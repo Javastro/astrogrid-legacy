@@ -1,4 +1,5 @@
 <%@ page import="org.astrogrid.community.common.policy.data.ResourceData,
+                 org.astrogrid.community.server.policy.manager.PolicyManagerImpl,
                  org.astrogrid.community.server.policy.manager.ResourceManagerImpl"
     session="false" %>
 
@@ -6,7 +7,8 @@
 
 //put add account link at the top
 //get a list of accounts and put a edit and remove beside them.
-ResourceManagerImpl rmi = new ResourceManagerImpl();
+//ResourceManagerImpl rmi = new ResourceManagerImpl();
+PolicyManagerImpl rmi = new PolicyManagerImpl();
 
 
 String removeResource = request.getParameter("RemoveResource");

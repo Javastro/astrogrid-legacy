@@ -1,11 +1,32 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/policy/manager/PolicyManagerCoreDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/10/29 15:50:05 $</cvs:date>
- * <cvs:version>$Revision: 1.10 $</cvs:version>
+ * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.11 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerCoreDelegate.java,v $
+ *   Revision 1.11  2004/11/22 13:03:04  jdt
+ *   Merges from Comm_KMB_585
+ *
+ *
+ *   Revision 1.9.18.1.4.4  2004/11/12 09:12:09  KevinBenson
+ *   Still need to javadoc and check exceptions on a couple of new methods
+ *   for ResourceManager and PermissionManager, but for the most part it is ready.
+ *   I will also add some stylesheets around the jsp pages later.
+ *
+ *   Revision 1.9.18.1.4.3  2004/11/10 12:28:54  KevinBenson
+ *   needed to add throw exceptions
+ *
+ *   Revision 1.9.18.1.4.2  2004/11/08 22:08:21  KevinBenson
+ *   added groupmember and permissionmanager tests.  Changed the install.xml to use eperate file names
+ *   instead of the same filename
+ *
+ *   Revision 1.9.18.1.4.1  2004/11/05 08:55:49  KevinBenson
+ *   Moved the GroupMember out of PolicyManager in the commons and client section.
+ *   Added more unit tests for GroupMember and PermissionManager for testing.
+ *   Still have some errors that needs some fixing.
+ *
  *   Revision 1.10  2004/10/29 15:50:05  jdt
  *   merges from Community_AdminInterface (bug 579)
  *
@@ -794,6 +815,41 @@ public class PolicyManagerCoreDelegate
                 ) ;
             }
         }
+   
+   /**
+    * Request the details for a Resource.
+    * @param The resource identifier.
+    * @return The requested ResourceData object.
+    * @throws CommunityResourceException If unable to locate the resource.
+    * @throws CommunityServiceException If there is an internal error in the service.
+    * @throws CommunityIdentifierException If the resource identifier is not valid.
+    *
+    */
+   public Object[] getResources()
+       {
+       //
+       // If we have a valid service reference.
+       if (null != this.manager)
+           {
+           //
+           // Try calling the service method.
+           try {
+               return this.manager.getResources() ;
+               }
+           //
+           // Catch anything that went BANG.
+           catch (RemoteException ouch)
+               {
+               //
+               // Try converting the Exception.
+               //serviceException(ouch) ;
+               //resourceException(ouch) ;
+               //identifierException(ouch) ;
+               }
+       }
+           return null;
+   }
+   
 
     /**
      * Update the details for a Resource.
@@ -925,6 +981,7 @@ public class PolicyManagerCoreDelegate
      *
      */
     public PolicyPermission getPermission(String resource, String group, String action)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException    
         {
         PolicyPermission result = null ;
         //
@@ -947,6 +1004,36 @@ public class PolicyManagerCoreDelegate
             }
         return result ;
         }
+    
+    /**
+     * Request a PolicyPermission.
+     * @todo Better Exception handling.
+     *
+     */
+    public Object[] getPermissions()    
+        {
+        Object[] result = null ;
+        //
+        // If we have a valid service reference.
+        if (null != this.manager)
+            {
+            //
+            // Try calling the service method.
+            try {
+                result = this.manager.getPermissions();
+                }
+            //
+            // Catch anything that went BANG.
+            catch (RemoteException ouch)
+                {
+                //
+                // Unpack the RemoteException, and re-throw the real Exception.
+                //
+                }
+            }
+        return result ;
+     }
+    
 
     /**
      * Update a PolicyPermission.
@@ -954,6 +1041,7 @@ public class PolicyManagerCoreDelegate
      *
      */
     public PolicyPermission setPermission(PolicyPermission permission)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         PolicyPermission result = null ;
         //
@@ -1152,4 +1240,102 @@ public class PolicyManagerCoreDelegate
                 ) ;
             }
         }
+    
+    /**
+     * Request a list of Group members.
+     * The group must be local.
+     * @param  group   The Group identifier.
+     * @return An array of GroupMemberData objects..
+     * @throws CommunityIdentifierException If one of the identifiers is not valid.
+     * @throws CommunityPolicyException If one the identifiers is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     *
+     */
+    public GroupMemberData getGroupMember(String account, String group)
+        throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
+        {
+        //
+        // If we have a valid service reference.
+        if (null != this.manager)
+            {
+            //
+            // Try calling the service method.
+            try {
+                return this.manager.getGroupMember(account,group) ;
+                }
+            //
+            // Catch anything that went BANG.
+            catch (RemoteException ouch)
+                {
+                //
+                // Try converting the Exception.
+                policyException(ouch) ;
+                serviceException(ouch) ;
+                identifierException(ouch) ;
+                //
+                // If we get this far, then we don't know what it is.
+                throw new CommunityServiceException(
+                    "WebService call failed - " + ouch,
+                    ouch
+                    ) ;
+                }
+            }
+        //
+        // If we don't have a valid service.
+        else {
+            throw new CommunityServiceException(
+                "Service not initialised"
+                ) ;
+            }
+        }    
+    
+    /**
+     * Request a list of Group members.
+     * The group must be local.
+     * @param  group   The Group identifier.
+     * @return An array of GroupMemberData objects..
+     * @throws CommunityIdentifierException If one of the identifiers is not valid.
+     * @throws CommunityPolicyException If one the identifiers is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     *
+     */
+    public Object[] getGroupMembers()
+        throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
+        {
+        //
+        // If we have a valid service reference.
+        if (null != this.manager)
+            {
+            //
+            // Try calling the service method.
+            try {
+                return this.manager.getGroupMembers() ;
+                }
+            //
+            // Catch anything that went BANG.
+            catch (RemoteException ouch)
+                {
+                //
+                // Try converting the Exception.
+                policyException(ouch) ;
+                serviceException(ouch) ;
+                identifierException(ouch) ;
+                //
+                // If we get this far, then we don't know what it is.
+                throw new CommunityServiceException(
+                    "WebService call failed - " + ouch,
+                    ouch
+                    ) ;
+                }
+            }
+        //
+        // If we don't have a valid service.
+        else {
+            throw new CommunityServiceException(
+                "Service not initialised"
+                ) ;
+            }
+        }
+    
+    
     }

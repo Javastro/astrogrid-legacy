@@ -1,11 +1,23 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/ant/install.xml,v $</cvs:source>
-    | <cvs:author>$Author: pah $</cvs:author>
-    | <cvs:date>$Date: 2004/08/13 13:26:45 $</cvs:date>
-    | <cvs:version>$Revision: 1.16 $</cvs:version>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
+    | <cvs:version>$Revision: 1.17 $</cvs:version>
     | <cvs:log>
     |   $Log: install.xml,v $
+    |   Revision 1.17  2004/11/22 13:03:04  jdt
+    |   Merges from Comm_KMB_585
+    |
+    |   Revision 1.16.58.2  2004/11/08 22:08:21  KevinBenson
+    |   added groupmember and permissionmanager tests.  Changed the install.xml to use eperate file names
+    |   instead of the same filename
+    |
+    |   Revision 1.16.58.1  2004/11/05 08:55:49  KevinBenson
+    |   Moved the GroupMember out of PolicyManager in the commons and client section.
+    |   Added more unit tests for GroupMember and PermissionManager for testing.
+    |   Still have some errors that needs some fixing.
+    |
     |   Revision 1.16  2004/08/13 13:26:45  pah
     |   -paramterize the input xml file to allow for easy location override
     |
@@ -446,7 +458,7 @@
         <echo message="  File      : ${service.file}"/>
         <echo message="  Date      : ${service.date}"/>
         <xslt style="${basedir}/xsl/registry/service.entry.xsl"
-            in="${basedir}/config/registry/service.entry.xml"
+            in="${basedir}/config/registry/${registry.entry.file}"
             out="${basedir}/config/service/${service.file}">
             <outputproperty name="method" value="xml"/>
             <outputproperty name="indent" value="yes"/>
@@ -490,29 +502,33 @@
         <antcall target="registy.service">
             <param name="service.authority" value="${org.astrogrid.community.ident}"/>
             <param name="service.resource"  value="org.astrogrid.community.common.policy.manager.PolicyManager"/>
-            <param name="service.wsdl"      value="${service.url}/PolicyManager?wsdl"/>
+            <param name="service.wsdl"      value="${service.url}/PolicyManager"/>
             <param name="service.file"      value="policy.manager.xml"/>
+            <param name="registry.entry.file" value="policymanager.entry.xml"/>
             <param name="service.date"      value="${service.date}"/>
         </antcall>
         <antcall target="registy.service">
             <param name="service.authority" value="${org.astrogrid.community.ident}"/>
             <param name="service.resource"  value="org.astrogrid.community.common.policy.service.PolicyService"/>
-            <param name="service.wsdl"      value="${service.url}/PolicyService?wsdl"/>
+            <param name="service.wsdl"      value="${service.url}/PolicyService"/>
             <param name="service.file"      value="policy.service.xml"/>
+    		<param name="registry.entry.file" value="policyservice.entry.xml"/>        	
             <param name="service.date"      value="${service.date}"/>
         </antcall>
         <antcall target="registy.service">
             <param name="service.authority" value="${org.astrogrid.community.ident}"/>
             <param name="service.resource"  value="org.astrogrid.community.common.security.manager.SecurityManager"/>
-            <param name="service.wsdl"      value="${service.url}/SecurityManager?wsdl"/>
+            <param name="service.wsdl"      value="${service.url}/SecurityManager"/>
             <param name="service.file"      value="security.manager.xml"/>
+            <param name="registry.entry.file" value="securitymanager.entry.xml"/>        	
             <param name="service.date"      value="${service.date}"/>
         </antcall>
         <antcall target="registy.service">
             <param name="service.authority" value="${org.astrogrid.community.ident}"/>
             <param name="service.resource"  value="org.astrogrid.community.common.security.service.SecurityService"/>
-            <param name="service.wsdl"      value="${service.url}/SecurityService?wsdl"/>
+            <param name="service.wsdl"      value="${service.url}/SecurityService"/>
             <param name="service.file"      value="security.service.xml"/>
+            <param name="registry.entry.file" value="securityservice.entry.xml"/>        	
             <param name="service.date"      value="${service.date}"/>
         </antcall>
     </target>

@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/junit/org/astrogrid/community/resolver/CommunityAccountSpaceResolverTestCase.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountSpaceResolverTestCase.java,v $
+ *   Revision 1.8  2004/11/22 13:03:04  jdt
+ *   Merges from Comm_KMB_585
+ *
+ *   Revision 1.7.104.1  2004/11/02 11:51:09  KevinBenson
+ *   added the check on getting  a homespace account when there is just the account name given
+ *
  *   Revision 1.7  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -93,6 +99,8 @@ public class CommunityAccountSpaceResolverTestCase
             found
             ) ;
         if (DEBUG_FLAG) System.out.println("  Found : " + found) ;
+        
+        if (DEBUG_FLAG) System.out.println("  Found toString : " + found.toString()) ;
         //
         // Check that the home space is right.
         assertEquals(
@@ -100,5 +108,36 @@ public class CommunityAccountSpaceResolverTestCase
             "ivo://org.astrogrid.mock.myspace/toad/public#qwertyuiop.xml",
             found.toString()
             ) ;
+//        }
+    
+        System.out.println("------------------");
+        //
+        // Create our target Ivorn.
+        Ivorn target2 = CommunityAccountIvornFactory.createMock(
+            "community",
+            "frog"
+            );
+        if (DEBUG_FLAG) System.out.println("  Target2 : " + target2) ;
+        //
+        // Create our resolver.
+        //CommunityAccountSpaceResolver resolver2 = new CommunityAccountSpaceResolver();
+        //
+        // Ask our resolver for the home address.
+        Ivorn found2 = resolver.resolve(target2) ;
+        assertNotNull(
+            "Failed to resolve home space",
+            found2
+            ) ;
+        if (DEBUG_FLAG) System.out.println("  Found2 : " + found2) ;
+        
+        if (DEBUG_FLAG) System.out.println("  Found2 toString : " + found2.toString()) ;
+        //
+        // Check that the home space is right.
+        assertEquals(
+            "Wrong ivorn2",
+            "ivo://org.astrogrid.mock.myspace/toad",
+            found2.toString()
+            ) ;
         }
+    
     }

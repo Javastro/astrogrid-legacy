@@ -1,9 +1,10 @@
 <%@ page import="org.astrogrid.community.common.policy.data.GroupData,
-             org.astrogrid.community.common.policy.data.ResourceData,
-             org.astrogrid.community.common.policy.data.PolicyPermission,            
+                 org.astrogrid.community.common.policy.data.ResourceData,
+                 org.astrogrid.community.common.policy.data.PolicyPermission,            
                  org.astrogrid.community.server.policy.manager.GroupManagerImpl,
+                 org.astrogrid.community.server.policy.manager.PolicyManagerImpl,
                  org.astrogrid.community.server.policy.manager.ResourceManagerImpl,                 
-             org.astrogrid.community.server.policy.manager.PermissionManagerImpl,
+                 org.astrogrid.community.server.policy.manager.PermissionManagerImpl,
                  org.astrogrid.community.resolver.policy.manager.PolicyManagerResolver,
                  org.astrogrid.registry.client.query.ServiceData,
                  org.astrogrid.store.Ivorn,
@@ -17,10 +18,12 @@
 
 //put add account link at the top
 //get a list of accounts and put a edit and remove beside them.
-GroupManagerImpl gmi = new GroupManagerImpl();
-AccountManagerImpl ami = new AccountManagerImpl();
-ResourceManagerImpl rmi = new ResourceManagerImpl();
-PermissionManagerImpl pmi = new PermissionManagerImpl();
+PolicyManagerImpl pmi = new PolicyManagerImpl();
+//PermissionManagerImpl pmi = new PermissionManagerImpl();
+//GroupManagerImpl gmi = new GroupManagerImpl();
+//AccountManagerImpl ami = new AccountManagerImpl();
+//ResourceManagerImpl rmi = new ResourceManagerImpl();
+//PermissionManagerImpl pmi = new PermissionManagerImpl();
 
 String removePermission = request.getParameter("RemovePermission");
 String addPermission = request.getParameter("AddPermission");
@@ -35,13 +38,13 @@ if(removePermission != null && removePermission.trim().length() > 0) {
    pmi.delPermission(request.getParameter("resource"),request.getParameter("group"),request.getParameter("action"));
    info = "Permission was deleted for group = " + request.getParameter("group") + " with resource = " + request.getParameter("resource");
 }else if(addPermission != null && addPermission.trim().length() > 0) {
-	  if((request.getParameter("resource") == null || request.getParameter("resource").trim().length() <= 0) ||
-		 (request.getParameter("group") == null || request.getParameter("group").trim().length() <= 0) ||
-		 (request.getParameter("action") == null || request.getParameter("action").trim().length() <= 0) ) {
-		 	info = "No adding of permission; You must have a Action, Resource, and Group for adding a permission.";
-	  } else {
-      	pmi.addPermission(request.getParameter("resource"),request.getParameter("group"),request.getParameter("action"));
-      	info = "Permission was added for group = " + request.getParameter("group") + " with resource = " + request.getParameter("resource");
+     if((request.getParameter("resource") == null || request.getParameter("resource").trim().length() <= 0) ||
+       (request.getParameter("group") == null || request.getParameter("group").trim().length() <= 0) ||
+       (request.getParameter("action") == null || request.getParameter("action").trim().length() <= 0) ) {
+         info = "No adding of permission; You must have a Action, Resource, and Group for adding a permission.";
+     } else {
+         pmi.addPermission(request.getParameter("resource"),request.getParameter("group"),request.getParameter("action"));
+         info = "Permission was added for group = " + request.getParameter("group") + " with resource = " + request.getParameter("resource");
       }
 }else if(getCommunity != null && getCommunity.trim().length() > 0) {
    Ivorn ivorn = new Ivorn(request.getParameter("community"));
@@ -51,10 +54,14 @@ if(removePermission != null && removePermission.trim().length() > 0) {
 }
 
 if(groups == null)
-   groups = gmi.getLocalGroups();
+   groups = pmi.getLocalGroups();
+//   groups = gmi.getLocalGroups();
    
-Object[] groupMembers = gmi.getGroupMembers();
-Object[] resources = rmi.getResources();
+//Object[] groupMembers = gmi.getGroupMembers();
+//Object[] resources = rmi.getResources();
+//Object[] permissions = pmi.getPermissions();
+Object[] groupMembers = pmi.getGroupMembers();
+Object[] resources = pmi.getResources();
 Object[] permissions = pmi.getPermissions();
 
 ServiceData[] communityServices = pmr.resolve();
@@ -127,9 +134,9 @@ ServiceData[] communityServices = pmr.resolve();
             </td>
          </tr>
       <%
-      	 }
+          }
          PolicyPermission pp = null;
-	     if(permissions != null && permissions.length > 0) 
+        if(permissions != null && permissions.length > 0) 
          for(int i = 0;i < permissions.length;i++) {
             pp = (PolicyPermission)permissions[i];
       %>

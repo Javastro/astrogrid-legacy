@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/AccountManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.20 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.21 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.21  2004/11/22 13:03:04  jdt
+ *   Merges from Comm_KMB_585
+ *
+ *   Revision 1.20.22.1  2004/11/08 22:08:21  KevinBenson
+ *   added groupmember and permissionmanager tests.  Changed the install.xml to use eperate file names
+ *   instead of the same filename
+ *
  *   Revision 1.20  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -372,7 +379,7 @@ public class AccountManagerImpl
      * @todo Verify that the finally gets executed, even if a new Exception is thrown.
      *
      */
-    protected AccountData getAccount(CommunityIvornParser ident)
+    public AccountData getAccount(CommunityIvornParser ident)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         log.debug("") ;

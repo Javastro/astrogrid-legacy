@@ -1,11 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/GroupManagerTest.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerTest.java,v $
+ *   Revision 1.6  2004/11/22 13:03:04  jdt
+ *   Merges from Comm_KMB_585
+ *
+ *   Revision 1.5.22.1  2004/11/05 08:55:49  KevinBenson
+ *   Moved the GroupMember out of PolicyManager in the commons and client section.
+ *   Added more unit tests for GroupMember and PermissionManager for testing.
+ *   Still have some errors that needs some fixing.
+ *
  *   Revision 1.5  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -267,6 +275,35 @@ public class GroupManagerTest
         // Check that they refer to the same group.
         assertEquals("Different identifiers", created, found) ;
         }
+    
+    /**
+     * Try getting a valid Group.
+     *
+     */
+    public GroupData testGetValidGroupData()
+        throws Exception
+        {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest:testGetValid()") ;
+        //
+        // Try creating the Group.
+        GroupData created = groupManager.addGroup(
+            createLocal("test-group").toString()
+            ) ;
+        assertNotNull("Null group", created) ;
+        //
+        // Try getting the details.
+        GroupData found = groupManager.getGroup(
+            createLocal("test-group").toString()
+            ) ;
+        assertNotNull("Null group", found) ;
+        //
+        // Check that they refer to the same group.
+        assertEquals("Different identifiers", created, found) ;
+        return found;
+    }
+    
 
     /**
      * Try setting a null Group.

@@ -1,11 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/ResourceManagerMock.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceManagerMock.java,v $
+ *   Revision 1.7  2004/11/22 13:03:04  jdt
+ *   Merges from Comm_KMB_585
+ *
+ *   Revision 1.6.22.1  2004/11/12 09:12:09  KevinBenson
+ *   Still need to javadoc and check exceptions on a couple of new methods
+ *   for ResourceManager and PermissionManager, but for the most part it is ready.
+ *   I will also add some stylesheets around the jsp pages later.
+ *
  *   Revision 1.6  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -166,6 +174,24 @@ public class ResourceManagerMock
                 ) ;
             }
         }
+    
+    /**
+     * Request a Resource details.
+     * @param The resource identifier.
+     * @return The requested ResourceData object.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityResourceException If unable to locate the resource.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     *
+     */
+    public Object[] getResources() {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerMock.getResources()") ;
+        return null;
+        
+    }
+    
 
     /**
      * Update a Resource details.

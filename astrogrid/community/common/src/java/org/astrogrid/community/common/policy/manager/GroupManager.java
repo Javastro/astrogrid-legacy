@@ -1,11 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/GroupManager.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManager.java,v $
+ *   Revision 1.9  2004/11/22 13:03:04  jdt
+ *   Merges from Comm_KMB_585
+ *
+ *   Revision 1.8.104.1  2004/11/05 08:55:49  KevinBenson
+ *   Moved the GroupMember out of PolicyManager in the commons and client section.
+ *   Added more unit tests for GroupMember and PermissionManager for testing.
+ *   Still have some errors that needs some fixing.
+ *
  *   Revision 1.8  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -119,6 +127,6 @@ public interface GroupManager
      *
      */
     public Object[] getLocalAccountGroups(String account)
-        throws RemoteException, CommunityServiceException, CommunityIdentifierException ;
+        throws RemoteException, CommunityServiceException, CommunityIdentifierException ;    
 
     }

@@ -1,11 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/ResourceManager.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceManager.java,v $
+ *   Revision 1.8  2004/11/22 13:03:04  jdt
+ *   Merges from Comm_KMB_585
+ *
+ *   Revision 1.7.104.1  2004/11/12 09:12:09  KevinBenson
+ *   Still need to javadoc and check exceptions on a couple of new methods
+ *   for ResourceManager and PermissionManager, but for the most part it is ready.
+ *   I will also add some stylesheets around the jsp pages later.
+ *
  *   Revision 1.7  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -56,6 +64,19 @@ public interface ResourceManager
      */
    public ResourceData getResource(String ident)
         throws RemoteException, CommunityIdentifierException, CommunityResourceException, CommunityServiceException ;
+   
+   /**
+    * Request the details for a Resource.
+    * @param The resource identifier.
+    * @return The requested ResourceData object.
+    * @throws CommunityResourceException If unable to locate the resource.
+    * @throws CommunityServiceException If there is an internal error in the service.
+    * @throws CommunityIdentifierException If the resource identifier is not valid.
+    * @throws RemoteException If the WebService call fails.
+    *
+    */
+  public Object[] getResources() throws RemoteException ;
+   
 
     /**
      * Update the details for a Resource.

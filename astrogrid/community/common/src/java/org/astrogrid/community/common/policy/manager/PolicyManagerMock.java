@@ -1,11 +1,28 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/PolicyManagerMock.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerMock.java,v $
+ *   Revision 1.8  2004/11/22 13:03:04  jdt
+ *   Merges from Comm_KMB_585
+ *
+ *   Revision 1.7.22.3  2004/11/12 09:12:09  KevinBenson
+ *   Still need to javadoc and check exceptions on a couple of new methods
+ *   for ResourceManager and PermissionManager, but for the most part it is ready.
+ *   I will also add some stylesheets around the jsp pages later.
+ *
+ *   Revision 1.7.22.2  2004/11/08 22:08:21  KevinBenson
+ *   added groupmember and permissionmanager tests.  Changed the install.xml to use eperate file names
+ *   instead of the same filename
+ *
+ *   Revision 1.7.22.1  2004/11/05 08:55:49  KevinBenson
+ *   Moved the GroupMember out of PolicyManager in the commons and client section.
+ *   Added more unit tests for GroupMember and PermissionManager for testing.
+ *   Still have some errors that needs some fixing.
+ *
  *   Revision 1.7  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -284,6 +301,20 @@ public class PolicyManagerMock
         {
         return resourceManager.getResource(ident) ;
         }
+    
+    /**
+     * Request a Resource details.
+     * @return The requested ResourceData object.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityResourceException If unable to locate the resource.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     *
+     */
+    public Object[] getResources()
+        {
+        return resourceManager.getResources() ;
+        }
+    
 
     /**
      * Update a Resource details.
@@ -314,6 +345,39 @@ public class PolicyManagerMock
         {
         return resourceManager.delResource(ident) ;
         }
+    
+    private GroupMemberManagerMock groupMemberManager = new GroupMemberManagerMock();
+    
+    public GroupMemberData addGroupMember(String account, String group)
+    throws CommunityIdentifierException, CommunityPolicyException, CommunityServiceException
+    {
+        return groupMemberManager.addGroupMember(account,group);
+    }
+    
+    public GroupMemberData delGroupMember(String account, String group)
+    throws CommunityIdentifierException, CommunityPolicyException, CommunityServiceException
+    {
+      return groupMemberManager.delGroupMember(account,group);
+    }
+    
+    public Object[] getGroupMembers(String group)
+    throws CommunityIdentifierException, CommunityPolicyException, CommunityServiceException
+    {
+      return groupMemberManager.getGroupMembers(group);
+    }
+    
+    public GroupMemberData getGroupMember(String account, String group)
+    throws CommunityIdentifierException, CommunityPolicyException, CommunityServiceException
+    {
+      return groupMemberManager.getGroupMember(account,group);
+    }    
+    
+    public Object[] getGroupMembers()
+    throws CommunityIdentifierException, CommunityPolicyException, CommunityServiceException
+    {
+      return groupMemberManager.getGroupMembers();
+    }
+    
 
     /**
      * Our PermissionManager.
@@ -340,13 +404,23 @@ public class PolicyManagerMock
         {
         return permissionManager.getPermission(resource, group, action) ;
         }
+    
+    /**
+     * Request a PolicyPermission.
+     *
+     */
+    public Object[] getPermissions()
+        throws RemoteException
+        {
+        return permissionManager.getPermissions();
+        }
+    
 
     /**
      * Update a PolicyPermission.
      *
      */
     public PolicyPermission setPermission(PolicyPermission permission)
-        throws RemoteException
         {
         return permissionManager.setPermission(permission) ;
         }
@@ -361,63 +435,5 @@ public class PolicyManagerMock
         return permissionManager.delPermission(resource, group, action) ;
         }
 
-    /**
-     * Request a list of Accounts, given a remote Community name.
-     *
-     */
-    public Object[] getRemoteAccounts(String community)
-        {
-        // TODO - return something.
-        return null ;
-        }
 
-    /**
-     * Request a list of Groups, given a remote Community name.
-     *
-     */
-    public Object[] getRemoteGroups(String community)
-        {
-        // TODO - return something.
-        return null ;
-        }
-
-    /**
-     * Add an Account to a Group, given the Account and Group names.
-     *
-     */
-    public GroupMemberData addGroupMember(String account, String group)
-        {
-        // TODO - return something.
-        return null ;
-        }
-
-    /**
-     * Remove an Account from a Group, given the Account and Group names.
-     *
-     */
-    public GroupMemberData delGroupMember(String account, String group)
-        {
-        // TODO - return something.
-        return null ;
-        }
-
-    /**
-     * Get a list of Group members, given the Group name.
-     *
-     */
-    public Object[] getGroupMembers(String group)
-        {
-        // TODO - return something.
-        return null ;
-        }
-
-    /**
-     * Get a list of remote Groups that an Account belongs to, given the Account and Community names.
-     *
-    public Object[] getRemoteAccountGroups(String account, String community)
-        {
-        // TODO - return something.
-        return null ;
-        }
-     */
     }

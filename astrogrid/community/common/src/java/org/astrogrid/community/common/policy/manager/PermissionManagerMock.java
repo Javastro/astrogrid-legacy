@@ -1,11 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/PermissionManagerMock.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PermissionManagerMock.java,v $
+ *   Revision 1.7  2004/11/22 13:03:04  jdt
+ *   Merges from Comm_KMB_585
+ *
+ *   Revision 1.6.22.1  2004/11/12 09:12:09  KevinBenson
+ *   Still need to javadoc and check exceptions on a couple of new methods
+ *   for ResourceManager and PermissionManager, but for the most part it is ready.
+ *   I will also add some stylesheets around the jsp pages later.
+ *
  *   Revision 1.6  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -145,6 +153,21 @@ public class PermissionManagerMock
             this.getHashKey(resource, group, action)
             ) ;
         }
+    
+    /**
+     * Request a PolicyPermission.
+     *
+     */
+    public Object[] getPermissions()
+        {
+        //
+        // TODO Check for null params.
+
+        //
+        // Lookup the Account in our map.
+        return null;
+        }
+    
 
     /**
      * Update a PolicyPermission.

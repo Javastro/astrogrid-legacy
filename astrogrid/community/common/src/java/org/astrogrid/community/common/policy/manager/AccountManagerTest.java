@@ -1,11 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/AccountManagerTest.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.10 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.11 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerTest.java,v $
+ *   Revision 1.11  2004/11/22 13:03:04  jdt
+ *   Merges from Comm_KMB_585
+ *
+ *   Revision 1.10.22.1  2004/11/05 08:55:49  KevinBenson
+ *   Moved the GroupMember out of PolicyManager in the commons and client section.
+ *   Added more unit tests for GroupMember and PermissionManager for testing.
+ *   Still have some errors that needs some fixing.
+ *
  *   Revision 1.10  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -313,6 +321,35 @@ public class AccountManagerTest
         // Check that they refer to the same account.
         assertEquals("Different identifiers", created, found) ;
         }
+    
+    /**
+     * Try getting a valid Account.
+     *
+     */
+    public AccountData testGetValidAccountData()
+        throws Exception
+        {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("AccountManagerTest:testGetValid()") ;
+        //
+        // Try creating an Account.
+        AccountData created = accountManager.addAccount(
+            createLocal("test-account").toString()
+            ) ;
+        assertNotNull("Null account", created) ;
+        //
+        // Try getting the details.
+        AccountData found = accountManager.getAccount(
+            createLocal("test-account").toString()
+            ) ;
+        assertNotNull("Null account", found) ;
+        //
+        // Check that they refer to the same account.
+        assertEquals("Different identifiers", created, found) ;
+        return found;
+    }
+    
 
     /**
      * Try setting a null Account.

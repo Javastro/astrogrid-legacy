@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/data/GroupMemberData.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/10/29 15:50:05 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupMemberData.java,v $
+ *   Revision 1.8  2004/11/22 13:03:04  jdt
+ *   Merges from Comm_KMB_585
+ *
  *   Revision 1.7  2004/10/29 15:50:05  jdt
  *   merges from Community_AdminInterface (bug 579)
  *
@@ -118,6 +121,55 @@ public class GroupMemberData
         {
         this.group = value ;
         }
+    
+    /*
+     * Compare this with another AccountData.
+     * All we want to check is the Account ident.
+     * @param object The Object to compare.
+     * @return true if the two object represetnt the same Account (the idents are equivalent).
+     * @todo Needs to refactored to check for local community in the ident.
+     * @todo Move this to a common data object base class
+     *
+     */
+    public synchronized boolean equals(Object object)
+        {
+        //
+        // If the object is null.
+        if (null == object)
+            {
+            return false ;
+            }
+        //
+        // If the object is not null.
+        else {
+            //
+            // If the object is an AccountData
+            if (object instanceof GroupMemberData)
+                {
+                GroupMemberData that = (GroupMemberData) object ;
+                //
+                // If our ident is null
+                if (null == this.account && null == this.group) {
+                    return (null == that.getAccount() && null == that.getGroup()) ;
+                }else if(this.account != null && this.group != null) {
+                    return (this.account.equals(that.getAccount()) && this.group.equals(that.getGroup()) ) ;
+                }else if(this.account == null && this.group != null) {
+                    return (null == that.getAccount() && this.group.equals(that.getGroup())) ;
+                }else if(this.account != null && this.group == null) {
+                    return (null == that.getGroup() && this.account.equals(that.getAccount()) ) ;
+                }else {
+                   //impossible to get here return false.
+                    return false;
+                }
+            }
+            //
+            // If that is not an AccountData
+            else {
+                return false ;
+                }
+            }
+        }
+    
 
     /**
      * Access to our Group ident.

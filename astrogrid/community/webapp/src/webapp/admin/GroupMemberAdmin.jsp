@@ -2,6 +2,7 @@
              org.astrogrid.community.common.policy.data.AccountData,
              org.astrogrid.community.common.policy.data.GroupMemberData, 
                  org.astrogrid.community.server.policy.manager.GroupManagerImpl,
+                 org.astrogrid.community.server.policy.manager.PolicyManagerImpl,
                  org.astrogrid.community.resolver.policy.manager.PolicyManagerResolver,
                  org.astrogrid.registry.client.query.ServiceData,
                  org.astrogrid.store.Ivorn,
@@ -15,8 +16,10 @@
 
 //put add account link at the top
 //get a list of accounts and put a edit and remove beside them.
-GroupManagerImpl gmi = new GroupManagerImpl();
-AccountManagerImpl ami = new AccountManagerImpl();
+//GroupManagerImpl gmi = new GroupManagerImpl();
+//AccountManagerImpl ami = new AccountManagerImpl();
+PolicyManagerImpl pmi = new PolicyManagerImpl();
+
 
 String removeGroupMember = request.getParameter("RemoveGroupMember");
 String addGroupMember = request.getParameter("AddGroupMember");
@@ -29,11 +32,11 @@ Object[] accounts = null;
 
 PolicyManagerResolver pmr = new PolicyManagerResolver();
 if(removeGroupMember != null && removeGroupMember.trim().length() > 0) {
-   gmi.delGroupMember(request.getParameter("account"),request.getParameter("group"));
+   pmi.delGroupMember(request.getParameter("account"),request.getParameter("group"));
    info = "GroupMember was deleted for account = " + request.getParameter("account") + " with group = " + request.getParameter("group");
 }else if(addGroupMember != null && addGroupMember.trim().length() > 0) {
    //System.out.println("Attempting to add group members account = " + request.getParameter("account") + " and group = " + request.getParameter("group"));
-      gmi.addGroupMember(request.getParameter("account"),request.getParameter("group"));
+      pmi.addGroupMember(request.getParameter("account"),request.getParameter("group"));
       info = "Added Group Member for account = " + request.getParameter("account") + " with group = " + request.getParameter("group");
 }else if(getCommunity != null && getCommunity.trim().length() > 0) {
    Ivorn ivorn = new Ivorn(request.getParameter("community"));
@@ -44,11 +47,14 @@ if(removeGroupMember != null && removeGroupMember.trim().length() > 0) {
 
 
 
-Object[] groups = gmi.getLocalGroups();
+//Object[] groups = gmi.getLocalGroups();
+Object[] groups = pmi.getLocalGroups();
 if(accounts == null)
-   accounts = ami.getLocalAccounts();
+   accounts = pmi.getLocalAccounts();
+   //accounts = ami.getLocalAccounts();
    
-Object[] groupMembers = gmi.getGroupMembers();
+//Object[] groupMembers = gmi.getGroupMembers();
+Object[] groupMembers = pmi.getGroupMembers();
 
 ServiceData[] communityServices = pmr.resolve();
 

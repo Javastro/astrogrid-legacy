@@ -1,11 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/ResourceManagerTest.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceManagerTest.java,v $
+ *   Revision 1.4  2004/11/22 13:03:04  jdt
+ *   Merges from Comm_KMB_585
+ *
+ *   Revision 1.3.22.1  2004/11/05 08:55:49  KevinBenson
+ *   Moved the GroupMember out of PolicyManager in the commons and client section.
+ *   Added more unit tests for GroupMember and PermissionManager for testing.
+ *   Still have some errors that needs some fixing.
+ *
  *   Revision 1.3  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -150,6 +158,48 @@ public class ResourceManagerTest
             found.getIdent()
             ) ;
         }
+    
+    /**
+     * Check we can find a known Resource.
+     *
+     */
+    public ResourceData testGetValidResourceData()
+        throws Exception
+        {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerTest:testGetValid()") ;
+        //
+        // Try creating the Resource.
+        ResourceData created = this.resourceManager.addResource() ;
+        assertNotNull(
+            "Null resource",
+            created
+            ) ;
+        //
+        // Get the resource ident.
+        String ident = created.getIdent() ;
+        assertNotNull(
+            "Null resource ident",
+            ident
+            ) ;
+        //
+        // Try getting the resource details.
+        ResourceData found = this.resourceManager.getResource(ident) ;
+        assertNotNull(
+            "Null resource",
+            found
+            ) ;
+        //
+        // Check that the identifiers are the same.
+        assertEquals(
+            "Identifiers don't match",
+            created.getIdent(),
+            found.getIdent()
+            ) ;
+            return found;
+        }
+    
 
     /**
      * Check the service won't find an unknown Resource.

@@ -3,10 +3,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/config/registry/localhost/org.astrogrid.localhost.policy.manager.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/04 18:00:02 $</cvs:date>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     |   $Log: org.astrogrid.localhost.policy.manager.xml,v $
+    |   Revision 1.7  2004/11/22 13:03:04  jdt
+    |   Merges from Comm_KMB_585
+    |
     |   Revision 1.6  2004/11/04 18:00:02  jdt
     |   Restored following fixes to auto-integration
     |   Merged in Reg_KMB_546 and Reg_KMB_603 and Comm_KMB_583
@@ -63,7 +66,7 @@
         <Subject>Test service</Subject>
         <Interface>
             <Invocation>WebService</Invocation>
-            <AccessURL use="base">http://localhost:8080/astrogrid-community/services/PolicyManager?wsdl</AccessURL>
+            <AccessURL use="base">http://localhost:8080/astrogrid-community/services/PolicyManager</AccessURL>
         </Interface>
     </Resource>
 </VODescription>

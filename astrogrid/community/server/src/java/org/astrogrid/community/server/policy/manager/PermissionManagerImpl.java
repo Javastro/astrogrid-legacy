@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/Attic/PermissionManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/10/29 15:50:05 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PermissionManagerImpl.java,v $
+ *   Revision 1.10  2004/11/22 13:03:04  jdt
+ *   Merges from Comm_KMB_585
+ *
  *   Revision 1.9  2004/10/29 15:50:05  jdt
  *   merges from Community_AdminInterface (bug 579)
  *
@@ -115,6 +118,40 @@ public class PermissionManagerImpl
         {
         super(parent) ;
         }
+    
+    
+    /**
+     * Reference to our local AccountManager.
+     * The GroupManager needs access to the current AccountManagerImpl because Castor maintains an
+     * in-memory cache of AccountData objects, with read-write locks.
+     *
+     */
+    private GroupManagerImpl groupManager ;
+    
+    /**
+     * Reference to our local AccountManager.
+     * The GroupManager needs access to the current AccountManagerImpl because Castor maintains an
+     * in-memory cache of AccountData objects, with read-write locks.
+     *
+     */
+    private ResourceManagerImpl resourceManager ;
+    
+
+    /**
+     * Public constructor, using a parent service and an AccountManager instance.
+     * @param parent A parent CommunityServiceImpl.
+     * @param accountManager An AccountManager instance.
+     * The GroupManager needs access to the current AccountManagerImpl because Castor maintains an
+     * in-memory cache of AccountData objects, with read-write locks.
+     *
+     */
+    public PermissionManagerImpl(CommunityServiceImpl parent,GroupManagerImpl groupManager, ResourceManagerImpl resourceManager)
+        {
+        super(parent) ;
+        this.groupManager = groupManager;
+        this.resourceManager = resourceManager;
+        }
+    
 
     /**
      * Create a new PolicyPermission.
@@ -156,36 +193,46 @@ public class PermissionManagerImpl
        //ResourceIdent resourceIdent = new ResourceIdent(resourceName) ;
        //ResourceIdentifier resourceIdent = new ResourceIdentifier(resourceName) ;        
        log.debug("  resource : " + resource) ;
-        
-        
-       ResourceManagerImpl rmi = new ResourceManagerImpl();
+                
        ResourceData rd = null;
        
        try {
-           rd = rmi.getResource(resource);
+           rd = resourceManager.getResource(resource);
        }catch(CommunityResourceException cre) {
            throw new CommunityPolicyException(
                    "Could not get the resource = " + resource,resource
                    ) ;
        }
         
-       PolicyManagerResolver pmr = new PolicyManagerResolver();
-       PolicyManagerDelegate pmd = null;
-       try { 
-           pmd = pmr.resolve(new CommunityIvornParser(group));
-       }catch(CommunityResolverException cre) {
-           throw new CommunityServiceException(
-                   "Could not resolve group = " + group,
-                   cre
-                   ) ;
-       }catch(RegistryException re) {
-           throw new CommunityServiceException(
-                   "Could not resolve group = " + group,
-                   re
-                   ) ;            
+       CommunityIvornParser cip = new CommunityIvornParser(group);
+       GroupData gd = null;
+       if(cip.isLocal()) {
+           gd = groupManager.getGroup(group);
+       }else {
+           try {
+               PolicyManagerResolver pmr = new PolicyManagerResolver();               
+               PolicyManagerDelegate pmd = pmr.resolve(cip);
+               gd = pmd.getGroup(group);
+           }catch(CommunityResolverException cre) {
+               throw new CommunityServiceException(
+                       "Could not resolve group = " + group,
+                       cre
+                       ) ;
+           }catch(RegistryException re) {
+               throw new CommunityServiceException(
+                       "Could not resolve group = " + group,
+                       re
+                       ) ;            
+           }
        }
-         
-       GroupData gd = pmd.getGroup(group);        
+
+       //Lets just double check, but the above statements should throw
+       //an exception or give is a valid non-null GroupData       
+       if(gd == null) {
+           throw new CommunityServiceException(
+                   "Could not find group = " + group);
+       }
+                 
        permission = new PolicyPermission() ;
        permission.setResource(rd.getIdent()) ;
        permission.setGroup(gd.getIdent()) ;
@@ -272,6 +319,7 @@ public class PermissionManagerImpl
      *
      */
     public PolicyPermission getPermission(String resourceName, String groupName, String action)
+    throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         log.debug("") ;
         log.debug("----\"----") ;
@@ -284,32 +332,33 @@ public class PermissionManagerImpl
         PolicyPermission result   = null ;
         //
         // Create a ResourceIdent for our Resource.
-        ResourceIdent resourceIdent = new ResourceIdent(resourceName) ;
-        log.debug("  resource : " + resourceIdent) ;
+        //ResourceIdent resourceIdent = new ResourceIdent(resourceName) ;
+        //log.debug("  resource : " + resourceIdent) ;
         //
         // Create a CommunityIdent for our Group.
-        CommunityIdent groupIdent = new CommunityIdent(groupName) ;
-        log.debug("  group    : " + groupIdent) ;
-
-        //
-        // If the resource ident is valid.
-        if (resourceIdent.isValid())
-            {
-            //
-            // If the resource ident is local.
-            if (resourceIdent.isLocal())
-                {
-                //
-                // If the group ident is valid.
-                if (groupIdent.isValid())
-                    {
+        //CommunityIdent groupIdent = new CommunityIdent(groupName) ;
+        //log.debug("  group    : " + groupIdent) ;
+        
+        ResourceData rd = null;
+        
+        try {
+            rd = resourceManager.getResource(resourceName);
+        }catch(CommunityResourceException cre) {
+            throw new CommunityPolicyException(
+                    "Could not get the resource = " + resourceName,resourceName
+                    ) ;
+        }
+        
+        CommunityIvornParser cip = new CommunityIvornParser(groupName);
+        
+        
                     //
                     // Create the database key.
                     Complex key = new Complex(
                         new Object[]
                             {
-                            resourceIdent.toString(),
-                            groupIdent.toString(),
+                            rd.getIdent(),
+                            cip.getAccountIdent(),
                             action
                             }
                         ) ;
@@ -363,31 +412,6 @@ public class PermissionManagerImpl
                         {
                         closeConnection(database) ;
                         }
-                    }
-                //
-                // If the group ident is not valid.
-                else {
-                    //
-                    // Set the response to null.
-                    result = null ;
-                    }
-                }
-            //
-            // If the resource is not local.
-            else {
-                //
-                // Set the response to null.
-                result = null ;
-                }
-            }
-            //
-            // If the resource is not valid.
-        else {
-            //
-            // Set the response to null.
-            result = null ;
-            }
-
         // TODO
         // Need to return something to the client.
         // Possible a new DataObject ... ?
@@ -400,6 +424,7 @@ public class PermissionManagerImpl
      *
      */
     public PolicyPermission setPermission(PolicyPermission permission)
+    throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         log.debug("") ;
         log.debug("----\"----") ;
@@ -407,37 +432,36 @@ public class PermissionManagerImpl
         log.debug("  resource : " + permission.getResource()) ;
         log.debug("  group    : " + permission.getGroup()) ;
         log.debug("  action   : " + permission.getAction()) ;
+        
+        System.out.println("PermissionManagerImpl.setPermission()") ;
+        System.out.println("  resource : " + permission.getResource()) ;
+        System.out.println("  group    : " + permission.getGroup()) ;
+        System.out.println("  action   : " + permission.getAction()) ;        
+        
 
         Database         database = null ;
         PolicyPermission result   = null ;
         //
-        // Create a ResourceIdent for our Resource.
-        ResourceIdent resourceIdent = new ResourceIdent(permission.getResource()) ;
-        log.debug("  resource : " + resourceIdent) ;
-        //
-        // Create a CommunityIdent for our Group.
-        CommunityIdent groupIdent = new CommunityIdent(permission.getGroup()) ;
-        log.debug("  group    : " + groupIdent) ;
 
-        //
-        // If the resource ident is valid.
-        if (resourceIdent.isValid())
-            {
-            //
-            // If the resource ident is local.
-            if (resourceIdent.isLocal())
-                {
-                //
-                // If the group ident is valid.
-                if (groupIdent.isValid())
-                    {
+        
+        ResourceData rd = null;
+        
+        try {
+            rd = resourceManager.getResource(permission.getResource());
+        }catch(CommunityResourceException cre) {
+            throw new CommunityPolicyException(
+                    "Could not get the resource = " + permission.getResource(),permission.getResource()
+                    ) ;
+        }
+        
+        CommunityIvornParser cip = new CommunityIvornParser(permission.getGroup());
                     //
                     // Create the database key.
                     Complex key = new Complex(
                         new Object[]
                             {
-                            resourceIdent.toString(),
-                            groupIdent.toString(),
+                            rd.getIdent(),
+                            cip.getAccountIdent(),
                             permission.getAction()
                             }
                         ) ;
@@ -495,30 +519,7 @@ public class PermissionManagerImpl
                         {
                         closeConnection(database) ;
                         }
-                    }
                 //
-                // If the group ident is not valid.
-                else {
-                    //
-                    // Set the response to null.
-                    result = null ;
-                    }
-                }
-            //
-            // If the resource is not local.
-            else {
-                //
-                // Set the response to null.
-                result = null ;
-                }
-            }
-            //
-            // If the resource is not valid.
-        else {
-            //
-            // Set the response to null.
-            result = null ;
-            }
 
         // TODO
         // Need to return something to the client.
@@ -570,11 +571,10 @@ public class PermissionManagerImpl
        log.debug("  resource : " + resource) ;
         
         
-       ResourceManagerImpl rmi = new ResourceManagerImpl();
        ResourceData rd = null;
        
        try {
-           rd = rmi.getResource(resource);
+           rd = resourceManager.getResource(resource);
        }catch(CommunityResourceException cre) {
            throw new CommunityPolicyException(
                    "Could not get the resource = " + resource,resource

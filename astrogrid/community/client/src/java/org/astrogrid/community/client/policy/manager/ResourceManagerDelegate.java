@@ -1,11 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/policy/manager/ResourceManagerDelegate.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:19 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceManagerDelegate.java,v $
+ *   Revision 1.7  2004/11/22 13:03:04  jdt
+ *   Merges from Comm_KMB_585
+ *
+ *   Revision 1.6.104.1  2004/11/12 09:12:09  KevinBenson
+ *   Still need to javadoc and check exceptions on a couple of new methods
+ *   for ResourceManager and PermissionManager, but for the most part it is ready.
+ *   I will also add some stylesheets around the jsp pages later.
+ *
  *   Revision 1.6  2004/06/18 13:45:19  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -56,6 +64,17 @@ public interface ResourceManagerDelegate
      */
    public ResourceData getResource(String ident)
         throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException ;
+   
+   /**
+    * Request the details for a Resource.
+    * @return The requested ResourceData object.
+    * @throws CommunityResourceException If unable to locate the resource.
+    * @throws CommunityServiceException If there is an internal error in the service.
+    * @throws CommunityIdentifierException If the resource identifier is not valid.
+    *
+    */
+  public Object[] getResources();
+   
 
     /**
      * Update the details for a Resource.

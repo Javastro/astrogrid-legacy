@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/PolicyManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/10/29 15:50:05 $</cvs:date>
- * <cvs:version>$Revision: 1.13 $</cvs:version>
+ * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.14 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.14  2004/11/22 13:03:04  jdt
+ *   Merges from Comm_KMB_585
+ *
  *   Revision 1.13  2004/10/29 15:50:05  jdt
  *   merges from Community_AdminInterface (bug 579)
  *
@@ -116,10 +119,17 @@ public class PolicyManagerImpl
      */
     private void initManagers()
         {
-        groupManager      = new GroupManagerImpl(this)      ;
         accountManager    = new AccountManagerImpl(this)    ;
         resourceManager   = new ResourceManagerImpl(this)   ;
         permissionManager = new PermissionManagerImpl(this) ;
+
+        /*
+         * The GroupManager needs access to the current AccountManagerImpl because Castor maintains an
+         * in-memory cache of AccountData objects, with read-write locks.
+         */
+        groupManager = new GroupManagerImpl(this, accountManager) ;
+        permissionManager = new PermissionManagerImpl(this,groupManager, resourceManager);
+
         }
 
     /**
@@ -364,11 +374,44 @@ public class PolicyManagerImpl
      * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
-    public Object[] getGroupMembers(String ident)
+    public Object[] getGroupMembers(String group)
         throws RemoteException, CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
         {
-        return groupManager.getGroupMembers(ident) ;
+        return groupManager.getGroupMembers(group) ;
         }
+    
+    
+
+    /**
+     * Request a list of Group Members.
+     * @param group The Group identifier.
+     * @return An array of GroupMemberData objects.
+     * @throws CommunityIdentifierException If one of the identifiers is not valid.
+     * @throws CommunityPolicyException If the group is not local.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     *
+     */
+    public GroupMemberData getGroupMember(String account, String group)
+        throws RemoteException, CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
+        {
+        return groupManager.getGroupMember(account, group) ;
+        }    
+    
+    /**
+     * Request a list of Group Members.
+     * @param group The Group identifier.
+     * @return An array of GroupMemberData objects.
+     * @throws CommunityIdentifierException If one of the identifiers is not valid.
+     * @throws CommunityPolicyException If the group is not local.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     *
+     */
+    public Object[] getGroupMembers()
+        throws RemoteException, CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
+        {
+        return groupManager.getGroupMembers() ;
+        }
+    
 
     /**
      * Request a list of Groups that an Account belongs to.
@@ -412,6 +455,21 @@ public class PolicyManagerImpl
         {
         return resourceManager.getResource(ident);
         }
+   
+   /**
+    * Request a Resource details.
+    * @return The requested ResourceData object.
+    * @throws CommunityIdentifierException If the identifier is not valid.
+    * @throws CommunityResourceException If unable to locate the resource.
+    * @throws CommunityServiceException If there is an internal error in the service.
+    * @throws RemoteException If the WebService call fails.
+    *
+    */
+  public Object[] getResources() throws RemoteException
+       {
+       return resourceManager.getResources();
+       }
+   
 
     /**
      * Update a Resource details.
@@ -460,15 +518,26 @@ public class PolicyManagerImpl
      *
      */
     public PolicyPermission getPermission(String resource, String group, String action)
+    throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         return permissionManager.getPermission(resource, group, action) ;
         }
+    
+    /**
+     * Request a PolicyPermission.
+     *
+     */
+    public Object[] getPermissions() {
+        return permissionManager.getPermissions() ;
+    }
+    
 
     /**
      * Update a PolicyPermission.
      *
      */
     public PolicyPermission setPermission(PolicyPermission permission)
+    throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         return permissionManager.setPermission(permission) ;
         }

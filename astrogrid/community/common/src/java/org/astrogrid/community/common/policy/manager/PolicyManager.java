@@ -1,11 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/PolicyManager.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManager.java,v $
+ *   Revision 1.9  2004/11/22 13:03:04  jdt
+ *   Merges from Comm_KMB_585
+ *
+ *   Revision 1.8.104.1  2004/11/05 08:55:49  KevinBenson
+ *   Moved the GroupMember out of PolicyManager in the commons and client section.
+ *   Added more unit tests for GroupMember and PermissionManager for testing.
+ *   Still have some errors that needs some fixing.
+ *
  *   Revision 1.8  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -33,51 +41,9 @@ import org.astrogrid.community.common.exception.CommunityIdentifierException ;
  *
  */
 public interface PolicyManager
-    extends Remote, CommunityService, AccountManager, GroupManager, ResourceManager, PermissionManager
+    extends Remote, CommunityService, AccountManager, GroupManager, GroupMemberManager, ResourceManager, PermissionManager
     {
-    /**
-     * Add an Account to a Group.
-     * The group must be local, but Account can be local or remote.
-     * @param  account The Account identifier.
-     * @param  group   The Group identifier.
-     * @return A GroupMemberData to confirm the membership.
-     * @throws CommunityIdentifierException If one of the identifiers is not valid.
-     * @throws CommunityPolicyException If one the identifiers is not in the database.
-     * @throws CommunityServiceException If there is an internal error in the service.
-     * @throws RemoteException If the Group is in a remote Community and the WebService call fails.
-     *
-     */
-    public GroupMemberData addGroupMember(String account, String group)
-        throws RemoteException, CommunityServiceException, CommunityIdentifierException, CommunityPolicyException ;
 
-    /**
-     * Remove an Account from a Group.
-     * The group must be local, but Account can be local or remote.
-     * @param  account The Account identifier.
-     * @param  group   The Group identifier.
-     * @return A GroupMemberData to confirm the membership.
-     * @throws CommunityIdentifierException If one of the identifiers is not valid.
-     * @throws CommunityPolicyException If one the identifiers is not in the database.
-     * @throws CommunityServiceException If there is an internal error in the service.
-     * @throws RemoteException If the Group is in a remote Community and the WebService call fails.
-     *
-     */
-    public GroupMemberData delGroupMember(String account, String group)
-        throws RemoteException, CommunityServiceException, CommunityPolicyException, CommunityIdentifierException ;
-
-    /**
-     * Request a list of Group members.
-     * The group must be local.
-     * @param  group   The Group identifier.
-     * @return An array of GroupMemberData objects..
-     * @throws CommunityIdentifierException If one of the identifiers is not valid.
-     * @throws CommunityPolicyException If one the identifiers is not in the database.
-     * @throws CommunityServiceException If there is an internal error in the service.
-     * @throws RemoteException If the Group is in a remote Community and the WebService call fails.
-     *
-     */
-    public Object[] getGroupMembers(String group)
-        throws RemoteException, CommunityServiceException, CommunityPolicyException, CommunityIdentifierException ;
 
     /**
      * Request a list of Accounts, given a remote Community name.

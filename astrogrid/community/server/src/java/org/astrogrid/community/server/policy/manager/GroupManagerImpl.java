@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/Attic/GroupManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/10/29 15:50:05 $</cvs:date>
- * <cvs:version>$Revision: 1.11 $</cvs:version>
+ * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.12 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerImpl.java,v $
+ *   Revision 1.12  2004/11/22 13:03:04  jdt
+ *   Merges from Comm_KMB_585
+ *
  *   Revision 1.11  2004/10/29 15:50:05  jdt
  *   merges from Community_AdminInterface (bug 579)
  *
@@ -57,12 +60,16 @@ import org.exolab.castor.jdo.DuplicateIdentityException ;
 import org.exolab.castor.persist.spi.Complex ;
 
 import org.astrogrid.community.common.policy.data.GroupData ;
+import org.astrogrid.community.common.policy.data.GroupMemberData ;
 import org.astrogrid.community.common.policy.data.AccountData ;
 import org.astrogrid.community.common.policy.data.GroupMemberData ;
 
 import org.astrogrid.community.common.ivorn.CommunityIvornParser ;
 
 import org.astrogrid.community.common.policy.manager.GroupManager ;
+import org.astrogrid.community.common.policy.manager.GroupMemberManager ;
+import org.astrogrid.community.common.policy.manager.AccountManager ;
+
 import org.astrogrid.community.resolver.CommunityAccountResolver;
 import org.astrogrid.community.server.service.CommunityServiceImpl ;
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration ;
@@ -80,7 +87,7 @@ import org.astrogrid.registry.RegistryException;
  */
 public class GroupManagerImpl
     extends CommunityServiceImpl
-    implements GroupManager
+    implements GroupManager, GroupMemberManager
     {
     /**
      * Our debug logger.
@@ -115,6 +122,28 @@ public class GroupManagerImpl
     public GroupManagerImpl(CommunityServiceImpl parent)
         {
         super(parent) ;
+        }
+
+    /**
+     * Reference to our local AccountManager.
+     * The GroupManager needs access to the current AccountManagerImpl because Castor maintains an
+     * in-memory cache of AccountData objects, with read-write locks.
+     *
+     */
+    private AccountManagerImpl accountManager ;
+
+    /**
+     * Public constructor, using a parent service and an AccountManager instance.
+     * @param parent A parent CommunityServiceImpl.
+     * @param accountManager An AccountManager instance.
+     * The GroupManager needs access to the current AccountManagerImpl because Castor maintains an
+     * in-memory cache of AccountData objects, with read-write locks.
+     *
+     */
+    public GroupManagerImpl(CommunityServiceImpl parent, AccountManagerImpl accountManager)
+        {
+        super(parent) ;
+        this.accountManager = accountManager ;
         }
 
     /**
@@ -777,22 +806,58 @@ public class GroupManagerImpl
             }
         
         //Checking if this account actually exists
-        CommunityAccountResolver car = new CommunityAccountResolver();
-        AccountData ad = null;
         
-        try {
-            ad = car.resolve(account);
-        }catch(CommunityResolverException cre) {
-            throw new CommunityServiceException(
-                    "Could not resolve account = " + account,
-                    cre
+        AccountData ad = null;
+        if(account.isLocal()) {
+            /*
+             * Previous code ...
+             * AccountManagerImpl ami = new AccountManagerImpl();
+             * ad = ami.getAccount(account);
+             *
+             * The GroupManager needs to use the current AccountManagerImpl because Castor maintains an
+             * in-memory cache of AccountData objects, with read-write locks.
+             *
+             */
+            //
+            // If we have a local AccountManager.
+            if (null != accountManager)
+                {
+                ad = accountManager.getAccount(
+                    account
+                    );
+                }
+            //
+            // If we don't have a local AccountManager.
+            else {
+                throw new CommunityServiceException(
+                    "Could not resolve local manager"
                     ) ;
-        }catch(RegistryException re) {
-            throw new CommunityServiceException(
-                    "Could not resolve account = " + account,
-                    re
-                    ) ;            
+                }
+
+        }else {
+            try {
+                CommunityAccountResolver car = new CommunityAccountResolver();
+                ad = car.resolve(account);
+            }catch(CommunityResolverException cre) {
+                throw new CommunityServiceException(
+                        "Could not resolve account = " + account,
+                        cre
+                        ) ;
+            }catch(RegistryException re) {
+                throw new CommunityServiceException(
+                        "Could not resolve account = " + account,
+                        re
+                        ) ;            
+            }
         }
+
+        //Lets just double check, but the above statements should throw
+        //an exception or give is a valid non-null AccountData
+        if(ad == null) {
+            throw new CommunityServiceException(
+                "Could not find account = " + account);
+        }
+
         
 //
 // Check the group isn't an account group.

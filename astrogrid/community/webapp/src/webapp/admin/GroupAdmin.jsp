@@ -1,5 +1,6 @@
 <%@ page import="org.astrogrid.community.common.policy.data.GroupData,
 				 org.astrogrid.community.common.ivorn.CommunityIvornParser,
+                 org.astrogrid.community.server.policy.manager.PolicyManagerImpl,				 
                  org.astrogrid.store.Ivorn,				 
                  org.astrogrid.community.server.policy.manager.GroupManagerImpl"
     session="false" %>
@@ -8,7 +9,8 @@
 
 //put add account link at the top
 //get a list of accounts and put a edit and remove beside them.
-GroupManagerImpl gmi = new GroupManagerImpl();
+//GroupManagerImpl gmi = new GroupManagerImpl();
+PolicyManagerImpl gmi = new PolicyManagerImpl();
 
 
 String removeGroup = request.getParameter("RemoveGroup");

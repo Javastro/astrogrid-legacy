@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/PermissionManager.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/10/29 15:50:05 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PermissionManager.java,v $
+ *   Revision 1.10  2004/11/22 13:03:04  jdt
+ *   Merges from Comm_KMB_585
+ *
  *   Revision 1.9  2004/10/29 15:50:05  jdt
  *   merges from Community_AdminInterface (bug 579)
  *
@@ -58,14 +61,23 @@ import org.astrogrid.community.common.exception.CommunityIdentifierException ;
      *
      */
     public PolicyPermission getPermission(String resource, String group, String action)
-        throws RemoteException ;
+        throws CommunityIdentifierException, CommunityServiceException,
+        CommunityPolicyException, RemoteException ;
+    
+    /**
+     * Request a PolicyPermission.
+     *
+     */
+    public Object[] getPermissions() throws RemoteException;
+    
 
     /**
      * Update a PolicyPermission.
      *
      */
     public PolicyPermission setPermission(PolicyPermission permission)
-        throws RemoteException ;
+        throws CommunityIdentifierException, CommunityServiceException, 
+        CommunityPolicyException, RemoteException ;
 
     /**
      * Delete a PolicyPermission.

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/policy/manager/PermissionManagerDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/10/29 15:50:05 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PermissionManagerDelegate.java,v $
+ *   Revision 1.8  2004/11/22 13:03:04  jdt
+ *   Merges from Comm_KMB_585
+ *
  *   Revision 1.7  2004/10/29 15:50:05  jdt
  *   merges from Community_AdminInterface (bug 579)
  *
@@ -56,13 +59,15 @@ public interface PermissionManagerDelegate
      * Request a PolicyPermission.
      *
      */
-    public PolicyPermission getPermission(String resource, String group, String action) ;
+    public PolicyPermission getPermission(String resource, String group, String action)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException;
 
     /**
      * Update a PolicyPermission.
      *
      */
-    public PolicyPermission setPermission(PolicyPermission permission) ;
+    public PolicyPermission setPermission(PolicyPermission permission)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException;
 
     /**
      * Delete a PolicyPermission.
@@ -70,5 +75,12 @@ public interface PermissionManagerDelegate
      */
     public boolean delPermission(String resource, String group, String action)
       throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException;
+    
+    /**
+     * Delete a PolicyPermission.
+     *
+     */
+    public Object[] getPermissions();
+    
 
     }
