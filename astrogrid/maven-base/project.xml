@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.6 2004/02/06 13:13:58 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.7 2004/02/07 01:00:30 jdt Exp $ -->
 <project>
     <pomVersion>3</pomVersion>
     <id>astrogrid-master</id>
@@ -35,7 +35,7 @@
             </includes>
         </unitTest>
     </build>
-    <url>http://www.astrogrid.org/maven/build/${pom.artifactId}/index.html</url>
+    <url>http://www.astrogrid.org/maven/build/${pom.name}/index.html</url>
     <developers>
         <developer>
             <name> Brian McIlwrath </name>
