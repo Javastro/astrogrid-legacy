@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.9 2004/03/10 00:48:37 mch Exp $
+ * $Id: DataServer.java,v 1.10 2004/03/10 02:37:01 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -70,7 +70,7 @@ public class DataServer
     * Runs a (blocking) cone search, returning a Votable
     */
    public String searchCone(Account user, double ra, double dec, double sr) throws IOException, ADQLException, SAXException {
-
+      try {
          Select s = ADQLUtils.buildMinimalQuery();
          TableExpression tc = new TableExpression();
          s.setTableClause(tc);
@@ -95,10 +95,20 @@ public class DataServer
          f.setTableReference(tables);
       
          StringWriter sw = new StringWriter();
+         log.debug("asking ADQL");
          askAdql(user, s, sw);
          
          log.debug("Returning: "+sw.toString());
          return sw.toString();
+      }
+      catch (Exception e) {
+         log.error(e);
+         return exceptionAsHtml("searchCone", e);
+      }
+      catch (Throwable th) {
+         log.error(th);
+         return "Error: "+th;
+      }
    }
    
    /**
@@ -114,6 +124,7 @@ public class DataServer
       log.debug("Found "+results.getCount()+" matches");
       querier.setState(QueryState.RUNNING_RESULTS);
       results.toVotable(out);
+      querier.setState(QueryState.FINISHED);
       QuerierManager.closeQuerier(querier);
       return querier.getStatus();
    }
@@ -240,6 +251,7 @@ public class DataServer
       return exceptionAsHtml(title, e, "");
    }
 }
+
 
 
 
