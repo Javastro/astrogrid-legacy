@@ -1,5 +1,5 @@
 /*
- * $Id: StatusHelper.java,v 1.1 2003/09/10 17:57:31 mch Exp $
+ * $Id: StatusHelper.java,v 1.2 2003/09/11 13:26:20 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -33,7 +33,7 @@ public class StatusHelper
    public static String makeStatusTag(String serviceId, String status)
    {
        return
-          "<"+STATUS_TAG+"  "+ServiceIdHelper.SERVICE_ID_ATT+"='"+serviceId+">\n"
+          "<"+STATUS_TAG+"  "+ServiceIdHelper.SERVICE_ID_ATT+"='"+serviceId+"'>\n"
          +status
          +"</"+STATUS_TAG+">\n";
 
@@ -42,7 +42,7 @@ public class StatusHelper
    /**
     * Returns an Iteration 02 job notification tag with status included
     */
-   public static String makeJobNotificationTag(String serviceId, String status) throws SAXException
+   public static String makeJobNotificationTag(String serviceId, String status) 
    {
       return
             "<job name='"+serviceId+"'  >"+
