@@ -64,7 +64,7 @@
   <dependencies>
 
    <dependency>
-      <groupId>astrogrid-datacenter</groupId>
+      <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-datacenter-client</artifactId>
       <version>SNAPSHOT</version>
           <properties>
@@ -73,18 +73,28 @@
    </dependency>
        <dependency>
         <id>astrogrid-mySpace</id>
+        <groupId>org.astrogrid</groupId>
         <version>SNAPSHOT</version>
        <properties>
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>
     <dependency>
-    	<groupId>astrogrid-jes</groupId>
-		<artifactId>astrogrid-jes</artifactId>
+    	<groupId>org.astrogrid</groupId>
+		<artifactId>astrogrid-jes-delegate</artifactId>
 		<version>SNAPSHOT</version>
 		<properties>
 			<war.bundle>true</war.bundle>
 		</properties>
+    </dependency>
+    <!-- required for the ApplicationController interface -->
+    <dependency>
+      <id>astrogrid-applications</id>
+      <groupId>org.astrogrid</groupId>
+      <version>SNAPSHOT</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
     <dependency>
@@ -105,14 +115,7 @@
     </properties>
     </dependency>
 
-    <!-- required for the ApplicationController interface -->
-    <dependency>
-      <id>astrogrid-applications</id>
-      <version>SNAPSHOT</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
+
 
     <dependency><!-- hsqldb - for testing -->
         <id>hsqldb</id>

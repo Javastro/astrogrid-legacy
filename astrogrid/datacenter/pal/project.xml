@@ -142,7 +142,7 @@ tomcat.password=secret<br />
 
     <dependency>
       <groupId>astrogrid-jes</groupId>
-      <artifactId>astrogrid-jes</artifactId>
+      <artifactId>astrogrid-jes-delegate</artifactId>
       <version>SNAPSHOT</version>
       <properties>
          <war.bundle>true</war.bundle>
