@@ -26,7 +26,7 @@
          <xsl:element name="oai:record">
             <xsl:element name="oai:header">
                <xsl:element name="oai:identifier">
-                  <xsl:text>oai://</xsl:text>
+                  <xsl:text>ivo_vor://</xsl:text>
                   <xsl:value-of select="./vr:Identifier/vr:AuthorityID"/>
                   <xsl:text>/</xsl:text>
                   <xsl:value-of select="./vr:Identifier/vr:ResourceKey"/>
@@ -100,7 +100,7 @@
                      </xsl:otherwise>
                   </xsl:choose>                  
                   <xsl:element name="dc:identifier">
-                     <xsl:text>ivo://</xsl:text>
+                     <xsl:text>ivo_vor://</xsl:text>
                      <xsl:value-of select="./vr:Identifier/vr:AuthorityID"/>
                      <xsl:text>/</xsl:text>
                      <xsl:value-of select="./vr:Identifier/vr:ResourceKey"/>
