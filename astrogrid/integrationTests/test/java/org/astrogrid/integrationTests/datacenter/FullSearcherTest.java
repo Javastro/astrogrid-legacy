@@ -1,4 +1,4 @@
-/*$Id: FullSearcherTest.java,v 1.1 2004/01/22 16:14:59 nw Exp $
+/*$Id: FullSearcherTest.java,v 1.2 2004/01/22 16:16:40 nw Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -101,6 +101,7 @@ public class FullSearcherTest extends TestCase {
    /** do a non-blocking query, where results are left in myspace. 
     * retreive from myspace, check they're what we expect
     * @throws Exception
+    * @todo - currently fails because it gets duff urls back. fix this.
     */
    public void testNonBlockingQuery() throws Exception {
       DatacenterQuery q = delegate.makeQuery(queryElement);
@@ -145,6 +146,9 @@ public class FullSearcherTest extends TestCase {
 
 /* 
 $Log: FullSearcherTest.java,v $
+Revision 1.2  2004/01/22 16:16:40  nw
+minor doc fix
+
 Revision 1.1  2004/01/22 16:14:59  nw
 added integration test for datacenter full searcher.
  
