@@ -90,7 +90,7 @@
                 <xsl:attribute name="value">
                   <xsl:choose>
                     <xsl:when test="tool/@tool-name = 'null'">
-                      ( Please select a tool... )       
+                      ( Please select a task... )       
                     </xsl:when>
                     <xsl:otherwise>
                       <xsl:value-of select="tool/@tool-name"/>
