@@ -454,7 +454,7 @@ public class WorkflowTestSuite extends TestCase {
    
    
    
-    public void toastSubmitWorkflow() {
+    public void testSubmitWorkflow() {
          logger.info( "---------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testSubmitWorkflow()" ); 
         
@@ -487,7 +487,7 @@ public class WorkflowTestSuite extends TestCase {
                 
             while( it.hasNext() ) {
                 p = (Parameter)it.next() ;
-                if( p.getName().equals("image1") ) {
+                if( p.getName().equals("DetectionImage") ) {
                     p.setLocation( Workflow.formatMySpaceURL( communitySnippet()
                                                             , "imagefiles"
                                                             , "image1_12345" ) ) ;
@@ -497,7 +497,7 @@ public class WorkflowTestSuite extends TestCase {
                                                             , "tools/sextractor"
                                                             , "extractor_config") ) ;
                 }
-                else if( p.getName().equals("config_parameters") ) {
+                else if( p.getName().equals("PARAMETERS_NAME") ) {
                     p.setLocation( Workflow.formatMySpaceURL( communitySnippet()
                                                             , "tools/sextractor"
                                                             , "sextractor_parameters" ) ) ;
@@ -508,9 +508,9 @@ public class WorkflowTestSuite extends TestCase {
             
             while( it.hasNext() ) {
                 p = (Parameter)it.next() ;
-                if( p.getName().equals("output") ) {
+                if( p.getName().equals("CATALOG_NAME") ) {
                     p.setLocation( Workflow.formatMySpaceURL( communitySnippet()
-                                                            , "votable/files"
+                                                            , "catalogfiles"
                                                             , "catalog_12345" ) ) ;
                 }
             }
@@ -547,7 +547,7 @@ public class WorkflowTestSuite extends TestCase {
 
 
 
-    public void toastCreateQueryAndSubmitWorkflow() {
+    public void testCreateQueryAndSubmitWorkflow() {
          logger.info( "-----------------------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testCreateQueryAndSubmitWorkflow()" ); 
         
