@@ -5,6 +5,15 @@
   </properties>
   <body>
   <release version="HEAD">
+        <action dev="kmb" type="add" > 
+            Added configuration pages to FileStore webapp.
+        </action>    
+        <action dev="jdt" type="add" > 
+            Created a graphical installer for the JES.  Download from <a href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">here</a>.
+        </action>
+        <action dev="jdt" type="add" issue="966"> 
+            Created a graphical installer for FileStore.  Download from <a href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">here</a>.
+        </action>            
         <action dev="kmb" type="add">
             New xmldb project for Registry.
         </action>
