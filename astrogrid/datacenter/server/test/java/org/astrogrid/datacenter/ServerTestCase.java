@@ -1,4 +1,4 @@
-/*$Id: ServerTestCase.java,v 1.6 2004/03/12 04:54:06 mch Exp $
+/*$Id: ServerTestCase.java,v 1.7 2004/08/27 12:41:52 nw Exp $
  * Created on 20-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,7 +34,7 @@ import org.xml.sax.SAXException;
  *<p />
  *in turn, this class extends XMLTestCase, which provides lots of nice xml unit testing methods
  * @author Noel Winstanley nw@jb.man.ac.uk 20-Nov-2003
- *
+ *@todo rewrite iin terms of org.astrogrid.test.AstrogridAssert in common project.
  */
 public class ServerTestCase extends XMLTestCase {
 
@@ -197,6 +197,9 @@ public class ServerTestCase extends XMLTestCase {
 
 /*
 $Log: ServerTestCase.java,v $
+Revision 1.7  2004/08/27 12:41:52  nw
+added todo
+
 Revision 1.6  2004/03/12 04:54:06  mch
 It05 MCH Refactor
 
