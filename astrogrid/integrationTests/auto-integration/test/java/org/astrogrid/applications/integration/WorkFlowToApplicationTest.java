@@ -1,5 +1,5 @@
 /*
- * $Id: WorkFlowToApplicationTest.java,v 1.1 2004/04/19 11:43:50 pah Exp $
+ * $Id: WorkFlowToApplicationTest.java,v 1.2 2004/04/20 14:45:22 nw Exp $
  *
  * Created on 07-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -30,7 +30,6 @@ import org.xml.sax.InputSource;
 
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
-import org.astrogrid.applications.common.config.ConfigLoader;
 import org.astrogrid.community.User;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.Credentials;
@@ -93,8 +92,6 @@ public class WorkFlowToApplicationTest extends AbstractTestForIntegration {
     */
    protected void setUp() throws Exception {
       super.setUp();
-      WKF.getInstance().checkPropertiesLoaded();
-      ConfigLoader.setConfigType(ConfigLoader.TEST_CONFIG); // set up the test config as early as possible
 
    }
 
