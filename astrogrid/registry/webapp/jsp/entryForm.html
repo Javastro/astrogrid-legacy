@@ -21,9 +21,60 @@ Enter the VOResource in the text area below and press the [Submit] button to add
       
 </form>
 
-Examples: <a href="CEADataCentreRegistryEntry.xml">Cea Datacenter</a> -
-          <a href="registry_template.xml">datacenter template?</a> -
-          <a href="RAI.xml">RAI datacenter</a> -
+<form action="addResourceEntry.jsp" method="POST">
+This will automatically post your Registry entries on a full Registry (hydra of Astrogrid), allowing the Full
+Registry to know about this Registry and harvest it during its next havest cycle.  This is just a simple post
+<input type="submit" name="postregsubmit" value="Submit">
+</form>
+
+
+<form action="addResourceEntry.jsp" method="POST">
+This will automatically download Registry type entries from another registry and add it to this Registry.
+Please input the url to another registry, a default full astrogrid registry is already located in the box.
+<input type="text" name="getregs" value="http://hydra.star.le.ac.uk:8080/astrogrid-registry"/>
+<input type="submit" name="getregsubmit" value="Submit">
+</form>
+
+
+<p>
+Below you will find example templates that you can copy/save and place into the text area.  Please do a "View Source" in
+your web browser when copying. Currently version 0.9 is shown will add version 0.10 shortly since the Registry can now handle
+either version or multiple versions.  Hint: on the links below might be best to open them up in a new window so you don't have to keep
+coming back to this window.  Hopefully soon something will automatically load it into the text area for you.
+
+This first section are examples, but also important to be used during the setup of a registry the first time.
+<ul>
+<li>
+Use this Registry Type Service when setting up the Registry for the first time.  This should be the first
+entry into the registry. This is the preferred template.  Please take it and fill it out correctly defining
+your Registry.  Be sure if this is the first Registry Type then set the AuthorityID and ManagedAuthority elements to
+what is defined in your properties.<br />
+<a href="RegistryTypeWebServicev0_9.xml">Registry Type With Web Service Interface</a></li>
+<li>This is another Registry Type as well that can be used, but uses the WebBrowser interface.  May be used if you do
+not want harvests occuring via a Web Service.<br />
+<a href="RegistryTypeWebBrowserv0_9.xml">Registry Type With Web Browser Interface</a></li>
+<li>Add another authority id to be managed.  This is an Authority Type xml template to be used when defining more Authority id's
+          <a href="AuthorityTypev0_9.xml">Authority Type</a></li>
+</ul>
+
+Below are just basic example templates that can be looked upon in understanding how to fill out the xml.
+<ul>
+<li>A basic service defined:<br />
+<a href="Myspace.xml">Basic Service defined for Myspace</a></li>
+<li>A basic siap service:<br />
+<a href="INT-WFS-SIAP.xml">SIAP service</a></li>
+<li>Data Center CEA Tool Defined and Service (example is 6df):<br />
+<a href="6dFRegistryEntry.xml">6df datacenter CEA application entry</a>
+<a href="6dfServiceRegistryEntry.xml">6df datacenter CEA service entry</a>
+</li>
+<li>A basic siap service:<br />
+<a href="INT-WFS-SIAP.xml">SIAP service</a></li>
+
+
+
+
+</ul>          
+</p>
           
 
 </body>
