@@ -416,13 +416,16 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 
 
    /**
-    * Returns the Agsl for the given source path
+    * Returns the Agsl for the given source path.  NB = no such thing for
+    * folders at the moment
     */
    public Agsl getAgsl(String sourcePath) throws IOException {
+      
+      assert (!sourcePath.endsWith("/") && !sourcePath.endsWith("\\")) : "Cannot create AGSLs for folders (yet)";
+      
       return new Agsl(getEndpoint().toString(), sourcePath);
    }
-   
-   
+  
    
    
 // ----------------------------------------------------------------------
@@ -1334,6 +1337,9 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 
 /*
 $Log: MySpaceIt05Delegate.java,v $
+Revision 1.28  2004/05/14 12:53:06  mch
+Added assertion to getAgsl() for folders
+
 Revision 1.27  2004/05/14 09:39:55  mch
 Fixed prepended myspace to endpoint msrl
 
