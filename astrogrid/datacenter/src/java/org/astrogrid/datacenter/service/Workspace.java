@@ -1,5 +1,5 @@
 /**
- * $Id: Workspace.java,v 1.7 2003/09/08 18:07:13 mch Exp $
+ * $Id: Workspace.java,v 1.8 2003/09/08 18:35:44 mch Exp $
  */
 
 package org.astrogrid.datacenter.service;
@@ -53,7 +53,7 @@ public class Workspace
 
       workspacePath = workRoot + File.separator + workspaceId;
 
-      File workspaceFile = new File(workspacePath);
+      workspaceFile = new File(workspacePath);
 
       if (workspaceFile.exists())
       {
@@ -66,27 +66,31 @@ public class Workspace
    }
 
    /**
-    * Use when you've finished with the space and you want to tidy up
+    * Use when you've finished with the space and you want to tidy up.  NB no
+    * other operations are possible after this - it is best to leave it to the
+    * garbage collector to close() as part of the finalise(), to avoid other
+    * unknown references to it trying to use it after close.
     */
    public synchronized void close() throws IOException
    {
-      Log.affirm(!isClosed(), "Trying to close a closed workspace");
+      if (isClosed()) throw new IllegalStateException("Trying to close a closed workspace");
+
+      if (!PERSIST) empty();
 
       //attempt at threadsafetying but haven't thought about it properly - MCH
       File tempFile = workspaceFile;
       workspaceFile = null;
-      
-      if (!PERSIST)
-      {
-         empty();
-         workspaceFile.delete();
-      }
+
+      if (!PERSIST) tempFile.delete();
    }
 
-
+   /** Returns true if the workspace has been closed down - ie should not
+    * be used any longer.  The best way to deal with closure safely is to
+    * let the garbage collector do it through the finalize method
+    */
    public boolean isClosed()
    {
-      return (workspaceFile != null);
+      return (workspaceFile == null);
    }
    
    /**
@@ -113,7 +117,7 @@ public class Workspace
     */
    public void empty() throws IOException
    {
-      Log.affirm(!isClosed(), "Trying to empty a closed workspace");
+      if (isClosed()) throw new IllegalStateException("Trying to empty a closed workspace");
 
       emptyDirectory(workspaceFile);
    }
@@ -122,11 +126,16 @@ public class Workspace
     * So you need to make a temporary file in the workspace - this returns
     * a reference to it given a filename
     */
-   public File makeWorkFile(String filename)
+   public File makeWorkFile(String filename) throws IOException
    {
-      Log.affirm(!isClosed(), "Trying to create a new file in a closed workspace");
+      if (isClosed()) throw new IllegalStateException("Trying to create a new file in a closed workspace");
 
-      return new File(workspacePath + File.separator + filename);
+      File file = new File(workspacePath + File.separator + filename);
+      if (file.createNewFile() == false)
+      {
+         throw new IOException("File '"+filename+"' already exists");
+      }
+      return file;
    }
 
    /**
@@ -144,13 +153,14 @@ public class Workspace
    {
       return File.createTempFile(prefix, "$$$", workspaceFile);
    }
-   
-   
+
    /**
     * General purpose method that deletes the contents of the given directory
     */
    public static void emptyDirectory(File dir) throws IOException
    {
+      Log.affirm(dir != null, "Null File given as directory");
+      
       if (!dir.exists())
       {
          throw new IOException("'"+dir + "' does not exist");
@@ -189,5 +199,6 @@ public class Workspace
       }
    }
 }
+
 
 
