@@ -1,4 +1,4 @@
-/*$Id: CompositeApplicationDescriptionLibrary.java,v 1.3 2004/07/26 00:57:46 nw Exp $
+/*$Id: CompositeApplicationDescriptionLibrary.java,v 1.4 2004/08/11 16:52:11 nw Exp $
  * Created on 09-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,9 @@
  *
 **/
 package org.astrogrid.applications.description;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
@@ -28,6 +31,12 @@ import junit.framework.TestSuite;
  *
  */
 public class CompositeApplicationDescriptionLibrary implements ApplicationDescriptionLibrary, ComponentDescriptor {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory
+            .getLog(CompositeApplicationDescriptionLibrary.class);
+
     /** Construct a new CompositeApplicationDescriptionLibrary
      * 
      */
@@ -117,6 +126,9 @@ public class CompositeApplicationDescriptionLibrary implements ApplicationDescri
 
 /* 
 $Log: CompositeApplicationDescriptionLibrary.java,v $
+Revision 1.4  2004/08/11 16:52:11  nw
+added logger
+
 Revision 1.3  2004/07/26 00:57:46  nw
 javadoc
 
