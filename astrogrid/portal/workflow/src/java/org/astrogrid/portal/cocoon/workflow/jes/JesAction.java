@@ -421,17 +421,18 @@ public class JesAction extends AbstractAction {
         } // end of checkPermission() 
         
         
-        private String communitySnippet() {
-        
-					String message = CommunityMessage.getMessage(
-													 (String)session.getAttribute( CREDENTIAL_TAG ),
-													 (String)session.getAttribute( CREDENTIAL_TAG ),
-													 (String)session.getAttribute( COMMUNITY_NAME_TAG ) );
+    private String communitySnippet() {
+        	
+		// PJN3 Note: temporary fix - changes to community due in It05 should improve this a lot
+		String message = CommunityMessage.getMessage(
+		    (String)session.getAttribute( CREDENTIAL_TAG ),
+			userid + "@" + (String)session.getAttribute( COMMUNITY_NAME_TAG ),
+			(String)session.getAttribute( COMMUNITY_NAME_TAG ) );
             
-					if (TRACE_ENABLED ) trace("communitySnippet: " + message );
+		if (TRACE_ENABLED ) trace("communitySnippet: " + message );
                                 
-					return message ;
-        }
+		return message ;
+    }
    
    
     } // end of inner class JesActionImpl

@@ -573,7 +573,9 @@ public class DesignAction extends AbstractAction {
                 	name = request.getParameter( WORKFLOW_NAME_PARAMETER ) ;
             	String
                 	newName = request.getParameter( WORKFLOW_NEW_NAME_PARAMETER ) ;
-                    
+                trace("Copying workflow: ") ;
+                trace("Origional name: " + name) ;
+                trace("New name: " + newName ) ;    
             	if( name == null ) {
                 	trace( "DesignActionImpl.copyWorkflow(): WORKFLOW_NAME_PARAMETER was null" );
                 	throw new ConsistencyException() ;
@@ -1387,9 +1389,10 @@ public class DesignAction extends AbstractAction {
         
         private String communitySnippet() {
         
+        // PJN3 Note: temporary fix - changes to community due in It05 should improve this a lot
             String message = CommunityMessage.getMessage(
                              (String)session.getAttribute( CREDENTIAL_TAG ),
-                             (String)session.getAttribute( CREDENTIAL_TAG ),
+                             userid + "@" + (String)session.getAttribute( COMMUNITY_NAME_TAG ),
                              (String)session.getAttribute( COMMUNITY_NAME_TAG ) );
             
             if (TRACE_ENABLED ) trace("communitySnippet: " + message );
