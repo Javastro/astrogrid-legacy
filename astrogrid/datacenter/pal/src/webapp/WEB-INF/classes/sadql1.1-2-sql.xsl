@@ -132,7 +132,7 @@
 
 <xsl:template match="Union">
     <xsl:text> (or </xsl:text>
-    <xsl:for-each select="*">
+    <xsl:for-each select="*">  or "node()/*"??b
          <xsl:apply-templates/>
          <!--xsl:call-template name="BooleanElement"/ -->
          <xsl:if test="not (position()=last())">

@@ -1,5 +1,5 @@
 /*
- * $Id: VoFileSelector.java,v 1.1 2004/03/03 17:40:58 mch Exp $
+ * $Id: VoFileSelector.java,v 1.1 2004/04/15 17:24:31 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -7,7 +7,7 @@
  * a copy of which has been included with this distribution in the LICENSE.txt file.
  */
 
-package org.astrogrid.ui.myspace;
+package org.astrogrid.ui.store;
 
 
 /**
@@ -33,7 +33,7 @@ import org.astrogrid.community.Account;
 import org.astrogrid.ui.IconButtonHelper;
 import org.astrogrid.ui.JHistoryComboBox;
 import org.astrogrid.ui.JPasteButton;
-import org.astrogrid.ui.myspace.MySpaceBrowser;
+import org.astrogrid.ui.store.StoreBrowser;
 import org.astrogrid.store.Agsl;
 
 public class VoFileSelector extends JPanel implements KeyListener {
@@ -49,7 +49,7 @@ public class VoFileSelector extends JPanel implements KeyListener {
    
    boolean isValid = false;
 
-   private String browserAction = MySpaceBrowser.OPEN_ACTION;
+   private String browserAction = StoreBrowser.OPEN_ACTION;
    
    //the person operating the browser is not nec the same as the owner of
    //the files we are using
@@ -165,7 +165,7 @@ public class VoFileSelector extends JPanel implements KeyListener {
       try
       {
          
-         MySpaceBrowser browser = MySpaceBrowser.showDialog(myspaceBrowserBtn, toAgsl(), operator, browserAction);
+         StoreBrowser browser = StoreBrowser.showDialog(myspaceBrowserBtn, toAgsl(), operator, browserAction);
          if (!browser.isCancelled())
          {
             fileEntryField.setItem(browser.getAgsl());
@@ -270,6 +270,9 @@ public class VoFileSelector extends JPanel implements KeyListener {
 
 /*
 $Log: VoFileSelector.java,v $
+Revision 1.1  2004/04/15 17:24:31  mch
+Moved myspace ui to store ui
+
 Revision 1.1  2004/03/03 17:40:58  mch
 Moved ui package
 

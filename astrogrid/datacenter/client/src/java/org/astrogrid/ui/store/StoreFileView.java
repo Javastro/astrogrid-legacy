@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFileView.java,v 1.4 2004/03/09 11:00:39 mch Exp $
+ * $Id: StoreFileView.java,v 1.1 2004/04/15 17:24:31 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -7,7 +7,7 @@
  * a copy of which has been included with this distribution in the LICENSE.txt file.
  */
 
-package org.astrogrid.ui.myspace;
+package org.astrogrid.ui.store;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -24,7 +24,6 @@ import org.astrogrid.store.Agsl;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.store.delegate.StoreFile;
-import org.astrogrid.store.delegate.myspace.MySpaceFolder;
 
 /**
  * Lists the files in the server
@@ -32,14 +31,14 @@ import org.astrogrid.store.delegate.myspace.MySpaceFolder;
  */
 
 
-public class MySpaceFileView extends JPanel {
+public class StoreFileView extends JPanel {
    StoreClient delegate = null;
    
    //the operator of this view, not (necessarily) the owner of the files
    Account operator = null;
    JTree listView = new JTree();
    
-   public MySpaceFileView(Account aUser) throws IOException {
+   public StoreFileView(Account aUser) throws IOException {
       JScrollPane scrollPane = new JScrollPane();
 
       setLayout(new BorderLayout());
@@ -152,7 +151,7 @@ public class MySpaceFileView extends JPanel {
             return;
          }
          
-         rootFolder = (MySpaceFolder) delegate.getFiles("*");
+         rootFolder = delegate.getFiles("*");
       }
       
       /**
@@ -165,7 +164,14 @@ public class MySpaceFileView extends JPanel {
        * @return  the number of children of the node <code>parent</code>
        */
       public int getChildCount(Object parent) {
-         return ((StoreFile) parent).listFiles().length;
+         StoreFile[] files = ((StoreFile) parent).listFiles();
+         if (files != null) {
+            return files.length;
+         }
+         else {
+            return 0;
+         }
+            
       }
       
       /**
@@ -182,7 +188,7 @@ public class MySpaceFileView extends JPanel {
          if ((parent == null) || (child == null)) {
             return -1;
          } else {
-            StoreFile[] files = ((MySpaceFolder) parent).listFiles();
+            StoreFile[] files = ((StoreFile) parent).listFiles();
 
             for (int f=0;f<files.length;f++) {
                if (files[f].equals(child)) {
@@ -221,7 +227,7 @@ public class MySpaceFileView extends JPanel {
        * @return  the child of <code>parent</code> at index <code>index</code>
        */
       public Object getChild(Object parent, int index) {
-         return ((MySpaceFolder) parent).listFiles()[index];
+         return ((StoreFile) parent).listFiles()[index];
       }
       
       /**
@@ -254,7 +260,7 @@ public class MySpaceFileView extends JPanel {
                                              expanded, leaf, row,
                                              hasFocus);
          
-        if (value instanceof MySpaceFolder) {
+        if ( ((StoreFile) value).isFolder()) {
             setToolTipText("Folder");
             if (expanded) {
                setIcon(openIcon);
@@ -274,7 +280,10 @@ public class MySpaceFileView extends JPanel {
 }
 
 /*
- $Log: MySpaceFileView.java,v $
+ $Log: StoreFileView.java,v $
+ Revision 1.1  2004/04/15 17:24:31  mch
+ Moved myspace ui to store ui
+
  Revision 1.4  2004/03/09 11:00:39  mch
  Fixed for moved myspace delegates
 

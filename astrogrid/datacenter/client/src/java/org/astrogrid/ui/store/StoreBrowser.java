@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceBrowser.java,v 1.4 2004/03/09 11:00:39 mch Exp $
+ * $Id: StoreBrowser.java,v 1.1 2004/04/15 17:24:31 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -7,7 +7,7 @@
  * a copy of which has been included with this distribution in the LICENSE.txt file.
  */
 
-package org.astrogrid.ui.myspace;
+package org.astrogrid.ui.store;
 
 import java.awt.*;
 import java.io.*;
@@ -44,10 +44,10 @@ import org.astrogrid.ui.JHistoryComboBox;
  */
 
 
-public class MySpaceBrowser extends JDialog
+public class StoreBrowser extends JDialog
 {
    JHistoryComboBox serverPicker = new JHistoryComboBox();
-   MySpaceFileView fileView = null;
+   StoreFileView fileView = null;
    JButton actBtn = null;
    JButton cancelBtn = new JButton("Cancel");
    JTextField filenameField = new JTextField();
@@ -76,24 +76,24 @@ public class MySpaceBrowser extends JDialog
    //used to lookup files on disk
    JFileChooser chooser = new JFileChooser();
 
-   Log log = LogFactory.getLog(MySpaceBrowser.class);
+   Log log = LogFactory.getLog(StoreBrowser.class);
    
    /** Constructor - private, use showDialog() */
-   private MySpaceBrowser(Dialog owner, Agsl vorl, Account user, String action) throws IOException
+   private StoreBrowser(Dialog owner, Agsl vorl, Account user, String action) throws IOException
    {
       super( owner);
       init(vorl, user, action);
    }
    
    /** Constructor - private, use showDialog */
-   private MySpaceBrowser(Frame owner, Agsl vorl, Account user, String action) throws IOException
+   private StoreBrowser(Frame owner, Agsl vorl, Account user, String action) throws IOException
    {
       super( owner);
       init(vorl, user, action);
    }
    
    /** Constructor - private, use showDialog */
-   private MySpaceBrowser(Agsl vorl, Account user, String action) throws IOException
+   private StoreBrowser(Agsl vorl, Account user, String action) throws IOException
    {
       super();
       init(vorl, user, action);
@@ -102,9 +102,9 @@ public class MySpaceBrowser extends JDialog
    /** Constructor - returns an instance of this tied correctly to the parent frame/dialog owner
     * of the calling Component
     */
-   public static MySpaceBrowser showDialog(Component owner, Agsl vorl, Account user, String action) throws IOException
+   public static StoreBrowser showDialog(Component owner, Agsl vorl, Account user, String action) throws IOException
    {
-      MySpaceBrowser browser = null;
+      StoreBrowser browser = null;
 
       Component c = owner;
       while ((c != null) && !(c instanceof Dialog) && !(c instanceof Frame)) {
@@ -113,12 +113,12 @@ public class MySpaceBrowser extends JDialog
 //         Window w = SwingUtilities.windowForComponent(owner);
       
       if (c == null) {
-         browser = new MySpaceBrowser( vorl, user, action);
+         browser = new StoreBrowser( vorl, user, action);
       } else {
          if (c instanceof Frame) {
-            browser = new MySpaceBrowser( (Frame) c, vorl, user, action);
+            browser = new StoreBrowser( (Frame) c, vorl, user, action);
          } else {
-            browser = new MySpaceBrowser( (Dialog) c, vorl, user, action);
+            browser = new StoreBrowser( (Dialog) c, vorl, user, action);
          }
       }
       browser.setModal(true);
@@ -151,12 +151,13 @@ public class MySpaceBrowser extends JDialog
       
       browserAction = action;
       
-      fileView = new MySpaceFileView(user);
+      fileView = new StoreFileView(user);
       
       serverPicker.addItem(""); //empty one to start with
       serverPicker.addItem("myspace:http://vm05.astrogrid.org:8080/astrogrid-mySpace");
       serverPicker.addItem("myspace:http://grendel12.roe.ac.uk:8080/astrogrid-mySpace");
-
+      serverPicker.addItem("myspace:http://grendel12.roe.ac.uk:8080/MySpaceManager/services/Manager");
+      
       filetypePicker.addItem("All Files");
 
       refreshBtn = IconButtonHelper.makeIconButton("Refresh", "Refresh", "Reloads file list from server");
@@ -653,7 +654,7 @@ public class MySpaceBrowser extends JDialog
 
       try
       {
-         MySpaceBrowser browser = MySpaceBrowser.showDialog(null, null, Account.ANONYMOUS, OPEN_ACTION);
+         StoreBrowser browser = StoreBrowser.showDialog(null, null, Account.ANONYMOUS, OPEN_ACTION);
       } catch (IOException ioe)
       {
          ioe.printStackTrace();
@@ -662,7 +663,10 @@ public class MySpaceBrowser extends JDialog
 }
 
 /*
-$Log: MySpaceBrowser.java,v $
+$Log: StoreBrowser.java,v $
+Revision 1.1  2004/04/15 17:24:31  mch
+Moved myspace ui to store ui
+
 Revision 1.4  2004/03/09 11:00:39  mch
 Fixed for moved myspace delegates
 
