@@ -1,4 +1,4 @@
-/*$Id: FairlyGroovyWorkflowTest.java,v 1.3 2004/08/12 21:46:15 nw Exp $
+/*$Id: FairlyGroovyWorkflowTest.java,v 1.4 2004/08/22 01:25:49 nw Exp $
  * Created on 04-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -89,6 +89,7 @@ public class FairlyGroovyWorkflowTest extends AbstractTestForWorkflow{
         Step hello = new Step();
         hello.setDescription("call hello tool");
         hello.setName("hello ");
+        hello.setResultVar("ignored"); // but need to specify to require jes to wait until results are returned.
         hello.setTool(helloTool);
         wf.getSequence().addActivity(hello);
     }
@@ -133,6 +134,9 @@ public class FairlyGroovyWorkflowTest extends AbstractTestForWorkflow{
 
 /* 
 $Log: FairlyGroovyWorkflowTest.java,v $
+Revision 1.4  2004/08/22 01:25:49  nw
+improved concurrent behaviour
+
 Revision 1.3  2004/08/12 21:46:15  nw
 cleaned up assertions
 
