@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegateTest.java,v 1.2 2004/01/13 00:32:47 nw Exp $
+ * $Id: WebDelegateTest.java,v 1.3 2004/01/13 15:50:24 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -27,7 +27,7 @@ public class WebDelegateTest extends TestCase
 {
 
 	//an astrogrid web service
-	private static String ROE_6DF = "http://grendel12.roe.ac.uk:8080/pal-SNAPSHOT";
+	private static String ROE_6DF = "http://grendel12.roe.ac.uk:8080/pal-SNAPSHOT/services/AxisDataServer";
 	
    /**
     * Tests an SQL-pass through query on the dummy
@@ -62,6 +62,9 @@ public class WebDelegateTest extends TestCase
 
 /*
  * $Log: WebDelegateTest.java,v $
+ * Revision 1.3  2004/01/13 15:50:24  nw
+ * fixed endpoint
+ *
  * Revision 1.2  2004/01/13 00:32:47  nw
  * Merged in branch providing
  * * sql pass-through
