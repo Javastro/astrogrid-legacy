@@ -1,5 +1,5 @@
 /*
- * $Id: StdSqlWriter.java,v 1.5 2005/03/31 16:09:40 mch Exp $
+ * $Id: StdSqlWriter.java,v 1.6 2005/03/31 23:16:32 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -317,13 +317,14 @@ public class StdSqlWriter implements QueryVisitor {
       //'haversine' distance formulae.  The correct one to use...
       if (funcsInRads) {
          return
+            /* @todo - note that the (float) typecasts are for postgres that can't cope with subtracting double precisions from single */
             makeSqlBoundsCondition(raCol, decCol, ra, dec, radius) + " AND "+
             "("+
             "(2 * ASIN( SQRT( "+
             //surround dec with extra brackets in order to cope with negative decs
-            "POWER( SIN( ("+decColRad+" - ("+dec.asRadians()+") ) / 2 ) ,2) + "+
+            "POWER( SIN( ("+decColRad+" - ("+ (float) dec.asRadians()+") ) / 2 ) ,2) + "+
             "COS("+dec.asRadians()+") * COS("+decColRad+") * "+
-            "POWER( SIN( ("+raColRad+" - "+ra.asRadians()+") / 2 ), 2) "+
+            "POWER( SIN( ("+raColRad+" - "+(float) ra.asRadians()+") / 2 ), 2) "+
             "))) < "+radius.asRadians()+
             ")";
       }
@@ -454,6 +455,9 @@ public class StdSqlWriter implements QueryVisitor {
 
 /*
  $Log: StdSqlWriter.java,v $
+ Revision 1.6  2005/03/31 23:16:32  mch
+ temp fix for postgres
+
  Revision 1.5  2005/03/31 16:09:40  mch
  Fixes and workarounds for null values, misisng metadoc columns
 
