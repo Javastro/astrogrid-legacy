@@ -1,4 +1,4 @@
-/*$Id: Query2MySpaceTest.java,v 1.6 2004/05/21 10:52:31 jdt Exp $
+/*$Id: Query2MySpaceTest.java,v 1.7 2004/05/21 16:42:31 mch Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.store.Agsl;
+import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.store.delegate.StoreFile;
@@ -53,8 +54,8 @@ public class Query2MySpaceTest extends TestCase {
     * retreive from myspace, check they're what we expect
     */
    public void testSubmit() throws Exception {
-      /*
-      Agsl resultsTarget = new Agsl(StdKeys.MYSPACE, resultsPath);
+
+      Agsl resultsTarget = new Agsl(new Msrl(StdKeys.MYSPACE), resultsPath);
 
       InputStream in = this.getClass().getResourceAsStream("SimpleStarQuery-adql05.xml");
       assertNotNull("Could not find test query", in);
@@ -70,7 +71,7 @@ public class Query2MySpaceTest extends TestCase {
       //wait until query finishes
       do {
          stat = delegate.getStatus(queryId);
-      } while (!stat.equals(QueryState.FINISHED) && (!stat.equals(QueryState.ERROR))); // need some extra timout here too 
+      } while (!stat.equals(QueryState.FINISHED) && (!stat.equals(QueryState.ERROR))); // need some extra timout here too
  
       //see if results are in expected myspace location
       StoreClient store = StoreDelegateFactory.createDelegate(Account.ANONYMOUS.toUser(), resultsTarget);
@@ -78,8 +79,6 @@ public class Query2MySpaceTest extends TestCase {
       
       Document resultDoc = DomHelper.newDocument(store.getStream(resultsTarget.getPath()));
       assertNotNull("null result document",resultDoc);
-      */
-      fail("Fix these compile errors");
    }
    
     /**
@@ -101,9 +100,14 @@ public class Query2MySpaceTest extends TestCase {
 
 /*
 $Log: Query2MySpaceTest.java,v $
+Revision 1.7  2004/05/21 16:42:31  mch
+Fixed compile errors
+
 Revision 1.6  2004/05/21 10:52:31  jdt
 Temporary quick fixes to deal with compilation errors following
+
 changes to Agsl constructor.
+
 See bugs 334 and 335
 
 Revision 1.5  2004/05/14 11:02:05  mch

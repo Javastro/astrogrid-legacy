@@ -1,4 +1,4 @@
-/*$Id: MySpaceTest.java,v 1.7 2004/05/21 10:52:31 jdt Exp $
+/*$Id: MySpaceTest.java,v 1.8 2004/05/21 16:41:49 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -92,19 +92,15 @@ public class MySpaceTest extends StoreClientTestHelper {
    }
    
    public void testMove() throws IOException
-   {/*
+   {
       assertMove(StoreDelegateFactory.createDelegate(testUser, MYSPACE),
-                 new Agsl(MYSPACE.getEndpoint(), path+COPY_TEST ));
-                 */
-       fail("Fix these compile errors");
+                 new Agsl(MYSPACE, path+COPY_TEST ));
    }
 
    public void testCopy() throws IOException
-   {/*
+   {
       assertCopy(StoreDelegateFactory.createDelegate(testUser, MYSPACE),
-                 new Agsl(MYSPACE.getEndpoint(), path+COPY_TEST ));
-                 */
-       fail("fix these compile errors");
+                 new Agsl(MYSPACE, path+COPY_TEST ));
    }
    
    public void testDelete() throws IOException {
@@ -133,9 +129,14 @@ public class MySpaceTest extends StoreClientTestHelper {
 
 /*
 $Log: MySpaceTest.java,v $
+Revision 1.8  2004/05/21 16:41:49  mch
+Fixed compile errors
+
 Revision 1.7  2004/05/21 10:52:31  jdt
 Temporary quick fixes to deal with compilation errors following
+
 changes to Agsl constructor.
+
 See bugs 334 and 335
 
 Revision 1.6  2004/05/11 09:25:30  pah
