@@ -1,3 +1,4 @@
+# builds a maven release for a particular project
 OLDDIR=$PWD
 
 PROJECT_NAME=$1
@@ -35,17 +36,21 @@ sh $SCRIPTHOME/maven-remove-jars.sh $PROJECT_NAME >> $LOG_FILE 2>&1
 echo "[ag-build-$PROJECT_NAME] removing $PROJECT_HOME"
 rm -fr $PROJECT_HOME >> $LOG_FILE 2>&1
 
+cvs co astrogrid/astrogrid-project-version.properties
+
+TAGNAME=`awk -F= '/$PROJECT_NAME/{print $2}' astrogrid/astrogrid-project-version.properties`
+
 echo "[ag-build-$PROJECT_NAME] cvs checkout"
-cvs -d $CVSROOT co -A astrogrid/$PROJECT_NAME >> $LOG_FILE 2>&1
+cvs -d $CVSROOT co -r $TAGNAME astrogrid/$PROJECT_NAME >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] project home: $PROJECT_HOME"
 cd $PROJECT_HOME >> $LOG_FILE 2>&1
 
-echo "[ag-build-$PROJECT_NAME] generate and deploy site; deploy SNAPSHOT"
+echo "[ag-build-$PROJECT_NAME] generate and deploy site; deploy"
 maven java:compile clover:html-report >> $LOG_FILE 2>&1
 maven site:generate site:fsdeploy >> $LOG_FILE 2>&1 
-maven jar:deploy-snapshot >> $LOG_FILE 2>&1
-maven war:deploy-snapshot >> $LOG_FILE 2>&1
+maven jar:deploy >> $LOG_FILE 2>&1
+maven war:deploy >> $LOG_FILE 2>&1
 echo "[ag-build-$PROJECT_NAME] deploy build log"
 cp $LOG_FILE /var/www/www/maven/build/log
 
