@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.15 2004/08/04 16:50:18 nw Exp $
+/*$Id: AllTests.java,v 1.16 2004/08/27 13:51:41 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,6 +35,7 @@ public class AllTests {
         suite.addTest(new TestSuite(MySpaceCommandlineWorkflowEndToEndTest.class));
         
         suite.addTest(new TestSuite(FairlyGroovyWorkflowTest.class));
+        suite.addTest(new TestSuite(DynamicWorkflowTest.class));
         
         suite.addTest(new TestSuite(CompositeWorkflowEndToEndTest.class));
         suite.addTest(new TestSuite(FlowWorkflowTest.class));
@@ -44,6 +45,9 @@ public class AllTests {
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.16  2004/08/27 13:51:41  nw
+added test that checks operation of dynamically-modified workflows.
+
 Revision 1.15  2004/08/04 16:50:18  nw
 added test for scripting extensions to workflow
 
