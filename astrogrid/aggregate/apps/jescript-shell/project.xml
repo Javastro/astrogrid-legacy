@@ -38,7 +38,7 @@
                     <jnlp.jar>true</jnlp.jar>
                 </properties>
     </dependency>
-    <!-- scripting uses externalValue classes - currently in cea server. will factor out later.. -->
+    <!-- scripting uses externalValue classes - currently in cea server. will factor out later into a smaller package -->
         <dependency>
                 <groupId>org.astrogrid</groupId>
                 <artifactId>astrogrid-cea-server</artifactId>
@@ -57,26 +57,26 @@
                     <jnlp.jar>true</jnlp.jar>
                 </properties>
         </dependency>
+    <dependency>
+      <artifactId>junit</artifactId>
+      <groupId>junit</groupId>
+      <version>3.8</version>
+      <properties>
+                    <jnlp.jar>true</jnlp.jar>
+      </properties>
+    </dependency>       
+        
+        
     <!-- needed for compilation only -->
     <dependency>
        <groupId>org.astrogrid</groupId>
        <artifactId>astrogrid-workflow-objects</artifactId>
        <version>${astrogrid.workflowobjects.version}</version>
-       <!--
-                <properties>
-                    <jnlp.jar>true</jnlp.jar>
-                </properties>
-                -->
     </dependency>
     <dependency>
         <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-common</artifactId>
         <version>${astrogrid.common.version}</version>
-        <!--
-                        <properties>
-                    <jnlp.jar>true</jnlp.jar>
-                </properties>
-                -->
     </dependency>
 
 
