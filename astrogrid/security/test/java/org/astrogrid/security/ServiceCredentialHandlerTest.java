@@ -61,7 +61,7 @@ public class ServiceCredentialHandlerTest extends TestCase {
     Set tokens = s2.getPrivateCredentials(NonceToken.class);
     assertEquals("Exactly one token", 1, tokens.size());
     NonceToken n2 = (NonceToken) tokens.iterator().next();
-    assertTrue("Token is valid", n2.isValid());
+    assertEquals("Names match", account, n2.getAccount());
   }
 
 
