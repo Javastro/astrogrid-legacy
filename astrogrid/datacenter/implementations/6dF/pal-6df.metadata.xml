@@ -1,0 +1,3342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RdbmsMetadata>
+   <ProductName>Microsoft SQL Server</ProductName>
+   <Version>Microsoft SQL Server  2000 - 8.00.534 (Intel X86)
+   Nov 19 2001 13:23:50
+   Copyright (c) 1988-2000 Microsoft Corporation
+   Enterprise Edition on Windows NT 5.0 (Build 2195: Service Pack 3)
+</Version>
+   <Driver>SQLServer v2.2.0022</Driver>
+   <Catalog>sixdf</Catalog>
+   <Table name="AGN2MASS">
+      <Description>The AGN2MASS table contains candidate AGN from 2MASS red AGN survey. The programme ID number (progid in the target table) for this input catalogue is 116.
+</Description>
+
+      <Column datatype="int" indexed="false" name="OBJID">
+
+         <Description>Unique ID Number</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="CATNAME">
+         <Description>Supplied catalogue name</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="TARGETNAME">
+         <Description>matching name in TARGET table, used to name FITS files and generate thumbnail images</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="long" indexed="false" name="TARGETID">
+         <Description>matching ID in TARGET table</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="RA">
+         <Description>RA J2000</Description>
+         <Units></Units>
+         <UCD>POS.RA.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="DEC">
+         <Description>DEC J2000</Description>
+         <Units> </Units>
+         <UCD>POS.DEC.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="short" indexed="false" name="PRIORITY">
+         <Description>Survey Weight</Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="MAG_1">
+         <Description>Supplied Magnitude 1</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="short" indexed="false" name="PROGID">
+         <Description>Programme ID</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="MAG_2">
+         <Description>Supplied Magnitude 2</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="MAG_3">
+         <Description>Supplied Magnitude 3</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+   </Table>
+   
+   <Table name="DENISI">
+      <Description>The DENISI table contains sources from the DENIS survey with I &lt; 14.85. The programme ID number (progid in the target table) for this input catalogue is 6. </Description>
+
+      <Column datatype="int" indexed="false" name="OBJID">
+         <Description>Unique ID Number</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="CATNAME">
+         <Description>Supplied Catalogue Name </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="TARGETNAME">
+         <Description>matching name in TARGET table, used to name FITS files and generate thumbnail images </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="long" indexed="false" name="TARGETID">
+         <Description>matching ID in TARGET table</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="RA">
+         <Description>RA J2000</Description>
+         <Units></Units>
+         <UCD>POS.RA.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="DEC">
+         <Description>DEC J2000</Description>
+         <Units> </Units>
+         <UCD>POS.DEC.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="short" indexed="false" name="PRIORITY">
+         <Description>Survey Weight</Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="MAG_1">
+         <Description>Supplied Magnitude 1</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="short" indexed="false" name="PROGID">
+         <Description>Programme ID</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="MAG_2">
+         <Description>Supplied Magnitude 2</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="COMMENT">
+         <Description>Supplied Comments </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+   </Table>
+   <Table name="DENISJ">
+      <Description>The DENISJ table contains sources from the DENIS survey with J &lt; 13.85. The programme ID number (progid in the target table) for this input catalogue is 5. </Description>
+
+      <Column datatype="int" indexed="false" name="OBJID">
+         <Description>Unique ID Number</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="CATNAME">
+         <Description>Supplied Catalogue Name </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="TARGETNAME">
+         <Description>matching name in TARGET table, used to name FITS files and generate thumbnail images </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="long" indexed="false" name="TARGETID">
+         <Description>matching ID in TARGET table</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="RA">
+         <Description>RA J2000</Description>
+         <Units></Units>
+         <UCD>POS.RA.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="DEC">
+         <Description>DEC J2000</Description>
+         <Units> </Units>
+         <UCD>POS.DEC.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="short" indexed="false" name="PRIORITY">
+         <Description>Survey Weight</Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="MAG_1">
+         <Description>Supplied Magnitude 1</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="short" indexed="false" name="PROGID">
+         <Description>Programme ID</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="MAG_2">
+         <Description>Supplied Magnitude 2</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="COMMENT">
+         <Description>Supplied Comments </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+   </Table>
+   <Table name="DURUKST">
+      <Description>The DURUKST table contains galaxies from the extension to the Durham/UKST galaxy survey. The programme ID number (progid in the target table) for this input catalogue is 78. </Description>
+      <Column datatype="int" indexed="false" name="OBJID">
+         <Description>Unique ID Number</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="CATNAME">
+         <Description>Supplied Catalogue Name </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="TARGETNAME">
+         <Description>matching name in TARGET table, used to name FITS files and generate thumbnail images </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="long" indexed="false" name="TARGETID">
+         <Description>matching ID in TARGET table</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="RA">
+         <Description>RA J2000</Description>
+         <Units></Units>
+         <UCD>POS.RA.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="DEC">
+         <Description>DEC J2000</Description>
+         <Units> </Units>
+         <UCD>POS.DEC.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="short" indexed="false" name="PRIORITY">
+         <Description>Survey Weight</Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="MAG_1">
+         <Description>Supplied Magnitude 1</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="short" indexed="false" name="PROGID">
+         <Description>Programme ID</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="MAG_2">
+         <Description>Supplied Magnitude 2</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+   </Table>
+   
+   
+   <Table name="FSC">
+      <Description>The FSC table contains galaxies from the IRAS faint source catalogue. The programme ID number (progid in the target table) for this input catalogue is 126. </Description>
+      <Column datatype="int" indexed="false" name="OBJID">
+         <Description>Unique ID Number</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="CATNAME">
+         <Description>Supplied Catalogue Name </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="TARGETNAME">
+         <Description>matching name in TARGET table, used to name FITS files and generate thumbnail images </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="long" indexed="false" name="TARGETID">
+         <Description>matching ID in TARGET table</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="RA">
+         <Description>RA J2000</Description>
+         <Units></Units>
+         <UCD>POS.RA.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="DEC">
+         <Description>DEC J2000</Description>
+         <Units> </Units>
+         <UCD>POS.DEC.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="short" indexed="false" name="PRIORITY">
+         <Description>Survey Weight</Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="MAG_1">
+         <Description>Supplied Magnitude 1</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="short" indexed="false" name="PROGID">
+         <Description>Programme ID</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="MAG_2">
+         <Description>Supplied Magnitude 2</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="COMMENT">
+         <Description>Supplied Comments </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+   </Table>
+
+
+   <Table name="HES">
+      <Description>The HES table contains candidate QSOs from the Hamburg/ESO Survey. The programme ID number (progid in the target table) for this input catalogue is 129. </Description>
+      <Column datatype="int" indexed="false" name="OBJID">
+         <Description>Unique ID Number</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="CATNAME">
+         <Description>Supplied Catalogue Name </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="TARGETNAME">
+         <Description>matching name in TARGET table, used to name FITS files and generate thumbnail images </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="long" indexed="false" name="TARGETID">
+         <Description>matching ID in TARGET table</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="RA">
+         <Description>RA J2000</Description>
+         <Units></Units>
+         <UCD>POS.RA.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="DEC">
+         <Description>DEC J2000</Description>
+         <Units> </Units>
+         <UCD>POS.DEC.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="short" indexed="false" name="PRIORITY">
+         <Description>Survey Weight</Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="MAG_1">
+         <Description>Supplied Magnitude 1</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="short" indexed="false" name="PROGID">
+         <Description>Programme ID</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="MAG_2">
+         <Description>Supplied Magnitude 2</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+   </Table>
+
+
+
+   <Table name="HIPASS">
+      <Description>The HIPASS table contains candidate galaxies from the HIPASS survey in HI. The programme ID number (progid in the target table) for this input catalogue is 119. </Description>
+      <Link>http://www.atnf.csiro.au/research/multibeam/release/</Link>
+      
+      <Column datatype="int" indexed="false" name="OBJID">
+         <Description>Unique ID Number</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="CATNAME">
+         <Description>Supplied Catalogue Name </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="TARGETNAME">
+         <Description>matching name in TARGET table, used to name FITS files and generate thumbnail images </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="long" indexed="false" name="TARGETID">
+         <Description>matching ID in TARGET table</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="RA">
+         <Description>RA J2000</Description>
+         <Units></Units>
+         <UCD>POS.RA.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="DEC">
+         <Description>DEC J2000</Description>
+         <Units> </Units>
+         <UCD>POS.DEC.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="short" indexed="false" name="PRIORITY">
+         <Description>Survey Weight</Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="MAG_1">
+         <Description>Supplied Magnitude 1</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="short" indexed="false" name="PROGID">
+         <Description>Programme ID</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="MAG_2">
+         <Description>Supplied Magnitude 2</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+   </Table>
+
+
+   <Table name="misc">
+      <Description> </Description>
+      <!-- schema='dbo' -->
+      <!-- cat='sixdf' -->
+      <!-- type='TABLE' -->
+
+      <!-- typecat='(Unknown)' -->
+      <!-- typeschema='(Unknown)' -->
+      <!-- typename='(Unknown)' -->
+      <!-- selfref='(Unknown)' -->
+      <!-- refgen='(Unknown)' -->
+      <Column datatype="int" indexed="false" name="OBJID">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='misc' -->
+
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="CATNAME">
+
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='misc' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="TARGETNAME">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='misc' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="long" indexed="false" name="TARGETID">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='misc' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="RA">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='misc' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="DEC">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='misc' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="short" indexed="false" name="PRIORITY">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='misc' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="MAG_1">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='misc' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="short" indexed="false" name="PROGID">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='misc' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="MAG_2">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='misc' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column arraysize="*" datatype="char" indexed="false" name="COMMENT">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='misc' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+   </Table>
+
+
+   <Table name="NVSS">
+      <Description>The NVSS table contains candidate QSOs from NVSS. The programme ID number (progid in the target table) for this input catalogue is 130. </Description>
+      <Link>http://www.cv.nrao.edu/nvss/</Link>
+      
+      <Column datatype="int" indexed="false" name="OBJID">
+         <Description>Unique ID Number</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="CATNAME">
+         <Description>Supplied Catalogue Name </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="TARGETNAME">
+         <Description>matching name in TARGET table, used to name FITS files and generate thumbnail images </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="long" indexed="false" name="TARGETID">
+         <Description>matching ID in TARGET table</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="RA">
+         <Description>RA J2000</Description>
+         <Units></Units>
+         <UCD>POS.RA.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="DEC">
+         <Description>DEC J2000</Description>
+         <Units> </Units>
+         <UCD>POS.DEC.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="short" indexed="false" name="PRIORITY">
+         <Description>Survey Weight</Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="MAG_1">
+         <Description>Supplied Magnitude 1</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="short" indexed="false" name="PROGID">
+         <Description>Programme ID</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="MAG_2">
+         <Description>Supplied Magnitude 2</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+   </Table>
+
+
+   
+   <Table name="RASS">
+      <Description> The RASS table contains candidate QSO/AGN from the ROSAT All-Sky Survey. The programme ID number (progid in the target table) for this input catalogue is 113.</Description>
+      <Link name="ROSAT Pages at MPE">http://wave.xray.mpe.mpg.de/rosat</Link>
+
+      <Column datatype="int" indexed="false" name="OBJID">
+         <Description>Unique ID Number</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="CATNAME">
+         <Description>Supplied Catalogue Name </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="TARGETNAME">
+         <Description>matching name in TARGET table, used to name FITS files and generate thumbnail images </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="long" indexed="false" name="TARGETID">
+         <Description>matching ID in TARGET table</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="RA">
+         <Description>RA J2000</Description>
+         <Units></Units>
+         <UCD>POS.RA.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="DEC">
+         <Description>DEC J2000</Description>
+         <Units> </Units>
+         <UCD>POS.DEC.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="short" indexed="false" name="PRIORITY">
+         <Description>Survey Weight</Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="MAG_1">
+         <Description>Supplied Magnitude 1</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="short" indexed="false" name="PROGID">
+         <Description>Programme ID</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="MAG_2">
+         <Description>Supplied Magnitude 2</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="COMMENT">
+         <Description>Supplied Comments </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+   </Table>
+
+
+
+   <Table name="rose">
+      <Description> </Description>
+      <!-- schema='dbo' -->
+      <!-- cat='sixdf' -->
+      <!-- type='TABLE' -->
+
+      <!-- typecat='(Unknown)' -->
+      <!-- typeschema='(Unknown)' -->
+      <!-- typename='(Unknown)' -->
+      <!-- selfref='(Unknown)' -->
+      <!-- refgen='(Unknown)' -->
+      <Column datatype="int" indexed="false" name="OBJID">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='rose' -->
+
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="CATNAME">
+
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='rose' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="TARGETNAME">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='rose' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="long" indexed="false" name="TARGETID">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='rose' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="RA">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='rose' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="DEC">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='rose' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="short" indexed="false" name="PRIORITY">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='rose' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="MAG_1">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='rose' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="short" indexed="false" name="PROGID">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='rose' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+   </Table>
+   
+   
+   
+   <Table name="shapley">
+      <Description>The SHAPLEY table contains galaxies from the Shapely supercluster region. The programme ID number (progid in the target table) for this input catalogue is 90. </Description>
+
+      <Column datatype="int" indexed="false" name="OBJID">
+         <Description>Unique ID Number</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="CATNAME">
+         <Description>Supplied Catalogue Name </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="TARGETNAME">
+         <Description>matching name in TARGET table, used to name FITS files and generate thumbnail images </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="long" indexed="false" name="TARGETID">
+         <Description>matching ID in TARGET table</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="RA">
+         <Description>RA J2000</Description>
+         <Units></Units>
+         <UCD>POS.RA.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="DEC">
+         <Description>DEC J2000</Description>
+         <Units> </Units>
+         <UCD>POS.DEC.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="short" indexed="false" name="PRIORITY">
+         <Description>Survey Weight</Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="MAG_1">
+         <Description>Supplied Magnitude 1</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="short" indexed="false" name="PROGID">
+         <Description>Programme ID</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="MAG_2">
+         <Description>Supplied Magnitude 2</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+   </Table>
+
+
+   <Table name="SPECTRA">
+      <Description>The SPECTRA table holds all the observational and redshift related data. Parameters are recorded for both the V and R frames (with a lot of the values being the same for both frames), redshift information is derived from a combined VR frame. Objects can be observed more than once. </Description>
+
+      <Column datatype="long" indexed="false" name="SPECID">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="long" indexed="false" name="TARGETID">
+
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="TARGETNAME">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="OBSRA">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="OBSDEC">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="MATCH_DR">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="long" indexed="false" name="HTMID">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="CX">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="CY">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="CZ">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="char" indexed="false" name="Z_ORIGIN">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="Z">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="Z_HELIO">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="int" indexed="false" name="QUALITY">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="ABEMMA">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="NMBEST">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="int" indexed="false" name="NGOOD">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="Z_EMI">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="Q_Z_EMI">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="int" indexed="false" name="KBESTR">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="R_CRCOR">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="Z_ABS">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="int" indexed="false" name="Q_Z_ABS">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="Q_FINAL">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="IALTER">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column arraysize="*" datatype="char" indexed="false" name="Z_COMM">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="TITLE_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="CENRA_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="CENDEC_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="APPRA_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="APPDEC_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="ACTMJD_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="CONMJD_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="PROGID_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column arraysize="*" datatype="char" indexed="false" name="LABEL_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="OBSID_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="RUN_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="EXP_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="short" indexed="false" name="NCOMB_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="GRATID_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="GRATSET_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="char" indexed="false" name="GRATSLOT_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="GRATBLAZ_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column arraysize="*" datatype="char" indexed="false" name="SOURCE_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="FOCUS_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="TFOCUS_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="GAIN_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="NOISE_v">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="CCD_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="char" indexed="false" name="UTDATE_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="UTSTRT_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="MJDOBS_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column arraysize="*" datatype="char" indexed="false" name="NAME_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="THPUT_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="RA_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="DEC_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="X_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="Y_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="int" indexed="false" name="XERR_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="YERR_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="THETA_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="int" indexed="false" name="FIBRE_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="short" indexed="false" name="PIVOT_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="RECMAG_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="int" indexed="false" name="PID_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="TITLE_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="CENRA_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="CENDEC_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="APPRA_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="APPDEC_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="ACTMJD_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="CONMJD_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="PROGID_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column arraysize="*" datatype="char" indexed="false" name="LABEL_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="OBSID_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="RUN_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="EXP_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="short" indexed="false" name="NCOMB_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="GRATID_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="GRATSET_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="char" indexed="false" name="GRATSLOT_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="GRATBLAZ_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column arraysize="*" datatype="char" indexed="false" name="SOURCE_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="FOCUS_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="TFOCUS_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="GAIN_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="NOISE_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="CCD_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="char" indexed="false" name="UTDATE_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="UTSTRT_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="MJDOBS_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column arraysize="*" datatype="char" indexed="false" name="NAME_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="THPUT_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="RA_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="DEC_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="X_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="Y_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="int" indexed="false" name="XERR_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="YERR_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="THETA_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="int" indexed="false" name="FIBRE_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="short" indexed="false" name="PIVOT_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="RECMAG_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="int" indexed="false" name="PID_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='spectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+   </Table>
+   
+   
+   <Table name="sss">
+      <Description> </Description>
+      <!-- schema='dbo' -->
+      <!-- cat='sixdf' -->
+      <!-- type='TABLE' -->
+
+      <!-- typecat='(Unknown)' -->
+      <!-- typeschema='(Unknown)' -->
+      <!-- typename='(Unknown)' -->
+      <!-- selfref='(Unknown)' -->
+      <!-- refgen='(Unknown)' -->
+      <Column datatype="long" indexed="false" name="OBJID">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='sss' -->
+
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="long" indexed="false" name="TARGETID">
+
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='sss' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="long" indexed="false" name="HTMID">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='sss' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="RA">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='sss' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="DEC">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='sss' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="CX">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='sss' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="CY">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='sss' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="CZ">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='sss' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+   </Table>
+   
+   <Table name="SUMSS">
+      <Description>The SUMSS table contains bright radio sources from SUMSS. The programme ID number (progid in the target table) for this input catalogue is 125. </Description>
+      <Link>http://www.astrop.physics.usyd.edu.au/SUMSS/</Link>
+ 
+ 
+      <Column datatype="int" indexed="false" name="OBJID">
+         <Description>Unique ID Number</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="CATNAME">
+         <Description>Supplied Catalogue Name </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="TARGETNAME">
+         <Description>matching name in TARGET table, used to name FITS files and generate thumbnail images </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="long" indexed="false" name="TARGETID">
+         <Description>matching ID in TARGET table</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="RA">
+         <Description>RA J2000</Description>
+         <Units></Units>
+         <UCD>POS.RA.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="DEC">
+         <Description>DEC J2000</Description>
+         <Units> </Units>
+         <UCD>POS.DEC.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="short" indexed="false" name="PRIORITY">
+         <Description>Survey Weight</Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="MAG_1">
+         <Description>Supplied Magnitude 1</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="short" indexed="false" name="PROGID">
+         <Description>Programme ID</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="MAG_2">
+         <Description>Supplied Magnitude 2</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+ 
+   </Table>
+   
+   
+   <Table name="SUPERCOS">
+      <Description>The SUPERCOS table contains galaxies selected from SuperCOSMOS scans of UKST plates. This table contains galaxies at |b| &gt; 20 with Bj &lt; 16.75 or R &lt; 15.6. The programme ID numbers (progid in the target table) for the Bj and R selected surveys are 8 and 7 respectively. </Description>
+      <Link>http://www-wfau.roe.ac.uk/sss/</Link>
+
+      <Column datatype="int" indexed="false" name="OBJID">
+         <Description>Unique ID Number</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="CATNAME">
+         <Description>Supplied Catalogue Name </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="TARGETNAME">
+         <Description>matching name in TARGET table, used to name FITS files and generate thumbnail images </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="long" indexed="false" name="TARGETID">
+         <Description>matching ID in TARGET table</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="RA">
+         <Description>RA J2000</Description>
+         <Units></Units>
+         <UCD>POS.RA.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="DEC">
+         <Description>DEC J2000</Description>
+         <Units> </Units>
+         <UCD>POS.DEC.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="short" indexed="false" name="PRIORITY">
+         <Description>Survey Weight</Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="MAG_1">
+         <Description> Bj mag, SCOS bright galaxy calibration</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="short" indexed="false" name="PROGID">
+         <Description>Programme ID</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="MAG_2">
+         <Description> R mag, SCOS bright galaxy calibration</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+ 
+      <Column datatype="char" indexed="false" name="COMMENT">
+         <Description> SCOS reference (field no. + B_index + R_index) </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+   </Table>
+   
+   
+   <Table name="TARGET">
+      <Description>The TARGET table represents the master target list used to configure 6dFGS observations. This list was formed by merging all the survey input tables/catalogues. TARGET is the hub of the database.
+            
+            The record with targetid=0 and targetname='blank____record' is there for objects that appear in other tables that for some reason are no longer in the master TARGET configuration file. eg there are some 70 objects in SPECTRA that are not in TARGET, they have been assigned a targetid=0 in the SPECTRA table.
+      </Description>
+
+      <Column datatype="long" indexed="false" name="TARGETID">
+         <Description>Unique ID used to link tables </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="TARGETNAME">
+         <Description> name in config file, used to name FITS file and generate thumbnail images </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="long" indexed="false" name="HTMID">
+         <Description> Hierarchical Triangular Mesh (20-deep) number </Description>
+         <Units>htm</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      
+      <Column datatype="float" indexed="false" name="RA">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='target' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="DEC">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='target' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="CX">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='target' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="CY">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='target' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="CZ">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='target' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="GL">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='target' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="GB">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='target' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="A_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='target' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="short" indexed="false" name="PROGID">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='target' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="BMAG">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='target' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="RMAG">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='target' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="short" indexed="false" name="SG">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='target' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="ZCATVEL">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='target' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="ZCATERR">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='target' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="short" indexed="false" name="ZCATREF">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='target' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+   </Table>
+
+
+   <Table name="TWOMASS">
+      <Description>The TWOMASS table contains holds the K, J and H selected samples originating from the 2MASS extended source catalogue. The K-selected sample, K &lt; 12.75 represents the primary 6dFGS input catalogue. The H and J selected samples reach H &lt; 13.00 and J &lt; 13.75. The programme ID numbers (progid in the target table) for the K, H and J selected surveys are 1, 3 and 4 respectively. </Description>
+      <Link>http://www.ipac.caltech.edu/2mass/</Link>
+
+
+      <Column datatype="int" indexed="false" name="OBJID">
+         <Description>Unique ID Number</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="CATNAME">
+         <Description>Supplied Catalogue Name </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="15" datatype="char" indexed="false" name="TARGETNAME">
+         <Description>matching name in TARGET table, used to name FITS files and generate thumbnail images </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="long" indexed="false" name="TARGETID">
+         <Description>matching ID in TARGET table</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="RA">
+         <Description>RA J2000</Description>
+         <Units></Units>
+         <UCD>POS.RA.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="DEC">
+         <Description>DEC J2000</Description>
+         <Units> </Units>
+         <UCD>POS.DEC.MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="short" indexed="false" name="PRIORITY">
+         <Description>Survey Weight</Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="float" indexed="false" name="MAG_1">
+         <Description>Supplied Magnitude 1</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="short" indexed="false" name="PROGID">
+         <Description>Programme ID</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="MAG_2">
+         <Description>Supplied Magnitude 2</Description>
+         <Units>mag</Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="J_M_K20FE">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='twomass' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="H_M_K20FE">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='twomass' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="K_M_K20FE">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='twomass' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="RADIUS">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='twomass' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="A_B">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='twomass' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="MUK20FE">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='twomass' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="CORR">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='twomass' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="J">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='twomass' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="H">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='twomass' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="KEXT">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='twomass' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="K">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='twomass' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="KEXT_K">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='twomass' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+   </Table>
+
+   <Table name="bestspectra">
+      <Description> </Description>
+      <!-- schema='dbo' -->
+      <!-- cat='sixdf' -->
+      <!-- type='VIEW' -->
+      <!-- typecat='(Unknown)' -->
+      <!-- typeschema='(Unknown)' -->
+      <!-- typename='(Unknown)' -->
+
+      <!-- selfref='(Unknown)' -->
+      <!-- refgen='(Unknown)' -->
+      <Column datatype="long" indexed="false" name="SPECID">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='bestspectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="long" indexed="false" name="TARGETID">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='bestspectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column arraysize="*" datatype="char" indexed="false" name="TARGETNAME">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='bestspectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="OBSRA">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='bestspectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="OBSDEC">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='bestspectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="MATCH_DR">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='bestspectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="Z">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='bestspectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="Z_HELIO">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='bestspectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="int" indexed="false" name="QUALITY">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='bestspectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="z_comm">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='bestspectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="EXP_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='bestspectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="char" indexed="false" name="UTDATE_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='bestspectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="EXP_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='bestspectra' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="char" indexed="false" name="UTDATE_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='bestspectra' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+   </Table>
+   <Table name="ned">
+      <Description> </Description>
+      <!-- schema='dbo' -->
+      <!-- cat='sixdf' -->
+      <!-- type='VIEW' -->
+      <!-- typecat='(Unknown)' -->
+      <!-- typeschema='(Unknown)' -->
+      <!-- typename='(Unknown)' -->
+
+      <!-- selfref='(Unknown)' -->
+      <!-- refgen='(Unknown)' -->
+      <Column datatype="float" indexed="false" name="OBSRA">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='ned' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="OBSDEC">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='ned' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="Z_HELIO">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='ned' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="QUALITY">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='ned' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="ABEMMA">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='ned' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="int" indexed="false" name="NMBEST">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='ned' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="Z_EMI">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='ned' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="Q_Z_EMI">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='ned' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="Z_ABS">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='ned' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="Q_Z_ABS">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='ned' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="Q_FINAL">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='ned' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="MJDOBS_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='ned' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="MJDOBS_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='ned' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="Z_COMM">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='ned' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="long" indexed="false" name="targetid">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='ned' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+   </Table>
+   <Table name="VIEWf">
+      <Description> </Description>
+      <!-- schema='dbo' -->
+      <!-- cat='sixdf' -->
+      <!-- type='VIEW' -->
+
+      <!-- typecat='(Unknown)' -->
+      <!-- typeschema='(Unknown)' -->
+      <!-- typename='(Unknown)' -->
+      <!-- selfref='(Unknown)' -->
+      <!-- refgen='(Unknown)' -->
+      <Column datatype="long" indexed="false" name="SPECID">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='VIEWf' -->
+
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="long" indexed="false" name="TARGETID">
+
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='VIEWf' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="TARGETNAME">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='VIEWf' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="OBSRA">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='VIEWf' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="OBSDEC">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='VIEWf' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="MATCH_DR">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='VIEWf' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="Z">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='VIEWf' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="Z_HELIO">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='VIEWf' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="QUALITY">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='VIEWf' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="int" indexed="false" name="Q_FINAL">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='VIEWf' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="int" indexed="false" name="Q_Z_ABS">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='VIEWf' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="float" indexed="false" name="EXP_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='VIEWf' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="char" indexed="false" name="UTDATE_V">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+
+         <!-- table='VIEWf' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+
+      <Column datatype="float" indexed="false" name="EXP_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='VIEWf' -->
+         <Description> </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="char" indexed="false" name="UTDATE_R">
+         <!-- schema='dbo' -->
+         <!-- cat='sixdf' -->
+         <!-- table='VIEWf' -->
+         <Description> </Description>
+         <Units> </Units>
+
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+   </Table>
+   
+   
+   
+   <Functions>
+      <Function>abs</Function>
+
+      <Function>acos</Function>
+      <Function>asin</Function>
+      <Function>atan</Function>
+      <Function>atan2</Function>
+      <Function>ceiling</Function>
+      <Function>cos</Function>
+
+      <Function>cot</Function>
+      <Function>degrees</Function>
+      <Function>exp</Function>
+      <Function>floor</Function>
+      <Function>log</Function>
+      <Function>log10</Function>
+
+      <Function>mod</Function>
+      <Function>pi</Function>
+      <Function>power</Function>
+      <Function>radians</Function>
+      <Function>rand</Function>
+      <Function>round</Function>
+
+      <Function>sign</Function>
+      <Function>sin</Function>
+      <Function>sqrt</Function>
+      <Function>tan</Function>
+   </Functions>
+   
+   
+</RdbmsMetadata>

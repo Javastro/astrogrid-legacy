@@ -1,5 +1,5 @@
 /*
- * $Id: Roe6dFTester.java,v 1.1 2004/07/06 17:14:41 mch Exp $
+ * $Id: Roe6dFTester.java,v 1.2 2004/08/19 19:51:41 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,8 +13,6 @@ package org.astrogrid.roe;
  * @author M Hill
  */
 
-import org.astrogrid.datacenter.queriers.*;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URL;
@@ -25,6 +23,12 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.TargetIndicator;
+import org.astrogrid.datacenter.queriers.DatabaseAccessException;
+import org.astrogrid.datacenter.queriers.Querier;
+import org.astrogrid.datacenter.queriers.QuerierManager;
+import org.astrogrid.datacenter.queriers.QuerierPlugin;
+import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.sql.JdbcConnections;
 import org.astrogrid.datacenter.queriers.sql.JdbcPlugin;
 import org.astrogrid.datacenter.query.ConeQuery;
@@ -82,6 +86,9 @@ public class Roe6dFTester extends TestCase
 }
    /*
    $Log: Roe6dFTester.java,v $
+   Revision 1.2  2004/08/19 19:51:41  mch
+   Updated 6df config
+
    Revision 1.1  2004/07/06 17:14:41  mch
    Added direct client test
 
