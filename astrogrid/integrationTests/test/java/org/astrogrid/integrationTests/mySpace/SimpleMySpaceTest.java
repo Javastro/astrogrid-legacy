@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleMySpaceTest.java,v 1.12 2004/02/17 23:58:38 jdt Exp $ Created on
+ * $Id: SimpleMySpaceTest.java,v 1.13 2004/02/24 01:34:19 jdt Exp $ Created on
  * 28-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -394,12 +394,17 @@ public final class SimpleMySpaceTest extends TestCase {
     URL url = new URL(urlTxt);
     InputStream is = url.openStream();
     BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-    String text = reader.readLine();
+    StringBuffer textBuff = new StringBuffer();
+    int ch;
+    while ((ch=reader.read())!=-1) {
+        textBuff.append((char)ch);
+    }
+    String text = textBuff.toString();
     //@TODO - readline isn't enough...got toread the lot
 
     log.debug("Attempted to save from'" + url + "' under name " + name);
     log.debug("Received back '" + result + "'");
-    log.debug("Expected: " + text);
+    log.debug("Expected: '" + text + "'");
     assertEquals("data returned from myspace not same as saved", result, text);
     String ok2 =
       client.deleteDataHolding(
@@ -412,7 +417,7 @@ public final class SimpleMySpaceTest extends TestCase {
   /**
    * test reading from url
    * @throws Exception no idea
-   *//*@TODO fixme
+   */
   public void testImportExportDeleteURL() throws Exception {
     String name = "foo" + Long.toString(System.currentTimeMillis());
     String url =
@@ -420,7 +425,7 @@ public final class SimpleMySpaceTest extends TestCase {
     importURLExportDelete(
       getFullPath(defaultUser, defaultCommunity, name),
       url);
-  }/*
+  }
   /**
    * Create a number of threads all trying to read, write and delete and watch the
    * chaos.  @TODO consider moving the threaded tests to another class
