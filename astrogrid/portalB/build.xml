@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/30 17:03:08 $</cvs:author>
-    | <cvs:version>$Revision: 1.28 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/30 17:10:43 $</cvs:author>
+    | <cvs:version>$Revision: 1.29 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.29  2003/06/30 17:10:43  dave
+    | Fixed query release build
+    |
     | Revision 1.28  2003/06/30 17:03:08  dave
     | Added script to build DataQuery release
     |
@@ -2260,9 +2263,11 @@
 		<mkdir dir="build/release/DataQuery"/>
 		<mkdir dir="build/release/DataQuery/webapp"/>
 		<mkdir dir="build/release/DataQuery/webapp/WEB-INF"/>
+		<mkdir dir="build/release/DataQuery/webapp/WEB-INF/lib"/>
 		<mkdir dir="build/release/DataQuery/webapp/WEB-INF/classes"/>
+		<mkdir dir="build/release/DataQuery/webapp/WEB-INF/servlets"/>
 		<!-- Copy our site files across -->
-		<copy verbose="true" toDir="build/release/DataQuery/webapp">
+		<copy verbose="true" toDir="build/release/DataQuery/webapp/servlets">
 			<fileset dir="src/site/DataQuery">
 				<exclude name="**/CVS/**"/>
 			</fileset>
@@ -2275,6 +2280,14 @@
 				<include name="**/portal/query/**"/>
 			</fileset>
 		</copy>
+
+		<!-- Copy the Axis client jars -->
+		<copy verbose="true" toDir="build/release/DataQuery/webapp/WEB-INF/lib">
+			<fileset dir="${axis.webapp}/WEB-INF/lib">
+				<include name="**/*.jar"/>
+			</fileset>
+		</copy>
+
 		<!-- Copy the web.xml file -->
 		<copy verbose="true" file="src/site/WEB-INF/web.xml" toFile="build/release/DataQuery/webapp/WEB-INF/web.xml"/>
 		<!-- Wrap everything up as a WAR fil -->
