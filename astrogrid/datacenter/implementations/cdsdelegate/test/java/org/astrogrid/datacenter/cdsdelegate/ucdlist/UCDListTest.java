@@ -1,4 +1,4 @@
-/*$Id: UCDListTest.java,v 1.1 2003/11/18 11:23:49 nw Exp $
+/*$Id: UCDListTest.java,v 1.2 2003/11/20 15:47:18 nw Exp $
  * Created on 16-Oct-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import javax.xml.rpc.ServiceException;
 
 import junit.framework.TestCase;
 
-/**
+/** Test the UCDList web server - returns a list of all known UCDs, HTML formatted.. (why not just put in on a web page :)
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Oct-2003
  *
  */
@@ -55,7 +55,7 @@ public class UCDListTest extends TestCase {
         String result = service.UCDList();
         assertNotNull(result);
         assertTrue(result.length() > 0);
-        System.out.println(result);
+        //System.out.println(result);
     }
 
 }
@@ -63,6 +63,9 @@ public class UCDListTest extends TestCase {
 
 /* 
 $Log: UCDListTest.java,v $
+Revision 1.2  2003/11/20 15:47:18  nw
+improved testing
+
 Revision 1.1  2003/11/18 11:23:49  nw
 mavenized cds delegate
 

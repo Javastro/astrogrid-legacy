@@ -1,4 +1,4 @@
-/*$Id: VizierQuerier.java,v 1.1 2003/11/18 11:23:49 nw Exp $
+/*$Id: VizierQuerier.java,v 1.2 2003/11/20 15:47:18 nw Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ import org.w3c.dom.Document;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 13-Nov-2003
- *
+ *@todo implement this.
  */
 public class VizierQuerier extends DatabaseQuerier {
 
@@ -54,6 +54,9 @@ public class VizierQuerier extends DatabaseQuerier {
 
 /* 
 $Log: VizierQuerier.java,v $
+Revision 1.2  2003/11/20 15:47:18  nw
+improved testing
+
 Revision 1.1  2003/11/18 11:23:49  nw
 mavenized cds delegate
 

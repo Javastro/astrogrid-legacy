@@ -1,4 +1,4 @@
-/*$Id: DeprecatedSesameDelegate.java,v 1.1 2003/11/18 11:23:49 nw Exp $
+/*$Id: DeprecatedSesameDelegate.java,v 1.2 2003/11/20 15:47:18 nw Exp $
  * Created on 16-Oct-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /** Delegate that calls the deprecated methods of the sesame web service.
+ * just tests each method, checks the result isn't null. uncomment printlns to see output.
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Oct-2003
  * @todo - add parsing / recognition of result string, to detect failure to find anything.
  */
@@ -65,6 +66,9 @@ public class DeprecatedSesameDelegate {
 
 /* 
 $Log: DeprecatedSesameDelegate.java,v $
+Revision 1.2  2003/11/20 15:47:18  nw
+improved testing
+
 Revision 1.1  2003/11/18 11:23:49  nw
 mavenized cds delegate
 

@@ -1,4 +1,4 @@
-/*$Id: DeprecatedSesameDelegateTest.java,v 1.1 2003/11/18 11:23:49 nw Exp $
+/*$Id: DeprecatedSesameDelegateTest.java,v 1.2 2003/11/20 15:47:18 nw Exp $
  * Created on 16-Oct-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.xml.sax.SAXException;
 
 import junit.framework.TestCase;
 
-/**
+/** Test the deprecated
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Oct-2003
  *
  */
@@ -48,13 +48,13 @@ public class DeprecatedSesameDelegateTest extends TestCase {
     public void testResolve() throws RemoteException {
         String result = del.resolveName(NAME);
         assertNotNull(result);
-        System.out.println(result);
+       // System.out.println(result);
     }
     
     public void testResolveUnknown() throws RemoteException {
         String result = del.resolveName(UNKNOWN);
         assertNotNull(result);
-        System.out.println(result);
+     //   System.out.println(result);
     }
     
     public void testResolveXML() throws ParserConfigurationException, SAXException, IOException {
@@ -77,6 +77,9 @@ public class DeprecatedSesameDelegateTest extends TestCase {
 
 /* 
 $Log: DeprecatedSesameDelegateTest.java,v $
+Revision 1.2  2003/11/20 15:47:18  nw
+improved testing
+
 Revision 1.1  2003/11/18 11:23:49  nw
 mavenized cds delegate
 

@@ -1,4 +1,4 @@
-/*$Id: SesameDelegateTest.java,v 1.1 2003/11/18 11:23:49 nw Exp $
+/*$Id: SesameDelegateTest.java,v 1.2 2003/11/20 15:47:18 nw Exp $
  * Created on 16-Oct-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,8 @@ import org.xml.sax.SAXException;
 
 import junit.framework.TestCase;
 
-/**
+/** test that exercises methods of sesame delegate
+ * just tests that each doesn't return null for now. uncomment println statements to see what the service returns
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Oct-2003
  *
  */
@@ -51,16 +52,18 @@ public class SesameDelegateTest extends TestCase {
     
     public void testResolveName() throws RemoteException {
         String result = ses.resolveName(NAME);
-        System.out.println(result);
+        assertNotNull(result);
+    //    System.out.println(result);
     }
     
     public void testResolveUnknown() throws RemoteException {
         String result = ses.resolveName(UNKNOWN);
-        System.out.println(result);
+        assertNotNull(result);
+  //      System.out.println(result);
     }
     
     public void testResolveNameXML() throws ParserConfigurationException, SAXException, IOException {
-        Document doc = ses.resolveNameToXML(NAME);
+        Document doc = ses.resolveNameToXML(NAME);        
         assertNotNull(doc);
     }
     
@@ -71,12 +74,14 @@ public class SesameDelegateTest extends TestCase {
     
     public void testResolveNameHTML() throws RemoteException {
         String result = ses.resolveNameToHTML(NAME);
-        System.out.println(result);
+        assertNotNull(result);
+//        System.out.println(result);
     }
     
     public void testResolveUnknownHTML() throws RemoteException {
         String result = ses.resolveNameToHTML(UNKNOWN);
-        System.out.println(result);
+        assertNotNull(result);
+      //  System.out.println(result);
     }
 
 
@@ -86,6 +91,9 @@ public class SesameDelegateTest extends TestCase {
 
 /* 
 $Log: SesameDelegateTest.java,v $
+Revision 1.2  2003/11/20 15:47:18  nw
+improved testing
+
 Revision 1.1  2003/11/18 11:23:49  nw
 mavenized cds delegate
 

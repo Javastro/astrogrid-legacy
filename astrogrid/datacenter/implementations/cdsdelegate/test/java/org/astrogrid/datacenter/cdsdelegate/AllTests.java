@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.1 2003/11/18 11:23:49 nw Exp $
+/*$Id: AllTests.java,v 1.2 2003/11/20 15:47:18 nw Exp $
  * Created on 16-Oct-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,7 +34,7 @@ public class AllTests {
         TestSuite suite =
             new TestSuite("Test for org.astrogrid.datacenter.cdsdelegate");
         //$JUnit-BEGIN$
-        suite.addTestSuite(AladinImageTest.class);
+       // suite.addTestSuite(AladinImageTest.class);
         suite.addTestSuite(SesameDelegateTest.class);
         suite.addTestSuite(DeprecatedSesameDelegateTest.class);
         suite.addTestSuite(UCDListTest.class);
@@ -48,6 +48,9 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.2  2003/11/20 15:47:18  nw
+improved testing
+
 Revision 1.1  2003/11/18 11:23:49  nw
 mavenized cds delegate
 

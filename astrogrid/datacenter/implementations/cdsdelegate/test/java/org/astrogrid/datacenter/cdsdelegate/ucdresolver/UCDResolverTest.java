@@ -1,4 +1,4 @@
-/*$Id: UCDResolverTest.java,v 1.1 2003/11/18 11:23:49 nw Exp $
+/*$Id: UCDResolverTest.java,v 1.2 2003/11/20 15:47:18 nw Exp $
  * Created on 16-Oct-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import javax.xml.rpc.ServiceException;
 
 import junit.framework.TestCase;
 
-/**
+/** Test the ucd resolver web service.
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Oct-2003
  *
  */
@@ -82,6 +82,9 @@ public class UCDResolverTest extends TestCase {
 
 /* 
 $Log: UCDResolverTest.java,v $
+Revision 1.2  2003/11/20 15:47:18  nw
+improved testing
+
 Revision 1.1  2003/11/18 11:23:49  nw
 mavenized cds delegate
 

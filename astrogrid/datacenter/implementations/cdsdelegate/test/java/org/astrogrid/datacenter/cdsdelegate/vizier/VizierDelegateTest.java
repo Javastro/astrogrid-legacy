@@ -1,4 +1,4 @@
-/*$Id: VizierDelegateTest.java,v 1.1 2003/11/18 11:23:49 nw Exp $
+/*$Id: VizierDelegateTest.java,v 1.2 2003/11/20 15:47:18 nw Exp $
  * Created on 16-Oct-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,8 +21,9 @@ import org.xml.sax.SAXException;
 import junit.framework.TestCase;
 
 /**
+ * Exercises the methods of the vizier web service 
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Oct-2003
- * @todo test rest of methods - don't know what parameters to pass.
+ * @todo test rest of methods - don't know what parameters to pass / good test queries.
  */
 public class VizierDelegateTest extends TestCase {
 
@@ -48,7 +49,7 @@ public class VizierDelegateTest extends TestCase {
         assertNotNull(doc);
         // check its a votable
         assertEquals("VOTABLE",doc.getDocumentElement().getLocalName());
-        XMLUtils.PrettyDocumentToStream(doc,System.out);
+       // XMLUtils.PrettyDocumentToStream(doc,System.out);
     }
         
     public void testCatalogueMetaData() throws Exception {
@@ -56,7 +57,7 @@ public class VizierDelegateTest extends TestCase {
         Document doc = del.cataloguesMetaData(t,1.0,Unit.ARCSEC);
         assertNotNull(doc);
         assertEquals("VOTABLE",doc.getDocumentElement().getLocalName());
-        XMLUtils.PrettyDocumentToStream(doc,System.out);
+       // XMLUtils.PrettyDocumentToStream(doc,System.out);
     }
     
     public void testCatalogueData() throws Exception {
@@ -64,7 +65,7 @@ public class VizierDelegateTest extends TestCase {
         Document doc = del.cataloguesData(t,1.0,Unit.ARCSEC,Wavelength.IR);
         assertNotNull(doc);
         assertEquals("VOTABLE",doc.getDocumentElement().getLocalName());
-        XMLUtils.PrettyDocumentToStream(doc,System.out);
+        //XMLUtils.PrettyDocumentToStream(doc,System.out);
     }
 
 }
@@ -72,6 +73,9 @@ public class VizierDelegateTest extends TestCase {
 
 /* 
 $Log: VizierDelegateTest.java,v $
+Revision 1.2  2003/11/20 15:47:18  nw
+improved testing
+
 Revision 1.1  2003/11/18 11:23:49  nw
 mavenized cds delegate
 

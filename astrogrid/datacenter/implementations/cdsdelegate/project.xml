@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project>
-  <extend>${basedir}/../../project-base.xml</extend>
+  <extend>${basedir}/../../build/project-base.xml</extend>
   <!-- the version of maven's project object model -->
   <pomVersion>3</pomVersion>
   
   <!-- a unique name for this project -->
   <id>cdsdelegate</id>
-  <name>AstroGrid DataCenter CDS Delegate</name>
+  <name>AstroGrid DataCenter CDS Vizier Delegate</name>
   <currentVersion>HEAD</currentVersion>
 
   <description><![CDATA[
-	Delegate client for the CDS SOAP services:
-	services documented <a href="http://cdsweb.u-strasbg.fr/cdsws.gml">here</a>
+	Astrogrid Datacenter implementation that acts as a 'gateway' (ahem) for the CDS Vizier catalogue
+	<p />
+	Makes use of the Vizier Web service provided by CDS. Documented <a href="http://cdsweb.u-strasbg.fr/cdsws.gml">here</a>
+	<p />
+	This project also provides stand-alone java delegates for the other web services provided by CDS -
+	<ul>
+	<li>Vizier Catalogue Search</li>
+	<li>UCD List</li>
+	<li>UCD Resolver</li>
+	<li>Sesame Name Resolver</li>
+	<li> Aladin image server (under development) </li>
+	</ul>
   ]]></description>
 
   <shortDescription>Astrogrid wrapper around CDS</shortDescription>
@@ -36,6 +46,11 @@
 	<dependency>
 		<groupId>astrogrid-datacenter</groupId>
 		<artifactId>astrogrid-datacenter-server</artifactId>
+		<version>SNAPSHOT</version>
+	</dependency>
+	<dependency>
+		<groupId>astrogrid-datacenter</groupId>
+		<artifactId>astrogrid-datacenter-client</artifactId>
 		<version>SNAPSHOT</version>
 	</dependency>
 
