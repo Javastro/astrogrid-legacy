@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceIt04Delegate.java,v 1.4 2004/03/10 00:28:28 mch Exp $
+ * $Id: MySpaceIt04Delegate.java,v 1.5 2004/03/16 00:01:09 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,11 +9,8 @@
 
 package org.astrogrid.store.delegate.myspace;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringBufferInputStream;
+import java.io.*;
+
 import java.net.URL;
 import java.util.StringTokenizer;
 import org.apache.axis.utils.XMLUtils;
@@ -44,7 +41,8 @@ public class MySpaceIt04Delegate implements StoreClient
       if (endPoint.startsWith(Msrl.SCHEME)) {
          endPoint = endPoint.substring(Msrl.SCHEME.length()+1);
       }
-      
+
+      //@todo this is a Bad Assumption, remove during it06 - mch.
       if (endPoint.startsWith("http") && (endPoint.indexOf("/services/MySpaceManager") == -1))
       {
          endPoint = endPoint + "/services/MySpaceManager";
@@ -66,35 +64,6 @@ public class MySpaceIt04Delegate implements StoreClient
       return new Agsl(serverMsrl.getDelegateEndpoint());
    }
 
-   /**
-    * Puts the given string into the given location
-    */
-   public void putString(String contents, String targetPath, boolean append) throws StoreException {
- 
-      boolean success = false;
-      try {
-         String action = MySpaceClient.OVERWRITE;
-         if (append) action = MySpaceClient.APPEND;
-         
-         Log.trace("putString:saveDataHolding("+operator.getUserId()+","+operator.getCommunity()+","+operator.getToken()+",/"+targetPath+","+contents+",not used,"+action);
-
-         success = depIt04Delegate.saveDataHolding(operator.getUserId(),
-                                     operator.getCommunity(),
-                                     operator.getToken(),
-                                     "/"+targetPath,
-                                     contents,
-                                     "not used",
-                                     action
-                                    );
-      }
-      catch (Exception e) {
-         throw new StoreException("Failed to putString to '"+targetPath+"'", e);
-      }
-      if (!success) {
-         throw new StoreException("Failed to putString to "+targetPath+"'");
-      }
-   }
-   
    /**
     * Returns a list of all the files that match the expression
     */
@@ -196,6 +165,50 @@ public class MySpaceIt04Delegate implements StoreClient
    }
    
    /**
+    * Puts the given byte array from the start to end points to the given location
+    */
+   public void putBytes(byte[] bytes, int offset, int length, String targetPath, boolean append) throws StoreException {
+      
+      putString(new String(bytes, offset, length), targetPath, append);
+   }
+   
+   /**
+    * Puts the given string into the given location
+    */
+   public void putString(String contents, String targetPath, boolean append) throws StoreException {
+ 
+      String action = MySpaceClient.OVERWRITE;
+      if (append) action = MySpaceClient.APPEND;
+      boolean success = false;
+
+      try {
+         
+         String debugContents = contents;
+         if (debugContents.length() > 300) {
+            debugContents = debugContents.substring(0,300)+"...";
+         }
+         debugContents = debugContents.replaceAll("\n","\\\\n"); //so it goes onto one 'line'
+         
+         Log.trace("putString('"+debugContents+"', "+targetPath+", "+action);
+
+         success = depIt04Delegate.saveDataHolding(operator.getUserId(),
+                                     operator.getCommunity(),
+                                     operator.getToken(),
+                                     "/"+targetPath,
+                                     contents,
+                                     "not used",
+                                     action
+                                    );
+      }
+      catch (Exception e) {
+         throw new StoreException("Failed to putString to '"+targetPath+"'", e);
+      }
+      if (!success) {
+         throw new StoreException("Failed to putString to "+targetPath+"'");
+      }
+   }
+   
+   /**
     * Copies the contents of the file at the given source url to the given location
     */
    public void putUrl(URL source, String targetPath, boolean append) throws StoreException {
@@ -227,27 +240,43 @@ public class MySpaceIt04Delegate implements StoreClient
 
    /**
     * Special OutputStream which writes to a string, then sends it when the stream is closed
-    * @todo: could send every n bytes and append to the other end
     */
    private class MySpaceOutputStream extends OutputStream
    {
-      StringBuffer buffer = new StringBuffer();
-      String targetPath = null;
+      private String targetPath = null;
+
+      private byte[] buffer = new byte[5000];
+      private int cursor = 0;  //insert point
       
-      public MySpaceOutputStream(String aTargetPath)
+      public MySpaceOutputStream(String aTargetPath) throws StoreException
       {
          this.targetPath = aTargetPath;
+         //overwrite target path
+         putString("", targetPath, false);
       }
       
-      public void write(int i)
+      public void write(int i) throws IOException
       {
-         buffer.append( (char) i);
+         //get low byte - streams don't do words
+         buffer[cursor] = (byte) (i & 0xFF);
+         
+         cursor++;
+         if (cursor>=buffer.length) {
+            flush();
+         }
       }
       
-      public void close() throws IOException
-      {
-         putString(buffer.toString(), targetPath, false);
+      public void flush() throws IOException {
+         //append string to file - cursor = length
+         putBytes(buffer, 0, cursor, targetPath, true);
+         cursor=0;
       }
+
+      public void close() throws IOException {
+         flush();
+         super.close();
+      }
+      
    }
    
    /**
@@ -277,7 +306,7 @@ public class MySpaceIt04Delegate implements StoreClient
 
       try {
          String source = depIt04Delegate.getDataHoldingUrl(operator.getUserId(), operator.getCommunity(), operator.getToken(),
-                                                           sourcePath);
+                                                           "/"+sourcePath);
 
          if (source == null)
          {
@@ -321,7 +350,7 @@ public class MySpaceIt04Delegate implements StoreClient
 
       try {
          depIt04Delegate.copyDataHolding(operator.getUserId(), operator.getCommunity(), operator.getToken(),
-                                                           originalPath, targetPath.getPath());
+                                                           "/"+originalPath, "/"+targetPath.getPath());
       }
       catch (Exception e) {
          throw new StoreException("Failed to copy '"+originalPath+"' to '"+targetPath.getPath()+"'", e);
@@ -356,6 +385,9 @@ public class MySpaceIt04Delegate implements StoreClient
 
 /*
 $Log: MySpaceIt04Delegate.java,v $
+Revision 1.5  2004/03/16 00:01:09  mch
+Streaming is now a series of PutStrings
+
 Revision 1.4  2004/03/10 00:28:28  mch
 Added root slash
 
