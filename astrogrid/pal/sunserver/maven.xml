@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!-- extension maven script -->
+<project default="astrogrid-build-site" xmlns:j="jelly:core">
+   <!--+
+      | Custom astrogrid goals for nightly build
+      | Override those in maven-base
+      +-->
+   <goal name="astrogrid-clean" prereqs="war:clean"/>
+   <goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site,site:sshdeploy" />
+   <goal name="astrogrid-build-site" prereqs="war:site"/>
+   <goal name="astrogrid-deploy-snapshot" prereqs="war:deploy-snapshot"/>
+   <goal name="astrogrid-build-snapshot" prereqs="war:artifact"/>
+   <goal name="astrogrid-install-snapshot" prereqs="war:install-snapshot"/>
+   <goal name="astrogrid-deploy-artifact" prereqs="war:deploy"/>
+   <goal name="astrogrid-build-artifact" prereqs="war:artifact"/>
+   <goal name="astrogrid-install-artifact" prereqs="war:install"/>
+   
+</project>
