@@ -1,5 +1,5 @@
 /*
- * $Id: MySqlQuerierTest.java,v 1.5 2003/09/25 03:16:40 nw Exp $
+ * $Id: MySqlQuerierTest.java,v 1.6 2003/11/07 10:57:19 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,13 +14,11 @@ package org.astrogrid.datacenter.integration.mysql;
  */
 
 import java.net.URL;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.queriers.Query;
@@ -54,7 +52,7 @@ public class MySqlQuerierTest extends TestCase
      // Query query = new Query(queryElement);
 
       //make connection to database
-      Configuration.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY,MySqlQuerier.class.getName());
+      SimpleConfig.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY,MySqlQuerier.class.getName());
       DatabaseQuerier q = DatabaseQuerierManager.createQuerier(fileDoc.getDocumentElement());
       assertTrue(q instanceof MySqlQuerier);
       MySqlQuerier querier = (MySqlQuerier)q;
@@ -85,10 +83,10 @@ public class MySqlQuerierTest extends TestCase
        Log.traceOn();
 
        //put driver into config file
-       Configuration.setProperty(SqlQuerier.JDBC_DRIVERS_KEY, "org.gjt.mm.mysql.Driver");
+       SimpleConfig.setProperty(SqlQuerier.JDBC_DRIVERS_KEY, "org.gjt.mm.mysql.Driver");
 
        //register URL in config file
-       Configuration.setProperty(SqlQuerier.JDBC_URL_KEY, "jdbc:mysql://localhost/Catalogue");
+       SimpleConfig.setProperty(SqlQuerier.JDBC_URL_KEY, "jdbc:mysql://localhost/Catalogue");
 
        junit.textui.TestRunner.run(suite());
     }
