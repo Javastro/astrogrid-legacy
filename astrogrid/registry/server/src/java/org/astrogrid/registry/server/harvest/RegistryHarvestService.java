@@ -20,7 +20,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NamedNodeMap;
 import org.xml.sax.InputSource;
 import org.astrogrid.registry.server.RegistryServerHelper;
-import org.astrogrid.registry.server.query.RegistryService;
 import org.astrogrid.registry.server.admin.RegistryAdminService;
 import java.net.URL;
 import java.io.Reader;

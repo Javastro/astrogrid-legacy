@@ -18,8 +18,7 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
-	<Resource status="active" update="Thu Oct 21 11:04:43 BST 2004" 
-		xsi:type="CeaServiceType">
+	<Resource  updated="2004-11-20T15:34:22Z" status="active" xsi:type="CeaServiceType">
 		<Identifier>
 			<AuthorityID>roe.ac.uk</AuthorityID>
 			<ResourceKey>datacenter/SSA-Proxy/ceaService</ResourceKey>

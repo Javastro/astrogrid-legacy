@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <vr:VODescription xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
-<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
+<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  updated="2004-11-20T15:34:22Z" status="active" xsi:type="CeaApplicationType">
 <vr:Identifier>
 <vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>Pegase</vr:ResourceKey>
@@ -40,7 +40,7 @@
 </cea:Interfaces>
 </cea:ApplicationDefinition>
 </vr:Resource>
-<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
+<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  updated="2004-11-20T15:34:22Z" status="active" xsi:type="CeaApplicationType">
 <vr:Identifier>
 <vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>Starburst99</vr:ResourceKey>
@@ -459,7 +459,7 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</ceapd:UI_Name>
 </cea:Interfaces>
 </cea:ApplicationDefinition>
 </vr:Resource>
-<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
+<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  updated="2004-11-20T15:34:22Z" status="active" xsi:type="CeaApplicationType">
 <vr:Identifier>
 <vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>annz</vr:ResourceKey>
@@ -526,7 +526,7 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</ceapd:UI_Name>
 </cea:Interfaces>
 </cea:ApplicationDefinition>
 </vr:Resource>
-<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
+<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  updated="2004-11-20T15:34:22Z" status="active" xsi:type="CeaApplicationType">
 <vr:Identifier>
 <vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>HyperZ</vr:ResourceKey>
@@ -621,7 +621,7 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</ceapd:UI_Name>
 </cea:Interfaces>
 </cea:ApplicationDefinition>
 </vr:Resource>
-<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
+<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  updated="2004-11-20T15:34:22Z" status="active" xsi:type="CeaApplicationType">
 <vr:Identifier>
 <vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>Galexyev</vr:ResourceKey>
@@ -661,7 +661,7 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</ceapd:UI_Name>
 </cea:Interfaces>
 </cea:ApplicationDefinition>
 </vr:Resource>
-<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
+<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  updated="2004-11-20T15:34:22Z" status="active" xsi:type="CeaApplicationType">
 <vr:Identifier>
 <vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>BPZ</vr:ResourceKey>
@@ -844,7 +844,7 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</ceapd:UI_Name>
 </cea:Interfaces>
 </cea:ApplicationDefinition>
 </vr:Resource>
-<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
+<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  updated="2004-11-20T15:34:22Z" status="active" xsi:type="CeaApplicationType">
 <vr:Identifier>
 <vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>SExtractor</vr:ResourceKey>
@@ -1111,7 +1111,7 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</ceapd:UI_Name>
 </cea:Interfaces>
 </cea:ApplicationDefinition>
 </vr:Resource>
-<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
+<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  updated="2004-11-20T15:34:22Z" status="active" xsi:type="CeaApplicationType">
 <vr:Identifier>
 <vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>swarp</vr:ResourceKey>
@@ -1178,7 +1178,7 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</ceapd:UI_Name>
 </cea:Interfaces>
 </cea:ApplicationDefinition>
 </vr:Resource>
-<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
+<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  updated="2004-11-20T15:34:22Z" status="active" xsi:type="CeaApplicationType">
 <vr:Identifier>
 <vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>CrossMatcher</vr:ResourceKey>
@@ -1284,7 +1284,7 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</ceapd:UI_Name>
 </cea:Interfaces>
 </cea:ApplicationDefinition>
 </vr:Resource>
-<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaServiceType">
+<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  updated="2004-11-20T15:34:22Z" status="active" xsi:type="CeaServiceType">
 <vr:Identifier>
 <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
 <vr:ResourceKey>JBORealCEC</vr:ResourceKey>

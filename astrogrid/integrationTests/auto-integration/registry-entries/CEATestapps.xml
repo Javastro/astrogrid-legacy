@@ -3,7 +3,7 @@
 	xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1"
     xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
     xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9">
-    <vr:Resource status="active" xsi:type="cea:CeaApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <vr:Resource  updated="2004-11-20T15:34:22Z" status="active" xsi:type="cea:CeaApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <vr:Identifier>
             <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
             <vr:ResourceKey>testap2</vr:ResourceKey>
@@ -203,7 +203,7 @@
         </cea:ApplicationDefinition>
 
     </vr:Resource>
-    <vr:Resource status="active" xsi:type="cea:CeaApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <vr:Resource  updated="2004-11-20T15:34:22Z" status="active" xsi:type="cea:CeaApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <vr:Identifier>
             <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
             <vr:ResourceKey>testapp</vr:ResourceKey>
@@ -394,7 +394,7 @@
             </cea:Interfaces>
         </cea:ApplicationDefinition>
     </vr:Resource>
-    <vr:Resource status="active" xsi:type="cea:CeaApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <vr:Resource  updated="2004-11-20T15:34:22Z" status="active" xsi:type="cea:CeaApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <vr:Identifier>
             <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
             <vr:ResourceKey>testap3</vr:ResourceKey>
@@ -463,7 +463,7 @@
 
         </cea:ApplicationDefinition>
     </vr:Resource>
-    <vr:Resource status="active" xsi:type="CeaServiceType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <vr:Resource  updated="2004-11-20T15:34:22Z" status="active" xsi:type="CeaServiceType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <vr:Identifier>
             <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
             <vr:ResourceKey>TemplateEntry</vr:ResourceKey>

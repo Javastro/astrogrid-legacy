@@ -688,7 +688,9 @@ public class RegistryQueryService {
    private String getRegistryVersion(Document query) {
        log.info("in getRegistryversion");
        //log.info("print in getRegistryVersion" + DomHelper.DocumentToString(query));
-       
+       if(query == null) {
+           return RegistryServerHelper.getRegistryVersionFromNode(query);
+       }
        Element elem = query.getDocumentElement();
        if(elem == null) {
            return RegistryServerHelper.getRegistryVersionFromNode(query);

@@ -8,7 +8,7 @@
    xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" 
    xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" 
    xmlns="http://www.ivoa.net/xml/VOResource/v0.10">
-<vr:Resource xsi:type="vg:Registry" updated="2004-09-04T15:34:22Z" status="active">
+<vr:Resource xsi:type="vg:Registry"  updated="2004-11-20T15:34:22Z" status="active">
  <identifier>ivo://astrogrid.org/org.astrogrid.registry.RegistryService</identifier>
  <title>Astrogrid Full Registry</title>
  <curation>

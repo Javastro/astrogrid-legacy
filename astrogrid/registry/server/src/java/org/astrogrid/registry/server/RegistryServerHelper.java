@@ -7,7 +7,7 @@ import org.w3c.dom.Element;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.LinkedHashMap;
-import org.astrogrid.registry.server.query.RegistryService;
+import org.astrogrid.registry.server.query.RegistryQueryService;
 import java.text.DateFormat;
 import java.util.Calendar;
 
@@ -107,7 +107,7 @@ public class RegistryServerHelper {
    }
    
    public static String getRegistryVersionFromNode(Node nd) {
-       if(Node.ELEMENT_NODE != nd.getNodeType()) {
+       if(nd == null || Node.ELEMENT_NODE != nd.getNodeType()) {
            log.info("not a ELEMENT NODE TIME TO JUST DEFAULT IT");
            return conf.getString("org.astrogrid.registry.version",null);
        }
@@ -146,7 +146,7 @@ public class RegistryServerHelper {
       log.debug("start initStatusMessage");      
       statusMessage = " ";
       
-      RegistryService rs = new RegistryService();
+      RegistryQueryService rs = new RegistryQueryService();
       Document regEntry = null;
       try {
          regEntry = rs.loadRegistry(null);

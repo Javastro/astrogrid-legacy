@@ -19,7 +19,7 @@ import org.astrogrid.registry.server.XQueryExecution;
 import org.astrogrid.util.DomHelper;
 import java.util.ArrayList;
 import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.server.query.RegistryService;
+import org.astrogrid.registry.server.query.RegistryQueryService;
 import org.astrogrid.registry.server.harvest.RegistryHarvestService;
 import org.xml.sax.helpers.DefaultHandler;
 import java.io.ByteArrayInputStream;
@@ -183,8 +183,6 @@ public class RegistryAdminService {
       String collectionName = "astrogridv" + versionNumber;
       log.info("Collection Name = " + collectionName);
       
-      
-
       hasStyleSheet = conf.getBoolean("org.astrogrid.registry.updatestylesheet." + versionNumber,false);
       if(hasStyleSheet) {
          //System.out.println("lets call transform update");
@@ -319,8 +317,7 @@ public class RegistryAdminService {
                   "Checking NodeVal for an authorityType: current NodeVal = " 
                   + nodeVal);
                   //check if it is a registry type.
-                  if(nodeVal != null && nodeVal.indexOf("Registry") != -1)
-                  {
+                  if(nodeVal != null && nodeVal.indexOf("Registry") != -1) {
                      addManageError = false;
                      log.info("This is an RegistryType");
                      root = xsDoc.createElement("AstrogridResource");
@@ -344,9 +341,11 @@ public class RegistryAdminService {
                      }
                      NodeList manageList = getManagedAuthorities(currentResource);                     
                      if(authorityID.equals(ident)) {
+                        log.info("authority id equaled to ident");
                         ((HashMap)manageAuths.get(versionNumber)).put(ident,null);
                         for(int k = 0;k < manageList.getLength();k++) {
                             manageNodeVal = manageList.item(k).getFirstChild().getNodeValue();
+                            log.info("try adding new manage node for this registry = " + manageNodeVal);
                             if(manageNodeVal != null && manageNodeVal.trim().length() > 0) {
                                 ((HashMap)manageAuths.get(versionNumber)).put(manageNodeVal,null);
                             }//if
@@ -356,6 +355,7 @@ public class RegistryAdminService {
                         for(int k = 0;k < manageList.getLength();k++) {
                             manageNodeVal = manageList.item(k).getFirstChild().getNodeValue();
                             if(manageNodeVal != null && manageNodeVal.trim().length() > 0) {
+                                log.info("try adding a managed authority for another registry = " + manageNodeVal);
                                 /*
                                  Need to think about this a little more.
                                 if(((HashMap)otherAuths.get(versionNumber)).containsKey(manageNodeVal)) {
@@ -387,7 +387,7 @@ public class RegistryAdminService {
                         addManageError = false;
                         // Grab our current Registry resource we need to add
                         // a new managed authority tag.
-                        RegistryService rs = new RegistryService();
+                        RegistryQueryService rs = new RegistryQueryService();
                         Document loadedRegistry = rs.loadRegistry(null);
                         
                         // Get a ManagedAuthority Node region/area
@@ -480,19 +480,19 @@ public class RegistryAdminService {
                            log.error(
                            "IN THE AUTO-INTEGRATION YOU SHOULD NOT GET HERE, " +
                            "Removing Resource and not updating this Resource");
-                           xsDoc.getDocumentElement().
-                                 removeChild(currentResource);
+                           //xsDoc.getDocumentElement().
+                           //      removeChild(currentResource);
                         }                           
                      }//if      
                   }//elseif   
                }//for
-            }
+            }//if
             
             if(addManageError) {
-               al.add("This AuthorityID is not managed by this Registry: " + 
+               al.add("This AuthorityID is not managed by the Registry: " + 
                       ident);
                log.info("Found entry not managed by this Registry = " + ident);
-               xsDoc.getDocumentElement().removeChild(currentResource);
+               //xsDoc.getDocumentElement().removeChild(currentResource);
             }//if
          }//else
          log.info("Time taken to update an entry = " + 
@@ -505,17 +505,16 @@ public class RegistryAdminService {
       // errored Resource that was not able to be updated in the db.
       try {      
           if(al != null && al.size() > 0) {
-             
-                Document errorDoc = DomHelper.newDocument();
-                Element errorRoot = errorDoc.createElement("RegistryError");
-                errorDoc.appendChild(errorRoot);
-                for(int i = 0;i < al.size();i++) {
-                   Element errorElem = errorDoc.createElement("error");
-                   errorElem.appendChild(errorDoc.
-                                         createTextNode((String)al.get(i)));
-                   errorRoot.appendChild(errorElem);
-                }   
-                return errorDoc;
+              Document errorDoc = DomHelper.newDocument();
+              Element errorRoot = errorDoc.createElement("RegistryError");
+              errorDoc.appendChild(errorRoot);
+              for(int i = 0;i < al.size();i++) {
+                  Element errorElem = errorDoc.createElement("error");
+                  errorElem.appendChild(errorDoc.
+                                        createTextNode((String)al.get(i)));
+                  errorRoot.appendChild(errorElem);
+              }   
+              return errorDoc;
           } else {
               returnDoc = DomHelper.newDocument();
               returnDoc.appendChild(returnDoc.createElement("UpdateResponse"));              
