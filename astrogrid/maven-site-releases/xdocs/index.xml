@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: index.xml,v 1.8 2004/07/27 11:10:58 jdt Exp $ -->
+<!-- $Id: index.xml,v 1.9 2004/07/28 22:24:13 jdt Exp $ -->
 <document>
 	<properties>
 		<title>Astrogrid Releases</title>
@@ -16,8 +16,8 @@
 					at least once a day to this portal on <a href="http://twmbarlwm.star.le.ac.uk:8080/astrogrid-portal">Twmbarlwm</a>.</P>
 			</subsection>
 			<subsection name="Itn06 Case 3">
-				<P> Case 3 has now been released.  The Maven docs for this branch can be found by following the link on the left.  This release is
-					installed on <A href="http://katatjuta.star.le.ac.uk:8080/astrogrid-portal/">Katatjuta</A>.
+				<P> Case 3 has now been branched, but is not yet complete.  The Maven docs for this branch can be found by following the link on the left.  A snapshot of this case is
+					installed on <A href="http://zhumulangma.star.le.ac.uk:8080/astrogrid-portal/main/mount/login/login-form">Zhumulangma</A>.
 					</P>
 			</subsection>
 			<subsection name="Itn05 Release">
