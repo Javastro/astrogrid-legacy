@@ -237,6 +237,25 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
    
    /**
     * Helper function for converting EntryResults to MySpaceFile/Folder
+    * returns the path only (ie not including name) of an EntryResults
+    */
+   public String getParentPathOf(EntryResults entryResult) {
+      String fullPath = entryResult.getEntryName();
+
+      //remove trailing slash if any - this just tells us that it's a directory,
+      //but not hainvg one doens't mean it isn't a directory, so ignore
+      if (fullPath.endsWith("/")) {
+         fullPath = fullPath.substring(0,fullPath.length());
+      }
+
+      if (fullPath.lastIndexOf("/") == -1) {
+         return "";
+      }
+      
+      return fullPath.substring(0,fullPath.lastIndexOf("/"));
+   }
+   /**
+    * Helper function for converting EntryResults to MySpaceFile/Folder
     * Creates a MySpaceFile/Folder from the given entry result
     */
    public StoreFile makeStoreFile(MySpaceFolder parent, EntryResults result) {
@@ -250,7 +269,15 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
          }
       }
       else {
+         if (parent == null) {
+            //make up a folder that has the right path
+            parent = new MySpaceFolder(getParentPathOf(result));
+            
             file = new MySpaceFile(parent, result);
+         }
+         else {
+            file = new MySpaceFile(parent, result);
+         }
       }
       return file;
    }
@@ -288,7 +315,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
          //remove trailing slash if any - this just tells us that it's a directory,
          //but not hainvg one doens't mean it isn't a directory, so ignore
          if (path.endsWith("/")) {
-            path = path.substring(0,path.length()-1);
+            path = path.substring(0,path.length());
          }
          //remove starting slash as we don't care if it has one of those or not
          if (path.startsWith("/")) {
@@ -299,12 +326,12 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
             parentFolder = root;
          }
          else {
-            String parentPath = path.substring(0, path.indexOf("/")-1);
+            String parentPath = path.substring(0, path.lastIndexOf("/"));
             parentFolder = (MySpaceFolder) root.findFile(parentPath);
          }
 
 
-                  //work out type & create right instance
+         //work out type & create right instance
          StoreFile file = makeStoreFile(parentFolder, result);
          parentFolder.add(file);
       }
@@ -1218,6 +1245,15 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
          isRoot = true;
       }
    
+      /** Creates a folder from a path */
+      public MySpaceFolder(String givenPath) {
+         super();
+         if (givenPath.startsWith("/")) {
+            givenPath = givenPath.substring(1); //chop off leading slash
+         }
+         this.name = givenPath;
+      }
+
       /** Adds the given StoreFile as a child that exists in this folder */
       public void add(StoreFile child) {
          children.put(child.getName(), child);
@@ -1236,10 +1272,16 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
       /** Returns path on server */
       public String getPath() {
          if (isRoot) {
-            return "/";
+            return "";
          }
          else {
-            return getParent().getPath()+getName()+"/";
+            if (getParent() == null) {
+               //temporary allowance for folders that describe a path
+               return getName()+"/";
+            }
+            else {
+               return getParent().getPath()+getName()+"/";
+            }
          }
       }
       
@@ -1265,7 +1307,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
             String token = dirTokens.nextToken();
             child = folder.getChild(token);
             if (child == null) {
-               throw new FileNotFoundException("No such token '"+token+"' in path "+path+" from "+this);
+               throw new FileNotFoundException("No such token '"+token+"' in path '"+path+"' from "+this);
             }
             else {
                if (child.isFolder()) {
@@ -1287,6 +1329,9 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 
 /*
 $Log: MySpaceIt05Delegate.java,v $
+Revision 1.23  2004/05/03 14:46:22  mch
+Fixes for int tests
+
 Revision 1.22  2004/05/03 13:39:40  mch
 Removed dependencies on EntryRecord and EntryNode
 
