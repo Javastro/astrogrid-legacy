@@ -8,7 +8,7 @@
          <!-- <li><a href="WEB-INF/classes/default.properties">Sample Configuration</a> -->
          <li><a href="self-test.html">Installation Test</a>
          <li><a href="fingerprint.jsp">Fingerprint</a>
-         <li><a href="http://grendel12.roe.ac.uk:8080/pal-6df/servlet/AxisServlet">SOAP WSDL</a>
+         <li><a href="servlet/AxisServlet">SOAP WSDL</a>
          <li><a href="client-dist/astrogrid-datacenter-client-SNAPSHOT.zip">Java client API</a>
       </ul>
    </div>
