@@ -39,7 +39,33 @@ Click "Deploy" at the bottom of the page.  You can now click the "List" button t
 
 3. Start up Tomcat.
 
-III. OPTIONAL CONFIGURATION
+III. ALTERNATIVE APACHE AXIS
+
+1. Place the following class files in $TOMCAT_HOME/webapps/axis/WEB-INF/classes/org/astrogrid/registry:
+
+	* QueryParser3_0.class
+	* Registry3_0.class
+	* RegistryInterface3_0.class
+
+2. Deploy the RegistryInterface3_0 web service.  To deploy in AXIS, create a deploy.wsdd file containing the following:
+
+<deployment xmlns="http://xml.apache.org/axis/wsdd/" 
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <service name="AstrogridRegistryService" provider="java:RPC">
+    <parameter name="className" value="org.astrogrid.registry.RegistryInterface3_0"/>
+    <parameter name="scope" value="application"/>
+    <parameter name="allowedMethods" value="submitQuery"/>
+  </service>
+</deployment>
+
+Make sure that the axis.jar file is in your CLASSPATH. Then issue the command
+  'java org.apache.axis.client.AdminClientClick deploy.wsdd'.
+
+3. Start up Tomcat.
+
+
+IV. OPTIONAL CONFIGURATION
 
 The registry code accesses two parameters files, qpParameters.xml and parameters_v1_0.xml, and one registry file, registry_v1_0.xml.  These files have been included in registry.war, but the actual code accesses all three files at the following locations:
 

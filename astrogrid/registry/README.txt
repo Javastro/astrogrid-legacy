@@ -27,7 +27,9 @@ Elizabeth Auden, MSSL
 
 2. INSTALL assumes that Tomcat and SOAP are installed on the server. Tomcat 4.1 is available for download from http://jakarta.apache.org/tomcat/tomcat-4.1-doc/index.html.  SOAP can be installed by placing soap.war in the Tomcat/webapps directory.  The Apache SOAP API version 2.2 can be downloaded from http://xml.apache.org/soap/index.html.  Place the file soap.war in the Tomcat/webapps directory, and make sure that activation.jar, mail.jar, and soap.jar are all placed in the Tomcat/lib directory and named in classpath.
 
-3.  The registry files use jar files for xml parsing and xql queries in addition to the SOAP related jar files.  Registry.war contains a directory called jar_files containg the following 6 jars and 1 war:
+3. Apache Axis can also be used, which is a more complete SOAP implementation. Download Axis version 1.1 from http://ws.apache.org/axis. Axis is installed in the same way as Apache SOAP, by placing the axis.war file in the Tomcat/webapps directory.
+
+4.  The registry files use jar files for xml parsing and xql queries in addition to the SOAP related jar files.  Registry.war contains a directory called jar_files containg the following 6 jars and 1 war:
 
 	* activation.jar
 	* mail.jar
