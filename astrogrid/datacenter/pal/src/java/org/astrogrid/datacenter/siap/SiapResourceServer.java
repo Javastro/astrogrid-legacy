@@ -1,4 +1,4 @@
-/*$Id: SiapResourceServer.java,v 1.1 2004/11/12 10:44:54 mch Exp $
+/*$Id: SiapResourceServer.java,v 1.2 2004/11/12 10:45:50 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,16 +28,16 @@ public class SiapResourceServer implements VoResourcePlugin {
     * so that we can combine them easily; some DOMs do not mix well.
     */
    public synchronized String[] getVoResources() throws IOException {
-      return new String[] { getSkyNodeServiceType() };
+      return new String[] { getSiapServiceType() };
    }
    
    /**
     * Returns ServiceType for cone search
     */
-   public String getSkyNodeServiceType() throws IOException {
+   public String getSiapServiceType() throws IOException {
       StringBuffer resource = new StringBuffer("<Resource xsi:type='ServiceType'>");
       
-      VoDescriptionServer.appendIdentifier(resource, "/skynode");
+      VoDescriptionServer.appendIdentifier(resource, "/siap");
       VoDescriptionServer.appendSummary(resource);
       VoDescriptionServer.appendCuration(resource);
       
@@ -76,8 +76,12 @@ public class SiapResourceServer implements VoResourcePlugin {
 
 /*
  $Log: SiapResourceServer.java,v $
+ Revision 1.2  2004/11/12 10:45:50  mch
+ fixed method name
+
  Revision 1.1  2004/11/12 10:44:54  mch
  More resources, siap stuff, ssap stuff, SSS
 
  
  */
+
