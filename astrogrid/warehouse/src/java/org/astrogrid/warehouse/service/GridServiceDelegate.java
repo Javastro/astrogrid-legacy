@@ -3,7 +3,6 @@ package org.astrogrid.warehouse.service;
 import java.net.URL;
 import java.rmi.Remote;
 import java.util.Calendar;
-import org.apache.axis.AxisFault;
 import org.gridforum.ogsi.ExtendedDateTimeType;
 import org.gridforum.ogsi.ExtensibilityType;
 import org.gridforum.ogsi.Factory;
