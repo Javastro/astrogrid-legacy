@@ -1,5 +1,5 @@
 /*
- * $Id: User.java,v 1.7 2004/01/08 22:14:32 pah Exp $
+ * $Id: User.java,v 1.8 2004/01/09 00:25:54 pah Exp $
  *
  * Created on 27-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -148,12 +148,35 @@ public class User {
       }
       return null;
    }
+   /**
+    * gets the userid part of the account string - i.e. that before the @
+    * @return
+    */
+   public String getUserId()
+   {
+      if(account!=null)
+      {
+         int i;
+         if((i= account.indexOf("@"))!= -1)
+         {
+            return account.substring(0, i);
+         }
+         else
+         {
+            return account;
+         }
+      }
+      return null;
+   }
 }
 
 /* $Log: User.java,v $
- * Revision 1.7  2004/01/08 22:14:32  pah
- * add a method to return the community part of the user account
+ * Revision 1.8  2004/01/09 00:25:54  pah
+ * added get userid
  *
+/* Revision 1.7  2004/01/08 22:14:32  pah
+/* add a method to return the community part of the user account
+/*
 /* Revision 1.6  2004/01/08 21:19:30  pah
 /* changed to reflect the fact that the account should be user@community
 /*
