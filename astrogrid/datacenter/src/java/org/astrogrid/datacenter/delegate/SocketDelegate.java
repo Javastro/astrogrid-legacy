@@ -1,5 +1,5 @@
 /*
- * $Id: SocketDelegate.java,v 1.5 2003/09/14 22:47:25 mch Exp $
+ * $Id: SocketDelegate.java,v 1.6 2003/09/15 13:17:36 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -12,7 +12,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.rmi.RemoteException;
 import javax.xml.parsers.ParserConfigurationException;
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.common.ResponseHelper;
 import org.astrogrid.datacenter.common.ServiceStatus;
 import org.astrogrid.datacenter.io.SocketXmlInputStream;
@@ -132,7 +131,9 @@ public class SocketDelegate extends DatacenterDelegate
       catch (org.xml.sax.SAXException e)
       {
          //somethings gone wrong at the server end - returning invalid XML
-         throw new RemoteException("Invalid XML returned by server",e);
+         IOException ioe = new IOException("Invalid XML returned by server");
+         ioe.initCause(e);
+         throw ioe;
       }
       catch (javax.xml.parsers.ParserConfigurationException e)
       {
@@ -223,6 +224,9 @@ public class SocketDelegate extends DatacenterDelegate
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.6  2003/09/15 13:17:36  mch
+Changed RemoteException thrown to more appropriate IOException
+
 Revision 1.5  2003/09/14 22:47:25  mch
 Various fixes :-)
 
