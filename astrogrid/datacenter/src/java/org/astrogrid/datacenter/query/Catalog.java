@@ -15,9 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
+import org.astrogrid.datacenter.Util;
 import org.astrogrid.i18n.AstroGridMessage;
-import org.astrogrid.Configurator;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -46,7 +45,7 @@ public class Catalog {
 		logger = Logger.getLogger( Catalog.class ) ;
 		
     private final static String
-        SUBCOMPONENT_NAME = Configurator.getClassName( Catalog.class ) ;                        
+        SUBCOMPONENT_NAME =  Util.getComponentName( Catalog.class ) ;                        
         
 	private static final String
 		ASTROGRIDERROR_COULD_NOT_CREATE_CATALOG_FROM_ELEMENT = "AGDTCE00420" ;	

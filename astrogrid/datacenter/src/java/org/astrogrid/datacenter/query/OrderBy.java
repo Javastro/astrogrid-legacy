@@ -10,16 +10,15 @@
  */
 package org.astrogrid.datacenter.query;
 
+import java.util.Iterator;
+
 import org.apache.log4j.Logger;
+import org.astrogrid.datacenter.Util;
+import org.astrogrid.datacenter.config.ConfigurationKeys;
+import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.astrogrid.Configurator;
-import org.astrogrid.datacenter.DTC;
-import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
-import org.astrogrid.i18n.AstroGridMessage;
-
-import java.util.Iterator ;
 
 /**
  * The <code>OrderBy</code> class represents the Order By clause of an SQL query
@@ -36,13 +35,13 @@ import java.util.Iterator ;
  * @see     org.astrogrid.datacenter.Query
  * @since   AstroGrid 1.2
  */
-public class OrderBy {
+public class OrderBy extends SQLComponent {
 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
 	
 	public final static String
-			SUBCOMPONENT_NAME = Configurator.getClassName( OrderBy.class ) ;
+			SUBCOMPONENT_NAME =  Util.getComponentName( OrderBy.class ) ;
 			
 	private static Logger 
 		logger = Logger.getLogger( OrderBy.class ) ;
@@ -152,8 +151,8 @@ public class OrderBy {
 					    .append( "." ) 
 					    .append( UCD ) ;
 					logger.debug( "Return: getColumnHeading(): key: "+buffer.toString().toUpperCase() );				
-					columnHeading = DTC.getProperty( buffer.toString()
-												 , DTC.UCD_CATEGORY ) ;					
+					columnHeading = getConfiguration().getProperty( buffer.toString()
+												 , ConfigurationKeys.UCD_CATEGORY ) ;					
 				}
 				else {
 				
@@ -171,8 +170,8 @@ public class OrderBy {
 					        .append( "." )
 					        .append( UCD ) ;	
 					    logger.debug( "Return: getColumnHeading(): key: "+buffer.toString().toLowerCase().toUpperCase() ) ;
-						columnHeading = DTC.getProperty( buffer.toString()
-													 , DTC.UCD_CATEGORY ) ;
+						columnHeading = getConfiguration().getProperty( buffer.toString()
+													 , ConfigurationKeys.UCD_CATEGORY ) ;
 						if ( columnHeading.length() > 0 ) // break as soon as column heading found
 						    break; 
 						buffer.delete( 0,buffer.length() ) ;

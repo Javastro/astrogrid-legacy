@@ -15,9 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.DTC ;
-import org.astrogrid.Configurator ;
-import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
+import org.astrogrid.datacenter.Util;
+import org.astrogrid.datacenter.config.ConfigurationKeys;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -37,13 +36,13 @@ import org.w3c.dom.NodeList;
  * @see     org.astrogrid.datacenter.Query
  * @since   AstroGrid 1.2
  */
-public class Return {
+public class Return extends SQLComponent{
 
 	private static final boolean 
 		TRACE_ENABLED = true ;
         
     private static final String
-        SUBCOMPONENT_NAME = Configurator.getClassName( Return.class ) ;
+        SUBCOMPONENT_NAME =  Util.getComponentName( Return.class ) ;
 	
 	private static Logger 
 		logger = Logger.getLogger( Return.class ) ;
@@ -196,8 +195,8 @@ public class Return {
 				    .append( "." )
 				    .append( UCD ) ;
 				logger.debug("Return: getColumnHeading(): key: "+buffer.toString().toUpperCase() );				
-				columnHeading = DTC.getProperty( buffer.toString()
-											   , DTC.UCD_CATEGORY ) ;					
+				columnHeading = getConfiguration().getProperty( buffer.toString()
+											   , ConfigurationKeys.UCD_CATEGORY ) ;					
 			}
 			else {
 				
@@ -215,8 +214,8 @@ public class Return {
 				       .append( "." )
 				       .append( UCD );	
 				   logger.debug("Return: getColumnHeading(): key: "+buffer.toString().toLowerCase().toUpperCase() );
-					 columnHeading = DTC.getProperty( buffer.toString()
-													, DTC.UCD_CATEGORY ) ; 
+					 columnHeading = getConfiguration().getProperty( buffer.toString()
+													, ConfigurationKeys.UCD_CATEGORY ) ; 
 				   if (columnHeading.length() > 0 ) // break as soon as column heading found
 				      break; 
 				   buffer.delete( 0,buffer.length() ) ;

@@ -15,9 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
-import org.astrogrid.datacenter.DTC;
-import org.astrogrid.Configurator;
+import org.astrogrid.datacenter.Util;
+import org.astrogrid.datacenter.config.ConfigurationKeys;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -38,7 +37,7 @@ import org.w3c.dom.NodeList;
  * @see     org.astrogrid.datacenter.Query
  * @since   AstroGrid 1.2
  */
-public class From {
+public class From extends SQLComponent {
 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
@@ -47,7 +46,7 @@ public class From {
 		logger = Logger.getLogger( From.class ) ;
         
     private final static String
-        SUBCOMPONENT_NAME = Configurator.getClassName( From.class ) ;         
+        SUBCOMPONENT_NAME = Util.getComponentName( From.class ) ;         
 		
 	private static final String
 		ASTROGRIDERROR_COULD_NOT_CREATE_FROM_FROM_ELEMENT = "AGDTCE00200",
@@ -119,8 +118,8 @@ public class From {
         		if ( catalog.getNumberTables() <= 0 ) {  // no table specified assume owner and table name are same
         			buffer
         			    .append( catalog.getName() )
-        			    .append( DTC.getProperty( DTC.DATABASE_TABLE_SEPARATOR
-												, DTC.DATASETAGENT_CATEGORY ) ) //Bug #15
+        			    .append( getConfiguration().getProperty( ConfigurationKeys.DATABASE_TABLE_SEPARATOR
+												, ConfigurationKeys.DATASETAGENT_CATEGORY ) ) //Bug #15
         			    .append( catalog.getName() )
         			    .append( ", " ) ;
         		}
@@ -136,8 +135,8 @@ public class From {
 			    		
 					    buffer
 					        .append( catalog.getName() )
-							.append( DTC.getProperty( DTC.DATABASE_TABLE_SEPARATOR
-													, DTC.DATASETAGENT_CATEGORY ) ) //Bug #15
+							.append( getConfiguration().getProperty( ConfigurationKeys.DATABASE_TABLE_SEPARATOR
+													, ConfigurationKeys.DATASETAGENT_CATEGORY ) ) //Bug #15
 				            .append( table.getName() )				
 				            .append( ", " ) ;
 			           		

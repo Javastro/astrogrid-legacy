@@ -11,9 +11,8 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.Configurator ;
-import org.astrogrid.datacenter.DTC;
-import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
+import org.astrogrid.datacenter.FactoryProvider;
+import org.astrogrid.datacenter.Util;
 import org.astrogrid.datacenter.myspace.Allocation;
 import org.astrogrid.datacenter.votable.VOTable;
 import org.astrogrid.datacenter.votable.VOTableException;
@@ -28,13 +27,12 @@ public class Query {
 		TRACE_ENABLED = true ;
 	
 	private static final String
-		SUBCOMPONENT_NAME = Configurator.getClassName( Query.class ) ;
+		SUBCOMPONENT_NAME =  Util.getComponentName( Query.class ) ;
 	
     private static Logger 
 	    logger = Logger.getLogger( Query.class ) ;
 		
     private static final String
-	    ASTROGRIDERROR_COULD_NOT_CREATE_QUERYFACTORY_IMPL = "AGDTCE00050" , 
 	    ASTROGRIDERROR_COULD_NOT_CREATE_QUERY_FROM_ELEMENTS = "AGDTCE00055" ;
         
     public static final String
@@ -140,41 +138,7 @@ public class Query {
     }
 
 
-    public static QueryFactory getFactory( String catalogName ) throws QueryException { 
-		if( TRACE_ENABLED ) logger.debug( "Query.getFactory(): entry") ;   	
-    	
-    	QueryFactory 
-    		factory ;
-    	String
-    		implementationFactoryName = DTC.getProperty( catalogName + DTC.CATALOG_DEFAULT_QUERYFACTORY 
-																	 , DTC.CATALOG_CATEGORY ) ;
-    		
-    	// If we couldn't find a specific factory in the properties file,
-    	// Then look for a default factory...
-    	if( implementationFactoryName == null )
-		    implementationFactoryName = DTC.getProperty( DTC.CATALOG_DEFAULT_QUERYFACTORY 
-													   , DTC.CATALOG_CATEGORY ) ;
-    		
-		try {
-			Object
-			   obj = Class.forName( implementationFactoryName ).newInstance() ;			    			
-			factory = (QueryFactory)obj ;
-		}
-		catch ( Exception ex ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_QUERYFACTORY_IMPL
-                                              , SUBCOMPONENT_NAME
-                                              , implementationFactoryName ) ;
-			logger.error( message.toString(), ex ) ;
-			throw new QueryException( message, ex );
-		}
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "Query.getFactory(): exit") ;			
-		}    	
-    	return factory; 
-    	
-    } // end of getFactory()
-    
+ 
     
     public void execute() throws QueryException  {
 		if( TRACE_ENABLED ) logger.debug( "Query.execute(): entry") ;   	
@@ -183,15 +147,15 @@ public class Query {
     }
     
     
-    public VOTable toVOTable( Allocation allocation ) throws VOTableException {  
+    public VOTable toVOTable( Allocation allocation, FactoryProvider facMan ) throws VOTableException {  
 		if( TRACE_ENABLED ) logger.debug( "Query.toVOTable(): entry") ;   	
 		   	
     	VOTable
     	   votable =  null ;
     	
     	try {
-    	   votable = VOTable.getFactory().createVOTable( this ) ;
-		   votable.stream( allocation ) ;
+    	   votable = facMan.getVOTableFactory().createVOTable( this ) ;
+		   votable.stream( allocation,facMan ) ;
     	} 
     	finally {  
 			if( TRACE_ENABLED ) logger.debug( "Query.toVOTable(): exit") ; 	 

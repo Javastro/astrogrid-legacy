@@ -11,9 +11,8 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
+import org.astrogrid.datacenter.Util;
 import org.astrogrid.i18n.AstroGridMessage;
-import org.astrogrid.Configurator;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -33,7 +32,7 @@ import org.w3c.dom.NodeList;
  * @see     org.astrogrid.datacenter.Query
  * @since   AstroGrid 1.2
  */
-public class Criteria {
+public class Criteria extends  SQLComponent {
 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
@@ -42,7 +41,7 @@ public class Criteria {
 		logger = Logger.getLogger( Criteria.class ) ;
 
     private final static String
-        SUBCOMPONENT_NAME = Configurator.getClassName( Criteria.class ) ;
+        SUBCOMPONENT_NAME =  Util.getComponentName( Criteria.class ) ;
 		
 	private static final String
 		ASTROGRIDERROR_COULD_NOT_CREATE_CRITERIA_ELEMENT = "AGDTCE00220",

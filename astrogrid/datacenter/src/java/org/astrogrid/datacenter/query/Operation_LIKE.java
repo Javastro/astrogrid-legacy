@@ -11,8 +11,8 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
+import org.astrogrid.datacenter.Util;
 import org.w3c.dom.Element;
-import org.astrogrid.Configurator;
 
 /**
  * The <code>Operation_LIKE</code> class represents operations within an 
@@ -43,7 +43,7 @@ public class Operation_LIKE extends Operation_MagnitudeComparison {
 		TRACE_ENABLED = true ;
 	
 	public final static String
-			SUBCOMPONENT_NAME = Configurator.getClassName( Operation_LIKE.class ) ;
+			SUBCOMPONENT_NAME =  Util.getComponentName( Operation_LIKE.class ) ;
 			
 	private static Logger 
 		logger = Logger.getLogger( Operation_LIKE.class ) ;

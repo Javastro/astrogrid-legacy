@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.astrogrid.datacenter.Util;
 import org.w3c.dom.Element;
-import org.astrogrid.Configurator ;
 
 
 /**
@@ -41,7 +41,7 @@ public class Operation_MIN extends Operation {
 		TRACE_ENABLED = true ;
 
     private static final String
-        SUBCOMPONENT_NAME = Configurator.getClassName( Operation_MIN.class ) ;        
+        SUBCOMPONENT_NAME =  Util.getComponentName( Operation_MIN.class ) ;        
 	
 	private static Logger 
 		logger = Logger.getLogger( Operation_MIN.class ) ;

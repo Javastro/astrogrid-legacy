@@ -11,7 +11,7 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-import org.w3c.dom.* ;
+import org.w3c.dom.Element;
 
 /**
  * The <code>Operation_EXISTS</code> class represents operations within an 

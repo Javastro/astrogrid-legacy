@@ -27,7 +27,9 @@ package org.astrogrid.datacenter.query;
  * @since   AstroGrid 1.2
  */
 public interface Operand {
-		
+		/* now already present in SQLComponent
+		 *  TODO - this is repitition that needs to be factored out.
+		 */
 	public abstract String toSQLString() ;
 
 }

@@ -11,8 +11,8 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
+import org.astrogrid.datacenter.Util;
 import org.w3c.dom.Element;
-import org.astrogrid.Configurator ;
 
 /**
  * The <code>Operation_LESS_THAN</code> class represents operations within an 
@@ -36,7 +36,7 @@ public class Operation_LESS_THAN extends Operation_MagnitudeComparison {
 		TRACE_ENABLED = true ;
 	
     private final static String
-         SUBCOMPONENT_NAME = Configurator.getClassName( Operation_LESS_THAN.class ) ;                        
+         SUBCOMPONENT_NAME =  Util.getComponentName( Operation_LESS_THAN.class ) ;                        
     
 	private static Logger 
 		logger = Logger.getLogger( Operation_LESS_THAN.class ) ;

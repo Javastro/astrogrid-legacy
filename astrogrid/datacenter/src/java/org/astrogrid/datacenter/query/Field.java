@@ -13,9 +13,8 @@ package org.astrogrid.datacenter.query;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.Configurator ;
-import org.astrogrid.datacenter.DTC;
-import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
+import org.astrogrid.datacenter.Util;
+import org.astrogrid.datacenter.config.ConfigurationKeys;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -36,7 +35,7 @@ import org.w3c.dom.NodeList;
  * @see     org.astrogrid.Query
  * @since   AstroGrid 1.2
  */
-public class Field implements Operand { 
+public class Field extends SQLComponent  implements Operand{ 
 
 	private static final boolean 
 		TRACE_ENABLED = true ;
@@ -45,7 +44,7 @@ public class Field implements Operand {
 		logger = Logger.getLogger( Field.class ) ;
         
     private final static String
-        SUBCOMPONENT_NAME = Configurator.getClassName( Field.class ) ;
+        SUBCOMPONENT_NAME =  Util.getComponentName( Field.class ) ;
 		
 	private static final String
 	   ASTROGRIDERROR_UNKNOWN_FIELD_TYPE_ENCOUNTERED = "AGDTCE00430" ;
@@ -162,8 +161,8 @@ public class Field implements Operand {
 						.append( "." )
 						.append( this.getName() );
 					logger.debug( "Criteria: getColumnHeading(): key: " + buffer.toString().toUpperCase() ) ;
-					columnHeading = DTC.getProperty( buffer.toString().toUpperCase()
-                                                   , DTC.UCD_CATEGORY ) ;	
+					columnHeading = getConfiguration().getProperty( buffer.toString().toUpperCase()
+                                                   , ConfigurationKeys.UCD_CATEGORY ) ;	
 									
 				} 
 				else {
@@ -182,8 +181,8 @@ public class Field implements Operand {
 						   .append( "." )
 						   .append( this.getName() );					
 						logger.debug("Criteria: getColumnHeading(): key: "+buffer.toString().toUpperCase() );
-						columnHeading = DTC.getProperty( buffer.toString().toUpperCase() 
-                                                       , DTC.UCD_CATEGORY) ;				
+						columnHeading = getConfiguration().getProperty( buffer.toString().toUpperCase() 
+                                                       , ConfigurationKeys.UCD_CATEGORY) ;				
 						if ( columnHeading.length() > 0 ) // break as soon as column heading found
 						   break; 
 						buffer.delete( 0, buffer.length() ) ;

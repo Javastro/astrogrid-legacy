@@ -13,9 +13,8 @@ package org.astrogrid.datacenter.query;
 import java.text.MessageFormat;
 
 import org.apache.log4j.Logger;
+import org.astrogrid.datacenter.Util;
 import org.w3c.dom.Element;
-
-import org.astrogrid.Configurator ;
 
 
 /**
@@ -40,7 +39,7 @@ public class Operation_LOGICAL_NOT extends Operation {
 		TRACE_ENABLED = true ;
         
     private static final String
-        SUBCOMPONENT_NAME = Configurator.getClassName( Operation_LOGICAL_NOT.class ) ;
+        SUBCOMPONENT_NAME =  Util.getComponentName( Operation_LOGICAL_NOT.class ) ;
 	
 	private static Logger 
 		logger = Logger.getLogger( Operation_LOGICAL_NOT.class ) ;

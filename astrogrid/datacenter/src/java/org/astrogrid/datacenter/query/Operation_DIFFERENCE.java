@@ -13,8 +13,8 @@ package org.astrogrid.datacenter.query;
 import java.text.MessageFormat;
 
 import org.apache.log4j.Logger;
+import org.astrogrid.datacenter.Util;
 import org.w3c.dom.Element;
-import org.astrogrid.Configurator;
 
 
 /**
@@ -39,7 +39,7 @@ public class Operation_DIFFERENCE extends Operation {
 		TRACE_ENABLED = true ;
         
     private final static String
-        SUBCOMPONENT_NAME = Configurator.getClassName( Operation_DIFFERENCE.class ) ;                         
+        SUBCOMPONENT_NAME =  Util.getComponentName( Operation_DIFFERENCE.class ) ;                         
 	
 	private static Logger 
 		logger = Logger.getLogger( Operation_DIFFERENCE.class ) ;

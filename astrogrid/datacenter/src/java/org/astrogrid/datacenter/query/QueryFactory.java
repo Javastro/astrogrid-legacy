@@ -11,9 +11,10 @@
 package org.astrogrid.datacenter.query;
 
 
+import org.astrogrid.datacenter.config.Configurable;
 import org.w3c.dom.Element;
-
-public interface QueryFactory {
+;
+public interface QueryFactory extends Configurable {
 	
     Query createQuery( Element queryElement ) throws QueryException ;
 

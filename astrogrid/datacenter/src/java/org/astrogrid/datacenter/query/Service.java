@@ -11,9 +11,8 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
+import org.astrogrid.datacenter.Util;
 import org.astrogrid.i18n.AstroGridMessage;
-import org.astrogrid.Configurator;
 import org.w3c.dom.Element;
 
 /**
@@ -37,7 +36,7 @@ public class Service {
 		TRACE_ENABLED = true ;
         
     private static final String
-        SUBCOMPONENT_NAME = Configurator.getClassName( Service.class ) ;
+        SUBCOMPONENT_NAME = Util.getComponentName( Service.class ) ;
 	
 	private static Logger 
 		logger = Logger.getLogger( Service.class ) ;

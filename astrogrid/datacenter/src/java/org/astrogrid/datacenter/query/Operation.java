@@ -11,12 +11,11 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
+import org.astrogrid.datacenter.Util;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.astrogrid.Configurator;
 
 
 /**
@@ -35,13 +34,13 @@ import org.astrogrid.Configurator;
  * @see     org.astrogrid.datacenter.Query
  * @since   AstroGrid 1.2
  */
-public abstract class Operation implements Operand {
+public abstract class Operation /*extends SQLComponent*/ implements Operand {
 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
         
     private final static String
-         SUBCOMPONENT_NAME = Configurator.getClassName( Operation.class ) ;                 
+         SUBCOMPONENT_NAME = Util.getComponentName( Operation.class ) ;                 
 	
 	private static Logger 
 		logger = Logger.getLogger( Operation.class ) ;
@@ -285,7 +284,7 @@ public abstract class Operation implements Operand {
 	public Catalog getCatalog() { return catalog; }
 	
 	public abstract void push( Operand operand ) ;
-
+	// TODO - this is crap and needs to be fixed
 	public void setFrom(From fromObject) { fromObject = fromObject ; }
 	public void setReturn(Return returnObject) { returnObject = returnObject ; }	
 	public void setCriteria(Criteria criteria) { criteria = criteria ; }		
