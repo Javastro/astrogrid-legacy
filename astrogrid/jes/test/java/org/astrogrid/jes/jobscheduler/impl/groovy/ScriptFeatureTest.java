@@ -1,4 +1,4 @@
-/*$Id: ScriptFeatureTest.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: ScriptFeatureTest.java,v 1.3 2004/08/09 17:34:10 nw Exp $
  * Created on 09-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,11 @@ public class ScriptFeatureTest extends AbstractTestForFeature {
         Script script = new Script();       
         script.setBody("x = 1 + 1; print(x);");
         wf.getSequence().addActivity(script);
+        
+        script = new Script();// in this script, test that various environmental variables are there.
+        script.setBody("print( jes != null && log != null && astrogrid != null && astrogrid.getAllServices().size() == 0 && currentUser != null && currentAccount != null);");
+        
+        wf.getSequence().addActivity(script);
         return wf;
     }
     /**
@@ -42,13 +47,19 @@ public class ScriptFeatureTest extends AbstractTestForFeature {
         
         Script script =(Script)result.getSequence().getActivity(0);
         assertScriptCompletedWithMessage(script,"2");
-  
+        
+         script =(Script)result.getSequence().getActivity(1);
+        assertScriptCompletedWithMessage(script,"true");  
    }
 }
 
 
 /* 
 $Log: ScriptFeatureTest.java,v $
+Revision 1.3  2004/08/09 17:34:10  nw
+implemented parfor.
+removed references to rulestore
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

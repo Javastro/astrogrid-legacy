@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.6 2004/08/05 14:38:30 nw Exp $
+/*$Id: AllTests.java,v 1.7 2004/08/09 17:34:10 nw Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,48 +27,54 @@ public class AllTests {
         suite.addTestSuite(GroovySchedulerSetupTest.class);
         suite.addTestSuite(SetFeatureTest.class);
         suite.addTestSuite(GroovyAbortJobTest.class);
+        suite.addTestSuite(ForEmptyFeatureTest.class);
+        suite.addTestSuite(ForSingletonFeatureTest.class);
         suite.addTestSuite(ScriptFeatureTest.class);
         suite.addTestSuite(ActivityStatusStoreTest.class);
         suite.addTestSuite(FlowFeatureTest.class);
-        suite.addTestSuite(RuleStoreTest.class);
         suite.addTestSuite(UnsetFeatureTest.class);
         suite.addTestSuite(GroovySubmitNewJobSuccessTest.class);
-        suite.addTestSuite(GroovyInterpreterFactoryTest.class);
         suite.addTestSuite(RuleTest.class);
+        suite.addTestSuite(GroovyInterpreterFactoryTest.class);
         suite.addTestSuite(SequenceFeatureTest.class);
+        suite.addTestSuite(WhileManyFeatureTest.class);
         suite.addTestSuite(FlowErrorFeatureTest.class);
         suite.addTestSuite(ActivityStatusTest.class);
         suite.addTestSuite(GroovySubmitNewJobNotifierFailsTest.class);
+        suite.addTestSuite(WhileNeverFeatureTest.class);
+        suite.addTestSuite(WhileOnceFeatureTest.class);
+        suite.addTestSuite(IfThenElseFalseFeatureTest.class);
         suite.addTestSuite(XStreamPicklerTest.class);
         suite.addTestSuite(StepErrorFeatureTest.class);
         suite.addTestSuite(FlowSingletonFeatureTest.class);
         suite.addTestSuite(ScriptErrorFeatureTest.class);
+        suite.addTestSuite(IfThenElseTrueFeatureTest.class);
         suite.addTestSuite(AnnotatorTest.class);
-        suite.addTestSuite(FlowEmptyFeatureTest.class);
         suite.addTestSuite(JesInterfaceTest.class);
+        suite.addTestSuite(FlowEmptyFeatureTest.class);
         suite.addTestSuite(GroovyTransformersTest.class);
         suite.addTestSuite(EmptyWorkflowFeatureTest.class);
+        suite.addTestSuite(IfThenFalseFeatureTest.class);
+        suite.addTestSuite(IfThenTrueFeatureTest.class);
         suite.addTestSuite(StepFeatureTest.class);
+        suite.addTestSuite(ForManyFeatureTest.class);
         suite.addTestSuite(VarsTest.class);
         suite.addTestSuite(CompilerTest.class);
-        suite.addTestSuite(GroovyAssumptionsTest.class);
         suite.addTestSuite(ScopeFeatureTest.class);
-        suite.addTestSuite(IfThenTrueFeatureTest.class);
-        suite.addTestSuite(IfThenFalseFeatureTest.class);
-        suite.addTestSuite(IfThenElseTrueFeatureTest.class);
-        suite.addTestSuite(IfThenElseFalseFeatureTest.class);
-        suite.addTestSuite(WhileOnceFeatureTest.class);
-        suite.addTestSuite(WhileNeverFeatureTest.class);
-        suite.addTestSuite(WhileManyFeatureTest.class);
-        suite.addTestSuite(ForEmptyFeatureTest.class);
-        suite.addTestSuite(ForSingletonFeatureTest.class);
-        suite.addTestSuite(ForManyFeatureTest.class);
+        suite.addTestSuite(GroovyAssumptionsTest.class);
+        suite.addTestSuite(ParforEmptyFeatureTest.class);
+        suite.addTestSuite(ParforSingletonFeatureTest.class);
+        suite.addTestSuite(ParforManyFeatureTest.class);
         //$JUnit-END$
         return suite;
     }
 }
 /* 
  $Log: AllTests.java,v $
+ Revision 1.7  2004/08/09 17:34:10  nw
+ implemented parfor.
+ removed references to rulestore
+
  Revision 1.6  2004/08/05 14:38:30  nw
  tests for sequential for construct
 

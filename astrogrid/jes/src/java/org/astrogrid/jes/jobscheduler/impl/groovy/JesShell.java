@@ -1,4 +1,4 @@
-/*$Id: JesShell.java,v 1.8 2004/08/05 14:38:15 nw Exp $
+/*$Id: JesShell.java,v 1.9 2004/08/09 17:34:10 nw Exp $
  * Created on 29-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,10 +11,14 @@
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.community.User;
+import org.astrogrid.community.beans.v1.Credentials;
+import org.astrogrid.scripting.Astrogrid;
 import org.astrogrid.workflow.beans.v1.For;
 import org.astrogrid.workflow.beans.v1.If;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
+import org.astrogrid.workflow.beans.v1.Parfor;
 import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.While;
@@ -72,7 +76,7 @@ public class JesShell {
         return result.booleanValue();
     }
     
-    public void executeBody(Rule r,ActivityStatusStore map, RuleStore store) throws CompilationFailedException, IOException {
+    public void executeBody(Rule r,ActivityStatusStore map, List store) throws CompilationFailedException, IOException {
         logger.info("firing " + r.getName());
         Binding bodyBinding = createBodyBinding(map,store);
         logger.debug(r);    
@@ -82,7 +86,7 @@ public class JesShell {
 
     }
     
-    public void executeScript(String script,String id, ActivityStatusStore map,RuleStore rules, PrintStream errStream, PrintStream outStream) throws CompilationFailedException, IOException {
+    public void executeScript(String script,String id, ActivityStatusStore map,List rules, PrintStream errStream, PrintStream outStream) throws CompilationFailedException, IOException {
         logger.info("Running script for id " + id);
         logger.debug(script);
         Binding scriptBinding = createScriptBinding(map,rules);
@@ -101,13 +105,14 @@ public class JesShell {
             System.setErr(originalErr);
             System.setOut(originalOut);
         }
+        logger.debug("Completed Script execution");
         vars.readFromBinding(scriptBinding);
     }
     
     /** used to evaluate uer-supplied expressions - if tests, etc 
      * @throws IOException
      * @throws CompilationFailedException*/
-public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, RuleStore rules) throws CompilationFailedException, IOException {
+public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, List rules) throws CompilationFailedException, IOException {
     logger.debug("exaluating " + expr);
     Binding scriptBinding = createScriptBinding(map,rules);
     Vars vars = map.getEnv(id);
@@ -126,7 +131,7 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Ru
     
 }
 
-    public boolean executeSet(Set set,String state,ActivityStatusStore map, RuleStore rules) throws CompilationFailedException, IOException {
+    public boolean executeSet(Set set,String state,ActivityStatusStore map, List rules) throws CompilationFailedException, IOException {
         Vars vars = map.getEnv(state);
         if (set.getValue() != null) {
             Object result = evaluateUserExpr(set.getValue(),state,map,rules);
@@ -141,21 +146,25 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Ru
     
     // necessary to have these, rather than pass the string directly into evaluateUserExpr - 
    // otherwise the gstirng gets substituted into before it reaches us.
-    public Object evaluateIfCondition(If ifObj,ActivityStatusStore map,RuleStore rules) throws CompilationFailedException, IOException {
+    public Object evaluateIfCondition(If ifObj,ActivityStatusStore map,List rules) throws CompilationFailedException, IOException {
         return evaluateUserExpr(ifObj.getTest(),ifObj.getId(),map,rules);
         
     }
     
-    public Object evaluateWhileCondition(While whileObj,ActivityStatusStore map,RuleStore rules) throws CompilationFailedException, IOException {
+    public Object evaluateWhileCondition(While whileObj,ActivityStatusStore map,List rules) throws CompilationFailedException, IOException {
         return evaluateUserExpr(whileObj.getTest(), whileObj.getId(),map,rules);
     }
     
-    public Object evaluateForItems(For forObj,ActivityStatusStore map,RuleStore rules) throws CompilationFailedException, IOException {
+    public Object evaluateForItems(For forObj,ActivityStatusStore map,List rules) throws CompilationFailedException, IOException {
         return  evaluateUserExpr(forObj.getItems(),forObj.getId(),map,rules);
    
     }
+    public Object evaluateParforItems(Parfor forObj,ActivityStatusStore map,List rules) throws CompilationFailedException, IOException {
+        return  evaluateUserExpr(forObj.getItems(),forObj.getId(),map,rules);
+   
+    }    
     
-    public Tool evaluateTool(Tool original,String id,ActivityStatusStore map, RuleStore rules) throws CompilationFailedException, IOException {
+    public Tool evaluateTool(Tool original,String id,ActivityStatusStore map, List rules) throws CompilationFailedException, IOException {
         Tool copy = new Tool();
         copy.setInterface(original.getInterface());
         copy.setName(original.getName());
@@ -219,7 +228,7 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Ru
         return b;
     }
 
-    private  Binding createBodyBinding(ActivityStatusStore map,RuleStore rules){
+    private  Binding createBodyBinding(ActivityStatusStore map,List rules){
         Binding b = createTriggerBinding(map);
         b.setVariable("rules",rules);
         b.setVariable("jes",jes);
@@ -232,12 +241,20 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Ru
      * @param state
      * @param map
      * @return
+     * @todo we're using the static singleton provided by astrogrid object here. may be issues with scripts interfering with each other - i.e. corrupting service list, etc.
+     * however, don't want to rebuild astrogird object each time. future solution - remove setters, etc - make immutable.
      */
-    private Binding createScriptBinding(ActivityStatusStore map, RuleStore rules) {
+    private Binding createScriptBinding(ActivityStatusStore map, List rules) {
         Binding b = new Binding();
         b.setVariable("log",jes.getLog());
         b.setVariable("jes",jes);
-        //@todo add in ag later b.setVariable("astrogrid",ag);
+        Astrogrid ag = Astrogrid.getInstance();
+        b.setVariable("astrogrid",ag);        
+
+        Credentials creds = jes.getWorkflow().getCredentials();        
+        b.setVariable("currentAccount",creds.getAccount());
+        User u = new User(creds.getAccount().getName(),creds.getAccount().getCommunity(),creds.getGroup().getName(),creds.getSecurityToken());
+        b.setVariable("currentUser",u);
         for (Iterator i = Status.allStatus.iterator(); i.hasNext(); ) {
             Status stat = (Status)i.next();
             b.setVariable(stat.getName(),stat);
@@ -264,6 +281,10 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Ru
 
 /* 
 $Log: JesShell.java,v $
+Revision 1.9  2004/08/09 17:34:10  nw
+implemented parfor.
+removed references to rulestore
+
 Revision 1.8  2004/08/05 14:38:15  nw
 implemented sequential for construct.
 

@@ -1,4 +1,4 @@
-/*$Id: Vars.java,v 1.3 2004/08/03 14:27:38 nw Exp $
+/*$Id: Vars.java,v 1.4 2004/08/09 17:34:10 nw Exp $
  * Created on 28-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -76,22 +76,14 @@ public class Vars{
             e.remove(name);
         }
     }
-    /** take a copy of the vars.
-     * note -this is a shallow(ish) copy. values of bindings are not copied, but
-     * are shared between the new and existing var objects.
-     * <p>
-     * for value objects, this means that they will diverge on the next assignment to the binding
-     * <p>
-     * for statefule objects, a change in state through one var will be visible in the other.
-     * @return
+    /** Branch these vars
+     * this is a very shallow copy. existing scopes are shared between the original and copy.
+     * however, new scopes in the copy do not appear in the original.
      */
-    public Vars cloneVars() {
+    public Vars branchVars() {
         Vars copy = new Vars();
         copy.l.clear();
-        for (Iterator i = l.iterator(); i.hasNext(); ) {
-            Map e = (Map)i.next();
-            copy.l.add(new HashMap(e));
-        }
+        copy.l.addAll(this.l);
         return copy;
     }
     
@@ -183,6 +175,10 @@ public void removeScope()     {
 
 /* 
 $Log: Vars.java,v $
+Revision 1.4  2004/08/09 17:34:10  nw
+implemented parfor.
+removed references to rulestore
+
 Revision 1.3  2004/08/03 14:27:38  nw
 added set/unset/scope features.
 

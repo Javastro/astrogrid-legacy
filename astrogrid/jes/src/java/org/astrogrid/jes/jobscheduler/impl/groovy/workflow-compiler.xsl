@@ -106,9 +106,10 @@ as it allows you to travese and select on all the different xpath axis...
 <xsl:template match="wf:workflow" >
 	
   <rules>
+	<!--
 	<name><xsl:value-of select="@name"/></name> 
 	<rootState><xsl:value-of select="generate-id()"/></rootState>
-	 <rules>
+	-->
 <!-- rules for entry and exit points into the interpreter -->
 <rule>
 	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == UNSTARTED</trigger>
@@ -141,7 +142,6 @@ jes.setWorkflowStatus(FINISHED);
     <xsl:apply-templates select=".//wf:*" />
     <xsl:comment>Error handlers</xsl:comment>
     <xsl:apply-templates select=".//wf:*" mode="errors"/>
-	</rules>
   </rules>
 </xsl:template>
 
@@ -254,7 +254,7 @@ jes.dispatchStep('<xsl:value-of select="generate-id()"/>',shell,states,rules);
 <body>
 states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
 <xsl:if test="@result-var and @result-var != ''"><!-- if we previously set this flag state, reset it -->
-			&amp;&amp; states.setStatus('<xsl:value-of select="generate-id()"/>' + "-results",START);
+		states.setStatus('<xsl:value-of select="generate-id()"/>' + "-results",START);
 		</xsl:if>
 </body>
 </rule>
@@ -314,6 +314,7 @@ states.setStatus('<xsl:value-of select="generate-id()"/>', FINISHED) ;
 - finish waits for all children to complete, then merges any environment alterations.
 - TODO - need to add in error-handling,
 - ALTERATION - no manipulation of environment. all share same. can use &lt;scope&gt; tag explicitly if needed.
+ - we just branch the environment - so existing stuff is shared, but new defns (and calls to 'scope') remain local to one branch.
 -->
 <xsl:comment>flow</xsl:comment>
 <rule>
@@ -322,8 +323,7 @@ states.setStatus('<xsl:value-of select="generate-id()"/>', FINISHED) ;
 	 <body>
 	<xsl:for-each select="./*">
 states.setStatus('<xsl:value-of select="generate-id()"/>',START);
-states.setEnv('<xsl:value-of select="generate-id()"/>',states.getEnv('<xsl:value-of select="generate-id(..)"/>'));
-<!--.cloneVars());-->
+states.setEnv('<xsl:value-of select="generate-id()"/>',states.getEnv('<xsl:value-of select="generate-id(..)"/>').branchVars());
 	</xsl:for-each>
 states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED);
 	</body>
@@ -336,14 +336,6 @@ states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED);
 		    </xsl:for-each>
 	</trigger>
 	<body>
-	<!-- not needed now
-	envList = [
-	<xsl:for-each select="./*">
-	  <xsl:if test="position() != 1">,</xsl:if> '<xsl:value-of select="generate-id()"/>'
-	</xsl:for-each>
-	];
-states.setEnv('<xsl:value-of select="generate-id()"/>',states.mergeVars(envList));
--->
 states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED) ;
 	</body>
 </rule>
@@ -406,7 +398,6 @@ states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
 <!-- rules for an while
 to start - if test passes, trigger body rule, pass current environment in.
 to continue - if test passes, re-trigger body rule. 
-tested
 -->
 <xsl:comment>while</xsl:comment>
 <rule>
@@ -437,6 +428,7 @@ if (shell.evaluateWhileCondition(whileObj,states,rules)) {
 </rule>
 </xsl:template>
 
+<!-- rules for a for loop -->
 <xsl:template match="wf:for" name="for">
 <xsl:comment>for</xsl:comment>
 <!-- set up loop variables etc -->
@@ -481,46 +473,69 @@ if (shell.evaluateWhileCondition(whileObj,states,rules)) {
 	-->
 
 <xsl:template match="wf:parfor" name="parfor">
-<!-- Phew! - this is the biggie. all the rest of the language constructs are static in some way.
+<!-- The complicated one:. all the rest of the language constructs are static in some way.
 even the for and while loops - they repeat the specified steps a number of times, but do not create new steps - so we can
 use generate-id() to refer to things cleanly.
 
 parfor is different - it spawns off multiple concurrent copies of the same subtree of the worflow - so we can't use
 generate-id() to reference things anymore - as such an id will refer to a step in each of the concurrent branches.
 
-approcach I'm taking is to dynamically grow the (compiled representation of) the tree - i.e. at runtime, where we know the 
+approcach I'm taking is to dynamically grow the (compiled representation of) the tree - That is, at runtime, once we know the 
 number of concurrent copies there's going to be, this rule adds more rules to the store. the generated rules implement each of the branches.
 
-confused? oh yes :)
-issues - what happens when parfor is itself in a sequential loop - don't need to code generate twice.
-@todo translate this still.
+issues 
+- what happens when parfor is itself in a sequential loop - don't need to code generate twice. although this is probably just an efficiency concern
+
 -->
 <xsl:comment>parfor</xsl:comment>
 <rule>
-	<name>parfor-start</name>
-	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START"</trigger>
+	<name>parfor-init</name>
+	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
 	<body>
-_<xsl:value-of select="generate-id()"/>_range = <xsl:value-of select="@range" />
-#list of ids of states in the par-for subtree - used as a template.
-_<xsl:value-of select="generate-id()"/>_stateList = [
-		 <xsl:for-each select=".//flow|.//sequence|.//script|.//step|.//while|.//for|.//if|.//then|.//else|.//Activity">
-		 <xsl:if test="position() != 1">,</xsl:if>'<xsl:value-of select="generate-id()"/>'
-		 </xsl:for-each>
-		  ]
-		  
-_<xsl:value-of select="generate-id()"/>_branchRoot = lambda i: '<xsl:value-of select="generate-id(./*)"/>:' + str(i)
-		  
-#for each branch, create a new set of rules using the rules for the above states as templates.		  
-for (ix,val) in zip(range(len(_<xsl:value-of select="generate-id()"/>_range)),_<xsl:value-of select="generate-id()"/>_range):
-		_addParallelBranch(ix,"<xsl:value-of select="@var"/>",val,_<xsl:value-of select="generate-id()"/>_stateList)
-		#now trigger root of branch.
-		_setStatus(_<xsl:value-of select="generate-id()"/>_branchRoot(ix),START)
-		env = _cloneEnv(_getEnv('<xsl:value-of select="generate-id()"/>'))
-		env["<xsl:value-of select="@var"/>"] = val # add new binding
-		_setEnv(_<xsl:value-of select="generate-id()"/>_branchRoot(ix),env)
-_addEndRule('<xsl:value-of select="generate-id()"/>',_<xsl:value-of select="generate-id()"/>_branchRoot,len(_<xsl:value-of select="generate-id()"/>_range))
-# created all dynamic rules, so set this one to started.
-setStatus('<xsl:value-of select="generate-id()"/>',STARTED)
+myID = '<xsl:value-of select="generate-id()"/>';
+parforObj = jes.getId(myID);
+log.error(parforObj);
+items = shell.evaluateParforItems(parforObj,states,rules);
+stateNames = [	<xsl:for-each select=".//*"><xsl:if test="position() != 1">,</xsl:if>
+&lt;&lt;&lt;ID
+(<xsl:value-of select="generate-id()"/>)
+ID			
+</xsl:for-each> ].join("|")
+
+pattern = ~( "[\"'](" + stateNames + ")[\"']");
+templateRules = rules.findAll{it.matches(pattern)}
+branchNames = [];
+items.inject(0) {ix, val |
+	branchName = '<xsl:value-of select="generate-id(./*)"/>-' + ix;
+	branchNames.add(branchName);	
+	templateRules.each{rules.add(it.rewriteAs(pattern,"'$1-" + ix + "'"))}
+	states.setStatus(branchName,START);
+	env = states.getEnv(myID).branchVars();
+	env.newScope();
+	env.set('<xsl:value-of select="@var"/>',val);
+	states.setEnv(branchName,env);
+	++ix;
+	}
+states.getEnv(myID + "-branches").set('names',branchNames);
+states.setStatus(myID,STARTED)
+	</body>
+</rule>
+<rule>
+	<name>parfor-end</name>
+	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED 
+		&amp;&amp; states.getEnv('<xsl:value-of select="generate-id()"/>' + '-branches').get('names').every {states.getStatus(it) == FINISHED}		
+	</trigger>
+	<body>
+states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);		
+	</body>
+</rule>
+<rule>
+	<name>parfor-error</name>
+	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED 
+		&amp;&amp; states.getEnv('<xsl:value-of select="generate-id()"/>' + '-branches').get('names').every {states.getStatus(it) == FINISHED || states.getStatus(it) == ERROR}		
+	</trigger>
+	<body>
+states.setStatus('<xsl:value-of select="generate-id()"/>',ERROR);		
 	</body>
 </rule>
 </xsl:template>

@@ -1,4 +1,4 @@
-/*$Id: JesInterface.java,v 1.6 2004/08/06 11:59:12 nw Exp $
+/*$Id: JesInterface.java,v 1.7 2004/08/09 17:34:10 nw Exp $
  * Created on 12-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -93,23 +93,29 @@ public class  JesInterface {
     // plus some helper methods.
 
     /** access object in workflow tree by id */
-    public Object getId(String id) {
+    public Object getId(String id) {        
         if (id.equals(getWorkflow().getId())) {
             return getWorkflow();
         } 
-        return getWorkflow().findXPathValue("//*[id = '" + id + "']");
+        Object result =  getWorkflow().findXPathValue("//*[id = '" + id + "']");
+        if (result != null) {
+            return result;
+        } else {
+            // assume its a mangled id. try again, removing last portion.
+            return getId(id.substring(0,id.lastIndexOf('-')));
+        }
     }
     /** 
      * dispatach a tool step 
      * @param id - the identifier of the step to execute
      * */ 
-    public void dispatchStep(String id, JesShell shell, ActivityStatusStore states, RuleStore rules) throws JesException {
+    public void dispatchStep(String id, JesShell shell, ActivityStatusStore states, List rules) throws JesException {
         Step step = (Step)getId(id);
           StepExecutionRecord er = AbstractJobSchedulerImpl.newStepExecutionRecord();
           step.addStepExecutionRecord(er);
            try{
                Tool tool = shell.evaluateTool(step.getTool(),id,states,rules);
-               getDispatcher().dispatchStep(getWorkflow(),step,tool); 
+               getDispatcher().dispatchStep(getWorkflow(),tool,id); 
                er.setStatus(ExecutionPhase.RUNNING);
            } catch (Throwable t) { // absolutely anything
                getLog().info("Step execution failed:",t);                 
@@ -144,7 +150,7 @@ public class  JesInterface {
         message.setTimestamp(new Date());
         return message;
     }
-    public boolean executeSet(String id,JesShell shell,ActivityStatusStore map,RuleStore rules) throws JesException {
+    public boolean executeSet(String id,JesShell shell,ActivityStatusStore map,List rules) throws JesException {
         Set set = (Set)getId(id);
         try {
             return shell.executeSet(set,id,map,rules);
@@ -155,7 +161,7 @@ public class  JesInterface {
             return false;
         }
     }    
-    public boolean dispatchScript(String id,JesShell shell,ActivityStatusStore map,RuleStore rules) throws JesException {
+    public boolean dispatchScript(String id,JesShell shell,ActivityStatusStore map,List rules) throws JesException {
         Script script = (Script)getId(id);        
         StepExecutionRecord er = AbstractJobSchedulerImpl.newStepExecutionRecord();
         script.addStepExecutionRecord(er);
@@ -214,6 +220,10 @@ public class  JesInterface {
 
 /* 
 $Log: JesInterface.java,v $
+Revision 1.7  2004/08/09 17:34:10  nw
+implemented parfor.
+removed references to rulestore
+
 Revision 1.6  2004/08/06 11:59:12  nw
 added helper methods for scripts manipulating the workflow document itself.
 

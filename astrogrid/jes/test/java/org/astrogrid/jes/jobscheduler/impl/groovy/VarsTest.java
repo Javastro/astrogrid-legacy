@@ -1,4 +1,4 @@
-/*$Id: VarsTest.java,v 1.3 2004/08/03 14:27:38 nw Exp $
+/*$Id: VarsTest.java,v 1.4 2004/08/09 17:34:10 nw Exp $
  * Created on 28-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,10 +51,15 @@ public class VarsTest extends TestCase {
             assertNull(vars.get("foo"));
         }
     
-    public void testCloneVars() {
-       Vars vars1 = vars.cloneVars();
+    public void testBranchVars() {
+       Vars vars1 = vars.branchVars();
        assertNotSame(vars,vars1);
        assertEquals(vars,vars1);
+       // check aliasing is happening.
+       vars1.set("foo","barney");
+       assertEquals(vars,vars1);
+       vars1.newScope();
+       assertTrue(! vars.equals(vars1));
     }
     
     public void testScopes() {
@@ -113,6 +118,10 @@ public class VarsTest extends TestCase {
 
 /* 
 $Log: VarsTest.java,v $
+Revision 1.4  2004/08/09 17:34:10  nw
+implemented parfor.
+removed references to rulestore
+
 Revision 1.3  2004/08/03 14:27:38  nw
 added set/unset/scope features.
 
