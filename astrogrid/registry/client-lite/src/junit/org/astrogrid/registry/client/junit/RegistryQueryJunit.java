@@ -93,7 +93,7 @@ public class RegistryQueryJunit extends TestCase{
    public void testDSAXML() throws Exception {
       if(DEBUG_FLAG) System.out.println("entered testDSAXML");      
       if(rs == null) return;      
-      Document doc = rs.getResourceByIdentifierDOM("org.astrogrid.localhost/testdsa");
+      Document doc = rs.getResourceByIdentifier("org.astrogrid.localhost/testdsa");
       assertNotNull(doc);
       if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
       System.out.println("exiting testdsaxml");
@@ -104,7 +104,7 @@ public class RegistryQueryJunit extends TestCase{
       if (DEBUG_FLAG) System.out.println("entered testLoadRegistry");
       if(rs == null) return;      
       //if(rs.conf.getString("vm05.astrogrid.org/MyspaceManager",null) == null) return;            
-      Document doc = rs.loadRegistryDOM();
+      Document doc = rs.loadRegistry();
       if(doc == null) {
          System.out.println("the doc was null for some reason");
       }
