@@ -1,4 +1,4 @@
-/*$Id: Services.java,v 1.1 2004/01/28 17:19:58 nw Exp $
+/*$Id: Services.java,v 1.2 2004/01/29 10:41:40 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,10 @@ import java.util.*;
 import org.apache.commons.digester.*;
 import org.xml.sax.SAXException;
 
-/** Maintains list of service mappings. Loaded from an xml file, that is either loaded from default location, or can be specified.
+/** Maintains lists of known astrogrid services<p />
+ * 
+ * The list of services is loaded from an xml file. This can either loaded from the default location on the classpath,
+ * or by specifying a URL.
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2004
  *
  */
@@ -27,7 +30,7 @@ public class Services {
    /** default location of service list document - in this package on the classpath */
    public static final String SERVICE_LIST= "services.xml";
    
-   /** create a service list using the default service list document
+   /** constructor, that populates list using the default service list document
     * 
     * @return a {@link java.util.List} of {@link Service} objects
     * @throws IOException
@@ -37,7 +40,7 @@ public class Services {
       this(null);
    }
    
-   /** create a service list
+   /** constructor, that populates service list using document at specified url
     * 
     * @param serviceListDocument URL of the service list document to read in
     * @return a {@link java.util.List} of {@link Service} objects
@@ -157,6 +160,10 @@ public class Services {
 
 /* 
 $Log: Services.java,v $
+Revision 1.2  2004/01/29 10:41:40  nw
+extended scripting model with helper functions,
+imporove javadoc
+
 Revision 1.1  2004/01/28 17:19:58  nw
 first check in of scripting project
  

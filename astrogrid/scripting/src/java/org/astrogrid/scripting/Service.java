@@ -1,4 +1,4 @@
-/*$Id: Service.java,v 1.1 2004/01/28 17:19:58 nw Exp $
+/*$Id: Service.java,v 1.2 2004/01/29 10:41:40 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,12 +26,12 @@ import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
  *
  */ 
 public class Service {
-   public static final String DATACENTER_SERVICE = "Datacenter";
-   public static final String MYSPACE_SERVICE= "Myspace";
-   public static final String REGISTRY_SERVICE = "Registry";
-   public static final String APPLICATION_SERVICE = "Application";
-   public static final String JOBCONTROL_SERVICE = "Jobcontrol";
-   public static final String UNNKOWN_SERVICE = "Unknown";
+   public static final String DATACENTER_SERVICE = "datacenter";
+   public static final String MYSPACE_SERVICE= "myspace";
+   public static final String REGISTRY_SERVICE = "registry";
+   public static final String APPLICATION_SERVICE = "application";
+   public static final String JOBCONTROL_SERVICE = "jobcontrol";
+   public static final String UNNKOWN_SERVICE = "unknown";
    
    public Service() {
    }
@@ -39,6 +39,20 @@ public class Service {
    protected String endpoint;
    protected String type;
    protected String description;
+   
+   /** instantate a suitable delegate object for this service
+    * 
+    * @return a delegate object, depending on the {@ #type} atttibute of this service:
+    * <ul>
+    * <li>datacenter - return a {@link org.astrogrid.datacenter.delegate.FullSearcher}
+    * <li>myspace - return a {@link org.astrogrid.mySpace.delegate.MySpaceClient}
+    * <li>registry - not implemented yet
+    * <li>application - return a {@link org.astrogrid.applications.delegate.ApplicationController}
+    * <li>jobcontrol - return a {@link org.astrogrid.jes.delegate.jobController.JobControllerDelegate}
+    * </ul>
+    * @throws ServiceException
+    * @throws IOException
+    */
    public Object createDelegate() throws  ServiceException, IOException {
       if (DATACENTER_SERVICE.equals(type)) {
          return DatacenterDelegateFactory.makeFullSearcher(endpoint);
@@ -47,7 +61,7 @@ public class Service {
          return MySpaceDelegateFactory.createDelegate(endpoint);
       }
       if (REGISTRY_SERVICE.equals(type)) {
-         throw new UnsupportedOperationException("Some prat hasn't not implemented this");
+         throw new UnsupportedOperationException("Don't think the registry has a delegate yet.");
       }
       if(APPLICATION_SERVICE.equals(type)) {
          return DelegateFactory.createDelegate(endpoint);
@@ -58,46 +72,47 @@ public class Service {
       throw new IllegalStateException("Unknown service type - cannot create delegate:" + this.endpoint);
    }
    
-   /**
+   /** Get the dsescription of this service
     * @return
     */
    public String getDescription() {
       return description;
    }
 
-   /**
+   /** Access the endpoint of this service
     * @return
     */
    public String getEndpoint() {
       return endpoint;
    }
-
-   /**
+ 
+   /** Access the type of this service - one of the constants defined in this class 
     * @return
     */
    public String getType() {
       return type;
    }
 
-   /**
+   /** Set the description of this service
     * @param string
     */
    public void setDescription(String string) {
       description = string.trim();
    }
 
-   /**
+   /** Set the endpoint of this service
     * @param string
     */
    public void setEndpoint(String string) {
       endpoint = string.trim();
    }
 
-   /**
+   /**Set the type of this service
     * @param string
     */
    public void setType(String string) {
-      type = string;
+      type = string.trim().toLowerCase();
+      
    }
 
    /* (non-Javadoc)
@@ -111,6 +126,10 @@ public class Service {
 
 /* 
 $Log: Service.java,v $
+Revision 1.2  2004/01/29 10:41:40  nw
+extended scripting model with helper functions,
+imporove javadoc
+
 Revision 1.1  2004/01/28 17:19:58  nw
 first check in of scripting project
  
