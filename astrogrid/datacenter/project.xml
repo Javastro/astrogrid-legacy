@@ -63,6 +63,11 @@
     </dependency>
 
     <dependency>
+      <id>castor</id>
+      <version>0.9.5</version>
+    </dependency>
+
+    <dependency>
       <id>jax-qname</id>
       <version>UNKNOWN</version>
       <jar>jax-qname.jar</jar>
@@ -97,10 +102,8 @@
     <dependency>
       <id>mysql</id>
       <version>3.0.8</version>
-      <jar>mysql-connection-java-3.0.8-stable-bin.jar</jar>
+      <jar>mysql-connector-java-3.0.8-stable-bin.jar</jar>
     </dependency>
-
-http://www.ibiblio.org/maven/mysql/jars/mysql-connector-java-3.0.8-stable-bin.jar
 
     <dependency>
       <id>objectwiz-votable</id>
