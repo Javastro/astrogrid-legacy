@@ -340,6 +340,7 @@ public class DataQueryServlet extends HttpServlet {
 					               "will be sent when the service comes back up.";
 				}
 				//set a Session of the request in xml format sent.
+				session.setAttribute("CriteriaNumber",null);
 				session.setAttribute("LastWebServiceXML",tempStr);
 				qb.clear();
 				qb = null;
