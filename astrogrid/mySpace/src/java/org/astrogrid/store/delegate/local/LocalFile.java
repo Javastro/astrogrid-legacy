@@ -1,5 +1,5 @@
 /*
- * $Id: LocalFile.java,v 1.1 2004/03/04 12:51:31 mch Exp $
+ * $Id: LocalFile.java,v 1.2 2004/04/06 10:16:23 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -98,7 +98,7 @@ public class LocalFile implements StoreFile
    
    /** Returns true if this is a container that can hold other files/folders */
    public boolean isFolder() {
-      return isFolder();
+      return file.isDirectory();
    }
    
    /** Returns true if this represents the same file as the given one */
@@ -118,6 +118,9 @@ public class LocalFile implements StoreFile
 
 /*
 $Log: LocalFile.java,v $
+Revision 1.2  2004/04/06 10:16:23  mch
+Fixed isFolder() bug
+
 Revision 1.1  2004/03/04 12:51:31  mch
 Moved delegate implementations into subpackages
 
