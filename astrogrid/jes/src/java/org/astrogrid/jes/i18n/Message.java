@@ -35,9 +35,9 @@ public class Message {
 		logger = Logger.getLogger( Message.class ) ;
 		
 	private static final String
-		ASTROGRIDERROR_MESSAGEKEY_NULL = "AGDTCExxxx1: Message - Message key is null",
-		ASTROGRIDERROR_MESSAGE_PATTERN_OR_INSERTS_INVALID = "AGDTCExxxx2 Message - Message pattern or inserts are invalid",
-		ASTROGRIDERROR_MESSAGE_NOT_FOUND_IN_RESOURCEBUNDLE  = "AGDTCExxxx3 Message - Message not found in ResourceBundle" ;
+		ASTROGRIDERROR_MESSAGEKEY_NULL = "AGJESZ00003:Message: Message key is null",
+		ASTROGRIDERROR_MESSAGE_PATTERN_OR_INSERTS_INVALID = "AGJESZ00004:Message: Message pattern or inserts are invalid",
+		ASTROGRIDERROR_MESSAGE_NOT_FOUND_IN_RESOURCEBUNDLE = "AGJESZ00005:Message: Message not found in ResourceBundle" ;
 		
     private static ResourceBundle
         messages ;
@@ -94,7 +94,7 @@ public class Message {
 		   messageString = null ;
 		   
 		try {
-			messageString = mssgs.getString( key ) ;   
+			messageString = key + mssgs.getString( key ) ;   
 			MessageFormat.format( messageString, inserts ) ;
 		}
 		catch( NullPointerException npex ) { 

@@ -41,10 +41,13 @@ public class DatasetAgent {
 	    CONFIG_MESSAGES_COUNTRYCODE  = "MESSAGES.INSTALLATION.COUNTRYCODE" ;
 	    
 	private static final String
-	    ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE    = "AGDTCE00010",
-	    ASTROGRIDERROR_DATASETAGENT_NOT_INITIALIZED = "AGDTCE00020",
+	    ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE    = "AGDTCZ00001:JobController: Could not read my configuration file",
+	    ASTROGRIDERROR_DATASETAGENT_NOT_INITIALIZED = "AGDTCZ00002:JobController: Not initialized. Perhaps my configuration file is missing.",
 	    ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGDTCE00030",
 	    ASTROGRIDERROR_ULTIMATE_QUERYFAILURE        = "AGDTCE00040";
+	    
+	private static final String
+		PARSER_VALIDATION = "PARSER.VALIDATION" ;	    
 	    			
 	private static Logger 
 		logger = Logger.getLogger( DatasetAgent.class ) ;
@@ -94,10 +97,14 @@ public class DatasetAgent {
 			    messageBundleBaseName = getProperty( CONFIG_MESSAGES_BASENAME ), 
 			    language = getProperty( CONFIG_MESSAGES_LANGUAGECODE ),
 			    country = getProperty( CONFIG_MESSAGES_COUNTRYCODE ) ;
+
+			logger.debug( "messageBundleBaseName[" + messageBundleBaseName + "]\t" +
+						  "language[" + language + "]\t" +
+						  "country[" + country + "]" ) ;		
 			
 			if( messageBundleBaseName != null ) {
 				     
-			    if( (language != null) && (language != "") )  {
+			    if( (language != null) && (!language.equals("")) )  {
 			    	
 				   Locale
 				      locale =  new Locale( language, (country != null ? country : "") );
@@ -120,6 +127,7 @@ public class DatasetAgent {
 	
 	public static String getProperty( String key ) {
 		if( TRACE_ENABLED ) logger.debug( "getProperty(): entry") ;
+		
 		String
 			retValue ;
 		try {	
@@ -131,7 +139,8 @@ public class DatasetAgent {
 		finally {
 			if( TRACE_ENABLED ) logger.debug( "getProperty(): exit") ;			
 		}
-		return retValue ;
+		
+		return ( retValue == null ? "" : retValue.trim() ) ;
 		
 	} // end of getProperty()
 	
@@ -230,6 +239,7 @@ public class DatasetAgent {
 	       builder = null;
 	       
 		try {
+		   factory.setValidating( Boolean.getBoolean( getProperty( PARSER_VALIDATION ) ) ) ; 		
 		   builder = factory.newDocumentBuilder();
 		   logger.debug( jobXML ) ;
 		   InputSource

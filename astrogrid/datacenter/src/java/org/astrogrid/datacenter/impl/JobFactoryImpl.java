@@ -2,6 +2,7 @@
 package org.astrogrid.datacenter.impl ;
 
 import org.apache.log4j.Logger;
+import org.astrogrid.datacenter.DatasetAgent ;
 import org.astrogrid.datacenter.i18n.*;
 import org.astrogrid.datacenter.JobFactory ;
 import org.astrogrid.datacenter.Job ;
@@ -25,9 +26,6 @@ public class JobFactoryImpl implements JobFactory {
 	
 	private static Logger 
 		logger = Logger.getLogger( JobFactoryImpl.class ) ;
-	
-	private static InitialContext 
-		initialContext = null ;
 	    
 	private static final String
 		JOB_DATASOURCE_LOCATION = "JOB.DATASOURCE" ; 
@@ -45,6 +43,66 @@ public class JobFactoryImpl implements JobFactory {
 		statement = null ;  
 	private ResultSet 
 		resultSet = null ;
+
+
+	private static DataSource getDataSource() throws JobException {
+		if( TRACE_ENABLED ) logger.debug( "getDataSource(): entry") ; 
+	
+		String
+		   datasourceName = null ;
+					
+		try{
+			
+			// Note the double lock strategy			
+			if( datasource == null ){
+			   synchronized ( JobFactoryImpl.class ) {
+				   if( datasource == null ){
+				   	   InitialContext
+					      initialContext = new InitialContext() ;
+					   datasourceName = DatasetAgent.getProperty( JOB_DATASOURCE_LOCATION ) ;
+					   datasource = (DataSource) initialContext.lookup( datasourceName ) ;
+				   }
+			   } // end synchronized
+			}
+			
+		}
+		catch( NamingException ne ) {
+			Message
+				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_JOB_DATASOURCE
+									 , (datasourceName != null ? datasourceName : "") ) ;			                     
+			logger.error( message.toString(), ne ) ;
+			throw new JobException( message, ne );
+		}
+		finally{
+			if( TRACE_ENABLED ) logger.debug( "getDataSource(): exit") ; 	
+		}
+		
+		return datasource ;	
+			
+	} // end of getDataSource()	
+
+
+	private Connection getConnection() throws JobException {
+		if( TRACE_ENABLED ) logger.debug( "getConnection(): entry") ; 
+		
+		try{
+			if( connection == null ) {
+				connection = getDataSource().getConnection() ;
+			}
+		}
+		catch( SQLException e) {
+			Message
+				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION ) ;
+			logger.error( message.toString(), e ) ;
+			throw new JobException( message, e );
+		}
+		finally{
+			if( TRACE_ENABLED ) logger.debug( "getConnection(): exit") ; 		
+		}
+		    
+		return connection ;  
+
+	} // end of getConnection()
 	
 	
     public Job createJob( Document jobDoc ) throws JobException  {
@@ -72,6 +130,7 @@ public class JobFactoryImpl implements JobFactory {
 		
     } // end of createJob()  
 
+//JBL Note: Do I also require an update?
 
     public Job findJob( String jobURN ) throws JobException { 
     	Element

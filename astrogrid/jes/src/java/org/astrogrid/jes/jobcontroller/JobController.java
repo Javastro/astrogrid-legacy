@@ -73,10 +73,13 @@ public class JobController {
 		CONFIG_MESSAGES_COUNTRYCODE  = "MESSAGES.INSTALLATION.COUNTRYCODE" ;
 	    
 	private static final String
-		ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE    = "AGJESE00010",
-		ASTROGRIDERROR_JES_NOT_INITIALIZED          = "AGJESE00020",
+		ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE    = "AGJESZ00001:JobController: Could not read my configuration file",
+		ASTROGRIDERROR_JES_NOT_INITIALIZED          = "AGJESZ00002:JobController: Not initialized. Perhaps my configuration file is missing.",
 		ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGJESE00030",
 		ASTROGRIDERROR_ULTIMATE_SUBMITFAILURE       = "AGJESE00040";
+	    			
+	private static final String
+	    PARSER_VALIDATION = "PARSER.VALIDATION" ;
 	    			
 	private static Logger 
 		logger = Logger.getLogger( JobController.class ) ;
@@ -135,14 +138,12 @@ public class JobController {
 				     
 				if( (language != null) && (!language.equals("")) )  {
 			    	
-				   logger.debug( "language..." ) ;
 				   Locale
 					  locale =  new Locale( language, (country != null ? country : "") );
 				   Message.setMessageResource( ResourceBundle.getBundle( messageBundleBaseName, locale ) ) ;	
 				   
 				}
 				else {
-				   logger.debug( "language null..." ) ;
 				   Message.setMessageResource( ResourceBundle.getBundle( messageBundleBaseName ) ) ;	
 				}
 			    
@@ -198,6 +199,7 @@ public class JobController {
 		   builder = null;
 	       
 		try {
+		   factory.setValidating( Boolean.getBoolean( getProperty( PARSER_VALIDATION ) ) ) ; 		    
 		   builder = factory.newDocumentBuilder();
 		   logger.debug( jobXML ) ;
 		   InputSource

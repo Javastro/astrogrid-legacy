@@ -115,6 +115,7 @@ public class QueryFactoryImpl implements QueryFactory {
 		if( TRACE_ENABLED ) logger.debug( "QueryFactoryImpl(): entry") ; 
 	}
 	
+	
 	private Connection getConnection( String catalogName ) throws QueryException {
 		if( TRACE_ENABLED ) logger.debug( "getConnection(): entry") ; 
 		
