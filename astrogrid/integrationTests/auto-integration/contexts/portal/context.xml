@@ -14,8 +14,9 @@
     <!--for the community client-->
     <Environment name="org.astrogrid.community.ident" override="false" type="java.lang.String" value="@REGAUTHORITY@" description="Local community identifier"/>
     <Environment name="org.astrogrid.registry.query.endpoint" override="false" type="java.lang.String" value="@CENTRALREGISTRY@Query" 
-        description="Registry Query 
-        Service endpoint"/>
+        description="Registry Query Service endpoint"/>
+    <Environment name="org.astrogrid.registry.admin.endpoint" override="false" type="java.lang.String" value="@CENTRALREGISTRY@Update" 
+        description="Registry Admin Service endpoint"/>
     <!--for workflow/jes-->
     <Environment name="workflow.jes.endpoint" override="false" type="java.lang.String" 
         value="@TOMCATROOT@/astrogrid-jes-@VERSION@/services/JobControllerService" description="Jes EndPoint"/>
