@@ -1,5 +1,5 @@
 /*
- * $Id: User.java,v 1.5 2003/12/30 10:40:02 pah Exp $
+ * $Id: User.java,v 1.6 2004/01/08 21:19:30 pah Exp $
  *
  * Created on 27-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,8 +13,15 @@
 
 package org.astrogrid.community;
 
+import org.astrogrid.community.common.util.CommunityMessage;
+
 /**
  * A bean to hold what is passed in the "community snippet".
+ * 
+ * Note that the current interpretation of this is that the account contains an identifier of the form user@community - The group relates to the
+ *  group that the user wishes to use for its credentials, this may be a cross community group. 
+ * 
+ * note that this should really be merged with the @link org.astrogrid.community.common.util.CommunityMessage class, which effectively does xml deserializtion
  * @author Paul Harrison (pah@jb.man.ac.uk), mch
  * @version $Name:  $
  * @since iteration4
@@ -25,17 +32,20 @@ public class User {
     String group = null;
     String token = null;
    
-    public final static User ANONYMOUS = new User("Anon","Anonymous","None");
+    public final static User ANONYMOUS = new User("Anon@nowhere","Anonymous","None");
 
    /** Default constructor - creates null user
     */
     public User(){
-       this("Anon","Anonymous", "None");
+       this("Anon@nowhere","Anonymous", "None");
     }
 
     /**
      * Creates a user from the given account group & token.  The account &
      * group cannot be null
+     * @param givenAccount the account in the form userid@community.
+     * @param givenGroup The group credential.
+     * @param givenToken The security token.
      */
     public User(String givenAccount, String givenGroup, String givenToken)
     {
@@ -45,12 +55,12 @@ public class User {
     }
     
     /**
-     * Creates a user from the given string representation
+     * Creates a user from "community snippet" representation.
+     * @param snippet The community snippet - this is an xml fragment.
      */
-    public User(String givenString)
+    public User(String snippet)
     {
-        this.account = givenString.substring(0,account.indexOf("@"));
-        this.group = givenString.substring(account.indexOf("@")+1,account.length());
+       this(CommunityMessage.getAccount(snippet),CommunityMessage.getGroup(snippet),CommunityMessage.getToken(snippet));
     }
     
    /**
@@ -106,19 +116,27 @@ public class User {
    }
 
    /**
-    * Returns a string with the 'normal' representation of account@group
+    * Returns a string with the 'normal' representation of account@community
     */
    public String toString()
    {
-      return account+"@"+group;
+      return account;
+   }
+   
+   public String toSnippet()
+   {
+      return CommunityMessage.getMessage(token, account, group);
    }
    
 }
 
 /* $Log: User.java,v $
- * Revision 1.5  2003/12/30 10:40:02  pah
- * made the default constructor non-deprecated - this is a bean it has to have a default constructor - make it acutally put in some values
+ * Revision 1.6  2004/01/08 21:19:30  pah
+ * changed to reflect the fact that the account should be user@community
  *
+/* Revision 1.5  2003/12/30 10:40:02  pah
+/* made the default constructor non-deprecated - this is a bean it has to have a default constructor - make it acutally put in some values
+/*
 /* Revision 1.4  2003/12/16 15:49:17  mch
 /* Extended to include Certification functionality - in prep to replace it
 /*
