@@ -35,7 +35,7 @@
   <section name="Submit an ADQL/xml Query">
     <p>
       <b>Enter your ADQL/xml query here:</b>
-      (<a href="http://skyservice.pha.jhu.edu/devel/AdqlTranslator/Convertor.aspx">Translate from SQL</a>)
+      (<a href="http://openskyquery.net/AdqlTranslator/Convertor.aspx">Translate from SQL</a>)
       (<a href="adql">Sample queries</a> <i>Note that some browsers will modify viewed XML, so check for DEFANGED, case changes, etc</i>)
       <br />
       <form action="submitAdqlXml.jsp" method="POST">
