@@ -2,8 +2,11 @@ package org.astrogrid.mySpace.mySpaceManager;
 
 import java.io.*;
 import java.util.*;
+import java.util.HashMap;
 
 import org.astrogrid.mySpace.mySpaceStatus.*;
+import org.astrogrid.mySpace.mySpaceUtil.*;
+
 
 /**
  * <p>
@@ -46,8 +49,11 @@ import org.astrogrid.mySpace.mySpaceStatus.*;
  * @version Iteration 2.
  */
 
-public class MySpaceInterface
-{  private static MySpaceStatus status = new MySpaceStatus();
+public class MySpaceManager{
+	private static MySpaceStatus status = new MySpaceStatus();
+	private MySpaceActions myspace = new MySpaceActions();
+	private HashMap request = new HashMap();
+	private  String response = "";
 //
 // Constructor.
 
@@ -55,8 +61,8 @@ public class MySpaceInterface
  * Default constructor.
  */
 
-   public MySpaceInterface()
-   {  super();
+   public MySpaceManager(){
+   	super();
    }
 
 // =================================================================
@@ -90,7 +96,7 @@ public class MySpaceInterface
 //   Create an instance of the MySpace manager and invoke the method
 //   corresponding to this action.
 
-      MySpaceManager myspace = new MySpaceManager();
+     //MySpaceActions myspace = new MySpaceActions();
 
       DataItemRecord dataItem = myspace.lookupDataHolderDetails(
         userID, communityID, jobID, dataItemID);
@@ -138,7 +144,7 @@ public class MySpaceInterface
 //   Create an instance of the MySpace manager and invoke the method
 //   corresponding to this action.
 
-      MySpaceManager myspace = new MySpaceManager();
+      //MySpaceActions myspace = new MySpaceActions();
 
       Vector itemRecVector = new Vector();
       itemRecVector = myspace.lookupDataHoldersDetails(
@@ -189,7 +195,7 @@ public class MySpaceInterface
 //   Create an instance of the MySpace manager and invoke the method
 //   corresponding to this action.
 
-      MySpaceManager myspace = new MySpaceManager();
+      //MySpaceActions myspace = new MySpaceActions();
 
       DataItemRecord dataitem = myspace.copyDataHolder(
         userID, communityID, jobID, oldDataItemID,
@@ -226,48 +232,53 @@ public class MySpaceInterface
   * touched.
   */
 
-   public String moveDataHolder(String jobDetails)
-   {
-
-//
+   public String moveDataHolder(String jobDetails){
+   	
 //   Decompose the userID, communityID, jobID and other details from
 //   the jobDetails.
 
-      String userID = "";
-      String communityID = "";
-      String jobID = "";
+    String userID = "";
+    String communityID = "";
+    String jobID = "";
+    
+    int oldDataItemID = 0;
+    String newDataItemName = "";
+      
+    MySpaceUtils util = new MySpaceUtils();
+    request = util.getRequestAttributes(jobDetails);
+    userID = request.get("userID").toString();
+    communityID = request.get("communityID").toString();
+    jobID = request.get("jobID").toString();
+    try{
+    	String idString = request.get("oldDataItemID").toString();
+      	oldDataItemID = Integer.parseInt(idString);
+      	}catch(NumberFormatException nfe){
+      		MySpaceMessage message = new MySpaceMessage("NUMBER_FORMAT_ERROR");
+            response = message.getMessage(nfe.toString());
+      	    return response;
+      	    }
+    newDataItemName = request.get("newDataItemName").toString();
 
-      int oldDataItemID = 0;
-      String newDataItemName = "";
-
-//
 //   Create an instance of the MySpace manager and invoke the method
-//   corresponding to this action.
-
-      MySpaceManager myspace = new MySpaceManager();
-
-      DataItemRecord dataitem = myspace.moveDataHolder(
+//   corresponding to this action. 
+    DataItemRecord dataitem = myspace.moveDataHolder(
         userID, communityID, jobID, oldDataItemID,
         newDataItemName);
 
-//
 //   Get other stuff which can usefully be returned.
 //   (Note that the current date needs to be returned to facilitate
 //   comparisons with the expiry date; the MySpace system might be in
 //   a different time-zone to the Explorer or portal.)
 
-      boolean successStatus = status.getSuccessStatus();
-      boolean warningStatus = status.getWarningStatus();
+    boolean successStatus = status.getSuccessStatus();
+    boolean warningStatus = status.getWarningStatus();
 
-      Date currentMySpaceDate = new Date();
+    Date currentMySpaceDate = new Date();
 
-//
 //   Format and return the results as XML.
 
-//   ................
-
-      String xmlString = "";
-      return xmlString;
+    response = util.buildMySpaceManagerResponse(dataitem);     
+    return response;
    }
 
 
@@ -296,7 +307,7 @@ public class MySpaceInterface
 //   Create an instance of the MySpace manager and invoke the method
 //   corresponding to this action.
 
-      MySpaceManager myspace = new MySpaceManager();
+      //MySpaceActions myspace = new MySpaceActions();
 
       String dataItemURI = myspace.exportDataHolder(
         userID, communityID, jobID, dataItemID);
@@ -346,7 +357,7 @@ public class MySpaceInterface
 //   Create an instance of the MySpace manager and invoke the method
 //   corresponding to this action.
 
-      MySpaceManager myspace = new MySpaceManager();
+      //MySpaceActions myspace = new MySpaceActions();
 
       DataItemRecord dataItem = myspace.createContainer(
         userID, communityID, jobID, newContainerName);
@@ -395,7 +406,7 @@ public class MySpaceInterface
 //   Create an instance of the MySpace manager and invoke the method
 //   corresponding to this action.
 
-      MySpaceManager myspace = new MySpaceManager();
+      //MySpaceActions myspace = new MySpaceActions();
 
       boolean deletedOk = myspace.deleteDataHolder(
         userID, communityID, jobID, dataItemID);
