@@ -1,5 +1,5 @@
 /*
- * $Id: GetLog.java,v 1.1 2004/09/08 14:32:32 mch Exp $
+ * $Id: GetLog.java,v 1.2 2004/09/08 17:47:17 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -31,11 +31,14 @@ public class GetLog extends StdServlet {
       out.println("Debug Log for "+DataServer.getDatacenterName()+" "+new Date());
 
       String palDebugFilename = FailbackConfig.resolveEnvironmentVariables("${catalina.home}/logs/pal.log");
-      if (request.getParameter("Log").toUpperCase().equals("CATALINA.OUT")) {
-         palDebugFilename = FailbackConfig.resolveEnvironmentVariables("${catalina.home}/logs/catalina.out");
-      }
-      if (request.getParameter("Log").toUpperCase().equals("DEBUG")) {
-         palDebugFilename = FailbackConfig.resolveEnvironmentVariables("${catalina.home}/logs/catalina.out");
+      String whichLog = request.getParameter("Log");
+      if (whichLog != null) {
+         if (request.getParameter("Log").toUpperCase().equals("CATALINA.OUT")) {
+            palDebugFilename = FailbackConfig.resolveEnvironmentVariables("${catalina.home}/logs/catalina.out");
+         }
+         else if (request.getParameter("Log").toUpperCase().equals("DEBUG")) {
+            palDebugFilename = FailbackConfig.resolveEnvironmentVariables("${catalina.home}/logs/catalina.out");
+         }
       }
       
       out.println("From "+palDebugFilename);
