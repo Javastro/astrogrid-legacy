@@ -9,7 +9,7 @@ package org.astrogrid.security;
  *
  * @author Guy Rixon
  */
-public class NoCredentialsException extends Exception {
+public class NoCredentialsException extends SecurityException {
 
   public NoCredentialsException (String message) {
     super(message);
