@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractTestForRegistry.java,v 1.4 2005/02/18 12:09:31 clq2 Exp $
+ * $Id: AbstractTestForRegistry.java,v 1.5 2005/02/22 21:02:58 clq2 Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -23,6 +23,7 @@ import javax.xml.transform.TransformerException;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
 import org.astrogrid.registry.client.query.RegistryService;
+import org.astrogrid.registry.client.query.OAIService;
 import org.astrogrid.scripting.Astrogrid;
 import org.astrogrid.scripting.Service;
 import org.astrogrid.test.AstrogridAssert;
@@ -60,6 +61,8 @@ public abstract class AbstractTestForRegistry extends TestCase {
    protected RegistryService rs = null;
    protected RegistryAdminService ras = null;
    
+   protected OAIService rsOAI = null;
+   
 
    /**
     * @param arg0
@@ -68,6 +71,7 @@ public abstract class AbstractTestForRegistry extends TestCase {
       super(arg0);
       rs = factory.createQuery();
       ras = factory.createAdmin();
+      rsOAI = factory.createOAI();
    }
 
    protected void setUp() throws Exception {

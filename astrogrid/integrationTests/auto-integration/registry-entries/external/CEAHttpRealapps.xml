@@ -99,11 +99,11 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
 		<vr:Curation>
 			<vr:Publisher>
 				<vr:Title>CDS</vr:Title>
-				<vr:Description>Centre de Données astronomiques de Strasbourg</vr:Description>
+				<vr:Description>Centre de Donees astronomiques de Strasbourg</vr:Description>
 				<vr:ReferenceURL>http://cdsweb.u-strasbg.fr/</vr:ReferenceURL>
 			</vr:Publisher>
 			<vr:Contact>
-				<vr:Name>Françoise Genova</vr:Name>
+				<vr:Name>Francoise Genova</vr:Name>
 				<vr:Email>genova@astro.u-strasbg.fr</vr:Email>
 			</vr:Contact>
 		</vr:Curation>

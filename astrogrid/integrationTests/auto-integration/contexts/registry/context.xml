@@ -1,0 +1,17 @@
+<Context path="/astrogrid-registry-@VERSION@">
+    <Environment
+        name="reg.amend.authorityid"
+        override="false" type="java.lang.String"
+        value="@REGAUTHORITY@"/>
+
+    <Environment
+        name="reg.oaipublish.0.9"
+        override="false" type="java.lang.String"
+        value="@TOMCATROOT@/astrogrid-registry-SNAPSHOT/OAIHandlerv0_9"/>
+
+    <Environment
+        name="reg.oaipublish.0.10"
+        override="false" type="java.lang.String"
+        value="@TOMCATROOT@/astrogrid-registry-SNAPSHOT/OAIHandlerv0_10"/>
+
+</Context>
