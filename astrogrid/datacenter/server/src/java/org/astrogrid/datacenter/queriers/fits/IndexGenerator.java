@@ -20,7 +20,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Locale;
 import javax.xml.parsers.ParserConfigurationException;
@@ -197,22 +196,18 @@ public class IndexGenerator
    
    /**
     * Generates an index XML file for the FITS files at the URLs listed in the
-    * given file
+    * given file, writing them out to the target stream
     */
-   public static String generateIndex(InputStream urlsIn) throws IOException
+   public static void generateIndex(InputStream urlsIn, OutputStream out) throws IOException
    {
          BufferedReader in
             = new BufferedReader(new InputStreamReader(urlsIn));
-         ArrayList al = new ArrayList();
          String line = null;
          while( (line = in.readLine()) != null) {
-            System.out.println("the url added to be processed = " + line);
-            al.add(new URL(line));
+            System.out.println("Processing " + line);
+            out.write(makeIndexSnippet(new URL(line)).getBytes());
          }
          in.close();
-         String indexFile = generateIndex(al.toArray());
-         Log.trace(indexFile);
-         return indexFile;
    }
 
    
@@ -235,8 +230,10 @@ public class IndexGenerator
       }
       String indexFile = null;
       if("-f".equals(args[0])) {
-         indexFile = generateIndex(new FileInputStream(args[1]));
-      }else if("-u".equals(args[0])) {
+         OutputStream out = new ByteArrayOutputStream();
+         generateIndex(new FileInputStream(args[1]), out);
+         indexFile = out.toString();
+      } else if("-u".equals(args[0])) {
          Object []fitsURLS = new Object[(args.length-1)];
          for(int i = 1;i < args.length;i++) {
             fitsURLS[(i-1)] = new URL(args[i]);
@@ -337,6 +334,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.16  2004/09/07 00:54:20  mch
+Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
+
 Revision 1.15  2004/09/06 21:38:34  mch
 Changed to take InputStream
 

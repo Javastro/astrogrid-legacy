@@ -1,19 +1,18 @@
 /*
- * $Id: FitsResults.java,v 1.14 2004/09/03 09:28:51 KevinBenson Exp $
+ * $Id: FitsResults.java,v 1.15 2004/09/07 00:54:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.fits;
 
-import java.io.*;
-
-import javax.xml.parsers.ParserConfigurationException;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
+import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
-import org.astrogrid.util.DomHelper;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /**
  * Holds the list of found FITS files.
@@ -31,7 +30,8 @@ public class FitsResults extends QueryResults {
     * know how big this result set will be, so it's likely we'll need a workspace
     * for any temporary files created when doing conversions
     */
-   public FitsResults(String[] results) {
+   public FitsResults(Querier parentQuerier, String[] results) {
+      super(parentQuerier);
       this.filenames = results;
    }
    
@@ -77,12 +77,12 @@ public class FitsResults extends QueryResults {
          if (statusToUpdate != null) {
             statusToUpdate.setProgress(i);
          }
-         printOut.println("<TABLE>");         
+         printOut.println("<TABLE>");
          printOut.println("<DATA><FITS>");
          printOut.println("   <STREAM>"+filenames[i]+"</STREAM>");
          
          printOut.println("</FITS></DATA>");
-         printOut.println("</TABLE>");         
+         printOut.println("</TABLE>");
       }
       
       
@@ -153,6 +153,9 @@ public class FitsResults extends QueryResults {
 
 /*
  $Log: FitsResults.java,v $
+ Revision 1.15  2004/09/07 00:54:20  mch
+ Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
+
  Revision 1.14  2004/09/03 09:28:51  KevinBenson
  change the table to be in the for loop
 

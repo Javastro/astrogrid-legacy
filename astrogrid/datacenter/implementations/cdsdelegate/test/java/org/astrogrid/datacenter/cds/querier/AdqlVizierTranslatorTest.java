@@ -1,4 +1,4 @@
-/*$Id: AdqlVizierTranslatorTest.java,v 1.2 2004/03/16 01:32:34 mch Exp $
+/*$Id: AdqlVizierTranslatorTest.java,v 1.3 2004/09/07 00:54:20 mch Exp $
  * Created on 01-Dec-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,17 +11,13 @@
 package org.astrogrid.datacenter.cds.querier;
 
 import java.io.InputStream;
-
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.cdsdelegate.vizier.DecimalDegreesTarget;
 import org.astrogrid.datacenter.cdsdelegate.vizier.NamedTarget;
 import org.astrogrid.datacenter.cdsdelegate.vizier.Unit;
 import org.astrogrid.datacenter.cdsdelegate.vizier.Wavelength;
-import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.w3c.dom.Document;
-
-import junit.framework.TestCase;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Dec-2003
@@ -91,7 +87,7 @@ public class AdqlVizierTranslatorTest extends ServerTestCase {
         assertNotNull(is);
         Document doc = XMLUtils.newDocument(is);
         assertNotNull(doc);
-        Translator trans = new AdqlVizierTranslator();
+        AdqlVizierTranslator trans = new AdqlVizierTranslator();
         Object o = trans.translate(doc.getDocumentElement());
         assertTrue(o instanceof VizierQuery);
         return (VizierQuery)o;
@@ -103,6 +99,9 @@ public class AdqlVizierTranslatorTest extends ServerTestCase {
 
 /*
 $Log: AdqlVizierTranslatorTest.java,v $
+Revision 1.3  2004/09/07 00:54:20  mch
+Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
+
 Revision 1.2  2004/03/16 01:32:34  mch
 Fixed for cahnges to code to work with new plugins
 

@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerierPlugin.java,v 1.5 2004/08/09 13:04:31 KevinBenson Exp $
+ * $Id: FitsQuerierPlugin.java,v 1.6 2004/09/07 00:54:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -61,19 +61,17 @@ public class FitsQuerierPlugin extends QuerierPlugin
          loadIndex();
       }
       Query qr = querier.getQuery();
-      String[] filenames;
+      String[] filenames = null;
       if (qr instanceof ConeQuery) {
           filenames = coneSearch(new ConeQueryMaker().getConeQuery(qr));
-         if (!aborted) {
-            processResults(new FitsResults(filenames));
-         }          
       } else if(qr instanceof AdqlQuery) {
          FitsMaker fm = new FitsMaker();
          String xql = fm.fromAdql((AdqlQuery)qr);
          filenames = doQuery(xql);
-         if (!aborted) {
-            processResults(new FitsResults(filenames));
-         }
+      }
+      if ((!aborted) && (filenames != null)) {
+         FitsResults results = new FitsResults(querier, filenames);
+         results.send(querier.getReturnSpec(), querier.getUser());
       }
    }
    
@@ -81,8 +79,8 @@ public class FitsQuerierPlugin extends QuerierPlugin
       Document resultDoc = null;
       String []files = null;
       try {
-         QueryDBService qdb = new QueryDBService();      
-         resultDoc = qdb.runQuery("dcfitsfiles",xql);         
+         QueryDBService qdb = new QueryDBService();
+         resultDoc = qdb.runQuery("dcfitsfiles",xql);
       }catch(ParserConfigurationException pce) {
          throw new RuntimeException("Server configuration error",pce);
       }catch(SAXException se) {
@@ -211,6 +209,9 @@ public class FitsQuerierPlugin extends QuerierPlugin
 
 /*
  $Log: FitsQuerierPlugin.java,v $
+ Revision 1.6  2004/09/07 00:54:20  mch
+ Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
+
  Revision 1.5  2004/08/09 13:04:31  KevinBenson
  small change to get the servlet from the index
 

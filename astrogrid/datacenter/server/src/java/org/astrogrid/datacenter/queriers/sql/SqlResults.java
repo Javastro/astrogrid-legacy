@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.35 2004/09/01 21:37:59 mch Exp $
+ * $Id: SqlResults.java,v 1.36 2004/09/07 00:54:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,9 +13,9 @@ import java.io.Writer;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Types;
 import org.apache.commons.logging.Log;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
 
@@ -43,8 +43,9 @@ public class SqlResults extends QueryResults
     * know how big this result set will be, so it's likely we'll need a workspace
     * for any temporary files created when doing conversions
     */
-   public SqlResults(ResultSet givenResults)
+   public SqlResults(Querier parentQuerier, ResultSet givenResults)
    {
+      super(parentQuerier);
       this.sqlResults = givenResults;
       
    }
@@ -309,6 +310,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.36  2004/09/07 00:54:20  mch
+ Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
+
  Revision 1.35  2004/09/01 21:37:59  mch
  Fixes for Servlets, more servlets and better and nicer status reports
 

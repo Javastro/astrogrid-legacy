@@ -1,4 +1,4 @@
-/*$Id: FitsResultsTest.java,v 1.6 2004/09/02 11:21:31 mch Exp $
+/*$Id: FitsResultsTest.java,v 1.7 2004/09/07 00:54:20 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -29,7 +29,7 @@ public class FitsResultsTest extends TestCase
    String [] exampleUrls = {"http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020728/tri20020728.0500",
                             "http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020728/tri20020728.0600"};
 
-   FitsResults fixedResults = new FitsResults(exampleUrls);
+   FitsResults fixedResults = new FitsResults(null, exampleUrls);
    FitsResults coneResults;
                             
    protected void setUp() throws Exception{
@@ -94,6 +94,9 @@ public class FitsResultsTest extends TestCase
 
 /*
  $Log: FitsResultsTest.java,v $
+ Revision 1.7  2004/09/07 00:54:20  mch
+ Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
+
  Revision 1.6  2004/09/02 11:21:31  mch
  Removed AstrogridAssert
 

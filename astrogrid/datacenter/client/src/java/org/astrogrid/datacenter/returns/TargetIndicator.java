@@ -1,5 +1,5 @@
 /*
- * $Id: TargetIndicator.java,v 1.1 2004/08/25 23:38:33 mch Exp $
+ * $Id: TargetIndicator.java,v 1.2 2004/09/07 00:54:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,10 +11,19 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.util.Properties;
+import javax.mail.MessagingException;
+import javax.mail.Provider;
+import javax.mail.Session;
+import javax.mail.Transport;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
-import org.astrogrid.store.Msrl;
+import org.astrogrid.store.delegate.StoreClient;
+import org.astrogrid.store.delegate.StoreDelegateFactory;
+import org.astrogrid.store.delegate.StoreException;
 import org.astrogrid.store.delegate.VoSpaceResolver;
 
 /**
@@ -30,13 +39,12 @@ public class TargetIndicator  {
    protected Ivorn ivorn = null;
    protected Writer out = null;
    
-   protected String compression = NONE;
-   public final static String NONE = "NONE";
-   public final static String ZIP  = "ZIP";
+   public final static String EMAIL_SERVER = "emailserver.address";
+   public final static String EMAIL_USER   = "emailserver.user";
+   public final static String EMAIL_PWD    = "emailserver.password";
+   public final static String EMAIL_FROM   = "emailserver.from";
    
-   protected String format = VOTABLE;
-   public final static String VOTABLE = "VOTABLE";
-   public final static String CSV  = "CSV";
+   
    
    /** Email constructor - see also makeIndicator */
    public TargetIndicator(String mailto) {
@@ -134,9 +142,70 @@ public class TargetIndicator  {
          return super.toString();
       }
    }
+   
+   /**
+    * Tests the destination exists and a file can be created on it.  This ensures
+    * that the given server url is correct, that the server is running and that
+    * the user has the right permissions on that particular one.
+    * We do this
+    * before, eg, running the query to try and ensure the query is not wasted.
+    *
+    * @throws IOException if the operation fails for any reason
+    */
+   public void testConnection(Account user) throws IOException {
+      
+      if (getEmail() != null) {
+         //check email server is available
+         String server = SimpleConfig.getSingleton().getString(EMAIL_SERVER);
+         String emailUser = SimpleConfig.getSingleton().getString(EMAIL_USER, null);
+         String password = SimpleConfig.getSingleton().getString(EMAIL_PWD, null);
+
+         try {
+            Properties props = new Properties();
+            props.put("mail.smtp.host", server);
+            Session session = Session.getDefaultInstance(props, null);
+   
+            Provider[] p = session.getProviders();
+            Transport transport = session.getTransport(session.getProvider("smtp"));
+            transport.connect(server, emailUser, password);
+         }
+         catch (MessagingException e) {
+            throw new IOException("Cannot connect to server "+server+": "+e);
+         }
+            
+      }
+
+      // test to see that the agsl for the results is valid
+      if (resolveAgsl() != null) {
+         
+         StoreClient store = StoreDelegateFactory.createDelegate(user.toUser(), resolveAgsl());
+
+         try {
+            store.putString("This is a test file to make sure we can create a file at the target before we start, so our query results are not lost",
+                              resolveAgsl().getPath(), false);
+         }
+         catch (StoreException se) {
+            //rethrow with more info
+            throw new StoreException("Test to create '"+resolveAgsl().getPath()+"' on target store failed "+se.getMessage(), se.getCause());
+         }
+         
+         try {
+            store.delete(resolveAgsl().getPath());
+         }
+         catch (StoreException se) {
+            //log it but don't fail
+            LogFactory.getLog(TargetIndicator.class).error("Could not delete test file",se);
+         }
+            
+      }
+   }
+   
 }
 /*
  $Log: TargetIndicator.java,v $
+ Revision 1.2  2004/09/07 00:54:20  mch
+ Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
+
  Revision 1.1  2004/08/25 23:38:33  mch
  (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 

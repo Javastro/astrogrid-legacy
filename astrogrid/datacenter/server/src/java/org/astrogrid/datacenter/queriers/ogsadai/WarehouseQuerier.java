@@ -1,26 +1,20 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.13 2004/04/01 17:10:31 mch Exp $
+ * $Id: WarehouseQuerier.java,v 1.14 2004/09/07 00:54:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.ogsadai;
 
-import java.io.*;
-
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
+import java.io.File;
+import java.io.IOException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
-import org.astrogrid.datacenter.queriers.status.QuerierComplete;
-import org.astrogrid.util.DomLoader;
+import org.astrogrid.datacenter.queriers.VotableInResults;
+import org.astrogrid.datacenter.queriers.sql.postgres.PostgresSqlMaker;
 import org.astrogrid.util.Workspace;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /**
  * An AstroGrid datacenter plugin Querier that provides access
@@ -127,7 +121,8 @@ public class WarehouseQuerier extends QuerierPlugin {
       throw new IOException("WarehouseQuerier workspace is null");
     }
     doShelledOutQuery(sql, tempFile);
-    processResults(new WarehouseResults(tempFile));
+    VotableInResults results = new VotableInResults(querier, tempFile);
+    results.send(querier.getReturnSpec(), querier.getUser());
     workspace.close();
   }
 
@@ -365,6 +360,9 @@ public class WarehouseQuerier extends QuerierPlugin {
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.14  2004/09/07 00:54:20  mch
+Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
+
 Revision 1.13  2004/04/01 17:10:31  mch
 Removed unused import
 

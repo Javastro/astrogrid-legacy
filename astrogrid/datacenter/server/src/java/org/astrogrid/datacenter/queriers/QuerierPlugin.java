@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierPlugin.java,v 1.15 2004/09/06 20:23:00 mch Exp $
+ * $Id: QuerierPlugin.java,v 1.16 2004/09/07 00:54:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -42,11 +42,6 @@ public abstract class QuerierPlugin  {
    
    protected static final Log log = LogFactory.getLog(QuerierPlugin.class);
 
-   public final static String EMAIL_SERVER = "emailserver.address";
-   public final static String EMAIL_USER   = "emailserver.user";
-   public final static String EMAIL_PWD    = "emailserver.password";
-   public final static String EMAIL_FROM   = "emailserver.from";
-   
    /** All Plugins implementations will have to have the same constructor as this */
    public QuerierPlugin(Querier givenParent) {
       this.querier = givenParent;
@@ -67,105 +62,7 @@ public abstract class QuerierPlugin  {
       aborted = true;
    }
    
-   /** This is a helper method for subclasses; it is meant to be called
-    * from the askQuery method.  It transforms the results and sends them
-    * as required, updating the querier status appropriately.
-    */
-   protected void processResults(QueryResults results) throws IOException {
-      
-      assert (results != null) : "Plugin has given null results to set";
 
-      QuerierProcessingResults resultsStatus = new QuerierProcessingResults(querier);
-      querier.setStatus(resultsStatus);
-
-      TargetIndicator target = querier.getResultsTarget();
-
-      log.info(querier+", sending results to "+target);
-
-      if (target.getEmail() != null) {
-
-         resultsStatus.setNote("emailing results to "+target.getEmail());
-         
-         emailResults(results, target.getEmail(), resultsStatus);
-      }
-      else {
-
-         resultsStatus.setNote("Sending results to "+target);
-
-         Writer writer = target.resolveWriter(querier.getUser());
-      
-         if (writer == null) {
-            throw new IOException("Could not resolve writer from "+target);
-         }
-
-         results.write(writer, resultsStatus, querier.getRequestedFormat());
-         
-         //we shouldn't actually close the writer, as for JSPs for example the
-         //page may still have writing to do
-         //@todo close targets when necessary
-         writer.flush();
-      }
-
-      String s = "Results sent to "+target;
-      if (target.isIvorn()) s = s + " => "+target.resolveAgsl();
-      resultsStatus.addDetail(s);
-      resultsStatus.setNote("");
-        
-      log.info(querier+" results sent");
-   }
-
-   /**
-    * Experimental emailler
-    */
-   protected void emailResults(QueryResults results, String targetAddress, QuerierProcessingResults resultsStatus) throws IOException {
-
-      // Get email server from configuration file
-      String emailServer = SimpleConfig.getSingleton().getString(EMAIL_SERVER);
-      String emailUser = SimpleConfig.getSingleton().getString(EMAIL_USER, null);
-      String emailPassword = SimpleConfig.getSingleton().getString(EMAIL_PWD, null);
-      String emailFrom = SimpleConfig.getSingleton().getString(EMAIL_FROM);
-         
-      try {
-         // create properties required by Session constructor, and get the default Session
-         Properties props = new Properties();
-         props.put("mail.smtp.host", emailServer);
-         Session session = Session.getDefaultInstance(props, null);
-   
-         //create message
-         Message message = new MimeMessage(session);
-         message.setFrom(new InternetAddress(emailFrom));
-         message.setRecipient(Message.RecipientType.TO, new InternetAddress(targetAddress));
-         message.setSubject("Results of Query "+querier.getId());
-         //message.setSentDate(new Date());
-      
-         // Set message contents - should really do this as a ZIP filed attachment. Later...
-         StringWriter sw = new StringWriter();
-         results.write(sw, resultsStatus, querier.getRequestedFormat());
-         message.setText(sw.toString());
-
-         // Send
-         Transport transport = session.getTransport(session.getProvider("smtp"));
-         transport.connect(emailServer, emailUser, emailPassword);
-         transport.sendMessage(message, new Address[] { new InternetAddress(targetAddress) });
-         
-         
-      } catch (MessagingException e)
-      {
-         log.error(e);
-         throw new IOException(e+", mailing to "+emailServer);
-      }
-   }
-
-   /**
-    * Plugins should implement this method to return a metadata voResource
-    * element that includes
-    * information about the database (eg column names, etc) that is being
-    * published.
-    */
-   public String getVoResource() throws IOException {
-      return null;
-   }
-   
    /**
     * While the 'askQuery' should do all tidying up required, this method
     * exists just to separate the plugin from the Querier when the querier
@@ -177,6 +74,9 @@ public abstract class QuerierPlugin  {
 }
 /*
  $Log: QuerierPlugin.java,v $
+ Revision 1.16  2004/09/07 00:54:20  mch
+ Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
+
  Revision 1.15  2004/09/06 20:23:00  mch
  Replaced metadata generators/servers with plugin mechanism. Added Authority plugin
 

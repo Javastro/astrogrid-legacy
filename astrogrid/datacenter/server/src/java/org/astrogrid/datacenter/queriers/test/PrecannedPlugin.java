@@ -1,5 +1,5 @@
 /*
- * $Id: PrecannedPlugin.java,v 1.1 2004/03/12 04:45:26 mch Exp $
+ * $Id: PrecannedPlugin.java,v 1.2 2004/09/07 00:54:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -29,9 +29,9 @@ public class PrecannedPlugin extends QuerierPlugin
    public void askQuery() throws IOException
    {
       Date today = new Date();
-      PrecannedResults results = new PrecannedResults("Created "+ today.getDate()+"-"+today.getMonth()+"-"+today.getYear()+" "+today.getHours()+":"+today.getMinutes()+":"+today.getSeconds());
+      PrecannedResults results = new PrecannedResults(querier, "Created "+ today.getDate()+"-"+today.getMonth()+"-"+today.getYear()+" "+today.getHours()+":"+today.getMinutes()+":"+today.getSeconds());
       
-      processResults(results);
+      results.send(querier.getReturnSpec(), querier.getUser());
    }
 
 

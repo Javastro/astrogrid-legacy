@@ -1,4 +1,4 @@
-/*$Id: EgsoQuerierPlugin.java,v 1.3 2004/09/06 21:36:15 mch Exp $
+/*$Id: EgsoQuerierPlugin.java,v 1.4 2004/09/07 00:54:20 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,14 +37,18 @@ public class EgsoQuerierPlugin extends QuerierPlugin {
    public void askQuery() throws IOException {
       EgsoQueryMaker translator = new EgsoQueryMaker();
       EgsoQuery query = translator.getEgsoQuery(querier.getQuery());
-      Document results = query.doDelegateQuery(delegate);
-      processResults(new VotableResults(results, null));
+      Document resultsVotDoc = query.doDelegateQuery(delegate);
+      VotableResults results = new VotableResults(querier, resultsVotDoc);
+      results.send(querier.getReturnSpec(), querier.getUser());
    }
 }
 
 
 /*
  $Log: EgsoQuerierPlugin.java,v $
+ Revision 1.4  2004/09/07 00:54:20  mch
+ Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
+
  Revision 1.3  2004/09/06 21:36:15  mch
  Factored out VotableResults
 

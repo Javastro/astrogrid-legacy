@@ -1,4 +1,4 @@
-/*$Id: AdqlVizierTranslator.java,v 1.4 2004/03/13 16:27:05 mch Exp $
+/*$Id: AdqlVizierTranslator.java,v 1.5 2004/09/07 00:54:20 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,28 +10,17 @@
 **/
 package org.astrogrid.datacenter.cds.querier;
 
-import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.adql.generated.*;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.DynamicVisitor;
 import org.astrogrid.datacenter.adql.QOM;
-import org.astrogrid.datacenter.adql.generated.ArrayOfString;
-import org.astrogrid.datacenter.adql.generated.Atom;
-import org.astrogrid.datacenter.adql.generated.AtomExpr;
-import org.astrogrid.datacenter.adql.generated.Circle;
-import org.astrogrid.datacenter.adql.generated.ColumnExpr;
-import org.astrogrid.datacenter.adql.generated.ComparisonPred;
-import org.astrogrid.datacenter.adql.generated.LikePred;
-import org.astrogrid.datacenter.adql.generated.NumberLiteral;
-import org.astrogrid.datacenter.adql.generated.ScalarExpression;
-import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.adql.generated.Table;
 import org.astrogrid.datacenter.cdsdelegate.vizier.DecimalDegreesTarget;
 import org.astrogrid.datacenter.cdsdelegate.vizier.NamedTarget;
 import org.astrogrid.datacenter.cdsdelegate.vizier.Unit;
 import org.astrogrid.datacenter.cdsdelegate.vizier.Wavelength;
-import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.w3c.dom.Element;
 
 /** Translate an adql query document into a {@link VizierCone} object
@@ -40,7 +29,7 @@ import org.w3c.dom.Element;
  * @author Noel Winstanley nw@jb.man.ac.uk 28-Nov-2003
  *
  */
-public class AdqlVizierTranslator  implements Translator {
+public class AdqlVizierTranslator   {
 
     /**
      * translate an adql document
@@ -197,6 +186,9 @@ public class AdqlVizierTranslator  implements Translator {
 
 /*
 $Log: AdqlVizierTranslator.java,v $
+Revision 1.5  2004/09/07 00:54:20  mch
+Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
+
 Revision 1.4  2004/03/13 16:27:05  mch
 Changed makeFullSearcher to makeQuerySearcher
 

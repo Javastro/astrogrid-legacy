@@ -1,18 +1,19 @@
 /*
- * $Id: PrecannedResults.java,v 1.4 2004/09/01 12:10:58 mch Exp $
+ * $Id: PrecannedResults.java,v 1.5 2004/09/07 00:54:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.test;
-import java.io.*;
-
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.Writer;
+import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
 import org.astrogrid.io.Piper;
-import org.astrogrid.util.DomHelper;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /**
  * For testing only; returns a dummy votable
@@ -29,8 +30,9 @@ public class PrecannedResults extends QueryResults
     * it from other results.  Loads example votable that should eb in the same
     * package
     */
-   public PrecannedResults(String someIdentifyingMark)
+   public PrecannedResults(Querier parentQuerier, String someIdentifyingMark)
    {
+      super(parentQuerier);
       this.id = someIdentifyingMark;
 
 //      if (getExampleStream() == null)

@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.58 2004/08/27 17:47:19 mch Exp $
+ * $Id: Querier.java,v 1.59 2004/09/07 00:54:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -169,7 +169,7 @@ public class Querier implements Runnable {
     * results processing but there are helper methods here for it
      */
    public void ask() throws IOException {
-      testResultsDestination();
+      returns.getTarget().testConnection(user);
 
       timeQueryStarted = new Date();
       
@@ -180,68 +180,6 @@ public class Querier implements Runnable {
       close();
    }
    
-   /**
-    * Tests the destination exists and a file can be created on it.  This ensures
-    * that the given server url is correct, that the server is running and that
-    * the user has the right permissions on that particular one.
-    * We do this
-    * before running the query to try and ensure the query is not wasted.
-    *
-    * @throws IOException if the operation fails for any reason
-    */
-   protected void testResultsDestination() throws IOException {
-      
-      TargetIndicator resultsTarget = returns.getTarget();
-      
-      if ((resultsTarget == null)) {
-         throw new IllegalStateException("no results destination");
-      }
-
-      if (resultsTarget.getEmail() != null) {
-         //check email server is available
-         String server = SimpleConfig.getSingleton().getString(QuerierPlugin.EMAIL_SERVER);
-         String user = SimpleConfig.getSingleton().getString(QuerierPlugin.EMAIL_USER, null);
-         String password = SimpleConfig.getSingleton().getString(QuerierPlugin.EMAIL_PWD, null);
-
-         try {
-            Properties props = new Properties();
-            props.put("mail.smtp.host", server);
-            Session session = Session.getDefaultInstance(props, null);
-   
-            Provider[] p = session.getProviders();
-            Transport transport = session.getTransport(session.getProvider("smtp"));
-            transport.connect(server, user, password);
-         }
-         catch (MessagingException e) {
-            throw new QuerierPluginException("Cannot connect to server "+server,e);
-         }
-            
-      }
-
-      // test to see that the agsl for the results is valid
-      if (resultsTarget.resolveAgsl() != null) {
-         
-         StoreClient store = StoreDelegateFactory.createDelegate(user.toUser(), resultsTarget.resolveAgsl());
-
-         try {
-            store.putString("This is a test file to make sure we can create a file at the target before we start, so our query results are not lost",
-                              resultsTarget.resolveAgsl().getPath(), false);
-         }
-         catch (StoreException se) {
-            //rethrow with more info
-            throw new StoreException("Test to create '"+resultsTarget.resolveAgsl().getPath()+"' on target store failed "+se.getMessage(), se.getCause());
-         }
-         
-         try {
-            store.delete(resultsTarget.resolveAgsl().getPath());
-         }
-         catch (StoreException se) {
-            //log it but don't fail
-            log.error("Could not delete test file",se);
-         }
-            
-      }
-   }
 
    /** Sets results target.
     * @deprecated - should be set in constructor - but v4.1 interface uses it */
@@ -256,7 +194,7 @@ public class Querier implements Runnable {
     * @deprecated use getReturnSpec */
    public String getRequestedFormat()           {  return ((ReturnTable) this.returns).getFormat(); }
 
-   public ReturnSpec getReturnSepc()            { return this.returns; }
+   public ReturnSpec getReturnSpec()            { return this.returns; }
    
    /**
     * Closes & tidies up
@@ -419,6 +357,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.59  2004/09/07 00:54:20  mch
+ Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
+
  Revision 1.58  2004/08/27 17:47:19  mch
  Added first servlet; started making more use of ReturnSpec
 

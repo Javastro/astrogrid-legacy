@@ -1,5 +1,5 @@
 /*
- * $Id: ReturnTable.java,v 1.3 2004/08/27 17:47:19 mch Exp $
+ * $Id: ReturnTable.java,v 1.4 2004/09/07 00:54:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,10 +25,7 @@ public class ReturnTable  extends ReturnSpec {
 
    NumericExpression[] sortOrder = null;
    
-   String format = VOTABLE; //defaults to VOTABLE
-   
-   public static final String VOTABLE  = "VOTable";
-   public static final String HTML     = "Html";
+   /** Another format particular to tables */
    public static final String CSV      = "CSV";
    
    
@@ -75,10 +72,6 @@ public class ReturnTable  extends ReturnSpec {
       return all;
    }
 
-   public void setFormat(String aFormat)  {  this.format = aFormat; }
-
-   public String getFormat()              {  return format; }
-   
    /** For debug & reference */
    public String toString() {
       String s = "[Results: target="+target+", cols=";
@@ -95,6 +88,9 @@ public class ReturnTable  extends ReturnSpec {
 }
 /*
  $Log: ReturnTable.java,v $
+ Revision 1.4  2004/09/07 00:54:20  mch
+ Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
+
  Revision 1.3  2004/08/27 17:47:19  mch
  Added first servlet; started making more use of ReturnSpec
 

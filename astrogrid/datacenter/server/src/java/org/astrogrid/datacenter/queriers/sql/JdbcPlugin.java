@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.27 2004/09/06 20:42:34 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.28 2004/09/07 00:54:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -99,7 +99,7 @@ public class JdbcPlugin extends QuerierPlugin implements VoResourcePlugin  {
             }
             
             //sort out results
-            processResults(new SqlResults(results));
+            new SqlResults(querier, results).send(querier.getReturnSpec(), querier.getUser());
          }
          
       }

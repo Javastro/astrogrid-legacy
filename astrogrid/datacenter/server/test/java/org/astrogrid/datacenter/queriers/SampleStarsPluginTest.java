@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.2 2004/09/06 20:23:00 mch Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.3 2004/09/07 00:54:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -40,7 +40,7 @@ public class SampleStarsPluginTest extends TestCase {
    public void testFixedResults() throws IOException, SAXException, SQLException {
       
       //test the fixed example ones
-      QueryResults results = new PrecannedResults("test");
+      QueryResults results = new PrecannedResults(null, "test");
       results.toVotable(new StringWriter(), null);
    }
 
@@ -86,7 +86,7 @@ public class SampleStarsPluginTest extends TestCase {
       
       //SampleStarsPlugin.populateDb();
 
-      QuerierPlugin plugin = new SampleStarsPlugin(null);
+      SampleStarsPlugin plugin = new SampleStarsPlugin(null);
       
       //generate metadata
       String metadata = plugin.getVoResource();

@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.20 2004/08/27 09:31:16 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.21 2004/09/07 00:54:20 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,10 @@
 **/
 package org.astrogrid.datacenter.queriers.sql;
 
-import java.io.*;
-
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.StringTokenizer;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -24,13 +26,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.ConfigException;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.queriers.spi.Translator;
-import org.astrogrid.datacenter.queriers.sql.deprecated.SqlQuerierSPI;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.sky.Angle;
-import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Element;
 
 /**
@@ -213,27 +212,10 @@ public class StdSqlMaker  extends SqlMaker {
     * Constructs an SQL statement for the given ADQL
     */
    public String fromAdql(AdqlQuery query) throws QueryException {
-      //should use appropriate xslt, but use deprecated stuff for now
 
       // find the translator
         Element queryBody = query.toDom().getDocumentElement();
         String namespaceURI = queryBody.getNamespaceURI();
-        if (namespaceURI == null) {
-            // maybe not using namespace aware parser - see if we can find an xmlns attribute instead
-            namespaceURI = queryBody.getAttribute("xmlns");
-        }
-        if (namespaceURI == null) {
-            DomHelper.PrettyElementToStream(queryBody,System.out);
-            throw new IllegalArgumentException("Query body has no namespace - cannot determine language");
-        }
-        
-        SqlQuerierSPI spi = new SqlQuerierSPI();
-        Translator trans = spi.getTranslatorMap().lookup(namespaceURI);
-        if (trans != null) {
-           String sql = useSpi(queryBody, trans);
-           log.debug("Used SPI "+trans+") to translate ADQL ("+namespaceURI+") to '"+sql+"'");
-           return sql;
-        }
         
         String sql = useXslt(queryBody, namespaceURI);
         
@@ -243,27 +225,6 @@ public class StdSqlMaker  extends SqlMaker {
         return sql;
 
      }
-     
-     
-     /** Uses the SPI plugin to do the translations */
-     public String useSpi(Element queryBody, Translator trans) throws QueryException {
-        // do the translation
-        Object intermediateRep = null;
-        Class expectedType = null;
-        try { // don't trust it.
-            intermediateRep = trans.translate(queryBody);
-        } catch (Exception t) {
-            throw new QueryException("Translation phase failed:" + t.getMessage(),t);
-        }
-        //check return type
-        expectedType = trans.getResultType();
-        if (! expectedType.isInstance(intermediateRep)) { // checks result is non-null and the right type.
-            throw new QueryException("Translation result " + intermediateRep.getClass().getName() + " not of expected type " + expectedType.getName());
-        }
-        
-        return (String) intermediateRep;
-
-   }
    
      /** Uses Xslt to do the translations */
    public String useXslt(Element queryBody, String namespaceURI) throws QueryException {
@@ -426,6 +387,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.21  2004/09/07 00:54:20  mch
+Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
+
 Revision 1.20  2004/08/27 09:31:16  mch
 Added limit, order by, some page tidying, etc
 

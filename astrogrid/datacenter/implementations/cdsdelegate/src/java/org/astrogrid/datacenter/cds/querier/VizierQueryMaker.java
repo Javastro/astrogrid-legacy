@@ -1,4 +1,4 @@
-/*$Id: VizierQueryMaker.java,v 1.1 2004/03/13 23:40:59 mch Exp $
+/*$Id: VizierQueryMaker.java,v 1.2 2004/09/07 00:54:20 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,6 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.cdsdelegate.vizier.DecimalDegreesTarget;
 import org.astrogrid.datacenter.cdsdelegate.vizier.Unit;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.query.Query;
@@ -65,7 +64,7 @@ public class VizierQueryMaker  {
 
       try {
         Element queryBody = query.toDom().getDocumentElement();
-        Translator trans = new AdqlVizierTranslator();
+        AdqlVizierTranslator trans = new AdqlVizierTranslator();
         // do the translation
         Object intermediateRep = null;
         Class expectedType = null;
@@ -91,6 +90,9 @@ public class VizierQueryMaker  {
 
 /*
 $Log: VizierQueryMaker.java,v $
+Revision 1.2  2004/09/07 00:54:20  mch
+Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
+
 Revision 1.1  2004/03/13 23:40:59  mch
 Changes to adapt to It05 refactor
 

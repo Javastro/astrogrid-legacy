@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.15 2004/09/06 20:23:00 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.16 2004/09/07 00:54:20 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -167,7 +167,7 @@ public class SqlPluginTest extends ServerTestCase {
     public void testResourceMaker() throws Exception {
        setUp();
        
-       QuerierPlugin plugin = new JdbcPlugin(null);
+       JdbcPlugin plugin = new JdbcPlugin(null);
 
        //generate metadata
        String metadata = plugin.getVoResource();
@@ -218,6 +218,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.16  2004/09/07 00:54:20  mch
+ Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
+
  Revision 1.15  2004/09/06 20:23:00  mch
  Replaced metadata generators/servers with plugin mechanism. Added Authority plugin
 
