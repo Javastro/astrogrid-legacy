@@ -1,1 +1,0 @@
-This is a small file to send to myspace severs for testing.
