@@ -245,7 +245,7 @@ a.ag-content-tab-link:hover
   /*
     Dimensions.
     */
-  width:                                    20%;
+  width:                                    30%;
 
   /*
     Positioning.
@@ -266,7 +266,10 @@ a.ag-content-tab-link:hover
   border-bottom-width:                      1px;
   border-bottom-style:                      solid;
 
+/*
   padding-right:                            21%;
+*/
+  padding-right:                            0%;
   
   /*
     Colours.
