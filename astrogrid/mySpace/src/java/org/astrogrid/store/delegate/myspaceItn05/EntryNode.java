@@ -88,8 +88,6 @@ public class EntryNode implements StoreFile
    }
 
 
-
-
 /**
  * Constructor with no arguments.  All the member variables are set to
  * null (or -1 in the case of <code>int</code>s).
@@ -106,6 +104,136 @@ public class EntryNode implements StoreFile
       this.type = EntryCodes.UNKNOWN;
       this.permissionsMask = null;
    }
+
+
+/**
+ * Create a <code>EntryNode</code> object from a list of EntryResults.
+ */
+
+   public EntryNode (String path, ArrayList entries)
+   {  
+//
+//   Create a fake root node corresponding to the path.
+
+//      System.out.println("orig path: " + path);
+      int pathLen = path.length();
+      int trailAst = path.lastIndexOf("*");
+      if (trailAst == pathLen-1)
+      {  int lastSep = path.lastIndexOf("/");
+//         System.out.println("lastSep " + lastSep);
+         path = path.substring(0, lastSep+1);
+      }
+
+      pathLen = path.length();
+      int trailSep = path.lastIndexOf("/");
+      if (trailSep == pathLen-1  && pathLen > 1)
+      {  path = path.substring(0, pathLen-1);
+      }
+
+//      System.out.println("fixed path: " + path);
+
+      this.entryName = path;
+      this.entryId = -1;
+      this.entryUri = null;
+      this.ownerId = null;
+      this.creationDate = new Date();
+      this.expiryDate = new Date();
+      this.size = -1;
+      this.type = EntryCodes.CON;
+      this.permissionsMask = null;
+
+
+//      for (int loop=0; loop<entries.size(); loop++)
+//      {  EntryResults temp = (EntryResults)entries.get(loop);
+//           System.out.println(loop + " " +
+//             temp.getEntryName() );
+//      }
+
+//
+//   Set both the root and current element to this element.
+
+      EntryNode root = this;
+      EntryNode currentEntry = this;
+//      System.out.println("top name: " + currentEntry.getName() );
+
+      ArrayList parentEntries = new ArrayList();
+      parentEntries.add(null);
+
+//
+//   Grow the tree.
+
+      boolean more = true;
+      int currentIndex = -1;
+      EntryNode newEntry = null;
+
+      while (more)
+      {
+//
+//      Attempt to obtain the next entry from the list.
+
+//         System.out.println("currentIndex, size: " +
+//           currentIndex + " " + entries.size() );
+         if (currentIndex < entries.size() - 1)
+         {  currentIndex = currentIndex + 1;
+            EntryNode nextEntry = new
+              EntryNode( (EntryResults)entries.get(currentIndex) );
+
+//            System.out.println("current, next: " +
+//              currentEntry.getName() +" " + nextEntry.getName() );
+
+            if (this.isChild(nextEntry, currentEntry) )
+            {  currentEntry.addChild(nextEntry);
+               parentEntries.add(currentEntry);
+               currentEntry = nextEntry;
+               entries.remove(currentIndex);
+
+               currentIndex = -1;
+            }
+         }
+         else
+         {  currentIndex = -1;
+            currentEntry = 
+              (EntryNode)parentEntries.get(parentEntries.size() -1);
+            parentEntries.remove(parentEntries.size() -1);
+
+            if (entries.size() < 1)
+            {  more = false;
+            }
+         }
+      }
+
+   }
+
+/**
+ * Determine whether first entry is a child of the second entry.
+ */
+
+  private boolean isChild(EntryNode firstEntry, EntryNode secondEntry)
+  {  boolean child = false;
+
+     String firstName = firstEntry.getName();
+     String secondName = secondEntry.getName();
+
+     int lastPos = firstName.lastIndexOf("/");
+
+     if ((secondName.equals("/") || secondName.equals("/*"))
+            && (lastPos == 0) )
+     {  child = true;
+     }
+     else
+     {  String firstParent = firstName.substring(0, lastPos);
+//        System.out.println("firstParent: " + firstParent);
+
+        if (firstParent.equals(secondName) )
+        {  child = true;
+        }
+     }
+
+//     System.out.println("first, second, child: " + firstName + " " +
+//      secondName + " " + child);
+
+     return child;
+  }
 
 
 // ----------------------------------------------------------------------
@@ -313,11 +441,11 @@ public class EntryNode implements StoreFile
  */
 
    public void addChild(EntryNode child)
-   {  System.out.println("type: " + type);
+   {  // System.out.println("type: " + type);
 
       if (type == EntryCodes.CON)
       {  children.add(child);
-         System.out.println("added...");
+//         System.out.println("added...");
       }
    }
 
@@ -329,11 +457,11 @@ public class EntryNode implements StoreFile
    public EntryNode getChild(int n)
    {  EntryNode child = new EntryNode();
 
-      System.out.println("n, cildren.size(): " +
-         n + " " + children.size() );
+//      System.out.println("n, cildren.size(): " +
+//         n + " " + children.size() );
       if (n < children.size() )
       {  child = (EntryNode)children.get(n);
-         System.out.println("child name: " + child.getName() );
+//         System.out.println("child name: " + child.getName() );
       }
       else
       {  child = null;
@@ -403,8 +531,8 @@ public class EntryNode implements StoreFile
          {  more = false;
          }
 
-         System.out.println("numChildren, more: " + numChildren 
-           + " " + more);
+//         System.out.println("numChildren, more: " + numChildren 
+//           + " " + more);
 
          while (more)
          {  numChildren = currentEntry.getNumChildren();
@@ -413,15 +541,15 @@ public class EntryNode implements StoreFile
                parentEntries.add(currentEntry);
                parentCurChild.add(new Integer(currentChild));
 
-               System.out.println("  new name, currentChild" + 
-                  currentEntry.getName() + " " + currentChild);
+//               System.out.println("  new name, currentChild" + 
+//                  currentEntry.getName() + " " + currentChild);
                currentEntry = currentEntry.getChild(currentChild);
-               System.out.println("  new name" + currentEntry.getName() );
+//               System.out.println("  new name" + currentEntry.getName() );
                currentChild = 0;
                level = level + 1;
 
                String currentLine = "\n";
-               for (int loop=0; loop<level; loop++)
+               for (int loop=0; loop<level-1; loop++)
                {  currentLine = currentLine + "  ";
                }
                currentLine = currentLine + currentEntry.getName();
@@ -429,7 +557,7 @@ public class EntryNode implements StoreFile
                {  currentLine = currentLine + " (container)";
                }
                buffer.append(currentLine);
-               System.out.println("\n>>> " + buffer.toString() );
+//               System.out.println("\n>>> " + buffer.toString() );
 
             }
             else

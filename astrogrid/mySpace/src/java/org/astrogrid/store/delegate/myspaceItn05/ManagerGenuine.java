@@ -239,6 +239,65 @@ public class ManagerGenuine implements Manager
      throws java.rmi.RemoteException
    {  KernelResults results = new KernelResults();
 
+      setUp();
+
+      try
+      {
+//
+//      Write a message to the log file.
+
+         logger.setActionName("putBytes");
+         logger.appendMessage("Invoked putBytes...");
+
+//
+//      [TODO]: The following statement is a place-holder.  In due
+//      course obtain the account details from the SOAP header.  Also
+//      the account class will probably not be a String.
+
+         String account = null;
+         logger.setAccount(account);
+
+//
+//      Convert the array of bytes to a String.
+//      The bytes are encoded as a series of space-separated numbers.
+//
+//      [TODO]: this is all something of a kludge.  Really the array
+//        of bytes should be saved as,... just an array of bytes.
+
+         StringBuffer toSave = new StringBuffer();
+         for (int loop = 0; loop<contents.length; loop++)
+         {  toSave.append(contents[loop] + " ");
+         }
+
+//
+//      Invoke the MySpaceActions object perform the appropriate tasks.
+
+         actions.setRegistryName(registryName);
+         boolean success = actions.putString(account, newFile, 
+           toSave.toString(), category, dispatchExisting);
+
+//
+//      Generate a success method if the method succeeded.
+
+         if (success)
+         {  status.addCode(MySpaceStatusCode.AGMMCI00001,
+              MySpaceStatusCode.INFO, MySpaceStatusCode.LOG,
+              this.getClassName() );
+         }
+
+//
+//      Copy any status messages to the results object.
+
+         ArrayList statusList = status.getStatusResults();
+         results.setStatusList(statusList.toArray() );
+         status.reset();
+      }
+      catch (Exception e)
+      {  logger.appendMessage("Exception in putBytes: " +
+           e.toString() );
+      }
+
+      logger.close();
       return results;
    }
 
@@ -270,7 +329,53 @@ public class ManagerGenuine implements Manager
      throws java.rmi.RemoteException
    {  KernelResults results = new KernelResults();
 
+      setUp();
 
+      try
+      {
+//
+//      Write a message to the log file.
+
+         logger.setActionName("putUri");
+         logger.appendMessage("Invoked putUri...");
+
+//
+//      [TODO]: The following statement is a place-holder.  In due
+//      course obtain the account details from the SOAP header.  Also
+//      the account class will probably not be a String.
+
+         String account = null;
+         logger.setAccount(account);
+
+//
+//      Invoke the MySpaceActions object perform the appropriate tasks.
+
+         actions.setRegistryName(registryName);
+         boolean success = actions.putUri(account, newFile, uri, 
+           category, dispatchExisting);
+
+//
+//      Generate a success message if the method succeeded.
+
+         if (success)
+         {  status.addCode(MySpaceStatusCode.AGMMCI00001,
+              MySpaceStatusCode.INFO, MySpaceStatusCode.LOG,
+              this.getClassName() );
+         }
+
+//
+//      Copy any status messages to the results object.
+
+         ArrayList statusList = status.getStatusResults();
+         results.setStatusList(statusList.toArray() );
+         status.reset();
+      }
+      catch (Exception e)
+      {  logger.appendMessage("Exception in putUri: " +
+           e.toString() );
+      }
+
+      logger.close();
       return results;
    }
 

@@ -234,7 +234,68 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  */
 
    public StoreFile getFiles(String filter) throws IOException
-   {  return null;
+   {  EntryNode fileRoot = new EntryNode();
+      boolean errorRaised = false;
+
+      try
+      {  KernelResults results = innerDelegate.getEntriesList(filter,
+           isTest);
+
+//
+//      Append and check any status messages.
+
+         Object[] statusResults = results.getStatusList();
+         errorRaised = this.appendAndCheckStatusMessages(
+           statusResults);
+
+//
+//      Assemble an array of any files which matched the query.
+//      Each file is returned as an EntryResults object, which is
+//      converted to the corresponding EntryRecord.
+
+         Object[] fileResults = results.getEntries();
+         int numFiles = Array.getLength(fileResults);
+//         System.out.println("numFiles " + numFiles);
+
+         if (numFiles > 0)
+         {  ArrayList fileList = new ArrayList();
+
+            for(int loop=0; loop<numFiles; loop++)
+            {  EntryResults file = 
+                 (EntryResults)fileResults[loop];
+               fileList.add(file);
+//                System.out.println("loop " + loop);
+            }
+
+            if (filter.equals("*") )
+            {  filter = "/*";
+            }
+
+//            System.out.println("before  EntryNode");
+            fileRoot = new EntryNode(filter, fileList);
+//            System.out.println("after  EntryNode");
+         }
+
+//
+//      If an error was raised in the Manager and the delegate is
+//      configured to throw an exception in this case then do so.
+
+         if (errorRaised && this.throwExceptions)
+         {  throw new IOException();
+         }
+
+      }
+      catch (Exception e)
+      {  if (errorRaised && this.throwExceptions)
+         {  throw new IOException (this.messageFromManager);
+         }
+         else
+         {  throw new IOException ("Failed to list Files on service: " + 
+              this.endPoint);
+         }
+      }
+
+      return fileRoot;
    }
 
 
