@@ -39,10 +39,20 @@ public class MySpaceActions
 
    public DataItemRecord lookupDataHolderDetails(String userID,
      String communityID, String jobID, int dataItemID)
-   {  RegistryManager reg = new RegistryManager(registryName);
+   {  DataItemRecord dataItem = new DataItemRecord();
+      dataItem = null;
 
-      DataItemRecord dataItem = this.internalLookupDataHolderDetails(
-        userID, communityID, jobID, dataItemID, reg);
+      try
+      {  RegistryManager reg = new RegistryManager(registryName);
+
+         dataItem = this.internalLookupDataHolderDetails(userID,
+           communityID, jobID, dataItemID, reg);
+      }
+      catch (Exception all)
+      {  MySpaceStatus status  = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00100, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
+      }
 
       return dataItem;
    }
@@ -55,10 +65,19 @@ public class MySpaceActions
 
    public Vector lookupDataHoldersDetails(String userID, 
      String communityID, String jobID, String query)
-   {  RegistryManager reg = new RegistryManager(registryName);
+   {  Vector dataItemVector = new Vector();
 
-      Vector dataItemVector = this.internalLookupDataHoldersDetails(
-        userID,  communityID, jobID, query, reg);
+      try
+      {  RegistryManager reg = new RegistryManager(registryName);
+
+         dataItemVector = this.internalLookupDataHoldersDetails(
+           userID,  communityID, jobID, query, reg);
+      }
+      catch (Exception all)
+      {  MySpaceStatus status  = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00100, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
+      }
 
       return dataItemVector;
    }
@@ -75,150 +94,164 @@ public class MySpaceActions
    {  DataItemRecord returnedDataItem = new DataItemRecord();
       returnedDataItem = null;
 
-//
-//   Attempt to open the registry and proceed if ok.
-
-      RegistryManager reg = new RegistryManager(registryName);
       MySpaceStatus status = new MySpaceStatus();
-      if (status.getSuccessStatus())
+
+      try
       {
 
 //
-//      Assemble the UserAccount from the UserID and CommunityID.
+//      Attempt to open the registry and proceed if ok.
 
-         UserAccount userAcc = new UserAccount(userID, communityID);
-
-//
-//      Check the user's authentication and proceed if ok.
-
-         if (userAcc.checkAuthentication() )
+         RegistryManager reg = new RegistryManager(registryName);
+         if (status.getSuccessStatus())
          {
 
 //
-//         Attempt to lookup the details of the original DataHolder
-//         and proceed if ok.
+//         Assemble the UserAccount from the UserID and CommunityID.
 
-            DataItemRecord oldDataItem = 
-              this.internalLookupDataHolderDetails(userID, communityID,
-                jobID, oldDataItemID, reg);
-            if (status.getSuccessStatus())
+            UserAccount userAcc = new UserAccount(userID, communityID);
+
+//
+//         Check the user's authentication and proceed if ok.
+
+            if (userAcc.checkAuthentication() )
             {
 
 //
-//            Check that the original item is a DataHolder rather
-//            than a container.
+//            Attempt to lookup the details of the original DataHolder
+//            and proceed if ok.
 
-               if (oldDataItem.getType() != DataItemRecord.CON)
+               DataItemRecord oldDataItem = 
+                 this.internalLookupDataHolderDetails(userID, communityID,
+                   jobID, oldDataItemID, reg);
+               if (status.getSuccessStatus())
                {
 
 //
-//               Check that the specified output container can be
-//               created.
+//               Check that the original item is a DataHolder rather
+//               than a container.
 
-                  if(this.checkCanBeCreated(newDataItemName, userAcc,
-                    jobID, reg) == true)
+                  if (oldDataItem.getType() != DataItemRecord.CON)
                   {
 
 //
-//                  Create a DataItemRecord for the new DataHolder.
+//                  Check that the specified output container can be
+//                  created.
 
-                     Date creation = new Date();
-
-                     Calendar cal = Calendar.getInstance();
-                     cal.setTime(creation);
-                     cal.add(Calendar.DATE, reg.getExpiryPeriod() );
-                     Date expiry = cal.getTime();
-
-                     int newdataItemID = reg.getNextDataItemID();
-                     String dataItemFileName = "f" + newdataItemID;
-
-                     int dataItemType = oldDataItem.getType();
-
-                     DataItemRecord newDataItem = new DataItemRecord
-                       (newDataItemName, newdataItemID,
-                       dataItemFileName, userID, creation, expiry,
-                       99999, dataItemType, "permissions");
-
-//
-//                  Attempt to add this entry to the registry.
-
-                     if (reg.addDataItemRecord(newDataItem) )
+                     if(this.checkCanBeCreated(newDataItemName, userAcc,
+                       jobID, reg) == true)
                      {
 
 //
-//                     Attempt to copy the DataHolder.
+//                     Create a DataItemRecord for the new DataHolder.
 
-                        int containSepPos1 = newDataItemName.indexOf("/");
-                        int containSepPos2 =
-                          newDataItemName.indexOf("/", containSepPos1+1);
-                        int containSepPos3 =
-                          newDataItemName.indexOf("/", containSepPos2+1);
+                        Date creation = new Date();
 
-                        String serverName;
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(creation);
+                        cal.add(Calendar.DATE, reg.getExpiryPeriod() );
+                        Date expiry = cal.getTime();
 
-                        if (containSepPos3 > 0)
+                        int newdataItemID = reg.getNextDataItemID();
+                        String dataItemFileName = "f" + newdataItemID;
+
+                        int dataItemType = oldDataItem.getType();
+                        int dataItemSize = oldDataItem.getSize();
+
+                        DataItemRecord newDataItem = new DataItemRecord
+                          (newDataItemName, newdataItemID,
+                          dataItemFileName, userID, creation, expiry,
+                          dataItemSize, dataItemType, "permissions");
+
+//
+//                     Attempt to add this entry to the registry.
+
+                        if (reg.addDataItemRecord(newDataItem) )
                         {
 
 //
-//                        Check that the server name is valid.
+//                        Attempt to copy the DataHolder.
 
-                           serverName = 
-                             newDataItemName.substring(containSepPos2+1,
-                               containSepPos3);
+                           int containSepPos1 = newDataItemName.indexOf("/");
+                           int containSepPos2 =
+                             newDataItemName.indexOf("/", containSepPos1+1);
+                           int containSepPos3 =
+                             newDataItemName.indexOf("/", containSepPos2+1);
+
+                           String serverName;
+
+                           if (containSepPos3 > 0)
+                           {
+
+//
+//                           Check that the server name is valid.
+
+                              serverName = 
+                                newDataItemName.substring(containSepPos2+1,
+                                  containSepPos3);
+                           }
+                           else
+                           {  serverName = "";
+                           }
+
+                           String serverDirectory =
+                             reg.getServerDirectory(serverName);
+
+                           String copyFrom = serverDirectory +
+                             oldDataItem.getDataItemFile();
+                           String copyTo = serverDirectory + dataItemFileName;
+
+                           ServerDriver serverDriver = new ServerDriver();
+                           if(serverDriver.copyDataHolder(copyFrom, copyTo) )
+                           {
+
+//
+//                           The copy succeeded.  Copy the DataItemRecord
+//                           for the new DataHolder to the return object.
+
+                              returnedDataItem = newDataItem;
+                           }
+                           else
+                           {
+
+//
+//                           The actual copy of the DataHolder failed.
+//                           Delete its entry from the registry, to bring
+//                           the registry back into line with reality and
+//                           report an error.
+
+                              reg.deleteDataItemRecord(newdataItemID);
+                              status.addCode(MySpaceStatusCode.AGMMCE00202,
+                                MySpaceStatusCode.ERROR,
+                                MySpaceStatusCode.LOG, this.getClassName() );
+                           }
                         }
                         else
-                        {  serverName = "";
+                        {  status.addCode(MySpaceStatusCode.AGMMCE00203,
+                             MySpaceStatusCode.ERROR,
+                             MySpaceStatusCode.LOG, this.getClassName() );
                         }
-
-                        String serverDirectory =
-                          reg.getServerDirectory(serverName);
-
-                        String copyFrom = serverDirectory +
-                          oldDataItem.getDataItemFile();
-                        String copyTo = serverDirectory + dataItemFileName;
-
-                        ServerDriver serverDriver = new ServerDriver();
-                        if(serverDriver.copyDataHolder(copyFrom, copyTo) )
-                        {
-
-//
-//                        The copy succeeded.  Copy the DataItemRecord
-//                        for the new DataHolder to the return object.
-
-                           returnedDataItem = newDataItem;
-                        }
-                        else
-                        {
-
-//
-//                        The actual copy of the DataHolder failed.
-//                        Delete its entry from the registry, to bring
-//                        the registry back into line with reality and
-//                        report an error.
-
-                           reg.deleteDataItemRecord(newdataItemID);
-                           status.addCode(MySpaceStatusCode.AGMMCE00035,
-                             MySpaceStatusCode.ERROR);
-                        }
-                     }
-                     else
-                     {  status.addCode(MySpaceStatusCode.AGMMCE00036,
-                          MySpaceStatusCode.ERROR);
                      }
                   }
-               }
-               else
-               {  status.addCode(MySpaceStatusCode.AGMMCE00037,
-                    MySpaceStatusCode.ERROR);
+                  else
+                  {  status.addCode(MySpaceStatusCode.AGMMCE00204,
+                       MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+                       this.getClassName() );
+                  }
                }
             }
          }
-      }
 
 //
-//   Re-write the registry file.
+//      Re-write the registry file.
 
-      reg.rewriteRegistryFile();
+         reg.rewriteRegistryFile();
+      }
+      catch (Exception all)
+      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+           MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+           this.getClassName() );
+      }
 
       return returnedDataItem;
    }
@@ -239,104 +272,117 @@ public class MySpaceActions
    {  DataItemRecord returnedDataItem = new DataItemRecord();
       returnedDataItem = null;
 
-//
-//   Attempt to open the registry and proceed if ok.
-
-      RegistryManager reg = new RegistryManager(registryName);
       MySpaceStatus status = new MySpaceStatus();
-      if (status.getSuccessStatus())
+
+      try
       {
 
 //
-//      Assemble the UserAccount from the UserID and CommunityID.
+//      Attempt to open the registry and proceed if ok.
 
-         UserAccount userAcc = new UserAccount(userID, communityID);
-
-//
-//      Check the user's authentication and proceed if ok.
-
-         if (userAcc.checkAuthentication() )
+         RegistryManager reg = new RegistryManager(registryName);
+         if (status.getSuccessStatus())
          {
 
 //
-//         Attempt to lookup the details of the original DataHolder
-//         and proceed if ok.
+//         Assemble the UserAccount from the UserID and CommunityID.
 
-            DataItemRecord oldDataItem = 
-              this.internalLookupDataHolderDetails(userID, communityID,
-                jobID, oldDataItemID, reg);
-            if (status.getSuccessStatus())
+            UserAccount userAcc = new UserAccount(userID, communityID);
+
+//
+//         Check the user's authentication and proceed if ok.
+
+            if (userAcc.checkAuthentication() )
             {
 
 //
-//            Check that the original item is a DataHolder rather
-//            than a container.
+//            Attempt to lookup the details of the original DataHolder
+//            and proceed if ok.
 
-               if (oldDataItem.getType() != DataItemRecord.CON)
+               DataItemRecord oldDataItem = 
+                 this.internalLookupDataHolderDetails(userID, communityID,
+                   jobID, oldDataItemID, reg);
+               if (status.getSuccessStatus())
                {
 
 //
-//               Check that the specified output container can be
-//               created.
+//               Check that the original item is a DataHolder rather
+//               than a container.
 
-                  if(this.checkCanBeCreated(newDataItemName, userAcc,
-                    jobID, reg) == true)
-                  { 
-
-//
-//                  Create a DataItemRecord for the new DataHolder.
-
-                     Date creation = new Date();
-
-                     Calendar cal = Calendar.getInstance();
-                     cal.setTime(creation);
-                     cal.add(Calendar.DATE, reg.getExpiryPeriod() );
-                     Date expiry = cal.getTime();
-
-                     int newdataItemID = reg.getNextDataItemID();
-                     String dataItemFileName = 
-                       oldDataItem.getDataItemFile();
-                     int dataItemType = oldDataItem.getType();
-
-                     DataItemRecord newDataItem = new DataItemRecord
-                       (newDataItemName, newdataItemID,
-                       dataItemFileName, userID, creation, expiry,
-                       99999, dataItemType, "permissions");
+                  if (oldDataItem.getType() != DataItemRecord.CON)
+                  {
 
 //
-//                  Attempt to add this entry to the registry.
+//                  Check that the specified output container can be
+//                  created.
 
-                     if (reg.addDataItemRecord(newDataItem) )
-                     {
-
-//
-//                     Delete the original entry from the registry.
-
-                        reg.deleteDataItemRecord(oldDataItemID);
+                     if(this.checkCanBeCreated(newDataItemName, userAcc,
+                       jobID, reg) == true)
+                     { 
 
 //
-//                     Set the return argument to the new dataItem.
+//                     Create a DataItemRecord for the new DataHolder.
 
-                        returnedDataItem = newDataItem;
-                     }
-                     else
-                     {  status.addCode(MySpaceStatusCode.AGMMCE00038,
-                          MySpaceStatusCode.ERROR);
+                        Date creation = new Date();
+
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(creation);
+                        cal.add(Calendar.DATE, reg.getExpiryPeriod() );
+                        Date expiry = cal.getTime();
+
+                        int newdataItemID = reg.getNextDataItemID();
+                        String dataItemFileName = 
+                          oldDataItem.getDataItemFile();
+                        int dataItemType = oldDataItem.getType();
+                        int dataItemSize = oldDataItem.getSize();
+
+                        DataItemRecord newDataItem = new DataItemRecord
+                          (newDataItemName, newdataItemID,
+                          dataItemFileName, userID, creation, expiry,
+                          dataItemSize, dataItemType, "permissions");
+
+//
+//                     Attempt to add this entry to the registry.
+
+                        if (reg.addDataItemRecord(newDataItem) )
+                        {
+
+//
+//                        Delete the original entry from the registry.
+
+                           reg.deleteDataItemRecord(oldDataItemID);
+
+//
+//                        Set the return argument to the new dataItem.
+
+                           returnedDataItem = newDataItem;
+                        }
+                        else
+                        {  status.addCode(MySpaceStatusCode.AGMMCE00205,
+                             MySpaceStatusCode.ERROR,
+                             MySpaceStatusCode.NOLOG, this.getClassName());
+                        }
                      }
                   }
-               }
-               else
-               {  status.addCode(MySpaceStatusCode.AGMMCE00039,
-                     MySpaceStatusCode.ERROR);
+                  else
+                  {  status.addCode(MySpaceStatusCode.AGMMCE00206,
+                       MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+                       this.getClassName());
+                  }
                }
             }
          }
-      }
 
 //
-//   Re-write the registry file.
+//      Re-write the registry file.
 
-      reg.rewriteRegistryFile();
+         reg.rewriteRegistryFile();
+      }
+      catch (Exception all)
+      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+           MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+           this.getClassName() );
+      }
 
       return returnedDataItem;
    }
@@ -363,72 +409,73 @@ public class MySpaceActions
       try
       {
 //
-//   Attempt to open the registry and proceed if ok.
+//      Attempt to open the registry and proceed if ok.
 
-      RegistryManager reg = new RegistryManager(registryName);
-      if (status.getSuccessStatus())
-      {
-
-//
-//      Assemble the UserAccount from the UserID and CommunityID.
-
-         UserAccount userAcc = new UserAccount(userID, communityID);
-
-//
-//      Check the user's authentication and proceed if ok.
-
-         if (userAcc.checkAuthentication() )
+         RegistryManager reg = new RegistryManager(registryName);
+         if (status.getSuccessStatus())
          {
 
 //
-//         Check that the specified dataHolder can be created.
+//         Assemble the UserAccount from the UserID and CommunityID.
 
-            if(this.checkCanBeCreated(newDataHolderName, userAcc,
-              jobID, reg) == true)
+            UserAccount userAcc = new UserAccount(userID, communityID);
+
+//
+//         Check the user's authentication and proceed if ok.
+
+            if (userAcc.checkAuthentication() )
             {
 
 //
-//            Create a DataItemRecord for the container.
+//            Check that the specified dataHolder can be created.
 
-               Date creation = new Date();
-
-               Calendar cal = Calendar.getInstance();
-               cal.setTime(creation);
-               cal.add(Calendar.DATE, reg.getExpiryPeriod() );
-               Date expiry = cal.getTime();
-
-               int newdataItemID = reg.getNextDataItemID();
-               int dataItemType = DataItemRecord.VOT;
-
-               DataItemRecord newDataItem = new DataItemRecord
-                 (newDataHolderName, newdataItemID, serverFileName,
-                 userID, creation, expiry, fileSize, dataItemType,
-                 "permissions");
+               if(this.checkCanBeCreated(newDataHolderName, userAcc,
+                 jobID, reg) == true)
+               {
 
 //
-//            Attempt to add this entry to the registry.
+//               Create a DataItemRecord for the container.
+
+                  Date creation = new Date();
+
+                  Calendar cal = Calendar.getInstance();
+                  cal.setTime(creation);
+                  cal.add(Calendar.DATE, reg.getExpiryPeriod() );
+                  Date expiry = cal.getTime();
+
+                  int newdataItemID = reg.getNextDataItemID();
+                  int dataItemType = DataItemRecord.VOT;
+
+                  DataItemRecord newDataItem = new DataItemRecord
+                    (newDataHolderName, newdataItemID, serverFileName,
+                    userID, creation, expiry, fileSize, dataItemType,
+                    "permissions");
+
+//
+//               Attempt to add this entry to the registry.
 
 
-               if (reg.addDataItemRecord(newDataItem) )
-               {  newDataHolder = newDataItem;
-               }
-               else
-               {  status.addCode(MySpaceStatusCode.AGMMCE00036,
-                    MySpaceStatusCode.ERROR);
+                  if (reg.addDataItemRecord(newDataItem) )
+                  {  newDataHolder = newDataItem;
+                  }
+                  else
+                  {  status.addCode(MySpaceStatusCode.AGMMCE00203,
+                       MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+                       this.getClassName() );
+                  }
                }
             }
          }
-      }
 
 //
-//   Re-write the registry file.
+//      Re-write the registry file.
 
-      reg.rewriteRegistryFile();
-
+         reg.rewriteRegistryFile();
       }
-      catch (Exception e)
-      {  status.addCode(MySpaceStatusCode.AGMMCE00049,
-           MySpaceStatusCode.ERROR);
+      catch (Exception all)
+      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+           MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+           this.getClassName() );
       }
 
       return newDataHolder;
@@ -446,102 +493,115 @@ public class MySpaceActions
      String jobID, int dataItemID)
    {  String dataHolderURI = null;
 
-//
-//   Attempt to open the registry and proceed if ok.
-
-      RegistryManager reg = new RegistryManager(registryName);
       MySpaceStatus status = new MySpaceStatus();
-      if (status.getSuccessStatus())
+
+      try
       {
-
 //
-//      Assemble the UserAccount from the UserID and CommunityID.
+//      Attempt to open the registry and proceed if ok.
 
-         UserAccount userAcc = new UserAccount(userID, communityID);
-
-//
-//      Check the user's authentication and proceed if ok.
-
-         if (userAcc.checkAuthentication() )
+         RegistryManager reg = new RegistryManager(registryName);
+         if (status.getSuccessStatus())
          {
 
 //
-//         Attempt to lookup the details of the DataHolder and proceed
-//         if ok.
+//         Assemble the UserAccount from the UserID and CommunityID.
 
-            DataItemRecord dataItem = 
-              this.internalLookupDataHolderDetails(userID, communityID,
-                jobID, dataItemID, reg);
-            if (status.getSuccessStatus())
+            UserAccount userAcc = new UserAccount(userID, communityID);
+
+//
+//         Check the user's authentication and proceed if ok.
+
+            if (userAcc.checkAuthentication() )
             {
 
 //
-//            Check that the original item is a DataHolder rather
-//            than a container.
+//            Attempt to lookup the details of the DataHolder and proceed
+//            if ok.
 
-               if (dataItem.getType() != DataItemRecord.CON)
+               DataItemRecord dataItem = 
+                 this.internalLookupDataHolderDetails(userID, communityID,
+                   jobID, dataItemID, reg);
+               if (status.getSuccessStatus())
                {
 
 //
-//               Check that the user is allowed to access the DataHolder.
+//               Check that the original item is a DataHolder rather
+//               than a container.
 
-                  String permissions;
-                  permissions = dataItem.getPermissionsMask();
-                  String ownerID;
-                  ownerID = dataItem.getOwnerID();
-
-                  if (userAcc.checkAuthorisation(UserAccount.READ,
-                    ownerID, permissions))
+                  if (dataItem.getType() != DataItemRecord.CON)
                   {
 
 //
-//                  Assemble the URI for the DataHolder from the
-//                  server URI and the file name of the DataHolder.
+//                  Check that the user is allowed to access the DataHolder.
 
-                     String dataItemName = dataItem.getDataItemName();
+                     String permissions;
+                     permissions = dataItem.getPermissionsMask();
+                     String ownerID;
+                     ownerID = dataItem.getOwnerID();
 
-                     int containSepPos1 = dataItemName.indexOf("/");
-                     int containSepPos2 =
-                       dataItemName.indexOf("/", containSepPos1+1);
-                     int containSepPos3 =
-                       dataItemName.indexOf("/", containSepPos2+1);
+                     if (userAcc.checkAuthorisation(UserAccount.READ,
+                       ownerID, permissions))
+                     {
 
-                     String serverURI;
+//
+//                     Assemble the URI for the DataHolder from the
+//                     server URI and the file name of the DataHolder.
 
-                     if (containSepPos3 > 0)
-                     {  String serverName =
-                          dataItemName.substring
-                            (containSepPos2+1, containSepPos3);
-                        serverURI = reg.getServerURI(serverName);
+                        String dataItemName = dataItem.getDataItemName();
+
+                        int containSepPos1 = dataItemName.indexOf("/");
+                        int containSepPos2 =
+                          dataItemName.indexOf("/", containSepPos1+1);
+                        int containSepPos3 =
+                          dataItemName.indexOf("/", containSepPos2+1);
+
+                        String serverURI;
+
+                        if (containSepPos3 > 0)
+                        {  String serverName =
+                             dataItemName.substring
+                               (containSepPos2+1, containSepPos3);
+                           serverURI = reg.getServerURI(serverName);
+                        }
+                        else
+                        {  serverURI = "bad_URI/";
+                        }
+
+                        dataHolderURI =
+                          serverURI + dataItem.getDataItemFile();
                      }
                      else
-                     {  serverURI = "bad_URI/";
+                     {  status.addCode(MySpaceStatusCode.AGMMCE00207,
+                          MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+                          this.getClassName() );
                      }
-
-                     dataHolderURI =
-                       serverURI + dataItem.getDataItemFile();
                   }
                   else
-                  {  status.addCode(MySpaceStatusCode.AGMMCE00040,
-                       MySpaceStatusCode.ERROR);
+                  {  status.addCode(MySpaceStatusCode.AGMMCE00208,
+                       MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+                       this.getClassName() );
                   }
                }
                else
-               {  status.addCode(MySpaceStatusCode.AGMMCE00041,
-                    MySpaceStatusCode.ERROR);
+               {  status.addCode(MySpaceStatusCode.AGMMCE00201,
+                    MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+                    this.getClassName() );
                }
             }
-            else
-            {  status.addCode(MySpaceStatusCode.AGMMCE00033,
-                 MySpaceStatusCode.ERROR);
-            }
          }
-      }
 
 //
-//   Do not re-write the registry; unlike most of the other Action
-//   methods, this method does not need to re-write the registry at
-//   this point because it has not modified it.
+//      Do not re-write the registry; unlike most of the other Action
+//      methods, this method does not need to re-write the registry at
+//      this point because it has not modified it.
+
+      }
+      catch (Exception all)
+      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+           MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+           this.getClassName() );
+      }
 
       return dataHolderURI;
    }
@@ -559,69 +619,80 @@ public class MySpaceActions
    {  DataItemRecord newContainer = new DataItemRecord();
       newContainer = null;
 
-//
-//   Attempt to open the registry and proceed if ok.
-
-      RegistryManager reg = new RegistryManager(registryName);
       MySpaceStatus status = new MySpaceStatus();
-      if (status.getSuccessStatus())
+
+      try
       {
 
 //
-//      Assemble the UserAccount from the UserID and CommunityID.
+//      Attempt to open the registry and proceed if ok.
 
-         UserAccount userAcc = new UserAccount(userID, communityID);
-
-//
-//      Check the user's authentication and proceed if ok.
-
-         if (userAcc.checkAuthentication() )
+         RegistryManager reg = new RegistryManager(registryName);
+         if (status.getSuccessStatus())
          {
 
 //
-//         Check that the specified container can be created.
+//         Assemble the UserAccount from the UserID and CommunityID.
 
-            if(this.checkCanBeCreated(newContainerName, userAcc,
-              jobID, reg) == true)
+            UserAccount userAcc = new UserAccount(userID, communityID);
+
+//
+//         Check the user's authentication and proceed if ok.
+
+            if (userAcc.checkAuthentication() )
             {
 
 //
-//            Create a DataItemRecord for the container.
+//            Check that the specified container can be created.
 
-               Date creation = new Date();
-
-               Calendar cal = Calendar.getInstance();
-               cal.setTime(creation);
-               cal.add(Calendar.DATE, reg.getExpiryPeriod() );
-               Date expiry = cal.getTime();
-
-               int newdataItemID = reg.getNextDataItemID();
-               String dataItemFileName = "f" + newdataItemID;
-               int dataItemType = DataItemRecord.CON;
-
-               DataItemRecord newDataItem = new DataItemRecord
-                 (newContainerName, newdataItemID, dataItemFileName,
-                 userID, creation, expiry, 0, dataItemType,
-                 "permissions");
+               if(this.checkCanBeCreated(newContainerName, userAcc,
+                 jobID, reg) == true)
+               {
 
 //
-//            Attempt to add this entry to the registry.
+//               Create a DataItemRecord for the container.
 
-               if (reg.addDataItemRecord(newDataItem) )
-               {  newContainer = newDataItem;
-               }
-               else
-               {  status.addCode(MySpaceStatusCode.AGMMCE00042,
-                    MySpaceStatusCode.ERROR);
+                  Date creation = new Date();
+
+                  Calendar cal = Calendar.getInstance();
+                  cal.setTime(creation);
+                  cal.add(Calendar.DATE, reg.getExpiryPeriod() );
+                  Date expiry = cal.getTime();
+
+                  int newdataItemID = reg.getNextDataItemID();
+                  String dataItemFileName = "f" + newdataItemID;
+                  int dataItemType = DataItemRecord.CON;
+
+                  DataItemRecord newDataItem = new DataItemRecord
+                    (newContainerName, newdataItemID, dataItemFileName,
+                    userID, creation, expiry, 0, dataItemType,
+                    "permissions");
+
+//
+//               Attempt to add this entry to the registry.
+
+                  if (reg.addDataItemRecord(newDataItem) )
+                  {  newContainer = newDataItem;
+                  }
+                  else
+                  {  status.addCode(MySpaceStatusCode.AGMMCE00209,
+                       MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+                       this.getClassName() );
+                  }
                }
             }
          }
-      }
 
 //
-//   Re-write the registry file.
+//      Re-write the registry file.
 
-      reg.rewriteRegistryFile();
+         reg.rewriteRegistryFile();
+      }
+      catch (Exception all)
+      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+           MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+           this.getClassName() );
+      }
 
       return newContainer;
    }
@@ -636,142 +707,158 @@ public class MySpaceActions
      String jobID, int dataItemID)
    {  boolean returnStatus = false;
 
-//
-//   Attempt to open the registry and proceed if ok.
-
-      RegistryManager reg = new RegistryManager(registryName);
       MySpaceStatus status = new MySpaceStatus();
-      if (status.getSuccessStatus())
+
+      try
       {
 
 //
-//      Assemble the UserAccount from the UserID and CommunityID.
+//      Attempt to open the registry and proceed if ok.
 
-         UserAccount userAcc = new UserAccount(userID, communityID);
+         RegistryManager reg = new RegistryManager(registryName);
 
-//
-//      Check the user's authentication and proceed if ok.
-
-         if (userAcc.checkAuthentication() )
+         if (status.getSuccessStatus())
          {
 
 //
-//         Attempt to lookup the details of the DataHolder and proceed
-//         if ok.
+//         Assemble the UserAccount from the UserID and CommunityID.
 
-            DataItemRecord dataItem = 
-              this.internalLookupDataHolderDetails(userID, communityID,
-                jobID, dataItemID, reg);
-            if (dataItem != null)
+            UserAccount userAcc = new UserAccount(userID, communityID);
+
+//
+//         Check the user's authentication and proceed if ok.
+
+            if (userAcc.checkAuthentication() )
             {
 
 //
-//            If the DataHolder is a container then check that it is
-//            empty.  Containers which are not empty cannot be deleted.
+//            Attempt to lookup the details of the DataHolder and proceed
+//            if ok.
 
-               boolean proceedToDelete = true;
-
-               if (dataItem.getType() == DataItemRecord.CON)
-               {  String query = dataItem.getDataItemName() + "/*";
-
-                  Vector childrenDataItemVector = 
-                    this.internalLookupDataHoldersDetails(userID,
-                      communityID, jobID, query, reg);
-                  if (status.getSuccessStatus())
-                  {  status.reset();
-                  }
-
-                  if (childrenDataItemVector != null)
-                  {  proceedToDelete = false;
-
-                     status.addCode(MySpaceStatusCode.AGMMCE00043,
-                       MySpaceStatusCode.ERROR);
-                  }
-               }
-
-               if (proceedToDelete)
+               DataItemRecord dataItem = 
+                 this.internalLookupDataHolderDetails(userID, communityID,
+                   jobID, dataItemID, reg);
+               if (dataItem != null)
                {
 
 //
-//               Check that the user is permitted to delete the DataHolder:
+//               If the DataHolder is a container then check that it is
+//               empty.  Containers which are not empty cannot be deleted.
 
-                  String permissions;
-                  permissions = dataItem.getPermissionsMask();
-                  String ownerID;
-                  ownerID = dataItem.getOwnerID();
+                  boolean proceedToDelete = true;
 
-                  if (userAcc.checkAuthorisation(UserAccount.READ,
-                    ownerID, permissions))
+                  if (dataItem.getType() == DataItemRecord.CON)
+                  {  String query = dataItem.getDataItemName() + "/*";
+
+                     Vector childrenDataItemVector = 
+                       this.internalLookupDataHoldersDetails(userID,
+                         communityID, jobID, query, reg);
+                     if (status.getSuccessStatus())
+                     {  status.reset();
+                     }
+
+                     if (childrenDataItemVector != null)
+                     {  proceedToDelete = false;
+
+                        status.addCode(MySpaceStatusCode.AGMMCE00210,
+                          MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+                          this.getClassName() );
+                     }
+                  }
+
+                  if (proceedToDelete)
                   {
 
 //
-//                  Attempt to delete the DataHolder.
+//                  Check that the user is permitted to delete the DataHolder:
 
-                     String dataItemName = dataItem.getDataItemName();
+                     String permissions;
+                     permissions = dataItem.getPermissionsMask();
+                     String ownerID;
+                     ownerID = dataItem.getOwnerID();
 
-                     int containSepPos1 = dataItemName.indexOf("/");
-                     int containSepPos2 =
-                       dataItemName.indexOf("/", containSepPos1+1);
-                     int containSepPos3 =
-                       dataItemName.indexOf("/", containSepPos2+1);
-
-                     String serverName;
-                     if (containSepPos3 > 0)
+                     if (userAcc.checkAuthorisation(UserAccount.READ,
+                       ownerID, permissions))
                      {
 
 //
-//                     Check that the server name is valid.
+//                     Attempt to delete the DataHolder.
 
-                        serverName = 
-                          dataItemName.substring(containSepPos2+1,
-                            containSepPos3);
-                     }
-                     else
-                     {  serverName = "";
-                     }
+                        String dataItemName = dataItem.getDataItemName();
 
-                     String serverDirectory =
-                       reg.getServerDirectory(serverName);
+                        int containSepPos1 = dataItemName.indexOf("/");
+                        int containSepPos2 =
+                          dataItemName.indexOf("/", containSepPos1+1);
+                        int containSepPos3 =
+                          dataItemName.indexOf("/", containSepPos2+1);
 
-                     String a = serverDirectory + dataItem.getDataItemFile();
-
-                     ServerDriver serverDriver = new ServerDriver();
-                     if (serverDriver.deleteDataHolder(a) )
-                     {
+                        String serverName;
+                        if (containSepPos3 > 0)
+                        {
 
 //
-//                     Delete the entry for the DataHolder in the registry,
-//                     to bring the registry into line with reality.
+//                        Check that the server name is valid.
 
-                        reg.deleteDataItemRecord(dataItemID);
+                           serverName = 
+                             dataItemName.substring(containSepPos2+1,
+                               containSepPos3);
+                        }
+                        else
+                        {  serverName = "";
+                        }
+
+                        String serverDirectory =
+                          reg.getServerDirectory(serverName);
+
+                        String a = serverDirectory +
+                          dataItem.getDataItemFile();
+
+                        ServerDriver serverDriver = new ServerDriver();
+                        if (serverDriver.deleteDataHolder(a) )
+                        {
 
 //
-//                     Set the return status to success.
+//                        Delete the entry for the DataHolder in the registry,
+//                        to bring the registry into line with reality.
 
-                       returnStatus = true;
+                           reg.deleteDataItemRecord(dataItemID);
+
+//
+//                        Set the return status to success.
+
+                          returnStatus = true;
+                        }
+                        else
+                        {  status.addCode(MySpaceStatusCode.AGMMCE00211,
+                             MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+                             this.getClassName() );
+                        }
                      }
                      else
-                     {  status.addCode(MySpaceStatusCode.AGMMCE00044,
-                          MySpaceStatusCode.ERROR);
+                     {  status.addCode(MySpaceStatusCode.AGMMCE00212,
+                          MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+                          this.getClassName() );
                      }
-                  }
-                  else
-                  {  status.addCode(MySpaceStatusCode.AGMMCE00045,
-                       MySpaceStatusCode.ERROR);
                   }
                }
-            }
-            else
-            {  status.addCode(MySpaceStatusCode.AGMMCE00033,
-                 MySpaceStatusCode.ERROR);
+               else
+               {  status.addCode(MySpaceStatusCode.AGMMCE00201,
+                    MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+                    this.getClassName());
+               }
             }
          }
-      }
 
 //
-//   Re-write the registry file.
+//      Re-write the registry file.
 
-      reg.rewriteRegistryFile();
+         reg.rewriteRegistryFile();
+      }
+      catch (Exception all)
+      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+           MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+           this.getClassName() );
+      }
 
       return returnStatus;
    }
@@ -811,59 +898,70 @@ public class MySpaceActions
 
       MySpaceStatus status = new MySpaceStatus();
 
-//
-//   Assemble the UserAccount from the UserID and CommunityID.
-
-      UserAccount userAcc = new UserAccount(userID, communityID);
-
-//
-//   Check the user's authentication and proceed if ok.
-
-      if (userAcc.checkAuthentication() )
+      try
       {
 
 //
-//      Attempt to lookup up the details of the DataHolder in the
-//      mySpace registry.
-//
-//      Note that in the following clause two conditions are
-//      checked for: the item not being in the registry and
-//      the user not having the privilege to access it.  The
-//      error messages set in these two cases are deliberately
-//      identical.
+//      Assemble the UserAccount from the UserID and CommunityID.
 
-         DataItemRecord dataItemFound =
-           reg.lookupDataItemRecord(dataItemID);
-         if (dataItemFound != null)
+         UserAccount userAcc = new UserAccount(userID, communityID);
+
+//
+//      Check the user's authentication and proceed if ok.
+
+         if (userAcc.checkAuthentication() )
          {
 
 //
-//         Check whether the user has the privileges to access the
-//         DataHolder.
+//         Attempt to lookup up the details of the DataHolder in the
+//         mySpace registry.
+//
+//         Note that in the following clause two conditions are
+//         checked for: the item not being in the registry and
+//         the user not having the privilege to access it.  The
+//         error messages set in these two cases are deliberately
+//         identical.
 
-            String permissions;
-            permissions = dataItemFound.getPermissionsMask();
-            String ownerID;
-            ownerID = dataItemFound.getOwnerID();
-
-            if (userAcc.checkAuthorisation(UserAccount.READ,
-              ownerID, permissions))
+            DataItemRecord dataItemFound =
+              reg.lookupDataItemRecord(dataItemID);
+            if (dataItemFound != null)
             {
 
 //
-//            All is ok; copy the DataItemRecord to the return argument.
+//            Check whether the user has the privileges to access the
+//            DataHolder.
 
-               dataItem = dataItemFound;
+               String permissions;
+               permissions = dataItemFound.getPermissionsMask();
+               String ownerID;
+               ownerID = dataItemFound.getOwnerID();
+
+               if (userAcc.checkAuthorisation(UserAccount.READ,
+                 ownerID, permissions))
+               {
+
+//
+//               All is ok; copy the DataItemRecord to the return argument.
+
+                  dataItem = dataItemFound;
+               }
+               else
+               {  status.addCode(MySpaceStatusCode.AGMMCE00201,
+                    MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+                    this.getClassName() );
+               }
             }
             else
-            {  status.addCode(MySpaceStatusCode.AGMMCE00033,
-               MySpaceStatusCode.ERROR);
+            {  status.addCode(MySpaceStatusCode.AGMMCE00201,
+                 MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+                 this.getClassName());
             }
          }
-         else
-         {  status.addCode(MySpaceStatusCode.AGMMCE00033,
-              MySpaceStatusCode.ERROR);
-         }
+      }
+      catch (Exception all)
+      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+            MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+            this.getClassName() );
       }
 
       return dataItem;
@@ -880,7 +978,7 @@ public class MySpaceActions
   * an argument.
   */
 
-   public Vector internalLookupDataHoldersDetails(String userID, 
+   private Vector internalLookupDataHoldersDetails(String userID, 
      String communityID, String jobID, String query,
      RegistryManager reg)
    {  Vector dataItemVector = new Vector();
@@ -888,108 +986,86 @@ public class MySpaceActions
 
       MySpaceStatus status = new MySpaceStatus();
 
-//
-//  -- debug --------------------------------------------------
-//
-//      print out details of registry config. file.
-
-//         int expiryPeriod = reg.getExpiryPeriod();
-//         System.out.println("Expiry period (days): " + expiryPeriod);
-
-//         Vector serverNames = reg.getServerNames();
-
-//         if (serverNames != null)
-//         {  int numServers = serverNames.size();
-
-//            String serverName;
-//            String serverURI;
-//            String serverDirectory;
-
-//            for (int loop=0; loop < numServers; loop++)
-//            {  serverName = (String)serverNames.get(loop);
-//               serverURI = reg.getServerURI(serverName);
-//               serverDirectory = reg.getServerDirectory(serverName);
-
-//               System.out.println("Server " + loop + " is called "
-//                 + serverName + " at " + serverURI + " and "
-//                 + serverDirectory);
-//            }
-//         }
-//         else
-//         {  System.out.println("No servers specified.");
-//         }
-
-//  -- end debug ----------------------------------------------
-
-//
-//   Assemble the UserAccount from the UserID and CommunityID.
-
-      UserAccount userAcc = new UserAccount(userID, communityID);
-
-//
-//   Check the user's authentication and proceed if ok.
-
-      if (userAcc.checkAuthentication() )
+      try
       {
 
 //
-//      Attempt lookup in the registry the entries for the DataHolders
-//      which match the query string.
-//
-//      Note that in the following clauses items which the user
-//      does not have the privilege to access are treated as though
-//      they do not exist.
+//      Assemble the UserAccount from the UserID and CommunityID.
 
-         Vector dataItemFoundVector =
-           reg.lookupDataItemRecords(query);
-         if (status.getSuccessStatus())
+         UserAccount userAcc = new UserAccount(userID, communityID);
+
+//
+//      Check the user's authentication and proceed if ok.
+
+         if (userAcc.checkAuthentication() )
          {
 
 //
-//         Check whether any DataHolders were found (it is perfectly
-//         possible that no entries will match the query string).
+//         Attempt lookup in the registry the entries for the DataHolders
+//         which match the query string.
+//
+//         Note that in the following clauses items which the user
+//         does not have the privilege to access are treated as though
+//         they do not exist.
 
-            if (dataItemFoundVector.size() > 0)
+            Vector dataItemFoundVector =
+              reg.lookupDataItemRecords(query);
+            if (status.getSuccessStatus())
             {
 
 //
-//            Examine every entry and check that the user has the
-//            privilege to access it.  If not remove it from the list.
-
-               for (int loop = 0; loop < dataItemFoundVector.size();
-                 loop++)
-               {  DataItemRecord currentItem = 
-                    (DataItemRecord)dataItemFoundVector.get(loop);
-
-                  String permissions;
-                  permissions = currentItem.getPermissionsMask();
-                  String ownerID;
-                  ownerID = currentItem.getOwnerID();
-
-                  if (!userAcc.checkAuthorisation(UserAccount.READ,
-                    ownerID, permissions))
-                  {  dataItemFoundVector.remove(loop);
-                  }
-               }
-
-//
-//            If any DataItemRecords remain in the Vector then copy
-//            the Vector to the return vector.  If no items are left
-//            then issue an informational message.
+//            Check whether any DataHolders were found (it is perfectly
+//            possible that no entries will match the query string).
 
                if (dataItemFoundVector.size() > 0)
-               {  dataItemVector = dataItemFoundVector;
+               {
+
+//
+//               Examine every entry and check that the user has the
+//               privilege to access it.  If not remove it from the list.
+
+                  for (int loop = 0; loop < dataItemFoundVector.size();
+                    loop++)
+                  {  DataItemRecord currentItem = 
+                       (DataItemRecord)dataItemFoundVector.get(loop);
+
+                     String permissions;
+                     permissions = currentItem.getPermissionsMask();
+                     String ownerID;
+                     ownerID = currentItem.getOwnerID();
+
+                     if (!userAcc.checkAuthorisation(UserAccount.READ,
+                       ownerID, permissions))
+                     {  dataItemFoundVector.remove(loop);
+                     }
+                  }
+
+//
+//               If any DataItemRecords remain in the Vector then copy
+//               the Vector to the return vector.  If no items are left
+//               then issue an informational message.
+
+                  if (dataItemFoundVector.size() > 0)
+                  {  dataItemVector = dataItemFoundVector;
+                  }
+                  else
+                  {  status.addCode(MySpaceStatusCode.AGMMCI00250,
+                       MySpaceStatusCode.INFO, MySpaceStatusCode.NOLOG,
+                       this.getClassName() );
+                  }
                }
                else
-               {  status.addCode(MySpaceStatusCode.AGMMCE00034,
-                    MySpaceStatusCode.INFO);
+               {  status.addCode(MySpaceStatusCode.AGMMCI00250,
+                    MySpaceStatusCode.INFO, MySpaceStatusCode.NOLOG,
+                    this.getClassName() );
                }
             }
-            else
-            {  status.addCode(MySpaceStatusCode.AGMMCE00034,
-                    MySpaceStatusCode.INFO);
-            }
          }
+      }
+      catch (Exception all)
+      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+           MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+           this.getClassName() );
       }
 
       return dataItemVector;
@@ -1022,97 +1098,123 @@ public class MySpaceActions
    {  boolean canBeCreated = false;
       MySpaceStatus status = new MySpaceStatus();
 
-//
-//   Check that the output DataHolder does not already exist.
-
-      String userID = userAcc.getUserID();
-      String communityID = userAcc.getCommunityID();
-
-      Vector checkOutputContainter = 
-        this.internalLookupDataHoldersDetails(userID, communityID,
-          jobID, newDataItemName, reg);
-      if (status.getSuccessStatus())
-      {  status.reset();
-      }
-      if (checkOutputContainter == null)
+      try
       {
 
 //
-//      Check that the container hierarchy is at least three levels
-//      deep; ie. that an attempt is not being made to create a
-//      top-level user container or a second-level server container.
+//      Check that the output DataHolder does not already exist.
 
-         int containSepPos1 = newDataItemName.indexOf("/");
-         int containSepPos2 = newDataItemName.indexOf("/", containSepPos1+1);
-         int containSepPos3 = newDataItemName.indexOf("/", containSepPos2+1);
+         String userID = userAcc.getUserID();
+         String communityID = userAcc.getCommunityID();
 
-         if (containSepPos3 > 0)
+         Vector checkOutputContainter = 
+           this.internalLookupDataHoldersDetails(userID, communityID,
+             jobID, newDataItemName, reg);
+         if (status.getSuccessStatus())
+         {  status.reset();
+         }
+         if (checkOutputContainter == null)
          {
 
 //
-//         Check that the server name is valid.
+//         Check that the container hierarchy is at least three levels
+//         deep; ie. that an attempt is not being made to create a
+//         top-level user container or a second-level server container.
 
-            String serverName = 
-              newDataItemName.substring(containSepPos2+1, containSepPos3);
+            int containSepPos1 = newDataItemName.indexOf("/");
+            int containSepPos2 = newDataItemName.indexOf("/",
+              containSepPos1+1);
+            int containSepPos3 = newDataItemName.indexOf("/",
+              containSepPos2+1);
 
-//            System.out.println("serverName: " + serverName);
-
-            if(reg.isServerName(serverName))
+            if (containSepPos3 > 0)
             {
+
 //
-//            Check that the user is permitted to create the output
-//            DataHolder:
-//              obtain the name of its parent container,
-//              check that this container exists,
-//              check that the user is allowed to write to this container.
+//            Check that the server name is valid.
 
-               String parentContainer = newDataItemName.substring
-                 (0, newDataItemName.lastIndexOf("/") );
-               Vector parentDataItemVector = 
-                 this.internalLookupDataHoldersDetails(userID,
-                   communityID, jobID, parentContainer, reg);
-               if (status.getSuccessStatus())
-               {  status.reset();
-               }
+               String serverName = 
+                 newDataItemName.substring(containSepPos2+1, containSepPos3);
 
-               if (parentDataItemVector != null)
-               {  DataItemRecord parentDataItem =
-                    (DataItemRecord)parentDataItemVector.firstElement();
+               if(reg.isServerName(serverName))
+               {
+//
+//               Check that the user is permitted to create the output
+//               DataHolder:
+//                 obtain the name of its parent container,
+//                 check that this container exists,
+//                 check that the user is allowed to write to this container.
 
-                  String permissions;
-                  permissions = parentDataItem.getPermissionsMask();
-                  String ownerID;
-                  ownerID = parentDataItem.getOwnerID();
+                  String parentContainer = newDataItemName.substring
+                    (0, newDataItemName.lastIndexOf("/") );
+                  Vector parentDataItemVector = 
+                    this.internalLookupDataHoldersDetails(userID,
+                      communityID, jobID, parentContainer, reg);
+                  if (status.getSuccessStatus())
+                  {  status.reset();
+                  }
 
-                  if (userAcc.checkAuthorisation(UserAccount.WRITE,
-                    ownerID, permissions))
-                  {  canBeCreated = true;
+                  if (parentDataItemVector != null)
+                  {  DataItemRecord parentDataItem =
+                       (DataItemRecord)parentDataItemVector.firstElement();
+
+                     String permissions;
+                     permissions = parentDataItem.getPermissionsMask();
+                     String ownerID;
+                     ownerID = parentDataItem.getOwnerID();
+
+                     if (userAcc.checkAuthorisation(UserAccount.WRITE,
+                       ownerID, permissions))
+                     {  canBeCreated = true;
+                     }
+                     else
+                     {  status.addCode(MySpaceStatusCode.AGMMCE00213,
+                           MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+                           this.getClassName() );
+                     }
                   }
                   else
-                  {  status.addCode(MySpaceStatusCode.AGMMCE00046,
-                        MySpaceStatusCode.ERROR);
+                  {  status.addCode(MySpaceStatusCode.AGMMCE00214,
+                       MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+                           this.getClassName() );
                   }
                }
                else
-               {  status.addCode(MySpaceStatusCode.AGMMCE00047,
-                    MySpaceStatusCode.ERROR);
+               {  status.addCode(MySpaceStatusCode.AGMMCE00300,
+                    MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+                    this.getClassName() );
                }
             }
             else
-            {  status.addCode(MySpaceStatusCode.AGMMCE00052,
-                 MySpaceStatusCode.ERROR);
+            {  status.addCode(MySpaceStatusCode.AGMMCE00301,
+                 MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+                 this.getClassName() );
             }
          }
          else
-         {  status.addCode(MySpaceStatusCode.AGMMCE00053,
-              MySpaceStatusCode.ERROR);
+         {  status.addCode(MySpaceStatusCode.AGMMCE00215,
+              MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+                 this.getClassName() );
          }
       }
-      else
-      {  status.addCode(MySpaceStatusCode.AGMMCE00048,
-           MySpaceStatusCode.ERROR);
+      catch (Exception all)
+      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+           MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+           this.getClassName() );
       }
 
       return canBeCreated;
    }
+
+// -----------------------------------------------------------------
+
+/**
+ * Obtain the name of the current Java class.
+ */
+
+   protected String getClassName()
+   { Class currentClass = this.getClass();
+     String name =  currentClass.getName();
+     return name;
+   }    
 }

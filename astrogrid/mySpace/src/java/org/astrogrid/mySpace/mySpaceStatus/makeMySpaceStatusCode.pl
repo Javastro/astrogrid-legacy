@@ -73,8 +73,10 @@
 #  Authors:
 #     ACD: A C Davenhall (Edinburgh)
 #  History:
-#     2/7/03 (ACD): Original version.
-#     4/7/03 (ACD): First stable version.
+#     2/7/03  (ACD): Original version.
+#     4/7/03  (ACD): First stable version.
+#     30/7/03 (ACD): Modified to make double-quotes around the message
+#        optional.
 #-
 
 #
@@ -192,8 +194,12 @@ sub ReadAndDecodeProperties
 
                      $currentCode = substr($currentLine, 0, $equalPos);
                      $currentMessage =
-                       substr($currentLine, $equalPos + 2, 300);
-                     chop($currentMessage);
+                       substr($currentLine, $equalPos + 1, 300);
+
+#
+#                   Remove any double quotes.
+
+                     $currentMessage =~ s/"//g;
 
                      $codes[$numCodes] = $currentCode;
                      $messages[$numCodes] = $currentMessage;

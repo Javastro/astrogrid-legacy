@@ -30,7 +30,7 @@ package org.astrogrid.mySpace.mySpaceStatus;
  * representation.
  * 
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 2.
+ * @version Iteration 3.
  */
 
 public class MySpaceStatusCode
@@ -43,61 +43,75 @@ public class MySpaceStatusCode
    public static final int WARN  = 2;  // Warning.
    public static final int ERROR = 3;  // Error.
 
-   public static final int REGISTRYCONF = 0;
-   public static final int TEMPPATHTO = 1;
-   public static final int MYSPACEMANAGER = 2;
-   public static final int SERVERMANAGER = 3;
-   public static final int AGMMCE00030 = 4;
-   public static final int AGMMCE00031 = 5;
-   public static final int AGMMCE00032 = 6;
-   public static final int AGMMCE00033 = 7;
-   public static final int AGMMCE00034 = 8;
-   public static final int AGMMCE00035 = 9;
-   public static final int AGMMCE00036 = 10;
-   public static final int AGMMCE00037 = 11;
-   public static final int AGMMCE00038 = 12;
-   public static final int AGMMCE00039 = 13;
-   public static final int AGMMCE00040 = 14;
-   public static final int AGMMCE00041 = 15;
-   public static final int AGMMCE00042 = 16;
-   public static final int AGMMCE00043 = 17;
-   public static final int AGMMCE00044 = 18;
-   public static final int AGMMCE00045 = 19;
-   public static final int AGMMCE00046 = 20;
-   public static final int AGMMCE00047 = 21;
-   public static final int AGMMCE00048 = 22;
-   public static final int AGMMCE00049 = 45;
-   public static final int AGMMCE00052 = 23;
-   public static final int AGMMCE00053 = 24;
-   public static final int AGMMCW00032 = 25;
-   public static final int AGMMCE00050 = 26;
-   public static final int AGMMCW00031 = 27;
-   public static final int AGMMCE00060 = 28;
-   
-   public static final int AGMSCE00030 = 29;
-   public static final int AGMSCE00031 = 30;
-   public static final int AGMSCE00032 = 31;
-   public static final int AGMSCE00033 = 32;
-   public static final int AGMSCE00034 = 33;
-   public static final int AGMSCE00035 = 34;
-   public static final int AGMSCE00036 = 35;
-   public static final int AGMSCE00040 = 36;
-   public static final int AGMSCE00041 = 37;
-   public static final int AGMSCE00042 = 38;
-   public static final int AGMSCE00043 = 39;
-   public static final int AGMSCE00044 = 40;
-   public static final int AGMSCE00045 = 41;
-   public static final int AGMSCE00046 = 42;
-   public static final int AGMSCE00047 = 43;
-   public static final int AGMSCE00048 = 44;
-  
-   public static final int AGMMCE00054 = 46;
-   public static final int AGMMCE00055 = 47;
-   public static final int AGMMCE00056 = 48;
+//
+//Public constants defining whether errors are logged.
+
+   public static final int LOG  = 0;    // Log the error.
+   public static final int NOLOG  = 1;  // Do not log the error.
+
+   public static final int SUBSYSTEM = 0;
+   public static final int AGMMCZ00001 = 1;
+   public static final int AGMMCZ00002 = 2;
+   public static final int AGMMCZ00003 = 3;
+   public static final int AGMMCZ00004 = 4;
+   public static final int AGMMCZ00005 = 5;
+   public static final int AGMMCE00030 = 6;
+   public static final int AGMMCE00031 = 7;
+   public static final int AGMMCE00100 = 8;
+   public static final int AGMMCE00101 = 9;
+   public static final int AGMMCE00102 = 10;
+   public static final int AGMMCE00103 = 11;
+   public static final int AGMMCE00104 = 12;
+   public static final int AGMMCE00105 = 13;
+   public static final int AGMMCE00106 = 14;
+   public static final int AGMMCW00150 = 15;
+   public static final int AGMMCW00151 = 16;
+   public static final int AGMMCW00152 = 17;
+   public static final int AGMMCW00153 = 18;
+   public static final int AGMMCW001543 = 19;
+   public static final int AGMMCE00201 = 20;
+   public static final int AGMMCE00202 = 21;
+   public static final int AGMMCE00203 = 22;
+   public static final int AGMMCE00204 = 23;
+   public static final int AGMMCE00205 = 24;
+   public static final int AGMMCE00206 = 25;
+   public static final int AGMMCE00207 = 26;
+   public static final int AGMMCE00208 = 27;
+   public static final int AGMMCE00209 = 28;
+   public static final int AGMMCE00210 = 29;
+   public static final int AGMMCE00211 = 30;
+   public static final int AGMMCE00212 = 31;
+   public static final int AGMMCE00213 = 32;
+   public static final int AGMMCE00214 = 33;
+   public static final int AGMMCE00215 = 34;
+   public static final int AGMMCE00216 = 35;
+   public static final int AGMMCE00217 = 36;
+   public static final int AGMMCE00218 = 37;
+   public static final int AGMMCE00219 = 38;
+   public static final int AGMMCI00250 = 39;
+   public static final int AGMMCE00300 = 40;
+   public static final int AGMMCE00301 = 41;
+   public static final int AGMSCE01000 = 42;
+   public static final int AGMSCE01001 = 43;
+   public static final int AGMSCE01002 = 44;
+   public static final int AGMSCE01003 = 45;
+   public static final int AGMSCE01004 = 46;
+   public static final int AGMSCE01005 = 47;
+   public static final int AGMSCE01006 = 48;
+   public static final int AGMSCE01040 = 49;
+   public static final int AGMSCE01041 = 50;
+   public static final int AGMSCE01042 = 51;
+   public static final int AGMSCE01043 = 52;
+   public static final int AGMSCE01044 = 53;
+   public static final int AGMSCE01045 = 54;
+   public static final int AGMSCE01046 = 55;
+   public static final int AGMSCE01047 = 56;
+   public static final int AGMSCE01048 = 57;
 
 
    private int code;    // Code.
    private int type;    // Code type code: INFO, WARN or ERROR.
+   private String invokingClass; // Name of the class invoking the error.
 
 //
 // Constructor.
@@ -106,9 +120,10 @@ public class MySpaceStatusCode
  * Create a <code>MySpaceStatusCode</code>, setting the code and type.
  */
 
-   public MySpaceStatusCode (int code,  int type)
+   public MySpaceStatusCode (int code,  int type, String invokingClass)
    {  this.code = code;
       this.type = type;
+      this.invokingClass = invokingClass;
    }
 
 //
@@ -123,17 +138,23 @@ public class MySpaceStatusCode
    public String getCode()
    {  String codeString = null;
 
-      if (code == MySpaceStatusCode.REGISTRYCONF)
-      {  codeString = "REGISTRYCONF";
+      if (code == MySpaceStatusCode.SUBSYSTEM)
+      {  codeString = "SUBSYSTEM";
       }
-      else if (code == MySpaceStatusCode.TEMPPATHTO)
-      {  codeString = "TEMPPATHTO";
+      else if (code == MySpaceStatusCode.AGMMCZ00001)
+      {  codeString = "AGMMCZ00001";
       }
-      else if (code == MySpaceStatusCode.MYSPACEMANAGER)
-      {  codeString = "MYSPACEMANAGER";
+      else if (code == MySpaceStatusCode.AGMMCZ00002)
+      {  codeString = "AGMMCZ00002";
       }
-      else if (code == MySpaceStatusCode.SERVERMANAGER)
-      {  codeString = "SERVERMANAGER";
+      else if (code == MySpaceStatusCode.AGMMCZ00003)
+      {  codeString = "AGMMCZ00003";
+      }
+      else if (code == MySpaceStatusCode.AGMMCZ00004)
+      {  codeString = "AGMMCZ00004";
+      }
+      else if (code == MySpaceStatusCode.AGMMCZ00005)
+      {  codeString = "AGMMCZ00005";
       }
       else if (code == MySpaceStatusCode.AGMMCE00030)
       {  codeString = "AGMMCE00030";
@@ -141,134 +162,155 @@ public class MySpaceStatusCode
       else if (code == MySpaceStatusCode.AGMMCE00031)
       {  codeString = "AGMMCE00031";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00032)
-      {  codeString = "AGMMCE00032";
+      else if (code == MySpaceStatusCode.AGMMCE00100)
+      {  codeString = "AGMMCE00100";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00033)
-      {  codeString = "AGMMCE00033";
+      else if (code == MySpaceStatusCode.AGMMCE00101)
+      {  codeString = "AGMMCE00101";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00034)
-      {  codeString = "AGMMCE00034";
+      else if (code == MySpaceStatusCode.AGMMCE00102)
+      {  codeString = "AGMMCE00102";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00035)
-      {  codeString = "AGMMCE00035";
+      else if (code == MySpaceStatusCode.AGMMCE00103)
+      {  codeString = "AGMMCE00103";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00036)
-      {  codeString = "AGMMCE00036";
+      else if (code == MySpaceStatusCode.AGMMCE00104)
+      {  codeString = "AGMMCE00104";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00037)
-      {  codeString = "AGMMCE00037";
+      else if (code == MySpaceStatusCode.AGMMCE00105)
+      {  codeString = "AGMMCE00105";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00038)
-      {  codeString = "AGMMCE00038";
+      else if (code == MySpaceStatusCode.AGMMCE00106)
+      {  codeString = "AGMMCE00106";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00039)
-      {  codeString = "AGMMCE00039";
+      else if (code == MySpaceStatusCode.AGMMCW00150)
+      {  codeString = "AGMMCW00150";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00040)
-      {  codeString = "AGMMCE00040";
+      else if (code == MySpaceStatusCode.AGMMCW00151)
+      {  codeString = "AGMMCW00151";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00041)
-      {  codeString = "AGMMCE00041";
+      else if (code == MySpaceStatusCode.AGMMCW00152)
+      {  codeString = "AGMMCW00152";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00042)
-      {  codeString = "AGMMCE00042";
+      else if (code == MySpaceStatusCode.AGMMCW00153)
+      {  codeString = "AGMMCW00153";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00043)
-      {  codeString = "AGMMCE00043";
+      else if (code == MySpaceStatusCode.AGMMCW001543)
+      {  codeString = "AGMMCW001543";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00044)
-      {  codeString = "AGMMCE00044";
+      else if (code == MySpaceStatusCode.AGMMCE00201)
+      {  codeString = "AGMMCE00201";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00045)
-      {  codeString = "AGMMCE00045";
+      else if (code == MySpaceStatusCode.AGMMCE00202)
+      {  codeString = "AGMMCE00202";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00046)
-      {  codeString = "AGMMCE00046";
+      else if (code == MySpaceStatusCode.AGMMCE00203)
+      {  codeString = "AGMMCE00203";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00047)
-      {  codeString = "AGMMCE00047";
+      else if (code == MySpaceStatusCode.AGMMCE00204)
+      {  codeString = "AGMMCE00204";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00048)
-      {  codeString = "AGMMCE00048";
+      else if (code == MySpaceStatusCode.AGMMCE00205)
+      {  codeString = "AGMMCE00205";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00052)
-      {  codeString = "AGMMCE00052";
+      else if (code == MySpaceStatusCode.AGMMCE00206)
+      {  codeString = "AGMMCE00206";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00053)
-      {  codeString = "AGMMCE00053";
+      else if (code == MySpaceStatusCode.AGMMCE00207)
+      {  codeString = "AGMMCE00207";
       }
-      else if (code == MySpaceStatusCode.AGMMCW00032)
-      {  codeString = "AGMMCW00032";
+      else if (code == MySpaceStatusCode.AGMMCE00208)
+      {  codeString = "AGMMCE00208";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00050)
-      {  codeString = "AGMMCE00140";
+      else if (code == MySpaceStatusCode.AGMMCE00209)
+      {  codeString = "AGMMCE00209";
       }
-      else if (code == MySpaceStatusCode.AGMMCW00031)
-      {  codeString = "AGMMCW00031";
+      else if (code == MySpaceStatusCode.AGMMCE00210)
+      {  codeString = "AGMMCE00210";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00060)
-      {  codeString = "AGMMCE00060";
+      else if (code == MySpaceStatusCode.AGMMCE00211)
+      {  codeString = "AGMMCE00211";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00030)
-      {  codeString = "AGMSCE00030";
+      else if (code == MySpaceStatusCode.AGMMCE00212)
+      {  codeString = "AGMMCE00212";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00031)
-      {  codeString = "AGMSCE00031";
+      else if (code == MySpaceStatusCode.AGMMCE00213)
+      {  codeString = "AGMMCE00213";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00032)
-      {  codeString = "AGMSCE00032";
+      else if (code == MySpaceStatusCode.AGMMCE00214)
+      {  codeString = "AGMMCE00214";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00033)
-      {  codeString = "AGMSCE00033";
+      else if (code == MySpaceStatusCode.AGMMCE00215)
+      {  codeString = "AGMMCE00215";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00034)
-      {  codeString = "AGMSCE00034";
+      else if (code == MySpaceStatusCode.AGMMCE00216)
+      {  codeString = "AGMMCE00216";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00035)
-      {  codeString = "AGMSCE00035";
+      else if (code == MySpaceStatusCode.AGMMCE00217)
+      {  codeString = "AGMMCE00217";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00036)
-      {  codeString = "AGMSCE00036";
+      else if (code == MySpaceStatusCode.AGMMCE00218)
+      {  codeString = "AGMMCE00218";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00040)
-      {  codeString = "AGMSCE00040";
+      else if (code == MySpaceStatusCode.AGMMCE00219)
+      {  codeString = "AGMMCE00219";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00041)
-      {  codeString = "AGMSCE00041";
+      else if (code == MySpaceStatusCode.AGMMCI00250)
+      {  codeString = "AGMMCI00250";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00042)
-      {  codeString = "AGMSCE00042";
+      else if (code == MySpaceStatusCode.AGMMCE00300)
+      {  codeString = "AGMMCE00300";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00043)
-      {  codeString = "AGMSCE00043";
+      else if (code == MySpaceStatusCode.AGMMCE00301)
+      {  codeString = "AGMMCE00301";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00044)
-      {  codeString = "AGMSCE00044";
+      else if (code == MySpaceStatusCode.AGMSCE01000)
+      {  codeString = "AGMSCE01000";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00045)
-      {  codeString = "AGMSCE00045";
+      else if (code == MySpaceStatusCode.AGMSCE01001)
+      {  codeString = "AGMSCE01001";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00046)
-      {  codeString = "AGMSCE00046";
+      else if (code == MySpaceStatusCode.AGMSCE01002)
+      {  codeString = "AGMSCE01002";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00047)
-      {  codeString = "AGMSCE00047";
+      else if (code == MySpaceStatusCode.AGMSCE01003)
+      {  codeString = "AGMSCE01003";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00048)
-      {  codeString = "AGMSCE00048";
+      else if (code == MySpaceStatusCode.AGMSCE01004)
+      {  codeString = "AGMSCE01004";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00049)
-      {  codeString = "AGMMCE00049";
+      else if (code == MySpaceStatusCode.AGMSCE01005)
+      {  codeString = "AGMSCE01005";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00054)
-      {  codeString = "AGMMCE00054";
+      else if (code == MySpaceStatusCode.AGMSCE01006)
+      {  codeString = "AGMSCE01006";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00055)
-      {  codeString = "AGMMCE00055";
+      else if (code == MySpaceStatusCode.AGMSCE01040)
+      {  codeString = "AGMSCE01040";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00056)
-      {  codeString = "AGMMCE00056";
+      else if (code == MySpaceStatusCode.AGMSCE01041)
+      {  codeString = "AGMSCE01041";
+      }
+      else if (code == MySpaceStatusCode.AGMSCE01042)
+      {  codeString = "AGMSCE01042";
+      }
+      else if (code == MySpaceStatusCode.AGMSCE01043)
+      {  codeString = "AGMSCE01043";
+      }
+      else if (code == MySpaceStatusCode.AGMSCE01044)
+      {  codeString = "AGMSCE01044";
+      }
+      else if (code == MySpaceStatusCode.AGMSCE01045)
+      {  codeString = "AGMSCE01045";
+      }
+      else if (code == MySpaceStatusCode.AGMSCE01046)
+      {  codeString = "AGMSCE01046";
+      }
+      else if (code == MySpaceStatusCode.AGMSCE01047)
+      {  codeString = "AGMSCE01047";
+      }
+      else if (code == MySpaceStatusCode.AGMSCE01048)
+      {  codeString = "AGMSCE01048";
       }
 
 
@@ -291,154 +333,195 @@ public class MySpaceStatusCode
    public String getCodeMessage()
    {  String message = null;
 
-      if (code == MySpaceStatusCode.REGISTRYCONF)
-      {  message = "usr/local/jakarta-tomcat-4.1.24/conf/astrogrid/mySpace/exampl";
+      if (code == MySpaceStatusCode.SUBSYSTEM)
+      {  message = "MMC";
       }
-      else if (code == MySpaceStatusCode.TEMPPATHTO)
-      {  message = "tmp/mySpaceTest";
+      else if (code == MySpaceStatusCode.AGMMCZ00001)
+      {  message = "AGDTCZ00001:MySpaceManager: Could not read configuration file {0}";
       }
-      else if (code == MySpaceStatusCode.MYSPACEMANAGER)
-      {  message = "ttp://localhost:8080/axis/services/MySpaceManage";
+      else if (code == MySpaceStatusCode.AGMMCZ00002)
+      {  message = "AGDTCZ00002:MySpaceManager: Not initialised; is configuration file missing?";
       }
-      else if (code == MySpaceStatusCode.SERVERMANAGER)
-      {  message = "ttp://localhost:8080/axis/services/ServerManage";
+      else if (code == MySpaceStatusCode.AGMMCZ00003)
+      {  message = "AGDTCZ00003:Message: Message key is null.";
+      }
+      else if (code == MySpaceStatusCode.AGMMCZ00004)
+      {  message = "AGDTCZ00004:Message: Message pattern or inserts are invalid";
+      }
+      else if (code == MySpaceStatusCode.AGMMCZ00005)
+      {  message = "AGDTCZ00005:Message: Message not found in ResourceBundle";
       }
       else if (code == MySpaceStatusCode.AGMMCE00030)
-      {  message = "Failed to write registry data file.";
+      {  message = "({0}) Error writing error codes to standard output.";
       }
       else if (code == MySpaceStatusCode.AGMMCE00031)
-      {  message = "Registry data file is corrupt.";
+      {  message = "({0})  Class not found.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00032)
-      {  message = "Failed to read registry data file.";
+      else if (code == MySpaceStatusCode.AGMMCE00100)
+      {  message = "({0}) Failed to create registry manager object.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00033)
-      {  message = "Requested Data Holder not found.";
+      else if (code == MySpaceStatusCode.AGMMCE00101)
+      {  message = "({0}) Failed to write registry data file.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00034)
-      {  message = "No Data Holders matched query string.";
+      else if (code == MySpaceStatusCode.AGMMCE00102)
+      {  message = "({0}) Registry data file is corrupt (contains unrecognised object).";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00035)
-      {  message = "Failed to create Data Holder.";
+      else if (code == MySpaceStatusCode.AGMMCE00103)
+      {  message = "({0}) Failed to read registry data file.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00036)
-      {  message = "Failed to create Data Holder (registry update failure).";
+      else if (code == MySpaceStatusCode.AGMMCE00104)
+      {  message = "({0})  No servers specified in the registry configuration file.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00037)
-      {  message = "Attempt to copy a container instead of a Data Holder.";
+      else if (code == MySpaceStatusCode.AGMMCE00105)
+      {  message = "({0}) Failed to read the registry configuration file.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00038)
-      {  message = "Failed to move Data Holder.";
+      else if (code == MySpaceStatusCode.AGMMCE00106)
+      {  message = "({0}) Failed to access item in registry.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00039)
-      {  message = "Attempt to move a container instead of a Data Holder.";
+      else if (code == MySpaceStatusCode.AGMMCW00150)
+      {  message = "({0}) Invalid expiry period in the registry configuration file.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00040)
-      {  message = "Cannot access Data Holder.";
+      else if (code == MySpaceStatusCode.AGMMCW00151)
+      {  message = "({0}) Invalid server details in the registry configuration file.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00041)
-      {  message = "Item is neither a container nor a Data Holder.";
+      else if (code == MySpaceStatusCode.AGMMCW00152)
+      {  message = "({0}) Expiry period not set; default adopted.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00042)
-      {  message = "Failed to create container.";
+      else if (code == MySpaceStatusCode.AGMMCW00153)
+      {  message = "({0}) Registry configuration file contains an illegal expiry period.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00043)
-      {  message = "Attempt to delete a container which is not empty.";
+      else if (code == MySpaceStatusCode.AGMMCW001543)
+      {  message = "({0}) Registry configuration contains an invalid server entry.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00044)
-      {  message = "Failed to delete Data Holder.";
+      else if (code == MySpaceStatusCode.AGMMCE00201)
+      {  message = "({0}) Requested Data Holder not found.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00045)
-      {  message = "User not permitted to delete this Data Holder or container.";
+      else if (code == MySpaceStatusCode.AGMMCE00202)
+      {  message = "({0}) Failed to create Data Holder.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00046)
-      {  message = "User not permitted to write to parent container.";
+      else if (code == MySpaceStatusCode.AGMMCE00203)
+      {  message = "({0}) Failed to create Data Holder (registry update failure).";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00047)
-      {  message = "The parent container does not exist.";
+      else if (code == MySpaceStatusCode.AGMMCE00204)
+      {  message = "({0}) Attempt to copy a container instead of a Data Holder.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00048)
-      {  message = "Data Holder or container already exists.";
+      else if (code == MySpaceStatusCode.AGMMCE00205)
+      {  message = "({0}) Failed to move Data Holder.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00052)
-      {  message = "Unknown server name.";
+      else if (code == MySpaceStatusCode.AGMMCE00206)
+      {  message = "({0}) Attempt to move a container instead of a Data Holder.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00053)
-      {  message = "Illegal or unknown server or user container.";
+      else if (code == MySpaceStatusCode.AGMMCE00207)
+      {  message = "({0}) Cannot access Data Holder.";
       }
-      else if (code == MySpaceStatusCode.AGMMCW00032)
-      {  message = "Registry configuration file contains an illegal expiry period.";
+      else if (code == MySpaceStatusCode.AGMMCE00208)
+      {  message = "({0}) Item is neither a container nor a Data Holder.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00050)
-      {  message = "Registry configuration does not contain at least one server.";
+      else if (code == MySpaceStatusCode.AGMMCE00209)
+      {  message = "({0}) Failed to create container.";
       }
-      else if (code == MySpaceStatusCode.AGMMCW00031)
-      {  message = "Registry configuration contains an invalid server entry.";
+      else if (code == MySpaceStatusCode.AGMMCE00210)
+      {  message = "({0}) Attempt to delete a container which is not empty.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00060)
-      {  message = "Registry data file is corrupt (contains an unrecognised object).";
+      else if (code == MySpaceStatusCode.AGMMCE00211)
+      {  message = "({0}) Failed to delete Data Holder.";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00030)
-      {  message = "There is no file to delete; check file path and try again.";
+      else if (code == MySpaceStatusCode.AGMMCE00212)
+      {  message = "({0}) User not permitted to delete this Data Holder or container.";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00031)
-      {  message = "There is no file to save, check file path and try again.";
+      else if (code == MySpaceStatusCode.AGMMCE00213)
+      {  message = "({0}) User not permitted to write to parent container.";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00032)
-      {  message = "Error Reading from file.";
+      else if (code == MySpaceStatusCode.AGMMCE00214)
+      {  message = "({0}) The parent container does not exist.";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00033)
-      {  message = "Error parsing xmlRequest in MySpaceUtils.parseRequest.";
+      else if (code == MySpaceStatusCode.AGMMCE00215)
+      {  message = "({0}) Data Holder or container already exists.";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00034)
-      {  message = "Error Casting from String to integer.";
+      else if (code == MySpaceStatusCode.AGMMCE00216)
+      {  message = "({0}) I/O exception while building response XML.";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00035)
-      {  message = "Error Calling MySpace ServerManager.";
+      else if (code == MySpaceStatusCode.AGMMCE00217)
+      {  message = "({0}) Error look up dataholderS details.";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00036)
-      {  message = "Null pointer getting one or more of the attributes from request string.";
+      else if (code == MySpaceStatusCode.AGMMCE00218)
+      {  message = "({0}) Error look up dataholder details.";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00040)
-      {  message = "Error Saving DataHolder.";
+      else if (code == MySpaceStatusCode.AGMMCE00219)
+      {  message = "({0}) Error Exporting Data Holder.";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00041)
-      {  message = "Error Moving DataHolder.";
+      else if (code == MySpaceStatusCode.AGMMCI00250)
+      {  message = "({0}) No Data Holders matched query string.";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00042)
-      {  message = "Data Holder Has Been Moved.";
+      else if (code == MySpaceStatusCode.AGMMCE00300)
+      {  message = "({0}) Invalid server name.";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00043)
-      {  message = "Error Copying DataHolder.";
+      else if (code == MySpaceStatusCode.AGMMCE00301)
+      {  message = "({0}) Illegal attempt to create or modify user or server containers.";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00044)
-      {  message = "Data Holder Has Been Copied.";
+      else if (code == MySpaceStatusCode.AGMSCE01000)
+      {  message = "({0}) No file to delete; check file path and try again.";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00045)
-      {  message = "Cannot delete the dataHolder because of security issues.";
+      else if (code == MySpaceStatusCode.AGMSCE01001)
+      {  message = "({0}) No file to save; check file path and try again.";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00046)
-      {  message = "Unknown error occurred whilst deleting data holder.";
+      else if (code == MySpaceStatusCode.AGMSCE01002)
+      {  message = "({0}) Error Reading from file.";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00047)
-      {  message = "File does not exist.";
+      else if (code == MySpaceStatusCode.AGMSCE01003)
+      {  message = "({0}) Error parsing xmlRequest in MySpaceUtils.parseRequest.";
       }
-      else if (code == MySpaceStatusCode.AGMSCE00048)
-      {  message = "There has been an I/O exception whilst building the response XML.";
+      else if (code == MySpaceStatusCode.AGMSCE01004)
+      {  message = "({0}) Error Casting from String to int.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00049)
-      {  message = "Error Uploading file from datacentre.";
+      else if (code == MySpaceStatusCode.AGMSCE01005)
+      {  message = "({0}) Error Calling MySpace ServerManager.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00054)
-      {  message = "Error looking up the details of a set of dataholders.";
+      else if (code == MySpaceStatusCode.AGMSCE01006)
+      {  message = "({0}) Null pointer getting one or more of the attributes from request string in MySpace.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00055)
-      {  message = "Error looking up the details of a dataholder.";
+      else if (code == MySpaceStatusCode.AGMSCE01040)
+      {  message = "({0}) Error Saving DataHolder.";
       }
-      else if (code == MySpaceStatusCode.AGMMCE00056)
-      {  message = "Error exporting a dataHolder.";
+      else if (code == MySpaceStatusCode.AGMSCE01041)
+      {  message = "({0}) Error Moving DataHolder.";
+      }
+      else if (code == MySpaceStatusCode.AGMSCE01042)
+      {  message = "({0}) Data Holder has been moved.";
+      }
+      else if (code == MySpaceStatusCode.AGMSCE01043)
+      {  message = "({0}) Error Copying DataHolder.";
+      }
+      else if (code == MySpaceStatusCode.AGMSCE01044)
+      {  message = "({0}) Data Holder has Been Copied. ";
+      }
+      else if (code == MySpaceStatusCode.AGMSCE01045)
+      {  message = "({0}) Cannot delete DataHolder because of security issues.";
+      }
+      else if (code == MySpaceStatusCode.AGMSCE01046)
+      {  message = "({0}) Unkown Error while deleting data holder.";
+      }
+      else if (code == MySpaceStatusCode.AGMSCE01047)
+      {  message = "({0}) File does not exist.";
+      }
+      else if (code == MySpaceStatusCode.AGMSCE01048)
+      {  message = "({0}) I/O exception while building response XML.";
       }
 
+
+//
+//   Translate the token corresponding to the invoking class.
+
+      int start = message.indexOf("{0}");
+
+      if (start > -1)
+      {  int stop = start + 2;
+         String temp = message.substring(0, start)
+           + invokingClass
+           + message.substring(stop+1, message.length() );
+
+         message = temp;
+      }
 
       return message;
    }

@@ -29,7 +29,8 @@ import java.util.*;
  * </p>
  * <p>
  * <code>
- *  msStatus.addCode(MySpaceStatusCode.CODE, MySpaceStatusCode.ERROR);
+ *  msStatus.addCode(MySpaceStatusCode.CODE, MySpaceStatusCode.ERROR,
+ *    MySpaceStatusCode.NOLOG, invokingClassName);
  * </code>
  * </p>
  * <p>
@@ -38,7 +39,8 @@ import java.util.*;
  * <p>
  * <code>
  *   MySpaceStatus msStatus = new MySpaceStatus(MySpaceStatusCode.CODE,
- *    MySpaceStatusCode.ERROR);
+ *    MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+ *    invokingClassName););
  * </code>
  * </p>
  * <p>
@@ -51,6 +53,14 @@ import java.util.*;
  *   <li><code>MySpaceStatusCode.WARN</code> - warning,</li>
  *   <li><code>MySpaceStatusCode.ERROR</code> - error.</li>
  * </ul>
+ * <p>
+ * The third argument indicates whether the error is to be added to the
+ * cumulative AstroGrid error log, as well as reported to the user.  The
+ * options are NOLOG and LOG.  As a general rule, only serious errors
+ * indicating that something is wrong with the AstroGrid system, should
+ * be logged.  The final argument is a String containing the name of
+ * the class which has invoked the error system.
+ * </p>
  * <p>
  * In addition to setting error and warnings there are also methods to
  * get back the error (or rather success) and warnings flags and to 
@@ -98,8 +108,9 @@ public class MySpaceStatus
  * and its associated type (information, warning or error, see above).
  */
 
-   public MySpaceStatus (int code, int type)
-   {  this.addCode(code, type);
+   public MySpaceStatus (int code, int type, int logFlag,
+     String invokingClass)
+   {  this.addCode(code, type, logFlag, invokingClass);
    }
 
 //
@@ -147,8 +158,10 @@ public class MySpaceStatus
  * Accumulate a new code in the <code>MySpaceStatus</code>.
  */
 
-   public void addCode(int code,  int type)
-   {  MySpaceStatusCode newCode = new MySpaceStatusCode(code, type);
+   public void addCode(int code,  int type, int logFlag,
+     String invokingClass)
+   {  MySpaceStatusCode newCode = new MySpaceStatusCode(code, type,
+       invokingClass);
 
       codes.add(newCode);
 
@@ -157,6 +170,13 @@ public class MySpaceStatus
       }
       else if (type == MySpaceStatusCode.WARN)
       {  warningStatus = true;
+      }
+
+//
+//   Log the error if required.
+
+      if (logFlag == MySpaceStatusCode.LOG)
+      {
       }
    }
 
@@ -167,30 +187,37 @@ public class MySpaceStatus
    public void outputCodes()
    {  int numCodes = codes.size();
 
-      for (int loop=0; loop<numCodes; loop++)
-      {  MySpaceStatusCode currentCode =
-           (MySpaceStatusCode)codes.elementAt(loop);
+      try
+      {  for (int loop=0; loop<numCodes; loop++)
+         {  MySpaceStatusCode currentCode =
+              (MySpaceStatusCode)codes.elementAt(loop);
 
-         String code = currentCode.getCode();
-         String message = currentCode.getCodeMessage();
-         int type = currentCode.getType();
+            String code = currentCode.getCode();
+            String message = currentCode.getCodeMessage();
+            int type = currentCode.getType();
 
-         if (type == MySpaceStatusCode.INFO)
-         {  System.out.println(
-              "!(" + loop + ") Info:    [" + code + "]: " + message);
+            if (type == MySpaceStatusCode.INFO)
+            {  System.out.println(
+                 "!(" + loop + ") Info:    [" + code + "]: " + message);
+            }
+            else if (type == MySpaceStatusCode.WARN)
+            {  System.out.println(
+                 "!(" + loop + ") Warning: [" + code + "]: " + message);
+            }
+            else if (type == MySpaceStatusCode.ERROR)
+            {  System.out.println(
+                 "!(" + loop + ") Error:   [" + code + "]: " + message);
+            }
+            else
+            {  System.out.println(
+                 "!(" + loop + ") Unknown: [" + code + "]: " + message);
+            }
          }
-         else if (type == MySpaceStatusCode.WARN)
-         {  System.out.println(
-              "!(" + loop + ") Warning: [" + code + "]: " + message);
-         }
-         else if (type == MySpaceStatusCode.ERROR)
-         {  System.out.println(
-              "!(" + loop + ") Error:   [" + code + "]: " + message);
-         }
-         else
-         {  System.out.println(
-              "!(" + loop + ") Unknown: [" + code + "]: " + message);
-         }
+      }
+      catch (Exception all)
+      {  this.addCode(MySpaceStatusCode.AGMMCE00030,
+           MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+           this.getClassName() );
       }
    }
 
@@ -215,10 +242,20 @@ public class MySpaceStatus
 
    public String translateCode(int code)
    {  MySpaceStatusCode dummyCode = new MySpaceStatusCode(code, 
-        MySpaceStatusCode.INFO);
+        MySpaceStatusCode.INFO, "dummy");
 
       String translatedCode = dummyCode.getCode();
 
       return translatedCode;
    }
+
+/**
+ * Obtain the name of the current Java class.
+ */
+
+   protected String getClassName()
+   { Class currentClass = this.getClass();
+     String name =  currentClass.getName();
+     return name;
+   }    
 }

@@ -41,14 +41,11 @@ import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
  * A method is provided to re-write the registry file when the as required.
  * 
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 2.
+ * @version Iteration 3.
  */
 
 public class RegistryManager
-{  
-//   private static Logger logger = Logger.getLogger(RegistryManager.class);
-   
-   private static boolean DEBUG = true;
+{  private static boolean DEBUG = true;
 	
    private Map dataItemRecordHashMap = new HashMap (1100);
                            // Hash map holding the MySpace system registry.
@@ -83,22 +80,30 @@ public class RegistryManager
    public RegistryManager(String registryName)
    {  this.registryName = registryName;
 
+      try
+      {
 //
-//   Attempt to read the registry configuration file.
+//      Attempt to read the registry configuration file.
 
-      registryConfigFileName = registryName + ".config";
-      this.readConfigFile(registryConfigFileName);
-
-//
-//   Attempt to read the user details file for the registry.
-
-//    TBD.
+         registryConfigFileName = registryName + ".config";
+         this.readConfigFile(registryConfigFileName);
 
 //
-//   Attempt to read the file containing the MySpace registry.
+//      Attempt to read the user details file for the registry.
 
-      registryFileName = registryName + ".reg";
-      this.readRegistryFile(registryFileName);
+//       TBD.
+
+//
+//      Attempt to read the file containing the MySpace registry.
+
+         registryFileName = registryName + ".reg";
+         this.readRegistryFile(registryFileName);
+      }
+      catch (Exception all)
+      {  MySpaceStatus stat1  = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00100, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
+      }
    }
 
 // -------------------------------------------------------------------
@@ -113,23 +118,31 @@ public class RegistryManager
    public RegistryManager(String registryName, String dummy)
    {  this.registryName = registryName;
 
+      try
+      {
 //
-//   Attempt to read the registry configuration file.
+//      Attempt to read the registry configuration file.
 
-      registryConfigFileName = registryName + ".config";
-      this.readConfigFile(registryConfigFileName);
-
-//
-//   Attempt to read the user details file for the registry.
-
-//    TBD.
+         registryConfigFileName = registryName + ".config";
+         this.readConfigFile(registryConfigFileName);
 
 //
-//   Set the name of the (currently empty) file which will contain the
-//   MySpace registry.
+//      Attempt to read the user details file for the registry.
 
-      registryFileName = registryName + ".reg";
-      dataItemIDSeqNo = 0;
+//       TBD.
+
+//
+//      Set the name of the (currently empty) file which will contain the
+//      MySpace registry.
+
+         registryFileName = registryName + ".reg";
+         dataItemIDSeqNo = 0;
+      }
+      catch (Exception all)
+      {  MySpaceStatus stat1  = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00100, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
+      }
    }
 
 // -------------------------------------------------------------------
@@ -160,9 +173,7 @@ public class RegistryManager
 //   for serialising and writing to it.
 
       try
-      {  
-//      	 if (DEBUG) logger.debug("ENTERING finalize in RegistryManager..registryFileName = "+registryFileName);
-      	 File registryFile = new File(registryFileName);
+      {  File registryFile = new File(registryFileName);
          FileOutputStream ros = new FileOutputStream(registryFile);
          ObjectOutputStream oos = new ObjectOutputStream(ros);
 
@@ -174,7 +185,6 @@ public class RegistryManager
 
          for (Iterator keyIter = keys.iterator(); keyIter.hasNext(); )
          {  String key =  (String)keyIter.next();
-//			if (DEBUG) logger.debug("KEY="+key);
             DataItemRecord itemRec =
               (DataItemRecord)dataItemRecordHashMap.get(key);
             oos.writeObject(itemRec);
@@ -187,7 +197,8 @@ public class RegistryManager
       }
       catch (IOException e)
       {  MySpaceStatus stat1  = new MySpaceStatus(
-           MySpaceStatusCode.AGMMCE00030, MySpaceStatusCode.ERROR);
+           MySpaceStatusCode.AGMMCE00101, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
       }
    }
 
@@ -243,8 +254,9 @@ public class RegistryManager
             catch (ClassNotFoundException cnfe)
             {  more = false;
                MySpaceStatus stat1  = new MySpaceStatus(
-                 MySpaceStatusCode.AGMMCE00060,
-                 MySpaceStatusCode.ERROR);
+                 MySpaceStatusCode.AGMMCE00102,
+                 MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+                 this.getClassName() );
             }
          }
 
@@ -257,7 +269,8 @@ public class RegistryManager
       }
       catch (IOException e)
       {  MySpaceStatus stat1  = new MySpaceStatus(
-           MySpaceStatusCode.AGMMCE00032, MySpaceStatusCode.ERROR);
+           MySpaceStatusCode.AGMMCE00103, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
       }
    }
 
@@ -361,15 +374,19 @@ public class RegistryManager
                      else
                      {  MySpaceStatus status  =
                           new MySpaceStatus(
-                            MySpaceStatusCode.AGMMCW00032,
-                            MySpaceStatusCode.WARN);
+                            MySpaceStatusCode.AGMMCW00153,
+                            MySpaceStatusCode.WARN,
+                            MySpaceStatusCode.NOLOG,
+                            this.getClassName() );
                      }
                   }
                   else
                   {  MySpaceStatus status  =
                        new MySpaceStatus(
-                         MySpaceStatusCode.AGMMCW00032,
-                         MySpaceStatusCode.WARN);
+                         MySpaceStatusCode.AGMMCW00153,
+                         MySpaceStatusCode.WARN,
+                         MySpaceStatusCode.NOLOG,
+                         this.getClassName() );
                   }
                }
 
@@ -392,9 +409,10 @@ public class RegistryManager
                   else
                   {  MySpaceStatus status  =
                        new MySpaceStatus(
-                         //MySpaceStatusCode.MS_W_RGCSRVI,
-					     MySpaceStatusCode.AGMMCE00050,
-                         MySpaceStatusCode.WARN);
+                         MySpaceStatusCode.AGMMCW001543,
+                         MySpaceStatusCode.WARN,
+                         MySpaceStatusCode.NOLOG,
+                         this.getClassName() );
                   }
                }
             }
@@ -408,8 +426,9 @@ public class RegistryManager
          {  expiryPeriod = 30;
 
             MySpaceStatus status  =
-              new MySpaceStatus(MySpaceStatusCode.AGMMCW00032,
-                MySpaceStatusCode.WARN);
+              new MySpaceStatus(MySpaceStatusCode.AGMMCW00153,
+                MySpaceStatusCode.WARN, MySpaceStatusCode.NOLOG,
+                this.getClassName() );
          }
 
 //
@@ -418,17 +437,22 @@ public class RegistryManager
 
          if (serverNames.size() < 1)
          {  MySpaceStatus status  =
-             // new MySpaceStatus(MySpaceStatusCode.MS_E_RGCSRVM,
-               new MySpaceStatus(MySpaceStatusCode.AGMMCE00050,
-                MySpaceStatusCode.ERROR);
+              new MySpaceStatus(MySpaceStatusCode.AGMMCE00104,
+                MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+                this.getClassName());
          }
 
          in.close();
       }
-      catch (java.io.IOException ex)
+
+//
+//   Note: any exception caught here is likely to be an I/O exception,
+//   but other types are possible, so a catch-all exception is used.
+
+      catch (Exception all)
       {  MySpaceStatus status = new MySpaceStatus(
-           //MySpaceStatusCode.MS_E_RGCSRVM, MySpaceStatusCode.ERROR);
-		   MySpaceStatusCode.AGMMCE00050, MySpaceStatusCode.ERROR);
+           MySpaceStatusCode.AGMMCE00104, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
 
 //         System.out.println("Cannot read input file.");
 //         ex.printStackTrace();
@@ -537,30 +561,37 @@ public class RegistryManager
  */
 
    public boolean addDataItemRecord(DataItemRecord dataItemRecord)
-   {
+   {  boolean status = false;
+
+      try
+      {
+//
+//      Generate the key from dataItemRecord's dataItemID.
+
+         String key = "" + dataItemRecord.getDataItemID();
 
 //
-//   Generate the key from dataItemRecord's dataItemID.
+//      Check that a DataItemRecord with this key does not already
+//      exist, and if not add dataItemRecord to the Hash Map holding the
+//      registry.
 
-      String key = "" + dataItemRecord.getDataItemID();
+         if (dataItemRecordHashMap.containsKey(key))
+         {  status = false;
+         }
+         else
+         {  dataItemRecordHashMap.put(key, dataItemRecord);
+            status = true;
+         }
 
-//
-//   Check that a DataItemRecord with this key does not already
-//   exist, and if not add dataItemRecord to the Hash Map holding the
-//   registry.
+//         System.out.println("Status from addDataItemRecord: "
+//           + status + "  key = " + key);
 
-      boolean status;
-
-      if (dataItemRecordHashMap.containsKey(key))
-      {  status = false;
       }
-      else
-      {  dataItemRecordHashMap.put(key, dataItemRecord);
-         status = true;
+      catch (Exception all)
+      {  MySpaceStatus exStatus = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
       }
-
-//      System.out.println("Status from addDataItemRecord: "
-//        + status + "  key = " + key);
 
       return status;
    }
@@ -574,28 +605,35 @@ public class RegistryManager
  */
 
    public boolean deleteDataItemRecord(int dataItemID)
-   {
+   {  boolean status = false;
+
+      try
+      {
 
 //
-//   Generate the key from the dataItemID.
+//      Generate the key from the dataItemID.
 
-      String key = "" + dataItemID;
+         String key = "" + dataItemID;
 
 //
-//   Check that a DataItemRecord with this key exists and then delete
-//   the corresponding entry from the Hash Map holding the registry.
+//      Check that a DataItemRecord with this key exists and then delete
+//      the corresponding entry from the Hash Map holding the registry.
 
-      boolean status;
+//         System.out.println("key to be removed: " + key);
 
-//      System.out.println("key to be removed: " + key);
-
-      if (dataItemRecordHashMap.containsKey(key))
-      {  dataItemRecordHashMap.remove(key);
-//         System.out.println(" ... key removed.");
-         status = true;
+         if (dataItemRecordHashMap.containsKey(key))
+         {  dataItemRecordHashMap.remove(key);
+//            System.out.println(" ... key removed.");
+            status = true;
+         }
+         else
+         {  status = false;
+         }
       }
-      else
-      {  status = false;
+      catch (Exception all)
+      {  MySpaceStatus exStatus = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
       }
 
       return  status;
@@ -612,27 +650,35 @@ public class RegistryManager
  */
 
    public DataItemRecord lookupDataItemRecord(int dataItemID)
-   {
+   {  DataItemRecord itemRecord = new DataItemRecord();
+      itemRecord = null;
+
+      try
+      {
 
 //
-//   Generate the key from the dataItemID.
+//      Generate the key from the dataItemID.
 
-      String key = "" + dataItemID;
+         String key = "" + dataItemID;
 
 //
-//   Check that a <code>DataItemRecord</code> with this key exists and if
-//   so then look it up in the Hash Map holding the registry.  If the key
-//   does not exist the return a null <code>DataItemRecord</code>.
+//      Check that a <code>DataItemRecord</code> with this key exists and if
+//      so then look it up in the Hash Map holding the registry.  If the key
+//      does not exist the return a null <code>DataItemRecord</code>.
 
-      DataItemRecord itemRecord = new DataItemRecord();
+         if (dataItemRecordHashMap.containsKey(key))
+         {  itemRecord = (DataItemRecord)dataItemRecordHashMap.get(key);
+         }
+         else
+         {  itemRecord = null;
+         }
+      }
+      catch (Exception all)
+      {  MySpaceStatus status = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
+      }
 
-      if (dataItemRecordHashMap.containsKey(key))
-      {  itemRecord = (DataItemRecord)dataItemRecordHashMap.get(key);
-      }
-      else
-      {  itemRecord = null;
-      }
-      
       return itemRecord;
    }
 
@@ -655,86 +701,100 @@ public class RegistryManager
       Comparator comparator = new DataItemRecordComparator();
       Set itemRecords = new TreeSet(comparator);
       Vector returnItemRecords = new Vector();
+
       int count = 0;
 
-//
-//   Check that the input string is not blank.
-
-      int len = dataHolderNameExpr.length();
-
-      if (len > 0)
+      try
       {
 
 //
-//      Check whether the given expression includes a terminating wild-card
-//      and assemble the comparison string that will be checked against the
-//      the entries in the registry.  If the input string does not
-//      contain a terminating wild-card then it is simply copied.  If it
-//      does then the portion of the string before the wild-card is copied.
+//      Check that the input string is not blank.
 
-         boolean wildCard;
-         String comparisonString;
-//		 logger.debug("inside RegistryManager.lookupDataRecords."+dataHolderNameExpr);
-         if (dataHolderNameExpr.endsWith("*") == true)
-         {  
-         	wildCard = true;
-            comparisonString = dataHolderNameExpr.substring(0, len-1);
-//            logger.debug("wildcad is true:"+comparisonString);
-         }
-         else
-         {  wildCard = false;
-            comparisonString = dataHolderNameExpr;
-         }
+         int len = dataHolderNameExpr.length();
+
+         if (len > 0)
+         {
 
 //
-//      Obtain the key set for the Registry Hash Map.
+//         Check whether the given expression includes a terminating wild-card
+//         and assemble the comparison string that will be checked against the
+//         the entries in the registry.  If the input string does not
+//         contain a terminating wild-card then it is simply copied.  If it
+//         does then the portion of the string before the wild-card is copied.
 
-         Set keys = dataItemRecordHashMap.keySet();
+            boolean wildCard;
+            String comparisonString;
 
-//
-//      Use the keys to examine every object.
-
-         for (Iterator keyIter = keys.iterator(); keyIter.hasNext(); )
-         {  String key =  (String)keyIter.next();
-            DataItemRecord itemRec =
-              (DataItemRecord)dataItemRecordHashMap.get(key);
-
-//
-//         Get the name for the current DataItemRecord.
-
-            String dataItemName = itemRec.getDataItemName();
-                 
-//            logger.debug("registryManager.lookupdatarecords.dataitemname    = " +dataItemName);
-//            logger.debug("registryManager.lookupdatarecords.comparisonString= " +comparisonString);
-//
-//         Check the name against the comparison string.  If it matches
-//         then add the current DataItemRecord to the (alphabetically
-//         sorted) TreeSet holding the list of matches.
-
-            if (!wildCard)
-            {  if (dataItemName.equals(comparisonString))
-               {  itemRecords.add(itemRec);
-               }
+            if (dataHolderNameExpr.endsWith("*") == true)
+            {  wildCard = true;
+               comparisonString = dataHolderNameExpr.substring(0, len-1);
             }
             else
-            {  // logger.debug("wildcard is true..");
-            	if (dataItemName.startsWith(comparisonString))
-               {  itemRecords.add(itemRec);
-//               	  logger.debug("added 1");
+            {  wildCard = false;
+               comparisonString = dataHolderNameExpr;
+            }
+
+//
+//         Obtain the key set for the Registry Hash Map.
+
+            Set keys = dataItemRecordHashMap.keySet();
+
+//
+//         Use the keys to examine every object.
+
+            for (Iterator keyIter = keys.iterator(); keyIter.hasNext(); )
+            {  String key =  (String)keyIter.next();
+               DataItemRecord itemRec =
+                 (DataItemRecord)dataItemRecordHashMap.get(key);
+
+//
+//            Get the name for the current DataItemRecord.
+
+               String dataItemName = itemRec.getDataItemName();
+
+//
+//            Check the name against the comparison string.  If it matches
+//            then add the current DataItemRecord to the (alphabetically
+//            sorted) TreeSet holding the list of matches.
+
+               if (!wildCard)
+               {  if (dataItemName.equals(comparisonString))
+                  {  itemRecords.add(itemRec);
+                  }
+               }
+               else
+               {  if (dataItemName.startsWith(comparisonString))
+                  {  itemRecords.add(itemRec);
+                  }
                }
             }
          }
-      }
 
 //
-//   Copy the entries in the alphabetically sorted TreeSet into the
-//   the return Vector.  Consequently, the elements in the Vector are
-//   also alphabetically sorted.
+//      Copy the entries in the alphabetically sorted TreeSet into the
+//      the return Vector.  Consequently, the elements in the Vector are
+//      also alphabetically sorted.
 
-      for(Iterator iter = itemRecords.iterator();  iter.hasNext(); )
-      {  returnItemRecords.add(iter.next());
+         for(Iterator iter = itemRecords.iterator();  iter.hasNext(); )
+         {  returnItemRecords.add(iter.next());
+         }
+      }
+      catch (Exception all)
+      {  MySpaceStatus status = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
       }
 
       return returnItemRecords;
    }
+
+/**
+ * Obtain the name of the current Java class.
+ */
+
+   protected String getClassName()
+   { Class currentClass = this.getClass();
+     String name =  currentClass.getName();
+     return name;
+   }    
 }

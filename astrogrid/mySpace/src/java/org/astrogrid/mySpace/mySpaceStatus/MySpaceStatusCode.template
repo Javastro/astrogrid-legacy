@@ -30,7 +30,7 @@ package org.astrogrid.mySpace.mySpaceStatus;
  * representation.
  * 
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 2.
+ * @version Iteration 3.
  */
 
 public class MySpaceStatusCode
@@ -43,10 +43,17 @@ public class MySpaceStatusCode
    public static final int WARN  = 2;  // Warning.
    public static final int ERROR = 3;  // Error.
 
+//
+//Public constants defining whether errors are logged.
+
+   public static final int LOG  = 0;    // Log the error.
+   public static final int NOLOG  = 1;  // Do not log the error.
+
 // ++-- Codes tag --
 
    private int code;    // Code.
    private int type;    // Code type code: INFO, WARN or ERROR.
+   private String invokingClass; // Name of the class invoking the error.
 
 //
 // Constructor.
@@ -55,9 +62,10 @@ public class MySpaceStatusCode
  * Create a <code>MySpaceStatusCode</code>, setting the code and type.
  */
 
-   public MySpaceStatusCode (int code,  int type)
+   public MySpaceStatusCode (int code,  int type, String invokingClass)
    {  this.code = code;
       this.type = type;
+      this.invokingClass = invokingClass;
    }
 
 //
@@ -94,6 +102,20 @@ public class MySpaceStatusCode
    {  String message = null;
 
 // ++-- getCodeMessage tag --
+
+//
+//   Translate the token corresponding to the invoking class.
+
+      int start = message.indexOf("{0}");
+
+      if (start > -1)
+      {  int stop = start + 2;
+         String temp = message.substring(0, start)
+           + invokingClass
+           + message.substring(stop+1, message.length() );
+
+         message = temp;
+      }
 
       return message;
    }
