@@ -1,4 +1,4 @@
-/*$Id: ExampleVOTableParsingWorkflowTest.java,v 1.1 2004/08/06 10:28:23 nw Exp $
+/*$Id: ExampleVOTableParsingWorkflowTest.java,v 1.2 2004/08/09 08:35:52 nw Exp $
  * Created on 06-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -73,12 +73,13 @@ public class ExampleVOTableParsingWorkflowTest extends AbstractTestForWorkflow {
         // now the app that consumes the list of parameters.
         descr = reg.getDescriptionFor(URL_LIST_SINK);
         Tool sinkTool = descr.createToolFromDefaultInterface();
-        // populate parameters here.
+        // populate other parameters here.
         Step sink = new Step();
         sink.setName("sink-step");
         sink.setTool(sinkTool);
         wf.getSequence().addActivity(sink);
         
+                
     }
     
     public void checkExecutionResults(Workflow result) throws Exception {
@@ -94,6 +95,9 @@ public class ExampleVOTableParsingWorkflowTest extends AbstractTestForWorkflow {
 
 /* 
 $Log: ExampleVOTableParsingWorkflowTest.java,v $
+Revision 1.2  2004/08/09 08:35:52  nw
+no change
+
 Revision 1.1  2004/08/06 10:28:23  nw
 example workflow
  
