@@ -13,8 +13,8 @@
              <option value="NONE">None</option>
           </select>
           Send them
-          <input type='radio' name='TargetBrowser'/>to Browser
-          <input type='radio' name='TargetURI'/>
+          <!-- <input type='radio' name='TargetBrowser' checked='true'/>to Browser -->
+          <!-- <input type='radio' name='TargetURI'/> -->
           <input type="text" name="Target"/> (Optional)
           <a href="http://wiki.astrogrid.org/bin/view/Support/HelpTargetIndicators">(Help)</a>
         </p>
