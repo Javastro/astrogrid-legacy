@@ -12,7 +12,7 @@
         }
         else
         {		
-		    document.getElementById(previously_selected).src="/astrogrid-portal/workflow/test/"+previously_selected_node+".gif";		       
+		    document.getElementById(previously_selected).src="/astrogrid-portal/mount/workflow/"+previously_selected_node+".gif";		       
             document.getElementById(id).src="/astrogrid-portal/mount/workflow/"+node_type+"_selected.gif";
 		    previously_selected=id;		  
 		    previously_selected_node = node_type;		  
@@ -47,11 +47,10 @@
     }
  
  
-    function populate_container_insert_form(index, id, action)
+    function populate_container_insert_form(id, index)
     {
        document.container_insert_form.activity_index_key.value = index;
-       document.container_insert_form.activity_key.value = id;           
-       document.container_insert_form.action.value = action;
+       document.container_insert_form.activity_key.value = id;
     } 
  
  
