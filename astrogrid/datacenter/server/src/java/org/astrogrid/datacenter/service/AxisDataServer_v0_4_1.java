@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer_v0_4_1.java,v 1.2 2004/03/08 13:24:35 mch Exp $
+ * $Id: AxisDataServer_v0_4_1.java,v 1.3 2004/03/09 22:57:18 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,6 +8,7 @@ package org.astrogrid.datacenter.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URL;
 import org.apache.axis.AxisFault;
 import org.apache.axis.types.URI;
@@ -17,7 +18,6 @@ import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.axisdataserver.types.Language;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.delegate.FullSearcher;
-import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QueryResults;
@@ -68,11 +68,9 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
          }
       
          //ask as an adql select
-         QueryResults results = server.askAdql(Account.ANONYMOUS, ADQLUtils.unmarshalSelect(q.getQueryBody()));
-         
-         String xmlDoc = DomHelper.DocumentToString(results.toVotable().getOwnerDocument());
-         
-         return new ByteArrayInputStream(xmlDoc.getBytes()).toString();
+         StringWriter sw = new StringWriter();
+         server.askAdql(Account.ANONYMOUS, ADQLUtils.unmarshalSelect(q.getQueryBody()), sw);
+         return sw.toString();
          
       }
       catch (ADQLException e) {
@@ -255,6 +253,9 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
 
 /*
 $Log: AxisDataServer_v0_4_1.java,v $
+Revision 1.3  2004/03/09 22:57:18  mch
+Pass streams to DataServer instead getting string results (less lumpy, able to close SQL)
+
 Revision 1.2  2004/03/08 13:24:35  mch
 Fixes to reintroduce ADQL querying and cone searches
 

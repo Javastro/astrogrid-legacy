@@ -21,7 +21,7 @@
    String adqlSql = request.getParameter("AdqlSql");
 
    try {
-     server.askAdqlSql(Account.ANONYMOUS, adqlSql).toVotable(out);
+     server.askAdqlSql(Account.ANONYMOUS, adqlSql, out);
    }
    catch (Exception e) {
       LogFactory.getLog(request.getContextPath()).error(e);

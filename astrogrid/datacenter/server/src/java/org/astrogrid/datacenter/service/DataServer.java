@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.6 2004/03/09 22:10:35 mch Exp $
+ * $Id: DataServer.java,v 1.7 2004/03/09 22:56:26 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,6 +10,7 @@ import org.astrogrid.datacenter.adql.generated.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URI;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -93,32 +94,31 @@ public class DataServer
          tables.addTable(t);
          f.setTableReference(tables);
       
-         QueryResults results = askAdql(user, s);
+         StringWriter sw = new StringWriter();
+         askAdql(user, s, sw);
          
-         //bit of a botch at the moment - converts VOTable back into string/input stream for returning...
-         //best way to fix is properly to pipe it - still not quite right but less
-         //memory
-         return DomHelper.DocumentToString(results.toVotable());
+         return sw.toString();
    }
    
    /**
-    * Runs a blocking ADQL/XML/OM query
+    * Runs a blocking ADQL/XML/OM query, outputting the results as votable to the given stream
     */
-   public QueryResults askAdql(Account user, Select adql) throws IOException, ADQLException {
+   public QuerierStatus askAdql(Account user, Select adql, Writer out) throws IOException, ADQLException {
       
       Query q = new Query();
       q.setQueryBody(ADQLUtils.toQueryBody(adql));
       
       Querier querier =  QuerierManager.createQuerier(q);
       QueryResults results = querier.doQuery();
+      results.toVotable(out);
       QuerierManager.closeQuerier(querier);
-      return results;
+      return querier.getStatus();
    }
    
    /**
     * Runs a blocking ADQL/SQL query
     */
-   public QueryResults askAdqlSql(Account user, String adqlSql) throws IOException, ADQLException {
+   public QuerierStatus askAdqlSql(Account user, String adqlSql, Writer out) throws IOException, ADQLException {
 
       throw new UnsupportedOperationException();
    }
@@ -219,6 +219,7 @@ public class DataServer
       e.printStackTrace(new PrintWriter(sw));
             
       return
+//       "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0 Transitional//EN'>\n"+
          "<html>\n"+
          "<head><title>"+title+"</title></head>\n"+
          "<body>\n"+
@@ -236,6 +237,7 @@ public class DataServer
       return exceptionAsHtml(title, e, "");
    }
 }
+
 
 
 

@@ -22,7 +22,7 @@
    Document adqlDom = DomHelper.newDocument(new StringBufferInputStream(adqlXml));
    
    try {
-     server.askAdql(Account.ANONYMOUS, ADQLUtils.unmarshalSelect(adqlDom)).toVotable(out);
+     server.askAdql(Account.ANONYMOUS, ADQLUtils.unmarshalSelect(adqlDom), out);
    }
    catch (Exception e) {
       LogFactory.getLog(request.getContextPath()).error(e);
