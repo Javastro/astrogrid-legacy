@@ -47,7 +47,7 @@ public class MySpaceIt05DelegateTest extends TestCase
 // of the others will).
 
 
-   public void testHeartBeat()
+   public void testHeartBeat() throws Exception
    {  try
       {  MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
            operator, mssUrl);
@@ -56,6 +56,7 @@ public class MySpaceIt05DelegateTest extends TestCase
       }
       catch(Exception e)
       {  System.out.println("Exception thrown in testHeartBeat.");
+          throw e;
       }
    }
 
@@ -64,7 +65,7 @@ public class MySpaceIt05DelegateTest extends TestCase
 //
 // Test the methods in the StoreClient Interface.
 
-   public void testGetOperator()
+   public void testGetOperator() throws Exception
    {  try
       {  MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
            operator, mssUrl);
@@ -74,10 +75,11 @@ public class MySpaceIt05DelegateTest extends TestCase
       }
       catch(Exception e)
       {  System.out.println("Exception thrown in testGetOperator.");
+      throw e;
       }
    }
 
-   public void testGetEndpoint()
+   public void testGetEndpoint() throws Exception
    {  try
       {  MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
            operator, mssUrl);
@@ -90,14 +92,16 @@ public class MySpaceIt05DelegateTest extends TestCase
       }
       catch(Exception e)
       {  System.out.println("Exception thrown in testGetEndpoint.");
+      throw e;
       }
    }
 
    public void testGetFiles()
    {
+       fail("Unwritten test");
    }
 
-   public void testListFiles()
+   public void testListFiles() throws Exception
    {  try
       {  MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
            operator, mssUrl);
@@ -133,10 +137,11 @@ public class MySpaceIt05DelegateTest extends TestCase
       }
       catch(Exception e)
       {  System.out.println("Exception thrown in testListFiles.");
+      throw e;
       }
    }
 
-   public void testGetFile()
+   public void testGetFile() throws Exception
    {  try
       {  MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
            operator, mssUrl);
@@ -169,10 +174,11 @@ public class MySpaceIt05DelegateTest extends TestCase
       }
       catch(Exception e)
       {  System.out.println("Exception thrown in testGetFile.");
+      throw e;
       }
    }
 
-   public void testPutBytes()
+   public void testPutBytes() throws Exception
    {  try
       {  MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
            operator, mssUrl);
@@ -200,10 +206,11 @@ public class MySpaceIt05DelegateTest extends TestCase
       }
       catch(Exception e)
       {  System.out.println("Exception thrown in testPutBytes.");
+      throw e;
       }
    }
 
-   public void testPutString()
+   public void testPutString() throws Exception
    {  try
       {  MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
            operator, mssUrl);
@@ -230,10 +237,11 @@ public class MySpaceIt05DelegateTest extends TestCase
       }
       catch(Exception e)
       {  System.out.println("Exception thrown in testPutString.");
+      throw e;
       }
    }
 
-   public void testPutUrl()
+   public void testPutUrl() throws Exception
    {  try
       {  MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
            operator, mssUrl);
@@ -261,18 +269,21 @@ public class MySpaceIt05DelegateTest extends TestCase
       }
       catch(Exception e)
       {  System.out.println("Exception thrown in testPutUrl.");
+      throw e;
       }
    }
 
    public void testPutStream()
    {
+       fail("Fix me!");
    }
 
    public void testGetStream()
    {
+       fail("I'm not finished!");
    }
 
-   public void testGetUrl()
+   public void testGetUrl() throws Exception
    {  try
       {  MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
            operator, mssUrl);
@@ -305,10 +316,11 @@ public class MySpaceIt05DelegateTest extends TestCase
       }
       catch(Exception e)
       {  System.out.println("Exception thrown in testGetUrl.");
+      throw e;
       }
    }
 
-   public void testDelete()
+   public void testDelete() throws Exception
    {  try
       {  MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
            operator, mssUrl);
@@ -335,13 +347,14 @@ public class MySpaceIt05DelegateTest extends TestCase
       }
       catch(Exception e)
       {  System.out.println("Exception thrown in testDelete.");
+          throw e;
       }
    }
 
 //
 //First copy: String to Agsl.
 
-   public void testCopy()
+   public void testCopy() throws Exception
    {  try
       {  MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
            operator, mssUrl);
@@ -370,13 +383,14 @@ public class MySpaceIt05DelegateTest extends TestCase
       }
       catch(Exception e)
       {  System.out.println("Exception thrown in testCopy.");
+      throw e;
       }
    }
 
 //
 //Second copy, Agsl to String.
 
-   public void testCopy2()
+   public void testCopy2() throws Exception
    {  try
       {  MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
            operator, mssUrl);
@@ -405,13 +419,14 @@ public class MySpaceIt05DelegateTest extends TestCase
       }
       catch(Exception e)
       {  System.out.println("Exception thrown in testCopy.");
+      throw e;
       }
    }
 
 //
 //First move, String to Agsl.
 
-   public void testMove()
+   public void testMove() throws Exception
    {  try
       {  MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
            operator, mssUrl);
@@ -440,13 +455,14 @@ public class MySpaceIt05DelegateTest extends TestCase
       }
       catch(Exception e)
       {  System.out.println("Exception thrown in testMove.");
+      throw e;
       }
    }
 
 //
 //Second move, Agsl to String.
 
-   public void testMove2()
+   public void testMove2() throws Exception
    {  try
       {  MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
            operator, mssUrl);
@@ -475,10 +491,11 @@ public class MySpaceIt05DelegateTest extends TestCase
       }
       catch(Exception e)
       {  System.out.println("Exception thrown in testMove.");
+      throw e;
       }
    }
 
-   public void testNewFolder()
+   public void testNewFolder() throws Exception
    {  try
       {  MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
            operator, mssUrl);
@@ -505,6 +522,7 @@ public class MySpaceIt05DelegateTest extends TestCase
       }
       catch(Exception e)
       {  System.out.println("Exception thrown testNewFolder.");
+      throw e;
       }
    }
 
@@ -513,7 +531,7 @@ public class MySpaceIt05DelegateTest extends TestCase
 //
 // Test the methods in the StoreAdminClient Interface.
 
-   public void testCreateUser()
+   public void testCreateUser() throws Exception
    {  try
       {  MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
            operator, mssUrl);
@@ -541,10 +559,11 @@ public class MySpaceIt05DelegateTest extends TestCase
       }
       catch(Exception e)
       {  System.out.println("Exception thrown in testCreateUser.");
+      throw e;
       }
    }
 
-   public void testDeleteUser()
+   public void testDeleteUser() throws Exception
    {  try
       {  MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
            operator, mssUrl);
@@ -572,6 +591,7 @@ public class MySpaceIt05DelegateTest extends TestCase
       }
       catch(Exception e)
       {  System.out.println("Exception thrown in testDeleteUser.");
+      throw e;
       }
    }
 
@@ -582,7 +602,7 @@ public class MySpaceIt05DelegateTest extends TestCase
 // StoreAdminClient interface.  Note that the heartBeat method has
 // already been tested at the very beginning.
 
-   public void testExtendLifetime()
+   public void testExtendLifetime() throws Exception
    {  try
       {  MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
            operator, mssUrl);
@@ -610,10 +630,11 @@ public class MySpaceIt05DelegateTest extends TestCase
       }
       catch(Exception e)
       {  System.out.println("Exception thrown in testExtendLifetime.");
+      throw e;
       }
    }
 
-   public void testChangeOwner()
+   public void testChangeOwner() throws Exception
    {  try
       {  MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
            operator, mssUrl);
@@ -641,6 +662,7 @@ public class MySpaceIt05DelegateTest extends TestCase
       }
       catch(Exception e)
       {  System.out.println("Exception thrown in testChangeOwner.");
+      throw e;
       }
    }
 
