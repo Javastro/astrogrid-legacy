@@ -1,5 +1,5 @@
 /*
- * $Id: Configuration.java,v 1.5 2003/08/28 18:19:15 mch Exp $
+ * $Id: Configuration.java,v 1.6 2003/09/09 17:47:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -40,6 +40,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
+
+import org.astrogrid.log.Log;
 
 public abstract class Configuration
 {
@@ -117,6 +119,8 @@ public abstract class Configuration
     */
    public static String getProperty(String key)
    {
+      affirmKeyValid(key);
+
       return properties.getProperty(key);
    }
 
@@ -125,6 +129,8 @@ public abstract class Configuration
     */
    public static void setProperty(String key, String value)
    {
+      affirmKeyValid(key);
+
       properties.setProperty(key, value);
    }
 
@@ -145,6 +151,8 @@ public abstract class Configuration
     */
    public static String getProperty(String key, String defaultValue)
    {
+      affirmKeyValid(key);
+
       if (properties == null)
       {
          return defaultValue;
@@ -152,5 +160,18 @@ public abstract class Configuration
 
       return properties.getProperty(key, defaultValue);
    }
+
+
+   /**
+    * Keys in the current Property implementation must not contain whitespace,
+    * colons or equals
+    */
+   public static void affirmKeyValid(String key)
+   {
+      Log.affirm(key.indexOf(":") == -1, "Key '"+key+"' contains an illegal character - a colon");
+      Log.affirm(key.indexOf(" ") == -1, "Key '"+key+"' contains an illegal character - a space");
+      Log.affirm(key.indexOf("=") == -1, "Key '"+key+"' contains an illegal character - an equals sign");
+   }
+
 }
 
