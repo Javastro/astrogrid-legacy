@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<services>
+<service type="Registry">
+        <endpoint>@TOMCATROOT@/astrogrid-registry-SNAPSHOT/services/Registry</endpoint>
+        <description>local registry query endpoint</description>
+</service>
+<service type="RegistryAdmin">
+        <endpoint>@TOMCATROOT@/astrogrid-registry-SNAPSHOT/services/RegistryAdmin</endpoint>
+        <description>local registry admin endpoint</description>
+</service>
+<service type="RegistryHarvest">
+        <endpoint>@TOMCATROOT@/astrogrid-registry-SNAPSHOT/services/RegistryHarvest</endpoint>
+        <description>local registry harvest endpoint</description>
+</service>
+   <!-- more to come here -->
+</services>
