@@ -88,12 +88,39 @@ import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
 import org.astrogrid.community.delegate.policy.PolicyPermission;
 
 Then where you want to check if the user has permissions do.
+         PolicyServiceDelegate psd = new PolicyServiceDelegate();
+         try {
+            boolean authorized = psd.checkPermissions(user,"guest","portalsite","read");
+            if(!authorized) {
+               errorMessage = "You are not authorized to enter the portal site.";  
+               //if you have no custom cocoon Action object I would create an <authorized>
+               //element here with a "true"/"false" string and then in your xsl check the authorized element to see if they
+               //have permissions. if they don't then just show them an error message and don't show them any of the page.
+               
+            }
+         }catch(Exception e) {
+            errorMessage = e.toString();
+            e.printStackTrace();  
+         }
+
+or
+
 PolicyserviceDelegate ps = new PolicyServiceDelegate();
+try {
 boolean authorized = ps.checkPermission(session.getAttribute("community_account"),session.getAttribute("credential"),resource,action);
 if(!authorized) {
   PolicyPermission pp = ps.getPolicyPermission();
   //now you their is a pp.getReason if you wish to show an error message.
+               //if you have no custom cocoon Action object I would create an <authorized>
+               //element here with a "true"/"false" string and then in your xsl check the authorized element to see if they
+               //have permissions. if they don't then just show them an error message and don't show them any of the page.
+  
 }
+         }catch(Exception e) {
+            errorMessage = e.toString();
+            e.printStackTrace();  
+         }
+
 ----------------------------------------------------------
 How to check if a user is authorized to perform a task (for server side system, external or local to the community)
 
@@ -110,17 +137,43 @@ String xmlsnippet = CommunityMessage.getMessage(session.getAttribute("community_
 The server side system now does this after it receives the xmlsnippet of code from the portal:
 import org.astrogrid.community.common.util.CommunityMessage;
 import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
-import org.astrogrid.community.delegate.policy.PolicyPermission;
+
 
 String account = CommunityMessage.getAccount(community_xmlsnippet_received);
 String credentail = CommunityMessage.getGroup(community_xmlsnippet_received);
 
+         PolicyServiceDelegate psd = new PolicyServiceDelegate();
+         try {
+            boolean authorized = psd.checkPermissions(user,"guest","portalsite","read");
+            if(!authorized) {
+               errorMessage = "You are not authorized to enter the portal site.";  
+               //if you have no custom cocoon Action object I would create an <authorized>
+               //element here with a "true"/"false" string and then in your xsl check the authorized element to see if they
+               //have permissions. if they don't then just show them an error message and don't show them any of the page.
+            }
+         }catch(Exception e) {
+            errorMessage = e.toString();
+            e.printStackTrace();  
+         }
+
+or 
+
 PolicyserviceDelegate ps = new PolicyServiceDelegate();
+try{
 boolean authorized = ps.checkPermission(session.getAttribute("community_account"),session.getAttribute("credential"),resource,action);
 if(!authorized) {
   PolicyPermission pp = ps.getPolicyPermission();
   //now you their is a pp.getReason() if you wish to show an error message.
+               //if you have no custom cocoon Action object I would create an <authorized>
+               //element here with a "true"/"false" string and then in your xsl check the authorized element to see if they
+               //have permissions. if they don't then just show them an error message and don't show them any of the page.
+  
 }
+         }catch(Exception e) {
+            errorMessage = e.toString();
+            e.printStackTrace();  
+         }
+
 -------------------------------------------------------
 How to Integrate pages into Astrogrid Cocoon
 
