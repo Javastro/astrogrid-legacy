@@ -7,23 +7,40 @@
     </properties>
     <body>
         <section name="Installing the Portal">
-            <subsection name="A brief guide">
-                <p> This <a 
-                    href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*portal*-SNAPSHOT*">link</a> 
-                    gives access to the latest war files. <ul> <li>Deploy the 
-                    astrogrid-portal-base.war to Tomcat in the usual way.</li> 
-                    <li>Stop tomcat</li> <li>Then take each subcomponent 
-                    astrogrid-portal-*.war in turn and unzip it over the top of 
-                    the webapp's folder in Tomcat. </li> 
-                    <li>
-                        Alternatively, deploy astrogrid-portal.war instead.  This consists of the base project
-                        and all of the sub-pages.
-                    </li>
-                            <li>Restart 
-                    Tomcat</li> </ul> *NOTE* As of today (30/3/04) the portal 
-                    <em>must</em> be deployed to a webapp named 
-                    "astrogrid-portal". It is anticipated that this restriction 
-                    will be removed soon. </p>
+            <subsection name="Deploying the whole portal">
+                <p> This <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*portal*-SNAPSHOT*">link</a> gives access to the latest war files. Take 
+                    the astrogrid-portal-*.war and deploy it to Tomcat by your favourite method.</p>
+                <p> *NOTE* As of today (16/9/04) the portal <em>must</em> be deployed to a webapp named "astrogrid-portal". It is anticipated that this 
+                    restriction will be removed soon. You may need to rename the war to "astrogrid-portal.war" to achieve this, depending on the deployment
+                    method you use.</p>
+            </subsection>
+            <subsection name="Deploying selected portal pages">
+                <p> If you wish you can deploy only a subset of the portal pages. 
+                    <ul> 
+                        <li>Deploy the astrogrid-portal-base.war to Tomcat in the usual 
+                    way.</li> 
+                        <li>Stop tomcat</li> 
+                            <li>Then take each subcomponent astrogrid-portal-*.war in turn and unzip it over the top of the webapp's 
+                    folder in Tomcat. </li> 
+                        <li>Restart Tomcat</li> 
+                        </ul> 
+                        </p>
+            </subsection>
+            <subsection name="Configuration">
+                <p> The login page configuration is handled using the org.astrogrid.config package. The simplest way to configure it is to enter the JNDI 
+                    properties below into Tomcat's server.xml file using the Tomcat administrator tool. 
+                    <ul> 
+                        <li>org.astrogrid.portal.registry.url=end point of the registry query webservice [MockDelegate]</li>
+                        <li>org.astrogrid.registry.query.endpoint=end point of the registry query webservice (will be merged with above property in Itn07)</li>
+                        <li>org.astrogrid.community.ident=Local community identifier (e.g. org.astrogrid.localhost)</li>         
+                        <li>emailserver.address=address of your smtp server [127.0.0.1]</li> 
+                        <li>emailserver.user=user whose account is used for sending reminder emails [astrogrid]</li> 
+                        <li>emailserver.password=user's password (if necessary) []</li> 
+                        <li>emailserver.from=return address for reminder emails [astrogrid@star.le.ac.uk]</li> 
+                        <li>astrogrid.portal.admin.email=email address of the administrator who should receive
+                            reminder and registration emails from users[jdt@roe.ac.uk]</li>
+                    </ul> 
+                    If values are not given for these properties, the defaults in square brackets are used instead. </p>
             </subsection>
         </section>
         <section name = "Building the Portal">
