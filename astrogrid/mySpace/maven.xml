@@ -26,10 +26,6 @@
 			<fileset dir="${maven.conf.dir}">
       		</fileset>
 		</copy>
-		<echo message="Copying generated site ${maven.docs.dest} across to webapp ${maven.war.webapp.dir}/maven"/>
-		<copy todir="${maven.war.webapp.dir}/maven" overwrite="yes">
-			<fileset dir="${maven.docs.dest}"/>
-		</copy>
 		<echo message="copying across a readme and sample config file"/>
 		<copy todir="${maven.war.webapp.dir}" overwrite="yes">
 			<fileset dir="${basedir}">
