@@ -23,19 +23,17 @@
      <item name="Server Development Documentation" href="server/index.html" />
    </menu>
    <menu name="Download">
-     <item name="Delegate binary dist" href="delegate-dist/astrogrid-datacenter-client-HEAD.zip" />
-     <item name="Delegate source dist" href="delegate-dist/astrogrid-datacenter-client-HEAD-src.zip" />
-     <item name="Server binary dist" href="server-dist/astrogrid-datacenter-server-HEAD.zip" />
-     <item name="Server source dist" href="server-dist/astrogrid-datacenter-server-HEAD-src.zip" />
-      <!-- download client
-      - single jar,
-      - supporting libs -->
+     <item name="Delegate binary dist" href="client-dist/astrogrid-datacenter-client-SNAPSHOT.zip" />
    </menu>
    <menu name="Server">
       <item name="Status" href="serverStatus.jsp" />
       <item name="Metadata" href="metadata.jsp" />
    </menu>
-
+   <menu name="CEA">
+        <item name="Fingerprint" href="cea-fingerprint.jsp" />
+        <item name="Installation Tests" href="TestServlet?suite=org.astrogrid.applications.component.CEAComponentManagerFactory" />
+        <item name="View VODescription" href="cec-http?method=returnRegistryEntry" />
+   </menu>
    <links>
      <item name="AstroGrid"  href="http://www.astrogrid.org"/>
 
