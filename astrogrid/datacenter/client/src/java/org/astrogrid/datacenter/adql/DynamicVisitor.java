@@ -1,4 +1,4 @@
-/*$Id: DynamicVisitor.java,v 1.1 2003/11/14 00:36:40 mch Exp $
+/*$Id: DynamicVisitor.java,v 1.2 2004/01/14 11:14:39 nw Exp $
  * Created on 29-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,7 +9,7 @@
  *
 **/
 package org.astrogrid.datacenter.adql;
-/** Dynamic DynamicVisitor Pattern interface.
+/** Dynamic implementation of the Visitor Pattern
  * <p>
  * To process / traverse a ADQL query object tree, implement this interface and pass to the
  * {@link QOM#acceptBottomUp} or {@link QOM#acceptTopDown} method of the root object in the object tree.
@@ -52,6 +52,9 @@ public interface DynamicVisitor {
 
 /* 
 $Log: DynamicVisitor.java,v $
+Revision 1.2  2004/01/14 11:14:39  nw
+improved documentation
+
 Revision 1.1  2003/11/14 00:36:40  mch
 Code restructure
 
