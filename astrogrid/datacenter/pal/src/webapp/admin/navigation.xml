@@ -7,14 +7,13 @@
          <li><a href="../setup/index.jsp">Setup</a>
       </ul>
    </div>
-   <div id='menuServer'>
-      <h5>Server</h5>
+   <div id='menuService'>
+      <h5>Service</h5>
       <ul>
          <li><a href="../index.jsp">Index</a>
          <li><a href="../serverStatus.jsp">Status</a>
          <li><a href="GetLog">Log</a>
          <li><a href="fingerprint.jsp">Fingerprint</a>
-         <li><a href='/manager/reload?path=<%= request.getContextPath() %>'>Restart</a>
       </ul>
    </div>
    <div id='menuMetadata'>
@@ -25,6 +24,13 @@
          <!-- <li><a href="editMetadata.jsp">Edit</a> -->
          <li><a href="register.jsp">Register</a>
          <li><a href="../docs/resourcePlugins.jsp">Configuring Metadata</a>
+      </ul>
+   </div>
+   <div id='menuContainer'>
+      <h5>Manager</h5>
+      <ul>
+         <li><a href='/manager/html/'>Manager</a>
+         <li><a href='/manager/reload?path=<%= request.getContextPath() %>'>Restart</a>
       </ul>
    </div>
 
