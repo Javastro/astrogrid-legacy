@@ -1,4 +1,4 @@
-<%@ page import="org.astrogrid.config.SimpleConfig"
+<%@ page import="org.astrogrid.cfg.ConfigFactory"
    isThreadSafe="false"
    session="false"
 %>
@@ -25,8 +25,8 @@
    </p>
    <p>This webapp resolves using:
    <ul>
-      <li><a href=''><%= SimpleConfig.getProperty("org.astrogrid.registry.query.endpoint","(not set)") %></a>
-      <li><a href=''><%= SimpleConfig.getProperty("org.astrogrid.registry.query.altendpoint","(not set)") %></a>
+      <li><a href=''><%= ConfigFactory.getCommonConfig().getProperty("org.astrogrid.registry.query.endpoint","(not set)") %></a>
+      <li><a href=''><%= ConfigFactory.getCommonConfig().getProperty("org.astrogrid.registry.query.altendpoint","(not set)") %></a>
    </ul>
    </p>
 
