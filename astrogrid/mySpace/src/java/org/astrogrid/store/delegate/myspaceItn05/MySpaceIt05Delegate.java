@@ -1,20 +1,17 @@
 package org.astrogrid.store.delegate.myspaceItn05;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import java.io.*;
-import java.net.*;
-
-import java.util.Date;
-import java.util.ArrayList;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Array;
-
-
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
 import org.astrogrid.community.User;
-
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
-
 import org.astrogrid.store.delegate.StoreAdminClient;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreException;
@@ -22,7 +19,7 @@ import org.astrogrid.store.delegate.StoreFile;
 
 
 /**
- * <code>MySpaceIt05Delegate</code> is the delegate class which 
+ * <code>MySpaceIt05Delegate</code> is the delegate class which
  * applications invoke in order to access a MySpace service.
  *
  * @author A C Davenhall (Edinburgh)
@@ -45,7 +42,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    private User operator = null;    // User of the delegate [TODO] Account?.
 
    private boolean isTest = false;
-   private boolean throwExceptions = false;
+   private boolean throwExceptions = true; //by default behave like other delegates
    private boolean allowOverWrite = true;
 
    private ArrayList statusList = new ArrayList(); // List of Status messages.
@@ -70,7 +67,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  * Constructor with specified User and endPoint.
  */
 
-   public MySpaceIt05Delegate(User operator, String endPoint) 
+   public MySpaceIt05Delegate(User operator, String endPoint)
      throws IOException
    {
       this.operator = operator;
@@ -89,7 +86,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
             new java.net.URL(endPoint) );
       }
       catch (Exception e)
-      {  throw new IOException 
+      {  throw new IOException
            ("Failed to create delegate for service: " + endPoint );
       }
    }
@@ -184,7 +181,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  */
 
    public void resetStatusList()
-   {  statusList.clear(); 
+   {  statusList.clear();
    }
 
 
@@ -212,9 +209,9 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  * @return The Agsl of the service to which this client is connected.
  */
    public Agsl getEndpoint()
-   {  
+   {
       try {
-         Agsl agsl = new Agsl( Msrl.SCHEME + ":" + endPoint );      
+         Agsl agsl = new Agsl( Msrl.SCHEME + ":" + endPoint );
          return agsl;
       }catch(MalformedURLException mue) {
          mue.printStackTrace();
@@ -233,16 +230,15 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    {  EntryNode fileRoot = new EntryNode();
       boolean errorRaised = false;
 
-      try
-      {  KernelResults results = innerDelegate.getEntriesList(filter,
+        KernelResults results = innerDelegate.getEntriesList(filter,
            isTest);
 
 //
 //      Append and check any status messages.
 
-         Object[] statusResults = results.getStatusList();
-         errorRaised = this.appendAndCheckStatusMessages(
-           statusResults);
+         appendAndCheckStatusMessages(results);
+
+
 
 //
 //      Assemble an array of any files which matched the query.
@@ -257,7 +253,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
          {  ArrayList fileList = new ArrayList();
 
             for(int loop=0; loop<numFiles; loop++)
-            {  EntryResults file = 
+            {  EntryResults file =
                  (EntryResults)fileResults[loop];
                fileList.add(file);
 //                System.out.println("loop " + loop);
@@ -272,25 +268,6 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 //            System.out.println("after  EntryNode");
          }
 
-//
-//      If an error was raised in the Manager and the delegate is
-//      configured to throw an exception in this case then do so.
-
-         if (errorRaised && this.throwExceptions)
-         {  throw new IOException();
-         }
-
-      }
-      catch (Exception e)
-      {  if (errorRaised && this.throwExceptions)
-         {  throw new IOException (this.messageFromManager);
-         }
-         else
-         {  throw new IOException ("Failed to list Files on service: " + 
-              this.endPoint);
-         }
-      }
-
       return fileRoot;
    }
 
@@ -300,8 +277,8 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 /**
  * Return a list of all the files that match the expression
  *
- * @param filter Filter (or query) which the files must match.  Queries 
- *   take the form of entry names which may optionally include a 
+ * @param filter Filter (or query) which the files must match.  Queries
+ *   take the form of entry names which may optionally include a
  *   wild-card character.  This wild-card character is an asterisk and
  *   it must occur at the end of the name.
  * @return Array of <code>EntryRecord</code>s which satisfy the query.
@@ -312,56 +289,34 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    {  StoreFile[] files = new StoreFile[1];
       boolean errorRaised = false;
 
-      try
-      {  KernelResults results = innerDelegate.getEntriesList(filter,
-           isTest);
+     KernelResults results = innerDelegate.getEntriesList(filter,
+        isTest);
 
 //
 //      Append and check any status messages.
 
-         Object[] statusResults = results.getStatusList();
-         errorRaised = this.appendAndCheckStatusMessages(
-           statusResults);
-
+      appendAndCheckStatusMessages(results);
 //
 //      Assemble an array of any files which matched the query.
 //      Each file is returned as an EntryResults object, which is
 //      converted to the corresponding EntryRecord.
 
-         Object[] fileResults = results.getEntries();
-         int numFiles = Array.getLength(fileResults);
+      Object[] fileResults = results.getEntries();
+      int numFiles = Array.getLength(fileResults);
 
-         if (numFiles > 0)
-         {  files = new StoreFile[numFiles];
+      if (numFiles > 0)
+      {  files = new StoreFile[numFiles];
 
-            for(int loop=0; loop<numFiles; loop++)
-            {  EntryRecord file = new EntryRecord(
-                (EntryResults)fileResults[loop] );
-               files[loop] = file;
-            }
-         }
-         else
-         {  files = null;
-         }
-
-//
-//      If an error was raised in the Manager and the delegate is
-//      configured to throw an exception in this case then do so.
-
-         if (errorRaised && this.throwExceptions)
-         {  throw new IOException();
-         }
-
-      }
-      catch (Exception e)
-      {  if (errorRaised && this.throwExceptions)
-         {  throw new IOException (this.messageFromManager);
-         }
-         else
-         {  throw new IOException ("Failed to list Files on service: " + 
-              this.endPoint);
+         for(int loop=0; loop<numFiles; loop++)
+         {  EntryRecord file = new EntryRecord(
+             (EntryResults)fileResults[loop] );
+            files[loop] = file;
          }
       }
+      else
+      {  files = null;
+      }
+
 
       return files;
    }
@@ -377,52 +332,29 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    {  EntryRecord requestedFile = new EntryRecord();
       boolean errorRaised = false;
 
-      try
-      {  KernelResults results = innerDelegate.getEntriesList(path,
-           isTest);
+      KernelResults results = null;
 
-//
-//      Append and check any status messages.
-
-         Object[] statusResults = results.getStatusList();
-         errorRaised = this.appendAndCheckStatusMessages(
-           statusResults);
-
-//
+      try {
+      
+         results = innerDelegate.getEntriesList(path, isTest);
+      }
+      catch (IOException ioe) {
+         //add context
+         throw new StoreException("Server access failure getting file "+path,ioe);
+      }
+      
+      //Check for errors raised via messages
+      appendAndCheckStatusMessages(results);
+      
 //      Obtain the file which matched the query.  This file is taken
 //      to be the first entry in the return array.
-
-         Object[] fileResults = results.getEntries();
-         int numFiles = Array.getLength(fileResults);
-
-         if (numFiles > 0)
-         {  requestedFile = new EntryRecord(
-              (EntryResults)fileResults[0] );
-         }
-         else
-         { requestedFile  = null;
-         }
-
-//
-//      If an error was raised in the Manager and the delegate is
-//      configured to throw an exception in this case then do so.
-
-         if (errorRaised && this.throwExceptions)
-         {  throw new IOException();
-         }
-
+      Object[] fileResults = results.getEntries();
+      if ((fileResults == null) || (fileResults.length==0)) {
+         //return null;
+         throw new FileNotFoundException(path);
       }
-      catch (Exception e)
-      {  if (errorRaised && this.throwExceptions)
-         {  throw new IOException (this.messageFromManager);
-         }
-         else
-         {  throw new IOException ("Failed to find File on service: " + 
-              this.endPoint);
-         }
-      }
-
-      return requestedFile;
+         
+      return new EntryRecord( (EntryResults)fileResults[0] );
    }
 
 
@@ -431,12 +363,10 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 /**
  * Put the given byte buffer from offset of length bytes, to the given target
  */
-   public void putBytes(byte[] bytes, int offset, int length, 
+   public void putBytes(byte[] bytes, int offset, int length,
      String targetPath, boolean append) throws IOException
    {  boolean errorRaised = false;
 
-      try
-      {  
 //
 //      Determine how a pre-existing file with the specified name is
 //      to be dispatched.
@@ -458,7 +388,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 //      Extract the subset of the array which is to be sent.
 
          int numBytes = length - offset;
-         byte[] subsetToSend = new byte[length]; 
+         byte[] subsetToSend = new byte[length];
 
          for (int loop=0; loop<numBytes; loop++)
          {  subsetToSend[loop] = bytes[loop + offset];
@@ -477,29 +407,8 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 //
 //      Append and check any status messages.
 
-         Object[] statusResults = results.getStatusList();
-         errorRaised = this.appendAndCheckStatusMessages(
-           statusResults);
+      appendAndCheckStatusMessages(results);
 
-//
-//      If an error was raised in the Manager and the delegate is
-//      configured to throw an exception in this case then do so.
-
-         if (errorRaised && this.throwExceptions)
-         {  throw new IOException();
-         }
-
-      }
-      catch (Exception e)
-      {  if (errorRaised && this.throwExceptions)
-         {  throw new IOException (this.messageFromManager);
-         }
-         else
-         {  throw new IOException (
-              "Failed to write array of bytes on service: " + 
-              this.endPoint);
-         }
-      }
    }
 
 
@@ -512,9 +421,6 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
      boolean append) throws IOException
    {  boolean errorRaised = false;
 
-      try
-      {  
-//
 //      Determine how a pre-existing file with the specified name is
 //      to be dispatched.
 
@@ -543,30 +449,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 
 //
 //      Append and check any status messages.
-
-         Object[] statusResults = results.getStatusList();
-         errorRaised = this.appendAndCheckStatusMessages(
-           statusResults);
-
-//
-//      If an error was raised in the Manager and the delegate is
-//      configured to throw an exception in this case then do so.
-
-         if (errorRaised && this.throwExceptions)
-         {  throw new IOException();
-         }
-
-      }
-      catch (Exception e)
-      {  if (errorRaised && this.throwExceptions)
-         {  throw new IOException (this.messageFromManager);
-         }
-         else
-         {  throw new IOException (
-              "Failed to save String on service: " + 
-              this.endPoint);
-         }
-      }
+      appendAndCheckStatusMessages(results);
    }
 
 
@@ -574,30 +457,28 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 
 /**
  * Copy the contents of the file at the given source url to the given
- * location. 
+ * location.
  */
-   public void putUrl(URL source, String targetPath, boolean append) 
+   public void putUrl(URL source, String targetPath, boolean append)
      throws IOException
    {  boolean errorRaised = false;
 
-      try
-      {  
 //
 //      Determine how a pre-existing file with the specified name is
 //      to be dispatched.
 
-         int dispatchExisting = ManagerCodes.LEAVE;
-         if (append)
-         {  dispatchExisting = ManagerCodes.APPEND;
+      int dispatchExisting = ManagerCodes.LEAVE;
+      if (append)
+      {  dispatchExisting = ManagerCodes.APPEND;
+      }
+      else
+      {  if (this.allowOverWrite)
+         {  dispatchExisting = ManagerCodes.OVERWRITE;
          }
          else
-         {  if (this.allowOverWrite)
-            {  dispatchExisting = ManagerCodes.OVERWRITE;
-            }
-            else
-            {  dispatchExisting = ManagerCodes.LEAVE;
-            }
+         {  dispatchExisting = ManagerCodes.LEAVE;
          }
+      }
 
 //
 //      Attempt to save the URL as a file.
@@ -606,36 +487,13 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 //      passing the category of file (VOTable etc.), so here it is set
 //      to UNKNOWN.
 
-         String uri = source.toString();
-         KernelResults results = innerDelegate.putUri(targetPath,
-           uri, EntryCodes.UNKNOWN, dispatchExisting, isTest);
+      String uri = source.toString();
+      KernelResults results = innerDelegate.putUri(targetPath,
+        uri, EntryCodes.UNKNOWN, dispatchExisting, isTest);
 
 //
 //      Append and check any status messages.
-
-         Object[] statusResults = results.getStatusList();
-         errorRaised = this.appendAndCheckStatusMessages(
-           statusResults);
-
-//
-//      If an error was raised in the Manager and the delegate is
-//      configured to throw an exception in this case then do so.
-
-         if (errorRaised && this.throwExceptions)
-         {  throw new IOException();
-         }
-
-      }
-      catch (Exception e)
-      {  if (errorRaised && this.throwExceptions)
-         {  throw new IOException (this.messageFromManager);
-         }
-         else
-         {  throw new IOException (
-              "Failed to save URL as a file on service: " + 
-              this.endPoint);
-         }
-      }
+      appendAndCheckStatusMessages(results);
    }
 
 
@@ -646,7 +504,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  * given location.
  */
 
-   public OutputStream putStream(String targetPath, boolean append) 
+   public OutputStream putStream(String targetPath, boolean append)
      throws IOException
    {  return new MySpaceOutputStream(targetPath, append);
    }
@@ -676,36 +534,18 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  */
 
    public URL getUrl(String sourcePath) throws IOException
-   {  URL url = null;
-      boolean conformingUrl = true;
-      String uri = "";
+   {
+      
+      EntryRecord file = (EntryRecord)this.getFile(sourcePath);
+      String uri = file.getEntryUri();
 
       try
-      {  EntryRecord file = (EntryRecord)this.getFile(sourcePath);
-         uri = file.getEntryUri();
-
-         try
-         {  url = new URL(uri);
-         }
-         catch (Exception e)
-         {  conformingUrl = false;
-            throw new IOException ();
-         }
+      {  return new URL(uri);
       }
-      catch (Exception e)
-      {  url = null;
-
-         if (!conformingUrl)
-         {  throw new IOException ("File has invalid URL: " + uri);
-         }
-         else
-         {  throw new IOException (
-              "Failed to obtain URL for file on service: " + 
-              this.endPoint);
-         }
+      catch (MalformedURLException mue)
+      {
+         throw new MalformedURLException("File "+sourcePath+" returned invalid URL: "+uri);
       }
-
-      return url;
    }
 
 
@@ -718,36 +558,12 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    public void delete(String deletePath) throws IOException
    {  boolean errorRaised = false;
 
-      try
-      {  KernelResults results = innerDelegate.deleteFile(deletePath,
-           isTest);
+        KernelResults results = innerDelegate.deleteFile(deletePath, isTest);
 
 //
 //      Append and check any status messages.
+      appendAndCheckStatusMessages(results);
 
-         Object[] statusResults = results.getStatusList();
-         errorRaised = this.appendAndCheckStatusMessages(
-           statusResults);
-
-//
-//      If an error was raised in the Manager and the delegate is
-//      configured to throw an exception in this case then do so.
-
-         if (errorRaised && this.throwExceptions)
-         {  throw new IOException();
-         }
-
-      }
-      catch (Exception e)
-      {  if (errorRaised && this.throwExceptions)
-         {  throw new IOException (this.messageFromManager);
-         }
-         else
-         {  throw new IOException (
-              "Failed to delete file on service: " + 
-              this.endPoint);
-         }
-      }
    }
 
 
@@ -760,37 +576,13 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    public void copy(String sourcePath, Agsl targetPath) throws IOException
    {  boolean errorRaised = false;
 
-      try
-      {  String targetFile = targetPath.getPath();
-         KernelResults results = innerDelegate.copyFile(sourcePath,
-           targetFile, isTest);
+      String targetFile = targetPath.getPath();
+      KernelResults results = innerDelegate.copyFile(sourcePath,
+        targetFile, isTest);
 
 //
 //      Append and check any status messages.
-
-         Object[] statusResults = results.getStatusList();
-         errorRaised = this.appendAndCheckStatusMessages(
-           statusResults);
-
-//
-//      If an error was raised in the Manager and the delegate is
-//      configured to throw an exception in this case then do so.
-
-         if (errorRaised && this.throwExceptions)
-         {  throw new IOException();
-         }
-
-      }
-      catch (Exception e)
-      {  if (errorRaised && this.throwExceptions)
-         {  throw new IOException (this.messageFromManager);
-         }
-         else
-         {  throw new IOException (
-              "Failed to copy file on service: " + 
-              this.endPoint);
-         }
-      }
+      appendAndCheckStatusMessages(results);
    }
 
 
@@ -803,37 +595,13 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    public void copy(Agsl source, String targetPath) throws IOException
    {  boolean errorRaised = false;
 
-      try
-      {  String sourcePath = source.getPath();
-         KernelResults results = innerDelegate.copyFile(sourcePath,
-           targetPath, isTest);
+      String sourcePath = source.getPath();
+      KernelResults results = innerDelegate.copyFile(sourcePath,
+        targetPath, isTest);
 
 //
 //      Append and check any status messages.
-
-         Object[] statusResults = results.getStatusList();
-         errorRaised = this.appendAndCheckStatusMessages(
-           statusResults);
-
-//
-//      If an error was raised in the Manager and the delegate is
-//      configured to throw an exception in this case then do so.
-
-         if (errorRaised && this.throwExceptions)
-         {  throw new IOException();
-         }
-
-      }
-      catch (Exception e)
-      {  if (errorRaised && this.throwExceptions)
-         {  throw new IOException (this.messageFromManager);
-         }
-         else
-         {  throw new IOException (
-              "Failed to copy file on service: " + 
-              this.endPoint);
-         }
-      }
+      appendAndCheckStatusMessages(results);
    }
 
 // ----------------------------------------------------------------------
@@ -845,37 +613,13 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    public void move(String sourcePath, Agsl targetPath) throws IOException
    {  boolean errorRaised = false;
 
-      try
-      {  String targetFile = targetPath.getPath();
-         KernelResults results = innerDelegate.moveFile(sourcePath,
-           targetFile, isTest);
+     String targetFile = targetPath.getPath();
+      KernelResults results = innerDelegate.moveFile(sourcePath,
+        targetFile, isTest);
 
 //
 //      Append and check any status messages.
-
-         Object[] statusResults = results.getStatusList();
-         errorRaised = this.appendAndCheckStatusMessages(
-           statusResults);
-
-//
-//      If an error was raised in the Manager and the delegate is
-//      configured to throw an exception in this case then do so.
-
-         if (errorRaised && this.throwExceptions)
-         {  throw new IOException();
-         }
-
-      }
-      catch (Exception e)
-      {  if (errorRaised && this.throwExceptions)
-         {  throw new IOException (this.messageFromManager);
-         }
-         else
-         {  throw new IOException (
-              "Failed to copy file on service: " + 
-              this.endPoint);
-         }
-      }
+      appendAndCheckStatusMessages(results);
    }
 
 
@@ -888,37 +632,13 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    public void move(Agsl source, String targetPath) throws IOException
    {  boolean errorRaised = false;
 
-      try
-      {  String sourcePath = source.getPath();
-         KernelResults results = innerDelegate.moveFile(sourcePath,
-           targetPath, isTest);
+      String sourcePath = source.getPath();
+      KernelResults results = innerDelegate.moveFile(sourcePath,
+        targetPath, isTest);
 
 //
 //      Append and check any status messages.
-
-         Object[] statusResults = results.getStatusList();
-         errorRaised = this.appendAndCheckStatusMessages(
-           statusResults);
-
-//
-//      If an error was raised in the Manager and the delegate is
-//      configured to throw an exception in this case then do so.
-
-         if (errorRaised && this.throwExceptions)
-         {  throw new IOException();
-         }
-
-      }
-      catch (Exception e)
-      {  if (errorRaised && this.throwExceptions)
-         {  throw new IOException (this.messageFromManager);
-         }
-         else
-         {  throw new IOException (
-              "Failed to copy file on service: " + 
-              this.endPoint);
-         }
-      }
+      appendAndCheckStatusMessages(results);
    }
 
 
@@ -931,36 +651,12 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    public void newFolder(String targetPath) throws IOException
    {  boolean errorRaised = false;
 
-      try
-      {  KernelResults results = innerDelegate.createContainer(
+      KernelResults results = innerDelegate.createContainer(
            targetPath, isTest);
 
 //
 //      Append and check any status messages.
-
-         Object[] statusResults = results.getStatusList();
-         errorRaised = this.appendAndCheckStatusMessages(
-           statusResults);
-
-//
-//      If an error was raised in the Manager and the delegate is
-//      configured to throw an exception in this case then do so.
-
-         if (errorRaised && this.throwExceptions)
-         {  throw new IOException();
-         }
-
-      }
-      catch (Exception e)
-      {  if (errorRaised && this.throwExceptions)
-         {  throw new IOException (this.messageFromManager);
-         }
-         else
-         {  throw new IOException (
-              "Failed to create container on service: " + 
-              this.endPoint);
-         }
-      }
+      appendAndCheckStatusMessages(results);
    }
 
 
@@ -986,36 +682,13 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    public void createUser(User newAccount) throws IOException
    {  boolean errorRaised = false;
 
-      try
-      {  String account = newAccount.getUserId();
-         KernelResults results = innerDelegate.createAccount(
-           account, isTest);
+      String account = newAccount.getUserId();
+      KernelResults results = innerDelegate.createAccount(
+        account, isTest);
 
 //
 //      Append and check any status messages.
-
-         Object[] statusResults = results.getStatusList();
-         errorRaised = this.appendAndCheckStatusMessages(
-           statusResults);
-
-//
-//      If an error was raised in the Manager and the delegate is
-//      configured to throw an exception in this case then do so.
-
-         if (errorRaised && this.throwExceptions)
-         {  throw new IOException();
-         }
-      }
-      catch (Exception e)
-      {  if (errorRaised && this.throwExceptions)
-         {  throw new IOException (this.messageFromManager);
-         }
-         else
-         {  throw new IOException (
-              "Failed to create account on service: " + 
-              this.endPoint);
-         }
-      }
+      appendAndCheckStatusMessages(results);
    }
 
 
@@ -1029,7 +702,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  * removes all extant containers belonging to an account.  Any files
  * belonging to the account must have been removed previously.  However,
  * the method will remove any remaining arbitrarily complex tree of
- * containers.  If any files are found the account will be left 
+ * containers.  If any files are found the account will be left
  * untouched.
  * </p>
  *
@@ -1039,36 +712,13 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    public void deleteUser(User deadAccount) throws IOException
    {  boolean errorRaised = false;
 
-      try
-      {  String account = deadAccount.getUserId();
-         KernelResults results = innerDelegate.deleteAccount(
-           account, isTest);
+      String account = deadAccount.getUserId();
+      KernelResults results = innerDelegate.deleteAccount(
+        account, isTest);
 
 //
 //      Append and check any status messages.
-
-         Object[] statusResults = results.getStatusList();
-         errorRaised = this.appendAndCheckStatusMessages(
-           statusResults);
-
-//
-//      If an error was raised in the Manager and the delegate is
-//      configured to throw an exception in this case then do so.
-
-         if (errorRaised && this.throwExceptions)
-         {  throw new IOException();
-         }
-      }
-      catch (Exception e)
-      {  if (errorRaised && this.throwExceptions)
-         {  throw new IOException (this.messageFromManager);
-         }
-         else
-         {  throw new IOException (
-              "Failed to delete account on service: " + 
-              this.endPoint);
-         }
-      }
+      appendAndCheckStatusMessages(results);
    }
 
 
@@ -1114,47 +764,22 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    public String getString(String targetPath) throws IOException
    {  boolean errorRaised = false;
       String contents = "";
-      try
-      {  
 //
 //      Attempt to retrieve the contents of the file as a String.
 
-         KernelResults results = innerDelegate.getString(targetPath,
-           isTest);
+      KernelResults results = innerDelegate.getString(targetPath,
+        isTest);
 
 //
 //      Obtain the retrieved contents from the results object.
 
-         if (results.getContentsString() != null)
-         {  contents = results.getContentsString();
-         }
+      if (results.getContentsString() != null)
+      {  contents = results.getContentsString();
+      }
 
 //
 //      Append and check any status messages.
-
-         Object[] statusResults = results.getStatusList();
-         errorRaised = this.appendAndCheckStatusMessages(
-           statusResults);
-
-//
-//      If an error was raised in the Manager and the delegate is
-//      configured to throw an exception in this case then do so.
-
-         if (errorRaised && this.throwExceptions)
-         {  throw new IOException();
-         }
-
-      }
-      catch (Exception e)
-      {  if (errorRaised && this.throwExceptions)
-         {  throw new IOException (this.messageFromManager);
-         }
-         else
-         {  throw new IOException (
-              "Failed to retrieve file contents as a String from service: " 
-              + this.endPoint);
-         }
-      }
+      appendAndCheckStatusMessages(results);
 
       return contents;
    }
@@ -1175,41 +800,17 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  * @param newExpiryDate New expiry date for the file.
  */
 
-   public void extendLifetime(String fileName, Date newExpiryDate) 
+   public void extendLifetime(String fileName, Date newExpiryDate)
      throws IOException
    {  boolean errorRaised = false;
 
-      try
-      {  long expiry = newExpiryDate.getTime();
-         KernelResults results = innerDelegate.extendLifetime(
-           fileName, expiry, isTest);
+      long expiry = newExpiryDate.getTime();
+      KernelResults results = innerDelegate.extendLifetime(
+        fileName, expiry, isTest);
 
 //
 //      Append and check any status messages.
-
-         Object[] statusResults = results.getStatusList();
-         errorRaised = this.appendAndCheckStatusMessages(
-           statusResults);
-
-//
-//      If an error was raised in the Manager and the delegate is
-//      configured to throw an exception in this case then do so.
-
-         if (errorRaised && this.throwExceptions)
-         {  throw new IOException();
-         }
-
-      }
-      catch (Exception e)
-      {  if (errorRaised && this.throwExceptions)
-         {  throw new IOException (this.messageFromManager);
-         }
-         else
-         {  throw new IOException (
-              "Failed to extend the lifetime of file on service: " + 
-              this.endPoint);
-         }
-      }
+      appendAndCheckStatusMessages(results);
    }
 
 
@@ -1227,41 +828,18 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  * @param newOwner Account of the new owner.
  */
 
-   public void changeOwner(String fileName, User newOwner) 
+   public void changeOwner(String fileName, User newOwner)
      throws IOException
    {  boolean errorRaised = false;
 
-      try
-      {  String owner = newOwner.getAccount();
-         KernelResults results = innerDelegate.changeOwner(
-           fileName, owner, isTest);
+    
+      String owner = newOwner.getAccount();
+      KernelResults results = innerDelegate.changeOwner(
+        fileName, owner, isTest);
 
 //
 //      Append and check any status messages.
-
-         Object[] statusResults = results.getStatusList();
-         errorRaised = this.appendAndCheckStatusMessages(
-           statusResults);
-
-//
-//      If an error was raised in the Manager and the delegate is
-//      configured to throw an exception in this case then do so.
-
-         if (errorRaised && this.throwExceptions)
-         {  throw new IOException();
-         }
-
-      }
-      catch (Exception e)
-      {  if (errorRaised && this.throwExceptions)
-         {  throw new IOException (this.messageFromManager);
-         }
-         else
-         {  throw new IOException (
-              "Failed to extend the change the owner of file on service: " 
-              + this.endPoint);
-         }
-      }
+      appendAndCheckStatusMessages(results);
    }
 
 
@@ -1277,28 +855,30 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  * is placed in the (global) member variable
  * <code>.messageFromManager</code>.
  *
- * @param statusResults Array of status messages, of type 
+ * @param statusResults Array of status messages, of type
  *   <code>StatusResults</code>.
  * @return A flag indicating whether any of the given messages
  *   corresponds to an error.  A value of true is returned if an error
  *   was found; otherwise false.
+ * @throws StoreException corresponding to the error if this delegate is
+    set to throw exceptions
  */
 
 
-   private boolean appendAndCheckStatusMessages(Object[] statusResults)
+   private boolean appendAndCheckStatusMessages(KernelResults statusResults) throws StoreException
    {  boolean errorRaised = false;
 
-      int numStatus = Array.getLength(statusResults);
+      int numStatus = statusResults.getStatusList().length;
 
       if (numStatus > 0)
       {  StatusMessage status = new StatusMessage();
 
          for(int loop=0; loop<numStatus; loop++)
-         {  
+         {
 //
 //         Convert each statusResults object to a StatusMessage.
 
-            status = new StatusMessage( (StatusResults)statusResults[loop] );
+            status = new StatusMessage( (StatusResults)statusResults.getStatusList()[loop] );
 
 //
 //         Add the StatusMessage to the accummulating list.
@@ -1315,6 +895,9 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
                {  this.messageFromManager = status.getMessage();
                }
                errorRaised = true;
+               if (this.throwExceptions) {
+                  throw new StoreException("["+status.getSeverity()+"] "+status.getMessage());
+               }
             }
          }
       }
@@ -1326,7 +909,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 // ----------------------------------------------------------------------
 
 /**
- * Special OutputStream which writes to a String, then sends it when the 
+ * Special OutputStream which writes to a String, then sends it when the
  * stream is closed.
  */
 
@@ -1337,7 +920,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
       private int cursor = 0;  //insert point
 
 
-      public MySpaceOutputStream(String aTargetPath, boolean append) 
+      public MySpaceOutputStream(String aTargetPath, boolean append)
         throws IOException
       {  this.targetPath = aTargetPath;
 
