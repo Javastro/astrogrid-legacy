@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/project.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/25 00:19:19 $</cvs:date>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:date>$Date: 2004/12/13 00:51:56 $</cvs:date>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.8  2004/12/13 00:51:56  jdt
+    |   merge from FLS_JDT_861
+    |
+    |   Revision 1.7.2.1  2004/12/09 12:01:31  jdt
+    |   removed duplicate dependency
+    |
     |   Revision 1.7  2004/11/25 00:19:19  jdt
     |   Merge from dave-dev-200410061224-200411221626
     |
@@ -119,14 +125,6 @@
             <url>http://www.astrogrid.org/</url>
         </dependency>
 
-        <!--+
-            | The servlet API library.
-            +-->
-		<dependency>
-			<artifactId>servletapi</artifactId>
-			<groupId>servletapi</groupId>
-			<version>2.2</version>
-		</dependency>
 
         <!--+
             | The Castor XML library.

@@ -2,10 +2,16 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/FileStoreConfigImpl.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:19:27 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/12/13 00:51:56 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreConfigImpl.java,v $
+ *   Revision 1.3  2004/12/13 00:51:56  jdt
+ *   merge from FLS_JDT_861
+ *
+ *   Revision 1.2.2.1  2004/12/09 11:54:53  jdt
+ *   Made file:// windows-friendly.
+ *
  *   Revision 1.2  2004/11/25 00:19:27  jdt
  *   Merge from dave-dev-200410061224-200411221626
  *
@@ -156,6 +162,7 @@ public class FileStoreConfigImpl
 			}
 		catch (Throwable ouch)
 			{
+            log.error("Unable to read service ivorn from config", ouch);
 			throw new FileStoreServiceException(
 				"Unable to read service ivorn from config.",
 				ouch

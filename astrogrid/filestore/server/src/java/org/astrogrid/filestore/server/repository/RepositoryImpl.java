@@ -2,10 +2,17 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/repository/RepositoryImpl.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:19:27 $</cvs:date>
- * <cvs:version>$Revision: 1.12 $</cvs:version>
+ * <cvs:date>$Date: 2004/12/13 00:51:56 $</cvs:date>
+ * <cvs:version>$Revision: 1.13 $</cvs:version>
  * <cvs:log>
  *   $Log: RepositoryImpl.java,v $
+ *   Revision 1.13  2004/12/13 00:51:56  jdt
+ *   merge from FLS_JDT_861
+ *
+ *   Revision 1.12.2.1  2004/12/09 14:47:37  jdt
+ *   Ensure that the outputstream buffer is flushed *before* we try to read it.  (Cause of two windows-only bugs:
+ *   testImportBytesSize and testImportStringSize)
+ *
  *   Revision 1.12  2004/11/25 00:19:27  jdt
  *   Merge from dave-dev-200410061224-200411221626
  *
@@ -579,9 +586,6 @@ public class RepositoryImpl
             finally
                 {
                 //
-                // Update our properties.
-                this.update() ;
-                //
                 // Close our output stream.
                 try {
                     if (null != output)
@@ -596,6 +600,10 @@ public class RepositoryImpl
                     log.warn("Failed to close output stream") ;
                     log.warn("----") ;
                     }
+                
+                //
+                // Update our properties.
+                this.update() ;                
                 }
             }
 
