@@ -30,10 +30,9 @@
             <item name="Itn04" href="http://wiki.astrogrid.org/bin/view/Astrogrid/SoftwareRelease"/>
             </item>
 		</menu>
-		<menu name="Clients">
+		<menu name="Client Applications">
 			<!-- nasty, but only way to have img and text at same time -->
 				<item name="Web Start" href="/jnlp/index.html"  />		
-				<item name="Install" href="client-install.html" />
 				<item name="Client Development Kits" href="/cdk.html"  />						
         </menu>
 		<menu name="Users and Installers">
