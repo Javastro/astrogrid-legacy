@@ -5,9 +5,11 @@
 
 <!-- this is the goal called by nightly build -->
 <preGoal name="jar:deploy-snapshot">
+	<!--
 	<maven:maven descriptor="${basedir}/pal/project.xml" goals="webapp-site" />
 	${systemScope.setProperty('goal','dist')}
-	<attainGoal name="multiproject:goal" /> <!-- packages everythin -->
+	<attainGoal name="multiproject:goal" />
+	-->
 	<!-- don't work
 	<attainGoal name="multiproject:deploy-snapshot" />
 	-->
@@ -16,20 +18,22 @@
 	  postProcessing="false"
 	  includes="*/project.xml,implementations/*/project.xml"
 	  excludes="pal/**"
-	  goals="jar:deploy-snapshot"
+	  goals="dist,jar:deploy-snapshot"
 	  banner="Deploying snapshots"
 	  ignoreFailures="true" />
 	 <maven:maven descriptor="${basedir}/pal/project.xml"
-	 	goals="war:deploy-snapshot"
+	 	goals="webapp-site,war:deploy-snapshot"
 		ignoreFailures="true" />
 
 </preGoal>
 
 
 <preGoal name="jar:install-snapshot">
+	<!--
 	<maven:maven descriptor="${basedir}/pal/project.xml" goals="webapp-site" />
 	${systemScope.setProperty('goal','dist')}
 	<attainGoal name="multiproject:goal" />
+	-->
 	<!--
 	<attainGoal name="multiproject:install-snapshot" />
 	-->
@@ -38,11 +42,11 @@
 	  postProcessing="false"
 	  includes="*/project.xml,implementations/*/project.xml"
 	  excludes="pal/**"
-	  goals="jar:install-snapshot"
+	  goals="dist,jar:install-snapshot"
 	  banner="installing snapshots"
 	  ignoreFailures="true" />
 	 <maven:maven descriptor="${basedir}/pal/project.xml"
-	 	goals="war:install-snapshot"
+	 	goals="webapp-site,war:install-snapshot"
 		ignoreFailures="true" />
 </preGoal>
 
