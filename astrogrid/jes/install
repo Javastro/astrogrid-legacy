@@ -21,7 +21,7 @@ You should also ensure the following are available:
 . log4j 1.2.4 or later
 
 We have tested using MySQL as the database. The appropriate jdbc jar
-is included with the distribution. Further details are given later.
+is included with the distribution.
 
 
 1.2 The Jes War file
@@ -61,7 +61,7 @@ before being moved into the WEB-INF/classes directory. See the README for extra 
 ****************************
 
 A Job database is required to keep track of jobs entered into the AstroGrid system.
-MySQL or a similar RDBMS is required. The details here are pertinent to MySQL.
+MySQL or a similar relational database is required. The details here are pertinent to MySQL.
 
 3.1 JES Database.        
 --------------------

@@ -3,188 +3,84 @@
 #=============================================================================#
 JES - Job Entry System
 
-1.0 SOFTWARE PREREQUISITES:
+1.0 JES Configuration:
 *****************************
 
-1.1 Externals.
-----------------
-
-These are the environments under which JES was developed:
-. RedHat Linux 7.3 
-. Java sdk j2sdk1.4.1_02
-. Tomcat 4.1.24
-. Axis-1_1RC2
-
-You should also ensure the following are available:
-. junit 3.8.1 or later
-. log4j 1.2.4 or later
-
-We have tested using MySQL as the database. The appropriate jdbc jar
-is included with the distribution. Further details are given later.
-
-
-1.2 Internals.
-----------------
-
-Two important software prerequisites are the jes's two properties files:
-
-(1) The configuration file ASTROGRID_jesconfig.properties. A great deal
-of setup-configurable data is held here. The file is well commented and bears
-reading... <<<MUST>>> be read!
-
-(2) The jes's messages file ASTROGRID_jesmessages.properties.
-All messages issued by JES are detailed here. The file name is 
-configurable within the ASTROGRID_jesconfig.properties file.
-
-The JES package will not work without these files being available. 
-
-Other prerequisites are included with the distribution. 
-See section 4.0 Install below.
-
-
-2.0 DATABASES:
-****************
-
-2.1 Overview of Databases.
-----------------------------
-
-JES requires one database:
-
-A Job database to keep track of jobs entered into the AstroGrid system.
-This is a small database of 4 tables. The ddl is available in the dbscripts
-directory. All tables are accessed with write capability. Some details are
-configurable within the ASTROGRID_jesconfig file.
-
-2.2 JNDI.        **** IMPORTANT ****
------------
-
-For reference see:    
-http://jakarta.apache.org/tomcat/tomcat-4.1-doc/jndi-datasource-examples-howto.html
-
-JES uses JNDI to lookup it's associated database, two files require 
-altering to enable this to happen:
-
-(1) The axis WEB.XML file - $CATALINA_HOME/webapps/axis/WEB-INF/web.xml:
-Add the JNDI names (as per ASTROGRID_jesconfig.properties) under which the 
-web services will look up preconfigured datasources (1 for each datasource eg: 
-jes-datasource):
-
-  <resource-ref>
-    <res-ref-name>jdbc/jes-datasource</res-ref-name>
-    <res-type>java.sql.DataSource</res-type>
-    <res-auth>Container</res-auth>
-  </resource-ref>
-
-(2) The Tomcat SERVER.XML file - $CATALINA_HOME/conf/server.xml
-Add database implementation specific details for each datasource as required
-by JNDI (eg. driverClassName, URL, User, Password):
-
-  <DefaultContext>
-    <Resource name="jdbc/jes-datasource"
-              auth="Container"
-              type="javax.sql.DataSource"/>
-            <ResourceParams name="jdbc/jes-datasource">
-              <parameter>
-                <name>maxActive</name>
-                <value>100</value>
-              </parameter>
-              <parameter>
-                <name>maxIdle</name>
-                <value>30</value>
-              </parameter>
-              <parameter>
-                <name>maxWait</name>
-                <value>10000</value>
-              </parameter>
-              <parameter>
-                <name>driverClassName</name>
-               <value>org.gjt.mm.mysql.Driver</value>
-             </parameter>
-             <parameter>
-               <name>url</name>
-               <value>jdbc:mysql://localhost:3306/</value>
-             </parameter>
-             <parameter>
-               <name>username</name>
-               <value>xxxx</value>
-             </parameter>
-             <parameter>
-               <name>password</name>
-               <value>xxxx</value>
-              </parameter>
-            </ResourceParams>
-     </DefaultContext>
-
-
-
-3.0 LIMITATIONS:
-******************
-
-
-
-4.0 INSTALL:
-**************
-
-4.1 Unjar the jes.jar archive.
--------------------------------------
-
-Unjar to some convenient temporary directory. The archive contains the following:
-
-. This README, so presumably you have already got this far!
-. jesBIN.jar              -    the jes executables
-. mm.mysql-2.0.14-bin.jar -    the mysql jdbc executables
-. config directory        -    contains jes configuration files
-. dbscripts               -    contains script for creating database tables.
-. wsdd                    -    contains deployment descriptors for deploying jes as a SOAP service within Axis
-
-4.2 Make sure the external prerequisites are fullfilled.
-----------------------------------------------------------
-See section 1.1
-
-
-4.3 Copy archive files into appropriate classpath location for Axis.
-----------------------------------------------------------------------
-Suggest the best location is the webapps/axis/WEB-INF/lib directory
-that is created when Axis is installed, but any convenient place
-where they can be picked up as part of a classpath.
-
-
-4.4 READ THE JES CONFIGURATION PROPERTIES FILE.
+1.1 The JES Configuration File and associated files
 -------------------------------------------------------
-Look in the config directory.
+The JES configuration file is named ASTROGRID_jesconfig.xml.
+There are some files associated with it, one containing application
+messages, and others used as templates for xml by the JES system.
+All apart from the configuration file are automatically copied to 
+a suitable classpath location. The configuration file requires
+editing, and possibly merging with a previous config file if this is
+not a first install.
 
+1.2 Editing the config file.
+-------------------------------
+The config file is broken down into certain categories:
+GENERAL       do not edit
+MESSAGES      do not edit
+JES           editable
+MONITOR       editable
+CONTROLLER    editable
+SCHEDULER     editable
+JOB           editable with caution
+MESSAGELOG    do not edit - for future use
+REGISTRY      do not edit - for future use
+TOOLS         editable
 
-4.5 Fullfill Database conditions.
------------------------------------
-. Create job database by running script held in dbscripts directory.
-  This may <<will>> require alteration for your flavour of RDBMS.
-. Alter Tomcat and Axis files to allow for JNDI (see section 2.2 above)
+1.2.1 JES Category
+----------------------
+Edit the ID value to uniquely name this JES installation. This value is used extensively
+so choose a sensible value and stick with it.
 
+1.2.2 MONITOR Category
+-------------------------
+Do not change the parser validation value from "false".
+The url value identifies the job monitor web service. This must be set accurately to the
+web service end point...
+http://$HOST_DNS_NAME:8080/$JES/services/JobMonitorService 
+Alter $HOST_DNS_NAME and $JES to reflect the deployed service for your installation.
 
-4.6 Alter the JES configuration file.
-----------------------------------------------
-. You must make appropriate database configuration details and other
-  items available by altering this file. ***Please read it***.
-. Place the configuration file and the messages file in a convenient
-  classpath-aware location for resources and/or classes; we suggest
-  the webapps/axis/WEB-INF/classes directory .
+1.2.3 CONTROLLER Category
+------------------------------
+Do not change the parser validation value from "false".
+The url value identifies the job controller web service. This must be set accurately to the
+web service end point...
+http://$HOST_DNS_NAME:8080/$JES/services/JobControllerService 
+Alter $HOST_DNS_NAME and $JES to reflect the deployed service for your installation.
 
+1.2.4 SCHEDULER Category
+------------------------------
+Do not change the parser validation value from "false".
+The url value identifies the job scheduler web service. This must be set accurately to the
+web service end point...
+http://$HOST_DNS_NAME:8080/$JES/services/JobSchedulerService 
+Alter $HOST_DNS_NAME and $JES to reflect the deployed service for your installation
 
-4.7 Ensure Database, Tomcat and Axis are running.
----------------------------------------------------
-You may have to restart Tomcat after step 4.6
+1.2.5 JOB Category
+------------------------------
+Only change these settings in consultation with your database administrator.
+It should not be necessary to change these settings unless the Astrogrid naming
+conventions infringe upon your own installation naming conventions. At present
+the DATASOURCE and TABLENAME parameters are the only candidates for change.
 
+1.2.4 TOOLS Category
+------------------------------
+This category is a short-term measure only. It is required to alter this only to 
+locate a tool endpoint until we are mature enough to dynamically locate these.
+For example...
+LOCATION.QueryTool" value="http://$TOOL_HOST_DNS_NAME:8080/$TOOL/services/$SERVICE_NAME" />
+$TOOL_HOST_DNS_NAME reflects the host where the tool is deployed
+$TOOL completes the service path
+$SERVICE_NAME name under which the ApplicationController for this service is deployed.
+These details will probably change in the next two weeks (JL - 17/12/2003)
 
-4.8 Deploy JES as three SOAP service within Axis.
-------------------------------------------------------
-See the wsdd descriptors within the wsdd directory.
-You must deploy the three JES subcomponents:
-. JobController
-. JobScheduler
-. JobMonitor
-The files are commented to show which command is required to execute deployment.
-The jesBIN.jar must be available when the command is executed. 
+1.3 Locate the Config File.
+-----------------------------
+The config file needs to be located on the JES application class path. Copy it 
+into the $CATALINA_HOME/webapps/$JES_HOME/WEB-INF/classes directory, where...
+$CATALINA_HOME is the Tomcat install directory
+$JES_HOME is the jes application install directory
 
-
-4.9 You are ready to go! Happy Astronomical Hunting!
-------------------------------------------------------
