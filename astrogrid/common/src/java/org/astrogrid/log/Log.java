@@ -1,5 +1,5 @@
 /*
- $Id: Log.java,v 1.6 2003/09/24 19:10:55 mch Exp $
+ $Id: Log.java,v 1.7 2003/10/31 16:53:31 mch Exp $
  */
 
 package org.astrogrid.log;
@@ -70,6 +70,8 @@ import java.util.Enumeration;
  *
  * @Created          : Sep 2003
  * @author           : M Hill
+ *
+ * @deprecated - use commons logging instead
  */
 
 public class Log
@@ -317,6 +319,9 @@ public class Log
 }
 /*
 $Log: Log.java,v $
+Revision 1.7  2003/10/31 16:53:31  mch
+Added deprecated tag
+
 Revision 1.6  2003/09/24 19:10:55  mch
 Added message to starting message
 
