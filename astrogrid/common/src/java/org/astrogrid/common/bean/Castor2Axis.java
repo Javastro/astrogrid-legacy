@@ -1,5 +1,5 @@
 /*
- * $Id: Castor2Axis.java,v 1.1 2004/03/18 16:25:52 pah Exp $
+ * $Id: Castor2Axis.java,v 1.2 2004/03/18 16:33:21 pah Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -39,12 +39,12 @@ public class Castor2Axis {
    private Castor2Axis() {
    }
 
-   public static _tool go(Tool ctool) {
+   public static _tool convert(Tool ctool) {
       _tool result = new _tool();
       result.set_interface(ctool.getInterface());
       result.setName(ctool.getName());
-      result.setInput(go(ctool.getInput()));
-      result.setOutput(go(ctool.getOutput()));
+      result.setInput(convert(ctool.getInput()));
+      result.setOutput(convert(ctool.getOutput()));
 
       return result;
    }
@@ -53,7 +53,7 @@ public class Castor2Axis {
     * @param output
     * @return
     */
-   public static _output go(Output output) {
+   public static _output convert(Output output) {
       
       org.astrogrid.applications.beans.v1.parameters.ParameterValue[] inpars = output.getParameter();
       _output result = new _output();
@@ -65,7 +65,7 @@ public class Castor2Axis {
     * @param input
     * @return
     */
-   public static _input go(Input input) {
+   public static _input convert(Input input) {
       _input result = new _input();
       org.astrogrid.applications.beans.v1.parameters.ParameterValue[] inpars = input.getParameter();
       result.setParameter(transformParameters(inpars));
@@ -78,17 +78,17 @@ public class Castor2Axis {
       
       for (int i = 0; i < inpars.length; i++) {
          // this is a bit inefficient as we are thowing away the objects created in the new above..
-         result[i] = go(inpars[i]);
+         result[i] = convert(inpars[i]);
       }
       
       return result;
    }
    
-   public static ParameterValue go(org.astrogrid.applications.beans.v1.parameters.ParameterValue parameterValue)
+   public static ParameterValue convert(org.astrogrid.applications.beans.v1.parameters.ParameterValue parameterValue)
    {
       ParameterValue result = new ParameterValue();
       result.setName(parameterValue.getName());
-      result.setType(go(parameterValue.getType()));
+      result.setType(convert(parameterValue.getType()));
       result.setValue(parameterValue.getValue());
      
       return result;
@@ -98,7 +98,7 @@ public class Castor2Axis {
     * @param types
     * @return
     */
-   private static ParameterTypes go(org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes type) {
+   private static ParameterTypes convert(org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes type) {
       ParameterTypes result = ParameterTypes.fromValue(new QName(type.toString()));
       return result;
    }

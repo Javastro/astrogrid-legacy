@@ -1,5 +1,5 @@
 /*
- * $Id: Axis2Castor.java,v 1.1 2004/03/18 16:25:52 pah Exp $
+ * $Id: Axis2Castor.java,v 1.2 2004/03/18 16:33:21 pah Exp $
  * 
  * Created on 18-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -32,14 +32,14 @@ import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 public class Axis2Castor {
 
     /** convert between castor and axis representations of the same schema object */
-    public static org.astrogrid.applications.beans.v1.cea.castor.MessageType axis2castor(MessageType mt) {
+    public static org.astrogrid.applications.beans.v1.cea.castor.MessageType convert(MessageType mt) {
         if (mt == null) {
             return null;
         }
         org.astrogrid.applications.beans.v1.cea.castor.MessageType result = new org.astrogrid.applications.beans.v1.cea.castor.MessageType();
         result.setContent(mt.getContent());
-        result.setPhase(Axis2Castor.axis2castor(mt.getPhase()));
-        result.setLevel(Axis2Castor.axis2castor(mt.getLevel()));
+        result.setPhase(Axis2Castor.convert(mt.getPhase()));
+        result.setLevel(Axis2Castor.convert(mt.getLevel()));
         result.setSource(mt.getSource());
         Calendar cal =  mt.getTimestamp();
         if (cal != null) {
@@ -49,7 +49,7 @@ public class Axis2Castor {
     }
 
     /** convert between castor and axis representations of the same schema object */
-    public static Account axis2castor(_Account arg0) {
+    public static Account convert(_Account arg0) {
         Account result = new Account();
         result.setCommunity(arg0.getCommunity().getValue());
         result.setName(arg0.getName().getValue());
@@ -57,7 +57,7 @@ public class Axis2Castor {
     }
 
     /** convert between castor and axis representations of the same schema object */
-    public static org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase axis2castor(org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase phase) {
+    public static org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase convert(org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase phase) {
         if (phase == null) {
             return null;
         } else {
@@ -68,7 +68,7 @@ public class Axis2Castor {
    //--type convertors/////////////////////////////////////////////////////////////////////////////////////////////////////////
     
        /** convert between castor and axis representations of the same schema object */
-       public static org.astrogrid.workflow.beans.v1.execution.JobURN axis2castor(JobURN jobURN) {
+       public static org.astrogrid.workflow.beans.v1.execution.JobURN convert(JobURN jobURN) {
            if (jobURN == null ) {
                return null;
            }
@@ -78,7 +78,7 @@ public class Axis2Castor {
        }
 
     /** convert between castor and axis representations of the same schema object */
-    public static org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel axis2castor(LogLevel level) {
+    public static org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel convert(LogLevel level) {
         if (level == null) {
             return null;
         } else {
