@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/release/server/config/Attic/database.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2003/10/09 03:47:22 $</cvs:date>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    |   $Log: database.xml,v $
+    |   Revision 1.1  2003/10/09 03:47:22  dave
+    |   Added initial release version
+    |
+    |   Revision 1.1  2003/08/28 17:33:56  dave
+    |   Initial policy prototype
+    |
+    | </cvs:log>
+    |
+    +-->
+<!DOCTYPE databases PUBLIC
+	"-//EXOLAB/Castor JDO Configuration DTD Version 1.0//EN"
+	"http://castor.exolab.org/jdo-conf.dtd">
+<database name="policy" engine="hsql">
+	<driver class-name="org.hsqldb.jdbcDriver"
+		url="jdbc:hsqldb:hsql://localhost:9001">
+		<param name="user"     value="sa"/>
+		<param name="password" value="veritas"/>
+	</driver>
+	<mapping href="mapping.xml"/>
+</database>
