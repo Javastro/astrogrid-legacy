@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcherTest.java,v 1.12 2004/08/09 17:31:11 nw Exp $
+/*$Id: CeaApplicationDispatcherTest.java,v 1.2 2005/03/13 07:13:39 clq2 Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,19 +27,19 @@ import java.net.URI;
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Feb-2004
  *
  */
-public class ApplicationControllerDispatcherTest extends AbstractTestWorkflowInputs{
+public class CeaApplicationDispatcherTest extends AbstractTestWorkflowInputs{
     /**
      * Constructor for ApplicationControllerDispatcherTest.
      * @param arg0
      */
-    public ApplicationControllerDispatcherTest(String arg0) {
+    public CeaApplicationDispatcherTest(String arg0) {
         super(arg0);
     }
     
     protected void setUp() throws Exception {
         Locator locator = new MockLocator();
         final URI monitorURL =  new URI("http://www.nowhere.org");
-        ApplicationControllerDispatcher.Endpoints monitor = new ApplicationControllerDispatcher.Endpoints() {
+        CeaApplicationDispatcher.Endpoints monitor = new CeaApplicationDispatcher.Endpoints() {
 
             public URI monitorEndpoint() {
                 return monitorURL;
@@ -49,12 +49,12 @@ public class ApplicationControllerDispatcherTest extends AbstractTestWorkflowInp
                 return monitorURL;
             }
         };
-        disp = new ApplicationControllerDispatcher(locator,monitor);
+        ceaDispatcher = new CeaApplicationDispatcher(locator,monitor);
     }
-    protected ApplicationControllerDispatcher disp;
+    protected CeaApplicationDispatcher ceaDispatcher;
     
     public void testDispatchStep(Workflow w,Step js) throws Exception {
-        disp.dispatchStep(w,js.getTool(),"someID");
+        ceaDispatcher.dispatchStep(w,js.getTool(),"someID");
     }
 
     /**
@@ -81,7 +81,13 @@ public class ApplicationControllerDispatcherTest extends AbstractTestWorkflowInp
 
 
 /* 
-$Log: ApplicationControllerDispatcherTest.java,v $
+$Log: CeaApplicationDispatcherTest.java,v $
+Revision 1.2  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.1.2.1  2005/03/11 14:03:47  nw
+tests for different dispatchers.
+
 Revision 1.12  2004/08/09 17:31:11  nw
 adjusted interface, to work better with dynamically-generated states.
 

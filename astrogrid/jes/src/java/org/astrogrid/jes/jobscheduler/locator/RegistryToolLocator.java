@@ -1,4 +1,4 @@
-/*$Id: RegistryToolLocator.java,v 1.13 2005/03/02 15:02:24 clq2 Exp $
+/*$Id: RegistryToolLocator.java,v 1.14 2005/03/13 07:13:39 clq2 Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,12 +29,19 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import java.io.StringWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 import junit.framework.Test;
 
 /** Tool locator that resolves tools using the registry.
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Mar-2004
+ * @todo needs to be re-thought to allow calling of different types of service - resolving to endpoints is still valid - however, many registered services will have a single reg entry, 
+ * rather than cea-application and cea-service - so query pattern is different
  *
  */
 public class RegistryToolLocator implements Locator, ComponentDescriptor {
@@ -51,11 +58,12 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
     
     protected final URL url;
     protected final RegistryService delegate;
+    protected final Random rand = new Random();
 
     /**
      * @see org.astrogrid.jes.jobscheduler.Locator#locateTool(org.astrogrid.workflow.beans.v1.Step)
      */    
-    public String locateTool(Tool tool) throws JesException{
+    public String[] locateTool(Tool tool) throws JesException{
             String name =tool.getName();
             if (name == null ) {
                 throw reportError("Unnamed tool - cannot locate it");
@@ -80,7 +88,7 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
             if (toolIds.length == 0) {
                 throw reportError("No identifiers in registry entry for tool" + name);
             }           
-            toolId = toolIds[0];
+            toolId = toolIds[0];            
         } catch (CastorException e) {
             throw reportError("Could not parse return document for tool" + name,e);
         }            
@@ -113,19 +121,40 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
                 throw reportError("Failed to extract identifiers from query document",e);
             }
             
-            String endpoint = null;            
-            for (int i = 0; i < serviceIds.length && endpoint == null; i++) {
+            // see what endpoints we can extract from the services..
+            List endpoints = new ArrayList();            
+            for (int i = 0; i < serviceIds.length ; i++) {
                 String serviceName = serviceIds[i].getAuthorityID() + "/" + serviceIds[i].getResourceKey();
                 try {
-                    endpoint = delegate.getEndPointByIdentifier(serviceName);
+                    // @todo inefficient? we've already got the reg entries, but here we're querying reg to resolve to endpoint
+                    // someone with better unsterstanding of reg entries could parse them directly..
+                    String endpoint = delegate.getEndPointByIdentifier(serviceName);
+                    if (endpoint != null && endpoint.trim().length() > 0) { // looks ok, add it to the list.
+                        try {                       
+                            URL ep = new URL(endpoint); // check it's a valid url..
+                            endpoints.add(ep);
+                        } catch (MalformedURLException e) {
+                            logger.warn("Service " + serviceName + "has duff endpoint URL",e);
+                        }
+                    }
                     logger.debug("Service " + serviceName + " resolved to endpoint " + endpoint);
                 } catch (RegistryException e) {
                     logger.warn("Query registry about " + serviceName + " failed",e);
                 }
             }
-                       
-            logger.debug("registry resolved to " + endpoint);
-            return endpoint;
+            
+            // select an endpoint to use.
+            String[] endpointList = null;
+            if (endpoints.size() == 0) {
+                throw reportError("No service providers for Tool " + name +" have a valid endpoint");
+            } else if (endpoints.size() == 1) {
+                endpointList = new String[]{endpoints.get(0).toString()};
+            } else { // more than one alternative - shuffle them up.
+                Collections.shuffle(endpoints);
+                endpointList = (String[])endpoints.toArray(new String[endpoints.size()]);
+            }
+            logger.debug("registry resolved to " + endpointList);
+            return endpointList;
     }
     
     
@@ -218,6 +247,17 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: RegistryToolLocator.java,v $
+Revision 1.14  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.13.2.2  2005/03/11 15:21:35  nw
+adjusted locator so that it returns a list of endpoints to connect to.
+we can get round-robin by shuffling the list.
+dispatcher tries each endpoint in the list until can connect to one wihout throwing an exception.
+
+Revision 1.13.2.1  2005/03/11 14:05:00  nw
+random-selection of application server if more than oneavailable.
+
 Revision 1.13  2005/03/02 15:02:24  clq2
 for v10 missing '
 

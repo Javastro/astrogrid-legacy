@@ -1,4 +1,4 @@
-/*$Id: DefaultProtocolLibraryFactory.java,v 1.3 2004/11/29 20:00:56 clq2 Exp $
+/*$Id: DefaultProtocolLibraryFactory.java,v 1.4 2005/03/13 07:13:39 clq2 Exp $
  * Created on 22-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,6 @@ public class DefaultProtocolLibraryFactory {
     
     public DefaultProtocolLibrary createLibrary() {
         DefaultProtocolLibrary lib = new DefaultProtocolLibrary();
-        lib.addProtocol(new AgslProtocol());
         lib.addProtocol(new FileProtocol());
         lib.addProtocol(new FtpProtocol());
         lib.addProtocol(new HttpProtocol());
@@ -39,6 +38,12 @@ public class DefaultProtocolLibraryFactory {
 
 /* 
 $Log: DefaultProtocolLibraryFactory.java,v $
+Revision 1.4  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.3.26.1  2005/03/11 11:20:58  nw
+replaced VoSpaceClient with FileManagerClient
+
 Revision 1.3  2004/11/29 20:00:56  clq2
 nww-itn07-684
 

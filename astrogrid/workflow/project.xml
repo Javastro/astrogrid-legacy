@@ -78,10 +78,15 @@
 
         <!-- myspace -->
                 <dependency>
-                        <artifactId>astrogrid-store-client</artifactId>
-                        <version>${astrogrid.mySpace.version}</version>
+                        <artifactId>astrogrid-filemanager-client</artifactId>
+                        <version>${astrogrid.filemanager.version}</version>
                         <groupId>org.astrogrid</groupId>
                 </dependency>
+                <dependency>
+                        <artifactId>astrogrid-filemanager-contract</artifactId>
+                        <version>${astrogrid.filemanager.version}</version>
+                        <groupId>org.astrogrid</groupId>
+                </dependency>		
         <!-- jes -->
                 <dependency>
                            <groupId>org.astrogrid</groupId>
@@ -93,6 +98,22 @@
                            <artifactId>astrogrid-workflow-objects</artifactId>
                            <version>${astrogrid.workflowobjects.version}</version>
                 </dependency>
+       <!-- community -->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-common</artifactId>
+            <version>${astrogrid.community.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-client</artifactId>
+            <version>${astrogrid.community.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-resolver</artifactId>
+            <version>${astrogrid.community.version}</version>
+        </dependency>		
      <!-- Third party dependencies -->
                 <dependency>
                         <artifactId>jconfig</artifactId>
@@ -110,6 +131,10 @@
                            <groupId>commons-discovery</groupId>
                            <version>20030211.213356</version>
                 </dependency>
+                <dependency><!-- required by filemanager client -->
+                        <id>commons-collections</id>
+                        <version>3.0</version>
+                </dependency>				
                 <dependency>
                     <artifactId>jaxrpc</artifactId>
                     <groupId>jaxrpc</groupId>

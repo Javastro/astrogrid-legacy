@@ -1,4 +1,4 @@
-/*$Id: SiapImageFetchDescription.java,v 1.2 2004/11/29 20:00:56 clq2 Exp $
+/*$Id: SiapImageFetchDescription.java,v 1.3 2005/03/13 07:13:39 clq2 Exp $
  * Created on 15-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,55 +10,27 @@
 **/
 package org.astrogrid.applications.apps;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.DefaultIDs;
-import org.astrogrid.applications.Status;
-import org.astrogrid.applications.AbstractApplication.IDs;
-import org.astrogrid.applications.apps.CatApplicationDescription.CatApplication;
-import org.astrogrid.applications.apps.CatApplicationDescription.StreamParameterAdapter;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
 import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.description.base.AbstractApplicationDescription;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.base.BaseApplicationInterface;
 import org.astrogrid.applications.description.base.BaseParameterDescription;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
-import org.astrogrid.applications.parameter.ParameterAdapter;
-import org.astrogrid.applications.parameter.protocol.ExternalValue;
-import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.community.User;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
-import org.astrogrid.io.Piper;
-import org.astrogrid.store.Ivorn;
-import org.astrogrid.store.VoSpaceClient;
-import org.astrogrid.util.TimeStamp;
 import org.astrogrid.workflow.beans.v1.Tool;
 
-import uk.ac.starlink.table.ColumnInfo;
-import uk.ac.starlink.table.RowSequence;
-import uk.ac.starlink.table.StarTable;
-import uk.ac.starlink.table.StarTableFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.ac.starlink.util.DataSource;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import junit.framework.Test;
 
@@ -179,6 +151,12 @@ public class SiapImageFetchDescription extends AbstractApplicationDescription
 
 /* 
 $Log: SiapImageFetchDescription.java,v $
+Revision 1.3  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.2.26.1  2005/03/11 11:21:19  nw
+replaced VoSpaceClient with FileManagerClient
+
 Revision 1.2  2004/11/29 20:00:56  clq2
 nww-itn07-684
 

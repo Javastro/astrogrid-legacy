@@ -1,4 +1,4 @@
-/*$Id: InMemorySystemTest.java,v 1.23 2004/12/03 14:47:41 jdt Exp $
+/*$Id: InMemorySystemTest.java,v 1.24 2005/03/13 07:13:39 clq2 Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,6 +34,8 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.picocontainer.MutablePicoContainer;
+import org.picocontainer.alternatives.ImplementationHidingComponentAdapter;
+import org.picocontainer.alternatives.ImplementationHidingComponentAdapterFactory;
 import org.picocontainer.defaults.CachingComponentAdapter;
 import org.picocontainer.defaults.DefaultComponentAdapterFactory;
 import org.w3c.dom.Document;
@@ -74,22 +76,30 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
         public TestComponentManager() {
             super();    
             MutablePicoContainer pico = super.getContainer();
+            DefaultComponentAdapterFactory fac = new DefaultComponentAdapterFactory();
             // need to remove existing registrations.
             
             // disptcher that short-circuits back to a monitor.                     
             pico.unregisterComponent(Dispatcher.class);
-            pico.registerComponentImplementation(Dispatcher.class,ShortCircuitDispatcher.class);
+            pico.registerComponent(
+                    new ImplementationHidingComponentAdapter(
+                            new CachingComponentAdapter(
+                                    fac.createComponentAdapter(Dispatcher.class,ShortCircuitDispatcher.class,null)
+                                    )
+                             ,false)
+                   );
+                                  
                        
             // scheduler that notifies of completion by releasing a barrier
             pico.unregisterComponent(SCHEDULER_ENGINE);
-            DefaultComponentAdapterFactory fac = new DefaultComponentAdapterFactory();
+
             pico.registerComponent(
-               //new HotSwappingComponentAdapter (
+               new ImplementationHidingComponentAdapter( // use this to allow us to tye the knot.
                     new CachingComponentAdapter(
                         fac.createComponentAdapter(SCHEDULER_ENGINE,ObservableJobScheduler.class,null)
                         //new DefaultComponentAdapterFactory(JobScheduler.class,ObservableJobScheduler.class)
                     )
-                  //)
+                  ,false) // if true, imprlementation-hiding-component-adapter is in 'strict' mode, and doesn't like our choice of component key.
                 );
             
             pico.registerComponentInstance(barrier);
@@ -195,6 +205,12 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemorySystemTest.java,v $
+Revision 1.24  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.23.22.1  2005/03/11 14:23:07  nw
+works now - using pico 1.1
+
 Revision 1.23  2004/12/03 14:47:41  jdt
 Merges from workflow-nww-776
 

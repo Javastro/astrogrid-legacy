@@ -1,4 +1,4 @@
-/*$Id: WorkflowStore.java,v 1.6 2004/12/03 14:47:41 jdt Exp $
+/*$Id: WorkflowStore.java,v 1.7 2005/03/13 07:13:39 clq2 Exp $
  * Created on 01-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,8 +55,20 @@ public interface WorkflowStore {
      * @param  locationToReadFrom ivorn location to read the workflow from.
      * @return workflow document object. will never return null
      * @throws WorkflowInterfaceException if document can't be loaded
+     * @deprecated use readWorkflow(userIvorn..)
      */
     Workflow readWorkflow(User user, Ivorn locationToReadFrom) throws WorkflowInterfaceException;
+    
+    
+    /** read workflow from the store.
+     * @param userId user account to operate store as.
+     * @param password password for this user/
+     * @param locationToReadFrom location to read document from
+     * @return document object
+     * @throws WorkflowInterfaceException
+     */
+    Workflow readWorkflow(Ivorn userId, String password, Ivorn locationToReadFrom) throws WorkflowInterfaceException;
+    
    /* Workflow readWorkflow( Account acc
                                        , String name ) throws WorkflowInterfaceException;
 */
@@ -73,9 +85,20 @@ public interface WorkflowStore {
      * @param locationToSaveTo ivorn location to save the document
      * @param workflow workflow document to save
      * @throws WorkflowInterfaceException
+     * @deprecated use saveWorkflow(userIvorn,..)
      */
     void saveWorkflow(User user,Ivorn locationToSaveTo,  Workflow workflow) throws WorkflowInterfaceException;
-             
+
+    
+    /** save workflow to myspace
+     * @param userId user ivorn to operate store as
+     * @param password password for this user
+     * @param locationToSaveTo location to save workflow to 
+     * @param workflow workflow documet.
+     * @throws WorkflowInterfaceException
+     */
+    void saveWorkflow(Ivorn userId,String password, Ivorn locationToSaveTo, Workflow workflow) throws WorkflowInterfaceException;
+    
   /*  void saveWorkflow( Account acc
                                       , Workflow workflow ) throws WorkflowInterfaceException;
 */
@@ -87,6 +110,12 @@ public interface WorkflowStore {
 
 /* 
 $Log: WorkflowStore.java,v $
+Revision 1.7  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.6.18.1  2005/03/11 12:39:30  nw
+replaced vospaceClient with FileManagerClient
+
 Revision 1.6  2004/12/03 14:47:41  jdt
 Merges from workflow-nww-776
 

@@ -1,15 +1,5 @@
 package org.astrogrid.scripting;
 
-import org.astrogrid.community.User;
-import org.astrogrid.config.Config;
-import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
-import org.astrogrid.portal.workflow.intf.WorkflowManager;
-import org.astrogrid.portal.workflow.intf.WorkflowManagerFactory;
-import org.astrogrid.registry.client.RegistryDelegateFactory;
-import org.astrogrid.registry.client.query.RegistryService;
-import org.astrogrid.store.VoSpaceClient;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;

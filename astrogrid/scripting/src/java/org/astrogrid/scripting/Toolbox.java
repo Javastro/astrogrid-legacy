@@ -1,4 +1,4 @@
-/*$Id: Toolbox.java,v 1.6 2005/03/11 17:57:47 clq2 Exp $
+/*$Id: Toolbox.java,v 1.7 2005/03/13 07:13:39 clq2 Exp $
  * Created on 19-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,24 +13,30 @@ package org.astrogrid.scripting;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.net.URISyntaxException;
+
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.applications.delegate.DelegateFactory;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibraryFactory;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.community.User;
+import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.filemanager.client.FileManagerClient;
+import org.astrogrid.filemanager.client.FileManagerClientFactory;
+import org.astrogrid.filemanager.common.FileManagerFault;
 import org.astrogrid.io.Piper;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.portal.workflow.intf.WorkflowManager;
 import org.astrogrid.portal.workflow.intf.WorkflowManagerFactory;
+import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.scripting.table.StarTableBuilder;
 import org.astrogrid.store.Ivorn;
-import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.store.tree.TreeClient;
 import org.astrogrid.store.tree.TreeClientFactory;
 import org.astrogrid.store.tree.TreeClientLoginException;
@@ -62,6 +68,7 @@ public class Toolbox {
     private final IOHelper iHelper = new IOHelper();
     private final TableHelper tHelper = new TableHelper();
     private final TreeClientFactory treeFactory = new TreeClientFactory();
+    private final FileManagerClientFactory fileManagerFactory = new FileManagerClientFactory();
 
 
     
@@ -183,9 +190,11 @@ public class Toolbox {
      * @param u object representing the user for whom to create the client for
      * @return a vospace client which has the permissions of user <tt>u</tt>
      * @see #getObjectBuilder() for how to build a <tt>User</tt> object*/
+    /* not possible any more
     public ScriptVoSpaceClient createVoSpaceClient(User u) {
         return new ScriptVoSpaceClient(u);
     }
+    */
     
     /** create a client to work with the vospace tree-model 
      * 
@@ -196,11 +205,25 @@ public class Toolbox {
      * @throws TreeClientServiceException if communication failed
      * @see #getObjectBuilder() to access a helper object for constructing an ivorn.
      * @see ObjectBuilder#createLocalUserIvorn(String) for simplest way to create the ivorn.
+     * @deprecated - use {@link createFileManagerClient} instead.
      */
     public TreeClient createTreeClient(Ivorn acc, String password) throws TreeClientLoginException, TreeClientServiceException {        
         TreeClient tc = treeFactory.createClient();
         tc.login(acc,password);
         return tc;
+    }
+    
+    /** create a client to work with the vospace tree-model
+     * 
+     * @param acc the ivorn of the account to connect as
+     * @param password the password for this account 
+     * @return a file manager client
+     * @throws CommunityException if login failed
+     * @throws RegistryException if communicationi failed
+     * @throws URISyntaxException 
+     */
+    public FileManagerClient createFileManagerClient(Ivorn acc,String password) throws CommunityException, RegistryException, URISyntaxException {
+        return fileManagerFactory.login(acc,password);
     }
     
     
@@ -209,25 +232,16 @@ public class Toolbox {
           return "Astrogrid Toolbox" + "\n" + this.getVersion();
        }
 
-    public static void main(String[] args) {
-        Toolbox tb = new Toolbox();
-        tb.getVersion();
-        System.out.println(tb);
-    }
-    
 }
 
 
 /* 
 $Log: Toolbox.java,v $
-Revision 1.6  2005/03/11 17:57:47  clq2
-scripting-nww-975
+Revision 1.7  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
 
-Revision 1.5.18.1  2005/03/03 12:31:16  nw
-removed dep on deprecated jar.
-
-Revision 1.5.8.1  2005/01/13 11:46:34  nw
-saved work that I've not got time to do
+Revision 1.5.20.1  2005/03/11 11:59:43  nw
+replaced vospaceClient with FileManagerClient
 
 Revision 1.5  2004/12/07 16:50:33  jdt
 merges from scripting-nww-805

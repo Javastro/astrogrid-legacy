@@ -81,6 +81,7 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+	<!--remove for transition to filemanager 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-store-client</artifactId>
@@ -89,6 +90,23 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+-->
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-filemanager-client</artifactId>
+      <version>${astrogrid.filemanager.version}</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>		
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-filemanager-contract</artifactId>
+      <version>${astrogrid.filemanager.version}</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>			
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-jes-delegate</artifactId>
@@ -118,7 +136,7 @@
     <!-- pico container -->
     <dependency>
       <id>picocontainer</id>
-      <version>1.0</version>
+      <version>1.1</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -174,7 +192,7 @@
     <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
-      <version>2.1</version>
+      <version>3.0</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>

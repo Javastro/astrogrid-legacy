@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractCmdLineAppTestCase.java,v 1.3 2004/11/27 13:20:02 pah Exp $
+ * $Id: AbstractCmdLineAppTestCase.java,v 1.4 2005/03/13 07:13:39 clq2 Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -16,7 +16,10 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 
+import org.picocontainer.Parameter;
 import org.picocontainer.PicoException;
+import org.picocontainer.defaults.ComponentParameter;
+import org.picocontainer.defaults.ConstantParameter;
 import org.picocontainer.defaults.ConstructorInjectionComponentAdapter;
 import org.picocontainer.defaults.DefaultPicoContainer;
 
@@ -70,7 +73,9 @@ public abstract class AbstractCmdLineAppTestCase extends
         DefaultPicoContainer container = new DefaultPicoContainer();
         container.registerComponent(new ConstructorInjectionComponentAdapter(
                 CommandLineApplicationDescription.class,
-                CommandLineApplicationDescription.class));
+                CommandLineApplicationDescription.class,
+                new Parameter[]{new ComponentParameter(ApplicationDescriptionEnvironment.class), new ConstantParameter(container)}
+        ));
         container.registerComponent(new ConstructorInjectionComponentAdapter(
                 CommandLineApplicationEnvironment.class,
                 CommandLineApplicationEnvironment.class));

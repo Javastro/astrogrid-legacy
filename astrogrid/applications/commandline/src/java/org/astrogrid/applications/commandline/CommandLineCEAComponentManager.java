@@ -1,4 +1,4 @@
-/*$Id: CommandLineCEAComponentManager.java,v 1.4 2004/11/27 13:20:02 pah Exp $
+/*$Id: CommandLineCEAComponentManager.java,v 1.5 2005/03/13 07:13:39 clq2 Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,10 +14,15 @@ import org.astrogrid.applications.commandline.digester.CommandLineApplicationDes
 import org.astrogrid.applications.commandline.digester.CommandLineDescriptionsLoader;
 import org.astrogrid.applications.component.CEAComponentManager;
 import org.astrogrid.applications.component.EmptyCEAComponentManager;
+import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
 
 import org.picocontainer.MutablePicoContainer;
+import org.picocontainer.Parameter;
+import org.picocontainer.defaults.BasicComponentParameter;
+import org.picocontainer.defaults.ComponentParameter;
+import org.picocontainer.defaults.ConstantParameter;
 import org.picocontainer.defaults.ConstructorInjectionComponentAdapter;
 
 import java.io.File;
@@ -74,8 +79,11 @@ public class CommandLineCEAComponentManager extends EmptyCEAComponentManager imp
                      return url;
              }
          });
-         // factory for appDescs
-         pico.registerComponentImplementation(CommandLineApplicationDescriptionFactory.class);
+         // factory for appDescs - necessary to register parameter to this by hand - as latest version of pico is a bit funny about references to the container itself.
+         pico.registerComponentImplementation(CommandLineApplicationDescriptionFactory.class
+                 ,CommandLineApplicationDescriptionFactory.class
+                 , new Parameter[]{new ConstantParameter(pico)}
+                 );
          // 'factory' for environments
          pico.registerComponent( // create a new instance each time.
              new ConstructorInjectionComponentAdapter(CommandLineApplicationEnvironment.class,CommandLineApplicationEnvironment.class));
@@ -87,10 +95,14 @@ public class CommandLineCEAComponentManager extends EmptyCEAComponentManager imp
              }
          }); 
           
-         // again, create a new one at each call.
+         // again, create a new one at each call. again, need to pass in pico parameter separately.
          pico.registerComponent(
-             new ConstructorInjectionComponentAdapter(CommandLineApplicationDescription.class,CommandLineApplicationDescription.class));
-       
+             new ConstructorInjectionComponentAdapter(CommandLineApplicationDescription.class
+                     ,CommandLineApplicationDescription.class
+                     , new Parameter[]{new ComponentParameter(ApplicationDescriptionEnvironment.class)
+                             ,new ConstantParameter(pico)
+                     }                                      
+             ));
     }
 
 }
@@ -98,6 +110,12 @@ public class CommandLineCEAComponentManager extends EmptyCEAComponentManager imp
 
 /* 
 $Log: CommandLineCEAComponentManager.java,v $
+Revision 1.5  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.4.24.1  2005/03/11 11:21:48  nw
+adjusted to fit with pico 1.1
+
 Revision 1.4  2004/11/27 13:20:02  pah
 result of merge of pah_cea_bz561 branch
 

@@ -1,5 +1,5 @@
 /*
- * $Id: AVODemoRunner.java,v 1.5 2004/09/29 19:47:26 pah Exp $
+ * $Id: AVODemoRunner.java,v 1.6 2005/03/13 07:13:39 clq2 Exp $
  * 
  * Created on 23-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,26 +13,34 @@
 
 package org.astrogrid.applications.avodemo;
 
-import java.io.StringWriter;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.beans.v1.Group;
+import org.astrogrid.filemanager.client.FileManagerClient;
+import org.astrogrid.filemanager.client.FileManagerClientFactory;
+import org.astrogrid.filemanager.client.FileManagerNode;
+import org.astrogrid.io.Piper;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.store.Ivorn;
-import org.astrogrid.store.VoSpaceClient;
-import org.astrogrid.store.delegate.StoreFile;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Sequence;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 
 /**
  * @author Paul Harrison (pah@jb.man.ac.uk)
@@ -93,7 +101,8 @@ private String workflowIvorn;
 
    public void createWorkflow() throws Exception {
       Group group = null;
-      VoSpaceClient myspacedel = new VoSpaceClient(fulluser);
+      FileManagerClient myspacedel = (new FileManagerClientFactory()).login(new Ivorn(fulluser.getAccount()),fulluser.getToken()); //unsure whether this is correct.
+      //VoSpaceClient myspacedel = new VoSpaceClient(fulluser);
       StringBuffer msbr = new StringBuffer("ivo://");
       msbr.append(AVODemoConstants.MYSPACE);
       msbr.append("#");
@@ -103,12 +112,16 @@ private String workflowIvorn;
       msbr.append(sector);
       msbr.append(hemi);
       myspaceBaseRef = msbr.toString();
+      FileManagerNode root;
       try {
-         myspacedel.newFolder(new Ivorn(myspaceBaseRef));
+          root = myspacedel.createFolder(new Ivorn(myspaceBaseRef));
+         //myspacedel.newFolder(new Ivorn(myspaceBaseRef));
       }
       catch (Exception e2) {
          // TODO Auto-generated catch block
          e2.printStackTrace();
+         //must be there already..
+         root = myspacedel.node(new Ivorn(myspaceBaseRef));
       }
       msbr.append("/");
       myspaceBaseRef = msbr.toString();
@@ -163,13 +176,20 @@ private String workflowIvorn;
       workflow.marshal(outstr);
       byte[] bytes = outstr.toString().getBytes();
       workflowIvorn = myspacebase + "workflow/" + workflow.getName();
-      myspacedel.putBytes(bytes, 0, bytes.length, new Ivorn(workflowIvorn), false);
+      //myspacedel.putBytes(bytes, 0, bytes.length, new Ivorn(workflowIvorn), false);
+      FileManagerNode output = root.addFile(workflow.getName());
+      OutputStream os = output.writeContent();
+      InputStream is = new ByteArrayInputStream(bytes);
+      Piper.pipe(is,os);
+      is.close();
+      os.close();
  
    }
    private void runworkflow() throws Exception {
-      VoSpaceClient myspacedel = new VoSpaceClient(fulluser);
+       FileManagerClient myspacedel = (new FileManagerClientFactory()).login(new Ivorn(fulluser.getAccount()),fulluser.getToken()); //unsure whether this is correct.       
+      //VoSpaceClient myspacedel = new VoSpaceClient(fulluser);
       myspaceBaseRef = myspacebase + sector + hemi;
-      myspacedel.newFolder(new Ivorn(myspaceBaseRef));
+      FileManagerNode folder = myspacedel.createFolder(new Ivorn(myspaceBaseRef));
 
       String exid;
       exid = runSExtractor("b");
@@ -185,11 +205,16 @@ private String workflowIvorn;
       exid = runHyperZ();
       waitForCompletion(exid);
       String urlout = null;
- 
-          StoreFile fout = myspacedel.getFile(new Ivorn(
-            myspaceBaseRef + "hyperzout"));
+      
+      FileManagerNode fout = folder.getChild("hyperzout");
+      Reader in = new InputStreamReader(fout.readContent());
+      Writer out = new StringWriter();
+      Piper.pipe(in,out);
+      
+      //    StoreFile fout = myspacedel.getFile(new Ivorn(
+       //     myspaceBaseRef + "hyperzout"));
             
-      mailresult(fout.toString());
+      mailresult(out.toString());
    }
 
    private String runHyperZ() {

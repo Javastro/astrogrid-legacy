@@ -1,4 +1,4 @@
-/*$Id: JesResultsListener.java,v 1.3 2004/07/09 09:30:28 nw Exp $
+/*$Id: JesResultsListener.java,v 1.4 2005/03/13 07:13:39 clq2 Exp $
  * Created on 01-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,7 +47,7 @@ public class JesResultsListener implements ResultsListener, ComponentDescriptor 
     /**
      * @see org.astrogrid.jes.service.v1.cearesults.ResultsListener#putResults(org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType, org.astrogrid.jes.types.v1.cea.axis.ResultListType)
      */
-    public void putResults(JobIdentifierType id, ResultListType resultList) throws RemoteException {
+    public void putResults(JobIdentifierType id, ResultListType resultList) {
         if (id  == null) {
             logger.info("null id object encountered");
             return;
@@ -92,6 +92,12 @@ public class JesResultsListener implements ResultsListener, ComponentDescriptor 
 
 /* 
 $Log: JesResultsListener.java,v $
+Revision 1.4  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.3.124.1  2005/03/11 14:05:40  nw
+minor change
+
 Revision 1.3  2004/07/09 09:30:28  nw
 merged in scripting workflow interpreter from branch
 nww-x-workflow-extensions

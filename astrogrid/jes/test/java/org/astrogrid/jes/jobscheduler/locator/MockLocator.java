@@ -1,4 +1,4 @@
-/*$Id: MockLocator.java,v 1.6 2004/08/03 16:31:25 nw Exp $
+/*$Id: MockLocator.java,v 1.7 2005/03/13 07:13:39 clq2 Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,8 +37,8 @@ public class MockLocator implements Locator {
     /**
      * @see org.astrogrid.jes.jobscheduler.ToolLocator#locateTool(org.astrogrid.jes.job.JobStep)
      */
-    public String locateTool(Tool t) throws JesException {
-        return willSucceed ? Delegate.TEST_URI : null;
+    public String[] locateTool(Tool t) throws JesException {
+        return willSucceed ? new String[]{Delegate.TEST_URI} : null;
     }
     /**
      * @see org.astrogrid.jes.jobscheduler.ToolLocator#getToolInterface(org.astrogrid.jes.job.JobStep)
@@ -51,6 +51,14 @@ public class MockLocator implements Locator {
 
 /* 
 $Log: MockLocator.java,v $
+Revision 1.7  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.6.96.1  2005/03/11 15:21:35  nw
+adjusted locator so that it returns a list of endpoints to connect to.
+we can get round-robin by shuffling the list.
+dispatcher tries each endpoint in the list until can connect to one wihout throwing an exception.
+
 Revision 1.6  2004/08/03 16:31:25  nw
 simplified interface to dispatcher and locator components.
 removed redundant implementations.

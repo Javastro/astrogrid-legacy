@@ -1,4 +1,4 @@
-/*$Id: Locator.java,v 1.6 2004/08/13 09:07:58 nw Exp $
+/*$Id: Locator.java,v 1.7 2005/03/13 07:13:39 clq2 Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,15 +18,23 @@ import org.astrogrid.workflow.beans.v1.Tool;
  *
  */
 public interface Locator {
-    /** resolve a tool name into an endpoint of a service that provides the tool 
+    /** resolve a tool name into a list of equivalent endpoints of services that provides the tool 
      * @todo return url? or something more abstract
      * */
-    String locateTool(Tool  js) throws JesException;
+    String[] locateTool(Tool  js) throws JesException;
 }
 
 
 /* 
 $Log: Locator.java,v $
+Revision 1.7  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.6.92.1  2005/03/11 15:21:35  nw
+adjusted locator so that it returns a list of endpoints to connect to.
+we can get round-robin by shuffling the list.
+dispatcher tries each endpoint in the list until can connect to one wihout throwing an exception.
+
 Revision 1.6  2004/08/13 09:07:58  nw
 tidied imports
 

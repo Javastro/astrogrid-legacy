@@ -1,4 +1,4 @@
-/*$Id: ConstantToolLocator.java,v 1.9 2004/08/13 09:07:26 nw Exp $
+/*$Id: ConstantToolLocator.java,v 1.10 2005/03/13 07:13:39 clq2 Exp $
  * Created on 27-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,9 +41,9 @@ public class ConstantToolLocator implements Locator , ComponentDescriptor{
     /**
      * @see org.astrogrid.jes.jobscheduler.Locator#locateTool(org.astrogrid.jes.job.JobStep)
      */
-    public String locateTool(Tool tool) throws JesException {
+    public String[] locateTool(Tool tool) throws JesException {
         logger.debug("constant tool locator: for " + tool.getName() + " returning " + endpoint.toString());
-        return endpoint.toString();
+        return new String[]{endpoint.toString()};
         
     }
 
@@ -72,6 +72,14 @@ public class ConstantToolLocator implements Locator , ComponentDescriptor{
 
 /* 
 $Log: ConstantToolLocator.java,v $
+Revision 1.10  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.9.92.1  2005/03/11 15:21:35  nw
+adjusted locator so that it returns a list of endpoints to connect to.
+we can get round-robin by shuffling the list.
+dispatcher tries each endpoint in the list until can connect to one wihout throwing an exception.
+
 Revision 1.9  2004/08/13 09:07:26  nw
 tidied imports
 

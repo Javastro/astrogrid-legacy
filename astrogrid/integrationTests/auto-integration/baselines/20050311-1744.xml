@@ -7,7 +7,7 @@
 		<where>twmbarlwm.star.le.ac.uk/127.0.0.1</where>
 		<who>clq</who>
 		<project-name>auto-integration</project-name>
-		<project-version>SNAPSHOT</project-version>
+		<project-version>HEAN</project-version>
 		<total-tests>686</total-tests>
 		<total-errors>96</total-errors>
 	</baseline-summary>

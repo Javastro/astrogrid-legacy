@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationDescription.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+ * $Id: CommandLineApplicationDescription.java,v 1.3 2005/03/13 07:13:39 clq2 Exp $
  *
  * Created on 25 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -75,7 +75,7 @@ public Application initializeApplication(String jobStepID, User user,Tool tool) 
     child.registerComponentInstance(appInterface);
     child.registerComponentInstance(jobStepID);
     try {
-        return (CommandLineApplication)child.registerComponentImplementation(CommandLineApplication.class,clazz).getComponentInstance();
+        return (CommandLineApplication)child.registerComponentImplementation(CommandLineApplication.class,clazz).getComponentInstance(child);
     } catch (PicoException e) {// somethings gone wrong - not the correct deps.
         logger.error("Could not instantiate the application class",e);
         throw new CeaException("Could not instantiate the application class",e);

@@ -1,4 +1,4 @@
-/*$Id: IvornProtocol.java,v 1.1 2004/07/26 12:07:38 nw Exp $
+/*$Id: IvornProtocol.java,v 1.2 2005/03/13 07:13:39 clq2 Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,14 @@
 **/
 package org.astrogrid.applications.parameter.protocol;
 
-import org.astrogrid.community.User;
+import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
+import org.astrogrid.filemanager.client.FileManagerClient;
+import org.astrogrid.filemanager.client.FileManagerClientFactory;
+import org.astrogrid.filemanager.client.FileManagerNode;
+import org.astrogrid.filemanager.common.BundlePreferences;
+import org.astrogrid.registry.RegistryException;
 import org.astrogrid.store.Ivorn;
-import org.astrogrid.store.VoSpaceClient;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,16 +37,28 @@ public class IvornProtocol implements Protocol , ComponentDescriptor{
      */
     public IvornProtocol() {
         super();
+        factory = new FileManagerClientFactory(NO_PREFETCH_POLICY);
     }
+    
+    protected final FileManagerClientFactory factory;
     /**
      * @see org.astrogrid.applications.parameter.protocol.Protocol#getProtocolName()
      */
     public String getProtocolName() {
         return Ivorn.SCHEME;
     }
+    
+    //
+    protected static final BundlePreferences NO_PREFETCH_POLICY  = new BundlePreferences();
+    static {
+        NO_PREFETCH_POLICY.setFetchParents(false);
+        NO_PREFETCH_POLICY.setMaxExtraNodes(new Integer(0));
+        NO_PREFETCH_POLICY.setPrefetchDepth(new Integer(0));
+    }
     /**
      * @see org.astrogrid.applications.parameter.protocol.Protocol#createIndirectValue(java.net.URI)
      * @todo find nice way to pass correct user value in here.
+     * @todo cache FileManagerClientFactory?
      */
     public ExternalValue createIndirectValue(final URI reference) throws InaccessibleExternalValueException {
         final Ivorn ivorn;
@@ -53,21 +69,22 @@ public class IvornProtocol implements Protocol , ComponentDescriptor{
             throw new InaccessibleExternalValueException(reference.toString(),e);
         }      
         return new ExternalValue() {
-            
-           VoSpaceClient client = new VoSpaceClient(new User());
+            FileManagerClient client= factory.login();
            
             public InputStream read() throws InaccessibleExternalValueException {
                 try {
-                return client.getStream(ivorn);
-                } catch (IOException e) {
+                    FileManagerNode n = client.node(ivorn);
+                    return n.readContent();
+                } catch (Exception e) {
                     throw new InaccessibleExternalValueException(ivorn.toString(),e);
-                }
+                } 
             }
 
             public OutputStream write() throws InaccessibleExternalValueException {
                 try {
-                return client.putStream(ivorn);
-                } catch (IOException e) {
+                    FileManagerNode n = client.node(ivorn);
+                return n.writeContent();
+                } catch (Exception e) {
                     throw new InaccessibleExternalValueException(ivorn.toString(),e);
                 }                
             }
@@ -96,6 +113,12 @@ public class IvornProtocol implements Protocol , ComponentDescriptor{
 
 /* 
 $Log: IvornProtocol.java,v $
+Revision 1.2  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.1.110.1  2005/03/11 11:20:58  nw
+replaced VoSpaceClient with FileManagerClient
+
 Revision 1.1  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package

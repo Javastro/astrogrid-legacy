@@ -1,4 +1,4 @@
-/*$Id: BasicJesComponentManager.java,v 1.5 2004/11/05 16:52:42 jdt Exp $
+/*$Id: BasicJesComponentManager.java,v 1.6 2005/03/13 07:13:39 clq2 Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,8 @@ package org.astrogrid.jes.component;
 import org.astrogrid.component.ComponentManagerException;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.component.descriptor.SimpleComponentDescriptor;
+import org.astrogrid.config.Config;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.jes.component.production.GroovyComponentManager;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
@@ -21,7 +23,12 @@ import org.astrogrid.jes.impl.workflow.InMemoryJobFactoryImpl;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.Locator;
-import org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher;
+import org.astrogrid.jes.jobscheduler.dispatcher.CeaApplicationDispatcher;
+import org.astrogrid.jes.jobscheduler.dispatcher.CompositeDispatcher;
+import org.astrogrid.jes.jobscheduler.dispatcher.ConeSearchDispatcher;
+import org.astrogrid.jes.jobscheduler.dispatcher.SiapDispatcher;
+import org.astrogrid.jes.jobscheduler.dispatcher.SsapDispatcher;
+import org.astrogrid.jes.jobscheduler.dispatcher.inprocess.InProcessCeaComponentManager;
 import org.astrogrid.jes.jobscheduler.impl.SchedulerTaskQueueDecorator;
 import org.astrogrid.jes.jobscheduler.locator.XMLFileLocator;
 import org.astrogrid.jes.resultlistener.JesResultsListener;
@@ -30,6 +37,7 @@ import org.astrogrid.jes.util.TemporaryBuffer;
 
 import org.picocontainer.Parameter;
 import org.picocontainer.defaults.ComponentParameter;
+import org.picocontainer.defaults.ConstantParameter;
 import org.picocontainer.defaults.ConstructorInjectionComponentAdapter;
 
 import java.net.URI;
@@ -58,18 +66,33 @@ public class BasicJesComponentManager extends EmptyJesComponentManager {
         }
         );
 
-         GroovyComponentManager.registerGroovyEngine(pico);
-        pico.registerComponentImplementation(Dispatcher.class,ApplicationControllerDispatcher.class);
-        pico.registerComponentInstance(ApplicationControllerDispatcher.Endpoints.class, 
-            new ApplicationControllerDispatcher.Endpoints() {
-            public URI monitorEndpoint() {
-                return defaultCallbackURL;
-            }
+         GroovyComponentManager.registerGroovyEngine(pico);     
+         // dispatchers.
+         pico.registerComponentImplementation(Dispatcher.class,CompositeDispatcher.class); // _the_ dispatcher.
+         pico.registerComponentImplementation(CeaApplicationDispatcher.class); // dispatch cea tools         
+         pico.registerComponentInstance(CeaApplicationDispatcher.Endpoints.class, 
+             new CeaApplicationDispatcher.Endpoints() {
+             public URI monitorEndpoint() {
+                 return defaultCallbackURL;
+             }
 
-            public URI resultListenerEndpoint() {
-                return defaultResultListenerURL;
-            }            
-        });
+             public URI resultListenerEndpoint() {
+                 return defaultResultListenerURL;
+             }            
+         });
+        pico.registerComponentImplementation(ConeSearchDispatcher.class); // dispach cone searches.
+        pico.registerComponentImplementation(SiapDispatcher.class);
+        pico.registerComponentImplementation(SsapDispatcher.class);
+        // used for in-process cea dispatchers
+        // as a work-around for a bug (picos don't register themselves anymore, but claim they do), need to set up parameters for this component by hand.
+        pico.registerComponentImplementation(InProcessCeaComponentManager.class,InProcessCeaComponentManager.class,
+                new Parameter[]{
+                    new ConstantParameter(pico)
+                    , new ConstantParameter(SimpleConfig.getSingleton())                    
+        }                    
+       );
+        
+  
         pico.registerComponentImplementation(Locator.class,XMLFileLocator.class);
         pico.registerComponentInstance(XMLFileLocator.ToolList.class,
             new XMLFileLocator.ToolList() {
@@ -108,6 +131,13 @@ public class BasicJesComponentManager extends EmptyJesComponentManager {
 
 /* 
 $Log: BasicJesComponentManager.java,v $
+Revision 1.6  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.5.36.1  2005/03/11 14:01:41  nw
+changes to work with pico1.1, and linked in the In-process
+cea server
+
 Revision 1.5  2004/11/05 16:52:42  jdt
 Merges from branch nww-itn07-scratchspace
 

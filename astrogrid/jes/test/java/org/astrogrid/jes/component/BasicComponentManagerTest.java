@@ -1,4 +1,4 @@
-/*$Id: BasicComponentManagerTest.java,v 1.4 2004/07/09 09:32:12 nw Exp $
+/*$Id: BasicComponentManagerTest.java,v 1.5 2005/03/13 07:13:39 clq2 Exp $
  * Created on 27-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,14 @@
 **/
 package org.astrogrid.jes.component;
 
+import org.astrogrid.applications.component.CEAComponentManager;
+import org.astrogrid.jes.jobscheduler.dispatcher.inprocess.InProcessCeaComponentManager;
+
+import org.picocontainer.MutablePicoContainer;
+import org.picocontainer.PicoContainer;
 import org.picocontainer.PicoException;
+import org.picocontainer.defaults.DefaultPicoContainer;
+
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -30,10 +37,13 @@ public class BasicComponentManagerTest extends TestCase {
     
     protected void setUp() throws Exception {
         cm = new BasicJesComponentManager();
+        cm.start();
     }
     
     protected JesComponentManager cm;
 
+
+    
     /** verify container is consistent */
     public void testVerify() {
         try {
@@ -46,6 +56,12 @@ public class BasicComponentManagerTest extends TestCase {
 
     public void testGetContainer() {
         assertNotNull(cm.getContainer());
+    }
+    
+    public void testGetSubContainer() {
+      CEAComponentManager cea = (CEAComponentManager)cm.getContainer().getComponentInstance(InProcessCeaComponentManager.class);
+      assertNotNull(cea);
+      assertNotNull(cea.getContainer().getParent());
     }
     
     public void testGetController() {
@@ -76,6 +92,12 @@ public class BasicComponentManagerTest extends TestCase {
 
 /* 
 $Log: BasicComponentManagerTest.java,v $
+Revision 1.5  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.4.124.1  2005/03/11 14:06:11  nw
+adjusted test to verify in-process cea server is happy.
+
 Revision 1.4  2004/07/09 09:32:12  nw
 merged in scripting workflow interpreter from branch
 nww-x-workflow-extensions

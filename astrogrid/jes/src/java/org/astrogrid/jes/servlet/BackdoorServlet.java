@@ -1,4 +1,4 @@
-/*$Id: BackdoorServlet.java,v 1.4 2004/08/13 09:07:26 nw Exp $
+/*$Id: BackdoorServlet.java,v 1.5 2005/03/13 07:13:39 clq2 Exp $
  * Created on 21-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -50,7 +50,7 @@ public class BackdoorServlet extends HttpServlet {
             Tool tool = new Tool();
             tool.setName(toolName);
             try {
-                String url = locator.locateTool(tool);
+                String url = locator.locateTool(tool)[0];
                 PrintWriter writer = response.getWriter();
                 writer.println(url);
             } catch (JesException e) {
@@ -64,6 +64,14 @@ public class BackdoorServlet extends HttpServlet {
 
 /* 
 $Log: BackdoorServlet.java,v $
+Revision 1.5  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.4.92.1  2005/03/11 15:21:35  nw
+adjusted locator so that it returns a list of endpoints to connect to.
+we can get round-robin by shuffling the list.
+dispatcher tries each endpoint in the list until can connect to one wihout throwing an exception.
+
 Revision 1.4  2004/08/13 09:07:26  nw
 tidied imports
 

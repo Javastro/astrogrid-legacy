@@ -1,4 +1,4 @@
-/*$Id: SiapImageFetchApplication.java,v 1.2 2004/11/29 20:00:56 clq2 Exp $
+/*$Id: SiapImageFetchApplication.java,v 1.3 2005/03/13 07:13:39 clq2 Exp $
  * Created on 23-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.applications.apps;
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Status;
-import org.astrogrid.applications.AbstractApplication.IDs;
 import org.astrogrid.applications.apps.CatApplicationDescription.StreamParameterAdapter;
 import org.astrogrid.applications.apps.SiapImageFetchDescription.ParameterAdapterDataSource;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
@@ -22,10 +21,11 @@ import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
-import org.astrogrid.community.User;
+import org.astrogrid.filemanager.client.FileManagerClient;
+import org.astrogrid.filemanager.client.FileManagerClientFactory;
+import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.io.Piper;
 import org.astrogrid.store.Ivorn;
-import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import uk.ac.starlink.table.ColumnInfo;
@@ -83,7 +83,7 @@ public class SiapImageFetchApplication extends AbstractApplication {
     final class ImageFetchRunnable implements Runnable {
         private static final String REFERENCE_UCD = "VOX:Image_AccessReference";
         protected final StarTableFactory factory = new StarTableFactory();
-        protected final VoSpaceClient vospace = new VoSpaceClient(new User()); // default user - should be sufficient for now.
+        protected final FileManagerClient vospace = (new FileManagerClientFactory()).login(); // default user - should be sufficient for now.
 
 
 
@@ -114,12 +114,13 @@ public class SiapImageFetchApplication extends AbstractApplication {
                                         
                 Ivorn dirIvorn = new Ivorn(baseDir + (baseDir.endsWith("/") ? "" : "/") + unq);
                 reportMessage("Images will be saved in folder " + dirIvorn);
-                vospace.newFolder(dirIvorn);
+                FileManagerNode dir = vospace.createFolder(dirIvorn);
                 
                 // save the votable itself.
                 Ivorn votable = new Ivorn(dirIvorn.toString() + "/" + "votable.vot");
+                FileManagerNode votableNode = dir.addFile("votable.vot");
                 InputStream vin = (InputStream)tableStream.process();                        
-                OutputStream vout = vospace.putStream(votable);
+                OutputStream vout = votableNode.writeContent(); 
                 Piper.pipe(vin,vout);
                 vin.close();
                 vout.close();
@@ -149,10 +150,10 @@ public class SiapImageFetchApplication extends AbstractApplication {
                 int count = 0;
                 for(RowSequence rs = table.getRowSequence(); rs.hasNext(); ) {
                     rs.next();
-                    URL url = new URL(rs.getCell(referenceCol).toString());
-                    Ivorn target = new Ivorn(dirIvorn.toString() + "/" + (count++) + ".fits");                            
-                    reportMessage("Saving " + url  + " to " + target);
-                    vospace.putUrl(url,target,false);
+                    URL url = new URL(rs.getCell(referenceCol).toString());  
+                    FileManagerNode target = dir.addFile((count ++) + ".fits");
+                    reportMessage("Saving " + url  + " to " + target.getName());
+                    target.copyURLToContent(url);
                     urls.add(url);
                     ivorns.add(target);
                 }                        
@@ -175,7 +176,7 @@ public class SiapImageFetchApplication extends AbstractApplication {
                 reportError("Storage Ivorn not in correct format",e);
             } catch (CeaException e) {
                 reportError("something failed",e);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 reportError("something failed",e);
             }
         }
@@ -202,6 +203,12 @@ public class SiapImageFetchApplication extends AbstractApplication {
 
 /* 
 $Log: SiapImageFetchApplication.java,v $
+Revision 1.3  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.2.26.1  2005/03/11 11:21:19  nw
+replaced VoSpaceClient with FileManagerClient
+
 Revision 1.2  2004/11/29 20:00:56  clq2
 nww-itn07-684
 

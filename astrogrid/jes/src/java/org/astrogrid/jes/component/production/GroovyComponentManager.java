@@ -1,4 +1,4 @@
-/*$Id: GroovyComponentManager.java,v 1.4 2004/11/05 16:52:42 jdt Exp $
+/*$Id: GroovyComponentManager.java,v 1.5 2005/03/13 07:13:39 clq2 Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,12 @@ import org.astrogrid.jes.impl.workflow.SqlCommands;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.Locator;
-import org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher;
+import org.astrogrid.jes.jobscheduler.dispatcher.CeaApplicationDispatcher;
+import org.astrogrid.jes.jobscheduler.dispatcher.CompositeDispatcher;
+import org.astrogrid.jes.jobscheduler.dispatcher.ConeSearchDispatcher;
+import org.astrogrid.jes.jobscheduler.dispatcher.SiapDispatcher;
+import org.astrogrid.jes.jobscheduler.dispatcher.SsapDispatcher;
+import org.astrogrid.jes.jobscheduler.dispatcher.inprocess.InProcessCeaComponentManager;
 import org.astrogrid.jes.jobscheduler.impl.SchedulerTaskQueueDecorator;
 import org.astrogrid.jes.jobscheduler.impl.groovy.GroovyInterpreterFactory;
 import org.astrogrid.jes.jobscheduler.impl.groovy.GroovySchedulerImpl;
@@ -41,6 +46,7 @@ import org.astrogrid.jes.util.TemporaryBuffer;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.Parameter;
 import org.picocontainer.defaults.ComponentParameter;
+import org.picocontainer.defaults.ConstantParameter;
 import org.picocontainer.defaults.ConstructorInjectionComponentAdapter;
 
 import javax.sql.DataSource;
@@ -49,7 +55,7 @@ import javax.sql.DataSource;
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jul-2004
  *
  */
-public class GroovyComponentManager extends EmptyJesComponentManager {
+public class GroovyComponentManager extends EmptyJesComponentManager{
     public GroovyComponentManager() throws ComponentManagerException {
         this(SimpleConfig.getSingleton());
     }
@@ -62,9 +68,21 @@ public class GroovyComponentManager extends EmptyJesComponentManager {
 
             registerGroovyEngine(pico);   
            
-           pico.registerComponentImplementation(Dispatcher.class,ApplicationControllerDispatcher.class);
-           pico.registerComponentImplementation(ApplicationControllerDispatcher.Endpoints.class,EndpointsFromConfig.class);
-           // register factory for temp buffers- so each component that requires one is passed it.
+            // different kinds of dispatcher.
+           pico.registerComponentImplementation(Dispatcher.class,CompositeDispatcher.class); // _the_ dispatcher.
+           pico.registerComponentImplementation(CeaApplicationDispatcher.class);           
+           pico.registerComponentImplementation(CeaApplicationDispatcher.Endpoints.class,EndpointsFromConfig.class);
+           
+           pico.registerComponentImplementation(ConeSearchDispatcher.class); // dispach cone searches.
+           pico.registerComponentImplementation(SiapDispatcher.class);
+           pico.registerComponentImplementation(SsapDispatcher.class);
+           // as a work-around for a bug (picos don't register themselves anymore, but claim they do), need to set up parameters for this component by hand.
+           pico.registerComponentImplementation(InProcessCeaComponentManager.class,InProcessCeaComponentManager.class,
+                   new Parameter[]{
+                       new ConstantParameter(pico)
+                       , new ConstantParameter(conf)                    
+           }                    
+          );        // register factory for temp buffers- so each component that requires one is passed it.
            pico.registerComponent(new ConstructorInjectionComponentAdapter(TemporaryBuffer.class,TemporaryBuffer.class));
            registerStandardComponents(pico);
            registerLocator(pico,conf);                    
@@ -200,6 +218,13 @@ public class GroovyComponentManager extends EmptyJesComponentManager {
 
 /* 
 $Log: GroovyComponentManager.java,v $
+Revision 1.5  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.4.36.1  2005/03/11 14:02:10  nw
+changes to work with pico1.1, and linked in the In-process
+cea server
+
 Revision 1.4  2004/11/05 16:52:42  jdt
 Merges from branch nww-itn07-scratchspace
 

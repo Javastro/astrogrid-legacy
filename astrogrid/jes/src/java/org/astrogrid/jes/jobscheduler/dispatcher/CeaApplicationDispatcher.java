@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcher.java,v 1.19 2004/08/13 09:07:58 nw Exp $
+/*$Id: CeaApplicationDispatcher.java,v 1.2 2005/03/13 07:13:39 clq2 Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,18 +29,19 @@ import org.apache.commons.logging.LogFactory;
 
 import java.net.URI;
 import java.net.URLConnection;
+import java.util.Arrays;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-/** Implementation of a Dispactcher that calls an application controller web service to execute job steps.
+/** Implementation of a Dispactcher that calls an cea  web service to execute a job step.
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Feb-2004
  *
  */
-public  class ApplicationControllerDispatcher implements Dispatcher, ComponentDescriptor {
+public  class CeaApplicationDispatcher implements Dispatcher, ComponentDescriptor {
    private static final Log logger =
-      LogFactory.getLog(ApplicationControllerDispatcher.class);
+      LogFactory.getLog(CeaApplicationDispatcher.class);
    /** Configuration component for Application Controller Dispatcher
     * @author Noel Winstanley nw@jb.man.ac.uk 07-Mar-2004
     *
@@ -54,7 +55,7 @@ public  class ApplicationControllerDispatcher implements Dispatcher, ComponentDe
     * @param endpoint configuration component that specifies the endpoint of the JobMonitor service. This is used by the ApplicationController to 
     * return execution information back to the JES server.
     */
-   public ApplicationControllerDispatcher(Locator locator, Endpoints endpoint) {
+   public CeaApplicationDispatcher(Locator locator, Endpoints endpoint) {
       this.locator = locator;
       this.monitorURI = endpoint.monitorEndpoint();
       this.resultListenerURI = endpoint.resultListenerEndpoint();
@@ -73,21 +74,25 @@ public  class ApplicationControllerDispatcher implements Dispatcher, ComponentDe
 
    public void dispatchStep(Workflow job, Tool tool,String stepId) throws JesException {
 
-      String toolLocation = locator.locateTool(tool);    
-      CommonExecutionConnectorClient appController =    DelegateFactory.createDelegate(toolLocation);
-
+      String[] toolLocations = locator.locateTool(tool);
       JobIdentifierType id = JesUtil.createJobId(job.getJobExecutionRecord().getJobId(), stepId);
-      logger.debug(         "Calling application controller at " + toolLocation + " for "
-            + tool.getName() + ", "+ id.getValue());
-      try {
-         String applicationId = appController.init(tool,id);
-         appController.registerResultsListener(applicationId,resultListenerURI);         
-         appController.registerProgressListener(applicationId,monitorURI);
-         appController.execute(applicationId);
-
+      boolean connected = false;
+      for (int i = 0; i < toolLocations.length && ! connected ; i++) { // try each one in the list, until something sticks.
+          CommonExecutionConnectorClient appController =    DelegateFactory.createDelegate(toolLocations[i]);
+          logger.debug(  "Calling application controller at " + toolLocations[i] + " for " + tool.getName() + ", "+ id.getValue());
+          try {
+              String applicationId = appController.init(tool,id);
+              appController.registerResultsListener(applicationId,resultListenerURI);         
+              appController.registerProgressListener(applicationId,monitorURI);
+              appController.execute(applicationId);
+              connected = true; // signal that we've connected to a cea, so no need to keep looping.
+          }
+          catch (CEADelegateException e) {
+              logger.warn("Failed to communicate with application controller",e);         
+          }
       }
-      catch (CEADelegateException e) {
-         throw new JesException("Failed to communicate with application controller", e);
+      if (! connected) {// exhausted all possibilities, so fail
+         throw new JesException("Failed to communicate with application controllers" + Arrays.asList(toolLocations));
       }
 
    }
@@ -141,7 +146,18 @@ public  class ApplicationControllerDispatcher implements Dispatcher, ComponentDe
 }
 
 /* 
-$Log: ApplicationControllerDispatcher.java,v $
+$Log: CeaApplicationDispatcher.java,v $
+Revision 1.2  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.1.2.2  2005/03/11 15:21:35  nw
+adjusted locator so that it returns a list of endpoints to connect to.
+we can get round-robin by shuffling the list.
+dispatcher tries each endpoint in the list until can connect to one wihout throwing an exception.
+
+Revision 1.1.2.1  2005/03/11 14:04:03  nw
+added new kinds of dispatcher.
+
 Revision 1.19  2004/08/13 09:07:58  nw
 tidied imports
 

@@ -1,4 +1,4 @@
-/*$Id: CommandLineApplicationDescriptionFactory.java,v 1.3 2004/08/27 12:45:52 pah Exp $
+/*$Id: CommandLineApplicationDescriptionFactory.java,v 1.4 2005/03/13 07:13:39 clq2 Exp $
  * Created on 02-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,9 +34,11 @@ public class CommandLineApplicationDescriptionFactory extends AbstractObjectCrea
      */
     public CommandLineApplicationDescriptionFactory(PicoContainer container) {
         super();
+        this.container = container;
         this.factory = container.getComponentAdapterOfType(CommandLineApplicationDescription.class); // or should I generalize here?
     }
     protected final ComponentAdapter factory;
+    protected final PicoContainer container;
 
     /**
      * @see org.apache.commons.digester.AbstractObjectCreationFactory#createObject(org.xml.sax.Attributes)
@@ -49,7 +51,7 @@ public class CommandLineApplicationDescriptionFactory extends AbstractObjectCrea
         logger.debug("Creating application description for '" + id + "'");
                
        //return new CommandLineApplicationDescription(id,factory);
-       CommandLineApplicationDescription descr = (CommandLineApplicationDescription)factory.getComponentInstance();
+       CommandLineApplicationDescription descr = (CommandLineApplicationDescription)factory.getComponentInstance(container);
        descr.setName(id);
        return descr;
       
@@ -59,6 +61,12 @@ public class CommandLineApplicationDescriptionFactory extends AbstractObjectCrea
 
 /* 
 $Log: CommandLineApplicationDescriptionFactory.java,v $
+Revision 1.4  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.3.72.1  2005/03/11 11:22:16  nw
+adjusted to fit with pico 1.1
+
 Revision 1.3  2004/08/27 12:45:52  pah
 get cardinality working for commandline digester
 

@@ -1,4 +1,4 @@
-/*$Id: MapLocator.java,v 1.11 2004/08/13 09:07:26 nw Exp $
+/*$Id: MapLocator.java,v 1.12 2005/03/13 07:13:39 clq2 Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,10 +54,10 @@ public class MapLocator implements Locator, ComponentDescriptor {
     /**
      * @see org.astrogrid.jes.jobscheduler.ToolLocator#locateTool(org.astrogrid.jes.job.JobStep)
      */
-    public String locateTool(Tool tool) throws JesException{
+    public String[] locateTool(Tool tool) throws JesException{
         ToolInfo nfo = getToolInfo(tool);
         logger.debug("tool location for " + tool.getName() + " :=" + nfo.getLocation());
-        return nfo.getLocation();
+        return new String[]{nfo.getLocation()};
         
     }
     /** return tool for this job step, or throw not found excepton */
@@ -173,6 +173,14 @@ public class MapLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: MapLocator.java,v $
+Revision 1.12  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.11.92.1  2005/03/11 15:21:35  nw
+adjusted locator so that it returns a list of endpoints to connect to.
+we can get round-robin by shuffling the list.
+dispatcher tries each endpoint in the list until can connect to one wihout throwing an exception.
+
 Revision 1.11  2004/08/13 09:07:26  nw
 tidied imports
 

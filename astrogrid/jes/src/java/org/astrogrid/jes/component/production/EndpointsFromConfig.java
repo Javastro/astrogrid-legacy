@@ -1,4 +1,4 @@
-/*$Id: EndpointsFromConfig.java,v 1.2 2004/07/05 18:34:13 nw Exp $
+/*$Id: EndpointsFromConfig.java,v 1.3 2005/03/13 07:13:39 clq2 Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.jes.component.production;
 
 import org.astrogrid.component.descriptor.SimpleComponentDescriptor;
 import org.astrogrid.config.Config;
-import org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher.Endpoints;
+import org.astrogrid.jes.jobscheduler.dispatcher.CeaApplicationDispatcher.Endpoints;
 
 import org.apache.axis.ConfigurationException;
 import org.apache.axis.MessageContext;
@@ -24,7 +24,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Iterator;
 
-/** Configuration object for {@link org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher}
+/** Configuration object for {@link org.astrogrid.jes.jobscheduler.dispatcher.CeaApplicationDispatcher}
  * <p>
  * looks in configuration for a key, otherwise guesses job monitor service by examing axis engine configuration.
  * @todo which doesn't seem to work at the moment  - need to fix
@@ -80,7 +80,7 @@ public class EndpointsFromConfig extends SimpleComponentDescriptor implements En
         return finalMonitorEndpoint;
     }
     /**
-     * @see org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher.Endpoints#resultListenerEndpoint()
+     * @see org.astrogrid.jes.jobscheduler.dispatcher.CeaApplicationDispatcher.Endpoints#resultListenerEndpoint()
      */
     public URI resultListenerEndpoint() {
         return finalResultsEndpoint;
@@ -90,6 +90,13 @@ public class EndpointsFromConfig extends SimpleComponentDescriptor implements En
 
 /* 
 $Log: EndpointsFromConfig.java,v $
+Revision 1.3  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.2.124.1  2005/03/11 14:02:10  nw
+changes to work with pico1.1, and linked in the In-process
+cea server
+
 Revision 1.2  2004/07/05 18:34:13  nw
 tweaked default value to be sensible
 

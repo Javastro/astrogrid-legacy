@@ -1,4 +1,4 @@
-/*$Id: ToolboxTest.java,v 1.4 2004/12/06 20:03:03 clq2 Exp $
+/*$Id: ToolboxTest.java,v 1.5 2005/03/13 07:13:39 clq2 Exp $
  * Created on 22-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -82,9 +82,7 @@ public class ToolboxTest extends TestCase {
         assertNotNull(t.createRegistryAdminClient());
     }
 
-    public void testCreateVoSpaceClient() {
-        assertNotNull(t.createVoSpaceClient(t.getObjectBuilder().user()));
-    }
+
 
     public void testCreateTreeClient() {
         // can't do much here - will connect, which can't be unit tests.
@@ -102,6 +100,12 @@ public class ToolboxTest extends TestCase {
 
 /* 
 $Log: ToolboxTest.java,v $
+Revision 1.5  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.4.22.1  2005/03/11 11:59:43  nw
+replaced vospaceClient with FileManagerClient
+
 Revision 1.4  2004/12/06 20:03:03  clq2
 nww_807a
 

@@ -1,4 +1,4 @@
-/*$Id: EmptyComponentManager.java,v 1.1 2004/05/04 11:00:12 nw Exp $
+/*$Id: EmptyComponentManager.java,v 1.2 2005/03/13 07:13:39 clq2 Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,7 +38,7 @@ public class EmptyComponentManager implements ComponentManager{
         pico = new DefaultPicoContainer();
     }
     /** the picocontainer that manages the components */
-    protected final MutablePicoContainer pico;
+    protected MutablePicoContainer pico;
     public String informationHTML() {
     
               StringWriter sw = new StringWriter();
@@ -117,6 +117,12 @@ public class EmptyComponentManager implements ComponentManager{
 
 /* 
 $Log: EmptyComponentManager.java,v $
+Revision 1.2  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.1.136.1  2005/03/11 13:24:38  nw
+changed to allow picocontainer to be set later.
+
 Revision 1.1  2004/05/04 11:00:12  nw
 moved pico-container component stuff from jes into common, so it can be used in cea too
  

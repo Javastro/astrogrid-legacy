@@ -1,4 +1,4 @@
-/*$Id: EmptyCEAComponentManager.java,v 1.11 2004/11/27 13:20:03 pah Exp $
+/*$Id: EmptyCEAComponentManager.java,v 1.12 2005/03/13 07:13:39 clq2 Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,9 +9,6 @@
  *
 **/
 package org.astrogrid.applications.component;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
@@ -33,7 +30,6 @@ import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
 import org.astrogrid.applications.manager.persist.FileStoreExecutionHistory;
 import org.astrogrid.applications.manager.persist.InMemoryExecutionHistory;
-import org.astrogrid.applications.parameter.protocol.AgslProtocol;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.applications.parameter.protocol.FileProtocol;
 import org.astrogrid.applications.parameter.protocol.FtpProtocol;
@@ -46,6 +42,8 @@ import org.astrogrid.config.Config;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.picocontainer.ComponentAdapter;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.Startable;
@@ -156,7 +154,7 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
                 DefaultProtocolLibrary lib = (DefaultProtocolLibrary) pico.getComponentInstanceOfType(DefaultProtocolLibrary.class);
                 for (Iterator i = pico.getComponentAdaptersOfType(Protocol.class).iterator(); i.hasNext(); ) {
                     ComponentAdapter ca = (ComponentAdapter)i.next();
-                    Protocol p = (Protocol)ca.getComponentInstance();
+                    Protocol p = (Protocol)ca.getComponentInstance(pico);
                     lib.addProtocol(p);
                 }
             }
@@ -175,7 +173,6 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
     
     /** registers the astorgird-specific protocols - ivo: and agsl:*/
     protected static final void registerAstrogridIndirectionProtocols(MutablePicoContainer pico) {
-        pico.registerComponentImplementation(AgslProtocol.class);
         pico.registerComponentImplementation(IvornProtocol.class);
     }
     
@@ -293,7 +290,7 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
                 CompositeApplicationDescriptionLibrary uberLib = (CompositeApplicationDescriptionLibrary)pico.getComponentInstanceOfType(CompositeApplicationDescriptionLibrary.class);
                 for (Iterator i = pico.getComponentAdaptersOfType(ApplicationDescriptionLibrary.class).iterator(); i.hasNext(); ) {
                     ComponentAdapter ca = (ComponentAdapter)i.next();
-                    ApplicationDescriptionLibrary lib = (ApplicationDescriptionLibrary)ca.getComponentInstance();
+                    ApplicationDescriptionLibrary lib = (ApplicationDescriptionLibrary)ca.getComponentInstance(pico);
                     // watch out for self.
                     if (lib != uberLib) {
                         uberLib.addLibrary(lib);
@@ -319,7 +316,7 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
             BaseApplicationDescriptionLibrary lib = (BaseApplicationDescriptionLibrary)pico.getComponentInstanceOfType(BaseApplicationDescriptionLibrary.class);
             for (Iterator i = pico.getComponentAdaptersOfType(ApplicationDescription.class).iterator(); i.hasNext();) {
                 ComponentAdapter ca = (ComponentAdapter)i.next();
-                ApplicationDescription appDesc = (ApplicationDescription)ca.getComponentInstance();
+                ApplicationDescription appDesc = (ApplicationDescription)ca.getComponentInstance(pico);
                 lib.addApplicationDescription(appDesc);
             }
         }
@@ -333,6 +330,12 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
 
 /* 
 $Log: EmptyCEAComponentManager.java,v $
+Revision 1.12  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.11.26.1  2005/03/11 11:21:13  nw
+adjusted to fit with pico 1.1
+
 Revision 1.11  2004/11/27 13:20:03  pah
 result of merge of pah_cea_bz561 branch
 

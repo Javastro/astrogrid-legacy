@@ -83,13 +83,17 @@
             <groupId>org.astrogrid</groupId>
             <version>${astrogrid.registry.version}</version>
         </dependency>
-        <!-- myspace -->
-        <dependency>
-            <artifactId>astrogrid-store-client</artifactId>
-            <version>${astrogrid.mySpace.version}</version>
-            <groupId>org.astrogrid</groupId>
-            <type>jar</type>
-        </dependency>
+        <!-- filemanager -->
+	<dependency>
+		<groupId>org.astrogrid</groupId>
+		<artifactId>astrogrid-filemanager-client</artifactId>
+		<version>${astrogrid.filemanager.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.astrogrid</groupId>
+		<artifactId>astrogrid-filemanager-contract</artifactId>
+		<version>${astrogrid.filemanager.version}</version>
+	</dependency>	
         <!-- jes -->
         <dependency>
             <groupId>org.astrogrid</groupId>
@@ -140,6 +144,10 @@
             <groupId>commons-discovery</groupId>
             <version>20030211.213356</version>
         </dependency>
+                <dependency><!-- required by filemanager client -->
+                        <id>commons-collections</id>
+                        <version>3.0</version>
+                </dependency>        
         <dependency>
             <id>wsdl4j</id>
             <version>1.4</version>

@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.5 2004/08/03 16:31:25 nw Exp $
+/*$Id: AllTests.java,v 1.6 2005/03/13 07:13:39 clq2 Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,13 +22,19 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("Test for org.astrogrid.jes.jobscheduler.dispatcher");
         //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(ApplicationControllerDispatcherTest.class));
+        suite.addTest(new TestSuite(CeaApplicationDispatcherTest.class));
         //$JUnit-END$
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.6  2005/03/13 07:13:39  clq2
+merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
+
+Revision 1.5.96.1  2005/03/11 14:03:47  nw
+tests for different dispatchers.
+
 Revision 1.5  2004/08/03 16:31:25  nw
 simplified interface to dispatcher and locator components.
 removed redundant implementations.
