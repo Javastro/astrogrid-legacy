@@ -7,6 +7,7 @@ import org.astrogrid.mySpace.mySpaceRegistry.DataItemRecord;
 import org.astrogrid.mySpace.mySpaceRegistry.MySpaceManager;
 import org.astrogrid.mySpace.mySpaceRegistry.UserAccount;
 import org.astrogrid.mySpace.mySpaceStatus.*;
+import org.astrogrid.mySpace.mySpaceUtil.MySpaceUtils;
 
 //java
 import java.util.Vector;
@@ -160,8 +161,17 @@ public class ServerManager {
          return 0;
     }
    
-    public String buildXMLResponse(String xml){//String origiRs, File xsl){
-    	logger.debug("BUILDXMLRESPONSE..."+xml);
+    public String buildXMLResponse(String dum){//String origiRs, File xsl){
+    	logger.debug("BUILDXMLRESPONSE...");
+    	//this is for tesing response xml string
+		MySpaceUtils util = new MySpaceUtils();
+		logger.debug("CREATED MYSPACEUTIL...");
+		//DataItemRecord record = new DataItemRecord();
+		String response = util.buildMySpaceManagerResponse();
+		
+		logger.debug("GOT RESPONSE" +response);
+		
+		/*
     	String response = "";
 		Node checker;
 		Document document = null;
@@ -229,7 +239,7 @@ public class ServerManager {
 		catch(Exception e){
 			logger.error("EXCEPTION!!"+e);
 		}
-
+*/
     	//parse with xslt   
 		return response;	
     }//end method

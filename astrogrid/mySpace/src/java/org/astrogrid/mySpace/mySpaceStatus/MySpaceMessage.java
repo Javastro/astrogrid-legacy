@@ -48,7 +48,7 @@ public class MySpaceMessage{
     //private String catalinaHome = System.getProperty("CATALINA_HOME");
     //so hard code for now
     private String catalinaHome = "/usr/local/astroGrid/jakarta-tomcat-4.1.24";
-    private String messageFilePath = catalinaHome+"/conf/" +"mySpaceMessage.properties";
+    private String messageFilePath = catalinaHome+"/conf/astrogrid/mySpace/" +"mySpaceMessage.properties";
 	private Properties p = new Properties();
     
    //logger.debug("XXX inside MySpaceMessage: ")+catalinaHome + "; mySpaceMessage = " +messageFilePath);
