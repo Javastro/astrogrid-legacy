@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.1 2004/07/01 15:39:40 jdt Exp $ -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
-    <extend>${basedir}/../base/project.xml</extend>
-    <id>sub</id>
-    <name>Sub Project</name>
-    <build/>
-
-</project>

@@ -1,7 +1,0 @@
-<project>
-    <extend>${basedir}/../basebase/project.xml</extend>
-    <pomVersion>3</pomVersion>
-    <name>Base Project</name>
-    <artifactId>Base</artifactId>
-    <properties/>
-</project>
