@@ -1,0 +1,27 @@
+AstroGrid JES (Job Entry System) README.
+
+Two important software prerequisites are JES's two properties files:
+
+(1) The configuration file ASTROGRID_jesconfig.properties. A great deal
+of setup-configurable data is held here. The file is well commented and bears
+reading.
+
+(2) The datacenter's messages file ASTROGRID_jesmessages.properties.
+All messages issued by JES are detailed here. The file name is 
+configurable within the ASTROGRID_jesconfig file.
+
+The jes package will not work without these files being available within
+Tomcat. BEWARE: we have had some difficulty with Tomcat picking up properties
+files.
+
+DATABASES.
+
+JES requires one database:
+
+A Job database to keep track of jobs entered into the AstroGrid system.
+This is a small database of 6 tables. The ddl is available in the dbscripts
+directory. All tables are accessed with write capability. Some details are
+configurable within the ASTROGRID_jesconfig file.
+
+At the present state of play, we have only had the opportunity of testing
+using Sybase on the hydra machine.
