@@ -51,6 +51,12 @@
 			<email>mch@roe.ac.uk</email>
 			<organization>ROE</organization>
 		</developer>
+		<developer>
+			<name>Noel Winstanley</name>
+			<id>nw</id>
+			<email>nw@jb.man.ac.uk</email>
+			<organization>Jodrell Bank</organization>
+		</developer>
 	</developers>
 	<repository>
 		<connection>
@@ -87,6 +93,59 @@
            <artifactId>astrogrid-applications</artifactId>
            <version>SNAPSHOT</version>
         </dependency>
+    
+    <!-- stuff for datacenter -->
+    <dependency>
+    	<groupId>astrogrid-datacenter</groupId>
+    	<artifactId>astrogrid-datacenter-client</artifactId>
+    	<version>SNAPSHOT</version>
+    </dependency>
+    <dependency><!-- think this is neded -->
+      <id>breezetk</id>
+      <version>UNKNOWN</version>
+      <jar>breezetk.jar</jar>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+
+    <dependency><!-- think this is needed -->
+      <id>VOTableUtil</id>
+      <version>UNKNOWN</version>
+      <jar>VOTableUtil.jar</jar>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+	<!--
+    <dependency>
+      <id>wsdl4j</id>
+      <version>1.0</version>
+    </dependency>
+	
+	<dependency>
+		<id>saaj</id>
+		<version>1.0</version>
+		<jar>saaj.jar</jar>
+	</dependency>
+	-->
+    <dependency>
+      <id>xml-apis</id>
+      <version>1.0.b2</version>
+    </dependency>
+
+    <!-- castor, and what it needs -->
+    <dependency>
+      <id>castor</id>
+      <version>0.9.5</version>
+      <jar>castor-0.9.5-xml.jar</jar>
+    </dependency>
+
+    <dependency>
+	<id>xerces</id>
+	<version>2.4.0</version>
+    </dependency>
+    <!-- end of stuff for datacenter -->
     
 		<dependency>
 			<artifactId>jconfig</artifactId>
