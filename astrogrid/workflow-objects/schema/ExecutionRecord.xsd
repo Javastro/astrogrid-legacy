@@ -12,7 +12,7 @@
 			</xsd:annotation>
 			<xsd:complexType>
 				<xsd:sequence>
-					<xsd:element ref="ceat:message" />
+					<xsd:element ref="ceat:message" minOccurs="0" maxOccurs="unbounded" />
 				</xsd:sequence>				
 				<xsd:attribute name="jobID" type="ceat:job-identifier-type" />
 				<xsd:attributeGroup ref="er:record-attr"/>
@@ -25,7 +25,7 @@
 				</xsd:annotation>
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element ref="ceat:message" />
+						<xsd:element ref="ceat:message" minOccurs="0" maxOccurs="unbounded"/>
 					</xsd:sequence>
 					<xsd:attributeGroup ref="er:record-attr" />
 			</xsd:complexType>
