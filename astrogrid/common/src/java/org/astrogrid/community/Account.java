@@ -1,5 +1,5 @@
 /*
- * $Id: Account.java,v 1.2 2004/02/17 14:31:49 mch Exp $
+ * $Id: Account.java,v 1.3 2004/03/02 01:30:36 mch Exp $
  *
  * Created on 27-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -49,7 +49,9 @@ import org.astrogrid.community.common.util.CommunityMessage;
  *
  * @author Paul Harrison (pah@jb.man.ac.uk), mch
  * @since iteration4
+ * @todo both User & Account are about to be replaced with Dave's Commnuity set.
  */
+
 public class Account {
 
     private String individual = null;
@@ -109,7 +111,7 @@ public class Account {
     
     /** Returns the IVO format used to refer to an account - ie ivo://community/individual
      */
-    public String getIvoRN() {
+    public String getIvorn() {
        return "ivo://"+community+"/"+individual;
     }
 
@@ -131,7 +133,7 @@ public class Account {
     */
    public boolean equals(Account user)
    {
-      return (user.getIvoRN().equals(this.getIvoRN()));
+      return (user.getIvorn().equals(this.getIvorn()));
    }
 
    /**
@@ -151,12 +153,24 @@ public class Account {
       return CommunityMessage.getMessage(token, getAstrogridId(), "(NoGroup)");
    }
    
+   /**
+    * Creates a User from this Account - User & Account are about to be
+    * replaced by Dave's new Community set
+    */
+   public User toUser()
+   {
+      return new User(getIndividual(), getCommunity(), "(NoGroup)", getToken());
+   }
+   
 }
 
 /* $Log: Account.java,v $
- * Revision 1.2  2004/02/17 14:31:49  mch
- * Minor changes to please checkstyle
+ * Revision 1.3  2004/03/02 01:30:36  mch
+ * IvoRN case change and toUser()
  *
+/* Revision 1.2  2004/02/17 14:31:49  mch
+/* Minor changes to please checkstyle
+/*
 /* Revision 1.1  2004/02/17 03:41:47  mch
 /* Datacenter version of User...
 /*
