@@ -1,5 +1,5 @@
 /*
- * $Id: DatabasePersistenceEngine.java,v 1.5 2004/04/19 17:34:08 pah Exp $
+ * $Id: DatabasePersistenceEngine.java,v 1.6 2004/05/14 11:56:57 pah Exp $
  * 
  * Created on 05-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -130,6 +130,17 @@ public class DatabasePersistenceEngine implements PersistenceEngine {
       catch (SQLException e) {
          throw new PersistenceException("problem updating status", e);
       }
+      finally {
+         try {
+            if (conn != null) {
+
+               conn.close();
+            }
+         }
+         catch (SQLException e1) {
+            logger.error("problem closing connection", e1);
+         }
+      }
 
    }
 
@@ -166,6 +177,17 @@ public class DatabasePersistenceEngine implements PersistenceEngine {
             "problem finding status for executionid=" + executionId,
             e);
       }
+      finally {
+         try {
+            if (conn != null) {
+
+               conn.close();
+            }
+         }
+         catch (SQLException e1) {
+            logger.error("problem closing connection", e1);
+         }
+      }
       return Status.valueOf(status);
 
    }
@@ -189,6 +211,17 @@ public class DatabasePersistenceEngine implements PersistenceEngine {
       }
       catch (SQLException e) {
          logger.error("problem updating end status", e);
+      }
+      finally {
+         try {
+            if (conn != null) {
+
+               conn.close();
+            }
+         }
+         catch (SQLException e1) {
+            logger.error("problem closing connection", e1);
+         }
       }
       
    }
@@ -217,7 +250,18 @@ public class DatabasePersistenceEngine implements PersistenceEngine {
       catch (SQLException e) {
          logger.error("problem updating start status", e);
       }
-      
+      finally {
+         try {
+            if (conn != null) {
+
+               conn.close();
+            }
+         }
+         catch (SQLException e1) {
+            logger.error("problem closing connection", e1);
+         }
+      }
+     
    }
    /**
     * @param app
