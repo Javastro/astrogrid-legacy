@@ -12,15 +12,11 @@ import org.astrogrid.community.User;
 import org.astrogrid.portal.common.user.UserHelper;
 import org.astrogrid.portal.login.common.SessionKeys;
 import org.astrogrid.portal.utils.acting.ActionUtils;
-
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.delegate.StoreClient;
-// import org.astrogrid.store.delegate.VoSpaceResolver;
-
-import org.astrogrid.filemanager.client.FileManagerDelegate ;
-import org.astrogrid.filemanager.resolver.FileManagerDelegateResolverImpl ;
-
+import org.astrogrid.store.delegate.StoreFile;
+import org.astrogrid.store.delegate.VoSpaceResolver;
 
 /**
  * Default implementation of <code>org.astrogrid.portal.myspace.acting.framework.ContextWrapper</code>.
@@ -36,14 +32,13 @@ public class ContextWrapperImpl implements ContextWrapper {
   private User user;
   private Ivorn ivorn;
   private Agsl agsl;
+  private StoreClient storeClient;
   
-  // private StoreClient storeClient;
-  private FileManagerDelegate fileManagerDelegate ;
-  
+  public static final String MYSPACE_CACHE = "myspace-cache";
+
   
   public ContextWrapperImpl(ActionUtils utils, Parameters params, Request request, Session session) 
   		throws MalformedURLException, IOException {
-      
     this.utils = utils;
     this.params= params;
     this.request = request;
@@ -51,21 +46,17 @@ public class ContextWrapperImpl implements ContextWrapper {
     
     try {
 	    // Set the current user.
-	    this.user = UserHelper.getCurrentUser(params, request, session);
+	    user = UserHelper.getCurrentUser(params, request, session);
 	    
       // Get the store client from the VOSpaceResolver.
-      this.ivorn = (Ivorn) utils.getAnyParameterObject(
+      ivorn = (Ivorn) utils.getAnyParameterObject(
           SessionKeys.IVORN,
           params, request, session);
 
-      //jl storeClient = VoSpaceResolver.resolveStore(user, ivorn);
-      
-      this.fileManagerDelegate = (new FileManagerDelegateResolverImpl()).resolve( ivorn ) ;
-      
+      storeClient = VoSpaceResolver.resolveStore(user, ivorn);
+
       // Set base AstroGrid storage location.
-      //jl agsl = storeClient.getEndpoint();
-      this.agsl =  new Agsl (ivorn.getPath() ) ;
-    
+      agsl = storeClient.getEndpoint();
     }
 	  catch(Throwable t) {
       throw new IOException("Could not create a valid context: " + t.getLocalizedMessage());
@@ -88,22 +79,8 @@ public class ContextWrapperImpl implements ContextWrapper {
     return agsl;
   }
   
-  public Ivorn getIvorn() throws IOException {
-      return ivorn ;
-    }
-  
   public StoreClient getStoreClient() {
-    //jl return storeClient;
-    return null ;
-  }
-  
-  /**
-   * Return the AstroGrid file manager delegate.
-   * 
-   * @return AstroGrid file manager delelgate
-   */
-  public FileManagerDelegate getFileManagerDelegate() {
-    return fileManagerDelegate ;
+    return storeClient;
   }
   
   public void setGlobalAttribute(String attribute, Object value) {
@@ -126,4 +103,29 @@ public class ContextWrapperImpl implements ContextWrapper {
     
     return result;
   }
+  
+  /**
+   * Return the cache of MySpace files for a user.
+   * 
+   * 
+   * @return <code>StoreFile</code> for a user
+   *n
+   */
+  public StoreFile getMySpaceCache() {
+      //JL: temporarilly removed caching...
+      return (StoreFile)null ;
+      // return (StoreFile)this.session.getAttribute( MYSPACE_CACHE ) ;
+  }
+  
+  
+  /**
+   * Set the cache of MySpace files for a user.
+   * 
+   * 
+   */
+  public void setMySpaceCache( StoreFile cache ) {
+      //JL: temporarilly removed caching...
+      // this.session.setAttribute( MYSPACE_CACHE, cache ) ;
+  }
+  
 }
