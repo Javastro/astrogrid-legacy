@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForWorkflow.java,v 1.9 2004/08/17 13:33:07 nw Exp $
+/*$Id: AbstractTestForWorkflow.java,v 1.10 2004/08/18 16:17:07 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,8 +30,11 @@ import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
+import org.apache.axis.utils.XMLUtils;
 import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
+import org.w3c.dom.Document;
 
 import java.io.StringReader;
 
@@ -119,6 +122,12 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
         softAssertTrue("Job failed to complete in expected time",completed);
         // check results.        
             Workflow result = jes.readJob(urn);
+            // dump workflow to output, so we can see whats been going on.
+            Document doc = XMLUtils.newDocument();
+            Marshaller.marshal(result,doc);
+            System.err.println("**********************************");
+            System.err.println(urn.toString());            
+            XMLUtils.PrettyDocumentToStream(doc,System.err);
             assertNotNull("null workflow returned", result);
             checkExecutionResults(result);
  
@@ -240,6 +249,9 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
 
 /* 
 $Log: AbstractTestForWorkflow.java,v $
+Revision 1.10  2004/08/18 16:17:07  nw
+added printout of workflow to system.err, so it gets picked up in tests.
+
 Revision 1.9  2004/08/17 13:33:07  nw
 added another helper method
 
