@@ -1,5 +1,5 @@
 /*
- * $Id: CeaDataService.java,v 1.1 2004/03/17 00:08:27 mch Exp $
+ * $Id: CeaDataService.java,v 1.2 2004/03/22 18:06:45 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,6 +11,7 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase;
 import org.astrogrid.applications.beans.v1.axis.ceabase._ApplicationList;
+import org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue;
 import org.astrogrid.applications.service.v1.cea.CeaFault;
 import org.astrogrid.applications.service.v1.cea.impl._returnRegistryEntryResponse_returnRegistryEntryReturn;
 import org.astrogrid.community.Account;
@@ -82,17 +83,23 @@ public class CeaDataService extends AxisDataServer implements org.astrogrid.appl
    public String execute(_tool parameters, JobIdentifierType jobId, String jobMonitor) throws RemoteException, CeaFault {
 
       //extract parameters from _tool
-      //p1.getInput().getParameter(0)
+      ParameterValue value = parameters.getInput().getParameter(0);
+      assert (value.getName().equals("Query"));
       Query query = new ConeQuery(30,30,6);
-      String format = QueryResults.FORMAT_VOTABLE;
-      String target = "myspace:http://vm05.astrogrid.org:8080/astrogrid-mySpace";
+      
+      value = parameters.getInput().getParameter(1);
+      assert (value.getName().equals("Format"));
+      String format = value.getValue();
+      
+      value = parameters.getInput().getParameter(2);
+      assert (value.getName().equals("Target"));
       
       Agsl resultsTarget;
       try {
-         resultsTarget = new Agsl(target);
+         resultsTarget = new Agsl(value.getValue());
       }
       catch (MalformedURLException mue) {
-         throw makeFault(true, "Invalid AGSL ("+target+") given for results target "+mue, mue);
+         throw makeFault(true, "Invalid AGSL ("+value.getValue()+") given for results target "+mue, mue);
       }
 
       URL monitorUrl = null;
@@ -134,6 +141,9 @@ public class CeaDataService extends AxisDataServer implements org.astrogrid.appl
 
 /*
 $Log: CeaDataService.java,v $
+Revision 1.2  2004/03/22 18:06:45  mch
+Added parameter extraction
+
 Revision 1.1  2004/03/17 00:08:27  mch
 Moved and renamed CeaDataService
 
