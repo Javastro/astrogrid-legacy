@@ -7,7 +7,7 @@
     xmlns:util="jelly:util"
     xmlns:doc="doc">
 
-  <!--Copy myself into parent project to create uberjar-->
+  <!--Copy myself into parent project to create uberwar-->
   <postGoal name="war:war">
         <jelly:set var="webapp.dir" value="${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
         <echo message="${webapp.dir}"/>
