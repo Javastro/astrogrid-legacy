@@ -44,10 +44,24 @@ public abstract class Activity {
         
     private Activity
         parent ;
-        
+     
+    /*
+     * An Activity requires a parent. so the default constructor is private.
+     * 
+     */   
     private Activity() {
     }
-        
+    
+    
+    /*
+     * An Activity requires:
+     * 
+     * (1) A parent. 
+     *     The exception is the Workflow, which is top of the Activity tree.
+     * 
+     * (2) A key unique within a Workflow.
+     * 
+     */    
     public Activity( Activity parent ) {
         if( TRACE_ENABLED ) trace( "Activity() entry") ; 
         
@@ -59,7 +73,8 @@ public abstract class Activity {
             if( TRACE_ENABLED ) trace( "Activity() exit") ; 
         }
         
-    }
+    } // end of Activity( Activity parent )
+    
 
 	public ActivityKey getKey() { return key; }
         
@@ -89,7 +104,7 @@ public abstract class Activity {
                 //     down into any children this element itself possesses.
                 // (2) We remove it from the current collection.
                 while( iterator.hasNext() ) {
-                    iterator.next().remove() ; 
+                    ((Activity)iterator.next()).remove() ; 
                     iterator.remove() ;
                 } // end while 
             
@@ -103,9 +118,16 @@ public abstract class Activity {
     } // end of remove()
     
     
+    /*
+     * To be overridden by ActivityContainer
+     */
     public ActivityIterator getChildren() { return null ; }
     
     
+    /*
+     * Attempts to walk up the Activity tree to find the Workflow,
+     * which is the top of the tree.
+     */
     public Workflow getWorkflow() {
         if( TRACE_ENABLED ) trace( "Activity.getWorkflow() entry") ;       
               
@@ -114,10 +136,16 @@ public abstract class Activity {
               
         try {
             
+            // If this gets invoked on a Workflow, 
+            // we are already at the top of the tree...
             if( this instanceof Workflow ) {
                 workflow = (Workflow)this ;
             }
             else {
+                
+                // Walk up the tree, stopping when
+                // the Activity has no parent, which
+                // is the marker for Workflow...
                    
                 Activity
                      parent = this.getParent(),
@@ -125,16 +153,21 @@ public abstract class Activity {
                  
                 while( parent != null ) {
                      workflowCandidate = parent ;
-                     parent = this.getParent() ;
+                     parent = parent.getParent() ;
                  }
              
-                 workflow = (Workflow)workflowCandidate ;
-                 
+                 if( workflowCandidate instanceof Workflow ) {
+                     workflow = (Workflow)workflowCandidate ;
+                 }
+                 else {
+                     debug( "Integrity failure in Activity tree") ;
+                 }
+                                    
             }
 
         }
         catch( Exception ex ) {
-            debug( "Exception: " + ex.getLocalizedMessage() ) ;
+            ex.printStackTrace() ;
         }
         finally {
             if( TRACE_ENABLED ) trace( "Activity.getWorkflow() exit") ;       
@@ -145,15 +178,26 @@ public abstract class Activity {
     } // end of getWorkflow()
     
     
+    /*
+     * Returns relative postion of a child within its parent container
+     */
     public int getIndex() {
         return ( (ActivityContainer)this.getParent() ).getIndex( this ) ;
     }
     
+    
+    /*
+     * Alters the relative postion of a child within its parent container.
+     * NB: This will alter the position of other children of the same
+     *     container.
+     */
     public void setIndex( int index ) {
         ( (ActivityContainer)this.getParent() ).setIndex( index, this ) ;
     }
     
+    
     public abstract String toXMLString() ;
+    
     
     private static void trace( String traceString ) {
         System.out.println( traceString ) ;

@@ -199,6 +199,7 @@ public abstract class ActivityContainer extends Activity {
           
     } // end of toXMLString()
     
+    
     private static void trace( String traceString ) {
         System.out.println( traceString ) ;
         // logger.debug( traceString ) ;

@@ -15,6 +15,8 @@ import java.util.HashMap ;
 import java.util.ListIterator;
 import java.util.Map ;
 import java.util.Collections ;
+import java.util.Vector ;
+import java.util.Iterator ;
 import java.text.MessageFormat ;
 import java.io.InputStream ;
 import org.xml.sax.* ;
@@ -80,7 +82,7 @@ import org.w3c.dom.Document ;
  */
 public class Workflow extends Activity {
 	
-	private static String oneStepSequenceTemplate = 		"<?xml version='1.0' encoding='UTF8'?>" +
+	private static final String oneStepSequenceTemplate = 		"<?xml version='1.0' encoding='UTF8'?>" +
 		"<!-- | Workflow Template contains a sequence of one step =================================================== -->" +
         "<workflow name = 'OneStepJob' templateName='oneStepJob'>" +
         "<userid>userid</userid>" +
@@ -94,7 +96,7 @@ public class Workflow extends Activity {
         "</sequence>" +
         "</workflow>" ;
         
-	private static String twoStepSequenceTemplate =
+	private static final String twoStepSequenceTemplate =
 		"<?xml version='1.0' encoding='UTF8'?>" +
         "<!-- | Workflow Template contains a sequence of two steps ==================================================== -->" +
         "<workflow name = 'TwoSequentialJobsteps' templateName='twoStepSequence'>" +
@@ -113,7 +115,7 @@ public class Workflow extends Activity {
         "</sequence>" +
         "</workflow>" ; 
         
-    private static String twoStepFlowTemplate = 
+    private static final String twoStepFlowTemplate = 
         "<?xml version='1.0' encoding='UTF8'?>" +
         "<!-- | Workflow Template contains a flow of two steps ================================================ -->" +
         "<workflow name = 'TwoParallelJobsteps' templateName='twoStepFlow'>" +
@@ -198,8 +200,7 @@ public class Workflow extends Activity {
              debug( "Created successfully" ) ;
              Document doc = XMLUtils.newDocument(source) ;
              debug(" doc created!" ) ;
-             workflow = new Workflow( doc ) ;
-//			 workflow = new Workflow( XMLUtils.newDocument(source) ) ;             
+             workflow = new Workflow( doc ) ;            
              debug("success") ;  
               
              workflow.setUserid( userid) ;
@@ -219,28 +220,44 @@ public class Workflow extends Activity {
         
      } // end createWorkflowFromTemplate()
     
-    
-    
-    
-        
-        
+          
     public static Workflow readWorkflow( String userid, String community, String name ) {
         if( TRACE_ENABLED ) trace( "Workflow.readWorkflow() entry") ; 
         
         Workflow
             workflow = null;
+        StringBuffer
+            pathBuffer = new StringBuffer( 64 ) ;
+        String
+            xmlString = null ;
          
         try {
-            String
-               sourceString = MySpaceHelper.readWorkflow(  userid, community, name ) ; 
+            
+            MySpaceManagerDelegate
+                mySpace = new MySpaceManagerDelegate( WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ) ;
                 
+            pathBuffer
+                .append( "/")
+                .append( workflow.getUserid() )
+//                .append( "/")
+//                .append( workflow.getCommunity() )
+                .append( "/")
+                .append( "serv1")
+                .append( "workflow")
+                .append( workflow.getName() ) ;
+            
+            xmlString = mySpace.getDataHolding( workflow.getUserid()
+                                              , workflow.getCommunity()
+                                              , pathBuffer.toString() ) ;                      
+
             InputSource
-               source = new InputSource( new StringReader( retrieveTemplate(sourceString) ) );
+               source = new InputSource( new StringReader( xmlString ) );
                          
             workflow = new Workflow( XMLUtils.newDocument(source) ) ;
       
         }
         catch ( Exception ex ) {
+            ex.printStackTrace() ;
         }
         finally {
             if( TRACE_ENABLED ) trace( "Workflow.readWorkflow() exit") ; 
@@ -248,7 +265,7 @@ public class Workflow extends Activity {
        
         return workflow ;
         
-    }
+    } // end of readWorkflow() 
     
     
     public static boolean deleteWorkflow( String userid, String community, String name  ) {
@@ -256,14 +273,33 @@ public class Workflow extends Activity {
         
         boolean
             retValue = true ;
+        StringBuffer
+            pathBuffer = new StringBuffer( 64 ) ;       
          
         try {
             
-            MySpaceHelper.deleteWorkflow(  userid, community, name ) ; 
+            MySpaceManagerDelegate
+               mySpace = new MySpaceManagerDelegate( WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ) ;
+                
+           pathBuffer
+               .append( "/")
+               .append( userid )
+//               .append( "/")
+//               .append( workflow.getCommunity() )
+               .append( "/")
+               .append( "serv1")
+               .append( "/")               
+               .append( "workflow")
+               .append( "/")
+               .append( name ) ;
+            
+           mySpace.deleteDataHolding( userid
+                                    , community
+                                    , pathBuffer.toString() ) ;                      
 
         }
         catch( Exception ex ) {
-            debug( "Exception" ) ;
+            ex.printStackTrace() ;
         }
         finally {
             if( TRACE_ENABLED ) trace( "Workflow.deleteWorkflow() exit") ; 
@@ -271,22 +307,33 @@ public class Workflow extends Activity {
         
         return retValue ;
         
-    }
+    } // end of deleteWorkflow()
     
     
     public static boolean saveWorkflow( Workflow workflow ) {
         if( TRACE_ENABLED ) trace( "Workflow.saveWorkflow() entry") ; 
         
      boolean
-         retValue = true ;
+         retValue = false ;
+     String
+         xmlWorkflow = null,
+         filePath = null ;         
          
      try {
         
-         MySpaceHelper.saveWorkflow( workflow ) ;
-               
+        MySpaceManagerDelegate
+            mySpace = new MySpaceManagerDelegate( WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ) ;
+            
+        mySpace.saveDataHolding( workflow.getUserid()
+                                , workflow.getCommunity()
+                                , workflow.getName()        // file name
+                                , workflow.toXMLString()    // file contents
+                                , "WF"                      // it's a workflow
+                                , "Overwrite" ) ;           // overwrite it if it already exists
+                        
      }
      catch( Exception ex ) {
-         debug( "Exception" ) ;
+         ex.printStackTrace() ;
      }
      finally {
          if( TRACE_ENABLED ) trace( "Workflow.saveWorkflow() exit") ; 
@@ -297,17 +344,46 @@ public class Workflow extends Activity {
     } // end of saveWorkflow()
     
     
-    //JBL Note: Is this a misnomer on my part? Should we be attempting this? Is it required?  
-    public static ListIterator readWorkflowList( String userid, String community, String name) {
+    /*
+     * At present this returns just an Iterator of string Objects representing the names
+     * of the files.
+     */
+    public static Iterator readWorkflowList( String userid, String community, String name) {
         if( TRACE_ENABLED ) trace( "Workflow.readWorkflowList() entry") ; 
         
-            ListIterator
-                iterator = null;
+            Iterator
+                iterator = null ;
+            java.util.Vector
+                vector = null ;
+            StringBuffer
+                argumentBuffer = new StringBuffer( 64 ) ;
          
             try {
-               iterator = MySpaceHelper.readWorkflowList(  userid, community ) ;       
+                
+                MySpaceManagerDelegate
+                    mySpace = new MySpaceManagerDelegate( WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ) ;
+                
+                argumentBuffer
+                    .append( "/")
+                    .append( userid )
+//                  .append( "/")
+//                  .append( workflow.getCommunity() )
+                    .append( "/")
+                    .append( "serv1")
+                    .append( "/" )
+                    .append( "workflow")
+                    .append( "/")
+                    .append( "*" ) ;
+            
+                vector = mySpace.listDataHoldings( userid
+                                                 , community
+                                                 , argumentBuffer.toString() ) ;
+                                                 
+                iterator = vector.iterator() ;  
+                          
             }
             catch ( Exception ex ) {
+                ex.printStackTrace() ;
             }
             finally {
                if( TRACE_ENABLED ) trace( "Workflow.readWorkflowList() exit") ; 
