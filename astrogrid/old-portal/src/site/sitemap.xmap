@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/Attic/sitemap.xmap,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/04 09:47:34 $</cvs:author>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/04 11:59:22 $</cvs:author>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     | $Log: sitemap.xmap,v $
+    | Revision 1.4  2003/06/04 11:59:22  dave
+    | Updated site directory structure
+    |
     | Revision 1.3  2003/06/04 09:47:34  dave
     | Updated sitemap to match directory changes
     |
@@ -65,19 +68,22 @@
 		<map:pipeline>
 
 <!-- New sitemap pipelines -->
-			<!-- SOAP echo servivce -->
+
+			<!-- SOAP echo service -->
 			<map:match pattern="soap/service/echo">
 				<!-- Generate XML from the SOAP request -->
 				<map:generate  src="soap/generator/soap-request.xsp" type="serverpages"/>
+				<!-- Transform the request into the response -->
+				<map:transform src="soap/services/echo/echo-soap.xsl"/>
 				<!-- Wrap the response in a SOAP envelope -->
 				<map:transform src="soap/generator/soap-envelope.xsl"/>
 				<!-- Serialize as XML -->
 				<map:serialize type="xml"/>
 			</map:match>
 
-			<!-- SOAP message test -->
-			<map:match pattern="soap/test/message">
-				<map:generate  src="soap/services/message/message-test.xsp" type="serverpages"/>
+			<!-- SOAP echo test -->
+			<map:match pattern="soap/test/echo">
+				<map:generate  src="soap/services/echo/echo-test.xsp" type="serverpages"/>
 				<map:transform src="util/html/xml-html.xsl"/>
 				<map:serialize type="html"/>
 			</map:match>
@@ -101,6 +107,26 @@
 				<map:serialize type="html"/>
 			</map:match>
 
+			<!-- SOAP message servivce -->
+			<map:match pattern="soap/service/message">
+				<!-- Generate XML from the SOAP request -->
+				<map:generate  src="soap/generator/soap-request.xsp" type="serverpages"/>
+				<!-- Transform the request into the response -->
+				<map:transform src="soap/services/message/message-soap.xsl"/>
+				<!-- Wrap the response in a SOAP envelope -->
+				<map:transform src="soap/generator/soap-envelope.xsl"/>
+				<!-- Serialize as XML -->
+				<map:serialize type="xml"/>
+			</map:match>
+
+			<!-- SOAP message test -->
+			<map:match pattern="soap/test/message">
+				<map:generate  src="soap/services/message/message-test.xsp" type="serverpages"/>
+				<map:transform src="util/html/xml-html.xsl"/>
+				<map:serialize type="html"/>
+			</map:match>
+
+
 
 
 
@@ -117,8 +143,9 @@
 			</map:match>
 			<!-- Initial home page -->
 			<map:match pattern="home*">
-				<map:generate  src="xml/hello.xml"/>
-				<map:transform src="xsl/table-layout.xsl"/>
+				<map:generate  src="home/hello.xml"/>
+				<map:transform src="treeview/styles/tree-navigation.xsl"/>
+				<map:transform src="home/styles/table-layout.xsl"/>
 				<map:serialize type="html"/>
 			</map:match>
 

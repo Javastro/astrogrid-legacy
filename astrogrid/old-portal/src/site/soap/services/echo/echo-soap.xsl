@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <!--
-<cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/soap/services/calc/Attic/calc-soap.xsl,v $</cvs:source>
+<cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/soap/services/echo/Attic/echo-soap.xsl,v $</cvs:source>
 <cvs:date>$Author: dave $</cvs:date>
 <cvs:author>$Date: 2003/06/04 11:59:22 $</cvs:author>
-<cvs:version>$Revision: 1.2 $</cvs:version>
+<cvs:version>$Revision: 1.1 $</cvs:version>
 <cvs:log>
-	$Log: calc-soap.xsl,v $
-	Revision 1.2  2003/06/04 11:59:22  dave
+	$Log: echo-soap.xsl,v $
+	Revision 1.1  2003/06/04 11:59:22  dave
 	Updated site directory structure
 
 	Revision 1.1  2003/06/04 09:12:05  dave
@@ -23,7 +23,6 @@
 <xsl:stylesheet
 	version="1.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	xmlns:calc="astrogrid:soap/calc"
 	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
 	>
 
@@ -32,40 +31,9 @@
 	    +-->
 	<xsl:template match="request">
 		<response>
-			<xsl:apply-templates/>
+			<!-- Include a copy of the request -->
+			<xsl:call-template name="tree-copy"/>
 		</response>
-	</xsl:template>
-
-	<!--+
-	    | Match and skip the soap envelope ...
-	    +-->
-	<xsl:template match="soapenv:*">
-		<xsl:comment>Processing SOAP element</xsl:comment>
-		<xsl:apply-templates/>
-	</xsl:template>
-
-	<!--+
-	    | Match and skip the request headers ...
-	    +-->
-	<xsl:template match="headers">
-		<xsl:comment>Processing request headers</xsl:comment>
-	</xsl:template>
-
-	<!--+
-	    | Match the request content ...
-	    +-->
-	<xsl:template match="content">
-		<xsl:comment>Processing request content</xsl:comment>
-		<xsl:apply-templates/>
-	</xsl:template>
-
-	<!--+
-	    | Match the calculation call and generate our result.
-	    +-->
-	<xsl:template match="calc:add">
-		<xsl:value-of select="i1"/>
-		<xsl:text>+</xsl:text>
-		<xsl:value-of select="i2"/>
 	</xsl:template>
 
 	<!-- Recursive copy of request tree -->

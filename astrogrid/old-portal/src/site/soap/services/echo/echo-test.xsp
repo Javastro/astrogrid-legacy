@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--+
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/soap/services/message/Attic/message-test.xsp,v $</cvs:source>
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/soap/services/echo/Attic/echo-test.xsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
     | <cvs:author>$Date: 2003/06/04 11:59:22 $</cvs:author>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
     | <cvs:log>
-    | $Log: message-test.xsp,v $
-    | Revision 1.2  2003/06/04 11:59:22  dave
+    | $Log: echo-test.xsp,v $
+    | Revision 1.1  2003/06/04 11:59:22  dave
     | Updated site directory structure
     |
     | Revision 1.1  2003/06/04 09:12:05  dave
@@ -32,7 +32,7 @@
     | 
     | </cvs:log>
     | 
-    | XSP page to call the Message service in the Axis examples and our Cocoon mockup.
+    | XSP page to call the Calculator service in the Axis examples and our Cocoon mockup.
     | 
     +-->
 <xsp:page language="java"
@@ -55,33 +55,11 @@
 			<![CDATA[
 			]]>
 		</xsp:logic>
-		<!-- Test the calculator services ... -->
-		<test>
-			<xsp:comment>Test SOAP call to Axis service</xsp:comment>
-			<soap:call url="http://localhost:8080/axis/services/MessageService">
-				<test:message xmlns:test="astrogrid:soap/message">
-					<element ident="A">
-						<element ident="B">
-							<element ident="C">
-								Some text ....
-							</element>
-						</element>
-					</element>
-				</test:message>
-			</soap:call>
-		</test>
+		<!-- Test the echo service ... -->
 		<test>
 			<xsp:comment>Test SOAP call to Cocoon service</xsp:comment>
-			<soap:call url="http://localhost:8080/cocoon/astrogrid/soap/service/message">
-				<test:message xmlns:test="astrogrid:soap/message">
-					<element ident="A">
-						<element ident="B">
-							<element ident="C">
-								Some text ....
-							</element>
-						</element>
-					</element>
-				</test:message>
+			<soap:call url="http://localhost:8080/cocoon/astrogrid/soap/service/echo">
+				<params/>
 			</soap:call>
 		</test>
 	</page>
