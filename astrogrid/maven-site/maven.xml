@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!-- extension maven script -->
+<project>
+	<!-- astrogrid goals for nightly build -->
+	<goal name="astrogrid-clean" prereqs="clean"/>
+	<goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
+		<attainGoal name="site:fsdeploy"/>
+	</goal>
+	<goal name="astrogrid-build-site">
+		<attainGoal name="site"/>
+	</goal>
+	<goal name="astrogrid-deploy-snapshot">
+		<echo message="nothing to do"/>
+	</goal>
+	<goal name="astrogrid-build-snapshot">
+		<echo message="nothing to do"/>
+	</goal>
+	<goal name="astrogrid-install-snapshot">
+		<echo message="nothing to do"/>
+	</goal>
+	<goal name="astrogrid-deploy-artifact">
+		<echo message="nothing to do"/>
+	</goal>
+	<goal name="astrogrid-build-artifact">
+		<echo message="nothing to do"/>
+	</goal>
+	<goal name="astrogrid-install-artifact">
+		<echo message="nothing to do"/>
+	</goal>
+</project>
