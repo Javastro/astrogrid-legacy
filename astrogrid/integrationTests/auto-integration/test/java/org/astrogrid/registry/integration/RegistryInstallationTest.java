@@ -1,4 +1,4 @@
-/*$Id: RegistryInstallationTest.java,v 1.4 2004/05/07 15:32:36 pah Exp $
+/*$Id: RegistryInstallationTest.java,v 1.5 2004/07/26 15:03:56 KevinBenson Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,7 +43,8 @@ public class RegistryInstallationTest extends RegistryBaseTestCase {
     }
     
     public void testRoot() throws Exception {
-        Document doc = delegate.loadRegistryDOM();
+        //Document doc = delegate.loadRegistryDOM();
+       Document doc = delegate.loadRegistry();
         assertNotNull(doc);
         XMLUtils.PrettyDocumentToStream(doc,System.out);
     }
@@ -67,6 +68,9 @@ public class RegistryInstallationTest extends RegistryBaseTestCase {
 
 /* 
 $Log: RegistryInstallationTest.java,v $
+Revision 1.5  2004/07/26 15:03:56  KevinBenson
+*** empty log message ***
+
 Revision 1.4  2004/05/07 15:32:36  pah
 more registry tests to flush out the fact that new entries are not being added
 
