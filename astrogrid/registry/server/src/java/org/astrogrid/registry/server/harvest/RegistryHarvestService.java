@@ -97,7 +97,23 @@ public class RegistryHarvestService {
 
       //Okay update this one resource entry.
       //ras.updateResource(resource);
-      beginHarvest(resource,dt);
+      NodeList nl = resource.getElementsByTagNameNS("*","Resource");
+      for(int i = 0; i < nl.getLength();i++) {
+          Element elem = (Element) nl.item(i);
+          /*
+          if(dt != null) {
+              //Document statDoc = qdb.getResource("statv"+versionNumber,RegistryServerHelper.getIdentifier(elem));
+              //String dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
+              //Date dt = new Date(Long.parseLong(dateString));
+              //harvestResource(elem,dt);
+              beginHarvest(elem,dt);
+          }else {
+              //harvestResource(elem,null);
+              beginHarvest(elem,null);
+          }//else
+          */   
+          beginHarvest(elem,null);          
+      }
       log.info("exiting harvestResource");
       log.debug("end harvestResource");
       return null;
@@ -116,20 +132,28 @@ public class RegistryHarvestService {
       String xqlQuery = null;
       String ident = null;
 
-      String versionNumber = conf.getString("org.astrogrid.registry.version");
-      String collectionName = "astrogridv" + versionNumber;
+      String versionNumber = null;
+      //String collectionName = "astrogridv" + versionNumber;
+      String collectionName = "";
       QueryDBService qdb = new QueryDBService();
+      //instantiate the Admin service that contains the update methods.
+      RegistryAdminService ras = new RegistryAdminService();      
       try {
           if(onlyRegistries) {
              //query for all the Registry types which should be all of them with an xsi:type="RegistryType"
-             xqlQuery = "declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.9\"; //vr:Resource[@xsi:type='RegistryType']";
+             //xqlQuery = "declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.9\"; //vr:Resource[@xsi:type='RegistryType']";
+             xqlQuery = "//*:Resource[@xsi:type='RegistryType']";
              harvestDoc = qdb.runQuery(collectionName,xqlQuery);
-             System.out.println("The harvestDoc = " + DomHelper.DocumentToString(harvestDoc));
+             //System.out.println("The harvestDoc = " + DomHelper.DocumentToString(harvestDoc));
+             if(harvestDoc != null) {
+                 ras.updateNoCheck(harvestDoc);
+             }               
              log.info("try just the Resource");
              NodeList nl = harvestDoc.getElementsByTagNameNS("*","Resource");
              log.info("Harvest All found this number of resources = " + nl.getLength());
              for(int i = 0; i < nl.getLength();i++) {
                Element elem = (Element) nl.item(i);
+               versionNumber = RegistryServerHelper.getRegistryVersionFromNode(elem);
                if(useDates) {
                   Document statDoc = qdb.getResource("statv"+versionNumber,RegistryServerHelper.getIdentifier(elem));
                   String dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
@@ -143,12 +167,17 @@ public class RegistryHarvestService {
              }//for
           }else {
             //query all Registry Types for Webbrowser or WebService interface
-             xqlQuery = "declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.9\"; //vr:Resource[vr:Interface/vr:Invocation='WebBrowser' or vr:Interface/vr:Invocation='WebService']";
+             //xqlQuery = "declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.9\"; //vr:Resource[vr:Interface/vr:Invocation='WebBrowser' or vr:Interface/vr:Invocation='WebService']";
+             xqlQuery = "//*:Resource[*:/Interface/*:AccessURL]";
              harvestDoc = qdb.runQuery(collectionName,xqlQuery);
+             if(harvestDoc != null) {
+                 ras.updateNoCheck(harvestDoc);
+             }             
              //NodeList nl = DomHelper.getNodeListTags(harvestDoc,"Resource","vr");
              NodeList nl = harvestDoc.getElementsByTagNameNS("*","Resource");
              for(int i = 0; i < nl.getLength();i++) {
                Element elem = (Element) nl.item(i);
+               versionNumber = RegistryServerHelper.getRegistryVersionFromNode(elem);
                if(useDates) {
                   Document statDoc = qdb.getResource("statv"+versionNumber,RegistryServerHelper.getIdentifier(elem));
                   String dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
@@ -161,6 +190,7 @@ public class RegistryHarvestService {
                }//else
              }//for
           }
+
       }catch(ParserConfigurationException pce) {
       	throw new RegistryException(pce);
       }catch(IOException ioe) {
@@ -263,17 +293,22 @@ private class HarvestThread extends Thread {
                        (typeAttribute.getNodeValue().equals("RegistryType"));
  //   System.out.println("RegistryType attribute =" + isRegistryType);
 
-      nl = ((Element) resource).getElementsByTagName("AccessURL");
+      nl = ((Element) resource).getElementsByTagNameNS("*","AccessURL");
       if(nl.getLength() == 0) {
-        nl = ((Element) resource).getElementsByTagName("vr:AccessURL");
+          nl = ((Element) resource).getElementsByTagNameNS("*","accessURL");
       }
       accessURL = nl.item(0).getFirstChild().getNodeValue();
 
-      nl = ((Element) resource).getElementsByTagName("Invocation");
+      nl = ((Element) resource).getElementsByTagNameNS("*","Invocation");
       if(nl.getLength() == 0) {
-        nl = ((Element) resource).getElementsByTagName("vr:Invocation");
+          //Need to look for interface here.
+        //nl = ((Element) resource).getElementsByTagName("vr:Invocation");
+          nl = ((Element) resource).getElementsByTagNameNS("*","interface");
+          typeAttribute = resource.getAttributes().getNamedItem("xsi:type");
+          invocationType = typeAttribute.getNodeValue();
+      } else {
+          invocationType = nl.item(0).getFirstChild().getNodeValue();
       }
-      invocationType = nl.item(0).getFirstChild().getNodeValue();
 
 //    accessURL = DomHelper.getNodeTextValue((Element)resourceList.item(i),"AccessURL","vr");
 //    invocationType = DomHelper.getNodeTextValue((Element)resourceList.item(i),"Invocation","vr");

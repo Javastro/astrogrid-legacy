@@ -42,8 +42,8 @@ public class RegistryServerHelper {
    
    private static HashMap manageAuthorities = null;
    
-   private static HashMap otherManagedAuths = null;   
-   
+   private static HashMap otherManagedAuths = null;
+      
    /**
     * conf - Config variable to access the configuration for the server normally
     * jndi to a config file.
@@ -99,7 +99,6 @@ public class RegistryServerHelper {
    public static String getXQLDeclarations(String versionNumber) {
        versionNumber = versionNumber.replace('.','_');
        String declarations = conf.getString("declare.namespace." + versionNumber,"");
-       //System.out.println("the getXQLDeclarations = " + declarations);
        return declarations;
    }
    
@@ -200,18 +199,18 @@ public class RegistryServerHelper {
    
    public static HashMap getOtherManagedAuthorities(String collectionName,String regVersion)  throws SAXException, MalformedURLException, ParserConfigurationException, IOException {
        log.debug("start getOtherManagedAuthorities");
-       if(otherManagedAuths == null || otherManagedAuths.size() <= 0) {
+       //if(otherManagedAuths == null || otherManagedAuths.size() <= 0) {
            processManagedAuthorities(collectionName, regVersion);   
-       }
+       //}
        log.debug("end getOtherManagedAuthorities");
        return otherManagedAuths;            
    }
    
    public static HashMap getManagedAuthorities(String collectionName,String regVersion)  throws SAXException, MalformedURLException, ParserConfigurationException, IOException {
        log.debug("start getManagedAuthorities");
-       if(manageAuthorities == null || manageAuthorities.size() <= 0) {
+       //if(manageAuthorities == null || manageAuthorities.size() <= 0) {
            processManagedAuthorities(collectionName, regVersion);   
-       }
+       //}
        log.debug("end getManagedAuthorities");
        return manageAuthorities;            
     }
@@ -227,19 +226,19 @@ public class RegistryServerHelper {
                          " for $x in //vr:Resource where @xsi:type='RegistryType'" +
                          " return $x";
        Document registries = qdb.runQuery(collectionName,xqlQuery);
-       System.out.println("the result of processManaged registries = " + DomHelper.DocumentToString(registries));
+       //System.out.println("the result of processManaged registries = " + DomHelper.DocumentToString(registries));
        NodeList resources = registries.getElementsByTagNameNS("*","Resource");
        HashMap tempHash = new HashMap();
        boolean sameRegistry = false;
        String regAuthID = conf.getString("org.astrogrid.registry.authorityid");
        String val = null;       
-       System.out.println("in processManagedAuthorities the regAuthID = " + regAuthID);
+       //System.out.println("in processManagedAuthorities the regAuthID = " + regAuthID);
        for(int j = 0;j < resources.getLength();j++) {
            NodeList mgList = ((Element)resources.item(j)).getElementsByTagNameNS("*","ManagedAuthority");
            for(int i = 0;i < mgList.getLength();i++) {
                val = mgList.item(i).getFirstChild().getNodeValue();
                tempHash.put(val,null);
-               System.out.println("the mgList val = " + val);
+               //System.out.println("the mgList val = " + val);
                if(val != null && regAuthID.equals(val.trim()))
                    sameRegistry = true;
            }//for

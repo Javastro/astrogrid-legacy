@@ -208,8 +208,12 @@ public class RegistryAdminService {
       
       //get All the Managed Authorities, the getManagedAutories() does not
       //perform a query every time only once.
+      HashMap versionManaged = null;
+      HashMap versionOtherManaged = null;
       try {
-         manageAuths = RegistryServerHelper.getManagedAuthorities(collectionName, versionNumber);
+         //manageAuths = RegistryServerHelper.getManagedAuthorities(collectionName, versionNumber);
+          versionManaged = RegistryServerHelper.getManagedAuthorities(collectionName, versionNumber);
+          manageAuths.put(versionNumber,versionManaged);
       }catch(SAXException se) {
          //throw new AxisFault("Could not parse xml for getting the Managed Authorities", se);
       }catch(MalformedURLException me) {
@@ -223,7 +227,9 @@ public class RegistryAdminService {
       //get All the Managed Authorities, the getOtherManagedAutories() does not
       //perform a query every time only once.
       try {
-         otherAuths = RegistryServerHelper.getOtherManagedAuthorities(collectionName, versionNumber);
+         //otherAuths = RegistryServerHelper.getOtherManagedAuthorities(collectionName, versionNumber);
+          versionOtherManaged = RegistryServerHelper.getOtherManagedAuthorities(collectionName, versionNumber);
+          otherAuths.put(versionNumber,versionOtherManaged);
       }catch(SAXException se) {
          //throw new AxisFault("Could not parse xml for getting the Managed Authorities", se);
       }catch(MalformedURLException me) {
@@ -233,6 +239,18 @@ public class RegistryAdminService {
       }catch(IOException ioe) {
          //  throw new AxisFault("IO problem", ioe);   
       }
+      
+      if(manageAuths.get(versionNumber) == null) {
+          //okay this must be the very first time into the registry where
+          //registry is empty. So put a an empty entry for this version.
+          manageAuths.put(versionNumber,null);
+      }
+      if(otherAuths.get(versionNumber) == null) {
+          //okay this must be the very first time into the registry where
+          //registry is empty. So put a an empty entry for this version.
+          otherAuths.put(versionNumber,null);
+      }
+      
       
       ArrayList al = new ArrayList();
       String xql = null;
@@ -245,9 +263,7 @@ public class RegistryAdminService {
       boolean addManageError = false;
       String manageNodeVal = null;
       
-      log.info("here is the nl length = " + nl.getLength() + 
-               " and manauths size = " + manageAuths.size() + 
-               " and otherAuths size = " + otherAuths.size());
+      log.info("here is the nl length = " + nl.getLength());
       
       final int resourceNum = nl.getLength();
       //go through the various resource entries.
@@ -291,7 +307,8 @@ public class RegistryAdminService {
                   //see if we manage this authority id
                   //if we do then update it in the db.
          //doe we manage this authority id, if so then add the resource.
-         if(manageAuths.containsKey(ident)) {
+         if(manageAuths.get(versionNumber) != null &&
+            ((HashMap)manageAuths.get(versionNumber)).containsKey(ident)) {
             //Essentially chop off other elemens wrapping the Resource element, and put
             //our own element. Would have been nice just to store the Resource element
             //at the root level, but it seems the XQueries on the database have problems
@@ -330,7 +347,7 @@ public class RegistryAdminService {
                   "Checking NodeVal for an authorityType: current NodeVal = " 
                   + nodeVal);
                   //check if it is a registry type.
-                  if(nodeVal != null && nodeVal.indexOf("RegistryType") != -1)
+                  if(nodeVal != null && nodeVal.indexOf("Registry") != -1)
                   {
                      addManageError = false;
                      log.info("This is an RegistryType");
@@ -351,29 +368,31 @@ public class RegistryAdminService {
                      }
                      NodeList manageList = getManagedAuthorities(currentResource);                     
                      if(authorityID.equals(ident)) {
-                        manageAuths.put(ident,null);
+                        ((HashMap)manageAuths.get(versionNumber)).put(ident,null);
                         for(int k = 0;k < manageList.getLength();k++) {
                             manageNodeVal = manageList.item(k).getFirstChild().getNodeValue();
                             if(manageNodeVal != null && manageNodeVal.trim().length() > 0) {
-                                manageAuths.put(manageNodeVal,null);
+                                ((HashMap)manageAuths.get(versionNumber)).put(manageNodeVal,null);
                             }//if
                         }//for
                      }else {
-                        otherAuths.put(ident,null);
+                        ((HashMap)otherAuths.get(versionNumber)).put(ident,null);
                         for(int k = 0;k < manageList.getLength();k++) {
                             manageNodeVal = manageList.item(k).getFirstChild().getNodeValue();
                             if(manageNodeVal != null && manageNodeVal.trim().length() > 0) {
-                                otherAuths.put(manageNodeVal,null);
+                                ((HashMap)otherAuths.get(versionNumber)).put(manageNodeVal,null);
                             }//if
                         }//for
                      }
                   }else if(nodeVal != null && 
-                           nodeVal.indexOf("AuthorityType") != -1)
+                           nodeVal.indexOf("Authority") != -1)
                   {
                      // Okay it is an AuthorityType and if no other registries 
                      // manage this authority then we can place it in this 
                      // registry as a new managed authority.
-                     if(!otherAuths.containsKey((String)ident)) {
+                     if(otherAuths.get(versionNumber) == null ||
+                        (otherAuths.get(versionNumber) != null &&
+                        !((HashMap)otherAuths.get(versionNumber)).containsKey((String)ident))) {
                         log.info(
                         "This is an AuthorityType and not managed by other authorities");
                         addManageError = false;
@@ -457,7 +476,7 @@ public class RegistryAdminService {
                            //                            versionNumber,tempIdent,
                            //                            elem);
                            // reset our hashmap of the managed authorities.
-                           manageAuths.put(ident,null);
+                           ((HashMap)manageAuths.get(versionNumber)).put(ident,null);
                         }else {
                            log.error("Removing child - but somehow the Registries" +
                                      " main RegistryType has no ManagedAuthority");
@@ -695,7 +714,7 @@ public class RegistryAdminService {
                  Node attrNode = nnm.item(j);
                  String nodeVal = attrNode.getNodeValue();
                  //check if it is a registry type.
-                 if(nodeVal != null && nodeVal.indexOf("RegistryType") != -1)
+                 if(nodeVal != null && nodeVal.indexOf("Registry") != -1)
                  {
                     log.info("A RegistryType in updateNoCheck add stats");
                     //update this registry resource into our registry.
@@ -710,12 +729,12 @@ public class RegistryAdminService {
                        throw new AxisFault("IO problem", ioe);
                     }//try
                     if(otherAuths != null) {
-                       otherAuths.put(ident,null);
+                       ((HashMap)otherAuths.get(versionNumber)).put(ident,null);
                        NodeList manageList = getManagedAuthorities(currentResource);
                        for(int k = 0;k < manageList.getLength();k++) {
                            String manageNodeVal = manageList.item(k).getFirstChild().getNodeValue();
                            if(manageNodeVal != null && manageNodeVal.trim().length() > 0) {
-                               otherAuths.put(manageNodeVal,null);
+                               ((HashMap)otherAuths.get(versionNumber)).put(manageNodeVal,null);
                            }
                        }
                     }//if
@@ -805,10 +824,15 @@ public class RegistryAdminService {
     */
    private String getAuthorityID(Element doc) {
       NodeList nl = doc.getElementsByTagNameNS("*","Identifier" );
-      if(nl.getLength() == 0)
-          return null;
-      NodeList authNodeList = ((Element)nl.item(0)).getElementsByTagNameNS("*","AuthorityID");
       String val = null;
+      if(nl.getLength() == 0) {
+          nl = doc.getElementsByTagNameNS("*","identifier" );
+          if(nl.getLength() == 0)
+              return null;
+      }
+    
+      NodeList authNodeList = ((Element)nl.item(0)).getElementsByTagNameNS("*","AuthorityID");
+      
       if(authNodeList.getLength() == 0) {
           val = nl.item(0).getFirstChild().getNodeValue();
           if(val.indexOf("/") != -1) 
@@ -827,8 +851,11 @@ public class RegistryAdminService {
     */  
    private String getResourceKey(Element doc) {
        NodeList nl = doc.getElementsByTagNameNS("*","Identifier" );
-       if(nl.getLength() == 0)
-           return null;
+       if(nl.getLength() == 0) {
+           nl = doc.getElementsByTagNameNS("*","identifier" );
+           if(nl.getLength() == 0)
+               return null;
+       }
        NodeList resNodeList = ((Element)nl.item(0)).getElementsByTagNameNS("*","ResourceKey");
        String val = null;
        if(resNodeList.getLength() == 0) {

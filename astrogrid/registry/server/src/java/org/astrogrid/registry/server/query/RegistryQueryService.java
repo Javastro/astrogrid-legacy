@@ -100,7 +100,7 @@ public class RegistryQueryService {
       log.debug("end Search");
       if(resultDoc != null) {
           log.info("Number of Resources to be returned = " + 
-                   resultDoc.getDocumentElement().getChildNodes().getLength());
+                   resultDoc.getElementsByTagNameNS("*","Resource").getLength());
       }
       
       //To be correct we need to transform the results, with a correct response element 
@@ -143,7 +143,7 @@ public class RegistryQueryService {
               (System.currentTimeMillis() - beginQ));
       if(resultDoc != null) {
           log.info("Number of Resources to be returned = " + 
-                   resultDoc.getDocumentElement().getChildNodes().getLength());
+                  resultDoc.getElementsByTagNameNS("*","Resource").getLength());
       }      
       log.debug("end select");
 
@@ -166,7 +166,7 @@ public class RegistryQueryService {
     */
    public Document Query(Document query) throws AxisFault {
       log.debug("start Query");
-      Document result = null;
+      Document resultDoc = null;
       try {
          //get the xquery.
          String xql = DomHelper.getNodeTextValue(query,"XQLString");
@@ -178,15 +178,15 @@ public class RegistryQueryService {
          String collectionName = "astrogridv" + versionNumber;
          log.info("Collection Name for query = " + collectionName);
          //query the eXist db.
-         result = queryExist(xql,collectionName);
-         if(result != null) {
+         resultDoc = queryExist(xql,collectionName);
+         if(resultDoc != null) {
              log.info("Number of Resources to be returned = " + 
-                      result.getDocumentElement().getChildNodes().getLength());
+                     resultDoc.getElementsByTagNameNS("*","Resource").getLength());
          }         
       }catch(IOException ioe) {
          throw new AxisFault("IO problem", ioe);
       }
-      return result;
+      return resultDoc;
    }
 
    /**
@@ -201,7 +201,7 @@ public class RegistryQueryService {
     */   
    public Document XQLString(Document query) throws AxisFault {
       log.debug("start XQLString");
-      Document result = null;
+      Document resultDoc = null;
       try {
          String attrVersion = getRegistryVersion(query);
          String versionNumber = attrVersion.replace('.','_');
@@ -211,16 +211,16 @@ public class RegistryQueryService {
          
          String xql = DomHelper.getNodeTextValue(query,"XQLString");
          log.debug("end XQLString");
-         result = queryExist(xql,collectionName);
-         if(result != null) {
+         resultDoc = queryExist(xql,collectionName);
+         if(resultDoc != null) {
              log.info("Number of Resources to be returned = " + 
-                      result.getDocumentElement().getChildNodes().getLength());
+                     resultDoc.getElementsByTagNameNS("*","Resource").getLength());
          }               
       }catch(IOException ioe) {
          throw new AxisFault("IO problem", ioe);         
-      }finally {
-         return result;
       }
+      return resultDoc;
+      
    }
    
    /**
@@ -253,7 +253,7 @@ public class RegistryQueryService {
               (System.currentTimeMillis() - beginQ));
       if(resultDoc != null) {
           log.info("Number of Resources to be returned = " + 
-                   resultDoc.getDocumentElement().getChildNodes().getLength());
+                  resultDoc.getElementsByTagNameNS("*","Resource").getLength());
       }      
       log.debug("end submitQuery");
 
@@ -361,7 +361,7 @@ public class RegistryQueryService {
          Document resultDoc = queryExist(xqlString,collectionName);
          if(resultDoc != null) {
              log.info("Number of Resources to be returned = " + 
-                      resultDoc.getDocumentElement().getChildNodes().getLength());
+                     resultDoc.getElementsByTagNameNS("*","Resource").getLength());
          }
          XSLHelper xslHelper = new XSLHelper();
          log.info("Time taken to complete keywordsearch on server = " +
@@ -696,4 +696,17 @@ public class RegistryQueryService {
        return RegistryServerHelper.getRegistryVersionFromNode(
                                    query.getDocumentElement());    
    }
+   
+   public Document harvestResource(Document resources)  throws AxisFault {
+       RegistryHarvestService rhs = new RegistryHarvestService();
+       try {   
+          rhs.harvestResource(resources,null);
+       }catch(IOException ioe) {
+          throw new AxisFault("IOE problem",ioe);
+       }catch(RegistryException re) {
+        throw new AxisFault("Registry exception", re);
+       }
+       return resources;      
+   }   
+   
 }
