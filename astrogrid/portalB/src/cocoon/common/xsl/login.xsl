@@ -47,7 +47,7 @@
 		</xsl:if>
 		<xsl:if test="$secure_connection = 'on'">	
 			<font color="blue">
-			  This form will be sent securely over the internet.
+			  This information will be sent securely over the internet, then redirect to a regular connection.
 			</font>	<br />
 		</xsl:if>
 		

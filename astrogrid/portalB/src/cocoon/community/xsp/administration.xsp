@@ -17,6 +17,8 @@
 		<xsp:include>java.util.ArrayList</xsp:include>
 		<xsp:include>java.util.Hashtable</xsp:include>
 		<xsp:include>java.util.Enumeration</xsp:include>		
+		<xsp:include>java.util.LinkedHashMap</xsp:include>
+		<xsp:include>java.util.Set</xsp:include>
 		<xsp:include>org.astrogrid.community.policy.data.GroupData</xsp:include>
 		<xsp:include>org.astrogrid.community.policy.data.CommunityData</xsp:include>		
 		<xsp:include>org.astrogrid.community.policy.data.AccountData</xsp:include>				
@@ -31,10 +33,12 @@
 			<actions>
 			<xsp:logic>
 			<![CDATA[
-				Hashtable actTable = (Hashtable)session.getAttribute("actionlist");
+				LinkedHashMap actTable = (LinkedHashMap)session.getAttribute("actionlist");
 				if(actTable != null && actTable.size() > 0 ) {
-				    for (Enumeration e = actTable.keys() ; e.hasMoreElements() ;) {
-    	              String key = (String)e.nextElement();
+				Set keySet = actTable.keySet();
+				Iterator actionIterator = keySet.iterator();
+				    while(actionIterator.hasNext()) {
+    	              String key = (String)actionIterator.next();
     	    ]]>
     	              <xsp:element name="action">
 						<xsp:attribute name="name"><xsp:expr>actTable.get(key)</xsp:expr></xsp:attribute>
