@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.11 2004/09/14 16:35:15 jdt Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.12 2004/09/14 17:02:19 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,9 +16,19 @@ import org.astrogrid.community.User;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.beans.v1.Group;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.scripting.Astrogrid;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.workflow.beans.v1.Workflow;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import com.meterware.httpunit.GetMethodWebRequest;
+import com.meterware.httpunit.WebConversation;
+import com.meterware.httpunit.WebResponse;
 
 import junit.framework.TestCase;
 
@@ -34,11 +44,14 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
     public AbstractTestForIntegration(String arg0) {
         super(arg0);
     }
+    private static final Log memLog = LogFactory.getLog("MEMORY");
+        
     /*
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
+        checkMemory("pre:" + this.getClass().getName());
         ag = Astrogrid.getInstance();
         assertNotNull("astrogrid instance is null",ag);
         // credentials object
@@ -57,6 +70,34 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
       
 
         wf = ag.getWorkflowManager().getWorkflowBuilder().createWorkflow(creds,"test workflow","a description");    
+    }
+    
+    protected void tearDown() throws Exception {
+        checkMemory("post: " + this.getClass().getName());
+    }
+    
+    
+    protected void checkMemory(String checkpoint) {
+        try {
+        WebConversation conv = new WebConversation();
+        conv.setAuthorization(SimpleConfig.getProperty("org.astrogrid.memory.user"),SimpleConfig.getProperty("org.astrogrid.memory.pass"));
+        GetMethodWebRequest gmr = new GetMethodWebRequest(SimpleConfig.getProperty("org.astrogrid.memory.endpoint"));        
+        WebResponse resp = conv.sendRequest(gmr);
+        Document dom = resp.getDOM();
+        Element el = (Element)dom.getElementsByTagName("memory").item(0);
+        StringBuffer message = new StringBuffer();
+        message.append(checkpoint);
+        message.append(",");
+        message.append(el.getAttribute("free"));
+        message.append(",");
+        message.append(el.getAttribute("total"));        
+        message.append(",");
+        message.append(el.getAttribute("max"));        
+        System.out.println("MEMORY: " + message);
+        memLog.info(message);
+        } catch (Throwable t) {
+            memLog.warn("Failed to check memory at " + checkpoint,t);
+        }
     }
    
     protected Astrogrid ag;
@@ -127,6 +168,9 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
+Revision 1.12  2004/09/14 17:02:19  nw
+added code to record memory usage.
+
 Revision 1.11  2004/09/14 16:35:15  jdt
 Added tests for an http-post service.
 
