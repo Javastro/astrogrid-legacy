@@ -1,11 +1,11 @@
-/*$Id: TestInstallation.java,v 1.3 2003/09/11 11:39:25 nw Exp $
+/*$Id: TestInstallation.java,v 1.4 2003/09/15 22:59:42 mch Exp $
  * Created on 08-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.integration.axisdataserver;
@@ -20,7 +20,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import java.io.*; 
+import java.io.*;
 import java.util.*;
 import java.net.*;
 /** integration test for validating an installation
@@ -29,11 +29,11 @@ import java.net.*;
  * Then will run predefined queries through the datacenter.
  * <p>
  * - deliberately not called *Test - as we dont want it automatically run via maven
- *  - just that junit is a nice way to present these installation tests 
+ *  - just that junit is a nice way to present these installation tests
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Sep-2003
 
  */
-public class TestInstallation extends TestCase { 
+public class TestInstallation extends TestCase {
 
     /**
      * Constructor for TestInstallation.
@@ -70,8 +70,8 @@ public class TestInstallation extends TestCase {
     public final String SERVICE_NAME_DEFAULT="AxisDataServer";
     public final String QUERY_FILE_KEY = "datacenter.test.installation.query.file";
     public final String QUERY_FILE_DEFAULT = "query.xml";
-    
-    
+
+
 
     /** check that tomcat is running and the axis server is running */
     public void testAxisInstallation() throws Exception {
@@ -82,9 +82,9 @@ public class TestInstallation extends TestCase {
         String checkPage = HsqlTestCase.streamToString( (new URL(baseURL,"happyaxis.jsp")).openConnection().getInputStream() );
         assertNotNull(checkPage);
         assertTrue(checkPage.trim().length() > 0);
-        assertEquals(-1,checkPage.toLowerCase().indexOf("error"));       
+        assertEquals(-1,checkPage.toLowerCase().indexOf("error"));
     }
-    
+
     /** check the datacenter web service is installed, by attempting to get the wsdl for it. */
     public void testDatacenterInstallation() throws Exception {
         InputStream wsdlStream =  (new URL(baseURL,"services/" + serviceName + "?wsdl")).openConnection().getInputStream();
@@ -92,7 +92,7 @@ public class TestInstallation extends TestCase {
         Document wsdlDoc = XMLUtils.newDocument(wsdlStream);
         assertNotNull(wsdlDoc);
         assertEquals("definitions",wsdlDoc.getDocumentElement().getLocalName());
-        
+
     }
     /** run a series of sample queries through the service
      *  <p>
@@ -115,7 +115,7 @@ public class TestInstallation extends TestCase {
             } else if (queryFile.isDirectory()) {
                 System.out.println("Local directory");
                 File[] inputs = queryFile.listFiles(new FileFilter() {
-                    public boolean accept(File pathname) {                        
+                    public boolean accept(File pathname) {
                         return pathname.getName().toLowerCase().endsWith(".xml");
                     }
                 });
@@ -125,31 +125,34 @@ public class TestInstallation extends TestCase {
             }
         } else { // try loading from classpath.
             System.out.println("Loading Resource");
-            InputStream is = this.getClass().getResourceAsStream(queryFile.getPath()); 
+            InputStream is = this.getClass().getResourceAsStream(queryFile.getPath());
             assertNotNull("input file :" + queryFile.getPath() + " not found on filesystem, or as resource",is);
             doQuery(del,is);
         }
     }
-    
+
     protected void doQuery(DatacenterDelegate del,InputStream is) throws Exception {
         Document doc = XMLUtils.newDocument(is);
         assertNotNull(doc);
         Element input = doc.getDocumentElement();
         assertNotNull(input);
-        Element result =  del.adqlQuery(input);
-        assertNotNull(result); 
+        Element result =  del.query(input);
+        assertNotNull(result);
         assertEquals("DatacenterResults",result.getLocalName());
         assertEquals(1,result.getElementsByTagName("TR").getLength()); // should return a single row.
         System.out.println(XMLUtils.ElementToString(result));
 
     }
-    
+
 
 }
 
 
-/* 
+/*
 $Log: TestInstallation.java,v $
+Revision 1.4  2003/09/15 22:59:42  mch
+rename for delegate changes
+
 Revision 1.3  2003/09/11 11:39:25  nw
 fixed integration test to expect new input formats
 
@@ -158,5 +161,5 @@ fixed to work with changes to query input format
 
 Revision 1.1  2003/09/10 13:05:05  nw
 added integration -testing hierarchy
- 
+
 */
