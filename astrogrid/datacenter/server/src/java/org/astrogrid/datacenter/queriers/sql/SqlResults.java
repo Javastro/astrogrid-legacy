@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.10 2004/03/10 00:46:00 mch Exp $
+ * $Id: SqlResults.java,v 1.11 2004/03/10 02:32:01 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -48,14 +48,17 @@ public class SqlResults implements QueryResults
 
    /** Returns number of rows */
    public int getCount() {
+      return -1;
+      /*
       try {
-         if (sqlResults.last() == false) return 0;
+         if (sqlResults.last() == false) return 0;  //disturbs the cursor for votable conversion...
          return sqlResults.getRow();
       }
       catch (SQLException sqle)  { //may be an unsupported operation
          log.error(sqle);
          return -1;
       }
+       */
    }
    
    /**
@@ -93,7 +96,7 @@ public class SqlResults implements QueryResults
 
    /** Stream version of the writer */
    public void toVotable(OutputStream out) throws IOException {
-      toVotable(new OutputStreamWriter(out));
+      toVotable((Writer) new OutputStreamWriter(out));
    }
    
    /**
@@ -209,6 +212,9 @@ public class SqlResults implements QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.11  2004/03/10 02:32:01  mch
+ Removed getCount attempt
+
  Revision 1.10  2004/03/10 00:46:00  mch
  catch unsupported operation
 
