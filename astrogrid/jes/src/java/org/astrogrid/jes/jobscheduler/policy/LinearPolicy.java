@@ -1,4 +1,4 @@
-/*$Id: LinearPolicy.java,v 1.6 2004/03/18 01:28:43 nw Exp $
+/*$Id: LinearPolicy.java,v 1.7 2004/03/18 10:54:52 nw Exp $
  * Created on 04-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,19 +11,12 @@
 package org.astrogrid.jes.jobscheduler.policy;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.Policy;
-import org.astrogrid.jes.util.JesUtil;
-import org.astrogrid.workflow.beans.v1.AbstractActivity;
-import org.astrogrid.workflow.beans.v1.ActivityContainer;
-import org.astrogrid.workflow.beans.v1.Sequence;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 import java.util.Iterator;
-
-import junit.framework.Test;
 
 /** Policy that executes all jobs in a  purely linear fashion, with no concurrency.
  * <p>
@@ -58,13 +51,7 @@ public class LinearPolicy extends AbstractPolicy implements Policy {
         while (i.hasNext()) {
             noStatusFound = false;
             Step step = (Step)i.next();
-            int count = step.getStepExecutionRecordCount();
-            ExecutionPhase s = null;
-            if (count ==0) {
-                s = ExecutionPhase.PENDING;
-            } else {
-                s = step.getStepExecutionRecord(count-1).getStatus();
-            }
+            ExecutionPhase s = getLatestExecutionPhase(step,ExecutionPhase.PENDING);
             if (s.equals(ExecutionPhase.ERROR) || s.equals(ExecutionPhase.UNKNOWN)) {
                 return s;
             }
@@ -96,28 +83,18 @@ public class LinearPolicy extends AbstractPolicy implements Policy {
         boolean justSeenComplete = true; // necessary, special case for first step.
         while (i.hasNext()) {
             Step s = (Step)i.next();
-            int count = s.getStepExecutionRecordCount();
-            if (count == 0) {
-                if (justSeenComplete) {
-                    return s;
-                } else {
-                    justSeenComplete = false;
-                }
-            } else {
-                StepExecutionRecord er = s.getStepExecutionRecord(count-1);
-                if (justSeenComplete && er.getStatus().getType() == ExecutionPhase.PENDING_TYPE) {
+            ExecutionPhase phase = getLatestExecutionPhase(s,ExecutionPhase.PENDING);
+                if (justSeenComplete && phase.equals(ExecutionPhase.PENDING)) {
                     return s;                
                 }
-                if (er.getStatus().getType()   == ExecutionPhase.COMPLETED_TYPE) {
+                if (phase.equals(ExecutionPhase.COMPLETED)) {
                     justSeenComplete = true;
                 } else {
                     justSeenComplete = false;
                 }         
-          }
-        }
+          }       
         return null;
     }
-    
 
     
    
@@ -127,6 +104,9 @@ public class LinearPolicy extends AbstractPolicy implements Policy {
 
 /* 
 $Log: LinearPolicy.java,v $
+Revision 1.7  2004/03/18 10:54:52  nw
+factored helper method into base class
+
 Revision 1.6  2004/03/18 01:28:43  nw
 corrected implement - does what it claims to now.
 

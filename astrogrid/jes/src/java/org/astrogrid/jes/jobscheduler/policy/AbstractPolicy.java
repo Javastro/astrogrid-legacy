@@ -1,4 +1,4 @@
-/*$Id: AbstractPolicy.java,v 1.3 2004/03/18 01:28:19 nw Exp $
+/*$Id: AbstractPolicy.java,v 1.4 2004/03/18 10:54:52 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,11 @@
 **/
 package org.astrogrid.jes.jobscheduler.policy;
 
+import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.jes.component.descriptor.SimpleComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.jes.util.JesFunctions;
+import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
 import org.apache.commons.logging.Log;
@@ -42,11 +44,30 @@ public abstract class AbstractPolicy extends SimpleComponentDescriptor implement
         wf.addFunctions(JesFunctions.FUNCTIONS);
     }
 
+    /** access the phase value for the latest execution record in the step
+     * <p>
+     * if no execution record present, return defaultValue
+     * @param s step to examine
+     * @param defaultValue status to return when no execution records found
+     * @return execution phase.
+     */
+    protected ExecutionPhase getLatestExecutionPhase(Step s, ExecutionPhase defaultValue) {
+        int count = s.getStepExecutionRecordCount();
+        if (count == 0) {
+            return defaultValue;
+        } else {
+            return s.getStepExecutionRecord(count-1).getStatus();
+        }
+    }
+
 }
 
 
 /* 
 $Log: AbstractPolicy.java,v $
+Revision 1.4  2004/03/18 10:54:52  nw
+factored helper method into base class
+
 Revision 1.3  2004/03/18 01:28:19  nw
 altered to extend simple component descriptor
 
