@@ -205,10 +205,12 @@ public class AdministrationDelegate {
    public boolean isAdminAccount(String account,String community) throws Exception {
       ArrayList al = getAccountGroups(account,community);
       String adminGroup = "Admin@" + community;
+      adminGroup = adminGroup.toLowerCase();
+      
       if(al != null && al.size() > 0) {
          for(int i = 0;i < al.size();i++) {
             GroupMemberData data = (GroupMemberData)al.get(i);
-            if(adminGroup.equals(data.getGroup())) {
+            if(adminGroup.equals(data.getGroup().toLowerCase())) {
                return true;            
             }//if
          }//for
