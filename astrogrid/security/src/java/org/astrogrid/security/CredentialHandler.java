@@ -29,8 +29,11 @@ public abstract class CredentialHandler extends GenericHandler {
 
   /**
    * Recovers the JAAS Subject resource from the configuration.
+   *
+   * @param i configuration data for the handler, including the Subject.
+   * @throws JAXRPCException if the configuration is invalid
    */
-  public void init (HandlerInfo i) throws JAXRPCException {
+  public final void init (final HandlerInfo i) {
     Map m = i.getHandlerConfig();
     Object s = m.get("Subject");
     assert(s != null);
@@ -41,7 +44,6 @@ public abstract class CredentialHandler extends GenericHandler {
   /**
    * Lists the header blocks processed by this handler.
    * Only one type is handled: the identity header.
-   * @TODO find the right QName.
    *
    * @return the list of names of header blocks.
    */
@@ -59,7 +61,7 @@ public abstract class CredentialHandler extends GenericHandler {
    * @return the message
    * @throws JAXRPC Exception if no SOAP message is available
    */
-  protected SOAPMessage getMessage (MessageContext mc) throws JAXRPCException {
+  protected final SOAPMessage getMessage (final MessageContext mc) {
     SOAPMessage sm = null;
     try {
       SOAPMessageContext smc = (SOAPMessageContext) mc;
