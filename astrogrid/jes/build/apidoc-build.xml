@@ -33,13 +33,15 @@ later - will make all this portable, and add to main maven scripts.
 
       </classpath>
 
-      <fileset dir="scripting/src/java" includes="**/Toolbox.java,**/XMLHelper.java,**/StarTableBuilder.java,**/ObjectBuilder.java,**/IOHelper.java,**/Script*.java" />
+      <fileset dir="scripting/src/java" includes="**/Toolbox.java,**/XMLHelper.java,**/TableHelper.java,**/ObjectBuilder.java,**/IOHelper.java,**/Script*.java,**/*StarTable*.java" />
 
-      <fileset dir="jes-scripting/src/java" includes="**/JesInterface.java,**/WorkflowLogger.java" />
+      <fileset dir="jes/src/java" includes="**/JesInterface.java,**/WorkflowLogger.java" />
 
       <fileset dir="common/src/java" includes="**/Ivorn.java,**/User.java,**/Config.java" />
 
-        <fileset dir="applications-HEAD/client/src/java" includes="**/*.java"  excludes="**/*DummyDelegate.java"/>
+        <fileset dir="applications-HEAD/client/src/java" includes="**/*.java"  excludes="**/*DummyDelegate.java,**/*Factory.java,**/*Exception.java"/>
+		
+		<fileset dir="applications-HEAD/server/src/java" includes="**/ProtocolLibrary.java,**/ExternalValue.java,**/Protocol.java" />
 
         <fileset dir="myspace/client/src/java" includes="**/VoSpaceClient.java,**/File.java,**/Node.java,**/Container.java,**/TreeClient.java"/>
 
@@ -48,7 +50,7 @@ later - will make all this portable, and add to main maven scripts.
 
         <fileset dir="workflow/src/java" includes="**/intf/*.java" excludes="**/WorkflowManagerFactory.java,**/*Exception.java,**/AcivityKey.java" />
 
-       <fileset  dir="workflow-objects/src/java"  includes="**/workflow/**/*.java,**/community/**/*.java" excludes="**/*Descriptor.java,**/axis/**"/>
+       <fileset  dir="workflow-objects/src/java"  includes="**/workflow/**/*.java,**/astrogrid/community/**/*.java" excludes="**/*Descriptor.java,**/axis/**"/>
 
     </javadoc>
   </target>

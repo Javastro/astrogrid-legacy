@@ -39,11 +39,11 @@
 // show what we've found
   print(urls);
 // find next step in workflow
- sinkStep = jes.getSteps().find {it.getName() == 'sink-step'};
+ sinkStep = jes.getSteps().find {it.name == 'sink-step'};
 // get to set of input parameters
-  inputs = sinkStep.getTool().getInput();
+  inputs = sinkStep.tool.input;
 // for each url, create new parameter, populate, add to inputs.
-  urls.each { p = jes.newParameter(); p.setName('url'); p.setValue(it); inputs.addParameter(p);}
+  urls.each { p = jes.newParameter(name:'url', value:it); inputs.addParameter(p);}
 ]]></source>
 </section>
 </body>

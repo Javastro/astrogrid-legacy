@@ -12,7 +12,25 @@
     <title>JEScript Object Model</title>
     <author email="Noel.Winstanley@manchester.ac.uk">Noel Winstanley</author>
   </properties>
-
+  <head>
+<script type="text/javascript">
+cc=0
+function show(id)
+{
+x = document.getElementById(id)
+if (x.cc == null || x.cc ==0) 
+{
+x.cc=1
+x.style.display='block'
+}
+else
+{
+x.cc=0
+x.style.display='none'
+}
+}
+</script>		
+</head>
   <body>
 
 <section name="What's available?">
@@ -31,16 +49,6 @@
 	<p> The following objects are available to 
 		JEScripts and script expressions: </p>
 	<dl>
-		<dt><code>jes</code></dt>
-		<dd>An object that represents the JES server that is executing the current workflow. 
-			Implemented by class          <xsl:call-template name="maybe-link"><xsl:with-param name="type">org.astrogrid.jes.jobscheduler.impl.groovy.JesInterface</xsl:with-param></xsl:call-template>.
-			Provides 
-			<ul>
-				<li>logging</li>
-				<li>access to the document model of the current workflow</li>
-				<li>execution control</li>
-			</ul>			
-		</dd>
 
 		<dt><code>astrogrid</code></dt>
 		<dd>An object that represents the entire Astrogrid system. 
@@ -54,7 +62,18 @@
 				<li>access to system config</li>
 				</ul>
 			</dd>
-
+			
+		<dt><code>jes</code></dt>
+		<dd>An object that represents the JES server that is executing the current workflow. 
+			Implemented by class          <xsl:call-template name="maybe-link"><xsl:with-param name="type">org.astrogrid.jes.jobscheduler.impl.groovy.JesInterface</xsl:with-param></xsl:call-template>.
+			Provides 
+			<ul>
+				<li>logging</li>
+				<li>access to the document model of the current workflow</li>
+				<li>execution control</li>
+			</ul>			
+		</dd>
+		
 		<dt><code>account</code></dt>
 		<dd>object that represents the identity of the user under which this workflow is being executed. An instance of
 			<xsl:call-template name="maybe-link"><xsl:with-param name="type">org.astrogrid.community.beans.v1.Account</xsl:with-param></xsl:call-template></dd>
@@ -79,14 +98,24 @@
 
    <section name="Toolbox" >
         <xsl:call-template name="toc">
-                <xsl:with-param name="class" select="class[@public='true' and not(contains(@name,'.')) and  (starts-with(@qualified-name,'org.astrogrid.scripting') or @name='Config')]" />
+                <xsl:with-param name="class" select="class[@public='true' and not(contains(@name,'.') or contains(@name,'VoSpace')) and  (starts-with(@qualified-name,'org.astrogrid.scripting') or @name='Config')]" />
         </xsl:call-template>
         <p>The main class for interacting with the astrogrid is <a href="#org.astrogrid.scripting.Toolbox">Toolbox</a>.
         An instance of this class, named <code>astrogrid</code> is available in the JEScript environment. Other subsidiary
         helper objects and delegates are accessible by calling the methods on <code>Toolbox</code>
         </p>
-        <xsl:apply-templates select="class[@public='true' and starts-with(@qualified-name,'org.astrogrid.scripting') and not(contains(@name,'.'))]"/>
+        <xsl:apply-templates select="class[@public='true' and starts-with(@qualified-name,'org.astrogrid.scripting') and not(contains(@name,'.') or contains(@name,'VoSpace'))]"/>
         <xsl:apply-templates select="class[@public='true' and @name='Config']"/>
+   </section>
+
+
+
+   <section name="VoSpace">
+        <xsl:call-template name="toc">
+                <xsl:with-param name="class" select="class[@public='true' and (starts-with(@qualified-name,'org.astrogrid.store') or starts-with(@qualified-name,'org.astrogrid.applications.parameter.protocol') or contains(@name,'VoSpace'))]" />
+        </xsl:call-template>
+     <p>There's three interfaces for interacting with VoSpace - the vospace client, the tree, and external values</p>
+       <xsl:apply-templates select="class[@public='true' and (starts-with(@qualified-name,'org.astrogrid.store') or starts-with(@qualified-name,'org.astrogrid.applications.parameter.protocol') or contains(@name,'VoSpace'))]"/>
    </section>
 
    <section name="JES Server" >
@@ -119,21 +148,14 @@
           <xsl:apply-templates select="class[@public='true' and starts-with(@qualified-name,'org.astrogrid.registry')]"/>
    </section>
 
-   <section name="VoSpace Delegate">
-        <xsl:call-template name="toc">
-                <xsl:with-param name="class" select="class[@public='true' and starts-with(@qualified-name,'org.astrogrid.store')]" />
-        </xsl:call-template>
-     <p>Two interfaces for interacting with VoSpace</p>
-       <xsl:apply-templates select="class[@public='true' and starts-with(@qualified-name,'org.astrogrid.store')]"/>
-   </section>
 
  <section name="CEA Delegate">
         <xsl:call-template name="toc">
-                <xsl:with-param name="class" select="class[@public='true' and starts-with(@qualified-name,'org.astrogrid.applications')]" />
+                <xsl:with-param name="class" select="class[@public='true' and starts-with(@qualified-name,'org.astrogrid.applications.delegate')]" />
         </xsl:call-template>
         <p>These classes provide a low-level interface to interact with CEA servers.
         </p>
-          <xsl:apply-templates select="class[@public='true' and starts-with(@qualified-name,'org.astrogrid.applications')]"/>
+          <xsl:apply-templates select="class[@public='true' and starts-with(@qualified-name,'org.astrogrid.applications.delegate')]"/>
    </section>
 
 	<section name="User Objects">
@@ -161,24 +183,31 @@
   <xsl:template match="class">
       <xsl:param name="concise" select="false()" />
       <a name="{@qualified-name}" />
-    <subsection name="{@name}">
-      <xsl:for-each select="super-class[not(@name='java.lang.Object')]">
-        <p>Extends <xsl:call-template name="maybe-link"><xsl:with-param name="type" select="@name"/></xsl:call-template></p>
+    <subsection name="{@name}"><p>
+      <xsl:for-each select="super-class[not(@name='java.lang.Object')]">	
+		<xsl:choose>
+			<xsl:when test="position() = 1">Extends&#160;</xsl:when>
+			<xsl:otherwise>,&#160;</xsl:otherwise>
+		</xsl:choose>
+			<xsl:call-template name="maybe-link"><xsl:with-param name="type" select="@name"/></xsl:call-template>
       </xsl:for-each>
+	  </p>
       <xsl:choose>
       <xsl:when test="tag[@name='@script-doc']">
-        <p><xsl:copy-of select="tag[@name='@script-doc']/text" /></p>
+        <p><xsl:copy-of select="tag[@name='@script-doc']/text" /><span style="color:blue;cursor:hand;" onclick="show('{generate-id()}')"> more..</span></p>
       </xsl:when>
       <xsl:otherwise>
-        <p><xsl:copy-of select="comment"/></p>
+        <p><xsl:copy-of select="comment"/><span style="color:blue;cursor:hand;" onclick="show('{generate-id()}')"> more..</span></p>
       </xsl:otherwise>
-      </xsl:choose>
+      </xsl:choose>	 
+	  <div style="display:none" id="{generate-id()}">
       <table>
         <xsl:apply-templates
          select="method[@public='true' and not (overridden-class='java.lang.Object') and not (tag[@name='@script-doc-omit']) ]">
                 <xsl:with-param name="concise" select="$concise" />
         </xsl:apply-templates>
       </table>
+	  </div>
     </subsection>
   </xsl:template>
 
