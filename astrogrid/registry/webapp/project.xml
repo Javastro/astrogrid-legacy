@@ -92,7 +92,7 @@
     <dependencies>
     
         <dependency>
-            <groupId>astrogrid-common</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-common</artifactId>
             <version>SNAPSHOT</version>
             <type>jar</type>
@@ -103,7 +103,7 @@
         </dependency>
     
         <dependency>
-            <groupId>astrogrid-registry</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry-common</artifactId>
             <version>SNAPSHOT</version>
             <type>jar</type>
@@ -116,7 +116,7 @@
             | The Registry server components.
             +-->
         <dependency>
-            <groupId>astrogrid-registry</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry-server</artifactId>
             <version>SNAPSHOT</version>
             <type>jar</type>

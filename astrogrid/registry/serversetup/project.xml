@@ -78,7 +78,7 @@
             | The Registry common components.
             +-->
         <dependency>
-            <groupId>astrogrid-registry</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry-common</artifactId>
             <version>SNAPSHOT</version>
             <type>jar</type>
@@ -89,7 +89,7 @@
         </dependency>
         
         <dependency>
-            <groupId>astrogrid-registry</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry-client</artifactId>
             <version>SNAPSHOT</version>
             <type>jar</type>

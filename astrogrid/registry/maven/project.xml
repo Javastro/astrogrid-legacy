@@ -15,7 +15,7 @@
         | The short name of the project group.
         | This value is used to group all jars for a project in one directory.
         +-->
-    <groupId>astrogrid-registry</groupId>
+    <groupId>org.astrogrid</groupId>
 
     <!--+
         | The current version of the project.
