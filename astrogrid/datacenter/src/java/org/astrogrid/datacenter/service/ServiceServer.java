@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceServer.java,v 1.12 2003/09/17 14:56:25 nw Exp $
+ * $Id: ServiceServer.java,v 1.13 2003/09/23 18:09:09 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,7 +9,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
+import java.net.URL;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
 import org.astrogrid.datacenter.common.ResponseHelper;
@@ -18,6 +19,8 @@ import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import sun.security.krb5.internal.crypto.e;
 
 /**
  * This abstract class provides the framework for managing the datacenter.  It
@@ -50,43 +53,52 @@ public abstract class ServiceServer
 
    /**
     * Returns the whole metadata file as a DOM document
-    * @todo implement
-    * 
+    * @todo implement better error reporting in case of failure
+    *
     */
    public Element getMetadata()
    {
+      // File metaFile = new File(Configuration.getProperty(METADATA_FILE_LOC_KEY, "metadata.xml"));
+      // search for file, then for resource on classpath - fits better with appservers / servlet containers
+      String location = Configuration.getProperty(METADATA_FILE_LOC_KEY,"metadata.xml");
+      String trying = location; //for  error reporting
       try
       {
-        // File metaFile = new File(Configuration.getProperty(METADATA_FILE_LOC_KEY, "metadata.xml"));
-        // search for file, then for resource on classpath - fits better with appservers / servlet containers
-        String location = Configuration.getProperty(METADATA_FILE_LOC_KEY,"metadata.xml");
+
         File metaFile = new File(location);
         InputStream is = null;
         if (metaFile.exists() && metaFile.isFile()) {
-            is = new FileInputStream(metaFile);            
+           is = new FileInputStream(metaFile);
         } else {
-            is = this.getClass().getResourceAsStream(location);
-            if (is == null) { // try making the resource absolute.
-                is = this.getClass().getResourceAsStream("/" + location);
-            }
+           URL url = this.getClass().getResource(location);
+           if (url != null)  {
+              trying = this.getClass().getResource(location).toString();
+              is = url.openStream();
+           }
+           if (is == null) { // try making the resource absolute.
+//this will throw errors if the property is already absolute
+//trying = this.getClass().getResource("/"+location).toString();
+//              is = this.getClass().getResourceAsStream("/" + location);
+              throw new IOException("metadata file '"+location+"' or '"+trying+" not found");
+           }
         }
 
          return XMLUtils.newDocument(is).getDocumentElement();
       }
-      catch (javax.xml.parsers.ParserConfigurationException e)
+      catch (ParserConfigurationException e)
       {
          Log.logError("XML Parser not configured properly",e);
          throw new RuntimeException("Server not configured properly",e);
       }
-      catch (org.xml.sax.SAXException e)
+      catch (SAXException e)
       {
          Log.logError("Invalid metadata",e);
-         throw new RuntimeException("Server not configured properly - invalid metadata",e);
+         throw new RuntimeException("Server not configured properly - invalid metadata in '"+trying+"'",e);
       }
       catch (IOException e)
       {
          Log.logError("Metadata file error",e);
-         throw new RuntimeException("Server not configured properly - metadata i/o error",e);
+         throw new RuntimeException("Server not configured properly - metadata i/o error for '"+trying+"'",e);
       }
    }
 
