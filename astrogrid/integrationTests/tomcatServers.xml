@@ -1,6 +1,12 @@
 <!--Deployment machines see http://wiki.astrogrid.org/bin/view/Astrogrid/Itn04IREnvironment -->
 <!--For use by deployWebapps.xml ant script-->
 <!--fill in the passwords below-->
+<!--**********************************
+	
+	DON'T CHECK THIS INTO CVS WITH
+	THE PASSWORDS VISIBLE!
+	                                 
+***********************************-->
 <root>
    <servers>
       <a>
