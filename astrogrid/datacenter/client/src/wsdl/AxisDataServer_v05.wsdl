@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wsdl:definitions
-         targetNamespace="http://astrogrid.org/datacenter/axis/v05/AxisDataServer"
+         targetNamespace="http://astrogrid.org/datacenter/axisdataserver/v05"
          xmlns="http://schemas.xmlsoap.org/wsdl/"
          xmlns:apachesoap="http://xml.apache.org/xml-soap"
-         xmlns:impl="http://astrogrid.org/datacenter/axis/v05/AxisDataServer"
-         xmlns:intf="http://astrogrid.org/datacenter/axis/v05/AxisDataServer"
-         xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
-         xmlns:tns1="http://community.astrogrid.org"
+         xmlns:dsa="http://astrogrid.org/datacenter/axisdataserver/v05"
          xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
          xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
          xmlns:xsd="http://www.w3.org/2001/XMLSchema">
    <wsdl:types>
-      <schema targetNamespace="http://community.astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema">
+         <schema targetNamespace="http://astrogrid.org/datacenter/axisdataserver/v05"
+                           xmlns="http://www.w3.org/2001/XMLSchema">
          <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
-         <complexType name="QueryStatus">
+         <complexType name="QueryStatusSoapyBean">
             <sequence>
                <element name="QueryID" nillable="true" type="xsd:string"/>
                <element name="State" nillable="true" type="xsd:string"/>
@@ -29,7 +27,7 @@
     <wsdl:part name="queryId" type="xsd:string"/>
   </wsdl:message>
   <wsdl:message name="getQueryStatusResponse">
-    <wsdl:part name="getQueryStatusReturn" type="xsd:string"/>
+    <wsdl:part name="getQueryStatusReturn" type="dsa:QueryStatusSoapyBean"/>
   </wsdl:message>
 
   <wsdl:message name="getMetadataRequest">
@@ -94,54 +92,54 @@
   </wsdl:message>
 
   <wsdl:portType name="AxisDataServer_v05">
-    <wsdl:operation name="getMetadata" parameterOrder="ignored">
-      <wsdl:input message="impl:getMetadataRequest" name="getMetadataRequest"/>
-      <wsdl:output message="impl:getMetadataResponse" name="getMetadataResponse"/>
+    <wsdl:operation name="getMetadata" >
+      <wsdl:input message="dsa:getMetadataRequest" name="getMetadataRequest"/>
+      <wsdl:output message="dsa:getMetadataResponse" name="getMetadataResponse"/>
     </wsdl:operation>
 
     <wsdl:operation name="askAdqlQuery" parameterOrder="query requestedFormat">
-      <wsdl:input message="impl:askAdqlQueryRequest" name="askAdqlQueryRequest"/>
-      <wsdl:output message="impl:askAdqlQueryResponse" name="askAdqlQueryResponse"/>
+      <wsdl:input message="dsa:askAdqlQueryRequest" name="askAdqlQueryRequest"/>
+      <wsdl:output message="dsa:askAdqlQueryResponse" name="askAdqlQueryResponse"/>
     </wsdl:operation>
 
     <wsdl:operation name="askSql" parameterOrder="sql requestedFormat">
-      <wsdl:input message="impl:askSqlRequest" name="askSqlRequest"/>
-      <wsdl:output message="impl:askSqlResponse" name="askSqlResponse"/>
+      <wsdl:input message="dsa:askSqlRequest" name="askSqlRequest"/>
+      <wsdl:output message="dsa:askSqlResponse" name="askSqlResponse"/>
     </wsdl:operation>
 
     <wsdl:operation name="askCone" parameterOrder="ra dec radius requestedFormat">
-      <wsdl:input message="impl:askConeRequest" name="askConeRequest"/>
-      <wsdl:output message="impl:askConeResponse" name="askConeResponse"/>
+      <wsdl:input message="dsa:askConeRequest" name="askConeRequest"/>
+      <wsdl:output message="dsa:askConeResponse" name="askConeResponse"/>
     </wsdl:operation>
 
     <wsdl:operation name="submitAdqlQuery" parameterOrder="query resultsTarget requestedFormat">
-      <wsdl:input message="impl:submitAdqlQueryRequest" name="submitAdqlQueryRequest"/>
-      <wsdl:output message="impl:submitAdqlQueryResponse" name="submitAdqlQueryResponse"/>
+      <wsdl:input message="dsa:submitAdqlQueryRequest" name="submitAdqlQueryRequest"/>
+      <wsdl:output message="dsa:submitAdqlQueryResponse" name="submitAdqlQueryResponse"/>
     </wsdl:operation>
 
     <wsdl:operation name="abortQuery" parameterOrder="queryId">
-      <wsdl:input message="impl:abortQueryRequest" name="abortQueryRequest"/>
-      <wsdl:output message="impl:abortQueryResponse" name="abortQueryResponse"/>
+      <wsdl:input message="dsa:abortQueryRequest" name="abortQueryRequest"/>
+      <wsdl:output message="dsa:abortQueryResponse" name="abortQueryResponse"/>
     </wsdl:operation>
 
     <wsdl:operation name="getQueryStatus" parameterOrder="queryId">
-      <wsdl:input message="impl:getQueryStatusRequest" name="getQueryStatusRequest"/>
-      <wsdl:output message="impl:getQueryStatusResponse" name="getQueryStatusResponse"/>
+      <wsdl:input message="dsa:getQueryStatusRequest" name="getQueryStatusRequest"/>
+      <wsdl:output message="dsa:getQueryStatusResponse" name="getQueryStatusResponse"/>
     </wsdl:operation>
 
-    <wsdl:operation name="submitQuery" parameterOrder="user query resultsTarget requestedFormat listener">
-      <wsdl:input message="impl:submitQueryRequest" name="submitQueryRequest"/>
-      <wsdl:output message="impl:submitQueryResponse" name="submitQueryResponse"/>
+    <wsdl:operation name="submitQuery" parameterOrder="query resultsTarget requestedFormat">
+      <wsdl:input message="dsa:submitQueryRequest" name="submitQueryRequest"/>
+      <wsdl:output message="dsa:submitQueryResponse" name="submitQueryResponse"/>
     </wsdl:operation>
 
     <wsdl:operation name="throwFault">
-      <wsdl:input message="impl:throwFaultRequest" name="throwFaultRequest"/>
-      <wsdl:output message="impl:throwFaultResponse" name="throwFaultResponse"/>
+      <wsdl:input message="dsa:throwFaultRequest" name="throwFaultRequest"/>
+      <wsdl:output message="dsa:throwFaultResponse" name="throwFaultResponse"/>
     </wsdl:operation>
 
   </wsdl:portType>
 
-  <wsdl:binding name="AxisDataServerV05SoapBinding" type="impl:AxisDataServer_v05">
+  <wsdl:binding name="AxisDataServerV05SoapBinding" type="dsa:AxisDataServer_v05">
     <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
 
     <wsdl:operation name="getMetadata">
@@ -236,7 +234,7 @@
   </wsdl:binding>
 
   <wsdl:service name="AxisDataServer_v05">
-    <wsdl:port binding="impl:AxisDataServerV05SoapBinding" name="AxisDataServer_v05">
+    <wsdl:port binding="dsa:AxisDataServerV05SoapBinding" name="AxisDataServer_v05">
       <wsdlsoap:address location="http://localhost:8080/axis/AxisDataServer_v05"/>
     </wsdl:port>
   </wsdl:service>
