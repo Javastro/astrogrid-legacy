@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseServiceImpl.java,v 1.10 2003/11/17 13:24:13 kea Exp $
+ * $Id: WarehouseServiceImpl.java,v 1.11 2003/11/19 17:34:45 kea Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -286,13 +286,13 @@ public class WarehouseServiceImpl
       // TOFIX: Temporary hack until we can get GridFTP transfers
       // (a la MySpace) working.
       try {
-        FileWriter writer = new FileWriter("/tmp/WS_OGSA_OUTPUT_GTR");
+        FileWriter writer = new FileWriter("/tmp/WS_OGSA_OUTPUT_KEA");
         writer.write(AnyHelper.getAsString(result));
         writer.close();
       }
       catch (IOException e) {
         throw new RemoteException(
-            "Couldn't open destination file /tmp/WS_OGSA_OUTPUT_GTR", e);
+            "Couldn't open destination file /tmp/WS_OGSA_OUTPUT_KEA", e);
       }
 
       // Finished with the GDS.
@@ -476,6 +476,9 @@ public class WarehouseServiceImpl
 }
 /*
 $Log: WarehouseServiceImpl.java,v $
+Revision 1.11  2003/11/19 17:34:45  kea
+Added getFactoryUrlFromRegistry method to GdsDelegate.
+
 Revision 1.10  2003/11/17 13:24:13  kea
 Single property for shelled-out JVM class directory;  jar files in this
 directory are automatically added to the shelled-out JVM classpath.
