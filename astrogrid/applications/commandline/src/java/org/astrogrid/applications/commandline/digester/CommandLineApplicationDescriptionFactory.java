@@ -1,4 +1,4 @@
-/*$Id: CommandLineApplicationDescriptionFactory.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+/*$Id: CommandLineApplicationDescriptionFactory.java,v 1.3 2004/08/27 12:45:52 pah Exp $
  * Created on 02-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,7 +46,7 @@ public class CommandLineApplicationDescriptionFactory extends AbstractObjectCrea
         if (arg0.getValue(CommandLineApplicationDescriptionsConstants.NAME_ATTR) != null) {
             id = arg0.getValue(CommandLineApplicationDescriptionsConstants.NAME_ATTR);
         }
-        logger.info("Creating application description for '" + id + "'");
+        logger.debug("Creating application description for '" + id + "'");
                
        //return new CommandLineApplicationDescription(id,factory);
        CommandLineApplicationDescription descr = (CommandLineApplicationDescription)factory.getComponentInstance();
@@ -59,6 +59,9 @@ public class CommandLineApplicationDescriptionFactory extends AbstractObjectCrea
 
 /* 
 $Log: CommandLineApplicationDescriptionFactory.java,v $
+Revision 1.3  2004/08/27 12:45:52  pah
+get cardinality working for commandline digester
+
 Revision 1.2  2004/07/01 11:07:59  nw
 merged in branch
 nww-itn06-componentization

@@ -1,5 +1,5 @@
 /*
- * $Id: BaseApplicationInterface.java,v 1.5 2004/08/17 15:08:51 nw Exp $
+ * $Id: BaseApplicationInterface.java,v 1.6 2004/08/27 12:49:06 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -84,7 +84,13 @@ public class BaseApplicationInterface implements ApplicationInterface {
       inputs.put(parameterName,card);
 
    }
-    /** @see #addInputParameter */
+ 
+   public void addInputParameter(String parameterName,int minoccurs, int maxoccurs)
+   throws ParameterDescriptionNotFoundException {
+       applicationDescription.getParameterDescription(parameterName);// will throw if parameter not known.
+      inputs.put(parameterName, new Cardinality(minoccurs,maxoccurs));
+
+   }
    public void addOutputParameter(String parameterName)
       throws ParameterDescriptionNotFoundException {
        this.addOutputParameter(parameterName,Cardinality.MANDATORY);
@@ -96,6 +102,12 @@ public class BaseApplicationInterface implements ApplicationInterface {
 
    }
    
+   public void addOutputParameter(String parameterName,int minoccurs, int maxoccurs)
+   throws ParameterDescriptionNotFoundException {   
+      applicationDescription.getParameterDescription(parameterName);
+      outputs.put(parameterName, new Cardinality(minoccurs,maxoccurs));
+
+   }
    
    
    

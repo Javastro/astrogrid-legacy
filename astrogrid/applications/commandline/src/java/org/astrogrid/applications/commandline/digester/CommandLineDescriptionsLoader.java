@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoader.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+ * $Id: CommandLineDescriptionsLoader.java,v 1.3 2004/08/27 12:45:52 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -101,12 +101,17 @@ public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLib
 
       digester.addSetProperties(CommandLineApplicationDescriptionsConstants.INTERFACE_ELEMENT);      
       //input and output parameter references
-      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.INPUT_PREFS, "addInputParameter",1);
+      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.INPUT_PREFS, "addInputParameter",3, new Class[]{String.class,Integer.class,Integer.class});
       digester.addCallParam(CommandLineApplicationDescriptionsConstants.INPUT_PREFS, 0, "ref");
+      digester.addCallParam(CommandLineApplicationDescriptionsConstants.INPUT_PREFS, 1, "minoccurs");
+      digester.addCallParam(CommandLineApplicationDescriptionsConstants.INPUT_PREFS, 2, "maxoccurs");
+      
       
       //input and output parameter references
-      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.OUTPUT_PREFS, "addOutputParameter",1);
+      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.OUTPUT_PREFS, "addOutputParameter",3,new Class[]{String.class,Integer.class,Integer.class});
       digester.addCallParam(CommandLineApplicationDescriptionsConstants.OUTPUT_PREFS, 0, "ref");
+      digester.addCallParam(CommandLineApplicationDescriptionsConstants.OUTPUT_PREFS, 1, "minoccurs");
+      digester.addCallParam(CommandLineApplicationDescriptionsConstants.OUTPUT_PREFS, 2, "maxoccurs");
       
       
       
