@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.49 2004/03/18 23:41:32 mch Exp $
+ * $Id: Querier.java,v 1.50 2004/03/29 16:58:15 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -174,7 +174,7 @@ public class Querier implements Runnable {
 
       timeQueryStarted = new Date();
       
-      QuerierPlugin plugin = QuerierPluginFactory.createPlugin(this);
+      plugin = QuerierPluginFactory.createPlugin(this);
       
       plugin.askQuery();
 
@@ -403,6 +403,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.50  2004/03/29 16:58:15  mch
+ Fix for plugin instance variable not being set
+
  Revision 1.49  2004/03/18 23:41:32  mch
  Reintroduced more thorough pre-query storepoint test
 
