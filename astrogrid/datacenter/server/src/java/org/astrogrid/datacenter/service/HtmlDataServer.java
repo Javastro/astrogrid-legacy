@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlDataServer.java,v 1.9 2004/03/15 21:45:18 mch Exp $
+ * $Id: HtmlDataServer.java,v 1.10 2004/03/16 16:59:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -127,22 +127,21 @@ public class HtmlDataServer
    public static String queryStatusAsHtml(String queryId, QuerierStatus status) {
 
       StringBuffer html = new StringBuffer(
-         "<h1>Status of Query "+queryId+"</h1>\n");
+         "<h1>Status of Query "+makeSafeForHtml(queryId)+"</h1>\n");
 
       if (status == null) {
          return html.toString()+
                   "<b>No Query found for that ID</b>\n";
       }
       
-      html.append("<h2>"+status.getState().toString()+"</h2>\n");
+      html.append("<h2>"+makeSafeForHtml(status.getState().toString())+"</h2>\n");
 
-      html.append("<p><b>"+status.getNote()+"</b></p>\n");
+      html.append("<p><b>"+makeSafeForHtml(status.getNote().replaceAll("\n","<br/>"))+"</b></p>\n");
       
       String[] details= status.getDetails();
       
       for (int i=0;i<details.length;i++) {
-         details[i].replaceAll("\n", "<br/>");
-         html.append("<p>"+details[i]+"</p>\n");
+         html.append("<p>"+makeSafeForHtml(details[i])+"</p>\n");
       }
       
       return html.toString();
@@ -220,7 +219,7 @@ public class HtmlDataServer
    /**
     * Deals with special characters */
    public static String makeSafeForHtml(String s) {
-      return s.replaceAll(">", "&gt;").replaceAll("<", "&lt;");
+      return s.replaceAll(">", "&gt;").replaceAll("<", "&lt;").replaceAll("\n","<br/>");
    }
    
    /** Convenience routine for exceptionAsHtml(String, Exception, String)   */
