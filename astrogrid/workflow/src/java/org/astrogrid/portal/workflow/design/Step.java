@@ -107,7 +107,7 @@ public class Step extends Activity {
                         this.tool = new NullTool() ;   
                     }  
                     else if( element.getTagName().equals( WorkflowDD.QUERY_ELEMENT ) ) {
-                        this.tool = new Query( element ) ;   
+                        this.tool = new Query( this.extractSelectElement( element ) ) ;   
                     }  
                     else if( element.getTagName().equals( WorkflowDD.RESOURCES_ELEMENT ) ) {
                         this.resources = new Resources( element ) ;                
@@ -116,14 +116,48 @@ public class Step extends Activity {
                 } // end if
                                 
             } // end for        
-
-            
+           
         }
         finally {
             if( TRACE_ENABLED ) trace( "Step(Element) exit") ;
         }
         
-    }   
+    } 
+    
+    
+    private Element extractSelectElement( Element queryElement ){
+        if( TRACE_ENABLED ) trace( "Step.extractSelectElement() entry") ; 
+        
+        Element
+            element = null ;
+        
+        try{
+            
+            NodeList
+               nodeList = queryElement.getChildNodes() ; 
+                           
+            for( int i=0 ; i < nodeList.getLength() ; i++ ) {           
+                if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
+                    
+                    element = (Element) nodeList.item(i) ;
+                
+                    if ( element.getTagName().equals( WorkflowDD.SELECT_ELEMENT ) ) {
+                        break ;   
+                    } 
+                    
+                } // end if
+                                
+            } // end for   
+                 
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Step.extractSelectElement() exit") ; 
+        }
+        
+        return element ;
+        
+    } // end of extractSelectElement()
+      
     
 	public void setName(String name) {
 		this.name = name;

@@ -238,8 +238,8 @@ public class Workflow extends Activity {
             pathBuffer
                 .append( "/")
                 .append( workflow.getUserid() )
-//                .append( "/")
-//                .append( workflow.getCommunity() )
+                .append( "@")
+                .append( workflow.getCommunity() )
                 .append( "/")
                 .append( "serv1")
                 .append( "/")
@@ -451,8 +451,8 @@ public class Workflow extends Activity {
            argumentBuffer
               .append( "/")
               .append( userid )
-//            .append( "/")
-//            .append( workflow.getCommunity() )
+              .append( "@")
+              .append( community )
               .append( "/")
               .append( "serv1")
               .append( "/" )

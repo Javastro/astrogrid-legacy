@@ -42,11 +42,14 @@ public class WorkflowDD {
         STEP_JOINCONDITION_ATTR = "stepJoinCondition";
         
     public static final String
-        QUERY_ELEMENT = "select",
-        QUERY_NAME_ELEMENT = "queryName",
-        QUERY_DESCRIPTION_ELEMENT = "queryDescription",
+        QUERY_ELEMENT = "query",
         NULL_TOOL_ELEMENT = "nulltool",
         RESOURCES_ELEMENT = "resources";
+        
+    public static final String
+        SELECT_ELEMENT = "select",
+        SELECT_NAME_ELEMENT = "queryName",
+        SELECT_DESCRIPTION_ELEMENT = "queryDescription";
         
     public static final String       
         RESOURCE_ELEMENT = "resource",
@@ -78,7 +81,7 @@ public class WorkflowDD {
         
     public static final String
         QUERY_TEMPLATE =
-        "<query>" +        "</query>" ;  
+        "<query>" +        "   {0}" +        "</query>" ;  
         
     public static final String
         RESOURCES_TEMPLATE =
@@ -105,12 +108,12 @@ public class WorkflowDD {
         "      joinCondition=\"{1}\" " +
         "      stepNumber=\"{2}\" " +
         "      sequenceNumber=\"{3}\">" +
-        "   <query>{4}</query>" + 
+        "   {4}" + 
         "</jobstep>" ;
         
     public static final String
         JOBQUERY_TEMPLATE =
-        "<query>" +
+        "<query>" +        "   {0}" +
         "</query>" ;          
 
 } // end of class WorkflowDD

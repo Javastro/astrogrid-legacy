@@ -73,8 +73,8 @@ public final class Query implements Tool {
             pathBuffer
                 .append( "/")
                 .append( userid )
-//              .append( "/")
-//              .append( workflow.getCommunity() )
+                .append( "@")
+                .append( community )
                 .append( "/")
                 .append( "serv1")
                 .append( "/")
@@ -124,8 +124,8 @@ public final class Query implements Tool {
           argumentBuffer
              .append( "/")
              .append( userid )
-//           .append( "/")
-//           .append( workflow.getCommunity() )
+             .append( "@")
+             .append( community )
              .append( "/")
              .append( "serv1")
              .append( "/" )
@@ -178,10 +178,10 @@ public final class Query implements Tool {
                     
                     element = (Element) nodeList.item(i) ;
                 
-                    if ( element.getTagName().equals( WorkflowDD.QUERY_NAME_ELEMENT ) ) {
+                    if ( element.getTagName().equals( WorkflowDD.SELECT_NAME_ELEMENT ) ) {
                         name = element.getFirstChild().getNodeValue().trim() ;  
                     }  
-                    else if( element.getTagName().equals( WorkflowDD.QUERY_DESCRIPTION_ELEMENT ) ) {
+                    else if( element.getTagName().equals( WorkflowDD.SELECT_DESCRIPTION_ELEMENT ) ) {
                         description = element.getFirstChild().getNodeValue().trim() ;
                     }  
                     
@@ -211,7 +211,7 @@ public final class Query implements Tool {
                inserts = new Object[1] ;
             inserts[0] = XMLUtils.ElementToString( queryElement ) ;
 
-            response = MessageFormat.format( WorkflowDD.STEP_TEMPLATE, inserts ) ;
+            response = MessageFormat.format( WorkflowDD.QUERY_TEMPLATE, inserts ) ;
 
         }
         finally {
@@ -235,7 +235,7 @@ public final class Query implements Tool {
                inserts = new Object[1] ;
             inserts[0] = XMLUtils.ElementToString( queryElement ) ;
 
-            response = MessageFormat.format( WorkflowDD.JOBSTEP_TEMPLATE, inserts ) ;
+            response = MessageFormat.format( WorkflowDD.JOBQUERY_TEMPLATE, inserts ) ;
 
         }
         finally {
