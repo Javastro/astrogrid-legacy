@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/explorer/junit/Attic/JUnitTestCase.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/22 04:03:41 $</cvs:author>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/23 11:19:03 $</cvs:author>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  * $Log: JUnitTestCase.java,v $
+ * Revision 1.5  2003/06/23 11:19:03  dave
+ * Added service location to view pages
+ *
  * Revision 1.4  2003/06/22 04:03:41  dave
  * Added actions and parsers for MySpace messages
  *
@@ -95,7 +98,7 @@ public class JUnitTestCase
 
 		//
 		// Check can locate our MySpace service.
-		boolean init = view.initService() ;
+		boolean init = view.initMySpaceService() ;
 		assertTrue("No service", init) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -149,7 +152,7 @@ public class JUnitTestCase
 		assertNotNull("Null view", view) ;
 		//
 		// Check can locate our MySpace service.
-		boolean init = view.initService() ;
+		boolean init = view.initMySpaceService() ;
 		assertTrue("No service", init) ;
 		//
 		// Set the lookup path.

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/site/explorer/Attic/index.jsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/22 23:29:12 $</cvs:author>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/23 11:19:03 $</cvs:author>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     | $Log: index.jsp,v $
+    | Revision 1.6  2003/06/23 11:19:03  dave
+    | Added service location to view pages
+    |
     | Revision 1.5  2003/06/22 23:29:12  dave
     | Tidied up pages
     |
@@ -66,8 +69,11 @@ if ("create".equals(action))
 	// Get the path from our request params.
 	String path = request.getParameter("path") ;
 	//
+	// Get the service from our request service.
+	String service = request.getParameter("service") ;
+	//
 	// Create a new view.
-	view = portal.createView(path) ;
+	view = portal.createView(service, path) ;
 	//
 	// If we created a view.
 	if (null != view)
@@ -118,6 +124,13 @@ if ("create".equals(action))
 							<option value="/clq">/clq</option>
 							<option value="/clq/serv2">/clq/serv2</option>
 						</select>
+						<select name="service">
+							<option value="">Default</option>
+							<option value="http://localhost:8080/axis/services/MySpaceManager">Local</option>
+							<option value="http://capc49.ast.cam.ac.uk:8080/axis/services/MySpaceManager">Cambridge (dave)</option>
+							<option value="http://143.210.36.120:8080/axis/services/MySpaceManager">Leicester (hydra)</option>
+							<option value="http://143.210.36.131:8080/axis/services/MySpaceManager">Leicester (qin)</option>
+						</select>
 						<input name="submit" type="submit" value="Create"/>
 					</form>
 					Views :
@@ -125,6 +138,7 @@ if ("create".equals(action))
 						<tr>
 							<td>Ident</td>
 							<td>Path</td>
+							<td>Service</td>
 						</tr>
 						<%
 						Iterator views = portal.getCurrentViews() ;
@@ -138,6 +152,9 @@ if ("create".equals(action))
 								</td>
 								<td>
 									<%= ("".equals(next.getPath()) ? "/" : next.getPath()) %>
+								</td>
+								<td>
+									<%= next.getMySpaceLocation() %>
 								</td>
 							</tr>
 							<%

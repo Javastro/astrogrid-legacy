@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/explorer/Attic/AstPortalView.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/22 22:29:48 $</cvs:author>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/23 11:19:03 $</cvs:author>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  * $Log: AstPortalView.java,v $
+ * Revision 1.7  2003/06/23 11:19:03  dave
+ * Added service location to view pages
+ *
  * Revision 1.6  2003/06/22 22:29:48  dave
  * Added message, actions and page for move
  *
@@ -107,11 +110,25 @@ public class AstPortalView
 	public AstPortalView(AstPortalSession session, String path)
 		{
 		//
+		// Use next constructor.
+		this(session, null, path) ;
+		}
+
+	/**
+	 * Public constructor.
+	 *
+	 */
+	public AstPortalView(AstPortalSession session, String service, String path)
+		{
+		//
 		// Initialise our base class.
 		super() ;
 		//
 		// Initialise our session.
 		this.session = session ;
+		//
+		// Initialise our service location.
+		setMySpaceLocation(service) ;
 		//
 		// Initialise our path.
 		this.path = path ;
@@ -214,47 +231,135 @@ public class AstPortalView
 		}
 
 	/**
+	 * Our MySpace service location.
+	 *
+	 */
+	protected String myspaceLocation ;
+
+	/**
+	 * Access to our MySpace service location.
+	 *
+	 */
+	public String getMySpaceLocation()
+		{
+		return this.myspaceLocation ;
+		}
+
+	/**
+	 * Access to our MySpace service location.
+	 *
+	 */
+	public void setMySpaceLocation(String location)
+		{
+		//
+		// If the location is null.
+		if (null == location)
+			{
+			this.myspaceLocation = null ;
+			}
+		//
+		// If the location is not null.
+		else {
+			 ;
+			//
+			// If the location is not blank.
+			if (location.trim().length() > 0)
+				{
+				this.myspaceLocation = location ;
+				}
+			//
+			// If the location is blank.
+			else {
+				this.myspaceLocation = null ;
+				}
+			}
+		//
+		// Reset our service instance.
+		this.initMySpaceService(true) ;
+		}
+
+	/**
 	 * Connection to our MySpace service locator.
 	 *
 	 */
-	protected MySpaceManagerService locator = new MySpaceManagerServiceLocator() ;
+	protected MySpaceManagerService myspaceLocator = new MySpaceManagerServiceLocator() ;
 
 	/**
 	 * Connection to our MySpace service.
 	 *
 	 */
-	protected MySpaceManager myspace ;
+	protected MySpaceManager myspaceService ;
 
 	/**
 	 * Initialise our MySpace service.
+	 * Calls the next methods with reset = false.
+	 *
+	 */
+	public boolean initMySpaceService()
+		{
+		return this.initMySpaceService(false) ;
+		}
+
+	/**
+	 * Initialise our MySpace service.
+	 * Resets to the default service if given a blank string or null.
 	 * 
 	 */
-	public boolean initService()
+	public boolean initMySpaceService(boolean reset)
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("AstPortalView.initMySpaceService()") ;
-		boolean result = false ;
+		if (DEBUG_FLAG) System.out.println("Service : " + myspaceLocation) ;
+
 		//
-		// If we don't already have a service.
-		if (null == myspace)
+		// If we need to reset the service.
+		if (reset)
+			{
+			myspaceService = null ;
+			}
+
+		//
+		// If we don't have a service instance.
+		if (null == myspaceService)
 			{
 			try {
-				myspace = locator.getMySpaceManager() ;
+				//
+				// If we have a service location.
+				if (null != myspaceLocation)
+					{
+					//
+					// Use the specific location.
+					myspaceService = myspaceLocator.getMySpaceManager(new java.net.URL(myspaceLocation)) ;
+					}
+				//
+				// If we don't have a specific location.
+				else {
+					//
+					// Use the default location.
+					myspaceService = myspaceLocator.getMySpaceManager() ;
+					}
 				}
 			catch (ServiceException ouch)
 				{
-//
-// FIXME ....
-//
+				//
+				// FIXME ....
+				//
 				if (DEBUG_FLAG) System.out.println("Exception initialising WebService") ;
 				if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
-
+				}
+			catch (java.net.MalformedURLException ouch)
+				{
+				//
+				// FIXME ....
+				//
+				if (DEBUG_FLAG) System.out.println("Exception initialising WebService") ;
+				if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
 				}
 			}
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
-		return (null != myspace)  ;
+		return (null != myspaceService)  ;
 		}
 
 	/**
@@ -279,8 +384,11 @@ public class AstPortalView
 				System.out.println("----") ;
 				}
 			//
+			// Create our service instance.
+			initMySpaceService() ;
+			//
 			// Call our service method.
-			String response = myspace.lookupDataHoldersDetails(request.toString()) ;
+			String response = myspaceService.lookupDataHoldersDetails(request.toString()) ;
 			if (DEBUG_FLAG)
 				{
 				System.out.println("----") ;
@@ -351,8 +459,11 @@ public class AstPortalView
 				System.out.println("----") ;
 				}
 			//
+			// Create our service instance.
+			initMySpaceService() ;
+			//
 			// Call our service method.
-			String response = myspace.lookupDataHolderDetails(request.toString()) ;
+			String response = myspaceService.lookupDataHolderDetails(request.toString()) ;
 			if (DEBUG_FLAG)
 				{
 				System.out.println("----") ;
@@ -422,8 +533,11 @@ public class AstPortalView
 				System.out.println("----") ;
 				}
 			//
+			// Create our service instance.
+			initMySpaceService() ;
+			//
 			// Call our service method.
-			String response = myspace.copyDataHolder(request.toString()) ;
+			String response = myspaceService.copyDataHolder(request.toString()) ;
 			if (DEBUG_FLAG)
 				{
 				System.out.println("----") ;
@@ -493,8 +607,11 @@ public class AstPortalView
 				System.out.println("----") ;
 				}
 			//
+			// Create our service instance.
+			initMySpaceService() ;
+			//
 			// Call our service method.
-			String response = myspace.moveDataHolder(request.toString()) ;
+			String response = myspaceService.moveDataHolder(request.toString()) ;
 			if (DEBUG_FLAG)
 				{
 				System.out.println("----") ;
@@ -564,8 +681,11 @@ public class AstPortalView
 				System.out.println("----") ;
 				}
 			//
+			// Create our service instance.
+			initMySpaceService() ;
+			//
 			// Call our service method.
-			String response = myspace.deleteDataHolder(request.toString()) ;
+			String response = myspaceService.deleteDataHolder(request.toString()) ;
 			if (DEBUG_FLAG)
 				{
 				System.out.println("----") ;

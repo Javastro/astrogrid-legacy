@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/session/Attic/AstPortalSession.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/12 18:19:38 $</cvs:author>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/23 11:19:03 $</cvs:author>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  * $Log: AstPortalSession.java,v $
+ * Revision 1.2  2003/06/23 11:19:03  dave
+ * Added service location to view pages
+ *
  * Revision 1.1  2003/06/12 18:19:38  dave
  * Initial import into cvs ...
  *
@@ -128,11 +131,24 @@ public class AstPortalSession
 
 	/**
 	 * Create a new view.
+	 * Using the default service location.
 	 *
 	 */
 	public AstPortalView createView(String path)
 		{
 		AstPortalView view = new AstPortalView(this, path) ;
+		this.views.put(view.getIdent(), view) ;
+		return view ;
+		}
+
+	/**
+	 * Create a new view.
+	 * Using a specific service location.
+	 *
+	 */
+	public AstPortalView createView(String service, String path)
+		{
+		AstPortalView view = new AstPortalView(this, service, path) ;
 		this.views.put(view.getIdent(), view) ;
 		return view ;
 		}
