@@ -1150,6 +1150,51 @@ public class Workflow extends Activity {
             
     }
     
+
+
+    
+	public static boolean insertToolIntoStep( String stepActivityKey
+											, Tool tool
+											, Workflow workflow ) {
+			if( TRACE_ENABLED ) trace( "Workflow.insertToolInStep(String,String, Workflow) entry") ; 
+
+			boolean
+				retValue = false ;
+			Step
+				step = null ;
+			Activity
+				activity = null ;
+            
+			try {
+            
+				activity = workflow.getActivity( stepActivityKey ) ;
+            
+				if( activity == null ) {
+					debug( "activity not found" ) ;
+				}
+				else if( (activity instanceof Step) == false ) {
+					debug( "activity not a Step") ;
+				}
+				else {
+					step = (Step)activity ;
+							step.setTool( tool ) ;
+							retValue = true ;
+					}
+                        
+			}
+			catch( Exception ex ) {
+					ex.printStackTrace() ;
+			}
+			finally {
+					if( TRACE_ENABLED ) trace( "Workflow.insertQueryInStep(String,String, Workflow) exit") ; 
+			}
+        
+			return retValue ;
+
+	} // end of insertQueryInStep(String,String)    
+    
+    
+    
         
     private static void trace( String traceString ) {
         System.out.println( traceString ) ;
