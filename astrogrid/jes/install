@@ -1,0 +1,149 @@
+#=============================================================================#
+#                    AstroGrid JES INSTALL.                     
+#=============================================================================#
+JES - Job Entry System
+
+1.0 SOFTWARE PREREQUISITES:
+*****************************
+
+1.1 Externals.
+----------------
+
+These are the environments under which JES was developed:
+. RedHat Linux 7.3 
+. Java sdk j2sdk1.4.1_02
+. Tomcat 4.1.24
+. Axis-1_1RC2
+. MySQL Ver 11.16 Distrib 3.23.49, for redhat-linux-gnu (i386)
+
+You should also ensure the following are available:
+. junit 3.8.1 or later
+. log4j 1.2.4 or later
+
+We have tested using MySQL as the database. The appropriate jdbc jar
+is included with the distribution. Further details are given later.
+
+
+1.2 The Jes War file
+----------------------
+
+Contains all the runtime files required for JES apart from the external prerequisites.
+
+
+2.0 Deploying the War file:
+****************************
+
+Tomcat must be installed and running in order to achieve this step.
+Copy the jes war file into the Tomcat webapps directory. Tomcat will automatically
+deploy the war file, creating the following directory structure under the webapps directory...
+
+astrogrid-jes-SNAPSHOT
+  |   
+  +__maven
+  |
+  +__WEB-INF
+      |
+      +__classes
+      |
+      +__lib
+      
+At the same time, the JES web services will be deployed automatically.
+      
+The astrogrid-jes-SNAPSHOT directory (or similarly named) will contain contain two important files:
+ASTROGRID_workflowconfig.xmlm    - the JES configuration file
+mysql_jes_database.ddl           - a basic script to create the JES database and tables.
+
+The configuration file needs to be altered or merged with any already existing JES configuration file
+before being moved into the WEB-INF/classes directory. See the README for extra details on this step.
+
+
+3.0 The JES Database :
+****************************
+
+A Job database is required to keep track of jobs entered into the AstroGrid system.
+MySQL or a similar RDBMS is required. The details here are pertinent to MySQL.
+
+3.1 JES Database.        
+--------------------
+
+Use the following command to create the JES database and its required 4 tables:
+mysql -u [admin user id] -p -f < $CATALINA_HOME/webapps/astrogrid-jes-SNAPSHOT/mysql_jes_database.ddl
+You will be prompted for the password for the admin user. 
+***EXTREME CAUTION*** 
+The -f or "force" option is required since the script attempts to drop the jes database, 
+which does not exist first time. On subsequent runs the existing database will be dropped. If this is
+not the required behaviour, edit the script and remove the DROP statement!
+
+3.2 Create an astrogrid database user
+----------------------------------------
+
+Get your system administrator or database administrator to advise you on this. The example shown
+here is not secure. With admin privileges, issue the following from the mysql command line after
+making sensible alterations...
+GRANT ALL PRIVILEGES ON *.* TO ag1-userid@localhost IDENTIFIED BY 'ag1-password' WITH GRANT OPTION ;
+GRANT ALL PRIVILEGES ON *.* TO ag1-userid@"%" IDENTIFIED BY 'ag1-password' WITH GRANT OPTION ;
+
+localhost should be changed to reflect the dns name of the relevant host
+ag1-userid can be changed to any sensible userid
+ag1-password can be changed to a sensible password.
+Note the two lines above, as the values are required in the following section...
+
+
+3.2 JNDI.        **** IMPORTANT ****
+-----------
+
+For reference see:    
+http://jakarta.apache.org/tomcat/tomcat-4.1-doc/jndi-datasource-examples-howto.html
+
+JES uses JNDI to lookup it's associated database. One file requires 
+altering to enable this to happen:
+
+The Tomcat SERVER.XML file - $CATALINA_HOME/conf/server.xml
+Add database implementation specific details for each datasource as required
+by JNDI (eg. driverClassName, URL, User, Password):
+
+  <DefaultContext>
+    <Resource name="jdbc/jes-datasource"
+              auth="Container"
+              type="javax.sql.DataSource"/>
+            <ResourceParams name="jdbc/jes-datasource">
+              <parameter>
+                <name>maxActive</name>
+                <value>100</value>
+              </parameter>
+              <parameter>
+                <name>maxIdle</name>
+                <value>30</value>
+              </parameter>
+              <parameter>
+                <name>maxWait</name>
+                <value>10000</value>
+              </parameter>
+              <parameter>
+                <name>driverClassName</name>
+               <value>org.gjt.mm.mysql.Driver</value>
+             </parameter>
+             <parameter>
+               <name>url</name>
+               <value>jdbc:mysql://localhost:3306/</value>
+             </parameter>
+             <parameter>
+               <name>username</name>
+               <value>ag1-userid</value>
+             </parameter>
+             <parameter>
+               <name>password</name>
+               <value>ag1-password</value>
+              </parameter>
+            </ResourceParams>
+     </DefaultContext>
+
+
+4.0 Edit the ASTROGRID_jesconfig.xml file
+********************************************
+See the accompanying README for this information.
+
+
+5.0 Shutdown and restart Tomcat.
+**********************************
+JES should be ready to run.
