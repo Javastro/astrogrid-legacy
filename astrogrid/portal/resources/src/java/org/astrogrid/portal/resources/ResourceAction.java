@@ -38,8 +38,8 @@ import org.astrogrid.store.Ivorn;
 
 /**
  * @author Phil Nicolson (pjn3@star.le.ac.uk) Jan 05
- * @version $Name:  $Revision: 1.6 $Date:
- * @version $Name:  $Revision: 1.6 $Date:
+ * @version $Name:  $Revision: 1.7 $Date:
+ * @version $Name:  $Revision: 1.7 $Date:
  */
 public class ResourceAction extends AbstractAction {
 
@@ -353,7 +353,7 @@ public class ResourceAction extends AbstractAction {
                 {                    
                   sqlQuery += wavelengthjoin;
                 }
-                sqlQuery += "vs:coverage/vs:spectral/vs:waveband = '" + wavelength[i].trim() + "' ";
+                sqlQuery += " vs:coverage/vs:spectral/vs:waveband = '" + wavelength[i].trim() + "' ";
               }
 			  andreqd = true;
               
@@ -375,7 +375,7 @@ public class ResourceAction extends AbstractAction {
                   sqlQuery += missionjoin;
                 } 
                 
-                sqlQuery += "vr:facility = '" + mission[i].trim() + "' ";
+                sqlQuery += " vr:facility = '" + mission[i].trim() + "' ";
               }
 			  andreqd = true;
               
@@ -398,7 +398,7 @@ public class ResourceAction extends AbstractAction {
                     sqlQuery += keywordjoin;
                 }
                 
-                sqlQuery += "vr:content/vr:subject = '" + keyword[i].trim() + "'";
+                sqlQuery += " vr:content/vr:subject = '" + keyword[i].trim() + "'";
               
               }
               
