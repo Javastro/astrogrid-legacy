@@ -1,5 +1,6 @@
 package org.astrogrid.security;
 
+import java.security.MessageDigest;
 import java.util.Date;
 import javax.xml.soap.Name;
 import javax.xml.soap.SOAPElement;
@@ -40,8 +41,15 @@ public class WsseHeaderElement {
   /**
    * The URI for the namespace of the WS-Security standard.
    */
-  private String WsseNamespace
-      = "http://schemas.xmlsoap.org/ws/2002/04/secext";
+  private String wsseNamespace
+      = "http://schemas.xmlsoap.org/ws/2002/07/secext";
+
+  /**
+   * The URI for the namespace for WSSE utility elements.
+   */
+  private String wssuNamespace
+      = "http://schemas.xmlsoap.org/ws/2002/07/utility";
+
 
   /**
    * A formatter for using ISO8601 timestamps.
@@ -67,65 +75,81 @@ public class WsseHeaderElement {
   public void write () throws SOAPException {
     SOAPPart     sp = this.message.getSOAPPart();
     assert (sp != null);
-    SOAPEnvelope se = sp.getEnvelope();
-    assert (se != null);
-    SOAPHeader   sh = se.getHeader();
+    SOAPEnvelope envelope = sp.getEnvelope();
+    assert (envelope != null);
+    SOAPHeader   header = envelope.getHeader();
 
     // Create the outer element.
-    Name securityName = se.createName("Security", "wsse", this.WsseNamespace);
-    SOAPHeaderElement security = sh.addHeaderElement(securityName);
+    Name securityName = envelope.createName("Security", "wsse", this.wsseNamespace);
+    SOAPHeaderElement security = header.addHeaderElement(securityName);
 
     // Add the UsernameToken.
-    SOAPElement usernameToken = this.addChildElement(se,
+    SOAPElement usernameToken = this.addChildElement(envelope,
                                                      security,
                                                      "UsernameToken",
                                                      "wsse",
-                                                     this.WsseNamespace);
+                                                     this.wsseNamespace);
+
+    // Add an ID element.
+    SOAPElement id = this.addChildElement(envelope,
+                                          usernameToken,
+                                          "Id",
+                                          "wssu",
+                                          this.wssuNamespace);
+    id.addTextNode("Fred");
 
     // Add a Nonce, generated randomly here.
-    String nonceValue = "123456789"; // @TODO: generate a proper nonce.
-    SOAPElement nonce = this.addChildElement(se,
+    String nonceValue = PasswordEncoding.generateEncodedNonce();
+    SOAPElement nonce = this.addChildElement(envelope,
                                              usernameToken,
                                              "Nonce",
                                              "wsse",
-                                             this.WsseNamespace);
+                                             this.wsseNamespace);
     nonce.addTextNode(nonceValue);
 
     // Add a creation timestamp.
     String createdValue = iso8601.format(new Date());
-    SOAPElement created = this.addChildElement(se,
+    SOAPElement created = this.addChildElement(envelope,
                                                usernameToken,
                                                "Created",
-                                               "wsse",
-                                               this.WsseNamespace);
+                                               "wssu",
+                                               this.wssuNamespace);
     created.addTextNode(createdValue);
 
     // Add the actual username to the token.
     String usernameValue = this.guard.getUsername();
     if (usernameValue != null) {
-      SOAPElement username = this.addChildElement(se,
+      SOAPElement username = this.addChildElement(envelope,
                                                   usernameToken,
                                                   "Username",
                                                   "wsse",
-                                                  this.WsseNamespace);
+                                                  this.wsseNamespace);
       username.addTextNode(usernameValue);
     }
 
     // Add the password to the token.  If password hashing is turned on,
     // concatenate the password with the nonce and timestamp and hash the
-    // result.
+    // result using the Secure Hashing Algorithm.
     String passwordValue = this.guard.getPassword();
     if (passwordValue != null) {
-     SOAPElement password = this.addChildElement(se,
+      SOAPElement password = this.addChildElement(envelope,
                                                   usernameToken,
                                                   "Password",
                                                   "wsse",
-                                                  this.WsseNamespace);
-     if (this.guard.isPasswordHashing()) {
-       // @TODO: add hashing algorithm.
-       // @TODO: add type attribute to password element.
-     }
-     password.addTextNode(passwordValue);
+                                                  this.wsseNamespace);
+      if (this.guard.isPasswordHashing()) {
+        passwordValue = PasswordEncoding.encode(passwordValue,
+                                                nonceValue,
+                                                createdValue);
+        System.out.println("Hashed password: " + passwordValue);
+        this.addAttribute(envelope,
+                          password,
+                          "Type",
+                          "wsse",
+                          this.wsseNamespace,
+                          "wsse:PasswordDigest");
+      }
+      password.addTextNode(passwordValue);
     }
 
   }
@@ -167,6 +191,60 @@ public class WsseHeaderElement {
     assert(uri != null);
     Name name = envelope.createName(child, prefix, uri);
     return parent.addChildElement(name);
+  }
+
+
+  /**
+   * Adds an attribute to an existing element.
+   * The SOAP element is used to derive the Name of the attribute.
+   *
+   * @param envelope SOAP envelope which generates the QNames
+   * @param parent existing element to bear the attribute
+   * @param name local name of the attribute
+   * @param prefix namespace prefix for the attribute
+   * @param uri namespace URI for the attribute
+   * @param value the value of the attribute
+   *
+   * @throws SOAPException if there was an error in constructing the
+   * QName for the child or in constructing the child element
+   */
+  private void addAttribute (SOAPEnvelope envelope,
+                             SOAPElement  parent,
+                             String       name,
+                             String       prefix,
+                             String       uri,
+                             String       value) throws SOAPException {
+    assert(envelope != null);
+    assert(parent != null);
+    assert(name != null);
+    assert(prefix != null);
+    assert(uri != null);
+    assert(value != null);
+    Name qName = envelope.createName(name, prefix, uri);
+    parent.addAttribute(qName, value);
+  }
+
+
+  /**
+   * Applies the Secure Hashing algorithm to a given string and
+   * returns the result in base-64 encoding.
+   *
+   * @param in the string to be hashed
+   *
+   * @return the hash value in a new object
+   *
+   * @throws SOAPException if the hashing fails
+   */
+  private String hashWithSha (String in) throws SOAPException {
+    try {
+      MessageDigest md = MessageDigest.getInstance("SHA");
+      md.update(in.getBytes());
+      byte[] b = md.digest();
+      return Base64.encodeBytes(b);
+    }
+    catch (Exception e) {
+      throw new SOAPException("Failed to hash the password", e);
+    }
   }
 
 }
