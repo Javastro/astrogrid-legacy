@@ -1,4 +1,4 @@
-/*$Id: SimpleMySpaceTest.java,v 1.10 2004/05/04 14:25:49 jdt Exp $
+/*$Id: SimpleMySpaceTest.java,v 1.11 2004/05/11 09:25:30 pah Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -80,7 +80,7 @@ public final class SimpleMySpaceTest extends TestCase {
             SimpleConfig.getSingleton().getString(
                 "org.astrogrid.myspace.endpoint");
         log.info("Running test against endpoint " + endPoint);
-        final User operator = new User("someuser", "group", "token");
+        final User operator = new User("someuser@somecommunity", "group", "token");
         myspace = new MySpaceIt05Delegate(operator, endPoint);
         //
         //      Configure the delegate to (i) not generate test responses and
@@ -336,6 +336,9 @@ public final class SimpleMySpaceTest extends TestCase {
 }
 /*
  $Log: SimpleMySpaceTest.java,v $
+ Revision 1.11  2004/05/11 09:25:30  pah
+ make sure that the user object is created properly
+
  Revision 1.10  2004/05/04 14:25:49  jdt
  Updated MySpaceWiper.  To delete a user it's no longer necessary
  to delete all his files...can just delete the user.   ahhh, much easier.

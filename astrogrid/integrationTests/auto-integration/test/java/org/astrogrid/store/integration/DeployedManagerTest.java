@@ -77,7 +77,7 @@ public class DeployedManagerTest extends TestCase
          assertNotNull(endPoint);
          log.debug("Running test against endpoint "+endPoint);
 
-         User operator = new User("someuser", "group", "token");
+         User operator = new User("someuser@somecommunity", "group", "token");
 
          MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
            operator, endPoint);

@@ -1,4 +1,4 @@
-/*$Id: MySpaceTest.java,v 1.5 2004/04/22 13:50:38 mch Exp $
+/*$Id: MySpaceTest.java,v 1.6 2004/05/11 09:25:30 pah Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,7 +44,7 @@ public class MySpaceTest extends StoreClientTestHelper {
       //MYSPACE = new Agsl("myspace:http://grendel12.roe.ac.uk:8080/MySpaceManager_v041/services/MySpaceManager");
       
       path = "avodemo/";
-      testUser = new User("avodemo", "test.astrogrid.org", "Loony");
+      testUser = new User("avodemo", "test.astrogrid.org", "group", "Loony");
 
       //make sure user exists
       try {
@@ -129,6 +129,9 @@ public class MySpaceTest extends StoreClientTestHelper {
 
 /*
 $Log: MySpaceTest.java,v $
+Revision 1.6  2004/05/11 09:25:30  pah
+make sure that the user object is created properly
+
 Revision 1.5  2004/04/22 13:50:38  mch
 Fixes to tests and more tests
 
