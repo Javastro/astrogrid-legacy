@@ -59,7 +59,9 @@
                <xsp:element name="inputParam">
                   <xsp:attribute name="param-name"><xsp:expr>params.getName()</xsp:expr></xsp:attribute>
                   <xsp:attribute name="param-type"><xsp:expr>params.getType()</xsp:expr></xsp:attribute>
-                  <xsp:attribute name="param-location"><xsp:expr>params.getLocation()</xsp:expr></xsp:attribute>                                    
+                  <xsp:attribute name="param-location"><xsp:expr>params.getLocation()</xsp:expr></xsp:attribute>
+                  <xsp:attribute name="param-cardinality-max"><xsp:expr>params.getCardinality().getMaximum()</xsp:expr></xsp:attribute>                                                      
+                  <xsp:attribute name="param-cardinality-min"><xsp:expr>params.getCardinality().getMinimum()</xsp:expr></xsp:attribute>                                                                        
                </xsp:element>
 			</content>
 			
@@ -99,6 +101,8 @@
                   <xsp:attribute name="param-name"><xsp:expr>params.getName()</xsp:expr></xsp:attribute>
                   <xsp:attribute name="param-type"><xsp:expr>params.getType()</xsp:expr></xsp:attribute>
                   <xsp:attribute name="param-location"><xsp:expr>params.getLocation()</xsp:expr></xsp:attribute>                                    
+                  <xsp:attribute name="param-cardinality-max"><xsp:expr>params.getCardinality().getMaximum()</xsp:expr></xsp:attribute>                                                      
+                  <xsp:attribute name="param-cardinality-min"><xsp:expr>params.getCardinality().getMinimum()</xsp:expr></xsp:attribute>                                                                        
                </xsp:element>
 			</content>
 			
@@ -408,6 +412,12 @@
 	        if (toolObject != null){
                <xsp:attribute name="toolObject-name"><xsp:expr>toolObject.getName()</xsp:expr></xsp:attribute> 
                <xsp:attribute name="toolObject-documentation"><xsp:expr>toolObject.getDocumentation()</xsp:expr></xsp:attribute>
+               ListIterator listInputIt = toolObject.getInputParameters() ;
+               inputParamsList(listInputIt) ;
+               ListIterator listOutputIt = toolObject.getOutputParameters() ;
+               outputParamsList(listOutputIt) ;
+                              
+               
             } // end of if            
          } // end of try
          catch(Exception e) {
