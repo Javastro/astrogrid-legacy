@@ -38,8 +38,8 @@ import org.astrogrid.store.Ivorn;
 
 /**
  * @author Phil Nicolson (pjn3@star.le.ac.uk) Jan 05
- * @version $Name:  $Revision: 1.5 $Date:
- * @version $Name:  $Revision: 1.5 $Date:
+ * @version $Name:  $Revision: 1.6 $Date:
+ * @version $Name:  $Revision: 1.6 $Date:
  */
 public class ResourceAction extends AbstractAction {
 
@@ -289,7 +289,7 @@ public class ResourceAction extends AbstractAction {
         
         categoryjoin = request.getParameter( PARAM_CONSTRAINT_ALL ).trim();
                  
-        sqlQuery = "Select * from Regitry where ( vr:content/vr:type='Catalog' )";
+        sqlQuery = "Select * from Regitry where ( ( vr:content/vr:type='Catalog' )";
         // Lets build up the XML for a query.
 
          // is this an empty search?
@@ -357,7 +357,7 @@ public class ResourceAction extends AbstractAction {
               }
 			  andreqd = true;
               
-              sqlQuery += "  "; // end of wavelength
+              sqlQuery += " ) "; // end of wavelength
               
             } // end of WAVELENGTH
 
@@ -402,13 +402,17 @@ public class ResourceAction extends AbstractAction {
               
               }
               
-              sqlQuery += " ) "; // start of keyword
+              sqlQuery += " ) "; // end of keyword
               
             } // end of KEYWORD
-        
+            
+            sqlQuery += " ) ";
+            
 		  }
+		 
         //  End of Query.
-		 sqlQuery += " ) "; 
+		 sqlQuery += " ) ";
+		 
       }
       catch(Exception ex) {
 		session.setAttribute( ERROR_MESSAGE_PARAMETER, ex.getMessage() ) ;      	
@@ -452,7 +456,7 @@ public class ResourceAction extends AbstractAction {
         taskJoin = request.getParameter( PARAM_TASK_JOIN ).trim();        
 
         // Lets build up the XML for a query.
-        sqlQuery = " Select * from Registry where ( @xsi:type = 'cea:CeaApplicationType' or ";
+        sqlQuery = " Select * from Registry where ( ( @xsi:type = 'cea:CeaApplicationType' or ";
         sqlQuery += " @xsi:type = 'cea:CeaHttpApplicationType' )";
         
 		// is this an empty search?
@@ -483,7 +487,9 @@ public class ResourceAction extends AbstractAction {
 		
           sqlQuery += ")";
 		}		                 	
-                     
+          
+		sqlQuery += ")"; // End of query
+		
       }
       catch(Exception ex){
 		session.setAttribute( ERROR_MESSAGE_PARAMETER, ex.getMessage() ) ;      	
