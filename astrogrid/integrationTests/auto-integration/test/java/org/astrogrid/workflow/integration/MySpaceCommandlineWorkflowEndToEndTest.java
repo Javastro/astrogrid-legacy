@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.3 2004/04/26 09:04:22 pah Exp $
+ * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.4 2004/05/11 12:15:27 pah Exp $
  * 
  * Created on 23-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -90,5 +90,13 @@ public class MySpaceCommandlineWorkflowEndToEndTest
         suite.addTest(new MySpaceCommandlineWorkflowEndToEndTest("tidyUp"));        
         return suite;
     }
+
+   /* (non-Javadoc)
+    * @see org.astrogrid.workflow.integration.SimpleCommandlineWorkflowEndToEndTest#buildWorkflow()
+    */
+   protected void buildWorkflow() throws Exception {
+      super.buildWorkflow();
+      wf.setName("MySpaceUsingWorkflow");
+   }
 
 }
