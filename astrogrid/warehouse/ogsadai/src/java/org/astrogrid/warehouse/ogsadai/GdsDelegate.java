@@ -134,7 +134,7 @@ public class GdsDelegate extends GridServiceDelegate {
     // and the query may take a while.
     ExtensibilityType result = null;
     try {
-      ((Stub) this.applicationPort).setTimeout(30*60*100);  // 3 min timeout
+      ((Stub) this.applicationPort).setTimeout(30*60*1000);  // 30 min timeout
       result = ((GDSPortType) this.applicationPort).perform(document);
     }
     catch (Exception e) {
