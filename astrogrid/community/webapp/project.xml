@@ -4,10 +4,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/04/15 16:52:00 $</cvs:date>
-    | <cvs:version>$Revision: 1.11 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/15 17:03:24 $</cvs:date>
+    | <cvs:version>$Revision: 1.12 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.12  2004/04/15 17:03:24  dave
+    |   Updated webapp depends to include VoSpaceClient
+    |
     |   Revision 1.11  2004/04/15 16:52:00  dave
     |   Updated webapp depends to include VoSpaceClient
     |
@@ -172,6 +175,20 @@
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>astrogrid-community-server</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <!--+
+            | The Community resolver components.
+            | Used by the VoSpace client.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-community-resolver</artifactId>
             <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
