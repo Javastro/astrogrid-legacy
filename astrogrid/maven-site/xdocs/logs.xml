@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-
+<!--this is a copy of index.xml.  It's necessary for the logs expanding menu item-->
 <document>
   <properties>
     <title>Maven</title>
@@ -15,9 +15,6 @@
       <p>
         AstroGrid is however focused in that it aims to develop something recognisably like a working VO on a short timescale, so that science can start getting done and technological lessons can be learned. This requires concentrating on selected datasets. Our priority is to develop a virtual observatory capability to support efficient and effective exploitation of key astronomical data sets of importance to the UK community: for example data from WFCAM, VISTA, XMM-SSC, e-MERLIN, SOHO and Cluster. It seems clear that good data curation, archive management, and datamining services all need to be closely linked together. AstroGrid is therefore a partnership formed by UK archive centres and astronomical computer scientists.
       </p>
-    </section>
-    <section name="temp">
-          Collapsable menus seem to need a page to link to.
     </section>
     <section name="Project Goals">
       <p>
