@@ -2,10 +2,9 @@ package org.astrogrid.mySpace.mySpaceServer;
 
 // AstroGrid.
 
-import org.astrogrid.mySpace.mySpaceManager.DataItemRecord;
 import org.astrogrid.mySpace.mySpaceStatus.*;
 import org.astrogrid.mySpace.mySpaceUtil.MySpaceUtils;
-import org.astrogrid.mySpace.mySpaceUtil.FileTransferGuy;
+
 
 // Java.
 
@@ -19,7 +18,6 @@ import java.io.File;
 import org.apache.log4j.Logger;
 
 import org.astrogrid.Configurator;
-import org.astrogrid.i18n.*;
 import org.astrogrid.mySpace.mySpaceUtil.*;
 
 /**
