@@ -53,7 +53,7 @@
                <td style="background-color: rgb(204,204,204); width: 140px;">
                   <a href="index.html"><br/> <b>Home</b></a>
                   <br/><br/>
-                  <a href="agbrowseregistry.html"><b>Browse registry</b></a>
+                  <a href="agregistry.html"><b>Browse registry</b></a>
                   <br/><br/>
                   <a href="agdataquery.html"><b>Data Query</b></a>
                   <br/><br/>
