@@ -99,12 +99,11 @@ public class CastorSerializer implements Serializer {
             Object value,
             SerializationContext context)
             throws IOException {
-        context.startElement(name, attributes);
+       // context.startElement(name, attributes);
         String fdate;
         StringWriter writer = null;
 
         try {
-
             writer = new StringWriter();
 
             // Create a Castor Marshaller initialized with the output stream
@@ -117,6 +116,8 @@ public class CastorSerializer implements Serializer {
 
             // Marshall the Castor object into the stream (sink)
             marshaller.marshal(value);
+            System.out.println(" **Serializing " + value.getClass().getName());
+            System.out.println(writer.toString());
 
             context.writeString(writer.toString());
         } catch (MarshalException me) {
@@ -128,7 +129,7 @@ public class CastorSerializer implements Serializer {
             throw new IOException(Messages.getMessage("castorValidationException00")
                     + ve.getLocalizedMessage());
         } finally {
-            context.endElement();
+           // context.endElement();
         }
     }
 

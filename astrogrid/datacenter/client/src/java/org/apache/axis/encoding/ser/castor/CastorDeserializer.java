@@ -72,7 +72,7 @@ import java.util.ArrayList;
  * Castor deserializer
  * @author Olivier Brand (olivier.brand@vodafone.com)
  * @author Steve Loughran
- * @version 1.0
+ * @version 1
  *
  */
 public class CastorDeserializer
@@ -98,6 +98,7 @@ public class CastorDeserializer
 
         try {
             MessageElement msgElem = context.getCurElement();
+            System.out.println("Unmarshalling " + javaType.getName() + " " + localName + " " + namespace );            
             if (msgElem != null)
             {
                 // Unmarshall the nested XML element into a castor object of type 'javaType'
