@@ -5,7 +5,7 @@
 	<title>PAL - Self Test</title>
 </properties>
 <body>
-<section name="Test Axis"><p>
+<section name="Test &amp; Debug Axis"><p>
 PAL uses Apache Axis as its underlying SOAP transport mechanism.
 
 <ul>
@@ -14,8 +14,7 @@ PAL uses Apache Axis as its underlying SOAP transport mechanism.
         <i>see below if this does not work.</i></li>
     <li><a href="servlet/AxisServlet">View</a>
         the list of deployed Web services</li>
-    <li><a href="http://xml.apache.org/axis">Visit</a>
-        the Apache-Axis Home Page</li>
+
 </ul>
 
 If the "happyaxis" validation page displays an exception instead of a
@@ -23,9 +22,15 @@ status page, the likely cause is that you have multiple XML parsers in
 your classpath. Clean up your classpath by eliminating extraneous parsers.
 </p>
 </section>
-<section name="Test PAL">
+<section name="Test &amp; Debug PAL">
 <p>
-Run the PAL installation tests <a href="TestServlet?suite=org.astrogrid.datacenter.InstallationSelfCheck">here</a>.
+<ul>
+
+<li><a href="TestServlet?suite=org.astrogrid.datacenter.InstallationSelfCheck">Run</a> the PAL installation
+self-tests</li>
+<li><a href="pal-dump.jsp">List</a> the PAL configuration</li>
+<li>Take a <a href="fingerprint.jsp">fingerprint</a> of the system</li>
+</ul>
 </p>
 </section>
 </body>
