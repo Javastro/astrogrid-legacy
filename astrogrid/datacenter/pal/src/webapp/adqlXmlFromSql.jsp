@@ -1,6 +1,6 @@
 <%@ page import="java.io.*,
          org.astrogrid.datacenter.service.*,
-         org.astrogrid.datacenter.sqlparser.*"
+         org.astrogrid.datacenter.query.*"
    isThreadSafe="false"
    session="false"
 %>
@@ -16,11 +16,11 @@
       //   adqlXml = Sql2Adql05.translate(adqlSql);
      // }
       if (request.getParameter("MakeAdql074") != null) {
-         adqlXml = Sql2Adql074.translate(adqlSql);
+         adqlXml = Query2Adql074.makeAdql(SqlQueryMaker.makeQuery(adqlSql));
       }
       else {
          //default
-         adqlXml = Sql2Adql074.translate(adqlSql);
+         adqlXml = Query2Adql074.makeAdql(SqlQueryMaker.makeQuery(adqlSql));
       }
    }
 %>

@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.3 2004/10/05 15:04:28 mch Exp $
+ * $Id: Querier.java,v 1.4 2004/10/06 21:12:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,14 +13,12 @@ import java.util.Date;
 import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.astrogrid.community.Account;
-import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.query.RawSqlQuery;
+import org.astrogrid.datacenter.query.condition.Condition;
 import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.datacenter.returns.TargetIndicator;
-import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.slinger.Slinger;
+import org.astrogrid.slinger.TargetIndicator;
 
 /**
  * Represents a single running query.
@@ -66,10 +64,6 @@ public class Querier implements Runnable {
    /** status of query */
    private QuerierStatus status;
 
-   /** Specification for where the results are to be sent, what form, what should
-    * be included, etc
-    */
-   private ReturnSpec returns = null;
 
    /** For measuring how long the query took - calculated from status change times*/
 //use status info   private Date timeQueryStarted = null;
@@ -83,18 +77,18 @@ public class Querier implements Runnable {
 
 
    /** Can't remember why this is private  - there was a reason... */
-   protected Querier(Account forUser, Query query, ReturnSpec resultsDefinition) throws IOException {
+   protected Querier(Account forUser, Query query) throws IOException {
       this.id = generateQueryId();
-      this.returns = resultsDefinition;
       this.user = forUser;
       this.query = query;
       
 
       //check raw sql
+      /*
       if ((query instanceof RawSqlQuery) && (!SimpleConfig.getSingleton().getBoolean(DataServer.SQL_PASSTHROUGH_ENABLED, false))) {
          throw new IllegalArgumentException("This datacenter does not allow raw SQL Queriers to be constructed");
       }
-      
+       */
       //default results destination is taken from default myspace given in config
       /** don't do this, as it means queries that have not been given an AGSL try to send to mysapce...
       URL defaultMySpace = SimpleConfig.getSingleton().getUrl(DEFAULT_MYSPACE, null);
@@ -109,16 +103,32 @@ public class Querier implements Runnable {
       setStatus(new QuerierConstructed(this));
    }
    
-   /** Factory method   */
-   public static Querier makeQuerier(Account forUser, Query query, ReturnSpec resultsDefinition) throws IOException {
-      Querier querier = new Querier(forUser, query, resultsDefinition);
+   /** Factory method, builds query from components  */
+   public static Querier makeQuerier(Account forUser, Condition condition, ReturnSpec resultsDefinition) throws IOException {
+      Querier querier = new Querier(forUser, new Query(null, condition, resultsDefinition));
 
       return querier;
    }
    
+   /** Factory method   */
+   public static Querier makeQuerier(Account forUser, Query query) throws IOException {
+      Querier querier = new Querier(forUser, query);
+
+      return querier;
+   }
+
+   /** Old Factory method  @deprecated  */
+   public static Querier makeQuerier(Account forUser, Condition condition, TargetIndicator target, String format) throws IOException {
+      Querier querier = new Querier(forUser, new Query(condition, new ReturnTable(target, format)));
+
+      return querier;
+   }
+
    /** Old Factory method  @deprecated  */
    public static Querier makeQuerier(Account forUser, Query query, TargetIndicator target, String format) throws IOException {
-      Querier querier = new Querier(forUser, query, new ReturnTable(target, format));
+      query.getResultsDef().setTarget(target);
+      query.getResultsDef().setFormat(format);
+      Querier querier = new Querier(forUser, query);
 
       return querier;
    }
@@ -162,7 +172,7 @@ public class Querier implements Runnable {
     * results processing but there are helper methods here for it
      */
    public void ask() throws IOException {
-      Slinger.testConnection(returns.getTarget(), getUser());
+      Slinger.testConnection(query.getTarget(), getUser());
 
  //     plugin = QuerierPluginFactory.createPlugin(this);
       
@@ -173,19 +183,20 @@ public class Querier implements Runnable {
    
 
    /** Sets results target.
-    * @deprecated - should be set in constructor - but v4.1 interface uses it */
+    * @deprecated - should be set in constructor - but v4.1 interface uses it
    public void setResultsTarget(TargetIndicator target)  { this.returns.setTarget(target); }
    
    /** Returns where the results are to be sent
-    * @deprecated use getReturnSpec */
+    * @deprecated use getReturnSpec
    public TargetIndicator getResultsTarget()    {   return this.returns.getTarget();  }
 
    /**
     * Returns the requested results format
-    * @deprecated use getReturnSpec */
+    * @deprecated use getReturnSpec
    public String getRequestedFormat()           {  return ((ReturnTable) this.returns).getFormat(); }
 
-   public ReturnSpec getReturnSpec()            { return this.returns; }
+    /** Returns the specification of the results */
+   public ReturnSpec getReturnSpec()            { return this.query.getResultsDef(); }
    
    /**
     * Closes & tidies up
@@ -348,6 +359,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.4  2004/10/06 21:12:17  mch
+ Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
  Revision 1.3  2004/10/05 15:04:28  mch
  Get time taken from status now
 

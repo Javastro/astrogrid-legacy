@@ -1,5 +1,5 @@
 /*
- * $Id: Sql2Adql074Test.java,v 1.4 2004/09/08 21:24:14 mch Exp $
+ * $Id: Sql2Adql074Test.java,v 1.5 2004/10/06 21:12:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,6 +11,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.astrogrid.datacenter.query.Query2Adql074;
+import org.astrogrid.datacenter.query.SqlQueryMaker;
 import org.astrogrid.util.DomHelper;
 import org.xml.sax.SAXException;
 
@@ -35,7 +37,7 @@ public class Sql2Adql074Test extends TestCase   {
    public void testSelectAll() throws IOException, ParserConfigurationException {
       String s = "SELECT * FROM CHARLIE";
       
-      String adql = Sql2Adql074.translate(s);
+      String adql = translate(s);
       
       assertValidXml(adql);
    }
@@ -43,23 +45,23 @@ public class Sql2Adql074Test extends TestCase   {
    public void testConditions() throws IOException, ParserConfigurationException {
       String s = "SELECT S.RA,    T.WIBBLE, UNDIE.PANTS, ETC.ETC FROM A, B,  CHARLIE AS C WHERE C.X > 3 AND C.Y < 4 OR A.RA > B.RA";
       
-      String adql = Sql2Adql074.translate(s);
+      String adql = translate(s);
       
       assertValidXml(adql);
    }
    public void testConditions2() throws IOException, ParserConfigurationException {
       String s = "SELECT t.a, g.d FROM Tab as a, Tab as d WHERE a.d < d.e AND a.f < d.f";
-      assertValidXml(Sql2Adql074.translate(s));
+      assertValidXml(translate(s));
    }
    
    public void testFuncs() throws IOException, ParserConfigurationException {
       String s = "SELECT t.a, g.d FROM Tab as a, Tab as d WHERE AVG(a.d) < SUM(d.e) AND a.f < d.f";
-      assertValidXml(Sql2Adql074.translate(s));
+      assertValidXml(translate(s));
    }
    
    public void testCircle() throws IOException, ParserConfigurationException {
       String s = "SELECT * FROM table WHERE CIRCLE(J2000, 25, 35, 6)";
-      assertValidXml(Sql2Adql074.translate(s));
+      assertValidXml(translate(s));
    }
 
    /* The NVO translations are based on 'std' SQL examples generated on the page
@@ -67,52 +69,52 @@ public class Sql2Adql074Test extends TestCase   {
     is slightly modified to fit with the parser limitations */
    
    public void testNvo1() throws IOException, ParserConfigurationException {
-      assertValidXml(Sql2Adql074.translate(
+      assertValidXml(translate(
          "Select * From Tab as t"
       ));
    }
    public void testNvo2() throws IOException, ParserConfigurationException {
-      assertValidXml(Sql2Adql074.translate(
+      assertValidXml(translate(
          "Select t.a, g.d from Tab as a, Tab as d where a.d < d.e and a.f < d.f"
       ));
    }
    public void testNvo3() throws IOException, ParserConfigurationException {
-      assertValidXml(Sql2Adql074.translate(
+      assertValidXml(translate(
          "Select t.*, b.* From Tab as t, Bob as b Where t.g <> b.g and Circle(J2000,12.5,23.0,5.0)"
       ));
    }
    public void testNvo4() throws IOException, ParserConfigurationException {
-      assertValidXml(Sql2Adql074.translate(
+      assertValidXml(translate(
          "Select t.b,b.d From Tab as t, Bob as b"
       ));
    }
    public void testNvo5() throws IOException, ParserConfigurationException {
-      assertValidXml(Sql2Adql074.translate(
+      assertValidXml(translate(
          "Select t.b, b.* from Tab as t, Bob as b Where Avg(b.dd) < 4.56"
       ));
    }
    /* Not yet implemented
    public void testNvo6() throws IOException, ParserConfigurationException {
-      assertValidXml(Sql2Adql074.translate(
+      assertValidXml(translate(
          "Select sin(A.b), A.* From Tab as A where Circle(J2000, 1.2, 2.4, 0.2) And (log(A.d) < 1.24)"
       ));
    }
     /**/
    public void testNvo7() throws IOException, ParserConfigurationException {
-      assertValidXml(Sql2Adql074.translate(
+      assertValidXml(translate(
          "Select a.* from Tab as a where Circle(Cartesian, 1.2, 2.4,3.6,0.2)"
       ));
    }
    /* Not yet implemented
    public void testNvo8() throws IOException, ParserConfigurationException {
-      assertValidXml(Sql2Adql074.translate(
+      assertValidXml(translate(
          "Select (a.b - c.d), atwo.* From Tab as a, Bob as b, b.e as atwo"
       ));
    }
     /**/
 
    public void testSsa() throws IOException, ParserConfigurationException {
-      assertValidXml(Sql2Adql074.translate(
+      assertValidXml(translate(
          "SELECT ra,dec, sCorMagB, sCorMagR1, sCorMagR2, sCorMagI\n"+
          "FROM Source\n"+
          "WHERE\n"+
@@ -123,20 +125,26 @@ public class Sql2Adql074Test extends TestCase   {
    }
    
    public void testPat1() throws IOException, ParserConfigurationException {
-      assertValidXml(Sql2Adql074.translate(
+      assertValidXml(translate(
          "SELECT * from IX/35/xmm1obs AS p where p.RA > 10"));
    }
       
    public void testLimit1() throws IOException, ParserConfigurationException {
-      assertValidXml(Sql2Adql074.translate(
+      assertValidXml(translate(
          "SELECT * LIMIT 12 from Table AS p where p.RA > 10"));
    }
 
    public void testLimit2() throws IOException, ParserConfigurationException {
-      assertValidXml(Sql2Adql074.translate(
+      assertValidXml(translate(
          "SELECT p.RA, p.DEC LIMIT   12   from IX/35/xmm1obs AS p where p.RA > 10"));
    }
 
+   public String translate(String sql) throws IOException {
+       return Query2Adql074.makeAdql(SqlQueryMaker.makeQuery(sql));
+   }
+
+   
+   
    public static Test suite() {
       // Reflection is used here to add all the testXXX() methods to the suite.
       return new TestSuite(Sql2Adql074Test.class);
@@ -153,6 +161,9 @@ public class Sql2Adql074Test extends TestCase   {
 
 /*
  $Log: Sql2Adql074Test.java,v $
+ Revision 1.5  2004/10/06 21:12:17  mch
+ Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
  Revision 1.4  2004/09/08 21:24:14  mch
  Commented out tests on things not yet implemented
 

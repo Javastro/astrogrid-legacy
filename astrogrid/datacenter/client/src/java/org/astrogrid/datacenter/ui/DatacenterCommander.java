@@ -1,4 +1,4 @@
-/*$Id: DatacenterCommander.java,v 1.8 2004/09/28 15:49:55 mch Exp $
+/*$Id: DatacenterCommander.java,v 1.9 2004/10/06 21:12:17 mch Exp $
  * Created on 24-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,9 @@ import javax.xml.rpc.ServiceException;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
-import org.astrogrid.datacenter.query.RawSqlQuery;
+import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.query.SqlQueryMaker;
+import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.io.Piper;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -142,7 +144,11 @@ public class DatacenterCommander {
       System.out.println("Connecting to server...");
       QuerySearcher del = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS, endpoint.toString(), DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       System.out.println("Asking query...");
-      InputStream results = del.askQuery(new RawSqlQuery(sql), QuerySearcher.VOTABLE);
+      SqlQueryMaker sqlMaker = new SqlQueryMaker();
+      sqlMaker.parseStatement(sql);
+      Query query = sqlMaker.getQuery();
+      query.setResultsDef(new ReturnTable(null, QuerySearcher.VOTABLE));
+      InputStream results = del.askQuery(query);
       System.out.println("Results:");
       Piper.bufferedPipe(results, System.out);
    }
@@ -152,6 +158,9 @@ public class DatacenterCommander {
 
 /*
  $Log: DatacenterCommander.java,v $
+ Revision 1.9  2004/10/06 21:12:17  mch
+ Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
  Revision 1.8  2004/09/28 15:49:55  mch
  Removed calls to deprecated methods
 

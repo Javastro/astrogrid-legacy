@@ -1,4 +1,4 @@
-/*$Id: PostgresQueryTranslatorTest.java,v 1.1 2004/09/28 15:11:33 mch Exp $
+/*$Id: PostgresQueryTranslatorTest.java,v 1.2 2004/10/06 21:12:17 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,13 +12,12 @@ package org.astrogrid.datacenter.queriers.sql.postgres;
 
 import java.io.InputStream;
 import java.util.Properties;
-import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.queriers.sql.postgres.PostgresSqlMaker;
 import org.astrogrid.datacenter.queriers.sql.SqlMaker;
 import org.astrogrid.datacenter.queriers.sql.SqlQueryTranslatorTest;
-import org.astrogrid.datacenter.query.AdqlQuery;
-import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.queriers.sql.postgres.PostgresSqlMaker;
+import org.astrogrid.datacenter.query.AdqlQueryMaker;
+import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
@@ -42,7 +41,7 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
        correctSql.load(is);
     }
     
-    /** Test makes valid SQL from cone earch */
+    /** Test makes valid SQL from cone earch
     public void testCone() throws Exception {
        
        SimpleConfig.getSingleton().setProperty(SqlMaker.CONE_SEARCH_TABLE_KEY, "OBJECTS");
@@ -51,7 +50,7 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
        SimpleConfig.getSingleton().setProperty(SqlMaker.DB_TRIGFUNCS_IN_RADIANS, "true");
        SimpleConfig.getSingleton().setProperty(SqlMaker.CONE_SEARCH_COL_UNITS_KEY, "deg");
        
-       String sql = translator.fromCone(new ConeQuery(20,20,3));
+       String sql = translator.fromCone(new SimpleQueryMaker(20,20,3));
        
        //this would be a nasty check...
     }
@@ -79,9 +78,9 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
 
        String filename = "sample-"+ver+"-"+testNum+".xml";
        Document adqlDom = DomHelper.newDocument( SqlQueryTranslatorTest.class.getResourceAsStream(filename));
-       AdqlQuery adqlQuery = new AdqlQuery(adqlDom.getDocumentElement());
+       Query adqlQuery = AdqlQueryMaker.makeQuery(adqlDom.getDocumentElement());
        
-       String result = translator.fromAdql(adqlQuery).trim();
+       String result = translator.getSql(adqlQuery).trim();
        String correct = correctSql.getProperty("sample"+testNum).trim();
        assertEquals(correct.trim().toLowerCase(), result.trim().toLowerCase());
     }
@@ -96,6 +95,9 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: PostgresQueryTranslatorTest.java,v $
+Revision 1.2  2004/10/06 21:12:17  mch
+Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
 Revision 1.1  2004/09/28 15:11:33  mch
 Moved server test directory to pal
 

@@ -1,4 +1,4 @@
-/*$Id: AxisDataService05QueryTest.java,v 1.1 2004/09/28 15:11:33 mch Exp $
+/*$Id: AxisDataService05QueryTest.java,v 1.2 2004/10/06 21:12:17 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,9 @@ import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.metadata.FileResourcePlugin;
 import org.astrogrid.datacenter.queriers.sql.SqlPluginTest;
 import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
-import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.AdqlQueryMaker;
+import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.query.Query2Adql074;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
@@ -28,9 +30,9 @@ public class AxisDataService05QueryTest extends ServerTestCase {
 
    protected AxisDataService_v05 server;
 
-   protected AdqlQuery query1;
-   protected AdqlQuery query2;
-   protected AdqlQuery query3;
+   protected Query query1;
+   protected Query query2;
+   protected Query query3;
    
    public AxisDataService05QueryTest(String arg0) {
         super(arg0);
@@ -43,16 +45,16 @@ public class AxisDataService05QueryTest extends ServerTestCase {
        
        server = new AxisDataService_v05();
        
-       query1 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-1.xml"));
+       query1 = AdqlQueryMaker.makeQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-1.xml"));
 
-       query2 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-3.xml"));
+       query2 = AdqlQueryMaker.makeQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-3.xml"));
        
 //       query3 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-3.xml"));
     }
 
     public void testDoOneShotAdql() throws Exception {
        
-        String results = server.askAdqlQuery(query1.toAdqlString(), "VOTABLE");
+        String results = server.askAdqlQuery(Query2Adql074.makeAdql(query1), "VOTABLE");
         Document doc = DomHelper.newDocument(results);
         assertIsVotableResultsResponse(doc);
     }
@@ -67,7 +69,7 @@ public class AxisDataService05QueryTest extends ServerTestCase {
     
     public void testAbort() throws Exception {
        
-       String qid = server.submitAdqlQuery(query1.toAdqlString(), "astrogrid:store:myspace:http://wibble/wobble#some/path", "VOTABLE");
+       String qid = server.submitAdqlQuery(Query2Adql074.makeAdql(query1), "astrogrid:store:myspace:http://wibble/wobble#some/path", "VOTABLE");
        assertNotNull(qid);
        server.abortQuery(qid);
 
@@ -100,6 +102,9 @@ public class AxisDataService05QueryTest extends ServerTestCase {
 
 /*
 $Log: AxisDataService05QueryTest.java,v $
+Revision 1.2  2004/10/06 21:12:17  mch
+Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
 Revision 1.1  2004/09/28 15:11:33  mch
 Moved server test directory to pal
 

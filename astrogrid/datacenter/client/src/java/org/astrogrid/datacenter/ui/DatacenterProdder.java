@@ -1,4 +1,4 @@
-/* $Id: DatacenterProdder.java,v 1.10 2004/09/28 15:49:55 mch Exp $
+/* $Id: DatacenterProdder.java,v 1.11 2004/10/06 21:12:17 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -27,10 +27,12 @@ import org.astrogrid.community.Account;
 import org.astrogrid.community.User;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
-import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.AdqlQueryMaker;
+import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.io.Piper;
+import org.astrogrid.slinger.AgslTarget;
 import org.astrogrid.store.Agsl;
-import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.ui.EscEnterListener;
@@ -288,7 +290,9 @@ public class DatacenterProdder extends JFrame
 
          progBox.setProgress(4);
          progBox.setNote("Starting query");
-         String id = querier.submitQuery(new AdqlQuery(queryDoc), new Agsl(resultsLoc), "VOTABLE");
+         Query query = AdqlQueryMaker.makeQuery(queryDoc);
+         query.setResultsDef(new ReturnTable(new AgslTarget(new Agsl(resultsLoc)), QuerySearcher.VOTABLE));
+         String id = querier.submitQuery(query);
 
          JFrame frame = new QueryPollingMonitor(new URL(datacenterLocator.getDelegateEndPoint()), id);
          frame.show();
@@ -344,7 +348,9 @@ public class DatacenterProdder extends JFrame
 
          //and GO!
          log.info("Running Query...");
-         InputStream results = querier.askQuery(new AdqlQuery(queryDoc), querier.VOTABLE);
+         Query query = AdqlQueryMaker.makeQuery(queryDoc);
+         query.setResultsDef(new ReturnTable(null, QuerySearcher.VOTABLE));
+         InputStream results = querier.askQuery(query);
          log.info("...Query complete");
 
          if (resultsLocator.getFileLoc() != null) {
@@ -419,6 +425,9 @@ public class DatacenterProdder extends JFrame
 
 /*
  $Log: DatacenterProdder.java,v $
+ Revision 1.11  2004/10/06 21:12:17  mch
+ Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
  Revision 1.10  2004/09/28 15:49:55  mch
  Removed calls to deprecated methods
 

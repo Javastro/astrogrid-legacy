@@ -3,7 +3,7 @@
        org.astrogrid.io.*,
        org.apache.commons.logging.LogFactory,
        org.astrogrid.community.Account,
-       org.astrogrid.datacenter.query.ConeQuery,
+       org.astrogrid.datacenter.query.*,
        org.astrogrid.datacenter.returns.*,
        org.astrogrid.datacenter.service.*"
    isThreadSafe="false"
@@ -21,7 +21,7 @@
    ReturnSpec returns = ServletHelper.makeReturnSpec(request);
 
    try {
-      server.askQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), returns);
+      server.askQuery(Account.ANONYMOUS, new Query(null, SimpleQueryMaker.makeConeCondition(ra, dec, sr), returns));
    } catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
       out.write(ServletHelper.exceptionAsHtmlPage("Searching Cone (RA="+ra+", DEC="+dec+", SR="+sr, th));

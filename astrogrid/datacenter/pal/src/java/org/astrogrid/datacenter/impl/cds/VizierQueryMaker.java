@@ -1,4 +1,4 @@
-/*$Id: VizierQueryMaker.java,v 1.1 2004/10/05 19:19:18 mch Exp $
+/*$Id: VizierQueryMaker.java,v 1.2 2004/10/06 21:12:17 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,12 +14,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.impl.cds.vizier.DecimalDegreesTarget;
 import org.astrogrid.datacenter.impl.cds.vizier.Unit;
-import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.query.AdqlQuery;
-import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.query.AdqlQueryMaker;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryException;
-import org.w3c.dom.Element;
+import org.astrogrid.datacenter.query.condition.Function;
+import org.astrogrid.datacenter.query.condition.LiteralString;
 
 /**
  * Produced Postgres-specific SQL
@@ -31,13 +30,7 @@ public class VizierQueryMaker  {
    /**
     * Makes an SQL string from the given Query */
    public VizierQuery getVizierQuery(Query query) throws QueryException {
-      if (query instanceof ConeQuery) {
-         return fromCone((ConeQuery) query);
-      }
-      else if (query instanceof AdqlQuery) {
-         return fromAdql((AdqlQuery) query);
-      }
-      else {
+       {
          throw new QueryException("Don't know how to make an ADQL Query from a "+query.getClass());
       }
    }
@@ -45,10 +38,13 @@ public class VizierQueryMaker  {
    /**
     * Constructs a Vizier Query from the given cone query
     */
-   public VizierQuery fromCone(ConeQuery cone) {
+   public VizierQuery fromCone(Function cone) {
       VizierQuery viz = new VizierQuery(
-         new DecimalDegreesTarget(cone.getRa(), cone.getDec()),
-         cone.getRadius()
+         new DecimalDegreesTarget(
+            Double.parseDouble( ((LiteralString) cone.getArg(2)).getValue()),
+            Double.parseDouble( ((LiteralString) cone.getArg(3)).getValue())
+         ),
+         Double.parseDouble( ((LiteralString) cone.getArg(4)).getValue())
       );
 
       viz.setUnit(Unit.DEG);
@@ -60,7 +56,7 @@ public class VizierQueryMaker  {
    /**
     * Constructs a Vizier Query from the given ADQL
     */
-   public VizierQuery fromAdql(AdqlQuery query) {
+   public VizierQuery fromAdql(AdqlQueryMaker query) {
       //should use appropriate xslt, but use deprecated stuff for now
       throw new UnsupportedOperationException("Need to write the ADQL -> Vizier Cone translator for ADQL 0.7.4+");
 
@@ -71,6 +67,9 @@ public class VizierQueryMaker  {
 
 /*
 $Log: VizierQueryMaker.java,v $
+Revision 1.2  2004/10/06 21:12:17  mch
+Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
 Revision 1.1  2004/10/05 19:19:18  mch
 Merged CDS implementation into PAL
 

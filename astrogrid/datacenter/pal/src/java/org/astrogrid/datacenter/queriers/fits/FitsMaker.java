@@ -1,4 +1,4 @@
-/*$Id: FitsMaker.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+/*$Id: FitsMaker.java,v 1.2 2004/10/06 21:12:17 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,13 +22,17 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.query.Query2Adql074;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Element;
+import java.io.IOException;
+import org.xml.sax.SAXException;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
- * A 'standard' translator that creates 'standard' SQL
+ * Creates XML from the query using transformation sheets
  */
 public class FitsMaker {
 
@@ -36,36 +40,34 @@ public class FitsMaker {
 
       
    /**
-    * Constructs an SQL statement for the given ADQL
+    * Constructs an XQL statement for the given ADQL
     */
-   public String fromAdql(AdqlQuery query) throws QueryException {
-      //should use appropriate xslt, but use deprecated stuff for now
+   public String fromAdql(Query query) throws QueryException, IOException {
 
-      // find the translator
-        Element queryBody = query.toDom().getDocumentElement();
-        String namespaceURI = queryBody.getNamespaceURI();
-        if (namespaceURI == null) {
+      Element adql = null;
+      //get the ADQL from the query
+      try {
+         adql = DomHelper.newDocument(Query2Adql074.makeAdql(query, null)).getDocumentElement();
+      }
+      catch (SAXException e) {
+         throw new RuntimeException("Query2Adql074 procuced invalid XML from query "+query,e);
+      }
+      catch (ParserConfigurationException e) {
+         throw new RuntimeException("Server configuration error:"+e,e);
+      }
+      
+      //Create DOM
+      String namespaceURI = adql.getNamespaceURI();
+      if (namespaceURI == null) {
             // maybe not using namespace aware parser - see if we can find an xmlns attribute instead
-            namespaceURI = queryBody.getAttribute("xmlns");
+            namespaceURI = adql.getAttribute("xmlns");
         }
         if (namespaceURI == null) {
-            DomHelper.PrettyElementToStream(queryBody,System.out);
+            DomHelper.PrettyElementToStream(adql,System.out);
             throw new IllegalArgumentException("Query body has no namespace - cannot determine language");
         }
         
-        /*
-        SqlQuerierSPI spi = new SqlQuerierSPI();
-        Translator trans = spi.getTranslatorMap().lookup(namespaceURI);
-        if (trans != null) {
-           String sql = useSpi(queryBody, trans);
-           log.debug("Used SPI "+trans+") to translate ADQL ("+namespaceURI+") to '"+sql+"'");
-           return sql;
-        }
-        */
-        String xql = useXslt(queryBody, namespaceURI);
-        
-        //sql = replaceRegion(sql);
-        
+        String xql = useXslt(adql, namespaceURI);
         
         return xql;
 
@@ -165,6 +167,9 @@ public class FitsMaker {
 
 /*
 $Log: FitsMaker.java,v $
+Revision 1.2  2004/10/06 21:12:17  mch
+Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
 Revision 1.1  2004/09/28 15:02:13  mch
 Merged PAL and server packages
 

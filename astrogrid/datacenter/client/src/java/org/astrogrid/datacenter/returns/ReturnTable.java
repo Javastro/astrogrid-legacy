@@ -1,5 +1,5 @@
 /*
- * $Id: ReturnTable.java,v 1.4 2004/09/07 00:54:20 mch Exp $
+ * $Id: ReturnTable.java,v 1.5 2004/10/06 21:12:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,7 +7,7 @@
 package org.astrogrid.datacenter.returns;
 
 import org.astrogrid.datacenter.query.condition.NumericExpression;
-import org.astrogrid.datacenter.returns.TargetIndicator;
+import org.astrogrid.slinger.TargetIndicator;
 
 
 /**
@@ -88,6 +88,9 @@ public class ReturnTable  extends ReturnSpec {
 }
 /*
  $Log: ReturnTable.java,v $
+ Revision 1.5  2004/10/06 21:12:16  mch
+ Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
  Revision 1.4  2004/09/07 00:54:20  mch
  Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
 

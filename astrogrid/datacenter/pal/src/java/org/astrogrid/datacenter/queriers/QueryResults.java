@@ -1,5 +1,5 @@
 /*
- * $Id: QueryResults.java,v 1.2 2004/10/01 18:04:58 mch Exp $
+ * $Id: QueryResults.java,v 1.3 2004/10/06 21:12:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,6 +25,8 @@ import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
 import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.datacenter.slinger.Slinger;
+import org.astrogrid.slinger.EmailTarget;
+import org.astrogrid.slinger.IvornTarget;
 
 /** A container interface that holds the results of a query until needed.
  * <p>
@@ -105,7 +107,7 @@ public abstract class QueryResults
 
       log.info(querier+", sending results to "+returns);
 
-      if (returns.getTarget().getEmail() != null) {
+      if (returns.getTarget() instanceof EmailTarget) {
 
          email(returns, status);
       }
@@ -128,7 +130,7 @@ public abstract class QueryResults
       }
 
       String s = "Results sent to "+returns.getTarget();
-      if (returns.getTarget().isIvorn()) s = s + " => "+returns.getTarget().resolveAgsl();
+      if (returns.getTarget() instanceof IvornTarget) { s = s + " => "+((IvornTarget) returns.getTarget()).resolveAgsl(); }
       status.addDetail(s);
       status.setMessage("");
         
@@ -140,9 +142,11 @@ public abstract class QueryResults
     */
    protected void email(ReturnSpec returns, QuerierProcessingResults status) throws IOException {
 
-      status.setMessage("emailing results to "+returns.getTarget().getEmail());
+      EmailTarget target = (EmailTarget) returns.getTarget();
+      
+      status.setMessage("emailing results to "+target.getEmailAddress());
          
-      String targetAddress = returns.getTarget().getEmail();
+      String targetAddress = target.getEmailAddress();
       
       // Get email server from configuration file
       String emailServer = SimpleConfig.getSingleton().getString(Slinger.EMAIL_SERVER);

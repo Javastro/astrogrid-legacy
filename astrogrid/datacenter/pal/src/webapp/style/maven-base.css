@@ -7,7 +7,6 @@ img {
 }
 table {
   padding:0px;
-  width: 100%;
   margin-left: -2px;
   margin-right: -2px;
 }
@@ -27,7 +26,7 @@ div.clear hr{
   display: none;
 }
 #projectLogo {
-  font-size: xx-large; 
+  font-size: xx-large;
   font-weight: bold;
 }
 #organizationLogo img, #projectLogo img, #projectLogo span{
@@ -41,7 +40,7 @@ div.clear hr{
 }
 .xleft, #organizationLogo img{
   float:left;
-} 
+}
 .xright, #projectLogo img, #projectLogo span{
   float:right;
   text-shadow: #7CFC00;

@@ -1,10 +1,11 @@
 /*
- * $Id: JdbcPlugin.java,v 1.4 2004/10/05 20:26:43 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.5 2004/10/06 21:12:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.sql;
+import org.astrogrid.datacenter.queriers.sql.*;
 
 import java.sql.*;
 

@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate_v05.java,v 1.3 2004/09/28 14:58:45 mch Exp $
+ * $Id: WebDelegate_v05.java,v 1.4 2004/10/06 21:12:16 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -12,7 +12,6 @@ import java.io.StringBufferInputStream;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.Hashtable;
-import javax.xml.rpc.Service;
 import org.apache.axis.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,11 +21,11 @@ import org.astrogrid.datacenter.axisdataserver.v05.QueryStatusSoapyBean;
 import org.astrogrid.datacenter.delegate.ClientQueryListener;
 import org.astrogrid.datacenter.delegate.ConeSearcher;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
-import org.astrogrid.datacenter.query.AdqlQuery;
-import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.query.RawSqlQuery;
-import org.astrogrid.store.Agsl;
+import org.astrogrid.datacenter.query.Query2Adql074;
+import org.astrogrid.datacenter.query.SimpleQueryMaker;
+import org.astrogrid.datacenter.returns.ReturnTable;
+import org.astrogrid.slinger.UriTarget;
 
 /**
  * A standard AstroGrid datacenter delegate implementation, based on
@@ -83,13 +82,12 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
    /**
     * Submits a query (asynchronous), returning a string identifying the query
     */
-   public String submitQuery(Query query, Agsl resultsTarget, String resultsFormat) throws IOException {
-      if (query instanceof AdqlQuery) {
-         return binding.submitAdqlQuery( ((AdqlQuery) query).toAdqlString(), resultsTarget.toString(), resultsFormat);
-      }
-      else {
-         throw new UnsupportedOperationException("Can only submit adql queries; use askQuery for other query types");
-      }
+   public String submitQuery(Query query) throws IOException {
+      assert (query.getResultsDef().getTarget() instanceof UriTarget) : "Specify Target using a URI";
+      
+      return binding.submitAdqlQuery(Query2Adql074.makeAdql(query, null),
+                                     ((UriTarget) query.getResultsDef().getTarget()).toURI().toString(),
+                                     query.getResultsDef().getFormat());
    }
    
    /**
@@ -100,28 +98,16 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
     * @return InputStream to results document, including votable
     */
    public InputStream coneSearch(double ra, double dec, double sr) throws IOException {
-      return askQuery(new ConeQuery(ra, dec, sr), "VOTABLE");
+      return askQuery(new Query(SimpleQueryMaker.makeConeCondition(ra, dec, sr), new ReturnTable(null, "VOTABLE")));
    }
    
-
    /**
-    * Simple blocking query; submit Query, get stream to results
+    * Simple blocking query; send Query, return stream to results
     */
-   public InputStream askQuery(Query query, String resultsFormat) throws IOException {
+   public InputStream askQuery(Query query) throws IOException {
       String results = null;
       
-      if (query instanceof AdqlQuery) {
-         results = binding.askAdqlQuery( ((AdqlQuery) query).toAdqlString(), resultsFormat);
-      }
-      else if (query instanceof ConeQuery) {
-         results = binding.askCone( ((ConeQuery) query).getRa(), ((ConeQuery) query).getDec(), ((ConeQuery) query).getRadius(), resultsFormat);
-      }
-      else if (query instanceof RawSqlQuery) {
-         results = binding.askSql( ((RawSqlQuery) query).getSql(), resultsFormat);
-      }
-      else {
-         throw new UnsupportedOperationException("Can only submit adql queries; use askQuery for other query types");
-      }
+      results = binding.askAdqlQuery( Query2Adql074.makeAdql(query, null), query.getResultsDef().getFormat());
       
       return new StringBufferInputStream(results);
    }
@@ -156,6 +142,9 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
 
 /*
  $Log: WebDelegate_v05.java,v $
+ Revision 1.4  2004/10/06 21:12:16  mch
+ Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
  Revision 1.3  2004/09/28 14:58:45  mch
  Removed obsolete 4.1 web interface
 
@@ -210,6 +199,9 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
  Revision 1.16  2004/01/08 15:48:17  mch
  Allow myspace references to be given
 $Log: WebDelegate_v05.java,v $
+Revision 1.4  2004/10/06 21:12:16  mch
+Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
 Revision 1.3  2004/09/28 14:58:45  mch
 Removed obsolete 4.1 web interface
 

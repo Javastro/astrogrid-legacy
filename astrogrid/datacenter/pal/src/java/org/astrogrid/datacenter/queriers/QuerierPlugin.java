@@ -1,12 +1,12 @@
 /*
- * $Id: QuerierPlugin.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: QuerierPlugin.java,v 1.2 2004/10/06 21:12:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
 
-import org.astrogrid.datacenter.returns.*;
+
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -74,6 +74,9 @@ public abstract class QuerierPlugin  {
 }
 /*
  $Log: QuerierPlugin.java,v $
+ Revision 1.2  2004/10/06 21:12:17  mch
+ Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
  Revision 1.1  2004/09/28 15:02:13  mch
  Merged PAL and server packages
 

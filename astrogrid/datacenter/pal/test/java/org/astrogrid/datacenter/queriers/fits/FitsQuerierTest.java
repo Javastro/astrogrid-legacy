@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.1 2004/09/28 15:11:33 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.2 2004/10/06 21:12:17 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -21,9 +21,10 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.fits.FitsTest;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
-import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.datacenter.returns.TargetIndicator;
+import org.astrogrid.slinger.NullTarget;
+import org.astrogrid.slinger.TargetIndicator;
 
 /** Test the Fits processing classes
  */
@@ -45,7 +46,7 @@ public class FitsQuerierTest extends TestCase
    }
 
    public void testPluginClass() throws IOException {
-      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(300, 60, 12), new TargetIndicator("mailto:mch@roe.ac.uk"), ReturnTable.VOTABLE);
+      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(300, 60, 12), new NullTarget(), ReturnTable.VOTABLE);
       
       assertTrue("Plugin '"+querier.getPlugin()+"' not FitsQuerierPlugin", querier.getPlugin() instanceof FitsQuerierPlugin);
    }
@@ -53,7 +54,7 @@ public class FitsQuerierTest extends TestCase
    public void testCone() throws IOException
    {
       StringWriter sw = new StringWriter();
-      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(300, 60, 12), new TargetIndicator(sw), ReturnTable.VOTABLE);
+      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(300, 60, 12), new NullTarget(), ReturnTable.VOTABLE);
       
       assertTrue("Plugin '"+querier.getPlugin()+"' not FitsQuerierPlugin", querier.getPlugin() instanceof FitsQuerierPlugin);
       
@@ -84,6 +85,9 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.2  2004/10/06 21:12:17  mch
+ Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
  Revision 1.1  2004/09/28 15:11:33  mch
  Moved server test directory to pal
 

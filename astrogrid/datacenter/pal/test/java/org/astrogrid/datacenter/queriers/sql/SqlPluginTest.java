@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.3 2004/10/05 20:26:43 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.4 2004/10/06 21:12:17 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,12 +23,12 @@ import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
-import org.astrogrid.datacenter.query.AdqlQuery;
-import org.astrogrid.datacenter.query.ConeQuery;
-import org.astrogrid.datacenter.query.RawSqlQuery;
+import org.astrogrid.datacenter.query.AdqlQueryMaker;
+import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.service.DataServer;
+import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.slinger.WriterTarget;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
@@ -84,7 +84,7 @@ public class SqlPluginTest extends ServerTestCase {
       SampleStarsPlugin.initConfig();
       
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(ra,dec,r), new TargetIndicator(sw), ReturnTable.VOTABLE);
+      Querier q = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(ra,dec,r), new WriterTarget(sw), ReturnTable.VOTABLE);
       manager.askQuerier(q);
       log.info("Checking results...");
       Document results = DomHelper.newDocument(sw.toString());
@@ -119,7 +119,7 @@ public class SqlPluginTest extends ServerTestCase {
       assertNotNull("Could not open query file :" + queryFile,is);
       
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new AdqlQuery(is), new TargetIndicator(sw), ReturnTable.VOTABLE);
+      Querier q = Querier.makeQuerier(Account.ANONYMOUS, AdqlQueryMaker.makeQuery(is), new WriterTarget(sw), ReturnTable.VOTABLE);
       
       manager.askQuerier(q);
       
@@ -130,7 +130,7 @@ public class SqlPluginTest extends ServerTestCase {
       log.info("Number of results = "+numResults);
    }
    
-   
+   /* no longer supported
    public void testSQLPassthru() throws Exception {
       
       //should fail - default should be off
@@ -146,6 +146,7 @@ public class SqlPluginTest extends ServerTestCase {
       askRawSql();
    }
    
+   /* no longer supported
    private void askRawSql() throws Exception {
       StringWriter sw = new StringWriter();
       Querier q = Querier.makeQuerier(Account.ANONYMOUS, new RawSqlQuery("select * from SampleStars"), new TargetIndicator(sw), ReturnTable.VOTABLE);
@@ -220,6 +221,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.4  2004/10/06 21:12:17  mch
+ Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
  Revision 1.3  2004/10/05 20:26:43  mch
  Prepared for better resource metadata generators
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.4 2004/10/05 14:56:45 mch Exp $
+ * $Id: DataServer.java,v 1.5 2004/10/06 21:12:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,7 +17,7 @@ import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.status.QuerierError;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.query.RawSqlQuery;
+import org.astrogrid.datacenter.query.condition.Condition;
 import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.util.DomHelper;
 
@@ -67,29 +67,37 @@ public class DataServer
    /**
     * Runs a (blocking) ADQL/XML/OM query, outputting the results as votable to the given stream
     */
-   public void askQuery(Account user, Query query, ReturnSpec resultsDef) throws Throwable {
+   public void askQuery(Account user, Query query) throws Throwable {
 
       Querier querier = null;
       try {
-         if ( (query instanceof RawSqlQuery) && !SimpleConfig.getSingleton().getBoolean(SQL_PASSTHROUGH_ENABLED)) {
-            throw new UnsupportedOperationException("This service does not allow SQL to be directly submitted");
-         }
+//         if ( (query instanceof RawSqlQuery) && !SimpleConfig.getSingleton().getBoolean(SQL_PASSTHROUGH_ENABLED)) {
+//            throw new UnsupportedOperationException("This service does not allow SQL to be directly submitted");
+//         }
    
-         querier = Querier.makeQuerier(user, query, resultsDef);
+         querier = Querier.makeQuerier(user, query);
          querierManager.askQuerier(querier);
       }
       catch (Throwable th) {
          //if there's an error, log it, make sure the querier state is correct, and rethrow to
          //be dealt with correctly up the tree
-         String msg = "askQuery("+user+", "+query+", "+resultsDef+")";
-         log.error(msg, th);
          if (querier != null) {
-            if (!(querier.getStatus() instanceof QuerierError)) {
-               querier.setStatus(new QuerierError(querier.getStatus(), msg,th));
-            }
+            try {
+               if (!(querier.getStatus() instanceof QuerierError)) {
+                  querier.setStatus(new QuerierError(querier.getStatus(), "",th));
+               }
+            } catch (Throwable th2) {} ; //ignore
          }
+         log.error("askQuery("+user+", "+query+")", th);
          throw th;
       }
+   }
+
+   /**
+    * @deprecated convenience method
+    */
+   public void askQuery(Account user, Condition condition, ReturnSpec returns) throws Throwable {
+      askQuery(user, new Query(condition, returns));
    }
 
    /**
@@ -102,28 +110,36 @@ public class DataServer
     * Submits a (non-blocking) ADQL/XML/OM query, returning the query's external
     * reference id.  Results will be output to given Agsl
     */
-   public String submitQuery(Account user, Query query, ReturnSpec resultsDef) throws Throwable {
+   public String submitQuery(Account user, Query query) throws Throwable {
 
       Querier querier = null;
       try {
-         querier = Querier.makeQuerier(user, query, resultsDef);
+         querier = Querier.makeQuerier(user, query);
       }
       catch (Throwable th) {
          //if there's an error, log it, make sure the querier state is correct, and rethrow to
          //be dealt with correctly up the tree
-         String msg = "submitQuery("+user+", "+query+", "+resultsDef+")";
-         log.error(msg, th);
          if (querier != null) {
-            if (!(querier.getStatus() instanceof QuerierError)) {
-               querier.setStatus(new QuerierError(querier.getStatus(), msg,th));
-            }
+            try {
+               if (!(querier.getStatus() instanceof QuerierError)) {
+                  querier.setStatus(new QuerierError(querier.getStatus(), "",th));
+               }
+            } catch (Throwable th2) {} ; //ignore
          }
+         log.error("submitQuery("+user+", "+query+")", th);
          throw th;
       }
       
       return submitQuerier(querier);
    }
 
+   /**
+    * @deprecated convenience method
+    */
+   public String submitQuery(Account user, Condition condition, ReturnSpec returns) throws Throwable {
+      return submitQuery(user, new Query(condition, returns));
+   }
+   
    /**
     * Submits a (non-blocking) ADQL/XML/OM query, returning the query's external
     * reference id.  Results will be output to given Agsl
@@ -133,9 +149,9 @@ public class DataServer
       assert(querier != null);
       
       try {
-         if ( (querier.getQuery() instanceof RawSqlQuery) && !SimpleConfig.getSingleton().getBoolean(SQL_PASSTHROUGH_ENABLED)) {
-            throw new UnsupportedOperationException("This service does not allow SQL to be directly submitted");
-         }
+//         if ( (querier.getQuery() instanceof RawSqlQuery) && !SimpleConfig.getSingleton().getBoolean(SQL_PASSTHROUGH_ENABLED)) {
+//            throw new UnsupportedOperationException("This service does not allow SQL to be directly submitted");
+//         }
    
          querierManager.submitQuerier(querier);
          return querier.getId();
@@ -143,13 +159,14 @@ public class DataServer
       catch (Throwable th) {
          //if there's an error, log it, make sure the querier state is correct, and rethrow to
          //be dealt with correctly up the tree
-         String msg = "submitQuery("+querier+")";
-         log.error(msg, th);
          if (querier != null) {
-            if (!(querier.getStatus() instanceof QuerierError)) {
-               querier.setStatus(new QuerierError(querier.getStatus(), msg,th));
-            }
+            try {
+               if (!(querier.getStatus() instanceof QuerierError)) {
+                  querier.setStatus(new QuerierError(querier.getStatus(), "",th));
+               }
+            } catch (Throwable th2) {} ; //ignore
          }
+         log.error("submitQuerier("+querier+")", th);
          throw th;
       }
    }

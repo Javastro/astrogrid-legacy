@@ -1,7 +1,4 @@
-<%@ page import="java.io.*,
-         org.astrogrid.config.SimpleConfig,
-         org.astrogrid.datacenter.service.DataServer,
-         org.astrogrid.datacenter.sqlparser.*"
+<%@ page import="org.astrogrid.datacenter.service.DataServer"
    isThreadSafe="false"
    session="false"
 %>
@@ -10,8 +7,7 @@
 <head>
 <title>Publisher's Astrogrid Library for <%=DataServer.getDatacenterName() %> </title>
 <style type="text/css" media="all">
-          @import url("./style/maven-base.css");
-          @import url("./style/maven-theme.css");
+          @import url("./style/astrogrid.css");
 </style>
 </title>
 </head>

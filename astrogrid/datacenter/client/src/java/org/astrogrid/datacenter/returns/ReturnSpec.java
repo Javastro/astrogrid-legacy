@@ -1,12 +1,12 @@
 /*
- * $Id: ReturnSpec.java,v 1.4 2004/10/05 19:20:00 mch Exp $
+ * $Id: ReturnSpec.java,v 1.5 2004/10/06 21:12:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.returns;
 
-import org.astrogrid.datacenter.returns.TargetIndicator;
+import org.astrogrid.slinger.TargetIndicator;
 
 
 /**
@@ -61,6 +61,9 @@ public abstract class ReturnSpec  {
 }
 /*
  $Log: ReturnSpec.java,v $
+ Revision 1.5  2004/10/06 21:12:16  mch
+ Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
  Revision 1.4  2004/10/05 19:20:00  mch
  Added raw
 

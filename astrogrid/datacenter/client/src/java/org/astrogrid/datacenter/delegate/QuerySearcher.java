@@ -1,5 +1,5 @@
 /*
- * $Id: QuerySearcher.java,v 1.1 2004/03/12 20:00:11 mch Exp $
+ * $Id: QuerySearcher.java,v 1.2 2004/10/06 21:12:16 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -26,12 +26,12 @@ public interface QuerySearcher extends ConeSearcher
    /**
     * Simple blocking query; submit Query, get stream to results
     */
-   public InputStream askQuery(Query query, String resultsFormat) throws IOException;
+   public InputStream askQuery(Query query) throws IOException;
 
    /**
     * Submits a query (asynchronous), returning a string identifying the query
     */
-   public String submitQuery(Query query, Agsl resultsTarget, String resultsFormat) throws IOException;
+   public String submitQuery(Query query) throws IOException;
    
    /**
     * Attempt to stop a query
@@ -41,6 +41,9 @@ public interface QuerySearcher extends ConeSearcher
 
 /*
 $Log: QuerySearcher.java,v $
+Revision 1.2  2004/10/06 21:12:16  mch
+Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
 Revision 1.1  2004/03/12 20:00:11  mch
 It05 Refactor (Client)
 

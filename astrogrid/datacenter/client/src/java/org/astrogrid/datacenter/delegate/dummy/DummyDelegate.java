@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDelegate.java,v 1.14 2004/03/12 20:00:11 mch Exp $
+ * $Id: DummyDelegate.java,v 1.15 2004/10/06 21:12:16 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -83,7 +83,7 @@ public class DummyDelegate implements QuerySearcher, ConeSearcher {
    /**
     * Simple blocking query; submit Query
     */
-   public InputStream askQuery(Query query, String resultsFormat) throws IOException {
+   public InputStream askQuery(Query query) throws IOException {
       // TODO
       return null;
    }
@@ -91,7 +91,7 @@ public class DummyDelegate implements QuerySearcher, ConeSearcher {
    /**
     * Submits a query (asynchronous), returning a string identifying the query
     */
-   public String submitQuery(Query query, Agsl resultsTarget, String resultsFormat) throws IOException {
+   public String submitQuery(Query query) throws IOException {
       // TODO
       return null;
    }
@@ -167,6 +167,9 @@ public class DummyDelegate implements QuerySearcher, ConeSearcher {
 
 /*
 $Log: DummyDelegate.java,v $
+Revision 1.15  2004/10/06 21:12:16  mch
+Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
 Revision 1.14  2004/03/12 20:00:11  mch
 It05 Refactor (Client)
 

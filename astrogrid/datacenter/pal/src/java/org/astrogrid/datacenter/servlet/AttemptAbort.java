@@ -1,5 +1,5 @@
 /*
- * $Id: AttemptAbort.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: AttemptAbort.java,v 1.2 2004/10/06 21:12:17 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -12,10 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.returns.ReturnSpec;
-import org.astrogrid.datacenter.returns.TargetIndicator;
+import org.astrogrid.slinger.TargetIndicator;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.ServletHelper;
 

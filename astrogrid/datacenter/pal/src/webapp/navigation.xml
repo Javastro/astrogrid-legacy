@@ -39,6 +39,7 @@
          <li><a href="other-back-end.html">Writing a new back-end</a>
          <li><a href="implementations" >Example back-ends </a>
          <li><a href="server/index.html" >Server Development Documentation </a>
+         <li><a href="bugs.jsp" >Report Bugs</a>
       </ul>
    </div>
    <div id='menuCEA'>

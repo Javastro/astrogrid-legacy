@@ -1,5 +1,5 @@
 /*
- * $Id: CutoutPlugin.java,v 1.2 2004/10/01 18:04:58 mch Exp $
+ * $Id: CutoutPlugin.java,v 1.3 2004/10/06 21:12:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,7 +12,7 @@ import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.status.QuerierComplete;
 import org.astrogrid.datacenter.queriers.status.QuerierError;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
-import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.query.Query;
 
 /**
@@ -40,16 +40,9 @@ public class CutoutPlugin extends QuerierPlugin {
       
       Query query = querier.getQuery();
 
-      if (query instanceof ConeQuery) {
          
 //       make image...
          
-      }
-      else {
-         RuntimeException t = new IllegalArgumentException("This plugin supports only cone queries");
-         querier.setStatus(new QuerierError(querier.getStatus(), "", t));
-         throw t;
-      }
       
       querier.setStatus(new QuerierComplete(querier.getStatus()));
 
@@ -64,6 +57,9 @@ public class CutoutPlugin extends QuerierPlugin {
 
 /*
  $Log: CutoutPlugin.java,v $
+ Revision 1.3  2004/10/06 21:12:17  mch
+ Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
  Revision 1.2  2004/10/01 18:04:58  mch
  Some factoring out of status stuff, added monitor page
 

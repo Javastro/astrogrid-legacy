@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: ServletHelper.java,v 1.2 2004/10/06 21:12:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,7 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.datacenter.returns.TargetIndicator;
+import org.astrogrid.slinger.TargetIndicator;
 
 /**
  * A set of dataserver methods for helping serving data in HTML form, eg for servlets

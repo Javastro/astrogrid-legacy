@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v05.java,v 1.3 2004/10/05 14:56:45 mch Exp $
+ * $Id: AxisDataService_v05.java,v 1.4 2004/10/06 21:12:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,20 +10,26 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.rmi.RemoteException;
+import javax.xml.rpc.ServiceException;
+import javax.xml.rpc.server.ServiceLifecycle;
 import org.apache.axis.AxisFault;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.v05.AxisDataServer_v05_Port;
 import org.astrogrid.datacenter.axisdataserver.v05.QueryStatusSoapyBean;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
-import org.astrogrid.datacenter.query.AdqlQuery;
-import org.astrogrid.datacenter.query.ConeQuery;
-import org.astrogrid.datacenter.query.RawSqlQuery;
+import org.astrogrid.datacenter.query.AdqlQueryMaker;
+import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.query.SimpleQueryMaker;
+import org.astrogrid.datacenter.query.SqlQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.service.AxisDataServer;
 import org.astrogrid.datacenter.service.DataServer;
+import org.astrogrid.slinger.TargetIndicator;
 
 /**
  * The implementation of the Datacenter web service for It4.1.
@@ -35,23 +41,43 @@ import org.astrogrid.datacenter.service.DataServer;
  *
  */
 
-public class AxisDataService_v05 implements AxisDataServer_v05_Port  {
+public class AxisDataService_v05 implements AxisDataServer_v05_Port, ServiceLifecycle  {
    
    AxisDataServer server = new AxisDataServer();
+   Log log = LogFactory.getLog(AxisDataService_v05.class);
    
+   /** Service initialised */
+   public void init(Object context) throws ServiceException {
+      if (context instanceof javax.xml.rpc.server.ServletEndpointContext) {
+         javax.xml.rpc.server.ServletEndpointContext secontext = (javax.xml.rpc.server.ServletEndpointContext) context;
+         try {
+            URL stem = secontext.getServletContext().getResource("/");
+            server.setUrlStem(stem.toString());
+         } catch (MalformedURLException e) {}
+         log.info("AxisDataService_v05 initalised, context "+server.getUrlStem());
+      }
+   }
+   
+   public void destroy() {
+      log.info("AxisDataService_v05 destroyed, context "+server.getUrlStem());
+   }
+
    /**
     * Ask adql query for blocking operation - returns the results
     */
-   public String askAdqlQuery(String query, String requestedFormat) throws AxisFault {
+   public String askAdqlQuery(String adql, String requestedFormat) throws AxisFault {
       try {
          
          
          StringWriter sw = new StringWriter();
-         server.askQuery(getUser(), new AdqlQuery(query), new ReturnTable(new TargetIndicator(sw), requestedFormat));
+         Query query = AdqlQueryMaker.makeQuery(adql);
+         query.getResultsDef().setFormat(requestedFormat);
+         query.getResultsDef().setTarget(TargetIndicator.makeIndicator(sw));
+         server.askQuery(getUser(), query);
          return sw.toString();
       }
       catch (Throwable e) {
-         throw server.makeFault(server.SERVERFAULT, "Error asking Query("+query+", "+requestedFormat+")", e);
+         throw server.makeFault(server.SERVERFAULT, "Error asking Query("+adql+", "+requestedFormat+")", e);
       }
    }
 
@@ -65,7 +91,10 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port  {
          }
          
          StringWriter sw = new StringWriter();
-         server.askQuery(getUser(), new RawSqlQuery(sql), new ReturnTable(new TargetIndicator(sw), requestedFormat));
+         Query query = SqlQueryMaker.makeQuery(sql);
+         query.getResultsDef().setFormat(requestedFormat);
+         query.getResultsDef().setTarget(TargetIndicator.makeIndicator(sw));
+         server.askQuery(getUser(), query);
          return sw.toString();
       }
       catch (Throwable e) {
@@ -79,7 +108,7 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port  {
    public String askCone(double ra, double dec, double radius, String requestedFormat) throws AxisFault {
       try {
          StringWriter sw = new StringWriter();
-         server.askQuery(getUser(), new ConeQuery(ra, dec, radius), new ReturnTable(new TargetIndicator(sw), requestedFormat));
+         server.askQuery(getUser(), SimpleQueryMaker.makeConeCondition(ra, dec, radius), new ReturnTable(TargetIndicator.makeIndicator(sw), requestedFormat));
          return sw.toString();
       }
       catch (Throwable e) {
@@ -90,9 +119,13 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port  {
    /**
     * Submit query for asynchronous operation - returns id of query
     */
-   public String submitAdqlQuery(String query, String resultsTarget, String requestedFormat) throws AxisFault {
+   public String submitAdqlQuery(String adql, String resultsTarget, String requestedFormat) throws AxisFault {
       try {
-         return server.submitQuery(getUser(), new AdqlQuery(query), new ReturnTable(TargetIndicator.makeIndicator(resultsTarget), requestedFormat));
+         Query query = AdqlQueryMaker.makeQuery(adql);
+         query.getResultsDef().setFormat(requestedFormat);
+         query.getResultsDef().setTarget(TargetIndicator.makeIndicator(resultsTarget));
+         server.askQuery(getUser(), query);
+         return server.submitQuery(getUser(), query);
       }
       catch (MalformedURLException mue) {
          throw server.makeFault(server.CLIENTFAULT, "malformed resultsTarget", mue);
@@ -166,6 +199,9 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port  {
 
 /*
 $Log: AxisDataService_v05.java,v $
+Revision 1.4  2004/10/06 21:12:17  mch
+Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
 Revision 1.3  2004/10/05 14:56:45  mch
 Added new web interface and partial skynode
 

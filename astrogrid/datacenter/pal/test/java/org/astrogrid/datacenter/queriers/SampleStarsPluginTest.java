@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.2 2004/10/05 20:26:43 mch Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.3 2004/10/06 21:12:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,9 +22,9 @@ import org.astrogrid.datacenter.queriers.sql.JdbcConnections;
 import org.astrogrid.datacenter.queriers.sql.RdbmsResourcePlugin;
 import org.astrogrid.datacenter.queriers.test.PrecannedResults;
 import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
-import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.datacenter.returns.TargetIndicator;
+import org.astrogrid.slinger.TargetIndicator;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -76,7 +76,7 @@ public class SampleStarsPluginTest extends TestCase {
       QuerierManager manager = new QuerierManager("DummyTest");
 
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), new TargetIndicator(sw), ReturnTable.VOTABLE);
+      Querier q = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(30,30,6), TargetIndicator.makeIndicator(sw), ReturnTable.VOTABLE);
       manager.askQuerier(q);
       Document results = DomHelper.newDocument(sw.toString());
    }

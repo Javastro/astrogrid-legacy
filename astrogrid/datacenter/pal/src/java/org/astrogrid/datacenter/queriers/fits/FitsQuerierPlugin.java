@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerierPlugin.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: FitsQuerierPlugin.java,v 1.2 2004/10/06 21:12:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,9 +18,6 @@ import org.astrogrid.config.ConfigException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
-import org.astrogrid.datacenter.queriers.query.ConeQueryMaker;
-import org.astrogrid.datacenter.query.AdqlQuery;
-import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.xmldb.eXist.server.QueryDBService;
@@ -60,13 +57,12 @@ public class FitsQuerierPlugin extends QuerierPlugin
       }
       Query qr = querier.getQuery();
       String[] filenames = null;
-      if (qr instanceof ConeQuery) {
-          filenames = coneSearch(new ConeQueryMaker().getConeQuery(qr));
-      } else if(qr instanceof AdqlQuery) {
-         FitsMaker fm = new FitsMaker();
-         String xql = fm.fromAdql((AdqlQuery)qr);
-         filenames = doQuery(xql);
-      }
+
+      FitsMaker fm = new FitsMaker();
+      String xql = fm.fromAdql(qr);
+      
+      filenames = doQuery(xql);
+      
       if ((!aborted) && (filenames != null)) {
          FitsResults results = new FitsResults(querier, filenames);
          results.send(querier.getReturnSpec(), querier.getUser());
@@ -96,9 +92,6 @@ public class FitsQuerierPlugin extends QuerierPlugin
       return files;
    }
 
-   public String[] coneSearch(ConeQuery query) throws IOException {
-      return coneSearch(query.getRa(), query.getDec(), query.getRadius());
-   }
    
    /**
     * locates all the fits files in this dataset that overlap the given
@@ -226,6 +219,9 @@ public class FitsQuerierPlugin extends QuerierPlugin
 
 /*
  $Log: FitsQuerierPlugin.java,v $
+ Revision 1.2  2004/10/06 21:12:17  mch
+ Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
  Revision 1.1  2004/09/28 15:02:13  mch
  Merged PAL and server packages
 

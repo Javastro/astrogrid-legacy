@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+/*$Id: DatacenterApplication.java,v 1.2 2004/10/06 21:12:17 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,10 @@
 **/
 package org.astrogrid.datacenter.service.v06;
 
+import EDU.oswego.cs.dl.util.concurrent.Executor;
+import java.io.IOException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Status;
@@ -22,22 +26,19 @@ import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
-import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
-import org.astrogrid.datacenter.query.AdqlQuery;
-import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.query.AdqlQueryMaker;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryState;
+import org.astrogrid.datacenter.query.SimpleQueryMaker;
+import org.astrogrid.datacenter.query.condition.Condition;
+import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.datacenter.service.DataServer;
+import org.astrogrid.slinger.TargetIndicator;
 import org.astrogrid.workflow.beans.v1.Tool;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import EDU.oswego.cs.dl.util.concurrent.Executor;
-
-import java.io.IOException;
-import java.util.Iterator;
+import org.xml.sax.SAXException;
+import javax.xml.parsers.ParserConfigurationException;
+import org.astrogrid.datacenter.query.QueryException;
 
 /** Represents a query running against the datacenter.
  * <p />
@@ -74,26 +75,37 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
     /** id allocated by datacenter to this querier */
     protected String querierID;
+    
     /** construct a query from the contents of the tool
+     * (mch) not entirely happy with this following changes to Query that include
+     * the result spec.  I've set it to table here and hope that targets etc get
+     * set properly later (as it would have done before)
      * @param t
      * @return
      */
     protected final Query buildQuery(ApplicationInterface interf) throws CeaException {
         if (interf.getName().equals(DatacenterApplicationDescription.CONE_IFACE)) {
-            return new ConeQuery(
+            return SimpleQueryMaker.makeConeQuery(
                 Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.RA).process())
                 , Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.DEC).process())
                 , Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.RADIUS).process())
+                , null
                 );
         } else if (interf.getName().equals(DatacenterApplicationDescription.ADQL_IFACE)) {
             String queryString = (String)findInputParameterAdapter(DatacenterApplicationDescription.QUERY).process();
             logger.debug("Query will be " + queryString);
-            return new AdqlQuery(queryString);
+           try {
+              return AdqlQueryMaker.makeQuery(queryString);
+           }
+           catch (SAXException e) { throw new IllegalArgumentException("Invalid ADQL"+e); }
+           catch (IOException e) { throw new RuntimeException("Server error:"+e,e); }
+           catch (ParserConfigurationException e) { throw new RuntimeException("Server error:"+e,e); }
+           catch (QueryException e) { throw new IllegalArgumentException("Query Error: "+e); }
         } else { // can't get here - as would have barfed during 'initializeApplication' in DatacenterApplicatonDescription
-            logger.fatal("Programming logic error - unknown interface" + interf.getName());
-            throw new IllegalArgumentException("Programming logic error - unknown interface" + interf.getName());
+           logger.fatal("Programming logic error - unknown interface" + interf.getName());
+           throw new IllegalArgumentException("Programming logic error - unknown interface" + interf.getName());
         }
-    }
+     }
     
     
     /**
@@ -163,7 +175,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
            Runnable worker = new Runnable() {
                public void run() {
                     try {
-                        CEATargetIndicator ti = (CEATargetIndicator)querier.getResultsTarget();
+                        CEATargetIndicator ti = (CEATargetIndicator)querier.getQuery().getTarget();
                         result.writeBack(ti);
                         setStatus(Status.COMPLETED); // now the application has completed..
                     } catch (CeaException e) {
@@ -189,7 +201,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
            // at this point dataServer has finished writing back down our pipe -  so we can close the output stream (if dataserver hasn't already
            // this frees the worker thread, which will then complete.
            try {
-               CEATargetIndicator ti = (CEATargetIndicator)querier.getResultsTarget();
+               CEATargetIndicator ti = (CEATargetIndicator)querier.getQuery().getTarget();
                ti.getWriter().close();
            } catch (IOException e) {
                // probably already happened then
@@ -226,6 +238,9 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
 $Log: DatacenterApplication.java,v $
+Revision 1.2  2004/10/06 21:12:17  mch
+Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
 Revision 1.1  2004/09/28 15:02:13  mch
 Merged PAL and server packages
 

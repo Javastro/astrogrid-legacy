@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.3 2004/10/05 15:27:35 mch Exp $
+/*$Id: DataServiceTest.java,v 1.4 2004/10/06 21:12:17 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,10 +16,11 @@ import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.queriers.sql.SqlPluginTest;
 import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
-import org.astrogrid.datacenter.query.AdqlQuery;
-import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.query.AdqlQueryMaker;
+import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.datacenter.returns.TargetIndicator;
+import org.astrogrid.slinger.TargetIndicator;
 import org.astrogrid.status.SelfMonitorBody;
 import org.astrogrid.status.TaskStatus;
 import org.astrogrid.util.DomHelper;
@@ -34,9 +35,9 @@ public class DataServiceTest extends ServerTestCase {
 
    protected DataServer server;
 
-   protected AdqlQuery query1;
-   protected AdqlQuery query2;
-   protected AdqlQuery query3;
+   protected Query query1;
+   protected Query query2;
+   protected Query query3;
    
    public DataServiceTest(String arg0) {
         super(arg0);
@@ -49,9 +50,9 @@ public class DataServiceTest extends ServerTestCase {
        
        server = new DataServer();
        
-       query1 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-1.xml"));
+       query1 = AdqlQueryMaker.makeQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-1.xml"));
 
-       query2 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-3.xml"));
+       query2 = AdqlQueryMaker.makeQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-3.xml"));
        
 //       query3 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-3.xml"));
     }
@@ -61,7 +62,7 @@ public class DataServiceTest extends ServerTestCase {
     public void testConeSearch() throws Throwable {
        
       StringWriter sw = new StringWriter();
-       server.askQuery(Account.ANONYMOUS, new ConeQuery(30, 30, 6), new ReturnTable(new TargetIndicator(sw), "VOTABLE"));
+       server.askQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(30, 30, 6), new ReturnTable(TargetIndicator.makeIndicator(sw), "VOTABLE"));
        String results = sw.toString();
 
        Document doc = DomHelper.newDocument(results);
@@ -75,7 +76,8 @@ public class DataServiceTest extends ServerTestCase {
    {
       //submit query
       StringWriter sw = new StringWriter();
-      server.askQuery(Account.ANONYMOUS, query1, new ReturnTable(new TargetIndicator(sw), "VOTABLE"));
+       query1.setResultsDef(new ReturnTable(TargetIndicator.makeIndicator(sw), "VOTABLE"));
+      server.askQuery(Account.ANONYMOUS, query1);
       String result = sw.toString();
        
       assertNotNull(result);
@@ -88,8 +90,9 @@ public class DataServiceTest extends ServerTestCase {
    public void testStatus() throws Throwable {
       //submit queries
       StringWriter sw = new StringWriter();
-      server.submitQuery(Account.ANONYMOUS, new ConeQuery(30, 30, 6), new ReturnTable(new TargetIndicator(sw), "VOTABLE"));
-      server.submitQuery(Account.ANONYMOUS, query1, new ReturnTable(new TargetIndicator(sw), "VOTABLE"));
+      server.submitQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(30, 30, 6), new ReturnTable(TargetIndicator.makeIndicator(sw), "VOTABLE"));
+       query1.setResultsDef(new ReturnTable(TargetIndicator.makeIndicator(sw), "VOTABLE"));
+      server.submitQuery(Account.ANONYMOUS, query1);
 
       DataServiceStatus status = DataServer.getStatus();
       TaskStatus[] tasks = status.getTasks();
@@ -134,6 +137,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.4  2004/10/06 21:12:17  mch
+Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
 Revision 1.3  2004/10/05 15:27:35  mch
 Minor changes to server status display
 

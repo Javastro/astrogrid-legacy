@@ -1,21 +1,20 @@
-/*$Id: CEATargetIndicator.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+/*$Id: CEATargetIndicator.java,v 1.2 2004/10/06 21:12:17 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.service.v06;
-
-import org.astrogrid.datacenter.returns.TargetIndicator;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.Channels;
 import java.nio.channels.Pipe;
+import org.astrogrid.slinger.WriterTarget;
 
 /**Extended TargetIndirector, that redirects results of query into cea framework.
  * <p/> This is so the same CEA libraries can be used in the datacenter implementation as in the other cea servers
@@ -28,7 +27,7 @@ import java.nio.channels.Pipe;
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Jul-2004
  *
  */
-public class CEATargetIndicator extends TargetIndicator {
+public class CEATargetIndicator extends WriterTarget {
 
     /** need to have a factory method*/
     public static CEATargetIndicator newInstance() throws IOException {
@@ -36,7 +35,7 @@ public class CEATargetIndicator extends TargetIndicator {
         return new CEATargetIndicator(pipe);
     }
 
-    private CEATargetIndicator(Pipe pipe) throws IOException {       
+    private CEATargetIndicator(Pipe pipe) throws IOException {
         super(Channels.newWriter(pipe.sink(),"UTF-8"));
         this.pipe = pipe;
     }
@@ -49,8 +48,11 @@ public class CEATargetIndicator extends TargetIndicator {
 }
 
 
-/* 
+/*
 $Log: CEATargetIndicator.java,v $
+Revision 1.2  2004/10/06 21:12:17  mch
+Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
 Revision 1.1  2004/09/28 15:02:13  mch
 Merged PAL and server packages
 

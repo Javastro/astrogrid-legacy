@@ -1,4 +1,4 @@
-/*$Id: PostgresSqlMaker.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+/*$Id: PostgresSqlMaker.java,v 1.2 2004/10/06 21:12:17 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,10 +12,8 @@ package org.astrogrid.datacenter.queriers.sql.postgres;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.sql.StdSqlMaker;
-import org.astrogrid.datacenter.query.AdqlQuery;
-import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.query.Query;
 
 /**
  * Produced Postgres-specific SQL.  This means:
@@ -28,15 +26,12 @@ import org.astrogrid.datacenter.query.ConeQuery;
  */
 public class PostgresSqlMaker extends StdSqlMaker {
 
-   private static final Log log = LogFactory.getLog(PostgresSqlMaker.class);
-
-    
    /**
     * Constructs an SQL statement for the given ADQL.
     */
-   public String fromAdql(AdqlQuery query) {
+   public String getSql(Query query) {
       
-      String stdSql = super.fromAdql(query);
+      String stdSql = super.getSql(query);
       
       String postgresSql = stdSql.replaceAll("<>","&&");
       
@@ -49,6 +44,9 @@ public class PostgresSqlMaker extends StdSqlMaker {
 
 /*
 $Log: PostgresSqlMaker.java,v $
+Revision 1.2  2004/10/06 21:12:17  mch
+Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
 Revision 1.1  2004/09/28 15:02:13  mch
 Merged PAL and server packages
 

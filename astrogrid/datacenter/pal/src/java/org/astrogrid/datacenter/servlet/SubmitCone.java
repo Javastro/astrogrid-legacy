@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitCone.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: SubmitCone.java,v 1.2 2004/10/06 21:12:17 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -12,10 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.returns.ReturnSpec;
-import org.astrogrid.datacenter.returns.TargetIndicator;
+import org.astrogrid.slinger.TargetIndicator;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.ServletHelper;
 
@@ -57,8 +57,8 @@ public class SubmitCone extends StdServlet {
          //if a target is not given, we do an asynchronous (ask) Query to the response
          //stream.
          if (tableDef.getTarget() == null) {
-            tableDef.setTarget(new TargetIndicator(response.getWriter()));
-            server.askQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), tableDef);
+            tableDef.setTarget(TargetIndicator.makeIndicator(response.getWriter()));
+            server.askQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(ra, dec, sr), tableDef);
          }
          else {
             response.setContentType("text/html");
@@ -67,7 +67,7 @@ public class SubmitCone extends StdServlet {
                "<head><title>Submitting Query</title></head>"+
                "<body>");
 
-            String id = server.submitQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), tableDef);
+            String id = server.submitQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(ra, dec, sr), tableDef);
       
             URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
             //indicate status

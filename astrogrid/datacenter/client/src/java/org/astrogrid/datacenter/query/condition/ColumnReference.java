@@ -1,5 +1,5 @@
 /*
- * $Id: ColumnReference.java,v 1.2 2004/08/27 09:31:16 mch Exp $
+ * $Id: ColumnReference.java,v 1.3 2004/10/06 21:12:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,7 +14,7 @@ package org.astrogrid.datacenter.query.condition;
  * whereas I think there ought to be separate types...
  */
 
-public class ColumnReference implements NumericExpression, StringExpression {
+public class ColumnReference implements SearchFieldReference {
    
    String datasetName = null;
    String tableName = null;
@@ -55,6 +55,9 @@ public class ColumnReference implements NumericExpression, StringExpression {
 
 /*
 $Log: ColumnReference.java,v $
+Revision 1.3  2004/10/06 21:12:16  mch
+Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
 Revision 1.2  2004/08/27 09:31:16  mch
 Added limit, order by, some page tidying, etc
 

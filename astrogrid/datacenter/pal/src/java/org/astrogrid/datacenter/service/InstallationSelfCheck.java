@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.5 2004/10/05 18:30:13 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.6 2004/10/06 21:12:17 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,12 +23,13 @@ import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
-import org.astrogrid.datacenter.query.ConeQuery;
-import org.astrogrid.datacenter.returns.NullWriter;
+import org.astrogrid.datacenter.query.AdqlQueryMaker;
+import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.v05.AxisDataService_v05;
+import org.astrogrid.slinger.NullWriter;
+import org.astrogrid.slinger.TargetIndicator;
 
 /** Unit test for checking an installation - checks location of config files, etc.
  * <p>
@@ -74,19 +75,32 @@ public class InstallationSelfCheck extends TestCase {
       assertNotNull("Plugin class must provide constructor(String,Query)",constr);
    }
 
+   /** Submits a query to get all of the database using ADQL */
+   public void testBigAdqlSearch() throws Throwable
+   {
+      DataServer server = new DataServer();
+      String adql = "<?xml version='1.0' encoding='utf-8'?>"+
+                     "<Select xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://www.ivoa.net/xml/ADQL/v0.7.4'>"+
+                     "  <SelectionList> <Item xsi:type='allSelectionItemType' /> </SelectionList>"+
+                     "  <From> <Table xsi:type='tableType' Name='SampleStars' Alias='s' />  </From>"+
+                     "</Select>";
+
+      server.submitQuery(Account.ANONYMOUS, AdqlQueryMaker.makeQuery(adql, TargetIndicator.makeIndicator(new NullWriter()), ReturnTable.CSV));
+   }
+
    /** Checks the querier/plugin operates - runs a cone query that will exercise it - so
     * this will also test the connection to the backend database. */
    public void testConeSearch() throws Throwable {
       StringWriter sw = new StringWriter(); //although we throw away the results
       DataServer server = new DataServer();
-      server.askQuery(Account.ANONYMOUS, new ConeQuery(30,30,2),
-                      new ReturnTable(new TargetIndicator(sw), ReturnTable.VOTABLE));
+      server.askQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(30,30,2),
+                      new ReturnTable(TargetIndicator.makeIndicator(sw), ReturnTable.VOTABLE));
    }
 
    /** Checks that the delegates can connect correctly */
    public void testSoapDelegate() throws Throwable {
       ConeSearcher searcher = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS,
-                                                                         AxisDataServer.getUrlStem()+"/services/AxisDataServer06",
+                                                                         AxisDataServer.getUrlStem()+"/services/AxisDataServer05",
                                                                          DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       InputStream is = searcher.coneSearch(30, 30, 6);
 
@@ -99,7 +113,7 @@ public class InstallationSelfCheck extends TestCase {
       DataServer server = new DataServer();
 
       for (int i=0;i<100;i++) {
-         server.submitQuery(Account.ANONYMOUS, new ConeQuery(30, 30, 6+i),
+         server.submitQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(30, 30, 6+i),
                             new ReturnTable(TargetIndicator.makeIndicator(new NullWriter()), ReturnTable.CSV));
       }
    }
@@ -140,6 +154,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.6  2004/10/06 21:12:17  mch
+ Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
  Revision 1.5  2004/10/05 18:30:13  mch
  Used NullWriter to throw away results rather than StringWriter which will hold them in memory
 

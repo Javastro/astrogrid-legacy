@@ -1,5 +1,5 @@
 /*
- * $Id: Slinger.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: Slinger.java,v 1.2 2004/10/06 21:12:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,6 +7,7 @@
 package org.astrogrid.datacenter.slinger;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Properties;
 import javax.mail.MessagingException;
 import javax.mail.Provider;
@@ -15,14 +16,17 @@ import javax.mail.Transport;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.returns.TargetIndicator;
+import org.astrogrid.slinger.AgslTarget;
+import org.astrogrid.slinger.EmailTarget;
+import org.astrogrid.slinger.IvornTarget;
+import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.store.Agsl;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.store.delegate.StoreException;
 
 /**
- * Used to indicate the target where the results are to be sent.  May be an AGSL, or an email address, or
- * some IVO based thingamy that is still to be resolved
+ * Something to do with sending things. Not really properly thought out yet
  *
  */
 
@@ -44,7 +48,7 @@ public class Slinger  {
     */
    public static void testConnection(TargetIndicator target, Account user) throws IOException {
       
-      if (target.getEmail() != null) {
+      if (target instanceof EmailTarget) {
          //check email server is available
          String server = SimpleConfig.getSingleton().getString(EMAIL_SERVER);
          String emailUser = SimpleConfig.getSingleton().getString(EMAIL_USER, null);
@@ -66,19 +70,19 @@ public class Slinger  {
       }
 
       // test to see that the agsl for the results is valid
-      if (target.resolveAgsl() != null) {
-         
-         StoreClient store = StoreDelegateFactory.createDelegate(user.toUser(), target.resolveAgsl());
+      if ((target instanceof AgslTarget) || (target instanceof IvornTarget)) {
+
+         Writer out = target.resolveWriter(user);
 
          try {
-            store.putString("This is a test file to make sure we can create a file at the target before we start, so our query results are not lost",
-                              target.resolveAgsl().getPath(), false);
+            out.write("This is a test file to make sure we can create a file at the target before we start, so our query results are not lost");
          }
-         catch (StoreException se) {
+         catch (IOException se) {
             //rethrow with more info
-            throw new StoreException("Test to create '"+target.resolveAgsl().getPath()+"' on target store failed "+se.getMessage(), se.getCause());
+            throw new IOException("Test to write to '"+target+"' failed: "+se.getMessage());
          }
-         
+         //erm
+         /*
          try {
             store.delete(target.resolveAgsl().getPath());
          }
@@ -86,13 +90,16 @@ public class Slinger  {
             //log it but don't fail
             LogFactory.getLog(Slinger.class).error("Could not delete test file",se);
          }
-            
+          */
       }
    }
    
 }
 /*
  $Log: Slinger.java,v $
+ Revision 1.2  2004/10/06 21:12:17  mch
+ Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
  Revision 1.1  2004/09/28 15:02:13  mch
  Merged PAL and server packages
 

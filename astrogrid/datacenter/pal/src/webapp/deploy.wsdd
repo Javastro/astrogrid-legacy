@@ -9,16 +9,28 @@
 <deployment xmlns="http://xml.apache.org/axis/wsdd/"
             xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
 
- <service name="AxisDataService05" provider="java:RPC">
+ <service name="AxisDataService05" style="RPC">
   <parameter name="className" value="org.astrogrid.datacenter.service.v05.AxisDataService_v05"/>
   <parameter name="allowedMethods" value="*"/>
+  <!-- Create one instance for the life of the service -->
+  <parameter name="scope" value="Application"/>
  </service>
- <service name="AxisDataService06" provider="java:RPC">
+ 
+ <!-- Iteration 06 improvements -->
+ <service name="AxisDataService06" style="wrapped">
+  <!-- Class that defines the interface -->
   <parameter name="className" value="org.astrogrid.datacenter.service.v06.AxisDataService_v06"/>
+  <!-- Create one instance for the life of the service -->
+  <parameter name="scope" value="Application"/>
+  <!-- Publish all of the service's methods -->
   <parameter name="allowedMethods" value="*"/>
  </service>
- <service name="SkyNode074" provider="java:RPC">
+ 
+ <!-- IVO Standard SkyNode v0.7.4 -->
+ <service name="SkyNode074" style="document">
   <parameter name="className" value="org.astrogrid.datacenter.service.skynode.v074.SkyNode"/>
+  <!-- Create one instance for the life of the service -->
+  <parameter name="scope" value="Application"/>
   <parameter name="allowedMethods" value="*"/>
  </service>
 

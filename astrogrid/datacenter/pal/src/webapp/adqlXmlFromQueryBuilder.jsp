@@ -1,6 +1,8 @@
 <%@ page language="java"
-    import="java.util.*, org.astrogrid.config.SimpleConfig, java.io.*, org.astrogrid.datacenter.sqlparser.*,
-    org.astrogrid.datacenter.returns.*, org.astrogrid.datacenter.query.condition.*,
+    import="java.util.*, org.astrogrid.config.SimpleConfig, java.io.*,
+    org.astrogrid.datacenter.returns.*,
+    org.astrogrid.datacenter.query.condition.*,
+    org.astrogrid.datacenter.query.*,
     org.astrogrid.datacenter.metadata.*, org.astrogrid.datacenter.service.ServletHelper,
     org.astrogrid.datacenter.service.DataServer,
     org.w3c.dom.*, org.astrogrid.util.* " %>
@@ -89,11 +91,11 @@ Parameter names in this request:
                
             if (request.getParameter("combine").equals("Intersection")) {
                //add as AND to previous
-               criteria = new LogicalExpression(criteria, "AND", newCriteria);
+               criteria = new Intersection(criteria, newCriteria);
             }
             else if (request.getParameter("combine").equals("Union")) {
                //add as OR to previous
-               criteria = new LogicalExpression(criteria, "OR", newCriteria);
+               criteria = new Union(criteria, newCriteria);
             }
             else  {
                out.write("ERROR: Unknown value for 'Combine':"+request.getParameter("combine"));

@@ -1,4 +1,4 @@
-/*$Id: QuerierManagerTest.java,v 1.1 2004/09/28 15:11:33 mch Exp $
+/*$Id: QuerierManagerTest.java,v 1.2 2004/10/06 21:12:17 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,8 +12,9 @@ package org.astrogrid.datacenter.queriers;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
-import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
+import org.astrogrid.slinger.NullTarget;
 
 /**
  * test behaviours the querier manager.
@@ -44,9 +45,9 @@ public class QuerierManagerTest extends ServerTestCase {
    }
    public void testHandleUniqueness() throws Exception {
       
-      s1 = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), null, ReturnTable.VOTABLE);
+      s1 = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(30,30,6), new ReturnTable(new NullTarget(), ReturnTable.VOTABLE));
       assertNotNull(s1);
-      s2 = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), null, ReturnTable.VOTABLE);
+      s2 = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(30,30,6), new ReturnTable(new NullTarget(), ReturnTable.VOTABLE));
       assertNotNull(s2);
       assertNotSame(s1,s2);
       assertFalse(s1.getId().equals(s2.getId()));
@@ -65,6 +66,9 @@ public class QuerierManagerTest extends ServerTestCase {
 
 /*
  $Log: QuerierManagerTest.java,v $
+ Revision 1.2  2004/10/06 21:12:17  mch
+ Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
  Revision 1.1  2004/09/28 15:11:33  mch
  Moved server test directory to pal
 

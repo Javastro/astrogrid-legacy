@@ -1,5 +1,5 @@
 /*
- * $Id: StringComparison.java,v 1.1 2004/08/25 23:38:33 mch Exp $
+ * $Id: StringComparison.java,v 1.2 2004/10/06 21:12:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -26,6 +26,12 @@ public class StringComparison implements Condition  {
       this.operator = StringCompareOperator.getFor(givenOperator);
    }
 
+   public StringComparison(StringExpression givenLHS, StringCompareOperator givenOperator, StringExpression givenRHS) {
+      this.lhs = givenLHS;
+      this.rhs = givenRHS;
+      this.operator = givenOperator;
+   }
+
    public String toString() {
       return "("+lhs+") "+operator+" ("+rhs+")";
    }
@@ -38,6 +44,9 @@ public class StringComparison implements Condition  {
 
 /*
 $Log: StringComparison.java,v $
+Revision 1.2  2004/10/06 21:12:16  mch
+Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
 Revision 1.1  2004/08/25 23:38:33  mch
 (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 

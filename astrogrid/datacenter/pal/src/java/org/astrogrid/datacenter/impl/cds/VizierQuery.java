@@ -1,4 +1,4 @@
-/*$Id: VizierQuery.java,v 1.1 2004/10/05 19:19:18 mch Exp $
+/*$Id: VizierQuery.java,v 1.2 2004/10/06 21:12:17 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,7 +31,7 @@ import org.xml.sax.SAXException;
  * @author Noel Winstanley nw@jb.man.ac.uk 28-Nov-2003
  *
  */
-public class VizierQuery implements Query {
+public class VizierQuery  {
    
    protected Target target;
    protected double radius;
@@ -136,6 +136,9 @@ public class VizierQuery implements Query {
 
 /*
  $Log: VizierQuery.java,v $
+ Revision 1.2  2004/10/06 21:12:17  mch
+ Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
  Revision 1.1  2004/10/05 19:19:18  mch
  Merged CDS implementation into PAL
 

@@ -1,5 +1,5 @@
 /*
- * $Id: SkyNode.java,v 1.1 2004/10/06 11:35:35 mch Exp $
+ * $Id: SkyNode.java,v 1.2 2004/10/06 21:12:17 mch Exp $
  */
 
 package org.astrogrid.datacenter.service.skynode.v074;
@@ -11,9 +11,9 @@ import java.rmi.RemoteException;
 import net.ivoa.www.xml.ADQL.v0_7_4.SelectType;
 import nvo_region.RegionType;
 import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.AdqlQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.datacenter.returns.TargetIndicator;
+import org.astrogrid.slinger.TargetIndicator;
 import org.astrogrid.datacenter.service.AxisDataServer;
 import org.astrogrid.util.DomHelper;
 

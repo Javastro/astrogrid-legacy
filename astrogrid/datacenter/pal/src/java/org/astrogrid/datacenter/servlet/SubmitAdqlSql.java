@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitAdqlSql.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: SubmitAdqlSql.java,v 1.2 2004/10/06 21:12:17 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -11,12 +11,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.AdqlQueryMaker;
+import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.query.SqlQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnSpec;
-import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.ServletHelper;
-import org.astrogrid.datacenter.sqlparser.Sql2Adql074;
+import org.astrogrid.slinger.TargetIndicator;
 
 /**
  * A servlet for processing Cone Queries.
@@ -41,8 +42,10 @@ public class SubmitAdqlSql extends StdServlet {
          //if a target is not given, we do an asynchronous (ask) Query to the response
          //stream.
          if (tableDef.getTarget() == null) {
-            tableDef.setTarget(new TargetIndicator(response.getWriter()));
-            server.askQuery(Account.ANONYMOUS, new AdqlQuery(Sql2Adql074.translate(adqlSql)), tableDef);
+            Query query = SqlQueryMaker.makeQuery(adqlSql);
+            query.getResultsDef().setTarget(TargetIndicator.makeIndicator(response.getWriter()));
+            query.getResultsDef().setFormat(tableDef.getFormat());
+            server.askQuery(Account.ANONYMOUS, query);
          }
          else {
             response.setContentType("text/html");
@@ -51,7 +54,10 @@ public class SubmitAdqlSql extends StdServlet {
                "<head><title>Submitting Query</title></head>"+
                "<body>");
 
-            String id = server.submitQuery(Account.ANONYMOUS, new AdqlQuery(adqlSql), tableDef);
+            Query query = SqlQueryMaker.makeQuery(adqlSql);
+            query.getResultsDef().setTarget(tableDef.getTarget());
+            query.getResultsDef().setFormat(tableDef.getFormat());
+            String id = server.submitQuery(Account.ANONYMOUS, query);
       
             URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
             //indicate status

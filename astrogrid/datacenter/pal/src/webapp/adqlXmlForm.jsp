@@ -1,6 +1,5 @@
 <%@ page import="java.io.*,
-         org.astrogrid.datacenter.service.*,
-         org.astrogrid.datacenter.sqlparser.*"
+         org.astrogrid.datacenter.service.*"
    isThreadSafe="false"
    session="false"
 %>

@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v06.java,v 1.3 2004/10/06 11:35:35 mch Exp $
+ * $Id: AxisDataService_v06.java,v 1.4 2004/10/06 21:12:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,21 +10,21 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
+import javax.xml.rpc.ServiceException;
 import javax.xml.rpc.server.ServiceLifecycle;
 import org.apache.axis.AxisFault;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.v05.QueryStatusSoapyBean;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
-import org.astrogrid.datacenter.query.AdqlQuery;
-import org.astrogrid.datacenter.query.RawSqlQuery;
-import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.datacenter.returns.TargetIndicator;
+import org.astrogrid.datacenter.query.AdqlQueryMaker;
+import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.query.Query2Adql074;
+import org.astrogrid.datacenter.query.SqlQueryMaker;
 import org.astrogrid.datacenter.service.AxisDataServer;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.DataServiceStatus;
-import org.astrogrid.datacenter.sqlparser.Sql2Adql074;
-import javax.xml.rpc.ServiceException;
+import org.astrogrid.slinger.TargetIndicator;
 
 /**
  * The implementation of the Datacenter axis web service for end of Itn06
@@ -57,7 +57,10 @@ public class AxisDataService_v06 implements ServiceLifecycle {
    public String askAdql(String adql, String requestedFormat) throws AxisFault {
       try {
          StringWriter sw = new StringWriter();
-         server.askQuery(getUser(), new AdqlQuery(adql), new ReturnTable(TargetIndicator.makeIndicator(sw), requestedFormat));
+         Query query = AdqlQueryMaker.makeQuery(adql);
+         query.getResultsDef().setFormat(requestedFormat);
+         query.getResultsDef().setTarget(TargetIndicator.makeIndicator(sw));
+         server.askQuery(getUser(), query);
          return sw.toString();
       }
       catch (Throwable e) {
@@ -70,7 +73,10 @@ public class AxisDataService_v06 implements ServiceLifecycle {
     */
    public String askAdql(String adql, String requestedFormat, String target) throws AxisFault {
       try {
-         server.askQuery(getUser(), new AdqlQuery(adql), new ReturnTable(TargetIndicator.makeIndicator(target), requestedFormat));
+         Query query = AdqlQueryMaker.makeQuery(adql);
+         query.getResultsDef().setFormat(requestedFormat);
+         query.getResultsDef().setTarget(TargetIndicator.makeIndicator(target));
+         server.askQuery(getUser(), query);
          return target.toString();
       }
       catch (Throwable e) {
@@ -83,7 +89,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
     */
    public String adqlSql2xml(String sql) throws AxisFault {
       try {
-         return Sql2Adql074.translate(sql);
+         return Query2Adql074.makeAdql(SqlQueryMaker.makeQuery(sql));
       }
       catch (Throwable e) {
          throw server.makeFault(server.SERVERFAULT, "Error converting SQL "+sql, e);
@@ -101,7 +107,10 @@ public class AxisDataService_v06 implements ServiceLifecycle {
          }
          
          StringWriter sw = new StringWriter();
-         server.askQuery(getUser(), new RawSqlQuery(sql), new ReturnTable(new TargetIndicator(sw), requestedFormat));
+         Query query = SqlQueryMaker.makeQuery(sql);
+         query.getResultsDef().setFormat(requestedFormat);
+         query.getResultsDef().setTarget(TargetIndicator.makeIndicator(sw));
+         server.askQuery(getUser(), query);
          return sw.toString();
       }
       catch (Throwable e) {
@@ -114,7 +123,10 @@ public class AxisDataService_v06 implements ServiceLifecycle {
     */
    public String submitAdql(String adql, String requestedFormat, String resultsTarget) throws AxisFault {
       try {
-         return server.submitQuery(getUser(), new AdqlQuery(adql), new ReturnTable(TargetIndicator.makeIndicator(resultsTarget), requestedFormat));
+         Query query = AdqlQueryMaker.makeQuery(adql);
+         query.getResultsDef().setFormat(requestedFormat);
+         query.getResultsDef().setTarget(TargetIndicator.makeIndicator(resultsTarget));
+         return server.submitQuery(getUser(), query);
       }
       catch (MalformedURLException mue) {
          throw server.makeFault(server.CLIENTFAULT, "malformed resultsTarget", mue);
@@ -191,6 +203,9 @@ public class AxisDataService_v06 implements ServiceLifecycle {
 
 /*
 $Log: AxisDataService_v06.java,v $
+Revision 1.4  2004/10/06 21:12:17  mch
+Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
 Revision 1.3  2004/10/06 11:35:35  mch
 A bit of tidying up around the web service interfaces.First stage SkyNode implementation
 
@@ -234,5 +249,6 @@ Revision 1.1  2004/03/17 00:27:21  mch
 Added v05 AxisDataServer
 
  */
+
 
 

@@ -1,12 +1,13 @@
 /*
- * $Id: TargetIndicatorTest.java,v 1.2 2004/10/05 15:03:06 mch Exp $
+ * $Id: TargetIndicatorTest.java,v 1.3 2004/10/06 21:12:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
 
-import org.astrogrid.datacenter.returns.*;
+
+import org.astrogrid.slinger.*;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -31,19 +32,19 @@ public class TargetIndicatorTest extends TestCase {
    public void testIvornMaker() throws Exception {
       TargetIndicator target = TargetIndicator.makeIndicator("ivo://wibble/key#path/to/file");
       assertNotNull(target);
-      assertTrue(target.isIvorn());
+      assertTrue(target instanceof IvornTarget);
    }
    
    public void testAgslMaker() throws Exception {
       TargetIndicator target = TargetIndicator.makeIndicator("astrogrid:store:http://some/place/with/a/file");
       assertNotNull(target);
-      assertFalse(target.isIvorn());
+      assertTrue(target instanceof AgslTarget);
    }
    
    public void testEmailMaker() throws Exception {
       TargetIndicator target = TargetIndicator.makeIndicator("mailto:mch@roe.ac.uk");
       assertNotNull(target);
-      assertFalse(target.isIvorn());
+      assertTrue(target instanceof EmailTarget);
    }
    
    /**
