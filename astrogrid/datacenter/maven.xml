@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!-- extension maven script -->
-<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven"  default="jar:jar">
+<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
 <!-- hooks into existing goals -->
   <preGoal name="java:compile"><!-- generate classes from schema and wsdl first -->
      <mkdir dir="${basedir}/generated/java" />
@@ -22,8 +22,7 @@
   </postGoal>
 
 <!-- new goals -->
- <goal name="compile-AxisDataServer" description="compiles classes required to generate wsdl">
- 	<attainGoal name="java:prepare-filesystem" />
+ <goal name="compile-AxisDataServer" description="compiles classes required to generate wsdl" prereqs="java:prepare-filesystem">
  	<javac
 	debug="${maven.compile.debug}" deprecation="${maven.compile.deprecation}"
 	 executable="${maven.compile.executable}"
@@ -37,15 +36,19 @@
 	</javac>
  </goal>
 
-  <goal name="generate-wsdl" description="generate wsdl from java class">
-  	<attainGoal name="axis-declare-tasks" />
+  <goal name="generate-wsdl" description="generate wsdl from java class" prereqs="axis-declare-tasks">
   	<axis-java2wsdl	useinheritedmethods="true"
-		methods="abortQuery
-			, doQuery
-			, getMetadata
-			, getResultsAndClose
-			, getVoRegistryMetadata
-			, startQuery"
+		methods="
+		doQuery
+		, getMetadata
+		, getVoRegistryMetadata
+		, makeQuery
+		, startQuery
+		, getResultsAndClose
+		, abortQuery
+		, getStatus
+		, registerWebListener
+		"
 		style="RPC"
 		porttypename="AxisDataServer"
 		output="wsdl/AxisDataServer.wsdl"
@@ -60,8 +63,7 @@
 	</axis-java2wsdl>
   </goal>
 
-  <goal name="generate-delegate" description="generate client classes from wsdl">
-	<attainGoal name="axis-declare-tasks" />
+  <goal name="generate-delegate" description="generate client classes from wsdl" prereqs="axis-declare-tasks">
   	<axis-wsdl2java output="${basedir}/generated/java"
 	noimports="true" url="wsdl/AxisDataServer.wsdl">
 		<mapping
@@ -116,26 +118,18 @@
   </goal>
 
 <!-- stand - alone goals - not addons to main build -->
-  <goal name="test-installation" description="test the datacenter webservice installation">
-  	<junit fork="yes">
-  		<test classname="org.astrogrid.datacenter.integration.axisdataserver.TestInstallation" >
-  		 <classpath >
-  			<pathelement location="${maven.build.dest}"/>
-  			<path refid="maven.dependency.classpath" />
-  		</classpath>
-  	<!--	<sysproperty key="datacenter.test.installation.query.file" value="${datacenter.test.installation.query.file}" />
-  	-->
-  		</test>
-  	</junit>
+
+  <goal name="test-installation" description="test the datacenter webservice installation" prereqs="datacenter-test-client-jar">
+	<!-- created jar file, now run it -->
+	<java fork="true" jar="packaging/pal/bin/test-server.jar"/>
   </goal>
 
-<goal name="dataserver-publish" description="jar up, deploy to webserver, restart webapp, redeploy webservice.">
+  <!-- remove hardcoded server location -->
+<goal name="dataserver-publish" description="jar up, deploy to webserver, restart webapp, redeploy webservice."
+	prereqs="jar:jar,tomcat-declare-tasks">
 	<!-- assumes vanilla tomcat & axis installation, and configured tomcat manager app. -->
-	<attainGoal name="jar:jar" /> <!-- would like to find way of getting this done quicker -->
-	<attainGoal name="tomcat-declare-tasks" />
-	<!-- copy across dependent jars... todo-->
-	<!-- copy across the packaged up jar -->
-	<copy file="target/astrogrid-datacenter-HEAD.jar" toDir="/var/lib/tomcat4/webapps/axis/WEB-INF/lib" />
+	<deploy:copy-deps todir="${axis.webapp.location}/WEB-INF/lib" />
+	<copy file="target/astrogrid-datacenter-HEAD.jar" toDir="${axis.webapp.location}/WEB-INF/lib" />
 	<!-- zap logs -->
 	<!-- wont work because of permissions
 	<delete>
@@ -149,14 +143,102 @@
 	<attainGoal name="dataserver-deploy"/>
 </goal>
 
+<!-- tasks for deployment / distribution -->
+<goal name="axis-zip" description="create zipped axis web-archive">
+<!-- copy dependent jars into template webapp, zip up into target directory-->
+	<delete>
+		<fileset dir="packaging/axis/WEB-INF/lib"
+			include="*.jar" />
+	</delete>
+	<!-- find a better way of doing this: e.g. attribute in project.xml -->
+	<deploy:copy-deps todir="packaging/axis/WEB-INF/lib"
+	   excludes="astrogrid-common,breezetk,objectwiz-votable,VOTableUtil,xml-apis,castor,xerces,junit,mm-mysql,jconn,hsqldb"
+	/>
+	<jar destfile="packaging/pal/lib/axis.war" basedir="packaging/axis" />
+</goal>
 
-  <goal name="dataserver-deploy" description="fire wsdd at axis to deploy dataserver">
-     <attainGoal name="axis-declare-tasks" />
+<goal name="datacenter-server-zip" description="create zipped datacenter server archive">
+<!-- copy dependent jars into template, zip up into main packaging directory
+ :todo - add versioning number to filename? certainly add to manifest.-->
+	<delete>
+		<fileset dir="packaging/datacenter-server/WEB-INF/lib"
+			include="*.jar" />
+	</delete>
+	<deploy:copy-deps todir="packaging/datacenter-server/WEB-INF/lib"
+		excludes="axis,wsdl4j,saaj,commons-logging,commons-discovery,jaxrpc-api,junit,log4j" />
+	<zip destfile="packaging/pal/lib/datacenter-server.zip" basedir="packaging/datacenter-server"/>
+</goal>
+
+<goal name="datacenter-test-client-jar" description="create executable jar for datacenter test client">
+  <delete dir="tmp" />
+  <mkdir dir="tmp" />
+  <deploy:copy-deps todir="tmp"
+  	excludes="breezetk,objectwiz-votable,VOTableUtil,castor,xerces,mm-mysql,jconn,hsqldb"
+	/>
+  <!-- want to bundle everything required into a single jar file - easy to run, with no classpath greif. -->
+  <jar destfile="packaging/pal/bin/test-server.jar">
+  	<manifest>
+	  <attribute name="Main-Class" value="org.astrogrid.datacenter.integration.axisdataserver.TestInstallation" />
+	</manifest>
+	<fileset dir="${maven.build.dest}" /> <!-- all our sources - just to be safe -->
+	<zipgroupfileset dir="tmp" includes="*.jar" />
+  </jar>
+</goal>
+
+<goal name="datacenter-register-client-jar" description="create executable jar for that registers datacenter service with axis">
+  <delete dir="tmp" />
+  <mkdir dir="tmp" />
+  <deploy:copy-deps todir="tmp"
+  	excludes="astrogrid-common,breezetk,objectwiz-votable,VOTableUtil,castor,xerces,mm-mysql,jconn,hsqldb"
+	/>
+  <jar destfile="packaging/pal/bin/register-service.jar">
+  	<manifest>
+	  <attribute name="Main-Class" value="org.astrogrid.datacenter.integration.axisdataserver.DeployServer" />
+	</manifest>
+	<zipgroupfileset dir="tmp" includes="*.jar" />
+	<fileset dir="${maven.build.dest}">
+		<include name="org/astrogrid/datacenter/integration/axisdataserver/DeployServer*.class" />
+	</fileset>
+	<fileset dir="${basedir}">
+		<include  name="wsdd/*.wsdd" />
+	</fileset>
+  </jar>
+</goal>
+
+<goal name="pal-zip" description="bundle together everything required for a datacenter"
+   prereqs="axis-zip,datacenter-server-zip,datacenter-test-client-jar,datacenter-register-client-jar">
+	<!-- clean out for starters -->
+	<delete>
+		<fileset dir="packaging/pal">
+			<include name="bin/*.jar" />
+			<include name="lib/*.jar" />
+			<include name="lib/*.zip" />
+			<include name="lib/*.war" />
+			<include name="doc/api/**" />
+			<include name="doc/src-doc/**" />
+		</fileset>
+	</delete>
+	<!-- grab generated documentation - assume already generated. do we want sources too?-->
+	<copy todir="packaging/pal/doc/api">
+		<fileset dir="${maven.build.dir}/docs/apidocs" />
+	</copy>
+	<copy todir="packaging/pal/doc/src-doc">
+		<fileset dir="${maven.build.dir}/docs/xref" />s
+	</copy>
+	<!-- bundle everything together, place in target -->
+	<zip destfile="${maven.build.dir}/pal-${version}.zip"
+		basedir="packaging">
+		<include name="pal/**" />
+	</zip>
+</goal>
+
+  <goal name="dataserver-deploy" description="fire wsdd at axis to deploy dataserver"
+  	prereqs="axis-declare-tasks">
   	<axis-admin xmlfile="wsdd/AxisDataServer-deploy.wsdd" />
   </goal>
 
-  <goal name="dataserver-undeploy" description="fire wsdd at axis to undeploy dataserver">
-  	<attainGoal name="axis-declare-tasks" />
+  <goal name="dataserver-undeploy" description="fire wsdd at axis to undeploy dataserver"
+   	prereqs="axis-declare-tasks">
   	<axis-admin xmlfile="wsdd/AxisDataServer-undeploy.wsdd" />
   </goal>
 
