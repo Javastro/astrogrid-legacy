@@ -1,0 +1,40 @@
+#! /bin/sh
+[ /usr/lib/jvm/java-1.4.2-sun-1.4.2.01/jre ] && JAVA=/usr/lib/jvm/java-1.4.2-sun-1.4.2.01/jre/bin/java || JAVA=java
+
+# Are we running within Cygwin on some version of Windows?
+cygwin=false;
+case "`uname -s`" in
+	CYGWIN*) cygwin=true ;;
+esac
+
+# Locate JS_HOME if not it is not set
+if [ "x$JS_HOME" = "x" ]; then
+    JS_HOME=`cd "$DIRNAME/.."; pwd`
+fi
+
+# SQuirreL home in Unix format.
+if $cygwin ; then
+	UNIX_STYLE_HOME=`cygpath "$JS_HOME"`
+else
+	UNIX_STYLE_HOME=$JS_HOME
+fi
+
+# First entry in classpath is the Squirrel application.
+TMP_CP=$UNIX_STYLE_HOME/lib/js1.5R4.1.jar
+
+# Then add all library jars to the classpath.
+IFS=""
+for a in $UNIX_STYLE_HOME/lib/*; do
+	TMP_CP="$TMP_CP":"$a";
+done
+
+# Now add the system classpath to our classpath. If running
+# Cygwin we also need to change our classpath to Windows format.
+if $cygwin ; then
+	TMP_CP=`cygpath -w -p $TMP_CP`
+	TMP_CP=$TMP_CP';'$CLASSPATH
+else
+	TMP_CP=$TMP_CP:$CLASSPATH
+fi
+
+$JAVA -cp $TMP_CP org.mozilla.javascript.tools.shell.Main $*

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!-- extension maven script -->
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:ant="jelly:ant" xmlns:deploy="deploy">
+
+<postGoal name="dist:prepare-bin-filesystem">
+	<ant:delete file="${maven.dist.bin.assembly.dir}/astrogrid-scripting-jython-SNAPSHOT.jar" />
+	<deploy:copy-deps todir="${maven.dist.bin.assembly.dir}/lib" />
+	<ant:copy todir="${maven.dist.bin.assembly.dir}">
+		<fileset dir="${basedir}">
+			<include name="bin/**" />
+			<include name="python-lib/**" />
+			<include name="examples/**" />
+		</fileset>
+	</ant:copy>
+</postGoal>
+
+<!-- for my own use -->
+<goal name="install-jython">
+	<ant:property name="install.dir" location="/home/noel/java/" />
+	<ant:delete quiet="true">
+		<fileset dir="${install.dir}/astrogrid-scripting-jython-SNAPSHOT" />
+	</ant:delete>
+	<ant:unzip src="${basedir}/target/distributions/astrogrid-scripting-jython-SNAPSHOT.zip" dest="${install.dir}" overwrite="true" />
+</goal>
+
+</project>

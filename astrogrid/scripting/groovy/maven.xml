@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!-- extension maven script -->
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:ant="jelly:ant" xmlns:deploy="deploy">
+
+<property name="groovy" value="groovy-1.0-beta-3" />
+
+<!-- fetch latest groovy snapshot, unzip into working dir -->
+<goal name="get.groovy">
+	<ant:mkdir dir="${basedir}/working" />
+	<ant:get src="http://dist.codehaus.org/groovy/distributions/${groovy}.tar.gz" dest="${basedir}/working/${groovy}.tar.gz" verbose="true" usetimestamp="true" />
+	<ant:untar src="${basedir}/working/${groovy}.tar.gz" dest="${basedir}/working" compression="gzip" />
+	<ant:copy todir="${maven.dist.bin.assembly.dir}">
+		<fileset dir="${basedir}/working/${groovy}" />
+	</ant:copy>
+</goal>
+
+<postGoal name="dist:prepare-bin-filesystem">
+	<ant:delete file="${maven.dist.bin.assembly.dir}/astrogrid-scripting-groovy-SNAPSHOT.jar" />
+	<deploy:copy-deps todir="${maven.dist.bin.assembly.dir}/lib" />
+	<ant:copy todir="${maven.dist.bin.assembly.dir}">
+		<fileset dir="${basedir}">
+			<include name="bin/**" />
+			<include name="groovy-lib/**" />
+			<include name="examples/**" />
+		</fileset>
+	</ant:copy>	
+	<attainGoal name="get.groovy" />
+</postGoal>
+
+<!-- for my own use -->
+<goal name="install-groovy">
+	<ant:property name="install.dir" location="/home/noel/java/" />
+	<ant:delete quiet="true">
+		<fileset dir="${install.dir}/astrogrid-scripting-groovy-SNAPSHOT" />
+	</ant:delete>
+	<ant:unzip src="${basedir}/target/distributions/astrogrid-scripting-groovy-SNAPSHOT.zip" dest="${install.dir}" overwrite="true" />
+	<ant:chmod dir="${install.dir}/astrogrid-scripting-groovy-SNAPSHOT/bin" perm="a+rx" includes="**/*" />
+</goal>
+
+</project>

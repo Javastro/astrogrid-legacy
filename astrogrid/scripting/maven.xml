@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!-- extension maven script -->
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:u="jelly:util" xmlns:deploy="deploy">
+
+
+<!-- hook into nightly build -->
+<postGoal name="war:deploy-snapshot">
+	<attainGoal name="deploy-dists" />
+</postGoal>
+
+<!-- want all dependent libs in my dist -->
+<postGoal name="dist:prepare-bin-filesystem">
+	<deploy:copy-deps todir="${maven.dist.bin.assembly.dir}/lib" />
+</postGoal>
+
+<!-- version for running by hand -->
+<goal name="make-dists" prereqs="dist:build-bin">
+	<!-- now fire off sub-builds -->
+	<maven:maven descriptor="${basedir}/groovy/project.xml" goals="dist:build-bin"/>
+	<maven:maven descriptor="${basedir}/rhino/project.xml" goals="dist:build-bin" />
+	<maven:maven descriptor="${basedir}/jython/project.xml" goals="dist:build-bin" /> 
+</goal>
+
+<!-- version for the nightly build -->
+<goal name="deploy-dists" prereqs="dist:deploy-bin">
+	<maven:maven descriptor="${basedir}/groovy/project.xml" goals="dist:deploy-bin"/>
+	<maven:maven descriptor="${basedir}/rhino/project.xml" goals="dist:deploy-bin" />
+	<maven:maven descriptor="${basedir}/jython/project.xml" goals="dist:deploy-bin" />
+</goal>
+
+
+</project>

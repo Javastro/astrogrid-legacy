@@ -1,0 +1,10 @@
+#!/bin/env jython
+from astrogrid import Astrogrid
+#fails at present - bad interaction with jython and dynamic class / resource loading.
+#
+app = Astrogrid.services[0].createDelegate()
+l = app.listApplications()
+print l
+xmlDescr = app.getApplicationDescription(list[0]).xmlmDescriptor
+print xmlDescr
+

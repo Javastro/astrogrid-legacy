@@ -1,0 +1,30 @@
+<services>
+<service type="Application">
+	<endpoint>http://astrogrid.jb.man.ac.uk:8080/astrogrid-applications/services/ApplicationControllerService</endpoint>
+	<description>An applications service</description>
+</service>
+<service type="Datacenter">
+	<endpoint>http://grendel12.roe.ac.uk:8080/pal-SNAPSHOT/services/AxisDataServer</endpoint>
+	<description>6DF, ROE</description>
+</service>
+<service type="Datacenter">
+	<endpoint>http://cass123.ast.cam.ac.uk:9080/pal-SNAPSHOT/services/AxisDataServer</endpoint>
+	<description>WFS, Cambridge</description>
+</service>
+<service type="Datacenter">
+	<endpoint>http://vm07.astrogrid.org:8080/pal/services/AxisDataServer</endpoint>
+	<description>merlin, test</description>
+</service>
+<service type="Myspace">
+	<endpoint>http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager</endpoint>
+	<description>ROE</description>
+</service>
+<service type="Myspace">
+	<endpoint>http://vm05.astrogrid.org:8080/astrogrid-mySpace/services/MySpaceManager </endpoint>
+	<description>Leicester</description>
+</service>
+<service type="Myspace">
+	<endpoint>http://astrogrid.jb.man.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager</endpoint>
+	<description>Jodrell Bank</description>
+</service>
+</services>
