@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/GroupManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/09 13:48:09 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/09 14:51:47 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerImpl.java,v $
+ *   Revision 1.6  2003/09/09 14:51:47  dave
+ *   Added delGroupMember - only local accounts and groups to start with.
+ *
  *   Revision 1.5  2003/09/09 13:48:09  dave
  *   Added addGroupMember - only local accounts and groups to start with.
  *
@@ -41,6 +44,8 @@ import org.exolab.castor.jdo.DatabaseNotFoundException ;
 import org.exolab.castor.jdo.DuplicateIdentityException ;
 import org.exolab.castor.jdo.TransactionNotInProgressException ;
 import org.exolab.castor.jdo.ClassNotPersistenceCapableException ;
+
+import org.exolab.castor.persist.spi.Complex ;
 
 import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.GroupData ;
@@ -845,6 +850,112 @@ public class GroupManagerImpl
 		// Should return a DataObject with status response.
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		return member ;
+		}
+
+	/**
+	 * Remove an Account from a Group.
+	 * This is not part of the GroupManager interface, and should only be called from the PolicyManager.
+	 *
+	 */
+	public boolean delGroupMember(CommunityIdent account, CommunityIdent group)
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("GroupManagerImpl.delGroupMember()") ;
+		if (DEBUG_FLAG) System.out.println("  account  : " + account) ;
+		if (DEBUG_FLAG) System.out.println("  group    : " + group) ;
+
+		//
+		// No checks if the ident is valid.
+		// Still want to delete the record even if the ident is invalid.
+		//
+
+		//
+		// Try update the database.
+		GroupMemberData member = null ;
+		try {
+			//
+			// Begin a new database transaction.
+			database.begin();
+			//
+			// Create the database key.
+			Complex key = new Complex(
+				new Object[]
+					{
+					account.toString(),
+					group.toString()
+					}
+				) ;
+			//
+			// Load the GroupMember from the database.
+			member = (GroupMemberData) database.load(GroupMemberData.class, key) ;
+			//
+			// Delete the record.
+			database.remove(member) ;
+			}
+		//
+		// If we couldn't find the object.
+		catch (ObjectNotFoundException ouch)
+			{
+			if (DEBUG_FLAG) System.out.println("") ;
+			if (DEBUG_FLAG) System.out.println("  ----") ;
+			if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in delGroupMember()") ;
+
+			//
+			// Set the response to null.
+			member = null ;
+
+			if (DEBUG_FLAG) System.out.println("  ----") ;
+			if (DEBUG_FLAG) System.out.println("") ;
+			}
+		//
+		// If anything else went bang.
+		catch (Exception ouch)
+			{
+			if (DEBUG_FLAG) System.out.println("") ;
+			if (DEBUG_FLAG) System.out.println("  ----") ;
+			if (DEBUG_FLAG) System.out.println("Generic exception in delGroupMember()") ;
+
+			//
+			// Set the response to null.
+			member = null ;
+
+			if (DEBUG_FLAG) System.out.println("  ----") ;
+			if (DEBUG_FLAG) System.out.println("") ;
+			}
+		//
+		// Commit the transaction.
+		finally
+			{
+			try {
+				if (null != member)
+					{
+					database.commit() ;
+					}
+				else {
+					database.rollback() ;
+					}
+				}
+			catch (Exception ouch)
+				{
+				if (DEBUG_FLAG) System.out.println("") ;
+				if (DEBUG_FLAG) System.out.println("  ----") ;
+				if (DEBUG_FLAG) System.out.println("Generic exception in delGroupMember() finally clause") ;
+
+				//
+				// Set the response to null.
+				member = null ;
+
+				if (DEBUG_FLAG) System.out.println("  ----") ;
+				if (DEBUG_FLAG) System.out.println("") ;
+				}
+			}
+
+		//
+		// TODO
+		// Should return a DataObject with status response.
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return (null != member) ;
 		}
 
 	}

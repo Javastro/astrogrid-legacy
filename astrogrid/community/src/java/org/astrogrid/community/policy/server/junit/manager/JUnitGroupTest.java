@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/manager/Attic/JUnitGroupTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/09 14:51:47 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitGroupTest.java,v $
+ *   Revision 1.3  2003/09/09 14:51:47  dave
+ *   Added delGroupMember - only local accounts and groups to start with.
+ *
  *   Revision 1.2  2003/09/08 20:28:50  dave
  *   Added CommunityIdent, with isLocal() and isValid()
  *
@@ -77,7 +80,7 @@ public class JUnitGroupTest
 	 * Our PolicyManager.
 	 *
 	 */
-	private PolicyManager service = null ;
+	private PolicyManager manager = null ;
 
 	/**
 	 * Setup our tests.
@@ -92,14 +95,14 @@ public class JUnitGroupTest
 
 		//
 		// Create our PolicyManager.
-		service = new PolicyManagerImpl();
+		manager = new PolicyManagerImpl();
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
 
 	/**
-	 * Check we can get the service status.
+	 * Check we can get the manager status.
 	 *
 	 */
 	public void testGetServiceStatus()
@@ -110,9 +113,9 @@ public class JUnitGroupTest
 		if (DEBUG_FLAG) System.out.println("testGetServiceStatus()") ;
 
 		//
-		// Try getting the service status.
-		ServiceData status = service.getServiceStatus() ;
-		assertNotNull("Null service status", status) ;
+		// Try getting the manager status.
+		ServiceData status = manager.getServiceStatus() ;
+		assertNotNull("Null manager status", status) ;
 
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("  Status") ;
@@ -136,7 +139,7 @@ public class JUnitGroupTest
 		//
 		// Try creating the Group.
 		GroupData group ;
-		group = service.addGroup(TEST_GROUP_IDENT);
+		group = manager.addGroup(TEST_GROUP_IDENT);
 		assertNotNull("Failed to create group", group) ;
 
 		if (DEBUG_FLAG) System.out.println("") ;
@@ -146,12 +149,12 @@ public class JUnitGroupTest
 
 		//
 		// Try creating the same Group again.
-		group = service.addGroup(TEST_GROUP_IDENT);
+		group = manager.addGroup(TEST_GROUP_IDENT);
 		assertNull("Created a duplicate group", group) ;
 
 		//
 		// Try creating group in a fake community.
-		group = service.addGroup(FAKE_GROUP_DOMAIN);
+		group = manager.addGroup(FAKE_GROUP_DOMAIN);
 		assertNull("Created a group in fake domain", group) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -172,11 +175,11 @@ public class JUnitGroupTest
 		//
 		// Try getting the fake Group.
 		GroupData group ;
-		group = service.getGroup(FAKE_GROUP_IDENT);
+		group = manager.getGroup(FAKE_GROUP_IDENT);
 		assertNull("Found the fake group", group) ;
 		//
 		// Try getting the real Group.
-		group = service.getGroup(TEST_GROUP_IDENT);
+		group = manager.getGroup(TEST_GROUP_IDENT);
 		assertNotNull("Failed to find the real group", group) ;
 
 		if (DEBUG_FLAG) System.out.println("  Group") ;
@@ -201,14 +204,14 @@ public class JUnitGroupTest
 		//
 		// Try getting the real Group.
 		GroupData group ;
-		group = service.getGroup(TEST_GROUP_IDENT);
+		group = manager.getGroup(TEST_GROUP_IDENT);
 		assertNotNull("Failed to find the real group", group) ;
 		//
 		// Modify the group.
 		group.setDescription("Modified description") ;
 		//
 		// Try updating the Group.
-		service.setGroup(group);
+		manager.setGroup(group);
 
 		if (DEBUG_FLAG) System.out.println("  Group") ;
 		if (DEBUG_FLAG) System.out.println("    ident : " + group.getIdent()) ;
@@ -232,7 +235,7 @@ public class JUnitGroupTest
 		//
 		// Try getting the list of Groups.
 		Object[] list ;
-		list = service.getGroupList();
+		list = manager.getGroupList();
 		assertNotNull("Failed to get the list of Groups", list) ;
 
 		if (DEBUG_FLAG) System.out.println("  ----") ;
@@ -263,15 +266,15 @@ public class JUnitGroupTest
 
 		//
 		// Delete the real group (no return data).
-		service.delGroup(TEST_GROUP_IDENT);
+		manager.delGroup(TEST_GROUP_IDENT);
 
 		//
 		// Delete the real group again (no return data).
-		service.delGroup(TEST_GROUP_IDENT);
+		manager.delGroup(TEST_GROUP_IDENT);
 
 		//
 		// Delete the fake group (no return data).
-		service.delGroup(FAKE_GROUP_IDENT);
+		manager.delGroup(FAKE_GROUP_IDENT);
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;

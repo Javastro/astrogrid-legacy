@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/manager/Attic/JUnitCommunityTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/09 14:51:47 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitCommunityTest.java,v $
+ *   Revision 1.3  2003/09/09 14:51:47  dave
+ *   Added delGroupMember - only local accounts and groups to start with.
+ *
  *   Revision 1.2  2003/09/08 20:28:50  dave
  *   Added CommunityIdent, with isLocal() and isValid()
  *
@@ -83,7 +86,7 @@ public class JUnitCommunityTest
 	 * Our PolicyManager.
 	 *
 	 */
-	private PolicyManager service = null ;
+	private PolicyManager manager = null ;
 
 	/**
 	 * Setup our tests.
@@ -98,14 +101,14 @@ public class JUnitCommunityTest
 
 		//
 		// Create our PolicyManager.
-		service = new PolicyManagerImpl();
+		manager = new PolicyManagerImpl();
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
 
 	/**
-	 * Check we can get the service status.
+	 * Check we can get the manager status.
 	 *
 	 */
 	public void testGetServiceStatus()
@@ -116,9 +119,9 @@ public class JUnitCommunityTest
 		if (DEBUG_FLAG) System.out.println("testGetServiceStatus()") ;
 
 		//
-		// Try getting the service status.
-		ServiceData status = service.getServiceStatus() ;
-		assertNotNull("Null service status", status) ;
+		// Try getting the manager status.
+		ServiceData status = manager.getServiceStatus() ;
+		assertNotNull("Null manager status", status) ;
 
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("  Status") ;
@@ -142,7 +145,7 @@ public class JUnitCommunityTest
 		//
 		// Try creating the Community.
 		CommunityData community ;
-		community = service.addCommunity(TEST_COMMUNITY_IDENT);
+		community = manager.addCommunity(TEST_COMMUNITY_IDENT);
 		assertNotNull("Failed to create community", community) ;
 
 		if (DEBUG_FLAG) System.out.println("") ;
@@ -154,7 +157,7 @@ public class JUnitCommunityTest
 
 		//
 		// Try creating the same Community again.
-		community = service.addCommunity(TEST_COMMUNITY_IDENT);
+		community = manager.addCommunity(TEST_COMMUNITY_IDENT);
 		assertNull("Created a duplicate community", community) ;
 //
 // Should use ident only to create ??
@@ -177,11 +180,11 @@ public class JUnitCommunityTest
 		//
 		// Try getting the fake Community.
 		CommunityData community ;
-		community = service.getCommunity(FAKE_COMMUNITY_IDENT);
+		community = manager.getCommunity(FAKE_COMMUNITY_IDENT);
 		assertNull("Found the fake community", community) ;
 		//
 		// Try getting the real Community.
-		community = service.getCommunity(TEST_COMMUNITY_IDENT);
+		community = manager.getCommunity(TEST_COMMUNITY_IDENT);
 		assertNotNull("Failed to find the real community", community) ;
 
 		if (DEBUG_FLAG) System.out.println("  Community") ;
@@ -208,14 +211,14 @@ public class JUnitCommunityTest
 		//
 		// Try getting the real Community.
 		CommunityData community ;
-		community = service.getCommunity(TEST_COMMUNITY_IDENT);
+		community = manager.getCommunity(TEST_COMMUNITY_IDENT);
 		assertNotNull("Failed to find the real community", community) ;
 		//
 		// Modify the community.
 		community.setDescription("Modified description") ;
 		//
 		// Try updating the Community.
-		service.setCommunity(community);
+		manager.setCommunity(community);
 
 		if (DEBUG_FLAG) System.out.println("  Community") ;
 		if (DEBUG_FLAG) System.out.println("    ident   : " + community.getIdent()) ;
@@ -241,7 +244,7 @@ public class JUnitCommunityTest
 		//
 		// Try getting the list of Communitys.
 		Object[] list ;
-		list = service.getCommunityList();
+		list = manager.getCommunityList();
 		assertNotNull("Failed to get the list of Communitys", list) ;
 
 		if (DEBUG_FLAG) System.out.println("  ----") ;
@@ -274,15 +277,15 @@ public class JUnitCommunityTest
 
 		//
 		// Delete the real community (no return data).
-		service.delCommunity(TEST_COMMUNITY_IDENT);
+		manager.delCommunity(TEST_COMMUNITY_IDENT);
 
 		//
 		// Delete the real community again (no return data).
-		service.delCommunity(TEST_COMMUNITY_IDENT);
+		manager.delCommunity(TEST_COMMUNITY_IDENT);
 
 		//
 		// Delete the fake community (no return data).
-		service.delCommunity(FAKE_COMMUNITY_IDENT);
+		manager.delCommunity(FAKE_COMMUNITY_IDENT);
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/manager/Attic/JUnitAccountTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/09 14:51:47 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitAccountTest.java,v $
+ *   Revision 1.3  2003/09/09 14:51:47  dave
+ *   Added delGroupMember - only local accounts and groups to start with.
+ *
  *   Revision 1.2  2003/09/08 20:28:50  dave
  *   Added CommunityIdent, with isLocal() and isValid()
  *
@@ -77,7 +80,7 @@ public class JUnitAccountTest
 	 * Our PolicyManager.
 	 *
 	 */
-	private PolicyManager service = null ;
+	private PolicyManager manager = null ;
 
 	/**
 	 * Setup our tests.
@@ -92,14 +95,14 @@ public class JUnitAccountTest
 
 		//
 		// Create our PolicyManager.
-		service = new PolicyManagerImpl();
+		manager = new PolicyManagerImpl();
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
 
 	/**
-	 * Check we can get the service status.
+	 * Check we can get the manager status.
 	 *
 	 */
 	public void testGetServiceStatus()
@@ -110,9 +113,9 @@ public class JUnitAccountTest
 		if (DEBUG_FLAG) System.out.println("testGetServiceStatus()") ;
 
 		//
-		// Try getting the service status.
-		ServiceData status = service.getServiceStatus() ;
-		assertNotNull("Null service status", status) ;
+		// Try getting the manager status.
+		ServiceData status = manager.getServiceStatus() ;
+		assertNotNull("Null manager status", status) ;
 
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("  Status") ;
@@ -136,7 +139,7 @@ public class JUnitAccountTest
 		//
 		// Try creating the Account.
 		AccountData account ;
-		account = service.addAccount(TEST_ACCOUNT_NAME);
+		account = manager.addAccount(TEST_ACCOUNT_NAME);
 		assertNotNull("Failed to create account", account) ;
 
 		if (DEBUG_FLAG) System.out.println("") ;
@@ -146,12 +149,12 @@ public class JUnitAccountTest
 
 		//
 		// Try creating the same Account again.
-		account = service.addAccount(TEST_ACCOUNT_NAME);
+		account = manager.addAccount(TEST_ACCOUNT_NAME);
 		assertNull("Created a duplicate account", account) ;
 
 		//
 		// Try creating an account in a fake community.
-		account = service.addAccount(FAKE_ACCOUNT_DOMAIN);
+		account = manager.addAccount(FAKE_ACCOUNT_DOMAIN);
 		assertNull("Created a account in fake domain", account) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -172,11 +175,11 @@ public class JUnitAccountTest
 		//
 		// Try getting the fake Account.
 		AccountData account ;
-		account = service.getAccount(FAKE_ACCOUNT_NAME);
+		account = manager.getAccount(FAKE_ACCOUNT_NAME);
 		assertNull("Found the fake account", account) ;
 		//
 		// Try getting the real Account.
-		account = service.getAccount(TEST_ACCOUNT_NAME);
+		account = manager.getAccount(TEST_ACCOUNT_NAME);
 		assertNotNull("Failed to find the real account", account) ;
 
 		if (DEBUG_FLAG) System.out.println("  Account") ;
@@ -201,14 +204,14 @@ public class JUnitAccountTest
 		//
 		// Try getting the real Account.
 		AccountData account ;
-		account = service.getAccount(TEST_ACCOUNT_NAME);
+		account = manager.getAccount(TEST_ACCOUNT_NAME);
 		assertNotNull("Failed to find the real account", account) ;
 		//
 		// Modify the account.
 		account.setDescription("Modified description") ;
 		//
 		// Try updating the Account.
-		service.setAccount(account);
+		manager.setAccount(account);
 
 		if (DEBUG_FLAG) System.out.println("  Account") ;
 		if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
@@ -232,7 +235,7 @@ public class JUnitAccountTest
 		//
 		// Try getting the list of Accounts.
 		Object[] list ;
-		list = service.getAccountList();
+		list = manager.getAccountList();
 		assertNotNull("Failed to get the list of Accounts", list) ;
 
 		if (DEBUG_FLAG) System.out.println("  ----") ;
@@ -263,15 +266,15 @@ public class JUnitAccountTest
 
 		//
 		// Delete the real account (no return data).
-		service.delAccount(TEST_ACCOUNT_NAME);
+		manager.delAccount(TEST_ACCOUNT_NAME);
 
 		//
 		// Delete the real account again (no return data).
-		service.delAccount(TEST_ACCOUNT_NAME);
+		manager.delAccount(TEST_ACCOUNT_NAME);
 
 		//
 		// Delete the fake account (no return data).
-		service.delAccount(FAKE_ACCOUNT_NAME);
+		manager.delAccount(FAKE_ACCOUNT_NAME);
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;

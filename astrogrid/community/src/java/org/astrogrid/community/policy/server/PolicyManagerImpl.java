@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/09 13:48:09 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/09 14:51:47 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.9  2003/09/09 14:51:47  dave
+ *   Added delGroupMember - only local accounts and groups to start with.
+ *
  *   Revision 1.8  2003/09/09 13:48:09  dave
  *   Added addGroupMember - only local accounts and groups to start with.
  *
@@ -448,6 +451,40 @@ public class PolicyManagerImpl
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		return result ;
 		}
+
+	/**
+	 * Remove a member from a Group.
+	 *
+	 */
+	public boolean delGroupMember(String accountName, String groupName)
+		throws RemoteException
+		{
+		boolean result = false ;
+
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.delGroupMember()") ;
+		if (DEBUG_FLAG) System.out.println("  account  : " + accountName) ;
+		if (DEBUG_FLAG) System.out.println("  group    : " + groupName) ;
+		//
+		// Create a CommunityIdent for the Group and Account
+		CommunityIdent groupIdent   = new CommunityIdent(groupName) ;
+		CommunityIdent accountIdent = new CommunityIdent(accountName) ;
+		if (DEBUG_FLAG) System.out.println("  --") ;
+		if (DEBUG_FLAG) System.out.println("  account : " + accountIdent) ;
+		if (DEBUG_FLAG) System.out.println("  group   : " + groupIdent) ;
+
+		//
+		// No checking required, just remove the group.
+		result = groupManager.delGroupMember(accountIdent, groupIdent) ;
+
+		//
+		// TODO
+		// Should return a DataObject with status response.
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return result ;
+		}
+
 
 	}
 

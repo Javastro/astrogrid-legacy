@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/09 13:48:09 $</cvs:date>
-    | <cvs:version>$Revision: 1.17 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/09 14:51:47 $</cvs:date>
+    | <cvs:version>$Revision: 1.18 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.18  2003/09/09 14:51:47  dave
+    |   Added delGroupMember - only local accounts and groups to start with.
+    |
     |   Revision 1.17  2003/09/09 13:48:09  dave
     |   Added addGroupMember - only local accounts and groups to start with.
     |
@@ -1839,9 +1842,7 @@
 	    +-->
 	<target name="policy.TEST" depends="">
 		<!-- Reset our database -->
-		<!--
 		<antcall target="hsqldb.database.delete"/>
-		-->
 		<!-- Run our server side tests -->
 		<antcall target="policy.server.junit"/>
 		<!-- Run our client side tests -->

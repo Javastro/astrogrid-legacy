@@ -1,21 +1,18 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/manager/Attic/JUnitGroupMemberTest.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/client/junit/manager/Attic/JUnitGroupMemberTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
  * <cvs:date>$Date: 2003/09/09 14:51:47 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:version>$Revision: 1.1 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitGroupMemberTest.java,v $
- *   Revision 1.2  2003/09/09 14:51:47  dave
+ *   Revision 1.1  2003/09/09 14:51:47  dave
  *   Added delGroupMember - only local accounts and groups to start with.
- *
- *   Revision 1.1  2003/09/09 13:48:09  dave
- *   Added addGroupMember - only local accounts and groups to start with.
  *
  * </cvs:log>
  *
  */
-package org.astrogrid.community.policy.server.junit.manager ;
+package org.astrogrid.community.policy.client.junit.manager ;
 
 import junit.framework.TestCase ;
 
@@ -24,7 +21,8 @@ import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.AccountData ;
 
 import org.astrogrid.community.policy.server.PolicyManager ;
-import org.astrogrid.community.policy.server.PolicyManagerImpl ;
+import org.astrogrid.community.policy.server.PolicyManagerService ;
+import org.astrogrid.community.policy.server.PolicyManagerServiceLocator ;
 
 /**
  *
@@ -60,10 +58,16 @@ public class JUnitGroupMemberTest
 	private static final boolean ASSERT_FLAG = false ;
 
 	/**
-	 * Our PolicyManager.
+	 * Our manager locator.
 	 *
 	 */
-	private PolicyManager manager = null ;
+	private PolicyManagerService locator ;
+
+	/**
+	 * Our manager.
+	 *
+	 */
+	private PolicyManager manager ;
 
 	/**
 	 * Setup our tests.
@@ -77,8 +81,13 @@ public class JUnitGroupMemberTest
 		if (DEBUG_FLAG) System.out.println("setUp()") ;
 
 		//
-		// Create our PolicyManager.
-		manager = new PolicyManagerImpl();
+		// Create our manager locator.
+		locator = new PolicyManagerServiceLocator() ;
+		assertNotNull("Null manager locator", locator) ;
+		//
+		// Create our manager.
+		manager = locator.getPolicyManager() ;
+		assertNotNull("Null manager", manager) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
