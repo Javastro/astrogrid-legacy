@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.11 2004/07/07 19:33:59 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.12 2004/07/14 18:04:02 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -86,7 +86,7 @@ public class JdbcPlugin extends QuerierPlugin  {
          querier.setStatus(new QuerierQuerying(querier));
          
          //execute query
-         log.debug("Query to perform: " + sql);
+         log.info("Performing Query: " + sql);
          statement.execute(sql);
          ResultSet results = statement.getResultSet();
 
@@ -237,11 +237,11 @@ public class JdbcPlugin extends QuerierPlugin  {
             tableTag.writeComment("schema='"+tables.getString("TABLE_SCHEM")+"'");
             tableTag.writeComment("cat='"+tables.getString("TABLE_CAT")+"'");
             tableTag.writeComment("type='"+tables.getString("TABLE_TYPE")+"'");
-            tableTag.writeComment("typecat='"+tables.getString("TYPE_CAT")+"'");
-            tableTag.writeComment("typeschema='"+tables.getString("TYPE_SCHEM")+"'");
-            tableTag.writeComment("typename='"+tables.getString("TYPE_NAME")+"'");
-            tableTag.writeComment("selfref='"+tables.getString("SELF_REFERENCING_COL_NAME")+"'");
-            tableTag.writeComment("refgen='"+tables.getString("REF_GENERATION")+"'");
+//            tableTag.writeComment("typecat='"+tables.getString("TYPE_CAT")+"'");
+//            tableTag.writeComment("typeschema='"+tables.getString("TYPE_SCHEM")+"'");
+//            tableTag.writeComment("typename='"+tables.getString("TYPE_NAME")+"'");
+//            tableTag.writeComment("selfref='"+tables.getString("SELF_REFERENCING_COL_NAME")+"'");
+//            tableTag.writeComment("refgen='"+tables.getString("REF_GENERATION")+"'");
             
             ResultSet columns = metadata.getColumns(null, null, tables.getString("TABLE_NAME"), "%");
             
