@@ -31,7 +31,7 @@
             if (ob != null ) 
             {
               DQtableID = ob.toString();          
-              session.removeAttribute("tableID");
+
             }   
             <DQtableID><xsp:expr>DQtableID</xsp:expr></DQtableID>
             
@@ -45,7 +45,7 @@
                   </util:expr>
                 </util:include-expr>
               </resultsFromRegistry>
-              session.removeAttribute("resultSingleCatalog");
+
             }
             else
             {
