@@ -155,7 +155,6 @@ public class DesignAction extends AbstractAction {
 	    TOOL_LIST_PARAMETER = "tool-list",
 	    USER_TOOL_LIST_PARAMETER = "user-tool-list",
 	    TOOL_NAME_PARAMETER = "tool_name",
-	    ORIG_TOOL_NAME_PARAMETER = "orig_tool_name",
 		STEP_KEY_PARAMETER = "step-key",
         ERROR_MESSAGE_PARAMETER = "ErrorMessage",
         LOCATION_PARAMETER = "location",
@@ -1948,7 +1947,6 @@ public class DesignAction extends AbstractAction {
 			try {
 		        String xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
 				String toolName = request.getParameter( TOOL_NAME_PARAMETER ) ;
-				String origToolName = request.getParameter( ORIG_TOOL_NAME_PARAMETER ) ;
 				String stepName = request.getParameter( STEP_NAME_PARAMETER ) ;
 				String stepVar = request.getParameter( STEP_VAR_PARAMETER ) ;				
 				String stepDescription = request.getParameter( STEP_DESCRIPTION_PARAMETER ) ;
@@ -1958,46 +1956,14 @@ public class DesignAction extends AbstractAction {
 				}
 
 				step = locateStep( workflow, xpathKey ); 
-											
-                //	Only insert new tool if user has changed chosen tool, or if origToolName = null
-				if ( origToolName.equals(null) || origToolName.equalsIgnoreCase("null"))
-				{				 
-				  tool = this.createTool( toolName ) ;			
-				  step.setTool( tool ) ;
-				  step.setName( stepName );
-				  if (!(stepVar.length() <= 0 || stepVar == null)) // the resultVar must contain a valid string, it cannot be empty so do not set if no value present.
-				    step.setResultVar( stepVar ) ;
-				  step.setDescription( stepDescription );
-				  String tempName = toolName ;
-				  if (tempName.indexOf("#") != -1)
-					tempName = tempName.substring(0,tempName.indexOf("#")).trim() ;
-				  session.setAttribute( ORIG_TOOL_NAME_PARAMETER, tempName ) ;				  
-				}
-				else if( origToolName.equalsIgnoreCase( toolName ) ) 
-				{
-				  step.setName( stepName ) ;
-				  if (!(stepVar.length() <= 0 || stepVar == null)) // the resultVar must contain a valid string, it cannot be empty so do not set if no value present.
-				    step.setResultVar( stepVar ) ;
-				  step.setDescription( stepDescription );
-				  String tempName = toolName ;
-				  if (tempName.indexOf("#") != -1)
-					tempName = tempName.substring(0,tempName.indexOf("#")).trim() ;
-				  session.setAttribute( ORIG_TOOL_NAME_PARAMETER, tempName ) ;
-				} 
-				else
-				{				
-				  tool = this.createTool( toolName ) ;			
-				  step.setTool( tool ) ;
-				  step.setName("") ;
-				  step.setResultVar("") ;
-				  step.setDescription("...");
-				  String tempName = toolName ;
-				  if (tempName.indexOf("#") != -1)
-					tempName = tempName.substring(0,tempName.indexOf("#")).trim() ;
-				  session.setAttribute( ORIG_TOOL_NAME_PARAMETER, tempName ) ;
-				} 
+				step.setName( stepName );				
+				if (!(stepVar.length() <= 0 || stepVar == null)) // the resultVar must contain a valid string, it cannot be empty so do not set if no value present.
+				  step.setResultVar( stepVar ) ;
+				step.setDescription( stepDescription );
 				
-				updateUserToolList( toolName );	
+				tool = this.createTool( toolName ) ;
+				step.setTool( tool );
+				updateUserToolList( toolName );				
 				
 			}
 			finally {
