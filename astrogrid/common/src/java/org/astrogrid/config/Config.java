@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.23 2004/03/31 11:00:14 mch Exp $
+ * $Id: Config.java,v 1.24 2004/04/24 11:43:05 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -188,7 +188,7 @@ public abstract class Config {
     * Typed getProperty - returns boolean.
     */
    public boolean getBoolean(String key) {
-      return Boolean.getBoolean(getProperty(key).toString());
+      return Boolean.valueOf(getProperty(key).toString()).booleanValue();
    }
 
    /**
