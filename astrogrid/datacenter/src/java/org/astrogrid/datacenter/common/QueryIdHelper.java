@@ -1,5 +1,5 @@
 /*
- * $Id: QueryIdHelper.java,v 1.2 2003/09/16 16:25:06 mch Exp $
+ * $Id: QueryIdHelper.java,v 1.3 2003/09/16 16:34:09 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -29,6 +29,8 @@ public class QueryIdHelper
    /** Makes a service tag with the given id as the tag value */
    public static String makeQueryIdTag(String id)
    {
+      Log.affirm((id != null) && (id.length() >0), "Id is empty");
+
       String tagString = "<"+QUERY_ID_TAG+">"+id+"</"+QUERY_ID_TAG+">";
 
       return tagString;
