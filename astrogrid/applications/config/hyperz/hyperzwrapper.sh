@@ -1,4 +1,4 @@
-# $Id: hyperzwrapper.sh,v 1.1 2004/01/16 19:53:28 pah Exp $
+# $Id: hyperzwrapper.sh,v 1.2 2004/01/16 21:53:48 pah Exp $
 #Paul Harrison
 #This is a wrapper for hyperz that makes it behave more like the generalized command line application
 
@@ -26,7 +26,7 @@ do
          CATALOG_FILE=$2
          shift 2
         ;;
-      -output_catalog)
+      -OUTPUT_CATALOG)
          OUTPUT_FILE=$2
          shift 2
         ;;
