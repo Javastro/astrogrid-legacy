@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: cvs-checkout.sh,v 1.5 2004/11/28 21:36:57 jdt Exp $ 
+# $Id: cvs-checkout.sh,v 1.6 2004/11/28 21:39:44 jdt Exp $ 
 ##############################################################
 # Script to checkout a module, and maven-base
 # First argument is module name
@@ -23,7 +23,7 @@ if [ -z "$MODULE" ]; then
 fi
 
 TAG=$2
-echo "Checking out $MODULE into "$CHECKOUTHOME"
+echo "Checking out $MODULE into $CHECKOUTHOME"
 if [ -z "$TAG" ]; then
 	echo "from Head"
 	# is there actually a branch called head?
