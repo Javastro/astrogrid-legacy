@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <document>
     <properties>
-        <title>Overview of Astrogrid</title>
+        <title>Overview of AstroGrid</title>
         <author email="jdt@roe.ac.uk">John Taylor</author>
     </properties>
     <body>
         <section name="Overview of AstroGrid">
             <p> The AstroGrid project (<a href="http://www.astrogrid.org/">http://www.astrogrid.org/</a>) aims to 
-                produce a working datagrid for key selected databases, with associated datamining facilities, by late 
+                produce a working datagrid for key selected databases, with associated data-mining facilities, by late 
                 2004. It is part of the world-wide drive towards the concept of a Virtual Observatory (VO), and can be 
                 seen as the UK contribution to this vision. However in various ways it is both wider and more focussed 
                 than other initiatives. It is wider in that it covers astronomy, solar physics, and space plasma (solar 
@@ -19,7 +19,7 @@
                 requires concentrating on selected datasets. Our priority is to develop a virtual observatory 
                 capability to support efficient and effective exploitation of key astronomical data sets of importance 
                 to the UK community: for example data from WFCAM, VISTA, XMM-SSC, e-MERLIN, SOHO and Cluster. It seems 
-                clear that good data curation, archive management, and datamining services all need to be closely 
+                clear that good data curation, archive management, and data-mining services all need to be closely 
                 linked together. AstroGrid is therefore a partnership formed by UK archive centres and astronomical 
                 computer scientists. </p>
         </section>

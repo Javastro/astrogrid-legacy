@@ -9,12 +9,12 @@
     <siteAddress>www.astrogrid.org</siteAddress>
     <siteDirectory>/var/www/software</siteDirectory>
     <repository>
-        <connection> scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid 
+        <connection> scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid
             </connection>
         <developerConnection> 
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid 
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid
             </developerConnection>
-        <url> http://www.astrogrid.org/viewcvs/astrogrid/ </url>
+        <url> http://www.astrogrid.org/viewcvs/</url>
     </repository>
     <build/>
     <properties/>

@@ -44,13 +44,14 @@
             <item name="Common Libraries" href="/downloaddocs/delegate.html" collapse="true">
                 <item name="Common" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-common-*SNAPSHOT.jar"/>
                 <item name="Community" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-community-*SNAPSHOT.jar"/>
+                <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-registry-common-*SNAPSHOT.jar"/>
                 <item name="Security" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-security-*SNAPSHOT.jar" />
                 <item name="Workflow" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-workflow-*SNAPSHOT.jar"/>
                 <item name="Workflow Common Objects" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-workflow-objects-*SNAPSHOT.jar" />
             </item>
-			<item name="Distributions" href="/downloaddocs/distributions.html" collapse="true">
+			<!--item name="Distributions" href="/downloaddocs/distributions.html" collapse="true">
 				<item name="Community - complete me" href=""/>
-			</item> 
+			</item--><!--leave me for now--> 
 		</menu>
 		<menu name="Information for Users">
 			<item name="Installing AstroGrid software" href="/userdocs/index.html" collapse="true">
@@ -68,12 +69,12 @@
 				<item name="Obtaining AstroGrid source code" href="/cvs-usage.html"/>
                 <item name="Process" href="/developerdocs/developmentprocess.html"/>
 				<item name="Coding Standards" href="/developerdocs/standards.html"/>
-                <item name="AstroGrid architecture" href="fillmein"/>
-				<!--item name="The automatic builds" href="/developerdocs/"/-->
+                <!--item name="AstroGrid architecture" href="fillmein"/-->
+				<item name="Building AstroGrid from source" href="/developerdocs/buildingastrogrid.html"/>
 				<!--item name="Writing AstroGrid compatable software" href="/developerdocs/"/-->
 				<item name="How to change these docs" href="/about.html"/>
 			</item>
-			<item name="Maven Documentation" href="/developerdocs/maven.html" collapse="true">
+			<item name="AstroGrid Maven Documentation" href="/developerdocs/maven.html" collapse="true">
 				<item name="SNAPSHOT" href="http://www.astrogrid.org/maven/docs/SNAPSHOT"/>
 				<item name="All releases and installations" href="http://www.astrogrid.org/maven/build"/>
 			</item>

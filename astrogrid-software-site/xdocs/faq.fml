@@ -80,10 +80,11 @@
                 <p> AstroGrid is not a single piece of software, but a collection of interoperating components designed to be installed on a distributed 
                     network of computers. Detailed instructions for the installation and configuration of individual components can be found on the <a 
                     href="http://www.astrogrid.org/maven/build">Astrogrid Maven pages</a>. Components likely to be of most interest are the <a 
-                    href="/docs/SNAPSHOT/datacenter">Publishers Astrogrid Library</a> for publishing data to AstroGrid, and the <a 
-                    href="/docs/SNAPSHOT/applications">Common Execution Architecture</a> for publishing dataprocessing applications.</p>
+                    href="http://www.astrogrid.org/maven/docs/SNAPSHOT/datacenter">Publishers Astrogrid Library</a> for publishing data to AstroGrid, and the 
+                    <a href="http://www.astrogrid.org/maven/docs/SNAPSHOT/applications">Common Execution Architecture</a> for publishing dataprocessing 
+                    applications.</p>
                 <p> It is also possible to install a set of typical AstroGrid components on a single machine for testing purposes. Step-by-step instructions 
-                    for this may be found <a href="/docs/SNAPSHOT/integrationTesting">here</a>. </p>
+                    for this may be found <a href="http://www.astrogrid.org/maven/docs/SNAPSHOT/integrationTesting">here</a>. </p>
             </answer>
         </faq>
     </part>
@@ -92,13 +93,13 @@
         <faq id="Astros-data">
             <question> How do I make my data available on Astrogrid? </question>
             <answer>
-                <p>See http://www.astrogrid.org/maven/docs/SNAPSHOT/datacenter/multiproject/pal/index.html</p>
+                <p>See the <a href="http://www.astrogrid.org/maven/docs/SNAPSHOT/datacenter/multiproject/pal/index.html">PAL Maven documentation</a>.</p>
             </answer>
         </faq>
         <faq>
             <question> How do I make my data processing application available on Astrogrid? </question>
             <answer>
-                <p>See http://www.astrogrid.org/maven/docs/SNAPSHOT/applications/index.html</p>
+                <p>See the <a href="http://www.astrogrid.org/maven/docs/SNAPSHOT/applications/index.html">CEA Maven documentation</a>.</p>
             </answer>
         </faq>
     </part>
@@ -115,7 +116,7 @@
         <faq>
             <question id="faq-where"> I am a developer and I wish to add a FAQ. What do I do? </question>
             <answer>
-                <p> The source code for this document is held in <a href="cvs-usage.html">CVS</a> under /astrogrid/astrogrid-site/xdoc/faq.xml. The faq is 
+                <p> The source code for this document is held in <a href="cvs-usage.html">CVS</a> under /astrogrid-software-site/xdoc/faq.xml. The faq is 
                     generated using maven's <a href="http://maven.apache.org/reference/plugins/faq/">faq</a> goal. </p>
             </answer>
         </faq>
