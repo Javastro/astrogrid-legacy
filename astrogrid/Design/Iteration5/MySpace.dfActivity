@@ -1,0 +1,359 @@
+package id4oieddr9kvksudr9kxa28;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16:oiref><oihard>
+@__modelType reference 
+*/
+class reference17 {
+}/**
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node19:oiref><oihard>
+@__modelType reference 
+*/
+class reference20 {
+}/**
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node48:oiref><oihard>
+@__modelType reference 
+*/
+class reference49 {
+}/**
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node47:oiref><oihard>
+@__modelType reference 
+*/
+class reference18 {
+}}/**
+
+@__tags
+@shapeType ActivityDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node17.link19:oiref>=130,770,130,820:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node29.link:oiref>=148,363,113,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node31.link:oiref>=134,600,134,649:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node1.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node31:oiref>=40,550,180,50,0:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node1.link:oiref>=144,101,144,179:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node19.node39.link43:oiref>=:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node12.link13:oiref>=148,291,108,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node37.link:oiref>=206,663,577,663:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node29:oiref>=100,410,51,29,0:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node46.link:oiref>=190,1063,420,1038:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node12.link:oiref>=170,270,350,270:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node:oiref>=320,30,181,670,0:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node12:oiref>=110,260,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node19.node39.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node31.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node30.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node.node18.link:oiref>=:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node37.link:oiref>=334,673,114,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node1:oiref>=50,66,172,35,0:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node.node27.link:oiref>=350,424,151,424:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node.node26:oiref>=350,260,140,43,0:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node19.node38:oiref>=577,631,142,46,0:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16:oiref>=30,20,195,1320,0:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node.node27:oiref>=350,390,131,54,0:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node42.link:oiref>=150,882,150,946:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node12.link13:oiref>=138,280,138,320:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node37:oiref>=63,649,143,53,0:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node42.link:oiref>=160,905,184,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node.node23.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node42:oiref>=90,820,123,62,0:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node37.link37:oiref>=130,702,130,750:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node39.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node.node26.link:oiref>=415,303,415,390:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node17:oiref>=100,750,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node44:oiref>=50,946,160,44,0:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node19:oiref>=560,30,171,860,0:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node:oiref>=129,39,12,12,1:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node9.link:oiref>=223,201,562,211:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node.link:oiref>=135,51,135,66:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node17.link:oiref>=160,760,430,780,428,1030:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node29.link36:oiref>=125,439,125,550:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node47:oiref>=420,1030,15,15,1:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node50:oiref>=130,320,15,15,1:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node19.node:oiref>=562,201,236,23,0:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node44.link:oiref>=127,990,127,1053:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node19.node21.link11:oiref>=:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node17.link:oiref>=260,780,143,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node46:oiref>=65,1053,125,45,0:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node10.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node48:oiref>=810,30,180,350,0:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node29.link:oiref>=138,410,138,335:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node9.link:oiref>=290,170,200,34,1:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node.node29.link36:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node9:oiref>=66,179,157,32,0:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node39.link43:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node19.node21.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node9.link14:oiref>=140,211,140,260:oigroup>
+
+
+
+
+
+
+*/
+class __positions {
+}/**
+@shapeType SwimLane
+@__modelType node
+@name MySpace
+@backgroundColor 200,200,200 
+*/
+class node16 {
+/**
+@shapeType Activity
+@__modelType node
+@name Request Comes In for copy, move, delete
+*/
+class node1 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node9:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType StartState
+@__modelType node
+@name StartState1 
+*/
+class node {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node1:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Call to Community 
+*/
+class node9 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node19.node:oiref><oihard>
+@eventArguments Find community service for (communityname)/user 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node12:oiref><oihard> 
+*/
+class link14 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Call Registry 
+*/
+class node37 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node19.node38:oiref><oihard>
+@eventArguments Myspace Identifier 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node17:oiref><oihard> 
+*/
+class link37 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Return myspace endpoint
+*/
+class node42 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node44:oiref><oihard>
+@action call to the myspace web service
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Move, copy , delete files for the user 
+*/
+class node44 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node46:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Return success/failure 
+*/
+class node46 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node47:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType EndState
+@__modelType node
+@name EndState2 
+*/
+class node50 {
+}/**
+@shapeType Decision
+@__modelType node
+@name Decision2 
+*/
+class node12 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node.node26:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node50:oiref><oihard>
+@eventArguments No service found 
+*/
+class link13 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Return Myspace identifier
+*/
+class node31 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node37:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Find account 
+*/
+class node29 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node31:oiref><oihard> 
+*/
+class link36 {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node50:oiref><oihard>
+@eventArguments No Myspace ident 
+*/
+class link {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Decision1 
+*/
+class node17 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node47:oiref><oihard>
+@sendClause No Myspace entry found 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node42:oiref><oihard> 
+*/
+class link19 {
+}}}/**
+@shapeType SwimLane
+@__modelType node
+@name Community
+@backgroundColor 200,200,200 
+*/
+class node {
+/**
+@shapeType Activity
+@__modelType node
+@name Call Community Service 
+*/
+class node26 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node.node27:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Ask Users Myspace Identifier 
+*/
+class node27 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node29:oiref><oihard> 
+*/
+class link {
+}}}/**
+@shapeType SwimLane
+@__modelType node
+@name Registry
+@backgroundColor 200,200,200 
+*/
+class node19 {
+/**
+@shapeType Activity
+@__modelType node
+@name Lookup the Community Service 
+*/
+class node {
+}/**
+@shapeType Activity
+@__modelType node
+@name Find Myspace Service
+*/
+class node38 {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text Note: A Registry and Community is not required . The delegates 
+will be instaled with Myspace, but the delegates will try
+to look things up in a config (local cache) if their is no actual
+web service installed.
+*/
+class node48 {
+}/**
+@shapeType EndState
+@__modelType node
+@name EndState1 
+@backgroundColor 0,0,0
+*/
+class node47 {
+}
