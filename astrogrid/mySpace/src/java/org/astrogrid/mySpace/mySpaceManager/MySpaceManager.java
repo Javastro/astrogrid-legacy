@@ -869,6 +869,33 @@ public String upLoad(String jobDetails){
     	return response;
     }
     
+	public String importDataHolder(String jobDetails){
+		return "Not Implemented";
+	}
+	
+	public String structureMySpace(String jobDetails){
+			return "Not Implemented";
+		}
+    
+	public String extendLease(String jobDetails){
+			return "Not Implemented";
+		}
+		
+	public String publish(String jobDetails){
+			return "Not Implemented";
+		}		
+		
+	public String createUser(String userID){
+			return "Not Implemented";
+		}		
+		
+	public String deleteUser(String userID){
+			return "Not Implemented";
+		}		
+		
+	public String changeOwner(String oldID, String newID){
+			return "Not Implemented";
+		}
 	protected String getComponentName() { return Configurator.getClassName( MySpaceManager.class) ; }    
 
 }
