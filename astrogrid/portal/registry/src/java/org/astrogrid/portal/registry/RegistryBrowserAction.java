@@ -31,6 +31,7 @@ import org.apache.axis.components.logger.LogFactory;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
+import org.astrogrid.util.DomHelper;
 
 import org.astrogrid.registry.NoResourcesFoundException;
 import org.astrogrid.registry.RegistryException;
@@ -73,11 +74,17 @@ public class RegistryBrowserAction extends AbstractAction
    public static final String SELECT_ACTION = "selectentry";
 
    public static final String CONFIRM_ACTION = "Verify";
+   
+   public static final String TABLE_ACTION = "getTable";
+   
+   public static final String SEPARATOR = "/";   
 
 /* Now the parameters passed back to Cocoon */
    public static final String PARAM_SERVER = "Server";
    
    public static final String PARAM_ID = "identifier";
+   
+   public static final String UNIQUE_ID = "uniqueID";
    
    public static final String PARAM_TITLE = "title";
    
@@ -183,7 +190,7 @@ public class RegistryBrowserAction extends AbstractAction
          if ( SERVERS[i][0].equals(server) )
             endpoint="http://" + SERVERS[i][1] + "/services/Registry";
       }
-      request.setAttribute("Servers", Servers);       
+	  request.setAttribute("Servers", Servers);      
 
       printDebug( method, "Service = " + endpoint);
 
@@ -228,6 +235,74 @@ public class RegistryBrowserAction extends AbstractAction
       } else if ( SELECT_ACTION.equals(action) ) {
          resultid = request.getParameter( PARAM_ID );
          printDebug( method, "Result id = " + resultid );
+	  
+	  } else if ( TABLE_ACTION.equals(action) ) 
+	  {
+	      try 
+	      {	
+		  String table = "";		 
+		      printDebug( method, "In table action!!" ); 
+		      String uniqueID = request.getParameter(UNIQUE_ID);
+		      String tableQuery = null;
+		      if (uniqueID != null && uniqueID.length() > 0)
+		      {
+		          printDebug( method, "uniqueID = " + uniqueID);  
+		           String authorityID = uniqueID.substring(0,uniqueID.indexOf(SEPARATOR)) ;
+			 	  printDebug( method, "uniqueID - auth = " + authorityID );
+		           String resourceKey = uniqueID.substring(uniqueID.indexOf(SEPARATOR)+1,uniqueID.lastIndexOf(SEPARATOR)) ;
+				  printDebug( method, "uniqueID - res = " + resourceKey);
+		           table = uniqueID.substring(uniqueID.lastIndexOf(SEPARATOR)+1,uniqueID.length()) ;
+				  printDebug( method, "uniqueID -table = " + table);	
+
+		          tableQuery = "<query>\n<selectionSequence>"
+				             + "\n<selection item='searchElements' itemOp='EQ' value='Resource'/>"
+				             + "\n<selectionOp op='$and$'/>"
+				             + "<selection item='AuthorityID' itemOp='EQ' value='"+authorityID+"'/>"
+				             + "\n<selectionOp op='AND'/>"
+				             + "\n<selection item='ResourceKey' itemOp='EQ' value='"+resourceKey+"'/>"
+				             + "\n<selectionOp op='AND'/>"
+				             + "\n<selection item='Name' itemOp='EQ' value='"+table+"'/>"
+				             + "\n</selectionSequence></query>";				                 
+				   printDebug( method, "tableQuery = " + tableQuery);
+				
+		      }	
+			  endpoint = "http://localhost:8080/astrogrid-registry-SNAPSHOT/services/Registry";
+							  
+			  printDebug( method, "Service = " + endpoint);
+			  URL url = new URL( endpoint );               
+			  RegistryService rs = RegistryDelegateFactory.createQuery(url);
+			  printDebug( method, "Service = " + rs);
+			  Document doc = rs.submitQuery( tableQuery );
+			 
+			  request.setAttribute("tableName", table);
+			  request.setAttribute("resultSingleCatalog", doc);
+          } 
+          catch( NoResourcesFoundException nrfe ) 
+          {
+		      errorMessage = "Your query produced no results." ;
+			  printDebug( method, errorMessage + " : " + nrfe );
+			  if ( STACK_TRACE) nrfe.printStackTrace();
+		  } 
+		  catch( RegistryException re ) 
+		  {
+		     errorMessage =
+					 "A error occurred in processing your query with the Registry.";
+		     printDebug( method, errorMessage + " : " + re );
+		     if ( STACK_TRACE) re.printStackTrace();
+		  } 
+		  catch( Exception e ) 
+		  {
+		     errorMessage = "An exception occurred. " + e;
+			 printDebug( method, errorMessage );
+			 if ( STACK_TRACE) e.printStackTrace();
+		  }
+				 
+				
+      
+      
+      
+      
+      
       } else if ( action == null ) {
          printDebug( method, "First Time set action" );
          action = QUERY_ACTION;
@@ -324,6 +399,7 @@ public class RegistryBrowserAction extends AbstractAction
 
      return query;
    }
+
 
    private String getResultMessage(Document doc) {
       String message = null;

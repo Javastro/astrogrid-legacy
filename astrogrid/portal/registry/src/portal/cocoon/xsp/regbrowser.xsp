@@ -14,13 +14,15 @@
   <xsp:structure>
     <xsp:include>java.util.Iterator</xsp:include>
     <xsp:include>java.util.LinkedHashMap</xsp:include>
+    <xsp:include>java.util.LinkedList</xsp:include>
     <xsp:include>java.util.Map</xsp:include>    
     <xsp:include>java.util.HashMap</xsp:include>    
     <xsp:include>java.util.ArrayList</xsp:include>    
     <xsp:include>java.util.Set</xsp:include>
     <xsp:include>org.apache.axis.utils.XMLUtils</xsp:include>
     <xsp:include>org.w3c.dom.Node</xsp:include>
-    <xsp:include>org.w3c.dom.Element</xsp:include>    
+    <xsp:include>org.w3c.dom.Element</xsp:include>
+    <xsp:include>org.w3c.dom.Document</xsp:include>    
   </xsp:structure>      
   
   <BrowserQuery>
@@ -89,6 +91,9 @@
             String description = "";
             String identifier = "";
             String ivorn = "";
+            String table = "";
+            String tempTable = "";
+            LinkedList tables = new LinkedList();
             
             while (iter.hasNext()) {
                xml = (String)iter.next();
@@ -114,6 +119,15 @@
                  ivorn = xml.substring( xml.indexOf(">",i1)+1, 
                                         xml.indexOf("</ReferenceURL>", i1) );
                }
+               i2 = xml.indexOf("<vs:Table");
+               i1 = xml.indexOf("<Name>", i2);
+               if( i1 != -1 ) {
+                 table = xml.substring( xml.indexOf(">",i1)+1, 
+                                        xml.indexOf("</Name>", i1) );
+               }
+               else {
+                   table = "none found";
+               }
          ]]>
 
                  <xsp:element name="result">
@@ -123,6 +137,8 @@
 <xsp:attribute name="key"><xsp:expr>key</xsp:expr></xsp:attribute>
 <xsp:attribute name="identifier"><xsp:expr>identifier</xsp:expr></xsp:attribute>
 <xsp:attribute name="ivorn"><xsp:expr>ivorn</xsp:expr></xsp:attribute>
+<xsp:attribute name="table"><xsp:expr>table</xsp:expr></xsp:attribute>
+<xsp:attribute name="xml"><xsp:expr>xml</xsp:expr></xsp:attribute>
                  </xsp:element>
           }
           }

@@ -2,42 +2,54 @@
 
 <!--+
     | Author: Patricio F. Ortiz "pfo@star.le.ac.uk"
+    |         Phil Nicolson "pjn3@star.le.ac.uk"
     | Date: Fri Mar  5 17:29:46 2004
     +-->
 
-<xsp:page language="java"
-	  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-          xmlns:xsp="http://apache.org/xsp"
-	  xmlns:util="http://apache.org/xsp/util/2.0"
-          xmlns:jpath="http://apache.org/xsp/jpath/1.0"
-	  xmlns:xsp-request="http://apache.org/xsp/request/2.0">
+  <xsp:page language="java"
+       xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsp="http://apache.org/xsp"
+       xmlns:util="http://apache.org/xsp/util/2.0" xmlns:jpath="http://apache.org/xsp/jpath/1.0"
+       xmlns:xsp-request="http://apache.org/xsp/request/2.0">
 
-  
-<AstroGrid>
+    <!--+
+        | Import any java classes here.
+        +-->
 
-<agVaribleDisplayFrame>
-<!--
-<agComponentTitle>Table: <xsp-request:get-parameter name="tableID"/></agComponentTitle>
--->
+        <xsp:structure>
+          <xsp:include>org.w3c.dom.Document</xsp:include>
+          <xsp:include>org.astrogrid.util.DomHelper</xsp:include>
+        </xsp:structure>
 
-<DQtableID><xsp-request:get-parameter name="tableID"/></DQtableID>
-
-<xsp:logic>
-     String quString, myURL, nada;
-     nada = new String("null");
-     quString = (String) <xsp-request:get-parameter name="tableID"/>;
-     if(quString.equals(nada)){
-<OneTableID>NoSource</OneTableID>
-     } else {
-     myURL = "http://barbara.star.le.ac.uk/datoz-bin/regfake?action=selOneTab&amp;tableID=" + quString;
-<OneTableID><xsp:expr>quString</xsp:expr></OneTableID>
-        <util:include-uri>
-           <util:href><xsp:expr>myURL</xsp:expr></util:href>
-        </util:include-uri>
-     }
-</xsp:logic>
-
-</agVaribleDisplayFrame>
-</AstroGrid>
-
-</xsp:page>
+      <AstroGrid>
+        <agVaribleDisplayFrame>
+          <xsp:logic>
+            String DQtableID = "null";
+            Object ob = null;
+            
+            ob = request.getAttribute("tableName");
+            if (ob != null) 
+            {
+              DQtableID = ob.toString();          
+            }   
+            <DQtableID><xsp:expr>DQtableID</xsp:expr></DQtableID>
+            
+            ob = request.getAttribute("resultSingleCatalog");
+            if (ob != null)
+            {              
+              <resultsFromRegistry>
+                <util:include-expr>
+                  <util:expr>
+                    DomHelper.DocumentToString((Document)ob)
+                  </util:expr>
+                </util:include-expr>
+              </resultsFromRegistry>
+            }
+            else
+            {
+              <resultsFromRegistry></resultsFromRegistry>
+            }
+                      
+          </xsp:logic>
+        </agVaribleDisplayFrame>
+      </AstroGrid>
+    </xsp:page>

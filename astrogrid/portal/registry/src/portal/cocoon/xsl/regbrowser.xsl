@@ -13,31 +13,24 @@
   <!--+
       | Match the root element.
     +-->
-  <xsl:template match="/">
-  <html>
-    <head>
-      <script type="text/javascript"
-              src="/astrogrid-portal/mount/registry/registry.js">
-      </script>
-    </head>
-    <body>
-      <title>Astrogrid: registry browser</title>
-      <xsl:apply-templates/>
-    </body>
-    </html>
-  </xsl:template>
+	<xsl:template match="/">
+	  <ag-div>	      
+	    <!-- Add our page content -->
+		<content>
+		  <agPUBMessage>Query the Registry Microbrowser - <xsl:value-of select="$mainelement"/></agPUBMessage> 
+		  <ag-script type="text/javascript" src="/astrogrid-portal/extras.js"/>		    
+		  <xsl:apply-templates/>
+		</content>
+	  </ag-div>
+	</xsl:template>
 
-  <!--+
-      | Match the main body element.
-    +-->
-  <xsl:template match="BrowserQuery">
-    <page>
-      <!-- Add our page content -->
-      <content>
-        <xsl:apply-templates/>
-      </content>
-    </page>
-  </xsl:template>
+
+	<!--+
+	    | Match the admin element.
+		+-->
+	<xsl:template match="BrowserQuery">		    
+	  <xsl:apply-templates/>
+	</xsl:template>
 
   <xsl:template match="BrowserBody">
     <xsl:if test="$resultlist=''" >
@@ -175,44 +168,97 @@
   </xsl:template>
 
   <xsl:template name="results_list">
-     <p>
-     <form method="post" action="registrybrowser.html" name="RegistryBrowser">
-      <input type="hidden" name="action" value="selectentry" />
-      <input type="hidden" name="authId">
-         <xsl:attribute name="value"><xsl:value-of
-                       select="$authId"/></xsl:attribute>
-      </input>
-      <input type="hidden" name="resourceKey">
-         <xsl:attribute name="value"><xsl:value-of
-                       select="$resourceKey"/></xsl:attribute>
-      </input>
-      <input type="hidden" name="mainelement">
-        <xsl:attribute name="value"><xsl:value-of
-                       select="$mainelement"/></xsl:attribute>
-      </input>
-      Select a <xsl:value-of select="$mainelement"/> from the following:      
-      <br/>
-        <xsl:for-each select="//BrowserQuery/BrowserBody/ResultsList/result">
-          <input type="radio" name="selection" id="selection">
-             <xsl:attribute name="value"><xsl:value-of
-                            select="@identifier"/></xsl:attribute>
-          </input>
-          <strong> <xsl:value-of select="@key"/> </strong>
-          <em> : <xsl:value-of select="@title"/></em>
-          <br/> 
-        </xsl:for-each>
-        <input type="button" value="Select">               
-               <xsl:attribute name="onClick">getSelectionId('<xsl:value-of
-                   select="$authId"/>','<xsl:value-of
-                   select="$resourceKey"/>');</xsl:attribute>                              
-         </input>                                             
-        <xsl:text>          </xsl:text>
-        <input type="submit" name="queryregistry" value="Restart" />
-        <xsl:text>          </xsl:text>
-        <input type="button" value="Cancel" onclick="window.close()"/>
-     </form>
-     </p>
-  </xsl:template>
+    <xsl:choose>
+      <xsl:when test="$mainelement = 'Catalog'">   <!-- CATALOG --> 
+        <p>
+          <form method="post" action="registrybrowser.html" name="RegistryBrowser" id="RegistryBrowser">
+            <input type="hidden" name="action" value="selectentry" />
+            <input type="hidden" name="mainelement">
+              <xsl:attribute name="value">
+                <xsl:value-of select="$mainelement"/>
+              </xsl:attribute>
+            </input>
+            Select a <xsl:value-of select="$mainelement"/> from the following:      
+            <br/>
+              <table>                    
+              <xsl:for-each select="//BrowserQuery/BrowserBody/ResultsList/result">
+                <tr>
+                  <td>
+                <strong> <xsl:value-of select="@key"/> </strong>
+                </td>
+                <td>
+                <em> : <xsl:value-of select="@title"/></em>
+                </td>
+              </tr>
+              <xsl:for-each select="@table">                      
+                <tr>
+                  <td>
+                  </td>
+                  <td>                                           
+                    <input type="radio" name="selection" id="selection">
+                      <xsl:attribute name="value">
+                        <xsl:value-of select="../@identifier"/>/<xsl:value-of select="."/>
+                      </xsl:attribute>
+                    </input>
+                    <xsl:value-of select="."/>
+                    </td>
+                  </tr>
+                </xsl:for-each>
+              </xsl:for-each>
+            </table>
+            <input name="queryregistry" type="button" value="Browse...">
+              <xsl:attribute name="onClick">findSelection()</xsl:attribute>                                                        
+            </input>                                                         
+            <xsl:text>          </xsl:text>
+            <input type="submit" name="queryregistry" value="Restart" />
+            <xsl:text>          </xsl:text>
+            <input type="button" value="Cancel" onclick="window.close()"/>
+          </form>
+        </p> 
+        </xsl:when>
+    
+        <xsl:otherwise>           <!-- TOOL -->
+          <p>
+            <form method="post" action="registrybrowser.html" name="RegistryBrowser">
+              <input type="hidden" name="action" value="selectentry" />
+              <input type="hidden" name="authId">
+                <xsl:attribute name="value"><xsl:value-of select="$authId"/></xsl:attribute>
+              </input>
+              <input type="hidden" name="resourceKey">
+                 <xsl:attribute name="value">
+                   <xsl:value-of select="$resourceKey"/>
+                 </xsl:attribute>
+              </input>
+              <input type="hidden" name="mainelement">
+                <xsl:attribute name="value">
+                  <xsl:value-of select="$mainelement"/>
+                </xsl:attribute>
+              </input>
+              Select a <xsl:value-of select="$mainelement"/> from the following:      
+              <br/>      
+                <xsl:for-each select="//BrowserQuery/BrowserBody/ResultsList/result">                
+                  <input type="radio" name="selection" id="selection">
+                    <xsl:attribute name="value">
+                      <xsl:value-of select="@identifier"/>
+                    </xsl:attribute>
+                  </input>             
+                  <strong> <xsl:value-of select="@key"/> </strong>
+                  <em> : <xsl:value-of select="@title"/></em>
+                  <br/> 
+                </xsl:for-each>
+              <input type="button" value="Select">               
+                <xsl:attribute name="onClick">getSelectionId('<xsl:value-of select="$authId"/>','<xsl:value-of select="$resourceKey"/>');</xsl:attribute>                              
+              </input>                                             
+              <xsl:text>          </xsl:text>
+              <input type="submit" name="queryregistry" value="Restart" />
+              <xsl:text>          </xsl:text>
+              <input type="button" value="Cancel" onclick="window.close()"/>
+            </form>
+          </p>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:template>    
+
 
   <!--+
       | Default template, copy all and apply templates.

@@ -5,86 +5,42 @@
     | Date: Fri Mar  5 17:29:46 2004
     +-->
 
-<xsp:page language="java"
-	  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-          xmlns:xsp="http://apache.org/xsp"
-	  xmlns:util="http://apache.org/xsp/util/2.0"
-          xmlns:jpath="http://apache.org/xsp/jpath/1.0">
+  <xsp:page language="java"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xsp="http://apache.org/xsp"
+	xmlns:util="http://apache.org/xsp/util/2.0"
+    xmlns:jpath="http://apache.org/xsp/jpath/1.0">
   
-<!--
-<body bgcolor="#ffffcc" background="/astrogrid-portal/hudf_hst_section.jpg">
-display: show; background-color: #ffffcc; text-align: left; font-size:
--->
-<body style="font-size: 80%" bgcolor="#ffffcc" background="/astrogrid-portal/eskimo2_hst_centre.jpg">
-<script language="javascript" src="/astrogrid-portal/extras.js">
-var i=0;
-</script>
-<script language="javascript">
-function closeMe(){
-	var cm = document.getElementById("tablePicker");
-	cm.style.display = "none";
-}
-</script>
-<center>
-<div id="helpy" name="helpy" style="width: 220px; height: 85px; display: none; background-color: #ffffcc; text-align: left; font-size: 14px">
-ah?
-</div>
-<div id="tablePicker" name="tablePicker" style="width: 220px; height: 85px;
-display: show; text-align: left; font-size: 14px">
-<table width="95%" class="compactT" border="0" cellpadding="1" cellspacing="1">
-<form name="fake"
-action="/astrogrid-portal/bare/mount/datacenter/variables.xsp"
-target="vars">
-<tr valign="bottom"><td align="left">
-Load a known table:<br />
-<input onFocus="focusit(this)" onBlur="defocusit(this)" name="tableID" size="20" value="IX/37/xmm1obs" title="This is an example only. Change at will"/>
-</td>
-<td align="right">
-<input type="submit" class="agActionButton" value="GO"/>
-</td></tr>
-
-<tr valign="bottom"><td align="left">
-<br />
-Or 
-<span name="lost"
-onClick="popupBrowser('/astrogrid-portal/lean/mount/datacenter/catalogueBrowser.xml')" class="agActionButton">Select a Table</span>
-</td>
-<td align="right">
-<!--
-<span style="cursor: pointer" onclick="closeMe();">X</span>
--->
-</td>
-</tr>
-</form>
-</table>
-</div>
-<!--
-<input type="button" name="lost" class="agActionButton" value="Select a Table"/>
-If you don't know which table to use.
-<form name="main" action="null">
-</form>
-<table style="display: none" width="98%" border="0" cellpadding="0" cellspacing="1">
-<form name="helpTable" action="">
-<tr>
-<td><input class="compact" name="colName" size="15"/>
-<input class="compact" name="colUnit" size="8"/></td>
-</tr>
-<tr>
-<td><input class="compact" name="colUCD" size="20"/>
-<input class="compact" name="colType" size="3"/></td>
-</tr>
-<tr>
-<td class="compact"><textarea class="compact" name="colExpla" rows="2"
-cols="23"> </textarea></td>
-</tr>
-</form>
-</table>
--->
-</center>
-</body>
-<!--
-<AstroGrid>
-</AstroGrid>
--->
-
+    <body style="font-size: 80%" bgcolor="#ffffcc" background="/astrogrid-portal/eskimo2_hst_centre.jpg">
+      <script language="javascript" src="/astrogrid-portal/extras.js"/>
+      <center>
+        <div id="helpy" name="helpy" style="width: 220px; height: 85px; display: none; background-color: #ffffcc; text-align: left; font-size: 14px">
+          ah?
+        </div>
+        <div id="tablePicker" name="tablePicker" style="width: 220px; height: 85px; display: show; text-align: left; font-size: 14px">
+          <table width="95%" class="compactT" border="0" cellpadding="1" cellspacing="1">
+            <form name="fake" action="/astrogrid-portal/bare/mount/datacenter/variables.xsp" target="vars">
+              <tr valign="bottom">
+                <td align="left">
+                  Load a known table:<br />
+                  <input onFocus="focusit(this)" onBlur="defocusit(this)" name="tableID" size="20" value="IX/37/xmm1obs" title="This is an example only. Change at will"/>
+                </td>
+                <td align="right">
+                  <input type="submit" class="agActionButton" value="GO"/>
+                </td>
+              </tr>
+              <tr valign="bottom">
+                <td align="left">
+                  <br />
+                  Or 
+                  <span name="lost" onClick="popupBrowser('/astrogrid-portal/lean/mount/registry/registrybrowser.html?mainelement=Catalog&amp;authId=null&amp;resourceKey=null')" class="agActionButton">Select a table</span>
+                </td>
+                <td align="right">
+                </td>
+              </tr>
+            </form>
+          </table>
+        </div>
+      </center>
+    </body>
 </xsp:page>
