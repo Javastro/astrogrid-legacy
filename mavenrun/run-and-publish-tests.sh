@@ -1,15 +1,15 @@
 #!/bin/bash
-# $Id: run-and-publish-tests.sh,v 1.2 2004/11/28 21:27:04 jdt Exp $ 
+# $Id: run-and-publish-tests.sh,v 1.3 2004/11/28 21:36:57 jdt Exp $ 
 ######################################################
 # Run the tests and publish the results to Uluru
 # (or wherever)
 ######################################################
 #
-if [-z "$BUILDHOME"]; then
+if [ -z "$BUILDHOME" ]; then
 	echo "Value of BUILDHOME (ie where AGINAB is) must be set"
 	exit 1
 fi
-if [-z "$DOCLOCATION"]; then
+if [ -z "$DOCLOCATION" ]; then
 	echo "Value of DOCLOCATION (ie where documents should be published) must be set"
 	exit 1
 fi

@@ -1,12 +1,12 @@
 #!/bin/bash
-# $Id: bounce-tomcat.sh,v 1.2 2004/11/28 21:27:04 jdt Exp $ 
+# $Id: bounce-tomcat.sh,v 1.3 2004/11/28 21:35:06 jdt Exp $ 
 ######################################################
 # Script to do a hard bounce of tomcat
 # Sometimes all processes fail to shutdown properly
 # so this attempts to kill any hanging processes
 ######################################################
 # Some reminders
-if [-z "$CATALINA_HOME"]; then
+if [ -z "$CATALINA_HOME" ]; then
    echo "Value of CATALINA_HOME must be set"
    exit 1
 fi

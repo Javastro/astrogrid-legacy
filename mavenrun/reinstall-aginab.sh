@@ -1,10 +1,10 @@
 #!/bin/bash
-# $Id: reinstall-aginab.sh,v 1.2 2004/11/28 21:27:04 jdt Exp $ 
+# $Id: reinstall-aginab.sh,v 1.3 2004/11/28 21:36:57 jdt Exp $ 
 ######################################################
 # Script to reinstall AGINAB, assumes TOMCAT is running
 ######################################################
 #
-if [-z "$BUILDHOME"]; then
+if [ -z "$BUILDHOME" ]; then
 	echo "Value of BUILDHOME (ie where AGINAB is) must be set"
 	exit 1
 fi

@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: run-int-test.sh,v 1.2 2004/11/28 21:27:04 jdt Exp $ 
+# $Id: run-int-test.sh,v 1.3 2004/11/28 21:36:57 jdt Exp $ 
 ######################################################
 # Script to install AGINAB, run the integration
 # tests and publish the results
@@ -16,11 +16,11 @@
 # DOCMACHINE = maven@www.astrogrid.org
 
 # Some reminders
-if [-z "$SCRIPTHOME"]; then
+if [ -z "$SCRIPTHOME" ]; then
    echo "Value of SCRIPTHOME (ie location of this script) must be set"
    exit 1
 fi
-if [-z "$CHECKOUTHOME"]; then
+if [ -z "$CHECKOUTHOME" ]; then
 	echo "Value of CHECKOUTHOME (ie where to checkout sources) must be set"
 	exit 1
 fi

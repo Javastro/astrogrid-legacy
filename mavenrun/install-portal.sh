@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: install-portal.sh,v 1.2 2004/11/28 21:27:04 jdt Exp $ 
+# $Id: install-portal.sh,v 1.3 2004/11/28 21:36:57 jdt Exp $ 
 ######################################################
 # Script to install the portal only,
 # Temporary measure while we're having memory problems
@@ -7,7 +7,7 @@
 # already installed
 ######################################################
 #
-if [-z "$BUILDHOME"]; then
+if [ -z "$BUILDHOME" ]; then
 	echo "Value of BUILDHOME (ie where AGINAB is) must be set"
 	exit 1
 fi
