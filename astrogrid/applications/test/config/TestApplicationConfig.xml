@@ -8,8 +8,9 @@
 		<Parameters>
 			<CmdLineParameterDefn name="P1" type="integer" commandPosition="1">
 				<agpd:UI_Name>Pause Time</agpd:UI_Name>
-				<agpd:UI_Description>Text<b>bold bit</b>
-					<b/>with some other - this is the time tha tthe application will pause in seconds before continuing to give the appearance of doing something...
+				<agpd:UI_Description>Text
+<!--				    <b>bold bit</b> Castor cannot cope with the any schema element -->
+					this is the time tha the application will pause in seconds before continuing to give the appearance of doing something...
 				</agpd:UI_Description>
 				<agpd:UCD>AAD</agpd:UCD>
 				<agpd:DefaultValue>1.0</agpd:DefaultValue>
@@ -105,7 +106,7 @@
 		<Parameters>
 			<CmdLineParameterDefn name="p1" type="integer">
 				<agpd:UI_Name>String</agpd:UI_Name>
-				<agpd:UI_Description>Text<b>bold bit</b>
+				<agpd:UI_Description>Text
 				</agpd:UI_Description>
 				<agpd:UCD>String</agpd:UCD>
 				<agpd:DefaultValue>Text</agpd:DefaultValue>
