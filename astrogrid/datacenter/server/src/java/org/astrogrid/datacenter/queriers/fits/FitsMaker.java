@@ -1,4 +1,4 @@
-/*$Id: FitsMaker.java,v 1.4 2004/09/07 00:54:20 mch Exp $
+/*$Id: FitsMaker.java,v 1.5 2004/09/21 14:14:49 KevinBenson Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -92,7 +92,7 @@ public class FitsMaker {
         xsltDoc = "adql073-2-xql_fits.xsl";
       }
       else if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.7.4")) {
-         xsltDoc = "adql074-2-sql.xsl";
+         xsltDoc = "adql074-2-xql_fits.xsl";
       }
 //      else if (namespaceURI.equals("http://adql.ivoa.net/v0.8")) {
 //         xsltDoc = "adql08-2-sql.xsl";
@@ -165,6 +165,9 @@ public class FitsMaker {
 
 /*
 $Log: FitsMaker.java,v $
+Revision 1.5  2004/09/21 14:14:49  KevinBenson
+added a xsl for fits on 0.7.4
+
 Revision 1.4  2004/09/07 00:54:20  mch
 Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
 
