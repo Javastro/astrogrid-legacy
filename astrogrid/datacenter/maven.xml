@@ -9,7 +9,7 @@
 	<maven:maven descriptor="${basedir}/pal/project.xml" goals="webapp-site" />
 	${systemScope.setProperty('goal','dist')}
 	<attainGoal name="multiproject:goal" /> <!-- packages everythin -->
-	<attainGoal name="multiproject:deploy-snapshot" /> <!-- make the artefacts -->
+	<attainGoal name="multiproject:deploy-snapshot" />
 </preGoal>
 
 
@@ -17,7 +17,7 @@
 	<maven:maven descriptor="${basedir}/pal/project.xml" goals="webapp-site" />
 	${systemScope.setProperty('goal','dist')}
 	<attainGoal name="multiproject:goal" /> <!-- packages everythin -->
-	<attainGoal name="multiproject:install-snapshot" /> <!-- make the artefacts -->
+	<attainGoal name="multiproject:install-snapshot" /> 
 </preGoal>
 
 <!-- goal called by nightly build -->
