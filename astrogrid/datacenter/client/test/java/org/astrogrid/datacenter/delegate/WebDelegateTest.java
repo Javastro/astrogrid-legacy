@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegateTest.java,v 1.12 2004/09/07 11:16:20 mch Exp $
+ * $Id: WebDelegateTest.java,v 1.13 2004/09/08 15:39:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -68,10 +68,10 @@ public class WebDelegateTest extends TestCase
       assertTrue("Wrong type of delegate created", client instanceof WebDelegate_v05);
 
       QuerySearcher queryClient = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS, "http://madeuphost/context/services/AxisDataServer", DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
-      assertTrue("Wrong type of delegate created", client instanceof WebDelegate_v041);
+      assertTrue("Wrong type of delegate created", queryClient instanceof WebDelegate_v041);
 
       queryClient = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS, "http://madeuphost/context/services/AxisDataService05", DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
-      assertTrue("Wrong type of delegate created", client instanceof WebDelegate_v05);
+      assertTrue("Wrong type of delegate created", queryClient instanceof WebDelegate_v05);
    }
       
   
@@ -94,6 +94,9 @@ public class WebDelegateTest extends TestCase
 
 /*
  * $Log: WebDelegateTest.java,v $
+ * Revision 1.13  2004/09/08 15:39:34  mch
+ * Fixed test
+ *
  * Revision 1.12  2004/09/07 11:16:20  mch
  * Added factory tests
  *
