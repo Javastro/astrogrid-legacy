@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: bounce-tomcat.sh,v 1.9 2004/12/21 12:17:19 jdt Exp $ 
+# $Id: bounce-tomcat.sh,v 1.10 2004/12/21 12:37:33 jdt Exp $ 
 ######################################################
 # Script to do a hard bounce of tomcat
 # Sometimes all processes fail to shutdown properly
@@ -25,7 +25,7 @@ ps -elf | grep $CATALINA_HOME
 TOMCATPID=`ps -elf | grep $CATALINA_HOME | grep java | awk {'print $4'}`
 #echo "Killing process $TOMCATPID"
 #kill -9 $TOMCATPID
-if [ $TOMCATPID ] 
+if [ "$TOMCATPID" ] 
 then
 	echo "******THERE WERE HANGING PROCESSES!*********"
 fi
