@@ -1,4 +1,4 @@
-/*$Id: CeaTest.java,v 1.1 2004/03/22 17:23:06 mch Exp $
+/*$Id: CeaTest.java,v 1.2 2004/03/22 18:07:00 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,14 @@
 **/
 package org.astrogrid.integrationtest.datacenter;
 
-import java.util.Date;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import org.astrogrid.applications.delegate.ApplicationController;
-import org.astrogrid.applications.delegate.beans.ParameterValues;
-import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
+import org.astrogrid.datacenter.delegate.QuerySearcher;
+import org.astrogrid.workflow.beans.v1.Input;
+import org.astrogrid.workflow.beans.v1.Output;
+import org.astrogrid.workflow.beans.v1.Tool;
 
 /** Tests the CEA web interface at the Vm07 datacenter
  *
@@ -25,16 +26,43 @@ import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 
 public class CeaTest  {
 
-   public static final String VM07_PAL = "http://vm07.astrogrid.org:8080/pal/services/CeaDataService";
+   public static final String STD_PAL = "http://vm07.astrogrid.org:8080/pal/services/CeaDataService";
    public static final String GRENDEL_PAL = "http://grendel12.roe.ac.uk:8080/pal-SNAPSHOT/services/CeaDataService";
    
-   public void testVm07() throws Exception {
+   public void testStdPal() throws Exception {
+
+      //create 'delegate'
+      Tool tool = new Tool();
+      tool.setName("Std Datacenter");
       
       //make up parameters
+      Input inputs = new Input();
+
+      ParameterValue param = new ParameterValue();
+      param.setName("Query");
+      param.setType(ParameterTypes.ADQL);
+      param.setValue("15");
+      inputs.addParameter(param);
+      
+      param = new ParameterValue();
+      param.setName("Format");
+      param.setType(ParameterTypes.STRING);
+      param.setValue(QuerySearcher.VOTABLE);
+      inputs.addParameter(param);
+
+      // output
+      Output outputs = new Output();
+
+      param = new ParameterValue();
+      param.setName("Target");
+      param.setType(ParameterTypes.STRING);
+      param.setValue("astrogrid:store:myspace:http://Hello World");
+      outputs.addParameter(param);
+      
+      tool.setInput(inputs);
+      tool.setOutput(outputs);
       
       //make up call
-
-      //make call
       
       //check results
    }
@@ -62,6 +90,9 @@ public class CeaTest  {
 
 /*
 $Log: CeaTest.java,v $
+Revision 1.2  2004/03/22 18:07:00  mch
+Added parameter construction
+
 Revision 1.1  2004/03/22 17:23:06  mch
 moved from old package name
 
