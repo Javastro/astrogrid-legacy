@@ -2,8 +2,8 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/sitemap.xmap,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/04/21 14:41:09 $</cvs:date>
-    | <cvs:version>$Revision: 1.15 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/21 15:09:22 $</cvs:date>
+    | <cvs:version>$Revision: 1.16 $</cvs:version>
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 <!-- ======================== Components ================================ -->
@@ -141,7 +141,7 @@
              +-->
             <map:act type="form-validator">
                <map:parameter name="descriptor" value="cocoon:/defs/logon-def.xml" />
-               <map:parameter name="validate" value="register" />
+               <map:parameter name="validate-set" value="register" />
                <!--validation succeeded-->
                <map:act type="astro-message-admin">
                   <map:parameter name="subject" value="Reminder Request" />
@@ -180,6 +180,9 @@
 <!--+
     | <cvs:log>
     |   $Log: sitemap.xmap,v $
+    |   Revision 1.16  2004/04/21 15:09:22  jdt
+    |   arse
+    |
     |   Revision 1.15  2004/04/21 14:41:09  jdt
     |   fixed validation of reminder page
     |
