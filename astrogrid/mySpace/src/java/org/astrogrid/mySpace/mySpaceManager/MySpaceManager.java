@@ -906,8 +906,8 @@ public String upLoadURL(String jobDetails){
     
 	private String getValues(String jobDetails) throws Exception{
 		//load jConfig file.
-		MMC.getInstance().checkPropertiesLoaded();
-		registryName = MMC.getProperty(MMC.REGISTRYCONF, MMC.CATLOG);
+		setUp();
+
 		if ( DEBUG )logger.debug("registryName = "+registryName);
 		request = util.getRequestAttributes(jobDetails);
 		try{
@@ -919,6 +919,10 @@ public String upLoadURL(String jobDetails){
 			if(request.get("newContainerName")!=null) newContainerName = request.get("newContainerName").toString();	
 			if(request.get("serverFileName")!=null) serverFileName = request.get("serverFileName").toString();
 			if(request.get("fileContent")!=null) fileContent = request.get("fileContent").toString();
+			if(request.get("category")!=null) category = request.get("category").toString();
+			if(request.get("importURI")!=null) importURI = request.get("importURI").toString();
+			if(request.get("contentsType")!=null) contentsType = request.get("contentsType").toString();
+			if(request.get("action")!=null) action = request.get("action").toString();
 
 			try{
 				if(request.get("fileSize")!=null) fileSize = Integer.parseInt(request.get("fileSize").toString());
@@ -1055,30 +1059,116 @@ public String upLoadURL(String jobDetails){
 			return "Not Implemented";
 		}		
 		
-	public String createUser(String userid, String communityid, Vector subfolders){
-			return "Not Implemented";
+	public boolean createUser(String userid, String communityid, Vector servers){
+		if ( DEBUG )  logger.debug("MySpaceManager.createUser");  
+		boolean isUserCreated = false;
+			try{			
+				setUp();		
+				isUserCreated = msA.createUser(userid, communityid, " ",servers);
+			}catch(Exception e){
+				logger.error("ERROR CREATEUSER MYSPACEMANAGER" +e.toString());
+				status.addCode(MySpaceStatusCode.AGMMCE00216,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+				AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00216", this.getComponentName()) ;
+				if(errCode=="")
+				  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
+				else
+				  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode+","+generalMessage.toString(),""); 		  
+			}
+			return isUserCreated;
+
 		}		
 		
-	public String deleteUser(String userid, String communityid){
-			return "Not Implemented";
+	public boolean deleteUser(String userid, String communityid){
+		if ( DEBUG )  logger.debug("MySpaceManager.deleteUser");  
+		boolean isUserDeleted = false;
+			try{			
+				setUp();		
+				isUserDeleted = msA.deleteUser(userid,communityid, " ");
+			}catch(Exception e){
+				logger.error("ERROR DELETEUSER MYSPACEMANAGER" +e.toString());
+				status.addCode(MySpaceStatusCode.AGMMCE00216,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+				AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00216", this.getComponentName()) ;
+				if(errCode=="")
+				  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
+				else
+				  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode+","+generalMessage.toString(),""); 		  
+			}
+			return isUserDeleted;
 		}		
 		
 	public String changeOwner(String userid, String communityid, String dataHolderName, String newOwnerID){
-		//get int dataItemID from String dataHolderName
-			return "Not Implemented";
-		}
+		if ( DEBUG )  logger.debug("MySpaceManager.changeOwner");
+		DataItemRecord dataitem = null;	     
+			try{
+				//response = getValues(jobDetails);
+				setUp();
+				msA.setRegistryName(registryName);
 
-	public String listExpiredDataHolders(String jobDetails){
+				Vector dataItemRecords = msA.lookupDataHoldersDetails(
+				  userID, communityID, jobID, serverFileName);
+
+				if (dataItemRecords != null)
+				{  DataItemRecord dataItem = (DataItemRecord)dataItemRecords.elementAt(0);
+					dataItemID = dataItem.getDataItemID();
+				   logger.debug("CHANGEOWNER TRING TO GET DATAITEMID: " +dataItemID);
+				}else{
+					logger.debug("CHANGEOWNER DATAITEMRCORDS = NULL!");
+				}
+				
+				dataitem = msA.changeOwnerDataHolder(userid, communityid, " ", dataItemID, newOwnerID);
+				
+				if ( DEBUG ) logger.debug("userid:"+userID+"comID"+communityID+"dataItemID"+dataItemID
+									   +"newOwnerID"+newOwnerID);				
+	
+     			boolean successStatus = status.getSuccessStatus();
+				boolean warningStatus = status.getWarningStatus();
+				
+			//   Format and return the results as XML.
+				if(dataitem!=null){
+					response = util.buildMySpaceManagerResponse(dataitem, returnStatus, details,"");
+					if (successStatus){
+						if (errCode=="")
+						  response = util.buildMySpaceManagerResponse(dataitem, MMC.SUCCESS, "","");	
+						else
+						  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode,""); 	    	
+					}else {
+						response = getErrorCode();
+						    	
+					}	
+				} else{
+					status.addCode(MySpaceStatusCode.AGMMCE00202,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+					AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00202", this.getComponentName()) ;
+					if(errCode=="")
+					  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
+					else
+					  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode+","+generalMessage.toString(),"");  
+					return response;
+				}
+				if( DEBUG ) logger.debug("RESPONSE: "+response); 
+			}catch(Exception e){
+				logger.error("ERROR CHANGEOWNER MYSPACEMANAGER" +e.toString());
+				status.addCode(MySpaceStatusCode.AGMMCE00216,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
+				AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00216", this.getComponentName()) ;
+				if(errCode=="")
+				  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
+				else
+				  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode+","+generalMessage.toString(),""); 		  
+				return response;
+			}
+			return response;
+
+		}
+		
+		public String listExpiredDataHolders(String jobDetails){
 		//String userID,String communityID, String jobID, String query)
 			return "Not Implemented";
 		}				
 		
-		/**
-		  * Lookup the details of a named set of DataHolders.
-		  */
+		private void setUp()throws Exception{
+			MMC.getInstance().checkPropertiesLoaded();
+			registryName = MMC.getProperty(MMC.REGISTRYCONF, MMC.CATLOG);	
 
-
-		
+		}
 	protected String getComponentName() { return Configurator.getClassName( MySpaceManager.class) ; }    
 
 }
