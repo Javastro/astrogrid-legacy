@@ -69,9 +69,9 @@
 
   <!-- Admin servlets -->
   <servlet>
-    <servlet-name>GetGeneratedMetadata</servlet-name>
-    <description>serves the 'initialising' generated metadata</description>
-    <servlet-class>org.astrogrid.datacenter.servlet.GetGeneratedMetadata</servlet-class>
+    <servlet-name>GetLog</servlet-name>
+    <description>Returns the log</description>
+    <servlet-class>org.astrogrid.datacenter.servlet.GetLog</servlet-class>
   </servlet>
 
   <servlet>
@@ -149,8 +149,8 @@
 
   <!-- Administration type stuff -->
   <servlet-mapping>
-    <servlet-name>GetGeneratedMetadata</servlet-name>
-    <url-pattern>/admin/GetGeneratedMetadata</url-pattern>
+    <servlet-name>GetLog</servlet-name>
+    <url-pattern>/admin/GetLog</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>
