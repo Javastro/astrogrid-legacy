@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.4 2004/10/05 15:20:03 mch Exp $
+/*$Id: QuerierManager.java,v 1.5 2004/10/05 17:31:14 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,7 +44,7 @@ public class QuerierManager implements QuerierListener {
    private Hashtable queuedQueriers = new Hashtable();
    
    /** priority index of queued queriers */
-   private TreeSet queuedPriorities = new TreeSet(new StartTimeComparator());
+   private TreeSet queuedPriorities = new TreeSet(new QuerierStartTimeComparator());
 
    /** lookup table of all the current queriers indexed by their handle*/
    private Hashtable runningQueriers = new Hashtable();
@@ -59,7 +59,7 @@ public class QuerierManager implements QuerierListener {
    public final static String TEST_QUERIER_ID = "TestQuerier:";
    
    /** PriorityComparitor for the queue */
-   protected class StartTimeComparator implements Comparator {
+   protected class QuerierStartTimeComparator implements Comparator {
       
       /**
        * Compares its two arguments for order.  Returns a negative integer,
@@ -90,6 +90,38 @@ public class QuerierManager implements QuerierListener {
       
    }
    
+   /** Status Comparitor for displays */
+   protected class StatusStartTimeComparator implements Comparator {
+      
+      /**
+       * Compares its two arguments for order.  Returns a negative integer,
+       * zero, or a positive integer as the first argument is less than, equal
+       * to, or greater than the second.<p>
+       *
+       * @param o1 the first object to be compared.
+       * @param o2 the second object to be compared.
+       * @return a negative integer, zero, or a positive integer as the
+       *           first argument is less than, equal to, or greater than the
+       *        second.
+       * @throws ClassCastException if the arguments' types prevent them from
+       *           being compared by this Comparator.
+       */
+      public int compare(Object o1, Object o2) {
+         QuerierStatus q1 = (QuerierStatus) o1;
+         QuerierStatus q2 = (QuerierStatus) o2;
+         if (q1.getStartTime().getTime()<q2.getStartTime().getTime()) {
+            return -1;
+         }
+         else if (q1.getStartTime().getTime()>q2.getStartTime().getTime()) {
+            return 1;
+         }
+         else {
+            return 0;
+         }
+      }
+      
+   }
+
    /** Constructor. Protected because we want to force people to use the factory method   */
    protected QuerierManager(String givenId) {
       this.managerId = givenId;
@@ -159,7 +191,7 @@ public class QuerierManager implements QuerierListener {
       Querier[] running = (Querier[]) runningQueriers.values().toArray(new Querier[] {} );
       Querier[] ran = (Querier[]) closedQueriers.values().toArray(new Querier[] {} );
 
-      TreeSet statuses = new TreeSet(new StartTimeComparator());
+      TreeSet statuses = new TreeSet(new StatusStartTimeComparator());
       for (int i = 0; i < queued.length; i++) {
          statuses.add(queued[i].getStatus());
       }
@@ -247,6 +279,9 @@ public class QuerierManager implements QuerierListener {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.5  2004/10/05 17:31:14  mch
+ Fix to wrong class cast in comparator
+
  Revision 1.4  2004/10/05 15:20:03  mch
  Added starttime sort to getStatus
 
