@@ -132,14 +132,6 @@
     </dependency>
     <!-- registry -->
     <dependency>
-      <groupId>org.astrogrid</groupId>
-      <artifactId>astrogrid-registry-client</artifactId>
-      <version>${pom.currentVersion}</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    <dependency>
       <artifactId>astrogrid-registry-client</artifactId>
       <groupId>org.astrogrid</groupId>
       <version>${pom.currentVersion}</version>
@@ -155,6 +147,18 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+    <!-- fits small dependency for exist db -->
+	<dependency>
+	    <groupId>org.astrogrid</groupId>
+	    <artifactId>astrogrid-exist-server</artifactId>
+		<version>${pom.currentVersion}</version>
+	    <type>jar</type>
+	    <url>http://www.astrogrid.org/</url>
+	    <properties>
+		    <war.bundle>true</war.bundle>
+		</properties>            
+	</dependency>
+    
     <!-- dsa back ends -->
     <dependency>
       <groupId>org.astrogrid</groupId>
