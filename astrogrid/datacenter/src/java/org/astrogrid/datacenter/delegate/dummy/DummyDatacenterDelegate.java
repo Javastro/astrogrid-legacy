@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDatacenterDelegate.java,v 1.1 2003/08/27 23:30:10 mch Exp $
+ * $Id: DummyDatacenterDelegate.java,v 1.2 2003/08/27 23:54:20 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -15,6 +15,7 @@ import org.astrogrid.datacenter.delegate.DatacenterStatusListener;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Element;
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 /**
  * A convenience class for java clients of datacenters.  They can create and
@@ -54,15 +55,36 @@ public class DummyDatacenterDelegate extends DatacenterDelegate
     * @todo returning a VOTable is not quite right - need to return the DOM
     * representation of the returning message which might contain admin info also
     */
-   public Element adqlQueryDatacenter(Element adql) throws RemoteException, QueryException
+   public Element adqlQueryDatacenter(Element adql) throws RemoteException
    {
-      Query query = new Query(adql);
+      fireStatusChanged(DatacenterStatusListener.STARTING);
+
+      fireStatusChanged(DatacenterStatusListener.RUNNING_QUERY);
+
+      //normally the given adql would be validated at the server, so we throw
+      //a special runtimeexception here if it's wrong
+      try
+      {
+         Query query = new Query(adql);
+      }
+      catch (QueryException e)
+      {
+         //rethrow as runtime exception - somethings gone wrong that shouldn't
+         throw new RuntimeException(e);
+      }
+
+      fireStatusChanged(DatacenterStatusListener.RUNNING_RESULTS);
 
       try
       {
          //load example response votable
-         URL url = getClass().getResource("testQuery.xml");
-         return XMLUtils.newDocument(url.openConnection().getInputStream()).getDocumentElement();
+         URL url = getClass().getResource("ExampleVotable.xml");
+         Document resultsDoc = XMLUtils.newDocument(url.openConnection().getInputStream());
+
+         fireStatusChanged(DatacenterStatusListener.FINISHED);
+
+         return resultsDoc.getDocumentElement();
+
       }
       catch (SAXException se)
       {
@@ -79,6 +101,7 @@ public class DummyDatacenterDelegate extends DatacenterDelegate
          //should never happen, so rethrow as runtime (is this naughty?)
          throw new RuntimeException(pce);
       }
+
 
    }
 
@@ -111,6 +134,9 @@ public class DummyDatacenterDelegate extends DatacenterDelegate
 
 /*
 $Log: DummyDatacenterDelegate.java,v $
+Revision 1.2  2003/08/27 23:54:20  mch
+test bug fixes
+
 Revision 1.1  2003/08/27 23:30:10  mch
 Introduced DummyDatacenterDelegate, selfcontained package for other workgroups to test with
 
@@ -125,4 +151,5 @@ initial checkin
 
 
 */
+
 

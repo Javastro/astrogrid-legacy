@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegate.java,v 1.4 2003/08/27 23:30:10 mch Exp $
+ * $Id: DatacenterDelegate.java,v 1.5 2003/08/27 23:55:02 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -34,7 +34,7 @@ public abstract class DatacenterDelegate
 
    /** Creates a delegate given an endpoint (a url to the service)
     */
-   private static DatacenterDelegate makeDelegate(String givenEndPoint) throws MalformedURLException, ServiceException
+   public static DatacenterDelegate makeDelegate(String givenEndPoint) throws MalformedURLException, ServiceException
    {
       if (givenEndPoint == null)
       {
@@ -58,7 +58,7 @@ public abstract class DatacenterDelegate
     * results part of the returned document, which may be VOTable or otherwise
     * depending on the results format specified in the ADQL
     */
-   public abstract Element adqlQueryDatacenter(Element adql) throws RemoteException, QueryException;
+   public abstract Element adqlQueryDatacenter(Element adql) throws RemoteException;
 
    /**
     * Returns the number of items that match the given query.  This is useful for
@@ -103,6 +103,9 @@ public abstract class DatacenterDelegate
 
 /*
 $Log: DatacenterDelegate.java,v $
+Revision 1.5  2003/08/27 23:55:02  mch
+test bug fixes
+
 Revision 1.4  2003/08/27 23:30:10  mch
 Introduced DummyDatacenterDelegate, selfcontained package for other workgroups to test with
 
@@ -117,4 +120,5 @@ initial checkin
 
 
 */
+
 
