@@ -10,10 +10,6 @@
         +-->
     <extend>${basedir}/../maven/project.xml</extend>
 
-    <!--+
-        | The current version of the Maven project descriptor.
-        +-->
-    <pomVersion>3</pomVersion>
 
     <!--+
         | The short name of the project.
