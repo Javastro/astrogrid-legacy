@@ -108,6 +108,7 @@
    		<map:generate src="workflow/xsp/workflow-detail.xsp" type="serverpages" />  
    		<map:transform src="workflow/xsl/workflow-detail.xsl" >   		
    		    <map:parameter name="action" value="{action}" />
+   		    <map:parameter name="ErrorMessage" value="{ErrorMessage}"/>
    		 </map:transform>
         <!-- Wrap the page in our HTML template -->
         <map:transform src="common/xsl/astrogrid.xsl" >       
@@ -134,6 +135,7 @@
    		<map:generate src="workflow/xsp/job-list.xsp" type="serverpages" />  
    		<map:transform src="workflow/xsl/job-list.xsl" >   		
    		    <map:parameter name="action" value="{action}" />
+   		    <map:parameter name="ErrorMessage" value="{ErrorMessage}"/>
    		 </map:transform>
         <!-- Wrap the page in our HTML template -->
         <map:transform src="common/xsl/astrogrid.xsl" >       
