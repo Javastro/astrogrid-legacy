@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
-    | <cvs:author>$Author: pah $</cvs:author>
-    | <cvs:date>$Date: 2003/09/09 18:46:08 $</cvs:date>
-    | <cvs:version>$Revision: 1.20 $</cvs:version>
+    | <cvs:author>$Author: KevinBenson $</cvs:author>
+    | <cvs:date>$Date: 2003/09/09 19:21:18 $</cvs:date>
+    | <cvs:version>$Revision: 1.21 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.21  2003/09/09 19:21:18  KevinBenson
+    |   added ResourceManager include to the build.xml
+    |
     |   Revision 1.20  2003/09/09 18:46:08  pah
     |   athorization build more in line with eclipse and other workgroup structures
     |
@@ -1376,6 +1379,10 @@
 				<!-- Include our AccountManager interface and implementation -->
 				<include name="org/astrogrid/community/policy/server/AccountManager.java"/>
 				<include name="org/astrogrid/community/policy/server/AccountManagerImpl.java"/>
+				<!-- Include our ResourceManager interface and implementation -->
+				<include name="org/astrogrid/community/policy/server/ResourceManager.java"/>
+				<include name="org/astrogrid/community/policy/server/ResourceManagerImpl.java"/>
+				
 				<!-- Include our GroupManager interface and implementation -->
 				<include name="org/astrogrid/community/policy/server/GroupManager.java"/>
 				<include name="org/astrogrid/community/policy/server/GroupManagerImpl.java"/>
@@ -1439,6 +1446,8 @@
 				<include name="org/astrogrid/community/policy/server/PolicyManager.java"/>
 				<!-- Include our AccountManager interface -->
 				<include name="org/astrogrid/community/policy/server/AccountManager.java"/>
+				<!-- Include our ResourceManager interface -->
+				<include name="org/astrogrid/community/policy/server/ResourceManager.java"/>
 				<!-- Include our GroupManager interface -->
 				<include name="org/astrogrid/community/policy/server/GroupManager.java"/>
 				<!-- Include our CommunityManager interface -->
