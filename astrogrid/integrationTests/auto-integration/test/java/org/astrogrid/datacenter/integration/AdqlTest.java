@@ -1,4 +1,4 @@
-/*$Id: AdqlTest.java,v 1.5 2004/08/30 22:11:46 KevinBenson Exp $
+/*$Id: AdqlTest.java,v 1.6 2004/09/02 01:33:48 nw Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,12 +19,20 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.io.Piper;
+import org.astrogrid.test.AstrogridAssert;
+import org.astrogrid.util.DomHelper;
+
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
+import javax.xml.transform.TransformerException;
 
 /**
  * Test querying using ADQL against std PAL
@@ -36,8 +44,12 @@ public class AdqlTest extends TestCase implements StdKeys {
 
    /**
     * Run sample query on std PAL
+ * @throws IOException
+ * @throws ParserConfigurationException
+ * @throws TransformerException
+ * @throws SAXException
     */
-   public void testAdqlSearch() throws IOException, ServiceException, IOException {
+   public void testAdqlSearch() throws ServiceException, SAXException, IOException, TransformerException, ParserConfigurationException {
       //load query
       InputStream is = this.getClass().getResourceAsStream("SimpleStarQuery-adql05.xml");
       assertNotNull(is);
@@ -50,10 +62,11 @@ public class AdqlTest extends TestCase implements StdKeys {
 
       InputStream results = delegate.askQuery(query, "VOTABLE");
       assertNotNull(results);
-      //should be empty votable
+      //should be empty votable      
+      AstrogridAssert.assertVotable(results);
    }
    
-   public void testAdqlSearchForSEC() throws IOException, ServiceException, IOException {
+   public void testAdqlSearchForSEC() throws ServiceException, SAXException, IOException, TransformerException, ParserConfigurationException {
       //load query
       System.out.println("Start testAdqlSearchForSEC");       
       InputStream is = this.getClass().getResourceAsStream("SimpleSECQuery-adql05.xml");
@@ -67,13 +80,16 @@ public class AdqlTest extends TestCase implements StdKeys {
 
       InputStream results = delegate.askQuery(query, "VOTABLE");
       assertNotNull(results);
-      Piper.pipe(results,System.out);
+      Document doc = DomHelper.newDocument(results);
+      assertNotNull(doc);
+      AstrogridAssert.assertVotable(doc);
+      DomHelper.DocumentToStream(doc,System.out);
       System.out.println("End testAdqlSearchForSEC");      
       //StringWriter outResult = new StringWriter();
       //Piper.pipe(new InputStreamReader(results),System.out);
    }
 
-   public void testAdqlSearchForFITS() throws IOException, ServiceException, IOException {
+   public void testAdqlSearchForFITS() throws ServiceException, SAXException, IOException, TransformerException, ParserConfigurationException {
       //load query
       System.out.println("Start testAdqlSearchForFITS");       
       InputStream is = this.getClass().getResourceAsStream("SimpleFITSQuery-adql073.xml");
@@ -87,12 +103,14 @@ public class AdqlTest extends TestCase implements StdKeys {
 
       InputStream results = delegate.askQuery(query, "VOTABLE");
       assertNotNull(results);
-      //StringWriter outResult = new StringWriter();
-      Piper.pipe(results,System.out);
+      Document doc = DomHelper.newDocument(results);
+      assertNotNull(doc);
+      AstrogridAssert.assertVotable(doc);
+      DomHelper.DocumentToStream(doc,System.out);
       System.out.println("End testAdqlSearchForFITS");
    }
    
-   public void testAdqlSearchForVizier() throws IOException, ServiceException, IOException {
+   public void testAdqlSearchForVizier() throws ServiceException, SAXException, IOException, TransformerException, ParserConfigurationException {
        //load query
        System.out.println("Start testAdqlSearchForVizier");
        InputStream is = this.getClass().getResourceAsStream("SimpleVizierCircle-adql05.xml");
@@ -106,7 +124,10 @@ public class AdqlTest extends TestCase implements StdKeys {
 
        InputStream results = delegate.askQuery(query, "VOTABLE");
        assertNotNull(results);
-       Piper.pipe(results,System.out);
+       Document doc = DomHelper.newDocument(results);
+       assertNotNull(doc);
+       AstrogridAssert.assertVotable(doc);
+       DomHelper.DocumentToStream(doc,System.out);
        System.out.println("End testAdqlSearchForVizier");       
        //should be empty votable
     }   
@@ -130,6 +151,9 @@ public class AdqlTest extends TestCase implements StdKeys {
 
 /*
 $Log: AdqlTest.java,v $
+Revision 1.6  2004/09/02 01:33:48  nw
+added asssertions that valid VOTables are returned.
+
 Revision 1.5  2004/08/30 22:11:46  KevinBenson
 added a little more for a vizier test
 

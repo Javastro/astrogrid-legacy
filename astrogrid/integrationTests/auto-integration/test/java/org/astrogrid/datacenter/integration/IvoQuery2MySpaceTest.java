@@ -1,4 +1,4 @@
-/*$Id: IvoQuery2MySpaceTest.java,v 1.7 2004/07/08 07:48:53 mch Exp $
+/*$Id: IvoQuery2MySpaceTest.java,v 1.8 2004/09/02 01:33:48 nw Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.store.delegate.StoreFile;
 import org.astrogrid.store.delegate.VoSpaceResolver;
+import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
@@ -87,6 +88,7 @@ public class IvoQuery2MySpaceTest extends TestCase implements StdKeys {
       
       Document resultDoc = DomHelper.newDocument(store.getStream(resultsTarget));
       assertNotNull("null result document",resultDoc);
+      AstrogridAssert.assertVotable(resultDoc);
    }
    
    public IvoQuery2MySpaceTest(String arg0) {
@@ -112,6 +114,9 @@ public class IvoQuery2MySpaceTest extends TestCase implements StdKeys {
 
 /*
 $Log: IvoQuery2MySpaceTest.java,v $
+Revision 1.8  2004/09/02 01:33:48  nw
+added asssertions that valid VOTables are returned.
+
 Revision 1.7  2004/07/08 07:48:53  mch
 More timeout info
 

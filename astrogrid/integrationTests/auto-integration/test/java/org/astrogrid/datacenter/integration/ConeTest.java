@@ -1,4 +1,4 @@
-/*$Id: ConeTest.java,v 1.6 2004/08/31 17:42:43 mch Exp $
+/*$Id: ConeTest.java,v 1.7 2004/09/02 01:33:48 nw Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,9 +20,12 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.ConeSearcher;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
+import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
 import org.xml.sax.SAXException;
 
 /**
@@ -55,8 +58,12 @@ public class ConeTest extends TestCase implements StdKeys {
    
    /**
     * Run some cone searches on std PAL it05
+ * @throws SAXException
+ * @throws IOException
+ * @throws ParserConfigurationException
+ * @throws TransformerException
     */
-   public void testStdConeSearch05() throws IOException, IOException, ParserConfigurationException, SAXException {
+   public void testStdConeSearch05() throws SAXException, IOException, TransformerException, ParserConfigurationException {
       
       ConeSearcher delegate = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, PAL_v05_ENDPOINT, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       assertNotNull("delegate was null",delegate);
@@ -70,6 +77,7 @@ public class ConeTest extends TestCase implements StdKeys {
       assertNotNull(is);
       //should be some results
       results = DomHelper.newDocument(is);
+      AstrogridAssert.assertVotable(results);
       
    
    }
@@ -92,6 +100,9 @@ public class ConeTest extends TestCase implements StdKeys {
 
 /*
 $Log: ConeTest.java,v $
+Revision 1.7  2004/09/02 01:33:48  nw
+added asssertions that valid VOTables are returned.
+
 Revision 1.6  2004/08/31 17:42:43  mch
 Added results DOM parsing
 

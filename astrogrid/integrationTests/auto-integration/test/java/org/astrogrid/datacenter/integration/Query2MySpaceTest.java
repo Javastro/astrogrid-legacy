@@ -1,4 +1,4 @@
-/*$Id: Query2MySpaceTest.java,v 1.11 2004/07/08 07:48:40 mch Exp $
+/*$Id: Query2MySpaceTest.java,v 1.12 2004/09/02 01:33:48 nw Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.store.delegate.StoreFile;
+import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
@@ -87,6 +88,7 @@ public class Query2MySpaceTest extends TestCase {
       
       Document resultDoc = DomHelper.newDocument(store.getStream(resultsTarget.getPath()));
       assertNotNull("null result document",resultDoc);
+      AstrogridAssert.assertVotable(resultDoc);
    }
    
     /**
@@ -108,6 +110,9 @@ public class Query2MySpaceTest extends TestCase {
 
 /*
 $Log: Query2MySpaceTest.java,v $
+Revision 1.12  2004/09/02 01:33:48  nw
+added asssertions that valid VOTables are returned.
+
 Revision 1.11  2004/07/08 07:48:40  mch
 More timeout info
 
