@@ -20,25 +20,25 @@
             </tr>
           <xsl:choose>
             <xsl:when test="./tool/@tool-name != 'null'">            
-              <tr>
+<!--              <tr>
                 <td colspan="5" style="color: blue; background-color: lightblue; text-align: center;">Input:</td>
               </tr>
               <tr>
                 <td colspan="2" align="center">Name:</td><td align="center">Value:</td><td></td><td></td>
               </tr>                               
-              <xsl:for-each select="./tool/inputParam">
+-->              <xsl:for-each select="./tool/inputParam">
                 <xsl:call-template name="parameter">
                   <xsl:with-param name="direction">input</xsl:with-param>
                 </xsl:call-template>
               </xsl:for-each>
               <xsl:if test="./tool/outputParam" >              
-                <tr>
+<!--                <tr>
                   <td colspan="5" style="color: blue; background-color: lightblue; text-align: center;">Output:</td>
                 </tr>
                 <tr>
                   <td colspan="2" align="center">Name:</td><td align="center">Value:</td><td></td><td></td>
                 </tr>                               
-                <xsl:for-each select="./tool/outputParam">  <!-- Email tool has no output params, so don't display -->
+-->                <xsl:for-each select="./tool/outputParam">  <!-- Email tool has no output params, so don't display -->
                   <xsl:call-template name="parameter">
                     <xsl:with-param name="direction">output</xsl:with-param>
                   </xsl:call-template>
