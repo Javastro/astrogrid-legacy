@@ -1,5 +1,5 @@
 /*
- * $Id: DummyQueryResults.java,v 1.3 2004/03/08 13:24:35 mch Exp $
+ * $Id: DummyQueryResults.java,v 1.4 2004/03/09 21:05:25 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -49,7 +49,7 @@ public class DummyQueryResults implements QueryResults
       
       //sometimes it cant' find stuff int he local directory if it's in a jar - try the classpath
       if (table == null) {
-         table = ClassLoader.getSystemResourceAsStream("ExampleVotable.xml");
+         table = this.getClass().getClassLoader().getResourceAsStream("ExampleVotable.xml");
       }
       
       return table;
