@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Ed Shaya (NASA) -->
+<!-- core (list) quanity schema -->
+<xsd:schema targetNamespace="http://ivoa.org/CoordinateSystems" xmlns="http://ivoa.org/CoordinateSystems" xmlns:q="http://ivoa.org/Quantity" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xsd:import namespace="http://ivoa.org/Quantity" schemaLocation="Quantity.xsd"/>
+	<xsd:annotation>
+		<xsd:documentation>CoordSystems.xsd - just a place holder for coord system defs. 
+                                  first draft Feb. 23 2004 (brian thomas; thomas@astro.umd.edu)
+				  This will almost certainly be replaced by/merged into Arnolds
+				  STC schema.
+                </xsd:documentation>
+	</xsd:annotation>
+	<!-- Coord Systemss -->
+	<!-- The coord system type .. all coord systems nodes will inherit from this. These
+             values are TBD, and this is just a place-holder/example of what can be done.
+         -->
+	<xsd:complexType name="coordSystemsType">
+		<xsd:complexContent>
+			<xsd:extension base="q:trivialQuantityType"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- CoordSystems container -->
+	<xsd:complexType name="coordSystemsContainerType">
+		<xsd:sequence>
+			<xsd:element ref="CoordSystemsGroup"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- abstract decl of our coordinate systems -->
+	<xsd:element name="CoordSystemsGroup" type="coordSystemsType" abstract="true"/>
+	<!-- concrete coordinate systems we may want, very very TBD! Should be 
+	     taken from Arnolds STC
+	 -->
+	<xsd:element name="TimeFrame" type="coordSystemsType" substitutionGroup="CoordSystemsGroup"/>
+	<xsd:element name="SkyFrame" type="coordSystemsType" substitutionGroup="CoordSystemsGroup"/>
+</xsd:schema>

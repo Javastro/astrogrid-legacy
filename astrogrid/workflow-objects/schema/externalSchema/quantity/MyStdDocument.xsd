@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Ed Shaya (NASA) -->
+<!-- Personalized document schema. Showing how user
+     can create inheriting schema that has both new elements/structure
+     and elements which are quantities. This particular
+     schema inherits from StdQuantity schema.
+  -->
+<xsd:schema targetNamespace="http://ivoa.org/Quantity" xmlns="http://ivoa.org/Quantity" xmlns:map="http://ivoa.org/Mappings" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xsd:import namespace="http://ivoa.org/Mappings" schemaLocation="Mappings.xsd"/>
+	<xsd:include schemaLocation="Quantity.xsd"/>
+	<!-- some new directly-inheriting quantity element declarations -->
+	<xsd:element name="Note" type="trivialQuantityType" substitutionGroup="QuantityGroup"/>
+	<xsd:element name="Field" type="standardQuantityType" substitutionGroup="QuantityGroup"/>
+	<xsd:element name="Flux" type="standardQuantityType" substitutionGroup="QuantityGroup"/>
+	<xsd:element name="PixelPos" type="coreQuantityType" substitutionGroup="QuantityGroup"/>
+	<xsd:element name="SkyVector" type="coreQuantityType" substitutionGroup="QuantityGroup"/>
+	<xsd:element name="X_pixel" type="frameType" substitutionGroup="FrameGroup"/>
+	<xsd:element name="Y_pixel" type="frameType" substitutionGroup="FrameGroup"/>
+	<xsd:element name="Ra" type="frameType" substitutionGroup="FrameGroup"/>
+	<xsd:element name="Dec" type="frameType" substitutionGroup="FrameGroup"/>
+	<!-- an extended value (cell) -->
+	<xsd:element name="D" type="valueCellType" substitutionGroup="ValueCellGroup"/>
+	<!-- now, a new map I want to add support for -->
+	<xsd:complexType name="C">
+		<xsd:complexContent>
+			<xsd:extension base="map:mappingType">
+				<xsd:sequence>
+					<xsd:element name="Refvals" type="trivialQuantityType"/>
+					<xsd:element name="Refpos" type="trivialQuantityType"/>
+					<xsd:element name="Scales" type="trivialQuantityType"/>
+					<xsd:element name="Rotation" type="trivialQuantityType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="Wcsmap" type="map:mappingType" substitutionGroup="map:MappingGroup"/>
+	<!-- my document -->
+	<xsd:complexType name="myDocumentType">
+		<xsd:sequence maxOccurs="unbounded">
+			<xsd:element ref="QuantityGroup"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- root element of my document -->
+	<xsd:element name="Mydocument" type="myDocumentType"/>
+</xsd:schema>

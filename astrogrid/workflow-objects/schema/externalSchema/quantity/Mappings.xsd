@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Ed Shaya (NASA) -->
+<!-- core (list) quanity schema -->
+<xsd:schema targetNamespace="http://ivoa.org/Mappings" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:q="http://ivoa.org/Quantity" xmlns="http://ivoa.org/Mappings" elementFormDefault="qualified">
+	<xsd:import namespace="http://ivoa.org/Quantity" schemaLocation="Quantity.xsd"/>
+	<xsd:annotation>
+		<xsd:documentation>Mappings.xsd - mappings for quantity serialization for IVOA.org
+                                  first draft Feb. 23 2004 (brian thomas; thomas@astro.umd.edu)
+                </xsd:documentation>
+	</xsd:annotation>
+	<!-- Mappings -->
+	<!-- The mapping type .. all mappings inherit from this. These
+             values are very TBD.
+         -->
+	<xsd:complexType name="mappingType">
+		<xsd:complexContent>
+			<xsd:restriction base="xsd:anyType">
+				<xsd:attribute name="type" type="xsd:string"/>
+				<xsd:attribute name="nparams" type="xsd:positiveInteger"/>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- Mapping ContainerType -->
+	<xsd:complexType name="mappingContainerType">
+		<xsd:sequence>
+			<xsd:element ref="MappingGroup"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- some mapping types -->
+	<xsd:complexType name="polyMapType">
+		<xsd:complexContent>
+			<xsd:extension base="mappingType">
+				<xsd:sequence>
+					<xsd:element name="Param" type="q:trivialQuantityType" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- abstract decl of our mappings -->
+	<xsd:element name="MappingGroup" type="mappingType" abstract="true"/>
+	<!-- concrete mappings we may want -->
+	<xsd:element name="Polynomial" type="polyMapType" substitutionGroup="MappingGroup"/>
+</xsd:schema>

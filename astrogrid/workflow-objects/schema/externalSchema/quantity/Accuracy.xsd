@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Ed Shaya (NASA) -->
+<!-- matrix accuracy schema for quantity -->
+<xsd:schema targetNamespace="http://ivoa.org/Accuracy" xmlns="http://ivoa.org/Accuracy" xmlns:q="http://ivoa.org/Quantity" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xsd:import namespace="http://ivoa.org/Quantity" schemaLocation="Quantity.xsd"/>
+	<xsd:include schemaLocation="Accuracy.xsd"/>
+	<xsd:annotation>
+		<xsd:documentation>StandardAccuracy.xsd - just a place holder for accuracy definitions.
+                                  first draft Feb. 23 2004 (brian thomas; thomas@astro.umd.edu)
+
+				  Many types of accuracy need to be defined, as well as practices
+				  for adding/restricting types of accuracy allowed. The point of
+				  this document is to carve out a namespace for these things. See
+				  bottom of the document for some *possible* types of accuracy.
+                </xsd:documentation>
+	</xsd:annotation>
+	<!-- Accuracy container -->
+	<xsd:complexType name="accuracyContainerType">
+		<xsd:annotation>
+			<xsd:documentation>Holds a list of members of AccuracyGroup</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="AccuracyGroup" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- abstract declaration of all accuracy elements -->
+	<xsd:element name="AccuracyGroup" type="q:quantityType" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>a substitution group for AccuracyTypes</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<!-- Accuracy Types.
+             These are just a place-holder/examples of what can be done.
+        -->
+	<!-- The basic accuracy type .. for holding single-valued accuracy information.  -->
+	<xsd:complexType name="basicAccuracyType">
+		<xsd:annotation>
+			<xsd:documentation>This holds a single value of accuracy data, so it is a basicQuantity</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="q:basicQuantityType"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- The list accuracy type .. for holding list-valued accuracy information.  -->
+	<xsd:complexType name="AccuracyContainerType">
+		<xsd:annotation>
+			<xsd:documentation>for holding list-valued accuracy information. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="q:coreQuantityType"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- The matrix accuracy type .. for holding list-valued accuracy information.  -->
+	<xsd:complexType name="matrixAccuracyType">
+		<xsd:annotation>
+			<xsd:documentation>An N-dim cube of accuracies</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="q:standardQuantityType"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- concrete accuracies we *may* want, very very TBD! Should be 
+	     taken from Arnolds STC as well as other sources. These examples 
+	     probably need to be more tightly defined as well...
+	 -->
+	<xsd:element name="MeasuredError" type="basicAccuracyType" substitutionGroup="AccuracyGroup">
+		<xsd:annotation>
+			<xsd:documentation>This holds a single error value.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="BinSize" type="basicAccuracyType" substitutionGroup="AccuracyGroup">
+		<xsd:annotation>
+			<xsd:documentation>The width of a possible range of values.  Used to describe the binning or pixelation of data</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Flag" type="basicAccuracyType" substitutionGroup="AccuracyGroup">
+		<xsd:annotation>
+			<xsd:documentation>Any flag or simple indicator.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="MeasuredErrorContainer" type="AccuracyContainerType" substitutionGroup="AccuracyGroup">
+		<xsd:annotation>
+			<xsd:documentation>a list of Accuracy with just error values</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="BinSizeContainer" type="AccuracyContainerType" substitutionGroup="AccuracyGroup">
+		<xsd:annotation>
+			<xsd:documentation>A list of binSizes</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="FlagContainer" type="AccuracyContainerType" substitutionGroup="AccuracyGroup">
+		<xsd:annotation>
+			<xsd:documentation>A list of flags</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="MeasuredErrorMatrix" type="matrixAccuracyType" substitutionGroup="AccuracyGroup">
+		<xsd:annotation>
+			<xsd:documentation>An N-dim cube of errors </xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="BinSizeMatrix" type="matrixAccuracyType" substitutionGroup="AccuracyGroup">
+		<xsd:annotation>
+			<xsd:documentation>An N-dim cube of binSizes</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="FlagMatrix" type="matrixAccuracyType" substitutionGroup="AccuracyGroup">
+		<xsd:annotation>
+			<xsd:documentation>An N-dim cube of flags</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+</xsd:schema>
