@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationsConstants.java,v 1.9 2004/03/23 19:46:04 pah Exp $
+ * $Id: ApplicationsConstants.java,v 1.10 2004/03/29 12:33:45 pah Exp $
  * 
  * Created on 17-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -59,9 +59,13 @@ public final class ApplicationsConstants {
    public final static String SMTPServerKey = "mail/AGMailSession";
    
    /**
-    * Points to the registryEndpoint
+    * Points to the query registryEndpoint
     */
    public final static String RegistryEndpointKey = "RegistryEndpoint";
+   /**
+    * Points to the query registryEndpoint
+    */
+   public final static String RegistryAdminEndpointKey = "RegistryAdminEndpoint";
    /**
     * Points to the URL entry that points to the file used as
     */

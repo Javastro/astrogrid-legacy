@@ -1,5 +1,5 @@
 /*
- * $Id: CeaControllerConfig.java,v 1.3 2004/03/23 19:46:04 pah Exp $
+ * $Id: CeaControllerConfig.java,v 1.4 2004/03/29 12:34:00 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -154,7 +154,15 @@ public class CeaControllerConfig {
       return rawPropertyConfig.getProperty(ApplicationsConstants.RegistryEndpointKey);
    }
    
-   public String toHTMLReport()
+   /**
+    * Get the endpoint for the Registry Admin.
+    * @return
+    */
+   public String getRegistryAdminEndpoint()
+   {
+      return rawPropertyConfig.getProperty(ApplicationsConstants.RegistryAdminEndpointKey);
+   }
+  public String toHTMLReport()
    {
       StringBuffer rep = new StringBuffer(128);
       
@@ -185,8 +193,13 @@ public class CeaControllerConfig {
       rep.append("</li>");
 
       rep.append("<li>");
-      rep.append("registry endpoint: ");
+      rep.append("registry query endpoint: ");
       rep.append(rawPropertyConfig.getProperty(ApplicationsConstants.RegistryEndpointKey));
+      rep.append("</li>");
+      
+      rep.append("<li>");
+      rep.append("registry admin endpoint: ");
+      rep.append(rawPropertyConfig.getProperty(ApplicationsConstants.RegistryAdminEndpointKey));
       rep.append("</li>");
       
       rep.append("<li>");
