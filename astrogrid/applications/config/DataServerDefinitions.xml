@@ -1,7 +1,7 @@
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
 <!-- Datacenter should define all Astrogrid datacenters, including warehouses  -->
 <DataCentreControllerConfig xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1
-\\pahlaptop\work\astrogrid\src\workflow-objects\schema\AGApplicationBase.xsd">
+\\pahlaptop\work\astrogrid\indsrc\workflow-objects\schema\AGApplicationBase.xsd">
 	<DataCentre name="Datacentre">
 		<Parameters>
 			<DataCentreParameterDefn name="Query" type="ADQL">
