@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jardesc>
+    <jar path="/home/noel/eclipse/datacenter/install/datacenter.jar"/>
+    <options overwrite="true" compress="true" exportErrors="false"
+        exportWarnings="true" saveDescription="true"
+        descriptionLocation="/datacenter/install/export description.jardesc"
+        useSourceFolders="false" buildIfNeeded="true"/>
+    <manifest manifestVersion="1.0" usesManifest="true"
+        reuseManifest="false" saveManifest="false"
+        generateManifest="true" manifestLocation="">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false">
+        <file path="/datacenter/LICENSE.txt"/>
+        <file path="/datacenter/lib/jconn2.jar"/>
+        <file path="/datacenter/lib/objectwiz-votable.jar"/>
+        <folder path="/datacenter/config"/>
+        <file path="/datacenter/README"/>
+        <folder path="/datacenter/wsdd"/>
+        <file path="/datacenter/lib/breezetk.jar"/>
+        <folder path="/datacenter/dbscripts"/>
+        <file path="/datacenter/install/datacenterBIN.jar"/>
+        <file path="/datacenter/lib/VOTableUtil.jar"/>
+    </selectedElements>
+</jardesc>
