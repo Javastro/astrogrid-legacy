@@ -29,7 +29,7 @@
                         <xsl:attribute name="READONLY">true</xsl:attribute>
                     </xsl:element>                  
                 </td>
-                <td rowspan="2" valign="middle">
+                <td rowspan="2" valign="bottom">
                     <form action="/astrogrid-portal/main/mount/workflow/agjobmanager-printer-friendly.html" name="printer_form" id="printer_form">
                   <input class="agActionButton" type="submit" name="action" value="Workflow transcript"/>
                   <input type="hidden" name="jobURN" id="jobURN"/>
