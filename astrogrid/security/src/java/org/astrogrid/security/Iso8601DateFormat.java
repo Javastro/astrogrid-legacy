@@ -19,7 +19,7 @@ public class Iso8601DateFormat extends SimpleDateFormat {
    * Constructs an Iso8601DateFormat.
    */
   public Iso8601DateFormat () {
-    super("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    super("yyyy-MM-dd'T'HH:mm:ss'Z'");
     // @TODO: sort out time zones
   }
 

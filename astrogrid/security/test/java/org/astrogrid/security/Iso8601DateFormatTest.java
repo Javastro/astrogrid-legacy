@@ -17,7 +17,7 @@ import junit.framework.TestCase;
     */
    public void testRoundTrip () throws Exception {
      Iso8601DateFormat i = new Iso8601DateFormat();
-     String s1 = "2000-01-01T12:00:00.001";
+     String s1 = "2000-01-01T12:00:00Z";
      Date d = i.parse(s1);
      String s2 = i.format(d);
      System.out.println("Before: " +
