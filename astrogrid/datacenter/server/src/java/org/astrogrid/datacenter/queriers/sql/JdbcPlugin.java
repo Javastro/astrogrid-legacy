@@ -1,31 +1,24 @@
 /*
- * $Id: JdbcPlugin.java,v 1.2 2004/03/14 00:39:55 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.3 2004/03/15 17:12:54 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.sql;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
-import java.util.StringTokenizer;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QuerierPluginException;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
+import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
 
 /**
  * A general purpose SQL Querier that will (hopefully) produce bog standard
@@ -71,10 +64,16 @@ public class JdbcPlugin extends QuerierPlugin  {
                   
          sql = sqlMaker.getSql(querier.getQuery());
          
+         querier.getStatus().addDetail("SQL: "+sql);
+      
          //connect to database
          log.debug("Connecting to the database");
          Connection jdbcConnection = connectionManager.createConnection();
          Statement statement = jdbcConnection.createStatement();
+         
+//       querier.getStatus().addDetail("Connection: "+jdbcConnection);
+
+         querier.setStatus(new QuerierQuerying());
          
          //execute query
          log.debug("Query to perform: " + sql);
