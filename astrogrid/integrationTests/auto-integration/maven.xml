@@ -106,7 +106,7 @@
 </goal>
 
 <goal name="astrogrid-deploy-site" description="Deploy the site docs for the test project" >
-        <maven:maven descriptor="${basedir}/tests-project.xml" goals="site,site:fsdeploy" />
+        <maven:maven descriptor="${basedir}/tests-project.xml" goals="site:deploy" />
 </goal>
 
 <goal name="ui-int-test"  description="run integration tests in ui runner">
