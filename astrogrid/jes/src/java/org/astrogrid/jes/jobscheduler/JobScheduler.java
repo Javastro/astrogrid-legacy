@@ -353,16 +353,16 @@ public class JobScheduler {
             Element
                element = null ,
                jobElement = doc.getDocumentElement() ;   // This should pick up the "job" element
-               
+              
             // set the Job id (i.e. its job URN)...
             jobElement.setAttribute( SubmissionRequestDD.JOB_URN_ATTR, step.getParent().getId() ) ;
-            
+         
             // set the URL for the JobMonitor so that it can be contacted by the datacenter... 
             jobElement.setAttribute( SubmissionRequestDD.JOB_MONITOR_URL_ATTR
-                                   , JES.getProperty( JES.MONITOR_URL, JES.MONITOR_URL ) ) ; 
-               
+                                   , JES.getProperty( JES.MONITOR_URL, JES.MONITOR_CATEGORY ) ) ; 
+              
             NodeList
-               nodeList = element.getChildNodes() ; 
+               nodeList = jobElement.getChildNodes() ; 
             ArrayList
                stepsToBeEliminated = new ArrayList() ; 
             Integer
@@ -370,14 +370,17 @@ public class JobScheduler {
                
             // identify jobsteps to be eliminated...
             for( int i=0 ; i < nodeList.getLength() ; i++ ) {
-                            
+                           
                 if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
-                    
+                   
                     element = (Element) nodeList.item(i) ;                  
+
                     if( element.getTagName().equals( SubmissionRequestDD.JOBSTEP_ELEMENT ) ) {                      
-                        
+                       
                         stepNumber = new Integer( element.getAttribute( SubmissionRequestDD.JOBSTEP_STEPNUMBER_ATTR).trim() ) ;
+
                         if( !stepNumber.equals( step.getStepNumber() ) ) {
+                       	
                             stepsToBeEliminated.add( element ) ;
                         }
                         
@@ -390,17 +393,18 @@ public class JobScheduler {
             Iterator
                 iterator = stepsToBeEliminated.iterator() ;
                 
-            while ( iterator.hasNext() ) {
+            while ( iterator.hasNext() ) {           	
                 element = (Element)iterator.next() ;
                 jobElement.removeChild( element ) ;
             }
             
             request = XMLUtils.DocumentToString( doc ) ;
-               
+              
         }
         catch ( Exception ex ) {
             AstroGridMessage
-                message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_FORMAT_RUN_REQUEST ) ; 
+                message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_FORMAT_RUN_REQUEST 
+                                              , this.getComponentName() ) ; 
             logger.error( message.toString(), ex ) ;
             throw new JesException( message ) ;
         } 
