@@ -2,8 +2,8 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/sitemap.xmap,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/03/19 13:09:03 $</cvs:date>
-    | <cvs:version>$Revision: 1.11 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/19 14:13:00 $</cvs:date>
+    | <cvs:version>$Revision: 1.12 $</cvs:version>
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 <!-- ======================== Components ================================ -->
@@ -87,17 +87,24 @@
                   <map:serialize type="xml" />
                </map:act>
                <!-- login unsuccessful -->
-               <map:generate type="file" src="xml/login-failed.xml" label="raw" />
+               <map:generate type="file" src="xml/login-failed.xml"/>
                <map:transform type="xslt" src="style/info.xsl" />
                <map:serialize type="xml" />
             </map:act>
             <!--if the validation fails (or it's first time thru) -->
-            <map:generate type="serverpages" src="xsp/logon.xsp" label="000" />
-						<map:transform type="xslt" src="style/logon.xsl" />
+            <map:generate type="serverpages" src="xsp/logon.xsp"/>
+            <map:transform type="xslt" src="style/logon.xsl" />
+            <map:serialize type="xml" />
+         </map:match>
+         
+         <!-- New Logout page -->
+         <map:match pattern="logout">
+            <map:generate type="serverpages" src="xsp/logout.xsp"/>
+            <map:transform type="xslt" src="style/info.xsl" />
             <map:serialize type="xml" />
          </map:match>
 				 
-				 <!-- Register page -->
+         <!-- Register page -->
          <map:match pattern="register">
          <!--+
              | If we are not registered, display the register form.
@@ -115,7 +122,7 @@
             </map:act>
             <!--if the validation fails (or it's first time thru) -->
             <map:generate type="serverpages" src="xsp/register.xsp"/>
-						<map:transform type="xslt" src="style/logon.xsl" />
+            <map:transform type="xslt" src="style/logon.xsl" />
             <map:serialize type="xml" />
          </map:match>
 				 
@@ -137,19 +144,17 @@
             </map:act>
             <!--if the validation fails (or it's first time thru) -->
             <map:generate type="serverpages" src="xsp/reminder.xsp"/>
-						<map:transform type="xslt" src="style/logon.xsl" />
+            <map:transform type="xslt" src="style/logon.xsl" />
             <map:serialize type="xml" />
          </map:match>
 
          <map:match pattern="**/*.xml">
             <map:generate type="file" src="{1}/{2}.xml" />
-
             <map:serialize type="xml" />
          </map:match>
 
          <map:match pattern="*.xsl">
             <map:generate type="file" src="style/{1}.xsl" />
-
             <map:serialize type="xml" />
          </map:match>
 
@@ -165,6 +170,10 @@
 <!--+
     | <cvs:log>
     |   $Log: sitemap.xmap,v $
+    |   Revision 1.12  2004/03/19 14:13:00  jdt
+    |   Merge from PLGN_JDT_bz199b.
+    |   Added log out page.
+    |
     |   Revision 1.11  2004/03/19 13:09:03  jdt
     |   references to login-jdt -> login-form
     |   ie, new page is now live.

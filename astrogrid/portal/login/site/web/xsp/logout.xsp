@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:id>$Id: logout.xsp,v 1.2 2004/03/19 14:13:00 jdt Exp $</cvs:id>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    |
+    +-->
+<xsp:page language="java" 
+      xmlns:xsp="http://apache.org/xsp"
+      xmlns:xsp-session="http://apache.org/xsp/session/2.0">
+<page>
+<title>
+		Logged Out.
+</title>
+<content>
+    Goodbye <xsp-session:get-attribute default="User" name="user"/>.
+    You have successfully logged out. <BR/> <!--probably shouldn't put html here? --> 
+    
+    <a href="login-form">Log in</a> again.
+</content>
+<xsp-session:invalidate/>
+</page>
+
+</xsp:page>
+<!--+
+    | <cvs:log>
+    |   $Log: logout.xsp,v $
+    |   Revision 1.2  2004/03/19 14:13:00  jdt
+    |   Merge from PLGN_JDT_bz199b.
+    |   Added log out page.
+    |
+    |   Revision 1.1.2.1  2004/03/19 14:09:14  jdt
+    |   Forgot the log out page!
+    |
+    | </cvs:log>
+    +-->
