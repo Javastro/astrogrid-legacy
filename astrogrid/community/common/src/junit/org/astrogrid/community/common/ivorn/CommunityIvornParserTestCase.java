@@ -1,53 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/junit/org/astrogrid/community/common/ivorn/CommunityIvornParserTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityIvornParserTestCase.java,v $
- *   Revision 1.5  2004/03/30 01:40:03  dave
- *   Merged development branch, dave-dev-200403242058, into HEAD
+ *   Revision 1.6  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.4.4.1  2004/03/28 09:11:43  dave
- *   Convert tabs to spaces
- *
- *   Revision 1.4  2004/03/23 16:34:08  dave
- *   Merged development branch, dave-dev-200403191458, into HEAD
- *
- *   Revision 1.3.4.4  2004/03/22 15:31:10  dave
- *   Added CommunitySecurityException.
- *   Updated SecurityManager and SecurityService to use Exceptions.
- *
- *   Revision 1.3.4.3  2004/03/22 02:25:35  dave
- *   Updated delegate interfaces to include Exception handling.
- *
- *   Revision 1.3.4.2  2004/03/21 07:21:34  dave
- *   Added test for local community identifier.
- *
- *   Revision 1.3.4.1  2004/03/21 06:41:41  dave
- *   Refactored to include Exception handling.
- *
- *   Revision 1.3  2004/03/15 07:49:30  dave
- *   Merged development branch, dave-dev-200403121536, into HEAD
- *
- *   Revision 1.2.2.2  2004/03/13 17:57:20  dave
- *   Remove RemoteException(s) from delegate interfaces.
- *   Protected internal API methods.
- *
- *   Revision 1.2.2.1  2004/03/12 17:42:09  dave
- *   Replaced tabs with spaces
- *
- *   Revision 1.2  2004/03/12 15:22:17  dave
- *   Merged development branch, dave-dev-200403101018, into HEAD
- *
- *   Revision 1.1.2.2  2004/03/12 13:38:03  dave
- *   Added test case for MockIvornFactory.
- *   Fixed bugs in CommunityIvornParser.
- *
- *   Revision 1.1.2.1  2004/03/12 00:46:25  dave
- *   Added CommunityIvornFactory and CommunityIvornParser.
- *   Added MockIvornFactory (to be moved to common project).
+ *   Revision 1.5.32.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *

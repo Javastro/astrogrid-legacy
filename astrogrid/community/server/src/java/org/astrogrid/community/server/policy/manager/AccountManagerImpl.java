@@ -1,31 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/AccountManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2004/05/19 21:33:23 $</cvs:date>
- * <cvs:version>$Revision: 1.17 $</cvs:version>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.18 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
- *   Revision 1.17  2004/05/19 21:33:23  KevinBenson
- *   needed to move the committing of the transaction to a different place so it got committed ot the database.
+ *   Revision 1.18  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.16  2004/04/23 16:58:13  dave
- *   Added demo accounts
+ *   Revision 1.17.10.2  2004/06/17 15:24:31  dave
+ *   Removed unused imports (PMD report).
  *
- *   Revision 1.15  2004/04/16 09:36:21  dave
- *   Changed string to Ivorn
- *
- *   Revision 1.14  2004/04/15 15:04:29  dave
- *   Added exception logging
- *
- *   Revision 1.13  2004/04/15 02:33:49  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.12  2004/04/15 02:27:46  dave
- *   Merged development branch, dave-dev-200404071355, into HEAD
- *
- *   Revision 1.11.14.1  2004/04/08 13:56:03  dave
- *   Updated the install tools and data files.
+ *   Revision 1.17.10.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -66,7 +54,7 @@ import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 import org.astrogrid.store.VoSpaceClient ;
 
 /**
- * The core AccountManager implementation.
+ * Server side implmenetation of the AccountManager service.
  *
  */
 public class AccountManagerImpl
@@ -912,10 +900,10 @@ String string = ident.getAccountIdent() ;
                     Ivorn ivorn = resolver.createUser(
                         service,
                         new Ivorn(
-                        	account.getIdent()
-							)
+                            account.getIdent()
+                            )
                         ) ;
-			        if (DEBUG_FLAG) System.out.println("  VoSpace ivorn : " + ivorn) ;
+                    if (DEBUG_FLAG) System.out.println("  VoSpace ivorn : " + ivorn) ;
                     //
                     // Update the Account data
                     account.setHomeSpace(

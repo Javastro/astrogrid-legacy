@@ -1,41 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/database/manager/Attic/DatabaseManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseManagerImpl.java,v $
- *   Revision 1.4  2004/03/08 13:42:33  dave
- *   Updated Maven goals.
- *   Replaced tabs with Spaces.
+ *   Revision 1.5  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.3.2.1  2004/03/08 12:53:18  dave
- *   Changed tabs to spaces
+ *   Revision 1.4.52.2  2004/06/17 15:24:31  dave
+ *   Removed unused imports (PMD report).
  *
- *   Revision 1.3  2004/03/05 17:19:59  dave
- *   Merged development branch, dave-dev-200402211936, into HEAD
- *
- *   Revision 1.2.2.4  2004/03/02 23:31:00  dave
- *   Added DatabaseManager to service tests
- *
- *   Revision 1.2.2.3  2004/02/23 19:43:47  dave
- *   Refactored DatabaseManager tests to test the interface.
- *   Refactored DatabaseManager tests to use common DatabaseManagerTest.
- *
- *   Revision 1.2.2.2  2004/02/23 08:55:20  dave
- *   Refactored CastorDatabaseConfiguration into DatabaseConfiguration
- *
- *   Revision 1.2.2.1  2004/02/22 20:03:16  dave
- *   Removed redundant DatabaseConfiguration interfaces
- *
- *   Revision 1.2  2004/02/20 21:11:05  dave
- *   Merged development branch, dave-dev-200402120832, into HEAD
- *
- *   Revision 1.1.2.1  2004/02/19 21:09:26  dave
- *   Refactored ServiceStatusData into a common package.
- *   Refactored CommunityServiceImpl constructor to take a parent service.
- *   Refactored default database for CommunityServiceImpl
+ *   Revision 1.4.52.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -43,17 +21,18 @@
 package org.astrogrid.community.server.database.manager ;
 
 import java.net.URL ;
-import java.rmi.RemoteException ;
 
 import org.exolab.castor.jdo.JDO ;
-
-import org.astrogrid.community.common.config.CommunityConfig ;
 
 import org.astrogrid.community.common.database.manager.DatabaseManager ;
 
 import org.astrogrid.community.server.service.CommunityServiceImpl ;
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration ;
 
+/**
+ * Server side implementation of the DatabaseManager service.
+ *
+ */
 public class DatabaseManagerImpl
     extends CommunityServiceImpl
     implements DatabaseManager

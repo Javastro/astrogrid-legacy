@@ -4,37 +4,15 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/portal/Attic/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
-    |   Revision 1.5  2004/03/12 15:22:17  dave
-    |   Merged development branch, dave-dev-200403101018, into HEAD
+    |   Revision 1.6  2004/06/18 13:45:20  dave
+    |   Merged development branch, dave-dev-200406081614, into HEAD
     |
-    |   Revision 1.4.18.1  2004/03/10 13:58:01  dave
-    |   Removed redundant pomVersion from sub-projects
-    |
-    |   Revision 1.4  2004/02/12 08:12:13  dave
-    |   Merged development branch, dave-dev-200401131047, into HEAD
-    |
-    |   Revision 1.2.4.2  2004/02/10 01:18:13  dave
-    |   Changed internal depends to use ${pom.currentVersion}.
-    |   Tried using a properties file, but depends from project.xml are loaded before any of the properties.
-    |   TODO Need to make this configurable, to set the versions of other astrogrid depends.
-    |
-    |   Revision 1.2.4.1  2004/02/10 00:40:37  dave
-    |   Added install tooklit to the Maven build.
-    |   Changed Maven project to use 'org.astrogrid' as the group name.
-    |   Fixed dependencies that used the original group name.
-    |
-    |   Revision 1.2  2004/01/07 10:45:40  dave
-    |   Merged development branch, dave-dev-20031224, back into HEAD
-    |
-    |   Revision 1.1.2.2  2004/01/07 04:29:15  dave
-    |   Moved properties into shared files and tested deployment goals
-    |
-    |   Revision 1.1.2.1  2004/01/06 14:21:43  dave
-    |   Tidied up directory tree ....
+    |   Revision 1.5.42.1  2004/06/17 13:38:59  dave
+    |   Tidied up old CVS log entries
     |
     | </cvs:log>
     +-->

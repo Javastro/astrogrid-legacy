@@ -1,58 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/common/ivorn/MockIvorn.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: MockIvorn.java,v $
- *   Revision 1.5  2004/03/23 16:34:08  dave
- *   Merged development branch, dave-dev-200403191458, into HEAD
+ *   Revision 1.6  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.4.2.2  2004/03/23 14:52:27  dave
- *   Modified the mock ivorn syntax.
- *
- *   Revision 1.4.2.1  2004/03/21 06:41:41  dave
- *   Refactored to include Exception handling.
- *
- *   Revision 1.4  2004/03/19 14:43:14  dave
- *   Merged development branch, dave-dev-200403151155, into HEAD
- *
- *   Revision 1.3.2.1  2004/03/16 14:05:21  dave
- *   Added CommunityIvornFactoryTestCase
- *   Added CommunityAccountIvornFactoryTestCase
- *
- *   Revision 1.3  2004/03/15 07:49:30  dave
- *   Merged development branch, dave-dev-200403121536, into HEAD
- *
- *   Revision 1.2.2.4  2004/03/15 06:52:08  dave
- *   Refactored PolicyManagerMockDelegate to use ivorn identifiers.
- *   Refactored CommunityAccountResolver to just handle AccountData.
- *   Added CommunityAccountSpaceResolver to resolve home space ivorn.
- *
- *   Revision 1.2.2.3  2004/03/13 17:57:20  dave
- *   Remove RemoteException(s) from delegate interfaces.
- *   Protected internal API methods.
- *
- *   Revision 1.2.2.2  2004/03/13 16:08:08  dave
- *   Added CommunityAccountResolver and CommunityEndpointResolver.
- *
- *   Revision 1.2.2.1  2004/03/12 17:42:09  dave
- *   Replaced tabs with spaces
- *
- *   Revision 1.2  2004/03/12 15:22:17  dave
- *   Merged development branch, dave-dev-200403101018, into HEAD
- *
- *   Revision 1.1.2.1  2004/03/12 13:44:43  dave
- *   Moved MockIvornFactory to MockIvorn
- *
- *   Revision 1.1.2.2  2004/03/12 13:38:03  dave
- *   Added test case for MockIvorn.
- *   Fixed bugs in CommunityIvornParser.
- *
- *   Revision 1.1.2.1  2004/03/12 00:46:25  dave
- *   Added CommunityIvornFactory and CommunityIvornParser.
- *   Added MockIvorn (to be moved to common project).
+ *   Revision 1.5.36.1  2004/06/17 13:38:58  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *

@@ -1,36 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/exception/CommunityServiceException.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityServiceException.java,v $
- *   Revision 1.3  2004/03/23 16:34:08  dave
- *   Merged development branch, dave-dev-200403191458, into HEAD
+ *   Revision 1.4  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.2.2.1  2004/03/21 06:41:41  dave
- *   Refactored to include Exception handling.
- *
- *   Revision 1.2  2004/03/19 14:43:14  dave
- *   Merged development branch, dave-dev-200403151155, into HEAD
- *
- *   Revision 1.1.2.5  2004/03/19 00:18:09  dave
- *   Refactored delegate Exception handling
- *
- *   Revision 1.1.2.4  2004/03/18 13:41:19  dave
- *   Added Exception handling to AccountManager
- *
- *   Revision 1.1.2.3  2004/03/17 13:50:23  dave
- *   Refactored Community exceptions
- *
- *   Revision 1.1.2.2  2004/03/17 01:08:48  dave
- *   Added AccountNotFoundException
- *   Added DuplicateAccountException
- *   Added InvalidIdentifierException
- *
- *   Revision 1.1.2.1  2004/03/16 19:52:31  dave
- *   Added Exception reporting to resolvers
+ *   Revision 1.3.36.1  2004/06/17 13:38:58  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *

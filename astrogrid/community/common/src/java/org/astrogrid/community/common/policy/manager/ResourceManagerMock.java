@@ -1,36 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/ResourceManagerMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceManagerMock.java,v $
- *   Revision 1.4  2004/03/15 07:49:30  dave
- *   Merged development branch, dave-dev-200403121536, into HEAD
+ *   Revision 1.5  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.3.12.2  2004/03/13 17:57:20  dave
- *   Remove RemoteException(s) from delegate interfaces.
- *   Protected internal API methods.
- *
- *   Revision 1.3.12.1  2004/03/13 16:08:08  dave
- *   Added CommunityAccountResolver and CommunityEndpointResolver.
- *
- *   Revision 1.3  2004/03/08 13:42:33  dave
- *   Updated Maven goals.
- *   Replaced tabs with Spaces.
- *
- *   Revision 1.2.2.1  2004/03/08 12:53:17  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.2  2004/03/05 17:19:59  dave
- *   Merged development branch, dave-dev-200402211936, into HEAD
- *
- *   Revision 1.1.2.1  2004/03/04 13:26:17  dave
- *   1) Added Delegate interfaces.
- *   2) Added Mock implementations.
- *   3) Added MockDelegates
- *   4) Added SoapDelegates
+ *   Revision 1.4.40.3  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -42,6 +22,12 @@ import java.util.HashMap ;
 
 import org.astrogrid.community.common.policy.data.ResourceData ;
 import org.astrogrid.community.common.service.CommunityServiceMock ;
+
+import org.astrogrid.community.common.identifier.ResourceIdentifier ;
+
+import org.astrogrid.community.common.exception.CommunityServiceException  ;
+import org.astrogrid.community.common.exception.CommunityResourceException ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
 /**
  * Mock implementation of our ResourceManager service.
@@ -55,7 +41,14 @@ public class ResourceManagerMock
      * Switch for our debug statements.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static final boolean DEBUG_FLAG = true ;
+
+    /**
+     * Switch for testing service exceptions.
+     * Set this to true, and the service calls will throw CommunityServiceExceptions.
+     *
+     */
+    public static boolean SERVICE_EXCEPTIONS = false ;
 
     /**
      * Public constructor.
@@ -70,37 +63,43 @@ public class ResourceManagerMock
      * Our hash table of values.
      *
      */
-    private Map map = new HashMap() ;
+    private static Map map = new HashMap() ;
 
-   /**
-    * Create a new Resource.
-    *
-    */
-   public ResourceData addResource(String ident)
+    /**
+     * Reset our map.
+     *
+     */
+    public static void reset()
         {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("ResourceManagerMock.reset()") ;
+        map.clear() ;
+        }
+
+    /**
+     * Register a new Resource.
+     * @return A new ResourceData object to represent the resource.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     *
+     */
+    public ResourceData addResource()
+        throws CommunityServiceException
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("ResourceManagerMock.addResource()") ;
         //
-        // Check for null ident.
-        if (null == ident)
+        // Check for CommunityServiceException tests.
+        if (SERVICE_EXCEPTIONS)
             {
-            // TODO
-            // Throw an exception ?
-            //
-            // Return null for now.
-            return null ;
-            }
-        //
-        // Check if we already have an existing Resource.
-        if (null != this.getResource(ident))
-            {
-            // TODO
-            // Throw a duplicate exception ?
-            //
-            // Return null for now.
-            return null ;
+            throw new CommunityServiceException("Mock exception test") ;
             }
         //
         // Create a new Resource.
-        ResourceData resource = new ResourceData(ident) ;
+        ResourceData resource = new ResourceData(
+            new ResourceIdentifier()
+            ) ;
         //
         // Add it to our map.
         map.put(resource.getIdent(), resource) ;
@@ -109,108 +108,165 @@ public class ResourceManagerMock
         return resource ;
         }
 
-   /**
-    * Request an Resource details.
-    *
-    */
-   public ResourceData getResource(String ident)
+    /**
+     * Request a Resource details.
+     * @param The resource identifier.
+     * @return The requested ResourceData object.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityResourceException If unable to locate the resource.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     *
+     */
+    public ResourceData getResource(String ident)
+        throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException
         {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("ResourceManagerMock.getResource()") ;
+        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
+        //
+        // Check for CommunityServiceException tests.
+        if (SERVICE_EXCEPTIONS)
+            {
+            throw new CommunityServiceException("Mock exception test") ;
+            }
         //
         // Check for null ident.
         if (null == ident)
             {
-            // TODO
-            // Throw an exception ?
-            //
-            // Return null for now.
-            return null ;
+            throw new CommunityIdentifierException(
+                "Null identifier"
+                ) ;
             }
         //
         // Lookup the Resource in our map.
-        return (ResourceData) map.get(ident) ;
+        ResourceData resource = (ResourceData) map.get(ident) ;
+        //
+        // If we found a matching resource.
+        if (null != resource)
+            {
+            return resource ;
+            }
+        //
+        // If we didn't find a matching resource.
+        else {
+            throw new CommunityResourceException(
+                "Unable to locate resource",
+                ident
+                ) ;
+            }
         }
 
-   /**
-    * Update an Resource details.
-    *
-    */
-   public ResourceData setResource(ResourceData resource)
+    /**
+     * Update a Resource details.
+     * @param The ResourceData to update.
+     * @return The updated ResourceData.
+     * @throws CommunityResourceException If unable to locate the resource.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws CommunityIdentifierException If the resource identifier is not valid.
+     *
+     */
+    public ResourceData setResource(ResourceData resource)
+        throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException
         {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("ResourceManagerMock.setResource()") ;
+        if (DEBUG_FLAG) System.out.println("  Resource : " + resource) ;
         //
-        // Check for null param.
+        // Check for CommunityServiceException tests.
+        if (SERVICE_EXCEPTIONS)
+            {
+            throw new CommunityServiceException("Mock exception test") ;
+            }
+        //
+        // Check for null resource.
         if (null == resource)
             {
-            //
-            // Throw an exception ?
-            //
-            // Return null for now.
-            return null ;
+            throw new CommunityResourceException(
+                "Null resource"
+                ) ;
             }
         //
-        // If we don't have an existing Resource.
-        if (null == this.getResource(resource.getIdent()))
+        // Check for null ident.
+        if (null == resource.getIdent())
+            {
+            throw new CommunityIdentifierException(
+                "Null identifier"
+                ) ;
+            }
+        //
+        // Check if we already have this resource.
+        if (map.containsKey(resource.getIdent()))
             {
             //
-            // Throw an exception ?
+            // Replace the existing Resource.
+            map.put(resource.getIdent(), resource) ;
             //
-            // Return null for now.
-            return null ;
+            // Return the new resource.
+            return resource ;
             }
         //
-        // Replace the existing Resource with the new data.
-        map.put(resource.getIdent(), resource) ;
-        //
-        // Return the new Resource.
-        return resource ;
+        // If we don't have a matching resource.
+        else {
+            throw new CommunityResourceException(
+                "Unable to locate resource",
+                resource.getIdent()
+                ) ;
+            }
         }
 
-   /**
-    * Delete a Resource.
-    *
-    */
-   public boolean delResource(String ident)
+    /**
+     * Delete a Resource object.
+     * @param The resource identifier.
+     * @return The original ResourceData.
+     * @throws CommunityResourceException If unable to locate the resource.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws CommunityIdentifierException If the resource identifier is not valid.
+     *
+     */
+    public ResourceData delResource(String ident)
+        throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException
         {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("ResourceManagerMock.delResource()") ;
+        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
+        //
+        // Check for CommunityServiceException tests.
+        if (SERVICE_EXCEPTIONS)
+            {
+            throw new CommunityServiceException("Mock exception test") ;
+            }
         //
         // Check for null ident.
         if (null == ident)
             {
-            //
-            // Throw an exception ?
-            //
-            // Return null for now.
-            // TODO - refactor API
-            return false ;
+            throw new CommunityIdentifierException(
+                "Null identifier"
+                ) ;
             }
         //
-        // Try to find the Resource.
-        ResourceData resource = this.getResource(ident) ;
+        // Try to find the original resource.
+        ResourceData original = (ResourceData) map.get(ident) ;
         //
-        // If we didn't find a matching Resource.
-        if (null == resource)
+        // If we found a matching resource.
+        if (null != original)
             {
             //
-            // Throw an exception ?
+            // Remove the original resource.
+            map.remove(ident) ;
             //
-            // Return null for now.
-            // TODO - refactor API
-            return false ;
+            // Return the original resource.
+            return original ;
             }
         //
-        // Remove the Resource from our map.
-        map.remove(resource.getIdent()) ;
-        //
-        // Return the old Resource.
-        // TODO - refactor API
-        return true ;
+        // If we didn't find a matching resource.
+        else {
+            throw new CommunityResourceException(
+                "Unable to locate resource",
+                ident
+                ) ;
+            }
         }
-
-   /**
-    * Request a list of Resources.
-    *
-    */
-   public Object[] getResourceList()
-        {
-        return map.values().toArray() ;
-        }
-
-   }
+    }

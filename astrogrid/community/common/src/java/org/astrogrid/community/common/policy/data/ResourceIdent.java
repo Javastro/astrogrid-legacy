@@ -1,28 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/data/ResourceIdent.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/01/07 10:45:38 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceIdent.java,v $
- *   Revision 1.2  2004/01/07 10:45:38  dave
- *   Merged development branch, dave-dev-20031224, back into HEAD
+ *   Revision 1.3  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.1.2.1  2004/01/05 06:47:18  dave
- *   Moved policy data classes into policy.data package
- *
- *   Revision 1.1.2.1  2003/12/24 05:54:48  dave
- *   Initial Maven friendly structure (only part of the service implemented)
- *
- *   Revision 1.3  2003/11/06 15:35:26  dave
- *   Replaced tabs with spaces
- *
- *   Revision 1.2  2003/09/13 02:18:52  dave
- *   Extended the jConfig configuration code.
- *
- *   Revision 1.1  2003/09/10 00:08:45  dave
- *   Added getGroupMembers, ResourceIdent and JUnit tests for ResourceManager
+ *   Revision 1.2.70.1  2004/06/17 13:38:58  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *

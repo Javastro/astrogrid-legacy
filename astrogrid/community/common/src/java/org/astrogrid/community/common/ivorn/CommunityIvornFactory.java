@@ -1,66 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/ivorn/CommunityIvornFactory.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityIvornFactory.java,v $
- *   Revision 1.6  2004/03/30 01:40:03  dave
- *   Merged development branch, dave-dev-200403242058, into HEAD
+ *   Revision 1.7  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.5.4.1  2004/03/28 09:11:43  dave
- *   Convert tabs to spaces
+ *   Revision 1.6.32.2  2004/06/17 14:50:01  dave
+ *   Removed unused imports (PMD report).
  *
- *   Revision 1.5  2004/03/23 16:34:08  dave
- *   Merged development branch, dave-dev-200403191458, into HEAD
- *
- *   Revision 1.4.2.2  2004/03/22 00:53:31  dave
- *   Refactored GroupManager to use Ivorn identifiers.
- *   Started removing references to CommunityManager.
- *
- *   Revision 1.4.2.1  2004/03/20 06:54:11  dave
- *   Added addAccount(AccountData) to PolicyManager et al.
- *   Added XML loader for AccountData.
- *
- *   Revision 1.4  2004/03/19 14:43:14  dave
- *   Merged development branch, dave-dev-200403151155, into HEAD
- *
- *   Revision 1.3.2.3  2004/03/18 13:41:19  dave
- *   Added Exception handling to AccountManager
- *
- *   Revision 1.3.2.2  2004/03/16 14:05:21  dave
- *   Added CommunityIvornFactoryTestCase
- *   Added CommunityAccountIvornFactoryTestCase
- *
- *   Revision 1.3.2.1  2004/03/16 11:55:15  dave
- *   Split CommunityIvornFactory into CommunityAccountIvornFactory and CommunityServiceIvornFactory.
- *
- *   Revision 1.3  2004/03/15 07:49:30  dave
- *   Merged development branch, dave-dev-200403121536, into HEAD
- *
- *   Revision 1.2.2.4  2004/03/15 07:27:15  dave
- *   Fixed refactored constructor for MockIvorn
- *
- *   Revision 1.2.2.3  2004/03/13 17:57:20  dave
- *   Remove RemoteException(s) from delegate interfaces.
- *   Protected internal API methods.
- *
- *   Revision 1.2.2.2  2004/03/13 16:08:08  dave
- *   Added CommunityAccountResolver and CommunityEndpointResolver.
- *
- *   Revision 1.2.2.1  2004/03/12 17:42:09  dave
- *   Replaced tabs with spaces
- *
- *   Revision 1.2  2004/03/12 15:22:17  dave
- *   Merged development branch, dave-dev-200403101018, into HEAD
- *
- *   Revision 1.1.2.2  2004/03/12 13:44:43  dave
- *   Moved MockIvornFactory to MockIvorn
- *
- *   Revision 1.1.2.1  2004/03/12 00:46:25  dave
- *   Added CommunityIvornFactory and CommunityIvornParser.
- *   Added MockIvorn (to be moved to common project).
+ *   Revision 1.6.32.1  2004/06/17 13:38:58  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -68,7 +21,6 @@
 package org.astrogrid.community.common.ivorn ;
 
 import org.astrogrid.store.Ivorn ;
-import org.astrogrid.common.ivorn.MockIvorn ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
 /**

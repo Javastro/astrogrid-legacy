@@ -1,24 +1,16 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/junit/org/astrogrid/community/client/policy/manager/Attic/PolicyManagerSoapDelegateTestCase.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/junit/org/astrogrid/community/client/policy/manager/GroupManagerSoapDelegateTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
+ * <cvs:date>$Date: 2004/06/18 13:45:19 $</cvs:date>
  * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
- *   $Log: PolicyManagerSoapDelegateTestCase.java,v $
- *   Revision 1.2  2004/03/19 14:43:14  dave
- *   Merged development branch, dave-dev-200403151155, into HEAD
+ *   $Log: GroupManagerSoapDelegateTestCase.java,v $
+ *   Revision 1.2  2004/06/18 13:45:19  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.1.2.1  2004/03/19 00:18:09  dave
- *   Refactored delegate Exception handling
- *
- *   Revision 1.2  2004/03/15 07:49:30  dave
- *   Merged development branch, dave-dev-200403121536, into HEAD
- *
- *   Revision 1.1.2.1  2004/03/15 06:52:08  dave
- *   Refactored PolicyManagerMockDelegate to use ivorn identifiers.
- *   Refactored CommunityAccountResolver to just handle AccountData.
- *   Added CommunityAccountSpaceResolver to resolve home space ivorn.
+ *   Revision 1.1.2.3  2004/06/17 13:38:58  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -30,21 +22,20 @@ import org.apache.axis.client.Call ;
 import org.astrogrid.community.client.policy.manager.PolicyManagerSoapDelegate ;
 import org.astrogrid.community.client.database.manager.DatabaseManagerSoapDelegate ;
 
-import org.astrogrid.community.common.policy.manager.AccountManagerTest ;
+import org.astrogrid.community.common.policy.manager.GroupManagerTest ;
 
 /**
- * A JUnit test case for our mock PolicyManager.
- * @todo create the top level PolicyManagerTest.
+ * JUnit test using the SOAP delegate to a GroupManager.
  *
  */
-public class PolicyManagerSoapDelegateTestCase
-    extends AccountManagerTest
+public class GroupManagerSoapDelegateTestCase
+    extends GroupManagerTest
     {
     /**
      * Switch for our debug statements.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static final boolean DEBUG_FLAG = true ;
 
 
     /**
@@ -71,7 +62,7 @@ public class PolicyManagerSoapDelegateTestCase
                 URL_BASE + "/DatabaseManager"
                 )
             ) ;
-        this.setAccountManager(
+        this.setGroupManager(
             new PolicyManagerSoapDelegate(
                 URL_BASE + "/PolicyManager"
                 )

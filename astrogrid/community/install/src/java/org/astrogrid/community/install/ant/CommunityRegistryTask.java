@@ -1,20 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/java/org/astrogrid/community/install/ant/CommunityRegistryTask.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/04/15 02:33:49 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityRegistryTask.java,v $
- *   Revision 1.3  2004/04/15 02:33:49  dave
- *   Changed tabs to spaces
+ *   Revision 1.4  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.2  2004/04/01 07:09:39  dave
- *   Merged development branch, dave-dev-200403300547, into HEAD
- *
- *   Revision 1.1.2.1  2004/04/01 06:50:36  dave
- *   Added install registry test data.
- *   Updated resolver doecs.
+ *   Revision 1.3.18.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *

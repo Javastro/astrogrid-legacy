@@ -1,16 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/policy/manager/PermissionManagerDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:19 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PermissionManagerDelegate.java,v $
- *   Revision 1.5  2004/03/19 14:43:14  dave
- *   Merged development branch, dave-dev-200403151155, into HEAD
+ *   Revision 1.6  2004/06/18 13:45:19  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.4.2.1  2004/03/19 00:18:09  dave
- *   Refactored delegate Exception handling
+ *   Revision 1.5.38.2  2004/06/17 15:10:03  dave
+ *   Removed unused imports (PMD report).
+ *
+ *   Revision 1.5.38.1  2004/06/17 13:38:58  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -20,8 +23,6 @@ package org.astrogrid.community.client.policy.manager ;
 import org.astrogrid.community.client.service.CommunityServiceDelegate ;
 
 import org.astrogrid.community.common.policy.data.PolicyPermission ;
-import org.astrogrid.community.common.policy.manager.PermissionManager ;
-import org.astrogrid.community.common.service.data.ServiceStatusData ;
 
 /**
  * Interface for our PermissionManager delegate.

@@ -1,19 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/ant/Attic/CommunityAccountSpaceResolverTask.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/04/15 02:33:49 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountSpaceResolverTask.java,v $
- *   Revision 1.3  2004/04/15 02:33:49  dave
- *   Changed tabs to spaces
+ *   Revision 1.4  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.2  2004/03/30 04:44:01  dave
- *   Merged development branch, dave-dev-200403300258, into HEAD
+ *   Revision 1.3.18.2  2004/06/17 15:17:30  dave
+ *   Removed unused imports (PMD report).
  *
- *   Revision 1.1.2.1  2004/03/30 04:42:31  dave
- *   Added CommunityAccountSpaceResolverTask.
+ *   Revision 1.3.18.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -27,8 +27,6 @@ import org.apache.tools.ant.Task ;
 import org.apache.tools.ant.BuildException ;
 
 import org.astrogrid.store.Ivorn ;
-
-import org.astrogrid.community.common.policy.data.AccountData ;
 
 import org.astrogrid.community.resolver.CommunityAccountSpaceResolver ;
 

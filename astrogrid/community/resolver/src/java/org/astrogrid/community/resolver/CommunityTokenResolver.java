@@ -1,25 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/Attic/CommunityTokenResolver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityTokenResolver.java,v $
- *   Revision 1.3  2004/03/30 01:40:03  dave
- *   Merged development branch, dave-dev-200403242058, into HEAD
+ *   Revision 1.4  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.2.4.1  2004/03/28 09:11:43  dave
- *   Convert tabs to spaces
+ *   Revision 1.3.32.2  2004/06/17 15:17:30  dave
+ *   Removed unused imports (PMD report).
  *
- *   Revision 1.2  2004/03/23 16:34:08  dave
- *   Merged development branch, dave-dev-200403191458, into HEAD
- *
- *   Revision 1.1.2.2  2004/03/23 16:28:49  dave
- *   Fixed JavaDocs.
- *
- *   Revision 1.1.2.1  2004/03/23 15:51:46  dave
- *   Added CommunityTokenResolver and CommunityPasswordResolver.
+ *   Revision 1.3.32.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -27,7 +21,6 @@
 package org.astrogrid.community.resolver ;
 
 import java.net.URL ;
-import org.astrogrid.store.Ivorn ;
 
 import org.astrogrid.community.common.security.data.SecurityToken ;
 

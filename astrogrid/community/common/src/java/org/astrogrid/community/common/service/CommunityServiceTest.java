@@ -1,40 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/service/CommunityServiceTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityServiceTest.java,v $
- *   Revision 1.5  2004/03/30 01:40:03  dave
- *   Merged development branch, dave-dev-200403242058, into HEAD
+ *   Revision 1.6  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.4.4.1  2004/03/28 09:11:43  dave
- *   Convert tabs to spaces
+ *   Revision 1.5.32.2  2004/06/17 14:50:03  dave
+ *   Removed unused imports (PMD report).
  *
- *   Revision 1.4  2004/03/23 16:34:08  dave
- *   Merged development branch, dave-dev-200403191458, into HEAD
- *
- *   Revision 1.3.16.1  2004/03/22 15:31:10  dave
- *   Added CommunitySecurityException.
- *   Updated SecurityManager and SecurityService to use Exceptions.
- *
- *   Revision 1.3  2004/03/08 13:42:33  dave
- *   Updated Maven goals.
- *   Replaced tabs with Spaces.
- *
- *   Revision 1.2.2.1  2004/03/08 12:53:17  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.2  2004/03/05 17:19:59  dave
- *   Merged development branch, dave-dev-200402211936, into HEAD
- *
- *   Revision 1.1.2.2  2004/03/02 23:31:00  dave
- *   Added DatabaseManager to service tests
- *
- *   Revision 1.1.2.1  2004/02/23 19:43:47  dave
- *   Refactored DatabaseManager tests to test the interface.
- *   Refactored DatabaseManager tests to use common DatabaseManagerTest.
+ *   Revision 1.5.32.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -47,12 +26,8 @@ import org.astrogrid.community.common.junit.JUnitTestBase ;
 
 import org.astrogrid.community.common.database.manager.DatabaseManager ;
 
-import org.astrogrid.community.common.service.data.ServiceStatusData ;
-
-import org.astrogrid.community.common.ivorn.CommunityIvornParser ;
 import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory ;
 
-import org.astrogrid.community.common.exception.CommunityPolicyException     ;
 import org.astrogrid.community.common.exception.CommunityServiceException    ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 

@@ -1,32 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/service/CommunityServiceCoreDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:19 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityServiceCoreDelegate.java,v $
- *   Revision 1.4  2004/03/30 01:40:03  dave
- *   Merged development branch, dave-dev-200403242058, into HEAD
+ *   Revision 1.5  2004/06/18 13:45:19  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.3.4.2  2004/03/28 09:11:43  dave
- *   Convert tabs to spaces
+ *   Revision 1.4.32.3  2004/06/17 15:10:03  dave
+ *   Removed unused imports (PMD report).
  *
- *   Revision 1.3.4.1  2004/03/28 02:00:55  dave
- *   Added database management tasks.
- *
- *   Revision 1.3  2004/03/23 16:34:08  dave
- *   Merged development branch, dave-dev-200403191458, into HEAD
- *
- *   Revision 1.2.2.1  2004/03/22 16:47:55  dave
- *   Updated SecurityManagerDelegate to include Exceptions.
- *   Updated SecurityServiceDelegate to include Exceptions.
- *
- *   Revision 1.2  2004/03/19 14:43:14  dave
- *   Merged development branch, dave-dev-200403151155, into HEAD
- *
- *   Revision 1.1.2.1  2004/03/19 00:18:09  dave
- *   Refactored delegate Exception handling
+ *   Revision 1.4.32.2  2004/06/17 13:38:58  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -41,6 +28,7 @@ import org.astrogrid.community.common.service.data.ServiceStatusData ;
 import org.astrogrid.community.common.exception.CommunityPolicyException     ;
 import org.astrogrid.community.common.exception.CommunityServiceException    ;
 import org.astrogrid.community.common.exception.CommunitySecurityException   ;
+import org.astrogrid.community.common.exception.CommunityResourceException   ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
 /**
@@ -52,12 +40,6 @@ import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 public class CommunityServiceCoreDelegate
     implements CommunityService, CommunityServiceDelegate
     {
-    /**
-     * Switch for our debug statements.
-     *
-     */
-    private static boolean DEBUG_FLAG = true ;
-
     /**
      * Public constructor.
      *
@@ -132,7 +114,7 @@ public class CommunityServiceCoreDelegate
      * @throws CommunityServiceException If the RemoteException cause was a CommunityServiceException.
      *
      */
-    public void convertServiceException(RemoteException ouch)
+    public void serviceException(RemoteException ouch)
         throws CommunityServiceException
         {
         //
@@ -155,7 +137,7 @@ public class CommunityServiceCoreDelegate
      * @throws CommunityIdentifierException If the RemoteException cause was a CommunityIdentifierException.
      *
      */
-    public void convertIdentifierException(RemoteException ouch)
+    public void identifierException(RemoteException ouch)
         throws CommunityIdentifierException
         {
         //
@@ -178,7 +160,7 @@ public class CommunityServiceCoreDelegate
      * @throws CommunitySecurityException If the RemoteException cause was a CommunitySecurityException.
      *
      */
-    public void convertSecurityException(RemoteException ouch)
+    public void securityException(RemoteException ouch)
         throws CommunitySecurityException
         {
         //
@@ -197,16 +179,35 @@ public class CommunityServiceCoreDelegate
         }
 
     /**
-     * A converter utility to unpack one of the CommunityExceptions from a RemoteException.
-     * @throws CommunityPolicyException If the RemoteException cause was a CommunityPolicyException.
-     * @throws CommunityServiceException If the RemoteException cause was a CommunityServiceException.
-     * @throws CommunityIdentifierException If the RemoteException cause was a CommunityIdentifierException.
-     * @todo Need to handle java.net.ConnectException
-     * @todo Need to handle org.astrogrid.config.PropertyNotFoundException
+     * A converter utility to unpack a CommunityResourceException from a RemoteException.
+     * @throws CommunityResourceException If the RemoteException cause was a CommunitySecurityException.
      *
      */
-    public void convertCommunityException(RemoteException ouch)
-        throws CommunityPolicyException, CommunityServiceException, CommunityIdentifierException
+    public void resourceException(RemoteException ouch)
+        throws CommunityResourceException
+        {
+        //
+        // If the remote Exception has a cause.
+        if (ouch.getCause() != null)
+            {
+            //
+            // If the cause is a CommunityResourceException.
+            if (ouch.getCause() instanceof CommunityResourceException)
+                {
+                //
+                // Re-throw the CommunityResourceException.
+                throw (CommunityResourceException) ouch.getCause() ;
+                }
+            }
+        }
+
+    /**
+     * A converter utility to unpack a CommunityPolicyException from a RemoteException.
+     * @throws CommunityPolicyException If the RemoteException cause was a CommunityPolicyException.
+     *
+     */
+    public void policyException(RemoteException ouch)
+        throws CommunityPolicyException
         {
         //
         // If the remote Exception has a cause.
@@ -217,8 +218,35 @@ public class CommunityServiceCoreDelegate
             if (ouch.getCause() instanceof CommunityPolicyException)
                 {
                 //
-                // Re-throw the CommunityPolicyException.
+                // Re-throw the CommunityResourceException.
                 throw (CommunityPolicyException) ouch.getCause() ;
+                }
+            }
+        }
+
+    /**
+     * A converter utility to unpack one of the CommunityExceptions from a RemoteException.
+     * @throws CommunityPolicyException If the RemoteException cause was a CommunityPolicyException.
+     * @throws CommunityServiceException If the RemoteException cause was a CommunityServiceException.
+     * @throws CommunityIdentifierException If the RemoteException cause was a CommunityIdentifierException.
+     * @throws CommunityResourceException If the RemoteException cause was a CommunityResourceException.
+     * @todo Need to handle java.net.ConnectException
+     * @todo Need to handle org.astrogrid.config.PropertyNotFoundException
+     *
+    public void convertCommunityException(RemoteException ouch)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityResourceException, CommunityPolicyException
+        {
+        //
+        // If the remote Exception has a cause.
+        if (ouch.getCause() != null)
+            {
+            //
+            // If the cause is a CommunityServiceException.
+            if (ouch.getCause() instanceof CommunityServiceException)
+                {
+                //
+                // Re-throw the CommunityServiceException.
+                throw (CommunityServiceException) ouch.getCause() ;
                 }
             //
             // If the cause is a CommunityIdentifierException.
@@ -229,13 +257,22 @@ public class CommunityServiceCoreDelegate
                 throw (CommunityIdentifierException) ouch.getCause() ;
                 }
             //
-            // If the cause is a CommunityServiceException.
-            if (ouch.getCause() instanceof CommunityServiceException)
+            // If the cause is a CommunityResourceException.
+            if (ouch.getCause() instanceof CommunityResourceException)
                 {
                 //
-                // Re-throw the CommunityServiceException.
-                throw (CommunityServiceException) ouch.getCause() ;
+                // Re-throw the CommunityIdentifierException.
+                throw (CommunityResourceException) ouch.getCause() ;
+                }
+            //
+            // If the cause is a CommunityPolicyException.
+            if (ouch.getCause() instanceof CommunityPolicyException)
+                {
+                //
+                // Re-throw the CommunityPolicyException.
+                throw (CommunityPolicyException) ouch.getCause() ;
                 }
             }
         }
+     */
     }

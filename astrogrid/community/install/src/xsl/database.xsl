@@ -2,26 +2,15 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/xsl/database.xsl,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: database.xsl,v $
-    |   Revision 1.2  2004/02/12 08:12:13  dave
-    |   Merged development branch, dave-dev-200401131047, into HEAD
+    |   Revision 1.3  2004/06/18 13:45:20  dave
+    |   Merged development branch, dave-dev-200406081614, into HEAD
     |
-    |   Revision 1.1.2.1  2004/02/10 00:40:37  dave
-    |   Added install tooklit to the Maven build.
-    |   Changed Maven project to use 'org.astrogrid' as the group name.
-    |   Fixed dependencies that used the original group name.
-    |
-    |   Revision 1.2  2003/12/31 18:18:27  dave
-    |   Updated install script and added INSTALL.txt to release webapp
-    |
-    |   Revision 1.2  2003/12/17 15:16:01  dave
-    |   Fixed missing properties in config files
-    |
-    |   Revision 1.1  2003/12/16 16:44:30  dave
-    |   Added deployment test data
+    |   Revision 1.2.60.1  2004/06/17 13:38:59  dave
+    |   Tidied up old CVS log entries
     |
     | </cvs:log>
     |

@@ -1,31 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/ant/Attic/CommunityResolverTask.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/04/15 02:33:49 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityResolverTask.java,v $
- *   Revision 1.5  2004/04/15 02:33:49  dave
- *   Changed tabs to spaces
+ *   Revision 1.6  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.4  2004/04/01 07:09:39  dave
- *   Merged development branch, dave-dev-200403300547, into HEAD
- *
- *   Revision 1.3.2.1  2004/04/01 01:50:14  dave
- *   Updated install and resolver docs.
- *
- *   Revision 1.3  2004/03/30 04:44:01  dave
- *   Merged development branch, dave-dev-200403300258, into HEAD
- *
- *   Revision 1.2.2.1  2004/03/30 03:24:57  dave
- *   Fixes to resolver tasks.
- *
- *   Revision 1.2  2004/03/30 01:40:03  dave
- *   Merged development branch, dave-dev-200403242058, into HEAD
- *
- *   Revision 1.1.2.1  2004/03/30 01:38:14  dave
- *   Refactored resolver and install toolkits.
+ *   Revision 1.5.18.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *

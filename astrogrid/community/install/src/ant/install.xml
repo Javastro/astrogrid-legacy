@@ -2,28 +2,15 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/ant/install.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/04/15 10:47:11 $</cvs:date>
-    | <cvs:version>$Revision: 1.10 $</cvs:version>
+    | <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+    | <cvs:version>$Revision: 1.11 $</cvs:version>
     | <cvs:log>
     |   $Log: install.xml,v $
-    |   Revision 1.10  2004/04/15 10:47:11  dave
-    |   Fixed ant script
+    |   Revision 1.11  2004/06/18 13:45:20  dave
+    |   Merged development branch, dave-dev-200406081614, into HEAD
     |
-    |   Revision 1.9  2004/04/15 02:27:46  dave
-    |   Merged development branch, dave-dev-200404071355, into HEAD
-    |
-    |   Revision 1.8  2004/04/14 14:37:20  jdt
-    |   Windows requires file URLs to be of the form
-    |   file:///C:/foo
-    |
-    |   Revision 1.7  2004/04/01 13:27:36  dave
-    |   Merged development branch, dave-dev-200404010813, into HEAD
-    |
-    |   Revision 1.7.8.2  2004/04/09 00:32:11  dave
-    |   Refactored the JNDI context tasks.
-    |
-    |   Revision 1.7.8.1  2004/04/08 13:56:02  dave
-    |   Updated the install tools and data files.
+    |   Revision 1.10.14.2  2004/06/17 13:38:59  dave
+    |   Tidied up old CVS log entries
     |
     | </cvs:log>
     |
@@ -54,7 +41,7 @@
     <!--+
         | Default Community properties.
         +-->
-    <property name="org.astrogrid.community.ident" value="org.astrogrid.iter-5.test.xyz"/>
+    <property name="org.astrogrid.community.ident" value="org.astrogrid.localhost"/>
 
     <!--+
         | Default Registry endpoints.

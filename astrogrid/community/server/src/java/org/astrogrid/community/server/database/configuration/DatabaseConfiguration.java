@@ -1,17 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/database/configuration/DatabaseConfiguration.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseConfiguration.java,v $
- *   Revision 1.4  2004/03/23 16:34:08  dave
- *   Merged development branch, dave-dev-200403191458, into HEAD
+ *   Revision 1.5  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.3.16.1  2004/03/20 06:54:11  dave
- *   Added addAccount(AccountData) to PolicyManager et al.
- *   Added XML loader for AccountData.
+ *   Revision 1.4.36.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *

@@ -1,31 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/policy/service/PolicyServiceDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:19 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyServiceDelegate.java,v $
- *   Revision 1.4  2004/03/23 16:34:08  dave
- *   Merged development branch, dave-dev-200403191458, into HEAD
+ *   Revision 1.5  2004/06/18 13:45:19  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.3.2.1  2004/03/22 02:25:35  dave
- *   Updated delegate interfaces to include Exception handling.
+ *   Revision 1.4.36.2  2004/06/17 15:10:03  dave
+ *   Removed unused imports (PMD report).
  *
- *   Revision 1.3  2004/03/19 14:43:14  dave
- *   Merged development branch, dave-dev-200403151155, into HEAD
- *
- *   Revision 1.2.16.1  2004/03/19 00:18:09  dave
- *   Refactored delegate Exception handling
- *
- *   Revision 1.2  2004/03/05 17:19:59  dave
- *   Merged development branch, dave-dev-200402211936, into HEAD
- *
- *   Revision 1.1.2.1  2004/03/04 13:26:17  dave
- *   1) Added Delegate interfaces.
- *   2) Added Mock implementations.
- *   3) Added MockDelegates
- *   4) Added SoapDelegates
+ *   Revision 1.4.36.1  2004/06/17 13:38:58  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -34,7 +22,6 @@ package org.astrogrid.community.client.policy.service ;
 
 import org.astrogrid.community.common.policy.data.PolicyPermission  ;
 import org.astrogrid.community.common.policy.data.PolicyCredentials ;
-import org.astrogrid.community.common.policy.service.PolicyService ;
 
 import org.astrogrid.community.client.service.CommunityServiceDelegate ;
 

@@ -1,22 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/security/service/SecurityServiceResolver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/04/01 07:09:39 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceResolver.java,v $
- *   Revision 1.3  2004/04/01 07:09:39  dave
- *   Merged development branch, dave-dev-200403300547, into HEAD
+ *   Revision 1.4  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.2.8.1  2004/03/31 10:30:57  dave
- *   Updated test data
+ *   Revision 1.3.28.2  2004/06/17 15:17:30  dave
+ *   Removed unused imports (PMD report).
  *
- *   Revision 1.2  2004/03/23 16:34:08  dave
- *   Merged development branch, dave-dev-200403191458, into HEAD
- *
- *   Revision 1.1.2.1  2004/03/23 14:51:26  dave
- *   Added SecurityManagerResolver and SecurityServiceResolver.
+ *   Revision 1.3.28.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -37,8 +34,6 @@ import org.astrogrid.community.client.security.service.SecurityServiceSoapDelega
 
 import org.astrogrid.community.resolver.CommunityEndpointResolver ;
 
-import org.astrogrid.community.common.exception.CommunityPolicyException ;
-import org.astrogrid.community.common.exception.CommunityServiceException ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 import org.astrogrid.community.resolver.exception.CommunityResolverException ;
 

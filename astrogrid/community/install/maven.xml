@@ -3,12 +3,15 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/04/23 16:58:12 $</cvs:date>
-    | <cvs:version>$Revision: 1.13 $</cvs:version>
+    | <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+    | <cvs:version>$Revision: 1.14 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
-    |   Revision 1.13  2004/04/23 16:58:12  dave
-    |   Added demo accounts
+    |   Revision 1.14  2004/06/18 13:45:20  dave
+    |   Merged development branch, dave-dev-200406081614, into HEAD
+    |
+    |   Revision 1.13.10.1  2004/06/17 13:38:59  dave
+    |   Tidied up old CVS log entries
     |
     | </cvs:log>
     |

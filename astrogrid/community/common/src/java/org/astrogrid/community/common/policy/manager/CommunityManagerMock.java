@@ -1,45 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/CommunityManagerMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityManagerMock.java,v $
- *   Revision 1.6  2004/03/23 16:34:08  dave
- *   Merged development branch, dave-dev-200403191458, into HEAD
+ *   Revision 1.7  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.5.2.1  2004/03/21 06:41:41  dave
- *   Refactored to include Exception handling.
+ *   Revision 1.6.36.2  2004/06/17 14:50:03  dave
+ *   Removed unused imports (PMD report).
  *
- *   Revision 1.5  2004/03/19 14:43:14  dave
- *   Merged development branch, dave-dev-200403151155, into HEAD
- *
- *   Revision 1.4.2.1  2004/03/18 13:41:19  dave
- *   Added Exception handling to AccountManager
- *
- *   Revision 1.4  2004/03/15 07:49:30  dave
- *   Merged development branch, dave-dev-200403121536, into HEAD
- *
- *   Revision 1.3.12.1  2004/03/13 17:57:20  dave
- *   Remove RemoteException(s) from delegate interfaces.
- *   Protected internal API methods.
- *
- *   Revision 1.3  2004/03/08 13:42:33  dave
- *   Updated Maven goals.
- *   Replaced tabs with Spaces.
- *
- *   Revision 1.2.2.1  2004/03/08 12:53:17  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.2  2004/03/05 17:19:59  dave
- *   Merged development branch, dave-dev-200402211936, into HEAD
- *
- *   Revision 1.1.2.1  2004/03/04 13:26:17  dave
- *   1) Added Delegate interfaces.
- *   2) Added Mock implementations.
- *   3) Added MockDelegates
- *   4) Added SoapDelegates
+ *   Revision 1.6.36.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -52,8 +26,7 @@ import java.util.HashMap ;
 import org.astrogrid.community.common.policy.data.CommunityData ;
 import org.astrogrid.community.common.service.CommunityServiceMock ;
 
-import org.astrogrid.community.common.exception.CommunityPolicyException     ;
-import org.astrogrid.community.common.exception.CommunityServiceException    ;
+import org.astrogrid.community.common.exception.CommunityPolicyException ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
 /**

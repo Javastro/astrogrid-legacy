@@ -1,91 +1,39 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/Attic/ResourceManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceManagerImpl.java,v $
- *   Revision 1.6  2004/03/05 17:19:59  dave
- *   Merged development branch, dave-dev-200402211936, into HEAD
+ *   Revision 1.7  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.5.2.3  2004/02/23 19:43:47  dave
- *   Refactored DatabaseManager tests to test the interface.
- *   Refactored DatabaseManager tests to use common DatabaseManagerTest.
+ *   Revision 1.6.54.3  2004/06/17 15:24:31  dave
+ *   Removed unused imports (PMD report).
  *
- *   Revision 1.5.2.2  2004/02/23 08:55:20  dave
- *   Refactored CastorDatabaseConfiguration into DatabaseConfiguration
- *
- *   Revision 1.5.2.1  2004/02/22 20:03:16  dave
- *   Removed redundant DatabaseConfiguration interfaces
- *
- *   Revision 1.5  2004/02/20 21:11:05  dave
- *   Merged development branch, dave-dev-200402120832, into HEAD
- *
- *   Revision 1.4.2.2  2004/02/19 21:09:27  dave
- *   Refactored ServiceStatusData into a common package.
- *   Refactored CommunityServiceImpl constructor to take a parent service.
- *   Refactored default database for CommunityServiceImpl
- *
- *   Revision 1.4.2.1  2004/02/16 15:20:54  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.4  2004/02/12 08:12:13  dave
- *   Merged development branch, dave-dev-200401131047, into HEAD
- *
- *   Revision 1.2.4.3  2004/02/06 13:49:09  dave
- *   Moved CommunityManagerBase into server.common.CommunityServer.
- *   Moved getServiceStatus into server.common.CommunityServer.
- *   Moved JUnit tests to match.
- *
- *   Revision 1.2.4.2  2004/01/27 18:55:08  dave
- *   Removed unused imports listed in PMD report
- *
- *   Revision 1.2.4.1  2004/01/27 07:10:11  dave
- *   Refactored ResourceManagerImpl
- *
- *   Revision 1.2  2004/01/07 10:45:45  dave
- *   Merged development branch, dave-dev-20031224, back into HEAD
- *
- *   Revision 1.1.2.2  2004/01/05 06:47:18  dave
- *   Moved policy data classes into policy.data package
- *
- *   Revision 1.1.2.1  2003/12/24 05:54:48  dave
- *   Initial Maven friendly structure (only part of the service implemented)
- *
- *   Revision 1.4  2003/09/13 02:18:52  dave
- *   Extended the jConfig configuration code.
- *
- *   Revision 1.3  2003/09/12 12:59:17  dave
- *   1) Fixed RemoteException handling in the manager and service implementations.
- *
- *   Revision 1.2  2003/09/10 00:08:45  dave
- *   Added getGroupMembers, ResourceIdent and JUnit tests for ResourceManager
- *
- *   Revision 1.1  2003/09/09 19:13:32  KevinBenson
- *   New resource managerr stuff
+ *   Revision 1.6.54.2  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
  */
 package org.astrogrid.community.server.policy.manager ;
 
-import java.util.Vector ;
-import java.util.Collection ;
-
 import org.exolab.castor.jdo.Database;
-import org.exolab.castor.jdo.OQLQuery;
-import org.exolab.castor.jdo.QueryResults;
 import org.exolab.castor.jdo.ObjectNotFoundException ;
-import org.exolab.castor.jdo.DuplicateIdentityException ;
 
+import org.astrogrid.community.common.identifier.ResourceIdentifier ;
 import org.astrogrid.community.common.policy.data.ResourceData ;
-import org.astrogrid.community.common.policy.data.ResourceIdent ;
 
 import org.astrogrid.community.common.policy.manager.ResourceManager ;
 
 import org.astrogrid.community.server.service.CommunityServiceImpl ;
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration ;
+
+import org.astrogrid.community.common.exception.CommunityServiceException  ;
+import org.astrogrid.community.common.exception.CommunityResourceException ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
 public class ResourceManagerImpl
     extends CommunityServiceImpl
@@ -125,321 +73,29 @@ public class ResourceManagerImpl
         }
 
     /**
-     * Create a new Resource.
+     * Register a new Resource.
+     * @return A new ResourceData object to represent the resource.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
-    public ResourceData addResource(String name)
+    public ResourceData addResource()
+        throws CommunityServiceException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("ResourceManagerImpl.addResource()") ;
-        if (DEBUG_FLAG) System.out.println("  name  : " + name) ;
-
         Database     database = null ;
         ResourceData resource = null ;
         //
-        // Create a ResourceIdent for our Resource.
-        ResourceIdent ident = new ResourceIdent(name) ;
+        // Create a new ResourceIdentifier for our Resource.
+        ResourceIdentifier ident = new ResourceIdentifier() ;
         if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
         //
-        // If the ident is valid.
-        if (ident.isValid())
-            {
-            //
-            // If the ident is local.
-            if (ident.isLocal())
-                {
-                //
-                // Create our new Resource object.
-                resource = new ResourceData() ;
-                resource.setIdent(ident.toString()) ;
-                //
-                //
-                // Try performing our transaction.
-                try {
-                    //
-                    // Open our database connection.
-                    database = this.getDatabase() ;
-                    //
-                    // Begin a new database transaction.
-                    database.begin();
-                    //
-                    // Try creating the resource in the database.
-                    database.create(resource);
-                    //
-                    // Commit the transaction.
-                    database.commit() ;
-                    }
-                //
-                // If we already have an object with that ident.
-// TODO
-// The only reason to treat this differently is that we might one day report it differently to the client.
-                catch (DuplicateIdentityException ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(ouch, "ResourceManagerImpl.addResource()") ;
-                    //
-                    // Set the response to null.
-                    resource = null ;
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-                    }
-                //
-                // If anything else went bang.
-                catch (Exception ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(ouch, "ResourceManagerImpl.addResource()") ;
-                    //
-                    // Set the response to null.
-                    resource = null ;
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-                    }
-                //
-                // Close our database connection.
-                finally
-                    {
-                    closeConnection(database) ;
-                    }
-                }
-            //
-            // If the ident is not local.
-            else {
-                resource = null ;
-                }
-            }
-            //
-            // If the ident is not valid.
-        else {
-            //
-            resource = null ;
-            }
-
-        // TODO
-        // Need to return something to the client.
-        // Possible a new DataObject ... ResourceResult ?
+        // Create our new Resource object.
+        resource = new ResourceData(ident) ;
         //
-
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        return resource ;
-        }
-
-    /**
-     * Request an Resource details.
-     *
-     */
-    public ResourceData getResource(String name)
-        {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerImpl.getResource()") ;
-        if (DEBUG_FLAG) System.out.println("  name  : " + name) ;
-
-        Database     database = null ;
-        ResourceData resource = null ;
         //
-        // Create a ResourceIdent for our Resource.
-        ResourceIdent ident = new ResourceIdent(name) ;
-        if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
-        //
-        // If the ident is valid.
-        if (ident.isValid())
-            {
-            //
-            // If the ident is local.
-            if (ident.isLocal())
-                {
-                try {
-                    //
-                    // Open our database connection.
-                    database = this.getDatabase() ;
-                    //
-                    // Begin a new database transaction.
-                    database.begin();
-                    //
-                    // Load the Resource from the database.
-                    resource = (ResourceData) database.load(ResourceData.class, ident.toString()) ;
-                    //
-                    // Commit the transaction.
-                    database.commit() ;
-                    }
-                //
-                // If we couldn't find the object.
-// TODO
-// The only reason to treat this differently is that we might one day report it differently to the client.
-                catch (ObjectNotFoundException ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(ouch, "ResourceManagerImpl.getResource()") ;
-                    //
-                    // Set the response to null.
-                    resource = null ;
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-                    }
-                //
-                // If anything else went bang.
-                catch (Exception ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(ouch, "ResourceManagerImpl.getResource()") ;
-                    //
-                    // Set the response to null.
-                    resource = null ;
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-                    }
-                //
-                // Close our database connection.
-                finally
-                    {
-                    closeConnection(database) ;
-                    }
-                }
-            //
-            // If the ident is not local.
-            else {
-                //
-                // Set the response to null.
-                resource = null ;
-                }
-            }
-            //
-            // If the ident is not valid.
-        else {
-            //
-            // Set the response to null.
-            resource = null ;
-            }
-
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        return resource ;
-        }
-
-    /**
-     * Update an Resource details.
-     *
-     */
-    public ResourceData setResource(ResourceData resource)
-        {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerImpl.setResource()") ;
-        if (DEBUG_FLAG) System.out.println("  Resource") ;
-        if (DEBUG_FLAG) System.out.println("     ident : " + resource.getIdent()) ;
-        if (DEBUG_FLAG) System.out.println("     desc  : " + resource.getDescription()) ;
-
-        Database database = null ;
-        //
-        // Get the resource ident.
-        ResourceIdent ident = new ResourceIdent(resource.getIdent()) ;
-        //
-        // If the ident is valid.
-        if (ident.isValid())
-            {
-            //
-            // If the ident is local.
-            if (ident.isLocal())
-                {
-                //
-                // Try update the database.
-                try {
-                    //
-                    // Open our database connection.
-                    database = this.getDatabase() ;
-                    //
-                    // Begin a new database transaction.
-                    database.begin();
-                    //
-                    // Load the Resource from the database.
-                    ResourceData data = (ResourceData) database.load(ResourceData.class, resource.getIdent()) ;
-                    //
-                    // Update the resource data.
-                    data.setDescription(resource.getDescription()) ;
-                    //
-                    // Commit the transaction.
-                    database.commit() ;
-                    }
-                //
-                // If we couldn't find the object.
-// TODO
-// The only reason to treat this differently is that we might one day report it differently to the client.
-                catch (ObjectNotFoundException ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(ouch, "ResourceManagerImpl.setResource()") ;
-                    //
-                    // Set the response to null.
-                    resource = null ;
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-                    }
-                //
-                // If anything else went bang.
-                catch (Exception ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(ouch, "ResourceManagerImpl.setResource()") ;
-                    //
-                    // Set the response to null.
-                    resource = null ;
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-                    }
-                //
-                // Close our database connection.
-                finally
-                    {
-                    closeConnection(database) ;
-                    }
-                }
-            //
-            // If the ident is not local.
-            else {
-                //
-                // Set the response to null.
-                resource = null ;
-                }
-            }
-            //
-            // If the ident is not valid.
-        else {
-            //
-            // Set the response to null.
-            resource = null ;
-            }
-
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        return resource ;
-        }
-
-    /**
-     * Request a list of Resources.
-     *
-     */
-    public Object[] getResourceList()
-        {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerImpl.getResourceList()") ;
-
-        //
-        // Try to query the database.
-        Database database = null ;
-        Object[] array    = null ;
+        // Try performing our transaction.
         try {
             //
             // Open our database connection.
@@ -448,23 +104,8 @@ public class ResourceManagerImpl
             // Begin a new database transaction.
             database.begin();
             //
-            // Create our OQL query.
-            OQLQuery query = database.getOQLQuery(
-                "SELECT resources FROM org.astrogrid.community.policy.data.ResourceData resources"
-                );
-            //
-            // Execute our query.
-            QueryResults results = query.execute();
-            //
-            // Transfer our results to a vector.
-            Collection collection = new Vector() ;
-            while (results.hasMore())
-                {
-                collection.add(results.next()) ;
-                }
-            //
-            // Convert it into an array.
-            array = collection.toArray() ;
+            // Try creating the resource in the database.
+            database.create(resource);
             //
             // Commit the transaction.
             database.commit() ;
@@ -475,123 +116,288 @@ public class ResourceManagerImpl
             {
             //
             // Log the exception.
-            logException(ouch, "ResourceManagerImpl.getResourceList()") ;
-            //
-            // Set the response to null.
-            array = null ;
+            logException(ouch, "ResourceManagerImpl.addResource()") ;
             //
             // Cancel the database transaction.
             rollbackTransaction(database) ;
+            //
+            // Throw a service exception.
+            throw new CommunityServiceException(
+                "Unable to create new resource",
+                ouch
+                ) ;
             }
         //
-        // Close our database connection.
+        // Always close our database connection.
         finally
             {
             closeConnection(database) ;
             }
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        return array ;
+        return resource ;
         }
 
     /**
-     * Delete an Resource.
+     * Request a Resource details.
+     * @param The resource identifier.
+     * @return The requested ResourceData object.
+     * @throws CommunityResourceException If unable to locate the resource.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws CommunityIdentifierException If the identifier is not valid.
      *
      */
-    public boolean delResource(String name)
+    public ResourceData getResource(String ident)
+        throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("ResourceManagerImpl.getResource()") ;
+        if (DEBUG_FLAG) System.out.println("  ident  : " + ident) ;
+        //
+        // Check for null ident.
+        if (null == ident)
+            {
+            throw new CommunityIdentifierException(
+                "Null identifier"
+                ) ;
+            }
+        Database     database = null ;
+        ResourceData resource = null ;
+        try {
+            //
+            // Open our database connection.
+            database = this.getDatabase() ;
+            //
+            // Begin a new database transaction.
+            database.begin();
+            //
+            // Load the Resource from the database.
+            resource = (ResourceData) database.load(ResourceData.class, ident) ;
+            //
+            // Commit the transaction.
+            database.commit() ;
+            }
+        //
+        // If we couldn't find the object.
+        catch (ObjectNotFoundException ouch)
+            {
+            //
+            // Log the exception.
+            logException(ouch, "ResourceManagerImpl.getResource()") ;
+            //
+            // Cancel the database transaction.
+            rollbackTransaction(database) ;
+            //
+            // Throw a resource exception.
+            throw new CommunityResourceException(
+                "Unable to locate resource",
+                ident
+                ) ;
+            }
+        //
+        // If anything else went bang.
+        catch (Exception ouch)
+            {
+            //
+            // Log the exception.
+            logException(ouch, "ResourceManagerImpl.getResource()") ;
+            //
+            // Cancel the database transaction.
+            rollbackTransaction(database) ;
+            //
+            // Throw a service exception.
+            throw new CommunityServiceException(
+                "Unable to locate resource",
+                ouch
+                ) ;
+            }
+        //
+        // Always close our database connection.
+        finally
+            {
+            closeConnection(database) ;
+            }
+        return resource ;
+        }
+
+    /**
+     * Update a Resource details.
+     * @param The ResourceData to update.
+     * @return The updated ResourceData.
+     * @throws CommunityResourceException If unable to locate the resource.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws CommunityIdentifierException If the resource identifier is not valid.
+     *
+     */
+    public ResourceData setResource(ResourceData update)
+        throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("ResourceManagerImpl.setResource()") ;
+        //
+        // Check for null update.
+        if (null == update)
+            {
+            throw new CommunityResourceException(
+                "Null resource"
+                ) ;
+            }
+        if (DEBUG_FLAG) System.out.println("    ident : " + update.getIdent()) ;
+        //
+        // Check for null ident.
+        if (null == update.getIdent())
+            {
+            throw new CommunityIdentifierException(
+                "Null identifier"
+                ) ;
+            }
+        Database     database = null ;
+        ResourceData resource = null ;
+        //
+        // Try update the database.
+        try {
+            //
+            // Open our database connection.
+            database = this.getDatabase() ;
+            //
+            // Begin a new database transaction.
+            database.begin();
+            //
+            // Load the Resource from the database.
+            resource = (ResourceData) database.load(ResourceData.class, update.getIdent()) ;
+            //
+            // Update the resource data.
+            resource.setDescription(update.getDescription()) ;
+            //
+            // Commit the transaction.
+            database.commit() ;
+            }
+        //
+        // If we couldn't find the object.
+        catch (ObjectNotFoundException ouch)
+            {
+            //
+            // Log the exception.
+            logException(ouch, "ResourceManagerImpl.setResource()") ;
+            //
+            // Cancel the database transaction.
+            rollbackTransaction(database) ;
+            //
+            // Throw a resource exception.
+            throw new CommunityResourceException(
+                "Unable to locate resource",
+                update.getIdent()
+                ) ;
+            }
+        //
+        // If anything else went bang.
+        catch (Exception ouch)
+            {
+            //
+            // Log the exception.
+            logException(ouch, "ResourceManagerImpl.setResource()") ;
+            //
+            // Cancel the database transaction.
+            rollbackTransaction(database) ;
+            //
+            // Throw a service exception.
+            throw new CommunityServiceException(
+                "Unable to update resource",
+                ouch
+                ) ;
+            }
+        //
+        // Always close our database connection.
+        finally
+            {
+            closeConnection(database) ;
+            }
+        return resource ;
+        }
+
+    /**
+     * Delete a Resource object.
+     * @param The resource identifier.
+     * @return The original ResourceData.
+     * @throws CommunityResourceException If unable to locate the resource.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws CommunityIdentifierException If the resource identifier is not valid.
+     *
+     */
+    public ResourceData delResource(String ident)
+        throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("ResourceManagerImpl.delResource()") ;
-        if (DEBUG_FLAG) System.out.println("  name  : " + name) ;
-
+        if (DEBUG_FLAG) System.out.println("    ident  : " + ident) ;
+        //
+        // Check for null ident.
+        if (null == ident)
+            {
+            throw new CommunityIdentifierException(
+                "Null identifier"
+                ) ;
+            }
         Database     database = null ;
         ResourceData resource = null ;
+        try {
+            //
+            // Open our database connection.
+            database = this.getDatabase() ;
+            //
+            // Begin a new database transaction.
+            database.begin();
+            //
+            // Load the Resource from the database.
+            resource = (ResourceData) database.load(ResourceData.class, ident) ;
+            //
+            // Delete the Resource.
+            database.remove(resource) ;
+            //
+            // Commit the transaction.
+            database.commit() ;
+            }
         //
-        // Create a ResourceIdent for our Resource.
-        ResourceIdent ident = new ResourceIdent(name) ;
-        if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
-        //
-        // If the ident is valid.
-        if (ident.isValid())
+        // If we couldn't find the object.
+        catch (ObjectNotFoundException ouch)
             {
             //
-            // If the ident is local.
-            if (ident.isLocal())
-                {
-                try {
-                    //
-                    // Open our database connection.
-                    database = this.getDatabase() ;
-                    //
-                    // Begin a new database transaction.
-                    database.begin();
-                    //
-                    // Load the Resource from the database.
-                    resource = (ResourceData) database.load(ResourceData.class, ident.toString()) ;
-                    //
-                    // Delete the Resource.
-                    database.remove(resource) ;
-                    //
-                    // Commit the transaction.
-                    database.commit() ;
-                    }
-                //
-                // If we couldn't find the object.
-// TODO
-// The only reason to treat this differently is that we might one day report it differently to the client.
-                catch (ObjectNotFoundException ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(ouch, "ResourceManagerImpl.delResource()") ;
-                    //
-                    // Set the response to null.
-                    resource = null ;
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-                    }
-                //
-                // If anything else went bang.
-                catch (Exception ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(ouch, "ResourceManagerImpl.delResource()") ;
-                    //
-                    // Set the response to null.
-                    resource = null ;
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-                    }
-                //
-                // Close our database connection.
-                finally
-                    {
-                    closeConnection(database) ;
-                    }
-                }
+            // Log the exception.
+            logException(ouch, "ResourceManagerImpl.delResource()") ;
             //
-            // If the ident is not local.
-            else {
-                //
-                // Set the response to null.
-                resource = null ;
-                }
+            // Cancel the database transaction.
+            rollbackTransaction(database) ;
+            //
+            // Throw a resource exception.
+            throw new CommunityResourceException(
+                "Unable to locate resource",
+                ident
+                ) ;
             }
+        //
+        // If anything else went bang.
+        catch (Exception ouch)
+            {
             //
-            // If the ident is not valid.
-        else {
+            // Log the exception.
+            logException(ouch, "ResourceManagerImpl.delResource()") ;
             //
-            // Set the response to null.
-            resource = null ;
+            // Cancel the database transaction.
+            rollbackTransaction(database) ;
+            //
+            // Throw a service exception.
+            throw new CommunityServiceException(
+                "Unable to update resource",
+                ouch
+                ) ;
             }
-
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-//
-// TODO broken API, we should return the deleted resource.
-        return (null != resource) ;
+        //
+        // Always close our database connection.
+        finally
+            {
+            closeConnection(database) ;
+            }
+        return resource ;
         }
-
     }

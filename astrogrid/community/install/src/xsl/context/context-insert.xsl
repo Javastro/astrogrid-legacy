@@ -2,30 +2,15 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/xsl/context/context-insert.xsl,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/04/15 02:27:46 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: context-insert.xsl,v $
-    |   Revision 1.2  2004/04/15 02:27:46  dave
-    |   Merged development branch, dave-dev-200404071355, into HEAD
+    |   Revision 1.3  2004/06/18 13:45:20  dave
+    |   Merged development branch, dave-dev-200406081614, into HEAD
     |
-    |   Revision 1.1.2.1  2004/04/09 00:32:11  dave
-    |   Refactored the JNDI context tasks.
-    |
-    |   Revision 1.2  2004/03/30 01:40:03  dave
-    |   Merged development branch, dave-dev-200403242058, into HEAD
-    |
-    |   Revision 1.1.2.1  2004/03/28 02:00:55  dave
-    |   Added database management tasks.
-    |
-    |   Revision 1.2  2004/02/20 21:11:05  dave
-    |   Merged development branch, dave-dev-200402120832, into HEAD
-    |
-    |   Revision 1.1.2.2  2004/02/16 15:20:54  dave
-    |   Changed tabs to spaces
-    |
-    |   Revision 1.1.2.1  2004/02/15 00:28:22  dave
-    |   Added tools for adding separate webapp context file to Tomcat
+    |   Revision 1.2.18.1  2004/06/17 13:38:59  dave
+    |   Tidied up old CVS log entries
     |
     | </cvs:log>
     |

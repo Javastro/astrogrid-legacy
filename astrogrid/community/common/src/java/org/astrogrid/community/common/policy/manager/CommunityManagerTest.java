@@ -1,16 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/CommunityManagerTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityManagerTest.java,v $
- *   Revision 1.2  2004/03/19 14:43:14  dave
- *   Merged development branch, dave-dev-200403151155, into HEAD
+ *   Revision 1.3  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.1.2.1  2004/03/18 13:01:29  dave
- *   Added test for CommunityManager
+ *   Revision 1.2.38.2  2004/06/17 14:50:03  dave
+ *   Removed unused imports (PMD report).
+ *
+ *   Revision 1.2.38.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -19,8 +22,7 @@ package org.astrogrid.community.common.policy.manager ;
 
 import org.astrogrid.community.common.policy.data.CommunityData ;
 
-import org.astrogrid.community.common.exception.CommunityPolicyException     ;
-import org.astrogrid.community.common.exception.CommunityServiceException    ;
+import org.astrogrid.community.common.exception.CommunityPolicyException ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
 import org.astrogrid.community.common.service.CommunityServiceTest ;

@@ -2,27 +2,15 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/release/webapp/config/xsl/Attic/config.xsl,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/12/31 18:18:27 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: config.xsl,v $
-    |   Revision 1.2  2003/12/31 18:18:27  dave
-    |   Updated install script and added INSTALL.txt to release webapp
+    |   Revision 1.3  2004/06/18 13:45:20  dave
+    |   Merged development branch, dave-dev-200406081614, into HEAD
     |
-    |   Revision 1.4  2003/11/06 15:35:26  dave
-    |   Replaced tabs with spaces
-    |
-    |   Revision 1.3  2003/09/22 13:48:53  dave
-    |   Updates to the community/portal build
-    |
-    |   Revision 1.2  2003/09/17 19:47:21  dave
-    |   1) Fixed classnotfound problems in the build.
-    |   2) Added the JUnit task to add the initial accounts and groups.
-    |   3) Got the build to work together with the portal.
-    |   4) Fixed some bugs in the Account handling.
-    |
-    |   Revision 1.1  2003/09/13 02:18:52  dave
-    |   Extended the jConfig configuration code.
+    |   Revision 1.2.68.1  2004/06/17 13:38:59  dave
+    |   Tidied up old CVS log entries
     |
     | </cvs:log>
     |

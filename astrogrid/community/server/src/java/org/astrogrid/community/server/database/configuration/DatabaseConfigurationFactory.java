@@ -1,69 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/database/configuration/Attic/DatabaseConfigurationFactory.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseConfigurationFactory.java,v $
- *   Revision 1.3  2004/03/08 13:42:33  dave
- *   Updated Maven goals.
- *   Replaced tabs with Spaces.
+ *   Revision 1.4  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.2.2.1  2004/03/08 12:53:18  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.2  2004/03/05 17:19:59  dave
- *   Merged development branch, dave-dev-200402211936, into HEAD
- *
- *   Revision 1.1.2.3  2004/03/02 15:29:35  dave
- *   Working round Castor problem with PasswordData - objects remain in database cache
- *
- *   Revision 1.1.2.2  2004/02/27 14:36:34  dave
- *   Added test database configuration factory
- *
- *   Revision 1.1.2.1  2004/02/23 08:55:20  dave
- *   Refactored CastorDatabaseConfiguration into DatabaseConfiguration
- *
- *   Revision 1.2.2.2  2004/02/22 20:03:16  dave
- *   Removed redundant DatabaseConfiguration interfaces
- *
- *   Revision 1.2.2.1  2004/02/22 02:54:15  dave
- *   Changed version to SNAPSHOT
- *
- *   Revision 1.2  2004/02/20 21:11:05  dave
- *   Merged development branch, dave-dev-200402120832, into HEAD
- *
- *   Revision 1.1.2.2  2004/02/20 19:34:11  dave
- *   Added JNDI Resource for community database.
- *   Removed multiple calls to loadDatabaseConfiguration .
- *
- *   Revision 1.1.2.1  2004/02/19 14:51:00  dave
- *   Changed DatabaseManager to DatabaseConfigurationFactory.
- *
- *   Revision 1.2.2.1  2004/02/16 15:20:54  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.2  2004/02/12 08:12:13  dave
- *   Merged development branch, dave-dev-200401131047, into HEAD
- *
- *   Revision 1.1.2.6  2004/02/05 11:36:29  dave
- *   Name change to database tools.
- *
- *   Revision 1.1.2.5  2004/01/30 03:21:23  dave
- *   Added initial code for SecurityManager and SecurityService
- *
- *   Revision 1.1.2.4  2004/01/29 17:07:20  dave
- *   Added local:// WebService test
- *
- *   Revision 1.1.2.3  2004/01/27 17:10:00  dave
- *   Refactored database handling in JUnit tests
- *
- *   Revision 1.1.2.2  2004/01/27 05:27:27  dave
- *   *** empty log message ***
- *
- *   Revision 1.1.2.1  2004/01/26 13:18:08  dave
- *   Added new DatabaseManager to enable local JUnit testing
+ *   Revision 1.3.52.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *

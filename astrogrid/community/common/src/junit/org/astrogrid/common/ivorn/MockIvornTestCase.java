@@ -1,31 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/junit/org/astrogrid/common/ivorn/MockIvornTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: MockIvornTestCase.java,v $
- *   Revision 1.3  2004/03/15 07:49:30  dave
- *   Merged development branch, dave-dev-200403121536, into HEAD
+ *   Revision 1.4  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.2.2.2  2004/03/15 06:52:08  dave
- *   Refactored PolicyManagerMockDelegate to use ivorn identifiers.
- *   Refactored CommunityAccountResolver to just handle AccountData.
- *   Added CommunityAccountSpaceResolver to resolve home space ivorn.
- *
- *   Revision 1.2.2.1  2004/03/12 17:42:09  dave
- *   Replaced tabs with spaces
- *
- *   Revision 1.2  2004/03/12 15:22:17  dave
- *   Merged development branch, dave-dev-200403101018, into HEAD
- *
- *   Revision 1.1.2.1  2004/03/12 13:44:43  dave
- *   Moved MockIvornFactory to MockIvorn
- *
- *   Revision 1.1.2.1  2004/03/12 13:38:03  dave
- *   Added test case for MockIvorn.
- *   Fixed bugs in CommunityIvornParser.
+ *   Revision 1.3.40.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *

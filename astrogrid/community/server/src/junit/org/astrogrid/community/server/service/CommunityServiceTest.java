@@ -1,65 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/server/service/Attic/CommunityServiceTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityServiceTest.java,v $
- *   Revision 1.3  2004/03/08 13:42:33  dave
- *   Updated Maven goals.
- *   Replaced tabs with Spaces.
+ *   Revision 1.4  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.2.2.1  2004/03/08 12:53:18  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.2  2004/03/05 17:20:00  dave
- *   Merged development branch, dave-dev-200402211936, into HEAD
- *
- *   Revision 1.1.2.3  2004/03/02 23:31:00  dave
- *   Added DatabaseManager to service tests
- *
- *   Revision 1.1.2.2  2004/02/24 20:08:10  dave
- *   Got local tests working - using maven generated WSDD config.
- *
- *   Revision 1.1.2.1  2004/02/23 19:43:47  dave
- *   Refactored DatabaseManager tests to test the interface.
- *   Refactored DatabaseManager tests to use common DatabaseManagerTest.
- *
- *   Revision 1.2.2.2  2004/02/23 08:55:20  dave
- *   Refactored CastorDatabaseConfiguration into DatabaseConfiguration
- *
- *   Revision 1.2.2.1  2004/02/22 20:03:16  dave
- *   Removed redundant DatabaseConfiguration interfaces
- *
- *   Revision 1.2  2004/02/20 21:11:05  dave
- *   Merged development branch, dave-dev-200402120832, into HEAD
- *
- *   Revision 1.1.2.1  2004/02/19 21:09:27  dave
- *   Refactored ServiceStatusData into a common package.
- *   Refactored CommunityServiceImpl constructor to take a parent service.
- *   Refactored default database for CommunityServiceImpl
- *
- *   Revision 1.2.2.2  2004/02/19 14:51:00  dave
- *   Changed DatabaseManager to DatabaseConfigurationFactory.
- *
- *   Revision 1.2.2.1  2004/02/16 15:20:54  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.2  2004/02/12 08:12:13  dave
- *   Merged development branch, dave-dev-200401131047, into HEAD
- *
- *   Revision 1.1.2.3  2004/02/06 14:32:30  dave
- *   Added PolicyServiceTest.
- *   Refactored some test data.
- *
- *   Revision 1.1.2.2  2004/02/06 13:53:03  dave
- *   Fixed extra {
- *
- *   Revision 1.1.2.1  2004/02/06 13:49:09  dave
- *   Moved CommunityManagerBase into server.common.CommunityServer.
- *   Moved getServiceStatus into server.common.CommunityServer.
- *   Moved JUnit tests to match.
+ *   Revision 1.3.52.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *

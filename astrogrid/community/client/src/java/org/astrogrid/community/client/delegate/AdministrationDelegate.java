@@ -2,10 +2,8 @@ package org.astrogrid.community.client.delegate ;
 
 import org.astrogrid.community.common.policy.data.GroupData;
 import org.astrogrid.community.common.policy.data.ResourceData;
-//import org.astrogrid.community.common.policy.data.CommunityData;
 import org.astrogrid.community.common.policy.data.AccountData;
 import org.astrogrid.community.common.policy.data.PolicyPermission;
-import org.astrogrid.community.common.policy.data.GroupMemberData;
 
 import org.astrogrid.community.common.config.CommunityConfig;
 
@@ -283,7 +281,7 @@ public class AdministrationDelegate {
     * @throws Exception
     */
    public ResourceData addResource(String name) throws Exception {
-      return service.addResource(name);      
+      return service.addResource();      
    }
 
 /**
@@ -292,7 +290,7 @@ public class AdministrationDelegate {
  * @return
  * @throws Exception
  */
-   public boolean delResource(String name) throws Exception {
+   public ResourceData delResource(String name) throws Exception {
       return service.delResource(name);      
    }
    
@@ -314,7 +312,7 @@ public class AdministrationDelegate {
     * @throws Exception
     */
    public ArrayList getResourceList() throws Exception {
-      return createArrayList(service.getResourceList());
+      return new ArrayList() ;
    }
    
    /**

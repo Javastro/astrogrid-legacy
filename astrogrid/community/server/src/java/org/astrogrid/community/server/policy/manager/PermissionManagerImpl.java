@@ -1,72 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/Attic/PermissionManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PermissionManagerImpl.java,v $
- *   Revision 1.6  2004/03/05 17:19:59  dave
- *   Merged development branch, dave-dev-200402211936, into HEAD
+ *   Revision 1.7  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.5.2.3  2004/02/23 19:43:47  dave
- *   Refactored DatabaseManager tests to test the interface.
- *   Refactored DatabaseManager tests to use common DatabaseManagerTest.
- *
- *   Revision 1.5.2.2  2004/02/23 08:55:20  dave
- *   Refactored CastorDatabaseConfiguration into DatabaseConfiguration
- *
- *   Revision 1.5.2.1  2004/02/22 20:03:16  dave
- *   Removed redundant DatabaseConfiguration interfaces
- *
- *   Revision 1.5  2004/02/20 21:11:05  dave
- *   Merged development branch, dave-dev-200402120832, into HEAD
- *
- *   Revision 1.4.2.2  2004/02/19 21:09:27  dave
- *   Refactored ServiceStatusData into a common package.
- *   Refactored CommunityServiceImpl constructor to take a parent service.
- *   Refactored default database for CommunityServiceImpl
- *
- *   Revision 1.4.2.1  2004/02/16 15:20:54  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.4  2004/02/12 08:12:13  dave
- *   Merged development branch, dave-dev-200401131047, into HEAD
- *
- *   Revision 1.2.4.4  2004/02/06 15:42:12  dave
- *   Fixes to pass JUnit tests.
- *
- *   Revision 1.2.4.3  2004/02/06 13:49:09  dave
- *   Moved CommunityManagerBase into server.common.CommunityServer.
- *   Moved getServiceStatus into server.common.CommunityServer.
- *   Moved JUnit tests to match.
- *
- *   Revision 1.2.4.2  2004/01/27 18:55:08  dave
- *   Removed unused imports listed in PMD report
- *
- *   Revision 1.2.4.1  2004/01/27 06:46:19  dave
- *   Refactored PermissionManagerImpl and added initial JUnit tests
- *
- *   Revision 1.2  2004/01/07 10:45:45  dave
- *   Merged development branch, dave-dev-20031224, back into HEAD
- *
- *   Revision 1.1.2.2  2004/01/05 06:47:18  dave
- *   Moved policy data classes into policy.data package
- *
- *   Revision 1.1.2.1  2003/12/24 05:54:48  dave
- *   Initial Maven friendly structure (only part of the service implemented)
- *
- *   Revision 1.4  2003/11/06 15:35:26  dave
- *   Replaced tabs with spaces
- *
- *   Revision 1.3  2003/10/09 01:38:30  dave
- *   Added JUnite tests for policy delegates
- *
- *   Revision 1.2  2003/09/12 12:59:17  dave
- *   1) Fixed RemoteException handling in the manager and service implementations.
- *
- *   Revision 1.1  2003/09/10 02:56:03  dave
- *   Added PermissionManager and tests
+ *   Revision 1.6.54.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *

@@ -1,49 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/PolicyManagerMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerMock.java,v $
- *   Revision 1.5  2004/03/23 16:34:08  dave
- *   Merged development branch, dave-dev-200403191458, into HEAD
+ *   Revision 1.6  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.4.2.3  2004/03/22 00:53:31  dave
- *   Refactored GroupManager to use Ivorn identifiers.
- *   Started removing references to CommunityManager.
- *
- *   Revision 1.4.2.2  2004/03/21 06:41:41  dave
- *   Refactored to include Exception handling.
- *
- *   Revision 1.4.2.1  2004/03/20 06:54:11  dave
- *   Added addAccount(AccountData) to PolicyManager et al.
- *   Added XML loader for AccountData.
- *
- *   Revision 1.4  2004/03/19 14:43:14  dave
- *   Merged development branch, dave-dev-200403151155, into HEAD
- *
- *   Revision 1.3.14.1  2004/03/18 13:41:19  dave
- *   Added Exception handling to AccountManager
- *
- *   Revision 1.3  2004/03/08 13:42:33  dave
- *   Updated Maven goals.
- *   Replaced tabs with Spaces.
- *
- *   Revision 1.2.2.1  2004/03/08 12:53:17  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.2  2004/03/05 17:19:59  dave
- *   Merged development branch, dave-dev-200402211936, into HEAD
- *
- *   Revision 1.1.2.2  2004/03/05 14:03:23  dave
- *   Added first client side SOAP test - SecurityServiceSoapDelegateTestCase
- *
- *   Revision 1.1.2.1  2004/03/04 13:26:17  dave
- *   1) Added Delegate interfaces.
- *   2) Added Mock implementations.
- *   3) Added MockDelegates
- *   4) Added SoapDelegates
+ *   Revision 1.5.36.2  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -62,6 +29,7 @@ import org.astrogrid.community.common.service.CommunityServiceMock ;
 
 import org.astrogrid.community.common.exception.CommunityPolicyException     ;
 import org.astrogrid.community.common.exception.CommunityServiceException    ;
+import org.astrogrid.community.common.exception.CommunityResourceException   ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
 /**
@@ -273,77 +241,6 @@ public class PolicyManagerMock
         return groupManager.getLocalAccountGroups(account) ;
         }
 
-    /**
-     * Our CommunityManager.
-     *
-    private CommunityManagerMock communityManager = new CommunityManagerMock() ;
-     */
-
-    /**
-     * Add a new Community, given the Account ident.
-     * @param  ident The Community identifier.
-     * @return A CommunityData for the Community.
-     * @throws CommunityIdentifierException If the identifier is not valid.
-     * @throws CommunityPolicyException If the identifier is already in the database.
-     *
-    public CommunityData addCommunity(String ident)
-        throws CommunityIdentifierException, CommunityPolicyException
-        {
-        return communityManager.addCommunity(ident) ;
-        }
-     */
-
-    /**
-     * Request a Community details, given the Community ident.
-     * @param  ident The Community identifier.
-     * @return A CommunityData for the Community.
-     * @throws CommunityIdentifierException If the identifier is not valid.
-     * @throws CommunityPolicyException If the identifier is not in the database.
-     *
-    public CommunityData getCommunity(String ident)
-        throws CommunityIdentifierException, CommunityPolicyException
-        {
-        return communityManager.getCommunity(ident) ;
-        }
-     */
-
-    /**
-     * Update a Community.
-     * @param  update The new CommunityData to update.
-     * @return A new CommunityData for the Community.
-     * @throws CommunityIdentifierException If the identifier is not valid.
-     * @throws CommunityPolicyException If the identifier is not in the database.
-     *
-    public CommunityData setCommunity(CommunityData update)
-        throws CommunityIdentifierException, CommunityPolicyException
-        {
-        return communityManager.setCommunity(update) ;
-        }
-     */
-
-    /**
-     * Delete a Community.
-     * @param  ident The Community identifier.
-     * @return The CommunityData for the old Community.
-     * @throws CommunityIdentifierException If the identifier is not valid.
-     * @throws CommunityPolicyException If the identifier is not in the database.
-     *
-    public CommunityData delCommunity(String ident)
-        throws CommunityIdentifierException, CommunityPolicyException
-        {
-        return communityManager.delCommunity(ident) ;
-        }
-     */
-
-    /**
-     * Request a list of Communities.
-     * @return An array of CommunityData objects.
-     *
-    public Object[] getCommunityList()
-        {
-        return communityManager.getCommunityList() ;
-        }
-     */
 
     /**
      * Our ResourceManager.
@@ -351,54 +248,61 @@ public class PolicyManagerMock
      */
     private ResourceManagerMock resourceManager = new ResourceManagerMock() ;
 
-   /**
-    * Create a new Resource.
-    *
-    */
-   public ResourceData addResource(String ident)
-        throws RemoteException
+    /**
+     * Register a new Resource.
+     * @return A new ResourceData object to represent the resource.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     *
+     */
+    public ResourceData addResource()
+        throws CommunityServiceException
         {
-        return resourceManager.addResource(ident) ;
+        return resourceManager.addResource() ;
         }
 
-   /**
-    * Request an Resource details.
-    *
-    */
-   public ResourceData getResource(String ident)
-        throws RemoteException
+    /**
+     * Request a Resource details.
+     * @param The resource identifier.
+     * @return The requested ResourceData object.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityResourceException If unable to locate the resource.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     *
+     */
+    public ResourceData getResource(String ident)
+        throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException
         {
         return resourceManager.getResource(ident) ;
         }
 
-   /**
-    * Update an Resource details.
-    *
-    */
-   public ResourceData setResource(ResourceData resource)
-        throws RemoteException
+    /**
+     * Update a Resource details.
+     * @param The ResourceData to update.
+     * @return The updated ResourceData.
+     * @throws CommunityIdentifierException If the resource identifier is not valid.
+     * @throws CommunityResourceException If unable to locate the resource.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     *
+     */
+    public ResourceData setResource(ResourceData resource)
+        throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException
         {
         return resourceManager.setResource(resource) ;
         }
 
-   /**
-    * Delete an Resource.
-    *
-    */
-   public boolean delResource(String ident)
-        throws RemoteException
+    /**
+     * Delete a Resource object.
+     * @param The resource identifier.
+     * @return The original ResourceData.
+     * @throws CommunityIdentifierException If the resource identifier is not valid.
+     * @throws CommunityResourceException If unable to locate the resource.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     *
+     */
+    public ResourceData delResource(String ident)
+        throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException
         {
         return resourceManager.delResource(ident) ;
-        }
-
-   /**
-    * Request a list of Resources.
-    *
-    */
-   public Object[] getResourceList()
-        throws RemoteException
-        {
-        return resourceManager.getResourceList() ;
         }
 
     /**

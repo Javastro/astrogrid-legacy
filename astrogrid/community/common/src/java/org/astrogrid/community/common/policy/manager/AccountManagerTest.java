@@ -1,48 +1,22 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/AccountManagerTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerTest.java,v $
- *   Revision 1.8  2004/03/30 01:40:03  dave
- *   Merged development branch, dave-dev-200403242058, into HEAD
+ *   Revision 1.9  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.7.4.1  2004/03/28 09:11:43  dave
- *   Convert tabs to spaces
+ *   Revision 1.8.32.3  2004/06/17 15:00:21  dave
+ *   Fixed debug flag
  *
- *   Revision 1.7  2004/03/23 16:34:08  dave
- *   Merged development branch, dave-dev-200403191458, into HEAD
+ *   Revision 1.8.32.2  2004/06/17 14:50:01  dave
+ *   Removed unused imports (PMD report).
  *
- *   Revision 1.6.2.4  2004/03/22 15:31:10  dave
- *   Added CommunitySecurityException.
- *   Updated SecurityManager and SecurityService to use Exceptions.
- *
- *   Revision 1.6.2.3  2004/03/22 00:53:31  dave
- *   Refactored GroupManager to use Ivorn identifiers.
- *   Started removing references to CommunityManager.
- *
- *   Revision 1.6.2.2  2004/03/21 06:41:41  dave
- *   Refactored to include Exception handling.
- *
- *   Revision 1.6.2.1  2004/03/20 06:54:11  dave
- *   Added addAccount(AccountData) to PolicyManager et al.
- *   Added XML loader for AccountData.
- *
- *   Revision 1.6  2004/03/19 14:43:14  dave
- *   Merged development branch, dave-dev-200403151155, into HEAD
- *
- *   Revision 1.5.2.3  2004/03/18 13:41:19  dave
- *   Added Exception handling to AccountManager
- *
- *   Revision 1.5.2.2  2004/03/17 13:50:23  dave
- *   Refactored Community exceptions
- *
- *   Revision 1.5.2.1  2004/03/17 01:08:48  dave
- *   Added AccountNotFoundException
- *   Added DuplicateAccountException
- *   Added InvalidIdentifierException
+ *   Revision 1.8.32.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -51,14 +25,9 @@ package org.astrogrid.community.common.policy.manager ;
 
 import java.rmi.RemoteException ;
 
-import org.astrogrid.store.Ivorn ;
-
 import org.astrogrid.community.common.policy.data.AccountData ;
 
-import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory ;
-
-import org.astrogrid.community.common.exception.CommunityPolicyException     ;
-import org.astrogrid.community.common.exception.CommunityServiceException    ;
+import org.astrogrid.community.common.exception.CommunityPolicyException ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
 import org.astrogrid.community.common.service.CommunityServiceTest ;
@@ -77,7 +46,7 @@ public class AccountManagerTest
      * @todo Refactor to use the common logging.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static final boolean DEBUG_FLAG = true ;
 
     /**
      * Public constructor.

@@ -2,30 +2,15 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/xsl/registry/authority.entry.xsl,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/04/01 13:27:36 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: authority.entry.xsl,v $
-    |   Revision 1.2  2004/04/01 13:27:36  dave
-    |   Merged development branch, dave-dev-200404010813, into HEAD
+    |   Revision 1.3  2004/06/18 13:45:20  dave
+    |   Merged development branch, dave-dev-200406081614, into HEAD
     |
-    |   Revision 1.1.2.1  2004/04/01 13:19:51  dave
-    |   Updated install registration tasks.
-    |
-    |   Revision 1.2  2004/03/30 01:40:03  dave
-    |   Merged development branch, dave-dev-200403242058, into HEAD
-    |
-    |   Revision 1.1.2.2  2004/03/28 09:11:43  dave
-    |   Convert tabs to spaces
-    |
-    |   Revision 1.1.2.1  2004/03/28 02:00:55  dave
-    |   Added database management tasks.
-    |
-    |   Revision 1.2  2004/03/23 16:34:08  dave
-    |   Merged development branch, dave-dev-200403191458, into HEAD
-    |
-    |   Revision 1.1.2.1  2004/03/23 10:48:32  dave
-    |   Registry configuration files and PolicyManagerResolver tests.
+    |   Revision 1.2.26.1  2004/06/17 13:38:59  dave
+    |   Tidied up old CVS log entries
     |
     | </cvs:log>
     |

@@ -1,46 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/config/CommunityConfig.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityConfig.java,v $
- *   Revision 1.4  2004/03/05 17:19:59  dave
- *   Merged development branch, dave-dev-200402211936, into HEAD
+ *   Revision 1.5  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.3.2.1  2004/03/02 15:29:35  dave
- *   Working round Castor problem with PasswordData - objects remain in database cache
- *
- *   Revision 1.3  2004/02/20 21:11:05  dave
- *   Merged development branch, dave-dev-200402120832, into HEAD
- *
- *   Revision 1.2.10.1  2004/02/16 15:20:54  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.2  2004/01/07 10:45:38  dave
- *   Merged development branch, dave-dev-20031224, back into HEAD
- *
- *   Revision 1.1.2.1  2003/12/30 18:15:02  dave
- *   Added missing source file
- *
- *   Revision 1.7  2003/10/09 01:38:30  dave
- *   Added JUnite tests for policy delegates
- *
- *   Revision 1.6  2003/09/18 15:50:03  dave
- *   Fixing bugs in configuration
- *
- *   Revision 1.5  2003/09/17 19:47:21  dave
- *   1) Fixed classnotfound problems in the build.
- *   2) Added the JUnit task to add the initial accounts and groups.
- *   3) Got the build to work together with the portal.
- *   4) Fixed some bugs in the Account handling.
- *
- *   Revision 1.4  2003/09/14 21:19:08  KevinBenson
- *   Added a PolicyServiceDelegate and some Configuration stuff added.
- *
- *   Revision 1.3  2003/09/13 02:18:52  dave
- *   Extended the jConfig configuration code.
+ *   Revision 1.4.54.1  2004/06/17 13:38:58  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *

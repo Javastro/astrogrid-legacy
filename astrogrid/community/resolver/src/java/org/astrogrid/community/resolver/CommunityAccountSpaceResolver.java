@@ -1,41 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityAccountSpaceResolver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountSpaceResolver.java,v $
- *   Revision 1.4  2004/03/30 01:40:03  dave
- *   Merged development branch, dave-dev-200403242058, into HEAD
+ *   Revision 1.5  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.3.6.1  2004/03/28 09:11:43  dave
- *   Convert tabs to spaces
- *
- *   Revision 1.3  2004/03/19 14:43:15  dave
- *   Merged development branch, dave-dev-200403151155, into HEAD
- *
- *   Revision 1.2.2.3  2004/03/19 04:51:46  dave
- *   Updated resolver with new Exceptions
- *
- *   Revision 1.2.2.2  2004/03/17 01:08:48  dave
- *   Added AccountNotFoundException
- *   Added DuplicateAccountException
- *   Added InvalidIdentifierException
- *
- *   Revision 1.2.2.1  2004/03/16 19:51:17  dave
- *   Added Exception reporting to resolvers
- *
- *   Revision 1.2  2004/03/15 07:49:30  dave
- *   Merged development branch, dave-dev-200403121536, into HEAD
- *
- *   Revision 1.1.2.2  2004/03/15 06:53:50  dave
- *   Removed redundant import.
- *
- *   Revision 1.1.2.1  2004/03/15 06:52:08  dave
- *   Refactored PolicyManagerMockDelegate to use ivorn identifiers.
- *   Refactored CommunityAccountResolver to just handle AccountData.
- *   Added CommunityAccountSpaceResolver to resolve home space ivorn.
+ *   Revision 1.4.32.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *

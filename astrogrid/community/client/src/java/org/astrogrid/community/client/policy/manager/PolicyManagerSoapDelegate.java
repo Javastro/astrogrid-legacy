@@ -1,22 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/policy/manager/PolicyManagerSoapDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:19 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerSoapDelegate.java,v $
- *   Revision 1.6  2004/03/30 01:40:03  dave
- *   Merged development branch, dave-dev-200403242058, into HEAD
+ *   Revision 1.7  2004/06/18 13:45:19  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.5.6.1  2004/03/28 09:11:43  dave
- *   Convert tabs to spaces
+ *   Revision 1.6.32.3  2004/06/17 15:10:03  dave
+ *   Removed unused imports (PMD report).
  *
- *   Revision 1.5  2004/03/19 14:43:14  dave
- *   Merged development branch, dave-dev-200403151155, into HEAD
- *
- *   Revision 1.4.2.2  2004/03/19 00:18:09  dave
- *   Refactored delegate Exception handling
+ *   Revision 1.6.32.2  2004/06/17 13:38:58  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -26,7 +23,6 @@ package org.astrogrid.community.client.policy.manager ;
 import java.net.URL ;
 import java.net.MalformedURLException ;
 
-import org.astrogrid.community.common.policy.manager.PolicyManager ;
 import org.astrogrid.community.common.policy.manager.PolicyManagerService ;
 import org.astrogrid.community.common.policy.manager.PolicyManagerServiceLocator ;
 
@@ -81,7 +77,7 @@ public class PolicyManagerSoapDelegate
     /**
      * Public constructor, for a specific endpoint URL.
      * @param endpoint The service endpoint URL.
-     * @todo Convert RemoteExceptions.
+     * @todo Better Exception handling.
      * @todo Trap null param.
      *
      */
@@ -94,7 +90,12 @@ public class PolicyManagerSoapDelegate
         if (DEBUG_FLAG) System.out.println("  URL : " + endpoint) ;
         //
         // Check for null param.
-        if (null == endpoint) { throw new IllegalArgumentException("Null endpoint") ; }
+        if (null == endpoint)
+            {
+            throw new IllegalArgumentException(
+                "Null endpoint"
+                ) ;
+            }
         //
         // Set our endpoint address.
         this.endpoint = endpoint ;

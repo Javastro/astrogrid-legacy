@@ -1,32 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/security/manager/SecurityManagerCoreDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:19 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityManagerCoreDelegate.java,v $
- *   Revision 1.6  2004/03/30 01:40:03  dave
- *   Merged development branch, dave-dev-200403242058, into HEAD
+ *   Revision 1.7  2004/06/18 13:45:19  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.5.4.2  2004/03/28 09:11:43  dave
- *   Convert tabs to spaces
+ *   Revision 1.6.32.3  2004/06/17 15:10:03  dave
+ *   Removed unused imports (PMD report).
  *
- *   Revision 1.5.4.1  2004/03/28 02:00:55  dave
- *   Added database management tasks.
- *
- *   Revision 1.5  2004/03/23 16:34:08  dave
- *   Merged development branch, dave-dev-200403191458, into HEAD
- *
- *   Revision 1.4.2.1  2004/03/22 16:47:55  dave
- *   Updated SecurityManagerDelegate to include Exceptions.
- *   Updated SecurityServiceDelegate to include Exceptions.
- *
- *   Revision 1.4  2004/03/19 14:43:14  dave
- *   Merged development branch, dave-dev-200403151155, into HEAD
- *
- *   Revision 1.3.14.1  2004/03/19 00:18:09  dave
- *   Refactored delegate Exception handling
+ *   Revision 1.6.32.2  2004/06/17 13:38:58  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -51,12 +38,6 @@ public class SecurityManagerCoreDelegate
     extends CommunityServiceCoreDelegate
     implements SecurityManager, SecurityManagerDelegate
     {
-    /**
-     * Switch for our debug statements.
-     *
-     */
-    private static boolean DEBUG_FLAG = true ;
-
     /**
      * Public constructor.
      *
@@ -118,9 +99,9 @@ public class SecurityManagerCoreDelegate
                 {
                 //
                 // Try converting the Exception.
-                convertServiceException(ouch) ;
-                convertSecurityException(ouch) ;
-                convertIdentifierException(ouch) ;
+                serviceException(ouch) ;
+                securityException(ouch) ;
+                identifierException(ouch) ;
                 //
                 // If we get this far, then we don't know what it is.
                 throw new CommunityServiceException(

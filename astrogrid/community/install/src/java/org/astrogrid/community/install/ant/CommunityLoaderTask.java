@@ -1,25 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/java/org/astrogrid/community/install/ant/CommunityLoaderTask.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityLoaderTask.java,v $
- *   Revision 1.2  2004/03/30 01:40:03  dave
- *   Merged development branch, dave-dev-200403242058, into HEAD
+ *   Revision 1.3  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.1.2.4  2004/03/29 11:44:54  dave
- *   Fixed bugs in Ant tasks
- *
- *   Revision 1.1.2.3  2004/03/28 09:11:43  dave
- *   Convert tabs to spaces
- *
- *   Revision 1.1.2.2  2004/03/28 08:37:10  dave
- *   Fixes to test data
- *
- *   Revision 1.1.2.1  2004/03/28 02:00:55  dave
- *   Added database management tasks.
+ *   Revision 1.2.32.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *

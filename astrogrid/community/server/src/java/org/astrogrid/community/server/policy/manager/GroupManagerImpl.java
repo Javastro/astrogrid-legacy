@@ -1,29 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/Attic/GroupManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerImpl.java,v $
- *   Revision 1.8  2004/03/30 01:40:03  dave
- *   Merged development branch, dave-dev-200403242058, into HEAD
+ *   Revision 1.9  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.7.4.1  2004/03/28 09:11:43  dave
- *   Convert tabs to spaces
+ *   Revision 1.8.32.2  2004/06/17 15:24:31  dave
+ *   Removed unused imports (PMD report).
  *
- *   Revision 1.7  2004/03/23 16:34:08  dave
- *   Merged development branch, dave-dev-200403191458, into HEAD
- *
- *   Revision 1.6.18.3  2004/03/22 00:53:31  dave
- *   Refactored GroupManager to use Ivorn identifiers.
- *   Started removing references to CommunityManager.
- *
- *   Revision 1.6.18.2  2004/03/21 18:14:29  dave
- *   Refactored GroupManagerImpl to use Ivorn identifiers.
- *
- *   Revision 1.6.18.1  2004/03/21 06:41:41  dave
- *   Refactored to include Exception handling.
+ *   Revision 1.8.32.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -55,10 +45,10 @@ import org.astrogrid.community.common.exception.CommunityPolicyException     ;
 import org.astrogrid.community.common.exception.CommunityServiceException    ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
-// TODO remove these
-import org.astrogrid.community.common.policy.data.CommunityIdent ;
-
-
+/**
+ * Server side implementation of the GroupManager service.
+ *
+ */
 public class GroupManagerImpl
     extends CommunityServiceImpl
     implements GroupManager

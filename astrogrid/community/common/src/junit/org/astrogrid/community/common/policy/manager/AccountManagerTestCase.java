@@ -1,22 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/junit/org/astrogrid/community/common/policy/manager/AccountManagerTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerTestCase.java,v $
- *   Revision 1.6  2004/03/23 16:34:08  dave
- *   Merged development branch, dave-dev-200403191458, into HEAD
+ *   Revision 1.7  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.5.2.1  2004/03/21 06:41:41  dave
- *   Refactored to include Exception handling.
- *
- *   Revision 1.5  2004/03/19 14:43:14  dave
- *   Merged development branch, dave-dev-200403151155, into HEAD
- *
- *   Revision 1.4.4.1  2004/03/17 13:50:23  dave
- *   Refactored Community exceptions
+ *   Revision 1.6.36.2  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -27,7 +21,7 @@ import org.astrogrid.community.common.database.manager.DatabaseManager ;
 import org.astrogrid.community.common.database.manager.DatabaseManagerMock ;
 
 /**
- * A JUnit test case for our AccountManager.
+ * A JUnit test using an AccountManagerMock service.
  *
  */
 public class AccountManagerTestCase
@@ -38,7 +32,7 @@ public class AccountManagerTestCase
      * @todo Refactor to use the common logging.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static final boolean DEBUG_FLAG = true ;
 
     /**
      * Setup our test.

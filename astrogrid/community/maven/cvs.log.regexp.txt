@@ -1,0 +1,81 @@
+Search and replace regular expression to delete old cvs log messages.
+
+-------------
+For Java
+
+Search :
+<cvs:log>(.*\n*)*</cvs:log>
+Replace :
+<cvs:log>\n *   $Log: cvs.log.regexp.txt,v $
+<cvs:log>\n *   Revision 1.2  2004/06/18 13:45:20  dave
+<cvs:log>\n *   Merged development branch, dave-dev-200406081614, into HEAD
+<cvs:log>\n *
+<cvs:log>\n *   Revision 1.1.2.1  2004/06/17 13:41:00  dave
+<cvs:log>\n *   Added cvs log regexp
+<cvs:log>\n *\n * </cvs:log>
+
+Test :
+ * <cvs:log>
+ *   $Log: cvs.log.regexp.txt,v $
+ *   Revision 1.2  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
+ *
+ *   Revision 1.1.2.1  2004/06/17 13:41:00  dave
+ *   Added cvs log regexp
+ *
+ * </cvs:log>
+
+Test :
+/*
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/cvs.log.regexp.txt,v $</cvs:source>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
+ *
+ * <cvs:log>
+ *   $Log: cvs.log.regexp.txt,v $
+ *   Revision 1.2  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
+ *
+ *   Revision 1.1.2.1  2004/06/17 13:41:00  dave
+ *   Added cvs log regexp
+ *
+ * </cvs:log>
+ *
+ */
+
+-------------
+For XML
+
+Search :
+<cvs:log>(.*\n*)*</cvs:log>
+Replace :
+<cvs:log>\n    |   $Log: cvs.log.regexp.txt,v $
+<cvs:log>\n    |   Revision 1.2  2004/06/18 13:45:20  dave
+<cvs:log>\n    |   Merged development branch, dave-dev-200406081614, into HEAD
+<cvs:log>\n    |
+<cvs:log>\n    |   Revision 1.1.2.1  2004/06/17 13:41:00  dave
+<cvs:log>\n    |   Added cvs log regexp
+<cvs:log>\n    |\n    | </cvs:log>
+
+Test :
+<!--+
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/cvs.log.regexp.txt,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: cvs.log.regexp.txt,v $
+    |   Revision 1.2  2004/06/18 13:45:20  dave
+    |   Merged development branch, dave-dev-200406081614, into HEAD
+    |
+    |   Revision 1.1.2.1  2004/06/17 13:41:00  dave
+    |   Added cvs log regexp
+    |
+    |   Revision 1.6.54.1  2004/06/15 15:09:58  dave
+    |   Refactored the ResourceManager API
+    | </cvs:log>
+    |
+    +-->
+

@@ -1,37 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/AccountManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.10 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.11 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManager.java,v $
- *   Revision 1.10  2004/03/23 16:34:08  dave
- *   Merged development branch, dave-dev-200403191458, into HEAD
+ *   Revision 1.11  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.9.2.2  2004/03/21 06:41:41  dave
- *   Refactored to include Exception handling.
- *
- *   Revision 1.9.2.1  2004/03/20 06:54:11  dave
- *   Added addAccount(AccountData) to PolicyManager et al.
- *   Added XML loader for AccountData.
- *
- *   Revision 1.9  2004/03/19 14:43:14  dave
- *   Merged development branch, dave-dev-200403151155, into HEAD
- *
- *   Revision 1.8.2.4  2004/03/19 04:51:46  dave
- *   Updated resolver with new Exceptions
- *
- *   Revision 1.8.2.3  2004/03/18 13:41:19  dave
- *   Added Exception handling to AccountManager
- *
- *   Revision 1.8.2.2  2004/03/17 13:50:23  dave
- *   Refactored Community exceptions
- *
- *   Revision 1.8.2.1  2004/03/17 01:08:48  dave
- *   Added AccountNotFoundException
- *   Added DuplicateAccountException
- *   Added InvalidIdentifierException
+ *   Revision 1.10.36.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *

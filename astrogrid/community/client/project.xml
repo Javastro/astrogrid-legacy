@@ -4,71 +4,15 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
-    | <cvs:version>$Revision: 1.9 $</cvs:version>
+    | <cvs:date>$Date: 2004/06/18 13:45:19 $</cvs:date>
+    | <cvs:version>$Revision: 1.10 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
-    |   Revision 1.9  2004/03/30 01:40:03  dave
-    |   Merged development branch, dave-dev-200403242058, into HEAD
+    |   Revision 1.10  2004/06/18 13:45:19  dave
+    |   Merged development branch, dave-dev-200406081614, into HEAD
     |
-    |   Revision 1.8.8.1  2004/03/28 02:00:55  dave
-    |   Added database management tasks.
-    |
-    |   Revision 1.8  2004/03/15 07:49:30  dave
-    |   Merged development branch, dave-dev-200403121536, into HEAD
-    |
-    |   Revision 1.7.2.1  2004/03/15 06:52:08  dave
-    |   Refactored PolicyManagerMockDelegate to use ivorn identifiers.
-    |   Refactored CommunityAccountResolver to just handle AccountData.
-    |   Added CommunityAccountSpaceResolver to resolve home space ivorn.
-    |
-    |   Revision 1.7  2004/03/12 15:22:17  dave
-    |   Merged development branch, dave-dev-200403101018, into HEAD
-    |
-    |   Revision 1.6.12.1  2004/03/10 13:58:01  dave
-    |   Removed redundant pomVersion from sub-projects
-    |
-    |   Revision 1.6  2004/03/05 17:19:59  dave
-    |   Merged development branch, dave-dev-200402211936, into HEAD
-    |
-    |   Revision 1.5.2.3  2004/03/05 16:28:28  dave
-    |   Added SecurityManager delegate test casees.
-    |   Refactored Maven JUnit properties.
-    |
-    |   Revision 1.5.2.2  2004/03/05 14:03:23  dave
-    |   Added first client side SOAP test - SecurityServiceSoapDelegateTestCase
-    |
-    |   Revision 1.5.2.1  2004/02/23 19:43:47  dave
-    |   Refactored DatabaseManager tests to test the interface.
-    |   Refactored DatabaseManager tests to use common DatabaseManagerTest.
-    |
-    |   Revision 1.5  2004/02/20 21:11:05  dave
-    |   Merged development branch, dave-dev-200402120832, into HEAD
-    |
-    |   Revision 1.4.2.1  2004/02/14 22:24:09  dave
-    |   Test toolkit for the install and tomcat sub-projects
-    |
-    |   Revision 1.4  2004/02/12 08:12:13  dave
-    |   Merged development branch, dave-dev-200401131047, into HEAD
-    |
-    |   Revision 1.2.4.2  2004/02/10 01:18:13  dave
-    |   Changed internal depends to use ${pom.currentVersion}.
-    |   Tried using a properties file, but depends from project.xml are loaded before any of the properties.
-    |   TODO Need to make this configurable, to set the versions of other astrogrid depends.
-    |
-    |   Revision 1.2.4.1  2004/02/10 00:40:37  dave
-    |   Added install tooklit to the Maven build.
-    |   Changed Maven project to use 'org.astrogrid' as the group name.
-    |   Fixed dependencies that used the original group name.
-    |
-    |   Revision 1.2  2004/01/07 10:45:37  dave
-    |   Merged development branch, dave-dev-20031224, back into HEAD
-    |
-    |   Revision 1.1.2.3  2004/01/07 04:29:15  dave
-    |   Moved properties into shared files and tested deployment goals
-    |
-    |   Revision 1.1.2.2  2004/01/01 01:44:29  dave
-    |   Moved common code into parent maven.xml script
+    |   Revision 1.9.32.1  2004/06/17 13:38:58  dave
+    |   Tidied up old CVS log entries
     |
     | </cvs:log>
     +-->

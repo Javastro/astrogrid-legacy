@@ -1,16 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/junit/org/astrogrid/community/common/policy/manager/GroupManagerTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerTestCase.java,v $
- *   Revision 1.2  2004/03/23 16:34:08  dave
- *   Merged development branch, dave-dev-200403191458, into HEAD
+ *   Revision 1.3  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.1.2.1  2004/03/21 06:41:41  dave
- *   Refactored to include Exception handling.
+ *   Revision 1.2.36.2  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -21,7 +21,7 @@ import org.astrogrid.community.common.database.manager.DatabaseManager ;
 import org.astrogrid.community.common.database.manager.DatabaseManagerMock ;
 
 /**
- * A JUnit test case for our GroupManager.
+ * A JUnit test using a GroupManagerMock service.
  *
  */
 public class GroupManagerTestCase

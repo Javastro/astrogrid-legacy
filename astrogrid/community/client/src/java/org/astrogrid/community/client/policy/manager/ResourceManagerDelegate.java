@@ -1,16 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/policy/manager/ResourceManagerDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:19 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceManagerDelegate.java,v $
- *   Revision 1.5  2004/03/19 14:43:14  dave
- *   Merged development branch, dave-dev-200403151155, into HEAD
+ *   Revision 1.6  2004/06/18 13:45:19  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.4.2.1  2004/03/19 00:18:09  dave
- *   Refactored delegate Exception handling
+ *   Revision 1.5.38.3  2004/06/17 15:10:03  dave
+ *   Removed unused imports (PMD report).
+ *
+ *   Revision 1.5.38.2  2004/06/17 13:38:58  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -20,8 +23,10 @@ package org.astrogrid.community.client.policy.manager ;
 import org.astrogrid.community.client.service.CommunityServiceDelegate ;
 
 import org.astrogrid.community.common.policy.data.ResourceData ;
-import org.astrogrid.community.common.policy.manager.ResourceManager ;
-import org.astrogrid.community.common.service.data.ServiceStatusData ;
+
+import org.astrogrid.community.common.exception.CommunityServiceException  ;
+import org.astrogrid.community.common.exception.CommunityResourceException ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
 /**
  * Interface for our ResourceManager delegate.
@@ -31,34 +36,49 @@ import org.astrogrid.community.common.service.data.ServiceStatusData ;
 public interface ResourceManagerDelegate
     extends CommunityServiceDelegate
     {
-   /**
-    * Create a new Resource.
-    *
-    */
-   public ResourceData addResource(String ident) ;
+    /**
+     * Register a new Resource.
+     * @return A new ResourceData object to represent the resource.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     *
+     */
+    public ResourceData addResource()
+        throws CommunityServiceException ;
 
-   /**
-    * Request an Resource details.
-    *
-    */
-   public ResourceData getResource(String ident) ;
+    /**
+     * Request the details for a Resource.
+     * @param The resource identifier.
+     * @return The requested ResourceData object.
+     * @throws CommunityResourceException If unable to locate the resource.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws CommunityIdentifierException If the resource identifier is not valid.
+     *
+     */
+   public ResourceData getResource(String ident)
+        throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException ;
 
-   /**
-    * Update an Resource details.
-    *
-    */
-   public ResourceData setResource(ResourceData resource) ;
+    /**
+     * Update the details for a Resource.
+     * @param The ResourceData to update.
+     * @return The updated ResourceData.
+     * @throws CommunityResourceException If unable to locate the resource.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws CommunityIdentifierException If the resource identifier is not valid.
+     *
+     */
+    public ResourceData setResource(ResourceData resource)
+        throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException ;
 
-   /**
-    * Delete an Resource.
-    *
-    */
-   public boolean delResource(String ident) ;
-
-   /**
-    * Request a list of Resources.
-    *
-    */
-   public Object[] getResourceList() ;
+    /**
+     * Delete a Resource.
+     * @param The resource identifier.
+     * @return The original ResourceData.
+     * @throws CommunityResourceException If unable to locate the resource.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     *
+     */
+    public ResourceData delResource(String ident)
+        throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException ;
 
     }

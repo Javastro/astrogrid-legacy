@@ -4,21 +4,15 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
-    | <cvs:version>$Revision: 1.14 $</cvs:version>
+    | <cvs:date>$Date: 2004/06/18 13:45:19 $</cvs:date>
+    | <cvs:version>$Revision: 1.15 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
-    |   Revision 1.14  2004/03/19 14:43:14  dave
-    |   Merged development branch, dave-dev-200403151155, into HEAD
+    |   Revision 1.15  2004/06/18 13:45:19  dave
+    |   Merged development branch, dave-dev-200406081614, into HEAD
     |
-    |   Revision 1.13.2.3  2004/03/19 00:14:47  dave
-    |   Changed clean target
-    |
-    |   Revision 1.13.2.2  2004/03/18 13:37:22  dave
-    |   Added default clean-build goal
-    |
-    |   Revision 1.13.2.1  2004/03/17 13:50:23  dave
-    |   Refactored Community exceptions
+    |   Revision 1.14.38.1  2004/06/17 13:38:58  dave
+    |   Tidied up old CVS log entries
     |
     | </cvs:log>
     +-->

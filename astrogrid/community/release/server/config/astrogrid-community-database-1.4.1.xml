@@ -2,27 +2,15 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/release/server/config/Attic/astrogrid-community-database-1.4.1.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/12/15 18:08:16 $</cvs:date>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     |   $Log: astrogrid-community-database-1.4.1.xml,v $
-    |   Revision 1.1  2003/12/15 18:08:16  dave
-    |   Extending build to produce war file.
+    |   Revision 1.2  2004/06/18 13:45:20  dave
+    |   Merged development branch, dave-dev-200406081614, into HEAD
     |
-    |   Revision 1.2  2003/11/16 18:24:34  dave
-    |   Merged dev branch back into HEAD
-    |
-    |   Revision 1.1.2.2  2003/11/16 14:08:54  dave
-    |   Replaced tabs with spaces
-    |
-    |   Revision 1.1.2.1  2003/11/13 10:41:54  dave
-    |   Version number or SNAPSHOT in release files
-    |
-    |   Revision 1.2  2003/11/06 15:35:26  dave
-    |   Replaced tabs with spaces
-    |
-    |   Revision 1.1  2003/08/28 17:33:56  dave
-    |   Initial policy prototype
+    |   Revision 1.1.70.1  2004/06/17 13:38:59  dave
+    |   Tidied up old CVS log entries
     |
     | </cvs:log>
     |

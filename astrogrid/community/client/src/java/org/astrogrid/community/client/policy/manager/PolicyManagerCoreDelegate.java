@@ -1,42 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/policy/manager/PolicyManagerCoreDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:19 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerCoreDelegate.java,v $
- *   Revision 1.7  2004/03/30 01:40:03  dave
- *   Merged development branch, dave-dev-200403242058, into HEAD
+ *   Revision 1.8  2004/06/18 13:45:19  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.6.4.2  2004/03/28 09:11:43  dave
- *   Convert tabs to spaces
+ *   Revision 1.7.32.3  2004/06/17 15:10:03  dave
+ *   Removed unused imports (PMD report).
  *
- *   Revision 1.6.4.1  2004/03/28 02:00:55  dave
- *   Added database management tasks.
- *
- *   Revision 1.6  2004/03/23 16:34:08  dave
- *   Merged development branch, dave-dev-200403191458, into HEAD
- *
- *   Revision 1.5.2.3  2004/03/22 02:25:35  dave
- *   Updated delegate interfaces to include Exception handling.
- *
- *   Revision 1.5.2.2  2004/03/22 00:53:31  dave
- *   Refactored GroupManager to use Ivorn identifiers.
- *   Started removing references to CommunityManager.
- *
- *   Revision 1.5.2.1  2004/03/20 06:54:11  dave
- *   Added addAccount(AccountData) to PolicyManager et al.
- *   Added XML loader for AccountData.
- *
- *   Revision 1.5  2004/03/19 14:43:14  dave
- *   Merged development branch, dave-dev-200403151155, into HEAD
- *
- *   Revision 1.4.2.3  2004/03/19 03:31:21  dave
- *   Changed AccountManagerMock to recognise DatabaseManager reset()
- *
- *   Revision 1.4.2.2  2004/03/19 00:18:09  dave
- *   Refactored delegate Exception handling
+ *   Revision 1.7.32.2  2004/06/17 13:38:58  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -49,7 +26,6 @@ import org.astrogrid.community.client.service.CommunityServiceCoreDelegate ;
 
 import org.astrogrid.community.common.policy.data.AccountData ;
 import org.astrogrid.community.common.policy.data.GroupData ;
-//import org.astrogrid.community.common.policy.data.CommunityData ;
 import org.astrogrid.community.common.policy.data.ResourceData ;
 import org.astrogrid.community.common.policy.data.PolicyPermission ;
 import org.astrogrid.community.common.policy.data.GroupMemberData ;
@@ -58,7 +34,9 @@ import org.astrogrid.community.common.policy.manager.PolicyManager ;
 
 import org.astrogrid.community.common.exception.CommunityPolicyException     ;
 import org.astrogrid.community.common.exception.CommunityServiceException    ;
+import org.astrogrid.community.common.exception.CommunityResourceException   ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
+
 
 /**
  * The core delegate for our PolicyManager service.
@@ -70,12 +48,6 @@ public class PolicyManagerCoreDelegate
     extends CommunityServiceCoreDelegate
     implements PolicyManager, PolicyManagerDelegate
     {
-    /**
-     * Switch for our debug statements.
-     *
-     */
-    private static boolean DEBUG_FLAG = true ;
-
     /**
      * Public constructor.
      *
@@ -136,7 +108,9 @@ public class PolicyManagerCoreDelegate
                 {
                 //
                 // Try converting the Exception.
-                convertCommunityException(ouch) ;
+                policyException(ouch) ;
+                serviceException(ouch) ;
+                identifierException(ouch) ;
                 //
                 // If we get this far, then we don't know what it is.
                 throw new CommunityServiceException(
@@ -181,7 +155,9 @@ public class PolicyManagerCoreDelegate
                 {
                 //
                 // Try converting the Exception.
-                convertCommunityException(ouch) ;
+                policyException(ouch) ;
+                serviceException(ouch) ;
+                identifierException(ouch) ;
                 //
                 // If we get this far, then we don't know what it is.
                 throw new CommunityServiceException(
@@ -226,7 +202,9 @@ public class PolicyManagerCoreDelegate
                 {
                 //
                 // Try converting the Exception.
-                convertCommunityException(ouch) ;
+                policyException(ouch) ;
+                serviceException(ouch) ;
+                identifierException(ouch) ;
                 //
                 // If we get this far, then we don't know what it is.
                 throw new CommunityServiceException(
@@ -271,7 +249,9 @@ public class PolicyManagerCoreDelegate
                 {
                 //
                 // Try converting the Exception.
-                convertCommunityException(ouch) ;
+                policyException(ouch) ;
+                serviceException(ouch) ;
+                identifierException(ouch) ;
                 //
                 // If we get this far, then we don't know what it is.
                 throw new CommunityServiceException(
@@ -316,7 +296,9 @@ public class PolicyManagerCoreDelegate
                 {
                 //
                 // Try converting the Exception.
-                convertCommunityException(ouch) ;
+                policyException(ouch) ;
+                serviceException(ouch) ;
+                identifierException(ouch) ;
                 //
                 // If we get this far, then we don't know what it is.
                 throw new CommunityServiceException(
@@ -358,7 +340,7 @@ public class PolicyManagerCoreDelegate
                 {
                 //
                 // Try converting the Exception.
-                convertServiceException(ouch) ;
+                serviceException(ouch) ;
                 //
                 // If we get this far, then we don't know what it is.
                 throw new CommunityServiceException(
@@ -403,7 +385,9 @@ public class PolicyManagerCoreDelegate
                 {
                 //
                 // Try converting the Exception.
-                convertServiceException(ouch) ;
+                policyException(ouch) ;
+                serviceException(ouch) ;
+                identifierException(ouch) ;
                 //
                 // If we get this far, then we don't know what it is.
                 throw new CommunityServiceException(
@@ -448,7 +432,9 @@ public class PolicyManagerCoreDelegate
                 {
                 //
                 // Try converting the Exception.
-                convertServiceException(ouch) ;
+                policyException(ouch) ;
+                serviceException(ouch) ;
+                identifierException(ouch) ;
                 //
                 // If we get this far, then we don't know what it is.
                 throw new CommunityServiceException(
@@ -493,7 +479,9 @@ public class PolicyManagerCoreDelegate
                 {
                 //
                 // Try converting the Exception.
-                convertServiceException(ouch) ;
+                policyException(ouch) ;
+                serviceException(ouch) ;
+                identifierException(ouch) ;
                 //
                 // If we get this far, then we don't know what it is.
                 throw new CommunityServiceException(
@@ -538,7 +526,9 @@ public class PolicyManagerCoreDelegate
                 {
                 //
                 // Try converting the Exception.
-                convertServiceException(ouch) ;
+                policyException(ouch) ;
+                serviceException(ouch) ;
+                identifierException(ouch) ;
                 //
                 // If we get this far, then we don't know what it is.
                 throw new CommunityServiceException(
@@ -583,7 +573,9 @@ public class PolicyManagerCoreDelegate
                 {
                 //
                 // Try converting the Exception.
-                convertServiceException(ouch) ;
+                policyException(ouch) ;
+                serviceException(ouch) ;
+                identifierException(ouch) ;
                 //
                 // If we get this far, then we don't know what it is.
                 throw new CommunityServiceException(
@@ -625,7 +617,7 @@ public class PolicyManagerCoreDelegate
                 {
                 //
                 // Try converting the Exception.
-                convertServiceException(ouch) ;
+                serviceException(ouch) ;
                 //
                 // If we get this far, then we don't know what it is.
                 throw new CommunityServiceException(
@@ -668,7 +660,8 @@ public class PolicyManagerCoreDelegate
                 {
                 //
                 // Try converting the Exception.
-                convertServiceException(ouch) ;
+                serviceException(ouch) ;
+                identifierException(ouch) ;
                 //
                 // If we get this far, then we don't know what it is.
                 throw new CommunityServiceException(
@@ -687,174 +680,14 @@ public class PolicyManagerCoreDelegate
         }
 
     /**
-     * Add a new Community, given the Account ident.
-     * @param  ident The Community identifier.
-     * @return A CommunityData for the Community.
-     * @throws CommunityIdentifierException If the identifier is not valid.
-     * @throws CommunityPolicyException If the identifier is already in the database.
+     * Register a new Resource.
+     * @return A new ResourceData object to represent the resource.
      * @throws CommunityServiceException If there is an internal error in the service.
      *
-    public CommunityData addCommunity(String ident)
-        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
-        {
-        //
-        // If we have a valid service reference.
-        if (null != this.manager)
-            {
-            //
-            // Try calling the service method.
-            try {
-                return this.manager.addCommunity(ident) ;
-                }
-            //
-            // Catch anything that went BANG.
-            catch (RemoteException ouch)
-                {
-                throw new CommunityServiceException(
-                    "WebService call failed",
-                    ouch
-                    ) ;
-                }
-            }
-        //
-        // If we don't have a valid service.
-        else {
-            throw new CommunityServiceException(
-                "Service not initialised"
-                ) ;
-            }
-        }
      */
-
-    /**
-     * Request a Community details, given the Community ident.
-     * @param  ident The Community identifier.
-     * @return A CommunityData for the Community.
-     * @throws CommunityIdentifierException If the identifier is not valid.
-     * @throws CommunityPolicyException If the identifier is not in the database.
-     * @throws CommunityServiceException If there is an internal error in the service.
-     *
-    public CommunityData getCommunity(String ident)
-        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
-        {
-        //
-        // If we have a valid service reference.
-        if (null != this.manager)
-            {
-            //
-            // Try calling the service method.
-            try {
-                return this.manager.getCommunity(ident) ;
-                }
-            //
-            // Catch anything that went BANG.
-            catch (RemoteException ouch)
-                {
-                throw new CommunityServiceException(
-                    "WebService call failed",
-                    ouch
-                    ) ;
-                }
-            }
-        //
-        // If we don't have a valid service.
-        else {
-            throw new CommunityServiceException(
-                "Service not initialised"
-                ) ;
-            }
-        }
-     */
-
-    /**
-     * Update a Community.
-     * @param  community The new CommunityData to update.
-     * @return A new CommunityData for the Community.
-     * @throws CommunityIdentifierException If the identifier is not valid.
-     * @throws CommunityPolicyException If the identifier is not in the database.
-     * @throws CommunityServiceException If there is an internal error in the service.
-     *
-    public CommunityData setCommunity(CommunityData community)
-        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
-        {
-        //
-        // If we have a valid service reference.
-        if (null != this.manager)
-            {
-            //
-            // Try calling the service method.
-            try {
-                return this.manager.setCommunity(community) ;
-                }
-            //
-            // Catch anything that went BANG.
-            catch (RemoteException ouch)
-                {
-                throw new CommunityServiceException(
-                    "WebService call failed",
-                    ouch
-                    ) ;
-                }
-            }
-        //
-        // If we don't have a valid service.
-        else {
-            throw new CommunityServiceException(
-                "Service not initialised"
-                ) ;
-            }
-        }
-     */
-
-    /**
-     * Delete a Community.
-     * @param  ident The Community identifier.
-     * @return The CommunityData for the old Community.
-     * @throws CommunityIdentifierException If the identifier is not valid.
-     * @throws CommunityPolicyException If the identifier is not in the database.
-     * @throws CommunityServiceException If there is an internal error in the service.
-     *
-    public CommunityData delCommunity(String ident)
-        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
-        {
-        //
-        // If we have a valid service reference.
-        if (null != this.manager)
-            {
-            //
-            // Try calling the service method.
-            try {
-                return this.manager.delCommunity(ident) ;
-                }
-            //
-            // Catch anything that went BANG.
-            catch (RemoteException ouch)
-                {
-                throw new CommunityServiceException(
-                    "WebService call failed",
-                    ouch
-                    ) ;
-                }
-            }
-        //
-        // If we don't have a valid service.
-        else {
-            throw new CommunityServiceException(
-                "Service not initialised"
-                ) ;
-            }
-        }
-     */
-
-    /**
-     * Request a list of Communities.
-     * @return An array of CommunityData objects.
-     * @throws CommunityServiceException If there is an internal error in the service.
-     *
-    public Object[] getCommunityList()
+    public ResourceData addResource()
         throws CommunityServiceException
         {
-        Object[] result = null ;
         //
         // If we have a valid service reference.
         if (null != this.manager)
@@ -862,14 +695,19 @@ public class PolicyManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                return this.manager.getCommunityList() ;
+                return this.manager.addResource() ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
+                //
+                // Try converting the Exception.
+                serviceException(ouch) ;
+                //
+                // If we get this far, then we don't know what it is.
                 throw new CommunityServiceException(
-                    "WebService call failed",
+                    "WebService call failed - " + ouch,
                     ouch
                     ) ;
                 }
@@ -882,43 +720,19 @@ public class PolicyManagerCoreDelegate
                 ) ;
             }
         }
+
+    /**
+     * Request the details for a Resource.
+     * @param The resource identifier.
+     * @return The requested ResourceData object.
+     * @throws CommunityResourceException If unable to locate the resource.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws CommunityIdentifierException If the resource identifier is not valid.
+     *
      */
-
-   /**
-    * Create a new Resource.
-    *
-    */
-   public ResourceData addResource(String ident)
-        {
-        ResourceData result = null ;
-        //
-        // If we have a valid service reference.
-        if (null != this.manager)
-            {
-            //
-            // Try calling the service method.
-            try {
-                result = this.manager.addResource(ident) ;
-                }
-            //
-            // Catch anything that went BANG.
-            catch (RemoteException ouch)
-                {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
-                }
-            }
-        return result ;
-        }
-
-   /**
-    * Request an Resource details.
-    *
-    */
    public ResourceData getResource(String ident)
+        throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException
         {
-        ResourceData result = null ;
         //
         // If we have a valid service reference.
         if (null != this.manager)
@@ -926,27 +740,46 @@ public class PolicyManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.manager.getResource(ident) ;
+                return this.manager.getResource(ident) ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
                 //
-                // Unpack the RemoteException, and re-throw the real Exception.
+                // Try converting the Exception.
+                serviceException(ouch) ;
+                resourceException(ouch) ;
+                identifierException(ouch) ;
                 //
+                // If we get this far, then we don't know what it is.
+                throw new CommunityServiceException(
+                    "WebService call failed - " + ouch,
+                    ouch
+                    ) ;
                 }
             }
-        return result ;
+        //
+        // If we don't have a valid service.
+        else {
+            throw new CommunityServiceException(
+                "Service not initialised"
+                ) ;
+            }
         }
 
-   /**
-    * Update an Resource details.
-    *
-    */
-   public ResourceData setResource(ResourceData resource)
+    /**
+     * Update the details for a Resource.
+     * @param The ResourceData to update.
+     * @return The updated ResourceData.
+     * @throws CommunityResourceException If unable to locate the resource.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws CommunityIdentifierException If the resource identifier is not valid.
+     *
+     */
+    public ResourceData setResource(ResourceData resource)
+        throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException
         {
-        ResourceData result = null ;
         //
         // If we have a valid service reference.
         if (null != this.manager)
@@ -954,27 +787,46 @@ public class PolicyManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.manager.setResource(resource) ;
+                return this.manager.setResource(resource) ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
                 //
-                // Unpack the RemoteException, and re-throw the real Exception.
+                // Try converting the Exception.
+                serviceException(ouch) ;
+                resourceException(ouch) ;
+                identifierException(ouch) ;
                 //
+                // If we get this far, then we don't know what it is.
+                throw new CommunityServiceException(
+                    "WebService call failed - " + ouch,
+                    ouch
+                    ) ;
                 }
             }
-        return result ;
+        //
+        // If we don't have a valid service.
+        else {
+            throw new CommunityServiceException(
+                "Service not initialised"
+                ) ;
+            }
         }
 
-   /**
-    * Delete an Resource.
-    *
-    */
-   public boolean delResource(String ident)
+    /**
+     * Delete a Resource.
+     * @param The resource identifier.
+     * @return The original ResourceData.
+     * @throws CommunityResourceException If unable to locate the resource.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     *
+     */
+    public ResourceData delResource(String ident)
+        throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException
         {
-        boolean result = false ;
         //
         // If we have a valid service reference.
         if (null != this.manager)
@@ -982,50 +834,37 @@ public class PolicyManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.manager.delResource(ident) ;
+                return this.manager.delResource(ident) ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
                 //
-                // Unpack the RemoteException, and re-throw the real Exception.
+                // Try converting the Exception.
+                serviceException(ouch) ;
+                resourceException(ouch) ;
+                identifierException(ouch) ;
                 //
+                // If we get this far, then we don't know what it is.
+                throw new CommunityServiceException(
+                    "WebService call failed - " + ouch,
+                    ouch
+                    ) ;
                 }
             }
-        return result ;
-        }
-
-   /**
-    * Request a list of Resources.
-    *
-    */
-   public Object[] getResourceList()
-        {
-        Object[] result = null ;
         //
-        // If we have a valid service reference.
-        if (null != this.manager)
-            {
-            //
-            // Try calling the service method.
-            try {
-                result = this.manager.getResourceList() ;
-                }
-            //
-            // Catch anything that went BANG.
-            catch (RemoteException ouch)
-                {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
-                }
+        // If we don't have a valid service.
+        else {
+            throw new CommunityServiceException(
+                "Service not initialised"
+                ) ;
             }
-        return result ;
         }
 
     /**
      * Create a new PolicyPermission.
+     * @todo Better Exception handling.
      *
      */
     public PolicyPermission addPermission(String resource, String group, String action)
@@ -1054,6 +893,7 @@ public class PolicyManagerCoreDelegate
 
     /**
      * Request a PolicyPermission.
+     * @todo Better Exception handling.
      *
      */
     public PolicyPermission getPermission(String resource, String group, String action)
@@ -1082,6 +922,7 @@ public class PolicyManagerCoreDelegate
 
     /**
      * Update a PolicyPermission.
+     * @todo Better Exception handling.
      *
      */
     public PolicyPermission setPermission(PolicyPermission permission)
@@ -1110,6 +951,7 @@ public class PolicyManagerCoreDelegate
 
     /**
      * Delete a PolicyPermission.
+     * @todo Better Exception handling.
      *
      */
     public boolean delPermission(String resource, String group, String action)
@@ -1165,7 +1007,9 @@ public class PolicyManagerCoreDelegate
                 {
                 //
                 // Try converting the Exception.
-                convertServiceException(ouch) ;
+                policyException(ouch) ;
+                serviceException(ouch) ;
+                identifierException(ouch) ;
                 //
                 // If we get this far, then we don't know what it is.
                 throw new CommunityServiceException(
@@ -1212,7 +1056,9 @@ public class PolicyManagerCoreDelegate
                 {
                 //
                 // Try converting the Exception.
-                convertServiceException(ouch) ;
+                policyException(ouch) ;
+                serviceException(ouch) ;
+                identifierException(ouch) ;
                 //
                 // If we get this far, then we don't know what it is.
                 throw new CommunityServiceException(
@@ -1258,7 +1104,9 @@ public class PolicyManagerCoreDelegate
                 {
                 //
                 // Try converting the Exception.
-                convertServiceException(ouch) ;
+                policyException(ouch) ;
+                serviceException(ouch) ;
+                identifierException(ouch) ;
                 //
                 // If we get this far, then we don't know what it is.
                 throw new CommunityServiceException(

@@ -2,30 +2,15 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/release/webapp/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/12/31 18:18:27 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
-    |   Revision 1.5  2003/12/31 18:18:27  dave
-    |   Updated install script and added INSTALL.txt to release webapp
+    |   Revision 1.6  2004/06/18 13:45:20  dave
+    |   Merged development branch, dave-dev-200406081614, into HEAD
     |
-    |   Revision 1.5  2003/12/17 15:16:01  dave
-    |   Fixed missing properties in config files
-    |
-    |   Revision 1.4  2003/12/17 10:26:45  dave
-    |   Tidied up the webapp deployment script
-    |
-    |   Revision 1.2  2003/12/16 16:44:30  dave
-    |   Added deployment test data
-    |
-    |   Revision 1.1  2003/12/16 15:08:07  dave
-    |   Updated the release jars
-    |
-    |   Revision 1.2  2003/12/16 12:46:35  dave
-    |   Fixed the web.xml dtd
-    |
-    |   Revision 1.1  2003/12/15 18:08:16  dave
-    |   Extending build to produce war file.
+    |   Revision 1.5.68.1  2004/06/17 13:38:59  dave
+    |   Tidied up old CVS log entries
     |
     | </cvs:log>
     |

@@ -1,30 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/GroupManagerTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerTest.java,v $
- *   Revision 1.3  2004/03/30 01:40:03  dave
- *   Merged development branch, dave-dev-200403242058, into HEAD
+ *   Revision 1.4  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.2.4.1  2004/03/28 09:11:43  dave
- *   Convert tabs to spaces
+ *   Revision 1.3.32.2  2004/06/17 14:50:03  dave
+ *   Removed unused imports (PMD report).
  *
- *   Revision 1.2  2004/03/23 16:34:08  dave
- *   Merged development branch, dave-dev-200403191458, into HEAD
- *
- *   Revision 1.1.2.3  2004/03/22 15:31:10  dave
- *   Added CommunitySecurityException.
- *   Updated SecurityManager and SecurityService to use Exceptions.
- *
- *   Revision 1.1.2.2  2004/03/22 00:53:31  dave
- *   Refactored GroupManager to use Ivorn identifiers.
- *   Started removing references to CommunityManager.
- *
- *   Revision 1.1.2.1  2004/03/21 06:41:41  dave
- *   Refactored to include Exception handling.
+ *   Revision 1.3.32.1  2004/06/17 13:38:59  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -34,10 +23,7 @@ package org.astrogrid.community.common.policy.manager ;
 
 import org.astrogrid.community.common.policy.data.GroupData ;
 
-import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory ;
-
-import org.astrogrid.community.common.exception.CommunityPolicyException     ;
-import org.astrogrid.community.common.exception.CommunityServiceException    ;
+import org.astrogrid.community.common.exception.CommunityPolicyException ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
 import org.astrogrid.community.common.service.CommunityServiceTest ;

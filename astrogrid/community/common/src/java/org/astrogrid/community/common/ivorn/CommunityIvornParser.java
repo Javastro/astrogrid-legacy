@@ -1,51 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/ivorn/CommunityIvornParser.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/04/15 02:33:49 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityIvornParser.java,v $
- *   Revision 1.8  2004/04/15 02:33:49  dave
- *   Changed tabs to spaces
+ *   Revision 1.9  2004/06/18 13:45:20  dave
+ *   Merged development branch, dave-dev-200406081614, into HEAD
  *
- *   Revision 1.7  2004/04/15 02:27:46  dave
- *   Merged development branch, dave-dev-200404071355, into HEAD
+ *   Revision 1.8.18.2  2004/06/17 14:50:01  dave
+ *   Removed unused imports (PMD report).
  *
- *   Revision 1.6.14.1  2004/04/08 13:56:02  dave
- *   Updated the install tools and data files.
- *
- *   Revision 1.6  2004/03/30 01:40:03  dave
- *   Merged development branch, dave-dev-200403242058, into HEAD
- *
- *   Revision 1.5.4.1  2004/03/28 09:11:43  dave
- *   Convert tabs to spaces
- *
- *   Revision 1.5  2004/03/23 16:34:08  dave
- *   Merged development branch, dave-dev-200403191458, into HEAD
- *
- *   Revision 1.4.2.5  2004/03/22 15:31:10  dave
- *   Added CommunitySecurityException.
- *   Updated SecurityManager and SecurityService to use Exceptions.
- *
- *   Revision 1.4.2.4  2004/03/22 02:25:35  dave
- *   Updated delegate interfaces to include Exception handling.
- *
- *   Revision 1.4.2.3  2004/03/22 00:53:31  dave
- *   Refactored GroupManager to use Ivorn identifiers.
- *   Started removing references to CommunityManager.
- *
- *   Revision 1.4.2.2  2004/03/21 07:21:34  dave
- *   Added test for local community identifier.
- *
- *   Revision 1.4.2.1  2004/03/21 06:41:41  dave
- *   Refactored to include Exception handling.
- *
- *   Revision 1.4  2004/03/19 14:43:14  dave
- *   Merged development branch, dave-dev-200403151155, into HEAD
- *
- *   Revision 1.3.2.4  2004/03/18 13:41:19  dave
- *   Added Exception handling to AccountManager
+ *   Revision 1.8.18.1  2004/06/17 13:38:58  dave
+ *   Tidied up old CVS log entries
  *
  * </cvs:log>
  *
@@ -54,8 +22,6 @@ package org.astrogrid.community.common.ivorn ;
 
 import java.net.URI ;
 import java.net.URISyntaxException ;
-
-import junit.framework.TestCase ;
 
 import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;

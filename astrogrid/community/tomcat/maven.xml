@@ -4,69 +4,15 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/tomcat/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/04/16 11:16:11 $</cvs:date>
-    | <cvs:version>$Revision: 1.11 $</cvs:version>
+    | <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
+    | <cvs:version>$Revision: 1.12 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
-    |   Revision 1.11  2004/04/16 11:16:11  dave
-    |   Added gofor it task.
+    |   Revision 1.12  2004/06/18 13:45:20  dave
+    |   Merged development branch, dave-dev-200406081614, into HEAD
     |
-    |   Revision 1.10  2004/04/16 11:11:40  dave
-    |   Added gofor it task.
-    |
-    |   Revision 1.9  2004/04/15 02:27:46  dave
-    |   Merged development branch, dave-dev-200404071355, into HEAD
-    |
-    |   Revision 1.8.10.2  2004/04/15 02:19:40  dave
-    |   Refactored install script to work with Tomcat 4.x and 5.x (incomplete).
-    |
-    |   Revision 1.8.10.1  2004/04/08 13:56:03  dave
-    |   Updated the install tools and data files.
-    |
-    |   Revision 1.8  2004/04/01 07:09:39  dave
-    |   Merged development branch, dave-dev-200403300547, into HEAD
-    |
-    |   Revision 1.7.2.2  2004/03/31 10:30:57  dave
-    |   Updated test data
-    |
-    |   Revision 1.7.2.1  2004/03/30 06:09:00  dave
-    |   Fixes to tomcat goals
-    |
-    |   Revision 1.7  2004/03/30 04:44:01  dave
-    |   Merged development branch, dave-dev-200403300258, into HEAD
-    |
-    |   Revision 1.6.2.3  2004/03/30 04:42:31  dave
-    |   Added CommunityAccountSpaceResolverTask.
-    |
-    |   Revision 1.6.2.2  2004/03/30 03:58:31  dave
-    |   Added CommunityTokenResolverTask.
-    |
-    |   Revision 1.6.2.1  2004/03/30 03:24:57  dave
-    |   Fixes to resolver tasks.
-    |
-    |   Revision 1.6  2004/03/30 01:40:04  dave
-    |   Merged development branch, dave-dev-200403242058, into HEAD
-    |
-    |   Revision 1.5.6.4  2004/03/30 01:38:14  dave
-    |   Refactored resolver and install toolkits.
-    |
-    |   Revision 1.5.6.3  2004/03/28 08:54:19  dave
-    |   Bug fixes
-    |
-    |   Revision 1.5.6.2  2004/03/28 08:37:10  dave
-    |   Fixes to test data
-    |
-    |   Revision 1.5.6.1  2004/03/28 02:00:55  dave
-    |   Added database management tasks.
-    |
-    |   Revision 1.5  2004/03/19 14:43:15  dave
-    |   Merged development branch, dave-dev-200403151155, into HEAD
-    |
-    |   Revision 1.4.2.2  2004/03/19 00:15:51  dave
-    |   Changed clean target
-    |
-    |   Revision 1.4.2.1  2004/03/18 13:37:22  dave
-    |   Added default clean-build goal
+    |   Revision 1.11.14.2  2004/06/17 13:38:59  dave
+    |   Tidied up old CVS log entries
     |
     | </cvs:log>
     |
