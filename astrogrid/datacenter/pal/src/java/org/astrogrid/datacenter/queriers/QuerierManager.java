@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.5 2004/10/05 17:31:14 mch Exp $
+/*$Id: QuerierManager.java,v 1.6 2004/10/05 19:20:32 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -53,7 +53,7 @@ public class QuerierManager implements QuerierListener {
    private Hashtable closedQueriers = new Hashtable();
 
    /** Maximum number of simultaneous queriers allowed */
-   private int maxQueriers = 10;
+   private int maxQueriers = 20;
    
    /** Special ID used to create a test querier for testing getStatus,. etc */
    public final static String TEST_QUERIER_ID = "TestQuerier:";
@@ -110,10 +110,10 @@ public class QuerierManager implements QuerierListener {
          QuerierStatus q1 = (QuerierStatus) o1;
          QuerierStatus q2 = (QuerierStatus) o2;
          if (q1.getStartTime().getTime()<q2.getStartTime().getTime()) {
-            return -1;
+            return 1;
          }
          else if (q1.getStartTime().getTime()>q2.getStartTime().getTime()) {
-            return 1;
+            return -1;
          }
          else {
             return 0;
@@ -257,8 +257,17 @@ public class QuerierManager implements QuerierListener {
     * running, moves a queued one and starts it
     */
    protected synchronized void checkQueue() {
+
+      System.gc(); //encourage garbage collection
+
+      //have a look at the memory; if it's 'low' then reduce to one query
+      //at a time
+//      if (Runtime.getRuntime().freeMemory()<500000) {
+//         maxQueriers = 1;
+//      }
+
       while ((queuedQueriers.size()>0) &&
-                ( (maxQueriers==-1) || (runningQueriers.size()<maxQueriers))) {
+                ( (maxQueriers==-1) || (runningQueriers.size()<=maxQueriers))) {
          
          Querier first = (Querier) queuedPriorities.first();
          queuedPriorities.remove(first);
@@ -279,6 +288,9 @@ public class QuerierManager implements QuerierListener {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.6  2004/10/05 19:20:32  mch
+ Queuing order
+
  Revision 1.5  2004/10/05 17:31:14  mch
  Fix to wrong class cast in comparator
 
@@ -421,4 +433,5 @@ public class QuerierManager implements QuerierListener {
  Database Querier - added calls to timer, untagled status transitions
  
  */
+
 
