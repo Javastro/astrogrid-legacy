@@ -35,11 +35,15 @@
 <property name="maven.war.webapp.dir" location="${maven.build.dir}/${pom.artifactId}" /> <!-- set this early to default - does not seem to be set n the war:webapp post goal -->
 
 
+	<preGoal name="war:init">
+	   <!-- make sure that the latest axis is in place necessary for the maven install -->
+	   <attainGoal name="axis.unpack" /> 
+	</preGoal>
 	<postGoal name="war:webapp">
 	    <attainGoal name="delegatejar" />
 		<echo message="copying cvs webap to axis src -${maven.war.src}"/>
   <!-- make sure that the cvs maven stuff is put into the webapp - because the axis dir is regarded as source for the war goal-->
-        <copy todir="${axis.webapp.srcdir}" overwrite="true">
+        <copy todir="${axis.webapp.srcdir}" overwrite="yes">
         <fileset dir="${basedir}/src/webapp"></fileset>
         </copy>
 		<echo message="Copying generated site ${maven.docs.dest} across to webapp ${maven.war.webapp.dir}/maven"/>
@@ -281,12 +285,6 @@ ApplicationConfigFile=${basedir}/test/config/TestApplicationConfig.xml
                         <exclude name="**/samples/**"/>
            </fileset>
          </move>
-         <!-- copy local changes on top -->
-         <move  todir="${axis.webapp.srcdir}">
-            <fileset dir="${basedir}/src/webapp">
-            </fileset>
-            
-         </move>
             <!--  <java classname="org.apache.axis.utils.Admin"
             dir="${tomcat.home}/webapps/ogsa/WEB-INF"
             classpathref="classpath" fork="yes" failonerror="true">
@@ -296,7 +294,7 @@ ApplicationConfigFile=${basedir}/test/config/TestApplicationConfig.xml
         
     </goal>
     
-    <goal name="axis.webapp.install" prereqs="tomcat-declare-tasks, war">
+    <goal name="axis.webapp.install" prereqs="tomcat-declare-tasks">
          <echo message="installing applications integration webapp (with axis)"/>
         <tomcat-install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/${appint.webapp.name}" war="file://${maven.build.dir}/${appint.webapp.name}"/>
     </goal>

@@ -270,11 +270,6 @@ This functionality is provided with the ApplicationController service, of which 
 		<includes>
 			<include>schema/*.xsd</include>
 			<include>schema/*.dtd</include>
-		</includes>
-	</resource>
-	<resource> <!-- webservice related files -->
-		<directory>${basedir}</directory>
-		<includes>
 			<include>wsdl/*.wsdl</include>
 			<include>wsdd/*.wsdd</include>
 		</includes>

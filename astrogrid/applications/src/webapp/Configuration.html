@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <title>Configuration</title>
+</head>
+<body>
+<h1>Configuration</h1>
+This consists of the following steps<br>
+<br>
+<ol>
+  <li>configure a database</li>
+  <li>set up the application contoller configuration file</li>
+  <li>set up any applications and the application description file</li>
+</ol>
+If you have ant installed on your system you can simplify this process
+usinf the ant build file found here.<br>
+<br>
+<h3>Database setup and JNDI reference</h3>
+<p>Need to configure a database - hsqldb is the only database that is
+supported at the moment
+</p>
+<ul>
+  <li>
+    <p>set up the database</p>
+  </li>
+  <li>
+    <p>create the tables in the database</p>
+  </li>
+  <li>
+    <p>create the JNDI datasource reference</p>
+  </li>
+  <li>ensure that tomcat has the database jar and the necessary
+commons
+jars in its classpath - put in common/lib</li>
+</ul>
+<div style="text-align: left;">
+<h3>Application Controller Configuration</h3>
+Create a JNDI reference to the
+configuration file - this
+reference should be called AstrogridApplicationsConfigURL</div>
+Although tomcat 4 does supply a tool to set the JNDI resources, it
+appears to be buggy and the best way is probably to edit the
+$CATALINA_HOME/conf/server.xml file directly. You can place the
+definitions in the &lt;DefaultContext&gt; element (within an
+&lt;engine&gt; element) or it can be placed in the application specific
+context<br>
+<br>
+<h4>A typical installation looks like this</h4>
+<pre>         &lt;Environment description="properties file" name="AstrogridApplicationsConfigURL" override="true" type="java.lang.String" value="file:///data/work/Test.properties"/&gt;<br>          &lt;Resource name="jdbc/AstrogridACDatasource" scope="Shareable" type="javax.sql.DataSource"/&gt;<br>          &lt;ResourceParams name="jdbc/AstrogridACDatasource"&gt;<br>       &lt;parameter&gt;<br>        &lt;name&gt;factory&lt;/name&gt;<br>        &lt;value&gt;org.apache.commons.dbcp.BasicDataSourceFactory&lt;/value&gt;<br>        &lt;/parameter&gt;<br>            &lt;parameter&gt;<br>              &lt;name&gt;maxWait&lt;/name&gt;<br>              &lt;value&gt;5000&lt;/value&gt;<br>            &lt;/parameter&gt;<br>            &lt;parameter&gt;<br>              &lt;name&gt;maxActive&lt;/name&gt;<br>              &lt;value&gt;4&lt;/value&gt;<br>            &lt;/parameter&gt;<br>            &lt;parameter&gt;<br>              &lt;name&gt;password&lt;/name&gt;<br>              &lt;value&gt;veritas&lt;/value&gt;<br>            &lt;/parameter&gt;<br>            &lt;parameter&gt;<br>              &lt;name&gt;url&lt;/name&gt;<br>              &lt;value&gt;jdbc:hsqldb:hsql://localhost:9001&lt;/value&gt;<br>            &lt;/parameter&gt;<br>            &lt;parameter&gt;<br>              &lt;name&gt;driverClassName&lt;/name&gt;<br>              &lt;value&gt;org.hsqldb.jdbcDriver&lt;/value&gt;<br>            &lt;/parameter&gt;<br>            &lt;parameter&gt;<br>              &lt;name&gt;maxIdle&lt;/name&gt;<br>              &lt;value&gt;2&lt;/value&gt;<br>            &lt;/parameter&gt;<br>            &lt;parameter&gt;<br>              &lt;name&gt;username&lt;/name&gt;<br>              &lt;value&gt;sa&lt;/value&gt;<br>            &lt;/parameter&gt;<br>          &lt;/ResourceParams&gt;<br><br></pre>
+Application Controller configuration paramters<br>
+<br>
+<pre>WorkingDirectory=/data/work/astrogrid/src/applications/build/workdir<br>ApplicationConfigFile=/data/work/astrogrid/src/applications/test/config/TestApplicationConfig.xml<br><br></pre>
+<p>The workingdirectory should point to a directory that the process
+running the applicationController can write to. It creates
+subdirectories in this directory to create a runtime environment for
+each of the application instances that it runs. The
+ApplicationConfigFile points to the file that contains all of the
+descriptions of the applications that the application controller can
+run. The contents of this file are describe in more detail on the <a
+ href="ApplicationConfiguration.html">Applicatons Setup page</a><br>
+</p>
+</body>
+</html>

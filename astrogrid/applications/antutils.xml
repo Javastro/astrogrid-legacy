@@ -16,6 +16,8 @@
     <property name="tomcat.home" location="/usr/local/tomcat"></property>
 
     <property name="hsqldb.url"      value="jdbc:hsqldb:hsql://${hsqldb.host}:${hsqldb.port}"/>
+    
+    <property file="build.properties"  ></property>
 
     <!--+
         | The Hsqldb library classpath.
@@ -143,7 +145,7 @@
              password="${hsqldb.pass}"
              print="true"
             >
-            <transaction src="src/sql/createcontroldb.sql"/>
+            <transaction src="${tomcat.home}/webapps/astrogrid-applications/config/createcontroldb.sql"/>
         </sql>
     </target>
 
@@ -159,12 +161,7 @@
              print="true"
             >
             <![CDATA[
-                SELECT * FROM communities ;
-                SELECT * FROM accounts    ;
-                SELECT * FROM groups      ;
-                SELECT * FROM resources   ;
-                SELECT * FROM members     ;
-                SELECT * FROM permissions ;
+                SELECT * FROM exestat ;
             ]]>
         </sql>
     </target>
@@ -181,13 +178,8 @@
              print="true"
             >
             <![CDATA[
-                DELETE FROM groups      ;
-                DELETE FROM members     ;
-                DELETE FROM accounts    ;
-                DELETE FROM resources   ;
-                DELETE FROM communities ;
-                DELETE FROM permissions ;
-            ]]>
+                DELETE FROM exestat      ;
+           ]]>
         </sql>
         
     </target>
@@ -201,7 +193,7 @@
     <fileset dir="${basedir}" includes="*.jar"></fileset>
     </path>
     <target name="quicktest">
-    <java classname="org.astrogrid.applications.delegate.ApplicationControllerDelegateTest" >
+    <java classname="org.astrogrid.applications.delegate.TestApplicationControllerDelegate" >
 
        <classpath refid="testpath"></classpath>
     </java>
