@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by John Taylor (ROE) -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
-	<!--
-  Temporary Test
--->
 	<pomVersion>3</pomVersion>
 	<id>astrogrid-common</id>
 	<name>AstroGrid Common</name>
@@ -93,6 +89,10 @@
 			<id>log4j</id>
 			<version>1.2.8</version>
 		</dependency>
+    <dependency>
+      <id>commons-discovery</id>
+      <version>20030211.213356</version>
+    </dependency>
 		<!--
     <dependency>
       <id>activation</id>
