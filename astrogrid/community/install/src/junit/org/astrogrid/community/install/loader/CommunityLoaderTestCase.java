@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/junit/org/astrogrid/community/install/loader/CommunityLoaderTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/24 17:27:38 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityLoaderTestCase.java,v $
+ *   Revision 1.3  2004/03/24 17:27:38  dave
+ *   Fixed side effect in tests
+ *
  *   Revision 1.2  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -52,13 +55,6 @@ public class CommunityLoaderTestCase
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("CommunityLoaderTestCase.setUp()") ;
-		//
-		// Initialise our mock service.
-		PolicyManagerMockDelegate.addManager(
-			new Ivorn(
-				"ivo://org.astrogrid.mock.community"
-				)
-			) ;
 		}
 
 	/**
