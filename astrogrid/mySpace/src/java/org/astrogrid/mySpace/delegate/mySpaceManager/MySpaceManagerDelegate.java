@@ -1,5 +1,7 @@
 package org.astrogrid.mySpace.delegate.mySpaceManager;
 
+import java.util.Vector;
+
 public class MySpaceManagerDelegate {
    
 	private String targetEndPoint = null;
@@ -76,7 +78,7 @@ public class MySpaceManagerDelegate {
 		return (String)value;
 	}		
 	
-	public String createUser(String userID) throws Exception {
+	public String createUser(String userID, Vector subfolders) throws Exception {
 		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
 		try {
 			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
@@ -89,7 +91,7 @@ public class MySpaceManagerDelegate {
 		}
 
 
-		String value = binding.createUser(userID);
+		String value = binding.createUser(userID, subfolders);
 		return (String)value;
 	}		
 	
@@ -110,7 +112,7 @@ public class MySpaceManagerDelegate {
 		return (String)value;
 	}	
 	
-	public String deleteUser(String userID) throws Exception {
+	public String deleteUser(String userID, Vector subfolders) throws Exception {
 		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
 		try {
 			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
@@ -123,7 +125,7 @@ public class MySpaceManagerDelegate {
 		}
 
 
-		String value = binding.deleteUser(userID);
+		String value = binding.deleteUser(userID, subfolders);
 		return (String)value;
 	}	
 	

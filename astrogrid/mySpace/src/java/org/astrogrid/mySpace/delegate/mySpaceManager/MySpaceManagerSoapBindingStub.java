@@ -141,6 +141,7 @@ public class MySpaceManagerSoapBindingStub extends org.apache.axis.client.Stub i
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("createUser");
         oper.addParameter(new javax.xml.namespace.QName("", "userID"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.addParameter(new javax.xml.namespace.QName("", "subfolders"), new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"), java.util.Vector.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         oper.setReturnClass(java.lang.String.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "createUserReturn"));
@@ -151,6 +152,7 @@ public class MySpaceManagerSoapBindingStub extends org.apache.axis.client.Stub i
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("deleteUser");
         oper.addParameter(new javax.xml.namespace.QName("", "userID"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.addParameter(new javax.xml.namespace.QName("", "subfolders"), new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"), java.util.Vector.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         oper.setReturnClass(java.lang.String.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "deleteUserReturn"));
@@ -580,7 +582,7 @@ public class MySpaceManagerSoapBindingStub extends org.apache.axis.client.Stub i
         }
     }
 
-    public java.lang.String createUser(java.lang.String userID) throws java.rmi.RemoteException {
+    public java.lang.String createUser(java.lang.String userID, java.util.Vector subfolders) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -593,7 +595,7 @@ public class MySpaceManagerSoapBindingStub extends org.apache.axis.client.Stub i
 
         setRequestHeaders(_call);
         setAttachments(_call);
-        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {userID});
+        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {userID, subfolders});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -609,7 +611,7 @@ public class MySpaceManagerSoapBindingStub extends org.apache.axis.client.Stub i
         }
     }
 
-    public java.lang.String deleteUser(java.lang.String userID) throws java.rmi.RemoteException {
+    public java.lang.String deleteUser(java.lang.String userID, java.util.Vector subfolders) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -622,7 +624,7 @@ public class MySpaceManagerSoapBindingStub extends org.apache.axis.client.Stub i
 
         setRequestHeaders(_call);
         setAttachments(_call);
-        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {userID});
+        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {userID, subfolders});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
