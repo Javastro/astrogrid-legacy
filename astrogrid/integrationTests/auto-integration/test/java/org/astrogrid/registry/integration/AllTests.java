@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2004/04/15 12:12:28 nw Exp $
+/*$Id: AllTests.java,v 1.3 2004/05/07 15:32:36 pah Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,8 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("Registry");
         //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(RegistryInstallationTest.class));
+       suite.addTest(new TestSuite(RegistryInstallationTest.class));
+       suite.addTest(new TestSuite(RegistryFunctionTest.class));
         //$JUnit-END$
         return suite;
     }
@@ -33,6 +34,9 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.3  2004/05/07 15:32:36  pah
+more registry tests to flush out the fact that new entries are not being added
+
 Revision 1.2  2004/04/15 12:12:28  nw
 testing
 

@@ -1,4 +1,4 @@
-/*$Id: RegistryInstallationTest.java,v 1.3 2004/05/07 10:23:38 pah Exp $
+/*$Id: RegistryInstallationTest.java,v 1.4 2004/05/07 15:32:36 pah Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,9 +25,10 @@ import junit.framework.TestCase;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Apr-2004
+ * @author Paul Harrison pah@jb.man.ac.uk 07-May-2004
  *
  */
-public class RegistryInstallationTest extends TestCase {
+public class RegistryInstallationTest extends RegistryBaseTestCase {
     /**
      * Constructor for RegistryInstallationTest.
      * @param arg0
@@ -35,17 +36,6 @@ public class RegistryInstallationTest extends TestCase {
     public RegistryInstallationTest(String arg0) {
         super(arg0);
     }
-    
-    protected void setUp() throws Exception {
-        Astrogrid ag = Astrogrid.getInstance();
-        List regList = ag.getRegistries();
-        assertNotNull(regList);
-        assertTrue(regList.size() > 0);
-        service = (Service)regList.get(0);
-        delegate = (RegistryService)service.createDelegate();
-    }
-    RegistryService delegate;
-    Service service;
     
     public void testConfiguration() throws Exception {
         assertNotNull(service.getEndpoint());
@@ -65,11 +55,21 @@ public class RegistryInstallationTest extends TestCase {
        assertTrue("There are no managed authorities", !auth.isEmpty());
     }
 
+   /* (non-Javadoc)
+    * @see junit.framework.TestCase#setUp()
+    */
+   protected void setUp() throws Exception {
+      super.setUp();
+   }
+
 }
 
 
 /* 
 $Log: RegistryInstallationTest.java,v $
+Revision 1.4  2004/05/07 15:32:36  pah
+more registry tests to flush out the fact that new entries are not being added
+
 Revision 1.3  2004/05/07 10:23:38  pah
 added managed authorities test
 

@@ -1,4 +1,4 @@
-/*$Id: MySpaceIntegrationTest.java,v 1.8 2004/04/23 00:27:56 nw Exp $
+/*$Id: MySpaceIntegrationTest.java,v 1.9 2004/05/07 15:32:36 pah Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,7 +43,7 @@ public class MySpaceIntegrationTest extends AbstractTestForIntegration {
 
         //VoSpaceClient client = new VoSpaceClient(user);
                 
-        Ivorn location = new Ivorn(MYSPACE, user.getUserId() +  "Workflow-MySpaceIntegrationTest.workflow-xml");
+        Ivorn location = createIVORN("/Workflow-MySpaceIntegrationTest.workflow-xml");
         store.saveWorkflow(user,location,wf);
         
         // get it back again.
@@ -58,6 +58,9 @@ public class MySpaceIntegrationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: MySpaceIntegrationTest.java,v $
+Revision 1.9  2004/05/07 15:32:36  pah
+more registry tests to flush out the fact that new entries are not being added
+
 Revision 1.8  2004/04/23 00:27:56  nw
 reorganized end-to-end tests. added test to verify flows are executed in parallel
 
