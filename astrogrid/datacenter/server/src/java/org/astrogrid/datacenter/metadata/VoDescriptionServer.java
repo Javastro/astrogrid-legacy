@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.11 2004/09/08 20:15:10 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.12 2004/09/08 20:25:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -144,6 +144,10 @@ public class VoDescriptionServer {
          //extract the resource elements
          Document ceaDoc = DomHelper.newDocument(ceaVoDescription);
          NodeList ceaResources = ceaDoc.getElementsByTagName("Resource");
+         if (ceaResources.getLength() ==0) {
+            ceaResources = ceaDoc.getElementsByTagName("vr:Resource");
+         }
+            
          for (int i = 0; i < ceaResources.getLength(); i++) {
             vod.append(DomHelper.ElementToString((Element) ceaResources.item(i)));
          }
@@ -190,6 +194,7 @@ public class VoDescriptionServer {
    }
    
 }
+
 
 
 
