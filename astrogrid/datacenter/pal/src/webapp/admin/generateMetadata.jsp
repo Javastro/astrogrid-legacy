@@ -1,5 +1,5 @@
-<%@ page import="org.astrogrid.datacenter.metadata.MetadataGenerator"
+<%@ page import="org.astrogrid.datacenter.metadata.MetadataInitialiser"
    isThreadSafe="false"
    session="false"
    contentType="text/xml"
-%><%= MetadataGenerator.generateMetadata() %>
+%><%= MetadataInitialiser.generateMetadata() %>

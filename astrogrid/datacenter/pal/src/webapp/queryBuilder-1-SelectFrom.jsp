@@ -30,10 +30,11 @@ empty you will receive all the columns in your results.
       metadata = MetadataServer.getMetadata();
    }
    catch (FileNotFoundException fnfe) {
-      metadata =MetadataGenerator.generateMetadata();
+      metadata = MetadataInitialiser.generateMetadata();
       %>
       <p>Note that a configured metadata file could not be found (<%= fnfe %>)
-      so this is based on the plugin's automatically generated metadata.
+      so this is based on automatically generated metadata meant for initial
+      metadata creation.
       <%
    }
 %>
