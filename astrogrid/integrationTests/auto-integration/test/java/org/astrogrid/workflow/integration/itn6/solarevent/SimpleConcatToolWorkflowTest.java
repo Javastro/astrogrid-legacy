@@ -1,4 +1,4 @@
-/*$Id: SimpleConcatToolWorkflowTest.java,v 1.1 2004/08/17 13:34:16 nw Exp $
+/*$Id: SimpleConcatToolWorkflowTest.java,v 1.2 2004/08/17 15:38:53 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,7 +36,7 @@ public class SimpleConcatToolWorkflowTest extends AbstractTestForWorkflow implem
     /**
      * @see org.astrogrid.workflow.integration.AbstractTestForWorkflow#buildWorkflow()
      */
-    protected void buildWorkflow() throws WorkflowInterfaceException {
+    protected void buildWorkflow() throws Exception {
         wf.setName(this.getClass().getName());
         ApplicationDescription desc = reg.getDescriptionFor(CONCAT_APP);
         Tool concatTool = desc.createToolFromDefaultInterface();
@@ -54,12 +54,13 @@ public class SimpleConcatToolWorkflowTest extends AbstractTestForWorkflow implem
         src2.setValue("choo");
         concatTool.getInput().addParameter(src2);
         
-        ParameterValue result = (ParameterValue)concatTool.findXPathValue("output/paramter[name='result']");
+        ParameterValue result = (ParameterValue)concatTool.findXPathValue("output/parameter[name='result']");
         assertNotNull(result);
         result.setIndirect(false); // want to get results back.
         // add to the workflow
         Step s = new Step();
         s.setDescription("Concat tool");
+        s.setName("concat");
         s.setTool(concatTool);
         wf.getSequence().addActivity(s);
     }
@@ -81,6 +82,9 @@ public class SimpleConcatToolWorkflowTest extends AbstractTestForWorkflow implem
 
 /* 
 $Log: SimpleConcatToolWorkflowTest.java,v $
+Revision 1.2  2004/08/17 15:38:53  nw
+tests for solar event science case.
+
 Revision 1.1  2004/08/17 13:34:16  nw
 *** empty log message ***
 

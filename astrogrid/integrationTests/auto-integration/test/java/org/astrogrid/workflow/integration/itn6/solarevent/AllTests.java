@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2004/08/17 13:36:18 nw Exp $
+/*$Id: AllTests.java,v 1.3 2004/08/17 15:38:53 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
  **/
 package org.astrogrid.workflow.integration.itn6.solarevent;
 import org.astrogrid.workflow.externaldep.itn6.solarevent.CompositeFitsVotableParsingConcatWorkflowTest;
+import org.astrogrid.workflow.externaldep.itn6.solarevent.SimpleSECWorkflowTest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 /**
@@ -26,7 +27,6 @@ public class AllTests {
         //$JUnit-BEGIN$
         suite.addTestSuite(ExampleVOTableParsingWorkflowTest.class);
         suite.addTestSuite(SimpleFitsWorkflowTest.class);
-        suite.addTestSuite(SimpleSECWorkflowTest.class);
         suite.addTestSuite(SimpleConcatToolWorkflowTest.class);
         //$JUnit-END$
         return suite;
@@ -34,6 +34,9 @@ public class AllTests {
 }
 /* 
  $Log: AllTests.java,v $
+ Revision 1.3  2004/08/17 15:38:53  nw
+ tests for solar event science case.
+
  Revision 1.2  2004/08/17 13:36:18  nw
  regenerated
 
