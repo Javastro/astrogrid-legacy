@@ -1,4 +1,4 @@
-/*$Id: RegistryToolLocator.java,v 1.10 2004/09/16 21:48:28 nw Exp $
+/*$Id: RegistryToolLocator.java,v 1.11 2004/10/08 20:03:19 pah Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -142,14 +142,16 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
      */
     
     private final static String PRE_QUERY= "<query><selectionSequence>" +
-        "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
+        "<selection item='searchElements' itemOp='EQ' value='vr:Resource'/>" +
         "<selectionOp op='$and$'/>" +
+        /* don't bother with this for now - not nice to search in xsi:type anyway
         "<selection item='@*:type' itemOp='EQ' value='CeaServiceType'/>"  +
         "<selectionOp op='AND'/>" +
-        "<selection item='*:ManagedApplications/*:ApplicationReference/*:AuthorityID' itemOp='EQ' value='" ;
+        */
+        "<selection item='cea:ManagedApplications/cea:ApplicationReference/vr:AuthorityID' itemOp='EQ' value='" ;
     private final static String MID_QUERY = "'/>"  +
         "<selectionOp op='AND'/>" +
-        "<selection item='*:ManagedApplications/*:ApplicationReference/*:ResourceKey' itemOp='EQ' value='" ;
+        "<selection item='cea:ManagedApplications/cea:ApplicationReference/vr:ResourceKey' itemOp='EQ' value='" ;
     private final static String END_QUERY =  "'/>"  +                                           
         /* don't think that we need these....
          "<selectionOp op='OR'/>" +
@@ -209,6 +211,9 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: RegistryToolLocator.java,v $
+Revision 1.11  2004/10/08 20:03:19  pah
+optimize the tool query to use namespaces - better performance than using wildcard
+
 Revision 1.10  2004/09/16 21:48:28  nw
 tried to optimize query bulding
 

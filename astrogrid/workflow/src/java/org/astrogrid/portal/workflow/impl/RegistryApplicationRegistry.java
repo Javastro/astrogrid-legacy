@@ -1,4 +1,4 @@
-/*$Id: RegistryApplicationRegistry.java,v 1.5 2004/09/02 13:03:53 jdt Exp $
+/*$Id: RegistryApplicationRegistry.java,v 1.6 2004/10/08 20:04:39 pah Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -70,7 +70,7 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
     /** string query to to pass to registry to get list of tools back 
      */
     public final static String LIST_QUERY_STRING= "<query><selectionSequence>" +
-    "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
+    "<selection item='searchElements' itemOp='EQ' value='vr:Resource'/>" +
     "<selectionOp op='$and$'/>" +
     "<selection item='@*:type' itemOp='EQ' value='CeaApplicationType'/>"  +
     "<selectionOp op='OR'/>" +
@@ -139,6 +139,9 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
 
 /* 
 $Log: RegistryApplicationRegistry.java,v $
+Revision 1.6  2004/10/08 20:04:39  pah
+optimize the tool query to use namespaces - better performance than using wildcard
+
 Revision 1.5  2004/09/02 13:03:53  jdt
 merge from SIAP case3
 
