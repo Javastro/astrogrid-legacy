@@ -230,12 +230,13 @@ public class MySpaceUtils {
 		HashMap request = new HashMap();
 		try{		
 			Document doc = parseRequest( xmlRequest );
+			
 			Node checker;
 			checker = doc.getDocumentElement();
 			boolean ascending = false;
 			int level = 1;
 			while (true) {
-				if( DEBUG )  logger.debug("Now trying to walk the dom tree..");
+				if( DEBUG )  logger.debug("travers the dom tree.."+xmlRequest);
 					
 					if (checker!=null && (checker.hasChildNodes()) && (!ascending)) {
 						checker = checker.getFirstChild();
@@ -245,11 +246,13 @@ public class MySpaceUtils {
 							if(checker.getFirstChild()!=null){
 								if(checker.getFirstChild().getNodeType()==Node.TEXT_NODE) {
 									text = checker.getFirstChild().getNodeValue();
-									if( DEBUG )  logger.debug("BEFORE.PUT.DOWN" +checker.getNodeName()+" TEXT " +text);
-									
+									//if( DEBUG )  logger.debug("BEFORE.PUT.DOWN" +checker.getNodeName()+" TEXT " +text);
+									if(checker.getNodeName().equals("fileContent")){
+										text = checker.getFirstChild().getNextSibling().getNodeValue();										
+									}
 									request.put(checker.getNodeName(), text);
 									
-									if( DEBUG )  logger.debug("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
+									if( DEBUG )  logger.debug("NODENAME: down"+checker.getNodeName() +",  TEXTVALUE: "+text);
 								}
 							}
 						}
@@ -263,11 +266,12 @@ public class MySpaceUtils {
 							if(checker.getFirstChild()!=null){
 								if(checker.getFirstChild().getNodeType()==Node.TEXT_NODE) {
 									text = checker.getFirstChild().getNodeValue();
-									if(DEBUG)  logger.debug("BEFORE.PUT.SIBLING");
-									
+									if(checker.getNodeName().equals("fileContent")){
+										text = checker.getFirstChild().getNextSibling().getNodeValue();
+										}
 									request.put(checker.getNodeName(), text);
 									
-									if(DEBUG)  logger.debug("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
+									if(DEBUG)  logger.debug("NODENAME: sibling"+checker.getNodeName() +",  TEXTVALUE: "+text);
 								}
 							}
 							ascending = false;
@@ -279,11 +283,12 @@ public class MySpaceUtils {
 							if(checker.getFirstChild()!=null){
 								if(checker.getFirstChild().getNodeType()==Node.TEXT_NODE) {
 									text = checker.getFirstChild().getNodeValue();
-									if( DEBUG )  logger.debug("BEFORE.PUT.UP");
-									
+									if(checker.getNodeName().equals("fileContent")){
+										text = checker.getFirstChild().getNextSibling().getNodeValue();
+										}
 									request.put(checker.getNodeName(), text);
 									
-									if( DEBUG )  logger.debug("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
+									if( DEBUG )  logger.debug("NODENAME: up"+checker.getNodeName() +",  TEXTVALUE: "+text);
 								}
 							}
 							ascending = true;
@@ -294,6 +299,8 @@ public class MySpaceUtils {
 								if( DEBUG )  logger.debug("BREAK!");
 								break;
 								}
+								logger.debug("qqqqqqqqqqqqqqqqqqqqqqrequest: "+request.containsKey("fileContent")+" size: "+request.size());
+								
 			}
 		}catch(Exception e){
 			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00046", this.getComponentName()) ;
