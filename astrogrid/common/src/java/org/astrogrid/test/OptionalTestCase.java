@@ -1,4 +1,4 @@
-/*$Id: OptionalTestCase.java,v 1.5 2004/01/23 11:40:52 nw Exp $
+/*$Id: OptionalTestCase.java,v 1.6 2004/01/26 12:52:30 jdt Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -100,7 +100,7 @@ public class OptionalTestCase extends TestCase {
    }
    
    private final static String mkKey(String classname) {
-      return "optional.test.skip" + classname;
+      return "optional.test.skip." + classname;
    }
 
    /** key used in System.properties. If true, by default disable optional test cases */ 
@@ -124,6 +124,9 @@ public class OptionalTestCase extends TestCase {
 
 /* 
 $Log: OptionalTestCase.java,v $
+Revision 1.6  2004/01/26 12:52:30  jdt
+minor bug
+
 Revision 1.5  2004/01/23 11:40:52  nw
 tarted up javadoc
 
