@@ -1,4 +1,4 @@
-/*$Id: SqlQuerierTest.java,v 1.4 2003/09/08 16:43:50 mch Exp $
+/*$Id: SqlQuerierTest.java,v 1.5 2003/09/10 10:01:38 nw Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,11 @@
 package org.astrogrid.datacenter.queriers.sql;
 
 import java.io.InputStream;
+
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.queriers.QueryResults;
@@ -24,10 +28,7 @@ import org.w3c.dom.Element;
  */
 public class SqlQuerierTest extends TestCase {
 
-    /**
-     * Constructor for SqlQuerierTest.
-     * @param arg0
-     *
+
     public SqlQuerierTest(String arg0) {
         super(arg0);
     }
@@ -37,20 +38,29 @@ public class SqlQuerierTest extends TestCase {
     */
     public static void main(String[] args)
     {
-       //register HSQLDB driver with driver key in configration file
-       //put driver into config file
-       Configuration.setProperty(SqlQuerier.JDBC_DRIVERS_KEY, "org.hsqldb.jdbcDriver"  );
-
-       //register where to find database
-       Configuration.setProperty(SqlQuerier.JDBC_URL_KEY, "jdbc:hsqldb:.");
-
+      /*NWW - moved configuration (setting of keys) to setUp - 
+      as setUp is guaranteed to be called before a test, while main() is not - 
+      automated testing, testing within a GUI / IDE,,etc */
+    
        junit.textui.TestRunner.run(SqlQuerierTest.class);
+    }
+
+    public static Test suite() {
+        // Reflection is used here to add all the testXXX() methods to the suite.
+        return new TestSuite(SqlQuerierTest.class);
     }
 
     /*
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
+        //register HSQLDB driver with driver key in configration file
+        //put driver into config file
+        Configuration.setProperty(SqlQuerier.JDBC_DRIVERS_KEY, "org.hsqldb.jdbcDriver"  );
+
+        //register where to find database
+        Configuration.setProperty(SqlQuerier.JDBC_URL_KEY, "jdbc:hsqldb:.");
+        Configuration.setProperty(SqlQuerier.JDBC_CONNECTION_PROPERTIES_KEY,"user=sa");
         querier = new SqlQuerier();
         String script = HsqlTestCase.getResourceAsString("create-test-db.sql");
         HsqlTestCase.runSQLScript(script,querier.jdbcConnection);
@@ -114,6 +124,9 @@ public class SqlQuerierTest extends TestCase {
 
 /*
 $Log: SqlQuerierTest.java,v $
+Revision 1.5  2003/09/10 10:01:38  nw
+fixed setup.
+
 Revision 1.4  2003/09/08 16:43:50  mch
 Removed toInputStream() from QueryResults as we don't really know what it's for yet
 
