@@ -3,10 +3,20 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/webapp/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2005/02/08 16:03:49 $</cvs:date>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:date>$Date: 2005/03/22 11:41:03 $</cvs:date>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.8  2005/03/22 11:41:03  jdt
+    |   merge from FS_KMB_1004
+    |
+    |   Revision 1.7.14.2  2005/03/20 10:32:21  KevinBenson
+    |   added the servlet to web.xml and changed maven.xml to not xsl it anymore.
+    |   small install instruciton tweak on configure.jsp
+    |
+    |   Revision 1.7.14.1  2005/03/18 15:37:06  KevinBenson
+    |   Added jsp files and a small change or two to some other files for a selftest.jsp
+    |
     |   Revision 1.7  2005/02/08 16:03:49  jdt
     |   Bug 937
     |
@@ -281,16 +291,17 @@
         <filestore:service.deploy service.name="FileStore"/>
         <!--+
             | Deploy our servlet.
-            +-->
         <attainGoal name="servlet-deploy"/>
+        +-->
         <!--+
             | Copy our log4j configuration file into WEB-INF/classes.
-            +-->
+
         <ant:copy verbose="true" todir="${axisDir}/WEB-INF/classes">
             <ant:fileset dir="src/config">
                 <include name="log4j.properties"/>
-            </ant:fileset>
+            </ant:fileset>            
         </ant:copy>
+                    +-->
     </postGoal>
 
     <!--+

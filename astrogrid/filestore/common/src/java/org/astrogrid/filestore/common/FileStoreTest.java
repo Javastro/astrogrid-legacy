@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreTest.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
- * <cvs:version>$Revision: 1.12 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2005/03/22 11:41:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.13 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreTest.java,v $
+ *   Revision 1.13  2005/03/22 11:41:04  jdt
+ *   merge from FS_KMB_1004
+ *
+ *   Revision 1.12.16.1  2005/03/18 15:37:06  KevinBenson
+ *   Added jsp files and a small change or two to some other files for a selftest.jsp
+ *
  *   Revision 1.12  2005/01/28 10:43:58  clq2
  *   dave_dev_200501141257 (filemanager)
  *
@@ -270,7 +276,8 @@ public class FileStoreTest
      * Test properties prefix.
      *
      */
-    public static final String TEST_PROPERTY_PREFIX = "org.astrogrid.filestore.test" ;
+    //public static final String TEST_PROPERTY_PREFIX = "org.astrogrid.filestore.test" ;
+    public static String TEST_PROPERTY_PREFIX = "org.astrogrid.filestore.test" ;
 
     /**
      * Helper method to get a local property.

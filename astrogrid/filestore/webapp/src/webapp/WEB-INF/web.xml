@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
+    "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+
+<web-app>
+  <display-name>Apache-Axis</display-name>
+  <servlet>
+    <servlet-name>AxisServlet</servlet-name>
+    <display-name>Apache-Axis Servlet</display-name>
+    <servlet-class>
+        org.apache.axis.transport.http.AxisServlet
+    </servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>AdminServlet</servlet-name>
+    <display-name>Axis Admin Servlet</display-name>
+    <servlet-class>
+        org.apache.axis.transport.http.AdminServlet
+    </servlet-class>
+    <load-on-startup>100</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <servlet-name>SOAPMonitorService</servlet-name>
+    <display-name>SOAPMonitorService</display-name>
+    <servlet-class>
+        org.apache.axis.monitor.SOAPMonitorService
+    </servlet-class>
+    <init-param>
+      <param-name>SOAPMonitorPort</param-name>
+      <param-value>5001</param-value>
+    </init-param>
+    <load-on-startup>100</load-on-startup>
+  </servlet>
+
+  <servlet>
+	<servlet-name>FileStoreServlet</servlet-name>
+	<display-name>FileStoreServlet</display-name>
+	<description>FileStore http access servlet</description>
+	<servlet-class>
+		org.astrogrid.filestore.server.servlet.FileStoreServlet
+	</servlet-class>
+  </servlet>
+
+
+  <servlet-mapping>
+    <servlet-name>AxisServlet</servlet-name>
+    <url-pattern>/servlet/AxisServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>AxisServlet</servlet-name>
+    <url-pattern>*.jws</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>AxisServlet</servlet-name>
+    <url-pattern>/services/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>SOAPMonitorService</servlet-name>
+    <url-pattern>/SOAPMonitor</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+	<servlet-name>FileStoreServlet</servlet-name>
+	<url-pattern>/filestore/*</url-pattern>
+  </servlet-mapping>
+
+
+ <!-- uncomment this if you want the admin servlet -->
+ <!--
+  <servlet-mapping>
+    <servlet-name>AdminServlet</servlet-name>
+    <url-pattern>/servlet/AdminServlet</url-pattern>
+  </servlet-mapping>
+ -->
+
+    <!-- currently the W3C havent settled on a media type for WSDL;
+    http://www.w3.org/TR/2003/WD-wsdl12-20030303/#ietf-draft
+    for now we go with the basic 'it's XML' response -->
+  <mime-mapping>
+    <extension>wsdl</extension>
+     <mime-type>text/xml</mime-type>
+  </mime-mapping>
+  
+
+  <mime-mapping>
+    <extension>xsd</extension>
+    <mime-type>text/xml</mime-type>
+  </mime-mapping>
+
+  <welcome-file-list id="WelcomeFileList">
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.jws</welcome-file>
+  </welcome-file-list>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name></web-resource-name>
+      <url-pattern>/admin/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>manager</role-name>
+    </auth-constraint>
+  </security-constraint>
+   
+  <login-config>
+    <auth-method>BASIC</auth-method>
+    <realm-name>AstroGrid</realm-name>
+  </login-config>
+
+  <security-role>
+    <role-name>manager</role-name>
+  </security-role>
+
+    <env-entry>
+        <description>The filestore service name</description>
+        <env-entry-name>org.astrogrid.filestore.service.name</env-entry-name>
+        <env-entry-value>org.astrogrid.filestore</env-entry-value>
+        <env-entry-type>java.lang.String</env-entry-type>
+    </env-entry>
+
+    <env-entry>
+        <description>The filestore service identifier</description>
+        <env-entry-name>org.astrogrid.filestore.service.ivorn</env-entry-name>
+        <env-entry-value>ivo://authority/resource</env-entry-value>
+        <env-entry-type>java.lang.String</env-entry-type>
+    </env-entry>
+
+    <env-entry>
+        <description>The filestore service location</description>
+        <env-entry-name>org.astrogrid.filestore.service.url</env-entry-name>
+        <env-entry-value>http://example.org:8080/context-name/filestore</env-entry-value>
+        <env-entry-type>java.lang.String</env-entry-type>
+    </env-entry>
+
+    <env-entry>
+        <description>The filestore repository location. Please change from the default location in your webapps.</description>
+        <env-entry-name>org.astrogrid.filestore.repository</env-entry-name>
+        <env-entry-value>.</env-entry-value>
+        <env-entry-type>java.lang.String</env-entry-type>
+    </env-entry>
+
+   <env-entry>
+      <description>Publishing Metadata to Registry endpoint, Point to the Registry that has or will contain your authorityid.</description>
+      <env-entry-name>org.astrogrid.registry.admin.endpoint</env-entry-name>
+      <env-entry-value>http://localhost:8080/astrogrid-registry/services/RegistryUpdate</env-entry-value>
+      <env-entry-type>java.lang.String</env-entry-type>
+   </env-entry>
+
+<!--
+Use for Server side testing only. set to the publishing registry.
+-->
+   <env-entry>
+      <description>Used for testing only, set to the same as publishing registry.</description>
+      <env-entry-name>org.astrogrid.registry.query.endpoint</env-entry-name>
+      <env-entry-value>http://localhost:8080/astrogrid-registry/services/RegistryQuery</env-entry-value>
+      <env-entry-type>java.lang.String</env-entry-type>
+   </env-entry>
+
+
+</web-app>

@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/deploy/src/junit/org/astrogrid/filestore/integration/FileStoreIntegrationTest.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/03/14 13:58:43 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2005/03/22 11:41:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreIntegrationTest.java,v $
+ *   Revision 1.3  2005/03/22 11:41:04  jdt
+ *   merge from FS_KMB_1004
+ *
+ *   Revision 1.2.4.1  2005/03/18 15:37:06  KevinBenson
+ *   Added jsp files and a small change or two to some other files for a selftest.jsp
+ *
  *   Revision 1.2  2005/03/14 13:58:43  clq2
  *   dave-dev-200503140252
  *
@@ -52,11 +58,7 @@ public class FileStoreIntegrationTest
 		this.target = 
 			(FileStoreCoreDelegate)
 			resolver.resolve(
-				new Ivorn(
-					getConfigProperty(
-						"org.astrogrid.filestore.test.ivorn"
-						)
-					)
+				new Ivorn(getTestProperty("ivorn"))
 				) ;
 		}
 
