@@ -12,14 +12,14 @@
       <item name="Applications Integration"     href="http://www.astrogrid.org/maven/build/applications/index.html"/>
       <item name="Common"           href="http://www.astrogrid.org/maven/build/common/index.html"/>
       <item name="Community"        href="http://www.astrogrid.org/maven/build/community/index.html"/>
-      <item name="Registry"         href="http://www.astrogrid.org/maven/build/registry/index.html"/>
+      <item name="DataCenter"       href="http://www.astrogrid.org/maven/build/datacenter/index.html"/>
       <item name="Job Management"   href="http://www.astrogrid.org/maven/build/jes/index.html"/>
       <item name="mySpace"          href="http://www.astrogrid.org/maven/build/mySpace/index.html"/>
-      <item name="DataCenter"       href="http://www.astrogrid.org/maven/build/datacenter/index.html"/>
-      <item name="Warehouse"        href="http://www.astrogrid.org/maven/build/warehouse/index.html"/>
       <item name="Portal"          href="http://www.astrogrid.org/maven/build/portal/index.html"/>
+      <item name="Registry"         href="http://www.astrogrid.org/maven/build/registry/index.html"/>
+      <item name="Scripting"		href="http://www.astrogrid.org/maven/build/scripting/index.html" />      
+      <item name="Warehouse"        href="http://www.astrogrid.org/maven/build/warehouse/index.html"/>
       <item name="Workflow"          href="http://www.astrogrid.org/maven/build/workflow/index.html"/>
-      <item name="Scripting"		href="http://www.astrogrid.org/maven/build/scripting/index.html" />
     </menu>
     <menu name="Integration and Logs">
       <item name="Integration Testing" href="http://www.astrogrid.org/maven/build/integrationTests/index.html"/>
@@ -27,15 +27,14 @@
        <item name="Applications Integration"           href="http://www.astrogrid.org/maven/build/log/maven-build-applications.log" />
        <item name="Common"           href="http://www.astrogrid.org/maven/build/log/maven-build-common.log" />
        <item name="Community"           href="http://www.astrogrid.org/maven/build/log/maven-build-community.log" />
-       <item name="Template Service" href="http://www.astrogrid.org/maven/build/log/maven-build-templateservice.log" />
-       <item name="Registry"         href="http://www.astrogrid.org/maven/build/log/maven-build-registry.log" />
+       <item name="DataCenter"       href="http://www.astrogrid.org/maven/build/log/maven-build-datacenter.log" />
        <item name="Job Management"   href="http://www.astrogrid.org/maven/build/log/maven-build-jes.log" />
        <item name="mySpace"          href="http://www.astrogrid.org/maven/build/log/maven-build-mySpace.log" />
-       <item name="DataCenter"       href="http://www.astrogrid.org/maven/build/log/maven-build-datacenter.log" />
-       <item name="Warehouse"        href="http://www.astrogrid.org/maven/build/log/maven-build-warehouse.log" />
        <item name="Portal"          href="http://www.astrogrid.org/maven/build/log/maven-build-portal.log" />
-       <item name="Workflow"         href="http://www.astrogrid.org/maven/build/log/maven-build-workflow.log" />
+       <item name="Registry"         href="http://www.astrogrid.org/maven/build/log/maven-build-registry.log" />
        <item name="Scripting"			href="http://www.astrogrid.org/maven/build/log/maven-build-scripting.log" />
+       <item name="Warehouse"        href="http://www.astrogrid.org/maven/build/log/maven-build-warehouse.log" />
+       <item name="Workflow"         href="http://www.astrogrid.org/maven/build/log/maven-build-workflow.log" />
        <item name="Integration Tests" href="http://www.astrogrid.org/maven/build/log/maven-build-integrationTests.log" />
       </item>
     </menu>
