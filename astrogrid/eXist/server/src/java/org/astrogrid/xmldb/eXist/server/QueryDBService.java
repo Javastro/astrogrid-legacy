@@ -29,21 +29,21 @@ import javax.xml.namespace.QName;
 
 
 public class QueryDBService {
-   
+
    private static final Log log = LogFactory.getLog(QueryDBService.class);
-   
+
    public static Config conf = null;
 
    static {
       if(conf == null) {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
-      }      
-   }   
+      }
+   }
 
-   
+
    public Document query(String collectionName, String xql) throws AxisFault {
       log.debug("start query");
-      
+
       try {
          return runQuery(collectionName,xql);
       }catch(MalformedURLException mue) {
@@ -59,10 +59,10 @@ public class QueryDBService {
          log.error(se);
          throw new AxisFault("SAX Exception - could not parse the result into xml", se);
       }finally {
-         log.debug("end query");   
+         log.debug("end query");
       }
    }
-   
+
    private URL getQueryUrl(String collectionName) throws MalformedURLException, UnsupportedEncodingException
    {
       log.debug("start getQueryUrl");
@@ -72,33 +72,33 @@ public class QueryDBService {
       }
       location += "/servlet/db/" + collectionName;
       log.debug("end getQueryUrl");
-      return new URL(location); 
+      return new URL(location);
    }
-   
+
    public Document getResource(String collectionName,String resource)
        throws MalformedURLException, ParserConfigurationException,
-       IOException, UnsupportedEncodingException, SAXException         
+       IOException, UnsupportedEncodingException, SAXException
    {
-      
+
        String resourceUniqueName = resource.replaceAll("[^\\w*]","_");
-       return DomHelper.newDocument(getQueryUrl(collectionName+"/"+resourceUniqueName));
+       return DomHelper.newDocument(getQueryUrl(collectionName + "/" + resourceUniqueName + ".xml"));
    }
-   
-   
-   public Document runQuery(String collectionName, String xql)  
+
+
+   public Document runQuery(String collectionName, String xql)
               throws MalformedURLException, ParserConfigurationException,
                      IOException, UnsupportedEncodingException, SAXException {
       log.debug("start runQuery");
       Document queryDoc = null;
       String numberOfResourcesReturned = conf.getString(
                                              "exist.query.returncount");
-      if(numberOfResourcesReturned == null || 
+      if(numberOfResourcesReturned == null ||
          numberOfResourcesReturned.trim().length() <= 0)
       {
          numberOfResourcesReturned = "25";
       }
-      
-      
+
+
       String query = "<query xmlns=\"http://exist.sourceforge.net/NS/exist\"" +
          " start=\"1\" max=\"" + numberOfResourcesReturned + "\">" +
          "<text><![CDATA[" + xql + "]]></text></query>";
@@ -117,7 +117,6 @@ public class QueryDBService {
       DomHelper.DocumentToStream(queryDoc,dos);
       dos.flush();
       dos.close();
-      log.debug("http response -"+huc.getResponseMessage());
       Document resultDoc = DomHelper.newDocument(huc.getInputStream());
       //System.out.println("the resultDoc in QueryDbservice = " + DomHelper.DocumentToString(resultDoc));
       long endQ = System.currentTimeMillis();
