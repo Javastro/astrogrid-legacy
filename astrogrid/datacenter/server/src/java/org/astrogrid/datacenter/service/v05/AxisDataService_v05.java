@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer_v0_5.java,v 1.3 2004/03/18 23:42:09 mch Exp $
+ * $Id: AxisDataService_v05.java,v 1.1 2004/04/05 15:55:06 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -126,7 +126,10 @@ public class AxisDataServer_v0_5 extends AxisDataServer implements AxisDataServe
 }
 
 /*
-$Log: AxisDataServer_v0_5.java,v $
+$Log: AxisDataService_v05.java,v $
+Revision 1.1  2004/04/05 15:55:06  mch
+Renamed it05 axis data service
+
 Revision 1.3  2004/03/18 23:42:09  mch
 Removed dummy getMetadata
 
