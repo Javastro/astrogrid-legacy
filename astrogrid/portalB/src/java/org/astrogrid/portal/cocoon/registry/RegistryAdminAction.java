@@ -17,6 +17,8 @@ import java.util.LinkedHashMap;
 import org.astrogrid.registry.RegistryConfig;
 import org.astrogrid.registry.client.admin.RegistryAdminDocumentHelper;
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
@@ -28,11 +30,12 @@ import org.xml.sax.InputSource;
 import java.util.Enumeration;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
+import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.registry.RegistryConfig;
 
 
 /**
- *
+ * Handles the updating and adding of registry Data into the registry.
  *
  */
 public class RegistryAdminAction extends AbstractAction
@@ -82,9 +85,12 @@ public class RegistryAdminAction extends AbstractAction
       Request request = ObjectModelHelper.getRequest(objectModel);
       Session session = request.getSession();
       String message = null;
+      Map mp = null;
       
+      //load the config.
       RegistryConfig.loadConfig();
       
+      //Get the action if any.
       String action = (String)request.getParameter(PARAM_ACTION);
       if(DEBUG_FLAG) {
          System.out.println("the action is = " + action);      
@@ -94,21 +100,25 @@ public class RegistryAdminAction extends AbstractAction
       //Do the createMap.
       //pass the map to the xsp page for generating the list.
       String mainElem = request.getParameter(PARAM_MAIN_ELEMENT);
-      RegistryConfig.loadConfig();
       
-      File fi = null;
       Document registryDocument = null;
       DocumentBuilderFactory dbf = null;
       DocumentBuilder regBuilder = null;
-      //Load Templates.
-      //Do the createMap.
-      //Now go thorugh the map and put it in a Hashmap.
-      //this Hashmap will be a choice box.
+      //See if a client passed in the IVOA xml to be updated.
       String updateXML = request.getParameter("updatexml");
+      boolean createCopy = false;
+      //Are we doing an update or just grabbing the data for template purposes on an add.
+      if(request.getParameter("createcopy") != null) {
+         createCopy = true;
+      }
+      String authID = "";
+      String resKey = "";
+      NodeList nl = null;
       if(action == null) {
+         //Okay updateXML was used.
          if(updateXML != null && updateXML.length() > 0) {
             try {
-            
+            //turnt he xml into a DOM tree.
             Reader reader2 = new StringReader(updateXML);
             InputSource inputSource = new InputSource(reader2);
             regBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -116,25 +126,41 @@ public class RegistryAdminAction extends AbstractAction
             }catch(Exception e) {
                e.printStackTrace();
             }
+
+            //We want to blank out the authorityid and resource key for 
+            //creating a copy area.
+            if(!createCopy) {
+               nl = registryDocument.getElementsByTagName("AuthorityID");
+               if(nl.getLength() > 0) {
+                  authID = nl.item(0).getFirstChild().getNodeValue();
+               }
+               nl = registryDocument.getElementsByTagName("ResourceKey");
+               if(nl.getLength() > 0) {
+                  resKey = nl.item(0).getFirstChild().getNodeValue();
+               }               
+            }else {
+               nl = registryDocument.getElementsByTagName("AuthorityID");
+               if(nl.getLength() > 0) {
+                  nl.item(0).getFirstChild().setNodeValue("enter authority id");
+               }
+               nl = registryDocument.getElementsByTagName("ResourceKey");
+               if(nl.getLength() > 0) {
+                  nl.item(0).getFirstChild().setNodeValue("enter new resource key");
+               }
+            }
          
          }else {
-      
-            if(RegistryOptionAction.ORGANISATION_OPTION.equals(mainElem)) {         
-               fi = RegistryConfig.getRegistryOrganisationTemplate();
-            }else if(RegistryOptionAction.AUTHORITY_OPTION.equals(mainElem)) {
-               fi = RegistryConfig.getRegistryAuthorityTemplate();
-            }else if(RegistryOptionAction.REGISTRY_OPTION.equals(mainElem)) {
-            }else if(RegistryOptionAction.SKYSERVICE_OPTION.equals(mainElem)) {
-            }else if(RegistryOptionAction.TABULARSKYSERVICE_OPTION.equals(mainElem)) {
-            }else if(RegistryOptionAction.DATACOLLECTION_OPTION.equals(mainElem)) {
-      
+            //were doing an add so load the appropriate template.
+            File fi = RegistryOptionAction.getTemplate(request);
+            if(fi == null) {
+               //TODO an error to report here.
+               //darn some error is happening.
             }
             try {
               dbf = DocumentBuilderFactory.newInstance();
               dbf.setNamespaceAware(true);
               regBuilder = dbf.newDocumentBuilder();
               registryDocument = regBuilder.parse(fi);
-             // System.out.println("the big xml registry = " + XMLUtils.DocumentToString(registryDocument));
             } catch (ParserConfigurationException e) {
               e.printStackTrace();
             } catch (IOException ioe) {
@@ -143,22 +169,36 @@ public class RegistryAdminAction extends AbstractAction
                sax.printStackTrace();
             }         
          }
-         Map mp = RegistryAdminDocumentHelper.createMap(registryDocument);
+         //Create the map from the DOM tree.
+         mp = RegistryAdminDocumentHelper.createMap(registryDocument);
+         //set the map into the request.
          request.setAttribute("regitems",mp);
-         printMap(mp);         
+        // printMap(mp);         
       }
-      
-     //Create the Document object and throw it to createMap
-     //now get the unique last text nodes of the map.
-     //should be able to do an indexOf and see if their is an "attr" which you put in "@" in front of the string.
-     
-      //go through ALL the request variables
-      //store it in a LinkedHashMap
-      //pass it to the createDocument.            
-      
+
+      String url = null;      
+      //Go ahead and load the ManagedAuthorities (Authorities this registry owns and is
+      //allowed to update and add)
+      HashMap hm = (HashMap)session.getAttribute("ManageAuthorities");
+      if(hm == null || hm.size() <= 0) {
+         url = RegistryConfig.getProperty("publish.registry.query.url");
+         RegistryService rs = new RegistryService(url);
+         try {
+            hm = rs.ManagedAuthorities();
+         }catch(Exception e) {
+            e.printStackTrace();
+            hm = null;
+         }
+         
+         session.setAttribute("ManageAuthorities",hm);
+      }               
+
+      //Okay it is an update or add action.      
       if(ADD_ACTION.equals(action) || UPDATE_ACTION.equals(action)) {
          Enumeration enum = request.getParameterNames();
          LinkedHashMap lhm = new LinkedHashMap();
+         boolean validAuthority = true;
+         //put the request results in a LinkedHashMap
          while(enum.hasMoreElements()) {
             String param = (String)enum.nextElement();
             if(param.indexOf("/") != -1) {
@@ -166,26 +206,51 @@ public class RegistryAdminAction extends AbstractAction
                if(val != null && val.trim().length() > 0) {
                   lhm.put(param,val);
                }
-            }
-         }
+               //make sure you have authority to make an add or update.
+               if(param.indexOf("vg:") == -1 && param.indexOf("AuthorityID") != -1 && param.indexOf("Identifier") != -1) {
+                  if(hm != null && !hm.containsKey(val.trim())) {
+                     validAuthority = false;
+                  }//if
+               }//if
+            }//if
+         }//while
+         //Debug lets print out the map.
          printMap(lhm);
-         System.out.println("now lets createdocument");
+         //Create the DOM tree from the map.
          Document finalDoc = RegistryAdminDocumentHelper.createDocument(lhm);
          System.out.println("the resulting document = " + XMLUtils.DocumentToString(finalDoc) );
-         String url = RegistryConfig.getProperty("publish.registry.update.url");
-         try {
-            System.out.println("okay the url = " + url);
-            RegistryAdminService ras = new RegistryAdminService(url);
-            ras.update(finalDoc);
-            message = "The Registry has been updated";            
-         }catch(Exception e) {
-            e.printStackTrace();
+         url = RegistryConfig.getProperty("publish.registry.update.url");
+         //Now lets create a Mapping.
+         //TODO this is not right need to create a mapping from the update service call below.
+         
+         mp = RegistryAdminDocumentHelper.createMap(finalDoc);
+         request.setAttribute("regitems",mp);
+         //make sure it is a valid authority.
+         if(validAuthority) {         
+            try {
+               //System.out.println("okay the url = " + url);
+               RegistryAdminService ras = new RegistryAdminService(url);
+               ras.update(finalDoc);
+               if(finalDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","Authority").getLength() > 0) {
+                  url = RegistryConfig.getProperty("publish.registry.query.url");
+                  RegistryService rs2 = new RegistryService(url);
+                  hm = rs2.ManagedAuthorities();
+                  session.setAttribute("ManageAuthorities",hm);
+               }
+               message = "The Registry has been updated";            
+            }catch(Exception e) {
+               e.printStackTrace();
+            }
+         }else {
+            //errorMessage happened not a valid authorityid.
+            message = "This does not seem to be a AuthorityID managed by this Registry.  Please add an Authority or change your AuthorityID";
          }
        //call the client service update method  
       }else if(REMOVE_ACTION.equals(action)) {
 //       call the client service remove method
       }
       
+      //set the action for the portal.
       if(mainElem != null && mainElem.length() > 0 ) {
          action = "add";
       }else {
@@ -199,6 +264,8 @@ public class RegistryAdminAction extends AbstractAction
       Map results = new HashMap() ;
       results.put(PARAM_ACTION,action);
       results.put("message",message);
+      results.put("authID",authID);
+      results.put("resKey",resKey);
       return results;
    }
    

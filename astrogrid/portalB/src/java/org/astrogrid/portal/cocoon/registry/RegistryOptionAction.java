@@ -11,9 +11,12 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.io.File;
+import org.astrogrid.registry.RegistryConfig;
 
 /**
- *
+ * Main Options component to let the user determine the next course of action which are Query, Add, or Harvest new
+ * registry entry.
  *
  */
 public class RegistryOptionAction extends AbstractAction
@@ -23,6 +26,11 @@ public class RegistryOptionAction extends AbstractAction
     *
     */
    public static boolean DEBUG_FLAG = true;
+   
+   private static final String PARAM_MAIN_ELEMENT = "mainelement";   
+   private static final String PARAM_CONE_SEARCH = "conesearch";
+   private static final String PARAM_SIA = "sia";
+   private static final String PARAM_HTTP = "paramhttp";
    
    /**
     * Cocoon param for the user param in the session.
@@ -44,7 +52,9 @@ public class RegistryOptionAction extends AbstractAction
 
    private static final String ADD_CRITERIA_ACTION = "addcriteria";   
    
+   public static final String RESOURCE_OPTION = "Resource";   
    public static final String ORGANISATION_OPTION = "Organisation";
+   public static final String SERVICE_OPTION = "Service";
    public static final String AUTHORITY_OPTION = "Authority";
    public static final String REGISTRY_OPTION = "Registry";
    public static final String SKYSERVICE_OPTION = "SkyService";
@@ -68,22 +78,53 @@ public class RegistryOptionAction extends AbstractAction
       Request request = ObjectModelHelper.getRequest(objectModel);
       Session session = request.getSession();
 
-
+      //put the main templates into an arraylsit to for displaying.
       ArrayList mainQueryPieces = new ArrayList();
-      mainQueryPieces.add("Organisation");
-      mainQueryPieces.add("Registry");
-      mainQueryPieces.add("Authority");
-      mainQueryPieces.add("SkyService");
-      mainQueryPieces.add("TabularSkyService");
-      mainQueryPieces.add("DataCollection");
+      mainQueryPieces.add(RESOURCE_OPTION);
+      mainQueryPieces.add(SERVICE_OPTION);      
+      mainQueryPieces.add(ORGANISATION_OPTION);
+      mainQueryPieces.add(REGISTRY_OPTION);
+      mainQueryPieces.add(AUTHORITY_OPTION);
+      mainQueryPieces.add(SKYSERVICE_OPTION);
+      mainQueryPieces.add(TABULARSKYSERVICE_OPTION);
+      mainQueryPieces.add(DATACOLLECTION_OPTION);
       request.setAttribute("MainQueryPieces",mainQueryPieces);
       
       
       //
       //Create a new HashMap for our results.  Will be used to
       //pass to the transformer (xsl page)
-      Map results = new HashMap() ;
-      //results.put(PARAM_CREDENTIAL,credential);
+      Map results = new HashMap();
       return results;
-   }  
+   }
+   
+   /**
+    * Method used by Query and Admin components to get a paricular template bassed off of a
+    * reequest object.
+    * @param request
+    * @return
+    */
+   public static File getTemplate(Request request) {
+
+      File fi = null;
+      String mainElem = request.getParameter(PARAM_MAIN_ELEMENT);
+
+      if(RegistryOptionAction.ORGANISATION_OPTION.equals(mainElem)) {         
+         fi = RegistryConfig.getRegistryOrganisationTemplate();
+      }else if(RegistryOptionAction.AUTHORITY_OPTION.equals(mainElem)) {
+         fi = RegistryConfig.getRegistryAuthorityTemplate();
+      }else if(RegistryOptionAction.REGISTRY_OPTION.equals(mainElem)) {
+         fi = RegistryConfig.getRegistryTemplate();
+      }else if(RegistryOptionAction.SKYSERVICE_OPTION.equals(mainElem)) {
+         fi = RegistryConfig.getSkyServiceTemplate();
+      }else if(RegistryOptionAction.TABULARSKYSERVICE_OPTION.equals(mainElem)) {
+         fi = RegistryConfig.getTabularSkyServiceTemplate();
+      }else if(RegistryOptionAction.DATACOLLECTION_OPTION.equals(mainElem)) {
+         fi = RegistryConfig.getDataCollectionTemplate();         
+      }else if(RegistryOptionAction.SERVICE_OPTION.equals(mainElem)) {
+         fi = RegistryConfig.getServiceTemplate();         
+      }
+      return fi;
+   }
+     
 }

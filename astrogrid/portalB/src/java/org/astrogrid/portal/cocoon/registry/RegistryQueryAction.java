@@ -19,6 +19,9 @@ import java.io.IOException;
 import org.astrogrid.registry.RegistryConfig;
 import org.astrogrid.registry.client.admin.RegistryAdminDocumentHelper;
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
@@ -38,15 +41,15 @@ public class RegistryQueryAction extends AbstractAction
     */
    public static boolean DEBUG_FLAG = true;
    
+   private static final String PARAM_MAIN_ELEMENT = "mainelement";   
+   
    /**
     * Cocoon param for the user param in the session.
     *
     */
    private static final String PARAM_ACTION = "action";
    
-   private static final String PARAM_CRITERIA_NUMBER = "criteria_number";   
-
-   private static final String PARAM_MAIN_ELEMENT = "mainelement";   
+   private static final String PARAM_CRITERIA_NUMBER = "criteria_number";      
    
    private static final Integer DEFAULT_CRITERIA_NUMBER = new Integer(1);
    
@@ -60,7 +63,7 @@ public class RegistryQueryAction extends AbstractAction
    
 
    /**
-    * Our action method.
+    * Action page to do a query.
     *
     */
    public Map act(
@@ -88,26 +91,15 @@ public class RegistryQueryAction extends AbstractAction
       }            
       RegistryConfig.loadConfig();
       
-      File fi = null;
-      //Load Templates.
-      //Do the createMap.
-      //Now go thorugh the map and put it in a Hashmap.
-      //this Hashmap will be a choice box.
-      if(RegistryOptionAction.ORGANISATION_OPTION.equals(mainElem)) {         
-         fi = RegistryConfig.getRegistryOrganisationTemplate();
-      }else if(RegistryOptionAction.AUTHORITY_OPTION.equals(mainElem)) {
-         fi = RegistryConfig.getRegistryAuthorityTemplate();
-      }else if(RegistryOptionAction.REGISTRY_OPTION.equals(mainElem)) {
-      }else if(RegistryOptionAction.SKYSERVICE_OPTION.equals(mainElem)) {
-      }else if(RegistryOptionAction.TABULARSKYSERVICE_OPTION.equals(mainElem)) {
-      }else if(RegistryOptionAction.DATACOLLECTION_OPTION.equals(mainElem)) {
-         
+      //Load the template.
+      File fi = RegistryOptionAction.getTemplate(request);
+      if(fi == null) {
+         //TODO do some type of error logging and exit here.
+         //darn some errror is happening.
       }
       
       Document registryDocument = null;
       //Create the Document object and throw it to createMap
-      //now get the unique last text nodes of the map.
-      //should be able to do an indexOf and see if their is an "attr" which you put in "@" in front of the string.
       try {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
@@ -121,11 +113,14 @@ public class RegistryQueryAction extends AbstractAction
       } catch (SAXException sax) {
          sax.printStackTrace();
       }
+      //now get the unique last text nodes of the map.
+      //should be able to do an indexOf and see if their is an "attr" which you put in "@" in front of the string.      
       Map mp = RegistryAdminDocumentHelper.createMap(registryDocument);
       Set st = mp.keySet();
       Iterator iter = st.iterator();
       TreeMap selectItems = new TreeMap();
-      
+      //Go through the Map and put it in a TreeMap which is an alphabetical list.
+      //And cut off everything but the last node which is the text or attribute node.
       while(iter.hasNext()) {
          String key = (String)iter.next();
          String []split = key.split("\\/");
@@ -151,6 +146,8 @@ public class RegistryQueryAction extends AbstractAction
       }            
 
       
+      //Create a Linked Hashmap of all the possible types.
+      //LinkedHashmap preservest the order of the list.
       LinkedHashMap compareTypeList = new LinkedHashMap();
       compareTypeList.put("Contains","CONTAINS");
       compareTypeList.put("equal","EQ");
@@ -164,13 +161,14 @@ public class RegistryQueryAction extends AbstractAction
          System.out.println("comparetypelist size = " + compareTypeList.size());
       }            
 
-      
+      //Put in the join types.
       ArrayList joinTypes = new ArrayList();
       joinTypes.add("AND");
       joinTypes.add("OR");
       request.setAttribute("JoinTypes",joinTypes);
 
       int crit_number = 0;
+      //What is the current criteria number count.
       String crit_number_str = request.getParameter(PARAM_CRITERIA_NUMBER);
       if(crit_number_str != null && crit_number_str.length() > 0) {
          crit_number = Integer.parseInt(crit_number_str);
@@ -184,10 +182,12 @@ public class RegistryQueryAction extends AbstractAction
       if(crit_number <= 0) {
          crit_number = 1;      
       }
+      //What is the action if any.
       if(ADD_CRITERIA_ACTION.equals(action)) {
+         //user wants to add more criteria's.
          crit_number++;
       }else if(QUERY_ACTION.equals(action)) {
-         
+         //Need to query.  So lets build up the XML for a query.
          String selItem = null;
          String selItemOperation = null;
          String selItemValue = null;
@@ -212,19 +212,26 @@ public class RegistryQueryAction extends AbstractAction
          }
          query += "</selectionSequence></query>";
          try {
+            //Now lets query.
             String url = null;
-            String chosenReg = request.getParameter("registryname");
-            if(chosenReg.equals(publishRegName)) {
-               url = RegistryConfig.getProperty("publish.registry.query.url");
-            }else {
-               url = RegistryConfig.getProperty("search.registry.query.url");
-            }
+            url = RegistryConfig.getProperty("search.registry.query.url");
             
-            System.out.println("okay calling rs with url = " + url + " and query = " + query);
             RegistryService rs = new RegistryService(url);
             Document doc = rs.submitQueryString(query);
-            resultXML = createFormResults(XMLUtils.DocumentToString(doc),mainElem);
+            //create the results and put it in the request.
+            resultXML = createFormResults(doc,mainElem);
             request.setAttribute("resultxml",resultXML);
+            //Here are the managed authorities.  Which determine which AuthorityID
+            //the registry owns and hence can do an update for.
+            if(resultXML.size() > 0) {
+               HashMap hm = (HashMap)session.getAttribute("ManageAuthorities");
+               if(hm == null || hm.size() <= 0) {
+                  url = RegistryConfig.getProperty("publish.registry.query.url");
+                  rs = new RegistryService(url);
+                  hm = rs.ManagedAuthorities();
+                  session.setAttribute("ManageAuthorities",hm);
+               }               
+            }
          }catch(Exception e) {
             e.printStackTrace();
          }
@@ -246,9 +253,16 @@ public class RegistryQueryAction extends AbstractAction
       }
       return results;
       
-   }  
+   }
    
-   private ArrayList createFormResults(String docResults,String mainElem) {
+   /**
+    * This method will be deleted later or used with an XSL sheet to make a pretty response for the html.
+    * Currently only displays the raw XML form coming back from the query web service response.
+    * @param docResults Query results in a DOM tree format.
+    * @param mainElem The main element we queried.
+    * @return ArrayList of all the String XML results.
+    */
+   private ArrayList createFormResults(Document docResults,String mainElem) {
       String lookup = null;
       String endLookup = null;
       if(RegistryOptionAction.ORGANISATION_OPTION.equals(mainElem)) {         
@@ -258,37 +272,28 @@ public class RegistryQueryAction extends AbstractAction
          lookup = "<vg:" + mainElem;
          endLookup = "</vg:" + mainElem + ">";
       }else if(RegistryOptionAction.REGISTRY_OPTION.equals(mainElem)) {
+         lookup = "<vg:" + mainElem;
+         endLookup = "</vg:" + mainElem + ">";         
       }else if(RegistryOptionAction.SKYSERVICE_OPTION.equals(mainElem)) {
+         lookup = "<vs:" + mainElem;
+         endLookup = "</vs:" + mainElem + ">";         
       }else if(RegistryOptionAction.TABULARSKYSERVICE_OPTION.equals(mainElem)) {
+         lookup = "<vs:" + mainElem;
+         endLookup = "</vs:" + mainElem + ">";         
       }else if(RegistryOptionAction.DATACOLLECTION_OPTION.equals(mainElem)) {
-         
+         lookup = "<vs:" + mainElem;
+         endLookup = "</vs:" + mainElem + ">";
+      }else if(RegistryOptionAction.SERVICE_OPTION.equals(mainElem)) {
+         lookup = "<vr:" + mainElem;
+         endLookup = "</vr:" + mainElem + ">";
       }
-      int index = 0;
-      int endIndex = 0;
-      //String inputUpdateForms = "<form name=\"RegistryUpdate\" method=\"get\" action=\"registryupdate.html\">\n";
-      //inputUpdateForms += "<input type=\"submit\" name=\"registryupdate\" value=\"Update This entry\" />";
-      String results = "";
-      int startindex = docResults.indexOf(lookup,index);
-      int resultEndIndex = docResults.indexOf(endLookup,index) + endLookup.length();
-      index = startindex;
-      //System.out.println("start while startindex = " + startindex + " endindex = " + resultEndIndex + " lookup = " + lookup + " endlookup = " + endLookup);
-      String temp = null;
+      NodeList nl = docResults.getDocumentElement().getChildNodes();
       ArrayList al = new ArrayList();
-      while(index != -1) {
-         temp = "<vodescription>" + docResults.substring(startindex,resultEndIndex) + "</vodescription>";          
-         al.add(temp);
-         index++;
-         index = docResults.indexOf(lookup,startindex+1);
-         startindex = index;
-         resultEndIndex = docResults.indexOf(endLookup,startindex) + endLookup.length();
-         
-         //System.out.println("in while index = " + index + " startindex = " + startindex + " endindex = " + resultEndIndex + " lookup = " + lookup + " endlookup = " + endLookup);
-         //System.out.println("the substring from startindex = " + docResults.substring(startindex));         
-         //System.out.println("the substring from index = " + docResults.substring(index));
-      }//while
-      System.out.println("the result is = " + results + " the end");
-      
+      for(int i = 0;i < nl.getLength();i++) {
+         Element elem = (Element)nl.item(i);
+         al.add("<vodescription>" + XMLUtils.ElementToString(elem) + "</vodescription>"); 
+      }      
       return al;
    }
-   
+  
 }
