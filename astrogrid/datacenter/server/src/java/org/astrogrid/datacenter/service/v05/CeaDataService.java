@@ -1,12 +1,14 @@
 /*
- * $Id: CeaDataService.java,v 1.6 2004/04/23 12:13:05 nw Exp $
+ * $Id: CeaDataService.java,v 1.7 2004/04/23 16:06:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service.v05;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase;
@@ -25,10 +27,8 @@ import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.VoSpaceClient;
+import org.astrogrid.store.delegate.VoSpaceResolver;
 import org.astrogrid.workflow.beans.v1.axis._tool;
-import java.net.URISyntaxException;
-import java.io.IOException;
-import org.astrogrid.datacenter.query.QueryException;
 
 
 /**
@@ -115,13 +115,31 @@ public class CeaDataService extends AxisDataServer implements org.astrogrid.appl
       // NWW: target is an output parameter.
       value = parameters.getOutput().getParameter(0);
       assert (value.getName().equals("Target"));
-      
+
       Agsl resultsTarget;
-      try {
-         resultsTarget = new Agsl(value.getValue());
+
+      if (value.getValue().startsWith("ivo")) {
+         try {
+            Ivorn ivorn = new Ivorn(value.getValue());
+            resultsTarget = VoSpaceResolver.resolveAgsl(ivorn);
+         }
+         catch (URISyntaxException use) {
+            throw makeFault(true, "Invalid IVORN ("+value.getValue()+") given for results target ", use);
+         }
+         catch (IOException ioe) {
+            throw makeFault(true, "Failed to resolve IVORN ("+value.getValue()+") given for results target ", ioe);
+         }
       }
-      catch (MalformedURLException mue) {
-         throw makeFault(true, "Invalid AGSL ("+value.getValue()+") given for results target "+mue, mue);
+      else if (Agsl.isAgsl(value.getValue())) {
+         try {
+            resultsTarget = new Agsl(value.getValue());
+         }
+         catch (MalformedURLException mue) {
+            throw makeFault(true, "Invalid AGSL ("+value.getValue()+") given for results target ", mue);
+         }
+      }
+      else {
+         throw makeFault(true, "Unknown form ("+value.getValue()+") for results target; send IVORN or AGSL", null);
       }
 
       URL monitorUrl = null;
@@ -163,6 +181,9 @@ public class CeaDataService extends AxisDataServer implements org.astrogrid.appl
 
 /*
 $Log: CeaDataService.java,v $
+Revision 1.7  2004/04/23 16:06:48  mch
+Fixed so target can be IVORN
+
 Revision 1.6  2004/04/23 12:13:05  nw
 corrected retreival of 'target' parameter value - its an output parameter
 
