@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.16 2004/03/13 01:03:17 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.17 2004/03/25 17:24:34 gtr Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
 	<pomVersion>3</pomVersion>
@@ -60,6 +60,49 @@
            <artifactId>astrogrid-applications</artifactId>
            <version>SNAPSHOT</version>
         </dependency>
+        
+        
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <type>jar</type>
+      <artifactId>astrogrid-security</artifactId>
+      <version>SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <type>jar</type>
+      <artifactId>astrogrid-community-common</artifactId>
+      <version>SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <type>jar</type>
+      <artifactId>astrogrid-community-client</artifactId>
+      <version>SNAPSHOT</version>
+    </dependency>
+    
+     <dependency>
+       <groupId>org.astrogrid</groupId>
+       <type>jar</type>
+       <artifactId>astrogrid-community-resolver</artifactId>
+       <version>SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <type>jar</type>
+      <artifactId>astrogrid-registry-common</artifactId>
+      <version>SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <type>jar</type>
+      <artifactId>astrogrid-registry-client</artifactId>
+      <version>SNAPSHOT</version>
+    </dependency>
     
     <!-- stuff for datacenter -->
     <dependency>
