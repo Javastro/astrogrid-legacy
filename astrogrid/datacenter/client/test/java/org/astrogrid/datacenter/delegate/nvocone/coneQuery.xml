@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-16"?>
+<Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SelectionAll/>
+  <TableClause>
+    <FromClause>
+      <TableReference>
+        <Table>
+          <Name>Catalogue</Name>
+          <AliasName>cat</AliasName>
+        </Table>
+
+      </TableReference>
+    </FromClause>
+    <WhereClause>
+      <IntersectionSearch>
+
+        <FirstCondition xsi:type="RegionSearch">
+          <Circle xmlns:q1="urn:nvo-region" xsi:type="q1:circleType">
+            <q1:Center>
+              <Pos2Vector xmlns="urn:nvo-coords">
+                <Name>Ra Dec</Name>
+                <CoordValue>
+                  <Value>
+
+                    <double>12.5</double>
+                    <double>23</double>
+                  </Value>
+                </CoordValue>
+              </Pos2Vector>
+            </q1:Center>
+            <q1:Radius>5</q1:Radius>
+
+          </Circle>
+        </FirstCondition>
+      </IntersectionSearch>
+    </WhereClause>
+  </TableClause>
+</Select>
+

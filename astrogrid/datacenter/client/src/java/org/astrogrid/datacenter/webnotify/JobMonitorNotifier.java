@@ -24,13 +24,11 @@ import org.w3c.dom.Document;
  * @author M Hill
  */
 
-public class JobMonitorNotifier
+public class JobMonitorNotifier extends WebNotifier
 {
-   private URL endPoint = null;
-   
    public JobMonitorNotifier(URL givenEndPoint)
    {
-      this.endPoint = givenEndPoint;
+      super(givenEndPoint);
    }
    
    public void tellServer(String queryId, QueryStatus status) throws ServiceException
@@ -92,6 +90,9 @@ public class JobMonitorNotifier
 
 /*
 $Log: JobMonitorNotifier.java,v $
+Revision 1.4  2003/11/18 00:34:37  mch
+New Adql-compliant cone search
+
 Revision 1.3  2003/11/17 21:56:42  mch
 Moved notification stuff to client part 2
 

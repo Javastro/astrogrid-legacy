@@ -7,14 +7,27 @@ package org.astrogrid.datacenter.delegate.nvocone;
 
 import org.astrogrid.datacenter.delegate.*;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 import java.util.Vector;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.rpc.ServiceException;
 import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.datacenter.adql.generated.Circle;
 import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.io.Piper;
 import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.service.Workspace;
+import org.astrogrid.datacenter.webnotify.JobMonitorNotifier;
+import org.astrogrid.datacenter.webnotify.WebNotifier;
+import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceDummyDelegate;
+import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 import org.xml.sax.SAXException;
 
 
@@ -32,22 +45,24 @@ import org.xml.sax.SAXException;
  * @author M Hill
  */
 
-public class NvoCsAdqlDelegate extends NvoConeSearchDelegate implements AdqlQuerier
+public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements AdqlQuerier
 {
+   Log log = LogFactory.getLog(AdqlNvoConeDelegate.class);
    
-   String endPoint = null;
+   private String userId, communityId, credentials = null;
    
    private class NvoConeSearchDummyQuery implements DatacenterQuery
    {
       double ra, dec, sr = 0;
       String queryId = null;
-      URL destinationServer = null;
+      String destinationServer = MySpaceDummyDelegate.DUMMY;
       URL resultsUrl = null; //where to find the results
       //DatacenterResults results = null;
       QueryStatus status = null;
       Vector listeners = new Vector();
+      Workspace workspace = null; //somewhere to put results if required
       
-      private NvoConeSearchDummyQuery(double givenRa, double givenDec, double givenSr, String givenId)
+      private NvoConeSearchDummyQuery(double givenRa, double givenDec, double givenSr, String givenId) throws IOException
       {
          this.ra = givenRa;
          this.dec = givenDec;
@@ -55,17 +70,10 @@ public class NvoCsAdqlDelegate extends NvoConeSearchDelegate implements AdqlQuer
          this.queryId = givenId;
          
          setStatus(QueryStatus.CONSTRUCTED);
+         
+         workspace = new Workspace();
       }
 
-      /**
-       * @todo create properly unique id, probably based on this machine as
-       * well as remote
-       */
-      private NvoConeSearchDummyQuery(double ra, double dec, double sr)
-      {
-         //create unique id...
-         this(ra, dec, sr, endPoint);
-      }
 
       /**
        * Give the datacenter the location of the service that the results should
@@ -75,7 +83,7 @@ public class NvoCsAdqlDelegate extends NvoConeSearchDelegate implements AdqlQuer
        */
       public void setResultsDestination(URL myspace) throws IOException
       {
-         destinationServer = myspace;
+         destinationServer = myspace.toString();
       }
       
       /**
@@ -162,10 +170,18 @@ public class NvoCsAdqlDelegate extends NvoConeSearchDelegate implements AdqlQuer
        */
       public void registerWebListener(URL url) throws IOException
       {
-         throw new UnsupportedOperationException("Web listeners not yet defined");
+         listeners.add(new WebNotifier(url));
       }
       
-      /**
+      /** Register a job monitor with the query.
+       * @deprecated - use registerWebListener
+       */
+      public void registerJobMonitor(URL url) throws IOException
+      {
+          listeners.add(new JobMonitorNotifier(url));
+     }
+
+     /**
        * Returns some kind of handle to the query
        */
       public String getId()
@@ -176,13 +192,7 @@ public class NvoCsAdqlDelegate extends NvoConeSearchDelegate implements AdqlQuer
       /**/
       public void registerListener(DelegateQueryListener newListener)
       {
-      }
-      
-      /** Register a job monitor with the query.
-       * @deprecated - use registerWebListener
-       */
-      public void registerJobMonitor(URL url) throws IOException
-      {
+         throw new UnsupportedOperationException("Web listeners not yet defined");
       }
       
       /**
@@ -190,13 +200,81 @@ public class NvoCsAdqlDelegate extends NvoConeSearchDelegate implements AdqlQuer
        */
       public void fireStatusChanged(QueryStatus newStatus)
       {
+         for (int i=0;i<listeners.size();i++)
+         {
+            log.trace("Notifying "+listeners.elementAt(i)+" of new status "+newStatus);
+            
+            try {
+               ((WebNotifier) listeners.elementAt(i)).tellServer(getId(), newStatus);
+            }
+            catch (ServiceException se) {
+               log.error("Could not tell server using "+listeners.elementAt(i),se);
+            }
+            
+         }
       }
       
       /**
        * Send results to myspace
        */
-      public void sendResults(InputStream resultsDoc)
+      public void sendResults(InputStream resultsDoc) throws IOException
       {
+         /**
+         if (destinationServer == null) {
+            //store locally
+            File resultsFile = workspace.makeWorkFile("results");
+            FileOutputStream out = new FileOutputStream(resultsFile);
+            Piper.pipe(resultsDoc, out);
+            out.close();
+            
+            resultsUrl = resultsFile.toURL();
+               
+            return;
+         }
+          */
+         
+         MySpaceManagerDelegate myspace = null;
+      
+         if (destinationServer.equals(MySpaceDummyDelegate.DUMMY)) {
+            myspace = new MySpaceDummyDelegate(destinationServer.toString());
+         } else {
+            myspace = new MySpaceManagerDelegate(destinationServer.toString());
+         }
+
+         String myspaceFilename = getId()+"_results";
+         ByteArrayOutputStream ba = new ByteArrayOutputStream();
+
+         try
+         {
+            Piper.pipe(resultsDoc, ba);
+            ba.close();
+         }
+         catch (IOException ioe)
+         {
+            log.error("Failed to read results from server "+serverUrl, ioe);
+         }
+
+         String resultsLoc = null;
+         
+         try {
+            myspace.saveDataHolding(getUserId(), getCommunityId(), getCredentials(), myspaceFilename,
+                              ba.toString(),
+                              "VOTable",
+                              MySpaceDummyDelegate.OVERWRITE);
+
+            resultsLoc = myspace.getDataHoldingUrl(getUserId(), getCommunityId(), getCredentials(), myspaceFilename);
+
+            resultsUrl = new URL(resultsLoc);
+
+         }
+         catch (MalformedURLException e) {
+            log.error("Invalid URL '"+resultsLoc+"' returned by myspace for results location");
+         }
+            
+         catch (Exception e) {
+            log.error("Failed to store results correctly in myspace at "+destinationServer, e);
+         }
+
       }
    }
    
@@ -204,10 +282,25 @@ public class NvoCsAdqlDelegate extends NvoConeSearchDelegate implements AdqlQuer
     * Creates a delegate to handle access to the nvo conesearch server
     * at the given endpoint
     */
-   public NvoCsAdqlDelegate(String givenEndpoint)
+   public AdqlNvoConeDelegate(String givenEndpoint)
    {
-      this.endPoint = givenEndpoint;
+      super(givenEndpoint);
    }
+   
+   /**
+    * Set user credentials (for myspace access)
+    */
+   public void setUserCredentials(String newUserId, String newCommunityId, String newCredentials)
+   {
+      this.userId = newUserId;
+      this.communityId = newCommunityId;
+      this.credentials = newCredentials;
+   }
+
+   public String getUserId()        { return userId; }
+   public String getCommunityId()   { return communityId; }
+   public String getCredentials()   { return credentials; }
+   
    
    /**
     * Constructs the query at the
@@ -220,7 +313,13 @@ public class NvoCsAdqlDelegate extends NvoConeSearchDelegate implements AdqlQuer
     */
    public DatacenterQuery makeQuery(Select adql, String givenId) throws IOException
    {
-      return new NvoConeSearchDummyQuery(;
+      //extract ra, dec, etc from adql
+      Circle circleClause = adql.getTableClause().getWhereClause().getCircle();
+      double ra = circleClause.getRa().getValue();
+      double dec = circleClause.getDec().getValue();
+      double sr = circleClause.getRadius().getValue();
+      
+      return new NvoConeSearchDummyQuery(ra, dec, sr, givenId);
    }
    
    /**
@@ -229,15 +328,29 @@ public class NvoCsAdqlDelegate extends NvoConeSearchDelegate implements AdqlQuer
     * such as registering listeners or setting the destination for the results.
     *
     * @param adql object model
+    * @todo create unique id
     */
    public DatacenterQuery makeQuery(Select adql) throws IOException
    {
-      return null;
+        return makeQuery(adql, generateId());
    }
    
    /**
-    * returns the full datacenter metadata.  Implementations might like to
-    * cache it locally (but remember threadsafety)...
+    * Generates an id for the query.  This should be unique at least locally -
+    * probably in some general sense too but we don't seem to have a mechanism
+    * for doing that yet
+    * @todo generate locally unique id properly
+    */
+   protected String generateId()
+   {
+      //return serverUrl;
+      return new Date().toString();
+   }
+   
+   /**
+    * returns the metadata.  some cone servers return metadata when you send
+    * a blank or zero search. This one just returns fixed metadata suitable
+    * for describing the 'columns' etc you can search on...
     */
    public Metadata getMetadata() throws IOException
    {
@@ -250,11 +363,14 @@ public class NvoCsAdqlDelegate extends NvoConeSearchDelegate implements AdqlQuer
     * @param resultsformat string specifying how the results will be returned (eg
     * votable, fits, etc) strings as given in the datacenter's metadata
     * @param ADQL
-    * @todo move adql package into common
     */
    public DatacenterResults doQuery(String resultsFormat, Select adql) throws IOException
    {
-      return null;
+      DatacenterQuery query = makeQuery(adql);
+
+      query.start();
+      
+      return query.getResultsAndClose();
    }
    
    /**
@@ -264,14 +380,17 @@ public class NvoCsAdqlDelegate extends NvoConeSearchDelegate implements AdqlQuer
     */
    public int countQuery(Select adql) throws IOException
    {
-      return 0;
+      throw new UnsupportedOperationException();
    }
    
    
 }
 
 /*
-$Log: NvoCsAdqlDelegate.java,v $
+$Log: AdqlNvoConeDelegate.java,v $
+Revision 1.1  2003/11/18 00:34:37  mch
+New Adql-compliant cone search
+
 Revision 1.1  2003/11/17 20:47:57  mch
 Adding Adql-like access to Nvo cone searches
 

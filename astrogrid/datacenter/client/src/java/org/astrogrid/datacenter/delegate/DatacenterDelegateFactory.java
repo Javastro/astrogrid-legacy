@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegateFactory.java,v 1.2 2003/11/17 20:47:57 mch Exp $
+ * $Id: DatacenterDelegateFactory.java,v 1.3 2003/11/18 00:34:37 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -13,7 +13,7 @@ import org.astrogrid.datacenter.delegate.agss.SocketDelegate;
 import org.astrogrid.datacenter.delegate.agws.WebDelegate;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.datacenter.delegate.nvocone.NvoConeSearchDelegate;
-import org.astrogrid.datacenter.delegate.nvocone.NvoCsAdqlDelegate;
+import org.astrogrid.datacenter.delegate.nvocone.AdqlNvoConeDelegate;
 
 /**
  * Constructs the right delegate for the given service
@@ -45,7 +45,7 @@ public class DatacenterDelegateFactory
       }
 
       //if the url includes ?CAT it's an nvo-server
-      if (givenEndPoint.indexOf("?CAT=") >-1)
+      if (givenEndPoint.toUpperCase().indexOf("?CAT=") >-1)
       {
          return new NvoConeSearchDelegate(givenEndPoint);
       }
@@ -86,9 +86,9 @@ public class DatacenterDelegateFactory
       //at some point, we ought to be able to make an AdqlQuerier-implementation
       //that runs on conesearches....
       //if the url includes ?CAT it's an nvo-server
-      if (givenEndPoint.indexOf("?CAT=") >-1)
+      if (givenEndPoint.indexOf("?") >-1)
       {
-         return new NvoCsAdqlDelegate(givenEndPoint);
+         return new AdqlNvoConeDelegate(givenEndPoint);
       }
 
       if (givenEndPoint.startsWith("socket")) {
@@ -102,6 +102,9 @@ public class DatacenterDelegateFactory
 
 /*
 $Log: DatacenterDelegateFactory.java,v $
+Revision 1.3  2003/11/18 00:34:37  mch
+New Adql-compliant cone search
+
 Revision 1.2  2003/11/17 20:47:57  mch
 Adding Adql-like access to Nvo cone searches
 

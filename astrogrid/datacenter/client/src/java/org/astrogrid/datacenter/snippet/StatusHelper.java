@@ -1,5 +1,5 @@
 /*
- * $Id: StatusHelper.java,v 1.1 2003/11/17 12:53:07 mch Exp $
+ * $Id: StatusHelper.java,v 1.2 2003/11/18 00:34:37 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -65,7 +65,7 @@ public class StatusHelper
    <jobstep name="{5}" stepNumber="{6}" status="{7}"/>
 </job>
    </pre>
-    */
+    *
    public static String makeJobNotificationTag(DatabaseQuerier querier)
    {
       return

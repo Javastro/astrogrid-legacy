@@ -1,5 +1,5 @@
 /*
- * $Id: NvoConeSearchDelegate.java,v 1.3 2003/11/17 16:59:12 mch Exp $
+ * $Id: NvoConeSearchDelegate.java,v 1.4 2003/11/18 00:34:37 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -28,7 +28,7 @@ import org.xml.sax.SAXException;
 public class NvoConeSearchDelegate implements ConeSearcher
 {
    
-   String serverUrl = null;
+   protected String serverUrl = null;
    
    public NvoConeSearchDelegate(String baseUrl)
    {
@@ -80,6 +80,9 @@ public class NvoConeSearchDelegate implements ConeSearcher
 
 /*
 $Log: NvoConeSearchDelegate.java,v $
+Revision 1.4  2003/11/18 00:34:37  mch
+New Adql-compliant cone search
+
 Revision 1.3  2003/11/17 16:59:12  mch
 ConeSearcher.coneSearch now returns stream not parsed element, throws IOException
 

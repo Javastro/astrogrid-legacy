@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-16"?>
+<Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SelectionAll/>
+  <TableClause>
+    <FromClause>
+      <TableReference>
+        <Table>
+          <Name>Tab</Name>
+
+          <AliasName>t</AliasName>
+        </Table>
+      </TableReference>
+    </FromClause>
+    <WhereClause>
+      <!--RegionSearch-->
+        <Circle xmlns:q1="urn:nvo-region" xsi:type="q1:circleType">
+          <Ra><Value>120</Value></Ra>
+          <Dec><Value>90</Value></Dec>
+          <Radius><Value>10</Value></Radius>
+        </Circle>
+      <!--/RegionSearch-->
+    </WhereClause>
+  </TableClause>
+
+</Select>
