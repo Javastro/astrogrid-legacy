@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/AccountManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/09/15 16:05:45 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/17 09:16:10 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.10  2003/09/17 09:16:10  KevinBenson
+ *   Added the Myspace call
+ *
  *   Revision 1.9  2003/09/15 16:05:45  KevinBenson
  *   *** empty log message ***
  *
@@ -53,10 +56,13 @@ import org.exolab.castor.jdo.DuplicateIdentityException ;
 import org.exolab.castor.jdo.TransactionNotInProgressException ;
 import org.exolab.castor.jdo.ClassNotPersistenceCapableException ;
 
+import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
+
 import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.GroupData ;
 import org.astrogrid.community.policy.data.AccountData ;
 import org.astrogrid.community.policy.data.CommunityIdent ;
+import org.astrogrid.community.common.CommunityConfig;
 
 public class AccountManagerImpl
 	implements AccountManager
@@ -232,6 +238,15 @@ public class AccountManagerImpl
 		// Need to return something to the client.
 		// Possibly a new DataObject ... ?
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
+      if(account != null) {
+         String myspaceCall = CommunityConfig.getProperty("myspace.url.webservice");
+         MySpaceManagerDelegate msmd = new MySpaceManagerDelegate(myspaceCall);
+         try {
+            msmd.createUser(ident.toString(),null);
+         }catch(Exception ouch) {
+            ouch.printStackTrace();
+         }
+      }
 		return account ;
 		}
 
@@ -725,6 +740,15 @@ public class AccountManagerImpl
 		// Need to return something to the client.
 		// Possibly a new DataObject ... ?
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
+      if(account != null) {
+         String myspaceCall = CommunityConfig.getProperty("myspace.url.webservice");
+         MySpaceManagerDelegate msmd = new MySpaceManagerDelegate(myspaceCall);
+         try {
+            msmd.deleteUser(ident.toString());
+         }catch(Exception ouch) {
+            ouch.printStackTrace();
+         }
+      }
 		return account ;
 		}
 
