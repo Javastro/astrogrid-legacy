@@ -1,4 +1,4 @@
-/*$Id: SendMailApplicationDescription.java,v 1.1 2004/08/11 17:40:49 nw Exp $
+/*$Id: SendMailApplicationDescription.java,v 1.2 2004/08/16 11:03:46 nw Exp $
  * Created on 11-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -76,7 +76,7 @@ public class SendMailApplicationDescription extends AbstractApplicationDescripti
     
     /** set up metadata for this instance */
     private final void setMetaData() {
-        setName("org.astrogrid.builtin/sendmail"); 
+        setName("org.astrogrid.localhost/sendmail"); 
         BaseParameterDescription to = new BaseParameterDescription();
         to.setName(TO);
         to.setDisplayName("To-Address");
@@ -252,6 +252,9 @@ public class SendMailApplicationDescription extends AbstractApplicationDescripti
 
 /* 
 $Log: SendMailApplicationDescription.java,v $
+Revision 1.2  2004/08/16 11:03:46  nw
+first stab at a cat application
+
 Revision 1.1  2004/08/11 17:40:49  nw
 implemented send mail application
  
