@@ -5,7 +5,7 @@ import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource ;
 
-// import org.astrogrid.community.User;
+import org.astrogrid.community.User;
 
 import java.util.Vector;
 

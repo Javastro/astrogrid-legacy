@@ -50,7 +50,10 @@ public class MMC extends Configurator {
 	/** URL Location of MySpaceServer. */
 		serverManagerLoc = "MYSPACESERVERURL",
 	/** URLs all MySpaceManager within the astrogrid system*/
-	    MYSPACEMANAGERURLs = "MYSPACEMANAGERURLs";
+	    MYSPACEMANAGERURLs = "MYSPACEMANAGERURLs",
+            SERVERDEPLOYMENT = "SERVERDEPLOYMENT",
+            DEBUG = "DEBUG",
+            CHECKPERMISSIONS = "CHECKPERMISSIONS";
 
     public static String
 	/** response template*/
