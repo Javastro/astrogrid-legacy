@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierTest.java,v 1.3 2003/09/05 13:44:45 nw Exp $
+ * $Id: QuerierTest.java,v 1.4 2003/09/08 16:42:29 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -37,7 +37,7 @@ public class QuerierTest extends TestCase
 
       //and results should produce a valid xml document: this will parse it in
       //into a DOM tree
-      Document doc = results.toVotable(null);
+      Document doc = results.toVotable();
       assertNotNull("results.toVotable() returns null",doc);
 
       //this gives a visual test but isn't much use for automated testers

@@ -1,11 +1,11 @@
-/*$Id: SqlResultsTest.java,v 1.1 2003/09/05 01:05:32 nw Exp $
+/*$Id: SqlResultsTest.java,v 1.2 2003/09/08 16:43:16 mch Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.queriers.sql;
@@ -37,7 +37,7 @@ public class SqlResultsTest extends HsqlTestCase {
          conn = new HsqlDataSource().getConnection();
          assertNotNull(conn);
            String script = getResourceAsString("create-test-db.sql");
-         runSQLScript(script,conn);   
+         runSQLScript(script,conn);
      }
      protected Connection conn;
 
@@ -56,7 +56,7 @@ public class SqlResultsTest extends HsqlTestCase {
         ResultSet rs = stmnt.executeQuery("select id,firstName,lastName from people order by id"); // deterministic query
         assertNotNull(rs);
         assertTrue(rs.first());
-        SqlResults res = new SqlResults(rs);
+        SqlResults res = new SqlResults(rs, null);
         assertNotNull(res);
         InputStream is = res.getInputStream();
         assertNotNull(is);
@@ -71,8 +71,11 @@ public class SqlResultsTest extends HsqlTestCase {
 }
 
 
-/* 
+/*
 $Log: SqlResultsTest.java,v $
+Revision 1.2  2003/09/08 16:43:16  mch
+Moved workspace parameter from QueryResults.toVotable() to QueryResults() constructor, created from querier which already has workspace
+
 Revision 1.1  2003/09/05 01:05:32  nw
 added testing of SQLQuerier over an in-memory Hsql database,
 
