@@ -1,13 +1,13 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/release/webapp/config/sql/Attic/create.sql,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/12/17 15:16:00 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/12/31 18:18:27 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: create.sql,v $
- *   Revision 1.1  2003/12/17 15:16:00  dave
- *   Fixed missing properties in config files
+ *   Revision 1.2  2003/12/31 18:18:27  dave
+ *   Updated install script and added INSTALL.txt to release webapp
  *
  *   Revision 1.11  2003/09/24 15:47:38  dave
  *   Added policy database loader tools.

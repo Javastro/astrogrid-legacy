@@ -1,0 +1,228 @@
+Installation notes for the AstroGrid Community service.
+
+------------------------"------------------------
+Simple installation.
+This is enough to install a test service on a local machine.
+
+The following instructions assume that you have Tomcat and Ant installed on
+your machine. Note, to run the default install, you will need root access
+to create the configuration and data directories.
+
+Download the zip file, and unpack it in a temp location of your choice. The
+zip file should contain the following files and directories.
+
+astrogrid-community-1.4.1.zip
+  |
+  +- build.xml
+  |
+  +- war
+  |    \-- astrogrid-community-1.4.1.war
+  |
+  \- config
+       |
+       +-- astrogrid-community-config-1.4.1.xml
+       +-- astrogrid-community-database-1.4.1.xml
+       +-- astrogrid-community-mapping-1.4.1.xml
+       |
+       +-- xml
+       |    |
+       |    +-- test.astrogrid.org.xml
+       |    \-- ....
+       |
+       +-- jar
+       |    |
+       |    +-- astrogrid-community-policy-client-1.4.1.jar
+       |    +-- astrogrid-community-policy-server-1.4.1.jar
+       |    \-- ....
+       |
+       +-- sql
+       |    |
+       |    \-- create.sql
+       |
+       \-- xsl
+            |
+            +-- config.xsl
+            +-- database.xsl
+            \-- webapp.xsl
+
+The 'war' directory contains the actual web application itself, packaged as
+a war file.
+ The 'config' directory contains the configuration files, and all the tools
+ required to setup and configure the service.
+
+The top level build.xml file is an Ant script with tasks to install and
+configure the web application.
+
+The build.xml file contains a number of pre-configured properties that you
+may need alter before you run the commands. Please check that the following
+properties reflect your local configuration.
+
+    <!--+
+        | The location of your Tomcat installation.
+        | If you don't have the CATALINA_HOME environment variable set,
+        | then you can set this to a specific location.
+        +-->
+    <property name="tomcat.home"    value="${env.CATALINA_HOME}"/>
+
+    <!--+
+        | Your community name.
+        | This is used to configure your community service,
+        | and to load the initial data.
+        +-->
+    <property name="community.name" value="test.astrogrid.org"/>
+
+    <!--+
+        | Config files location.
+        +-->
+    <property name="config.home" value="/etc/astrogrid/community"/>
+
+    <!--+
+        | Database files location.
+        +-->
+    <property name="data.home" value="/var/astrogrid/community"/>
+
+
+To install the webapp, type the following command :
+
+	ant install
+
+This just copies the war file into the webapps directory of your Tomcat
+installation. If your version of Tomcat is configured to automatically
+detect new webapps, then it will find the new war file and unpack it for
+you. If not, then you may need to restart Tomcat to get it to register the
+new webapp..
+
+Once Tomcat has unpacked the war file, you then need to install the config
+files and configure the web service.
+To do this, type the following command :
+
+	ant config
+
+This will run a series of Ant tasks to setup the configuration files, and
+then load the initial database data into the service. If this all works
+properly, then you should have a running Community service.
+
+------------------------"------------------------
+Detailed installation
+If you want to customise your configuration, then the following section
+explains what each of the configuration stages does.
+
+The first task, 'ant install', just copies the war file into the webapps
+directory of your Tomcat installation. If the webapp is already installed,
+then you can skip this step.
+
+Note that the 'ant install' task renames the war file from
+'astrogrid-community-1.4.1.war' to 'astrogrid-community.war', removing the
+version number from the name. When the war file is unpacked and installed
+by Tomcat, then name of the war file becomes the name of the web
+application in the service URL. All of the Community components default to
+using http://hostname:8080/astrogrid-community/services/ServiceName as the
+service URL. You can change the application name. However, you will also
+need to change the endpoint URL used by any client components that access
+the service.
+
+The second step 'ant config' runs a series of smaller Ant tasks to
+configure the service.
+
+  <!--+
+      | Deploy our config.
+      | These need to be run after Tomcat has unpacked our war file.
+      +-->
+  <target name="config" depends="">
+      <!-- Deploy our config files -->
+      <antcall target="deploy.config"/>
+      <!-- Set the webapp JNDI property -->
+      <antcall target="config.jndi"/>
+      <!-- Configure the database params -->
+      <antcall target="config.database"/>
+      <!-- Create the database tables -->
+      <antcall target="init.database"/>
+      <!-- Load the database tables -->
+      <antcall target="load.database"/>
+  </target>
+
+The first step, 'deploy.config', creates the config directory,
+'/etc/astrogrid/community', and copies the new config files across. If you
+are installing the service over the top of an existing installation, then
+you may want to skip this step, or take a backup copy of your existing
+installation files. If you do not have root access to the target system,
+you may not be able to create the directory at the default location,
+'/etc/astrogrid/community'. In which case, you can change the location of
+the configuration files by altering the property in the build.xml script.
+
+  <!--+
+      | Config files location.
+      +-->
+  <property name="config.home" value="/etc/astrogrid/community"/>
+
+The next step, 'config.jndi', sets a JNDI property in the webapp 'web.xml'
+file to point to the location of the configuration files. It uses an XSLT
+transform to add the following entry to the end of the 'web.xml' file.
+
+  <web-app>
+    ....
+    <env-entry>
+      <!--JNDI property for community config-->
+      <env-entry-name>org.astrogrid.community.config</env-entry-name>
+      <env-entry-value>/etc/astrogrid/community/astrogrid-community-config.xml</env-entry-value>
+      <env-entry-type>java.lang.String</env-entry-type>
+    </env-entry>
+  </web-app>
+
+At the moment, this needs to be done separately for each of the Astrogrid
+webapps.
+Next release we hope to be able to add one global JNDI property in the
+Tomcat configuration rather than separate JNDI entries for each individual
+web application.
+
+The next step, 'config.database', creates the directory for the database
+files, and uses a series of XSLT transforms to update the database settings
+in the config files. If you do not have root access to the target system,
+you may not be able to create the directory at the default location,
+'/var/astrogrid/community'. In which case, you can change the location of
+the database files by altering the property in the build.xml script.
+
+  <!--+
+      | Database files location.
+      +-->
+  <property name="data.home" value="/var/astrogrid/community"/>
+
+The next step, 'init.database', uses an SQL script to create the database
+tables.
+If you already have an existing database, then you may want to skip this
+step.
+
+The final step, 'load.database', loads the initial test data into your
+database. If you already have an existing database, then you may want to
+skip this step.
+
+This uses the 'community.name' property to select which data file to load.
+If the 'community.name' is set to 'test.astrogrid.org', then it will load
+the initial data from a file called 'test.astrogrid.org.xml' in the
+'config/xml' directory.
+
+For testing, you can add additional properties to the existing data file,
+or you can create your own, based on the example data provided.
+
+If you want to create your own test data, then you need to change the
+'community.name' property in the 'build.xml' file,
+
+  <!--+
+      | Your community name.
+      +-->
+  <property name="community.name" value="my.community.org"/>
+
+and create a corresponding data file in the 'config/xml' directory.
+
+  \- config
+       |
+       \-- xml
+            |
+            +-- test.astrogrid.org.xml
+            \-- my.community.org.xml
+
+Note, the 'load.database' task does not connect directly to the database.
+It connects to the web service, and uses the WebService API to add the data
+to the community database. For this to work, you need to have the
+WebService installed and running.
+

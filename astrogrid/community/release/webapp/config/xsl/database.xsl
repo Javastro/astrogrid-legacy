@@ -2,11 +2,14 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/release/webapp/config/xsl/Attic/database.xsl,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/12/17 15:16:00 $</cvs:date>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/31 18:18:27 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     |   $Log: database.xsl,v $
-    |   Revision 1.1  2003/12/17 15:16:00  dave
+    |   Revision 1.2  2003/12/31 18:18:27  dave
+    |   Updated install script and added INSTALL.txt to release webapp
+    |
+    |   Revision 1.2  2003/12/17 15:16:01  dave
     |   Fixed missing properties in config files
     |
     |   Revision 1.1  2003/12/16 16:44:30  dave

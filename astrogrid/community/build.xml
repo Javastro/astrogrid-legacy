@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/12/17 15:16:00 $</cvs:date>
-    | <cvs:version>$Revision: 1.53 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/31 18:18:26 $</cvs:date>
+    | <cvs:version>$Revision: 1.54 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.54  2003/12/31 18:18:26  dave
+    |   Updated install script and added INSTALL.txt to release webapp
+    |
     |   Revision 1.53  2003/12/17 15:16:00  dave
     |   Fixed missing properties in config files
     |
@@ -1077,7 +1080,7 @@
         | Unpack our Axis webapp war file.
         +-->
     <target name="axis.webapp.unwar" depends="">
-        <unwar src="${jar.cache.local}/axis/wars/axis-${axis.version}.war" dest="${axis.home}/webapp"/>
+        <unwar src="${jar.cache.local}/axis/jars/axis-${axis.version}.war" dest="${axis.home}/webapp"/>
     </target>
 
     <!--+
@@ -3275,8 +3278,16 @@ To repeat
 		</copy>
 
 		<!--+
+			| Add the installation instructions.
+			+-->
+        <copy verbose="false" overwrite="true"
+            file="src/doc/release/INSTALL.txt"
+            toFile="release/webapp/INSTALL.txt"/>
+
+		<!--+
 			| Wrap the whole lot up as a zip file
 			+-->
+		<zip destfile="release/${project.name}-${project.version}.zip" basedir="release/webapp"/>
 
     </target>
 

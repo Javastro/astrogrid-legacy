@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/ant/Attic/deploy.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/12/17 15:16:01 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/31 18:18:29 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: deploy.xml,v $
+    |   Revision 1.6  2003/12/31 18:18:29  dave
+    |   Updated install script and added INSTALL.txt to release webapp
+    |
     |   Revision 1.5  2003/12/17 15:16:01  dave
     |   Fixed missing properties in config files
     |
@@ -27,21 +30,30 @@
     | </cvs:log>
     |
     | Webapp deployment script.
-	| Adds all of the components in the right places and sets up the configuration files.
+    | Adds all of the components in the right places and sets up the configuration files.
     |
     |
     +-->
 <project default="init" basedir="." name="Community">
 
     <!--+
-        | Configuration properties.
-        | TODO - Default to env.CATALINA_HOME ?
+        | Prefix for system properties.
         +-->
+    <property environment="env"/>
+
     <!--+
+        | The location of your Tomcat installation.
+        | If you don't have the CATALINA_HOME environment variable set, then you can set this to a specific location.
     <property name="tomcat.home"    value="/usr/java/servers/tomcat/jakarta-tomcat-4.1.24-LE-jdk14"/>
     <property name="tomcat.home"    value="/usr/local/jakarta-tomcat-4.1.24"/>
-    +-->
-    <property name="tomcat.home"    value="/usr/java/servers/tomcat/jakarta-tomcat-4.1.24-LE-jdk14"/>
+        +-->
+    <property name="tomcat.home"    value="${env.CATALINA_HOME}"/>
+
+    <!--+
+        | Your community name.
+        | This is used to configure your community service, and to load the initial data.
+        | If you change this, then you need to create a corresponding data file to load the initial community data.
+        +-->
     <property name="community.name" value="test.astrogrid.org"/>
 
     <!--+
@@ -103,13 +115,6 @@
     <property name="tomcat.server"  value="${tomcat.host}:${tomcat.port}"/>
     <property name="tomcat.url"     value="http://${tomcat.server}"/>
     <property name="tomcat.timeout" value="60"/>
-
-    <!--+
-        | Tomcat manager properties.
-    <property name="tomcat.manager.url"      value="${tomcat.url}/manager"/>
-    <property name="tomcat.manager.username" value="astrogrid"/>
-    <property name="tomcat.manager.password" value="please"/>
-        +-->
 
     <!--+
         | Bootstrap classpath for Tomcat
@@ -414,8 +419,8 @@
         | Depoly our webapp.
         | This just copies our war file into the Tomcat webapps directory.
         +-->
-    <target name="webapp" depends="">
-		<!-- Deploy our webapp -->
+    <target name="install" depends="">
+        <!-- Deploy our webapp -->
         <antcall target="deploy.webapp"/>
     </target>
 
@@ -424,15 +429,15 @@
         | These need to be run after Tomcat has unpacked our war file.
         +-->
     <target name="config" depends="">
-		<!-- Deploy our config files -->
+        <!-- Deploy our config files -->
         <antcall target="deploy.config"/>
-		<!-- Set the webapp JNDI property -->
+        <!-- Set the webapp JNDI property -->
         <antcall target="config.jndi"/>
-		<!-- Configure the database params -->
+        <!-- Configure the database params -->
         <antcall target="config.database"/>
-		<!-- Create the database tables -->
+        <!-- Create the database tables -->
         <antcall target="init.database"/>
-		<!-- Load the database tables -->
+        <!-- Load the database tables -->
         <antcall target="load.database"/>
     </target>
 
