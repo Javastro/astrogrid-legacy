@@ -3,8 +3,8 @@ package org.astrogrid.mySpace.mySpaceStatus;
 import java.io.*;
 import java.util.*;
 
-// import org.apache.commons.logging.Log;
-// import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * The <code>Logger</code> class is the MySpace class for logging
@@ -18,7 +18,8 @@ import java.util.*;
  * (iii) standard output.
  *
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 4.
+ * @since Iteration 4.
+ * @version Iteration 5.
  */
 
 public class Logger
@@ -29,8 +30,8 @@ public class Logger
 //    MySpace log file name.
    private static String mySpaceLogFileName = "./myspace.log";
 
-   private static String userId = null;        // User Identifier.
-   private static String communityId = null;   // Community Identifier.
+   private static String accountId = null;   // Account Identifier.
+   private static String actionName = null;  // Name of invoking action.
 
 //
 //PrintWriter for the MySpace log.
@@ -40,7 +41,7 @@ public class Logger
 //
 //Logger for the Jakata commons logging.
 
-//   private static Log commonsLog = LogFactory.getLog(Logger.class); 
+   private static Log commonsLog = LogFactory.getLog(Logger.class); 
 
 //
 // ------------------------------------------------------------------------
@@ -92,16 +93,14 @@ public class Logger
       {  try
          {  FileOutputStream fos = new FileOutputStream(
               mySpaceLogFileName, true);
-//              "/home/avo/myspacedata/myspace.log", true);
             mySpaceLogWriter = new PrintWriter(fos);
 
             Date startDate = new Date();
-            String startMessage = " ===== Start of MySpace logging "
-              + "session " + startDate.toString();
+            String startMessage = "===== Start of MySpace Service "
+              + "logging session " + startDate.toString();
 
             mySpaceLogWriter.println(startMessage);
             mySpaceLogWriter.flush();
-            mySpaceLogWriter.close();
          }
          catch (Exception all)
          {  all.printStackTrace();
@@ -137,12 +136,24 @@ public class Logger
 // Methods.
 
 /**
- * Set the details of the current user of the MySpace system.
+ * Set the details of the current Account using the MySpace system.
+ *
+ * @param account Account identifier or name.
  */
 
-   public void setUser (String userId, String communityId)
-   {  this.userId = userId;
-      this.communityId = communityId;
+   public void setAccount (String accountId)
+   {  this.accountId = accountId;
+   }
+
+
+/**
+ * Set the details of the current action.
+ *
+ * @param actionName Name of the current action.
+ */
+
+   public void setActionName (String actionName)
+   {  this.actionName = actionName;
    }
 
 
@@ -158,15 +169,15 @@ public class Logger
 
       Date currentDate = new Date();
 
-      String messageHead = "--- MySpace service " + currentDate.toString()
+      String messageHead = "--- MySpace " + currentDate.toString()
         + " (";
 
-      if (userId != null)
-      {  messageHead = messageHead + "user: " + userId + "@";
+      if (accountId != null)
+      {  messageHead = messageHead +  accountId + ", ";
       }
 
-      if (communityId != null)
-      { messageHead = messageHead  + communityId;
+      if (actionName != null)
+      { messageHead = messageHead  +  actionName;
       }
 
       messageHead = messageHead + ") --- \n";
@@ -174,15 +185,14 @@ public class Logger
 //
 //   Assemble the complete, final message.
 
-      String completeMessage = messageHead + message;
+      String completeMessage = messageHead + "  " + message + "\n";
 
 //
 //   If required append the message to the AstroGrid log.
 
       if (astroGridLog)
       {  try
-         {
-//         {  commonsLog.info(completeMessage);
+         {  commonsLog.info(completeMessage);
          }
          catch (Exception all)
          {  all.printStackTrace();
@@ -194,14 +204,8 @@ public class Logger
 
       if (mySpaceLog)
       {  try
-         {  FileOutputStream fos = new FileOutputStream(
-              mySpaceLogFileName, true);
-//             "/home/avo/myspacedata/myspace.log", true);
-            mySpaceLogWriter = new PrintWriter(fos);
-
-            mySpaceLogWriter.println(completeMessage);
+         {  mySpaceLogWriter.println(completeMessage);
             mySpaceLogWriter.flush();
-            mySpaceLogWriter.close();
          }
          catch (Exception all)
          {  all.printStackTrace();
@@ -234,13 +238,8 @@ public class Logger
 
       if (mySpaceLog)
       {  try
-         {  FileOutputStream fos = new FileOutputStream(
-              mySpaceLogFileName, true);
-//             "/home/avo/myspacedata/myspace.log", true);
-            mySpaceLogWriter = new PrintWriter(fos);
-
-            Date closeDate = new Date();
-            String closeMessage = " ===== Close of MySpace logging "
+         {  Date closeDate = new Date();
+            String closeMessage = "===== Close of MySpace logging "
               + "session " + closeDate.toString() + "\n\n";
 
             mySpaceLogWriter.println(closeMessage);

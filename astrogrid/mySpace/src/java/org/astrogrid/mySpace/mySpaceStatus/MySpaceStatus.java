@@ -157,7 +157,8 @@ public class MySpaceStatus
 
          StatusResults message = new StatusResults();
          message.setSeverity( currentCode.getType() );
-         message.setMessage( currentCode.getCodeMessage() );
+         message.setMessage( currentCode.getCode() + " " +
+           currentCode.getCodeMessage() );
          message.setTimeStamp(timeStamp);
 
          statusResults.add(message);
@@ -165,10 +166,6 @@ public class MySpaceStatus
 
       return statusResults;
    }
-
-
-
-
 
 
 //
