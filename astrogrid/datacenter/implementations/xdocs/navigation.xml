@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AstroGrid">
+
+  <title>AstroGrid Project</title>
+
+  <body>
+  <!--
+    <menu name="Publishers Astrogrid Library">
+    	<item name="Download PAL snapshot" href="pal.zip" />
+    </menu>
+  -->
+    <menu name="Subprojects">
+    	<item name="SixdF" href="../sixdF/index.html" />
+	<item name="Merlin" href="../merlin/index.html" />
+	<item name="CDS Vizier" href="../cdsdelegate/index.html" />
+	<item name="mch" href="../mch/index.html" />
+	<item name="Installation test" href="../installation-test/index.html" />
+	<item name="http2java" href="../http2java/index.html" />
+    </menu>
+    <links>
+       <item name="AstroGrid"  href="http://www.astrogrid.org"/>
+       <item name="Projects"   href="http://www.astrogrid.org/maven/build/index.html"/>
+       <item name="DataCenter" href="../../index.html"/>
+    </links>
+  </body>
+</project>

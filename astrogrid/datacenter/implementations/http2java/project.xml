@@ -5,10 +5,10 @@
   <pomVersion>3</pomVersion>
 
   <!-- a unique name for this project -->
-  <id>http2soap</id>
+  <id>http2java</id>
 
   <!-- a short but descriptive name for the project -->
-  <name>HTTP - SOAP Adapter</name>
+  <name>HTTP - Java Adapter</name>
 
   <!-- The version of the project under development, e.g.
        1.1, 1.2, 2.0-dev -->
@@ -16,9 +16,9 @@
 
 
   <description>
-	Adapater SOAP service that wraps a legacy web application
-	converts between SOAP messages and HTTP-POST / HTTP-GET to
-	CGI scripts.
+	Adapater library that wraps a legacy web application
+	converts between java method calls and HTTP-POST / HTTP-GET to
+	CGI scripts. Can be used as the back end for a SOAP server that wraps a legacy web application.
   </description>
   <!-- a short description of what the project does -->
   <shortDescription>
