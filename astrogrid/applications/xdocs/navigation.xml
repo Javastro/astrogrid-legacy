@@ -5,7 +5,10 @@
 
   <body>
     <menu name="Background Information">
-    	<item name="Workgroup" href="http://wiki.astrogrid.org/bin/view/Astrogrid/Itn04ApplicationIntegration" />
+    	<item name="Workgroup" href="http://wiki.astrogrid.org/bin/view/Astrogrid/ApplicationIntegrationItn04" />
+    	<item name="Component Description" href="http://wiki.astrogrid.org/bin/view/Astrogrid/ApplicationsIntegration" />
+    	<item name="UML Design" href="http://www.astrogrid.org/maven/design/applications/" />   
+    	<item name="Schema"  href=""/>	
     </menu>
     <links>
        <item name="AstroGrid"  href="http://www.astrogrid.org"/>
