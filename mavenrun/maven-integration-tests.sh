@@ -2,7 +2,7 @@ BUILD_DIR=/home/maven/build
 SCRIPTHOME=/home/maven/mavenrun
 OLDDIR=$PWD
 PROJECT_NAME=integrationTests
-LOG_FILE=maven-integration-tests.log
+LOG_FILE=maven-build-integrationTests.log
 
 DATE=`date`
 TIMESTAMP=`date +%Y%m%d-%T`
