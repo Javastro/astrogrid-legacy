@@ -23,8 +23,8 @@ public class UserHelper {
 		ActionUtils utils = ActionUtilsFactory.getActionUtils();
 		
 		String account = utils.getAnyParameter(UserHelper.PARAM_ACCOUNT, params, request, session);
-		String group = utils.getAnyParameter(UserHelper.PARAM_ACCOUNT, params, request, session);
-		String token = utils.getAnyParameter(UserHelper.PARAM_ACCOUNT, params, request, session);
+		String group = utils.getAnyParameter(UserHelper.PARAM_GROUP, params, request, session);
+		String token = utils.getAnyParameter(UserHelper.PARAM_TOKEN, params, request, session);
 		
 		return new User(account, group, token);
 	}
