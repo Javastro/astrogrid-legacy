@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.15 2004/03/02 01:29:48 mch Exp $
+ * $Id: Config.java,v 1.16 2004/03/04 20:25:02 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,6 +8,7 @@ package org.astrogrid.config;
 
 
 import java.io.IOException;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
@@ -50,6 +51,9 @@ public abstract class Config {
    /** Loads the properties from the file at the given URL  */
    public abstract void loadFromUrl(URL url) throws IOException;
 
+   /** Writes out the configuration keys and values to the given Writer. Used
+    * for site debugging */
+   public abstract void dumpConfig(Writer out);
    
    /**
     * Adds the given string to the list of places the values are being found

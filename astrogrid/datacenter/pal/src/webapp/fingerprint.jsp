@@ -185,7 +185,7 @@
      out.println(t.getMessage());
    }
    
-   ((FailbackConfig) SimpleConfig.getSingleton()).dumpConfig(out);
+   SimpleConfig.getSingleton().dumpConfig(out);
 %>
 </pre>
 

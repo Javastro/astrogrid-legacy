@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.9 2004/03/03 17:29:00 mch Exp $
+ * $Id: FailbackConfig.java,v 1.10 2004/03/04 20:25:02 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
@@ -381,7 +382,10 @@ public class FailbackConfig extends Config {
    /**
     * Dumps config contents
     */
-   public void dumpConfig(PrintWriter out)  {
+   public void dumpConfig(Writer writer)  {
+      
+      PrintWriter out = new PrintWriter(writer);
+      
       out.println("Configuration loaded from: "+loadedFrom());
       out.println();
 
@@ -472,6 +476,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.10  2004/03/04 20:25:02  mch
+Added dumpConfig to Config, and changed argument to general Writer
+
 Revision 1.9  2004/03/03 17:29:00  mch
 Added debug statements
 
@@ -512,6 +519,7 @@ Revision 1.2  2004/02/17 03:54:35  mch
 Nughtily large number of fixes for demo
 
  */
+
 
 
 
