@@ -38,14 +38,14 @@
 			Do you Wish to do a Query?
 		</p>
 		<form method="get" action="registryquery.html" name="RegistryQuery">
-			<select name="mainelement">
+				<select name="mainelement">		
 				<xsl:for-each select="//registryoptions/regoptions/regoption">
 					<xsl:element name="option">
 						<xsl:attribute name="value"><xsl:value-of select="@name"/></xsl:attribute>
 						<xsl:value-of select="@name"/>
 					</xsl:element>				  
 				</xsl:for-each>
-			</select>
+				</select>
 			<br />
 			<input type="submit" name="queryregistry" value="Go Query" />
 		</form>
@@ -53,20 +53,35 @@
 			Or Do you wish to do an Add?
 		</p>
 		<form method="get" action="registryupdate.html" name="RegistryUpdate">
-			<select name="mainelement">
-				<xsl:for-each select="//registryoptions/regoptions/regoption">
+			Main Elements: <br />
+				<select name="mainelement">
+				<xsl:for-each select="//registryoptions/regoptions/regoption">				
 					<xsl:if test="@name != 'Registry'" >
 						<xsl:element name="option">
 							<xsl:attribute name="value"><xsl:value-of select="@name"/></xsl:attribute>
 							<xsl:value-of select="@name"/>
-						</xsl:element>				  
+						</xsl:element>
 					</xsl:if>
 				</xsl:for-each>
-			</select>
+				</select>
 			<br />
 			<input type="submit" name="addregistry" value="Go Add" />
+			<i>Hint: You may query the registry and create a copy of any result found in the registry.</i>
 		</form>		
 		
+		<hr />
+		<br />
+		<i>Obtain new registry:</i>
+		<br />
+		Get Registry metadata:<br />
+		<form method="get" action="registryharvest.html" name="RegistryHarvest">
+			<input type="hidden" name="newregistry" value="true" />
+			<input type="hidden" name="addregistries" value="true" />
+			<b>Url:</b>
+			<input type="text" name="accessurl" />
+			<br />
+			<input type="submit" name="addregistry" value="Go Harvest" />
+		</form>				
 	</xsl:template>
 
 	<!--+

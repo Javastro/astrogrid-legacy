@@ -42,12 +42,6 @@
 			<input type="hidden" name="mainelement">
 				<xsl:attribute name="value"><xsl:value-of select="$mainelement"/></xsl:attribute>
 			</input>			
-			<input type="radio" name="registryname" CHECKED="ON">
-				<xsl:attribute name="value"><xsl:value-of select="$searchregistryname" /></xsl:attribute>
-			</input><xsl:value-of select="$searchregistryname" />
-			<input type="radio" name="registryname">
-				<xsl:attribute name="value"><xsl:value-of select="$publishregistryname" /></xsl:attribute>
-			</input><xsl:value-of select="$publishregistryname" />
 			<br />
 			<select name="selectitem0">
 				<xsl:for-each select="//registryquery/selectitems/selectitem">
@@ -114,7 +108,7 @@
 			<input type="hidden" name="mainelement">
 				<xsl:attribute name="value"><xsl:value-of select="$mainelement"/></xsl:attribute>
 			</input>			
-			<input type="submit" name="addcriteria" value="Add More Criteria's" />
+			<input type="submit" name="addcriteria" value="Add More Criteria" />
 		</form>
 		<br />
 		<br />
@@ -129,6 +123,13 @@
 						<input type="submit" name="update" value="Update This Entry" />
 					</form>
 				</xsl:if>
+					<form method="post" action="registryupdate.html">
+						<input type="hidden" name="createcopy" value="true" />
+						<input type="hidden" name="updatexml">
+							<xsl:attribute name="value"><xsl:value-of select="@val"/></xsl:attribute>
+						</input>
+						<input type="submit" name="update" value="Create Copy" />
+					</form>
 			</xsl:if>
 			<xsl:if test="$mainelement = 'Registry'" >
 				<form method="post" action="registryharvest.html">
@@ -141,7 +142,7 @@
 				</form>
 			</xsl:if>
 			<xsl:value-of select="@val"/>
-			<br /><br />
+			<br /><hr />
 		</xsl:for-each>
 
 

@@ -16,14 +16,14 @@
 		<xsp:include>java.util.ArrayList</xsp:include>
 	</xsp:structure>	    
 	
-	<wrappit>
+	<harvest>
 		<xsp:logic>
 			<![CDATA[
-				String result = (String)request.getParameter("HarvestResult");
+				String result = "nevermind everything held in xsl page";
 			]]>
-			<xsp:element name="test">
+			<xsp:element name="metadata">
 				<xsp:expr>result</xsp:expr>
 			</xsp:element>
 		</xsp:logic>
-	</wrappit>
+	</harvest>
 </xsp:page>

@@ -6,6 +6,8 @@
 
 	<xsl:param name="action" />	
 	<xsl:param name="message" />
+	<xsl:param name="authID" />
+	<xsl:param name="resKey" />	
 	<xsl:param name="ErrorMessage" />
 
 	<!--+
@@ -34,6 +36,8 @@
 		<xsl:if test="$message != ''" >
 			<font color="blue"><xsl:value-of select="$message" /></font>
 		</xsl:if>	
+		<br />
+		<i>Updated and Created attributes will automatically be set when submitted.</i>
 		<form method="get" action="registryupdate.html" name="RegistryUpdate">
 			<xsl:if test="$action = 'add'" >
 				<input type="hidden" name="action" value="add" />
@@ -45,12 +49,20 @@
 			<xsl:for-each select="//registryquery/regitems/regitem">
 				<tr>
 					<td>
-						<xsl:value-of select="@name"/>
+						<xsl:value-of select="@label"/>
 					</td>
 					<td>
 						<input type="text">
 							<xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
 							<xsl:attribute name="value"><xsl:value-of select="@val"/></xsl:attribute>
+							<!--
+							<xsl:if test="$authID = @val" >
+								<xsl:attribute name="disabled">true</xsl:attribute>
+							</xsl:if>
+							<xsl:if test="$resKey = @val" >
+								<xsl:attribute name="disabled">true</xsl:attribute>
+							</xsl:if>							
+							-->
 						</input>
 					</td>
 				</tr>
