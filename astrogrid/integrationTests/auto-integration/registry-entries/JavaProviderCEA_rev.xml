@@ -238,6 +238,10 @@
         <AuthorityID>@REGAUTHORITY@</AuthorityID>
         <ResourceKey>concat</ResourceKey>
       </cea:ApplicationReference>
+      <cea:ApplicationReference>
+        <AuthorityID>@REGAUTHORITY@</AuthorityID>
+        <ResourceKey>siap-image-fetch</ResourceKey>
+      </cea:ApplicationReference>
     </cea:ManagedApplications>
   </Resource>
 </VODescription>

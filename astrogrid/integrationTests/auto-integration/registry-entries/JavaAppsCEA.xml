@@ -125,4 +125,82 @@
       </cea:Interfaces>
     </cea:ApplicationDefinition>
   </Resource>
+  <Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType"
+  xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
+  xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"
+  >
+  <vr:Identifier>
+        <AuthorityID>@REGAUTHORITY@</AuthorityID>
+    <vr:ResourceKey>siap-image-fetch</vr:ResourceKey>
+  </vr:Identifier>
+  <vr:Title>TemplateEntry</vr:Title>
+  <vr:ShortName>TemplateEntry</vr:ShortName>
+  <vr:Summary>
+    <vr:Description>This is part of the astrogrid CEA.</vr:Description>
+    <vr:ReferenceURL>http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+  </vr:Summary>
+  <vr:Type>Other</vr:Type>
+  <vr:Curation>
+    <vr:Publisher>
+      <vr:Title>Astrogrid</vr:Title>
+      <vr:Description>blah blab</vr:Description>
+      <vr:ReferenceURL>http://www.astrogrid.org/</vr:ReferenceURL>
+    </vr:Publisher>
+    <vr:Contact>
+      <vr:Name>Paul Harrison</vr:Name>
+      <vr:Email>pah@jb.man.ac.uk</vr:Email>
+    </vr:Contact>
+    <vr:Date role="representative">2004-03-26</vr:Date>
+    <vr:Creator>
+      <vr:Name>Astrogrid</vr:Name>
+      <vr:Logo>??</vr:Logo>
+    </vr:Creator>
+    <vr:Version>Iteration 5</vr:Version>
+  </vr:Curation>
+  <vr:Subject>???</vr:Subject>
+  <cea:ApplicationDefinition xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+    <cea:Parameters>
+      <cea:ParameterDefinition name="table" type="VOTable">
+        <ceapd:UI_Name>Image List</ceapd:UI_Name>
+        <ceapd:UI_Description>VOTable containing URIs of images</ceapd:UI_Description>
+        <ceapd:UCD />
+        <ceapd:DefaultValue />
+        <ceapd:Units />
+      </cea:ParameterDefinition>
+      <cea:ParameterDefinition name="baseIvorn" type="anyURI" sub-type="ivo://..">
+        <ceapd:UI_Name>Save To</ceapd:UI_Name>
+        <ceapd:UI_Description>Location of a directory in myspace in which to save fetched images</ceapd:UI_Description>
+        <ceapd:UCD />
+        <ceapd:DefaultValue />
+        <ceapd:Units />
+      </cea:ParameterDefinition>
+      <cea:ParameterDefinition name="urls" type="text">
+        <ceapd:UI_Name>URLs of files to fetch</ceapd:UI_Name>
+        <ceapd:UI_Description>List of the urls of the fetched files</ceapd:UI_Description>
+        <ceapd:UCD />
+        <ceapd:DefaultValue />
+        <ceapd:Units />
+      </cea:ParameterDefinition>
+      <cea:ParameterDefinition name="ivorns" type="text">
+        <ceapd:UI_Name>Ivorns of fetched Files</ceapd:UI_Name>
+        <ceapd:UI_Description>List of the ivorns of the fetched files</ceapd:UI_Description>
+        <ceapd:UCD />
+        <ceapd:DefaultValue />
+        <ceapd:Units />
+      </cea:ParameterDefinition>
+    </cea:Parameters>
+    <cea:Interfaces>
+      <ceab:Interface name="basic">
+        <ceab:input>
+          <ceab:pref ref="table" minoccurs="1" maxoccurs="1" />
+          <ceab:pref ref="baseIvorn" minoccurs="1" maxoccurs="1" />
+        </ceab:input>
+        <ceab:output>
+          <ceab:pref ref="urls" minoccurs="1" maxoccurs="1" />
+          <ceab:pref ref="ivorns" minoccurs="1" maxoccurs="1" />
+        </ceab:output>
+      </ceab:Interface>
+    </cea:Interfaces>
+  </cea:ApplicationDefinition>
+</Resource>
 </VODescription>

@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!-- Edited by NWW to reduce number of results, and point to local files -->
+<VOTABLE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.0 http://www.ivoa.net/xml/VOTable/v1.0"
+ xmlns="http://www.ivoa.net/xml/VOTable/v1.0">
+  <RESOURCE type="results">
+    <INFO name="QUERY_STATUS" value="OK"></INFO>
+    <PARAM name="INPUT:POS"/>
+    <PARAM name="INPUT:SIZE" value="0"/>
+    <PARAM name="INPUT:FORMAT" value="ALL">
+      <VALUES>
+        <OPTION value="image/fits"/>
+        <OPTION value="METADATA"/>
+        <OPTION value="ALL"/>
+      </VALUES>
+    </PARAM>
+    <TABLE>
+      <FIELD name="title"      ucd="VOX:Image_title"           datatype="char"   arraysize="*" />
+      <FIELD name="instrument" ucd="VOX:INST_ID"               datatype="char"   arraysize="*" />
+      <FIELD name="ra"         ucd="POS_EQ_RA_MAIN"            datatype="double"               />
+      <FIELD name="dec"        ucd="POS_EQ_DEC_MAIN"           datatype="double"               />
+      <FIELD name="naxes"      ucd="VOX:Image_Naxes"           datatype="int"                  />
+      <FIELD name="naxis"      ucd="VOX:Image_Naxis"           datatype="int"    arraysize="2" />
+      <FIELD name="format"     ucd="VOX:Image_Format"          datatype="char"   arraysize="*" />
+      <FIELD name="accref"     ucd="VOX:Image_AccessReference" datatype="char"   arraysize="*" />
+      <FIELD name="band-id"    ucd="VOX:BandPass_ID"           datatype="char"   arraysize="*" />
+      <FIELD name="band-unit"  ucd="VOX:BandPass_Unit"         datatype="char"   arraysize="*" />
+      <FIELD name="band-upper" ucd="VOX:BandPass_HiLimit"      datatype="double" unit="m"      />
+      <FIELD name="band-ref"   ucd="VOX:BandPass_RefValue"     datatype="double" unit="m"      />
+      <FIELD name="band-lower" ucd="VOX:BandPass_LoLimit"      datatype="double" unit="m"      />
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>Run 213937, CCD 1</TD>
+            <TD>Isaac Newton Telescope Wide Field Camera</TD>
+            <TD>180.499995833333</TD>
+            <TD>3.33333333333333e-05</TD>
+            <TD>2</TD>
+            <TD>2048,4096</TD>
+            <TD>image/jpeg</TD>           
+            <TD>@BASE@/image1.jpg</TD>
+<!--            <TD>http://cass38.ast.cam.ac.uk/cgi-bin/wfs-siap/getImage?run=213937&amp;ccd=1</TD>-->
+            <TD>RGO-z</TD>
+            <TD>meters</TD>
+            <TD>9.5e-07</TD>
+            <TD>8.763e-07</TD>
+            <TD>8.56e-07</TD>
+          </TR>
+          <TR>
+            <TD>Run 213937, CCD 2</TD>
+            <TD>Isaac Newton Telescope Wide Field Camera</TD>
+            <TD>180.499995833333</TD>
+            <TD>3.33333333333333e-05</TD>
+            <TD>2</TD>
+            <TD>2048,4096</TD>
+            <TD>image/jpeg</TD>           
+            <TD>@BASE@/image2.jpg</TD>
+<!--            <TD>http://cass38.ast.cam.ac.uk/cgi-bin/wfs-siap/getImage?run=213937&amp;ccd=2</TD>-->
+            <TD>RGO-z</TD>
+            <TD>meters</TD>
+            <TD>9.5e-07</TD>
+            <TD>8.763e-07</TD>
+            <TD>8.56e-07</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+  </RESOURCE>
+</VOTABLE>
+
