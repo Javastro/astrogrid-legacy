@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegateFactory.java,v 1.7 2003/11/26 16:31:46 nw Exp $
+ * $Id: DatacenterDelegateFactory.java,v 1.8 2003/12/03 19:37:03 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -17,6 +17,7 @@ import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.datacenter.delegate.nvocone.AdqlNvoConeDelegate;
 import org.astrogrid.datacenter.delegate.nvocone.NvoConeSearchDelegate;
 
+import java.lang.reflect.Constructor;
 /**
  * Constructs the right delegate for the given service
  *
@@ -29,6 +30,7 @@ public class DatacenterDelegateFactory {
    public final static String NVO_CONE_SERVICE = "NVO Cone Service";
    public final static String DUMMY_SERVICE = "Dummy";
    public final static String ASTROGRID_SOCKET_SERVICE = "AstroGrid Socket Service";
+   public final static String ASTROGRID_DIRECT = "AstroGrid Direct";
    
    /**
     * For backwards compatibility - call without user & type info.  It makes
@@ -98,12 +100,12 @@ public class DatacenterDelegateFactory {
       if (givenEndPoint.indexOf("?") >-1) {
          return makeAdqlQuerier(Certification.ANONYMOUS, givenEndPoint, NVO_CONE_SERVICE);
       }
-      
+
       if (givenEndPoint.startsWith("socket")) {
          return makeAdqlQuerier(Certification.ANONYMOUS, givenEndPoint, ASTROGRID_SOCKET_SERVICE);
       }
       
-         return makeAdqlQuerier(Certification.ANONYMOUS, givenEndPoint, ASTROGRID_WEB_SERVICE);
+      return makeAdqlQuerier(Certification.ANONYMOUS, givenEndPoint, ASTROGRID_WEB_SERVICE);
    }
 
 
@@ -122,13 +124,32 @@ public class DatacenterDelegateFactory {
       if (serviceType.equals(NVO_CONE_SERVICE)) {
          return new AdqlNvoConeDelegate(givenEndPoint);
       }
-      
+
       if (serviceType.equals(ASTROGRID_SOCKET_SERVICE)) {
          return new SocketDelegate(givenEndPoint, null);
       }
       
       if (serviceType.equals(ASTROGRID_WEB_SERVICE)) {
          return new WebDelegate(user, new URL(givenEndPoint));
+      }
+
+      if (serviceType.equals(ASTROGRID_DIRECT)) {
+         //lets see if we can find DirectDelegate on the class path - if so then we
+         //can connect directly to the server.  This is not very nice and note quite
+         //right yet - we ought to be able to check and then fallback.  Later.
+         try
+         {
+            Class delegate = Class.forName("org.astrogrid.datacenter.delegate.agdirect.DirectDelegate");
+         
+            Constructor constr = delegate.getConstructor(new Class[] {Certification.class });
+            return (AdqlQuerier) constr.newInstance(new Object[] {user});
+         
+         }
+         catch (Exception e) {
+            //other exceptions raised by constructor of the direct delegate
+            throw new RuntimeException(e);
+         
+         }
       }
       
       throw new IllegalArgumentException("Service Type '"+serviceType+"' unknown");
@@ -160,6 +181,9 @@ public class DatacenterDelegateFactory {
 
 /*
  $Log: DatacenterDelegateFactory.java,v $
+ Revision 1.8  2003/12/03 19:37:03  mch
+ Introduced DirectDelegate, fixed DummyQuerier
+
  Revision 1.7  2003/11/26 16:31:46  nw
  altered transport to accept any query format.
  moved back to axis from castor

@@ -20,8 +20,9 @@ import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.service.JobNotifyServiceListener;
 import org.astrogrid.datacenter.service.WebNotifyServiceListener;
 import org.astrogrid.datacenter.snippet.DocMessageHelper;
+import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDummyDelegate;
-import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
+import org.astrogrid.mySpace.delegate.MySpaceManagerDelegate;
 import org.astrogrid.util.Workspace;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -221,7 +222,7 @@ public abstract class Querier implements Runnable {
          throw new IllegalStateException("no results destination");
       }
       
-      MySpaceManagerDelegate myspace = null;
+      MySpaceClient myspace = null;
       
       if (resultsDestination.equals(MySpaceDummyDelegate.DUMMY)) {
           log.info("Using dummy myspace delegate");
@@ -248,7 +249,7 @@ public abstract class Querier implements Runnable {
          throw new IllegalStateException("No results to send");
       }
       
-      MySpaceManagerDelegate myspace = null;
+      MySpaceClient myspace = null;
       
       if (resultsDestination.equals(MySpaceDummyDelegate.DUMMY)) {
          myspace = new MySpaceDummyDelegate(resultsDestination);
@@ -440,6 +441,9 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.10  2003/12/03 19:37:03  mch
+ Introduced DirectDelegate, fixed DummyQuerier
+
  Revision 1.9  2003/12/02 17:57:35  mch
  Moved MySpaceDummyDelegate
 

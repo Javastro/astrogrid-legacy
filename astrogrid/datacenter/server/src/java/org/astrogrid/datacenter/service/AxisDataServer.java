@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.17 2003/12/01 20:57:39 mch Exp $
+ * $Id: AxisDataServer.java,v 1.18 2003/12/03 19:37:03 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -201,19 +201,6 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
       querier.setResultsDestination(resultsDestination.toString());
    }
    
-   /**
-    * Starts an existing query running
-    * @soap
-    * @todo - use a thread pool system here - threads are resource-hungry.
-    */
-   public void startQuery(String id) {
-      Querier querier = getQuerier(id);
-      if (querier == null) {
-          throw new IllegalArgumentException("Unknown qid:" + id);
-      }
-      Thread queryThread = new Thread(querier);
-      queryThread.start();
-   }
    
    /**
     * Checks the query specified by the given id
@@ -253,6 +240,15 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
       if (querier != null)  {
          querier.abort();
       }
+   }
+
+   /**
+    * Starts an existing query running
+    * @soap
+   */
+   public void startQuery(String id) {
+      Querier querier = getQuerier(id);
+      startQuery(querier);
    }
    
    /**

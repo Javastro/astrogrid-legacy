@@ -1,57 +1,50 @@
 /*
- * $Id: WebDelegate.java,v 1.11 2003/12/03 19:37:03 mch Exp $
+ * $Id: DirectDelegate.java,v 1.1 2003/12/03 19:37:03 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
-package org.astrogrid.datacenter.delegate.agws;
+package org.astrogrid.datacenter.delegate.agdirect;
+
+import org.astrogrid.datacenter.delegate.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.rmi.RemoteException;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
-
-import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.axisdataserver.AxisDataServerServiceLocator;
-import org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub;
 import org.astrogrid.datacenter.axisdataserver.types._query;
-import org.astrogrid.datacenter.delegate.AdqlQuerier;
-import org.astrogrid.datacenter.delegate.Certification;
-import org.astrogrid.datacenter.delegate.ConeSearcher;
-import org.astrogrid.datacenter.delegate.DatacenterException;
-import org.astrogrid.datacenter.delegate.DatacenterQuery;
-import org.astrogrid.datacenter.delegate.DatacenterResults;
-import org.astrogrid.datacenter.delegate.DelegateQueryListener;
-import org.astrogrid.datacenter.delegate.Metadata;
-import org.astrogrid.datacenter.delegate.SqlQuerier;
-import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.datacenter.queriers.Querier;
+import org.astrogrid.datacenter.queriers.QuerierManager;
+import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.service.JobNotifyServiceListener;
+import org.astrogrid.datacenter.service.ServiceServer;
+import org.astrogrid.datacenter.service.WebNotifyServiceListener;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
  * A standard AstroGrid datacenter delegate implementation, based on
- * http messaging with an Apache/Tomcat/Axis server.
+ * direct access to the server code - ie running on the same JVM as the server
+ * is.  This means that co-located services can use datacenters extremely efficiently,
+ * without the overheads of TCP/IP and SOAP.
  * <p>
- * Provides access to 'ADQL-compliant' web services, such as AstroGrid PAL ones
- * and (hopefully?) skynodes when they are implemented.
+ * To prevent circular dependencies, this delegate is part of the server project, and
+ * is created by the factory only if it can be found on the classpath.
  *
  * @author M Hill
- * @author Jeff Lusted (from DatasetAgentDelegate)
  */
 
-public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
+public class DirectDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
 {
-   /** Generated binding code that mirrors the service's methods */
-   private AxisDataServerSoapBindingStub binding;
+   ServiceServer service = null;
 
    /** User certification */
    private Certification certification = null;
@@ -61,13 +54,13 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
     * Implementation of a query instance, represening the query at the
     * server side
     */
-   private class WebQueryDelegate implements DatacenterQuery
+   private class DirectQueryDelegate implements DatacenterQuery
    {
-     String queryId = null;
+      Querier querier = null;
       
-      public WebQueryDelegate(String id)
+      public DirectQueryDelegate(Querier givenQuerier)
       {
-         this.queryId = id;
+         this.querier = givenQuerier;
       }
       
       /**
@@ -75,7 +68,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
       */
       public DatacenterResults getResultsAndClose() throws IOException
       {
-            return new DatacenterResults(new String[] {binding.getResultsAndClose(queryId)});
+         return new DatacenterResults(new String[] { querier.getResultsLoc() }) ;
       }
       
       /**
@@ -86,7 +79,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
       */
       public void setResultsDestination(URL resultsDestination) throws RemoteException
       {
-         binding.setResultsDestination(queryId,buildURI(resultsDestination));
+         querier.setResultsDestination(resultsDestination.toString());
       }
       
       /**
@@ -94,7 +87,8 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
       */
       public void start() throws RemoteException
       {
-         binding.startQuery(queryId);
+         Thread t = new Thread(querier);
+         t.start();
       }
       
       /**
@@ -104,7 +98,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
       */
       public QueryStatus getStatus() throws RemoteException
       {
-         return QueryStatus.getFor(binding.getStatus(queryId));
+         return querier.getStatus();
       }
       
       /**
@@ -112,7 +106,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
       */
       public String getId()
       {
-         return queryId;
+         return querier.getQueryId();
       }
       
       /**
@@ -120,7 +114,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
       */
       public void abort() throws RemoteException
       {
-         binding.abortQuery(queryId);
+         querier.abort();
       }
       
       /**
@@ -134,55 +128,24 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
       
       public void registerJobMonitor(URL url) throws RemoteException
       {
-
-            binding.registerJobMonitor(queryId, buildURI(url));
+         querier.registerListener(new JobNotifyServiceListener(url));
       }
 
       public void registerWebListener(URL url) throws RemoteException
       {
-         binding.registerWebListener(queryId, buildURI(url));
+         querier.registerListener(new WebNotifyServiceListener(url));
       }
       
    }
-   
-   /** helper method to build a URI from a URL.
-    * @todo could replace URL with URI altogether - a better class in some ways, as URL will barf at protocols it doesn't know. (myspace://)
-    * @param url
-    * @return valid apache uri
-    */
-   private URI buildURI(URL url) {
-       try {
-        URI uri = new URI(url.toString());
-        return uri;
-       } catch (URI.MalformedURIException e) {
-           // very unlikely to happen - just come from a URL, which is stricter..
-           throw new IllegalArgumentException("Malformed URI: " + e.getMessage());
-       }
-   }
-   
-   /* Returns the metadata
-   */
-   public Metadata getMetadata() throws RemoteException {
-       String metaD = binding.getMetadata(null);
-       ByteArrayInputStream is = new ByteArrayInputStream(metaD.getBytes());
-       try {
-        Document doc = XMLUtils.newDocument(is);
-        return new Metadata(doc.getDocumentElement());
-       } catch (Exception e) {
-           throw new RemoteException("Could not parse document",e);
-       }
-
-   } //end WebQueryDelegate
-
    
    /** Don't use this directly - use the factory method
     * DatacenterDelegate.makeDelegate() in case we need to create new sorts
     * of datacenter delegates in the future...
     */
-   public WebDelegate(Certification user, URL givenEndPoint) throws ServiceException
+   public DirectDelegate(Certification givenUser)
    {
-      binding =(AxisDataServerSoapBindingStub) new AxisDataServerServiceLocator().getAxisDataServer( givenEndPoint );
-      this.certification = user;
+      this.certification = givenUser;
+      service = new ServiceServer();
    }
 
    /**
@@ -191,7 +154,6 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
     */
    public void setTimeout(int givenTimeout)
    {
-      binding.setTimeout(givenTimeout);
    }
 
 
@@ -220,12 +182,11 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
    {
       try
       {
-          _query q = new _query();
-          q.setQueryBody(ADQLUtils.marshallSelect(adql).getDocumentElement());
-         return new WebQueryDelegate(binding.makeQueryWithId(q, givenId));
+         _query q = new _query();
+         q.setQueryBody(ADQLUtils.marshallSelect(adql).getDocumentElement());
+         
+         return new DirectQueryDelegate(QuerierManager.createQuerier(q, givenId));
       }
-      catch (QueryException e) { throw new DatacenterException("Illegal Query", e); }
-      catch (SAXException e) { throw new DatacenterException("Illegal Query", e); }
       catch (ADQLException e) {throw new DatacenterException("Illegal Query",e); }
    }
    
@@ -240,12 +201,11 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
    {
       try
       {
-          _query q = new _query();
-          q.setQueryBody(ADQLUtils.marshallSelect(adql).getDocumentElement());
-      return new WebQueryDelegate(binding.makeQuery(q));
+         _query q = new _query();
+         q.setQueryBody(ADQLUtils.marshallSelect(adql).getDocumentElement());
+
+         return new DirectQueryDelegate(QuerierManager.createQuerier(q));
       }
-      catch (QueryException e) { throw new DatacenterException("Illegal Query", e); }
-      catch (SAXException e) { throw new DatacenterException("Illegal Query", e); }
       catch (ADQLException e) {throw new DatacenterException("Illegal Query",e);}
    }
    
@@ -263,13 +223,14 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
          //run query on server
          _query q = new _query();
          q.setQueryBody(ADQLUtils.marshallSelect(adql).getDocumentElement());
-         String result = binding.doQuery(resultsFormat, q);
-         InputStream is = new ByteArrayInputStream(result.getBytes());
-         Document rDoc = XMLUtils.newDocument(is);
+         
+         Querier querier = QuerierManager.createQuerier(q);
+         
+         QueryResults result = querier.doQuery();
          
          //extract results to DatacenterResults
          //only one type for It03 servers - votable
-         return new DatacenterResults(rDoc.getDocumentElement());
+         return new DatacenterResults(result.toVotable().getDocumentElement());
          
       }
       catch (Exception e) {
@@ -378,12 +339,21 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
       }
       */
   }
-   
+ 
+  /**
+   * returns the full datacenter metadata.
+   */
+  public Metadata getMetadata() throws IOException
+  {
+     return new Metadata(service.getMetadata());
+  }
+  
+  
 }
 
 /*
-$Log: WebDelegate.java,v $
-Revision 1.11  2003/12/03 19:37:03  mch
+$Log: DirectDelegate.java,v $
+Revision 1.1  2003/12/03 19:37:03  mch
 Introduced DirectDelegate, fixed DummyQuerier
 
 Revision 1.10  2003/12/01 16:53:16  nw

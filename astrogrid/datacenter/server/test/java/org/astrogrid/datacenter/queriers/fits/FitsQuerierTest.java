@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.2 2003/12/01 20:58:42 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.3 2003/12/03 19:37:03 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -17,6 +17,10 @@ import java.net.URL;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.queriers.DatabaseAccessException;
+import org.astrogrid.datacenter.queriers.Querier;
+import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.fits.IndexGenerator;
 
 /** Test the Fits processing classes
@@ -74,7 +78,18 @@ public class FitsQuerierTest extends TestCase
       
       querier.setIndex(new FileInputStream(indexFile));
    }
-   
+
+   /**
+    *  Tests that it works OK as a plugin
+    */
+   public void testPlugin() throws DatabaseAccessException
+   {
+      SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, FitsQuerier.class.getName());
+      
+      Querier querier = QuerierManager.createQuerier(null);
+      
+      assertTrue(querier instanceof FitsQuerier);
+   }
    
    public static Test suite()
    {
@@ -88,6 +103,7 @@ public class FitsQuerierTest extends TestCase
     */
    public static void main(String args[]) throws IOException
    {
+      org.astrogrid.log.Log.logToConsole();
       junit.textui.TestRunner.run(suite());
    }
    
@@ -96,6 +112,9 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.3  2003/12/03 19:37:03  mch
+ Introduced DirectDelegate, fixed DummyQuerier
+
  Revision 1.2  2003/12/01 20:58:42  mch
  Abstracting coarse-grained plugin
 

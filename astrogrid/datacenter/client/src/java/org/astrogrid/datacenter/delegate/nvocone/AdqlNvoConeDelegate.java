@@ -26,7 +26,7 @@ import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.webnotify.JobMonitorNotifier;
 import org.astrogrid.datacenter.webnotify.WebNotifier;
 import org.astrogrid.mySpace.delegate.MySpaceDummyDelegate;
-import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
+import org.astrogrid.mySpace.delegate.MySpaceManagerDelegate;
 import org.astrogrid.util.Workspace;
 import org.xml.sax.SAXException;
 
@@ -391,6 +391,9 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements AdqlQu
 
 /*
 $Log: AdqlNvoConeDelegate.java,v $
+Revision 1.6  2003/12/03 19:37:03  mch
+Introduced DirectDelegate, fixed DummyQuerier
+
 Revision 1.5  2003/12/02 17:55:29  mch
 Moved MySpaceDummy
 

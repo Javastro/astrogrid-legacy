@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerier.java,v 1.9 2003/12/03 15:25:13 mch Exp $
+ * $Id: FitsQuerier.java,v 1.10 2003/12/03 19:37:03 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -172,7 +172,6 @@ public class FitsQuerier extends Querier
    public void setIndex(Document givenIndexDom)
    {
        index = givenIndexDom;
-     
    }
    
    /** Querier implemenation - Updates the status and does the query (by calling the abstract
@@ -184,13 +183,7 @@ public class FitsQuerier extends Querier
       return null;
    }
    
-   /* (non-Javadoc)
-    * @see org.astrogrid.datacenter.queriers.spi.QuerierSPI#getPluginInfo()
-    */
-   public String getPluginInfo() {
-      return "FITS Querier";
-   }
-   
+ 
    /**
     * Test harness
     */
@@ -234,6 +227,9 @@ public class FitsQuerier extends Querier
 
 /*
  $Log: FitsQuerier.java,v $
+ Revision 1.10  2003/12/03 19:37:03  mch
+ Introduced DirectDelegate, fixed DummyQuerier
+
  Revision 1.9  2003/12/03 15:25:13  mch
  Fix to ignoring duplicates
 
@@ -265,6 +261,7 @@ public class FitsQuerier extends Querier
  Abstracted Querier from DatabaseQuerier
 
  */
+
 
 
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DummyQuerierTest.java,v 1.6 2003/12/02 12:31:13 mch Exp $
+ * $Id: DummyQuerierTest.java,v 1.7 2003/12/03 19:37:03 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -57,7 +57,7 @@ public class DummyQuerierTest extends ServerTestCase
         //check that we can;t go back a step however
         try {
             querier.setStatus(QueryStatus.RUNNING_QUERY);
-            fail("expected to barf");
+            fail("Should have failed trying to go back a step");
         } catch (IllegalStateException e) {
             //expected
         }
@@ -68,7 +68,7 @@ public class DummyQuerierTest extends ServerTestCase
         // barfs on empty exception
         try {
             querier.getError();
-            fail("expected to barf");
+            fail("Should have failed getting error when there isn't one");
         } catch (IllegalStateException e) {
             //expected
         }

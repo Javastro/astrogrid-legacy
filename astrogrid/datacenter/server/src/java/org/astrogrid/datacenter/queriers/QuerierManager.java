@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.8 2003/12/03 12:47:44 mch Exp $
+/*$Id: QuerierManager.java,v 1.9 2003/12/03 19:37:03 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -140,19 +140,14 @@ public class QuerierManager {
    public static Querier createQuerier(_query query, String qid) throws DatabaseAccessException {
       
       //assigns handle
-      try {
-         if (queriers.get(qid) != null) {
-            log.error( "Handle '" + qid + "' already in use");
-            throw new IllegalArgumentException("Handle " + qid + "already in use");
-         }
-         Querier querier = instantiateQuerier(query, qid);
-         queriers.put(qid, querier);
+      if (queriers.get(qid) != null) {
+         log.error( "Handle '" + qid + "' already in use");
+         throw new IllegalArgumentException("Handle " + qid + "already in use");
+      }
+      Querier querier = instantiateQuerier(query, qid);
+      queriers.put(qid, querier);
 
-         return querier;
-      }
-      catch (IOException e) {
-         throw new DatabaseAccessException(e,"Could not create workspace for id:"+qid);
-      }
+      return querier;
    }
    
    /**
@@ -280,6 +275,9 @@ public class QuerierManager {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.9  2003/12/03 19:37:03  mch
+ Introduced DirectDelegate, fixed DummyQuerier
+
  Revision 1.8  2003/12/03 12:47:44  mch
  Better error reportiong for failed Querier instantiations
 

@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceServer.java,v 1.10 2003/12/01 16:43:52 nw Exp $
+ * $Id: ServiceServer.java,v 1.11 2003/12/03 19:37:03 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -26,7 +26,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * This abstract class provides the framework for managing the datacenter.  It
+ * This abstract class provides the framework for managing a datacenter.  It
  * manages the running service instances.  Subclasses from this might implement
  * an axis/http server, or a socket-server, or a grid/ogsa server, etc.
  * @see org.astrogrid.datacenter.servers package for implementations
@@ -34,12 +34,12 @@ import org.xml.sax.SAXException;
  * @author M Hill
  */
 
-public abstract class ServiceServer
+public class ServiceServer
 {
-    private static Log log = LogFactory.getLog(ServiceServer.class);
+   private static Log log = LogFactory.getLog(ServiceServer.class);
    /** Configuration key to where the metadata file is located */
    public static final String METADATA_FILE_LOC_KEY = "MetadataFile";
-
+   
    /**
     * Returns the metadata in the registry form (VOResource)
     * @todo implement
@@ -47,61 +47,60 @@ public abstract class ServiceServer
    public Element getVOResource()
    {
       Element fullMetadata = getMetadata();
-
+      
       //do some transformation thing
       Element voResource = fullMetadata; //for now...
-
+      
       //return transformed document
       return voResource;
    }
-
-/** primitive method to access stream containing metadata */
-    protected InputStream getMetadataStream() throws IOException {
-        // File metaFile = new File(Configuration.getProperty(METADATA_FILE_LOC_KEY, "metadata.xml"));
-        // search for file, then for resource on classpath - fits better with appservers / servlet containers
-        String location = SimpleConfig.getProperty(METADATA_FILE_LOC_KEY,"metadata.xml");
-        String trying = location; //for  error reporting
-        File metaFile = new File(location);
-        InputStream is = null;
-        if (metaFile.exists() && metaFile.isFile()) {
-           is = new FileInputStream(metaFile);
-        } else {
-           URL url = this.getClass().getResource(location);
-           if (url != null)  {
-              trying = this.getClass().getResource(location).toString();
-              is = url.openStream();
-           }
-           if (is == null && ! location.startsWith("/")) { // try making the resource absolute.
-//this will throw errors if the property is already absolute
-// and don't want to change the default location for this, in case it breaks socket-server based datacenters.
-// NWW - well we can check for this. commenting this out breaks datacenters running in an app server.
-// MCH - hopefully this will work under both :-)
-              url = this.getClass().getResource("/"+location);
-              if (url != null)
-              {
-                 trying = url.toString();
-                 is = this.getClass().getResourceAsStream("/" + location);
-              }
-           }
-        }
-        if (is == null) {
-            throw new IOException("metadata file '"+location+"' or '"+trying+" not found");
-        }
-        return is;
-    }
-
-
+   
+   /** Returns a stream to the metadata file */
+   protected InputStream getMetadataStream() throws IOException {
+      // File metaFile = new File(Configuration.getProperty(METADATA_FILE_LOC_KEY, "metadata.xml"));
+      // search for file, then for resource on classpath - fits better with appservers / servlet containers
+      String location = SimpleConfig.getProperty(METADATA_FILE_LOC_KEY,"metadata.xml");
+      String trying = location; //for  error reporting
+      File metaFile = new File(location);
+      InputStream is = null;
+      if (metaFile.exists() && metaFile.isFile()) {
+         is = new FileInputStream(metaFile);
+      } else {
+         URL url = this.getClass().getResource(location);
+         if (url != null)  {
+            trying = this.getClass().getResource(location).toString();
+            is = url.openStream();
+         }
+         if (is == null && ! location.startsWith("/")) { // try making the resource absolute.
+            //this will throw errors if the property is already absolute
+            // and don't want to change the default location for this, in case it breaks socket-server based datacenters.
+            // NWW - well we can check for this. commenting this out breaks datacenters running in an app server.
+            // MCH - hopefully this will work under both :-)
+            url = this.getClass().getResource("/"+location);
+            if (url != null)
+            {
+               trying = url.toString();
+               is = this.getClass().getResourceAsStream("/" + location);
+            }
+         }
+      }
+      if (is == null) {
+         throw new IOException("metadata file '"+location+"' or '"+trying+" not found");
+      }
+      return is;
+   }
+   
+   
    /**
     * Returns the whole metadata file as a DOM document
     * @todo implement better error reporting in case of failure
-    *
     */
    public Element getMetadata()
    {
-    InputStream is = null;
+      InputStream is = null;
       try
       {
-        is = getMetadataStream();
+         is = getMetadataStream();
          return XMLUtils.newDocument(is).getDocumentElement();
       }
       catch (ParserConfigurationException e)
@@ -120,16 +119,16 @@ public abstract class ServiceServer
          throw new RuntimeException("Server not configured properly - metadata i/o error",e);
       }
       finally {
-          if (is != null) {
-              try {
-                is.close();
-              } catch (IOException e) {
-                  // not bothered
-              }
-          }
+         if (is != null) {
+            try {
+               is.close();
+            } catch (IOException e) {
+               // not bothered
+            }
+         }
       }
    }
-
+   
    /**
     * Returns the list of nodes of the metadata corresponding to the given XPath
     *
@@ -138,27 +137,27 @@ public abstract class ServiceServer
     */
    public NodeList getMetadata(String xpathExpression) throws IOException
    {
-       if (xpathExpression == null || xpathExpression.length() ==0) {
-           throw new IllegalArgumentException("Empty xpathExpression");
-       }
+      if (xpathExpression == null || xpathExpression.length() ==0) {
+         throw new IllegalArgumentException("Empty xpathExpression");
+      }
       Element metadata = getMetadata();
-
+      
       //do some xpathing
       try
       {
          NodeList nodes = XPathAPI.selectNodeList(metadata, xpathExpression);
-
+         
          return nodes;
       }
       catch (javax.xml.transform.TransformerException e)
       {
          throw new IOException("Could not transform metadata using xpath '"+xpathExpression+"'");
       }
-
+      
    }
-    /**/
-
-
+   /**/
+   
+   
    /** For non-blocking queries, you might want to get the query status
     * if the querier has an error (status = errro) throws the exception
     * (dont liek this too general)
@@ -167,7 +166,7 @@ public abstract class ServiceServer
    {
       return ResponseHelper.makeStatusResponse(getQuerier(queryId)).getDocumentElement();
    }
-
+   
    /**
     * Returns the service corresponding to the given ID
     */
@@ -175,9 +174,17 @@ public abstract class ServiceServer
    {
       return QuerierManager.getQuerier(queryId);
    }
-
-
-
+   
+   /**
+    * Starts an existing query running
+    * @todo - use a thread pool system here - threads are resource-hungry.
+    */
+   public void startQuery(Querier querier) {
+      Thread queryThread = new Thread(querier);
+      queryThread.start();
+   }
+   
+   
 }
 
 

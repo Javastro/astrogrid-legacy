@@ -1,5 +1,5 @@
 /*
- * $Id: SocketDelegate.java,v 1.6 2003/12/02 19:49:44 mch Exp $
+ * $Id: SocketDelegate.java,v 1.7 2003/12/03 19:37:03 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -15,7 +15,6 @@ import java.net.URL;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.delegate.Certification;
-import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.astrogrid.datacenter.delegate.DelegateQueryListener;
@@ -208,7 +207,7 @@ public class SocketDelegate implements AdqlQuerier
          return StatusHelper.getServiceStatus(response);
       }
       
-      public void abort() throws DatacenterException
+      public void abort()
       {
          
       }
@@ -245,7 +244,7 @@ public class SocketDelegate implements AdqlQuerier
     * doing checks on how big the result set is likely to be before it has to be
     * transferred about the net.
     */
-   public int countQuery(Select adql) throws DatacenterException
+   public int countQuery(Select adql) throws IOException
    {
       throw new UnsupportedOperationException();
    }
@@ -433,6 +432,9 @@ public class SocketDelegate implements AdqlQuerier
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.7  2003/12/03 19:37:03  mch
+Introduced DirectDelegate, fixed DummyQuerier
+
 Revision 1.6  2003/12/02 19:49:44  mch
 Moved snippet and socket-processing stuff into their own packages
 
