@@ -1,5 +1,5 @@
-<!-- $Id: deployWebapps.xml,v 1.3 2004/01/09 15:16:22 jdt Exp $ -->
-<!--
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: deployWebapps.xml,v 1.4 2004/01/12 15:05:24 jdt Exp $ --><!--
 	Example Deploy Script for Astrogrid War files
 	This script uses the Tomcat Manager to deploy war files built nightly by Maven
 
@@ -9,124 +9,236 @@
 	To run it from maven, you will need to pop the catalina-ant.jar into maven's lib directory AND
 	modify forehead.conf to pick it up.
 	You'll need to set the urls, Tomcat Manager usernames and passwords below in the tomcatServers.xml file.
-	-->
-	
-
-
-<project name="DeployWars" default="RedeployTheLot" basedir=".">
+	--><project basedir="." default="RedeployTheLot" name="DeployWars">
   
 
 
 <!--Deployment machines see http://wiki.astrogrid.org/bin/view/Astrogrid/Itn04IREnvironment -->
 
   <target name="loadServersProperties">
-    <xmlproperty file="tomcatServers.xml"  keepRoot="false" />
+    <xmlproperty file="tomcatServers.xml" keepRoot="false"/>
     <!-- URLs of the wars-->
     <property name="mavenURL" value="http://www.astrogrid.org/maven/"/>
   
-    <property name="mySpace.path"    value="/astrogrid-mySpace-intTest"/>
-    <property name="mySpace.war.url"  value="${mavenURL}/astrogrid-mySpace/wars/astrogrid-mySpace-SNAPSHOT.war"/>
-    <property name="mySpace.host.url"    value="${servers.a.url}"/>
-    <property name="mySpace.host.user"    value="${servers.a.user}"/>
-    <property name="mySpace.host.password"    value="${servers.a.password}"/> <!-- would be nice if this could be assigned as an "array".  Might be possible in Ant 1.6...-->
+    <property name="mySpace.path" value="/intTest-mySpace"/>
+    <property name="mySpace.war.url" value="${mavenURL}/astrogrid-mySpace/wars/astrogrid-mySpace-SNAPSHOT.war"/>
+    <property name="mySpace.host.url" value="${servers.a.url}"/>
+    <property name="mySpace.host.user" value="${servers.a.user}"/>
+    <property name="mySpace.host.password" value="${servers.a.password}"/> <!-- would be nice if this could be assigned as an "array".  Might be possible in Ant 1.6...-->
   
-    <property name="jes.path"     value="/astrogrid-jes-intTest"/>   
-    <property name="jes.war.url"     value="${mavenURL}/astrogrid-jes/wars/astrogrid-jes-SNAPSHOT.war"/>
-    <property name="jes.host.url"    value="${servers.a.url}"/>
-    <property name="jes.host.user"    value="${servers.a.user}"/>
-    <property name="jes.host.password"    value="${servers.a.password}"/> 
+    <property name="jes.path" value="/intTest-jes"/>   
+    <property name="jes.war.url" value="${mavenURL}/astrogrid-jes/wars/astrogrid-jes-SNAPSHOT.war"/>
+    <property name="jes.host.url" value="${servers.a.url}"/>
+    <property name="jes.host.user" value="${servers.a.user}"/>
+    <property name="jes.host.password" value="${servers.a.password}"/> 
+    
+    <property name="palVizier.path" value="/intTest-palVizier"/>   
+    <property name="palVizier.war.url" value="${mavenURL}/astrogrid-datacenter/wars/pal-SNAPSHOT.war"/>
+    <property name="palVizier.host.url" value="${servers.a.url}"/>
+    <property name="palVizier.host.user" value="${servers.a.user}"/>
+    <property name="palVizier.host.password" value="${servers.a.password}"/> 
+    
+    <property name="palMerlin.path" value="/intTest-palMerlin"/>   
+    <property name="palMerlin.war.url" value="${mavenURL}/astrogrid-datacenter/wars/pal-SNAPSHOT.war"/>
+    <property name="palMerlin.host.url" value="${servers.c.url}"/>
+    <property name="palMerlin.host.user" value="${servers.c.user}"/>
+    <property name="palMerlin.host.password" value="${servers.c.password}"/>
+    
+    <property name="applications.path" value="/intTest-applications"/>   
+    <property name="applications.war.url" value="${mavenURL}/astrogrid-applications/wars/astrogrid-applications-SNAPSHOT.war"/>
+    <property name="applications.host.url" value="${servers.b.url}"/>
+    <property name="applications.host.user" value="${servers.b.user}"/>
+    <property name="applications.host.password" value="${servers.b.password}"/>
+    
+    <property name="community.path" value="/intTest-community"/>   
+    <property name="community.war.url" value="${mavenURL}/astrogrid-community/wars/astrogrid-community-SNAPSHOT.war"/>
+    <property name="community.host.url" value="${servers.b.url}"/>
+    <property name="community.host.user" value="${servers.b.user}"/>
+    <property name="community.host.password" value="${servers.b.password}"/>
+    
+    <property name="portal.path" value="/intTest-portal"/>   
+    <property name="portal.war.url" value="${mavenURL}/astrogrid-portal/wars/astrogrid-portal-SNAPSHOT.war"/>
+    <property name="portal.host.url" value="${servers.b.url}"/>
+    <property name="portal.host.user" value="${servers.b.user}"/>
+    <property name="portal.host.password" value="${servers.b.password}"/>     
+        
+    <property name="registry.path" value="/intTest-registry"/>   
+    <property name="registry.war.url" value="${mavenURL}/astrogrid-registry/wars/astrogrid-registry-SNAPSHOT.war"/>
+    <property name="registry.host.url" value="${servers.c.url}"/>
+    <property name="registry.host.user" value="${servers.c.user}"/>
+    <property name="registry.host.password" value="${servers.c.password}"/>     
+    
+    <property name="datawarehouse.path" value="/intTest-datawarehouse"/>   
+    <property name="datawarehouse.war.url" value="${mavenURL}/astrogrid-datawarehouse/wars/astrogrid-datawarehouse-SNAPSHOT.war"/>
+    <property name="datawarehouse.host.url" value="${servers.c.url}"/>
+    <property name="datawarehouse.host.user" value="${servers.c.user}"/>
+    <property name="datawarehouse.host.password" value="${servers.c.password}"/>     
+     
   </target>
 
 <!--==================================================================================-->
 
-	<target name="RedeployTheLot" depends="RedeployMySpace,RedeployJES"/>
+	<target depends="RedeployApplications,RedeployJES,RedeployMySpace,RedeployPALMerlin,RedeployPALVizier,Redeploycommunity,Redeploydatawarehouse,Redeployportal,Redeployregistry" name="RedeployTheLot"/>
+	<target depends="DeployApplications,DeployJES,DeployMySpace,DeployPALMerlin,DeployPALVizier,Deploycommunity,Deploydatawarehouse,Deployportal,Deployregistry" name="DeployTheLot"/>
+
+<!--==================================================================================-->
+
+<!--==================================================================================-->
+  <!-- community-->
+
+    <target depends="loadServersProperties" description="Obtain the latest community war and deploy it to tomcat" name="Deploycommunity">
+    	<echo message="Deploying community from ${community.war.url} to ${community.host.url} at ${community.path}"/>
+		<deploy password="${community.host.password}" path="${community.path}" url="${community.host.url}" username="${community.host.user}" war="${community.war.url}"/>
+    </target>
+    
+    <target depends="loadServersProperties" name="Undeploycommunity">
+		<remove password="${community.host.password}" path="${community.path}" url="${community.host.url}" username="${community.host.user}"/>
+	</target>
+	
+    <target depends="Undeploycommunity, Deploycommunity" name="Redeploycommunity"/>
+
+<!--==================================================================================-->
+
+<!--==================================================================================-->
+  <!-- portal-->
+
+    <target depends="loadServersProperties" description="Obtain the latest portal war and deploy it to tomcat" name="Deployportal">
+    	<echo message="Deploying portal from ${portal.war.url} to ${portal.host.url} at ${portal.path}"/>
+		<deploy password="${portal.host.password}" path="${portal.path}" url="${portal.host.url}" username="${portal.host.user}" war="${portal.war.url}"/>
+    </target>
+    
+    <target depends="loadServersProperties" name="Undeployportal">
+		<remove password="${portal.host.password}" path="${portal.path}" url="${portal.host.url}" username="${portal.host.user}"/>
+	</target>
+	
+    <target depends="Undeployportal, Deployportal" name="Redeployportal"/>
+
+<!--==================================================================================-->
+
+<!--==================================================================================-->
+  <!-- registry-->
+
+    <target depends="loadServersProperties" description="Obtain the latest registry war and deploy it to tomcat" name="Deployregistry">
+    	<!--echo message="Deploying registry from ${registry.war.url} to ${registry.host.url} at ${registry.path}"/-->
+		<!--deploy password="${registry.host.password}" path="${registry.path}" url="${registry.host.url}" username="${registry.host.user}" war="${registry.war.url}"/-->
+		<echo message="Warning! Registry not automatically deployable"/>
+    </target>
+    
+    <target depends="loadServersProperties" name="Undeployregistry">
+		<!--remove password="${registry.host.password}" path="${registry.path}" url="${registry.host.url}" username="${registry.host.user}"/-->
+	</target>
+	
+    <target depends="Undeployregistry, Deployregistry" name="Redeployregistry"/>
+
+<!--==================================================================================-->
+
+<!--==================================================================================-->
+  <!-- datawarehouse-->
+
+    <target depends="loadServersProperties" description="Obtain the latest datawarehouse war and deploy it to tomcat" name="Deploydatawarehouse">
+    	<echo message="Deploying datawarehouse from ${datawarehouse.war.url} to ${datawarehouse.host.url} at ${datawarehouse.path}"/>
+		<deploy password="${datawarehouse.host.password}" path="${datawarehouse.path}" url="${datawarehouse.host.url}" username="${datawarehouse.host.user}" war="${datawarehouse.war.url}"/>
+    </target>
+    
+    <target depends="loadServersProperties" name="Undeploydatawarehouse">
+		<remove password="${datawarehouse.host.password}" path="${datawarehouse.path}" url="${datawarehouse.host.url}" username="${datawarehouse.host.user}"/>
+	</target>
+	
+    <target depends="Undeploydatawarehouse, Deploydatawarehouse" name="Redeploydatawarehouse"/>
+
+<!--==================================================================================-->
+
+<!--==================================================================================-->
+  <!-- applications-->
+
+    <target depends="loadServersProperties" description="Obtain the latest applications war and deploy it to tomcat" name="DeployApplications">
+    	<echo message="Deploying applications from ${applications.war.url} to ${applications.host.url} at ${applications.path}"/>
+		<deploy password="${applications.host.password}" path="${applications.path}" url="${applications.host.url}" username="${applications.host.user}" war="${applications.war.url}"/>
+    </target>
+    
+    <target depends="loadServersProperties" name="UndeployApplications">
+		<remove password="${applications.host.password}" path="${applications.path}" url="${applications.host.url}" username="${applications.host.user}"/>
+	</target>
+	
+    <target depends="UndeployApplications, DeployApplications" name="RedeployApplications"/>
 
 <!--==================================================================================-->
 
 <!--==================================================================================-->
   <!-- JES-->
 
-    <target name="DeployJES" depends="loadServersProperties" description="Obtain the latest jes war and deploy it to tomcat">
+    <target depends="loadServersProperties" description="Obtain the latest jes war and deploy it to tomcat" name="DeployJES">
     	<echo message="Deploying JES from ${jes.war.url} to ${jes.host.url} at ${jes.path}"/>
-		<deploy url="${jes.host.url}" path="${jes.path}"
-		    war="${jes.war.url}"
-		    username="${jes.host.user}" password="${jes.host.password}" />
+		<deploy password="${jes.host.password}" path="${jes.path}" url="${jes.host.url}" username="${jes.host.user}" war="${jes.war.url}"/>
     </target>
     
-    <target name="UndeployJES" depends="loadServersProperties">
-		<remove url="${jes.host.url}" path="${jes.path}"
-		    username="${jes.host.user}" password="${jes.host.password}" />
+    <target depends="loadServersProperties" name="UndeployJES">
+		<remove password="${jes.host.password}" path="${jes.path}" url="${jes.host.url}" username="${jes.host.user}"/>
 	</target>
 	
-    <target name="RedeployJES" depends="UndeployJES, DeployJES"/>
+    <target depends="UndeployJES, DeployJES" name="RedeployJES"/>
 
 <!--==================================================================================-->
 
 <!--==================================================================================-->
   <!-- MySpace-->
 
-    <target name="DeployMySpace" depends="loadServersProperties" description="Obtain the latest MySpace war and deploy it to tomcat">
+    <target depends="loadServersProperties" description="Obtain the latest MySpace war and deploy it to tomcat" name="DeployMySpace">
     	<echo message="Deploying MySpace from ${mySpace.war.url} to ${mySpace.host.url} at ${mySpace.path}"/>
-		<deploy url="${mySpace.host.url}" path="${mySpace.path}"
-		    war="${mySpace.war.url}"
-		    username="${mySpace.host.user}" password="${mySpace.host.password}" />
+		<deploy password="${mySpace.host.password}" path="${mySpace.path}" url="${mySpace.host.url}" username="${mySpace.host.user}" war="${mySpace.war.url}"/>
     </target>
     
     <target depends="loadServersProperties" name="UndeployMySpace">
-		<remove url="${mySpace.host.url}" path="${mySpace.path}"
-		    username="${mySpace.host.user}" password="${mySpace.host.password}" />
+		<remove password="${mySpace.host.password}" path="${mySpace.path}" url="${mySpace.host.url}" username="${mySpace.host.user}"/>
 	</target>
 	
-    <target name="RedeployMySpace" depends="UndeployMySpace, DeployMySpace"/>
+    <target depends="UndeployMySpace, DeployMySpace" name="RedeployMySpace"/>
 
 <!--==================================================================================-->
 
 
-<!--following two are out of date -->
+
 <!--==================================================================================-->
   <!-- PAL/Vizier-->
   <!-- need to copy across cds delegate too?-->
-    <property name="PALVizierPath"     value="/pal-SNAPSHOT"/>
-    <target name="DeployPALVizier">
-		<deploy url="${url3}" path="${PALVizierPath}"
-		    war="${PALwarURL}"
-		    username="${username3}" password="${password3}" />
+
+    <target depends="loadServersProperties" description="obtain latest pal/vizier war and deploy it" name="DeployPALVizier">
+	    <echo message="Deploying PAL/Vizier from ${palVizier.war.url} to ${palVizier.host.url} at ${palVizier.path}"/>
+		<deploy password="${palVizier.host.password}" path="${palVizier.path}" url="${palVizier.host.url}" username="${palVizier.host.user}" war="${palVizier.war.url}"/>
     </target>
     
     <target name="UndeployPALVizier">
-		<remove url="${url3}" path="${PALVizierPath}"
-		    username="${username3}" password="${password3}" />
+		<remove password="${palVizier.host.password}" path="${palVizier.path}" url="${palVizier.host.url}" username="${palVizier.host.user}"/>
 	</target>
 	
-    <target name="RedeployPALVizer" depends="UndeployPALVizier, DeployPALVizier"/>
+    <target depends="UndeployPALVizier, DeployPALVizier" name="RedeployPALVizier"/>
 
 <!--==================================================================================-->
 
   <!-- PAL/Merlin-->
-    <property name="PALMerlinpath"     value="/pal-SNAPSHOT"/>
-    <target name="DeployPALMerlin" description="Obtain the latest PAL war and deploy it to tomcat">
-		<deploy url="${url4}" path="${PALMerlinpath}"
-		    war="${PALwarURL}"
-		    username="${username4}" password="${password4}" />
+
+    <target depends="loadServersProperties" description="obtain latest pal/merlin war and deploy it" name="DeployPALMerlin">
+	    <echo message="Deploying PAL/Merlin from ${palMerlin.war.url} to ${palMerlin.host.url} at ${palMerlin.path}"/>
+		<deploy password="${palMerlin.host.password}" path="${palMerlin.path}" url="${palMerlin.host.url}" username="${palMerlin.host.user}" war="${palMerlin.war.url}"/>
     </target>
     
     <target name="UndeployPALMerlin">
-		<remove url="${url4}" path="${PALMerlinpath}"
-		    username="${username4}" password="${password4}" />
+		<remove password="${palMerlin.host.password}" path="${palMerlin.path}" url="${palMerlin.host.url}" username="${palMerlin.host.user}"/>
 	</target>
 	
-    <target name="RedeployPALMerlin" depends="UndeployPALMerlin, DeployPALMerlin"/>
+    <target depends="UndeployPALMerlin, DeployPALMerlin" name="RedeployPALMerlin"/>
+    
     
 <!--==================================================================================-->
 
   <!-- Configure the custom Ant tasks for the Manager application -->
-  <taskdef name="deploy"    classname="org.apache.catalina.ant.DeployTask"/>
-  <taskdef name="list"      classname="org.apache.catalina.ant.ListTask"/>
-  <taskdef name="reload"    classname="org.apache.catalina.ant.ReloadTask"/>
-  <taskdef name="resources" classname="org.apache.catalina.ant.ResourcesTask"/>
-  <taskdef name="roles"     classname="org.apache.catalina.ant.RolesTask"/>
-  <taskdef name="start"     classname="org.apache.catalina.ant.StartTask"/>
-  <taskdef name="stop"      classname="org.apache.catalina.ant.StopTask"/>
-  <taskdef name="undeploy"  classname="org.apache.catalina.ant.UndeployTask"/>
-  <taskdef name="remove"  classname="org.apache.catalina.ant.RemoveTask"/>
+  <taskdef classname="org.apache.catalina.ant.DeployTask" name="deploy"/>
+  <taskdef classname="org.apache.catalina.ant.ListTask" name="list"/>
+  <taskdef classname="org.apache.catalina.ant.ReloadTask" name="reload"/>
+  <taskdef classname="org.apache.catalina.ant.ResourcesTask" name="resources"/>
+  <taskdef classname="org.apache.catalina.ant.RolesTask" name="roles"/>
+  <taskdef classname="org.apache.catalina.ant.StartTask" name="start"/>
+  <taskdef classname="org.apache.catalina.ant.StopTask" name="stop"/>
+  <taskdef classname="org.apache.catalina.ant.UndeployTask" name="undeploy"/>
+  <taskdef classname="org.apache.catalina.ant.RemoveTask" name="remove"/>
 </project>
