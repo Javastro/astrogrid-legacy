@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.119 2004/09/24 10:34:41 pah Exp $ -->
+<!-- $Id: maven.xml,v 1.120 2004/09/30 13:58:20 nw Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -69,8 +69,8 @@
         <filter token="TOMCATROOT" value="${tomcat.url}" />
         <filter token="TOMCATLOC" value="${tomcat.location}" />
         <filter token="REGAUTHORITY" value="${registry.authorityid}" />
-		<filter token="COMMUNITYID" value="${communityid}" />
-		
+                <filter token="COMMUNITYID" value="${communityid}" />
+
         <filter token="TOMCATPORT" value="${tomcat.port}"/>
         <filter token="VERSION" value="${astrogrid.iteration}"/>
         <filter token="MAILHOST" value="${mailhost}" />
@@ -84,9 +84,10 @@
        <delete dir="${temporary.dir}" />
 </goal>
 
+
 <goal name="init" prereqs="declare-tasks">
                 <echo>AuthorityID used: ${registry.authorityid}</echo>
-				<echo>Community ivo identifier: ${communityid}</echo>
+                                <echo>Community ivo identifier: ${communityid}</echo>
 <!--do not delete the temporary directory here - pah-->
         <mkdir dir="${temporary.dir}" />
         <deploy:copy-deps todir="${temporary.dir}" />
@@ -574,7 +575,6 @@
                         <include name="hsql*.jar" />
                         <include name="mail*.jar" />
                         <include name="activation*.jar" /> <!-- required by mail - dunno why tomcat doesn't ship with these.. -->
-                        <!-- may need to add more here later -->
                 </fileset>
         </copy>
 </goal>
@@ -597,19 +597,19 @@
         <copy todir="${temporary.dir}/jes" filtering="true">
                 <fileset dir="contexts/jes" />
         </copy>
+       <ag:maybe-enable-cougaar webapp="jes" />
         <war update="true" destfile="${temporary.dir}/astrogrid-jes-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/jes"/>
         </war>
-
   <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-jes-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-jes-${pom.currentVersion}.war"/>
-
 </goal>
 
 <goal name="cea-server-deploy"   >
         <copy todir="${temporary.dir}/cea-server" filtering="true">
                 <fileset dir="contexts/cea-server" />
         </copy>
+       <ag:maybe-enable-cougaar webapp="cea-server" />
         <war update="true" destfile="${temporary.dir}/astrogrid-cea-server-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/cea-server"/>
         </war>
@@ -623,6 +623,7 @@
         <copy todir="${temporary.dir}/cea-commandline" filtering="true">
                 <fileset dir="contexts/cea-commandline" />
         </copy>
+       <ag:maybe-enable-cougaar webapp="cea-commandline" />
         <war update="true" destfile="${temporary.dir}/astrogrid-cea-commandline-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/cea-commandline"/>
         </war>
@@ -636,6 +637,7 @@
         <copy todir="${temporary.dir}/cea-http" filtering="true">
                 <fileset dir="contexts/cea-http" />
         </copy>
+       <ag:maybe-enable-cougaar webapp="cea-http" />
         <war update="true" destfile="${temporary.dir}/astrogrid-cea-http-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/cea-http"/>
         </war>
@@ -660,6 +662,7 @@
                 <include name="astro*.prop*"/>
             </fileset>
     </copy>
+    <ag:maybe-enable-cougaar webapp="registry" />
 
     <war update="true" destfile="${temporary.dir}/astrogrid-registry-${pom.currentVersion}.war">
                 <classes dir="${temporary.dir}/registry"/>
@@ -678,6 +681,7 @@
         <copy todir="${temporary.dir}/myspace" filtering="true">
                 <fileset dir="contexts/myspace" />
         </copy>
+        <ag:maybe-enable-cougaar webapp="myspace" />
         <war update="true" destfile="${temporary.dir}/astrogrid-mySpace-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/myspace"/>
         </war>
@@ -721,6 +725,7 @@
     <copy todir="${temporary.dir}/${filestore.name}" filtering="true">
         <fileset dir="contexts/filestore"/>
     </copy>
+    <ag:maybe-enable-cougaar webapp="${filestore.name}" />
     <!--+
         | Update the war file.
         +-->
@@ -744,6 +749,7 @@
         <copy todir="${temporary.dir}/pal" filtering="true">
                 <fileset dir="contexts/pal" />
         </copy>
+       <ag:maybe-enable-cougaar webapp="pal" />
         <war update="true" destfile="${temporary.dir}/pal-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/pal"/>
         </war>
@@ -753,12 +759,14 @@
 
 </goal>
 
+<!-- NOEL - cougaar taglib won't work with these pal wars - pal uses a different naming pattern. arse -->
 <goal name="pal-fits-deploy" >
                 <copy file="${temporary.dir}/pal-${pom.currentVersion}.war"
                       tofile="${temporary.dir}/pal-fits-${pom.currentVersion}.war" />
         <copy todir="${temporary.dir}/pal_fits" filtering="true">
                 <fileset dir="contexts/pal_fits" />
         </copy>
+       <ag:maybe-enable-cougaar webapp="pal_fits" />
         <war update="true" destfile="${temporary.dir}/pal-fits-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/pal_fits"/>
         </war>
@@ -772,6 +780,7 @@
         <copy todir="${temporary.dir}/pal_sec" filtering="true">
                 <fileset dir="contexts/pal_sec" />
         </copy>
+       <ag:maybe-enable-cougaar webapp="pal-sec" />
         <war update="true" destfile="${temporary.dir}/pal-sec-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/pal_sec"/>
         </war>
@@ -786,6 +795,7 @@
                 <copy todir="${temporary.dir}/pal_cds" filtering="true">
                         <fileset dir="contexts/pal_cds" />
                 </copy>
+                <ag:maybe-enable-cougaar webapp="pal_cds" />
                 <war update="true" destfile="${temporary.dir}/pal-cds-${pom.currentVersion}.war">
                         <metainf dir="${temporary.dir}/pal_cds"/>
                 </war>
@@ -800,6 +810,7 @@
         <copy todir="${temporary.dir}/portal" filtering="true">
                 <fileset dir="contexts/portal" />
         </copy>
+       <ag:maybe-enable-cougaar webapp="portal" />
         <war update="true" destfile="${temporary.dir}/astrogrid-portal-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/portal" />
         </war>
@@ -814,6 +825,7 @@
     <copy todir="${temporary.dir}/community/webapp" filtering="true">
         <fileset dir="contexts/community" />
     </copy>
+       <ag:maybe-enable-cougaar webapp="community" />
     <war update="true" destfile="${temporary.dir}/astrogrid-community-${pom.currentVersion}.war">
         <metainf dir="${temporary.dir}/community/webapp"/>
     </war>
@@ -974,6 +986,7 @@
                 <delete dir="${temporary.dir}" />
                                 <delete dir="${work.dir}"/>
 </goal>
+
 
 
 <!-- extra reports - full junit report, annotated with regression info.-->

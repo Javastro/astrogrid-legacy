@@ -9,7 +9,7 @@
                 xmlns:ag="org.astrogrid.deploy"
     >
 
-	<!-- does this need to be in a task? -->
+        <!-- does this need to be in a task? -->
 <goal name="declare-tasks">
    <!-- Configure the custom Ant tasks for the Manager application -->
   <taskdef name="tomcat-deploy"    classname="org.apache.catalina.ant.DeployTask" classpathref="maven.dependency.classpath"/>
@@ -140,6 +140,123 @@
             />
 
 
+                </define:tag>
+                <!-- enable cougar for this webapp, if it's 'short name' is part of the space-separated list of
+                names in the variable 'enable.cougaar.list'.
+                example shortnames - portal, community, registry, myspace, cea, cea-commandline, cea-http, jes, etc.
+                - works on war filenames conforming to pattern
+                  astrogrid-${shortname}-{$version}.war
+                   - so doesn't work for pal, and its vairants, which don't follow this pattern.-->
+                <define:tag name="maybe-enable-cougaar">
+                        <!-- bit of a pity that we parse this every time - dunno how to declare a global though.. -->
+                        <util:tokenize var="enableList" delim=" ">${enable.cougaar.list}</util:tokenize>
+                        <j:if test="${enableList.contains(webapp)}">
+                                <ag:enable-cougaar webapp="${webapp}" />
+                        </j:if>
+                </define:tag>
+
+                <define:tag name="enable-cougaar">
+                    <echo>enabling cougaar profiler for ${webapp}</echo>
+                        <!-- off-line processing -first extract the war -->
+                        <property name="war.dir" location="${temporary.dir}/${webapp}-war" />
+                        <unwar src="${temporary.dir}/astrogrid-${webapp}-${pom.currentVersion}.war"
+                                dest="${war.dir}" />
+                        <!-- instrument the classes -->
+                        <echo>instrumenting WEB-INF/classes</echo>
+                        <fileScanner var="classes">
+                                <fileset dir="${war.dir}/WEB-INF/classes">
+                                        <include name="**/*.class" />
+                                </fileset>
+                        </fileScanner>
+                        <j:forEach var="class" items="${classes.iterator()}">
+                                <ag:_cougaar-instrument
+                                        class="${class}"
+                                        warRoot="${war.dir}"
+                                />
+                        </j:forEach>
+                        <!-- instrument the jars - takes a very very long time - so only do the ag ones -->.
+                        <echo>instrumenting WEB-INF/lib</echo>
+                        <fileScanner var="libs">
+                                <fileset dir="${war.dir}/WEB-INF/lib">
+                                        <include name="astrogrid-*.jar" />
+                                </fileset>
+                        </fileScanner>
+                        <property name="jar.dir" location="${temporary.dir}/jar-working" />
+                        <j:forEach var="lib" items="${libs.iterator()}">
+
+                                <echo>Instrumenting jar file ${lib}</echo>
+                                <delete dir="${jar.dir}" quiet="true"/>
+                                <mkdir dir="${lib.dir}" />
+                                <unjar src="${lib}" dest="${jar.dir}" />
+                                <fileScanner var="jarClasses">
+                                        <fileset dir="${jar.dir}">
+                                                <include name="**/*.class" />
+                                        </fileset>
+                                </fileScanner>
+                                <j:forEach var="class" items="${jarClasses.iterator()}">
+                                        <ag:_cougaar-instrument class="${class}" warRoot="${war.dir}" />
+                                </j:forEach>
+                                <delete file="${lib}" />
+                                <jar destfile="${lib}" basedir="${lib.dir}" />
+                        </j:forEach>
+                        -->
+                   <!-- patch web.xml -->
+                        <jsl:stylesheet var="addCougaarServlet">
+                                <jsl:template match="node() | @*" priority="1">
+                                        <jxml:copy>
+                                                <jsl:applyTemplates select="@* | node()" />
+                                        </jxml:copy>
+                                </jsl:template>
+                                <!-- match the last 'servlet' entry -->
+                                <jsl:template match="servlet[name(following-sibling::*[1]) != 'servlet']" priority="2">
+                                        <jxml:copyOf select="." />
+                                        <servlet>
+                                                <servlet-name>CougaarServlet</servlet-name>
+                                                <servlet-class>org.cougaar.profiler.servlet.ProfilerServlet</servlet-class>
+                                        </servlet>
+                                </jsl:template>
+                                <!-- same for servlet mapping -->
+                                <jsl:template match="servlet-mapping[name(following-sibling::*[1]) != 'servlet-mapping']" priority="2">
+                                        <jxml:copyOf select="." />
+                                        <servlet-mapping>
+                                                <servlet-name>CougaarServlet</servlet-name>
+                                                <url-pattern>/cougaar</url-pattern>
+                                        </servlet-mapping>
+                                </jsl:template>
+                        </jsl:stylesheet>
+                        <jxml:parse var="originalWebXML" xml="file:${war.dir}/WEB-INF/web.xml" />
+                        <j:file name="${war.dir}/WEB-INF/web.xml">
+                                <jsl:style stylesheet="${addCougaarServlet}" select="$originalWebXML" />
+                        </j:file>
+                  <!-- stuff things back into the war file  - and add in cougaar jars.-->
+                  <delete file="${temporary.dir}/astrogrid-${webapp}-${pom.currentVersion}.war" />
+                  <war destfile="${temporary.dir}/astrogrid-${webapp}-${pom.currentVersion}.war"
+                        basedir="${war.dir}"
+                        webxml="${war.dir}/WEB-INF/web.xml"
+                        excludes="**/web.xml">
+                        <lib dir="${temporary.dir}">
+                                <include name="*cougaar*.jar" />
+                                <include name="*bcel*.jar" />
+                        </lib>
+                  </war>
+                </define:tag>
+                <!-- not for external use -->
+                <define:tag name="_cougaar-instrument">
+                       <java classname="org.cougaar.profiler.transform.SelfProfiler"
+                             fork="true" output="${class}-instrumented">
+                             <classpath><!-- necessary to have all classes the processed class may depend upon on the classpath -->
+                                   <fileset dir="${warRoot}/WEB-INF/lib">
+                                     <include name="*.jar" />
+                                   </fileset>
+                                   <fileset dir="${temporary.dir}">
+                                           <include name="*.jar" />
+                                   </fileset>
+                                                <path refid="maven.dependency.classpath" />
+                                                <path location="${warRoot}/WEB-INF/classes" />
+                             </classpath>
+                        <arg value="${class}" />
+                       </java>
+                       <move overwrite="true" file="${class}-instrumented" tofile="${class}" />
                 </define:tag>
         </define:taglib>
 
