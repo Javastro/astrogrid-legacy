@@ -15,6 +15,7 @@ import org.astrogrid.portal.workflow.design.activity.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource ;
 import java.io.StringReader ; 
+import java.util.ListIterator ;
 
 public class WorkflowTestSuite extends TestCase {
 	
@@ -538,12 +539,14 @@ public class WorkflowTestSuite extends TestCase {
               workflowName = "WorkflowTest_" + date.getTime(),
               description = "This is a one step job submitted at " + date.toGMTString(),
               templateName = "OneStepJob",
-              queryName = "query_20031008.xml" ; ;
+              queryName = "query_20031008.xml" ; 
               
           Workflow
               workflow = null ;
           String
-              query = null ;
+              query = null,
+              queryLocation = null,
+              votableLocation = null ;
           Sequence
               sequence = null ;
           boolean
@@ -554,6 +557,8 @@ public class WorkflowTestSuite extends TestCase {
               activity = null ;
           Step
               step = null ;
+          ListIterator
+              listIt = null ;
             
           try{
              workflow = Workflow.createWorkflowFromTemplate( communitySnippet()
@@ -567,9 +572,37 @@ public class WorkflowTestSuite extends TestCase {
              
              query = Workflow.readQuery( communitySnippet()
                                        , queryName ) ;
+                                       
+             queryLocation = Workflow.formatMySpaceURL( communitySnippet()
+                                                      , "query"
+                                                      , queryName ) ;
+                                                      
+              votableLocation = Workflow.formatMySpaceURL( communitySnippet()
+                                                         , "votable"
+                                                         , "votable_0123.xml" ) ;
              
-             sequence = (Sequence)workflow.getChild() ;
+             listIt = tool.getInputParameters() ;
+             Parameter
+                p ;
              
+             while( listIt.hasNext() ) {
+                 p = (Parameter)listIt.next() ;
+                 if( p.getName().equals("query") )
+                    p.setLocation( queryLocation ) ;
+                    break ;
+             } 
+             
+             listIt = tool.getOutputParameters() ;
+             
+             while( listIt.hasNext() ) {
+                 p = (Parameter)listIt.next() ;
+                 if( p.getName().equals("result") )
+                    p.setLocation( votableLocation ) ;
+                    break ;
+             }                                          
+                                                      
+             
+             sequence = (Sequence)workflow.getChild() ;            
              iterator = sequence.getChildren() ;
              
              while( iterator.hasNext() ) {
@@ -650,10 +683,5 @@ public class WorkflowTestSuite extends TestCase {
         }
           
     }
-    
-    
-    
-    
-    
     
 } // end of class WorkflowTestSuite

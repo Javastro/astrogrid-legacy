@@ -1102,13 +1102,37 @@ public class Workflow extends Activity {
     } // end of readMySpaceFile() 
     
     
-
-
-
-
+    /**
+      * Formats some logical URL for a file in MySpace.
+      * 
+      * This is a guess at present. The guess involved assuming
+      * for a logical representation that the community info
+      * would not be required.
+      * 
+      * @param communitySnippet - Account and Group details.
+      * @param logicalDirectoryPath - Path without user details
+      *        Directories should be separated by forward slashes.
+      * @param fileName - just the file name
+      * @see 
+      **/   
+    public static String formatMySpaceURL( String communitySnippet
+                                         , String logicalDirectoryPath
+                                         , String fileName ) {
+        
+        StringBuffer
+            buffer = new StringBuffer(64) ;
+            
+        buffer
+            .append( "myspace://" )
+            .append( logicalDirectoryPath )
+            .append( "/")
+            .append( fileName ) ;
+            
+        return buffer.toString() ; 
+            
+    }
     
-    
-      
+        
     private static void trace( String traceString ) {
         System.out.println( traceString ) ;
         // logger.debug( traceString ) ;
