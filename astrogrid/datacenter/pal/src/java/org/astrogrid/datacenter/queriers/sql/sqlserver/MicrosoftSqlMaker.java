@@ -1,4 +1,4 @@
-/*$Id: PostgresSqlMaker.java,v 1.3 2004/11/03 01:35:18 mch Exp $
+/*$Id: MicrosoftSqlMaker.java,v 1.2 2004/11/03 01:35:18 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.
  *
 **/
-package org.astrogrid.datacenter.queriers.sql.postgres;
+package org.astrogrid.datacenter.queriers.sql.sqlserver;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,7 +24,7 @@ import org.astrogrid.datacenter.query.Query;
  * <p>
  * * Trig functions assume radians as arguments
  */
-public class PostgresSqlMaker extends StdSqlMaker {
+public class MicrosoftSqlMaker extends StdSqlMaker {
 
    /**
     * Constructs an SQL statement for the given ADQL.
@@ -32,23 +32,41 @@ public class PostgresSqlMaker extends StdSqlMaker {
    public String makeSql(Query query) {
       
       String stdSql = super.makeSql(query);
-      
-      String postgresSql = stdSql.replaceAll("<>","&&");
-      
-      return postgresSql;
+
+      //add 'top'  to just after SELECT
+      long limit = query.getLocalLimit();
+      if (limit != -1) {
+         int selectIdx = stdSql.toUpperCase().indexOf("SELECT");
+         
+         String msSql = stdSql.substring(0, selectIdx+6)+" TOP "+limit+" "+stdSql.substring(selectIdx+6);
+         
+         return msSql;
+      }
+      else {
+         return stdSql;
+      }
    }
 
+   public String makeCountSql(Query query) {
+      throw new UnsupportedOperationException("Need to get rid of LIMIT before can do this");
+   }
    
 }
 
 
 /*
-$Log: PostgresSqlMaker.java,v $
-Revision 1.3  2004/11/03 01:35:18  mch
+$Log: MicrosoftSqlMaker.java,v $
+Revision 1.2  2004/11/03 01:35:18  mch
 PAL_MCH_Candidate2 merge Part II
 
-Revision 1.2.8.1  2004/10/27 00:43:40  mch
+Revision 1.1.2.3  2004/11/01 16:01:25  mch
+removed unnecessary getLocalLimit parameter, and added check for abort in sqlResults
+
+Revision 1.1.2.2  2004/10/27 00:43:40  mch
 Started adding getCount, some resource fixes, some jsps
+
+Revision 1.1.2.1  2004/10/22 14:34:56  mch
+fixes for limiting sql on ms sql server
 
 Revision 1.2  2004/10/06 21:12:17  mch
 Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger

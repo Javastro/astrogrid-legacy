@@ -1,5 +1,5 @@
 /*
- * $Id: AuthorityConfigPlugin.java,v 1.7 2004/10/25 13:14:19 jdt Exp $
+ * $Id: AuthorityConfigPlugin.java,v 1.8 2004/11/03 01:35:18 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -36,17 +36,17 @@ public class AuthorityConfigPlugin implements VoResourcePlugin {
             new String[] {
                "xsi:type='AuthorityType'",
                "status='active'",
-               "updated='"+new Date()+"'"
+               "updated='"+VoDescriptionServer.REGISTRY_DATEFORMAT.format(new Date())+"'"
             });
       XmlTagPrinter identifier = authResource.newTag("Identifier");
       identifier.writeTag("AuthorityID", SimpleConfig.getSingleton().getString(VoDescriptionServer.AUTHID_KEY));
       identifier.writeTag("ResourceKey", "authority");
 
       /** This isn't right - it's submitting datacenter information as part of the organisation's information */
-      identifier.writeTag("Title", DataServer.getDatacenterName());
-      identifier.writeTag("ShortName", SimpleConfig.getSingleton().getString("datacenter.shortname", ""));
+      authResource.writeTag("Title", DataServer.getDatacenterName());
+      authResource.writeTag("ShortName", SimpleConfig.getSingleton().getString("datacenter.shortname", ""));
       
-      XmlTagPrinter summary = identifier.newTag("Summary");
+      XmlTagPrinter summary = authResource.newTag("Summary");
       summary.writeTag("Description", SimpleConfig.getSingleton().getString("datacenter.description", ""));
       summary.writeTag("ReferenceURL", SimpleConfig.getSingleton().getString("datacenter.url", ""));
    

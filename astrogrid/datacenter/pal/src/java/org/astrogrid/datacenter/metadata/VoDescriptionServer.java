@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.8 2004/10/25 13:14:19 jdt Exp $
+ * $Id: VoDescriptionServer.java,v 1.9 2004/11/03 01:35:18 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */

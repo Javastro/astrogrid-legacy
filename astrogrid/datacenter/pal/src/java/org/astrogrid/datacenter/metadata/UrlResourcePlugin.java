@@ -1,5 +1,5 @@
 /*
- * $Id: UrlResourcePlugin.java,v 1.4 2004/10/25 13:14:19 jdt Exp $
+ * $Id: UrlResourcePlugin.java,v 1.5 2004/11/03 01:35:18 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */

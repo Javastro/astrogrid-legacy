@@ -1,28 +1,16 @@
 /*
- * $Id: FileResourcePlugin.java,v 1.3 2004/10/12 23:09:53 mch Exp $
+ * $Id: FileResourcePlugin.java,v 1.4 2004/11/03 01:35:18 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.metadata;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.util.Vector;
-import javax.xml.parsers.ParserConfigurationException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.ConfigException;
-import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.util.DomHelper;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * Serves a metadata resource from a file on disk.

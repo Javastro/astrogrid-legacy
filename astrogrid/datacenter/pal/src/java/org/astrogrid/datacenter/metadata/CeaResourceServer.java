@@ -1,5 +1,5 @@
 /*
- * $Id: CeaResourceServer.java,v 1.5 2004/10/29 18:30:26 mch Exp $
+ * $Id: CeaResourceServer.java,v 1.6 2004/11/03 01:35:18 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -60,7 +60,7 @@ public class CeaResourceServer implements VoResourcePlugin {
 
             String type = resource.getAttribute("xsi:type");
             resource.setAttribute("status", "active");
-            resource.setAttribute("update", new Date().toString());
+            resource.setAttribute("update", VoDescriptionServer.REGISTRY_DATEFORMAT.format(new Date()));
 
             if (type.indexOf("CeaApplicationType")>-1) {
                returns[i] = getApplicationType(resource);
@@ -90,7 +90,7 @@ public class CeaResourceServer implements VoResourcePlugin {
       XmlTagPrinter appType = printer.newTag("Resource", new String[] {
                "xsi:type='cea:CeaApplicationType'",
                "status='active'",
-               "update='"+new Date()+"'"
+               "updated='"+VoDescriptionServer.REGISTRY_DATEFORMAT.format(new Date())+"'"
             });
       VoDescriptionServer.addIdentifier(appType, "/ceaApplication");
 
@@ -117,7 +117,7 @@ public class CeaResourceServer implements VoResourcePlugin {
       XmlTagPrinter servType = printer.newTag("Resource", new String[] {
                "xsi:type='cea:CeaServiceType'",
                "status='active'",
-               "update='"+new Date()+"'"
+               "updated='"+VoDescriptionServer.REGISTRY_DATEFORMAT.format(new Date())+"'"
             });
       VoDescriptionServer.addIdentifier(servType , "/ceaService");
 
@@ -137,6 +137,7 @@ public class CeaResourceServer implements VoResourcePlugin {
             SimpleConfig.getSingleton().getString("datacenter.url")+"services/CommonExecutionConnectorService"
          );
 
+      //reference to CeaApplication resource
       XmlTagPrinter manappTag = servType.newTag("cea:ManagedApplications");
       XmlTagPrinter appRefTag = manappTag.newTag("cea:ApplicationReference");
       appRefTag.writeTag("AuthorityID", SimpleConfig.getSingleton().getString("datacenter.authorityId"));

@@ -1,4 +1,4 @@
-/*$Id: SqlMaker.java,v 1.5 2004/10/25 13:14:19 jdt Exp $
+/*$Id: SqlMaker.java,v 1.6 2004/11/03 01:35:18 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import org.astrogrid.datacenter.query.QueryException;
 /**
  * Translates queries into SQL
  */
-public abstract class SqlMaker  {
+public interface SqlMaker  {
    
    /** Key used to look up the column containing RA for cone searches */
    public static final String CONE_SEARCH_TABLE_KEY = "conesearch.table";
@@ -38,16 +38,23 @@ public abstract class SqlMaker  {
 //   public static final String DB_COLS_IN_RADIANS = "conesearch.columns.in.radians";
 
    /**
-    * Makes an SQL string from the given Query */
-   public abstract String getSql(Query query) throws QueryException;
+    * Make an SQL string from the given Query */
+   public String makeSql(Query query) throws QueryException;
+
+   /**
+    * Make a COUNT SQL string from the given Query */
+   public String makeCountSql(Query query) throws QueryException;
 
 }
 
 
 /*
 $Log: SqlMaker.java,v $
-Revision 1.5  2004/10/25 13:14:19  jdt
-Merges from branch PAL_MCH - another attempt
+Revision 1.6  2004/11/03 01:35:18  mch
+PAL_MCH_Candidate2 merge Part II
+
+Revision 1.2.2.2  2004/10/27 00:43:39  mch
+Started adding getCount, some resource fixes, some jsps
 
 Revision 1.2.2.1  2004/10/22 09:05:15  mch
 Moved SqlMakers back to server

@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.5 2004/10/25 13:14:19 jdt Exp $
+/*$Id: StdSqlMaker.java,v 1.6 2004/11/03 01:35:18 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,8 +40,9 @@ import org.xml.sax.SAXException;
 /**
  * A 'standard' translator that creates 'standard' SQL
  */
-public class StdSqlMaker  extends SqlMaker {
+public class StdSqlMaker  extends AdqlSqlMaker {
 
+   
    private static final Log log = LogFactory.getLog(StdSqlMaker.class);
    
     /** Returns the SQL condition for a circle based on the columns in the
@@ -103,22 +104,21 @@ public class StdSqlMaker  extends SqlMaker {
     public String makeSqlBoundsCondition(String raCol, String decCol, Angle ra, Angle dec, Angle radius) {
    
        String colUnits = SimpleConfig.getSingleton().getString(CONE_SEARCH_COL_UNITS_KEY);
-    
       
-      if (dec.asDegrees() - radius.asDegrees() < 0) {
+      if (dec.asDegrees() - radius.asDegrees() < -90) {
          //circle includes north pole.  Add bounds as just a dec limit.
-         return "("+makeColumnRadians(decCol)+"<"+(dec.asRadians()+radius.asRadians())+")";
+         return "("+decCol+"<"+getAngleInColUnits(Angle.fromRadians(dec.asRadians()+radius.asRadians()))+")";
       }
    
-      if (dec.asDegrees() + radius.asDegrees() > 180) {
+      if (dec.asDegrees() + radius.asDegrees() > +90) {
          //circle includes south pole. Add bounds as just a dec limit
-         return "("+makeColumnRadians(decCol)+">"+(dec.asRadians()-radius.asRadians())+")";
+         return "("+decCol+">"+getAngleInColUnits(Angle.fromRadians(dec.asRadians()-radius.asRadians()))+")";
       }
 
       //make upper and lower limit
-      return "( ("+makeColumnRadians(decCol)+"<"+(dec.asRadians()+radius.asRadians())+") "+
+      return "( ("+decCol+"<"+getAngleInColUnits(Angle.fromRadians(dec.asRadians()+radius.asRadians()))+") "+
             " and "+
-              " ("+makeColumnRadians(decCol)+">"+(dec.asRadians()-radius.asRadians())+") )";
+              " ("+decCol+">"+getAngleInColUnits(Angle.fromRadians(dec.asRadians()-radius.asRadians()))+") )";
     
     }
    
@@ -143,193 +143,36 @@ public class StdSqlMaker  extends SqlMaker {
       }
    }
    
+   /** Returns the given angle in the column's units.   Useful for making SQL a bit
+    * simpler - convert the angles to the column units rather than vice versa with functions */
+   public String getAngleInColUnits(Angle givenAngle) {
+      String colUnits = SimpleConfig.getSingleton().getString(CONE_SEARCH_COL_UNITS_KEY).trim().toLowerCase();
+      if (colUnits.equals("rad")) {
+         return ""+givenAngle.asRadians();
+      }
+      else if (colUnits.equals("deg")) {
+         return ""+givenAngle.asDegrees();
+      }
+      else if (colUnits.equals("marcsec")) {
+         return ""+(givenAngle.asArcSecs()*1000);
+      }
+      else {
+         throw new ConfigException("Unknown units '"+colUnits+"' for conesearch columns, only 'rad', 'deg' or 'marcsec' supported");
+      }
+   }
    
    
    /**
-    * Constructs an SQL statement for the given ADQL document
+    * Constructs an SQL statement for the given ADQL document by getting the
+    * (super) ADQL/sql and replacing the region
     */
-   public String getSql(Element adql) throws QueryException {
-      String sql = useXslt(adql);
+   public String makeSql(Query query) throws QueryException {
+      String sql = super.makeSql(query);
       
       sql = replaceRegion(sql);
       return sql;
    }
    
-   /**
-    * Constructs an ADQL/SQL statement for the given ADQL document (basically leaves
-    * the CIRCLE etc functions inline)
-    */
-   public String getAdqlSql(Element adql) throws QueryException {
-      String sql = useXslt(adql);
-      
-      return sql;
-   }
-   
-   /**
-    * Constructs an SQL statement for the given Query.  Uses the ADQL generator
-    * and XSLT style sheets - there may be a better way of doing this!
-    */
-   public String getSql(Query query) throws QueryException {
-      
-      //botch fix for cone searches which don't specify table
-      if ((query.getScope() == null) && (query.getCriteria() instanceof Function)) {
-         if ( ((Function) query.getCriteria()).getName().toUpperCase().equals("CIRCLE")) {
-            query.setScope(new String[] { SimpleConfig.getProperty(StdSqlMaker.CONE_SEARCH_TABLE_KEY) });
-         }
-      }
-
-      if (query.getScope() == null) {
-         throw new QueryException("No scope (FROM) given in query");
-      }
-      
-      try {
-         //Create an ADQL string documnet from the query
-         String adqlTxt = Adql074Writer.makeAdql(query);
-         Document adqlDom = DomHelper.newDocument(adqlTxt);
-         
-         //translate it
-         String sql = getSql(adqlDom.getDocumentElement());
-
-         return sql;
-         
-      }
-      catch (SAXException e) {
-         throw new RuntimeException("Adql074Writer produced invalid XML from query "+query,e);
-      }
-      catch (IOException e) {
-         throw new RuntimeException("Server error:"+e,e);
-      }
-      catch (ParserConfigurationException e) {
-         throw new RuntimeException("Server configuration error:"+e,e);
-      }
-      
-   }
-
-   protected long getLimit(Query query) {
-      long localLimit = SimpleConfig.getSingleton().getInt(SqlResults.MAX_RETURN_ROWS_KEY, -1);
-      long queryLimit = query.getLimit();
-      if ((queryLimit == -1) || ((queryLimit > localLimit) && (localLimit != -1))) {
-         queryLimit = localLimit;
-      }
-      return queryLimit;
-   }
-   
-   /** Uses Xslt to do the translations */
-   public String useXslt(Element adql) throws QueryException {
-      
-      String namespaceURI = adql.getNamespaceURI();
-      
-      if ((namespaceURI==null) || (namespaceURI.length()==0)) {
-         throw new QueryException("No namespace specified in query document, so don't know what it is");
-      }
-      
-      String xsltDoc = null;
-      InputStream xsltIn = null;
-      String whereIsDoc = null; //used for debug/trace/error messages
-      
-      //work out which translator sheet to use
-      
-      //see if there's a config property set
-      String key = "datacenter.sqlmaker.xslt."+namespaceURI.replaceAll(":","_");
-      xsltDoc = SimpleConfig.getSingleton().getString(key, null);
-      
-      try {
-         if (xsltDoc != null) {
-            //use config-specified sheet
-            xsltIn = new FileInputStream(xsltDoc);
-            whereIsDoc = "File "+xsltDoc;
-         }
-         else {
-            //not given in configuration file - look in subdirectory of class as resource
-            if (namespaceURI.equals("http://tempuri.org/adql")) { //assume v0.5
-               //xsltDoc = "adql05-2-sql.xsl";
-               throw new QueryException("ADQL 0.5 is no longer supported.  Please submit ADQL 0.7.4 documents");
-            }
-            if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.7.4")) {
-               xsltDoc = "adql074-2-sql.xsl";
-            }
-            else if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.7.3")) {
-               xsltDoc = "adql073-2-sql.xsl";
-            }
-            else if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.8")) {
-               xsltDoc = "adql08-2-sql.xsl";
-            }
-            else if (namespaceURI.equals("http://astrogrid.org/sadql/v1.1")) {
-               xsltDoc = "sadql1.1-2-sql.xsl";
-            }
-            
-            if (xsltDoc == null) {
-               throw new RuntimeException("No builtin xslt for ADQL namespace '"+namespaceURI+"'; set configuration key '" + key+"'");
-            }
-            
-            //find specified sheet as resource of this class
-            xsltIn = StdSqlMaker.class.getResourceAsStream("./xslt/"+xsltDoc);
-            whereIsDoc = StdSqlMaker.class+" resource ./xslt/"+xsltDoc;
-            
-            //if above doesn't work, try doing by hand for Tomcat ClassLoader
-            if (xsltIn == null) {
-               String path = StdSqlMaker.class.getPackage().toString().replace('.', '/').substring(8)+"/xslt/"+xsltDoc;
-               xsltIn = StdSqlMaker.class.getClassLoader().getResourceAsStream(path);
-            }
-
-            //sometimes it won't even find it then if it's in a JAR.  Look in class path.  However
-            //*assume* it's in classpath, as we don't know what the classpath is during unit tests.
-            if (xsltIn == null) {
-               log.warn("Could not find builtin ADQL->SQL transformer doc '"+whereIsDoc+"', looking in classpath...");
-               
-               xsltIn = this.getClass().getClassLoader().getResourceAsStream(xsltDoc);
-               whereIsDoc = xsltDoc+" in classpath at "+this.getClass().getClassLoader().getResource(xsltDoc);
-            }
-            
-            if (xsltIn == null) {
-               throw new QueryException("Could not find ADQL->SQL transformer doc "+xsltDoc);
-            }
-         }
-         
-         //create transformer
-         log.debug("Transforming ADQL ["+namespaceURI+"] using Xslt doc at '"+whereIsDoc+"'");
-         TransformerFactory tFactory = TransformerFactory.newInstance();
-         try {
-            tFactory.setAttribute("UseNamespaces", Boolean.FALSE);
-         }
-         catch (IllegalArgumentException iae) {
-            //ignore - if UseNamepsaces is unsupported, it will chuck an exception, and
-            //we don't want to use namespaces anyway so taht's fine
-         }
-         Transformer transformer = tFactory.newTransformer(new StreamSource(xsltIn));
-         
-         //transform
-         StringWriter sw = new StringWriter();
-         transformer.transform(new DOMSource(adql), new StreamResult(sw));
-         String sql = sw.toString();
-         
-         //tidy it up - remove new lines and double spaces
-         sql = sql.replaceAll("\n","");
-         sql = sql.replaceAll("\r","");
-         while (sql.indexOf("  ")>-1) { sql = sql.replaceAll("  ", " "); }
-         
-         //botch botch botch - for some reason transformers sometimes add <?xml tag to beginning
-         if (sql.startsWith("<?")) {
-            sql = sql.substring(sql.indexOf("?>")+2);
-         }
-         //botch botch botch - something funny with ADQL 0.7.3 schema to do with comparisons
-         sql = sql.replaceAll("&gt;", ">").replaceAll("&lt;", "<");
-         
-         log.debug("Used '"+xsltDoc+"' to translate ADQL ("+namespaceURI+") to '"+sql+"'");
-         
-         return sql;
-      }
-      catch (TransformerConfigurationException tce) {
-         throw new QueryException(tce+" (using xslt sheet "+xsltDoc+")",tce);
-      }
-      catch (TransformerException te) {
-         throw new QueryException(te+" translating ADQL->SQL using "+xsltDoc,te);
-      }
-      catch (IOException ioe) {
-         throw new QueryException(ioe+" Opening XSLT sheet "+xsltDoc,ioe);
-      }
-      
-   }
    
    /**
     * Replaces the REGION() function with the cone search SQL.
@@ -384,8 +227,14 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
  $Log: StdSqlMaker.java,v $
- Revision 1.5  2004/10/25 13:14:19  jdt
- Merges from branch PAL_MCH - another attempt
+ Revision 1.6  2004/11/03 01:35:18  mch
+ PAL_MCH_Candidate2 merge Part II
+
+ Revision 1.2.2.4  2004/11/01 12:25:29  mch
+ Fix for dec -90 to +90
+
+ Revision 1.2.2.3  2004/10/27 00:43:39  mch
+ Started adding getCount, some resource fixes, some jsps
 
  Revision 1.2.2.2  2004/10/22 14:34:56  mch
  fixes for limiting sql on ms sql server

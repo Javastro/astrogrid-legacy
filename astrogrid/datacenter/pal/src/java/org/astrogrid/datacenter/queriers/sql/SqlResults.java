@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.8 2004/10/18 13:11:30 mch Exp $
+ * $Id: SqlResults.java,v 1.9 2004/11/03 01:35:18 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,6 +18,8 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
+import org.astrogrid.datacenter.queriers.status.QuerierStatus;
+import org.astrogrid.datacenter.query.Query;
 
 /**
  * Implementation of <tt>QueryResults</tt> as a wrapper around a <tt>ResultSet</tt>
@@ -28,15 +30,15 @@ import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
  * @author M Hill
  */
 
-public class SqlResults extends QueryResults
-{
+public class SqlResults extends QueryResults {
+   
    protected ResultSet sqlResults;
    protected static final Log log = org.apache.commons.logging.LogFactory.getLog(SqlResults.class);
    
-   public final static int DEFAULT_MAX_RETURN_ROWS = -1;
+//   public final static int DEFAULT_MAX_RETURN_ROWS = -1;
    
    /** Key used to define maximum number of rows allowed - defaults to 200, -1 = any */
-   public final static String MAX_RETURN_ROWS_KEY = "datacenter.sql.maxreturn";
+//   public final static String MAX_RETURN_ROWS_KEY = "datacenter.sql.maxreturn";
 
    /**
     * Construct this wrapper around the given JDBC/SQL ResultSet.  We don't
@@ -72,7 +74,7 @@ public class SqlResults extends QueryResults
    {
       assert (out != null);
       
-      long localLimit = SimpleConfig.getSingleton().getInt(MAX_RETURN_ROWS_KEY, DEFAULT_MAX_RETURN_ROWS);
+      long localLimit = SimpleConfig.getSingleton().getInt(Query.MAX_RETURN_KEY, -1);
       long queryLimit = querier.getQuery().getLimit();
       
      
@@ -80,7 +82,7 @@ public class SqlResults extends QueryResults
       {
          PrintWriter printOut = new PrintWriter(new BufferedWriter(out));
          
-         printOut.println("<!DOCTYPE VOTABLE SYSTEM 'http://us-vo.org/xml/VOTable.dtd'>");
+//         printOut.println("<!DOCTYPE VOTABLE SYSTEM 'http://us-vo.org/xml/VOTable.dtd'>");
          printOut.println("<VOTABLE version='1.0'>");
          
          /* don't know where to find this info - in the netadata I expect
@@ -145,6 +147,11 @@ public class SqlResults extends QueryResults
                log.warn("Limiting returned results to "+localLimit);
                break;
             }
+            
+            if (querier.getStatus().getStage().equals(QuerierStatus.ABORTED)) {
+               printOut.println(" ------------------ Querier Aborted ----------------- ");
+               return;
+            }
          }
          statusToUpdate.addDetail(row+" rows sent");
          
@@ -175,7 +182,8 @@ public class SqlResults extends QueryResults
    {
       assert (out != null);
       
-      long maxAllowed = SimpleConfig.getSingleton().getInt(MAX_RETURN_ROWS_KEY, DEFAULT_MAX_RETURN_ROWS);
+      long localLimit = SimpleConfig.getSingleton().getInt(Query.MAX_RETURN_KEY, -1);
+      long queryLimit = querier.getQuery().getLimit();
       
       try
       {
@@ -203,13 +211,11 @@ public class SqlResults extends QueryResults
          printOut.println("</TR>");
 
          int row = 0;
-         int maxRow = getCount();
-         String ofMax = " of "+maxRow;
-         if (maxRow == -1) ofMax = "";
-         while (sqlResults.next())
+         statusToUpdate.newProgress("Processing Row", getCount());
+         while (sqlResults.next() && ((queryLimit == -1) || (row<=queryLimit)))
          {
             row++;
-            statusToUpdate.setMessage("Processing Row "+row+ofMax);
+            statusToUpdate.setProgress(row);
 
             printOut.println("<TR>");
             for (int i=1;i<=cols;i++)
@@ -218,10 +224,15 @@ public class SqlResults extends QueryResults
             }
             printOut.println("</TR>");
             
-            if ((maxAllowed!=-1) && (row>maxAllowed)) {
-               statusToUpdate.addDetail("Results limited to "+maxAllowed+" rows by datacenter");
-               log.warn("Limiting returned results to "+maxAllowed);
+            if ((localLimit!=-1) && (row>localLimit)) {
+               statusToUpdate.addDetail("Results limited to "+localLimit+" rows by datacenter");
+               log.warn("Limiting returned results to "+localLimit);
                break;
+            }
+
+            if (querier.getStatus().getStage().equals(QuerierStatus.ABORTED)) {
+               printOut.println(" ------------------ Querier Aborted ----------------- ");
+               return;
             }
          }
          statusToUpdate.addDetail(row+" rows sent");
@@ -246,7 +257,8 @@ public class SqlResults extends QueryResults
     */
    public void writeCSV(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
    {
-      long maxAllowed = SimpleConfig.getSingleton().getInt(MAX_RETURN_ROWS_KEY, DEFAULT_MAX_RETURN_ROWS);
+      long maxAllowed = SimpleConfig.getSingleton().getInt(Query.MAX_RETURN_KEY, -1);
+      long queryLimit = querier.getQuery().getLimit();
       
       try
       {
@@ -270,7 +282,7 @@ public class SqlResults extends QueryResults
          int maxRow = getCount();
          String ofMax = " of "+maxRow;
          if (maxRow == -1) ofMax = "";
-         while (sqlResults.next())
+         while (sqlResults.next() && ((queryLimit == -1) || (row<=queryLimit)))
          {
             row++;
             statusToUpdate.setMessage(note+"\nProcessing Row "+row+ofMax);
@@ -289,6 +301,10 @@ public class SqlResults extends QueryResults
                break;
             }
             
+            if (querier.getStatus().getStage().equals(QuerierStatus.ABORTED)) {
+               printOut.println(" ------------------ Querier Aborted ----------------- ");
+               return;
+            }
          }
 
          statusToUpdate.addDetail(row+" rows sent");
@@ -320,6 +336,15 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.9  2004/11/03 01:35:18  mch
+ PAL_MCH_Candidate2 merge Part II
+
+ Revision 1.8.6.2  2004/11/01 16:01:25  mch
+ removed unnecessary getLocalLimit parameter, and added check for abort in sqlResults
+
+ Revision 1.8.6.1  2004/10/27 00:43:39  mch
+ Started adding getCount, some resource fixes, some jsps
+
  Revision 1.8  2004/10/18 13:11:30  mch
  Lumpy Merge
 
