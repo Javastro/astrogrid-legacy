@@ -1,4 +1,4 @@
-/*$Id: EgsoQueryMaker.java,v 1.1 2004/07/07 09:17:40 KevinBenson Exp $
+/*$Id: EgsoQueryMaker.java,v 1.2 2004/07/07 14:32:54 KevinBenson Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,10 +12,7 @@ package org.astrogrid.datacenter.sec.querier;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-//import org.astrogrid.datacenter.cdsdelegate.vizier.DecimalDegreesTarget;
-//import org.astrogrid.datacenter.cdsdelegate.vizier.Unit;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-//import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.RawSqlQuery;
 import org.astrogrid.datacenter.query.Query;
@@ -45,6 +42,9 @@ public class EgsoQueryMaker  {
 
 /*
 $Log: EgsoQueryMaker.java,v $
+Revision 1.2  2004/07/07 14:32:54  KevinBenson
+Few small changes because I had it referencing "cds" at the moment.
+
 Revision 1.1  2004/07/07 09:17:40  KevinBenson
 New SEC/EGSO proxy to query there web service on the Solar Event Catalog
 

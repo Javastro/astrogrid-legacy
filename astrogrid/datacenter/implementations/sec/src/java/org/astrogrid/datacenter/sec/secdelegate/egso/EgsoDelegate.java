@@ -1,4 +1,4 @@
-/*$Id: EgsoDelegate.java,v 1.1 2004/07/07 09:17:40 KevinBenson Exp $
+/*$Id: EgsoDelegate.java,v 1.2 2004/07/07 14:32:54 KevinBenson Exp $
  * Created on 16-Oct-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -66,17 +66,14 @@ public class EgsoDelegate {
 
 /* 
 $Log: EgsoDelegate.java,v $
+Revision 1.2  2004/07/07 14:32:54  KevinBenson
+Few small changes because I had it referencing "cds" at the moment.
+
 Revision 1.1  2004/07/07 09:17:40  KevinBenson
 New SEC/EGSO proxy to query there web service on the Solar Event Catalog
 
 Revision 1.2  2003/12/01 16:50:30  nw
 first working tested version
-
-Revision 1.1  2003/11/18 11:23:49  nw
-mavenized cds delegate
-
-Revision 1.2  2003/11/18 11:10:05  nw
-mavenized cds delegate
 
 Revision 1.1  2003/10/16 10:11:45  nw
 first check in

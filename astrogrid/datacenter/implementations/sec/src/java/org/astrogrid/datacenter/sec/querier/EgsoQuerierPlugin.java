@@ -1,4 +1,4 @@
-/*$Id: EgsoQuerierPlugin.java,v 1.1 2004/07/07 09:17:40 KevinBenson Exp $
+/*$Id: EgsoQuerierPlugin.java,v 1.2 2004/07/07 14:32:54 KevinBenson Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,9 +21,8 @@ import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.w3c.dom.Document;
 
-/** Datacenter querier SPI that performs queries against CDS Vizier webservice.
- * @see AdqlVizierTranslator
- * @author Noel Winstanley nw@jb.man.ac.uk 13-Nov-2003
+/** Datacenter querier that performs queries against SEC webservice.
+ * @author Kevin Benson kmb@mssl.ucl.ac.uk
  */
 public class EgsoQuerierPlugin extends QuerierPlugin {
    
@@ -49,6 +48,9 @@ public class EgsoQuerierPlugin extends QuerierPlugin {
 
 /*
  $Log: EgsoQuerierPlugin.java,v $
+ Revision 1.2  2004/07/07 14:32:54  KevinBenson
+ Few small changes because I had it referencing "cds" at the moment.
+
  Revision 1.1  2004/07/07 09:17:40  KevinBenson
  New SEC/EGSO proxy to query there web service on the Solar Event Catalog
 

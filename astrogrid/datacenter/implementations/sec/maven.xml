@@ -171,7 +171,7 @@ new goals
 
   <goal name="generate-delegates" description="generate classes from wsdl" prereqs="axis-declare-tasks">
   	<description><![CDATA[
-	generated client classes from wsdl from cds.
+	generated client classes from wsdl from sec.
 	]]></description>
   	<delete><!-- clean out to start with -->
 		<fileset dir="${generated.src}" >

@@ -11,7 +11,7 @@
   <description><![CDATA[
    Astrogrid Datacenter implementation that acts as a 'gateway' (ahem) for the SEC catalogue
    <p />
-   Makes use of the SEC Web service provided by EGSO. Documented <a href="http://cdsweb.u-strasbg.fr/cdsws.gml">here</a>
+   Makes use of the SEC Web service provided by EGSO.
    <p />
    This project also provides stand-alone java delegates for the other web services provided by SEC -
    <ul>
