@@ -1,4 +1,4 @@
-/*$Id: StoreClientTest.java,v 1.2 2004/03/02 01:25:39 mch Exp $
+/*$Id: StoreClientTest.java,v 1.3 2004/03/02 11:55:56 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import junit.framework.TestCase;
+import org.astrogrid.community.User;
 import org.astrogrid.io.Piper;
 import org.astrogrid.store.Agsl;
 
@@ -142,21 +143,26 @@ public abstract class StoreClientTest extends TestCase {
       /* broken? */
       store.move(path+SOURCE_TEST, target);
 
+      //target store may not be same as source store
+      StoreClient targetStore = StoreDelegateFactory.createDelegate(User.ANONYMOUS, target);
+
       //make sure old one is dead
       StoreFile f = store.getFile(path+SOURCE_TEST);
       assertNull(f);
 
       //make sure new one exists
-      assertFileExists(store, target.getPath());
+      assertFileExists(targetStore, target.getPath());
       
       //make sure contents are the same
-      InputStream in = store.getUrl(target.getPath()).openStream();
+      InputStream in = targetStore.getUrl(target.getPath()).openStream();
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       Piper.bufferedPipe(in, out);
       in.close();
       out.close();
       assertEquals(SOURCE_CONTENTS, out.toString());
-      
+    
+      //delete moved file
+      targetStore.delete(target.getPath());
    }
 
    public void assertCopy(StoreClient store, Agsl target) throws IOException
@@ -168,16 +174,22 @@ public abstract class StoreClientTest extends TestCase {
       //make sure old one exists
       assertFileExists(store, path+SOURCE_TEST);
 
+      //target store may not be same as source store
+      StoreClient targetStore = StoreDelegateFactory.createDelegate(User.ANONYMOUS, target);
+
       //make sure new one exists
-      assertFileExists(store, target.getFilename());
+      assertFileExists(targetStore, target.getFilename());
       
       //make sure contents are the same
-      InputStream in = store.getUrl(target.getPath()).openStream();
+      InputStream in = targetStore.getUrl(target.getPath()).openStream();
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       Piper.bufferedPipe(in, out);
       in.close();
       out.close();
       assertEquals(SOURCE_CONTENTS, out.toString());
+
+      //delete copied file
+      targetStore.delete(target.getPath());
       
    }
    
@@ -203,6 +215,9 @@ public abstract class StoreClientTest extends TestCase {
 
 /*
 $Log: StoreClientTest.java,v $
+Revision 1.3  2004/03/02 11:55:56  mch
+Fixed move and copy bugs
+
 Revision 1.2  2004/03/02 01:25:39  mch
 Minor fixes
 
