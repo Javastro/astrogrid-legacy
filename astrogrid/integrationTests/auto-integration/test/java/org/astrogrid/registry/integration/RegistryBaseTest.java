@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryBaseTest.java,v 1.6 2004/08/25 11:40:50 KevinBenson Exp $
+ * $Id: RegistryBaseTest.java,v 1.7 2004/09/03 09:46:33 nw Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,13 +13,23 @@
 
 package org.astrogrid.registry.integration;
 
+import java.io.IOException;
 import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.scripting.Astrogrid;
 import org.astrogrid.scripting.Service;
+import org.astrogrid.test.AstrogridAssert;
+import org.astrogrid.test.schema.SchemaMap;
+
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import junit.framework.TestCase;
 
@@ -73,5 +83,16 @@ public abstract class RegistryBaseTest extends TestCase {
       adminDelegate = (RegistryAdminService)service.createDelegate();
       assertNotNull(adminDelegate);
    }
+   
+  // useful reg-specific assertions.
+   public void assertVODescription(Document doc) {
+       AstrogridAssert.assertSchemaValid(doc,"VODescription",SchemaMap.ALL);
+   }
+   
+   public void assertVOResource(Document doc) {
+       AstrogridAssert.assertSchemaValid(doc,"VOResource",SchemaMap.ALL);
+   }
+   
+   /* @todo more needed here - inspect contents of a result, handle 'searchResults' etc*/
    
 }
