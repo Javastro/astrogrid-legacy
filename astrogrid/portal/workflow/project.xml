@@ -4,6 +4,16 @@
     <name>AstroGrid Portal Workflow</name>
     <dependencies>
     
+	  <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-portal-common</artifactId>
+            <version>${astrogrid.portal.version}</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+	
     
             <dependency>
             <groupId>org.astrogrid</groupId>
