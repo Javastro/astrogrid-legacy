@@ -2,11 +2,14 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/14 13:50:07 $</cvs:date>
-    | <cvs:version>$Revision: 1.17 $</cvs:version>
+    | <cvs:author>$Author: KevinBenson $</cvs:author>
+    | <cvs:date>$Date: 2004/07/25 08:57:33 $</cvs:date>
+    | <cvs:version>$Revision: 1.18 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.18  2004/07/25 08:57:33  KevinBenson
+    |   small change to use the registry-client-lite
+    |
     |   Revision 1.17  2004/07/14 13:50:07  dave
     |   Merged development branch, dave-dev-200406301228, into HEAD
     |
@@ -154,7 +157,7 @@
             +-->
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>astrogrid-registry-client</artifactId>
+            <artifactId>astrogrid-registry-client-lite</artifactId>
             <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
