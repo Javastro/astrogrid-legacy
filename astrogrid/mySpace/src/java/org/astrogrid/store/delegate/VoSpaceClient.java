@@ -1,14 +1,17 @@
 /*
- * $Id: VoSpaceClient.java,v 1.1 2004/03/01 22:38:46 mch Exp $
+ * $Id: VoSpaceClient.java,v 1.2 2004/03/08 22:57:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.store.delegate;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import org.astrogrid.community.User;
+import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
@@ -21,19 +24,44 @@ import org.astrogrid.store.delegate.StoreDelegateFactory;
  * to access the the store services or files.  As such it is really a factory,
  * making appropriate delegates as required, but it offers convenient methods
  * for, eg,  returning streams directly to IVO-identified files.
+ * It makes use of the registry and commnunity to look up IVORNs
  *
  */
 
 public class VoSpaceClient {
    
+   RegistryService registry = new RegistryService();
+   
    /**
     * Given an IVO Resource Name, resolves the AGSL
-    * @todo implement
     */
    public Agsl resolveAgsl(Ivorn ivorn) throws IOException {
-      //we need some kind of 'type' information here...
-      throw new UnsupportedOperationException();
+
+      //NB the implementation is not complete until we have sorted out how this is supposed to work in detail
       
+      //the fragment bit is not relevent to the service lookup - preserve it
+      String fragment = ivorn.getFragment();
+
+      //look up in config first
+      String agsl = SimpleConfig.getSingleton().getString(ivorn.toRegistryString(), null);
+
+      /*
+      if (agsl == null) {
+         //look in registry
+         agsl = registry.getEndPointByIdentifier(ivorn.toRegistryString());
+      }
+      
+      if (agsl == null) {
+         //look in community
+         agsl = community.getMySpace(ivorn.toRegistryString());
+      }
+       */
+
+      if (agsl == null) {
+         throw new FileNotFoundException("Cannot resolve "+ivorn);
+      }
+
+      return new Agsl(agsl);
    }
    
    /**
@@ -59,6 +87,9 @@ public class VoSpaceClient {
 
 /*
 $Log: VoSpaceClient.java,v $
+Revision 1.2  2004/03/08 22:57:17  mch
+Added placeholding for registry and community delegates
+
 Revision 1.1  2004/03/01 22:38:46  mch
 Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
 
