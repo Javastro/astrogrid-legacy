@@ -1,6 +1,10 @@
 package org.astrogrid.security;
 
-import javax.xml.rpc.JAXRPCException;
+import java.util.List;
+import java.util.Hashtable;
+import javax.xml.namespace.QName;
+import javax.xml.rpc.handler.HandlerRegistry;
+import javax.xml.rpc.handler.HandlerInfo;
 import javax.xml.rpc.Service;
 
 /**
@@ -50,13 +54,26 @@ public class ClientSecurityGuard extends SecurityGuard {
    * This sets up the message handlers for the endpoint;
    * this must be done exactly once.
    *
-   * @param s the endpoint to be guarded
+   * @param service the endpoint to be guarded
+   * @param port the QName for the port to be guarded
    */
-  public void mountGuard (Service s) {
+  public void mountGuard (Service service, QName port) {
 
-    // @TODO Register handler.
+    // Create the configuration for the handler. This is always the
+    // same and applies to any number of web-service port-types.
+    Hashtable config = new Hashtable();
+    config.put("SecurityGuard", this);
+    QName[] handlers = new QName[] {};
+    HandlerInfo info = new HandlerInfo(ClientCredentialHandler.class,
+                                       config,
+                                       handlers);
 
-    // @TODO Register this as a resource for the handler.
+    // Get the JAX-RPC handler-chain for the port and add the
+    // credentials handler from this package.
+    HandlerRegistry reg = service.getHandlerRegistry();
+    System.out.println("Setting the credential handler for " + port);
+    List chain = reg.getHandlerChain(port);
+    chain.add(info);
   }
 
 }
