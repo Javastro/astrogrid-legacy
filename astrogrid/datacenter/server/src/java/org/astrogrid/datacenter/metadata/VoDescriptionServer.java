@@ -1,11 +1,10 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.4 2004/09/06 21:34:47 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.5 2004/09/07 11:20:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.metadata;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import javax.xml.parsers.ParserConfigurationException;
@@ -13,8 +12,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.component.CEAComponentManagerFactory;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.registry.RegistryException;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
+import org.astrogrid.registry.client.admin.RegistryAdminService;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -143,7 +147,37 @@ public class VoDescriptionServer {
 
       return vod.toString();
    }
+
+   /**
+    * Returns the Authority resource element of the description */
+   public static Element getAuthorityResource() throws IOException {
+      return getResource("AuthorityID");
+   }
    
+   /**
+    * Returns the resource element of the given type eg 'AuthorityID'.
+    * Matches the given string against the attribute 'xsi:type' of the elements
+    * named 'Resource'
+    */
+   public static Element getResource(String type) throws IOException {
+      NodeList resources = getVoDescription().getElementsByTagName("Resource");
+      
+      for (int i = 0; i < resources.getLength(); i++) {
+         Element resource = (Element) resources.item(i);
+         if (resource.getAttribute("xsi:type").equals(type)) {
+            return resource;
+         }
+      }
+      return null; //not found
+   }
+
+   /**
+    * Sends the voDescription to the registry
+    */
+   public void pushToRegistry() throws IOException, RegistryException {
+      RegistryAdminService service = RegistryDelegateFactory.createAdmin();
+      service.update(getVoDescription());
+   }
    
    
    /** Returns the element representing the given table name in the served
