@@ -1,5 +1,5 @@
 /*
- * $Id: BaseApplicationTestCase.java,v 1.5 2004/04/19 17:34:08 pah Exp $
+ * $Id: BaseApplicationTestCase.java,v 1.6 2004/05/20 12:33:58 pah Exp $
  * 
  * Created on 30-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -111,10 +111,10 @@ public abstract class BaseApplicationTestCase extends WorkFlowUsingTestCase {
       // need to start a long running application and then perform this query - would be good to try firing multiple applications at once also...
    }
 
-   public final void testReturnRegistryEntry() {
+   public final void testReturnRegistryEntry() throws CeaException {
       String reg  = controller.returnRegistryEntry();
       assertNotNull(reg);
-      assertEquals("this is not implemented yet", reg); // need to change when implemented!
+      //TODO  need to actually test something about the registry entry
    }
 
    

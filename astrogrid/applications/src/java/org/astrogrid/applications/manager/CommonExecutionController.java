@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionController.java,v 1.2 2004/03/23 12:51:26 pah Exp $
+ * $Id: CommonExecutionController.java,v 1.3 2004/05/20 12:33:58 pah Exp $
  * 
  * Created on 22-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -45,6 +45,6 @@ public interface CommonExecutionController {
 
    // return an entry for the registry - this really belongs in an interface
    // that the registry should be providing
-   public String returnRegistryEntry();
+   public String returnRegistryEntry() throws CeaException;
 
 }

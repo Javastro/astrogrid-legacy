@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationController.java,v 1.25 2004/05/04 08:59:10 pah Exp $
+ * $Id: AbstractApplicationController.java,v 1.26 2004/05/20 12:33:58 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ package org.astrogrid.applications.manager;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ import javax.sql.DataSource;
 import org.apache.axis.description.ServiceDesc;
 import org.exolab.castor.xml.CastorException;
 import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.InputSource;
@@ -185,7 +187,7 @@ public abstract class AbstractApplicationController
        VODescription template = (VODescription)um2.unmarshal(istream);
          
        
-          logger.info("registering the server to "+serviceDesc.getEndpointURL());
+          logger.info("registering the server to "+ endpointURL);
           
           RegistryEntryBuilder builder =
              new RegistryEntryBuilder(applist, template, endpointURL);
@@ -256,9 +258,27 @@ public abstract class AbstractApplicationController
    /** 
     * @see org.astrogrid.applications.manager.CommonExecutionController#returnRegistryEntry()
     */
-   public String returnRegistryEntry() {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("AbstractApplicationController.returnRegistryEntry() not implemented");
+   public String returnRegistryEntry() throws CeaException {
+      VODescription regentry;
+      StringWriter sw;
+      try {
+         if (serviceDesc != null) {
+           regentry = createRegistryEntry(new URL(serviceDesc.getEndpointURL()));
+         }
+         else {
+            regentry = createRegistryEntry(new URL("http://unknown.com"));
+         
+         }
+         sw = new StringWriter();
+         Marshaller mar = new Marshaller(sw);
+         //TODO might need to tweak marshal settings to get castor to behave as expected.
+         mar.marshal(regentry);
+         
+      }
+      catch (Exception e) {
+        throw new CeaException("problem returning registry entry", e);
+      }
+     return sw.toString();
    }
 
 
