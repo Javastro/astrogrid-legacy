@@ -31,7 +31,6 @@ public class ContextWrapperImpl implements ContextWrapper {
   private Request request;
   private Session session;
   private User user;
-  private String endPoint;
   private Ivorn ivorn;
   private Agsl agsl;
   private StoreClient storeClient;
@@ -47,24 +46,15 @@ public class ContextWrapperImpl implements ContextWrapper {
 	    // Set the current user.
 	    user = UserHelper.getCurrentUser(params, request, session);
 	    
-	    // Set MySpace end point.
-	    endPoint = utils.getAnyParameter(
-	        ContextWrapper.PARAM_END_POINT,
-	        ContextWrapper.DEFAULT_END_POINT,
-	        params, request, session);
-	    
-	    // Set base AstroGrid storage location.
-	    agsl = new Agsl(endPoint);
-	    
-	    // Get the storage client.
-	    storeClient = StoreDelegateFactory.createDelegate(user, agsl);
-      
       // Get the store client from the VOSpaceResolver.
       ivorn = (Ivorn) utils.getAnyParameterObject(
           SessionKeys.IVORN,
           params, request, session);
 
       storeClient = VoSpaceResolver.resolveStore(user, ivorn);
+
+      // Set base AstroGrid storage location.
+      agsl = storeClient.getEndpoint();
     }
 	  catch(Throwable t) {
       throw new IOException("Could not create a valid context: " + t.getLocalizedMessage());
@@ -84,7 +74,7 @@ public class ContextWrapperImpl implements ContextWrapper {
   }
   
   public Agsl getAgsl() throws IOException {
-    return VoSpaceResolver.resolveAgsl(ivorn);
+    return agsl;
   }
   
   public StoreClient getStoreClient() {
