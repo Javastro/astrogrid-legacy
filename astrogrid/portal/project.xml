@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- -->
-<!DOCTYPE project [
-  <!ENTITY cocoon-deps SYSTEM "cocoon-dependencies.xml">
-]>
-<!-- -->
 <project
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
   <pomVersion>3</pomVersion>
   
-  <id>astrogrid-portal</id>
-  <name>AstroGrid Portal</name>
+  <id>astrogrid-portal-wrapper</id>
+  <name>AstroGrid Portal Wrapper</name>
   <groupId>astrogrid-portal</groupId>
 
   <currentVersion>HEAD</currentVersion>
@@ -67,30 +62,31 @@
   </developers>
   
   <dependencies>
+    <!-- Common -->
+    <dependency>
+      <groupId>astrogrid-common</groupId>
+      <artifactId>astrogrid-common</artifactId>
+      <version>SNAPSHOT</version>
+    </dependency>
+
     <!--
-      Utilities.
+      Testing Utilities.
       -->
     <dependency>
-      <id>junit</id>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
       <version>3.8.1</version>
     </dependency>
 
     <dependency>
-      <id>log4j</id>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
       <version>1.2.8</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
     </dependency>
-
-    <!--
-      Cocoon.
-      -->
-      &cocoon-deps;
   </dependencies>
   
   <build>
-    <sourceDirectory>src/java</sourceDirectory>
-    <unitTestSourceDirectory>src/java</unitTestSourceDirectory>
+    <sourceDirectory/>
+    <unitTestSourceDirectory/>
   </build>
 </project>
