@@ -4,7 +4,7 @@
         <vr:Resource xsi:type="CeaServiceType">
                 <vr:Identifier>
                         <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
-                        <vr:ResourceKey>sec_dsaservice</vr:ResourceKey>
+                        <vr:ResourceKey>trace_dsaservice</vr:ResourceKey>
                 </vr:Identifier>
                 <vr:Title>TemplateEntry</vr:Title>
                 <vr:ShortName>TemplateEntry</vr:ShortName>
@@ -40,12 +40,12 @@
                 </vr:Capability>
                 <vr:Interface>
                         <vr:Invocation>WebService</vr:Invocation>
-                        <vr:AccessURL use="base">@TOMCATROOT@/astrogrid-pal-sec-SNAPSHOT/services/CeaDataService</vr:AccessURL>
+                        <vr:AccessURL use="base">@TOMCATROOT@/astrogrid-pal-fits-SNAPSHOT/services/CeaDataService</vr:AccessURL>
                 </vr:Interface>
                 <ManagedApplications>
                         <ApplicationReference>
                                 <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
-                                <vr:ResourceKey>sec_dsa</vr:ResourceKey>
+                                <vr:ResourceKey>trace_dsa</vr:ResourceKey>
                         </ApplicationReference>
                 </ManagedApplications>
         </vr:Resource>
