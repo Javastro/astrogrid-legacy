@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<DatacenterMetadata>
+   <Publisher>ROE</Publisher>
+   <Contact>
+      <Name>Martin Hill</Name>
+      <email>mch@roe.ac.uk</email>
+   </Contact>
+   <Contact>
+      <Name>Mike Read</Name>
+      <email>mar@roe.ac.uk</email>
+   </Contact>
+   
+   <Column table="TARGET" name="TARGETID">
+     <Description>unique ID no., used to link tables</Description>
+   </Column>
+
+   <Column table="TARGET" name="TARGETNAME">
+     <Description>name in config file, used to name FITS file and generate thumbnail images</Description>
+   </Column>
+     
+   <Column table="TARGET" name="HTMID">
+     <Description>Hierarchical Triangular Mesh (20-deep) number</Description>
+   </Column>
+     
+   <Column table="TARGET" name="RA">
+     <UCD>POS_RA_MAIN</UCD>
+     <Units>Decimal Degrees</Units>
+     <Description>Master Right Ascension J2000</Description>
+   </Column>
+   
+   <Column table="TARGET" name="DEC">
+     <UCD>POS_DEC_MAIN</UCD>
+     <Units>Decimal Degrees</Units>
+     <Description>Master Declination J2000</Description>
+   </Column>
+
+   <Column table="TARGET" name="BMAG">
+     <UCD>PHOT_MAG</UCD>
+     <Units>No idea. Candle-watt hours per cubic yard I should think</Units>
+     <Description>Master Declination J2000</Description>
+   </Column>
+
+<-- and these ones! CX  float    Cartesian x of unit (ra,dec) vector on celestial sphere
+CY    float    Cartesian y of unit (ra,dec) vector on celestial sphere
+CZ    float    Cartesian z of unit (ra,dec) vector on celestial sphere
+GL    float    galactic longitude
+GB    float    galactic latitude
+A_V   real  Schlegel V extinction
+PROGID   smallint    highest priority programme ID
+BMAG  real  Bj magnitude from online SuperCOSMOS Sky Surveys (99.99 and 23.0 are nulls)
+RMAG  real  Rf magnitude from online SuperCOSMOS Sky Surveys (99.99 and 22.0 are nulls)
+SG    smallint    SSS star/galaxy flag 1=galaxy 2=star 3=unclass 4=noise
+ZCATVEL  int   velocity in ZCAT
+ZCATERR  int   error on velocity in ZCAT
+ZCATREF  smallint    ZCAT reference -->
+
+
+
+</DatacenterMetadata>
