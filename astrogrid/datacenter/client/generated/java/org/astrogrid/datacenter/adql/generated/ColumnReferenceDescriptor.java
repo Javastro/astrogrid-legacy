@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ColumnReferenceDescriptor.java,v 1.9 2003/11/27 00:49:52 nw Exp $
+ * $Id: ColumnReferenceDescriptor.java,v 1.10 2003/11/27 17:27:15 nw Exp $
  */
 
 package org.astrogrid.datacenter.adql.generated;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ColumnReferenceDescriptor.
  * 
- * @version $Revision: 1.9 $ $Date: 2003/11/27 00:49:52 $
+ * @version $Revision: 1.10 $ $Date: 2003/11/27 17:27:15 $
  */
 public class ColumnReferenceDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

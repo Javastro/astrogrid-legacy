@@ -36,8 +36,14 @@ the adql package, mangle serializer and deserializer attributes
 	</xsl:copy>
     </xsl:when>
     -->
-    <xsl:when test="false()">
-    </xsl:when>
+   <!-- change className setting to point to our implementation class -->
+    <xsl:when test="name() = 'parameter' and @name = 'className'">
+    	<xsl:copy>
+		<xsl:copy-of select="@*[not(name()='value')]" />
+		<xsl:attribute name="value">org.astrogrid.datacenter.service.AxisDataServerSoapBinding</xsl:attribute>
+		<xsl:apply-templates />
+	</xsl:copy>
+    </xsl:when>    
     <xsl:otherwise>
         <xsl:copy>
             <xsl:apply-templates select="@* | node()"/>

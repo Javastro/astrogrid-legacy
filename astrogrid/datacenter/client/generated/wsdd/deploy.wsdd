@@ -12,7 +12,7 @@
 <parameter name="wsdlTargetNamespace" value="http://www.astrogrid.org/datacenter/It04/dataserver/v1"/>
 <parameter name="wsdlServiceElement" value="AxisDataServerService"/>
 <parameter name="wsdlServicePort" value="AxisDataServer"/>
-<parameter name="className" value="org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingSkeleton"/>
+<parameter name="className" value="org.astrogrid.datacenter.service.AxisDataServerSoapBinding"/>
 <parameter name="wsdlPortType" value="AxisDataServer"/>
 <parameter name="allowedMethods" value="*"/>
 <parameter name="scope" value="Application"/>

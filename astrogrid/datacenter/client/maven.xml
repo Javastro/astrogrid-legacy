@@ -277,7 +277,7 @@ Requires:
 			<!-- do same for query object -->
 		    <replacefilter
 		    	token="new org.astrogrid.datacenter.axisdataserver.types._query()"
-			value="org.astrogrid.datacenter.common.QueryHelper.buildMinimalQuery()" />
+			value="org.astrogrid.datacenter.axisdataserver.types.QueryHelper.buildMinimalQuery()" />
 		</replace>
 	</goal>
 

@@ -1,4 +1,4 @@
-/*$Id: QueryHelper.java,v 1.4 2003/11/27 00:49:52 nw Exp $
+/*$Id: QueryHelper.java,v 1.1 2003/11/27 17:27:15 nw Exp $
  * Created on 18-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.datacenter.common;
+package org.astrogrid.datacenter.axisdataserver.types;
 
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLUtils;
@@ -45,6 +45,9 @@ public class QueryHelper {
 
 /* 
 $Log: QueryHelper.java,v $
+Revision 1.1  2003/11/27 17:27:15  nw
+build tweaks
+
 Revision 1.4  2003/11/27 00:49:52  nw
 added community bean to query
 

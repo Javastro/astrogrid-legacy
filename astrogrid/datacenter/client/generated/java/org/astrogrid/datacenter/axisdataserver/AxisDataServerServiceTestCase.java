@@ -74,7 +74,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         // Test operation
         try {
             java.lang.String value = null;
-            value = binding.doQuery(new java.lang.String(), org.astrogrid.datacenter.common.QueryHelper.buildMinimalQuery());
+            value = binding.doQuery(new java.lang.String(), org.astrogrid.datacenter.axisdataserver.types.QueryHelper.buildMinimalQuery());
         }
         catch (java.io.IOException e1) {
             throw new junit.framework.AssertionFailedError("IOException Exception caught: " + e1);
@@ -107,7 +107,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         // Test operation
         try {
             org.astrogrid.datacenter.axisdataserver.types._QueryId value = null;
-            value = binding.makeQuery(org.astrogrid.datacenter.common.QueryHelper.buildMinimalQuery());
+            value = binding.makeQuery(org.astrogrid.datacenter.axisdataserver.types.QueryHelper.buildMinimalQuery());
         }
         catch (java.io.IOException e1) {
             throw new junit.framework.AssertionFailedError("IOException Exception caught: " + e1);
@@ -140,7 +140,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         // Test operation
         try {
             org.astrogrid.datacenter.axisdataserver.types._QueryId value = null;
-            value = binding.makeQueryWithId(org.astrogrid.datacenter.common.QueryHelper.buildMinimalQuery(), new java.lang.String());
+            value = binding.makeQueryWithId(org.astrogrid.datacenter.axisdataserver.types.QueryHelper.buildMinimalQuery(), new java.lang.String());
         }
         catch (java.io.IOException e1) {
             throw new junit.framework.AssertionFailedError("IOException Exception caught: " + e1);
