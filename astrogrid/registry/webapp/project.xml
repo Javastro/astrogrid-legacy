@@ -81,14 +81,15 @@
     	       servlets to handle multiple versions by adding the param "registry.version"</i>
     		<br />
     		<b>Harvest Daemon</b> -- The harvest daemon will automatically kick off harvests or you may
-    	    go to the servet web site to kick off manual harvests. Location http://..../RegistryHarvest
+    	    go to the servet web site to kick off manual harvests or even replication. Location http://..../RegistryHarvest
     	</p>
     </section>
    	<section name="eXist">
      	<p>
     		Registry uses an eXist xml database for storing and querying the resources of the Registry. 
     	    You can download eXist from <a href="http://exist.sourceforge.net">eXist website</a>. You can
-    	    also download it from <a href="http://www.astrogrid.org/maven/exist">eXist from Astrogrid</a>
+    	    also download it from <a href="http://www.astrogrid.org/maven/exist/wars/exist.war">eXist from Astrogrid</a>. 
+    	    The deployment steps below uses the exist war file from Astrogrid because it has a few settings already configured for you.
      	    For security purposes,
     	    it is better to install the eXist as a server installation on another port
     	    that is not accessible to outside computers, but still accessible to 
@@ -98,7 +99,9 @@
     	    See <a href="http://exist.sourceforge.net/configuration.html">Config for eXist</a>.  Change
     	    the cacheSize to something bigger if this is going to be a full Registry. 
     	    Finally set the match-tagging-elements and match-tagging-attributes to "no".  In Astrogrid
-    	    these changes are already in place, but change the cacheSize to something more appropriate.
+    	    these changes are already in place, but change the cacheSize to something more appropriate. Changing the
+    	    match-tagging atributes should shortly be factored out and the Registry can turn off (set to "no") on the
+    	    queries to the database.
     	</p>
     	<p>
     		It is recommended to have the exist location end in "exist" hence http://server.com/exist is the location.  This
@@ -108,7 +111,7 @@
 	<section name="Deployment/Installation">
 		<p>			
     	   	Here we list the steps involved to deploy the registry (and eXist) onto a servlet container.  An 
-    	   	assumption is made that you know basic knowledge of servlet containers such as tomcat.
+    	   	assumption is made that you know basic knowledge of servlet containers such as tomcat. <br />
     	   	Steps involved:
     	   	<ul>
     			<li>1.) Download the latest copy of astrogrid-registry from <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/">Astrogrid repository</a>
@@ -122,9 +125,52 @@
     	        <li>5.) Finally go to the registry deployed area and go to "regdeployedarea"/WEB-INF/classes and edit the astrogrid.properties and
                     optionally if you are using the astrogrid oai facilities then the oaicat.properties.  The properties
                     files should be well commented to guide you, the main registry properties are below</li>
-    	        <li>6.) Your done.  If you tried to use registry before editing the properties file then a restart of your
+    	        <li>6.) In general the installation of the registry is complete, but read below for the setup.  If you tried to use registry before editing the properties file then a restart of your
     	            servlet containger will be required.</li>
     	   	</ul>
+    	    Now the easy part of the installation is complete.  The current iteration is a slightly more difficult on the setup, but will try
+    	    to guide you in the steps of setting up your Registry. <br />
+    	    Steps involved:
+    	    <ul>
+    			<li>1.) Every Registry needs to define itself before it can be harvested or known to the outside world
+                    currently you have an empty Registry so the first step in the setup is to define yourself. First download
+                    a template <a href="http://www.astrogrid.org/viewcvs/astrogrid/registry/webapp/template/RegistryTypev0_9.xml">Registry Template Browser</a></li>
+    	        <li>2.) Look at the Registry template and modify it to describe your registry.  Your AuthorityID element and ManagedAuthority element must match
+                    exactly to the one placed in your properties file.</li>
+    			<li>3.) Go to your entryForm page of your installed registry ex: http://server.com:8080/astrogrid-registry-SNAPSHOT/entryForm.html</li>
+    	        <li>4.) Copy and paste your modified RegistryType entry, the main thing is the Resource element all the other elements are ignored
+    	            during an update.</li>
+        		<li>5.) Submit your Registry type entry.</li>
+				<li>Now your registry is setup to receive Resources for that AuthorityID.</li>
+        		<li>6.) Now look at: <a href="http://www.astrogrid.org/viewcvs/astrogrid/registry/webapp/template/AuthorityTypeTypev0_9.xml">Authority Template</a>, To add other
+			        AuthorityIDs to be managed by this Registry fill out an AuthorityType and submit it with the entryform.html.  The entry form can
+			        take multiple Resources.  And it is not required, but advisable that you should fill out an AuthorityType that you used defining the
+			        original RegistryType above.</li>
+		        <li>If you are setting up a local Registry and do not need a Full Registry and DO NOT WANT TO BE HARVESTED BY OTHER REGISTRIES then stop here, all your
+			        entries are complete and other client apps may submit Resources to this registry as long as it is a AuthorityID
+			        managed by this Registry.</li>
+		        <li>If this is tended to be a full Registry then a few more steps are required (remember as well no harvesting will occur if harvest.enabled property is set to false).  
+        			First I should state that
+			        a few additional jsp pages will be added to make this process of registering with other
+    				Registries easier.</li>
+      			<li>7.) First making your Registry known to the world.  For now the easist thing to do is take the RegistryType entry you modified above
+        			and go to the entryForm for a Full Registry and submit it.  Now your Registry will shortly be known to the world the next harvest cycle
+        			will pick up your entries.</li>
+        		<li>Now if your not planning on being a Full Registry then stop here.</li>
+        		<li>8.)Go to the full Registry you know of and get all there Registries.  By going to
+	            	http://fullregistry.com:8080/astrogrid-registry-SNAPSHOT/services/RegistryQuery?method=GetRegistries
+            		Save this xml entry or just copy it.</li>
+        		<li>9.) Now finally as usual go to your entryForm and put these xml entries in there.</li>
+        		<li>10.) Now the next time your harvest cycle happens it will begin harvesting these Registries, the first time
+        			it will harvest with no Date, and then after that it will harvest by date.  Optionally you may go to your
+        			RegistryHarvest servlet and kick off a harvest manually or even a Replicate if needed.</li>
+        		<li>Your done.</li>
+    	    </ul>
+			<br />
+			Final Note:  If this is a Full Registry I would suggest setting your memorry in your servlet container to be higher and the
+        	cacheSize in the exist db to be higher (see exist section above).  For your servlet container such as tomcat setting the 
+	        variable CATALINA_OPTS to "-Xmx200M" or higher is recommended.
+   	
 
     	    See the properties below, you may point to another OAI web based instance if you like.
     		<i>Below are the properties and examples from the registry-server documentation plus some additions for the servlets, 
@@ -140,8 +186,7 @@
 	  	  <li>registry.harvest.enabled - required, Does this registry do harvesting of other registries.</li>
 	  	  <li>declare.namespace.0_9 - recommended, namespaces to be declared on the queries in xquery type form meaning seperated by ";"</li>
 		  <li>keyword.query.path.0_9 - required, the xpaths to elements to be used on the keyword search comma seperated.</li>
-  	      <li>identifier.path.hasauthorityid.0_9 - required, is the key (identifier) split up, normally only 0_9 will be true
-  	  </li>
+  	      <li>identifier.path.hasauthorityid.0_9 - required, is the key (identifier) split up, normally only 0_9 will be true</li>
 		</ul>
 		Example of config properties:
 		<ul>
