@@ -19,7 +19,7 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
- <vr:Resource xsi:type="RegistryType" updated="1999-11-04T15:34:22+0000" status="active" >
+ <vr:Resource xsi:type="RegistryType" updated="2005-11-04T15:34:22" status="active" >
     <Identifier>
       <AuthorityID>@REGAUTHORITY@</AuthorityID>
       <ResourceKey>org.astrogrid.registry.RegistryService</ResourceKey>
@@ -43,8 +43,8 @@
     </Curation>
     <vg:ManagedAuthority>@REGAUTHORITY@</vg:ManagedAuthority>
     <Interface>
-      <Invocation>WebService</Invocation>
-      <AccessURL use="full">@TOMCATROOT@/astrogrid-registry-webapp/services/RegistryHarvest?wsdl</AccessURL>
+      <Invocation>WebBrowser</Invocation>
+      <AccessURL use="full">@TOMCATROOT@/astrogrid-registry-SNAPSHOT/OAIHandlerv0_9</AccessURL>
     </Interface>
   </vr:Resource>
   </VODescription>
