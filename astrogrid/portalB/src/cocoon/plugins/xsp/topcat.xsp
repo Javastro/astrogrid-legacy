@@ -8,6 +8,18 @@
 		>
 		
 	<!--+
+	    | Import any java classes here.
+	    +-->
+	<xsp:structure>
+		<xsp:include>uk.ac.starlink.votable.VOTableBuilder</xsp:include>
+		<xsp:include>java.net.URL</xsp:include>
+		<xsp:include>uk.ac.starlink.util.URLDataSource</xsp:include>
+		<xsp:include>uk.ac.starlink.topcat.TableViewer</xsp:include>
+		<xsp:include>uk.ac.starlink.table.*</xsp:include>
+	</xsp:structure>
+		
+		
+	<!--+
 	    | The XSP page needs one non-xsp tag.
 	    | Anything in here gets added inside the Generator generate() method.
 	    +-->
@@ -17,31 +29,102 @@
 		</xsp:element>
 		<xsp:logic>
 			<![CDATA[
-				if (null != (String)request.getParameter("url") && ((String)request.getParameter("url")).length() > 0) {
+				String url = null;
+				String xaxis = null;
+				String yaxis = null;
+				if ((url = (String)request.getParameter("url")) != null  && ((String)request.getParameter("url")).length() > 0) {
+					url = url.trim();
 			]]>
 					<xsp:element name="url">
-						<xsp:attribute name="val"><xsp:expr>(String)request.getParameter("url")</xsp:expr></xsp:attribute>
+						<xsp:attribute name="val"><xsp:expr>url</xsp:expr></xsp:attribute>
 					</xsp:element>
 			<![CDATA[
 				}
 			]]>
 			<![CDATA[
-				if (null != (String)request.getParameter("xaxis") && ((String)request.getParameter("xaxis")).length() > 0) {
+				if ((xaxis = (String)request.getParameter("xaxis")) != null && ((String)request.getParameter("xaxis")).length() > 0) {
+					xaxis = xaxis.trim();
 			]]>
 					<xsp:element name="xaxis">
-						<xsp:attribute name="val"><xsp:expr>(String)request.getParameter("xaxis")</xsp:expr></xsp:attribute>
+						<xsp:attribute name="val"><xsp:expr>xaxis</xsp:expr></xsp:attribute>
 					</xsp:element>
 			<![CDATA[
 				}
-				if (null != (String)request.getParameter("yaxis") && ((String)request.getParameter("yaxis")).length() > 0) {
+				if ((yaxis = (String)request.getParameter("yaxis")) != null && ((String)request.getParameter("yaxis")).length() > 0) {
+					yaxis = yaxis.trim();
 			]]>
 					<xsp:element name="yaxis">
-						<xsp:attribute name="val"><xsp:expr>(String)request.getParameter("yaxis")</xsp:expr></xsp:attribute>
+						<xsp:attribute name="val"><xsp:expr>yaxis</xsp:expr></xsp:attribute>
 					</xsp:element>
 			<![CDATA[
-				}
+				}				
 			]]>
 		</xsp:logic>
+		
+			<xsp:logic>
+				<![CDATA[
+					VOTableBuilder vot = new VOTableBuilder();
+				    URLDataSource urlds = new URLDataSource(new URL(url));
+					StarTable st = vot.makeStarTable(urlds);
+			   		ColumnRandomWrapperStarTable wst = new ColumnRandomWrapperStarTable(st);
+			   		ColumnInfo cinfo = null;
+				   	for(int i = 0;i < wst.getColumnCount();i++) {
+						cinfo = wst.getColumnInfo( i );
+						if(Number.class.isAssignableFrom(cinfo.getContentClass()) || 
+						   Date.class.isAssignableFrom(cinfo.getContentClass()) ) {
+							if(xaxis == null || xaxis.length() <= 0 ) {
+							   	xaxis = cinfo.getName().trim();
+				]]>
+								<xsp:element name="xaxis">
+									<xsp:attribute name="val"><xsp:expr>xaxis</xsp:expr></xsp:attribute>
+								</xsp:element>
+				<![CDATA[
+							}//if
+							if(!cinfo.getName().trim().equals(xaxis) && (yaxis == null || yaxis.length() <= 0)) {
+								yaxis = cinfo.getName().trim();
+				]]>
+								<xsp:element name="yaxis">
+									<xsp:attribute name="val"><xsp:expr>yaxis</xsp:expr></xsp:attribute>
+								</xsp:element>				
+				<![CDATA[
+							}//if
+							if(xaxis != null && yaxis != null) {
+								i = wst.getColumnCount();
+							}//if
+						}//if
+					}//for
+				]]>
+				</xsp:logic>
+			<axislist>
+				<xsp:logic>
+			   	<![CDATA[
+					   	for(int j = 0;j < wst.getColumnCount();j++) {
+							cinfo = wst.getColumnInfo( j );
+							if(Number.class.isAssignableFrom(cinfo.getContentClass()) || 
+							   Date.class.isAssignableFrom(cinfo.getContentClass()) ) {
+				]]>
+								<xsp:element name="axisitem">
+									<xsp:attribute name="val">
+										<xsp:expr>cinfo.getName()</xsp:expr>
+									</xsp:attribute>
+				<![CDATA[
+									if(cinfo.getName().trim().equals(xaxis)) {
+				]]>
+									<xsp:attribute name="defaultx">default</xsp:attribute>
+				<![CDATA[
+									}
+									if(cinfo.getName().trim().equals(yaxis)) {
+				]]>
+									<xsp:attribute name="defaulty">default</xsp:attribute>
+				<![CDATA[
+									}
+				]]>								
+								</xsp:element>
+				<![CDATA[
+						   }//if
+					   	}//for
+			   	]]>
+			</xsp:logic>
+		</axislist>
 	</topcat>
-
 </xsp:page>

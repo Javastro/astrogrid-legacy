@@ -17,7 +17,11 @@
    <map:components>
       <map:generators default="file"/>
       <map:transformers default="xslt"/>
-      <map:readers default="resource"/>
+      <map:readers default="resource">
+         <map:reader name="votable"
+              pool-max="32"
+              src="org.astrogrid.portal.cocoon.plugins.readers.VotableReader"/>
+      </map:readers>
       <map:serializers default="html"/>
       <map:selectors default="browser"/>
       <map:matchers default="wildcard"/>
@@ -110,6 +114,17 @@
                <map:transform src="xsl/redirect.xsl"/> 
                <map:serialize type="html"/>
             </map:match>
+
+            <map:match pattern="agtopcat.html">
+               <map:generate type="serverpages" src="plugins/xsp/topcat.xsp"/>
+               <map:transform src="plugins/xsl/topcat.xsl"/>
+               <map:serialize type="html"/>
+            </map:match>
+
+	         <map:match pattern="votable">
+    	       <map:read type="votable" mime-type="image/png" src="{1}.vot"/>
+        	 </map:match>
+
 
             <map:match pattern="agregistry.xsp">
                <map:generate type="serverpages" src="xsp/agregistry.xsp"/>
@@ -264,6 +279,7 @@
                    <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
                    <map:parameter name="tools-page"    value="agtools.html"/>
                    <map:parameter name="logout-page"   value="aglogout.html"/>
+                   <map:parameter name="current-page" value="agmyspace.html"/>                   
                   </map:transform>
                   <!-- Serialize as HTML -->
                   <map:serialize type="html"/>
