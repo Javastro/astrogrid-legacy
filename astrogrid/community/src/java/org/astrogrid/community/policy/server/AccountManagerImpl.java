@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/AccountManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/10/09 01:38:30 $</cvs:date>
- * <cvs:version>$Revision: 1.15 $</cvs:version>
+ * <cvs:author>$Author: KevinBenson $</cvs:author>
+ * <cvs:date>$Date: 2003/10/10 13:27:51 $</cvs:date>
+ * <cvs:version>$Revision: 1.16 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.16  2003/10/10 13:27:51  KevinBenson
+ *   commented out the setPassword(null)
+ *
  *   Revision 1.15  2003/10/09 01:38:30  dave
  *   Added JUnite tests for policy delegates
  *
@@ -1019,7 +1022,7 @@ public class AccountManagerImpl
 			while (results.hasMore())
 				{
             AccountData ad = (AccountData)results.next();
-            ad.setPassword(null);
+          //  ad.setPassword(null);
 				collection.add(ad) ;
 				}
 			//
