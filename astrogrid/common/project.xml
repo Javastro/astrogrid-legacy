@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: project.xml,v 1.26 2004/11/23 18:40:50 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.27 2005/02/15 11:00:09 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <extend>../maven-base/project.xml</extend>
   <artifactId>astrogrid-common</artifactId>
@@ -91,4 +91,10 @@
       <version>1.0</version>
     </dependency>
   </dependencies>
+    <dependency>
+      <groupId>servletapi</groupId>
+      <artifactId>servletapi</artifactId>
+      <version>2.4</version>
+    </dependency>
+  </dependencies>  
 </project>
