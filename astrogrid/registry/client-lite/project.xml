@@ -226,9 +226,9 @@
     	
         <!-- for writing XML -->
        <dependency>
-          <artifactId>astrogrid-slinger-xml</artifactId>
+          <artifactId>astrogrid-xml</artifactId>
           <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.slinger.version}</version>
+          <version>${astrogrid.xml.stable}</version>
        </dependency>
 
        <dependency>
