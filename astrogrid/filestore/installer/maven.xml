@@ -42,7 +42,7 @@
         <!--temp fix to problem that can't download war from behind firewall-->
     <preGoal name="jar:jar">
     	<deploy:copy-deps todir="tmp" />
-    	<copy toDir="${maven.build.dest}" file="tmp/astrogrid-filestore-deploy-script-${pom.currentVersion}.war"/>
+    	<copy toDir="${maven.build.dest}" file="tmp/astrogrid-filestore-deploy-script-${pom.currentVersion}.jar"/>
     </preGoal>
     <!--temp fix to problem that can't download war from behind firewall-->
     <preGoal name="javaapp:jar">
