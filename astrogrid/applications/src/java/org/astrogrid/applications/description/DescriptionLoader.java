@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionLoader.java,v 1.7 2003/12/09 09:11:51 pah Exp $
+ * $Id: DescriptionLoader.java,v 1.8 2004/01/09 00:25:08 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -28,7 +28,7 @@ import org.astrogrid.applications.manager.AbstractApplicationController;
 
 /**
  * Loads the application descriptions from the description file into a set of {@link ApplicationDescription} objects. It uses the {@link org.apache.commons.digester.Digester} to parse the XML file. 
- * The schema for these definitions is located at <a href="http://www.astrogrid.org/viewcvs/*checkout*\/astrogrid/applications/schema/AGParameterDefinition.xsd?rev=HEAD&content-type=text/plain">schema</a>
+ * The schema for these definitions is located at <a href="http://www.astrogrid.org/viewcvs/%2Acheckout%2A/astrogrid/applications/schema/AGParameterDefinition.xsd?rev=HEAD&content-type=text/plain">schema</a>
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4

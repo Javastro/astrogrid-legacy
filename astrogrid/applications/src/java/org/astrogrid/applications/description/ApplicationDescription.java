@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationDescription.java,v 1.5 2003/12/03 11:48:48 pah Exp $
+ * $Id: ApplicationDescription.java,v 1.6 2004/01/09 00:25:08 pah Exp $
  * 
  * Created on 14-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -26,7 +26,8 @@ import org.astrogrid.applications.description.exception.ParameterDescriptionNotF
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
- * @TODO this is only a placeholder until proper implementation is sorted.
+ * @TODO this should be integrated with the workflow module - so that it does not pick stuff up from it's config file....
+ * @TODO the serialization/deserialization should be done via a tool like cocoon rather than manually...
  */
 public class ApplicationDescription {
    private String name;

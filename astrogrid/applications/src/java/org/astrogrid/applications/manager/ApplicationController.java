@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationController.java,v 1.13 2003/12/17 17:16:54 pah Exp $
+ * $Id: ApplicationController.java,v 1.14 2004/01/09 00:25:08 pah Exp $
  *
  * Created on 03 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -66,6 +66,7 @@ public interface ApplicationController {
    /**
     * Returns an xml string describing the application service controller and the applications that it controls. This string would be suitable for putting in the registry.
     * @return A VOResource fragment suiltable for inclusion in the registry.
+    * @TODO need to have a better way to capture and report application errors...
     */
    String returnRegistryEntry();
 

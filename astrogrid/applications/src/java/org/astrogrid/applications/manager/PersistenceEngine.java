@@ -1,5 +1,5 @@
 /*
- * $Id: PersistenceEngine.java,v 1.3 2003/12/15 14:29:49 pah Exp $
+ * $Id: PersistenceEngine.java,v 1.4 2004/01/09 00:25:08 pah Exp $
  * 
  * Created on 05-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -28,9 +28,10 @@ import org.astrogrid.applications.common.config.ApplicationControllerConfig;
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
+ * @TODO need to add more of the details of each execution to the database
  */
 public class PersistenceEngine {
-   
+
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(PersistenceEngine.class);
 
@@ -60,17 +61,17 @@ public class PersistenceEngine {
     * @return a unique execution identifier.
     */
    public synchronized int getNewID() {
-      
-      logger.info("getting a new execution id form datasource="+ds.toString());
 
-      Connection conn;
+      logger.info("getting a new execution id form datasource=" + ds.toString());
+
+      Connection conn = null;
       ResultSet rs;
       int id = -1;
 
       try {
          conn = ds.getConnection();
          logger.info("got new conncection");
- 
+
          PreparedStatement stmt =
             conn.prepareStatement(
                "insert into exestat (program) values ('new');call IDENTITY();");
@@ -85,6 +86,17 @@ public class PersistenceEngine {
       catch (SQLException e) {
          // TODO Auto-generated catch block
          e.printStackTrace();
+      }
+      finally {
+         try {
+            if (conn != null) {
+
+               conn.close();
+            }
+         }
+         catch (SQLException e1) {
+            logger.error("problem closing connection",e1);
+         }
       }
       return id;
 

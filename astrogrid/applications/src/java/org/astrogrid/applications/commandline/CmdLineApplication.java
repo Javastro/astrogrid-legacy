@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplication.java,v 1.6 2004/01/04 14:51:22 pah Exp $
+ * $Id: CmdLineApplication.java,v 1.7 2004/01/09 00:25:08 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -27,6 +27,7 @@ import org.astrogrid.applications.commandline.exceptions.ApplicationExecutionExc
 import org.astrogrid.applications.common.io.StreamPiper;
 import org.astrogrid.applications.manager.AbstractApplicationController;
 import org.astrogrid.community.User;
+import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.jobMonitor.JobMonitorDelegate;
 /**
  * A generic model for a command line application. This generally assumes that the application can be run from a command line obtaining all of its parameters from commandline arguments and possibly standard in. 
@@ -114,18 +115,17 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
       JobMonitorDelegate 
       delegate = JobMonitorDelegate.buildDelegate( jobMonitorURL );
       
-      // FIXME need to call with a proper joburn and to make the jobstep an integer - requires jobcontroller interface change....
-//      try {
-//// FIXME         delegate.monitorJob("joburn123",Integer.parseInt(jobStepID),delegate.STATUS_COMPLETED,"comment" );
-//      }
-//      catch (NumberFormatException e) {
-//         // TODO Auto-generated catch block
-//         e.printStackTrace();
-//      }
-//      catch (JesDelegateException e) {
-//         // TODO Auto-generated catch block
-//         e.printStackTrace();
-//      }
+      try {
+        delegate.monitorJob(jobStepID,delegate.STATUS_COMPLETED,"comment" );
+      }
+      catch (NumberFormatException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+      catch (JesDelegateException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
 
 
    }

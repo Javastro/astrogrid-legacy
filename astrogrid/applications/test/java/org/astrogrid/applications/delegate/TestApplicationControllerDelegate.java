@@ -1,5 +1,5 @@
 /*
- * $Id: TestApplicationControllerDelegate.java,v 1.2 2003/12/17 17:16:54 pah Exp $
+ * $Id: TestApplicationControllerDelegate.java,v 1.3 2004/01/09 00:25:08 pah Exp $
  * 
  * Created on 08-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -109,7 +109,7 @@ public class TestApplicationControllerDelegate extends TestCase {
       parameters.setParameterSpec(TestAppConst.PARAMETERSPEC1);
       try {
          executionid = delegate.initializeApplication(applicationid, "nojobstep", monitorURL, user, parameters);
-         assertTrue("executionid invalid", executionid.equals("-1"));
+         assertTrue("executionid invalid", !executionid.equals("-1"));
       }
       catch (RemoteException e) {
          e.printStackTrace();
