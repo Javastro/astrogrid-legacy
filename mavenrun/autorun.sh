@@ -1,10 +1,9 @@
 #!/bin/bash
-# $Id: autorun.sh,v 1.25 2004/09/22 15:55:55 jdt Exp $ 
+# $Id: autorun.sh,v 1.26 2004/10/07 09:23:41 anoncvs Exp $ 
 # Script to run the integration tests/AGINAB
 OLDDIR=$PWD
 
 #setup paths etc
-source /etc/profile
 CHECKOUTHOME=/data/cvsDownloads/itn06
 TESTMODULE=astrogrid/integrationTests/auto-integration
 SCRIPTHOME=/home/integration/autobuilds
