@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerierPlugin.java,v 1.4 2004/07/26 13:53:44 KevinBenson Exp $
+ * $Id: FitsQuerierPlugin.java,v 1.5 2004/08/09 13:04:31 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,7 +16,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
-import org.astrogrid.datacenter.queriers.QuerierPluginException;
+//import org.astrogrid.datacenter.queriers.QuerierPluginException;
 import org.astrogrid.datacenter.queriers.query.ConeQueryMaker;
 import org.astrogrid.datacenter.queriers.status.QuerierAborted;
 import org.astrogrid.datacenter.query.AdqlQuery;
@@ -86,7 +86,7 @@ public class FitsQuerierPlugin extends QuerierPlugin
       }catch(ParserConfigurationException pce) {
          throw new RuntimeException("Server configuration error",pce);
       }catch(SAXException se) {
-         throw new QuerierPluginException("FitsQuerierPlugin index not valid xml",se);
+         throw new IOException("FitsQuerierPlugin index not valid xml");
       }
       if(resultDoc != null) {
          NodeList fileNames = resultDoc.getElementsByTagName("Filename");
@@ -189,7 +189,7 @@ public class FitsQuerierPlugin extends QuerierPlugin
       
       URL url = SimpleConfig.getSingleton().getUrl(FITS_INDEX_URL, null);
       String strURL = url.toExternalForm();
-      SimpleConfig.getSingleton().setProperty("exist.db.url",strURL.substring(0,strURL.indexOf("/db")));
+      SimpleConfig.getSingleton().setProperty("exist.db.url",strURL.substring(0,strURL.indexOf("/servlet")));
       if (url != null) {
          try {
             index = DomHelper.newDocument(url.openStream());
@@ -198,7 +198,8 @@ public class FitsQuerierPlugin extends QuerierPlugin
             throw new RuntimeException("Server configuration error",e);
          }
          catch (SAXException e) {
-            throw new QuerierPluginException("FitsQuerierPlugin index not valid xml",e);
+            //throw new QuerierPluginException("FitsQuerierPlugin index not valid xml",e);
+            throw new IOException("FitsQuerierPlugin");
 
          }
       }
@@ -210,6 +211,9 @@ public class FitsQuerierPlugin extends QuerierPlugin
 
 /*
  $Log: FitsQuerierPlugin.java,v $
+ Revision 1.5  2004/08/09 13:04:31  KevinBenson
+ small change to get the servlet from the index
+
  Revision 1.4  2004/07/26 13:53:44  KevinBenson
  Changes to Fits to do an xquery on an xml file dealing with fits data.
  Small xsl style sheet to make the xql which will get the filename element
