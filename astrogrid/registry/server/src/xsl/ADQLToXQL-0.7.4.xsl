@@ -290,8 +290,15 @@
       for $x in //</xsl:text><xsl:value-of select="$resource_elem"/>
       <xsl:text>
        where 
+      </xsl:text>      
+
+<!--
+      <xsl:text>
+       where 
        $x/@status='active' and 
       </xsl:text>      
+-->
+
       <xsl:apply-templates select="ad:Condition"/>
       <xsl:text> 
          return $x
