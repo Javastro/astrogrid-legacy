@@ -1,5 +1,5 @@
 /*
- * $Id: GdsQueryDelegate.java,v 1.5 2003/12/12 13:44:01 gtr Exp $
+ * $Id: GdsQueryDelegate.java,v 1.6 2003/12/15 14:23:09 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,94 +20,67 @@ import org.apache.xerces.parsers.DOMParser;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+/*
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.dom.DOMResult;
+*/
+
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
 import java.io.StringReader;
-import java.util.Properties;
 import org.globus.ogsa.utils.AnyHelper;
 import org.globus.ogsa.GridServiceException;
 import org.gridforum.ogsi.ExtensibilityType;
 import org.apache.axis.AxisFault;
 
+/**
+ * The following imports are declared but not used:
+ * import java.io.FileNotFoundException;
+ * import java.io.File;
+ * import java.io.FileWriter;
+ * import java.io.FileReader;
+ * import java.net.URL;
+ * import org.xml.sax.SAXException;
+ * import org.gridforum.ogsi.HandleType;
+ * import org.apache.axis.client.Stub;
+ */
+
+
 
 /**
- * Executes a query on a grid-enabled database using the
- * OGSA-DAI interface.
- * Locates a GDS Factory in a registry of OGSA-DAI installations,
- * instantiates a GDS and sends it one query, the results of
- * which are returned to the caller.
  *
- * This class has a main method and is intended to be invoked
- * through this method.  It takes the query from the command line
- * and writes the results of the query to standard output.
- *
- * The query is given in SQL. The results are returned in 
- * web-rowset format.
- * 
- * @author K. Andrews
- * @author G. Rixon
+ * @author K Andrews
  */
+
 public class GdsQueryDelegate 
 {
   /**
-   * Configuration properties for this service.
-   * These use the WarehouseQuerier.properties file to discover
-   * the location of the OGSA-DAI warehouse services, configure 
-   * OGSA-DAI input etc.
-   */
-  protected Properties serviceProperties = null;
-
-  static Logger logger = Logger.getLogger("GdsQueryLogger");
-
-  /**
-   * Default constructor, which loads run-time installation-specific
-   * configuration properties (which must be supplied in the co-located
-   * "WarehouseQuerier.properties" file).
+   * Default empty constructor.
    * 
    * @throws Exception
    * @throws IOException
    * @throws SAXException
-   */  
+   */
+  
+  static Logger logger = Logger.getLogger("GdsQueryLogger");
+  
   public GdsQueryDelegate() 
       throws Exception, IOException, SAXException {
     super();    //Can throw IOException and SAXException
-
-    try {
-      // Load installation-specific runtime properties
-      serviceProperties = new Properties();
-      InputStream s = GdsQueryDelegate.class.getResourceAsStream(
-            "GdsQueryDelegate.properties"); 
-      if (s == null) {
-        throw new Exception(
-          "Couldn't find properties file GdsQueryDelegate.properties");
-      }
-      serviceProperties.load(s);
-    }
-    catch (IOException e) {
-      logger.error(
-	  "Couldn't load properties from GdsQueryDelegate.properties: " + 
-	   e.getMessage());
-      throw new Exception(
-          "Couldn't load properties from GdsQueryDelegate.properties: " + 
-           e.getMessage());
-    }
   }
 
   /*
    * Use an OGSA-DAI Grid Data Service to perform the supplied SQL query.
    */
-  protected Document doRealQuery(String sql, OutputStream output, 
-        boolean invokedFromMain) throws Exception {
+  protected Document doRealQuery(String sql, String registryUrlString, 
+        OutputStream output, boolean invokedFromMain) throws Exception {
 
-    String registryURLString = 
-        serviceProperties.getProperty(
-            "HOST_STRING", DEFAULT_HOST_STRING) + 
-        serviceProperties.getProperty(
-            "REGISTRY_STRING", DEFAULT_REGISTRY_STRING);
-  
     int timeout = 300;  // TOFIX configurable?
 
     ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
@@ -116,13 +89,20 @@ public class GdsQueryDelegate
     // Do a synchronous query using the GDS.
     try {
 
+      // Look at the registry to get the factory URL
+      //String factoryUrlString = 
+       //   GdsDelegate.getFactoryUrlFromRegistry(registryUrlString,timeout);
+      //System.out.println("GDSF is " + factoryUrlString);
+      //logger.info("GDSF is " + factoryUrlString);
+
       // Create a grid-service delegate for the GDS.  This handles the
       // awkward semantics of the grid-service, including creating
       // the grid-service instance.
-      // Get the handle of the factory from the registry.
       logger.info("Creating the GDS delegate...");
       GdsDelegate gds = new GdsDelegate();
-      gds.setFactoryGshFromRegistry(registryURLString, timeout);
+      gds.setRegistryGsh(registryUrlString);
+      gds.setFactoryGshFromRegistry();
+      //String factoryUrlString = gds.getFactoryHandle();
       logger.info("Connecting to the GDS...");
       gds.connect();
 
@@ -137,12 +117,14 @@ public class GdsQueryDelegate
       xmlString = cdataNode.getNodeValue();
 
       // Print this to stdout just in case we're shipping results via stdout
+      //System.out.println(WAREHOUSE_RESULT_START);
       logger.info(WAREHOUSE_RESULT_START);
 
       //Print byte stream to output stream
       output.write(xmlString.getBytes());
 
       // Print this to stdout just in case we're shipping results via stdout
+      //System.out.println(WAREHOUSE_RESULT_END);
       logger.info(WAREHOUSE_RESULT_END);
     }
     catch (AxisFault e) {
@@ -304,35 +286,49 @@ public class GdsQueryDelegate
     GdsQueryDelegate gdsQueryDelegate = new GdsQueryDelegate();
 
     String sql;
+    String registryUrlString;
     String outputFileName = null;
+
     try {
       int len = args.length;
-      if (len == 0) {
-        //TOFIX 
-        logger.error(
-		"No SQL supplied for shelled-out query at command-line");
-        throw new Exception(
-            "No SQL supplied for shelled-out query at command-line");
+
+      // Get SQL query (first parameter)
+      if ((len == 0) || (args[0] == null)) {
+		    String errorMessage = 
+          "No SQL (parameter 1) supplied to GdsQueryDelegate";
+        logger.error(errorMessage);
+        throw new Exception(errorMessage);
       }
       sql = args[0];
-      if (sql.equals(null)) {
-      	logger.error(
-		"No SQL supplied for shelled-out query at command-line");
-        throw new Exception(
-            "No SQL supplied for shelled-out query at command-line");
+
+      // Get URL for ogsa-dai registry (third parameter)
+      if (len < 2) {
+		    String errorMessage = 
+          "No Registry URL (parameter 2) supplied to GdsQueryDelegate";
+        logger.error(errorMessage);
+        throw new Exception(errorMessage);
       }
-      if (len > 1) {
-        outputFileName = args[1];
+      registryUrlString = args[1];
+
+      // Get results filename if supplied (third parameter)
+      if (len == 2) {
+        outputFileName = args[2];
+      }
+      if (len > 2) {
+		    String errorMessage = 
+           "Too many parameters (" + Integer.toString(len) + 
+           ") supplied to GdsQueryDelegate";
+        logger.error(errorMessage);
+        throw new Exception(errorMessage);
       }
     }
     catch (ArrayIndexOutOfBoundsException e) {
-      logger.error(
-	  "Unexpected number of command-line arguments (" + 
-	 Integer.toString(args.length) + ")");
-      throw new Exception(
-          "Unexpected number of command-line arguments (" + 
-         Integer.toString(args.length) + ")");
+		  String errorMessage = 
+           "Unexpected number of parameters supplied to GdsQueryDelegate";
+        logger.error(errorMessage + ": " + e.getMessage());
+        throw new Exception(errorMessage);
     }
+
     OutputStream output;
     if (outputFileName == null) {
       output = System.out;
@@ -341,7 +337,8 @@ public class GdsQueryDelegate
       output = new FileOutputStream(outputFileName);
     }
     //Do real query in shelled-out mode
-    Document result = gdsQueryDelegate.doRealQuery(sql, output, false);
+    Document result = gdsQueryDelegate.doRealQuery(
+        sql, registryUrlString,output, false);
   }
 
   // ----------------------------------------------------------
@@ -362,8 +359,10 @@ public class GdsQueryDelegate
 }
 /*
 $Log: GdsQueryDelegate.java,v $
-Revision 1.5  2003/12/12 13:44:01  gtr
-Uses GdsDelegate.setFactoryGshFromRegistry.
+Revision 1.6  2003/12/15 14:23:09  kea
+Restoring changes buggered up by CVS, bastard bastard bastard.
+No properties file for GdsQueryDelegate anymore, registry URL for
+ogsa-dai passed in as parameter.
 
 Revision 1.4  2003/12/11 16:17:54  eca
 Logging comments for System.out.println and in conjunction with 
