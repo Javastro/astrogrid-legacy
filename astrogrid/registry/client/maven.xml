@@ -11,6 +11,7 @@
     xmlns:util="jelly:util"
     xmlns:log="jelly:log"
     xmlns:define="jelly:define"
+    xmlns:artifact="artifact"    
     xmlns:deploy="deploy"
     >
 
@@ -57,19 +58,46 @@
     </preGoal>
 
     <!--+
-        | Build and install our component jar.
-        | (required as a target goal for the reactor)
+        | Build and install our artifact jar.
         +-->
-    <goal name="install-artifact">
+    <goal name="astrogrid-install-artifact">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <ant:echo message="Building component artifact ...."/>
-        <attainGoal name="jar:install"/>
+        <!--+
+            | Build our artifact jar.
+            +-->
+        <attainGoal name="jar:jar"/>
+        <!--+
+            | Install our artifact jar.
+            +-->
+		<artifact:install
+			artifact="${maven.build.dir}/${maven.final.name}.jar"
+			project="${pom}"
+			type="jar"
+			/>
     </goal>
-	<goal name="deploy-artifact">
-	  <attainGoal name="jar:deploy"/>
-	</goal>
+
+    <!--+
+        | Build and deploy our artifact jar.
+        +-->
+    <goal name="astrogrid-deploy-artifact">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Create our artifact jar.
+            +-->
+        <attainGoal name="astrogrid-install-artifact"/>
+        <!--+
+            | Deploy our artifact jar.
+            +-->
+		<artifact:deploy
+			artifact="${maven.build.dir}/${maven.final.name}.jar"
+			project="${pom}"
+			type="jar"
+			/>
+    </goal>
 	
 
     <!--+

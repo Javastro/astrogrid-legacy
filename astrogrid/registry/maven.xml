@@ -104,7 +104,7 @@
             basedir="${basedir}"
             postProcessing="false"
             includes="common/project.xml,client/project.xml,client-lite/project.xml,server/project.xml,webapp/project.xml"
-            goals="install-artifact"
+            goals="astrogrid-install-artifact"
             banner="Building component artifact : "
             ignoreFailures="false"
             />
@@ -161,6 +161,21 @@
             ignoreFailures="false"
             />
     </goal>
+    
+    <!--+
+        | Build and deploy our components.
+        +-->
+    <goal name="astrogrid-deploy-artifact">
+        <maven:reactor
+            basedir="${basedir}"
+            postProcessing="false"
+            includes="common/project.xml,client/project.xml,client-lite/project.xml,server/project.xml,webapp/project.xml"
+            goals="astrogrid-deploy-artifact"
+            banner="Deploying snapshot artifact : "
+            ignoreFailures="false"
+            />
+    </goal>
+    
     
  
 
