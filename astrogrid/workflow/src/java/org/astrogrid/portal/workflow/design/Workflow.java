@@ -160,7 +160,8 @@ public class Workflow extends Activity {
           
         debug( "userid: " + userid ) ;
         debug( "community: " + community ) ;
-        debug( "name: " + name ) ;          
+        debug( "name: " + name ) ;
+		debug( "description: " + description ) ;          
             
         try {
             workflow = new Workflow() ;
@@ -192,18 +193,15 @@ public class Workflow extends Activity {
           
          debug( "userid: " + userid ) ;
          debug( "community: " + community ) ;
-         debug( "name: " + name ) ;          
+         debug( "name: " + name ) ;
+		 debug( "description: " + description ) ;          
             
          try {
-
-			 debug("About to create input source") ;                        
+                       
              InputSource
                 source = new InputSource( new StringReader( retrieveTemplate(templateName) ) );
-             debug( "Created successfully" ) ;
              Document doc = XMLUtils.newDocument(source) ;
-             debug(" doc created!" ) ;
-             workflow = new Workflow( doc ) ;            
-             debug("success") ;  
+             workflow = new Workflow( doc ) ;              
               
              workflow.setUserid( userid) ;
              workflow.setCommunity( community ) ;
