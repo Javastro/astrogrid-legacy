@@ -1,4 +1,4 @@
-/*$Id: HTMLDriver.java,v 1.1 2004/04/06 08:29:21 nw Exp $
+/*$Id: HTMLDriver.java,v 1.2 2004/04/07 23:06:05 nw Exp $
  * Created on 05-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,29 +11,26 @@
 package org.astrogrid.jes.servlet;
 
 import org.astrogrid.community.beans.v1.Account;
-import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.component.ComponentManager;
-import org.astrogrid.jes.component.ComponentManagerFactory;
-import org.astrogrid.jes.job.JobException;
-import org.astrogrid.jes.job.SubmitJobRequest;
+import org.astrogrid.jes.delegate.JesDelegateFactory;
+import org.astrogrid.jes.delegate.JobController;
+import org.astrogrid.jes.delegate.JobSummary;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
-
-import org.apache.axis.utils.XMLUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Iterator;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
@@ -60,6 +57,7 @@ public class HTMLDriver extends HttpServlet {
     public HTMLDriver() {
         super();
     }
+    
     /**
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -75,26 +73,25 @@ public class HTMLDriver extends HttpServlet {
             throw new ServletException(e);
         }
     }
-
+    private static final String ENDPOINT = "";
     /**
      * @param req
      * @param resp
      */
     private void doList(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        ComponentManager man =ComponentManagerFactory.getInstance();
+        JobController man = JesDelegateFactory.createJobController(computeEndpoint(req).toString());
         Account acc = new Account();
         acc.setCommunity(req.getParameter(COMMUNITY));
         acc.setName(req.getParameter(USERNAME));
         PrintWriter out = resp.getWriter();
         out.println("<html><body>");
         out.println("<h1>Jobs for " + acc.getName() + "@" + acc.getCommunity());
-        Iterator i = man.getFacade().getJobFactory().findUserJobs(acc);
+        JobSummary[] summary = man.readJobList(acc);
         out.println("<table>");        
-        while (i.hasNext()) {
-            Workflow wf = (Workflow)i.next();
+        for (int i = 0; i < summary.length; i++) {           
             out.println("<tr>");
-            out.println("<td>" + wf.getName() + "</td>");
-            String urn = wf.getJobExecutionRecord().getJobId().getContent();
+            out.println("<td>" + summary[i].getName() + "</td>");
+            String urn = summary[i].getJobURN().getContent();
             out.println("<td><a href='html-driver?action=inspect&urn=" + URLEncoder.encode(urn) + "'>"
                 + urn + "</a></td>");
             out.println("</tr>");
@@ -102,15 +99,24 @@ public class HTMLDriver extends HttpServlet {
         out.println("</table>");
         out.println("</body></html>");
     }
+
+    private URL computeEndpoint(HttpServletRequest req) throws MalformedURLException {
+        
+        URL endpoint = new URL("http", req.getServerName(),
+          req.getServerPort(), req.getContextPath() +  "/services/JobControllerService"); 
+        return endpoint;
+    }
     /**
      * @param req
      * @param resp
      */
     private void doInspect(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        ComponentManager man = ComponentManagerFactory.getInstance();
+        //ComponentManager man = ComponentManagerFactory.getInstance();
+
+        JobController man = JesDelegateFactory.createJobController(computeEndpoint(req).toString());        
         JobURN urn = new JobURN();
         urn.setContent(req.getParameter(URN).trim());
-        Workflow wf = man.getFacade().getJobFactory().findJob(urn);
+        Workflow wf = man.readJob(urn);
         TransformerFactory fac = TransformerFactory.newInstance();
         Transformer trans = fac.newTransformer(
             new StreamSource(this.getClass().getResourceAsStream("workflow.xsl"))
@@ -130,9 +136,16 @@ public class HTMLDriver extends HttpServlet {
      */
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-        ComponentManager man = ComponentManagerFactory.getInstance();
-        SubmitJobRequest subReq = man.getFacade().createSubmitJobRequest(req.getParameter(WORKFLOW));
-        man.getFacade().getJobFactory().createJob(subReq);
+        //ComponentManager man = ComponentManagerFactory.getInstance();
+
+        JobController man = JesDelegateFactory.createJobController(computeEndpoint(req).toString());
+        Workflow wf = Workflow.unmarshalWorkflow(new StringReader(req.getParameter(WORKFLOW)));
+        JobURN urn = man.submitWorkflow(wf);
+
+        PrintWriter out = resp.getWriter();
+        out.println("<html><body>");
+        out.println("<h1>Submitted Job " + urn.getContent() + "</h1>");
+        out.println("</body></table>");                
         } catch (Exception e) {
             throw new ServletException(e);
         }
@@ -145,6 +158,9 @@ public class HTMLDriver extends HttpServlet {
 
 /* 
 $Log: HTMLDriver.java,v $
+Revision 1.2  2004/04/07 23:06:05  nw
+got html-front-end working
+
 Revision 1.1  2004/04/06 08:29:21  nw
 start of a html interface
  
