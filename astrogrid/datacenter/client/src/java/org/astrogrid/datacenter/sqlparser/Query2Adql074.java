@@ -1,5 +1,5 @@
 /*
- * $Id: Query2Adql074.java,v 1.12 2004/09/08 21:04:39 mch Exp $
+ * $Id: Query2Adql074.java,v 1.13 2004/09/10 11:30:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -34,7 +34,7 @@ public class Query2Adql074  {
       log.debug("Making ADQL from "+query.toString());
       
       StringWriter sw = new StringWriter();
-      XmlPrinter xw = new XmlPrinter(sw, false);
+      XmlPrinter xw = new XmlPrinter(sw, true);
       xw.writeComment("ADQL generated from: "+query);
       xw.writeComment(comment);
       
@@ -236,6 +236,9 @@ public class Query2Adql074  {
 
 /*
  $Log: Query2Adql074.java,v $
+ Revision 1.13  2004/09/10 11:30:12  mch
+ reintroduced xml processing instruction
+
  Revision 1.12  2004/09/08 21:04:39  mch
  fix to case chagne
 
