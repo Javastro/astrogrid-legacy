@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 import java.io.*;
+import java.net.*;
 import java.util.*;
 import java.util.ArrayList;
 import java.lang.reflect.Array;
@@ -21,6 +22,12 @@ import org.astrogrid.community.User;
 
 import org.astrogrid.store.delegate.myspaceItn05.MySpaceIt05Delegate;
 import org.astrogrid.store.delegate.myspaceItn05.EntryRecord;
+import org.astrogrid.store.delegate.myspaceItn05.EntryNode;
+
+//
+// Example end point:
+//
+//   http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/Manager
 
 
 /**
@@ -63,7 +70,7 @@ public class MySpaceDriver
 //
 //   Create the Options menu items.
 
-      JMenuItem menuItem = new JMenuItem("Enter query");
+      JMenuItem menuItem = new JMenuItem("Enter query (output as list)");
       menuItem.addActionListener(new ActionListener()
          {  public void actionPerformed(ActionEvent e)
             {  BufferedReader console = new BufferedReader(
@@ -100,13 +107,129 @@ public class MySpaceDriver
                   {  System.out.println("No files satisfied query.");
                   }
 
-                   System.out.println("\nMessages:-");
-                   middle.outputStatusList();
-                   middle.resetStatusList();
+                  System.out.println("\nMessages:-");
+                  middle.outputStatusList();
+                  middle.resetStatusList();
                }
                catch (Exception ex)
                {  ex.printStackTrace();
                }
+            }
+         }
+      );
+      fileMenu.add(menuItem);
+
+
+      menuItem = new JMenuItem("Enter query (output as tree)");
+      menuItem.addActionListener(new ActionListener()
+         {  public void actionPerformed(ActionEvent e)
+            {  BufferedReader console = new BufferedReader(
+                 new InputStreamReader(System.in));
+
+               System.out.println("Enter query (eg. '*'):");
+               String query = null;
+               try
+               {  query = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  query ="*";
+               }
+
+               try
+               {  middle.setTest(isTest);
+                  middle.setThrow(false);
+                  EntryNode fileRoot = (EntryNode)middle.getFiles(query);
+
+                  System.out.println("\nMatching files:-");
+                  System.out.println(fileRoot.toString() );
+
+                  System.out.println("\nMessages:-");
+                  middle.outputStatusList();
+                  middle.resetStatusList();
+               }
+               catch (Exception ex)
+               {  ex.printStackTrace();
+               }
+            }
+         }
+      );
+      fileMenu.add(menuItem);
+
+
+      menuItem = new JMenuItem("Show details of file");
+      menuItem.addActionListener(new ActionListener()
+         {  public void actionPerformed(ActionEvent e)
+            {  BufferedReader console = new BufferedReader(
+                 new InputStreamReader(System.in));
+
+               String fileName;
+               System.out.println("Enter name of file:");
+               try
+               {  fileName = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  fileName = "";
+               }
+
+               try
+               {  middle.setTest(isTest);
+                  middle.setThrow(false);
+
+                  EntryRecord file = 
+                    (EntryRecord)middle.getFile(fileName);
+
+                  System.out.println("\nFile details:-");
+                  System.out.println("  " + file.toString() );
+                  System.out.println("  URL: " + file.getEntryUri() );
+
+                  middle.outputStatusList();
+                  middle.resetStatusList();
+               }
+               catch (Exception ex)
+               {  ex.printStackTrace();
+               }
+ 
+
+            }
+         }
+      );
+      fileMenu.add(menuItem);
+
+
+      menuItem = new JMenuItem("Show URL of file");
+      menuItem.addActionListener(new ActionListener()
+         {  public void actionPerformed(ActionEvent e)
+            {  BufferedReader console = new BufferedReader(
+                 new InputStreamReader(System.in));
+
+               String fileName;
+               System.out.println("Enter name of file:");
+               try
+               {  fileName = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  fileName = "";
+               }
+
+               try
+               {  middle.setTest(isTest);
+                  middle.setThrow(false);
+
+                  URL url = middle.getUrl(fileName);
+
+                  System.out.println("URL: " + url.toString() );
+
+                  middle.outputStatusList();
+                  middle.resetStatusList();
+               }
+               catch (Exception ex)
+               {  ex.printStackTrace();
+               }
+ 
+
             }
          }
       );
@@ -157,6 +280,140 @@ public class MySpaceDriver
          }
       );
       fileMenu.add(menuItem);
+
+
+      menuItem = new JMenuItem("Append a String to a file");
+      menuItem.addActionListener(new ActionListener()
+         {  public void actionPerformed(ActionEvent e)
+            {  BufferedReader console = new BufferedReader(
+                 new InputStreamReader(System.in));
+
+               String fileName;
+               System.out.println("Enter name of file:");
+               try
+               {  fileName = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  fileName = "";
+               }
+
+               String contents;
+               System.out.println("Enter the new contents:");
+               try
+               {  contents = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  contents = "";
+               }
+
+               try
+               {  middle.setTest(isTest);
+                  middle.setThrow(false);
+                  middle.putString(contents, fileName, true);
+
+                  System.out.println("\nMessages:-");
+                  middle.outputStatusList();
+                  middle.resetStatusList();
+               }
+               catch (Exception ex)
+               {  ex.printStackTrace();
+               }
+             }
+         }
+      );
+      fileMenu.add(menuItem);
+
+
+      menuItem = new JMenuItem("Create file from a URL");
+      menuItem.addActionListener(new ActionListener()
+         {  public void actionPerformed(ActionEvent e)
+            {  BufferedReader console = new BufferedReader(
+                 new InputStreamReader(System.in));
+
+               String newFileName;
+               System.out.println("Enter name of new file:");
+               try
+               {  newFileName = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  newFileName = "";
+               }
+
+               String urlString;
+               System.out.println("Enter the URL:");
+               try
+               {  urlString = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  urlString = "http://blue.nowhere/";
+               }
+
+               try
+               {  URL url = new URL(urlString);
+
+                  middle.setTest(isTest);
+                  middle.setThrow(false);
+                  middle.putUrl(url, newFileName, false);
+
+                  System.out.println("\nMessages:-");
+                  middle.outputStatusList();
+                  middle.resetStatusList();
+               }
+               catch (Exception ex)
+               {  ex.printStackTrace();
+               }
+ 
+
+            }
+         }
+      );
+      fileMenu.add(menuItem);
+
+      menuItem = new JMenuItem("Create file from array of bytes");
+      menuItem.addActionListener(new ActionListener()
+         {  public void actionPerformed(ActionEvent e)
+            {  BufferedReader console = new BufferedReader(
+                 new InputStreamReader(System.in));
+
+               String newFileName;
+               System.out.println("Enter name of new file:");
+               try
+               {  newFileName = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  newFileName = "";
+               }
+
+               try
+               {  byte[] someBytes = new byte[] {1, 2, 3, 4, 5, 6};
+
+                  middle.setTest(isTest);
+                  middle.setThrow(false);
+                  middle.putBytes(someBytes, 0, 6, newFileName, false);
+
+                  System.out.println("\nMessages:-");
+                  middle.outputStatusList();
+                  middle.resetStatusList();
+               }
+               catch (Exception ex)
+               {  ex.printStackTrace();
+               }
+ 
+
+            }
+         }
+      );
+      fileMenu.add(menuItem);
+
+
+
+
+
 
 
       menuItem = new JMenuItem("Retrieve file contents");
