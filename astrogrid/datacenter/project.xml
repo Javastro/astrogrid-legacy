@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project>
 <extend>${basedir}/build/project-base.xml</extend>
-  <!-- the version of maven's project object model -->
-  <pomVersion>3</pomVersion>
+
 
   <!-- a unique name for this project -->
   <id>astrogrid-datacenter</id>
@@ -159,18 +158,8 @@ See documentation for the PAL project for further build instructions.
 
   <shortDescription>Astrogrid Datacenter</shortDescription>
 
-  <!-- definition for site docs -->
-  <siteAddress>www.astrogrid.org</siteAddress>
   <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/datacenter</siteDirectory>
 
-  <repository>
-    <connection>
-      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/datacenter
-    </connection>
-    <developerConnection>
-      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/datacenter
-    </developerConnection>
-  </repository>
 
 
   <reports>
