@@ -1,4 +1,4 @@
-/*$Id: ClientTests.java,v 1.10 2004/09/28 15:07:23 mch Exp $
+/*$Id: ClientTests.java,v 1.11 2004/09/28 16:37:23 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,6 @@ package org.astrogrid.datacenter;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import org.astrogrid.datacenter.axisdataserver.TransportTest;
 import org.astrogrid.datacenter.delegate.WebDelegateTest;
 import org.astrogrid.datacenter.delegate.nvocone.NvoConeTest;
 import org.astrogrid.io.xml.XmlPrinterTest;
@@ -38,7 +37,7 @@ public class ClientTests {
       //$JUnit-END$
       // and add other suites too.
 //      suite.addTest(org.astrogrid.datacenter.adql.AllTests.suite());
-      suite.addTest(new TestSuite(TransportTest.class));
+      //suite.addTest(new TestSuite(TransportTest.class));
       suite.addTest(NvoConeTest.suite());
       suite.addTest(XmlPrinterTest.suite());
       suite.addTest(WebDelegateTest.suite());
@@ -49,6 +48,9 @@ public class ClientTests {
 
 /*
  $Log: ClientTests.java,v $
+ Revision 1.11  2004/09/28 16:37:23  mch
+ Removed 4.1 interface
+
  Revision 1.10  2004/09/28 15:07:23  mch
  Removed ADQL 0.5 object model & 4.1 interface
 

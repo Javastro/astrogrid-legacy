@@ -1,5 +1,5 @@
 /*
- * $Id: PrecannedPlugin.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: PrecannedPlugin.java,v 1.2 2004/09/28 16:37:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,7 +10,6 @@ import org.astrogrid.datacenter.queriers.*;
 import java.io.IOException;
 import java.util.Date;
 
-import org.astrogrid.datacenter.axisdataserver.types.Query;
 
 /**
  * A 'blind' querier that ignores the incoming query and returns a prepared

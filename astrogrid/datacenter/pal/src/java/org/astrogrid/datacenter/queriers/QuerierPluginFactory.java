@@ -1,4 +1,4 @@
-/*$Id: QuerierPluginFactory.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+/*$Id: QuerierPluginFactory.java,v 1.2 2004/09/28 16:38:05 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,6 @@ import java.util.Hashtable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.store.Agsl;
 
@@ -113,6 +112,9 @@ public class QuerierPluginFactory {
 
 /*
  $Log: QuerierPluginFactory.java,v $
+ Revision 1.2  2004/09/28 16:38:05  mch
+ Removed 4.1 interface
+
  Revision 1.1  2004/09/28 15:02:13  mch
  Merged PAL and server packages
 
