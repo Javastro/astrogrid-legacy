@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationProviderTest.java,v 1.7 2004/09/17 01:23:09 nw Exp $
+/*$Id: HttpApplicationProviderTest.java,v 1.8 2004/09/26 23:34:47 jdt Exp $
  * Created on 30-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,17 @@
 **/
 package org.astrogrid.applications.http;
 
+import java.net.URL;
+
 import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.Application;
-import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.MockMonitor;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.ApplicationInterface;
@@ -31,11 +33,9 @@ import org.astrogrid.applications.http.test.TestWebServer;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
-import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
+import org.astrogrid.applications.parameter.protocol.FileProtocol;
 import org.astrogrid.community.User;
 import org.astrogrid.workflow.beans.v1.Tool;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
 
 /** 
  * Test of the HttpApplication backend to CEA
@@ -65,7 +65,8 @@ public class HttpApplicationProviderTest extends TestCase {
         //Fire up an in process server
         TestWebServer.getServer(PORT);
         IdGen idgen = new InMemoryIdGen();
-        ProtocolLibrary protocolLib = new DefaultProtocolLibrary();
+        DefaultProtocolLibrary protocolLib = new DefaultProtocolLibrary();
+        protocolLib.addProtocol(new FileProtocol()); //this is done by the component manager normally
         monitor = new MockMonitor();
         ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(idgen,protocolLib);
         HttpApplicationDescriptionLibrary.Community community = new TestCommunity();
@@ -233,6 +234,43 @@ public class HttpApplicationProviderTest extends TestCase {
     }
     
     /**
+     * As testAdd, but using a file:// param
+     * @throws Exception
+     */
+    public void testAddIndirectParameter() throws Exception {
+        ApplicationDescription hw = getApplicationDescription("/Adder");
+        
+        
+        
+        Tool tool  = (Tool) toolUnmarshaller.unmarshallFromFile("tool-Adder1.xml");
+        // Replace a parameter by an indirect value.  Can't do this in the xml file
+        // since we don't know where your local tmp directory is going to be.
+        URL url_x = this.getClass().getResource("test/xinput.txt");
+        log.debug("Located x input file at "+url_x);
+        ParameterValue pval_x = (ParameterValue)tool.findXPathValue("input/parameter[name='x']");
+        log.debug("Changing x value in tools document from "+pval_x.getValue());
+        pval_x.setValue(url_x.toString());
+        log.debug("to " + pval_x.getValue());
+        pval_x.setIndirect(true);
+        Application app = hw.initializeApplication("testrun",user,tool);
+        assertNotNull(app);
+        app.addObserver(monitor);
+        app.execute();
+        monitor.waitFor(10);
+        assertTrue(monitor.sawExit);
+        ResultListType results= app.getResult();
+        assertNotNull(results);
+        assertEquals(1,results.getResultCount());
+        String resultName=results.getResult(0).getName();
+        assertEquals("sum", resultName);
+        
+        String resultVal = results.getResult(0).getValue();
+        assertNotNull(resultVal);
+        log.debug("testAdd()" + resultVal);
+        assertEquals("8",resultVal);
+    }
+    
+    /**
      * Post isn't supported yet
      * @throws Exception
      */
@@ -334,6 +372,9 @@ public class HttpApplicationProviderTest extends TestCase {
 
 /* 
 $Log: HttpApplicationProviderTest.java,v $
+Revision 1.8  2004/09/26 23:34:47  jdt
+Added a unit test that checks that indirect input params are handled right.
+
 Revision 1.7  2004/09/17 01:23:09  nw
 updated tests
 
