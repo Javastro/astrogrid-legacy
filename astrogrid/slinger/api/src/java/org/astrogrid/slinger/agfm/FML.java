@@ -1,5 +1,5 @@
 /*
- * $Id: FML.java,v 1.1 2005/03/15 12:07:28 mch Exp $
+ * $Id: FML.java,v 1.2 2005/03/28 01:48:09 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -41,7 +41,7 @@ public class FML implements SRL, TargetIdentifier, SourceIdentifier
    /** When set it identifies which filestore the manager should look at */
    private String storeId = null;
    
-   public static final String SCHEME = "managedfile";
+   public static final String SCHEME = "fml";
    
    //for error messages
    public static final String FORM = SCHEME+":<serviceEndPoint>[#<Path>[!<Store>]]";
@@ -191,6 +191,9 @@ public class FML implements SRL, TargetIdentifier, SourceIdentifier
 /*
 
 $Log: FML.java,v $
+Revision 1.2  2005/03/28 01:48:09  mch
+Added socket source/target, and makeFile instead of outputChild
+
 Revision 1.1  2005/03/15 12:07:28  mch
 Added FileManager support
 

@@ -1,0 +1,60 @@
+/*
+ * $Id: SocketSource.java,v 1.1 2005/03/28 01:48:09 mch Exp $
+ *
+ * (C) Copyright Astrogrid...
+ */
+
+package org.astrogrid.slinger.sources;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.Socket;
+import java.security.Principal;
+
+/**
+ * Used to indicate the target where the results are to be sent when it's been
+ * given as a tcp/ip socket.
+ *
+ */
+
+public class SocketSource implements SourceIdentifier {
+   
+   Socket socket;
+
+   public SocketSource(Socket targetSocket)  {
+
+      this.socket = targetSocket;
+   }
+
+   public InputStream resolveInputStream(Principal user) throws IOException {
+      return socket.getInputStream();
+   }
+
+   /** Returns null (unknown) */
+   public String getMimeType(Principal user) throws IOException {
+      return null;
+   }
+
+   public String toString() {
+      return "[Socket at '"+socket.getLocalAddress()+":"+socket.getLocalPort()+"']";
+   }
+
+   /** Resolves reader as a wrapper around resolved inputstream */
+   public Reader resolveReader(Principal user) throws IOException {
+      return new InputStreamReader(resolveInputStream(user));
+   }
+   
+   
+}
+/*
+ $Log: SocketSource.java,v $
+ Revision 1.1  2005/03/28 01:48:09  mch
+ Added socket source/target, and makeFile instead of outputChild
+
+
+ */
+
+
+

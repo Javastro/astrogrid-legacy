@@ -1,5 +1,5 @@
 /*
- * $Id: HomespaceName.java,v 1.3 2005/03/21 16:10:43 mch Exp $
+ * $Id: HomespaceName.java,v 1.4 2005/03/28 01:48:09 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -171,7 +171,7 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
 
       //create backwards compatible ivorn-syntax homespace, as community still expects the form "ivo://community/individual#path"
       IVORN ivoForm = toIvoForm();
-      org.astrogrid.store.Ivorn oldHomespaceId = new org.astrogrid.store.Ivorn(ivoForm.getAuthority(), ivoForm.getKey(), ivoForm.getPath());
+      org.astrogrid.store.Ivorn oldHomespaceId = ivoForm.toOldIvorn(); //new org.astrogrid.store.Ivorn(ivoForm.getAuthority(), ivoForm.getKey(), ivoForm.getPath());
 
       //look up in config first
       String key = "homespace."+getName();
@@ -217,15 +217,15 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
    /** Returns the homespace id in the form of an IVO identifier. This is for backwards compatibility for
     * some AstroGrid components that still use IVO identifiers for things that aren't resolvable using
     * IVO components. */
-   public IVORN toIvoForm() {
+   public IVOSRN toIvoForm() {
 
       int atIdx = getName().indexOf("@");
       if (atIdx == -1) {
-         throw new IllegalArgumentException("homespace "+this+" should be of the form homespace:<individual>@<community>[#path]");
+         throw new IllegalArgumentException("homespace "+toString()+" should be of the form homespace:<individual>@<community>[#path]");
       }
       String individualId = getName().substring(0,atIdx);
       String communityId = getName().substring(atIdx+1);
-      return new IVORN(communityId, individualId, getPath());
+      return new IVOSRN(communityId, individualId, getPath());
    }
 
    
@@ -266,6 +266,9 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
 
 /*
 $Log: HomespaceName.java,v $
+Revision 1.4  2005/03/28 01:48:09  mch
+Added socket source/target, and makeFile instead of outputChild
+
 Revision 1.3  2005/03/21 16:10:43  mch
 Fixes to compile (including removing refs to FileManager clients)
 

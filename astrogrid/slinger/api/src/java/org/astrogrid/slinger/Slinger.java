@@ -1,5 +1,5 @@
 /*
- * $Id: Slinger.java,v 1.3 2005/03/24 17:53:44 mch Exp $
+ * $Id: Slinger.java,v 1.4 2005/03/28 01:48:09 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,20 +9,22 @@ package org.astrogrid.slinger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URISyntaxException;
 import java.security.Principal;
 import org.astrogrid.account.LoginAccount;
 import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.io.Piper;
 import org.astrogrid.slinger.sources.SourceIdentifier;
 import org.astrogrid.slinger.sources.SourceMaker;
 import org.astrogrid.slinger.sources.StringSource;
 import org.astrogrid.slinger.targets.EmailTarget;
-import org.astrogrid.slinger.targets.StreamTarget;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.slinger.targets.UrlTarget;
+import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.slinger.vospace.IVORN;
 
 
@@ -93,6 +95,21 @@ public class Slinger  {
       out.close();
    }
 
+   /** Spawns a thread that reads the data from the source and sends it to the
+    * target
+    * */
+   public static void spawnSling(SourceIdentifier source, TargetIdentifier target, Principal user) throws IOException {
+      
+      target.setMimeType(source.getMimeType(user), user);
+      
+      InputStream in = source.resolveInputStream(user);
+      OutputStream out = target.resolveOutputStream(user);
+      
+      Piper.bufferedPipe(in, out);
+      in.close();
+      out.close();
+   }
+
    /** Convenience routine returns true if this application is configured to serve local
     * files */
    public static boolean allowLocalAccess() {
@@ -108,9 +125,18 @@ public class Slinger  {
    }
    
    /** For quick tests/debug */
-   public static void main(String[] args) throws IOException, IOException, URISyntaxException
+   public static void main(String[] args) throws IOException, URISyntaxException
    {
-//      Slinger.testConnection(TargetMaker.makeTarget("myspace:http://katatjuta.star.le.ac.uk:8080/astrogrid-mySpace-SNAPSHOT/services/Manager#frog/votable/martinPlayingWith6dF"), LoginAccount.ANONYMOUS);
+      SimpleConfig.getSingleton().setProperty("org.astrogrid.registry.query.endpoint", "http://hydra.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery");
+      
+      String id = "homespace:DSATEST1@uk.ac.le.star#MartinsTestTree.txt";
+      System.out.println("Testing out...");
+      Slinger.sling(new StringSource("Some text"), TargetMaker.makeTarget(id), LoginAccount.ANONYMOUS);
+      System.out.println("...Reading back...");
+      StringWriter sw = new StringWriter();
+      Slinger.sling(SourceMaker.makeSource(id), new WriterTarget(sw), LoginAccount.ANONYMOUS);
+      System.out.println("...Done: "+sw.toString());
+      /*
       if (args.length<=1) {
          printHelp();
       }
@@ -137,11 +163,15 @@ public class Slinger  {
             printHelp();
          }
       }
+       /**/
    }
 }
 
 /*
  $Log: Slinger.java,v $
+ Revision 1.4  2005/03/28 01:48:09  mch
+ Added socket source/target, and makeFile instead of outputChild
+
  Revision 1.3  2005/03/24 17:53:44  mch
  Added checks for preventing local disk access
 

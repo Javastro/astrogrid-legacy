@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.6 2005/03/22 16:18:48 mch Exp $ -->
+<!-- $Id: project.xml,v 1.7 2005/03/28 01:48:09 mch Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -56,6 +56,12 @@
          <jar>jax-qname.jar</jar>
        </dependency>
 
+       <dependency>
+         <id>saaj</id>
+         <version>UNKNOWN</version>
+         <jar>saaj.jar</jar>
+       </dependency>
+
       <!-- Astrogrid fileManager client -->
        <dependency>
             <artifactId>astrogrid-filemanager-client</artifactId>
@@ -67,6 +73,18 @@
             <artifactId>astrogrid-filemanager-contract</artifactId>
             <groupId>org.astrogrid</groupId>
          <version>${astrogrid.filemanager.version}</version>
+       </dependency>
+
+       <dependency>
+            <artifactId>astrogrid-filestore-client</artifactId>
+            <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.filestore.version}</version>
+       </dependency>
+
+       <dependency>
+            <artifactId>astrogrid-filestore-common</artifactId>
+            <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.filestore.version}</version>
        </dependency>
 
        <!-- JavaMail for TargetIndicators -->
@@ -90,8 +108,6 @@
          <version>${astrogrid.registry.version}</version>
        </dependency>
     
-
-        <!-- Community resolving components.-->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
@@ -114,6 +130,18 @@
            <version>${astrogrid.community.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
+        </dependency>
+
+        <dependency>
+            <artifactId>commons-collections</artifactId>
+            <groupId>commons-collections</groupId>
+            <version>3.0</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>commons-discovery</artifactId>
+            <groupId>commons-discovery</groupId>
+            <version>20030211.213356</version>
         </dependency>
 
 

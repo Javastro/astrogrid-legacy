@@ -1,5 +1,5 @@
 /*
- * $Id: StreamPiper.java,v 1.1 2005/03/22 16:17:33 mch Exp $
+ * $Id: StreamPiper.java,v 1.2 2005/03/28 01:48:09 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -25,6 +25,10 @@ public class StreamPiper
    public static final int DEFAULT_BLOCK_SIZE = 2048;
 
    protected int blockSize = DEFAULT_BLOCK_SIZE;
+
+   /** For multi-threaded applications, calling 'abort' sets this to true
+    * which in turn tells the 'pipe' method to stop */
+   protected boolean terminated = false;
    
    /** Create piper with default block size  */
    public StreamPiper() {}
@@ -36,6 +40,9 @@ public class StreamPiper
    
    /** Number of bytes copied at a time */
    public int getBlockSize() { return blockSize; }
+
+   /** Set terminate to true - pipe stops */
+   public void abort() {      terminated = true; }
    
    /**
     * Reads all the bytes from the given input stream
@@ -49,7 +56,7 @@ public class StreamPiper
       int total = 0;
       int read = in.read(block);
       total += read;
-      while (read > -1)
+      while ((read > -1) && (!terminated))
       {
          out.write(block,0, read);
          read = in.read(block);
@@ -60,7 +67,7 @@ public class StreamPiper
 
 
    /** Spawns a thread that pipes the two streams - ie an asynchronous pipe */
-   public static Thread spawnPipe(final InputStream in, final OutputStream out, final SpawnedPiperListener listener, int blockSize) {
+   public static StreamPiper spawnPipe(final InputStream in, final OutputStream out, final SpawnedPiperListener listener, int blockSize) {
       
       final StreamPiper piper = new StreamPiper(blockSize);
       
@@ -86,13 +93,16 @@ public class StreamPiper
       
       pipingThread.start();
       
-      return pipingThread;
+      return piper;
    }
    
 }
 
 /* $Log: StreamPiper.java,v $
- * Revision 1.1  2005/03/22 16:17:33  mch
- * Extended Piper to a package that has listening, thread spawning, etc
+ * Revision 1.2  2005/03/28 01:48:09  mch
+ * Added socket source/target, and makeFile instead of outputChild
  *
+/* Revision 1.1  2005/03/22 16:17:33  mch
+/* Extended Piper to a package that has listening, thread spawning, etc
+/*
 /* */

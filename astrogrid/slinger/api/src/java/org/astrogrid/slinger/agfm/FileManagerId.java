@@ -1,5 +1,5 @@
 /*
- * $Id: FileManagerId.java,v 1.3 2005/03/22 12:58:18 mch Exp $
+ * $Id: FileManagerId.java,v 1.4 2005/03/28 01:48:09 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -43,7 +43,7 @@ import org.astrogrid.slinger.vospace.IVOSRN;
 
 public class FileManagerId implements SRL, TargetIdentifier, SourceIdentifier
 {
-   public IVORN id = null;
+   private IVOSRN id = null;
    
    /** When set it identifies which filestore the manager should look at */
    private String storeId = null;
@@ -54,7 +54,7 @@ public class FileManagerId implements SRL, TargetIdentifier, SourceIdentifier
    public static final String FORM = SCHEME+":ivo://{community}/{individual}[#<Path>[!<Store>]]";
    
    /** Make a single reference out of an identifier in the 'ivo' form */
-   public FileManagerId(IVORN ivoFormId)
+   public FileManagerId(IVOSRN ivoFormId)
    {
       this.id = ivoFormId;
    }
@@ -69,12 +69,16 @@ public class FileManagerId implements SRL, TargetIdentifier, SourceIdentifier
    public FileManagerId(String fmid) throws URISyntaxException {
       assert isFileManagerId(fmid) : "Not a FileManagerID; should be of the form "+FORM;
 
-      this.id = new IVORN(fmid.substring(SCHEME.length()+1));
+      this.id = new IVOSRN(fmid.substring(SCHEME.length()+1));
    }
    
    /** Returns true if the given string looks like it might be a filemanager id */
    public static boolean isFileManagerId(String candidate) {
       return candidate.toLowerCase().startsWith(SCHEME);
+   }
+   
+   public IVOSRN getId() {
+      return id;
    }
    
    /**
@@ -115,13 +119,19 @@ public class FileManagerId implements SRL, TargetIdentifier, SourceIdentifier
    }
 
    public OutputStream resolveOutputStream(Principal user) throws IOException {
-//      return null;
-  //    /* temporarily commoneted as there appears to be a compile/maven bug in compiling the client.node() bit
       try {
          FileManagerClientFactory factory = new FileManagerClientFactory();
          FileManagerClient client = factory.login();
-         FileManagerNode node = client.node(id.toOldIvorn());
-         return node.writeContent();
+         FileManagerNode node = null;
+         
+         //if the file doesn't exist, we need to make it
+         if (client.exists(id.toOldIvorn()) == null) {
+            node = client.createFile(id.toOldIvorn());
+         }
+         else {
+            node = client.node(id.toOldIvorn());
+         }
+         return new FMCompleterStream(node, node.writeContent());
       }
       catch (CommunityException e) {
          throw new StoreException(e+" resolving output stream to "+id+" for "+user,e);
@@ -180,6 +190,9 @@ public class FileManagerId implements SRL, TargetIdentifier, SourceIdentifier
 /*
 
 $Log: FileManagerId.java,v $
+Revision 1.4  2005/03/28 01:48:09  mch
+Added socket source/target, and makeFile instead of outputChild
+
 Revision 1.3  2005/03/22 12:58:18  mch
 changed schemes to separate FileManagerId from MSRL
 

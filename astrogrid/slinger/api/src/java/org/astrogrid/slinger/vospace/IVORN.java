@@ -1,5 +1,5 @@
 /*
- * $Id: IVORN.java,v 1.3 2005/03/21 16:10:43 mch Exp $
+ * $Id: IVORN.java,v 1.4 2005/03/28 01:48:09 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -115,7 +115,9 @@ public class IVORN
    /** For backwards compatibility, returns as the 'store' IVORN object from
     * the common project */
    public org.astrogrid.store.Ivorn toOldIvorn() {
-      return new org.astrogrid.store.Ivorn(getAuthority(), getKey(), getPath());
+      return new org.astrogrid.store.Ivorn(getAuthority(),
+                                           getKey().substring(1), //remove initial slash
+                                           getFragment());
    }
    
    /**
@@ -166,6 +168,9 @@ public class IVORN
 
 /*
 $Log: IVORN.java,v $
+Revision 1.4  2005/03/28 01:48:09  mch
+Added socket source/target, and makeFile instead of outputChild
+
 Revision 1.3  2005/03/21 16:10:43  mch
 Fixes to compile (including removing refs to FileManager clients)
 
