@@ -1,259 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Paul Harrison (Jodrell Bank Observatory) -->
-<CommandLineExecutionControllerConfig xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1
-\\pahlaptop\work\astrogrid\src\workflow-objects\schema\AGApplicationBase.xsd">
-	<Application name="REGAUTHORITY.testapp">
-		<!-- do not test specific instance app for now -->
-		<!--This is the main test application-->
-		<Parameters>
-			<CmdLineParameterDefn name="P1" type="integer" commandPosition="1">
-				<agpd:UI_Name>Pause Time</agpd:UI_Name>
-				<agpd:UI_Description>Text
-<!--                                <b>bold bit</b> Castor cannot cope with the any schema element -->
-                                        this is the time tha the application will pause in seconds before continuing to give the appearance of doing something...
-                                </agpd:UI_Description>
-				<agpd:UCD>AAD</agpd:UCD>
-				<agpd:DefaultValue>1.0</agpd:DefaultValue>
-				<agpd:Units>String</agpd:Units>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P2" type="double" commandPosition="2">
-				<agpd:UI_Name>String</agpd:UI_Name>
-				<agpd:UI_Description>Text This can be anything
-                                </agpd:UI_Description>
-				<agpd:UCD>String</agpd:UCD>
-				<agpd:DefaultValue>Text</agpd:DefaultValue>
-				<agpd:Units>String</agpd:Units>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P3" type="binary" switchType="normal">
-				<agpd:UI_Name/>
-				<agpd:UI_Description/>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P3d" type="text" switchType="normal" commandSwitch="P3">
-				<agpd:UI_Name/>
-				<agpd:UI_Description/>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P4" type="text" commandSwitch="Parameter4" switchType="keyword">
-				<agpd:UI_Name/>
-				<agpd:UI_Description/>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P5" type="VOTable">
-				<agpd:UI_Name/>
-				<agpd:UI_Description/>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P6" type="RA">
-				<agpd:UI_Name/>
-				<agpd:UI_Description/>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P7" type="Dec">
-				<agpd:UI_Name/>
-				<agpd:UI_Description/>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P8" type="ADQL">
-				<agpd:UI_Name/>
-				<agpd:UI_Description/>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P9" type="binary" switchType="normal">
-				<agpd:UI_Name/>
-				<agpd:UI_Description>The contents of this file will be copied to the output</agpd:UI_Description>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P9d" type="binary" commandSwitch="P9">
-				<agpd:UI_Name/>
-				<agpd:UI_Description>The contents of this file will be copied to the output</agpd:UI_Description>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P10" type="boolean"/>
-			<CmdLineParameterDefn name="P11" type="anyURI"/>
-			<CmdLineParameterDefn name="P12" type="text" switchType="normal">
-				<agpd:UI_Name/>
-				<agpd:UI_Description/>
-			</CmdLineParameterDefn>
-		</Parameters>
-		<Interfaces>
-			<Interface name="I1">
-				<input>
-					<pref ref="P1"/>
-					<pref ref="P2"/>
-					<pref ref="P4"/>
-					<pref ref="P9"/>
-				</input>
-				<output>
-					<pref ref="P3"/>
-				</output>
-			</Interface>
-			<Interface name="Ilocal">
-				<input>
-					<pref ref="P1"/>
-					<pref ref="P2"/>
-					<pref ref="P4"/>
-					<pref ref="P9d"/>
-				</input>
-				<output>
-					<pref ref="P3d"/>
-				</output>
-			</Interface>
-			<Interface name="I2">
-				<input>
-					<pref ref="P9"/>
-				</input>
-				<output>
-					<pref ref="P3"/>
-				</output>
-			</Interface>
-		</Interfaces>
-		<ExecutionPath>@WORKDIR@/cea/commandline/work/testapp.sh</ExecutionPath>
-	</Application>
-	<Application name="REGAUTHORITY.testap2">
-		<!-- do not test specific instance app for now -->
-		<!--This is the main test application-->
-		<Parameters>
-			<CmdLineParameterDefn name="P1" type="integer" commandPosition="1">
-				<agpd:UI_Name>Pause Time</agpd:UI_Name>
-				<agpd:UI_Description>Text
-<!--                                <b>bold bit</b> Castor cannot cope with the any schema element -->
-                                        this is the time tha the application will pause in seconds before continuing to give the appearance of doing something...
-                                </agpd:UI_Description>
-				<agpd:UCD>AAD</agpd:UCD>
-				<agpd:DefaultValue>1.0</agpd:DefaultValue>
-				<agpd:Units>String</agpd:Units>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P2" type="double" commandPosition="2">
-				<agpd:UI_Name>String</agpd:UI_Name>
-				<agpd:UI_Description>Text This can be anything
-                                </agpd:UI_Description>
-				<agpd:UCD>String</agpd:UCD>
-				<agpd:DefaultValue>Text</agpd:DefaultValue>
-				<agpd:Units>String</agpd:Units>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P3" type="binary" switchType="normal">
-				<agpd:UI_Name/>
-				<agpd:UI_Description/>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P3d" type="text" switchType="normal" commandSwitch="P3">
-				<agpd:UI_Name/>
-				<agpd:UI_Description/>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P4" type="text" commandSwitch="Parameter4" switchType="keyword">
-				<agpd:UI_Name/>
-				<agpd:UI_Description/>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P5" type="VOTable">
-				<agpd:UI_Name/>
-				<agpd:UI_Description/>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P6" type="RA">
-				<agpd:UI_Name/>
-				<agpd:UI_Description/>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P7" type="Dec">
-				<agpd:UI_Name/>
-				<agpd:UI_Description/>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P8" type="ADQL">
-				<agpd:UI_Name/>
-				<agpd:UI_Description/>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P9" type="binary" switchType="normal">
-				<agpd:UI_Name/>
-				<agpd:UI_Description>The contents of this file will be copied to the output</agpd:UI_Description>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P9d" type="text" commandSwitch="P9">
-				<agpd:UI_Name/>
-				<agpd:UI_Description>The contents of this file will be copied to the output</agpd:UI_Description>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P10" type="boolean"/>
-			<CmdLineParameterDefn name="P11" type="anyURI"/>
-			<CmdLineParameterDefn name="P12" type="text" switchType="normal">
-				<agpd:UI_Name/>
-				<agpd:UI_Description/>
-			</CmdLineParameterDefn>
-		</Parameters>
-		<Interfaces>
-			<Interface name="I1">
-				<input>
-					<pref ref="P1"/>
-					<pref ref="P2"/>
-					<pref ref="P4"/>
-					<pref ref="P9"/>
-				</input>
-				<output>
-					<pref ref="P3"/>
-				</output>
-			</Interface>
-			<Interface name="Ilocal">
-				<input>
-					<pref ref="P1"/>
-					<pref ref="P2"/>
-					<pref ref="P4"/>
-					<pref ref="P9d"/>
-				</input>
-				<output>
-					<pref ref="P3d"/>
-				</output>
-			</Interface>
-			<Interface name="I2">
-				<input>
-					<pref ref="P9"/>
-				</input>
-				<output>
-					<pref ref="P3"/>
-				</output>
-			</Interface>
-		</Interfaces>
-		<ExecutionPath>@WORKDIR@/cea/commandline/work/testapp.sh</ExecutionPath>
-	</Application>
-	<Application name="REGAUTHORITY.testap3">
-		<!--This Application does not exist - this is just here to help with testing the description reading modules-->
-		<Parameters>
-			<CmdLineParameterDefn name="p1" type="integer">
-				<agpd:UI_Name>String</agpd:UI_Name>
-				<agpd:UI_Description>Text
-                                </agpd:UI_Description>
-				<agpd:UCD>String</agpd:UCD>
-				<agpd:DefaultValue>Text</agpd:DefaultValue>
-				<agpd:Units>String</agpd:Units>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="p2" type="integer">
-				<agpd:UI_Name>String</agpd:UI_Name>
-				<agpd:UI_Description>Text
-                                </agpd:UI_Description>
-				<agpd:UCD>String</agpd:UCD>
-				<agpd:DefaultValue>Text</agpd:DefaultValue>
-				<agpd:Units>String</agpd:Units>
-			</CmdLineParameterDefn>
-		</Parameters>
-		<Interfaces>
-			<Interface name="ID000001">
-				<input>
-					<pref ref="p2"/>
-				</input>
-				<output>
-					<pref ref="p1"/>
-				</output>
-			</Interface>
-		</Interfaces>
-		<ExecutionPath>String</ExecutionPath>
-	</Application>
+<CommandLineExecutionControllerConfig xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+	
 	<!-- put the real applications here - note that they are not autodeployed, so the paths are fixed strings - this is more of a registry test....-->
 	<Application name="REGAUTHORITY.SExtractor" instanceClass="org.astrogrid.applications.commandline.sextractor.SExtractor">
 		<!--This is the application to concentrate on for the end of this iteration-->
 		<Parameters>
 			<!-- temporarily turn the images into direct file references - for performance during the AVO demo -->
-			<CmdLineParameterDefn name="DetectionImage" type="binary" commandPosition="1">
+			<CmdLineParameterDefn name="DetectionImage" type="binary" commandPosition="1"  fileRef="false">
 				<agpd:UI_Name>Detection Image</agpd:UI_Name>
 				<agpd:UI_Description>The image that is used to detect sources. Basic position, shape and size informtaion is derived from this image</agpd:UI_Description>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="PhotoImage" type="binary" commandPosition="2">
+			<CmdLineParameterDefn name="PhotoImage" type="binary" commandPosition="2" fileRef="true">
 				<agpd:UI_Name>Measurement Image</agpd:UI_Name>
 				<agpd:UI_Description>The Image that is used to measure photometric parameters</agpd:UI_Description>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="config_file" type="binary" commandSwitch="c">
+			<CmdLineParameterDefn name="config_file" type="binary" commandSwitch="c" fileRef="true">
 				<agpd:UI_Name>Configuration File</agpd:UI_Name>
 				<agpd:UI_Description>File containing the main configuration parameters for SExtractor</agpd:UI_Description>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="PARAMETERS_NAME" type="binary">
+			<CmdLineParameterDefn name="PARAMETERS_NAME" type="binary" fileRef="true">
 				<agpd:UI_Name>Parameter File</agpd:UI_Name>
 				<agpd:UI_Description>A File containing the list of catalogue paramters that should be computed</agpd:UI_Description>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="CATALOG_NAME" type="VOTable">
+			<CmdLineParameterDefn name="CATALOG_NAME" type="VOTable" fileRef="true">
 				<agpd:UI_Name>Derived output catalogue</agpd:UI_Name>
 				<agpd:UI_Description>The catalogue of images derived from the input images</agpd:UI_Description>
 			</CmdLineParameterDefn>
@@ -318,25 +89,33 @@
 				<agpd:UI_Name>Resulting VOTable</agpd:UI_Name>
 				<agpd:UI_Description>The VOTable file containing result of the match</agpd:UI_Description>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="matchRadius" type="double" commandSwitch="String">
+			<CmdLineParameterDefn name="matchRadius" type="double" commandSwitch="String" fileRef="false">
 				<agpd:UI_Name>Match Radius</agpd:UI_Name>
 				<agpd:UI_Description>??</agpd:UI_Description>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="radMax" type="double" commandSwitch="String">
+			<CmdLineParameterDefn name="radMax" type="double" commandSwitch="String" fileRef="false">
 				<agpd:UI_Name>Maximum search radius</agpd:UI_Name>
 				<agpd:UI_Description>??</agpd:UI_Description>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="output" type="text" commandSwitch="String">
+			<CmdLineParameterDefn name="output" type="text" commandSwitch="String" fileRef="false">
 				<agpd:UI_Name>output type</agpd:UI_Name>
 				<agpd:UI_Description>This can be one of HTML VOTable of Ascii, with the default being VOTable</agpd:UI_Description>
+			
 				<agpd:DefaultValue>VOTable</agpd:DefaultValue>
+				<agpd:OptionList>
+					<agpd:OptionVal>HTML
+					</agpd:OptionVal>
+					<agpd:OptionVal>VOTable</agpd:OptionVal>
+					<agpd:OptionVal>Ascii</agpd:OptionVal>
+				</agpd:OptionList>
+				
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="maxMatches" type="integer">
+			<CmdLineParameterDefn name="maxMatches" type="integer" fileRef="false">
 				<agpd:UI_Name>maximum number of matches per target</agpd:UI_Name>
 				<agpd:UI_Description>maximum number of matches per target</agpd:UI_Description>
 			</CmdLineParameterDefn>
 		</Parameters>
-		<!--this would be nicer as a list type - need to implement that...-->
+		
 		<Interfaces>
 			<Interface name="simple">
 				<input>
@@ -352,10 +131,114 @@
 	</Application>
 	<Application name="REGAUTHORITY.BPZ">
 		<!--Another photometric redshift tool - need to complete the parameter definitions...-->
-		<Parameters/>
+		<Parameters>
+			<CmdLineParameterDefn type="text" name="SPECTRA">
+				<agpd:UI_Name>Spectra</agpd:UI_Name>
+				<agpd:UI_Description>template list</agpd:UI_Description>
+				<agpd:DefaultValue>CWWSB.list</agpd:DefaultValue>
+			</CmdLineParameterDefn>
+           <CmdLineParameterDefn type="text" name="PRIOR" fileRef="false">
+			<agpd:UI_Name>PRIOR</agpd:UI_Name>
+			<agpd:UI_Description>prior name</agpd:UI_Description>
+			<agpd:DefaultValue>hdfn</agpd:DefaultValue>
+			
+		   </CmdLineParameterDefn>
+		   <CmdLineParameterDefn type="double" name="DZ" fileRef="false">
+			   <agpd:UI_Name>DZ</agpd:UI_Name>
+			   <agpd:UI_Description>redshift resolution</agpd:UI_Description>
+			   <agpd:DefaultValue>0.01</agpd:DefaultValue>
+		   </CmdLineParameterDefn>
+		   <CmdLineParameterDefn type="double" name="ZMIN" fileRef="false">
+			    <agpd:UI_Name>ZMIN</agpd:UI_Name>
+				<agpd:UI_Description>minimum redshift</agpd:UI_Description>
+				<agpd:DefaultValue>0.01</agpd:DefaultValue>
+		   </CmdLineParameterDefn>
+		   <CmdLineParameterDefn type="double" name="ZMAX" fileRef="false">
+			<agpd:UI_Name>ZMAX</agpd:UI_Name>
+			<agpd:UI_Description>maximum redshift</agpd:UI_Description>
+			<agpd:DefaultValue>6.5</agpd:DefaultValue>
+		   </CmdLineParameterDefn>
+		   <CmdLineParameterDefn type="boolean" name="MAG"  fileRef="false">
+		   <agpd:UI_Name>MAG</agpd:UI_Name>
+			<agpd:UI_Description>Data in magnitudes?</agpd:UI_Description>
+			<agpd:DefaultValue>yes</agpd:DefaultValue>
+		   </CmdLineParameterDefn>
+		   <CmdLineParameterDefn type="double" name="ODDS"  fileRef="false">
+			<agpd:UI_Name>ODDS</agpd:UI_Name>
+			<agpd:UI_Description>Odds threshold: affects confidence limits definition</agpd:UI_Description>
+			<agpd:DefaultValue>0.95</agpd:DefaultValue>
+		   </CmdLineParameterDefn>
+		   <CmdLineParameterDefn type="integer" name="INTERP"  fileRef="false">
+			<agpd:UI_Name>INTERP</agpd:UI_Name>
+			<agpd:UI_Description>Number of interpolated templates between each of the original ones</agpd:UI_Description>
+			<agpd:DefaultValue>0</agpd:DefaultValue>
+		   </CmdLineParameterDefn>
+		   <CmdLineParameterDefn type="text" name="EXCLUDE"  fileRef="false">
+			<agpd:UI_Name>EXCLUDE</agpd:UI_Name>
+			<agpd:UI_Description>Filters to be excluded from the estimation</agpd:UI_Description>
+			<agpd:DefaultValue>none</agpd:DefaultValue>
+		   </CmdLineParameterDefn>
+		   <CmdLineParameterDefn type="boolean" name="NEW_AB"  fileRef="false">
+			<agpd:UI_Name>NEW_AB</agpd:UI_Name>
+			<agpd:UI_Description>If yes, generate new AB files even if they already exist</agpd:UI_Description>
+			<agpd:DefaultValue>no</agpd:DefaultValue>
+		   </CmdLineParameterDefn>
+		   <CmdLineParameterDefn type="boolean" name="CHECK"  fileRef="false">
+			   <agpd:UI_Name>CHECK</agpd:UI_Name>
+			   <agpd:UI_Description>Perform some checks, compare observed colors with templates, etc.</agpd:UI_Description>
+			   <agpd:DefaultValue>no</agpd:DefaultValue>
+		   </CmdLineParameterDefn>
+		   <CmdLineParameterDefn type="boolean" name="VERBOSE"  fileRef="false">
+			 <agpd:UI_Name>VERBOSE</agpd:UI_Name>
+			 <agpd:UI_Description>Print estimated redshifts to the standard output</agpd:UI_Description>
+			 <agpd:DefaultValue>yes</agpd:DefaultValue>
+		   </CmdLineParameterDefn>
+		   <CmdLineParameterDefn type="boolean" name="PROBS"  fileRef="false">
+			 <agpd:UI_Name>PROBS</agpd:UI_Name>
+			 <agpd:UI_Description>Save all the galaxy probability distributions (very large file created)</agpd:UI_Description>
+		   </CmdLineParameterDefn>
+		   <CmdLineParameterDefn type="boolean" name="PROBS_LITE"  fileRef="false">
+			<agpd:UI_Name>PROBS_LITE</agpd:UI_Name>
+			<agpd:UI_Description>Save only the final probability distribution</agpd:UI_Description>
+			<agpd:DefaultValue>no</agpd:DefaultValue>
+		   </CmdLineParameterDefn>
+		   <CmdLineParameterDefn type="boolean" name="GET_Z"  fileRef="false">
+			<agpd:UI_Name>GET_Z</agpd:UI_Name>
+			<agpd:UI_Description>Actually obtain photo-z</agpd:UI_Description>
+			<agpd:DefaultValue>yes</agpd:DefaultValue>
+		   </CmdLineParameterDefn>
+		   <CmdLineParameterDefn type="boolean" name="ONLY_TYPE"  fileRef="false">
+			<agpd:UI_Name>ONLY_TYPE</agpd:UI_Name>
+			<agpd:UI_Description>Use spectroscopic redshifts instead of photo-z</agpd:UI_Description>
+			<agpd:DefaultValue>no</agpd:DefaultValue>
+		   </CmdLineParameterDefn>
+		   <CmdLineParameterDefn type="boolean" name="MADAU"  fileRef="false">
+			<agpd:UI_Name>MADAU</agpd:UI_Name>
+			<agpd:UI_Description>Apply Madau correction to spectra</agpd:UI_Description>
+			<agpd:DefaultValue>yes</agpd:DefaultValue>
+		   </CmdLineParameterDefn>
+		   <CmdLineParameterDefn type="double" name="Z_THR"  fileRef="false">
+			<agpd:UI_Name>Z_THR</agpd:UI_Name>
+			<agpd:UI_Description>Integrate likelihood for z&gt;z_thr</agpd:UI_Description>
+			<agpd:DefaultValue>0</agpd:DefaultValue>
+		   </CmdLineParameterDefn>
+		   <CmdLineParameterDefn type="boolean" name="COLOR"  fileRef="false">
+			<agpd:UI_Name>COLOR</agpd:UI_Name>
+			<agpd:UI_Description>Use colors instead of fluxes</agpd:UI_Description>
+			<agpd:DefaultValue>no</agpd:DefaultValue>
+		   </CmdLineParameterDefn>
+		   <CmdLineParameterDefn type="boolean" name="PLOTS"  fileRef="false">
+			<agpd:UI_Name>PLOTS</agpd:UI_Name>
+			<agpd:UI_Description>produce plots</agpd:UI_Description>
+			<agpd:DefaultValue>no</agpd:DefaultValue>
+		   </CmdLineParameterDefn>
+		</Parameters>
 		<Interfaces>
-			<Interface name="">
-				<input/>
+			<!--could have an interface that used a config file also-->
+			<Interface name="primary">
+				<input><pref ref="DZ"  minOccurs="0"/>
+					<!-- still need to finish this -->
+					</input>
 				<output/>
 			</Interface>
 		</Interfaces>
