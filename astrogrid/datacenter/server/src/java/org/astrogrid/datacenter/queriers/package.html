@@ -1,6 +1,7 @@
 <html>
 <body>
-<h3>Introduction & Purpose</h3>
+<h1>Does the querying</h1>
+
 Handles the translation between the ADQL submitted to the server and the
 backend database, and in reverse between the results returned by the database
 and the VOTable (or other 'VO-agreed standard') format to be returned by the
@@ -25,26 +26,6 @@ visitor pattern implemented in the {@link org.astrogrid.datacenter.adql} package
 It maintains a {@link org.astrogrid.datacenter.queriers.TranslationFrame.Stack} 
 of {@link org.astrogrid.datatacenter.queriers.TranslationFrame} objects. These store the intermediate results of the translation
 process.
-<p>
-The base translator class is extended by {@link org.astrogrid.datacenter.queriers.sql.SqlQueryTranslator} which provides the standard
-rules for translating elements of ADQL to the corresponding fragments of SQL. This class is practically declarative 
-- it simple contains a rule for each language construct.
-<p>
-This standard ruleset can be extended further, if needed, with specific rules for 
- each dialect of SQL you're 
-translating - look at {@link org.astrogrid.datacenter.queriers.sybase.SybaseQueryTranslator} for example. 
- This makes it easy to override 
-the few rules that differ between different SQL dialects.
-<p>
-The result of the execution of each rule (a <tt>visit</tt> method) is stored in the current translator frame. 
-Later rules can retrieve these results by key. This makes the translation 
-process much more independent of changes to the underlying structure of the 
-object model, and also handles the (very common) case of some nodes not being 
-present - no need to check for null, the translatorFrame just returns an 
-empty string in these cases.
-<p>
-Because of the reflection, this design is less efficient than a hand-coded 
-approach. But I figure that can be provided once the schema is settled upon if needed - 
-until then, these rule-based translators are more declarative and hence much easier to keep up-to-date.
+
 </body>
 </html>
