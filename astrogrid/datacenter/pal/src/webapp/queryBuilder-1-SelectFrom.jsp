@@ -3,6 +3,7 @@
     org.astrogrid.datacenter.returns.*, org.astrogrid.datacenter.query.condition.*,
     org.astrogrid.datacenter.metadata.*, org.astrogrid.datacenter.service.ServletHelper,
     org.astrogrid.datacenter.service.DataServer,
+    org.astrogrid.datacenter.ucd.UcdDictionary,
     org.w3c.dom.*, org.astrogrid.util.* " %>
 
 <head>
@@ -62,8 +63,8 @@ empty you will receive all the columns in your results.
             <td><b>Return?</b></td>
             <td><b>Column</b></td>
             <td><b>Units</b></td>
-            <td><b>UCD1</b></td>
-            <td><b>UCD1+</b></td>
+            <td><b><a href='<%= UcdDictionary.UCD1REF %>'>UCD1</a></b></td>
+            <td><b><a href='<%= UcdDictionary.UCD1PREF %>'>UCD1+</a></b></td>
             <td><b>Description</b></td>
          </tr>
 

@@ -37,25 +37,25 @@
       <Description>Some stars, consisting of many background, a few extra around pleidies.</Description>
       <Column datatype="int" indexed="false" name="ID">
          <Description>A unique ID </Description>
-         <UCD>META.RECORD</UCD>
-         <UcdPlus> </UcdPlus>
+         <UCD>ID</UCD>
+         <UcdPlus>meta.record</UcdPlus>
       </Column>
       <Column arraysize="*" datatype="char" indexed="false" name="NAME">
          <Description>Generated Name of the object</Description>
-         <UCD>META.NOTE</UCD>
-         <UcdPlus> </UcdPlus>
+         <UCD>ID_MAIN</UCD>
+         <UcdPlus>meta.note</UcdPlus>
       </Column>
       <Column datatype="double" indexed="true" name="RA">
          <Description>Right Ascension of the object</Description>
          <Units>deg</Units>
-         <UCD>POS.RA.MAIN</UCD>
-         <UcdPlus> </UcdPlus>
+         <UCD>POS_EQ_RA_MAIN</UCD>
+         <UcdPlus>pos.ra.main </UcdPlus>
       </Column>
       <Column datatype="double" indexed="true" name="DEC">
          <Description>Declination of the object</Description>
          <Units>deg</Units>
-         <UCD>POS.DEC.MAIN</UCD>
-         <UcdPlus> </UcdPlus>
+         <UCD>POS_EQ_DEC_MAIN</UCD>
+         <UcdPlus>pos.dec.main </UcdPlus>
          <ErrorColumn> </ErrorColumn>
       </Column>
       <Column datatype="double" indexed="false" name="MAG">
@@ -71,24 +71,26 @@
       <!-- schema='' -->
       <Column datatype="int" indexed="false" name="ID">
          <Description>IDENTITY </Description>
-         <UCD>META.RECORD </UCD>
-         <UcdPlus> </UcdPlus>
+         <UCD>ID</UCD>
+         <UcdPlus>meta.record</UcdPlus>
       </Column>
       <Column datatype="double" indexed="true" name="RA">
          <Description>Right Ascension of the object</Description>
          <Units>deg</Units>
-         <UCD>POS.RA.MAIN</UCD>
-         <UcdPlus> </UcdPlus>
+         <UCD>POS_EQ_RA_MAIN</UCD>
+         <UcdPlus>pos.ra.main </UcdPlus>
       </Column>
       <Column datatype="double" indexed="true" name="DEC">
          <Description>Declination of the object</Description>
          <Units>deg</Units>
-         <UCD>POS.DEC.MAIN</UCD>
-         <UcdPlus> </UcdPlus>
+         <UCD>POS_EQ_DEC_MAIN</UCD>
+         <UcdPlus>pos.dec.main </UcdPlus>
          <ErrorColumn> </ErrorColumn>
       </Column>
       <Column arraysize="*" datatype="char" indexed="false" name="SHAPE">
          <Description>What shape of galaxy is it</Description>
+         <UcdPlus>src.morph</UcdPlus>
+         <UCD>MORPH</UCD>
       </Column>
    </Table>
 </RdbmsMetadata>

@@ -1,6 +1,7 @@
 <%@ page import="java.io.*,
        org.w3c.dom.*,
        org.astrogrid.io.*,
+       org.astrogrid.datacenter.ucd.UcdDictionary,
        org.astrogrid.util.DomHelper,
        org.astrogrid.datacenter.metadata.MetadataServer,
        org.astrogrid.datacenter.service.*"
@@ -41,8 +42,8 @@
 <th>Column</th>
 <th>Type</th>
 <th>Units</th>
-<th>UCD1</th>
-<th>UCD1+</th>
+<th><a href='<%= UcdDictionary.UCD1REF %>'>UCD1</a></th>
+<th><a href='<%= UcdDictionary.UCD1PREF %>'>UCD1+</a></th>
 <th>Error</th>
 <th>Description</th>
 </tr>
