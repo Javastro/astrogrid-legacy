@@ -1,5 +1,5 @@
 /*
-   $Id: DomLoader.java,v 1.1 2003/12/04 00:20:44 mch Exp $
+   $Id: DomLoader.java,v 1.2 2004/03/07 14:58:56 mch Exp $
 
    (c) Copyright...
 */
@@ -21,6 +21,8 @@ import org.xml.sax.SAXException;
  * <P>
  * The problem with using Apache's XMLUtils or similar is that it requires a particular
  * DOM implementation installed.  This does not...
+ *
+ * @deprecated - use DomHelper which does more of the stuff that XMLUtils does
  *
  * @author M Hill
  */
