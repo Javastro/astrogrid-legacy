@@ -1,0 +1,77 @@
+<html>
+<body>
+The store package defines the representations and delegates used to describe and
+access data in 'VO-Space' - store points on the web that can be reached by
+VO-compliant components.
+
+<h3>VO-Space</h3>
+
+VO Space is the set of store points that we assume Astrogrid components must be
+able to reach to read from and write to.  This includes local disk space, MySpace,
+FTP servers (for read access at least), Grid FTP servers and Http servers (for read
+access at least).
+<p>
+This package defines a consistent way of accessing all these store points, so that
+the user (whether human or automatic) can specify where inputs are to be read from
+and outputs are to be sent in a consistent way, and the software that is expected
+to use these references can also just call methods on classes in this package
+and expect everything to Just Work.
+
+<h3>Naming things in VO-Space</h3>
+
+The IVO have created a resource 'identifier' with the scheme <code>ivo:</code> .  Strictly
+speaking this is a resource 'name' as they are intended as Registry lookup keys and cannot
+be used as locators. These are called IVORNs (International Virtual Observatory Resource Names)
+and are represented using the class <code>Ivorn</code>.
+
+<h3>Locating things in VO-Space</h3>
+
+A location in VO-Space might refer to a file on an FTP server, or a file on a local
+disk, or a file in myspace. To represent this we have an AstroGrid Storepoint Locator (AGSL) that
+returns a location to this file, which is represented in turn by the <code>Agsl</code> class.
+
+<h3>Resolving Names to Locations</h3>
+
+IVORNs that identify store points or files on store points can be resolved to locators
+using the VoSpaceResolver.  The Resolver looks up the IVORN in the Registry and
+Community services to find the relevent Store point, and returns a location in
+the form of an AGSL. The Resolver also has convenience routines for opening
+input and output streams directly to the file named by the IVORN.
+
+<h3>Setting Results Targets</h3>
+
+Defining where results are to be sent is slightly broader again than VOSpace (eg might include email), and
+is TBD.
+
+<h3>Store Clients</h3>
+
+The StoreClient interface defines the operations that we can reasonably expect any
+store point must be able to implement; operations such as move, copy, create folder,
+list files, upload, download, etc.
+<p>
+A StoreClient implentation is a 'delegate', and it handles all the communication
+required to carry out these operations with <i>a specific store site</i>.  This is
+a 'middle level' delegate.
+<p>
+However users of this package do not need to care about implementations - if you
+want to access a store point, you give your AGSL to the StoreClientFactory and
+get back a StoreClient that you can operate.
+
+<h3>Levels of delegates</h3>
+Lower level delegates are those such as soap binding delegates, FTP client software, etc.
+<p>
+A middle level delegate is a StoreClient implementation that users of this package
+can use to manipulate files on a single Store point using paths and AGSLs.
+<p>
+A top level delegate is similar to a StoreClient but manipulates files in VO-Space
+in general, using IVORNs.  The VoSpaceResolver helps with this but it is not
+complete.
+
+<h3>VoSpace Clients</h3>
+At some point we intend to make a VoSpaceClient that
+will allow file manipulation entirely by IVORNs; that is copy, move, rename, etc
+
+
+</body>
+</html>
+
