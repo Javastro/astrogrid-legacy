@@ -37,6 +37,17 @@ This means it also currently relies on the OGSA implementation supplied
 with the Globus Toolkit 3.0.  Both of these technologies must be deployed 
 using Apache Tomcat.
 </p>
+
+<p><strong>Important note for early adopters</strong></p>
+<p>The Iteration 5 release of the AstroGrid Grid Data Warehouse is
+hardwired to expect an underlying Postgres 7.3 DBMS, where all the datasets 
+accessed via the GDW contain columns named <strong><tt>ra</tt></strong> 
+(right ascension) and <strong><tt>decl</tt></strong> (declination).
+</p><p>
+The next release of the GDW should support user-customisable ADQL-SQL 
+translation (not just the current Postgres-flavoured translation),
+with user-configurable column names for right ascension and declination.
+</p>
 </section>
 
 <section name="Installation"><p>
