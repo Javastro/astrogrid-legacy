@@ -1,4 +1,4 @@
-package org.astrogrid.portal.cocoon.registry;
+package org.astrogrid.portal.registry;
 
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.acting.AbstractAction;

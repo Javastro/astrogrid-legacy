@@ -1,4 +1,4 @@
-package org.astrogrid.portal.cocoon.registry;
+package org.astrogrid.portal.registry;
 
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.acting.AbstractAction;
@@ -34,7 +34,13 @@ import org.astrogrid.registry.RegistryException;
 
 import org.astrogrid.config.Config;
 
+import org.astrogrid.registry.beans.resource.*;
+import org.astrogrid.registry.beans.resource.types.InvocationType;
 import org.astrogrid.util.DomHelper;
+import org.astrogrid.registry.common.WSDLBasicInformation;
+import org.astrogrid.store.Ivorn;
+
+import org.exolab.castor.xml.*;
 import java.io.InputStream;
 
 
@@ -75,7 +81,8 @@ public class RegistryQueryAction extends AbstractAction
    
    public static Config conf = null;   
    
-   private static final String RESOURCE_XML_URL_TEMPLATE_PROPERTY = "QueryResourceTemplate.xml";   
+   private static final String RESOURCE_XML_URL_TEMPLATE_PROPERTY =
+                                               "QueryResourceTemplate.xml";   
   
    static {
       if(conf == null) {
@@ -110,10 +117,11 @@ public class RegistryQueryAction extends AbstractAction
             
       String action = (String)request.getParameter(PARAM_ACTION);
       String mainElem = request.getParameter(PARAM_MAIN_ELEMENT);
+      String method = "Registry Query Action";               
       
       if(DEBUG_FLAG) {
-         System.out.println("the action is = " + action);      
-         System.out.println("the mainElem = " + mainElem);
+         printDebug(method, "the action is = " + action);      
+         printDebug(method, "the mainElem = " + mainElem);
       }            
 
          //Create the Document object and throw it to createMap
@@ -122,18 +130,22 @@ public class RegistryQueryAction extends AbstractAction
            dbf.setNamespaceAware(true);
            DocumentBuilder regBuilder = dbf.newDocumentBuilder();
            registryDocument = getDocumentTemplate();
-           System.out.println("the xml from getDocumentTemplate = " + XMLUtils.DocumentToString(registryDocument));
+           printDebug(method, "the xml from getDocumentTemplate = " +
+               XMLUtils.DocumentToString(registryDocument).substring(0,200) );
          } catch (ParserConfigurationException e) {
            e.printStackTrace();
          }
-         //now get the unique last text nodes of the map.
-         //should be able to do an indexOf and see if their is an "attr" which you put in "@" in front of the string.      
+         // now get the unique last text nodes of the map.
+         // should be able to do an indexOf and see if their is an "attr"
+         // which you put in "@" in front of the string.      
          Map mp = RegistryAdminDocumentHelper.createMap(registryDocument);
          Set st = mp.keySet();
          Iterator iter = st.iterator();
          TreeMap selectItems = new TreeMap();
-         //Go through the Map and put it in a TreeMap which is an alphabetical list.
-         //And cut off everything but the last node which is the text or attribute node.
+         //Go through the Map and put it in a TreeMap which is
+         //an alphabetical list.
+         //And cut off everything but the last node which is the text or
+         //attribute node.
          while(iter.hasNext()) {
             String key = (String)iter.next();
             String []split = key.split("\\/");
@@ -155,7 +167,7 @@ public class RegistryQueryAction extends AbstractAction
          request.setAttribute("selectitems",selectItems);
          
          if(DEBUG_FLAG) {
-            System.out.println("selectitems size = " + selectItems.size());
+            printDebug(method, "selectitems size = " + selectItems.size());
          }            
    
          
@@ -170,7 +182,8 @@ public class RegistryQueryAction extends AbstractAction
          request.setAttribute("Comparisons",compareTypeList);
    
          if(DEBUG_FLAG) {
-            System.out.println("comparetypelist size = " + compareTypeList.size());
+            printDebug( method, "comparetypelist size = " +
+                                compareTypeList.size() );
          }            
    
          //Put in the join types.
@@ -193,7 +206,7 @@ public class RegistryQueryAction extends AbstractAction
          if(ADD_CRITERIA_ACTION.equals(action)) {
             //user wants to add more criteria's.
             crit_number++;
-         }else if(QUERY_ACTION.equals(action)) {
+         } else if(QUERY_ACTION.equals(action)) {
             //Need to query.  So lets build up the XML for a query.
             String selItem = null;
             String selItemOperation = null;
@@ -206,7 +219,8 @@ public class RegistryQueryAction extends AbstractAction
             selItemOperation = request.getParameter("selectitemop0");
             selItemValue = request.getParameter("selectitemvalue0");
                
-            query += "<selection item='" + selItem + "' itemOp='" + selItemOperation + "' value='" + selItemValue + "'/>";
+            query += "<selection item='" + selItem + "' itemOp='" +
+                       selItemOperation + "' value='" + selItemValue + "'/>";
             for(int i = 1;i < crit_number;i++) {
                selJoinType = request.getParameter(("selectjointype" + i));
                query += "<selectionOp op='" + selJoinType + "'/>";
@@ -215,21 +229,32 @@ public class RegistryQueryAction extends AbstractAction
                selItemOperation = request.getParameter("selectitemop" + i);
                selItemValue = request.getParameter("selectitemvalue" + i);
                
-               query += "<selection item='" + selItem + "' itemOp='" + selItemOperation + "' value='" + selItemValue + "'/>";
+               query += "<selection item='" + selItem + "' itemOp='" +
+                          selItemOperation + "' value='" + selItemValue + "'/>";
             }
             query += "</selectionSequence></query>";
+            if ( DEBUG_FLAG) printDebug( method, "Query = " + query);
             try {
                //Now lets query.
                String url = null;               
                RegistryService rs = RegistryDelegateFactory.createQuery();
-               Document doc = rs.submitQueryStringDOM(query);
+               if (DEBUG_FLAG) printDebug( method, "Service = " + rs);
+//               VODescription vo = rs.submitQueryString(query);
+//               if (DEBUG_FLAG) printDebug( method, "VO Description = " + vo);
+               Document doc = rs.submitQueryStringDOM( query );
+               if ( DEBUG_FLAG) printDebug( method, "doc = " + doc );
+                //                     XMLUtils.DocumentToString(doc) );
+               //if ( doc == null )
+                   //throw new NoResourcesFoundException("Null Query");
 //               errorMessage = getResultMessage(doc);
                   //create the results and put it in the request.
                   resultXML = createFormResults(doc,mainElem);
                   request.setAttribute("resultxml",resultXML);
                   
                   NodeList nl = doc.getDocumentElement().getChildNodes();
-                  System.out.println("the Elementtostring in queryaction = " + XMLUtils.ElementToString(doc.getDocumentElement()));
+                  if (DEBUG_FLAG)
+                     printDebug(method, "the Elementtostring in queryaction = " +
+                           XMLUtils.ElementToString(doc.getDocumentElement()) );
                   ArrayList resultNodes = new ArrayList();
                   resultNodes.add(doc.getDocumentElement());
                   /*for(int i = 0;i < nl.getLength();i++) {
@@ -237,26 +262,30 @@ public class RegistryQueryAction extends AbstractAction
                   }*/
                   request.setAttribute("resultNodes",resultNodes);      
                   
-                  //Here are the managed authorities.  Which determine which AuthorityID
+                  //Here are the managed authorities.
+                  //Which determine which AuthorityID
                   //the registry owns and hence can do an update for.
                   if(resultXML.size() > 0) {
-                     HashMap hm = (HashMap)session.getAttribute("ManageAuthorities");
+                     HashMap hm = (HashMap)session.getAttribute(
+                                      "ManageAuthorities" );
                      if(hm == null || hm.size() <= 0) {
                         hm = rs.managedAuthorities();
                         session.setAttribute("ManageAuthorities",hm);
                      }//if              
                   }//if
             }catch(NoResourcesFoundException nrfe) {
-               nrfe.printStackTrace();
+               //nrfe.printStackTrace();
                errorMessage = "Your query produced no results";
             }catch(RegistryException re) {
-               re.printStackTrace();
-               errorMessage = "A error occurred in processing your query with the Registry.";
+               //re.printStackTrace();
+               errorMessage = "A error occurred in processing your query " +
+                              "with the Registry.";
             }catch(Exception e) {
                e.printStackTrace();
             }
          }//else doing a query
-         request.setAttribute(PARAM_CRITERIA_NUMBER,String.valueOf(crit_number));         
+         request.setAttribute( PARAM_CRITERIA_NUMBER,
+                               String.valueOf(crit_number) );         
       
       //
       //Create a new HashMap for our results.  Will be used to
@@ -275,8 +304,10 @@ public class RegistryQueryAction extends AbstractAction
    }
    
    /**
-    * This method will be deleted later or used with an XSL sheet to make a pretty response for the html.
-    * Currently only displays the raw XML form coming back from the query web service response.
+    * This method will be deleted later or used with an XSL sheet to make
+    * a pretty response for the html.
+    * Currently only displays the raw XML form coming back from
+    * the query web service response.
     * @param docResults Query results in a DOM tree format.
     * @param mainElem The main element we queried.
     * @return ArrayList of all the String XML results.
@@ -310,7 +341,8 @@ public class RegistryQueryAction extends AbstractAction
       ArrayList al = new ArrayList();
       for(int i = 0;i < nl.getLength();i++) {
          Element elem = (Element)nl.item(i);
-         al.add("<vodescription>" + XMLUtils.ElementToString(elem) + "</vodescription>"); 
+         al.add("<vodescription>" + XMLUtils.ElementToString(elem) +
+                "</vodescription>"); 
       }      
       return al;
    }
@@ -322,6 +354,19 @@ public class RegistryQueryAction extends AbstractAction
          message = nl.item(0).getFirstChild().getNodeValue();
       }//if
       return message;  
+   }
+   
+   /**
+      * Small convenience method to print DEBUG Messages.
+      * @param method The java function
+      * @param message The Debug message
+      */   
+   
+   private void printDebug (String method, String message) {
+      if( DEBUG_FLAG ) System.out.println( method + " : " + message );      
+   }
+   private void printMessage (String message) {
+      System.out.println( message );      
    }
    
    public Document getDocumentTemplate() {

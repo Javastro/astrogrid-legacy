@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<xsp:page language="java"
+    create-session="true"
+    xmlns:xsp="http://apache.org/xsp"
+    xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+    xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+    >
+    
+      <!--+
+      | Import any java classes here.
+      +-->
+
+  <xsp:structure>
+    <xsp:include>java.util.Iterator</xsp:include>
+    <xsp:include>java.util.LinkedHashMap</xsp:include>
+    <xsp:include>java.util.Map</xsp:include>    
+    <xsp:include>java.util.HashMap</xsp:include>    
+    <xsp:include>java.util.ArrayList</xsp:include>    
+    <xsp:include>java.util.Set</xsp:include>
+    <xsp:include>org.apache.axis.utils.XMLUtils</xsp:include>
+    <xsp:include>org.w3c.dom.Node</xsp:include>
+    <xsp:include>org.w3c.dom.Element</xsp:include>    
+  </xsp:structure>      
+  
+  <BrowserQuery>
+  
+    <servers>
+      <xsp:logic>
+        Iterator iter = null;
+        String key = null;
+        String val = null;
+        Set st = null;
+        LinkedHashMap serverList =
+                       (LinkedHashMap)request.getAttribute("Servers");
+
+        String mainElem = (String)request.getAttribute("mainelement");
+        String ErrorMessage = (String)request.getAttribute("errormessage");
+        String authid = (String)request.getAttribute("authId");
+        String resourcekey = (String)request.getAttribute("resourceKey");
+        String action = (String)request.getAttribute("action");
+        request.setAttribute( "authId", authid );
+        request.setAttribute( "resourceKey", resourcekey );
+       
+      <![CDATA[
+        if(serverList != null && serverList.size() > 0 ) {
+      ]]>
+          st = serverList.keySet();
+          iter = st.iterator();
+          while (iter.hasNext()) {
+            key = (String)iter.next();
+            val = (String)serverList.get(key);
+            <xsp:element name="server">
+              <xsp:attribute
+                 name="name"><xsp:expr>key</xsp:expr></xsp:attribute>
+              <xsp:attribute
+                 name="val"><xsp:expr>val</xsp:expr></xsp:attribute>
+            </xsp:element>
+          }
+        }
+        
+        if ( ErrorMessage != null ) {
+           <Error><xsp:expr>ErrorMessage</xsp:expr></Error>
+        }
+
+      </xsp:logic>
+    </servers>
+    
+    <BrowserBody>
+      <xsp:logic>
+         if ( "queryregistry".equals(action) ) {
+            <xsp:element name="BrowserForm">   
+       <xsp:attribute name="type"><xsp:expr>mainElem</xsp:expr></xsp:attribute>
+            </xsp:element>
+         } else {
+
+         <ResultsList>
+         <xsp:logic>
+         ArrayList xmlresult = (ArrayList)request.getAttribute("resultlist");
+         String xml = null;
+         if ( xmlresult != null )
+      <![CDATA[
+         if(xmlresult != null && xmlresult.size() > 0 ) {
+      ]]>
+            iter = xmlresult.iterator();           
+            boolean update = false;
+            String id = "";
+            String title = "";
+            String description = "";
+            String identifier = "";
+            String ivorn = "";
+            
+            while (iter.hasNext()) {
+               xml = (String)iter.next();
+      <![CDATA[
+               int i1 = xml.indexOf("<AuthorityID>");
+               int i2 = xml.indexOf("</AuthorityID>", i1);
+               id = xml.substring( xml.indexOf( ">", i1 ) + 1, i2 );
+               int j1 = xml.indexOf("<ResourceKey>", i1);
+               int j2 = xml.indexOf("</ResourceKey>", j1);
+               key = xml.substring( xml.indexOf( ">", j1 ) + 1, j2 );
+               identifier = id + "/" + key;
+               
+               i1 = xml.indexOf("<Title>");
+               title = xml.substring( xml.indexOf( ">", i1 ) + 1, 
+                                      xml.indexOf("</Title>", i1) );
+               i1 = xml.indexOf("<Description>");
+               if( i1 != -1 ) {
+                 description = xml.substring( xml.indexOf(">",i1)+1, 
+                                       xml.indexOf("</Description>", i1) );
+               }
+               i1 = xml.indexOf("<ReferenceURL>");
+               if( i1 != -1 ) {
+                 ivorn = xml.substring( xml.indexOf(">",i1)+1, 
+                                        xml.indexOf("</ReferenceURL>", i1) );
+               }
+         ]]>
+
+                 <xsp:element name="result">
+<xsp:attribute name="title"><xsp:expr>title</xsp:expr></xsp:attribute>
+<xsp:attribute name="desc"><xsp:expr>description</xsp:expr></xsp:attribute>
+<xsp:attribute name="id"><xsp:expr>id</xsp:expr></xsp:attribute>
+<xsp:attribute name="key"><xsp:expr>key</xsp:expr></xsp:attribute>
+<xsp:attribute name="identifier"><xsp:expr>identifier</xsp:expr></xsp:attribute>
+<xsp:attribute name="ivorn"><xsp:expr>ivorn</xsp:expr></xsp:attribute>
+                 </xsp:element>
+          }
+          }
+         </xsp:logic>
+         </ResultsList>
+        }
+       </xsp:logic>
+    </BrowserBody>
+    
+  </BrowserQuery>
+  
+</xsp:page>

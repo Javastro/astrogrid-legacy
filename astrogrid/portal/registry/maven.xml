@@ -192,6 +192,7 @@
         <ant:mkdir dir="${webapp.dir}/mount/registry/web/style"/>
         <ant:mkdir dir="${webapp.dir}/mount/registry/web/style/xsl"/>
         <ant:mkdir dir="${webapp.dir}/mount/registry/web/style/xsp"/>
+        <ant:mkdir dir="${webapp.dir}/mount/registry/web/scripts"/>
         <ant:mkdir dir="${webapp.dir}/WEB-INF/menu"/>
         <ant:copy verbose="false"
             todir="${webapp.dir}/mount/registry/web/style/xsp">
@@ -203,6 +204,12 @@
             todir="${webapp.dir}/mount/registry/web/style/xsl">
             <ant:fileset dir="${maven.src.dir}/portal/cocoon/xsl">
                 <include name="*.xsl"/>
+            </ant:fileset>
+        </ant:copy>
+        <ant:copy verbose="false"
+            todir="${webapp.dir}/mount/registry/web/scripts">
+            <ant:fileset dir="${maven.src.dir}/portal/cocoon/scripts">
+                <include name="*.js"/>
             </ant:fileset>
         </ant:copy>
         <ant:copy verbose="false"

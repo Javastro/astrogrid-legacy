@@ -1,4 +1,4 @@
-package org.astrogrid.portal.cocoon.registry;
+package org.astrogrid.portal.registry;
 
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.acting.AbstractAction;
@@ -17,8 +17,8 @@ import org.astrogrid.config.Config;
 
 
 /**
- * Main Options component to let the user determine the next course of action which are Query, Add, or Harvest new
- * registry entry.
+ * Main Options component to let the user determine the next course of action
+ * which are Query, Add, or Harvest new registry entry.
  *
  */
 public class RegistryOptionAction extends AbstractAction
@@ -65,14 +65,22 @@ public class RegistryOptionAction extends AbstractAction
    public static final String TABULARSKYSERVICE_OPTION = "TabularSkyService";
    public static final String DATACOLLECTION_OPTION = "DataCollection";
    
-   private static final String ORGANISATION_XML_URL_TEMPLATE_PROPERTY = "OrganisationTemplate.xml";
-   private static final String RESOURCE_XML_URL_TEMPLATE_PROPERTY = "ResourceTemplate.xml";
-   private static final String SERVICE_XML_URL_TEMPLATE_PROPERTY = "ServiceTemplate.xml";
-   private static final String AUTHORITY_XML_URL_TEMPLATE_PROPERTY = "AuthorityTemplate.xml";
-   private static final String REGISTRY_XML_URL_TEMPLATE_PROPERTY = "RegistryTemplate.xml";
-   private static final String SKYSERVICE_XML_URL_TEMPLATE_PROPERTY = "SkyServiceTemplate.xml";
-   private static final String TABULARSKYSERVICE_XML_URL_TEMPLATE_PROPERTY = "TabularSkyServiceTemplate.xml";
-   private static final String DATACOLLECTION_XML_URL_TEMPLATE_PROPERTY = "DataCollectionTemplate.xml";   
+   private static final String ORGANISATION_XML_URL_TEMPLATE_PROPERTY =
+                                          "OrganisationTemplate.xml";
+   private static final String RESOURCE_XML_URL_TEMPLATE_PROPERTY =
+                                          "ResourceTemplate.xml";
+   private static final String SERVICE_XML_URL_TEMPLATE_PROPERTY =
+                                          "ServiceTemplate.xml";
+   private static final String AUTHORITY_XML_URL_TEMPLATE_PROPERTY =
+                                          "AuthorityTemplate.xml";
+   private static final String REGISTRY_XML_URL_TEMPLATE_PROPERTY =
+                                          "RegistryTemplate.xml";
+   private static final String SKYSERVICE_XML_URL_TEMPLATE_PROPERTY =
+                                          "SkyServiceTemplate.xml";
+   private static final String TABULARSKYSERVICE_XML_URL_TEMPLATE_PROPERTY =
+                                          "TabularSkyServiceTemplate.xml";
+   private static final String DATACOLLECTION_XML_URL_TEMPLATE_PROPERTY =
+                                          "DataCollectionTemplate.xml";   
    
    static {
       if(conf == null) {
@@ -113,7 +121,8 @@ public class RegistryOptionAction extends AbstractAction
       if("true".equals(request.getParameter("setconfig"))) {
          String configKey = request.getParameter("configkey");
          String configVal = request.getParameter("configvalue");
-         System.out.println("changing configKey = " + configKey + " and configVal = " + configVal);
+         System.out.println("changing configKey = " + configKey +
+                                " and configVal = " + configVal);
          conf.setProperty(configKey,configVal);
       }//if
       
@@ -125,10 +134,11 @@ public class RegistryOptionAction extends AbstractAction
    }
    
    /**
-    * Method used by Query and Admin components to get a paricular template bassed off of a
-    * reequest object.
+    * Method used by Query and Admin components to get a particular template
+    * based off of a request object.
     * @param request
-    * @deprecated Not to use anymore getting this information from the resources (jar file now) not the config.
+    * @deprecated Not to use anymore getting this information from the resources
+    *            (jar file now) not the config.
     * @return
     */
    public static String getTemplate(Request request) {
@@ -147,11 +157,12 @@ public class RegistryOptionAction extends AbstractAction
       }else if(RegistryOptionAction.SKYSERVICE_OPTION.equals(mainElem)) {
          templateURL = conf.getString(SKYSERVICE_XML_URL_TEMPLATE_PROPERTY);
       }else if(RegistryOptionAction.TABULARSKYSERVICE_OPTION.equals(mainElem)) {
-         templateURL = conf.getString(TABULARSKYSERVICE_XML_URL_TEMPLATE_PROPERTY);
+         templateURL = conf.getString(
+                             TABULARSKYSERVICE_XML_URL_TEMPLATE_PROPERTY );
       }else if(RegistryOptionAction.DATACOLLECTION_OPTION.equals(mainElem)) {
-         templateURL = conf.getString(DATACOLLECTION_XML_URL_TEMPLATE_PROPERTY);         
+         templateURL = conf.getString(DATACOLLECTION_XML_URL_TEMPLATE_PROPERTY);
       }else if(RegistryOptionAction.SERVICE_OPTION.equals(mainElem)) {
-         templateURL = conf.getString(SERVICE_XML_URL_TEMPLATE_PROPERTY);         
+         templateURL = conf.getString(SERVICE_XML_URL_TEMPLATE_PROPERTY);
       }
       return templateURL;
    }     

@@ -1,4 +1,4 @@
-package org.astrogrid.portal.cocoon.registry;
+package org.astrogrid.portal.registry;
 
 import java.io.File;
 import java.io.IOException;
