@@ -114,6 +114,8 @@ public class DesignAction extends AbstractAction {
         ACTIVITY_KEY_PARAMETER = "activity-key",
         WORKFLOW_LIST_PARAMETER = "workflow-list",
         QUERY_LIST_PARAMETER = "query-list",
+	    TOOL_LIST_PARAMETER = "tool-list",
+	    TOOL_NAME_PARAMETER = "tool-name",
 		STEP_KEY_PARAMETER = "step-key",
         ERROR_MESSAGE_PARAMETER = "ErrorMessage";
         
@@ -133,7 +135,8 @@ public class DesignAction extends AbstractAction {
         ACTION_EDIT_JOINCONDITION = "edit-join-condition",
         ACTION_READ_QUERY = "read-query",
         ACTION_READ_QUERY_LIST = "read-query-list",
-        ACTION_INSERT_QUERY_INTO_STEP = "insert-query-into-step",
+	    ACTION_CREATE_TOOL = "create-tool-for-step",
+        ACTION_INSERT_TOOL_INTO_STEP = "insert-tool-into-step",
         ACTION_READ_LISTS = "read-lists" ;
         
     public static final String
@@ -267,7 +270,7 @@ public class DesignAction extends AbstractAction {
                 if( action == null ){
                     debug( "action is null") ;  
                 }      
-                if( action.equals( ACTION_CREATE_WORKFLOW ) ) {
+                else if( action.equals( ACTION_CREATE_WORKFLOW ) ) {
 					template = request.getParameter( TEMPLATE_PARAM_TAG ) ; 
 					if ( template.equals( EMPTY_TEMPLATE ) ) {
 						this.createWorkflow() ;
@@ -303,9 +306,12 @@ public class DesignAction extends AbstractAction {
 				else if( action.equals( ACTION_READ_LISTS ) ) {
 					this.readLists() ; 
 				}			
-				else if( action.equals( ACTION_INSERT_QUERY_INTO_STEP ) ) {
-					this.insertQueryIntoStep() ;                     								
+				else if( action.equals( ACTION_INSERT_TOOL_INTO_STEP ) ) {
+					this.insertToolIntoStep() ;                     								
                 }
+				else if( action.equals( ACTION_CREATE_TOOL ) ) {
+					this.createTool() ;                     								
+				}                
                 else {
                     debug( "unsupported action") ; 
                 }
@@ -637,7 +643,7 @@ public class DesignAction extends AbstractAction {
                     
                  if( activity instanceof Step ) {
                      step = (Step)activity ;
-                     Workflow.insertQueryIntoStep( step, queryName ) ;
+//                     Workflow.insertQueryIntoStep( step, queryName ) ;
                  }
                  else {
                      throw new ConsistencyException() ;
@@ -704,7 +710,29 @@ public class DesignAction extends AbstractAction {
             }
          
         } // end of editJoinCondition()
-            
+
+
+        private void createTool() throws ConsistencyException {
+		   if( TRACE_ENABLED ) trace( "DesignActionImpl.createToo() entry" ) ;
+		   try {
+		   	
+              String
+			     toolName = request.getParameter( TOOL_NAME_PARAMETER ) ;
+                    
+			  if( toolName == null ) {
+			     throw new ConsistencyException() ;		   	
+			  }
+			  Tool 
+			     tool = Workflow.createTool( communitySnippet()
+				                           , toolName ) ;
+				                           
+		   
+		   	  
+		   }
+	       finally {
+		      if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflowList() exit" ) ;
+		   }					         
+        } // end of createTool()
            
         private void readWorkflowList() {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflowList() entry" ) ;
@@ -747,7 +775,20 @@ public class DesignAction extends AbstractAction {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.readQueryList() exit" ) ;
             }
                     
-        } // end of readQueryList()   
+        } // end of readQueryList()
+        
+        private void readToolList() {
+           if( TRACE_ENABLED ) trace( "DesignActionImpl.readToolList() entry" ) ;
+              
+           try {
+              Iterator
+                 iterator =  Workflow.readToolList( communitySnippet() ) ;
+                 this.request.setAttribute( TOOL_LIST_PARAMETER, iterator ) ;               
+           }
+           finally {
+              if( TRACE_ENABLED ) trace( "DesignActionImpl.readToolList() exit" ) ;
+           }
+        } // end of readQueryList()           
 
 		private void readLists() {
 			if( TRACE_ENABLED ) trace( "DesignActionImpl.readLists() entry" ) ;
@@ -766,7 +807,12 @@ public class DesignAction extends AbstractAction {
 					this.request.setAttribute( WORKFLOW_LIST_PARAMETER, workflowIterator ) ;
 					Iterator
 						queryIterator = Workflow.readQueryList( communitySnippet(), "*" ) ;
-					this.request.setAttribute( QUERY_LIST_PARAMETER, queryIterator ) ;               
+					this.request.setAttribute( QUERY_LIST_PARAMETER, queryIterator ) ; 
+				
+				    Iterator
+					    toolIterator = Workflow.readToolList( communitySnippet() ) ;
+				    this.request.setAttribute( TOOL_LIST_PARAMETER, toolIterator ) ;
+
 				}
 				catch( WorkflowException wfex ) {
                 
@@ -779,8 +825,8 @@ public class DesignAction extends AbstractAction {
                     
 			} // end of readLists()
            
-		private void insertQueryIntoStep() throws ConsistencyException {
-			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertQueryIntoStep() entry" ) ;
+		private void insertToolIntoStep() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertToolIntoStep() entry" ) ;
 			
 			boolean 
 				response = false;
@@ -799,7 +845,7 @@ public class DesignAction extends AbstractAction {
                 	debug( "stepKey is null" ) ;
                 }
                 else {
-				    response = Workflow.insertQueryIntoStep( stepKey, queryName, workflow ) ;
+//				    response = Workflow.insertQueryIntoStep( stepKey, queryName, workflow ) ;
                 }   
 				
 				if ( response == false ) {

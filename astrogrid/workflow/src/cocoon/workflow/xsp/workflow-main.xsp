@@ -1,0 +1,317 @@
+<?xml version="1.0"?>
+
+   <xsp:page language="java"
+             create-session="true"
+             xmlns:xsp="http://apache.org/xsp"
+             xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+             xmlns:xsp-request="http://apache.org/xsp/request/2.0">
+
+   <xsp:structure>
+      <xsp:include>java.util.Iterator</xsp:include>
+      <xsp:include>org.astrogrid.portal.cocoon.workflow.design.DesignAction</xsp:include>
+      <xsp:include>org.astrogrid.portal.workflow.design.*</xsp:include>
+      <xsp:include>org.astrogrid.portal.workflow.design.activity.*</xsp:include>
+   </xsp:structure>
+
+   <xsp:logic>
+
+      private static final boolean 
+         TRACE_ENABLED = true;
+
+      AttributesImpl 
+         xspAttrWorkflow = null;	
+      AttributesImpl 
+         xspAttrQuery = null;
+      AttributesImpl 
+         xspAttrTool = null;         
+
+      //=========================================================================================
+      public void workflowList ( Iterator iterator ) throws SAXException {
+         if( TRACE_ENABLED ) trace("workflow-main-xsp.workflowlist() entry");
+
+         xspAttrWorkflow = new AttributesImpl();
+
+         try {
+            String workflow;
+
+            while( iterator.hasNext() ) {
+               workflow = (String)iterator.next();
+               outputWorkflow( workflow, xspAttrWorkflow );			
+            }
+         }
+         finally {
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp.workflowlist() exit");
+         }
+      } // end of workflowList() 
+
+      private void outputWorkflow( String workflow, AttributesImpl xspAttr )
+                                                    throws SAXException {
+         if( TRACE_ENABLED ) trace( "workflow-main-xsp.outputWorkflow() entry");
+
+         try {
+         
+            <content>
+               <xsp:element name="workflow">
+                  <xsp:attribute name="workflow-name"><xsp:expr>workflow</xsp:expr></xsp:attribute>
+<!--					<xsp:attribute name="name"><xsp:expr>workflow.getName()</xsp:expr></xsp:attribute>					-->
+<!--					<xsp:attribute name="description"><xsp:expr>workflow.getDescription()</xsp:expr></xsp:attribute>	-->
+               </xsp:element>
+			</content>
+			
+         }
+         finally {
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp.outputWorkflow() exit");
+         }
+      } // end of outputWorkflow()
+      
+      //===========================================================================================
+      public void queryList ( Iterator iterator ) throws SAXException {
+         if( TRACE_ENABLED ) trace("workflow-main-xsp.queryList() entry");
+        	
+         xspAttrQuery = new AttributesImpl();
+
+         try {
+            String query;
+
+            while( iterator.hasNext() ) {
+               query = (String)iterator.next();
+               outputQuery( query, xspAttrQuery );
+            }
+         }
+         finally {
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp.queryList() exit");
+         }
+      } // end of QueryList()
+      
+      private void outputQuery( String query, AttributesImpl xspAttr )
+                                              throws SAXException {	
+         if( TRACE_ENABLED ) trace( "workflow-main-xsp.outputQuery() entry");
+
+		 try {
+
+            <content>
+               <xsp:element name="query">
+                  <xsp:attribute name="query-name"><xsp:expr>query</xsp:expr></xsp:attribute>													
+<!--					<xsp:attribute name="query-name"><xsp:expr>query.getName()</xsp:expr></xsp:attribute>  -->
+<!--					<xsp:attribute name="description"><xsp:expr>query.getDescription()</xsp:expr></xsp:attribute> -->
+               </xsp:element>
+			</content>
+
+         }
+         finally {
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp.outputQuery() exit");
+         }
+      } // end of outputQuery()	
+            
+      //==================================================================================================
+      public void toolList ( Iterator iterator ) throws SAXException {
+         if( TRACE_ENABLED ) trace("workflow-main-xsp.toolList() entry");
+        	
+         xspAttrTool = new AttributesImpl();
+
+         try {
+            String tool;
+
+            while( iterator.hasNext() ) {
+               tool = (String)iterator.next();
+               outputTool( tool, xspAttrTool );
+            }
+         }
+         finally {
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp.toolList() exit");
+         }
+      } // end of ToolList()      	
+
+      private void outputTool( String tool, AttributesImpl xspAttr )
+                                              throws SAXException {	
+         if( TRACE_ENABLED ) trace( "workflow-main-xsp.outputTool() entry");
+
+		 try {
+
+            <content>
+               <xsp:element name="tool">
+                  <xsp:attribute name="tool-name"><xsp:expr>tool</xsp:expr></xsp:attribute>													
+<!--					<xsp:attribute name="tool-name"><xsp:expr>tool.getName()</xsp:expr></xsp:attribute>  -->
+<!--					<xsp:attribute name="tool-description"><xsp:expr>tool.getDescription()</xsp:expr></xsp:attribute> -->
+               </xsp:element>
+			</content>
+
+         }
+         finally {
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp.outputTool() exit");
+         }
+      } // end of outputTool()
+      
+      //====================================================================================================
+      
+      public void activityTree ( Activity activity ) throws SAXException {
+         if( TRACE_ENABLED ) trace( "workflow-main-xsp.activityTree() entry") ; 
+        	
+         AttributesImpl 
+            xspAttr = new AttributesImpl() ;
+        
+            try {
+        	
+               if( activity instanceof Sequence ) {
+                  sequence( (Sequence)activity, xspAttr ) ;
+               }
+        	   else if( activity instanceof Flow ) {
+                  flow( (Flow)activity, xspAttr ) ;
+               }
+               else if( activity instanceof Step ) {
+                  step( (Step)activity, xspAttr ) ;
+               }
+        	   else if ( activity instanceof Workflow ) {
+               }
+               else {
+                  debug( "unsupported Activity" ) ;
+               } 
+            }
+        	finally {
+               if( TRACE_ENABLED ) trace( "workflow-main-xsp.activityTree() exit") ;
+        	}
+         } // end of activityTree()
+
+         private void sequence( Sequence aSequence, AttributesImpl xspAttr ) throws SAXException {  	
+	        if( TRACE_ENABLED ) trace( "workflow-main-xsp.sequence() entry") ;
+		        	
+		    try { 
+		     	
+			   <content>	
+                  <xsp:element name="sequence">
+                     <xsp:attribute name="key"><xsp:expr>aSequence.getKey()</xsp:expr></xsp:attribute>
+                     <xsp:logic>activityContainer( aSequence, xspAttr ) ;</xsp:logic>
+                  </xsp:element>
+               </content>
+		
+		    }
+            catch(Exception e) {
+               e.printStackTrace() ;
+            }		    
+        	finally {
+               if( TRACE_ENABLED ) trace( "workflow-main-xsp.sequence() exit") ;
+        	}
+         } // end of sequence()
+		
+		
+         private void flow( Flow flow, AttributesImpl xspAttr ) throws SAXException {
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp.flow() entry") ; 
+        	
+        	try {
+	
+               <content>
+                  <xsp:element name="flow">
+                     <xsp:attribute name="key"><xsp:expr>flow.getKey()</xsp:expr></xsp:attribute>
+                     <xsp:logic>activityContainer( flow, xspAttr ) ;</xsp:logic>
+                  </xsp:element>
+               </content>
+			
+        	}
+            catch(Exception e) {
+               e.printStackTrace() ;
+            }        	
+        	finally {
+               if( TRACE_ENABLED ) trace( "workflow-main-xsp.flow() exit") ;
+            }		
+         } // end of flow()
+		
+         private void step( Step step, AttributesImpl xspAttr ) throws SAXException {
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp.step() entry") ; 
+        	
+        	try {
+        	
+               <content>	
+                  <xsp:element name="step">
+                     <xsp:attribute name="key"><xsp:expr>step.getKey()</xsp:expr></xsp:attribute>
+					 <xsp:attribute name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:attribute>
+					 <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
+					 <xsp:attribute name="tool"><xsp:expr>step.getTool().getName()</xsp:expr></xsp:attribute>
+					 <xsp:attribute name="joinCondition"><xsp:expr>step.getJoinCondition()</xsp:expr></xsp:attribute>
+                  </xsp:element>
+			   </content>
+            
+            }
+            catch(Exception e) {
+               e.printStackTrace() ;
+            }
+            finally {
+               if( TRACE_ENABLED ) trace( "workflow-main-xsp.step() exit") ;
+        	}		
+         } // end of step()
+				
+         private void activityContainer( ActivityContainer activityContainer, AttributesImpl xspAttr ) 
+                                                                              throws SAXException {
+		    if( TRACE_ENABLED ) trace( "workflow-main-xsp.activityContainer() entry") ; 
+        	
+        	try {
+        	
+               ActivityIterator
+                  iterator = activityContainer.getChildren() ;
+					
+				while( iterator.hasNext() ) {
+					activityTree( (Activity)iterator.next() ) ;
+            }
+         }
+         catch(Exception e) {
+            e.printStackTrace() ;
+         }         
+         finally {
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp.activityContainer() exit") ;
+         }	
+      } // end of activityContainer()
+      
+      //====================================================================================================      	
+
+      private static void trace( String traceString ) {
+         System.out.println( traceString );
+      }
+
+      private static void debug( String traceString ) {
+         System.out.println( traceString );
+      }
+
+   </xsp:logic>
+
+   <workflow>
+      <xsp:logic>
+      
+      //================================================================================
+      Workflow
+         workflow = (Workflow)session.getAttribute( DesignAction.HTTP_WORKFLOW_TAG ) ;
+		
+      //================================================================================
+	
+	  if (workflow != null) {
+         <xsp:attribute name="template"><xsp:expr>workflow.getTemplateName()</xsp:expr></xsp:attribute>
+         <xsp:attribute name="workflow-name"><xsp:expr>workflow.getName()</xsp:expr></xsp:attribute> 
+         <xsp:attribute name="workflow-description"><xsp:expr>workflow.getDescription()</xsp:expr></xsp:attribute> 
+		
+
+         //========================================================================
+			
+         activityTree( workflow.getChild() ) ;
+		
+         //========================================================================
+      } 
+   </xsp:logic>
+   
+   <xsp:logic>      	
+      
+         Iterator workflowIterator = 		
+            (Iterator)request.getAttribute( DesignAction.WORKFLOW_LIST_PARAMETER );			
+
+		 workflowList( workflowIterator );
+		
+		 Iterator queryIterator =
+            (Iterator)request.getAttribute( DesignAction.QUERY_LIST_PARAMETER );			
+
+	     queryList( queryIterator );
+	     
+		 Iterator toolIterator =
+            (Iterator)request.getAttribute( DesignAction.TOOL_LIST_PARAMETER );			
+
+	     toolList( toolIterator );	     		
+
+      </xsp:logic>
+   </workflow>
+</xsp:page>
