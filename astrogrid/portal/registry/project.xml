@@ -9,9 +9,9 @@
 
     <!--+
         | Extend the common project descriptor.
-     
-    <extend>../maven/project.xml</extend>
-   +-->
+        +-->
+    <extend>../project.xml</extend>
+   
     <!--+
         | The current version of the Maven project descriptor.
         +-->
