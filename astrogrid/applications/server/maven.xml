@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
-<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="astrogrid-install-snapshot">
 <!-- properties -->
 <property name="working.dir" location="${basedir}/target/tmp" />
 <!-- standard astrogrid goals -->
@@ -112,13 +112,15 @@
         <!-- merge in anything else from site xdocs, and
          the resources we grabbed previously. -->
         <copy todir="${tmp.docs}" overwrite="false">
-                <fileset dir="${basedir}/xdocs" />
                 <fileset dir="${working.dir}">
                         <include name="wsdl/**" />
                         <include name="schema/**" />
                 </fileset>
+                <fileset dir="${basedir}/../xdocs" >
+					<exclude name="**/navigation.xml"/>
+			    </fileset>			 
         </copy>
-        <!-- set up properties -->
+         <!-- set up properties -->
         <j:set var="maven.docs.dest" value="${webapp.docs}" />
         <j:set var="maven.docs.src" value="${tmp.docs}" />
         <j:set var="maven.xdoc.poweredby.title" value="Provided by Astrogrid" />

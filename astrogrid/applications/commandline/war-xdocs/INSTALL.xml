@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<document>
+<properties>
+	<author email="pah@jb.man.ac.uk">Paul Harrison</author>
+	<title>CEA Controller Installation Information</title>
+</properties>
+
+<body>
+<section name="Installation Instructions">
+
+<p>where detailed explanations of the confuration steps are contained. In summary you need to set the following environment properties with the tomcat manager.</p>
+<ol>
+	
+	  <li>cea.filestore.basedir" override="false" type="java.lang.String" value="@WORKDIR@/cea/commandline/store" 
+		</li>
+      <li>cea.registry.template.url" decription="The template registry entry" type="java.lang.String" value="@CONFIGPATH@/CEARegistryTemplate.xml" 
+		</li>
+<li>org.astrogrid.registry.admin.endpoint" description="registry update service endpoint URL" type="java.lang.String" value="@CENTRALREGISTRY@Update"
+
+	</li><li>
+org.astrogrid.registry.query.endpoint" description="registry query service endpoint URL" type="java.lang.String" value="@CENTRALREGISTRY@Query"  
+	</li>
+	
+	<li>It might also be necessary to install accompanying applications - this is described in more detail inside the web application.</li>
+  
+ </ol>
+</section>
+</body>
+</document>

@@ -1,35 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project name="AstroGrid">
   <body>
-    <title>AstroGrid Project - Generic CEA Server</title>
+    <title>AstroGrid Project - Generic CEA Framework</title>
     <menu name="Installation">
-      <item name="Install" href="INSTALL.html" />
-      <item name="Release" href="RELEASE.html" />
+      <item name="Install doc" href="provider/INSTALL.html" />
+      <item name="Release doc" href="RELEASE.html" />
       <item name="Fingerprint" href="fingerprint.jsp" />
       <item name="Axis Check" href="happyaxis.jsp" />
       <item name="Installation Tests" href="TestServlet?suite=org.astrogrid.applications.component.CEAComponentManagerFactory" />
       <item name="View web services" href="servlet/AxisServlet" />
       <item name="View VODescription" href="cec-http?method=returnRegistryEntry" />
     </menu>
-    <menu name="Documentation">
-      <item name="CEA Application Provider" href="provider" />
-      <item name="Project Information" href="project-info.html" />
-      <item name="CEA Description" href="http://wiki.astrogrid.org/bin/view/Astrogrid/ApplicationsIntegration" />
-    </menu>
     <menu name="Resources">
       <item name="WSDL" href="wsdl" />
-      <item name="Schemas" href="schemas" />
+      <item name="Schema" href="schema" />
       <item name="client lib" href="client" />
     </menu>
+	<menu name="CEC Specific">
+	  <item name="documentation" href="provider" />
+	  <item name="adding an application" href="provider/AppProgGuide.html"/>
+      <item name="CEC javadoc" href="provider/apidocs" />
+      <item name="CEC formatted Source" href="provider/xref" />
+ 		
+	</menu>
     <menu name="Development Documentation">
-      <item name="javadoc" href="apidocs" />
-      <item name="Formatted Source" href="xref" />
+      <item name="CEA Design" href="design/"/>
+      <item name="programmers guide" href="programmers_guide.html"/>
+      <item name="Framework javadoc" href="apidocs" />
+      <item name="Framework formatted Source" href="xref" />
       <item name="Formatted Test Source" href="xref-test" />
+	  
     </menu>
     <links>
       <item name="AstroGrid" href="http://www.astrogrid.org" />
       <item name="Projects" href="http://www.astrogrid.org/maven/build/index.html" />
-      <item name="CEA" href="http://www.astrogrid.org/maven/docs/snapshot/applications/index.html" />
+      <item name="CEA maven" href="http://www.astrogrid.org/maven/docs/snapshot/applications/index.html" />
     </links>
   </body>
 </project>

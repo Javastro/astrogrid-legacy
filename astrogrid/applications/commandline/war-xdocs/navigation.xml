@@ -6,15 +6,13 @@
 
     <menu name="Installation">
        <item name="Install" href="INSTALL.html"/>
-       <item name="Release" href="RELEASE.html"/>
-       <item name="Download" href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-applications-SNAPSHOT.war"/>
+	   <item name="Application Configuration" href="ApplicationConfiguration.html"/>
+       <item name="Download" href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-cea-commandline-SNAPSHOT.war"/>
+	   <item name="back to CEA Framework" href=".." />
 
     </menu>
-    <menu name="Documentation">
-        <item name="Project information" href="project-info.html" />
-    </menu>
-
     <menu name="Development Documentation">
+	  <item name="Developers Guide" href="AppProgGuide.html"/>
       <item name="javadoc" href="apidocs" />
       <item name="Formatted Source" href="xref" />
       <item name="Formatted Test Source" href="xref-test" />
@@ -23,7 +21,7 @@
     <links>
        <item name="AstroGrid"  href="http://www.astrogrid.org"/>
        <item name="Projects"   href="http://www.astrogrid.org/maven/build/index.html"/>
-       <item name="CEA Framework" href=".." />
+     
        </links>
   </body>
 </project>

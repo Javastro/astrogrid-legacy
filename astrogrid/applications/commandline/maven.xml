@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
-<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="astrogrid-install-snapshot">
 <!-- standard astrogrid goals - defined in server project -->
   <!-- war packaging -->
   <!-- this is the name of the goal that does the packaging in the parent project.
