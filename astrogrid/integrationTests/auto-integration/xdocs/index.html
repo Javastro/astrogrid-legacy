@@ -2,178 +2,22 @@
 <HTML>
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
-	<TITLE>AGINAB</TITLE>
+	<TITLE>Integration Testing</TITLE>
 	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.1.1  (Win32)">
 	<META NAME="CREATED" CONTENT="20040618;17343551">
 	<META NAME="CHANGEDBY" CONTENT="John Taylor">
 	<META NAME="CHANGED" CONTENT="20040619;10452793">
 </HEAD>
 <BODY LANG="en-US" DIR="LTR">
-<H1>Installing Astrogrid using AGINAB (Astrogrid In A Box)</H1>
-<P>AGINAB allows you to install and configure a standard set of
-Astrogrid components on any Un*x machine. All Astrogrid developers
-should have their own local copy for testing work, and reinstall it
-frequently. Note that as of 17/6/04 AGINAB does not work correctly on
-Windows machines.</P>
-<H2>Prerequisites</H2>
-<UL>
-	<LI><P>JRE or <A HREF="http://java.sun.com/j2se/1.4.2/download.html">JDK</A>
-	1.4.x</P>
-	<LI><P><A HREF="http://maven.apache.org/start/download.html">Maven</A>
-	RC3 or better</P>
-	<LI><P><A HREF="http://apache.rmplc.co.uk/dist/jakarta/tomcat-5/v5.0.25/">Tomcat</A>
-	5.x with a user of role <A HREF="http://jakarta.apache.org/tomcat/tomcat-5.0-doc/manager-howto.html#Configuring Manager Application Access">manager</A>
-	enabled</P>
-</UL>
-<H2>Procedure to install the latest snapshot</H2>
-<UL>
-	<LI><P>Checkout <A HREF="http://www.astrogrid.org/viewcvs/astrogrid/integrationTests/auto-integration/">astrogrid/integrationTests/auto-integration</A>
-	from CVS and <FONT FACE="Courier, monospace">cd</FONT> to the root
-	directory</P>
-	<LI><P>Create a file <A HREF="build.properties">build.properties</A>
-	and edit the following properties to be appropriate for your local
-	set up:</P>
-	<UL>
-		<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Courier, monospace">tomcat.manager.username=manager_username</FONT>
-				</P>
-		<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Courier, monospace">tomcat.manager.password=manager_password</FONT>
-				</P>
-		<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Courier, monospace">work.dir=</FONT><A HREF="../../../../ag-integration-work"><FONT FACE="Courier, monospace">C:/Java/ag-integration-work</FONT></A>
-				</P>
-		<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Courier, monospace">tomcat.location=</FONT><A HREF="../../../../ApacheSoftwareFoundation/Tomcat5.0"><FONT FACE="Courier, monospace">C:/Java/ApacheSoftwareFoundation/Tomcat5.0</FONT></A>
-				</P>
-		<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Courier, monospace">tomcat.common.lib.dir=</FONT><A HREF="../../../../ApacheSoftwareFoundation/Tomcat5.0"><FONT FACE="Courier, monospace">${tomcat.location}/common/lib</FONT></A>
-				</P>
-		<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Courier, monospace">tomcat.port=</FONT><A HREF="../../../../ApacheSoftwareFoundation/Tomcat5.0"><FONT FACE="Courier, monospace">8080</FONT></A>
-				</P>
-		<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Courier, monospace">registry.authorityid=</FONT><A HREF="../../../../ApacheSoftwareFoundation/Tomcat5.0"><FONT FACE="Courier, monospace">org.astrogrid.localhost</FONT></A>
-				</P>
-		<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Courier, monospace">version=</FONT><A HREF="../../../../ApacheSoftwareFoundation/Tomcat5.0"><FONT FACE="Courier, monospace">SNAPSHOT</FONT></A>
-				</P>
-	</UL>
-</UL>
-<P STYLE="margin-bottom: 0cm"><BR>
-</P>
-<UL>
-	<LI><P>If you have previously installed Astrogrid execute:</P>
-	<UL>
-		<LI><P><FONT FACE="Courier, monospace">maven undeploy-all</FONT></P>
-	</UL>
-	<LI><P>To install a new set of components execute:</P>
-	<UL>
-		<LI><P><FONT FACE="Courier, monospace">maven deploy-all</FONT></P>
-	</UL>
-	<LI><P>To test the installation execute:</P>
-	<UL>
-		<LI><P><FONT FACE="Courier, monospace">maven astrogrid-build-site</FONT></P>
-	</UL>
-	<LI><P>Compare the documentation generated in your <A HREF="junit-report.html">target/docs</A>
-	directory with that published on the <A HREF="http://www.astrogrid.org/maven/docs/snapshot/integrationTests/junit-report.html">Astrogrid
-	site</A>.</P>
-	<LI><P>You can access your installed portal at
-	<A HREF="http://127.0.0.1:8080/astrogrid-portal/">http://127.0.0.1:8080/astrogrid-portal/</A>
-	and use the pre-installed user &quot;frog&quot;, pw &quot;qwerty&quot;,
-	community &quot;org.astrogrid.localhost&quot;</P>
-</UL>
-<H2>Tips</H2>
-<UL>
-	<LI><P>AGINAB downloads a number of large files. Make sure you're on
-	a fast network the first time you run it</P>
-	<LI><P>If you have installed Astrogrid once and wish to reinstall it
-	without a new set of downloads then execute maven with the -o switch</P>
-	<LI><P>To install a single component such as the portal, execute</P>
-	<UL>
-		<LI><P><FONT FACE="Courier, monospace">maven init portal-deploy</FONT></P>
-	</UL>
-</UL>
-<UL>
-	<UL>
-		<LI><P><FONT FACE="Courier, monospace">In general:</FONT></P>
-		<UL>
-			<LI><P><FONT FACE="Courier, monospace">maven init
-			X-deploy/X-undeploy where
-			X=myspace/jes/apps/reg/myspace-store/pal/portal/community</FONT></P>
-		</UL>
-	</UL>
-</UL>
-<UL>
-	<LI><P>Configuration properties you may wish to play with can be
-	found in webapps/astrogrid-configuration/AstroGridConfig.properties
-	. These should be edited <I>before</I> AGINAB is run (you may edit
-	them afterwards by tracking down the deployed properties file in
-	your Tomcat installation.)</P>
-	<LI><P>Sometimes Tomcat does not clean up after itself properly when
-	the undeploy-all goal is run. To make doubly sure that you are
-	starting clean, shut down Tomcat and execute</P>
-	<UL>
-		<LI><P><FONT FACE="Courier, monospace">maven CLEANTOMCAT</FONT></P>
-	</UL>
-    <LI><P>If Community fails to set itself up following a clean installation of Tomcat, it could be because it has failed
-        to find the hsqldb database driver jar.  Stop/start Tomcat and repeat the maven deploy-all command.</P></LI>
-</UL>
-<H2>Testing a component before committing to CVS</H2>
-<P>Major fixes to a component should be integration tested before
-being committed to CVS. This is straightforward to do:</P>
-<UL>
-	<UL>
-		<LI><P><FONT FACE="Courier, monospace">cd</FONT> to the root AGINAB
-		folder</P>
-		<LI><P>Execute</P>
-		<UL>
-			<LI><P><FONT FACE="Courier, monospace">maven undeploy-all</FONT></P>
-			<LI><P><FONT FACE="Courier, monospace">maven eclipse-int-test</FONT></P>
-		</UL>
-	</UL>
-</UL>
-<P>This will remove any existing components, and download the latest
-component binaries from Uluru to your local repository.  The second
-call to maven is simply a hack to force it to download the binaries
-that are later needed for the testing stage.</P>
-<UL>
-	<UL>
-		<LI><P><FONT FACE="Courier, monospace">cd</FONT> to the root of the
-		component you wish to test</P>
-	</UL>
-</UL>
-<UL>
-	<UL>
-		<LI><P>Execute:</P>
-		<UL>
-			<LI><P><FONT FACE="Courier, monospace">maven
-			astrogrid-install-snapshot</FONT></P>
-		</UL>
-	</UL>
-</UL>
-<P>This installs a copy of the component with your fixes in your
-local repository.</P>
-<UL>
-	<UL>
-		<LI><P><FONT FACE="Courier, monospace">cd</FONT> to the root AGINAB
-		folder</P>
-		<LI><P>Execute</P>
-		<UL>
-			<LI><P><FONT FACE="Courier, monospace">maven -o deploy-all</FONT></P>
-			<LI><P><FONT FACE="Courier, monospace">maven -o
-			astrogrid-build-site</FONT></P>
-		</UL>
-	</UL>
-</UL>
-<P>The -o (offline) switch prevents maven overwriting your updated
-component with any newer one that may have been built by Uluru in the
-meantime.</P>
-<UL>
-	<UL>
-		<LI><P>Compare the tests generated in your <A HREF="junit-report.html">target/docs</A>
-		directory with that published on the <A HREF="http://www.astrogrid.org/maven/docs/SNAPSHOT/integrationTests/junit-report.html">Astrogrid
-		site</A>.  In particular, examine the regression report at <a href="junit-full/index.html">junit-full/index.html</a> which will allow you to compare
-        the tests in your builds against recent baselines, and thus track down any unexpected test failures.  </P>
-	</UL>
-</UL>
+<H1>Integration Testing</H1>
 <P>
-<HR/>
+AstroGrid components are continuously integrated and tested using a Maven script that has to come to be known
+as AGINAB (AstroGrid-IN-A-Box).  As well as being used for testing, AGINAB is also a handy way to quickly 
+deploy and configure a test set of AstroGrid components on a single machine.   
 </P>
-<P>This documentation was generated using Maven's <A HREF="http://maven.apache.org/reference/plugins/html2xdoc/">html2xdoc</A>
-goal.</P>
-<P>John Taylor 19th June 2004</P>
+<P>
+For the latest integration test results and instructions on how you can use AGINAB please follow the links to the left.
+</P>
+<P>John Taylor 25th October 2004</P>
 </BODY>
 </HTML>
