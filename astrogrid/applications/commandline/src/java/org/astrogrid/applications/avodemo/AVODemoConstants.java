@@ -1,5 +1,5 @@
 /*
- * $Id: AVODemoConstants.java,v 1.1 2004/09/06 17:18:12 pah Exp $
+ * $Id: AVODemoConstants.java,v 1.2 2004/09/09 06:42:06 pah Exp $
  * 
  * Created on 23-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -29,6 +29,9 @@ public final static String appconEndPoint = "http://astrogrid.jb.man.ac.uk:8080/
 public final static String SENDMAILHOST = "localhost";
 public static final String COMMUNITY = "org.astrogrid.localhost";
 public static final String MYSPACE = COMMUNITY + "/myspace";
+public static final String SEXTRACTOR = COMMUNITY+"/SExtractor";
+public static final String HYPERZ = COMMUNITY+"/HyperZ";
+public static final String DFT = COMMUNITY+"/CrossMatcher";
 
    /**
     * make sure that it cannot be instantiated.

@@ -1,5 +1,5 @@
 /*
- * $Id: AVODemoRunner.java,v 1.2 2004/09/06 23:01:52 pah Exp $
+ * $Id: AVODemoRunner.java,v 1.3 2004/09/09 06:42:06 pah Exp $
  * 
  * Created on 23-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -42,7 +42,7 @@ import org.astrogrid.workflow.beans.v1.Workflow;
  */
 public class AVODemoRunner implements Runnable {
 
-   private JobIdentifierType jobstepid = new JobIdentifierType();
+private JobIdentifierType jobstepid = new JobIdentifierType();
    org.astrogrid.community.User fulluser =
       new org.astrogrid.community.User(AVODemoConstants.ACCOUNT, AVODemoConstants.GROUP, AVODemoConstants.TOKEN);
    private final String MYSPACEBASECONT = "ivo://"+AVODemoConstants.MYSPACE +"#" + fulluser.getUserId() + "/";
@@ -60,6 +60,7 @@ public class AVODemoRunner implements Runnable {
    private String username;
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(AVODemoRunner.class);
+private String workflowIvorn;
    
    /**
     * 
@@ -161,7 +162,8 @@ public class AVODemoRunner implements Runnable {
 
       workflow.marshal(outstr);
       byte[] bytes = outstr.toString().getBytes();
-      myspacedel.putBytes(bytes, 0, bytes.length, new Ivorn(myspacebase + "workflow/" + workflow.getName()), false);
+      workflowIvorn = myspacebase + "workflow/" + workflow.getName();
+      myspacedel.putBytes(bytes, 0, bytes.length, new Ivorn(workflowIvorn), false);
  
    }
    private void runworkflow() throws Exception {
@@ -197,7 +199,7 @@ public class AVODemoRunner implements Runnable {
    private void populateHyperZStep(Step step) {
       Input input = new Input();
       Output output = new Output();
-      String applicationid = AVODemoConstants.COMMUNITY+"/HyperZ";
+      String applicationid = AVODemoConstants.HYPERZ;
       Tool tool = new Tool();
       tool.setName(applicationid);
       tool.setInput(input);
@@ -235,7 +237,7 @@ public class AVODemoRunner implements Runnable {
    private void populateDftStep(Step step) {
       Output output = new Output();
       Input input = new Input();
-      String applicationid = AVODemoConstants.COMMUNITY+"/CrossMatcher";
+      String applicationid = AVODemoConstants.DFT;
 
       Tool tool = new Tool();
       tool.setName(applicationid);
@@ -286,7 +288,7 @@ public class AVODemoRunner implements Runnable {
    private void populateSExtractorStep(Step step, String band) {
       Output output = new Output();
       Input input = new Input();
-      String applicationid = AVODemoConstants.COMMUNITY+"/SExtractor";
+      String applicationid = AVODemoConstants.SEXTRACTOR;
       Tool tool = new Tool();
       tool.setName(applicationid);
       tool.setInput(input);
@@ -476,4 +478,7 @@ public class AVODemoRunner implements Runnable {
       username = string;
    }
 
+public String getWorkflowIvorn() {
+    return workflowIvorn;
+}
 }
