@@ -198,9 +198,7 @@
 
 <!-- end of war stuff -->
 
-  <preGoal name="java:compile">
-     <mkdir dir="${basedir}/target/classes" />     <!-- Clover fails if this dir is not present -->
-  </preGoal>
+
 
 <!-- stand - alone goals - not addons to main build -->
 <property name="tomcat.host" value="localhost"/>

@@ -1,96 +1,637 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workflow name="token authentication" xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1">
- <sequence>
-  <Activity joinCondition="any" name="first step" sequenceNumber="1" stepNumber="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="step">
+<workflow id="N10001" name="token authentication" xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1">
+ <sequence id="N10005">
+  <Activity id="N10006" joinCondition="any" name="first step" sequenceNumber="1" stepNumber="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="step">
    <tool interface="com.foo.bar.wibble" name="another tool"/>
-   <ns1:step-execution-record finishTime="2004-03-11T19:37:34.494Z" startTime="2004-03-11T19:37:33.874Z" status="COMPLETED" xmlns:ns1="http://www.astrogrid.org/schema/ExecutionRecord/v1">
+   <ns1:step-execution-record finishTime="2005-04-01T15:40:31.072+01:00" startTime="2005-04-01T15:40:30.652+01:00" status="COMPLETED" xmlns:ns1="http://www.astrogrid.org/schema/ExecutionRecord/v1">
     <ns2:message xmlns:ns2="http://www.astrogrid.org/schema/CEATypes/v1">
      <ns2:content>
-OK     </ns2:content>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;result-list-type xmlns=&quot;http://www.astrogrid.org/schema/CEATypes/v1&quot;/&gt;     </ns2:content>
      <ns2:source>
-application     </ns2:source>
+CEA     </ns2:source>
      <ns2:timestamp>
-2004-03-11T19:37:33.896Z     </ns2:timestamp>
+2005-04-01T15:40:30.852+01:00     </ns2:timestamp>
      <ns2:level>
 info     </ns2:level>
      <ns2:phase>
 COMPLETED     </ns2:phase>
     </ns2:message>
+    <ns3:message xmlns:ns3="http://www.astrogrid.org/schema/CEATypes/v1">
+     <ns3:content>
+OK     </ns3:content>
+     <ns3:source>
+application     </ns3:source>
+     <ns3:timestamp>
+2005-04-01T15:40:30.672+01:00     </ns3:timestamp>
+     <ns3:level>
+info     </ns3:level>
+     <ns3:phase>
+COMPLETED     </ns3:phase>
+    </ns3:message>
    </ns1:step-execution-record>
   </Activity>
-  <Activity xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sequence">
-   <Activity joinCondition="any" name="nested step one" sequenceNumber="1" stepNumber="2" xsi:type="step">
+  <Activity id="N10010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sequence">
+   <Activity id="N10013" joinCondition="any" name="nested step one" sequenceNumber="1" stepNumber="2" xsi:type="step">
     <tool interface="dunno what's required here" name="a tool"/>
-    <ns3:step-execution-record finishTime="2004-03-11T19:37:34.670Z" startTime="2004-03-11T19:37:34.047Z" status="COMPLETED" xmlns:ns3="http://www.astrogrid.org/schema/ExecutionRecord/v1">
-     <ns4:message xmlns:ns4="http://www.astrogrid.org/schema/CEATypes/v1">
-      <ns4:content>
-OK      </ns4:content>
-      <ns4:source>
-application      </ns4:source>
-      <ns4:timestamp>
-2004-03-11T19:37:34.079Z      </ns4:timestamp>
-      <ns4:level>
-info      </ns4:level>
-      <ns4:phase>
-COMPLETED      </ns4:phase>
-     </ns4:message>
-    </ns3:step-execution-record>
-   </Activity>
-   <Activity joinCondition="any" name="nested step two" sequenceNumber="2" stepNumber="3" xsi:type="step">
-    <tool interface="something" name="something"/>
-    <ns5:step-execution-record finishTime="2004-03-11T19:37:34.844Z" startTime="2004-03-11T19:37:34.139Z" status="COMPLETED" xmlns:ns5="http://www.astrogrid.org/schema/ExecutionRecord/v1">
+    <ns4:step-execution-record finishTime="2005-04-01T15:40:31.683+01:00" startTime="2005-04-01T15:40:31.553+01:00" status="COMPLETED" xmlns:ns4="http://www.astrogrid.org/schema/ExecutionRecord/v1">
+     <ns5:message xmlns:ns5="http://www.astrogrid.org/schema/CEATypes/v1">
+      <ns5:content>
+OK      </ns5:content>
+      <ns5:source>
+application      </ns5:source>
+      <ns5:timestamp>
+2005-04-01T15:40:31.553+01:00      </ns5:timestamp>
+      <ns5:level>
+info      </ns5:level>
+      <ns5:phase>
+COMPLETED      </ns5:phase>
+     </ns5:message>
      <ns6:message xmlns:ns6="http://www.astrogrid.org/schema/CEATypes/v1">
       <ns6:content>
-OK      </ns6:content>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;result-list-type xmlns=&quot;http://www.astrogrid.org/schema/CEATypes/v1&quot;/&gt;      </ns6:content>
       <ns6:source>
-application      </ns6:source>
+CEA      </ns6:source>
       <ns6:timestamp>
-2004-03-11T19:37:34.172Z      </ns6:timestamp>
+2005-04-01T15:40:32.364+01:00      </ns6:timestamp>
       <ns6:level>
 info      </ns6:level>
       <ns6:phase>
 COMPLETED      </ns6:phase>
      </ns6:message>
-    </ns5:step-execution-record>
+    </ns4:step-execution-record>
+   </Activity>
+   <Activity id="N1001C" joinCondition="any" name="nested step two" sequenceNumber="2" stepNumber="3" xsi:type="step">
+    <tool interface="something" name="something"/>
+    <ns7:step-execution-record finishTime="2005-04-01T15:40:32.795+01:00" startTime="2005-04-01T15:40:32.234+01:00" status="COMPLETED" xmlns:ns7="http://www.astrogrid.org/schema/ExecutionRecord/v1">
+     <ns8:message xmlns:ns8="http://www.astrogrid.org/schema/CEATypes/v1">
+      <ns8:content>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;result-list-type xmlns=&quot;http://www.astrogrid.org/schema/CEATypes/v1&quot;/&gt;      </ns8:content>
+      <ns8:source>
+CEA      </ns8:source>
+      <ns8:timestamp>
+2005-04-01T15:40:32.585+01:00      </ns8:timestamp>
+      <ns8:level>
+info      </ns8:level>
+      <ns8:phase>
+COMPLETED      </ns8:phase>
+     </ns8:message>
+     <ns9:message xmlns:ns9="http://www.astrogrid.org/schema/CEATypes/v1">
+      <ns9:content>
+OK      </ns9:content>
+      <ns9:source>
+application      </ns9:source>
+      <ns9:timestamp>
+2005-04-01T15:40:32.234+01:00      </ns9:timestamp>
+      <ns9:level>
+info      </ns9:level>
+      <ns9:phase>
+COMPLETED      </ns9:phase>
+     </ns9:message>
+    </ns7:step-execution-record>
    </Activity>
   </Activity>
-  <Activity joinCondition="any" name="final step" sequenceNumber="2" stepNumber="4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="step">
+  <Activity id="N10025" joinCondition="any" name="final step" sequenceNumber="2" stepNumber="4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="step">
    <tool interface="blah" name="foo"/>
-   <ns7:step-execution-record finishTime="2004-03-11T19:37:34.343Z" startTime="2004-03-11T19:37:33.920Z" status="COMPLETED" xmlns:ns7="http://www.astrogrid.org/schema/ExecutionRecord/v1">
-    <ns8:message xmlns:ns8="http://www.astrogrid.org/schema/CEATypes/v1">
-     <ns8:content>
-OK     </ns8:content>
-     <ns8:source>
-application     </ns8:source>
-     <ns8:timestamp>
-2004-03-11T19:37:33.942Z     </ns8:timestamp>
-     <ns8:level>
-info     </ns8:level>
-     <ns8:phase>
-COMPLETED     </ns8:phase>
-    </ns8:message>
-   </ns7:step-execution-record>
+   <ns10:step-execution-record finishTime="2005-04-01T15:40:33.286+01:00" startTime="2005-04-01T15:40:33.165+01:00" status="COMPLETED" xmlns:ns10="http://www.astrogrid.org/schema/ExecutionRecord/v1">
+    <ns11:message xmlns:ns11="http://www.astrogrid.org/schema/CEATypes/v1">
+     <ns11:content>
+OK     </ns11:content>
+     <ns11:source>
+application     </ns11:source>
+     <ns11:timestamp>
+2005-04-01T15:40:33.165+01:00     </ns11:timestamp>
+     <ns11:level>
+info     </ns11:level>
+     <ns11:phase>
+COMPLETED     </ns11:phase>
+    </ns11:message>
+   </ns10:step-execution-record>
   </Activity>
  </sequence>
  <description>
 document with (pointlessly) nested sequences, and token authentication. </description>
  <Credentials>
-  <ns9:Account xmlns:ns9="http://www.astrogrid.org/schema/Credentials/v1">
-   <ns9:Name>
-nww74   </ns9:Name>
-   <ns9:Community>
-jodrell   </ns9:Community>
-  </ns9:Account>
-  <ns10:Group xmlns:ns10="http://www.astrogrid.org/schema/Credentials/v1">
-   <ns10:Name>
-developers   </ns10:Name>
-   <ns10:Community>
-jodrell   </ns10:Community>
-  </ns10:Group>
-  <ns11:SecurityToken xmlns:ns11="http://www.astrogrid.org/schema/Credentials/v1"/>
+  <ns12:Account xmlns:ns12="http://www.astrogrid.org/schema/Credentials/v1">
+   <ns12:Name>
+nww74   </ns12:Name>
+   <ns12:Community>
+jodrell   </ns12:Community>
+  </ns12:Account>
+  <ns13:Group xmlns:ns13="http://www.astrogrid.org/schema/Credentials/v1">
+   <ns13:Name>
+developers   </ns13:Name>
+   <ns13:Community>
+jodrell   </ns13:Community>
+  </ns13:Group>
+  <ns14:SecurityToken xmlns:ns14="http://www.astrogrid.org/schema/Credentials/v1"/>
  </Credentials>
- <ns12:job-execution-record finishTime="2004-03-11T19:37:35.049Z" startTime="2004-03-11T19:37:33.853Z" status="COMPLETED" xmlns:ns12="http://www.astrogrid.org/schema/ExecutionRecord/v1">
-  <ns12:jobId>
-jes:nwLaptop/127.0.0.1/nww74@jodrell/1079033853849:1282545079  </ns12:jobId>
- </ns12:job-execution-record>
+ <ns15:job-execution-record finishTime="2005-04-01T15:40:33.496+01:00" startTime="2005-04-01T15:40:30.301+01:00" status="COMPLETED" xmlns:ns15="http://www.astrogrid.org/schema/ExecutionRecord/v1">
+  <ns15:extension key="pickled.groovy.interpreter">
+&lt;interpreter&gt;
+  &lt;ruleStore&gt;
+    &lt;indexScript&gt;def index() {if (
+states.getStatus('N10013') == ERROR
+){
+return 'error-handler-N10013';
+}
+if (
+states.getStatus('N10006') == START
+){
+return 'step-start-N10006';
+}
+if (
+states.getStatus('N1001C') == FINISH
+		
+){
+return 'step-end-N1001C';
+}
+if (
+states.getStatus('N1001C') == ERROR
+){
+return 'error-handler-N1001C';
+}
+if (
+states.getStatus('N10010') == START
+){
+return 'sequence-start-N10010';
+}
+if (
+states.getStatus('N10005') == ERROR
+){
+return 'error-handler-N10005';
+}
+if (
+states.getStatus('N1001C') == START
+){
+return 'step-start-N1001C';
+}
+if (
+states.getStatus('N10006') == FINISHED &amp;amp;&amp;amp; states.getStatus('N10010') == UNSTARTED
+){
+return 'sequence chain-N10006';
+}
+if (
+states.getStatus('N10013') == FINISHED &amp;amp;&amp;amp; states.getStatus('N1001C') == UNSTARTED
+){
+return 'sequence chain-N10013';
+}
+if (
+states.getStatus('N10010') == FINISHED &amp;amp;&amp;amp; states.getStatus('N10025') == UNSTARTED
+){
+return 'sequence chain-N10010';
+}
+if (
+states.getStatus('N10005') == STARTED 
+		
+		&amp;amp;&amp;amp; states.getStatus('N10025') == FINISHED
+		
+){
+return 'sequence-end-N10005';
+}
+if (
+states.getStatus('N10025') == START
+){
+return 'step-start-N10025';
+}
+if (
+states.getStatus('N10013') == FINISH
+		
+){
+return 'step-end-N10013';
+}
+if (
+states.getStatus('N10025') == FINISH
+		
+){
+return 'step-end-N10025';
+}
+if (
+states.getStatus('N10001') == ERROR
+){
+return 'workflow-error-N10001';
+}
+if (
+states.getStatus('N10001') == UNSTARTED
+){
+return 'workflow-start-N10001';
+}
+if (
+states.getStatus('N10001') == STARTED &amp;amp;&amp;amp; states.getStatus('N10005') == FINISHED
+){
+return 'workflow-end-N10001';
+}
+if (
+states.getStatus('N10025') == ERROR
+){
+return 'error-handler-N10025';
+}
+if (
+states.getStatus('N10006') == ERROR
+){
+return 'error-handler-N10006';
+}
+if (
+states.getStatus('N10005') == START
+){
+return 'sequence-start-N10005';
+}
+if (
+states.getStatus('N10006') == FINISH
+		
+){
+return 'step-end-N10006';
+}
+if (
+states.getStatus('N10010') == STARTED 
+		
+		&amp;amp;&amp;amp; states.getStatus('N1001C') == FINISHED
+		
+){
+return 'sequence-end-N10010';
+}
+if (
+states.getStatus('N10010') == ERROR
+){
+return 'error-handler-N10010';
+}
+if (
+states.getStatus('N10013') == START
+){
+return 'step-start-N10013';
+}
+return null;}
+index()&lt;/indexScript&gt;
+    &lt;entry&gt;
+      &lt;string&gt;error-handler-N10013&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+states.setStatus('N10013',ERRED);
+states.setStatus('N10010',ERROR);
+   &lt;/body&gt;
+        &lt;name&gt;error-handler-N10013&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N10013') == ERROR&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;step-start-N10006&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+if (jes.dispatchStep('N10006',shell,states,rules)) {
+	states.setStatus('N10006',STARTED);
+} else {
+	states.setStatus('N10006',ERROR);
+}
+&lt;/body&gt;
+        &lt;name&gt;step-start-N10006&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N10006') == START&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;step-end-N1001C&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+states.setStatus('N1001C',FINISHED);
+&lt;/body&gt;
+        &lt;name&gt;step-end-N1001C&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N1001C') == FINISH
+		&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;error-handler-N1001C&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+states.setStatus('N1001C',ERRED);
+states.setStatus('N10010',ERROR);
+   &lt;/body&gt;
+        &lt;name&gt;error-handler-N1001C&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N1001C') == ERROR&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;sequence-start-N10010&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+states.setStatus('N10013',START);
+states.setEnv('N10013',states.getEnv('N10010')) ;
+
+states.setStatus('N10010',STARTED)	  
+	&lt;/body&gt;
+        &lt;name&gt;sequence-start-N10010&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N10010') == START&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;error-handler-N10005&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+states.setStatus('N10005',ERRED);
+states.setStatus('N10001',ERROR);
+   &lt;/body&gt;
+        &lt;name&gt;error-handler-N10005&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N10005') == ERROR&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;step-start-N1001C&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+if (jes.dispatchStep('N1001C',shell,states,rules)) {
+	states.setStatus('N1001C',STARTED);
+} else {
+	states.setStatus('N1001C',ERROR);
+}
+&lt;/body&gt;
+        &lt;name&gt;step-start-N1001C&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N1001C') == START&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;sequence chain-N10006&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+states.setStatus('N10010',START);
+states.setEnv('N10010',states.getEnv('N10006'));
+	&lt;/body&gt;
+        &lt;name&gt;sequence chain-N10006&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N10006') == FINISHED &amp;amp;&amp;amp; states.getStatus('N10010') == UNSTARTED&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;sequence chain-N10013&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+states.setStatus('N1001C',START);
+states.setEnv('N1001C',states.getEnv('N10013'));
+	&lt;/body&gt;
+        &lt;name&gt;sequence chain-N10013&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N10013') == FINISHED &amp;amp;&amp;amp; states.getStatus('N1001C') == UNSTARTED&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;sequence chain-N10010&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+states.setStatus('N10025',START);
+states.setEnv('N10025',states.getEnv('N10010'));
+	&lt;/body&gt;
+        &lt;name&gt;sequence chain-N10010&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N10010') == FINISHED &amp;amp;&amp;amp; states.getStatus('N10025') == UNSTARTED&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;sequence-end-N10005&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+states.setStatus('N10005', FINISHED) ;
+
+	&lt;/body&gt;
+        &lt;name&gt;sequence-end-N10005&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N10005') == STARTED 
+		
+		&amp;amp;&amp;amp; states.getStatus('N10025') == FINISHED
+		&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;step-start-N10025&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+if (jes.dispatchStep('N10025',shell,states,rules)) {
+	states.setStatus('N10025',STARTED);
+} else {
+	states.setStatus('N10025',ERROR);
+}
+&lt;/body&gt;
+        &lt;name&gt;step-start-N10025&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N10025') == START&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;step-end-N10013&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+states.setStatus('N10013',FINISHED);
+&lt;/body&gt;
+        &lt;name&gt;step-end-N10013&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N10013') == FINISH
+		&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;step-end-N10025&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+states.setStatus('N10025',FINISHED);
+&lt;/body&gt;
+        &lt;name&gt;step-end-N10025&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N10025') == FINISH
+		&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;workflow-error-N10001&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+		states.setStatus('N10001',ERRED);
+		jes.setWorkflowStatus(ERROR);
+	&lt;/body&gt;
+        &lt;name&gt;workflow-error-N10001&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N10001') == ERROR&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;workflow-start-N10001&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+states.setStatus('N10001',STARTED);
+jes.setWorkflowStatus(STARTED);
+states.setStatus('N10005',START);
+	&lt;/body&gt;
+        &lt;name&gt;workflow-start-N10001&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N10001') == UNSTARTED&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;workflow-end-N10001&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+states.setStatus('N10001',FINISHED);
+jes.setWorkflowStatus(FINISHED);
+	&lt;/body&gt;
+        &lt;name&gt;workflow-end-N10001&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N10001') == STARTED &amp;amp;&amp;amp; states.getStatus('N10005') == FINISHED&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;error-handler-N10025&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+states.setStatus('N10025',ERRED);
+states.setStatus('N10005',ERROR);
+   &lt;/body&gt;
+        &lt;name&gt;error-handler-N10025&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N10025') == ERROR&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;error-handler-N10006&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+states.setStatus('N10006',ERRED);
+states.setStatus('N10005',ERROR);
+   &lt;/body&gt;
+        &lt;name&gt;error-handler-N10006&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N10006') == ERROR&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;sequence-start-N10005&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+states.setStatus('N10006',START);
+states.setEnv('N10006',states.getEnv('N10005')) ;
+
+states.setStatus('N10005',STARTED)	  
+	&lt;/body&gt;
+        &lt;name&gt;sequence-start-N10005&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N10005') == START&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;step-end-N10006&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+states.setStatus('N10006',FINISHED);
+&lt;/body&gt;
+        &lt;name&gt;step-end-N10006&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N10006') == FINISH
+		&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;sequence-end-N10010&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+states.setStatus('N10010', FINISHED) ;
+
+	&lt;/body&gt;
+        &lt;name&gt;sequence-end-N10010&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N10010') == STARTED 
+		
+		&amp;amp;&amp;amp; states.getStatus('N1001C') == FINISHED
+		&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;error-handler-N10010&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+states.setStatus('N10010',ERRED);
+states.setStatus('N10005',ERROR);
+   &lt;/body&gt;
+        &lt;name&gt;error-handler-N10010&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N10010') == ERROR&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;step-start-N10013&lt;/string&gt;
+      &lt;rule&gt;
+        &lt;body&gt;
+if (jes.dispatchStep('N10013',shell,states,rules)) {
+	states.setStatus('N10013',STARTED);
+} else {
+	states.setStatus('N10013',ERROR);
+}
+&lt;/body&gt;
+        &lt;name&gt;step-start-N10013&lt;/name&gt;
+        &lt;trigger&gt;states.getStatus('N10013') == START&lt;/trigger&gt;
+      &lt;/rule&gt;
+    &lt;/entry&gt;
+  &lt;/ruleStore&gt;
+  &lt;stateMap&gt;
+    &lt;states&gt;
+      &lt;entry&gt;
+        &lt;string&gt;N10010&lt;/string&gt;
+        &lt;state&gt;
+          &lt;env&gt;
+            &lt;l&gt;
+              &lt;map/&gt;
+            &lt;/l&gt;
+          &lt;/env&gt;
+          &lt;key&gt;N10010&lt;/key&gt;
+          &lt;status&gt;
+            &lt;status&gt;FINISHED&lt;/status&gt;
+          &lt;/status&gt;
+        &lt;/state&gt;
+      &lt;/entry&gt;
+      &lt;entry&gt;
+        &lt;string&gt;N10013&lt;/string&gt;
+        &lt;state&gt;
+          &lt;env reference=&quot;../../../entry/state/env&quot;/&gt;
+          &lt;key&gt;N10013&lt;/key&gt;
+          &lt;status&gt;
+            &lt;status&gt;FINISHED&lt;/status&gt;
+          &lt;/status&gt;
+        &lt;/state&gt;
+      &lt;/entry&gt;
+      &lt;entry&gt;
+        &lt;string&gt;N10005&lt;/string&gt;
+        &lt;state&gt;
+          &lt;env reference=&quot;../../../entry/state/env&quot;/&gt;
+          &lt;key&gt;N10005&lt;/key&gt;
+          &lt;status&gt;
+            &lt;status&gt;STARTED&lt;/status&gt;
+          &lt;/status&gt;
+        &lt;/state&gt;
+      &lt;/entry&gt;
+      &lt;entry&gt;
+        &lt;string&gt;N10001&lt;/string&gt;
+        &lt;state&gt;
+          &lt;env&gt;
+            &lt;l&gt;
+              &lt;map/&gt;
+            &lt;/l&gt;
+          &lt;/env&gt;
+          &lt;key&gt;N10001&lt;/key&gt;
+          &lt;status reference=&quot;../../../entry[3]/state/status&quot;/&gt;
+        &lt;/state&gt;
+      &lt;/entry&gt;
+      &lt;entry&gt;
+        &lt;string&gt;N10025&lt;/string&gt;
+        &lt;state&gt;
+          &lt;env reference=&quot;../../../entry/state/env&quot;/&gt;
+          &lt;key&gt;N10025&lt;/key&gt;
+          &lt;status&gt;
+            &lt;status&gt;FINISH&lt;/status&gt;
+          &lt;/status&gt;
+        &lt;/state&gt;
+      &lt;/entry&gt;
+      &lt;entry&gt;
+        &lt;string&gt;N1001C&lt;/string&gt;
+        &lt;state&gt;
+          &lt;env reference=&quot;../../../entry/state/env&quot;/&gt;
+          &lt;key&gt;N1001C&lt;/key&gt;
+          &lt;status reference=&quot;../../../entry/state/status&quot;/&gt;
+        &lt;/state&gt;
+      &lt;/entry&gt;
+      &lt;entry&gt;
+        &lt;string&gt;N10006&lt;/string&gt;
+        &lt;state&gt;
+          &lt;env reference=&quot;../../../entry/state/env&quot;/&gt;
+          &lt;key&gt;N10006&lt;/key&gt;
+          &lt;status&gt;
+            &lt;status&gt;FINISHED&lt;/status&gt;
+          &lt;/status&gt;
+        &lt;/state&gt;
+      &lt;/entry&gt;
+    &lt;/states&gt;
+  &lt;/stateMap&gt;
+&lt;/interpreter&gt;  </ns15:extension>
+  <ns15:jobId>
+jes:JDT-Astrogrid/172.16.0.31/nww74@jodrell/1112366430241:912499349  </ns15:jobId>
+ </ns15:job-execution-record>
 </workflow>
