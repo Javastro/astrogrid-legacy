@@ -1,0 +1,17 @@
+This project comes with a comprehensive set of ant build 
+tasks.  
+
+At the moment, it's possible to build the source (but not 
+deploy the resulting grid service, which requires additional 
+infrastructure) using the command "maven antBuild" (a custom
+maven goal which simply delegates the build to ant).
+
+At present, a Globus 3.0 installation is also required in
+order to build the source successfully, and the files 
+build.xml and config/build.properties need to be configured
+to reflect the location of this installation.  
+
+If somebody can tell me (kea@ast.cam.ac.uk) how to get Maven 
+to pass its maven.dependency.classpath to ant, we should be able 
+to eliminate the explicit Globus 3.0 dependency (for building
+the source, but not deploying it of course!).

@@ -1,0 +1,280 @@
+AstroGrid echo service
+----------------------
+
+This is the source code of AstroGrid's "echo" grid-service, which is
+the pilot service in our trial grid.  The service provides a single operation,
+called "echo", that returns its argument to the caller.  The service is
+not useful to end-users but is a tool for proving the ability to run grid
+services on AstroGrid sites.
+
+The service built from this package is a web service; it communicates using
+SOAP over HTTP.  It is also a grid service according to the GGF definition.
+This means (a) that the GridService port is present in the service and (b)
+that instances of the service are created dynamically by calls to a factory
+service.
+
+
+Changes since v3
+----------------
+
+The package has been entirely rewritten, firstly to make it work with 
+the alpha-4 release of Globus Toolkit 3 (GT3) and secondly to catch up
+with current ideas on how to organize grid services:
+
+ - based on a package template to simplify build.xml;
+ 
+ - service interface defined in Java instead of in hand-coded WSDL;
+ 
+ - vastly improved build system, with targets for deploying to Tomcat;
+ 
+ - build products kept in a "build" sub-directory;
+ 
+ - test clients create their own service instances;
+ 
+ - extra configuration allowed in build.properties.
+
+This package is compatible with GT3 alpha 4.  It is no longer compatible with
+GT3 alpha 3 and earlier.
+
+At present, the secure versions of the echo service have been dropped
+from the package.  They may be added back in later versions.
+
+
+
+Supporting software
+-------------------
+
+You need the alpha-4 release of Globus Toolkit 3 (GT3).  The alpha-3 
+release and earlier releases won't work.  You need to use the class libraries
+(jar files) from the right version of GT3 when running both the service and
+the clients.
+
+You need the build system Jakarta-ant, from the Apache foundation. V1.5.3 of 
+ant was used in the tests.  V1.5.0 and earlier of ant are known to be
+incompatible with the build file in this package.
+
+The echo service uses Apache Axis, but axis is included in GT3.  You
+do not need to install Axis separately.
+
+You may run the echo services in GT3's stand-alone service-container, or
+you may run them under control of the Axis servlet in a servlet container
+such as Jakarta-Tomcat.  At the time of writing, Jakarta-Tomcat is the
+preferred option and the stand-alone service-container is best avoided.
+
+This is Java software so you need a JDK to build and run it.  JDK v1.4 is
+recommended.
+
+
+
+Installation
+------------
+
+This is a source-code release.  You build ag-ogsa-echo from source, then deploy
+it into either GT3 or Tomcat.  Detailed instructions follow.
+
+
+Unpacking and naming directories:
+---------------------------------
+
+Install the support packages, following the authors' instructions in each case.
+
+   JDK
+   ant
+   GT3
+   Tomcat (if you choose to use it)
+
+These packages should all be in separate directories.  You will probably need
+to install them in the order given above.
+
+Deploy the GT3 code into Jakarta-Tomcat.  The instructions for this are
+part of the GT3 installation-sequence.
+
+Now unpack ag-ogsa-echo into its own directory: you can choose where to put it.
+This is the directory in which you will build and test ag-ogsa-echo; it's
+not the directory from which the service will be run.
+
+In these instructions, I will refer to the top-level directory for each
+package by the following names, as if there were environment variables
+pointing to the directories; this makes the instructions clearer.  You
+do not need to set the environment variables except for JAVA_HOME which
+must be set to help ant find the JDK.
+
+   JAVA_HOME
+   ANT_HOME
+   CATALINA_HOME
+   GT3_HOME
+   ECHO_HOME
+   
+In ECHO_HOME/config, edit the file build.properties and sets its
+contents as follows.
+
+Add a line to say where GT3 is installed:
+
+   ogsi.home=$GT3_HOME
+
+where you must write in the file the value of $GT3_HOME.
+
+Add a line to say where Jakarta-Tomcat is installed:
+
+   tomcat.home=$CATALINA_HOME
+
+where you must write in the file the value of $CATALINA_HOME.
+
+Add a line to say where GT3's schema are stored inside Jakarta-Tomcat:
+
+   ogsi.schema.context=ROOT
+   
+or
+
+   ogsi.schema.context=ogsa
+   
+If in $CATALINA_HOME/webapps/ROOT you have a directory called schema, then
+ogsi.schema.context is "ROOT"; this is the default.  If you have modified
+GT3 to keep its schema in $CATALINA_HOME/webapps/ogsa/schema, then you need
+to set ogsi.schema.context to "ogsa".
+
+Your config/build.properties file should now look similar to
+
+   ogsi.home=/usr/local/ogsa-alpha-4-core
+   tomcat.home=/usr/local/tomcat
+   ogsi.schema.context=ROOT
+
+
+Building ag-ogsa-echo:
+----------------------
+
+Change directory to $ECHO_HOME. You can build ag-ogsa-echo with one command to
+ant:
+
+   ant build
+   
+To return the package to its initial state, give the command
+
+   ant distclean
+   
+but note that this command destroys the built version needed for the
+deployment steps.
+
+
+Deploy ag-ogsa-echo to GT3:
+---------------------------
+
+You would do this if you intend to run the stand-alone service-container
+that comes with GT3.  If you intend to run the service only in Jakarta-Tomcat
+then you do not need to do this step.
+
+Change directory to $ECHO_HOME.  Deploy the package with the command
+
+   ant deploy
+   
+If the service-container is running, then you will need to stop it and restart
+it to make the echo service available.
+
+There is no command to undeploy the package from GT3.
+
+
+Deploy GT3 into Tomcat:
+-----------------------
+
+You would do this if you intend to run the service in Jakarta-Tomcat.  If you
+intend to run the service only in GT3's stand-alone service-container then
+you do not need to do this step.
+
+Change directory to $ECHO_HOME.  Give the command
+
+  ant deployToTomcat
+  
+If Tomcat is not yet running, the the service will become available when 
+Tomcat is next started. If Tomcat is running but the ogsa web-application is
+not yet loaded, then the service will become available when the web-application
+is next loaded.  Otherwise, you need to reload the web-application called
+"ogsa" to make the service available; use Tomcat's manager interface as
+described in the Tomcat documentation.
+
+To remove the service from Tomcat (without removing other grid-service
+deployed in the same ogsa web-application), use the command
+
+   ant undeployFromTomcat
+
+
+Installation checklist
+----------------------
+1.  Install supporting software.
+1.1   Install JDK.
+1.2   Install ant 1.5.1+.
+1.3   Install GT3.
+1.4   Install Tomcat (optional)
+2.  Create/edit build.properties in $ECHO_HOME/config.
+2.1   Define ogsi.home (mandatory).
+2.2   Define tomcat.home (mandatory if using tomcat; otherwise not needed)
+2.3   Define ogsi.schema.context (mandatory)
+3.  Build ag-ogsa-echo.
+3.1   cd $ECHO_HOME.
+3.2   ant build
+4.  Deploy ag-ogsa-echo to GT3 (if not using Tomcat).
+4.1   cd $ECHO_HOME.
+4.2   ant deploy
+5.  Deploy ag-ogsa-echo to Tomcat.
+5.1   cd $ECHO_HOME
+5.2   ant deployToTomcat
+5.3   Restart Tomcat or reload the ogsa web-application.
+6.  Clean ECHO_HOME (optional).
+6.1   cd $ECHO_HOME
+6.2   ant distclean
+
+
+Running the stand-alone server
+------------------------------
+
+This section refers to the stand-alone grid-service container supplied with
+GT3. If you are running your services inside Tomcat you can skip this
+section.
+
+First, make sure that all the jar files in $GT3_HOME/lib are in your
+CLASSPATH.  Now change directory to $GT3_HOME.  (You will get class-not-found
+errors if you try to run the server from any other directory.)
+
+To run the server containing the echo service, enter
+
+  ant startContainer -Dservice.port=9090 &
+
+where 9090 is the IP port-number on which the server listens.
+Use whatever port-number is convenient on your server.  The default port,
+used if the "service.port" property is not set, is 8080.
+
+If this operation works, you will gets some progress messages, then a pause of
+around 30 seconds, then several screens of XML.  The XML is actually Web
+Services Inspection Language (WSIL) and it's a listing of the grid services
+that the new server is running. If the server doesn't work, you'll get an
+unhandled exception with a stack dump.
+
+If you have failures when running the code, the most likely problem is with your
+CLASSPATH.  You should also check that you are in $GT3_HOME when starting the
+server.
+
+
+Running the clients
+-------------------
+
+Two clients are provided. TestEcho creates an instance of an echo service,
+invokes it once and then exits.  TestMultipleEcho creates an instance of
+the service, invokes it 100 times, and then exits.
+
+To run either client, you must invoke the JVM from the command line with
+your CLASSPATH set correctly. There are no ant targets to invoked the clients.
+
+Your CLASSPATH should be set to include all the jars in $GT3_HOME/lib plus
+the ag-ogsa-echo-x.y.z jar in $ECHO_HOME/build.  The order of the jars is not
+important.
+
+Run the commands like this:
+
+   java org.astrogrid.ogsa.echo.TestEcho ping \
+      http://<address>:<port-number>/ogsa/services/astrogrid/echo/EchoFactory
+      
+where, in the URL that is the third argument, you must fill in the address
+and port number of the Tomcat server or stand-alone service container where
+you deployed the service.  The URL is actually the Grid Service Handle
+of the factory for the echo service.  TestMultipleEcho is run in the
+same way; just change the name of the class in the first argument. "Ping" is
+a string for the service to echo pack to you; pick your own.

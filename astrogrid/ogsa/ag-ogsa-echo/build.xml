@@ -1,0 +1,275 @@
+<?xml version="1.0"?>
+
+<project name="$product.name" basedir="." default="build">
+  
+   <!-- This file is for local adjustments.  It must set ogsi.home.
+        It may set other properties. -->
+   <property file="config/build.properties"/>
+   
+   <!-- This file is for semi-stable settings fixed by the 
+        OGSA implementation. -->
+   <property file="${ogsi.home}/ogsa.properties"/>
+   
+   <!-- This file specializes this template to a particular product. -->
+   <property file="config/template.properties"/>
+   
+   <!-- This is a default controlling the web-app context in which
+        OGSI's schema are kept.  Users with non-default locations
+        of schema (typically, inside the ogsi web-app) can override
+        this by setting the property in build.properties. -->
+   <property name="ogsi.schema.location" value="ROOT"/>
+   
+   
+   <!-- These names are used in several targets. -->
+   <property name="jar.name" value="${product.name}-${product.version}.jar"/>
+   <property name="gar.name" value="${product.name}-${product.version}.gar"/>
+   <property name="wsdl.directory" value="/schema/astrogrid/${product.subdirectory}"/>
+   <property name="wsdl.file"      value="${service.name}.wsdl"/>
+   <property name="wsdl.path"      value="${wsdl.directory}/${wsdl.file}"/>
+
+
+   <!-- Use this classpath (by reference) in all Java targets. -->
+   <path id="classpath">
+     <pathelement location="build/classes"/>
+     <fileset dir="${ogsi.home}/lib">
+       <include name="*.jar"/>
+     </fileset>
+     <pathelement location="build/schema"/>
+   </path>
+ 
+  <!-- Check that OGSI is available. Abort the build if not. -->
+  <target name="checkForOGSI">
+    <fail message="ogsi.home is not defined." unless="ogsi.home"/>
+    <available property="haveOGSI" file="${ogsi.home}" type="dir"/>
+    <fail message="OGSI is not available at ${ogsi.home}."
+          unless="haveOGSI"/>
+    <echo message="OGSI is taken from ${ogsi.home}."/>
+  </target>
+  
+  <!-- Take local copies of the schema and WSDL from the current
+       OGSI.  These files have to be referred to using relative URLs
+       that work after this package is deployed into OGSI; therefore,
+       at compile time, the files have to be copied into this package. -->
+   <target name="copyWSDL">
+     <copy todir="build/schema/ogsi" preservelastmodified="true">
+       <fileset dir="${ogsi.home}/schema/ogsi"/>
+     </copy>
+     <copy todir="build/schema" 
+         file="${ogsi.home}/schema/NStoPkg.properties"
+         preservelastmodified="true"/>
+   </target>
+
+   <!-- Generate WSDL for the service starting from a Java class defining the
+        interface to a web-service port. -->
+   <target name="generateWSDL" depends="copyWSDL">
+      <echo message="Generating ${wsdl.file} from ${service.java.package}.${port.interface.java.class}..."/>
+      <mkdir dir="build/classes"/>
+      <javac srcdir="src" 
+             destdir="build/classes" 
+             classpathref="classpath">
+         <include name="**/${port.interface.java.class}.java" />
+      </javac>
+      <mkdir dir="build/${wsdl.directory}"/>
+      <java classname="${java2wsdl.tool}" classpathref="classpath" dir="." fork="yes">
+         <arg value="-S"/>  
+         <arg value="${service.name}"/>  
+         <arg value="-l"/>  
+         <arg value="http://localhost/ogsa/services/"/>  
+         <arg value="-n"/>  
+         <arg value="${service.xml.namespace.uri}"/>  
+         <arg value="-o"/>
+         <arg value="build/${wsdl.path}"/>
+         <arg value="${service.java.package}.${port.interface.java.class}"/>
+      </java>
+      <antcall target="decorateWSDL"/>
+   </target>
+
+   <!-- Add the standard ports of the grid-service 
+        specification to the WSDL. -->
+   <target name="decorateWSDL">
+      <echo message="Adding standard ports to ${wsdl.file}..."/>
+      <java classname="${wsdldecorator.tool}" 
+            dir="build/${wsdl.directory}" fork="yes"
+            classpathref="classpath">
+         <arg value="../../ogsi/ogsi_bindings.wsdl"/>
+         <arg value="${wsdl.file}"/>
+      </java>
+   </target>
+
+   <!-- Generate Java classes, as source code, for the client
+        and the service, based on the WSDL file. -->
+   <target name="generateStubs" depends="generateWSDL">
+      <echo message="Generating stubs from ${wsdl.path} ..." />
+      <mkdir dir="build/src/java"/>
+      <java classname="${wsdl.tool}" dir="." fork="yes" 
+          classpathref="classpath">
+         <sysproperty key="java.protocol.handler.pkgs" 
+               value="org.globus.net.protocol" />
+         <arg value="-o"/>  
+         <arg value="build/src/java"/>  
+         <arg value="build/${wsdl.path}"/>
+      </java>
+      <delete dir="build/src/java/org/gridforum" includeEmptyDirs="true"/>
+      <delete dir="build/src/java/org/globus"    includeEmptyDirs="true"/>
+   </target>
+
+
+
+   <!-- Compile all the java code.  Do the generated classes first.
+        Put all the compiled classes in the org/astrogrid tree. -->
+   <target name="compile" depends="generateStubs">
+      <javac srcdir="build/src/java/org" 
+             classpathref="classpath"
+             listfiles="true"
+             destdir="build/classes"/>
+      <javac srcdir="src/java/org/astrogrid/ogsa/echo"
+             classpathref="classpath" 
+             listfiles="true" 
+             destdir="build/classes"/>
+   </target>
+  
+  
+   <!-- Put all the class files into a jar file.  Assume that all the
+        compiled classes are already stored in the org/astrogrid tree. -->
+   <target name="jar" depends="compile">
+      <copy file="config/security-config.xml"
+            todir="build/classes/org/astrogrid/ogsa/echo"/>
+      <jar destfile="build/${jar.name}" 
+           basedir="build/classes">
+         <include name="org/**/*.class"/>
+         <include name="org/**/security-config.xml"/>
+      </jar>
+   </target>
+
+
+   <!-- Generate a customized server-deploy.wsdd from a template. -->
+   <target name="generateWSDD" depends="generateWSDL">
+      <copy file="wsdd/server-deploy-template.wsdd" 
+            tofile="build/server-deploy.wsdd"
+            verbose="true">
+         <filterset>
+            <filter token="product.subdirectory" value="${product.subdirectory}"/>
+            <filter token="factory.name"         value="${factory.name}"/>
+            <filter token="wsdl.path"            value="${wsdl.path}"/>
+            <filter token="service.java.package" value="${service.java.package}"/>
+            <filter token="service.java.class"   value="${service.java.class}"/>
+         </filterset>
+      </copy>
+      <copy file="wsdd/server-undeploy-template.wsdd" 
+            tofile="build/server-undeploy.wsdd"
+            verbose="true">
+         <filterset>
+            <filter token="product.subdirectory" value="${product.subdirectory}"/>
+            <filter token="factory.name"         value="${factory.name}"/>
+            <filter token="wsdl.path"            value="${wsdl.path}"/>
+            <filter token="service.java.package" value="${service.java.package}"/>
+            <filter token="service.java.class"   value="${service.java.class}"/>
+         </filterset>
+      </copy>
+   </target>
+
+
+   <!-- Pack up the files that OGSA-TP needs in a "gar" file, which
+        is actually just a jar file with a particular pattern of contents.
+        The jar of classes is put inside the gar for distribution. -->
+   <target name="gar" depends="jar, generateWSDD">
+      <jar destfile="build/${gar.name}" basedir="build">
+         <include name="${wsdl.path}"/>
+         <include name="${jar.name}"/>
+         <include name="server-deploy.wsdd"/>
+      </jar>
+   </target>
+  
+  
+   <!-- Do the entire build in one go, but don't do the
+        deployment to the service container yet. -->
+   <target name="build" depends="checkForOGSI, gar"/>
+  
+  
+   <!-- Deploy the built product to the GT3 tree outside Tomcat.
+        Invoke ant on the build file in ogsi.home, telling it
+        The absolute path to the gar file in the CWD. -->
+   <target name="deploy" depends="checkForOGSI">
+      <ant dir="${ogsi.home}" target="deploy">
+         <property name="gar.name" value="${basedir}/build/${gar.name}"/>
+      </ant>
+   </target>
+  
+   <!-- Deploy the built product to GT3 in Tomcat. 
+        To make Axis aware of the service (i.e. to get the
+        information in server-deploy.wsdd spliced into Axis'
+        server-config.wsdd), go to the directory where Axis
+        keeps its server-config.wsdd and run the admin utility
+        there.  The utility always operates on server-config.wsdd
+        in the CWD: this is how it knows which copy of Axis
+        to work on. -->
+   <target name="deployToTomcat">
+      <copy toDir="${tomcat.home}/webapps/ogsa/WEB-INF/lib"
+            file="build/${jar.name}"/>
+      <mkdir dir="${tomcat.home}/webapps/${ogsi.schema.context}/${wsdl.directory}"/>
+      <copy todir="${tomcat.home}/webapps/${ogsi.schema.context}/${wsdl.directory}">
+        <fileset dir="build/${wsdl.directory}"/>
+      </copy>
+      <java classname="org.apache.axis.utils.Admin" 
+            dir="${tomcat.home}/webapps/ogsa/WEB-INF"
+            classpathref="classpath" fork="yes" failonerror="true">
+        <arg value="server"/>
+        <arg value="${basedir}/build/server-deploy.wsdd"/>
+      </java>
+   </target>
+  
+   <!-- Remove the built product to GT3 in Tomcat. -->
+   <target name="undeployFromTomcat">
+      <delete file="${tomcat.home}/webapps/ogsa/WEB-INF/lib/${jar.name}"/>
+      <delete dir="${tomcat.home}/webapps/${ogsi.schema.context}/${wsdl.directory}"/>
+      <java classname="org.apache.axis.utils.Admin" 
+            dir="${tomcat.home}/webapps/ogsa/WEB-INF"
+            classpathref="classpath" fork="yes" failonerror="true">
+        <arg value="server"/>
+        <arg value="${basedir}/build/server-undeploy.wsdd"/>
+      </java>
+   </target>
+   
+   
+   <!-- Clear out remains of previous builds.
+        NB: this also deletes the files needed for installation
+        in OGSA-TP, so do this after deploying the service. -->
+   <target name="distclean">
+      <delete dir="build"    includeEmptyDirs="true"/>
+   </target>
+
+
+  <property name="echo.service.factory" 
+            value="http://cass111.ast.cam.ac.uk:8080/ogsa/services/astrogrid/echo/EchoFactory"/>
+
+  <target name="testEcho">
+    <java dir="."
+          fork="true"
+          classpathref="classpath"
+          classname="org.astrogrid.ogsa.echo.TestEcho">
+      <arg value="ping"/>
+      <arg value="${echo.service.factory}"/>
+    </java>
+  </target>
+
+  <target name="testWhoAmI">
+    <java dir="."
+          fork="true"
+          classpathref="classpath"
+          classname="org.astrogrid.ogsa.echo.TestWhoAmI">
+      <arg value="${echo.service.factory}"/>
+    </java>
+  </target>
+
+  <target name="testDelegation">
+    <java dir="."
+          fork="true"
+          classpathref="classpath"
+          classname="org.astrogrid.ogsa.echo.TestDelegation">
+      <arg value="${echo.service.factory}"/>
+    </java>
+  </target>
+
+
+
+</project>
