@@ -49,7 +49,7 @@ import ORG.oclc.oai.server.verb.ServerVerb;
  * @author Jeffrey A. Young, OCLC Online Computer Library Center
  */
 public abstract class AbstractCatalog {
-    private static final boolean debug = false;
+    private static final boolean debug = true;
     /**
      * The RecordFactory that understands how to convert this database's
      * native "item" to the various metadataFormats to be supported.
@@ -368,6 +368,8 @@ public abstract class AbstractCatalog {
 	    properties.getProperty("AbstractCatalog.oaiCatalogClassName");
 	String recordFactoryClassName =
 	    properties.getProperty("AbstractCatalog.recordFactoryClassName");
+        System.out.println("the catalog name found in the factory = " + oaiCatalogClassName);
+        System.out.println("the record name found in the factory = " + recordFactoryClassName);
         if (oaiCatalogClassName == null) {
             throw new ClassNotFoundException(
                   "AbstractCatalog.oaiCatalogClassName is missing from properties file");

@@ -92,10 +92,10 @@ public class RegistryService {
       String selectQuery = "<query><selectionSequence>" +
             "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
             "<selectionOp op='$and$'/>" +
-            "<selection item='AuthorityID' itemOp='EQ' value='" +
+            "<selection item='vr:Identifier/vr:AuthorityID' itemOp='EQ' value='" +
                 authorityID + "'/>" +
             "<selectionOp op='AND'/>" +
-            "<selection item='@*:type' itemOp='EQ' value='RegistryType'/>"  +
+            "<selection item='@xsi:type' itemOp='EQ' value='RegistryType'/>"  +
          "</selectionSequence></query>";
       
       try {         
