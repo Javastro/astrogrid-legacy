@@ -168,17 +168,13 @@ public class FileTransfer {
   private void transfer(final String urlStr, final File localFile)
       throws FileTransferException {
 
-    GlobusInputStream  in  = null;
-    GlobusOutputStream out = null;
-    GlobusURL          url = null;
-
     // Catch any exception and rethrow as a FileTransferException
     // with the original exception as the cause.
     try {
 
       // Parse the source URL.  GlobusURL is used insted of java.net.URL
       // in order to include gsiftp URLs.
-      url = new GlobusURL(urlStr);
+      GlobusURL url = new GlobusURL(urlStr);
 
       // Do the transfer.
       if (url.getProtocol().equalsIgnoreCase("gsiftp") ||
