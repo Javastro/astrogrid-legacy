@@ -148,7 +148,7 @@
             <tr>
               <td colspan="4">
                 <div style="text-align: center; background-color: lightblue;">
-                  <input class="agActionButton" type="submit" name="action" value="Remember these details" />
+                  <input class="agActionButton" type="submit" name="action" value="update step details" />
                 </div>
               </td>
             </tr>                        
