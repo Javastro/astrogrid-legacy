@@ -1,4 +1,4 @@
-/*$Id: RegistryToolLocator.java,v 1.14 2005/03/13 07:13:39 clq2 Exp $
+/*$Id: RegistryToolLocator.java,v 1.15 2005/03/30 15:19:19 nw Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -132,7 +132,7 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
                     if (endpoint != null && endpoint.trim().length() > 0) { // looks ok, add it to the list.
                         try {                       
                             URL ep = new URL(endpoint); // check it's a valid url..
-                            endpoints.add(ep);
+                            endpoints.add(ep.toString());
                         } catch (MalformedURLException e) {
                             logger.warn("Service " + serviceName + "has duff endpoint URL",e);
                         }
@@ -247,6 +247,9 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: RegistryToolLocator.java,v $
+Revision 1.15  2005/03/30 15:19:19  nw
+fixed type cast problem
+
 Revision 1.14  2005/03/13 07:13:39  clq2
 merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
 
