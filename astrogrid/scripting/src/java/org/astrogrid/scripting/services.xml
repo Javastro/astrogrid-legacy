@@ -1,5 +1,5 @@
 <services>
-<service type="Application">
+<service type="CEA">
 	<endpoint>http://astrogrid.jb.man.ac.uk:8080/astrogrid-applications/services/ApplicationControllerService</endpoint>
 	<description>An applications service</description>
 </service>
@@ -14,17 +14,5 @@
 <service type="Datacenter">
 	<endpoint>http://vm07.astrogrid.org:8080/pal/services/AxisDataServer</endpoint>
 	<description>merlin, test</description>
-</service>
-<service type="Myspace">
-	<endpoint>http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager</endpoint>
-	<description>ROE</description>
-</service>
-<service type="Myspace">
-	<endpoint>http://vm05.astrogrid.org:8080/astrogrid-mySpace/services/MySpaceManager </endpoint>
-	<description>Leicester</description>
-</service>
-<service type="Myspace">
-	<endpoint>http://astrogrid.jb.man.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager</endpoint>
-	<description>Jodrell Bank</description>
 </service>
 </services>
