@@ -20,10 +20,10 @@
 	<property name="tomcat.port" value="8080"/>
 	
 	<property name="tool.dir" value="/home/applications/tools"/>
-     <!-- iteration specific -->
-	<property name="astrogrid.release" value="Itn05_release" />
-	<property name="registry.authorityid" value="org.astrogrid.itn05"/>
-	<property name="registry.location" value="http://cadairidris.star.le.ac.uk:8080/astrogrid-registry-${astrogrid.release}/services/Registry"/>
+     <!-- iteration specific -->	
+	<property name="astrogrid.release" value="Itn06_case3-SNAPSHOT" />
+	<property name="registry.authorityid" value="org.astrogrid.itn06"/>
+	<property name="registry.location" value="http://${tomcat.host}:8080/astrogrid-registry-${astrogrid.release}/services/Registry"/>
 	
 	<!-- other, non-configurable properties -->
 	<property name="tomcat.url" value="http://${tomcat.host}:${tomcat.port}"/>
@@ -36,7 +36,7 @@
 	<property name="config.webapp.name" 
 		value="astrogrid-configuration-${astrogrid.release}" />
 	<j:if test="${context.getVariable('registry.authorityid') == null}">
-		<j:set var="registry.authorityid" value="org.astrogrid.itn05"/>
+		<j:set var="registry.authorityid" value="org.astrogrid.itn06"/>
 	</j:if>
 	<!-- tokens to subst into config files -->
 	<filter token="WORKDIR" value="${work.dir}" />
@@ -187,7 +187,8 @@
 		<sleep seconds="2" />
 		<attainGoal name="myspace-deploy" />
 		<sleep seconds="2" />
-		<attainGoal name="community-deploy"/>\
+		<attainGoal name="community-deploy"/>
+		<attainGoal name="filestore-deploy" />
 		<sleep seconds="2" />
 		<attainGoal name="portal-deploy" />
 		<sleep seconds="4" />
@@ -199,6 +200,7 @@
 		<attainGoal name="jes-undeploy" />
 		<attainGoal name="reg-undeploy" />
 		<attainGoal name="myspace-undeploy" />
+		<attainGoal name="filestore-undeploy" />
 		<attainGoal name="community-undeploy" />
 		<attainGoal name="portal-undeploy" />
 	</goal>
@@ -303,6 +305,19 @@
 		<ag:register entry="${work.dir}/pal/config/RegistryEntry.xml"/>
 		
 	</goal>
+	
+	
+   <goal name="setup-filestore" description="filestore setup">
+	<echo>Configuring Filestore repository</echo>
+    <mkdir dir="${work.dir}/filestore/repository"/>
+    <mkdir dir="${work.dir}/filestore/data"/>
+	<copy todir="${work.dir}">
+		<fileset dir="work">
+			<include name="**/filestore/data/*"/>
+		</fileset>
+	</copy>
+   </goal>
+	
 	
 	<goal name="setup-community" description="Community setup" prereqs="community-toolkit">
 		<!--+
@@ -526,7 +541,7 @@
 				password="${tomcat.manager.password}" 
 				update="true"
 				path="/exist" 
-				war="file://${temporary.dir}/exist-SNAPSHOT.war" />
+				war="file://${temporary.dir}/astrogrid-exist-${pom.currentVersion}.war" />
 		</j:catch>
 	</goal>
 	<goal name="exist-deploy" prereqs="tomcat-declare-tasks" >
@@ -536,7 +551,7 @@
 				password="${tomcat.manager.password}" 
 				update="true"
 				path="/exist" 
-				war="file://${temporary.dir}/exist-SNAPSHOT.war" />
+				war="file://${temporary.dir}/astrogrid-exist-${pom.currentVersion}.war" />
 		</j:catch>
 		
 	</goal>
@@ -546,6 +561,10 @@
 	<goal name="myspace-deploy" prereqs="tomcat-declare-tasks">
 		<ag:GetDeploy name="mySpace" />
 	</goal>
+	<goal name="filestore-deploy" prereqs="tomcat-declare-tasks">
+		<ag:GetDeploy name="filestore" />
+	</goal>
+	
 	<goal name="pal-deploy" prereqs="tomcat-declare-tasks" >
 		<echo>note that pal takes its local config from ${work.dir}/pal/config/datacenter.properties</echo>
 		<!-- note that this is not made a webapp for security reasons - also perhaps not all of the standard config is needed.... -->
@@ -576,6 +595,9 @@
 	</goal>
 	<goal name="myspace-undeploy" prereqs="tomcat-declare-tasks" >
 		<ag:UnDeploy name="mySpace"/>
+	</goal>
+	<goal name="filestore-undeploy" prereqs="tomcat-declare-tasks" >
+		<ag:UnDeploy name="filestore"/>
 	</goal>
 	<goal name="apps-undeploy" prereqs="tomcat-declare-tasks" >
 		<ag:UnDeploy name="applications"/>

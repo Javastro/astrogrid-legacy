@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.3 2004/08/04 12:23:28 pah Exp $ -->
+<!-- $Id: project.xml,v 1.4 2004/08/12 18:02:05 pah Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <groupId>org.astrogrid</groupId>
     <id>astrogrid-deploy</id>
     <name>Deployment scripts</name>
-    <currentVersion>Itn05_release</currentVersion>
+    <currentVersion>SNAPSHOT</currentVersion>
     <organization>
         <name>AstroGrid</name>
         <url>http://www.astrogrid.org</url>
@@ -25,10 +25,11 @@
     <dependencies>
         <!-- war files to install -->
        <dependency>
-                <artifactId>exist</artifactId>
-                <groupId>exist</groupId>
-                <version>SNAPSHOT</version>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-exist</artifactId>
+	        <version>${pom.currentVersion}</version>
                 <type>war</type>
+            <properties/>
         </dependency>
         <!-- cheeky little database driver -->
                    <dependency>
@@ -60,7 +61,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-install</artifactId>
-            <version>Itn05_release</version>
+            <version>Itn06_case3-SNAPSHOT</version>
             <type>zip</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
@@ -72,7 +73,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-install</artifactId>
-            <version>Itn05_release</version>
+            <version>Itn06_case3-SNAPSHOT</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>

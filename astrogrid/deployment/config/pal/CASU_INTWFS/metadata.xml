@@ -1,0 +1,799 @@
+<?xml version="1.0"?>
+<DataCenterMetadata version="0.1">
+
+<!--
+The INT wide-field survey is an imaging survey in 9 filter-bands.
+
+In the original data, each observation, to which a unique run-number
+is attached, images one field in one filter-band. Not all areas of
+the sky in the survey have been observed in all bands and some have
+been been observed more than once in a given band.
+
+The intermediate data-sets are catalogues of celestial objects detected
+in the images. There is one of these catalogues per run-number. Each
+row of these intermediate catalogues contains data about one celestial
+object taken from one observation in one filter-band.
+
+This is a merged object-catalogue made by positional matching between
+objects in the intermediate catalogues. Each row of this catalogue
+describes one celestial object, but may contain data from more than one
+observation. For each photometric quantity, there is one column for each
+of the nine bands. These columns contains nulls where the object is not
+detected in that filter-band.
+-->
+
+<!-- Unique index for the celestial object -->
+
+<column table="obj" name="objID">
+ <ucd>ID_NUMBER</ucd>
+ <description>Some index number for the celestial object</description>
+</column>
+
+
+<!-- Celestial position -->
+
+<column table="obj" name="ra">
+ <description>Right ascension of celestial object</description>
+ <ucd>POS_EQ_RA_MAIN</ucd>
+ <units>deg</units>
+</column>
+
+<column table="obj" name="dec">
+ <description>Declination of celestial object</description>
+ <ucd>POS_EQ_DEC</ucd>
+ <units>deg</units>
+</column>
+
+<column table="obj" name="cx">
+</column>
+
+<column table="obj" name="cy">
+</column>
+
+<column table="obj" name="cz">
+</column>
+
+<column table="obj" name="htmID">
+ <description>Hierarchical Triangular Mesh Index</description>
+</column>
+
+
+<!-- U-band data -->
+
+<column table="obj" name="run_U">
+ <description>INT run-number of observation yielding U-band photometry</description>
+ <ucd>ID_EXPOSURE</ucd>
+</column>
+
+<column table="obj" name="ccd_U">
+ <description>Number of CCD chip in the camera on which the object falls, U-band observation</description>
+ <ucd>ID_IDENTIFIER</ucd>
+</column>
+
+<column table="obj" name="number_U">
+ <description>Number of object in catalogue for single observation, U band</description>
+ <ucd>ID_IDENTIFIER</ucd>
+</column>
+
+<column table="obj" name="offsetRa_U">
+ <description>Offset of RA measured in U-band observation from that in ra column</description>
+ <ucd>POS_EQ_RA_OFF</ucd>
+</column>
+
+<column table="obj" name="offsetDec_U">
+ <description>Offset of declination measured in U-band observation from that in dec column</description>
+ <ucd>POS_EQ_RA_OFF</ucd>
+</column>
+
+<column table="obj" name="x_U">
+ <description>Position of object on CCD, x coordinate, U-band observation</description>
+ <ucd>POS_CCD_X</ucd>
+ <units>pix</units>
+</column>
+
+<column table="obj" name="y_U">
+ <description>Position of object on CCD, y coordinate, U-band observation</description>
+ <ucd>POS_CCD_Y</ucd>
+ <units>pix</units>
+</column>
+
+<column table="obj" name="flux_U">
+ <description>Photometric flux in U band (instrumental scale)</description>
+ <ucd>ERROR</ucd>
+</column>
+
+<column table="obj" name="fluxErr_U">
+ <description>Uncertainty in photometric flux, U band (instrumental scale)</description>
+ <ucd>ERROR</ucd>
+</column>
+
+<column table="obj" name="U">
+ <description>Photometric magnitude in U band</description>
+ <ucd>PHOT_MAG_U</ucd>
+ <units>mag</units>
+</column>
+
+<column table="obj" name="Err_U">
+ <description>Uncertainty in photometric magnitude, U band</description>
+ <ucd>ERROR</ucd>
+ <units>mag</units>
+</column>
+
+<column table="obj" name="type_U">
+ <description>Star/galaxy/noise classification-code, derived from U-band observation</description>
+ <ucd>CLASS_OBJECT</ucd>
+</column>
+
+<column table="obj" name="stellar_U">
+</column>
+
+<column table="obj" name="isoA_U">
+</column>
+
+<column table="obj" name="isoB_U">
+</column>
+
+<column table="obj" name="isoPhi_U">
+ <description>Position angle of isophotes of object, derived from U-band observation</description>
+ <ucd>POS_POS-ANG</ucd>
+ <units>deg</units>
+</column>
+
+
+<!-- g-band data -->
+
+<column table="obj" name="run_g">
+ <description>INT run-number of observation yielding g-band photometry</description>
+ <ucd>ID_EXPOSURE</ucd>
+</column>
+
+<column table="obj" name="ccd_g">
+ <description>Number of CCD chip in the camera on which the object falls, g-band observation</description>
+ <ucd>ID_IDENTIFIER</ucd>
+</column>
+
+<column table="obj" name="number_g">
+ <description>Number of object in catalogue for single observation, g band</description>
+ <ucd>ID_IDENTIFIER</ucd>
+</column>
+
+<column table="obj" name="offsetRa_g">
+ <description>Offset of RA measured in g-band observation from that in ra column</description>
+ <ucd>POS_EQ_RA_OFF</ucd>
+</column>
+
+<column table="obj" name="offsetDec_g">
+ <description>Offset of declination measured in g-band observation from that in dec column</description>
+ <ucd>POS_EQ_RA_OFF</ucd>
+</column>
+
+<column table="obj" name="x_g">
+ <description>Position of object on CCD, x coordinate, g-band observation</description>
+ <ucd>POS_CCD_X</ucd>
+ <units>pix</units>
+</column>
+
+<column table="obj" name="y_g">
+ <description>Position of object on CCD, y coordinate, g-band observation</description>
+ <ucd>POS_CCD_Y</ucd>
+ <units>pix</units>
+</column>
+
+<column table="obj" name="flux_g">
+ <description>Photometric flux in g band (instrumental scale)</description>
+ <ucd>PHOT_FLUX_NORM</ucd>
+</column>
+
+<column table="obj" name="fluxErr_g">
+ <description>Uncertainty in photometric flux, g band (instrumental scale)</description>
+ <ucd>ERROR</ucd>
+</column>
+
+<column table="obj" name="g">
+ <description>Photometric magnitude in g band</description>
+ <ucd>PHOT_SDSS_G</ucd>
+ <units>mag</units>
+</column>
+
+<column table="obj" name="Err_g">
+ <description>Uncertainty in photometric magnitude, g band</description>
+ <ucd>ERROR</ucd>
+ <units>mag</units>
+</column>
+
+<column table="obj" name="type_g">
+ <description>Star/galaxy/noise classification-code, derived from g-band observation</description>
+ <ucd>CLASS_OBJECT</ucd>
+</column>
+
+<column table="obj" name="stellar_g">
+</column>
+
+<column table="obj" name="isoA_g">
+</column>
+
+<column table="obj" name="isoB_g">
+</column>
+
+<column table="obj" name="isoPhi_g">
+ <description>Position angle of isophotes of object, derived from g-band observation</description>
+ <ucd>POS_POS-ANG</ucd>
+ <units>deg</units>
+</column>
+
+
+<!-- r-band data -->
+
+<column table="obj" name="run_r">
+ <description>INT run-number of observation yielding r-band photometry</description>
+ <ucd>ID_EXPOSURE</ucd>
+</column>
+
+<column table="obj" name="ccd_r">
+ <description>Number of CCD chip in the camera on which the object falls, r-band observation</description>
+ <ucd>ID_IDENTIFIER</ucd>
+</column>
+
+<column table="obj" name="number_r">
+ <description>Number of object in catalogue for single observation, r band</description>
+ <ucd>ID_IDENTIFIER</ucd>
+</column>
+
+<column table="obj" name="offsetRa_r">
+ <description>Offset of RA measured in r-band observation from that in ra column</description>
+ <ucd>POS_EQ_RA_OFF</ucd>
+</column>
+
+<column table="obj" name="offsetDec_r">
+ <description>Offset of declination measured in r-band observation from that in dec column</description>
+ <ucd>POS_EQ_RA_OFF</ucd>
+</column>
+
+<column table="obj" name="x_r">
+ <description>Position of object on CCD, x coordinate, r-band observation</description>
+ <ucd>POS_CCD_X</ucd>
+ <units>pix</units>
+</column>
+
+<column table="obj" name="y_r">
+ <description>Position of object on CCD, y coordinate, r-band observation</description>
+ <ucd>POS_CCD_Y</ucd>
+ <units>pix</units>
+</column>
+
+<column table="obj" name="flux_r">
+ <description>Photometric flux in r band (instrumental scale)</description>
+ <ucd>PHOT_FLUX_NORM</ucd>
+</column>
+
+<column table="obj" name="fluxErr_r">
+ <description>Uncertainty in photometric flux, r band (instrumental scale)</description>
+ <ucd>ERROR</ucd>
+</column>
+
+<column table="obj" name="r">
+ <description>Photometric magnitude in r band</description>
+ <ucd>PHOT_SDSS_R</ucd>
+ <units>mag</units>
+</column>
+
+<column table="obj" name="Err_r">
+ <description>Uncertainty in photometric magnitude, r band</description>
+ <ucd>ERROR</ucd>
+ <units>mag</units>
+</column>
+
+<column table="obj" name="type_r">
+ <description>Star/galaxy/noise classification-code, derived from r-band observation</description>
+ <ucd>CLASS_OBJECT</ucd>
+</column>
+
+<column table="obj" name="stellar_r">
+</column>
+
+<column table="obj" name="isoA_r">
+</column>
+
+<column table="obj" name="isoB_r">
+</column>
+
+<column table="obj" name="isoPhi_r">
+ <description>Position angle of isophotes of object, derived from r-band observation</description>
+ <ucd>POS_POS-ANG</ucd>
+ <units>deg</units>
+</column>
+
+
+<!-- i-band data -->
+
+<column table="obj" name="run_i">
+ <description>INT run-number of observation yielding i-band photometry</description>
+ <ucd>ID_EXPOSURE</ucd>
+</column>
+
+<column table="obj" name="ccd_i">
+ <description>Number of CCD chip in the camera on which the object falls, i-band observation</description>
+ <ucd>ID_IDENTIFIER</ucd>
+</column>
+
+<column table="obj" name="number_i">
+ <description>Number of object in catalogue for single observation, i band</description>
+ <ucd>ID_IDENTIFIER</ucd>
+</column>
+
+<column table="obj" name="offsetRa_i">
+ <description>Offset of RA measured in i-band observation from that in ra column</description>
+ <ucd>POS_EQ_RA_OFF</ucd>
+</column>
+
+<column table="obj" name="offsetDec_i">
+ <description>Offset of declination measured in i-band observation from that in dec column</description>
+ <ucd>POS_EQ_RA_OFF</ucd>
+</column>
+
+<column table="obj" name="x_i">
+ <description>Position of object on CCD, x coordinate, i-band observation</description>
+ <ucd>POS_CCD_X</ucd>
+ <units>pix</units>
+</column>
+
+<column table="obj" name="y_i">
+ <description>Position of object on CCD, y coordinate, i-band observation</description>
+ <ucd>POS_CCD_</ucd>
+ <units>pix</units>
+</column>
+
+<column table="obj" name="flux_i">
+ <description>Photometric flux in i band (instrumental scale)</description>
+ <ucd>PHOT_FLUX_NORM</ucd>
+</column>
+
+<column table="obj" name="fluxErr_i">
+ <description>Uncertainty in photometric flux, i band (instrumental scale)</description>
+ <ucd>ERROR</ucd>
+</column>
+
+<column table="obj" name="i">
+ <description>Photometric magnitude in i band</description>
+ <ucd>PHOT_SDSS_I</ucd>
+ <units>mag</units>
+</column>
+
+<column table="obj" name="Err_i">
+ <description>Uncertainty in photometric magnitude, i band</description>
+ <ucd>ERROR</ucd>
+ <units>mag</units>
+</column>
+
+<column table="obj" name="type_i">
+ <description>Star/galaxy/noise classification-code, derived from i-band observation</description>
+ <ucd>CLASS_OBJECT</ucd>
+</column>
+
+<column table="obj" name="stellar_i">
+</column>
+
+<column table="obj" name="isoA_i">
+</column>
+
+<column table="obj" name="isoB_i">
+</column>
+
+<column table="obj" name="isoPhi_i">
+ <description>Position angle of isophotes of object, derived from i-band observation</description>
+ <ucd>POS_POS-ANG</ucd>
+ <units>deg</units>
+</column>
+
+
+<!-- z-band data -->
+
+<column table="obj" name="run_z">
+ <description>INT run-number of observation yielding z-band photometry</description>
+ <ucd>ID_EXPOSURE</ucd>
+</column>
+
+<column table="obj" name="ccd_z">
+ <description>Number of CCD chip in the camera on which the object falls, z-band observation</description>
+ <ucd>ID_IDENTIFIER</ucd>
+</column>
+
+<column table="obj" name="number_z">
+ <description>Number of object in catalogue for single observation, z band</description>
+ <ucd>ID_IDENTIFIER</ucd>
+</column>
+
+<column table="obj" name="offsetRa_z">
+ <description>Offset of RA measured in z-band observation from that in ra column</description>
+ <ucd>POS_EQ_RA_OFF</ucd>
+</column>
+
+<column table="obj" name="offsetDec_z">
+ <description>Offset of declination measured in z-band observation from that in dec column</description>
+ <ucd>POS_EQ_RA_OFF</ucd>
+</column>
+
+<column table="obj" name="x_z">
+ <description>Position of object on CCD, x coordinate, z-band observation</description>
+ <ucd>POS_CCD_X</ucd>
+ <units>pix</units>
+</column>
+
+<column table="obj" name="y_z">
+ <description>Position of object on CCD, y coordinate, z-band observation</description>
+ <ucd>POS_CCD_Y</ucd>
+ <units>pix</units>
+</column>
+
+<column table="obj" name="flux_z">
+ <description>Photometric flux in z band (instrumental scale)</description>
+ <ucd>PHOT_FLUX_NORM</ucd>
+</column>
+
+<column table="obj" name="fluxErr_z">
+ <description>Uncertainty in photometric flux, z band (instrumental scale)</description>
+ <ucd>ERROR</ucd>
+</column>
+
+<column table="obj" name="z">
+ <description>Photometric magnitude in z band</description>
+ <ucd>PHOT_MAG_z</ucd>
+ <units>mag</units>
+</column>
+
+<column table="obj" name="Err_z">
+ <description>Uncertainty in photometric magnitude, z band</description>
+ <ucd>ERROR</ucd>
+ <units>mag</units>
+</column>
+
+<column table="obj" name="type_z">
+ <description>Star/galaxy/noise classification-code, derived from z-band observation</description>
+ <ucd>CLASS_OBJECT</ucd>
+</column>
+
+<column table="obj" name="stellar_z">
+</column>
+
+<column table="obj" name="isoA_z">
+</column>
+
+<column table="obj" name="isoB_z">
+</column>
+
+<column table="obj" name="isoPhi_z">
+ <description>Position angle of isophotes of object, derived from z-band observation</description>
+ <ucd>POS_POS-ANG</ucd>
+ <units>deg</units>
+</column>
+
+
+<!-- B-band data -->
+
+<column table="obj" name="run_B">
+ <description>INT run-number of observation yielding B-band photometry</description>
+ <ucd>ID_EXPOSURE</ucd>
+</column>
+
+<column table="obj" name="ccd_B">
+ <description>Number of CCD chip in the camera on which the object falls, B-band observation</description>
+ <ucd>ID_IDENTIFIER</ucd>
+</column>
+
+<column table="obj" name="number_B">
+ <description>Number of object in catalogue for single observation, B band</description>
+ <ucd>ID_IDENTIFIER</ucd>
+</column>
+
+<column table="obj" name="offsetRa_B">
+ <description>Offset of RA measured in B-band observation from that in ra column</description>
+ <ucd>POS_EQ_RA_OFF</ucd>
+</column>
+
+<column table="obj" name="offsetDec_B">
+ <description>Offset of declination measured in B-band observation from that in dec column</description>
+ <ucd>POS_EQ_RA_OFF</ucd>
+</column>
+
+<column table="obj" name="x_B">
+ <description>Position of object on CCD, x coordinate, B-band observation</description>
+ <ucd>POS_CCD_X</ucd>
+ <units>pix</units>
+</column>
+
+<column table="obj" name="y_B">
+ <description>Position of object on CCD, y coordinate, B-band observation</description>
+ <ucd>POS_CCD_Y</ucd>
+ <units>pix</units>
+</column>
+
+<column table="obj" name="flux_B">
+ <description>Photometric flux in B band (instrumental scale)</description>
+ <ucd>PHOT_FLUX_NORM</ucd>
+</column>
+
+<column table="obj" name="fluxErr_B">
+ <description>Uncertainty in photometric flux, B band (instrumental scale)</description>
+ <ucd>ERROR</ucd>
+</column>
+
+<column table="obj" name="B">
+ <description>Photometric magnitude in B band</description>
+ <ucd>PHOT_MAG_B</ucd>
+ <units>mag</units>
+</column>
+
+<column table="obj" name="Err_B">
+ <description>Uncertainty in photometric magnitude, B band</description>
+ <ucd>ERROR</ucd>
+ <units>mag</units>
+</column>
+
+<column table="obj" name="type_B">
+ <description>Star/galaxy/noise classification-code, derived from B-band observation</description>
+ <ucd>CLASS_OBJECT</ucd>
+</column>
+
+<column table="obj" name="stellar_B">
+</column>
+
+<column table="obj" name="isoA_B">
+</column>
+
+<column table="obj" name="isoB_B">
+</column>
+
+<column table="obj" name="isoPhi_B">
+ <description>Position angle of isophotes of object, derived from B-band observation</description>
+ <ucd>POS_POS-ANG</ucd>
+ <units>deg</units>
+</column>
+
+
+<!-- V-band data -->
+
+<column table="obj" name="run_V">
+ <description>INT run-number of observation yielding V-band photometry</description>
+ <ucd>ID_EXPOSURE</ucd>
+</column>
+
+<column table="obj" name="ccd_V">
+ <description>Number of CCD chip in the camera on which the object falls, V-band observation</description>
+ <ucd>ID_IDENTIFIER</ucd>
+</column>
+
+<column table="obj" name="number_V">
+ <description>Number of object in catalogue for single observation, V band</description>
+ <ucd>ID_IDENTIFIER</ucd>
+</column>
+
+<column table="obj" name="offsetRa_V">
+ <description>Offset of RA measured in V-band observation from that in ra column</description>
+ <ucd>POS_EQ_RA_OFF</ucd>
+</column>
+
+<column table="obj" name="offsetDec_V">
+ <description>Offset of declination measured in V-band observation from that in dec column</description>
+ <ucd>POS_EQ_RA_OFF</ucd>
+</column>
+
+<column table="obj" name="x_V">
+ <description>Position of object on CCD, x coordinate, V-band observation</description>
+ <ucd>POS_CCD_X</ucd>
+ <units>pix</units>
+</column>
+
+<column table="obj" name="y_V">
+ <description>Position of object on CCD, y coordinate, V-band observation</description>
+ <ucd>POS_CCD_Y</ucd>
+ <units>pix</units>
+</column>
+
+<column table="obj" name="flux_V">
+ <description>Photometric flux in V band (instrumental scale)</description>
+ <ucd>PHOT_FLUX_NORM</ucd>
+</column>
+
+<column table="obj" name="fluxErr_V">
+ <description>Uncertainty in photometric flux, V band (instrumental scale)</description>
+ <ucd>ERROR</ucd>
+</column>
+
+<column table="obj" name="V">
+ <description>Photometric magnitude in V band</description>
+ <ucd>PHOT_MAG_V</ucd>
+ <units>mag</units>
+</column>
+
+<column table="obj" name="Err_V">
+ <description>Uncertainty in photometric magnitude, V band</description>
+ <ucd>ERROR</ucd>
+ <units>mag</units>
+</column>
+
+<column table="obj" name="type_V">
+ <description>Star/galaxy/noise classification-code, derived from V-band observation</description>
+ <ucd>CLASS_OBJECT</ucd>
+</column>
+
+<column table="obj" name="stellar_V">
+</column>
+
+<column table="obj" name="isoA_V">
+</column>
+
+<column table="obj" name="isoB_V">
+</column>
+
+<column table="obj" name="isoPhi_V">
+ <description>Position angle of isophotes of object, derived from V-band observation</description>
+ <ucd>POS_POS-ANG</ucd>
+ <units>deg</units>
+</column>
+
+
+<!-- Harris-R-band data -->
+
+<column table="obj" name="run_Harris_R">
+ <description>INT run-number of observation yielding Harris-R-band photometry</description>
+ <ucd>ID_EXPOSURE</ucd>
+</column>
+
+<column table="obj" name="ccd_Harris_R">
+ <description>Number of CCD chip in the camera on which the object falls, Harris-R-band observation</description>
+ <ucd>ID_IDENTIFIER</ucd>
+</column>
+
+<column table="obj" name="number_Harris_R">
+ <description>Number of object in catalogue for single observation, Harris-R band</description>
+ <ucd>ID_IDENTIFIER</ucd>
+</column>
+
+<column table="obj" name="offsetRa_Harris_R">
+ <description>Offset of RA measured in Harris-R-band observation from that in ra column</description>
+ <ucd>POS_EQ_RA_OFF</ucd>
+</column>
+
+<column table="obj" name="offsetDec_Harris_R">
+ <description>Offset of declination measured in Harris-R-band observation from that in dec column</description>
+ <ucd>POS_EQ_RA_OFF</ucd>
+</column>
+
+<column table="obj" name="x_Harris_R">
+ <description>Position of object on CCD, x coordinate, Harris-R-band observation</description>
+ <ucd>POS_CCD_X</ucd>
+ <units>pix</units>
+</column>
+
+<column table="obj" name="y_Harris_R">
+ <description>Position of object on CCD, y coordinate, Harris-R-band observation</description>
+ <ucd>POS_CCD_Y</ucd>
+ <units>pix</units>
+</column>
+
+<column table="obj" name="flux_Harris_R">
+ <description>Photometric flux in Harris-R band (instrumental scale)</description>
+ <ucd>PHOT_FLUX_NORM</ucd>
+</column>
+
+<column table="obj" name="fluxErr_Harris_R">
+ <description>Uncertainty in photometric flux, Harris-R band (instrumental scale)</description>
+ <ucd>ERROR</ucd>
+</column>
+
+<column table="obj" name="Harris_R">
+ <description>Photometric magnitude in Harris-R band</description>
+ <ucd>PHOT_MAG_R</ucd>
+ <units>mag</units>
+</column>
+
+<column table="obj" name="Err_Harris_R">
+ <description>Uncertainty in photometric magnitude, Harris-R band</description>
+ <ucd>ERROR</ucd>
+ <units>mag</units>
+</column>
+
+<column table="obj" name="type_Harris_R">
+ <description>Star/galaxy/noise classification-code, derived from Harris-R-band observation</description>
+ <ucd>CLASS_OBJECT</ucd>
+</column>
+
+<column table="obj" name="stellar_Harris_R">
+</column>
+
+<column table="obj" name="isoA_Harris_R">
+</column>
+
+<column table="obj" name="isoB_Harris_R">
+</column>
+
+<column table="obj" name="isoPhi_Harris_R">
+ <description>Position angle of isophotes of object, derived from Harris-R-band observation</description>
+ <ucd>POS_POS-ANG</ucd>
+ <units>deg</units>
+</column>
+
+
+<!-- RGO-I-band data -->
+
+<column table="obj" name="run_RGO_I">
+ <description>INT run-number of observation yielding RGO-I-band photometry</description>
+ <ucd>ID_EXPOSURE</ucd>
+</column>
+
+<column table="obj" name="ccd_RGO_I">
+ <description>Number of CCD chip in the camera on which the object falls, RGO-I-band observation</description>
+ <ucd>ID_IDENTIFIER</ucd>
+</column>
+
+<column table="obj" name="number_RGO_I">
+ <description>Number of object in catalogue for single observation, RGO-I band</description>
+ <ucd>ID_IDENTIFIER</ucd>
+</column>
+
+<column table="obj" name="offsetRa_RGO_I">
+ <description>Offset of RA measured in RGO-I-band observation from that in ra column</description>
+ <ucd>POS_EQ_RA_OFF</ucd>
+</column>
+
+<column table="obj" name="offsetDec_RGO_I">
+ <description>Offset of declination measured in RGO-I-band observation from that in dec column</description>
+ <ucd>POS_EQ_RA_OFF</ucd>
+</column>
+
+<column table="obj" name="x_RGO_I">
+ <description>Position of object on CCD, x coordinate, RGO-I-band observation</description>
+ <ucd>POS_CCD_X</ucd>
+ <units>pix</units>
+</column>
+
+<column table="obj" name="y_RGO_I">
+ <description>Position of object on CCD, y coordinate, RGO-I-band observation</description>
+ <ucd>POS_CCD_Y</ucd>
+ <units>pix</units>
+</column>
+
+<column table="obj" name="flux_RGO_I">
+ <description>Photometric flux in RGO-I band (instrumental scale)</description>
+ <ucd>PHOT_FLUX_NORM</ucd>
+</column>
+
+<column table="obj" name="fluxErr_RGO_I">
+ <description>Uncertainty in photometric flux, RGO-I band (instrumental scale)</description>
+ <ucd>ERROR</ucd>
+</column>
+
+<column table="obj" name="RGO_I">
+ <description>Photometric magnitude in RGO-I band</description>
+ <ucd>PHOT_MAG_I</ucd>
+ <units>mag</units>
+</column>
+
+<column table="obj" name="Err_RGO_I">
+ <description>Uncertainty in photometric magnitude, RGO-I band</description>
+ <ucd>ERROR</ucd>
+ <units>mag</units>
+</column>
+
+<column table="obj" name="type_RGO_I">
+ <description>Star/galaxy/noise classification-code, derived from RGO-I-band observation</description>
+ <ucd>CLASS_OBJECT</ucd>
+</column>
+
+<column table="obj" name="stellar_RGO_I">
+</column>
+
+<column table="obj" name="isoA_RGO_I">
+</column>
+
+<column table="obj" name="isoB_RGO_I">
+</column>
+
+<column table="obj" name="isoPhi_RGO_I">
+ <description>Position angle of isophotes of object, derived from RGO-I-band observation</description>
+ <ucd>POS_POS-ANG</ucd>
+ <units>deg</units>
+</column>
+
+
+</DataCenterMetadata>

@@ -1,0 +1,5 @@
+<Context path="/astrogrid-cea-http-Itn06_case3-SNAPSHOT">
+  <!-- configuration file for the HTTP cea server webapp -->
+  <Environment name="org.astrogrid.config.url" override="false" type="java.lang.String" value="@CONFIGPATH@/AstroGridConfig.properties" />
+  <Environment name="cea.filestore.basedir" override="false" type="java.lang.String" value="@WORKDIR@/cea/http/store" />
+</Context>
