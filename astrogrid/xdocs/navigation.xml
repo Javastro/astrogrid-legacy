@@ -48,8 +48,8 @@
                 <item name="Workflow" href="log/maven-build-workflow.log" />
                 <item name="Workflow Common Objects" 
                     href="log/maven-build-workflow-objects.log" />
-                <item name="Integration Tests" 
-                    href="log/maven-build-integrationTests.log" />
+                <!--item name="Integration Tests" 
+                    href="log/maven-build-integrationTests.log" /-->
             </item>
         </menu>
         <menu name="Releases">
