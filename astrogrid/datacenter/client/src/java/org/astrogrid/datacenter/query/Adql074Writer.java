@@ -1,5 +1,5 @@
 /*
- * $Id: Adql074Writer.java,v 1.6 2004/11/03 00:17:56 mch Exp $
+ * $Id: Adql074Writer.java,v 1.7 2004/11/05 12:26:06 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -192,6 +192,10 @@ public class Adql074Writer  {
    
          writeColRef(parentTag, elementName, (ColumnReference) expression);
       }
+      else if (expression instanceof RawSearchField) {
+         //bit of a botch
+         writeColRef(parentTag, elementName, new ColumnReference("", ((RawSearchField) expression).getField()));
+      }
       else if (expression instanceof MathExpression) {
          
          XmlTagPrinter argTag = parentTag.newTag(elementName, new String[] { "xsi:type='closedExprType'" }).newTag("Arg", new String[] { "xsi:type='binaryExprType'","Oper='"+((MathExpression) expression).getOperator().toString()+"'"});
@@ -202,8 +206,8 @@ public class Adql074Writer  {
          writeFunction(parentTag, "Arg", (Function) expression);
       }
       else {
-         throw new UnsupportedOperationException("Unknown Numeric Expression type "+
-                                                     expression.getClass());
+         throw new UnsupportedOperationException("Unknown NumericExpression type "+
+                                                     expression);
       }
    }
 
@@ -302,6 +306,9 @@ public class Adql074Writer  {
 
 /*
  $Log: Adql074Writer.java,v $
+ Revision 1.7  2004/11/05 12:26:06  mch
+ Added botch for handling table-less fields
+
  Revision 1.6  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 
