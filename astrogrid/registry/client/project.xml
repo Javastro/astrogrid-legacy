@@ -129,7 +129,7 @@
 				<li>harvestFrom(date) returns all data from a particular date and the authority id must be managed by this registry.</li>
 				<li>harvestAll() - Not really supposed to be used on the client side it kicks off a harvest of all Registries and services.</li>
 				<li>harvestResource(resource doc) - updates this resource entry in the registry and if it is a Registry kicks off a harvest if it is Service and the registry manages the autority id it kicks off a harvest as well.</li>
-				<li>harvestFromResource(date & resource) - not quite implemented yet.  same as harvestResource, from a particluar date for Registry Resource entries.</li>				
+				<li>harvestFromResource(date and resource) - not quite implemented yet.  same as harvestResource, from a particluar date for Registry Resource entries.</li>				
 			</ul>
 		</p>
 	</section>
