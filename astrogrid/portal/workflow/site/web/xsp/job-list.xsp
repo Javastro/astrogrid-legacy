@@ -126,7 +126,7 @@
            
            //================================================================================
            Workflow[]
-               workflows = (Workflow[])request.getAttribute( JesAction.HTTP_JOBLIST_TAG ) ;
+               workflows = (Workflow[])<xsp-request:get-attribute name="job-list-tag" as="object"/>;
            
            jobList( workflows ) ; 
            //================================================================================
