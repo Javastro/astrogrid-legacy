@@ -140,7 +140,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
             System.out.println("in XMLFileOAICatalog(): maxListSize=" + maxListSize);
 
          System.out.println("get the managedauths");
-         HashMap manageAuths = RegistryServerHelper.getManagedAuthorities();
+         HashMap manageAuths = RegistryServerHelper.getManagedAuthorities(collectionName, versionNumber);
          
          Set keys = manageAuths.keySet();
          Iterator keyIter = keys.iterator();
