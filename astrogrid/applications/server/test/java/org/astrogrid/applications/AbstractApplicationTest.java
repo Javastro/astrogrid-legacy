@@ -1,4 +1,4 @@
-/*$Id: AbstractApplicationTest.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: AbstractApplicationTest.java,v 1.3 2004/07/22 16:34:48 nw Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,6 @@ import org.astrogrid.applications.description.base.ApplicationDescriptionEnviron
 import org.astrogrid.applications.description.base.BaseApplicationInterface;
 import org.astrogrid.applications.description.base.BaseParameterDescription;
 import org.astrogrid.applications.parameter.ParameterAdapter;
-import org.astrogrid.applications.parameter.ParameterAdapterFactory;
 import org.astrogrid.community.User;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
@@ -99,31 +98,13 @@ public class AbstractApplicationTest extends TestCase {
     
     //
     app = new AbstractApplication(ids,tool,interf,null) {
-            protected ParameterAdapterFactory createAdapterFactory() {
-                return new ParameterAdapterFactory() {
 
-                    public ParameterAdapter createAdapter(final ParameterValue pval, ParameterDescription desr) {
-                        return new ParameterAdapter() {
-
-                            public Object process() throws CeaException {
-                                return pval.getValue();
-                            }
-
-                            public void writeBack(Object o) throws CeaException {
-                            }
-
-                            public ParameterValue getWrappedParameter() {
-                                return pval;
-                            }
-                        };
-                    }
-                };
-            }
-            public boolean execute() throws CeaException {
-                return false;
-            }
             public ResultListType retrieveResult() {
                 return null;
+            }
+
+            public boolean execute() throws CeaException {
+                return false;
             }
         };
     }
@@ -181,12 +162,18 @@ public class AbstractApplicationTest extends TestCase {
         assertTrue(i.next() instanceof ParameterValue);
     }
     public void testCreateAdaptersAndFindParameterAdapter() throws Exception {
-        assertNotNull(app.createAdapterFactory());
-        assertEquals(0,app.inputAdapters.size());
-        assertEquals(0,app.outputAdapters.size());        
+        assertFalse(app.inputParameterAdapters().hasNext());
+        assertFalse(app.outputParameterAdapters().hasNext());        
         app.createAdapters();
-        assertEquals(1,app.inputAdapters.size());
-        assertEquals(1,app.outputAdapters.size());        
+        // check each now has one adapater.
+        Iterator i = app.inputParameterAdapters();
+        assertTrue(i.hasNext());
+        i.next();
+        assertFalse(i.hasNext());
+        i = app.outputParameterAdapters();
+        assertTrue(i.hasNext());
+        i.next();
+        assertFalse(i.hasNext());           
         // now find some adapters.
         ParameterAdapter pA = app.findParameterAdapter("y");
         assertNotNull(pA);
@@ -198,6 +185,9 @@ public class AbstractApplicationTest extends TestCase {
 
 /* 
 $Log: AbstractApplicationTest.java,v $
+Revision 1.3  2004/07/22 16:34:48  nw
+cleaned up application / parameter adapter interface.
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplication.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: JavaClassApplication.java,v 1.3 2004/07/22 16:32:54 nw Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,9 +17,7 @@ import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.ParameterDescription;
-import org.astrogrid.applications.parameter.DefaultParameterAdapterFactory;
 import org.astrogrid.applications.parameter.ParameterAdapter;
-import org.astrogrid.applications.parameter.ParameterAdapterFactory;
 import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
 import org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary;
 import org.astrogrid.community.User;
@@ -30,6 +28,9 @@ import org.apache.commons.logging.LogFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /** An application that calls a static java method
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
@@ -50,19 +51,18 @@ public class JavaClassApplication extends AbstractApplication {
         super(ids, tool, interf,lib);
     }
     
-    /** @todo - should move the structuring of this into base class?
+    /** 
      * @see org.astrogrid.applications.Application#execute(org.astrogrid.applications.ApplicationExitMonitor)
      */
     public boolean execute() throws CeaException {
-        results.clearResult();
-        super.createAdapters();
-        Object[] args = new Object[inputAdapters.size()];
-        for (int i = 0; i < args.length; i++) {
-            ParameterAdapter a = (ParameterAdapter)inputAdapters.get(i);
-            args[i] = a.process();
+        createAdapters();
+        List args = new ArrayList();
+        for (Iterator i = inputParameterAdapters(); i.hasNext(); ) {
+            ParameterAdapter a = (ParameterAdapter)i.next();
+            args.add( a.process());
         }
        JavaClassApplicationDescription jappDesc = (JavaClassApplicationDescription)getApplicationDescription();            
-       Thread task = new Exec(args,jappDesc.method);
+       Thread task = new Exec(args.toArray(),jappDesc.method);
        setStatus(Status.INITIALIZED);
        task.start();
        return true;       
@@ -84,9 +84,8 @@ public class JavaClassApplication extends AbstractApplication {
                 
                 // we can do this, as we know there's only ever going to be one interface, and one output parameter.
                 setStatus(Status.WRITINGBACK);
-                ParameterAdapter result = (ParameterAdapter)outputAdapters.get(0);
+                ParameterAdapter result = (ParameterAdapter)outputParameterAdapters().next();
                 result.writeBack(resultVal);
-                results.addResult(result.getWrappedParameter());
                 setStatus(Status.COMPLETED);                
             } catch (IllegalArgumentException e) {
                 reportError("Illegal Argument passed to  java 'application'",e);
@@ -102,24 +101,21 @@ public class JavaClassApplication extends AbstractApplication {
          }
     }
     
-    /**overridden - to return a parameterAdapterFactory that will return javaClassParameterAdapters */
-    protected ParameterAdapterFactory createAdapterFactory() {
-        return new DefaultParameterAdapterFactory(lib) {
-          protected ParameterAdapter instantiateAdapter(
-              ParameterValue pval,
-              ParameterDescription desr,
-              IndirectParameterValue indirectVal) {
-              return new JavaClassParameterAdapter(pval, desr, indirectVal);
-          }
-        };
+    /** overridden to return a JavaClassParameterAdapter.
+     * @see org.astrogrid.applications.AbstractApplication#instantiateAdapter(org.astrogrid.applications.beans.v1.parameters.ParameterValue, org.astrogrid.applications.description.ParameterDescription, org.astrogrid.applications.parameter.indirect.IndirectParameterValue)
+     */
+    protected ParameterAdapter instantiateAdapter(ParameterValue pval,
+            ParameterDescription descr, IndirectParameterValue indirectVal) {
+        return new JavaClassParameterAdapter(pval, descr, indirectVal);
     }
-     
-
 }
 
 
 /* 
 $Log: JavaClassApplication.java,v $
+Revision 1.3  2004/07/22 16:32:54  nw
+cleaned up application / parameter adapter interface.
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

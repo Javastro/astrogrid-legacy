@@ -1,4 +1,4 @@
-/*$Id: SampleJavaClassApplications.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: SampleJavaClassApplications.java,v 1.3 2004/07/22 16:32:54 nw Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,20 @@
 **/
 package org.astrogrid.applications.javaclass;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /** Sample class of static methods, to use as java 'applications'
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
  *
  */
 public class SampleJavaClassApplications {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory
+        .getLog(SampleJavaClassApplications.class);
+
     /** Construct a new TestJavaApplication
      * 
      */
@@ -32,6 +41,7 @@ public class SampleJavaClassApplications {
     }
     /** add two numbers */
     public static int sum(int a, int b) {
+        logger.info("Summing " + a + " and " + b);
         return a + b;
     }
         
@@ -40,6 +50,9 @@ public class SampleJavaClassApplications {
 
 /* 
 $Log: SampleJavaClassApplications.java,v $
+Revision 1.3  2004/07/22 16:32:54  nw
+cleaned up application / parameter adapter interface.
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

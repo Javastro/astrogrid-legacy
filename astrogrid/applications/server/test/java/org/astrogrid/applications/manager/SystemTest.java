@@ -1,4 +1,4 @@
-/*$Id: SystemTest.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: SystemTest.java,v 1.3 2004/07/22 16:35:17 nw Exp $
  * Created on 09-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -88,11 +88,12 @@ public class SystemTest extends TestCase {
            a.setName(inputParameterNames[0]);
            b.setName(inputParameterNames[1]);
            b.setIndirect(true);
+           a.setIndirect(false);
            a.setValue("1");
            File valFile = File.createTempFile("SystemTest-Input",null);
            valFile.deleteOnExit();
            PrintWriter pw = new PrintWriter(new FileWriter(valFile));
-           pw.println(2); 
+           pw.print(2); 
            pw.close();
            b.setValue(valFile.toURI().toString());
            input.addParameter(a);
@@ -135,6 +136,7 @@ public class SystemTest extends TestCase {
         assertTrue(resultFile.exists());
         BufferedReader br = new BufferedReader(new FileReader(resultFile));        
         String resultValue = br.readLine();        
+        System.out.println(resultValue);
         assertEquals(3,Integer.valueOf(resultValue).intValue());              
         }
     
@@ -154,6 +156,9 @@ public class SystemTest extends TestCase {
 
 /* 
 $Log: SystemTest.java,v $
+Revision 1.3  2004/07/22 16:35:17  nw
+cleaned up application / parameter adapter interface.
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

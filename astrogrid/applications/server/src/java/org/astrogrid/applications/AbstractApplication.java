@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplication.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: AbstractApplication.java,v 1.3 2004/07/22 16:32:15 nw Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -17,16 +17,18 @@ import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
-import org.astrogrid.applications.parameter.DefaultParameterAdapterFactory;
+import org.astrogrid.applications.parameter.DefaultParameterAdapter;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.ParameterAdapterException;
-import org.astrogrid.applications.parameter.ParameterAdapterFactory;
+import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
 import org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary;
 import org.astrogrid.community.User;
 import org.astrogrid.workflow.beans.v1.Tool;
 
+import org.apache.commons.collections.iterators.IteratorChain;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -51,31 +53,6 @@ import java.util.Observable;
  * @since iteration4.1
  */
 public abstract class AbstractApplication extends Observable implements Application {
-    /**
-     * Commons Logger for this class
-     */
-    private static final Log logger = LogFactory.getLog(AbstractApplication.class);
-
-
-   /** the interface being used by this application */
-   protected final ApplicationInterface applicationInterface;
-
-   /**
-    * the application status
-    */
-   private Status status = Status.NEW;
-   
-   protected final IDs ids;
-   /** tool object defines the parameters, etc to the application */
-   protected final Tool tool;
-   /** list of parameter adapters for the inputs to the application. emty at start */
-   protected final List inputAdapters = new ArrayList();
-   /** list of parameter adapters for the outputs of the application. empty at start */
-   protected final List outputAdapters = new ArrayList();
-   /** list type containing results of the application execution. obviously empty to start with */
-   protected final ResultListType results = new ResultListType();
-   /** library of indirection protocol handlers */
-   protected final IndirectionProtocolLibrary lib;
    /** interface to the set of identifiers for an application */
    public static interface IDs {
         /** the cea-assigned id for this application execution */
@@ -88,6 +65,31 @@ public abstract class AbstractApplication extends Observable implements Applicat
        /** identifier for the user who own this application execution */
        public User getUser();
    }
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(AbstractApplication.class);
+
+
+   /** the interface being used by this application */
+   private final ApplicationInterface applicationInterface;
+   
+   protected final IDs ids;
+   /** list of parameter adapters for the inputs to the application. emty at start */
+   private final List inputAdapters = new ArrayList();
+   /** library of indirection protocol handlers */
+   protected final IndirectionProtocolLibrary lib;
+   /** list of parameter adapters for the outputs of the application. empty at start */
+   private final List outputAdapters = new ArrayList();
+   /** list type containing results of the application execution. obviously empty to start with */
+   private final ResultListType results = new ResultListType();
+
+   /**
+    * the application status
+    */
+   private Status status = Status.NEW;
+   /** tool object defines the parameters, etc to the application */
+   private final Tool tool;
    
    /** construct a new abstract application - a repreentation of an exection of an application actually.
     *  Construct a new AbstractApplication
@@ -105,69 +107,44 @@ public abstract class AbstractApplication extends Observable implements Applicat
       this.tool = tool;
       this.lib = lib;
    }
-    public String getID() {
-        return ids.getId();
+    /** default implementation of attemptAbort - always fails, and returns false.
+     */
+    public boolean attemptAbort() {
+        return false;
     }
 
-   public abstract boolean execute() throws CeaException;
-
-    
-
-   public ResultListType getResult() {
-       return results;
-   }
- 
-
-   public ApplicationInterface getApplicationInterface()  {
-       return applicationInterface;
-   }
-
-   public ApplicationDescription getApplicationDescription() {
-      return applicationInterface.getApplicationDescription();
-   }
-
-
-   public String toString() {
-      return getApplicationDescription().getName() + "#" + getApplicationInterface().getName();
-   }
-
-   public User getUser() {
-      return ids.getUser();
-   }
-
-
-
-  
-
-   /**
-    * @return
-    */
-   public String getJobStepID() {
-      return ids.getJobStepId();
-   }
-
-
-   /**
-    * @return
-    */
-   public Status getStatus() {
-      return status;
-   }
-
-   /**
-    * change the status of this application
-    * <p /> causes all registered observers to be notified of this change 
-    * @param status
-    */
-   public void setStatus(Status status) {
-      this.status = status;
-      setChanged();
-      notifyObservers(status);
-   }
-   
-   public ParameterValue[] getInputParameters() {
-       return tool.getInput().getParameter();
-   }
+    /** hook that specialized subclasses can overried - to return a custom adapter  
+     * used in {@link #createAdapters}
+     * @return a {@link DefaultParameterAdapterFactory}
+     */
+    protected ParameterAdapter instantiateAdapter(ParameterValue pval, ParameterDescription descr,IndirectParameterValue indirectVal) {
+        return new DefaultParameterAdapter(pval,descr,indirectVal);
+    }
+    /** sets up the list of input and output parameter adapters
+     * 
+     * @throws ParameterDescriptionNotFoundException
+     * @throws ParameterAdapterException
+     * @see #inputAdapters
+     * @see #outputAdapters
+     */
+    protected final void createAdapters() throws ParameterDescriptionNotFoundException, ParameterAdapterException {
+        inputAdapters.clear();
+        outputAdapters.clear();
+        results.clearResult();
+        for  (Iterator params = inputParameterValues(); params.hasNext();){
+             ParameterValue param = (ParameterValue)params.next();       
+            IndirectParameterValue iVal = (param.getIndirect() ? lib.getIndirect(param) : null);
+             ParameterAdapter adapter = this.instantiateAdapter(param,getApplicationDescription().getParameterDescription(param.getName()),iVal);
+             inputAdapters.add(adapter);
+          }
+        for  (Iterator params = outputParameterValues(); params.hasNext();){
+            ParameterValue param = (ParameterValue)params.next();       
+           IndirectParameterValue iVal = (param.getIndirect() ? lib.getIndirect(param) : null);
+            ParameterAdapter adapter = this.instantiateAdapter(param,getApplicationDescription().getParameterDescription(param.getName()),iVal);
+            outputAdapters.add(adapter);
+            results.addResult(adapter.getWrappedParameter());
+         }          
+    }
    
    /** can be extended by subclasses to provide more info */
    public MessageType createTemplateMessage() {
@@ -178,41 +155,17 @@ public abstract class AbstractApplication extends Observable implements Applicat
        return mt;
    }
 
-// end of public interface.
-
-
-  
-    /** subclassing helper - find a parameter by name in the tool inputs or tool outputs */
-   protected ParameterValue findParameter(String name)   {
-      return (ParameterValue)tool.findXPathValue("input/parameter[name='" + name + "'] | output/parameter[name='" + name + "']");
-   }
+   public abstract boolean execute() throws CeaException;
    
    /** subclassing helper - find a parameter by name in the tool inputs */
-   protected ParameterValue findInputParameter(String name) {
+   protected final ParameterValue findInputParameter(String name) {
        return (ParameterValue)tool.findXPathValue("input/parameter[name='" + name + "']");
 
-   }
-   /** subclassing helper - find a parameter by name in the tool outputs */
-   protected ParameterValue findOutputParameter(String name) {
-       return (ParameterValue)tool.findXPathValue("output/parameter[name='" + name + "']");
-       
-   }
-   /** iterator over all parameterValues in the tool inputs and outputs */
-   protected Iterator parameterValues() {
-       return tool.findXPathIterator("input/parameter | output/parameter");
-   }
-   /** iterator over all parameter values in the tool inputs */
-   protected Iterator inputParameterValues() {
-       return tool.findXPathIterator("input/parameter");
-   }
-   /** iterate over all parameter values in the tool outputs */
-   protected Iterator outputParameterValues() {
-       return tool.findXPathIterator("output/parameter");
    }
    
   // querying parameter adapters. 
   /** find the parameter adapter for the named input parameter */
-  protected ParameterAdapter findInputParameterAdapter(String name) {
+  protected final ParameterAdapter findInputParameterAdapter(String name) {
       for (Iterator i = inputAdapters.iterator(); i.hasNext(); ) {
           ParameterAdapter a = (ParameterAdapter)i.next();
           if (a.getWrappedParameter().getName().equals(name)) {
@@ -221,8 +174,13 @@ public abstract class AbstractApplication extends Observable implements Applicat
       }
       return null;
   }
+   /** subclassing helper - find a parameter by name in the tool outputs */
+   protected final ParameterValue findOutputParameter(String name) {
+       return (ParameterValue)tool.findXPathValue("output/parameter[name='" + name + "']");
+       
+   }
   /** find the parameter adapter for the named output parameter */
-   protected ParameterAdapter findOutputParameterAdapter(String name) {   
+   protected final ParameterAdapter findOutputParameterAdapter(String name) {   
       for (Iterator i = outputAdapters.iterator(); i.hasNext(); ) {
           ParameterAdapter a = (ParameterAdapter)i.next();
           if (a.getWrappedParameter().getName().equals(name)) {
@@ -231,62 +189,92 @@ public abstract class AbstractApplication extends Observable implements Applicat
       }      
       return null;      
   }
+
+// end of public interface.
+
+
+  
+    /** subclassing helper - find a parameter by name in the tool inputs or tool outputs */
+   protected final ParameterValue findParameter(String name)   {
+      return (ParameterValue)tool.findXPathValue("input/parameter[name='" + name + "'] | output/parameter[name='" + name + "']");
+   }
   /** find the parameter adapter for the named parameter (which may be either input or output) */
-  protected ParameterAdapter findParameterAdapter(String name) {
+  protected final ParameterAdapter findParameterAdapter(String name) {
       ParameterAdapter a = findInputParameterAdapter(name);
       if (a == null) {
           a = findOutputParameterAdapter(name);
       }
       return a;
   }
-    /** default implementation of attemptAbort - always fails, and returns false.
-     */
-    public boolean attemptAbort() {
-        return false;
-    }
 
-    /** hook that specialized subclasses can overried - to return a custom adapter factory 
-     * used in {@link #createAdapters}
-     * @return a {@link DefaultParameterAdapterFactory}
-     */
-    protected  ParameterAdapterFactory createAdapterFactory() {
-        return new DefaultParameterAdapterFactory(this.lib);
+   public final ApplicationDescription getApplicationDescription() {
+      return applicationInterface.getApplicationDescription();
+   }
+ 
+
+   public final ApplicationInterface getApplicationInterface()  {
+       return applicationInterface;
+   }
+    public final String getID() {
+        return ids.getId();
     }
+   
+   public final ParameterValue[] getInputParameters() {
+       return tool.getInput().getParameter();
+   }
+
+   /**
+    * @return
+    */
+   public final String getJobStepID() {
+      return ids.getJobStepId();
+   }
+
     
-    /** sets up the list of input and output parameter adapters
-     * 
-     * @throws ParameterDescriptionNotFoundException
-     * @throws ParameterAdapterException
-     * @see #inputAdapters
-     * @see #outputAdapters
-     */
-    protected void createAdapters() throws ParameterDescriptionNotFoundException, ParameterAdapterException {
-        inputAdapters.clear();
-        outputAdapters.clear();
-          ParameterAdapterFactory fac = createAdapterFactory();
-          for (Iterator params = inputParameterValues(); params.hasNext(); ) {
-             ParameterValue param = (ParameterValue)params.next();       
-             ParameterAdapter adapter = fac.createAdapter(param,getApplicationDescription().getParameterDescription(param.getName())); 
-             inputAdapters.add(adapter);
-          }
-        for (Iterator params = outputParameterValues(); params.hasNext(); ) {
-           ParameterValue param = (ParameterValue)params.next();       
-           ParameterAdapter adapter = fac.createAdapter(param,getApplicationDescription().getParameterDescription(param.getName())); 
-           outputAdapters.add(adapter);
-        }          
-    }
-    /** report an arbitrary message - to the log, and also to all observers */
-    protected void reportMessage(String msg) {
-        logger.info(msg); 
-        MessageType mt = createTemplateMessage();
-        mt.setContent(msg);
-        mt.setLevel(LogLevel.INFO);
-        setChanged();
-        notifyObservers(mt);         
-    }
+
+   public final ResultListType getResult() {
+       return results;
+   }
+   
+
+   /**
+    * @return
+    */
+   public final  Status getStatus() {
+      return status;
+   }
+
+   public final User getUser() {
+      return ids.getUser();
+   }
+   /** iterator over all parameter values in the tool inputs */
+   protected final  Iterator inputParameterValues() {
+       return tool.findXPathIterator("input/parameter");
+   }
+   /** iterate over all parameter values in the tool outputs */
+   protected final Iterator outputParameterValues() {
+       return tool.findXPathIterator("output/parameter");
+   }
+   /** iterator over all parameterValues in the tool inputs and outputs */
+   protected final Iterator parameterValues() {
+       return tool.findXPathIterator("input/parameter | output/parameter");
+   }
+   
+   protected final Iterator inputParameterAdapters() {
+       return inputAdapters.iterator();
+   } 
+   protected final Iterator outputParameterAdapters() {
+       return outputAdapters.iterator();
+   }
+   protected final Iterator parameterAdapters() {
+       IteratorChain i = new IteratorChain();
+       i.addIterator(inputAdapters.iterator());
+       i.addIterator(outputAdapters.iterator());
+       return i;
+   }
 
     /** report an error message - to the log, and to all observers */
-    protected void reportError(String msg) {
+    protected final void reportError(String msg) {
         logger.error(msg); 
         MessageType mt = createTemplateMessage();
         mt.setContent(msg);
@@ -296,7 +284,7 @@ public abstract class AbstractApplication extends Observable implements Applicat
         setStatus(Status.ERROR);        
     }
     /** report an exception - to the log, and to all observers */
-    protected void reportError(String msg, Throwable e) {
+    protected final void reportError(String msg, Throwable e) {
         logger.error(msg,e); 
         MessageType mt = createTemplateMessage();
         StringWriter sw = new StringWriter();
@@ -312,6 +300,31 @@ public abstract class AbstractApplication extends Observable implements Applicat
         setStatus(Status.ERROR);
         
     }
+    /** report an arbitrary message - to the log, and also to all observers */
+    protected final void reportMessage(String msg) {
+        logger.info(msg); 
+        MessageType mt = createTemplateMessage();
+        mt.setContent(msg);
+        mt.setLevel(LogLevel.INFO);
+        setChanged();
+        notifyObservers(mt);         
+    }
+
+   /**
+    * change the status of this application
+    * <p /> causes all registered observers to be notified of this change 
+    * @param status
+    */
+   public final void setStatus(Status status) {
+      this.status = status;
+      setChanged();
+      notifyObservers(status);
+   }
+
+
+   public String toString() {
+      return getApplicationDescription().getName() + "#" + getApplicationInterface().getName();
+   }
 
 }
 

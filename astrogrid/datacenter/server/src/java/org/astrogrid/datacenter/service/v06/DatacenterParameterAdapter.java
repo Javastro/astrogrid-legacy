@@ -1,4 +1,4 @@
-/*$Id: DatacenterParameterAdapter.java,v 1.2 2004/07/20 02:14:48 nw Exp $
+/*$Id: DatacenterParameterAdapter.java,v 1.3 2004/07/22 16:31:22 nw Exp $
  * Created on 13-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,29 +39,7 @@ public class DatacenterParameterAdapter extends DefaultParameterAdapter implemen
     public DatacenterParameterAdapter(ParameterValue arg0, ParameterDescription arg1, IndirectParameterValue arg2) {
         super(arg0, arg1, arg2);
     }
-    
-    /** returns value if direct.
-     * if indirect, reads contents into string buffer (we know the parameters are never going to be very big).
-     * @see org.astrogrid.applications.parameter.ParameterAdapter#process()
-     */
-    public Object process() throws CeaException {
-        if (indirectVal == null) {
-            return val.getValue();
-        } else {
-            StringWriter sw = new StringWriter();
-            Reader r = new InputStreamReader(indirectVal.read());
-            try {
-                Piper.pipe(r, sw);
-                r.close();
-                sw.close();
-            }
-            catch (IOException e) {
-                throw new CeaException("Could not prociess parameter " + val.getName());
-            }
-            return sw.toString();
-        }
-    }
-    
+        
     /** @param arg0 - expects a {@link CEATargetIndicator} from which it will slurp the results.
      * @see org.astrogrid.applications.parameter.ParameterAdapter#writeBack(java.lang.Object)
      */
@@ -90,6 +68,9 @@ public class DatacenterParameterAdapter extends DefaultParameterAdapter implemen
 
 /* 
 $Log: DatacenterParameterAdapter.java,v $
+Revision 1.3  2004/07/22 16:31:22  nw
+cleaned up application / parameter adapter interface.
+
 Revision 1.2  2004/07/20 02:14:48  nw
 final implementaiton of itn06 Datacenter CEA interface
 

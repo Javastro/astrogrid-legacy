@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.2 2004/07/20 02:14:48 nw Exp $
+/*$Id: DatacenterApplication.java,v 1.3 2004/07/22 16:31:22 nw Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,9 +16,7 @@ import org.astrogrid.applications.Status;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.ParameterDescription;
-import org.astrogrid.applications.parameter.DefaultParameterAdapterFactory;
 import org.astrogrid.applications.parameter.ParameterAdapter;
-import org.astrogrid.applications.parameter.ParameterAdapterFactory;
 import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
 import org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary;
 import org.astrogrid.community.Account;
@@ -47,6 +45,7 @@ import java.util.Iterator;
  *
  */
 public class DatacenterApplication extends AbstractApplication implements QuerierListener {
+
     /**
      * Commons Logger for this class
      */
@@ -74,7 +73,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
      * @param t
      * @return
      */
-    protected final Query buildQuery(Tool t,ApplicationInterface interf) throws CeaException {
+    protected final Query buildQuery(ApplicationInterface interf) throws CeaException {
         if (interf.getName().equals(DatacenterApplicationDescription.CONE_IFACE)) {
             return new ConeQuery(
                 Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.RA).process())
@@ -96,12 +95,11 @@ public class DatacenterApplication extends AbstractApplication implements Querie
      * @see org.astrogrid.applications.Application#execute()
      */
     public boolean execute() throws CeaException {
-        results.clearResult();
-        super.createAdapters();
+        createAdapters();
         try {
             TargetIndicator ti = CEATargetIndicator.newInstance();
             String resultsFormat = (String)findInputParameterAdapter(DatacenterApplicationDescription.FORMAT).process();
-            Query query = buildQuery(tool,getApplicationInterface());        
+            Query query = buildQuery(getApplicationInterface());        
             Querier querier = Querier.makeQuerier(acc,query,ti,resultsFormat);
             querier.addListener(this);        
 
@@ -153,7 +151,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
            
        } else if (state.equals(QueryState.RUNNING_RESULTS)) {
            this.setStatus(Status.WRITINGBACK);
-           final ParameterAdapter result = (ParameterAdapter)outputAdapters.get(0);
+           final ParameterAdapter result = (ParameterAdapter)outputParameterAdapters().next();
            //necessary to perform write-back in separate thread - as we don't know what thread is calling this callback
            // and it mustn't be the same one as is going to write out the output - otherwise we'll deadlock on the pipe. 
            Thread worker = new Thread() {
@@ -161,7 +159,6 @@ public class DatacenterApplication extends AbstractApplication implements Querie
                     try {               
                         CEATargetIndicator ti = (CEATargetIndicator)querier.getResultsTarget();
                         result.writeBack(ti);
-                        results.addResult(result.getWrappedParameter());
                         setStatus(Status.COMPLETED); // now the application has completed..                        
                     } catch (CeaException e) {
                         reportError("Failed to write back parameter values",e);
@@ -206,14 +203,11 @@ public class DatacenterApplication extends AbstractApplication implements Querie
      
      
     /** overridden, to return instances of datacenter parameter adapter.
-     * @see org.astrogrid.applications.AbstractApplication#createAdapterFactory()
+     * @see org.astrogrid.applications.AbstractApplication#instantiateAdapter(org.astrogrid.applications.beans.v1.parameters.ParameterValue, org.astrogrid.applications.description.ParameterDescription, org.astrogrid.applications.parameter.indirect.IndirectParameterValue)
      */
-    protected ParameterAdapterFactory createAdapterFactory() {
-        return new DefaultParameterAdapterFactory(lib) {
-            protected ParameterAdapter instantiateAdapter(ParameterValue pval, ParameterDescription descr, IndirectParameterValue indirectVal) {
-               return new DatacenterParameterAdapter(pval,descr,indirectVal);
-            }
-        };
+    protected ParameterAdapter instantiateAdapter(ParameterValue arg0,
+            ParameterDescription arg1, IndirectParameterValue arg2) {
+        return new DatacenterParameterAdapter(arg0, arg1, arg2);
     }
 
 }
@@ -221,6 +215,9 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /* 
 $Log: DatacenterApplication.java,v $
+Revision 1.3  2004/07/22 16:31:22  nw
+cleaned up application / parameter adapter interface.
+
 Revision 1.2  2004/07/20 02:14:48  nw
 final implementaiton of itn06 Datacenter CEA interface
 
