@@ -5,9 +5,9 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.generated.datasetagent.client;
+package org.astrogrid.portal.generated.datasetagent.client;
 
-public class DatasetAgentSoapBindingStub extends org.apache.axis.client.Stub implements org.astrogrid.wslink.datasetagent.DatasetAgent {
+public class DatasetAgentSoapBindingStub extends org.apache.axis.client.Stub implements org.astrogrid.portal.generated.datasetagent.client.DatasetAgent {
     private java.util.Vector cachedSerClasses = new java.util.Vector();
     private java.util.Vector cachedSerQNames = new java.util.Vector();
     private java.util.Vector cachedSerFactories = new java.util.Vector();

@@ -5,9 +5,9 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.generated.myspace.client;
+package org.astrogrid.portal.generated.myspace.client;
 
-public class MySpaceManagerServiceLocator extends org.apache.axis.client.Service implements org.astrogrid.wslink.myspace.MySpaceManagerService {
+public class MySpaceManagerServiceLocator extends org.apache.axis.client.Service implements org.astrogrid.portal.generated.myspace.client.MySpaceManagerService {
 
     // Use to get a proxy class for MySpaceManager
     private final java.lang.String MySpaceManager_address = "http://localhost:8080/axis/services/MySpaceManager";
@@ -27,7 +27,7 @@ public class MySpaceManagerServiceLocator extends org.apache.axis.client.Service
         MySpaceManagerWSDDServiceName = name;
     }
 
-    public org.astrogrid.wslink.myspace.MySpaceManager getMySpaceManager() throws javax.xml.rpc.ServiceException {
+    public org.astrogrid.portal.generated.myspace.client.MySpaceManager getMySpaceManager() throws javax.xml.rpc.ServiceException {
        java.net.URL endpoint;
         try {
             endpoint = new java.net.URL(MySpaceManager_address);
@@ -38,9 +38,9 @@ public class MySpaceManagerServiceLocator extends org.apache.axis.client.Service
         return getMySpaceManager(endpoint);
     }
 
-    public org.astrogrid.wslink.myspace.MySpaceManager getMySpaceManager(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
+    public org.astrogrid.portal.generated.myspace.client.MySpaceManager getMySpaceManager(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
         try {
-            org.astrogrid.wslink.myspace.MySpaceManagerSoapBindingStub _stub = new org.astrogrid.wslink.myspace.MySpaceManagerSoapBindingStub(portAddress, this);
+            org.astrogrid.portal.generated.myspace.client.MySpaceManagerSoapBindingStub _stub = new org.astrogrid.portal.generated.myspace.client.MySpaceManagerSoapBindingStub(portAddress, this);
             _stub.setPortName(getMySpaceManagerWSDDServiceName());
             return _stub;
         }
@@ -56,8 +56,8 @@ public class MySpaceManagerServiceLocator extends org.apache.axis.client.Service
      */
     public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         try {
-            if (org.astrogrid.wslink.myspace.MySpaceManager.class.isAssignableFrom(serviceEndpointInterface)) {
-                org.astrogrid.wslink.myspace.MySpaceManagerSoapBindingStub _stub = new org.astrogrid.wslink.myspace.MySpaceManagerSoapBindingStub(new java.net.URL(MySpaceManager_address), this);
+            if (org.astrogrid.portal.generated.myspace.client.MySpaceManager.class.isAssignableFrom(serviceEndpointInterface)) {
+                org.astrogrid.portal.generated.myspace.client.MySpaceManagerSoapBindingStub _stub = new org.astrogrid.portal.generated.myspace.client.MySpaceManagerSoapBindingStub(new java.net.URL(MySpaceManager_address), this);
                 _stub.setPortName(getMySpaceManagerWSDDServiceName());
                 return _stub;
             }

@@ -5,9 +5,9 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.generated.registry.client;
+package org.astrogrid.portal.generated.registry.client;
 
-public class RegistryInterface_BindingStub extends org.apache.axis.client.Stub implements org.astrogrid.wslink.registry.RegistryInterface_Port {
+public class RegistryInterface_BindingStub extends org.apache.axis.client.Stub implements org.astrogrid.portal.generated.registry.client.RegistryInterface_Port {
     private java.util.Vector cachedSerClasses = new java.util.Vector();
     private java.util.Vector cachedSerQNames = new java.util.Vector();
     private java.util.Vector cachedSerFactories = new java.util.Vector();
@@ -88,7 +88,7 @@ public class RegistryInterface_BindingStub extends org.apache.axis.client.Stub i
         org.apache.axis.client.Call _call = createCall();
         _call.setOperation(_operations[0]);
         _call.setUseSOAPAction(true);
-        _call.setSOAPActionURI("");
+        _call.setSOAPActionURI("urn:org.astrogrid.registry.RegistryInterface");
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
         _call.setOperationName(new javax.xml.namespace.QName("urn:org.astrogrid.registry.RegistryInterface", "submitQuery"));
 

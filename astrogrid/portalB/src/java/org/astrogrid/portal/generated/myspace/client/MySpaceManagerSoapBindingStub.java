@@ -5,9 +5,9 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.generated.myspace.client;
+package org.astrogrid.portal.generated.myspace.client;
 
-public class MySpaceManagerSoapBindingStub extends org.apache.axis.client.Stub implements org.astrogrid.wslink.myspace.MySpaceManager {
+public class MySpaceManagerSoapBindingStub extends org.apache.axis.client.Stub implements org.astrogrid.portal.generated.myspace.client.MySpaceManager {
     private java.util.Vector cachedSerClasses = new java.util.Vector();
     private java.util.Vector cachedSerQNames = new java.util.Vector();
     private java.util.Vector cachedSerFactories = new java.util.Vector();

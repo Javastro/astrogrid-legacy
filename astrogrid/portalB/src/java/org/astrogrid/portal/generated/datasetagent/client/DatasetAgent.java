@@ -5,7 +5,7 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.generated.datasetagent.client;
+package org.astrogrid.portal.generated.datasetagent.client;
 
 public interface DatasetAgent extends java.rmi.Remote {
     public java.lang.String runQuery(java.lang.String jobXML) throws java.rmi.RemoteException;

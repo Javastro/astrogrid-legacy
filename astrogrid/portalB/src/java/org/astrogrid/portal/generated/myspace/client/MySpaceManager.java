@@ -5,7 +5,7 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.generated.myspace.client;
+package org.astrogrid.portal.generated.myspace.client;
 
 public interface MySpaceManager extends java.rmi.Remote {
     public java.lang.String upLoad(java.lang.String jobDetails) throws java.rmi.RemoteException;

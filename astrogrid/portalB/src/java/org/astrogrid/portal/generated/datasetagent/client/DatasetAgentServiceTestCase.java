@@ -5,28 +5,17 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.generated.datasetagent.client;
-import junit.framework.*;
+package org.astrogrid.portal.generated.datasetagent.client;
 
 public class DatasetAgentServiceTestCase extends junit.framework.TestCase {
     public DatasetAgentServiceTestCase(java.lang.String name) {
         super(name);
     }
-
-	public static void main (String[] args) {		
-		junit.textui.TestRunner.run(suite());
-	}    
-
-
-	public static Test suite() {
-		return new TestSuite(DatasetAgentServiceTestCase.class);
-	}    
-    
     public void test1DatasetAgentRunQuery() throws Exception {
-        org.astrogrid.wslink.datasetagent.DatasetAgentSoapBindingStub binding;
+        org.astrogrid.portal.generated.datasetagent.client.DatasetAgentSoapBindingStub binding;
         try {
-            binding = (org.astrogrid.wslink.datasetagent.DatasetAgentSoapBindingStub)
-                          new org.astrogrid.wslink.datasetagent.DatasetAgentServiceLocator().getDatasetAgent();
+            binding = (org.astrogrid.portal.generated.datasetagent.client.DatasetAgentSoapBindingStub)
+                          new org.astrogrid.portal.generated.datasetagent.client.DatasetAgentServiceLocator().getDatasetAgent();
         }
         catch (javax.xml.rpc.ServiceException jre) {
             if(jre.getLinkedCause()!=null)
@@ -41,10 +30,7 @@ public class DatasetAgentServiceTestCase extends junit.framework.TestCase {
         // Test operation
         java.lang.String value = null;
         value = binding.runQuery(new java.lang.String());
-		System.out.println("okay query done the value = " + value);
-		assertNotNull("value of query is", value);
-        
         // TBD - validate results
     }
-    
+
 }

@@ -5,23 +5,17 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.generated.jobcontroller.client;
-import junit.framework.*;
+package org.astrogrid.portal.generated.jobcontroller.client;
 
 public class JobControllerServiceTestCase extends junit.framework.TestCase {
     public JobControllerServiceTestCase(java.lang.String name) {
         super(name);
     }
-    
-	public static Test suite() {
-		return new TestSuite(JobControllerServiceTestCase.class);
-	}
-    
     public void test1JobControllerServiceSubmitJob() throws Exception {
-        org.astrogrid.wslink.jobController.JobControllerServiceSoapBindingStub binding;
+        org.astrogrid.portal.generated.jobcontroller.client.JobControllerServiceSoapBindingStub binding;
         try {
-            binding = (org.astrogrid.wslink.jobController.JobControllerServiceSoapBindingStub)
-                          new org.astrogrid.wslink.jobController.JobControllerServiceLocator().getJobControllerService();
+            binding = (org.astrogrid.portal.generated.jobcontroller.client.JobControllerServiceSoapBindingStub)
+                          new org.astrogrid.portal.generated.jobcontroller.client.JobControllerServiceLocator().getJobControllerService();
         }
         catch (javax.xml.rpc.ServiceException jre) {
             if(jre.getLinkedCause()!=null)
@@ -36,15 +30,7 @@ public class JobControllerServiceTestCase extends junit.framework.TestCase {
         // Test operation
         java.lang.String value = null;
         value = binding.submitJob(new java.lang.String());
-		System.out.println("okay query done the value = " + value);
-		assertNotNull("value of query is", value);
-
         // TBD - validate results
     }
-    
-	public static void main (String[] args) {		
-		junit.textui.TestRunner.run(suite());
-	}
-    
 
 }

@@ -5,9 +5,9 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.generated.jobcontroller.client;
+package org.astrogrid.portal.generated.jobcontroller.client;
 
-public class JobControllerServiceSoapBindingStub extends org.apache.axis.client.Stub implements org.astrogrid.wslink.jobController.JobController {
+public class JobControllerServiceSoapBindingStub extends org.apache.axis.client.Stub implements org.astrogrid.portal.generated.jobcontroller.client.JobController {
     private java.util.Vector cachedSerClasses = new java.util.Vector();
     private java.util.Vector cachedSerQNames = new java.util.Vector();
     private java.util.Vector cachedSerFactories = new java.util.Vector();

@@ -5,25 +5,17 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.generated.registry.client;
-import java.util.*;
-import junit.framework.*;
-
+package org.astrogrid.portal.generated.registry.client;
 
 public class RegistryInterfaceTestCase extends junit.framework.TestCase {
     public RegistryInterfaceTestCase(java.lang.String name) {
         super(name);
     }
-
-	public static Test suite() {
-		return new TestSuite(RegistryInterfaceTestCase.class);
-	}
-
     public void test1RegistryInterfacePortSubmitQuery() throws Exception {
-        org.astrogrid.wslink.registry.RegistryInterface_BindingStub binding;
+        org.astrogrid.portal.generated.registry.client.RegistryInterface_BindingStub binding;
         try {
-            binding = (org.astrogrid.wslink.registry.RegistryInterface_BindingStub)
-                          new org.astrogrid.wslink.registry.RegistryInterfaceLocator().getRegistryInterfacePort();
+            binding = (org.astrogrid.portal.generated.registry.client.RegistryInterface_BindingStub)
+                          new org.astrogrid.portal.generated.registry.client.RegistryInterfaceLocator().getRegistryInterfacePort();
         }
         catch (javax.xml.rpc.ServiceException jre) {
             if(jre.getLinkedCause()!=null)
@@ -38,13 +30,7 @@ public class RegistryInterfaceTestCase extends junit.framework.TestCase {
         // Test operation
         java.lang.String value = null;
         value = binding.submitQuery(new java.lang.String());
-        System.out.println("okay query done the value = " + value);
-		assertNotNull("value of query is", value);
         // TBD - validate results
     }
-
-	public static void main (String[] args) {		
-		junit.textui.TestRunner.run(suite());
-	}
 
 }

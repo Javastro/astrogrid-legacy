@@ -5,12 +5,12 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.generated.registry.client;
+package org.astrogrid.portal.generated.registry.client;
 
-public class RegistryInterfaceLocator extends org.apache.axis.client.Service implements org.astrogrid.wslink.registry.RegistryInterface {
+public class RegistryInterfaceLocator extends org.apache.axis.client.Service implements org.astrogrid.portal.generated.registry.client.RegistryInterface {
 
     // Use to get a proxy class for RegistryInterfacePort
-    private final java.lang.String RegistryInterfacePort_address = "http://localhost:3000/soap/servlet/rpcrouter";
+    private final java.lang.String RegistryInterfacePort_address = "http://msslxy.mssl.ucl.ac.uk:8080/soap/servlet/rpcrouter";
 
     public java.lang.String getRegistryInterfacePortAddress() {
         return RegistryInterfacePort_address;
@@ -27,7 +27,7 @@ public class RegistryInterfaceLocator extends org.apache.axis.client.Service imp
         RegistryInterfacePortWSDDServiceName = name;
     }
 
-    public org.astrogrid.wslink.registry.RegistryInterface_Port getRegistryInterfacePort() throws javax.xml.rpc.ServiceException {
+    public org.astrogrid.portal.generated.registry.client.RegistryInterface_Port getRegistryInterfacePort() throws javax.xml.rpc.ServiceException {
        java.net.URL endpoint;
         try {
             endpoint = new java.net.URL(RegistryInterfacePort_address);
@@ -38,9 +38,9 @@ public class RegistryInterfaceLocator extends org.apache.axis.client.Service imp
         return getRegistryInterfacePort(endpoint);
     }
 
-    public org.astrogrid.wslink.registry.RegistryInterface_Port getRegistryInterfacePort(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
+    public org.astrogrid.portal.generated.registry.client.RegistryInterface_Port getRegistryInterfacePort(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
         try {
-            org.astrogrid.wslink.registry.RegistryInterface_BindingStub _stub = new org.astrogrid.wslink.registry.RegistryInterface_BindingStub(portAddress, this);
+            org.astrogrid.portal.generated.registry.client.RegistryInterface_BindingStub _stub = new org.astrogrid.portal.generated.registry.client.RegistryInterface_BindingStub(portAddress, this);
             _stub.setPortName(getRegistryInterfacePortWSDDServiceName());
             return _stub;
         }
@@ -56,8 +56,8 @@ public class RegistryInterfaceLocator extends org.apache.axis.client.Service imp
      */
     public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         try {
-            if (org.astrogrid.wslink.registry.RegistryInterface_Port.class.isAssignableFrom(serviceEndpointInterface)) {
-                org.astrogrid.wslink.registry.RegistryInterface_BindingStub _stub = new org.astrogrid.wslink.registry.RegistryInterface_BindingStub(new java.net.URL(RegistryInterfacePort_address), this);
+            if (org.astrogrid.portal.generated.registry.client.RegistryInterface_Port.class.isAssignableFrom(serviceEndpointInterface)) {
+                org.astrogrid.portal.generated.registry.client.RegistryInterface_BindingStub _stub = new org.astrogrid.portal.generated.registry.client.RegistryInterface_BindingStub(new java.net.URL(RegistryInterfacePort_address), this);
                 _stub.setPortName(getRegistryInterfacePortWSDDServiceName());
                 return _stub;
             }

@@ -5,9 +5,9 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.generated.jobcontroller.client;
+package org.astrogrid.portal.generated.jobcontroller.client;
 
-public class JobControllerServiceLocator extends org.apache.axis.client.Service implements org.astrogrid.wslink.jobController.JobControllerService {
+public class JobControllerServiceLocator extends org.apache.axis.client.Service implements org.astrogrid.portal.generated.jobcontroller.client.JobControllerService {
 
     // Use to get a proxy class for JobControllerService
     private final java.lang.String JobControllerService_address = "http://localhost:8080/axis/services/JobControllerService";
@@ -27,7 +27,7 @@ public class JobControllerServiceLocator extends org.apache.axis.client.Service 
         JobControllerServiceWSDDServiceName = name;
     }
 
-    public org.astrogrid.wslink.jobController.JobController getJobControllerService() throws javax.xml.rpc.ServiceException {
+    public org.astrogrid.portal.generated.jobcontroller.client.JobController getJobControllerService() throws javax.xml.rpc.ServiceException {
        java.net.URL endpoint;
         try {
             endpoint = new java.net.URL(JobControllerService_address);
@@ -38,9 +38,9 @@ public class JobControllerServiceLocator extends org.apache.axis.client.Service 
         return getJobControllerService(endpoint);
     }
 
-    public org.astrogrid.wslink.jobController.JobController getJobControllerService(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
+    public org.astrogrid.portal.generated.jobcontroller.client.JobController getJobControllerService(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
         try {
-            org.astrogrid.wslink.jobController.JobControllerServiceSoapBindingStub _stub = new org.astrogrid.wslink.jobController.JobControllerServiceSoapBindingStub(portAddress, this);
+            org.astrogrid.portal.generated.jobcontroller.client.JobControllerServiceSoapBindingStub _stub = new org.astrogrid.portal.generated.jobcontroller.client.JobControllerServiceSoapBindingStub(portAddress, this);
             _stub.setPortName(getJobControllerServiceWSDDServiceName());
             return _stub;
         }
@@ -56,8 +56,8 @@ public class JobControllerServiceLocator extends org.apache.axis.client.Service 
      */
     public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         try {
-            if (org.astrogrid.wslink.jobController.JobController.class.isAssignableFrom(serviceEndpointInterface)) {
-                org.astrogrid.wslink.jobController.JobControllerServiceSoapBindingStub _stub = new org.astrogrid.wslink.jobController.JobControllerServiceSoapBindingStub(new java.net.URL(JobControllerService_address), this);
+            if (org.astrogrid.portal.generated.jobcontroller.client.JobController.class.isAssignableFrom(serviceEndpointInterface)) {
+                org.astrogrid.portal.generated.jobcontroller.client.JobControllerServiceSoapBindingStub _stub = new org.astrogrid.portal.generated.jobcontroller.client.JobControllerServiceSoapBindingStub(new java.net.URL(JobControllerService_address), this);
                 _stub.setPortName(getJobControllerServiceWSDDServiceName());
                 return _stub;
             }

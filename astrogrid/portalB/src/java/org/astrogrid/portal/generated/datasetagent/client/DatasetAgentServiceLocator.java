@@ -5,9 +5,9 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.generated.datasetagent.client;
+package org.astrogrid.portal.generated.datasetagent.client;
 
-public class DatasetAgentServiceLocator extends org.apache.axis.client.Service implements org.astrogrid.wslink.datasetagent.DatasetAgentService {
+public class DatasetAgentServiceLocator extends org.apache.axis.client.Service implements org.astrogrid.portal.generated.datasetagent.client.DatasetAgentService {
 
     // Use to get a proxy class for DatasetAgent
     private final java.lang.String DatasetAgent_address = "http://hydra.star.le.ac.uk:8080/axis/services/DatasetAgent";
@@ -27,7 +27,7 @@ public class DatasetAgentServiceLocator extends org.apache.axis.client.Service i
         DatasetAgentWSDDServiceName = name;
     }
 
-    public org.astrogrid.wslink.datasetagent.DatasetAgent getDatasetAgent() throws javax.xml.rpc.ServiceException {
+    public org.astrogrid.portal.generated.datasetagent.client.DatasetAgent getDatasetAgent() throws javax.xml.rpc.ServiceException {
        java.net.URL endpoint;
         try {
             endpoint = new java.net.URL(DatasetAgent_address);
@@ -38,9 +38,9 @@ public class DatasetAgentServiceLocator extends org.apache.axis.client.Service i
         return getDatasetAgent(endpoint);
     }
 
-    public org.astrogrid.wslink.datasetagent.DatasetAgent getDatasetAgent(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
+    public org.astrogrid.portal.generated.datasetagent.client.DatasetAgent getDatasetAgent(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
         try {
-            org.astrogrid.wslink.datasetagent.DatasetAgentSoapBindingStub _stub = new org.astrogrid.wslink.datasetagent.DatasetAgentSoapBindingStub(portAddress, this);
+            org.astrogrid.portal.generated.datasetagent.client.DatasetAgentSoapBindingStub _stub = new org.astrogrid.portal.generated.datasetagent.client.DatasetAgentSoapBindingStub(portAddress, this);
             _stub.setPortName(getDatasetAgentWSDDServiceName());
             return _stub;
         }
@@ -56,8 +56,8 @@ public class DatasetAgentServiceLocator extends org.apache.axis.client.Service i
      */
     public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         try {
-            if (org.astrogrid.wslink.datasetagent.DatasetAgent.class.isAssignableFrom(serviceEndpointInterface)) {
-                org.astrogrid.wslink.datasetagent.DatasetAgentSoapBindingStub _stub = new org.astrogrid.wslink.datasetagent.DatasetAgentSoapBindingStub(new java.net.URL(DatasetAgent_address), this);
+            if (org.astrogrid.portal.generated.datasetagent.client.DatasetAgent.class.isAssignableFrom(serviceEndpointInterface)) {
+                org.astrogrid.portal.generated.datasetagent.client.DatasetAgentSoapBindingStub _stub = new org.astrogrid.portal.generated.datasetagent.client.DatasetAgentSoapBindingStub(new java.net.URL(DatasetAgent_address), this);
                 _stub.setPortName(getDatasetAgentWSDDServiceName());
                 return _stub;
             }
