@@ -1,241 +1,252 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by John Taylor (ROE) -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
-	<pomVersion>3</pomVersion>
-	<id>astrogrid-workflow</id>
-	<name>AstroGrid Workflow</name>
-	<currentVersion>$Name:  $</currentVersion>
-	<organization>
-		<name>AstroGrid</name>
-		<url>http://www.astrogrid.org</url>
-		<logo>http://www.astrogrid.org/images/AGlogo</logo>
-	</organization>
-	<inceptionYear>2002</inceptionYear>
-	<package>org.astrogrid</package>
-	<logo>http://www.astrogrid.org/images/AGlogo</logo>
-	<shortDescription>AstroGrid Workflow Components</shortDescription>
-	<issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
-	<siteDirectory>/var/www/www/maven/build/workflow</siteDirectory>
-	<repository>
-		<connection>
+        <pomVersion>3</pomVersion>
+        <id>astrogrid-workflow</id>
+        <name>AstroGrid Workflow</name>
+        <currentVersion>$Name:  $</currentVersion>
+        <organization>
+                <name>AstroGrid</name>
+                <url>http://www.astrogrid.org</url>
+                <logo>http://www.astrogrid.org/images/AGlogo</logo>
+        </organization>
+        <inceptionYear>2002</inceptionYear>
+        <package>org.astrogrid</package>
+        <logo>http://www.astrogrid.org/images/AGlogo</logo>
+        <shortDescription>AstroGrid Workflow Components</shortDescription>
+        <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
+        <siteDirectory>/var/www/www/maven/build/workflow</siteDirectory>
+        <repository>
+                <connection>
       scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/workflow
     </connection>
-		<developerConnection>
+                <developerConnection>
       scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/workflow
     </developerConnection>
-		<url>
-    	http://www.astrogrid.org/viewcvs/astrogrid/workflow/
+                <url>
+            http://www.astrogrid.org/viewcvs/astrogrid/workflow/
     </url>
-	</repository>
-	<developers>
-		<developer>
-			<name>Paul Harrison</name>
-			<id>pah</id>
-			<email>pah@jb.man.ac.uk</email>
-		</developer>
-		<developer>
-			<name>Pedro Contreras</name>
-			<id>pc</id>
-			<email>P.Contreras@qub.ac.uk</email>
-		</developer>
-		<developer>
-			<name>Clive Davenhall</name>
-			<id>acd</id>
-			<email>acd@roe.ac.uk</email>
-		</developer>
-		<developer>
-			<name>Jeff Lusted</name>
-			<id>jl99</id>
-			<email>jl99@star.le.ac.uk</email>
-		</developer>
-		<developer>
-			<name>John Taylor</name>
-			<id>jdt</id>
-			<email>jdt@roe.ac.uk</email>
-		</developer>
-		<developer>
-			<name>Phil Nicholson</name>
-			<id>pjn3</id>
-			<email>pjn3@star.le.ac.uk</email>
-		</developer>
-		<developer>
-			<name>Roy Platon</name>
-			<id>rtp</id>
-			<email>R.T.Platon@rl.ac.uk</email>
-		</developer>
-	</developers>
-	<dependencies>
-		<!-- astrogrid -specific deps -->
-		<dependency>
-			<artifactId>astrogrid-common</artifactId>
-			<version>SNAPSHOT</version>
-			<groupId>astrogrid-common</groupId>
-		</dependency>
-		<dependency>
-			<artifactId>astrogrid-mySpace</artifactId>
-			<version>SNAPSHOT</version>
-			<groupId>astrogrid-mySpace</groupId>
-		</dependency>
-		<dependency>
-			<artifactId>policy-client</artifactId>
-			<version>1.0</version>
-			<groupId>astrogrid-community</groupId>
-		</dependency>
-		<dependency>
-			<artifactId>astrogrid-jes</artifactId>
-			<version>Itn04_1</version>
-			<groupId>astrogrid-jes</groupId>
-		</dependency>
-		<dependency>
-			<artifactId>authentication-client</artifactId>
-			<version>1.0</version>
-			<groupId>astrogrid-community</groupId>
-		</dependency>
-		<!-- Third party dependencies -->
-		<dependency>
-			<artifactId>jconfig</artifactId>
-			<groupId>jconfig</groupId>
-			<version>2.1</version>
-		</dependency>
-		<dependency>
-			<artifactId>log4j</artifactId>
-			<groupId>log4j</groupId>
-			<version>1.2.4</version>
-		</dependency>
-		<dependency>
-			<artifactId>commons-logging</artifactId>
-			<groupId>commons-logging</groupId>
-			<version>1.0.3</version>
-		</dependency>
+        </repository>
+        <developers>
+                <developer>
+                        <name>Paul Harrison</name>
+                        <id>pah</id>
+                        <email>pah@jb.man.ac.uk</email>
+                </developer>
+                <developer>
+                        <name>Pedro Contreras</name>
+                        <id>pc</id>
+                        <email>P.Contreras@qub.ac.uk</email>
+                </developer>
+                <developer>
+                        <name>Clive Davenhall</name>
+                        <id>acd</id>
+                        <email>acd@roe.ac.uk</email>
+                </developer>
+                <developer>
+                        <name>Jeff Lusted</name>
+                        <id>jl99</id>
+                        <email>jl99@star.le.ac.uk</email>
+                </developer>
+                <developer>
+                        <name>John Taylor</name>
+                        <id>jdt</id>
+                        <email>jdt@roe.ac.uk</email>
+                </developer>
+                <developer>
+                        <name>Phil Nicholson</name>
+                        <id>pjn3</id>
+                        <email>pjn3@star.le.ac.uk</email>
+                </developer>
+                <developer>
+                        <name>Roy Platon</name>
+                        <id>rtp</id>
+                        <email>R.T.Platon@rl.ac.uk</email>
+                </developer>
+        </developers>
+        <dependencies>
+                <!-- astrogrid -specific deps -->
+                <dependency>
+                        <artifactId>astrogrid-common</artifactId>
+                        <version>SNAPSHOT</version>
+                        <groupId>org.astrogrid</groupId>
+                </dependency>
+                <dependency>
+                        <artifactId>astrogrid-mySpace</artifactId>
+                        <version>SNAPSHOT</version>
+                        <groupId>org.astrogrid</groupId>
+                </dependency>
+                <dependency>
+                        <artifactId>policy-client</artifactId>
+                        <version>1.0</version>
+                        <groupId>astrogrid-community</groupId>
+                </dependency>
+                <!--
+                <dependency>
+                        <artifactId>astrogrid-jes</artifactId>
+                        <version>Itn04_1</version>
+                        <groupId>astrogrid-jes</groupId>
+                </dependency>
+                -->
+                <dependency>
+           <groupId>org.astrogrid</groupId>
+           <artifactId>astrogrid-jes-delegate</artifactId>
+           <version>SNAPSHOT</version>
+            </dependency>
+        <dependency>
+           <groupId>org.astrogrid</groupId>
+           <artifactId>astrogrid-workflow-objects</artifactId>
+           <version>SNAPSHOT</version>
+        </dependency>
+                <dependency>
+                        <artifactId>authentication-client</artifactId>
+                        <version>1.0</version>
+                        <groupId>astrogrid-community</groupId>
+                </dependency>
+                <!-- Third party dependencies -->
+                <dependency>
+                        <artifactId>jconfig</artifactId>
+                        <groupId>jconfig</groupId>
+                        <version>2.1</version>
+                </dependency>
+                <dependency>
+                        <artifactId>log4j</artifactId>
+                        <groupId>log4j</groupId>
+                        <version>1.2.4</version>
+                </dependency>
+                <dependency>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                        <version>1.0.3</version>
+                </dependency>
         <dependency>
            <artifactId>commons-discovery</artifactId>
            <groupId>commons-discovery</groupId>
            <version>20030211.213356</version>
-        </dependency> 
-        <dependency>
-    		<artifactId>jaxrpc</artifactId>
-    		<groupId>jaxrpc</groupId>
-    		<version>UNKNOWN</version>
-    		<jar>jaxrpc.jar</jar>
         </dependency>
-    	<dependency>
-      		<artifactId>saaj</artifactId>
-      		<groupId>saaj</groupId>
-      		<version>UNKNOWN</version>
-      		<jar>saaj.jar</jar>
-    	</dependency>         
-		<dependency>
-			<artifactId>axis</artifactId>
-			<groupId>axis</groupId>
-			<version>1.1</version>
-		</dependency>
-		<dependency>
-			<artifactId>cocoon</artifactId>
-			<groupId>cocoon</groupId>
-			<version>2.0.4</version>
-		</dependency>
-		<dependency>
-			<artifactId>avalon-framework</artifactId>
-			<groupId>avalon-framework</groupId>
-			<version>20020627</version>
-		</dependency>
-		<dependency>
-			<artifactId>logkit</artifactId>
-			<groupId>logkit</groupId>
-			<version>1.2</version>
-			<!--1.2.2 available-->
-		</dependency>
-	</dependencies>
-	<build>
-		<sourceDirectory>src/java</sourceDirectory>
-		<unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-		<unitTest>
-			<includes>
-				<include>**/*Test*.java</include>
-			</includes>
-			<resources>
-				<resource>
-					<directory>${basedir}/test/java</directory>
-					<includes>
-						<include>**/*.xml</include>
-						<include>**/*.properties</include>
-						<include>**/*.sql</include>
-					</includes>
-				</resource>
-			</resources>
-		</unitTest>
-		<resources>
-			<resource>
-				<!-- config files -->
-				<directory>${basedir}/src/java</directory>
-				<includes>
-					<include>**/*.xml</include>
-					<include>**/*.properties</include>
-				</includes>
-			</resource>
-			<resource>
-				<!-- schemas  - may be needed for validation -->
-				<directory>${basedir}</directory>
-				<includes>
-					<include>schema/*.xsd</include>
-					<include>schema/*.dtd</include>
-				</includes>
-			</resource>
-			<resource>
-				<!-- webservice related files -->
-				<directory>${basedir}</directory>
-				<includes>
-					<include>wsdl/*.wsdl</include>
-					<include>wsdd/*.wsdd</include>
-				</includes>
-			</resource>
-		</resources>
-	</build>
-	<reports>
-		<report>
+        <dependency>
+                    <artifactId>jaxrpc</artifactId>
+                    <groupId>jaxrpc</groupId>
+                    <version>UNKNOWN</version>
+                    <jar>jaxrpc.jar</jar>
+        </dependency>
+            <dependency>
+                      <artifactId>saaj</artifactId>
+                      <groupId>saaj</groupId>
+                      <version>UNKNOWN</version>
+                      <jar>saaj.jar</jar>
+            </dependency>
+                <dependency>
+                        <artifactId>axis</artifactId>
+                        <groupId>axis</groupId>
+                        <version>1.1</version>
+                </dependency>
+                <dependency>
+                        <artifactId>cocoon</artifactId>
+                        <groupId>cocoon</groupId>
+                        <version>2.0.4</version>
+                </dependency>
+                <dependency>
+                        <artifactId>avalon-framework</artifactId>
+                        <groupId>avalon-framework</groupId>
+                        <version>20020627</version>
+                </dependency>
+                <dependency>
+                        <artifactId>logkit</artifactId>
+                        <groupId>logkit</groupId>
+                        <version>1.2</version>
+                </dependency>
+        </dependencies>
+        <build>
+                <sourceDirectory>src/java</sourceDirectory>
+                <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+                <unitTest>
+                        <includes>
+                                <include>**/*Test*.java</include>
+                        </includes>
+                        <resources>
+                                <resource>
+                                        <directory>${basedir}/test/java</directory>
+                                        <includes>
+                                                <include>**/*.xml</include>
+                                                <include>**/*.properties</include>
+                                                <include>**/*.sql</include>
+                                        </includes>
+                                </resource>
+                        </resources>
+                </unitTest>
+                <resources>
+                        <resource>
+                                <!-- config files -->
+                                <directory>${basedir}/src/java</directory>
+                                <includes>
+                                        <include>**/*.xml</include>
+                                        <include>**/*.properties</include>
+                                </includes>
+                        </resource>
+                        <resource>
+                                <!-- schemas  - may be needed for validation -->
+                                <directory>${basedir}</directory>
+                                <includes>
+                                        <include>schema/*.xsd</include>
+                                        <include>schema/*.dtd</include>
+                                </includes>
+                        </resource>
+                        <resource>
+                                <!-- webservice related files -->
+                                <directory>${basedir}</directory>
+                                <includes>
+                                        <include>wsdl/*.wsdl</include>
+                                        <include>wsdd/*.wsdd</include>
+                                </includes>
+                        </resource>
+                </resources>
+        </build>
+        <reports>
+                <report>
       maven-changelog-plugin
     </report>
-		<report>
+                <report>
       maven-changes-plugin
     </report>
-		<report>
+                <report>
       maven-checkstyle-plugin
     </report>
-		<report>
+                <report>
       maven-clover-plugin
     </report>
-		<report>
+                <report>
       maven-developer-activity-plugin
     </report>
-		<report>
+                <report>
       maven-file-activity-plugin
     </report>
-		<report>
+                <report>
       maven-javadoc-plugin
     </report>
-		<report>
+                <report>
       maven-jdepend-plugin
     </report>
-		<report>
+                <report>
       maven-junit-report-plugin
     </report>
-		<report>
+                <report>
 maven-jxr-plugin
     </report>
-		<report>
+                <report>
       maven-license-plugin
     </report>
-		<report>
+                <report>
       maven-linkcheck-plugin
     </report>
-		<report>
+                <report>
 maven-pmd-plugin
     </report>
-		<report>
+                <report>
       maven-tasklist-plugin
     </report>
-		<report>
+                <report>
       maven-simian-plugin
     </report>
-	</reports>
+        </reports>
 </project>
