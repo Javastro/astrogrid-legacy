@@ -1,5 +1,5 @@
 /*
- * $Id: DataQueryService.java,v 1.5 2003/09/04 09:23:34 nw Exp $
+ * $Id: DataQueryService.java,v 1.6 2003/09/05 13:23:11 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -78,15 +78,22 @@ public class DataQueryService implements ServiceStatus
     * to extract the right elements
     */
    public Element runQuery(Element domContainingQuery) throws QueryException, DatabaseAccessException, IOException
-   {
+   {  
+       DatabaseQuerier querier = null;
+       try {
       fireStatusChanged(STARTING);
-      //Query query = new Query(domContainingQuery);
 
-      DatabaseQuerier querier = DatabaseQuerier.createQuerier();
-
+      querier = DatabaseQuerier.createQuerier();
+      fireStatusChanged(RUNNING_QUERY);
       QueryResults results = querier.queryDatabase(domContainingQuery);
-
+      fireStatusChanged(RUNNING_RESULTS);
       return results.toVotable(workspace).getDocumentElement();
+       } finally {
+           if (querier != null) {
+               querier.close();               
+           }
+           fireStatusChanged(FINISHED);
+       }
    }
 
    /**
