@@ -1,4 +1,4 @@
-/*$Id: JavaProviderServerInfo.java,v 1.3 2004/11/19 14:17:56 clq2 Exp $
+/*$Id: JavaProviderServerInfo.java,v 1.4 2004/11/24 19:49:22 clq2 Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
 public class JavaProviderServerInfo implements ServerInfo{
 
 
-    /**
+    /** main testing application is "SUM"
      * @see org.astrogrid.applications.integration.AbstractRunTestForCEA.ServerInfo#getApplicationName()
      */
     public String getApplicationName() {
@@ -74,8 +74,11 @@ public class JavaProviderServerInfo implements ServerInfo{
 
 /* 
 $Log: JavaProviderServerInfo.java,v $
-Revision 1.3  2004/11/19 14:17:56  clq2
-roll back beforeMergenww-itn07-659
+Revision 1.4  2004/11/24 19:49:22  clq2
+nww-itn07-659
+
+Revision 1.1.104.1  2004/11/18 10:52:01  nw
+javadoc, some very minor tweaks.
 
 Revision 1.1  2004/07/01 11:43:33  nw
 cea refactor

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineFileIndirectExecutionTest.java,v 1.4 2004/11/19 14:17:56 clq2 Exp $
+ * $Id: CommandLineFileIndirectExecutionTest.java,v 1.5 2004/11/24 19:49:22 clq2 Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -27,10 +27,13 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.net.URI;
 
-/** test simplest possible execution of a command-line app - direct, no external references involved.
+/** test commandiline app with file-based indirect parametesrs.
  * @author Paul Harrison (pah@jb.man.ac.uk) 11-May-2004
  * @version $Name:  $
  * @since iteration5
+ * 
+ * @see org.astrogrid.applications.integration.AbstractRunTestForCEA
+ * @see org.astrogrid.applications.integration.commandline.CommandLineProviderServerInfo
  */
 public class CommandLineFileIndirectExecutionTest extends AbstractRunTestForCEA {
 

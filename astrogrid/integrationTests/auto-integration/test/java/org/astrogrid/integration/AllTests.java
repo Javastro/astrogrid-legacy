@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.10 2004/11/23 15:45:31 jdt Exp $
+/*$Id: AllTests.java,v 1.11 2004/11/24 19:49:22 clq2 Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.integration;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-/**
+/** The root of all the integration tests.
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Apr-2004
  *
  */
@@ -43,6 +43,9 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.11  2004/11/24 19:49:22  clq2
+nww-itn07-659
+
 Revision 1.10  2004/11/23 15:45:31  jdt
 Merge from INT_JDT_757 (restoring mch's tests)
 

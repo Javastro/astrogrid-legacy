@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.15 2004/11/19 14:17:56 clq2 Exp $
+ * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.16 2004/11/24 19:49:22 clq2 Exp $
  * 
  * Created on 23-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -38,6 +38,7 @@ import junit.framework.TestSuite;
 
 /**
  * An end to end test that exercises a commandLine application with myspace interaction.
+ * uses TESTAPP
  * @author Paul Harrison (pah@jb.man.ac.uk) 23-Apr-2004
  * @version $Name:  $
  * @since iteration5

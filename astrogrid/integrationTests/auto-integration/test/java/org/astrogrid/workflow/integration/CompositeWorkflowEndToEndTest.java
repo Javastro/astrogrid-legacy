@@ -1,4 +1,4 @@
-/*$Id: CompositeWorkflowEndToEndTest.java,v 1.10 2004/11/19 14:17:56 clq2 Exp $
+/*$Id: CompositeWorkflowEndToEndTest.java,v 1.11 2004/11/24 19:49:22 clq2 Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,6 +36,10 @@ import java.util.Date;
 /** end-to-end test of workfow - usecase of creating and submitting a workflow.
  * <p> 
  * involves jes, cea, registry and myspace, all orchestrated through the workflow library.
+ * <p>
+ * This is an old acceptance test, which I don't want to alter - however,it doesn't test things thoroughly, and is liable to fail.
+ * 
+ * Uses TESTAPP and TESTDSA
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
  *
  */
@@ -130,8 +134,11 @@ public class CompositeWorkflowEndToEndTest extends AbstractTestForWorkflow {
 
 /* 
 $Log: CompositeWorkflowEndToEndTest.java,v $
-Revision 1.10  2004/11/19 14:17:56  clq2
-roll back beforeMergenww-itn07-659
+Revision 1.11  2004/11/24 19:49:22  clq2
+nww-itn07-659
+
+Revision 1.8.40.1  2004/11/18 10:52:01  nw
+javadoc, some very minor tweaks.
 
 Revision 1.8  2004/09/09 10:46:38  nw
 removed explicit call to write workflow to vospace - happens under the hood anyhow.

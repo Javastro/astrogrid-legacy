@@ -1,4 +1,4 @@
-/*$Id: DataCenterVOSpaceIndirectExecutionTest.java,v 1.4 2004/11/19 14:17:56 clq2 Exp $
+/*$Id: DataCenterVOSpaceIndirectExecutionTest.java,v 1.5 2004/11/24 19:49:22 clq2 Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,8 +30,11 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 
-/**
+/** test datacenter cea against indirect parameters that reference resources in myspace.
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Jun-2004
+ * 
+ * @see org.astrogrid.applications.integration.AbstractRunTestForCEA
+ * @see org.astrogrid.applications.integration.datacenter.DataCenterProviderServerInfo
  *
  */
 public class DataCenterVOSpaceIndirectExecutionTest extends AbstractRunTestForCEA{
@@ -87,8 +90,11 @@ public class DataCenterVOSpaceIndirectExecutionTest extends AbstractRunTestForCE
 
 /* 
 $Log: DataCenterVOSpaceIndirectExecutionTest.java,v $
-Revision 1.4  2004/11/19 14:17:56  clq2
-roll back beforeMergenww-itn07-659
+Revision 1.5  2004/11/24 19:49:22  clq2
+nww-itn07-659
+
+Revision 1.2.52.1  2004/11/18 10:52:01  nw
+javadoc, some very minor tweaks.
 
 Revision 1.2  2004/08/27 13:16:52  nw
 used AstrogridAssert to check results more thoroughly.

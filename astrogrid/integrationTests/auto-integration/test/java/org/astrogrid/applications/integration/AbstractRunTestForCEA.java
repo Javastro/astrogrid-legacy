@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractRunTestForCEA.java,v 1.7 2004/11/19 14:17:56 clq2 Exp $
+ * $Id: AbstractRunTestForCEA.java,v 1.8 2004/11/24 19:49:22 clq2 Exp $
  * 
  * Created on 14-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -22,22 +22,34 @@ import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 /** Abstract test case for executing applications.
+ * provides a skeleton test {@link #testExecute()}. Testers just need to implement {@link #populateTool(Tool)} and {@link #checkResults(ResultListType)}
  * @author Paul Harrison (pah@jb.man.ac.uk) 14-May-2004
  * @version $Name:  $
  * @since iteration5
+ * @see org.astrogrid.applications.integration.ServerInfo
  */
 public abstract class AbstractRunTestForCEA
    extends AbstractTestForCEA {
 
    /**
-    * @param arg0
+    * @param info - server info component that describes which application to test
     */
    public AbstractRunTestForCEA(ServerInfo info,String arg0) {
       super(info.getServerSearchString(),arg0);
       this.serverInfo = info;
    }
    protected final ServerInfo serverInfo;
-
+/** skeleton test 
+ * <ul>
+ * <li>creates a tool object by querying the registry,
+ * <li>sets up parameters by calling {@link #populateTool(Tool)}
+ * <li>initialize the application
+ * <li>check the status of the application
+ * <li>executre the application
+ * <li>poll the status of the application, until it either times out or completes.
+ * <li>gets results for application, calls {@link #checkResults(ResultListType)}
+ * </ul>
+ */
    public void testExecute() throws Exception {
        try {
        ApplicationRegistry reg = ag.getWorkflowManager().getToolRegistry();
@@ -100,11 +112,13 @@ public abstract class AbstractRunTestForCEA
    
     /**
     * Make checks on the results that are expected....
+    * @param results - results of application execution
+    * 
     */
    protected abstract void checkResults(ResultListType results) throws Exception; 
 
-   /**
-    * @param tool
+   /** populate passed in tool object wtih parameter values.
+    * @param tool - pre-initialzed tool object
     */
    protected abstract void populateTool(Tool tool) throws Exception;
 

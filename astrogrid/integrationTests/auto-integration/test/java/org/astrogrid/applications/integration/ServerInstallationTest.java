@@ -1,4 +1,4 @@
-/*$Id: ServerInstallationTest.java,v 1.8 2004/11/19 14:17:56 clq2 Exp $
+/*$Id: ServerInstallationTest.java,v 1.9 2004/11/24 19:49:22 clq2 Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,7 +43,7 @@ public class ServerInstallationTest extends AbstractTestForCEA {
         this.info = info;
     }
     protected final ServerInfo info;
-    
+    /** check the service is physically there */
     public void testServicePresent() throws Exception {
         URL url = new URL( delegate.getTargetEndPoint());
         // will throw malformed if a problem..
@@ -53,7 +53,7 @@ public class ServerInstallationTest extends AbstractTestForCEA {
         Piper.pipe(r,sw);        
         assertEquals("endpoint page contains error:" + sw.toString(),-1,sw.toString().toLowerCase().indexOf("error"));                
     } 
-    
+    /** chech that apps are registered in registry */
     public void testApplicationsRegistered() throws Exception {        
         ApplicationRegistry reg = ag.getWorkflowManager().getToolRegistry();
         //assertNotNull(reg.getDescriptionFor(applicationName()));
@@ -69,7 +69,7 @@ public class ServerInstallationTest extends AbstractTestForCEA {
     }
 
     
-    
+    /** test cea server returns a registry entry for harvesting */
     public void testReturnRegistryEntry() throws Exception {
         String entry = delegate.returnRegistryEntry();
         assertNotNull(entry);
@@ -85,8 +85,11 @@ public class ServerInstallationTest extends AbstractTestForCEA {
 
 /* 
 $Log: ServerInstallationTest.java,v $
-Revision 1.8  2004/11/19 14:17:56  clq2
-roll back beforeMergenww-itn07-659
+Revision 1.9  2004/11/24 19:49:22  clq2
+nww-itn07-659
+
+Revision 1.6.50.1  2004/11/18 10:52:01  nw
+javadoc, some very minor tweaks.
 
 Revision 1.6  2004/09/02 01:33:25  nw
 added assertion that we're getting back a voresource.

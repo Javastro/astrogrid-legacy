@@ -1,4 +1,4 @@
-/*$Id: VOSpaceIndirectExecutionTest.java,v 1.4 2004/11/19 14:17:56 clq2 Exp $
+/*$Id: VOSpaceIndirectExecutionTest.java,v 1.5 2004/11/24 19:49:22 clq2 Exp $
  * Created on 23-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
-/** Test execution of application, using indirect parameters and reuslts in vospace..
+/** Test execution of application, using indirect parameters that point into vospace..
+ * @see org.astrogrid.applications.integration.AbstractRunTestForCEA
+ * @see org.astrogrid.applications.integration.JavaProviderServerInfo
  * @author Noel Winstanley nw@jb.man.ac.uk 23-Jun-2004
  *
  */
@@ -79,8 +81,11 @@ public class VOSpaceIndirectExecutionTest extends AbstractRunTestForCEA {
 
 /* 
 $Log: VOSpaceIndirectExecutionTest.java,v $
-Revision 1.4  2004/11/19 14:17:56  clq2
-roll back beforeMergenww-itn07-659
+Revision 1.5  2004/11/24 19:49:22  clq2
+nww-itn07-659
+
+Revision 1.2.92.1  2004/11/18 10:52:01  nw
+javadoc, some very minor tweaks.
 
 Revision 1.2  2004/07/23 08:44:30  nw
 fix to parameter population

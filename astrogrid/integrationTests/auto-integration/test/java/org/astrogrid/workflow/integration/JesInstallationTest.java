@@ -1,4 +1,4 @@
-/*$Id: JesInstallationTest.java,v 1.10 2004/11/19 14:17:56 clq2 Exp $
+/*$Id: JesInstallationTest.java,v 1.11 2004/11/24 19:49:22 clq2 Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
-/** Test jes service is happy. also exercises the part of workflowManager that talks to jes.
+/** verify that  jes service is running and happy. also exercises the part of workflowManager that talks to jes.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
  *
  */
@@ -81,8 +81,11 @@ public class JesInstallationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: JesInstallationTest.java,v $
-Revision 1.10  2004/11/19 14:17:56  clq2
-roll back beforeMergenww-itn07-659
+Revision 1.11  2004/11/24 19:49:22  clq2
+nww-itn07-659
+
+Revision 1.8.26.1  2004/11/18 10:52:01  nw
+javadoc, some very minor tweaks.
 
 Revision 1.8  2004/09/22 00:45:48  nw
 increased timeout again - hoping to get more reliable results.

@@ -1,4 +1,4 @@
-/*$Id: DirectExecutionTest.java,v 1.3 2004/11/19 14:17:56 clq2 Exp $
+/*$Id: DirectExecutionTest.java,v 1.4 2004/11/24 19:49:22 clq2 Exp $
  * Created on 22-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,8 +14,10 @@ import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.workflow.beans.v1.Tool;
 
-/**
+/** Most basic CEA test - runs a java-based application, returning results directly.
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Jun-2004
+ * @see org.astrogrid.applications.integration.AbstractRunTestForCEA
+ * @see org.astrogrid.applications.integration.JavaProviderServerInfo
  *
  */
 public class DirectExecutionTest extends AbstractRunTestForCEA{
@@ -43,8 +45,11 @@ public class DirectExecutionTest extends AbstractRunTestForCEA{
 
 /* 
 $Log: DirectExecutionTest.java,v $
-Revision 1.3  2004/11/19 14:17:56  clq2
-roll back beforeMergenww-itn07-659
+Revision 1.4  2004/11/24 19:49:22  clq2
+nww-itn07-659
+
+Revision 1.1.104.1  2004/11/18 10:52:01  nw
+javadoc, some very minor tweaks.
 
 Revision 1.1  2004/07/01 11:43:33  nw
 cea refactor
