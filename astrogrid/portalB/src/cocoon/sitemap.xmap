@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/Attic/sitemap.xmap,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/30 00:04:53 $</cvs:author>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/30 12:42:31 $</cvs:author>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     | $Log: sitemap.xmap,v $
+    | Revision 1.6  2003/06/30 12:42:31  dave
+    | Added user name session attribute
+    |
     | Revision 1.5  2003/06/30 00:04:53  dave
     | Added initial astrogrid style
     |
@@ -83,6 +86,8 @@
 			<map:match pattern="agmyspace.html">
 				<!-- Call our explorer action -->
 				<map:act type="astrogrid-explorer">
+					<!-- Set the session attribute to check for the user name -->
+					<map:parameter name="user-param"  value="user"/>
 					<!-- Generate our page XML -->
 					<map:generate src="explorer/xsp/explorer.xsp" type="serverpages" label="000, 001"/>
 					<!-- Convert the data into a page -->
@@ -172,12 +177,48 @@
 				<map:serialize type="html"/>
 			</map:match>
 
-			<!-- MySpace data -->
+			<!-- MySpace test data -->
 			<map:match pattern="explorer/myspace/*">
 				<!-- Generate our XML data -->
 				<map:generate src="/var/projects/astrogrid/astrogrid/portalB/build/myspace/live/service/temp/{1}" label="000, 001"/>
 				<!-- Serialize as XML -->
 				<map:serialize type="xml"/>
+			</map:match>
+
+			<!-- Session attribute test -->
+			<map:match pattern="session">
+				<!-- Generate our XML data -->
+				<map:generate src="explorer/xsp/session.xsp" type="serverpages" label="000, 001"/>
+				<!-- Serialize as XML -->
+				<map:serialize type="html"/>
+			</map:match>
+
+			<!-- Explorer test -->
+			<map:match pattern="explorer">
+				<!-- Call our explorer action -->
+				<map:act type="astrogrid-explorer">
+					<!-- Set the session attribute to check for the user name -->
+					<map:parameter name="user-param"  value="user"/>
+					<!-- Generate our page XML -->
+					<map:generate src="explorer/xsp/explorer.xsp" type="serverpages" label="000, 001"/>
+					<!-- Convert the data into a page -->
+					<map:transform src="explorer/xsl/explorer.xsl" label="002">
+						<!-- Add the action params -->
+						<map:parameter name="action"  value="{action}"/>
+						<map:parameter name="confirm" value="{confirm}"/>
+						<!-- Add the explorer page names -->
+						<map:parameter name="explorer-page" value="explorer"/>
+						<map:parameter name="votable-page"  value="votable"/>
+					</map:transform>
+				</map:act>
+				<!-- Wrap the page in our HTML template -->
+				<map:transform src="common/xsl/template.xsl" label="003">
+					<!-- Add the explorer page names -->
+					<map:parameter name="explorer-page" value="explorer"/>
+					<map:parameter name="votable-page"  value="votable"/>
+				</map:transform>
+				<!-- Serialize as HTML -->
+				<map:serialize type="html"/>
 			</map:match>
 
 		</map:pipeline>

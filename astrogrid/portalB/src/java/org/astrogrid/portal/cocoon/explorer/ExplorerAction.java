@@ -2,24 +2,19 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/cocoon/explorer/Attic/ExplorerAction.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/26 14:15:10 $</cvs:author>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/30 12:42:31 $</cvs:author>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  * $Log: ExplorerAction.java,v $
+ * Revision 1.2  2003/06/30 12:42:31  dave
+ * Added user name session attribute
+ *
  * Revision 1.1  2003/06/26 14:15:10  dave
  * Added explorer pages and actions to Cocoon
  *
  * <cvs:log>
  *
-
-http://methionine.codon.demon.co.uk:8080/cocoon/astrogrid/explorer/explorer.000?
-http://methionine.codon.demon.co.uk:8080/cocoon/astrogrid/explorer/explorer.000?action=create-view
-http://methionine.codon.demon.co.uk:8080/cocoon/astrogrid/explorer/explorer.000?action=create-view&path=/clq
-http://methionine.codon.demon.co.uk:8080/cocoon/astrogrid/explorer/explorer.000?action=create-view&path=/clq&service=http://capc49.ast.cam.ac.uk:8080/axis/services/MySpaceManager
-
-http://methionine.codon.demon.co.uk:8080/cocoon/astrogrid/explorer/explorer.000?AST-VIEW=AST-1
-
  *
  */
 package org.astrogrid.portal.cocoon.explorer ;
@@ -38,6 +33,7 @@ import java.util.Iterator;
 import org.xml.sax.EntityResolver;
 
 import org.apache.avalon.framework.parameters.Parameters;
+import org.apache.avalon.framework.parameters.ParameterException ;
 import org.apache.cocoon.acting.AbstractAction;
 import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.environment.Session;
@@ -63,6 +59,12 @@ public class ExplorerAction
 	 *
 	 */
 	public static final String COPY_PREFIX = "Copy of " ;
+
+	/**
+	 * Cocoon param for the user param in the session.
+	 *
+	 */
+	public static final String USER_PARAM_NAME = "user-param" ;
 
 	/**
 	 * Http request param for a path value.
@@ -178,6 +180,24 @@ public class ExplorerAction
 		Map results = new HashMap() ;
 
 		//
+		// Get our current user name from the session.
+		String tag  = null ;
+		String user = null ;
+		try {
+			tag = params.getParameter(USER_PARAM_NAME) ;
+			}
+		catch (ParameterException ouch)
+			{
+			tag = null ;
+			}
+		if (null != tag)
+			{
+			user = (String) session.getAttribute(tag) ;
+			}
+		if (DEBUG_FLAG) System.out.println("User tag  : " + tag) ;
+		if (DEBUG_FLAG) System.out.println("User name : " + user) ;
+
+		//
 		// Our current AstSession.
 		AstPortalSession portal = null ;
 		//
@@ -233,11 +253,26 @@ public class ExplorerAction
 					String path    = request.getParameter(EXPLORER_PATH_PARAM) ;
 					String service = request.getParameter(EXPLORER_SERVICE_PARAM) ;
 					if (DEBUG_FLAG) System.out.println("Creating a new view ....") ;
+					if (DEBUG_FLAG) System.out.println("User    : " + user) ;
 					if (DEBUG_FLAG) System.out.println("Path    : " + path) ;
-					if (DEBUG_FLAG) System.out.println("Service : " + service) ;
+					String base = "" ;
+					//
+					// If we have a user name.
+					if (null != user)
+						{
+						base += "/" + user ;
+						}
+					//
+					// If we have a path.
+					if (null != path)
+						{
+						base += "/" + path ;
+						}
 					//
 					// Create the view.
-					view = portal.createExplorerView(service, path) ;
+					if (DEBUG_FLAG) System.out.println("Base    : " + base) ;
+					if (DEBUG_FLAG) System.out.println("Service : " + service) ;
+					view = portal.createExplorerView(service, base) ;
 					//
 					// Clear the action and confirm values.
 					// FIXME : Only do this is the action worked.

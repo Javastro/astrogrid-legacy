@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/explorer/xsp/Attic/session.xsp,v $</cvs:source>
+    | <cvs:date>$Author: dave $</cvs:date>
+    | <cvs:author>$Date: 2003/06/30 12:42:31 $</cvs:author>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    | $Log: session.xsp,v $
+    | Revision 1.1  2003/06/30 12:42:31  dave
+    | Added user name session attribute
+    |
+    | </cvs:log>
+    | 
+    | A test page to set session attributes.
+    | 
+    +-->
+<xsp:page language="java"
+		create-session="true"
+		xmlns:xsp="http://apache.org/xsp"
+		xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+		xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+		>
+
+	<html>
+
+		<xsp:logic>
+			<![CDATA[
+			String name   = null ;
+			String value  = null ;
+			String action = null ;
+			String result = null ;
+
+			//
+			// Get the params from the request.
+			name   = request.getParameter("name") ;
+			value  = request.getParameter("value") ;
+			action = request.getParameter("action") ;
+
+			//
+			// If the action is 'update'.
+			if ("update".equals(action))
+				{
+				//
+				// Set the session attribute.
+				if (null != name)
+					{
+					session.setAttribute(name, value) ;
+					}
+				}
+
+			//
+			// Get the session attribute.
+			if (null != name)
+				{
+				result = (String) session.getAttribute(name) ;
+				}
+
+			]]>
+		</xsp:logic>
+
+		<body>
+			<p>
+				<table border="1">
+					<tr>
+						<td>Name</td>
+						<td>
+							<xsp:expr>name</xsp:expr>
+						</td>
+					</tr>
+					<tr>
+						<td>Value</td>
+						<td>
+							<xsp:expr>value</xsp:expr>
+						</td>
+					</tr>
+					<tr>
+						<td>Action</td>
+						<td>
+							<xsp:expr>action</xsp:expr>
+						</td>
+					</tr>
+					<tr>
+						<td>Session</td>
+						<td>
+							<xsp:expr>result</xsp:expr>
+						</td>
+					</tr>
+				</table>
+			</p>
+			<p>
+				<form method="get">
+					<input type="hidden" name="action" value="update"/>
+					<table border="1">
+						<tr>
+							<td>Name</td>
+							<td>
+								<input type="text" name="name">
+									<xsp:attribute name="value"><xsp:expr>name</xsp:expr></xsp:attribute>
+								</input>
+							</td>
+						</tr>
+						<tr>
+							<td>Value</td>
+							<td>
+								<input type="text" name="value">
+									<xsp:attribute name="value"><xsp:expr>value</xsp:expr></xsp:attribute>
+								</input>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>
+								<input type="submit" value="Update"/>
+							</td>
+						</tr>
+					</table>
+				</form>
+			</p>
+		</body>
+	</html>
+
+</xsp:page>

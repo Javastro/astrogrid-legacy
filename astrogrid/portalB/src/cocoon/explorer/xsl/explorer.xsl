@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/explorer/xsl/Attic/explorer.xsl,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/30 00:04:53 $</cvs:author>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/30 12:42:31 $</cvs:author>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     | $Log: explorer.xsl,v $
+    | Revision 1.7  2003/06/30 12:42:31  dave
+    | Added user name session attribute
+    |
     | Revision 1.6  2003/06/30 00:04:53  dave
     | Added initial astrogrid style
     |
@@ -509,8 +512,8 @@
 	    +-->
 	<xsl:template name="create-view">
 		<form method="get">
-			<input type="hidden" name="action"  value="create-view"/>
-			<input type="hidden" name="confirm" value="true"/>
+			<input type="hidden" name="action"   value="create-view"/>
+			<input type="hidden" name="confirm"  value="true"/>
 			<table class="info" border="0">
 				<tr class="info">
 					<td class="info">
