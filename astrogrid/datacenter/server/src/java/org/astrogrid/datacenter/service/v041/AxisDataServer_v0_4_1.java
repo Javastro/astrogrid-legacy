@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer_v0_4_1.java,v 1.5 2004/03/14 04:13:04 mch Exp $
+ * $Id: AxisDataServer_v0_4_1.java,v 1.6 2004/03/16 01:21:08 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -226,9 +226,9 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
       log.debug("Querier ["+queryId+"] registering JobMonitor at "+uri);
       try  {
          URL u = new URL(uri.toString());
-         Querier querier = server.getQuerier(queryId);
+         Querier querier = (Querier) madeQueriers.get(queryId);
          if (querier == null) {
-            throw new IllegalArgumentException("Unknown qid" + queryId);
+            throw new IllegalArgumentException("Unknown Query ID '" + queryId+"'");
          }
          
          querier.addListener(new JobNotifyServiceListener(queryId, u));
@@ -255,6 +255,9 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
 
 /*
 $Log: AxisDataServer_v0_4_1.java,v $
+Revision 1.6  2004/03/16 01:21:08  mch
+Fixed unknown query id on register job monitor
+
 Revision 1.5  2004/03/14 04:13:04  mch
 Wrapped output target in TargetIndicator
 
