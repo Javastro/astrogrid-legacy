@@ -1,5 +1,5 @@
 /*
- * $Id: StilStarTableWriter.java,v 1.2 2005/03/30 18:25:45 mch Exp $
+ * $Id: StilStarTableWriter.java,v 1.3 2005/03/30 19:01:08 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,7 +14,6 @@ import org.astrogrid.tableserver.metadata.ColumnInfo;
 import uk.ac.starlink.table.AbstractStarTable;
 import uk.ac.starlink.table.RowSequence;
 import uk.ac.starlink.table.StarTableWriter;
-import uk.ac.starlink.table.StreamStarTableWriter;
 
 /**
  * Adaptor to the STIL (Starlink Library) StarTableWriter,
@@ -185,6 +184,9 @@ public class StilStarTableWriter extends AbstractStarTable implements TableWrite
 
 /*
  $Log: StilStarTableWriter.java,v $
+ Revision 1.3  2005/03/30 19:01:08  mch
+ fixes to results format
+
  Revision 1.2  2005/03/30 18:25:45  mch
  fix for sql-server jdbc problem
 
