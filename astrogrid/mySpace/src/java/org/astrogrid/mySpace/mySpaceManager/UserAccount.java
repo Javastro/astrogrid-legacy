@@ -2,8 +2,8 @@ package org.astrogrid.mySpace.mySpaceManager;
 
 import java.io.*;
 
-import org.astrogrid.community.common.util.CommunityMessage;
-import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
+// import org.astrogrid.community.common.util.CommunityMessage;
+// import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
 
 import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatus;
 import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
@@ -233,23 +233,23 @@ public class UserAccount
 //  If ok then create a permissions manager delegate and check whether
 //  the user is authorised for this type of operation.
 
-     if (authorised)
-     {  PolicyServiceDelegate psd = new PolicyServiceDelegate();
+//     if (authorised)
+//     {  PolicyServiceDelegate psd = new PolicyServiceDelegate();
 
-        try
-        {  String agUserId = this.getUserAGrId();
+//        try
+//        {  String agUserId = this.getUserAGrId();
 
-           authorised = psd.checkPermissions(agUserId, credentials,
-             "myspace", oper);
-        }
-        catch (Exception e)
-        {  authorised = false;
+//           authorised = psd.checkPermissions(agUserId, credentials,
+//             "myspace", oper);
+//        }
+//        catch (Exception e)
+//        {  authorised = false;
 
-           MySpaceStatus status  = new MySpaceStatus(
-              MySpaceStatusCode.AGMMCE00050, MySpaceStatusCode.ERROR,
-              MySpaceStatusCode.NOLOG, this.getClassName() );
-        }
-     }
+//           MySpaceStatus status  = new MySpaceStatus(
+//              MySpaceStatusCode.AGMMCE00050, MySpaceStatusCode.ERROR,
+//              MySpaceStatusCode.NOLOG, this.getClassName() );
+//        }
+//     }
 
      return authorised;
   }
