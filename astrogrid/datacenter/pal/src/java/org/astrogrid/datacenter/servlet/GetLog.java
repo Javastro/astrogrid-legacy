@@ -1,5 +1,5 @@
 /*
- * $Id: GetLog.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: GetLog.java,v 1.2 2004/10/05 15:03:42 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -25,27 +25,44 @@ public class GetLog extends StdServlet {
    
    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-      response.setContentType("text/plain");
-
-      PrintWriter out = response.getWriter();
-      out.println("Debug Log for "+DataServer.getDatacenterName()+" "+new Date());
-
-      String palDebugFilename = FailbackConfig.resolveEnvironmentVariables("${catalina.home}/logs/pal.log");
+      String palDebugFilename = null;
       String whichLog = request.getParameter("Log");
-      if (whichLog != null) {
-         if (request.getParameter("Log").toUpperCase().equals("CATALINA.OUT")) {
-            palDebugFilename = FailbackConfig.resolveEnvironmentVariables("${catalina.home}/logs/catalina.out");
-         }
-         else if (request.getParameter("Log").toUpperCase().equals("DEBUG")) {
-            palDebugFilename = FailbackConfig.resolveEnvironmentVariables("${catalina.home}/logs/catalina.out");
-         }
+      if (whichLog == null) {
+         palDebugFilename = FailbackConfig.resolveEnvironmentVariables("${catalina.home}/logs/pal.log");
+         response.setContentType("text/plain");
       }
-      
-      out.println("From "+palDebugFilename);
-      out.println("");
-      out.flush();
-      FileReader logReader = new FileReader(palDebugFilename);
-      Piper.bufferedPipe(logReader, out);
+      else if (whichLog.toUpperCase().equals("CATALINA.OUT")) {
+         palDebugFilename = FailbackConfig.resolveEnvironmentVariables("${catalina.home}/logs/catalina.out");
+         response.setContentType("text/plain");
+      }
+      else if (whichLog.toUpperCase().equals("DEBUG")) {
+         palDebugFilename = FailbackConfig.resolveEnvironmentVariables("${catalina.home}/logs/pal-debug.log");
+         response.setContentType("text/plain");
+      }
+      else if (whichLog.toUpperCase().equals("WEB")) {
+         palDebugFilename = FailbackConfig.resolveEnvironmentVariables("${catalina.home}/logs/pal-web.log");
+         response.setContentType("text/html");
+      }
+      else if (whichLog.toUpperCase().equals("XML")) {
+         palDebugFilename = FailbackConfig.resolveEnvironmentVariables("${catalina.home}/logs/pal-xml.log");
+         response.setContentType("text/xml");
+      }
+      else {
+         response.setContentType("text/plain");
+         response.getWriter().println("Unknown Log value '"+whichLog+"'; use CATALINA.OUT, DEBUG, XML or WEB, or leave blank for INFO level +");
+      }
+
+      if (palDebugFilename != null) {
+         PrintWriter out = response.getWriter();
+         out.println("Debug Log for "+DataServer.getDatacenterName()+" "+new Date());
+   
+         out.println("From "+palDebugFilename);
+         out.println("");
+         out.flush();
+         FileReader logReader = new FileReader(palDebugFilename);
+         Piper.bufferedPipe(logReader, out);
+         out.flush();
+      }
    }
 
 
