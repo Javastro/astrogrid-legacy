@@ -26,9 +26,13 @@ public class WorkflowTestSuite extends TestCase {
 	private static final String
         log4jproperties = "/home/jl99/log4j.properties" ;	
         
-    private static String
-        queryName,
-        workflowName ;	
+    private String
+        lastQueryNameReadFromList = "",
+        lastWorkflowNameReadFromList = "",
+        nameOfWorkflowSavedInMySpace = "";
+
+    private final Date
+        runDate = new Date() ;
         
 	/**
 	 * Sets up the test fixture.
@@ -62,8 +66,8 @@ public class WorkflowTestSuite extends TestCase {
          logger.info( "enter: WorkflowTestSuite.testWorkflowActivityNavigation()" ); 
         
          final String 
-             name = "OneStepJob",
-             description = "This is a one step job",
+             name = "WorkflowActivityNavigation_" + this.runDate.getTime(),
+             description = "Workflow meant to test basic activity navigation",
              templateName = "OneStepJob" ;
          Workflow
             workflow = null ,
@@ -110,8 +114,8 @@ public class WorkflowTestSuite extends TestCase {
         logger.info( "enter: WorkflowTestSuite.testCreateWorkflowFromTemplate_MissingTemplate()" ); 
         
         final String 
-            name = "OneStepJob",
-            description = "This is a one step job",
+            name = "WorkflowFromTemplate_MissingTemplate_" + this.runDate.getTime() ,
+            description = "Workflow should fail because of missing template",
             templateName = "IncorrectName" ;
             
         try{
@@ -137,8 +141,8 @@ public class WorkflowTestSuite extends TestCase {
         logger.info( "enter: WorkflowTestSuite.testCreateWorkflowFromTemplate_OneStepTemplate()" ); 
         
         final String 
-            name = "OneStepJob",
-            description = "This is a one step job",
+            name = "WorkflowFromTemplate_OneStepTemplate_" + this.runDate.getTime() ,
+            description = "Workflow created from the OneStepJob template",
             templateName = "OneStepJob" ;
         Workflow
             workflow = null ;
@@ -161,19 +165,98 @@ public class WorkflowTestSuite extends TestCase {
         }
         
     } // end of testCreateWorkflowFromTemplate_OneStepTemplate()
-
-
-
-    public void testSaveWorkflow() {
-         logger.info( "-------------------------------------------" ); 
-         logger.info( "enter: WorkflowTestSuite.testSaveWorkflow()" ); 
-         
-        Date
-            date = new Date() ;
+    
+    
+    public void testCreateWorkflowFromScratch_OneSequence_OneStep_Tool() {
+        logger.info( "---------------------------------------------------------------------------------" ); 
+        logger.info( "enter: WorkflowTestSuite.testCreateWorkflowFromScratch_OneSequence_OneStep_Tool()" ); 
         
         final String 
-             name = "WorkflowTestSuite_testSaveWorkflow()_" + date.getTime(),
-             description = "This is a one step job",
+            workflowName = "WorkflowFromScratch_OneSequence_OneStep_Tool_" + this.runDate.getTime(),
+            description = "A one sequence, one step workflow designed without use of a template" ; 
+
+        final String
+            votableLocation[] = { Workflow.formatMySpaceURL( communitySnippet(), "votables", "votable01.xml" )
+                                , Workflow.formatMySpaceURL( communitySnippet(), "votables", "votable02.xml" )
+                                , Workflow.formatMySpaceURL( communitySnippet(), "votables", "votable03.xml" )
+                                , Workflow.formatMySpaceURL( communitySnippet(), "votables", "votable04.xml" )
+                                , Workflow.formatMySpaceURL( communitySnippet(), "votables", "votable05.xml" ) } ;
+        final String
+            votOutputLocation = Workflow.formatMySpaceURL( communitySnippet(), "votables", "outputXS6wf01.xml") ;
+        
+        Workflow
+            workflow = null ;
+        Sequence
+            sequence = null ;
+        Step
+            step = null ;
+        String
+            wfXML = null ;            
+                       
+        try{
+            workflow = Workflow.createWorkflow( communitySnippet()
+                                              , workflowName
+                                              , description ) ;
+                                              
+            sequence = new Sequence( workflow ) ;
+            workflow.setChild( sequence ) ;
+            step = sequence.createStep( 0 ) ;
+            step.setName( "One step sequence" ) ;
+            step.setDescription( "One step sequence containing DataFederation tool" ) ;
+            step.setJoinCondition( JoinCondition.ANY ) ;
+            
+            // Setting sequence and step numbers shows a weakness in the current approach.
+            // These should be auto-generated in some fashion...
+            step.setSequenceNumber( 1 ) ;
+            step.setStepNumber( 1 ) ;
+                                                          
+            prettyPrint( "Workflow:", workflow.constructWorkflowXML( communitySnippet() ) ) ;
+            
+            this.setUpDataFederationStep( step
+                                        , votableLocation
+                                        , true
+                                        , "some sort of show string here"
+                                        , "some sort of target string here"
+                                        , "some sort of what2show string here"
+                                        , "some sort of require string here" 
+                                        , "some sort of output string here"
+                                        , 5
+                                        , votOutputLocation ) ;
+ 
+            wfXML = workflow.constructWorkflowXML( communitySnippet() ) ;
+            prettyPrint( "Workflow xml:", wfXML ) ;
+            
+            //JBL Note: Need to hold correct results in a file for comparison purposes...
+            
+//            if( jesXML.indexOf( "name=\"require\"" ) == -1 ) {
+//                assertTrue( true ) ;
+//            }
+//            else {
+//                assertTrue( false ) ;
+//            }
+              
+            assertTrue( true ) ;
+              
+        }
+        catch( Exception ex ) {
+            ex.printStackTrace() ;
+            assertTrue( false ) ;
+        }
+        finally {
+            logger.info( "exit: WorkflowTestSuite.testCreateWorkflowFromScratch_OneSequence_OneStep_Tool()" );  
+        }
+        
+    } // end of testCreateWorkflowFromScratch_OneSequence_OneStep_Tool()
+
+
+
+    public void t5estSaveWorkflow() {
+        logger.info( "-------------------------------------------" ); 
+        logger.info( "enter: WorkflowTestSuite.testSaveWorkflow()" ); 
+         
+        nameOfWorkflowSavedInMySpace = "SaveWorkflow_" + this.runDate.getTime() ;
+        final String 
+             description = "Workflow which should have been saved in MySpace",
              templateName = "OneStepJob" ;
          Workflow
              workflow = null ;
@@ -183,7 +266,7 @@ public class WorkflowTestSuite extends TestCase {
          try{
              
             workflow = Workflow.createWorkflowFromTemplate( communitySnippet()
-                                                          , name
+                                                          , nameOfWorkflowSavedInMySpace
                                                           , description
                                                           , templateName ) ;
       
@@ -209,7 +292,7 @@ public class WorkflowTestSuite extends TestCase {
 
 
 
-    public void testReadWorkflowList() {
+    public void t5estReadWorkflowList() {
          logger.info( "-----------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadWorkflowList()" ); 
         
@@ -220,8 +303,8 @@ public class WorkflowTestSuite extends TestCase {
              iterator = Workflow.readWorkflowList( communitySnippet(), "*" ) ;
              
              while ( iterator.hasNext() ) {
-                 WorkflowTestSuite.workflowName = (String)iterator.next() ;
-                 logger.info( "Workflow Name: " + WorkflowTestSuite.workflowName ) ;
+                 this.lastWorkflowNameReadFromList = (String)iterator.next() ;
+                 logger.info( "Workflow Name: " + this.lastWorkflowNameReadFromList ) ;
              }
  
              assertTrue( true ) ;    
@@ -239,18 +322,16 @@ public class WorkflowTestSuite extends TestCase {
  
  
  
-    public void testReadWorkflow() {
+    public void t5estReadWorkflow() {
          logger.info( "-------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadWorkflow()" ); 
         
-         final String 
-//             name = "OneStepJob" ;
-               name = "WorkflowTestSuite_testSaveWorkflow()_1070024120435" ;
          Workflow
             workflow ;
             
          try{
-             workflow = Workflow.readWorkflow( communitySnippet(), WorkflowTestSuite.workflowName ) ;
+             workflow = Workflow.readWorkflow( communitySnippet()
+                                             , this.lastWorkflowNameReadFromList ) ;
              prettyPrint( "Workflow:", workflow.constructWorkflowXML( communitySnippet() ) ) ;
              assertTrue( true ) ;    
          }
@@ -267,20 +348,16 @@ public class WorkflowTestSuite extends TestCase {
     
     
 
-    
-    
-
-    public void testDeleteWorkflow() {
+    public void t5estDeleteWorkflow() {
          logger.info( "---------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testDeleteWorkflow()" ); 
         
-        final String 
-            name = "OneStepJob" ;
         boolean
             ret = false ;
             
         try{
-            ret = Workflow.deleteWorkflow( communitySnippet(), name) ;
+            ret = Workflow.deleteWorkflow( communitySnippet()
+                                         , nameOfWorkflowSavedInMySpace ) ;
             
             logger.info( "deleted: " + ret ) ;
  
@@ -301,14 +378,13 @@ public class WorkflowTestSuite extends TestCase {
 
 
 
-    public void testReadQueryList() {
+    public void t5estReadQueryList() {
          logger.info( "--------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadQueryList()" ); 
         
          Iterator
             iterator ;
-         
-            
+                    
          try{
              iterator = Workflow.readQueryList( communitySnippet(), "*" ) ;
              
@@ -316,10 +392,9 @@ public class WorkflowTestSuite extends TestCase {
  //            logger.info( "About to execute iterator: iterator.next()" ) ;
  //            logger.info( iterator.next().getClass().getName() ) ;
              
-             while ( iterator.hasNext() ) {
-                 
-                 WorkflowTestSuite.queryName = (String)iterator.next() ;
-                 logger.info( "Query Name: " + WorkflowTestSuite.queryName ) ;
+             while ( iterator.hasNext() ) {                
+                 this.lastQueryNameReadFromList = (String)iterator.next() ;
+                 logger.info( "Query Name: " + this.lastQueryNameReadFromList ) ;
              }
  
              assertTrue( true ) ;    
@@ -337,17 +412,15 @@ public class WorkflowTestSuite extends TestCase {
     
     
     
-    public void testReadQuery() {
+    public void t5estReadQuery() {
          logger.info( "----------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadQuery()" ); 
         
-         final String 
-             name = "Merlin_DataNo_LessThan_305000_20031031" ;
          String
              query ;
             
          try{
-             query = Workflow.readQuery( communitySnippet(), WorkflowTestSuite.queryName ) ;
+             query = Workflow.readQuery( communitySnippet(), this.lastQueryNameReadFromList ) ;
              prettyPrint( "Query looks like:", query ) ;
              assertTrue( true ) ;    
          }
@@ -372,10 +445,6 @@ public class WorkflowTestSuite extends TestCase {
          try{
              
              iterator = Workflow.readToolList( communitySnippet() ) ;
-             
- //            logger.info( "iterator: " + iterator ) ;
- //            logger.info( "About to execute iterator: iterator.next()" ) ;
- //            logger.info( iterator.next().getClass().getName() ) ;
              
              while ( iterator.hasNext() ) {
                  logger.info( "Tool Name: " + (String)iterator.next() ) ;
@@ -454,20 +523,20 @@ public class WorkflowTestSuite extends TestCase {
    
    
    
-    public void testSubmitWorkflow() {
-         logger.info( "---------------------------------------------" ); 
-         logger.info( "enter: WorkflowTestSuite.testSubmitWorkflow()" ); 
+    public void t5estSubmitWorkflow() {
+        logger.info( "---------------------------------------------" ); 
+        logger.info( "enter: WorkflowTestSuite.testSubmitWorkflow()" ); 
         
         final String 
-             name = "WorkflowOct3",
-             description = "This is a one step job",
-             templateName = "OneStepJob" ;
-         Workflow
-             workflow = null ;
-         boolean
-             rc = false ;
+            name = "SubmitWorkflow_" + this.runDate.getTime() ,
+            description = "A one step workflow that actually gets submitted",
+            templateName = "OneStepJob" ;
+        Workflow
+            workflow = null ;
+        boolean
+            rc = false ;
             
-         try{
+        try{
             workflow = Workflow.createWorkflowFromTemplate( communitySnippet()
                                                           , name
                                                           , description
@@ -547,7 +616,7 @@ public class WorkflowTestSuite extends TestCase {
 
 
 
-    public void testCreateQueryAndSubmitWorkflow() {
+    public void t5estCreateQueryAndSubmitWorkflow() {
          logger.info( "-----------------------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testCreateQueryAndSubmitWorkflow()" ); 
         
@@ -555,10 +624,11 @@ public class WorkflowTestSuite extends TestCase {
             date = new Date() ;
             
          final String 
-              workflowName = "WorkflowTest_" + date.getTime(),
-              description = "This is a one step job submitted at " + date.toGMTString(),
+              workflowName = "CreateQueryAndSubmitWorkflow_" + this.runDate.getTime(),
+              description = "A one step workflow with a real query that gets submitted",
               templateName = "OneStepJob",
-              queryName = "query_20031008.xml" ; 
+              queryName = "query_20031008.xml" ; // How can I gurantee this will continue to exist.
+              // By saving it in MySpace on every occasion (and also deleting it)
               
           Workflow
               workflow = null ;
@@ -727,12 +797,9 @@ public class WorkflowTestSuite extends TestCase {
         logger.info( "------------------------------------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testToJesXMLOnEmptyOptionalParameter()" ); 
 
-        final Date 
-            date = new Date() ;
-           
         final String 
-            workflowName = "WorkflowTest_" + date.getTime(),
-            description = "One step DataFederation job created at " + date.toGMTString(),
+            workflowName = "ToJesXMLOnEmptyOptionalParameter_" + this.runDate.getTime(),
+            description = "One step DataFederation workflow with an empty optional parameter",
             templateName = "OneStepJob"  ; 
               
  
@@ -815,12 +882,9 @@ public class WorkflowTestSuite extends TestCase {
         logger.info( "----------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testDeleteParameter()" ); 
 
-        final Date 
-            date = new Date() ;
-           
         final String 
-            workflowName = "WorkflowTest_" + date.getTime(),
-            description = "One step DataFederation job created at " + date.toGMTString(),
+            workflowName = "DeleteParameter_" + this.runDate.getTime(),
+            description = "One step DataFederation workflow where one parameter gets deleted",
             templateName = "OneStepJob"  ; 
               
  
@@ -907,13 +971,10 @@ public class WorkflowTestSuite extends TestCase {
     public void testInsertParameterValue() {
         logger.info( "----------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testInsertParameterValue()" ); 
-
-        final Date 
-            date = new Date() ;
-           
+  
         final String 
-            workflowName = "WorkflowTest_" + date.getTime(),
-            description = "One step DataFederation job created at " + date.toGMTString(),
+            workflowName = "InsertParameterValue_" + this.runDate.getTime(),
+            description = "One step DataFederation workflow where a parameter value is inserted" ,
             templateName = "OneStepJob"  ; 
               
  
@@ -1033,6 +1094,10 @@ public class WorkflowTestSuite extends TestCase {
                 
                 p = (Parameter)iterator.next() ;
                 pName = p.getName() ;
+                
+                // There can be a variable number of VOTfiles.
+                // The initial setup assumes there are only 2
+                // ie: the minimum number...
                 if( pName.equals("VOTfiles") ) {
                     p.setValue( votables[votablesIndex] ) ;
                     votablesIndex++ ;
@@ -1063,6 +1128,7 @@ public class WorkflowTestSuite extends TestCase {
             
             iterator = null ; 
             
+            // This sets up the VOTfiles beyond the minimum 2...
             for( votablesIndex=2; votablesIndex < votables.length; votablesIndex++ ) {
                 p = tool.newInputParameter( "VOTfiles" ) ;
                 p.setValue( votables[votablesIndex] ) ;
