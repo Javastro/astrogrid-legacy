@@ -25,10 +25,10 @@
 <pre>
 <%
    //RegistryHarvestService server = new RegistryHarvestService();
-   UpdateRegistry server = new UpdateRegistry();
+   RegistryAdminService server = new RegistryAdminService();
 
    //Document entry = server.harvestFromResource(DomHelper.newDocument(resource));
-   Document entry = server.update(DomHelper.newDocument(resource));
+   Document entry = server.updateResource(DomHelper.newDocument(resource));
    
    if (entry == null) {
       out.write("<p>No entry returned</p>");
