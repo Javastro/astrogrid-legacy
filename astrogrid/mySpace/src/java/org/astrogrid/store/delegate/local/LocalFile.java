@@ -1,5 +1,5 @@
 /*
- * $Id: LocalFile.java,v 1.2 2004/04/06 10:16:23 mch Exp $
+ * $Id: LocalFile.java,v 1.3 2004/04/06 11:01:33 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -86,13 +86,19 @@ public class LocalFile implements StoreFile
    
    /** Returns where to find this file using an AStrogrid Store Locator */
    public Agsl toAgsl() {
-      String s = store.getEndpoint().getEndpoint();
+      Agsl storeLoc = store.getEndpoint();
       try {
-         return new Agsl(s, getPath());
+         if (getPath() == null) {
+            //file refers to root directory - ie the store point.
+            return storeLoc;
+         }
+         else {
+            return new Agsl(storeLoc.getEndpoint(), getPath());
+         }
       }
       catch (MalformedURLException mue) {
          //should never happen as the Agsl is generated....
-         throw new RuntimeException("Program Error: generated invalid Agsl from ("+s+", "+getPath()+")",mue);
+         throw new RuntimeException("Program Error: generated invalid Agsl from ("+storeLoc+", "+getPath()+")",mue);
       }
    }
    
@@ -118,6 +124,9 @@ public class LocalFile implements StoreFile
 
 /*
 $Log: LocalFile.java,v $
+Revision 1.3  2004/04/06 11:01:33  mch
+Fixed null pointer when LocalFile is root
+
 Revision 1.2  2004/04/06 10:16:23  mch
 Fixed isFolder() bug
 
