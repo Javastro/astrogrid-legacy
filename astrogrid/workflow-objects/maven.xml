@@ -1,0 +1,138 @@
+<?xml version="1.0" ?>
+<!-- extension maven script -->
+<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+<!-- location of generated source tree -->
+<property name="generated.src" location="${basedir}/src/java" />
+<property name="generated.dir" location="${basedir}/src" />
+
+
+<!-- hooks into existing goals -->
+  <preGoal name="java:compile"><!-- generate classes from schema and wsdl first -->
+    
+     <mkdir dir="${basedir}/target/classes" />     <!-- Clover fails if this dir is not present -->
+
+  </preGoal>
+
+<!-- new goals -->
+<!-- re-run all code generation -->
+<goal name="regenerate-all" description="regenerate all sources" prereqs="run-castor,run-wsdl2java" />
+<!-- castor object model generation -->
+  <goal name="run-castor" description="generate classes from schema using castor" prereqs="castor-cleanout,castor-generate"/>
+
+  <goal name="castor-cleanout">
+          <delete>
+                <fileset dir="${generated.src}">
+                        <include name="org/astrogrid/workflow/beans/v1/**/*.java" />
+                        <include name="org/astrogrid/applications/beans/v1/**/*.java" />
+                </fileset>
+        </delete>
+  </goal>
+
+  <goal name="castor-generate">
+          <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+                <classpath>
+                        <pathelement location="${basedir}/build" />
+                        <path refid="maven.dependency.classpath" />
+                </classpath>
+                    <arg value="-i"/>
+                    <arg file="${basedir}/schema/AGParameterDefinition.xsd" />
+                <arg value="-binding-file" />
+                <arg file="${basedir}/build/castor-binding.xml" />
+                    <arg value="-dest" />
+                    <arg file="${generated.src}" />
+                <arg value="-verbose" />
+                <arg value="-typesj2"/>
+        </java>
+
+        <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+                <classpath>
+                        <pathelement location="${basedir}/build" />
+                        <path refid="maven.dependency.classpath" />
+                </classpath>
+                    <arg value="-i"/>
+                    <arg file="${basedir}/schema/Workflow.xsd" />
+                <arg value="-binding-file" />
+                <arg file="${basedir}/build/castor-binding.xml" />
+                    <arg value="-dest" />
+                    <arg file="${generated.src}" />
+                <arg value="-verbose" />
+                <arg value="-typesj2" />
+        </java>
+  </goal>
+
+<!-- wsdl2java tooling -->
+        <goal name="run-wsdl2java" description="generate classes from wsdl"
+                prereqs="axis-declare-tasks,wsdl-cleanout,controller-wsdl,monitor-wsdl,scheduler-wsdl,wsdd-postprocess" />
+
+        <goal name="wsdl-cleanout">
+                <delete>
+                        <fileset dir="${generated.src}">
+                                <include name="org/astrogrid/jes/delegate/v1/**/*.java" />
+                                <include name="org/astrogrid/jes/types/v1/**/*.java" />
+                                <include name="org/astrogrid/jes/service/v1/**/*.java" />
+                        </fileset>
+                </delete>
+        </goal>
+
+        <goal name="controller-wsdl">
+          <axis-wsdl2java output="${generated.src}"             verbose="true"
+            serverside="true"
+            skeletondeploy="false"            
+            deployscope="Application"
+            testcase="false"
+        url="${basedir}/wsdl/JobController.wsdl"
+        namespacemappingfile="${basedir}/build/axis-namespace-mappings.properties"
+        />
+        <move file="${generated.src}/org/astrogrid/jes/delegate/v1/jobcontroller/deploy.wsdd"
+        	tofile="${basedir}/wsdd/JobController-deploy.wsdd" />
+        </goal>
+
+        <goal name="scheduler-wsdl">
+          <axis-wsdl2java output="${generated.src}"             verbose="true"
+            serverside="true"
+            skeletondeploy="false"
+            deployscope="Application"            
+            testcase="false"
+        url="${basedir}/wsdl/JobScheduler.wsdl"
+        namespacemappingfile="${basedir}/build/axis-namespace-mappings.properties"
+        />
+                <move file="${generated.src}/org/astrogrid/jes/delegate/v1/jobscheduler/deploy.wsdd"
+        	tofile="${basedir}/wsdd/JobScheduler-deploy.wsdd" />
+        </goal>
+
+   <goal name="monitor-wsdl" prereqs="axis-declare-tasks">
+          <axis-wsdl2java output="${generated.src}"             verbose="true"
+            serverside="true"
+            skeletondeploy="false"
+            deployscope="Application"
+            testcase="false"
+        url="${basedir}/wsdl/JobMonitor.wsdl"
+        namespacemappingfile="${basedir}/build/axis-namespace-mappings.properties"
+        />
+       <move file="${generated.src}/org/astrogrid/jes/delegate/v1/jobmonitor/deploy.wsdd"
+        	tofile="${basedir}/wsdd/JobMonitor-deploy.wsdd" />
+
+   </goal>
+   
+   <goal name="wsdd-postprocess">
+   	  <!-- first delete the remaining undeploy wsdd files in source tree 
+   	  	want to remove any *Impl.java files too-->
+   	  <delete>
+   	  	<fileset dir="${generated.src}">
+   	  		<include name="**/*.wsdd" />
+   	  		<include name="**/*Impl.java" />
+   	  	</fileset>
+   	  </delete>
+   	  
+   	  <!-- now need to mangle things together into a deployment descriptor -->
+   </goal>
+<!-- end of generation stuff -->
+
+
+  <goal name="axis-declare-tasks">
+     <taskdef resource="axis-tasks.properties"  classpathref="maven.dependency.classpath" />
+  </goal>
+
+
+
+</project>
