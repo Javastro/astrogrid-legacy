@@ -34,6 +34,9 @@ import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.exception.CommunityServiceException;
 import org.astrogrid.community.common.exception.CommunityPolicyException;
 
+import org.astrogrid.community.User;
+import org.astrogrid.store.Ivorn;
+
 import java.util.Map;
 import java.util.HashMap;
 import java.net.MalformedURLException;
@@ -171,7 +174,8 @@ public class JesAction extends AbstractAction {
         private String action;
         private boolean bConfirm;
 		private String template;  
-        private Credentials credentials;            
+        private Credentials credentials;   
+        private User user;          
         
         public JesActionImpl( Redirector redirector,
                               SourceResolver resolver,
@@ -290,6 +294,11 @@ public class JesAction extends AbstractAction {
                 credentials.setAccount( account );
                 credentials.setGroup( group );
                 credentials.setSecurityToken( "dummy" );
+                
+                this.user = new User();
+                user.setAccount( userid );
+                user.setGroup( this.group );
+                user.setToken( token );
 
             }
             finally {
@@ -354,10 +363,9 @@ public class JesAction extends AbstractAction {
                 JobExecutionService jes = workflowManager.getJobExecutionService();
                 JobSummary[] jobSummaries = jes.readJobList( credentials.getAccount() ) ;
                 Workflow[] workflows = new Workflow[ jobSummaries.length ]; 
-                WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
                 
                 for( int i=0; i<workflows.length; i++ ) {
-//                     workflows[i] = wfStore.readWorkflow( credentials.getAccount(), jobSummaries[i].getName() ) ;
+                     workflows[i] = jes.readJob( jobSummaries[i].getJobURN() );
                 }
     
                 this.request.setAttribute( HTTP_JOBLIST_TAG, workflows );
