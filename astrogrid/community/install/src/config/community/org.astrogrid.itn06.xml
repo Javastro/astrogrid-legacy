@@ -3,7 +3,7 @@
     | This is not the best place to do this  - the community setup needs to be factored out into the deployment package...
     |
     +-->
-<community ident="ivo://org.astrogrid.itn05">
+<community ident="ivo://org.astrogrid.itn06">
     <!--+
         | The community Accounts.
         +-->
@@ -11,17 +11,17 @@
         <!--+
             | Test Accounts.
             +-->
-        <account ident="ivo://org.astrogrid.itn05/frog">
+        <account ident="ivo://org.astrogrid.itn06/frog">
             <display>Green Frog</display>
             <description>Astrogrid tester</description>
             <email>frog@mail.astrogrid.org</email>
         </account>
-        <account ident="ivo://org.astrogrid.itn05/toad">
+        <account ident="ivo://org.astrogrid.itn06/toad">
             <display>Brown Toad</display>
             <description>Astrogrid tester</description>
             <email>toad@mail.astrogrid.org</email>
         </account>
-        <account ident="ivo://org.astrogrid.itn05/newt">
+        <account ident="ivo://org.astrogrid.itn06/newt">
             <display>Grey newt</display>
             <description>Astrogrid tester</description>
             <email>newt@mail.astrogrid.org</email>
@@ -29,7 +29,7 @@
         <!--+
             | Anonymous Account.
             +-->
-        <account ident="ivo://org.astrogrid.itn05/anonymous">
+        <account ident="ivo://org.astrogrid.itn06/anonymous">
             <display>Anonymous</display>
             <description>Astrogrid anonymous</description>
             <email>anonymous@mail.astrogrid.org</email>
@@ -37,22 +37,22 @@
         <!--+
             | Demo Accounts.
             +-->
-        <account ident="ivo://org.astrogrid.itn05/keith">
+        <account ident="ivo://org.astrogrid.itn06/keith">
             <display>Keith Noddle</display>
             <description>Astrogrid demonstrator</description>
             <email>keith@mail.astrogrid.org</email>
         </account>
-        <account ident="ivo://org.astrogrid.itn05/andy">
+        <account ident="ivo://org.astrogrid.itn06/andy">
             <display>Andy Lawrence</display>
             <description>Astrogrid demonstrator</description>
             <email>andy@mail.astrogrid.org</email>
         </account>
-        <account ident="ivo://org.astrogrid.itn05/tony">
+        <account ident="ivo://org.astrogrid.itn06/tony">
             <display>Tony Linde</display>
             <description>Astrogrid demonstrator</description>
             <email>tony@mail.astrogrid.org</email>
         </account>
-        <account ident="ivo://org.astrogrid.itn05/nic">
+        <account ident="ivo://org.astrogrid.itn06/nic">
             <display>Nic Walton</display>
             <description>Astrogrid demonstrator</description>
             <email>nic@mail.astrogrid.org</email>
@@ -63,16 +63,16 @@
         | The community Groups.
         +-->
     <groups>
-        <group ident="ivo://org.astrogrid.itn05/public">
+        <group ident="ivo://org.astrogrid.itn06/public">
             <description>Public group</description>
         </group>
-        <group ident="ivo://org.astrogrid.itn05/users">
+        <group ident="ivo://org.astrogrid.itn06/users">
             <description>General users group</description>
         </group>
-        <group ident="ivo://org.astrogrid.itn05/java">
+        <group ident="ivo://org.astrogrid.itn06/java">
             <description>Java developers group</description>
         </group>
-        <group ident="ivo://org.astrogrid.itn05/astro">
+        <group ident="ivo://org.astrogrid.itn06/astro">
             <description>Astronomers group</description>
         </group>
     </groups>
@@ -84,20 +84,20 @@
         <!--+
             | Test Accounts.
             +-->
-        <password account="ivo://org.astrogrid.itn05/frog"  password="qwerty"/>
-        <password account="ivo://org.astrogrid.itn05/toad"  password="qwerty"/>
-        <password account="ivo://org.astrogrid.itn05/newt"  password="qwerty"/>
+        <password account="ivo://org.astrogrid.itn06/frog"  password="qwerty"/>
+        <password account="ivo://org.astrogrid.itn06/toad"  password="qwerty"/>
+        <password account="ivo://org.astrogrid.itn06/newt"  password="qwerty"/>
         <!--+
             | Anonymous Account.
             +-->
-        <password account="ivo://org.astrogrid.itn05/anonymous"  password="qwerty"/>
+        <password account="ivo://org.astrogrid.itn06/anonymous"  password="qwerty"/>
         <!--+
             | Demo Accounts.
             +-->
-        <password account="ivo://org.astrogrid.itn05/keith"  password="qwerty"/>
-        <password account="ivo://org.astrogrid.itn05/andy"   password="qwerty"/>
-        <password account="ivo://org.astrogrid.itn05/tony"   password="qwerty"/>
-        <password account="ivo://org.astrogrid.itn05/nic"    password="qwerty"/>
+        <password account="ivo://org.astrogrid.itn06/keith"  password="qwerty"/>
+        <password account="ivo://org.astrogrid.itn06/andy"   password="qwerty"/>
+        <password account="ivo://org.astrogrid.itn06/tony"   password="qwerty"/>
+        <password account="ivo://org.astrogrid.itn06/nic"    password="qwerty"/>
     </passwords>
 
 </community>
