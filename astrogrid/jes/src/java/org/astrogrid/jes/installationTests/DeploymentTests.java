@@ -1,4 +1,4 @@
-/* $Id: DeploymentTests.java,v 1.1 2004/01/21 17:51:34 jdt Exp $
+/* $Id: DeploymentTests.java,v 1.2 2004/03/04 02:14:08 nw Exp $
  * Created on 21-Jan-2004 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,6 @@ public class DeploymentTests {
     TestSuite suite =
       new TestSuite("Test for org.astrogrid.jes.installationTests");
     //$JUnit-BEGIN$
-    suite.addTest(new TestSuite(ServicesLocatedTest.class));
     //$JUnit-END$
     return suite;
   }
@@ -32,6 +31,9 @@ public class DeploymentTests {
 
 /*
 *$Log: DeploymentTests.java,v $
+*Revision 1.2  2004/03/04 02:14:08  nw
+*removed old instalation tests - will need to write new ones
+*
 *Revision 1.1  2004/01/21 17:51:34  jdt
 *Some installation tests, and some bug fixes of configuration.jsp and some broken links
 *
