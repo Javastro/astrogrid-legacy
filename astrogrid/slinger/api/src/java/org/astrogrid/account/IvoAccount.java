@@ -1,5 +1,5 @@
 /*
- * $Id: IvoAccount.java,v 1.1 2005/02/14 20:47:38 mch Exp $
+ * $Id: IvoAccount.java,v 1.2 2005/03/29 20:02:47 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -88,6 +88,11 @@ public class IvoAccount implements Principal {
    public String toIvorn() {
       return "ivo://"+community+"/"+individual;
    }
+   
+   public String toString() {
+      return getName();
+   }
+   
 }
 
 
