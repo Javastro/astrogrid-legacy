@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SelectionAll/>
+  <TableClause>
+    <FromClause>
+      <TableReference>
+        <Table>
+          <Name>xmm1</Name>
+          <AliasName>t</AliasName>
+        </Table>
+      </TableReference>
+    </FromClause>
+    <WhereClause>
+      <!--RegionSearch-->
+        <Circle xmlns:q1="urn:nvo-region" xsi:type="q1:circleType">
+          <Ra><Value>180</Value></Ra>
+          <Dec><Value>23</Value></Dec>
+          <Radius><Value>0.05</Value></Radius>
+        </Circle>
+      <!--/RegionSearch-->
+    </WhereClause>
+  </TableClause>
+
+</Select>
