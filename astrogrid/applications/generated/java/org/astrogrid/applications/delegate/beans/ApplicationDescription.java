@@ -5,7 +5,7 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.applications;
+package org.astrogrid.applications.delegate.beans;
 
 public class ApplicationDescription  implements java.io.Serializable {
     private java.lang.String name;
@@ -74,7 +74,7 @@ public class ApplicationDescription  implements java.io.Serializable {
         new org.apache.axis.description.TypeDesc(ApplicationDescription.class);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://applications.astrogrid.org", "ApplicationDescription"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "ApplicationDescription"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("name");
         elemField.setXmlName(new javax.xml.namespace.QName("", "name"));

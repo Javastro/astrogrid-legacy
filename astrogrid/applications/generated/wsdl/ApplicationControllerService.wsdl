@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions targetNamespace="urn:manager.applications.astrogrid.org" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:impl.manager.applications.astrogrid.org" xmlns:intf="urn:manager.applications.astrogrid.org" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns2="http://applications.astrogrid.org" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<wsdl:definitions targetNamespace="urn:manager.applications.astrogrid.org" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:impl.manager.applications.astrogrid.org" xmlns:intf="urn:manager.applications.astrogrid.org" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="urn:beans.applications.astrogrid.org" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
  <wsdl:types>
   <schema targetNamespace="urn:manager.applications.astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="ArrayOf_xsd_string">
     <complexContent>
      <restriction base="soapenc:Array">
@@ -9,25 +10,16 @@
      </restriction>
     </complexContent>
    </complexType>
-   <element name="listApplicationsReturn" type="intf:ArrayOf_xsd_string"/>
-   <element name="getApplicationDescriptionReturn" type="tns2:ApplicationDescription"/>
-   <complexType name="ArrayOf_tns2_Parameter">
+   <complexType name="ArrayOf_tns1_Parameter">
     <complexContent>
      <restriction base="soapenc:Array">
-      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns2:Parameter[]"/>
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:Parameter[]"/>
      </restriction>
     </complexContent>
    </complexType>
-   <element name="initializeApplicationReturn" type="xsd:int"/>
-   <element name="queryApplicationStatusReturn" type="xsd:string"/>
   </schema>
-  <schema targetNamespace="urn:impl.manager.applications.astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema">
-   <element name="applicationID" type="xsd:string"/>
-   <element name="applicationID" type="xsd:string"/>
-   <element name="jobstepID" type="xsd:int"/>
-   <element name="parameters" type="intf:ArrayOf_tns2_Parameter"/>
-  </schema>
-  <schema targetNamespace="http://applications.astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema">
+  <schema targetNamespace="urn:beans.applications.astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="ApplicationDescription">
     <sequence>
      <element name="name" nillable="true" type="xsd:string"/>
@@ -50,25 +42,25 @@
 
    <wsdl:message name="listApplicationsResponse">
 
-      <wsdl:part element="intf:listApplicationsReturn" name="listApplicationsReturn"/>
+      <wsdl:part name="listApplicationsReturn" type="intf:ArrayOf_xsd_string"/>
 
    </wsdl:message>
 
    <wsdl:message name="queryApplicationStatusResponse">
 
-      <wsdl:part element="intf:queryApplicationStatusReturn" name="queryApplicationStatusReturn"/>
+      <wsdl:part name="queryApplicationStatusReturn" type="xsd:string"/>
 
    </wsdl:message>
 
    <wsdl:message name="initializeApplicationResponse">
 
-      <wsdl:part element="intf:initializeApplicationReturn" name="initializeApplicationReturn"/>
+      <wsdl:part name="initializeApplicationReturn" type="xsd:int"/>
 
    </wsdl:message>
 
    <wsdl:message name="getApplicationDescriptionRequest">
 
-      <wsdl:part element="impl:applicationID" name="applicationID"/>
+      <wsdl:part name="applicationID" type="xsd:string"/>
 
    </wsdl:message>
 
@@ -78,17 +70,17 @@
 
    <wsdl:message name="getApplicationDescriptionResponse">
 
-      <wsdl:part element="intf:getApplicationDescriptionReturn" name="getApplicationDescriptionReturn"/>
+      <wsdl:part name="getApplicationDescriptionReturn" type="tns1:ApplicationDescription"/>
 
    </wsdl:message>
 
    <wsdl:message name="initializeApplicationRequest">
 
-      <wsdl:part element="impl:applicationID" name="applicationID"/>
+      <wsdl:part name="applicationID" type="xsd:string"/>
 
-      <wsdl:part element="impl:jobstepID" name="jobstepID"/>
+      <wsdl:part name="jobstepID" type="xsd:int"/>
 
-      <wsdl:part element="impl:parameters" name="parameters"/>
+      <wsdl:part name="parameters" type="intf:ArrayOf_tns1_Parameter"/>
 
    </wsdl:message>
 
@@ -140,9 +132,9 @@
 
    </wsdl:portType>
 
-   <wsdl:binding name="ApplicationContrllerServiceSoapBinding" type="intf:ApplicationController">
+   <wsdl:binding name="ApplicationControllerServiceSoapBinding" type="intf:ApplicationController">
 
-      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
 
       <wsdl:operation name="listApplications">
 
@@ -150,13 +142,13 @@
 
          <wsdl:input name="listApplicationsRequest">
 
-            <wsdlsoap:body namespace="urn:manager.applications.astrogrid.org" use="literal"/>
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:manager.applications.astrogrid.org" use="encoded"/>
 
          </wsdl:input>
 
          <wsdl:output name="listApplicationsResponse">
 
-            <wsdlsoap:body namespace="urn:manager.applications.astrogrid.org" use="literal"/>
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:manager.applications.astrogrid.org" use="encoded"/>
 
          </wsdl:output>
 
@@ -168,13 +160,13 @@
 
          <wsdl:input name="getApplicationDescriptionRequest">
 
-            <wsdlsoap:body namespace="urn:manager.applications.astrogrid.org" use="literal"/>
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:manager.applications.astrogrid.org" use="encoded"/>
 
          </wsdl:input>
 
          <wsdl:output name="getApplicationDescriptionResponse">
 
-            <wsdlsoap:body namespace="urn:manager.applications.astrogrid.org" use="literal"/>
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:manager.applications.astrogrid.org" use="encoded"/>
 
          </wsdl:output>
 
@@ -186,13 +178,13 @@
 
          <wsdl:input name="initializeApplicationRequest">
 
-            <wsdlsoap:body namespace="urn:manager.applications.astrogrid.org" use="literal"/>
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:manager.applications.astrogrid.org" use="encoded"/>
 
          </wsdl:input>
 
          <wsdl:output name="initializeApplicationResponse">
 
-            <wsdlsoap:body namespace="urn:manager.applications.astrogrid.org" use="literal"/>
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:manager.applications.astrogrid.org" use="encoded"/>
 
          </wsdl:output>
 
@@ -204,13 +196,13 @@
 
          <wsdl:input name="executeApplicationRequest">
 
-            <wsdlsoap:body namespace="urn:manager.applications.astrogrid.org" use="literal"/>
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:manager.applications.astrogrid.org" use="encoded"/>
 
          </wsdl:input>
 
          <wsdl:output name="executeApplicationResponse">
 
-            <wsdlsoap:body namespace="urn:manager.applications.astrogrid.org" use="literal"/>
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:manager.applications.astrogrid.org" use="encoded"/>
 
          </wsdl:output>
 
@@ -222,13 +214,13 @@
 
          <wsdl:input name="queryApplicationStatusRequest">
 
-            <wsdlsoap:body namespace="urn:manager.applications.astrogrid.org" use="literal"/>
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:manager.applications.astrogrid.org" use="encoded"/>
 
          </wsdl:input>
 
          <wsdl:output name="queryApplicationStatusResponse">
 
-            <wsdlsoap:body namespace="urn:manager.applications.astrogrid.org" use="literal"/>
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:manager.applications.astrogrid.org" use="encoded"/>
 
          </wsdl:output>
 
@@ -238,9 +230,9 @@
 
    <wsdl:service name="ApplicationControllerService">
 
-      <wsdl:port binding="intf:ApplicationContrllerServiceSoapBinding" name="ApplicationContrllerService">
+      <wsdl:port binding="intf:ApplicationControllerServiceSoapBinding" name="ApplicationControllerService">
 
-         <wsdlsoap:address location="http://localhost:8080/axis/services/ApplicationContrllerService"/>
+         <wsdlsoap:address location="http://localhost:8080/axis/services/ApplicationControllerService"/>
 
       </wsdl:port>
 

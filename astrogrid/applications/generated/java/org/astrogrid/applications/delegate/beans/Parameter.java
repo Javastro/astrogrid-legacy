@@ -5,7 +5,7 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.applications;
+package org.astrogrid.applications.delegate.beans;
 
 public abstract class Parameter  implements java.io.Serializable {
 
@@ -44,7 +44,7 @@ public abstract class Parameter  implements java.io.Serializable {
         new org.apache.axis.description.TypeDesc(Parameter.class);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://applications.astrogrid.org", "Parameter"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "Parameter"));
     }
 
     /**

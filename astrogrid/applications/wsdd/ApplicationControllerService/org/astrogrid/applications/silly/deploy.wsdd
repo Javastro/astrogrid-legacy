@@ -16,7 +16,7 @@
       <parameter name="wsdlTargetNamespace" value="urn:manager.applications.astrogrid.org"/>
       <parameter name="wsdlServiceElement" value="ApplicationControllerService"/>
       <parameter name="wsdlServicePort" value="ApplicationControllerService"/>
-      <parameter name="className" value="org.astrogrid.applications.manager.ApplicationControllerServiceSoapBindingImpl"/>
+      <parameter name="className" value="org.astrogrid.applications.silly.ApplicationControllerServiceSoapBindingImpl"/>
       <parameter name="wsdlPortType" value="ApplicationController"/>
       <operation name="listApplications" qname="operNS:listApplications" xmlns:operNS="urn:manager.applications.astrogrid.org" returnQName="listApplicationsReturn" returnType="rtns:ArrayOf_xsd_string" xmlns:rtns="urn:manager.applications.astrogrid.org" >
       </operation>
@@ -37,7 +37,7 @@
       <typeMapping
         xmlns:ns="urn:beans.applications.astrogrid.org"
         qname="ns:Parameter"
-        type="java:org.astrogrid.applications.beans.Parameter"
+        type="java:org.astrogrid.applications.delegate.beans.Parameter"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
@@ -45,7 +45,7 @@
       <typeMapping
         xmlns:ns="urn:manager.applications.astrogrid.org"
         qname="ns:ArrayOf_tns1_Parameter"
-        type="java:org.astrogrid.applications.beans.Parameter[]"
+        type="java:org.astrogrid.applications.delegate.beans.Parameter[]"
         serializer="org.apache.axis.encoding.ser.ArraySerializerFactory"
         deserializer="org.apache.axis.encoding.ser.ArrayDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
@@ -53,7 +53,7 @@
       <typeMapping
         xmlns:ns="urn:beans.applications.astrogrid.org"
         qname="ns:ApplicationDescription"
-        type="java:org.astrogrid.applications.beans.ApplicationDescription"
+        type="java:org.astrogrid.applications.delegate.beans.ApplicationDescription"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"

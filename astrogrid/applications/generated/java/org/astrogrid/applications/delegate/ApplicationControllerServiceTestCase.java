@@ -5,17 +5,17 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.applications.manager;
+package org.astrogrid.applications.delegate;
 
 public class ApplicationControllerServiceTestCase extends junit.framework.TestCase {
     public ApplicationControllerServiceTestCase(java.lang.String name) {
         super(name);
     }
-    public void test1ApplicationContrllerServiceListApplications() throws Exception {
-        org.astrogrid.applications.manager.ApplicationContrllerServiceSoapBindingStub binding;
+    public void test1ApplicationControllerServiceListApplications() throws Exception {
+        org.astrogrid.applications.delegate.ApplicationControllerServiceSoapBindingStub binding;
         try {
-            binding = (org.astrogrid.applications.manager.ApplicationContrllerServiceSoapBindingStub)
-                          new org.astrogrid.applications.manager.ApplicationControllerServiceLocator().getApplicationContrllerService();
+            binding = (org.astrogrid.applications.delegate.ApplicationControllerServiceSoapBindingStub)
+                          new org.astrogrid.applications.delegate.ApplicationControllerServiceLocator().getApplicationControllerService();
         }
         catch (javax.xml.rpc.ServiceException jre) {
             if(jre.getLinkedCause()!=null)
@@ -33,11 +33,11 @@ public class ApplicationControllerServiceTestCase extends junit.framework.TestCa
         // TBD - validate results
     }
 
-    public void test2ApplicationContrllerServiceGetApplicationDescription() throws Exception {
-        org.astrogrid.applications.manager.ApplicationContrllerServiceSoapBindingStub binding;
+    public void test2ApplicationControllerServiceGetApplicationDescription() throws Exception {
+        org.astrogrid.applications.delegate.ApplicationControllerServiceSoapBindingStub binding;
         try {
-            binding = (org.astrogrid.applications.manager.ApplicationContrllerServiceSoapBindingStub)
-                          new org.astrogrid.applications.manager.ApplicationControllerServiceLocator().getApplicationContrllerService();
+            binding = (org.astrogrid.applications.delegate.ApplicationControllerServiceSoapBindingStub)
+                          new org.astrogrid.applications.delegate.ApplicationControllerServiceLocator().getApplicationControllerService();
         }
         catch (javax.xml.rpc.ServiceException jre) {
             if(jre.getLinkedCause()!=null)
@@ -50,16 +50,16 @@ public class ApplicationControllerServiceTestCase extends junit.framework.TestCa
         binding.setTimeout(60000);
 
         // Test operation
-        org.astrogrid.applications.ApplicationDescription value = null;
+        org.astrogrid.applications.delegate.beans.ApplicationDescription value = null;
         value = binding.getApplicationDescription(new java.lang.String());
         // TBD - validate results
     }
 
-    public void test3ApplicationContrllerServiceInitializeApplication() throws Exception {
-        org.astrogrid.applications.manager.ApplicationContrllerServiceSoapBindingStub binding;
+    public void test3ApplicationControllerServiceInitializeApplication() throws Exception {
+        org.astrogrid.applications.delegate.ApplicationControllerServiceSoapBindingStub binding;
         try {
-            binding = (org.astrogrid.applications.manager.ApplicationContrllerServiceSoapBindingStub)
-                          new org.astrogrid.applications.manager.ApplicationControllerServiceLocator().getApplicationContrllerService();
+            binding = (org.astrogrid.applications.delegate.ApplicationControllerServiceSoapBindingStub)
+                          new org.astrogrid.applications.delegate.ApplicationControllerServiceLocator().getApplicationControllerService();
         }
         catch (javax.xml.rpc.ServiceException jre) {
             if(jre.getLinkedCause()!=null)
@@ -73,15 +73,15 @@ public class ApplicationControllerServiceTestCase extends junit.framework.TestCa
 
         // Test operation
         int value = -3;
-        value = binding.initializeApplication(new java.lang.String(), 0, new org.astrogrid.applications.Parameter[0]);
+        value = binding.initializeApplication(new java.lang.String(), 0, new org.astrogrid.applications.delegate.beans.Parameter[0]);
         // TBD - validate results
     }
 
-    public void test4ApplicationContrllerServiceExecuteApplication() throws Exception {
-        org.astrogrid.applications.manager.ApplicationContrllerServiceSoapBindingStub binding;
+    public void test4ApplicationControllerServiceExecuteApplication() throws Exception {
+        org.astrogrid.applications.delegate.ApplicationControllerServiceSoapBindingStub binding;
         try {
-            binding = (org.astrogrid.applications.manager.ApplicationContrllerServiceSoapBindingStub)
-                          new org.astrogrid.applications.manager.ApplicationControllerServiceLocator().getApplicationContrllerService();
+            binding = (org.astrogrid.applications.delegate.ApplicationControllerServiceSoapBindingStub)
+                          new org.astrogrid.applications.delegate.ApplicationControllerServiceLocator().getApplicationControllerService();
         }
         catch (javax.xml.rpc.ServiceException jre) {
             if(jre.getLinkedCause()!=null)
@@ -98,11 +98,11 @@ public class ApplicationControllerServiceTestCase extends junit.framework.TestCa
         // TBD - validate results
     }
 
-    public void test5ApplicationContrllerServiceQueryApplicationStatus() throws Exception {
-        org.astrogrid.applications.manager.ApplicationContrllerServiceSoapBindingStub binding;
+    public void test5ApplicationControllerServiceQueryApplicationStatus() throws Exception {
+        org.astrogrid.applications.delegate.ApplicationControllerServiceSoapBindingStub binding;
         try {
-            binding = (org.astrogrid.applications.manager.ApplicationContrllerServiceSoapBindingStub)
-                          new org.astrogrid.applications.manager.ApplicationControllerServiceLocator().getApplicationContrllerService();
+            binding = (org.astrogrid.applications.delegate.ApplicationControllerServiceSoapBindingStub)
+                          new org.astrogrid.applications.delegate.ApplicationControllerServiceLocator().getApplicationControllerService();
         }
         catch (javax.xml.rpc.ServiceException jre) {
             if(jre.getLinkedCause()!=null)

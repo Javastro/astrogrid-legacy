@@ -36,7 +36,7 @@
 
 <!-- new goals -->
 
-  <goal name="generate-wsdl" description="generate the wsdl from the classes" prereqs="axis-declare-tasks, java:compile">
+  <goal name="generate-wsdl" description="generate the wsdl from the classes" prereqs="axis-declare-tasks, java-compile-for-wsdl">
   	<delete><!-- clean out to start with -->
   	     <!-- need to save the server side skeleton -->
 		<fileset dir="${generated.src}" >
@@ -48,6 +48,15 @@
   <mkdir dir="${generated.dir}/wsdl" />
 	<attainGoal name="java2wsdl" />
 	      
+  </goal>
+  <goal name="java-compile-for-wsdl" prereqs="clean">
+     <echo message="${maven.build.dest}" />
+     <javac srcdir="${basedir}/src/java"
+            destdir="${maven.build.dest}"
+            classpathref="maven.dependency.classpath"
+            debug="on">
+            
+     </javac>
   </goal>
 
   <goal name="generate-delegate" description="generate classes from wsdl" prereqs="axis-declare-tasks">
@@ -65,17 +74,19 @@
    <goal name="java2wsdl" prereqs="axis-declare-tasks">
    <axis-java2wsdl output="${generated.dir}/wsdl/ApplicationControllerService.wsdl"
             classname="org.astrogrid.applications.manager.ApplicationController"
-            location="${axis.url}/services/ApplicationContrllerService"
+            location="${axis.url}/services/ApplicationControllerService"
             namespace="urn:manager.applications.astrogrid.org"
             namespaceimpl="urn:impl.manager.applications.astrogrid.org"
             implclass="org.astrogrid.applications.manager.AbstractApplicationController"
-            style="DOCUMENT"
-            use="LITERAL"
+            style="RPC"
+            use="ENCODED"
    >
             <!-- The classpath to find the authenticationService classes -->
             <classpath>
                 <path location="${maven.build.dest}"/>
             </classpath>
+            <mapping package="org.astrogrid.applications" namespace="urn:beans.applications.astrogrid.org" />
+            
    </axis-java2wsdl>
    </goal>   
    <property name="wsdl.file" value="${generated.dir}/wsdl/ApplicationControllerService.wsdl"/>
@@ -85,15 +96,29 @@
             skeletondeploy="false"
             testcase="true"
 		url="${wsdl.file}">
+           <mapping namespace="urn:manager.applications.astrogrid.org" package="org.astrogrid.applications.delegate"/>
+           <mapping namespace="urn:impl.manager.applications.astrogrid.org"   package="org.astrogrid.applications.delegate.impl"/>
+           <mapping namespace="urn:beans.applications.astrogrid.org"   package="org.astrogrid.applications.delegate.beans"/>
+		
 	</axis-wsdl2java>
-	<!-- now generate stuff for server side - into a different package with namespace mapping.-->
-	<axis-wsdl2java output="${generated.src}"
-	 url="${wsdl.file}"
-            verbose="true"
+	<!-- generate the server side stuff -->
+  	<axis-wsdl2java output="${generated.src}"             verbose="true"
             serverside="true"
             skeletondeploy="false"
-            testcase="false">
+            testcase="false"
+		url="${wsdl.file}">
+           <mapping namespace="urn:manager.applications.astrogrid.org" package="org.astrogrid.applications.service"/>
+           <mapping namespace="urn:impl.manager.applications.astrogrid.org"   package="org.astrogrid.applications.service"/>
+           <mapping namespace="urn:beans.applications.astrogrid.org"   package="org.astrogrid.applications.delegate.beans"/>
+		
 	</axis-wsdl2java>
+	<delete>
+	 <fileset dir="${generated.src}">
+	    <include name="**/service/*Locator.java" />
+	    <include name="**/service/*Stub.java" />
+	    <include name="**/service/*Service.java" />
+	 </fileset>
+	</delete>
 	<!-- do some tidying -->
 	<mkdir dir="${basedir}/wsdd/ApplicationControllerService"/>
 	<move todir="${basedir}/wsdd/ApplicationControllerService">
@@ -101,7 +126,6 @@
 	    <include name="**/*.wsdd" />
 	  </fileset>
 	</move>
-	
    </goal>
 
 

@@ -16,28 +16,14 @@
       <parameter name="wsdlTargetNamespace" value="urn:manager.applications.astrogrid.org"/>
       <parameter name="wsdlServiceElement" value="ApplicationControllerService"/>
       <parameter name="wsdlServicePort" value="ApplicationControllerService"/>
-      <parameter name="className" value="org.astrogrid.applications.manager.ApplicationControllerServiceSoapBindingImpl"/>
+      <parameter name="className" value="org.astrogrid.applications.delegate.ApplicationControllerServiceSoapBindingSkeleton"/>
       <parameter name="wsdlPortType" value="ApplicationController"/>
-      <operation name="listApplications" qname="operNS:listApplications" xmlns:operNS="urn:manager.applications.astrogrid.org" returnQName="listApplicationsReturn" returnType="rtns:ArrayOf_xsd_string" xmlns:rtns="urn:manager.applications.astrogrid.org" >
-      </operation>
-      <operation name="getApplicationDescription" qname="operNS:getApplicationDescription" xmlns:operNS="urn:manager.applications.astrogrid.org" returnQName="getApplicationDescriptionReturn" returnType="rtns:ApplicationDescription" xmlns:rtns="urn:beans.applications.astrogrid.org" >
-        <parameter name="applicationID" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
-      </operation>
-      <operation name="initializeApplication" qname="operNS:initializeApplication" xmlns:operNS="urn:manager.applications.astrogrid.org" returnQName="initializeApplicationReturn" returnType="rtns:int" xmlns:rtns="http://www.w3.org/2001/XMLSchema" >
-        <parameter name="applicationID" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
-        <parameter name="jobstepID" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
-        <parameter name="parameters" type="tns:ArrayOf_tns1_Parameter" xmlns:tns="urn:manager.applications.astrogrid.org"/>
-      </operation>
-      <operation name="executeApplication" qname="operNS:executeApplication" xmlns:operNS="urn:manager.applications.astrogrid.org" >
-      </operation>
-      <operation name="queryApplicationStatus" qname="operNS:queryApplicationStatus" xmlns:operNS="urn:manager.applications.astrogrid.org" returnQName="queryApplicationStatusReturn" returnType="rtns:string" xmlns:rtns="http://www.w3.org/2001/XMLSchema" >
-      </operation>
-      <parameter name="allowedMethods" value="getApplicationDescription queryApplicationStatus initializeApplication executeApplication listApplications"/>
+      <parameter name="allowedMethods" value="*"/>
 
       <typeMapping
         xmlns:ns="urn:beans.applications.astrogrid.org"
         qname="ns:Parameter"
-        type="java:org.astrogrid.applications.beans.Parameter"
+        type="java:org.astrogrid.applications.delegate.beans.Parameter"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
@@ -45,7 +31,7 @@
       <typeMapping
         xmlns:ns="urn:manager.applications.astrogrid.org"
         qname="ns:ArrayOf_tns1_Parameter"
-        type="java:org.astrogrid.applications.beans.Parameter[]"
+        type="java:org.astrogrid.applications.delegate.beans.Parameter[]"
         serializer="org.apache.axis.encoding.ser.ArraySerializerFactory"
         deserializer="org.apache.axis.encoding.ser.ArrayDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
@@ -53,7 +39,7 @@
       <typeMapping
         xmlns:ns="urn:beans.applications.astrogrid.org"
         qname="ns:ApplicationDescription"
-        type="java:org.astrogrid.applications.beans.ApplicationDescription"
+        type="java:org.astrogrid.applications.delegate.beans.ApplicationDescription"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
