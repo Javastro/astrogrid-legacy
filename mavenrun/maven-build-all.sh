@@ -1,6 +1,9 @@
 BUILD_DIR=/home/maven/build
 SCRIPTHOME=/home/maven/mavenrun
 
+DOCLOCATION=$MAVEN_PUBLIC/docs
+SNAPSHOTDOCS=$DOCLOCATION/snapshot
+
 DATE=`date`
 TIMESTAMP=`date +%Y%m%d-%T`
 
@@ -31,6 +34,10 @@ $SCRIPTHOME/maven-build.sh warehouse >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-new.sh workflow >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-new.sh maven-site >> $BUILD_DIR/$LOG_FILE 2>&1
 
+echo "Moving docs to snapshot location" >> $BUILD_DIR/$LOG_FILE 2>&1
+cp -r $MAVEN_PUBLIC/build $SNAPSHOTDOCS
+echo "Copying redirect pages over old location" >> $BUILD_DIR/$LOG_FILE 2>&1
+cp -r $DOCLOCATION/redirect $MAVEN_PUBLIC/build
 
 echo >> $BUILD_DIR/$LOG_FILE 2>&1
 echo "AstroGrid Build ($DATE)" >> $BUILD_DIR/$LOG_FILE 2>&1

@@ -1,10 +1,10 @@
-#A master script to build a set of jars
-#based on their cvs tags
-#Be sure that the dependencies in the POMs are correct
 TAG_TO_BUILD=$1
 
 BUILD_DIR=/home/maven/build
 SCRIPTHOME=/home/maven/mavenrun
+
+DOCLOCATION=$MAVEN_PUBLIC/docs
+RELEASEDOCS=$DOCLOCATION/snapshot
 
 DATE=`date`
 TIMESTAMP=`date +%Y%m%d-%T`
@@ -20,7 +20,7 @@ echo >> $BUILD_DIR/$LOG_FILE 2>&1
 
 #Check out the maven project first, since this may act as a base
 #from which other projects may inherit
-$SCRIPTHOME/maven-build-tagged.sh maven-base $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged-new.sh maven-base $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 #Now the "real" projects.
 $SCRIPTHOME/maven-build-tagged.sh common $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-tagged.sh applications $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
@@ -33,9 +33,13 @@ $SCRIPTHOME/maven-build-tagged.sh registry $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE
 $SCRIPTHOME/maven-build-tagged.sh scripting $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-tagged.sh warehouse $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-tagged.sh workflow $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
-#don't need this one, because we don't want to publish the docs for the branch
-#$SCRIPTHOME/maven-build-maven-site.sh >> $BUILD_DIR/$LOG_FILE 2>&1
 
+$SCRIPTHOME/maven-build-new.sh maven-site >> $BUILD_DIR/$LOG_FILE 2>&1
+
+echo "Moving docs to release location" >> $BUILD_DIR/$LOG_FILE 2>&1
+cp -r $MAVEN_PUBLIC/build $RELEASEDOCS
+echo "Copying redirect pages over old location" >> $BUILD_DIR/$LOG_FILE 2>&1
+cp -r $DOCLOCATION/redirect $MAVEN_PUBLIC/build
 
 echo >> $BUILD_DIR/$LOG_FILE 2>&1
 echo "AstroGrid Build ($DATE)" >> $BUILD_DIR/$LOG_FILE 2>&1
