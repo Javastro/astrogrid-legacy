@@ -1,0 +1,16 @@
+<!-- Select TARGET.DEC<20 -->
+<Select  xmlns="http://adql.ivoa.net/v0.73">
+   <SelectionList>
+      <All />
+   </SelectionList>
+   <From>
+      <Table Name="TARGET" Alias="t"/>
+   </From>
+   <Where>
+      <Compare Comparison="&lt;">
+         <Column Table="t" Name="DEC"/>
+         <Atom><Real>20</Real></Atom>
+      </Compare>
+   </Where>
+</Select>
+

@@ -1,0 +1,16 @@
+<!-- Select SPECTA.OBSRA < 5 -->
+<Select  xmlns="http://adql.ivoa.net/v0.73">
+   <SelectionList>
+      <All />
+   </SelectionList>
+   <From>
+      <Table Name="SPECTRA" Alias="s"/>
+   </From>
+   <Where>
+      <Compare Comparison="&lt;">
+         <Column Table="s" Name="RA"/>
+         <Atom><Real>5</Real></Atom>
+      </Compare>
+   </Where>
+</Select>
+
