@@ -126,9 +126,8 @@
                      <xsp:attribute name="key"><xsp:expr>getXPathKey( step )</xsp:expr></xsp:attribute>
                      <xsp:attribute name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:attribute>
                      <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
-                     <xsp:attribute name="joinCondition"><xsp:expr>step.getJoinCondition()</xsp:expr></xsp:attribute>
-                     <xsp:attribute name="step-status"><xsp:expr>step.getStepExecutionRecord(0).getStatus()</xsp:expr></xsp:attribute>
-                     <xsp:attribute name="start-time"><xsp:expr>step.getStepExecutionRecord(0).getStartTime()</xsp:expr></xsp:attribute>                                         
+                     <xsp:attribute name="step-status"><xsp:expr>step.getStepExecutionRecord(step.getStepExecutionRecordCount() -1).getStatus()</xsp:expr></xsp:attribute>
+                     <xsp:attribute name="step-start-time"><xsp:expr>step.getStepExecutionRecord(step.getStepExecutionRecordCount() -1).getStartTime()</xsp:expr></xsp:attribute>                                                             
                   </xsp:element>                        
  
             }
