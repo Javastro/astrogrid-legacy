@@ -42,7 +42,8 @@ Open Tomcat's administration interface (see the Tomcat manual). In the tree disp
 <li>name = org.astrogrid.config.url</li>
 <li>type = java.lang.String </li>
 <li>value = $CATALINA_HOME/conf/AstroGridConfig.properties</li>
-<li>description = Path to AstroGrid central configuration<li>
+<li>description = Path to AstroGrid central configuration</li>
+</ol>
 </p><p>
 but you must replace $CATALINA_HOME with the full path to the Tomcat directory when typing the entry. 
 </p><p>
@@ -74,7 +75,9 @@ To configure the data warehouse module of the Astrogrid software, only two confi
 <b>A. $TOMCAT/webapps/warehouse/WEB-INF/classes/org/astrogrid/warehouse/queriers/ogsadai/WarehouseQuerier.properties</b>
 </p><p>
 This file configures the data warehouse querier. Change the parameter names to specify the warehouse querier class name, the location of the OGSA-DAI registry, the XSLT stylesheet used to transform rowsets to VOTable, a specific java virtual machine for the querier (optional), and the location of the OGSA-DAI jar files. 
-</p><p>
+</p>
+
+<p>
 <ol>
 <li>DatabaseQuerierClassConfigure the type of querier. Enter the package name of the data centre querier class here: 
 <ul>
@@ -109,9 +112,11 @@ This file configures the data warehouse querier. Change the parameter names to s
 </li> 
 </ol>
 <b>B. $TOMCAT/conf/AstroGridConfig.properties </b>
+</p>
 <p>
 This is the configuration file for an Astrogrid data centre - it can be specialized to describe a data warehouse. Only one parameter needs to be changed to specify the warehouse. 
-</p><p>
+</p>
+<p>
 <ol>
 <li>DatabaseQuerierClassConfigure the package name of the class that will query the data warehouse: 
 <ul>
