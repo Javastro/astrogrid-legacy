@@ -139,17 +139,23 @@ public class MessagingService implements ServiceLifecycle {
       Iterator processorIt = elementProcessors.keySet().iterator();
       while(processorIt.hasNext()) {
         tagName = (String) processorIt.next();
+        logger.debug("[initProcessorRegistry] tag name: " + tagName);
         
         try {
           clazzName = elementProcessors.getProperty(tagName);
+          logger.debug("[initProcessorRegistry] class name: " + clazzName);
           if(clazzMap.containsKey(clazzName)) {
             processor = (ElementProcessor) clazzMap.get(clazzName);
           }
           else {
             clazz = Class.forName(clazzName);
+            logger.debug("[initProcessorRegistry] class: " + clazz);
 
             processor = (ElementProcessor) clazz.newInstance();
+            logger.debug("[initProcessorRegistry] got new instance: " + clazz);
+
             processor.init(servletEndpointContext);
+            logger.debug("[initProcessorRegistry] init'd: " + clazz);
             
             clazzMap.put(clazzName, processor);
           }
@@ -167,7 +173,11 @@ public class MessagingService implements ServiceLifecycle {
         }
         catch(ProcessorException e) {
           logger.error("[initProcessorRegistry] could not initialise processor for tag name: " + tagName, e);
-          throw new ServiceException("", e);
+          throw new ServiceException("could not initialise processor for tag name: " + tagName, e);
+        }
+        catch(Exception e) {
+          logger.error("[initProcessorRegistry] unknown exception: " + e.getMessage(), e);
+          throw new ServiceException("unknown exception: " + e.getMessage(), e);
         }
       }
     }
