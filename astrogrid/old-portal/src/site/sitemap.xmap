@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/Attic/sitemap.xmap,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/04 11:59:22 $</cvs:author>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/05 09:05:56 $</cvs:author>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     | $Log: sitemap.xmap,v $
+    | Revision 1.5  2003/06/05 09:05:56  dave
+    | Added JWS and RPC WebService tests.
+    |
     | Revision 1.4  2003/06/04 11:59:22  dave
     | Updated site directory structure
     |
@@ -84,6 +87,7 @@
 			<!-- SOAP echo test -->
 			<map:match pattern="soap/test/echo">
 				<map:generate  src="soap/services/echo/echo-test.xsp" type="serverpages"/>
+				<!-- Serialize as HTML -->
 				<map:transform src="util/html/xml-html.xsl"/>
 				<map:serialize type="html"/>
 			</map:match>
@@ -102,7 +106,11 @@
 
 			<!-- SOAP calc test -->
 			<map:match pattern="soap/test/calc">
+				<!-- Call the test services -->
 				<map:generate  src="soap/services/calc/calc-test.xsp" type="serverpages"/>
+				<!-- Include the wsdl for the axis service -->
+				<map:transform type="cinclude"/>
+				<!-- Serialize as HTML -->
 				<map:transform src="util/html/xml-html.xsl"/>
 				<map:serialize type="html"/>
 			</map:match>
@@ -122,11 +130,40 @@
 			<!-- SOAP message test -->
 			<map:match pattern="soap/test/message">
 				<map:generate  src="soap/services/message/message-test.xsp" type="serverpages"/>
+				<!-- Serialize as HTML -->
 				<map:transform src="util/html/xml-html.xsl"/>
 				<map:serialize type="html"/>
 			</map:match>
 
+			<!-- SOAP JWS test -->
+			<map:match pattern="soap/test/jws">
+				<map:generate  src="soap/services/test/jws/jws-test.xsp" type="serverpages"/>
+				<!-- Include the wsdl for the axis service -->
+				<map:transform type="cinclude"/>
+				<!-- Serialize as HTML -->
+				<map:transform src="util/html/xml-html.xsl"/>
+				<map:serialize type="html"/>
+			</map:match>
 
+			<!-- SOAP JWS test -->
+			<map:match pattern="soap/test/jws-person">
+				<map:generate  src="soap/services/test/jws/jws-person-test.xsp" type="serverpages"/>
+				<!-- Include the wsdl for the axis service -->
+				<map:transform type="cinclude"/>
+				<!-- Serialize as HTML -->
+				<map:transform src="util/html/xml-html.xsl"/>
+				<map:serialize type="html"/>
+			</map:match>
+
+			<!-- SOAP RPC test -->
+			<map:match pattern="soap/test/rpc">
+				<map:generate  src="soap/services/test/rpc/rpc-test.xsp" type="serverpages"/>
+				<!-- Include the wsdl for the axis service -->
+				<map:transform type="cinclude"/>
+				<!-- Serialize as HTML -->
+				<map:transform src="util/html/xml-html.xsl"/>
+				<map:serialize type="html"/>
+			</map:match>
 
 
 
@@ -144,7 +181,7 @@
 			<!-- Initial home page -->
 			<map:match pattern="home*">
 				<map:generate  src="home/hello.xml"/>
-				<map:transform src="treeview/styles/tree-navigation.xsl"/>
+				<map:transform src="tree/styles/tree-navigation.xsl"/>
 				<map:transform src="home/styles/table-layout.xsl"/>
 				<map:serialize type="html"/>
 			</map:match>
@@ -201,12 +238,12 @@
 
 
 			<!-- Treeview source files -->
-			<map:match pattern="treeview/scripts/*.js">
-				<map:read mime-type="text/js" src="treeview/scripts/{1}.js"/>
+			<map:match pattern="tree/scripts/*.js">
+				<map:read mime-type="text/js" src="tree/scripts/{1}.js"/>
 			</map:match>
 			<!-- Treeview image files -->
-			<map:match pattern="treeview/icons/*.gif">
-				<map:read mime-type="image/gif" src="treeview/icons/{1}.gif"/>
+			<map:match pattern="tree/icons/*.gif">
+				<map:read mime-type="image/gif" src="tree/icons/{1}.gif"/>
 			</map:match>
 
 			<!-- Tree data page -->

@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/java/org/astrorgid/portal/query/Attic/AstPortalQuery.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/03 13:16:47 $</cvs:author>
- * <cvs:version>$Revision:</cvs:version>
+ * <cvs:author>$Date: 2003/06/05 09:05:56 $</cvs:author>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  * $Log: AstPortalQuery.java,v $
+ * Revision 1.2  2003/06/05 09:05:56  dave
+ * Added JWS and RPC WebService tests.
+ *
  * Revision 1.1  2003/06/03 13:16:47  dave
  * Added initial iter 02 code
  *

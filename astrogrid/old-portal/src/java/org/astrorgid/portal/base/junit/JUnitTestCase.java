@@ -2,8 +2,8 @@
  *
  * <cvs:source>$Source:</cvs:source>
  * <cvs:date>$Author:</cvs:date>
- * <cvs:author>$Date: 2003/06/03 13:16:47 $</cvs:author>
- * <cvs:version>$Revision:</cvs:version>
+ * <cvs:author>$Date: 2003/06/05 09:05:56 $</cvs:author>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  * $Log:

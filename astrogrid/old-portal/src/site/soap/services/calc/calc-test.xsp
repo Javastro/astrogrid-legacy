@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/soap/services/calc/Attic/calc-test.xsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/04 09:12:05 $</cvs:author>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/05 09:05:56 $</cvs:author>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     | $Log: calc-test.xsp,v $
+    | Revision 1.2  2003/06/05 09:05:56  dave
+    | Added JWS and RPC WebService tests.
+    |
     | Revision 1.1  2003/06/04 09:12:05  dave
     | Reorganised site directories, and added SOAP message test
     |
@@ -33,10 +36,11 @@
     | 
     +-->
 <xsp:page language="java"
-		xmlns:xsp="http://apache.org/xsp"
-		xmlns:xscript="http://apache.org/xsp/xscript/1.0"
-		xmlns:soap="http://apache.org/xsp/soap/3.0">
-		>
+	xmlns:xsp="http://apache.org/xsp"
+	xmlns:xscript="http://apache.org/xsp/xscript/1.0"
+	xmlns:soap="http://apache.org/xsp/soap/3.0"
+	xmlns:ci="http://apache.org/cocoon/include/1.0"
+	>
 
 	<!-- Initialisation code here -->
 	<xsp:structure>
@@ -54,7 +58,7 @@
 		</xsp:logic>
 		<!-- Test the calculator services ... -->
 		<test>
-			<xsp:comment>Test SOAP call to Axis service</xsp:comment>
+			<xsp:comment>SOAP call to Axis service</xsp:comment>
 			<soap:call url="http://localhost:8080/axis/Calculator.jws">
 				<calc:add xmlns:calc="astrogrid:soap/calc">
 					<i1 type="xsd:int">5</i1>
@@ -63,7 +67,7 @@
 			</soap:call>
 		</test>
 		<test>
-			<xsp:comment>Test SOAP call to Cocoon service</xsp:comment>
+			<xsp:comment>SOAP call to Cocoon service</xsp:comment>
 			<soap:call url="http://localhost:8080/cocoon/astrogrid/soap/service/calc">
 				<calc:add xmlns:calc="astrogrid:soap/calc">
 					<i1 type="xsd:int">5</i1>
@@ -71,5 +75,13 @@
 				</calc:add>
 			</soap:call>
 		</test>
+
+		<wsdl>
+			<xsp:comment>WSDL for the Axis service</xsp:comment>
+			<ci:includexml>
+				<ci:src>http://localhost:8080/axis/Calculator.jws?wsdl</ci:src>
+			</ci:includexml>
+		</wsdl>
+
 	</page>
 </xsp:page>

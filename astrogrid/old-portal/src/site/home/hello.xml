@@ -1,13 +1,16 @@
 <!--
 <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/home/Attic/hello.xml,v $</cvs:source>
 <cvs:date>$Author: dave $</cvs:date>
-<cvs:author>$Date: 2003/06/04 11:55:03 $</cvs:author>
-<cvs:version>$Revision: 1.1 $</cvs:version>
+<cvs:author>$Date: 2003/06/05 09:05:56 $</cvs:author>
+<cvs:version>$Revision: 1.2 $</cvs:version>
 <cvs:log>
 	$Log: hello.xml,v $
+	Revision 1.2  2003/06/05 09:05:56  dave
+	Added JWS and RPC WebService tests.
+
 	Revision 1.1  2003/06/04 11:55:03  dave
 	Updating directory structure
-
+	
 	Revision 1.1  2003/06/03 13:16:47  dave
 	Added initial iter 02 code
 	
@@ -60,6 +63,15 @@
 		<br/>
 		<a href="explorer/AST-1/">Initial explorer (assuming view ident is AST-1)</a>
 		<br/>
+
+		<br/>
+		<a href="soap/test/jws">SOAP JWS service test page</a>
+		<br/>
+		<a href="soap/test/rpc">SOAP RPC service test page</a>
+		<br/>
+
+		<br/>
+		<a href="soap/test/echo">SOAP echo test page</a>
 		<br/>
 		<a href="soap/test/calc">SOAP CalculatorService test page</a>
 		<br/>

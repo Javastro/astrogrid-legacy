@@ -1,80 +1,85 @@
 <?xml version="1.0"?>
 <!--
-<cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/Attic/build.xml,v $</cvs:source>
-<cvs:date>$Author: dave $</cvs:date>
-<cvs:author>$Date: 2003/06/04 10:38:34 $</cvs:author>
-<cvs:version>$Revision: 1.6 $</cvs:version>
-<cvs:log>
-	$Log: build.xml,v $
-	Revision 1.6  2003/06/04 10:38:34  dave
-	Added Axis deployment tasks
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/Attic/build.xml,v $</cvs:source>
+    | <cvs:date>$Author: dave $</cvs:date>
+    | <cvs:author>$Date: 2003/06/05 09:05:55 $</cvs:author>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:log>
+    | $Log: build.xml,v $
+    | Revision 1.7  2003/06/05 09:05:55  dave
+    | Added JWS and RPC WebService tests.
+    |
+    | Revision 1.6  2003/06/04 10:38:34  dave
+    | Added Axis deployment tasks
+    | 
+    | Revision 1.5  2003/06/04 10:00:25  dave
+    | Removed reference to lib directory
+    | 
+    | Revision 1.4  2003/06/03 13:45:22  dave
+    | Removed lib from classpath reference
+    | 
+    | Revision 1.3  2003/06/03 13:16:47  dave
+    | Added initial iter 02 code
+    | 
+    | Revision 1.20  2003/05/30 15:26:17  Dumbledore
+    | Added SOAP request generator.
+    | 
+    | Revision 1.19  2003/05/29 16:16:54  Dumbledore
+    | Fixed type in axis.webapp path (needs to be absolute path for tomcat.install task).
+    | 
+    | Revision 1.18  2003/05/29 15:42:46  Dumbledore
+    | Fixed typo in Axis webapp path ...
+    | 
+    | Revision 1.17  2003/05/29 15:03:19  Dumbledore
+    | Added Axis binary to the depends, and added Ant tasks to install it.
+    | 
+    | Revision 1.16  2003/05/28 12:00:49  Dumbledore
+    | Added action classes to session.
+    | 
+    | Revision 1.15  2003/05/27 14:25:05  Dumbledore
+    | Added initial code for explorer views.
+    | 
+    | Revision 1.14  2003/05/25 22:24:23  Dumbledore
+    | Initial attempt at an XSP action - hand written Java code to start with.
+    | 
+    | Revision 1.13  2003/05/25 15:32:10  Dumbledore
+    | Added java build and junit test tasks.
+    | 
+    | Revision 1.12  2003/05/25 14:59:33  Dumbledore
+    | Experiment with running tomcat in a parallel task.
+    | 
+    | Revision 1.11  2003/05/25 14:55:51  Dumbledore
+    | Experiment with running tomcat in a parallel task.
+    | 
+    | Revision 1.10  2003/05/25 14:34:42  Dumbledore
+    | Experiment with running tomcat in a parallel task.
+    | 
+    | Revision 1.9  2003/05/25 14:29:25  Dumbledore
+    | Experiment with running tomcat in a parallel task.
+    | 
+    | Revision 1.8  2003/05/25 14:24:43  Dumbledore
+    | Experiment with running tomcat in a parallel task.
+    | 
+    | Revision 1.7  2003/05/25 14:18:34  Dumbledore
+    | Experiment with running tomcat in a parallel task.
+    | 
+    | Revision 1.6  2003/05/25 12:16:19  Dumbledore
+    | Changed the sitemap xslt param from a path to the full path/file.
+    | Fixed problem of missing '/' at the end of the path.
+    | 
+    | Revision 1.5  2003/05/25 12:04:48  Dumbledore
+    | Added ${basedir} to the file path in cocoon.webapp.install.
+    | 
+    | Revision 1.4  2003/05/25 11:57:21  Dumbledore
+    | Added the site.build and site.delete tasks.
+    | 
+    | Revision 1.3  2003/05/25 11:24:59  Dumbledore
+    | Fixed bug in the cvs log header.
+    | 
+    | </cvs:log>
+    | 
+    +-->
 
-	Revision 1.5  2003/06/04 10:00:25  dave
-	Removed reference to lib directory
-	
-	Revision 1.4  2003/06/03 13:45:22  dave
-	Removed lib from classpath reference
-	
-	Revision 1.3  2003/06/03 13:16:47  dave
-	Added initial iter 02 code
-	
-	Revision 1.20  2003/05/30 15:26:17  Dumbledore
-	Added SOAP request generator.
-	
-	Revision 1.19  2003/05/29 16:16:54  Dumbledore
-	Fixed type in axis.webapp path (needs to be absolute path for tomcat.install task).
-	
-	Revision 1.18  2003/05/29 15:42:46  Dumbledore
-	Fixed typo in Axis webapp path ...
-	
-	Revision 1.17  2003/05/29 15:03:19  Dumbledore
-	Added Axis binary to the depends, and added Ant tasks to install it.
-	
-	Revision 1.16  2003/05/28 12:00:49  Dumbledore
-	Added action classes to session.
-	
-	Revision 1.15  2003/05/27 14:25:05  Dumbledore
-	Added initial code for explorer views.
-	
-	Revision 1.14  2003/05/25 22:24:23  Dumbledore
-	Initial attempt at an XSP action - hand written Java code to start with.
-	
-	Revision 1.13  2003/05/25 15:32:10  Dumbledore
-	Added java build and junit test tasks.
-	
-	Revision 1.12  2003/05/25 14:59:33  Dumbledore
-	Experiment with running tomcat in a parallel task.
-	
-	Revision 1.11  2003/05/25 14:55:51  Dumbledore
-	Experiment with running tomcat in a parallel task.
-	
-	Revision 1.10  2003/05/25 14:34:42  Dumbledore
-	Experiment with running tomcat in a parallel task.
-	
-	Revision 1.9  2003/05/25 14:29:25  Dumbledore
-	Experiment with running tomcat in a parallel task.
-	
-	Revision 1.8  2003/05/25 14:24:43  Dumbledore
-	Experiment with running tomcat in a parallel task.
-	
-	Revision 1.7  2003/05/25 14:18:34  Dumbledore
-	Experiment with running tomcat in a parallel task.
-	
-	Revision 1.6  2003/05/25 12:16:19  Dumbledore
-	Changed the sitemap xslt param from a path to the full path/file.
-	Fixed problem of missing '/' at the end of the path.
-	
-	Revision 1.5  2003/05/25 12:04:48  Dumbledore
-	Added ${basedir} to the file path in cocoon.webapp.install.
-	
-	Revision 1.4  2003/05/25 11:57:21  Dumbledore
-	Added the site.build and site.delete tasks.
-	
-	Revision 1.3  2003/05/25 11:24:59  Dumbledore
-	Fixed bug in the cvs log header.
-	
-</cvs:log>
- -->
 <project default="init" basedir=".">
 
 	<!-- Project build properties -->
@@ -428,20 +433,6 @@
 		<untar src="${axis.src}" dest="${axis.build}" compression="gzip"/>
 	</target>
 
-	<!-- Deploy the axis services --> 
-	<target name="axis.service.install" depends="axis.tasks">
-		<!-- Copy the calculator example -->
-		<copy verbose="true" file="${axis.home}/samples/userguide/example2/Calculator.java" tofile="${axis.webapp}/Calculator.jws"/>
-		<!-- Deploy the echo message example --> 
-		<axis.admin
-			port="${axis.port}"
-			hostname="${axis.host}"
-			servletpath="${axis.base}/services/AdminService"
-			debug="true"
-			xmlfile="${axis.home}/samples/message/deploy.wsdd"
-			/>
-	</target>
-
 	<!-- Install our Axis web-app -->
 	<target name="axis.webapp.install" depends="tomcat.tasks">
 		<!-- Wait for the Tomcat manager -->
@@ -500,6 +491,103 @@
 		<antcall target="axis.untar"/>
 		<!-- Add the endorsed classes to Tomcat -->
 		<antcall target="axis.endorsed"/>
+	</target>
+
+	<!-- Install the Axis docs as a webapp -->
+	<target name="axis.docs.install" depends="tomcat.tasks">
+		<!-- Copy the dummy web.xml file -->
+		<copy file="src/docs/axis/WEB-INF/web.xml" todir="${axis.home}/docs/WEB-INF"/>
+		<!-- Wait for the Tomcat manager -->
+		<waitfor maxwait="${tomcat.manager.wait}" maxwaitunit="second" checkevery="500">
+			<http url="${tomcat.manager.url}"/>
+		</waitfor>
+		<!-- Install our web-app -->
+		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/axis-docs" war="file://${axis.home}/docs"/>
+	</target>
+
+	<!-- Remove the Axis docs webapp -->
+	<target name="axis.docs.remove" depends="tomcat.tasks">
+		<!-- Wait for the Tomcat manager -->
+		<waitfor maxwait="${tomcat.manager.wait}" maxwaitunit="second" checkevery="500">
+			<http url="${tomcat.manager.url}"/>
+		</waitfor>
+		<!-- Remove our web-app -->
+		<tomcat.remove username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/axis-docs"/>
+	</target>
+
+	<!-- Deploy the axis calculator example --> 
+	<target name="axis.service.install.examples.calculator" depends="">
+		<copy file="${axis.home}/samples/userguide/example2/Calculator.java" tofile="${axis.webapp}/Calculator.jws"/>
+	</target>
+
+	<!-- Deploy the axis message example --> 
+	<target name="axis.service.install.examples.message" depends="axis.tasks">
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="${axis.base}/services/AdminService"
+			debug="true"
+			xmlfile="${axis.home}/samples/message/deploy.wsdd"
+			/>
+	</target>
+
+	<!-- Deploy our JWS test services --> 
+	<target name="axis.service.install.test.jws" depends="">
+		<copy file="src/java/org/astrorgid/portal/test/axis/jws/TestJwsService.java"       tofile="${axis.webapp}/TestJwsService.jws"/>
+		<copy file="src/java/org/astrorgid/portal/test/axis/jws/TestJwsPersonService.java" tofile="${axis.webapp}/TestJwsPersonService.jws"/>
+	</target>
+
+	<!-- Remove our JWS test services --> 
+	<target name="axis.service.remove.test.jws" depends="">
+		<delete failonerror="false">
+			<fileset dir="${axis.webapp}/WEB-INF/jwsClasses">
+				<include name="TestJws*.class"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<!-- Deploy our RCP test services --> 
+	<target name="axis.service.install.test.rpc" depends="java.compile, axis.tasks">
+		<!-- Copy the classes into the Axis WEB-INF/classes directory -->
+		<copy verbose="true" todir="${axis.webapp}/WEB-INF/classes">
+			<fileset dir="build/classes">
+				<include name="**/test/axis/rpc/TestRpc*.class"/>
+			</fileset>
+		</copy>
+		<!-- Deploy our WebService -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="${axis.base}/services/AdminService"
+			debug="true"
+			xmlfile="src/java/org/astrorgid/portal/test/axis/rpc/deploy.wsdd"
+			/>
+	</target>
+
+	<!-- Remove our RCP test services --> 
+	<target name="axis.service.remove.test.rpc" depends="axis.tasks">
+		<!-- Remove the WebService -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="${axis.base}/services/AdminService"
+			debug="true"
+			xmlfile="src/java/org/astrorgid/portal/test/axis/rpc/undeploy.wsdd"
+			/>
+		<!-- Tidy up any class files -->
+		<delete failonerror="false">
+			<fileset dir="${axis.webapp}/WEB-INF/classes">
+				<include name="**/test/axis/rpc/TestRpc*.class"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<!-- Deploy our axis example services --> 
+	<target name="axis.service.install" depends="">
+		<antcall target="axis.service.install.examples.calculator"/>
+		<antcall target="axis.service.install.examples.message"/>
+		<antcall target="axis.service.install.test.jws"/>
+		<antcall target="axis.service.install.test.rpc"/>
 	</target>
 
 	<!-- ================ Site tasks ================ -->
@@ -715,6 +803,13 @@
 				<echo message="Installing Axis services ...."/>
 				<antcall target="axis.service.install"/>
 				<echo message=""/>
+
+				<!-- Install the Axis documentation -->
+				<echo message=""/>
+				<echo message="Installing Axis documentation ...."/>
+				<antcall target="axis.docs.install"/>
+				<echo message=""/>
+
 				<echo message="Ok ... Astrogrid portal is running."/>
 
 			</sequential>

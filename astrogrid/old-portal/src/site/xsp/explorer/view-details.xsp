@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/xsp/explorer/Attic/view-details.xsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/03 13:16:47 $</cvs:author>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/05 09:05:56 $</cvs:author>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     | $Log: view-details.xsp,v $
+    | Revision 1.2  2003/06/05 09:05:56  dave
+    | Added JWS and RPC WebService tests.
+    |
     | Revision 1.1  2003/06/03 13:16:47  dave
     | Added initial iter 02 code
     |
@@ -316,7 +319,7 @@
 							</soap:call>
 
 							<xsp:comment>Test SOAP call to Cocoon service</xsp:comment>
-							<soap:call url="http://localhost:8080/cocoon/astrogrid/soap/calc">
+							<soap:call url="http://localhost:8080/cocoon/astrogrid/soap/service/calc">
 								<calc:add xmlns:calc="astrogrid:soap/calc">
 									<i1 type="xsd:int">5</i1>
 									<i2 type="xsd:int">20</i2>

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!--
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/java/org/astrorgid/portal/test/axis/rpc/Attic/deploy.wsdd,v $</cvs:source>
+    | <cvs:date>$Author: dave $</cvs:date>
+    | <cvs:author>$Date: 2003/06/05 09:05:56 $</cvs:author>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    | $Log: deploy.wsdd,v $
+    | Revision 1.1  2003/06/05 09:05:56  dave
+    | Added JWS and RPC WebService tests.
+    |
+    |
+    +-->
+
+<deployment name="test"
+	xmlns="http://xml.apache.org/axis/wsdd/" 
+	xmlns:java="http://xml.apache.org/axis/wsdd/providers/java"
+	>
+
+	<service name="rpc" provider="java:RPC">
+		<parameter name="className"      value="org.astrogrid.portal.test.axis.rpc.TestRpcService"/>
+		<parameter name="allowedMethods" value="doNothing, getDateAsLong, getDateAsDate, getIntSquared"/>
+
+		<!--
+		<operation name="echoInteger" returnQName="return" returnType="RTypeNS:int" xmlns:RTypeNS="http://www.w3.org/2001/XMLSchema" >
+			<parameter name="inputInteger" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+		</operation>
+		-->
+
+	</service>
+
+</deployment>

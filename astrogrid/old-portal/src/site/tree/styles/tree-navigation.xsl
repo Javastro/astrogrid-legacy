@@ -2,13 +2,16 @@
 <!--
 <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/tree/styles/Attic/tree-navigation.xsl,v $</cvs:source>
 <cvs:date>$Author: dave $</cvs:date>
-<cvs:author>$Date: 2003/06/04 11:59:22 $</cvs:author>
-<cvs:version>$Revision: 1.1 $</cvs:version>
+<cvs:author>$Date: 2003/06/05 09:05:56 $</cvs:author>
+<cvs:version>$Revision: 1.2 $</cvs:version>
 <cvs:log>
 	$Log: tree-navigation.xsl,v $
+	Revision 1.2  2003/06/05 09:05:56  dave
+	Added JWS and RPC WebService tests.
+
 	Revision 1.1  2003/06/04 11:59:22  dave
 	Updated site directory structure
-
+	
 	Revision 1.1  2003/06/03 13:16:47  dave
 	Added initial iter 02 code
 	
@@ -54,8 +57,8 @@
 	<xsl:template match="treeview">
 		<!-- Add the tree view scripts -->
 		<xsl:comment>Script elements required by treeview</xsl:comment>
-		<script src="/cocoon/astrogrid/treeview/scripts/ua.js"/>
-		<script src="/cocoon/astrogrid/treeview/scripts/ftiens4.js"/>
+		<script src="/cocoon/astrogrid/tree/scripts/ua.js"/>
+		<script src="/cocoon/astrogrid/tree/scripts/ftiens4.js"/>
 
 		<!-- Add the tree view link -->
 		<xsl:comment>Removing this link will make the script stop from working</xsl:comment>
@@ -72,7 +75,7 @@
 				USEICONS = 1 ;
 				WRAPTEXT = 0 ;
 				PERSERVESTATE = 1 ;
-				ICONPATH = "/cocoon/astrogrid/treeview/icons/" ;
+				ICONPATH = "/cocoon/astrogrid/tree/icons/" ;
 				HIGHLIGHT = 1 ;
 			]]>
 			<!-- Create the root element -->

@@ -2,13 +2,16 @@
 <!--
 <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/soap/services/calc/Attic/calc-soap.xsl,v $</cvs:source>
 <cvs:date>$Author: dave $</cvs:date>
-<cvs:author>$Date: 2003/06/04 11:59:22 $</cvs:author>
-<cvs:version>$Revision: 1.2 $</cvs:version>
+<cvs:author>$Date: 2003/06/05 09:05:56 $</cvs:author>
+<cvs:version>$Revision: 1.3 $</cvs:version>
 <cvs:log>
 	$Log: calc-soap.xsl,v $
+	Revision 1.3  2003/06/05 09:05:56  dave
+	Added JWS and RPC WebService tests.
+
 	Revision 1.2  2003/06/04 11:59:22  dave
 	Updated site directory structure
-
+	
 	Revision 1.1  2003/06/04 09:12:05  dave
 	Reorganised site directories, and added SOAP message test
 	
@@ -63,9 +66,11 @@
 	    | Match the calculation call and generate our result.
 	    +-->
 	<xsl:template match="calc:add">
-		<xsl:value-of select="i1"/>
-		<xsl:text>+</xsl:text>
-		<xsl:value-of select="i2"/>
+		<return>
+			<xsl:value-of select="i1"/>
+			<xsl:text>+</xsl:text>
+			<xsl:value-of select="i2"/>
+		</return>
 	</xsl:template>
 
 	<!-- Recursive copy of request tree -->
