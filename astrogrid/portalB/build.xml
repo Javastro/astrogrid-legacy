@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/17 15:40:15 $</cvs:author>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/18 01:33:15 $</cvs:author>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.4  2003/06/18 01:33:15  dave
+    | Moved message parser into separate class and added service lookup to pages
+    |
     | Revision 1.3  2003/06/17 15:40:15  dave
     | Fixed missing libraries in build sequence
     |
@@ -260,7 +263,7 @@
 	    | Required with JDK 1.4.2
 	    +-->
 	<target name="axis.endorsed" depends="jaf.unzip">
-		<copy verbose="true" file="${jaf.home}/activation.jar" toDir="${tomcat.home}/common/endorsed"/>
+		<copy verbose="false" file="${jaf.home}/activation.jar" toDir="${tomcat.home}/common/endorsed"/>
 	</target>
 
 	<!-- ================ Axis tasks ================ -->
@@ -387,13 +390,13 @@
 		<mkdir dir="${site.webapp}/WEB-INF"/>
 		<mkdir dir="${site.webapp}/WEB-INF/lib"/>
 		<!-- Copy our site files -->
-		<copy verbose="true" toDir="${site.webapp}">
+		<copy verbose="false" toDir="${site.webapp}">
 			<fileset dir="${site.src}">
 				<exclude name="**/CVS/**"/>
 			</fileset>
 		</copy>
 		<!-- Copy our portal jar -->
-		<copy verbose="true" toDir="${site.webapp}/WEB-INF/lib">
+		<copy verbose="false" toDir="${site.webapp}/WEB-INF/lib">
 			<fileset dir="${portal.build}/lib">
 				<include name="**/*.jar"/>
 			</fileset>
@@ -403,7 +406,7 @@
 		    | FIXME : We probably don't need ALL of these,
 		    | need to check which ones we really do need to run the client stubs.
 		    +-->
-		<copy verbose="true" toDir="${site.webapp}/WEB-INF/lib">
+		<copy verbose="false" toDir="${site.webapp}/WEB-INF/lib">
 			<fileset dir="${axis.home}/lib">
 				<include name="axis.jar"/>
 				<include name="axis-ant.jar"/>
@@ -505,7 +508,7 @@
 			<!-- Run our JUnit tests -->
 			<batchtest todir="build/myspace/mock/service/junit">
 				<fileset dir="build/myspace/mock/service/classes">
-					<include name="**/junit/**/JUnit*.class" />
+					<include name="**/junit/**/JUnitTestCase.class" />
 				</fileset>
 			</batchtest>
 		</junit>
@@ -664,7 +667,7 @@
 			<!-- Run our JUnit tests -->
 			<batchtest todir="build/myspace/mock/client/junit">
 				<fileset dir="build/myspace/mock/client/classes">
-					<include name="**/junit/**/JUnit*.class" />
+					<include name="**/junit/**/JUnitTestCase.class" />
 				</fileset>
 			</batchtest>
 		</junit>
@@ -877,6 +880,12 @@
 		    +-->
 		<antcall target="portal.REBUILD"/>
 
+		<!--+
+		    | Rebuild our portal site.
+		    | This installs the JSP pages and WebApp.
+		    +-->
+		<antcall target="site.REBUILD"/>
+
 	</target>
 
 	<!--+
@@ -975,7 +984,7 @@
 	<!-- Delete the local copy of the MySpace service -->
 	<target name="MYSPACE.service.clean" depends="">
 		<!-- Tidy up any class files -->
-		<delete verbose="true" failonerror="false">
+		<delete verbose="false" failonerror="false">
 			<fileset dir="${axis.webapp}/WEB-INF/classes">
 				<include name="org/astrogrid/mySpace/**"/>
 			</fileset>
@@ -988,7 +997,7 @@
 		<!-- Create our wsdd directory -->
 		<mkdir dir="build/myspace/live/service/wsdd"/>
 		<!-- Copy the deployment descriptors -->
-		<copy verbose="true" todir="build/myspace/live/service/wsdd">
+		<copy verbose="false" todir="build/myspace/live/service/wsdd">
 			<fileset dir="depends/services/myspace">
 				<include name="*.wsdd" />
 			</fileset>
@@ -1070,7 +1079,7 @@
 	    | This task removes the config from the Tomcat 
 	    +-->
 	<target name="MYSPACE.service.config.clean" depends="">
-		<delete verbose="true" dir="${tomcat.home}/conf/astrogrid/mySpace" failonerror="false"/>
+		<delete verbose="false" dir="${tomcat.home}/conf/astrogrid/mySpace" failonerror="false"/>
 	</target>
 
 	<!--+
@@ -1119,8 +1128,11 @@
 		<!-- Create our classes directory -->
 		<mkdir dir="build/myspace/live/client/classes"/>
 		<!-- Copy our client java code -->
-		<copy verbose="true" todir="build/myspace/live/client/java">
+		<copy verbose="false" todir="build/myspace/live/client/java">
 			<fileset dir="src/java">
+				<!-- Our XML utils -->
+				<include name="**/util/xml/sax/**"/>
+				<!-- Our client stubs -->
 				<include name="**/services/myspace/client/**"/>
 			</fileset>
 		</copy>
@@ -1164,7 +1176,7 @@
 			<!-- Run our JUnit tests -->
 			<batchtest todir="build/myspace/live/client/junit">
 				<fileset dir="build/myspace/live/client/classes">
-					<include name="**/junit/**/JUnit*.class" />
+					<include name="**/junit/**/JUnitTestCase.class" />
 				</fileset>
 			</batchtest>
 		</junit>

@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/explorer/Attic/AstPortalView.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/17 15:17:34 $</cvs:author>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/18 01:33:15 $</cvs:author>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  * $Log: AstPortalView.java,v $
+ * Revision 1.3  2003/06/18 01:33:15  dave
+ * Moved message parser into separate class and added service lookup to pages
+ *
  * Revision 1.2  2003/06/17 15:17:34  dave
  * Added links to live MySpace, including initial XML parser for lookup results
  *
@@ -31,6 +34,7 @@ import java.io.IOException ;
 import java.util.Map ;
 import java.util.Iterator ;
 import java.util.Hashtable ;
+import java.util.Collection ;
 
 import java.rmi.RemoteException ;
 import javax.xml.rpc.ServiceException ;
@@ -42,6 +46,9 @@ import org.astrogrid.portal.util.xml.sax.SAXElementHandler  ;
 import org.astrogrid.portal.util.xml.sax.SAXDocumentHandler ;
 import org.astrogrid.portal.util.xml.sax.SAXAttributeHandler ;
 import org.astrogrid.portal.util.xml.sax.SAXCharacterHandler ;
+
+import org.astrogrid.portal.services.myspace.client.LookupResponseParser ;
+import org.astrogrid.portal.services.myspace.client.DataItemRecord ;
 
 //
 // Import the generated mock client stubs.
@@ -188,10 +195,25 @@ public class AstPortalView
 	 */
 
 	/**
+	 * Our current list of DataItems.
+	 *
+	 */
+	private Collection items ;
+
+	/**
+	 * Access to our list of DataItems.
+	 *
+	 */
+	public Collection getDataItems()
+		{
+		return this.items ;
+		}
+
+	/**
 	 * Call the lookupDataHoldersDetails on our MySpaceManager.
 	 *
 	 */
-	public String lookupDataHoldersDetails()
+	public void lookupDataHoldersDetails()
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -217,380 +239,44 @@ public class AstPortalView
 			}
 		catch (RemoteException ouch)
 			{
-//
-// FIXME ....
-//
+			//
+			// FIXME ....
 			if (DEBUG_FLAG) System.out.println("Exception calling lookupDataHoldersDetails()") ;
 			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
 			}
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		return response ;
-		}
-
-	/**
-	 * Process the lookup response.
-	 *
-	 */
-	public void processDataHoldersDetails(String response)
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AstPortalView.processDataHoldersDetails()") ;
-
 		//
-		// Create our DocumentHandler.
-		SAXDocumentHandler parser = new SAXDocumentHandler() ;
-		//
-		// <results> element handler.
-		parser.addElementHandler(
-			new SAXElementHandler("results")
+		// If we got a response.
+		if (null != response)
+			{
+			try {
+				//
+				// Check we can create a parser.
+				LookupResponseParser parser = new LookupResponseParser() ;
+				//
+				// Parse the response.
+				parser.parseResponse(response) ;
+				//
+				// Collect the DataItems.
+				items = parser.getResults() ;
+				}
+			catch (IOException ouch)
 				{
 				//
-				// Start of results element.
-				protected void startElement()
-					throws SAXException
-					{
-					if (DEBUG_FLAG) System.out.println("Start of results") ;
-					}
-				//
-				// Close of results element.
-				protected void closeElement()
-					throws SAXException
-					{
-					if (DEBUG_FLAG) System.out.println("Close of results") ;
-					}
-				//
-				// Initialise results handler.
-				public void init()
-					{
-					//
-					// Add a <status> handler.
-					addElementHandler(
-						new SAXElementHandler("status")
-							{
-							//
-							// Initialise <status> handler.
-							public void init()
-								{
-								//
-								// Add a <status> handler.
-								addElementHandler(
-									new SAXElementHandler("status")
-										{
-										public void init()
-											{
-											//
-											// Handle text content of <status>
-											setCharacterHandler(
-												new SAXCharacterHandler()
-													{
-													public void parseText(String text)
-														throws SAXException
-														{
-														if (DEBUG_FLAG) System.out.println("Status : " + text) ;
-														}
-													}
-												);
-											}
-										}
-									) ;
-								//
-								// Add a <details> handler.
-								addElementHandler(
-									new SAXElementHandler("details")
-										{
-										}
-									) ;
-								//
-								// Add a <currentDate> handler.
-								addElementHandler(
-									new SAXElementHandler("currentDate")
-										{
-										public void init()
-											{
-											setCharacterHandler(
-												new SAXCharacterHandler()
-													{
-													public void parseText(String text)
-														throws SAXException
-														{
-														if (DEBUG_FLAG) System.out.println("Date : " + text) ;
-														}
-													}
-												);
-											}
-										}
-									) ;
-								}
-							}
-						) ;
-					//
-					// Add a <dataItemRecords> handler.
-					addElementHandler(
-						new SAXElementHandler("dataItemRecords")
-							{
-							public void init()
-								{
-								//
-								// Add a <dataItemRecord> handler.
-								addElementHandler(
-									new SAXElementHandler("dataItemRecord")
-										{
-										//
-										// Start of DataItem record.
-										protected void startElement()
-											throws SAXException
-											{
-											if (DEBUG_FLAG) System.out.println("----") ;
-											if (DEBUG_FLAG) System.out.println("Start of DataItem record") ;
-											}
-										//
-										// Close of DataItem record.
-										protected void closeElement()
-											throws SAXException
-											{
-											if (DEBUG_FLAG) System.out.println("Close of DataItem record") ;
-											if (DEBUG_FLAG) System.out.println("----") ;
-											}
-										public void init()
-											{
-
-
-											//
-											// Add a <dataItemName> handler.
-											addElementHandler(
-												new SAXElementHandler("dataItemName")
-													{
-													public void init()
-														{
-														setCharacterHandler(
-															new SAXCharacterHandler()
-																{
-																public void parseText(String text)
-																	throws SAXException
-																	{
-																	if (DEBUG_FLAG) System.out.println("Name : " + text) ;
-																	}
-																}
-															);
-														}
-													}
-												) ;
-
-											//
-											// Add a <dataItemID> handler.
-											addElementHandler(
-												new SAXElementHandler("dataItemID")
-													{
-													public void init()
-														{
-														setCharacterHandler(
-															new SAXCharacterHandler()
-																{
-																public void parseText(String text)
-																	throws SAXException
-																	{
-																	if (DEBUG_FLAG) System.out.println("Ident : " + text) ;
-																	}
-																}
-															);
-														}
-													}
-												) ;
-
-											//
-											// Add a <ownerID> handler.
-											addElementHandler(
-												new SAXElementHandler("ownerID")
-													{
-													public void init()
-														{
-														setCharacterHandler(
-															new SAXCharacterHandler()
-																{
-																public void parseText(String text)
-																	throws SAXException
-																	{
-																	if (DEBUG_FLAG) System.out.println("Owner : " + text) ;
-																	}
-																}
-															);
-														}
-													}
-												) ;
-
-											//
-											// Add a <creationDate> handler.
-											addElementHandler(
-												new SAXElementHandler("creationDate")
-													{
-													public void init()
-														{
-														setCharacterHandler(
-															new SAXCharacterHandler()
-																{
-																public void parseText(String text)
-																	throws SAXException
-																	{
-																	if (DEBUG_FLAG) System.out.println("Created : " + text) ;
-																	}
-																}
-															);
-														}
-													}
-												) ;
-
-											//
-											// Add a <expiryDate> handler.
-											addElementHandler(
-												new SAXElementHandler("expiryDate")
-													{
-													public void init()
-														{
-														setCharacterHandler(
-															new SAXCharacterHandler()
-																{
-																public void parseText(String text)
-																	throws SAXException
-																	{
-																	if (DEBUG_FLAG) System.out.println("Expires : " + text) ;
-																	}
-																}
-															);
-														}
-													}
-												) ;
-
-											//
-											// Add a <size> handler.
-											addElementHandler(
-												new SAXElementHandler("size")
-													{
-													public void init()
-														{
-														setCharacterHandler(
-															new SAXCharacterHandler()
-																{
-																public void parseText(String text)
-																	throws SAXException
-																	{
-																	if (DEBUG_FLAG) System.out.println("Size : " + text) ;
-																	}
-																}
-															);
-														}
-													}
-												) ;
-
-											//
-											// Add a <type> handler.
-											addElementHandler(
-												new SAXElementHandler("type")
-													{
-													public void init()
-														{
-														setCharacterHandler(
-															new SAXCharacterHandler()
-																{
-																public void parseText(String text)
-																	throws SAXException
-																	{
-																	if (DEBUG_FLAG) System.out.println("Type : " + text) ;
-																	}
-																}
-															);
-														}
-													}
-												) ;
-
-											//
-											// Add a <permissionsMask> handler.
-											addElementHandler(
-												new SAXElementHandler("permissionsMask")
-													{
-													public void init()
-														{
-														setCharacterHandler(
-															new SAXCharacterHandler()
-																{
-																public void parseText(String text)
-																	throws SAXException
-																	{
-																	if (DEBUG_FLAG) System.out.println("Perm : " + text) ;
-																	}
-																}
-															);
-														}
-													}
-												) ;
-
-											//
-											// Add a <dataHolderURI> handler.
-											addElementHandler(
-												new SAXElementHandler("dataHolderURI")
-													{
-													public void init()
-														{
-														setCharacterHandler(
-															new SAXCharacterHandler()
-																{
-																public void parseText(String text)
-																	throws SAXException
-																	{
-																	if (DEBUG_FLAG) System.out.println("URI  : " + text) ;
-																	}
-																}
-															);
-														}
-													}
-												) ;
-											}
-										}
-									) ;
-								}
-							}
-						) ;
-					}
+				// FIXME ....
+				if (DEBUG_FLAG) System.out.println("IOException in LookupResponseParser") ;
+				if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
 				}
-			) ;
-
-		//
-		// Try parsing the response.
-		try {
-			//
-			// Remove the bad header from the response.
-			String header = "<?xml version=1.0 encoding=UTF-8?>" ;
-			response = response.substring(header.length()) ;
-			//
-			// Convert it into an InputStream.
-			Reader reader = new StringReader(response) ;
-			//
-			// Parse the response.
-			parser.parse(reader) ;
-			}
-		//
-		// Catch any IO exceptions.
-		catch (IOException ouch)
-			{
-//
-// FIXME ....
-//
-			if (DEBUG_FLAG) System.out.println("IOException while parsing lookupDataHoldersDetails") ;
-			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
-			}
-		//
-		// Catch any SAX exceptions.
-		catch (SAXException ouch)
-			{
-//
-// FIXME ....
-//
-			if (DEBUG_FLAG) System.out.println("SAXException while parsing lookupDataHoldersDetails") ;
-			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+			catch (SAXException ouch)
+				{
+				//
+				// FIXME ....
+				if (DEBUG_FLAG) System.out.println("SAXException in LookupResponseParser") ;
+				if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+				}
 			}
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
+
 
 	}

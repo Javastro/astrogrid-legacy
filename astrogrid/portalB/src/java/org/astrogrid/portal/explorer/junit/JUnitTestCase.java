@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/explorer/junit/Attic/JUnitTestCase.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/17 15:17:34 $</cvs:author>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/18 01:33:15 $</cvs:author>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  * $Log: JUnitTestCase.java,v $
+ * Revision 1.3  2003/06/18 01:33:15  dave
+ * Moved message parser into separate class and added service lookup to pages
+ *
  * Revision 1.2  2003/06/17 15:17:34  dave
  * Added links to live MySpace, including initial XML parser for lookup results
  *
@@ -21,10 +24,14 @@ package org.astrogrid.portal.explorer.junit ;
 
 import junit.framework.TestCase ;
 
+import java.util.Iterator ;
+import java.util.Collection ;
+
 import org.astrogrid.portal.base.AstPortalIdent ;
 import org.astrogrid.portal.base.AstPortalBase ;
 
 import org.astrogrid.portal.explorer.AstPortalView ;
+import org.astrogrid.portal.services.myspace.client.DataItemRecord ;
 
 /**
  *
@@ -169,70 +176,37 @@ public class JUnitTestCase
 		//
 		// Check can locate our MySpace service.
 		boolean init = view.initMySpaceService() ;
-		assertTrue("Null service", init) ;
+		assertTrue("No service", init) ;
 		//
 		// Set the lookup path.
-		view.setPath("/ktn/*") ;
+		view.setPath("*") ;
 		//
 		// Check we can call our service method.
-		String results = view.lookupDataHoldersDetails() ;
+		view.lookupDataHoldersDetails() ;
 		//
 		// Check we got some results.
-		assertNotNull("Noull results", results) ;
+		Collection results = view.getDataItems() ;
+		assertNotNull("Null results", results) ;
 		//
-		// Debug output.
+		// Print out our results.
 		if (DEBUG_FLAG)
 			{
-			if (DEBUG_FLAG) System.out.println("Results :") ;
-			if (DEBUG_FLAG) System.out.println("----") ;
-			if (DEBUG_FLAG) System.out.println(results) ;
-			if (DEBUG_FLAG) System.out.println("----") ;
+			Iterator iter = results.iterator() ;
+			while (iter.hasNext())
+				{
+				DataItemRecord item = (DataItemRecord) iter.next() ;
+				if (DEBUG_FLAG) System.out.println("----") ;
+				if (DEBUG_FLAG) System.out.println("DataItemRecord") ;
+				if (DEBUG_FLAG) System.out.println("Name    : " + item.getName()) ;
+				if (DEBUG_FLAG) System.out.println("Ident   : " + item.getIdent()) ;
+				if (DEBUG_FLAG) System.out.println("Size    : " + item.getSize()) ;
+				if (DEBUG_FLAG) System.out.println("Type    : " + item.getType()) ;
+				if (DEBUG_FLAG) System.out.println("Owner   : " + item.getOwner()) ;
+				if (DEBUG_FLAG) System.out.println("Created : " + item.getCreated()) ;
+				if (DEBUG_FLAG) System.out.println("Expires : " + item.getExpires()) ;
+				if (DEBUG_FLAG) System.out.println("----") ;
+				}
 			}
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
-
-	/**
-	 * Check that we can process the lookupDataHoldersDetails results
-	 *
-	 */
-	public void testLookupDataHoldersResults()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testLookupDataHoldersResults") ;
-
-		//
-		// Check can create a view.
-		AstPortalView view = new AstPortalView(null, "") ;
-		assertNotNull("Null view", view) ;
-		//
-		// Check can locate our MySpace service.
-		boolean init = view.initMySpaceService() ;
-		assertTrue("Null service", init) ;
-		//
-		// Set the lookup path.
-		view.setPath("/ktn/*") ;
-		//
-		// Check we can call our service method.
-		String results = view.lookupDataHoldersDetails() ;
-		//
-		// Check we got some results.
-		assertNotNull("Noull results", results) ;
-		//
-		// Debug output.
-		if (DEBUG_FLAG)
-			{
-			System.out.println("Results :") ;
-			System.out.println("----") ;
-			System.out.println(results) ;
-			System.out.println("----") ;
-			}
-		//
-		// Check we can process the results.
-		view.processDataHoldersDetails(results) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
