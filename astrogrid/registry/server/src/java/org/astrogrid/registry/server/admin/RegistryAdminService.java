@@ -476,9 +476,9 @@ public class RegistryAdminService implements
   
   private String formUpdateXQLQuery(Element doc,String ident, String resKey) {
      if(resKey != null) {
-       return ".//*:AuthorityID = '" + ident + "' and .//*:ResourceKey = '" + resKey + "'";   
+       return ".//*:Identifier/AuthorityID = '" + ident + "' and .//*:Identifier/ResourceKey = '" + resKey + "'";   
      }else {
-       return ".//*:AuthorityID = '" + ident + "'";
+       return ".//*:Identifier/AuthorityID = '" + ident + "'";
      }
   }
   

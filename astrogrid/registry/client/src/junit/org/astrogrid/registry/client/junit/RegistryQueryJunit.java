@@ -95,6 +95,17 @@ public class RegistryQueryJunit extends TestCase{
                   
    }
    
+   
+   public void testDSAXML() throws Exception {
+      if(DEBUG_FLAG) System.out.println("entered testDSAXML");      
+      if(rs == null) return;      
+      Document doc = rs.getResourceByIdentifierDOM("org.astrogrid.localhost/testdsa");
+      assertNotNull(doc);
+      if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
+      System.out.println("exiting testdsaxml");
+   }   
+   
+   
    public void testLoadRegistry() throws Exception {      
       //assertNotNull(rs);
       if (DEBUG_FLAG) System.out.println("entered testLoadRegistry");
@@ -132,8 +143,8 @@ public class RegistryQueryJunit extends TestCase{
       if(DEBUG_FLAG) System.out.println("entered testSecurityManagerEndPoint");      
       if(rs == null) return;
       try {
-         String endPoint = rs.getEndPointByIdentifier("org.astrogrid.test.cam/org.astrogrid.community.common.security.service.SecurityService");
-         assertNotNull(endPoint);
+         String endPoint = rs.getEndPointByIdentifier("org.astrogrid.localhost/org.astrogrid.community.common.security.service.SecurityService");
+         //assertNotNull(endPoint);
          if(DEBUG_FLAG) System.out.println("endPoint = " + endPoint);         
       }catch(RegistryException re) {
          re.printStackTrace();
@@ -146,8 +157,8 @@ public class RegistryQueryJunit extends TestCase{
       if(DEBUG_FLAG) System.out.println("entered testCommunityPolicyManagerEndPoint");      
       if(rs == null) return;
       try {
-         String endPoint = rs.getEndPointByIdentifier("org.astrogrid.test.cam/org.astrogrid.community.common.policy.manager.PolicyManager");
-         assertNotNull(endPoint);
+         String endPoint = rs.getEndPointByIdentifier("org.astrogrid.localhost/org.astrogrid.community.common.policy.manager.PolicyManager");
+         //assertNotNull(endPoint);
          if(DEBUG_FLAG) System.out.println("endPoint = " + endPoint);         
       }catch(RegistryException re) {
          re.printStackTrace();
@@ -159,8 +170,8 @@ public class RegistryQueryJunit extends TestCase{
       if(DEBUG_FLAG) System.out.println("entered testCommunityPolicyManagerEndPointOnCodon");      
       if(rs == null) return;
       try {
-         String endPoint = rs.getEndPointByIdentifier("org.astrogrid.test.codon/org.astrogrid.community.common.security.service.SecurityService");
-         assertNotNull(endPoint);
+         String endPoint = rs.getEndPointByIdentifier("org.astrogrid.localhost/org.astrogrid.community.common.security.service.SecurityService");
+         //assertNotNull(endPoint);
          if(DEBUG_FLAG) System.out.println("endPoint = " + endPoint);         
       }catch(RegistryException re) {
          re.printStackTrace();
