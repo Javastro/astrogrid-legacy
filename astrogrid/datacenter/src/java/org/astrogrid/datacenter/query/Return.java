@@ -169,8 +169,8 @@ public class Return {
 				buffer.append(catalog.getName());
 				buffer.append(".");
 				buffer.append(UCD);
-				logger.debug("Return: getColumnHeading(): key: "+buffer.toString());				
-				columnHeading = DatasetAgent.getProperty( buffer.toString() ) ;					
+				logger.debug("Return: getColumnHeading(): key: "+buffer.toString().toUpperCase() );				
+				columnHeading = DatasetAgent.getProperty( buffer.toString().toUpperCase() ) ;					
 			}
 			else {
 				
@@ -186,8 +186,8 @@ public class Return {
 				   buffer.append(table.getName().toUpperCase());
 				   buffer.append(".");
 				   buffer.append(UCD);	
-				   logger.debug("Return: getColumnHeading(): key: "+buffer.toString());
-				   columnHeading = DatasetAgent.getProperty( buffer.toString() ) ;
+				   logger.debug("Return: getColumnHeading(): key: "+buffer.toString().toLowerCase().toUpperCase() );
+				   columnHeading = DatasetAgent.getProperty( buffer.toString().toUpperCase() ) ;
 				   if (columnHeading.length() > 0) // break as soon as column heading found
 				      break; 
 				   buffer.delete(0,buffer.length());

@@ -45,6 +45,10 @@ public class From {
 	private static final String
 		ASTROGRIDERROR_COULD_NOT_CREATE_FROM_FROM_ELEMENT = "AGDTCE00200",
 	    ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_FROM = "AGDTCE00210" ;
+	    
+	private static final String
+	/** Property file key for the job database JNDI location */    			
+	    QUERY_FROM_SEPARATOR = "QUERY.FROM.SEPARATOR" ;	    
 	    		
 	private List
 	   catalogs = new ArrayList() ;
@@ -110,7 +114,7 @@ public class From {
         	
         		if ( catalog.getNumberTables() <= 0 ) {  // no table specified assume owner and table name are same
         			buffer.append( catalog.getName() );
-        			buffer.append( ".." );
+        			buffer.append( DatasetAgent.getProperty( QUERY_FROM_SEPARATOR ) ); //Bug #15
         			buffer.append( catalog.getName() );
         			buffer.append( ", " );
         		}
@@ -125,7 +129,7 @@ public class From {
 			    		table = (Table)iterator2.next() ;
 			    		
 					    buffer.append( catalog.getName() );
-				    	buffer.append( ".." );
+				    	buffer.append(  DatasetAgent.getProperty( QUERY_FROM_SEPARATOR ) ); //Bug #15
 				        buffer.append( table.getName() );				
 				        buffer.append( ", " );
 			           		
