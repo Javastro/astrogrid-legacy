@@ -13,8 +13,7 @@
 <head>
 <title>Metadata for <%=DataServer.getDatacenterName() %> pushed</title>
 <style type="text/css" media="all">
-          @import url("../style/maven-base.css");
-          @import url("../style/maven-theme.css");
+          @import url("./style/astrogrid.css");
 </style>
 </title>
 </head>

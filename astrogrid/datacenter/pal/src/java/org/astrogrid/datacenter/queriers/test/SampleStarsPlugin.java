@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.3 2004/10/18 13:11:30 mch Exp $
+ * $Id: SampleStarsPlugin.java,v 1.4 2004/10/25 00:49:17 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -43,6 +43,8 @@ public class SampleStarsPlugin extends JdbcPlugin
 
       SimpleConfig.setProperty(JdbcPlugin.SQL_TRANSLATOR, StdSqlMaker.class.getName());
 
+      SimpleConfig.setProperty("datacenter.name", "Sample");
+      
       SimpleConfig.setProperty(SqlMaker.CONE_SEARCH_RA_COL_KEY, "RA");
       SimpleConfig.setProperty(SqlMaker.CONE_SEARCH_DEC_COL_KEY,"DEC");
       SimpleConfig.setProperty(SqlMaker.CONE_SEARCH_TABLE_KEY,  "SampleStars");
@@ -199,6 +201,12 @@ public class SampleStarsPlugin extends JdbcPlugin
 }
    /*
    $Log: SampleStarsPlugin.java,v $
+   Revision 1.4  2004/10/25 00:49:17  jdt
+   Merges from branch PAL_MCH
+
+   Revision 1.3.6.1  2004/10/19 17:26:27  mch
+   Odd fixes
+
    Revision 1.3  2004/10/18 13:11:30  mch
    Lumpy Merge
 

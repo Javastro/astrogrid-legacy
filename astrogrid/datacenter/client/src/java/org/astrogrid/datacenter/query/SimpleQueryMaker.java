@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleQueryMaker.java,v 1.4 2004/10/18 13:11:30 mch Exp $
+ * $Id: SimpleQueryMaker.java,v 1.5 2004/10/25 00:49:17 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,7 +18,6 @@ import org.astrogrid.datacenter.query.condition.*;
 import java.util.Enumeration;
 import java.util.Properties;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.queriers.sql.SqlMaker;
 import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.slinger.TargetIndicator;
@@ -55,7 +54,7 @@ public class SimpleQueryMaker  {
     * The scope ('FROM') is loaded from the configuration file, if given
     */
    public static Query makeConeQuery(double givenRa, double givenDec, double givenRadius, ReturnSpec returns) {
-      String coneTable = SimpleConfig.getSingleton().getString(SqlMaker.CONE_SEARCH_TABLE_KEY, null);
+      String coneTable = SimpleConfig.getSingleton().getString("conesearch.table", null);
       if (coneTable != null) {
          return new Query(new String[] { coneTable }, makeConeCondition(givenRa, givenDec, givenRadius), returns);
       }
@@ -100,6 +99,12 @@ public class SimpleQueryMaker  {
 }
 /*
  $Log: SimpleQueryMaker.java,v $
+ Revision 1.5  2004/10/25 00:49:17  jdt
+ Merges from branch PAL_MCH
+
+ Revision 1.4.6.1  2004/10/21 19:10:24  mch
+ Removed deprecated translators, moved SqlMaker back to server,
+
  Revision 1.4  2004/10/18 13:11:30  mch
  Lumpy Merge
 

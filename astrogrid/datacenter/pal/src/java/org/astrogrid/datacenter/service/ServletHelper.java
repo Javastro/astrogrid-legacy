@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.5 2004/10/13 01:01:15 mch Exp $
+ * $Id: ServletHelper.java,v 1.6 2004/10/25 00:49:17 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,18 +42,33 @@ public class ServletHelper
       }
       //might be set in config for authority stuff
       String configStem = SimpleConfig.getSingleton().getString("datacenter.url", null);
-      if (configStem.endsWith("/")) {
-         configStem = configStem.substring(0,configStem.length()-1);
+      if (configStem != null) {
+         if (!configStem.endsWith("/")) {
+            configStem = configStem+"/";
+         }
       }
       return configStem;
    }
 
    public static void setUrlStem(HttpServletRequest request) {
-      urlStem = request.getServerName() +":" + request.getServerPort()+"/"+request.getContextPath();
-      if (urlStem.endsWith("/")) {
-         urlStem = urlStem.substring(0,urlStem.length()-1);
+      setUrlStem(
+         request.getServerName() +":" + request.getServerPort()+"/"+request.getContextPath()
+      );
+   }
+
+   public static void setUrlStem(String aStem) {
+      if (!aStem.endsWith("/")) {
+         aStem = aStem+"/";
+      }
+      log.info("Service Stem set to '"+aStem+"'");
+      if (urlStem == null) {
+         urlStem = aStem;
+      }
+      else if (!urlStem.equals(aStem)) {
+         log.error("Trying to set service URL stem to "+aStem+" when already "+urlStem+"; ignoring new stem");
       }
    }
+
    /**
     * Gets the user details from the request */
    public static Account getUser(HttpServletRequest request)  {
@@ -202,6 +218,8 @@ public class ServletHelper
       return exceptionAsHtmlPage(title, th, "");
    }
 }
+
+
 
 
 

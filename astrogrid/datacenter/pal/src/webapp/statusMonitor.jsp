@@ -15,8 +15,7 @@
 <html>
 <head><title>Service Status Monitoring Page</title>
 <style type="text/css" media="all">
-          @import url("./style/maven-base.css");
-          @import url("./style/maven-theme.css");
+          @import url("./style/astrogrid.css");
 </style>
 </head>
 <body>

@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v06.java,v 1.6 2004/10/12 21:33:57 mch Exp $
+ * $Id: AxisDataService_v06.java,v 1.7 2004/10/25 00:49:17 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,9 +16,9 @@ import org.apache.axis.AxisFault;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.axisdataserver.v05.QueryStatusSoapyBean;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
+import org.astrogrid.datacenter.query.Adql074Writer;
 import org.astrogrid.datacenter.query.AdqlQueryMaker;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.query.Query2Adql074;
 import org.astrogrid.datacenter.query.SqlQueryMaker;
 import org.astrogrid.datacenter.service.AxisDataServer;
 import org.astrogrid.slinger.TargetIndicator;
@@ -36,6 +36,13 @@ import org.astrogrid.status.ServiceStatus;
 
 public class AxisDataService_v06 implements ServiceLifecycle {
    
+   
+   AxisDataServer server = new AxisDataServer();
+   
+   /** Called by Axis when the service needs to be initialised. Not actuall of
+    * much use, as it only gets called through Axis, and other servlet/JSP access
+    * won't do that
+    */
    public void init(Object context) throws ServiceException {
       if (context instanceof javax.xml.rpc.server.ServletEndpointContext) {
          javax.xml.rpc.server.ServletEndpointContext secontext = (javax.xml.rpc.server.ServletEndpointContext) context;
@@ -45,9 +52,6 @@ public class AxisDataService_v06 implements ServiceLifecycle {
    
    public void destroy() {
    }
-   
-   
-   AxisDataServer server = new AxisDataServer();
    
    /**
     * Ask adql query (blocking request).  Returns results.
@@ -87,7 +91,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
     */
    public String adqlSql2xml(String sql) throws AxisFault {
       try {
-         return Query2Adql074.makeAdql(SqlQueryMaker.makeQuery(sql));
+         return Adql074Writer.makeAdql(SqlQueryMaker.makeQuery(sql), "From SQL: "+sql);
       }
       catch (Throwable e) {
          throw server.makeFault(server.SERVERFAULT, e+", converting SQL "+sql, e);
@@ -220,6 +224,15 @@ public class AxisDataService_v06 implements ServiceLifecycle {
 
 /*
 $Log: AxisDataService_v06.java,v $
+Revision 1.7  2004/10/25 00:49:17  jdt
+Merges from branch PAL_MCH
+
+Revision 1.6.8.2  2004/10/21 19:10:24  mch
+Removed deprecated translators, moved SqlMaker back to server,
+
+Revision 1.6.8.1  2004/10/20 19:09:21  mch
+Added doc on init
+
 Revision 1.6  2004/10/12 21:33:57  mch
 Slight change to error messages
 

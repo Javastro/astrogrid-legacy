@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.4 2004/10/18 13:11:30 mch Exp $
+/*$Id: MetadataTest.java,v 1.5 2004/10/25 00:49:17 jdt Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,10 +11,13 @@
 package org.astrogrid.datacenter.metadata;
 
 import java.io.FileNotFoundException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 import junit.framework.TestCase;
 import org.astrogrid.applications.component.CEAComponentManagerFactory;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.queriers.sql.JdbcPlugin;
+import org.astrogrid.datacenter.DsaDomHelper;
 import org.astrogrid.datacenter.queriers.sql.RdbmsResourcePlugin;
 import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
 import org.astrogrid.util.DomHelper;
@@ -31,12 +34,28 @@ public class MetadataTest extends TestCase {
       SampleStarsPlugin.initConfig();
    }
    
-   public void assertHasAuthorityResource(Document candidate) {
+   /** Checks that the identifiers are there and valid */
+   public void assertIdentifiersOK(Document candidate) {
       
-      //check for authority id
-      Element id = (Element) candidate.getElementsByTagName("Identifier").item(0);
-      assertNotNull("No Identifier tag", id);
-      String authorityId = DomHelper.getValue(id, "AuthorityID");
+      Element[] resources = DsaDomHelper.getChildrenByTagName(candidate.getDocumentElement(), "Resource");
+      for (int r = 0; r < resources.length; r++) {
+         String xsitype = resources[r].getAttribute("xsi:type");
+         Element[] ids = DsaDomHelper.getChildrenByTagName(resources[r], "Identifier");
+         assertTrue("Should only be one identifier tag", ids.length==1);
+
+         for (int i = 0; i < ids.length; i++) {
+            Element id = ids[i];
+            String authId = DomHelper.getValue(id, "AuthorityID");
+            String idConfig = SimpleConfig.getSingleton().getString(VoDescriptionServer.AUTHID_KEY);
+            assertEquals("Authority ID incorrect in Resource type "+xsitype, idConfig, authId);
+
+            String resKey = DomHelper.getValue(id, "ResourceKey");
+            String resConfig = SimpleConfig.getSingleton().getString(VoDescriptionServer.RESKEY_KEY);
+            if (!xsitype.equals("AuthorityType")) {
+               assertTrue("Resource Key is "+resKey+", should start with "+resConfig+" in Resource type "+xsitype, resKey.startsWith(resConfig));
+            }
+         }
+      }
    }
    
    public void assertHasRdbmsResource(Document candidate) {
@@ -52,13 +71,13 @@ public class MetadataTest extends TestCase {
       DomHelper.DocumentToStream(metadata, System.out);
       
       assertNotNull(metadata);
-      assertHasAuthorityResource(metadata);
+      assertIdentifiersOK(metadata);
       assertHasRdbmsResource(metadata);
    }
    
    public void testJdbc() throws Exception {
      
-      SimpleConfig.setProperty(VoResourcePlugin.RESOURCE_PLUGIN_KEY, JdbcPlugin.class.getName());
+      SimpleConfig.setProperty(VoResourcePlugin.RESOURCE_PLUGIN_KEY, RdbmsResourcePlugin.class.getName());
       
       //generate metadata
       Document metaDoc = VoDescriptionServer.getVoDescription();
@@ -67,13 +86,15 @@ public class MetadataTest extends TestCase {
       DomHelper.DocumentToStream(metaDoc, System.out);
       
       assertHasRdbmsResource(metaDoc);
+      assertIdentifiersOK(metaDoc);
     }
 
+    //checks we can get individual resources from the metadata
    public void testGetResouce() throws Exception {
-      SimpleConfig.setProperty(VoResourcePlugin.RESOURCE_PLUGIN_KEY, JdbcPlugin.class.getName());
+      SimpleConfig.setProperty(VoResourcePlugin.RESOURCE_PLUGIN_KEY, RdbmsResourcePlugin.class.getName());
       
-      Element auth = VoDescriptionServer.getAuthorityResource();
-      assertNotNull("No AuthorityType in VOdescription", auth);
+//not required      Element auth = VoDescriptionServer.getAuthorityResource();
+//      assertNotNull("No AuthorityType in VOdescription", auth);
 
       Element rdbms = VoDescriptionServer.getResource("RdbmsMetadata");
       assertNotNull("No RdbmsMetadata in VODescription", rdbms);
@@ -94,13 +115,22 @@ public class MetadataTest extends TestCase {
       assertHasRdbmsResource(resourceDoc);
    }
 
-   public void testCeaResource() throws Throwable {
+   //checks that the document being returned by the CEA Library is OK
+   public void testCeaLibrary() throws Throwable {
       String ceaVoDescription = CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry();
-      //extract the resource elements
       Document ceaDoc = DomHelper.newDocument(ceaVoDescription);
+//      assertIdentifiersOK(ceaDoc);
+   }
+   
+   public void testCeaResource() throws Throwable {
+      SimpleConfig.setProperty(VoResourcePlugin.RESOURCE_PLUGIN_KEY, CeaResourceServer.class.getName());
+      //generate metadata
+      Document metaDoc = VoDescriptionServer.getVoDescription();
+      
+      assertIdentifiersOK(metaDoc);
    }
       
-   public void testMetatdataFileServer() throws Throwable{
+   public void testMetadataFileServer() throws Throwable{
       
       SimpleConfig.setProperty(VoResourcePlugin.RESOURCE_PLUGIN_KEY, FileResourcePlugin.class.getName());
       //get non-existent file
@@ -114,8 +144,10 @@ public class MetadataTest extends TestCase {
       }
       
       SimpleConfig.setProperty(FileResourcePlugin.METADATA_FILE_LOC_KEY, "org/astrogrid/datacenter/metadata/metadata.xml");
-      FileResourcePlugin plugin = (FileResourcePlugin) VoDescriptionServer.createPlugin(FileResourcePlugin.class.getName());
-      assertNotNull(plugin.getVoResources());
+      VoDescriptionServer.clearCache(); //force reload
+      Document metadata = VoDescriptionServer.getVoDescription();
+      assertNotNull(metadata);
+      assertIdentifiersOK(metadata);
    }
    
    public void testMetatdataUrlServer() throws Throwable{
@@ -124,8 +156,14 @@ public class MetadataTest extends TestCase {
       SimpleConfig.setProperty(FileResourcePlugin.METADATA_URL_LOC_KEY, this.getClass().getResource("metadata.xml").toString());
       Document metadata = VoDescriptionServer.getVoDescription();
       assertNotNull(metadata);
+      assertIdentifiersOK(metadata);
    }
 
+   public void testRegistryDates() {
+      Calendar ukcal = new GregorianCalendar(Locale.UK);
+      Calendar uscal = new GregorianCalendar(Locale.US);
+   }
+   
    public static void main(String[] args) {
       junit.textui.TestRunner.run(MetadataTest.class);
    }
@@ -136,6 +174,27 @@ public class MetadataTest extends TestCase {
 
 /*
  $Log: MetadataTest.java,v $
+ Revision 1.5  2004/10/25 00:49:17  jdt
+ Merges from branch PAL_MCH
+
+ Revision 1.4.6.5  2004/10/22 09:13:37  mch
+ Started on Registry GMT dates
+
+ Revision 1.4.6.4  2004/10/20 22:19:19  mch
+ Fix for checking authority type resource key
+
+ Revision 1.4.6.3  2004/10/20 18:12:45  mch
+ CEA fixes, resource tests and fixes, minor navigation changes
+
+ Revision 1.4.6.2  2004/10/19 17:26:27  mch
+ Odd fixes
+
+ Revision 1.4.6.1  2004/10/19 14:01:31  mch
+ Merged other PAL_MCH branches together
+
+ Revision 1.4.4.1  2004/10/19 11:45:02  mch
+ Started fixes to CEA metadata from DSAs
+
  Revision 1.4  2004/10/18 13:11:30  mch
  Lumpy Merge
 

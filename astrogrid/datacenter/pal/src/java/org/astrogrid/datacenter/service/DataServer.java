@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.5 2004/10/06 21:12:17 mch Exp $
+ * $Id: DataServer.java,v 1.6 2004/10/25 00:49:17 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,8 +14,10 @@ import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
+import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.queriers.status.QuerierError;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
+import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.condition.Condition;
 import org.astrogrid.datacenter.returns.ReturnSpec;
@@ -38,6 +40,9 @@ import org.astrogrid.util.DomHelper;
  * Managing the Queriers (each one of which rrepresents one query performed
  * on the database) is delegated to the QuerierManager
  * <p>
+ * @todo Not happy with this being a mix of static and instance methods.  Probably
+ * need a factory/singleton
+ *
  * @author M Hill
  */
 
@@ -64,6 +69,29 @@ public class DataServer
       return SimpleConfig.getProperty("datacenter.name","Unnamed AstroGrid Datacenter");
    }
 
+   
+   /**
+    * Does all the things that need to be done on startup initialisation (as opposed
+    * to one-off in lifetime of data initialisation)
+    */
+   public static void startUp() {
+      log.info("Startup");
+
+      //botch, need a better way of plugging into initialisation stuff
+      if (SimpleConfig.getSingleton().getString(QuerierPluginFactory.QUERIER_PLUGIN_KEY).equals("org.astrogrid.datacenter.queriers.test.SampleStarsPlugin")) {
+         SampleStarsPlugin.initConfig();
+      }
+   }
+   
+   /**
+    * Does all the things that need to be done on shutdown
+    */
+   public static void shutDown() {
+      log.info("Shutdown");
+      querierManager.shutDown();
+   }
+   
+   
    /**
     * Runs a (blocking) ADQL/XML/OM query, outputting the results as votable to the given stream
     */

@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlTest.java,v 1.2 2004/10/18 13:11:30 mch Exp $
+ * $Id: AdqlTest.java,v 1.3 2004/10/25 00:49:17 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -35,7 +35,7 @@ public class AdqlTest extends TestCase   {
    
    public void roundParse(Element fileAdqlDom) throws Exception {
       Query query = AdqlXml074Parser.makeQuery(fileAdqlDom);
-      String writtenAdql = Query2Adql074.makeAdql(query);
+      String writtenAdql = Adql074Writer.makeAdql(query);
       Element writtenAdqlDom = DomHelper.newDocument(writtenAdql).getDocumentElement();
       System.out.print(writtenAdql);
       new AdqlTestHelper().assertElementsEqual(fileAdqlDom, writtenAdqlDom);
@@ -58,6 +58,12 @@ public class AdqlTest extends TestCase   {
 
 /*
  $Log: AdqlTest.java,v $
+ Revision 1.3  2004/10/25 00:49:17  jdt
+ Merges from branch PAL_MCH
+
+ Revision 1.2.6.1  2004/10/21 19:10:24  mch
+ Removed deprecated translators, moved SqlMaker back to server,
+
  Revision 1.2  2004/10/18 13:11:30  mch
  Lumpy Merge
 

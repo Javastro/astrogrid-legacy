@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.4 2004/10/20 08:10:55 pah Exp $
+/*$Id: DatacenterApplication.java,v 1.5 2004/10/25 00:49:17 jdt Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,8 @@ package org.astrogrid.datacenter.service.v06;
 
 import EDU.oswego.cs.dl.util.concurrent.Executor;
 import java.io.IOException;
+import java.io.StringWriter;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.AbstractApplication;
@@ -29,16 +31,15 @@ import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.AdqlQueryMaker;
 import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
-import org.astrogrid.datacenter.query.condition.Condition;
-import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.datacenter.service.DataServer;
+import org.astrogrid.slinger.StreamTarget;
 import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.slinger.WriterTarget;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.xml.sax.SAXException;
-import javax.xml.parsers.ParserConfigurationException;
-import org.astrogrid.datacenter.query.QueryException;
 
 /** Represents a query running against the datacenter.
  * <p />
@@ -75,6 +76,8 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
     /** id allocated by datacenter to this querier */
     protected String querierID;
+    
+    public String getQuerierId() { return querierID;   }
     
     /** construct a query from the contents of the tool
      * (mch) not entirely happy with this following changes to Query that include
@@ -113,7 +116,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
     public boolean execute() throws CeaException {
         createAdapters();
         try {
-            TargetIndicator ti = CEATargetIndicator.newInstance();
+            TargetIndicator ti = CEATargetIndicator.makeIndicator((DatacenterParameterAdapter) findOutputParameterAdapter(DatacenterApplicationDescription.RESULT));
             String resultsFormat = (String)findInputParameterAdapter(DatacenterApplicationDescription.FORMAT).process();
             Query query = buildQuery(getApplicationInterface());
             query.getResultsDef().setTarget(ti);
@@ -171,6 +174,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
            
        } else if (state.equals(QueryState.RUNNING_RESULTS)) {
            this.setStatus(Status.WRITINGBACK);
+          /*
            final ParameterAdapter result = (ParameterAdapter)outputParameterAdapters().next();
            //necessary to perform write-back in separate thread - as we don't know what thread is calling this callback
            // and it mustn't be the same one as is going to write out the output - otherwise we'll deadlock on the pipe.
@@ -190,7 +194,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
            }catch (InterruptedException e) {
                reportMessage("couldn't start worker thread to read results");
            }
-               
+           */
        } else if (state.equals(QueryState.ABORTED)) {
            this.reportMessage(qs.toString());
             this.setStatus(Status.ERROR); // this is the convention.
@@ -199,18 +203,26 @@ public class DatacenterApplication extends AbstractApplication implements Querie
            this.reportError(qs.toString()); // sets us in error state.
            
        } else if (state.equals(QueryState.FINISHED)) {
-           // dataserver has finished, but application hasn't until all data is writtenBack.
-           // at this point dataServer has finished writing back down our pipe -  so we can close the output stream (if dataserver hasn't already
-           // this frees the worker thread, which will then complete.
-           try {
-               CEATargetIndicator ti = (CEATargetIndicator)querier.getQuery().getTarget();
-               ti.getWriter().close();
-           } catch (IOException e) {
-               // probably already happened then
-               reportMessage("coudln't close pipe" + e.getMessage());
-           }
-           // we report this, but don't consider the application complete until it finishes its writing back thread
-           //this.setStatus(Status.COMPLETED);
+          //if the output parameter indicates that the results are to be written to a string, then
+          //now that the query is finished we can set the internal value of that parameter to the
+          //string that contains the results, from a StringWriter created as part of
+          //CEATargetIndicator.makeIndicator
+         DatacenterParameterAdapter result = (DatacenterParameterAdapter) findOutputParameterAdapter(DatacenterApplicationDescription.RESULT);
+          if (result.getExternalValue() == null) {
+             WriterTarget target = (WriterTarget) querier.getQuery().getTarget();
+             StringWriter sw = (StringWriter) target.resolveWriter(acc);
+             result.setInternalValue(sw.toString() );
+          }
+          else {
+             try {
+                StreamTarget target = (StreamTarget) querier.getQuery().getTarget();
+                target.resolveStream(acc).close();
+             }
+             catch (IOException ioe) {
+                logger.error(ioe+" closing StreamTarget");
+             }
+          }
+           this.setStatus(Status.COMPLETED);
            this.reportMessage(qs.toString());
            
        } else if (state.equals(QueryState.UNKNOWN)) {
@@ -240,6 +252,15 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
 $Log: DatacenterApplication.java,v $
+Revision 1.5  2004/10/25 00:49:17  jdt
+Merges from branch PAL_MCH
+
+Revision 1.3.8.1  2004/10/20 18:12:45  mch
+CEA fixes, resource tests and fixes, minor navigation changes
+
+Revision 1.4.2.1  2004/10/20 12:43:28  mch
+Fixes to CEA interface to write directly to target
+
 Revision 1.4  2004/10/20 08:10:55  pah
 taken account of new backend phase and tidied up some logging
 

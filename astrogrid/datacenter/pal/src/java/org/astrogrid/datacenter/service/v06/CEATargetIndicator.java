@@ -1,4 +1,4 @@
-/*$Id: CEATargetIndicator.java,v 1.2 2004/10/06 21:12:17 mch Exp $
+/*$Id: CEATargetIndicator.java,v 1.3 2004/10/25 00:49:17 jdt Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,9 +11,10 @@
 package org.astrogrid.datacenter.service.v06;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.channels.Channels;
-import java.nio.channels.Pipe;
+import java.io.StringWriter;
+import org.astrogrid.applications.parameter.protocol.InaccessibleExternalValueException;
+import org.astrogrid.slinger.StreamTarget;
+import org.astrogrid.slinger.TargetIndicator;
 import org.astrogrid.slinger.WriterTarget;
 
 /**Extended TargetIndirector, that redirects results of query into cea framework.
@@ -26,30 +27,36 @@ import org.astrogrid.slinger.WriterTarget;
  * @todo check pipe limits, etc
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Jul-2004
  *
+ * MCH: was hanging on one of the pipe threads so have switched it about so datacenter writes to it and the results go straight
+ * to pipe (rather than through an extra thread and double pipe).  datacenter doesn't close targets anyway.
+ *
  */
-public class CEATargetIndicator extends WriterTarget {
+public abstract class CEATargetIndicator extends TargetIndicator  {
+   
+   public static TargetIndicator makeIndicator(DatacenterParameterAdapter resultsTarget) throws IOException, InaccessibleExternalValueException {
+      if (resultsTarget.getExternalValue() != null) {
+         return new StreamTarget(resultsTarget.getExternalValue().write());
+      }
+      else {
+         return new WriterTarget(new StringWriter());
+      }
+   }
 
-    /** need to have a factory method*/
-    public static CEATargetIndicator newInstance() throws IOException {
-        Pipe pipe = Pipe.open();
-        return new CEATargetIndicator(pipe);
-    }
-
-    private CEATargetIndicator(Pipe pipe) throws IOException {
-        super(Channels.newWriter(pipe.sink(),"UTF-8"));
-        this.pipe = pipe;
-    }
-    protected final Pipe pipe;
-    public InputStream getStream() {
-        return Channels.newInputStream(pipe.source());
-    }
-    
     
 }
 
 
 /*
 $Log: CEATargetIndicator.java,v $
+Revision 1.3  2004/10/25 00:49:17  jdt
+Merges from branch PAL_MCH
+
+Revision 1.2.8.1  2004/10/20 18:12:45  mch
+CEA fixes, resource tests and fixes, minor navigation changes
+
+Revision 1.2.10.1  2004/10/20 12:43:28  mch
+Fixes to CEA interface to write directly to target
+
 Revision 1.2  2004/10/06 21:12:17  mch
 Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

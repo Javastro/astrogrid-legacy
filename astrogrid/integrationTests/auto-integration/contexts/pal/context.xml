@@ -6,5 +6,38 @@
            value="@CONFIGPATH@/AstroGridConfig.properties"/>
 
   <Environment name="cea.filestore.basedir" override="false" type="java.lang.String" value="@WORKDIR@/cea/dsa/store" />
+  <Environment name="datacenter.cea.app.name" override="false" type="java.lang.String" value="@REGAUTHORITY@/testdsa" />
+
+  <Environment name="datacenter.name" override="false" type="java.lang.String" value="SampleStars Auto-Integration Datacenter" />
+
+  <!-- Configure to connect to SampleStars -->
+  <!-- <Environment name="datacenter.resource.plugin" override="false" type="java.lang.String" value="org.astrogrid.datacenter.metadata.AuthorityConfigPlugin" /> -->
+  <Environment name="datacenter.resource.plugin" override="false" type="java.lang.String" value="org.astrogrid.datacenter.queriers.test.SampleStarsMetaServer" />
+
+  <Environment name="datacenter.querier.plugin" override="false" type="java.lang.String" value="org.astrogrid.datacenter.queriers.test.SampleStarsPlugin" />
+
+  <Environment name="datacenter.sql.maxreturn" override="false" type="java.lang.Integer" value="2000"/>
+
+  <Environment name="conesearch.table" override="false" type="java.lang.String" value="SampleStars"/>
+  <Environment name="conesearch.ra.column" override="false" type="java.lang.String" value="RA"/>
+  <Environment name="conesearch.dec.column" override="false" type="java.lang.String" value="DEC"/>
+  <Environment name="conesearch.column.units" override="false" type="java.lang.String" value="deg"/>
+
+  <Environment name="datacenter.implements.circle" override="false" type="java.lang.Boolean" value="true"/>
+  <Environment name="datacenter.implements.xmatch" override="false" type="java.lang.Boolean" value="false"/>
+
+  <!-- Registry stuff -->
+  <Environment name="datacenter.authorityId" override="false" type="java.lang.String" value="@REGAUTHORITY@"/>
+  <Environment name="datacenter.resourceKey" override="false" type="java.lang.String" value="testdsa"/>
+
+  <Environment name="datacenter.shortname" override="false" type="java.lang.String" value="SampleStars"/>
+  <Environment name="datacenter.description" override="false" type="java.lang.String" value="Test 'samplestars' rdbms datacenter for the Astrogrid auto integration tests "/>
+  <Environment name="datacenter.url" override="false" type="java.lang.String" value="@TOMCATROOT@/astrogrid-pal-SNAPSHOT/"/>
+   
+  <Environment name="datacenter.publisher" override="false" type="java.lang.String" value="AstroGrid"/>
+
+  <Environment name="datacenter.contact.name" override="false" type="java.lang.String" value="Martin"/>
+  <Environment name="datacenter.contact.email" override="false" type="java.lang.String" value="mch@roe.ac.uk"/>
+  <Environment name="datacenter.contact.date" override="false" type="java.lang.String" value="Oct 04"/>
 
 </Context>

@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsMetaServer.java,v 1.4 2004/10/12 23:09:53 mch Exp $
+ * $Id: SampleStarsMetaServer.java,v 1.5 2004/10/25 00:49:17 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,6 +12,7 @@ import org.astrogrid.config.Config;
 import org.astrogrid.config.ConfigException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.metadata.AuthorityConfigPlugin;
+import org.astrogrid.datacenter.metadata.CeaResourceServer;
 import org.astrogrid.datacenter.metadata.FileResourcePlugin;
 import org.astrogrid.datacenter.metadata.VoResourcePlugin;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
@@ -49,11 +50,16 @@ public class SampleStarsMetaServer extends FileResourcePlugin
     * Initialises config so that authority ID, etc are set
     */
    public static void initConfig() {
+
+      //bear in mind that this is only called when SampleStarsPlugin is called,
+      //so getmetadata may fail if called beforehand
+      
       //configure so it looks for itself
       SimpleConfig.getSingleton().setProperties(VoResourcePlugin.RESOURCE_PLUGIN_KEY, new Object[] {
-               SampleStarsMetaServer.class.getName(),
                AuthorityConfigPlugin.class.getName(),
-               TabularSkyServicePlugin.class.getName()
+               SampleStarsMetaServer.class.getName(),
+               TabularSkyServicePlugin.class.getName(),
+               CeaResourceServer.class.getName()
             });
 
       
@@ -63,7 +69,7 @@ public class SampleStarsMetaServer extends FileResourcePlugin
       SimpleConfig.setProperty("datacenter.publisher", "AstroGrid");
       SimpleConfig.setProperty("datacenter.description", "An unconfigured datacenter; it contains two tables of sample stars and galaxies for testing and demonstration purposes.");
       SimpleConfig.setProperty("datacenter.contact.name", "Martin Hill");
-      SimpleConfig.setProperty("datacenter.contact.name", "mch@roe.ac.uk");
+      SimpleConfig.setProperty("datacenter.contact.email", "mch@roe.ac.uk");
 
       SimpleConfig.setProperty("datacenter.authorityId", "astrogrid.org");
       SimpleConfig.setProperty("datacenter.resourceKey", "pal-sample");

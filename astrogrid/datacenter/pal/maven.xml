@@ -7,8 +7,6 @@
 <property name="implementations.dir" location="${basedir}/../implementations" />
 <property name="working.dir" location="${basedir}/target/tmp" />
 
-<goal name="pal" prereqs="astrogrid-clean,astrogrid-build-artifact" />
-
 
 <!-- standard astrogrid goals -->
 <goal name="astrogrid-install-artifact" prereqs="jar:install,war:install" />

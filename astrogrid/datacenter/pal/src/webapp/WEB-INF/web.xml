@@ -11,7 +11,13 @@
     SOAP service that publishes a data set to AstroGrid.
   </description>
 
- 
+   <!-- Class to listen out to container events (ie startup, shutdown) -->
+   <!-- This doesn't work on tomcat 4.0...
+   <listener>
+        <listener-class>org.astrogrid.datacenter.servlet.ContainerListener</listener-class>
+    </listener>
+    -->
+     
   <servlet>
     <servlet-name>AxisServlet</servlet-name>
     <display-name>Apache-Axis Servlet</display-name>

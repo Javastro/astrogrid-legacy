@@ -1,12 +1,43 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- tomcat-5 specific deployment descriptor - can be used to configure environment, loggers, etc -->
 <Context path="/astrogrid-pal-cds-SNAPSHOT">
- <Environment name="datacenter.querier.catalogueName" override="false" type="java.lang.String" value="Dixon" />
- <Environment name="datacenter.querier.metadata" override="false" type="java.lang.String" value="FALSE" />
- <Environment name="datacenter.querier.plugin" override="false" type="java.lang.String" value="org.astrogrid.datacenter.cds.querier.VizierQuerierPlugin" />
+
+ <Environment name="datacenter.name" override="false" type="java.lang.String" value="CDS/Vizier Proxy Datacenter" />
+
  <Environment name="org.astrogrid.config.url" override="false" type="java.lang.String"
            value="@CONFIGPATH@/AstroGridConfig.properties"/>
+
  <!-- setup of cea interface for this dsa -->
  <Environment name="cea.filestore.basedir" override="false" type="java.lang.String" value="@WORKDIR@/cea/dsa-cec/store" />
  <Environment name="datacenter.cea.app.name" override="false" type="java.lang.String" value="@REGAUTHORITY@/cds_dsa" />
+ 
+  <!-- Configure to use Vizier Proxy -->
+  <Environment name="datacenter.querier.plugin" override="false" type="java.lang.String" value="org.astrogrid.datacenter.cds.querier.VizierQuerierPlugin" />
+  <Environment name="datacenter.querier.catalogueName" override="false" type="java.lang.String" value="Dixon" />
+  <Environment name="datacenter.querier.metadata" override="false" type="java.lang.String" value="FALSE" />
+
+  <Environment name="datacenter.resource.plugin" override="false" type="java.lang.String" value="org.astrogrid.datacenter.cds.VizierResourcePlugin" />
+
+  <Environment name="conesearch.table" override="false" type="java.lang.String" value="SampleStars"/>
+  <Environment name="conesearch.ra.column" override="false" type="java.lang.String" value="RA"/>
+  <Environment name="conesearch.dec.column" override="false" type="java.lang.String" value="DEC"/>
+  <Environment name="conesearch.column.units" override="false" type="java.lang.String" value="deg"/>
+
+  <Environment name="datacenter.implements.circle" override="false" type="java.lang.Boolean" value="true"/>
+  <Environment name="datacenter.implements.xmatch" override="false" type="java.lang.Boolean" value="false"/>
+
+  <!-- Registry stuff -->
+  <Environment name="datacenter.authorityId" override="false" type="java.lang.String" value="@REGAUTHORITY@"/>
+  <Environment name="datacenter.resourceKey" override="false" type="java.lang.String" value="cds_dsa"/>
+
+  <Environment name="datacenter.shortname" override="false" type="java.lang.String" value="VizierProxy"/>
+  <Environment name="datacenter.description" override="false" type="java.lang.String" value="Provides IVO access to Vizier data"/>
+  <Environment name="datacenter.url" override="false" type="java.lang.String" value="@TOMCATROOT@/astrogrid-pal-cds-SNAPSHOT/"/>
+   
+  <Environment name="datacenter.publisher" override="false" type="java.lang.String" value="AstroGrid"/>
+
+  <Environment name="datacenter.contact.name" override="false" type="java.lang.String" value="Martin"/>
+  <Environment name="datacenter.contact.email" override="false" type="java.lang.String" value="mch@roe.ac.uk"/>
+  <Environment name="datacenter.contact.date" override="false" type="java.lang.String" value="Oct 04"/>
+
 </Context>

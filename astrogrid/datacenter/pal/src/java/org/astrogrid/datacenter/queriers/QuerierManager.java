@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.6 2004/10/05 19:20:32 mch Exp $
+/*$Id: QuerierManager.java,v 1.7 2004/10/25 00:49:17 jdt Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,9 +12,9 @@ package org.astrogrid.datacenter.queriers;
 
 import java.io.IOException;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.TreeSet;
-import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.queriers.Querier;
@@ -280,6 +280,23 @@ public class QuerierManager implements QuerierListener {
    }
    
    
+   /** Shut down - abort all running queries */
+   public void shutDown() {
+      //so no new ones start while we shut down
+      queuedQueriers.clear();
+      queuedPriorities.clear();
+      
+      QuerierStatus[] running = getRunning();
+      for (int i = 0; i < running.length; i++) {
+         Querier q = getQuerier(running[i].getId());
+         try {
+            q.abort();
+         }
+         catch (Throwable th) {
+            //ignore
+         }
+      }
+   }
    
    
    
@@ -288,6 +305,12 @@ public class QuerierManager implements QuerierListener {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.7  2004/10/25 00:49:17  jdt
+ Merges from branch PAL_MCH
+
+ Revision 1.6.10.1  2004/10/20 19:42:03  mch
+ Added context listener and initalisation code
+
  Revision 1.6  2004/10/05 19:20:32  mch
  Queuing order
 

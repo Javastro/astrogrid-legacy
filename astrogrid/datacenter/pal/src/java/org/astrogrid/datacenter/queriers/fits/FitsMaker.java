@@ -1,4 +1,4 @@
-/*$Id: FitsMaker.java,v 1.2 2004/10/06 21:12:17 mch Exp $
+/*$Id: FitsMaker.java,v 1.3 2004/10/25 00:49:17 jdt Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,10 @@
 **/
 package org.astrogrid.datacenter.queriers.fits;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -22,14 +24,12 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.query.Adql074Writer;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.query.Query2Adql074;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Element;
-import java.io.IOException;
 import org.xml.sax.SAXException;
-import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * Creates XML from the query using transformation sheets
@@ -47,7 +47,7 @@ public class FitsMaker {
       Element adql = null;
       //get the ADQL from the query
       try {
-         adql = DomHelper.newDocument(Query2Adql074.makeAdql(query, null)).getDocumentElement();
+         adql = DomHelper.newDocument(Adql074Writer.makeAdql(query)).getDocumentElement();
       }
       catch (SAXException e) {
          throw new RuntimeException("Query2Adql074 procuced invalid XML from query "+query,e);
@@ -167,6 +167,12 @@ public class FitsMaker {
 
 /*
 $Log: FitsMaker.java,v $
+Revision 1.3  2004/10/25 00:49:17  jdt
+Merges from branch PAL_MCH
+
+Revision 1.2.8.1  2004/10/21 19:10:24  mch
+Removed deprecated translators, moved SqlMaker back to server,
+
 Revision 1.2  2004/10/06 21:12:17  mch
 Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

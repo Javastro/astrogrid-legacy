@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitCone.java,v 1.3 2004/10/07 10:34:44 mch Exp $
+ * $Id: SubmitCone.java,v 1.4 2004/10/25 00:49:17 jdt Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -66,6 +66,7 @@ public class SubmitCone extends StdServlet {
                "<html>"+
                "<head><title>Submitting Query</title></head>"+
                "<body>");
+            response.getWriter().flush();
 
             String id = server.submitQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(ra, dec, sr, tableDef));
       
@@ -76,6 +77,7 @@ public class SubmitCone extends StdServlet {
             //redirect to status
             response.getWriter().write("<META HTTP-EQUIV='Refresh' CONTENT='0;URL="+statusUrl+"?ID="+id+"'>"+
                                       "</body></html>");
+            response.getWriter().flush();
          }
       }
       catch (Throwable th) {

@@ -1,4 +1,4 @@
-/*$Id: AxisDataService05QueryTest.java,v 1.4 2004/10/18 13:11:30 mch Exp $
+/*$Id: AxisDataService05QueryTest.java,v 1.5 2004/10/25 00:49:17 jdt Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,9 +17,9 @@ import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.metadata.FileResourcePlugin;
 import org.astrogrid.datacenter.queriers.sql.SqlPluginTest;
 import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
+import org.astrogrid.datacenter.query.Adql074Writer;
 import org.astrogrid.datacenter.query.AdqlQueryMaker;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.query.Query2Adql074;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
@@ -48,7 +48,7 @@ public class AxisDataService05QueryTest extends ServerTestCase {
 //       Query query2 = AdqlQueryMaker.makeQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-3.xml"));
        
 
-        String results = server.askAdqlQuery(Query2Adql074.makeAdql(query1), "VOTABLE");
+        String results = server.askAdqlQuery(Adql074Writer.makeAdql(query1), "VOTABLE");
         Document doc = DomHelper.newDocument(results);
         assertIsVotableResultsResponse(doc);
     }
@@ -65,7 +65,7 @@ public class AxisDataService05QueryTest extends ServerTestCase {
        
        Query query1 = AdqlQueryMaker.makeQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-1.xml"));
 
-       String qid = server.submitAdqlQuery(Query2Adql074.makeAdql(query1), "null", "VOTABLE");
+       String qid = server.submitAdqlQuery(Adql074Writer.makeAdql(query1), "null", "VOTABLE");
        assertNotNull(qid);
        server.abortQuery(qid);
 
@@ -98,6 +98,12 @@ public class AxisDataService05QueryTest extends ServerTestCase {
 
 /*
 $Log: AxisDataService05QueryTest.java,v $
+Revision 1.5  2004/10/25 00:49:17  jdt
+Merges from branch PAL_MCH
+
+Revision 1.4.6.1  2004/10/21 19:10:24  mch
+Removed deprecated translators, moved SqlMaker back to server,
+
 Revision 1.4  2004/10/18 13:11:30  mch
 Lumpy Merge
 

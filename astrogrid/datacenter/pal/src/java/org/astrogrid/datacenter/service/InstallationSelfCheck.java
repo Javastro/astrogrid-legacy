@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.12 2004/10/18 13:11:30 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.13 2004/10/25 00:49:17 jdt Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,9 +25,9 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.delegate.ConeSearcher;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.metadata.VoDescriptionServer;
-import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
+import org.astrogrid.datacenter.queriers.sql.SqlMaker;
 import org.astrogrid.datacenter.query.AdqlQueryMaker;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
@@ -87,7 +87,7 @@ public class InstallationSelfCheck extends TestCase {
       String adql = "<?xml version='1.0' encoding='utf-8'?>"+
                      "<Select xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://www.ivoa.net/xml/ADQL/v0.7.4'>"+
                      "  <SelectionList> <Item xsi:type='allSelectionItemType' /> </SelectionList>"+
-                     "  <From> <Table xsi:type='tableType' Name='SampleStars' Alias='s' />  </From>"+
+                     "  <From> <Table xsi:type='tableType' Name='"+SimpleConfig.getSingleton().getString(SqlMaker.CONE_SEARCH_TABLE_KEY)+"' Alias='s' />  </From>"+
                      "</Select>";
 
       server.askQuery(Account.ANONYMOUS, AdqlQueryMaker.makeQuery(adql, TargetIndicator.makeIndicator(new NullWriter()), ReturnTable.CSV));
@@ -184,6 +184,12 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.13  2004/10/25 00:49:17  jdt
+ Merges from branch PAL_MCH
+
+ Revision 1.12.6.1  2004/10/21 16:14:21  mch
+ Changes to take home
+
  Revision 1.12  2004/10/18 13:11:30  mch
  Lumpy Merge
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Adql074Writer.java,v 1.2 2004/10/18 13:30:03 mch Exp $
+ * $Id: Adql074Writer.java,v 1.3 2004/10/25 00:49:17 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,10 +10,10 @@ import org.astrogrid.datacenter.query.condition.*;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import org.astrogrid.datacenter.returns.ReturnSpec;
-import org.astrogrid.datacenter.returns.ReturnTable;
+import java.io.Writer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.io.xml.XmlPrinter;
 import org.astrogrid.io.xml.XmlTagPrinter;
 
@@ -34,24 +34,26 @@ public class Adql074Writer  {
    
    /** Convenience routine */
    public static String makeAdql(Query query) throws IOException {
-      return new Adql074Writer(query).write(null);
+      return makeAdql(query, null);
    }
 
    /** Convenience routine */
    public static String makeAdql(Query query, String comment) throws IOException {
-      return new Adql074Writer(query).write(comment);
+      StringWriter sw = new StringWriter();
+      new Adql074Writer(query).write(sw, comment);
+      return sw.toString();
    }
 
+   /** Construct writer for a given query.   */
    public Adql074Writer(Query queryToWrite) {
       this.query = queryToWrite;
    }
    
-   public String write(String comment) throws IOException {
-
+   /** Writes an ADQL 0.7.4 representation of the query, including the given comment if any */
+   public void write(Writer out, String comment) throws IOException {
       log.debug("Making ADQL from "+query.toString());
       
-      StringWriter sw = new StringWriter();
-      XmlPrinter xw = new XmlPrinter(sw, true);
+      XmlPrinter xw = new XmlPrinter(out, true);
       xw.writeComment("ADQL generated from: "+query);
       if (comment != null) { xw.writeComment(comment); }
       
@@ -114,9 +116,9 @@ public class Adql074Writer  {
          
       }
       //-- tidy up --
-      selectTag.close();
+      xw.close();
       
-      return sw.toString();
+      out.flush();
    }
    
 
@@ -225,7 +227,7 @@ public class Adql074Writer  {
    }
 
    /** Writes out the adql for a circle/cone search */
-   public void writeCircle(XmlTagPrinter parentTag, String elementName, Function circleFunc) throws IOException  {
+   private void writeCircle(XmlTagPrinter parentTag, String elementName, Function circleFunc) throws IOException  {
       XmlTagPrinter tTag = parentTag.newTag(elementName, new String[] { "xsi:type='regionSearchType'" });
       XmlTagPrinter regionTag = tTag.newTag("Region", new String[] { "xmlns:q1='urn:nvo-region'","xsi:type='q1:circleType'","coord_system_id=''"});
 
@@ -247,7 +249,7 @@ public class Adql074Writer  {
    }
    
    /** Writes out the adql for a general numeric function */
-   public void writeFunction(XmlTagPrinter parentTag, String elementName, Function function) throws IOException {
+   private void writeFunction(XmlTagPrinter parentTag, String elementName, Function function) throws IOException {
       String type = null;
       String name = function.getName().toUpperCase();
       if (aggregateFuncs.indexOf(" "+name+" ")>-1) {
@@ -280,7 +282,7 @@ public class Adql074Writer  {
    
    /** Writes out the ADQL tag for the given column as a child of the given parentTag with
     * the given elementName */
-   public void writeColRef(XmlTagPrinter parent, String elementName, ColumnReference colRef) throws IOException {
+   private void writeColRef(XmlTagPrinter parent, String elementName, ColumnReference colRef) throws IOException {
 
       String tableName = colRef.getTableName();
       //replace with alias is there is one
@@ -300,6 +302,12 @@ public class Adql074Writer  {
 
 /*
  $Log: Adql074Writer.java,v $
+ Revision 1.3  2004/10/25 00:49:17  jdt
+ Merges from branch PAL_MCH
+
+ Revision 1.2.6.1  2004/10/21 19:10:24  mch
+ Removed deprecated translators, moved SqlMaker back to server,
+
  Revision 1.2  2004/10/18 13:30:03  mch
  Lumpy Merge
 

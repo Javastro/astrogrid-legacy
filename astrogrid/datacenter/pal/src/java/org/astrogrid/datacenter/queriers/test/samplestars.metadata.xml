@@ -2,6 +2,10 @@
 <!-- Note that this is in TWO places - in the classes directory for deployment, and
 also the package with SampleStarsMetaServer in, for unit tests -->
 <Resource xsi:type="RdbmsMetadata">
+   <Identifier>
+      <AuthorityID>test.astrogrid.org</AuthorityID>
+      <ResourceKey>pal-samplestars/rdbms</ResourceKey>
+   </Identifier>
    <ProductName>HSQL Database Engine</ProductName>
    <Version>1.7.1</Version>
    <Driver>HSQL Database Engine Driver v1.7.1</Driver>

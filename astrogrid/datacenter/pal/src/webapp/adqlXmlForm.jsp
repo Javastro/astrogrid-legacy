@@ -8,8 +8,7 @@
 <head>
 <title>Query Form for <%=DataServer.getDatacenterName() %> </title>
 <style type="text/css" media="all">
-          @import url("./style/maven-base.css");
-          @import url("./style/maven-theme.css");
+          @import url("./style/astrogrid.css");
 </style>
 </title>
 </head>

@@ -107,7 +107,7 @@ Parameter names in this request:
       
    }
    //build up list of search tables - ie the scope
-   //this consists of any tables in both searchCols and resultCols
+   //this consists of any tables in either searchCols and resultCols
    Vector searchTables = new Vector();
    for (int i = 0; i < searchCols.length; i++) {
       if (searchCols[i].indexOf(".") >-1) {
@@ -122,25 +122,27 @@ Parameter names in this request:
 
    //build up list of output columns
    Vector outColRefs = new Vector();
-   for (int i = 0; i < resultCols.length; i++) {
-      String colRef = resultCols[i];
-      if ((colRef != null) && (colRef.length() >0)) {
-         String tableName = "";
-         String colName = "";
-         if (colRef.indexOf(".")==-1) {
-            colName = colRef;
+   if (!resultCols[0].trim().equals("*")) { //if it's not a 'select *'
+      for (int i = 0; i < resultCols.length; i++) {
+         String colRef = resultCols[i];
+         if ((colRef != null) && (colRef.length() >0)) {
+            String tableName = "";
+            String colName = "";
+            if (colRef.indexOf(".")==-1) {
+               colName = colRef;
+            }
+            else {
+               //split table/column
+               tableName = colRef.substring(0, colRef.indexOf("."));
+               colName = colRef.substring(colRef.indexOf(".")+1);
+            }
+            outColRefs.add(new ColumnReference(tableName, colName));
+   
+            if (!searchTables.contains(tableName)) {
+               searchTables.add(tableName);
+            }
+   
          }
-         else {
-            //split table/column
-            tableName = colRef.substring(0, colRef.indexOf("."));
-            colName = colRef.substring(colRef.indexOf(".")+1);
-         }
-         outColRefs.add(new ColumnReference(tableName, colName));
-
-         if (!searchTables.contains(tableName)) {
-            searchTables.add(tableName);
-         }
-
       }
    }
    ReturnSpec resultsDef = null;
@@ -156,13 +158,13 @@ Parameter names in this request:
    String adqlXml = "";
    String comment = "Generated from queryBuilder '"+request.getRequestURI()+"'"; //doesn't give complete URL... :-(
    if (request.getParameter("MakeAdql074") != null) {
-      adqlXml = Query2Adql074.makeAdql(query, comment);
+      adqlXml = Adql074Writer.makeAdql(query, comment);
    }
 //   else if (request.getParameter("MakeAdql05") != null) {
 //      adqlXml = Query2Adql05.makeAdql(query, comment);
 //   }
    else {  //default to makign latest
-      adqlXml = Query2Adql074.makeAdql(query, comment);
+      adqlXml = Adql074Writer.makeAdql(query, comment);
    }
    out.flush();
 

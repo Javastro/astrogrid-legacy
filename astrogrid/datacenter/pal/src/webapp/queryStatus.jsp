@@ -1,6 +1,7 @@
 <%@ page import="java.io.*,
        org.w3c.dom.*,
        java.net.URL,
+       java.util.Date,
        org.astrogrid.io.*,
        org.apache.commons.logging.LogFactory,
        org.astrogrid.community.Account,
@@ -16,8 +17,7 @@
 <html>
 <head><title>Status of Query<%= request.getParameter("ID") %></title>
 <style type="text/css" media="all">
-          @import url("./style/maven-base.css");
-          @import url("./style/maven-theme.css");
+          @import url("./style/astrogrid.css");
 </style>
 </head>
 <body>
@@ -32,7 +32,9 @@
       QuerierStatus status = server.getQueryStatus(Account.ANONYMOUS, queryId);
 %>
 <h1>Status of Query <%=ServletHelper.makeSafeForHtml(queryId) %></h1>
-
+<p>at <%= new Date() %>
+</p>
+         
 <%   if (status == null) { %>
          <b>No Query found for that ID</b>
 <%   } %>

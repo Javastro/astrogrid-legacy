@@ -1,4 +1,4 @@
-<%@ page import="org.astrogrid.datacenter.service.DataServer"
+<%@ page import="org.astrogrid.datacenter.service.DataServer, org.astrogrid.config.SimpleConfig"
    isThreadSafe="false"
    session="false"
 %>
@@ -20,17 +20,20 @@
 
 <h1>Welcome</h1>
 <p>
-Welcome to PAL - the Publisher's Astrogrid Library.  This is a standard AstroGrid
-datacenter interface to publish a set of data to the Virtual Observatory.
+Welcome to the PAL interface to <%=DataServer.getDatacenterName() %>.  PAL is the
+Publisher's Astrogrid Library and gives Virtual Observatory compliant access to
+this dataset.
 </p>
-<p> To query that data using this interface, go to the 'Ask Query' on the left.
+<p> To query this data directly, you can use the 'Ask Query' on the left.
 </p>
-
+<h2><%=DataServer.getDatacenterName() %></h2>
+<p><%= SimpleConfig.getSingleton().getString("datacenter.description","(No description given)") %>
+</p>
 <h1>Install Notes</h1>
 <p>
 If you have just installed PAL, then you can now run some
 <a href="self-test.jsp">self-tests</a> to run diagnostics, or
-read how to <a href="configuration.html">configure</a> your datacenter.
+read how to <a href="docs/configure.jsp">configure</a> your datacenter.
 </p>
 
 </body>

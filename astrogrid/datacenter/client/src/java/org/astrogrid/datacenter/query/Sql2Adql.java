@@ -1,5 +1,5 @@
 /*
- * $Id: Sql2Adql.java,v 1.2 2004/10/18 13:11:30 mch Exp $
+ * $Id: Sql2Adql.java,v 1.3 2004/10/25 00:49:17 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,13 +7,6 @@
 package org.astrogrid.datacenter.query;
 
 import java.io.IOException;
-import java.io.InputStream;
-import javax.xml.parsers.ParserConfigurationException;
-import org.astrogrid.datacenter.queriers.sql.StdSqlMaker;
-import org.astrogrid.slinger.TargetIndicator;
-import org.astrogrid.util.DomHelper;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 /**
  * Convenience class for converting ADQL/SQL to ADQL/XML
@@ -34,6 +27,12 @@ public class Sql2Adql {
 }
 /*
  $Log: Sql2Adql.java,v $
+ Revision 1.3  2004/10/25 00:49:17  jdt
+ Merges from branch PAL_MCH
+
+ Revision 1.2.6.1  2004/10/21 19:10:24  mch
+ Removed deprecated translators, moved SqlMaker back to server,
+
  Revision 1.2  2004/10/18 13:11:30  mch
  Lumpy Merge
 

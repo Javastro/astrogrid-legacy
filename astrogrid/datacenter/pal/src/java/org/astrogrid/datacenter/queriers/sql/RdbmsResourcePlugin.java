@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsResourcePlugin.java,v 1.2 2004/10/08 17:14:22 mch Exp $
+ * $Id: RdbmsResourcePlugin.java,v 1.3 2004/10/25 00:49:17 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,6 +18,7 @@ import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.metadata.VoResourcePlugin;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.io.xml.XmlPrinter;
@@ -49,7 +50,13 @@ public class RdbmsResourcePlugin implements VoResourcePlugin  {
     */
    public String getColumnValue(ResultSet table, String column) {
       try {
-         return table.getString(column);
+         String s = table.getString(column);
+         if (s==null) {
+            return "";
+         }
+         else {
+            return s;
+         }
       }
       catch (SQLException e) {
          return "(Unknown)";
@@ -133,12 +140,16 @@ public class RdbmsResourcePlugin implements VoResourcePlugin  {
 
          XmlTagPrinter metaTag = xw.newTag("Resource", new String[] { "xsi:type='RdbmsMetadata'" });
 
+         VoDescriptionServer.addIdentifier(metaTag, "/rdbms");
+         
          /** Get general info */
          String name = metadata.getDatabaseProductName();
          String version = metadata.getDatabaseProductVersion();
          String driver = metadata.getDriverName()+" v"+metadata.getDriverVersion();
 //         String jdbc = metadata.getJDBCMajorVersion()+"."+metadata.getJDBCMinorVersion();
 
+         metaTag.writeTag("Type", "Catalog"); //for query builder
+         
          metaTag.writeTag("ProductName", name);
          metaTag.writeTag("Version", version);
          metaTag.writeTag("Driver", driver);

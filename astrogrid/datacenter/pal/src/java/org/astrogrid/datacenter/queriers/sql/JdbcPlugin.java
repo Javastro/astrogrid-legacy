@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.7 2004/10/18 13:11:30 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.8 2004/10/25 00:49:17 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
@@ -42,6 +43,9 @@ public class JdbcPlugin extends DefaultPlugin {
    /** Adql -> SQL translator class */
    public static final String SQL_TRANSLATOR = "datacenter.querier.plugin.sql.translator";
    
+   /** execute timeout  */
+   public static final String TIMEOUT = "datacenter.sql.timeout";
+
    /** Connection manager */
    private static JdbcConnections connectionManager = null;
    
@@ -76,14 +80,16 @@ public class JdbcPlugin extends DefaultPlugin {
          jdbcConnection = getJdbcConnection();
          Statement statement = jdbcConnection.createStatement();
          
-         querier.setStatus(new QuerierQuerying(querier.getStatus()));
+//already done above         querier.setStatus(new QuerierQuerying(querier.getStatus()));
+         querier.getStatus().addDetail("Submitted to JDBC at "+new Date());
          
          //execute query
          log.info("Performing Query: " + sql);
+//some problem with this on SSA         statement.setQueryTimeout(SimpleConfig.getSingleton().getInt(TIMEOUT, 30*60)); //default to half an hour
          statement.execute(sql);
-         ResultSet results = statement.getResultSet();
+         querier.getStatus().addDetail("JDBC execution complete at "+new java.util.Date());
 
-         querier.getStatus().addDetail("Finished Query phase at "+new java.util.Date());
+         ResultSet results = statement.getResultSet();
          
          if (!aborted) {
             
@@ -158,5 +164,6 @@ public class JdbcPlugin extends DefaultPlugin {
    
    
 }
+
 
 

@@ -1,5 +1,5 @@
 /*
-   $Id: XmlTagPrinter.java,v 1.5 2004/09/06 20:35:37 mch Exp $
+   $Id: XmlTagPrinter.java,v 1.6 2004/10/25 00:49:17 jdt Exp $
 
    (c) Copyright...
 */
@@ -87,6 +87,7 @@ public class XmlTagPrinter
     */
    public void writeTag(String tag, String value) throws IOException
    {
+      assertTagNameValid(tag);
       closeChild();
       this.writeLine("<"+tag+">"+transformSpecials(value)+"</"+tag+">");
    }
@@ -106,6 +107,7 @@ public class XmlTagPrinter
     */
    public void writeTag(String tag, String[] attrs, String value) throws IOException
    {
+      assertTagNameValid(tag);
       closeChild();
       this.writeLine("<"+tag+" "+concatAttrs(attrs)+">"+transformSpecials(value)+"</"+tag+">");
    }
@@ -119,6 +121,14 @@ public class XmlTagPrinter
       this.writeLine(DomHelper.ElementToString(e));
    }
 
+   /** Checks to see if the tag name is valid - ie no spaces, diamond brackets
+    */
+   private void assertTagNameValid(String tagName) {
+       assert tagName.indexOf(" ")==-1 : "Illegal Space in tag '"+tagName+"'";
+       assert tagName.indexOf("<")==-1 : "Illegal bracket in tag '"+tagName+"'";
+       assert tagName.indexOf(">")==-1 : "Illegal bracket in tag '"+tagName+"'";
+   }
+   
    /**
     * Transforms special characters to safe ones (eg & to &amp, < to &lt)
     */
@@ -246,6 +256,12 @@ public class XmlTagPrinter
 
 /*
  $Log: XmlTagPrinter.java,v $
+ Revision 1.6  2004/10/25 00:49:17  jdt
+ Merges from branch PAL_MCH
+
+ Revision 1.5.32.1  2004/10/20 20:31:11  mch
+ Added assertion to catch illegal tag names
+
  Revision 1.5  2004/09/06 20:35:37  mch
  Changed attrs argument to array of attrs to avoid programmer errors mistaking attr for value...
 

@@ -1,5 +1,5 @@
 /*
- * $Id: AuthorityConfigPlugin.java,v 1.4 2004/10/12 23:09:53 mch Exp $
+ * $Id: AuthorityConfigPlugin.java,v 1.5 2004/10/25 00:49:17 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -39,37 +39,24 @@ public class AuthorityConfigPlugin implements VoResourcePlugin {
                "updated='"+new Date()+"'"
             });
       XmlTagPrinter identifier = authResource.newTag("Identifier");
-      identifier.writeTag("AuthorityID", SimpleConfig.getSingleton().getString("datacenter.authorityId"));
-      identifier.writeTag("ResourceKey", SimpleConfig.getSingleton().getString("datacenter.resourceKey"));
-      authResource.writeTag("Title", DataServer.getDatacenterName());
-      authResource.writeTag("ShortName", SimpleConfig.getSingleton().getString("datacenter.shortname", ""));
+      identifier.writeTag("AuthorityID", SimpleConfig.getSingleton().getString(VoDescriptionServer.AUTHID_KEY));
+      identifier.writeTag("ResourceKey", "authority");
+
+      /** This isn't right - it's submitting datacenter information as part of the organisation's information */
+      identifier.writeTag("Title", DataServer.getDatacenterName());
+      identifier.writeTag("ShortName", SimpleConfig.getSingleton().getString("datacenter.shortname", ""));
       
-      XmlTagPrinter summary = authResource.newTag("Summary");
+      XmlTagPrinter summary = identifier.newTag("Summary");
       summary.writeTag("Description", SimpleConfig.getSingleton().getString("datacenter.description", ""));
       summary.writeTag("ReferenceURL", SimpleConfig.getSingleton().getString("datacenter.url", ""));
-      XmlTagPrinter curation = authResource.newTag("Curation");
-      
-      String publisher = SimpleConfig.getSingleton().getString("datacenter.publisher",null);
-      if (publisher != null) {
-         XmlTagPrinter publisherTag = curation.newTag("Publisher");
-         publisherTag.writeTag("Title", publisher);
-      }
+   
+      //VoDescriptionServer.writeCuration(authResource);
 
-      XmlTagPrinter contact = curation.newTag("Contact");
-      contact.writeTag("Name", SimpleConfig.getSingleton().getString("datacenter.contact.name",""));
-      contact.writeTag("Email", SimpleConfig.getSingleton().getString("datacenter.contact.email",""));
-      contact.writeTag("Date", SimpleConfig.getSingleton().getString("datacenter.contact.date",""));
-
-      XmlTagPrinter iface = authResource.newTag("Interface");
-      iface.writeTag("Invocation", "WebService");
-      iface.writeTag("AccessURL", new String[] { "use='full'" }, AxisDataServer.getUrlStem()+"/services/AxisDataService05");
-      
       resourceSnippet.close();
       sw.close();
       String s = sw.toString(); //so we can pause here with a breakpoint and see what it is
       return new String[] { s };
    }
-   
    
 }
 

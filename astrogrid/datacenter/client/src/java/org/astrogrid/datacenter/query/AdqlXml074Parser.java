@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlXml074Parser.java,v 1.2 2004/10/18 13:11:30 mch Exp $
+ * $Id: AdqlXml074Parser.java,v 1.3 2004/10/25 00:49:17 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,6 +14,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 import javax.xml.parsers.ParserConfigurationException;
+import org.astrogrid.datacenter.DsaDomHelper;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Element;
@@ -57,50 +58,17 @@ public class AdqlXml074Parser  {
       return node.getAttribute("xsi:type");
    }
 
-   /** Returns the first child element of the given name of the given parent
-    * element.  If there is more than one, throws an exception.  If there is
-    * none, returns null */
-   public static Element getSingleChildByTagName(Element parent, String tagName) {
-      Element[] children = getChildrenByTagName(parent, tagName);
-      if (children.length>1) {
-         //more than one from is bad
-         throw new QueryException("More than one "+tagName+" element in "+parent.getNodeName());
-      }
-      if (children.length>0) {
-         return children[0];
-      }
-      else {
-         return null;
-      }
-   }
-   
-   /** a bit like getChildrenByTagName but returns only those elements that are
-    * direct children of the given parent */
-   public static Element[] getChildrenByTagName(Element parent, String name) {
-      Vector v =  new Vector();
-      NodeList c = parent.getChildNodes();
-      for (int n = 0; n < c.getLength(); n++) {
-         if (c.item(n) instanceof Element) {
-            //ignore namespaces for now
-            if ( ((Element) c.item(n)).getLocalName().equals(name)) {
-               v.add( c.item(n));
-            }
-         }
-      }
-      return (Element[]) v.toArray(new Element[] {});
-   }
-   
    /** Constructs a Query from the given ADQL 0.7.4 Select element */
    public Query parseSelect(Element select) {
 
       //do froms first so we build alias list
-      Element from = getSingleChildByTagName(select, "From");
+      Element from = DsaDomHelper.getSingleChildByTagName(select, "From");
       if (from != null) {
          parseFrom(from);
       }
       
       //select list - cols to return
-      Element selectList = getSingleChildByTagName(select, "SelectionList");
+      Element selectList = DsaDomHelper.getSingleChildByTagName(select, "SelectionList");
       if (selectList == null) {
          throw new QueryException("No SelectionList element in Select");
       }
@@ -108,9 +76,9 @@ public class AdqlXml074Parser  {
       
       //Search condition/Where
       Condition condition = null;
-      Element where = getSingleChildByTagName(select, "Where");
+      Element where = DsaDomHelper.getSingleChildByTagName(select, "Where");
       if (where != null) {
-         Element rootCondition = getSingleChildByTagName(where, "Condition");
+         Element rootCondition = DsaDomHelper.getSingleChildByTagName(where, "Condition");
          if (rootCondition == null) {
             //there should be at least one in a where
             throw new QueryException("No root Condition element in Where");
@@ -138,7 +106,7 @@ public class AdqlXml074Parser  {
       }
 
       //limit
-      Element restrict = getSingleChildByTagName(select, "Restrict");
+      Element restrict = DsaDomHelper.getSingleChildByTagName(select, "Restrict");
       if (restrict != null) {
          query.setLimit(Long.parseLong(restrict.getAttribute("Top")));
       }
@@ -149,7 +117,7 @@ public class AdqlXml074Parser  {
    public void parseSelectionList( Element selectionListElement) {
       
       //return columns (select)
-      Element[] items = getChildrenByTagName(selectionListElement, "Item");
+      Element[] items = DsaDomHelper.getChildrenByTagName(selectionListElement, "Item");
       if ((items.length==1) && ( getXsiType( items[0]).equals("allSelectionItemType"))) {
          //that's fine, leave returnCols as null
          return;
@@ -174,7 +142,7 @@ public class AdqlXml074Parser  {
    /** Parse From (Scope) element */
    public void parseFrom(Element fromElement) {
       //scope (from)
-      Element[] fromTables = getChildrenByTagName(fromElement, "Table");
+      Element[] fromTables = DsaDomHelper.getChildrenByTagName(fromElement, "Table");
       for (int i = 0; i < fromTables.length; i++) {
          parseFromTable( fromTables[i] );
       }
@@ -198,7 +166,7 @@ public class AdqlXml074Parser  {
       String xsiType = getXsiType(conditionElement);
 
       if (xsiType.equals("intersectionSearchType")) {
-         Element[] conditions = getChildrenByTagName(conditionElement, "Condition");
+         Element[] conditions = DsaDomHelper.getChildrenByTagName(conditionElement, "Condition");
          Intersection queryCondition = new Intersection(parseCondition( conditions[0] ));
          for (int i = 1; i < conditions.length; i++) {
             queryCondition.addCondition( parseCondition( conditions[i]) );
@@ -206,7 +174,7 @@ public class AdqlXml074Parser  {
          return queryCondition;
       }
       else if (xsiType.equals("unionSearchType")) {
-         Element[] conditions = getChildrenByTagName(conditionElement, "Condition");
+         Element[] conditions = DsaDomHelper.getChildrenByTagName(conditionElement, "Condition");
          Union queryCondition = new Union(parseCondition( conditions[0] ));
          for (int i = 1; i < conditions.length; i++) {
             queryCondition.addCondition( parseCondition( conditions[i]) );
@@ -220,7 +188,7 @@ public class AdqlXml074Parser  {
 //    }
       else if (xsiType.equals("comparisonPredType")) {
          String op = conditionElement.getAttribute("Comparison");
-         Element[] args = getChildrenByTagName(conditionElement, "Arg");
+         Element[] args = DsaDomHelper.getChildrenByTagName(conditionElement, "Arg");
          if (args.length != 2) {
             throw new QueryException("Comparison element <"+conditionElement.getNodeName()+"> has "+args.length+" <Arg> elements - it should have two");
          }
@@ -237,7 +205,7 @@ public class AdqlXml074Parser  {
          throw new UnsupportedOperationException("Can't cope with ADQL 0.7.4 condition "+xsiType);
       }
       else if (xsiType.equals("regionSearchType")) {
-         Element region = getSingleChildByTagName(conditionElement, "Region");
+         Element region = DsaDomHelper.getSingleChildByTagName(conditionElement, "Region");
          return parseRegion(region);
       }
       else {
@@ -266,7 +234,7 @@ public class AdqlXml074Parser  {
    
    private boolean isStringExpression(Element arg) {
       if (getXsiType(arg).equals("atomType")) {
-         Element literal = getSingleChildByTagName(arg, "Literal");
+         Element literal = DsaDomHelper.getSingleChildByTagName(arg, "Literal");
          if (getXsiType(literal).equals("stringType")) {
             return true;
          }
@@ -288,7 +256,7 @@ public class AdqlXml074Parser  {
    
    private StringExpression parseStringArg(Element arg) {
       if (getXsiType(arg).equals("atomType")) {
-         Element literal = getSingleChildByTagName(arg, "Literal");
+         Element literal = DsaDomHelper.getSingleChildByTagName(arg, "Literal");
          if ( getXsiType(literal).equals("stringType")) {
             return new LiteralString( literal.getAttribute("Value"));
          }
@@ -307,7 +275,7 @@ public class AdqlXml074Parser  {
    
    private NumericExpression parseNumArg(Element arg) {
       if (getXsiType(arg).equals("atomType")) {
-         Element literal = getSingleChildByTagName(arg, "Literal");
+         Element literal = DsaDomHelper.getSingleChildByTagName(arg, "Literal");
          if ( getXsiType(literal).equals("realType")) {
             return new LiteralNumber( literal.getAttribute("Value"));
          }
@@ -349,14 +317,14 @@ public class AdqlXml074Parser  {
          coordSys = "J2000"; //default
       }
       
-      Element centerElement = getSingleChildByTagName(region, "Center");
+      Element centerElement = DsaDomHelper.getSingleChildByTagName(region, "Center");
       //the two <double> elements are ra & dec - yuk
       NodeList pointElements = centerElement.getElementsByTagName("double");
       assert pointElements.getLength() == 2 : "Should be two <double> elements specifying the center in the Region";
       double ra  = Double.parseDouble(DomHelper.getValue( (Element) pointElements.item(0) ));
       double dec = Double.parseDouble(DomHelper.getValue( (Element) pointElements.item(0) ));
       
-      Element radiusElement = getSingleChildByTagName(region, "Radius");
+      Element radiusElement = DsaDomHelper.getSingleChildByTagName(region, "Radius");
       double radius = Double.parseDouble(DomHelper.getValue(radiusElement));
       
       return new Circle(coordSys, ra, dec, radius);
@@ -365,6 +333,12 @@ public class AdqlXml074Parser  {
 }
 /*
  $Log: AdqlXml074Parser.java,v $
+ Revision 1.3  2004/10/25 00:49:17  jdt
+ Merges from branch PAL_MCH
+
+ Revision 1.2.6.1  2004/10/20 18:12:45  mch
+ CEA fixes, resource tests and fixes, minor navigation changes
+
  Revision 1.2  2004/10/18 13:11:30  mch
  Lumpy Merge
 

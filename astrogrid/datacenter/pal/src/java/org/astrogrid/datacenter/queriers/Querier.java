@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.6 2004/10/18 13:11:30 mch Exp $
+ * $Id: Querier.java,v 1.7 2004/10/25 00:49:17 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,6 +14,7 @@ import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.service.v06.CEATargetIndicator;
 import org.astrogrid.datacenter.slinger.Slinger;
 
 /**
@@ -83,6 +84,17 @@ public class Querier implements Runnable, PluginListener {
       plugin = QuerierPluginFactory.createPlugin(this);
       
       setStatus(new QuerierConstructed(this));
+
+      //do this as part of the constructor so that we get errors back even on
+      //submitted (asynchronous) queries.
+      
+      //botch botch botch for CEATargetIndicators which appear to hang in this case
+      //if (!(query.getTarget() instanceof CEATargetIndicator))
+      {
+         Slinger.testConnection(query.getTarget(), user);
+      }
+
+      
    }
    
    /** Factory method   */
@@ -132,8 +144,6 @@ public class Querier implements Runnable, PluginListener {
      */
    public void ask() throws IOException {
       
-      Slinger.testConnection(query.getTarget(), user);
-
  //     plugin = QuerierPluginFactory.createPlugin(this);
       
       plugin.askQuery(user, query, this);
@@ -312,6 +322,15 @@ public class Querier implements Runnable, PluginListener {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.7  2004/10/25 00:49:17  jdt
+ Merges from branch PAL_MCH
+
+ Revision 1.6.6.1  2004/10/20 18:12:45  mch
+ CEA fixes, resource tests and fixes, minor navigation changes
+
+ Revision 1.6.8.1  2004/10/20 12:43:28  mch
+ Fixes to CEA interface to write directly to target
+
  Revision 1.6  2004/10/18 13:11:30  mch
  Lumpy Merge
 

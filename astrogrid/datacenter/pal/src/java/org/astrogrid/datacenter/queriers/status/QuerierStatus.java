@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierStatus.java,v 1.3 2004/10/05 14:57:01 mch Exp $
+ * $Id: QuerierStatus.java,v 1.4 2004/10/25 00:49:17 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,7 +9,6 @@ package org.astrogrid.datacenter.queriers.status;
 import java.util.Date;
 import java.util.Vector;
 import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.status.TaskStatus;
 
@@ -93,6 +92,15 @@ public abstract class QuerierStatus implements TaskStatus
       return getState().toString();
    }
    
+   /** Returns a full human-readable message string */
+   public String asFullMessage() {
+      StringBuffer s = new StringBuffer(getState().toString()+": "+getMessage()+" ("+getProgressMsg()+")");
+      for (int i = 0; i < details.size(); i++) {
+         s.append("\n"+details.get(i));
+      }
+      return s.toString();
+   }
+   
    public void addDetail(String message) {
       details.add(message);
    }
@@ -145,6 +153,15 @@ public abstract class QuerierStatus implements TaskStatus
 
 /*
 $Log: QuerierStatus.java,v $
+Revision 1.4  2004/10/25 00:49:17  jdt
+Merges from branch PAL_MCH
+
+Revision 1.3.10.1  2004/10/20 18:12:45  mch
+CEA fixes, resource tests and fixes, minor navigation changes
+
+Revision 1.3.12.1  2004/10/20 12:43:28  mch
+Fixes to CEA interface to write directly to target
+
 Revision 1.3  2004/10/05 14:57:01  mch
 Added queued
 

@@ -1,11 +1,11 @@
-/*$Id: DatacenterParameterAdapter.java,v 1.2 2004/10/20 08:13:09 pah Exp $
+/*$Id: DatacenterParameterAdapter.java,v 1.3 2004/10/25 00:49:17 jdt Exp $
  * Created on 13-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.service.v06;
@@ -48,12 +48,20 @@ public class DatacenterParameterAdapter extends DefaultParameterAdapter implemen
     public DatacenterParameterAdapter(ParameterValue arg0, ParameterDescription arg1, ExternalValue arg2) {
         super(arg0, arg1, arg2);
     }
-        
+
+    public ExternalValue getExternalValue() { return externalVal; }
+    
+    public void setInternalValue(String value) {
+       val.setValue(value);
+    }
+    
     /** @param arg0 - expects a {@link CEATargetIndicator} from which it will slurp the results.
      * @see org.astrogrid.applications.parameter.ParameterAdapter#writeBack(java.lang.Object)
      */
     public void writeBack(Object arg0) throws CeaException {
-        CEATargetIndicator ti = (CEATargetIndicator) arg0;
+       throw new UnsupportedOperationException("Shouldn't use this in DSAs, see CEATargetIndicator");
+       /*
+       CEATargetIndicator ti = (CEATargetIndicator) arg0;
         logger.debug("writing back "+ti+" to "+externalVal);
         try {
             if (this.externalVal == null) {
@@ -71,13 +79,23 @@ public class DatacenterParameterAdapter extends DefaultParameterAdapter implemen
         } catch (IOException e) {
             throw new ParameterWriteBackException("Could not write back parameter",e);
         }
+        */
     }
 
 }
 
 
-/* 
+/*
 $Log: DatacenterParameterAdapter.java,v $
+Revision 1.3  2004/10/25 00:49:17  jdt
+Merges from branch PAL_MCH
+
+Revision 1.1.12.1  2004/10/20 18:12:45  mch
+CEA fixes, resource tests and fixes, minor navigation changes
+
+Revision 1.2.2.1  2004/10/20 12:43:28  mch
+Fixes to CEA interface to write directly to target
+
 Revision 1.2  2004/10/20 08:13:09  pah
 added some logging
 

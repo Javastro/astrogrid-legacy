@@ -164,7 +164,7 @@ a.newWindow, a.newWindow:link, a.newWindow:visited, a.newWindow:active, a.newWin
   background: url(../images/newwindow.png) right center no-repeat;
   padding-right: 18px;
 }
-h2 {
+h1 {
   padding: 4px 4px 4px 6px;
   border: 1px solid #999;
   color: #900;
@@ -172,7 +172,7 @@ h2 {
   font-weight:900;
   font-size: x-large;
 }
-h3 {
+h2 {
   padding: 4px 4px 4px 6px;
   border: 1px solid #aaa;
   color: #900;

@@ -1,5 +1,5 @@
 /*
- * $Id: Sql2Adql074Test.java,v 1.7 2004/10/18 13:11:30 mch Exp $
+ * $Id: Sql2Adql074Test.java,v 1.8 2004/10/25 00:49:17 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,11 +11,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.queriers.sql.StdSqlMaker;
-import org.astrogrid.datacenter.query.Query2Adql074;
+import org.astrogrid.datacenter.query.Adql074Writer;
 import org.astrogrid.datacenter.query.SqlQueryMaker;
-import org.astrogrid.datacenter.sky.Angle;
 import org.astrogrid.util.DomHelper;
 import org.xml.sax.SAXException;
 
@@ -67,6 +64,7 @@ public class Sql2Adql074Test extends TestCase   {
       assertValidXml(translate(s));
    }
 
+   /* need to move this to the server side
    public void testConvertedCircle() throws IOException, ParserConfigurationException {
       SimpleConfig.setProperty(StdSqlMaker.DB_TRIGFUNCS_IN_RADIANS, "true");
       SimpleConfig.setProperty(StdSqlMaker.CONE_SEARCH_TABLE_KEY, "ConeTable");
@@ -76,6 +74,7 @@ public class Sql2Adql074Test extends TestCase   {
       String s = "SELECT * FROM table WHERE "+new StdSqlMaker().makeSqlCircleCondition(new Angle(25.0), new Angle(35), new Angle(6));
       assertValidXml(translate(s));
    }
+    */
 
    /* The NVO translations are based on 'std' SQL examples generated on the page
    at http://openskyquery.net/AdqlTranslator/Convertor.aspx, however the SQL here
@@ -156,7 +155,7 @@ public class Sql2Adql074Test extends TestCase   {
    }
 
    public String translate(String sql) throws IOException {
-       return Query2Adql074.makeAdql(SqlQueryMaker.makeQuery(sql));
+       return Adql074Writer.makeAdql(SqlQueryMaker.makeQuery(sql), "from SQL "+sql);
    }
 
    
@@ -177,6 +176,12 @@ public class Sql2Adql074Test extends TestCase   {
 
 /*
  $Log: Sql2Adql074Test.java,v $
+ Revision 1.8  2004/10/25 00:49:17  jdt
+ Merges from branch PAL_MCH
+
+ Revision 1.7.6.1  2004/10/21 19:10:24  mch
+ Removed deprecated translators, moved SqlMaker back to server,
+
  Revision 1.7  2004/10/18 13:11:30  mch
  Lumpy Merge
 

@@ -1,5 +1,5 @@
 /*
- * $Id: PalProxyPlugin.java,v 1.3 2004/10/18 13:11:30 mch Exp $
+ * $Id: PalProxyPlugin.java,v 1.4 2004/10/25 00:49:17 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,9 +18,8 @@ import org.astrogrid.datacenter.queriers.DefaultPlugin;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.VotableInResults;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
-import org.astrogrid.datacenter.queriers.status.QuerierStatus;
+import org.astrogrid.datacenter.query.Adql074Writer;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.query.Query2Adql074;
 import org.astrogrid.slinger.UriTarget;
 
 /**
@@ -61,7 +60,7 @@ public class PalProxyPlugin extends DefaultPlugin {
       //write POST parameters
       DataOutputStream out = new DataOutputStream(connection.getOutputStream());
 //      out.writeBytes( "AdqlSql="+URLEncoder.encode(new StdSqlMaker().getSql(querier.getQuery()))+
-      out.writeBytes( "AdqlXml="+URLEncoder.encode(Query2Adql074.makeAdql(query))+
+      out.writeBytes( "AdqlXml="+URLEncoder.encode(Adql074Writer.makeAdql(query))+
                       "&Format="+URLEncoder.encode("VOTABLE")
                     );
 

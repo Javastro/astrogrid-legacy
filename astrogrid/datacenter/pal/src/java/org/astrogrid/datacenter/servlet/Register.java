@@ -1,5 +1,5 @@
 /*
- * $Id: Register.java,v 1.1 2004/10/12 23:09:53 mch Exp $
+ * $Id: Register.java,v 1.2 2004/10/25 00:49:17 jdt Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -30,7 +30,7 @@ public class Register extends StdServlet {
       
       try {
          String regParam = request.getParameter("RegistryUrl");
-         if (regParam == null) {
+         if ((regParam == null) || (regParam.trim().length()==0)) {
             regParam =  SimpleConfig.getSingleton().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY);
          }
 

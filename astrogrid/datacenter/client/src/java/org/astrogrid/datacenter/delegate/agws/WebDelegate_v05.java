@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate_v05.java,v 1.5 2004/10/07 10:34:44 mch Exp $
+ * $Id: WebDelegate_v05.java,v 1.6 2004/10/25 00:49:17 jdt Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -21,8 +21,8 @@ import org.astrogrid.datacenter.axisdataserver.v05.QueryStatusSoapyBean;
 import org.astrogrid.datacenter.delegate.ClientQueryListener;
 import org.astrogrid.datacenter.delegate.ConeSearcher;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
+import org.astrogrid.datacenter.query.Adql074Writer;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.query.Query2Adql074;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.slinger.UriTarget;
@@ -85,7 +85,7 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
    public String submitQuery(Query query) throws IOException {
       assert (query.getResultsDef().getTarget() instanceof UriTarget) : "Specify Target using a URI";
       
-      return binding.submitAdqlQuery(Query2Adql074.makeAdql(query, null),
+      return binding.submitAdqlQuery(Adql074Writer.makeAdql(query),
                                      ((UriTarget) query.getResultsDef().getTarget()).toURI().toString(),
                                      query.getResultsDef().getFormat());
    }
@@ -111,7 +111,7 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
          throw new IllegalArgumentException("Use v06 delegates to do blocking queries that send results elsewhere.  Otherwise remove target and read returned results");
       }
       
-      results = binding.askAdqlQuery( Query2Adql074.makeAdql(query), query.getResultsDef().getFormat());
+      results = binding.askAdqlQuery(Adql074Writer.makeAdql(query), query.getResultsDef().getFormat());
       
       return new StringBufferInputStream(results);
    }
@@ -146,6 +146,12 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
 
 /*
  $Log: WebDelegate_v05.java,v $
+ Revision 1.6  2004/10/25 00:49:17  jdt
+ Merges from branch PAL_MCH
+
+ Revision 1.5.8.1  2004/10/21 19:10:24  mch
+ Removed deprecated translators, moved SqlMaker back to server,
+
  Revision 1.5  2004/10/07 10:34:44  mch
  Fixes to Cone maker functions and reading/writing String comparisons from Query
 
@@ -206,6 +212,12 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
  Revision 1.16  2004/01/08 15:48:17  mch
  Allow myspace references to be given
 $Log: WebDelegate_v05.java,v $
+Revision 1.6  2004/10/25 00:49:17  jdt
+Merges from branch PAL_MCH
+
+Revision 1.5.8.1  2004/10/21 19:10:24  mch
+Removed deprecated translators, moved SqlMaker back to server,
+
 Revision 1.5  2004/10/07 10:34:44  mch
 Fixes to Cone maker functions and reading/writing String comparisons from Query
 

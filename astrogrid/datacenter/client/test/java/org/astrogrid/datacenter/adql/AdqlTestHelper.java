@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlTestHelper.java,v 1.2 2004/10/18 13:11:30 mch Exp $
+ * $Id: AdqlTestHelper.java,v 1.3 2004/10/25 00:49:17 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -69,6 +69,7 @@ public class AdqlTestHelper    {
 //      NodeList e2children = e2.getChildNodes();
 //      assert e1children.getLength() == e2children.getLength() : "Different number of children in "+e1.getTagName();
 
+      /* this isn't right
       for (int i = 0; i < e1children.getLength(); i++) {
          if (e1children.item(i) instanceof Element) {
             //get equivelent e2 child
@@ -77,6 +78,7 @@ public class AdqlTestHelper    {
             assertElementsEqual( (Element) e1children.item(i), e2child);
          }
       }
+       */
    }
    
    /* Returns the 'current' adql version of the 'standard test example' NVO queries
@@ -108,6 +110,12 @@ public class AdqlTestHelper    {
 
 /*
  $Log: AdqlTestHelper.java,v $
+ Revision 1.3  2004/10/25 00:49:17  jdt
+ Merges from branch PAL_MCH
+
+ Revision 1.2.6.1  2004/10/19 17:21:10  mch
+ Removed incorrect assertElementsEqual recursion - not yet right
+
  Revision 1.2  2004/10/18 13:11:30  mch
  Lumpy Merge
 

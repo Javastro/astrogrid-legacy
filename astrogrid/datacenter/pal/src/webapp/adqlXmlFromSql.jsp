@@ -16,11 +16,11 @@
       //   adqlXml = Sql2Adql05.translate(adqlSql);
      // }
       if (request.getParameter("MakeAdql074") != null) {
-         adqlXml = Query2Adql074.makeAdql(SqlQueryMaker.makeQuery(adqlSql));
+         adqlXml = Adql074Writer.makeAdql(SqlQueryMaker.makeQuery(adqlSql), "From SQL:"+adqlSql);
       }
       else {
          //default
-         adqlXml = Query2Adql074.makeAdql(SqlQueryMaker.makeQuery(adqlSql));
+         adqlXml = Adql074Writer.makeAdql(SqlQueryMaker.makeQuery(adqlSql), "From SQL:"+adqlSql);
       }
    }
 %>

@@ -1,5 +1,5 @@
 /*
- * $Id: TargetIndicatorTest.java,v 1.4 2004/10/18 13:11:30 mch Exp $
+ * $Id: TargetIndicatorTest.java,v 1.5 2004/10/25 00:49:17 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,10 +23,10 @@ public class TargetIndicatorTest extends TestCase {
    public void testNullMaker() throws Exception {
 
       TargetIndicator target = TargetIndicator.makeIndicator((String) null);
-      assertTrue( (target instanceof WriterTarget));
+      assertTrue( (target instanceof NullTarget));
       
       target = TargetIndicator.makeIndicator("");
-      assertTrue( (target instanceof WriterTarget));
+      assertTrue( (target instanceof NullTarget));
    }
    
    public void testIvornMaker() throws Exception {

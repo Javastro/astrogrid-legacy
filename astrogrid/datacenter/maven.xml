@@ -3,6 +3,9 @@
 <project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
 <!-- hooks to farm out everything to subprojects -->
 
+<!-- simple frequently-used goal -->
+<goal name="pal" prereqs="astrogrid-clean,astrogrid-install-snapshot" />
+
 <!-- Astrogrid custom goals -->
 <goal name="astrogrid-deploy-snapshot">
    <echo message="Master Project: astrogrid-deploy-snapshot"/>
