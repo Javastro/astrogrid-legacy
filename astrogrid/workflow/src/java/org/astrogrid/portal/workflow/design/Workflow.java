@@ -371,6 +371,9 @@ public class Workflow extends Activity {
 
          
         try {
+            Workflow.insertQueryIntoStep( step.getKey().toString()
+                                        , queryName
+                                        , step.getWorkflow() ) ;
                         
         }
         catch( Exception ex ) {
@@ -383,7 +386,52 @@ public class Workflow extends Activity {
         return false ;
 
     } // end of insertQueryInStep()
-   
+  
+  
+    public static boolean insertQueryIntoStep( String stepActivityKey
+                                             , String queryName
+                                             , Workflow workflow ) {
+        if( TRACE_ENABLED ) trace( "Workflow.insertQueryInStep(String,String) entry") ; 
+
+        boolean
+            retValue = false ;
+        Step
+            step = null ;
+        Activity
+            activity = null ;
+        Query
+            query = null ;
+            
+        try {
+            
+            activity = workflow.getActivity( stepActivityKey ) ;
+            
+            if( activity == null ) {
+                debug( "activity not found" ) ;
+            }
+            else if( (activity instanceof Step) == false ) {
+                debug( "activity not a Step") ;
+            }
+            else {
+                step = (Step)activity ;
+                query = Query.readQuery( workflow.getUserid()
+                                       , workflow.getCommunity()
+                                       , queryName ) ;
+                step.setTool( query ) ;
+                retValue = true ;
+            }
+                        
+        }
+        catch( Exception ex ) {
+            ex.printStackTrace() ;
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Workflow.insertQueryInStep(String,String) exit") ; 
+        }
+        
+        return false ;
+
+    } // end of insertQueryInStep(String,String) 
     
     
     /*
