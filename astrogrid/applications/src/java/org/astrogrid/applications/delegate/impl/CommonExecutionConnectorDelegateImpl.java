@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorDelegateImpl.java,v 1.3 2004/03/30 22:45:09 pah Exp $
+ * $Id: CommonExecutionConnectorDelegateImpl.java,v 1.4 2004/04/20 11:41:57 pah Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -21,6 +21,7 @@ import java.rmi.RemoteException;
 import javax.xml.rpc.ServiceException;
 
 import org.astrogrid.applications.beans.v1.ApplicationList;
+import org.astrogrid.applications.beans.v1.axis.ceabase._ApplicationList;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorDelegate;
@@ -33,6 +34,8 @@ import org
    .v1
    .cea
    .CommonExecutionConnectorServiceSoapBindingStub;
+import org.astrogrid.applications.service.v1.cea.impl._ceaFault;
+import org.astrogrid.applications.service.v1.cea.impl._returnRegistryEntryResponse_returnRegistryEntryReturn;
 import org.astrogrid.common.bean.Axis2Castor;
 import org.astrogrid.common.bean.Castor2Axis;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
@@ -108,8 +111,19 @@ public class CommonExecutionConnectorDelegateImpl
     * @see org.astrogrid.applications.delegate.CommonExecutionConnectorClient#listApplications()
     */
    public ApplicationList listApplications() throws CEADelegateException {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("CommonExecutionConnectorDelegateImpl.listApplications() not implemented");
+      ApplicationList result = null;
+      CommonExecutionConnector cec = getBinding();
+     
+         try {
+            _ApplicationList _result = cec.listApplications();
+            result = Axis2Castor.convert(_result);
+         }
+         catch (RemoteException e) {
+           throw new CEADelegateException("list app", e);
+         }
+         return result;
+      
+      
    }
 
    /* (non-Javadoc)
@@ -143,8 +157,17 @@ public class CommonExecutionConnectorDelegateImpl
     * @see org.astrogrid.applications.delegate.CommonExecutionConnectorClient#returnRegistryEntry()
     */
    public String returnRegistryEntry() throws CEADelegateException {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("CommonExecutionConnectorDelegateImpl.returnRegistryEntry() not implemented");
+      String result;
+      CommonExecutionConnector cec = getBinding();
+      try {
+        _returnRegistryEntryResponse_returnRegistryEntryReturn _result = cec.returnRegistryEntry();
+        result = _result.toString();//FIXME this is not the registry entry....
+      }
+      catch (RemoteException e) {
+         throw new CEADelegateException("problem getting registry entry", e);
+      }
+      return result;
+     
    }
 
 }
