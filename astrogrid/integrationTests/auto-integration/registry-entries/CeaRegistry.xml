@@ -139,7 +139,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <Identifier>
                         <AuthorityID>@REGAUTHORITY@</AuthorityID>
-                        <ResourceKey>msslyxy-cea</ResourceKey>
+                        <ResourceKey>msslxy-cea</ResourceKey>
                 </Identifier>
                 <Title>TemplateEntry</Title>
                 <ShortName>TemplateEntry</ShortName>
