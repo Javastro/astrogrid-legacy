@@ -1,4 +1,4 @@
-/*$Id: IvoQuery2MySpaceTest.java,v 1.5 2004/05/23 10:03:10 jdt Exp $
+/*$Id: IvoQuery2MySpaceTest.java,v 1.6 2004/07/07 22:28:15 mch Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -56,8 +56,6 @@ public class IvoQuery2MySpaceTest extends TestCase implements StdKeys {
     * retreive from myspace, check they're what we expect
     */
    public void testSubmit() throws Exception {
-      fail("I *think* this test is causing the test suite to seize up");
-      /*
       Ivorn resultsTarget = new Ivorn("ivo://org.astrogrid.localhost/myspace#"+resultsPath);
 
       InputStream in = this.getClass().getResourceAsStream("SimpleStarQuery-adql05.xml");
@@ -72,9 +70,16 @@ public class IvoQuery2MySpaceTest extends TestCase implements StdKeys {
       String stat = delegate.getStatus(queryId);
 
       //wait until query finishes
+      TimeStamp timeout = new TimeStamp();
       do {
          stat = delegate.getStatus(queryId);
-      } while (!stat.equals(QueryState.FINISHED) && (!stat.equals(QueryState.ERROR))); // need some extra timout here too 
+      }
+      while ((!stat.equals(QueryState.FINISHED) && (!stat.equals(QueryState.ERROR))) // need some extra timout here too
+            && (timeout.getSecsSince()<60) ); // ..or timesout
+
+      if (timeout.getSecsSince()>=60) {
+         fail("query timed out");
+      }
  
       //see if results are in expected myspace location
       VoSpaceClient store = new VoSpaceClient(Account.ANONYMOUS.toUser());
@@ -82,7 +87,6 @@ public class IvoQuery2MySpaceTest extends TestCase implements StdKeys {
       
       Document resultDoc = DomHelper.newDocument(store.getStream(resultsTarget));
       assertNotNull("null result document",resultDoc);
-      */
    }
    
    public IvoQuery2MySpaceTest(String arg0) {
@@ -108,8 +112,12 @@ public class IvoQuery2MySpaceTest extends TestCase implements StdKeys {
 
 /*
 $Log: IvoQuery2MySpaceTest.java,v $
+Revision 1.6  2004/07/07 22:28:15  mch
+Reintroduced tests, this time with timeout check
+
 Revision 1.5  2004/05/23 10:03:10  jdt
 Disabled this test because it seems to be causing the whole suite
+
 to seize up.
 
 Revision 1.4  2004/05/14 11:02:05  mch
@@ -145,4 +153,5 @@ Revision 1.1  2004/01/22 16:14:59  nw
 added integration test for datacenter full searcher.
  
 */
+
 
