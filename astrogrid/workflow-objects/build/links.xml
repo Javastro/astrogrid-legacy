@@ -5,6 +5,7 @@
      <schema file-location="ExecutionRecord.xsd" docfile-location="ExecutionRecord.html"/>
      <schema file-location="AGApplicationBase.xsd" docfile-location="AGApplicationBase.html"/>
      <schema file-location="./externalSchema/VOResource-v0.9.xsd" docfile-location="./externalSchema/VOResource-v0.9.html"/>
+     <schema file-location="./externalSchema/VOTable.xsd" docfile-location="./externalSchema/VOTable.html"/>
      <schema file-location="CEATypes.xsd" docfile-location="CEATypes.html"/>
 <!--todo need to add all the other mappings that we might be using...-->     
 </links>
