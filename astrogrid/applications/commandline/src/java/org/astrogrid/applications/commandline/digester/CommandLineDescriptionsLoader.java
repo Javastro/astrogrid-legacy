@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoader.java,v 1.3 2004/08/27 12:45:52 pah Exp $
+ * $Id: CommandLineDescriptionsLoader.java,v 1.4 2004/08/27 15:40:00 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 
 package org.astrogrid.applications.commandline.digester;
 
+import org.astrogrid.applications.beans.v1.ParameterRef;
 import org.astrogrid.applications.commandline.CommandLineParameterDescription;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
@@ -101,18 +102,18 @@ public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLib
 
       digester.addSetProperties(CommandLineApplicationDescriptionsConstants.INTERFACE_ELEMENT);      
       //input and output parameter references
-      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.INPUT_PREFS, "addInputParameter",3, new Class[]{String.class,Integer.class,Integer.class});
-      digester.addCallParam(CommandLineApplicationDescriptionsConstants.INPUT_PREFS, 0, "ref");
-      digester.addCallParam(CommandLineApplicationDescriptionsConstants.INPUT_PREFS, 1, "minoccurs");
-      digester.addCallParam(CommandLineApplicationDescriptionsConstants.INPUT_PREFS, 2, "maxoccurs");
+      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.INPUT_PREFS, "addInputParameterAsPref", 1, new Class[]{ParameterRef.class});
+      digester.addObjectCreate(CommandLineApplicationDescriptionsConstants.INPUT_PREFS, ParameterRef.class);
+      digester.addSetProperties(CommandLineApplicationDescriptionsConstants.INPUT_PREFS);
+      digester.addCallParam(CommandLineApplicationDescriptionsConstants.INPUT_PREFS, 0, true);
       
       
       //input and output parameter references
-      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.OUTPUT_PREFS, "addOutputParameter",3,new Class[]{String.class,Integer.class,Integer.class});
-      digester.addCallParam(CommandLineApplicationDescriptionsConstants.OUTPUT_PREFS, 0, "ref");
-      digester.addCallParam(CommandLineApplicationDescriptionsConstants.OUTPUT_PREFS, 1, "minoccurs");
-      digester.addCallParam(CommandLineApplicationDescriptionsConstants.OUTPUT_PREFS, 2, "maxoccurs");
-      
+      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.OUTPUT_PREFS, "addOutputParameterAsPref", 1, new Class[]{ParameterRef.class});
+      digester.addObjectCreate(CommandLineApplicationDescriptionsConstants.OUTPUT_PREFS, ParameterRef.class);
+      digester.addSetProperties(CommandLineApplicationDescriptionsConstants.OUTPUT_PREFS);
+      digester.addCallParam(CommandLineApplicationDescriptionsConstants.OUTPUT_PREFS, 0, true);
+     
       
       
       digester.addSetNext(CommandLineApplicationDescriptionsConstants.INTERFACE_ELEMENT, "addInterface");
@@ -135,8 +136,10 @@ public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLib
             name = arg0.getValue(CommandLineApplicationDescriptionsConstants.NAME_ATTR);
         }
         ApplicationDescription appDescription = (ApplicationDescription)this.digester.peek(); // i.e. the description we want is at the top of the stack.
-        return new BaseApplicationInterface(name,appDescription);
+        return new CommandLineApplicationInterface(name,appDescription);
     }
    }
+   
+   
 
 }
