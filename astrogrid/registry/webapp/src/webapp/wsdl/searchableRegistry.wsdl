@@ -17,12 +17,12 @@
    <service name="RegistryInterfaceService">
       <port name="RegistrySearchPort" binding="ris:RegistrySearchSOAP">
          <soap:address 
-        location="http://hydra.star.le.ac.uk:8080/astrogrid-registry/RegistryQuery"/>
+        location="http://localhost:8080/astrogrid-registry/services/RegistryQuery"/>
       </port>
 
       <port name="RegistryHarvestPort" binding="rih:RegistryHarvestSOAP">
          <soap:address 
-        location="http://hydra.star.le.ac.uk:8080/astrogrid-registry/RegistryQuery"/>
+        location="http://localhost:8080/astrogrid-registry/services/RegistryQuery"/>
       </port>
    </service>
 
