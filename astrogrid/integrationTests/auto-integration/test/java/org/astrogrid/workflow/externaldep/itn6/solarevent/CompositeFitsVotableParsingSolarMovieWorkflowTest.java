@@ -1,4 +1,4 @@
-/*$Id: CompositeFitsVotableParsingSolarMovieWorkflowTest.java,v 1.2 2004/09/07 12:57:23 nw Exp $
+/*$Id: CompositeFitsVotableParsingSolarMovieWorkflowTest.java,v 1.3 2004/09/20 15:03:53 pah Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -85,7 +85,7 @@ public class CompositeFitsVotableParsingSolarMovieWorkflowTest extends SimpleFit
         // Where do I find the names like CONCAT_APP, MPEG_APP, and FITS_APP?
         ApplicationDescription descr = reg.getDescriptionFor(MPEG_APP);
         Tool solarMovieTool = descr.createToolFromDefaultInterface();
-        ParameterValue result = (ParameterValue)solarMovieTool.findXPathValue("output/parameter[name='result']");
+        ParameterValue result = (ParameterValue)solarMovieTool.findXPathValue("output/parameter[name='OutputFile']");
         assertNotNull(result);
         result.setIndirect(true); // want to get results into myspace
         result.setValue(target.toString());
@@ -114,6 +114,9 @@ public class CompositeFitsVotableParsingSolarMovieWorkflowTest extends SimpleFit
 
 /* 
 $Log: CompositeFitsVotableParsingSolarMovieWorkflowTest.java,v $
+Revision 1.3  2004/09/20 15:03:53  pah
+update the output parameter name
+
 Revision 1.2  2004/09/07 12:57:23  nw
 fixed little bug in embedded script - need to clear existing parameters first.
 
