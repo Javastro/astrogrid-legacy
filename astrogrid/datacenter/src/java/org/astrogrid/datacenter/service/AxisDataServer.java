@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.16 2003/09/15 22:38:42 mch Exp $
+ * $Id: AxisDataServer.java,v 1.17 2003/09/16 12:49:26 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -183,9 +183,9 @@ public class AxisDataServer extends ServiceServer
     * <p>
     * @soap
     */
-   public QueryStatus getStatus(String id)
+   public String getStatus(String id)
    {
-      return DatabaseQuerier.getQuerier(id).getStatus();
+      return DatabaseQuerier.getQuerier(id).getStatus().toString();
    }
 
    /**
