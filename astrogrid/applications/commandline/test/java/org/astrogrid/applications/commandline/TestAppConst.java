@@ -1,5 +1,5 @@
 /*
- * $Id: TestAppConst.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+ * $Id: TestAppConst.java,v 1.3 2004/09/23 22:44:23 pah Exp $
  * 
  * Created on 05-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -21,6 +21,7 @@ package org.astrogrid.applications.commandline;
 public final class TestAppConst {
 
    public static final String MAIN_INTERFACE = "I1" ;
+   public static final String REALAPP_CONFFILE = "/CeaApplicationConfig.xml";
 
    public static final String TESTAPP_NAME="fake.authority.id/testapp";
    

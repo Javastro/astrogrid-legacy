@@ -1,4 +1,4 @@
-/*$Id: CommandLineApplicationTest.java,v 1.7 2004/09/15 11:37:00 pah Exp $
+/*$Id: CommandLineApplicationTest.java,v 1.8 2004/09/23 22:44:23 pah Exp $
  * Created on 27-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,7 +58,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
  * @author pah
  *  
  */
-public class CommandLineApplicationTest extends DescriptionBaseTestCase {
+public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
     private static final String TEST_DATA = "test input data";
 
     private static final String PAR4_DATA = "any old rubbish";
@@ -72,81 +72,22 @@ public class CommandLineApplicationTest extends DescriptionBaseTestCase {
         super(arg0);
     }
 
-    /*
-     * @see TestCase#setUp()
-     */
     protected void setUp() throws Exception {
         super.setUp();
-        final File workingDir = File.createTempFile(
-                "CommandLineApplicationTest", null);
-        workingDir.delete();
-        workingDir.mkdir();
-        assertTrue(workingDir.exists());
-        workingDir.deleteOnExit();
-        DefaultPicoContainer container = new DefaultPicoContainer();
-        container.registerComponent(new ConstructorInjectionComponentAdapter(
-                CommandLineApplicationDescription.class,
-                CommandLineApplicationDescription.class));
-        container.registerComponent(new ConstructorInjectionComponentAdapter(
-                CommandLineApplicationEnvironment.class,
-                CommandLineApplicationEnvironment.class));
-        container.registerComponentImplementation(InMemoryIdGen.class);
-        container
-                .registerComponentInstance(new CommandLineApplicationEnvironment.WorkingDir() {
-
-                    public File getDir() {
-                        return workingDir;
-                    }
-                });
-        DefaultProtocolLibrary lib = new DefaultProtocolLibrary();
-        lib.addProtocol(new FileProtocol());
-        container.registerComponentInstance(lib);
-        container
-                .registerComponentImplementation(ApplicationDescriptionEnvironment.class);
-        CommandLineApplicationDescriptionFactory descFactory = new CommandLineApplicationDescriptionFactory(
-                container);
-        try {
-            container.verify();
-        }
-        catch (PicoException t) {
-            t.printStackTrace();
-            fail("Container misconfigured");
-        }
-        CommandLineDescriptionsLoader dl = new CommandLineDescriptionsLoader(
-                new CommandLineDescriptionsLoader.DescriptionURL() {
-
-                    public URL getURL() {
-                        return inputFile;
-                    }
-                }, descFactory);
-        assertNotNull("cannot create the DescriptionLoader", dl);
-        descs = dl;
-        testAppDescr = descs.getDescription(TESTAPPNAME);
-        assertNotNull(testAppDescr);
-        // now fix the execution path for this app description.
-        assertTrue(testAppDescr instanceof CommandLineApplicationDescription);
-        CommandLineApplicationDescription cAppDescr = (CommandLineApplicationDescription)testAppDescr;
         // will only work with unjarred-classes - but this is always the case in
         // development.
         URI uri = new URI(this.getClass().getResource("/app/testapp.sh")
                 .toString());
         File appPath = (new File(uri)).getParentFile();
-
+    
         System.out.println("TESTAPPDIR := " + appPath.getAbsolutePath());
         assertTrue(appPath.exists());
         assertTrue(appPath.isDirectory());
-        cAppDescr.setExecutionPath(cAppDescr.getExecutionPath().replaceAll(
+        testAppDescr.setExecutionPath(testAppDescr.getExecutionPath().replaceAll(
                 "@TOOLBASEDIR@", appPath.getAbsolutePath()));
         
-        ExecutionHistory history = new InMemoryExecutionHistory();
-        
-        controller = new DefaultExecutionController(dl,history);
+
     }
-
-    protected BaseApplicationDescriptionLibrary descs;
-
-    protected ApplicationDescription testAppDescr;
-
     /** calls application, with direct parameter values */
     public void testCreateApplicationDirect() throws Exception {
         Tool t = buildTool();
@@ -385,14 +326,13 @@ public class CommandLineApplicationTest extends DescriptionBaseTestCase {
 
         return results;
     }
-
-    private static final int WAIT_SECONDS = 30;
-
-    private DefaultExecutionController controller;
 }
 
 /*
  * $Log: CommandLineApplicationTest.java,v $
+ * Revision 1.8  2004/09/23 22:44:23  pah
+ * need new CommandLineParameterAdapter to separate out the switch adding part so that patricios merge tool can be accomodated
+ *
  * Revision 1.7  2004/09/15 11:37:00  pah
  * make the commandline appliction do all the parameter fetching int he main execution thread
  *

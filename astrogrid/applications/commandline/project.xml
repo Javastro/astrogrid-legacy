@@ -130,6 +130,10 @@ This functionality is provided with the ApplicationController service, of which 
             <include>**/*.sql</include>
          </includes>
         </resource>
+		<resource>
+			<directory>${basedir}/config</directory>
+			<include>CeaApplicationConfig.xml</include>
+		</resource>
       </resources>
     </unitTest>
 

@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZVOTableWriter.java,v 1.4 2004/08/28 07:17:34 pah Exp $
+ * $Id: HyperZVOTableWriter.java,v 1.5 2004/09/23 22:44:23 pah Exp $
  * 
  * Created on 20-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -20,7 +20,7 @@ import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment;
 import org.astrogrid.applications.commandline.CommandLineParameterDescription;
-import org.astrogrid.applications.commandline.CommandLineParameterAdapter;
+import org.astrogrid.applications.commandline.DefaultCommandLineParameterAdapter;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 
@@ -46,7 +46,7 @@ import java.io.IOException;
  * @version $Name:  $
  * @since iteration4.1
  */
-public class HyperZVOTableWriter extends CommandLineParameterAdapter {
+public class HyperZVOTableWriter extends DefaultCommandLineParameterAdapter {
     /**
      * Logger for this class
      */

@@ -1,5 +1,5 @@
 /*
- * $Id: Dft.java,v 1.5 2004/08/28 07:17:34 pah Exp $
+ * $Id: Dft.java,v 1.6 2004/09/23 22:44:23 pah Exp $
  * 
  * Created on 20-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,11 +13,18 @@
 
 package org.astrogrid.applications.commandline.dft;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.commandline.CommandLineApplication;
 import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment;
-import org.astrogrid.applications.commandline.CommandLineParameterAdapter;
+import org.astrogrid.applications.commandline.CommandLineParameterDescription;
+import org.astrogrid.applications.commandline.DefaultCommandLineParameterAdapter;
 import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.parameter.ParameterAdapter;
+import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -34,6 +41,10 @@ import java.util.List;
  * @todo can't do it this way anymore - have tightened up the adapter interface. rewrite needed.
  */
 public class Dft extends CommandLineApplication {
+    /**
+     * Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(Dft.class);
 
 
 
@@ -56,49 +67,18 @@ public class Dft extends CommandLineApplication {
 
    }
 
-   /**
-    * @TODO This is a quick and dirty manipulation of the parameters to get things running for the AVO demo - should think about the best general way to do this.
-    * @todo rewrite using custom adapters - this method isn't possible any more.
-    * @see org.astrogrid.applications.commandline.CmdLineApplication#postParamSetupHook()
-    */
-   protected void postParamSetupHook() {
-      //get the output file to the front...
-      List newparams = new ArrayList();
+   
+    protected ParameterAdapter instantiateAdapter(ParameterValue pval,
+            ParameterDescription desr, ExternalValue indirectVal) {
+      if (desr.getName().equals("matches")) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("creating merging adapter for parameter matches");
+        }
 
-    ParameterAdapter outputParam = findParameterAdapter("merged_output");
-    // not possible.
-    //outputAdapters.remove(outputParam);
-    newparams.add(outputParam);
- //
-      CommandLineParameterAdapter mergeparam = null;
-      StringBuffer sb = new StringBuffer();
- 
-      for (Iterator iter = inputParameterAdapters(); iter.hasNext();) {
-         ParameterAdapter element = (ParameterAdapter)iter.next();
-         if (element.getWrappedParameter().getName().equals("matches")) {
-            if (mergeparam == null) {
-               mergeparam = (CommandLineParameterAdapter)element;
-               sb.append(mergeparam.getReferenceFile().getPath());               
-            }
-            else
-            {
-               sb.append(" ");
-               sb.append(((CommandLineParameterAdapter)element).getReferenceFile().getPath());
-            }
-
-         }
-         else {
-            newparams.add(element);
-
-         }
-      }
-      mergeparam.getWrappedParameter().setValue("matches="+sb.toString());
-      newparams.add(mergeparam);
-      // not possible.
-      //inputAdapters.clear();
-      //inputAdapters.addAll(newparams);
-
-   }
-
-
+        return new MergingParameterAdapter(getApplicationInterface(), pval, (CommandLineParameterDescription)desr, indirectVal, applicationEnvironment);
+    }
+    else {
+         return super.instantiateAdapter(pval, desr, indirectVal);
+    }
+    }
 }

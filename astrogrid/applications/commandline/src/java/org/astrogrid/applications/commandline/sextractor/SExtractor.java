@@ -1,5 +1,5 @@
 /*
- * $Id: SExtractor.java,v 1.4 2004/08/28 07:17:34 pah Exp $
+ * $Id: SExtractor.java,v 1.5 2004/09/23 22:44:23 pah Exp $
  *
  * Created on 24 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.applications.commandline.sextractor;
 
 import org.astrogrid.applications.commandline.CommandLineApplication;
 import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment;
-import org.astrogrid.applications.commandline.CommandLineParameterAdapter;
+import org.astrogrid.applications.commandline.DefaultCommandLineParameterAdapter;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.community.User;
@@ -66,10 +66,10 @@ public class SExtractor extends CommandLineApplication {
      try {
         //FIXME band is determined by the last character of the catalogue name file AVO Kludge
         String band;
-        CommandLineParameterAdapter catname = (CommandLineParameterAdapter)findParameterAdapter("CATALOG_NAME");
+        DefaultCommandLineParameterAdapter catname = (DefaultCommandLineParameterAdapter)findParameterAdapter("CATALOG_NAME");
        // band=catname.getRawValue().substring(catname.getRawValue().length()-1);
        band=catname.getWrappedParameter().getValue().substring(catname.getWrappedParameter().getValue().length()-1);       
-       ASCII2VOTableConverter conv = new ASCII2VOTableConverter(catname,(CommandLineParameterAdapter) findParameterAdapter("PARAMETERS_NAME"), applicationEnvironment, band);
+       ASCII2VOTableConverter conv = new ASCII2VOTableConverter(catname,(DefaultCommandLineParameterAdapter) findParameterAdapter("PARAMETERS_NAME"), applicationEnvironment, band);
       conv.writeVOTable();
    }
    catch (IOException e) {

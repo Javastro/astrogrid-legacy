@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplication.java,v 1.13 2004/09/22 10:52:50 pah Exp $
+ * $Id: CommandLineApplication.java,v 1.14 2004/09/23 22:44:23 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -33,6 +33,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -96,7 +97,7 @@ public class CommandLineApplication extends AbstractApplication implements Runna
     protected ParameterAdapter instantiateAdapter( ParameterValue pval, ParameterDescription desr, ExternalValue indirectVal) {                
         CommandLineParameterDescription clpd = (CommandLineParameterDescription)desr;
              logger.debug("creating parameter adapter for " + pval.getName());
-             return new CommandLineParameterAdapter(getApplicationInterface(),pval, (CommandLineParameterDescription)desr,indirectVal,applicationEnvironment);
+             return new DefaultCommandLineParameterAdapter(getApplicationInterface(),pval, (CommandLineParameterDescription)desr,indirectVal,applicationEnvironment);
          
       }
    protected void setupParameters() throws CeaException {
@@ -116,8 +117,8 @@ public class CommandLineApplication extends AbstractApplication implements Runna
      Collections.sort(allAdapterList, new Comparator(){
        public int compare(Object o1, Object o2) {
            //FIXME - need to check that the ordering of "equal" objects stays the same with thiss algorithm
-            CommandLineParameterAdapter p1 = (CommandLineParameterAdapter)o1;
-            CommandLineParameterAdapter p2 = (CommandLineParameterAdapter)o2;
+            DefaultCommandLineParameterAdapter p1 = (DefaultCommandLineParameterAdapter)o1;
+            DefaultCommandLineParameterAdapter p2 = (DefaultCommandLineParameterAdapter)o2;
             int pos1 = p1.desc.getCommandPosition();
             int pos2 = p2.desc.getCommandPosition();
             if(pos1 == -1) // indicates that it is not a position dependent
@@ -156,11 +157,20 @@ public class CommandLineApplication extends AbstractApplication implements Runna
      // iterate over all the parameter adapters now that they have been sorted...
      for (Iterator i = allAdapterList.iterator(); i.hasNext(); ) {
          ParameterAdapter adapter = (ParameterAdapter)i.next();
-         List vals = (List)adapter.process();
-         for (Iterator j = vals.iterator(); j.hasNext(); ) {
-            argvals.add(j.next().toString());
-         }                  
-     }
+             adapter.process();
+      }
+     
+     //iterate over the paramters adapters adding the commandline switches
+     for (Iterator i = allAdapterList.iterator(); i.hasNext();) {
+        CommandLineParameterAdapter adapter = (CommandLineParameterAdapter)i.next();
+        List vals = adapter.addSwitches();
+        if (vals != null) {
+            for (Iterator j = vals.iterator(); j.hasNext();) {
+                argvals.add(j.next().toString());
+            } 
+        }                  
+    }
+     
      
      reportMessage("Parameters for application: " + argvals.toString());
       // TODO check for position parameters - really need to sort the parameter list based on the parameter position information.
