@@ -74,7 +74,8 @@ function hinter(elem){
 
 /* ------------------------------------------------*/
 
-function footer(fuss){
+function footer(){
+	var fuss = document.getElementById("imgfoot");
 	var qposx = findPosX(fuss);
 	var qposy = findPosY(fuss);
 	getOzSize();
