@@ -1,5 +1,5 @@
 /*
- * $Id: DummyQuerierTest.java,v 1.5 2003/11/28 16:10:30 nw Exp $
+ * $Id: DummyQuerierTest.java,v 1.6 2003/12/02 12:31:13 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -62,7 +62,7 @@ public class DummyQuerierTest extends ServerTestCase
             //expected
         }
         assertFalse(listener.heard);
-    }    
+    }
     
     public void testErrorBehaviour() {
         // barfs on empty exception
@@ -85,7 +85,7 @@ public class DummyQuerierTest extends ServerTestCase
             fail("expected to barf");
         } catch (IllegalStateException ignored) {
             //expected
-        } 
+        }
         assertFalse(listener.heard);
                
     }
@@ -95,13 +95,14 @@ public class DummyQuerierTest extends ServerTestCase
     */
    public void testDummyQuery() throws Exception
    {
+      Querier querier = DummyQuerierSPI.createDummyQuerier();
       QueryResults results = null;
 
       //dummy one should accept a null
       results = querier.doQuery();
        assertEquals(QueryStatus.QUERY_COMPLETE,querier.getStatus());
        
-       System.out.println(listener.statusList); // test on something here?       
+       System.out.println(listener.statusList); // test on something here?
        
       //and results should produce a valid xml document: this will parse it in
       //into a DOM tree
@@ -120,7 +121,7 @@ public class DummyQuerierTest extends ServerTestCase
 
     class MockListener implements QuerierListener {
         List statusList = new ArrayList();
-        public void queryStatusChanged(Querier querier) {            
+        public void queryStatusChanged(Querier querier) {
             heard = true;
             statusList.add(querier.getStatus());
         }
