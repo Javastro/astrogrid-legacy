@@ -108,7 +108,7 @@ public class From extends SQLComponent {
             if ( catalog.getNumberTables() <= 0 ) {  // no table specified assume owner and table name are same
                buffer
                    .append( catalog.getName() )
-                   .append( Configuration.getProperty( ConfigurationKeys.DATABASE_TABLE_SEPARATOR) )
+                   .append( ".." ) //softwired for now cos I can't see whats wrong: Configuration.getProperty( ConfigurationKeys.DATABASE_TABLE_SEPARATOR) )
                    .append( catalog.getName() )
                    .append( ", " ) ;
             }
@@ -124,7 +124,7 @@ public class From extends SQLComponent {
 
                    buffer
                        .append( catalog.getName() )
-                     .append( Configuration.getProperty( ConfigurationKeys.DATABASE_TABLE_SEPARATOR) ) //Bug #15
+                        .append( ".." ) //softwired for now cos I can't see whats wrong: Configuration.getProperty( ConfigurationKeys.DATABASE_TABLE_SEPARATOR) )
                         .append( table.getName() )
                         .append( ", " ) ;
 

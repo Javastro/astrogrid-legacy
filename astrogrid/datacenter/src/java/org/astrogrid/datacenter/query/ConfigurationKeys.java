@@ -1,4 +1,4 @@
-/* $Id: ConfigurationKeys.java,v 1.1 2003/08/28 16:17:06 mch Exp $
+/* $Id: ConfigurationKeys.java,v 1.2 2003/09/16 15:59:29 mch Exp $
  * Created on 19-Aug-2003
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -95,13 +95,16 @@ public interface ConfigurationKeys {
    /** UCD category within the component's configuration */
    UCD_CATEGORY = "UCD";
 
-   public static final String
    /** Key within component's configuration identifying separator between database and table */
-   DATABASE_TABLE_SEPARATOR = "DATABASE.TABLE.SEPARATOR";
+//   public static final String
+//   DATABASE_TABLE_SEPARATOR = "DATABASE.TABLE.SEPARATOR";
 
 }
 /*
  * $Log: ConfigurationKeys.java,v $
+ * Revision 1.2  2003/09/16 15:59:29  mch
+ * Softwired database separator to fix bug....
+ *
  * Revision 1.1  2003/08/28 16:17:06  mch
  * New Configuration package
  *
