@@ -20,7 +20,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         org.apache.axis.description.OperationDesc oper;
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getStatus");
-        oper.addParameter(new javax.xml.namespace.QName("", "id"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.addParameter(new javax.xml.namespace.QName("", "soapBody"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"), java.lang.Object.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         oper.setReturnClass(java.lang.String.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "getStatusReturn"));
@@ -30,8 +30,8 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getMetadata");
-        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"));
-        oper.setReturnClass(java.lang.Object.class);
+        oper.setReturnType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Element"));
+        oper.setReturnClass(org.w3c.dom.Element.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "getMetadataReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
@@ -142,8 +142,8 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("registerWebListener");
-        oper.addParameter(new javax.xml.namespace.QName("", "queryId"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
-        oper.addParameter(new javax.xml.namespace.QName("", "listener"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"), java.lang.Object.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.addParameter(new javax.xml.namespace.QName("", "soapBody"), new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Element"), org.w3c.dom.Element.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.addParameter(new javax.xml.namespace.QName("", "listener"), new javax.xml.namespace.QName("http://delegate.datacenter.astrogrid.org", "WebNotifyServiceListener"), org.astrogrid.datacenter.delegate.WebNotifyServiceListener.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(org.apache.axis.encoding.XMLType.AXIS_VOID);
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
@@ -193,6 +193,13 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
             qName = new javax.xml.namespace.QName("http://query.datacenter.astrogrid.org", "QueryException");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.datacenter.query.QueryException.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://delegate.datacenter.astrogrid.org", "WebNotifyServiceListener");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.delegate.WebNotifyServiceListener.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -255,7 +262,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         }
     }
 
-    public java.lang.String getStatus(java.lang.String id) throws java.rmi.RemoteException {
+    public java.lang.String getStatus(java.lang.Object soapBody) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -268,7 +275,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
 
         setRequestHeaders(_call);
         setAttachments(_call);
-        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {id});
+        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {soapBody});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -283,7 +290,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         }
     }
 
-    public java.lang.Object getMetadata() throws java.rmi.RemoteException {
+    public org.w3c.dom.Element getMetadata() throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -304,9 +311,9 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         else {
             extractAttachments(_call);
             try {
-                return (java.lang.Object) _resp;
+                return (org.w3c.dom.Element) _resp;
             } catch (java.lang.Exception _exception) {
-                return (java.lang.Object) org.apache.axis.utils.JavaUtils.convert(_resp, java.lang.Object.class);
+                return (org.w3c.dom.Element) org.apache.axis.utils.JavaUtils.convert(_resp, org.w3c.dom.Element.class);
             }
         }
     }
@@ -500,7 +507,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         extractAttachments(_call);
     }
 
-    public void registerWebListener(java.lang.String queryId, java.lang.Object listener) throws java.rmi.RemoteException {
+    public void registerWebListener(org.w3c.dom.Element soapBody, org.astrogrid.datacenter.delegate.WebNotifyServiceListener listener) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -513,7 +520,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
 
         setRequestHeaders(_call);
         setAttachments(_call);
-        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {queryId, listener});
+        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {soapBody, listener});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;

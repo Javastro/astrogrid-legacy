@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: SelectionListChoiceItem.java,v 1.2 2003/09/16 12:47:59 nw Exp $
+ * $Id: SelectionListChoiceItem.java,v 1.3 2003/09/16 13:23:24 nw Exp $
  */
 
 package org.astrogrid.datacenter.adql.generated;
@@ -23,7 +23,7 @@ import org.astrogrid.datacenter.adql.AbstractQOM;
 /**EDITED by HAND - work around for bug - made a subclass of AbstractQOM.
  * Class SelectionListChoiceItem.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/09/16 12:47:59 $
+ * @version $Revision: 1.3 $ $Date: 2003/09/16 13:23:24 $
  */
 public class SelectionListChoiceItem extends AbstractQOM  implements java.io.Serializable {
 

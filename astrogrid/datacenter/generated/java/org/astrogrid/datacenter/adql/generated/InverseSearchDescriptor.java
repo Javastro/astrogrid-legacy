@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: InverseSearchDescriptor.java,v 1.2 2003/09/16 12:47:58 nw Exp $
+ * $Id: InverseSearchDescriptor.java,v 1.3 2003/09/16 13:23:24 nw Exp $
  */
 
 package org.astrogrid.datacenter.adql.generated;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class InverseSearchDescriptor.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/09/16 12:47:58 $
+ * @version $Revision: 1.3 $ $Date: 2003/09/16 13:23:24 $
  */
 public class InverseSearchDescriptor extends org.astrogrid.datacenter.adql.generated.SearchDescriptor {
 
