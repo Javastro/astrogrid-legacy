@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.43 2004/08/18 18:44:12 mch Exp $
+ * $Id: AxisDataServer.java,v 1.44 2004/08/18 22:29:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -107,9 +107,9 @@ public abstract class AxisDataServer  {
    /**
     * Submits given query
     */
-   public String submitQuery(Account user, Query query, Agsl resultsTarget, String requestedFormat, QuerierListener listener) throws AxisFault {
+   public String submitQuery(Account user, Query query, TargetIndicator resultsTarget, String requestedFormat, QuerierListener listener) throws AxisFault {
       try  {
-         Querier querier = Querier.makeQuerier(user, query, new TargetIndicator(resultsTarget), requestedFormat);
+         Querier querier = Querier.makeQuerier(user, query, resultsTarget, requestedFormat);
          if (listener != null) { querier.addListener(listener); }
          server.querierManager.submitQuerier(querier);
          return querier.getId();
@@ -171,6 +171,9 @@ public abstract class AxisDataServer  {
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.44  2004/08/18 22:29:21  mch
+Take more general TargetIndicator rather than AGSL
+
 Revision 1.43  2004/08/18 18:44:12  mch
 Created metadata plugin service and added helper methods
 
