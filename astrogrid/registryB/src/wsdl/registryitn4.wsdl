@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="urn:org.astrogrid.registry" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:org.astrogrid.registry" xmlns:intf="urn:org.astrogrid.registry" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns2="http://request.query.registry.astrogrid.org" xmlns:tns3="http://response.query.registry.astrogrid.org" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ <wsdl:types>
+  <schema targetNamespace="http://request.query.registry.astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="RegistryQuery">
+    <sequence/>
+   </complexType>
+   <complexType name="RegistryUpdate">
+    <sequence/>
+   </complexType>
+  </schema>
+  <schema targetNamespace="urn:org.astrogrid.registry" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+  
+   <element name="regQuery" type="tns2:RegistryQuery"/>
+   <element name="submitQueryReturn" type="tns3:RegistryResponse"/>
+   <element name="regUpdate" type="tns2:RegistryUpdate"/>
+   <element name="updateQueryReturn" type="xsd:boolean"/>
+   <element name="regUpdate2" type="tns2:RegistryUpdate"/>
+   <element name="deleteQueryReturn" type="xsd:boolean"/>
+   <element name="dTimeRequest" type="xsd:dateTime"/>
+   <element name="harvestReturn" type="xsd:boolean"/>
+   <element name="replicateReturn" type="xsd:boolean"/>
+  </schema>
+  <schema targetNamespace="http://response.query.registry.astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="RegistryResponse">
+    <sequence/>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="deleteQueryResponse">
+
+      <wsdl:part element="impl:deleteQueryReturn" name="deleteQueryReturn"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteQueryRequest">
+
+      <wsdl:part element="impl:regUpdate2" name="in0"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="replicateResponse">
+
+      <wsdl:part element="impl:replicateReturn" name="replicateReturn"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateQueryRequest">
+
+      <wsdl:part element="impl:regUpdate" name="in0"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="replicateRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="harvestRequest">
+
+      <wsdl:part element="impl:dTimeRequest" name="dTime"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="submitQueryRequest">
+
+      <wsdl:part element="impl:regQuery" name="regQuery"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="harvestResponse">
+
+      <wsdl:part element="impl:harvestReturn" name="harvestReturn"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="submitQueryResponse">
+
+      <wsdl:part element="impl:submitQueryReturn" name="submitQueryReturn"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateQueryResponse">
+
+      <wsdl:part element="impl:updateQueryReturn" name="updateQueryReturn"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="RegistryInterface">
+
+      <wsdl:operation name="submitQuery">
+
+         <wsdl:input message="impl:submitQueryRequest" name="submitQueryRequest"/>
+
+         <wsdl:output message="impl:submitQueryResponse" name="submitQueryResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateQuery">
+
+         <wsdl:input message="impl:updateQueryRequest" name="updateQueryRequest"/>
+
+         <wsdl:output message="impl:updateQueryResponse" name="updateQueryResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteQuery">
+
+         <wsdl:input message="impl:deleteQueryRequest" name="deleteQueryRequest"/>
+
+         <wsdl:output message="impl:deleteQueryResponse" name="deleteQueryResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="harvest">
+
+         <wsdl:input message="impl:harvestRequest" name="harvestRequest"/>
+
+         <wsdl:output message="impl:harvestResponse" name="harvestResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="replicate">
+
+         <wsdl:input message="impl:replicateRequest" name="replicateRequest"/>
+
+         <wsdl:output message="impl:replicateResponse" name="replicateResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="RegistrySoapBinding" type="impl:RegistryInterface">
+
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="submitQuery">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="submitQueryRequest">
+
+            <wsdlsoap:body namespace="urn:org.astrogrid.registry" use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="submitQueryResponse">
+
+            <wsdlsoap:body namespace="urn:org.astrogrid.registry" use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateQuery">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="updateQueryRequest">
+
+            <wsdlsoap:body namespace="urn:org.astrogrid.registry" use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="updateQueryResponse">
+
+            <wsdlsoap:body namespace="urn:org.astrogrid.registry" use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteQuery">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteQueryRequest">
+
+            <wsdlsoap:body namespace="urn:org.astrogrid.registry" use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteQueryResponse">
+
+            <wsdlsoap:body namespace="urn:org.astrogrid.registry" use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="harvest">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="harvestRequest">
+
+            <wsdlsoap:body namespace="urn:org.astrogrid.registry" use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="harvestResponse">
+
+            <wsdlsoap:body namespace="urn:org.astrogrid.registry" use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="replicate">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="replicateRequest">
+
+            <wsdlsoap:body namespace="urn:org.astrogrid.registry" use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="replicateResponse">
+
+            <wsdlsoap:body namespace="urn:org.astrogrid.registry" use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="RegistryInterfaceService">
+
+      <wsdl:port binding="impl:RegistrySoapBinding" name="Registry">
+
+         <wsdlsoap:address location="http://localhost:8080/axis/services/Registry"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

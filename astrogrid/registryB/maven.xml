@@ -80,7 +80,7 @@
 		<jar destfile="${project.build}/jar/server/${registry.server.jar}">
 			<!-- Copy our own Java source -->
 			<fileset dir="${registry.classes}">
-			    <exclude name="**/delegate/**" />
+			    <exclude name="**/client/**" />
 			</fileset>
 		</jar>
 	</goal>

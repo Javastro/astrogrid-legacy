@@ -1,0 +1,63 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from RegistryInterfaceService WSDL service -->
+
+  <service name="Registry" provider="java:RPC" style="document" use="literal">
+      <parameter name="wsdlTargetNamespace" value="urn:org.astrogrid.registry"/>
+      <parameter name="wsdlServiceElement" value="RegistryInterfaceService"/>
+      <parameter name="wsdlServicePort" value="Registry"/>
+      <parameter name="className" value="org.astrogrid.registry.server.RegistryService"/>
+      <parameter name="wsdlPortType" value="RegistryInterface"/>
+      <operation name="submitQuery" qname="operNS:submitQuery" xmlns:operNS="urn:org.astrogrid.registry" returnQName="retNS:submitQueryReturn" xmlns:retNS="urn:org.astrogrid.registry" returnType="rtns:RegistryResponse" xmlns:rtns="http://response.query.registry.astrogrid.org" >
+        <parameter qname="pns:regQuery" xmlns:pns="urn:org.astrogrid.registry" type="tns:RegistryQuery" xmlns:tns="http://request.query.registry.astrogrid.org"/>
+      </operation>
+      <operation name="updateQuery" qname="operNS:updateQuery" xmlns:operNS="urn:org.astrogrid.registry" returnQName="retNS:updateQueryReturn" xmlns:retNS="urn:org.astrogrid.registry" returnType="rtns:boolean" xmlns:rtns="http://www.w3.org/2001/XMLSchema" >
+        <parameter qname="pns:regUpdate" xmlns:pns="urn:org.astrogrid.registry" type="tns:RegistryUpdate" xmlns:tns="http://request.query.registry.astrogrid.org"/>
+      </operation>
+      <operation name="deleteQuery" qname="operNS:deleteQuery" xmlns:operNS="urn:org.astrogrid.registry" returnQName="retNS:deleteQueryReturn" xmlns:retNS="urn:org.astrogrid.registry" returnType="rtns:boolean" xmlns:rtns="http://www.w3.org/2001/XMLSchema" >
+        <parameter qname="pns:regUpdate2" xmlns:pns="urn:org.astrogrid.registry" type="tns:RegistryUpdate" xmlns:tns="http://request.query.registry.astrogrid.org"/>
+      </operation>
+      <operation name="harvest" qname="operNS:harvest" xmlns:operNS="urn:org.astrogrid.registry" returnQName="retNS:harvestReturn" xmlns:retNS="urn:org.astrogrid.registry" returnType="rtns:boolean" xmlns:rtns="http://www.w3.org/2001/XMLSchema" >
+        <parameter qname="pns:dTimeRequest" xmlns:pns="urn:org.astrogrid.registry" type="tns:dateTime" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="replicate" qname="operNS:replicate" xmlns:operNS="urn:org.astrogrid.registry" returnQName="retNS:replicateReturn" xmlns:retNS="urn:org.astrogrid.registry" returnType="rtns:boolean" xmlns:rtns="http://www.w3.org/2001/XMLSchema" >
+      </operation>
+      <parameter name="allowedMethods" value="deleteQuery replicate updateQuery submitQuery harvest"/>
+      <parameter name="scope" value="Session"/>
+
+      <typeMapping
+        xmlns:ns="http://response.query.registry.astrogrid.org"
+        qname="ns:RegistryResponse"
+        type="java:org.astrogrid.registry.query.response.RegistryResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://request.query.registry.astrogrid.org"
+        qname="ns:RegistryUpdate"
+        type="java:org.astrogrid.registry.query.request.RegistryUpdate"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://request.query.registry.astrogrid.org"
+        qname="ns:RegistryQuery"
+        type="java:org.astrogrid.registry.query.request.RegistryQuery"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+  </service>
+</deployment>

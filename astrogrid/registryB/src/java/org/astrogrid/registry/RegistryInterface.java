@@ -3,7 +3,7 @@ package org.astrogrid.registry;
 
 import java.rmi.Remote ;
 import java.rmi.RemoteException;
-import java.util.Date;
+import java.util.Calendar;
 
 import org.astrogrid.registry.query.request.RegistryQuery;
 import org.astrogrid.registry.query.request.RegistryUpdate;
@@ -18,7 +18,7 @@ public interface RegistryInterface extends Remote {
    
    public Boolean deleteQuery(RegistryUpdate ru) throws RemoteException;
    
-   public Boolean harvest(Date a) throws RemoteException;
+   public Boolean harvest(Calendar a) throws RemoteException;
    
    public Boolean replicate() throws RemoteException;
    
