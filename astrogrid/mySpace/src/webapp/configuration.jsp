@@ -50,9 +50,9 @@ boolean guessPressed = request.getParameterValues(guessBtn)!=null;
       String baseURL = new URL ("http", request.getServerName(),
                                         request.getServerPort(), 
                                         request.getContextPath()).toString();
-      defaultsBean.setMsmUrl(baseURL+"/MySpaceManager");
+      defaultsBean.setMsmUrl(baseURL+"/services/MySpaceManager");
       defaultsBean.setMssUrl("NotRequired");
-      defaultsBean.setMsmsUrl(baseURL+"/MySpaceManager,");
+      defaultsBean.setMsmsUrl(baseURL+"/services/MySpaceManager,");
       message="Based on the location of the webapp, these are the best guesses for the URLs.  Press change to apply them, followed by export if you wish to save them to the config file.";
    } 
      
@@ -261,15 +261,15 @@ if (loadedConfig) {
   <input:text name="version"  attributesText='size="15"' /><br>
   Location of Registry DB file: 
   <input:text name="registryconf" attributesText='size="100"'/> <br> 
-  MySpaceManagerURL: 
+  <span style="color: #800080;">MySpaceManagerURL:</span> 
   <input:text name="msmUrl"  attributesText='size="100"'/><br>
-  MySpaceServerURL: 
+  <span style="color: #800080;">MySpaceServerURL:</span> 
   <input:text name="mssUrl"  attributesText='size="100"'/><br>
-  MySpaceMangerURLs: 
+  <span style="color: #800080;">MySpaceMangerURLs:</span> 
   <input:text name="msmsUrl" attributesText='size="100"'/><br>
-  <button type="submit" name="<%=changeBtn%>" onmouseover="javascript:window.status='Update these values for this session only (will reset to config files values after server is bounced)';" onmouseout="javascript:window.status='';">Change</button>
+  <button type="submit" name="<%=changeBtn%>" onmouseover="javascript:window.status='Update these values for this session only (will reset to values in config file after server is bounced)';" onmouseout="javascript:window.status='';">Change</button>
   
-  <button type="submit" name="<%=guessBtn%>"  onmouseover="javascript:window.status='Guess the URLs from the webapps installation location (need to press change use the values)';" onmouseout="javascript:window.status='';">Guess URLs</button>
+  <button type="submit" name="<%=guessBtn%>"  onmouseover="javascript:window.status='The items in purple can be guessed from the webapp''s installation location (need to press change to apply the values)';" onmouseout="javascript:window.status='';">Guess URLs</button>
   <BR>
   <button type="submit" name="<%=exportBtn%>" onmouseover="javascript:window.status='Export these values to the named config file.';" onmouseout="javascript:window.status='';">Export</button> to 
 <input:text name="<%=filenameTxt%>" attributesText='size="50"' default="../ASTROGRID_myspacemanagerconfig.export"/>
