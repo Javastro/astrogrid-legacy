@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- does not do anything for now - did not seem to work -->
+<mapping xmlns="http://castor.exolab.org/" 
+    xmlns:cst="http://castor.exolab.org/">
+    <description>Castor generated mapping file</description>
+ </mapping>
