@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: project.xml,v 1.71 2004/09/16 21:49:31 nw Exp $ -->
+<!-- $Id: project.xml,v 1.72 2004/11/08 17:56:59 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
   <extend>../maven-base/project.xml</extend>
   <id>astrogrid-jes</id>
@@ -53,8 +53,8 @@
             <include>**/*.xmltemplate</include>
             <include>**/*.properties</include>
             <include>**/*.sql</include>
-            <include>**/*.ddl</include>
-            <include>**/*.betwixt</include>
+            <include>**/*.txt</include>
+            <include>**/*.jpg</include>
           </includes>
         </resource>
       </resources>
@@ -66,8 +66,6 @@
           <include>**/*.xml</include>
           <include>**/*.xsl</include>
           <include>**/*.properties</include>
-          <include>*.py</include>
-          <include>**/*.betwixt</include>
         </includes>
       </resource>
     </resources>
