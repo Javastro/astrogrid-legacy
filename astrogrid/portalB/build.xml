@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/09/24 13:20:21 $</cvs:author>
-    | <cvs:version>$Revision: 1.46 $</cvs:version>
+    | <cvs:author>$Date: 2003/09/29 23:28:55 $</cvs:author>
+    | <cvs:version>$Revision: 1.47 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.47  2003/09/29 23:28:55  dave
+    | Updated the release build script
+    |
     | Revision 1.46  2003/09/24 13:20:21  dave
     | Fixed reference to missing authentication library
     |
@@ -2361,14 +2364,12 @@
 		<!-- Replace the main cocoon sitemap -->
 		<copy verbose="false" file="src/ral/cocoon.xmap" toFile="build/release/cocoon/webapp/sitemap.xmap"/>
 
-		<!-- Create the portal config -->
-<!-- ZRQ Need to update the community name when we do this ....-->
+		<!-- Copy the portal config -->
 		<mkdir dir="build/release/cocoon/webapp/WEB-INF/config"/>
 		<copy verbose="false" file="src/config/config.xml" toDir="build/release/cocoon/webapp/WEB-INF/config"/>
 		<!--+
 			| Modify the Cocoon web.xml, adding our JNDI property
 			| This will default to the settings for the current machine.
-			| Real installs need to modify this to match their config.
 			+-->
 		<xslt style="src/build/config/webapp.xsl"
 		      in="build/release/cocoon/webapp/WEB-INF/web.xml"
@@ -2394,46 +2395,53 @@
 		</jar>
 	</target>
 
-	<!-- Install the release webapp into Tomcat -->
-	<target name="cocoon.release.install" depends="tomcat.tasks">
+	<!--+
+		| Deploy our Cocoon webapp.
+		| This deploys the Cocoon webapp in place, using the Tomcat Manager to reference the Cocoon webapp in our build tree.
+		+-->
+	<target name="cocoon.deploy" depends="tomcat.tasks">
 		<!-- Wait for the Tomcat manager -->
 		<antcall target="tomcat.manager.wait"/>
 		<!-- Install our web-app -->
 		<echo message=""/>
-		<echo message="Installing Cocoon ...."/>
+		<echo message="Deploying Cocoon ...."/>
 		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/cocoon" war="file://${basedir}/build/release/cocoon/webapp"/>
+		<!-- Wait for Cocoon to load -->
+		<antcall target="cocoon.wait"/>
 	</target>
 
-
-	<!-- Install our source tree as a web-app -->
-	<target name="project.webapp.install" depends="tomcat.tasks">
-		<!-- Copy our WEB-INF directory -->
-		<copy verbose="false" toDir="${basedir}">
-			<fileset dir="src/webapp">
-			</fileset>
-		</copy>
-		<!-- Wait for the Tomcat manager -->
-		<antcall target="tomcat.manager.wait"/>
-		<!-- Install our web-app -->
-		<echo message=""/>
-		<echo message="Installing source webapp ...."/>
-		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/source" war="file://${basedir}"/>
+	<!--+
+		| Install our Cocoon webapp.
+		| This installs the Cocoon webapp by copying the war file into the Tomcat webapps directory.
+		+-->
+	<target name="cocoon.install" depends="">
+		<antcall target="cocoon.release"/>
+		<echo message="Installing Cocoon webapp ...."/>
+		<copy verbose="false" file="build/release/cocoon/cocoon.war" toFile="${tomcat.home}/webapps/cocoon.war"/>
 	</target>
 
-	<!-- Remove our project webapps-->
+	<!--+
+		| Deploy our release webapp.
+		| This deploys the Cocoon webapp in place, using the Tomcat Manager to reference the Cocoon webapp in our build tree.
+		+-->
+	<target name="release.DEPLOY" depends="">
+		<antcall target="cocoon.release"/>
+		<antcall target="cocoon.deploy"/>
+	</target>
+
+	<!--+
+		| Install our Cocoon webapp.
+		| This installs the Cocoon webapp by copying the war file into the Tomcat webapps directory.
+		+-->
+	<target name="release.INSTALL" depends="">
+		<antcall target="cocoon.release"/>
+		<antcall target="cocoon.install"/>
+	</target>
+
+	<!-- Delete the Cocoon webapp from the Tomcat webapps directory -->
 	<target name="release.DELETE" depends="">
 		<delete verbose="false" failonerror="false" dir="${tomcat.home}/webapps/cocoon"/>
 		<delete verbose="false" failonerror="false" file="${tomcat.home}/webapps/cocoon.war"/>
-		<delete verbose="false" failonerror="false" dir="${tomcat.home}/webapps/DataQuery"/>
-		<delete verbose="false" failonerror="false" file="${tomcat.home}/webapps/DataQuery.war"/>
-	</target>
-
-	<!-- Release our project -->
-	<target name="project.RELEASE" depends="">
-		<antcall target="cocoon.release"/>
-		<antcall target="project.webapp.install"/>
-		<echo message="Installing project webapps ...."/>
-		<copy verbose="false" file="build/release/cocoon/cocoon.war" toFile="${tomcat.home}/webapps/cocoon.war"/>
 	</target>
 
 </project>
