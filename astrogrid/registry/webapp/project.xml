@@ -209,13 +209,9 @@
           	</properties>            
         </dependency>
 
-        <dependency>
-            <id>axis</id>
-            <version>1.1</version>
-        </dependency>
-      
-	<dependency>
-	    <artifactId>xmldb</artifactId>
+        
+		<dependency>
+			<artifactId>xmldb</artifactId>
             <groupId>exist</groupId>
            	<version>unknown</version>            
           	<properties>
@@ -233,35 +229,7 @@
           	</properties>            
         </dependency>
         
-        <dependency>
-	     <id>jaxrpc</id>
-	     <version>unknown</version>
-	      <jar>jaxrpc.jar</jar>
-	 </dependency>
-	
-	 <dependency>
-	      <id>saaj</id>
-	      <version>unknown</version>
-	      <jar>saaj.jar</jar>
-	</dependency>
-	
-	<dependency>
-	      <artifactId>commons-logging</artifactId>
-	      <groupId>commons-logging</groupId>
-	      <version>1.0.3</version>
-	</dependency>
-	 
-	<dependency>
-	       <artifactId>commons-discovery</artifactId>
-	       <groupId>commons-discovery</groupId>
-	        <version>20030211.213356</version>
-	</dependency>        
-                             
-        <dependency>
-            <id>servletapi</id>
-             <version>2.4</version>
-              <!-- Compile time only -->
-         </dependency>
+
 		<!---+
 			Commenting this out, because wsdl4j is already going into the lib directory with 
 			axis.  Lets leave it here for now just in the odd case they ever take it out of the axis
