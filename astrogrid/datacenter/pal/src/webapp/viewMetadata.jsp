@@ -1,7 +1,10 @@
+<%-- a JSP that displays the metadata in a form suitable for users.  This could/should
+  well be an Xslt - I just can't be bothered making one, this is easier for me... --%>
 <%@ page import="java.io.*,
        org.w3c.dom.*,
        org.astrogrid.io.*,
        org.astrogrid.datacenter.ucd.UcdDictionary,
+       org.astrogrid.datacenter.units.UnitDictionary,
        org.astrogrid.util.DomHelper,
        org.astrogrid.datacenter.metadata.*,
        org.astrogrid.datacenter.service.*"
@@ -59,7 +62,7 @@
 <tr>
 <th>Column</th>
 <th>Type</th>
-<th>Units</th>
+<th><a href='<%= UnitDictionary.UNIT_REF %>'>Units</a></th>
 <th><a href='<%= UcdDictionary.UCD1REF %>'>UCD1</a></th>
 <th><a href='<%= UcdDictionary.UCD1PREF %>'>UCD1+</a></th>
 <th>Error</th>
@@ -104,11 +107,12 @@
 } // end if rdbmsMetadata exists
 %>
 
-<h2>Raw Metadata</h2>
+<h1>Raw Metadata</h1>
 
 <p>Download the metadata document <a href='GetMetadata'>here</a></p>
 <p>Download the raw metadata document <a href='getRawMetadata.jsp'>here</a></p>
 <%-- <p>If you have access to administrator functions, you can download regenerated metadata <a href='admin/generateMetadata.jsp'>here</a></p> --%>
+
 </div>
 
    <%@ include file="footer.xml" %>
