@@ -97,7 +97,7 @@ Requires:
    <goal name="SkyNodeWsdl2java" prereqs="axis-declare-tasks">
 
       <axis-wsdl2java output="${generated.src}" verbose="true" testcase="true"
-         url="${basedir}/src/wsdl/SkyNode0.7.wsdl"
+         url="${basedir}/src/wsdl/SkyNode0.7.3.1.wsdl"
          deployscope="Application" serverside="true" skeletondeploy="true">
       </axis-wsdl2java>
    </goal>
