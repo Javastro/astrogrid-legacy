@@ -41,6 +41,69 @@ configuration guide (the file CONFIG in the installation kit).  The
 default configuration is correct for operation with the GDW back-end
 service on hydra.star.le.ac.uk.
 
+To configure the data warehouse module of the Astrogrid software, only two
+configuration files need to be edited: the WarehouseQuerier.properties
+file and the AstroGridConfig.properties file.  $TOMCAT is used below to
+indicate the Tomcat installation directory.
+
+A. $TOMCAT/webapps/warehouse/WEB-INF/classes/org/astrogrid/warehouse/queriers/ogsadai/WarehouseQuerier.properties
+
+This file configures the data warehouse querier.  Change the parameter
+names to specify the warehouse querier class name, the location of the
+OGSA-DAI registry, the XSLT stylesheet used to transform rowsets to
+VOTable, a specific java virtual machine for the querier (optional), and
+the location of the OGSA-DAI jar files.
+
+1. DatabaseQuerierClass
+Configure the type of querier. Enter the package name of the data centre
+querier class here:
+	DatabaseQuerierClass =
+		org.astrogrid.warehouse.queriers.ogsadai.WarehouseQuerier
+
+2. OgsaDaiHostString and OgsaDaiRegistryString
+Configure the location of the OGSA-DAI grid service registry. Enter the
+URL for the OGSA-DAI registry host machine followed by the local
+identifier of the OGSA-DAI registry:
+	OgsaDaiHostString=http://hydra.star.le.ac.uk:8082
+
+OgsaDaiRegistryString=/gdw/services/ogsadai/DAIServiceGroupRegistry
+
+3. XslTransform
+Configure the name and location of the XSLT stylesheet that will convert
+XML rowsets to VOTable. Enter the URL of the XSLT stylesheet:
+
+XslTransform=http://astrogrid.ast.cam.ac.uk/xslt/ag-warehouse-first.xsl
+
+4. WarehouseJVM (Optional)
+Configure the JVM for the GdsQueryDelegate. Only set this variable if the
+GdsQueryDelegate requires a specific java virtual machine (other than the
+one specified in Tomcat's $JAVA-HOME variable).
+	WarehouseJvm=/data/cass123a/kea/j2sdk1.4.1_01/bin/java
+
+5. ExecutableJarPath
+Configure the executable path for OGSA-DAI classes. Set this variable to
+the relative pathname that holds the OGSA-DAI package jar file in
+Tomcat(note - an absolute path can be used as well):
+	ExecutableJarPath=../webapps/warehouse/WEB-INF/classes/
+
+6. ExecutableJarName
+Configure the OGSA-DAI jar filename. Enter the filename of the OGSA-DAI
+jar file located in the relative pathname above:
+	ExecutableJarName=astrogrid-ogsadai-delegates.jar
+
+B. $TOMCAT/conf/AstroGridConfig.properties
+
+This is the configuration file for an Astrogrid data centre - it can be
+specialized to describe a data warehouse.  Only one parameter needs to be
+changed to specify the warehouse.
+
+1. DatabaseQuerierClass
+Configure the package name of the class that will query the data
+warehouse:
+	DatabaseQuerierClass=
+		org.astrogrid.warehouse.queriers.ogsadai.WarehouseQuerier
+
+
 Go back to the manager interface and start the warehouse web-application.
 This makes it available to users over the Internet.
 
