@@ -1,5 +1,5 @@
 /*
- * $Id: User.java,v 1.1 2003/11/27 16:33:19 pah Exp $
+ * $Id: User.java,v 1.2 2003/12/07 00:33:05 pah Exp $
  * 
  * Created on 27-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -24,6 +24,16 @@ public class User {
     String account;
     String group;
     String token;
+    
+    public User(){
+    }
+    
+    public User(String account, String group, String token)
+    {
+       this.account = account;
+       this.group = group;
+       this.token = token;
+    }
    /**
     * @return
     */
