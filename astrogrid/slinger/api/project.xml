@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.5 2005/03/22 12:58:18 mch Exp $ -->
+<!-- $Id: project.xml,v 1.6 2005/03/22 16:18:48 mch Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -21,7 +21,8 @@
     <shortDescription>AstroGrid Slinger API</shortDescription>
 
     <dependencies>
-    
+
+        <!-- need common for the old User and Ivorns -->
         <dependency>
             <artifactId>astrogrid-common</artifactId>
             <groupId>org.astrogrid</groupId>
@@ -31,7 +32,13 @@
         <dependency>
             <artifactId>astrogrid-config</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>${astrogrid.config.version}</version>
+            <version>${astrogrid.config.stable}</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>astrogrid-utils</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.utils.stable}</version>
         </dependency>
 
        <!-- axis, for myspace client -->
