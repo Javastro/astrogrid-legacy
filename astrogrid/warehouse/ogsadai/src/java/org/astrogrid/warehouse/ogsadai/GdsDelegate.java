@@ -2,9 +2,15 @@ package org.astrogrid.warehouse.ogsadai;
 
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.Properties;
+import javax.xml.namespace.QName;
+import org.apache.axis.client.Stub;
 import org.globus.ogsa.utils.AnyHelper;
+import org.gridforum.ogsi.EntryType;
 import org.gridforum.ogsi.ExtensibilityType;
+import org.gridforum.ogsi.HandleType;
+import org.gridforum.ogsi.LocatorType;
 import org.w3c.dom.Document;
 import uk.org.ogsadai.common.XMLUtilities;
 import uk.org.ogsadai.wsdl.gds.GDSPortType;
@@ -15,9 +21,6 @@ import uk.org.ogsadai.service.daiservicegroups.DAIServiceGroupRegistrationPortTy
 import uk.org.ogsadai.service.daiservicegroups.DAIServiceGroupRegistrationServiceLocator;
 import uk.org.ogsadai.service.daiservicegroups.helpers.DAIServiceGroupQueryHelper;
 
-import java.net.URL;
-import org.apache.axis.client.Stub;
-import javax.xml.namespace.QName;
 
 /**
  * A delegate for the Grid Data Service (GDS) of OGSA-DAI.
@@ -78,6 +81,7 @@ public class GdsDelegate extends GridServiceDelegate {
            e.getMessage(), e);
     }
   }
+
 
   /**
    * Returns the Grid Service Handle for the registry of 
@@ -209,35 +213,113 @@ public class GdsDelegate extends GridServiceDelegate {
    * @throws Exception
    */
   public void setFactoryGshFromRegistry( 
-	  String registryUrl, int timeoutValue ) throws Exception
-  {
-	// Ask the GDSR for information about registered GDSFs 
-	DAIServiceGroupRegistrationServiceLocator gdsrLocator = null;
-	DAIServiceGroupRegistrationPortType gdsrGpt = null;
-  
-	try {
-		gdsrLocator = new DAIServiceGroupRegistrationServiceLocator();
-		gdsrGpt = gdsrLocator.getDAIServiceGroupRegistrationPort(
-			  new URL(registryUrl));
-   
-		// Set timeout of SOAP calls
-		((Stub) gdsrGpt).setTimeout(timeoutValue * 1000);
-	}
-	catch (Exception e) {
-	  logger.error("Could not locate registry at: " + registryUrl,e);
-	  throw new Exception(
-		"Could not locate registry at: " + registryUrl,e);
-	}
-      
-	QName[] portTypes = new QName[1];
-	portTypes[0] = OGSADAIConstants.GDSF_PORT_TYPE;
-	ExtensibilityType query = 
-		DAIServiceGroupQueryHelper.getPortTypeQuery(portTypes);
-	ExtensibilityType result;
-	result = gdsrGpt.findServiceData(query);          
-    factoryHandle = result;
+	  String registryUrl, int timeoutValue ) throws Exception {
 
+    // Ask the GDSR for information about registered GDSFs 
+    DAIServiceGroupRegistrationServiceLocator gdsrLocator = null;
+    DAIServiceGroupRegistrationPortType gdsrGpt = null;
+    try {
+      gdsrLocator = new DAIServiceGroupRegistrationServiceLocator();
+      gdsrGpt = gdsrLocator.getDAIServiceGroupRegistrationPort(
+          new URL(registryUrl));
+   
+      // Set timeout of SOAP calls
+     ((Stub) gdsrGpt).setTimeout(timeoutValue * 1000);
+    }
+    catch (Exception e) {
+      logger.error("Could not locate registry at: " + registryUrl, e);
+      throw new Exception(
+        "Could not locate registry at: " + registryUrl, e);
+    }
+
+
+      QName[] portTypes = new QName[1];
+      portTypes[0] = OGSADAIConstants.GDSF_PORT_TYPE;
+      ExtensibilityType query = 
+          DAIServiceGroupQueryHelper.getPortTypeQuery(portTypes);
+      ExtensibilityType result = gdsrGpt.findServiceData(query);
+
+    String gsh = this.chooseFactoryFromRegistry(result);
+    this.setFactoryHandle(gsh);
   }
+
+
+  /**
+   * Chooses a GDS factory from a list of factories.
+   * The list is in the form returned by the registry.
+   *
+   * @param queryResult the structure returned from the 
+   *                    query on the registry.
+   * @return the factory GSH.
+   */
+  String chooseFactoryFromRegistry (ExtensibilityType queryResult)
+      throws Exception {
+
+    String factoryURLString = "";
+    boolean haveFoundFactoryUrl = false;
+    try {
+      Object[] entries = AnyHelper.getAsObject(queryResult, EntryType.class);
+
+        if (entries == null || entries.length == 0){
+                        logger.error("No locators.");
+            throw new Exception("No locators.");
+        }
+
+        // Chose which factory to use.  If message level security is
+        // on prefer URLs that contain the work secure.  If message
+        // level security is off prefer URLs that do not contain the
+        // work secure.
+        for( int i = 0; i<entries.length && !haveFoundFactoryUrl; ++i )
+        {
+            EntryType someEntry = (EntryType) entries[i];
+            LocatorType locator = someEntry.getMemberServiceLocator();
+            HandleType[] handles = locator.getHandle();
+            if (handles == null || handles.length == 0)
+            {
+                logger.error("No handles.");
+                throw new Exception("No handles.");
+            }
+
+
+            // Check to see if finished looking for factory URLs
+            if ( factoryURLString.toUpperCase().indexOf( "SECURE") >= 0 ) {
+                // This is a factory for a secure GDS.  We will
+                // consider this to be the best URL if message level
+                // security is set.
+                //if ( mIsMessageLevelSecurity ) //TOFIX - security flag
+                if ( false ) {
+                    haveFoundFactoryUrl = true;
+                }
+            }
+            else
+            {
+                // This is a factory for a non-secure GDS.  We will
+                // consider this to be the best bet if message level
+                // security is off.
+                //if ( !mIsMessageLevelSecurity ) //TOFIX - security flag
+                if ( true ) {
+                    haveFoundFactoryUrl = true;
+                }
+            }
+        }
+    }
+    catch (Exception e) {
+      logger.error("No factories registered at the OGSA-DAI registry.", e);
+      throw new Exception(
+         "No factories registered at the OGSA-DAI registry.", e);
+    }
+    if (!haveFoundFactoryUrl) {
+      logger.error("Couldn't find factory URL at the OGSA-DAI registry.");
+      throw new Exception(
+         "Couldn't find factory URL at the OGSA-DAI registry at ");
+    }
+    
+    return factoryURLString;
+  }
+
+
+
+
 
   /**
    * Converts an SQL string into an XML Perform document for OGSA-DAI.
