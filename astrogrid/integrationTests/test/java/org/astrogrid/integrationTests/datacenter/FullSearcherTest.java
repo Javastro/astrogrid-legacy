@@ -1,4 +1,4 @@
-/*$Id: FullSearcherTest.java,v 1.2 2004/01/22 16:16:40 nw Exp $
+/*$Id: FullSearcherTest.java,v 1.3 2004/01/23 09:08:09 nw Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
+import org.astrogrid.community.User;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.delegate.*;
@@ -46,7 +47,7 @@ public class FullSearcherTest extends TestCase {
    
    protected void setUp() throws Exception {
       String endpoint = ConfManager.getInstance().getMerlinDatacenterEndPoint();
-      delegate = DatacenterDelegateFactory.makeFullSearcher(endpoint);
+      delegate = DatacenterDelegateFactory.makeFullSearcher(User.ANONYMOUS,endpoint,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       assertNotNull("delegate was null",delegate);
       
       InputStream is = this.getClass().getResourceAsStream("query-merlin.xml");
@@ -146,6 +147,9 @@ public class FullSearcherTest extends TestCase {
 
 /* 
 $Log: FullSearcherTest.java,v $
+Revision 1.3  2004/01/23 09:08:09  nw
+added cone searcher test too
+
 Revision 1.2  2004/01/22 16:16:40  nw
 minor doc fix
 
