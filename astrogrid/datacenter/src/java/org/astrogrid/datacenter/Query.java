@@ -4,6 +4,7 @@ package org.astrogrid.datacenter;
 
 import org.apache.log4j.Logger;
 
+import org.astrogrid.datacenter.impl.QueryFactoryImpl;
 import org.astrogrid.i18n.*;
 
 import org.w3c.dom.Document ;
@@ -40,9 +41,10 @@ public class Query {
     		implementationFactoryName = DatasetAgent.getProperty( catalogName ) ;
     		
 		try {
-			Class 
-				queryFactoryClassObject = Class.forName( implementationFactoryName ) ;
-			factory = (QueryFactory) queryFactoryClassObject.newInstance() ;			
+			Object
+			   obj = Class.forName( implementationFactoryName ).newInstance() ;			   
+//			logger.debug( "obj: " + obj.toString() ) ; 			
+			factory = (QueryFactory)obj ;
 		}
 		catch ( Exception ex ) {
 			Message

@@ -13,6 +13,7 @@ import java.io.StringReader ;
 
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
+import org.xml.sax.InputSource ;
 
 public class DatasetAgent {
 	
@@ -47,6 +48,7 @@ public class DatasetAgent {
 		    FileInputStream istream = new FileInputStream( CONFIG_FILENAME );
 		    configurationProperties.load(istream);
 		    istream.close();
+			logger.debug( configurationProperties.toString() ) ;
 		}
 		catch ( IOException ex ) {
 			Message
@@ -111,7 +113,7 @@ public class DatasetAgent {
                // Note - nothing on Jobs so far...
                //   	
     		   QueryFactory
-    		      queryFactory = Query.getFactory( "this needs to be catalog name" ) ;
+    		      queryFactory = Query.getFactory( "USNOB" ) ;
     		   query = queryFactory.createQuery( queryDoc ) ;
 			   query.execute() ;
 			   VOTable
@@ -124,7 +126,7 @@ public class DatasetAgent {
 			votable.stream( allocation ) ;
 */			
                response = votable.toString() ;			
-			   // Now touch the scheduler if you can....
+			   // Now touch the job monitor if you can....
 			
     		} // end else		
     			
@@ -162,10 +164,9 @@ public class DatasetAgent {
 		try {
 		   builder = factory.newDocumentBuilder();
 		   logger.debug( jobXML ) ;
-		   StringReader
-		      jobReader = new StringReader( jobXML ) ;
-		   // This is wrong...
-		   queryDoc = builder.parse( jobXML );
+		   InputSource
+		      jobSource = new InputSource( new StringReader( jobXML ) );
+		   queryDoc = builder.parse( jobSource );
 		}
 		catch ( Exception ex ) {
 			Message

@@ -20,6 +20,19 @@ import org.apache.log4j.BasicConfigurator ;
  */
 public class DatasetAgentTest extends TestCase {
 	
+	private static final String
+	    query7 =  
+	"<?xml version = '1.0' encoding = 'UTF8'?>" +
+	"<job name = 'jl012'>" +
+	   "<userid>jlusted</userid>" +
+	   "<community>leicester</community>" +
+	   "<jobstep name='aconesearch'>" +
+		  "<query>" +      
+			  "SELECT COUNT(*) FROM USNOB..USNOB" + 
+		  "</query>" +
+	   "</jobstep>" +
+	"</job>";
+	
 	static Logger 
 		logger = Logger.getLogger( DatasetAgentTest.class );
 
@@ -34,7 +47,7 @@ public class DatasetAgentTest extends TestCase {
 	public void testDataCenter() {
 		DatasetAgent
 			dsAgent= new DatasetAgent() ;
-		dsAgent.runQuery( "This should be XML" ) ;	
+		dsAgent.runQuery( query7 ) ;	
 		assertTrue( true ) ;
 	}
 	

@@ -55,7 +55,7 @@ public class QueryFactoryImpl implements QueryFactory {
 		try{
 			// Note the double lock strategy				
 			if( datasource == null ){
-				synchronized ( datasource ) {
+				synchronized ( QueryFactoryImpl.class ) {
 					if( datasource == null ){
 						InitialContext
 						    initialContext = new InitialContext() ;
@@ -79,6 +79,9 @@ public class QueryFactoryImpl implements QueryFactory {
 			
 	} // end of getDataSource()
 	
+	public QueryFactoryImpl () {
+		if( TRACE_ENABLED ) logger.debug( "QueryFactoryImpl(): entry") ; 
+	}
 	
 	private Connection getConnection() throws QueryException {
 		if( TRACE_ENABLED ) logger.debug( "getConnection(): entry") ; 
