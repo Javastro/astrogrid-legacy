@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<xsp:page language="java"
+   xmlns:xsp="http://apache.org/xsp"
+   xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+   xmlns:soap="http://apache.org/xsp/soap/3.0">
+     
+<page>
+
+<xsp:logic>
+   String QueryType = <xsp-request:get-parameter name="QueryType"/>;
+   String Element   = <xsp-request:get-parameter name="Element"/>;
+   String Value     = <xsp-request:get-parameter name="Value"/>;
+</xsp:logic>
+
+      <soap:call
+         url="http://stargrid1.bnsc.rl.ac.uk:8080/axis/services/AstrogridRegistryService"
+         xmlns:xsi="http://www.w3,org/1999/XMLSchema-instance"
+         xmlns:xsd="http://www.w3.org/1999/XMLSchema">
+
+         <reg:listRegistryMetadata
+            xmlns:reg="http://www.astrogrid.org/registry">
+            <in0 xsi:type="xsd:string"><xsp:expr>Element</xsp:expr></in0>
+            <in1 xsi:type="xsd:string"><xsp:expr>Value</xsp:expr></in1>
+         </reg:listRegistryMetadata>
+      </soap:call>
+
+</page>
+
+</xsp:page>

@@ -1,0 +1,42 @@
+<html>
+ <head>
+  <title>Cocoon registry service</title>
+ </head>
+ <body>
+  <table cellspacing="0" border="0" width="100%">
+   <tr>
+    <td align="left" width="30%">
+      <img alt="Home" src="AGlogo.gif">
+    </td>
+    <td align="left">
+     <h1>Registry Web Service demo from Cocoon</h1>
+    </td>
+  </tr>
+ </table>
+ <form action="registry.xsp" method="post">
+ <p>
+ Check a Registry Query Type and enter any parameters below. <br>
+  <input type="radio" name="QueryType", value="queryServices">
+     Query Services
+  <br/>
+  <input type="radio" name="QueryType" value="listAllServices">
+     List All Services
+  <br/>
+  <input type="radio" NAME="QueryType" value="listServiceMetadata">
+     List Service Metadata
+  <br/>
+    <input type="radio" NAME="QueryType" value="listRegistryMetadata" checked >
+     List Registry Metadata
+    <br/>
+    <input type="radio" NAME="QueryType"
+value="listServiceMetadataFormat">
+     List Services Metadata Format
+    <P>
+    Element: <input name="Element" type="TEXT" value="id">
+    Element Value: <input name="Value" type="TEXT" value="all">
+    <input type="SUBMIT" value="Submit"> 
+    </P>
+   </form>
+ 
+  </body>
+</html>
