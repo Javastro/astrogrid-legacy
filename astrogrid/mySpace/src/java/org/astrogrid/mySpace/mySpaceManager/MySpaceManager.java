@@ -123,11 +123,16 @@ public String upLoad(String jobDetails){
 			msA.setRegistryName(registryName);
 			RegistryManager reg = new RegistryManager(registryName);
 			String mySpaceFileName = "f" + reg.getNextDataItemID();
-			
+			String contentsType="";
+			String importURI="";
+			//this need to be considered when to invoke import when to invoke upload.
 			reg.rewriteRegistryFile();
-			dataitem = msA.importDataHolder(
+			dataitem = msA.upLoadDataHolder(
 				userID, communityID, jobID, newDataHolderName,
-				mySpaceFileName, fileSize );
+				mySpaceFileName, contentsType );
+			dataitem = msA.importDataHolder(userID, communityID,
+				 jobID, importURI, newDataItemName,
+				 contentsType);
 			if ( DEBUG ) logger.debug("userid:"+userID+"comID"+communityID+"jobid"+jobID+"newDataHN"+newDataHolderName+"filenm:"+mySpaceFileName
 								   +"fileSize"+fileSize);
 			if( DEBUG ) logger.debug("UploaderroCode is:" +errCode);
@@ -319,12 +324,6 @@ public String upLoad(String jobDetails){
 			if(DEBUG) logger.debug("LOOKUPDATAHOLDERSDETAILS CHECKING ATTRIBUTES FOR CREATING DATAITEM:"
 				+ userID +"   "+communityID +"   "+jobID +"   "+newDataHolderName +"   "
 				  +serverFileName +"   "+fileSize +"   " +"   registryName:"+registryName);
-								
-	
-		//   Get other stuff which can usefully be returned.
-		//   (Note that the current date needs to be returned to facilitate
-		//   comparisons with the expiry date; the MySpace system might be in
-		//   a different time-zone to the Explorer or portal.)
 	
 			boolean successStatus = status.getSuccessStatus();
 			boolean warningStatus = status.getWarningStatus();
@@ -335,7 +334,7 @@ public String upLoad(String jobDetails){
 			String header = "";
 			String footer = "";
 			String element = "";
-			logger.debug("before getting vection size:");
+	
 			if(itemRecVector!=null){
 				header = util.buildMySpaceManagerResponseHeader( MMC.SUCCESS, "");
 				footer = util.buildMySpaceManagerResponseFooter();
@@ -853,34 +852,16 @@ public String upLoad(String jobDetails){
 				}
 		}
         
-		//if ( DEBUG )logger.debug("FILE lOCATION: "+request.get("serverFileName"));
-		//if((request.containsKey("serverFileName")) &&(request.get("serverFileName")!=null) )serverFileName = request.get("serverFileName").toString();
-		logger.debug("555555555555"+serverFileName);
-		
-		//if ( (request.containsKey("newDataHolderName")) && (request.get("newDataHolderName")!=null)){
-		/*
-		if (request.get("newDataHolderName")!=null){
-			if(request.get("newDataHolderName").toString().trim().length()>0){
-				logger.debug("666666666666666");
-			  if ( DEBUG ) logger.debug("newdatraholdernema:"+newDataHolderName+"done");
-			  newDataHolderName = request.get("newDataHolderName").toString();
-			  logger.debug("77777777777");
-			}
-		}else{
-			logger.debug("88888888888888");
-			newDataHolderName = "/" +userID +"/serv1" +serverFileName.substring(serverFileName.lastIndexOf("/"),serverFileName.length());
-			if ( DEBUG ) logger.debug("newdataholdername:"+newDataHolderName+"done2");
-		}*/
 		
 		if ( request.containsKey("newDataHolderName")){
 			if (request.get("newDataHolderName").toString().trim().length()>0){
-				logger.debug("666666666666666"+newDataHolderName);
+				logger.debug("MySpaceManager.getValue newDataHolderName:"+newDataHolderName);
 				if ( DEBUG ) logger.debug("newdatraholdernema:"+newDataHolderName+"done");
 				newDataHolderName = request.get("newDataHolderName").toString();
-				logger.debug("777777777777777777");
+				
 			}else{
-				logger.debug("88888888888888888"+serverFileName.length()+"9999"+serverFileName.toString());
-				logger.debug("1010101010101010"+serverFileName.lastIndexOf("/"));
+				logger.debug("MySpaceManager.getValue serverFileName length:"+serverFileName.length()+", name: "+serverFileName.toString());
+				logger.debug("MySpaceManager.getValue"+serverFileName.lastIndexOf("/"));
 				newDataHolderName = "/" +userID +"/serv1" +serverFileName.substring(serverFileName.lastIndexOf("/"),serverFileName.length());
 				if ( DEBUG ) logger.debug("newdataholdername:"+newDataHolderName+"done2");
 			}		
@@ -897,13 +878,6 @@ public String upLoad(String jobDetails){
 		return response;
 	}
     
-	public String importDataHolder(String jobDetails){
-		return "Not Implemented";
-	}
-	
-	public String structureMySpace(String jobDetails){
-			return "Not Implemented";
-		}
     
 	public String extendLease(String jobDetails){
 		if ( DEBUG )  logger.debug("MySpaceManager.extendLease");
@@ -986,21 +960,30 @@ public String upLoad(String jobDetails){
 			return "Not Implemented";
 		}		
 		
-	public String createUser(String userID){
+	public String createUser(String userid, String communityid, Vector subfolders){
 			return "Not Implemented";
 		}		
 		
-	public String deleteUser(String userID){
+	public String deleteUser(String userid, String communityid){
 			return "Not Implemented";
 		}		
 		
-	public String changeOwner(String oldID, String newID){
+	public String changeOwner(String userid, String communityid, String dataHolderName, String newOwnerID){
+		//get int dataItemID from String dataHolderName
 			return "Not Implemented";
 		}
-		
-	public String authorise(String userDetails){
+
+	public String listExpiredDataHolders(String jobDetails){
+		//String userID,String communityID, String jobID, String query)
 			return "Not Implemented";
-		}		
+		}				
+		
+		/**
+		  * Lookup the details of a named set of DataHolders.
+		  */
+
+
+		
 	protected String getComponentName() { return Configurator.getClassName( MySpaceManager.class) ; }    
 
 }
