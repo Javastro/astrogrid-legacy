@@ -1,4 +1,4 @@
-/* $Id: ServicesLocatedTest.java,v 1.2 2004/01/23 15:22:04 jdt Exp $
+/* $Id: ServicesLocatedTest.java,v 1.1 2004/03/04 19:27:59 jdt Exp $
  * Created on 21-Jan-2004 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -7,7 +7,7 @@
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file. 
  */
-package org.astrogrid.mySpace.installationTests;
+package org.astrogrid.mySpace.installationtest;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -93,6 +93,9 @@ public class ServicesLocatedTest extends TestCase {
 
 /*
 *$Log: ServicesLocatedTest.java,v $
+*Revision 1.1  2004/03/04 19:27:59  jdt
+*Package name changed to lower case to satisfy coding standards.  mea culpa - didn't read the Book.  Tx Martin.
+*
 *Revision 1.2  2004/01/23 15:22:04  jdt
 **** empty log message ***
 *

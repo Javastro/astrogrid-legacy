@@ -1,4 +1,4 @@
-/* $Id: DeploymentTests.java,v 1.3 2004/01/21 17:03:51 jdt Exp $
+/* $Id: DeploymentTests.java,v 1.1 2004/03/04 19:27:59 jdt Exp $
  * Created on 29-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -7,7 +7,7 @@
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file. 
  */
-package org.astrogrid.mySpace.installationTests;
+package org.astrogrid.mySpace.installationtest;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
