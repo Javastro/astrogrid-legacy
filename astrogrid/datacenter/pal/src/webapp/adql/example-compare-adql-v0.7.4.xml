@@ -4,7 +4,7 @@
   <SelectionList>
     <Item xsi:type="columnReferenceType" Table="t" Name="a" />
     <Item xsi:type="columnReferenceType" Table="g" Name="d" />
-  </SelectionList>Select t.a, g.d from Tab a, Tab d where a.d < d.e and a.f < (d.f - e.g)
+  </SelectionList>
   <From>
     <Table xsi:type="tableType" Name="Tab" Alias="a" />
     <Table xsi:type="tableType" Name="Tab" Alias="d" />
