@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- castor binding file : configures the process of generating java classes from xml schema
+
+
+at present, just defined package - namespace mappings
+-->
+
+<binding defaultBindingType="type" xmlns="http://www.castor.org/SourceGenerator/Binding">
+  <package>
+    <name>org.astrogrid.applications.beans.v1</name>
+    <namespace>http://www.astrogrid.org/schema/AGParameterDefinition/</namespace><!-- should put versions on these namespaces -->
+  </package>
+  <package>
+    <name>org.astrogrid.workflow.beans.v1</name>
+    <namespace>http://www.astrogrid.org/schema/AGWorkflow/</namespace>
+  </package>
+</binding>
