@@ -6,11 +6,9 @@
 	    | It's questionable whether we need these since the build
 	    | is now controlled from the root project
 	    +-->
-	<goal name="astrogrid-clean" prereqs="clean"/>
 	<goal name="astrogrid-deploy-site">
 	    <echo message="Please deploy the site docs from the base myspace project"/>
 	</goal>
-	<goal name="astrogrid-build-site" prereqs="site"/>
 	<goal name="astrogrid-deploy-snapshot" prereqs="war:deploy-snapshot"/>
 	<goal name="astrogrid-build-snapshot" prereqs="war:snapshot"/>
 	<goal name="astrogrid-install-snapshot" prereqs="war:install-snapshot"/>
@@ -18,12 +16,6 @@
 	<goal name="astrogrid-build-artifact" prereqs="war:jar"/>
 	<goal name="astrogrid-install-artifact" prereqs="war:install"/>
 	
-	
-	<preGoal name="java:compile">
-		<mkdir dir="${basedir}/target/classes"/>
-		<!-- JDepend fails if this dir is not present.  Hack to fix it. -->
-	</preGoal>
-
 	<postGoal name="war:webapp">
 		<j:set var="classes.dir" value="${pom.getPluginContext('maven-war-plugin').getVariable('webapp.build.classes')}" />
 		<echo message="Copying xml templates and properties across from ${maven.conf.dir} to ${classes.dir} directory"/>
