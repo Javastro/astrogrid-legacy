@@ -14,6 +14,7 @@ package org.astrogrid.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -32,7 +33,21 @@ public class DomLoaderTest extends TestCase
       assertNotNull(doc);
    }
 
-    /**
+   public void testReadString() throws IOException, ParserConfigurationException, SAXException
+   {
+      String xml = "<Root><Parent><Child>Arthuer</Child><Child>Beatrice</Child></Parent></Root>";
+      Document doc = DomLoader.readDocument(xml);
+      assertNotNull(doc);
+   }
+
+   public void testReadUrl() throws IOException, ParserConfigurationException, SAXException
+   {
+      URL xml = this.getClass().getResource("xmlDocument.xml");
+      Document doc = DomLoader.readDocument(xml);
+      assertNotNull(doc);
+   }
+
+   /**
      * Assembles and returns a test suite made up of all the testXxxx() methods
       * of this class.
      */
@@ -54,6 +69,9 @@ public class DomLoaderTest extends TestCase
 
 /*
 $Log: DomLoaderTest.java,v $
+Revision 1.2  2004/03/01 22:46:29  mch
+Increased test coverage
+
 Revision 1.1  2003/12/02 19:59:17  mch
 Implementation-neutral DOM loader
 
