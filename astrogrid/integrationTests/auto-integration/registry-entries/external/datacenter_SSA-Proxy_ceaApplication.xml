@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<VODescription xmlns="vr" xmlns:exist="http://exist.sourceforge.net/NS/exist" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <Resource  updated="2004-11-20T15:34:22Z" status="active" xmlns="http://www.ivoa.net/xml/VOResource/v0.9" xsi:type="CeaApplicationType">
+<VODescription 
+   xmlns="http://www.ivoa.net/xml/VOResource/v0.9" 
+   xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" 
+   xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" 
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Resource  updated="2004-11-20T15:34:22Z" status="active" xmlns="http://www.ivoa.net/xml/VOResource/v0.9" xsi:type="cea:CeaApplicationType">
         <Identifier>
             <AuthorityID>roe.ac.uk</AuthorityID>
             <ResourceKey>datacenter/SSA-Proxy/ceaApplication</ResourceKey>
@@ -19,7 +23,6 @@
             <Contact>
                 <Name>Martin Hill</Name>
                 <Email>mch@roe.ac.uk</Email>
-                <Date/>
             </Contact>
         </Curation>
         <cea:ApplicationDefinition xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1">

@@ -11,6 +11,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException; 
 import org.apache.axis.client.Call; 
 import org.apache.axis.client.Service; 
+import org.astrogrid.registry.common.RegistryValidator;
 import org.apache.axis.message.SOAPBodyElement; 
 import org.apache.axis.utils.XMLUtils; 
 import org.w3c.dom.Document; 
@@ -31,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.config.Config;
+import junit.framework.AssertionFailedError;
 
 import org.astrogrid.registry.common.XSLHelper;
 
@@ -157,6 +159,24 @@ public class UpdateRegistry implements RegistryAdminService {
     */   
    public Document update(Document update) throws RegistryException {
 
+      if(update == null) {
+          throw new RegistryException("Cannot update 'null' found as the document to update");
+      }
+      
+      boolean validateXML = conf.getBoolean("registry.validate.onupdates",false);
+      if(validateXML) {
+          try {
+              RegistryValidator.isValid(update);
+          }catch(AssertionFailedError afe) {
+              logger.error("Error invalid document still attempting to process resources = " + afe.getMessage());
+              if(conf.getBoolean("registry.quiton.invalid",false)) {
+                  throw new RegistryException("Quitting: Invalid document, Message: " + afe.getMessage());
+              }
+          }
+          
+      }
+
+      
       DocumentBuilder registryBuilder = null;
       Document doc = null;
       Document resultDoc = null;

@@ -26,4 +26,9 @@
         value="@TOMCATROOT@/astrogrid-jes-@VERSION@/services/JobControllerService" description="Jes EndPoint"/>
     <Environment name="workflow.applist" override="false" type="java.lang.String" value="registry" 
         description="Instructs the portal to get the list of applications from the registry"/>
+    <Environment name="registry.validate.onupdates" override="false" type="java.lang.String" value="true" 
+        description="Turn validation on for updates on registry entries"/>
+    <Environment name="registry.quiton.invalid" override="false" type="java.lang.String" value="false" 
+        description="Quit on an invalid registry document submitted through the portal."/>
+
 </Context>

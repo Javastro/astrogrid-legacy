@@ -58,48 +58,105 @@ public class RegistryServerHelper {
 
    private static String versionNumber = null;
    
+   private static String defaultRoot = null;
+   
    /**
     * Static to be used on the initiatian of this class for the config
     */   
    static {
       if(conf == null) {        
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
-         versionNumber = conf.getString("org.astrogrid.registry.version");         
+         versionNumber = conf.getString("org.astrogrid.registry.version");
+         defaultRoot = conf.getString("registry.rootNode.default",null);
       }      
+   }
+   
+   public static String getDefaultVersionNumber() {
+       return versionNumber;
+   }
+   
+   public static String getRootNodeName(String versionNumber) {
+       return conf.getString("registry.rootNode." + versionNumber,defaultRoot);
+   }
+   
+   public static String getRootNodeLocalName(String versionNumber) {
+       String val = getRootNodeName(versionNumber);
+       return val.substring((val.indexOf(":")+1));
+   }
+   
+   /**
+    * Gets the text out of the First authority id element.
+    * Need to use RegistryServerHelper class to get the NodeList. It has
+    * already these common methods  in it.  Once it gets the NodeList
+    * then return the text in the first child. 
+    * @param doc xml element normally the full DOM root element.
+    * @return AuthorityID text
+    */
+   public static String getAuthorityID(Element doc) {
+      NodeList nl = doc.getElementsByTagNameNS("*","Identifier" );
+      String val = null;
+      if(nl.getLength() == 0) {
+          nl = doc.getElementsByTagNameNS("*","identifier" );
+          if(nl.getLength() == 0)
+              return null;
+      }
+    
+      NodeList authNodeList = ((Element)nl.item(0)).getElementsByTagNameNS("*","AuthorityID");
+      
+      if(authNodeList.getLength() == 0) {
+          val = nl.item(0).getFirstChild().getNodeValue();
+          int index = val.lastIndexOf("/");
+          if( index != -1 && index > 6) 
+              return val.substring(6,index);
+          else
+              return val.substring(6);
+      }
+      return authNodeList.item(0).getFirstChild().getNodeValue();
+   }
+
+   /**
+    * Gets the text out of the First ResourceKey element.
+    * Need to use RegistryServerHelper class to get the NodeList. It has
+    * already these common methods  in it.  Once it gets the NodeList
+    * then return the text in the first child. 
+    * @param doc xml element normally the full DOM root element.
+    * @return ResourceKey text
+    */  
+   public static String getResourceKey(Element doc) {
+       NodeList nl = doc.getElementsByTagNameNS("*","Identifier" );
+       if(nl.getLength() == 0) {
+           nl = doc.getElementsByTagNameNS("*","identifier" );
+           if(nl.getLength() == 0)
+               return null;
+       }
+       NodeList resNodeList = ((Element)nl.item(0)).getElementsByTagNameNS("*","ResourceKey");
+       String val = null;
+       if(resNodeList.getLength() == 0) {
+           val = nl.item(0).getFirstChild().getNodeValue();
+           int index = val.lastIndexOf("/");
+           if(index != -1 && index > 6 &&  val.length() > (index+1)) 
+               return val.substring(index+1);
+       }else {
+           if(resNodeList.item(0).hasChildNodes())
+               return resNodeList.item(0).getFirstChild().getNodeValue();
+       }
+       //it is just an empty ResourceKey which is okay.
+       return "";
    }
    
    
    public static String getIdentifier(Node nd) throws IOException {
-   	String ident = null;
-      String temp = null;
-      String regVersion;
-      NodeList nl = ((Element)nd).getElementsByTagNameNS("*","Identifier" );
-      if(nl.getLength() == 0) {
-          nl = ((Element)nd).getElementsByTagNameNS("*","identifier" );
-      }
-      if(nl.getLength() == 0) {
-          throw new IOException("Canot find an Identifier element");
-      }
-      
-      NodeList authNodeList = ((Element)nl.item(0)).getElementsByTagNameNS("*","AuthorityID");
-      String val = null;
-      if(authNodeList.getLength() == 0) {
-          if(nl.item(0).hasChildNodes())
-              return nl.item(0).getFirstChild().getNodeValue();
-          else
-              throw new IOException("Found an Identifier that was empty");
-      }
-      if(!authNodeList.item(0).hasChildNodes()) {
-          throw new IOException("No Text for AuthorityID this is not allowed");
-      }
-      val = authNodeList.item(0).getFirstChild().getNodeValue();
-      NodeList resList = ((Element)nl.item(0)).getElementsByTagNameNS("*","ResourceKey");
-      if(resList.getLength() > 0 && resList.item(0).hasChildNodes()) {
-          val += "/" + resList.item(0).getFirstChild().getNodeValue(); 
-      }
-      return val;
+      String ident = getAuthorityID((Element)nd);
+      String resKey = getResourceKey((Element)nd);
+      if(resKey != null && resKey.trim().length() > 0) ident += "/" + resKey;
+      return ident;
    }
    
+   /**
+    * @deprecated use in QueryHelper now.
+    * @param versionNumber
+    * @return
+    */
    public static String getXQLDeclarations(String versionNumber) {
        versionNumber = versionNumber.replace('.','_');
        String declarations = conf.getString("declare.namespace." + versionNumber,"");
@@ -226,12 +283,11 @@ public class RegistryServerHelper {
        if(manageAuthorities == null)
            manageAuthorities = new HashMap();
        QueryDBService qdb = new QueryDBService();       
-       String xqlQuery = RegistryServerHelper.getXQLDeclarations(regVersion) + 
-                         " for $x in //vr:Resource where @xsi:type |= '*Registry*'" +
-                         " return $x";
+       String xqlQuery = QueryHelper.queryForRegistries(regVersion);
        Document registries = qdb.runQuery(collectionName,xqlQuery);
        //System.out.println("the result of processManaged registries = " + DomHelper.DocumentToString(registries));
        NodeList resources = registries.getElementsByTagNameNS("*","Resource");
+       log.info("Number of Resources found loading up registries = " + resources.getLength());
        HashMap tempHash = new HashMap();
        boolean sameRegistry = false;
        String regAuthID = conf.getString("org.astrogrid.registry.authorityid");
@@ -240,8 +296,9 @@ public class RegistryServerHelper {
        for(int j = 0;j < resources.getLength();j++) {
            NodeList mgList = ((Element)resources.item(j)).getElementsByTagNameNS("*","ManagedAuthority");
            if(mgList.getLength() == 0) {
-               mgList = ((Element)resources.item(j)).getElementsByTagNameNS("*","managedauthority");
+               mgList = ((Element)resources.item(j)).getElementsByTagNameNS("*","managedAuthority");
            }
+           log.info("mglist size = " + mgList.getLength());
            for(int i = 0;i < mgList.getLength();i++) {
                val = mgList.item(i).getFirstChild().getNodeValue();
                tempHash.put(val,null);

@@ -2,6 +2,6 @@
 	<selectionSequence>
 		<selection item="searchElements" itemOp="EQ" value="Resource"/>
 		<selectionOp op="$and$"/>
-		<selection item="@xsi:type" itemOp="EQ" value="TabularSkyService"/>
+		<selection item="@xsi:type" itemOp="EQ" value="vs:TabularSkyServiceType"/>
 	</selectionSequence>
 </query>

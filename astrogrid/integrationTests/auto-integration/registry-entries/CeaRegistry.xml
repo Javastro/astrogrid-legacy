@@ -7,7 +7,7 @@ xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1"
 xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1"
 xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<Resource  updated="2004-11-20Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaApplicationType">
+	<Resource updated="2004-11-20Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cea:CeaApplicationType">
                 <Identifier>
                         <AuthorityID>@REGAUTHORITY@</AuthorityID>
                         <ResourceKey>CallMakeMPEGFitsImages</ResourceKey>
@@ -56,7 +56,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                         <cea:Interfaces>
                                 <ceab:Interface name="Simple">
                                         <ceab:input>
-                                                <ceab:pref ref="InputFiles" maxOccurs="0" minOccurs="1"/>
+                                                <ceab:pref ref="InputFiles"/>
                                         </ceab:input>
                                         <ceab:output>
                                                 <ceab:pref ref="OutputFile"/>
@@ -65,7 +65,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                         </cea:Interfaces>
                 </cea:ApplicationDefinition>
         </Resource>
-        <Resource  updated="2004-11-20Z" status="active" xsi:type="CeaApplicationType"
+        <Resource  updated="2004-11-20Z" status="active" xsi:type="cea:CeaApplicationType"
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <Identifier>
                         <AuthorityID>@REGAUTHORITY@</AuthorityID>
@@ -135,7 +135,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                         </cea:Interfaces>
                 </cea:ApplicationDefinition>
         </Resource>
-        <Resource  updated="2004-11-20Z" status="active" xsi:type="CeaServiceType"
+        <Resource  updated="2004-11-20Z" status="active" xsi:type="cea:CeaServiceType"
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <Identifier>
                         <AuthorityID>@REGAUTHORITY@</AuthorityID>

@@ -2,44 +2,29 @@
 <VODescription
     xmlns="http://www.ivoa.net/xml/VOResource/v0.9"
     xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9"
-    xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2"
     xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.2"
-    xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.4"
-    xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1"
-    xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.2"
-    xmlns:sia="http://www.ivoa.net/xml/SIA/v0.6"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v0.9
-                      http://www.ivoa.net/xml/VOResource/VOResource-v0.9.xsd
-                      http://www.ivoa.net/xml/VOCommunity/v0.2
-                      http://www.ivoa.net/xml/VOCommunity/VOCommunity-v0.2.xsd
-                      http://www.ivoa.net/xml/VORegistry/v0.2
-                      http://www.ivoa.net/xml/VORegistry/VORegistry-v0.2.xsd
-                      http://www.ivoa.net/xml/ConeSearch/v0.2
-                      http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
-                      http://www.ivoa.net/xml/SIA/v0.6
-                      http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
-    <vr:Resource xsi:type="AuthorityType">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <vr:Resource xsi:type="vg:AuthorityType">
         <Identifier>
             <AuthorityID>IDENT</AuthorityID>
             <ResourceKey>TYPE</ResourceKey>
         </Identifier>
-        <Title>Test service</Title>
-        <ShortName>Test service</ShortName>
-        <Subject>Test service</Subject>
+        <Title>Community Authority Resource</Title>
+        <ShortName>Community Authority</ShortName>
         <Summary>
-            <Description>Test service</Description>
+            <Description>Authority Resource to define Community, Policy, and Security services</Description>
             <ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
         </Summary>
         <Curation>
             <Publisher>
-                <Title>Test service</Title>
+                <Title>Community Publisher</Title>
             </Publisher>
             <Contact>
-                <Name>Test service</Name>
-                <Email>test@astrogrid.org</Email>
+                <Name>Kevin Benson</Name>
+                <Email>kmb@mssl.ucl.ac.uk</Email>
             </Contact>
             <Date>DATE</Date>
         </Curation>
+        <Subject>Community</Subject>
     </vr:Resource>
 </VODescription>

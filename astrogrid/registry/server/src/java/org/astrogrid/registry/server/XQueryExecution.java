@@ -191,7 +191,7 @@ public class XQueryExecution
             }
             else if (((Element)
                     nlSS.item(z)).getAttribute("itemOp").equals("CONTAINS")){
-               itemOp = " |= ";
+               itemOp = " &= ";
                wildcardon = true;
             }            
             else if (((Element)

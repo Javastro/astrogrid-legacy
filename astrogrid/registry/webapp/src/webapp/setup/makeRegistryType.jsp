@@ -8,7 +8,7 @@
                       http://www.ivoa.net/xml/VORegistry/v0.2
                       http://www.ivoa.net/xml/VORegistry/VORegistry-v0.2.xsd">
 
- <vr:Resource xsi:type="RegistryType" status="active" >
+ <vr:Resource xsi:type="vg:RegistryType" status="active" >
     <Identifier>
       <AuthorityID><%= request.getParameter("AuthorityID") %></AuthorityID>
       <ResourceKey>org.astrogrid.registry.RegistryService</ResourceKey>
@@ -28,10 +28,10 @@
        <Email><%= request.getParameter("ContactEmail") %></Email>
       </Contact>
     </Curation>
-    <vg:ManagedAuthority><%= request.getParameter("AuthorityID") %></vg:ManagedAuthority>
     <Interface>
       <Invocation>WebService</Invocation>
       <AccessURL use="full"><%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQuery</AccessURL>
     </Interface>
+    <vg:ManagedAuthority><%= request.getParameter("AuthorityID") %></vg:ManagedAuthority>    
   </vr:Resource>
 </VODescription>

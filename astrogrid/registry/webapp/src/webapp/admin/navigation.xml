@@ -12,14 +12,16 @@
    <div id='menuConfig'>
       <h5>Configure</h5>
       <ul>
+		  <!--
          <li><a href="../setup/install.jsp" >Initial Setup</a>
+         -->
          <li><a href="../admin/fingerprint.jsp" >Fingerprint</a>
       </ul>
    </div>
    <div id='menuRegister'>
       <h5>Register</h5>
       <ul>
-         <li><a href="../admin/editEntry.jsp">Enter/Edit Document</a>
+         <li><a href="../editEntry.jsp">Enter/Edit Document</a>
       </ul>
    </div>
 

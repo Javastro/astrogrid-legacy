@@ -93,6 +93,12 @@
        		<id>xml-apis</id>
           	<version>1.0.b2</version>
         </dependency>
+    	
+            <dependency>
+              <id>junit</id>
+              <version>3.8</version>
+            </dependency>
+    	
         
         <dependency>
            <id>wsdl4j</id>
@@ -127,7 +133,12 @@
            <version>unknown</version>
            <jar>saaj.jar</jar>
         </dependency>
-        
+
+        <dependency>
+          <id>xmlunit</id>
+          <version>1.0</version>
+        </dependency>
+
         
     </dependencies>
 
@@ -143,6 +154,17 @@
             | The location of our JUnit source code.
             +-->
         <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+    	
+        <resources>
+            <resource>
+           	   <directory>${basedir}/src</directory>
+		        <includes>
+		           	<include>schema/*.xsd</include>		        	
+	            	<include>schema/**/*.xsd</include>
+		        </includes>            	
+            </resource>
+        </resources>
+    	
         <!--+
             | Our JUnit test classes.
             +-->
@@ -151,16 +173,18 @@
                 | Which tests to include.
                 +-->
             <includes>
-                <include>**/*Junit.java</include>
+                <include>**/*Test.java</include>
             </includes>
             
-            <!--+
-                | The resources for our tests.
             <resources>
                 <resource>
+               	   <directory>${basedir}/src/junit</directory>
+    		        <includes>
+    		           	<include>**/*.xml</include>
+    		        </includes>            	
                 </resource>
             </resources>
-                +-->
+        	
         </unitTest>
     </build>
 

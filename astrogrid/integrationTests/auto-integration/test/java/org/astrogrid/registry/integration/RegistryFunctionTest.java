@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryFunctionTest.java,v 1.19 2004/09/22 10:47:25 nw Exp $
+ * $Id: RegistryFunctionTest.java,v 1.20 2004/12/18 18:30:16 jdt Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -69,7 +69,8 @@ public class RegistryFunctionTest extends AbstractTestForRegistry {
       assertNotNull("did not return the resource as DOM", dom);
       Element doc = dom.getDocumentElement();
       XMLUtils.PrettyElementToStream(doc, System.out);
-      assertSingletonVODescription(dom);
+      //assertSingletonVODescription(dom);
+      assertVODescription(dom);
       assertTrue("did not find the resource  - returned a null document - should have an error message before now",doc.hasChildNodes());
       //VODescription val = rs.getResourceByIdentifier(ivorn);
       //assertNotNull("did not return the resource as Castor Object",val);
@@ -82,7 +83,8 @@ public class RegistryFunctionTest extends AbstractTestForRegistry {
       Document doc = rs.getResourceByIdentifier(new Ivorn("ivo://"+AUTHORITY_ID+"/"+"testapp"));
       assertNotNull("failed to retrieve a known registry entry",doc);
       XMLUtils.DocumentToStream(doc,System.out);
-      assertSingletonVODescription(doc);
+      //assertSingletonVODescription(doc);
+      assertVODescription(doc);
       NodeList nodelst = doc.getElementsByTagNameNS( "*", "Resource");
       assertEquals("There should be exactly one entry returned for getResourceByIdentifierDOM",1, nodelst.getLength());
    }

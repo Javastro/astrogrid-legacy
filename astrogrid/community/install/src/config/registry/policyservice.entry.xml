@@ -3,10 +3,22 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/config/registry/policyservice.entry.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/12/18 18:30:16 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: policyservice.entry.xml,v $
+    |   Revision 1.3  2004/12/18 18:30:16  jdt
+    |   KMB's merges:
+    |   		Reg_KMB_728 astrogrid/registry
+    |             o Reg_KMB_728 astrogrid/workflow
+    |             o Reg_KMB_728 astrogrid/community
+    |
+    |             o Exist_KMB_613 astrogrid/exist
+    |             o Reg_KMB_605 astrogrid/auto-integration -- only r
+    |
+    |   Revision 1.2.2.1  2004/11/24 11:03:25  KevinBenson
+    |   corrected the validation part of things and added dependency for auto-integration area
+    |
     |   Revision 1.2  2004/11/22 13:03:04  jdt
     |   Merges from Comm_KMB_585
     |
@@ -29,46 +41,30 @@
 <VODescription
   xmlns="http://www.ivoa.net/xml/VOResource/v0.9"
   xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9"
-  xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2"
-  xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.2"
-  xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.4"
-  xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1"
-  xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.2"
-  xmlns:sia="http://www.ivoa.net/xml/SIA/v0.6"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v0.9
-                      http://www.ivoa.net/xml/VOResource/VOResource-v0.9.xsd
-                      http://www.ivoa.net/xml/VOCommunity/v0.2
-                      http://www.ivoa.net/xml/VOCommunity/VOCommunity-v0.2.xsd
-                      http://www.ivoa.net/xml/VORegistry/v0.2
-                      http://www.ivoa.net/xml/VORegistry/VORegistry-v0.2.xsd
-                      http://www.ivoa.net/xml/ConeSearch/v0.2
-                      http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
-                      http://www.ivoa.net/xml/SIA/v0.6
-                      http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
- <vr:Resource xsi:type="ServiceType">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <vr:Resource xsi:type="vr:ServiceType">
     <Identifier>
       <AuthorityID>IDENT</AuthorityID>
       <ResourceKey>TYPE</ResourceKey>
     </Identifier>
-    <Title>Test service</Title>
-    <ShortName>Test service</ShortName>
+    <Title>Policy Service Community</Title>
+    <ShortName>Policy Service</ShortName>
     <Summary>
       <Description/>
       <ReferenceURL>http://www.astrogrid.org</ReferenceURL>
     </Summary>
-    <Type>Test service</Type>
+    <Type>BasicData</Type>
     <Curation>
       <Publisher>
-         <Title>Test service</Title>
+         <Title>Policy Service</Title>
       </Publisher>
       <Contact>
-        <Name>Test service</Name>
-          <Email>test@astrogrid.org</Email>
+        <Name>Kevin Benson</Name>
+        <Email>kmb@mssl.ucl.ac.uk</Email>
       </Contact>
       <Date>DATE</Date>
     </Curation>
-    <Subject>Test service</Subject>
+    <Subject>Policy Service</Subject>
     <Interface>
       <Invocation>WebService</Invocation>
       <AccessURL use="base">WSDL</AccessURL>

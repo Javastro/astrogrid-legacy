@@ -29,6 +29,7 @@ import org.astrogrid.xmldb.eXist.server.QueryDBService;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.server.harvest.RegistryHarvestService;
 import org.astrogrid.registry.server.RegistryServerHelper;
+import org.astrogrid.registry.server.QueryHelper;
 
 /**
  *
@@ -109,50 +110,6 @@ public class RegistryQueryService {
                                             versionNumber,"SearchResponse");
    }
 
-   /**
-    * Select - On certain Web Service styles a client may call the
-    * Web Service with no method wrapped around in the SOAP body.
-    * This method is for those cases when only the parameters are passed
-    * in the soap body.  Hence this query method catches those cases and
-    * queries the registry.
-    * 
-    * @param query - DOM object containing ADQL.
-    * @throws - AxisFault containing exceptions that might have occurred setting up
-    * or querying the registry.
-    * @return - Resource DOM object of the Resources from the query of the registry. 
-    * 
-    */
-   public Document Select(Document query) throws AxisFault {
-      log.debug("start Select");
-      long beginQ = System.currentTimeMillis();
-      XSLHelper xslHelper = new XSLHelper();
-      
-      String attrVersion = getRegistryVersion(query);
-      String versionNumber = attrVersion.replace('.','_');
-      
-      String collectionName = "astrogridv" + versionNumber;
-      log.info("Collection Name for query = " + collectionName);
-      
-      //get the XQuery from the ADQL.
-      String xqlQuery = getQuery(query);
-      log.info("The XQLQuery = " + xqlQuery);
-      
-      //perform the query and log how long it took to query.      
-      Document resultDoc = queryExist(xqlQuery,collectionName);
-      log.info("Time taken to complete select on server = " +
-              (System.currentTimeMillis() - beginQ));
-      if(resultDoc != null) {
-          log.info("Number of Resources to be returned = " + 
-                  resultDoc.getElementsByTagNameNS("*","Resource").getLength());
-      }      
-      log.debug("end select");
-
-      //To be correct we need to transform the results, with a correct response element 
-      //for the soap message and for the right root element around the resources.
-      //With this web service styule it has no method name around the response
-      //for the soap.
-      return xslHelper.transformExistResult((Node)resultDoc,versionNumber,null);
-   }
    
    /**
     * More of a convenience method to do direct Xqueries on the registry
@@ -274,40 +231,32 @@ public class RegistryQueryService {
     */
    public Document loadRegistry(Document query) throws AxisFault {
       log.debug("start loadRegistry");
-      log.info("start loadRegistry");
-      long beginQ = System.currentTimeMillis();
-      //get the default autority id for this registry.
-      String authorityID = conf.getString(AUTHORITYID_PROPERTY);
-      authorityID = authorityID.trim();
       
+      //get the default autority id for this registry.      
       Document doc = null;
       Document responseDoc = null;
       String attrVersion = getRegistryVersion(query);
-      log.info("the attrVersion in loadRegistry = " + attrVersion);
       String versionNumber = attrVersion.replace('.','_');
       log.info("the versionNumber in loadRegistry = " + versionNumber);
-      String collectionName = "astrogridv" + versionNumber;
-      log.info("Collection Name for query = " + collectionName);
-      boolean hasAuthorityID = conf.getBoolean(
-                 "identifier.path.hasauthorityid." + versionNumber,true);
-      String xqlIDString = "vr:Identifier/vr:AuthorityID = ";
-      if(!hasAuthorityID) {
-          xqlIDString = "vr:identifier |= ";
-      }
-      String xqlString = RegistryServerHelper.getXQLDeclarations(versionNumber) + 
-                  " //vr:Resource[" + xqlIDString + "'" + authorityID +
-                  "' and @xsi:type |= '*Registry*']";      
-      log.info("XQL String = " + xqlString);
-      Document resultDoc = queryExist(xqlString,collectionName);
-      
-      XSLHelper xslHelper = new XSLHelper();
-      log.info("Time taken to complete loadRegistry on server = " +
-              (System.currentTimeMillis() - beginQ));
-      log.debug("end loadRegistry");
-      
-      //To be correct we need to transform the results, with a correct response element 
-      //for the soap message and for the right root element around the resources.
-      return xslHelper.transformExistResult((Node)resultDoc,versionNumber,null);
+      return loadMainRegistry(versionNumber);
+   }
+   
+   public Document loadMainRegistry(String versionNumber) throws AxisFault {
+       long beginQ = System.currentTimeMillis();       
+       String collectionName = "astrogridv" + versionNumber;
+       log.info("Collection Name for query = " + collectionName);
+       String xqlString = QueryHelper.queryForMainRegistry(versionNumber);
+       log.info("XQL String = " + xqlString);
+       Document resultDoc = queryExist(xqlString,collectionName);
+       
+       XSLHelper xslHelper = new XSLHelper();
+       log.info("Time taken to complete loadRegistry on server = " +
+               (System.currentTimeMillis() - beginQ));
+       log.debug("end loadRegistry");
+       
+       //To be correct we need to transform the results, with a correct response element 
+       //for the soap message and for the right root element around the resources.
+       return xslHelper.transformExistResult((Node)resultDoc,versionNumber,null);
    }
    
    /**
@@ -323,10 +272,59 @@ public class RegistryQueryService {
       QueryDBService qdb = new QueryDBService();
       return qdb.query(collectionName,xqlString);
    }
+   
+   public Document keywordQuery(String keywords, boolean orKeywords) throws AxisFault {
+       return keywordQuery(keywords,orKeywords,RegistryServerHelper.getDefaultVersionNumber());
+   }
+   
+   public Document keywordQuery(String keywords, boolean orKeywords, String version) throws AxisFault {
+       long beginQ = System.currentTimeMillis();
+       String versionNumber = version.replace('.','_');
+       String []keyword = keywords.split(" ");
+       String xqlPaths = conf.getString("keyword.query.path." + versionNumber);
+       String []xqlPath = xqlPaths.split(",");
+       
+
+       String xqlString = QueryHelper.getStartQuery(versionNumber);       
+       for(int i = 0;i < xqlPath.length;i++) {
+           xqlString += "(";
+           for(int j = 0;j < keyword.length;j++) {
+             xqlString += xqlPath[i] + " |= '*" + keyword[j] + "*'";
+             if(j != (keyword.length - 1)) {
+                 if(orKeywords) { 
+                     xqlString += " or ";
+                 }else {
+                     xqlString += " and ";
+                 }
+             }//if
+           }//for
+           xqlString += ") ";
+           if(i != (xqlPath.length-1)) {
+               xqlString += " or ";
+           }
+       }//for
+       xqlString += " return $x";
+       
+       String collectionName = "astrogridv" + versionNumber;
+       Document resultDoc = queryExist(xqlString,collectionName); 
+       if(resultDoc != null) {
+           log.info("Number of Resources to be returned = " + 
+                   resultDoc.getElementsByTagNameNS("*","Resource").getLength());
+       }
+       XSLHelper xslHelper = new XSLHelper();
+       log.info("Time taken to complete keywordsearch on server = " +
+               (System.currentTimeMillis() - beginQ));
+       log.debug("end keywordsearch");         
+       
+       //To be correct we need to transform the results, with a correct response element 
+       //for the soap message and for the right root element around the resources.
+       return xslHelper.transformExistResult((Node)resultDoc,
+                                             versionNumber,"KeywordSearchResponse");
+   }
+   
 
    public Document KeywordSearch(Document query) throws AxisFault {
-         log.debug("start keywordsearch"); 
-         long beginQ = System.currentTimeMillis();          
+         log.debug("start keywordsearch");                   
          String keywords = null;
          String orValue = null;
          try {
@@ -336,42 +334,8 @@ public class RegistryQueryService {
              throw new AxisFault("IO problem trying to get keywords and orValue");
          }
          String attrVersion = getRegistryVersion(query);
-         String versionNumber = attrVersion.replace('.','_');
-         String xqlPaths = conf.getString("keyword.query.path." + versionNumber);
-         String []xqlPath = xqlPaths.split(",");
-         String []keyword = keywords.split(" ");
-         boolean orKeywords = new Boolean(orValue).booleanValue();         
-         String xqlString = RegistryServerHelper.getXQLDeclarations(versionNumber) + 
-         " for $x in //vr:Resource where ";
-         for(int i = 0;i < xqlPath.length;i++) {
-             for(int j = 0;j < keyword.length;j++) {
-               xqlString += xqlPath[i] + " |= *" + keyword[j] + "*";
-               if(i != (xqlPath.length - 1) && 
-                  j != (keyword.length - 1)) {
-                   if(orKeywords) { 
-                       xqlString += " or ";
-                   }else {
-                       xqlString += " and ";
-                   }
-               }//if
-             }//for
-         }//for
-         
-         String collectionName = "astrogridv" + versionNumber;
-         Document resultDoc = queryExist(xqlString,collectionName);
-         if(resultDoc != null) {
-             log.info("Number of Resources to be returned = " + 
-                     resultDoc.getElementsByTagNameNS("*","Resource").getLength());
-         }
-         XSLHelper xslHelper = new XSLHelper();
-         log.info("Time taken to complete keywordsearch on server = " +
-                 (System.currentTimeMillis() - beginQ));
-         log.debug("end keywordsearch");         
-         
-         //To be correct we need to transform the results, with a correct response element 
-         //for the soap message and for the right root element around the resources.
-         return xslHelper.transformExistResult((Node)resultDoc,
-                                               versionNumber,"KeywordSearchResponse");
+         boolean orKeywords = new Boolean(orValue).booleanValue();
+         return keywordQuery(keywords,orKeywords,attrVersion);
    }
 
    /**
@@ -396,10 +360,8 @@ public class RegistryQueryService {
       log.info("Collection Name for query = " + collectionName);
       
       //Should declare namespaces, but it is not required so will leave out for now.
-      String xqlString = RegistryServerHelper.getXQLDeclarations(versionNumber) + 
-              " for $x in //vr:Resource where @xsi:type |= '*Registry*' return $x";
-      log.info("XQL String = " + xqlString);
-      
+      String xqlString = QueryHelper.queryForRegistries(versionNumber);
+      log.info("XQL String = " + xqlString);      
       Document resultDoc = queryExist(xqlString,collectionName);
       XSLHelper xslHelper = new XSLHelper();
       log.info("Time taken to complete GetRegistries on server = " +

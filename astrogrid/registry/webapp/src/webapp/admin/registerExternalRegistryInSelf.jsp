@@ -60,7 +60,7 @@ A default registry in AstroGrid is pre-set.
 <pre>
 <%
 RegistryAdminService server = new RegistryAdminService();
-String domurl = getregs + "/getRegistries.jsp";
+String domurl = getregs + "/getRegistriesXML.jsp";
 URL urlDom = new URL(domurl);
 System.out.println("the domurl = " + domurl);
 out.write("<p>getregs: " + getregs + "</p><br />");
@@ -72,7 +72,9 @@ if (result != null) {
   XMLUtils.ElementToWriter(result.getDocumentElement(), out);
 }
 out.write("<p><br /><br />Here were the entries attempted to be updated into the registry (Remember only the Resource elements are placed into the registry):<br /></p>");
+System.out.println("result not null");
 if(doc != null) {
+	System.out.println("doc not null");
       String testxml = DomHelper.DocumentToString(doc);
       testxml = testxml.replaceAll("<","&lt;");
       testxml = testxml.replaceAll(">","&gt;");

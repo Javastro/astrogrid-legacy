@@ -260,6 +260,23 @@
            <version>unknown</version>
            <jar>saaj.jar</jar>
         </dependency>
+    	
+        <dependency>
+          <id>junit</id>
+          <version>3.8</version>
+        </dependency>
+    	
+            <dependency>
+              <id>xmlunit</id>
+              <version>1.0</version>
+            </dependency>
+    	
+        <dependency>
+            <artifactId>commons-httpclient</artifactId>
+            <groupId>commons-httpclient</groupId>
+            <version>2.0-beta1</version>
+        </dependency>
+    	
         
     </dependencies>
 

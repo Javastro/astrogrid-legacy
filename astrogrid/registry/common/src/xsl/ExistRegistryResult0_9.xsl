@@ -10,7 +10,7 @@
 	<xsl:output method="xml" />
 	
     <xsl:template match="exist:result">
-        <xsl:element name="VODescription" namespace="vr">
+        <xsl:element name="vr:VODescription">
       		<xsl:apply-templates/>
         </xsl:element>
     </xsl:template>

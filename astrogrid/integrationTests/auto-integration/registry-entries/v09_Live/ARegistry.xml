@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VODescription
+  xmlns="http://www.ivoa.net/xml/VOResource/v0.9"
+  xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9"
+  xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <vr:Resource xsi:type="vg:RegistryType" xmlns="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.2" updated="2004-11-20T15:34:22Z" status="active">
+    <Identifier>
+      <AuthorityID>astrogrid.org</AuthorityID>
+      <ResourceKey>org.astrogrid.registry.RegistryService</ResourceKey>
+    </Identifier>
+    <Title>Astrogrid Full Registry</Title>
+    <Summary>
+      <Description>
+         The main Astrogrid publishing registry
+      </Description>
+      <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/registry/index.html</ReferenceURL>
+    </Summary>
+    <Type>Archive</Type>
+    <Curation>
+      <Publisher>
+         <Title>Astrogrid</Title>
+      </Publisher>
+      <Contact>
+        <Name>Tony Linde</Name>
+       <Email>ael@star.le.ac.uk</Email>
+      </Contact>
+    </Curation>
+    <Interface>
+      <Invocation>WebService</Invocation>
+      <AccessURL use="full">http://hydra.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery</AccessURL>
+    </Interface>
+    <vg:ManagedAuthority>astrogrid.org</vg:ManagedAuthority>
+    <vg:ManagedAuthority>astrogrid.mssl</vg:ManagedAuthority>
+    <vg:ManagedAuthority>org.astrogrid</vg:ManagedAuthority>
+    <vg:ManagedAuthority>roe.ac.uk</vg:ManagedAuthority>
+  </vr:Resource>
+  </VODescription>

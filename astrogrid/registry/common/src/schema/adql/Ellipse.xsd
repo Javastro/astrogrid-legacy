@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Ed Shaya (NASA) -->
+<!-- Personalized document schema. Showing how user
+     can create inheriting schema that has both new elements/structure
+     and elements which are quantities. This particular
+     schema inherits only from BasicQuantity schema, so more
+     advanced types of quantities arent allowed.
+  -->
+<xsd:schema targetNamespace="http://ivoa.org/Quantity" xmlns="http://ivoa.org/Quantity" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xsd:include schemaLocation="Quantity.xsd"/>
+	<xsd:complexType name="ellipseType">
+		<xsd:complexContent>
+			<xsd:extension base="coreQuantityType"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- some new directly-inheriting quantity element declarations -->
+	<xsd:element name="Ellipse" type="ellipseType" substitutionGroup="QuantityGroup"/>
+	<xsd:element name="Semi-major-axis" type="basicQuantityType" substitutionGroup="QuantityGroup"/>
+	<xsd:element name="Semi-minor-axis" type="basicQuantityType" substitutionGroup="QuantityGroup"/>
+</xsd:schema>

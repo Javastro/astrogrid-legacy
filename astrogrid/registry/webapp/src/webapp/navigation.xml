@@ -13,12 +13,13 @@
          <li><a href="ivornLookupForm.jsp" >IVORN Lookup</a>
          <li><a href="browse.jsp" >Browse</a>
          <li><a href="adqlquery.jsp" >Query</a>
+         <li><a href="keywordquery.jsp" >Keyword Query</a>
       </ul>
    </div>
    <div id='menuRegister'>
       <h5>Register</h5>
       <ul>
-         <li><a href="admin/editEntry.jsp">Enter Resource</a>
+         <li><a href="editEntry.jsp">Enter Resource</a>
       </ul>
    </div>
 </div>

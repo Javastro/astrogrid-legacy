@@ -1,6 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
-<VODescription xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns="http://www.ivoa.net/xml/VOResource/v0.9">
-    <Resource  updated="2004-11-20T15:34:22Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaApplicationType">
+<VODescription 
+   xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" 
+   xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" 
+   xmlns="http://www.ivoa.net/xml/VOResource/v0.9">
+    <Resource  updated="2004-11-20T15:34:22Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cea:CeaApplicationType">
     <Identifier>
       <AuthorityID>@REGAUTHORITY@</AuthorityID>
       <ResourceKey>sum</ResourceKey>
@@ -32,21 +35,21 @@
     <Subject>???</Subject>
     <cea:ApplicationDefinition>
       <cea:Parameters>
-        <cea:ParameterDefinition accept-encodings="" type="text" name="parameter-1" sub-type="int">
+        <cea:ParameterDefinition type="text" name="parameter-1" sub-type="int">
           <ns9:UI_Name xmlns:ns9="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
           <ns10:UI_Description xmlns:ns10="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
           <ns11:UCD xmlns:ns11="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
           <ns12:DefaultValue xmlns:ns12="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
           <ns13:Units xmlns:ns13="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
         </cea:ParameterDefinition>
-        <cea:ParameterDefinition accept-encodings="" type="text" name="result" sub-type="int">
+        <cea:ParameterDefinition type="text" name="result" sub-type="int">
           <ns14:UI_Name xmlns:ns14="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
           <ns15:UI_Description xmlns:ns15="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
           <ns16:UCD xmlns:ns16="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
           <ns17:DefaultValue xmlns:ns17="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
           <ns18:Units xmlns:ns18="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
         </cea:ParameterDefinition>
-        <cea:ParameterDefinition accept-encodings="" type="text" name="parameter-0" sub-type="int">
+        <cea:ParameterDefinition type="text" name="parameter-0" sub-type="int">
           <ns19:UI_Name xmlns:ns19="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
           <ns20:UI_Description xmlns:ns20="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
           <ns21:UCD xmlns:ns21="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
@@ -67,7 +70,7 @@
       </cea:Interfaces>
     </cea:ApplicationDefinition>
   </Resource>
-   <Resource  updated="2004-11-20T15:34:22Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaApplicationType">
+   <Resource  updated="2004-11-20T15:34:22Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cea:CeaApplicationType">
     <Identifier>
       <AuthorityID>@REGAUTHORITY@</AuthorityID>
       <ResourceKey>helloWorld</ResourceKey>
@@ -99,7 +102,7 @@
     <Subject>???</Subject>
     <cea:ApplicationDefinition>
       <cea:Parameters>
-        <cea:ParameterDefinition accept-encodings="" type="text" name="result" sub-type="java.lang.String">
+        <cea:ParameterDefinition type="text" name="result" sub-type="java.lang.String">
           <ns2:UI_Name xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
           <ns3:UI_Description xmlns:ns3="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
           <ns4:UCD xmlns:ns4="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
@@ -117,7 +120,7 @@
       </cea:Interfaces>
     </cea:ApplicationDefinition>
   </Resource>
-   <Resource  updated="2004-11-20T15:34:22Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaApplicationType">
+   <Resource  updated="2004-11-20T15:34:22Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cea:CeaApplicationType">
     <Identifier>
       <AuthorityID>@REGAUTHORITY@</AuthorityID>
       <ResourceKey>helloYou</ResourceKey>
@@ -149,14 +152,14 @@
     <Subject>???</Subject>
     <cea:ApplicationDefinition>
       <cea:Parameters>
-        <cea:ParameterDefinition accept-encodings="" type="text" name="result" sub-type="java.lang.String">
+        <cea:ParameterDefinition type="text" name="result" sub-type="java.lang.String">
           <ns26:UI_Name xmlns:ns26="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
           <ns27:UI_Description xmlns:ns27="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
           <ns28:UCD xmlns:ns28="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
           <ns29:DefaultValue xmlns:ns29="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
           <ns30:Units xmlns:ns30="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
         </cea:ParameterDefinition>
-        <cea:ParameterDefinition accept-encodings="" type="text" name="parameter-0" sub-type="java.lang.String">
+        <cea:ParameterDefinition type="text" name="parameter-0" sub-type="java.lang.String">
           <ns31:UI_Name xmlns:ns31="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
           <ns32:UI_Description xmlns:ns32="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
           <ns33:UCD xmlns:ns33="http://www.astrogrid.org/schema/AGParameterDefinition/v1" />
@@ -176,7 +179,7 @@
       </cea:Interfaces>
     </cea:ApplicationDefinition>
   </Resource>
-  <Resource  updated="2004-11-20T15:34:22Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaServiceType">
+  <Resource  updated="2004-11-20T15:34:22Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cea:CeaServiceType">
     <Identifier>
       <AuthorityID>@REGAUTHORITY@</AuthorityID>
       <ResourceKey>JavaProviderCEC</ResourceKey>

@@ -20,6 +20,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NamedNodeMap;
 import org.xml.sax.InputSource;
 import org.astrogrid.registry.server.RegistryServerHelper;
+import org.astrogrid.registry.server.QueryHelper;
 import org.astrogrid.registry.server.admin.RegistryAdminService;
 import java.net.URL;
 import java.io.Reader;
@@ -141,7 +142,7 @@ public class RegistryHarvestService {
       Document harvestDoc = null;
       String xqlQuery = null;
       String ident = null;
-
+      onlyRegistries = true;
       boolean harvestEnabled = conf.getBoolean("registry.harvest.enabled",false);
       if(!harvestEnabled) {
           return;
@@ -160,8 +161,7 @@ public class RegistryHarvestService {
           if(onlyRegistries) {
              //query for all the Registry types which should be all of them with an xsi:type="RegistryType"
              //xqlQuery = "declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.9\"; //vr:Resource[@xsi:type='RegistryType']";
-             xqlQuery = "//*:Resource[@xsi:type |= '*RegistryType*' or @xsi:type |= '*Registry*']";
-             System.out.println("hello the xqlQuery = " + xqlQuery);
+             xqlQuery = QueryHelper.getAllRegistryQuery();
              log.info("the xqlQuery = " + xqlQuery);
              harvestDoc = qdb.runQuery(collectionName,xqlQuery);
              //System.out.println("The harvestDoc = " + DomHelper.DocumentToString(harvestDoc));
@@ -178,8 +178,13 @@ public class RegistryHarvestService {
                versionNumber = RegistryServerHelper.getRegistryVersionFromNode(elem);
                versionNumber = versionNumber.replace('.','_');               
                if(useDates) {
-                  Document statDoc = qdb.getResource("statv"+versionNumber,RegistryServerHelper.getIdentifier(elem));
-                  String dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
+                  String dateString = null;
+                  try {
+                      Document statDoc = qdb.getResource("statv"+versionNumber,RegistryServerHelper.getIdentifier(elem));
+                      dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
+                  }catch(Exception e) {
+                     log.warn("ignore for now: could not find a stat/date for element using no date.");
+                  }
                   
                   Date dt = null;
                   if(dateString != null && dateString.trim().length() > 0) {
@@ -192,7 +197,9 @@ public class RegistryHarvestService {
                 beginHarvest(elem,null);
                }//else
              }//for
-          }else {
+          }
+          /*
+          else {
             //query all Registry Types for Webbrowser or WebService interface
              //xqlQuery = "declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.9\"; //vr:Resource[vr:Interface/vr:Invocation='WebBrowser' or vr:Interface/vr:Invocation='WebService']";
              xqlQuery = "//*:Resource[*:/Interface/*:AccessURL or *:/interface/*:accessURL]";
@@ -223,6 +230,7 @@ public class RegistryHarvestService {
                }//else
              }//for
           }
+          */
 
       }catch(ParserConfigurationException pce) {
       	throw new RegistryException(pce);
@@ -315,11 +323,6 @@ private class HarvestThread extends Thread {
       System.out.println(resource.getNodeName() + " " + resource.getNodeValue());
 
       NamedNodeMap attributes = resource.getAttributes();
-      // Debug (BKM)
-      for(int i=0; i<attributes.getLength(); i++) {
-		  System.out.println("Attribute " + i + " Name " + attributes.item(i).getNodeName() +
-		                      " value " + attributes.item(i).getNodeValue());
-      }
 
       //get the accessurl and invocation type.
       //invocationtype is either WebService or WebBrowser.
@@ -332,7 +335,16 @@ private class HarvestThread extends Thread {
       if(nl.getLength() == 0) {
           nl = ((Element) resource).getElementsByTagNameNS("*","accessURL");
       }
+      if(nl.getLength() == 0) {
+          log.error("Error did not find a AccessURL");
+          throw new RegistryException("No accessURL found");
+      }
+      if(!nl.item(0).hasChildNodes()) {
+          log.error("Error did not find any text to the accessURL");
+          throw new RegistryException("No text found for the accessURL");          
+      }
       accessURL = nl.item(0).getFirstChild().getNodeValue();
+
 
       nl = ((Element) resource).getElementsByTagNameNS("*","Invocation");
       if(nl.getLength() == 0) {
@@ -343,17 +355,21 @@ private class HarvestThread extends Thread {
               typeAttribute = ((Element)nl.item(0)).getAttributes().getNamedItem("xsi:type");
               invocationType = typeAttribute.getNodeValue();
           }
-      } else {
+      } else {          
           invocationType = nl.item(0).getFirstChild().getNodeValue();
+      }
+      
+      if(accessURL.indexOf("?wsdl") != -1) {
+          accessURL = accessURL.substring(0,accessURL.indexOf("?wsdl"));
       }
 
 //    accessURL = DomHelper.getNodeTextValue((Element)resourceList.item(i),"AccessURL","vr");
 //    invocationType = DomHelper.getNodeTextValue((Element)resourceList.item(i),"Invocation","vr");
       log.info("The access URL = " + accessURL + " invocationType = " + invocationType);
-//      System.out.println("The access URL = " + accessURL + " invocationType = " + invocationType);
+//    System.out.println("The access URL = " + accessURL + " invocationType = " + invocationType);
 
 
-      if("WebService".equals(invocationType)) {
+      if("WebService".endsWith(invocationType)) {
          //call the service
          //remember to look at the date
          Element childElem = null;
@@ -464,7 +480,7 @@ private class HarvestThread extends Thread {
                 log.error(e);
             }
          }
-      }else if("WebBrowser".equals(invocationType) || "Extended".equals(invocationType)) {
+      }else if("WebBrowser".endsWith(invocationType) || "Extended".endsWith(invocationType)) {
          //its a web browser so assume for oai.
          try {
             String ending = "";

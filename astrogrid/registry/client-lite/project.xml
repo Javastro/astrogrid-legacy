@@ -260,6 +260,17 @@
            <version>unknown</version>
            <jar>saaj.jar</jar>
         </dependency>
+    	
+        <dependency>
+          <id>junit</id>
+          <version>3.8</version>
+        </dependency>
+    	
+        <dependency>
+          <id>xmlunit</id>
+          <version>1.0</version>
+        </dependency>
+    	
 
     </dependencies>
 

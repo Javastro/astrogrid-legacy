@@ -1,4 +1,4 @@
-/*$Id: QueryOAIRegistryTest.java,v 1.6 2004/09/22 10:47:25 nw Exp $
+/*$Id: QueryOAIRegistryTest.java,v 1.7 2004/12/18 18:30:16 jdt Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,12 +63,12 @@ public class QueryOAIRegistryTest extends AbstractTestForRegistry {
    }
    
    public void testGetRecord() throws RegistryException {
-       Document result = rs.getRecord("ivo_vor://org.astrogrid.localhost/org.astrogrid.registry.RegistryService");
+       Document result = rs.getRecord("ivo://org.astrogrid.localhost/org.astrogrid.registry.RegistryService");
        DomHelper.DocumentToStream(result,System.out);
    }
    
    public void testListMetadataFormats() throws RegistryException {
-       Document result = rs.listMetadataFormats("ivo_vor://org.astrogrid.localhost/org.astrogrid.registry.RegistryService");
+       Document result = rs.listMetadataFormats("ivo://org.astrogrid.localhost/org.astrogrid.registry.RegistryService");
        DomHelper.DocumentToStream(result,System.out);
    }
    

@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Ed Shaya (NASA) -->
+<!-- IVOA standard (n-dimensional) quantity schema -->
+<xsd:schema targetNamespace="http://ivoa.org/Quantity" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:coord="http://ivoa.org/CoordinateSystems" xmlns:acc="http://ivoa.org/Accuracy" xmlns:map="http://ivoa.org/Mappings" xmlns="http://ivoa.org/Quantity" elementFormDefault="qualified">
+	<xsd:import namespace="http://ivoa.org/Accuracy" schemaLocation="Accuracy.xsd"/>
+	<xsd:import namespace="http://ivoa.org/CoordinateSystems" schemaLocation="CoordinateSystems.xsd"/>
+	<xsd:import namespace="http://ivoa.org/Mappings" schemaLocation="Mappings.xsd"/>
+	<xsd:complexType name="quantityType" mixed="true">
+		<xsd:annotation>
+			<xsd:documentation>Primitive type for QuantityGroup</xsd:documentation>
+		</xsd:annotation>
+	</xsd:complexType>
+	<xsd:complexType name="standardQuantityType">
+		<xsd:annotation>
+			<xsd:documentation>This is the full featured quantity with axes</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="unmixedQuantityType">
+				<xsd:sequence>
+					<xsd:element name="MetaData" type="quantityContainerType" minOccurs="0"/>
+					<xsd:element name="Ucd" type="trivialQuantityType" minOccurs="0"/>
+					<xsd:element name="CoordSystem" type="coord:coordSystemsContainerType" minOccurs="0"/>
+					<xsd:choice minOccurs="0">
+						<xsd:element name="Axes" type="coreQuantityType"/>
+						<xsd:element name="AxesContainer" type="axesContainerType"/>
+						<!-- axes must be either core quantities only -->
+						<!-- when there is more than one set of axes -->
+					</xsd:choice>
+					<xsd:choice>
+						<xsd:sequence>
+							<xsd:choice>
+								<xsd:sequence>
+									<xsd:choice minOccurs="0">
+										<xsd:element name="Units" type="trivialQuantityType"/>
+										<xsd:element name="Unitless" type="unitlessType"/>
+									</xsd:choice>
+									<xsd:choice minOccurs="0">
+										<xsd:element name="Float" type="floatType"/>
+										<xsd:element name="Integer" type="integerType"/>
+										<xsd:element name="String" type="stringType"/>
+									</xsd:choice>
+								</xsd:sequence>
+								<xsd:element name="Vector" type="vectorType"/>
+								<!-- type 1 : scalar needs dataType + units -->
+								<!-- type 2 : vector needs dataType only -->
+							</xsd:choice>
+							<xsd:choice>
+								<xsd:element ref="ValueCellGroup"/>
+								<xsd:element name="Values" type="valuesContainerType"/>
+								<xsd:element name="Mapping" type="map:mappingContainerType"/>
+							</xsd:choice>
+							<xsd:element name="AltValues" type="quantityContainerType" minOccurs="0"/>
+							<xsd:element name="Accuracy" type="acc:accuracyContainerType" minOccurs="0"/>
+							<!-- dataTYpe/Units. Only certain combos can exist -->
+						</xsd:sequence>
+						<xsd:choice>
+							<xsd:element name="Members"/>
+							<xsd:element ref="QuantityGroup" maxOccurs="unbounded"/>
+						</xsd:choice>
+						<!-- number data -->
+						<!-- choice 2 : has member, this may be specified either
+                 as within a full "members" element, or just start listing quantities 
+              -->
+					</xsd:choice>
+					<!-- arbitrary (quantity) metadata (only basic quantites or lower allowed) -->
+					<!-- special named meta-data : the ucd -->
+					<!-- special named meta-data : the coordSystem -->
+					<!-- specification of the (apparent) dimensionality -->
+					<!-- data section. various groupings -->
+					<!-- data either number or members -->
+				</xsd:sequence>
+				<xsd:attributeGroup ref="quantityAttribs"/>
+				<xsd:attribute name="size" type="xsd:nonNegativeInteger" use="optional"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="coreQuantityType">
+		<xsd:annotation>
+			<xsd:documentation>This quantity holds one-dimensional values</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="standardQuantityType">
+				<xsd:sequence>
+					<xsd:element name="MetaData" type="quantityContainerType" minOccurs="0"/>
+					<xsd:element name="Ucd" type="trivialQuantityType" minOccurs="0"/>
+					<xsd:element name="CoordSystem" type="coord:coordSystemsContainerType" minOccurs="0"/>
+					<xsd:choice>
+						<xsd:sequence>
+							<xsd:choice>
+								<xsd:sequence>
+									<xsd:choice minOccurs="0">
+										<xsd:element name="Units" type="trivialQuantityType"/>
+										<xsd:element name="Unitless" type="unitlessType"/>
+									</xsd:choice>
+									<xsd:choice minOccurs="0">
+										<xsd:element name="Float" type="floatType"/>
+										<xsd:element name="Integer" type="integerType"/>
+										<xsd:element name="String" type="stringType"/>
+									</xsd:choice>
+								</xsd:sequence>
+								<xsd:element name="Vector" type="vectorType"/>
+								<!-- type 1 : scalar needs dataType + units -->
+								<!-- type 1 : vector needs dataType only -->
+							</xsd:choice>
+							<xsd:choice>
+								<xsd:element ref="ValueCellGroup"/>
+								<xsd:element name="Values" type="valuesContainerType"/>
+								<xsd:element name="Mapping" type="map:mappingContainerType"/>
+							</xsd:choice>
+							<xsd:element name="Accuracy" type="acc:accuracyContainerType" minOccurs="0"/>
+							<!-- dataTYpe/Units. Only certain combos can exist -->
+						</xsd:sequence>
+						<xsd:choice>
+							<xsd:element name="Members"/>
+							<xsd:element ref="QuantityGroup" maxOccurs="unbounded"/>
+						</xsd:choice>
+						<!-- number data -->
+						<!-- choice 2 : has member, this may be specified either
+                 as within a full "members" element, or just start listing quantities
+              -->
+					</xsd:choice>
+					<!-- data either number or members -->
+				</xsd:sequence>
+				<xsd:attributeGroup ref="quantityAttribs"/>
+				<xsd:attribute name="size" type="xsd:nonNegativeInteger" use="optional"/>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="basicQuantityType">
+		<xsd:annotation>
+			<xsd:documentation>This quantity holds just a single value</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="coreQuantityType">
+				<xsd:sequence>
+					<xsd:element name="MetaData" type="quantityContainerType" minOccurs="0"/>
+					<xsd:element name="Ucd" type="trivialQuantityType" minOccurs="0"/>
+					<xsd:element name="CoordSystem" type="coord:coordSystemsContainerType" minOccurs="0"/>
+					<xsd:choice>
+						<xsd:sequence>
+							<xsd:choice>
+								<xsd:sequence>
+									<xsd:choice minOccurs="0">
+										<xsd:element name="Units" type="trivialQuantityType"/>
+										<xsd:element name="Unitless" type="unitlessType"/>
+									</xsd:choice>
+									<xsd:choice minOccurs="0">
+										<xsd:element name="Float" type="floatType"/>
+										<xsd:element name="Integer" type="integerType"/>
+										<xsd:element name="String" type="stringType"/>
+									</xsd:choice>
+								</xsd:sequence>
+								<xsd:element name="Vector" type="vectorType"/>
+								<!-- type 1 : scalar needs dataType + units -->
+								<!-- type 1 : vector needs dataType only -->
+							</xsd:choice>
+							<xsd:element ref="ValueCellGroup"/>
+							<xsd:element name="Accuracy" type="acc:accuracyContainerType" minOccurs="0"/>
+							<!-- dataTYpe/Units. Only certain combos can exist -->
+						</xsd:sequence>
+						<xsd:element name="Members"/>
+						<!-- number data -->
+						<!-- choice 2 : has member -->
+					</xsd:choice>
+					<!-- data either number or members -->
+				</xsd:sequence>
+				<xsd:attributeGroup ref="quantityAttribs"/>
+				<xsd:attribute name="size" use="prohibited"/>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="trivialQuantityType" mixed="true">
+		<xsd:annotation>
+			<xsd:documentation>Trivial Quantity holds PCDATA as well as quantity attributes.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent mixed="true">
+			<xsd:extension base="quantityType">
+				<xsd:attributeGroup ref="quantityAttribs"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="unmixedQuantityType" mixed="false">
+		<xsd:annotation>
+			<xsd:documentation>This is an intermediate to restrict PCDATA in quantity except for trivialQuantities</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent mixed="false">
+			<xsd:restriction base="quantityType"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="axesContainerType">
+		<xsd:annotation>
+			<xsd:documentation>A list of axes or axesrefs</xsd:documentation>
+		</xsd:annotation>
+		<xsd:choice>
+			<xsd:sequence>
+				<xsd:element name="Axes" type="coreQuantityType" minOccurs="0" maxOccurs="unbounded"/>
+				<!-- axes should be only core or standard quantities only -->
+			</xsd:sequence>
+			<xsd:element name="RefQuantity" type="refQuantityType"/>
+		</xsd:choice>
+		<!-- holds either sequence of axes -Or- a reference to some others -->
+	</xsd:complexType>
+	<xsd:complexType name="valuesContainerType" mixed="true">
+		<xsd:annotation>
+			<xsd:documentation>ValueCells</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="ValueCellGroup" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="fixedWidth" default="no">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:NMTOKEN">
+					<xsd:enumeration value="yes"/>
+					<xsd:enumeration value="no"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+	</xsd:complexType>
+	<xsd:attributeGroup name="frameAttribs">
+		<xsd:annotation>
+			<xsd:documentation>name, description, and qid</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="name" type="xsd:string"/>
+		<xsd:attribute name="description" type="xsd:string"/>
+		<xsd:attribute name="qid" type="xsd:ID" use="optional"/>
+	</xsd:attributeGroup>
+	<xsd:attributeGroup name="quantityAttribs">
+		<xsd:annotation>
+			<xsd:documentation>For now, same as frameAttribs</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attributeGroup ref="frameAttribs"/>
+	</xsd:attributeGroup>
+	<xsd:attributeGroup name="coreQuantityAttribs">
+		<xsd:annotation>
+			<xsd:documentation>This quantity holds one-dimensional values</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attributeGroup ref="quantityAttribs"/>
+		<xsd:attribute name="size" type="xsd:nonNegativeInteger" use="required"/>
+	</xsd:attributeGroup>
+	<xsd:complexType name="refQuantityType">
+		<xsd:annotation>
+			<xsd:documentation>This type of quantity just references other types. This allows reuse of quantities.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="quantityType">
+				<xsd:attribute name="qidRef" type="xsd:IDREF" use="required"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="QuantityGroup" type="quantityType" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>A substitution group for quantity</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="FrameGroup" type="frameType" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>A subsitution group for frames</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="StandardQuantity" type="standardQuantityType" substitutionGroup="QuantityGroup">
+		<xsd:annotation>
+			<xsd:documentation>see StandardQuantityType</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Quantity" type="standardQuantityType" substitutionGroup="QuantityGroup">
+		<xsd:annotation>
+			<xsd:documentation>see standardQuantityType</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="CoreQuantity" type="coreQuantityType" substitutionGroup="QuantityGroup">
+		<xsd:annotation>
+			<xsd:documentation>see CoreQuantityType</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="BasicQuantity" type="basicQuantityType" substitutionGroup="QuantityGroup">
+		<xsd:annotation>
+			<xsd:documentation>see BasicQuantityType</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="vectorType">
+		<xsd:annotation>
+			<xsd:documentation>Allows one to define a tuple or vector datatype.  One then declares the native format for each component of the vector.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence maxOccurs="unbounded">
+			<xsd:element ref="FrameGroup" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="TrivialQuantity" type="trivialQuantityType" substitutionGroup="QuantityGroup">
+		<xsd:annotation>
+			<xsd:documentation>see TrivialQuantityType</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="RefQuantity" type="refQuantityType" substitutionGroup="QuantityGroup">
+		<xsd:annotation>
+			<xsd:documentation>see refQuantityType</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Frame" type="frameType" substitutionGroup="FrameGroup">
+		<xsd:annotation>
+			<xsd:documentation>see FrameType</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="quantityContainerType">
+		<xsd:annotation>
+			<xsd:documentation>A container for quantities</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="QuantityGroup" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="integerType">
+		<xsd:annotation>
+			<xsd:documentation>I/O format information on integer fields</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="type" default="decimal">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:NMTOKEN">
+					<xsd:enumeration value="decimal"/>
+					<xsd:enumeration value="octal"/>
+					<xsd:enumeration value="hexadecimal"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="width" type="xsd:NMTOKEN"/>
+		<xsd:attribute name="signed" default="yes">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:NMTOKEN">
+					<xsd:enumeration value="yes"/>
+					<xsd:enumeration value="no"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="noDataValue" type="xsd:long"/>
+		<!-- use="required"/>
+-->
+	</xsd:complexType>
+	<xsd:complexType name="floatType">
+		<xsd:annotation>
+			<xsd:documentation>I/O format information on float/exponential fields</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="width" type="xsd:NMTOKEN"/>
+		<xsd:attribute name="precision" type="xsd:NMTOKEN"/>
+		<xsd:attribute name="exponent" type="xsd:NMTOKEN" default="0"/>
+		<xsd:attribute name="noDataValue" type="xsd:double"/>
+		<!-- use="required"/>
+-->
+		<!-- use="required"/>
+-->
+	</xsd:complexType>
+	<xsd:complexType name="stringType">
+		<xsd:annotation>
+			<xsd:documentation>I/O format information on character strings</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="width" type="xsd:NMTOKEN" default="-1"/>
+		<xsd:attribute name="noDataValue" type="xsd:string"/>
+	</xsd:complexType>
+	<xsd:complexType name="unitlessType">
+		<xsd:annotation>
+			<xsd:documentation>For when the quantity has no physical units.  Use sparingly.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:complexType>
+	<xsd:complexType name="frameType">
+		<xsd:annotation>
+			<xsd:documentation>see FrameType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="MetaData" type="quantityContainerType" minOccurs="0"/>
+			<xsd:element name="Ucd" type="trivialQuantityType" minOccurs="0"/>
+			<xsd:element name="CoordSystem" type="coord:coordSystemsContainerType" minOccurs="0"/>
+			<xsd:choice>
+				<xsd:sequence>
+					<xsd:choice minOccurs="0">
+						<xsd:element name="Units" type="trivialQuantityType"/>
+						<xsd:element name="Unitless" type="unitlessType"/>
+					</xsd:choice>
+					<xsd:choice minOccurs="0">
+						<xsd:element name="Float" type="floatType"/>
+						<xsd:element name="Integer" type="integerType"/>
+						<xsd:element name="String" type="stringType"/>
+					</xsd:choice>
+				</xsd:sequence>
+				<xsd:element name="Vector" type="vectorType"/>
+				<!-- type 1 : scalar needs dataType + units -->
+				<!-- type 2 : vector needs dataType only -->
+			</xsd:choice>
+			<!-- arbitrary (quantity) metadata (only basic quantites or lower allowed) -->
+			<!-- special named meta-data : the ucd -->
+			<!-- special named meta-data : the coordSystem -->
+			<!-- units/dataType section -->
+		</xsd:sequence>
+		<xsd:attributeGroup ref="frameAttribs"/>
+	</xsd:complexType>
+	<xsd:element name="ValueCellGroup" type="valueCellType" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>a substitution group for  ValueCellType</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="valueCellType">
+		<xsd:annotation>
+			<xsd:documentation>For holding a single datum</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string"/>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="valueContainerType">
+		<xsd:annotation>
+			<xsd:documentation>A container for members of the ValueGroup</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="ValueCellGroup" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="Value" type="valueCellType" substitutionGroup="ValueCellGroup">
+		<xsd:annotation>
+			<xsd:documentation>see ValueCellType</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+</xsd:schema>

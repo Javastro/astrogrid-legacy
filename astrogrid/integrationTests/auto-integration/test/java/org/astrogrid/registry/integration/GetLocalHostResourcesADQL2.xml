@@ -13,7 +13,7 @@
       </Compare>
       <Compare Comparison="=">
          <Column Name="vr:Resource/vr:Identifier/vr:ResourceKey"/>
-         <Atom><String>sia</String></Atom>
+         <Atom><String>testdsa</String></Atom>
       </Compare>      
       </And>
    </Where>

@@ -1,4 +1,4 @@
-/*$Id: QueryRegistryClientADQLTest.java,v 1.6 2004/09/22 10:47:25 nw Exp $
+/*$Id: QueryRegistryClientADQLTest.java,v 1.7 2004/12/18 18:30:16 jdt Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,6 +47,7 @@ public class QueryRegistryClientADQLTest extends AbstractTestForRegistry {
        Document  result = rs.search(queryDoc);
        assertNotNull(result);
        DomHelper.DocumentToStream(result,System.out);
+       assertVODescription(result);
        AstrogridAssert.assertXpathExists("/SearchResponse",result);
     }
     
@@ -55,7 +56,7 @@ public class QueryRegistryClientADQLTest extends AbstractTestForRegistry {
       Document  result = rs.search(queryDoc);
       assertNotNull(result);
       DomHelper.DocumentToStream(result,System.out); 
-
+      assertVODescription(result);
       AstrogridAssert.assertXpathExists("/SearchResponse",result);      
    }
     

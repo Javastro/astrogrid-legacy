@@ -6,6 +6,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Attr;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.astrogrid.registry.server.RegistryServerHelper;
@@ -16,6 +17,7 @@ import java.text.DateFormat;
 import org.astrogrid.config.Config;
 import org.astrogrid.registry.common.XSLHelper;
 import org.astrogrid.registry.server.XQueryExecution;
+import org.astrogrid.registry.common.RegistryValidator;
 import org.astrogrid.util.DomHelper;
 import java.util.ArrayList;
 import org.astrogrid.registry.RegistryException;
@@ -38,6 +40,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.axis.AxisFault;
 import org.astrogrid.xmldb.eXist.server.UpdateDBService;
+import junit.framework.AssertionFailedError;
 
 /**
  * Class Name: RegistryAdminService
@@ -154,35 +157,31 @@ public class RegistryAdminService {
             
       boolean hasStyleSheet = false;
       
-      //If there is a stylesheet placed in the astrogrid-registry-common.jar
-      //with aparticular name for that version it will perform an XSL
-      //translations.  Currently not used.
       
       UpdateDBService udbService = new UpdateDBService();
       
       
+      if(update == null) {
+          throw new AxisFault("Nothing on request 'null sent'");
+      }
+      
       //Get all the Resource elements
-      NodeList nl = update.getElementsByTagNameNS("*","Resource");
-      /*
-      try {
-         nl = DomHelper.getNodeListTags(update,"Resource","vr");
-      } catch(IOException ioe) {
-         log.error("IO error trying to find Resources");
-         throw new AxisFault("IO Error when retrieving Resource nodes.");
+      NodeList nl = null;
+      
+      String attrVersion = null;
+      if(update.getDocumentElement().hasChildNodes()) {
+          attrVersion = RegistryServerHelper.getRegistryVersionFromNode(update.getDocumentElement().getFirstChild());
+      }else {
+          attrVersion = RegistryServerHelper.getRegistryVersionFromNode(update.getDocumentElement());
       }
-      */
-      if(nl.getLength() == 0) {
-          log.error("No Resources found to be updated");
-          throw new AxisFault("No Resources found to be updated");
-      }
-      String attrVersion = RegistryServerHelper.getRegistryVersionFromNode(nl.item(0));
+      
       log.info("Registry Version being updated = " + attrVersion);      
       String vrNS = "http://www.ivoa.net/xml/VOResource/v" + attrVersion;
       log.info("Registry namespace being updated = " + vrNS);
       String versionNumber = attrVersion.replace('.','_');
       String collectionName = "astrogridv" + versionNumber;
       log.info("Collection Name = " + collectionName);
-      
+      //String rootNodeString = RegistryServerHelper.getRootNodeLocalName(versionNumber);
       hasStyleSheet = conf.getBoolean("org.astrogrid.registry.updatestylesheet." + versionNumber,false);
       if(hasStyleSheet) {
          //System.out.println("lets call transform update");
@@ -193,16 +192,32 @@ public class RegistryAdminService {
       }
 
       nl = xsDoc.getElementsByTagNameNS("*","Resource");
-      /*
-      try {
-          nl = DomHelper.getNodeListTags(xsDoc,"Resource","vr");
-      } catch(IOException ioe) {
-          throw new AxisFault("IO Error when retrieving Resource nodes.");
+      if(nl.getLength() == 0) {
+          throw new AxisFault("No Resources Found to be updated");
       }
-      */
-      log.info("Number of Resources = " + nl.getLength());
-      log.info("server side update the xsDoc = " + 
-              DomHelper.DocumentToString(xsDoc));      
+      
+      boolean validateXML = conf.getBoolean("registry.validate.onupdates",false);
+      //log.info("Validate xml2 = " + validateXML);
+      if(validateXML) {
+          try {
+              
+              String rootElement = update.getDocumentElement().getFirstChild().getLocalName();
+              if(rootElement == null) {
+                  rootElement = update.getDocumentElement().getFirstChild().getNodeName();
+              }
+              log.info("try Validating for version = " + versionNumber +
+                       " with rootElement = " + rootElement);
+              RegistryValidator.isValid(xsDoc,rootElement);
+          }catch(AssertionFailedError afe) {
+              afe.printStackTrace();
+              log.error("Error invalid document = " + afe.getMessage());
+              if(conf.getBoolean("registry.quiton.invalid",false)) {
+                  throw new AxisFault("Invalid update, document not valid " + afe.getMessage());
+              }//if              
+          }//catch
+      }//if
+      
+      log.info("Number of Resources to be updated = " + nl.getLength());
       
       if(manageAuths.get(versionNumber) == null)
           populateManagedMaps(collectionName, versionNumber);
@@ -244,33 +259,37 @@ public class RegistryAdminService {
          //hence the nodelist is like a queue and no longer
          //has the current resource and moves everything up the queue
          //get the iden and resource key elements.
-         ident = getAuthorityID((Element)nl.item(0));
-         resKey = getResourceKey((Element)nl.item(0));
+         ident = RegistryServerHelper.getAuthorityID((Element)nl.item(0));
+         log.info("here is the ident/authid = " + ident);         
+         resKey = RegistryServerHelper.getResourceKey((Element)nl.item(0));
+         log.info("here is the reskey = " + resKey);
          //set the currentResource element.
          Element currentResource = (Element)nl.item(0);
          //Sometimes there are other elements defined above the
          //Resource element so be sure this Resource element has a
-         //defined vr namespace if it does not have one already. 
-         if(!"vr".equals(currentResource.getPrefix())) {
-             currentResource.setAttribute("xmlns:vr",vrNS);
-         }
-         //same goes for default namespaces make sure there is one set
-         //on the Resource element otherwise we might get XML where elements
-         //don't have a defined default namespace.
-         if(defaultNS == null) {
-             defaultNS = DomHelper.getNodeAttrValue((Element)currentResource,"xmlns");             
-         }//if
-         if((defaultNS == null || defaultNS.trim().length() == 0) && currentResource.getParentNode() != null) {
-             defaultNS = DomHelper.getNodeAttrValue((Element)currentResource.getParentNode(),"xmlns");
-         }//if
-         if(defaultNS != null && defaultNS.trim().length() > 0) {
-             currentResource.setAttribute("xmlns",defaultNS);
-         }//if             
+         //defined vr namespace if it does not have one already.
          
+         Node parentNode = currentResource.getParentNode();
+         NamedNodeMap attrNNM = parentNode.getAttributes();
+         //currentResource.setPrefix("vr");
+         for(int k= 0;k < attrNNM.getLength();k++) {
+             Node attrNode = attrNNM.item(k);
+             if(!currentResource.hasAttribute(attrNode.getNodeName()) && 
+                !attrNode.getLocalName().equals(currentResource.getPrefix())) {
+                 //System.out.println("2ADDING THIS ATTRIBUTE: the localname = " + attrNode.getLocalName() + " node name = " + attrNode.getNodeName() + " node value = " + attrNode.getNodeValue() + " namespace uri = " + attrNode.getNamespaceURI());
+                 if(attrNode.getNodeName().indexOf("xmlns") != -1 && 
+                    attrNode.getNodeName().indexOf("xsi") == -1) {
+                     //System.out.println("adding xmlns");
+                     currentResource.setAttribute(attrNode.getNodeName(),
+                                                  attrNode.getNodeValue());
+                 }//else
+             }//if
+         }//for
          
+
          //set a temporary identifier.
          tempIdent = ident;
-         if(resKey != null) tempIdent += "/" + resKey;
+         if(resKey != null && resKey.trim().length() > 0) tempIdent += "/" + resKey;
       
          log.info("serverside update ident = " + ident + " reskey = " + 
                   resKey + " the nl getlenth here = " + nl.getLength());
@@ -388,7 +407,7 @@ public class RegistryAdminService {
                         // Grab our current Registry resource we need to add
                         // a new managed authority tag.
                         RegistryQueryService rs = new RegistryQueryService();
-                        Document loadedRegistry = rs.loadRegistry(null);
+                        Document loadedRegistry = rs.loadMainRegistry(versionNumber);
                         
                         // Get a ManagedAuthority Node region/area
                         // so we can append a sibling to it, and
@@ -444,14 +463,14 @@ public class RegistryAdminService {
 
                            // Now get the information to re-update the
                            // Registry Resource which is for this registry.
-                           ident = getAuthorityID(loadedRegistry.
+                           ident = RegistryServerHelper.getAuthorityID(loadedRegistry.
                                                   getDocumentElement());
-                           resKey = getResourceKey(loadedRegistry.
+                           resKey = RegistryServerHelper.getResourceKey(loadedRegistry.
                                                    getDocumentElement());
                            tempIdent = ident;
                            if(resKey != null) tempIdent += "/" + resKey;
                            //TODO: again this next line should not be needed.
-                           df = loadedRegistry.createDocumentFragment();
+                           //df = loadedRegistry.createDocumentFragment();
                            
                            Element elem = loadedRegistry.
                                           createElement("AstrogridResource");
@@ -587,97 +606,6 @@ public class RegistryAdminService {
        log.debug("end populateManagedMaps");
    }
  
-   /**
-    * Not used and Not finished yet, but this will be a validate method to
-    * validate the DOM/XML that comes in, using the local schemas.
-    * @param xmlDoc
-    * @return
-    */ 
-   public boolean isValid(Document xmlDoc) {
-      log.debug("start isValid");
-      
-      // Okay not sure might need to think of a better way, but here is how
-      // this method will work.
-      // Create the SAXParserFactory stuff and setnamespaceaware and 
-      // setValidting to true.
-      String regNameSpaces = conf.getString("registry.namespaces");
-      String []nameSpaces = regNameSpaces.split(";");
-       
-      String location = conf.getString("exist.db.url");
-      location += "/servlet/db/schemas";
-      
-      SAXParserFactory spf = SAXParserFactory.newInstance();
-      spf.setNamespaceAware(true);
-      spf.setValidating(true);
-      SAXParser sp = null;
-      try {
-         sp = spf.newSAXParser();
-         /*
-         for(int i = 0;i < nameSpaces.length;i++) {
-            String xmlDocName = nameSpaces[i].replaceAll("[^\\w*]","_") + 
-                                ".xsd";
-            URL localLocation = XQueryExecution.getUpdateURL("schemas",
-                                                             xmlDocName);
-            HttpURLConnection huc = (HttpURLConnection) localLocation.
-                                                        openConnection();
-            if(HttpURLConnection.HTTP_NOT_FOUND == huc.getResponseCode()) {
-               huc.disconnect();
-              //Okay we don't have it in our Exist Db.  Create a Dom object
-              //and update it in our schema.
-               Document newSchema = DomHelper.newDocument(new URL(
-                                                              nameSpaces[i]));
-               updateSchema(newSchema);
-               huc = (HttpURLConnection) XQueryExecution.
-                                         getUpdateURL("schemas", xmlDocName).
-                                         openConnection();
-               if(HttpURLConnection.HTTP_NOT_FOUND == huc.getResponseCode()) {
-                  //Okay if there is still something wrong then just use the
-                  //external link for now.
-                  //Probably should log this though.
-                  huc.disconnect();
-                  localLocation = new URL(nameSpaces[i]);
-               }//if
-            }//if
-            sp.setProperty(nameSpaces[i],localLocation.toString());
-         }
-         */
-         sp.setProperty(
-             "http://java.sun.com/xml/jaxp/properties/schemaLanguage",
-             "http://www.w3.org/2001/XMLSchema"
-         );         
-      }
-      catch(ParserConfigurationException pce) {
-         pce.printStackTrace();
-         log.error(pce);   
-      }
-      catch(SAXNotSupportedException sse) {
-         sse.printStackTrace();
-         log.error(sse);
-      }
-      catch(SAXException se) {
-         se.printStackTrace();
-         log.error(se);
-      }
-
-      try {
-         DefaultHandler dh = new DefaultHandler();
-         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-         DomHelper.DocumentToStream(xmlDoc,baos);
-         ByteArrayInputStream bais = new ByteArrayInputStream(baos.
-                                                              toByteArray());
-         sp.parse(bais, dh);
-      }
-      catch(SAXException se) {
-         se.printStackTrace();
-         log.error(se);
-      }
-      catch(IOException ioe) {
-         ioe.printStackTrace();
-         log.error(ioe);   
-      }
-      log.debug("end isValid");
-      return true;
-   }  
   
    /**
     * Also an update method that updates into this Registry's db. But it does no
@@ -703,16 +631,14 @@ public class RegistryAdminService {
       String tempIdent = null;
 
       XSLHelper xs = new XSLHelper();
+      
+      if(update == null) {
+          throw new IOException("Error nothing to update 'null sent'");
+      }
 
       
       
-      //Okay we need to get the vr attribute namespace.
-      //The confusing part is since we are using message style there is a chance it 
-      //could be in the root element (which might be the web service operation name)
-      //hence we need to look at the root element, its fist child, and lastly
-      //the child of that node
-      //ex of possible message style input: 
-      //<update><VoResource xmlns:vr=... ><Resource xmlns:vr=...>
+     
       //the vr attribute can live at either or both of those elments and we just need to get the first one.
       //It is possible the <update> element will not be there hence we need to look at the root element
       //NodeList nl = DomHelper.getNodeListTags(update,"Resource","vr");
@@ -739,6 +665,12 @@ public class RegistryAdminService {
       }
       nl = xsDoc.getElementsByTagNameNS("*","Resource");
       
+      boolean validateXML = conf.getBoolean("registry.validate.onharvestupdates",false);
+      if(validateXML) {
+          RegistryValidator.isValid(xsDoc,"Resource");
+      }
+      
+      
       //System.out.println("the xsdoc in updateNocheck = " + DomHelper.DocumentToString(xsDoc));
       log.info("Number of Resources = " + nl.getLength());
       UpdateDBService udbService = new UpdateDBService();
@@ -748,6 +680,20 @@ public class RegistryAdminService {
       
       if(otherAuths.get(versionNumber) == null)
           populateOtherManagedMaps(collectionName, versionNumber);
+      
+      //hmmm he is doing harvesting before he setup the registry, okay let it go.
+      if(manageAuths.get(versionNumber) == null) {
+          //okay this must be the very first time into the registry where
+          //registry is empty. So put a an empty entry for this version.
+          manageAuths.put(versionNumber,new HashMap());
+      }
+      //hmmm he is doing harvesting before he setup the registry, okay let it go.
+      if(otherAuths.get(versionNumber) == null) {
+          //okay this must be the very first time into the registry where
+          //registry is empty. So put a an empty entry for this version.
+          otherAuths.put(versionNumber,new HashMap());
+      }
+      
 
       
 
@@ -756,8 +702,8 @@ public class RegistryAdminService {
       // automatically reduced the length by one.
       final int resourceNum = nl.getLength();
       for(int i = 0;i < resourceNum;i++) {
-         ident = getAuthorityID( (Element)nl.item(0));
-         resKey = getResourceKey( (Element)nl.item(0));
+         ident = RegistryServerHelper.getAuthorityID( (Element)nl.item(0));
+         resKey = RegistryServerHelper.getResourceKey( (Element)nl.item(0));
          Element currentResource = (Element)nl.item(0);
 
          tempIdent = ident;
@@ -869,6 +815,11 @@ public class RegistryAdminService {
       log.debug("start getManagedAuthorityID");
       //try {
           NodeList nl = doc.getElementsByTagNameNS("*","ManagedAuthority");
+          
+          if(nl.getLength() == 0) {
+              nl = doc.getElementsByTagNameNS("*","managedAuthority");
+          }          
+          
           //NodeList nl = DomHelper.getNodeListTags(doc,"ManagedAuthority","vg");
           if(nl.getLength() > 0)
              return nl.item(0);
@@ -884,6 +835,9 @@ public class RegistryAdminService {
        log.debug("start getManagedAuthorityID");
        //NodeList nl = null;
        NodeList nl = regNode.getElementsByTagNameNS("*","ManagedAuthority");
+       if(nl.getLength() == 0) {
+           nl = regNode.getElementsByTagNameNS("*","managedAuthority");
+       }
        /*
        try {
            
@@ -896,62 +850,7 @@ public class RegistryAdminService {
        return nl;
     }
    
-  
-   /**
-    * Gets the text out of the First authority id element.
-    * Need to use RegistryServerHelper class to get the NodeList. It has
-    * already these common methods  in it.  Once it gets the NodeList
-    * then return the text in the first child. 
-    * @param doc xml element normally the full DOM root element.
-    * @return AuthorityID text
-    */
-   private String getAuthorityID(Element doc) {
-      NodeList nl = doc.getElementsByTagNameNS("*","Identifier" );
-      String val = null;
-      if(nl.getLength() == 0) {
-          nl = doc.getElementsByTagNameNS("*","identifier" );
-          if(nl.getLength() == 0)
-              return null;
-      }
-    
-      NodeList authNodeList = ((Element)nl.item(0)).getElementsByTagNameNS("*","AuthorityID");
-      
-      if(authNodeList.getLength() == 0) {
-          val = nl.item(0).getFirstChild().getNodeValue();
-          if(val.indexOf("/") != -1) 
-              return val.substring(0,val.indexOf("/"));
-      }
-      return authNodeList.item(0).getFirstChild().getNodeValue();
-   }
-
-   /**
-    * Gets the text out of the First ResourceKey element.
-    * Need to use RegistryServerHelper class to get the NodeList. It has
-    * already these common methods  in it.  Once it gets the NodeList
-    * then return the text in the first child. 
-    * @param doc xml element normally the full DOM root element.
-    * @return ResourceKey text
-    */  
-   private String getResourceKey(Element doc) {
-       NodeList nl = doc.getElementsByTagNameNS("*","Identifier" );
-       if(nl.getLength() == 0) {
-           nl = doc.getElementsByTagNameNS("*","identifier" );
-           if(nl.getLength() == 0)
-               return null;
-       }
-       NodeList resNodeList = ((Element)nl.item(0)).getElementsByTagNameNS("*","ResourceKey");
-       String val = null;
-       if(resNodeList.getLength() == 0) {
-           val = nl.item(0).getFirstChild().getNodeValue();
-           if(val.indexOf("/") != -1) 
-               return val.substring(val.indexOf("/")+1);
-       }
-       if(resNodeList.item(0).hasChildNodes())
-           return resNodeList.item(0).getFirstChild().getNodeValue();
-       //it is just an empty ResourceKey which is okay.
-       return "";
-   }
-  
+   
  /**
    * Takes an XML Document and will either update and insert the data in the
    * registry.  If a client is intending for an insert, but the primarykey 

@@ -165,18 +165,18 @@ Find IVORNs including <input name="IvornPart" type="text" value='<%= ivornpart %
    
             out.write("<a href=viewEntryXml.jsp?IVORN="+ivoStr+">XML</a>,  ");
 
-            out.write("<a href=admin/editEntry.jsp?IVORN="+ivoStr+">Edit</a>");
+            out.write("<a href=editEntry.jsp?IVORN="+ivoStr+">Edit</a>");
 
+			/*
             if (!deleted) {
                out.write(", <a href=admin/deleteResource.jsp?IVORN="+ivoStr+">Delete</a>");
             }
+        	*/
             
             out.write("</td>");
          }
          out.write("</font></tr>\n");
-         
       }
-      
       out.write("</table>");
    
    }

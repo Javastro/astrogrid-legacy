@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractTestForRegistry.java,v 1.1 2004/09/22 10:47:25 nw Exp $
+ * $Id: AbstractTestForRegistry.java,v 1.2 2004/12/18 18:30:16 jdt Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -28,10 +28,14 @@ import org.astrogrid.scripting.Service;
 import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.test.schema.SchemaMap;
 
+import org.astrogrid.registry.common.RegistryValidator;
+import org.astrogrid.registry.common.RegistrySchemaMap;
+
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import junit.framework.TestCase;
+import org.astrogrid.util.DomHelper;
 
 /**
  * @author Paul Harrison (pah@jb.man.ac.uk) 07-May-2004
@@ -87,7 +91,8 @@ public abstract class AbstractTestForRegistry extends TestCase {
   // useful reg-specific assertions.
    /** assert a document conforms to the vodescription schema */
    public void assertVODescription(Document doc) {
-       AstrogridAssert.assertSchemaValid(doc,"VODescription",SchemaMap.ALL);
+       //AstrogridAssert.assertSchemaValid(doc,"VODescription",RegistrySchemaMap.ALL);
+       RegistryValidator.isValid(doc,"VODescription");
    }
    
 

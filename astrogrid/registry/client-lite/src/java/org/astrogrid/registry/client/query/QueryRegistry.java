@@ -635,7 +635,7 @@ public class QueryRegistry implements RegistryService {
             sbe = (SOAPBodyElement)result.get(0);
             return sbe.getAsDocument();
          }else {
-             return DomHelper.newDocument();
+            return DomHelper.newDocument();
          }
       } catch (RemoteException re) {
          throw new RegistryException(re);

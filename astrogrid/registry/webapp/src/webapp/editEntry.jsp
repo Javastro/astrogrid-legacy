@@ -1,6 +1,7 @@
 <%@ page import="org.astrogrid.registry.server.JspHelper,
                  org.w3c.dom.Document,
                  org.astrogrid.util.DomHelper,
+                 org.astrogrid.config.SimpleConfig,
                  java.net.*,
                  java.util.*,
                  java.io.*"
@@ -30,12 +31,36 @@
 
 <h1>Add/Update Entry</h1>
 <p>
-Enter the VOResource in the text area below and press the [Submit] button to add it to the registry.  If the Resource
-already exists, it will be updated.
+Here you can update the resources in various ways. If the Resources are already there then it will be updated, This page also can handle multiple versions of the registry to be updated:
+<%
+if(SimpleConfig.getSingleton().getBoolean("registry.validate.onupdates",false)) {
+%>
+<br />
+<font color="blue">Validation is already turned on for server side updates.</font><br />
+<%
+   if(SimpleConfig.getSingleton().getBoolean("registry.quiton.invalid",false)) {
+%>
+      <font color="blue">It is also set to Quit on invalid updates.</font>
+<%}else {%>
+      <font color="blue">The server side though will still attempt to update the invalid document.</font>
+<%}%>
+
+
+<%
+}else {
+%>
+<br />
+<font color="blue">Validation is <font color="red">Not</font> turned on for server side updates.</font>
+<%}%>
+</p>
+
+<p>
+<a href="reg_xml_samples">Sample area of xml to enter</a>
 </p>
 
 Upload from a local file:
 <form enctype="multipart/form-data" method="post" action="addResourceEntry.jsp">
+<input type="checkbox" name="validate" value="true">Validate</input>
 <input type="file" name="docfile" />
 <input type="hidden" name="addFromFile" value="true" />
 <input type="submit" name="uploadFromFile" value="upload" />
@@ -43,13 +68,16 @@ Upload from a local file:
 <br />
 Upload from a url:
 <form method="post" action="addResourceEntry.jsp">
+<input type="checkbox" name="validate" value="true">Validate</input>
 <input type="text" name="docurl" />
 <input type="hidden" name="addFromURL" value="true" />
 <input type="submit" name="uploadFromURL" value="upload" />
+
 </form>
 
 Upload from text:<br />
 <form action="addResourceEntry.jsp" method="post">
+<input type="checkbox" name="validate" value="true">Validate</input>
 <input type="hidden" name="addFromText" value="true" />
 <p>
 <textarea name="Resource" rows="30" cols="90">
