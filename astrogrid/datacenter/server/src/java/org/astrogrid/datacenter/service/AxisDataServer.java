@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.7 2003/11/21 17:37:56 nw Exp $
+ * $Id: AxisDataServer.java,v 1.8 2003/11/25 00:31:07 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,6 +14,10 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
@@ -63,10 +67,19 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * - depends on how the tomcat server is run
     * uch easier to place a config file in the WEB-INF/classes directory of
     * the axis web app.
+    * @todo this is a quick hack to get config from JNDI, as code in SImpleConfig doesn't want to work.
+    * later find out why the library code isn't doing the job.
     */
    public AxisDataServer() throws IOException
-   {
-      SimpleConfig.autoLoad();
+   {  
+       try{
+       String s = (String)new InitialContext().lookup("java:comp/env/org.astrogrid.config.url");
+       System.out.println("Context value " + s);
+      SimpleConfig.load(s);
+   } catch (NamingException e) {
+       log.warn("JNDI lookup failed");
+       SimpleConfig.autoLoad();
+   }
    }
 
    /**
