@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: autorun.sh,v 1.18 2004/07/20 13:08:05 jdt Exp $ 
+# $Id: autorun.sh,v 1.19 2004/07/20 13:09:07 jdt Exp $ 
 # Script to run the integration tests/AGINAB
 OLDDIR=$PWD
 
@@ -21,7 +21,7 @@ rm $LOGFILE
 echo "Integration Test Log $DATE" >> $LOGFILE
 echo "=============================" >> $LOGFILE
 #Use old style download counter
-MY_OPTS=maven -Dmaven.download.meter=bootstrap
+MY_OPTS=-Dmaven.download.meter=bootstrap
 
 cd $BUILDHOME >> $LOGFILE 2>&1
 echo "Undeploying old apps..." >> $LOGFILE
