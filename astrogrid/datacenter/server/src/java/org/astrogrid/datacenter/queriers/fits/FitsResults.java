@@ -1,5 +1,5 @@
 /*
- * $Id: FitsResults.java,v 1.12 2004/09/01 12:30:34 mch Exp $
+ * $Id: FitsResults.java,v 1.13 2004/09/02 10:26:24 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -70,15 +70,18 @@ public class FitsResults extends QueryResults {
       printOut.println("<TABLE>");
       
       
+      if (statusToUpdate != null) {
+         statusToUpdate.newProgress("Adding File", getCount());
+      }
       for (int i=0;i<filenames.length;i++) {
-         statusToUpdate.setNote("Adding File "+i+" of "+getCount());
+         if (statusToUpdate != null) {
+            statusToUpdate.setProgress(i);
+         }
          printOut.println("<DATA><FITS>");
-         printOut.println("   <FileName>"+filenames[i]+"</STREAM>");
+         printOut.println("   <STREAM>"+filenames[i]+"</STREAM>");
          
          printOut.println("</FITS></DATA>");
       }
-      
-      statusToUpdate.setNote("");
       
       printOut.println("</TABLE>");
       
@@ -93,24 +96,30 @@ public class FitsResults extends QueryResults {
     * Converts results to HTML to given outputstream.
     */
    public void toHtml(Writer out, QuerierProcessingResults statusToUpdate) throws IOException {
-
+      
       PrintWriter printOut = new PrintWriter(new BufferedWriter(out));
       
       printOut.println("<HTML>");
       
-         printOut.println("<TITLE>Query Results</TITLE>");
-         printOut.println("</HEAD>");
-
-         printOut.println("<BODY>");
+      printOut.println("<HEAD>");
+      printOut.println("<TITLE>Query Results</TITLE>");
+      printOut.println("</HEAD>");
       
+      printOut.println("<BODY>");
+      
+      if (statusToUpdate != null) {
+         statusToUpdate.newProgress("Adding File", getCount());
+      }
       for (int i=0;i<filenames.length;i++) {
-         statusToUpdate.setNote("Adding File "+i+" of "+getCount());
+         if (statusToUpdate != null) {
+            statusToUpdate.setProgress(i);
+         }
          printOut.println("   <P>"+filenames[i]+"</P>");
       }
-
-        printOut.println("</BODY>");
-         
-         printOut.println("</HTML>");
+      
+      printOut.println("</BODY>");
+      
+      printOut.println("</HTML>");
       
       printOut.flush();
    }
@@ -123,8 +132,15 @@ public class FitsResults extends QueryResults {
 
       PrintWriter printOut = new PrintWriter(new BufferedWriter(out));
 
+      if (statusToUpdate != null) {
+         statusToUpdate.newProgress("Adding File", getCount());
+      }
+
       printOut.println("Found Files");
       for (int i=0;i<filenames.length;i++) {
+         if (statusToUpdate != null) {
+            statusToUpdate.setProgress(i);
+         }
          printOut.println(filenames);
       }
       printOut.flush();
@@ -135,6 +151,9 @@ public class FitsResults extends QueryResults {
 
 /*
  $Log: FitsResults.java,v $
+ Revision 1.13  2004/09/02 10:26:24  mch
+ Fixed XML form
+
  Revision 1.12  2004/09/01 12:30:34  mch
  Fix to Fits VOtables
 
