@@ -1,4 +1,4 @@
-/*$Id: JesUtil.java,v 1.3 2004/03/09 14:23:12 nw Exp $
+/*$Id: JesUtil.java,v 1.4 2004/03/15 23:45:07 nw Exp $
  * Created on 03-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,10 +38,66 @@ public class JesUtil {
         super();
     }
   
-
-    /**
-     * @see org.astrogrid.jes.job.BeanFacade#axis2castor(org.astrogrid.jes.types.v1.JobURN)
+    /** return an iterator of all job steps in the workflow
+     * 
+     * @param wf workflow
+     * @return non-null iterator of step objects
+     * @see org.astrogrid.workflow.beans.v1.Step
+     */    
+    public static Iterator getJobSteps(Workflow wf) {
+        wf.addFunctions(JesFunctions.FUNCTIONS);
+        return wf.findXPathIterator("//*[jes:isStep()]");
+    }
+    /** extract the jobURN portion of a job identifier
+     * @see #createJobId(org.astrogrid.workflow.beans.v1.execution.JobURN, String)
+     * @param id job identifier
+     * @return the urn portion of the identifier.
      */
+    public static org.astrogrid.workflow.beans.v1.execution.JobURN extractURN(JobIdentifierType id) {
+         if (id == null) {
+             return null;
+         }
+         int pos = id.getValue().lastIndexOf('#');
+         org.astrogrid.workflow.beans.v1.execution.JobURN result = new org.astrogrid.workflow.beans.v1.execution.JobURN();
+         result.setContent(id.getValue().substring(0,pos));
+         return result;
+     }
+
+    /** extract the xpath portion of a job identifier
+     * @see #createJobId(org.astrogrid.workflow.beans.v1.execution.JobURN, String)
+     * @param id job identifier 
+     * @return xpath portion of the identifier
+     */
+     public static String extractXPath(JobIdentifierType id) {
+         if (id == null) {
+             return null;
+         }
+         int pos = id.getValue().lastIndexOf('#');
+         return id.getValue().substring(pos + 1);
+     }
+    
+    /** create a job identifier - for passing out into an application contorller - from a jobURN and xpath of the step to execute */
+     public static JobIdentifierType createJobId(org.astrogrid.workflow.beans.v1.execution.JobURN urn, String xpath) {
+         JobIdentifierType id = new JobIdentifierType();
+         id.setValue(urn.getContent() + "#" + xpath);
+         return id;
+     }
+    
+     /** gets most recent record step. if none present, will insert one */
+     public static StepExecutionRecord getLatestOrNewRecord(Step s) {
+         int count = s.getStepExecutionRecordCount();
+         if (count ==0) {
+             StepExecutionRecord rec = new StepExecutionRecord();
+             s.addStepExecutionRecord(rec);
+             return rec;            
+         } else {
+             return s.getStepExecutionRecord(count-1);
+         }
+     }
+
+//--type convertors/////////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
+    /** convert between castor and axis representations of the same schema object */
     public static org.astrogrid.workflow.beans.v1.execution.JobURN axis2castor(JobURN jobURN) {
         if (jobURN == null ) {
             return null;
@@ -51,54 +107,16 @@ public class JesUtil {
         return result;
     }
 
-    /**
-     * @see org.astrogrid.jes.job.BeanFacade#castor2axis(org.astrogrid.workflow.beans.v1.execution.JobURN)
-     */
+ /** convert between castor and axis representations of the same schema object */
     public static JobURN castor2axis(org.astrogrid.workflow.beans.v1.execution.JobURN jobURN) {
         if (jobURN == null) {
             return null;
         }
         return new JobURN(jobURN.getContent());
     }  
+   
 
-    public static org.astrogrid.workflow.beans.v1.execution.JobURN extractURN(JobIdentifierType id) {
-        if (id == null) {
-            return null;
-        }
-        int pos = id.getValue().lastIndexOf('#');
-        org.astrogrid.workflow.beans.v1.execution.JobURN result = new org.astrogrid.workflow.beans.v1.execution.JobURN();
-        result.setContent(id.getValue().substring(0,pos));
-        return result;
-    }
-
-    public static String extractXPath(JobIdentifierType id) {
-        if (id == null) {
-            return null;
-        }
-        int pos = id.getValue().lastIndexOf('#');
-        return id.getValue().substring(pos + 1);
-    }
-    
-
-    public static JobIdentifierType createJobId(org.astrogrid.workflow.beans.v1.execution.JobURN urn, String xpath) {
-        JobIdentifierType id = new JobIdentifierType();
-        id.setValue(urn.getContent() + "#" + xpath);
-        return id;
-    }
-    
-    /** gets most recent record step. if none present, will insert one */
-    public static StepExecutionRecord getLatestOrNewRecord(Step s) {
-        int count = s.getStepExecutionRecordCount();
-        if (count ==0) {
-            StepExecutionRecord rec = new StepExecutionRecord();
-            s.addStepExecutionRecord(rec);
-            return rec;            
-        } else {
-            return s.getStepExecutionRecord(count-1);
-        }
-    }
-    
-    
+    /** convert between castor and axis representations of the same schema object */
     public static org.astrogrid.applications.beans.v1.cea.castor.MessageType axis2castor(MessageType mt) {
         if (mt == null) {
             return null;
@@ -115,6 +133,7 @@ public class JesUtil {
         return result;
     }
 
+    /** convert between castor and axis representations of the same schema object */
     public static org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel axis2castor(LogLevel level) {
         if (level == null) {
             return null;
@@ -122,7 +141,8 @@ public class JesUtil {
             return org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel.valueOf(level.getValue());
         }
     }
-    
+
+    /** convert between castor and axis representations of the same schema object */
     public static org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase axis2castor(ExecutionPhase phase) {
         if (phase == null) {
             return null;
@@ -131,22 +151,11 @@ public class JesUtil {
         }
     }
     
-    /*-----*/
-    /** at moment this is a replication of the current duff jes behaviour - all job steps are stripped out, no matter the inner structure of the document
-     *recursion can be quite inefficient, but don't care as this is only temporary behaviour. 
-     *@return a list of Step objects
-     */
-    
-    public static Iterator getJobSteps(Workflow wf) {
-        wf.addFunctions(JesFunctions.FUNCTIONS);
-        return wf.findXPathIterator("//*[jes:isStep()]");
-    }
 
 
-    /**
-     * @param arg0
-     * @return
-     */
+
+
+    /** convert between castor and axis representations of the same schema object */
     public static Account axis2castor(_Account arg0) {
         Account result = new Account();
         result.setCommunity(arg0.getCommunity().getValue());
@@ -158,6 +167,9 @@ public class JesUtil {
 
 /* 
 $Log: JesUtil.java,v $
+Revision 1.4  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.3  2004/03/09 14:23:12  nw
 integrated new JobController wsdl interface
 

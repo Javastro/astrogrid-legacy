@@ -1,4 +1,4 @@
-/*$Id: SchedulerTaskQueueDecorator.java,v 1.2 2004/03/15 01:30:45 nw Exp $
+/*$Id: SchedulerTaskQueueDecorator.java,v 1.3 2004/03/15 23:45:07 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,8 +23,19 @@ import EDU.oswego.cs.dl.util.concurrent.Executor;
 import EDU.oswego.cs.dl.util.concurrent.QueuedExecutor;
 import junit.framework.Test;
 
-/** Notifier that maintains a queue, adds notifications to it, where they are consumed by a scheduler running in a different thread.
+/** A scheduler implementation that decorates another scheduler with a task queue.
+ * <p>
+ * the decorated scheduler executes in a separate, single thread. Any method calls are encapsulated as task objects, and added to the task queue.
+ * <p>
+ * This ensures that the decorated scheduler executes in a single-threaded manner - as all requests to it are serialized by the task queue. Because of this,
+ * there is no need for the underlying implementation to worry about synchronization, concurrency, etc. In particular, underlying Job stores need provide no locking 
+ * ability - as there will never by multiple concurrent updates to a job execution record.
+ * <p>
+ * Although the single-threaded nature may appear to be a bottle neck, we can expect this design to scale quite well - the scheduler is bound by IO 
+ * due to   communication with external web services, so serial processing of tasks is not a problem - each task is quick to process and short-lived.
+ * There could be further gains due to removal of overhead in calling synchronized methods and aquiring locks in the job store. 
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Feb-2004
+ * @todo extend to handle delete and cancel requests.
  *
  */
 public class SchedulerTaskQueueDecorator implements JobScheduler , ComponentDescriptor{
@@ -37,22 +48,24 @@ public class SchedulerTaskQueueDecorator implements JobScheduler , ComponentDesc
         this.executor = new QueuedExecutor();
         this.factory = new TaskFactory(scheduler);
     }
+    /** concurrency framework component that provides a task queue */
     protected final Executor executor;
+    /** factory component that creates tasks to add to the queue*/
     protected final TaskFactory factory;
-    /**
+    /**adds a task to the queue that will call 'scheduleNewJob' with the current parameters on the wrapped job scheduler
      * @see org.astrogrid.jes.comm.SchedulerNotifier#notify(org.astrogrid.jes.job.Job)
      */
     public void scheduleNewJob(JobURN urn) throws Exception {        
         executor.execute(factory.createTask(urn));
     }
-    /**
+    /**adds a task to te queue that will call 'resumeJob' with the current parameters on the wrapped job scheduler
      * @see org.astrogrid.jes.comm.SchedulerNotifier#notify(org.astrogrid.jes.types.v1.JobInfo)
      */
     public void resumeJob(JobIdentifierType ji,MessageType i) throws Exception {
         executor.execute(factory.createTask(ji,i));
     }    
     
-    /** hidden method - add another runnable to the queue. useful for testing - i.e. can insert a 'end of test' runnable 
+    /** general method to add another runnable to the queue. useful for testing - i.e. can insert a 'end of test' runnable 
      * after all other tasks.
      * @author Noel Winstanley nw@jb.man.ac.uk 19-Feb-2004
      *
@@ -61,15 +74,16 @@ public class SchedulerTaskQueueDecorator implements JobScheduler , ComponentDesc
         executor.execute(r);
     }
     /** helper class to build runnable tasks to be passed to the executor. Ensuring that only this class has a reference to the
-     * job scheduler itself ensures that we don't accidentaly call it directly;
+     * wrapped job scheduler itself ensures that we don't accidentaly call it directly;
      * @author Noel Winstanley nw@jb.man.ac.uk 18-Feb-2004
      *
      */
-    static class TaskFactory {
+    private static class TaskFactory {
         public TaskFactory(JobScheduler js) {
             this.js = js;
         }
         final JobScheduler js;
+        
         private static final Log logger = LogFactory.getLog("TaskQueue");
         /** create a task to schedule new job */
         public Runnable createTask(final JobURN urn) {
@@ -122,6 +136,9 @@ public class SchedulerTaskQueueDecorator implements JobScheduler , ComponentDesc
 
 /* 
 $Log: SchedulerTaskQueueDecorator.java,v $
+Revision 1.3  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.2  2004/03/15 01:30:45  nw
 factored component descriptor out into separate package
 

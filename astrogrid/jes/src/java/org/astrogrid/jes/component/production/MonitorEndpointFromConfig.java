@@ -1,4 +1,4 @@
-/*$Id: MonitorEndpointFromConfig.java,v 1.3 2004/03/15 01:30:06 nw Exp $
+/*$Id: MonitorEndpointFromConfig.java,v 1.4 2004/03/15 23:45:07 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,19 +17,20 @@ import org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/**
+/** Configuration object for {@link org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher}
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Mar-2004
  *
-        final URL 
         @todo implement in a more intelligent way - try getting a servlet context, etc. axis context even.
  */
 public class MonitorEndpointFromConfig extends SimpleComponentDescriptor implements MonitorEndpoint {
+    /** key to look in config for  job monitor endpoint */
     public static final String MONITOR_ENDPOINT_KEY = "jes.monitor.endpoint.url";
+    /** default value for {@link #MONITOR_ENDPOINT_KEY} */
     public static final String DEFAULT_URL = "http://localhost:8080/astrogrid-jes/services/JobMonitor";
 
     public MonitorEndpointFromConfig(Config conf) throws MalformedURLException {
         url = conf.getUrl(MONITOR_ENDPOINT_KEY,new URL(DEFAULT_URL));
-        name = "get job monitor endpoint from config";
+        name = "ApplicationControllerDispatcher - Monitor Endpoint configuration";
              description = "Loads job-monitor endpoint (used by callback from application controller) from Config\n" +
                  "key :" + MONITOR_ENDPOINT_KEY
                  + "\n current value:" + url.toString();        
@@ -47,6 +48,9 @@ public class MonitorEndpointFromConfig extends SimpleComponentDescriptor impleme
 
 /* 
 $Log: MonitorEndpointFromConfig.java,v $
+Revision 1.4  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.3  2004/03/15 01:30:06  nw
 factored component descriptor out into separate package
 

@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcher.java,v 1.7 2004/03/15 01:30:45 nw Exp $
+/*$Id: ApplicationControllerDispatcher.java,v 1.8 2004/03/15 23:45:07 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,9 +37,8 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-/** Reimplementation of rough dispatcher.
+/** Implementation of a Dispactcher that calls an application controller web service to execute job steps.
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Feb-2004
- * step number should be stepID - don't want to imply that steps are sequentially numbered.
  *
  */
 public class ApplicationControllerDispatcher implements Dispatcher , ComponentDescriptor{
@@ -51,8 +50,10 @@ public class ApplicationControllerDispatcher implements Dispatcher , ComponentDe
     public interface MonitorEndpoint {
         URL getURL();
     }    
-    /** Construct a new ApplicationControllerDispatcher
-     * 
+    /** Construct a new ApplicationControllerDispatcher    
+     * @param locator tool locator component to use to resolve endpoints
+     * @param endpoint configuration component that specifies the endpoint of the JobMonitor service. This is used by the ApplicationController to 
+     * return execution information back to the JES server.
      */
     public ApplicationControllerDispatcher(Locator locator, MonitorEndpoint endpoint)  {
         this.locator = locator;
@@ -60,7 +61,9 @@ public class ApplicationControllerDispatcher implements Dispatcher , ComponentDe
         assert monitorURL != null;
         logger.info("monitor URL set to " + monitorURL.toString());
     }
+    /** tool locator component */
     protected final Locator locator;
+    /** endpoint of local jobmonitor service - used as a callback */
     protected final URL monitorURL;
     /**
      * @see org.astrogrid.jes.jobscheduler.Dispatcher#dispatchStep(java.lang.String, org.astrogrid.jes.job.JobStep)
@@ -95,7 +98,7 @@ public class ApplicationControllerDispatcher implements Dispatcher , ComponentDe
          
     }
     
-    /** factored into separate method, as have feeling this may change .. */
+    /**Build appCon's 'user' parameter, from the credentials contained within the workflow document */
     protected User buildUser(Workflow parent) throws JesException {
         User user = new User();
         user.setAccount(parent.getCredentials().getAccount().getName()+"@"+parent.getCredentials().getAccount().getCommunity());
@@ -104,7 +107,7 @@ public class ApplicationControllerDispatcher implements Dispatcher , ComponentDe
         return user;
     }
     
-    /** factored out again, for changes sake*/
+    /** construct the parameter values to pass to the appclication controller*/
     protected ParameterValues buildParameterValues(Step js) throws JesException{
         try {
         ParameterValues params = new ParameterValues();
@@ -170,6 +173,9 @@ public class ApplicationControllerDispatcher implements Dispatcher , ComponentDe
 
 /* 
 $Log: ApplicationControllerDispatcher.java,v $
+Revision 1.8  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.7  2004/03/15 01:30:45  nw
 factored component descriptor out into separate package
 

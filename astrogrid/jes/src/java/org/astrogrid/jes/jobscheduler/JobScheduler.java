@@ -1,4 +1,4 @@
-/*$Id: JobScheduler.java,v 1.51 2004/03/15 00:31:15 nw Exp $
+/*$Id: JobScheduler.java,v 1.52 2004/03/15 23:45:07 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,16 +11,17 @@
 package org.astrogrid.jes.jobscheduler;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
-/** Interface to a component that schedules jobs for execution 
+/** Interface to a component that executes jobs.
  * @author Noel Winstanley nw@jb.man.ac.uk 05-Mar-2004
  *
  */
 public interface JobScheduler {
-    /** add a new job to the list of jobs to be executed
+    /** register a  new pending job with the scheduler.
      *  <p>
      * This method doesn't itself start the job running - it merely notifies the scheduler of the existence of a new job. The scheduler is 
      * free to decide when and how to execute the job  
-     * @param jobURN unique identifier of the workflow document that forms this job.
+     * @param jobURN unique identifier of the workflow document that forms this job. It is assumed that the scheduler can use this to retreive the workflow definition 
+     * from some store.
      * @throws Exception catch all
      */
     public abstract void scheduleNewJob(JobURN jobURN) throws Exception;
@@ -31,7 +32,7 @@ public interface JobScheduler {
      * that the step is completed.
      * <p>
      * The scheduler is then expected to examine the results of the step execution, and possible schedule further steps for execution.
-     * @param id unique identifier for the job and step.
+     * @param id unique identifier for the job and step. details of encoding are privae to a particular scheduler implementation.
      * @param info reporting information on the execution of the step.
      * @throws Exception
      */

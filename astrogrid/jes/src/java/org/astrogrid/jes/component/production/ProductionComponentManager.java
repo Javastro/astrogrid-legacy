@@ -1,4 +1,4 @@
-/*$Id: ProductionComponentManager.java,v 1.6 2004/03/15 01:30:06 nw Exp $
+/*$Id: ProductionComponentManager.java,v 1.7 2004/03/15 23:45:07 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,11 +44,12 @@ import javax.sql.DataSource;
  *
  */
 public final class ProductionComponentManager extends EmptyComponentManager {
+    /** construct a component manager, that gets configuration from {@link SimpleConfig}*/
     public ProductionComponentManager() throws ComponentManagerException {
         this(SimpleConfig.getSingleton());
     }
     /** Construct a new ProductionComponentManager
-     * 
+     * @param conf confugration object to use to look up keys.
      */
     public ProductionComponentManager(Config conf) throws ComponentManagerException{
         super();
@@ -79,13 +80,18 @@ public final class ProductionComponentManager extends EmptyComponentManager {
         }
     }
     
-    /** @todo add config tests for a production system in here */
+    /**Description-only component - metadata for entire system. 
+     * 
+     * @todo add config tests for a production system in here */
     private static final ComponentDescriptor JES_META = new SimpleComponentDescriptor(
         "Production Job Execution System",
         "job execution system"
     );
-    
+    /** key to look in config for implementation of job factory to use
+     * <p>
+     * possible values = <tt>db</tt> | <tt>file</tt> | <tt><i>java.class.name</i></tt> */
     public static final String JOB_FACTORY_KEY = "jes.jobfactory";
+    /** key to look in config for a datasource object */
     public static final String DB_JOB_FACTORY_DATASOURCE_KEY = "jdbc/jes-datasource";
     private static final ComponentDescriptor JOBFACTORY_META_DATA 
         = new SimpleComponentDescriptor("Job Factory Configuration",
@@ -130,6 +136,10 @@ public final class ProductionComponentManager extends EmptyComponentManager {
             pico.registerComponentImplementation(FileJobFactoryImpl.BaseDirectory.class,BaseDirectoryFromConfig.class);
                    
     }
+    /** key to look in config for implementation of locator to use
+     * <p>
+     * possible values: <tt>xml</tt> | <tt>registry</tt> | <tt><i>java.class.name</i></tt>
+     */
     public static final String LOCATOR_KEY = "jes.locator";
     private static final ComponentDescriptor LOCATOR_META = new SimpleComponentDescriptor("Tool Locator Configuration",
         "to select tool locator implementation, set key " + LOCATOR_KEY + " to \n" + 
@@ -177,6 +187,9 @@ public final class ProductionComponentManager extends EmptyComponentManager {
 
 /* 
 $Log: ProductionComponentManager.java,v $
+Revision 1.7  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.6  2004/03/15 01:30:06  nw
 factored component descriptor out into separate package
 

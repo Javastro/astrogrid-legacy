@@ -38,8 +38,8 @@ import java.util.Date;
 
 import junit.framework.Test;
 
-/**Scheduling framework. Composes together a set of different objects - this means that different behaviours can be gained by 
- * composing a scheduler using different objects.
+/** Default implementation of a Job Scheduler
+ * 
  */
 public class SchedulerImpl implements org.astrogrid.jes.jobscheduler.JobScheduler, ComponentDescriptor {
 	
@@ -68,7 +68,11 @@ public class SchedulerImpl implements org.astrogrid.jes.jobscheduler.JobSchedule
 	private static Log
 		logger = LogFactory.getLog( SchedulerImpl.class ) ;
 		
-
+    /** register a new job with the scheduler
+     * <p>
+     * initializes execution records for the job, then starts the job running.
+     * @see org.astrogrid.jes.jobscheduler.JobScheduler#scheduleNewJob(org.astrogrid.jes.types.v1.JobURN)
+     */
     public void scheduleNewJob( JobURN jobURN ) {
         try {
 	        JobFactory factory = facade.getJobFactory() ;
@@ -154,7 +158,11 @@ public class SchedulerImpl implements org.astrogrid.jes.jobscheduler.JobSchedule
         }      
     }
 
-
+    /** resume executioin of a job
+     * <p>
+     * records information returned by tool execution in the workflow document, and then attempts to execute further steps in the workflow.
+     * @see org.astrogrid.jes.jobscheduler.JobScheduler#resumeJob(org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType, org.astrogrid.jes.types.v1.cea.axis.MessageType)
+     */
 	public void resumeJob(JobIdentifierType id,org.astrogrid.jes.types.v1.cea.axis.MessageType info) {
         Workflow job = null;  
         JobFactory factory = null;  

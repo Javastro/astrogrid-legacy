@@ -1,4 +1,4 @@
-/*$Id: AbstractPolicy.java,v 1.1 2004/03/05 16:16:23 nw Exp $
+/*$Id: AbstractPolicy.java,v 1.2 2004/03/15 23:45:07 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,9 @@ import org.astrogrid.workflow.beans.v1.Workflow;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/**
+/** Abstract base class for policy implementations
+ * <p>
+ * at the moment, just provdes a logger, and configures the function set available to jxpath.
  * @author Noel Winstanley nw@jb.man.ac.uk 05-Mar-2004
  *
  */
@@ -31,7 +33,10 @@ public abstract class AbstractPolicy implements Policy {
         super();
     }
 
-    /** inefficient to do this on every call, will need to refactor later*/
+    /** add a set of functions to the jxpath context for a workflow.
+     * <p>
+     * @see org.astrogrid.jes.util.JesFunctions 
+     * @todo inefficient to do this on every call, will need to refactor later*/
     protected void registerFunctions(Workflow wf) {
         wf.addFunctions(JesFunctions.FUNCTIONS);
     }
@@ -41,6 +46,9 @@ public abstract class AbstractPolicy implements Policy {
 
 /* 
 $Log: AbstractPolicy.java,v $
+Revision 1.2  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.1  2004/03/05 16:16:23  nw
 worked now object model through jes.
 implemented basic scheduling policy

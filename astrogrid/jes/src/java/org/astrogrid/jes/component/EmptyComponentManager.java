@@ -1,4 +1,4 @@
-/*$Id: EmptyComponentManager.java,v 1.5 2004/03/15 01:30:06 nw Exp $
+/*$Id: EmptyComponentManager.java,v 1.6 2004/03/15 23:45:07 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,9 @@ import java.util.Iterator;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-/** Empty Component manager - needs components registered with it to be usefile.
+/** Empty Component manager - needs components registered with it to be useful.
+ * <p>
+ * This class implements the abstract methods - subclasses register components with the picocontainer.
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Mar-2004
  *
  */
@@ -42,22 +44,17 @@ public class EmptyComponentManager implements ComponentManager {
         pico = new DefaultPicoContainer();
     }
 
-    
+        /** the picocontainer that manages the components */
       protected final MutablePicoContainer pico;
-      /**
-       * @return
-       */
+      
       public BeanFacade getFacade() {
           return (BeanFacade)pico.getComponentInstanceOfType(BeanFacade.class);
       }
 
-      /**
-       * @return
-       */
       public JobScheduler getNotifier() {
           return (JobScheduler)pico.getComponentInstance(JobScheduler.class);
       }
-
+    /** key under which the back-end job scheduler engine should be registered (if different from the public interface of the job scheduler */
     protected static final String SCHEDULER_ENGINE = "scheduler-engine";
     
       public JobMonitor getMonitor() {
@@ -68,7 +65,6 @@ public class EmptyComponentManager implements ComponentManager {
           return (JobController)pico.getComponentInstanceOfType(JobController.class);
       }
     
-      /** used for debugging / output to JSP */
       public String informationHTML() {
           getNotifier();
           getMonitor();
@@ -114,7 +110,6 @@ public class EmptyComponentManager implements ComponentManager {
               return sw.toString();
       }
             
-    /** search components for tests to run */
     public Test getSuite() {
         // drag in main components - ensure everythng is configured.
         getNotifier();
@@ -161,6 +156,9 @@ public class EmptyComponentManager implements ComponentManager {
 
 /* 
 $Log: EmptyComponentManager.java,v $
+Revision 1.6  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.5  2004/03/15 01:30:06  nw
 factored component descriptor out into separate package
 

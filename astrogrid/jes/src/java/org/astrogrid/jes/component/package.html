@@ -1,5 +1,28 @@
 <html>
 	<body>
-		<h1>Code to control loading and configuration of components</h1>
-	</body>
+		<h1>Component management and configuration</h1>
+		JES implementation is split into components, which are assembled together at runtime, using the Inversion-of-Control pattern
+		-- basically this means something outside the components is responsible for selecting component implemntations, configuring them, and assembling them all 
+		together. The components 
+		themselves do not self-configure, which means that they are more versatile, pluggable, and easier to use in different settings (especially testing).
+		<p/>
+		This package, and its subpackages implement the <i>something</i> that assembles the jes server from components. This something is described by the interface
+		{@link org.astrogrid.jes.component.ComponentManager}, which lists the methods it must support - basically accessors for each of the main components.
+		<p/>
+		{@link org.astrogrid.jes.component.EmptyComponentManager} is the base implementation. It uses a <a href="http://www.picocontainer.org/">PicoContainer</a>
+		to manage the construction and lifecycle of the components.
+		<p/>
+		{@link org.astrogrid.jes.component.BasicComponentManager} populates the component manager with a set of default component implementations - these 
+		are the simplest, minimal-configuration set of components - suitable for testing.
+		<p /> 
+		A production version of the JES system - with a robust, configurable set of component implementations - is defined in the {@link org.astrogrid.jes.component.production}
+		package
+		<p />
+		The {@link org.astrogrid.jes.component.ComponentManagerFactory} takes care of initializing the component manager, and stores it in a static singleton, from 
+		where it can be accessed as needed.
+		<p/>
+		The {@link org.astrogrid.jes.component.descriptor} package defines a descriptor-interface for components. Components that implement this interface 
+		are able to supply name, description, and JUnit test classes. These are used to document and installation-test the running JES system.
+		
+	</body>		
 </html>

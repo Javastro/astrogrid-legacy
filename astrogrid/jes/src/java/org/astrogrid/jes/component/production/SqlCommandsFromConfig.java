@@ -1,4 +1,4 @@
-/*$Id: SqlCommandsFromConfig.java,v 1.3 2004/03/15 01:30:06 nw Exp $
+/*$Id: SqlCommandsFromConfig.java,v 1.4 2004/03/15 23:45:07 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import junit.framework.Test;
 
 /**
  * Implementation of SqlCommands that loads sql commands to execute from a configuration 
+ * Used to configure a {@link org.astrogrid.jes.impl.workflow.DBJobFactoryImpl}
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Feb-2004
  *
  */
@@ -43,7 +44,7 @@ import junit.framework.Test;
  * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
  */
 public String getName() {
-    return "ConfigSQLCommands";
+    return "DBJobFactory - sql command configuration";
 }
 /**
  * @see org.astrogrid.jes.component.ComponentDescriptor#getDescription()
@@ -66,6 +67,9 @@ public Test getInstallationTest() {
 
 /* 
 $Log: SqlCommandsFromConfig.java,v $
+Revision 1.4  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.3  2004/03/15 01:30:06  nw
 factored component descriptor out into separate package
 

@@ -1,6 +1,12 @@
 <html>
 	<body>
 		<h1>Locator implementations</h1>
-		Locators find information about a tool from somewhere.
+		Locators find information about a tool from somewhere - at the moment, they just resolve a symbolic tool name into 
+		a service endpoint.
+	<h2>Implementations</h2>
+	The ideal implementation is one that queries an astrogrid registry - {@link org.astrogrid.jes.jobscheduler.locator.RegistryToolLocator}.
+	While the registry is being developed, and for testing purposes, there are locator implementations that will resolve all tool names to 
+	a fixed service endpoint - {@link org.astrogrid.jes.jobscheduler.locator.ConstantToolLocator} - and that will load resolution information from a
+	configuration file - {@link org.astrogrid.jes.jobscheduler.locator.XMLFileLocator}, {@link org.astrogrid.jes.jobscheduler.locator.MapLocator}
 	</body>
 </html>

@@ -1,4 +1,4 @@
-/*$Id: SimpleComponentDescriptor.java,v 1.1 2004/03/15 01:30:06 nw Exp $
+/*$Id: SimpleComponentDescriptor.java,v 1.2 2004/03/15 23:45:07 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.jes.component.descriptor;
 
 import junit.framework.Test;
 
-/** Handy ad-hoc implementation of a component descriptor
+/** Handy stand-alone implementation of a component descriptor
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Mar-2004
  *
  */
@@ -57,6 +57,9 @@ public class SimpleComponentDescriptor implements ComponentDescriptor {
 
 /* 
 $Log: SimpleComponentDescriptor.java,v $
+Revision 1.2  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.1  2004/03/15 01:30:06  nw
 factored component descriptor out into separate package
 

@@ -1,4 +1,4 @@
-/*$Id: ToolListFromConfig.java,v 1.3 2004/03/15 01:30:06 nw Exp $
+/*$Id: ToolListFromConfig.java,v 1.4 2004/03/15 23:45:07 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,13 +16,15 @@ import org.astrogrid.jes.jobscheduler.locator.XMLFileLocator.ToolList;
 
 import java.net.URL;
 
-/**
+/** Configuration object for {@link org.astrogrid.jes.jobscheduler.locator.XMLFileLocator}
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Mar-2004
  */
 public class ToolListFromConfig extends SimpleComponentDescriptor implements ToolList {
-
+    /** key to look in config for url of tools document */
     public static final String XML_LOCATOR_URL = "jes.locator.xml.url";
-    /** @todo change this */
+    /** 
+     * Default location to load tool list from
+     * @todo change this location */
     public static final String DEFAULT_XML_LOCATOR_URL = "/org/astrogrid/jes/jobscheduler/locator/tools.xml";
     public ToolListFromConfig(Config conf) {
         url = conf.getUrl(XML_LOCATOR_URL,this.getClass().getResource(DEFAULT_XML_LOCATOR_URL));
@@ -45,6 +47,9 @@ public class ToolListFromConfig extends SimpleComponentDescriptor implements Too
 
 /* 
 $Log: ToolListFromConfig.java,v $
+Revision 1.4  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.3  2004/03/15 01:30:06  nw
 factored component descriptor out into separate package
 

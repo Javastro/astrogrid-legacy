@@ -21,7 +21,8 @@ import org.apache.commons.logging.LogFactory;
 import junit.framework.Test;
 
 
-/**
+/** Implementation of a component that notifies the scheduler when a task has completed
+ * <p> 
  Job Monitor is a greatly reduced from what it used to be. now just acts as a conduit into the job scheduler.
  *@todo - maybe add synchronous service call, so clients that need to know can block until reaching confirmation?
  * @author  Jeff Lusted
@@ -54,8 +55,6 @@ public class JobMonitor implements org.astrogrid.jes.delegate.v1.jobmonitor.JobM
             logger.info("Null info object encountered");
             return;
         }
-
-
 
 		try {	
             nudger.resumeJob(id,info);

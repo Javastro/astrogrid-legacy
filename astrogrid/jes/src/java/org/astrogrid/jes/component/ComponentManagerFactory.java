@@ -1,4 +1,4 @@
-/*$Id: ComponentManagerFactory.java,v 1.2 2004/03/07 21:04:38 nw Exp $
+/*$Id: ComponentManagerFactory.java,v 1.3 2004/03/15 23:45:07 nw Exp $
  * Created on 16-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,10 @@ import junit.framework.TestSuite;
 
 
 /**
-
+ Static singleton that contains a single instance of a ComponentManager. 
+ Used so that the same component manager (and so same components) can be accessed from different parts of the server - in particular the job monitor and jobscheduler
+ web services.
+ @todo replace with a component manager initialized in a servlet, and stored in the axis context.
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Feb-2004
  *
  */
@@ -49,7 +52,7 @@ public class ComponentManagerFactory {
     }
     
   
-    /** static method - makes this look like a normal test component ! */
+    /** static method - makes this look like a normal JUnit test, which can then be called in a junit runner.*/
     public static Test suite(){
         try {
             return ComponentManagerFactory.getInstance().getSuite();

@@ -1,4 +1,4 @@
-/*$Id: BaseDirectoryFromConfig.java,v 1.3 2004/03/15 01:30:06 nw Exp $
+/*$Id: BaseDirectoryFromConfig.java,v 1.4 2004/03/15 23:45:07 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,15 +16,18 @@ import org.astrogrid.jes.impl.workflow.FileJobFactoryImpl.BaseDirectory;
 
 import java.io.File;
 
-/**
+/** Configuration object for {@link org.astrogrid.jes.impl.workflow.FileJobFactoryImpl}
+ * <p>
+ * 
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Mar-2004
  */
 public class BaseDirectoryFromConfig extends SimpleComponentDescriptor implements BaseDirectory {
+    /** key to look in config for base directory */
     public static final String BASE_DIR_KEY = "jes.jobfactory.file.basedir";
      public BaseDirectoryFromConfig(Config conf) {
          String fileLoc = conf.getString(BASE_DIR_KEY,System.getProperty("java.io.tmpdir"));
          baseDir = new File(fileLoc);
-         name = "get base directory from config";
+         name = "FileJobFactory - Base Directory configuration";
         description = "Loads base-directory configuration parameter for FileJobFactory from Config\n" +
             "key :" + BASE_DIR_KEY            + "\n current value:" + baseDir.getAbsolutePath();
      }
@@ -41,6 +44,9 @@ public class BaseDirectoryFromConfig extends SimpleComponentDescriptor implement
 
 /* 
 $Log: BaseDirectoryFromConfig.java,v $
+Revision 1.4  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.3  2004/03/15 01:30:06  nw
 factored component descriptor out into separate package
 

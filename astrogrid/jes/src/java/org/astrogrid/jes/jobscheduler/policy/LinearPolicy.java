@@ -1,4 +1,4 @@
-/*$Id: LinearPolicy.java,v 1.4 2004/03/15 01:30:45 nw Exp $
+/*$Id: LinearPolicy.java,v 1.5 2004/03/15 23:45:07 nw Exp $
  * Created on 04-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,8 @@ import java.util.Iterator;
 
 import junit.framework.Test;
 
-/** Policy that executes all jobs in a  purely linear fashion. ignores data deps.
+/** Policy that executes all jobs in a  purely linear fashion, with no concurrency.
+ * @todo add handling of join conditions.
  * @author Noel Winstanley nw@jb.man.ac.uk 04-Mar-2004
  *
  */
@@ -32,7 +33,7 @@ public class LinearPolicy extends AbstractPolicy implements Policy , ComponentDe
         super();
         logger.info("Creating Linear Policy");
     }
-    /** returns
+    /** 
      * @see org.astrogrid.jes.jobscheduler.Policy#currentJobStatus(org.astrogrid.workflow.beans.v1.Workflow)
      */
     public ExecutionPhase currentJobStatus(Workflow job) {
@@ -86,7 +87,7 @@ public class LinearPolicy extends AbstractPolicy implements Policy , ComponentDe
      * @see org.astrogrid.jes.component.ComponentDescriptor#getDescription()
      */
     public String getDescription() {
-        return "Executes job steps in a top-to-bottom, purely sequential manner. treats flows as sequences, ignored data dependencies between steps";
+        return "Executes job steps in a top-to-bottom, purely sequential manner. treats flows as sequences";
     }
     /**
      * @see org.astrogrid.jes.component.ComponentDescriptor#getInstallationTest()
@@ -102,6 +103,9 @@ public class LinearPolicy extends AbstractPolicy implements Policy , ComponentDe
 
 /* 
 $Log: LinearPolicy.java,v $
+Revision 1.5  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.4  2004/03/15 01:30:45  nw
 factored component descriptor out into separate package
 

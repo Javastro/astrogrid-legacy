@@ -1,6 +1,18 @@
 <html>
 	<body>
 		<h1>Job Scheduler Component</h1>
-This may either be presented as a separate web service , or as a concurrent thread process (preferred).		
+		A Job Scheduler is responsible for executing a collection of jobs, each composed of steps.
+		<h2>Interface</h2>
+			The {@link org.astrogrid.jes.jobscheduler.JobScheduler} interface defines the two methods
+			that a job scheduler implementation should provide - a method to register a new job with the scheduler, and
+			a method to notify the scheduler when a job step has completed.
+			
+	 <h2>Implementation</h2>
+	 An implementation of a job scheduler can be broken down into the scheduler engine itself, and some helper components:
+	 <ul>
+	 	{@link org.astrogrid.jes.jobscheduler.Dispatcher} - interface into a step dispactcher, that executes a job step by calling a remote service.
+	 	{@link org.astrogrid.jes.jobscheduler.Locator} - interface into a tool locator, which resolves tool names to service endpoints
+	 	{@link org.astrogrid.jes.Jobscheduler.Policy} - interface into a scheduling policy, which determines the execution order of steps in the job.
+	 </ul>
 	</body>
 </html>

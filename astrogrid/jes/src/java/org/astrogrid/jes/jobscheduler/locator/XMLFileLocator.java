@@ -1,4 +1,4 @@
-/*$Id: XMLFileLocator.java,v 1.3 2004/03/07 21:04:38 nw Exp $
+/*$Id: XMLFileLocator.java,v 1.4 2004/03/15 23:45:07 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,10 +22,12 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /** Extension of map locator that uses digester to read in an xml configuration file giving tool details.
+ * @see tools.xml for examplpe configuration file
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Feb-2004
  *
  */
 public class XMLFileLocator extends MapLocator {
+    /** configuration interface - url of tool list document */
     public static interface ToolList {
         public URL getURL();
     }
@@ -98,6 +100,9 @@ public class XMLFileLocator extends MapLocator {
 
 /* 
 $Log: XMLFileLocator.java,v $
+Revision 1.4  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.3  2004/03/07 21:04:38  nw
 merged in nww-itn05-pico - adds picocontainer
 

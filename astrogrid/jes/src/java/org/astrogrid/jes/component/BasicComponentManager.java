@@ -1,4 +1,4 @@
-/*$Id: BasicComponentManager.java,v 1.5 2004/03/15 01:30:06 nw Exp $
+/*$Id: BasicComponentManager.java,v 1.6 2004/03/15 23:45:07 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,8 @@ import org.picocontainer.defaults.ComponentParameter;
 import java.net.URL;
 
 /** Basic stand-alone component set up - no need for external config file.
+ * <p>
+ * used for testing, etc.
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Mar-2004
  *
  */
@@ -95,6 +97,9 @@ public class BasicComponentManager extends EmptyComponentManager {
 
 /* 
 $Log: BasicComponentManager.java,v $
+Revision 1.6  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.5  2004/03/15 01:30:06  nw
 factored component descriptor out into separate package
 

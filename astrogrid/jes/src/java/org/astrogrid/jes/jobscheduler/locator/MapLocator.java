@@ -1,4 +1,4 @@
-/*$Id: MapLocator.java,v 1.6 2004/03/15 01:30:45 nw Exp $
+/*$Id: MapLocator.java,v 1.7 2004/03/15 23:45:07 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -82,7 +82,7 @@ public class MapLocator implements Locator, ComponentDescriptor {
         return nfo.getInterface();
     }
     
-    public static class ToolInfo {
+    protected static class ToolInfo {
         private String location;
         private String interfaceName;
         private String name;
@@ -181,6 +181,9 @@ public class MapLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: MapLocator.java,v $
+Revision 1.7  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.6  2004/03/15 01:30:45  nw
 factored component descriptor out into separate package
 

@@ -1,4 +1,4 @@
-/*$Id: ConstantToolLocator.java,v 1.4 2004/03/15 01:30:45 nw Exp $
+/*$Id: ConstantToolLocator.java,v 1.5 2004/03/15 23:45:07 nw Exp $
  * Created on 27-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import java.net.URL;
 
 import junit.framework.Test;
 
-/** Constant tool locator - always returns same endpoint.
+/** Constant tool locator - always resolves tool names to the same, constant endpoint.
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Feb-2004
  *
  */
@@ -72,6 +72,9 @@ public class ConstantToolLocator implements Locator , ComponentDescriptor{
 
 /* 
 $Log: ConstantToolLocator.java,v $
+Revision 1.5  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.4  2004/03/15 01:30:45  nw
 factored component descriptor out into separate package
 

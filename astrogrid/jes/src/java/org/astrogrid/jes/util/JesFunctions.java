@@ -1,4 +1,4 @@
-/*$Id: JesFunctions.java,v 1.1 2004/03/05 16:16:24 nw Exp $
+/*$Id: JesFunctions.java,v 1.2 2004/03/15 23:45:07 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,10 +19,10 @@ import org.apache.commons.jxpath.Functions;
 import org.apache.commons.jxpath.Pointer;
 
 
-/** A class of jxpath functions,used to calculate policy decisions */
+/** A class of jxpath functions,used within policy implementations to search a workflow tree */
 public class JesFunctions {
     public static final Functions FUNCTIONS = new ClassFunctions(JesFunctions.class,"jes");
-    
+    /** returns true if the current node is a step that is in the 'Pending' Execition Phase*/
     public static boolean isPendingStep(ExpressionContext ctxt) {
         Pointer p = ctxt.getContextNodePointer();
         if (p == null) {
@@ -48,6 +48,7 @@ public class JesFunctions {
         }
         return p.getValue() instanceof Step;
     }
+    /** count the number of execution records contained in this step */
     public static int execCount(ExpressionContext ctxt) {
         Pointer p = ctxt.getContextNodePointer();
         if (p == null) {
@@ -59,7 +60,7 @@ public class JesFunctions {
         }
         return step.getStepExecutionRecordCount();
     }
-    
+    /** access the latest status (Execution Phase) for this step */
     public static String latestStatus(ExpressionContext ctxt) {
         Pointer p = ctxt.getContextNodePointer();
         if (p == null) {
@@ -80,6 +81,9 @@ public class JesFunctions {
 
 /* 
 $Log: JesFunctions.java,v $
+Revision 1.2  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.1  2004/03/05 16:16:24  nw
 worked now object model through jes.
 implemented basic scheduling policy

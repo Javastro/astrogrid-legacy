@@ -1,4 +1,4 @@
-/*$Id: MockSchedulerImpl.java,v 1.2 2004/03/15 01:30:45 nw Exp $
+/*$Id: MockSchedulerImpl.java,v 1.3 2004/03/15 23:45:07 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 
 import junit.framework.Test;
 
-/**
+/** Mock implementation of a JobScheduler - just counts the number of times its methods are called.
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Feb-2004
  *
  */
@@ -80,6 +80,9 @@ public class MockSchedulerImpl implements JobScheduler , ComponentDescriptor{
 
 /* 
 $Log: MockSchedulerImpl.java,v $
+Revision 1.3  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.2  2004/03/15 01:30:45  nw
 factored component descriptor out into separate package
 

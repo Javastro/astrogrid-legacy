@@ -1,5 +1,13 @@
 <html>
 	<body>
 		<h1>Component Descriptors</h1>
+		Optional interface that components can implement to be self-documenting. 
+		The component manager will detect when components it manages implement this interface - it is used to generate 
+		human-readable system and configuration information.
+		<p>
+			It is also used to dynamically assemble an installation-test suite for the components currently in the manager.
+			See {@link org.astrogrid.scheduler.locator.XMLFileLocator} for an example of an implementation of this class that 
+			provides installation tests.
+		</p>
 	</body>
 </html>

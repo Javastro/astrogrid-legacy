@@ -1,4 +1,4 @@
-/*$Id: Dispatcher.java,v 1.4 2004/03/05 16:16:23 nw Exp $
+/*$Id: Dispatcher.java,v 1.5 2004/03/15 23:45:07 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,15 +14,16 @@ import org.astrogrid.jes.JesException;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
 /** Interface to a component that dispatches (executes) a job step.
- * This may be done by communicating to an application controller, to by other means. 
+ * This may be done by communicating with a remote service, such as an application controller, to by other means. 
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Feb-2004
  *
  */
 public interface Dispatcher {
-    /** execute the tool located within this job step. 
-     * do not record any status changes in this implementation - throw exceptions on failure, which are then recorded correctly by the called of this component
-     * @param communitySnippet
-     * @param js
+    /** execute the tool entry defined within a job step.
+     * <p>
+     * Implementations should not alter the workflow and step objects - recording execution information is the responsibility of the scheduler engine. 
+     * @param wf workflow document the step is from
+     * @param js the job step to execute
      * @throws JesException
      */
     void dispatchStep(Workflow wf, Step js) throws JesException;
@@ -31,6 +32,9 @@ public interface Dispatcher {
 
 /* 
 $Log: Dispatcher.java,v $
+Revision 1.5  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.4  2004/03/05 16:16:23  nw
 worked now object model through jes.
 implemented basic scheduling policy

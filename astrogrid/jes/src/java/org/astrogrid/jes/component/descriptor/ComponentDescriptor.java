@@ -1,4 +1,4 @@
-/*$Id: ComponentDescriptor.java,v 1.1 2004/03/15 01:30:06 nw Exp $
+/*$Id: ComponentDescriptor.java,v 1.2 2004/03/15 23:45:07 nw Exp $
  * Created on 06-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,9 @@ package org.astrogrid.jes.component.descriptor;
 
 import junit.framework.Test;
 
-/** interface that components should provide to be self-documenting
+/** An interface that components should implement to be self-documenting
+ * <p>
+ * Note that although it's nice for components to implement this interface, it is not mandatory - hence none of the component interfaces extend this one.
  * @author Noel Winstanley nw@jb.man.ac.uk 06-Mar-2004
  *
  */
@@ -20,9 +22,11 @@ public interface ComponentDescriptor {
 
     /** full name for the component */
     String getName();
-    /** formatted description of the component, (maybe details of current configuration */
+    /** formatted description of the component, (with maybe details of current configuration */
     String getDescription();
-    /** Access a junit test / suite to run to check component is installed and configured correctly */
+    /** Access a junit test suite that when run will verify that the component instance and configured correctly
+     * <p>
+     * may return null if no tests are applicable. */
     Test getInstallationTest() ;
     
 }
@@ -30,6 +34,9 @@ public interface ComponentDescriptor {
 
 /* 
 $Log: ComponentDescriptor.java,v $
+Revision 1.2  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.1  2004/03/15 01:30:06  nw
 factored component descriptor out into separate package
 

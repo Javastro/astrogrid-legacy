@@ -1,4 +1,4 @@
-/*$Id: Locator.java,v 1.3 2004/03/04 01:57:35 nw Exp $
+/*$Id: Locator.java,v 1.4 2004/03/15 23:45:07 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,13 +18,20 @@ import org.astrogrid.workflow.beans.v1.Step;
  *
  */
 public interface Locator {
+    /** resolve a tool name into an endpoint of a service that provides the tool 
+     * @todo return url? or something more abstract
+     * */
     String locateTool(Step js) throws JesException;
+    /** @deprecated - don't know what use this is */
     String getToolInterface(Step js) throws JesException;
 }
 
 
 /* 
 $Log: Locator.java,v $
+Revision 1.4  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.3  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

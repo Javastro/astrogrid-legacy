@@ -1,4 +1,4 @@
-/*$Id: ComponentManager.java,v 1.7 2004/03/15 00:30:19 nw Exp $
+/*$Id: ComponentManager.java,v 1.8 2004/03/15 23:45:07 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,34 +18,49 @@ import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.Startable;
 
 import junit.framework.Test;
-/**
+/** Interface to a container for components.
+ * <p>
+ * Based on an underlying <a href="http://www.picocontainer.org/">PicoContainer</a> implementation
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Mar-2004
  *
  */
 public interface ComponentManager extends Startable{
+    /** get the picocontainer that manages the components */
     public abstract MutablePicoContainer getContainer();
-    /**
+    /** access the bean facade component
      * @return
      */
     public abstract BeanFacade getFacade();
-    /**
-     * @return
+    /** access the job scheduler component.
+     * @todo rename to getScheduler
      */
     public abstract JobScheduler getNotifier();
     /**
      * @return
      */
-    //public abstract JobScheduler getScheduler();
+    /** access the job monitor component */
     public abstract JobMonitor getMonitor();
+    /** access the job controller component */
     public abstract JobController getController();
-    /** used for debugging / output to JSP */
+    /** output human-readable description of contents of container as HTML
+     *  <p>
+     * used for debugging / output to JSP 
+     * Uses descriptions from components that implement the {@link org.astrogrid.jes.component.descriptor.ComponentDescriptor} interface*/
     public abstract String informationHTML();
+    /** output human-readable description of contents of container */
     public abstract String information();
-    /** search components for tests to run */
+    /** return a suite of installation tests for the components in the container 
+     * <p>
+     * this suite is the composition of all installation tests returned by objects in the container that implement the
+     * {@link org.astrogrid.jes.component.descriptor.ComponentDescriptor} interface
+     * */
     public abstract Test getSuite();
 }
 /* 
 $Log: ComponentManager.java,v $
+Revision 1.8  2004/03/15 23:45:07  nw
+improved javadoc
+
 Revision 1.7  2004/03/15 00:30:19  nw
 updaed to refer to moved classes
 
