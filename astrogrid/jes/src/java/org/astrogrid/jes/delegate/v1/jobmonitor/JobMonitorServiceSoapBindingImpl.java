@@ -9,6 +9,9 @@
 
 package org.astrogrid.jes.delegate.v1.jobmonitor;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.astrogrid.jes.component.ComponentManagerFactory;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
@@ -16,10 +19,19 @@ import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import java.rmi.RemoteException;
 
 public class JobMonitorServiceSoapBindingImpl implements org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor{
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(JobMonitorServiceSoapBindingImpl.class);
+
     public JobMonitorServiceSoapBindingImpl() {
-        //SchedulerNotifier notifier = ComponentManager.getInstance().getNotifier();
-       // monitor = new org.astrogrid.jes.jobmonitor.JobMonitor(notifier);
-       monitor = ComponentManagerFactory.getInstance().getMonitor();
+        JobMonitor tmpMonitor = null;
+        try {
+        tmpMonitor = ComponentManagerFactory.getInstance().getMonitor();
+        } catch (Throwable t) {
+            logger.fatal("Could not acquire monitor service",t);
+        }
+        monitor = tmpMonitor;
     }
     protected final JobMonitor monitor;
 
