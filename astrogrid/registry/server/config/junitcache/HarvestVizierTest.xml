@@ -64,7 +64,7 @@
     <vg:ManagedAuthority>astrogrid</vg:ManagedAuthority>
     <Interface>
       <Invocation>WebBrowser</Invocation>
-      <AccessURL use="dir">http://vizier.u-strasbg.fr/cgi-bin/registry/vizier/oai.pl?metadataPrefix=ivo_vr&amp;verb=ListRecords</AccessURL>
+      <AccessURL use="dir">http://donotedovizier.u-strasbg.fr/cgi-bin/registry/vizier/oai.pl?metadataPrefix=ivo_vr&amp;verb=ListRecords</AccessURL>
     </Interface>
   </Resource>
  </VODescription>
