@@ -10,12 +10,41 @@
        |
        +-->
     <xsl:template name="query-tasks">
+        
+      <script language="javascript">
+        /*
+         * validateEntries()
+         * Prevent characters that may cause xml queries to
+         * fail from being entered into search (eg: ' " &lt; &amp;)
+         *
+         * @param id         
+         */
+        function validateEntries()
+        {
+          var name = document.getElementById('taskNameField').value;
+          var title = document.getElementById('taskTitleField').value;
+          var desc = document.getElementById('taskDescriptionField').value;                              
+          var objRegExp = /['"\074\046]/;
+
+          if (objRegExp.test(name) || objRegExp.test(pub) || objRegExp.test(title) || objRegExp.test(desc))
+          {
+          alert('Search criteria contain characters that are not allowed in when searching..');
+            return false;
+          }
+          else
+          {
+            return true;
+          }
+        }
+      </script>
+              
       <div id="query-tasks" style="display:none ">
         <form name="query_form" 
               id="query_form" 
               method="post"
               action="/astrogrid-portal/bare/mount/resources/resourceResults.html" 
-              target="resourcesResultsFrame">
+              target="resourcesResultsFrame"
+              onsubmit = "return validateEntries();">
           <table border="1" cellpadding="5">
             <tr valign="top">
               <td rowspan="3">
@@ -49,7 +78,7 @@
                     <td>
                       <input title="eg: Trace Instrument Fits Catalogue"  
                              name="titleField" 
-                             id="titleField" 
+                             id="taskTitleField" 
                              type="text" 
                              onblur="defocusit(this)" 
                              onfocus="focusit(this)">
@@ -62,7 +91,7 @@
                     <td>
                       <input title="eg: part of the astrogrid CEA" 
                              name="descriptionField" 
-                             id="descriptionField" 
+                             id="taskDescriptionField" 
                              type="text" 
                              onblur="defocusit(this)" 
                              onfocus="focusit(this)">

@@ -18,6 +18,7 @@
                 <li>This page allows resource discovery, presently <b>tasks</b> and <b>catalogs</b> </li>
                 <li>The search is case insensitive and uses 'contains'.</li>
                 <li>The search will return a maximum of 100 entries.</li>
+                <li>(Certain characters are not permitted when searching - these are: ' " &amp; &lt; )</li>
               </ul>
             </td>
           </tr>

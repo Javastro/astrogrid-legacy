@@ -7,12 +7,42 @@
        +-->
 
     <xsl:template name="query-catalogs">       
-      <div id="query-catalogs" style="display: none ">
+        
+      <script language="javascript">
+        /*
+         * validateEntries()
+         * Prevent characters that may cause xml queries to
+         * fail from being entered into search (eg: ' " &lt; &amp;)
+         *
+         * @param id         
+         */
+        function validateResourceEntries()
+        {
+          var name = document.getElementById('resourceNameField').value;
+          var pub = document.getElementById('resourcePublisherField').value;
+          var title = document.getElementById('resourceTitleField').value;
+          var desc = document.getElementById('resourceDescriptionField').value;                              
+          var objRegExp = /['"\074\046]/;
+
+          if (objRegExp.test(name) || objRegExp.test(pub) || objRegExp.test(title) || objRegExp.test(desc))
+          {
+          alert('Search criteria contain characters that are not allowed in when searching..');
+            return false;
+          }
+          else
+          {
+            return true;
+          }
+        }
+      </script>        
+        
+      <div id="query-catalogs" style="display: none ">                 
         <form name="catalog_form" 
               id="catalog_form" 
               action="/astrogrid-portal/bare/mount/resources/resourceResults.html" 
               method="post" 
-              target="resourcesResultsFrame">
+              target="resourcesResultsFrame"
+              onsubmit = "return validateResourceEntries();">
           <table border="1" cellpadding="5">
             <tr valign="top">
               <td>
@@ -38,7 +68,7 @@
                   <tr valign="top">
                     <td nowrap="true">Resource publisher</td>
                     <td>
-                      <input title="eg: MSSL/UCL Mullard Space Science Laboratory" type="text" name="publisherField" id="publisherField" onblur="defocusit(this)" onfocus="focusit(this)" >
+                      <input title="eg: MSSL/UCL Mullard Space Science Laboratory" type="text" name="publisherField" id="resourcePublisherField" onblur="defocusit(this)" onfocus="focusit(this)" >
                       </input>
                     </td>
                     <td><span>string</span></td>
@@ -46,7 +76,7 @@
                   <tr>
                     <td nowrap="true">Resource title</td>
                     <td>
-                      <input title="eg: NOAA SGAS Energetic Events" type="text" name="titleField" id="titleField" onblur="defocusit(this)" onfocus="focusit(this)" >
+                      <input title="eg: NOAA SGAS Energetic Events" type="text" name="titleField" id="resourceTitleField" onblur="defocusit(this)" onfocus="focusit(this)" >
                       </input>
                     </td>
                     <td><span>string</span></td>
@@ -54,7 +84,7 @@
                   <tr valign="top">
                     <td>Description</td>
                     <td>
-                      <input title="eg: This is the Solar Event Catalogue" type="text" name="descriptionField" id="descriptionField" onblur="defocusit(this)" onfocus="focusit(this)" >
+                      <input title="eg: This is the Solar Event Catalogue" type="text" name="descriptionField" id="resourceDescriptionField" onblur="defocusit(this)" onfocus="focusit(this)" >
                       </input>                      
                     </td>
                     <td><span>string</span></td>
