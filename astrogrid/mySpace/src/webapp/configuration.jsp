@@ -115,7 +115,7 @@ if (!createPressed) {
                                     request.getServerPort(), "/manager/html").toString();
        message="The values have been saved to <em>"+fileName+"</em>. " +
                "You <em>may</em> now need to move this file to the location specified in the "+
-               "installation instructions and <a href='"+managerURL+"'>reload</a> the webapp or restart the webserver.  Alternatively press change for your changes to effect now.";
+               "installation instructions and <a href='"+managerURL+"'>reload</a> the webapp or restart the webserver.  Alternatively press change for your changes to take effect now.";
    }
 
 //If change pressed let's change 'em
