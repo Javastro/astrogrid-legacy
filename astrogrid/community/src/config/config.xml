@@ -1,11 +1,14 @@
 <?xml version="1.0" ?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/config/Attic/config.xml,v $</cvs:source>
-    | <cvs:author>$Author: KevinBenson $</cvs:author>
-    | <cvs:date>$Date: 2003/09/14 21:19:43 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2003/09/15 11:18:55 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: config.xml,v $
+    |   Revision 1.3  2003/09/15 11:18:55  dave
+    |   Fixed typo in config file
+    |
     |   Revision 1.2  2003/09/14 21:19:43  KevinBenson
     |   *** empty log message ***
     |
@@ -22,9 +25,9 @@
 	    | The actual values are filled in by the Ant build script.
 	    |
 	    +-->
-	<category neame="org.astrogrid.community">
-		<property name="database.name"    value="policy"/>
-		<property name="database.config"  value="c:\\database.xml"/>
-		<property name="database.mapping" value="c:\\mapping.xml"/>
+	<category name="org.astrogrid.community">
+		<property name="database.name"    value="...."/>
+		<property name="database.config"  value="...."/>
+		<property name="database.mapping" value="...."/>
 	</category> 
 </properties>
