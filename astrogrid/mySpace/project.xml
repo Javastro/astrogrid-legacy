@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.35 2004/03/09 23:23:08 mch Exp $ -->
+<!-- $Id: project.xml,v 1.36 2004/03/12 18:11:05 mch Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
@@ -17,10 +17,10 @@
     <dependencies>
     
     
-      <!-- for VoSpaceClient resolver - not needed when that is removed
+      <!-- for VoSpaceResolver -->
         <dependency>
             <artifactId>astrogrid-registry-client</artifactId>
-            <groupId>astrogrid-registry-client</groupId>
+            <groupId>org.astrogrid</groupId>
             <version>SNAPSHOT</version>
             <properties>
                 <war.bundle>true</war.bundle>
@@ -28,13 +28,12 @@
         </dependency>
         <dependency>
             <artifactId>astrogrid-registry-common</artifactId>
-            <groupId>astrogrid-registry-common</groupId>
+            <groupId>org.astrogrid</groupId>
             <version>SNAPSHOT</version>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-         -->
     
     
         <dependency>
@@ -45,7 +44,7 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-        <dependency>
+        <!-- mch why is this in?! dependency>
             <artifactId>astrogrid-datacenter-client</artifactId>
             <groupId>astrogrid-datacenter</groupId>
             <version>SNAPSHOT</version>
@@ -53,6 +52,7 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+        -->
         <dependency>
             <artifactId>commons-discovery</artifactId>
             <groupId>commons-discovery</groupId>
