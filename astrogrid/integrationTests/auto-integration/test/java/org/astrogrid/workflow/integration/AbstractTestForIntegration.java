@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.4 2004/04/19 09:35:24 nw Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.5 2004/04/19 11:42:41 pah Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.beans.v1.Group;
 import org.astrogrid.scripting.Astrogrid;
+import org.astrogrid.store.Ivorn;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
 import junit.framework.TestCase;
@@ -63,12 +64,19 @@ public class AbstractTestForIntegration extends TestCase {
     public static final String TESTDSA = COMMUNITY + "/testdsa";
     public static final String TESTAPP = COMMUNITY + "/testapp";
     
-    
+   protected Ivorn createIVORN(String path)
+   {
+      return new Ivorn(MYSPACE,user.getUserId()+path);
+   }
+   
 }
 
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
+Revision 1.5  2004/04/19 11:42:41  pah
+added createIVORN
+
 Revision 1.4  2004/04/19 09:35:24  nw
 added constants for ivorns of services.
 added test query
