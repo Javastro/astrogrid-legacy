@@ -68,7 +68,7 @@ public class MySpaceStatusCode
    public static final int AGMMCW00151 = 16;
    public static final int AGMMCW00152 = 17;
    public static final int AGMMCW00153 = 18;
-   public static final int AGMMCW001543 = 19;
+   public static final int AGMMCW00154 = 19;
    public static final int AGMMCE00201 = 20;
    public static final int AGMMCE00202 = 21;
    public static final int AGMMCE00203 = 22;
@@ -88,25 +88,27 @@ public class MySpaceStatusCode
    public static final int AGMMCE00217 = 36;
    public static final int AGMMCE00218 = 37;
    public static final int AGMMCE00219 = 38;
-   public static final int AGMMCI00250 = 39;
-   public static final int AGMMCE00300 = 40;
-   public static final int AGMMCE00301 = 41;
-   public static final int AGMSCE01000 = 42;
-   public static final int AGMSCE01001 = 43;
-   public static final int AGMSCE01002 = 44;
-   public static final int AGMSCE01003 = 45;
-   public static final int AGMSCE01004 = 46;
-   public static final int AGMSCE01005 = 47;
-   public static final int AGMSCE01006 = 48;
-   public static final int AGMSCE01040 = 49;
-   public static final int AGMSCE01041 = 50;
-   public static final int AGMSCE01042 = 51;
-   public static final int AGMSCE01043 = 52;
-   public static final int AGMSCE01044 = 53;
-   public static final int AGMSCE01045 = 54;
-   public static final int AGMSCE01046 = 55;
-   public static final int AGMSCE01047 = 56;
-   public static final int AGMSCE01048 = 57;
+   public static final int AGMMCE00220 = 39;
+   public static final int AGMMCE00221 = 40;
+   public static final int AGMMCI00250 = 41;
+   public static final int AGMMCE00300 = 42;
+   public static final int AGMMCE00301 = 43;
+   public static final int AGMSCE01000 = 44;
+   public static final int AGMSCE01001 = 45;
+   public static final int AGMSCE01002 = 46;
+   public static final int AGMSCE01003 = 47;
+   public static final int AGMSCE01004 = 48;
+   public static final int AGMSCE01005 = 49;
+   public static final int AGMSCE01006 = 50;
+   public static final int AGMSCE01040 = 51;
+   public static final int AGMSCE01041 = 52;
+   public static final int AGMSCE01042 = 53;
+   public static final int AGMSCE01043 = 54;
+   public static final int AGMSCE01044 = 55;
+   public static final int AGMSCE01045 = 56;
+   public static final int AGMSCE01046 = 57;
+   public static final int AGMSCE01047 = 58;
+   public static final int AGMSCE01048 = 59;
 
 
    private int code;    // Code.
@@ -195,8 +197,8 @@ public class MySpaceStatusCode
       else if (code == MySpaceStatusCode.AGMMCW00153)
       {  codeString = "AGMMCW00153";
       }
-      else if (code == MySpaceStatusCode.AGMMCW001543)
-      {  codeString = "AGMMCW001543";
+      else if (code == MySpaceStatusCode.AGMMCW00154)
+      {  codeString = "AGMMCW00154";
       }
       else if (code == MySpaceStatusCode.AGMMCE00201)
       {  codeString = "AGMMCE00201";
@@ -254,6 +256,12 @@ public class MySpaceStatusCode
       }
       else if (code == MySpaceStatusCode.AGMMCE00219)
       {  codeString = "AGMMCE00219";
+      }
+      else if (code == MySpaceStatusCode.AGMMCE00220)
+      {  codeString = "AGMMCE00220";
+      }
+      else if (code == MySpaceStatusCode.AGMMCE00221)
+      {  codeString = "AGMMCE00221";
       }
       else if (code == MySpaceStatusCode.AGMMCI00250)
       {  codeString = "AGMMCI00250";
@@ -390,7 +398,7 @@ public class MySpaceStatusCode
       else if (code == MySpaceStatusCode.AGMMCW00153)
       {  message = "({0}) Registry configuration file contains an illegal expiry period.";
       }
-      else if (code == MySpaceStatusCode.AGMMCW001543)
+      else if (code == MySpaceStatusCode.AGMMCW00154)
       {  message = "({0}) Registry configuration contains an invalid server entry.";
       }
       else if (code == MySpaceStatusCode.AGMMCE00201)
@@ -449,6 +457,12 @@ public class MySpaceStatusCode
       }
       else if (code == MySpaceStatusCode.AGMMCE00219)
       {  message = "({0}) Error Exporting Data Holder.";
+      }
+      else if (code == MySpaceStatusCode.AGMMCE00220)
+      {  message = "({0}) Failed to delete container.";
+      }
+      else if (code == MySpaceStatusCode.AGMMCE00221)
+      {  message = "({0}) Failed to delete user.";
       }
       else if (code == MySpaceStatusCode.AGMMCI00250)
       {  message = "({0}) No Data Holders matched query string.";

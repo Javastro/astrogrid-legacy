@@ -11,7 +11,7 @@ package org.astrogrid.mySpace.mySpaceManager;
  *
  * @author C L Qin
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 2.
+ * @version Iteration 3.
  */
 
 public class ServerDriver
@@ -31,17 +31,72 @@ public class ServerDriver
 // -----------------------------------------------------------------
 
 /**
+  * Write the contents of an input string as a new file a MySpace
+  * server.
+  *
+  * @param contents The string containing the contents to be written
+  *  to the new file.
+  *
+  * @param newDataHolderFileName  The name of the file on the server
+  *  corresponding to the DataHolder to be copied to (ie. the
+  *  output file).  The file name should include the full directory
+  *  specification, as known to the server operating system.
+  */
+
+   public boolean upLoadString(String contents,
+     String newDataHolderFileName)
+   {  boolean successStatus = true;
+
+      System.out.println("Attempt to a string to a dataHolder on a server:\n"
+        + "  output server file name: " + newDataHolderFileName + "\n"
+        + "  contents: \n\n" + contents);
+
+      return successStatus;
+   }
+
+
+// -----------------------------------------------------------------
+
+/**
+  * Import a new dataHolder into a MySpace sercer.  A remote file is
+  * imported into the MySpace server.  This remote file is identified by
+  * a URI, which is passed as one of the input arguments.  In Iteration
+  * 3 this URI must be a URL.
+  *
+  * @param importURI The URI of the remote file to be imported.
+  *
+  * @param newDataHolderFileName  The name of the file on the server
+  *  corresponding to the DataHolder to be copied to (ie. the
+  *  output file).  The file name should include the full directory
+  *  specification, as known to the server operating system.
+  */
+
+   public boolean importDataHolder(String importURI, 
+     String newDataHolderFileName)
+   {  boolean successStatus = true;
+
+      System.out.println("Attempt to import a dataHolder on a server:\n"
+        + "  input URI: "+ importURI + "\n"
+        + "  output server file name: " + newDataHolderFileName);
+
+      return successStatus;
+   }
+
+// -----------------------------------------------------------------
+
+/**
   * Copy a DataHolder from one location on a MySpace server to another
   * location on the same server.
   *
   * @param oldDataHolderFileName The name of the file on the server
-  *   corresponding to the DataHolder to be copied from (ie. the
-  *   input file).  The file name should include the full directory
-  *   specification, as known to the server operating system.
+  *  corresponding to the DataHolder to be copied from (ie. the
+  *  input file).  The file name should include the full directory
+  *  specification, as known to the server operating system.
+  *
   * @param newDataHolderFileName  The name of the file on the server
-  *   corresponding to the DataHolder to be copied to (ie. the
-  *   output file).  The file name should include the full directory
-  *   specification, as known to the server operating system.
+  *  corresponding to the DataHolder to be copied to (ie. the
+  *  output file).  The file name should include the full directory
+  *  specification, as known to the server operating system.
   */
 
    public boolean copyDataHolder(String oldDataHolderFileName, 

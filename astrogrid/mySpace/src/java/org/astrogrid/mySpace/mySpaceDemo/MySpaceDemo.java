@@ -465,19 +465,19 @@ public class MySpaceDemo
                   newDataHolderName = "";
                }
 
-               String serverFileName;
-               System.out.println("Enter corresponding server file name:");
+               String remoteURI;
+               System.out.println("Enter corresponding remote URI:");
                try
-               {  serverFileName = console.readLine();
+               {  remoteURI = console.readLine();
                }
                catch (IOException ioerror)
                {  System.out.println("Ooops");
-                  serverFileName = "";
+                  remoteURI = "";
                }
 
                DataItemRecord newDataHolder = myspace.importDataHolder(
-                 "acd", "roe", "job27", newDataHolderName,
-                 serverFileName, 100 );
+                 "acd", "roe", "job27", remoteURI, newDataHolderName,
+                 "quERY");
 
                Vector itemRecVector = new Vector();
                itemRecVector = myspace.lookupDataHoldersDetails(
@@ -513,6 +513,76 @@ public class MySpaceDemo
          }
       );
       fileMenu.add(menuItem);
+
+      menuItem = new JMenuItem("UpLoad DataHolder");
+      menuItem.addActionListener(new ActionListener()
+         {  public void actionPerformed(ActionEvent e)
+            {  BufferedReader console = new BufferedReader(
+                 new InputStreamReader(System.in));
+
+               String newDataHolderName;
+               System.out.println("Enter name of new DataHolder:");
+               try
+               {  newDataHolderName = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  newDataHolderName = "";
+               }
+
+               String contents;
+               System.out.println("Enter the contents of the DataHolder:");
+               try
+               {  contents = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  contents = "";
+               }
+
+               DataItemRecord newDataHolder = myspace.upLoadDataHolder(
+                 "acd", "roe", "job27", newDataHolderName, contents,
+                 "wF");
+
+               Vector itemRecVector = new Vector();
+               itemRecVector = myspace.lookupDataHoldersDetails(
+                 "acd", "roe", "job27", "*");
+
+               System.out.println("New state of the registry: ");
+
+               int numFound;
+               if (itemRecVector != null)
+               {  numFound = itemRecVector.size();
+               }
+               else
+               {   numFound = 0;
+                   System.out.println("  No entries matched the query");
+               }
+
+               DataItemRecord itemRec = new DataItemRecord();
+
+               for (int loop=0; loop<numFound; loop++)
+               {  itemRec = (DataItemRecord)itemRecVector.elementAt(loop);
+                  System.out.println("[" + itemRec.getDataItemID()
+                    + "]: " + itemRec.toString() );
+               }
+
+               System.out.println("");
+               if (!status.getSuccessStatus())
+               {  System.out.println("Operation failed.");
+               }
+               status.outputCodes();
+               status.reset();
+               System.out.println("");
+            }
+         }
+      );
+      fileMenu.add(menuItem);
+
+
+
+
+
 
       menuItem = new JMenuItem("Delete DataHolder");
       menuItem.addActionListener(new ActionListener()
@@ -672,7 +742,94 @@ public class MySpaceDemo
       );
       fileMenu.add(menuItem);
 
+      menuItem = new JMenuItem("Add new user");
+      menuItem.addActionListener(new ActionListener()
+         {  public void actionPerformed(ActionEvent e)
+            {  BufferedReader console = new BufferedReader(
+                 new InputStreamReader(System.in));
 
+               System.out.println("Enter ID of the new user:");
+               String userID;
+               try
+               {  userID = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  userID = "";
+               }
+
+               String serverList;
+               System.out.println("Enter the names of the user's servers:");
+               try
+               {  serverList = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  serverList = "";
+               }
+
+               Vector servers = new Vector();
+               servers.add(serverList);
+
+               boolean addOk = myspace.addUser(userID, "roe",
+                 "job27", servers);
+
+               if (addOk)
+               {  System.out.println("User added ok.");
+               }
+               else
+               {  System.out.println("Failed to add user.");
+               }
+
+               System.out.println("");
+               if (!status.getSuccessStatus())
+               {  System.out.println("Operation failed.");
+               }
+               status.outputCodes();
+               status.reset();
+               System.out.println("");
+            }
+         }
+      );
+      fileMenu.add(menuItem);
+
+      menuItem = new JMenuItem("Delete user");
+      menuItem.addActionListener(new ActionListener()
+         {  public void actionPerformed(ActionEvent e)
+            {  BufferedReader console = new BufferedReader(
+                 new InputStreamReader(System.in));
+
+               System.out.println("Enter ID of the user to delete:");
+               String userID;
+               try
+               {  userID = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  userID = "";
+               }
+
+               boolean deleteOk = myspace.deleteUser(userID, "roe",
+                 "job27");
+
+               if (deleteOk)
+               {  System.out.println("User deleted ok.");
+               }
+               else
+               {  System.out.println("Failed to delete user.");
+               }
+
+               System.out.println("");
+               if (!status.getSuccessStatus())
+               {  System.out.println("Operation failed.");
+               }
+               status.outputCodes();
+               status.reset();
+               System.out.println("");
+            }
+         }
+      );
+      fileMenu.add(menuItem);
 
 
       menuItem = new JMenuItem("Quit");

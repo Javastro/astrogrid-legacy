@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
  *
  * @author C L Qin
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 2.
+ * @version Iteration 3.
  */
 
 public class ServerDriver
@@ -40,6 +40,83 @@ public class ServerDriver
 
    public ServerDriver()
    {  super();
+   }
+
+// -----------------------------------------------------------------
+
+/**
+  * Write the contents of an input string as a new file a MySpace
+  * server.
+  *
+  * @param contents The string containing the contents to be written
+  *  to the new file.
+  *
+  * @param newDataHolderFileName  The name of the file on the server
+  *  corresponding to the DataHolder to be copied to (ie. the
+  *  output file).  The file name should include the full directory
+  *  specification, as known to the server operating system.
+  */
+
+   public boolean upLoadString(String contents,
+     String newDataHolderFileName)
+   {  boolean successStatus = true;
+
+      try
+      {  call = createServerCall();
+         call.setOperationName( "upLoadString" );		
+         call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
+         call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
+		
+         call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
+         String serverResponse = (String)call.invoke( new Object[]
+           {contents,newDataHolderFileName} );
+
+         if ( DEBUG )  logger.debug("GOT SERVERRESPONSE: " + serverResponse);
+      }
+      catch(Exception e)
+      {  successStatus = false;
+      }
+
+      return successStatus;
+   }
+
+// -----------------------------------------------------------------
+
+/**
+  * Import a new dataHolder into a MySpace sercer.  A remote file is
+  * imported into the MySpace server.  This remote file is identified by
+  * a URI, which is passed as one of the input arguments.  In Iteration
+  * 3 this URI must be a URL.
+  *
+  * @param importURI The URI of the remote file to be imported.
+  *
+  * @param newDataHolderFileName  The name of the file on the server
+  *  corresponding to the DataHolder to be copied to (ie. the
+  *  output file).  The file name should include the full directory
+  *  specification, as known to the server operating system.
+  */
+
+   public boolean importDataHolder(String importURI, 
+     String newDataHolderFileName)
+   {  boolean successStatus = true;
+
+      try
+      {  call = createServerCall();
+         call.setOperationName( "importDataHolder" );
+         call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
+         call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
+	
+         call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
+         String serverResponse = (String)call.invoke( new Object[]
+           {importURI,newDataHolderFileName} );
+
+         if ( DEBUG )  logger.debug("GOT SERVERRESPONSE: " + serverResponse);
+      }
+      catch(Exception e)
+      {  successStatus = false;
+      }
+
+      return successStatus;
    }
 
 // -----------------------------------------------------------------

@@ -38,7 +38,7 @@ import java.text.*;
  * </p>
  *
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 2.
+ * @version Iteration 3.
  */
 
 public class DataItemRecord implements Serializable
@@ -47,9 +47,11 @@ public class DataItemRecord implements Serializable
 //
 //Public constants defining the permitted codes for the DataHolder type.
 
-   public static final int UNKNOWN = 0; // Unknown.
-   public static final int CON = 1;     // Container.
-   public static final int VOT = 2;     // VOTable.
+   public static final int UNKNOWN = 0;  // Unknown.
+   public static final int CON = 1;      // Container.
+   public static final int VOT = 2;      // VOTable (XML).
+   public static final int QUERY = 3;    // Query (XML).
+   public static final int WORKFLOW = 4; // Workflow (XML).
 
    private String dataItemName;     // Full Name.
    private int    dataItemID;       // Identifier in the registry.
@@ -208,7 +210,15 @@ public class DataItemRecord implements Serializable
            dateRepn.format(creationDate) + ")";
       }
       else if (type == VOT)
-      {  returnString = dataItemName + " (" + size + " bytes, created " +
+      {  returnString = dataItemName + " (VoTable, " + size + " bytes, " +
+           dateRepn.format(creationDate) + ")";
+      }
+      else if (type == QUERY)
+      {  returnString = dataItemName + " (query, " + size + " bytes, " +
+           dateRepn.format(creationDate) + ")";
+      }
+      else if (type == WORKFLOW)
+      {  returnString = dataItemName + " (workflow, " + size + " bytes, " +
            dateRepn.format(creationDate) + ")";
       }
       else
@@ -218,4 +228,32 @@ public class DataItemRecord implements Serializable
 
       return returnString;
    }
+
+//
+// Static methods.
+
+/**
+ * Convert a string representation of a DataItemRecord content type into
+ *  the corresponding integer code.
+ */
+
+   public static int translateType(String contentType)
+   {  int returnType = DataItemRecord.UNKNOWN;
+
+      if (contentType.equalsIgnoreCase("QUERY") )
+      {  returnType = DataItemRecord.QUERY;
+      }
+      else if (contentType.equalsIgnoreCase("WF") )
+      {  returnType = DataItemRecord.WORKFLOW;
+      }
+      else if (contentType.equalsIgnoreCase("VOT") ||
+               contentType.equalsIgnoreCase("") )
+      {  returnType = DataItemRecord.VOT;
+      }
+
+      return returnType;
+   }
+
+
+
 }
