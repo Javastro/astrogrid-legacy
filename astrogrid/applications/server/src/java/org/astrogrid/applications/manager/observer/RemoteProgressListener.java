@@ -1,4 +1,4 @@
-/*$Id: RemoteProgressListener.java,v 1.3 2004/07/02 09:11:13 nw Exp $
+/*$Id: RemoteProgressListener.java,v 1.4 2004/07/20 02:03:08 nw Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,7 +31,7 @@ import java.util.Observer;
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Jun-2004
  *
  */
-public class RemoteProgressListener implements Observer {
+public class RemoteProgressListener extends AbstractProgressListener {
     /**
      * Commons Logger for this class
      */
@@ -47,25 +47,12 @@ public class RemoteProgressListener implements Observer {
     }
     protected final JobMonitorDelegate delegate;
     protected final URI endpoint;
-    /**
-     * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
-     */
-    public void update(Observable o, Object arg) {
-        Application app = (Application)o;
-        if (arg instanceof Status) {
-            reportStatusChange(app,(Status)arg);
-        } else if (arg instanceof MessageType) {
-            reportMessage(app,(MessageType)arg);
-            
-        } else {
-            logger.warn("Unknown object in update notification " + arg.getClass().getName() + " " + arg.toString());
-        }
-    }
+
     /**
      * @param app
      * @param type
      */
-    private void reportMessage(Application app, MessageType message) {
+    protected void reportMessage(Application app, MessageType message) {
         try {
             delegate.monitorJob(new JobIdentifierType( app.getJobStepID()),Castor2Axis.convert(message));
         }
@@ -79,7 +66,7 @@ public class RemoteProgressListener implements Observer {
      * @param app
      * @param status
      */
-    private void reportStatusChange(Application app, Status status) {
+    protected void reportStatusChange(Application app, Status status) {
         try {
             MessageType message = app.createTemplateMessage();
             message.setPhase(status.toExecutionPhase());
@@ -98,6 +85,9 @@ public class RemoteProgressListener implements Observer {
 
 /* 
 $Log: RemoteProgressListener.java,v $
+Revision 1.4  2004/07/20 02:03:08  nw
+added abstract listener classes
+
 Revision 1.3  2004/07/02 09:11:13  nw
 improved logging
 
