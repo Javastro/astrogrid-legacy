@@ -19,11 +19,11 @@
 		<xsp:include>java.util.Enumeration</xsp:include>		
 		<xsp:include>java.util.LinkedHashMap</xsp:include>
 		<xsp:include>java.util.Set</xsp:include>
-		<xsp:include>org.astrogrid.community.policy.data.GroupData</xsp:include>
-		<xsp:include>org.astrogrid.community.policy.data.CommunityData</xsp:include>		
-		<xsp:include>org.astrogrid.community.policy.data.AccountData</xsp:include>				
-		<xsp:include>org.astrogrid.community.policy.data.ResourceData</xsp:include>
-		<xsp:include>org.astrogrid.community.policy.data.GroupMemberData</xsp:include>
+		<xsp:include>org.astrogrid.community.common.policy.data.GroupData</xsp:include>
+		<xsp:include>org.astrogrid.community.common.policy.data.CommunityData</xsp:include>		
+		<xsp:include>org.astrogrid.community.common.policy.data.AccountData</xsp:include>				
+		<xsp:include>org.astrogrid.community.common.policy.data.ResourceData</xsp:include>
+		<xsp:include>org.astrogrid.community.common.policy.data.GroupMemberData</xsp:include>
 	</xsp:structure>	    
 	    
 	    

@@ -1,4 +1,3 @@
-
 package org.astrogrid.portal.cocoon.community;
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.acting.AbstractAction;
@@ -12,12 +11,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
-import org.astrogrid.community.delegate.policy.AdministrationDelegate;
-import org.astrogrid.community.policy.data.GroupData;
-import org.astrogrid.community.common.CommunityConfig;
-import org.astrogrid.community.policy.data.CommunityData;
-import org.astrogrid.community.policy.data.AccountData;
-import org.astrogrid.community.policy.data.ResourceData;
+import org.astrogrid.portal.login.common.SessionKeys;
+import org.astrogrid.config.Config;
+import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.community.common.policy.data.AccountData;
+import org.astrogrid.community.common.security.data.SecurityToken;
+import org.astrogrid.community.common.exception.CommunitySecurityException;
+import org.astrogrid.community.resolver.security.manager.SecurityManagerResolver;
+import org.astrogrid.community.resolver.security.service.SecurityServiceResolver;
+import org.astrogrid.community.resolver.policy.manager.PolicyManagerResolver;
+import org.astrogrid.community.client.policy.manager.PolicyManagerDelegate;
+import org.astrogrid.community.client.security.manager.SecurityManagerDelegate;
+import org.astrogrid.community.client.security.service.SecurityServiceDelegate;
+import java.net.MalformedURLException;
+import java.net.URL;
+import org.apache.avalon.framework.logger.ConsoleLogger;
+import org.apache.avalon.framework.logger.Logger;
+import org.astrogrid.store.Ivorn;
+
 
 /**
  *
@@ -30,11 +41,34 @@ import org.astrogrid.community.policy.data.ResourceData;
 public class AdministrationAction extends AbstractAction
 {
    
+   
+   /**
+    * Switch for our debug statements. 
+    * JDT: I know we shouldn't be using System.outs but they
+    * can be *so* useful. Retain, but switch off for deployment and
+    * supplement with logging to files.
+    *  
+    */
+   private static final boolean debugToSystemOutOn = true;
+   
+   
+   /**
+    * Logger
+    */
+   private Logger log;
+   
+   
 	/**
 	 * Switch for our debug statements.
 	 *
 	 */
 	public static boolean DEBUG_FLAG = true;
+   
+   /**
+    * Name of JNDI property holding security delegate endpoint URL
+    */
+   public static final String ORG_ASTROGRID_PORTAL_REGISTRY_URL = "org.astrogrid.portal.registry.url";
+   
 	
 	/**
 	 * Cocoon param for the user param in the session.
@@ -96,6 +130,20 @@ public class AdministrationAction extends AbstractAction
    
    private static final String HTTPS_CONNECTION = "on";   
    
+   
+   /**
+    * During unit tests the logger isn't setup properly, hence this method to
+    * use a console logger instead.  Also will log to console
+    * if debugToSystemOutOn - can be useful.
+    *  
+    */
+   private void checkLogger() {
+       log = super.getLogger();
+       if (log == null || debugToSystemOutOn) {
+           enableLogging(new ConsoleLogger());
+           log = super.getLogger();
+       }
+   }   
 		
 	/**
 	 * Our action method.
@@ -109,8 +157,9 @@ public class AdministrationAction extends AbstractAction
 		Parameters params)
 		{
 	      
-      String community_name = CommunityConfig.getCommunityName();
+      String community_name = null;//CommunityConfig.getCommunityName();
       System.out.println(community_name);
+      
       
 		//
 		// Get our current request and session.
@@ -131,11 +180,29 @@ public class AdministrationAction extends AbstractAction
       if(processAction != null && processAction.length() > 0 ) {
          action = processAction;
       }
-      
+      String endpoint = null;
+      SecurityManagerResolver smr = null;
+      SecurityServiceResolver ssr = null;
+      PolicyManagerResolver pmr = null;
+      try {
+          final Config config = SimpleConfig.getSingleton();
+          endpoint = config.getString(ORG_ASTROGRID_PORTAL_REGISTRY_URL, null);
+          log.debug("Registry endpoint:"+endpoint);
+          smr = new SecurityManagerResolver(new URL(endpoint));
+          ssr = new SecurityServiceResolver(new URL(endpoint));
+          pmr = new PolicyManagerResolver(new URL(endpoint));
+      } catch (MalformedURLException e1) {
+          log.error("Unable to create registry URL", e1);
+          errorMessage = "No registry url foSecurityManagerResolverund";
+          //throw new LoginException("Unable to contact registry.  Please check your registry URL",e1);
+      }
 
-      String secureConn = CommunityConfig.getProperty("portal.security","on");
-      String securePort = CommunityConfig.getProperty("portal.secure.port",String.valueOf(request.getServerPort()));
-      String nonSecurePort = CommunityConfig.getProperty("portal.nonsecure.port",String.valueOf(request.getServerPort()));      
+      
+            
+
+      String secureConn = "off";//CommunityConfig.getProperty("portal.security","on");
+      String securePort = null;//CommunityConfig.getProperty("portal.secure.port",String.valueOf(request.getServerPort()));
+      String nonSecurePort = null;//CommunityConfig.getProperty("portal.nonsecure.port",String.valueOf(request.getServerPort()));      
       
       String redirect_url = null;
       if(HTTPS_CONNECTION.equals(secureConn) && 
@@ -162,9 +229,14 @@ public class AdministrationAction extends AbstractAction
       }else {
          if(request.isSecure()) {
             try {
+               /*
                redirect_url = "http://" + request.getServerName() + ":" +
                             nonSecurePort + request.getRequestURI() + "?" +
                             request.getQueryString();
+               */
+               redirect_url = "http://" + request.getServerName() + ":" +
+                                           request.getServerPort() + request.getRequestURI() + "?" +
+                                           request.getQueryString();               
                System.out.println(redirect_url);
                redirector.redirect(true,redirect_url);
              }catch(Exception e) {
@@ -176,7 +248,8 @@ public class AdministrationAction extends AbstractAction
 		if(DEBUG_FLAG) {
 			System.out.println("the action is = " + action);		
 		}
-      AdministrationDelegate adminDelegate = new AdministrationDelegate();
+      
+      //AdministrationDelegate adminDelegate = new AdministrationDelegate();
 
       String ident = (String)request.getParameter(IDENT);
       if(ident != null && ident.trim().length() > 0 ) {
@@ -200,12 +273,18 @@ public class AdministrationAction extends AbstractAction
       if(comm_account == null) {
          actionTable.put(ACTION_INSERT_ACCOUNT,"Insert Account");
       }else {
+         actionTable.put(ACTION_CHANGE_PASSWORD,"Change Password");
+         /*
          try {
             isAdmin = adminDelegate.isAdminAccount(comm_account,community_name);
          }catch(Exception e) {
             e.printStackTrace();
             isAdmin = false;
          }
+         */
+         
+         /*
+         isAdmin = true;
 
          if(isAdmin) {
             actionTable.put(ACTION_INSERT_ACCOUNT,"Insert Account");
@@ -229,6 +308,7 @@ public class AdministrationAction extends AbstractAction
             actionTable.put(ACTION_VIEW_GROUPS,"View Groups");
             actionTable.put(ACTION_CHANGE_PASSWORD,"Change of Password");
          }
+         */
       }      
       
       session.setAttribute("actionlist",actionTable);
@@ -239,11 +319,13 @@ public class AdministrationAction extends AbstractAction
       if(community == null || community.length() <= 0) {
          community = (String)session.getAttribute("community_name");
       }
+      /*
       if(community == null || community.length() <= 0) {
          community = CommunityConfig.getCommunityName();
       }
+      */
       
-      
+      /*
       if(ACTION_INSERT_PERMISSION.equals(action)) {
          try {
           ArrayList al = adminDelegate.getGroupList(community);
@@ -253,7 +335,8 @@ public class AdministrationAction extends AbstractAction
              e.printStackTrace();
          }         
       }
-      
+      */
+      /*
       if(ACTION_REMOVE_GROUP.equals(action) || ACTION_VIEW_GROUPS.equals(action) ||
          ACTION_REMOVE_MEMBER.equals(action) || ACTION_INSERT_MEMBER.equals(action) ||
          ACTION_REMOVE_PERMISSION.equals(action)) {
@@ -265,7 +348,8 @@ public class AdministrationAction extends AbstractAction
             e.printStackTrace();
         }
       }
-      
+      */
+      /*
       if(ACTION_REMOVE_COMMUNITY.equals(action) || ACTION_VIEW_COMMUNITY.equals(action) ||
          ACTION_INSERT_MEMBER.equals(action)) {
         try {
@@ -276,7 +360,8 @@ public class AdministrationAction extends AbstractAction
             e.printStackTrace();
         }
       }
-      
+      */
+      /*
       if(ACTION_REMOVE_RESOURCE.equals(action) ||  ACTION_INSERT_PERMISSION.equals(action)
          || ACTION_REMOVE_PERMISSION.equals(action) || ACTION_VIEW_RESOURCES.equals(action) ) {
         try {
@@ -287,8 +372,8 @@ public class AdministrationAction extends AbstractAction
             e.printStackTrace();
         }
       }
-      
-
+      */
+      /*
       if(ACTION_REMOVE_ACCOUNT.equals(action) || ACTION_REMOVE_MEMBER.equals(action) 
          || ACTION_INSERT_MEMBER.equals(action) || ACTION_VIEW_ACCOUNTS.equals(action)) {
               try {
@@ -299,7 +384,8 @@ public class AdministrationAction extends AbstractAction
                   e.printStackTrace();
               }
        }      
-      
+      */
+      /*
       if(ACTION_INSERT_GROUP.equals(processAction)) {
          if(ident != null && ident.length() > 0) {
             
@@ -317,6 +403,8 @@ public class AdministrationAction extends AbstractAction
             errorMessage = "Cannot insert an empty group";
          }
       }
+      */
+      /*
       else if(ACTION_REMOVE_GROUP.equals(processAction)) {
          
          if(ident != null && ident.length() > 0) {
@@ -371,33 +459,88 @@ public class AdministrationAction extends AbstractAction
          }else {
             errorMessage = "No insert empty community";
          } 
-      } else if(ACTION_INSERT_ACCOUNT.equals(processAction)) {
-         if(ident != null && ident.length() > 0) {
+      } else
+      */
+       Ivorn userIvo = null;
+       SecurityManagerDelegate smd = null;
+       if(ACTION_INSERT_ACCOUNT.equals(processAction)) {
+         String communityName = request.getParameter("community_belong");
+         if(ident != null && ident.length() > 0 && communityName != null && communityName.length() > 0) {
+            
+            String homeSpace = request.getParameter("community_homespace");
+            String displayName = request.getParameter("community_displayname");
+            
+            
             String pass = request.getParameter("password");
             if(pass == null || pass.trim().length() <= 0) {
                errorMessage = "You cannot have no or empty password";
             }
             else {
                try {
-                  AccountData ad = adminDelegate.addAccount(ident);
-                  if(ad != null) {
-                     ad.setDescription(request.getParameter("description"));
-                     ad.setPassword(pass);
-                     adminDelegate.setAccount(ad);
-//                     adminDelegate.setPassword(String.valueOf(pass.hashCode()));                  
-                     adminDelegate.setPassword(ident,pass);                  
-                     adminDelegate.addGroupMember(ident,"guest");
-                  }
+                  
+                  PolicyManagerDelegate pmd = pmr.resolve(userIvo = new Ivorn(communityName+"/"+ident,null));
+                  smd = smr.resolve(userIvo);
+                  
+                  //pmsd.
+                  //AccountData ad = adminDelegate.addAccount(ident);
+                  AccountData ad = new AccountData();
+                  ad.setDescription(request.getParameter("description"));
+                  ad.setHomeSpace(homeSpace);
+                  ad.setDisplayName(displayName);
+                  ad.setIdent(ident);
+                  pmd.addAccount(ad);
+                  smd.setPassword(ad.getIdent(),pass);
                   message = "Account inserted.";
+                  session.setAttribute("community_account",ad.getIdent());
                }catch(Exception e) {
-                  errorMessage = e.toString();
                   e.printStackTrace();
+                  errorMessage = "Internal problem communicating with Community service.";
                }
             }
          }else {
-            errorMessage = "No account given to insert";
+            errorMessage = "No account name or community name given to insert";
          } 
-      } else if(ACTION_REMOVE_ACCOUNT.equals(processAction)) {
+      }else if(ACTION_CHANGE_PASSWORD.equals(processAction)) {
+         String password = request.getParameter("current_password");
+         String newpassword = request.getParameter("new_password");
+         String verifypassword = request.getParameter("verify_password");
+         
+         SecurityToken st = null;
+         try {
+            SecurityServiceDelegate ssd = ssr.resolve(userIvo = new Ivorn(comm_account,null));
+            smd = smr.resolve(userIvo);
+            
+            st = ssd.checkPassword((String)session.getAttribute(SessionKeys.USER),password);
+            if(st != null && st.isValid()) {
+               if(newpassword.equals(verifypassword)) {
+                  if(newpassword == null || newpassword.trim().length() <= 0) {
+                     errorMessage = "You cannot have an empty new password";
+                  }else {
+                     //int newPasswordHashed = newpassword.hashCode();
+                     //ad.setPassword(String.valueOf(newPasswordHashed));
+                     //adminDelegate.setAccount(ad);
+//                     adminDelegate.setPassword(String.valueOf(newPasswordHashed));
+                     //adminDelegate.setPassword(ident,newpassword);
+                     smd.setPassword((String)session.getAttribute(SessionKeys.USER),newpassword);
+                     message = "Account's password changed.";
+                  }
+               }else {
+                  errorMessage = "Your new password and the verification password do not match.";
+               }
+            }else {
+               errorMessage = "Your current password is not what is in our system.";
+            }            
+         } catch(CommunitySecurityException cse) {
+            cse.printStackTrace();
+            errorMessage = "Your current password is not what is in our system.";
+         } catch(Exception e) {
+            e.printStackTrace();
+            errorMessage = "Internal problem communicating with Community service.";
+         }
+      }
+      /*
+       
+       else if(ACTION_REMOVE_ACCOUNT.equals(processAction)) {
          if(ident != null && ident.length() > 0) {
             try {
                adminDelegate.delAccount(ident);
@@ -541,7 +684,7 @@ public class AdministrationAction extends AbstractAction
               errorMessage = "No insert empty community";
            } 
       }      
-		
+		*/
 		//
 		results.put(ACTION,action);
       results.put("errormessage",errorMessage);

@@ -7,11 +7,11 @@ import org.apache.cocoon.environment.Session;
 import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.SourceResolver;
 import org.apache.cocoon.environment.ObjectModelHelper;
-import org.astrogrid.community.common.CommunityConfig;
+//import org.astrogrid.community.common.CommunityConfig;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.astrogrid.community.delegate.policy.AdministrationDelegate;
+//import org.astrogrid.community.delegate.policy.AdministrationDelegate;
 
 /**
  *
@@ -64,6 +64,7 @@ public class CredentialAction extends AbstractAction
       
       //
       // Get our current request and session.
+      /*
       Request request = ObjectModelHelper.getRequest(objectModel);
       Session session = request.getSession();
       
@@ -93,7 +94,7 @@ public class CredentialAction extends AbstractAction
      
       //Create a new HashMap for our results.  Will be used to
       //pass to the transformer (xsl page)
-      Map results = new HashMap();
+      //Map results = new HashMap();
           
       String community = (String)request.getParameter(PARAM_COMMUNITY);
       if(community == null || community.length() <= 0) {
@@ -113,8 +114,9 @@ public class CredentialAction extends AbstractAction
          }
          
          String credential = (String)session.getAttribute(PARAM_CREDENTIAL);
-         results.put(PARAM_CREDENTIAL,credential);         
-
+         results.put(PARAM_CREDENTIAL,credential);
+        */          
+      Map results = new HashMap();
       return results;
    }  
 }
