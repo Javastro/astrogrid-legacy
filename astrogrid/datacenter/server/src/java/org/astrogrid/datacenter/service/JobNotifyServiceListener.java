@@ -1,5 +1,5 @@
 /*
- * $Id: JobNotifyServiceListener.java,v 1.10 2003/12/01 16:43:52 nw Exp $
+ * $Id: JobNotifyServiceListener.java,v 1.11 2004/02/15 23:17:05 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -7,14 +7,14 @@
 package org.astrogrid.datacenter.service;
 
 import java.net.URL;
-
-import javax.xml.rpc.ServiceException;
-
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
-import org.astrogrid.datacenter.webnotify.JobMonitorNotifier;
+import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.webnotify.WebNotifier;
+import org.astrogrid.jes.delegate.JesDelegateException;
+import org.astrogrid.jes.delegate.JobMonitor;
+import org.astrogrid.jes.delegate.jobMonitor.JobMonitorDelegate;
 
 /**
  * Very much like the WebNotifyServiceListener, this one creates a special
@@ -26,14 +26,14 @@ import org.astrogrid.datacenter.webnotify.WebNotifier;
 
 public class JobNotifyServiceListener implements QuerierListener
 {
-   private JobMonitorNotifier notifier = null;
+   private URL jobMonitor = null;
    
    /**
     * Create a listener which will send service updates to the given URL
     */
    public JobNotifyServiceListener(URL aClientListener)
    {
-      notifier = new JobMonitorNotifier(aClientListener);
+      jobMonitor = aClientListener;
    }
 
    /** Called by the service when it has a
@@ -42,10 +42,25 @@ public class JobNotifyServiceListener implements QuerierListener
    public void queryStatusChanged(Querier querier)
    {
       try {
-         notifier.tellServer(querier.getQueryId(), querier.getStatus());
+         JobMonitorDelegate jmd = JobMonitorDelegate.buildDelegate(jobMonitor.toString());
+         
+         JobMonitorDelegate.Status status = jmd.STATUS_RUNNING;
+         String message = querier.getStatus().toString();
+         if (querier.getStatus() == QueryStatus.FINISHED)
+         {
+            status = jmd.STATUS_COMPLETED;
+            message = "results sent to "+querier.getResultsLoc();
+         }
+         else if (querier.getStatus() == QueryStatus.ERROR)
+         {
+            status = jmd.STATUS_IN_ERROR;
+            message = querier.getError().toString();
+         }
+         
+         jmd.monitorJob(querier.getExtRef(), status, message);
       }
-      catch (ServiceException e) {
-         LogFactory.getLog(WebNotifier.class).error("Failed to contact service using "+notifier, e);
+      catch (JesDelegateException e) {
+         LogFactory.getLog(WebNotifier.class).error("Failed to contact job monitor at "+jobMonitor, e);
       }
    }
    
@@ -53,6 +68,9 @@ public class JobNotifyServiceListener implements QuerierListener
 
 /*
 $Log: JobNotifyServiceListener.java,v $
+Revision 1.11  2004/02/15 23:17:05  mch
+Naughty Big Lump of Changes cont: fixes for It04.1 myspace
+
 Revision 1.10  2003/12/01 16:43:52  nw
 dropped _QueryId, back to string
 

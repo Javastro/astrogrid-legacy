@@ -12,7 +12,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.Vector;
-
 import org.apache.commons.logging.Log;
 import org.astrogrid.community.User;
 import org.astrogrid.config.SimpleConfig;
@@ -22,19 +21,19 @@ import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.service.JobNotifyServiceListener;
 import org.astrogrid.datacenter.service.WebNotifyServiceListener;
 import org.astrogrid.datacenter.snippet.DocMessageHelper;
-import org.astrogrid.mySpace.delegate.MySpaceClient;
-import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
+import org.astrogrid.vospace.delegate.VoSpaceClient;
+import org.astrogrid.vospace.delegate.VoSpaceDelegateFactory;
 import org.astrogrid.util.Workspace;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Represents a single running query.   
- * 
+ * Represents a single running query.
+ *
  * <p>
  * If two queries will be made on a database, two Querier instances
- * will be required.  
+ * will be required.
  * <p>
  * It is a very abstract class meant to help administer
  * the queries - concrete subclasses take care of the details of performing the query.
@@ -80,7 +79,7 @@ public abstract class Querier implements Runnable {
    /**
     * Where the result should be sent on completion.  Probably a myspace
     * server URL
-    * initialized to value stored in configuration under {@link QuerierManager#RESULTS_TARGET_KEY} 
+    * initialized to value stored in configuration under {@link QuerierManager#RESULTS_TARGET_KEY}
     */
    private String resultsDestination = SimpleConfig.getProperty(QuerierManager.RESULTS_TARGET_KEY);
    
@@ -95,7 +94,7 @@ public abstract class Querier implements Runnable {
    
    public Querier(String queryId, Query query) throws IOException {
        this.id = queryId;
-       this.query = query;       
+       this.query = query;
        workspace = new Workspace(queryId);
        if ((query == null) || (query.getUser() == null)) {
            this.user = User.ANONYMOUS;
@@ -111,6 +110,13 @@ public abstract class Querier implements Runnable {
       return id;
    }
 
+   /**
+    * Returns the external reference to this query - eg job step id
+    */
+   public String getExtRef() {
+      return id;
+   }
+   
    /**
     * Returns the query
     */
@@ -228,13 +234,10 @@ public abstract class Querier implements Runnable {
          throw new IllegalStateException("no results destination");
       }
       
-      MySpaceClient myspace = MySpaceDelegateFactory.createDelegate(resultsDestination);
+      VoSpaceClient myspace = VoSpaceDelegateFactory.createDelegate(user, resultsDestination);
       
-      myspace.saveDataHolding(user.getAccount(), user.getGroup(), user.getToken(),
-                              "testFile",
-                              "This is a test file to make sure we can create a file in myspace, so our query results are not lost",
-                              "",
-                              "Overwrite"); // this interface needs refactoring. constants would be a start.
+      myspace.putString("This is a test file to make sure we can create a file in the given myspace, so our query results are not lost",
+                        "testFile", false);
    }
    
    /**
@@ -248,9 +251,9 @@ public abstract class Querier implements Runnable {
          throw new IllegalStateException("No results to send");
       }
       
-      MySpaceClient myspace = MySpaceDelegateFactory.createDelegate(resultsDestination);
+      VoSpaceClient myspace = VoSpaceDelegateFactory.createDelegate(user, resultsDestination);
   
-      String myspaceFilename = getQueryId()+"_results";
+      String myspaceFilename = "/"+user.getIvoRef()+"/"+getQueryId()+"_results";
       
       try {
          //stream results to string for outputting to myspace.   At
@@ -258,30 +261,13 @@ public abstract class Querier implements Runnable {
          //to that
          ByteArrayOutputStream ba = new ByteArrayOutputStream();
          results.toVotable(ba);
-         ba.close();        
-         myspace.saveDataHolding(user.getAccount(), user.getGroup(), user.getToken(),
-                                 myspaceFilename,
-                                 ba.toString(),
-                                 "VOTable",
-                                 "Overwrite");
+         ba.close();
+         myspace.putString(ba.toString(), myspaceFilename, false);
          
-         resultsLoc = myspace.getDataHoldingUrl(user.getAccount(), user.getGroup(), user.getToken(),  myspaceFilename);
+         resultsLoc = myspace.getUrl("/"+user.getIvoRef()+"/"+myspaceFilename).toString();
       }
       catch (SAXException se) {
          log.error("Could not create VOTable",se);
-         //couldn't send as VOTable. Try CSV
-         /*
-          ByteArrayOutputStream ba = new ByteArrayOutputStream();
-          results.toCSV(ba);
-          ba.close();
-         
-          myspace.saveDataHolding(userid, communityid, myspaceFilename,
-          ba.toString(),
-          "CSV",
-          myspace.OVERWRITE);
-         
-          resultsLoc = myspace.getDataHoldingUrl(userid, communityid, myspaceFilename);
-          */
       }
       
    }
@@ -436,6 +422,9 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.18  2004/02/15 23:17:05  mch
+ Naughty Big Lump of Changes cont: fixes for It04.1 myspace
+
  Revision 1.17  2004/01/16 13:14:07  nw
  initialized resultDestination to default myspace given in config.
  previously wasn't being initialized.

@@ -1,5 +1,5 @@
 /*
- * $Id: DirectDelegate.java,v 1.2 2004/01/13 00:33:15 nw Exp $
+ * $Id: DirectDelegate.java,v 1.3 2004/02/15 23:17:05 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -84,7 +84,7 @@ public class DirectDelegate implements FullSearcher, ConeSearcher
       * or the service may throw an exception when attempting to start the
       * query
       */
-      public void setResultsDestination(URL resultsDestination) throws RemoteException
+      public void setResultsDestination(String resultsDestination) throws RemoteException
       {
          querier.setResultsDestination(resultsDestination.toString());
       }
@@ -295,7 +295,7 @@ public class DirectDelegate implements FullSearcher, ConeSearcher
          TableExpression tc = new TableExpression();
          s.setTableClause(tc);
          
-         Where w = new Where(); 
+         Where w = new Where();
          tc.setWhereClause(w);
          
          Circle c = new Circle();
@@ -304,7 +304,7 @@ public class DirectDelegate implements FullSearcher, ConeSearcher
          c.setRadius(ADQLUtils.mkApproxNum(sr));
          w.setCircle(c);
          
-         DatacenterResults results = doQuery(VOTABLE, ADQLUtils.toQueryBody(s));  
+         DatacenterResults results = doQuery(VOTABLE, ADQLUtils.toQueryBody(s));
          
          //bit of a botch at the moment - converts VOTable back into string/input stream for returning...
          //best way to fix is properly to pipe it - still not quite right but less
@@ -331,6 +331,9 @@ public class DirectDelegate implements FullSearcher, ConeSearcher
 
 /*
 $Log: DirectDelegate.java,v $
+Revision 1.3  2004/02/15 23:17:05  mch
+Naughty Big Lump of Changes cont: fixes for It04.1 myspace
+
 Revision 1.2  2004/01/13 00:33:15  nw
 Merged in branch providing
 * sql pass-through
