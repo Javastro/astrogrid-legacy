@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.68 2004/08/05 14:52:22 KevinBenson Exp $ -->
+<!-- $Id: maven.xml,v 1.69 2004/08/05 18:26:16 clq2 Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -26,7 +26,7 @@
 
 
 <property name="tomcat.host" value="localhost"/>
-<property name="tomcat.port" value="8080"/>
+<property name="tomcat.port" value="${tomcat.port}"/>
 <property name="tomcat.url" value="http://${tomcat.host}:${tomcat.port}"/>
 <property name="tomcat.manager.url" value="${tomcat.url}/manager"/>
 <property name="existurl" value="${tomcat.url}/exist/servlet/db"/>
