@@ -1,4 +1,4 @@
-/*$Id: StoreClientTestHelper.java,v 1.3 2004/04/16 16:11:11 mch Exp $
+/*$Id: StoreClientTestHelper.java,v 1.4 2004/04/16 16:12:14 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -101,7 +101,6 @@ public abstract class StoreClientTestHelper extends TestCase {
          }
       }
 
-
       //create file in new folder
       store.putString("This is just a test file for "+this.getClass(), "NewFolder/NewFile.txt", false);
       
@@ -116,7 +115,9 @@ public abstract class StoreClientTestHelper extends TestCase {
       
       assertNull(store.getFile(path+"NewFolder/NewFile.txt"));
       
-      
+      //tidy up folder
+      store.delete(path+"NewFolder");
+      assertNull(store.getFile(path+"NewFolder"));
       
    }
    
@@ -225,6 +226,9 @@ public abstract class StoreClientTestHelper extends TestCase {
 
 /*
 $Log: StoreClientTestHelper.java,v $
+Revision 1.4  2004/04/16 16:12:14  mch
+Ignore newFolder if it already exists (eg broken previous test)
+
 Revision 1.3  2004/04/16 16:11:11  mch
 Ignore newFolder if it already exists (eg broken previous test)
 
@@ -245,4 +249,5 @@ Factored out common myspace tests
 
 
 */
+
 
