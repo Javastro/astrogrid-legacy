@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.13 2003/09/10 09:59:52 nw Exp $
+ * $Id: DatabaseQuerier.java,v 1.14 2003/09/10 12:09:01 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -187,15 +187,13 @@ public abstract class DatabaseQuerier implements Runnable
     * Convenience class method - runs a blocking query.  NB the given DOM document may include other tags, so we need
     * to extract the right elements
     */
-   public static Element doQueryGetVotable(Element domContainingQuery) throws QueryException, DatabaseAccessException, IOException
+   public static DatabaseQuerier doQueryGetResults(Element domContainingQuery) throws QueryException, DatabaseAccessException, IOException
    {
       DatabaseQuerier querier = DatabaseQuerier.createQuerier(domContainingQuery);
 
       querier.doQuery();
 
-      querier.setStatus(ServiceStatus.RUNNING_RESULTS);
-
-      return querier.getResults().toVotable().getDocumentElement();
+      return querier;
    }
 
    /**
@@ -317,7 +315,7 @@ public abstract class DatabaseQuerier implements Runnable
     * throws an exception (as each querier should only handle one query).
     * Synchronised as the queriers may be running under a different thread
     */
-   protected synchronized void setStatus(ServiceStatus newStatus)
+   public synchronized void setStatus(ServiceStatus newStatus)
    {
       Log.affirm(status != ServiceStatus.ERROR,
                  "Trying to start a step '"+newStatus+"' when the status is '"

@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceServer.java,v 1.3 2003/09/09 18:32:56 mch Exp $
+ * $Id: ServiceServer.java,v 1.4 2003/09/10 12:08:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -100,16 +100,6 @@ public abstract class ServiceServer
 
    }
     /**/
-
-   /**
-    * Runs a blocking query - ie, starts the query, waits for it to finish
-    * and then returns the results.
-    *
-    */
-   public Element runQuery(Element soapBody) throws QueryException, IOException
-   {
-      return DatabaseQuerier.doQueryGetVotable(soapBody);
-   }
 
 
    /** For non-blocking queries, you might want to get the query status

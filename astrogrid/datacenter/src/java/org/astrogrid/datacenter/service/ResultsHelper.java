@@ -1,5 +1,5 @@
 /*
- * $Id: ResultsHelper.java,v 1.3 2003/09/09 18:32:11 mch Exp $
+ * $Id: ResultsHelper.java,v 1.4 2003/09/10 12:08:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,8 +23,6 @@ import org.xml.sax.SAXException;
 
 public class ResultsHelper
 {
-   public final static String SERVICEID_TAG = "ServiceID";
-
    /**
     * Returns a document that indicates the query has started
     * If the query has already got an exception, throws this so that
@@ -41,7 +39,7 @@ public class ResultsHelper
       {
        String doc =
           "<QueryResponse>\n"
-         +"   "+makeServiceIdTag(querier.getHandle())+"\n"
+         +"   "+DocMessageHelper.makeServiceIdTag(querier.getHandle())+"\n"
          +"   <STATUS>"+querier.getStatus()+"</STATUS>\n"
          +"</QueryResponse>\n";
 
@@ -90,7 +88,7 @@ public class ResultsHelper
       {
        String doc =
           "<ResultsResponse>\n"
-         +"   "+makeServiceIdTag(querier.getHandle())+"\n"
+         +"   "+DocMessageHelper.makeServiceIdTag(querier.getHandle())+"\n"
          +"   <RESULTS>\n"
          +results
          +"   </RESULTS>\n"
@@ -109,12 +107,6 @@ public class ResultsHelper
 
    }
 
-   /**
-    * Returns a service id tag containing the given string as the id
-    */
-   public static String makeServiceIdTag(String id)
-   {
-      return "<"+SERVICEID_TAG+">"+id+"</"+SERVICEID_TAG+">";
-   }
+
 }
 

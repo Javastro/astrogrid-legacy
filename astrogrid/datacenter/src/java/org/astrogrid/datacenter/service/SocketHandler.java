@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.2 2003/09/09 17:52:29 mch Exp $
+ * $Id: SocketHandler.java,v 1.3 2003/09/10 12:08:44 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -77,12 +77,21 @@ public class SocketHandler extends ServiceServer implements Runnable, ServiceLis
                Element docRequest = XMLUtils.newDocument(in).getDocumentElement();
 
                //assume a blocking query
-               Element results = DatabaseQuerier.doQueryGetVotable(docRequest);
+               DatabaseQuerier querier = DatabaseQuerier.doQueryGetResults(docRequest);
 
-               XMLUtils.DocumentToStream(results.getOwnerDocument(), out);
+               querier.setStatus(ServiceStatus.RUNNING_RESULTS);
+
+               Element response = ResultsHelper.makeResultsResponse(querier, querier.getResults().toVotable().getDocumentElement());
+
+               XMLUtils.DocumentToStream(response.getOwnerDocument(), out);
             }
             catch (IOException e)
             {
+               e.printStackTrace(System.out);
+            }
+            catch (Throwable e)
+            {
+               out.writeChars("Oh no it's all gone horribly wrong "+e);
                e.printStackTrace(System.out);
             }
             catch (SAXException e)
@@ -103,10 +112,6 @@ public class SocketHandler extends ServiceServer implements Runnable, ServiceLis
       {
          e.printStackTrace(System.out);
       }
-      catch (ParserConfigurationException e)
-      {
-         e.printStackTrace(System.out);
-      }
    }
 
 
@@ -114,6 +119,9 @@ public class SocketHandler extends ServiceServer implements Runnable, ServiceLis
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.3  2003/09/10 12:08:44  mch
+Changes to make web interface more consistent
+
 Revision 1.2  2003/09/09 17:52:29  mch
 ServiceStatus move and config key fix
 
