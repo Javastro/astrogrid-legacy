@@ -10,6 +10,7 @@ import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.QOM;
 import org.astrogrid.datacenter.common.DocMessageHelper;
 import org.astrogrid.datacenter.query.AstroGridQuery;
+import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -51,7 +52,7 @@ public class Query
     * Constructs a query wrapping the given dom.  Also creates an instance
     * of the correct type - eg adql.QOM or query.AstroGridQuery
     */
-   public Query(Element domContainingQuery) throws SAXException
+   public Query(Element domContainingQuery) throws ADQLException, QueryException
    {
        // NWW - possible that the root element passed in is the query element
        if (DocMessageHelper.QUERY_TAG.equals(domContainingQuery.getLocalName())) {
@@ -72,31 +73,13 @@ public class Query
       {
           NodeList adqlRoots = queryXml.getElementsByTagName("Select");
           Log.affirm(adqlRoots.getLength() == 1,"Either no ADQL select tag within query, or too many");
-         try
-         {
 
-            adql = ADQLUtils.unmarshalSelect(adqlRoots.item(0));
-         }
-         catch (org.exolab.castor.xml.ValidationException e)
-         {
-            throw new SAXException("ADQL invalid",e);
-         }
-         catch (org.exolab.castor.xml.MarshalException e)
-         {
-            throw new SAXException("Failed to load adql object model",e);
-         }
+          adql = ADQLUtils.unmarshalSelect(adqlRoots.item(0));
       }
       else
       {
          //astrogrid it02 query
-         try
-         {
-            agQuery = new AstroGridQuery(queryXml);
-         }
-         catch (org.astrogrid.datacenter.query.QueryException e)
-         {
-            throw new SAXException("Error loading astrogrid query",e);
-         }
+          agQuery = new AstroGridQuery(queryXml);
       }
    }
 
@@ -129,6 +112,9 @@ public class Query
 
 /*
 $Log: Query.java,v $
+Revision 1.5  2003/09/22 16:51:24  mch
+Now posts results to dummy myspace
+
 Revision 1.4  2003/09/15 16:28:19  mch
 Fixes to make maven happy(er)
 

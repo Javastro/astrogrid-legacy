@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.17 2003/09/19 15:10:17 nw Exp $
+ * $Id: SqlQuerier.java,v 1.18 2003/09/22 16:51:24 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,11 +17,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 import java.util.StringTokenizer;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
@@ -29,6 +27,8 @@ import org.astrogrid.datacenter.queriers.Query;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.QueryTranslator;
 import org.astrogrid.log.Log;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * A general purpose SQL Querier that will (hopefully) produce bog standard
@@ -72,8 +72,10 @@ public class SqlQuerier extends DatabaseQuerier
     * </ul>
 
     */
-   public SqlQuerier() throws DatabaseAccessException, IOException
+   public SqlQuerier(Element domContainingQuery) throws DatabaseAccessException, IOException, SAXException
    {
+      super(domContainingQuery);
+
       String userId = Configuration.getProperty(USER_KEY);
       String password = Configuration.getProperty(PASSWORD_KEY);
 

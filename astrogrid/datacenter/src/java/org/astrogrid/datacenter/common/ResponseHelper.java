@@ -1,13 +1,15 @@
 /*
- * $Id: ResponseHelper.java,v 1.11 2003/09/17 14:51:30 nw Exp $
+ * $Id: ResponseHelper.java,v 1.12 2003/09/22 16:51:24 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.common;
 
+import java.net.URL;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -126,17 +128,40 @@ public class ResponseHelper
          throw querier.getError();
       }
 
-      //default to votable
-      if (results == null)
-      {
-         results = querier.getResults().toVotable().getDocumentElement();
-      }
+      Log.affirm(results != null, "Results=null");
 
       String doc =
           QueryIdHelper.makeTagWithQueryIdAttr(DATACENTER_RESULTS_TAG, querier.getHandle())+"\n"
          +"   <TIME>"+querier.getQueryTimeTaken()+"</TIME>\n"
          +"   <Results type='votable'>\n"
          +XMLUtils.ElementToString(results)
+         +"   </Results>\n"
+         +"</"+DATACENTER_RESULTS_TAG+">\n";
+
+      return DocHelper.wrap(doc);
+
+   }
+
+   /**
+    * Makes a document up with the results URL incorporated
+    * <p>
+    * If the query has already got an exception, throws this so that
+    * client gets it (don't like this, very general)
+    */
+   public static Document makeResultsResponse(DatabaseQuerier querier, URL results) throws Throwable
+   {
+      if (querier.getStatus() == QueryStatus.ERROR)
+      {
+         throw querier.getError();
+      }
+
+      Log.affirm(results != null, "Results=null");
+
+      String doc =
+          QueryIdHelper.makeTagWithQueryIdAttr(DATACENTER_RESULTS_TAG, querier.getHandle())+"\n"
+         +"   <TIME>"+querier.getQueryTimeTaken()+"</TIME>\n"
+         +"   <Results type='url'>\n"
+         +"       "+results
          +"   </Results>\n"
          +"</"+DATACENTER_RESULTS_TAG+">\n";
 

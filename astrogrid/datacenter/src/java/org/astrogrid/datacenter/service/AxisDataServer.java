@@ -1,12 +1,11 @@
 /*
- * $Id: AxisDataServer.java,v 1.20 2003/09/17 14:51:30 nw Exp $
+ * $Id: AxisDataServer.java,v 1.21 2003/09/22 16:51:24 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
 import java.io.IOException;
-
 import org.astrogrid.datacenter.common.QueryIdHelper;
 import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.common.ResponseHelper;
@@ -14,12 +13,13 @@ import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.delegate.WebNotifyServiceListener;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.QueryStatusForwarder;
 import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-/** 
+/**
  * This class is the public web interface, called by Axis
  * when Axis receives the SOAP message from the client. It is a singleton
  * - all state depends on the DataService instances, one of
@@ -86,13 +86,13 @@ public class AxisDataServer extends ServiceServer
    {
       DatabaseQuerier querier = DatabaseQuerier.createQuerier(soapBody);
 
-      querier.doQuery();
+      QueryResults results = querier.doQuery();
 
       querier.setStatus(QueryStatus.RUNNING_RESULTS);
 
       return ResponseHelper.makeResultsResponse(
          querier,
-         querier.getResults().toVotable().getDocumentElement()
+         results.toVotable().getDocumentElement()
       ).getDocumentElement();
    }
 
@@ -158,7 +158,7 @@ public class AxisDataServer extends ServiceServer
       {
          return ResponseHelper.makeResultsResponse(
             querier,
-            querier.getResults().toVotable().getDocumentElement()
+            querier.getResultsLoc()
          ).getDocumentElement();
 
       }

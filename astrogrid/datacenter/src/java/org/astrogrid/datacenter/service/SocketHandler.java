@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.14 2003/09/17 14:51:30 nw Exp $
+ * $Id: SocketHandler.java,v 1.15 2003/09/22 16:51:24 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
-
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.common.QueryIdHelper;
 import org.astrogrid.datacenter.common.QueryStatus;
@@ -22,6 +21,7 @@ import org.astrogrid.datacenter.io.SocketXmlOutputStream;
 import org.astrogrid.datacenter.io.TraceInputStream;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.QueryListener;
+import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
@@ -147,7 +147,7 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
             {
                Log.trace("SocketHandler: Results Requested");
                DatabaseQuerier querier = getQuerierFromDoc(docRequest);
-               Document response = ResponseHelper.makeResultsResponse(querier, querier.getResults().toVotable().getDocumentElement());
+               Document response = ResponseHelper.makeResultsResponse(querier, querier.getResultsLoc());
                out.writeDoc(response);
             }
             else if (docRequest.getElementsByTagName(SocketDelegate.REQ_STATUS_TAG).getLength() > 0)
@@ -162,11 +162,11 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
                //a blocking/synchronous query
                DatabaseQuerier querier = DatabaseQuerier.createQuerier(docRequest.getDocumentElement());
                querier.registerListener(this);
-               querier.doQuery();
+               QueryResults results = querier.doQuery();
 
                querier.setStatus(QueryStatus.RUNNING_RESULTS);
 
-               Document response = ResponseHelper.makeResultsResponse(querier, querier.getResults().toVotable().getDocumentElement());
+               Document response = ResponseHelper.makeResultsResponse(querier, results.toVotable().getDocumentElement());
 
                out.writeAsDoc(response.getDocumentElement());
             }
@@ -209,6 +209,9 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
       }
    }
 
+   /**
+    * Returns the querier referred to in the document
+    */
    private DatabaseQuerier getQuerierFromDoc(Document doc)
    {
       String queryId = QueryIdHelper.getQueryId(doc.getDocumentElement());
@@ -238,6 +241,9 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.15  2003/09/22 16:51:24  mch
+Now posts results to dummy myspace
+
 Revision 1.14  2003/09/17 14:51:30  nw
 tidied imports - will stop maven build whinging
 

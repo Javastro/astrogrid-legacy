@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.26 2003/09/17 14:51:30 nw Exp $
+ * $Id: DatabaseQuerier.java,v 1.27 2003/09/22 16:51:24 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,7 +15,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
-
+import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.adql.ADQLException;
+import org.astrogrid.datacenter.common.CommunityHelper;
+import org.astrogrid.datacenter.common.DocHelper;
 import org.astrogrid.datacenter.common.DocMessageHelper;
 import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.config.Configuration;
@@ -24,9 +27,9 @@ import org.astrogrid.datacenter.delegate.WebNotifyServiceListener;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.Workspace;
 import org.astrogrid.log.Log;
+import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceDummyDelegate;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * The Querier classes handle a single, individual query to an individual
@@ -38,6 +41,13 @@ import org.xml.sax.SAXException;
  * <p>
  * This class provides factory methods for both blocking and non-blocking
  * queries, hopefully completely hiding the two-way translation process
+ *
+ * @todo not happy with the handling of the initial dom, and all the instance
+ * variables used to keep bits of it. And the places they are extracted are
+ * split between the factory method and the constructor (as the constructor
+ * can't throw catchable Exceptions easily as the factory method uses
+ * introspection to get at it)
+ *
  * @see doQueryGetVotable()
  * @see spawnQuery
  * <p>
@@ -49,6 +59,9 @@ public abstract class DatabaseQuerier implements Runnable
    /** Key to configuration files' entry that tells us what database querier
     * to use with this service   */
    public static final String DATABASE_QUERIER_KEY = "DatabaseQuerierClass";
+
+   /** Key to configuration entry for the default target myspace for this server */
+   public static final String RESULTS_TARGET_KEY = "DefaultMySpace";
 
    /** List of serviceListeners who will be updated when the status changes */
    private Vector serviceListeners = new Vector();
@@ -79,8 +92,20 @@ public abstract class DatabaseQuerier implements Runnable
    /** The query object model */
    private Query query = null;
 
-   /** Handle to the results from the query */
-   protected QueryResults results = null;
+   /**
+    * userid and communityid for using myspace
+    */
+   private String userid, communityid = null;
+
+   /**
+    * Where the result should be sent on completion.  Probably a myspace
+    * server URL
+    */
+   private String resultsDestination = null;
+
+   /** Handle to the results from the query - the location (prob myspace) where
+    * the results can be found */
+   private URL resultsLoc = null;
 
    /** For measuring how long the query took */
    private Date timeQueryStarted = null;
@@ -90,20 +115,27 @@ public abstract class DatabaseQuerier implements Runnable
    /**
     * Constructor - creates a handle to identify this instance
     */
-   public DatabaseQuerier() throws IOException
+   protected DatabaseQuerier(Element givenDOM) throws IOException
    {
-      handle = generateHandle();
+      //assigns handle
+      handle = DocHelper.getTagValue(givenDOM, DocMessageHelper.ASSIGN_QUERY_ID_TAG);
+
+      if (handle == null)
+      {
+         handle = generateHandle();
+      }
+
+      Log.affirm(queriers.get(handle) == null, "Handle '"+handle+"' already in use");
+
       queriers.put(handle, this);
       workspace = new Workspace(handle);
-      setStatus(QueryStatus.CONSTRUCTED);
-   }
 
-   /**
-    * Creates the query model based on the given DOM
-    */
-   public void setQuery(Element givenDOM) throws SAXException
-   {
-      query = new Query(givenDOM);
+      // work out myspace stuff
+      setResultsDestination(givenDOM);
+
+      // work out user & community
+      userid = CommunityHelper.getUserId(givenDOM);
+      communityid = CommunityHelper.getCommunityId(givenDOM);
    }
 
    /**
@@ -150,7 +182,7 @@ public abstract class DatabaseQuerier implements Runnable
     * @throws DatabaseAccessException on error (contains cause exception)
     *
     */
-   public static DatabaseQuerier createQuerier(Element domContainingQuery) throws DatabaseAccessException, MalformedURLException
+   public static DatabaseQuerier createQuerier(Element domContainingQuery) throws DatabaseAccessException, MalformedURLException, ADQLException, QueryException
    {
       String querierClass = Configuration.getProperty(DATABASE_QUERIER_KEY);
 //       "org.astrogrid.datacenter.queriers.sql.SqlQuerier"    //default to general SQL querier
@@ -177,8 +209,8 @@ public abstract class DatabaseQuerier implements Runnable
          // Original Code
          //DatabaseQuerier querier = (DatabaseQuerier)qClass.newInstance();
          // safe equivalent
-         Constructor constr= qClass.getConstructor(new Class[]{});
-         DatabaseQuerier querier = (DatabaseQuerier)constr.newInstance(new Object[]{});
+         Constructor constr= qClass.getConstructor(new Class[]{ Element.class });
+         DatabaseQuerier querier = (DatabaseQuerier)constr.newInstance(new Object[]{domContainingQuery});
 
          querier.setQuery(domContainingQuery);
          querier.registerWebListeners(domContainingQuery); //looks through dom for web listeners
@@ -186,10 +218,6 @@ public abstract class DatabaseQuerier implements Runnable
          return querier;
       } // NWW - temporarily added more to messages being thrown back - as we're not getting the embedded exceptions back on the server side.
        // think this is an issue with WSDL and DatabaseAccessException not having a null constructor - because is subclass of IOException.
-      catch (SAXException e)
-      {
-         throw new DatabaseAccessException(e,"Could not parse Query: " + e.getMessage());
-      }
       catch (InvocationTargetException e) {
           // interested in the root cause here - invocation target is just a wrapper, and not meaningful in itself.
           throw new DatabaseAccessException(e.getCause(),"Could not load DatabaseQuerier '" + querierClass + "' :" + e.getCause().getMessage());
@@ -200,8 +228,37 @@ public abstract class DatabaseQuerier implements Runnable
       }
    }
 
+
    /**
-    * Examines given DOM for tags requesting notifications
+    * Creates the query model based on the given DOM.  Publicso we can reach
+    * it for testing
+    */
+   public void setQuery(Element givenDOM) throws ADQLException, QueryException
+   {
+      query = new Query(givenDOM);
+   }
+
+   /**
+    * Sets up the target of where the results will be sent to
+    */
+   private void setResultsDestination(Element givenDOM)
+   {
+      resultsDestination = DocHelper.getTagValue(givenDOM, DocMessageHelper.RESULTS_TARGET_TAG);
+
+      if (resultsDestination == null)
+      {
+         resultsDestination = Configuration.getProperty(RESULTS_TARGET_KEY);
+      }
+
+      //doesn't matter here - might be a synchronous call
+      //    Log.affirm(resultsDestination != null,
+      //                  "No Result target (eg myspace) given in config file (key "+RESULTS_TARGET_KEY+"), "+
+      //                    "and no key "+DocMessageHelper.RESULTS_TARGET_TAG+" in given DOM ");
+   }
+
+   /**
+    * Examines given DOM for tags requesting notifications.  Public so that
+    * listeners can be added after the querier is running.
     */
    public void registerWebListeners(Element domContainingListeners) throws MalformedURLException
    {
@@ -230,15 +287,23 @@ public abstract class DatabaseQuerier implements Runnable
    }
     /**/
 
+
    /**
     * Runnable implementation - this method is called when the thread to run
-    * this asynchronously is started.  @see spawnQuery
+    * this asynchronously is started.  Sends the results to the destination
+    * specified in the input document.
     */
    public void run()
    {
       try
       {
-         doQuery();
+         //test the destination is OK before doing query
+         testResultsDestination();
+
+         QueryResults results = doQuery();
+
+         //send the results to the desstinateion
+         sendResults(results);
       }
       catch (QueryException e)
       {
@@ -250,28 +315,76 @@ public abstract class DatabaseQuerier implements Runnable
          Log.logError("Could not access database in spawned thread ",e);
          setErrorStatus(e);
       }
+      catch (IOException e)
+      {
+         Log.logError("Could not create file on myspace",e);
+         setErrorStatus(e);
+      }
+   }
+
+
+   /**
+    * Tests the destination exists and a file can be created on it.  We do this
+    * before running the query to try and ensure the query is not wasted.
+    *
+    * @throws IOException if the operation fails for any reason
+    */
+   protected void testResultsDestination() throws IOException
+   {
+      Log.affirm(resultsDestination != null,
+                 "No Result target (eg myspace) given in config file (key "+RESULTS_TARGET_KEY+"), "+
+                 "and no key "+DocMessageHelper.RESULTS_TARGET_TAG+" in given DOM ");
+
+      MySpaceDummyDelegate myspace = new MySpaceDummyDelegate(resultsDestination);
+
+      myspace.saveDataHolding(userid, communityid, "testFile",
+                              "This is a test file to make sure we can create a file in myspace, so our query results are not lost",
+                              "test",
+                              myspace.OVERWRITE);
+   }
+
+   /**
+    * Sends the given results to the myspace server
+    */
+   protected void sendResults(QueryResults results) throws IOException
+   {
+      Log.affirm(results != null, "No results to send");
+
+      MySpaceDummyDelegate myspace = new MySpaceDummyDelegate(resultsDestination);
+
+      String filename = getHandle()+"_results";
+
+      myspace.saveDataHolding(userid, communityid, filename,
+                              XMLUtils.ElementToString(results.toVotable().getDocumentElement()),
+                              "VOTable",
+                              myspace.OVERWRITE);
+
+      resultsLoc = myspace.getDataHoldingUrl(userid, communityid, filename);
+
    }
 
 
    /** Updates the status and does the query (by calling the abstract
-    * queryDatabase() overridden by subclasses) and stores the results locally
+    * queryDatabase() overridden by subclasses) and returns the results.
+    * Use by both synchronous (blocking) and asynchronous (threaded) querying
     */
-   public void doQuery() throws QueryException, DatabaseAccessException
+   public QueryResults doQuery() throws QueryException, DatabaseAccessException
    {
       setStatus(QueryStatus.RUNNING_QUERY);
 
-      results = queryDatabase(query);
+      QueryResults results = queryDatabase(query);
 
       setStatus(QueryStatus.QUERY_COMPLETE);
 
+      return results;
    }
 
    /** Returns the results - returns null if the results have not yet
     * been returned
     */
-   public QueryResults getResults()
+   public URL getResultsLoc()
    {
-      return results;
+      return resultsLoc;
    }
 
 

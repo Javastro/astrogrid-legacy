@@ -1,5 +1,5 @@
 /*
- * $Id: SocketDelegate.java,v 1.16 2003/09/18 13:12:27 nw Exp $
+ * $Id: SocketDelegate.java,v 1.17 2003/09/22 16:51:24 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -114,7 +114,7 @@ public class SocketDelegate extends DatacenterDelegate
       out = new SocketXmlOutputStream(socket.getOutputStream());
 
       TraceInputStream tin = new TraceInputStream(socket.getInputStream());
-//      tin.setState(true);
+      tin.setState(true);
       tin.copy2File(new File("incomingMsgs.log"));
       in = new SocketXmlInputStream(tin);
    }
@@ -358,6 +358,9 @@ public Element getMetadata() throws IOException {
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.17  2003/09/22 16:51:24  mch
+Now posts results to dummy myspace
+
 Revision 1.16  2003/09/18 13:12:27  nw
 renamed delegate methods to match those in web service
 
@@ -429,6 +432,7 @@ initial checkin
 
 
 */
+
 
 
 

@@ -1,4 +1,4 @@
-/*$Id: MsSqlServerQuerier.java,v 1.5 2003/09/17 14:51:30 nw Exp $
+/*$Id: MsSqlServerQuerier.java,v 1.6 2003/09/22 16:51:24 mch Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,10 +11,11 @@
 package org.astrogrid.datacenter.queriers.mssqlserver;
 
 import java.io.IOException;
-
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.QueryTranslator;
 import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /** Database Querier implementation for Microsoft SQL Server
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Sep-2003
@@ -23,9 +24,9 @@ import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
 public class MsSqlServerQuerier extends SqlQuerier {
 
 
-   public MsSqlServerQuerier() throws DatabaseAccessException, IOException
+   public MsSqlServerQuerier(Element dom) throws DatabaseAccessException, IOException, SAXException
    {
-      super();
+      super(dom);
    }
 
     /* (non-Javadoc)
@@ -40,6 +41,9 @@ public class MsSqlServerQuerier extends SqlQuerier {
 
 /*
 $Log: MsSqlServerQuerier.java,v $
+Revision 1.6  2003/09/22 16:51:24  mch
+Now posts results to dummy myspace
+
 Revision 1.5  2003/09/17 14:51:30  nw
 tidied imports - will stop maven build whinging
 

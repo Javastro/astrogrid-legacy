@@ -1,5 +1,5 @@
 /*
- * $Id: QueryIdHelper.java,v 1.5 2003/09/19 15:11:55 nw Exp $
+ * $Id: QueryIdHelper.java,v 1.6 2003/09/22 16:51:24 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -53,7 +53,8 @@ public class QueryIdHelper
          //no service id tag found, look for attribute in top tag
          String attribute = domContainingId.getAttribute(QueryIdHelper.QUERY_ID_ATT);
 
-         Log.affirm(attribute != null, "No query id tag or attribute found in "+XMLUtils.ElementToString(domContainingId));
+         Log.affirm((attribute != null) && (attribute.length() != 0),
+                    "No query id tag or attribute found in "+XMLUtils.ElementToString(domContainingId));
 
          return attribute;
       }
@@ -85,6 +86,7 @@ public class QueryIdHelper
       return "<"+tagName+"  "+QUERY_ID_ATT+"='"+id+"'>";
    }
 }
+
 
 
 

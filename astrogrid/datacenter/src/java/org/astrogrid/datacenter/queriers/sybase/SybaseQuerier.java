@@ -1,4 +1,4 @@
-/*$Id: SybaseQuerier.java,v 1.7 2003/09/17 14:51:30 nw Exp $
+/*$Id: SybaseQuerier.java,v 1.8 2003/09/22 16:51:24 mch Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,11 +11,11 @@
 package org.astrogrid.datacenter.queriers.sybase;
 
 import java.io.IOException;
-
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.QueryTranslator;
 import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
-
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /** DatabaseQuerier implementation for Sybase.
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Sep-2003
@@ -27,9 +27,9 @@ public class SybaseQuerier extends SqlQuerier
      * @param ds
      * @throws DatabaseAccessException
      */
-   public SybaseQuerier() throws DatabaseAccessException, IOException
+   public SybaseQuerier(Element dom) throws DatabaseAccessException, IOException, SAXException
    {
-        super();
+        super(dom);
    }
 
    /**
@@ -73,6 +73,9 @@ public class SybaseQuerier extends SqlQuerier
 
 /*
 $Log: SybaseQuerier.java,v $
+Revision 1.8  2003/09/22 16:51:24  mch
+Now posts results to dummy myspace
+
 Revision 1.7  2003/09/17 14:51:30  nw
 tidied imports - will stop maven build whinging
 

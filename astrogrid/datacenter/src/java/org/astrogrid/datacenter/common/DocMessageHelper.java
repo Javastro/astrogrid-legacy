@@ -1,5 +1,5 @@
 /*
- * $Id: DocMessageHelper.java,v 1.6 2003/09/15 15:44:44 mch Exp $
+ * $Id: DocMessageHelper.java,v 1.7 2003/09/22 16:51:24 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,9 +20,12 @@ public class DocMessageHelper
    /** The tag used to register a web listener */
    public static final String LISTENER_TAG = "NotifyMe";
    /** The tag used to register a job web listener */
-   public static final String JOBLISTENER_TAG = "NotifyJob";
+   public static final String JOBLISTENER_TAG = "JobMonitorURL";
    /** NWW - needs to be lower case to fit with legacy xml query language */
    public static final String QUERY_TAG = "query";
-
+   /** when the external tool wants to assign the query id, it sends this tag */
+   public static final String ASSIGN_QUERY_ID_TAG = "AssignID";
+   /** Key specifying results target - prob myspace server */
+   public static final String RESULTS_TARGET_TAG = "ResultsTarget";
 }
 
