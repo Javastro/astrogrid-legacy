@@ -1,5 +1,5 @@
 /**
- * $Id: ChildrenLoader.java,v 1.1 2005/04/01 01:54:56 mch Exp $
+ * $Id: ChildrenLoader.java,v 1.2 2005/04/04 01:10:15 mch Exp $
  *
  */
 
@@ -23,10 +23,12 @@ public class ChildrenLoader implements Runnable {
    boolean aborted = false;
    ChildLoadCompleter completer;
    FileNode directory;
+   FileSorter sorter;
    
-   public ChildrenLoader(FileNode aDirectory, ChildLoadCompleter aCompleter) {
+   public ChildrenLoader(FileNode aDirectory, ChildLoadCompleter aCompleter, FileSorter aSorter) {
       this.completer = aCompleter;
       this.directory = aDirectory;
+      this.sorter = aSorter;
    }
    
    public void run() {
@@ -39,14 +41,20 @@ public class ChildrenLoader implements Runnable {
          FileNode[] childFiles = directory.listFiles();
          if (childFiles != null) {
             log.debug("...found "+childFiles.length+" files for "+directory.getPath());
-            //so we have the results, now add them in to the model/node, but do so in the ui thread
-            if (!aborted) {
-               completer.setChildFiles(childFiles);
-               SwingUtilities.invokeLater(completer);
-            }
          }
          else {
             log.debug("...found no files for "+directory.getPath());
+         }
+         //so we have the results, now add them in to the model/node, but do so in the ui thread (whether
+         //or not they are empty)
+         if (!aborted) {
+            //sort
+            childFiles = sorter.sort(childFiles);
+         }
+         
+         if (!aborted) {
+            completer.setChildFiles(childFiles);
+            SwingUtilities.invokeLater(completer);
          }
       }
       catch (Throwable e) {

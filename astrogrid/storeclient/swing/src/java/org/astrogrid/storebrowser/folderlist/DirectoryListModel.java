@@ -1,5 +1,5 @@
 /*
- * $Id: DirectoryListModel.java,v 1.1 2005/04/01 17:32:25 mch Exp $
+ * $Id: DirectoryListModel.java,v 1.2 2005/04/04 01:10:15 mch Exp $
  */
 
 package org.astrogrid.storebrowser.folderlist;
@@ -9,12 +9,15 @@ package org.astrogrid.storebrowser.folderlist;
  */
 
 import java.io.IOException;
+import javax.swing.Icon;
 import javax.swing.table.AbstractTableModel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.file.FileNode;
-import org.astrogrid.slinger.mime.MimeTypes;
 import org.astrogrid.storebrowser.swing.ChildrenLoader;
+import org.astrogrid.storebrowser.swing.FileSorter;
+import org.astrogrid.storebrowser.swing.MimeIcons;
+import org.astrogrid.ui.IconFactory;
 
 public class DirectoryListModel extends AbstractTableModel {
    
@@ -23,6 +26,9 @@ public class DirectoryListModel extends AbstractTableModel {
    protected FileNode directory = null;
    protected FileNode[] children = null;
 
+   public static boolean foldersOnly = true; //true if this is to show folders only - not files/leaves
+   
+   FileSorter sorter = new FileSorter(false, true);
    
    /** Construct view listing children of given node */
    public DirectoryListModel( FileNode dir) throws IOException {
@@ -53,7 +59,16 @@ public class DirectoryListModel extends AbstractTableModel {
       fireTableDataChanged();
    }
    
-   public Object getValueAt(int row, int column){
+     public Class getColumnClass(int c) {
+      if (c==0) {
+         return Icon.class;
+      }
+      else {
+         return String.class;
+      }
+     }
+
+    public Object getValueAt(int row, int column){
       if ( directory == null || children == null ) {
          return null;
       }
@@ -80,7 +95,7 @@ public class DirectoryListModel extends AbstractTableModel {
                   return "(?)";
                }
                 */
-               return "(?)";
+               return "";
             }
             else {
                long size = file.getSize();
@@ -115,7 +130,21 @@ public class DirectoryListModel extends AbstractTableModel {
    }
 
    /** Returns a suitable object for the icon for the file */
-   public Object getIcon(FileNode file) {
+   public Icon getIcon(FileNode file) {
+      
+      if (file.isFolder()) {
+         return IconFactory.getIcon("Folder");
+      }
+      
+      Icon icon = MimeIcons.getIcon(file.getMimeType());
+      
+      if (icon != null) {
+         return icon;
+      }
+      else {
+         return null;
+      }
+      /*
       if (file.isFolder()) {
          return "+";
       }
@@ -137,6 +166,7 @@ public class DirectoryListModel extends AbstractTableModel {
          }
       }
       return "?";
+       */
    }
    
    public String getColumnName( int column ) {
@@ -156,19 +186,10 @@ public class DirectoryListModel extends AbstractTableModel {
       }
    }
    
-   public Class getColumnClass( int column ) {
-      //        if ( column == 0 ) {
-      //            return getValueAt( 0, column).getClass();
-      //        }
-      //        else {
-      return super.getColumnClass( column );
-      //        }
-   }
-
   /** Starts the load thread */
    public synchronized void startLoadChildren() {
 
-      ChildrenLoader loading = new ChildrenLoader(directory, new FileListSetter(this));
+      ChildrenLoader loading = new ChildrenLoader(directory, new FileListSetter(this), sorter);
       Thread loadingThread = new Thread(loading);
       loadingThread.start();
    }

@@ -1,5 +1,5 @@
 /*
- * $Id: FileManagerFile.java,v 1.2 2005/04/01 01:54:56 mch Exp $
+ * $Id: FileManagerFile.java,v 1.3 2005/04/04 01:10:15 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -197,7 +197,7 @@ public class FileManagerFile implements FileNode {
    }
    
    /** Lists children files if this is a container - returns null otherwise */
-   public synchronized FileNode[]listFiles() throws IOException {
+   public synchronized FileNode[] listFiles() throws IOException {
       if (!isFolder()) {
          return null;
       }
@@ -233,6 +233,9 @@ public class FileManagerFile implements FileNode {
 
 /*
 $Log: FileManagerFile.java,v $
+Revision 1.3  2005/04/04 01:10:15  mch
+proper actions, better (not perfect) threading, started drag drop
+
 Revision 1.2  2005/04/01 01:54:56  mch
 Various fixes to threading and added threaded directory view
 

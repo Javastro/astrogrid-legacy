@@ -1,5 +1,5 @@
 /*
- * $Id: ChildNodeSetter.java,v 1.1 2005/04/01 01:54:56 mch Exp $
+ * $Id: ChildNodeSetter.java,v 1.2 2005/04/04 01:10:15 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,11 +9,9 @@
 
 package org.astrogrid.storebrowser.tree;
 
-import java.io.IOException;
 import java.security.Principal;
 import javax.swing.tree.DefaultTreeModel;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.file.FileNode;
 import org.astrogrid.storebrowser.swing.ChildLoadCompleter;
 
 /** Swing components are not threadsafe, so adding children/making other changes
@@ -23,11 +21,11 @@ import org.astrogrid.storebrowser.swing.ChildLoadCompleter;
 
 public class ChildNodeSetter extends ChildLoadCompleter {
    
-   StoreFileNode parent;
+   FileViewNode parent;
    DefaultTreeModel model;
    Principal user;
    
-   public ChildNodeSetter(StoreFileNode givenParent, DefaultTreeModel givenModel, Principal givenUser) {
+   public ChildNodeSetter(FileViewNode givenParent, DefaultTreeModel givenModel, Principal givenUser) {
       this.parent = givenParent;
       this.model = givenModel;
       this.user = givenUser;
@@ -38,12 +36,16 @@ public class ChildNodeSetter extends ChildLoadCompleter {
    /** Modifies Swing components, so only run from SwingUtilities.invokeLater() */
    public void run() {
       
+      LogFactory.getLog(ChildNodeSetter.class).debug("Loading children...");
       parent.removeAllChildren();
       
       if (childFiles != null) {
 
          parent.setChildren(childFiles);
       }
+      parent.setCompleteness(1);
+      LogFactory.getLog(ChildNodeSetter.class).debug("...children loaded");
+      
       if (model != null) model.reload(parent);
    }
    

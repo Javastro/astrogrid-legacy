@@ -1,5 +1,5 @@
 /*
- * $Id: StoreFileNode.java,v 1.6 2005/04/01 17:32:25 mch Exp $
+ * $Id: FileViewNode.java,v 1.1 2005/04/04 01:10:15 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -11,6 +11,7 @@ package org.astrogrid.storebrowser.tree;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Vector;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -20,7 +21,9 @@ import javax.swing.tree.TreeNode;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.file.FileNode;
+import org.astrogrid.storebrowser.folderlist.DirectoryListModel;
 import org.astrogrid.storebrowser.swing.ChildrenLoader;
+import org.astrogrid.storebrowser.swing.FileSorter;
 
 /**
  * StoreFile adaptor for JTree views (or similar).
@@ -33,9 +36,9 @@ import org.astrogrid.storebrowser.swing.ChildrenLoader;
  * loading thread we have a handle to is the same as the one we had a moment ago
  */
 
-public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
-
-   Log log = LogFactory.getLog(StoreFileNode.class);
+public class FileViewNode extends DefaultMutableTreeNode implements TreeNode {
+   
+   Log log = LogFactory.getLog(FileViewNode.class);
    
    FileNode file = null;
    Principal user = null;
@@ -46,18 +49,27 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
    
    DefaultTreeModel model = null; //used to update when children are loaded
 
-   /* -1 = no children loaded, 0 = loading, 1 = loaded.  By
+   FileSorter sorter = new FileSorter(false, true);
+   
+   /* -1 = connecting (loading properties) , 0 = loading children, 1 = fully loaded.  By
    using just the one flag and having it changed in one place only we can stop
    threading problems.  Note that the loading thread changes it, but the loading
     thread cna only be created in one place */
-   private int completeness = -1;
+   private int completeness = CONNECTING;
+   public final static int CONNECTING = -2;
+   public final static int CONNECTED = -1;
+   public final static int LOADINGCHILDREN = 0;
+   public final static int COMPLETE = 1;
    
-   public StoreFileNode(DefaultTreeModel givenModel, MutableTreeNode givenParent, FileNode aFile, Principal aUser) throws IOException {
+   public FileViewNode(DefaultTreeModel givenModel, MutableTreeNode givenParent, FileNode aFile, Principal aUser) throws IOException {
       this.parent = givenParent;
       this.file = aFile;
       this.user = aUser;
       this.model = givenModel;
       children = new Vector();
+      if (file != null) {
+         completeness = CONNECTED;
+      }
    }
    
    public FileNode getFile()  {
@@ -71,6 +83,16 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
    public Principal getUser() {
       return user;
    }
+
+   /** Used only by loading threads */
+   public void setCompleteness(int newCompleteness) {
+      this.completeness = newCompleteness;
+   }
+   
+   /** Used by displays */
+   public int getCompleteness() {
+      return completeness;
+   }
    
    
    /** Returns the *node* path, which may be longer than the file path as it may
@@ -80,22 +102,16 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
          return "/";
       }
       else {
-         return ((StoreFileNode) getParent()).getPath()+"/"+getName();
+         return ((FileViewNode) getParent()).getPath()+"/"+getName();
       }
    }
 
-   /**
-    * Returns true if the file is still being loaded or is incomplete */
-   public boolean isLoading() {
-      return (completeness < 1);
-   }
-   
    /**
     * Returns the number of children <code>TreeNode</code>s the receiver
     * contains.
     */
    public synchronized int getChildCount() {
-      if (completeness == -1) {
+      if (completeness < LOADINGCHILDREN) {
          startLoadChildren();
       }
       return children.size();
@@ -106,7 +122,30 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
       startLoadChildren();
    }
 
-   /** Override so we can order it properly */
+   /** Returns teh child viewnode that wraps the given filenode */
+   public FileViewNode getViewChild(FileNode findFile) {
+      if (completeness < COMPLETE) {
+         //force load children, and do it now - too painful to forward this to a thread
+         try {
+            FileNode[] fileChilds = sorter.sort(file.listFiles());
+            setCompleteness(COMPLETE); //so the consequences of the adds in setChildren don't kick off a loadChildren
+            setChildren(fileChilds);
+         }
+         catch (IOException ioe) {
+            log.error(ioe+" loading children for "+file,ioe);
+         }
+      }
+      Enumeration e = children.elements();
+      while (e.hasMoreElements()) {
+         FileViewNode child = (FileViewNode) e.nextElement();
+         if (child.file.equals(findFile)) {
+            return child;
+         }
+      }
+      return null;
+   }
+   
+   /** Override so we can order it properly
    public void add(MutableTreeNode newChild) {
 
       if (children == null) {
@@ -116,7 +155,7 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
          //find insert position - don't like this, doubt it's threadsafe
          Enumeration e = children.elements();
          int i = 0;
-         while (e.hasMoreElements() &&  ((StoreFileNode) e.nextElement()).compareTo( (StoreFileNode) newChild) < 0 ) {
+         while (e.hasMoreElements() &&  ((FileViewNode) e.nextElement()).compareTo( (FileViewNode) newChild) < 0 ) {
             i++;
          }
          insert(newChild, i);
@@ -124,79 +163,88 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
    }
 
    /** Returns < 0 if this file should be placed before the given file in
-    * directory lists, 0 if they are equal and > 0 if it should be placed after */
-   public int compareTo(StoreFileNode node) {
-      if (file.isFolder() && (!node.file.isFolder())) {
+    * directory lists, 0 if they are equal and > 0 if it should be placed after
+   public int compareTo(Object node) {
+      return sortKey.compareTo( ((FileViewNode) node).sortKey);
+      /*
+      if (file.isFolder() && (!((FileViewNode) node).file.isFolder())) {
          return -1;
       }
-      if (!file.isFolder() && (node.file.isFolder())) {
+      if (!file.isFolder() && (((FileViewNode) node).file.isFolder())) {
          return 1;
       }
       //otherwise by name comparison
 //    return (file.getName().compareTo(node.file.getName()));
       //otherwise by caseless name comparison
-      return (file.getName().toLowerCase().compareTo(node.file.getName().toLowerCase()));
+      return (file.getName().toLowerCase().compareTo(((FileViewNode) node).file.getName().toLowerCase()));
+       
    }
-   
+    */
    /** Refresh - clears the children and file's children. Synchronised as this
     * should be the only public method that modifies the completeness flag  */
    public synchronized void startLoadChildren() {
 
-      if ( completeness != 0)  { //only if not already loading
-         completeness = 0;
+      if ( completeness != LOADINGCHILDREN)  { //only if not already loading
+         completeness = LOADINGCHILDREN;
          clearError();
+         model.nodeChanged(this); //so the display updates
       
          if ((file != null) && (file.isFolder())) {
-            ChildrenLoader loading = new ChildrenLoader(file, new ChildNodeSetter(this, model, user));
+            ChildrenLoader loading = new ChildrenLoader(file, new ChildNodeSetter(this, model, user), sorter);
             Thread loadingThread = new Thread(loading);
             loadingThread.start();
          }
       }
    }
 
+   /** Given a list of FileNode children loaded, sorts them into order and
+    * adds them into the tree */
    public void setChildren(FileNode[] childFiles) {
-         for (int i = 0; i < childFiles.length; i++) {
-            //LogFactory.getLog(NodeFileAdder.class).debug("Adding "+children[i]+" to "+parent);
-            
-            try {
-               StoreFileNode childNode = new StoreFileNode(model, parent, childFiles[i], user);
-               
-               //bit of a botch - make sure child doesn't refer to parent before inserting
-               childNode.setParent(null);
-               
-               //insert
-               add(childNode);
-            }
-            catch (IOException e) {
-               LogFactory.getLog(ChildNodeSetter.class).error("Creating child node for "+childFiles[i],e);
-            }
-            
+      
+      this.removeAllChildren();
+
+      //done in loading thread now FileNode[] childFiles = sorter.sort(childFiles);
+      for (int i = 0; i < childFiles.length; i++) {
+         try {
+             //it's important that we use the proper 'add' here (rather than adding directly to children) as otherwise the displays screws up
+             add(new FileViewNode(model, null, childFiles[i], user));
          }
-         completeness = 1;
+         catch (IOException e) {
+            LogFactory.getLog(ChildNodeSetter.class).error("Creating child node for "+childFiles[i],e);
+         }
       }
+      /*
+      //create wrapping treeview nodes and check for folder-only views
+      log.trace("Creating wrapper nodes");
+      FileViewNode[] childTreeNodes = new FileViewNode[childFiles.length];
+      int n=-1;
+      for (int f = 0; f < childFiles.length; f++) {
+         try {
+            if ((!DirectoryListModel.foldersOnly) || (childFiles[f].isFolder())) {
+               n++;
+               childTreeNodes[n] = new FileViewNode(model, null, childFiles[f], user);
+            }
+         }
+         catch (IOException e) {
+            LogFactory.getLog(ChildNodeSetter.class).error("Creating child node for "+childFiles[f],e);
+         }
+      }
+      if (n==-1) {
+         return; //nothing found
+      }
+      //sort
+      log.trace("Sorting");
+      Arrays.sort(childTreeNodes,0,n);
 
-      /** Simple class that makes the appropriate Swing component calls to update the
-    * display as files come in.  Use SwingUtilities.invokeLater() to call it, so
-    * that it's run from the GUI thread, as Swing components are not threadsafe */
-   public class NodeChanger implements Runnable {
-
-      TreeNode node;
-      DefaultTreeModel model;
-      
-      public NodeChanger(TreeNode givenNode, DefaultTreeModel givenModel) {
-         this.node = givenNode;
-         this.model = givenModel;
-         
-         assert (node != null) : "Node is null";
-         assert (model != null) : "Model is null";
+      //add
+      log.trace("Adding");
+      for (int i = 0; i < n+1; i++) {
+          add(childTreeNodes[i]);
       }
-      
-      public void run() {
-         model.nodeChanged(node);
-      }
-      
+      log.trace("done");
+       */
    }
-   
+
    
    
    
@@ -261,7 +309,7 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
     * throwing exceptions allows the display to keep functioning even if
     one of the servers goes down (or the interface changes and everything fails horribly) */
    public void setError(String message, Throwable th) {
-      LogFactory.getLog(StoreFileNode.class).error(message,th);
+      LogFactory.getLog(FileViewNode.class).error(message,th);
       lastError = th;
    }
 
@@ -272,4 +320,6 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
    public Throwable getError() {
       return lastError;
    }
+   
+   
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: FilePopupMenu.java,v 1.1 2005/04/02 12:51:23 mch Exp $
+ * $Id: FilePopupMenu.java,v 1.2 2005/04/04 01:10:15 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,37 +9,32 @@
 
 package org.astrogrid.storebrowser.tree;
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import javax.swing.Icon;
+import org.astrogrid.storebrowser.tree.actions.*;
+
+import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import org.astrogrid.file.FileNode;
-import org.astrogrid.storebrowser.swing.PleaseWait;
-import org.astrogrid.storebrowser.tree.actions.DeleteAction;
 
 
 
 /**
- * Special renderer for store nodes in trees.  DefaultTreeCellRenderer subclasses
- * JLabel, which can take both icon and string
+ * Popup menu for files
  */
 
 public class FilePopupMenu extends JPopupMenu {
 
-   Icon errorIcon = null;
-   
    /** Initialise icons etc */
-   public FilePopupMenu(DirectoryTreeModel dirtree, StoreFileNode selectedNode) {
+   public FilePopupMenu(SelectedFileGetter getter) {
 
-      JMenuItem delete = new JMenuItem("Delete");
-      delete.addActionListener(
-         new DeleteAction(dirtree, selectedNode)
-      );
-      add(delete);
+      add(new JMenuItem(new RefreshAction(getter)));
+
+      add(new JMenuItem(new DeleteAction(getter)));
+      
+      add(new JMenuItem(new UploadAction(new JFileChooser(), getter)));
+
+      add(new JMenuItem(new DownloadAction(new JFileChooser(), getter)));
+
+      add(new JMenuItem(new CopyFromUrlAction(getter)));
       
    }
 

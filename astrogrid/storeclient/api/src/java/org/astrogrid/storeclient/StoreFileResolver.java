@@ -1,5 +1,5 @@
 /*
- * $Id: StoreFileResolver.java,v 1.1 2005/03/31 19:25:39 mch Exp $
+ * $Id: StoreFileResolver.java,v 1.2 2005/04/04 01:10:15 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -94,7 +94,7 @@ public class StoreFileResolver {
          return new JargonFileAdaptor(new URI(uri));
       }
       else {
-         throw new IllegalArgumentException("Can't interpret URI "+uri);
+         throw new IllegalArgumentException("Can't interpret URI '"+uri+"'");
       }
    }
    
@@ -102,6 +102,9 @@ public class StoreFileResolver {
 
 /*
 $Log: StoreFileResolver.java,v $
+Revision 1.2  2005/04/04 01:10:15  mch
+proper actions, better (not perfect) threading, started drag drop
+
 Revision 1.1  2005/03/31 19:25:39  mch
 semi fixed a few threading things, introduced sort order to tree
 

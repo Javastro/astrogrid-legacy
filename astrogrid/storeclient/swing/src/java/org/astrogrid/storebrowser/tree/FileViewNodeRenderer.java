@@ -1,5 +1,5 @@
 /*
- * $Id: StoreNodeTreeCellRenderer.java,v 1.2 2005/03/28 03:06:09 mch Exp $
+ * $Id: FileViewNodeRenderer.java,v 1.1 2005/04/04 01:10:15 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -11,18 +11,11 @@ package org.astrogrid.storebrowser.tree;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.IOException;
 import javax.swing.Icon;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import org.astrogrid.storebrowser.tree.StoreFileNode;
+import org.astrogrid.storebrowser.swing.MimeIcons;
+import org.astrogrid.storebrowser.tree.FileViewNode;
 import org.astrogrid.ui.IconFactory;
 
 
@@ -32,69 +25,33 @@ import org.astrogrid.ui.IconFactory;
  * JLabel, which can take both icon and string
  */
 
-public class StoreNodeTreeCellRenderer extends DefaultTreeCellRenderer  {
+public class FileViewNodeRenderer extends DefaultTreeCellRenderer  {
 
-   JPopupMenu popupMenu = null;
-   StoreFileNode storeFileNode = null;
    Icon errorIcon = null;
+   Icon storeIcon = null;
    
    /** Initialise icons etc */
-   public StoreNodeTreeCellRenderer() {
+   public FileViewNodeRenderer() {
 
-      errorIcon = IconFactory.getIcon("error");
-      
-      popupMenu = new JPopupMenu();
-
-      JMenuItem refresh = new JMenuItem("Refresh");
-      refresh.addActionListener(
-         new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-               try {
-                  storeFileNode.getFile().refresh();
-               }
-               catch (IOException ioe) {
-                  JOptionPane.showMessageDialog((Component) e.getSource(), ioe.getMessage(), "Refreshing "+storeFileNode, JOptionPane.ERROR);
-               }
-            }
-         }
-      );
-      popupMenu.add(refresh);
-
-      /*
-      JMenuItem delete = new JMenuItem("Delete");
-      delete.addActionListener(
-         new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-               try {
-                  storeFileNode.getFile().delete();
-               }
-               catch (IOException ioe) {
-                  JOptionPane.showMessageDialog((Component) e.getSource(), ioe.getMessage(), "Refreshing "+storeFileNode, JOptionPane.ERROR);
-               }
-               catch (URISyntaxException use) {
-                  JOptionPane.showMessageDialog((Component) e.getSource(), use.getMessage(), "Refreshing "+storeFileNode, JOptionPane.ERROR);
-               }
-            }
-         }
-      );
-      popupMenu.add(delete);
-       */
-      
-      addMouseListener(
-         new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-               if (e.isPopupTrigger()) {
-                  popupMenu.show(e.getComponent(), e.getX(), e.getY());
-               }
-            }
-         }
-      );
-      
-      //set icons
-      errorIcon = null;
+      errorIcon = IconFactory.getIcon("Error", IconFactory.SMALL);
+      storeIcon = IconFactory.getIcon("Store", IconFactory.SMALL);
       
    }
 
+   public Icon getLeafIcon(Object node) {
+      if (node instanceof FileViewNode) {
+         String mimetype = ((FileViewNode) node).getFile().getMimeType();
+         Icon icon = MimeIcons.getIcon(mimetype);
+         if (icon != null) {
+            return icon;
+         }
+         return getLeafIcon();
+      }
+      else {
+         return getLeafIcon(); //default
+      }
+   }
+   
    public Component getTreeCellRendererComponent(JTree tree, Object storeNode, boolean isSelected, boolean isExpanded, boolean isLeaf, int row, boolean hasFocus) {
 
       //Sets all the properties (mostly copied from DefaultTreeCellRenderer)
@@ -104,8 +61,10 @@ public class StoreNodeTreeCellRenderer extends DefaultTreeCellRenderer  {
       // There needs to be a way to specify disabled icons.
       if (!tree.isEnabled()) {
          setEnabled(false);
-         if (isLeaf) {
-            setDisabledIcon(getLeafIcon());
+         if (storeNode instanceof StoreRootNode) {
+            setDisabledIcon(storeIcon);
+         } else if (isLeaf) {
+            setDisabledIcon(getLeafIcon(storeNode));
          } else if (isExpanded) {
             setDisabledIcon(getOpenIcon());
          } else {
@@ -114,8 +73,10 @@ public class StoreNodeTreeCellRenderer extends DefaultTreeCellRenderer  {
       }
       else {
          setEnabled(true);
-         if (isLeaf) {
-            setIcon(getLeafIcon());
+         if (storeNode instanceof StoreRootNode) {
+            setIcon(storeIcon);
+         } else if (isLeaf) {
+            setIcon(getLeafIcon(storeNode));
          } else if (isExpanded) {
             setIcon(getOpenIcon());
          } else {
@@ -126,11 +87,16 @@ public class StoreNodeTreeCellRenderer extends DefaultTreeCellRenderer  {
       //so painter knows to colour in background
       selected = isSelected;
       
-      if (storeNode instanceof StoreFileNode) {
-         storeFileNode = ((StoreFileNode) storeNode);
+      if (storeNode instanceof FileViewNode) {
          
+         FileViewNode storeFileNode = ((FileViewNode) storeNode);
+
          String loading = "";
-         if (storeFileNode.isLoading()) {
+         if (storeFileNode.getCompleteness() == FileViewNode.CONNECTING) {
+            loading = " [Connecting] ";
+            setForeground(Color.GRAY); //should be loaded from look and feel but it will do for now
+         }
+         if (storeFileNode.getCompleteness() == FileViewNode.LOADINGCHILDREN) {
             loading = " [Loading] ";
             setForeground(Color.GRAY); //should be loaded from look and feel but it will do for now
          }

@@ -1,5 +1,5 @@
 /*
- * $Id: StoreBrowser.java,v 1.10 2005/04/01 17:32:25 mch Exp $
+ * $Id: StoreBrowser.java,v 1.11 2005/04/04 01:10:15 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -10,18 +10,18 @@
 package org.astrogrid.storebrowser.swing;
 import javax.swing.*;
 import org.astrogrid.storebrowser.tree.*;
+import org.astrogrid.storebrowser.tree.actions.*;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.security.Principal;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -32,20 +32,17 @@ import org.astrogrid.account.IvoAccount;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.file.FileNode;
-import org.astrogrid.file.LocalFile;
-import org.astrogrid.io.piper.StreamPiper;
 import org.astrogrid.slinger.Slinger;
 import org.astrogrid.slinger.mime.MimeTypes;
-import org.astrogrid.slinger.sources.SourceIdentifier;
-import org.astrogrid.slinger.sources.SourceMaker;
-import org.astrogrid.slinger.targets.TargetIdentifier;
-import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.storebrowser.folderlist.DirectoryListModel;
 import org.astrogrid.storebrowser.folderlist.DirectoryListView;
+import org.astrogrid.storebrowser.imageview.ImageContentsView;
+import org.astrogrid.storebrowser.textview.ContentViewer;
 import org.astrogrid.storebrowser.textview.TextContentsView;
 import org.astrogrid.ui.EscEnterListener;
-import org.astrogrid.ui.IconButtonHelper;
+import org.astrogrid.ui.ImageFactory;
 import org.astrogrid.ui.JHistoryComboBox;
+import org.astrogrid.ui.Splash;
 
 /**
  * A non-modal window for managing files in stores. Uses storeclient
@@ -55,7 +52,7 @@ import org.astrogrid.ui.JHistoryComboBox;
  */
 
 
-public class StoreBrowser extends JDialog
+public class StoreBrowser extends JFrame implements SelectedFileGetter
 {
    JHistoryComboBox addressPicker = new JHistoryComboBox();
 
@@ -65,11 +62,14 @@ public class StoreBrowser extends JDialog
    StoreTreeView treeView = null;
 
    /** Right hand panel shows folder or file contents */
-   JScrollPane contentPanel = new JScrollPane();
+   Component contentViewer;
+   JPanel contentHolder; //the panel that holds teh content
    
    /** Special case of contentPanel holding lists of files, so that we can
     examine it for selections, etc */
-   DirectoryListView directoryView = new DirectoryListView();
+   DirectoryListView directoryView = null;
+   /** We keep one instance of the directory viewer to save recreating it */
+   DirectoryListView directoryViewer = new DirectoryListView();
    
    //toolbar buttons
    JButton addStoreBtn = null;
@@ -82,8 +82,8 @@ public class StoreBrowser extends JDialog
    JButton newFolderBtn = null;
 
    //default size
-   public static final int DEF_SIZE_X = 550;
-   public static final int DEF_SIZE_Y = 350;
+   public static final int DEF_SIZE_X = 800;
+   public static final int DEF_SIZE_Y = 600;
    
    //used to lookup files on disk
    JFileChooser chooser = new JFileChooser();
@@ -99,6 +99,11 @@ public class StoreBrowser extends JDialog
       initComponents();
    }
 
+   private StoreBrowser(JFrame owner, Principal user) throws IOException   {
+      super();
+      this.operator = user;
+      initComponents();
+   }
 
    /**
     * Builds GUI and initialises components
@@ -107,123 +112,87 @@ public class StoreBrowser extends JDialog
    {
       setTitle("Browsing Stores as "+operator.getName());
       
+      //menu bar
+      JMenuBar mainMenu = new JMenuBar();
+      JMenu fileMenu = new JMenu("File");
+      mainMenu.add(fileMenu);
+      fileMenu.add(new JMenuItem(new DeleteAction(this)));
+      fileMenu.add(new JMenuItem(new RefreshAction(this)));
+      fileMenu.add(new JMenuItem(new DownloadAction(chooser, this)));
+      fileMenu.add(new JMenuItem(new UploadAction(chooser, this)));
+      fileMenu.add(new JMenuItem(new CopyFromUrlAction(this)));
+
+      setJMenuBar(mainMenu);
+
+      //address picker
       addressPicker.addItem(""); //empty one to start with
+      JPanel addressPanel = new JPanel(new BorderLayout());
+      addressPanel.add(new JLabel("Address"), BorderLayout.WEST);
+      addressPanel.add(addressPicker, BorderLayout.CENTER);
       
-      //toolbar
-      addStoreBtn = IconButtonHelper.makeIconButton("AddStore", "AddStore", "Add store to the tree");
-      refreshBtn = IconButtonHelper.makeIconButton("Refresh", "Refresh", "Reloads file list from server");
-      newFolderBtn = IconButtonHelper.makeIconButton("New", "NewFolder", "Creates a new folder");
-      uploadBtn = IconButtonHelper.makeIconButton("Put", "Up", "Upload file from local disk to MySpace");
-      uploadUrlBtn = IconButtonHelper.makeIconButton("PutUrl","Putty", "Copy file from public URL to MySpace");
-      downloadBtn = IconButtonHelper.makeIconButton("Get","Down", "Download file from MySpace to local disk");
-      deleteBtn = IconButtonHelper.makeIconButton("Del","Delete", "Deletes selected item");
-      copyBtn = IconButtonHelper.makeIconButton("Copy", "Copy", "Copies selected item");
-
-      JPanel iconBtnPanel = new JPanel();
-      BoxLayout btnLayout = new BoxLayout(iconBtnPanel, BoxLayout.X_AXIS);
-      iconBtnPanel.setLayout(btnLayout);
-      iconBtnPanel.add(addStoreBtn);
-      iconBtnPanel.add(refreshBtn);
-      iconBtnPanel.add(newFolderBtn);
-      iconBtnPanel.add(uploadBtn);
-      iconBtnPanel.add(uploadUrlBtn);
-      iconBtnPanel.add(downloadBtn);
-      iconBtnPanel.add(deleteBtn);
-      iconBtnPanel.add(copyBtn);
-
       //tree view
       treeView = new StoreTreeView(operator);
       JScrollPane treePanel = new JScrollPane();
       treePanel.getViewport().setView(treeView);
 
-      //address pciker and toolbar combined
-      JPanel topPanel = new JPanel(new BorderLayout());
-      topPanel.add(new JLabel("Address"), BorderLayout.WEST);
-      topPanel.add(addressPicker, BorderLayout.CENTER);
-      topPanel.add(iconBtnPanel, BorderLayout.EAST);
+      //toolbar
+      addStoreBtn = makeToolbarButton(new AddStoreAction(treeView)); //IconButtonHelper.makeIconButton("AddStore", "AddStore", "Add store to the tree");
+      refreshBtn = makeToolbarButton(new RefreshAction(this)); //IconButtonHelper.makeIconButton("Refresh", "Refresh", "Reloads file list from server");
+      newFolderBtn = makeToolbarButton(new NewFolderAction(this)); //IconButtonHelper.makeIconButton("New", "NewFolder", "Creates a new folder");
+      uploadBtn = makeToolbarButton(new UploadAction(chooser, this)); //IconButtonHelper.makeIconButton("Put", "Up", "Upload file from local disk to MySpace");
+      uploadUrlBtn = makeToolbarButton(new CopyFromUrlAction(this)); //IconButtonHelper.makeIconButton("PutUrl","Putty", "Copy file from public URL to MySpace");
+      downloadBtn = makeToolbarButton(new DownloadAction(chooser, this)); //IconButtonHelper.makeIconButton("Get","Down", "Download file from MySpace to local disk");
+      deleteBtn = makeToolbarButton(new DeleteAction(this)); //IconButtonHelper.makeIconButton("Del","Delete", "Deletes selected item");
+      //copyBtn = makeToolbarButton(new CopyAction(this, this)); //IconButtonHelper.makeIconButton("Copy", "Copy", "Copies selected item");
 
-      topPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+      JToolBar toolbar = new JToolBar();
+      toolbar.add(addStoreBtn);
+      toolbar.add(refreshBtn);
+      toolbar.add(newFolderBtn);
+      toolbar.add(uploadBtn);
+      toolbar.add(uploadUrlBtn);
+      toolbar.add(downloadBtn);
+      toolbar.add(deleteBtn);
+      //toolbar.add(copyBtn);
 
-      getContentPane().setLayout(new BorderLayout());
+
+      //layout the components
+      contentHolder = new JPanel(new BorderLayout());
       JPanel RHS = new JPanel(new BorderLayout());
       JPanel LHS = new JPanel(new BorderLayout());
       LHS.add(treePanel, BorderLayout.CENTER);
-      RHS.add(contentPanel, BorderLayout.CENTER);
-
-      getContentPane().add(topPanel, BorderLayout.NORTH);
+      RHS.add(contentHolder, BorderLayout.CENTER);
       splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, LHS, RHS);
-      getContentPane().add(splitter);
       splitter.setDividerLocation(0.35);
       
-      addStoreBtn.addActionListener(
-         new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-               treeView.askNewStore();
+      //setting the divider location only works once the UI is displayed, so add to queue
+      SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+               // TODO - load from preferences
+               setSize(DEF_SIZE_X,DEF_SIZE_Y);
+               splitter.setDividerLocation(0.35);
             }
-         }
-      );
-      
-      refreshBtn.addActionListener(
-         new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-               refresh();
-            }
-         }
-      );
-      
-      uploadBtn.addActionListener(
-         new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-               uploadFromDisk();
-            }
-         }
-      );
-      
-      uploadUrlBtn.addActionListener(
-         new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-               uploadFromUrl();
-            }
-         }
-      );
-      
-      downloadBtn.addActionListener(
-         new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-               downloadSelectedToDisk();
-            }
-         }
-      );
-      
+      });
+      /**/
+      //add address panel to top
+      JPanel panel1 = new JPanel(new BorderLayout());
+      panel1.add(addressPanel, BorderLayout.NORTH);
+      panel1.add(splitter, BorderLayout.CENTER);
+
+      //add toolbar above that (so it can be moved around)
+      JPanel panel2 =  new JPanel(new BorderLayout());
+      panel2.add(toolbar, BorderLayout.NORTH);
+      panel2.add(panel1, BorderLayout.CENTER);
+
+      //topPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+      getContentPane().setLayout(new BorderLayout());
+
+      getContentPane().add(panel2);
+
       addressPicker.addActionListener(
          new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 //               treeView.setSelectionsetStore(addressPicker.getSelectedItem().toString());
-            }
-         }
-      );
-      
-      deleteBtn.addActionListener(
-         new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-               deleteSelected();
-            }
-         }
-      );
-      
-      /*
-      copyBtn.addActionListener(
-         new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-               copySelected();
-            }
-         }
-      );
-       */
-      newFolderBtn.addActionListener(
-         new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-               newFolder();
             }
          }
       );
@@ -241,34 +210,74 @@ public class StoreBrowser extends JDialog
             }
          }
       );
+
+      /*
+      treeView.addMouseListener( new MouseAdapter() {
+         public void mouseClicked(MouseEvent e) {
       
-      treeView.addMouseListener(new MouseAdapter() {
-               public void mousePressed(MouseEvent e) {
-                  if (e.isPopupTrigger()) {
-                     TreePath mousePath = treeView.getPathForLocation(e.getX(), e.getY());
-                     if (mousePath != null) {
-                        treeView.setSelectionPath(mousePath);
-                        StoreFileNode selectedNode = (StoreFileNode) mousePath.getLastPathComponent();
-                        if (selectedNode.getFile().isFolder()) {
-                           JPopupMenu menu = new FolderPopupMenu( (DirectoryTreeModel) treeView.getModel(), selectedNode);
-                           menu.show(treeView, e.getX(), e.getY());
-                        }
-                        else {
-                           JPopupMenu menu = new FilePopupMenu((DirectoryTreeModel) treeView.getModel(), selectedNode);
-                           menu.show(treeView, e.getX(), e.getY());
-                        }
+            if (e.isPopupTrigger() || (e.getButton()==3)) { //popup trigger flag doesn't always seem to work...
+               TreePath mousePath = treeView.getPathForLocation(e.getX(), e.getY());
+               if (mousePath != null) {
+                  treeView.setSelectionPath(mousePath);
+                  FileViewNode selectedNode = (FileViewNode) mousePath.getLastPathComponent();
+                  if (selectedNode instanceof StoreRootNode) {
+                        new StorePopupMenu(treeView, (StoreRootNode) treeView.getSelectedNode()).show(treeView, e.getX(), e.getY());
+                  }
+                  else {
+                     if (selectedNode.getFile().isFolder()) {
+                        new FolderPopupMenu((DirectoryTreeModel) treeView.getModel(), treeView).show(treeView, e.getX(), e.getY());
+                     }
+                     else {
+                        new FilePopupMenu((DirectoryTreeModel) treeView.getModel(), treeView).show(treeView, e.getX(), e.getY());
                      }
                   }
                }
-               
+            }
+            
+         }
       });
-   
+       */
+      
+      directoryViewer.addMouseListener( new MouseAdapter() {
+         public void mouseClicked(MouseEvent e) {
+            //select file in tree if double clicked in directory list
+            if ((e.getButton()==1) && (e.getClickCount()>1)) {
+               int row = directoryView.rowAtPoint(e.getPoint());
+               if (row != -1) {
+                  FileNode file = directoryView.getFile(row);
+                  if (file.isFolder()) {
+                     //find corresponding node in tree
+                     FileViewNode selectedNode = treeView.getSelectedNode();
+                     FileViewNode childNode = selectedNode.getViewChild(file);
+                     TreePath pathToSelect = treeView.getSelectionPath().pathByAddingChild(childNode);
+                     ((DirectoryTreeModel) treeView.getModel()).reload(selectedNode);
+                     treeView.expandPath(treeView.getSelectionPath());
+                     treeView.setSelectionPath(pathToSelect);
+                  }
+                  else {
+                     //open in special editor?
+                  }
+               }
+            }
+            
+         }
+      });
+      
       new EscEnterListener(this, null, null, true);
       
       pack();
       invalidate();
    }
 
+   /** Makes a toolbar button for an action - removes text if icon is available  */
+   public JButton makeToolbarButton(Action action) {
+      JButton button = new JButton(action);
+      if (action.getValue(Action.SMALL_ICON) != null) {
+         button.setText("");
+      }
+      return button;
+   }
+   
 
    /** Returns current operator of this component */
    public Principal getOperator() {
@@ -278,17 +287,27 @@ public class StoreBrowser extends JDialog
    /** Sets the content pane depending on the selected file/folder */
    protected void setContentPane() {
       FileNode f = treeView.getSelectedFile();
+
+      //abort load of existing panel
+      contentHolder.removeAll(); //clear display
+      if (contentViewer != null) {
+         if (contentViewer instanceof ContentViewer) {
+               ((ContentViewer) contentViewer).abortLoad();
+         }
+         contentViewer = null;
+      }
       
       if (f == null) {
-         contentPanel.getViewport().setView(null);
+         //do nothing
       }
       else {
          if (f.isFolder()) {
             //show directory view
             try {
-               directoryView = new DirectoryListView();
+               directoryView = directoryViewer;
                directoryView.setModel(new DirectoryListModel(f));
-               contentPanel.getViewport().setView(directoryView);
+               contentViewer = new JScrollPane(directoryView);
+               contentHolder.add(contentViewer);
             }
             catch (IOException ioe) {
                log.error(ioe+" Making model of "+f,ioe);
@@ -300,258 +319,26 @@ public class StoreBrowser extends JDialog
             
             //show file contents if possible
             if (f.getMimeType() == null) {
-               contentPanel.getViewport().setView(null);
+               //do nothing - don't know what it is
             }
             else {
-               if ((f.getMimeType().equals(MimeTypes.PLAINTEXT)) || (f.getMimeType().equals(MimeTypes.VOTABLE)) || (f.getMimeType().equals(MimeTypes.WORKFLOW)) || (f.getMimeType().equals(MimeTypes.ADQL))) {
+               if ((f.getMimeType().startsWith(MimeTypes.TEXT)) || (f.getMimeType().equals(MimeTypes.VOTABLE))) {
                   
-                  TextContentsView textDisplay = new TextContentsView(f);
-                  contentPanel.getViewport().setView(textDisplay);
+                  contentViewer = new TextContentsView(f);
+                  contentHolder.add(contentViewer);
+               }
+               else if (f.getMimeType().startsWith(MimeTypes.IMAGE)) {
+                  contentViewer = new ImageContentsView(f);
+                  contentHolder.add(contentViewer);
                }
                else {
-                  contentPanel.getViewport().setView(null);
+                  //don't know what to do with this type
                }
                
-               
             }
          }
       }
    }
-   
-   public void refresh() {
-      StoreFileNode node = treeView.getSelectedNode();
-      TreePath path = treeView.getSelectionPath();
-      
-      if (node != null) {
-         if (node.isLeaf()) {
-            node = (StoreFileNode) node.getParent(); //refresh folder rather than file
-            path = path.getParentPath();
-         }
-         
-            node.refresh();
-            
-            treeView.review(node);
-            
-            //refresh content pane
-            setContentPane();
-      }
-   }
-   
-   /** Download button pressed - copy selected file from store to disk */
-   public void downloadSelectedToDisk()
-   {
-      //get selected store path
-      FileNode source = getSelectedFile();
-      
-      //check a path (not just a folder) selected
-      if ((source == null) || (source.isFolder())) {
-         JOptionPane.showMessageDialog(this, "Select file to get");
-         return;
-      }
-
-      //ask for local file location to svae it to
-      int response = chooser.showSaveDialog(this);
-      
-      if (response == chooser.APPROVE_OPTION) {
-         
-         LocalFile target = new LocalFile(chooser.getSelectedFile());
-         
-         transfer(source, target);
-      }
-   }
-   
-   /** Starts a Transfer from point to point - threaded so the transfer happens on a different thread */
-   public void transfer(FileNode source, FileNode target) {
-         try {
-            OutputStream out = target.openOutputStream(source.getMimeType(), false);
-            PleaseWait waitBox = new PleaseWait(this, "Connecting to server");
-            InputStream in = source.openInputStream();
-            waitBox.hide();
-            log.info("Copying from "+source+" to "+target);
-            PipeProgressMonitor monitor = new PipeProgressMonitor(in, this, "Copying "+source+" to "+target, source+" copied", (int) source.getSize());
-            StreamPiper piper = new StreamPiper();
-            piper.spawnPipe(in, out, monitor, StreamPiper.DEFAULT_BLOCK_SIZE);
-         }
-         catch (IOException e) {
-            log.error(e+" copying '"+source+"' to '"+target+"'",e);
-            JOptionPane.showMessageDialog(this, e+" copying '"+target+"': "+e, "Copy Failure", JOptionPane.ERROR_MESSAGE);
-         }
-   }
-   
-   /** Upload button pressed - copy file from disk to Myspace */
-   public void uploadFromDisk()
-   {
-      FileNode target = getSelectedFile();
-      if (target == null)   {
-         JOptionPane.showMessageDialog(this, "Set directory or filename to upload to");
-         return;
-      }
-      if (!target.isFolder()) {
-         int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to overwrite '"+target.getPath()+"?" );
-         if (response == JOptionPane.NO_OPTION) {
-            return;
-         }
-      }
-
-      int response = chooser.showOpenDialog(this);
-      
-      if (response == chooser.APPROVE_OPTION)
-      {
-         FileNode source = new LocalFile(chooser.getSelectedFile());
-
-         try {
-            if (target.isFolder()) {
-               target = target.makeFile(source.getName());
-            }
-
-            transfer(source, target);
-            
-         } catch (IOException e) {
-            log.error(e+" Making file "+source.getName()+" in "+target,e);
-            JOptionPane.showMessageDialog(this, e+" Making file "+source.getName()+" in "+target, "Upload Failure", JOptionPane.ERROR_MESSAGE);
-         }
-      }
-   }
-
-   /** Upload button pressed - copy file from URL to Myspace */
-   public void uploadFromUrl()
-   {
-      //see if a filename has been entered
-      FileNode file = getSelectedFile();
-      if (file == null)   {
-         JOptionPane.showMessageDialog(this, "Set directory or filename target");
-         return;
-      }
-      
-      String urlEntry = JOptionPane.showInputDialog(this, "Enter URL to upload");
-      SourceIdentifier source = null;
-      
-      if (urlEntry != null)
-      {
-         try {
-            source = SourceMaker.makeSource(new URL(urlEntry));
-            
-            //confirm overwrite
-            if (file.isFile())
-            {
-               int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to overwrite '"+file.getName()+"?" );
-               if (response == JOptionPane.NO_OPTION) {
-                  return;
-               }
-            }
-            TargetIdentifier target = TargetMaker.makeTarget(file.getUri());
-            Slinger.sling(source, target, operator);
-            refresh();
-
-         } catch (URISyntaxException mue) {
-            log.error("Invalid URL '"+urlEntry+"' ", mue);
-            JOptionPane.showMessageDialog(this, mue+", url='"+urlEntry+"'", "StoreBrowser", JOptionPane.ERROR_MESSAGE);
-         } catch (MalformedURLException mue) {
-            log.error("Invalid URL '"+urlEntry+"' ", mue);
-            JOptionPane.showMessageDialog(this, mue+", url='"+urlEntry+"'", "StoreBrowser", JOptionPane.ERROR_MESSAGE);
-         } catch (IOException e) {
-            log.error("Upload of '"+urlEntry+"' failed", e);
-            JOptionPane.showMessageDialog(this, e+", uploading "+source+" to '"+urlEntry+"'", "StoreBrowser", JOptionPane.ERROR_MESSAGE);
-         }
-      }
-   }
-
-   /**
-    * Delete selected item
-    */
-   public void deleteSelected()
-   {
-      //see if a filename has been selected
-      FileNode target = getSelectedFile();
-      if (target == null)   {
-         JOptionPane.showMessageDialog(this, "Select directory or filename to delete");
-         return;
-      }
-
-      int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete '"+target+"'?","Confirm Delete", JOptionPane.OK_CANCEL_OPTION);
-
-//    if (response == JOptionPane.OK_OPTION) {
-         //double check for non-empty folders?
-//       if (target.isFolder() && target.
-//    }
-      
-      if (response == JOptionPane.OK_OPTION) {
-         try {
-            target.getParent().refresh();
-            target.delete();
-            refresh();
-         }
-         catch (IOException ioe) {
-            log.error(ioe+", deleting "+target, ioe);
-            JOptionPane.showMessageDialog(this, ioe+" deleting '"+target+"'", "StoreBrowser", JOptionPane.ERROR_MESSAGE);
-         }
-      }
-   }
-
-   /**
-    * Create new folder
-    */
-   public void newFolder()
-   {
-      //see if a filename has been selected
-      FileNode target = getSelectedFile();
-      if ((target == null) || (!target.isFolder()))   {
-         JOptionPane.showMessageDialog(this, "Select directory to create new folder in");
-         return;
-      }
-   
-      String newFoldername = JOptionPane.showInputDialog(this, "Enter folder name to create");
-
-      if (newFoldername != null) {
-         //create folder
-         try {
-            target.makeFolder(newFoldername);
-            refresh();
-         } catch (IOException ioe) {
-            log.error(ioe+", creating new folder '"+newFoldername+"'", ioe);
-            JOptionPane.showMessageDialog(this, ioe+", creating new folder '"+newFoldername+"'", "StoreBrowser", JOptionPane.ERROR_MESSAGE);
-         }
-      }
-   }
-
-   /**
-    * Copy selected item
-    *
-   public void copySelected()
-   {
-      //get selected myspace path
-      String path = getFullPath();
-      
-      //check a path (not just a folder) selected
-      if ((path == null) || (path.trim().length() == 0) || (path.endsWith("/"))) {
-         JOptionPane.showMessageDialog(this, "Select file to copy from");
-         return;
-      }
-
-      //get new name
-      String targetEntry = JOptionPane.showInputDialog(this, "target (Agsl or path from root)");
-      Agsl target;
-      try {
-         if (targetEntry.startsWith(Agsl.SCHEME)) {
-            target = new Agsl(targetEntry);
-         }
-         else {
-            target = fileView.getDelegate().getEndpoint();
-         }
-
-         fileView.getDelegate().copy(path, target);
-         fileView.refreshList();
-      }
-      catch (MalformedURLException mue) {
-         JOptionPane.showMessageDialog(this, "Invalid entry, should be of the form "+Agsl.FORM);
-      }
-      catch (IOException ioe) {
-         log.error("Copy of '"+path+"' failed", ioe);
-         JOptionPane.showMessageDialog(this, "Copy of '"+path+"' failed: "+ioe, "MySpace Browser", JOptionPane.ERROR_MESSAGE);
-      }
-      
-   }
-   
    /** Returns the currently selected file, which may be selected on the tree view,
     * or may be selected via a folder on teh tree view and a row selection on the folder
     * contents view */
@@ -574,18 +361,36 @@ public class StoreBrowser extends JDialog
      */
    public static void main(String[] args) throws IOException, URISyntaxException, IOException {
 
+      Image logo = ImageFactory.getImage("AstroGrid.gif");
+      logo = logo.getScaledInstance(70, 50,Image.SCALE_REPLICATE);
+      
+      Splash splash = new Splash("LARF", "Light Access to Remote Files                ", "1.0", Color.WHITE, Color.BLUE, logo, null);
+      
       SimpleConfig.getSingleton().setProperty("org.astrogrid.registry.query.endpoint", "http://capc49.ast.cam.ac.uk/galahad-registry/services/RegistryQuery");
       ConfigFactory.getCommonConfig().setProperty(Slinger.PERMIT_LOCAL_ACCESS_KEY, "true");
 
 //      Principal user = new IvoAccount("DSATEST1", "uk.ac.le.star", null);
-      Principal user = new IvoAccount("guest01", "uk.ac.le.star", null);
+      Principal user = new IvoAccount("martinhill", "uk.ac.le.star", null);
       if ((args.length>1)) {
          user = new IvoAccount(args[0]);
       }
-      StoreBrowser browser = new StoreBrowser(user);
+      
+      final StoreBrowser browser = new StoreBrowser(user);
+      browser.setIconImage(ImageFactory.getImage("Folder.gif"));
       browser.setLocation(100,100);
-      ((StoresList) browser.treeView.getModel().getRoot()).addTestStores();
+      //((StoresList) browser.treeView.getModel().getRoot()).addTestStores();
+      splash.hide();
       browser.show();
+      browser.setSize(DEF_SIZE_X, DEF_SIZE_Y);
+      browser.splitter.setDividerLocation(0.4);
+      //setting the divider location only works once the UI is displayed, so add to queue
+      SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+               // TODO - load from preferences
+               browser.setSize(DEF_SIZE_X,DEF_SIZE_Y);
+               browser.splitter.setDividerLocation(0.45);
+            }
+      });
    }
 }
 

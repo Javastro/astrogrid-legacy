@@ -8,6 +8,7 @@ package org.astrogrid.storebrowser.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog;
+import java.awt.Frame;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,12 +25,19 @@ public class PleaseWait extends JDialog
 {
    public PleaseWait(Dialog parent, String message) {
       super(parent, "Please Wait...", false); //not modal
+      setTitle("Please Wait...");
       init(message);
    }
 
+   public PleaseWait(Frame parent, String message) {
+      super(parent, "Please Wait...", false); //not modal
+      setTitle("Please Wait...");
+      init(message);
+   }
    
    public PleaseWait(String message) {
       super();
+      setTitle("Please Wait...");
       init(message);
    }
 
@@ -37,7 +45,7 @@ public class PleaseWait extends JDialog
    public void init(String message) {
       JPanel msgPanel = new JPanel(new BorderLayout());
       msgPanel.add(new JLabel(message), BorderLayout.CENTER);
-      this.getRootPane().add(msgPanel);
+      this.getContentPane().add(msgPanel);
       pack();
       invalidate();
       show();

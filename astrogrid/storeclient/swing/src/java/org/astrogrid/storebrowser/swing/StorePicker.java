@@ -1,5 +1,5 @@
 /*
- * $Id: StorePicker.java,v 1.5 2005/04/01 10:41:02 mch Exp $
+ * $Id: StorePicker.java,v 1.6 2005/04/04 01:10:15 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -30,7 +30,7 @@ import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.io.Piper;
 import org.astrogrid.slinger.Slinger;
-import org.astrogrid.storebrowser.tree.StoreFileNode;
+import org.astrogrid.storebrowser.tree.FileViewNode;
 import org.astrogrid.storebrowser.tree.StoreTreeView;
 import org.astrogrid.storebrowser.tree.StoresList;
 import org.astrogrid.file.FileNode;
@@ -284,12 +284,12 @@ public class StorePicker extends JDialog
 
 
    public void refresh() {
-      StoreFileNode node = treeView.getSelectedNode();
+      FileViewNode node = treeView.getSelectedNode();
       TreePath path = treeView.getSelectionPath();
       
       if (node != null) {
          if (node.isLeaf()) {
-            node = (StoreFileNode) node.getParent(); //refresh folder rather than file
+            node = (FileViewNode) node.getParent(); //refresh folder rather than file
             path = path.getParentPath();
          }
          
@@ -402,7 +402,7 @@ public class StorePicker extends JDialog
       if ((args.length>1)) {
          user = new IvoAccount(args[0]);
       }
-         FileNode picked = StorePicker.choose(user, "OK");
+         FileNode picked = StorePicker.choose(user, "Dump");
          System.out.println("Picked file "+picked+":");
          
          if ((picked != null) && (picked.isFile())) {
@@ -418,6 +418,9 @@ public class StorePicker extends JDialog
 
 /*
 $Log: StorePicker.java,v $
+Revision 1.6  2005/04/04 01:10:15  mch
+proper actions, better (not perfect) threading, started drag drop
+
 Revision 1.5  2005/04/01 10:41:02  mch
 threading, preferences
 

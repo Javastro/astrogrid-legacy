@@ -1,5 +1,5 @@
 /*
- * $Id: NodeFileAdder.java,v 1.2 2005/03/31 19:25:39 mch Exp $
+ * $Id: NodeFileAdder.java,v 1.3 2005/04/04 01:10:15 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -23,12 +23,12 @@ import org.astrogrid.file.FileNode;
 
 public class NodeFileAdder implements Runnable {
    
-   StoreFileNode parent;
+   FileViewNode parent;
    FileNode[] children;
    DefaultTreeModel model;
    Principal user;
    
-   public NodeFileAdder(StoreFileNode givenParent, FileNode[] givenChildren, DefaultTreeModel givenModel, Principal givenUser) {
+   public NodeFileAdder(FileViewNode givenParent, FileNode[] givenChildren, DefaultTreeModel givenModel, Principal givenUser) {
       this.parent = givenParent;
       this.children = givenChildren;
       this.model = givenModel;
@@ -46,7 +46,7 @@ public class NodeFileAdder implements Runnable {
             //LogFactory.getLog(NodeFileAdder.class).debug("Adding "+children[i]+" to "+parent);
             
             try {
-               StoreFileNode childNode = new StoreFileNode(model, parent, children[i], user);
+               FileViewNode childNode = new FileViewNode(model, parent, children[i], user);
                
                //bit of a botch - make sure child doesn't refer to parent before inserting
                childNode.setParent(null);

@@ -1,5 +1,5 @@
 /*
- * $Id: FolderPopupMenu.java,v 1.1 2005/04/02 12:51:23 mch Exp $
+ * $Id: FolderPopupMenu.java,v 1.2 2005/04/04 01:10:15 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,51 +9,33 @@
 
 package org.astrogrid.storebrowser.tree;
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import javax.swing.Icon;
+import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import org.astrogrid.file.FileNode;
+import org.astrogrid.storebrowser.tree.actions.CopyFromUrlAction;
 import org.astrogrid.storebrowser.tree.actions.DeleteAction;
+import org.astrogrid.storebrowser.tree.actions.RefreshAction;
+import org.astrogrid.storebrowser.tree.actions.SelectedFileGetter;
+import org.astrogrid.storebrowser.tree.actions.UploadAction;
 
 
 
 /**
- * Special renderer for store nodes in trees.  DefaultTreeCellRenderer subclasses
- * JLabel, which can take both icon and string
+ * popup menu for folders
  */
 
 public class FolderPopupMenu extends JPopupMenu {
 
-   Icon errorIcon = null;
-   
-   /** Initialise icons etc */
-   public FolderPopupMenu(DirectoryTreeModel dirtree, final StoreFileNode selectedNode) {
+   /** Creeate menu  */
+   public FolderPopupMenu(final SelectedFileGetter getter) {
 
-      JMenuItem refresh = new JMenuItem("Refresh");
-      refresh.addActionListener(
-         new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-               try {
-                  selectedNode.getFile().refresh();
-               }
-               catch (IOException ioe) {
-                  JOptionPane.showMessageDialog((Component) e.getSource(), ioe.getMessage(), "Refreshing "+selectedNode.getFile(), JOptionPane.ERROR);
-               }
-            }
-         }
-      );
-      add(refresh);
+      add(new JMenuItem(new RefreshAction(getter)));
 
-      JMenuItem delete = new JMenuItem("Delete");
-      delete.addActionListener(
-         new DeleteAction(dirtree, selectedNode)
-      );
-      add(delete);
+      add(new JMenuItem(new DeleteAction(getter)));
+      
+      add(new JMenuItem(new UploadAction(new JFileChooser(), getter)));
+
+      add(new JMenuItem(new CopyFromUrlAction(getter)));
       
    }
 

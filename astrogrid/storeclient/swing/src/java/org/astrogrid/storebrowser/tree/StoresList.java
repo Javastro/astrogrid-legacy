@@ -1,5 +1,5 @@
 /*
- * $Id: StoresList.java,v 1.5 2005/04/01 10:41:02 mch Exp $
+ * $Id: StoresList.java,v 1.6 2005/04/04 01:10:15 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -10,6 +10,7 @@
 package org.astrogrid.storebrowser.tree;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Enumeration;
@@ -52,7 +53,12 @@ public class StoresList extends DefaultMutableTreeNode {
 
       //add local filespace if appropriate
       if (ConfigFactory.getCommonConfig().getBoolean(PERMIT_LOCAL_ACCESS_KEY, false)) {
-         addStore("LocalDisk", "file://");
+         File[] localRoots = File.listRoots();
+         for (int i = 0; i < localRoots.length; i++) {
+            if (!localRoots[i].getPath().startsWith("A:")) { //leave off the floppy disk from the auto list as you get popup boxes
+               addStore(new StoreRootNode(model, this, localRoots[i].getPath(), localRoots[i], user));
+            }
+         }
       }
       
       //add configured stores
@@ -60,7 +66,7 @@ public class StoresList extends DefaultMutableTreeNode {
       String storeslist = prefs.get(USER_STORELIST_KEY, "");
       StringTokenizer s = new StringTokenizer(storeslist, ",");
       while (s.hasMoreTokens()) {
-         String storeUri = s.nextToken();
+         String storeUri = s.nextToken().trim();
          addStore(storeUri, storeUri);
       }
       
@@ -108,6 +114,10 @@ public class StoresList extends DefaultMutableTreeNode {
       throw new IllegalArgumentException("Store '"+name+"' not found");
    }
    
+   /** Remove given store */
+   public void removeStore(StoreRootNode delStore) {
+      children.remove(delStore);
+   }
    /** Returns a set of test/default stores.  This is mostly used for 'quick hack'
     * GUIs to have an initial set of stores.
     */

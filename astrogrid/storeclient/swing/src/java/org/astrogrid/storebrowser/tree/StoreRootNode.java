@@ -1,5 +1,5 @@
 /*
- * $Id: StoreRootNode.java,v 1.5 2005/04/01 01:54:56 mch Exp $
+ * $Id: StoreRootNode.java,v 1.6 2005/04/04 01:10:15 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,12 +9,14 @@
 
 package org.astrogrid.storebrowser.tree;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.Principal;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultTreeModel;
-import org.astrogrid.storebrowser.swing.ChildrenLoader;
+import javax.swing.tree.TreeNode;
+import org.astrogrid.file.LocalFile;
 import org.astrogrid.storeclient.StoreFileResolver;
 
 /**
@@ -24,7 +26,7 @@ import org.astrogrid.storeclient.StoreFileResolver;
  *
  */
 
-public class StoreRootNode extends StoreFileNode {
+public class StoreRootNode extends FileViewNode {
    
    String name = null;
    String uri = null;
@@ -37,12 +39,19 @@ public class StoreRootNode extends StoreFileNode {
       this.uri = storeUri;
    }
 
+   public StoreRootNode(DefaultTreeModel model, StoresList root, String storeName, File localFile, Principal aUser) throws IOException {
+      super(model, root, new LocalFile(localFile), aUser);
+      this.name = storeName;
+      this.uri = localFile.toURL().toString();
+   }
+
    /** Spawns a thread so that the display can work while we connect.  This is not
     * properly threadsafe - it's OK as the treview is written 'just now', ie make
     * sure you can't call refresh while calling this... */
    public synchronized void connect() {
 
       if (!connected) {
+         setCompleteness(CONNECTING);
          connected = true;
          InitialConnector loading = new InitialConnector(this);
          Thread loadingThread = new Thread(loading);
@@ -51,10 +60,18 @@ public class StoreRootNode extends StoreFileNode {
       
    }
    
+   /** Connect if not connected */
+   public void refresh() {
+      if (!connected) {
+         connect();
+      }
+      super.refresh();
+   }
+   
    /** Thread that connects and loads first children */
    public class InitialConnector implements Runnable {
       
-      StoreFileNode node = null;
+      FileViewNode node = null;
       
       public InitialConnector(StoreRootNode givenNode) {
          node = givenNode;
@@ -63,15 +80,45 @@ public class StoreRootNode extends StoreFileNode {
       public void run() {
          try {
             node.file = StoreFileResolver.resolveStoreFile(uri, user);
+            node.setCompleteness(FileViewNode.CONNECTED);
          }
          catch (URISyntaxException e) {
             setError(e+" resolving storefile at "+uri, e);
+            connected = false;
          }
          catch (IOException e) {
             setError(e+" resolving storefile at "+uri, e);
+            connected = false;
          }
-         SwingUtilities.invokeLater(new NodeChanger(node, node.model));
+         catch (Throwable e) {
+            setError(e+" resolving storefile at "+uri, e);
+            connected = false;
+         }
+         SwingUtilities.invokeLater(new NodePropertyChanger(node, node.model));
       }
+   }
+   
+      /** Simple class that makes the appropriate Swing component calls to update the
+    * display as files come in.  Use SwingUtilities.invokeLater() to call it, so
+    * that it's run from the GUI thread, as Swing components are not threadsafe */
+   public class NodePropertyChanger implements Runnable {
+
+      TreeNode node;
+      DefaultTreeModel model;
+      
+      public NodePropertyChanger(TreeNode givenNode, DefaultTreeModel givenModel) {
+         this.node = givenNode;
+         this.model = givenModel;
+         
+         assert (node != null) : "Node is null";
+         assert (model != null) : "Model is null";
+      }
+      
+      public void run() {
+
+         model.nodeChanged(node);
+      }
+      
    }
    
    public String getUri() {
