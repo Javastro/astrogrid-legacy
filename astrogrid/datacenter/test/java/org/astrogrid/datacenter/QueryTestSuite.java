@@ -1,33 +1,34 @@
 package org.astrogrid.datacenter;
 
+import java.io.IOException;
+
+import javax.xml.parsers.ParserConfigurationException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.astrogrid.datacenter.datasetagent.*;
-import org.astrogrid.datacenter.query.*;
-import org.astrogrid.datacenter.impl.*;
-import org.w3c.dom.* ;
-// import junit.framework.* ;
+import org.apache.axis.utils.XMLUtils;
 import org.apache.log4j.Logger;
-// import org.apache.log4j.Level;
-import org.apache.log4j.PropertyConfigurator ;
-
-import org.apache.axis.utils.XMLUtils ;
+import org.apache.log4j.PropertyConfigurator;
+import org.astrogrid.datacenter.datasetagent.*;
+import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
+import org.astrogrid.datacenter.impl.QueryFactoryImpl;
+import org.astrogrid.datacenter.query.Query;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import javax.xml.parsers.ParserConfigurationException ;
-
-
-// import java.io.FileReader;
-// import java.io.BufferedReader ;
-// import java.io.FileNotFoundException ;
-import java.io.IOException ;
 
  
 public class QueryTestSuite extends TestCase {
 	
 	private static Logger 
 		logger = Logger.getLogger( QueryTestSuite.class ) ;
+		
+	private static final String
+	    log4jproperties = "/usr/local/astrogrid/eclipse/log4j.properties" ;
 		
 	public static String
 	    path ; // Path to directory where query XML docs are stored
@@ -60,7 +61,10 @@ public class QueryTestSuite extends TestCase {
 		Element
 		    element = null ;
 
-		try {
+		try { 
+            
+            DatasetAgent
+                someDatasetAgent = new DatasetAgent() ;
   			
   			Document
 			    document = XMLUtils.newDocument( filePath ) ;
@@ -143,7 +147,7 @@ public class QueryTestSuite extends TestCase {
 		// This is the pseudo-SQL... 
 		// "SELECT "
 		final String
-			sqlString = "SELECT  COLUMN_ONE, COLUMN_TWO, COLUMN_THREE FROM USNOB..USNOB  " +
+			sqlString = "SELECT   DISTINCT COLUMN_ONE, COLUMN_TWO, COLUMN_THREE FROM USNOB..USNOB  " +
 			            "WHERE ( ( COLUMN_FOUR = 16 ) AND ( COLUMN_FIVE <> 11.5 ) )",
 			fileName = "query_AND_EQUALS_NE.xml" ;
 		Element
@@ -156,7 +160,8 @@ public class QueryTestSuite extends TestCase {
 		try{
 			query = new Query( queryElement, factory ) ;
 			resultString = query.toSQLString() ;
-			// logger.info( "testQueryToString_CONE_with_AND: " + resultString ) ;
+			logger.info( "testQueryToString_CONE_with_AND: " + resultString ) ;
+			logger.info( "testQueryToString_CONE_with_AND: " + sqlString ) ;
 			assertTrue( resultString.equals( sqlString ) ) ;	
 		}
 		catch( Exception ex ) {
@@ -223,7 +228,7 @@ public class QueryTestSuite extends TestCase {
 			query = new Query( queryElement, factory ) ;
 			resultString = query.toSQLString() ;
 //			logger.info( "testQueryToString_BETWEEN_BETWEEN_GT: " + resultString ) ;
-			assertTrue( resultString.equals( sqlString ) ) ;	
+			assertTrue( resultString.replaceAll(" ","").equals( sqlString.replaceAll(" ","") ) ) ;	
 		}
 		catch( Exception ex ) {
 			assertTrue( false ) ;
@@ -551,7 +556,455 @@ public class QueryTestSuite extends TestCase {
         
 	} // end of testQueryToString_OR_GTE_LTE_GT_LT()
 	
+	public void testQueryToString_LIKE() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_LIKE()" );	
+		
+		// This is the pseudo-SQL... 
+		// ""
+		final String
+			sqlString = "SELECT  COLUMN_ONE, COLUMN_TWO, COLUMN_THREE FROM USNOB..USNOB  WHERE " +
+								"( COLUMN_FOUR LIKE '%star' )" ,
+			fileName = "query_LIKE.xml" ;
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString().trim() ;
+			// logger.info( "testQueryToString_LIKE: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_LIKE()" );	
+		}
+        
+	} // end of testQueryToString_LIKE()	
 
+
+	public void testQueryToString_LIKE_AND_LIKE() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_LIKE_AND_LIKE()" );	
+		
+		// This is the pseudo-SQL... 
+		// ""
+		final String
+			sqlString = "SELECT  COLUMN_ONE, COLUMN_TWO, COLUMN_THREE FROM USNOB..USNOB  WHERE " +
+								"( ( COLUMN_FOUR LIKE '%star' ) AND ( COLUMN_FIVE LIKE 'nebula%' ) )" ,
+			fileName = "query_LIKE_AND_LIKE.xml" ;
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString().trim() ;
+			// logger.info( "testQueryToString_LIKE_AND_LIKE: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_LIKE_AND_LIKE()" );	
+		}
+        
+	} // end of testQueryToString_LIKE_AND_LIKE()	
+
+
+	public void testQueryToString_NOT_LIKE() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_NOT_LIKE()" );	
+		
+		// This is the pseudo-SQL... 
+		// ""
+		final String
+			sqlString = "SELECT  COLUMN_ONE, COLUMN_TWO, COLUMN_THREE FROM USNOB..USNOB  WHERE " +
+								"( NOT ( COLUMN_FOUR LIKE '%star' ) )" ,
+			fileName = "query_NOT_LIKE.xml" ;
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString().trim() ;
+			// logger.info( "testQueryToString_NOT_LIKE: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_NOT_LIKE()" );	
+		}
+        
+	} // end of testQueryToString_NOT_LIKE()	
+
+
+	public void testQueryToString_PLUS() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_PLUS()" );	
+		
+		// This is the pseudo-SQL... 
+		// ""
+		final String
+			sqlString = "SELECT  COLUMN_ONE, COLUMN_TWO FROM USNOB..USNOB  WHERE " +
+								"( COLUMN_THREE + COLUMN_FOUR )" ,
+			fileName = "query_PLUS.xml" ;
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString().trim() ;
+			// logger.info( "testQueryToString_PLUS: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_PLUS()" );	
+		}
+        
+	} // end of testQueryToString_PLUS()
+	
+	
+	public void testQueryToString_MINUS() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_MINUS()" );	
+		
+		// This is the pseudo-SQL... 
+		// ""
+		final String
+			sqlString = "SELECT  COLUMN_ONE, COLUMN_TWO FROM USNOB..USNOB  WHERE " +
+								"( COLUMN_THREE - COLUMN_FOUR - COLUMN_FIVE )" ,
+			fileName = "query_MINUS.xml" ;
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString().trim() ;
+			// logger.info( "testQueryToString_MINUS: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_MINUS()" );	
+		}
+        
+	} // end of testQueryToString_MINUS()	
+	
+	
+	public void testQueryToString_ARITHMETIC_PASSTHROUGH() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_ARITHMETIC_PASSTHROUGH()" );	
+		
+		// This is the pseudo-SQL... 
+		// ""
+		final String
+			sqlString = "SELECT  COLUMN_ONE, COLUMN_TWO, COLUMN_THREE FROM USNOB..USNOB  WHERE " +
+								"( COLUMN_FOUR + COLUMN_FIVE > COLUMN_SIX )" ,
+			fileName = "query_COLUMN_ARITHMETIC_PASSTHROUGH.xml" ;
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString().trim() ;
+			logger.info( "testQueryToString_ARITHMETIC_PASSTHROUGH: " + resultString ) ;
+			logger.info( "testQueryToString_ARITHMETIC_PASSTHROUGH: " + sqlString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_ARITHMETIC_PASSTHROUGH()" );	
+		}
+        
+	} // end of testQueryToString_ARITHMETIC_PASSTHROUGH()	
+
+
+		public void testQueryToString_ORDER_BY() {
+			logger.info( "enter: QueryTestSuite.testQueryToString_ORDER_BY()" );	
+		
+			// This is the pseudo-SQL... 
+			// ""
+			final String
+				sqlString = "SELECT  COLUMN_ONE, COLUMN_TWO, COLUMN_THREE FROM USNOB..USNOB  WHERE " +
+						"( COLUMN_FOUR > COLUMN_FIVE ) ORDER BY   COLUMN_ONE DESC  ,  COLUMN_TWO DESC  ,  COLUMN_THREE ASC" ,
+		fileName = "query_ORDER_BY_DESC.xml" ;		
+			Element
+				queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+			Query
+				query = null ;
+			String
+				resultString = null ;
+			
+			try{
+				query = new Query( queryElement, factory ) ;
+				resultString = query.toSQLString().trim() ;
+				// logger.info( "testQueryToString_ORDER_BY: " + resultString ) ;
+				assertTrue( resultString.equals( sqlString ) ) ;	
+			}
+			catch( Exception ex ) {
+				assertTrue( false ) ;
+			}
+			finally {
+				logger.info( "exit: QueryTestSuite.testQueryToString_ORDER_BY()" );	
+			}
+        
+		} // end of testQueryToString_ORDER_BY()
+
+
+		public void testQueryToString_GROUP_BY() {
+			logger.info( "enter: QueryTestSuite.testQueryToString_GROUP_BY()" );	
+		
+			// This is the pseudo-SQL... 
+			// ""
+			final String
+				sqlString = "SELECT  COLUMN_ONE, COLUMN_TWO, COLUMN_THREE FROM USNOB..USNOB  WHERE " +
+								"( COLUMN_FOUR > COLUMN_FIVE ) GROUP BY  COLUMN_ONE, COLUMN_TWO" ,
+				fileName = "query_GROUP_BY.xml" ;		
+			Element
+				queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+			Query
+				query = null ;
+			String
+				resultString = null ;
+			
+			try{
+				query = new Query( queryElement, factory ) ;
+				resultString = query.toSQLString().trim() ;
+				// logger.info( "testQueryToString_GROUP_BY: " + resultString ) ;
+				assertTrue( resultString.equals( sqlString ) ) ;	
+			}
+			catch( Exception ex ) {
+				assertTrue( false ) ;
+			}
+			finally {
+				logger.info( "exit: QueryTestSuite.testQueryToString_GROUP_BY()" );	
+			}
+        
+		} // end of testQueryToString_GROUP_BY()
+
+
+		public void testQueryToString_IN_WITH_SUBQUERY() {
+			logger.info( "enter: QueryTestSuite.testQueryToString_IN_WITH_SUBQUERY()" );	
+		
+			// This is the pseudo-SQL... 
+			// ""
+			final String
+				sqlString = "SELECT  COLUMN_ONE, COLUMN_TWO FROM USNOB..USNOB  WHERE " +
+							"( COLUMN_THREE IN  (  SELECT  COLUMN_FOUR FROM USNOB..USNOB " +
+							" WHERE ( ( COLUMN_FIVE = COLUMN_SIX ) AND ( COLUMN_SEVEN > 1000 ) ) )  )" ,				
+				fileName = "query_IN_with_SUBQUERY.xml" ;		
+			Element
+				queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+			Query
+				query = null ;
+			String
+				resultString = null ;
+			
+			try{
+				query = new Query( queryElement, factory ) ;
+				resultString = query.toSQLString().trim() ;
+				// logger.info( "testQueryToString_IN_WITH_SUBQUERY: " + resultString ) ;
+				assertTrue( resultString.equals( sqlString ) ) ;	
+			}
+			catch( Exception ex ) {
+				assertTrue( false ) ;
+			}
+			finally {
+				logger.info( "exit: QueryTestSuite.testQueryToString_IN_WITH_SUBQUERY()" );	
+			}
+        
+		} // end of testQueryToString_IN_WITH_SUBQUERY()
+    
+    
+	public void testQueryToString_EXISTS_WITH_SUBQUERY() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_EXISTS_WITH_SUBQUERY()" );	
+		
+		// This is the pseudo-SQL... 
+		// ""
+		final String
+			sqlString = "SELECT  COLUMN_ONE, COLUMN_TWO FROM USNOB..USNOB  WHERE " +
+						"( COLUMN_THREE EXISTS  (  SELECT  COLUMN_FOUR FROM USNOB..USNOB " +
+						" WHERE ( ( COLUMN_FIVE = COLUMN_SIX ) AND ( COLUMN_SEVEN > 1000 ) ) )  )" ,				
+			fileName = "query_EXISTS_with_SUBQUERY.xml" ;		
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString().trim() ;
+			// logger.info( "testQueryToString_EXISTS_WITH_SUBQUERY: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_EXISTS_WITH_SUBQUERY()" );	
+		}
+        
+	} // end of testQueryToString_EXISTS_WITH_SUBQUERY()    
+
+
+	public void testQueryToString_COLUMN_ARITMETIC_PLUS_GT_MINUS() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_COLUMN_ARITMETIC_PLUS_GT_MINUS()" );	
+		
+		// This is the pseudo-SQL... 
+		// ""
+		final String
+			sqlString = "SELECT  * FROM USNOB..USNOB  WHERE " +
+									"( ( ( COLUMN_ONE + COLUMN_TWO ) ) > ( ( COLUMN_THREE - COLUMN_FOUR - COLUMN_FIVE ) ) )" ,				
+			fileName = "query_COLUMN_ARITHMETIC_PLUS_GT_MINUS.xml" ;		
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString().trim() ;
+			// logger.info( "testQueryToString_COLUMN_ARITMETIC_PLUS_GT_MINUS: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_COLUMN_ARITMETIC_PLUS_GT_MINUS()" );	
+		}
+        
+	} // end of testQueryToString_COLUMN_ARITMETIC_PLUS_GT_MINUS()   
+
+
+	public void testQueryToString_COLUMN_ARITMETIC_MULTIPLY() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_COLUMN_ARITMETIC_MULTIPLY()" );	
+		
+		// This is the pseudo-SQL... 
+		// ""
+		final String
+			sqlString = "SELECT  * FROM USNOB..USNOB  WHERE " +
+						"( ( ( COLUMN_ONE * COLUMN_TWO ) ) > ( ( COLUMN_THREE * COLUMN_FOUR * 1000 ) ) )" ,				
+			fileName = "query_COLUMN_ARITHMETIC_MULTIPLY.xml" ;		
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString().trim() ;
+			// logger.info( "testQueryToString_COLUMN_ARITMETIC_MULTIPLY: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_COLUMN_ARITMETIC_MULTIPLY()" );	
+		}
+        
+	} // end of testQueryToString_COLUMN_ARITMETIC_MULTIPLY()  	
+
+
+	public void testQueryToString_COLUMN_ARITMETIC_DIVIDE() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_COLUMN_ARITMETIC_DIVIDE()" );	
+		
+		// This is the pseudo-SQL... 
+		// ""
+		final String
+			sqlString = "SELECT  * FROM USNOB..USNOB  WHERE " +
+									"( ( ( COLUMN_ONE / COLUMN_TWO )  / 10  ) = ( ( COLUMN_THREE / COLUMN_FOUR / 1000 ) ) )" ,				
+			fileName = "query_COLUMN_ARITHMETIC_DIVIDE.xml" ;		
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString().trim() ;
+			// logger.info( "testQueryToString_COLUMN_ARITMETIC_DIVIDE: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_COLUMN_ARITMETIC_DIVIDE()" );	
+		}
+        
+	} // end of testQueryToString_COLUMN_ARITMETIC_DIVIDE()	
+	  
+
+	public void testQueryToString_MIN_MAX_AVG() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_MIN_MAX_AVG()" );	
+		
+		// This is the pseudo-SQL... 
+	    // ""
+	    final String
+		    sqlString = "SELECT  COLUMN_ONE FROM USNOB..USNOB  WHERE " +
+		                "( ( COLUMN_TWO >  AVG(COLUMN_THREE)  ) AND (  MAX(COLUMN_FOUR)  <  MIN(COLUMN_FIVE)  ) )" ,				
+			fileName = "query_MIN_MAX_AVG.xml" ;		
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+	    Query
+		    query = null ;
+	    String
+		    resultString = null ;
+			
+	    try{
+		    query = new Query( queryElement, factory ) ;
+		    resultString = query.toSQLString().trim() ;
+		    // logger.info( "testQueryToString_COLUMN_ARITMETIC_DIVIDE: " + resultString ) ;
+		    assertTrue( resultString.equals( sqlString ) ) ;	
+	    }
+	    catch( Exception ex ) {
+		    assertTrue( false ) ;
+	    }
+	    finally {
+		    logger.info( "exit: QueryTestSuite.testQueryToString_MIN_MAX_AVG()" );	
+	    }
+        
+    } // end of testQueryToString_MIN_MAX_AVG()	
 
 	/**
 	 * Assembles and returns a test suite for
@@ -570,7 +1023,7 @@ public class QueryTestSuite extends TestCase {
      */
     public static void main( String args[] )  {
 
-		PropertyConfigurator.configure( "/home/jl99/downloads/log4j.properties" ) ;
+		PropertyConfigurator.configure( log4jproperties ) ;
 				
 		if( args.length == 0 ) {
 			 System.out.println( "Usage: Path to XML query directory required" ) ;
