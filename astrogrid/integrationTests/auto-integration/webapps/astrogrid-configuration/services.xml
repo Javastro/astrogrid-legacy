@@ -1,19 +1,19 @@
 <?xml version="1.0" ?>
 <services>
 <!-- configuration file for scripting - lists all known services. -->
-<service type="Application">
+<service type="CEA">
         <endpoint>@TOMCATROOT@/astrogrid-cea-commandline-@VERSION@/services/CommonExecutionConnectorService</endpoint>
         <description>cea command-line provider</description>
 </service>
-<service type="Application">
+<service type="CEA">
         <endpoint>@TOMCATROOT@/astrogrid-cea-server-@VERSION@/services/CommonExecutionConnectorService</endpoint>
         <description>cea java provider</description>
 </service>
-<service type="Application">
+<service type="CEA">
         <endpoint>@TOMCATROOT@/astrogrid-cea-http-@VERSION@/services/CommonExecutionConnectorService</endpoint>
         <description>cea http provider</description>
 </service>
-<service type="Application">
+<service type="CEA">
         <endpoint>@TOMCATROOT@/astrogrid-pal-@VERSION@/services/CommonExecutionConnectorService</endpoint>
         <description>cea datacenter provider</description>
 </service>
