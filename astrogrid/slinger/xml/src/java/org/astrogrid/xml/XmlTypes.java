@@ -1,5 +1,5 @@
 /*
- * $Id: XmlTypes.java,v 1.1 2005/03/10 14:45:54 mch Exp $
+ * $Id: XmlTypes.java,v 1.2 2005/03/10 16:29:31 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,7 +14,6 @@ package org.astrogrid.xml;
  */
 
 import java.util.Date;
-import org.astrogrid.dataservice.out.tables.VoTableWriter;
 
 public class XmlTypes  {
    
@@ -64,6 +63,9 @@ public class XmlTypes  {
 
 /*
  $Log: XmlTypes.java,v $
+ Revision 1.2  2005/03/10 16:29:31  mch
+ removed dead import
+
  Revision 1.1  2005/03/10 14:45:54  mch
  For handlign XML types
 
