@@ -5,6 +5,10 @@
   </properties>
   <body>
   <release version="HEAD">
+        <action dev="jl" type="fix" issue="670"> MySpace Explorer changes aimed largely at (1) eliminating errant nesting of folders. There appear to be three 
+            sources for this error. Two have been eliminated. The other (introducing a file on the same level as a folder with the same name) I am raising 
+            another bug for. But also included...(2) Tidied up headings and field names on micro-browser. and (3) Partly strengthened the error checking on the 
+            m-b aswell. </action>
         <action dev="kmb" type="fix" issue="787">
             Pending....
         </action>    
