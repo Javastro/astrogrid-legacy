@@ -19,8 +19,9 @@ import org.astrogrid.portal.utils.acting.ActionUtilsFactory;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.delegate.StoreClient; 
 import org.astrogrid.store.delegate.StoreDelegateFactory; 
-
-import org.astrogrid.datacenter.sqlparser.Sql2Adql074;
+//bug 566 --clq2
+//import org.astrogrid.datacenter.sqlparser.Sql2Adql074;
+import org.astrogrid.datacenter.query.Sql2Adql;
 
 import org.apache.avalon.framework.logger.ConsoleLogger;
 
@@ -116,8 +117,11 @@ public class MySpaceSaveAction extends AbstractAction {
 //              adqlAsString = " " ;
 //          }
           
-//          session.setAttribute( SESSIONKEY_ADQL_AS_STRING, adqlAsString ) ;       
-          adqlAsXML = Sql2Adql074.translate( adqlAsString ) ;      
+//          session.setAttribute( SESSIONKEY_ADQL_AS_STRING, adqlAsString ) ;
+
+          //bug 566 -clq2
+          //adqlAsXML = Sql2Adql074.translate( adqlAsString ) ;
+		  adqlAsXML =  Sql2Adql.translateToAdql074( adqlAsString ) ;
           logger.debug("[act] adqlAsXML (x): " + adqlAsXML);
       
           // JL. This is a hack. 
