@@ -187,7 +187,8 @@ public class RegistryAdminService {
 
       hasStyleSheet = conf.getBoolean("org.astrogrid.registry.updatestylesheet." + versionNumber,false);
       if(hasStyleSheet) {
-         System.out.println("lets call transform update");
+         //System.out.println("lets call transform update");
+         log.info("performing transformation before analysis of update for versionNumber = " + versionNumber);
          xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),versionNumber);
       } else {
          xsDoc = update;
@@ -234,7 +235,7 @@ public class RegistryAdminService {
       boolean addManageError = false;
       String manageNodeVal = null;
       
-      log.info("here is the nl length = " + nl.getLength());
+      //log.info("here is the nl length = " + nl.getLength());
       
       final int resourceNum = nl.getLength();
       //go through the various resource entries.
@@ -355,6 +356,19 @@ public class RegistryAdminService {
                         for(int k = 0;k < manageList.getLength();k++) {
                             manageNodeVal = manageList.item(k).getFirstChild().getNodeValue();
                             if(manageNodeVal != null && manageNodeVal.trim().length() > 0) {
+                                /*
+                                 Need to think about this a little more.
+                                if(((HashMap)otherAuths.get(versionNumber)).containsKey(manageNodeVal)) {
+                                    log.error(
+                                    "Update Successfull, but when trying to update a Registry with authority id = " +
+                                    ident + "; Found an AuthorityID already owned by another Registry, " +
+                                    "the authority id in conflict is: " + manageNodeVal);
+                                    al.add(
+                                      "Update Successfull, but when trying to update a Registry with authority id = " +
+                                      ident + "; Found an AuthorityID already owned by another Registry, " +
+                                      "the authority id in conflict is: " + manageNodeVal);
+                                }
+                                */
                                 ((HashMap)otherAuths.get(versionNumber)).put(manageNodeVal,null);
                             }//if
                         }//for
@@ -684,6 +698,8 @@ public class RegistryAdminService {
       String tempIdent = null;
 
       XSLHelper xs = new XSLHelper();
+
+      
       
       //Okay we need to get the vr attribute namespace.
       //The confusing part is since we are using message style there is a chance it 
@@ -697,12 +713,28 @@ public class RegistryAdminService {
       //NodeList nl = DomHelper.getNodeListTags(update,"Resource","vr");
       NodeList nl = update.getElementsByTagNameNS("*","Resource");
       log.info("the nl length of resoruces = " + nl.getLength());
-      String attrVersion = RegistryServerHelper.getRegistryVersionFromNode(nl.item(0));
+      String attrVersion = conf.getString("org.astrogrid.registry.version");
+      if(nl.getLength() > 0) {
+          attrVersion = RegistryServerHelper.getRegistryVersionFromNode(nl.item(0)); 
+      }
       String vrNS = "http://www.ivoa.net/xml/VOResource/v" + attrVersion;
       String versionNumber = attrVersion.replace('.','_');      
       String collectionName = "astrogridv" + versionNumber;
       String defaultNS = null;
       log.info("Collection Name = " + collectionName);
+      
+      boolean hasStyleSheet = conf.getBoolean("org.astrogrid.registry.updatestylesheet." + versionNumber,false);
+      Document xsDoc = null;
+      if(hasStyleSheet) {
+         //System.out.println("lets call transform update");
+         log.info("performing transformation before analysis of update for versionNumber = " + versionNumber);
+         xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),versionNumber);
+      } else {
+         xsDoc = update;
+      }
+      nl = xsDoc.getElementsByTagNameNS("*","Resource");
+      
+      //System.out.println("the xsdoc in updateNocheck = " + DomHelper.DocumentToString(xsDoc));
       log.info("Number of Resources = " + nl.getLength());
       UpdateDBService udbService = new UpdateDBService();
       
@@ -738,7 +770,8 @@ public class RegistryAdminService {
          if(defaultNS != null && defaultNS.trim().length() > 0) {
              currentResource.setAttribute("xmlns",defaultNS);
          }             
-         root = update.createElement("AstrogridResource");
+         //root = update.createElement("AstrogridResource");
+         root = xsDoc.createElement("AstrogridResource");
          root.appendChild(currentResource);
          RegistryServerHelper.
              addStatusMessage("Entering new entry: " + tempIdent);

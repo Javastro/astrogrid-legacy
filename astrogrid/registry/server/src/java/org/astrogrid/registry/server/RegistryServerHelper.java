@@ -75,8 +75,12 @@ public class RegistryServerHelper {
       String regVersion;
       NodeList nl = ((Element)nd).getElementsByTagNameNS("*","Identifier" );
       if(nl.getLength() == 0) {
+          nl = ((Element)nd).getElementsByTagNameNS("*","identifier" );
+      }
+      if(nl.getLength() == 0) {
           throw new IOException("Canot find an Identifier element");
       }
+      
       NodeList authNodeList = ((Element)nl.item(0)).getElementsByTagNameNS("*","AuthorityID");
       String val = null;
       if(authNodeList.getLength() == 0) {
@@ -223,7 +227,7 @@ public class RegistryServerHelper {
            manageAuthorities = new HashMap();
        QueryDBService qdb = new QueryDBService();       
        String xqlQuery = RegistryServerHelper.getXQLDeclarations(regVersion) + 
-                         " for $x in //vr:Resource where @xsi:type='RegistryType'" +
+                         " for $x in //vr:Resource where @xsi:type |= '*Registry*'" +
                          " return $x";
        Document registries = qdb.runQuery(collectionName,xqlQuery);
        //System.out.println("the result of processManaged registries = " + DomHelper.DocumentToString(registries));
@@ -235,10 +239,12 @@ public class RegistryServerHelper {
        //System.out.println("in processManagedAuthorities the regAuthID = " + regAuthID);
        for(int j = 0;j < resources.getLength();j++) {
            NodeList mgList = ((Element)resources.item(j)).getElementsByTagNameNS("*","ManagedAuthority");
+           if(mgList.getLength() == 0) {
+               mgList = ((Element)resources.item(j)).getElementsByTagNameNS("*","managedauthority");
+           }
            for(int i = 0;i < mgList.getLength();i++) {
                val = mgList.item(i).getFirstChild().getNodeValue();
                tempHash.put(val,null);
-               //System.out.println("the mgList val = " + val);
                if(val != null && regAuthID.equals(val.trim()))
                    sameRegistry = true;
            }//for
