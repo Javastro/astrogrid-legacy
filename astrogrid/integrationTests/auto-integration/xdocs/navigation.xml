@@ -8,7 +8,7 @@
        <item name="AstroGrid" href="http://www.astrogrid.org"/>
     </links>
     <menu name="Testing">
-      <item name="Results"     href="junit-report.html"/>
+      <item name="Summary Results"     href="junit-report.html"/>
       <item name="Detailed Results" href="junit-full/index.html" />
       <item name="I and R Wiki Page" href="http://wiki.astrogrid.org/bin/view/Astrogrid/Itn05IntegrationRelease"/>
     </menu>
