@@ -7,7 +7,10 @@ import org.astrogrid.mySpace.mySpaceServer.ServerManager;
  * @testfamily JUnit
  * @testkind testcase
  * @testsetup Empty TestCase
- * @testedclass org.astrogrid.mySpace.mySpaceServer.ServerManager*/
+ * @testedclass org.astrogrid.mySpace.mySpaceServer.ServerManager
+ * @author C L Qin
+ * @version Iteration 2.
+ * */
 public class TestServerManager extends TestCase {
     /** Constructs a test case with the given name. */
     public TestServerManager(String name) {

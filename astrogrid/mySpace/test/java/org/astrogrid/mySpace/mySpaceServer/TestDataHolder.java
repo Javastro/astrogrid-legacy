@@ -7,7 +7,10 @@ import org.astrogrid.mySpace.mySpaceServer.DataHolder;
  * @testfamily JUnit
  * @testkind testcase
  * @testsetup Empty TestCase
- * @testedclass org.astrogrid.mySpace.mySpaceServer.DataHolder*/
+ * @testedclass org.astrogrid.mySpace.mySpaceServer.DataHolder
+ * @author C L Qin
+ * @version Iteration 2.
+ * */
 public class TestDataHolder extends TestCase {
     /** Constructs a test case with the given name. */
     public TestDataHolder(String name) {

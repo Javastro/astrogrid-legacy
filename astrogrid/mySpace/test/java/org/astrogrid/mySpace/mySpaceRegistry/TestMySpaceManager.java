@@ -7,7 +7,10 @@ import org.astrogrid.mySpace.mySpaceRegistry.MySpaceManager;
  * @testfamily JUnit
  * @testkind testcase
  * @testsetup Empty TestCase
- * @testedclass org.astrogrid.mySpace.mySpaceRegistry.MySpaceManager*/
+ * @testedclass org.astrogrid.mySpace.mySpaceRegistry.MySpaceManager
+ * @author C L Qin
+ * @version Iteration 2.
+ * */
 public class TestMySpaceManager extends TestCase {
     /** Constructs a test case with the given name. */
     public TestMySpaceManager(String name) {
