@@ -1,4 +1,4 @@
-/*$Id: SubmitStoreFailureTest.java,v 1.4 2004/03/15 00:06:57 nw Exp $
+/*$Id: SubmitStoreFailureTest.java,v 1.5 2004/03/15 00:32:01 nw Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.jes.jobcontroller;
 
 import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
 import org.astrogrid.jes.impl.workflow.MockJobFactoryImpl;
-import org.astrogrid.jes.jobscheduler.MockJobScheduler;
+import org.astrogrid.jes.jobscheduler.impl.MockSchedulerImpl;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 /** Test behaviour of job controller when store breaks down.
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Feb-2004
@@ -31,7 +31,7 @@ public class SubmitStoreFailureTest extends AbstractTestForJobController {
     protected void performTest(JobURN urn) throws Exception {
         assertNotNull(seenException);
         // don't expect notifier to have been called.
-        assertEquals(0,((MockJobScheduler )nudger).getCallCount());
+        assertEquals(0,((MockSchedulerImpl )nudger).getCallCount());
     }
     /**
      * @see org.astrogrid.jes.jobcontroller.AbstractTest#createJobFactory()
@@ -45,6 +45,9 @@ public class SubmitStoreFailureTest extends AbstractTestForJobController {
 
 /* 
 $Log: SubmitStoreFailureTest.java,v $
+Revision 1.5  2004/03/15 00:32:01  nw
+merged contents of comm package into jobscheduler package.
+
 Revision 1.4  2004/03/15 00:06:57  nw
 removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
 

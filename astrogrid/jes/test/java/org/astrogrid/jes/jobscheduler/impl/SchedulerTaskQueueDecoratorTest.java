@@ -1,4 +1,4 @@
-/*$Id: MemoryQueueSchedulerNotifierTest.java,v 1.4 2004/03/15 00:06:57 nw Exp $
+/*$Id: SchedulerTaskQueueDecoratorTest.java,v 1.1 2004/03/15 00:32:01 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,9 +8,9 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.jes.comm;
+package org.astrogrid.jes.jobscheduler.impl;
 
-import org.astrogrid.jes.jobscheduler.MockJobScheduler;
+import org.astrogrid.jes.jobscheduler.impl.MockSchedulerImpl;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
@@ -21,22 +21,22 @@ import junit.framework.TestCase;
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Feb-2004
  *
  */
-public class MemoryQueueSchedulerNotifierTest extends TestCase {
+public class SchedulerTaskQueueDecoratorTest extends TestCase {
     /**
      * Constructor for MemoryQueueSchedulerNotifierTest.
      * @param arg0
      */
-    public MemoryQueueSchedulerNotifierTest(String arg0) {
+    public SchedulerTaskQueueDecoratorTest(String arg0) {
         super(arg0);
     }
     
     protected void setUp() throws Exception {
-        js = new MockJobScheduler();
-        q = new MemoryQueueSchedulerNotifier(js);
+        js = new MockSchedulerImpl();
+        q = new SchedulerTaskQueueDecorator(js);
     }
     
-    protected MemoryQueueSchedulerNotifier q;
-    protected MockJobScheduler js;
+    protected SchedulerTaskQueueDecorator q;
+    protected MockSchedulerImpl js;
     
     public void testSimpleNewJob() throws Exception {
         JobURN urn = new JobURN("jes:some:urn");
@@ -66,7 +66,10 @@ public class MemoryQueueSchedulerNotifierTest extends TestCase {
 
 
 /* 
-$Log: MemoryQueueSchedulerNotifierTest.java,v $
+$Log: SchedulerTaskQueueDecoratorTest.java,v $
+Revision 1.1  2004/03/15 00:32:01  nw
+merged contents of comm package into jobscheduler package.
+
 Revision 1.4  2004/03/15 00:06:57  nw
 removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
 

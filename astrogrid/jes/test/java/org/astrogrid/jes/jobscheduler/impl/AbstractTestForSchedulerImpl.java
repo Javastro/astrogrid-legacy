@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForJobScheduler.java,v 1.3 2004/03/05 16:16:55 nw Exp $
+/*$Id: AbstractTestForSchedulerImpl.java,v 1.1 2004/03/15 00:32:01 nw Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,9 +8,11 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.jes.jobscheduler;
+package org.astrogrid.jes.jobscheduler.impl;
 
 import org.astrogrid.jes.jobcontroller.AbstractTestForJobController;
+import org.astrogrid.jes.jobscheduler.Dispatcher;
+import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
 import org.astrogrid.jes.jobscheduler.policy.MockPolicy;
 
@@ -20,12 +22,12 @@ import org.astrogrid.jes.jobscheduler.policy.MockPolicy;
  * @author Noel Winstanley nw@jb.man.ac.uk 13-Feb-2004
  *
  */
-public abstract class AbstractTestForJobScheduler extends AbstractTestForJobController {
+public abstract class AbstractTestForSchedulerImpl extends AbstractTestForJobController {
     /**
      * Constructor for JobSchedulerTest.
      * @param arg0
      */
-    public AbstractTestForJobScheduler(String arg0) {
+    public AbstractTestForSchedulerImpl(String arg0) {
         super(arg0);
     }
     
@@ -33,7 +35,7 @@ public abstract class AbstractTestForJobScheduler extends AbstractTestForJobCont
         super.setUp();
         dispatcher = createDispatcher();
         policy = createPolicy();
-        js = new JobScheduler(facade,dispatcher,policy);
+        js = new SchedulerImpl(facade,dispatcher,policy);
         
     }
     
@@ -47,14 +49,17 @@ public abstract class AbstractTestForJobScheduler extends AbstractTestForJobCont
     
     protected Policy policy;
     protected Dispatcher dispatcher;
-    protected JobScheduler js;
+    protected SchedulerImpl js;
     
 
 }
 
 
 /* 
-$Log: AbstractTestForJobScheduler.java,v $
+$Log: AbstractTestForSchedulerImpl.java,v $
+Revision 1.1  2004/03/15 00:32:01  nw
+merged contents of comm package into jobscheduler package.
+
 Revision 1.3  2004/03/05 16:16:55  nw
 worked now object model through jes.
 implemented basic scheduling policy

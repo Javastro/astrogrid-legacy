@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.3 2004/03/05 16:16:55 nw Exp $
+/*$Id: AllTests.java,v 1.4 2004/03/15 00:32:01 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,8 @@
  *
 **/
 package org.astrogrid.jes.jobscheduler;
+import org.astrogrid.jes.jobscheduler.impl.*;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 /**
@@ -22,17 +24,19 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("Test for org.astrogrid.jes.jobscheduler");
         //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(SubmitNewJobNotifierFailsTest.class));
-        suite.addTest(new TestSuite(SubmitNewJobSuccessTest.class));
-        suite.addTest(new TestSuite(ResumeJobSuccessTest.class));
         //$JUnit-END$
         suite.addTest(org.astrogrid.jes.jobscheduler.locator.AllTests.suite());
         suite.addTest(org.astrogrid.jes.jobscheduler.dispatcher.AllTests.suite());
+        suite.addTest(org.astrogrid.jes.jobscheduler.impl.AllTests.suite());
+        suite.addTest(org.astrogrid.jes.jobscheduler.policy.AllTests.suite());
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.4  2004/03/15 00:32:01  nw
+merged contents of comm package into jobscheduler package.
+
 Revision 1.3  2004/03/05 16:16:55  nw
 worked now object model through jes.
 implemented basic scheduling policy

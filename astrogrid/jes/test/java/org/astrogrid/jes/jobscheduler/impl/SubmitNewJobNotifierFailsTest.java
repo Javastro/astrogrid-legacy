@@ -1,4 +1,4 @@
-/*$Id: SubmitNewJobNotifierFailsTest.java,v 1.7 2004/03/10 14:37:35 nw Exp $
+/*$Id: SubmitNewJobNotifierFailsTest.java,v 1.1 2004/03/15 00:32:01 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,9 +8,10 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.jes.jobscheduler;
+package org.astrogrid.jes.jobscheduler.impl;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
+import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
 import org.astrogrid.jes.util.JesFunctions;
 import org.astrogrid.jes.util.JesUtil;
@@ -24,7 +25,7 @@ import java.util.Iterator;
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Feb-2004
  *
  */
-public class SubmitNewJobNotifierFailsTest extends AbstractTestForJobScheduler{
+public class SubmitNewJobNotifierFailsTest extends AbstractTestForSchedulerImpl{
     /** Construct a new SubmitNewJobNotifierFailsTest
      * 
      */
@@ -74,6 +75,9 @@ public class SubmitNewJobNotifierFailsTest extends AbstractTestForJobScheduler{
 
 /* 
 $Log: SubmitNewJobNotifierFailsTest.java,v $
+Revision 1.1  2004/03/15 00:32:01  nw
+merged contents of comm package into jobscheduler package.
+
 Revision 1.7  2004/03/10 14:37:35  nw
 adjusted tests to handle an empty workflow
 

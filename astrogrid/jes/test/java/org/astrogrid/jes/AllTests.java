@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.8 2004/03/05 16:16:55 nw Exp $
+/*$Id: AllTests.java,v 1.9 2004/03/15 00:32:01 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,6 @@ public class AllTests {
         suite.addTest(org.astrogrid.jes.impl.workflow.AllTests.suite());
         suite.addTest(org.astrogrid.jes.jobmonitor.AllTests.suite());
         suite.addTest(org.astrogrid.jes.jobscheduler.AllTests.suite());
-        suite.addTest(org.astrogrid.jes.comm.AllTests.suite());
         suite.addTest(org.astrogrid.jes.component.AllTests.suite());
         suite.addTest(org.astrogrid.jes.jobscheduler.policy.AllTests.suite());
         return suite;
@@ -41,6 +40,9 @@ public class AllTests {
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.9  2004/03/15 00:32:01  nw
+merged contents of comm package into jobscheduler package.
+
 Revision 1.8  2004/03/05 16:16:55  nw
 worked now object model through jes.
 implemented basic scheduling policy

@@ -1,4 +1,4 @@
-/*$Id: SOAPJobMonitorTest.java,v 1.4 2004/03/15 00:06:57 nw Exp $
+/*$Id: SOAPJobMonitorTest.java,v 1.5 2004/03/15 00:32:01 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import org.astrogrid.jes.component.ComponentManager;
 import org.astrogrid.jes.component.ComponentManagerFactory;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.jes.delegate.JobMonitor;
-import org.astrogrid.jes.jobscheduler.MockJobScheduler;
+import org.astrogrid.jes.jobscheduler.impl.MockSchedulerImpl;
 import org.astrogrid.jes.testutils.io.FileResourceLoader;
 import org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
@@ -73,7 +73,7 @@ public class SOAPJobMonitorTest extends AbstractTestForSOAPService {
     public void testEmptyData() throws Exception {
         delegate.monitorJob(id,info);
         assertTrue("notification times out",barrier.attempt(Sync.ONE_SECOND * 10));
-        MockJobScheduler noti = (MockJobScheduler)ComponentManagerFactory.getInstance().getNotifier();
+        MockSchedulerImpl noti = (MockSchedulerImpl)ComponentManagerFactory.getInstance().getNotifier();
         assertEquals(1,noti.getCallCount());
     }
     
@@ -105,6 +105,9 @@ public class SOAPJobMonitorTest extends AbstractTestForSOAPService {
 
 /* 
 $Log: SOAPJobMonitorTest.java,v $
+Revision 1.5  2004/03/15 00:32:01  nw
+merged contents of comm package into jobscheduler package.
+
 Revision 1.4  2004/03/15 00:06:57  nw
 removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
 

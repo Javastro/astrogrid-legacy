@@ -1,4 +1,4 @@
-/*$Id: SubmitNotifierFailureTest.java,v 1.4 2004/03/15 00:06:57 nw Exp $
+/*$Id: SubmitNotifierFailureTest.java,v 1.5 2004/03/15 00:32:01 nw Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,9 @@
 **/
 package org.astrogrid.jes.jobcontroller;
 
-import org.astrogrid.jes.comm.JobScheduler;
 import org.astrogrid.jes.impl.workflow.InMemoryJobFactoryImpl;
-import org.astrogrid.jes.jobscheduler.MockJobScheduler;
+import org.astrogrid.jes.jobscheduler.JobScheduler;
+import org.astrogrid.jes.jobscheduler.impl.MockSchedulerImpl;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 /** Test what happens when notifier fails.
@@ -34,7 +34,7 @@ public class SubmitNotifierFailureTest extends AbstractTestForJobController {
     protected void performTest(JobURN urn) throws Exception {
         assertNotNull(seenException);
         // check notifier was called - double check we failed in the right place.
-        assertTrue(((MockJobScheduler)nudger).getCallCount() > 0);
+        assertTrue(((MockSchedulerImpl)nudger).getCallCount() > 0);
 
         // look into store - shoudn't be an entry in the store for it. (i.e. should have been cleaned out when failed to submit).
         // in this case, means the store should be empty.
@@ -45,7 +45,7 @@ public class SubmitNotifierFailureTest extends AbstractTestForJobController {
      * @see org.astrogrid.jes.jobcontroller.AbstractTest#createNotifier()
      */
     protected JobScheduler createNotifier() {
-        return new MockJobScheduler(false);
+        return new MockSchedulerImpl(false);
     }
 
 }
@@ -53,6 +53,9 @@ public class SubmitNotifierFailureTest extends AbstractTestForJobController {
 
 /* 
 $Log: SubmitNotifierFailureTest.java,v $
+Revision 1.5  2004/03/15 00:32:01  nw
+merged contents of comm package into jobscheduler package.
+
 Revision 1.4  2004/03/15 00:06:57  nw
 removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
 

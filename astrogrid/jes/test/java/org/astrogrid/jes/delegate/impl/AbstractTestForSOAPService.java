@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForSOAPService.java,v 1.4 2004/03/15 00:06:57 nw Exp $
+/*$Id: AbstractTestForSOAPService.java,v 1.5 2004/03/15 00:32:01 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,11 @@
 **/
 package org.astrogrid.jes.delegate.impl;
 
-import org.astrogrid.jes.comm.JobScheduler;
 import org.astrogrid.jes.component.BasicComponentManager;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
-import org.astrogrid.jes.jobscheduler.MockJobScheduler;
+import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
+import org.astrogrid.jes.jobscheduler.impl.MockSchedulerImpl;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 
@@ -58,7 +58,7 @@ public class AbstractTestForSOAPService extends TestCase {
     
     }
     /** scheduler notifier that releases barrier when finished */
-    protected static class MyMockJobScheduler extends MockJobScheduler {
+    protected static class MyMockJobScheduler extends MockSchedulerImpl {
         public MyMockJobScheduler(Sync barrier) throws InterruptedException {
             this.barrier = barrier;
             barrier.acquire();
@@ -80,6 +80,9 @@ public class AbstractTestForSOAPService extends TestCase {
 
 /* 
 $Log: AbstractTestForSOAPService.java,v $
+Revision 1.5  2004/03/15 00:32:01  nw
+merged contents of comm package into jobscheduler package.
+
 Revision 1.4  2004/03/15 00:06:57  nw
 removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
 

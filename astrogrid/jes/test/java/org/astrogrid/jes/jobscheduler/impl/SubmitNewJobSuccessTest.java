@@ -1,4 +1,4 @@
-/*$Id: SubmitNewJobSuccessTest.java,v 1.7 2004/03/10 14:37:35 nw Exp $
+/*$Id: SubmitNewJobSuccessTest.java,v 1.1 2004/03/15 00:32:01 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.jes.jobscheduler;
+package org.astrogrid.jes.jobscheduler.impl;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
@@ -20,7 +20,7 @@ import org.astrogrid.workflow.beans.v1.execution.JobURN;
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Feb-2004
  *
  */
-public class SubmitNewJobSuccessTest extends AbstractTestForJobScheduler {
+public class SubmitNewJobSuccessTest extends AbstractTestForSchedulerImpl {
     /** Construct a new SubmitNewJobSuccessTest
      * @param arg0
      */
@@ -54,6 +54,9 @@ public class SubmitNewJobSuccessTest extends AbstractTestForJobScheduler {
 
 /* 
 $Log: SubmitNewJobSuccessTest.java,v $
+Revision 1.1  2004/03/15 00:32:01  nw
+merged contents of comm package into jobscheduler package.
+
 Revision 1.7  2004/03/10 14:37:35  nw
 adjusted tests to handle an empty workflow
 

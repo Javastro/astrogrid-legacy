@@ -1,4 +1,4 @@
-/*$Id: InMemorySystemTest.java,v 1.11 2004/03/15 00:06:57 nw Exp $
+/*$Id: InMemorySystemTest.java,v 1.12 2004/03/15 00:32:01 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,13 +11,13 @@
 package org.astrogrid.jes;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.jes.comm.JobScheduler;
 import org.astrogrid.jes.component.BasicComponentManager;
 import org.astrogrid.jes.component.ComponentManager;
 import org.astrogrid.jes.component.ComponentManagerFactory;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
+import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.jes.jobscheduler.dispatcher.ShortCircuitDispatcher;
 import org.astrogrid.jes.testutils.io.FileResourceLoader;
@@ -138,7 +138,7 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
     }
     /** extended job scheduler that will notify us when tasks are complete. 
      *does this by entering barrier when done - which releases other (presumbably blocked) thread.*/
-    public static class ObservableJobScheduler extends org.astrogrid.jes.jobscheduler.JobScheduler {
+    public static class ObservableJobScheduler extends org.astrogrid.jes.jobscheduler.impl.SchedulerImpl {
 
         /** Construct a new ObservableJobScheduler
          * @param facade
@@ -169,6 +169,9 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemorySystemTest.java,v $
+Revision 1.12  2004/03/15 00:32:01  nw
+merged contents of comm package into jobscheduler package.
+
 Revision 1.11  2004/03/15 00:06:57  nw
 removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
 

@@ -1,4 +1,4 @@
-/*$Id: JobMonitorTest.java,v 1.6 2004/03/15 00:06:57 nw Exp $
+/*$Id: JobMonitorTest.java,v 1.7 2004/03/15 00:32:01 nw Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,7 +9,7 @@
  *
 **/
 package org.astrogrid.jes.jobmonitor;
-import org.astrogrid.jes.jobscheduler.MockJobScheduler;
+import org.astrogrid.jes.jobscheduler.impl.MockSchedulerImpl;
 import org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
@@ -31,7 +31,7 @@ public class JobMonitorTest extends TestCase {
     }
     
     protected void setUp() {
-        this.nudger = new MockJobScheduler();
+        this.nudger = new MockSchedulerImpl();
         this.monitor = new JobMonitor(nudger);
         this.info = new MessageType();
         this.id = new JobIdentifierType();
@@ -41,7 +41,7 @@ public class JobMonitorTest extends TestCase {
     protected MessageType info;
     protected JobIdentifierType id;
     protected JobMonitor monitor;
-    protected MockJobScheduler nudger;
+    protected MockSchedulerImpl nudger;
     
     public void testNormal() {        
         monitor.monitorJob(id,info);
@@ -57,7 +57,7 @@ public class JobMonitorTest extends TestCase {
     
     public void testNudgerFailure() {
         // create different configuration..
-        nudger = new MockJobScheduler(false); // set to fail
+        nudger = new MockSchedulerImpl(false); // set to fail
         monitor = new JobMonitor(nudger); 
         monitor.monitorJob(id,info);
         assertEquals(1,nudger.getCallCount());
@@ -70,6 +70,9 @@ public class JobMonitorTest extends TestCase {
 
 /* 
 $Log: JobMonitorTest.java,v $
+Revision 1.7  2004/03/15 00:32:01  nw
+merged contents of comm package into jobscheduler package.
+
 Revision 1.6  2004/03/15 00:06:57  nw
 removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
 
