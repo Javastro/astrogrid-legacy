@@ -31,11 +31,11 @@ public class WKF extends org.astrogrid.Configurator {
     private static final String 
     /** Configuration file for this component. */  
         CONFIG_FILENAME = "ASTROGRID_workflowconfig.xml" ;
-	    
-	public static final String 
-	/** Workflow category within the component's configuration */  
-		WORKFLOW_CATEGORY = "WORKFLOW" ,	
-	/** Key within component's configuration identifying the template used for single step jobs. */  
+        
+    public static final String 
+    /** Workflow category within the component's configuration */  
+        WORKFLOW_CATEGORY = "WORKFLOW" ,    
+    /** Key within component's configuration identifying the template used for single step jobs. */  
         WORKFLOW_TEMPLATE_SINGLESTEP = "TEMPLATE.SINGLESTEP" ,
     /** Key within component's configuration identifying the template used for two step sequence. */  
         WORKFLOW_TEMPLATE_TWOSTEPSEQUENCE = "TEMPLATE.TWOSTEPSEQUENCE" ,
@@ -69,7 +69,8 @@ public class WKF extends org.astrogrid.Configurator {
     public static final String 
      /** Tools category within the component's configuration */  
         TOOL_CATEGORY = "dummy value" ,    
-        TOOL_DOCUMENTATION = "DOCUMENTATION",        TOOL_INPUT_PARAMS_TOTAL = "INPUT_PARAMS.TOTAL",
+        TOOL_DOCUMENTATION = "DOCUMENTATION",
+        TOOL_INPUT_PARAMS_TOTAL = "INPUT_PARAMS.TOTAL",
         TOOL_INPUT_PARAM_NAME = "INPUT_PARAM.NAME." , 
         TOOL_INPUT_PARAM_DOCUMENTATION = "INPUT_PARAM.DOCUMENTATION.",  
         TOOL_INPUT_PARAM_TYPE = "INPUT_PARAM.TYPE." ,
@@ -115,6 +116,14 @@ public class WKF extends org.astrogrid.Configurator {
  
     protected String getConfigFileName() { return CONFIG_FILENAME ; }    
     protected String getSubsystemAcronym() { return SUBSYSTEM_ACRONYM ; }
+    /**
+     * Name bound in server.xml of URL of config file
+     * @return JNDI name
+     * @see org.astrogrid.Configurator#getJNDIName()
+     */
+    protected String getJNDIName() {
+        return "org.astrogrid.workflow.config.url";
+    }
     
-	 
+     
 } // end of class WKF
