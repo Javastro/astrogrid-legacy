@@ -35,7 +35,7 @@
     <property name="PARSER.VALIDATION" value="false" />
 
     <!-- Where the dataholders are stored. Please remember to add a "/" at the end of the path -->
-    <property name="DATAHOLDERFOLDER" value="/usr/local/tomcat/webapps/mySpace-SNAPSHOT/dataholders/" />  
+    <property name="DATAHOLDERFOLDER" value="/usr/local/tomcat/webapps/ROOT/mySpaceRepository/" />  
 
     <!-- COPY COMMAND
         This is the copy command performed by the opration system where MySpaceServer is installed

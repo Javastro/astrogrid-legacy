@@ -36,7 +36,7 @@
     
     <!-- REGISTRYCONF
         This is the directory where MySpace Registry will get/log info, please add /example at the end of your path -->
-    <property name="REGISTRYCONF" value="/usr/local/astroGrid/jakarta-tomcat-4.1.24/conf/astrogrid/mySpace/example" />
+    <property name="REGISTRYCONF" value="/tmp/example" />
  
     <!-- URL MYSPACE MANAGER
         This is the URL for the MySpace Manager facility for the installed 
