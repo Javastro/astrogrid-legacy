@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
 	<baseline-summary>
-		<baseline-name>GeneratedSummary</baseline-name>
-		<baseline-description>to fill in</baseline-description>
+		<baseline-name>2004 09 17 nww</baseline-name>
+		<baseline-description>tests run on noel's laptop (with no portal deployed)</baseline-description>
 		<when>Fri Sep 17 14:58:50 BST 2004</when>
 		<where>nwLaptop/127.0.0.1</where>
 		<who>noel</who>
