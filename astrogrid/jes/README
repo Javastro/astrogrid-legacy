@@ -19,10 +19,8 @@ You should also ensure the following are available:
 . junit 3.8.1 or later
 . log4j 1.2.4 or later
 
-We have only tested so far using Sybase as the database. The appropriate jdbc jar
+We have tested using MySQL as the database. The appropriate jdbc jar
 is included with the distribution. Further details are given later.
-
-***NOTE*** Sybase is not a prerequisite. Please try other jdbc compliant databases.
 
 
 1.2 Internals.
@@ -53,13 +51,9 @@ See section 4.0 Install below.
 JES requires one database:
 
 A Job database to keep track of jobs entered into the AstroGrid system.
-This is a small database of 6 tables. The ddl is available in the dbscripts
+This is a small database of 4 tables. The ddl is available in the dbscripts
 directory. All tables are accessed with write capability. Some details are
 configurable within the ASTROGRID_jesconfig file.
-
-At the present state of play, we have only had the opportunity of testing
-using Sybase on the hydra machine.
-
 
 2.2 JNDI.        **** IMPORTANT ****
 -----------
@@ -89,48 +83,43 @@ by JNDI (eg. driverClassName, URL, User, Password):
     <Resource name="jdbc/jes-datasource"
               auth="Container"
               type="javax.sql.DataSource"/>
-    <ResourceParams name="jdbc/jes-datasource">
-      <parameter>
-        <name>driverClassName</name>
-        <value>com.sybase.jdbc2.jdbc.SybDriver</value>
-      </parameter>
-      <parameter>
-        <name>url</name>
-        <value>jdbc:sybase:Tds:hydra:4100</value>
-      </parameter>
-      <parameter>
-        <name>username</name>
-        <value>xxxx</value>
-      </parameter>
-      <parameter>
-        <name>password</name>
-        <value>xxxx</value>
-      </parameter>
-      <parameter>
-        <name>removeAbandoned</name>
-        <value>true</value>
-      </parameter>
-    </ResourceParams>
-     
-     .......
+            <ResourceParams name="jdbc/jes-datasource">
+              <parameter>
+                <name>maxActive</name>
+                <value>100</value>
+              </parameter>
+              <parameter>
+                <name>maxIdle</name>
+                <value>30</value>
+              </parameter>
+              <parameter>
+                <name>maxWait</name>
+                <value>10000</value>
+              </parameter>
+              <parameter>
+                <name>driverClassName</name>
+               <value>org.gjt.mm.mysql.Driver</value>
+             </parameter>
+             <parameter>
+               <name>url</name>
+               <value>jdbc:mysql://localhost:3306/</value>
+             </parameter>
+             <parameter>
+               <name>username</name>
+               <value>xxxx</value>
+             </parameter>
+             <parameter>
+               <name>password</name>
+               <value>xxxx</value>
+              </parameter>
+            </ResourceParams>
      </DefaultContext>
+
 
 
 3.0 LIMITATIONS:
 ******************
 
-There are limitations on the query parameters that equate to
-the SQL submitted against an astronomical database. 
-The following are not yet supported:
-
-ORDER BY
-GROUP BY
-sub-selects
-column arithmetic
-ANY
-ALL
-
-Most if not all of these will be available shortly.
 
 
 4.0 INSTALL:
@@ -142,11 +131,11 @@ Most if not all of these will be available shortly.
 Unjar to some convenient temporary directory. The archive contains the following:
 
 . This README, so presumably you have already got this far!
-. jesBIN.jar            -    the jes executables
-. jconn2.jar            -    the Sybase jdbc executables
-. config directory      -    contains jes configuration files
-. dbscripts             -    contains script for creating database tables.
-. wsdd                  -    contains deployment descriptors for deploying jes as a SOAP service within Axis
+. jesBIN.jar              -    the jes executables
+. mm.mysql-2.0.14-bin.jar -    the mysql jdbc executables
+. config directory        -    contains jes configuration files
+. dbscripts               -    contains script for creating database tables.
+. wsdd                    -    contains deployment descriptors for deploying jes as a SOAP service within Axis
 
 4.2 Make sure the external prerequisites are fullfilled.
 ----------------------------------------------------------

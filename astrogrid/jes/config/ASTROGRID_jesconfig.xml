@@ -36,7 +36,7 @@
   
   <!-- JES CATEGORY =========================================================== -->  
   <category name="JES">
-    <property name="ID" value="JES@Leicester" />
+    <property name="ID" value="jes@astrogrid1.jb.ac.uk" />
   </category>
  
  
@@ -44,24 +44,23 @@
   <category name="MONITOR">
     <property name="PARSER.VALIDATION" value="false" />  
     <!-- Location of our JobMonitor -->
-    <property name="URL" value="http://hydra.star.le.ac.uk:8080/axis/services/JobMonitorService" />
+    <property name="URL" value="http://astrogrid1.jb.ac.uk:8080/axis/services/JobMonitorService" />
   </category>
   
   
-  <!-- CONTROLLER CATEGORY =================================================================== -->    
+<!-- CONTROLLER CATEGORY ===================================================================     
   <category name="CONTROLLER">
     <property name="PARSER.VALIDATION" value="false" />
     <property name="TEMPLATE.RESPONSE" value="JobController.xmltemplate" />  
-    <!-- Location of our JobController -->
-    <property name="URL" value="http://hydra.star.le.ac.uk:8080/axis/services/JobControllerService" />
+    <property name="URL" value="http://astrogrid1.jb.ac.uk:8080/axis/services/JobControllerService" />
   </category>  
-  
+-->
   
   <!-- SCHEDULER CATEGORY =================================================================== -->    
   <category name="SCHEDULER">
     <property name="PARSER.VALIDATION" value="false" />
     <!-- Location of our JobScheduler -->
-    <property name="URL" value="http://hydra.star.le.ac.uk:8080/axis/services/JobSchedulerService" />
+    <property name="URL" value="http://astrogrid1.jb.ac.uk:8080/axis/services/JobSchedulerService" />
     <!-- Schedule Job Request Template -->
     <property name="TEMPLATE.SCHEDULE_JOB_REQUEST" value="JobSchedulerRequest.xmltemplate" />
   </category>  
@@ -75,11 +74,11 @@
     <!-- The Job Data Source -->
     <property name="DATASOURCE" value="java:comp/env/jdbc/jes-datasource" />
     <!-- The Job table names -->
-    <property name="JOB" value="jes..job" />
-    <property name="JOBSTEP" value="jes..jobstep" />
-    <property name="TOOL" value="jes..tool" />
-    <property name="PARAMETER" value="jes..parameter" />
-    <property name="JOBID" value="jes..jobid" />
+    <property name="JOB" value="jes.job" />
+    <property name="JOBSTEP" value="jes.jobstep" />
+    <property name="TOOL" value="jes.tool" />
+    <property name="PARAMETER" value="jes.parameter" />
+    <property name="JOBID" value="jes.jobid" />
     <!-- The bookable range of Job id's -->
     <property name="ID.BOOKABLERANGE" value="100" />
   </category>
@@ -88,7 +87,7 @@
   <!-- MESSAGELOG CATEGORY ============================================================== -->    
   <category name="MESSAGELOG">
     <!-- Location of our AstroGridMessageLog -->
-    <property name="URL" value="http://hydra.star.le.ac.uk:8080/axis/services/????" />
+    <property name="URL" value="http://astrogrid?.jb.ac.uk:8080/axis/services/????" />
     <!-- AstroGridMessageLog Request Template -->
     <property name="TEMPLATE.REQUEST" value="MessageLogRequest.xmltemplate" />
   </category>  
@@ -97,7 +96,7 @@
   <!-- REGISTRY CATEGORY =============================================================== -->    
   <category name="REGISTRY">
     <!-- Location of Registry -->
-    <property name="URL" value="http://hydra.star.le.ac.uk:8080/axis/services/????" />
+    <property name="URL" value="http://astrogrid2.jb.ac.uk:8080/axis/services/????" />
     <!-- Registry Request Template -->
     <property name="TEMPLATE.REQUEST" value="RegistryRequest.xmltemplate" />
   </category>  
@@ -106,9 +105,9 @@
     <!-- TOOLS CATEGORY =============================================================== -->    
   <category name="TOOLS">
     <!-- Location of various tools -->
-    <property name="QueryTool" value="http://hydra.star.le.ac.uk:8080/axis/services/????" />
-    <property name="Sextractor" value="http://hydra.star.le.ac.uk:8080/axis/services/????" />
-    <property name="VOTableMerge" value="http://hydra.star.le.ac.uk:8080/axis/services/????" />
+    <property name="QueryTool" value="http://astrogrid3.jb.ac.uk:8080/axis/services/????" />
+    <property name="Sextractor" value="http://astrogrid3.jb.ac.uk:8080/axis/services/????" />
+    <property name="VOTableMerge" value="http://astrogrid3.jb.ac.uk:8080/axis/services/????" />
   </category>  
 
 </properties>

@@ -123,7 +123,7 @@ public class JES extends org.astrogrid.Configurator {
     /** Job category within the component's configuration */  
         TOOLS_CATEGORY = "TOOLS" ,    
         TOOLS_QUERY = "QueryTool",
-        TOOLS_SEXTRACTOR = "sextractor",
+        TOOLS_SEXTRACTOR = "Sextractor",
         TOOLS_VOTABLEMERGE = "VOTableMerge";        
          
     private static JES

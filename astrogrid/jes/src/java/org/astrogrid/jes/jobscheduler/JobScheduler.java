@@ -67,9 +67,8 @@ public class JobScheduler {
         ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGJESE00490",
 		ASTROGRIDERROR_ULTIMATE_SCHEDULEFAILURE     = "AGJESE00500",
 	    ASTROGRIDERROR_FAILED_TO_FORMAT_RUN_REQUEST = "AGJESE00510",
-	    ASTROGRIDERROR_FAILED_TO_CONTACT_DATACENTER = "AGJESE00520",
-        ASTROGRIDERROR_FAILED_TO_CONTACT_REGISTRY   = "AGJESE00525",
-        ASTROGRIDERROR_DATACENTER_LOCATION_MISSING  = "AGJESE00785" ;
+	    ASTROGRIDERROR_FAILED_TO_LOCATE_TOOL        = "AGJESE00520",
+        ASTROGRIDERROR_FAILED_WHEN_CONTACTING_APPLICATION_CONTROLLER   = "AGJESE00525"  ;
 	    			
 	private static Logger 
 		logger = Logger.getLogger( JobScheduler.class ) ;
@@ -241,7 +240,7 @@ public class JobScheduler {
         catch( RemoteException rex ) {
             step.setStatus( JobStep.STATUS_IN_ERROR ) ;
             AstroGridMessage
-                message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_CONTACT_REGISTRY
+                message = new AstroGridMessage( ASTROGRIDERROR_FAILED_WHEN_CONTACTING_APPLICATION_CONTROLLER
                                               , this.getComponentName() ) ; 
             logger.error( message.toString(), rex ) ;
             throw new JesException(message) ;
@@ -310,7 +309,7 @@ public class JobScheduler {
 		}
 		catch ( Exception ex ) {
 			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_CONTACT_REGISTRY
+				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_LOCATE_TOOL
                                               , this.getComponentName() ) ; 
 			logger.error( message.toString(), ex ) ;
             throw new JesException(message) ;

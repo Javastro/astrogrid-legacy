@@ -53,7 +53,7 @@ public class JobFactoryImpl implements JobFactory {
         SUBCOMPONENT_NAME = Configurator.getClassName( JobFactoryImpl.class );        
 	    
 	public static final String
-		JOB_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, JOBNAME, STATUS, SUBMITTIMESTAMP, USERID, COMMUNITY, GROUP, TOKEN, JOBXML, DESCRIPTION ) " +
+		JOB_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, JOBNAME, STATUS, SUBMITTIMESTAMP, USERID, COMMUNITY, COGROUP, COTOKEN, JOBXML, DESCRIPTION ) " +
 												"VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )" ,	                          
 	    JOB_UPDATE_TEMPLATE = "UPDATE {0} SET STATUS = ''{1}'' WHERE JOBURN = ''{2}''" ,
 	    JOB_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}''" ,
@@ -67,8 +67,8 @@ public class JobFactoryImpl implements JobFactory {
 	    COL_STATUS = 3,
 	    COL_SUBMITTIMESTAMP = 4,
 	    COL_USERID = 5,
-	    COL_COMMUNITY = 6,
-        COL_GROUP = 7,
+	    COL_COCOMMUNITY = 6,
+        COL_COGROUP = 7,
         COL_TOKEN = 8,
 	    COL_JOBXML = 9,
         COL_DESCRIPTION = 10 ;
@@ -172,11 +172,9 @@ public class JobFactoryImpl implements JobFactory {
         ASTROGRIDERROR_JOB_NOT_FOUND                              = "AGJESE00710",
         ASTROGRIDERROR_JOBS_NOT_FOUND                             = "AGJESE00720",
         ASTROGRIDERROR_JOBSTEP_NOT_FOUND                          = "AGJESE00730",
-        ASTROGRIDERROR_DUPLICATE_QUERY_FOUND                      = "AGJESE00740",
-        ASTROGRIDERROR_QUERY_NOT_FOUND                            = "AGJESE00750",
-        ASTROGRIDERROR_CATALOG_NOT_FOUND                          = "AGJESE00760",
-        ASTROGRIDERROR_TABLE_NOT_FOUND                            = "AGJESE00770",
-        ASTROGRIDERROR_SERVICE_NOT_FOUND                          = "AGJESE00780",       
+        ASTROGRIDERROR_DUPLICATE_TOOL_FOUND                       = "AGJESE00740",
+        ASTROGRIDERROR_TOOL_NOT_FOUND                             = "AGJESE00750",
+        ASTROGRIDERROR_PARAMETER_NOT_FOUND                        = "AGJESE00760",
         ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST            = "AGJESE00790", 
         ASTROGRIDERROR_UNABLE_TO_COMPLETE_UPDATE_REQUEST          = "AGJESE00800",
         ASTROGRIDERROR_JOBID_SINGLETON_ROW_FAULT                  = "AGJESE00810",
@@ -418,8 +416,8 @@ public class JobFactoryImpl implements JobFactory {
                 job.setStatus( rs.getString( COL_STATUS ) ) ;
                 job.setDate( this.formatDate( rs.getString( COL_SUBMITTIMESTAMP ) ) ) ;
 				job.setUserId( rs.getString( COL_USERID ) ) ;
-				job.setCommunity( rs.getString( COL_COMMUNITY ) ) ;
-                job.setCommunity( rs.getString( COL_GROUP ) ) ;  
+				job.setCommunity( rs.getString( COL_COCOMMUNITY ) ) ;
+                job.setCommunity( rs.getString( COL_COGROUP ) ) ;  
                 job.setToken( rs.getString( COL_TOKEN ) ) ;                
 				job.setDocumentXML( rs.getString( COL_JOBXML ) ) ;
                 job.setDescription( rs.getString( COL_DESCRIPTION ) ) ;
@@ -513,8 +511,8 @@ public class JobFactoryImpl implements JobFactory {
                     job.setStatus( rs.getString( COL_STATUS ) ) ;
                     job.setDate( this.formatDate( rs.getString( COL_SUBMITTIMESTAMP ) ) ) ;
                     job.setUserId( rs.getString( COL_USERID ) ) ;
-                    job.setCommunity( rs.getString( COL_COMMUNITY ) ) ;
-                    job.setCommunity( rs.getString( COL_GROUP ) ) ;  
+                    job.setCommunity( rs.getString( COL_COCOMMUNITY ) ) ;
+                    job.setCommunity( rs.getString( COL_COGROUP ) ) ;  
                     job.setToken( rs.getString( COL_TOKEN ) ) ;                
                     job.setDocumentXML( rs.getString( COL_JOBXML ) ) ;
                     job.setDescription( rs.getString( COL_DESCRIPTION ) ) ;
@@ -593,8 +591,8 @@ public class JobFactoryImpl implements JobFactory {
                     job.setStatus( rs.getString( COL_STATUS ) ) ;
                     job.setDate( this.formatDate( rs.getString( COL_SUBMITTIMESTAMP ) ) ) ;
                     job.setUserId( rs.getString( COL_USERID ) ) ;
-                    job.setCommunity( rs.getString( COL_COMMUNITY ) ) ;
-                    job.setCommunity( rs.getString( COL_GROUP ) ) ;  
+                    job.setCommunity( rs.getString( COL_COCOMMUNITY ) ) ;
+                    job.setCommunity( rs.getString( COL_COGROUP ) ) ;  
                     job.setToken( rs.getString( COL_TOKEN ) ) ;                
                     job.setDocumentXML( rs.getString( COL_JOBXML ) ) ;
                     job.setDescription( rs.getString( COL_DESCRIPTION ) ) ;
@@ -923,7 +921,7 @@ public class JobFactoryImpl implements JobFactory {
                 // Whoops! Tool not found when it should have been...
                 // AGJESE00750=:JobFactoryImpl: Query not found for Job with URN [{0}] and JobStep number [{1}]
                 AstroGridMessage
-                    message = new AstroGridMessage( ASTROGRIDERROR_QUERY_NOT_FOUND
+                    message = new AstroGridMessage( ASTROGRIDERROR_TOOL_NOT_FOUND
                                                   , SUBCOMPONENT_NAME
                                                   , jobStep.getParent().getId()
                                                   , jobStep.getStepNumber() ) ;
@@ -942,7 +940,7 @@ public class JobFactoryImpl implements JobFactory {
                 if( rs.next() == true ) {
                     // We have a duplicate Tool!!! This should be impossible...
                     AstroGridMessage
-                        message = new AstroGridMessage( ASTROGRIDERROR_DUPLICATE_QUERY_FOUND
+                        message = new AstroGridMessage( ASTROGRIDERROR_DUPLICATE_TOOL_FOUND
                                                       , SUBCOMPONENT_NAME
                                                       , jobStep.getParent().getId()
                                                       , jobStep.getStepNumber() ) ;
@@ -1026,7 +1024,7 @@ public class JobFactoryImpl implements JobFactory {
             if( !rs.isBeforeFirst() ) {
                 // Whoops! No parameters found when there should have been...
                 AstroGridMessage
-                    message = new AstroGridMessage( ASTROGRIDERROR_CATALOG_NOT_FOUND
+                    message = new AstroGridMessage( ASTROGRIDERROR_PARAMETER_NOT_FOUND
                                                   , SUBCOMPONENT_NAME
                                                   , tool.getParent().getParent().getId()
                                                   , tool.getParent().getStepNumber() ) ;
@@ -1114,7 +1112,7 @@ public class JobFactoryImpl implements JobFactory {
       catch( SQLException sex ) {
           AstroGridMessage
               message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT
-                                              , SUBCOMPONENT_NAME ) ;
+                                            , SUBCOMPONENT_NAME ) ;
           logger.error( message.toString(), sex ) ;
           throw new JobException( message, sex );         
       }

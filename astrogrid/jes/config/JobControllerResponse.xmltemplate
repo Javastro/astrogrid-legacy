@@ -3,7 +3,7 @@
 <response> 
    <job> 
 	  <userid>{0}</userid> 
-	  <jes_community>{1}</jes_community> 
+	  <community>{1}</community> 
 	  <time>{2}</time> 
 	  <jobid>{3}</jobid> 
    </job> 

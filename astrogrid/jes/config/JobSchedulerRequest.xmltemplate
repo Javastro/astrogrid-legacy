@@ -1,3 +1,5 @@
 <?xml version="1.0" encoding="UTF8"?> 
 <!-- JobScheduler Request Template -->
-<job name="{0}" userid="{1}" community="{2}" time="{3}" jobURN="{4}" />
+<job name="{0}" time="{1}" jobURN="{2}" >
+{3}
+</job>
