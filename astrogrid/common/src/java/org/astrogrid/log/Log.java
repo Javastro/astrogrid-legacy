@@ -1,5 +1,5 @@
 /*
- $Id: Log.java,v 1.8 2003/12/16 11:29:47 mch Exp $
+ $Id: Log.java,v 1.9 2004/06/18 11:07:02 jdt Exp $
  */
 
 package org.astrogrid.log;
@@ -9,7 +9,6 @@ import org.apache.commons.logging.*;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
-import java.util.Enumeration;
 
 /**
  * A covenience singleton, providing easy to use access to logging facilities,
@@ -290,6 +289,9 @@ public class Log
 }
 /*
 $Log: Log.java,v $
+Revision 1.9  2004/06/18 11:07:02  jdt
+Coding standards tidying up.
+
 Revision 1.8  2003/12/16 11:29:47  mch
 Removed specialist setup methods
 

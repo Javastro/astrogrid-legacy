@@ -1,4 +1,4 @@
-/* $Id: UserTest.java,v 1.9 2004/06/17 17:34:08 jdt Exp $
+/* $Id: UserTest.java,v 1.10 2004/06/18 11:07:02 jdt Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,10 +9,10 @@
 package org.astrogrid.community;
 
 
-import java.io.IOException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.astrogrid.community.common.util.CommunityMessage;
 
 /**
@@ -116,6 +116,9 @@ public class UserTest extends TestCase
 
 /*
 $Log: UserTest.java,v $
+Revision 1.10  2004/06/18 11:07:02  jdt
+Coding standards tidying up.
+
 Revision 1.9  2004/06/17 17:34:08  jdt
 Miscellaneous coding standards issues.
 
