@@ -44,6 +44,15 @@ public class SubConfigurator_DDD extends org.astrogrid.Configurator {
     }
         
     protected String getConfigFileName() { return CONFIG_FILENAME ; }
-    protected String getSubsystemAcronym() { return SUBSYSTEM_ACRONYM ; }         
+    protected String getSubsystemAcronym() { return SUBSYSTEM_ACRONYM ; }
+
+
+    /* (non-Javadoc)
+     * @see org.astrogrid.Configurator#getJNDIName()
+     */
+    protected String getJNDIName() {
+      
+      return null;
+    }         
         					   			    
 } // end of class DummyConfigurator_AAA

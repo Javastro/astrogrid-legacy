@@ -1,4 +1,4 @@
-/* $Id: DummyFileConfiguratorNoMessages.java,v 1.1 2004/01/20 17:23:45 jdt Exp $
+/* $Id: DummyFileConfiguratorNoMessages.java,v 1.2 2004/01/20 17:37:02 jdt Exp $
  * Created on 11-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,10 +32,21 @@ public final class DummyFileConfiguratorNoMessages extends Configurator {
   public String getSubsystemAcronym() {
     return "GHJ";
   }
+
+  /* (non-Javadoc)
+   * @see org.astrogrid.Configurator#getJNDIName()
+   */
+  protected String getJNDIName() {
+    
+    return null;
+  }
 }
 
 /*
 *$Log: DummyFileConfiguratorNoMessages.java,v $
+*Revision 1.2  2004/01/20 17:37:02  jdt
+*bit the bullet and made getJNDIName abstract...now let's see what breaks.
+*
 *Revision 1.1  2004/01/20 17:23:45  jdt
 *Added unit tests for full clover coverage and fixed bugs.
 *

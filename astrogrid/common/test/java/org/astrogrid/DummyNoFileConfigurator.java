@@ -1,4 +1,4 @@
-/* $Id: DummyNoFileConfigurator.java,v 1.1 2003/12/11 18:19:10 jdt Exp $
+/* $Id: DummyNoFileConfigurator.java,v 1.2 2004/01/20 17:37:02 jdt Exp $
  * Created on 11-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,10 +31,21 @@ public final class DummyNoFileConfigurator extends Configurator {
   public String getSubsystemAcronym() {
     return "DEF";
   }
+
+  /* (non-Javadoc)
+   * @see org.astrogrid.Configurator#getJNDIName()
+   */
+  protected String getJNDIName() {
+    
+    return null;
+  }
 }
 
 /*
 *$Log: DummyNoFileConfigurator.java,v $
+*Revision 1.2  2004/01/20 17:37:02  jdt
+*bit the bullet and made getJNDIName abstract...now let's see what breaks.
+*
 *Revision 1.1  2003/12/11 18:19:10  jdt
 *New files to test the modifications to the Configurator which allow it
 *to load properties files from URLs

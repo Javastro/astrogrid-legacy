@@ -100,7 +100,7 @@ public abstract class Configurator {
    * Verify that the configuration file has been located and loaded
    * @throws AstroGridException if not
    */
-  public void checkPropertiesLoaded() throws AstroGridException {
+  public final void checkPropertiesLoaded() throws AstroGridException {
     Log.trace("checkPropertiesLoaded() entry");
 
     String check = "NOT LOADED";
@@ -251,7 +251,7 @@ public abstract class Configurator {
    * @param fileName Name of file
    * @throws AstroGridException probably an IOException
    */
-  public final void save(String fileName) throws AstroGridException {
+  public final void save(final String fileName) throws AstroGridException {
     assert getSubsystemAcronym() != null;
     Configurator.save(getSubsystemAcronym(), fileName);
   }
@@ -278,11 +278,8 @@ public abstract class Configurator {
    * java:comp/env/jesConfigFileURL
    * </verbatim>
    * @return To be implemented by subclasses.  This just returns null.
-   * @TODO make this method abstract, but not yet to avoid breaking any classes I don't know about
    */
-  protected String getJNDIName() {
-    return null;
-  }
+  protected abstract String getJNDIName();
 
   /**
    * Loads the configuration file.  Firstly an attempt is made to find a URL
