@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: deployWebapps.xml,v 1.16 2004/02/20 17:22:59 jdt Exp $ --><!--
+<!-- $Id: deployWebapps.xml,v 1.17 2004/03/13 01:11:21 jdt Exp $ --><!--
 	Example Deploy Script for Astrogrid War files
 	This script uses the Tomcat Manager to deploy war files built nightly by Maven
 
@@ -15,8 +15,8 @@
 
 <!--==================================================================================-->
 
-	<target depends="RedeployApplications,RedeployJES,RedeployMySpace,Redeployportal,RedeployPalMartin" name="RedeployTheLot"/>
-	<target depends="DeployApplications,DeployJES,DeployMySpace,DeployPALSkyServer,Deployportal,DeployPalMartin" name="DeployTheLot"/>
+	<target depends="RedeployMySpace" name="RedeployTheLot"/>
+	<target depends="DeployMySpace" name="DeployTheLot"/>
 
 <!--==================================================================================-->
 
@@ -29,7 +29,7 @@
     <!-- URLs of the wars-->
     <property name="mavenURL" value="http://www.astrogrid.org/maven/"/>
 
-    <property name="mySpace.path" value="/intTest-mySpace"/>
+    <property name="mySpace.path" value="/astrogrid-mySpace"/>
     <property name="mySpace.war.url" value="${mavenURL}/org.astrogrid/wars/astrogrid-mySpace-SNAPSHOT.war"/>
     <property name="mySpace.host.url" value="${servers.a.url}"/>
     <property name="mySpace.host.user" value="${servers.a.user}"/>
