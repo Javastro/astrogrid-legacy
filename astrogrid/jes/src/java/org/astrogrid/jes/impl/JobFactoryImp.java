@@ -13,15 +13,15 @@ public class JobFactoryImp implements  JobFactory {
 
     public void begin(){ }
 
-    public boolean end(){ }
+    public boolean end(){ return true; }
 
-    public String deleteJob(Job job){ }
+    public String deleteJob(Job job){ return new String("OK"); }
 
-    public String deleteJob(String jobURN){ }
+    public String deleteJob(String jobURN){ return new String("OK");}
 
     public Iterator findJobsWhere(String queryString){ }
 
-    public Job findJob(String jobURN){ }
+    public Job findJob(String jobURN){ return new Job() ;}
 
     public Job createJob(String jobURN){ }
 
