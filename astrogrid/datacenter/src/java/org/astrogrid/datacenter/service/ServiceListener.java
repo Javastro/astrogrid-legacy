@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceListener.java,v 1.1 2003/08/28 13:07:41 mch Exp $
+ * $Id: ServiceListener.java,v 1.2 2003/08/29 07:57:12 maven Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -30,7 +30,7 @@ public class ServiceListener
    /**
     * Create a listener which will send service updates to the given URL
     *
-    * @todo design & implement properly...
+    * @todo design &amp; implement properly...
     */
    public ServiceListener(URL aClientListener)
    {
@@ -47,6 +47,9 @@ public class ServiceListener
 
 /*
 $Log: ServiceListener.java,v $
+Revision 1.2  2003/08/29 07:57:12  maven
+- changed '&' to '&amp;'
+
 Revision 1.1  2003/08/28 13:07:41  mch
 Added service listener placeholders
 

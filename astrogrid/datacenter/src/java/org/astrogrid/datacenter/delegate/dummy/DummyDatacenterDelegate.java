@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDatacenterDelegate.java,v 1.2 2003/08/27 23:54:20 mch Exp $
+ * $Id: DummyDatacenterDelegate.java,v 1.3 2003/08/29 07:57:01 maven Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -115,7 +115,7 @@ public class DummyDatacenterDelegate extends DatacenterDelegate
 
    /**
     * returns an example metadata file.
-    * @todo not supported yet.  Need to make a metadata file & return it
+    * @todo not supported yet.  Need to make a metadata file &amp; return it
     */
    public Element getRegistryMetadata()
    {
@@ -134,6 +134,9 @@ public class DummyDatacenterDelegate extends DatacenterDelegate
 
 /*
 $Log: DummyDatacenterDelegate.java,v $
+Revision 1.3  2003/08/29 07:57:01  maven
+- changed '&' to '&amp;'
+
 Revision 1.2  2003/08/27 23:54:20  mch
 test bug fixes
 
