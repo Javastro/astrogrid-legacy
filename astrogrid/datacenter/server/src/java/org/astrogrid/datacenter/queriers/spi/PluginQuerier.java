@@ -170,9 +170,29 @@ public class PluginQuerier extends Querier {
    }
       
        
+/** calls close method on querierSPI before closing Querier itself */
+   public void close() throws IOException {      
+      try {
+         if (spi != null) {
+            try {
+            spi.close();
+            } catch (Exception e) { // gah! pity the types are wrong here
+               log.info("Plugin threw exception on close",e);
+               throw new IOException(e.getMessage());
+            }
+         }
+      } finally {
+         super.close();
+      }
+   }
+
 }
 /*
  $Log: PluginQuerier.java,v $
+ Revision 1.4  2004/01/15 17:37:14  nw
+ overrode default close() method - so now querierSPI.close()
+ is called first too.
+
  Revision 1.3  2004/01/15 12:38:40  nw
  improved documentation
 
