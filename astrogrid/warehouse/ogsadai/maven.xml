@@ -13,4 +13,19 @@
     </copy>
   </postGoal>
 
+  <target name="queryDelegateTest">
+    <path id="classpath">
+      <pathelement location="target/classes"/>
+      <path refid="maven.dependency.classpath"/>
+    </path>
+    <java
+        classname="org.astrogrid.warehouse.ogsadai.GdsQueryDelegate"
+        dir="target/classes" fork="yes" failonerror="true"
+        classpathref="classpath">
+      <arg value= "SELECT * FROM first WHERE POS_EQ_DEC > 59.9"/>
+      <!-- PUT THIS IN FOR OUTPUT TO FILE RATHER THAN STDOUT -->
+      <!-- <arg value= "/tmp/QUERIER_OUTPUT_VOT"/> -->
+    </java>
+  </target>
+
 </project>
