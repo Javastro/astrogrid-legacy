@@ -1,5 +1,5 @@
 /*
- * $Id: WorkFlowUsingTestCase.java,v 1.4 2004/04/16 16:47:23 pah Exp $
+ * $Id: WorkFlowUsingTestCase.java,v 1.5 2004/04/24 10:37:07 pah Exp $
  * 
  * Created on 18-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -21,12 +21,13 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.InputSource;
 
 import org.astrogrid.applications.common.config.BaseDBTestCase;
+import org.astrogrid.community.User;
+import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.community.beans.v1.Credentials;
+import org.astrogrid.community.beans.v1.Group;
+import org.astrogrid.store.Ivorn;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
-
-
-import junit.framework.TestCase;
-import junit.framework.TestFailure;
 
 /**
  * @author Paul Harrison (pah@jb.man.ac.uk) 18-Mar-2004
@@ -44,14 +45,30 @@ public class WorkFlowUsingTestCase extends BaseDBTestCase {
    public WorkFlowUsingTestCase() {
       this("applications workflow");
    }
+   protected void setUp() throws Exception {
+       super.setUp();
+       // credentials object
+       acc =  new Account();
+       acc.setCommunity(COMMUNITY);
+       acc.setName("frog");
+       
+       group = new Group();
+       group.setCommunity(COMMUNITY);
+       group.setName("devel");
+       
+       creds = new Credentials();
+       creds.setAccount(acc);
+       creds.setGroup(group);
+       creds.setSecurityToken("blah");
 
-   /**
-    * @param arg0
-    */
-   public WorkFlowUsingTestCase(String arg0) {
-      super(arg0);
-      
+       //equivalent user object
+       user = new User();
+       user.setAccount(creds.getAccount().getName() + "@" + creds.getAccount().getCommunity());
+       user.setGroup(creds.getGroup().getName() + "@" + creds.getGroup().getCommunity());
+       user.setToken(creds.getSecurityToken());        
+
       InputStream is = this.getClass().getResourceAsStream("/testworkflow.xml");
+      assertNotNull(is);
       InputSource source = new InputSource(is);
       try {
          workflow = (Workflow)Unmarshaller.unmarshal(Workflow.class, source);
@@ -71,14 +88,34 @@ public class WorkFlowUsingTestCase extends BaseDBTestCase {
             fail("cannot validate the test workflow");
       }
       
+
+   }
+   
+   protected Account acc;
+   protected Group group;   
+   protected Credentials creds;
+   protected User user;
+   protected Workflow wf;
+    
+   public static final String COMMUNITY = "org.astrogrid.localhost";
+   public static final String MYSPACE = COMMUNITY + "/myspace";
+   public static final String TESTDSA = COMMUNITY + "/testdsa";
+   public static final String TESTAPP = COMMUNITY + "/testapp";
+   public static final String TESTAPP2 = COMMUNITY + "/testap2"; //note it isn't double 'p'
+    
+  protected Ivorn createIVORN(String path)
+  {
+     return new Ivorn(MYSPACE,user.getUserId()+path);
+  }
+
+   /**
+    * @param arg0
+    */
+   public WorkFlowUsingTestCase(String arg0) {
+      super(arg0);
+      
       
    }
 
-   /** 
-    * @see junit.framework.TestCase#setUp()
-    */
-   protected void setUp() throws Exception {
-      super.setUp();
-   }
 
 }

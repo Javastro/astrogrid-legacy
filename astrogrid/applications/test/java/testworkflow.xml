@@ -4,7 +4,7 @@
 \\pahlaptop\work\astrogrid\src\workflow-objects\schema\Workflow.xsd" name="">
 	<sequence>
 		<step name="test step">
-			<tool name="testapp" interface="I1">
+			<tool name="fake.authority.id/testapp" interface="I1">
 				<input>
 					<parameter name="P1" type="integer">
 						<agpd:value>30</agpd:value>
@@ -28,7 +28,7 @@
 		</step>
 		<!-- this step just does the same with the local file references -->
 		<step name="test step">
-			<tool name="testapp" interface="Ilocal">
+			<tool name="fake.authority.id/testap2" interface="I1">
 				<input>
 					<parameter name="P1" type="integer">
 						<agpd:value>30</agpd:value>

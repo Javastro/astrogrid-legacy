@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractDelegateTestCase.java,v 1.3 2004/04/21 09:10:02 pah Exp $
+ * $Id: AbstractDelegateTestCase.java,v 1.4 2004/04/24 10:37:07 pah Exp $
  * 
  * Created on 22-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -18,6 +18,8 @@ import org.astrogrid.applications.description.TestAppConst;
 import org.astrogrid.applications.manager.WorkFlowUsingTestCase;
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.store.Ivorn;
+import org.astrogrid.store.VoSpaceClient;
 
 /**
  * @author Paul Harrison (pah@jb.man.ac.uk) 22-Mar-2004
@@ -42,6 +44,10 @@ public abstract class AbstractDelegateTestCase extends WorkFlowUsingTestCase {
       // TODO Auto-generated constructor stub
    }
 
+   private Ivorn outIvorn;
+
+   private Ivorn targetIvorn;
+
    /**
        * Constructor for ApplicationControllerDelegateTest.
        * @param arg0
@@ -58,6 +64,8 @@ public abstract class AbstractDelegateTestCase extends WorkFlowUsingTestCase {
    protected String monitorURL;
 
    protected CommonExecutionConnectorClient delegate;
+   
+   protected final String TESTCONTENTS = "this is the test contents written back";
 
    protected String endpoint;
 
@@ -69,8 +77,22 @@ public abstract class AbstractDelegateTestCase extends WorkFlowUsingTestCase {
       delegate = DelegateFactory.createDelegate(endpoint);
       assertNotNull(delegate);
 
-      monitorURL = "JESMonitorDummy";
+      monitorURL = null; // that will stop any monitor call
       applicationid = TestAppConst.TESTAPP_NAME;
+      VoSpaceClient client = new VoSpaceClient(user);
+      assertNotNull(client); 
+      targetIvorn = createIVORN("testInFile");
+      assertNotNull(targetIvorn);      
+      outIvorn = createIVORN("outfile"); 
+      assertNotNull(outIvorn);
+      
+      //write out some contents
+      
+      byte[] cont = TESTCONTENTS.getBytes();
+      client.putBytes(cont, 0, cont.length, outIvorn, false);
+      
+        
+
    }
 
    public final void testListApplications() throws CEADelegateException {
@@ -91,6 +113,13 @@ public abstract class AbstractDelegateTestCase extends WorkFlowUsingTestCase {
 
    public final void testReturnRegistryEntry() throws CEADelegateException {
       String regent = delegate.returnRegistryEntry();
+   }
+   
+   public final void testExecutionMySpaceUsingApplication() throws CEADelegateException
+   {
+      executionid = delegate.execute(tool, jobstepID, monitorURL);
+      assertTrue("executionid invalid", executionid.equals("-1"));
+      
    }
    
 

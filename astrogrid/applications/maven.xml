@@ -59,6 +59,7 @@
 	<preGoal name="war:init">
 	   <!-- make sure that the latest axis is in place necessary for the maven install -->
 	   <attainGoal name="axis.unpack" /> 
+	   <mkdir dir="${basedir}/target/docs"/> <!-- a little hack to  make sure that it will build even if the docs target has not run -->
 	</preGoal>
 	<postGoal name="war:webapp">
 	    <attainGoal name="grab-schema" />
