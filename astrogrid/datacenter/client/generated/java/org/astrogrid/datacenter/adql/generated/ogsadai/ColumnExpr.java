@@ -1,0 +1,163 @@
+/*
+ * This class was automatically generated with 
+ * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
+ * Schema.
+ * $Id: ColumnExpr.java,v 1.2 2004/03/26 16:03:33 eca Exp $
+ */
+
+package org.astrogrid.datacenter.adql.generated.ogsadai;
+
+  //---------------------------------/
+ //- Imported classes and packages -/
+//---------------------------------/
+
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Serializable;
+import java.io.Writer;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.xml.sax.ContentHandler;
+
+/**
+ * Class ColumnExpr.
+ * 
+ * @version $Revision: 1.2 $ $Date: 2004/03/26 16:03:33 $
+ */
+public class ColumnExpr extends org.astrogrid.datacenter.adql.generated.ogsadai.ScalarExpression 
+implements java.io.Serializable
+{
+
+
+      //--------------------------/
+     //- Class/Member Variables -/
+    //--------------------------/
+
+    /**
+     * Field _allColumnReference
+     */
+    private org.astrogrid.datacenter.adql.generated.ogsadai.AllColumnReference _allColumnReference;
+
+    /**
+     * Field _singleColumnReference
+     */
+    private org.astrogrid.datacenter.adql.generated.ogsadai.SingleColumnReference _singleColumnReference;
+
+
+      //----------------/
+     //- Constructors -/
+    //----------------/
+
+    public ColumnExpr() {
+        super();
+    } //-- org.astrogrid.datacenter.adql.generated.ogsadai.ColumnExpr()
+
+
+      //-----------/
+     //- Methods -/
+    //-----------/
+
+    /**
+     * Returns the value of field 'allColumnReference'.
+     * 
+     * @return the value of field 'allColumnReference'.
+     */
+    public org.astrogrid.datacenter.adql.generated.ogsadai.AllColumnReference getAllColumnReference()
+    {
+        return this._allColumnReference;
+    } //-- org.astrogrid.datacenter.adql.generated.ogsadai.AllColumnReference getAllColumnReference() 
+
+    /**
+     * Returns the value of field 'singleColumnReference'.
+     * 
+     * @return the value of field 'singleColumnReference'.
+     */
+    public org.astrogrid.datacenter.adql.generated.ogsadai.SingleColumnReference getSingleColumnReference()
+    {
+        return this._singleColumnReference;
+    } //-- org.astrogrid.datacenter.adql.generated.ogsadai.SingleColumnReference getSingleColumnReference() 
+
+    /**
+     * Method isValid
+     */
+    public boolean isValid()
+    {
+        try {
+            validate();
+        }
+        catch (org.exolab.castor.xml.ValidationException vex) {
+            return false;
+        }
+        return true;
+    } //-- boolean isValid() 
+
+    /**
+     * Method marshal
+     * 
+     * @param out
+     */
+    public void marshal(java.io.Writer out)
+        throws org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException
+    {
+        
+        Marshaller.marshal(this, out);
+    } //-- void marshal(java.io.Writer) 
+
+    /**
+     * Method marshal
+     * 
+     * @param handler
+     */
+    public void marshal(org.xml.sax.ContentHandler handler)
+        throws java.io.IOException, org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException
+    {
+        
+        Marshaller.marshal(this, handler);
+    } //-- void marshal(org.xml.sax.ContentHandler) 
+
+    /**
+     * Sets the value of field 'allColumnReference'.
+     * 
+     * @param allColumnReference the value of field
+     * 'allColumnReference'.
+     */
+    public void setAllColumnReference(org.astrogrid.datacenter.adql.generated.ogsadai.AllColumnReference allColumnReference)
+    {
+        this._allColumnReference = allColumnReference;
+    } //-- void setAllColumnReference(org.astrogrid.datacenter.adql.generated.ogsadai.AllColumnReference) 
+
+    /**
+     * Sets the value of field 'singleColumnReference'.
+     * 
+     * @param singleColumnReference the value of field
+     * 'singleColumnReference'.
+     */
+    public void setSingleColumnReference(org.astrogrid.datacenter.adql.generated.ogsadai.SingleColumnReference singleColumnReference)
+    {
+        this._singleColumnReference = singleColumnReference;
+    } //-- void setSingleColumnReference(org.astrogrid.datacenter.adql.generated.ogsadai.SingleColumnReference) 
+
+    /**
+     * Method unmarshalColumnExpr
+     * 
+     * @param reader
+     */
+    public static org.astrogrid.datacenter.adql.generated.ogsadai.ColumnExpr unmarshalColumnExpr(java.io.Reader reader)
+        throws org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException
+    {
+        return (org.astrogrid.datacenter.adql.generated.ogsadai.ColumnExpr) Unmarshaller.unmarshal(org.astrogrid.datacenter.adql.generated.ogsadai.ColumnExpr.class, reader);
+    } //-- org.astrogrid.datacenter.adql.generated.ogsadai.ColumnExpr unmarshalColumnExpr(java.io.Reader) 
+
+    /**
+     * Method validate
+     */
+    public void validate()
+        throws org.exolab.castor.xml.ValidationException
+    {
+        org.exolab.castor.xml.Validator validator = new org.exolab.castor.xml.Validator();
+        validator.validate(this);
+    } //-- void validate() 
+
+}

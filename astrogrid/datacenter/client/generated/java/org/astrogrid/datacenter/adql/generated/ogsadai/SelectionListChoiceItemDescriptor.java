@@ -1,0 +1,242 @@
+/*
+ * This class was automatically generated with 
+ * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
+ * Schema.
+ * $Id: SelectionListChoiceItemDescriptor.java,v 1.2 2004/03/26 16:03:33 eca Exp $
+ */
+
+package org.astrogrid.datacenter.adql.generated.ogsadai;
+
+  //---------------------------------/
+ //- Imported classes and packages -/
+//---------------------------------/
+
+import org.exolab.castor.mapping.AccessMode;
+import org.exolab.castor.xml.TypeValidator;
+import org.exolab.castor.xml.XMLFieldDescriptor;
+import org.exolab.castor.xml.validators.*;
+
+/**
+ * Class SelectionListChoiceItemDescriptor.
+ * 
+ * @version $Revision: 1.2 $ $Date: 2004/03/26 16:03:33 $
+ */
+public class SelectionListChoiceItemDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
+
+
+      //--------------------------/
+     //- Class/Member Variables -/
+    //--------------------------/
+
+    /**
+     * Field nsPrefix
+     */
+    private java.lang.String nsPrefix;
+
+    /**
+     * Field nsURI
+     */
+    private java.lang.String nsURI;
+
+    /**
+     * Field xmlName
+     */
+    private java.lang.String xmlName;
+
+    /**
+     * Field identity
+     */
+    private org.exolab.castor.xml.XMLFieldDescriptor identity;
+
+
+      //----------------/
+     //- Constructors -/
+    //----------------/
+
+    public SelectionListChoiceItemDescriptor() {
+        super();
+        nsURI = "http://tempuri.org/adql";
+        
+        //-- set grouping compositor
+        setCompositorAsChoice();
+        org.exolab.castor.xml.util.XMLFieldDescriptorImpl  desc           = null;
+        org.exolab.castor.xml.XMLFieldHandler              handler        = null;
+        org.exolab.castor.xml.FieldValidator               fieldValidator = null;
+        //-- initialize attribute descriptors
+        
+        //-- initialize element descriptors
+        
+        //-- _aliasSelectionItem
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.datacenter.adql.generated.ogsadai.AliasSelectionItem.class, "_aliasSelectionItem", "AliasSelectionItem", org.exolab.castor.xml.NodeType.Element);
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                SelectionListChoiceItem target = (SelectionListChoiceItem) object;
+                return target.getAliasSelectionItem();
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    SelectionListChoiceItem target = (SelectionListChoiceItem) object;
+                    target.setAliasSelectionItem( (org.astrogrid.datacenter.adql.generated.ogsadai.AliasSelectionItem) value);
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return new org.astrogrid.datacenter.adql.generated.ogsadai.AliasSelectionItem();
+            }
+        } );
+        desc.setHandler(handler);
+        desc.setNameSpaceURI("http://tempuri.org/adql");
+        desc.setMultivalued(false);
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _aliasSelectionItem
+        fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        { //-- local scope
+        }
+        desc.setValidator(fieldValidator);
+        //-- _exprSelectionItem
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.datacenter.adql.generated.ogsadai.ExprSelectionItem.class, "_exprSelectionItem", "ExprSelectionItem", org.exolab.castor.xml.NodeType.Element);
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                SelectionListChoiceItem target = (SelectionListChoiceItem) object;
+                return target.getExprSelectionItem();
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    SelectionListChoiceItem target = (SelectionListChoiceItem) object;
+                    target.setExprSelectionItem( (org.astrogrid.datacenter.adql.generated.ogsadai.ExprSelectionItem) value);
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return new org.astrogrid.datacenter.adql.generated.ogsadai.ExprSelectionItem();
+            }
+        } );
+        desc.setHandler(handler);
+        desc.setNameSpaceURI("http://tempuri.org/adql");
+        desc.setMultivalued(false);
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _exprSelectionItem
+        fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        { //-- local scope
+        }
+        desc.setValidator(fieldValidator);
+        //-- _allSelectionItem
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.datacenter.adql.generated.ogsadai.AllSelectionItem.class, "_allSelectionItem", "AllSelectionItem", org.exolab.castor.xml.NodeType.Element);
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                SelectionListChoiceItem target = (SelectionListChoiceItem) object;
+                return target.getAllSelectionItem();
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    SelectionListChoiceItem target = (SelectionListChoiceItem) object;
+                    target.setAllSelectionItem( (org.astrogrid.datacenter.adql.generated.ogsadai.AllSelectionItem) value);
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return new org.astrogrid.datacenter.adql.generated.ogsadai.AllSelectionItem();
+            }
+        } );
+        desc.setHandler(handler);
+        desc.setNameSpaceURI("http://tempuri.org/adql");
+        desc.setMultivalued(false);
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _allSelectionItem
+        fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        { //-- local scope
+        }
+        desc.setValidator(fieldValidator);
+    } //-- org.astrogrid.datacenter.adql.generated.ogsadai.SelectionListChoiceItemDescriptor()
+
+
+      //-----------/
+     //- Methods -/
+    //-----------/
+
+    /**
+     * Method getAccessMode
+     */
+    public org.exolab.castor.mapping.AccessMode getAccessMode()
+    {
+        return null;
+    } //-- org.exolab.castor.mapping.AccessMode getAccessMode() 
+
+    /**
+     * Method getExtends
+     */
+    public org.exolab.castor.mapping.ClassDescriptor getExtends()
+    {
+        return null;
+    } //-- org.exolab.castor.mapping.ClassDescriptor getExtends() 
+
+    /**
+     * Method getIdentity
+     */
+    public org.exolab.castor.mapping.FieldDescriptor getIdentity()
+    {
+        return identity;
+    } //-- org.exolab.castor.mapping.FieldDescriptor getIdentity() 
+
+    /**
+     * Method getJavaClass
+     */
+    public java.lang.Class getJavaClass()
+    {
+        return org.astrogrid.datacenter.adql.generated.ogsadai.SelectionListChoiceItem.class;
+    } //-- java.lang.Class getJavaClass() 
+
+    /**
+     * Method getNameSpacePrefix
+     */
+    public java.lang.String getNameSpacePrefix()
+    {
+        return nsPrefix;
+    } //-- java.lang.String getNameSpacePrefix() 
+
+    /**
+     * Method getNameSpaceURI
+     */
+    public java.lang.String getNameSpaceURI()
+    {
+        return nsURI;
+    } //-- java.lang.String getNameSpaceURI() 
+
+    /**
+     * Method getValidator
+     */
+    public org.exolab.castor.xml.TypeValidator getValidator()
+    {
+        return this;
+    } //-- org.exolab.castor.xml.TypeValidator getValidator() 
+
+    /**
+     * Method getXMLName
+     */
+    public java.lang.String getXMLName()
+    {
+        return xmlName;
+    } //-- java.lang.String getXMLName() 
+
+}
