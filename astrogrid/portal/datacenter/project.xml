@@ -18,12 +18,16 @@
       <groupId>astrogrid-common</groupId>
       <artifactId>astrogrid-common</artifactId>
       <version>SNAPSHOT</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
     </dependency>
 
-    <!-- Datacenter -->
+    <!-- Portal Common  -->
+    <dependency>
+      <groupId>astrogrid-portal</groupId>
+      <artifactId>astrogrid-portal-common</artifactId>
+      <version>SNAPSHOT</version>
+    </dependency>
+
+    <!-- Datacenter Client-->
     <dependency>
       <groupId>astrogrid-datacenter</groupId>
       <artifactId>astrogrid-datacenter-client</artifactId>
@@ -32,7 +36,7 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
-
+    
     <!-- MySpace -->
     <dependency>
       <groupId>astrogrid-mySpace</groupId>
@@ -43,6 +47,35 @@
       </properties>
     </dependency>
     
+    <!-- JAX dependencies -->
+    <dependency>
+      <groupId>jaxrpc-api</groupId>
+      <artifactId>jaxrpc-api</artifactId>
+      <version>1.0.3</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>jax-qname</groupId>
+      <artifactId>jax-qname</artifactId>
+      <version>1.0.3</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    
+    <!-- Apache Commons -->
+    <dependency>
+      <groupId>commons-discovery</groupId>
+      <artifactId>commons-discovery</artifactId>
+      <version>SNAPSHOT</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
     <!-- DO NOT INCLUDE PARENT DEPENDENCIES IN WAR -->
     &cocoon-deps;
   </dependencies>
