@@ -635,7 +635,7 @@ System.out.println("  Path : " + path);
 
       if (url == null)
       {  throw new FileNotFoundException(
-           "Failed to find URL for path: " + sourcePath);
+           "Failed to find URL for path: " + sourcePath+" on "+managerMsrl);
       }
 
       return url.openStream();
@@ -1422,6 +1422,9 @@ System.out.println("Done");
 
 /*
 $Log: MySpaceIt05Delegate.java,v $
+Revision 1.11  2004/11/07 22:19:57  mch
+added endpoint to exception
+
 Revision 1.10  2004/11/05 17:39:59  mch
 Added outputstream.toString with useful info
 
