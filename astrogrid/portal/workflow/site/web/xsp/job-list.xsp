@@ -99,6 +99,9 @@
                   			
                }		
 		    }
+		    catch(Exception ex) {
+		    	ex.printStackTrace() ;
+		    }
         	finally {
         		if( TRACE_ENABLED ) trace( "job-list-xsp.outputJob() exit") ;
         	}
