@@ -24,7 +24,13 @@
 		| Deploy our 3rd party jars.
 		+-->
 	<goal name="deploy.depends">
-		<ant:copy verbose="true" todir="${webapp.home}/WEB-INF/lib" file="${pom.getDependencyPath('jconfig:jconfig')}"/>
+		<ant:copy verbose="true" todir="${webapp.home}/WEB-INF/lib">
+			<ant:fileset>
+				<ant:include name="${pom.getDependencyPath('jconfig:jconfig')}"/>
+				<ant:include name="${pom.getDependencyPath('astrogrid-community:astrogrid-community-auth-client')}"/>
+				<ant:include name="${pom.getDependencyPath('astrogrid-community:astrogrid-community-policy-client')}"/>
+			</ant:fileset>
+		</ant:copy>
 	</goal>
 
 	<!--+
