@@ -44,7 +44,9 @@ public class ServiceCredentialHandler extends CredentialHandler {
     mc.setProperty("Subject", s);
 
     try {
+      System.out.println("ServiceCredentialHandler.handleRequest(): parsing credentials...");
       WsseHeaderElement.parse(sm, s);
+      System.out.println("ServiceCredentialHandler.handleRequest(): credentials were parsed successfully.");
     }
     catch (NoCredentialsException e1) {
       // Don't authenticate.  Allow anonymous access.
@@ -56,6 +58,7 @@ public class ServiceCredentialHandler extends CredentialHandler {
     }
 
     try {
+      System.out.println("ServiceCredentialHandler.handleRequest(): attempting authentication...");
       Configuration.setConfiguration(new SimpleLoginConfiguration());
       LoginContext l = new LoginContext("", s);
       l.login();
@@ -63,7 +66,8 @@ public class ServiceCredentialHandler extends CredentialHandler {
     }
     catch (Exception e3) {
       System.out.println("ServiceCredentialHandler.handleRequest(): authentication failed.");
-      System.out.println("Here's the rejected message:");
+      System.out.println(e3.getMessage());
+      System.out.println("Here's the rejected request:");
       try {
         sm.writeTo(System.out);
       }

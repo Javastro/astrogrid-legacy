@@ -67,6 +67,7 @@ public class NonceTokenCheck implements LoginModule {
    * @throws LoginException if authentication fails
    */
   public boolean login () throws LoginException {
+    System.out.println("Entering NonceTokenCheck.login()...");
 
     // Extract the original token from the context.
     // No tokens means no authentication.
@@ -75,9 +76,11 @@ public class NonceTokenCheck implements LoginModule {
     NonceToken newToken = null;
     Set tokens = this.subject.getPrivateCredentials(NonceToken.class);
     if (tokens.size() == 0) {
-      throw new LoginException("No nonce tokens were presented.");
+      System.out.println("NonceTokenCheck.login(): authentication failed: No nonce tokens were presented.");
+      throw new LoginException("No nonce tokens were presented");
     }
     else if (tokens.size() > 1) {
+      System.out.println("NonceTokenCheck.login(): authentication failed: too many nonce tokens were presented.");
       throw new LoginException("Too many nonce tokens were presented.");
     }
     else {
@@ -96,14 +99,17 @@ public class NonceTokenCheck implements LoginModule {
       System.out.println("Returned token: " + newToken.toString());
     }
     catch (CommunitySecurityException e1) {
+      System.out.println("NonceTokenCheck.login(): authentication failed: is invalid.");
       throw new FailedLoginException("Authentication with nonce token failed; "
                                    + "nonce is invalid");
     }
     catch (CommunityIdentifierException e2) {
+      System.out.println("NonceTokenCheck.login(): authentication failed: account ID is invalid.");
           throw new FailedLoginException("Authentication with nonce token failed; "
                                        + "account identifier is invalid");
     }
     catch (Exception e3) {
+      System.out.println("NonceTokenCheck.login(): authentication failed: problems with community service.");
       throw new LoginException("Could not validate the nonce token; " +
                                "problems with the community service: " +
                                e3);
