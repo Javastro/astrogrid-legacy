@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<document>
+  <properties>
+    <title>Maven</title>
+    <author email="gps@roe.ac.uk">Peter Shillan</author>
+  </properties>
+
+  <body>
+    <section name="AstroGrid">
+      <p>
+        This project documents the development of AstroGrid including all sub-projects.
+      </p>
+    </section>
+  </body>
+</document>
