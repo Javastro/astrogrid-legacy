@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.2 2003/09/15 15:23:16 mch Exp $
+ * $Id: WebDelegate.java,v 1.3 2003/09/15 15:37:45 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -10,10 +10,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import javax.xml.rpc.ServiceException;
-import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.delegate.axisdataserver.*;
-import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.datacenter.common.DocHelper;
 import org.astrogrid.datacenter.common.ServiceStatus;
+import org.astrogrid.datacenter.common.ServiceIdHelper;
+import org.astrogrid.datacenter.delegate.axisdataserver.AxisDataServerServiceLocator;
+import org.astrogrid.datacenter.delegate.axisdataserver.AxisDataServerSoapBindingStub;
+import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Element;
 
 /**
@@ -63,21 +65,44 @@ public class WebDelegate extends DatacenterDelegate
    public Element adqlQuery(Element adql) throws RemoteException
    {
        try {
-       return binding.doQuery(adql);
+          return binding.doQuery(adql);
        } catch (QueryException e) {
            throw new RemoteException(e.getMessage());
        }
 
    }
 
+   /**
+    * Returns votable results (or status info if results not ready)
+    * @todo change getResultsAndClose() to take the service Id as string
+    */
    public Element getResults(String id) throws RemoteException
    {
-      throw new UnsupportedOperationException("Not implemented yet");
+      try
+      {
+         return binding.getResultsAndClose(
+            DocHelper.wrap(ServiceIdHelper.makeServiceIdTag(id)).getDocumentElement());
+
+      }
+      catch (Exception e)
+      {
+         throw new RemoteException(e.getMessage());
+      }
    }
 
+   /**
+    * Spawns the given query - ie starts it, returns with the server acknowledgement
+    */
    public Element spawnAdqlQuery(Element adql) throws RemoteException
    {
-      throw new UnsupportedOperationException("Not implemented yet");
+      try
+      {
+         return binding.startQuery(adql);
+      }
+      catch (Exception e)
+      {
+         throw new RemoteException(e.getMessage());
+      }
    }
 
 
@@ -123,6 +148,9 @@ public class WebDelegate extends DatacenterDelegate
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.3  2003/09/15 15:37:45  mch
+Implemented asynch queries
+
 Revision 1.2  2003/09/15 15:23:16  mch
 Added doc
 
