@@ -1,0 +1,52 @@
+/*$Id: ADQLUtils.java,v 1.1 2003/08/28 15:27:54 nw Exp $
+ * Created on 28-Aug-2003
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+**/
+package org.astrogrid.datacenter.adql;
+import org.astrogrid.datacenter.adql.generated.*;
+import org.astrogrid.datacenter.adql.generated.types.*;
+import org.exolab.castor.xml.CastorException;
+
+import java.io.*;
+
+/** some static helper methods for working with ADQL object trees.
+ * @author Noel Winstanley nw@jb.man.ac.uk 28-Aug-2003
+ *
+ */
+public class ADQLUtils {
+    /** write query out to string 
+     * -- why can't this be implemented by castor already*/
+    public static String queryToString(Select q) throws IOException, CastorException {
+        StringWriter out = new StringWriter();
+        q.marshal(out);
+        out.close();
+        return out.toString();
+    }
+    
+    /** throw together the minimal query that will validate
+     *  - expect this to change as new versions of the schema become more polished.
+     * currently boils down to <Select><SelectionAll/></Select> */
+    public static Select buildMinimalQuery() {
+        Select s = new Select();
+        
+        SelectChoice sel = new SelectChoice();        
+        s.setSelectChoice(sel);
+        sel.setSelectionAll(new SelectionAll());
+        // no order-by or table clauses required, according to schema.
+        return s;
+    }
+}
+
+
+/* 
+$Log: ADQLUtils.java,v $
+Revision 1.1  2003/08/28 15:27:54  nw
+added ADQL object model.
+ 
+*/
