@@ -1,22 +1,30 @@
 /*
- * $Id: SqlResults.java,v 1.12 2004/03/10 23:09:59 mch Exp $
+ * $Id: SqlResults.java,v 1.13 2004/03/11 10:46:53 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.sql;
 
-import java.io.*;
-
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
+
 import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
-import org.astrogrid.util.DomHelper;
 import org.astrogrid.util.Workspace;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -44,47 +52,32 @@ public class SqlResults implements QueryResults
    {
       this.sqlResults = givenResults;
       this.workspace = givenWorkspace;
-      
-   }
-
-   /** Returns number of rows */
-   public int getCount() {
-      return -1;
-      /*
-      try {
-         if (sqlResults.last() == false) return 0;  //disturbs the cursor for votable conversion...
-         return sqlResults.getRow();
-      }
-      catch (SQLException sqle)  { //may be an unsupported operation
-         log.error(sqle);
-         return -1;
-      }
-       */
    }
    
    /**
     * Converts the resultset to VOTable Document.
     */
-   public Document toVotable(QuerierProcessingResults statusToUpdate) throws IOException, SAXException
+   public Document toVotable() throws IOException, SAXException
    {
       try
       {
          //don't know how big the result set is so use the workspace - unless
          //it's null, in which case work from memory
-         if ((workspace != null) && (!workspace.isClosed()))
+         if (workspace != null)
          {
             File workfile = workspace.makeWorkFile("votableResults.vot.xml"); //should go into workspace...
             
             OutputStream out = new FileOutputStream(workfile) ;
-            toVotable(out, statusToUpdate);
+            toVotable(out);
             out.close();
-            return DomHelper.newDocument(new FileInputStream(workfile));
+            return XMLUtils.newDocument(new FileInputStream(workfile));
          }
          else
          {
-            StringWriter sw = new StringWriter();
-            toVotable(sw, statusToUpdate);
-            return DomHelper.newDocument(sw.toString());
+            ByteArrayOutputStream ba = new ByteArrayOutputStream();
+            toVotable(ba);
+            ba.close();
+            return XMLUtils.newDocument(new ByteArrayInputStream(ba.toByteArray()));
          }
       }
       catch (ParserConfigurationException e)
@@ -94,22 +87,17 @@ public class SqlResults implements QueryResults
          throw ioe;
       }
    }
-
-   /** Stream version of the writer */
-   public void toVotable(OutputStream out, QuerierProcessingResults statusToUpdate) throws IOException {
-      toVotable((Writer) new OutputStreamWriter(out), statusToUpdate);
-   }
    
    /**
     * Converts results to VOTable to given outputstream.  I (MCH) don't think this
     * is very pleasant, and will break when the votable format changes, but
     * is easy to fix...
     */
-   public void toVotable(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
+   public void toVotable(OutputStream out) throws IOException
    {
       try
       {
-         PrintWriter printOut = new PrintWriter(new BufferedWriter(out));
+         PrintStream printOut = new PrintStream(new BufferedOutputStream(out));
          
          printOut.println("<!DOCTYPE VOTABLE SYSTEM 'http://us-vo.org/xml/VOTable.dtd'>");
          printOut.println("<VOTABLE version='1.0'>");
@@ -141,7 +129,6 @@ public class SqlResults implements QueryResults
                                 + getVotableType(i)
                                 +" ucd='"+getUcdFor(metadata.getColumnName(i))+"' "
                                 +"/>");
-            statusToUpdate.setProgress("Processng Record "+i+" of "+getCount());
          }
 
          printOut.println("<DATA>");
@@ -174,7 +161,6 @@ public class SqlResults implements QueryResults
       catch (SQLException sqle)
       {
          log.error("Could not convert results",sqle);
-         throw new IOException(sqle+", converting to VOtable");
       }
    }
    
@@ -199,7 +185,7 @@ public class SqlResults implements QueryResults
          case Types.SMALLINT: return "datatype='short'";
          case Types.TINYINT:  return "datatype='short'";
          default: {
-            log.error("Cannot cope with type "+sqlResults.getMetaData().getColumnTypeName(col)+", storing as string");
+            log.error("Cannot cope with type "+sqlResults.getMetaData().getColumnTypeName(col)+", assuming string");
             return "datatype='char' arraysize='*'";
          }
       }
@@ -216,26 +202,8 @@ public class SqlResults implements QueryResults
 
 /*
  $Log: SqlResults.java,v $
- Revision 1.12  2004/03/10 23:09:59  mch
- Fixed unknown sql type stopping query
-
- Revision 1.11  2004/03/10 02:32:01  mch
- Removed getCount attempt
-
- Revision 1.10  2004/03/10 00:46:00  mch
- catch unsupported operation
-
- Revision 1.9  2004/03/09 22:58:39  mch
- Provided for piping/writing out of results rather than returning as string
-
- Revision 1.8  2004/03/09 21:54:58  mch
- Added Writer methods to toVotables for JSPs
-
- Revision 1.7  2004/03/09 18:50:06  mch
- Fixed workspace used when closed
-
- Revision 1.6  2004/03/08 00:31:28  mch
- Split out webservice implementations for versioning
+ Revision 1.13  2004/03/11 10:46:53  mch
+ Oops made change to HEAD results not new refactored one
 
  Revision 1.5  2004/01/15 14:49:47  nw
  improved documentation
@@ -259,4 +227,3 @@ public class SqlResults implements QueryResults
  It03-Close
 
  */
-
