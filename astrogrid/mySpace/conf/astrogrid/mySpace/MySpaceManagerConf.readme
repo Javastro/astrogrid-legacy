@@ -1,8 +1,0 @@
-#Files in this folder should be placed directely under $CATALINA_HOME
-#Files include:
-#statuscodes.lis
-#MySpaceRequest.properties
-#MySpaceResponse.properties
-#MySpaceResponseHeader.properties
-#MySpaceResponseElements.properties
-#MySpaceResponseFooter.properties
