@@ -1,4 +1,4 @@
-/*$Id: MySpaceStressTest.java,v 1.2 2005/01/16 17:28:12 jdt Exp $
+/*$Id: MySpaceStressTest.java,v 1.3 2005/01/16 17:29:07 jdt Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -92,7 +92,7 @@ public class MySpaceStressTest extends TestCase {
 				MYSPACE);
 
 		//create file in one
-        final int MAX = 5;
+        final int MAX = 3500;
 		for (int i = 0; i < MAX; ++i) {
 			byte[] bytes = bigString.toString().getBytes();
 			System.out.print("Putting file "+i+ "...");
@@ -119,7 +119,7 @@ public class MySpaceStressTest extends TestCase {
 				MYSPACE);
 
 		//create file in one
-        final int MAX = 1;
+        final int MAX = 0;
 		for (int i = 0; i < MAX; ++i) {
 			byte[] bytes = bigString.toString().getBytes();
 			System.out.print("Putting file " + i + "of length" + bytes.length
@@ -144,6 +144,9 @@ public class MySpaceStressTest extends TestCase {
 
 /*
  * $Log: MySpaceStressTest.java,v $
+ * Revision 1.3  2005/01/16 17:29:07  jdt
+ * changed number of runs
+ *
  * Revision 1.2  2005/01/16 17:28:12  jdt
  * added a url test too
  * Revision 1.1 2005/01/14 15:37:46 jdt
