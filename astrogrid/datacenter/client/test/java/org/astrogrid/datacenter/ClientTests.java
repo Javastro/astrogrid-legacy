@@ -1,4 +1,4 @@
-/*$Id: ClientTests.java,v 1.8 2004/07/03 11:52:50 mch Exp $
+/*$Id: ClientTests.java,v 1.9 2004/09/07 02:28:29 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.datacenter;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.astrogrid.datacenter.axisdataserver.TransportTest;
+import org.astrogrid.datacenter.delegate.WebDelegateTest;
 import org.astrogrid.datacenter.delegate.nvocone.NvoConeTest;
 import org.astrogrid.io.xml.XmlPrinterTest;
 
@@ -40,6 +41,7 @@ public class ClientTests {
       suite.addTest(new TestSuite(TransportTest.class));
       suite.addTest(NvoConeTest.suite());
       suite.addTest(XmlPrinterTest.suite());
+      suite.addTest(WebDelegateTest.suite());
       return suite;
    }
 }
@@ -47,6 +49,9 @@ public class ClientTests {
 
 /*
  $Log: ClientTests.java,v $
+ Revision 1.9  2004/09/07 02:28:29  mch
+ Removed ADQL 0.5 tests
+
  Revision 1.8  2004/07/03 11:52:50  mch
  Removed delegate type test and added xml printer test
 

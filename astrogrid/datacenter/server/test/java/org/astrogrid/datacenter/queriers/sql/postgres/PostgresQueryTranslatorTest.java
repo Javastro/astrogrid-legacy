@@ -1,4 +1,4 @@
-/*$Id: PostgresQueryTranslatorTest.java,v 1.3 2004/08/18 21:27:22 mch Exp $
+/*$Id: PostgresQueryTranslatorTest.java,v 1.4 2004/09/07 02:28:29 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,28 +57,28 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
     }
 
     /** ADQLn - run as separate tests so all get checked even if one fails */
-    public void test1Adql05() throws Exception { doFromFile("adql0.5", 1); }
-//    public void test1Adql073() throws Exception { doFromFile("adql0.7.3", 1); }
+    //public void test1Adql05() throws Exception { doFromFile("adql0.5", 1); }
+    public void test1Adql074() throws Exception { doFromFile("adql0.7.4", 1); }
     //not used public void test1Adql08() throws Exception { doFromFile("adql0.8", 1); }
     //not ready  public void test1Sadql11() throws Exception { doFromFile("sadql1.1", 1); }
     
     /** ADQLn - run as separate tests so all get checked even if one fails */
-    public void test2Adql05() throws Exception { doFromFile("adql0.5", 2); }
- //   public void test2Adql073() throws Exception { doFromFile("adql0.7.3", 2); }
+//    public void test2Adql05() throws Exception { doFromFile("adql0.5", 2); }
+    public void test2Adql074() throws Exception { doFromFile("adql0.7.4", 3); }
     //not used public void test2Adql08() throws Exception { doFromFile("adql0.8", 2); }
     //not ready public void test2Sadql11() throws Exception { doFromFile("sadql1.1", 2); }
     
     /** ADQLn - run as separate tests so all get checked even if one fails */
-    public void test3AdqlCone05() throws Exception { doFromFile("adql0.5", 3); }
+//    public void test3AdqlCone05() throws Exception { doFromFile("adql0.5", 3); }
     
     /** ADQLn - run as separate tests so all get checked even if one fails */
-    public void test4Adql() throws Exception { doFromFile("adql0.5", 4); }
+//    public void test4Adql() throws Exception { doFromFile("adql0.5", 4); }
     
     /** ADQLn - run as separate tests so all get checked even if one fails */
-    public void test5Adql() throws Exception { doFromFile("adql0.5", 5); }
+//    public void test5Adql() throws Exception { doFromFile("adql0.5", 5); }
     
     /** ADQLn - run as separate tests so all get checked even if one fails */
-    public void test6Adql() throws Exception { doFromFile("adql0.5", 6); }
+//    public void test6Adql() throws Exception { doFromFile("adql0.5", 6); }
     
     /** Test makes valid SQL from simple adql */
     public void doFromFile(String ver, int testNum) throws Exception {
@@ -108,6 +108,9 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: PostgresQueryTranslatorTest.java,v $
+Revision 1.4  2004/09/07 02:28:29  mch
+Removed ADQL 0.5 tests
+
 Revision 1.3  2004/08/18 21:27:22  mch
 Fixed some tests; added faster results checking more logging
 

@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.21 2004/09/07 00:54:20 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.22 2004/09/07 02:28:29 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -251,10 +251,10 @@ public class StdSqlMaker  extends SqlMaker {
          }
          else {
             //not given in configuration file - look in subdirectory of class as resource
-            if (namespaceURI.equals("http://tempuri.org/adql")) { //assume v0.5
-               xsltDoc = "adql05-2-sql.xsl";
-            }
-            else if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.7.4")) {
+//            if (namespaceURI.equals("http://tempuri.org/adql")) { //assume v0.5
+//  obsolete             xsltDoc = "adql05-2-sql.xsl";
+//            }
+            if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.7.4")) {
                xsltDoc = "adql074-2-sql.xsl";
             }
             else if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.7.3")) {
@@ -387,6 +387,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.22  2004/09/07 02:28:29  mch
+Removed ADQL 0.5 tests
+
 Revision 1.21  2004/09/07 00:54:20  mch
 Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
 

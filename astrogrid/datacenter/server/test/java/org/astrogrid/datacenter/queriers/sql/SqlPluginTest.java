@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.16 2004/09/07 00:54:20 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.17 2004/09/07 02:28:29 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
-import org.astrogrid.datacenter.queriers.QuerierPlugin;
+import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.query.RawSqlQuery;
@@ -81,7 +81,7 @@ public class SqlPluginTest extends ServerTestCase {
    public Document askCone(double ra, double dec, double r) throws Exception {
 
       //make sure the configuration is correct for the plugin
-      //DummySqlPlugin.initConfig();
+      SampleStarsPlugin.initConfig();
       
       StringWriter sw = new StringWriter();
       Querier q = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(ra,dec,r), new TargetIndicator(sw), ReturnTable.VOTABLE);
@@ -100,13 +100,13 @@ public class SqlPluginTest extends ServerTestCase {
       askAdqlFromFile("dummydb-test-1.xml");
    }
    
-   public void testAdql2() throws Exception {
-      askAdqlFromFile("dummydb-test-2.xml");
-   }
+//   public void testAdql2() throws Exception {
+//      askAdqlFromFile("dummydb-test-2.xml");
+//   }
 
-   public void testAdql3() throws Exception {
-      askAdqlFromFile("dummydb-test-3.xml");
-   }
+//   public void testAdql3() throws Exception {
+//      askAdqlFromFile("dummydb-test-3.xml");
+//   }
 
    public void testAdql4() throws Exception {
       askAdqlFromFile("dummy-pleidies-adql.xml");
@@ -218,6 +218,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.17  2004/09/07 02:28:29  mch
+ Removed ADQL 0.5 tests
+
  Revision 1.16  2004/09/07 00:54:20  mch
  Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
 
