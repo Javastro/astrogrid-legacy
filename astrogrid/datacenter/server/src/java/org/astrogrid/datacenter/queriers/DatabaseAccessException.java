@@ -5,7 +5,7 @@
 
 package org.astrogrid.datacenter.queriers;
 
-import java.io.IOException;
+import java.rmi.RemoteException;
 
 
 /**
@@ -22,7 +22,7 @@ import java.io.IOException;
  * @author M Hill
  */
 
-public class DatabaseAccessException extends IOException
+public class DatabaseAccessException extends RemoteException
 {
    /**
     * Constructor taking the cause of the error (an exception/error) and
@@ -59,6 +59,9 @@ public class DatabaseAccessException extends IOException
 
 /*
 $Log: DatabaseAccessException.java,v $
+Revision 1.2  2003/12/03 16:05:46  mch
+Now extends RemoteException which should give better error reporting at the web client
+
 Revision 1.1  2003/11/14 00:38:29  mch
 Code restructure
 
