@@ -89,7 +89,7 @@ public class AxisDataServerServiceLocator extends org.apache.axis.client.Service
     }
 
     public javax.xml.namespace.QName getServiceName() {
-        return new javax.xml.namespace.QName("http://localhost:8080/axis/services/AxisDataServer", "AxisDataServerService");
+        return new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1", "AxisDataServerService");
     }
 
     private java.util.HashSet ports = null;

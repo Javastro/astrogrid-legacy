@@ -8,14 +8,15 @@
 package org.astrogrid.datacenter.delegate.axisdataserver;
 
 public interface AxisDataServer extends java.rmi.Remote {
-    public java.lang.String getStatus(java.lang.Object soapBody) throws java.rmi.RemoteException;
-    public org.w3c.dom.Element getMetadata() throws java.rmi.RemoteException;
-    public java.lang.Object getMetadata(java.lang.String xpathExpression) throws java.rmi.RemoteException;
-    public org.w3c.dom.Element getVoRegistryMetadata() throws java.rmi.RemoteException;
-    public org.w3c.dom.Element doQuery(org.w3c.dom.Element soapBody) throws java.rmi.RemoteException, org.astrogrid.datacenter.query.QueryException, org.astrogrid.datacenter.delegate.axisdataserver.DatabaseAccessException;
-    public org.w3c.dom.Element makeQuery(org.w3c.dom.Element soapBody) throws java.rmi.RemoteException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException, org.astrogrid.datacenter.delegate.axisdataserver.DatabaseAccessException;
-    public org.w3c.dom.Element startQuery(org.w3c.dom.Element soapBody) throws java.rmi.RemoteException;
-    public org.w3c.dom.Element getResultsAndClose(org.w3c.dom.Element soapBody) throws java.rmi.RemoteException, org.xml.sax.SAXException;
-    public void abortQuery(org.w3c.dom.Element soapBody) throws java.rmi.RemoteException;
-    public void registerWebListener(org.w3c.dom.Element soapBody, org.astrogrid.datacenter.delegate.WebNotifyServiceListener listener) throws java.rmi.RemoteException;
+    public org.w3c.dom.Element getMetadata(java.lang.Object parameters) throws java.rmi.RemoteException;
+    public org.w3c.dom.Element doQuery(java.lang.String resultsFormat, org.astrogrid.datacenter.adql.generated.Select adql) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException;
+    public java.lang.String makeQuery(org.astrogrid.datacenter.adql.generated.Select adql) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException;
+    public java.lang.String makeQueryWithId(org.astrogrid.datacenter.adql.generated.Select adql, java.lang.String assignedId) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException;
+    public void setResultsDestination(java.lang.String myspaceUrl) throws java.rmi.RemoteException;
+    public void startQuery(java.lang.String id) throws java.rmi.RemoteException;
+    public java.lang.String getResultsAndClose(java.lang.String queryId) throws java.rmi.RemoteException, org.xml.sax.SAXException;
+    public void abortQuery(java.lang.String queryId) throws java.rmi.RemoteException;
+    public java.lang.String getStatus(java.lang.String queryId) throws java.rmi.RemoteException;
+    public void registerWebListener(java.lang.String queryId, java.lang.String url) throws java.rmi.RemoteException, java.net.MalformedURLException;
+    public void registerJobMonitor(java.lang.String queryId, java.lang.String url) throws java.rmi.RemoteException, java.net.MalformedURLException;
 }
