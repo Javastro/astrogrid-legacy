@@ -91,6 +91,76 @@ public class XSLHelper {
       return null;
    }
    
+   public Document transformToOAI(Node doc, String versionNumber) {
+      String fileName = "Resourcev" + versionNumber + "-OAI.xsl";
+
+      Source xmlSource = new DOMSource(doc);
+      Document resultDoc = null;
+      
+      ClassLoader loader = this.getClass().getClassLoader();
+      InputStream is = null;
+      is = loader.getResourceAsStream(fileName);
+      Source xslSource = new StreamSource(is);
+            
+      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+      try {
+         builderFactory.setNamespaceAware(true);
+         DocumentBuilder builder = builderFactory.newDocumentBuilder();
+         resultDoc = builder.newDocument();
+         //DocumentFragment df = resultDoc.createDocumentFragment();
+         TransformerFactory transformerFactory = TransformerFactory.newInstance();
+         
+         DOMResult result = new DOMResult(resultDoc);
+         Transformer transformer = transformerFactory.newTransformer(xslSource);
+         
+         transformer.transform(xmlSource,result);
+         //System.out.println("the resultwriter transform = " + sw.toString());
+      }catch(ParserConfigurationException pce) {
+         pce.printStackTrace();
+      }catch(TransformerConfigurationException tce) {
+         tce.printStackTrace();
+      }catch(TransformerException te) {
+         te.printStackTrace();
+      }
+      return resultDoc;
+   }
+   
+   
+   public Document transformResultVersions(Node doc, String fromVersion, String toVersion) {
+      String fileName = "VOResource-" + fromVersion + "-" + toVersion + ".xsl";
+
+      Source xmlSource = new DOMSource(doc);
+      Document resultDoc = null;
+      
+      ClassLoader loader = this.getClass().getClassLoader();
+      InputStream is = null;
+      is = loader.getResourceAsStream(fileName);
+      Source xslSource = new StreamSource(is);
+            
+      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+      try {
+         builderFactory.setNamespaceAware(true);
+         DocumentBuilder builder = builderFactory.newDocumentBuilder();
+         resultDoc = builder.newDocument();
+         //DocumentFragment df = resultDoc.createDocumentFragment();
+         TransformerFactory transformerFactory = TransformerFactory.newInstance();
+         
+         DOMResult result = new DOMResult(resultDoc);
+         Transformer transformer = transformerFactory.newTransformer(xslSource);
+         
+         transformer.transform(xmlSource,result);
+         //System.out.println("the resultwriter transform = " + sw.toString());
+      }catch(ParserConfigurationException pce) {
+         pce.printStackTrace();
+      }catch(TransformerConfigurationException tce) {
+         tce.printStackTrace();
+      }catch(TransformerException te) {
+         te.printStackTrace();
+      }
+      return resultDoc;
+      
+   }
+   
    
    public Document transformExistResult(String versionNumber, boolean withResponseElement, Node doc) {
       
