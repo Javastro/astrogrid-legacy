@@ -1,10 +1,22 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/server/src/java/org/astrogrid/mySpace/mySpaceManager/FileStoreDriver.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/09 01:19:50 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/25 10:52:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreDriver.java,v $
+ *   Revision 1.6  2004/11/25 10:52:49  jdt
+ *   Merge from dave-dev-200410061224-200411221626
+ *
+ *   Revision 1.5.24.3  2004/11/19 11:11:28  dave
+ *   Updated FileStoreDriver to match changes in FileStore
+ *
+ *   Revision 1.5.24.2  2004/11/02 23:18:17  dave
+ *   Updated to match changes to FileStore FileProperties ...
+ *
+ *   Revision 1.5.24.1  2004/10/26 13:34:27  dave
+ *   Updated FileStoreDelegateResolver to FileStoreDelegateResolverImpl ....
+ *
  *   Revision 1.5  2004/09/09 01:19:50  dave
  *   Updated MIME type handling in MySpace.
  *   Extended test coverage for MIME types in FileStore and MySpace.
@@ -93,6 +105,7 @@ import org.astrogrid.filestore.common.file.FileProperties ;
 import org.astrogrid.filestore.common.transfer.UrlGetTransfer ;
 
 import org.astrogrid.filestore.resolver.FileStoreDelegateResolver ;
+import org.astrogrid.filestore.resolver.FileStoreDelegateResolverImpl ;
 import org.astrogrid.filestore.resolver.FileStoreResolverException ;
 
 import org.astrogrid.filestore.common.exception.FileStoreIdentifierException ;
@@ -241,7 +254,7 @@ public class FileStoreDriver
 		//
 		// Create our resolver using the default registry.
 		FileStoreDelegateResolver resolver =
-			new FileStoreDelegateResolver() ;
+			new FileStoreDelegateResolverImpl() ;
 		//
 		// Use our resolver to create our filestore delegate.
 		return new FileStoreDriver(
@@ -270,7 +283,7 @@ public class FileStoreDriver
 		//
 		// Create our resolver using the registry endpoint.
 		FileStoreDelegateResolver resolver =
-			new FileStoreDelegateResolver(
+			new FileStoreDelegateResolverImpl(
 				registry
 				) ;
 		//
@@ -395,7 +408,7 @@ public class FileStoreDriver
 	 *
 	 */
 	public void importUrl(DataItemRecord item, URL source)
-		throws FileStoreServiceException, FileStoreTransferException
+		throws FileStoreServiceException, FileStoreTransferException, FileStoreIdentifierException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -507,6 +520,7 @@ public class FileStoreDriver
 	 *
 	 */
 	private void updateDataItem(DataItemRecord item, FileProperty[] properties)
+		throws FileStoreIdentifierException
 		{
 		updateDataItem(
 			item,
@@ -523,29 +537,22 @@ public class FileStoreDriver
 	 *
 	 */
 	private void updateDataItem(DataItemRecord item, FileProperties properties)
+		throws FileStoreIdentifierException
 		{
 		//
-		// Update the data item identifier.
+		// Update the data item properties.
 		item.setDataItemFile(
-			properties.getResourceIdent()
+			properties.getStoreResourceIdent()
 			) ;
-		//
-		// Update the data item Ivorn.
 		item.setDataItemIvorn(
-			properties.getResourceIvorn().toString()
+			properties.getStoreResourceIvorn().toString()
 			) ;
-		//
-		// Update the data item URL.
 		item.setDataItemUri(
-			properties.getResourceUrl().toString()
+			properties.getStoreResourceUrl().toString()
 			) ;
-		//
-		// Update the data item size.
 		item.setSize(
 			properties.getContentSize()
 			) ;
-		//
-		// Update the data item mime type.
 		item.setDataItemMime(
 			properties.getContentType()
 			) ;
