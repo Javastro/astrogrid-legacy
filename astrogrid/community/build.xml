@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: pah $</cvs:author>
-    | <cvs:date>$Date: 2003/09/09 17:24:36 $</cvs:date>
-    | <cvs:version>$Revision: 1.19 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/09 18:46:08 $</cvs:date>
+    | <cvs:version>$Revision: 1.20 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.20  2003/09/09 18:46:08  pah
+    |   athorization build more in line with eclipse and other workgroup structures
+    |
     |   Revision 1.19  2003/09/09 17:24:36  pah
     |   some more authorization tasks added - wip - committed to reduce conflicts
     |
@@ -74,6 +77,7 @@
 	<property name="project.name"    value="ast-policy"/>
 	<property name="project.version" value="1.0"/>
 	<property name="testdir" value="${basedir}/test"></property>
+	<property name="installkitdir" value="${basedir}/install"></property>
 
 	<!--+
 		| User preferences.
@@ -2635,10 +2639,14 @@ Start of Authentication "auth" tasks
 	
 	<!-- Authentication tasks -->
 	<property name="authentication.base" value="${basedir}/build/authentication"/>
+	<property name="authentication.classes" value="${basedir}/build/authentication/classes"></property> <!-- use the eclipse build for now -->
 
 	<property name="authentication.server.jar"  value="authentication-server-${project.version}.jar"/>
 	<property name="authentication.client.jar"  value="authentication-client-${project.version}.jar"/>
 	
+		<target name="authentication.delete" depends="">
+		<delete dir="${authentication.base}" failonerror="false"/>
+	</target>
 	
 	<target name="authentication.TEST" depends="authentication.testSetup">
 	</target>
@@ -2757,13 +2765,12 @@ Start of Authentication "auth" tasks
 		       debug="on"
 		       deprecation="on"
 		       optimize="on"
-		       verbose="on"
+		       verbose="off"
 		       >
-		    <!--   <include name="org/astrogrid/community/**"/>
+		     <include name="org/astrogrid/community/**"/>
 		       <exclude name="org/astrogrid/community/policy/**"/>
 		       <exclude name="org/astrogrid/community/auth/**"/>
-		       <exclude name="org/astrogrid/community/delegate/**"/> -->
-		       <include name="org/astrogrid/community/delegate/authentication/**"/>
+		       <exclude name="org/astrogrid/community/delegate/policy/**"/> 
 
 			<classpath>
 				<!-- Include the JUnit libraries -->
@@ -2781,20 +2788,13 @@ Start of Authentication "auth" tasks
 		| Jar our server classes.
 		+-->
 	<target name="authentication.server.jar" depends="">
-		<!-- Create our build directory -->
-		<mkdir dir="${authentication.base}/jar"/>
 		<!-- Create our jar file -->
-		<jar destfile="${authentication.base}/jar/${authentication.server.jar}">
+		<mkdir dir="${installkitdir}"/>
+		<jar destfile="${installkitdir}/${authentication.server.jar}">
 			<!-- Copy our own Java source -->
-			<fileset dir="${authentication.server.base}/classes">
-				<include name="org/astrogrid/community/authentication/data/**"/>
-				<include name="org/astrogrid/community/authentication/server/**"/>
-				<!--+
-					| PATCH : Include the auth data objects
-					| Required because the Castor mapping referes to  org.astrogrid.community.authentication.data.SecurityToken.
-					| May cause problems if we want to deploy these in separate jars :-(
-					+-->
-				<include name="org/astrogrid/community/authentication/data/**"/>
+			<fileset dir="${authentication.classes}">
+				<include name="org/astrogrid/community/authentication/**"/>
+				<include name="org/astrogrid/community/authentication/**"/>
 			</fileset>
 		</jar>
 	</target>
@@ -2804,14 +2804,15 @@ Start of Authentication "auth" tasks
 		+-->
 	<target name="authentication.client.jar" depends="">
 		<!-- Create our build directory -->
-		<mkdir dir="${authentication.base}/jar"/>
+
+		<mkdir dir="${installkitdir}"/>
+		
 		<!-- Create our jar file -->
-		<jar destfile="${authentication.base}/jar/${authentication.client.jar}">
+		<jar destfile="${installkitdir}/${authentication.client.jar}">
 			<!-- Copy our own Java source -->
-			<fileset dir="${authentication.client.base}/classes">
+			<fileset dir="${authentication.classes}">
 				<include name="org/astrogrid/community/authentication/data/**"/>
 				<include name="org/astrogrid/community/authentication/server/**"/>
-				<include name="org/astrogrid/community/authentication/client/**"/>
 				<include name="org/astrogrid/community/delegate/authentication/**"/>
 			</fileset>
 		</jar>
@@ -2827,29 +2828,29 @@ Start of Authentication "auth" tasks
 		<!-- Create our config directory -->
 		<mkdir dir="${authentication.server.base}/config"/>
 		<!-- Copy our database mapping files -->
-		<copy verbose="false" overwrite="true" toDir="${authentication.server.base}/config">
+		<copy verbose="false" overwrite="true" toDir="${authentication.base}/config">
 			<fileset dir="src/castor/hsqldb">
 				<include name="database.xml"/>
 				<include name="mapping.xml"/>
 			</fileset>
 		</copy>
 	</target>
+	
+	<target name="authentication.GENSERVICE" depends="" description="regenerates the WSDL and client stubs for the service">
+		<antcall target="authentication.delete"/>
+		<antcall target="authentication.server.javac"/>
+		<antcall target="authentication.service.java2wsdl"/>
+		<antcall target="authentication.service.wsdl2java"/>
+		<antcall target="authentication.client.wsdl2java" />	
+	</target>
 
 	<!--+
 	    | Build our authentication service.
 	    +-->
 	<target name="authentication.BUILD" depends="">
-		<antcall target="authentication.delete"/>
-
-		<antcall target="authentication.service.javac"/>
-		<antcall target="authentication.service.java2wsdl"/>
-		<antcall target="authentication.service.wsdl2java"/>
 		<antcall target="authentication.javac"/>
 		<antcall target="authentication.server.config"/>
 		<antcall target="authentication.server.jar"/>
-
-		<antcall target="authentication.client.prepare"/>
-		<antcall target="authentication.client.javac"/>
 		<antcall target="authentication.client.jar"/>
 	</target>
 
@@ -2904,7 +2905,7 @@ Start of Authentication "auth" tasks
 			hostname="${axis.host}"
 			servletpath="/${axis.servlet}/services/AdminService"
 			debug="true"
-			xmlfile="$basedir/wsdd/authenticationServiceDeploy.wsdd"
+			xmlfile="$basedir/wsdd/AuthenticationService/deploy.wsdd"
 			/>
 	</target>
 
