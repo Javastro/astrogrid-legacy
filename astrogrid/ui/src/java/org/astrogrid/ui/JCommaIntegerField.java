@@ -3,6 +3,12 @@
 //
 // Version History
 //
+// 1.2:  09 Dec 2002
+//       Removed the overridden setText() method because it was generating
+//       exceptions when called with empty string to clear box. Its 
+//       functionality is not needed anyway as the new NumberDocument prevents
+//       the entering of any characters in the field that would make the
+//       current contents a non-number...
 // 1.1:  14 Nov 2002
 //       Rewrote the NumberDocument class so that it now, rather than testing 
 //       char-by-char on insert, builds a temporary version of what the text
@@ -146,30 +152,6 @@ public class JCommaIntegerField extends JTextField
       // Calls superclass directly as there is no need to for the integer
       // check in setText(String);
       super.setText("" + value);
-   }
-   
-   /**
-    * Overrides the superclass method to check that the value the field is
-    * being set to is a valid integer/integer list.
-    */
-   public void setText(String value)
-   {
-      try
-      {
-        StringTokenizer tokenizer = new StringTokenizer(value);
-
-        // Check any/all passed values are integers
-        while (tokenizer.hasMoreTokens())
-        {
-          Integer.parseInt(tokenizer.nextToken(","));
-        };
-
-        super.setText(value);
-      }
-      catch (NumberFormatException nfe)
-      {
-         throw new IllegalArgumentException("'"+value+"' is not an integer/integer list");
-      }
    }
 }
 

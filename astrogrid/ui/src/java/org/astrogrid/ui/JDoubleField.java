@@ -3,15 +3,21 @@
 //
 // Version History
 //
+// 1.2:  09 Dec 2002
+//       Removed the overridden setText() method because it was generating
+//       exceptions when called with empty string to clear box. Its 
+//       functionality is not needed anyway as the new NumberDocument prevents
+//       the entering of any characters in the field that would make the
+//       current contents a non-number...
 // 1.1:  14 Nov 2002
-//       Rewrote the NumberDocument class so that it now, rather than testing
+//       Rewrote the NumberDocument class so that it now, rather than testing 
 //       char-by-char on insert, builds a temporary version of what the text
 //       field WOULD contain if it were allowed to have the new content
-//       inserted and then tests this with NumberChecker.isPotentialDouble().
+//       inserted and then tests this with NumberChecker.isPotentialDouble(). 
 //       If this test
 //       fails the insert does not happen. The net effect is similar to
-//       checking char-by-char but is more robust and prevents false strings
-//       like '-5..5-' which would be accepted by the char tester but
+//       checking char-by-char but is more robust and prevents false strings 
+//       like '-5..5-' which would be accepted by the char tester but 
 //       rejected by the NumberChecker.isPotentialDouble() function.
 // 1.0:  05 Nov 2002
 //       Initial version.
@@ -99,21 +105,4 @@ public class JDoubleField extends JTextField
       // check in setText(String);
       super.setText("" + value);
    }
-   
-   /**
-    * Overrides the superclass method to check that the value the field is
-    * being set to is a valid double.
-    */
-   public void setText(String value)
-   {
-      try
-      {
-         super.setText("" + Double.parseDouble(value.trim()));
-      }
-      catch (NumberFormatException nfe)
-      {
-         throw new IllegalArgumentException("'" + value + "' is not a double");
-      }
-   }
 }
-
