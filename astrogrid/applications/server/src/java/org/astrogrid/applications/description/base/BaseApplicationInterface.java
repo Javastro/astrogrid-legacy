@@ -1,5 +1,5 @@
 /*
- * $Id: BaseApplicationInterface.java,v 1.3 2004/07/26 00:58:22 nw Exp $
+ * $Id: BaseApplicationInterface.java,v 1.4 2004/08/16 11:03:07 nw Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.applications.description.base;
 
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.Cardinality;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.description.ParameterDirection;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
@@ -20,7 +21,9 @@ import org.astrogrid.applications.description.exception.ParameterNotInInterfaceE
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 /**
  * Basic implementation of {@link org.astrogrid.applications.description.ApplicationInterface}
   <p />
@@ -53,19 +56,8 @@ public class BaseApplicationInterface implements ApplicationInterface {
 
    protected final String name;
 
-   /**
-    * list of the {@link ParameterDescription} objects that make up the inputs for this interface.
-    *@link aggregation
-    *      @associates org.astrogrid.applications.description.ParameterDescription
-    */
-   private final  List inputs = new ArrayList();
-
-   /**
-    * list of the  {@link ParameterDescription} objects that make up the outputs for this interface.
-    *@link aggregation
-    *      @associates org.astrogrid.applications.description.ParameterDescription
-    */
-   private final List outputs = new ArrayList();
+   private final  Map inputs = new HashMap();
+   private final Map outputs = new HashMap();
 
 
    /**
@@ -83,28 +75,41 @@ public class BaseApplicationInterface implements ApplicationInterface {
  */
    public void addInputParameter(String parameterName)
       throws ParameterDescriptionNotFoundException {
+       this.addInputParameter(parameterName,Cardinality.MANDATORY);
+   }
+   
+   public void addInputParameter(String parameterName,Cardinality card)
+   throws ParameterDescriptionNotFoundException {
        applicationDescription.getParameterDescription(parameterName);// will throw if parameter not known.
-      inputs.add(parameterName);
+      inputs.put(parameterName,card);
 
    }
     /** @see #addInputParameter */
    public void addOutputParameter(String parameterName)
       throws ParameterDescriptionNotFoundException {
+       this.addOutputParameter(parameterName,Cardinality.MANDATORY);
+   }
+   public void addOutputParameter(String parameterName,Cardinality card)
+   throws ParameterDescriptionNotFoundException {   
       applicationDescription.getParameterDescription(parameterName);
-      outputs.add(parameterName);
+      outputs.put(parameterName,card);
 
    }
+   
+   
+   
+   
    public String[] getArrayofInputs() {
-      return (String[])inputs.toArray(new String[0]);
+      return (String[])inputs.keySet().toArray(new String[0]);
    }
    public String[] getArrayofOutputs() {
-      return (String[])outputs.toArray(new String[0]);
+      return (String[])outputs.keySet().toArray(new String[0]);
    }
 
    public ParameterDescription getInputParameter(String parameterName)
       throws ParameterNotInInterfaceException {
       ParameterDescription ad = null;
-      if (inputs.contains(parameterName)) {
+      if (inputs.containsKey(parameterName)) {
          try {
             ad = applicationDescription.getParameterDescription(parameterName);
          }
@@ -122,11 +127,11 @@ public class BaseApplicationInterface implements ApplicationInterface {
    public ParameterDirection getParameterDirection(String parameterName)
    {
       ParameterDirection retval = ParameterDirection.NOTFOUND;
-      if(inputs.contains(parameterName))
+      if(inputs.containsKey(parameterName))
       {
          retval = ParameterDirection.INPUT;
       }
-      if (outputs.contains(parameterName)) {
+      if (outputs.containsKey(parameterName)) {
          retval = ParameterDirection.OUTPUT;
       }
       return retval;
@@ -134,7 +139,7 @@ public class BaseApplicationInterface implements ApplicationInterface {
    public ParameterDescription getOutputParameter(String parameterName)
        throws ParameterNotInInterfaceException {
        ParameterDescription ad = null;
-       if (outputs.contains(parameterName)) {
+       if (outputs.containsKey(parameterName)) {
           try {
              ad = applicationDescription.getParameterDescription(parameterName);
           }
@@ -150,13 +155,35 @@ public class BaseApplicationInterface implements ApplicationInterface {
        return ad;
     }
     
+
+
+
     /**
-     * @see java.lang.Object#toString()
+     * @see org.astrogrid.applications.description.ApplicationInterface#getParameterCardinality(java.lang.String)
      */
-    public String toString() {
-        return "Interface: " + getName() 
-        + " \n\tinputs: " + Arrays.asList(getArrayofInputs()).toString()
-        + "\n\toutputs: " +  Arrays.asList(getArrayofOutputs()).toString();
+    public Cardinality getParameterCardinality(String name) throws ParameterNotInInterfaceException {
+        if (outputs.containsKey(name)) {
+            return (Cardinality)outputs.get(name);
+        } else if (inputs.containsKey(name)) {
+            return (Cardinality)inputs.get(name);
+        } else {
+            throw new ParameterNotInInterfaceException(name);
+        }
+        
     }
 
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("[ApplicationInterface:");
+        buffer.append(" applicationDescription: ");
+        buffer.append(applicationDescription.getName());
+        buffer.append(" name: ");
+        buffer.append(name);
+        buffer.append(" inputs: ");
+        buffer.append(inputs);
+        buffer.append(" outputs: ");
+        buffer.append(outputs);
+        buffer.append("]");
+        return buffer.toString();
+    }
 }

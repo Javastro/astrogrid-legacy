@@ -1,4 +1,4 @@
-/*$Id: ApplicationInterface.java,v 1.3 2004/07/26 00:57:46 nw Exp $
+/*$Id: ApplicationInterface.java,v 1.4 2004/08/16 11:03:07 nw Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,9 +38,16 @@ public interface ApplicationInterface {
     
     /** access the application description that this interface belongs to */ 
     public ApplicationDescription getApplicationDescription();
+    
+    /** access the cardinality of a parameter */
+    public Cardinality getParameterCardinality(String name) throws ParameterNotInInterfaceException;
+    
 }
 /* 
 $Log: ApplicationInterface.java,v $
+Revision 1.4  2004/08/16 11:03:07  nw
+added classes to model cardinality of prefs.
+
 Revision 1.3  2004/07/26 00:57:46  nw
 javadoc
 

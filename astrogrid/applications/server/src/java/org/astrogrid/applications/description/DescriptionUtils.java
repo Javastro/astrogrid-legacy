@@ -1,4 +1,4 @@
-/*$Id: DescriptionUtils.java,v 1.3 2004/07/26 00:57:46 nw Exp $
+/*$Id: DescriptionUtils.java,v 1.4 2004/08/16 11:03:07 nw Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,9 @@
 **/
 package org.astrogrid.applications.description;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.astrogrid.applications.beans.v1.ApplicationBase;
 import org.astrogrid.applications.beans.v1.Input;
 import org.astrogrid.applications.beans.v1.Interface;
@@ -18,6 +21,8 @@ import org.astrogrid.applications.beans.v1.Output;
 import org.astrogrid.applications.beans.v1.ParameterRef;
 import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
 import org.astrogrid.applications.beans.v1.parameters.XhtmlDocumentation;
+import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
+import org.astrogrid.applications.description.exception.ParameterNotInInterfaceException;
 
 /** Class of static helper methods for working wih descriptions.
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
@@ -25,6 +30,11 @@ import org.astrogrid.applications.beans.v1.parameters.XhtmlDocumentation;
  *
  */
 public class DescriptionUtils {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(DescriptionUtils.class);
+
     /** Construct a new DescriptionUtils
      * 
      */
@@ -56,12 +66,28 @@ public class DescriptionUtils {
           for (int j = 0; j < inputRefs.length; j++) {
               ParameterRef pref = new ParameterRef();
               pref.setRef(inputRefs[j]);
+              try {
+                  Cardinality c = appIface.getParameterCardinality(inputRefs[j]);
+                  pref.setMaxoccurs(c.getMaxOccurs());
+                  pref.setMaxoccurs(c.getMinOccurs());
+              } catch (ParameterNotInInterfaceException e) {
+                  // minor problem. not worth halting for.
+                  logger.warn("Problem with representation of " + inputRefs[j],e);
+              }
               input.addPref(pref);
           }
           String[] outputRefs = appIface.getArrayofOutputs();
           for (int j = 0; j < outputRefs.length; j++) {
               ParameterRef pref = new ParameterRef();
               pref.setRef(outputRefs[j]);
+              try {
+                  Cardinality c = appIface.getParameterCardinality(outputRefs[j]);
+                  pref.setMaxoccurs(c.getMaxOccurs());
+                  pref.setMaxoccurs(c.getMinOccurs());
+              } catch (ParameterNotInInterfaceException e) {
+                  // minor problem. not worth halting for.
+                  logger.warn("Problem with representation of " + outputRefs[j],e);
+              }
               output.addPref(pref);
           }        
           interfacesType.add_interface(iface);
@@ -96,6 +122,9 @@ public class DescriptionUtils {
 
 /* 
 $Log: DescriptionUtils.java,v $
+Revision 1.4  2004/08/16 11:03:07  nw
+added classes to model cardinality of prefs.
+
 Revision 1.3  2004/07/26 00:57:46  nw
 javadoc
 
