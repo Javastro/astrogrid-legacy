@@ -2,11 +2,14 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/config/community/org.astrogrid.localhost.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2004/08/27 12:35:15 $</cvs:date>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     |   $Log: org.astrogrid.localhost.xml,v $
+    |   Revision 1.8  2004/08/27 12:35:15  clq2
+    |   added guy
+    |
     |   Revision 1.7  2004/06/18 13:45:20  dave
     |   Merged development branch, dave-dev-200406081614, into HEAD
     |
@@ -70,6 +73,11 @@
             <description>Astrogrid demonstrator</description>
             <email>nic@mail.astrogrid.org</email>
         </account>
+		<account ident="ivo://org.astrogrid.betatest/guyrixon">
+            <display>Guy Rixon</display>
+            <description>Astrogrid demonstrator</description>
+            <email>guyrixon@mail.astrogrid.org</email>
+        </account>
 
     </accounts>
     <!--+
@@ -111,6 +119,7 @@
         <password account="ivo://org.astrogrid.localhost/andy"   password="qwerty"/>
         <password account="ivo://org.astrogrid.localhost/tony"   password="qwerty"/>
         <password account="ivo://org.astrogrid.localhost/nic"    password="qwerty"/>
+		<password account="ivo://org.astrogrid.betatest/guyrixon"  password="qwerty"/>
     </passwords>
 
 </community>
