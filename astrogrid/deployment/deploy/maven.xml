@@ -504,14 +504,14 @@
 		<ag:GetDeploy name="jes"/>
 	</goal>
 	<goal name="cea-cmd-deploy" prereqs="tomcat-declare-tasks" >
-		<echo>note that cea-cmd takes its local config from ${work.dir}/cea/config/CeaApplicationConfig.xml</echo>
+		<echo>note that cea-cmd takes its local config from ${work.dir}/cea/commandline/config/CeaApplicationConfig.xml</echo>
 		<!-- note that this is not made a webapp for security reasons - also perhaps not all of the standard config is needed.... -->
 	   <copy file="webapps/astrogrid-configuration/AstroGridConfig.properties"
-		 tofile="${work.dir}/cea/config/astrogrid.properties" filtering="true" overwrite="true" />
+		 tofile="${work.dir}/cea/commandline/config/astrogrid.properties" filtering="true" overwrite="true" />
 	   <copy file="webapps/astrogrid-configuration/CEARegistryTemplate.xml"
-		 tofile="${work.dir}/cea/config/CEARegistryTemplate.xml" filtering="true" overwrite="false" /> <!-- allow local template -->
-	   <copy file="${work.dir}/cea/config/CeaApplicationConfig.xml"
-		 tofile="${work.dir}/cea/config/CeaApplicationConfigProcessed.xml" filtering="true" overwrite="false" /> <!-- allow local template -->
+		 tofile="${work.dir}/cea/commandline/config/CEARegistryTemplate.xml" filtering="true" overwrite="false" /> <!-- allow local template -->
+	   <copy file="${work.dir}/cea/commandline/config/CeaApplicationConfig.xml"
+		 tofile="${work.dir}/cea/commandline/config/CeaApplicationConfigProcessed.xml" filtering="true" overwrite="false" /> <!-- allow local template -->
 		 
 		<ag:GetDeploy name="cea-commandline"/>
 	</goal>
