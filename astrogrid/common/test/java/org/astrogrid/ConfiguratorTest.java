@@ -1,4 +1,4 @@
-/* $Id: ConfiguratorTest.java,v 1.2 2003/12/11 18:55:20 jdt Exp $
+/* $Id: ConfiguratorTest.java,v 1.3 2004/01/06 16:24:11 jdt Exp $
  * Created on 11-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -111,7 +111,7 @@ public final class ConfiguratorTest extends TestCase {
     final String category = "FOO";
     
     // url for testing the DummyURLConfigurator
-    URL url = new URL("http://astrogrid1.jb.man.ac.uk:8080/jdtTestResources/urlTestConfig.xml");
+    URL url = new URL("http://wiki.astrogrid.org/pub/Main/JohnTaylor/urlTestConfig.xml");
     // check the URL exists OK    
     InputStream is = url.openStream();
     is.close();
@@ -204,6 +204,9 @@ public final class ConfiguratorTest extends TestCase {
 
 /*
 *$Log: ConfiguratorTest.java,v $
+*Revision 1.3  2004/01/06 16:24:11  jdt
+*updated a broken URL
+*
 *Revision 1.2  2003/12/11 18:55:20  jdt
 *Adapted the configurator to look for the properties file at a URL supplied in a
 *JNDI lookup service.
