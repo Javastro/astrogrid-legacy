@@ -4,7 +4,7 @@
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
   manually check that it's worked).
-  
+
    Run 'maven deploy-all'.  If it completes successfully, run 'maven int-test'.
 
    The deployer checks the astrogrid repository and your local one as normal to find the latest wars to
@@ -30,7 +30,7 @@
 <property name="config.webapp.name" value="astrogrid-configuration" />
 
         <j:if test="${context.getVariable('registry.authorityid') == null}">
-	        <j:set var="registry.authorityid" value="org.astrogrid.localhost"/>        
+                <j:set var="registry.authorityid" value="org.astrogrid.localhost"/>
         </j:if>
 
         <!-- tokens to subst into config files -->
@@ -39,10 +39,10 @@
         <filter token="TOMCATROOT" value="${tomcat.url}" />
         <filter token="TOMCATLOC" value="${tomcat.location}" />
         <filter token="REGAUTHORITY" value="${registry.authorityid}" />
-        
+
 <!-- setup -->
 <goal name="init" prereqs="tomcat-declare-tasks">
-		<echo>AuthorityID used: ${registry.authorityid}</echo>
+                <echo>AuthorityID used: ${registry.authorityid}</echo>
         <delete dir="${temporary.dir}" />
         <mkdir dir="${temporary.dir}" />
         <deploy:copy-deps todir="${temporary.dir}" />
@@ -126,7 +126,7 @@
 <goal name="style-workflows" description="apply presentation stylesheet to all workflows">
                   <!--declare the transformer factory to use -->
         ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
-        <xslt style="workflow.xsl" destdir="${work.dir}/styled-workflows" basedir="${work.dir}/jes" />
+        <xslt style="${basedir}/build/workflow.xsl" destdir="${work.dir}/styled-workflows" basedir="${work.dir}/jes" />
 </goal>
 
 <!-- Working direcotry //////////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -142,7 +142,7 @@
         <attainGoal name="setup-myspace" />
         <!--Finally kick the CommonExecutionController to register itself-->
         <http url="${tomcat.url}/astrogrid-applications-SNAPSHOT/servlet/initForRegistry"/>
-        
+
 </goal>
 
 <goal name="setup-working-dir" description="create working dir, copy across templates">
@@ -383,6 +383,20 @@
                 fork="true" classpathref="maven.dependency.classpath"
                 dir="${temporary.dir}/client">
         </java>
+</goal>
+
+<postGoal name="maven-junit-report-plugin:report">
+        <attainGoal name="full-junit-report" />
+</postGoal>
+<goal name="full-junit-report">
+        <mkdir dir="${basedir}/target/docs/junit-full" />
+       ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+        <junitreport todir="${basedir}/target">
+                <fileset dir="${basedir}/target/test-reports">
+                        <include name="TEST-*.xml" />
+                </fileset>
+                <report format="frames" styledir="${basedir}/build" todir="${basedir}/target/docs/junit-full" />
+        </junitreport>
 </goal>
 
 
