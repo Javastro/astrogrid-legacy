@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlDelegate.java,v 1.1 2003/09/09 17:50:07 mch Exp $
+ * $Id: HtmlDelegate.java,v 1.2 2003/09/10 13:04:17 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -11,8 +11,8 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import javax.xml.rpc.ServiceException;
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.delegate.datasetAgent.DatasetAgentServiceLocator;
-import org.astrogrid.datacenter.delegate.datasetAgent.DatasetAgentSoapBindingStub;
+import org.astrogrid.datacenter.delegate.axisdataserver.*;
+import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.common.ServiceStatus;
 import org.w3c.dom.Element;
 
@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
 public class HtmlDelegate extends DatacenterDelegate
 {
    private URL endpoint = null;
-   DatasetAgentSoapBindingStub binding;
+   AxisDataServerSoapBindingStub binding;
 
    /** Don't use this directly - use the factory method
     * DatacenterDelegate.makeDelegate() in case we need to create new sorts
@@ -38,8 +38,7 @@ public class HtmlDelegate extends DatacenterDelegate
    {
       this.endpoint = givenEndPoint;
 
-      binding = (DatasetAgentSoapBindingStub)
-            new DatasetAgentServiceLocator().getDatasetAgent( endpoint );
+      binding =(AxisDataServerSoapBindingStub) new AxisDataServerServiceLocator().getAxisDataServer( endpoint );
    }
 
    /**
@@ -57,30 +56,17 @@ public class HtmlDelegate extends DatacenterDelegate
     * described in ADQL (Astronomical Data Query Language).  Returns the
     * results part of the returned document, which may be VOTable or otherwise
     * depending on the results format specified in the ADQL
+    * @todo - seems bad to have to hide these exceptions to fit in with interface - can we loosen interface instead.
+    * or even get rid of it - what does it give us over the machine generated AxisDataServerSoapBindingStub ?
     */
    public Element adqlQuery(Element adql) throws RemoteException
    {
-      String results = binding.runQuery(adql.toString());
+       try {
+       return binding.doQuery(adql);
+       } catch (QueryException e) {
+           throw new RemoteException(e.getMessage());
+       }
 
-      try
-      {
-         return XMLUtils.newDocument(results).getDocumentElement();
-      }
-      catch (org.xml.sax.SAXException e)
-      {
-         //somethings gone wrong at the server end - returning invalid XML
-         throw new RemoteException("Invalid XML returned by server",e);
-      }
-      catch (java.io.IOException e)
-      {
-         //somethings gone wrong at the server end - returning invalid XML
-         throw new RemoteException("Invalid XML returned by server",e);
-      }
-      catch (javax.xml.parsers.ParserConfigurationException e)
-      {
-         //somethings wrong here with the parser configuration, which is not normal
-         throw new RuntimeException("Could not interpret returned XML, parser not configured?",e);
-      }
    }
 
    public Element getResults(String id) throws RemoteException
@@ -109,9 +95,9 @@ public class HtmlDelegate extends DatacenterDelegate
     * center serves) in the form required by registries. See the VOResource
     * schema; I think that is what this should return...
     */
-   public Element getRegistryMetadata()
+   public Element getRegistryMetadata() throws RemoteException
    {
-      throw new UnsupportedOperationException();
+     return binding.getVoRegistryMetadata();
    }
 
    /**
@@ -136,6 +122,10 @@ public class HtmlDelegate extends DatacenterDelegate
 
 /*
 $Log: HtmlDelegate.java,v $
+Revision 1.2  2003/09/10 13:04:17  nw
+updated to work with new wsdl-generated classes
+- changed imports, changed names of methods, etc.
+
 Revision 1.1  2003/09/09 17:50:07  mch
 Class renames, configuration key fixes, registry/metadata methods and spawning query methods
 
