@@ -1,4 +1,4 @@
-package id2mo8jdsekfnt0dsekg6a2;
+package id1i9budu5jjgbidu5jp92g;
 
 /**
 @version 2.0
@@ -7,15 +7,15 @@ package id2mo8jdsekfnt0dsekg6a2;
 */
 class diagram {
 /**
-@__ref <oiref:java#Class#org.astrogrid.applications.delegate.impl.AbstractDelegate:oiref><oihard>
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.conesearch.ConeSearchType:oiref><oihard>
 @__modelType reference 
 */
 class reference {
 }/**
-@__ref <oiref:java#Class#org.astrogrid.applications.delegate.impl.CommonExecutionConnectorDelegateImpl:oiref><oihard>
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.conesearch.ConeSearchTypeDescriptor:oiref><oihard>
 @__modelType reference 
 */
-class reference3 {
+class reference139 {
 }}/**
 @__tags
 @shapeType ClassDiagram 

@@ -6,17 +6,104 @@ package id2o71xdsekfnt0dsekg7ad;
 @__modelType diagram 
 */
 class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.cea.CeaServiceTypeDescriptor:oiref><oihard>
+@__modelType reference 
+@__hidden
+*/
+class reference {
 }/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.cea.ApplicationDefinition:oiref><oihard>
+@__modelType reference 
+*/
+class reference25 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.cea.ParametersDescriptor:oiref><oihard>
+@__modelType reference 
+@__hidden
+*/
+class reference26 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.cea.CeaServiceType:oiref><oihard>
+@__modelType reference 
+*/
+class reference27 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.cea.ApplicationDefinitionDescriptor:oiref><oihard>
+@__modelType reference 
+@__hidden
+*/
+class reference28 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.cea.ManagedApplications:oiref><oihard>
+@__modelType reference 
+*/
+class reference29 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.cea.CeaApplicationType:oiref><oihard>
+@__modelType reference 
+@hideAttributes*/
+class reference30 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.cea.CeaApplicationTypeDescriptor:oiref><oihard>
+@__modelType reference 
+@__hidden
+*/
+class reference31 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.cea.ManagedApplicationsDescriptor:oiref><oihard>
+@__modelType reference 
+@__hidden
+*/
+class reference32 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.cea.Parameters:oiref><oihard>
+@__modelType reference 
+*/
+class reference33 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.ResourceType:oiref><oihard>
+@__modelType reference
+@__imported
+@__hiddenMember BeanProperty#<oiref:java#Member#org.astrogrid.registry.beans.resource.ResourceType#getType#(##)#:oiref>
+@__hiddenMember BeanProperty#<oiref:java#Member#org.astrogrid.registry.beans.resource.ResourceType#getTypeCount#(##)#:oiref> 
+*/
+class reference34 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.ServiceType:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference35 {
+}}/**
 @__tags
 @shapeType ClassDiagram 
 */
 class __tags {
 }/**
-@__options 
+@__options filter.d2.state = on
+filter.d1.state = on 
 */
 class __options {
 }/**
-@__positions 
+@__positions <oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.ResourceType:oiref>=49,19,427,561,0:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.registry.beans.cea.CeaServiceType#org.astrogrid.registry.beans.resource.ServiceType:oiref>=627,371,627,262:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.cea.ManagedApplications:oiref>=919,240,200,224,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.cea.CeaApplicationType:oiref>=80,640,320,316,0:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.cea.CeaApplicationType#_applicationDefinition:oiref>=400,747,480,747:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.cea.ApplicationDefinitionDescriptor:oiref>=670,530,200,316,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.cea.ManagedApplicationsDescriptor:oiref>=230,990,200,316,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.cea.CeaServiceTypeDescriptor:oiref>=230,530,200,316,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.registry.beans.resource.ServiceType#org.astrogrid.registry.beans.resource.ResourceType:oiref>=561,156,476,156:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.cea.CeaServiceType:oiref>=561,371,200,178,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.cea.ApplicationDefinition#_parameters:oiref>=680,727,760,727:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.registry.beans.cea.CeaApplicationType#org.astrogrid.registry.beans.resource.ResourceType:oiref>=240,640,240,580:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.ServiceType:oiref>=561,51,200,211,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.cea.CeaServiceType#_managedApplications:oiref>=761,417,919,417:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.cea.ParametersDescriptor:oiref>=450,530,200,316,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.cea.CeaApplicationTypeDescriptor:oiref>=10,990,200,316,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.cea.Parameters:oiref>=760,600,200,224,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.cea.ApplicationDefinition:oiref>=480,630,200,224,1:oigroup>
 */
 class __positions {
 }

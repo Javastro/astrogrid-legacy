@@ -12,6 +12,276 @@ class diagram {
 @__fqn <oiref:#Package#org.astrogrid.registry.beans.resource.votable.types:oiref> 
 */
 class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.VOTABLE:oiref><oihard>
+@__modelType reference 
+*/
+class reference71 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.COOSYS:oiref><oihard>
+@__modelType reference 
+*/
+class reference72 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.FIELDItemDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference73 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.MINDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference74 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.MIN:oiref><oihard>
+@__modelType reference 
+*/
+class reference75 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.COOSYSDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference76 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.OPTIONDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference77 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.TABLEFORMATTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference78 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.ArrayDEF:oiref><oihard>
+@__modelType reference 
+*/
+class reference79 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.VALUESDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference80 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.DEFINITIONSDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference81 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.TDDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference82 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.StreamTABLEFORMATTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference83 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.PrecTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference84 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.TABLEDATADescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference85 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.INFODescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference86 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.FITSDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference87 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.DATADescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference88 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.PARAM:oiref><oihard>
+@__modelType reference 
+*/
+class reference89 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.PARAMDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference90 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.DEFINITIONSItemDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference91 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.STREAM:oiref><oihard>
+@__modelType reference 
+*/
+class reference92 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.OPTION:oiref><oihard>
+@__modelType reference 
+*/
+class reference93 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.ArrayDEFDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference94 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.VOTABLEDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference95 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.TABLEFORMATType:oiref><oihard>
+@__modelType reference 
+*/
+class reference96 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.AnyTEXTDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference97 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.TD:oiref><oihard>
+@__modelType reference 
+*/
+class reference98 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.FIELD:oiref><oihard>
+@__modelType reference 
+*/
+class reference99 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.StreamTABLEFORMATType:oiref><oihard>
+@__modelType reference 
+*/
+class reference100 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.FIELDItem:oiref><oihard>
+@__modelType reference 
+*/
+class reference101 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.FITS:oiref><oihard>
+@__modelType reference 
+*/
+class reference102 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.TRDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference103 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.INFO:oiref><oihard>
+@__modelType reference 
+*/
+class reference104 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.MAX:oiref><oihard>
+@__modelType reference 
+*/
+class reference105 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.TABLE:oiref><oihard>
+@__modelType reference 
+*/
+class reference106 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.TR:oiref><oihard>
+@__modelType reference 
+*/
+class reference107 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.MAXDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference108 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.AstroYearDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference109 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.TABLEDATA:oiref><oihard>
+@__modelType reference 
+*/
+class reference110 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.DEFINITIONS:oiref><oihard>
+@__modelType reference 
+*/
+class reference111 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.TABLEDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference112 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.RESOURCE:oiref><oihard>
+@__modelType reference 
+*/
+class reference113 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.DATA:oiref><oihard>
+@__modelType reference 
+*/
+class reference114 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.DEFINITIONSItem:oiref><oihard>
+@__modelType reference 
+*/
+class reference115 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.LINK:oiref><oihard>
+@__modelType reference 
+*/
+class reference116 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.VALUES:oiref><oihard>
+@__modelType reference 
+*/
+class reference117 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.FIELDDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference118 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.STREAMDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference119 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.AstroYear:oiref><oihard>
+@__modelType reference 
+*/
+class reference120 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.RESOURCEDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference121 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.LINKDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference122 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.PrecType:oiref><oihard>
+@__modelType reference 
+*/
+class reference123 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.votable.AnyTEXT:oiref><oihard>
+@__modelType reference 
+*/
+class reference124 {
 }}/**
 @__tags
 @shapeType ClassDiagram 

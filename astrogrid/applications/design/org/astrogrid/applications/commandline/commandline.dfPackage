@@ -50,7 +50,7 @@ class __tags {
 */
 class __options {
 }/**
-@__positions <oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.CmdLineApplication:oiref>=54,10,200,729,1:oigroup>
+@__positions <oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.CmdLineApplication:oiref>=54,10,200,752,1:oigroup>
 <oigroup:<oiref:design#Class#id2z8nkdq6d6uu9dq6d7ann.diagram:oiref>=481,358,162,164,1:oigroup>
 <oigroup:<oiref:design#Class#id3lgaadq6d6uu9dq6d7aml.diagram:oiref>=511,178,83,118,1:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.commandline.CmdLineApplicationCreator#instance:oiref>=760,240,760,290,850,290,850,200,800,200:oigroup>

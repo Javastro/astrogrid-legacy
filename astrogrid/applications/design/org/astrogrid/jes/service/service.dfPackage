@@ -1,4 +1,4 @@
-package id2fgp7dsekfnt0dsekg75t;
+package id301l9du5jjgbidu5jp8zf;
 
 /**
 @version 2.0
@@ -7,9 +7,9 @@ package id2fgp7dsekfnt0dsekg75t;
 */
 class diagram {
 /**
-@__ref <oiref:design#Class#idm49adu5jjgbidu5jp8w2.diagram:oiref><oihard>
+@__ref <oiref:design#Class#idy4i2du5jjgbidu5jp8zw.diagram:oiref><oihard>
 @__modelType reference
-@__fqn <oiref:#Package#org.astrogrid.common.bean.v1:oiref> 
+@__fqn <oiref:#Package#org.astrogrid.jes.service.v1:oiref> 
 */
 class reference {
 }}/**

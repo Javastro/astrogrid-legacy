@@ -6,7 +6,87 @@ package id3cnb6dsekfnt0dsekg6ik;
 @__modelType diagram 
 */
 class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.axis.ceabase.DataCentreApplication:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
 }/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase_Parameters:oiref><oihard>
+@__modelType reference 
+*/
+class reference13 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase:oiref><oihard>
+@__modelType reference 
+*/
+class reference14 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.axis.ceabase._interface:oiref><oihard>
+@__modelType reference 
+*/
+class reference15 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.axis.ceabase.DataCenterParameterDefinition:oiref><oihard>
+@__modelType reference 
+*/
+class reference16 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.axis.ceabase.Interface_output:oiref><oihard>
+@__modelType reference 
+*/
+class reference17 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.axis.ceabase._CmdLineParameterDefn:oiref><oihard>
+@__modelType reference 
+*/
+class reference18 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.axis.ceabase.Interface_input:oiref><oihard>
+@__modelType reference 
+*/
+class reference19 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.axis.ceabase.WebServiceParameterDefinition:oiref><oihard>
+@__modelType reference 
+*/
+class reference20 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.axis.ceabase.InterfacesType:oiref><oihard>
+@__modelType reference 
+*/
+class reference21 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.axis.ceabase.WebServiceApplication:oiref><oihard>
+@__modelType reference 
+*/
+class reference22 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.axis.ceabase._ApplicationList:oiref><oihard>
+@__modelType reference 
+*/
+class reference23 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.axis.ceabase.SwitchTypes:oiref><oihard>
+@__modelType reference 
+*/
+class reference24 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.axis.ceabase.ParameterRef:oiref><oihard>
+@__modelType reference 
+*/
+class reference25 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.axis.ceabase.CommandLineParameterDefinition:oiref><oihard>
+@__modelType reference 
+*/
+class reference26 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.axis.ceabase.CommandLineApplication:oiref><oihard>
+@__modelType reference 
+*/
+class reference27 {
+}}/**
 @__tags
 @shapeType ClassDiagram 
 */

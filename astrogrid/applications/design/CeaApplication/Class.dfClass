@@ -1,0 +1,44 @@
+package id4vmjjduiffak4duifjzp6;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#CeaApplication.ResourceReference:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#CeaApplication.InternalReference:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference2 {
+}/**
+@__ref <oiref:java#Class#CeaApplication.ExternalReference:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference4 {
+}}/**
+
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#CeaApplication.InternalReference:oiref>=30,180,169,105,1:oigroup>
+<oigroup:<oiref:java#Class#CeaApplication.ExternalReference:oiref>=230,180,150,151,1:oigroup>
+<oigroup:<oiref:java#Extends#CeaApplication.ExternalReference#CeaApplication.ResourceReference:oiref>=263,180,263,133:oigroup>
+<oigroup:<oiref:java#Class#CeaApplication.ResourceReference:oiref>=130,40,166,93,0:oigroup>
+<oigroup:<oiref:java#Extends#CeaApplication.InternalReference#CeaApplication.ResourceReference:oiref>=148,180,148,133:oigroup>
+*/
+class __positions {
+}

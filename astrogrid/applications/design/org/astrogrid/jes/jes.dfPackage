@@ -112,6 +112,18 @@ class reference7 {
 @__fqn <oiref:#Package#org.astrogrid.jes.installationtest:oiref> 
 */
 class reference13 {
+}/**
+@__ref <oiref:design#Class#id3ordqdu5jjgbidu5jkg3d.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.servlet:oiref> 
+*/
+class reference6 {
+}/**
+@__ref <oiref:design#Class#id301l9du5jjgbidu5jp8zf.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.service:oiref> 
+*/
+class reference8 {
 }}/**
 @__tags
 @shapeType ClassDiagram 

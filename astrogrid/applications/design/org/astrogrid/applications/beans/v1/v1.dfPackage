@@ -33,21 +33,25 @@ class reference56 {
 }/**
 @__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.InterfacesTypeDescriptor:oiref><oihard>
 @__modelType reference 
+@__hidden
 */
 class reference38 {
 }/**
 @__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.CommandLineParameterDefinitionDescriptor:oiref><oihard>
 @__modelType reference 
+@__hidden
 */
 class reference39 {
 }/**
 @__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.DataCenterParameterDefinitionDescriptor:oiref><oihard>
 @__modelType reference 
+@__hidden
 */
 class reference40 {
 }/**
 @__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.CmdLineParameterDefnDescriptor:oiref><oihard>
 @__modelType reference 
+@__hidden
 */
 class reference42 {
 }/**
@@ -58,11 +62,13 @@ class reference44 {
 }/**
 @__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.CommonExecutionConnectorConfigTypeDescriptor:oiref><oihard>
 @__modelType reference 
+@__hidden
 */
 class reference45 {
 }/**
 @__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.ApplicationListDescriptor:oiref><oihard>
 @__modelType reference 
+@__hidden
 */
 class reference46 {
 }/**
@@ -78,6 +84,7 @@ class reference48 {
 }/**
 @__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.WebServiceExecutionControllerConfigDescriptor:oiref><oihard>
 @__modelType reference 
+@__hidden
 */
 class reference49 {
 }/**
@@ -93,6 +100,7 @@ class reference51 {
 }/**
 @__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.OutputDescriptor:oiref><oihard>
 @__modelType reference 
+@__hidden
 */
 class reference52 {
 }/**
@@ -123,11 +131,13 @@ class reference58 {
 }/**
 @__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.ParameterRefDescriptor:oiref><oihard>
 @__modelType reference 
+@__hidden
 */
 class reference59 {
 }/**
 @__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.InputDescriptor:oiref><oihard>
 @__modelType reference 
+@__hidden
 */
 class reference60 {
 }/**
@@ -138,6 +148,7 @@ class reference61 {
 }/**
 @__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.CommandLineApplicationDescriptor:oiref><oihard>
 @__modelType reference 
+@__hidden
 */
 class reference62 {
 }/**
@@ -158,11 +169,13 @@ class reference65 {
 }/**
 @__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.DataCentreControllerConfigDescriptor:oiref><oihard>
 @__modelType reference 
+@__hidden
 */
 class reference66 {
 }/**
 @__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.ParametersDescriptor:oiref><oihard>
 @__modelType reference 
+@__hidden
 */
 class reference67 {
 }/**
@@ -173,26 +186,31 @@ class reference68 {
 }/**
 @__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.WebServiceParameterDefinitionDescriptor:oiref><oihard>
 @__modelType reference 
+@__hidden
 */
 class reference69 {
 }/**
 @__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.InterfaceDescriptor:oiref><oihard>
 @__modelType reference 
+@__hidden
 */
 class reference70 {
 }/**
 @__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.WebServiceApplicationDescriptor:oiref><oihard>
 @__modelType reference 
+@__hidden
 */
 class reference71 {
 }/**
 @__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.CommandLineExecutionControllerConfigDescriptor:oiref><oihard>
 @__modelType reference 
+@__hidden
 */
 class reference72 {
 }/**
 @__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.DataCentreApplicationDescriptor:oiref><oihard>
 @__modelType reference 
+@__hidden
 */
 class reference73 {
 }/**
@@ -213,6 +231,7 @@ class reference76 {
 }/**
 @__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.ApplicationBaseDescriptor:oiref><oihard>
 @__modelType reference 
+@__hidden
 */
 class reference77 {
 }/**
@@ -226,70 +245,73 @@ class reference78 {
 */
 class __tags {
 }/**
-@__options 
+@__options filter.g.state = on
+filter.e.state = off
+filter.f.state = on
+filter.d2.state = on 
 */
 class __options {
 }/**
-@__positions <oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.ParameterRefDescriptor:oiref>=1170,1370,200,411,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.CommonExecutionConnectorConfigType:oiref>=2110,10,200,303,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.Parameters:oiref>=510,10,200,480,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.DataCentreApplication#org.astrogrid.applications.beans.v1.ApplicationBase:oiref>=610,1100,610,1030:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.WebServiceExecutionControllerConfigDescriptor#org.astrogrid.applications.beans.v1.CommonExecutionConnectorConfigTypeDescriptor:oiref>=1270,481,1100,421:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.CommandLineParameterDefinition:oiref>=2550,10,200,618,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.DataCentreControllerConfigDescriptor:oiref>=950,481,200,388,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.WebServiceApplication#org.astrogrid.applications.beans.v1.ApplicationBase:oiref>=830,1100,660,1030:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.CmdLineParameterDefn#org.astrogrid.applications.beans.v1.CommandLineParameterDefinition:oiref>=2650,688,2650,628:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.InterfacesType:oiref>=230,550,200,480,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.CommandLineExecutionControllerConfig:oiref>=2110,373,200,457,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.DataCentreControllerConfig#org.astrogrid.applications.beans.v1.CommonExecutionConnectorConfigType:oiref>=1990,373,2160,313:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.beans.v1.ApplicationBase#_interfaces:oiref>=510,790,430,790:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.CommandLineParameterDefinitionDescriptor:oiref>=10,10,200,411,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.WebServiceParameterDefinitionDescriptor:oiref>=2270,1370,200,411,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.WebServiceApplicationDescriptor#org.astrogrid.applications.beans.v1.ApplicationBaseDescriptor:oiref>=3090,481,3090,421:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.InputDescriptor:oiref>=1390,1370,200,411,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.DataCenterParameterDefinition:oiref>=1610,1370,200,303,1:oigroup>
-<oigroup:<oiref:design#Class#id454o6dsekfnt0dsekg6ma.diagram:oiref>=2930,1370,200,341,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.CommandLineExecutionControllerConfigDescriptor:oiref>=730,481,200,388,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.Output:oiref>=1390,550,200,480,1:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.beans.v1.ApplicationBase#_parameters:oiref>=610,550,610,490:oigroup>
-<oigroup:<oiref:design#Class#iddji8dsekfnt0dsekg6k2.diagram:oiref>=3210,190,83,118,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.ApplicationBaseDescriptor:oiref>=2990,10,200,411,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.WebServiceExecutionControllerConfig#org.astrogrid.applications.beans.v1.CommonExecutionConnectorConfigType:oiref>=2430,373,2260,313:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.CommonExecutionConnectorConfigTypeDescriptor:oiref>=950,10,200,411,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.CommandLineApplication:oiref>=290,1100,200,319,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.InterfacesTypeDescriptor:oiref>=2770,910,200,411,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.CmdLineParameterDefnDescriptor#org.astrogrid.applications.beans.v1.CommandLineParameterDefinitionDescriptor:oiref>=110,481,110,421:oigroup>
-<oigroup:<oiref:design#Class#id3hd6wdsekfnt0dsekg6no.diagram:oiref>=3210,910,167,141,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.InterfaceDescriptor:oiref>=2490,1370,200,411,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.WebServiceApplicationDescriptor:oiref>=2990,481,200,388,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.ParametersDescriptor:oiref>=2050,1370,200,411,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.DataCentreApplicationDescriptor#org.astrogrid.applications.beans.v1.ApplicationBaseDescriptor:oiref>=2870,481,3040,421:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.Input:oiref>=1670,10,200,480,1:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.beans.v1.Interface#_output:oiref>=1490,444,1490,550:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.ApplicationListDescriptor:oiref>=10,1450,200,411,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.ApplicationBase:oiref>=510,550,200,480,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.WebServiceApplication:oiref>=730,1100,200,280,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.Interface:oiref>=1390,10,200,434,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.CmdLineParameterDefnDescriptor:oiref>=10,481,200,388,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.CommandLineApplicationDescriptor#org.astrogrid.applications.beans.v1.ApplicationBaseDescriptor:oiref>=3310,481,3140,421:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.ParameterRef:oiref>=10,1910,200,572,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.CmdLineParameterDefn:oiref>=2550,688,200,280,1:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.beans.v1.Interface#_input:oiref>=1590,227,1670,227:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.CommandLineApplication#org.astrogrid.applications.beans.v1.ApplicationBase:oiref>=390,1100,560,1030:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.OutputDescriptor:oiref>=950,1370,200,411,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.WebServiceExecutionControllerConfig:oiref>=2330,373,200,457,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.ApplicationList:oiref>=1830,1370,200,480,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.DataCentreControllerConfig:oiref>=1890,373,200,457,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.DataCentreApplicationDescriptor:oiref>=2770,481,200,388,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.CommandLineApplicationDescriptor:oiref>=3210,481,200,388,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.WebServiceParameterDefinition:oiref>=2710,1370,200,303,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.WebServiceExecutionControllerConfigDescriptor:oiref>=1170,481,200,388,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.DataCenterParameterDefinitionDescriptor:oiref>=2990,910,200,411,1:oigroup>
-<oigroup:<oiref:design#Class#id31sbqdsekfnt0dsekg6hr.diagram:oiref>=3210,10,117,141,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.DataCentreControllerConfigDescriptor#org.astrogrid.applications.beans.v1.CommonExecutionConnectorConfigTypeDescriptor:oiref>=1050,481,1050,421:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.CommandLineExecutionControllerConfigDescriptor#org.astrogrid.applications.beans.v1.CommonExecutionConnectorConfigTypeDescriptor:oiref>=830,481,1000,421:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.DataCentreApplication:oiref>=510,1100,200,280,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.CommandLineExecutionControllerConfig#org.astrogrid.applications.beans.v1.CommonExecutionConnectorConfigType:oiref>=2210,373,2210,313:oigroup> 
+@__positions <oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.ParameterRefDescriptor:oiref>=1170,1370,200,316,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.CommonExecutionConnectorConfigType:oiref>=1230,10,200,178,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.Parameters:oiref>=290,10,200,224,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.DataCentreApplication#org.astrogrid.applications.beans.v1.ApplicationBase:oiref>=388,634,388,564:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.WebServiceExecutionControllerConfigDescriptor#org.astrogrid.applications.beans.v1.CommonExecutionConnectorConfigTypeDescriptor:oiref>=1270,481,1100,326:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.CommandLineParameterDefinition:oiref>=1670,10,200,270,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.DataCentreControllerConfigDescriptor:oiref>=950,481,200,293,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.WebServiceApplication#org.astrogrid.applications.beans.v1.ApplicationBase:oiref>=600,634,439,564:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.CmdLineParameterDefn#org.astrogrid.applications.beans.v1.CommandLineParameterDefinition:oiref>=1769,340,1769,280:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.InterfacesType:oiref>=10,294,200,224,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.CommandLineExecutionControllerConfig:oiref>=1230,248,200,201,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.DataCentreControllerConfig#org.astrogrid.applications.beans.v1.CommonExecutionConnectorConfigType:oiref>=1110,248,1280,188:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.beans.v1.ApplicationBase#_interfaces:oiref>=290,406,210,406:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.CommandLineParameterDefinitionDescriptor:oiref>=10,10,200,316,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.WebServiceParameterDefinitionDescriptor:oiref>=2270,1370,200,316,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.WebServiceApplicationDescriptor#org.astrogrid.applications.beans.v1.ApplicationBaseDescriptor:oiref>=3090,481,3090,326:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.InputDescriptor:oiref>=1390,1370,200,316,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.DataCenterParameterDefinition:oiref>=1377,530,200,178,1:oigroup>
+<oigroup:<oiref:design#Class#id454o6dsekfnt0dsekg6ma.diagram:oiref>=10,850,200,341,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.CommandLineExecutionControllerConfigDescriptor:oiref>=730,481,200,293,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.Output:oiref>=510,327,200,224,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.beans.v1.ApplicationBase#_parameters:oiref>=390,294,390,234:oigroup>
+<oigroup:<oiref:design#Class#iddji8dsekfnt0dsekg6k2.diagram:oiref>=867,530,83,118,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.ApplicationBaseDescriptor:oiref>=2990,10,200,316,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.WebServiceExecutionControllerConfig#org.astrogrid.applications.beans.v1.CommonExecutionConnectorConfigType:oiref>=1550,248,1380,188:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.CommonExecutionConnectorConfigTypeDescriptor:oiref>=950,10,200,316,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.CommandLineApplication:oiref>=78,634,200,178,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.InterfacesTypeDescriptor:oiref>=2770,910,200,316,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.CmdLineParameterDefnDescriptor#org.astrogrid.applications.beans.v1.CommandLineParameterDefinitionDescriptor:oiref>=110,481,110,326:oigroup>
+<oigroup:<oiref:design#Class#id3hd6wdsekfnt0dsekg6no.diagram:oiref>=970,530,167,141,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.InterfaceDescriptor:oiref>=2490,1370,200,316,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.WebServiceApplicationDescriptor:oiref>=2990,481,200,293,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.ParametersDescriptor:oiref>=2050,1370,200,316,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.DataCentreApplicationDescriptor#org.astrogrid.applications.beans.v1.ApplicationBaseDescriptor:oiref>=2870,481,3040,326:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.Input:oiref>=790,10,200,224,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.beans.v1.Interface#_output:oiref>=610,257,610,327:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.ApplicationListDescriptor:oiref>=10,1450,200,316,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.ApplicationBase:oiref>=290,294,200,270,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.WebServiceApplication:oiref>=506,634,189,155,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.Interface:oiref>=510,10,200,247,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.CmdLineParameterDefnDescriptor:oiref>=10,481,200,293,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.CommandLineApplicationDescriptor#org.astrogrid.applications.beans.v1.ApplicationBaseDescriptor:oiref>=3310,481,3140,326:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.ParameterRef:oiref>=1157,530,200,247,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.CmdLineParameterDefn:oiref>=1673,340,193,155,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.beans.v1.Interface#_input:oiref>=710,122,790,122:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.CommandLineApplication#org.astrogrid.applications.beans.v1.ApplicationBase:oiref>=178,634,339,564:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.OutputDescriptor:oiref>=950,1370,200,316,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.WebServiceExecutionControllerConfig:oiref>=1450,248,200,201,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.ApplicationList:oiref>=1597,530,200,224,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.DataCentreControllerConfig:oiref>=1010,248,200,201,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.DataCentreApplicationDescriptor:oiref>=2770,481,200,293,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.CommandLineApplicationDescriptor:oiref>=3210,481,200,293,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.WebServiceParameterDefinition:oiref>=1377,790,200,178,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.WebServiceExecutionControllerConfigDescriptor:oiref>=1170,481,200,293,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.DataCenterParameterDefinitionDescriptor:oiref>=2990,910,200,316,1:oigroup>
+<oigroup:<oiref:design#Class#id31sbqdsekfnt0dsekg6hr.diagram:oiref>=730,530,117,141,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.DataCentreControllerConfigDescriptor#org.astrogrid.applications.beans.v1.CommonExecutionConnectorConfigTypeDescriptor:oiref>=1050,481,1050,326:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.CommandLineExecutionControllerConfigDescriptor#org.astrogrid.applications.beans.v1.CommonExecutionConnectorConfigTypeDescriptor:oiref>=830,481,1000,326:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.DataCentreApplication:oiref>=298,634,188,155,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.beans.v1.CommandLineExecutionControllerConfig#org.astrogrid.applications.beans.v1.CommonExecutionConnectorConfigType:oiref>=1330,248,1330,188:oigroup>
 */
 class __positions {
 }

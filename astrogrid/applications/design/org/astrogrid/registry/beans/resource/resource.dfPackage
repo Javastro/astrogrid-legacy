@@ -18,6 +18,216 @@ class reference {
 @__fqn <oiref:#Package#org.astrogrid.registry.beans.resource.types:oiref> 
 */
 class reference53 {
+}/**
+@__ref <oiref:design#Class#id3pjetdu5jjgbidu5jp945.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.registry.beans.resource.registry:oiref> 
+*/
+class reference9 {
+}/**
+@__ref <oiref:design#Class#id29eijdu5jjgbidu5jp91x.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.registry.beans.resource.community:oiref> 
+*/
+class reference10 {
+}/**
+@__ref <oiref:design#Class#id2cxy9du5jjgbidu5jp94m.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.registry.beans.resource.sia:oiref> 
+*/
+class reference11 {
+}/**
+@__ref <oiref:design#Class#id1i9budu5jjgbidu5jp92g.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.registry.beans.resource.conesearch:oiref> 
+*/
+class reference12 {
+}/**
+@__ref <oiref:design#Class#id2jgivdu5jjgbidu5jp92x.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.registry.beans.resource.dataservice:oiref> 
+*/
+class reference13 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.VOResourceDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference34 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.CurationTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference35 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.RelatedResourceType:oiref><oihard>
+@__modelType reference 
+*/
+class reference36 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.CapabilityType:oiref><oihard>
+@__modelType reference 
+*/
+class reference37 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.NameReferenceTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference38 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.ResourceReferenceType:oiref><oihard>
+@__modelType reference 
+*/
+class reference39 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.ServiceTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference40 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.LogicalIdentifierTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference41 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.IdentifierType:oiref><oihard>
+@__modelType reference 
+*/
+class reference42 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.IdentifierTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference43 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.ServiceType:oiref><oihard>
+@__modelType reference 
+*/
+class reference44 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.AccessURLType:oiref><oihard>
+@__modelType reference 
+*/
+class reference45 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.CreatorType:oiref><oihard>
+@__modelType reference 
+*/
+class reference46 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.SummaryType:oiref><oihard>
+@__modelType reference 
+*/
+class reference47 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.CurationType:oiref><oihard>
+@__modelType reference 
+*/
+class reference48 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.ResourceReferenceTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference49 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.ContactTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference50 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.DateType:oiref><oihard>
+@__modelType reference 
+*/
+class reference51 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.LogicalIdentifierType:oiref><oihard>
+@__modelType reference 
+*/
+class reference52 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.VODescriptionDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference54 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.AccessURLTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference55 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.DateTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference56 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.CreatorTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference57 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.RelatedResourceTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference58 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.VOResource:oiref><oihard>
+@__modelType reference 
+*/
+class reference59 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.ResourceTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference60 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.SourceType:oiref><oihard>
+@__modelType reference 
+*/
+class reference61 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.InterfaceType:oiref><oihard>
+@__modelType reference 
+*/
+class reference62 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.CapabilityTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference63 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.NameReferenceType:oiref><oihard>
+@__modelType reference 
+*/
+class reference64 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.SummaryTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference65 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.SourceTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference66 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.ContactType:oiref><oihard>
+@__modelType reference 
+*/
+class reference67 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.VODescription:oiref><oihard>
+@__modelType reference 
+*/
+class reference68 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.InterfaceTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference69 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.ResourceType:oiref><oihard>
+@__modelType reference 
+*/
+class reference70 {
 }}/**
 @__tags
 @shapeType ClassDiagram 
@@ -28,7 +238,71 @@ class __tags {
 */
 class __options {
 }/**
-@__positions 
+@__positions <oigroup:<oiref:java#Extends#org.astrogrid.registry.beans.resource.CreatorType#org.astrogrid.registry.beans.resource.NameReferenceType:oiref>=134,2270,134,988:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.InterfaceTypeDescriptor:oiref>=2428,1690,200,411,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.SummaryType#_source:oiref>=1396,204,1652,204:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.SummaryType:oiref>=1196,10,200,434,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.CapabilityTypeDescriptor:oiref>=1842,2810,200,411,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.SourceType:oiref>=1652,10,200,388,1:oigroup>
+<oigroup:<oiref:design#Class#id29eijdu5jjgbidu5jp91x.diagram:oiref>=2428,2250,200,187,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.ContactTypeDescriptor:oiref>=1842,1690,200,411,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.IdentifierTypeDescriptor:oiref>=2428,10,200,411,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.ResourceReferenceType:oiref>=316,2270,200,480,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.registry.beans.resource.ServiceType#org.astrogrid.registry.beans.resource.ResourceType:oiref>=1246,2270,1246,2184:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.CurationTypeDescriptor:oiref>=2062,1130,200,411,1:oigroup>
+<oigroup:<oiref:design#Class#id1i9budu5jjgbidu5jp92g.diagram:oiref>=2648,790,192,141,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.CurationType#_creator:oiref>=278,1448,278,2270:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.ResourceReferenceTypeDescriptor:oiref>=1622,1690,200,411,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.VODescription:oiref>=2428,1130,200,480,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.SourceTypeDescriptor:oiref>=2648,10,200,411,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.RelatedResourceType:oiref>=315,2830,200,388,1:oigroup>
+<oigroup:<oiref:design#Class#id4obszdsekfnt0dsekg7bh.diagram:oiref>=1622,1130,200,371,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.ResourceType#_identifier:oiref>=1196,794,740,794:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.registry.beans.resource.LogicalIdentifierType#org.astrogrid.registry.beans.resource.IdentifierType:oiref>=638,2270,638,988:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.CurationType#_contact:oiref>=430,600,430,444:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.ServiceType:oiref>=1096,2270,200,365,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.ServiceType#_interface:oiref>=1193,2635,1193,2830:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.CapabilityType:oiref>=816,2270,200,388,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.NameReferenceType:oiref>=10,600,200,388,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.ContactType:oiref>=400,10,200,434,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.RelatedResourceType#_relatedTo:oiref>=415,2830,415,2750:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.ContactType#_identifier:oiref>=570,444,570,600:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.VOResourceDescriptor:oiref>=1842,1130,200,411,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.CapabilityType#_standardID:oiref>=916,2270,689,988:oigroup>
+<oigroup:<oiref:design#Class#id2jgivdu5jjgbidu5jp92x.diagram:oiref>=2648,1410,200,1123,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.ResourceTypeDescriptor:oiref>=2092,10,200,411,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.DateTypeDescriptor:oiref>=2062,2250,200,411,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.VODescriptionDescriptor:oiref>=1622,2250,200,411,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.registry.beans.resource.CreatorTypeDescriptor#org.astrogrid.registry.beans.resource.NameReferenceTypeDescriptor:oiref>=1972,580,1972,421:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.NameReferenceType#_identifier:oiref>=210,948,249,1468,470,1468,540,948:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.LogicalIdentifierType:oiref>=536,2270,200,319,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.ResourceReferenceType#_identifier:oiref>=440,2270,589,988:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.AccessURLTypeDescriptor:oiref>=1842,2250,200,411,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.CreatorType:oiref>=96,2270,200,319,1:oigroup>
+<oigroup:<oiref:design#Class#id3pjetdu5jjgbidu5jp945.diagram:oiref>=2648,570,178,187,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.ResourceType#_summary:oiref>=1296,600,1296,444:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.SummaryTypeDescriptor:oiref>=2062,2810,200,411,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.RelatedResourceTypeDescriptor:oiref>=1622,2810,200,411,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.ResourceType#_curation:oiref>=1196,640,662,580,543,580,460,640:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.registry.beans.resource.LogicalIdentifierTypeDescriptor#org.astrogrid.registry.beans.resource.IdentifierTypeDescriptor:oiref>=2528,580,2528,421:oigroup>
+<oigroup:<oiref:design#Class#id2cxy9du5jjgbidu5jp94m.diagram:oiref>=2428,2470,200,295,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.CreatorTypeDescriptor:oiref>=1872,580,200,388,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.ResourceType:oiref>=1196,600,200,1584,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.VOResource#_resource:oiref>=1356,2270,1356,2184:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.InterfaceType#_accessURL:oiref>=1291,3024,1371,3024:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.DateType:oiref>=2062,1690,200,388,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.ServiceTypeDescriptor:oiref>=2092,580,200,388,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.VOResource:oiref>=1316,2270,200,342,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.AccessURLType:oiref>=1371,2830,200,388,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.registry.beans.resource.ServiceTypeDescriptor#org.astrogrid.registry.beans.resource.ResourceTypeDescriptor:oiref>=2192,580,2192,421:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.LogicalIdentifierTypeDescriptor:oiref>=2428,580,200,388,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.IdentifierType:oiref>=540,600,200,388,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.CurationType#_publisher:oiref>=364,1448,364,2270:oigroup>
+<oigroup:<oiref:design#Class#id2dexqdsekfnt0dsekg7c7.diagram:oiref>=2868,10,200,1353,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.ServiceType#_capability:oiref>=1096,2452,1016,2452:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.CurationType:oiref>=260,600,200,848,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.NameReferenceTypeDescriptor:oiref>=1872,10,200,411,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.InterfaceType:oiref>=1091,2830,200,434,1:oigroup> 
 */
 class __positions {
 }

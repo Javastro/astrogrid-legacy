@@ -42,6 +42,21 @@ class reference35 {
 @__fqn <oiref:#Package#CeaApplication.Registry:oiref> 
 */
 class reference36 {
+}/**
+@__ref <oiref:java#Class#CeaApplication.ResourceReference:oiref><oihard>
+@__modelType reference 
+*/
+class reference1 {
+}/**
+@__ref <oiref:java#Class#CeaApplication.InternalReference:oiref><oihard>
+@__modelType reference 
+*/
+class reference3 {
+}/**
+@__ref <oiref:java#Class#CeaApplication.ExternalReference:oiref><oihard>
+@__modelType reference 
+*/
+class reference5 {
 }}/**
 @__tags
 @shapeType ClassDiagram

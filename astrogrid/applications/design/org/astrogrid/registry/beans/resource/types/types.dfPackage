@@ -6,7 +6,67 @@ package id4obszdsekfnt0dsekg7bh;
 @__modelType diagram 
 */
 class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.types.AccessURLTypeUseType:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
 }/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.types.RelationshipTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference14 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.types.AccessURLTypeUseTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference15 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.types.CategoryType:oiref><oihard>
+@__modelType reference 
+*/
+class reference16 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.types.ResourceTypeStatusTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference17 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.types.CategoryTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference18 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.types.ContentLevelType:oiref><oihard>
+@__modelType reference 
+*/
+class reference19 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.types.RelationshipType:oiref><oihard>
+@__modelType reference 
+*/
+class reference20 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.types.InvocationType:oiref><oihard>
+@__modelType reference 
+*/
+class reference21 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.types.ResourceTypeStatusType:oiref><oihard>
+@__modelType reference 
+*/
+class reference22 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.types.InvocationTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference23 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.types.ContentLevelTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference24 {
+}}/**
 @__tags
 @shapeType ClassDiagram 
 */
@@ -16,7 +76,64 @@ class __tags {
 */
 class __options {
 }/**
-@__positions 
+@__positions <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.ContentLevelType#VALUE_0:oiref>=2210,727,2210,1097,2600,1097,2600,367,2400,367:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.ResourceTypeStatusType#INACTIVE:oiref>=4240,451,4240,541,4410,541,4410,371,4320,371:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.types.AccessURLTypeUseTypeDescriptor:oiref>=3050,1110,200,411,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.types.ContentLevelType:oiref>=2200,10,200,717,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.types.RelationshipType:oiref>=3050,10,200,487,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.ContentLevelType#VALUE_1:oiref>=2220,727,2220,1057,2590,1057,2590,407,2400,407:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#BIBLIOGRAPHY:oiref>=465,1325,465,2135,825,2135,825,525,640,525:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.InvocationType#EXTENDED:oiref>=3590,543,3590,713,3920,713,3920,383,3750,383:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#ARCHIVE:oiref>=457,1325,457,2175,833,2175,833,485,640,485:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.ContentLevelType#VALUE_2:oiref>=2230,727,2230,1017,2580,1017,2580,447,2400,447:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.AccessURLTypeUseType#DIR:oiref>=170,451,170,501,260,501,260,411,210,411:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.InvocationType#WEBBROWSER:oiref>=3670,543,3670,633,3840,633,3840,463,3750,463:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.ContentLevelType#VALUE_3:oiref>=2240,727,2240,977,2570,977,2570,487,2400,487:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#SURVEY:oiref>=505,1325,505,1935,785,1935,785,725,640,725:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#OUTREACH:oiref>=532,1325,532,1815,758,1815,758,845,640,845:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#OTHER:oiref>=448,1325,448,2215,842,2215,842,445,640,445:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#ANIMATION:oiref>=550,1325,550,1735,740,1735,740,925,640,925:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#JOURNAL:oiref>=481,1325,481,2055,809,2055,809,605,640,605:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#PERSON:oiref>=631,1325,631,1375,659,1375,659,1285,640,1285:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.types.ResourceTypeStatusType:oiref>=4120,10,200,441,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#BASICDATA:oiref>=577,1325,577,1615,713,1615,713,1045,640,1045:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.ContentLevelType#VALUE_4:oiref>=2250,727,2250,937,2560,937,2560,527,2400,527:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#PRESS:oiref>=604,1325,604,1495,686,1495,686,1165,640,1165:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.AccessURLTypeUseType#BASE:oiref>=130,451,130,541,300,541,300,371,210,371:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.types.ContentLevelTypeDescriptor:oiref>=3930,1110,200,411,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.ContentLevelType#VALUE_5:oiref>=2260,727,2260,897,2550,897,2550,567,2400,567:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.types.InvocationTypeDescriptor:oiref>=3710,1110,200,411,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.types.InvocationType:oiref>=3550,10,200,533,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.ContentLevelType#VALUE_6:oiref>=2280,727,2280,857,2530,857,2530,607,2400,607:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.ResourceTypeStatusType#DELETED:oiref>=4280,451,4280,501,4370,501,4370,411,4320,411:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#SIMULATION:oiref>=497,1325,497,1975,793,1975,793,685,640,685:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.InvocationType#GLUSERVICE:oiref>=3710,543,3710,593,3800,593,3800,503,3750,503:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.ContentLevelType#VALUE_7:oiref>=2320,727,2320,817,2490,817,2490,647,2400,647:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#CATALOG:oiref>=473,1325,473,2095,817,2095,817,565,640,565:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.InvocationType#CUSTOM:oiref>=3560,543,3560,753,3950,753,3950,343,3750,343:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.types.RelationshipTypeDescriptor:oiref>=4120,650,200,411,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.RelationshipType#VALUE_0:oiref>=3090,497,3090,667,3420,667,3420,337,3250,337:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#PHOTOGRAPHIC:oiref>=595,1325,595,1535,695,1535,695,1125,640,1125:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#EPORESOURCE:oiref>=541,1325,541,1775,749,1775,749,885,640,885:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.ContentLevelType#VALUE_8:oiref>=2360,727,2360,777,2450,777,2450,687,2400,687:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#PROJECT:oiref>=622,1325,622,1415,668,1415,668,1245,640,1245:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.RelationshipType#VALUE_1:oiref>=3130,497,3130,627,3380,627,3380,377,3250,377:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.types.CategoryTypeDescriptor:oiref>=3490,1110,200,411,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.types.CategoryType:oiref>=440,10,200,1315,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#EDUCATION:oiref>=523,1325,523,1855,767,1855,767,805,640,805:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.types.AccessURLTypeUseType:oiref>=10,10,200,441,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.ResourceTypeStatusType#ACTIVE:oiref>=4200,451,4200,581,4450,581,4450,331,4320,331:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#TRANSFORMATION:oiref>=514,1325,514,1895,776,1895,776,765,640,765:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#BACKGROUND:oiref>=568,1325,568,1655,722,1655,722,1005,640,1005:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.RelationshipType#VALUE_2:oiref>=3170,497,3170,587,3340,587,3340,417,3250,417:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.InvocationType#WEBSERVICE:oiref>=3630,543,3630,673,3880,673,3880,423,3750,423:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#ORGANISATION:oiref>=613,1325,613,1455,677,1455,677,1205,640,1205:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.RelationshipType#VALUE_3:oiref>=3210,497,3210,547,3300,547,3300,457,3250,457:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.registry.beans.resource.types.ResourceTypeStatusTypeDescriptor:oiref>=3270,1110,200,411,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#HISTORICAL:oiref>=586,1325,586,1575,704,1575,704,1085,640,1085:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#ARTWORK:oiref>=559,1325,559,1695,731,1695,731,965,640,965:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.CategoryType#LIBRARY:oiref>=489,1325,489,2015,801,2015,801,645,640,645:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.registry.beans.resource.types.AccessURLTypeUseType#FULL:oiref>=90,451,90,581,340,581,340,331,210,331:oigroup> 
 */
 class __positions {
 }

@@ -1,0 +1,248 @@
+package id2jgivdu5jjgbidu5jp92x;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id14an4du5jjgbidu5jp93o.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.registry.beans.resource.dataservice.types:oiref> 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.ParamTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference140 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.AccessTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference141 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.TableTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference142 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.ExtendedInterfaceType:oiref><oihard>
+@__modelType reference 
+*/
+class reference143 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.SpectralTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference144 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.Long:oiref><oihard>
+@__modelType reference 
+*/
+class reference145 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.SpatialTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference146 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.RegionType:oiref><oihard>
+@__modelType reference 
+*/
+class reference147 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.ParamHTTPType:oiref><oihard>
+@__modelType reference 
+*/
+class reference148 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.CircleRegionType:oiref><oihard>
+@__modelType reference 
+*/
+class reference149 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.TabularSkyServiceTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference150 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.CoordRangeType:oiref><oihard>
+@__modelType reference 
+*/
+class reference151 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.CircleRegionTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference152 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.VOTableColumnsDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference153 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.TemporalType:oiref><oihard>
+@__modelType reference 
+*/
+class reference154 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.CoverageTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference155 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.FormatType:oiref><oihard>
+@__modelType reference 
+*/
+class reference156 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.SpatialType:oiref><oihard>
+@__modelType reference 
+*/
+class reference157 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.PositionType:oiref><oihard>
+@__modelType reference 
+*/
+class reference158 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.ExtendedInterfaceTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference159 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.SpectralType:oiref><oihard>
+@__modelType reference 
+*/
+class reference160 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.CoverageType:oiref><oihard>
+@__modelType reference 
+*/
+class reference161 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.AccessType:oiref><oihard>
+@__modelType reference 
+*/
+class reference162 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.LatDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference163 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.DataTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference164 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.TabularSkyServiceType:oiref><oihard>
+@__modelType reference 
+*/
+class reference165 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.DataType:oiref><oihard>
+@__modelType reference 
+*/
+class reference166 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.CoordRangeTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference167 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.DataCollectionTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference168 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.LongDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference169 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.SkyServiceTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference170 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.WavelengthRangeType:oiref><oihard>
+@__modelType reference 
+*/
+class reference171 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.WavelengthRangeTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference172 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.PositionTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference173 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.ParamHTTPTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference174 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.DataCollectionType:oiref><oihard>
+@__modelType reference 
+*/
+class reference175 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.FormatTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference176 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.VOTableColumns:oiref><oihard>
+@__modelType reference 
+*/
+class reference177 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.TemporalTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference178 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.ParamType:oiref><oihard>
+@__modelType reference 
+*/
+class reference179 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.TableType:oiref><oihard>
+@__modelType reference 
+*/
+class reference180 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.Lat:oiref><oihard>
+@__modelType reference 
+*/
+class reference181 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.SkyServiceType:oiref><oihard>
+@__modelType reference 
+*/
+class reference182 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.registry.beans.resource.dataservice.RegionTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference183 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+*/
+class __positions {
+}
