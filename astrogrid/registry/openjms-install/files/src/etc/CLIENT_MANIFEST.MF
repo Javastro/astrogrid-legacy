@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Specification-Title: Java Message Service
+Specification-Vendor: Sun Microsystems, Inc.
+Specification-Version: 1.0.2b
+Implementation-Title: OpenJMS
+Implementation-Vendor: Exolab Inc.
+Implementation-Version: $VERSION$ $DATE$ $TIME$
+Class-Path: $EXOLABCORE$
+  $JMS$
+  $JNDI$
+  $LOG4J$

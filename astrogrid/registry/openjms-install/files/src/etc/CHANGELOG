@@ -1,0 +1,765 @@
+VERSION 0.7.5
+=============
+
+* Unified InitialContextFactory implementations into a single class.
+  To construct an InitialContext:
+        Hashtable properties = new Hashtable();
+        properties.put(Context.INITIAL_CONTEXT_FACTORY,
+                 "org.exolab.jms.jndi.InitialContextFactory");
+        properties.put(Context.PROVIDER_URL, "rmi://myhost:1099/");
+        Context initial = new InitialContext(properties);
+
+  To specify to connect to the JNDI provider using TCP:
+          properties.put(Context.PROVIDER_URL, "tcp://myhost:3035/");
+  
+  Using HTTP:
+        properties.put(Context.PROVIDER_URL, "http://myhost:8080/");
+  
+  The old InitialContextFactory implementations RmiJndiInitialContextFactory, 
+  IpcJndiInitialContextFactory, IntravmJndiInitialContextFactory, 
+  HttpJndiInitialContextFactory, SslHttpJndiInitialContextFactory may still 
+  be used, but will be removed in a future release.
+
+* Added support for multiple connectors.
+  In order to configure multiple connectors, simply add a 
+  <Connector> entry for each desired connector. Each connection factory 
+  must have a different name.
+  e.g, to configure tcp and rmi connectors:
+  <Connectors>
+    <Connector scheme="rmi">
+      <ConnectionFactories>
+        <QueueConnectionFactory name="RMIQueueConnectionFactory" />
+        <TopicConnectionFactory name="RMITopicConnectionFactory" />
+      </ConnectionFactories>
+    </Connector>
+    <Connector scheme="tcp">
+      <ConnectionFactories>
+        <QueueConnectionFactory name="TCPQueueConnectionFactory" />
+        <TopicConnectionFactory name="TCPTopicConnectionFactory" />
+      </ConnectionFactories>
+    </Connector>
+  </Connectors>
+
+* Simplified URLs for the RMI connector. The server path no longer 
+  needs to be specified in the URL.
+  E.g, when specifying the Context.PROVIDER_URL, rmi://myhost:1099/ is 
+  equivalent to rmi://myhost:1099/JndiServer. When specifying the 
+  administration URL, rmi://myhost:1099/ is equivalent to 
+  rmi://myhost:1099/JmsAdminServer
+
+* Simplified the Context.PROVIDER_URL for the HTTP and HTTPS 
+  connectors. The server path no longer needs to be specified in the 
+  URL. http://myhost:8080/ is equivalent to http://myhost:8080/openjms/OpenJMSJndi
+  and https://myhost:8443/ is equivalent to https://myhost:8443/openjms/OpenJMSJndi
+
+* Changed the behaviour of the http connector. Previously, if the 
+  JndiConstants.HTTP_CLIENT_URL_PROPERTY property wasn't set, the value would
+  default to http://localhost:8080/openjms/OpenJMSClient, which isn't very useful
+  for most applications. It now defaults to the host and port of the server's 
+  web server.
+
+* Fixed bug 669033 - Can't shutdown embedded server via admin API
+
+* Fixed bug which prevented the use of an external JNDI provider
+
+* Fixed bug which prevented the registration of heirarchical topics
+
+* Fixed bug which prevented messages created via Session.createMessage() 
+  from being made persistent if their JMSType was null.
+
+* Added code to support realtime database garbage collection for 
+  topics and queues. Previously we only supported queues. This 
+  option means that we can deprecate the garbage collection options
+  on the DatabaseConfiguration element. This is only supported for 
+  JDBC since we will be deprecate support for JDBM in the near 
+  future
+  
+* Made changes to JMSServerSession so that a message is only made
+  persistent if the delivery mode is PERSISTENT and the destination
+  is an administered destination
+  
+* Added support for administered wildcard destinations and durable
+  consumers. So a destination such as "*" can be defined and durable
+  subscribers attached to it. Such a consumer will receive all messages
+  destined for single level destinations (i.e topic1, jima, exolab etc)
+  The existing wild carding mechanism is too limited.
+  
+* Made a change to the connection garbage collection algorithm. Now a 
+  connection will only be cleaned up if there are 3 consecutive failures
+  to a ping request. Connection GC is scheduled every minute. Previously,
+  the server was occasionally, prematurely cleaning up connections even
+  if the client was still active. The would be seen with the error 
+  "No consumer registered with Id XX".
+  
+* Previously, when a client terminated abnormally while it has a receiver
+  waiting on a synchronous receive, the server would display an error 
+  indicating that it could not send the notification when a message for 
+  that receiver became available. This would only happen if a message arrived
+  almost at the same time as the client was terminated. This error message
+  is not displayed at the moment.
+  
+* Modified the factory binding so that if localhost is specified as the server
+  name it will be replaced with the IP address. This will mean that a client 
+  can run remote client even if the server name is configured with "localhost"
+  
+* Added the method JmsAdminServerIfc.destinationExists(String name) so a client
+  can query whether a destination exists.
+  
+VERSION 0.7.4
+=============
+
+* Refactored the OpenJMS startup, shutdown and administration 
+  scripts. There is now a single script to perform these tasks: 
+  openjms.bat (openjms.sh for unix).
+  Helper scripts are provided:
+  
+  startup.sh - invokes openjms.sh start
+  shutdown.sh - invokes openjms.sh stop
+  admin.sh - invokes openjms.sh admin
+  
+  startup.bat - invokes openjms.bat start
+  shutdown.bat - invokes openjms.bat stop
+  admin.bat - invokes openjms.bat admin
+  
+  The original startjms script now invokes openjms run.
+
+* The scripts now ignore the global CLASSPATH environment variable.
+  In order to specify JDBC driver jars, create a script named 
+  setenv.bat (setenv.sh for Unix) in $OPENJMS_HOME/bin, and set the 
+  CLASSPATH in it. This will be called by the openjms script.
+  Eg, to configure the CLASSPATH for Oracle on Windows, setenv.bat 
+  might look like:
+  
+  rem set up the classpath to include the Oracle JDBC drivers            
+  set CLASSPATH=c:/oracle/jdbc/lib/classes12.zip
+
+* Made the -config switch to JmsServer and AdminMgr optional.
+  If not specified, the configuration file:
+    ${openjms.home}/config/openjms.xml
+  will be used
+
+* Fixed memory leak in the server's handling of QueueBrowsers
+
+* Updated to ANTLR 2.7.2a2. ANTLR 2.7.1 was producing code in 
+  SelectorLexer which when compiled exceeded the JVM method size limit 
+  of 65535 bytes, resulting in a java.lang.ClassFormatError exception 
+  at runtime.
+
+* Fixed NPE in the intravm client. It wasn't handling 'is-alive' pings 
+  from the server.
+
+* The TcpsConfiguration is now used to determine the port and
+  jndiPort when the tcps connector is configured. In previous releases,
+  it was ignored and the &lt;TcpConfiguration&gt; used instead.
+  Note: the default port for the tcps connector is 3031.
+
+* Fixed bug 665495: receive blocks all sessions on tcp
+  This bug, introduced in 0.7.3, also impacted the http connector.
+
+* Fixed bug 667595: InvalidDestinationException for null destination
+
+* Fixed bug 667590: Incorrect default delivery mode NOTE: this may break
+  existing clients which expect NON_PERSISTENT to be the default delivery 
+  mode. Clients which specify the delivery mode will be unaffected.
+
+* Fixed bug 667581: Incorrect default priority. The priority previously 
+  defaulted to 0. It now defaults to Message.DEFAULT_PRIORITY (4)
+
+* Fixed bug 667597: IllegalStateException for non-transacted commit. 
+  Previously a JMSException was thrown if Session.commit() or 
+  Session.rollback() were invoked for a non-transacted session. 
+  It now throws a javax.jms.IllegalStateException
+
+* Refactored the message cache in the engine. Messages are no longer
+  caches at the MessageMgr level. Now they are cached at the DestinationCache
+  level for queues and the CosumerEndpoint level for topics. This also reduces
+  contention to single data structure and improves performance of the overall 
+  server.
+
+* Modified the build.xml file and openjms so that it now compiles and runs 
+  under both JDK1.3 and JDK1.4. 
+
+* Modified the HTTP configuration so that the URL is now in the form
+  of /openjms/[name-of-servlet]. This changes simplifies the deployment 
+  of the openjms.war in Jakarta Tomcat since you do not to change the
+  server.xml configuration file. This weas tested against Tomcat v4.1.18
+  
+* Add create_informix.sql script, which was provided by Ludovic Pourrat.
+
+
+
+VERSION 0.7.3.2
+===============
+* Updated to ANTLR 2.7.2a2. ANTLR 2.7.1 was producing code in SelectorLexer
+  which when compiled exceeded the JVM method size limit of 65535 bytes,
+  resulting in a java.lang.ClassFormatError exception at runtime.
+
+VERSION 0.7.3.1
+===============
+* Fixed a FATAL issue with TCP, which preventing it from working in v0.7.3.
+  Build v0.7.3 is invalid for TCP
+
+* Added a sample openjms-wrapper.conf, which can be used with 
+  http://wrapper.sourceforge.net, to install it as an NT service. Modify
+  the configuration file to suite your environment and then execute 
+  Wrapper.exe -i <config file> to install the service.
+
+VERSION 0.7.3
+=============
+* Applied a patch by Christer Homer to fix bug #915
+  
+* Fixed a problem with transacted sessions, queues and asynchronous listener. 
+  Messages were begin acked more than once. 
+  
+* Fixed a problem with client ack mode and Qeueues. Messages were not
+  being acknowledge correctly.
+  
+* Messages for Queues are now removed from the database once they have
+  been acknowledged. If your JMS application is simply using Queues
+  there is no need to run the database garbage collection service.
+  
+* Fix to bug889. Rollback on transacted session does not work correctly.
+  If the session was rolled back the messages were never resent.
+  
+* Fix to bug669. Receiving from a temporary topic within the scope of the 
+  same connection as the publisher does not work.
+  
+* Changed garbage collection policy so that when memory is low persistent
+  messages are removed from transient memory. They are then retrieved on
+  as required.
+  
+* Fixed a bug with receive(time). The original design was very problematic.
+  
+* Fixed to bug966, which prevented the creation of a publisher with a null
+  queue.
+  
+VERSION 0.7.2b14
+================
+* Fixed bug 888, rolling back a transaction with an asynchronous 
+  consumer. A test cases has been added to the repository
+        
+* Fixed the intermittent client disconnection problem for RMI. The 
+  problem was evident under heavy load and led to the client 
+  failing to contact the server and assuming the server was
+  unavailable. The solution was to retry the request.
+    
+
+VERSION 0.7.2
+=============
+* Resolved problem with Tyrex, which was causing intermittent problems
+  with most databases under medium load. 
+
+* Updated the openjms user guide to include a section on using the 
+  OpenJMS administration API. Also moved the OpenJMS Administration 
+  Manual into the user guide.
+
+* Updated the data dictionary document in src/doc to reflect the 
+  current structure of the OpenJMS database bug #847
+
+* Added a facility to soak test the OpenJMS server. This will run
+  a series of tests using topics, queues, temporary topic and
+  temporary queues. Everything is run from an Ant build script 
+  and currently there is support for testing combinations of 
+  RMI and TCP with JDBM, MYSQL, Oracle and HSQL. The soak test
+  is used internally to ensure that the fundamental behaviour 
+  of the server is coherent. We will extend the level of support
+  in a subsequent release. 
+
+* Added a transaction log package, which will be used to develop
+  a batching RDBMS connector. This new connector is aimed at improving
+  our persistent message throughput on RDBMS databases.
+
+* We are looking at dropping support for JDBM in the near future. 
+  Instead out-of-the-box, OpenJMS will ship with an embedded version
+  of HSQL. So you still get a simple environment to test the product.
+
+* A number of bugs related to HSQL have been resolved, including bug 
+  #849
+
+* Problems with running some of the scripts on Linux have been resolved.
+  (bugs #825 #803 #741)
+	
+* Limited support for multiple connectors running on the same OpenJMS
+  server. This will enable a combination of RMI and TCP clients to 
+  connect to the same server. This will be completed in the next
+  release. This facility can be used to support secure and non-secure 
+  connections to the same server.
+
+* Fixed a number of bugs relating to JMS compliance issues. These include
+  bug #805 #856 #797 #781 #774.
+
+* Fixed bug #865, relating to automatic disconnection of clients.
+	
+* All connection factories and destinations are registered with the 
+  JNDI provider when the server starts-up.
+
+* Restructured the OpenJMS configuration file format to make it
+  simpler to configure. This change breaks existing configuration 
+  files - these can be converted to the new format using the
+  $OPENJMS_HOME/bin/convertcfg script
+
+* Made performance enhancements to the TCP connector. The TCP connector
+  now outperforms the RMI connector
+
+* Replaced the Jakarta Regexp regular expression package with Jakarta
+  ORO, to avoid stack overflow errors when evaluating 'like' selector
+  expressions against long strings.
+
+* OpenJMS jars now set the Class-Path property in MANIFEST.MF files
+  to avoid the need to specify dependent jars in the class path.
+
+* Updated logging to use log4j 1.1.3. The log4j XML syntax has changed
+  slightly since version 1.0.4. Refer to config/log4j.xml for an
+  example.
+
+* Fixed BytesMessage.readBytes(byte[], int). The old code used the 
+  array length rather than the input parameter to decide how much to 
+  read.
+
+* Fixed StreamMessage handling of boolean values.
+
+* Fixed bug #805 where selectors couldn't handle Long.MIN_VALUE
+
+* Improved performance on the MessageQueue data structure, which is used
+  internally by the message manager
+
+* Fixed bug #877 which relates to NullPointerException when using selectors.
+
+* Added lock expiry support to the object database (JDBM). If the OpenJMS 
+  server crashes, the lock will be cleaned up on restart.
+  By default, there is a 4 minute delay before the server can restart -
+  this is to avoid conflicts should multiple server instances attempt
+  to start at the same time.
+
+VERSION 0.7.1
+=============
+
+* Removed support for persistent JNDI providers. All administered destinations
+  and connection factories are registered with the provider at system init time
+ 
+* Reengineered the QueueBrowser so that messages are pulled from the server in 
+  blocks of twenty (not configurable at the moment). Previous design had the 
+  server pushing all messages down to the client irrespective of the client's 
+  processing profile.
+ 
+* The scripts now use the OPENJMS_HOME environment variable to locate the 
+  OpenJMS jars. If this is not set, it defaults to '..'
+
+* The openjms.home property is now set in scripts, and points to the OpenJMS 
+  installation directory.
+
+* Added support for property expansion in configuration files, to enable
+  OpenJMS to be launched from directories other than $OPENJMS_HOME/bin
+  The sample configuration files now use ${openjms.home} in path attributes
+  instead of '../'
+
+* Fixed bug in garbage collection, which ran every time the system checked for 
+  the percentage of free memory.
+
+* Fixed bug #756, where the 'messages' table was being incorrectly created for
+  SQL server
+	
+VERSION 0.7
+=============
+
+* Added database tool for creating and dropping OpenJMS tables in RBDMS 
+  databases
+	
+* Fixed bug #725, where NamingExceptions weren't being correctly propagated
+  back to the client.
+	
+* Fixed bug #627, where the JMSXGroupID and JMSXGroupSeq properties were not
+  being returned by ConnectionMetaData.getJMSXPropertyNames()
+	
+* Fixed bug #628, where BytesMessage.writeObject() and 
+  StreamMessage.writeObject() both allowed any serializable object to be 
+  written.
+
+* Fixed bug #629, where BytesMessage and StreamMessage were using 
+  ObjectOutputStream to write data. This was causing additional unwanted
+  data to be written into the byte stream. 
+
+* Fixed bug #689, so that ObjectMessage now supports nulls
+
+* Fixed bug #690, so that user-properties may not be modified on received
+  messages unless clearProperties() is invoked
+	
+* Fixed bug #693, so that Message.setJMSCorrelationIDAsBytes() now throws
+  UnsupportedOperationException in accordance with the javadoc
+
+* Fixed bug #695, so that MapMessage, ObjectMessage and TextMessage now 
+  implement clearBody()
+
+* Added SSL support for MIPC connections using SUN's JSSE 1.0.2 package.
+
+* Changed default server address lookup to use 
+  InetAddress.getLocalHost().getHostAddress if host name/address is NOT
+  provided in the config file, rather than defaulting to "localhost"
+
+* Added internalServerAddress to configuration + code. This only used when 
+  server is behind a NAT Router. This becomes the internal address the 
+  server is known by and the serverAddress is the external address. Clients 
+  will then attempt to connect to the serverAdress first, if that fails 
+  they will then try the internalServerAddress if it exists. This is usefull
+  in cases where the NAT router does not forward requests to the internet IP 
+  address from the local network. In this case the internal address of the 
+  server can be used.
+  This is only used for the MIPC connector.
+
+VERSION 0.6.2beta
+=================
+	
+* Fixed bug #514, relating to OpenJMS overriding the logging behaviour of 
+  other user's log4j settings. The configuration files have changed as a 
+  result. 
+  . the LoggerConfiguration element now only requires a "file" attribute which
+    must point to an xml file conforming to log4j.dtd 
+  . the distribution now contains a log4j.xml file which gets installed into
+    the config/ directory when OpenJMS is built. The sample configuration files
+    use this to initialise log4j for the server.
+
+* Fixed bug #624, where the wrong exception was being thrown when a primitive 
+  message property was being read for a null value.
+
+* Fixed bug #625, where illegal property identifiers could be used as property
+  names
+
+* Fixed bug #670, where a NameNotFoundException was being thrown if an 
+  administered destination was being created programatically, and then looked
+  up immediately afterwards.
+
+* Fixed bug #681, where the client intravm implementation did not copy messages
+  sent or received. If a client modifies such a message, it was therefore
+  modifying the instance held by the server.
+
+* Fixed bug #682, where message properties were not being cloned, potentially
+  resulting with multiple messages referring to the same set of properties.
+
+* Fixed bugs for MessageConsumer objects that received messages asynchronously
+  from sessions using CLIENT_ACKNOWLEDGE mode. If the listener was deregistered
+  then re-registered, in some circumstances previously acknowledged messages 
+  could be received again.
+
+VERSION 0.6.1
+=============
+* Fixed bug #660, which relates to serializable classes
+
+* Fixed the problem with starting and stopping a connection (bug #664)
+
+* All administered objects now implement the Referenceable interface as outlined 
+  in the JMS specification
+  
+* Client Acknowledgement (bug #656) has been corrected to conform with the 
+  specification.
+  
+* GUI has been fixed so that topics can be correctly deleted (bug #655)
+
+* Script files have been modified to pick up version 0.6.1
+
+VERSION 0.6
+===========
+* Major work in refactoring the messaging engine. The code is more readable and maintainable
+  than previous versions. It also provides a good foundation for moving the product forward.
+
+* Introduced in-memory GC, which removes all processed and expired messages from
+  memory. You can control the GC interval and the priority of the GC thread through
+  the configuration file.
+
+* Introduced database GC, which removes all processed and expired messages from the
+  database. You can control the GC interval and the priority of the GC thread through
+  the configuration file.
+
+* MIPC and RMI transport protocols both support ExceptionListener. The client may use
+  this hook to be notified when the server goes down.
+
+* MIPC and RMI transport protocols both support automatic client disconnection detection.
+  This facility is used by the server to clean up server-side resources when a client
+  abnormally terminates.
+
+* Fixed local transactions so that they are committed and rolled back correctly.
+
+* Support for Context.PROVIDER_URL property when getting an InitialContext. The format of the 
+  property values is rmi://host:port/name and mipc://host:port/name for RMI and MIPC 
+  respectively
+
+* New configuration file format, which is incompatible with previous versions. Additionally,
+  new database format, which is also incompatible with previous versions. We needed to make
+  drastic changes to the database structure to better support persistent messages. Future  
+  version will be backward compatible.
+
+* The GUI has been slightly improved to better reflect the state of administered destinations
+  and durable subscribers. You no longer need to specify a date when you purge messages. It 
+  will simply purge all acknowledged and expired messages.
+
+* Removed a restriction in OpenJMS, which prevented a client creating a consumer or receiver
+  to the same destination, within the same session.
+
+
+VERSION 0.5.2
+=============
+
+* Fixed bug #525, which relates to acknowledgements in transacted sessions.
+
+* The OpenJMS web site is now in the CVS repository thanks to Ashish Agrawal 
+  (ashish@intalio.com). The documents can be found in src/doc
+  
+* Restructured the configuration file to consolidate some of the parameters. 
+  You will need to make changes to existing configuration files to run the 
+  latest version of the server. (bug #457, 459)
+  
+* You can now preconfigure queues and topics from the configuration file. For
+  topic you can also configure durable subscribers. Look at the 
+  AdministeredDestinations element in any configuration file for details on how
+  to use this feature.
+  
+* Improved the build.xml file to better support the release process and added 
+  the 'convert' target, which adds or removes the LF in scripts depending 
+  whether they are for windows or unix.
+  
+* A very basic RMI JNDI provider ships in the examples directory, which is 
+  used to test OpenJMS against an external JNDI provider.
+  
+* Added code contributed by Fabien Betremieux (fabien.betremieux@lumos.com)
+  from Lumos, which extends SimpleConsumer and SimplePublisher to provide 
+  throughput statistics of the OpenJMS server. Look in 
+  examples.openjms.profiling package for the code.
+  Execute runprofilepublisher -help and runprofileconsumer -help for a list of
+  command line options.
+  
+* New User Guide available in the src/doc directory, which provides more 
+  up-to-date information on getting, configuring and running OpenJMS.
+  
+* OpenJMS can now run with an external JNDI provider. See configuration files
+  rmi_external_jms.xml and ipc_external_jms.xml for configuration details. Also
+  view the user guide for more information. (bug #275, 450)
+  
+* You can now shutdown the server from the command line by using the 
+  undocumented '-stopServer' option on the admin.bat or admin.sh script. 
+  You need to also specify the configuration file that was used to start the 
+  server. (bug #191)
+ 
+* Non-durable queues are now supported.
+
+* Changed the JNDI property names to be consistent with other properties.
+  Any instances of client code like the following should be changed from:
+
+    // Get the JNDI context
+    Hashtable properties = new Hashtable();
+    properties.put("org.exolab.jms.jndi.PortNumber", port);
+    properties.put("org.exolab.jms.jndi.Host", host);
+    properties.put(Context.INITIAL_CONTEXT_FACTORY, 
+        "org.exolab.jms.jndi.rmi.RmiJndiInitialContextFactory");
+    Context context = new InitialContext(props);
+
+  to:
+    Hashtable properties = new Hashtable();
+    properties.put("org.exolab.jms.jndi.port", port);
+    properties.put("org.exolab.jms.jndi.host", host);
+    // etc
+
+  or:
+    import org.exolab.jms.jndi.JndiConstants;
+    // etc
+    Hashtable properties = new Hashtable();
+    properties.put(JndiConstants.PORT_NUMBER_PROPERTY, port);
+    properties.put(JndiConstants.HOST_PROPERTY, host);
+    // etc
+
+* OpenJMS.properties has been removed as it is no longer required
+	
+* Fixed bug in RDBMS adapter where consumers were not being inserted 
+  correctly. This was causing duplicate messages for consumers that 
+  disconnected and then reconnected.
+
+* Fixed bug #298, where the DuplicateConsumerId exception was masking
+  the real cause of the failure to register a consumer.
+
+* Fixed bug #362, where durable consumers of NON_PERSISTENT messages could
+  receive duplicate messages on reconnection to the server.
+
+* Fixed bug #423, where TopicSession.unsubscribe() was failing to remove 
+  durable subscriptions.
+	
+* Fixed bug in the message manager where a dispatcher could be created for a
+  non-durable destination when a durable destination existed.
+
+* Fixed NullPointerException bug in PersistentConsumer.
+
+* Fixed bug where clients couldn't reconnect to a restarted OpenJMS server.
+
+* Fixed bug where durable QueueReceivers were losing messages, most notably
+  when calling QueueReceiver.receive(...)
+
+* Fixed message acknowledge exception for durable QueueReceivers that 
+  repeatedly connected, polled, and disconnected from a queue.
+
+
+VERSION 0.5.1
+=============
+
+* OpenJMS can now be built using JDK1.2.2
+
+* Changed queue behaviour so that NON_PERSISTENT queues are kept after the last
+  consumer disconnects. 
+
+* Fixed bug in durable queues where PERSISTENT messages were being lost if 
+  the message selector for a consumer was changed.
+
+* Fixed bug in JDBM where locks weren't being de-allocated. This was 
+  preventing cached persistent messages from being garbage collected
+	
+VERSION 0.5
+===========
+
+* Wildcard subscsriptions is now provided for Topics only.
+  Wildcarding is only available to subscribers not to publishers, 
+  publishers must always publish to a specific topic. 
+  As part of this release all topic names are parsed and only topics 
+  consisting of valid alphanumeric's will be allowed. The "*" character 
+  is used for all wildcarding and is only legal in topic subscribers. 
+  The "." Character is used as a topic delimiter and separates the topic 
+  hierarchy.
+  Wildcarding is on two levels;
+    1.	A specific level as in "openjms.demo.*.subs.*" where the "*" will 
+	match any text on that level, and all other text must match exactly, 
+	including case.
+    2.	This level plus all subsequent levels as in "openjms.demo.**" where 
+	"**" will match all subsequent levels from that point on, 
+	and any previous text must match exactly. No other text is legal 
+	after a "**". If any text is encountered after this wildcard the 
+	topic will deemed to be invalid. A "**" on its own will match all 
+	topics. It is possible to achieve specific level and hierarchical 
+	level wildcarding as in "openjms.*.test2.**"
+
+* Castor is no longer used for RDBMS support. OpenJMS now uses the JDBC direct
+  (JDBC 2 compliant) along with Tyrex (http://tyrex.exolab.org) for 
+  transaction support. The following databases have been tested with OpenJMS
+  and OpenJMS configuration files provided.
+
+        Database Name              JDBC Driver
+        =============		   ===========
+        Sybase V12                 jConnect V5.2
+        Sybase SQL Anywhere 7.0	   jConnect V5.2
+        Oracle V8i.1.6             Oracle JDBC driver
+        MySQL V3.23.27beta         mm V2.0.2
+
+* QueueBrowsers are now supported.
+
+* Flow control has been added.
+
+* OpenJMS will only build/run against Java 1.3 or greater.
+
+* Application Server Facility is now supported (XA support is forthcomig). There 
+  is an example of an ApplicationServer in the examples directory.
+  
+* A JMS client can now run within the constraints of an Applet environment without
+  getting security exceptions.
+  
+* The RMI server can now be configured to run on any port on any host. All the examples
+  now have additional parameters -jndiHost and -jndiPort to locate the JNDI server and 
+  bootstrap connection to the openjms server.
+  
+* Quite few bug fixes including 142, 150, 165, 172, 190, 245, 246, 151, 235, 
+	
+	
+VERSION 0.4
+===========
+
+* integrated message selector support for TopicSubscribers and QueueReceivers
+  Message selector support for QueueBrowser will be added in the next release
+
+* Support for relational databases is now available. The JDBM currently used
+  to store durable messages can now be replaced by an RDBMS. Access to the
+  rdbms is through castor, and should support all databases supported by 
+  castor. Initial testing has only been conducted on Oracle 8i.1.6. and 
+  Sybase 12. For more information on castor see http://castor.exolab.org
+
+* Session close bug has now been fixed.
+
+* The test harness has been improved to run through and test all configurations
+  of the OpenJMS server. There are still some minor bugs with this likely
+  related to timing issues between running each OpenJMS server configuration.
+  Individual tests when run on there own work fine. This will be fixed shortly
+  and updated as a minor release.
+
+* In an effort to improve the ease of builds and tests for new comers to
+  OpenJMS the build all target has been modified to do a 
+  build jar testharness examples preparetest. 
+
+VERSION 0.3
+===========
+
+* bug fixes in 0.2.1. Sending messages that have an internal bytes array greater
+  than 1024 now works correctly. Getting an JmsCorrellationId no longer throws
+  an exception if it has not been set.
+
+* logging is now implemented through the log4j module 
+
+* code that implements the selector SQL-92 syntax has been contributed by 
+  Tim Anderson. (mailto:tma@netspace.com.au). The message engine now needs 
+  to hook it in.
+  
+* There is a new JNDI ADMIN console that provides an interface to the JNDI 
+  administered objects. JNDI contexts and objects can now be viewed, created 
+  and deleted.
+
+* Additional test cases have been added to exercise the client API. More will be
+  added for v0.4.
+  
+
+
+VERSION 0.2.1
+=============
+
+* support for IPC-TCP/IP connector
+
+* support for database cache to improve performance of persistent message 
+  delivery mode
+  
+* fixes to the Queue messaging model.
+
+* support for Temporary Topics and Queues,
+
+* support for QueueRequestor/TopiRequestor (i.e request-reply)
+
+* Client side test case coverage
+
+* improved the JNDI codebase 
+
+* Fixed the RMI implementation of the JMS Server for Linux. Now all examples
+  execute on this platform.
+  
+* All examples and configuration files are available to run either the IPC
+  or RMI connector
+  
+* Examples for QueueSender, QueueReceiver, TemporaryTopic and TemporaryQueue
+
+
+VERSION 0.2
+===========
+ 
+* point-to-point and publish-and-subscribe messaging models
+ 
+* Persistent and Non-Persistent delivery modes based on JDBM. This also 
+  includes support for durable destinations and durable subscribers
+ 
+* Transacted sessions
+ 
+* Administration console to start, stop the server in addition to other 
+  administrative functions including message purging, durable consumer 
+  definition etc
+ 
+* Examples for SimplePublisher and SimpleConsumer which together can be used
+  to demonstrate end-to-end OpenJMS.
+ 
+* Full blown FX Dealing application based on OpenJMS with GUI's for capturing
+  deals and displaying deals. It deals with both message delivery models.
+ 
+* RMI and embeddable JMS servers all specified through an XML-based 
+  configuration file.
+ 
+* RMI and embeddable JNDI server.
+ 
+* Automated testharness 
+ 
+* Documentation on installing, using  and contributing to the OpenJMS project.
