@@ -86,7 +86,7 @@
                                 </xsl:element>
                             </td>
                             <td><input type="submit" value="submit" /></td>
-                            <td><input name="myspace-name" type="button" value="Browse..." onclick="javascript:void(window.open('/astrogrid-portal/mount/myspace/myspace-micro', 'mySpaceMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200'))"/></td>    
+                            <td><input name="myspace-name" type="button" value="Browse..." onclick="javascript:void(window.open('/astrogrid-portal/mount/myspace/myspace-micro?ivorn=&agsl=', 'mySpaceMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200'))"/></td>    
 <!--                        </xsl:when>
                         <xsl:otherwise>
                             <td><xsl:value-of select="@param-value" /></td>
