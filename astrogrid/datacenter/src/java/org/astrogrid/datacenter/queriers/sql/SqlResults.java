@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.2 2003/09/04 09:23:16 nw Exp $
+ * $Id: SqlResults.java,v 1.3 2003/09/08 16:34:31 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -39,28 +39,35 @@ public class SqlResults implements QueryResults
 {
    protected ResultSet results;
    protected ResultSetConverter converter;
-   
+   protected Workspace workspace = null;
 
-
-   public SqlResults(ResultSet givenResults) {
-       this.results = givenResults;
-       this.converter = new ResultSetToSimpleVOTable("","","","","");
-   }
    /**
-    * Converts the resultset to VOTable Document.  Needs a workspace
-    * to do this, so pass that in
+    * Construct this wrapper around the given JDBC/SQL ResultSet.  We don't
+    * know how big this result set will be, so it's likely we'll need a workspace
+    * for any temporary files created when doing conversions
     */
-   public Document toVotable(Workspace workspace) throws IOException
+   public SqlResults(ResultSet givenResults, Workspace givenWorkspace)
    {
-      File workfile = workspace.makeWorkFile("votableResults.vot.xml"); //should go into workspace...
-
-      PrintStream out = null ;
-
+      this.results = givenResults;
+      this.converter = new ResultSetToSimpleVOTable("","","","","");
+      this.workspace = givenWorkspace;
+   }
+   
+   /**
+    * Converts the resultset to VOTable Document.
+    */
+   public Document toVotable() throws IOException
+   {
       try
       {
-            out = new PrintStream( new FileOutputStream(workfile) );
-            converter.serialize( results, out );
-            return XMLUtils.newDocument(new FileInputStream(workfile));
+         //don't know how big the result set is so use the workspace
+         File workfile = workspace.makeWorkFile("votableResults.vot.xml"); //should go into workspace...
+   
+         PrintStream out = null ;
+
+         out = new PrintStream( new FileOutputStream(workfile) );
+         converter.serialize( results, out );
+         return XMLUtils.newDocument(new FileInputStream(workfile));
       }
       catch (SAXException e)
       {

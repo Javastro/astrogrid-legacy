@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDatacenterDelegate.java,v 1.5 2003/09/07 18:52:39 mch Exp $
+ * $Id: DummyDatacenterDelegate.java,v 1.6 2003/09/08 16:34:04 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -19,11 +19,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 /**
- * A convenience class for java clients of datacenters.  They can create and
- * use this class to manage all the connections/calls/etc without having to
- * mess around with all the SOAP messages directly.
- *
- * An instance of one of these corresponds to one connection to one database
+ * An implementation of the DatacenterDelegate that validates inputs and
+ * returns valid results, but does not call any datacenter services.
+ * Provided for unit and integration test purposes, so applications can run
+ * against a realistic data center without having to set one up.
  *
  * @author M Hill
  * @author Jeff Lusted (from DatasetAgentDelegate)
@@ -52,7 +51,7 @@ public class DummyDatacenterDelegate extends DatacenterDelegate
 
    /**
     * Checks that the given ADQL is valid (makes a query from it), returns an
-    * example VOTable in this package
+    * example VOTable supplied in this package
     * @todo returning a VOTable is not quite right - need to return the DOM
     * representation of the returning message which might contain admin info also
     */
@@ -116,7 +115,7 @@ public class DummyDatacenterDelegate extends DatacenterDelegate
 
    /**
     * returns an example metadata file.
-    * @todo not supported yet.  Need to make a metadata file &amp; return it
+    * @todo not supported yet.  Need to make a metadata file and return it
     */
    public Element getRegistryMetadata()
    {
@@ -135,6 +134,9 @@ public class DummyDatacenterDelegate extends DatacenterDelegate
 
 /*
 $Log: DummyDatacenterDelegate.java,v $
+Revision 1.6  2003/09/08 16:34:04  mch
+Added documentation
+
 Revision 1.5  2003/09/07 18:52:39  mch
 Added typesafe ServiceStatus
 

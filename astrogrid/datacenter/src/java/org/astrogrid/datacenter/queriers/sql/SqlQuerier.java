@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.6 2003/09/07 18:56:42 mch Exp $
+ * $Id: SqlQuerier.java,v 1.7 2003/09/08 16:34:31 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -215,7 +215,7 @@ public class SqlQuerier extends DatabaseQuerier
          statement.execute(sql);
          ResultSet results = statement.getResultSet();
 
-         return new SqlResults(results);
+         return new SqlResults(results, workspace);
       } catch (SQLException e) {
          throw new DatabaseAccessException(e, "Could not query database using '" + sql + "'");
       } catch (Exception e) {

@@ -1,5 +1,5 @@
 /*
- * $Id: StdDatacenterDelegate.java,v 1.3 2003/09/07 18:51:12 mch Exp $
+ * $Id: StdDatacenterDelegate.java,v 1.4 2003/09/08 16:34:04 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -17,11 +17,9 @@ import org.astrogrid.datacenter.servicestatus.ServiceStatus;
 import org.w3c.dom.Element;
 
 /**
- * A convenience class for java clients of datacenters.  They can create and
- * use this class to manage all the connections/calls/etc without having to
- * mess around with all the SOAP messages directly.
+ * A standard AstroGrid datacenter delegate implementation.
  *
- * An instance of one of these corresponds to one connection to one database
+ * @see DatacenterDelegate
  *
  * @author M Hill
  * @author Jeff Lusted (from DatasetAgentDelegate)
@@ -32,7 +30,8 @@ public class StdDatacenterDelegate extends DatacenterDelegate
    private URL endpoint = null;
    DatasetAgentSoapBindingStub binding;
 
-   /** Use the factory method DatacenterDelegate.makeDelegate() in case we need to create new sorts
+   /** Don't use this directly - use the factory method
+    * DatacenterDelegate.makeDelegate() in case we need to create new sorts
     * of datacenter delegates in the future...
     */
    public StdDatacenterDelegate(String givenEndPoint) throws MalformedURLException, ServiceException
@@ -117,6 +116,9 @@ public class StdDatacenterDelegate extends DatacenterDelegate
 
 /*
 $Log: StdDatacenterDelegate.java,v $
+Revision 1.4  2003/09/08 16:34:04  mch
+Added documentation
+
 Revision 1.3  2003/09/07 18:51:12  mch
 Added typesafe ServiceStatus
 

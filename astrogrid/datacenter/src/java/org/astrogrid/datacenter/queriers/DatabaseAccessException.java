@@ -24,11 +24,10 @@ import java.io.IOException;
 
 public class DatabaseAccessException extends IOException
 {
-   public DatabaseAccessException(Throwable cause)
-   {
-      this(cause,"");
-   }
-
+   /**
+    * Constructor taking the cause of the error (an exception/error) and
+    * a message describing the context
+    */
    public DatabaseAccessException(Throwable cause, String message)
    {
       super(message);
@@ -37,6 +36,14 @@ public class DatabaseAccessException extends IOException
          initCause(cause);
          setStackTrace(cause.getStackTrace());
       }
+   }
+
+   /**
+    * Convenience constructor that just takes the cause of the error
+    */
+   public DatabaseAccessException(Throwable cause)
+   {
+      this(cause,"");
    }
 
    /**
@@ -52,6 +59,9 @@ public class DatabaseAccessException extends IOException
 
 /*
 $Log: DatabaseAccessException.java,v $
+Revision 1.3  2003/09/08 16:34:31  mch
+Added documentation
+
 Revision 1.2  2003/09/07 18:54:47  mch
 Fix for null causes
 

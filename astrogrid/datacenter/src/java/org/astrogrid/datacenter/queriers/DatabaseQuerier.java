@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.9 2003/09/07 18:55:20 mch Exp $
+ * $Id: DatabaseQuerier.java,v 1.10 2003/09/08 16:34:31 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,8 +20,18 @@ import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
 
 /**
- * The abstract class including factory, that all database queriers must implement
- *
+ * The Querier classes handle a single, individual query to an individual
+ * database.  If two queries will be made on a database, two Querier instances
+ * will be required.  A 'database' here is a database management system; eg
+ * MySQL, Microsoft's SQL server, etc.
+ * <p>
+ * @see package documentation
+ * <p>
+ * This class provides factory methods for both blocking and non-blocking
+ * queries, hopefully completely hiding the two-way translation process
+ * @see doQueryGetVotable()
+ * @see spawnQuery
+ * <p>
  * @author M Hill
  */
 
@@ -42,7 +52,7 @@ public abstract class DatabaseQuerier implements Runnable
 
    /** Temporary workspace for working files, and somewhere to put the results
     * for non-blocking calls */
-   private Workspace workspace = null;
+   protected Workspace workspace = null;
 
    /** A handle is used to identify a particular service.  It is also used as the
     * basis for any temporary storage. */
@@ -167,7 +177,7 @@ public abstract class DatabaseQuerier implements Runnable
 
       querier.setStatus(ServiceStatus.RUNNING_RESULTS);
 
-      return querier.getResults().toVotable(querier.getWorkspace()).getDocumentElement();
+      return querier.getResults().toVotable().getDocumentElement();
    }
 
    /**

@@ -1,12 +1,24 @@
 <html>
 <body>
-defines how the querying of the backend database works.  Here are defined the interfaces, and
-a factory is provided that loads the appropriate implementation based on a configuration file setting
+<h3>Introduction & Purpose</h3>
+Handles the translation between the ADQL submitted to the server and the
+backend database, and in reverse between the results returned by the database
+and the VOTable (or other 'VO-agreed standard') format to be returned by the
+server.
+<p>
+Note that both ways then are many/many; the ADQL is likely to go through different
+versions, there will be many different databases, some of which may be bespoke
+(rather than JDBC/SQL variants).  Similarly the return may be JDBC ResultSet, but
+may be some other bespoke format, to be translated to VOTable or FITS or
+whatever.
+<p>
+The querier must also be able to cope with both synchronous (blocking) and
+asynchronous (spawned, or separately threaded) queries.
 <p>
 Also provides framework of a system to translate between ADQL and SQL. See subpackages for database-specific
 implementations. See {@link org.astrogrid.datacenter.queriers.TranslationFrame} for explanation of the translation system.
 
-
 <h3>Implementation Details</h3>
+
 </body>
 </html>
