@@ -1,4 +1,4 @@
-/*$Id: Services.java,v 1.9 2004/05/07 15:33:50 pah Exp $
+/*$Id: Services.java,v 1.10 2004/07/01 11:36:25 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -84,7 +84,6 @@ public class Services {
    }
    
    
-   protected List myspaces = new ArrayList();
    protected List datacenters = new ArrayList();
    protected List applications = new ArrayList();
    protected List registries = new ArrayList();
@@ -114,8 +113,6 @@ public class Services {
       } else if (Service.JOBCONTROL_SERVICE.equals(s.getType()) 
             || Service.JOBMONITOR_SERVICE.equals(s.getType())){
          jes.add(s);
-      } else if (Service.MYSPACE_SERVICE.equals(s.getType())) {
-         myspaces.add(s);
       } else if (Service.REGISTRY_SERVICE.equals(s.getType())) {
          registries.add(s);
             } else if (Service.REGISTRYADMIN_SERVICE.equals(s.getType())) {
@@ -129,7 +126,7 @@ public class Services {
     * @return
     */
    public List getAllServices() {
-      List allServices = new ArrayList(myspaces);
+      List allServices = new ArrayList();
       allServices.addAll(datacenters);
       allServices.addAll(applications);
       allServices.addAll(registries);
@@ -160,12 +157,6 @@ public class Services {
       return jes;
    }
 
-   /** access lilst of all myspace services
-    * @return
-    */
-   public List getMyspaces() {
-      return myspaces;
-   }
 
    /**access list of all registry services
     * @return
@@ -200,6 +191,9 @@ public class Services {
 
 /* 
 $Log: Services.java,v $
+Revision 1.10  2004/07/01 11:36:25  nw
+fixed for removal of myspace delegate
+
 Revision 1.9  2004/05/07 15:33:50  pah
 added egistryAdmin as a service type
 

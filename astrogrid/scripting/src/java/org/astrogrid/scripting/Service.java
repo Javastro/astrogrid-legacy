@@ -1,4 +1,4 @@
-/*$Id: Service.java,v 1.9 2004/05/07 15:33:50 pah Exp $
+/*$Id: Service.java,v 1.10 2004/07/01 11:36:25 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,6 @@ import javax.xml.rpc.ServiceException;
 import org.astrogrid.applications.delegate.DelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
-import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 
 
@@ -29,7 +28,6 @@ import org.astrogrid.registry.client.RegistryDelegateFactory;
  */ 
 public class Service {
    public static final String DATACENTER_SERVICE = "datacenter";
-   public static final String MYSPACE_SERVICE= "myspace";
    public static final String REGISTRY_SERVICE = "registry";
    public static final String REGISTRYADMIN_SERVICE = "registryadmin";
    public static final String APPLICATION_SERVICE = "application";
@@ -61,9 +59,11 @@ public class Service {
       if (DATACENTER_SERVICE.equals(type)) {
          return DatacenterDelegateFactory.makeQuerySearcher(endpoint);
       } 
+      /*
       if (MYSPACE_SERVICE.equals(type)) {
          return MySpaceDelegateFactory.createDelegate(endpoint);
       }
+      */
       if (REGISTRY_SERVICE.equals(type)) {
           return RegistryDelegateFactory.createQuery(new URL(endpoint));
       }
@@ -136,6 +136,9 @@ public class Service {
 
 /* 
 $Log: Service.java,v $
+Revision 1.10  2004/07/01 11:36:25  nw
+fixed for removal of myspace delegate
+
 Revision 1.9  2004/05/07 15:33:50  pah
 added egistryAdmin as a service type
 
