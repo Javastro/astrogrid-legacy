@@ -1,5 +1,5 @@
 /*
- * $Id: TargetIndicator.java,v 1.4 2004/09/07 01:39:27 mch Exp $
+ * $Id: TargetIndicator.java,v 1.5 2004/10/05 14:55:00 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import org.astrogrid.community.Account;
 import org.astrogrid.store.Agsl;
@@ -69,7 +70,21 @@ public class TargetIndicator  {
       }
    }
    /**/
-      
+
+   /**
+    * Tests the string & creates the right kind of TargetIndicator
+    */
+   public static TargetIndicator makeIndicator(URI target) throws MalformedURLException, URISyntaxException {
+      return makeIndicator(target.toString());
+   }
+   
+   /**
+    * Makes a target that will write to the given writer
+    */
+   public static TargetIndicator makeIndicator(Writer target)  {
+      return new TargetIndicator(target);
+   }
+   
    public String getEmail() {
       return email;
    }
@@ -131,6 +146,9 @@ public class TargetIndicator  {
 }
 /*
  $Log: TargetIndicator.java,v $
+ Revision 1.5  2004/10/05 14:55:00  mch
+ Added factory methods
+
  Revision 1.4  2004/09/07 01:39:27  mch
  Moved email keys from TargetIndicator to Slinger
 
