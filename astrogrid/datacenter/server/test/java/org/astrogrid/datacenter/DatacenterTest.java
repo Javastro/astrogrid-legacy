@@ -1,4 +1,4 @@
-/*$Id: DatacenterTest.java,v 1.11 2004/02/24 16:03:48 mch Exp $
+/*$Id: DatacenterTest.java,v 1.12 2004/03/04 23:43:48 mch Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,6 +62,8 @@ public class DatacenterTest extends AbstractTestInstallation {
         SimpleConfig.setProperty(ServiceServer.METADATA_FILE_LOC_KEY,"/org/astrogrid/datacenter/test-metadata.xml");
         // set myspace to use
         SimpleConfig.setProperty(QuerierManager.DEFAULT_MYSPACE, MySpaceDummyDelegate.DUMMY);
+       
+        SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, "org.astrogrid.datacenter.sitedebug.DummyQuerier");
         // populate the database
         String script = ServerTestCase.getResourceAsString("/org/astrogrid/datacenter/queriers/sql/create-test-db.sql");
         DataSource ds = new HsqlTestCase.HsqlDataSource();
@@ -84,6 +86,9 @@ public class DatacenterTest extends AbstractTestInstallation {
         System.setProperty(QUERY_FILE_KEY,"/org/astrogrid/datacenter/test-query.adql");
         // off we go.
         super.setUp();
+                         
+                         
+         
     }
     
    protected Connection conn;
@@ -106,6 +111,9 @@ public class DatacenterTest extends AbstractTestInstallation {
 
 /*
 $Log: DatacenterTest.java,v $
+Revision 1.12  2004/03/04 23:43:48  mch
+Fixes for tests that broke with changes to config
+
 Revision 1.11  2004/02/24 16:03:48  mch
 Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
 

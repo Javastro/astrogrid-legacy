@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerierSPI.java,v 1.6 2004/02/24 16:04:18 mch Exp $
+ * $Id: SqlQuerierSPI.java,v 1.7 2004/03/04 23:43:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -68,35 +68,35 @@ public final static String JNDI_DATASOURCE = "java:comp/env/jdbc/pal-datasource"
       map.add(SQLUtils.SQL_XMLNS,new SqlQueryTranslator());
   }
 
-/**
- *     * Looks for JNDI connection, if that fails look for JDBC connection
-    * <p>
-    * Behaviour.
-    * <ol>
-    * <li>Checks JNDI for a datasource under {@link #JNDI_DATASOURCE}. If present, use this to initialize the querier
-    * <li>Otherwise, checks for a database url in configuration under {@link #JDBC_URL}, and
-    * optional connection properties under {@link #CONNECTION_PROPERTIES}. If url is present, this is used to initialize the querier
-    * </ul>
- *
- * @todo this rigmarole is gone through every time a DatabaseQuerier is created. Factor out into a factory for efficiency.
- * @todo introduce a jdbc connection pool - new connection is currently made for each database querier. then discarded after a single query.
- * @return
- * @throws DatabaseAccessException
- */
-protected Connection createConnection() throws DatabaseAccessException {
-    log.debug("Creating Connection");
-      String userId = SimpleConfig.getSingleton().getString(USER_KEY);
-      String password = SimpleConfig.getSingleton().getString(PASSWORD_KEY);
-    Connection conn = null;
-    conn = createConnectionFromJNDI(userId,password);
-    if (conn == null) {
+  /**
+   *     * Looks for JNDI connection, if that fails look for JDBC connection
+   * <p>
+   * Behaviour.
+   * <ol>
+   * <li>Checks JNDI for a datasource under {@link #JNDI_DATASOURCE}. If present, use this to initialize the querier
+   * <li>Otherwise, checks for a database url in configuration under {@link #JDBC_URL}, and
+   * optional connection properties under {@link #CONNECTION_PROPERTIES}. If url is present, this is used to initialize the querier
+   * </ul>
+   *
+   * @todo this rigmarole is gone through every time a DatabaseQuerier is created. Factor out into a factory for efficiency.
+   * @todo introduce a jdbc connection pool - new connection is currently made for each database querier. then discarded after a single query.
+   * @return
+   * @throws DatabaseAccessException
+   */
+  protected Connection createConnection() throws DatabaseAccessException {
+     log.debug("Creating Connection");
+     String userId = SimpleConfig.getSingleton().getString(USER_KEY, null);
+     String password = SimpleConfig.getSingleton().getString(PASSWORD_KEY, null);
+     Connection conn = null;
+     conn = createConnectionFromJNDI(userId,password);
+     if (conn == null) {
         conn = createConnectionFromProperties(userId,password);
-    }
-    if (conn == null) {
-           throw new DatabaseAccessException("No information on how to connect to JDBC - no '"+JNDI_DATASOURCE+"' defined in JNDI or '"+JDBC_URL_KEY+"' key in configuration file");
-    }
-    return conn;
-}
+     }
+     if (conn == null) {
+        throw new DatabaseAccessException("No information on how to connect to JDBC - no '"+JNDI_DATASOURCE+"' defined in JNDI or '"+JDBC_URL_KEY+"' key in configuration file");
+     }
+     return conn;
+  }
   
     protected Connection createConnectionFromJNDI(String userId,String password) throws DatabaseAccessException  {
             log.debug("Looking for datasource in JNDI");

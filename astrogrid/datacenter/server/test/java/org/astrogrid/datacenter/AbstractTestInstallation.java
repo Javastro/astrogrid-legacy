@@ -1,4 +1,4 @@
-/*$Id: AbstractTestInstallation.java,v 1.10 2004/02/16 23:07:04 mch Exp $
+/*$Id: AbstractTestInstallation.java,v 1.11 2004/03/04 23:43:48 mch Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -185,7 +185,7 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
                
         QueryStatus stat = query.getStatus();
         assertNotNull("status is null",stat);
-        assertEquals("status code is not as expected",QueryStatus.UNKNOWN,stat);
+        assertEquals("status code is not as expected",QueryStatus.CONSTRUCTED,stat);
        // need to add this back in later - maybe a web listener that can't find its endpoint should just failsafe..
        // URL notifyURL = new URL("http://www.nobody.there.com");
        // query.registerWebListener(notifyURL);
@@ -287,6 +287,9 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
 
 /*
 $Log: AbstractTestInstallation.java,v $
+Revision 1.11  2004/03/04 23:43:48  mch
+Fixes for tests that broke with changes to config
+
 Revision 1.10  2004/02/16 23:07:04  mch
 Moved DummyQueriers to std server and switched to AttomConfig
 
