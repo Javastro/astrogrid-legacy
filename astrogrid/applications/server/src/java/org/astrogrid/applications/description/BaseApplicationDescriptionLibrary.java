@@ -1,4 +1,4 @@
-/*$Id: BaseApplicationDescriptionLibrary.java,v 1.5 2004/09/01 15:42:26 jdt Exp $
+/*$Id: BaseApplicationDescriptionLibrary.java,v 1.6 2004/09/07 08:06:39 pah Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,7 +34,8 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
      */
     private static final Log logger = LogFactory.getLog(BaseApplicationDescriptionLibrary.class);
     
-    /** configuration interface - defines the name of the community the applications will be added to. */
+    /** configuration interface - defines the name of the community the applications will be added to. 
+     * @TODO - this is really the authorityID not community. I think this needs a little more thought - the registry will have to be consulted on the name/authorityID in real deployments*/
 
     public interface Community {
         String getCommunity();
@@ -106,6 +107,9 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
 
 /* 
 $Log: BaseApplicationDescriptionLibrary.java,v $
+Revision 1.6  2004/09/07 08:06:39  pah
+todo added - need to remove confusion between community and authorityid
+
 Revision 1.5  2004/09/01 15:42:26  jdt
 Merged in Case 3
 
