@@ -527,7 +527,7 @@ public class JobFactoryImpl implements JobFactory {
 	
 	
 	private void createJobSteps( Job job ) throws JobException {
-		if( TRACE_ENABLED ) logger.debug( "createJobSteps(): exit") ;   
+		if( TRACE_ENABLED ) logger.debug( "createJobSteps(): entry") ;   
 					
 		try {
 			
@@ -539,8 +539,9 @@ public class JobFactoryImpl implements JobFactory {
 			   jobStep = null ;
 		   
 			while ( iterator.hasNext() ) {
+				jobStep = (JobStep)iterator.next() ;
 				jobStep.setStepNumber( ++count ) ;
-			    insertOneJobStep( (JobStep)iterator.next() ) ;			
+			    insertOneJobStep( jobStep ) ;			
 			} 
 
 		}
