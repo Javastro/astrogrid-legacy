@@ -1,5 +1,5 @@
 /*
- * $Id: MetadataGenerator.java,v 1.1 2004/07/01 23:07:14 mch Exp $
+ * $Id: MetadataGenerator.java,v 1.2 2004/08/12 15:00:13 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,6 +7,7 @@
 package org.astrogrid.datacenter.admin;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,6 +45,14 @@ public class MetadataGenerator
       catch (QuerierPluginException qpe) {
          throw new RuntimeException("Server Querier plugin mechanism not configured properly: "+qpe, qpe);
       }
+   }
+   
+   /**
+    * This can be run from the command line to generate the initial file
+    */
+   public static void main(String[] args) throws IOException {
+      MetadataGenerator.writeMetadata(new OutputStreamWriter(System.out));
+      
    }
    
 }
