@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<agp:menu-def
+    name="workflow-page-menu"
+    xmlns:agp="http://www.astrogrid.org/portal/it05">
+  <agp:menu
+      contents="File"
+      contents-hover="File"
+      icon=""
+      uri=""
+      target="_self"
+      status-text="File...">
+    <agp:item
+        contents="Open"
+        contents-hover="Open"
+        icon="Open.gif"
+        uri=""
+        target="_self"
+        status-text="Open a workflow"/>
+    <agp:item
+        contents="Save"
+        contents-hover="Save"
+        icon="images/Save.gif"
+        uri=""
+        target="_self"
+        status-text="Save a workflow"/>
+    <agp:item
+        contents="Save As"
+        contents-hover="Save As"
+        icon="Save.gif"
+        uri=""
+        target="_self"
+        status-text="Save a workflow as..."/>        
+  </agp:menu>
+  <agp:menu
+      contents="Edit"
+      contents-hover="Edit"
+      icon="Edit.gif"
+      uri=""
+      target="_self"
+      status-text="Edit workflow...">
+    <agp:item
+        contents="Insert step"
+        contents-hover="Insert step"
+        icon=""
+        uri=""
+        target="_self"
+        status-text="Insert step into workflow...."/>
+    <agp:item
+        contents="Insert flow"
+        contents-hover="Insert flow"
+        icon=""
+        uri=""
+        target="_self"
+        status-text="Insert flow into workflow...."/>
+    <agp:item
+        contents="Insert sequence"
+        contents-hover="Insert sequence"
+        icon=""
+        uri=""
+        target="_self"
+        status-text="Insert sequence into workflow...."/>        
+  </agp:menu>
+</agp:menu-def>
