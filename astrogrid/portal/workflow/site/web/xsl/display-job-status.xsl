@@ -109,7 +109,7 @@
                         </xsl:element>                       
                         <td colspan="30" valign="middle" style="color: blue;">
                             <font size="-1">
-                                Name: <b><xsl:value-of select="@step-name"/> </b>Staus: <b><xsl:value-of select="@step-status"/> </b>
+                                Name: <b><xsl:value-of select="@step-name"/></b>, Status: <b><xsl:value-of select="@step-status"/> </b>
                                 <xsl:element name="a">
                                     <xsl:attribute name="style">padding-left: 10;</xsl:attribute>
                                     <xsl:attribute name="href">javascript:void(0);</xsl:attribute>
