@@ -154,7 +154,7 @@
                 <arg value="j2" />
         </java>
         <!-- experiment -pah
-        
+
         <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
                 <classpath>
                         <pathelement location="${basedir}/build" />
@@ -170,7 +170,7 @@
                 <arg value="-types" />
                 <arg value="j2" />
         </java>
-        
+
         <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
                 <classpath>
                         <pathelement location="${basedir}/build" />
@@ -187,10 +187,10 @@
                 <arg value="j2" />
         </java>
         -->
-        
-        
+
+
   </goal>
-  
+
   <goal name="generate-mapping" prereqs="java:compile">
               <java fork="yes" classname="GenerateMapping" classpathref="maven.dependency.classpath">
                 <classpath>
@@ -200,7 +200,7 @@
                 </classpath>
                 <arg file="${basedir}/sampleDocuments/mapping.xml"/>
                 </java>
-      
+
   </goal>
 
 <!-- wsdl2java tooling -->
@@ -212,7 +212,7 @@
            <include name="org/astrogrid/applications/service/v1/**/*.java" />
            <include name="org/astrogrid/applications/beans/v1/axis/**/*.java" />
            <include name="org/astrogrid/workflow/beans/v1/axis/**/*.java" />
-           
+
         </patternset>
 
         <goal name="run-wsdl2java" description="generate classes from wsdl"
@@ -252,7 +252,7 @@
        <move file="${generated.src}/org/astrogrid/jes/delegate/v1/jobmonitor/deploy.wsdd"
                 tofile="${generated.src}/org/astrogrid/jes/delegate/v1/jobmonitor/JobMonitor-deploy.wsdd" />
    </goal>
-   
+
   <goal name="cec-wsdl" prereqs="axis-declare-tasks">
           <axis-wsdl2java output="${generated.src}"             verbose="true"
             serverside="true"
@@ -262,22 +262,23 @@
         url="${basedir}/wsdl/CommonExecutionConnnector.wsdl"
         namespacemappingfile="${basedir}/build/axis-namespace-mappings.properties"
         />
-  
+
          <move file="${generated.src}/org/astrogrid/applications/service/v1/cea/deploy.wsdd"
                 tofile="${generated.src}/org/astrogrid/applications/service/v1/cea/CommonExecutionConnector-deploy.wsdd" />
-                
+
    </goal>
 
    <goal name="wsdd-postprocess" description="apply xslt to fix generation bugs">
            <!--declare the transformer factory to use -->
         ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
-
         <xslt basedir="${generated.src}"
               includes="**/*-deploy.wsdd" style="${basedir}/build/clean-wsdd.xsl"
               destdir="${basedir}/wsdd" extension=".wsdd">
                 <outputproperty name="encoding" value="iso8859_1"/>
                 <outputproperty name="indent" value="yes"/>
-              
+                <!-- makes combining wsdd files easier if they've got no header declaration -->
+                <outputproperty name="omit-xml-declaration" value="yes" />
+
         </xslt>
         <copy todir="${basedir}/wsdd">
                 <fileset dir="${basedir}/wsdd">
@@ -322,7 +323,7 @@
               <param name="searchIncludedSchemas" expression="true" />
               <param name="searchImportedSchemas" expression="true" />
               <param name="linksFile" expression="${basedir}/build/links.xml" />
-             
+
         </xslt>
 
         <copy file="${basedir}/build/xs3p.xsl" todir="${basedir}/schema/externalSchema" />
@@ -332,9 +333,9 @@
               <param name="searchIncludedSchemas" expression="true" />
               <param name="searchImportedSchemas" expression="true" />
               <param name="linksFile" expression="${basedir}/build/linkse.xml" />
-             
+
         </xslt>
-     
+
       <!-- cleanup -->
       <delete>
           <fileset  dir="${basedir}/schema/">
