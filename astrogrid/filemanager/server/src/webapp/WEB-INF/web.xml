@@ -79,9 +79,77 @@
   </mime-mapping>
 
   <welcome-file-list id="WelcomeFileList">
-    <welcome-file>index.html</welcome-file>
     <welcome-file>index.jsp</welcome-file>
+    <welcome-file>index.html</welcome-file>
     <welcome-file>index.jws</welcome-file>
   </welcome-file-list>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name></web-resource-name>
+      <url-pattern>/admin/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>manager</role-name>
+    </auth-constraint>
+  </security-constraint>
+   
+  <login-config>
+    <auth-method>BASIC</auth-method>
+    <realm-name>AstroGrid</realm-name>
+  </login-config>
+
+  <security-role>
+    <role-name>manager</role-name>
+  </security-role>
+
+    <env-entry>
+        <description>The file manager service identifier</description>
+        <env-entry-name>org.astrogrid.filemanager.service.ivorn</env-entry-name>
+        <env-entry-value>ivo://authority/resource</env-entry-value>
+        <env-entry-type>java.lang.String</env-entry-type>
+    </env-entry>
+
+    <env-entry>
+        <description>The default filestore service identifier</description>
+        <env-entry-name>org.astrogrid.filemanager.filestore.ivorn</env-entry-name>
+        <env-entry-value>ivo://authority/resource</env-entry-value>
+        <env-entry-type>java.lang.String</env-entry-type>
+    </env-entry>
+
+    <env-entry>
+        <description>The Base directory of the file manager</description>
+        <env-entry-name>org.astrogrid.filemanager.basedir</env-entry-name>
+        <env-entry-value>.</env-entry-value>
+        <env-entry-type>java.lang.String</env-entry-type>
+    </env-entry>
+
+    <env-entry>
+        <description>The given name of the file manager.</description>
+        <env-entry-name>org.astrogrid.filemanager.service.name</env-entry-name>
+        <env-entry-value>org.astrogrid.filemanager</env-entry-value>
+        <env-entry-type>java.lang.String</env-entry-type>
+    </env-entry>
+
+    <env-entry>
+        <description>Version of Registry the File manager understands, do not change</description>
+        <env-entry-name>org.astrogrid.registry.result.version</env-entry-name>
+        <env-entry-value>0.9</env-entry-value>
+        <env-entry-type>java.lang.String</env-entry-type>
+    </env-entry>
+
+   <env-entry>
+      <description>Publishing Metadata to Registry endpoint, Point to the Registry that has or will contain your authorityid.</description>
+      <env-entry-name>org.astrogrid.registry.admin.endpoint</env-entry-name>
+      <env-entry-value>http://localhost:8080/astrogrid-registry/services/RegistryUpdate</env-entry-value>
+      <env-entry-type>java.lang.String</env-entry-type>
+   </env-entry>
+
+   <env-entry>
+      <description>Query Registry endpoint; set as same of the publishing registry.</description>
+      <env-entry-name>org.astrogrid.registry.query.endpoint</env-entry-name>
+      <env-entry-value>http://localhost:8080/astrogrid-registry/services/RegistryQuery</env-entry-value>
+      <env-entry-type>java.lang.String</env-entry-type>
+   </env-entry>
 
 </web-app>
