@@ -35,9 +35,13 @@
 	 	goals="webapp-site,war:install-snapshot"
 		ignoreFailures="true" />
 </goal>
-<goal name="astrogrid-site-deploy">
-	<echo message="Master Project: astrogrid-site-deploy"/>
+<goal name="astrogrid-build-site">
+	<echo message="Master Project: astrogrid-build-site"/>
 	<attainGoal name="multiproject:site" />
+</goal>
+<goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
+	<echo message="Master Project: astrogrid-deploy-site"/>
+	<attainGoal name="site:fsdeploy" />
 </goal>
 <goal name="astrogrid-clean">
 	<echo message="Master Project: astrogrid-clean"/>
