@@ -12,6 +12,7 @@ import de.gmd.ipsi.domutil.*;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.io.File;
 
 
 public class Registry3_0 {
@@ -22,6 +23,12 @@ public class Registry3_0 {
 	String queryResponse = "";
 		
 	public String xmlQuery(String query) {
+
+		String registryPathName = (System.getProperty("user.dir"));
+		File f = new File(registryPathName);
+		registryPathName = f.getAbsolutePath();
+		String parametersFileName = registryPathName + "/../webapps/org/astrogrid/registry/parameters_v1_0.xml";
+		File parametersFile = new File(parametersFileName);
 
 		Document parameterDoc = null;
 		DocumentBuilderFactory parameterFactory = DocumentBuilderFactory.newInstance();
@@ -34,8 +41,7 @@ public class Registry3_0 {
 		
 		try {
 		  parameterBuilder = parameterFactory.newDocumentBuilder();
-		  parameterDoc = parameterBuilder.parse("http://msslxy.mssl.ucl.ac.uk:8080/org/astrogrid/registry/parameters_v1_0.xml");
-		  //parameterDoc = parameterBuilder.parse("http://localhost:8080/org/astrogrid/registry/parameters_v1_0.xml");
+		  parameterDoc = parameterBuilder.parse(parametersFile);
 		}
 		catch (ParserConfigurationException e) {
 		  response = "<error>REGISTRY - " + e.toString() + "</error>";
