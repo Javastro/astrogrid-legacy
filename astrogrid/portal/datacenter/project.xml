@@ -14,6 +14,21 @@
       <artifactId>astrogrid-common</artifactId>
       <version>${pom.currentVersion}</version>
     </dependency>
+    
+        <!--+
+            | The Registry common components.
+            +-->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-registry-common</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>    
+    
 
     <!-- Portal Common  -->
     <dependency>
@@ -41,6 +56,17 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>    
+    
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-registry-client-lite</artifactId>
+      <version>${pom.currentVersion}</version>
+      <type>jar</type>
+      <url>http://www.astrogrid.org/</url>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
      
     <!-- JAX dependencies -->
     <dependency>

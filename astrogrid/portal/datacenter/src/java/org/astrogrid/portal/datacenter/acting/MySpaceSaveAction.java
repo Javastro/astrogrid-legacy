@@ -36,10 +36,10 @@ public class MySpaceSaveAction extends AbstractAction {
      *  
      */
     private static final boolean DEBUG_TO_SYSTEM_OUT = true;
+     
+    public static final String SESSIONKEY_ADQL_AS_STRING = "adqlQuery" ;
     
-    public static final String SESSIONKEY_ADQL_AS_STRING = "adql-query" ;
-    
-    public static final String SESSIONKEY_RESOURCE_ID = "query-builder-resource-id" ;
+    public static final String SESSIONKEY_RESOURCE_ID = "uniqueID" ;
     
     public static final String SESSIONKEY_ADQL_ERROR = "query-builder-adql-error" ;
      
@@ -74,7 +74,7 @@ public class MySpaceSaveAction extends AbstractAction {
     try {
         
       // For initial testing purposes only...
-      // session.setAttribute( SESSIONKEY_RESOURCE_ID, "org.astrogrid.localhost/noaa_trace/tablexyz" ) ;
+      // session.setAttribute( SESSIONKEY_RESOURCE_ID, "org.astrogrid.localhost/noaa_trace/sgas_event" ) ;
         
       // Set the current user.
       User user = UserHelper.getCurrentUser(params, request, session);

@@ -19,8 +19,13 @@ import org.astrogrid.store.Agsl;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.community.User;
-
+import org.w3c.dom.Document;
 import org.apache.avalon.framework.logger.ConsoleLogger;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
+import org.astrogrid.registry.client.query.RegistryService;
+import org.astrogrid.registry.NoResourcesFoundException;
+import org.astrogrid.registry.RegistryException;
+import org.apache.axis.utils.XMLUtils;
 
 /**
  * This class provides the DataCenter UI with the facility to
@@ -36,11 +41,17 @@ public class MySpaceLoadAction extends AbstractAction {
      */
     private static final boolean DEBUG_TO_SYSTEM_OUT = true;
     
-    public static final String SESSIONKEY_ADQL_AS_STRING = "adql-query" ;
+    public static final String SESSIONKEY_ADQL_AS_STRING = "adqlQuery" ;
     
-    public static final String SESSIONKEY_RESOURCE_ID = "query-builder-resource-id" ;
+    public static final String SESSIONKEY_RESOURCE_ID = "uniqueID" ;
     
     public static final String SESSIONKEY_ADQL_ERROR = "query-builder-adql-error" ;
+    
+    public static final String SESSIONKEY_TABLENAME = "tableID" ; 
+    
+    public static final String SESSIONKEY_RESULT_SINGLE_CATALOG = "resultSingleCatalog" ;
+    
+    public static final String SEPARATOR = "/";   
     
     
   /**
@@ -63,7 +74,7 @@ public class MySpaceLoadAction extends AbstractAction {
    * @see org.apache.cocoon.acting.Action#act(org.apache.cocoon.environment.Redirector, org.apache.cocoon.environment.SourceResolver, java.util.Map, java.lang.String, org.apache.avalon.framework.parameters.Parameters)
    */
   public Map act(Redirector redirector, SourceResolver resolver, Map objectModel, String source, Parameters params) {
-      Logger logger = this.retrieveLogger();
+    Logger logger = this.retrieveLogger();
     
     Map sitemapParams = new HashMap();
     ActionUtils utils = ActionUtilsFactory.getActionUtils();
@@ -116,6 +127,7 @@ public class MySpaceLoadAction extends AbstractAction {
       } 
       else {          
          session.setAttribute( SESSIONKEY_RESOURCE_ID, resourceId ) ;
+         this.retrieveMetadata( resourceId, logger, request, session) ;
       }
       session.removeAttribute( SESSIONKEY_ADQL_ERROR ) ;
       logger.debug( "[act] adql source set to: " + adqlSource ) ;
@@ -129,6 +141,9 @@ public class MySpaceLoadAction extends AbstractAction {
 
 //      sitemapParams.put("adql-document", adqlSource);
 //      sitemapParams.put("adql-document-loaded", "true");
+
+      logger.debug( "[act]" + SESSIONKEY_ADQL_AS_STRING + ": " + session.getAttribute( SESSIONKEY_ADQL_AS_STRING ) );
+      
     }
     catch(Throwable t) {
       request.setAttribute("adql-document-loaded", "false");
@@ -167,6 +182,55 @@ public class MySpaceLoadAction extends AbstractAction {
           logger = super.getLogger();
       }
       return logger ;
-  }  
+  } 
+  
+  
+  private void retrieveMetadata ( String resourceId, Logger logger, Request request, Session session ) {
+      
+      try { 
+        String table = "";         
+        String tableQuery = null;
+        String authorityID = resourceId.substring(0,resourceId.indexOf(SEPARATOR)) ;
+        String resourceKey = resourceId.substring(resourceId.indexOf(SEPARATOR)+1,resourceId.lastIndexOf(SEPARATOR)) ;
+        table = resourceId.substring( resourceId.lastIndexOf(SEPARATOR)+1 ).trim() ;
+ 
+        tableQuery = "<query>\n<selectionSequence>"
+                   + "\n<selection item='searchElements' itemOp='EQ' value='Resource'/>"
+                   + "\n<selectionOp op='$and$'/>"
+                   + "<selection item='vr:Identifier/vr:AuthorityID' itemOp='EQ' value='"+authorityID+"'/>"
+                   + "\n<selectionOp op='AND'/>"
+                   + "\n<selection item='vr:Identifier/vr:ResourceKey' itemOp='EQ' value='"+resourceKey+"'/>"   
+                   + "\n<selectionOp op='AND'/>"        
+                   + "<selection item='vr:Type' itemOp='EQ' value='Catalog'/>"
+                   + "\n</selectionSequence></query>";  
+                                              
+        logger.debug( "tableQuery = " + tableQuery);                              
+        RegistryService rs = RegistryDelegateFactory.createQuery();
+        Document doc = rs.submitQuery( tableQuery );       
+        logger.debug( "document: " + XMLUtils.DocumentToString( doc ) ) ;
+             
+//        request.setAttribute("tableName", table);
+//        request.setAttribute("tableName", "testTable");
+//        request.setAttribute("resultSingleCatalog", doc);
+        session.setAttribute( SESSIONKEY_TABLENAME, table );
+        session.setAttribute( SESSIONKEY_RESULT_SINGLE_CATALOG, doc );
+        
+      } 
+      catch( NoResourcesFoundException nrfe ) 
+      {
+          logger.error( "Your query produced no results." );
+      } 
+      catch( RegistryException re ) 
+      {
+         logger.error( "A error occurred in processing your query with the Registry." );
+         re.printStackTrace() ;
+      } 
+      catch( Exception e ) 
+      {
+         logger.debug( "Exception occurred. " );
+         e.printStackTrace() ;
+      }
+            
+  }
   
 }

@@ -10,8 +10,8 @@
       xmlns:xsp="http://apache.org/xsp"
 	  xmlns:util="http://apache.org/xsp/util/2.0"
       xmlns:jpath="http://apache.org/xsp/jpath/1.0"
-      xmlns:xsp-session="http://apache.org/xsp/session/2.0"
-	  xmlns:xsp-request="http://apache.org/xsp/request/2.0">
+	  xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+	  xmlns:xsp-session="http://apache.org/xsp/session/2.0">
   
   <AstroGrid>
 <!--
@@ -62,26 +62,27 @@ variable, which could be used by invoking some xpath way
   <xsp:logic>
      String quString, myURL, nada;
      nada = new String("null");
-     quString = (String) <xsp-session:get-attribute name="adql-query"/>;
+     quString = (String) <xsp-session:get-attribute name="adqlQuery"/>;
      if( quString == null ) {
 <OneTableID>NoSource</OneTableID>
 <QUERYAREA>
-<textarea name="adql-query" class="areaInput" id="ag_data-query" cols="50" rows="8">
+<textarea name="adqlQuery" class="areaInput" id="ag_data-query" cols="50" rows="8">
 </textarea>
 </QUERYAREA>
      }
      else {
 <OneTableID>NoSource</OneTableID>
 <QUERYAREA>
-<textarea name="adql-query" class="areaInput" id="ag_data-query" cols="50" rows="8"><xsp:expr>quString</xsp:expr></textarea>
+<textarea name="adqlQuery" class="areaInput" id="ag_data-query" cols="50" rows="8"><xsp:expr>quString</xsp:expr></textarea>
 </QUERYAREA>
      }
+     
 <!--     
      quString = (String) <xsp-request:get-parameter name="tableID"/>;
      if(quString.equals(nada)){
 <OneTableID>NoSource</OneTableID>
 <QUERYAREA>
-<textarea name="adql-query" class="areaInput" id="ag_data-query" cols="50" rows="8">
+<textarea name="adqlQuery" class="areaInput" id="ag_data-query" cols="50" rows="8">
 </textarea>
 </QUERYAREA>
      } else {
@@ -91,7 +92,7 @@ variable, which could be used by invoking some xpath way
            <util:href><xsp:expr>myURL</xsp:expr></util:href>
         </util:include-uri>
 <QUERYAREA>
-<textarea name="adql-query" class="areaInput" id="ag_data-query" cols="50" rows="8">FROM <xsp:expr>quString</xsp:expr> </textarea>
+<textarea name="adqlQuery" class="areaInput" id="ag_data-query" cols="50" rows="8">FROM <xsp:expr>quString</xsp:expr> </textarea>
 </QUERYAREA>
      }
 -->
