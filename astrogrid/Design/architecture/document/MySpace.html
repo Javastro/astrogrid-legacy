@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><meta content="text/html; charset=UTF-8" http-equiv="content-type"><title>MySpace</title></head><body style="direction: ltr;">
+<h1>MySpace and virtual storage</h1>
+<p>MySpace is a virtual file-system. It gives uses the illusion of a
+directory-tree of files in one system; in reality, the files may be
+distributed across many servers. The distributed system makes the
+storage available throughout AstroGrid; the virtual directory tree
+makes this distribution manageable for the users.<br>
+</p>
+<p> Storage services in MySpace are of two kinds: MySpace managers
+support the directory tree and Filestores provide the data storage.
+Physical files are found on Filestores (and any given physical file is
+entirely on one Filestore); virtual files are found on MySpace
+managers. The storage on Filestores is flat; they act as one per
+service and that directory may hold files for many different users. The
+virtual storage on MySpace managers is tree-like, and each user has his
+or own branch of the tree. <br>
+</p>
+<p>MySpace is arranged to provide each user with a homespace: a virtual
+home directory. Additional storage for bulk data may, in principle, be
+leased for a fixed period and added to a user's MySpace: this is the
+equivalent of scratch discs in a physical file system. In the current
+system, all storage is included in the homespace and no leasing occurs.</p>
+<p>Client software gets at the data via the MySpace manager services.
+These services allow the contents of files to be read or written with
+the data travelling as parts of SOAP messages. In this mode, an entire
+file is read or written in each message; no streaming is possible. This
+is the mode of file access used in the <a href="generated/use-cases/workflow-use-cases.html">workflow use-cases</a>. The manager acts as a facade to the Filestore and delagates data-access operations.</p>
+<p>It is also possible to ask the MySpace manager to provide a URL by
+which the file may be streamed to the client. In this case, the URL is
+provided by a SOAP operation on the manager (which it delegates to the
+filestore). but the client talks directly to the Filestore
+web-application when downloading the data. The <a href="generated/use-cases/MySpace-use-cases.html">MySpace use cases</a> show this in more detail. There is no matching upload operation that links the client directly to the Filestore.</p>
+<p>Currently, MySpace is using IVORN syntax for virtual file names, and
+using it in a subtle way. An IVORN is a URI with the scheme <span style="font-style: italic;">ivo</span>
+and it consists in an authority ID and a resource key. Together, the
+authoeiry ID and resource key identify an entry in an IVOA resource
+registry. The resource key may have several levels separated by forward
+slashes; it tends to look like a file path and there is an implication
+of hierarchy. For example:</p>
+<pre>ivo://org.astrogrid.cam/INT-WFS/SIAP<br></pre>
+<p>is an IVORN for the resource INT-WFS/SIAP with authority
+org.astrogrid.cam (which might be the SIAP service in the INT-WFS
+service-cluster under the Cambridge authority).<br>
+</p>
+<p>In a MySpace name, the front part is the IVORN for the manager
+maintaining the directory tree in which the virtual file lives.
+Following this is a file path. E.g.</p>
+<pre>ivo://org.astrogrid.cam/MySpace/gtr/2004/qqq.dat<br></pre>
+<p>is virtual file <span style="font-style: italic;">/gtr/2004/qqq.dat</span>
+on the manager service ivo://org.astrogrid.cam/MySpace. To distinguish
+the file path from the IVORN for the service takes special logic that
+is built into the resolver classes of the AstroGrid code.</p>
+<p>The virtual files in MySpace form VOSpace which consists entirely of
+entries on services registered in the IVO registry; hence the trick
+with the IVORNs can work. Data sources and sinks in AstroGrid are not
+all within VOSpace; unregistered file-servers such as web-sites and
+local disc are also accessible. VOSpace locations can be described by
+IVORNs; non-VOSpace locations are not virtual and must be described
+with URLs. AstroGrid's distributed file system deals with "store space"
+which is the union of VOSpace and the space covered by URLs. A location
+in store space is described by an AstroGrid Store Locator (AGSL). An
+AGSL includes either a URL or an IVORN for a VOSpace location which has
+been annotated with the endpoint address of the Manager service
+carrying that virtual file. E.g.</p>
+<pre>astrogrid:store:http://archive.ast.cam.ac.uk/INT-WFS/image/r123456.fits<br></pre>
+<p>or</p>
+<pre>astrogrid:store:myspace:[ivo://org.astrogrid.cam/MySpace]http://ag01.ast.cam.ac.uk#/gtr/2004/qqq.dat<br></pre>
+<p>Software that processes AGSL is required to deal with both forms. In
+each case, there is enough information to obtain the data of the file
+without further resolution of the name by an external service. <br>
+</p>
+<p>AGSLs are concrete but short-lived. They should not be archived
+because they can be invalidated by changes in the underlying storage.
+IVORNs, be comparison, are abstract but are safer to archive.</p>
+<p>Martin Hill has written <a href="http://www.astrogrid.org/maven/docs/SNAPSHOT/mySpace/multiproject/astrogrid-store-client/apidocs/index.html">more about store space and AGSLs</a>.</p>
+<p>AGSLs have a complicated and subtle syntax. They are not something
+that users should be expected to predict. A good UI for AstroGrid
+should allow users to work only with the file-path part of their file
+names and should add the AGSL prefix when appropriate. Unfortunately,
+in the current system, users <span style="font-style: italic;">do</span> have to type in AGSLs. This is probably the single greatest useability problem in the current software.<br>
+</p>
+<p><br>
+</p>
+<pre><br></pre>
+<p><br>
+</p>
+<p><br>
+</p>
+</body></html>
