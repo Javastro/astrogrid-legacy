@@ -1,4 +1,4 @@
-/*$Id: PostgresSqlMaker.java,v 1.1 2004/04/01 17:17:57 mch Exp $
+/*$Id: PostgresSqlMaker.java,v 1.2 2004/08/05 12:49:50 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,33 +30,7 @@ public class PostgresSqlMaker extends StdSqlMaker {
 
    private static final Log log = LogFactory.getLog(PostgresSqlMaker.class);
 
-   public String getRaDecSql(ConeQuery query) {
-
-      String table = SimpleConfig.getSingleton().getString(CONE_SEARCH_TABLE_KEY);
-      String alias = table.substring(0,1);
-      
-      //get which columns given RA & DEC for cone searches
-      String raCol  = alias+"."+SimpleConfig.getSingleton().getString(CONE_SEARCH_RA_COL_KEY);
-      String decCol = alias+"."+SimpleConfig.getSingleton().getString(CONE_SEARCH_DEC_COL_KEY);
-      
-      double ra  = query.getRa();
-      double dec = query.getDec();
-      double radius = query.getRadius();
-      
-      return "SELECT * FROM "+table+" as "+alias+
-         " WHERE "+
-         //square - for quicker searches
-         "("+decCol+"<"+(dec+radius)+" AND "+decCol+">"+(dec-radius)+" AND"+
-         " "+ raCol+"<"+(ra +radius)+" AND "+ raCol+">"+(ra -radius)+")"+
-         " AND "+
-         //circle
-         "( DEGREES(2 * ASIN( SQRT("+
-              "POW(SIN(RADIANS(("+dec+"-"+decCol+")/2)), 2) "+
-              "+ COS(RADIANS("+dec+")) * COS(RADIANS("+decCol+")) "+
-                "* POW(SIN(RADIANS(("+ra+"-"+raCol+")/2),2))"+
-         "))) < "+radius+")";
-   }
-   
+    
    /**
     * Constructs an SQL statement for the given ADQL.
     */
@@ -75,6 +49,9 @@ public class PostgresSqlMaker extends StdSqlMaker {
 
 /*
 $Log: PostgresSqlMaker.java,v $
+Revision 1.2  2004/08/05 12:49:50  mch
+Removed obsolete circle condition generator
+
 Revision 1.1  2004/04/01 17:17:57  mch
 Added postgres-specific SQL translator
 
