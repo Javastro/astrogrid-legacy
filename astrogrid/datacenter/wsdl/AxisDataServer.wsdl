@@ -54,6 +54,12 @@
 
    </wsdl:message>
 
+   <wsdl:message name="makeQueryRequest">
+
+      <wsdl:part name="soapBody" type="apachesoap:Element"/>
+
+   </wsdl:message>
+
    <wsdl:message name="QueryException">
 
       <wsdl:part name="fault" type="tns3:QueryException"/>
@@ -69,6 +75,14 @@
    <wsdl:message name="getVoRegistryMetadataResponse">
 
       <wsdl:part name="getVoRegistryMetadataReturn" type="apachesoap:Element"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="registerWebListenerRequest">
+
+      <wsdl:part name="queryId" type="xsd:string"/>
+
+      <wsdl:part name="listener" type="xsd:anyType"/>
 
    </wsdl:message>
 
@@ -94,9 +108,19 @@
 
    </wsdl:message>
 
+   <wsdl:message name="registerWebListenerResponse">
+
+   </wsdl:message>
+
    <wsdl:message name="getMetadataRequest1">
 
       <wsdl:part name="xpathExpression" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStatusRequest">
+
+      <wsdl:part name="id" type="xsd:string"/>
 
    </wsdl:message>
 
@@ -116,6 +140,18 @@
 
    </wsdl:message>
 
+   <wsdl:message name="makeQueryResponse">
+
+      <wsdl:part name="makeQueryReturn" type="apachesoap:Element"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStatusResponse">
+
+      <wsdl:part name="getStatusReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
    <wsdl:message name="abortQueryResponse">
 
    </wsdl:message>
@@ -127,6 +163,14 @@
    </wsdl:message>
 
    <wsdl:portType name="AxisDataServer">
+
+      <wsdl:operation name="getStatus" parameterOrder="id">
+
+         <wsdl:input message="impl:getStatusRequest" name="getStatusRequest"/>
+
+         <wsdl:output message="impl:getStatusResponse" name="getStatusResponse"/>
+
+      </wsdl:operation>
 
       <wsdl:operation name="getMetadata">
 
@@ -164,17 +208,25 @@
 
       </wsdl:operation>
 
-      <wsdl:operation name="startQuery" parameterOrder="soapBody">
+      <wsdl:operation name="makeQuery" parameterOrder="soapBody">
 
-         <wsdl:input message="impl:startQueryRequest" name="startQueryRequest"/>
+         <wsdl:input message="impl:makeQueryRequest" name="makeQueryRequest"/>
 
-         <wsdl:output message="impl:startQueryResponse" name="startQueryResponse"/>
+         <wsdl:output message="impl:makeQueryResponse" name="makeQueryResponse"/>
 
          <wsdl:fault message="impl:QueryException" name="QueryException"/>
 
          <wsdl:fault message="impl:SAXException" name="SAXException"/>
 
          <wsdl:fault message="impl:DatabaseAccessException" name="DatabaseAccessException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="startQuery" parameterOrder="soapBody">
+
+         <wsdl:input message="impl:startQueryRequest" name="startQueryRequest"/>
+
+         <wsdl:output message="impl:startQueryResponse" name="startQueryResponse"/>
 
       </wsdl:operation>
 
@@ -196,11 +248,37 @@
 
       </wsdl:operation>
 
+      <wsdl:operation name="registerWebListener" parameterOrder="queryId listener">
+
+         <wsdl:input message="impl:registerWebListenerRequest" name="registerWebListenerRequest"/>
+
+         <wsdl:output message="impl:registerWebListenerResponse" name="registerWebListenerResponse"/>
+
+      </wsdl:operation>
+
    </wsdl:portType>
 
    <wsdl:binding name="AxisDataServerSoapBinding" type="impl:AxisDataServer">
 
       <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="getStatus">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getStatusRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getStatusResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
 
       <wsdl:operation name="getMetadata">
 
@@ -286,17 +364,17 @@
 
       </wsdl:operation>
 
-      <wsdl:operation name="startQuery">
+      <wsdl:operation name="makeQuery">
 
          <wsdlsoap:operation soapAction=""/>
 
-         <wsdl:input name="startQueryRequest">
+         <wsdl:input name="makeQueryRequest">
 
             <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
 
          </wsdl:input>
 
-         <wsdl:output name="startQueryResponse">
+         <wsdl:output name="makeQueryResponse">
 
             <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
 
@@ -319,6 +397,24 @@
             <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
 
          </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="startQuery">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="startQueryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="startQueryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:output>
 
       </wsdl:operation>
 
@@ -357,6 +453,24 @@
          </wsdl:input>
 
          <wsdl:output name="abortQueryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="registerWebListener">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="registerWebListenerRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="registerWebListenerResponse">
 
             <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
 

@@ -14,12 +14,16 @@
    <service name="AxisDataServer" provider="java:RPC">
       <parameter name="className" value="org.astrogrid.datacenter.service.AxisDataServer"/>
       <parameter name="allowedMethods"
-       value="abortQuery
-		, doQuery
+       value="
+		doQuery
 		, getMetadata
-		, getResultsAndClose
 		, getVoRegistryMetadata
+		, makeQuery
 		, startQuery
+		, getResultsAndClose
+		, abortQuery
+		, getStatus
+		, registerWebListener
 		"/>
    </service>
 </deployment>
