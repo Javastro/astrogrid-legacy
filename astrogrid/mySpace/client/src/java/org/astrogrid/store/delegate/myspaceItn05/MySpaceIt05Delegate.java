@@ -656,6 +656,12 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
       //this seems to return a localhost
       URL url = new URL(entry.getEntryUri());
       
+      // >>> HACK ALERT!
+      // >>> @author peter.shillan
+      // This "hack" gets around the problem of being returned localhost URLs.
+      // The preferred way is to configure MySpace with the full server name.
+      // The problem only arises if the servers are co-located and the solution works
+      // in these circumstances.
       String host = url.getHost();
 
       // If localhost is returned, try to work out the real host name.
@@ -673,6 +679,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
           // Default url will be used.
         }
       }
+      // <<< HACK ALERT!
       
       return url;
    }
@@ -1358,6 +1365,9 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 
 /*
 $Log: MySpaceIt05Delegate.java,v $
+Revision 1.5  2004/06/29 14:20:01  gps
+- making clear note of the "localhost hack"
+
 Revision 1.4  2004/06/24 11:45:53  gps
 - removed extraneous code from getUrl()
 
