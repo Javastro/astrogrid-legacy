@@ -156,7 +156,11 @@ ADQL
 <!-- stand - alone goals - not addons to main build -->
   <goal name="test-installation" description="test the datacenter webservice installation" prereqs="datacenter-test-client-jar">
 	<!-- created jar file, now run it -->
-	<java fork="true" jar="packaging/pal/bin/test-server.jar"/>
+	<java fork="true" jar="packaging/pal/bin/test-server.jar">
+	<!-- for testing remote installation
+		<sysproperty key="datacenter.test.installation.base.url" value="http://aife.jb.man.ac.uk:8080/axis/services/AxisDataServer" />
+		-->
+	</java>
   </goal>
 
 <goal name="datacenter-server-publish" description="compile and deploy to webserver, restart webapp, redeploy webservice."
