@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.11 2003/09/11 13:28:24 nw Exp $
+/*$Id: AllTests.java,v 1.12 2003/09/19 12:02:37 nw Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,7 @@ public class AllTests {
         TestSuite suite = new TestSuite("Test for org.astrogrid.datacenter");
         //$JUnit-BEGIN$
         //suite.addTest(QueryTestSuite.suite());
-        //$JUnit-END$
+        //$JUnit-END$ 
         // and add other suites too.
         suite.addTest(org.astrogrid.datacenter.config.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.query.QueryParsingTest.suite());
@@ -42,6 +42,7 @@ public class AllTests {
         suite.addTest(org.astrogrid.datacenter.adql.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.queriers.sql.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.common.AllTests.suite());
+        suite.addTest(org.astrogrid.datacenter.DatacenterTest.suite());
         return suite;
     }
 }
@@ -49,6 +50,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.12  2003/09/19 12:02:37  nw
+Added top level test - runs integration tests against an inprocess db and inprocess axis.
+
 Revision 1.11  2003/09/11 13:28:24  nw
 added xml creation tests
 
