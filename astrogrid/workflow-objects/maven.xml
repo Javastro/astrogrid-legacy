@@ -145,10 +145,14 @@
            <include name="org/astrogrid/community/beans/v1/axis/**/*.java" />
            <include name="org/astrogrid/jes/delegate/v1/**/*.java" />
            <include name="org/astrogrid/jes/types/v1/**/*.java" />
+           <include name="org/astrogrid/applications/service/v1/**/*.java" />
+           <include name="org/astrogrid/applications/beans/v1/axis/**/*.java" />
+           <include name="org/astrogrid/workflow/beans/v1/axis/**/*.java" />
+           
         </patternset>
 
         <goal name="run-wsdl2java" description="generate classes from wsdl"
-                prereqs="axis-declare-tasks,wsdl-cleanout,controller-wsdl,monitor-wsdl,wsdd-postprocess,source-postprocess" />
+                prereqs="axis-declare-tasks,wsdl-cleanout,controller-wsdl,monitor-wsdl,cec-wsdl,wsdd-postprocess,source-postprocess" />
 
         <goal name="wsdl-cleanout">
                 <delete>
@@ -183,6 +187,21 @@
         />
        <move file="${generated.src}/org/astrogrid/jes/delegate/v1/jobmonitor/deploy.wsdd"
                 tofile="${generated.src}/org/astrogrid/jes/delegate/v1/jobmonitor/JobMonitor-deploy.wsdd" />
+   </goal>
+   
+  <goal name="cec-wsdl" prereqs="axis-declare-tasks">
+          <axis-wsdl2java output="${generated.src}"             verbose="true"
+            serverside="true"
+            skeletondeploy="false"
+            deployscope="Application"
+            testcase="false"
+        url="${basedir}/wsdl/CommonExecutionConnnector.wsdl"
+        namespacemappingfile="${basedir}/build/axis-namespace-mappings.properties"
+        />
+<!--  
+         <move file="${generated.src}/org/astrogrid/jes/delegate/v1/jobmonitor/deploy.wsdd"
+                tofile="${generated.src}/org/astrogrid/jes/delegate/v1/jobmonitor/JobMonitor-deploy.wsdd" />
+                -->
    </goal>
 
    <goal name="wsdd-postprocess" description="apply xslt to fix generation bugs">
