@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.12 2004/07/14 18:04:25 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.13 2004/08/02 11:35:03 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -103,7 +103,7 @@ public class StdSqlMaker  extends SqlMaker {
       }
       
       //start with a square - for quicker searches
-      String sql = makeSqlBoundsCondition(raCol, decCol, ra, dec, radius);
+//      String sql = makeSqlBoundsCondition(raCol, decCol, ra, dec, radius);
 
       //naively, we could use the 'least squares' distance (pythagoros) to see if
       //the objects are within radius distance. However this doesn't work well
@@ -150,7 +150,8 @@ public class StdSqlMaker  extends SqlMaker {
     * Use this when doing polygon/circle searches on reasonably small areas, to provide
     * some easy-to-check bounds for the db before it has to get on to the trig.
     * @param raCol, decCol - the column names that contain the RA & DEC values of the objects
-    */
+    * @TODO Doesn't allow for wraparound RA
+    *
    public String makeSqlBoundsCondition(String raCol, String decCol, Angle ra, Angle dec, Angle radius) {
 
       boolean colsInRadians = SimpleConfig.getSingleton().getBoolean(DB_COLS_IN_RADIANS);
@@ -187,7 +188,7 @@ public class StdSqlMaker  extends SqlMaker {
       
       
    }
-      
+    /**/
    
    
    /** Returns the SQL suitable for doing a cone query on HTM-indexed catalogue */
@@ -388,6 +389,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.13  2004/08/02 11:35:03  mch
+Commented out incorrect square bounds maker
+
 Revision 1.12  2004/07/14 18:04:25  mch
 Fixed SQL/Angles
 
@@ -426,4 +430,5 @@ It05 MCH Refactor
 
  
 */
+
 
