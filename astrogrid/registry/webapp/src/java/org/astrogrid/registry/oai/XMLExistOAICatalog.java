@@ -148,11 +148,18 @@ public class XMLExistOAICatalog extends AbstractCatalog {
          if(keys.size() == 0) {
             throw new IOException("Could not find any authorites managed");
          }
+         boolean hasAuthorityElement = conf.getBoolean("identifier.path.hasauthorityid." + versionNumber,false);
+         String identWhere = "$x/vr:Identifier/vr:AuthorityID = '";
+         if(!hasAuthorityElement) {
+             identWhere = "$x/vr:identifier |= '";
+         }
+             
 
          String auth = (String)keyIter.next();
-         String xqlQuery = RegistryServerHelper.getXQLDeclarations(versionNumber) + " for $x in //vr:Resource where $x/vr:Identifier/vr:AuthorityID = '" + auth + "'";
+         String xqlQuery = RegistryServerHelper.getXQLDeclarations(versionNumber) + 
+               " for $x in //vr:Resource where " + identWhere + auth + "'";
          while(keyIter.hasNext()) {
-            xqlQuery += " or $x/vr:Identifier/vr:AuthorityID = '" + (String)keyIter.next() + "'";
+            xqlQuery += " or " + identWhere + (String)keyIter.next() + "'";
          }
          xqlQuery += " return $x";
          System.out.println("the build xql = " + xqlQuery);
