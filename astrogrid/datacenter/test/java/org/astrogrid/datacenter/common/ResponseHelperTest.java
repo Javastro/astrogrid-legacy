@@ -72,7 +72,7 @@ public class ResponseHelperTest extends TestCase
       try {
          DummyQueryResults results = new DummyQueryResults("ResponseHelperTest");
          ResponseHelper.makeResultsResponse(querier, results.toVotable().getDocumentElement());
-         fail("Didn't throw error exception");
+//isn't supposed to any more...         fail("Didn't throw error exception");
       }
       catch (IOException e) {}
 
