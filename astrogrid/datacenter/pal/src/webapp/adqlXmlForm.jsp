@@ -26,6 +26,7 @@
   <p>
   <b>Enter your ADQL/xml query here:</b>
       <form action="submitAdqlXml.jsp" method="POST">
+        <i>Note that some browsers will modify viewed XML, so check for DEFANGED, case changes, etc</i>
         <textarea name="AdqlXml" rows="20" cols="100%"><%= request.getParameter("AdqlXml") %></textarea>
         <p/>
         <%@ include file='resultsForm.xml' %>
@@ -33,9 +34,9 @@
         <input type="submit" value="Submit ADQL" />
         </p>
       </form>
-      (<a href="adqlSqlForm.jsp">Translate from SQL</a>)
-      (<a href="adql">Sample queries</a>)
-      <i>Note that some browsers will modify viewed XML, so check for DEFANGED, case changes, etc</i>
+      <a href="adqlSqlForm.jsp">Translate from SQL</a> *
+      <a href="http://openskyquery.net/AdqlTranslator/Convertor.aspx">NVO Translator</a> *
+      <a href="adql">Sample queries</a>
       <br />
     </p>
 </div>
