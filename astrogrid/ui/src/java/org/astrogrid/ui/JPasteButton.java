@@ -1,5 +1,5 @@
 /*
-   $Id: JPasteButton.java,v 1.1 2002/11/27 16:20:06 mch Exp $
+   $Id: JPasteButton.java,v 1.2 2002/12/03 17:28:51 mch Exp $
 
    Date       Author      Changes
    19 Oct 2002 M Hill      Created
@@ -28,6 +28,10 @@ public class JPasteButton extends JButton implements ActionListener
    public JPasteButton(JTextField aField)
    {
       super(IconFactory.getIcon("paste"));
+      if (getIcon()==null)
+      {
+         setText("Paste");
+      }
       this.textField = aField;
       this.setToolTipText("Replaces text with clipboard contents");
       this.addActionListener(this);

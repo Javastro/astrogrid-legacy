@@ -1,5 +1,5 @@
 /*
-   $Id: JSetFileButton.java,v 1.1 2002/11/27 16:20:06 mch Exp $
+   $Id: JSetFileButton.java,v 1.2 2002/12/03 17:28:57 mch Exp $
 
    Date       Author      Changes
    $date$     M Hill      Created
@@ -46,6 +46,11 @@ public class JSetFileButton extends JButton implements ActionListener
 //      getBorder().getBorderInsets(this).top=0;
 //    setBorder(BorderFactory.create
 //      setMargin(new Insets(0,0,0,0));
+      if (getIcon()==null)
+      {
+         setText("Set");
+      }
+      setToolTipText("Opens a file browser to select file");
       addActionListener(this);
    }
 
