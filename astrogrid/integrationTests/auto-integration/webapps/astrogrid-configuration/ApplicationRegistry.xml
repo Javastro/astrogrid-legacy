@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+NWW: redundant - jes now configuured to use the registry for this information
+-->
 <!-- List of applications
   used by xml-file-based tool registry component in workflow (until astrogrid-registry provides this functioinality)
 -->

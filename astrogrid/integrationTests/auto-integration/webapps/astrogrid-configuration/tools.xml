@@ -1,4 +1,7 @@
 <tools>
+<!--
+NWW: redundant - jes now configuured to use the registry for this information
+-->
 <!-- list of known tools, and the endpoint of the application controller that provides them-->
 <!--
     <tool
