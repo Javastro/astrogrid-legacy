@@ -24,7 +24,7 @@
   
   <shortDescription>AstroGrid Registry Components</shortDescription>
 
-  <issueTrackingUrl>http://www.astrogrid.org/bugzilla</issueTrackingUrl>
+  <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
   <siteDirectory>/var/www/www/maven/build/registry</siteDirectory>
   
   <repository>
