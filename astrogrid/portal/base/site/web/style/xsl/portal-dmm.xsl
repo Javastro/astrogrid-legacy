@@ -31,7 +31,20 @@
           <xsl:attribute name="type">text/css</xsl:attribute>
         </xsl:element>
         
-        <script src="domMenu.js" type="text/javascript">
+        <!--
+          Menu stylesheet.
+          -->
+        <link>
+          <xsl:attribute name="href">/astrogrid-portal/domMenu.css</xsl:attribute>
+          <xsl:attribute name="rel">stylesheet</xsl:attribute>
+          <xsl:attribute name="type">text/css</xsl:attribute>
+        </link>
+        
+        <script src="/astrogrid-portal/domMenu.js" type="text/javascript">
+          null;
+        </script>
+
+        <script src="/astrogrid-portal/menu.xml" type="text/javascript">
           null;
         </script>
 
@@ -62,7 +75,23 @@
       
       <!-- Process onload functions -->
       <body onload="ag_onload();">
-        <xsl:apply-templates/>
+        <div id="ag-header">
+          <xsl:apply-templates select="//ag-header//ag-div/*"/>
+        </div>
+        
+        <div id="ag-body">
+          <div id="main-menu">
+            <script type="text/javascript">
+              domMenu_activate('main-menu');
+            </script>
+          </div>
+
+          <xsl:apply-templates select="//ag-body/*"/>
+        </div>
+        
+        <div id="ag-footer">
+          <xsl:apply-templates select="//ag-footer//ag-div/*"/>
+        </div>
       </body>
     </html>
   </xsl:template>
@@ -70,7 +99,7 @@
   <!-- Add <menu/> element -->
   <xsl:template name="ag-menu">
     <xsl:element name="script">
-      <xsl:attribute name="src"><xsl:value-of select="@name"/>.dmm</xsl:attribute>
+      <xsl:attribute name="src">/astrogrid-portal/<xsl:value-of select="@name"/>.dmm</xsl:attribute>
       <xsl:attribute name="type">text/javascript</xsl:attribute>
       null;
     </xsl:element>
@@ -101,6 +130,12 @@
   </xsl:template>
   
   <!-- Default, copy all and apply templates -->
+  <xsl:template match="@*|node()">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
+  
   <xsl:template match="@*|node()">
     <!-- Output local names for XHTML nodes -->
     <xsl:if test="namespace-uri() = 'http://www.w3.org/1999/xhtml'">

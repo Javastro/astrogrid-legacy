@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.6 2004/03/30 16:43:57 jdt Exp $
+    | CVS $Id: sitemap.xmap,v 1.7 2004/04/06 15:26:50 gps Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -595,7 +595,7 @@
     <!--+
         | Dom Menus.
         +-->
-      <map:match pattern="**.dmm">
+      <map:match pattern="*.dmm">
         <map:generate src="context://WEB-INF/dom-menu/{1}.xml" type="file"/>
       
         <map:transform src="context://web/style/xsl/menu2jscript.xsl"/>
@@ -642,7 +642,7 @@
           <map:part element="ag-footer" src="cocoon:/test/footer.html"/>
         </map:aggregate>
 
-        <map:transform src="web/style/xsl/portal.xsl">
+        <map:transform src="web/style/xsl/portal-dmm.xsl">
           <map:parameter name="ag-css-url" value="/astrogrid-portal/portal.css"/>
           <map:parameter name="ag-title" value="Astrogrid Portal"/>
         </map:transform>

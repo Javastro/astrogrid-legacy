@@ -129,7 +129,7 @@
     -->
     <init-param>
       <param-name>enable-uploads</param-name>
-      <param-value>false</param-value>
+      <param-value>true</param-value>
     </init-param>
 
     <!--
@@ -139,12 +139,12 @@
       with volume: C:\Path\To\Upload\Directory
 
       The default directory is "upload-dir" in the work-directory
+    -->
 
     <init-param>
       <param-name>upload-directory</param-name>
       <param-value>WEB-INF/work/upload-dir</param-value>
     </init-param>
-    -->
 
     <!--
       Causes all files in multipart requests to be saved to upload-dir.
@@ -169,12 +169,12 @@
     
     <!--
       Specify maximum allowed size of the upload. Defaults to 10 Mb.
+    -->
 
     <init-param>
       <param-name>upload-max-size</param-name>
       <param-value>10000000</param-value>
     </init-param>
-    -->
 
     <!--
       This parameter allows to specify where Cocoon should create its page
