@@ -109,9 +109,7 @@
         </tr>
         <tr>
             <xsl:apply-templates select="*"/>
-        </tr>
-
-        
+        </tr>        
     </xsl:template>
 
 
@@ -122,20 +120,36 @@
         <xsl:param name="count"/>                         <!-- No. of ancestors for this node = no. columns required prior to displaying it-->
         <xsl:param name="counter" select="1"/>      <!-- Loop counter (needs to increment so that table can be formatted correctly -->
             <xsl:if test="$counter != $count">             <!-- Test to see if column should display details -->
-                <td valign="top">               
-                    <xsl:for-each select="ancestor::*">    <!-- Display horizontal sequence image in relevant column -->
-                        <xsl:if test="name() = 'sequence'">
-                            <xsl:if test="count(ancestor::*) = $counter -1">
-                                <xsl:attribute name="background">  <!-- prevent gaps appearing in 'trunk' when parameters are viewed -->
-                                    <xsl:value-of select="$image_path"/>sequence_trunk.gif
-                                </xsl:attribute> 
-                                <xsl:element name="img">
-                                    <xsl:attribute name="src"><xsl:value-of select="$image_path"/>sequence_trunk.gif</xsl:attribute>
-                                    <xsl:attribute name="width">70</xsl:attribute>
-                                    <xsl:attribute name="height">25</xsl:attribute>
-                                </xsl:element>                                
+                <td valign="top">              
+                    <xsl:for-each select="ancestor::*">    <!-- Display vertical sequence image in relevant column -->
+                        <xsl:if test="name() = 'sequence'">                           
+                            <xsl:if test="count(ancestor::*) = $counter ">
+                                <xsl:if test="count(following-sibling::*) != 0">
+                                    <xsl:attribute name="background">  <!-- prevent gaps appearing in 'trunk' when parameters are viewed -->
+                                        <xsl:value-of select="$image_path"/>sequence_trunk.gif
+                                    </xsl:attribute>                                              
+                                    <xsl:element name="img">
+                                        <xsl:attribute name="src"><xsl:value-of select="$image_path"/>sequence_trunk.gif</xsl:attribute>
+                                        <xsl:attribute name="width">70</xsl:attribute>
+                                        <xsl:attribute name="height">25</xsl:attribute>
+                                    </xsl:element>                                                                                                                                                        
+                                </xsl:if>     
                             </xsl:if>
-                        </xsl:if>
+                        </xsl:if>                                                                      
+                        <xsl:if test="name() = 'flow'">                           
+                            <xsl:if test="count(ancestor::*) = $counter ">
+                                <xsl:if test="count(following-sibling::*) != 0">
+                                    <xsl:attribute name="background">  <!-- prevent gaps appearing in 'trunk' when parameters are viewed -->
+                                        <xsl:value-of select="$image_path"/>sequence_trunk.gif
+                                    </xsl:attribute>                                              
+                                    <xsl:element name="img">
+                                        <xsl:attribute name="src"><xsl:value-of select="$image_path"/>sequence_trunk.gif</xsl:attribute>
+                                        <xsl:attribute name="width">70</xsl:attribute>
+                                        <xsl:attribute name="height">25</xsl:attribute>
+                                    </xsl:element>                                                                                                                                                        
+                                </xsl:if>     
+                            </xsl:if>
+                        </xsl:if>                                                                       
                     </xsl:for-each>                                                              
                 </td>            
              <xsl:call-template name="format-cells">
@@ -156,7 +170,7 @@
                             <xsl:attribute name="height">25</xsl:attribute>
                         </xsl:element>
                     </xsl:when>
-                    <xsl:when test="count(following-sibling::*) = 0"> <!-- if there are no following siblings then display bottom arrow image -->
+                    <xsl:when test="count(following-sibling::*) = 0"> <!-- if there are no following siblings then display bottom arrow image -->                    
                         <xsl:element name="img">
                             <xsl:attribute name="src"><xsl:value-of select="$image_path"/>arrow_bottom.gif</xsl:attribute>
                             <xsl:attribute name="width">70</xsl:attribute>
