@@ -1,4 +1,4 @@
-package test.org.astrogrid.mySpace.mySpaceServer;
+package org.astrogrid.mySpace.mySpaceServer;
 
 import junit.framework.*;
 import org.astrogrid.mySpace.mySpaceServer.ServerManager;

@@ -1,4 +1,4 @@
-package test.org.astrogrid.mySpace.mySpaceStatus;
+package org.astrogrid.mySpace.mySpaceStatus;
 
 import junit.framework.*;
 import org.astrogrid.mySpace.mySpaceStatus.MySpaceMessage;
