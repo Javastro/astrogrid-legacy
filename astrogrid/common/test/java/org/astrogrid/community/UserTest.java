@@ -1,4 +1,4 @@
-/* $Id: UserTest.java,v 1.2 2004/02/14 17:26:20 mch Exp $
+/* $Id: UserTest.java,v 1.3 2004/02/17 03:45:06 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -33,8 +33,8 @@ public class UserTest extends TestCase
       String snippet = CommunityMessage.getMessage("SomeToken","me@community","agroup");
       
       assertEquals("me@community", CommunityMessage.getAccount(snippet));
-      assertEquals("me", CommunityMessage.getIndividual(snippet));
-      assertEquals("community", CommunityMessage.getCommunity(snippet));
+//      assertEquals("me", CommunityMessage.getIndividual(snippet));
+//      assertEquals("community", CommunityMessage.getCommunity(snippet));
       assertEquals("agroup", CommunityMessage.getGroup(snippet));
       assertEquals("SomeToken", CommunityMessage.getToken(snippet));
 
@@ -48,7 +48,7 @@ public class UserTest extends TestCase
       snippet = CommunityMessage.getMessage("SomeToken","me@community","agroup");
       snippet = snippet.replaceAll("me@community", "mecommunist");
       try {
-         CommunityMessage.getIndividual(snippet);
+//         CommunityMessage.getIndividual(snippet);
          fail("Should have complained that vo reference didn't contain '@'");
       } catch (AssertionError ae) {} //ignore - should happen
             
@@ -64,11 +64,11 @@ public class UserTest extends TestCase
       
       User me = new User(snippet);
       
-      assertEquals("me", me.getIndividual());
+//      assertEquals("me", me.getIndividual());
       assertEquals("community", me.getCommunity());
       assertEquals("agroup", me.getGroup());
       assertEquals("SomeToken", me.getToken());
-      assertEquals("me@community", me.getIvoRef());
+//      assertEquals("me@community", me.getIvoRef());
       
       snippet = CommunityMessage.getMessage("SomeToken","me@community","anothergroup");
       
@@ -98,6 +98,9 @@ public class UserTest extends TestCase
 
 /*
 $Log: UserTest.java,v $
+Revision 1.3  2004/02/17 03:45:06  mch
+Fixes for Pauls revert-to-doesnt-break-everyones User
+
 Revision 1.2  2004/02/14 17:26:20  mch
 Fixed CVS tags
 
