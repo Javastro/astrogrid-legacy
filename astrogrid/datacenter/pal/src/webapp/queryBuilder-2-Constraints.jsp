@@ -93,9 +93,9 @@ Enter below the constraints you want to put on each of the values.
 <input type='radio' name='combine' value='Intersection' <%=getChecked(request.getParameterValues("combine"), "Intersection") %> /> intersection (AND),
 or a <input type='radio' name='combine' value='Union' <%=getChecked(request.getParameterValues("combine"), "Union") %> /> union (OR).
 
-<p align='left'>
+<p>
 
-<table border="1" cellspacing="3" cellpadding="3" align='left' >
+<table border="1" cellspacing="3" cellpadding="3">
 <%
    //show all conditions, plus one row for adding a new condition
    for (int con=0;con<conditionColumns.length;con++) {
@@ -125,7 +125,6 @@ or a <input type='radio' name='combine' value='Union' <%=getChecked(request.getP
          <td>
             <input type='text' name='conditionValue' value='<%=conditionValues[con] %>' >
          </td>
-         <td></td><!-- empty element so table sits on the left -->
          </tr>
 <%
   //     } // end if
