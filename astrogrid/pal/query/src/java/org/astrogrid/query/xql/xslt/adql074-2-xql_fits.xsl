@@ -10,17 +10,14 @@
    -->
    <!-- Define order of output -->
    <xsl:template match="ad:Select" >
-      <xsl:text>
-       for $x in //FitsFile
-      </xsl:text>
-      <!--
+      <!--   
       <xsl:text>  SELECT </xsl:text>
       <xsl:apply-templates select="ad:Allow"/>
       <xsl:apply-templates select="ad:Restrict"/>
       <xsl:apply-templates select="ad:SelectionList"/>
       <xsl:text> FROM </xsl:text>
-      <xsl:apply-templates select="ad:From"/>
       -->
+      <xsl:apply-templates select="ad:From"/>
       <xsl:apply-templates select="ad:Where"/>
       <!--
       <xsl:apply-templates select="ad:GroupBy"/>
@@ -65,7 +62,7 @@
       </xsl:variable>
       <xsl:value-of select="substring($string, 1, string-length($string) - 2)"/>
    </xsl:template>
-     -->
+     -->   
    <!--
      -  SelectionList Template
 
@@ -92,28 +89,25 @@
       </xsl:variable>
       <xsl:value-of select="substring($string, 1, string-length($string) - 2)"/>
    </xsl:template>
-     -->
-   <!--
-     -  From Template
+     -->   
 
    <xsl:template match="ad:From">
       <xsl:variable name="string">
+         <xsl:text>for $c in collection(</xsl:text>
          <xsl:for-each select="ad:Table">
+            <xsl:text>'/db/dcfitsfiles/</xsl:text>
             <xsl:value-of select="@Name"/>
-            <xsl:text> AS </xsl:text>
-            <xsl:value-of select="@Alias"/>
-            <xsl:text>, </xsl:text>
+            <xsl:text>', </xsl:text>
          </xsl:for-each>
          <xsl:for-each select="ad:ArchiveTable">
+            <xsl:text>'/db/dcfitsfiles/</xsl:text>
             <xsl:value-of select="@Name"/>
-            <xsl:text> </xsl:text>
-            <xsl:value-of select="@Alias"/>
-            <xsl:text>, </xsl:text>
+            <xsl:text>', </xsl:text>
          </xsl:for-each>
       </xsl:variable>
       <xsl:value-of select="substring($string, 1, string-length($string) - 2)"/>
+      <xsl:text>)</xsl:text>
    </xsl:template>
-     -->
    <!-- Search Types -->
    <!--
      -  Intersection Search:  a AND b
@@ -154,7 +148,7 @@
       </xsl:choose>
       <xsl:text>') </xsl:text>
    </xsl:template>
-     -->
+     -->   
    <!--
      -  XMatch
 
@@ -180,7 +174,7 @@
       <xsl:text> </xsl:text>
       <xsl:value-of select="ad:Sigma/@Value"/>
    </xsl:template>
-     -->
+     -->   
    <!--
      -  Simple binary operator comparison:  a op b
      -->
@@ -254,7 +248,7 @@
       <xsl:text> WHERE </xsl:text>
       <xsl:apply-templates select="ad:Condition"/>
       -->
-      <xsl:text> where </xsl:text>
+      <xsl:text> for $x in $c//FitsFile where </xsl:text>
       <xsl:apply-templates select="ad:Condition"/>
       <xsl:text> return $x/Filename</xsl:text>
    </xsl:template>
@@ -283,7 +277,7 @@
       <!--
       <xsl:value-of select="@Table"/>
       <xsl:text>.</xsl:text>
-      <xsl:value-of select="@Name"/>
+      <xsl:value-of select="@Name"/>      
       -->
       <xsl:variable name="colName" select="@Name" />
       <xsl:text>$x/</xsl:text>
