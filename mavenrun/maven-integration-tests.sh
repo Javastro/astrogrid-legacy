@@ -63,12 +63,11 @@ cd $PROJECT_HOME >> $BUILD_DIR/$LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] generate and deploy site; deploy SNAPSHOT" >> $BUILD_DIR/$LOG_FILE 2>&1
 
-maven deployWebapps >> $BUILD_DIR/$LOG_FILE 2>&1 
-maven site >> $BUILD_DIR/$LOG_FILE 2>&1 
-maven site:fsdeploy >> $BUILD_DIR/$LOG_FILE 2>&1
+maven astrogrid-deploy-webapps >> $BUILD_DIR/$LOG_FILE 2>&1 
+maven astrogrid-deploy-site >> $BUILD_DIR/$LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] deploy build log" >> $BUILD_DIR/$LOG_FILE 2>&1
-cp $BUILD_DIR/$LOG_FILE /var/www/www/maven/build/log
+cp $BUILD_DIR/$LOG_FILE /var/www/www/maven/docs/snapshot/log
 
 echo "[ag-build-$PROJECT_NAME] back to start dir: $OLDDIR" >> $BUILD_DIR/$LOG_FILE 2>&1
 cd $OLDDIR

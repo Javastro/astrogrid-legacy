@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.15 2004/03/05 16:13:34 nw Exp $ -->
+<!-- $Id: project.xml,v 1.16 2004/03/13 01:03:17 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
 	<pomVersion>3</pomVersion>
 	<id>astrogrid-integrationTests</id>
-	<name>integrationTests</name>
+	<name>Astrogrid Integration Tests</name>
 	<description> This project consists of test scripts and code to run integration tests on 
 	Astrogrid.  Currently these consist of a number of JUnit tests.</description>
 	<shortDescription>AstroGrid Integration Tests</shortDescription>
+	<!--overriding those in parent POM-->
+	<siteDirectory>/var/www/www/maven/docs/snapshot/${astrogrid.name}</siteDirectory>
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
 		<unitTestSourceDirectory>test/java</unitTestSourceDirectory>
@@ -26,6 +28,7 @@
 			</resources>
 		</unitTest>
 	</build>
+	<!--overriding those in parent POM-->
 	<dependencies>
 		<dependency>
 			<artifactId>astrogrid-mySpace</artifactId>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
 <project>
-	<goal name="deployWebapps">
+	<goal name="astrogrid-deploy-webapps">
 		<echo message="Deploying webapps..."/>
 		<ant antfile="deployWebapps.xml"/>
 	</goal>
