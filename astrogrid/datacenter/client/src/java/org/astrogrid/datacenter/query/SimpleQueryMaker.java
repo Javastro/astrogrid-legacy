@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleQueryMaker.java,v 1.1 2004/10/06 21:12:16 mch Exp $
+ * $Id: SimpleQueryMaker.java,v 1.2 2004/10/06 22:13:45 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -34,6 +34,14 @@ public class SimpleQueryMaker  {
       Function circle = new Function("CIRCLE", new Expression[] { coordSys, ra, dec, radius });
       
       return circle;
+   }
+
+   /** Convenience method for constructing a cone query returning a VOTable to the given target
+    */
+   public static Query makeConeQuery(double givenRa, double givenDec, double givenRadius, TargetIndicator target, String format) {
+      Query query = makeConeQuery(givenRa, givenDec, givenRadius, target);
+      query.getResultsDef().setFormat(format);
+      return query;
    }
 
    /** Convenience method for constructing a cone query returning a VOTable to the given target
@@ -73,6 +81,9 @@ public class SimpleQueryMaker  {
 }
 /*
  $Log: SimpleQueryMaker.java,v $
+ Revision 1.2  2004/10/06 22:13:45  mch
+ Added convenience method
+
  Revision 1.1  2004/10/06 21:12:16  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 
