@@ -20,6 +20,9 @@ The changes from the version supplied with GT3.0.2 are as follows:
    @web.app.name@ and should be replaced with the name of the web
    application; ogsa is the traditional value.  If this substitution
    is not made, then this file is not valid for use with GT3.
+   
+ - The display name of the web-app is also set via a token:
+   @web.app.display.name@.
  
  - The OGSI/Globus schema are declared to be inside the web application
    holding GT3, instead of in the ROOT web application.
@@ -28,7 +31,7 @@ The changes from the version supplied with GT3.0.2 are as follows:
 -->
 
 <web-app>
-  <display-name>OGSI Container Servlet</display-name>
+  <display-name>@web.app.display.name@</display-name>
   
   <servlet>
     <servlet-name>OgsiServlet</servlet-name>
