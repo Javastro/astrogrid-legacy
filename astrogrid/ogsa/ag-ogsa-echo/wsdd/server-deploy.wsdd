@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment name="defaultServerConfig" 
+            xmlns="http://xml.apache.org/axis/wsdd/" 
+            xmlns:java="http://xml.apache.org/axis/wsdd/providers/java"> 
+  <service name="astrogrid/echo/basic/EchoFactoryService" provider="Handler" style="wrapped">
+    <parameter name="className" value="org.globus.ogsa.impl.core.factory.DynamicFactoryImpl"/>
+    <parameter name="persistent" value="true"/>
+    <parameter name="schemaPath" value="schema/core/factory/factory_service.wsdl"/>
+    <parameter name="instanceSchemaPath" value="schema/astrogrid/echo/echo_service.wsdl"/>
+    <parameter name="handlerClass" value="org.globus.ogsa.handlers.RPCURIProvider"/>
+    <parameter name="instanceClass" value="org.astrogrid.ogsa.echo.EchoImpl"/>
+  </service>
+  
+  <service name="astrogrid/echo/soap-secure/EchoFactoryService" provider="Handler" style="wrapped">
+    <parameter name="className" value="org.globus.ogsa.impl.core.factory.DynamicFactoryImpl"/>
+    <parameter name="persistent" value="true"/>
+    <parameter name="schemaPath" value="schema/core/factory/factory_service.wsdl"/>
+    <parameter name="instanceSchemaPath" value="schema/astrogrid/echo/secure_echo_service.wsdl"/>
+    <parameter name="handlerClass" value="org.globus.ogsa.handlers.RPCURIProvider"/>
+    <parameter name="instanceClass" value="org.astrogrid.ogsa.echo.SoapSecureEchoImpl"/>
+  </service>
+</deployment>

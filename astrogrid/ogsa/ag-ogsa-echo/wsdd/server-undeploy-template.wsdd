@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<undeployment name="defaultServerConfig" 
+            xmlns="http://xml.apache.org/axis/wsdd/" 
+            xmlns:java="http://xml.apache.org/axis/wsdd/providers/java"> 
+  <service name="astrogrid/@product.subdirectory@/@factory.name@" 
+           provider="Handler" style="wrapped"/>
+</undeployment>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment name="defaultServerConfig" 
+            xmlns="http://xml.apache.org/axis/wsdd/" 
+            xmlns:java="http://xml.apache.org/axis/wsdd/providers/java"> 
+  <service name="astrogrid/@product.subdirectory@/@factory.name@" provider="Handler" style="wrapped">
+    <parameter name="name"               value="AstroGrid echo factory"/>
+    <parameter name="className"          value="org.gridforum.ogsi.Factory"/>
+    <parameter name="baseClassName"      value="org.globus.ogsa.impl.ogsi.PersistentGridServiceImpl"/>
+    <parameter name="schemaPath"         value="schema/ogsi/ogsi_factory_service.wsdl"/>
+    <parameter name="persistent"         value="true"/>
+    <parameter name="handlerClass"       value="org.globus.ogsa.handlers.RPCURIProvider"/>
+    <parameter name="allowedMethods"     value="*"/>
+    <parameter name="factoryCallback"    value="org.globus.ogsa.impl.ogsi.DynamicFactoryCallbackImpl"/>
+    <parameter name="operationProviders" value="org.globus.ogsa.impl.ogsi.FactoryProvider"/>
+    <parameter name="instance-name"          value="AstroGrid echo service"/>
+    <parameter name="instance-schemaPath"    value="@wsdl.path@"/>
+    <parameter name="instance-className"     value="@service.java.package@.@service.java.class@"/>
+    <parameter name="instance-baseClassName" value="@service.java.package@.@service.java.class@"/>
+<!--
+    <parameter name="authorization"          value="gridmap"/>
+    <parameter name="gridmap"                value="/etc/grid-security/grid-mapfile"/>
+    <parameter name="instance-gridmap"       value="/etc/grid-security/grid-mapfile"/>
+    <parameter name="serviceCert"            value="/etc/grid-security/hostcert.pem"/>
+    <parameter name="serviceKey"             value="/etc/grid-security/hostkey.pem"/>
+-->
+    <parameter name="instance-securityConfig"         value="org/astrogrid/ogsa/echo/security-config.xml"/>
+  </service>
+</deployment>
