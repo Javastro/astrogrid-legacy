@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!--+
+    |
+    +-->
+<project default="init" basedir="." name="registry-upload">
+
+    <!--+
+        | Default Registry endpoints.
+        +-->
+    <property name="org.astrogrid.registry.url"   value="${tomcat.url}/astrogrid-registry-SNAPSHOT/services/Registry"/>
+    <property name="org.astrogrid.registry.admin" value="${tomcat.url}/astrogrid-registry-SNAPSHOT/services/RegistryAdmin"/>
+
+    <!--+
+        | The registry tools classpath.
+        +-->
+    <path id="register.classpath">
+        <fileset dir="tmp">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <!--+
+        | Upload a local XML file to the Registry.
+        +-->
+    <target name="register" depends="">
+        <echo message=""/>
+        <echo message="Uploading XML ...."/>
+        <echo message="  Data     : ${registry.data}"/>
+        <echo message="  Registry : ${org.astrogrid.registry.admin}"/>
+        <!--+
+            | Initialise our Ant task.
+            +-->
+        <taskdef name="register.task" classname="org.astrogrid.community.install.ant.CommunityRegistryTask">
+            <classpath refid="register.classpath"/>
+        </taskdef>
+        <!--+
+            | Upload our Registry entry.
+            +-->
+        <register.task
+            data="${registry.data}"
+            registry="${org.astrogrid.registry.admin}"
+            />
+    </target>
+
+</project>
