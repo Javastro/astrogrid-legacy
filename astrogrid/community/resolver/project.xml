@@ -3,11 +3,14 @@
     | Maven project description for the AstroGrid community resolver.
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:author>$Author: KevinBenson $</cvs:author>
+    | <cvs:date>$Date: 2004/03/15 17:05:49 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.4  2004/03/15 17:05:49  KevinBenson
+    |   added some new dependencies.
+    |
     |   Revision 1.3  2004/03/15 07:49:30  dave
     |   Merged development branch, dave-dev-200403121536, into HEAD
     |
@@ -137,6 +140,9 @@
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
+        
+        
+        
         <!--+
             | The JConfig jars.
             +-->
@@ -158,6 +164,19 @@
             <type>jar</type>
             <url>http://www.castor.org/</url>
         </dependency>
+        
+       <dependency>
+        	<artifactId>commons-jxpath</artifactId>
+            <groupId>commons-jxpath</groupId>
+            <version>1.1</version>
+        </dependency>        
+        
+	   <dependency>
+        	<artifactId>jakarta-regexp</artifactId>
+            <groupId>jakarta-regexp</groupId>
+            <version>1.3</version>
+        </dependency>         
+        
         <!--+
             | The Xerces library that Castor relies on.
             +-->
