@@ -83,12 +83,12 @@ public class JobFactoryImpl implements JobFactory {
 	public static final String
         QUERY_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER ) " +
 						  "VALUES ( ''{1}'', ''{2}'' )" ,
-	    QUERY_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = {1} AND STEPNUMBER = {2}" ;    
+	    QUERY_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}'' AND STEPNUMBER = ''{2}''" ;    
 
 	public static final String
 		CATALOG_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER, CATALOGNAME ) " +
 						  "VALUES ( ''{1}'', ''{2}'', ''{3}'' )" ,
-		CATALOG_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = {1} AND STEPNUMBER = {2}" ;  
+		CATALOG_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}'' AND STEPNUMBER = ''{2}''" ;  
 		
 	private static final int
 		COL_CATALOG_JOBURN = 1,
@@ -98,7 +98,7 @@ public class JobFactoryImpl implements JobFactory {
 	public static final String
 		TABLE_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER, CATALOGNAME, TABLENAME ) " +
 						  "VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'' )" , 
-        TABLE_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = {1} AND STEPNUMBER = {2} AND CATALOGNAME = {3}" ; 
+        TABLE_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}'' AND STEPNUMBER = ''{2}'' AND CATALOGNAME = ''{3}''" ; 
           
 	private static final int
 		COL_TABLE_JOBURN = 1,
@@ -109,7 +109,7 @@ public class JobFactoryImpl implements JobFactory {
 	public static final String
 		SERVICE_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER, CATALOGNAME, SERVICENAME, SERVICEURL ) " +
 						  "VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'', ''{5}'' )" ,  						    
-        SERVICE_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = {1} AND STEPNUMBER = {2} AND CATALOGNAME = {3}" ;  
+        SERVICE_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}'' AND STEPNUMBER = ''{2}'' AND CATALOGNAME = ''{3}''" ;  
     
 	private static final int
 		COL_SERVICE_JOBURN = 1,
