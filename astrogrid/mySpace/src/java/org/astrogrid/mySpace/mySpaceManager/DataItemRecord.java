@@ -1,7 +1,6 @@
 package org.astrogrid.mySpace.mySpaceManager;
 
 import java.io.*;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.text.*;

@@ -5,7 +5,6 @@ import org.apache.axis.client.Service;
 import javax.xml.rpc.ParameterMode;
 import javax.xml.rpc.encoding.XMLType;
 
-import org.apache.axis.AxisProperties;
 import org.astrogrid.mySpace.mySpaceStatus.*;
 
 import org.apache.log4j.Logger;
