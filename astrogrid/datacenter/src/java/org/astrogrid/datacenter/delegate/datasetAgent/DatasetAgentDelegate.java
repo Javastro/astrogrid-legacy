@@ -1,5 +1,5 @@
 /*
- * $Id: DatasetAgentDelegate.java,v 1.4 2003/08/22 11:48:34 nw Exp $
+ * $Id: DatasetAgentDelegate.java,v 1.5 2003/08/25 21:51:20 mch Exp $
  */
 
 package org.astrogrid.datacenter.delegate.datasetAgent;
@@ -7,8 +7,8 @@ package org.astrogrid.datacenter.delegate.datasetAgent;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
+import org.astrogrid.AstroGridException;
 
-import org.astrogrid.datacenter.delegate.DatacenterDelegateException;
 
 /**
  * The <code>DatasetAgentDelegate</code> class.
@@ -18,26 +18,26 @@ import org.astrogrid.datacenter.delegate.DatacenterDelegateException;
  * @since   AstroGrid 1.2
  */
 public class DatasetAgentDelegate {
-    
+
     private String
         targetEndPoint = null ;
     private int
         timeout = 60000 ;
-        
+
     public DatasetAgentDelegate( String targetEndPoint ) {
       this.targetEndPoint = targetEndPoint;
     }
-    
+
     public DatasetAgentDelegate( String targetEndPoint, int timeout ) {
       this.targetEndPoint = targetEndPoint ;
       this.timeout = timeout ;
     }
-     
-    public void runQuery(String req) throws DatacenterDelegateException {
-        
+
+    public void runQuery(String req) throws AstroGridException {
+
         DatasetAgentSoapBindingStub
             binding = null ;
-            
+
         try {
             binding = (DatasetAgentSoapBindingStub)
                           new DatasetAgentServiceLocator().getDatasetAgent( new URL( targetEndPoint ) );
@@ -45,23 +45,26 @@ public class DatasetAgentDelegate {
             binding.runQuery(req);
         }
         catch( MalformedURLException mex ) {
-            throw new DatacenterDelegateException( mex ) ;
+            throw new AstroGridException( mex ) ;
         }
         catch( RemoteException rex) {
-            throw new DatacenterDelegateException( rex ) ;
+            throw new AstroGridException( rex ) ;
         }
         catch( javax.xml.rpc.ServiceException sex ) {
-            throw new DatacenterDelegateException( sex ) ;
+            throw new AstroGridException( sex ) ;
         }
-              
+
         return ;
-  
+
     } // end of runQuery()
 
 } // end of class DatasetAgentDelegate
 
 /*
 $Log: DatasetAgentDelegate.java,v $
+Revision 1.5  2003/08/25 21:51:20  mch
+Removed DatasetAgentException
+
 Revision 1.4  2003/08/22 11:48:34  nw
 improved docs
 
