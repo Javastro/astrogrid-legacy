@@ -1,4 +1,4 @@
-/*$Id: ExamplesTest.java,v 1.1 2003/08/28 22:45:47 nw Exp $
+/*$Id: ExamplesTest.java,v 1.2 2003/09/02 14:41:15 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,27 +32,27 @@ public class ExamplesTest extends TestCase {
     }
 
     public void test1() throws Exception {
-        processExample("sample1.xml");
+        processFile("sample1.xml");
     }
 
     public void test2() throws Exception {
-        processExample("sample2.xml");
+        processFile("sample2.xml");
     }
     
     public void test3() throws Exception {
-        processExample("sample3.xml");
+        processFile("sample3.xml");
     }
     
     public void test4() throws Exception {
-        processExample("sample4.xml");
+        processFile("sample4.xml");
     }
     
     public void test5() throws Exception {
-        processExample("sample5.xml");
+        processFile("sample5.xml");
     }
 
     /** muck about with the input file a bit */
-    protected void processExample(String path) throws Exception {
+    protected void processFile(String path) throws Exception {
         InputStream is = this.getClass().getResourceAsStream(path);
         assertNotNull(is);
         Reader reader = new InputStreamReader(is);
@@ -81,6 +81,9 @@ public class ExamplesTest extends TestCase {
 
 /* 
 $Log: ExamplesTest.java,v $
+Revision 1.2  2003/09/02 14:41:15  nw
+added tests for ADQL parser
+
 Revision 1.1  2003/08/28 22:45:47  nw
 added unit test that runs a set of sample ADQL documents through the object model
  

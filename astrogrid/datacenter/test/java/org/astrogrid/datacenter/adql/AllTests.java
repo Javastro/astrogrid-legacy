@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2003/08/28 22:45:47 nw Exp $
+/*$Id: AllTests.java,v 1.3 2003/09/02 14:41:15 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,6 +29,8 @@ public class AllTests {
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(MarshallingTest.class));
         suite.addTest(new TestSuite(ExamplesTest.class));
+        suite.addTest(new TestSuite(VisitorTest.class));
+        suite.addTest(new TestSuite(MySQLQueryTranslatorTest.class));
         //$JUnit-END$
         return suite;
     }
@@ -37,6 +39,9 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.3  2003/09/02 14:41:15  nw
+added tests for ADQL parser
+
 Revision 1.2  2003/08/28 22:45:47  nw
 added unit test that runs a set of sample ADQL documents through the object model
 
