@@ -1,19 +1,20 @@
 package org.astrogrid.security;
 
+import java.util.Hashtable;
 import java.util.Iterator;
 import javax.xml.rpc.handler.MessageContext;
 import javax.xml.rpc.handler.soap.SOAPMessageContext;
 import javax.xml.soap.SOAPMessage;
 
 /**
- * Trivial implementation of javax.xml.rpc.handler.MessageContext,
+ * Implementation of javax.xml.rpc.handler.MessageContext,
  * and javax.xml.rpc.handler.soap.SOAPMessageContext.  This class
  * avoids the need to use Axis' MessageContext directly when
  * testing.
  *
- * The accessors for the SOAP message work. The other methods do
- * nothing useful. In particular, they do not store and retrieve
- * properties of the context.
+ * All the methods work according to JAX-RPC semantics
+ * except {@link getRoles}. The latter always returns an empty
+ * array of role-names.
  *
  * @author Guy Rixon
  */
@@ -23,6 +24,19 @@ public class DummyMessageContext implements SOAPMessageContext {
    * The SOAP message in this context.
    */
   private SOAPMessage message;
+
+  /**
+   * Properties stored by other object.
+   */
+  private Hashtable properties;
+
+
+  /**
+   * Constructs a DummyMessageContext, initializing the list of properties.
+   */
+  public DummyMessageContext () {
+    this.properties = new Hashtable();
+  }
 
 
   /**
@@ -53,19 +67,18 @@ public class DummyMessageContext implements SOAPMessageContext {
 
   /**
    * Returns true if the MessageContext contains a property with
-   * the specified name. This implementation always returns false.
+   * the specified name.
    */
   public boolean containsProperty (java.lang.String name) {
-    return false;
+    return this.properties.containsKey(name);
   }
 
 
   /**
    * Gets the value of a specific property from the MessageContext.
-   * This implementation always returns null.
    */
   public Object getProperty (String name) {
-    return null;
+    return this.properties.get(name);
   }
 
 
@@ -74,21 +87,24 @@ public class DummyMessageContext implements SOAPMessageContext {
    * in this MessageContext. This version always returns null;
    */
   public Iterator getPropertyNames () {
-    return null;
+    return this.properties.keySet().iterator();
   }
 
 
   /**
    * Removes a property (name-value pair) from the MessageContext.
-   * This implementation does nothing.
    */
-  public void removeProperty(String name) {}
+  public void removeProperty(String name) {
+    this.properties.remove(name);
+  }
 
 
   /**
    * Sets the name and value of a property associated
-   * with the MessageContext. This implementation does nothing.
+   * with the MessageContext.
    */
-  public void setProperty (String name, Object value) {}
+  public void setProperty (String name, Object value) {
+    this.properties.put(name, value);
+  }
 
 }
