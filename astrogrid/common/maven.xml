@@ -40,16 +40,16 @@
     </goal>  
     <goal name="jabber-me">
         <j:if test="${context.getVariable('jabber.host') != null}">
-            <attainGoal name="tomcat-declare-tasks"/>
+            <attainGoal name="jabber-declare-tasks"/>
             <j:catch>
                 <jabber host="${jabber.host}" from="${jabber.sender}" 
-                    to="${jabber.receiver}" password="${jabber.password}" 
+                    tolist="${jabber.receiver}" password="${jabber.password}" 
                     message="${message}"/>
             </j:catch>
         </j:if>
     </goal>
     <!-- Configure the custom Ant tasks for Jabber -->
-    <goal name="tomcat-declare-tasks">
+    <goal name="jabber-declare-tasks">
         <taskdef name="jabber" classname="com.tfftech.ant.taskdefs.im.jabber.JabberTask" /> 
     </goal>
     <!-- End Jabber Goals -->
