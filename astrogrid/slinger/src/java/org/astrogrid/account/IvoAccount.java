@@ -1,5 +1,5 @@
 /*
- * $Id: IvoAccount.java,v 1.2 2004/12/07 01:33:36 jdt Exp $
+ * $Id: IvoAccount.java,v 1.3 2005/01/26 17:31:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */

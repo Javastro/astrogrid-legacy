@@ -1,5 +1,5 @@
 /*
- * $Id: MimeTypes.java,v 1.2 2004/12/07 01:33:36 jdt Exp $
+ * $Id: MimeTypes.java,v 1.3 2005/01/26 17:31:56 mch Exp $
  *
  */
 
@@ -34,8 +34,8 @@ public interface MimeTypes  {
 }
 /*
  *   $Log: MimeTypes.java,v $
- *   Revision 1.2  2004/12/07 01:33:36  jdt
- *   Merge from PAL_Itn07
+ *   Revision 1.3  2005/01/26 17:31:56  mch
+ *   Split slinger out to scapi, swib, etc.
  *
  *   Revision 1.1.2.2  2004/12/06 00:07:31  mch
  *   Added clip, addstore and fixes

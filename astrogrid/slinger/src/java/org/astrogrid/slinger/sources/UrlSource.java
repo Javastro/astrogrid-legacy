@@ -1,5 +1,5 @@
 /*
- * $Id: UrlSource.java,v 1.2 2004/12/07 01:33:36 jdt Exp $
+ * $Id: UrlSource.java,v 1.3 2005/01/26 17:31:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -60,8 +60,8 @@ public class UrlSource extends UriSource {
 }
 /*
  $Log: UrlSource.java,v $
- Revision 1.2  2004/12/07 01:33:36  jdt
- Merge from PAL_Itn07
+ Revision 1.3  2005/01/26 17:31:57  mch
+ Split slinger out to scapi, swib, etc.
 
  Revision 1.1.2.2  2004/12/03 11:50:19  mch
  renamed Msrl etc to separate from storeclient ones.  Prepared for SRB

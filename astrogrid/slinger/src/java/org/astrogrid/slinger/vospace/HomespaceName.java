@@ -1,5 +1,5 @@
 /*
- * $Id: HomespaceName.java,v 1.2 2004/12/07 01:33:36 jdt Exp $
+ * $Id: HomespaceName.java,v 1.3 2005/01/26 17:31:57 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -11,13 +11,18 @@ package org.astrogrid.slinger.vospace;
 
 import java.io.*;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.Principal;
 import org.astrogrid.account.LoginAccount;
+import org.astrogrid.community.common.exception.CommunityException;
+import org.astrogrid.community.resolver.CommunityAccountSpaceResolver;
+import org.astrogrid.community.resolver.exception.CommunityResolverException;
+import org.astrogrid.config.ConfigException;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.slinger.StoreFile;
-import org.astrogrid.slinger.StoreFileResolver;
+import org.astrogrid.registry.RegistryException;
+import org.astrogrid.slinger.SRI;
+import org.astrogrid.slinger.SRL;
+import org.astrogrid.slinger.StoreException;
 import org.astrogrid.slinger.myspace.MSRL;
 import org.astrogrid.slinger.sources.SourceIdentifier;
 import org.astrogrid.slinger.targets.TargetIdentifier;
@@ -30,7 +35,7 @@ import org.astrogrid.slinger.vospace.IVOSRN;
  * @author MCH, KMB, KTN, DM, ACD
  */
 
-public class HomespaceName implements TargetIdentifier, SourceIdentifier
+public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
 {
    public final static String SCHEME = "homespace";
    
@@ -79,6 +84,11 @@ public class HomespaceName implements TargetIdentifier, SourceIdentifier
 
    /** String representation */
    public String toString() {
+      return toURI();
+   }
+
+   /** Returns the URI representation */
+   public String toURI() {
       if (path == null) {
          return SCHEME+":"+accountName;
       } else {
@@ -86,20 +96,9 @@ public class HomespaceName implements TargetIdentifier, SourceIdentifier
       }
    }
 
-   /** Returns the URI representation */
-   public URI toUri() {
-      try {
-         return new URI(toString());
-      }
-      catch (URISyntaxException e) {
-         //this should never happen as it shouldn't be possible to create an agsl that isn't
-         throw new RuntimeException("Application error: "+e+" for HomespaceName "+toString());
-      }
-   }
-
    /** Resolves the location */
    public String toLocation(Principal user) throws IOException {
-      return StoreFileResolver.resolveStoreFile(this, user).getUri();
+      return resolveIvosrn().resolveSrl().toURI();
    }
    
    /** Returns true if the given string is likely to be a homespace - ie if it
@@ -112,12 +111,12 @@ public class HomespaceName implements TargetIdentifier, SourceIdentifier
    /** All targets must be able to resolve to a stream.  The user is required
     * for permissioning. */
    public InputStream resolveInputStream(Principal user) throws IOException {
-      return VoSpaceResolver.resolveInputStream(VoSpaceResolver.resolveIvosrn(this), user);
+      return resolveIvosrn().resolveInputStream(user);
    }
    
    /** Used to set the mime type of the data about to be sent to the target.  */
    public String getMimeType(Principal user) throws IOException {
-      return StoreFileResolver.resolveStoreFile(this, user).getMimeType();
+      return resolveIvosrn().getMimeType(user);
    }
    
    public Reader resolveReader(Principal user) throws IOException {
@@ -131,14 +130,91 @@ public class HomespaceName implements TargetIdentifier, SourceIdentifier
    /** All targets must be able to resolve to a stream.  The user is required
     * for permissioning. */
    public OutputStream resolveOutputStream(Principal user) throws IOException {
-      return VoSpaceResolver.resolveOutputStream(this, user);
+      return resolveIvosrn().resolveOutputStream(user);
    }
    
    /** Used to set the mime type of the data about to be sent to the target.  */
    public void setMimeType(String aMimeType, Principal user) throws IOException {
-      StoreFile file = StoreFileResolver.resolveStoreFile(this, user);
-      file.setMimeType(aMimeType, user);
+      resolveIvosrn().setMimeType(aMimeType, user);
    }
+
+   /**
+    * Returns the ivosrn to this 'homespace'
+    */
+   public IVOSRN resolveIvosrn() throws IOException {
+
+      //used for debug/user info - says somethign about where the ivorn has been looked for
+      String lookedIn = "";
+
+      //create backwards compatible ivorn-syntax homespace, as community still expects the form "ivo://community/individual#path"
+      int atIdx = getName().indexOf("@");
+      if (atIdx == -1) {
+         throw new IllegalArgumentException("homespace "+this+" should be of the form homespace:<individual>@<community>[#path]");
+      }
+      String individualId = getName().substring(0,atIdx);
+      String communityId = getName().substring(atIdx+1);
+      org.astrogrid.store.Ivorn oldHomespaceId = new org.astrogrid.store.Ivorn(communityId, individualId, getPath());
+
+      //look up in config first
+      String key = "homespace."+getName();
+      String value = SimpleConfig.getSingleton().getString(key, null);
+      lookedIn += "Config (key=homespace."+getName()+") ";
+      if (value != null) {
+         if (IVOSRN.isIvorn(value)) {
+            try {
+               return new IVOSRN( new IVOSRN(value), getPath());
+            }
+            catch (URISyntaxException use) {
+               throw new ConfigException(use+" config value for homespace key "+key+" is not a valid IVORN: "+value);
+            }
+         }
+         else {
+            throw new ConfigException("Config value for homespace key '"+key+"' is not an IVORN: "+value);
+         }
+      }
+
+      //look up old id in config
+      value = SimpleConfig.getSingleton().getString(oldHomespaceId.getPath(), null);
+      lookedIn += "Config (key="+oldHomespaceId.getPath()+") ";
+      if (value != null) {
+         if (value.startsWith("ivo:")) {
+            try {
+               return new IVOSRN( new IVOSRN(value), getPath());
+            }
+            catch (URISyntaxException use) {
+               throw new ConfigException(use+" config value for homespace key "+key+" is not a valid IVORN: "+value);
+            }
+         }
+         else {
+            throw new ConfigException("Config value for homespace key '"+key+"' is not a valid IVORN: "+value);
+         }
+      }
+      
+      
+      //lazy load delegate - also more robust in case it doesn't instantiate
+      CommunityAccountSpaceResolver communityResolver = new CommunityAccountSpaceResolver();
+
+      try {
+//         Ivorn homespaceIvorn = community.resolve(homespace);
+         lookedIn += "Community ("+communityResolver+") ";
+         IVOSRN storepoint = new IVOSRN(new IVOSRN(communityResolver.resolve(oldHomespaceId).toString()), getPath());
+         return storepoint;
+      }
+      catch (URISyntaxException use) {
+         throw new StoreException(use+" from IVORN returned by community delegate for "+oldHomespaceId);
+      }
+      catch (CommunityResolverException cre) {
+         //don't ignore this - if it is trying to be resolved, use the config to do shortcut that
+         throw new StoreException(cre+" resolving "+this+" ("+oldHomespaceId+") from community "+communityResolver+", looked in "+lookedIn,cre);
+      }
+      catch (CommunityException ce) {
+         throw new StoreException(ce+" resolving "+this+" ("+oldHomespaceId+") from community "+communityResolver+", looked in "+lookedIn,ce);
+      }
+      catch (RegistryException re) {
+         throw new StoreException(re+" resolving "+this+" ("+oldHomespaceId+") from community "+communityResolver+", looked in "+lookedIn,re);
+      }
+   }
+   
    
    /**
     * quick tests/debugs
@@ -153,13 +229,13 @@ public class HomespaceName implements TargetIdentifier, SourceIdentifier
       HomespaceName name = new HomespaceName("homespace:agdemo1@org.astrogrid#/agdemo1/votable/MartinPlayingWithNamesYetAgain");
       System.out.println(name);
 
-      IVOSRN ivosrn = VoSpaceResolver.resolveIvosrn(name);
+      IVOSRN ivosrn = name.resolveIvosrn();
       System.out.println("->"+ivosrn);
       
-      MSRL msrl = VoSpaceResolver.resolveMsrl(ivosrn);
+      SRL msrl = ivosrn.resolveSrl();
       System.out.println("->"+msrl);
       
-      OutputStream out = msrl.resolveOutputStream(LoginAccount.ANONYMOUS);
+      OutputStream out = ((MSRL) msrl).resolveOutputStream(LoginAccount.ANONYMOUS);
       out.write("This could be rude and you'd never know cos it's about to be overwritten".getBytes());
       out.close();
       
@@ -173,8 +249,14 @@ public class HomespaceName implements TargetIdentifier, SourceIdentifier
 
 /*
 $Log: HomespaceName.java,v $
-Revision 1.2  2004/12/07 01:33:36  jdt
-Merge from PAL_Itn07
+Revision 1.3  2005/01/26 17:31:57  mch
+Split slinger out to scapi, swib, etc.
+
+Revision 1.1.2.5  2005/01/26 14:35:36  mch
+Separating slinger and scapi
+
+Revision 1.1.2.4  2004/12/08 18:37:11  mch
+Introduced SPI and SPL
 
 Revision 1.1.2.3  2004/12/06 21:03:16  mch
 Fixes to resolving homespace

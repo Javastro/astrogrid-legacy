@@ -1,5 +1,5 @@
 /*
- * $Id: MSRL.java,v 1.2 2004/12/07 01:33:36 jdt Exp $
+ * $Id: MSRL.java,v 1.3 2005/01/26 17:31:56 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -8,16 +8,16 @@
  */
 
 package org.astrogrid.slinger.myspace;
+import org.astrogrid.slinger.myspace.it05.*;
 
 import java.io.*;
 
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.Principal;
 import javax.xml.rpc.ServiceException;
 import org.astrogrid.community.User;
+import org.astrogrid.slinger.SRL;
 import org.astrogrid.slinger.StoreException;
 import org.astrogrid.slinger.sources.SourceIdentifier;
 import org.astrogrid.slinger.targets.TargetIdentifier;
@@ -38,7 +38,7 @@ import org.astrogrid.slinger.targets.TargetIdentifier;
  * <p>
  */
 
-public class MSRL implements TargetIdentifier, SourceIdentifier
+public class MSRL implements SRL, TargetIdentifier, SourceIdentifier
 {
    private URL delegateEndpoint = null;
    private String filepath = null;
@@ -117,20 +117,15 @@ public class MSRL implements TargetIdentifier, SourceIdentifier
     * must be true.
     */
    public String toString() {
+      return toURI();
+   }
+
+   /** Returns URI instance of locator */
+   public String toURI()  {
       String msrl = SCHEME+":"+delegateEndpoint;
       if (filepath != null) { msrl = msrl +"#"+filepath; }
       if (storeId != null) { msrl = msrl +"!"+storeId; }
       return msrl;
-   }
-
-   /** Returns URI instance of locator */
-   public URI toUri()  {
-      try {
-         return new URI(toString());
-      }
-      catch (URISyntaxException e) {
-         throw new RuntimeException("Program Error: MSRL is invalid URL: "+e);
-      }
    }
    
    /** Returns just the delegate end point */
@@ -212,9 +207,10 @@ public class MSRL implements TargetIdentifier, SourceIdentifier
 
    public InputStream resolveInputStream(Principal user) throws IOException {
       try {
-         return new MySpaceFile(this, user).openInputStream(user);
+         MySpaceIt05Delegate temp = new MySpaceIt05Delegate(User.ANONYMOUS, getDelegateEndpoint().toString());
+         return temp.getStream(getPath());
       }
-      catch (ServiceException se) {
+      catch (StoreException se) {
          IOException ioe = new IOException(se+" connecting to "+this+", user "+user);
          ioe.setStackTrace(se.getStackTrace());
          throw ioe;
@@ -232,9 +228,10 @@ public class MSRL implements TargetIdentifier, SourceIdentifier
    /** Used to set the mime type of the data about to be sent to the source. Does nothing. */
    public String getMimeType(Principal user) throws IOException {
       try {
-         return new MySpaceFile(this, user).getMimeType();
+         MySpaceIt05Delegate temp = new MySpaceIt05Delegate(User.ANONYMOUS, getDelegateEndpoint().toString());
+         return temp.getFile(getPath()).getMimeType();
       }
-      catch (ServiceException se) {
+      catch (StoreException se) {
          IOException ioe = new IOException(se+" connecting to "+this+", user "+user);
          ioe.setStackTrace(se.getStackTrace());
          throw ioe;
@@ -246,8 +243,14 @@ public class MSRL implements TargetIdentifier, SourceIdentifier
 
 /*
 $Log: MSRL.java,v $
-Revision 1.2  2004/12/07 01:33:36  jdt
-Merge from PAL_Itn07
+Revision 1.3  2005/01/26 17:31:56  mch
+Split slinger out to scapi, swib, etc.
+
+Revision 1.1.2.4  2005/01/26 14:35:17  mch
+Separating slinger and scapi
+
+Revision 1.1.2.3  2004/12/08 18:37:11  mch
+Introduced SPI and SPL
 
 Revision 1.1.2.2  2004/12/06 03:17:38  mch
 added info to error report

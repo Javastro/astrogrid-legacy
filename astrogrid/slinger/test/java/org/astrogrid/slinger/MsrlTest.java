@@ -1,5 +1,5 @@
 /*
- * $Id: MsrlTest.java,v 1.2 2004/12/07 01:33:36 jdt Exp $
+ * $Id: MsrlTest.java,v 1.3 2005/01/26 17:31:57 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -93,6 +93,9 @@ public class MsrlTest extends TestCase
 
 /*
 $Log: MsrlTest.java,v $
+Revision 1.3  2005/01/26 17:31:57  mch
+Split slinger out to scapi, swib, etc.
+
 Revision 1.2  2004/12/07 01:33:36  jdt
 Merge from PAL_Itn07
 

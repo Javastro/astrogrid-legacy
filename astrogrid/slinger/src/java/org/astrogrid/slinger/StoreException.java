@@ -1,5 +1,5 @@
 /*
- * $Id: StoreException.java,v 1.2 2004/12/07 01:33:36 jdt Exp $
+ * $Id: StoreException.java,v 1.3 2005/01/26 17:31:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -29,6 +29,9 @@ public class StoreException extends IOException
 
 /*
 $Log: StoreException.java,v $
+Revision 1.3  2005/01/26 17:31:56  mch
+Split slinger out to scapi, swib, etc.
+
 Revision 1.2  2004/12/07 01:33:36  jdt
 Merge from PAL_Itn07
 

@@ -1,5 +1,5 @@
 /*
- * $Id: NullTarget.java,v 1.2 2004/12/07 01:33:36 jdt Exp $
+ * $Id: NullTarget.java,v 1.3 2005/01/26 17:31:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,9 +8,11 @@ package org.astrogrid.slinger.targets;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URISyntaxException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.security.Principal;
-import org.astrogrid.slinger.targets.out.NullOutputStream;
+import org.astrogrid.slinger.SRI;
+import org.astrogrid.slinger.io.NullOutputStream;
 
 /**
  * Convenience null target for testing - output is written out to NullWriter and
@@ -18,20 +20,29 @@ import org.astrogrid.slinger.targets.out.NullOutputStream;
  *
  */
 
-public class NullTarget extends UriTarget {
-
+public class NullTarget implements SRI, TargetIdentifier
+{
+   
    public static final String NULL_TARGET_URI = "target:NullOut";
    
-   public NullTarget() throws URISyntaxException {
-      super(NULL_TARGET_URI);
+   public NullTarget()  {
+      super();
+   }
+   
+   public String toURI() {
+      return NULL_TARGET_URI;
    }
 
    /** All targets must be able to resolve to a stream.  The user is required
     * for permissioning. */
-   public OutputStream resolveOutputStream(Principal user) throws IOException {
+   public OutputStream resolveOutputStream(Principal user)  {
       return new NullOutputStream();
    }
    
+   /** Resolves writer as a wrapper around resolved outputstream */
+   public Writer resolveWriter(Principal user) throws IOException {
+      return new OutputStreamWriter(resolveOutputStream(user));
+   }
    
    /** Used to set the mime type of the data about to be sent to the target. Does nothing. */
    public void setMimeType(String mimeType, Principal user) {
@@ -39,8 +50,17 @@ public class NullTarget extends UriTarget {
 }
 /*
  $Log: NullTarget.java,v $
- Revision 1.2  2004/12/07 01:33:36  jdt
- Merge from PAL_Itn07
+ Revision 1.3  2005/01/26 17:31:57  mch
+ Split slinger out to scapi, swib, etc.
+
+ Revision 1.1.2.6  2005/01/26 14:35:27  mch
+ Separating slinger and scapi
+
+ Revision 1.1.2.5  2004/12/13 15:53:39  mch
+ Moved stuff to IO package and new progress monitoring streams
+
+ Revision 1.1.2.4  2004/12/08 18:37:11  mch
+ Introduced SPI and SPL
 
  Revision 1.1.2.3  2004/11/27 12:47:04  mch
  separated out null outputsream

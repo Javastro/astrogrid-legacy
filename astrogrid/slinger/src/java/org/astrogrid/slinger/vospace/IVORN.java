@@ -1,5 +1,5 @@
 /*
- * $Id: IVORN.java,v 1.2 2004/12/07 01:33:36 jdt Exp $
+ * $Id: IVORN.java,v 1.3 2005/01/26 17:31:57 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,19 +9,21 @@
 
 package org.astrogrid.slinger.vospace;
 
-import java.io.*;
-
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.Principal;
-import org.astrogrid.slinger.StoreFileResolver;
-import org.astrogrid.slinger.sources.SourceIdentifier;
-import org.astrogrid.slinger.targets.TargetIdentifier;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.registry.RegistryException;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
+import org.astrogrid.registry.client.query.RegistryService;
 
 /**
- * International Virtual Observatory Storepoint Resource Name.  An IVORN used to
- * name storepoints - eg files.
- *
+ * International Virtual Observatory Resource Name.  An IVORN names a resource
+ * and is resolved
+ * using Registries
+
  * @author MCH, KMB, KTN, DM, ACD
  */
 
@@ -91,21 +93,15 @@ public class IVORN
 
    /** String representation */
    public String toString() {
+      return toURI();
+   }
+
+   /** Returns the IVORN in URI form */
+   public String toURI() {
       if (fragment == null) {
          return SCHEME+"://"+getPath();
       } else {
          return SCHEME+"://"+getPath()+"#"+fragment;
-      }
-   }
-
-   /** Returns the IVORN in URI form */
-   public URI toUri() {
-      try {
-         return new URI(toString());
-      }
-      catch (URISyntaxException e) {
-         //this should never happen as it shouldn't be possible to create an agsl that isn't
-         throw new RuntimeException("Application error: "+e+" for IVORN "+toString());
       }
    }
 
@@ -122,13 +118,61 @@ public class IVORN
       return aString.toLowerCase().startsWith(SCHEME+"://");
    }
    
+   /**
+    * Given an IVO Storepoint Resource Name, resolves a string using the local
+    * config or Registry (ie this does not work with account ivorns - use Homespace), which will be some
+    * kind of URI (and which may not be alocation - it may be another IVORN)
+    */
+   public String resolve() throws IOException {
+      
+      RegistryService registry = RegistryDelegateFactory.createQuery();
+
+      //used for debug/Principal info - says somethign about where the ivorn has been looked for
+      String lookedIn = "";
+      
+      //look up in config first
+      String key = "ivorn."+getPath();
+      String ms = SimpleConfig.getSingleton().getString(key, null);
+      lookedIn += "Config (key="+key+") ";
+      if (ms != null) {
+         return ms;
+      }
+      
+      //if not found, see if the registry can resolve it
+      try {
+         lookedIn += ", Registry "+registry;
+         String resolvedEndPoint = registry.getEndPointByIdentifier(getPath());
+
+         if (resolvedEndPoint == null) {
+            //if not found, throw an exception
+            throw new FileNotFoundException("Cannot resolve "+this+" from "+lookedIn);
+         }
+         else {
+            //hmmm yes but what have we got back? a myspace endpoint or an http endpoint?
+            //assume myspace for now...
+            LogFactory.getLog(IVORN.class).trace("Registry-Resolved "+this+" to "+resolvedEndPoint+" (from "+registry+")");
+            return resolvedEndPoint;
+         }
+      }
+      catch (RegistryException e) {
+         IOException ioe = new IOException(e+", getting endpoint for '"+this+"' from "+registry);
+         ioe.setStackTrace(e.getStackTrace());
+         throw ioe;
+      }
+   }
 
 }
 
 /*
 $Log: IVORN.java,v $
-Revision 1.2  2004/12/07 01:33:36  jdt
-Merge from PAL_Itn07
+Revision 1.3  2005/01/26 17:31:57  mch
+Split slinger out to scapi, swib, etc.
+
+Revision 1.1.2.5  2005/01/26 14:35:36  mch
+Separating slinger and scapi
+
+Revision 1.1.2.4  2004/12/08 18:37:11  mch
+Introduced SPI and SPL
 
 Revision 1.1.2.3  2004/12/06 21:03:16  mch
 Fixes to resolving homespace

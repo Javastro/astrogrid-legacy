@@ -1,8 +1,8 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/slinger/src/java/org/astrogrid/slinger/mime/Attic/MimeNames.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/12/07 01:33:36 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Author: mch $</cvs:author>
+ * <cvs:date>$Date: 2005/01/26 17:31:56 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  */
 
@@ -39,6 +39,7 @@ public class MimeNames implements MimeTypes  {
       addLookup(HTML,      "HTML");
       addLookup(CSV,       "Comma-Separated");
       addLookup(TSV,       "Tab-Separated");
+      addLookup(FITS,      "FITS");
    }
       
    /**
@@ -93,8 +94,11 @@ public class MimeNames implements MimeTypes  {
 }
 /*
  *   $Log: MimeNames.java,v $
- *   Revision 1.2  2004/12/07 01:33:36  jdt
- *   Merge from PAL_Itn07
+ *   Revision 1.3  2005/01/26 17:31:56  mch
+ *   Split slinger out to scapi, swib, etc.
+ *
+ *   Revision 1.1.2.3  2004/12/08 18:37:11  mch
+ *   Introduced SPI and SPL
  *
  *   Revision 1.1.2.2  2004/11/25 18:28:21  mch
  *   More tarting up

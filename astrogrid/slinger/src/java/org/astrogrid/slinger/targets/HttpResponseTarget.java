@@ -1,5 +1,5 @@
 /*
- * $Id: HttpResponseTarget.java,v 1.2 2004/12/07 01:33:36 jdt Exp $
+ * $Id: HttpResponseTarget.java,v 1.3 2005/01/26 17:31:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,7 +12,7 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.security.Principal;
 import javax.servlet.http.HttpServletResponse;
-import org.astrogrid.slinger.targets.out.NoCloseWriter;
+import org.astrogrid.slinger.io.NoCloseWriter;
 
 /**
  * Where the target is an http response - eg a servlet/JSP output for a browser
@@ -61,8 +61,11 @@ public class HttpResponseTarget implements TargetIdentifier {
 }
 /*
  $Log: HttpResponseTarget.java,v $
- Revision 1.2  2004/12/07 01:33:36  jdt
- Merge from PAL_Itn07
+ Revision 1.3  2005/01/26 17:31:57  mch
+ Split slinger out to scapi, swib, etc.
+
+ Revision 1.1.2.2  2004/12/13 15:53:39  mch
+ Moved stuff to IO package and new progress monitoring streams
 
  Revision 1.1.2.1  2004/11/22 00:46:28  mch
  New Slinger Package

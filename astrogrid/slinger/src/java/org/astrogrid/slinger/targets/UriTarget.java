@@ -1,5 +1,5 @@
 /*
- * $Id: UriTarget.java,v 1.2 2004/12/07 01:33:36 jdt Exp $
+ * $Id: UriTarget.java,v 1.3 2005/01/26 17:31:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -50,6 +50,9 @@ public abstract class UriTarget implements TargetIdentifier {
 }
 /*
  $Log: UriTarget.java,v $
+ Revision 1.3  2005/01/26 17:31:57  mch
+ Split slinger out to scapi, swib, etc.
+
  Revision 1.2  2004/12/07 01:33:36  jdt
  Merge from PAL_Itn07
 
