@@ -1,4 +1,4 @@
-/*$Id: ApplicationsInstallationTest.java,v 1.3 2004/04/19 09:35:24 nw Exp $
+/*$Id: ApplicationsInstallationTest.java,v 1.4 2004/04/21 10:44:05 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,10 @@ import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.scripting.Service;
 import org.astrogrid.workflow.beans.v1.Tool;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 
@@ -44,6 +48,10 @@ public class ApplicationsInstallationTest extends AbstractTestForIntegration {
         delegate = (CommonExecutionConnectorClient)serv.createDelegate();
     } 
     
+    protected String applicationName() {
+        return TESTAPP;
+    }
+    
     protected Service findRequiredService(Iterator apps) {
         while( apps.hasNext() ) { // find the correct one
             Service s = (Service)apps.next();
@@ -61,8 +69,18 @@ public class ApplicationsInstallationTest extends AbstractTestForIntegration {
     
     public void testApplicationsRegistered() throws Exception {        
         ApplicationRegistry reg = ag.getWorkflowManager().getToolRegistry();
-        assertNotNull(reg.getDescriptionFor(TESTAPP));
+        assertNotNull(reg.getDescriptionFor(applicationName()));
     }
+
+    public void testApplicationResolvable() throws Exception {
+        URL requestURL = new URL("http://localhost:8080/astrogrid-jes-SNAPSHOT/backdoor?action=locate&name=" + applicationName());
+        InputStream is = requestURL.openStream();
+        BufferedReader in = new BufferedReader(new InputStreamReader(is));
+        String line = in.readLine();
+        assertNotNull(line);
+        URL endpoint = new URL(line); // checks its a valid url.
+        
+    }    
     
     public void testListApplications() throws Exception {
         ApplicationList results = delegate.listApplications();        
@@ -82,7 +100,7 @@ public class ApplicationsInstallationTest extends AbstractTestForIntegration {
         System.out.println(description);
     }
     
-    /** @todo test returned entry further */
+    
     public void testReturnRegistryEntry() throws Exception {
         String entry = delegate.returnRegistryEntry();
         assertNotNull(entry);
@@ -91,11 +109,12 @@ public class ApplicationsInstallationTest extends AbstractTestForIntegration {
     
     public void testExecute() throws Exception {
         ApplicationRegistry reg = ag.getWorkflowManager().getToolRegistry();
-        ApplicationDescription descr = reg.getDescriptionFor(TESTAPP);
-        assertNotNull("could not get application description for testapp",descr);
+        ApplicationDescription descr = reg.getDescriptionFor(applicationName());
+        assertNotNull("could not get application description",descr);
         Tool tool = descr.createToolFromDefaultInterface();
         assertNotNull("tool is null",tool);
-        descr.validate(tool); // shouold be ready to go, with no further config.
+        populateTool(tool);
+        descr.validate(tool);
         
         JobIdentifierType id = new JobIdentifierType(); // not too bothered about this.
         id.setValue(this.getClass().getName());
@@ -104,11 +123,21 @@ public class ApplicationsInstallationTest extends AbstractTestForIntegration {
       assertNotNull(execId);
       
     }
+
+    /**
+     * @param tool
+     */
+    protected void populateTool(Tool tool) throws Exception{
+        // shouold be ready to go, with no further config.
+    }
 }
 
 
 /* 
 $Log: ApplicationsInstallationTest.java,v $
+Revision 1.4  2004/04/21 10:44:05  nw
+tidied to check applicatrions are resolvable.
+
 Revision 1.3  2004/04/19 09:35:24  nw
 added constants for ivorns of services.
 added test query

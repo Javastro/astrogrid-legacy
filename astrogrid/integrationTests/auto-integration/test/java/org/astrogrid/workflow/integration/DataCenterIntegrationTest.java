@@ -1,4 +1,4 @@
-/*$Id: DataCenterIntegrationTest.java,v 1.7 2004/04/20 14:47:41 nw Exp $
+/*$Id: DataCenterIntegrationTest.java,v 1.8 2004/04/21 10:44:05 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,9 +22,13 @@ import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Iterator;
 
 /** Test  CEA functionality of datacenter.
@@ -55,50 +59,40 @@ public class DataCenterIntegrationTest extends ApplicationsInstallationTest {
         // never reached.
         return null;        
     }
-
-    public void testApplicationsRegistered() throws Exception {        
-        ApplicationRegistry reg = ag.getWorkflowManager().getToolRegistry();
-        assertNotNull(reg.getDescriptionFor(TESTDSA));
+    /**
+     * @see org.astrogrid.workflow.integration.ApplicationsInstallationTest#applicationName()
+     */
+    protected String applicationName() {
+        return TESTDSA;
     }
 
-    /**Override this, as querying a data center requires different params.
-     * @see org.astrogrid.workflow.integration.ApplicationsIntegrationTest#testExecute()
-     */
 
-    public void testExecute() throws Exception {
-        ApplicationRegistry reg = ag.getWorkflowManager().getToolRegistry();
-        ApplicationDescription descr = reg.getDescriptionFor(TESTDSA);
-        assertNotNull("could not get application description for testdsa",descr);
-        Tool tool = descr.createToolFromDefaultInterface();
-        assertNotNull("tool is null",tool);
-        ParameterValue query= (ParameterValue)tool.findXPathValue("input/parameter[name='Query']");
-        assertNotNull(query);
-        InputStream is = this.getClass().getResourceAsStream("DataCenterIntegrationTest-sample-query.xml");
-        assertNotNull(is);
-        StringWriter out = new StringWriter();
-        Piper.pipe(new InputStreamReader(is),out); 
-        query.setValue(out.toString());       
-        
-        ParameterValue target = (ParameterValue)tool.findXPathValue("output/parameter[name='Target']");
-        assertNotNull(target);
-       // Ivorn targetIvorn = new Ivorn(MYSPACE,"/" + user.getUserId() + "/test/DatacenterIntegrationTest.votable.xml");
-       Agsl targetAgsl = new Agsl("myspace:http://localhost:8080/astrogrid-mySpace-SNAPSHOT/services/Manager","frog/DatacenterIntegrationTest.votable");
-        target.setValue(targetAgsl.toString());
-        descr.validate(tool); 
-                
-        JobIdentifierType id = new JobIdentifierType(); // not too bothered about this.
-        id.setValue(this.getClass().getName());
-       String returnEndpoint ="http://localhost:8080/astrogrid-jes-SNAPSHOT/services/JobMonitorService";      
-      String execId = delegate.execute(tool,id,returnEndpoint);
-      assertNotNull(execId);
-      
+    protected void populateTool(Tool tool) throws Exception {
+          ParameterValue query= (ParameterValue)tool.findXPathValue("input/parameter[name='Query']");
+            assertNotNull(query);
+            InputStream is = this.getClass().getResourceAsStream("DataCenterIntegrationTest-sample-query.xml");
+            assertNotNull(is);
+            StringWriter out = new StringWriter();
+            Piper.pipe(new InputStreamReader(is),out); 
+            query.setValue(out.toString());       
+            
+            ParameterValue target = (ParameterValue)tool.findXPathValue("output/parameter[name='Target']");
+            assertNotNull(target);
+           Ivorn targetIvorn = new Ivorn(MYSPACE,"/" + user.getUserId() + "/DatacenterIntegrationTest.votable.xml");
+          // Agsl targetAgsl = new Agsl("myspace:http://localhost:8080/astrogrid-mySpace-SNAPSHOT/services/Manager","frog/DatacenterIntegrationTest.votable");
+            target.setValue(targetIvorn.toString());
     }    
+
+
 
 }
 
 
 /* 
 $Log: DataCenterIntegrationTest.java,v $
+Revision 1.8  2004/04/21 10:44:05  nw
+tidied to check applicatrions are resolvable.
+
 Revision 1.7  2004/04/20 14:47:41  nw
 changed to use an agsl for now
 
