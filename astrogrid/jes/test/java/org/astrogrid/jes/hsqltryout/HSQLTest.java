@@ -1,4 +1,4 @@
-/* $Id: HSQLTest.java,v 1.2 2003/10/29 12:09:17 jdt Exp $
+/* $Id: HSQLTest.java,v 1.3 2003/10/30 18:47:51 jdt Exp $
  * Created on 28-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hsqldb.jdbcDataSource;
 
 import junit.framework.TestCase;
 
@@ -86,9 +88,7 @@ public class HSQLTest extends TestCase {
    * @throws IOException problem loading sql file
    */
   private void createTable() throws SQLException, IOException {
-    Statement statement = conn.createStatement();
-    statement.execute(getResourceAsString("create-test-db.sql"));
-    statement.close();
+    executeSQLscript("create-test-db.sql");
   }
 
   /**
@@ -104,26 +104,25 @@ public class HSQLTest extends TestCase {
     } catch (SQLException expected) {
       return;
     }
-
-    //createTable();
-    //  Statement statement = conn.createStatement();
-
-    //  ResultSet results = statement.executeQuery("SELECT * FROM system_tables");
-    //  for (int i=1;i<10;++i) {
-    //    System.out.print(i);
-    //    System.out.print(results.getString(i));
-    //  }
-    //  System.out.println(results.toString());
   }
   /**
    * put stuff in the table 
-   * @TODO refactor this out
    * @throws SQLException Problems in the database
    * @throws IOException Problems getting the creation sql loaded
    */
   private void loadTable() throws SQLException, IOException {
+    executeSQLscript("loadup-db.sql");
+  }
+
+  /**
+   * Loads up a text file and executes the contents.
+   * @param sqlFileName The file to be loaded
+   * @throws SQLException If the SQL don't work
+   * @throws IOException If the file can't be loaded
+   */
+  private void executeSQLscript(final String sqlFileName) throws SQLException, IOException {
     Statement statement = conn.createStatement();
-    statement.execute((getResourceAsString("loadup-db.sql")));
+    statement.execute((getResourceAsString(sqlFileName)));
     statement.close();
   }
   /**
@@ -153,6 +152,7 @@ public class HSQLTest extends TestCase {
    * @param resource file to be found
    * @return contents of that file as a string
    * @throws IOException if something goes pear shaped trying to find the file
+   * @TODO refactor this away
    */
   private static String getResourceAsString(final String resource)
     throws IOException {
@@ -182,11 +182,29 @@ public class HSQLTest extends TestCase {
     assertNotNull(str);
     return str;
   }
+  
+  /** 
+   * Alternative way of getting a connection we're going to need for 
+   * testing the JobFactory.
+   * @throws SQLException if there's a prob with the database, surprise surprise
+   * @throws IOException if we can't get hold of the SQL scripts to set up the database
+   */
+  public final void testGetConnectionFromDataSource() throws SQLException, IOException {
+
+    jdbcDataSource ds = new jdbcDataSource();
+    ds.setDatabase(".");
+    conn = ds.getConnection("sa","");
+    testCreateTable();
+  }
 
 }
 
 /*
 *$Log: HSQLTest.java,v $
+*Revision 1.3  2003/10/30 18:47:51  jdt
+*Trying out getting a Connection from a DataSource, as is done in
+*the JobController.
+*
 *Revision 1.2  2003/10/29 12:09:17  jdt
 *Some minor tidying to satisfy the coding standards.
 *
