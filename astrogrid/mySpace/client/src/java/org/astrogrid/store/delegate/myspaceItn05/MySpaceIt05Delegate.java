@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
@@ -652,7 +654,28 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
       EntryResults entry = (EntryResults) entries[0];
       
       //this seems to return a localhost
-      return new URL(entry.getEntryUri());
+      URL url = new URL(entry.getEntryUri());
+      
+      String host = url.getHost();
+
+      // If localhost is returned, try to work out the real host name.
+      if(host.equalsIgnoreCase("localhost")) {
+        String protocol = url.getProtocol();
+        int port = url.getPort();
+        String urlPath = url.getPath();
+        String file = url.getFile();
+        
+        try {
+          InetAddress addr = InetAddress.getLocalHost();
+          String fullHostName = addr.getCanonicalHostName();
+          url = new URL(protocol, fullHostName, port, urlPath);
+        }
+        catch(UnknownHostException e) {
+          // Default url will be used.
+        }
+      }
+      
+      return url;
    }
 
 
@@ -1336,6 +1359,9 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 
 /*
 $Log: MySpaceIt05Delegate.java,v $
+Revision 1.3  2004/06/24 11:43:08  gps
+- fixed 'localhost' return problem in getUrl()
+
 Revision 1.2  2004/06/14 23:08:52  jdt
 Merge from branches
 ClientServerSplit_JDT
