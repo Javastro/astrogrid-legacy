@@ -158,7 +158,7 @@ public class AdministrationAction extends AbstractAction
 		{
 	      
       String community_name = null;//CommunityConfig.getCommunityName();
-      System.out.println(community_name);
+      //System.out.println(community_name);
       
       
 		//
@@ -176,7 +176,7 @@ public class AdministrationAction extends AbstractAction
       
 		String action = request.getParameter(ACTION);
       String processAction = request.getParameter(PROCESS_ACTION);
-      
+      System.out.println("the action = " + action + " and processAction = " + processAction);
       if(processAction != null && processAction.length() > 0 ) {
          action = processAction;
       }
@@ -188,6 +188,7 @@ public class AdministrationAction extends AbstractAction
           final Config config = SimpleConfig.getSingleton();
           endpoint = config.getString(ORG_ASTROGRID_PORTAL_REGISTRY_URL, null);
           log.debug("Registry endpoint:"+endpoint);
+          System.out.println("the endpoint = " + endpoint);
           smr = new SecurityManagerResolver(new URL(endpoint));
           ssr = new SecurityServiceResolver(new URL(endpoint));
           pmr = new PolicyManagerResolver(new URL(endpoint));
@@ -199,7 +200,7 @@ public class AdministrationAction extends AbstractAction
 
       
             
-
+      System.out.println("By default at the moment secure connections are turned off");
       String secureConn = "off";//CommunityConfig.getProperty("portal.security","on");
       String securePort = null;//CommunityConfig.getProperty("portal.secure.port",String.valueOf(request.getServerPort()));
       String nonSecurePort = null;//CommunityConfig.getProperty("portal.nonsecure.port",String.valueOf(request.getServerPort()));      
@@ -229,11 +230,6 @@ public class AdministrationAction extends AbstractAction
       }else {
          if(request.isSecure()) {
             try {
-               /*
-               redirect_url = "http://" + request.getServerName() + ":" +
-                            nonSecurePort + request.getRequestURI() + "?" +
-                            request.getQueryString();
-               */
                redirect_url = "http://" + request.getServerName() + ":" +
                                            request.getServerPort() + request.getRequestURI() + "?" +
                                            request.getQueryString();               
@@ -258,11 +254,6 @@ public class AdministrationAction extends AbstractAction
       }
       boolean isAdmin = false;
       LinkedHashMap actionTable = new LinkedHashMap();
-      String comm_account = (String)session.getAttribute("community_account");
-      if(comm_account == null || comm_account.length() <= 0) {
-         comm_account = (String)session.getAttribute("user");
-      }
-
 /*
       try {
          adminDelegate.getPassword(comm_account);
@@ -270,7 +261,7 @@ public class AdministrationAction extends AbstractAction
         e.printStackTrace();  
       }      
 */
-      if(comm_account == null) {
+      if((String)session.getAttribute(SessionKeys.USER) == null || ((String)session.getAttribute(SessionKeys.USER)).trim().length() <= 0 ) {
          actionTable.put(ACTION_INSERT_ACCOUNT,"Insert Account");
       }else {
          actionTable.put(ACTION_CHANGE_PASSWORD,"Change Password");
@@ -507,7 +498,8 @@ public class AdministrationAction extends AbstractAction
          
          SecurityToken st = null;
          try {
-            SecurityServiceDelegate ssd = ssr.resolve(userIvo = new Ivorn(comm_account,null));
+            String ivo_account = (String)session.getAttribute(SessionKeys.COMMUNITY_NAME) + "/" + (String)session.getAttribute(SessionKeys.USER); 
+            SecurityServiceDelegate ssd = ssr.resolve(userIvo = new Ivorn(ivo_account,null));
             smd = smr.resolve(userIvo);
             
             st = ssd.checkPassword((String)session.getAttribute(SessionKeys.USER),password);
