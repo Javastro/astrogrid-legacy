@@ -10,7 +10,7 @@
                 <description><xsl:value-of select="description" /></description>
                 <env-entry-name><xsl:value-of select="env-entry-name" /></env-entry-name>
                 <env-entry-type><xsl:value-of select="env-entry-type" /></env-entry-type>
-                <env-entry-value> org.astrogrid.applications.component.HttpApplicationCEAComponentManager</env-entry-value>
+                <env-entry-value> org.astrogrid.applications.http.HttpApplicationCEAComponentManager</env-entry-value>
         </env-entry>
 </xsl:template>
 
