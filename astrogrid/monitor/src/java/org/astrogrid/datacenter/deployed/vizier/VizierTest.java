@@ -1,4 +1,4 @@
-/*$Id: VizierTest.java,v 1.2 2004/11/08 02:56:13 mch Exp $
+/*$Id: VizierTest.java,v 1.3 2004/11/12 11:30:28 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,7 +29,7 @@ import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.query.SqlQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.slinger.TargetMaker;
+import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.util.DomHelper;
 import org.xml.sax.SAXException;
 
@@ -74,7 +74,7 @@ public class VizierTest extends TestCase {
 
       query.setResultsDef(new ReturnTable(TargetMaker.makeIndicator(responseContainer), QuerySearcher.VOTABLE));
       
-      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, query);
+      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, query, this);
       
       VizierQuerierPlugin plugin = new VizierQuerierPlugin();
       plugin.askQuery(querier.getUser(), query, querier);
@@ -138,6 +138,9 @@ public class VizierTest extends TestCase {
 
 /*
  $Log: VizierTest.java,v $
+ Revision 1.3  2004/11/12 11:30:28  mch
+ Fixed merge
+
  Revision 1.2  2004/11/08 02:56:13  mch
  more tests
 
