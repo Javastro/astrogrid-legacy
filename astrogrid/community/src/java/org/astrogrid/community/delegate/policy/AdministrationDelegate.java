@@ -4,6 +4,7 @@ import org.astrogrid.community.policy.data.GroupData;
 import org.astrogrid.community.policy.data.ResourceData;
 import org.astrogrid.community.policy.data.CommunityData;
 import org.astrogrid.community.policy.data.AccountData;
+import org.astrogrid.community.policy.data.PolicyPermission;
 
 import org.astrogrid.community.policy.server.PolicyManager ;
 import org.astrogrid.community.policy.server.PolicyManagerService ;
@@ -39,6 +40,20 @@ public class AdministrationDelegate {
          service = null;
       }      
    }
+   
+   public PolicyPermission addPermission(String resource, String group, String action)
+      throws Exception
+      {
+      return service.addPermission(resource, group, action) ;
+      }
+      
+   public boolean delPermission(String resource, String group, String action)
+      throws Exception
+      {
+      return service.delPermission(resource, group, action) ;
+      }
+      
+
    
    
    public boolean addGroupMember(String account,String group) throws Exception {
@@ -108,11 +123,6 @@ public class AdministrationDelegate {
    public ResourceData setResource(ResourceData ad) throws Exception {
       return service.setResource(ad);  
    }
-   
-   
-   
-   
-   
    
    
    public ArrayList getAccountGroupList(String account) throws Exception {
