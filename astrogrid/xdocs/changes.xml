@@ -1,0 +1,18 @@
+<document>
+  <properties>
+    <title>Changes since previous release</title>
+    <author email="jdt@roe.ac.uk">John Taylor</author>
+  </properties>
+  <body>
+    <release version="astrogrid-portal-SNAPSHOT" date="16/11/04" description="head rebuild">
+      <action dev="rtp" type="fix" issue="683" >
+        Browsing for Tools picks up Extraneous Material
+      </action>              
+    </release>
+    <release version="0.6.0" date="14/11/04">
+      <action dev="jdt" type="update" description="Iteration 6 Release">
+        What's new in Iteration 6? - To be completed.
+      </action>                   
+    </release>
+  </body>
+</document>
