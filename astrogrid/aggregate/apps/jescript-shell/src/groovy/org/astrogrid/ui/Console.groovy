@@ -13,11 +13,7 @@ import javax.swing.JFileChooser
 import javax.swing.JOptionPane
 import javax.swing.SwingUtilities
 import javax.swing.text.StyleContext
-import org.astrogrid.scripting.Toolbox
-import org.astrogrid.community.beans.v1.*
-import org.astrogrid.store.Ivorn
-import org.astrogrid.community.User
-import org.astrogrid.community.resolver.CommunityPasswordResolver
+import org.astrogrid.ui.script.*;
 
 import org.codehaus.groovy.runtime.InvokerHelper
 
@@ -36,6 +32,7 @@ class Console extends ConsoleSupport {
     scriptList
     scriptFile
     codeBase
+    private String toolboxVersion
 
     private URL helpURL = new URL("http://www.astrogrid.org/maven/docs/HEAD/jes/userguide-architecture.html");
     private boolean dirty
@@ -49,56 +46,40 @@ class Console extends ConsoleSupport {
     }
 
     boolean login() {
-        creds = new Credentials();
-        acc = new Account()
-        group = new Group()
-        group.name = "shell-users"
-        while (acc.name == null || acc.name.size() == 0) {
-	        acc.name = JOptionPane.showInputDialog("Usename:")
+		name = null;
+        while (name == null || name.size() == 0) {
+	        name = JOptionPane.showInputDialog("Usename:")
 	        }
         password = null;
         while (password == null || password.size() ==0) {
 	        password = JOptionPane.showInputDialog("Password:")
 	     }
-	     while (acc.community == null || acc.community.size() ==0) {
-	        acc.community = JOptionPane.showInputDialog("Community:","astrogrid.org")
+	     community = null;
+	     while (community == null || community.size() ==0) {
+	        community = JOptionPane.showInputDialog("Community:","astrogrid.org")
 	     }
-        group.community = acc.community
 
-        creds.account = acc
-        creds.group = group
-
-        // now attempt to login to community.
         try {
-            security = new CommunityPasswordResolver();
-            creds.setSecurityToken(security.checkPassword("ivo://" + acc.community +"/" +  acc.name,password).toString())
-	        } catch (Exception e) {
+            scriptEnv = LoginFactory.login(name,community,password);
+    		createBasicScriptBinding(scriptEnv);
+    		return true;
+            } catch (Exception e) {
 		        e.printStackTrace();
 		        // display swing dialog.
 		        JOptionPane.showMessageDialog(null,"Failed to login\n" + e.getMessage());
 		        return false;
 	        }	     
-        createBasicScriptBinding(new Toolbox(),creds)
-        return true;
     }
 
-    void createBasicScriptBinding(Toolbox toolbox2, Credentials credentials) {
+	/** just adds items from environment bean into shell bindings */
+    void createBasicScriptBinding(ScriptEnvironment env) {
         shell = new GroovyShell();
-        shell.setProperty("astrogrid",toolbox2)
-
-        shell.setProperty("account",credentials.account)
-        String name = credentials.account.name
-        String community = credentials.account.community
-        User u = new User(name,community,credentials.group.name,credentials.securityToken)
-        shell.setProperty("user",u)
-
-        try {
-            shell.setProperty("userIvorn",new Ivorn("ivo://" + community + "/" +  name));
-        } catch (Exception e) {
-            logger.error("URISyntaxException when creating userIvorn.",e);
-        }
-        shell.setProperty("homeIvorn",new Ivorn(community,name,name + "/"));
-
+        shell.setProperty("astrogrid",env.astrogrid);
+        shell.setProperty("user",env.user);
+        shell.setProperty("account",env.account);
+        shell.setProperty("userIvorn",env.userIvorn);
+        shell.setProperty("homeIvorn",env.homeIvorn);
+		toolboxVersion = env.astrogrid.version;
     }
 
 
@@ -326,7 +307,7 @@ class Console extends ConsoleSupport {
 
     showAbout(EventObject evt = null) {
         version = InvokerHelper.getVersion()
-        pane = swing.optionPane(message:'Console for evaluating Groovy JEScripts\nVersion ' + version + "\n Astrogrid Toolbox Version: " + (new Toolbox()).version)
+        pane = swing.optionPane(message:'Console for evaluating Groovy JEScripts\nVersion ' + version + "\n Astrogrid Toolbox Version: " + toolboxVersion)
         dialog = pane.createDialog(frame, 'About JEScript Console')
         dialog.show()
     }
