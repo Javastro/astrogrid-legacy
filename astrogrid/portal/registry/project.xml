@@ -10,7 +10,7 @@
   <extend>../project.xml</extend>
   
   <id>astrogrid-portal-datacenter</id>
-  <name>AstroGrid Portal DataCenter</name>
+  <name>AstroGrid Portal Registry</name>
 
   <dependencies>
     <!-- Common -->
@@ -23,15 +23,6 @@
       </properties>
     </dependency>
 
-    <!-- Datacenter -->
-    <dependency>
-      <groupId>astrogrid-datacenter</groupId>
-      <artifactId>astrogrid-datacenter-client</artifactId>
-      <version>SNAPSHOT</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
 
     <!-- MySpace -->
     <dependency>

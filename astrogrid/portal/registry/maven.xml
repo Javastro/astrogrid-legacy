@@ -15,7 +15,7 @@
     <j:set var="webapp.dir" value="${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
     
     <j:set var="webapp.dir.mount" value="${webapp.dir}/mount"/>
-    <j:set var="webapp.dir.mount.component" value="${webapp.dir.mount}/datacenter"/>
+    <j:set var="webapp.dir.mount.component" value="${webapp.dir.mount}/registry"/>
     <j:set var="webapp.dir.mount.component.web" value="${webapp.dir.mount.component}/web"/>
 
     <ant:mkdir dir="${webapp.dir.mount}"/>
