@@ -1,4 +1,4 @@
-/* $Id: ConfiguratorTest.java,v 1.1 2003/12/11 18:19:10 jdt Exp $
+/* $Id: ConfiguratorTest.java,v 1.2 2003/12/11 18:55:20 jdt Exp $
  * Created on 11-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -105,7 +105,7 @@ public final class ConfiguratorTest extends TestCase {
    * @throws NamingException if there's problems with the naming service
    * @throws IOException if the URL isn't working
    */
-  public void testGetAPropertyFromURLConfigurator() throws NamingException, IOException   {
+  public void testGetAPropertyFromURLConfigurator() throws NamingException, IOException, AstroGridException   {
     final String expect = "asdf";
     final String key = "BAR";
     final String category = "FOO";
@@ -120,9 +120,11 @@ public final class ConfiguratorTest extends TestCase {
     String jndiName = configurator.getJNDIName();
 
     Context ctx = NamingManager.getInitialContext(null);
-    ctx.bind(jndiName, url);
-    assertEquals("Object bound OK", url, ctx.lookup(jndiName));
-        
+    ctx.bind(jndiName, url.toString());
+    assertEquals("Object bound OK", url.toString(), ctx.lookup(jndiName));
+    
+    configurator.checkPropertiesLoaded();    
+       
     assertEquals(
       "Property didn't match",
       expect,
@@ -155,8 +157,8 @@ public final class ConfiguratorTest extends TestCase {
       // expected 
     }
     
-    ctx.bind(jndiName, crapURL);
-    assertEquals("Object bound OK", crapURL, ctx.lookup(jndiName));
+    ctx.bind(jndiName, crapURL.toString());
+    assertEquals("Object bound OK", crapURL.toString(), ctx.lookup(jndiName));
         
     try {
       new DummyCrapURLConfigurator().checkPropertiesLoaded();
@@ -202,6 +204,10 @@ public final class ConfiguratorTest extends TestCase {
 
 /*
 *$Log: ConfiguratorTest.java,v $
+*Revision 1.2  2003/12/11 18:55:20  jdt
+*Adapted the configurator to look for the properties file at a URL supplied in a
+*JNDI lookup service.
+*
 *Revision 1.1  2003/12/11 18:19:10  jdt
 *New files to test the modifications to the Configurator which allow it
 *to load properties files from URLs
