@@ -1,4 +1,4 @@
-Deploying the Astrogrid test Portal                              BKM 20030326
+Deploying the Astrogrid test Portal                              BKM 20030327
 
 1) Install apache tomcat (current version is 4.1.18)
 
@@ -9,10 +9,12 @@ Deploying the Astrogrid test Portal                              BKM 20030326
 4) Point browser at http:/<machine name>:8080/Astrogrid
 
 The Astrogrid test portlet is on the home (anon user) page. This page cannot
-be edited to add or remove portlets. If you wish to do this login as one
-of turbine/turbine or astrogrid/astrogrid or create your OWN username. To
-do this attempt to login with an unknown username and the option to "create
-an account" will appear.
+be edited to add or remove portlets. The user astrogrid (same password)
+exists as an example of a configurable page. This contains BOTH the Registry
+portlet and one developed at RAL to invoke the CDS Aladdin applet. Or you 
+can create create your OWN username and add portlets in any style and 
+number you like. To do this attempt to login with an unknown username and 
+a dialog box with the option to "create an account" will appear.
 
 All other source files in this directory are presented for reference only.
-An ant build file to use them sensible will appear soon!
+An ant build file to use them sensibly will appear soon!

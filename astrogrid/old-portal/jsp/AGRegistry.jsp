@@ -7,25 +7,30 @@
     String[] jspheaders = (String[]) request.getAttribute("AGRegistry");
     String taskoutput = (String) request.getAttribute("RegOutput");
     String agpeid = (String) request.getAttribute("ag_peid");
-    String message = null;
+	String agserver = (String) request.getAttribute("ag_server");
+	if ( agserver == null ) agserver = "";
+	String agport = (String) request.getAttribute("ag_port");
+	if ( agport == null ) agport = "";
 %>
 
 <FORM METHOD="POST" ACTION="<jetspeed:dynamicUri/>">
   <INPUT TYPE="hidden" NAME="ag_peid" VALUE="<%=agpeid%>">
   Enter Web Server:
-  <SELECT name="WebServerOpt">
+  <SELECT name="WebServerOpt" value="<%=agserver%>">
       <OPTGROUP label="Web Servers">
-	  <OPTION label="other"> Specify</OPTION>
-          <OPTION label="stargrid1"> stargrid1</OPTION>
-	  <OPTION label="rlspc14">   rlspc14</OPTION>
+	  <OPTION label="other"> </OPTION>
+      <OPTION label="leicester"> Leicester </OPTION>
+      <OPTION label="stargrid1"> stargrid1 </OPTION>
+	  <OPTION label="Roy's PC">   rlspc14 </OPTION>
       </OPTGROUP>
    </SELECT>
-   <INPUT name="WebServer" type = "TEXT" >
-   Port Number: <INPUT name="port" type="TEXT" value="8080">
+   <INPUT name="WebServer" type = "TEXT" value="<%=agserver%>">
+   Port Number: <INPUT name="port" type="TEXT" value="<%=agport%>">
+
   <P> Check a Registry Query Type and enter any parameters below. <BR/>
   <INPUT TYPE="radio" NAME="QueryType", VALUE="queryServices">             Query Services
   <BR/>
-  <INPUT TYPE="radio" NAME="QueryType", VALUE="listAllServices" checked>   List All Services
+  <INPUT TYPE="radio" NAME="QueryType", VALUE="listAllServices">           List All Services
   <BR/>
   <INPUT TYPE="radio" NAME="QueryType", VALUE="listServiceMetadata">       List Service Metadata
   <BR/>
