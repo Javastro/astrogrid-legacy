@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/java/org/astrogrid/community/install/ant/CommunityRegistryTask.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: KevinBenson $</cvs:author>
+ * <cvs:date>$Date: 2004/07/23 11:56:09 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityRegistryTask.java,v $
+ *   Revision 1.5  2004/07/23 11:56:09  KevinBenson
+ *   Small change to use the new RegistryUpdate delegate and new REgistryUpdate endpoint
+ *
  *   Revision 1.4  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -24,7 +27,7 @@ import java.net.URL ;
 import org.apache.tools.ant.Task ;
 import org.apache.tools.ant.BuildException ;
 
-import org.astrogrid.registry.client.admin.RegistryAdminService ;
+import org.astrogrid.registry.client.admin.UpdateRegistry ;
 
 /**
  * An Ant task to register a Community service woth a remote Registry.
@@ -139,11 +142,18 @@ public class CommunityRegistryTask
         try {
             //
             // Create our RegistryAdminService client.
+            /*
             RegistryAdminService registry = new RegistryAdminService(
                 new URL(
                     this.registry
                     )
                 ) ;
+                */
+            UpdateRegistry registry = new UpdateRegistry(
+              new URL(
+                 this.registry
+              )
+            );
             //
             // Send the document to the service.
             registry.updateFromFile(

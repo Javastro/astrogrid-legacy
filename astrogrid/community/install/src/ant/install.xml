@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/ant/install.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/16 14:58:34 $</cvs:date>
-    | <cvs:version>$Revision: 1.14 $</cvs:version>
+    | <cvs:author>$Author: KevinBenson $</cvs:author>
+    | <cvs:date>$Date: 2004/07/23 11:56:09 $</cvs:date>
+    | <cvs:version>$Revision: 1.15 $</cvs:version>
     | <cvs:log>
     |   $Log: install.xml,v $
+    |   Revision 1.15  2004/07/23 11:56:09  KevinBenson
+    |   Small change to use the new RegistryUpdate delegate and new REgistryUpdate endpoint
+    |
     |   Revision 1.14  2004/07/16 14:58:34  dave
     |   Merged development branch, dave-dev-200407161516, into HEAD
     |
@@ -62,7 +65,7 @@
         | Default Registry endpoints.
         +-->
     <property name="org.astrogrid.registry.url"   value="http://localhost:8080/astrogrid-registry-SNAPSHOT/services/Registry"/>
-    <property name="org.astrogrid.registry.admin" value="http://localhost:8080/astrogrid-registry-SNAPSHOT/services/RegistryAdmin"/>
+    <property name="org.astrogrid.registry.admin" value="http://localhost:8080/astrogrid-registry-SNAPSHOT/services/RegistryUpdate"/>
 
     <!--+
         | Default Tomcat properties.
