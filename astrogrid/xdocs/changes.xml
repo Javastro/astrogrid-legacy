@@ -4,7 +4,7 @@
     <author email="jdt@roe.ac.uk">John Taylor</author>
   </properties>
   <body>
-    <release version="TBD incs. 0.7-b000s, 0.7-b001o" date="7/12/04">
+    <release version="Baseline-20041208" date="7/12/04">
         <action dev="nw" type="fix" issue="776">
             Summary objects return more data.
         </action>
