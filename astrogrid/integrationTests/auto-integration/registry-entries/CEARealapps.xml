@@ -1,308 +1,569 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<VODescription xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns="http://www.ivoa.net/xml/VOResource/v0.9">
-    <Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaApplicationType">
-        <Identifier>
-            <AuthorityID>@REGAUTHORITY@</AuthorityID>
-            <ResourceKey>SExtractor</ResourceKey>
-        </Identifier>
-        <Title>SExtractor</Title>
-        <ShortName>SExtractor</ShortName>
-        <Summary>
-            <Description>This is part of the astrogrid CEA.</Description>
-            <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</ReferenceURL>
-        </Summary>
-        <Type>Other</Type>
-        <Curation>
-            <Publisher>
-                <Title>Astrogrid</Title>
-                <Description>blah blab</Description>
-                <ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
-            </Publisher>
-            <Contact>
-                <Name>Paul Harrison</Name>
-                <Email>pah@jb.man.ac.uk</Email>
-            </Contact>
-            <Date role="representative">2004-03-26</Date>
-            <Creator>
-                <Name>Astrogrid</Name>
-                <Logo>??</Logo>
-            </Creator>
-            <Version>Iteration 5</Version>
-        </Curation>
-        <Subject>???</Subject>
-        <cea:ApplicationDefinition>
-            <cea:Parameters>
-                <cea:ParameterDefinition name="DetectionImage" type="binary">
-                    <ns1:UI_Name
-                        xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Detection Image</ns1:UI_Name>
-                    <ns2:UI_Description
-                        xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The
-                        image that is used to detect sources. Basic
-                        position,                 shape and size
-                        informtaion is derived from this image</ns2:UI_Description>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="PhotoImage" type="binary">
-                    <ns3:UI_Name
-                        xmlns:ns3="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Measurement Image</ns3:UI_Name>
-                    <ns4:UI_Description
-                        xmlns:ns4="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The
-                        Image that is used to measure photometric parameters</ns4:UI_Description>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="config_file" type="text">
-                    <ns5:UI_Name
-                        xmlns:ns5="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Configuration File</ns5:UI_Name>
-                    <ns6:UI_Description
-                        xmlns:ns6="http://www.astrogrid.org/schema/AGParameterDefinition/v1">File
-                        containing the main configuration parameters for SExtractor</ns6:UI_Description>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="PARAMETERS_NAME" type="text">
-                    <ns7:UI_Name
-                        xmlns:ns7="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Parameter File</ns7:UI_Name>
-                    <ns8:UI_Description
-                        xmlns:ns8="http://www.astrogrid.org/schema/AGParameterDefinition/v1">A
-                        File containing the list of catalogue paramters
-                        that                 should be computed</ns8:UI_Description>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="CATALOG_NAME" type="text">
-                    <ns9:UI_Name
-                        xmlns:ns9="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Derived
-                        output catalogue</ns9:UI_Name>
-                    <ns10:UI_Description
-                        xmlns:ns10="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The
-                        catalogue of images derived from the input images</ns10:UI_Description>
-                </cea:ParameterDefinition>
-            </cea:Parameters>
-            <cea:Interfaces>
-                <ns11:Interface name="Simple" xmlns:ns11="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
-                    <ns11:input>
-                        <ns11:pref ref="DetectionImage"/>
-                        <ns11:pref ref="PhotoImage"/>
-                        <ns11:pref ref="config_file"/>
-                        <ns11:pref ref="PARAMETERS_NAME"/>
-                    </ns11:input>
-                    <ns11:output>
-                        <ns11:pref ref="CATALOG_NAME"/>
-                    </ns11:output>
-                </ns11:Interface>
-            </cea:Interfaces>
-        </cea:ApplicationDefinition>
-    </Resource>
-    <Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaApplicationType">
-        <Identifier>
-            <AuthorityID>@REGAUTHORITY@</AuthorityID>
-            <ResourceKey>HyperZ</ResourceKey>
-        </Identifier>
-        <Title>HyperZ</Title>
-        <ShortName>HyperZ</ShortName>
-        <Summary>
-            <Description>This is part of the astrogrid CEA.</Description>
-            <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</ReferenceURL>
-        </Summary>
-        <Type>Other</Type>
-        <Curation>
-            <Publisher>
-                <Title>Astrogrid</Title>
-                <Description>blah blab</Description>
-                <ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
-            </Publisher>
-            <Contact>
-                <Name>Paul Harrison</Name>
-                <Email>pah@jb.man.ac.uk</Email>
-            </Contact>
-            <Date role="representative">2004-03-26</Date>
-            <Creator>
-                <Name>Astrogrid</Name>
-                <Logo>??</Logo>
-            </Creator>
-            <Version>Iteration 5</Version>
-        </Curation>
-        <Subject>???</Subject>
-        <cea:ApplicationDefinition>
-            <cea:Parameters>
-                <cea:ParameterDefinition name="config_file" type="text">
-                    <ns12:UI_Name
-                        xmlns:ns12="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Configuration File</ns12:UI_Name>
-                    <ns13:UI_Description
-                        xmlns:ns13="http://www.astrogrid.org/schema/AGParameterDefinition/v1">A
-                        HyperZ configuration file</ns13:UI_Description>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="input_catalog" type="text">
-                    <ns14:UI_Name
-                        xmlns:ns14="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Magnitude Catalogue</ns14:UI_Name>
-                    <ns15:UI_Description
-                        xmlns:ns15="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The
-                        input catalogue of measured magnitude</ns15:UI_Description>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="output_catalog" type="text">
-                    <ns16:UI_Name
-                        xmlns:ns16="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Redshift Catalogue</ns16:UI_Name>
-                    <ns17:UI_Description
-                        xmlns:ns17="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The
-                        catalogue of estimated redshifts</ns17:UI_Description>
-                </cea:ParameterDefinition>
-            </cea:Parameters>
-            <cea:Interfaces>
-                <ns18:Interface name="simple" xmlns:ns18="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
-                    <ns18:input>
-                        <ns18:pref ref="config_file"/>
-                        <ns18:pref ref="input_catalog"/>
-                    </ns18:input>
-                    <ns18:output>
-                        <ns18:pref ref="output_catalog"/>
-                    </ns18:output>
-                </ns18:Interface>
-            </cea:Interfaces>
-        </cea:ApplicationDefinition>
-    </Resource>
-    <Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaApplicationType">
-        <Identifier>
-            <AuthorityID>@REGAUTHORITY@</AuthorityID>
-            <ResourceKey>CrossMatcher</ResourceKey>
-        </Identifier>
-        <Title>CrossMatcher</Title>
-        <ShortName>CrossMatcher</ShortName>
-        <Summary>
-            <Description>This is part of the astrogrid CEA.</Description>
-            <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</ReferenceURL>
-        </Summary>
-        <Type>Other</Type>
-        <Curation>
-            <Publisher>
-                <Title>Astrogrid</Title>
-                <Description>blah blab</Description>
-                <ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
-            </Publisher>
-            <Contact>
-                <Name>Paul Harrison</Name>
-                <Email>pah@jb.man.ac.uk</Email>
-            </Contact>
-            <Date role="representative">2004-03-26</Date>
-            <Creator>
-                <Name>Astrogrid</Name>
-                <Logo>??</Logo>
-            </Creator>
-            <Version>Iteration 5</Version>
-        </Curation>
-        <Subject>???</Subject>
-        <cea:ApplicationDefinition>
-            <cea:Parameters>
-                <cea:ParameterDefinition name="targets" type="VOTable">
-                    <ns19:UI_Name
-                        xmlns:ns19="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Target votable</ns19:UI_Name>
-                    <ns20:UI_Description
-                        xmlns:ns20="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The
-                        VOTable file containing the target sources</ns20:UI_Description>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="matches" type="VOTable">
-                    <ns21:UI_Name
-                        xmlns:ns21="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Match VOTable</ns21:UI_Name>
-                    <ns22:UI_Description
-                        xmlns:ns22="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The
-                        VOTable file containing the sources to match</ns22:UI_Description>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="merged_output" type="VOTable">
-                    <ns23:UI_Name
-                        xmlns:ns23="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Resulting VOTable</ns23:UI_Name>
-                    <ns24:UI_Description
-                        xmlns:ns24="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The
-                        VOTable file containing result of the match</ns24:UI_Description>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="matchRadius" type="double">
-                    <ns25:UI_Name
-                        xmlns:ns25="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Match Radius</ns25:UI_Name>
-                    <ns26:UI_Description xmlns:ns26="http://www.astrogrid.org/schema/AGParameterDefinition/v1">??</ns26:UI_Description>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="radMax" type="double">
-                    <ns27:UI_Name
-                        xmlns:ns27="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Maximum
-                        search radius</ns27:UI_Name>
-                    <ns28:UI_Description xmlns:ns28="http://www.astrogrid.org/schema/AGParameterDefinition/v1">??</ns28:UI_Description>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="output" type="text">
-                    <ns29:UI_Name
-                        xmlns:ns29="http://www.astrogrid.org/schema/AGParameterDefinition/v1">output type</ns29:UI_Name>
-                    <ns30:UI_Description
-                        xmlns:ns30="http://www.astrogrid.org/schema/AGParameterDefinition/v1">This
-                        can be one of HTML VOTable of Ascii, with the
-                        default                 being VOTable</ns30:UI_Description>
-                    <agpd:DefaultValue xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">VOTable</agpd:DefaultValue>
-                </cea:ParameterDefinition>
-                <cea:ParameterDefinition name="maxMatches" type="integer">
-                    <ns31:UI_Name
-                        xmlns:ns31="http://www.astrogrid.org/schema/AGParameterDefinition/v1">maximum
-                        number of matches per target</ns31:UI_Name>
-                    <ns32:UI_Description
-                        xmlns:ns32="http://www.astrogrid.org/schema/AGParameterDefinition/v1">maximum
-                        number of matches per target</ns32:UI_Description>
-                </cea:ParameterDefinition>
-            </cea:Parameters>
-            <cea:Interfaces>
-                <ns33:Interface name="simple" xmlns:ns33="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
-                    <ns33:input>
-                        <ns33:pref ref="targets" maxoccurs="0"/>
-                        <ns33:pref ref="matches" maxoccurs="0"/>
-                    </ns33:input>
-                    <ns33:output>
-                        <ns33:pref ref="merged_output"/>
-                    </ns33:output>
-                </ns33:Interface>
-            </cea:Interfaces>
-        </cea:ApplicationDefinition>
-    </Resource>
-    <Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaServiceType">
-        <Identifier>
-            <AuthorityID>@REGAUTHORITY@</AuthorityID>
-            <ResourceKey>JBOApps</ResourceKey>
-        </Identifier>
-        <Title>TemplateEntry</Title>
-        <ShortName>TemplateEntry</ShortName>
-        <Summary>
-            <Description>This is part of the astrogrid CEA. This applications are stored at JBO</Description>
-            <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</ReferenceURL>
-        </Summary>
-        <Type>Other</Type>
-        <Curation>
-            <Publisher>
-                <Title>Astrogrid</Title>
-                <Description>blah blab</Description>
-                <ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
-            </Publisher>
-            <Contact>
-                <Name>Paul Harrison</Name>
-                <Email>pah@jb.man.ac.uk</Email>
-            </Contact>
-            <Date role="representative">2004-03-26</Date>
-            <Creator>
-                <Name>Astrogrid</Name>
-                <Logo>??</Logo>
-            </Creator>
-            <Version>Iteration 5</Version>
-        </Curation>
-        <Subject>???</Subject>
-        <Capability>
-            <StandardURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</StandardURL>
-            <StandardID>
-                <AuthorityID>astrogrid.og</AuthorityID>
-                <ResourceKey>CommonExecutionArchitucture</ResourceKey>
-            </StandardID>
-        </Capability>
-        <Interface>
-            <Invocation>WebService</Invocation>
-            <AccessURL use="base">http://astrogrid.jb.man.ac.uk:8080/astrogrid-applications-SNAPSHOT/services/CommonExecutionConnectorService</AccessURL>
-        </Interface>
-        <cea:ManagedApplications>
-            <cea:ApplicationReference>
-                <AuthorityID>@REGAUTHORITY@</AuthorityID>
-                <ResourceKey>SExtractor</ResourceKey>
-            </cea:ApplicationReference>
-            <cea:ApplicationReference>
-                <AuthorityID>@REGAUTHORITY@</AuthorityID>
-                <ResourceKey>HyperZ</ResourceKey>
-            </cea:ApplicationReference>
-            <cea:ApplicationReference>
-                <AuthorityID>@REGAUTHORITY@</AuthorityID>
-                <ResourceKey>CrossMatcher</ResourceKey>
-            </cea:ApplicationReference>
-        </cea:ManagedApplications>
-    </Resource>
-</VODescription>
+<vr:VODescription xmlns="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" 
+	xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" 
+	xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" 
+	xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9">
+	<vr:Resource status="active" xsi:type="cea:CeaApplicationType" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<vr:Identifier>
+			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+			<vr:ResourceKey>CrossMatcher</vr:ResourceKey>
+		</vr:Identifier>
+		<vr:Title>TemplateEntry</vr:Title>
+		<vr:ShortName>TemplateEntry</vr:ShortName>
+		<vr:Summary>
+			<vr:Description>This is part of the astrogrid CEA.</vr:Description>
+			<vr:ReferenceURL>
+				http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+		</vr:Summary>
+		<vr:Type>Other</vr:Type>
+		<vr:Curation>
+			<vr:Publisher>
+				<vr:Title>Astrogrid</vr:Title>
+				<vr:Description>blah blab</vr:Description>
+				<vr:ReferenceURL>http://www.astrogrid.org/</vr:ReferenceURL>
+			</vr:Publisher>
+			<vr:Contact>
+				<vr:Name>Paul Harrison</vr:Name>
+				<vr:Email>pah@jb.man.ac.uk</vr:Email>
+			</vr:Contact>
+			<vr:Date role="representative">2004-03-26</vr:Date>
+			<vr:Creator>
+				<vr:Name>Astrogrid</vr:Name>
+				<vr:Logo>??</vr:Logo>
+			</vr:Creator>
+			<vr:Version>Iteration 5</vr:Version>
+		</vr:Curation>
+		<vr:Subject>???</vr:Subject>
+		<cea:ApplicationDefinition>
+			<cea:Parameters>
+				<cea:ParameterDefinition name="matches" type="VOTable" 
+					>
+					<ceapd:UI_Name>Match VOTable</ceapd:UI_Name>
+					<ceapd:UI_Description>The VOTable file containing the 
+						sources to match</ceapd:UI_Description>
+					<ceapd:UCD></ceapd:UCD>
+					<ceapd:DefaultValue></ceapd:DefaultValue>
+					<ceapd:Units></ceapd:Units>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="output" type="text" 
+					>
+					<ceapd:UI_Name>output type</ceapd:UI_Name>
+					<ceapd:UI_Description>This can be one of HTML VOTable of 
+						Ascii, with the default being 
+						VOTable</ceapd:UI_Description>
+					<ceapd:UCD></ceapd:UCD>
+					<ceapd:DefaultValue>VOTable</ceapd:DefaultValue>
+					<ceapd:Units></ceapd:Units>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="merged_output" type="VOTable" 
+					>
+					<ceapd:UI_Name>Resulting VOTable</ceapd:UI_Name>
+					<ceapd:UI_Description>The VOTable file containing result of 
+						the match</ceapd:UI_Description>
+					<ceapd:UCD></ceapd:UCD>
+					<ceapd:DefaultValue></ceapd:DefaultValue>
+					<ceapd:Units></ceapd:Units>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="maxMatches" type="integer" 
+					>
+					<ceapd:UI_Name>maximum number of matches per 
+						target</ceapd:UI_Name>
+					<ceapd:UI_Description>maximum number of matches per 
+						target</ceapd:UI_Description>
+					<ceapd:UCD></ceapd:UCD>
+					<ceapd:DefaultValue></ceapd:DefaultValue>
+					<ceapd:Units></ceapd:Units>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="targets" type="VOTable" 
+					>
+					<ceapd:UI_Name>Target votable</ceapd:UI_Name>
+					<ceapd:UI_Description>The VOTable file containing the 
+						target sources</ceapd:UI_Description>
+					<ceapd:UCD></ceapd:UCD>
+					<ceapd:DefaultValue></ceapd:DefaultValue>
+					<ceapd:Units></ceapd:Units>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="matchRadius" type="double" 
+					>
+					<ceapd:UI_Name>Match Radius</ceapd:UI_Name>
+					<ceapd:UI_Description>??</ceapd:UI_Description>
+					<ceapd:UCD></ceapd:UCD>
+					<ceapd:DefaultValue></ceapd:DefaultValue>
+					<ceapd:Units></ceapd:Units>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="radMax" type="double" 
+					>
+					<ceapd:UI_Name>Maximum search radius</ceapd:UI_Name>
+					<ceapd:UI_Description>??</ceapd:UI_Description>
+					<ceapd:UCD></ceapd:UCD>
+					<ceapd:DefaultValue></ceapd:DefaultValue>
+					<ceapd:Units></ceapd:Units>
+				</cea:ParameterDefinition>
+			</cea:Parameters>
+			<cea:Interfaces>
+				<ceab:Interface name="simple">
+					<ceab:input>
+						<ceab:pref ref="matches" minoccurs="1" maxoccurs="0"/>
+						<ceab:pref ref="targets" minoccurs="1" maxoccurs="0"/>
+					</ceab:input>
+					<ceab:output>
+						<ceab:pref ref="merged_output" minoccurs="1" 
+							maxoccurs="1"/>
+					</ceab:output>
+				</ceab:Interface>
+			</cea:Interfaces>
+		</cea:ApplicationDefinition>
+	</vr:Resource>
+	
+	<vr:Resource status="active" xsi:type="cea:CeaApplicationType" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<vr:Identifier>
+			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+			<vr:ResourceKey>BPZ</vr:ResourceKey>
+		</vr:Identifier>
+		<vr:Title>TemplateEntry</vr:Title>
+		<vr:ShortName>TemplateEntry</vr:ShortName>
+		<vr:Summary>
+			<vr:Description>This is part of the astrogrid CEA.</vr:Description>
+			<vr:ReferenceURL>
+				http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+		</vr:Summary>
+		<vr:Type>Other</vr:Type>
+		<vr:Curation>
+			<vr:Publisher>
+				<vr:Title>Astrogrid</vr:Title>
+				<vr:Description>blah blab</vr:Description>
+				<vr:ReferenceURL>http://www.astrogrid.org/</vr:ReferenceURL>
+			</vr:Publisher>
+			<vr:Contact>
+				<vr:Name>Paul Harrison</vr:Name>
+				<vr:Email>pah@jb.man.ac.uk</vr:Email>
+			</vr:Contact>
+			<vr:Date role="representative">2004-03-26</vr:Date>
+			<vr:Creator>
+				<vr:Name>Astrogrid</vr:Name>
+				<vr:Logo>??</vr:Logo>
+			</vr:Creator>
+			<vr:Version>Iteration 5</vr:Version>
+		</vr:Curation>
+		<vr:Subject>???</vr:Subject>
+		<cea:ApplicationDefinition>
+			<cea:Parameters/>
+			<cea:Interfaces>
+				<ceab:Interface name="">
+					<ceab:input/>
+					<ceab:output/>
+				</ceab:Interface>
+			</cea:Interfaces>
+		</cea:ApplicationDefinition>
+	</vr:Resource>
+	
+	<vr:Resource status="active" xsi:type="cea:CeaApplicationType" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<vr:Identifier>
+			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+			<vr:ResourceKey>HyperZ</vr:ResourceKey>
+		</vr:Identifier>
+		<vr:Title>TemplateEntry</vr:Title>
+		<vr:ShortName>TemplateEntry</vr:ShortName>
+		<vr:Summary>
+			<vr:Description>This is part of the astrogrid CEA.</vr:Description>
+			<vr:ReferenceURL>
+				http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+		</vr:Summary>
+		<vr:Type>Other</vr:Type>
+		<vr:Curation>
+			<vr:Publisher>
+				<vr:Title>Astrogrid</vr:Title>
+				<vr:Description>blah blab</vr:Description>
+				<vr:ReferenceURL>http://www.astrogrid.org/</vr:ReferenceURL>
+			</vr:Publisher>
+			<vr:Contact>
+				<vr:Name>Paul Harrison</vr:Name>
+				<vr:Email>pah@jb.man.ac.uk</vr:Email>
+			</vr:Contact>
+			<vr:Date role="representative">2004-03-26</vr:Date>
+			<vr:Creator>
+				<vr:Name>Astrogrid</vr:Name>
+				<vr:Logo>??</vr:Logo>
+			</vr:Creator>
+			<vr:Version>Iteration 5</vr:Version>
+		</vr:Curation>
+		<vr:Subject>???</vr:Subject>
+		<cea:ApplicationDefinition>
+			<cea:Parameters>
+				<cea:ParameterDefinition name="output_catalog" type="VOTable" 
+					>
+					<ceapd:UI_Name>Redshift Catalogue</ceapd:UI_Name>
+					<ceapd:UI_Description>The catalogue of estimated 
+						redshifts</ceapd:UI_Description>
+					<ceapd:UCD></ceapd:UCD>
+					<ceapd:DefaultValue></ceapd:DefaultValue>
+					<ceapd:Units></ceapd:Units>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="config_file" type="binary" 
+					>
+					<ceapd:UI_Name>Configuration File</ceapd:UI_Name>
+					<ceapd:UI_Description>A HyperZ configuration 
+						file</ceapd:UI_Description>
+					<ceapd:UCD></ceapd:UCD>
+					<ceapd:DefaultValue></ceapd:DefaultValue>
+					<ceapd:Units></ceapd:Units>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="input_catalog" type="VOTable" 
+					>
+					<ceapd:UI_Name>Magnitude Catalogue</ceapd:UI_Name>
+					<ceapd:UI_Description>The input catalogue of measured 
+						magnitude</ceapd:UI_Description>
+					<ceapd:UCD></ceapd:UCD>
+					<ceapd:DefaultValue></ceapd:DefaultValue>
+					<ceapd:Units></ceapd:Units>
+				</cea:ParameterDefinition>
+			</cea:Parameters>
+			<cea:Interfaces>
+				<ceab:Interface name="simple">
+					<ceab:input>
+						<ceab:pref ref="config_file" minoccurs="1" 
+							maxoccurs="1"/>
+						<ceab:pref ref="input_catalog" minoccurs="1" 
+							maxoccurs="1"/>
+					</ceab:input>
+					<ceab:output>
+						<ceab:pref ref="output_catalog" minoccurs="1" 
+							maxoccurs="1"/>
+					</ceab:output>
+				</ceab:Interface>
+			</cea:Interfaces>
+		</cea:ApplicationDefinition>
+	</vr:Resource>
+	<vr:Resource status="active" xsi:type="cea:CeaApplicationType" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<vr:Identifier>
+			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+			<vr:ResourceKey>SExtractor</vr:ResourceKey>
+		</vr:Identifier>
+		<vr:Title>TemplateEntry</vr:Title>
+		<vr:ShortName>TemplateEntry</vr:ShortName>
+		<vr:Summary>
+			<vr:Description>This is part of the astrogrid CEA.</vr:Description>
+			<vr:ReferenceURL>
+				http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+		</vr:Summary>
+		<vr:Type>Other</vr:Type>
+		<vr:Curation>
+			<vr:Publisher>
+				<vr:Title>Astrogrid</vr:Title>
+				<vr:Description>blah blab</vr:Description>
+				<vr:ReferenceURL>http://www.astrogrid.org/</vr:ReferenceURL>
+			</vr:Publisher>
+			<vr:Contact>
+				<vr:Name>Paul Harrison</vr:Name>
+				<vr:Email>pah@jb.man.ac.uk</vr:Email>
+			</vr:Contact>
+			<vr:Date role="representative">2004-03-26</vr:Date>
+			<vr:Creator>
+				<vr:Name>Astrogrid</vr:Name>
+				<vr:Logo>??</vr:Logo>
+			</vr:Creator>
+			<vr:Version>Iteration 5</vr:Version>
+		</vr:Curation>
+		<vr:Subject>???</vr:Subject>
+		<cea:ApplicationDefinition>
+			<cea:Parameters>
+				<cea:ParameterDefinition name="CATALOG_NAME" type="VOTable" 
+					>
+					<ceapd:UI_Name>Derived output catalogue</ceapd:UI_Name>
+					<ceapd:UI_Description>The catalogue of images derived from 
+						the input images</ceapd:UI_Description>
+					<ceapd:UCD></ceapd:UCD>
+					<ceapd:DefaultValue></ceapd:DefaultValue>
+					<ceapd:Units></ceapd:Units>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="PARAMETERS_NAME" type="binary" 
+					>
+					<ceapd:UI_Name>Parameter File</ceapd:UI_Name>
+					<ceapd:UI_Description>A File containing the list of 
+						catalogue paramters that should be 
+						computed</ceapd:UI_Description>
+					<ceapd:UCD></ceapd:UCD>
+					<ceapd:DefaultValue></ceapd:DefaultValue>
+					<ceapd:Units></ceapd:Units>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="config_file" type="binary" 
+					>
+					<ceapd:UI_Name>Configuration File</ceapd:UI_Name>
+					<ceapd:UI_Description>File containing the main 
+						configuration parameters for 
+						SExtractor</ceapd:UI_Description>
+					<ceapd:UCD></ceapd:UCD>
+					<ceapd:DefaultValue></ceapd:DefaultValue>
+					<ceapd:Units></ceapd:Units>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="DetectionImage" type="binary" 
+					>
+					<ceapd:UI_Name>Detection Image</ceapd:UI_Name>
+					<ceapd:UI_Description>The image that is used to detect 
+						sources. Basic position, shape and size informtaion is 
+						derived from this image</ceapd:UI_Description>
+					<ceapd:UCD></ceapd:UCD>
+					<ceapd:DefaultValue></ceapd:DefaultValue>
+					<ceapd:Units></ceapd:Units>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="PhotoImage" type="binary" 
+					>
+					<ceapd:UI_Name>Measurement Image</ceapd:UI_Name>
+					<ceapd:UI_Description>The Image that is used to measure 
+						photometric parameters</ceapd:UI_Description>
+					<ceapd:UCD></ceapd:UCD>
+					<ceapd:DefaultValue></ceapd:DefaultValue>
+					<ceapd:Units></ceapd:Units>
+				</cea:ParameterDefinition>
+			</cea:Parameters>
+			<cea:Interfaces>
+				<ceab:Interface name="Simple">
+					<ceab:input>
+						<ceab:pref ref="PARAMETERS_NAME" minoccurs="1" 
+							maxoccurs="1"/>
+						<ceab:pref ref="config_file" minoccurs="1" 
+							maxoccurs="1"/>
+						<ceab:pref ref="DetectionImage" minoccurs="1" 
+							maxoccurs="1"/>
+						<ceab:pref ref="PhotoImage" minoccurs="1" 
+							maxoccurs="1"/>
+					</ceab:input>
+					<ceab:output>
+						<ceab:pref ref="CATALOG_NAME" minoccurs="1" 
+							maxoccurs="1"/>
+					</ceab:output>
+				</ceab:Interface>
+			</cea:Interfaces>
+		</cea:ApplicationDefinition>
+	</vr:Resource>
+	<vr:Resource status="active" xsi:type="cea:CeaApplicationType" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<vr:Identifier>
+			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+			<vr:ResourceKey>annz</vr:ResourceKey>
+		</vr:Identifier>
+		<vr:Title>TemplateEntry</vr:Title>
+		<vr:ShortName>TemplateEntry</vr:ShortName>
+		<vr:Summary>
+			<vr:Description>This is part of the astrogrid CEA.</vr:Description>
+			<vr:ReferenceURL>
+				http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+		</vr:Summary>
+		<vr:Type>Other</vr:Type>
+		<vr:Curation>
+			<vr:Publisher>
+				<vr:Title>Astrogrid</vr:Title>
+				<vr:Description>blah blab</vr:Description>
+				<vr:ReferenceURL>http://www.astrogrid.org/</vr:ReferenceURL>
+			</vr:Publisher>
+			<vr:Contact>
+				<vr:Name>Paul Harrison</vr:Name>
+				<vr:Email>pah@jb.man.ac.uk</vr:Email>
+			</vr:Contact>
+			<vr:Date role="representative">2004-03-26</vr:Date>
+			<vr:Creator>
+				<vr:Name>Astrogrid</vr:Name>
+				<vr:Logo>??</vr:Logo>
+			</vr:Creator>
+			<vr:Version>Iteration 5</vr:Version>
+		</vr:Curation>
+		<vr:Subject>???</vr:Subject>
+		<cea:ApplicationDefinition>
+			<cea:Parameters>
+				<cea:ParameterDefinition name="OUTPUT" type="binary" 
+					>
+					<ceapd:UI_Name></ceapd:UI_Name>
+					<ceapd:UI_Description/>
+					<ceapd:UCD></ceapd:UCD>
+					<ceapd:DefaultValue></ceapd:DefaultValue>
+					<ceapd:Units></ceapd:Units>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="NET_WEIGHT" type="binary" 
+					>
+					<ceapd:UI_Name></ceapd:UI_Name>
+					<ceapd:UI_Description/>
+					<ceapd:UCD></ceapd:UCD>
+					<ceapd:DefaultValue></ceapd:DefaultValue>
+					<ceapd:Units></ceapd:Units>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="INPUT_PHOTOM" type="binary" 
+					>
+					<ceapd:UI_Name></ceapd:UI_Name>
+					<ceapd:UI_Description/>
+					<ceapd:UCD></ceapd:UCD>
+					<ceapd:DefaultValue></ceapd:DefaultValue>
+					<ceapd:Units></ceapd:Units>
+				</cea:ParameterDefinition>
+			</cea:Parameters>
+			<cea:Interfaces>
+				<ceab:Interface name="simple">
+					<ceab:input>
+						<ceab:pref ref="NET_WEIGHT" minoccurs="1" 
+							maxoccurs="0"/>
+						<ceab:pref ref="INPUT_PHOTOM" minoccurs="1" 
+							maxoccurs="1"/>
+					</ceab:input>
+					<ceab:output>
+						<ceab:pref ref="OUTPUT" minoccurs="1" maxoccurs="1"/>
+					</ceab:output>
+				</ceab:Interface>
+			</cea:Interfaces>
+		</cea:ApplicationDefinition>
+	</vr:Resource>
+	<vr:Resource status="active" xsi:type="cea:CeaApplicationType" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<vr:Identifier>
+			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+			<vr:ResourceKey>swarp</vr:ResourceKey>
+		</vr:Identifier>
+		<vr:Title>TemplateEntry</vr:Title>
+		<vr:ShortName>TemplateEntry</vr:ShortName>
+		<vr:Summary>
+			<vr:Description>This is part of the astrogrid CEA.</vr:Description>
+			<vr:ReferenceURL>
+				http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+		</vr:Summary>
+		<vr:Type>Other</vr:Type>
+		<vr:Curation>
+			<vr:Publisher>
+				<vr:Title>Astrogrid</vr:Title>
+				<vr:Description>blah blab</vr:Description>
+				<vr:ReferenceURL>http://www.astrogrid.org/</vr:ReferenceURL>
+			</vr:Publisher>
+			<vr:Contact>
+				<vr:Name>Paul Harrison</vr:Name>
+				<vr:Email>pah@jb.man.ac.uk</vr:Email>
+			</vr:Contact>
+			<vr:Date role="representative">2004-03-26</vr:Date>
+			<vr:Creator>
+				<vr:Name>Astrogrid</vr:Name>
+				<vr:Logo>??</vr:Logo>
+			</vr:Creator>
+			<vr:Version>Iteration 5</vr:Version>
+		</vr:Curation>
+		<vr:Subject>???</vr:Subject>
+		<cea:ApplicationDefinition>
+			<cea:Parameters>
+				<cea:ParameterDefinition name="IMAGEOUT_NAME" type="FITS" 
+					>
+					<ceapd:UI_Name>Output Image</ceapd:UI_Name>
+					<ceapd:UI_Description>The resampled and possibly coadded 
+						output image</ceapd:UI_Description>
+					<ceapd:UCD></ceapd:UCD>
+					<ceapd:DefaultValue></ceapd:DefaultValue>
+					<ceapd:Units></ceapd:Units>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="config_file" type="binary" 
+					>
+					<ceapd:UI_Name>Configuration File</ceapd:UI_Name>
+					<ceapd:UI_Description>File containing the main 
+						configuration parameters for 
+						Swarp</ceapd:UI_Description>
+					<ceapd:UCD></ceapd:UCD>
+					<ceapd:DefaultValue></ceapd:DefaultValue>
+					<ceapd:Units></ceapd:Units>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="Image" type="FITS" 
+					>
+					<ceapd:UI_Name>Detection Image</ceapd:UI_Name>
+					<ceapd:UI_Description>The image that is used to detect 
+						sources. Basic position, shape and size informtaion is 
+						derived from this image</ceapd:UI_Description>
+					<ceapd:UCD></ceapd:UCD>
+					<ceapd:DefaultValue></ceapd:DefaultValue>
+					<ceapd:Units></ceapd:Units>
+				</cea:ParameterDefinition>
+			</cea:Parameters>
+			<cea:Interfaces>
+				<ceab:Interface name="Simple">
+					<ceab:input>
+						<ceab:pref ref="config_file" minoccurs="1" 
+							maxoccurs="1"/>
+						<ceab:pref ref="Image" minoccurs="1" maxoccurs="1"/>
+					</ceab:input>
+					<ceab:output>
+						<ceab:pref ref="IMAGEOUT_NAME" minoccurs="1" 
+							maxoccurs="1"/>
+					</ceab:output>
+				</ceab:Interface>
+			</cea:Interfaces>
+		</cea:ApplicationDefinition>
+	</vr:Resource>
+	<vr:Resource status="active" xsi:type="CeaServiceType" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<vr:Identifier>
+			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+			<vr:ResourceKey>JBORealCEC</vr:ResourceKey>
+		</vr:Identifier>
+		<vr:Title>TemplateEntry</vr:Title>
+		<vr:ShortName>TemplateEntry</vr:ShortName>
+		<vr:Summary>
+			<vr:Description>This is part of the astrogrid CEA.</vr:Description>
+			<vr:ReferenceURL>
+				http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+		</vr:Summary>
+		<vr:Type>Other</vr:Type>
+		<vr:Curation>
+			<vr:Publisher>
+				<vr:Title>Astrogrid</vr:Title>
+				<vr:Description>blah blab</vr:Description>
+				<vr:ReferenceURL>http://www.astrogrid.org/</vr:ReferenceURL>
+			</vr:Publisher>
+			<vr:Contact>
+				<vr:Name>Paul Harrison</vr:Name>
+				<vr:Email>pah@jb.man.ac.uk</vr:Email>
+			</vr:Contact>
+			<vr:Date role="representative">2004-03-26</vr:Date>
+			<vr:Creator>
+				<vr:Name>Astrogrid</vr:Name>
+				<vr:Logo>??</vr:Logo>
+			</vr:Creator>
+			<vr:Version>Iteration 5</vr:Version>
+		</vr:Curation>
+		<vr:Subject>???</vr:Subject>
+		<vr:Capability>
+			<vr:StandardURL>
+				http://www.astrogrid.org/maven/build/applications/</vr:StandardURL>
+			<vr:StandardID>
+				<vr:AuthorityID>astrogrid.og</vr:AuthorityID>
+				<vr:ResourceKey>CommonExecutionArchitucture</vr:ResourceKey>
+			</vr:StandardID>
+		</vr:Capability>
+		<vr:Interface>
+			<vr:Invocation>WebService</vr:Invocation>
+			<vr:AccessURL use="base">
+				http://astrogrid.jb.man.ac.uk:8080/astrogrid-cea-commandline-SNAPSHOT/services/CommonExecutionConnectorService</vr:AccessURL>
+		</vr:Interface>
+		<cea:ManagedApplications>
+			<cea:ApplicationReference>
+				<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+				<vr:ResourceKey>CrossMatcher</vr:ResourceKey>
+			</cea:ApplicationReference>
+			<cea:ApplicationReference>
+				<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+				<vr:ResourceKey>BPZ</vr:ResourceKey>
+			</cea:ApplicationReference>
+			<cea:ApplicationReference>
+				<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+				<vr:ResourceKey>HyperZ</vr:ResourceKey>
+			</cea:ApplicationReference>
+			<cea:ApplicationReference>
+				<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+				<vr:ResourceKey>SExtractor</vr:ResourceKey>
+			</cea:ApplicationReference>
+			<cea:ApplicationReference>
+				<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+				<vr:ResourceKey>annz</vr:ResourceKey>
+			</cea:ApplicationReference>
+			<cea:ApplicationReference>
+				<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+				<vr:ResourceKey>swarp</vr:ResourceKey>
+			</cea:ApplicationReference>
+			
+		</cea:ManagedApplications>
+	</vr:Resource>
+</vr:VODescription>
