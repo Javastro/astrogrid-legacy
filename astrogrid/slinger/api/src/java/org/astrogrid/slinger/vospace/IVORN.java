@@ -1,5 +1,5 @@
 /*
- * $Id: IVORN.java,v 1.1 2005/02/14 20:47:38 mch Exp $
+ * $Id: IVORN.java,v 1.2 2005/03/15 12:07:28 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -112,6 +112,12 @@ public class IVORN
       return aString.toLowerCase().startsWith(SCHEME+"://");
    }
    
+   /** For backwards compatibility, returns as the 'store' IVORN object from
+    * the common project */
+   public org.astrogrid.store.Ivorn toOldIvorn() {
+      return new org.astrogrid.store.Ivorn(getAuthority(), getKey(), getPath());
+   }
+   
    /**
     * Given an IVO Resource Name, resolves a string using the local
     * config or Registry (ie this does not work with account ivorns - use Homespace), which will be some
@@ -160,6 +166,9 @@ public class IVORN
 
 /*
 $Log: IVORN.java,v $
+Revision 1.2  2005/03/15 12:07:28  mch
+Added FileManager support
+
 Revision 1.1  2005/02/14 20:47:38  mch
 Split into API and webapp
 

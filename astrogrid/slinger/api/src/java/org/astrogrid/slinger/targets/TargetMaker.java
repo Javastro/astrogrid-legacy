@@ -1,5 +1,5 @@
 /*
- * $Id: TargetMaker.java,v 1.1 2005/02/14 20:47:38 mch Exp $
+ * $Id: TargetMaker.java,v 1.2 2005/03/15 12:07:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -48,10 +48,8 @@ public abstract class TargetMaker  {
       else if (HomespaceName.isHomespaceName(id)) {
          return new HomespaceName(id);
       }
-//replaced by Uri and MySpace targets      else if (Agsl.isAgsl(id)) {
-//         return new AgslTarget(new Agsl(id));
-//      }
       else {
+         //could do with adding some sort of configurable plugin mechanism similar to the URL plugins
          throw new IllegalArgumentException("'"+id+" should be a URL, or start 'mailto:' or '"+IVORN.SCHEME+"' or '"+MSRL.SCHEME+"' or '"+HomespaceName.SCHEME+"'");
       }
    }
@@ -134,6 +132,9 @@ public abstract class TargetMaker  {
 }
 /*
  $Log: TargetMaker.java,v $
+ Revision 1.2  2005/03/15 12:07:28  mch
+ Added FileManager support
+
  Revision 1.1  2005/02/14 20:47:38  mch
  Split into API and webapp
 

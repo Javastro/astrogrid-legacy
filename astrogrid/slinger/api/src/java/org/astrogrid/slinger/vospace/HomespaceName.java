@@ -1,5 +1,5 @@
 /*
- * $Id: HomespaceName.java,v 1.1 2005/02/14 20:47:38 mch Exp $
+ * $Id: HomespaceName.java,v 1.2 2005/03/15 12:07:28 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -25,10 +25,19 @@ import org.astrogrid.slinger.StoreException;
 import org.astrogrid.slinger.sources.SourceIdentifier;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.vospace.IVOSRN;
+import org.astrogrid.slinger.agfm.FileManagerId;
 
 /**
  * Homespace name, of the form homespace:<<acountname>>#path to file.
- * eg homespace:mch@roe.ac.uk#mch/queriers/6dfQuery.adql
+ * eg homespace:mch@roe.ac.uk#mch/queriers/6dfQuery.adql.  A 'homespace' is
+ * a way of identifying a file by the user/account; so that someone can say 'in
+ * my home space at this path', and the physical/net location of that homespace
+ * can be moved around.
+ *
+ * @TODO NOTE VERY MUCH: Because the registry doesn't have a proper way of
+ * distinguishing types of services, homespaces are ASSUMED to resolve to
+ * FileManager services via a URI of ivo:// form.
+ * @See FileManagerId.
  *
  * @author MCH, KMB, KTN, DM, ACD
  */
@@ -48,10 +57,10 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
       String s = homespaceName.substring(SCHEME.length()+1);
       int hashIdx = s.indexOf("#");
       if (hashIdx == -1) {
-         accountName = s;
+         setAccountName(s);
       }
       else {
-         accountName = s.substring(0,hashIdx);
+         setAccountName(s.substring(0,hashIdx));
          path = s.substring(hashIdx+1);
       }
    }
@@ -59,15 +68,24 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
    /** Construct from given account name and path */
    public HomespaceName(String anAccountName, String aPath)
    {
-      this.accountName = anAccountName;
+      setAccountName(anAccountName);
       this.path = aPath;
    }
    
    /** Construct from a Principle and a path */
    public HomespaceName(Principal aUser, String aPath)  {
 
-      this.accountName = aUser.getName();
+      setAccountName(aUser.getName());
       this.path = aPath;
+   }
+
+   /** Sets account name property.  Account name should include an '@' sign at the moment, ie
+    {individual}@{community}... */
+   public void setAccountName(String name) {
+      if (name.indexOf("@") == -1) {
+         throw new IllegalArgumentException("Account name should be of the form {individual}@{community}");
+      }
+      this.accountName = name;
    }
    
    /** Returns identifier scheme */
@@ -109,14 +127,29 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
    /** All targets must be able to resolve to a stream.  The user is required
     * for permissioning. */
    public InputStream resolveInputStream(Principal user) throws IOException {
-      return resolveIvosrn().resolveInputStream(user);
+      //what we should do return resolveIvosrn().resolveInputStream(user);
+      return new FileManagerId(this).resolveInputStream(user);
    }
    
    /** Used to set the mime type of the data about to be sent to the target.  */
    public String getMimeType(Principal user) throws IOException {
-      return resolveIvosrn().getMimeType(user);
+      //what we should do return resolveIvosrn().getMimeType(user);
+      return new FileManagerId(this).getMimeType(user);
    }
    
+   /** Opens up an output stream to the homespace file, assuming that the file
+    * is served by a FileManager.  */
+   public OutputStream resolveOutputStream(Principal user) throws IOException {
+      //what we should do return resolveIvosrn().resolveOutputStream(user);
+      return new FileManagerId(this).resolveOutputStream(user);
+   }
+   
+   /** Used to set the mime type of the data about to be sent to the target.  */
+   public void setMimeType(String aMimeType, Principal user) throws IOException {
+      //what we should do resolveIvosrn().setMimeType(aMimeType, user);
+      new FileManagerId(this).setMimeType(aMimeType, user);
+   }
+
    public Reader resolveReader(Principal user) throws IOException {
       return new InputStreamReader(resolveInputStream(user));
    }
@@ -125,33 +158,19 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
       return new OutputStreamWriter(resolveOutputStream(user));
    }
 
-   /** All targets must be able to resolve to a stream.  The user is required
-    * for permissioning. */
-   public OutputStream resolveOutputStream(Principal user) throws IOException {
-      return resolveIvosrn().resolveOutputStream(user);
-   }
-   
-   /** Used to set the mime type of the data about to be sent to the target.  */
-   public void setMimeType(String aMimeType, Principal user) throws IOException {
-      resolveIvosrn().setMimeType(aMimeType, user);
-   }
-
    /**
-    * Returns the ivosrn to this 'homespace'
+    * Returns the registry-resolvable ivo resource name to this 'homespace'.  Looks first
+    * in config file, and if not found there looks up the community server for the
+    * accountname's community, which will return the IVORN to the storepoint.
     */
-   public IVOSRN resolveIvosrn() throws IOException {
+   private IVOSRN resolveIvosrn() throws IOException {
 
       //used for debug/user info - says somethign about where the ivorn has been looked for
       String lookedIn = "";
 
       //create backwards compatible ivorn-syntax homespace, as community still expects the form "ivo://community/individual#path"
-      int atIdx = getName().indexOf("@");
-      if (atIdx == -1) {
-         throw new IllegalArgumentException("homespace "+this+" should be of the form homespace:<individual>@<community>[#path]");
-      }
-      String individualId = getName().substring(0,atIdx);
-      String communityId = getName().substring(atIdx+1);
-      org.astrogrid.store.Ivorn oldHomespaceId = new org.astrogrid.store.Ivorn(communityId, individualId, getPath());
+      IVORN ivoForm = toIvoForm();
+      org.astrogrid.store.Ivorn oldHomespaceId = new org.astrogrid.store.Ivorn(ivoForm.getAuthority(), ivoForm.getKey(), ivoForm.getPath());
 
       //look up in config first
       String key = "homespace."+getName();
@@ -214,6 +233,23 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
    }
    
    
+   /** Returns the homespace id in the form of an IVO identifier. This is for backwards compatibility for
+    * some AstroGrid components that still use IVO identifiers for things that aren't resolvable using
+    * IVO components. */
+   public IVORN toIvoForm() {
+
+      int atIdx = getName().indexOf("@");
+      if (atIdx == -1) {
+         throw new IllegalArgumentException("homespace "+this+" should be of the form homespace:<individual>@<community>[#path]");
+      }
+      String individualId = getName().substring(0,atIdx);
+      String communityId = getName().substring(atIdx+1);
+      return new IVORN(communityId, individualId, getPath());
+   }
+
+   
+   
+   
    /**
     * quick tests/debugs
     */
@@ -249,6 +285,9 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
 
 /*
 $Log: HomespaceName.java,v $
+Revision 1.2  2005/03/15 12:07:28  mch
+Added FileManager support
+
 Revision 1.1  2005/02/14 20:47:38  mch
 Split into API and webapp
 

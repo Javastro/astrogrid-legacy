@@ -1,5 +1,5 @@
 /*
- * $Id: MSRL.java,v 1.1 2005/02/14 20:47:38 mch Exp $
+ * $Id: MSRL.java,v 1.2 2005/03/15 12:07:28 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -7,7 +7,9 @@
  * a copy of which has been included with this distribution in the LICENSE.txt file.
  */
 
+
 package org.astrogrid.slinger.myspace;
+
 import org.astrogrid.slinger.myspace.it05.*;
 
 import java.io.*;
@@ -36,7 +38,8 @@ import org.astrogrid.slinger.targets.TargetIdentifier;
  * </pre>
  * If the path fragment is empty, the MSRL refers to a myspace store service
  * <p>
- */
+*/
+
 
 public class MSRL implements SRL, TargetIdentifier, SourceIdentifier
 {
@@ -159,7 +162,8 @@ public class MSRL implements SRL, TargetIdentifier, SourceIdentifier
    public String getName()
    {
       String path = getPath();
-      if (path != null) { //might refer to a server, ie no path
+
+     if (path != null) { //might refer to a server, ie no path
          if (path.endsWith("/")) {
             path = path.substring(0,path.length()-1); //chop off last slash
          }
@@ -242,91 +246,177 @@ public class MSRL implements SRL, TargetIdentifier, SourceIdentifier
 }
 
 /*
+
 $Log: MSRL.java,v $
+Revision 1.2  2005/03/15 12:07:28  mch
+Added FileManager support
+
 Revision 1.1  2005/02/14 20:47:38  mch
 Split into API and webapp
 
 Revision 1.3  2005/01/26 17:31:56  mch
 Split slinger out to scapi, swib, etc.
 
+
 Revision 1.1.2.4  2005/01/26 14:35:17  mch
+
 Separating slinger and scapi
 
+
+
 Revision 1.1.2.3  2004/12/08 18:37:11  mch
+
 Introduced SPI and SPL
 
+
+
 Revision 1.1.2.2  2004/12/06 03:17:38  mch
+
 added info to error report
 
+
+
 Revision 1.1.2.1  2004/12/03 11:50:19  mch
+
 renamed Msrl etc to separate from storeclient ones.  Prepared for SRB
 
+
+
 Revision 1.1.2.1  2004/11/22 00:46:28  mch
+
 New Slinger Package
 
+
+
 Revision 1.4  2004/07/07 14:02:14  mch
+
 Fix to parsing out URL
 
+
+
 Revision 1.3  2004/07/06 20:19:06  mch
+
 Added Itn06 file identifiers
 
+
+
 Revision 1.2  2004/06/14 23:08:53  jdt
+
 Merge from branches
+
+
 
 ClientServerSplit_JDT
 
+
+
 and
+
+
 
 MySpaceClientServerSplit_JDT
 
 
 
+
+
+
+
 MySpace now split into a client/delegate jar
+
+
 
 astrogrid-myspace-<version>.jar
 
+
+
 and a server/manager war
+
+
 
 astrogrid-myspace-server-<version>.war
 
+
+
 Revision 1.1.2.1  2004/06/14 22:33:21  jdt
+
 Split into delegate jar and server war.
+
 Delegate: astrogrid-myspace-SNAPSHOT.jar
+
 Server/Manager: astrogrid-myspace-server-SNAPSHOT.war
 
+
+
 Package names unchanged.
+
 If you regenerate the axis java/wsdd/wsdl files etc you'll need
+
 to move some files around to ensure they end up in the client
+
 or the server as appropriate.
+
 As of this check-in the tests/errors/failures is 162/1/22 which
+
 matches that before the split.
 
+
+
 Revision 1.9  2004/05/12 09:00:16  mch
+
 Added extra check for illegal string on creation
 
+
+
 Revision 1.8  2004/03/25 12:27:19  mch
+
 Tidied doc
+
+
 
 Revision 1.7  2004/03/25 12:21:59  mch
+
 Tidied doc
 
+
+
 Revision 1.6  2004/03/22 10:25:42  mch
+
 Added VoSpaceClient, StoreDelegate, some minor changes to StoreClient interface
 
+
+
 Revision 1.5  2004/03/14 03:31:54  mch
+
 Added openOutputStream
 
+
+
 Revision 1.4  2004/03/10 00:20:22  mch
+
 Changed @ to ! in MSRL to be compatible with existing individaul@community myspace servers
 
+
+
 Revision 1.3  2004/03/01 22:38:46  mch
+
 Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
 
+
+
 Revision 1.2  2004/03/01 16:38:58  mch
+
 Merged in from datacenter 4.1 and odd cvs/case problems
 
+
+
 Revision 1.1  2004/03/01 15:15:33  mch
+
 Updates to Store delegates after myspace meeting
 
+
+
  */
+
+
 
