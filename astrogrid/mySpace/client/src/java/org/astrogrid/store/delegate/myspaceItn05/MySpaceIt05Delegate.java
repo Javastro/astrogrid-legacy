@@ -663,7 +663,6 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
         String protocol = url.getProtocol();
         int port = url.getPort();
         String urlPath = url.getPath();
-        String file = url.getFile();
         
         try {
           InetAddress addr = InetAddress.getLocalHost();
@@ -1359,6 +1358,9 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 
 /*
 $Log: MySpaceIt05Delegate.java,v $
+Revision 1.4  2004/06/24 11:45:53  gps
+- removed extraneous code from getUrl()
+
 Revision 1.3  2004/06/24 11:43:08  gps
 - fixed 'localhost' return problem in getUrl()
 
