@@ -42,8 +42,10 @@ echo "[ag-build-$PROJECT_NAME] project home: $PROJECT_HOME"
 cd $PROJECT_HOME >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] generate and deploy site; deploy SNAPSHOT"
-maven java:compile clover:html-report >> $LOG_FILE 2>&1
-maven site:site site:fsdeploy >> $LOG_FILE 2>&1 
+maven java:compile >> $LOG_FILE 2>&1 
+maven clover:html-report >> $LOG_FILE 2>&1
+maven site >> $LOG_FILE 2>&1 
+maven site:fsdeploy >> $LOG_FILE 2>&1
 maven jar:deploy-snapshot >> $LOG_FILE 2>&1
 maven war:deploy-snapshot >> $LOG_FILE 2>&1
 echo "[ag-build-$PROJECT_NAME] deploy build log"
