@@ -55,6 +55,7 @@
 
 
 <goal name="astrogrid-deploy-artifact">
+		<maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:deploy" />
         <attainGoal name="jar:deploy" />
         <attainGoal name="war:deploy" />
 </goal>
