@@ -108,11 +108,11 @@
                <td class="ag-content-tab-top">Monitor-Jobs</td>                  
             </tr>
             <tr>                
-               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmonitor.html?action=new">New</a></td>
-               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmonitor.html?action=submit">Submit</a></td>
-               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmonitor.html?action=view">View</a></td>
-               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmonitor.html?action=delete">Delete</a></td>                  
-               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmonitor.html?action=templates">Templates</a></td>
+               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmanager.html?action=new">New</a></td>
+               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmanager.html?action=submit">Submit</a></td>
+               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmanager.html?action=view">View</a></td>
+               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmanager.html?action=delete">Delete</a></td>                  
+               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmanager.html?action=templates">Templates</a></td>
                <!--
                  Spacing.
                  -->
