@@ -1,11 +1,15 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
-    | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/07/03 10:44:43 $</cvs:author>
-    | <cvs:version>$Revision: 1.36 $</cvs:version>
+    | <cvs:date>$Author: KevinBenson $</cvs:date>
+    | <cvs:author>$Date: 2003/07/31 10:18:24 $</cvs:author>
+    | <cvs:version>$Revision: 1.37 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.37  2003/07/31 10:18:24  KevinBenson
+    | Change the build.xml file so it will work with the new DataQuery cocoon version.
+    | Still had a small error in CreateRequest.java. And also got rid of the WS_FTP files.
+    |
     | Revision 1.36  2003/07/03 10:44:43  dave
     | Fixed obscure comment in portal.javac
     |
@@ -564,11 +568,11 @@
 	    | The following tasks install Cocoon 2.0 from a binary distribution.
 	    +-->
 	<!-- Unpack the Cocoon binary --> 
-	<target name="cocoon.2.0.untar" depends="cocoon.init">
+	<target name="cocoon.2.0.unzip" depends="cocoon.init">
 		<!-- Create the Cocoon directory -->
 		<mkdir dir="${cocoon.build}"/>
 		<!-- Unpack the Cocoon tar file -->
-		<untar src="${cocoon.tar}" dest="${cocoon.build}" compression="gzip"/>
+		<unzip src="${cocoon.zip}" dest="${cocoon.build}" />
 	</target>
 
 	<!-- Unpack the Cocoon WebApp --> 
@@ -589,7 +593,7 @@
 		<!-- Delete the Cocoon installation -->
 		<antcall target="cocoon.2.0.delete"/>
 		<!-- Unpack the Cocoon binary --> 
-		<antcall target="cocoon.2.0.untar"/>
+		<antcall target="cocoon.2.0.unzip"/>
 		<!-- Unpack the Cocoon WebApp --> 
 		<antcall target="cocoon.2.0.unwar"/>
 		<!-- Add the endorsed libraries -->
@@ -1064,8 +1068,10 @@
 		<!-- Copy our java source code -->
 		<copy toDir="${portal.build}/java">
 			<fileset dir="src/java">
-				<!-- Exclude any live service classes -->
+				<!-- Exclude any live service classes 	
 				<exclude name="**/services/**"/>
+				-->
+				<exclude name="**/junit/**"/>
 				<!-- Exclude any mock service classes -->
 				<exclude name="**/mock/**"/>
 				<!--+
@@ -1175,8 +1181,9 @@
 			<!--
 			<zipfileset prefix="" dir="build/myspace/mock/client/classes"/>
 			-->
-			<!-- Include our mock myspace client stubs -->
-			<zipfileset prefix="" dir="build/myspace/live/client/classes"/>
+			<!-- Include our mock myspace client stubs
+				<zipfileset prefix="" dir="build/myspace/live/client/classes"/>
+			-->
 		</jar>
 	</target>
 
@@ -2148,7 +2155,7 @@
 		-->
 		<!-- Cocoon 2.0 build properties -->
 		<property name="cocoon.version" value="cocoon-2.0.4"/>
-		<property name="cocoon.tar"     value="depends/cocoon/cocoon-latest-vm14-bin.tar.gz.tar"/>
+		<property name="cocoon.zip"     value="depends/cocoon/cocoon-latest-vm14-bin.zip"/>
 		<property name="cocoon.build"   value="build/cocoon"/>
 		<property name="cocoon.war"     value="build/cocoon/${cocoon.version}/cocoon.war"/>
 		<property name="cocoon.webapp"  value="build/cocoon/${cocoon.version}/webapp"/>
@@ -2260,10 +2267,9 @@
 	</target>
 
 	<!-- Build the DataQuery servlets for release as a WAR file  -->
+	<!--
 	<target name="query.release" depends="init, cocoon.init">
-		<!-- Delete the export directories -->
 		<delete dir="build/release/DataQuery" failonerror="false"/>
-		<!-- Create the export directories -->
 		<mkdir dir="build/release"/>
 		<mkdir dir="build/release/DataQuery"/>
 		<mkdir dir="build/release/DataQuery/webapp"/>
@@ -2271,15 +2277,12 @@
 		<mkdir dir="build/release/DataQuery/webapp/WEB-INF/lib"/>
 		<mkdir dir="build/release/DataQuery/webapp/WEB-INF/classes"/>
 		<mkdir dir="build/release/DataQuery/webapp/WEB-INF/servlets"/>
-		<!-- Copy our site files across -->
 		<copy verbose="false" toDir="build/release/DataQuery/webapp/servlets">
 			<fileset dir="src/site/DataQuery">
 				<exclude name="**/CVS/**"/>
 			</fileset>
 		</copy>
-		<!-- Compile our java classes -->
 		<antcall target="portal.javac"/>
-		<!-- Copy our java files across -->
 		<copy verbose="false" toDir="build/release/DataQuery/webapp/WEB-INF/classes">
 			<fileset dir="build/portal/classes">
 				<include name="**/portal/query/**"/>
@@ -2288,22 +2291,19 @@
 			</fileset>
 		</copy>
 
-		<!-- Copy the Axis client jars -->
 		<copy verbose="false" toDir="build/release/DataQuery/webapp/WEB-INF/lib">
 			<fileset dir="${axis.webapp}/WEB-INF/lib">
 				<include name="**/*.jar"/>
 			</fileset>
 		</copy>
 
-		<!-- Copy the web.xml file -->
 		<copy verbose="false" file="src/site/WEB-INF/web.xml" toFile="build/release/DataQuery/webapp/WEB-INF/web.xml"/>
-		<!-- Wrap everything up as a WAR fil -->
 		<jar destfile="build/release/DataQuery/DataQuery.war">
 			<fileset dir="build/release/DataQuery/webapp">
 			</fileset>
 		</jar>
 	</target>
-
+	-->
 	<!-- Install our source tree as a web-app -->
 	<target name="project.webapp.install" depends="tomcat.tasks">
 		<!-- Copy our WEB-INF directory -->
@@ -2329,12 +2329,10 @@
 
 	<!-- Release our project -->
 	<target name="project.RELEASE" depends="">
-		<antcall target="query.release"/>
 		<antcall target="cocoon.release"/>
 		<antcall target="project.webapp.install"/>
 		<echo message="Installing project webapps ...."/>
 		<copy verbose="false" file="build/release/cocoon/cocoon.war" toFile="${tomcat.home}/webapps/cocoon.war"/>
-		<copy verbose="false" file="build/release/DataQuery/DataQuery.war" toFile="${tomcat.home}/webapps/DataQuery.war"/>
 	</target>
 
 </project>

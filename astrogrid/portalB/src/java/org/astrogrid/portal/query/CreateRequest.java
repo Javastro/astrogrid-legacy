@@ -51,8 +51,8 @@ public class CreateRequest {
 
 	}
 
-	public CreateRequest(QueryBuilder qb) {
-		buildXMLRequest(qb);
+	public CreateRequest(QueryBuilder qb,String dsAgent) {
+		buildXMLRequest(qb,dsAgent);
 	}
 
 	/**
