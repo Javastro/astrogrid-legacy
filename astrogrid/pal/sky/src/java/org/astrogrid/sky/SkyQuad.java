@@ -1,5 +1,5 @@
 /*
- * $Id: SkyQuad.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: SkyQuad.java,v 1.2 2005/03/16 12:00:47 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,20 +10,21 @@ import java.awt.Dimension;
 
 
 /**
- * Represents a 'rectangular' area on the sky defined by opposite corner points.
- * As the sky is not flat, this is not a rectangle but a four-sided shape with
+ * Represents a 'rectangular' area on the sky in RA/DEC-space.
+ * As the sky is not flat, this is a four-sided shape with
  * straight lines along the line of view (great circles on the sky); it is
  * a rectangle in coordinate space not on the sky.
  *
- * Not sure how you would use this over the pole...
  *
  * @author M Hill
  */
 
 public class SkyQuad implements SkyRegion {
    
-   private SkyPoint minCorner;
-   private SkyPoint maxCorner;
+   private Angle maxRa;
+   private Angle minRa;
+   private Angle maxDec;
+   private Angle minDec;
    
    public SkyQuad(SkyPoint cornerA, SkyPoint cornerB) {
 
@@ -92,31 +93,4 @@ public class SkyQuad implements SkyRegion {
    }
 
 }
-/*
- $Log: SkyQuad.java,v $
- Revision 1.1  2005/02/17 18:37:35  mch
- *** empty log message ***
-
- Revision 1.1.1.1  2005/02/16 17:11:24  mch
- Initial checkin
-
- Revision 1.1  2004/10/06 21:12:16  mch
- Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
-
- Revision 1.1  2004/09/28 15:02:13  mch
- Merged PAL and server packages
-
- Revision 1.3  2004/07/12 22:15:06  mch
- Added SkyCircle and some methods to Angle
-
- Revision 1.2  2004/07/06 16:02:03  mch
- Minor tidying up etc
-
- Revision 1.1  2004/03/12 04:45:26  mch
- It05 MCH Refactor
-
-
- */
-
-
 

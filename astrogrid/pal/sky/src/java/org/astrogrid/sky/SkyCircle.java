@@ -1,5 +1,5 @@
 /*
- * $Id: SkyCircle.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: SkyCircle.java,v 1.2 2005/03/16 12:00:46 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -21,35 +21,20 @@ import java.awt.Dimension;
 public class SkyCircle implements SkyRegion {
    
    private SkyPoint center;
-   private Angle raRadius;
-   private Angle decRadius;
-   
-   //cache bounds as it may get used often
-   private SkyQuad bounds = null;
+   private Angle radius;
    
    
    /** Constructs a circle; the radius is assumed to be a declination from the
-    * center in both directions, so is modified in the RA direction to compensate
-    * for the compression of the coordinate frame towards the poles
-    */
-   public SkyCircle(SkyPoint givenCenter, Angle givenDecRadius, Angle givenRaRadius) {
-
-      this.center = givenCenter;
-      this.decRadius = givenDecRadius;
-      this.raRadius = givenRaRadius;
-   }
-
-   /** Constructs a circle; the radius is assumed to be a declination from the
-    * center in both directions, so is modified in the RA direction to compensate
-    * for the compression of the coordinate frame towards the poles
+    * center in all directions around it, so note that it will be 'different' in the
+    * RA depending on the declination, and it all goes funny at the poles.
     */
    public SkyCircle(SkyPoint givenCenter, Angle givenRadius) {
 
       this.center = givenCenter;
-      this.decRadius = givenRadius;
-      this.raRadius = Angle.fromRadians( givenRadius.asRadians() / Math.cos(decRadius.asRadians()));
+      this.radius = givenRadius;
    }
-   
+
+  
    /** Returns the overall bounds - ie min RA/DEC, max RA/DEC or opposite corner HTMs.
     * This can be useful for first-stage queries */
    public SkyQuad getBounds() {
@@ -86,8 +71,11 @@ public class SkyCircle implements SkyRegion {
 }
 /*
  $Log: SkyCircle.java,v $
- Revision 1.1  2005/02/17 18:37:35  mch
- *** empty log message ***
+ Revision 1.2  2005/03/16 12:00:46  mch
+ Tidy up
+
+ Revision 1.1.1.1  2005/02/17 18:37:35  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:24  mch
  Initial checkin
