@@ -1,9 +1,9 @@
 /**
- * <cvs:id>$Id: LoginAction.java,v 1.26 2004/04/21 16:59:39 jdt Exp $</cvs:id>
+ * <cvs:id>$Id: LoginAction.java,v 1.27 2004/05/14 19:32:40 KevinBenson Exp $</cvs:id>
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/04/21 16:59:39 $</cvs:date>
- * <cvs:version>$Revision: 1.26 $</cvs:version>
+ * <cvs:author>$Author: KevinBenson $</cvs:author>
+ * <cvs:date>$Date: 2004/05/14 19:32:40 $</cvs:date>
+ * <cvs:version>$Revision: 1.27 $</cvs:version>
  */
 package org.astrogrid.portal.cocoon.common;
 import java.net.MalformedURLException;
@@ -222,6 +222,8 @@ public final class LoginAction extends AbstractAction {
         session.setAttribute(
             SessionKeys.COMMUNITY_NAME,
             CommunityConfig.getCommunityName());
+            
+        session.setAttribute("community_authority",community);
         //
         // Set the current account info in our request.
         request.setAttribute(USER_PARAM, user);
@@ -283,6 +285,9 @@ public final class LoginAction extends AbstractAction {
 /**
  * <cvs:log>
  * $Log: LoginAction.java,v $
+ * Revision 1.27  2004/05/14 19:32:40  KevinBenson
+ * new temporary session variable for the community authority
+ *
  * Revision 1.26  2004/04/21 16:59:39  jdt
  * temporary change to accommodate bug 297
  *
