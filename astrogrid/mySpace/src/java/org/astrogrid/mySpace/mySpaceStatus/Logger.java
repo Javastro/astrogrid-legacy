@@ -239,8 +239,8 @@ public class Logger
       if (mySpaceLog)
       {  try
          {  Date closeDate = new Date();
-            String closeMessage = "===== Close of MySpace logging "
-              + "session " + closeDate.toString() + "\n\n";
+            String closeMessage = "--- Close of MySpace logging "
+              + "session " + closeDate.toString() + "\n\n\n";
 
             mySpaceLogWriter.println(closeMessage);
             mySpaceLogWriter.flush();
