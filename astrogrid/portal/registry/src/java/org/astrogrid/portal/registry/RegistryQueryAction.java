@@ -233,22 +233,7 @@ public class RegistryQueryAction extends AbstractAction
                   System.out.println("the Elementtostring in queryaction = " + XMLUtils.ElementToString(doc.getDocumentElement()));
                   ArrayList resultNodes = new ArrayList();
                   resultNodes.add(doc.getDocumentElement());
-                  /*for(int i = 0;i < nl.getLength();i++) {
-                     resultNodes.add(nl.item(i)); 
-                  }*/
-                  request.setAttribute("resultNodes",resultNodes);      
-                  
-                  //Here are the managed authorities.  Which determine which AuthorityID
-                  //the registry owns and hence can do an update for.
-                  if(resultXML.size() > 0) {
-                     HashMap hm = (HashMap)session.getAttribute("ManageAuthorities");
-                     if(hm == null || hm.size() <= 0) {
-                        url = RegistryConfig.getProperty("publish.registry.query.url");
-                        rs = new RegistryService(url);
-                        hm = rs.ManagedAuthorities();
-                        session.setAttribute("ManageAuthorities",hm);
-                     }//if              
-                  }//if
+                  request.setAttribute("resultNodes",resultNodes);
                }//if
             }catch(Exception e) {
                e.printStackTrace();

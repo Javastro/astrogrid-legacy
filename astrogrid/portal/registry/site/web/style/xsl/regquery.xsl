@@ -118,25 +118,24 @@
 			</input>			
 			<input type="submit" name="addcriteria" value="Add More Criteria" />
 		</form>
-		<br />
-		<br />
-		<hr />
+
+		<xsl:if test="//registryquery/xmlresults/xmlresult">
+			<table border="1" cellspacing="0" cellpadding="0">
+				<tr>
+					<td>Actions</td>
+					<td>Identifier</td>
+					<td>Title</td>
+					<td>Description</td>
+				</tr>		
 		<xsl:for-each select="//registryquery/xmlresults/xmlresult">
+			<tr>
+				<td>
 			<xsl:if test="$mainelement != 'Registry'" >
-				<xsl:if test="@update = 'true'" >
 					<form method="post" action="registryupdate.html">
 						<input type="hidden" name="updatexml">
 							<xsl:attribute name="value"><xsl:value-of select="@val"/></xsl:attribute>
 						</input>
-						<input type="submit" name="update" value="Update This Entry" />
-					</form>
-				</xsl:if>
-					<form method="post" action="registryupdate.html">
-						<input type="hidden" name="createcopy" value="true" />
-						<input type="hidden" name="updatexml">
-							<xsl:attribute name="value"><xsl:value-of select="@val"/></xsl:attribute>
-						</input>
-						<input type="submit" name="update" value="Create Copy" />
+						<input type="submit" name="update" value="Update" />
 					</form>
 			</xsl:if>
 			<xsl:if test="$mainelement = 'Registry'" >
@@ -145,44 +144,24 @@
 					<input type="hidden" name="registryxml">
 						<xsl:attribute name="value"><xsl:value-of select="@val"/></xsl:attribute>
 					</input>
-					Havest From Date: <input type="text" name="dateFrom" />
-					<input type="submit" name="harvest" value="Harvest Registry" />
+					Havest From Date:<input type="text" name="dateFrom" value="2001-04-02" />
+					<input type="submit" name="harvest" value="Harvest" />
 				</form>
 			</xsl:if>
-			<xsl:value-of select="@val"/>
-			<br /><hr />
+			<form method="post" action="registrymetadata.xml">
+				<input type="hidden" name="xmlcontent">
+					<xsl:attribute name="value"><xsl:value-of select="@val"/></xsl:attribute>
+				</input>
+				<input type="submit" name="update" value="See Full XML" />
+			</form>	
+			</td>
+			<td><xsl:value-of select="@ident"/></td>
+			<td><xsl:value-of select="@title"/></td>
+			<td><xsl:value-of select="@desc"/></td>
+			</tr>			
 		</xsl:for-each>
-
-<hr />
-<hr />
-		<xsl:if test="//registryquery/xmlresultnodes/element/">
-			<table border="0" cellspacing="0" cellpadding="0">
-				<tr>
-					<td>Actions</td>
-					<td>Identifier</td>
-					<td>Title</td>
-					<td>Description</td>
-				</tr>
-			<xsl:for-each select="//registryquery/xmlresultnodes/element/*/*">
-				<tr>
-					<td><xsl:value-of select="name()"/></td>
-					<td><xsl:value-of select="vc:Title/text()" /></td>
-                    <td>
-                        <xsl:value-of select="local-name()"/>
-                    </td>
-					<td><xsl:value-of select="Title/text()" /></td>                    
-
-					<td> </td>
-					<!--
-					<td><xsl:value-of select="Identifier/AuthorityID/text()" />/<xsl:value-of select="./Identifier/ResourceKey" /></td>
-					<td><xsl:value-of select="self::node()/Title" /></td>					
-					<td><xsl:value-of select="Summary/Description/text()" /></td>
-					-->
-				</tr>
-			</xsl:for-each>
-			</table>
+		</table>
 		</xsl:if>
-
 	</xsl:template>
 
 	<!--+

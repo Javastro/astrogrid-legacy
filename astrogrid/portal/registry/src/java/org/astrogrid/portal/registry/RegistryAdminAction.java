@@ -91,6 +91,9 @@ public class RegistryAdminAction extends AbstractAction
       Session session = request.getSession();
       String message = null;
       Map mp = null;
+      String url = null;      
+      RegistryService rs = null;
+      HashMap hm = null;
       
       //load the config.
       RegistryConfig.loadConfig();
@@ -111,16 +114,12 @@ public class RegistryAdminAction extends AbstractAction
       Document registryDocument = null;
       DocumentBuilderFactory dbf = null;
       DocumentBuilder regBuilder = null;
+      NodeList nl = null;
       //See if a client passed in the IVOA xml to be updated.
       String updateXML = request.getParameter(UPDATE_XML_PARAM);
-      boolean createCopy = false;
-      //Are we doing an update or just grabbing the data for template purposes on an add.
-      if(request.getParameter(CREATE_COPY_PARAM) != null) {
-         createCopy = true;
-      }
+      boolean createCopy = true;
       String authID = "Identifier AuthorityID";
       String resKey = "Identifier ResourceKey";
-      NodeList nl = null;
       if(action == null) {
          //Okay updateXML was used.
          if(updateXML != null && updateXML.length() > 0) {
@@ -134,6 +133,22 @@ public class RegistryAdminAction extends AbstractAction
                e.printStackTrace();
             }
             request.setAttribute("keepvals","true");
+            try {
+               url = RegistryConfig.getProperty("publish.registry.query.url");
+               rs = new RegistryService(url);
+               hm = rs.ManagedAuthorities();
+               nl = registryDocument.getElementsByTagName("AuthorityID");
+               if(nl.getLength() > 0) {
+                  if(hm.containsKey(nl.item(0).getFirstChild().getNodeValue().trim())) {
+                     createCopy = false;
+                  }//if
+               }else {
+                  message = "Cannot find an AuthorityID for prepopulating values.";
+               }
+            }catch(Exception e) {
+               message = e.getMessage();
+               e.printStackTrace();
+            }
 
             //We want to blank out the authorityid and resource key for 
             //creating a copy area.
@@ -184,7 +199,7 @@ public class RegistryAdminAction extends AbstractAction
       
       
 
-      String url = null;      
+      
       //Go ahead and load the ManagedAuthorities (Authorities this registry owns and is
       //allowed to update and add)
       //Okay it is an update or add action.      
