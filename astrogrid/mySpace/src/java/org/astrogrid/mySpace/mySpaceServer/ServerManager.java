@@ -3,9 +3,9 @@
 package org.astrogrid.mySpace.mySpaceServer;
 
 //astrogrid
-import org.astrogrid.mySpace.mySpaceRegistry.DataItemRecord;
-import org.astrogrid.mySpace.mySpaceRegistry.MySpaceManager;
-import org.astrogrid.mySpace.mySpaceRegistry.UserAccount;
+import org.astrogrid.mySpace.mySpaceManager.DataItemRecord;
+import org.astrogrid.mySpace.mySpaceManager.MySpaceManager;
+import org.astrogrid.mySpace.mySpaceManager.UserAccount;
 import org.astrogrid.mySpace.mySpaceStatus.*;
 import org.astrogrid.mySpace.mySpaceUtil.MySpaceUtils;
 
@@ -58,20 +58,19 @@ public class ServerManager {
     /** userAcc = String usrID + String communityID
      * */
     public String deleteDataHolder(String dataHolderPath){ //throws Exception{
-    	if (DEBUG){
+    	if (DEBUG)
     		logger.debug("MySpace ServerManager.deleteDataHolder...");
-    	}
     	
     	try{
     		
     		File file = new File(dataHolderPath);   		
     		if  (file == null || !file.exists()){
 				if (DEBUG)  logger.debug("File not exist! can't delete.");
-				MySpaceMessage msMessage = new MySpaceMessage("NULL_FILE_DELETE","w");
-				response = msMessage.getMessage("NULL_FILE_DELETE");
+				MySpaceMessage msMessage = new MySpaceMessage("NULL_FILE_DELETE");
+				response = msMessage.getMessage();
 				return response;
     		}
-    		//return "File deletion complete";
+
     		try{
     			boolean isDeleted = file.delete();
 				if (DEBUG) logger.debug("ServerManager deleteDataHolder "+dataHolderPath);
@@ -115,8 +114,10 @@ public class ServerManager {
     }
 
     public String moveDataHolder(String dataHolderPath, String destinationDataHolderPath) {
-
-        return "";
+    	//only for testing from RequestResponseClient for getRequestAttributes. faking dataHolderPath as input xml request.
+        MySpaceUtils util = new MySpaceUtils();
+        util.getRequestAttributes(dataHolderPath);
+        return dataHolderPath;
     }
 
     public String saveDataHolder(String content, String dataHolderPath) {
@@ -149,16 +150,16 @@ public class ServerManager {
     }
 
     //need to be decided not implement in Iteration 2
-    public boolean tidyMySpace() {
-    	return true;
+    public String tidyMySpace() {
+    	return "";
     }
 
     /** given a size, return true or false indecate whether this action is doable
      *
      * */
-    public int enquireDataHolderSize(UserAccount userAcc, int size) {
+    public String enquireDataHolderSize(String userId, String communityId, int size) {
          
-         return 0;
+         return "";
     }
    
     public String buildXMLResponse(String dum){//String origiRs, File xsl){
@@ -167,7 +168,8 @@ public class ServerManager {
 		MySpaceUtils util = new MySpaceUtils();
 		logger.debug("CREATED MYSPACEUTIL...");
 		//DataItemRecord record = new DataItemRecord();
-		String response = util.buildMySpaceManagerResponse();
+		DataItemRecord dataItemRecord = new DataItemRecord();
+		String response = util.buildMySpaceManagerResponse(dataItemRecord);
 		
 		logger.debug("GOT RESPONSE" +response);
 		
