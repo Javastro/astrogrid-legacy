@@ -124,9 +124,13 @@ public class LoginAction extends AbstractAction
 						}
 					else {
 						if (DEBUG_FLAG) System.out.println("PASS : Got token") ;
-						if (DEBUG_FLAG) System.out.println("  Token : " + token) ;
-						if (DEBUG_FLAG) System.out.println("  Token : " + token.getToken()) ;
-						if (DEBUG_FLAG) System.out.println("  Used  : " + token.getUsed()) ;
+						if (DEBUG_FLAG) System.out.println("  Token   : " + token) ;
+						if (DEBUG_FLAG) System.out.println("  Token   : " + token.getToken()) ;
+						if (DEBUG_FLAG) System.out.println("  Used    : " + token.getUsed()) ;
+						if (DEBUG_FLAG) System.out.println("  Target  : " + token.getTarget()) ;
+						if (DEBUG_FLAG) System.out.println("  Account : " + token.getAccount()) ;
+						if (DEBUG_FLAG) System.out.println("  Start   : " + token.getStartDate()) ;
+						if (DEBUG_FLAG) System.out.println("  End     : " + token.getExpirationDate()) ;
 						}
 					}
 
