@@ -1,8 +1,12 @@
 /*
  * @(#)Query.java   1.0
+ *  
+ * Copyright (C) AstroGrid. All rights reserved.
  *
- * AstroGrid Copyright notice.
- * 
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
  */
 
 package org.astrogrid.jes.job; 
@@ -24,13 +28,18 @@ public class Query {
 		logger = Logger.getLogger( Query.class ) ;
 		
 	private static final String
-		ASTROGRIDERROR_COULD_NOT_dosomething = "AGJESE00???" ;
+        ASTROGRIDERROR_COULD_NOT_CREATE_QUERY = "AGJESE00610" ;
         
 	private Set
 		catalogs = new HashSet() ;
 		
     private JobStep
         parent ;
+	
+	
+	public Query( JobStep parent ) {
+		setParent( parent ) ;
+	}
 	
 	
 	public Query( JobStep parent, Element queryElement ) throws JobException {
@@ -62,7 +71,7 @@ public class Query {
 		}
 		catch( Exception ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_dosomething ) ;
+				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_QUERY ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex );    		
 		}

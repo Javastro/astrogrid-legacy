@@ -1,10 +1,13 @@
 /*
- * @(#)Table.java	1.0 
+ * @(#)Table.java   1.0
  *
- * AstroGrid Copyright notice.
- * 
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
  */
-
 package org.astrogrid.jes.job;
 
 import org.apache.log4j.Logger;
@@ -13,7 +16,7 @@ import org.astrogrid.jes.jobcontroller.*;
 import org.w3c.dom.* ;
 
 /**
- * The <code>Criteria</code> class represents ...
+ * The <code>Table</code> class represents ...
  * <p>
  * Introductory text.... For example:
  * <p><blockquote><pre>
@@ -35,13 +38,19 @@ public class Table {
 		logger = Logger.getLogger( Table.class ) ;
 		
 	private static final String
-		ASTROGRIDERROR_COULD_NOT_dosomething = "AGJESE00???" ;
+		ASTROGRIDERROR_COULD_NOT_CREATE_TABLE = "AGJESE00620" ;
 	
 	private String 
 	   name ;
 	   
 	private Catalog
 	   parent ;
+	
+	   
+	public Table( Catalog parent ) {
+		setParent( parent ) ;
+	}
+	
 	   
 	public Table( Catalog parent, Element tableElement ) throws JobException {
 		if( TRACE_ENABLED ) logger.debug( "Table(Element): entry") ; 
@@ -53,7 +62,7 @@ public class Table {
 		}
 		catch( Exception ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_dosomething ) ;
+				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_TABLE ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex );    		
 		}

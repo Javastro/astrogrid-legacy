@@ -57,6 +57,11 @@ public class Catalog {
 	    parent ;
 	    
 	    
+	public Catalog( Query parent ) {
+		setParent( parent ) ;
+	}
+	    
+	    
 	public Catalog( Query parent, Element catalogElement ) throws JobException {
 		if( TRACE_ENABLED ) logger.debug( "Catalog(Element): entry") ;
 		   

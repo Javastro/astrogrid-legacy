@@ -1,10 +1,13 @@
 /*
- * @(#)Service.java	1.2 
+ * @(#)Services.java   1.0
  *
- * AstroGrid Copyright notice.
- * 
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
  */
-
 package org.astrogrid.jes.job;
 
 import org.apache.log4j.Logger;
@@ -35,7 +38,7 @@ public class Service {
 		logger = Logger.getLogger( Service.class ) ;
 		
 	private static final String
-		ASTROGRIDERROR_COULD_NOT_dosomething = "AGJESE00???" ;
+		ASTROGRIDERROR_COULD_NOT_CREATE_SERVICE = "AGJESE00630" ;
 	
 	private String 
 	   name,
@@ -43,6 +46,12 @@ public class Service {
 	   
 	private Catalog
 	   parent ;
+	   
+	
+	public Service( Catalog parent ) {
+		setParent( parent ) ;
+	}
+	
 	   
 	public Service( Catalog parent, Element serviceElement ) throws JobException {
 		if( TRACE_ENABLED ) logger.debug( "Service(Element): entry") ;  
@@ -55,7 +64,7 @@ public class Service {
 		}
 		catch( Exception ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_dosomething ) ;
+				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_SERVICE ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex );    		
 		}
