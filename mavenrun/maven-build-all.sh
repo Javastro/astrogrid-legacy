@@ -1,5 +1,5 @@
 #!/bin/bash
-BUILD_DIR=/home/maven/build
+BUILD_DIR=/home/maven/build/snapshot
 SCRIPTHOME=/home/maven/mavenrun
 
 DATE=`date`
