@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.47 2004/03/17 12:53:44 mch Exp $
+ * $Id: Querier.java,v 1.48 2004/03/18 20:42:37 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -215,21 +215,32 @@ public class Querier implements Runnable {
          }
             
       }
-      
+
+      /*
       if (resultsTarget.resolveAgsl() != null) {
-         StoreClient store = StoreDelegateFactory.createDelegate(user.toUser(), resultsTarget.resolveAgsl());
-      
-         store.putString("This is a test file to make sure we can create a file in the given myspace, so our query results are not lost",
-                           "testFile", false);
          
+         String testFilename = user.getIndividual()+"@"+user.getCommunity()+"/serv1/votable/testFile.txt";
+         StoreClient store = StoreDelegateFactory.createDelegate(user.toUser(), resultsTarget.resolveAgsl());
+
          try {
-            store.delete("testFile");
+            store.putString("This is a test file to make sure we can create a file in the given myspace, so our query results are not lost",
+                              testFilename, false);
          }
          catch (StoreException se) {
+            //rethrow with more info
+            throw new StoreException("Test to create file '"+testFilename+"' on target store failed "+se.getMessage(), se.getCause());
+         }
+         
+         try {
+            store.delete(testFilename);
+         }
+         catch (StoreException se) {
+            //log it but don't fail
             log.error("Could not delete test file",se);
          }
             
       }
+       */
    }
 
    /** Sets results target.
@@ -394,6 +405,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.48  2004/03/18 20:42:37  mch
+ Removed test myspace
+
  Revision 1.47  2004/03/17 12:53:44  mch
  Fixed QuerierStatus being gotten from somewhere else
 
