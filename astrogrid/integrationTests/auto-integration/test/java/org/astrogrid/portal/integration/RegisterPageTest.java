@@ -1,4 +1,4 @@
-/* $Id: RegisterPageTest.java,v 1.1 2004/04/15 11:48:09 jdt Exp $
+/* $Id: RegisterPageTest.java,v 1.2 2004/04/21 14:23:39 jdt Exp $
  * Created on Apr 7, 2004 by jdt
  * 
  * Copyright (C) AstroGrid. All rights reserved. 
@@ -66,11 +66,11 @@ public final class RegisterPageTest extends WebTestCase {
 
 
     /**
-     * Check that the login page has the correct forms
+     * Check that the register page has the correct forms
      * and links on it
      *
      */
-    public void testRegistryPageCorrect(){
+    public void testRegisterPageCorrect(){
 
         assertFormPresent();
         assertFormElementPresent(NAME);
@@ -131,6 +131,9 @@ public final class RegisterPageTest extends WebTestCase {
 
 /*
  *  $Log: RegisterPageTest.java,v $
+ *  Revision 1.2  2004/04/21 14:23:39  jdt
+ *  typos in test names.
+ *
  *  Revision 1.1  2004/04/15 11:48:09  jdt
  *  Moved to auto-integration
  *

@@ -1,4 +1,4 @@
-/* $Id: ReminderPageTest.java,v 1.1 2004/04/15 11:48:09 jdt Exp $
+/* $Id: ReminderPageTest.java,v 1.2 2004/04/21 14:23:39 jdt Exp $
  * Created on Apr 7, 2004 by jdt
  * 
  * Copyright (C) AstroGrid. All rights reserved. 
@@ -71,7 +71,7 @@ public final class ReminderPageTest extends WebTestCase {
      * and links on it
      *
      */
-    public void testRegistryPageCorrect(){
+    public void testReminderPageCorrect(){
         assertTextPresent("Password reminder");
         assertFormPresent();
         assertFormElementPresent(NAME);
@@ -132,6 +132,9 @@ public final class ReminderPageTest extends WebTestCase {
 
 /*
  *  $Log: ReminderPageTest.java,v $
+ *  Revision 1.2  2004/04/21 14:23:39  jdt
+ *  typos in test names.
+ *
  *  Revision 1.1  2004/04/15 11:48:09  jdt
  *  Moved to auto-integration
  *
