@@ -28,6 +28,7 @@ import org.w3c.dom.* ;
 
 import org.astrogrid.i18n.*;
 import org.astrogrid.AstroGridException ;
+import org.astrogrid.jes.delegate.jobController.*;
 
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 import org.astrogrid.portal.workflow.*;
@@ -350,9 +351,19 @@ public class Workflow extends Activity {
     public static boolean submitWorkflow( Workflow workflow ) {
         if( TRACE_ENABLED ) trace( "Workflow.submitWorkflow() entry") ; 
 
-         
+        boolean
+            retValue = false ;
+        String
+            request = null,
+            jesLocation = null ;
+        JobControllerDelegate
+            jobController = null ;
+                    
         try {
-                        
+            jesLocation = WKF.getProperty( WKF.JES_URL, WKF.JES_CATEGORY ) ;
+            request = workflow.toJESXMLString() ;
+            jobController = new JobControllerDelegate( jesLocation ) ;
+            jobController.submitJob( request ) ;            
         }
         catch( Exception ex ) {
             ex.printStackTrace() ;
@@ -367,25 +378,10 @@ public class Workflow extends Activity {
     
     
     public static boolean insertQueryIntoStep( Step step, String queryName ) {
-        if( TRACE_ENABLED ) trace( "Workflow.insertQueryInStep() entry") ; 
-
-         
-        try {
-            Workflow.insertQueryIntoStep( step.getKey().toString()
-                                        , queryName
-                                        , step.getWorkflow() ) ;
-                        
-        }
-        catch( Exception ex ) {
-            ex.printStackTrace() ;
-        }
-        finally {
-            if( TRACE_ENABLED ) trace( "Workflow.insertQueryInStep() exit") ; 
-        }
-        
-        return false ;
-
-    } // end of insertQueryInStep()
+            return Workflow.insertQueryIntoStep( step.getKey().toString()
+                                               , queryName
+                                               , step.getWorkflow() ) ;                   
+    }
   
   
     public static boolean insertQueryIntoStep( String stepActivityKey
@@ -429,7 +425,7 @@ public class Workflow extends Activity {
             if( TRACE_ENABLED ) trace( "Workflow.insertQueryInStep(String,String) exit") ; 
         }
         
-        return false ;
+        return retValue ;
 
     } // end of insertQueryInStep(String,String) 
     
