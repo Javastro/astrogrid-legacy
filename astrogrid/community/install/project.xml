@@ -3,11 +3,14 @@
     | Maven project description for the AstroGrid community webapp.
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
-    | <cvs:version>$Revision: 1.13 $</cvs:version>
+    | <cvs:author>$Author: KevinBenson $</cvs:author>
+    | <cvs:date>$Date: 2004/06/21 09:41:27 $</cvs:date>
+    | <cvs:version>$Revision: 1.14 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.14  2004/06/21 09:41:27  KevinBenson
+    |   made it use the registry-client-lite version
+    |
     |   Revision 1.13  2004/06/18 13:45:20  dave
     |   Merged development branch, dave-dev-200406081614, into HEAD
     |
@@ -154,7 +157,7 @@
             +-->
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>astrogrid-registry-client</artifactId>
+            <artifactId>astrogrid-registry-client-lite</artifactId>
             <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
@@ -162,45 +165,8 @@
                 <jar.fileset>true</jar.fileset>
             </properties>
         </dependency>
+                
         
-        <dependency>
-            <artifactId>astrogrid-workflow-objects</artifactId>
-            <groupId>${pom.groupId}</groupId>
-            <version>${pom.currentVersion}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-            <properties>
-                <jar.fileset>true</jar.fileset>
-            </properties>            
-        </dependency>
-        
-        
-        <!--+
-            | The JXpath library - required for Registry delegate.
-            +-->
-       <dependency>
-            <artifactId>commons-jxpath</artifactId>
-            <groupId>commons-jxpath</groupId>
-            <version>1.1</version>
-            <type>jar</type>
-            <url></url>
-            <properties>
-                <lib.fileset>true</lib.fileset>
-            </properties>
-        </dependency>
-        <!--+
-            | The Jakarta Regexp library - required for Registry delegate.
-            +-->
-       <dependency>
-            <artifactId>jakarta-regexp</artifactId>
-            <groupId>jakarta-regexp</groupId>
-            <version>1.3</version>
-            <type>jar</type>
-            <url></url>
-            <properties>
-                <lib.fileset>true</lib.fileset>
-            </properties>
-        </dependency>
         <!--+
             | The new Castor libraries.
         <dependency>
