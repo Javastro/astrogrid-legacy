@@ -89,8 +89,8 @@ public class Tool {
         
     private Tool() {
     }
-    
-    protected Tool( String name ) {
+    // pah - relaxed the accessibility to public for testing purposes...
+    public Tool( String name ) {
         this.name = name ;
     }
         
