@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer_v0_4_1.java,v 1.6 2004/03/16 01:21:08 mch Exp $
+ * $Id: AxisDataServer_v0_4_1.java,v 1.7 2004/03/18 11:46:53 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,6 +14,7 @@ import org.apache.axis.types.URI;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.axisdataserver.types.Language;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
+import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.queriers.JobNotifyServiceListener;
 import org.astrogrid.datacenter.queriers.Querier;
@@ -190,6 +191,8 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
    public void startQuery(String id) throws AxisFault {
       try {
          Querier querier = server.getQuerier(id);
+         if (querier == null)
+            throw new DatacenterException("Querier not found for ID "+id);
          server.submitQuerier(querier);
       }
       catch (Throwable e) {
@@ -255,6 +258,9 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
 
 /*
 $Log: AxisDataServer_v0_4_1.java,v $
+Revision 1.7  2004/03/18 11:46:53  mch
+Added better checking for nul queriers
+
 Revision 1.6  2004/03/16 01:21:08  mch
 Fixed unknown query id on register job monitor
 

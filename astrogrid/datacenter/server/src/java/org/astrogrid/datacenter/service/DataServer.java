@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.22 2004/03/15 19:16:12 mch Exp $
+ * $Id: DataServer.java,v 1.23 2004/03/18 11:46:53 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -116,6 +116,8 @@ public class DataServer
     */
    public String submitQuerier(Querier querier) throws Throwable {
 
+      assert(querier != null);
+      
       try {
          if ( (querier.getQuery() instanceof RawSqlQuery) && !SimpleConfig.getSingleton().getBoolean(SQL_PASSTHROUGH_ENABLED)) {
             throw new UnsupportedOperationException("This service does not allow SQL to be directly submitted");
