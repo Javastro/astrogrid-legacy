@@ -58,6 +58,10 @@
          
          out.write("<hr>");
          status = status.getPrevious();
+         if (status != null) {
+            out.write("<h3>"+ServletHelper.makeSafeForHtml(status.getState().toString()+" at "+status.getTimestamp())+"</h3>");
+            out.write(ServletHelper.makeSafeForHtml(status.getMessage()));
+         }
       }
          
       if (!isFinished) {
