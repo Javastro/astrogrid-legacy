@@ -25,7 +25,8 @@
 	  </p>
 	   <!--http://www.astrogrid.org/maven/astrogrid-datacenter/-->
 	    <subsection name="Javascript"><p>
-		<a href="http://www.mozilla.org/rhino">Rhino</a> is an implementation of javascript in Java. <a href="">Download</a> the
+		<a href="http://www.mozilla.org/rhino">Rhino</a> is an implementation of javascript in Java.
+		<a href="http://www.astrogrid.org/maven/astrogrid-scripting/distributions/astrogrid-scripting-rhino-SNAPSHOT.tar.gz">Download</a> the
 		snapshot tarball, unpack, and configure by setting the <tt>JS_HOME</tt> environment variable to
 		the root of the unpackaged code, and adding <tt>${JS_HOME}/bin</tt> to your path.
 		<p />
@@ -34,13 +35,14 @@
 		The <tt>examples</tt> directory contains some example programs that use the astrogrid delegates
 		</p></subsection>
 		<subsection name="Groovy"><p>
-		<a href="">Groovy</a> is
+		<a href="http://groovy.codehaus.org/">Groovy</a> is
 		<blockquote><i>
 		 a powerful new high level dynamic language for the JVM combining lots of great features from
 		 languages like Python, Ruby and Smalltalk and making them available to the Java developers
 		 using a Java-like syntax.
 		</i></blockquote>
-		Installation is similar to that for Javascript. <a href="">Download</a> the tarball snapshot, unzip, and configure
+		Installation is similar to that for Javascript.
+		<a href="http://www.astrogrid.org/maven/astrogrid-scripting/distributions/astrogrid-scripting-rhino-SNAPSHOT.tar.gz">Download</a> the tarball snapshot, unzip, and configure
 		by setting the <tt>GROOVY_HOME</tt> environment variable to point to the unpackaged code.
 		<p />
 		Again, <tt>bin</tt> contains to run groovy, <tt>examples</tt> has groovy versions of the example programs.
@@ -53,7 +55,7 @@
 		</p></subsection>
 		<subsection name="Java"><p>
 		 The assembled set of delegates and supporting libraries is a convenient starting point for writing
-		 java client applications. The set of libraries can be <a href="">downloaded here</a>
+		 java client applications. The set of libraries can be <a href="http://www.astrogrid.org/maven/astrogrid-scripting/distributions/astrogrid-scripting-SNAPSHOT.tar.gz">downloaded here</a>
 		</p></subsection>
 		<subsection name="Other languages"><p>
 			Other possible scripting languages targets are
