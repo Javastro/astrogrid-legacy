@@ -27,8 +27,10 @@ public class DatasetAgentTest extends TestCase {
 	   "<userid>jlusted</userid>" +
 	   "<community>leicester</community>" +
 	   "<jobstep name='aconesearch'>" +
-		  "<query>" +      
-			  "SELECT COUNT(*) FROM USNOB..USNOB" + 
+		  "<query>" + 
+		     "<from></from>"+      
+			  "<return></return>" +			  "<criteria>" +                 "<operation name='GREATER_THAN'>"
+                 			  "SELECT COUNT(*) FROM USNOB..USNOB" + 
 		  "</query>" +
 	   "</jobstep>" +
 	"</job>";

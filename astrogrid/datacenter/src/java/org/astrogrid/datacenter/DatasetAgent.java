@@ -22,8 +22,35 @@ import org.w3c.dom.*;
 import org.xml.sax.InputSource ;
 
 /**
- * The <code>DatasetAgent</code> class represents 
+ * The <code>DatasetAgent</code> class is the top level AstroGrid 
+ * component in a data center.It contains the workflow for executing a job,
+ * usually a query against an astronomical catalog. The catalog is likely held 
+ * within an SQL/RDBMS style database that is JDBC compliant. However, this is
+ * not an absolute restriction, and other sources can be utilized at the cost
+ * of the datacenter writing an implementation factory to support their own
+ * special query processing.
  * <p>
+ * The mainline argument (the workflow) is held within the method runQuery(),
+ * which should be referred to for further detail. The basic workflow is:
+ *      1. Load the datacenter properties (if not already loaded).
+ *      2. Analyse the query and create appropriate structures.
+ *      3  Execute the query.
+ *      4. Allocate temporary file space within the local file system.
+ *      5. Convert the query into VOTable format and stream it to
+ *         the allocated file.
+ *      6. Inform the MySpace facility that there is a file to
+ *         pick up, and give it the file location.
+ *      7. Inform the JobMonitor of successful completion.
+ * <p>	
+ * The above does not cover use cases where errors occur.
+ * <p>
+ * An instance of a DatasetAgent is stateless, with some provisos:
+ * 1. The datacenter is driven by a properties file, held at class level.
+ * 2. AstroGrid messages are held in a manner amenable to internationalization.
+ * These are also loaded from a properties file, held at class level.
+ * 3. Finally, and importantly, the DatasetAgent utilizes an entity which does
+ * contain state - the Job entity, which currently represents one table held in any suitable
+ * JDBC compliant database. However, again this is not an absolute restriction.
  *
  * @author  Jeff Lusted
  * @version 1.0 28-May-2003
@@ -31,6 +58,8 @@ import org.xml.sax.InputSource ;
  */
 public class DatasetAgent {
 	 
+	// Compile-time switch. Set this to false to eliminate all trace statements
+	// within the byte code.
 	private static final boolean 
 		TRACE_ENABLED = true ;
 			
