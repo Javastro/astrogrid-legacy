@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceClient.java,v 1.2 2004/03/08 22:57:17 mch Exp $
+ * $Id: VoSpaceClient.java,v 1.3 2004/03/09 11:48:19 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -53,7 +53,10 @@ public class VoSpaceClient {
       
       if (agsl == null) {
          //look in community
-         agsl = community.getMySpace(ivorn.toRegistryString());
+         ivorn = community.getMySpace(ivorn.toRegistryString());
+      
+         agsl = registry.getEndPointByIdentifier(ivorn.toRegistryString());
+      
       }
        */
 
@@ -87,6 +90,9 @@ public class VoSpaceClient {
 
 /*
 $Log: VoSpaceClient.java,v $
+Revision 1.3  2004/03/09 11:48:19  mch
+Updated design for community call
+
 Revision 1.2  2004/03/08 22:57:17  mch
 Added placeholding for registry and community delegates
 
