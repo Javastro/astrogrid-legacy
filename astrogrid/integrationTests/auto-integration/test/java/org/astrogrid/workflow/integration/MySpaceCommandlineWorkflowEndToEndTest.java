@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.4 2004/05/11 12:15:27 pah Exp $
+ * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.5 2004/05/11 12:17:39 pah Exp $
  * 
  * Created on 23-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -72,6 +72,7 @@ public class MySpaceCommandlineWorkflowEndToEndTest
     * @see org.astrogrid.workflow.integration.SimpleCommandlineWorkflowEndToEndTest#configureToolParameters(org.astrogrid.workflow.beans.v1.Tool)
     */
    protected void configureToolParameters(Tool tool) {
+      super.configureToolParameters(tool);
       ParameterValue pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P9']");
       pval.setValue(inputIvorn.toString());
       pval = (ParameterValue)tool.findXPathValue("output/parameter[name='P3']");
