@@ -1,5 +1,5 @@
 /*
- * $Id: Application.java,v 1.4 2004/07/26 12:07:38 nw Exp $
+ * $Id: Application.java,v 1.5 2004/09/17 01:20:54 nw Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -64,8 +64,16 @@ public interface Application  {
     * This is the main entry point for the application, and is expected to return quickly, with the application continuing execution in another thread if needed.
     * @return true if the application has successfully been started executing.
     * @throws CeaException
+    * @deprecated - use {@link #createExecutionTask} instead
     */
    boolean execute() throws CeaException;
+   
+   /** return a runnable that will perform the execution of the application
+    * main new entry point for the application. expectred to return quickly, with main processing suspended within the runnable object.
+    * @return
+    */
+   Runnable createExecutionTask() throws CeaException;
+   
   /** @return results of the application execution- will be empty / semipopulated if the application has not yet completed. */
    public ResultListType getResult();
    /** get the input parameters to this application execution 

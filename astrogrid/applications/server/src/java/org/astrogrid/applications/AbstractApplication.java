@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplication.java,v 1.7 2004/09/01 15:42:26 jdt Exp $
+ * $Id: AbstractApplication.java,v 1.8 2004/09/17 01:20:54 nw Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -221,7 +221,8 @@ public abstract class AbstractApplication extends Observable implements Applicat
        return mt;
    }
 
-   /** to be implemented - should start the application running, and then return
+   /**<b>Deprecated</b> 
+    * to be overridden- should start the application running, and then return
     * <p>
     * Usual pattern.
     * <ol>
@@ -239,8 +240,11 @@ public abstract class AbstractApplication extends Observable implements Applicat
     *   <li>set application state to {@link Status#COMPLETED}
     * </ol>
     *</ol>
+    *@deprecated - use {@link #createExecutionTask()} instead
   */
-   public abstract boolean execute() throws CeaException;
+   public  boolean execute() throws CeaException {
+       return false;
+   }
    
    /** subclassing helper - find a parameter by name in the tool inputs */
    protected final ParameterValue findInputParameter(String name) {
@@ -449,5 +453,34 @@ public abstract class AbstractApplication extends Observable implements Applicat
       return getApplicationDescription().getName() + "#" + getApplicationInterface().getName();
    }
 
+   /*** to be implemented - create a runnable for applicaton execution, and then return
+    * <p>
+    * Usual body of method does
+    * <ol>
+    * <li>(optional) inspect / adjust parameter values
+    * <li> call {@link #createAdapters()} to create parameterAdapters
+    * <li> create runnable result object
+    * </ol>
+    * responsibilities of runnable are
+    * <ol> 
+    * <li>iterate through input parameter adapters, calling {@link ParameterAdapter#process()} on each, collecting returned parameter values
+    * <li>set application state to {@link Status#INITIALIZED}
+    *   <li>sets application state to {@link Status#RUNNING}
+    *   <li>performs applicatioin execution in some way, passing in parameter values
+    *   <li>reports progress via {@link #reportMessage(String)}, etc.
+    *   <li> on application complettion, set application state to {@link Status#WRITINGBACK}
+    *   <li>iterate through output parameter adapters, calling {@link ParameterAdapter#writeBack(Object)} on each.
+    *   <li>set application state to {@link Status#COMPLETED}
+    * </ol>
+    *</ol>
+    * 
+    *  default implementation of this method - for backwards compatability
+    * if this method returns null, then the deprecated {@link #execute()} will be called instead
+    * @see org.astrogrid.applications.Application#createExecutionTask()
+    * @return null 
+    */
+    public Runnable createExecutionTask() throws CeaException {
+        return null;
+    }
 }
 
