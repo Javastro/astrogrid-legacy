@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForWorkflow.java,v 1.1 2004/07/01 11:47:39 nw Exp $
+/*$Id: AbstractTestForWorkflow.java,v 1.2 2004/07/05 18:32:34 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,7 +54,7 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
     
     protected abstract void buildWorkflow() throws WorkflowInterfaceException;
 
-   public static final long WAIT_TIME = 120 * 1000;
+   public static final long WAIT_TIME = 240 * 1000;
 
     public void checkExecutionResults(Workflow result) {
         softAssertEquals("Workflow not completed",
@@ -130,6 +130,9 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
 
 /* 
 $Log: AbstractTestForWorkflow.java,v $
+Revision 1.2  2004/07/05 18:32:34  nw
+fixed tests
+
 Revision 1.1  2004/07/01 11:47:39  nw
 cea refactor
  

@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.9 2004/07/01 11:47:39 nw Exp $
+ * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.10 2004/07/05 18:32:34 nw Exp $
  * 
  * Created on 23-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -88,7 +88,6 @@ public class MySpaceCommandlineWorkflowEndToEndTest
    }
    
    public void checkExecutionResults(Workflow wf)  {
-       super.checkExecutionResults(wf);
        // get the result, check its what we expect.
        Step s = (Step)wf.getSequence().getActivity(0);
        String value = s.getTool().getOutput().getParameter(0).getValue();
@@ -100,7 +99,8 @@ public class MySpaceCommandlineWorkflowEndToEndTest
        // now check target ivorn has same contents as the original.
         Reader reader = new InputStreamReader(is);
         StringWriter writer = new StringWriter();    
-        assertTrue("contents of result file do not include contents of input file",writer.toString().indexOf(CommandLineProviderServerInfo.TEST_CONTENTS) != -1);
+        Piper.pipe(reader,writer);
+        assertTrue("contents of result file do not include contents of input file\n" + writer.toString(),writer.toString().indexOf(CommandLineProviderServerInfo.TEST_CONTENTS) != -1);
         } catch (IOException e) {
             softFail("exception when reading result: " + e.getMessage());
         }

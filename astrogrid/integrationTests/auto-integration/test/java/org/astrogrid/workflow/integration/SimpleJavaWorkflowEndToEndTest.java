@@ -1,4 +1,4 @@
-/*$Id: SimpleJavaWorkflowEndToEndTest.java,v 1.2 2004/07/02 09:12:27 nw Exp $
+/*$Id: SimpleJavaWorkflowEndToEndTest.java,v 1.3 2004/07/05 18:32:34 nw Exp $
  * Created on 23-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,13 +45,20 @@ public class SimpleJavaWorkflowEndToEndTest extends AbstractTestForSimpleWorkflo
     String value = (String)wf.findXPathValue("sequence/activity/tool/output/parameter/value");
     softAssertNotNull("result is null",value);
     softAssertTrue("result is empty",value.trim().length() > 0);
-    softAssertEquals("result ins't as expected",42,Integer.parseInt(value));
+    try {
+        softAssertEquals("result ins't as expected",42,Integer.parseInt(value));
+    } catch (NumberFormatException e) {
+        softFail("Can't parse number in result" + e.getMessage());
+    }
     }
 }
 
 
 /* 
 $Log: SimpleJavaWorkflowEndToEndTest.java,v $
+Revision 1.3  2004/07/05 18:32:34  nw
+fixed tests
+
 Revision 1.2  2004/07/02 09:12:27  nw
 better checking of result value
 
