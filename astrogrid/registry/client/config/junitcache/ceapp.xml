@@ -94,28 +94,28 @@
             </cea:Parameters>
             <cea:Interfaces>
                 <Interface name="I1">
-                    <input>
-                        <pref ref="P1"/>
-                    </input>
-                    <output>
-                        <pref ref="P3"/>
-                    </output>
+                    <ceapd:input>
+                        <ceapd:pref ref="P1"/>
+                    </ceapd:input>
+                    <ceapd:output>
+                        <ceapd:pref ref="P3"/>
+                    </ceapd:output>
                 </Interface>
                 <Interface name="Ilocal">
-                    <input>
-                        <pref ref="P1"/>
-                    </input>
-                    <output>
-                        <pref ref="P3d"/>
-                    </output>
+                    <ceapd:input>
+                        <ceapd:pref ref="P1"/>
+                    </ceapd:input>
+                    <ceapd:output>
+                        <ceapd:pref ref="P3d"/>
+                    </ceapd:output>
                 </Interface>
                 <Interface name="I2">
-                    <input>
-                        <pref ref="P9"/>
-                    </input>
-                    <output>
-                        <pref ref="P3"/>
-                    </output>
+                    <ceapd:input>
+                        <ceapd:pref ref="P9"/>
+                    </ceapd:input>
+                    <ceapd:output>
+                        <ceapd:pref ref="P3"/>
+                    </ceapd:output>
                 </Interface>
             </cea:Interfaces>
         </cea:ApplicationDefinition>

@@ -131,6 +131,19 @@
    			<xsl:text>java:org.astrogrid.registry.beans.cea.base.CmdLineParameterDefn</xsl:text>
 	    </xsl:attribute>
     </xsl:template>
+
+    <xsl:template match="pref">
+        <xsl:element name="ceab:pref">
+        	<xsl:if test="@ref">
+	            <xsl:attribute name="ref">
+	                <xsl:value-of select="@ref" />
+        	    </xsl:attribute>
+        	</xsl:if>
+      		<xsl:apply-templates/>
+        </xsl:element>
+    </xsl:template>
+    
+    
     
 	<xsl:template match="text()|processing-instruction()|comment()">
 	  <xsl:value-of select="."/>

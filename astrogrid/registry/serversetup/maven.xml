@@ -37,26 +37,33 @@
         | Maven : Any more unexpected suprises !?
     <core:import inherit="true" file="${maven.build.dir}/../../maven/maven.xml"/>
         +-->
+
+    <!--+
+        | Build and install our snapshot jar.
+        | (required as a target goal for the reactor)
+        +-->
+    <goal name="install-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Building snapshot artifact ...."/>
+        <attainGoal name="jar:install-snapshot"/>
+    </goal>
+
         
     <goal name="reg-installer">
         <attainGoal name="jar:jar"/>
-                <attainGoal name="run-installer"/>
-
-    
+        <attainGoal name="run-installer"/>    
     </goal>
     
-    <goal name="run-installer">
-    
+    <goal name="run-installer">    
         <ant:java classname="regsetup.RegistrySetup"
             fork="false"
             >
             <classpath>
         	   <pathelement location="${maven.build.dir}/${pom.artifactId}-${pom.currentVersion}.jar"/>
-
 	         </classpath>            
         </ant:java>
-    
-    
     </goal>
 
     <!--+
@@ -101,12 +108,6 @@
             </core:forEach>
         
         
-        <!--+
-            | Create the META-INF directory.
-
-        <ant:mkdir dir="${maven.build.dest}/META-INF"/>
-        <ant:mkdir dir="${maven.build.dest}/META-INF/wsdd"/>
-            +-->        
         <!--+
             | Copy our WSDD service deployment files.
         <ant:copy verbose="false" todir="${maven.build.dest}/META-INF/wsdd">

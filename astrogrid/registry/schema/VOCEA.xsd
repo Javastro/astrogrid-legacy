@@ -5,7 +5,7 @@
 		<xs:appinfo>
 			<vm:SchemaName>VOCEA</vm:SchemaName>
 			<vm:schemaPrefix>xs</vm:schemaPrefix>
-			<vm:targetPrefix>vs</vm:targetPrefix>
+			<vm:targetPrefix>cea</vm:targetPrefix>
 		</xs:appinfo>
 		<xs:documentation>
         An extension to the core resource metadata (VOResource) for 

@@ -19,7 +19,7 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
- <vr:Resource xsi:type="RegistryType">
+ <Resource xsi:type="RegistryType">
     <Identifier>
       <AuthorityID>vizier</AuthorityID>
       <ResourceKey>RegistryTest</ResourceKey>
@@ -66,5 +66,5 @@
       <Invocation>WebBrowser</Invocation>
       <AccessURL use="dir">http://dontvizier.u-strasbg.fr/cgi-bin/registry/vizier/oai.pl?metadataPrefix=ivo_vr&amp;verb=ListRecords</AccessURL>
     </Interface>
-  </vr:Resource>
+  </Resource>
  </VODescription>

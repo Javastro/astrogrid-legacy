@@ -27,7 +27,7 @@
         | The full name of the project.
         | This is used when generating JavaDoc titles.
         +-->
-    <name>AstroGrid registry server</name>
+    <name>AstroGrid registry server setup</name>
 
     <!--+
         | The Java package name of the project.
@@ -40,7 +40,7 @@
         | The short description should be limited to a single line.
         +-->
     <shortDescription>
-        Astrogrid Registry installer
+        Astrogrid Registry Installer
     </shortDescription>
 
     <!--+
@@ -63,10 +63,10 @@
         +-->
     <repository>
         <connection>
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/registry/server
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/registry/serversetup
         </connection>
         <developerConnection>
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/registry/server
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/registry/serversetup
         </developerConnection>
     </repository>
 
@@ -166,15 +166,6 @@
           	</properties>
         </dependency>
 
-        <dependency>
-       		<id>xercesImpl</id>
-          	<version>2.5.0</version>
-          	<properties>
-          		<war.bundle>true</war.bundle>
-          	</properties>
-        </dependency>
-
-        
         <dependency >
            <id>wsdl4j</id>
            <version>1.4</version>
