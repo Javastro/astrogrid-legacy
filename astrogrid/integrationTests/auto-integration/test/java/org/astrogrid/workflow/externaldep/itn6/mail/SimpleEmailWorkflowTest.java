@@ -1,4 +1,4 @@
-/*$Id: SimpleEmailWorkflowTest.java,v 1.1 2004/08/17 16:16:17 nw Exp $
+/*$Id: SimpleEmailWorkflowTest.java,v 1.2 2004/08/27 13:18:27 nw Exp $
  * Created on 17-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -66,7 +66,7 @@ public class SimpleEmailWorkflowTest extends AbstractTestForWorkflow {
     
     public void checkExecutionResults(Workflow result) throws Exception {
         super.checkExecutionResults(result);
-        // step itself doesn't return any value - need to find a way of reading the mailbox itself. hmm.
+        //@todo  step itself doesn't return any value - need to find a way of reading the mailbox itself. hmm.
         
     }    
 
@@ -75,6 +75,9 @@ public class SimpleEmailWorkflowTest extends AbstractTestForWorkflow {
 
 /* 
 $Log: SimpleEmailWorkflowTest.java,v $
+Revision 1.2  2004/08/27 13:18:27  nw
+added todo
+
 Revision 1.1  2004/08/17 16:16:17  nw
 email test - need to find a way to check the mail has been received.
  
