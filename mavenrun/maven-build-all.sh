@@ -22,9 +22,9 @@ $SCRIPTHOME/maven-build.sh mySpace >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build.sh portal >> $BUILD_DIR/$LOG_FILE 2>&1
 #$SCRIPTHOME/maven-build.sh portalB >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build.sh registry >> $BUILD_DIR/$LOG_FILE 2>&1
-$SCRIPTHOME/maven-build.sh templateservice >> $BUILD_DIR/$LOG_FILE 2>&1
+#$SCRIPTHOME/maven-build.sh templateservice >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build.sh tools >> $BUILD_DIR/$LOG_FILE 2>&1
-$SCRIPTHOME/maven-build.sh ui >> $BUILD_DIR/$LOG_FILE 2>&1
+#$SCRIPTHOME/maven-build.sh ui >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build.sh warehouse >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build.sh workflow >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-maven-site.sh >> $BUILD_DIR/$LOG_FILE 2>&1
