@@ -1,4 +1,4 @@
-/*$Id: Services.java,v 1.4 2004/02/02 10:30:48 nw Exp $
+/*$Id: Services.java,v 1.5 2004/02/02 18:43:14 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.scripting;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import org.apache.commons.digester.*;
@@ -38,7 +39,12 @@ public class Services {
     * @throws SAXException
     */
    public Services()  throws IOException, SAXException  {
-      this(null);
+      this((URL)null);
+   }
+   
+   /** constructor, populates a list using a document at specified URL */
+   public Services(String url) throws MalformedURLException, IOException, SAXException {
+      this( new URL(url) );      
    }
    
    /** constructor, that populates service list using document at specified url
@@ -176,6 +182,9 @@ public class Services {
 
 /* 
 $Log: Services.java,v $
+Revision 1.5  2004/02/02 18:43:14  nw
+improved constructors
+
 Revision 1.4  2004/02/02 10:30:48  nw
 added helper method to create services.
 

@@ -3,6 +3,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -57,6 +58,9 @@ public class Astrogrid extends Services {
    public Astrogrid(URL url) throws IOException, SAXException {
       super(url);
    }
+   public Astrogrid(String url) throws MalformedURLException, IOException, SAXException {
+      super(url);
+   }
    /** access the singleton astrogrid object, initializaing if necessary
     * */   
    public synchronized static Astrogrid getInstance()  {
@@ -72,6 +76,16 @@ public class Astrogrid extends Services {
    }
    /** create the singleton astorgrid object, using service document at the given url */
    public synchronized static Astrogrid getInstance(URL url) {
+      try {
+        theInstance = new Astrogrid(url);
+      } catch (Exception e) {
+         System.err.println("Could not inizitalize Astrogrid object from url:" + url.toString());
+         e.printStackTrace();
+      }
+      return theInstance;
+   }
+   /** create the singleton astorgrid object, using service document at the given url */
+   public synchronized static Astrogrid getInstance(String url) {
       try {
         theInstance = new Astrogrid(url);
       } catch (Exception e) {
