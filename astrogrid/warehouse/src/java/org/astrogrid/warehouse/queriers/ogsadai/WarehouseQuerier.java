@@ -1,13 +1,10 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.10 2003/12/11 13:14:48 kea Exp $
+ * $Id: WarehouseQuerier.java,v 1.11 2003/12/12 14:42:03 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.warehouse.queriers.ogsadai;
-
-import org.astrogrid.warehouse.service.SystemTalker;
-import org.astrogrid.warehouse.service.TalkResult;
 
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
@@ -19,8 +16,6 @@ import org.astrogrid.util.DomLoader;
 
 import org.w3c.dom.Document;
 
-//import org.apache.xerces.parsers.DOMParser;
-//import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.TransformerFactory;
@@ -474,6 +469,9 @@ public class WarehouseQuerier extends Querier
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.11  2003/12/12 14:42:03  gtr
+Unused import statements were removed.
+
 Revision 1.10  2003/12/11 13:14:48  kea
 Moved OGSA-DAI host and registry location into WarehouseQuerier properties
 file so they can be edited more easily in a tomcat inst.
