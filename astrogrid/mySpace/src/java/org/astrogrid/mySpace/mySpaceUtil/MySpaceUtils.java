@@ -116,62 +116,85 @@ public class MySpaceUtils {
 	
 	public HashMap getRequestAttributes( String xmlRequest ){
 		HashMap request = new HashMap();
-		Document doc = parseRequest( xmlRequest );
-		Node checker;
-		checker = doc.getDocumentElement();
-		boolean ascending = false;
-		int level = 1;
-		while (true) {
-			logger.debug("Now trying to walk the dom tree..");
-			if (!ascending) {
-				//indentToLevel(level);
-				//printNodeInfo(checker);
-				}
-				if ((checker.hasChildNodes()) && (!ascending)) {
-					checker = checker.getFirstChild();
-					logger.debug("GOING DOWN"+checker.getNodeName() +"NODETYPE="+checker.getNodeType());
-					if(checker.getNodeType()==1){
-						String text = "";
-						if(checker.getFirstChild()!=null){
-							if(checker.getFirstChild().getNodeType()==Node.TEXT_NODE) {
-								text = checker.getFirstChild().getNodeValue();
-							}
-						}
-						logger.debug("NODENAME: "+checker.getNodeName() +"NODEVALUE: "+checker.getNodeValue() +"TEXTVALUE: "+text);
-						request.put(checker.getNodeName(),checker.getNodeValue());
-					//printAttributes((Node)checker);
+		try{		
+			Document doc = parseRequest( xmlRequest );
+			Node checker;
+			checker = doc.getDocumentElement();
+			boolean ascending = false;
+			int level = 1;
+			while (true) {
+				logger.debug("Now trying to walk the dom tree..");
+				if (!ascending) {
+					//indentToLevel(level);
+					//printNodeInfo(checker);
 					}
-					ascending = false;
-					level++;
-					}
-					else if (checker.getNextSibling() != null) {
-						checker= checker.getNextSibling();
-						String text = "";
-						if(checker.getFirstChild()!=null){
-							if(checker.getFirstChild().getNodeType()==Node.TEXT_NODE) {
-								text = checker.getFirstChild().getNodeValue();
+					logger.debug("XXXXXXXXXXXXX");
+					if (checker!=null && (checker.hasChildNodes()) && (!ascending)) {
+						logger.debug("YYYYYYYYYY");
+						checker = checker.getFirstChild();
+						logger.debug("GOING DOWN"+checker.getNodeName() +"NODETYPE="+checker.getNodeType());
+						if(checker.getNodeType()==1){
+							String text = "";
+							if(checker.getFirstChild()!=null){
+								if(checker.getFirstChild().getNodeType()==Node.TEXT_NODE) {
+									text = checker.getFirstChild().getNodeValue();
+									logger.debug("BEFORE.PUT.DOWN" +checker.getNodeName()+" TEXT " +text);
+									
+									request.put(checker.getNodeName(), text);
+									
+									logger.debug("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
+								}
 							}
+							//logger.debug("NODENAME: "+checker.getNodeName() +"NODEVALUE: "+checker.getNodeValue() +"TEXTVALUE: "+text);
+							//request.put(checker.getNodeName(),checker.getNodeValue());
+						//printAttributes((Node)checker);
 						}
-						logger.debug("NODENAME: "+checker.getNodeName() +"NODEVALUE: "+checker.getNodeValue() +"TEXTVALUE: "+text);
 						ascending = false;
-						logger.debug("GOING RIGHT");
+						level++;
 						}
-					else if (checker.getParentNode() != null) {
-						checker= checker.getParentNode();
-						String text = "";
-						if(checker.getFirstChild()!=null){
-							if(checker.getFirstChild().getNodeType()==Node.TEXT_NODE) {
-								text = checker.getFirstChild().getNodeValue();
+						else if (checker!=null && checker.getNextSibling() != null) {
+							checker= checker.getNextSibling();
+							String text = "";
+							logger.debug(	"SIBBLING...");
+							if(checker.getFirstChild()!=null){
+								if(checker.getFirstChild().getNodeType()==Node.TEXT_NODE) {
+									text = checker.getFirstChild().getNodeValue();
+									logger.debug("BEFORE.PUT.SIBLING");
+									
+									request.put(checker.getNodeName(), text);
+									
+									logger.debug("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
+								}
 							}
-						}
-						logger.debug("NODENAME: "+checker.getNodeName() +"NODEVALUE: "+checker.getNodeValue() +"TEXTVALUE: "+text);
-						ascending = true;
-						level--;
-						logger.debug("GOING UP");
-						}
-						else {
-							break;
+							//logger.debug("NODENAME: "+checker.getNodeName() +"NODEVALUE: "+checker.getNodeValue() +"TEXTVALUE: "+text);
+							ascending = false;
+							logger.debug("GOING RIGHT");
 							}
+						else if (checker !=null && checker.getParentNode() != null) {
+							checker= checker.getParentNode();
+							String text = "";
+							if(checker.getFirstChild()!=null){
+								if(checker.getFirstChild().getNodeType()==Node.TEXT_NODE) {
+									text = checker.getFirstChild().getNodeValue();
+									logger.debug("BEFORE.PUT.UP");
+									
+									request.put(checker.getNodeName(), text);
+									
+									logger.debug("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
+								}
+							}
+							//logger.debug("NODENAME: "+checker.getNodeName() +"NODEVALUE: "+checker.getNodeValue() +"TEXTVALUE: "+text);
+							ascending = true;
+							level--;
+							logger.debug("GOING UP");
+							}
+							else {
+								logger.debug("BREAK!");
+								break;
+								}
+			}
+		}catch(Exception e){
+			logger.debug("ERROR Walking DOM TREE: "+e.toString());
 		}
 		return request;
 	}
