@@ -14,7 +14,6 @@ package org.astrogrid.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.jar.JarFile;
@@ -155,6 +154,9 @@ public class ClassPathUtils
 
 /*
 $Log: ClassPathUtils.java,v $
+Revision 1.2  2003/11/13 22:14:56  mch
+Removed unused import
+
 Revision 1.1  2003/09/24 18:32:22  mch
 Tool for checking classpath
 
