@@ -21,7 +21,7 @@ OLDDIR=$PWD
 
 TAG=$1
 
-echo Going to deploy docs for this release ${TAG:=HEAD} to ${DOCLOCATION?"Value of DOCLOCATION (ie where documents should be published) must be set"} - hit ctrl-c if this isn't what you want
+echo Going to deploy docs for this release ${TAG:=HEAD} to ${DOCLOCATION?"Value of DOCLOCATION (ie where documents should be published) must be set"} - hit ctrl-c if this isnt what you want
 
 # Fairly unvariable variables
 BUILDHOME=$CHECKOUTHOME/astrogrid
