@@ -43,7 +43,7 @@ public class GdsDelegateTest extends TestCase {
     // Test method with valid testRegistryUrl:
     try {
       gds.setFactoryGshFromRegistry(testRegistryUrl1, timeoutValue);
-      assertNotNull(gds.factoryPort);
+      assertNotNull(gds.getFactoryHandle());
     }
     catch (Exception e) {}
 		
@@ -76,7 +76,7 @@ public class GdsDelegateTest extends TestCase {
     GdsDelegate gds = new GdsDelegate();
     gds.setRegistryGsh(testRegistryUrl1);
     gds.setFactoryGshFromRegistry();
-    assertNotNull(gds.factoryPort);
+    assertNotNull(gds.getFactoryHandle());
   }
 
 
@@ -96,7 +96,7 @@ public class GdsDelegateTest extends TestCase {
            "exception for a bogus registry-GSH.");
     }
     catch (Exception e) {}
-    assertNull(gds.factoryPort);
+    assertNull(gds.getFactoryHandle());
   }
     
 
