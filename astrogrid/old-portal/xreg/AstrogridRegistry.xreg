@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<registry>
+    <portlet-entry name="AstrogridRegistry" hidden="false" type="ref"
+        parent="JSP" application="false">
+        <meta-info>
+            <title>Astrogrid Registry Portlet</title>
+            <description>Astrogrid Registry Service using JSP</description>
+        </meta-info>
+        <classname>org.apache.jetspeed.portal.portlets.JspPortlet</classname>
+        <parameter name="template" value="AstrogridRegistry.jsp"
+            hidden="true" cachedOnName="true" cachedOnValue="true"/>
+        <parameter name="action"
+            value="portlets.AstrogridRegistryAction" hidden="true"
+            cachedOnName="true" cachedOnValue="true"/>
+        <media-type ref="html"/>
+        <url cachedOnURL="true"/>
+        <category group="Jetspeed">tutorial</category>
+    </portlet-entry>
+</registry>
