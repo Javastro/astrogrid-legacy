@@ -1,5 +1,5 @@
 /*
- * $Id: QueryResults.java,v 1.1 2003/08/26 16:40:54 mch Exp $
+ * $Id: QueryResults.java,v 1.2 2003/09/04 09:23:16 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,6 +8,7 @@ package org.astrogrid.datacenter.queriers;
 
 import java.io.IOException;
 import java.io.InputStream;
+import org.astrogrid.datacenter.service.Workspace;
 import org.w3c.dom.Document;
 
 /**
@@ -29,6 +30,6 @@ public interface QueryResults
     * format yeuch.  It makes sense to throw XML formatting errors here as it
     * is likely that some XML formatting will be done...
     */
-   public Document toVotable() throws IOException;
+   public Document toVotable(Workspace workspace) throws IOException;
 }
 

@@ -1,16 +1,32 @@
 /*
- * $Id: SqlResults.java,v 1.1 2003/08/26 16:40:54 mch Exp $
+ * $Id: SqlResults.java,v 1.2 2003/09/04 09:23:16 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.sql;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.queriers.QueryResults;
+import org.astrogrid.datacenter.service.Workspace;
+import org.objectwiz.votable.ResultSetConverter;
+import org.objectwiz.votable.ResultSetToSimpleVOTable;
+import org.objectwiz.votable.exception.ConverterException;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * Basically a wrapper around a ResultSet.  Can be used (I believe) for any
@@ -21,20 +37,76 @@ import org.w3c.dom.Document;
 
 public class SqlResults implements QueryResults
 {
-   private ResultSet results;
+   protected ResultSet results;
+   protected ResultSetConverter converter;
+   
 
-   public SqlResults(ResultSet givenResults)
-   {
+
+   public SqlResults(ResultSet givenResults) {
+       this.results = givenResults;
+       this.converter = new ResultSetToSimpleVOTable("","","","","");
    }
-
-   public Document toVotable() throws IOException
+   /**
+    * Converts the resultset to VOTable Document.  Needs a workspace
+    * to do this, so pass that in
+    */
+   public Document toVotable(Workspace workspace) throws IOException
    {
-      return null;
+      File workfile = workspace.makeWorkFile("votableResults.vot.xml"); //should go into workspace...
+
+      PrintStream out = null ;
+
+      try
+      {
+            out = new PrintStream( new FileOutputStream(workfile) );
+            converter.serialize( results, out );
+            return XMLUtils.newDocument(new FileInputStream(workfile));
+      }
+      catch (SAXException e)
+      {
+         IOException ioe = new IOException("Error in generated votable xml: "+e.toString());
+         ioe.setStackTrace(e.getStackTrace());
+         throw ioe;
+
+      }
+      catch (ParserConfigurationException e)
+      {
+         IOException ioe = new IOException("Error in program configuration: "+e.toString());
+         ioe.setStackTrace(e.getStackTrace());
+         throw ioe;
+      }
+      catch (SQLException e)
+      {
+         IOException ioe = new IOException("Error in result set: "+e.toString());
+         ioe.setStackTrace(e.getStackTrace());
+         throw ioe;
+      }
+      catch (ConverterException e)
+      {
+         IOException ioe = new IOException("Error in votable generator: "+e.toString());
+         ioe.setStackTrace(e.getStackTrace());
+         throw ioe;
+      }
    }
 
    public InputStream getInputStream() throws IOException
    {
-      return null;
+       ByteArrayOutputStream ba = new ByteArrayOutputStream();
+       PrintStream ps = new PrintStream(ba);
+       try {
+        converter.serialize(results,ps);
+        ps.close();
+        ba.close();
+        return new ByteArrayInputStream(ba.toByteArray());
+       } catch (ConverterException e) {
+           IOException ioe = new IOException("Unable to convert results to VOTable");
+           ioe.initCause(e);
+           throw ioe;
+       } catch (SQLException e) {
+           IOException ioe = new IOException("Error reading results from database");
+           ioe.initCause(e);
+           throw ioe;
+       }
    }
 
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.5 2003/09/02 14:47:26 nw Exp $
+ * $Id: DatabaseQuerier.java,v 1.6 2003/09/04 09:23:16 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -46,7 +46,7 @@ public abstract class DatabaseQuerier
 
       try
       {
-         return (DatabaseQuerier) querierClass.getClass().forName(querierClass).newInstance();
+         return (DatabaseQuerier) Class.forName(querierClass).newInstance();
       }
       catch (ClassNotFoundException e)
       {
