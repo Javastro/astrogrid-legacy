@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: delegate-project.xml,v 1.3 2004/02/27 00:45:33 nw Exp $ -->
+<!-- $Id: delegate-project.xml,v 1.4 2004/04/29 16:54:12 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <extend>../maven-base/project.xml</extend>
     <id>astrogrid-jes-delegate</id>
@@ -7,19 +7,7 @@
     <description>Delegate jar for the JES controller.
                 This is soley a packaging project - all documentation, testing, etc handled by main project.xml</description>
     <shortDescription>Delegate for AstroGrid Job Management Components</shortDescription>
-    <!-- Temporary Overrides till we get consistent artifactIds-->
-    <siteDirectory>/var/www/www/maven/build/jes</siteDirectory>
-    <repository>
-        <connection>
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/jes
-            </connection>
-        <developerConnection>
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/jes
-            </developerConnection>
-        <url> http://www.astrogrid.org/viewcvs/astrogrid/jes/
-            </url>
-    </repository>
-    <!-- end of overrides -->
+
     <build>
         <sourceDirectory>${basedir}/src/java</sourceDirectory>
                 <sourceModifications>
