@@ -1,4 +1,4 @@
-/*$Id: BasicComponentManager.java,v 1.6 2004/03/15 23:45:07 nw Exp $
+/*$Id: BasicComponentManager.java,v 1.7 2004/03/18 10:53:54 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,7 @@ import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher;
 import org.astrogrid.jes.jobscheduler.impl.SchedulerTaskQueueDecorator;
 import org.astrogrid.jes.jobscheduler.locator.XMLFileLocator;
+import org.astrogrid.jes.jobscheduler.policy.JoinPolicy;
 import org.astrogrid.jes.jobscheduler.policy.LinearPolicy;
 
 import org.picocontainer.Parameter;
@@ -54,7 +55,7 @@ public class BasicComponentManager extends EmptyComponentManager {
         );
         
         pico.registerComponentImplementation(SCHEDULER_ENGINE,org.astrogrid.jes.jobscheduler.impl.SchedulerImpl.class);
-        pico.registerComponentImplementation(Policy.class,LinearPolicy.class);
+        pico.registerComponentImplementation(Policy.class,JoinPolicy.class);
         pico.registerComponentImplementation(Dispatcher.class,ApplicationControllerDispatcher.class);
         pico.registerComponentInstance(ApplicationControllerDispatcher.MonitorEndpoint.class, 
             new ApplicationControllerDispatcher.MonitorEndpoint() {
@@ -97,6 +98,9 @@ public class BasicComponentManager extends EmptyComponentManager {
 
 /* 
 $Log: BasicComponentManager.java,v $
+Revision 1.7  2004/03/18 10:53:54  nw
+upgraded to use join policy
+
 Revision 1.6  2004/03/15 23:45:07  nw
 improved javadoc
 
