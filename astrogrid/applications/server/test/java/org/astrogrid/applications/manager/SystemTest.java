@@ -1,4 +1,4 @@
-/*$Id: SystemTest.java,v 1.4 2004/07/26 12:07:38 nw Exp $
+/*$Id: SystemTest.java,v 1.5 2004/09/17 01:22:12 nw Exp $
  * Created on 09-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -90,7 +90,7 @@ public class SystemTest extends TestCase {
            a.setIndirect(false);
            a.setValue("1");
            File valFile = File.createTempFile("SystemTest-Input",null);
-           valFile.deleteOnExit();
+           //valFile.deleteOnExit();
            PrintWriter pw = new PrintWriter(new FileWriter(valFile));
            pw.print(2); 
            pw.close();
@@ -101,7 +101,7 @@ public class SystemTest extends TestCase {
            result.setName(iface.getArrayofOutputs()[0]);
            result.setIndirect(true);
            File resultFile = File.createTempFile("SystemTest-Results",null);
-           resultFile.deleteOnExit();
+           //resultFile.deleteOnExit();
            result.setValue(resultFile.toURI().toString());
            output.addParameter(result);
     }
@@ -155,6 +155,12 @@ public class SystemTest extends TestCase {
 
 /* 
 $Log: SystemTest.java,v $
+Revision 1.5  2004/09/17 01:22:12  nw
+updated tests
+
+Revision 1.4.52.1  2004/09/14 13:44:37  nw
+added tests for thread pool implementation
+
 Revision 1.4  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package

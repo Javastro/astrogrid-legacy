@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationProviderTest.java,v 1.6 2004/09/14 16:26:26 jdt Exp $
+/*$Id: HttpApplicationProviderTest.java,v 1.7 2004/09/17 01:23:09 nw Exp $
  * Created on 30-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -309,6 +309,7 @@ public class HttpApplicationProviderTest extends TestCase {
     /**
      * Apps containing preprocessing scripts should fail at the moment.
      * @throws Exception
+     * @todo NWW: this isn't observable anymore. 
      */
     public void testPreProcess() throws Exception {
             try {
@@ -333,6 +334,9 @@ public class HttpApplicationProviderTest extends TestCase {
 
 /* 
 $Log: HttpApplicationProviderTest.java,v $
+Revision 1.7  2004/09/17 01:23:09  nw
+updated tests
+
 Revision 1.6  2004/09/14 16:26:26  jdt
 Attempt to get the http-post working.  Upgraded http-client, to no avail.  Either http client
 or the embedded test webserver isn't handling post correctly.  Flagged tests

@@ -1,4 +1,4 @@
-/*$Id: JavaClassProviderTest.java,v 1.3 2004/07/26 12:07:38 nw Exp $
+/*$Id: JavaClassProviderTest.java,v 1.4 2004/09/17 01:22:12 nw Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -79,8 +79,7 @@ public class JavaClassProviderTest extends TestCase {
         Application app = hw.initializeApplication("testrun",user,tool);
         assertNotNull(app);
         app.addObserver(monitor);
-        app.execute();
-         monitor.waitFor(10);
+        app.createExecutionTask().run();
         assertTrue(monitor.sawExit);
         ResultListType results= app.getResult();
         assertNotNull(results);
@@ -114,8 +113,8 @@ public class JavaClassProviderTest extends TestCase {
         Application app = hw.initializeApplication("testrun",user,tool);
         assertNotNull(app);        
         app.addObserver(monitor);
-        app.execute();
-        monitor.waitFor(20);
+
+        app.createExecutionTask().run();
         assertTrue(monitor.sawExit);
         ResultListType results= app.getResult();
         assertNotNull(results);
@@ -132,6 +131,12 @@ public class JavaClassProviderTest extends TestCase {
 
 /* 
 $Log: JavaClassProviderTest.java,v $
+Revision 1.4  2004/09/17 01:22:12  nw
+updated tests
+
+Revision 1.3.52.1  2004/09/14 13:44:59  nw
+runs in same thread.
+
 Revision 1.3  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package
