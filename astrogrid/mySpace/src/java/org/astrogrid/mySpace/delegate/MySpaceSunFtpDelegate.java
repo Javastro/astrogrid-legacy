@@ -1,5 +1,5 @@
 /*
- $Id: MySpaceSunFtpDelegate.java,v 1.3 2003/12/09 13:01:51 mch Exp $
+ $Id: MySpaceSunFtpDelegate.java,v 1.4 2003/12/10 12:14:34 jdt Exp $
 
  (c) Copyright...
  */
@@ -274,11 +274,7 @@ public class MySpaceSunFtpDelegate implements MySpaceClient
    public String publiciseToServer(String remoteFilename, InputStream source) throws IOException
    {
 
-//
-//   hack to remove the assert statement, which will not compile.
-
-//      assert ftpConnection != null : "Trying to publish before
-//        connecting. Call connect() before publicise(...)";
+      assert ftpConnection != null : "Trying to publish before connecting. Call connect() before publicise(...)";
 
       org.astrogrid.log.Log.trace("Publicise: Copying '"+source+"' to '"+server+"' as '"+remoteFilename+"'...");
 
