@@ -44,6 +44,11 @@
             <item name="Test Results" 
                 href="integrationTests/junit-report.html"/>    
         </menu>
+		<menu name="Deployment">
+            <item name="main project" 
+                href="deployment/index.html"/>
+        </menu>
+		
         <menu name="Logs">
             <item name="Maven Build Logs" href="/logs.html" collapse="true">
                 <item name="Applications Integration" 
