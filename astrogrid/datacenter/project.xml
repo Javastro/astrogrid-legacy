@@ -117,17 +117,21 @@
       <version>20030211.213356</version>
       <!--<version>SNAPSHOT</version>-->
     </dependency>
-    
+
     <dependency>
       <id>jaxrpc-api</id>
       <version>1.0.3</version>
     </dependency>
-    
+
     <dependency>
       <id>xml-apis</id>
       <version>1.0.b2</version>
     </dependency>
-    
+
+    <dependency>
+    	<id>xalan</id>
+	<version>2.5.1</version>
+    </dependency>
     <!-- castor, and what it needs -->
     <dependency>
       <id>castor</id>
@@ -139,7 +143,14 @@
 	<id>xerces</id>
 	<version>2.4.0</version>
     </dependency>
-    
+
+    <!-- interfact between castor and axis -->
+    <dependency>
+    	<groupId>axis</groupId>
+	<artifactId>axis-castor</artifactId>
+	<version>1.1</version>
+    </dependency>
+
 	<!-- logging and testing -->
     <dependency>
       <id>junit</id>
@@ -164,6 +175,16 @@
 		<version>4.1.24</version>
 	</dependency>
 
+ 	<dependency>
+		<groupId>ant</groupId>
+		<artifactId>ant-optional</artifactId>
+		<version>1.5.2</version>
+ 	</dependency>
+ 	<dependency>
+ 		<id>oro</id>
+  		<version>2.0.7</version>
+ 	</dependency>
+
     <!-- database drivers -->
     <dependency>
     	<id>mm-mysql</id>
@@ -181,6 +202,7 @@
     </dependency>
 	<!-- add entry for ms sql server -->
 
+	<!-- cocoon stuff -->
     <dependency>
       <id>avalon-framework</id>
       <version>20020627</version>

@@ -5,181 +5,150 @@
   <preGoal name="java:compile"><!-- generate classes from schema and wsdl first -->
      <mkdir dir="${basedir}/generated/java" />
      <path id="generated.src" location="${basedir}/generated/java"/>
-     <path id="integration.src" locaton="${basedir}/test/int/java" />
+     <path id="integration.src" location="${basedir}/test/int/java" />
+     <path id="test.src" location="${basedir}/test/java" /> <!-- ikky. should refactor to avoid this -->
     <maven:addPath id="maven.compile.src.set" refid="generated.src"/>  <!-- declares new src tree to maven -->
     <maven:addPath id="maven.compile.src.set" refid="integration.src" />
-	<attainGoal name="maybe-regenerate-wsdl" />
-  	<attainGoal name="maybe-regenerate-adql" />
+    <maven:addPath id="maven.compile.src.set" refid="test.src" />
   </preGoal>
-
 
 <!-- hook to get my own stuff run before xdocs binds the site together-->
   <preGoal name="xdoc">
   	<attainGoal name="ant" />
   	<attainGoal  name="pal-zip" />
 	<copy file="${maven.build.dir}/pal.zip" tofile="${maven.build.dir}/docs/pal.zip" />
-	<!-- check stuff back into cvs -->
   </preGoal>
 
-<!-- new goals -->
-
 <!--
-WSDL
+new goals
 -->
-<goal name="maybe-regenerate-wsdl" description="regenerate WSDL and classes if older than AxisDataServer.java">
-	<condition property="wsdlRegenerate" value="true">
-		<not>
-		<uptodate targetfile="wsdl/AxisDataServer.wsdl">
-		  <srcfiles dir="src/java/org/astrogrid/datacenter/service"
-		  	includes="*.java" /> <!-- better to be safe than sorry -->
-		</uptodate>
-		</not>
-	</condition>
-	<j:if test="${wsdlRegenerate}">
-		<echo>Regenerating WSDL and client classes</echo>
-		<attainGoal name="generate-wsdl" />
-		<attainGoal name="generate-delegate" />
-	</j:if>
-</goal>
-
-
- <goal name="compile-AxisDataServer" description="compiles classes required to generate wsdl" prereqs="java:prepare-filesystem">
- 	<javac
-	debug="${maven.compile.debug}" deprecation="${maven.compile.deprecation}"
-	 executable="${maven.compile.executable}"
-	fork="${maven.compile.fork}" optimize="${maven.compile.optimize}"
-	verbose="${maven.compile.verbose}" listfiles="true"
-	destdir="${maven.build.dest}" >
-		<compilerarg line="${maven.compile.compilerargs}" />
-		<src refid="maven.compile.src.set" />
-		<classpath refid="maven.dependency.classpath" />
-		<include name="**/service/AxisDataServer.java" />
-	</javac>
- </goal>
-
-  <goal name="generate-wsdl" description="generate wsdl from java class AxisDataServer" prereqs="axis-declare-tasks,compile-AxisDataServer">
-	<!-- parse .wsdd file to find list of method names -->
-	<xmlproperty file="wsdd/AxisDataServer-deploy.wsdd" prefix="wsdd"/>
-	<echo>Web-Service methods declared in wsdd/AxisDataServer-deploy.wsdd:
-	     ${wsdd.deployment.service.parameter(value)}</echo>
-	<axis-java2wsdl	useinheritedmethods="true"
-		methods="${wsdd.deployment.service.parameter(value)}"
-		style="RPC"
-		porttypename="AxisDataServer"
-		output="wsdl/AxisDataServer.wsdl"
-		namespace="http://localhost:8080/axis/services/AxisDataServer"
-		location="http://localhost:8080/axis/services/AxisDataServer"
-		classname="org.astrogrid.datacenter.service.AxisDataServer">
-		<classpath>
-			<pathelement location="${maven.build.dest}" />
-			<path refid="maven.dependency.classpath" />
-		</classpath>
-		<mapping namespace="http://xml.apache.org/xml-soap" package="org.w3c.dom" />
-	</axis-java2wsdl>
-  </goal>
-
-  <goal name="generate-delegate" description="generate client classes from wsdl" prereqs="axis-declare-tasks">
-  	<axis-wsdl2java output="${basedir}/generated/java"
-	noimports="true" url="wsdl/AxisDataServer.wsdl">
-		<mapping
-			namespace="http://localhost:8080/axis/services/AxisDataServer"
-			package="org.astrogrid.datacenter.delegate.axisdataserver" />
-	</axis-wsdl2java>
-	<!-- this generates a little too much - now have overlapping classes. lets delete the rest -->
-	<delete>
-		<fileset dir="${basedir}/generated/java">
-		    <include name="**/WebNotifyServiceListener.java" />
-			<include name="**/*Exception.java" />
-			<exclude name="**/DatabaseAccessException.java" />
+  <goal name="wsdl2java" description="generate classes from wsdl" prereqs="axis-declare-tasks">
+  	<delete><!-- clean out to start with -->
+		<fileset dir="${basedir}/generated/java" >
+			<include name="**/*.java" />
+			<include name="**/*.class" />
+			<include name="**/*.wsdd" />
 		</fileset>
 	</delete>
-  </goal>
-<!-- don't understand this enough at present - and probably not worh the bother.
-  <goal name="generate-wsdd" description="generate wsdd from wsdl">
-  	<attainGoal name="axis-declare-tasks" />
-	<mkdir dir="tmp" />
-	<axis-wsdl2java output="tmp" verbose="true" url="wsdl/AxisDataServer.wsdl"
-		deployscope="Application" serverside="true" skeletondeploy="true"
-	>
-		<mapping namespace="http://localhost:8080/axis/services/AxisDataServer"
+  	<axis-wsdl2java output="${basedir}/generated/java" verbose="true"
+		url="wsdl/AxisDataServer.wsdl">
+		<mapping
+			namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1"
 			package="org.astrogrid.datacenter.delegate.axisdataserver" />
+		<mapping
+			namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
+			package="org.astrogrid.datacenter.delegate.axisdataserver.types" />
+		<mapping
+	       		namespace="http://tempuri.org/adql"
+	       		package="org.astrogrid.datacenter.adql.generated" />
 	</axis-wsdl2java>
+	<!-- now generate stuff for server side - into a different package.-->
+	<axis-wsdl2java output="${basedir}/generated/java" verbose="true" url="wsdl/AxisDataServer.wsdl"
+		deployscope="Application" serverside="true" skeletondeploy="false">
+		<mapping
+			namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1"
+			package="org.astrogrid.datacenter.server.axisdataserver" />
+		<mapping
+			namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
+			package="org.astrogrid.datacenter.server.axisdataserver.types" />
+		<mapping
+	       		namespace="http://tempuri.org/adql"
+	       		package="org.astrogrid.datacenter.adql.generated" />
+	</axis-wsdl2java>
+	<delete>	<!-- this generates too much - now have overlapping classes. lets delete the rest -->
+		<fileset dir="${basedir}/generated/java">
+		   <!-- don't want any of the server-side java classes -->
+		   <include name="org/astrogrid/datacenter/server/**/*.java" />
+		   <!-- stuff that is already defined -->
+		    <include name="org/xml/sax/**" />
+		    <include name="java/**" />
+		    <include name="**/AstroGridException.java" />
+		    <include name="**/QueryException.java" />
+		    <!-- want to use castor for these classes -->
+		    <include name="org/astrogrid/datacenter/adql/generated/*.java" />
+		</fileset>
+	</delete>
+	<!-- now call castor to generate ADQL object model -->
+	<attainGoal name="generate-adql" />
+	<!-- transform wsdd file - change to use Castor serializers for ADQL object model-->
+	${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+	<xslt basedir="${basedir}/generated/java/org/astrogrid/datacenter/server/axisdataserver"
+	      includes="*.wsdd" style="${basedir}/wsdd/generate-wsdd.xsl"
+	      destdir="${basedir}/wsdd" extension=".wsdd" />
+	<!-- now need to do some work on the stub file. -->
+	<!-- first castor places some classes in the 'types' package. do a search and replace on the stub file, update referecnes -->
+ 	<property name="stub.file"
+		location="${basedir}/generated/java/org/astrogrid/datacenter/delegate/axisdataserver/AxisDataServerSoapBindingStub.java" />
+	<replace summary="true" file="${stub.file}">
+		<replacefilter
+			token="org.astrogrid.datacenter.adql.generated.Comparison.class"
+			value="org.astrogrid.datacenter.adql.generated.types.Comparison.class" />
+		<replacefilter
+			token="org.astrogrid.datacenter.adql.generated.OrderDirection.class"
+			value="org.astrogrid.datacenter.adql.generated.types.OrderDirection.class" />
+		<replacefilter
+			token="org.astrogrid.datacenter.adql.generated.AggregateFunction.class"
+			value="org.astrogrid.datacenter.adql.generated.types.AggregateFunction.class" />
+		<replacefilter
+			token="org.astrogrid.datacenter.adql.generated.BinaryOperator.class"
+			value="org.astrogrid.datacenter.adql.generated.types.BinaryOperator.class" />
+		<replacefilter
+			token="org.astrogrid.datacenter.adql.generated.UnaryOperator.class"
+			value="org.astrogrid.datacenter.adql.generated.types.UnaryOperator.class" />
+		<replacefilter
+			token="org.astrogrid.datacenter.adql.generated.AllOrDistinct.class"
+			value="org.astrogrid.datacenter.adql.generated.types.AllOrDistinct.class" />
+		<replacefilter
+			token="javax.xml.namespace.QName qName;"
+			value="javax.xml.namespace.QName qName;
+			        java.lang.Class castorsf = org.apache.axis.encoding.ser.castor.CastorSerializerFactory.class;
+       				java.lang.Class castordf = org.apache.axis.encoding.ser.castor.CastorDeserializerFactory.class;" />
+	</replace>
+	<!-- for declaration of castor classes, replace 2 lines with our own definitions.
+	relies on axis-generated code following certain pattern. -->
+	<replaceregexp 	file="${stub.file}" flags="sg"
+		match="(cls = org\.astrogrid\.datacenter\.adql\.generated\.[^\n]+\n)([^\n]+\n)([^\n]+\n)([^\n]+\n)"
+		replace="\1\2
+			cachedSerFactories.add(castorsf);
+			cachedDeserFactories.add(castordf);
+
+			"/>
+	<!-- fix axis-wsdl bug - sometimes introduces spurious &gt; at start of strings -->
+	<replaceregexp file="${stub.file}" flags="sg"
+		match='"&gt;([^"]+)"'
+		replace='"\1"' />
+
   </goal>
--->
-
-
-<!--
-ADQL
--->
-<goal name="maybe-regenerate-adql" description="generate ADQl if schema is more recent than classes">
-	<condition property="adqlRegenerate" value="true">
-		<not>
-		<uptodate
-			srcfile="schema/ADQLschema.xsd"
-			targetfile="generated/java/org/astrogrid/datacenter/adql/generated/Select.java"
-		/>
-		</not>
-	</condition>
-	<j:if test="${adqlRegenerate}">
-		<echo>Regenerating ADQL classes</echo>
-		<attainGoal name="generate-adql" />
-	</j:if>
-</goal>
 
   <goal name="generate-adql"  description="regenerate the ADQL object model">
 	<!-- set up the classpath for the source generator tool -->
-  <path id="castor.class.path">
-    <!-- needed to override the default configuration file - knew there was a reason I disliked Castor.. -->
-	<pathelement location="lib/config" />
-  	<path refid="maven.dependency.classpath" />
-  </path>
-    <delete quiet="true">
-   <fileset dir="generated/java/org/astrogrid/datacenter/adql/generated">
-  	 	<include name="**/*.java" />
-   		<include name="**/*.class" />
-   </fileset>
-   </delete>
+ 	 <path id="castor.class.path"><!-- needed to override the default configuration file - knew there was a reason I disliked Castor.. -->
+		<pathelement location="lib/config" />
+  		<path refid="maven.dependency.classpath" />
+  	</path>
+    	<delete quiet="true">
+   		<fileset dir="generated/java/org/astrogrid/datacenter/adql/generated">
+  	 		<include name="**/*.java" />
+   			<include name="**/*.class" />
+   		</fileset>
+   	</delete>
   	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="castor.class.path">
-  	  <arg value="-i"/>
-  	  <arg file="schema/ADQLschema.xsd" />
-  	  <arg value="-package" />
-  	  <arg value="org.astrogrid.datacenter.adql.generated" />
-  	  <arg value="-dest" />
-  	  <arg file="generated/java" />
-  	  <!--<arg value="-verbose" />-->
+  	  	<arg value="-i"/>
+  	  	<arg file="schema/ADQLschema.xsd" />
+  	  	<arg value="-package" />
+  	  	<arg value="org.astrogrid.datacenter.adql.generated" />
+  	  	<arg value="-dest" />
+  	  	<arg file="generated/java" />
+  	  	<!--<arg value="-verbose" />-->
  	  </java>
  	  <!-- now do some patching of the output - hope to do away with this in time. -->
  	  <patch patchfile="patches/groupByChoiceItem.patch" originalfile="generated/java/org/astrogrid/datacenter/adql/generated/GroupByChoiceItem.java"/>
  	  <patch patchfile="patches/selectionListChoiceItem.patch" originalfile="generated/java/org/astrogrid/datacenter/adql/generated/SelectionListChoiceItem.java"/>
   </goal>
 
-<!-- stand - alone goals - not addons to main build -->
-  <goal name="test-installation" description="test the datacenter webservice installation" prereqs="datacenter-test-client-jar">
-	<!-- created jar file, now run it -->
-	<java fork="true" jar="packaging/pal/bin/test-server.jar">
-	<!-- for testing remote installation
-		<sysproperty key="datacenter.test.installation.base.url" value="http://aife.jb.man.ac.uk:8080/axis/services/AxisDataServer" />
-		-->
-	</java>
-  </goal>
-
-<goal name="datacenter-server-publish" description="compile and deploy to webserver, restart webapp, redeploy webservice."
-	prereqs="jar:jar,tomcat-declare-tasks,datacenter-server-zip">
-	<!-- assumes vanilla tomcat & axis installation, and configured tomcat manager app. -->
-	<copy todir="${axis.webapp.location}/WEB-INF/lib">
-		<fileset dir="packaging/datacenter-server/WEB-INF/lib">
-			<include name="*.jar" />
-		</fileset>
-	</copy>
-	<!-- restart webapp -->
-	<tomcat-reload url="http://localhost:8080/manager"
-		username="${tomcat.manager.username}" password="${tomcat.manager.password}" path="/axis" />
-	<!-- remove and reinstall dataservice with axis -->
-	<attainGoal name="dataserver-undeploy" />
-	<attainGoal name="dataserver-deploy"/>
-</goal>
-
-<!-- tasks for deployment / distribution -->
+<!--
+distribution - tasks to assemble build products.
+-->
 <goal name="axis-zip" description="create zipped axis web-archive">
 <!-- copy dependent jars into template webapp, zip up into target directory-->
 	<delete>
@@ -193,8 +162,7 @@ ADQL
 	<jar destfile="packaging/pal/lib/axis.war" basedir="packaging/axis" />
 </goal>
 
-<goal name="datacenter-server-zip" prereqs="jar:jar"
-	description="create zipped datacenter server archive">
+<goal name="datacenter-server-zip" prereqs="jar:jar" description="create zipped datacenter server archive">
 	<delete>
 		<fileset dir="packaging/datacenter-server/WEB-INF/lib"
 			include="*.jar" />
@@ -206,8 +174,7 @@ ADQL
 	<zip destfile="packaging/pal/lib/datacenter-server.zip" basedir="packaging/datacenter-server"/>
 </goal>
 
-<goal name="datacenter-test-client-jar" prereqs="java:compile"
-	description="create executable jar for datacenter test client">
+<goal name="datacenter-test-client-jar" prereqs="java:compile" description="create executable jar for datacenter test client">
   <delete dir="tmp" />
   <mkdir dir="tmp" />
   <deploy:copy-deps todir="tmp"
@@ -275,36 +242,53 @@ ADQL
 	</zip>
 </goal>
 
-<!-- boilerplate below here -->
+<!--
+stand - alone goals - development helpers, not additions to main build
+-->
+  <goal name="test-installation" description="test the datacenter webservice installation" prereqs="datacenter-test-client-jar">
+	<!-- created jar file, now run it -->
+	<java fork="true" jar="packaging/pal/bin/test-server.jar">
+	<!-- for testing remote installation
+		<sysproperty key="datacenter.test.installation.base.url" value="http://aife.jb.man.ac.uk:8080/axis/services/AxisDataServer" />
+		-->
+		<sysproperty key="datacenter.test.installation.base.url" value="http://uml04.astrogrid.org:8080/axis/services/AxisDataServer" />
+	</java>
+  </goal>
+
+<goal name="datacenter-server-publish" description="compile and deploy to webserver, restart webapp, redeploy webservice."
+	prereqs="jar:jar,tomcat-declare-tasks,datacenter-server-zip">
+	<!-- assumes vanilla tomcat & axis installation, and configured tomcat manager app. -->
+	<copy todir="${axis.webapp.location}/WEB-INF/lib">
+		<fileset dir="packaging/datacenter-server/WEB-INF/lib">
+			<include name="*.jar" />
+		</fileset>
+	</copy>
+	<!-- restart webapp -->
+	<tomcat-reload url="http://localhost:8080/manager"
+		username="${tomcat.manager.username}" password="${tomcat.manager.password}" path="/axis" />
+	<!-- remove and reinstall dataservice with axis -->
+	<attainGoal name="dataserver-undeploy" />
+	<attainGoal name="dataserver-deploy"/>
+</goal>
+
   <goal name="dataserver-deploy" description="fire wsdd at axis to deploy dataserver"
   	prereqs="axis-declare-tasks">
-  	<axis-admin xmlfile="wsdd/AxisDataServer-deploy.wsdd" />
+  	<axis-admin xmlfile="wsdd/deploy.wsdd" />
   </goal>
 
   <goal name="dataserver-undeploy" description="fire wsdd at axis to undeploy dataserver"
    	prereqs="axis-declare-tasks">
-  	<axis-admin xmlfile="wsdd/AxisDataServer-undeploy.wsdd" />
+  	<axis-admin xmlfile="wsdd/undeploy.wsdd" />
   </goal>
 
+<!--
+boilerplate below here
+-->
   <goal name="axis-declare-tasks">
       <taskdef resource="axis-tasks.properties"  classpathref="maven.dependency.classpath" />
   </goal>
 
-<!-- tomcat tools -->
 <goal name="tomcat-declare-tasks">
-  <!-- work-around until these get added to ibiblio..
-  although seems to store in the wrong place at present. -->
-  <!--
-  <property name="local.catalina-ant.dir" location="${maven.repo.local}/catalina-ant/jars" />
-  <mkdir dir="${local.catalina-ant.dir}" />
-  <get src="http://www.codeczar.com/products/tomcat/distributions/catalina-ant-4.1.24.jar"
-     dest="${local.catalina-ant.dir}/catalina-ant-4.1.24.jar"
-      usetimestamp="true" ignoreerrors="true"
-     />
-     <path id="catalina-ant.path">
-     	<fileset dir="${local.catalina-ant.dir}" includes="*.jar" />
-     </path>
-     -->
    <!-- Configure the custom Ant tasks for the Manager application -->
   <taskdef name="tomcat-deploy"    classname="org.apache.catalina.ant.DeployTask" classpathref="maven.dependency.classpath"/>
   <taskdef name="tomcat-install"   classname="org.apache.catalina.ant.InstallTask" classpathref="maven.dependency.classpath"/>
