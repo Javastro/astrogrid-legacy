@@ -4,10 +4,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/Attic/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/04/15 02:27:46 $</cvs:date>
-    | <cvs:version>$Revision: 1.11 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/15 16:39:47 $</cvs:date>
+    | <cvs:version>$Revision: 1.12 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.12  2004/04/15 16:39:47  dave
+    |   Updated webapp depends to include VoSpaceClient
+    |
     |   Revision 1.11  2004/04/15 02:27:46  dave
     |   Merged development branch, dave-dev-200404071355, into HEAD
     |
@@ -109,31 +112,18 @@
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
-
-        <!--+
+       <!--+
             | The MySpace delegate.
             +-->
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>astrogrid-mySpace</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>SNAPSHOT</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
-
         <!--+
-            | The new Castor libraries.
-            | Can't use these yet, because the mapping file URL has moved.
-        <dependency>
-            <groupId>castor</groupId>
-            <artifactId>castor</artifactId>
-            <version>0.9.5.3</version>
-            <type>jar</type>
-            <url>http://www.castor.org/</url>
-        </dependency>
-            +-->
-        <!--+
-            | The old Castor JDO library.
+            | The Castor JDO library.
             +-->
         <dependency>
             <groupId>castor</groupId>
@@ -143,8 +133,7 @@
             <url>http://www.castor.org/</url>
         </dependency>
         <!--+
-            | The old Castor XML library - required for Registry delegate.
-            | Not required if we use the new libraries.
+            | The Castor XML library - required for Registry delegate.
             +-->
         <dependency>
             <groupId>castor</groupId>
