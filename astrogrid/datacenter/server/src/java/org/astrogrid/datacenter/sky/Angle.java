@@ -1,5 +1,5 @@
 /*
- * $Id: Angle.java,v 1.2 2004/07/12 22:15:06 mch Exp $
+ * $Id: Angle.java,v 1.3 2004/07/14 18:05:31 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -26,10 +26,10 @@ public class Angle
    private ValueError error = null;
    
    /** Ratio of radians to degrees */
-   public final static double RAD2DEG = 360/Math.PI;
+   public final static double RAD2DEG = 360/(2*Math.PI);
 
    /** Ratio of degrees to radians */
-   public final static double DEG2RAD = Math.PI/360;
+   public final static double DEG2RAD = 2*Math.PI/360;
 
    /** Ratio of degrees to mils (military units) */
    public final static int DEG2MIL = 20;
@@ -165,6 +165,9 @@ public class Angle
 
 /*
 $Log: Angle.java,v $
+Revision 1.3  2004/07/14 18:05:31  mch
+Fixed radians to degrees factors
+
 Revision 1.2  2004/07/12 22:15:06  mch
 Added SkyCircle and some methods to Angle
 
