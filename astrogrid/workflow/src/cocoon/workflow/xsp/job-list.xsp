@@ -31,7 +31,7 @@
         	
 				while( iterator.hasNext() ) {
 					job = (Job)iterator.next() ;
-					outputJob( job ) ;			
+					outputJob( job, xspAttr ) ;			
 				}
        
         	}
@@ -51,11 +51,11 @@
 	
 			<content>	
 				<xsp:element name="job">
-					<xsp:element name="name"><xsp:expr>job.getName()</xsp:expr></xsp:element>
-					<xsp:element name="description"><xsp:expr>job.getDescription()</xsp:expr></xsp:element>
-					<xsp:element name="time"><xsp:expr>job.getTimestamp()</xsp:expr></xsp:element>
-					<xsp:element name="status"><xsp:expr>job.getStatus()</xsp:expr></xsp:element>	
-					<xsp:element name="jobid"><xsp:expr>job.getJobid()</xsp:expr></xsp:element>															
+					<xsp:attribute name="name"><xsp:expr>job.getName()</xsp:expr></xsp:attribute>
+					<xsp:attribute name="description"><xsp:expr>job.getDescription()</xsp:expr></xsp:attribute>
+					<xsp:attribute name="time"><xsp:expr>job.getTimestamp()</xsp:expr></xsp:attribute>
+					<xsp:attribute name="status"><xsp:expr>job.getStatus()</xsp:expr></xsp:attribute>	
+					<xsp:attribute name="jobid"><xsp:expr>job.getJobid()</xsp:expr></xsp:attribute>															
 				</xsp:element>
 			</content>
 		
@@ -83,7 +83,7 @@
 </xsp:logic>
 
 
-<job-list>
+<workflow>
 
 	<xsp:logic>
 		
@@ -108,6 +108,6 @@
 				
 	</xsp:logic>
 
-</job-list>
+</workflow>
 
 </xsp:page>
