@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleConfig.java,v 1.10 2004/03/13 21:25:18 mch Exp $
+ * $Id: SimpleConfig.java,v 1.11 2004/03/18 22:34:29 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -60,7 +60,6 @@ public abstract class SimpleConfig
 
    /**
     * Static access to load from a url
-    * @deprecated use getSingleton().getProperty()
     */
    public static void load(URL url) throws IOException
    {
@@ -69,7 +68,6 @@ public abstract class SimpleConfig
    
    /**
     * Static access to the instance method
-    * @deprecated use getSingleton().loadedFrom()
     */
    public static String loadedFrom()
    {
@@ -78,7 +76,6 @@ public abstract class SimpleConfig
 
    /**
     * Sets the given property - useful for tests.
-    * @deprecated use getSingleton().setProperty()
     */
    public static void setProperty(String key, String value)
    {
@@ -88,7 +85,6 @@ public abstract class SimpleConfig
    /**
     * Returns the property value of the given key; throws an exception if the
     * key is not set
-    * @deprecated use getSingleton().getProperty()
     */
    public static String getProperty(String key)
    {
@@ -99,7 +95,6 @@ public abstract class SimpleConfig
     * Returns the property value of the given key, or the given default if
     * the key is not found or the properties file has not been created (eg
     * this has not been initialised)
-    * @deprecated use getSingleton().getProperty()
     */
    public static String getProperty(String key, Object defaultValue)
    {
