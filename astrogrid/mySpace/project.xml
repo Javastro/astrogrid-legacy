@@ -105,6 +105,14 @@
 			</properties>
 		</dependency>
 		<dependency>
+			<artifactId>commons-discovery</artifactId>
+			<groupId>commons-discovery</groupId>
+			<version>20030211.213356</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+		</dependency>		
+		<dependency>
 			<artifactId>cog-jglobus</artifactId>
 			<groupId>cog-jglobus</groupId>
 			<version>OGSA3.0</version>
@@ -194,6 +202,7 @@
 				<include>${maven.build.dest}/*.xmltemplate</include>
 				<include>${maven.build.dest}/*.xml</include>
 				<include>${maven.build.dest}/*.properties</include>
+				<include>${maven.build.dest}/*.servers</include>
 			</includes>
 		</resource>
 	</resources>
