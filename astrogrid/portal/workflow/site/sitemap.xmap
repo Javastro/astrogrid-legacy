@@ -271,7 +271,15 @@
           </map:transform>
           <!-- Serialize as HTML -->
           <map:serialize type="html" />
-        </map:match>            
+        </map:match> 
+        
+        <map:match pattern="agjobmanager-printer-friendly.html">            
+          <map:generate src="web/xsp/printer-friendly.xsp" type="serverpages" label="000" />
+          <map:transform src="web/xsl/display-printer-friendly.xsl">
+          </map:transform>
+          <!-- Serialize as HTML -->
+          <map:serialize type="html" />
+        </map:match>                   
     
       <!-- xml -->
       <map:match pattern="**.xml">
