@@ -8,7 +8,7 @@ import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
  * Junit tests for the <code>MySpaceStatusCode</code> class.
  *
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 2.
+ * @version Iteration 3.
  */
 
 public class TestMySpaceStatusCode extends TestCase
@@ -28,9 +28,10 @@ public class TestMySpaceStatusCode extends TestCase
 
    public void testGetCode()
    {  MySpaceStatusCode msStatusCode = new MySpaceStatusCode(
-        MySpaceStatusCode.MS_E_REGDWRT, MySpaceStatusCode.ERROR);
+        MySpaceStatusCode.AGMMCE00030, MySpaceStatusCode.ERROR,
+          "thisclass");
       
-      Assert.assertEquals(msStatusCode.getCode(), "MS_E_REGDWRT");
+      Assert.assertEquals(msStatusCode.getCode(), "AGMMCE00030");
    }
 
 /**
@@ -39,10 +40,14 @@ public class TestMySpaceStatusCode extends TestCase
 
    public void testToString()
    {  MySpaceStatusCode msStatusCode = new MySpaceStatusCode(
-        MySpaceStatusCode.MS_E_REGDWRT, MySpaceStatusCode.ERROR);
+        MySpaceStatusCode.AGMMCE00101, MySpaceStatusCode.ERROR,
+          "thisclass");
+
+      String message = msStatusCode.toString();
+      System.out.println(message);
       
-      Assert.assertEquals(msStatusCode.toString(),
-        "!Error:   [MS_E_REGDWRT]: Failed to write registry data file.");
+      Assert.assertEquals(message,
+   "!Error:   [AGMMCE00101]: (thisclass) Failed to write registry data file.");
    }
 
 /**

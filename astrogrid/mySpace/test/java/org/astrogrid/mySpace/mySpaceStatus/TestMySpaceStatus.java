@@ -9,7 +9,7 @@ import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
  * Junit tests for the <code>MySpaceStatus</code> class.
  *
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 2.
+ * @version Iteration 3.
  */
 
 public class TestMySpaceStatus extends TestCase
@@ -32,22 +32,25 @@ public class TestMySpaceStatus extends TestCase
 
    public void testAddCode()
    {  MySpaceStatus msStatus = new
-        MySpaceStatus(MySpaceStatusCode.MS_I_NDHMTCH,
-          MySpaceStatusCode.INFO);
+        MySpaceStatus(MySpaceStatusCode.AGMMCI00250,
+          MySpaceStatusCode.INFO, MySpaceStatusCode.NOLOG,
+          this.getClassName() );
 
       Assert.assertTrue(msStatus.getSuccessStatus() );
       Assert.assertTrue(!msStatus.getWarningStatus() );
 
       msStatus.reset();
-      msStatus.addCode(MySpaceStatusCode.MS_W_RGCSRVI,
-       MySpaceStatusCode.WARN);
+      msStatus.addCode(MySpaceStatusCode.AGMMCW00150,
+        MySpaceStatusCode.WARN, MySpaceStatusCode.NOLOG,
+        this.getClassName() );
 
       Assert.assertTrue(msStatus.getSuccessStatus() );
       Assert.assertTrue(msStatus.getWarningStatus() );
 
       msStatus.reset();
-      msStatus.addCode(MySpaceStatusCode.MS_E_REGDWRT,
-       MySpaceStatusCode.ERROR);
+      msStatus.addCode(MySpaceStatusCode.AGMMCE00100,
+        MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+        this.getClassName() );
 
       Assert.assertTrue(!msStatus.getSuccessStatus() );
       Assert.assertTrue(!msStatus.getWarningStatus() );
@@ -61,11 +64,13 @@ public class TestMySpaceStatus extends TestCase
 
    public void testOutputCodes()
    {  MySpaceStatus msStatus = new
-        MySpaceStatus(MySpaceStatusCode.MS_I_NDHMTCH,
-          MySpaceStatusCode.INFO);
+        MySpaceStatus(MySpaceStatusCode.AGMMCI00250,
+          MySpaceStatusCode.INFO, MySpaceStatusCode.NOLOG,
+          this.getClassName() );
 
-      msStatus.addCode(MySpaceStatusCode.MS_W_RGCSRVI,
-       MySpaceStatusCode.WARN);
+      msStatus.addCode(MySpaceStatusCode.AGMMCW00150,
+        MySpaceStatusCode.WARN, MySpaceStatusCode.NOLOG,
+        this.getClassName() );
 
       msStatus.outputCodes();
 
@@ -81,17 +86,29 @@ public class TestMySpaceStatus extends TestCase
 
    public void testReset()
    {  MySpaceStatus msStatus = new
-        MySpaceStatus(MySpaceStatusCode.MS_E_REGDWRT,
-          MySpaceStatusCode.ERROR);
+        MySpaceStatus(MySpaceStatusCode.AGMMCE00030,
+          MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+          this.getClassName() );
 
-      msStatus.addCode(MySpaceStatusCode.MS_W_RGCSRVI,
-        MySpaceStatusCode.WARN);
+      msStatus.addCode(MySpaceStatusCode.AGMMCW00150,
+        MySpaceStatusCode.WARN, MySpaceStatusCode.NOLOG,
+        this.getClassName() );
 
       msStatus.reset();
 
       Assert.assertTrue(msStatus.getSuccessStatus() );
       Assert.assertTrue(!msStatus.getWarningStatus() );
    }
+
+/**
+ * Obtain the name of the current Java class.
+ */
+
+   protected String getClassName()
+   { Class currentClass = this.getClass();
+     String name =  currentClass.getName();
+     return name;
+   }    
 
 /**
  * Main method to run the class.
