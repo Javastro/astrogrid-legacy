@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.117 2004/09/23 09:59:54 nw Exp $ -->
+<!-- $Id: maven.xml,v 1.118 2004/09/23 10:39:55 nw Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -1090,8 +1090,8 @@
                         <jsl:template match="testsuite">
                                 <jxml:copy select=".">
                                         <jxml:set var="currentSuite" select="." />
-                                        <jxml:set var="suiteSummary" select="$baseline/testsuites/testsuite[(@name=$currentSuite/@name and @package=$currentSuite/@package)]" />
-
+                                        <jxml:set var="suiteSummary" select="$baseline/testsuites/testsuite[@package=$currentSuite/@package][@name=$currentSuite/@name]" />
+                                        <!-- work around for bug- necessary to have two [..] clauses, as 'and' doesn't seem to work within a clause -->
                                           <jxml:element name="baseline">
                                                 <jxml:attribute name="name">${baselineName}</jxml:attribute>
                                                 <jxml:attribute name="tests"><jxml:expr select="$suiteSummary/@tests"/></jxml:attribute>
