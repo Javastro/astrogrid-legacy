@@ -22,7 +22,7 @@
 
 <pre>
 <%
-   RegistryService server = new RegistryService();
+    RegistryQueryService server = new RegistryQueryService();
 
          String selectQuery = "<query><selectionSequence>" +
            "<selection item='searchElements' itemOp='EQ' value='all'/>" +

@@ -25,7 +25,7 @@
 <pre>
 <%
    //RegistryHarvestService server = new RegistryHarvestService();
-   RegistryAdminService server = new RegistryAdminService();
+   UpdateRegistry server = new UpdateRegistry();
 
    //Document entry = server.harvestFromResource(DomHelper.newDocument(resource));
    Document entry = server.update(DomHelper.newDocument(resource));

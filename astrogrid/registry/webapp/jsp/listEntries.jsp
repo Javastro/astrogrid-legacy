@@ -20,12 +20,12 @@
 
 <hr>
 <%
-   RegistryService server = new RegistryService();
+   RegistryQueryService server = new RegistryQueryService();
 
          String selectQuery = "<query><selectionSequence>" +
          "<selection item='searchElements' itemOp='EQ' value='all'/>" +
          "<selectionOp op='$and$'/>" +
-         "<selection item='*:Identifier/*:AuthorityID' itemOp='NE' value=''/>"+
+         "<selection item='*:Identifier/*:AuthorityID' itemOp='NE' value=' '/>"+
          "</selectionSequence></query>";
 
    
@@ -42,18 +42,18 @@
       out.write("<tr><td>AuthorityID</td><td>ResourceKey</td><td>Actions</td></tr>");
       
       
-      NodeList identifiers = entry.getElementsByTagName("Identifier");
+      NodeList identifiers = entry.getElementsByTagNameNS("*","Identifier");
       
       for (int n=0;n<identifiers.getLength();n++) {
          out.write("<tr>\n");
          
-//         NodeList d2 = ((Element) identifiers.item(n)).getElementsByTagName("ResourceKey");
+//         NodeList d2 = ((Element) identifiers.item(n)).getElementsByTagNameNS("*""ResourceKey");
 //         out.write("Item 0:"+d2.item(0).getNodeName()+", "+d2.item(0).getFirstChild().getNodeValue()+"\n");
 //         out.write("Item 1:"+d2.item(1).getNodeName()+", "+d2.item(1).getNodeValue()+"\n");
          
          
-         Element resource = (Element) ((Element) identifiers.item(n)).getElementsByTagName("ResourceKey").item(0);
-         Element authority = (Element) ((Element) identifiers.item(n)).getElementsByTagName("AuthorityID").item(0);
+         Element resource = (Element) ((Element) identifiers.item(n)).getElementsByTagNameNS("*","ResourceKey").item(0);
+         Element authority = (Element) ((Element) identifiers.item(n)).getElementsByTagNameNS("*","AuthorityID").item(0);
          
          if (authority == null) {
             out.write("<td>null?!</td>");
