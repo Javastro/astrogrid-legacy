@@ -1,4 +1,4 @@
-/*$Id: TestInstallation.java,v 1.2 2003/09/11 11:05:33 nw Exp $
+/*$Id: TestInstallation.java,v 1.3 2003/09/11 11:39:25 nw Exp $
  * Created on 08-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -138,7 +138,7 @@ public class TestInstallation extends TestCase {
         assertNotNull(input);
         Element result =  del.adqlQuery(input);
         assertNotNull(result); 
-        assertEquals("ResultsResponse",result.getLocalName());
+        assertEquals("DatacenterResults",result.getLocalName());
         assertEquals(1,result.getElementsByTagName("TR").getLength()); // should return a single row.
         System.out.println(XMLUtils.ElementToString(result));
 
@@ -150,6 +150,9 @@ public class TestInstallation extends TestCase {
 
 /* 
 $Log: TestInstallation.java,v $
+Revision 1.3  2003/09/11 11:39:25  nw
+fixed integration test to expect new input formats
+
 Revision 1.2  2003/09/11 11:05:33  nw
 fixed to work with changes to query input format
 
