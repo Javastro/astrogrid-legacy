@@ -219,12 +219,29 @@ public class RegistryManager
 //      value is generated internally by the database.  However, the
 //      code that would be used to add this column is left in as
 //      comments, for purposes of illustration.
+//
+//      Also note that the expiry date is generated from the creation
+//      date by adding the expiry period for the server.
 
          java.util.Date creationDate = dataItemRecord.getCreationDate();
          long creationTime = creationDate.getTime();
          java.sql.Date sqlCreation = new java.sql.Date(creationTime);
 
-         java.util.Date expiryDate = dataItemRecord.getExpiryDate();
+         String serverName = dataItemRecord.getServer();
+         int expiryPeriod;
+         if (serverName != "")
+         {  expiryPeriod = this.getServerExpiryPeriod(
+              dataItemRecord.getServer() );
+         }
+         else
+         {  expiryPeriod = 0;
+         }
+
+         Calendar cal = Calendar.getInstance();
+         cal.setTime(creationDate);
+         cal.add(Calendar.DATE, expiryPeriod);
+         java.util.Date expiryDate = cal.getTime();
+
          long expiryTime = expiryDate.getTime();
          java.sql.Date sqlExpiry = new java.sql.Date(expiryTime);
 

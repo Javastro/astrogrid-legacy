@@ -209,11 +209,6 @@ public class MySpaceActions
 
                         Date creation = new Date();
 
-                        Calendar cal = Calendar.getInstance();
-                        cal.setTime(creation);
-                        cal.add(Calendar.DATE, reg.getServerExpiryPeriod("serv1") );
-                        Date expiry = cal.getTime();
-
                         int newdataItemID = -1;
                         String dataItemFileName = "";
 
@@ -222,7 +217,7 @@ public class MySpaceActions
 
                         DataItemRecord newDataItem = new DataItemRecord
                           (newDataItemName, newdataItemID,
-                          dataItemFileName, userID, creation, expiry,
+                          dataItemFileName, userID, creation, creation,
                           dataItemSize, dataItemType, "permissions");
 
 //
@@ -235,56 +230,10 @@ public class MySpaceActions
 //
 //                        Attempt to copy the DataHolder.
 
-                           String oldDataItemName = 
-                             oldDataItem.getDataItemName();
-
-                           int containSepPos1 = oldDataItemName.indexOf("/");
-                           int containSepPos2 =
-                             oldDataItemName.indexOf("/", containSepPos1+1);
-                           int containSepPos3 =
-                             oldDataItemName.indexOf("/", containSepPos2+1);
-
-                           String oldServerName;
-
-                           if (containSepPos3 > 0)
-                           {
-
-//
-//                           Check that the server name is valid.
-
-                              oldServerName = 
-                                oldDataItemName.substring(containSepPos2+1,
-                                  containSepPos3);
-                           }
-                           else
-                           {  oldServerName = "";
-                           }
-
-
-                           containSepPos1 = newDataItemName.indexOf("/");
-                           containSepPos2 =
-                             newDataItemName.indexOf("/", containSepPos1+1);
-                           containSepPos3 =
-                             newDataItemName.indexOf("/", containSepPos2+1);
-
-                           String newServerName;
-
-                           if (containSepPos3 > 0)
-                           {
-
-//
-//                           Check that the server name is valid.
-
-                              newServerName = 
-                                newDataItemName.substring(containSepPos2+1,
-                                  containSepPos3);
-                           }
-                           else
-                           {  newServerName = "";
-                           }
+                           String oldServerName = oldDataItem.getServer();
+                           String newServerName = newDataItem.getServer();
 
                            boolean copyOk = true;
-
 //
 //                        Check whether the new and old files are on
 //                        the same server and proceed accordingly.
@@ -471,11 +420,14 @@ public class MySpaceActions
 //
 //                     Create a DataItemRecord for the new DataHolder.
 
+
+                        int expiryPeriod = reg.getServerExpiryPeriod(
+                          oldDataItem.getServer() );
                         Date creation = new Date();
 
                         Calendar cal = Calendar.getInstance();
                         cal.setTime(creation);
-                        cal.add(Calendar.DATE, reg.getServerExpiryPeriod("serv1") );
+                        cal.add(Calendar.DATE, expiryPeriod);
                         Date expiry = cal.getTime();
 
                         int newdataItemID = -1;
@@ -588,11 +540,6 @@ public class MySpaceActions
 
                   Date creation = new Date();
 
-                  Calendar cal = Calendar.getInstance();
-                  cal.setTime(creation);
-                  cal.add(Calendar.DATE, reg.getServerExpiryPeriod("serv1") );
-                  Date expiry = cal.getTime();
-
                   int newdataItemID = -1;
                   String dataItemFileName = "";
 
@@ -605,7 +552,7 @@ public class MySpaceActions
 
                   DataItemRecord newDataItem = new DataItemRecord
                     (newDataItemName, newdataItemID,
-                    dataItemFileName, userID, creation, expiry,
+                    dataItemFileName, userID, creation, creation,
                     dataItemSize, dataItemType, "permissions");
 
 //
@@ -614,33 +561,11 @@ public class MySpaceActions
                   newDataItem = reg.addDataItemRecord(newDataItem);
                   if (newDataItem != null )
                   {
-
 //
 //                  Attempt to copy the contents of the input string as
 //                  a new file on the server.
 
-                     int containSepPos1 = newDataItemName.indexOf("/");
-                     int containSepPos2 =
-                       newDataItemName.indexOf("/", containSepPos1+1);
-                     int containSepPos3 =
-                       newDataItemName.indexOf("/", containSepPos2+1);
-
-                     String serverName;
-
-                     if (containSepPos3 > 0)
-                     {
-
-//
-//                     Check that the server name is valid.
-
-                        serverName = 
-                          newDataItemName.substring(containSepPos2+1,
-                             containSepPos3);
-                     }
-                     else
-                     {  serverName = "";
-                     }
-
+                     String serverName= newDataItem.getServer();
                      String serverDirectory =
                        reg.getServerDirectory(serverName);
 
@@ -742,11 +667,6 @@ public class MySpaceActions
 
                   Date creation = new Date();
 
-                  Calendar cal = Calendar.getInstance();
-                  cal.setTime(creation);
-                  cal.add(Calendar.DATE, reg.getServerExpiryPeriod("serv1") );
-                  Date expiry = cal.getTime();
-
                   int newdataItemID = -1;
                   String dataItemFileName = "";
 
@@ -756,7 +676,7 @@ public class MySpaceActions
 
                   DataItemRecord newDataItem = new DataItemRecord
                     (newDataItemName, newdataItemID,
-                    dataItemFileName, userID, creation, expiry,
+                    dataItemFileName, userID, creation, creation,
                     dataItemSize, dataItemType, "permissions");
 
 //
@@ -770,28 +690,7 @@ public class MySpaceActions
 //                  Attempt to copy the contents of the input string as
 //                  a new file on the server.
 
-                     int containSepPos1 = newDataItemName.indexOf("/");
-                     int containSepPos2 =
-                       newDataItemName.indexOf("/", containSepPos1+1);
-                     int containSepPos3 =
-                       newDataItemName.indexOf("/", containSepPos2+1);
-
-                     String serverName;
-
-                     if (containSepPos3 > 0)
-                     {
-
-//
-//                     Check that the server name is valid.
-
-                        serverName = 
-                          newDataItemName.substring(containSepPos2+1,
-                             containSepPos3);
-                     }
-                     else
-                     {  serverName = "";
-                     }
-
+                     String serverName = newDataItem.getServer();
                      String serverDirectory =
                        reg.getServerDirectory(serverName);
 
@@ -909,26 +808,8 @@ public class MySpaceActions
 //                     Assemble the URI for the DataHolder from the
 //                     server URI and the file name of the DataHolder.
 
-                        String dataItemName = dataItem.getDataItemName();
-
-                        int containSepPos1 = dataItemName.indexOf("/");
-                        int containSepPos2 =
-                          dataItemName.indexOf("/", containSepPos1+1);
-                        int containSepPos3 =
-                          dataItemName.indexOf("/", containSepPos2+1);
-
-                        String serverURI;
-
-                        if (containSepPos3 > 0)
-                        {  String serverName =
-                             dataItemName.substring
-                               (containSepPos2+1, containSepPos3);
-                           serverURI = reg.getServerURI(serverName);
-                        }
-                        else
-                        {  serverURI = "bad_URI/";
-                        }
-
+                        String serverName = dataItem.getServer();
+                        String serverURI = reg.getServerURI(serverName);
                         dataHolderURI =
                           serverURI + dataItem.getDataItemFile();
                      }
@@ -1016,18 +897,13 @@ public class MySpaceActions
 
                   Date creation = new Date();
 
-                  Calendar cal = Calendar.getInstance();
-                  cal.setTime(creation);
-                  cal.add(Calendar.DATE, reg.getServerExpiryPeriod("serv1") );
-                  Date expiry = cal.getTime();
-
                   int newdataItemID = -1;
                   String dataItemFileName = "";
                   int dataItemType = DataItemRecord.CON;
 
                   DataItemRecord newDataItem = new DataItemRecord
                     (newContainerName, newdataItemID, dataItemFileName,
-                    userID, creation, expiry, 0, dataItemType,
+                    userID, creation, creation, 0, dataItemType,
                     "permissions");
 
 //
@@ -1143,29 +1019,7 @@ public class MySpaceActions
 //
 //                     Attempt to delete the DataHolder.
 
-                        String dataItemName = dataItem.getDataItemName();
-
-                        int containSepPos1 = dataItemName.indexOf("/");
-                        int containSepPos2 =
-                          dataItemName.indexOf("/", containSepPos1+1);
-                        int containSepPos3 =
-                          dataItemName.indexOf("/", containSepPos2+1);
-
-                        String serverName;
-                        if (containSepPos3 > 0)
-                        {
-
-//
-//                        Check that the server name is valid.
-
-                           serverName = 
-                             dataItemName.substring(containSepPos2+1,
-                               containSepPos3);
-                        }
-                        else
-                        {  serverName = "";
-                        }
-
+                        String serverName = dataItem.getServer();
                         String serverDirectory =
                           reg.getServerDirectory(serverName);
 
