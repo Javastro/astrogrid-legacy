@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.6 2004/03/04 01:57:35 nw Exp $
+/*$Id: AllTests.java,v 1.7 2004/03/04 02:14:27 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,6 @@ public class AllTests {
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(CastorWorkflowTest.class));
         suite.addTest(new TestSuite(InMemorySystemTest.class));
-        suite.addTest(new TestSuite(JESTest.class));
         suite.addTest(new TestSuite(LocalSOAPSystemTest.class));
         //$JUnit-END$
         suite.addTest(org.astrogrid.jes.delegate.AllTests.suite());
@@ -40,6 +39,9 @@ public class AllTests {
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.7  2004/03/04 02:14:27  nw
+removed jes configurator. using config now instead
+
 Revision 1.6  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.
