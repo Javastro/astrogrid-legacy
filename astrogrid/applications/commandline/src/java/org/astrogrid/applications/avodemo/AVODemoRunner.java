@@ -1,5 +1,5 @@
 /*
- * $Id: AVODemoRunner.java,v 1.3 2004/09/09 06:42:06 pah Exp $
+ * $Id: AVODemoRunner.java,v 1.4 2004/09/23 09:01:06 pah Exp $
  * 
  * Created on 23-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -209,7 +209,7 @@ private String workflowIvorn;
       input.addParameter(param);
       param.setName("config_file");
 
-      param.setValue("/home/applications/demo/hyperz/zphot.param");
+      param.setValue("file:///home/applications/demo/hyperz/zphot.param");
       param.setIndirect(true);
 
       param = new ParameterValue();
@@ -293,14 +293,14 @@ private String workflowIvorn;
       tool.setName(applicationid);
       tool.setInput(input);
       tool.setOutput(output);
-      tool.setInterface("simple");
+      tool.setInterface("Simple");
       ParameterValue param = new ParameterValue();
       input.addParameter(param);
       param.setName("DetectionImage");
 
       param.setIndirect(true);
       param.setValue(
-         "/home/applications/data/GOODS/h_"
+         "file:///home/applications/data/GOODS/h_"
             + hemi
             + "z_"
             + sector
@@ -312,7 +312,7 @@ private String workflowIvorn;
 
       param.setIndirect(true);
       param.setValue(
-         "/home/applications/data/GOODS/h_"
+         "file:///home/applications/data/GOODS/h_"
             + hemi
             + band
             + "_"
@@ -325,14 +325,14 @@ private String workflowIvorn;
 
       param.setIndirect(true);
       param.setValue(
-         "/home/applications/demo/h_goods_" + hemi + band + "_r1.0z_phot_sex.txt");
+         "file:///home/applications/demo/h_goods_" + hemi + band + "_r1.0z_phot_sex.txt");
 
       param = new ParameterValue();
       input.addParameter(param);
       param.setName("PARAMETERS_NAME");
 
       param.setIndirect(true);
-      param.setValue("/home/applications/demo/std.param");
+      param.setValue("file:///home/applications/demo/std.param");
 
       param = new ParameterValue();
       output.addParameter(param);
