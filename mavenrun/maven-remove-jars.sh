@@ -1,7 +1,16 @@
 #!/bin/sh
 OLDDIR=$PWD
 
-PROJECT_NAME=$1
+#PROJECT_NAME=$1
+
+echo "[ag-build-$PROJECT_NAME] sourcing java"
+source $HOME/.bash-config/java >> $LOG_FILE 2>&1
+
+echo "[ag-build-$PROJECT_NAME] sourcing maven"
+source $HOME/.bash-config/maven >> $LOG_FILE 2>&1
+
+echo "[ag-build-$PROJECT_NAME] sourcing cvs"
+source $HOME/.bash-config/cvs >> $LOG_FILE 2>&1
 
 # Change to Maven repository directory for project.
 cd $MAVEN_PUBLIC/org.astrogrid/
