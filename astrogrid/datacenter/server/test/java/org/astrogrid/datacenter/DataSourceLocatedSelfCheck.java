@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 
 import junit.framework.TestCase;
 
-/* $Id: DataSourceLocatedSelfTest.java,v 1.1 2004/01/29 18:33:06 jdt Exp $
+/* $Id: DataSourceLocatedSelfCheck.java,v 1.1 2004/01/29 21:55:26 anoncvs Exp $
  * Created on 29-Jan-2004 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,13 +29,13 @@ import junit.framework.TestCase;
  * <p>
  * not intended for use during development - hence the different naming convention.
  */
-public class DataSourceLocatedSelfTest extends TestCase {
+public class DataSourceLocatedSelfCheck extends TestCase {
 
   /**
-   * Constructor for DataSourceLocatedSelfTest.
+   * Constructor for DataSourceLocatedSelfCheck.
    * @param arg0 name
    */
-  public DataSourceLocatedSelfTest(final String arg0) {
+  public DataSourceLocatedSelfCheck(final String arg0) {
     super(arg0);
   }
 
@@ -59,7 +59,10 @@ public class DataSourceLocatedSelfTest extends TestCase {
 }
 
 /*
-*$Log: DataSourceLocatedSelfTest.java,v $
+*$Log: DataSourceLocatedSelfCheck.java,v $
+*Revision 1.1  2004/01/29 21:55:26  anoncvs
+*Name change.  Gawd I've got tests on the brain.  It IS a test, but not as we know it.
+*
 *Revision 1.1  2004/01/29 18:33:06  jdt
 *InitialCommit
 *
