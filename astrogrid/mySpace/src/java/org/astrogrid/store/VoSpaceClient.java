@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceClient.java,v 1.3 2004/04/06 09:00:46 KevinBenson Exp $
+ * $Id: VoSpaceClient.java,v 1.4 2004/04/15 16:41:41 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,6 +18,7 @@ import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.store.delegate.StoreFile;
 import org.astrogrid.store.delegate.VoSpaceResolver;
 import java.net.URISyntaxException;
+import org.astrogrid.community.common.ivorn.CommunityIvornParser;
 
 /**
  * This delegate provides methods for operating on files in VoSpace - that is,
@@ -129,21 +130,39 @@ public class VoSpaceClient {
    
    public Ivorn createUser(Ivorn target, String user) throws IOException, URISyntaxException {
       Agsl vospaceTarget = VoSpaceResolver.resolveAgsl(target);
-      StoreAdminClient client = StoreDelegateFactory.createAdminDelegate(operator, vospaceTarget);      
-      client.createUser(new User(user,null,null));
-      return new Ivorn(target.toString() + "#" + user);
+      StoreAdminClient client = StoreDelegateFactory.createAdminDelegate(operator, vospaceTarget);
+      CommunityIvornParser ci = null;
+      try {
+         ci = new CommunityIvornParser(user);
+      }catch(Exception e) {
+         e.printStackTrace();
+         throw new IOException("Could not parse ivorn user ");
+      }
+            
+      client.createUser(new User(ci.getAccountName(),ci.getCommunityName(),"Anonymous","None"));
+      return new Ivorn(target.toString());
    }
    
-   public void deleteUser(Ivorn target, String user) throws IOException, URISyntaxException {
+   public void deleteUser(Ivorn target, Ivorn user) throws IOException, URISyntaxException {
       Agsl vospaceTarget = VoSpaceResolver.resolveAgsl(target);
-      StoreAdminClient client = StoreDelegateFactory.createAdminDelegate(operator, vospaceTarget);      
-      client.deleteUser(new User(user,null,null));
+      StoreAdminClient client = StoreDelegateFactory.createAdminDelegate(operator, vospaceTarget);
+      CommunityIvornParser ci = null;
+      try {
+         ci = new CommunityIvornParser(user);
+      }catch(Exception e) {
+         e.printStackTrace();
+         throw new IOException("Could not parse ivorn user ");
+      }
+      client.deleteUser(new User(ci.getAccountName(),ci.getCommunityName(),"Anonymous","None"));
    }
    
 }
 
 /*
 $Log: VoSpaceClient.java,v $
+Revision 1.4  2004/04/15 16:41:41  KevinBenson
+new way of using the user object for createUser.
+
 Revision 1.3  2004/04/06 09:00:46  KevinBenson
 changed it around so that it calls community first then registry to figvure out endpoints
 
