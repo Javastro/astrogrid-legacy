@@ -41,8 +41,6 @@
         <attainGoal name="reg-deploy" />
         <attainGoal name="myspace-deploy" />
         <attainGoal name="pal-deploy" />
-        <attainGoal name="community-deploy" />
-        <attainGoal name="portal-deploy" />
 </goal>
 
 <goal name="undeploy-all" prereqs="init" description="undeploy all webapps">
@@ -53,8 +51,6 @@
         <attainGoal name="reg-undeploy" />
         <attainGoal name="myspace-undeploy" />
         <attainGoal name="pal-undeploy" />
-        <attainGoal name="community-undeploy" />
-        <attainGoal name="portal-undeploy" />
 </goal>
 
 <goal name="list" prereqs="init" description="list deployed webapps">
@@ -230,6 +226,9 @@
         </war>
   <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-registry-SNAPSHOT" war="file://${temporary.dir}/astrogrid-registry-SNAPSHOT.war"/>
+          
+  <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/exist" war="file://${temporary.dir}/exist-inttest.war"/>          
 </goal>
 
 <goal name="myspace-deploy" >
@@ -254,38 +253,12 @@
           path="/astrogrid-pal-SNAPSHOT" war="file://${temporary.dir}/pal-SNAPSHOT.war"/>
 </goal>
 
-<goal name="portal-deploy">
-        <copy todir="${temporary.dir}/portal" filtering="true">
-                <fileset dir="contexts/portal" />
-        </copy>
-        <war update="true" destfile="${temporary.dir}/astrogrid-portal-SNAPSHOT.war">
-                <metainf dir="${temporary.dir}/portal" />
-        </war>
-        <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                path="/astrogrid-portal-SNAPSHOT" war="file://${temporary.dir}/astrogrid-portal-SNAPSHOT.war" />
-</goal>
-
-<!--+
-    | Deploy community.
-    +-->
-<goal name="community-deploy">
-        <!--+
-            |
-        <copy todir="${temporary.dir}/jes" filtering="true">
-                <fileset dir="contexts/jes" />
-        </copy>
-        <war update="true" destfile="${temporary.dir}/astrogrid-jes-SNAPSHOT.war">
-                <metainf dir="${temporary.dir}/jes"/>
-        </war>
-  <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-jes-SNAPSHOT" war="file://${temporary.dir}/astrogrid-jes-SNAPSHOT.war"/>
-            +-->
-</goal>
-
 <!-- undeploy ///////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <goal name="reg-undeploy" >
   <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-registry-SNAPSHOT" />
+  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/exist" />
 </goal>
 
 <goal name="myspace-undeploy" >
@@ -319,21 +292,6 @@
                 path="/myspace-store" />
 </goal>
 
-<goal name="portal-undeploy">
-        <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                path="astrogrid-portal-SNAPSHOT" />
-</goal>
-
-<!--+
-    | Un-deploy community.
-    +-->
-<goal name="community-undeploy" >
-    <!--+
-        |
-        <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                path="/myspace-store" />
-        +-->
-</goal>
 
 <!-- boilerplate below here /////////////////////////////////////////////////////////////////////////////////////////////-->
 
