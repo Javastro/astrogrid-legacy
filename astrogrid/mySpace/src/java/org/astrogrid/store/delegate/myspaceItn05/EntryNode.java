@@ -29,7 +29,7 @@ import org.astrogrid.store.Agsl;
  */
 
 public class EntryNode implements StoreFile
-{
+{  
 //
 //Member variables defining the entry record.
 
@@ -149,7 +149,7 @@ public class EntryNode implements StoreFile
  */
 
    public EntryNode (String path, ArrayList entries)
-   {
+   {  
 //
 //   Create a fake root node corresponding to the path.
 
@@ -233,7 +233,7 @@ public class EntryNode implements StoreFile
          }
          else
          {  currentIndex = -1;
-            currentEntry =
+            currentEntry = 
               (EntryNode)parentEntries.get(parentEntries.size() -1);
             parentEntries.remove(parentEntries.size() -1);
 
@@ -317,7 +317,7 @@ public class EntryNode implements StoreFile
       return isContainer;
    }
    
-/**
+/** 
  * Return true if this <code>EntryNode</code> is a self-contained file.
  * For example, a database table might be represented as a StoreFile but
  * it is not a file.  A value of false is always returned because currently
@@ -349,12 +349,18 @@ public class EntryNode implements StoreFile
       return childArray;
    }
    
-/**
- * Return the path to this file on the MySpace Service., including filename
+/** 
+ * Return the path to this file on the MySpace Service.
  */
    public String getPath()
-   {
-      return entryName;
+   {  String path = "/";
+
+      int lastSep = entryName.lastIndexOf("/");
+      if (lastSep>0)
+      {  path = entryName.substring(0, lastSep+1);
+      }
+
+      return path;
    }
    
 /**
@@ -457,8 +463,8 @@ public class EntryNode implements StoreFile
 /**
  * Return the type of the entry.
  *
- * @return The type of the entry.  One of: <code>EntryCodes.UNKNOWN</code>,
- *   <code>EntryCodes.CON</code>, <code>EntryCodes.VOT</code>,
+ * @return The type of the entry.  One of: <code>EntryCodes.UNKNOWN</code>, 
+ *   <code>EntryCodes.CON</code>, <code>EntryCodes.VOT</code>, 
  *   <code>EntryCodes.QUERY</code>, <code>EntryCodes.WORKFLOW</code> or
  *   <code>EntryCodes.XML</code>.
  */
@@ -598,17 +604,17 @@ public class EntryNode implements StoreFile
          {  more = false;
          }
 
-//         System.out.println("numChildren, more: " + numChildren
+//         System.out.println("numChildren, more: " + numChildren 
 //           + " " + more);
 
          while (more)
          {  numChildren = currentEntry.getNumChildren();
             if (currentChild < numChildren)
-            {
+            {  
                parentEntries.add(currentEntry);
                parentCurChild.add(new Integer(currentChild));
 
-//               System.out.println("  new name, currentChild" +
+//               System.out.println("  new name, currentChild" + 
 //                  currentEntry.getName() + " " + currentChild);
                currentEntry = currentEntry.getChild(currentChild);
 //               System.out.println("  new name" + currentEntry.getName() );
