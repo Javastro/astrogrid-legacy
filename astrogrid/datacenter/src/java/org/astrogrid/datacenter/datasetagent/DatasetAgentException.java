@@ -12,7 +12,8 @@ package org.astrogrid.datacenter.datasetagent;
 
 import org.astrogrid.datacenter.DatacenterException;
 import org.astrogrid.i18n.AstroGridMessage;
-
+/** exception type thrown by the dataset agent 
+ */
 public class DatasetAgentException extends DatacenterException {
 
     public DatasetAgentException( AstroGridMessage message ) {

@@ -11,13 +11,15 @@
 package org.astrogrid.datacenter.datasetagent;
 
 import java.io.StringReader;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.Configurator ;
-import org.astrogrid.AstroGridException ;
-import org.astrogrid.datacenter.DTC;
+import org.astrogrid.AstroGridException;
+import org.astrogrid.datacenter.Util;
+import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.datacenter.config.ConfigurationKeys;
 import org.astrogrid.datacenter.job.Job;
 import org.astrogrid.datacenter.myspace.Allocation;
 import org.astrogrid.datacenter.query.Query;
@@ -87,9 +89,28 @@ public class DatasetAgent {
 	  * 
 	  **/       	
 	public DatasetAgent() {
-		if( TRACE_ENABLED ) logger.debug( "DatasetAgent(): entry/exit") ;
+		if( TRACE_ENABLED ) logger.debug( "DatasetAgent(): entry") ;
+		config = new Configuration();
+		fac = new DynamicFactoryManager(config);
+	}
+	protected final Configuration config;
+	protected final DynamicFactoryManager fac;
+	/** verify that all configuration files are present,
+	 * load factories from config file if not already loaded.
+	 * @throws AstroGridException
+	 */
+	protected void checkResources() throws AstroGridException {
+		// If properties file is not loaded, we bail out...
+		// Each DatasetAgent MUST be properly initialized! 
+		config.checkPropertiesLoaded() ;
+		// now each of the factories..
+		fac.verify();
 	}
 	
+	
+	
+	
+
 	
 	/**
 	  * <p> 
@@ -148,40 +169,35 @@ public class DatasetAgent {
     public String runQuery( String jobXML ) { 	
     	if( TRACE_ENABLED ) logger.debug( "runQuery() entry") ;
     	
-		String
-			response = null ;
-		Job
-		    job = null ;
-		Allocation
-		    allocation = null ;
+		String response = null ;
+		Job job = null ;
+		Allocation allocation = null ;
 			
 		try { 
-			// If properties file is not loaded, we bail out...
-			// Each DatasetAgent MUST be properly initialized! 
-            DTC.getInstance().checkPropertiesLoaded() ;
+			checkResources();
   		
     		// Parse the request and create the necessary Job structures, including Query...
          	Document
     		   queryDoc = parseRequest( jobXML ) ;
-            job = Job.getFactory().create( queryDoc ) ;
+            job = fac.getJobFactory().create( queryDoc,fac ) ;
             
             // Execute the Query...
             job.setStatus( Job.STATUS_RUNNING ) ;
-            Job.getFactory().update( job );
+            fac.getJobFactory().update( job );
 			job.getJobStep().getQuery().execute() ;
 			   	
 			// Acquire some temporary file space...		   
-			allocation = Allocation.getFactory().allocateCacheSpace( job.getId() ) ;
-			   
+			allocation = fac.getMySpaceFactory().allocateCacheSpace( job.getId() ) ;
+
 			// Produce VOTable and write it to a temporary file...   
 			VOTable
-			   votable = job.getJobStep().getQuery().toVOTable( allocation ) ;
+			   votable = job.getJobStep().getQuery().toVOTable( allocation ,fac) ;
 			  
 			// Inform MySpace that file is ready for pickup...   
 			allocation.informMySpace( job ) ;           
             			
 			job.setStatus( Job.STATUS_COMPLETED ) ; 
-			Job.getFactory().update( job );		
+			fac.getJobFactory().update( job );		
 				 
 			// temporary, for testing
 			response = votable.toString() ;	
@@ -195,12 +211,14 @@ public class DatasetAgent {
 			logger.error( generalMessage.toString() ) ;
 			
 			job.setStatus( Job.STATUS_IN_ERROR ) ;		
-			try{ Job.getFactory().update( job ); } catch( Exception ex ) {;}     
+			try{ fac.getJobFactory().update( job ); } catch( Exception ex ) {;}     
  				
 			// If we were responding, we would format our error response here...
 			if( response == null ) {
 				response = generalMessage.toString() + "/n" + detailMessage.toString();
 			}
+    	} catch (NullPointerException e){
+    		e.printStackTrace();
     	}
     	finally {
 			// Inform JobMonitor within JES of jobstep completion...
@@ -212,6 +230,27 @@ public class DatasetAgent {
         return response ;   	
     	 	
     } // end runQuery()
+
+	/** test method - check everything gets initialized correctly */
+	public String selfTest() {
+		java.io.StringWriter sout = null;
+		java.io.PrintWriter wout = null;
+		try {				
+			// If properties file is not loaded, we bail out...
+			// Each DatasetAgent MUST be properly initialized!
+			sout = new java.io.StringWriter();
+			wout = new java.io.PrintWriter(sout);
+			
+			config.checkPropertiesLoaded() ;
+			fac.verify();
+			wout.println(config); // hopefully this does something nice.
+			wout.println(fac);
+			return sout.toString();
+		} catch (Throwable t) {
+			t.printStackTrace(wout);
+			return "Failed " + t.getMessage() + sout.toString();
+		}
+	}
 
 
     private Document parseRequest( String jobXML ) throws DatasetAgentException {  	
@@ -226,8 +265,8 @@ public class DatasetAgent {
 	       
 		try {
                     
-		   factory.setValidating( Boolean.getBoolean( DTC.getProperty( DTC.DATASETAGENT_PARSER_VALIDATION
-		                                                             , DTC.DATASETAGENT_CATEGORY )  )  ) ; 		
+		   factory.setValidating( Boolean.getBoolean( config.getProperty( ConfigurationKeys.DATASETAGENT_PARSER_VALIDATION
+		                                                             , ConfigurationKeys.DATASETAGENT_CATEGORY )  )  ) ; 		
 		   builder = factory.newDocumentBuilder();
 		   logger.debug( jobXML ) ;
 		   InputSource
@@ -258,7 +297,7 @@ public class DatasetAgent {
     }
 
  
-	public String getComponentName() { return Configurator.getClassName( DatasetAgent.class ) ; }
+	public String getComponentName() { return  Util.getComponentName( DatasetAgent.class ) ; }
 
 
 } // end of class DatasetAgent
