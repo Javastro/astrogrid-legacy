@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/24 10:43:25 $</cvs:author>
-    | <cvs:version>$Revision: 1.13 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/24 15:36:41 $</cvs:author>
+    | <cvs:version>$Revision: 1.14 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.14  2003/06/24 15:36:41  dave
+    | Adding initial XSP pages
+    |
     | Revision 1.13  2003/06/24 10:43:25  dave
     | Fixed bugs in DataTreeWalker and tree page
     |
@@ -1077,7 +1080,7 @@
 	<!--+
 	    | These tasks install and configure the client and server components for the real MySpace service.
 	    | At the moment, these tasks just use a binary jar in our depends directory, collected from the MySpace project.
-	    | At some point, these may be updated to use the original source code foe the MySpace service from cvs.
+	    | At some point, these need to be updated to use the original source code foe the MySpace service from cvs.
 	    +-->
 	<!-- Compile server side classes for the MySpace service -->
 	<target name="MYSPACE.service.javac" depends="">
@@ -1425,13 +1428,11 @@
 
 	<!--+
 	    | Reset the local MySpace service.
-	    | At the moment the service is soo unstable, so some of the JUnit tests corrupt the server data files.
+	    | At the moment some of the JUnit tests corrupt the server data files.
 	    | When this happens, it is easier to remove and re-install the service.
 	    | If Tomcat is just running the MySpace WebService, then stopping and starting Tomcat works.
-	    | However, as our portal code is running in the same Tomcat instance, this would loos all of our portal session data.
+	    | However, as our portal code is running in the same Tomcat instance, this would loose all of our portal session data.
 	    | This task removes the MySpace WebService and re-installs it from clean.
-	    | In fact, removing and installing the WebService does not fix the problem.
-	    | To get rid of the corrupted data you need to reload the whole Axis WebApp.
 	    +-->
 	<target name="MYSPACE.RESET" depends="">
 		<!-- Remove the MySpace service -->
@@ -1607,7 +1608,7 @@
 
 	<!--+
 	    | Upload an item into the registry.
-	    | This test may break the MySpace service ....
+	    | This is untested ....
 	    +-->
 	<target name="MYSPACE.client.junit.upload" depends="MYSPACE.client.javac">
 		<!-- Wait for the Axis service -->
@@ -1640,7 +1641,8 @@
 
 	<!--+
 	    | Delete an item from the registry.
-	    | This test may break the MySpace service ....
+	    | This test may break the MySpace service if the item does not exist.
+	    | This test may break the MySpace service if the path refers to a container.
 	    +-->
 	<target name="MYSPACE.client.junit.delete" depends="MYSPACE.client.javac">
 		<!-- Wait for the Axis service -->
@@ -1673,7 +1675,7 @@
 
 	<!--+
 	    | Create a container in the registry.
-	    | This test may break the MySpace service if there is somethingwith the same name.
+	    | This test may break the MySpace service if there is already something with the same name.
 	    +-->
 	<target name="MYSPACE.client.junit.create" depends="MYSPACE.client.javac">
 		<!-- Wait for the Axis service -->

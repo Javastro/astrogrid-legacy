@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/explorer/Attic/AstPortalView.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/24 10:43:25 $</cvs:author>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/24 15:36:41 $</cvs:author>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  *
  * <cvs:log>
  * $Log: AstPortalView.java,v $
+ * Revision 1.10  2003/06/24 15:36:41  dave
+ * Adding initial XSP pages
+ *
  * Revision 1.9  2003/06/24 10:43:25  dave
  * Fixed bugs in DataTreeWalker and tree page
  *
@@ -336,15 +339,16 @@ public class AstPortalView
 	public void setMySpaceLocation(String location)
 		{
 		//
-		// If the location is null.
+		// If the location is null, use the default address.
 		if (null == location)
 			{
-			this.myspaceLocation = null ;
+			this
+			.myspaceLocation = myspaceLocator.getMySpaceManagerAddress() ;
 			}
 		//
 		// If the location is not null.
-		else {
-			 ;
+		if (null != location)
+			{
 			//
 			// If the location is not blank.
 			if (location.trim().length() > 0)
@@ -352,9 +356,9 @@ public class AstPortalView
 				this.myspaceLocation = location ;
 				}
 			//
-			// If the location is blank.
+			// If the location is blank, use the default address
 			else {
-				this.myspaceLocation = null ;
+				this.myspaceLocation = myspaceLocator.getMySpaceManagerAddress() ;
 				}
 			}
 		//

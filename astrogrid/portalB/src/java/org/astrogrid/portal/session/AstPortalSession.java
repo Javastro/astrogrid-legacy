@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/session/Attic/AstPortalSession.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/23 11:19:03 $</cvs:author>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/24 15:36:41 $</cvs:author>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  * $Log: AstPortalSession.java,v $
+ * Revision 1.3  2003/06/24 15:36:41  dave
+ * Adding initial XSP pages
+ *
  * Revision 1.2  2003/06/23 11:19:03  dave
  * Added service location to view pages
  *
@@ -91,7 +94,13 @@ public class AstPortalSession
 	 */
 	public AstPortalQuery getQuery(String ident)
 		{
-		return (AstPortalQuery) this.queries.get(ident) ;
+		if (null != ident)
+			{
+			return (AstPortalQuery) this.queries.get(ident) ;
+			}
+		else {
+			return null ;
+			}
 		}
 
 	/**
@@ -126,7 +135,13 @@ public class AstPortalSession
 	 */
 	public AstPortalView getView(String ident)
 		{
-		return (AstPortalView) this.views.get(ident) ;
+		if (null != ident)
+			{
+			return (AstPortalView) this.views.get(ident) ;
+			}
+		else {
+			return null ;
+			}
 		}
 
 	/**
@@ -159,7 +174,10 @@ public class AstPortalSession
 	 */
 	public void deleteView(String ident)
 		{
-		this.views.remove(ident) ;
+		if (null != ident)
+			{
+			this.views.remove(ident) ;
+			}
 		}
 
 	}
