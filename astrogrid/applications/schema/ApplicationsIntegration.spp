@@ -5,9 +5,12 @@
 		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow-objects\sampleDocuments\CEARegistyEntry.xml" HomeFolder="Yes"/>
 		<File FilePath="\\pahlaptop\work\astrogrid\src\applications\config\DataServerDefinitions.xml" HomeFolder="Yes"/>
 		<File FilePath="\\pahlaptop\work\astrogrid\src\applications\test\config\TestApplicationConfig.xml" HomeFolder="Yes"/>
+		<File FilePath="\\pahlaptop\work\astrogrid\src\applications\test\java\testworkflow.xml" HomeFolder="Yes"/>
 		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow-objects\sampleDocuments\workflow.xml" HomeFolder="Yes"/>
 	</Folder>
-	<Folder FolderName="XSL Files" ExtStr="xsl;xslt"/>
+	<Folder FolderName="XSL Files" ExtStr="xsl;xslt">
+		<File FilePath="\\pahlaptop\work\astrogrid\tmp\transform.xslt" HomeFolder="Yes"/>
+	</Folder>
 	<Folder FolderName="HTML Files" ExtStr="html;htm;xhtml;asp"/>
 	<Folder FolderName="DTD/Schemas" ExtStr="dtd;dcd;xdr;biz;xsd">
 		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow-objects\schema\AGApplicationBase.xsd" HomeFolder="Yes"/>
