@@ -1,4 +1,4 @@
-/*$Id: RegistryToolLocator.java,v 1.1 2004/03/08 00:37:07 nw Exp $
+/*$Id: RegistryToolLocator.java,v 1.2 2004/03/09 14:41:44 nw Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.jes.jobscheduler.locator;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.Locator;
+import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.workflow.beans.v1.Step;
@@ -48,7 +49,7 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
     public String locateTool(Step js) throws JesException {
         try {
             return delegate.getEndPointByIdentifier(js.getTool().getName());
-        } catch (ValidationException e) {
+        } catch (RegistryException e) {
             throw new JesException("Failed to locate tool due to error",e);
         }
     }
@@ -81,6 +82,9 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: RegistryToolLocator.java,v $
+Revision 1.2  2004/03/09 14:41:44  nw
+updated to track changes to registry delegate
+
 Revision 1.1  2004/03/08 00:37:07  nw
 preliminary implementation of registry tool locatr
  
