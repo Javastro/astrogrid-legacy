@@ -1,0 +1,40 @@
+<!ENTITY % HTML PUBLIC
+    "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+%HTML;
+
+<!--
+  AstroGrid Div:
+    Used in place of a div, it can contain div tags.
+-->
+<!ELEMENT ag-div (ag-link|ag-script|ag-onload|ag-menu|%Flow;)*>
+
+<!--
+  AstroGrid Link:
+    Used to include 
+-->
+<!ELEMENT ag-link EMPTY>
+<!--
+  
+-->
+<!ELEMENT ag-script EMPTY>
+<!--
+  
+-->
+<!ELEMENT ag-onload EMPTY>
+<!--
+  
+-->
+<!ELEMENT ag-menu EMPTY>
+
+<!ATTLIST ag-link href CDATA #REQUIRED>
+<!ATTLIST ag-link rel CDATA #REQUIRED>
+<!ATTLIST ag-link type CDATA #REQUIRED>
+
+<!ATTLIST ag-script type CDATA #FIXED "text/javascript">
+<!ATTLIST ag-script src CDATA #REQUIRED>
+
+<!ATTLIST ag-onload function CDATA #REQUIRED>
+
+<!ATTLIST ag-menu name CDATA #REQUIRED>
+<!ATTLIST ag-menu src CDATA #IMPLIED>

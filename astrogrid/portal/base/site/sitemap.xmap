@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.2 2004/03/19 12:36:26 jdt Exp $
+    | CVS $Id: sitemap.xmap,v 1.3 2004/03/29 23:51:06 gps Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -236,6 +236,7 @@
         <encoding>UTF-8</encoding>
       </map:serializer>
       <map:serializer logger="sitemap.serializer.text" mime-type="text/plain" name="text" src="org.apache.cocoon.serialization.TextSerializer"/>
+      <map:serializer logger="sitemap.serializer.javascript" mime-type="text/javascript" name="javascript" src="org.apache.cocoon.serialization.TextSerializer"/>
       <map:serializer logger="sitemap.serializer.vrml" mime-type="model/vrml" name="vrml" src="org.apache.cocoon.serialization.TextSerializer"/>
       <map:serializer logger="sitemap.serializer.zip" mime-type="application/zip" name="zip" src="org.apache.cocoon.serialization.ZipArchiveSerializer"/>
       <map:serializer logger="sitemap.serializer.sxw" mime-type="application/vnd.sun.xml.writer" name="sxw" src="org.apache.cocoon.serialization.ZipArchiveSerializer"/>
@@ -527,7 +528,9 @@
       <map:transform type="xinclude"/>
     
     <!-- style the menu -->
-      <map:transform type="xslt" src="{ag-menu-stylesheet}"/>
+      <map:transform src="context://web/style/xsl/menu2jscript.xsl"/>
+  
+      <map:serialize type="javascript"/>
     </map:resource>
   </map:resources>
 
@@ -588,22 +591,59 @@
       <map:match pattern="mount/*/**">
         <map:mount check-reload="yes" src="mount/{1}/" uri-prefix="mount/{1}"/>
       </map:match>
+      
+    <!--+
+        | Dom Menus.
+        +-->
+      <map:match pattern="**.dmm">
+        <map:generate src="context://WEB-INF/dom-menu/{1}.xml" type="file"/>
+      
+        <map:transform src="context://web/style/xsl/menu2jscript.xsl"/>
+
+        <map:serialize type="javascript"/>
+     </map:match>
+    
+      <map:match pattern="dom-menu-*.html">
+        <map:generate src="context://web/static/dom-menu-{1}.html" type="file"/>
+      
+        <map:serialize type="xhtml"/>
+     </map:match>
+    
+     <map:match pattern="icons/*.png">
+       <map:read mime-type="images/png" src="web/images/icons/{1}.png"/>
+     </map:match>
+     
+     <map:match pattern="entity-test.xml">
+       <map:generate type="file" src="context://web/static/entity-test.xml"/>
+<!-- -->
+       <map:transform src="context://web/style/xsl/portal-dmm.xsl">
+         <map:parameter name="ag-title" value="Dom Menu Test"/>
+         <map:parameter name="ag-css-url" value="domMenu.css"/>
+       </map:transform>
+<!-- -->
+       <map:serialize type="xhtml"/>
+     </map:match>
+
+     <map:match pattern="entity-test.html">
+       <map:generate type="file" src="context://web/static/entity-test.html"/>
+
+       <map:serialize type="xhtml"/>
+     </map:match>
 
     <!-- welcome page -->
       <map:match pattern="">
-        <map:redirect-to uri="main/mount/login/login-form"/>
+        <map:redirect-to uri="main/home.xml"/>
       </map:match>
 
       <map:match pattern="main/**">
         <map:aggregate element="ag-page">
           <map:part element="ag-header" src="cocoon:/test/header.html"/>
-          <!--map:part element="ag-menu" src="cocoon:/menu.xml" strip-root="yes"/-->
           <map:part element="ag-body" src="cocoon:/{1}"/>
           <map:part element="ag-footer" src="cocoon:/test/footer.html"/>
         </map:aggregate>
 
-        <map:transform src="web/style/xsl/test/portal.xsl">
-          <map:parameter name="ag-css-url" value="/astrogrid-portal/test/portal.css"/>
+        <map:transform src="web/style/xsl/portal.xsl">
+          <map:parameter name="ag-css-url" value="/astrogrid-portal/portal.css"/>
           <map:parameter name="ag-title" value="Astrogrid Portal"/>
         </map:transform>
 

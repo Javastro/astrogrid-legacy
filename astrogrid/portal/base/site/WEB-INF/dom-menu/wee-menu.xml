@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<agp:menu-def
+    name="wee_menu"
+    xmlns:agp="http://www.astrogrid.org/portal/it05">
+  <agp:settings
+      axis="vertical"
+      menubar-class="wee_menu_menubar"
+      submenu-width-correction="-1"
+      vertical-submenu-offset-x="-1"
+      vertical-submenu-offset-y="-1"
+      horizontal-submenu-offset-x="0"
+      horizontal-submenu-offset-y="0"/>
+  <agp:menu
+      contents="Wee"
+      contents-hover="Wee"
+      icon="icons/Binocular.png"
+      uri=""
+      target="_self"
+      status-text="Wee...">
+    <agp:item
+        contents="WeeItem"
+        contents-hover="WeeItem"
+        icon="icons/Open.png"
+        uri=""
+        target="_self"
+        status-text="Wee menu item"/>
+    <agp:menu
+        contents="WeeSub"
+        contents-hover="WeeSub"
+        icon="icons/BlueCirlce.png"
+        uri=""
+        target="_self"
+        status-text="Wee sub menu...">
+      <agp:item
+        contents="WeeSubItem"
+        contents-hover="WeeSubItem"
+        icon="icons/Open.png"
+        uri=""
+        target="_self"
+        status-text="Wee sub menu item"/>
+      <agp:menu
+          contents="WeeSubSub"
+          contents-hover="WeeSubSub"
+          icon="icons/BlueCirlce.png"
+          uri=""
+          target="_self"
+          status-text="Wee sub sub menu...">
+        <agp:item
+          contents="WeeSubSubItem"
+          contents-hover="WeeSubSubItem"
+          icon="icons/Open.png"
+          uri=""
+          target="_self"
+          status-text="Wee sub sub menu item"/>
+      </agp:menu>
+    </agp:menu>
+  </agp:menu>
+</agp:menu-def>

@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<!--
+<ag-div
+    xmlns="http://www.astrogrid.org/portal"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.astrogrid.org/portal astrogrid.xsd"
+    xmlns:xml="http://www.w3.org/XML/1998/namespace"
+    xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <xhtml:div>
+    &lt;xhtml:div&gt; text
+  </xhtml:div>
+  
+  <xhtml:p>
+    &lt;xhtml:p&gt; text
+  </xhtml:p>
+
+  <ag-div>
+    <ag-menu name="main-menu"/>
+  </ag-div>
+  
+  <xhtml:p>
+    &lt;xhtml:p&gt; text
+  </xhtml:p>
+  
+  <xhtml:form action="bob">
+  </xhtml:form>
+</ag-div>
+-->
+
+<ag-div>
+  <div>
+    &lt;xhtml:div&gt; text
+  </div>
+  
+  <p>
+    &lt;xhtml:p&gt; text
+  </p>
+
+  <ag-div>
+    <ag-menu name="main-menu"/>
+  </ag-div>
+  
+  <p>
+    &lt;xhtml:p&gt; text
+  </p>
+  
+  <form action="bob">
+  </form>
+</ag-div>

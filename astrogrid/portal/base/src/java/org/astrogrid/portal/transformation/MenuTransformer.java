@@ -51,11 +51,12 @@ public class MenuTransformer extends AbstractDOMTransformer {
     
     Logger logger = this.getLogger();
 
+/*
     Element menuEl =
       result.createElementNS("http://www.astrogrid.org/portal", "menu");
     menuEl.setAttribute("display", "Miscellaneous");
     menuEl.setAttribute("name", "MenuTransformer");
-    
+*/
     logger.info("[transform] create menu element");
 
 //    Element menuLinkEl =
@@ -67,11 +68,11 @@ public class MenuTransformer extends AbstractDOMTransformer {
     logger.info("[transform] created menu link element");
 
     Element rootMenuEl = (Element) result.getFirstChild();
-    rootMenuEl.appendChild(menuEl);
+//    rootMenuEl.appendChild(menuEl);
 
     logger.info("[transform] added new menu to main menu");
 
-    result = addMenus(result, menuEl, doc);
+    result = addMenus(result, rootMenuEl, doc);
     
     logger.info("[transform] added sub menus");
 
@@ -148,8 +149,8 @@ public class MenuTransformer extends AbstractDOMTransformer {
       JXPathContext menuContext = JXPathContext.newContext(menu);
       JXPathContext fileContext = JXPathContext.newContext(new DocumentContainer(includeUrl));
       
-      String fileMenuName = (String) fileContext.getValue("/menu/@name");
-      Double menuValue = (Double) menuContext.getValue("count(//menu[@name='" + fileMenuName + "'])");
+      String fileMenuName = (String) fileContext.getValue("/agp:menu-def/@name");
+      Double menuValue = (Double) menuContext.getValue("count(//agp:menu-def[@name='" + fileMenuName + "'])");
       
       result = (menuValue.doubleValue() == 0.0d);
     }

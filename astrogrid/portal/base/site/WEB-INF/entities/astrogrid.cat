@@ -1,0 +1,4 @@
+OVERRIDE YES
+
+PUBLIC "-//ASTROGRID//DTD PORTAL V1.0//EN"
+       "astrogrid.dtd"

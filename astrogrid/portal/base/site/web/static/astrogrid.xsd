@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.astrogrid.org/portal"
+    xmlns="http://www.astrogrid.org/portal"
+    elementFormDefault="qualified"
+    
+    xmlns:xml="http://www.w3.org/XML/1998/namespace"
+    xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    
+  <xs:annotation>
+    <xs:documentation>
+      This AstroGrid schema defines a replacement for the xhtml:div tag that
+      allows links (CSS), scripts (JavaScript) and menus to be included by
+      subcomponents.
+    </xs:documentation>
+  </xs:annotation>
+    
+  <xs:import
+      namespace="http://www.w3.org/1999/xhtml"
+      schemaLocation="http://www.w3.org/2002/08/xhtml/xhtml1-transitional.xsd"/>
+  
+  <xs:import
+      namespace="http://www.w3.org/XML/1998/namespace"
+      schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+  
+  <xs:complexType name="ag-menu-type">
+    <xs:annotation>
+      <xs:documentation>
+        The AstroGrid Menu Type defines the attributes needed to specify a
+        menu.
+      </xs:documentation>
+    </xs:annotation>
+
+    <xs:attribute name="id" type="xs:ID" use="optional"/>
+    <xs:attribute name="name" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="ag-link-type">
+    <xs:annotation>
+      <xs:documentation>
+        The AstroGrid Link Type defines the same attributes as the
+        xhtml:link tag.  It is defined solely so that it can be used within
+        the pages of subcomponents, extracted, and placed at the top of the
+        Portal file as an xhtml:link.
+      </xs:documentation>
+    </xs:annotation>
+
+    <xs:attributeGroup ref="xhtml:attrs"/>
+    <xs:attribute name="charset" type="xhtml:Charset"/>
+    <xs:attribute name="href" type="xhtml:URI"/>
+    <xs:attribute name="hreflang" type="xhtml:LanguageCode"/>
+    <xs:attribute name="type" type="xhtml:ContentType"/>
+    <xs:attribute name="rel" type="xhtml:LinkTypes"/>
+    <xs:attribute name="rev" type="xhtml:LinkTypes"/>
+    <xs:attribute name="media" type="xhtml:MediaDesc"/>
+    <xs:attribute name="target" type="xhtml:FrameTarget"/>
+  </xs:complexType>
+  
+  <xs:complexType name="ag-script-type" mixed="true">
+    <xs:annotation>
+      <xs:documentation>
+        The AstroGrid Script Type defines the same attributes as the
+        xhtml:script tag.  It is defined solely so that it can be used
+        within the pages of subcomponents, extracted, and placed at the top
+        of the Portal file as an xhtml:script.
+      </xs:documentation>
+    </xs:annotation>
+
+    <xs:attribute name="id" type="xs:ID"/>
+    <xs:attribute name="charset" type="xhtml:Charset"/>
+    <xs:attribute name="type" use="required" type="xhtml:ContentType"/>
+    <xs:attribute name="language"/>
+    <xs:attribute name="src" type="xhtml:URI"/>
+    <xs:attribute name="defer">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="defer"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute ref="xml:space" fixed="preserve"/>
+  </xs:complexType>
+
+  <xs:complexType name="ag-flow-type" mixed="true">
+    <xs:annotation>
+      <xs:documentation>
+        The AstroGrid Flow Type defines the same attributes as the
+        xhtml:flow type used as the type for xhtml:div.  It is defined
+        solely so that it can be used within the pages of subcomponents as a
+        replacement for xhtml:div that will allow subcomponent links and
+        scripts.
+      </xs:documentation>
+    </xs:annotation>
+    
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:group ref="xhtml:block"/>
+      <xs:element ref="xhtml:form"/>
+      <xs:group ref="xhtml:inline"/>
+      <xs:group ref="xhtml:misc"/>
+      
+      <xs:element ref="ag-menu"/>
+      <xs:element ref="ag-link"/>
+      <xs:element ref="ag-script"/>
+      <xs:element ref="ag-div"/>
+    </xs:choice>
+    
+    <xs:attributeGroup ref="xhtml:attrs"/>
+    <xs:attributeGroup ref="xhtml:TextAlign"/>
+  </xs:complexType>
+  
+  <xs:element name="ag-menu" type="ag-menu-type"/>
+  <xs:element name="ag-link" type="ag-link-type"/>
+  <xs:element name="ag-script" type="ag-script-type"/>
+  <xs:element name="ag-div" type="ag-flow-type"/>
+</xs:schema>

@@ -1,0 +1,47 @@
+/* AstroGrid Menu Style */
+div.agMenu_menuBar {
+    padding: 2px 4px 0 4px;
+    background-color: lightblue;
+    border-color: red;
+}
+
+div.agMenu_subMenuBar {
+    border: 1px solid;
+    border-color: black;
+    background-color: lightgray;
+}
+div.agMenu_menuElement, div.agMenu_subMenuElement {
+    border: 0;
+    color: blue;
+    font-family: serif; 
+    font-size: 12px;
+    line-height: 14px;
+    text-align: left;
+    padding: 3px 5px;
+}
+div.agMenu_subMenuElement {
+    padding: 3px 3px 3px 13px;
+}
+div.agMenu_menuElementHover {
+    padding: 2px 4px;
+    border: 1px solid;
+    border-color: purple
+    background-color: green;
+}
+div.agMenu_subMenuElementHover {
+    padding: 2px 2px 2px 12px;
+    border: 1px solid;
+    border-color: gray;
+}
+
+
+#wee_menu {
+  float: left;
+  width: 20%;
+  background-color: red;
+  color: green;
+}
+
+div.wee_menu_menubar {
+  background-color: red;
+}
