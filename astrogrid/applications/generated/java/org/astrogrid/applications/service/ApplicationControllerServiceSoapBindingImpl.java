@@ -23,7 +23,7 @@ public class ApplicationControllerServiceSoapBindingImpl implements org.astrogri
     public void executeApplication() throws java.rmi.RemoteException {
     }
 
-    public java.lang.String queryApplicationStatus() throws java.rmi.RemoteException {
+    public java.lang.String queryApplicationExecutionStatus(int executionId) throws java.rmi.RemoteException {
         return null;
     }
 

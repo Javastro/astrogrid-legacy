@@ -4,22 +4,43 @@
 <!-- location of generated source tree -->
 <property name="generated.src" location="${basedir}/generated/java" />
 <property name="generated.dir" location="${basedir}/generated" />
+<!-- Tomcat properties -->
+<property name="appint.webapp.name" value="${pom.artifactId}"/><!-- use the standard application id -->
+<property name="appint.service.name" value="ApplicationControllerService"/>
+<property name="tomcat.host" value="localhost"/>
+<property name="tomcat.port" value="8080"/>
+
+<property name="tomcat.url" value="http://${tomcat.host}:${tomcat.port}"/>
+<property name="tomcat.manager.url" value="${tomcat.url}/manager"/>
  <!-- Axis properties-->
-<property name="axis.base"     value="${basedir}/target/axis"/>
-<property name="axis.webapp"  value="${axis.base}/agappint"/>
-<property name="axis.host"    value="localhost"/>
-<property name="axis.port"    value="8080"/>
-<property name="axis.server"  value="${axis.host}:${axis.port}"/>
-<property name="axis.servlet" value="axis"/>
-<property name="axis.url"     value="http://${axis.server}/${axis.servlet}"/>
+<property name="axis.base"     value="${basedir}/build/axis"/>
+<property name="axis.webapp.srcdir"  value="${axis.base}/${appint.webapp.name}"/>
+<property name="axis.url"     value="${tomcat.url}/${appint.webapp.name}"/>
 <property name="axis.timeout" value="60"/>
 
+<!-- this classpath comes from the files that are extracted from the axis distro -->
+    <path id="axis.classpath">
+        <pathelement location="${axis.webapp.srcdir}/WEB-INF/lib/axis.jar"/>
+        <pathelement location="${axis.webapp.srcdir}/WEB-INF/lib/axis-ant.jar"/>
+        <pathelement location="${axis.webapp.srcdir}/WEB-INF/lib/saaj.jar"/>
+        <pathelement location="${axis.webapp.srcdir}/WEB-INF/lib/wsdl4j.jar"/>
+        <pathelement location="${axis.webapp.srcdir}/WEB-INF/lib/jaxrpc.jar"/>
+        <pathelement location="${axis.webapp.srcdir}/WEB-INF/lib/commons-logging.jar"/>
+        <pathelement location="${axis.webapp.srcdir}/WEB-INF/lib/commons-discovery.jar"/>
+    </path>
+    
+   <property name="maven.war.src" value="${axis.webapp.srcdir}"/> 
+
+<preGoal name="war">
+  <echo message="${maven.war.src}"/>
+</preGoal>
 
 <!-- hooks into existing goals -->
   <preGoal name="java:compile"><!-- generate classes from schema and wsdl first -->
      <mkdir dir="${generated.src}" />
      <path id="generated.src.path" location="${generated.src}"/>
     <maven:addPath id="maven.compile.src.set" refid="generated.src.path"/>  <!-- declares new src tree to maven -->
+    <maven:addPath id="maven.dependency.classpath" refid="axis.classpath"/>
 <!-- don't do this for now....
   	-->
   </preGoal>
@@ -37,6 +58,7 @@
 <!-- new goals -->
 
   <goal name="generate-wsdl" description="generate the wsdl from the classes" prereqs="axis-declare-tasks, java-compile-for-wsdl">
+    <maven:addPath id="maven.dependency.classpath" refid="axis.classpath"/>
   	<delete><!-- clean out to start with -->
   	     <!-- need to save the server side skeleton -->
 		<fileset dir="${generated.src}" >
@@ -51,6 +73,7 @@
   </goal>
   <goal name="java-compile-for-wsdl" prereqs="clean">
      <echo message="${maven.build.dest}" />
+     <mkdir dir="${maven.build.dest}"/>
      <javac srcdir="${basedir}/src/java"
             destdir="${maven.build.dest}"
             classpathref="maven.dependency.classpath"
@@ -72,9 +95,10 @@
    </goal>
    
    <goal name="java2wsdl" prereqs="axis-declare-tasks">
-   <axis-java2wsdl output="${generated.dir}/wsdl/ApplicationControllerService.wsdl"
+     <maven:addPath id="maven.dependency.classpath" refid="axis.classpath"/>
+   <axis-java2wsdl output="${generated.dir}/wsdl/${appint.service.name}.wsdl"
             classname="org.astrogrid.applications.manager.ApplicationController"
-            location="${axis.url}/services/ApplicationControllerService"
+            location="${axis.url}/services/${appint.service.name}"
             namespace="urn:manager.applications.astrogrid.org"
             namespaceimpl="urn:impl.manager.applications.astrogrid.org"
             implclass="org.astrogrid.applications.manager.AbstractApplicationController"
@@ -88,10 +112,12 @@
             <mapping package="org.astrogrid.applications" namespace="urn:beans.applications.astrogrid.org" />
             
    </axis-java2wsdl>
-   </goal>   
-   <property name="wsdl.file" value="${generated.dir}/wsdl/ApplicationControllerService.wsdl"/>
+   </goal> 
+     
+   <property name="wsdl.file" value="${generated.dir}/wsdl/${appint.service.name}.wsdl"/>
    <goal name="wsdl2java" prereqs="axis-declare-tasks">
-  	<axis-wsdl2java output="${generated.src}"             verbose="true"
+   <maven:addPath id="maven.dependency.classpath" refid="axis.classpath"/>
+   <axis-wsdl2java output="${generated.src}"             verbose="true"
             serverside="false"
             skeletondeploy="false"
             testcase="true"
@@ -120,12 +146,16 @@
 	 </fileset>
 	</delete>
 	<!-- do some tidying -->
-	<mkdir dir="${basedir}/wsdd/ApplicationControllerService"/>
-	<move todir="${basedir}/wsdd/ApplicationControllerService">
+	<mkdir dir="${basedir}/wsdd/${appint.service.name}"/>
+	<move todir="${generated.dir}/wsdd/${appint.service.name}" flatten="true">
 	  <fileset dir="${generated.src}">
 	    <include name="**/*.wsdd" />
 	  </fileset>
 	</move>
+   </goal>
+   
+   <goal name="service-prepare-dependencies" prereqs="jar">
+   <!-- do not really need to to this with the maven war goal - use that instead....-->
    </goal>
 
 
@@ -134,6 +164,7 @@
  		<echo message="tomcat.home    : ${tomcat.home}"/>
 		<echo message="tomcat.manager.username     : ${tomcat.manager.username}"/>
 		<echo message="tomcat.manager.password     : ${tomcat.manager.password}"/>
+		<echo message="maven.war.src               : ${maven.war.src}"/>
  		<echo message=""/>
     </goal>
 
@@ -143,7 +174,8 @@
         <mkdir dir="${axis.base}"/>
         <!-- there must be a way to reference this directly surely? does it use the JSTL expression language? what is the key?-->
         <j:forEach var="deps" items="${pom.artifacts}">
-         <j:if test="${deps.dependency.artifactId=='axis' &amp;&amp; deps.dependency.type=='zip'}">
+         <j:if test="${deps.dependency.artifactId=='axisfull' &amp;&amp; deps.dependency.type=='zip'}">
+         <echo message="found full axis distribution"/>
           <unzip src="${deps.path}" dest="${axis.base}" >
           <patternset>
             <include name="**/webapps/**" />
@@ -151,8 +183,19 @@
           </unzip>
           </j:if>
         </j:forEach>
-         <move  todir="${axis.webapp}" >
-           <fileset dir="${axis.base}/axis-1_1/webapps/axis" />
+        <echo message="${axis.webapp.srcdir}" />
+        <mkdir dir="${axis.webapp.srcdir}" />
+        <!--move the webapps stuff into the correct place -->
+         <move  todir="${axis.webapp.srcdir}" >
+           <fileset dir="${axis.base}/axis-1_1/webapps/axis" >
+                        <exclude name="**/samples/**"/>
+           </fileset>
+         </move>
+         <!-- copy local changes on top -->
+         <move  todir="${axis.webapp.srcdir}">
+            <fileset dir="${basedir}/src/webapp">
+            </fileset>
+            
          </move>
             <!--  <java classname="org.apache.axis.utils.Admin"
             dir="${tomcat.home}/webapps/ogsa/WEB-INF"
@@ -161,6 +204,21 @@
         <arg value="${basedir}/build/server-deploy.wsdd"/>
         -->
         
+    </goal>
+    
+    <goal name="axis.webapp.install" prereqs="tomcat-declare-tasks, war">
+         <echo message="installing applications integration webapp (with axis)"/>
+        <tomcat-install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/${appint.webapp.name}" war="file://${maven.build.dir}/${appint.webapp.name}"/>
+    </goal>
+    
+    <goal name="service-deploy" prereqs="axis-declare-tasks">
+         <axis-admin
+            port="${tomcat.port}"
+            hostname="${tomcat.host}"
+            servletpath="/${appint.webapp.name}/services/AdminService"
+            debug="true"
+            xmlfile="${generated.dir}/wsdd/${appint.service.name}/deploy.wsdd"
+            />
     </goal>
 
 <!-- boilerplate below here -->

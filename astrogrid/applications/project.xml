@@ -64,11 +64,21 @@
 </developers>
  
   <dependencies> <!-- hope to be able to remove some of these soon. -->
+   <!-- needs this is the full distribution of axis - do not include other axis dependent jars - they are automatically unpacked and added to the dependency class path-->
+     <dependency>
+      <groupId>axis</groupId>
+<artifactId>axisfull</artifactId>
+      <version>1.1</version>
+      <type>zip</type>
+    </dependency>
     <!-- astrogrid -specific deps -->
     <dependency>
       <groupId>astrogrid-common</groupId>
       <artifactId>astrogrid-common</artifactId>
       <version>SNAPSHOT</version>
+	<properties>
+	          <war.bundle>true</war.bundle>
+	</properties>
     </dependency>
 
     <!-- we need the myspace client to compile. fix this later when mySpace packaging is better. -->
@@ -76,12 +86,18 @@
     	<groupId>astrogrid-mySpace</groupId>
 <artifactId>astrogrid-mySpace</artifactId>
 	<version>SNAPSHOT</version>
+	<properties>
+	          <war.bundle>true</war.bundle>
+	</properties>
     </dependency>
     
     <dependency>
     <groupId>astrogrid-jes</groupId>
 <artifactId>astrogrid-jes</artifactId>
     <version>SNAPSHOT</version>
+	<properties>
+	          <war.bundle>true</war.bundle>
+	</properties>
     </dependency>
 
     <dependency>
@@ -89,6 +105,9 @@
 <artifactId>objectwiz-votable</artifactId>
       <version>UNKNOWN</version>
       <jar>objectwiz-votable.jar</jar>
+	<properties>
+	          <war.bundle>true</war.bundle>
+	</properties>
     </dependency>
 
     <dependency>
@@ -99,9 +118,19 @@
     </dependency>
 
     <!-- more standard deps -->
+       	<!-- logging and testing -->
+    <dependency>
+      <groupId>junit</groupId>
+<artifactId>junit</artifactId>
+      <version>3.8</version>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+<artifactId>log4j</artifactId>
+      <version>1.2.4</version>
+    </dependency>
+	<!-- used as part of build - no need to deploy with final app.-->
       <!-- axis, and the jars it relies upon -->
-
-        <!-- axis, and the jars it relies upon -->
     <dependency>
       <id>axis</id>
       <version>1.1</version>
@@ -138,18 +167,7 @@
       <id>xml-apis</id>
       <version>1.0.b2</version>
     </dependency>
-       	<!-- logging and testing -->
-    <dependency>
-      <groupId>junit</groupId>
-<artifactId>junit</artifactId>
-      <version>3.8</version>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-<artifactId>log4j</artifactId>
-      <version>1.2.4</version>
-    </dependency>
-	<!-- used as part of build - no need to deploy with final app.-->
+    
 	<dependency>
 		<groupId>axis</groupId>
 		<artifactId>axis-ant</artifactId>
@@ -171,15 +189,7 @@
       <version>1.11.0</version>
     </dependency>
   </dependencies>
-  <!-- needs to be at end (maven looks in it for classpath stuff) - replace with the var file verion-->
-<!--
-      <dependency>
-      <groupId>axis</groupId>
-<artifactId>axis</artifactId>
-      <version>1.1</version>
-      <type>zip</type>
-    </dependency>
-    -->
+  
   <build>
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>test/java</unitTestSourceDirectory>

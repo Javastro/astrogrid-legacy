@@ -46,9 +46,9 @@
 
    </wsdl:message>
 
-   <wsdl:message name="queryApplicationStatusResponse">
+   <wsdl:message name="queryApplicationExecutionStatusRequest">
 
-      <wsdl:part name="queryApplicationStatusReturn" type="xsd:string"/>
+      <wsdl:part name="executionId" type="xsd:int"/>
 
    </wsdl:message>
 
@@ -74,6 +74,12 @@
 
    </wsdl:message>
 
+   <wsdl:message name="queryApplicationExecutionStatusResponse">
+
+      <wsdl:part name="queryApplicationExecutionStatusReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
    <wsdl:message name="initializeApplicationRequest">
 
       <wsdl:part name="applicationID" type="xsd:string"/>
@@ -81,10 +87,6 @@
       <wsdl:part name="jobstepID" type="xsd:int"/>
 
       <wsdl:part name="parameters" type="intf:ArrayOf_tns1_Parameter"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="queryApplicationStatusRequest">
 
    </wsdl:message>
 
@@ -122,11 +124,11 @@
 
       </wsdl:operation>
 
-      <wsdl:operation name="queryApplicationStatus">
+      <wsdl:operation name="queryApplicationExecutionStatus" parameterOrder="executionId">
 
-         <wsdl:input message="intf:queryApplicationStatusRequest" name="queryApplicationStatusRequest"/>
+         <wsdl:input message="intf:queryApplicationExecutionStatusRequest" name="queryApplicationExecutionStatusRequest"/>
 
-         <wsdl:output message="intf:queryApplicationStatusResponse" name="queryApplicationStatusResponse"/>
+         <wsdl:output message="intf:queryApplicationExecutionStatusResponse" name="queryApplicationExecutionStatusResponse"/>
 
       </wsdl:operation>
 
@@ -208,17 +210,17 @@
 
       </wsdl:operation>
 
-      <wsdl:operation name="queryApplicationStatus">
+      <wsdl:operation name="queryApplicationExecutionStatus">
 
          <wsdlsoap:operation soapAction=""/>
 
-         <wsdl:input name="queryApplicationStatusRequest">
+         <wsdl:input name="queryApplicationExecutionStatusRequest">
 
             <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:manager.applications.astrogrid.org" use="encoded"/>
 
          </wsdl:input>
 
-         <wsdl:output name="queryApplicationStatusResponse">
+         <wsdl:output name="queryApplicationExecutionStatusResponse">
 
             <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:manager.applications.astrogrid.org" use="encoded"/>
 
@@ -232,7 +234,7 @@
 
       <wsdl:port binding="intf:ApplicationControllerServiceSoapBinding" name="ApplicationControllerService">
 
-         <wsdlsoap:address location="http://localhost:8080/axis/services/ApplicationControllerService"/>
+         <wsdlsoap:address location="http://localhost:8080/astrogrid-applications/services/ApplicationControllerService"/>
 
       </wsdl:port>
 

@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationDescription.java,v 1.1 2003/11/14 23:47:08 pah Exp $
+ * $Id: ApplicationDescription.java,v 1.2 2003/11/18 17:58:49 pah Exp $
  * 
  * Created on 14-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -24,7 +24,15 @@ public class ApplicationDescription {
    private String name;
    private String parameter;
    
-
+   public ApplicationDescription()
+   {
+      name="defaultname";
+   }
+   
+   public ApplicationDescription(String applicationID)
+   {
+      name = applicationID;
+   }
    /**
     * @return
     */

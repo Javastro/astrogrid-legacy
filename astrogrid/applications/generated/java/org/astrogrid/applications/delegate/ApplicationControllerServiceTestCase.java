@@ -98,7 +98,7 @@ public class ApplicationControllerServiceTestCase extends junit.framework.TestCa
         // TBD - validate results
     }
 
-    public void test5ApplicationControllerServiceQueryApplicationStatus() throws Exception {
+    public void test5ApplicationControllerServiceQueryApplicationExecutionStatus() throws Exception {
         org.astrogrid.applications.delegate.ApplicationControllerServiceSoapBindingStub binding;
         try {
             binding = (org.astrogrid.applications.delegate.ApplicationControllerServiceSoapBindingStub)
@@ -116,7 +116,7 @@ public class ApplicationControllerServiceTestCase extends junit.framework.TestCa
 
         // Test operation
         java.lang.String value = null;
-        value = binding.queryApplicationStatus();
+        value = binding.queryApplicationExecutionStatus(0);
         // TBD - validate results
     }
 

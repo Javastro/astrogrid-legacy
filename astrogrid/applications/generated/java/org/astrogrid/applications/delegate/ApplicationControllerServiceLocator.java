@@ -10,7 +10,7 @@ package org.astrogrid.applications.delegate;
 public class ApplicationControllerServiceLocator extends org.apache.axis.client.Service implements org.astrogrid.applications.delegate.ApplicationControllerService {
 
     // Use to get a proxy class for ApplicationControllerService
-    private final java.lang.String ApplicationControllerService_address = "http://localhost:8080/axis/services/ApplicationControllerService";
+    private final java.lang.String ApplicationControllerService_address = "http://localhost:8080/astrogrid-applications/services/ApplicationControllerService";
 
     public java.lang.String getApplicationControllerServiceAddress() {
         return ApplicationControllerService_address;
