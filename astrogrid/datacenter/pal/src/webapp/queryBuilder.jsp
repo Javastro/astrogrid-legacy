@@ -79,17 +79,6 @@ Select which columns you will be using to search:
    return true;
    ">
 
-<table border="1" cellspacing="3" cellpadding="3" >
-   <tr>
-      <td><b>Table</b></td>
-      <td><b>Column</b></td>
-      <td><b>Description</b></td>
-      <td><b>Units</b></td>
-      <td><b>Search?</b></td>
-      <td><b>Return?</b></td>
-   </tr>
-
-
 <%
    NodeList tables = metadata.getElementsByTagName("Table");
    if (tables.getLength() == 0) {
@@ -99,6 +88,25 @@ Select which columns you will be using to search:
    for (int t=0;t<tables.getLength();t++) {
       Element tableElement = (Element) tables.item(t);
       String tableName = tableElement.getAttribute("name");
+      String link = DomHelper.getValue(tableElement, "Link");
+%>
+      <h3><%=tableName %></h3>
+      <p><%= DomHelper.getValue(tableElement, "Description") %></p>
+      <% if (link.length()>0) { %> <p><a href='<%=link %>'>Link</a></p> <% } %>
+      
+      <table border="1" cellspacing="3" cellpadding="3" >
+         <tr>
+            <td><b>Constrain?</b></td>
+            <td><b>Return?</b></td>
+            <td><b>Table</b></td>
+            <td><b>Column</b></td>
+            <td><b>Units</b></td>
+            <td><b>UCD1</b></td>
+            <td><b>UCD1+</b></td>
+            <td><b>Description</b></td>
+         </tr>
+
+<%
       NodeList columns = tableElement.getElementsByTagName("Column");
       for (int c=0;c<columns.getLength();c++) {
          Element colElement = (Element) columns.item(c);
@@ -106,19 +114,20 @@ Select which columns you will be using to search:
          String colId = tableName+"."+colName;
          %>
          <tr>
-         <td><%= tableName %></td>
-         <td><%= colName %></td>
-         <td><%= DomHelper.getValue(colElement, "Description") %></td>
-         <td><%= DomHelper.getValue(colElement, "Units") %></td>
-
          <td><input type='checkbox' name='searchColumn' value='<%= colId %>' <%= getChecked(searchCols,colId) %> ></td>
          <td><input type='checkbox' name='resultColumn' value='<%= colId %>' <%= getChecked(resultCols,colId) %> ></td>
-         <%
-      }
-   }
-%>
+         <td><%= tableName %></td>
+         <td><%= colName %></td>
+         <td><%= DomHelper.getValue(colElement, "Units") %></td>
+         <td><%= DomHelper.getValue(colElement, "UCD") %></td>
+         <td><%= DomHelper.getValue(colElement, "UcdPlus") %></td>
+         <td><%= DomHelper.getValue(colElement, "Description") %></td>
 
-</table>
+         <%
+      } //end for cols
+%></table><%
+   } //end for tables
+%>
 </p>
 <input type='submit' value='Update'>
 

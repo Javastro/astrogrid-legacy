@@ -4,4 +4,4 @@
    isThreadSafe="false"
    session="false"
    contentType="text/xml"
-%><% MetadataGenerator.writeMetadata(out); %>
+%><%= MetadataGenerator.generateMetadata() %>

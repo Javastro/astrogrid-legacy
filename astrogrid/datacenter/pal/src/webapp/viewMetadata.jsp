@@ -5,7 +5,7 @@
        org.apache.commons.logging.LogFactory,
        org.astrogrid.community.Account,
        org.astrogrid.datacenter.metadata.MetadataServer,
-       org.astrogrid.datacenter.service.HtmlDataServer"
+       org.astrogrid.datacenter.service.*"
    isThreadSafe="false"
    session="false"
 %>
@@ -14,16 +14,17 @@
 <body>
 <%= HtmlDataServer.getPageHeader() %>
 
-<h1>Metadata for <%=HtmlDataServer.getDatacenterName() %></h1>
+<h1>Metadata for <%=DataServer.getDatacenterName() %></h1>
 
 <!--- list tables & columns --->
 <%
+   MetadataServer.clearCache(); //force refresh
    try {
       String[] tables = MetadataServer.getTables();
       for (int table=0;table<tables.length;table++) {
 %>
 <h2>Table '<%=tables[table] %>'</h2>
-<p><%= MetadataServer.getTableDescription(tables[table]) %></p>
+<p><%= DomHelper.getValue(MetadataServer.getTableElement(tables[table]),"Description") %></p>
 <p>
 <table border=1 summary='Column details for table <%=tables[table] %>' cellpadding='5%'>
 <tr>
@@ -44,6 +45,7 @@
 <td><%=DomHelper.getValue(colElement, "Units") %></td>
 <td><%=DomHelper.getValue(colElement, "UCD") %></td>
 <td><%=DomHelper.getValue(colElement, "ErrorColumn") %></td>
+<td><%=DomHelper.getValue(colElement, "Description") %></td>
 </tr>
 <%
          } //end cols
