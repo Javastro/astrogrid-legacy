@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackTest.java,v 1.1 2004/03/01 14:16:18 mch Exp $
+ * $Id: FailbackTest.java,v 1.2 2004/03/01 23:05:31 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -14,6 +14,7 @@ package org.astrogrid.config;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -177,6 +178,16 @@ public class FailbackTest extends TestCase
       //..even for non-strings
       config.setProperty("TEST.URL.INTOBJ", new Integer(12));
       assertEquals("Unexpected value", "12", config.getString("TEST.URL.INTOBJ"));
+      
+      //check returns default OK
+      assertEquals(5, config.getInt("TEST.NOT.THERE", 6));
+      
+      //check returns default OK
+      assertEquals(new URL("http://something/path"), config.getUrl("TEST.NOT.THERE", new URL("http://something/path")));
+      
+      //check returns default OK
+      assertEquals("Hi there", config.getString("TEST.NOT.THERE", "Hi there"));
+      
    }
    
     /**
@@ -199,6 +210,9 @@ public class FailbackTest extends TestCase
 
 /*
  $Log: FailbackTest.java,v $
+ Revision 1.2  2004/03/01 23:05:31  mch
+ Increased test coverage
+
  Revision 1.1  2004/03/01 14:16:18  mch
  Fixed config tests following new Failback config
 
