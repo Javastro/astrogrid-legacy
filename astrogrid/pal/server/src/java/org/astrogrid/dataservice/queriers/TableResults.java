@@ -1,5 +1,5 @@
 /*
- * $Id: TableResults.java,v 1.5 2005/03/30 18:25:45 mch Exp $
+ * $Id: TableResults.java,v 1.6 2005/03/30 18:54:03 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -82,16 +82,16 @@ public abstract class TableResults implements QueryResults
       log.info(querier+", sending results to "+returns);
 
       TargetIdentifier target = returns.getTarget();
+      String format = returns.getFormat();
 
       if (target == null) {
          throw new DatacenterException("No Target given for results");
       }
 
-      String msg = target.toString();
-      
-      status.setMessage("Sending results to "+target.toString());
+      status.setMessage("Sending results to "+target.toString()+" as "+format);
 
-      String format = returns.getFormat();
+      //Set mime type before sending
+      target.setMimeType(format, querier.getUser());
       
       Writer out = target.resolveWriter(querier.getUser());
       assert (out != null);
@@ -121,9 +121,6 @@ public abstract class TableResults implements QueryResults
          throw new IllegalArgumentException("Unknown results format in return spec "+returns+" given");
       }
       
-      log.debug("Returning table results, type "+tableWriter.getMimeType());
-      target.setMimeType(tableWriter.getMimeType(), querier.getUser());
-      
       //add  a filteredtablewriters if any
       Class filterClass = ConfigFactory.getCommonConfig().getClass(TABLE_FILTERS_KEY,  null);
       if (filterClass != null) {
@@ -131,6 +128,7 @@ public abstract class TableResults implements QueryResults
          tableWriter = makeTableWriter(filterClass, tableWriter);
       }
 
+      //call overridden method that will know what form the data is in
       writeTable(tableWriter, status);
 
       if (querier.isAborted()) {
@@ -189,6 +187,7 @@ public abstract class TableResults implements QueryResults
    }
 
 }
+
 
 
 

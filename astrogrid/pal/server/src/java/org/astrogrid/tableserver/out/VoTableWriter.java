@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableWriter.java,v 1.2 2005/03/30 15:52:15 mch Exp $
+ * $Id: VoTableWriter.java,v 1.3 2005/03/30 18:54:03 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,8 +11,9 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Date;
 import org.apache.commons.logging.Log;
-import org.astrogrid.tableserver.metadata.ColumnInfo;
 import org.astrogrid.slinger.mime.MimeTypes;
+import org.astrogrid.slinger.targets.TargetIdentifier;
+import org.astrogrid.tableserver.metadata.ColumnInfo;
 
 /**
  * For writing out tables in votable.  As far as I'm aware dates are not handled
@@ -50,7 +51,6 @@ public class VoTableWriter implements TableWriter {
    public final static String[] TYPES = new String[] {
       TYPE_LONG, TYPE_BOOLEAN, TYPE_BIT, TYPE_UBYTE, TYPE_CHAR, TYPE_UNICHAR, TYPE_DOUBLE, TYPE_FLOAT, TYPE_DOUBLECOMPLEX, TYPE_FLOATCOMPLEX, TYPE_INT, TYPE_SHORT
    };
-   
    
    /**
     * Construct this wrapping the given stream.  Writes out the first few tags
@@ -216,6 +216,9 @@ public class VoTableWriter implements TableWriter {
 
 /*
  $Log: VoTableWriter.java,v $
+ Revision 1.3  2005/03/30 18:54:03  mch
+ fixes to results format
+
  Revision 1.2  2005/03/30 15:52:15  mch
  debug etc for bad sql types
 
