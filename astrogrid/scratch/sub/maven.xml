@@ -5,8 +5,12 @@
 	<postGoal name="clean:clean">
         <echo message="==Sub POM=="/>
         <echo message="Master: ${astrogrid.master}"/>
+        <echo message="BaseBase: ${astrogrid.basebase}"/>        
         <echo message="Base: ${astrogrid.base}"/>
         <echo message="Sub: ${astrogrid.sub}"/>
+        <echo message="maven.repo.central = ${maven.repo.central}"/>
+        <echo message="currentVersion=${pom.currentVersion}"/>
+        <echo message="groupId=${pom.groupId}"/>
     </postGoal>
 
 	

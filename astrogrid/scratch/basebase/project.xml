@@ -1,9 +1,8 @@
 <project>
-    <extend>${basedir}/../basebase/project.xml</extend>
     <pomVersion>3</pomVersion>
     <name>Base Project</name>
-    <currentVersion>basecurrentversion</currentVersion>
-    <artifactId>BaseBase</artifactId>
+    <artifactId>base</artifactId>
+    <groupId>basebasegroupdId</groupId>
     <developers>
         <developer>
             <name>Brian McIlwrath</name>
