@@ -50,14 +50,13 @@
     <description>
         <![CDATA[
 	<p>
-		The Server area takes in request from a web service and does various tasks on the Registry.  Currently the Registry
-		information is stored in a flat file, but will soon be using an XMLDB of eXist.
-		See <a href="exist.sourceforge.net">eXist</a>
+		The Server area takes in request from a web service and does various tasks on the Registry.  
+		All registry xml metadata is stgored in a XMLDB eXist: See <a href="exist.sourceforge.net">eXist</a> for more information.
 		<br />
 	</p>
 	<section name="Interface">
 		<p>
-				Web Service Interface methods:
+			Web Service Interface methods:
 			<ul>
 				<li>update(Resource schema) - updates the Registry with one to many Resources.</li>
 				<li>harvestFrom(date) - return all resource information modified from a particular date.</li>
@@ -66,6 +65,41 @@
 				<li>harvestResource - Registers a resource entry into the db and performs a harvest on that entry if possible.</li>
 				<li>loadRegistry() - just returns the Registry Resource metadata entry for this resource.</li>
 			</ul>
+		</p>
+	</section>
+	<section name="More on Queries">
+		<p>
+			Currently the queries conform to an old style xml schema and syntax and will be changed shortly in itn06 to 
+			conform to the IVOA schema.  The schema can be found: <a href="..">Registry ~Query Schema</a>, but look at the
+			examples below to see basic syntax of the queries, it is very SQL like and easy to understand.  The queries on the
+			server side are taken and parsed into XQuery to be performed on the database. 
+			In the current iteration the parsing looks for all namespaces "*", and the current sectionOp values are "AND|OR".
+			The section items can be set to any text node or attribute, and finally for itemOp is much like the Xquery syntax see the itemOp list.
+			<br />
+			<i>ItemOp List:</i>
+			<ul>
+				<li>CONTAINS - constains or substring</li>
+				<li>EQ - equals</li>
+				<li>NE - not equals</li>
+				<li>GE - greater-than-or-equals</li>
+				<li>LE - less-than-or-equals</li>
+				<li>GT - greater-than</li>
+				<li>LT - less-than</li>
+			</ul>			
+			<br />
+			<i>Examples:</i><br />
+			Load Registry interface is just a convenience interface to query for a particular RegistryType.<br />
+			<i>			
+				<query>
+					<selectionSequence>
+					    <selection item='searchElements' itemOp='EQ' value='Resource'/>
+        		        <selectionOp op='$and$'/> <!-- this is a dummy ob for the searchElements item hoped to be removed soon, but neeed now -->
+						<selection item='AuthorityID' itemOp='EQ' value='" + authorityID + "'/>
+        		        <selectionOp op='AND'/>
+		                <selection item='@type' itemOp='EQ' value='RegistryType'/>
+        	        </selectionSequence>
+        	    </query>
+			</i>
 		</p>
 	</section>
 	<section name="Builds">
