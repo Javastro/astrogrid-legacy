@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.13 2004/08/02 11:35:03 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.14 2004/08/05 09:52:59 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -266,15 +266,16 @@ public class StdSqlMaker  extends SqlMaker {
       else if (namespaceURI.equals("http://tempuri.org/adql")) { //assume v0.5
          xsltDoc = "adql05-2-sql.xsl";
       }
-      else if (namespaceURI.equals("http://adql.ivoa.net/v0.73")) {
-         xsltDoc = "adql073-2-sql.xsl";
-      }
+      //for some reason this version has never worked
+//      else if (namespaceURI.equals("http://adql.ivoa.net/v0.73")) {
+//         xsltDoc = "adql073-2-sql.xsl";
+//      }
       else if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.7.4")) {
          xsltDoc = "adql074-2-sql.xsl";
       }
-//      else if (namespaceURI.equals("http://adql.ivoa.net/v0.8")) {
-//         xsltDoc = "adql08-2-sql.xsl";
-//      }
+      else if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.8")) {
+         xsltDoc = "adql08-2-sql.xsl";
+      }
       else if (namespaceURI.equals("http://astrogrid.org/sadql/v1.1")) {
          xsltDoc = "sadql1.1-2-sql.xsl";
       }
@@ -389,6 +390,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.14  2004/08/05 09:52:59  mch
+Removed aql073 and added 08
+
 Revision 1.13  2004/08/02 11:35:03  mch
 Commented out incorrect square bounds maker
 
