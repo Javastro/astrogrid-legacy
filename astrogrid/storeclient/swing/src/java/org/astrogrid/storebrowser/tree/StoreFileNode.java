@@ -1,5 +1,5 @@
 /*
- * $Id: StoreFileNode.java,v 1.1 2005/03/28 02:06:35 mch Exp $
+ * $Id: StoreFileNode.java,v 1.2 2005/03/28 03:06:09 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -25,6 +25,12 @@ import org.astrogrid.storeclient.api.StoreFile;
 /**
  * StoreFile adaptor for JTree views (or similar).
  *
+ * This implements a threaded child loader, so that the UI doesn't freeze while
+ * we wait for remote services to respond.  This requires some rather careful
+ * threadsafing; I haven't done this formally, but we have to be very careful
+ * with refreshing.  For the moment I've assumed that any reload has to wait
+ * for the previous one to finish, otherwise it can get very missing ensuring the
+ * loading thread we have a handle to is the same as the one we had a moment ago
  */
 
 public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
@@ -36,7 +42,7 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
    
    Throwable lastError = null;
    
-   boolean loading = false;
+   ChildrenLoader loading = null;
    
    DefaultTreeModel model = null; //used to update when children are loaded
    
@@ -75,7 +81,7 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
    /**
     * Returns true if the file is still being loaded */
    public boolean isLoading() {
-      return loading;
+      return loading != null;
    }
    
    /**
@@ -86,26 +92,24 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
       return children.size();
    }
 
-   /** Refresh - clears the children and file's children */
-   public void refresh() {
-      if ((!loading) && (file != null) && (file.isFolder())) {
-         clearError();
-         loadChildren();
+   /** Refresh - clears the children and file's children. Synchronised as this
+    * should be the only method that modifies the 'loading' flag*/
+   public synchronized void refresh() {
+      
+      if (loading != null) {
+         loading.abort(); //so we can stop it and start it again
+      }
+      else {
+         if ((file != null) && (file.isFolder())) {
+            clearError();
+            children = new Vector();
+            loading = new ChildrenLoader(this);
+            Thread loadingThread = new Thread(loading);
+            loadingThread.start();
+         }
       }
    }
 
-   /** Loads the list of child files/folders from the remote service into this
-    * instance.  At the moment this is a blocking call, but really
-    * it ought to spawn a thread that retrieves the children one by one and
-    * adds them in so that the UI doesn't halt for slow services
-    */
-   protected void loadChildren()  {
-      children = new Vector();
-      Thread loadingThread = new Thread(new ChildrenLoader(this));
-      loading = true;
-      loadingThread.start();
-   }
-   
    /** Loads single child from given StoreFile.  This is called when updating
     * this TreeNode wrapper with new data from the remote server, so it must also
     * update any suitable model listeners.
@@ -117,41 +121,57 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
       if (model != null) model.reload(this);
       
    }
-/** Runnable that loads the children from the remote service into this instance */
-
-public class ChildrenLoader implements Runnable {
+   
+   /** Runnable that loads the children from the remote service into this instance */
+   public class ChildrenLoader implements Runnable {
       
       StoreFileNode node = null;
+      boolean aborted = false;
       
       public ChildrenLoader(StoreFileNode givenNode) {
          this.node = givenNode;
       }
-            public void run() {
-               try {
-                  node.getFile().refresh();
-                  StoreFile[] childFiles = node.getFile().listFiles(node.getUser());
-                  if (childFiles != null) {
-                     for (int i = 0; i < childFiles.length; i++) {
-                        try {
-                           node.loadChild(childFiles[i]);
-                        }
-                        catch (IOException e) {
-                           System.out.println(e+" loading "+childFiles[i]); //temporary, should log
-                           e.printStackTrace(System.out);
-                        }
-                     }
+      public void run() {
+         try {
+            node.getFile().refresh();
+            StoreFile[] childFiles = node.getFile().listFiles(node.getUser());
+            if (childFiles != null) {
+               for (int i = 0; i < childFiles.length; i++) {
+                  try {
+                     node.loadChild(childFiles[i]);
                   }
+                  catch (IOException e) {
+                     log.error(e+" loading "+childFiles[i]);
+                  }
+                  if (aborted) break;
                }
-               catch (IOException e) {
-                  System.out.println(e+" loading children of "+this); //temporary, should log
-                  e.printStackTrace(System.out);
-               }
-               node.loading = false;
-               if (model != null) model.nodeChanged(node);
             }
+         }
+         catch (IOException e) {
+            node.setError(e+" loading children of "+this, e);
+         }
+         node.loading = null; //disengage from node
+         if (node.model != null) node.model.nodeChanged(node);
+      }
       
+      /** Call to abort the update */
+      public void abort() {
+         aborted = true;
+         log.debug("Aborting load for "+node);
+      }
    }
-   
+
+   /** When we close down this object, we also want to close down any
+    * updating that might be going on.  We could make this more explicit...
+    */
+   public void finalize() {
+      try {
+         loading.abort();
+      }
+      catch (NullPointerException npe) {
+         //not loading - never mind eh? We could test for loading == null but it might be made null between the check and the call
+      }
+   }
    
    /**
     * Returns the child <code>TreeNode</code> at index
@@ -201,8 +221,8 @@ public class ChildrenLoader implements Runnable {
    /** Stores last error so we can display it;  Recording errors rather than
     * throwing exceptions allows the display to keep functioning even if
     one of the servers goes down (or the interface changes and everything fails horribly) */
-   public void setError(Throwable th) {
-      LogFactory.getLog(StoreFileNode.class).error("",th);
+   public void setError(String message, Throwable th) {
+      LogFactory.getLog(StoreFileNode.class).error(message,th);
       lastError = th;
    }
 

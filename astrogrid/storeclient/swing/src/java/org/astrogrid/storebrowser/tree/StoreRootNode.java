@@ -1,5 +1,5 @@
 /*
- * $Id: StoreRootNode.java,v 1.1 2005/03/28 02:06:35 mch Exp $
+ * $Id: StoreRootNode.java,v 1.2 2005/03/28 03:06:09 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -33,35 +33,35 @@ public class StoreRootNode extends StoreFileNode {
       this.uri = storeUri;
    }
 
-   /** Spawns a thread so that the display can work while we connect */
+   /** Spawns a thread so that the display can work while we connect.  This is not
+    * properly threadsafe - it's OK as the treview is written 'just now', ie make
+    * sure you can't call refresh while calling this... */
    public void connect() {
-      
-      Thread loadingThread = new Thread(new InitialConnector(this));
-      loading = true;
+
+      loading = new InitialConnector(this);
+      Thread loadingThread = new Thread(loading);
       loadingThread.start();
    }
    
    /** Thread that connects and loads first children */
-   public class InitialConnector implements Runnable {
-      
-      StoreRootNode node = null;
+   public class InitialConnector extends StoreFileNode.ChildrenLoader {
       
       public InitialConnector(StoreRootNode givenNode) {
-         this.node = givenNode;
+         super(givenNode);
       }
       
       public void run() {
          try {
             node.file = StoreFileResolver.resolveStoreFile(uri, user);
-            node.model.nodeChanged(node);
-            node.loadChildren();
          }
          catch (URISyntaxException e) {
-            setError(e);
+            setError(e+" resolving storefile at "+uri, e);
          }
          catch (IOException e) {
-            setError(e);
+            setError(e+" resolving storefile at "+uri, e);
          }
+         node.model.nodeChanged(node);
+         super.run();
       }
    }
    

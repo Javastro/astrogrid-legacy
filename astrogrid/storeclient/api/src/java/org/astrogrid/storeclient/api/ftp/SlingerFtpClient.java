@@ -1,5 +1,5 @@
 /*
- $Id: SlingerFtpClient.java,v 1.1 2005/02/16 19:57:06 mch Exp $
+ $Id: SlingerFtpClient.java,v 1.2 2005/03/28 03:06:09 mch Exp $
 
  (c) Copyright...
  */
@@ -121,6 +121,11 @@ public class SlingerFtpClient extends FTPClient {
       }
    }
    
+   /** Override to synchronize to reduce number of spawned hits on server?
+   public FTPFile[] listFiles(String path) throws IOException {
+      return super.listFiles(path);
+   }
+    /**/
    
    /** test stuff */
    public static void main(String[] args) throws IOException {

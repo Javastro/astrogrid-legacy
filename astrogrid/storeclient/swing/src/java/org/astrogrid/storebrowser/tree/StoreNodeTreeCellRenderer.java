@@ -1,5 +1,5 @@
 /*
- * $Id: StoreNodeTreeCellRenderer.java,v 1.1 2005/03/28 02:06:35 mch Exp $
+ * $Id: StoreNodeTreeCellRenderer.java,v 1.2 2005/03/28 03:06:09 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,13 +9,13 @@
 
 package org.astrogrid.storebrowser.tree;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import javax.swing.Icon;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -132,15 +132,18 @@ public class StoreNodeTreeCellRenderer extends DefaultTreeCellRenderer  {
          String loading = "";
          if (storeFileNode.isLoading()) {
             loading = " [Loading] ";
+            setForeground(Color.GRAY); //should be loaded from look and feel but it will do for now
          }
    
-         if (storeFileNode.getError() == null) {
+         Throwable error = storeFileNode.getError(); //read once in case it's removed while we execute this
+         if (error == null) {
             setText(storeFileNode.getName()+loading);
          }
          else {
+            setForeground(Color.PINK);
             setIcon(errorIcon);
-            setText(storeFileNode.getName()+" ["+storeFileNode.getError().getMessage()+"]");
-            setToolTipText(storeFileNode.getError().getMessage());
+            setText(storeFileNode.getName()+" ["+error.getMessage()+"]");
+            setToolTipText(error.getMessage());
             tree.validate();
          }
       }

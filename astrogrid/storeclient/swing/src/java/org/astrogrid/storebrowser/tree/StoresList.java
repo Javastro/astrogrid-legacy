@@ -1,5 +1,5 @@
 /*
- * $Id: StoresList.java,v 1.1 2005/03/28 02:06:35 mch Exp $
+ * $Id: StoresList.java,v 1.2 2005/03/28 03:06:09 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -45,9 +45,10 @@ public class StoresList extends DefaultMutableTreeNode {
    public void setModel(DefaultTreeModel givenModel) throws IOException {
       model = givenModel;
       
-      //add standard stores
+      //add homespace
       addHomespace();
 
+      //add local filespace if appropriate
       if (ConfigFactory.getCommonConfig().getBoolean(PERMIT_LOCAL_ACCESS_KEY, false)) {
          addStore("LocalDisk", "file://");
       }
@@ -105,7 +106,7 @@ public class StoresList extends DefaultMutableTreeNode {
       addStore("ROE FTP", "ftp://ftp.roe.ac.uk/pub/");
       addStore("Ed FTP", "ftp://ftp.ed.ac.uk/pub/");
       addStore("Mirror Service", "ftp://ftp.mirrorservice.org/");
-      //stores.add(new StoreNode(root, "iBiblio", "ftp://ftp.ibiblio.org/", user));
+      addStore("iBiblio", "ftp://ftp.ibiblio.org/");
       addStore("Demo SRB", JargonFileAdaptor.DEMO_SRB_URI);
    }
    
