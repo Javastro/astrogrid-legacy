@@ -97,7 +97,7 @@
             </input>
           </td>
           <td nowrap="true">                                   
-            <input type="radio" name="param_indirect">                
+            <input type="checkbox" name="param_indirect">                
               <xsl:attribute name="id"><xsl:value-of select="$indirect-id"/></xsl:attribute>
               <xsl:if test="@param-indirect = 'true'">
                 <xsl:attribute name="checked">true</xsl:attribute>
