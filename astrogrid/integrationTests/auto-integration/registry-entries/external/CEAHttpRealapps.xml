@@ -2,7 +2,7 @@
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
 <vr:VODescription xmlns="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
 	<!--A Genuine SIAP service - Guy's recently announced INT WFS service at Cambridge-->
-	<vr:Resource  updated="2004-11-20T15:34:22Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
+	<vr:Resource  updated="2004-11-20Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
 		<vr:Identifier>
 			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
 			<vr:ResourceKey>INTWideFieldSurveySIAP</vr:ResourceKey>
@@ -75,7 +75,7 @@
 			<ceab:URL>http://archive.ast.cam.ac.uk/cgi-bin/wfs-siap/queryImage</ceab:URL>
 		</cea:CeaHttpAdapterSetup>
 	</vr:Resource>
-	<vr:Resource  updated="2004-11-20T15:34:22Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
+	<vr:Resource  updated="2004-11-20Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
 		<vr:Identifier>
 			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
 			<vr:ResourceKey>CDS.XMatch</vr:ResourceKey>
@@ -150,7 +150,7 @@
 			<ceab:URL>http://cdsws.u-strasbg.fr/</ceab:URL>
 		</cea:CeaHttpAdapterSetup>
 	</vr:Resource>
-	<vr:Resource  updated="2004-11-20T15:34:22Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaServiceType">
+	<vr:Resource  updated="2004-11-20Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaServiceType">
 		<vr:Identifier>
 			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
 			<vr:ResourceKey>RealHttpCEC</vr:ResourceKey>
