@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.18 2004/03/14 00:50:31 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.19 2004/03/14 00:54:45 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -103,7 +103,7 @@ public class InstallationSelfCheck extends TestCase {
       
       StoreClient myspace = StoreDelegateFactory.createDelegate(User.ANONYMOUS, new Agsl(new Msrl(defaultMyspace)));
       
-      myspace.listFiles("*");
+      myspace.getFiles("*");
    }
    
    
@@ -119,6 +119,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.19  2004/03/14 00:54:45  mch
+ Changed test on myspace to one that works on deprecated delegate
+
  Revision 1.18  2004/03/14 00:50:31  mch
  Fixed to submit cone query test
 
