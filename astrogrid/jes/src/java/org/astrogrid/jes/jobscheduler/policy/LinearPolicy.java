@@ -1,4 +1,4 @@
-/*$Id: LinearPolicy.java,v 1.2 2004/03/07 21:04:38 nw Exp $
+/*$Id: LinearPolicy.java,v 1.3 2004/03/10 14:37:21 nw Exp $
  * Created on 04-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,7 +36,11 @@ public class LinearPolicy extends AbstractPolicy implements Policy , ComponentDe
      * @see org.astrogrid.jes.jobscheduler.Policy#currentJobStatus(org.astrogrid.workflow.beans.v1.Workflow)
      */
     public ExecutionPhase currentJobStatus(Workflow job) {
-        registerFunctions(job);  
+        registerFunctions(job);
+        // special case for empty workflow
+        if (job.findXPathValue("//*[jes:isStep()]") == null) {
+            return ExecutionPhase.COMPLETED;
+        }  
         Iterator i = job.findXPathIterator("//*[jes:isStep()]/stepExecutionRecord/status");
         boolean runningFound = false;       
         boolean pendingFound = false;
@@ -98,6 +102,9 @@ public class LinearPolicy extends AbstractPolicy implements Policy , ComponentDe
 
 /* 
 $Log: LinearPolicy.java,v $
+Revision 1.3  2004/03/10 14:37:21  nw
+fixed to retrun 'completed' immediately when it sees an empty workflow
+
 Revision 1.2  2004/03/07 21:04:38  nw
 merged in nww-itn05-pico - adds picocontainer
 
