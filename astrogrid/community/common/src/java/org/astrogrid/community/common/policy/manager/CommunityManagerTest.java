@@ -1,31 +1,23 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/AccountManagerTest.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/CommunityManagerTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
  * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
- *   $Log: AccountManagerTest.java,v $
- *   Revision 1.6  2004/03/19 14:43:14  dave
+ *   $Log: CommunityManagerTest.java,v $
+ *   Revision 1.2  2004/03/19 14:43:14  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
- *   Revision 1.5.2.3  2004/03/18 13:41:19  dave
- *   Added Exception handling to AccountManager
- *
- *   Revision 1.5.2.2  2004/03/17 13:50:23  dave
- *   Refactored Community exceptions
- *
- *   Revision 1.5.2.1  2004/03/17 01:08:48  dave
- *   Added AccountNotFoundException
- *   Added DuplicateAccountException
- *   Added InvalidIdentifierException
+ *   Revision 1.1.2.1  2004/03/18 13:01:29  dave
+ *   Added test for CommunityManager
  *
  * </cvs:log>
  *
  */
 package org.astrogrid.community.common.policy.manager ;
 
-import org.astrogrid.community.common.policy.data.AccountData ;
+import org.astrogrid.community.common.policy.data.CommunityData ;
 
 import org.astrogrid.community.common.exception.CommunityPolicyException     ;
 import org.astrogrid.community.common.exception.CommunityServiceException    ;
@@ -33,7 +25,7 @@ import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
 import org.astrogrid.community.common.service.CommunityServiceTest ;
 
-public class AccountManagerTest
+public class CommunityManagerTest
     extends CommunityServiceTest
     {
     /**
@@ -47,45 +39,45 @@ public class AccountManagerTest
      * Public constructor.
      *
      */
-    public AccountManagerTest()
+    public CommunityManagerTest()
         {
         }
 
     /**
-     * Our target AccountManager.
+     * Our target CommunityManager.
      *
      */
-    private AccountManager accountManager ;
+    private CommunityManager communityManager ;
 
     /**
-     * Get our target AccountManager.
+     * Get our target CommunityManager.
      *
      */
-    public AccountManager getAccountManager()
+    public CommunityManager getCommunityManager()
         {
-        return this.accountManager ;
+        return this.communityManager ;
         }
 
     /**
-     * Set our target AccountManager.
+     * Set our target CommunityManager.
      *
      */
-    public void setAccountManager(AccountManager manager)
+    public void setCommunityManager(CommunityManager manager)
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerTest.setAccountManager()") ;
+        if (DEBUG_FLAG) System.out.println("CommunityManagerTest.setCommunityManager()") ;
         if (DEBUG_FLAG) System.out.println("  Manager : " + manager.getClass()) ;
         //
-        // Set our AccountManager reference.
-        this.accountManager = manager ;
+        // Set our CommunityManager reference.
+        this.communityManager = manager ;
         //
         // Set our CommunityService reference.
         this.setCommunityService(manager) ;
         }
 
     /**
-     * Try creating a null Account.
+     * Try creating a null Community.
      *
      */
     public void testCreateNull()
@@ -93,11 +85,11 @@ public class AccountManagerTest
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testCreateNull()") ;
+        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testCreateNull()") ;
         //
-        // Try creating an Account.
+        // Try creating a Community.
         try {
-            accountManager.addAccount(null) ;
+            communityManager.addCommunity(null) ;
             fail("Expected CommunityIdentifierException") ;
             }
         catch (CommunityIdentifierException ouch)
@@ -108,7 +100,7 @@ public class AccountManagerTest
         }
 
     /**
-     * Check we can create a valid Account.
+     * Check we can create a valid Community.
      *
      */
     public void testCreateValid()
@@ -116,16 +108,16 @@ public class AccountManagerTest
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testCreateValid()") ;
+        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testCreateValid()") ;
         //
-        // Try creating an Account.
-        assertNotNull("Null account",
-            accountManager.addAccount("test-account")
+        // Try creating an Community.
+        assertNotNull("Null community",
+            communityManager.addCommunity("test-community")
             ) ;
         }
 
     /**
-     * Try to create a duplicate Account.
+     * Try to create a duplicate Community.
      *
      */
     public void testCreateDuplicate()
@@ -133,16 +125,16 @@ public class AccountManagerTest
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testCreateDuplicate()") ;
+        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testCreateDuplicate()") ;
         //
-        // Try creating an Account.
-        assertNotNull("Null account",
-            accountManager.addAccount("test-account")
+        // Try creating an Community.
+        assertNotNull("Null community",
+            communityManager.addCommunity("test-community")
             ) ;
         //
-        // Try creating the same Account.
+        // Try creating the same Community.
         try {
-            accountManager.addAccount("test-account") ;
+            communityManager.addCommunity("test-community") ;
             fail("Expected CommunityPolicyException") ;
             }
         catch (CommunityPolicyException ouch)
@@ -153,7 +145,7 @@ public class AccountManagerTest
         }
 
     /**
-     * Try getting a null Account.
+     * Try getting a null Community.
      *
      */
     public void testGetNull()
@@ -161,11 +153,11 @@ public class AccountManagerTest
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testGetNull()") ;
+        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testGetNull()") ;
         //
         // Try getting the details.
         try {
-            accountManager.getAccount(null) ;
+            communityManager.getCommunity(null) ;
             fail("Expected CommunityIdentifierException") ;
             }
         catch (CommunityIdentifierException ouch)
@@ -176,7 +168,7 @@ public class AccountManagerTest
         }
 
     /**
-     * Try getting an unknown Account.
+     * Try getting an unknown Community.
      *
      */
     public void testGetUnknown()
@@ -184,11 +176,11 @@ public class AccountManagerTest
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testGetUnknown()") ;
+        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testGetUnknown()") ;
         //
         // Try getting the details.
         try {
-            accountManager.getAccount("unknown-account") ;
+            communityManager.getCommunity("unknown-community") ;
             fail("Expected CommunityPolicyException") ;
             }
         catch (CommunityPolicyException ouch)
@@ -199,7 +191,7 @@ public class AccountManagerTest
         }
 
     /**
-     * Try getting a valid Account.
+     * Try getting a valid Community.
      *
      */
     public void testGetValid()
@@ -207,25 +199,25 @@ public class AccountManagerTest
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testGetValid()") ;
+        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testGetValid()") ;
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testCreateValid()") ;
+        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testCreateValid()") ;
         //
-        // Try creating an Account.
-        AccountData created = accountManager.addAccount("test-account") ;
-        assertNotNull("Null account", created) ;
+        // Try creating a Community.
+        CommunityData created = communityManager.addCommunity("test-community") ;
+        assertNotNull("Null community", created) ;
         //
         // Try getting the details.
-        AccountData found = accountManager.getAccount("test-account") ;
-        assertNotNull("Null account", found) ;
+        CommunityData found = communityManager.getCommunity("test-community") ;
+        assertNotNull("Null community", found) ;
         //
-        // Check that they refer to the same account.
+        // Check that they refer to the same community.
         assertEquals("Different identifiers", created, found) ;
         }
 
     /**
-     * Try setting a null Account.
+     * Try setting a null Community.
      *
      */
     public void testSetNull()
@@ -233,9 +225,9 @@ public class AccountManagerTest
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testSetNull()") ;
+        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testSetNull()") ;
         try {
-            accountManager.setAccount(null) ;
+            communityManager.setCommunity(null) ;
             fail("Expected CommunityIdentifierException") ;
             }
         catch (CommunityIdentifierException ouch)
@@ -246,7 +238,7 @@ public class AccountManagerTest
         }
 
     /**
-     * Try setting an unknown Account.
+     * Try setting an unknown Community.
      *
      */
     public void testSetUnknown()
@@ -254,12 +246,12 @@ public class AccountManagerTest
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testSetUnknown()") ;
+        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testSetUnknown()") ;
         //
-        // Try setting an unknown account.
+        // Try setting an unknown community.
         try {
-            accountManager.setAccount(
-                new AccountData("unknown-account")
+            communityManager.setCommunity(
+                new CommunityData("unknown-community")
                 ) ;
             fail("Expected CommunityPolicyException") ;
             }
@@ -271,7 +263,7 @@ public class AccountManagerTest
         }
 
     /**
-     * Try setting a valid Account.
+     * Try setting a valid Community.
      *
      */
     public void testSetValid()
@@ -279,41 +271,32 @@ public class AccountManagerTest
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testSetValid()") ;
+        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testSetValid()") ;
         //
-        // Try creating an Account.
-        AccountData account = accountManager.addAccount("test-account") ;
-        assertNotNull("Null account", account) ;
+        // Try creating an Community.
+        CommunityData community = communityManager.addCommunity("test-community") ;
+        assertNotNull("Null community", community) ;
         //
         // Change the details.
-        account.setDisplayName("Test DisplayName") ;
-        account.setDescription("Test Description") ;
-        account.setEmailAddress("Test EmailAddress") ;
-        account.setHomeSpace("Test HomeSpace") ;
+        community.setDescription("Test Description") ;
         //
         // Try setting the details.
-        account = accountManager.setAccount(account) ;
-        assertNotNull("Null account", account) ;
+        community = communityManager.setCommunity(community) ;
+        assertNotNull("Null community", community) ;
         //
         // Check the details have been changed.
-        assertEquals("Different details", "Test DisplayName",  account.getDisplayName())  ;
-        assertEquals("Different details", "Test Description",  account.getDescription())  ;
-        assertEquals("Different details", "Test EmailAddress", account.getEmailAddress()) ;
-        assertEquals("Different details", "Test HomeSpace",    account.getHomeSpace())    ;
+        assertEquals("Different details", "Test Description",  community.getDescription())  ;
         //
         // Try getting the details.
-        account = accountManager.getAccount("test-account") ;
-        assertNotNull("Null account", account) ;
+        community = communityManager.getCommunity("test-community") ;
+        assertNotNull("Null community", community) ;
         //
         // Check the details have been changed.
-        assertEquals("Different details", account.getDisplayName(),  "Test DisplayName")  ;
-        assertEquals("Different details", account.getDescription(),  "Test Description")  ;
-        assertEquals("Different details", account.getEmailAddress(), "Test EmailAddress") ;
-        assertEquals("Different details", account.getHomeSpace(),    "Test HomeSpace")    ;
+        assertEquals("Different details", community.getDescription(),  "Test Description")  ;
         }
 
     /**
-     * Try deleting a null Account.
+     * Try deleting a null Community.
      *
      */
     public void testDeleteNull()
@@ -321,9 +304,9 @@ public class AccountManagerTest
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testDeleteNull()") ;
+        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testDeleteNull()") ;
         try {
-            accountManager.delAccount(null) ;
+            communityManager.delCommunity(null) ;
             fail("Expected CommunityIdentifierException") ;
             }
         catch (CommunityIdentifierException ouch)
@@ -334,7 +317,7 @@ public class AccountManagerTest
         }
 
     /**
-     * Try deleting an unknown Account.
+     * Try deleting an unknown Community.
      *
      */
     public void testDeleteUnknown()
@@ -342,9 +325,9 @@ public class AccountManagerTest
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testDeleteUnknown()") ;
+        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testDeleteUnknown()") ;
         try {
-            accountManager.delAccount("unknown-account") ;
+            communityManager.delCommunity("unknown-community") ;
             fail("Expected CommunityPolicyException") ;
             }
         catch (CommunityPolicyException ouch)
@@ -355,7 +338,7 @@ public class AccountManagerTest
         }
 
     /**
-     * Try deleting a valid Account.
+     * Try deleting a valid Community.
      *
      */
     public void testDeleteValid()
@@ -363,22 +346,22 @@ public class AccountManagerTest
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testDeleteValid()") ;
+        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testDeleteValid()") ;
         //
-        // Try creating the Account.
-        AccountData created = accountManager.addAccount("test-account") ;
-        assertNotNull("Null account", created) ;
+        // Try creating the Community.
+        CommunityData created = communityManager.addCommunity("test-community") ;
+        assertNotNull("Null community", created) ;
         //
-        // Try deleting the Account.
-        AccountData deleted = accountManager.delAccount("test-account") ;
-        assertNotNull("Null account", deleted) ;
+        // Try deleting the Community.
+        CommunityData deleted = communityManager.delCommunity("test-community") ;
+        assertNotNull("Null community", deleted) ;
         //
-        // Check that the two objects represent the same Account.
+        // Check that the two objects represent the same Community.
         assertEquals("Different identifiers", created, deleted) ;
         }
 
     /**
-     * Try deleting the same Account.
+     * Try deleting the same Community.
      *
      */
     public void testDeleteTwice()
@@ -386,22 +369,22 @@ public class AccountManagerTest
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testDeleteTwice()") ;
+        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testDeleteTwice()") ;
         //
-        // Try creating the Account.
-        AccountData created = accountManager.addAccount("test-account") ;
-        assertNotNull("Null account", created) ;
+        // Try creating the Community.
+        CommunityData created = communityManager.addCommunity("test-community") ;
+        assertNotNull("Null community", created) ;
         //
-        // Try deleting the Account.
-        AccountData deleted = accountManager.delAccount("test-account") ;
-        assertNotNull("Null account", deleted) ;
+        // Try deleting the Community.
+        CommunityData deleted = communityManager.delCommunity("test-community") ;
+        assertNotNull("Null community", deleted) ;
         //
-        // Check that the two objects represent the same Account.
+        // Check that the two objects represent the same Community.
         assertEquals("Different identifiers", created, deleted) ;
         //
-        // Try deleting the Account again.
+        // Try deleting the Community again.
         try {
-            accountManager.delAccount("test-account") ;
+            communityManager.delCommunity("test-community") ;
             fail("Expected CommunityPolicyException") ;
             }
         catch (CommunityPolicyException ouch)

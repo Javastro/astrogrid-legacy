@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/CommunityManagerMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityManagerMock.java,v $
+ *   Revision 1.5  2004/03/19 14:43:14  dave
+ *   Merged development branch, dave-dev-200403151155, into HEAD
+ *
+ *   Revision 1.4.2.1  2004/03/18 13:41:19  dave
+ *   Added Exception handling to AccountManager
+ *
  *   Revision 1.4  2004/03/15 07:49:30  dave
  *   Merged development branch, dave-dev-200403121536, into HEAD
  *
@@ -40,6 +46,10 @@ import java.util.HashMap ;
 import org.astrogrid.community.common.policy.data.CommunityData ;
 import org.astrogrid.community.common.service.CommunityServiceMock ;
 
+import org.astrogrid.community.common.exception.CommunityPolicyException     ;
+import org.astrogrid.community.common.exception.CommunityServiceException    ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException ;
+
 /**
  * Mock implementation of our CommunityManager service.
  *
@@ -70,30 +80,36 @@ public class CommunityManagerMock
     private Map map = new HashMap() ;
 
     /**
-     * Create a new Community.
+     * Add a new Community, given the Account ident.
+     * @param  ident The Community identifier.
+     * @return A CommunityData for the Community.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is already in the database.
      *
      */
     public CommunityData addCommunity(String ident)
+        throws CommunityIdentifierException, CommunityPolicyException
         {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("CommunityManagerMock.addCommunity()") ;
+        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)
             {
-            // TODO
-            // Throw an exception ?
-            //
-            // Return null for now.
-            return null ;
+            throw new CommunityIdentifierException(
+				"Null identifier"
+            	) ;
             }
         //
         // Check if we already have an existing community.
-        if (null != this.getCommunity(ident))
+        if (map.containsKey(ident))
             {
-            // TODO
-            // Throw a duplicate exception ?
-            //
-            // Return null for now.
-            return null ;
+            throw new CommunityPolicyException(
+				"Duplicate account",
+                ident
+                ) ;
             }
         //
         // Create a new community.
@@ -107,89 +123,115 @@ public class CommunityManagerMock
         }
 
     /**
-     * Request an Community details.
+     * Request a Community details, given the Community ident.
+     * @param  ident The Community identifier.
+     * @return A CommunityData for the Community.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
      *
      */
     public CommunityData getCommunity(String ident)
+        throws CommunityIdentifierException, CommunityPolicyException
         {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("CommunityManagerMock.getCommunity()") ;
+        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)
             {
-            // TODO
-            // Throw an exception ?
-            //
-            // Return null for now.
-            return null ;
+            throw new CommunityIdentifierException(
+				"Null identifier"
+            	) ;
+            }
+        //
+        // Lookup the Account in our map.
+        CommunityData community = (CommunityData) map.get(ident) ;
+        //
+        // If we found a Community.
+        if (null != community)
+            {
+            return community ;
+            }
+        //
+        // If we didn't find a Community.
+        else {
+            throw new CommunityPolicyException(
+				"Community not found",
+                ident
+                ) ;
+            }
+        }
+
+    /**
+     * Update a Community.
+     * @param  update The new CommunityData to update.
+     * @return A new CommunityData for the Community.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
+     *
+     */
+    public CommunityData setCommunity(CommunityData update)
+        throws CommunityIdentifierException, CommunityPolicyException
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("CommunityManagerMock.setCommunity()") ;
+        if (DEBUG_FLAG) System.out.println("  Ident : " + ((null != update) ? update.getIdent() : null)) ;
+        //
+        // Check for null data.
+        if (null == update)
+            {
+            throw new CommunityIdentifierException(
+				"Null identifier"
+            	) ;
+            }
+        //
+        // Check for null ident.
+        if (null == update.getIdent())
+            {
+            throw new CommunityIdentifierException(
+				"Null identifier"
+            	) ;
             }
         //
         // Lookup the Community in our map.
-        return (CommunityData) map.get(ident) ;
-        }
-
-    /**
-     * Update an Community details.
-     *
-     */
-    public CommunityData setCommunity(CommunityData community)
-        {
-        //
-        // Check for null param.
-        if (null == community)
-            {
-            //
-            // Throw an exception ?
-            //
-            // Return null for now.
-            return null ;
-            }
-        //
-        // If we don't have an existing community.
-        if (null == this.getCommunity(community.getIdent()))
-            {
-            //
-            // Throw an exception ?
-            //
-            // Return null for now.
-            return null ;
-            }
+        CommunityData found = this.getCommunity(update.getIdent()) ;
         //
         // Replace the existing Community with the new data.
-        map.put(community.getIdent(), community) ;
-        //
-        // Return the new Community.
-        return community ;
+        map.put(found.getIdent(), update) ;
+		//
+		// Return the new data.
+		return update ;
         }
 
     /**
-     * Delete an Community.
+     * Delete a Community.
+     * @param  ident The Community identifier.
+     * @return The CommunityData for the old Community.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
      *
      */
     public CommunityData delCommunity(String ident)
+        throws CommunityIdentifierException, CommunityPolicyException
         {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("CommunityManagerMock.delCommunity()") ;
+        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)
             {
-            //
-            // Throw an exception ?
-            //
-            // Return null for now.
-            return null ;
+            throw new CommunityIdentifierException(
+				"Null identifier"
+            	) ;
             }
         //
         // Try to find the Community.
         CommunityData community = this.getCommunity(ident) ;
-        //
-        // If we didn't find a Community.
-        if (null == community)
-            {
-            //
-            // Throw an exception ?
-            //
-            // Return null for now.
-            return null ;
-            }
         //
         // Remove the Community from our map.
         map.remove(community.getIdent()) ;
@@ -199,11 +241,15 @@ public class CommunityManagerMock
         }
 
     /**
-     * Request a list of Communitys.
+     * Request a list of Communities.
+     * @return An array of CommunityData objects.
      *
      */
     public Object[] getCommunityList()
         {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("CommunityManagerMock.getCommunityList()") ;
         return map.values().toArray() ;
         }
     }

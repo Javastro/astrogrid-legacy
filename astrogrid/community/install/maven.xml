@@ -4,79 +4,18 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
-    |   Revision 1.8  2004/03/15 07:49:30  dave
-    |   Merged development branch, dave-dev-200403121536, into HEAD
+    |   Revision 1.9  2004/03/19 14:43:14  dave
+    |   Merged development branch, dave-dev-200403151155, into HEAD
     |
-    |   Revision 1.7.12.2  2004/03/12 17:42:09  dave
-    |   Replaced tabs with spaces
+    |   Revision 1.8.2.2  2004/03/19 00:14:59  dave
+    |   Changed clean target
     |
-    |   Revision 1.7.12.1  2004/03/12 17:30:00  dave
-    |   Fixed Castor JTA dependencies
-    |
-    |   Revision 1.7  2004/03/08 13:42:33  dave
-    |   Updated Maven goals.
-    |   Replaced tabs with Spaces.
-    |
-    |   Revision 1.6.2.2  2004/03/08 12:53:18  dave
-    |   Changed tabs to spaces
-    |
-    |   Revision 1.6.2.1  2004/03/08 12:10:05  dave
-    |   Modified Maven build scripts to use new AstroGrid goals
-    |
-    |   Revision 1.6  2004/03/05 17:19:59  dave
-    |   Merged development branch, dave-dev-200402211936, into HEAD
-    |
-    |   Revision 1.5.2.2  2004/03/05 16:28:28  dave
-    |   Added SecurityManager delegate test casees.
-    |   Refactored Maven JUnit properties.
-    |
-    |   Revision 1.5.2.1  2004/02/22 01:50:47  dave
-    |   Refactored install and deploy goals
-    |
-    |   Revision 1.5  2004/02/20 21:11:05  dave
-    |   Merged development branch, dave-dev-200402120832, into HEAD
-    |
-    |   Revision 1.4.2.2  2004/02/16 15:20:54  dave
-    |   Changed tabs to spaces
-    |
-    |   Revision 1.4.2.1  2004/02/14 22:24:09  dave
-    |   Test toolkit for the install and tomcat sub-projects
-    |
-    |   Revision 1.4  2004/02/12 08:12:13  dave
-    |   Merged development branch, dave-dev-200401131047, into HEAD
-    |
-    |   Revision 1.2.4.3  2004/02/10 01:18:13  dave
-    |   Changed internal depends to use ${pom.currentVersion}.
-    |   Tried using a properties file, but depends from project.xml are loaded before any of the properties.
-    |   TODO Need to make this configurable, to set the versions of other astrogrid depends.
-    |
-    |   Revision 1.2.4.2  2004/02/10 00:40:37  dave
-    |   Added install tooklit to the Maven build.
-    |   Changed Maven project to use 'org.astrogrid' as the group name.
-    |   Fixed dependencies that used the original group name.
-    |
-    |   Revision 1.2.4.1  2004/01/17 13:54:18  dave
-    |   Removed password from AccountData
-    |
-    |   Revision 1.2  2004/01/07 10:45:39  dave
-    |   Merged development branch, dave-dev-20031224, back into HEAD
-    |
-    |   Revision 1.1.2.1  2004/01/05 06:47:18  dave
-    |   Moved policy data classes into policy.data package
-    |
-    |   Revision 1.1.2.4  2004/01/05 04:45:34  dave
-    |   Removed the maven.xml import ... seems to work without it ?
-    |
-    |   Revision 1.1.2.3  2004/01/05 04:11:05  dave
-    |   Fixed the maven.xml import
-    |   Changed the primary goal to install-artifact
-    |
-    |   Revision 1.1.2.2  2004/01/01 01:44:29  dave
-    |   Moved common code into parent maven.xml script
+    |   Revision 1.8.2.1  2004/03/18 13:37:22  dave
+    |   Added default clean-build goal
     |
     | </cvs:log>
     |
@@ -89,7 +28,7 @@
     xmlns:log="jelly:log"
     xmlns:define="jelly:define"
     xmlns:deploy="deploy"
-    default="astrogrid-install-snapshot"
+    default="astrogrid-rebuild-snapshot"
     >
 
     <!--+
@@ -108,6 +47,17 @@
     </goal>
 
     <!-- ================ Reactor goals ================ -->
+
+    <!--+
+        | Clean, build and install our snapshot jar.
+        +-->
+    <goal name="astrogrid-rebuild-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <attainGoal name="clean"/>
+        <attainGoal name="astrogrid-install-snapshot"/>
+    </goal>
 
     <!--+
         | Clean our build target.

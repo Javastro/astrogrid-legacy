@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/database/manager/DatabaseManagerMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseManagerMock.java,v $
+ *   Revision 1.5  2004/03/19 14:43:14  dave
+ *   Merged development branch, dave-dev-200403151155, into HEAD
+ *
+ *   Revision 1.4.2.2  2004/03/19 03:31:21  dave
+ *   Changed AccountManagerMock to recognise DatabaseManager reset()
+ *
+ *   Revision 1.4.2.1  2004/03/18 13:41:19  dave
+ *   Added Exception handling to AccountManager
+ *
  *   Revision 1.4  2004/03/15 07:49:30  dave
  *   Merged development branch, dave-dev-200403121536, into HEAD
  *
@@ -39,6 +48,7 @@
 package org.astrogrid.community.common.database.manager ;
 
 import org.astrogrid.community.common.service.CommunityServiceMock ;
+import org.astrogrid.community.common.policy.manager.AccountManagerMock ;
 
 /**
  * Mock implementation of our DatabaseManager service.
@@ -209,10 +219,14 @@ public class DatabaseManagerMock
 
     /**
      * Reset our mock database tables.
-     * @TODO - This needs to reset the other mock databases.
+     * @todo This needs to reset the other mock databases.
      *
      */
     public void resetDatabaseTables()
         {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("DatabaseManagerMock.resetDatabaseTables()") ;
+		AccountManagerMock.reset() ;
         }
     }

@@ -1,42 +1,21 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/junit/org/astrogrid/community/common/policy/data/Attic/AccountDataJUnitTest.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/junit/org/astrogrid/community/common/policy/data/AccountDataTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
- *   $Log: AccountDataJUnitTest.java,v $
- *   Revision 1.5  2004/03/15 07:49:30  dave
- *   Merged development branch, dave-dev-200403121536, into HEAD
+ *   $Log: AccountDataTestCase.java,v $
+ *   Revision 1.2  2004/03/19 14:43:14  dave
+ *   Merged development branch, dave-dev-200403151155, into HEAD
  *
- *   Revision 1.4.2.1  2004/03/12 17:42:09  dave
- *   Replaced tabs with spaces
+ *   Revision 1.1.2.2  2004/03/18 13:41:19  dave
+ *   Added Exception handling to AccountManager
  *
- *   Revision 1.4  2004/03/12 15:22:17  dave
- *   Merged development branch, dave-dev-200403101018, into HEAD
- *
- *   Revision 1.3.18.1  2004/03/10 13:32:01  dave
- *   Added home space to AccountData.
- *   Improved null param checking in AccountManager.
- *   Improved null param checking in AccountManager tests.
- *
- *   Revision 1.3  2004/02/20 21:11:05  dave
- *   Merged development branch, dave-dev-200402120832, into HEAD
- *
- *   Revision 1.2.2.1  2004/02/16 15:20:54  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.2  2004/02/12 08:12:13  dave
- *   Merged development branch, dave-dev-200401131047, into HEAD
- *
- *   Revision 1.1.2.2  2004/01/30 03:21:23  dave
- *   Added initial code for SecurityManager and SecurityService
- *
- *   Revision 1.1.2.1  2004/01/27 05:43:10  dave
- *   Moved the JUnit tests around a bit
- *
- *   Revision 1.1.2.1  2004/01/13 14:29:41  dave
- *   Added initial JUnit tests
+ *   Revision 1.1.2.1  2004/03/17 01:08:48  dave
+ *   Added AccountNotFoundException
+ *   Added DuplicateAccountException
+ *   Added InvalidIdentifierException
  *
  * </cvs:log>
  *
@@ -46,10 +25,10 @@ package org.astrogrid.community.common.policy.data ;
 import org.astrogrid.community.common.junit.JUnitTestBase ;
 
 /**
- * Base class for our data object JUnit tests.
+ * JUnit test for AccountData objects.
  *
  */
-public class AccountDataJUnitTest
+public class AccountDataTestCase
     extends JUnitTestBase
     {
     /**
@@ -105,10 +84,10 @@ public class AccountDataJUnitTest
         // Check the account ident.
         assertEquals("Account ident not equal", "frog", frog.getIdent()) ;
         //
-        // Try to change toe Account ident.
+        // Try to change the Account ident.
         frog.setIdent("toad") ;
         //
-        // Check the account ident.
+        // Check the account ident has NOT changed.
         assertEquals("Account ident not equal", "frog", frog.getIdent()) ;
         }
 

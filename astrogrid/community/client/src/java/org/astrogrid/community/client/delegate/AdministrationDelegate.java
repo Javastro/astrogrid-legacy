@@ -215,10 +215,10 @@ public class AdministrationDelegate {
     * Gets an account list based off of a community name.
     * @param community
     * @return
-    */
    public ArrayList getAccountList(String community) throws Exception {
       return createArrayList(service.getRemoteAccounts(community));
    }
+    */
    
    /**
     * Converts an array of AccountData objects to an ArrayList.
@@ -235,11 +235,15 @@ public class AdministrationDelegate {
       }
       return al;         
    }
-   
+
+/*
+ *   
    public ArrayList getAccountGroups(String account, String community) throws Exception {
       return createArrayList(service.getRemoteAccountGroups(account,community));
    } 
-   
+ */   
+/*
+ *   
    public boolean isAdminAccount(String account,String community) throws Exception {
       ArrayList al = getAccountGroups(account,community);
       String adminGroup = "Admin@" + community;
@@ -255,7 +259,8 @@ public class AdministrationDelegate {
       }//if
       return false;
    }
-   
+ *
+ */   
    /**
     * Updates an account.
     * @param ad
@@ -336,10 +341,10 @@ public class AdministrationDelegate {
     * Return a grou list in a particular community.  Might be the local or remote community.
     * @param community
     * @return
-    */
    public ArrayList getGroupList(String community) throws Exception {
       return createArrayList(service.getRemoteGroups(community));  
    }
+    */
       
    /**
     * Delete a group.

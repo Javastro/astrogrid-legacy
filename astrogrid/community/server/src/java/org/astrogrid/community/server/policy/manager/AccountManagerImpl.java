@@ -1,148 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/AccountManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 14:43:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
- *   Revision 1.8  2004/03/15 07:49:30  dave
- *   Merged development branch, dave-dev-200403121536, into HEAD
+ *   Revision 1.9  2004/03/19 14:43:15  dave
+ *   Merged development branch, dave-dev-200403151155, into HEAD
  *
- *   Revision 1.7.2.1  2004/03/12 17:42:09  dave
- *   Replaced tabs with spaces
+ *   Revision 1.8.2.2  2004/03/19 04:51:46  dave
+ *   Updated resolver with new Exceptions
  *
- *   Revision 1.7  2004/03/12 15:22:17  dave
- *   Merged development branch, dave-dev-200403101018, into HEAD
- *
- *   Revision 1.6.12.2  2004/03/10 13:49:36  dave
- *   Added missing properties to AccountManagerImpl.setAccount
- *
- *   Revision 1.6.12.1  2004/03/10 13:32:01  dave
- *   Added home space to AccountData.
- *   Improved null param checking in AccountManager.
- *   Improved null param checking in AccountManager tests.
- *
- *   Revision 1.6  2004/03/05 17:19:59  dave
- *   Merged development branch, dave-dev-200402211936, into HEAD
- *
- *   Revision 1.5.2.3  2004/02/23 19:43:47  dave
- *   Refactored DatabaseManager tests to test the interface.
- *   Refactored DatabaseManager tests to use common DatabaseManagerTest.
- *
- *   Revision 1.5.2.2  2004/02/23 08:55:20  dave
- *   Refactored CastorDatabaseConfiguration into DatabaseConfiguration
- *
- *   Revision 1.5.2.1  2004/02/22 20:03:16  dave
- *   Removed redundant DatabaseConfiguration interfaces
- *
- *   Revision 1.5  2004/02/20 21:11:05  dave
- *   Merged development branch, dave-dev-200402120832, into HEAD
- *
- *   Revision 1.4.2.2  2004/02/19 21:09:26  dave
- *   Refactored ServiceStatusData into a common package.
- *   Refactored CommunityServiceImpl constructor to take a parent service.
- *   Refactored default database for CommunityServiceImpl
- *
- *   Revision 1.4.2.1  2004/02/16 15:20:54  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.4  2004/02/12 08:12:13  dave
- *   Merged development branch, dave-dev-200401131047, into HEAD
- *
- *   Revision 1.2.4.9  2004/02/06 13:49:09  dave
- *   Moved CommunityManagerBase into server.common.CommunityServer.
- *   Moved getServiceStatus into server.common.CommunityServer.
- *   Moved JUnit tests to match.
- *
- *   Revision 1.2.4.8  2004/01/27 18:55:08  dave
- *   Removed unused imports listed in PMD report
- *
- *   Revision 1.2.4.7  2004/01/27 05:52:27  dave
- *   Added GroupManagerTest
- *
- *   Revision 1.2.4.6  2004/01/27 05:19:17  dave
- *   Moved Exception logging into CommunityManagerBase
- *   Replaced if(null == database) with DatabaseNotFoundException
- *
- *   Revision 1.2.4.5  2004/01/27 03:54:28  dave
- *   Changed database name to database config in CommunityManagerBase
- *
- *   Revision 1.2.4.4  2004/01/26 23:23:23  dave
- *   Changed CommunityManagerImpl to use the new DatabaseManager.
- *   Moved rollback and close into CommunityManagerBase.
- *
- *   Revision 1.2.4.3  2004/01/26 15:16:57  dave
- *   Created CommunityManagerBase to handle database connections
- *
- *   Revision 1.2.4.2  2004/01/26 13:18:08  dave
- *   Added new DatabaseManager to enable local JUnit testing
- *
- *   Revision 1.2.4.1  2004/01/17 13:54:18  dave
- *   Removed password from AccountData
- *
- *   Revision 1.2  2004/01/07 10:45:45  dave
- *   Merged development branch, dave-dev-20031224, back into HEAD
- *
- *   Revision 1.1.2.2  2004/01/05 06:47:18  dave
- *   Moved policy data classes into policy.data package
- *
- *   Revision 1.1.2.1  2003/12/24 05:54:48  dave
- *   Initial Maven friendly structure (only part of the service implemented)
- *
- *   Revision 1.17  2003/11/06 15:35:26  dave
- *   Replaced tabs with spaces
- *
- *   Revision 1.16  2003/10/10 13:27:51  KevinBenson
- *   commented out the setPassword(null)
- *
- *   Revision 1.15  2003/10/09 01:38:30  dave
- *   Added JUnite tests for policy delegates
- *
- *   Revision 1.14  2003/10/07 20:40:25  KevinBenson
- *   conforms to new myspace delegate
- *
- *   Revision 1.13  2003/09/30 16:07:30  pah
- *   removed the password nulling in getAccount() - it was being written back to the database
- *
- *   Revision 1.12  2003/09/24 21:56:06  dave
- *   Added setPassword() to AccountManager
- *
- *   Revision 1.11  2003/09/17 19:47:21  dave
- *   1) Fixed classnotfound problems in the build.
- *   2) Added the JUnit task to add the initial accounts and groups.
- *   3) Got the build to work together with the portal.
- *   4) Fixed some bugs in the Account handling.
- *
- *   Revision 1.10  2003/09/17 09:16:10  KevinBenson
- *   Added the Myspace call
- *
- *   Revision 1.9  2003/09/15 16:05:45  KevinBenson
- *   *** empty log message ***
- *
- *   Revision 1.8  2003/09/13 02:18:52  dave
- *   Extended the jConfig configuration code.
- *
- *   Revision 1.7  2003/09/12 12:59:17  dave
- *   1) Fixed RemoteException handling in the manager and service implementations.
- *
- *   Revision 1.6  2003/09/10 17:21:43  dave
- *   Added remote functionality to groups.
- *
- *   Revision 1.5  2003/09/10 06:03:27  dave
- *   Added remote capability to Accounts
- *
- *   Revision 1.4  2003/09/09 16:48:48  KevinBenson
- *   added setpassword in their on the update
- *
- *   Revision 1.3  2003/09/09 10:57:47  dave
- *   Added corresponding SINGLE Group to addAccount and delAccount.
- *
- *   Revision 1.2  2003/09/08 20:28:50  dave
- *   Added CommunityIdent, with isLocal() and isValid()
- *
- *   Revision 1.1  2003/09/06 20:10:07  dave
- *   Split PolicyManager into separate components.
+ *   Revision 1.8.2.1  2004/03/18 13:41:19  dave
+ *   Added Exception handling to AccountManager
  *
  * </cvs:log>
  *
@@ -172,9 +43,12 @@ import org.astrogrid.community.common.config.CommunityConfig;
 import org.astrogrid.community.server.service.CommunityServiceImpl ;
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration ;
 
+import org.astrogrid.community.common.exception.CommunityPolicyException     ;
+import org.astrogrid.community.common.exception.CommunityServiceException    ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException ;
+
 /**
- * A class to handle Accounts.
- * This needs refactoring to make it more robust.
+ * The core AccountManager implementation.
  *
  */
 public class AccountManagerImpl
@@ -189,7 +63,7 @@ public class AccountManagerImpl
 
     /**
      * The default public group.
-     * This should be moved to the GroupManager.
+     * @todo This should be in a config file, not hard coded.
      *
      */
     private static String DEFAULT_GROUP = "everyone" ;
@@ -205,6 +79,7 @@ public class AccountManagerImpl
 
     /**
      * Public constructor, using specific database configuration.
+     * @param config A specific DatabaseConfiguration.
      *
      */
     public AccountManagerImpl(DatabaseConfiguration config)
@@ -214,6 +89,7 @@ public class AccountManagerImpl
 
     /**
      * Public constructor, using a parent service.
+     * @param parent A parent CommunityServiceImpl.
      *
      */
     public AccountManagerImpl(CommunityServiceImpl parent)
@@ -222,46 +98,64 @@ public class AccountManagerImpl
         }
 
     /**
-     * Create a new Account, given the Account ident as a String.
-     * @param ident The Account ident.
-     * @return A valid AccountData if the Account was created, null if the Account was not created.
-     * @TODO Execption error reporting.
+     * Add a new Account, given the Account ident.
+     * @param  ident The Account identifier.
+     * @return An AccountData for the Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is already in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @todo Refactor to use Ivorn identifiers
      *
      */
     public AccountData addAccount(String ident)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         //
-        // Check for null param.
-        if (null == ident) { return null ; }
+        // Check for null ident.
+        if (null == ident)
+            {
+            throw new CommunityIdentifierException(
+				"Null identifier"
+            	) ;
+            }
+		//
+		// Parse the ident and process the result.
         return this.addAccount(new CommunityIdent(ident)) ;
         }
 
     /**
-     * Create a new Account, given the Account ident.
-     * This needs refactoring to make it more robust.
-     * TODO 1) If the 'everyone' group does not exist, then create it.
-     * TODO 2) If the account group already exists (as an AccountGroup) then don't throw a duplicate exception.
-     * TODO 3) If the account already belongs to the account group then don't throw a duplicate exception.
-     * TODO 4) If the account already belongs to the 'everyone' group then don't throw a duplicate exception.
-     * TODO 5) If the MySpace call adds the Account, store the MySpace server and Account details.
-     *
-     * If fragments of the account data already exist, e.g. groups, membership and permissions,
-     * should we tidy them up before creating the new account or leave them as-is ?
-     *
-     * @param ident The Account ident.
-     * @return A valid AccountData if the Account was created, null if the Account was not created.
-     * @TODO Execption error reporting.
+     * Add a new Account, given the Account ident.
+     * @param  ident The Account identifier.
+     * @return An AccountData for the Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is already in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @todo Needs refactoring to make it more robust.
+     * @todo If the 'everyone' group does not exist, then create it.
+     * @todo If the account group already exists (as an AccountGroup) then don't throw a duplicate exception.
+     * @todo If the account already belongs to the account group then don't throw a duplicate exception.
+     * @todo If the account already belongs to the 'everyone' group then don't throw a duplicate exception.
+     * @todo If the MySpace call adds the Account, store the MySpace server and Account details.
+     * @todo Tidy up fragments of old data, e.g. groups, membership and permissions,
+     * @todo Verify that the finally gets executed, even if a new Exception is thrown.
+     * @todo Refactor to use Ivorn identifiers
      *
      */
     protected AccountData addAccount(CommunityIdent ident)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("AccountManagerImpl.addAccount()") ;
-        if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
         //
-        // Check for null param.
-        if (null == ident) { return null ; }
+        // Check for null ident.
+        if (null == ident)
+            {
+            throw new CommunityIdentifierException(
+				"Null identifier"
+            	) ;
+            }
         Database    database = null ;
         AccountData account  = null ;
         GroupData   group    = null ;
@@ -323,20 +217,17 @@ public class AccountManagerImpl
                     }
                 //
                 // If we already have an object with that ident.
-// TODO
-// The only reason to treat this differently is that we might one day report it differently to the client.
                 catch (DuplicateIdentityException ouch)
                     {
                     //
-                    // Log the exception.
-                    logException(ouch, "AccountManagerImpl.addAccount()") ;
-                    //
-                    // Set the response to null.
-                    group   = null ;
-                    account = null ;
-                    //
                     // Cancel the database transaction.
                     rollbackTransaction(database) ;
+					//
+					// Throw a new Exception.
+					throw new CommunityPolicyException(
+						"Duplicate Account already exists",
+						ident.toString()
+						) ;
                     }
                 //
                 // If anything else went bang.
@@ -344,14 +235,20 @@ public class AccountManagerImpl
                     {
                     //
                     // Log the exception.
-                    logException(ouch, "AccountManagerImpl.addAccount()") ;
-                    //
-                    // Set the response to null.
-                    group   = null ;
-                    account = null ;
+                    logException(
+                    	ouch,
+                    	"AccountManagerImpl.addAccount()"
+                    	) ;
                     //
                     // Cancel the database transaction.
                     rollbackTransaction(database) ;
+					//
+					// Throw a new Exception.
+					throw new CommunityServiceException(
+						"Database transaction failed",
+						ident.toString(),
+						ouch
+						) ;
                     }
                 //
                 // Close our database connection.
@@ -363,26 +260,29 @@ public class AccountManagerImpl
             //
             // If the ident is not local.
             else {
-                //
-                // Set the response to null.
-                group   = null ;
-                account = null ;
+				//
+				// Throw a new Exception.
+				throw new CommunityPolicyException(
+					"Account is not local",
+					ident.toString()
+					) ;
                 }
             }
-            //
-            // If the ident is not valid.
+        //
+        // If the ident is not valid.
         else {
-            //
-            // Set the response to null.
-            group   = null ;
-            account = null ;
+			//
+			// Throw a new Exception.
+			// @todo - remove when Ivorns used
+			throw new CommunityIdentifierException(
+				"Identifier is not valid",
+				ident.toString()
+				) ;
             }
-
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
 
 //
 // Need to store the MySpace URL.
-//
+// Move this to a separate method.
         //
         // Add the user to the local myspace.
         if(account != null)
@@ -412,30 +312,57 @@ public class AccountManagerImpl
         }
 
     /**
-     * Request an Account data, given the Account name.
+     * Request an Account details, given the Account ident.
+     * @param  ident The Account identifier.
+     * @return An AccountData for the Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @todo Refactor to use Ivorn identifiers
      *
      */
     public AccountData getAccount(String ident)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         //
-        // Check for null param.
-        if (null == ident) { return null ; }
+        // Check for null ident.
+        if (null == ident)
+            {
+            throw new CommunityIdentifierException(
+				"Null identifier"
+            	) ;
+            }
+		//
+		// Parse the identifier and process that.
         return this.getAccount(new CommunityIdent(ident)) ;
         }
 
     /**
-     * Request an Account data, given the Account ident.
+     * Request an Account details, given the Account ident.
+     * @param  ident The Account identifier.
+     * @return An AccountData for the Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @todo Verify that the finally gets executed, even if a new Exception is thrown.
+     * @todo Refactor to use Ivorn identifiers
      *
      */
     protected AccountData getAccount(CommunityIdent ident)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("AccountManagerImpl.getAccount()") ;
         if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
         //
-        // Check for null param.
-        if (null == ident) { return null ; }
+        // Check for null ident.
+        if (null == ident)
+            {
+            throw new CommunityIdentifierException(
+				"Null identifier"
+            	) ;
+            }
         Database    database = null ;
         AccountData account  = null ;
         //
@@ -462,19 +389,17 @@ public class AccountManagerImpl
                     }
                 //
                 // If we couldn't find the object.
-// TODO
-// The only reason to treat this differently is that we might one day report it differently to the client.
                 catch (ObjectNotFoundException ouch)
                     {
                     //
-                    // Log the exception.
-                    logException(ouch, "AccountManagerImpl.getAccount()") ;
-                    //
-                    // Set the response to null.
-                    account = null ;
-                    //
                     // Cancel the database transaction.
                     rollbackTransaction(database) ;
+					//
+					// Throw a new Exception.
+					throw new CommunityPolicyException(
+						"Account not found",
+						ident.toString()
+						) ;
                     }
                 //
                 // If anything else went bang.
@@ -482,13 +407,20 @@ public class AccountManagerImpl
                     {
                     //
                     // Log the exception.
-                    logException(ouch, "AccountManagerImpl.getAccount()") ;
-                    //
-                    // Set the response to null.
-                    account = null ;
+                    logException(
+                    	ouch,
+                    	"AccountManagerImpl.getAccount()"
+                    	) ;
                     //
                     // Cancel the database transaction.
                     rollbackTransaction(database) ;
+					//
+					// Throw a new Exception.
+					throw new CommunityServiceException(
+						"Database transaction failed",
+						ident.toString(),
+						ouch
+						) ;
                     }
                 //
                 // Close our database connection.
@@ -500,30 +432,41 @@ public class AccountManagerImpl
             //
             // If the ident is not local.
             else {
-                //
-                // Set the response to null.
-                account = null ;
+				//
+				// Throw a new Exception.
+				throw new CommunityPolicyException(
+					"Account is not local",
+					ident.toString()
+					) ;
                 }
             }
-            //
-            // If the ident is not valid.
+        //
+        // If the ident is not valid.
         else {
-            //
-            // Set the response to null.
-            account = null ;
+			//
+			// Throw a new Exception.
+			// @todo - remove when Ivorns used
+			throw new CommunityIdentifierException(
+				"Identifier is not valid",
+				ident.toString()
+				) ;
             }
-        // TODO
-        // Need to return something to the client.
-        // Possibly a new DataObject ... ?
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
         return account ;
         }
 
     /**
-     * Update an existing Account data.
+     * Update an Account.
+     * @param  account The new AccountData to update.
+     * @return A new AccountData for the Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @todo Verify that the finally gets executed, even if a new Exception is thrown.
+     * @todo Refactor to use Ivorn identifiers
      *
      */
     public AccountData setAccount(AccountData account)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -531,8 +474,21 @@ public class AccountManagerImpl
         if (DEBUG_FLAG) System.out.println("  Account") ;
         if (DEBUG_FLAG) System.out.println("    ident : " + ((null != account) ? account.getIdent() : null)) ;
         //
-        // Check for null param.
-        if (null == account) { return null ; }
+        // Check for null account.
+        if (null == account)
+            {
+            throw new CommunityIdentifierException(
+				"Null account"
+            	) ;
+            }
+        //
+        // Check for null ident.
+        if (null == account.getIdent())
+            {
+            throw new CommunityIdentifierException(
+				"Null identifier"
+            	) ;
+            }
         //
         // Create a CommunityIdent from the account.
         CommunityIdent ident = new CommunityIdent(account.getIdent()) ;
@@ -569,19 +525,17 @@ public class AccountManagerImpl
                     }
                 //
                 // If we couldn't find the object.
-// TODO
-// The only reason to treat this differently is that we might one day report it differently to the client.
                 catch (ObjectNotFoundException ouch)
                     {
                     //
-                    // Log the exception.
-                    logException(ouch, "AccountManagerImpl.setAccount()") ;
-                    //
-                    // Set the response to null.
-                    account = null ;
-                    //
                     // Cancel the database transaction.
                     rollbackTransaction(database) ;
+					//
+					// Throw a new Exception.
+					throw new CommunityPolicyException(
+						"Account not found",
+						ident.toString()
+						) ;
                     }
                 //
                 // If anything else went bang.
@@ -589,13 +543,20 @@ public class AccountManagerImpl
                     {
                     //
                     // Log the exception.
-                    logException(ouch, "AccountManagerImpl.setAccount()") ;
-                    //
-                    // Set the response to null.
-                    account = null ;
+                    logException(
+                    	ouch,
+                    	"AccountManagerImpl.setAccount()"
+                    	) ;
                     //
                     // Cancel the database transaction.
                     rollbackTransaction(database) ;
+					//
+					// Throw a new Exception.
+					throw new CommunityServiceException(
+						"Database transaction failed",
+						ident.toString(),
+						ouch
+						) ;
                     }
                 //
                 // Close our database connection.
@@ -607,51 +568,80 @@ public class AccountManagerImpl
             //
             // If the ident is not local.
             else {
-                //
-                // Set the response to null.
-                account = null ;
+				//
+				// Throw a new Exception.
+				throw new CommunityPolicyException(
+					"Account is not local",
+					ident.toString()
+					) ;
                 }
             }
-            //
-            // If the ident is not valid.
+        //
+        // If the ident is not valid.
         else {
-            //
-            // Set the response to null.
-            account = null ;
+			//
+			// Throw a new Exception.
+			// @todo - remove when Ivorns used
+			throw new CommunityIdentifierException(
+				"Identifier is not valid",
+				ident.toString()
+				) ;
             }
-
-        // TODO
-        // Need to return something to the client.
-        // Possibly a new DataObject ... ?
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
         return account ;
         }
 
     /**
-     * Delete an Account, given the Account name.
+     * Delete an Account.
+     * @param  ident The Account identifier.
+     * @return The AccountData for the old Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
     public AccountData delAccount(String ident)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         //
-        // Check for null param.
-        if (null == ident) { return null ; }
+        // Check for null ident.
+        if (null == ident)
+            {
+            throw new CommunityIdentifierException(
+				"Null identifier"
+            	) ;
+            }
+		//
+		// Parse the identifier and process that.
         return this.delAccount(new CommunityIdent(ident)) ;
         }
 
     /**
-     * Delete an Account, given the Account ident.
+     * Delete an Account.
+     * @param  ident The Account identifier.
+     * @return The AccountData for the old Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @todo Need to have a mechanism for tidying up references to a remote Account.
+     * @todo Need to have a mechanism for tidying up references to an old Account.
+     * @todo Need to have a mechanism for notifying other Communities that the Account has been deleted.
+     * @todo Verify that the finally gets executed, even if a new Exception is thrown.
+     * @todo Refactor to use Ivorn identifiers.
      *
      */
     protected AccountData delAccount(CommunityIdent ident)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("AccountManagerImpl.delAccount()") ;
         if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
         //
-        // Check for null param.
-        if (null == ident) { return null ; }
+        // Check for null ident.
+        if (null == ident)
+            {
+            throw new CommunityIdentifierException(
+				"Null identifier"
+            	) ;
+            }
         Database    database = null ;
         AccountData account  = null ;
         //
@@ -767,18 +757,39 @@ public class AccountManagerImpl
                     if (DEBUG_FLAG) System.out.println("  PASS : done commit") ;
                     }
                 //
-                // If anything went bang.
+                // If we couldn't find the object.
+                catch (ObjectNotFoundException ouch)
+                    {
+                    //
+                    // Cancel the database transaction.
+                    rollbackTransaction(database) ;
+					//
+					// Throw a new Exception.
+					throw new CommunityPolicyException(
+						"Account not found",
+						ident.toString()
+						) ;
+                    }
+                //
+                // If anything else went bang.
                 catch (Exception ouch)
                     {
                     //
                     // Log the exception.
-                    logException(ouch, "AccountManagerImpl.delAccount()") ;
-                    //
-                    // Set the response to null.
-                    account = null ;
+                    logException(
+                    	ouch,
+                    	"AccountManagerImpl.delAccount()"
+                    	) ;
                     //
                     // Cancel the database transaction.
                     rollbackTransaction(database) ;
+					//
+					// Throw a new Exception.
+					throw new CommunityServiceException(
+						"Database transaction failed",
+						ident.toString(),
+						ouch
+						) ;
                     }
                 //
                 // Close our database connection.
@@ -790,22 +801,25 @@ public class AccountManagerImpl
             //
             // If the ident is not local.
             else {
-                //
-                // Set the response to null.
-                account = null ;
-//
-// TODO
-// Actually, this could be a call from a remote community to tell us that it is deleting an Account.
-// In which case, we need to tidy up our groups and permissions tables ....
-//
+				//
+				// Throw a new Exception.
+				throw new CommunityPolicyException(
+					"Account is not local",
+					ident.toString()
+					) ;
                 }
             }
-            //
-            // If the ident is not valid.
+        //
+        // If the ident is not valid.
         else {
-            account = null ;
+			//
+			// Throw a new Exception.
+			// @todo - remove when Ivorns used
+			throw new CommunityIdentifierException(
+				"Identifier is not valid",
+				ident.toString()
+				) ;
             }
-
 //
 // TODO .. should we notify other community services that the Account has gone ?
 //
@@ -831,12 +845,6 @@ public class AccountManagerImpl
  *
  */
             }
-
-        // TODO
-        // Need to return something to the client.
-        // Possibly a new DataObject ... ?
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-
         return account ;
         }
 

@@ -1,36 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/policy/manager/PolicyManagerCoreDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerCoreDelegate.java,v $
- *   Revision 1.4  2004/03/15 07:49:30  dave
- *   Merged development branch, dave-dev-200403121536, into HEAD
+ *   Revision 1.5  2004/03/19 14:43:14  dave
+ *   Merged development branch, dave-dev-200403151155, into HEAD
  *
- *   Revision 1.3.12.1  2004/03/13 17:57:20  dave
- *   Remove RemoteException(s) from delegate interfaces.
- *   Protected internal API methods.
+ *   Revision 1.4.2.3  2004/03/19 03:31:21  dave
+ *   Changed AccountManagerMock to recognise DatabaseManager reset()
  *
- *   Revision 1.3  2004/03/08 13:42:33  dave
- *   Updated Maven goals.
- *   Replaced tabs with Spaces.
- *
- *   Revision 1.2.2.1  2004/03/08 12:53:17  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.2  2004/03/05 17:19:59  dave
- *   Merged development branch, dave-dev-200402211936, into HEAD
- *
- *   Revision 1.1.2.2  2004/03/04 16:09:37  dave
- *   Added PolicyService delegates
- *
- *   Revision 1.1.2.1  2004/03/04 13:26:17  dave
- *   1) Added Delegate interfaces.
- *   2) Added Mock implementations.
- *   3) Added MockDelegates
- *   4) Added SoapDelegates
+ *   Revision 1.4.2.2  2004/03/19 00:18:09  dave
+ *   Refactored delegate Exception handling
  *
  * </cvs:log>
  *
@@ -38,6 +21,8 @@
 package org.astrogrid.community.client.policy.manager ;
 
 import java.rmi.RemoteException ;
+
+import org.astrogrid.community.client.service.CommunityServiceCoreDelegate ;
 
 import org.astrogrid.community.common.policy.data.AccountData ;
 import org.astrogrid.community.common.policy.data.GroupData ;
@@ -48,14 +33,18 @@ import org.astrogrid.community.common.policy.data.GroupMemberData ;
 
 import org.astrogrid.community.common.policy.manager.PolicyManager ;
 
-import org.astrogrid.community.common.service.data.ServiceStatusData ;
+import org.astrogrid.community.common.exception.CommunityPolicyException     ;
+import org.astrogrid.community.common.exception.CommunityServiceException    ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
 /**
- * The core delegate code for our PolicyManager service.
- * This acts as a wrapper for a PolicyManager service, and handles any RemoteExceptions internally.
+ * The core delegate for our PolicyManager service.
+ * This acts as a wrapper for a PolicyManager service, and converts RemoteExceptions into CommunityServiceException.
+ * @todo Refactor this as a number of smaller classes.
  *
  */
 public class PolicyManagerCoreDelegate
+    extends CommunityServiceCoreDelegate
     implements PolicyManager, PolicyManagerDelegate
     {
     /**
@@ -68,7 +57,7 @@ public class PolicyManagerCoreDelegate
      * Public constructor.
      *
      */
-    public PolicyManagerCoreDelegate()
+    protected PolicyManagerCoreDelegate()
         {
         }
 
@@ -93,16 +82,22 @@ public class PolicyManagerCoreDelegate
      */
     protected void setPolicyManager(PolicyManager manager)
         {
+		this.setCommunityService(manager) ;
         this.manager = manager ;
         }
 
     /**
-     * Create a new Account, given the Account ident.
+     * Add a new Account, given the Account ident.
+     * @param  ident The Account identifier.
+     * @return An AccountData for the Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is already in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
     public AccountData addAccount(String ident)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        AccountData result = null ;
         //
         // If we have a valid service reference.
         if (null != this.manager)
@@ -110,27 +105,44 @@ public class PolicyManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.manager.addAccount(ident) ;
+                return this.manager.addAccount(ident) ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
+				//
+				// Try converting the Exception.
+				convertCommunityException(ouch) ;
+				//
+				// If we get this far, then we don't know what it is.
+				throw new CommunityServiceException(
+					"WebService call failed - unexpected Exception type",
+					ouch
+					) ;
                 }
             }
-        return result ;
+		//
+		// If we don't have a valid service.
+		else {
+			throw new CommunityServiceException(
+				"Service not initialised"
+				) ;
+			}
         }
 
     /**
-     * Request an Account data, given the Account ident.
+     * Request an Account details, given the Account ident.
+     * @param  ident The Account identifier.
+     * @return An AccountData for the Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
     public AccountData getAccount(String ident)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        AccountData result = null ;
         //
         // If we have a valid service reference.
         if (null != this.manager)
@@ -138,27 +150,44 @@ public class PolicyManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.manager.getAccount(ident) ;
+                return this.manager.getAccount(ident) ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
+				//
+				// Try converting the Exception.
+				convertCommunityException(ouch) ;
+				//
+				// If we get this far, then we don't know what it is.
+				throw new CommunityServiceException(
+					"WebService call failed - unexpected Exception type",
+					ouch
+					) ;
                 }
             }
-        return result ;
+		//
+		// If we don't have a valid service.
+		else {
+			throw new CommunityServiceException(
+				"Service not initialised"
+				) ;
+			}
         }
 
     /**
-     * Update an Account data.
+     * Update an Account.
+     * @param  account The new AccountData to update.
+     * @return A new AccountData for the Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
     public AccountData setAccount(AccountData account)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        AccountData result = null ;
         //
         // If we have a valid service reference.
         if (null != this.manager)
@@ -166,27 +195,44 @@ public class PolicyManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.manager.setAccount(account) ;
+                return this.manager.setAccount(account) ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
+				//
+				// Try converting the Exception.
+				convertCommunityException(ouch) ;
+				//
+				// If we get this far, then we don't know what it is.
+				throw new CommunityServiceException(
+					"WebService call failed - unexpected Exception type",
+					ouch
+					) ;
                 }
             }
-        return result ;
+		//
+		// If we don't have a valid service.
+		else {
+			throw new CommunityServiceException(
+				"Service not initialised"
+				) ;
+			}
         }
 
     /**
-     * Delete an Account, given the Account name.
+     * Delete an Account.
+     * @param  ident The Account identifier.
+     * @return The AccountData for the old Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
     public AccountData delAccount(String ident)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        AccountData result = null ;
         //
         // If we have a valid service reference.
         if (null != this.manager)
@@ -194,27 +240,41 @@ public class PolicyManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.manager.delAccount(ident) ;
+                return this.manager.delAccount(ident) ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
+				//
+				// Try converting the Exception.
+				convertCommunityException(ouch) ;
+				//
+				// If we get this far, then we don't know what it is.
+				throw new CommunityServiceException(
+					"WebService call failed - unexpected Exception type",
+					ouch
+					) ;
                 }
             }
-        return result ;
+		//
+		// If we don't have a valid service.
+		else {
+			throw new CommunityServiceException(
+				"Service not initialised"
+				) ;
+			}
         }
 
     /**
      * Request a list of local Accounts.
+     * @return An array of AccountData objects.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
     public Object[] getLocalAccounts()
+        throws CommunityServiceException
         {
-        Object[] result = null ;
         //
         // If we have a valid service reference.
         if (null != this.manager)
@@ -222,18 +282,30 @@ public class PolicyManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.manager.getLocalAccounts() ;
+                return this.manager.getLocalAccounts() ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
+				//
+				// Try converting the Exception.
+				convertServiceException(ouch) ;
+				//
+				// If we get this far, then we don't know what it is.
+				throw new CommunityServiceException(
+					"WebService call failed - unexpected Exception type",
+					ouch
+					) ;
                 }
             }
-        return result ;
+		//
+		// If we don't have a valid service.
+		else {
+			throw new CommunityServiceException(
+				"Service not initialised"
+				) ;
+			}
         }
 
     /**
@@ -405,12 +477,17 @@ public class PolicyManagerCoreDelegate
         }
 
     /**
-     * Create a new Community.
+     * Add a new Community, given the Account ident.
+     * @param  ident The Community identifier.
+     * @return A CommunityData for the Community.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is already in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
     public CommunityData addCommunity(String ident)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        CommunityData result = null ;
         //
         // If we have a valid service reference.
         if (null != this.manager)
@@ -418,27 +495,39 @@ public class PolicyManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.manager.addCommunity(ident) ;
+                return this.manager.addCommunity(ident) ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
+				throw new CommunityServiceException(
+					"WebService call failed",
+					ouch
+					) ;
                 }
             }
-        return result ;
+		//
+		// If we don't have a valid service.
+		else {
+			throw new CommunityServiceException(
+				"Service not initialised"
+				) ;
+			}
         }
 
     /**
-     * Request an Community details.
+     * Request a Community details, given the Community ident.
+     * @param  ident The Community identifier.
+     * @return A CommunityData for the Community.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
     public CommunityData getCommunity(String ident)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        CommunityData result = null ;
         //
         // If we have a valid service reference.
         if (null != this.manager)
@@ -446,27 +535,39 @@ public class PolicyManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.manager.getCommunity(ident) ;
+                return this.manager.getCommunity(ident) ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
+				throw new CommunityServiceException(
+					"WebService call failed",
+					ouch
+					) ;
                 }
             }
-        return result ;
+		//
+		// If we don't have a valid service.
+		else {
+			throw new CommunityServiceException(
+				"Service not initialised"
+				) ;
+			}
         }
 
     /**
-     * Update an Community details.
+     * Update a Community.
+     * @param  community The new CommunityData to update.
+     * @return A new CommunityData for the Community.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
     public CommunityData setCommunity(CommunityData community)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        CommunityData result = null ;
         //
         // If we have a valid service reference.
         if (null != this.manager)
@@ -474,27 +575,39 @@ public class PolicyManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.manager.setCommunity(community) ;
+                return this.manager.setCommunity(community) ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
+				throw new CommunityServiceException(
+					"WebService call failed",
+					ouch
+					) ;
                 }
             }
-        return result ;
+		//
+		// If we don't have a valid service.
+		else {
+			throw new CommunityServiceException(
+				"Service not initialised"
+				) ;
+			}
         }
 
     /**
-     * Delete an Community.
+     * Delete a Community.
+     * @param  ident The Community identifier.
+     * @return The CommunityData for the old Community.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
     public CommunityData delCommunity(String ident)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        CommunityData result = null ;
         //
         // If we have a valid service reference.
         if (null != this.manager)
@@ -502,25 +615,35 @@ public class PolicyManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.manager.delCommunity(ident) ;
+                return this.manager.delCommunity(ident) ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
+				throw new CommunityServiceException(
+					"WebService call failed",
+					ouch
+					) ;
                 }
             }
-        return result ;
+		//
+		// If we don't have a valid service.
+		else {
+			throw new CommunityServiceException(
+				"Service not initialised"
+				) ;
+			}
         }
 
     /**
-     * Request a list of Communitys.
+     * Request a list of Communities.
+     * @return An array of CommunityData objects.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
     public Object[] getCommunityList()
+        throws CommunityServiceException
         {
         Object[] result = null ;
         //
@@ -530,18 +653,25 @@ public class PolicyManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.manager.getCommunityList() ;
+                return this.manager.getCommunityList() ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
+				throw new CommunityServiceException(
+					"WebService call failed",
+					ouch
+					) ;
                 }
             }
-        return result ;
+		//
+		// If we don't have a valid service.
+		else {
+			throw new CommunityServiceException(
+				"Service not initialised"
+				) ;
+			}
         }
 
    /**
@@ -797,68 +927,19 @@ public class PolicyManagerCoreDelegate
         }
 
     /**
-     * Request a list of Accounts, given a remote Community name.
-     *
-     */
-    public Object[] getRemoteAccounts(String community)
-        {
-        Object[] result = null ;
-        //
-        // If we have a valid service reference.
-        if (null != this.manager)
-            {
-            //
-            // Try calling the service method.
-            try {
-                result = this.manager.getRemoteAccounts(community) ;
-                }
-            //
-            // Catch anything that went BANG.
-            catch (RemoteException ouch)
-                {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
-                }
-            }
-        return result ;
-        }
-
-    /**
-     * Request a list of Groups, given a remote Community name.
-     *
-     */
-    public Object[] getRemoteGroups(String community)
-        {
-        Object[] result = null ;
-        //
-        // If we have a valid service reference.
-        if (null != this.manager)
-            {
-            //
-            // Try calling the service method.
-            try {
-                result = this.manager.getRemoteGroups(community) ;
-                }
-            //
-            // Catch anything that went BANG.
-            catch (RemoteException ouch)
-                {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
-                }
-            }
-        return result ;
-        }
-
-    /**
-     * Add an Account to a Group, given the Account and Group names.
+     * Add an Account to a Group.
+     * The group must be local, but Account can be local or remote.
+     * @param  account The Account identifier.
+     * @param  group   The Group identifier.
+     * @return An GroupMemberData to confirm the membership.
+     * @throws CommunityIdentifierException If one of the identifiers is not valid.
+     * @throws CommunityPolicyException If one the identifiers is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
     public GroupMemberData addGroupMember(String account, String group)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        GroupMemberData result = null ;
         //
         // If we have a valid service reference.
         if (null != this.manager)
@@ -866,18 +947,25 @@ public class PolicyManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.manager.addGroupMember(account, group) ;
+                return this.manager.addGroupMember(account, group) ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
+				throw new CommunityServiceException(
+					"WebService call failed",
+					ouch
+					) ;
                 }
             }
-        return result ;
+		//
+		// If we don't have a valid service.
+		else {
+			throw new CommunityServiceException(
+				"Service not initialised"
+				) ;
+			}
         }
 
     /**
@@ -936,61 +1024,4 @@ public class PolicyManagerCoreDelegate
         return result ;
         }
 
-    /**
-     * Get a list of remote Groups that an Account belongs to, given the Account and Community names.
-     *
-     */
-    public Object[] getRemoteAccountGroups(String account, String community)
-        {
-        Object[] result = null ;
-        //
-        // If we have a valid service reference.
-        if (null != this.manager)
-            {
-            //
-            // Try calling the service method.
-            try {
-                result = this.manager.getRemoteAccountGroups(account, community) ;
-                }
-            //
-            // Catch anything that went BANG.
-            catch (RemoteException ouch)
-                {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
-                }
-            }
-        return result ;
-        }
-
-    /**
-     * Service health check.
-     * @return ServiceStatusData with details of the Service status.
-     * TODO -refactor this to a base class
-     *
-     */
-    public ServiceStatusData getServiceStatus()
-        {
-        ServiceStatusData result = null ;
-        //
-        // If we have a valid service reference.
-        if (null != this.manager)
-            {
-            //
-            // Try calling the service method.
-            try {
-                result = this.manager.getServiceStatus() ;
-                }
-            //
-            // Catch anything that went BANG.
-            catch (RemoteException ouch)
-                {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
-                }
-            }
-        return result ;
-        }
     }

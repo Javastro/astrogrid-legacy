@@ -1,34 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/database/manager/DatabaseManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseManager.java,v $
- *   Revision 1.4  2004/03/08 13:42:33  dave
- *   Updated Maven goals.
- *   Replaced tabs with Spaces.
+ *   Revision 1.5  2004/03/19 14:43:14  dave
+ *   Merged development branch, dave-dev-200403151155, into HEAD
  *
- *   Revision 1.3.2.1  2004/03/08 12:53:17  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.3  2004/03/05 17:19:59  dave
- *   Merged development branch, dave-dev-200402211936, into HEAD
- *
- *   Revision 1.2.2.2  2004/03/02 23:31:00  dave
- *   Added DatabaseManager to service tests
- *
- *   Revision 1.2.2.1  2004/02/22 20:03:16  dave
- *   Removed redundant DatabaseConfiguration interfaces
- *
- *   Revision 1.2  2004/02/20 21:11:05  dave
- *   Merged development branch, dave-dev-200402120832, into HEAD
- *
- *   Revision 1.1.2.1  2004/02/19 21:09:26  dave
- *   Refactored ServiceStatusData into a common package.
- *   Refactored CommunityServiceImpl constructor to take a parent service.
- *   Refactored default database for CommunityServiceImpl
+ *   Revision 1.4.14.2  2004/03/19 00:18:09  dave
+ *   Refactored delegate Exception handling
  *
  * </cvs:log>
  *
@@ -39,6 +21,7 @@ import java.rmi.Remote ;
 import java.rmi.RemoteException ;
 
 import org.astrogrid.community.common.service.CommunityService ;
+import org.astrogrid.community.common.exception.CommunityServiceException ;
 
 /**
  * Interface for our DatabaseManager service.
@@ -49,51 +32,65 @@ public interface DatabaseManager
     {
     /**
      * Get the current database name.
+     * @throws CommunityServiceException If there is an server error.
+     * @throws RemoteException If the WebService call fails.
      *
      */
     public String getDatabaseName()
-        throws RemoteException ;
+        throws RemoteException, CommunityServiceException ;
 
     /**
      * Get our JDO configuration resource name.
+     * @throws CommunityServiceException If there is an server error.
+     * @throws RemoteException If the WebService call fails.
      *
      */
     public String getDatabaseConfigResource()
-        throws RemoteException ;
+        throws RemoteException, CommunityServiceException ;
 
     /**
      * Get the database SQL script name.
+     * @throws CommunityServiceException If there is an server error.
+     * @throws RemoteException If the WebService call fails.
      *
      */
     public String getDatabaseScriptResource()
-        throws RemoteException ;
+        throws RemoteException, CommunityServiceException ;
 
     /**
      * Get the database configuration URL.
+     * @throws CommunityServiceException If there is an server error.
+     * @throws RemoteException If the WebService call fails.
      *
      */
     public String getDatabaseConfigUrl()
-        throws RemoteException ;
+        throws RemoteException, CommunityServiceException ;
 
     /**
      * Get the database engine description.
+     * @throws CommunityServiceException If there is an server error.
+     * @throws RemoteException If the WebService call fails.
      *
      */
     public String getDatabaseDescription()
-        throws RemoteException ;
+        throws RemoteException, CommunityServiceException ;
 
     /**
      * Check the database tables.
+     * @throws CommunityServiceException If there is an server error.
+     * @throws RemoteException If the WebService call fails.
      *
      */
     public boolean checkDatabaseTables()
-        throws RemoteException ;
+        throws RemoteException, CommunityServiceException ;
 
     /**
      * Reset our database tables.
+     * @throws CommunityServiceException If there is an server error.
+     * @throws RemoteException If the WebService call fails.
      *
      */
     public void resetDatabaseTables()
-        throws RemoteException ;
+        throws RemoteException, CommunityServiceException ;
 
     }

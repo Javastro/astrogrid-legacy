@@ -1,11 +1,28 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityEndpointResolver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 14:43:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityEndpointResolver.java,v $
+ *   Revision 1.3  2004/03/19 14:43:15  dave
+ *   Merged development branch, dave-dev-200403151155, into HEAD
+ *
+ *   Revision 1.2.2.4  2004/03/19 04:51:46  dave
+ *   Updated resolver with new Exceptions
+ *
+ *   Revision 1.2.2.3  2004/03/17 01:08:48  dave
+ *   Added AccountNotFoundException
+ *   Added DuplicateAccountException
+ *   Added InvalidIdentifierException
+ *
+ *   Revision 1.2.2.2  2004/03/16 19:51:17  dave
+ *   Added Exception reporting to resolvers
+ *
+ *   Revision 1.2.2.1  2004/03/16 11:55:15  dave
+ *   Split CommunityIvornFactory into CommunityAccountIvornFactory and CommunityServiceIvornFactory.
+ *
  *   Revision 1.2  2004/03/15 07:49:30  dave
  *   Merged development branch, dave-dev-200403121536, into HEAD
  *
@@ -33,16 +50,17 @@ import org.astrogrid.config.Config ;
 import org.astrogrid.config.SimpleConfig ;
 
 import org.astrogrid.community.common.ivorn.CommunityIvornParser ;
-import org.astrogrid.community.common.exception.CommunityException ;
+import org.astrogrid.community.common.ivorn.CommunityServiceIvornFactory ;
+
+import org.astrogrid.community.common.exception.CommunityPolicyException ;
+import org.astrogrid.community.common.exception.CommunityServiceException ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException ;
+import org.astrogrid.community.resolver.exception.CommunityResolverException ;
 
 import org.astrogrid.registry.RegistryException;
 
 /**
- * This is just a local wrapper for the RegistryDelegate.
- * Handles creating the registry delegate to resolve Ivorn(s).
- * @see org.astrogrid.store.Ivorn
- * @see org.astrogrid.registry.client.RegistryDelegateFactory
- * @see org.astrogrid.registry.client.query.RegistryService
+ * This is a local wrapper for the RegistryDelegate resolve Ivorns into service endpoints.
  *
  */
 public class CommunityEndpointResolver
@@ -60,7 +78,7 @@ public class CommunityEndpointResolver
     protected static Config conf = SimpleConfig.getSingleton() ;
 
     /**
-     * Public constructor, using default registry delegate.
+     * Public constructor, using the default Registry service.
      *
      */
     public CommunityEndpointResolver()
@@ -71,8 +89,8 @@ public class CommunityEndpointResolver
         }
 
     /**
-     * Public constructor, with a specific registry delegate.
-     * @param registry The endpoint address for our registry delegate.
+     * Public constructor, for a specific Registry service.
+     * @param registry The endpoint address for our RegistryDelegate.
      *
      */
     public CommunityEndpointResolver(URL registry)
@@ -96,19 +114,38 @@ public class CommunityEndpointResolver
 
     /**
      * Resolve an Ivorn into a service endpoint.
-	 * @param ivorn An Ivorn containing a Community authority.
-	 * @param type  The type of service we want.
+     * @param ivorn An Ivorn containing a Community identifier.
+     * @param type  The Java class of the service interface we want.
      * @return The endpoint address for the service.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityResolverException If the Community is unable to resolve the identifier.
+     * @throws RegistryException If the Registry is unable to resolve the identifier.
      *
      */
-    public URL resolve(Ivorn ivorn, String type)
-        throws RegistryException, MalformedURLException
+    public URL resolve(Ivorn ivorn, Class type)
+        throws RegistryException, CommunityIdentifierException, CommunityResolverException
         {
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("CommunityEndpointResolver.resolve()") ;
-		if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
-		if (DEBUG_FLAG) System.out.println("  Type  : " + type)  ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("CommunityEndpointResolver.resolve()") ;
+        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
+        if (DEBUG_FLAG) System.out.println("  Type  : " + type)  ;
+        //
+        // Check for null ivorn.
+        if (null == ivorn)
+        	{
+        	throw new CommunityIdentifierException(
+        		"Null identifier"
+        		) ;
+        	}
+        //
+        // Check for null type.
+        if (null == type)
+        	{
+        	throw new CommunityIdentifierException(
+        		"Null service type"
+        		) ;
+        	}
         //
         // Parse the ivorn and resolve it.
         return this.resolve(
@@ -117,60 +154,82 @@ public class CommunityEndpointResolver
             ) ;
         }
 
-	/**
-	 * Resolve data from a CommunityIvornParser.
-	 * @param parser A CommunityIvornParser containing the Community authority.
-	 * @return A new Ivorn for the corresponding VoSpace, or null if none found.
-	 * @TODO Better Exceptions for error reporting.
-	 *
-	 */
-    public URL resolve(CommunityIvornParser parser, String type)
-        throws RegistryException, MalformedURLException
+    /**
+     * Resolve data from a CommunityIvornParser.
+     * @param parser A CommunityIvornParser containing the Community identifier.
+     * @param type   The Java class of the service interface we want.
+     * @return The endpoint address for the service.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityResolverException If the Community is unable to resolve the identifier.
+     * @throws RegistryException If the Registry is unable to resolve the identifier.
+     *
+     */
+    public URL resolve(CommunityIvornParser parser, Class type)
+        throws RegistryException, CommunityIdentifierException, CommunityResolverException
         {
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("CommunityEndpointResolver.resolve()") ;
-		if (DEBUG_FLAG) System.out.println("  Ivorn : " + ((null != parser) ? parser.getIvorn() : null)) ;
-		if (DEBUG_FLAG) System.out.println("  Type  : " + type)  ;
-		//
-		// Check for null param.
-		if (null == parser) { throw new IllegalArgumentException("Null parser") ; }
-        if (null == type)   { throw new IllegalArgumentException("Null type")   ; }
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("CommunityEndpointResolver.resolve()") ;
+        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ((null != parser) ? parser.getIvorn() : null)) ;
+        if (DEBUG_FLAG) System.out.println("  Type  : " + type)  ;
+        //
+        // Check for null param.
+        if (null == parser)
+        	{
+        	throw new CommunityIdentifierException(
+        		"Null identifier"
+        		) ;
+        	}
+        //
+        // Check for null type.
+        if (null == type)
+        	{
+        	throw new CommunityIdentifierException(
+        		"Null service type"
+        		) ;
+        	}
         //
         // Create our service Ivorn.
-		Ivorn ivorn  = parser.getServiceIvorn(type) ;
-		//
-		// If we got a service Ivorn.
-		if (null != ivorn)
-			{
-			if (DEBUG_FLAG) System.out.println("PASS : Got service Ivorn")  ;
-			if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn)  ;
-			//
-			// Lookup the service in the registry.
-			String endpoint = registry.getEndPointByIdentifier(ivorn.toString()) ;
-			//
-			// If we found an entry in the Registry.
-			if (null != endpoint)
-				{
-				if (DEBUG_FLAG) System.out.println("PASS : Got service endpoint")  ;
-				if (DEBUG_FLAG) System.out.println("  Endpoint : " + endpoint)  ;
-				//
-				// Convert it into an endpoint URL.
-				return new URL(endpoint) ;
-				}
-			//
-			// If we didn't get a service endpoint.
-			else {
-				if (DEBUG_FLAG) System.out.println("FAIL : Null service endpoint")  ;
-				return null ;
-				}
-			}
-		//
-		// If we didn't get a service Ivorn.
-		else {
-			if (DEBUG_FLAG) System.out.println("FAIL : Null service Ivorn")  ;
-			return null ;
-			}
-		}
+        Ivorn ivorn  = CommunityServiceIvornFactory.createIvorn(
+            parser.getCommunityIdent(),
+            type
+            ) ;
+        if (DEBUG_FLAG) System.out.println("PASS : Got service Ivorn")  ;
+        if (DEBUG_FLAG) System.out.println("  Ivorn    : " + ivorn)  ;
+        //
+        // Lookup the service in the registry.
+        String endpoint = registry.getEndPointByIdentifier(ivorn.toString()) ;
+        //
+        // If we found an entry in the Registry.
+        if (null != endpoint)
+            {
+            if (DEBUG_FLAG) System.out.println("PASS : Got service endpoint")  ;
+            if (DEBUG_FLAG) System.out.println("  Endpoint : " + endpoint)  ;
+            //
+            // Convert it into an endpoint URL.
+            try {
+                return new URL(endpoint) ;
+                }
+            //
+            // Report the problem in a Exception.
+            catch (MalformedURLException ouch)
+                {
+                throw new CommunityResolverException(
+                    "Unable to parse Registry response into endpoint URL",
+                    ivorn
+                    ) ;
+                }
+            }
+        //
+        // If we didn't get a service endpoint.
+        else {
+            //
+            // Report the problem in a Exception.
+            throw new CommunityResolverException(
+                "Registry returned null endpoint address for ivorn",
+                ivorn
+                ) ;
+            }
+        }
     }
 

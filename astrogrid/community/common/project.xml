@@ -4,54 +4,15 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
-    |   Revision 1.7  2004/03/15 07:49:30  dave
-    |   Merged development branch, dave-dev-200403121536, into HEAD
+    |   Revision 1.8  2004/03/19 14:43:14  dave
+    |   Merged development branch, dave-dev-200403151155, into HEAD
     |
-    |   Revision 1.6.2.1  2004/03/15 07:40:56  dave
-    |   Removed redundant depends from project.xml
-    |
-    |   Revision 1.6  2004/03/12 15:22:17  dave
-    |   Merged development branch, dave-dev-200403101018, into HEAD
-    |
-    |   Revision 1.5.12.3  2004/03/12 13:38:03  dave
-    |   Added test case for MockIvornFactory.
-    |   Fixed bugs in CommunityIvornParser.
-    |
-    |   Revision 1.5.12.2  2004/03/12 00:46:25  dave
-    |   Added CommunityIvornFactory and CommunityIvornParser.
-    |   Added MockIvornFactory (to be moved to common project).
-    |
-    |   Revision 1.5.12.1  2004/03/10 13:58:01  dave
-    |   Removed redundant pomVersion from sub-projects
-    |
-    |   Revision 1.5  2004/03/05 17:19:59  dave
-    |   Merged development branch, dave-dev-200402211936, into HEAD
-    |
-    |   Revision 1.4.4.2  2004/02/26 15:17:48  dave
-    |   Removed mockmaker depends.
-    |
-    |   Revision 1.4.4.1  2004/02/23 19:43:47  dave
-    |   Refactored DatabaseManager tests to test the interface.
-    |   Refactored DatabaseManager tests to use common DatabaseManagerTest.
-    |
-    |   Revision 1.4  2004/02/12 08:12:13  dave
-    |   Merged development branch, dave-dev-200401131047, into HEAD
-    |
-    |   Revision 1.2.4.1  2004/01/13 14:29:41  dave
-    |   Added initial JUnit tests
-    |
-    |   Revision 1.2  2004/01/07 10:45:38  dave
-    |   Merged development branch, dave-dev-20031224, back into HEAD
-    |
-    |   Revision 1.1.2.3  2004/01/07 04:29:15  dave
-    |   Moved properties into shared files and tested deployment goals
-    |
-    |   Revision 1.1.2.2  2004/01/01 01:44:29  dave
-    |   Moved common code into parent maven.xml script
+    |   Revision 1.7.2.1  2004/03/18 13:40:08  dave
+    |   Cleaned log
     |
     | </cvs:log>
     +-->

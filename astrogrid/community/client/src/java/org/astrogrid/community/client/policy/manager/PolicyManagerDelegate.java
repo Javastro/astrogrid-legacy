@@ -1,81 +1,54 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/policy/manager/PolicyManagerDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerDelegate.java,v $
- *   Revision 1.4  2004/03/15 07:49:30  dave
- *   Merged development branch, dave-dev-200403121536, into HEAD
+ *   Revision 1.5  2004/03/19 14:43:14  dave
+ *   Merged development branch, dave-dev-200403151155, into HEAD
  *
- *   Revision 1.3.12.1  2004/03/13 17:57:20  dave
- *   Remove RemoteException(s) from delegate interfaces.
- *   Protected internal API methods.
- *
- *   Revision 1.3  2004/03/08 13:42:33  dave
- *   Updated Maven goals.
- *   Replaced tabs with Spaces.
- *
- *   Revision 1.2.2.1  2004/03/08 12:53:17  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.2  2004/03/05 17:19:59  dave
- *   Merged development branch, dave-dev-200402211936, into HEAD
- *
- *   Revision 1.1.2.1  2004/03/04 13:26:17  dave
- *   1) Added Delegate interfaces.
- *   2) Added Mock implementations.
- *   3) Added MockDelegates
- *   4) Added SoapDelegates
+ *   Revision 1.4.2.2  2004/03/19 00:18:09  dave
+ *   Refactored delegate Exception handling
  *
  * </cvs:log>
  *
  */
 package org.astrogrid.community.client.policy.manager ;
 
+import org.astrogrid.community.client.service.CommunityServiceDelegate ;
+
 import org.astrogrid.community.common.policy.data.GroupMemberData ;
 import org.astrogrid.community.common.policy.manager.PolicyManager ;
-import org.astrogrid.community.common.service.data.ServiceStatusData ;
+
+import org.astrogrid.community.common.exception.CommunityPolicyException     ;
+import org.astrogrid.community.common.exception.CommunityServiceException    ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
 /**
  * Interface for our PolicyManager delegate.
- * This extends the PolicyManager interface, without the RemoteExceptions.
+ * This mirrors the PolicyManager interface without the RemoteExceptions.
+ * @see PolicyManager
  *
  */
 public interface PolicyManagerDelegate
-    extends AccountManagerDelegate, GroupManagerDelegate, CommunityManagerDelegate, ResourceManagerDelegate, PermissionManagerDelegate
+    extends CommunityServiceDelegate, AccountManagerDelegate, GroupManagerDelegate, CommunityManagerDelegate, ResourceManagerDelegate, PermissionManagerDelegate
     {
 
     /**
-     * Request a list of local Accounts.
+     * Add an Account to a Group.
+     * The group must be local, but Account can be local or remote.
+     * @param  account The Account identifier.
+     * @param  group   The Group identifier.
+     * @return An GroupMemberData to confirm the membership.
+     * @throws CommunityIdentifierException If one of the identifiers is not valid.
+     * @throws CommunityPolicyException If one the identifiers is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
-    public Object[] getLocalAccounts() ;
-
-    /**
-     * Request a list of Accounts, given a remote Community name.
-     *
-     */
-    public Object[] getRemoteAccounts(String community) ;
-
-    /**
-     * Request a list of local Groups.
-     *
-     */
-    public Object[] getLocalGroups() ;
-
-    /**
-     * Request a list of Groups, given a remote Community name.
-     *
-     */
-    public Object[] getRemoteGroups(String community) ;
-
-    /**
-     * Add an Account to a Group, given the Account and Group names.
-     *
-     */
-    public GroupMemberData addGroupMember(String account, String group) ;
+    public GroupMemberData addGroupMember(String account, String group)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException ;
 
     /**
      * Remove an Account from a Group, given the Account and Group names.
@@ -94,18 +67,5 @@ public interface PolicyManagerDelegate
      *
      */
     public Object[] getLocalAccountGroups(String account) ;
-
-    /**
-     * Get a list of remote Groups that an Account belongs to, given the Account and Community names.
-     *
-     */
-    public Object[] getRemoteAccountGroups(String account, String community) ;
-
-    /**
-     * Service health check.
-     * @return ServiceStatusData with details of the Service status.
-     *
-     */
-    public ServiceStatusData getServiceStatus() ;
 
     }

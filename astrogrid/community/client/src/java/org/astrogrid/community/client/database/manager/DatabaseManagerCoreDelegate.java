@@ -1,23 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/database/manager/DatabaseManagerCoreDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseManagerCoreDelegate.java,v $
- *   Revision 1.3  2004/03/08 13:42:33  dave
- *   Updated Maven goals.
- *   Replaced tabs with Spaces.
+ *   Revision 1.4  2004/03/19 14:43:14  dave
+ *   Merged development branch, dave-dev-200403151155, into HEAD
  *
- *   Revision 1.2.2.1  2004/03/08 12:53:17  dave
- *   Changed tabs to spaces
+ *   Revision 1.3.14.2  2004/03/19 03:31:20  dave
+ *   Changed AccountManagerMock to recognise DatabaseManager reset()
  *
- *   Revision 1.2  2004/03/05 17:19:59  dave
- *   Merged development branch, dave-dev-200402211936, into HEAD
- *
- *   Revision 1.1.2.1  2004/03/04 17:13:30  dave
- *   Added DatabaseManager delegates
+ *   Revision 1.3.14.1  2004/03/19 00:18:09  dave
+ *   Refactored delegate Exception handling
  *
  * </cvs:log>
  *
@@ -26,9 +22,11 @@ package org.astrogrid.community.client.database.manager ;
 
 import java.rmi.RemoteException ;
 
-import org.astrogrid.community.common.service.data.ServiceStatusData ;
+import org.astrogrid.community.client.service.CommunityServiceCoreDelegate ;
 
 import org.astrogrid.community.common.database.manager.DatabaseManager ;
+
+import org.astrogrid.community.common.exception.CommunityServiceException ;
 
 /**
  * The core delegate code for our DatabaseManager service.
@@ -36,7 +34,8 @@ import org.astrogrid.community.common.database.manager.DatabaseManager ;
  *
  */
 public class DatabaseManagerCoreDelegate
-    implements DatabaseManagerDelegate
+    extends CommunityServiceCoreDelegate
+    implements DatabaseManager, DatabaseManagerDelegate
     {
     /**
      * Switch for our debug statements.
@@ -78,11 +77,12 @@ public class DatabaseManagerCoreDelegate
 
     /**
      * Get the current database name.
+     * @throws CommunityServiceException If there is an server error.
      *
      */
     public String getDatabaseName()
+        throws CommunityServiceException
         {
-        String result = null ;
         //
         // If we have a valid service reference.
         if (null != this.manager)
@@ -90,27 +90,40 @@ public class DatabaseManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.manager.getDatabaseName() ;
+                return this.manager.getDatabaseName() ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
+				//
+				// Try converting the Exception.
+				convertServiceException(ouch) ;
+				//
+				// If we get this far, then we don't know what it is.
+				throw new CommunityServiceException(
+					"WebService call failed - unexpected Exception type",
+					ouch
+					) ;
                 }
             }
-        return result ;
+		//
+		// If we don't have a valid service.
+		else {
+			throw new CommunityServiceException(
+				"Service not initialised"
+				) ;
+			}
         }
 
     /**
      * Get our JDO configuration resource name.
+     * @throws CommunityServiceException If there is an server error.
      *
      */
     public String getDatabaseConfigResource()
+        throws CommunityServiceException
         {
-        String result = null ;
         //
         // If we have a valid service reference.
         if (null != this.manager)
@@ -118,27 +131,40 @@ public class DatabaseManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.manager.getDatabaseConfigResource() ;
+                return this.manager.getDatabaseConfigResource() ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
+				//
+				// Try converting the Exception.
+				convertServiceException(ouch) ;
+				//
+				// If we get this far, then we don't know what it is.
+				throw new CommunityServiceException(
+					"WebService call failed - unexpected Exception type",
+					ouch
+					) ;
                 }
             }
-        return result ;
+		//
+		// If we don't have a valid service.
+		else {
+			throw new CommunityServiceException(
+				"Service not initialised"
+				) ;
+			}
         }
 
     /**
      * Get the database SQL script name.
+     * @throws CommunityServiceException If there is an server error.
      *
      */
     public String getDatabaseScriptResource()
+        throws CommunityServiceException
         {
-        String result = null ;
         //
         // If we have a valid service reference.
         if (null != this.manager)
@@ -146,27 +172,40 @@ public class DatabaseManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.manager.getDatabaseScriptResource() ;
+                return this.manager.getDatabaseScriptResource() ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
+				//
+				// Try converting the Exception.
+				convertServiceException(ouch) ;
+				//
+				// If we get this far, then we don't know what it is.
+				throw new CommunityServiceException(
+					"WebService call failed - unexpected Exception type",
+					ouch
+					) ;
                 }
             }
-        return result ;
+		//
+		// If we don't have a valid service.
+		else {
+			throw new CommunityServiceException(
+				"Service not initialised"
+				) ;
+			}
         }
 
     /**
      * Get the database configuration URL.
+     * @throws CommunityServiceException If there is an server error.
      *
      */
     public String getDatabaseConfigUrl()
+        throws CommunityServiceException
         {
-        String result = null ;
         //
         // If we have a valid service reference.
         if (null != this.manager)
@@ -174,27 +213,40 @@ public class DatabaseManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.manager.getDatabaseConfigUrl() ;
+                return this.manager.getDatabaseConfigUrl() ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
+				//
+				// Try converting the Exception.
+				convertServiceException(ouch) ;
+				//
+				// If we get this far, then we don't know what it is.
+				throw new CommunityServiceException(
+					"WebService call failed - unexpected Exception type",
+					ouch
+					) ;
                 }
             }
-        return result ;
+		//
+		// If we don't have a valid service.
+		else {
+			throw new CommunityServiceException(
+				"Service not initialised"
+				) ;
+			}
         }
 
     /**
      * Get the database engine description.
+     * @throws CommunityServiceException If there is an server error.
      *
      */
     public String getDatabaseDescription()
+        throws CommunityServiceException
         {
-        String result = null ;
         //
         // If we have a valid service reference.
         if (null != this.manager)
@@ -202,27 +254,40 @@ public class DatabaseManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.manager.getDatabaseDescription() ;
+                return this.manager.getDatabaseDescription() ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
+				//
+				// Try converting the Exception.
+				convertServiceException(ouch) ;
+				//
+				// If we get this far, then we don't know what it is.
+				throw new CommunityServiceException(
+					"WebService call failed - unexpected Exception type",
+					ouch
+					) ;
                 }
             }
-        return result ;
+		//
+		// If we don't have a valid service.
+		else {
+			throw new CommunityServiceException(
+				"Service not initialised"
+				) ;
+			}
         }
 
     /**
      * Check the database tables.
+     * @throws CommunityServiceException If there is an server error.
      *
      */
     public boolean checkDatabaseTables()
+        throws CommunityServiceException
         {
-        boolean result = false ;
         //
         // If we have a valid service reference.
         if (null != this.manager)
@@ -230,25 +295,39 @@ public class DatabaseManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.manager.checkDatabaseTables() ;
+                return this.manager.checkDatabaseTables() ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
+				//
+				// Try converting the Exception.
+				convertServiceException(ouch) ;
+				//
+				// If we get this far, then we don't know what it is.
+				throw new CommunityServiceException(
+					"WebService call failed - unexpected Exception type",
+					ouch
+					) ;
                 }
             }
-        return result ;
+		//
+		// If we don't have a valid service.
+		else {
+			throw new CommunityServiceException(
+				"Service not initialised"
+				) ;
+			}
         }
 
     /**
      * Reset our database tables.
+     * @throws CommunityServiceException If there is an server error.
      *
      */
     public void resetDatabaseTables()
+        throws CommunityServiceException
         {
         //
         // If we have a valid service reference.
@@ -257,46 +336,29 @@ public class DatabaseManagerCoreDelegate
             //
             // Try calling the service method.
             try {
-                this.manager.getDatabaseName() ;
+                this.manager.resetDatabaseTables() ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
+				//
+				// Try converting the Exception.
+				convertServiceException(ouch) ;
+				//
+				// If we get this far, then we don't know what it is.
+				throw new CommunityServiceException(
+					"WebService call failed - unexpected Exception type",
+					ouch
+					) ;
                 }
             }
-        }
-
-    /**
-     * Service health check.
-     * @return ServiceStatusData with details of the Service status.
-     * TODO -refactor this to a base class
-     *
-     */
-    public ServiceStatusData getServiceStatus()
-        {
-        ServiceStatusData result = null ;
-        //
-        // If we have a valid service reference.
-        if (null != this.manager)
-            {
-            //
-            // Try calling the service method.
-            try {
-                result = this.manager.getServiceStatus() ;
-                }
-            //
-            // Catch anything that went BANG.
-            catch (RemoteException ouch)
-                {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
-                }
-            }
-        return result ;
+		//
+		// If we don't have a valid service.
+		else {
+			throw new CommunityServiceException(
+				"Service not initialised"
+				) ;
+			}
         }
     }

@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/PolicyManagerMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerMock.java,v $
+ *   Revision 1.4  2004/03/19 14:43:14  dave
+ *   Merged development branch, dave-dev-200403151155, into HEAD
+ *
+ *   Revision 1.3.14.1  2004/03/18 13:41:19  dave
+ *   Added Exception handling to AccountManager
+ *
  *   Revision 1.3  2004/03/08 13:42:33  dave
  *   Updated Maven goals.
  *   Replaced tabs with Spaces.
@@ -41,6 +47,10 @@ import org.astrogrid.community.common.policy.data.GroupMemberData ;
 
 import org.astrogrid.community.common.service.CommunityServiceMock ;
 
+import org.astrogrid.community.common.exception.CommunityPolicyException     ;
+import org.astrogrid.community.common.exception.CommunityServiceException    ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException ;
+
 /**
  * Mock implementation of our PolicyManager service.
  *
@@ -71,54 +81,70 @@ public class PolicyManagerMock
      * Our AccountManager.
      *
      */
-    private AccountManager accountManager = new AccountManagerMock() ;
+    private AccountManagerMock accountManager = new AccountManagerMock() ;
 
     /**
-     * Create a new Account, given the Account ident.
+     * Add a new Account, given the Account ident.
+     * @param  ident The Account identifier.
+     * @return An AccountData for the Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is already in the database.
      *
      */
     public AccountData addAccount(String ident)
-        throws RemoteException
+        throws CommunityIdentifierException, CommunityPolicyException
         {
         return accountManager.addAccount(ident) ;
         }
 
     /**
-     * Request an Account data, given the Account ident.
+     * Request an Account details, given the Account ident.
+     * @param  ident The Account identifier.
+     * @return An AccountData for the Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
      *
      */
     public AccountData getAccount(String ident)
-        throws RemoteException
+        throws CommunityIdentifierException, CommunityPolicyException
         {
         return accountManager.getAccount(ident) ;
         }
 
     /**
-     * Update an Account data.
+     * Update an Account.
+     * @param  update The new Account data to update.
+     * @return A new AccountData for the Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
      *
      */
-    public AccountData setAccount(AccountData account)
-        throws RemoteException
+    public AccountData setAccount(AccountData update)
+        throws CommunityIdentifierException, CommunityPolicyException
         {
-        return accountManager.setAccount(account) ;
+        return accountManager.setAccount(update) ;
         }
 
     /**
-     * Delete an Account, given the Account name.
+     * Delete an Account.
+     * @param  ident The Account identifier.
+     * @return The AccountData for the old Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
      *
      */
     public AccountData delAccount(String ident)
-        throws RemoteException
+        throws CommunityIdentifierException, CommunityPolicyException
         {
         return accountManager.delAccount(ident) ;
         }
 
     /**
      * Request a list of local Accounts.
+     * @return An array of AccountData objects.
      *
      */
     public Object[] getLocalAccounts()
-        throws RemoteException
         {
         return accountManager.getLocalAccounts() ;
         }
@@ -127,7 +153,7 @@ public class PolicyManagerMock
      * Our GroupManager.
      *
      */
-    private GroupManager groupManager = new GroupManagerMock() ;
+    private GroupManagerMock groupManager = new GroupManagerMock() ;
 
     /**
      * Create a new Group, given the Group ident.
@@ -193,54 +219,70 @@ public class PolicyManagerMock
      * Our CommunityManager.
      *
      */
-    private CommunityManager communityManager = new CommunityManagerMock() ;
+    private CommunityManagerMock communityManager = new CommunityManagerMock() ;
 
     /**
-     * Create a new Community.
+     * Add a new Community, given the Account ident.
+     * @param  ident The Community identifier.
+     * @return A CommunityData for the Community.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is already in the database.
      *
      */
     public CommunityData addCommunity(String ident)
-        throws RemoteException
+        throws CommunityIdentifierException, CommunityPolicyException
         {
         return communityManager.addCommunity(ident) ;
         }
 
     /**
-     * Request an Community details.
+     * Request a Community details, given the Community ident.
+     * @param  ident The Community identifier.
+     * @return A CommunityData for the Community.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
      *
      */
     public CommunityData getCommunity(String ident)
-        throws RemoteException
+        throws CommunityIdentifierException, CommunityPolicyException
         {
         return communityManager.getCommunity(ident) ;
         }
 
     /**
-     * Update an Community details.
+     * Update a Community.
+     * @param  update The new CommunityData to update.
+     * @return A new CommunityData for the Community.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
      *
      */
-    public CommunityData setCommunity(CommunityData community)
-        throws RemoteException
+    public CommunityData setCommunity(CommunityData update)
+        throws CommunityIdentifierException, CommunityPolicyException
         {
-        return communityManager.setCommunity(community) ;
+        return communityManager.setCommunity(update) ;
         }
 
     /**
-     * Delete an Community.
+     * Delete a Community.
+     * @param  ident The Community identifier.
+     * @return The CommunityData for the old Community.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
      *
      */
     public CommunityData delCommunity(String ident)
-        throws RemoteException
+        throws CommunityIdentifierException, CommunityPolicyException
         {
         return communityManager.delCommunity(ident) ;
         }
 
     /**
-     * Request a list of Communitys.
+     * Request a list of Communities.
+     * @return An array of CommunityData objects.
      *
      */
     public Object[] getCommunityList()
-        throws RemoteException
         {
         return communityManager.getCommunityList() ;
         }
@@ -249,7 +291,7 @@ public class PolicyManagerMock
      * Our ResourceManager.
      *
      */
-    private ResourceManager resourceManager = new ResourceManagerMock() ;
+    private ResourceManagerMock resourceManager = new ResourceManagerMock() ;
 
    /**
     * Create a new Resource.
@@ -305,7 +347,7 @@ public class PolicyManagerMock
      * Our PermissionManager.
      *
      */
-    private PermissionManager permissionManager = new PermissionManagerMock() ;
+    private PermissionManagerMock permissionManager = new PermissionManagerMock() ;
 
     /**
      * Create a new PolicyPermission.
@@ -400,10 +442,10 @@ public class PolicyManagerMock
     /**
      * Get a list of remote Groups that an Account belongs to, given the Account and Community names.
      *
-     */
     public Object[] getRemoteAccountGroups(String account, String community)
         {
         // TODO - return something.
         return null ;
         }
+     */
     }

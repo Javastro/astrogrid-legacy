@@ -4,46 +4,15 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/portal/Attic/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/19 14:43:15 $</cvs:date>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
-    |   Revision 1.7  2004/03/15 07:49:30  dave
-    |   Merged development branch, dave-dev-200403121536, into HEAD
+    |   Revision 1.8  2004/03/19 14:43:15  dave
+    |   Merged development branch, dave-dev-200403151155, into HEAD
     |
-    |   Revision 1.6.12.2  2004/03/12 17:42:09  dave
-    |   Replaced tabs with spaces
-    |
-    |   Revision 1.6.12.1  2004/03/12 17:30:00  dave
-    |   Fixed Castor JTA dependencies
-    |
-    |   Revision 1.6  2004/03/08 13:42:33  dave
-    |   Updated Maven goals.
-    |   Replaced tabs with Spaces.
-    |
-    |   Revision 1.5.2.1  2004/03/08 12:53:18  dave
-    |   Changed tabs to spaces
-    |
-    |   Revision 1.5  2004/03/05 17:19:59  dave
-    |   Merged development branch, dave-dev-200402211936, into HEAD
-    |
-    |   Revision 1.4.4.1  2004/02/22 01:50:47  dave
-    |   Refactored install and deploy goals
-    |
-    |   Revision 1.4  2004/02/12 08:12:13  dave
-    |   Merged development branch, dave-dev-200401131047, into HEAD
-    |
-    |   Revision 1.2.4.1  2004/01/17 13:54:18  dave
-    |   Removed password from AccountData
-    |
-    |   Revision 1.2  2004/01/07 10:45:40  dave
-    |   Merged development branch, dave-dev-20031224, back into HEAD
-    |
-    |   Revision 1.1.2.2  2004/01/07 04:29:15  dave
-    |   Moved properties into shared files and tested deployment goals
-    |
-    |   Revision 1.1.2.1  2004/01/06 14:21:43  dave
-    |   Tidied up directory tree ....
+    |   Revision 1.7.2.1  2004/03/19 00:15:19  dave
+    |   Changed clean target
     |
     | </cvs:log>
     |

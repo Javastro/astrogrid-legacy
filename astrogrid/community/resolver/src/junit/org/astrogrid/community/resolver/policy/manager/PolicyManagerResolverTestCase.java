@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/junit/org/astrogrid/community/resolver/policy/manager/PolicyManagerResolverTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 14:43:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerResolverTestCase.java,v $
+ *   Revision 1.4  2004/03/19 14:43:15  dave
+ *   Merged development branch, dave-dev-200403151155, into HEAD
+ *
+ *   Revision 1.3.2.1  2004/03/16 11:55:15  dave
+ *   Split CommunityIvornFactory into CommunityAccountIvornFactory and CommunityServiceIvornFactory.
+ *
  *   Revision 1.3  2004/03/15 07:49:30  dave
  *   Merged development branch, dave-dev-200403121536, into HEAD
  *
@@ -40,6 +46,8 @@ import junit.framework.TestCase ;
 import org.astrogrid.store.Ivorn ;
 import org.astrogrid.common.ivorn.MockIvorn ;
 
+import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory ;
+
 import org.astrogrid.community.client.policy.manager.PolicyManagerDelegate ;
 import org.astrogrid.community.client.policy.manager.PolicyManagerMockDelegate ;
 import org.astrogrid.community.client.policy.manager.PolicyManagerSoapDelegate ;
@@ -69,7 +77,10 @@ public class PolicyManagerResolverTestCase
         if (DEBUG_FLAG) System.out.println("PolicyManagerResolverTestCase.testResolveMock()") ;
         //
         // Create our Ivorn.
-        Ivorn ivorn = new MockIvorn("community", "frog") ;
+        Ivorn ivorn = CommunityAccountIvornFactory.createMock(
+        	"community",
+        	"frog"
+        	) ;
         if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
         //
         // Create our resolver.
@@ -104,7 +115,10 @@ public class PolicyManagerResolverTestCase
         if (DEBUG_FLAG) System.out.println("PolicyManagerResolverTestCase.testCreateMock()") ;
         //
         // Create our Ivorn.
-        Ivorn ivorn = new MockIvorn("community", "frog") ;
+        Ivorn ivorn = CommunityAccountIvornFactory.createMock(
+        	"community",
+        	"frog"
+        	) ;
         if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
 		//
 		// Initialise our mock service.

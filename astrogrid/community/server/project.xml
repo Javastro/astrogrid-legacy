@@ -4,72 +4,15 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/Attic/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/19 14:43:15 $</cvs:date>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
-    |   Revision 1.8  2004/03/15 07:49:30  dave
-    |   Merged development branch, dave-dev-200403121536, into HEAD
+    |   Revision 1.9  2004/03/19 14:43:15  dave
+    |   Merged development branch, dave-dev-200403151155, into HEAD
     |
-    |   Revision 1.7.2.1  2004/03/12 17:30:00  dave
-    |   Fixed Castor JTA dependencies
-    |
-    |   Revision 1.7  2004/03/12 15:22:17  dave
-    |   Merged development branch, dave-dev-200403101018, into HEAD
-    |
-    |   Revision 1.6.12.2  2004/03/12 13:38:03  dave
-    |   Added test case for MockIvornFactory.
-    |   Fixed bugs in CommunityIvornParser.
-    |
-    |   Revision 1.6.12.1  2004/03/10 13:58:01  dave
-    |   Removed redundant pomVersion from sub-projects
-    |
-    |   Revision 1.6  2004/03/05 17:19:59  dave
-    |   Merged development branch, dave-dev-200402211936, into HEAD
-    |
-    |   Revision 1.5.2.2  2004/03/02 15:29:35  dave
-    |   Working round Castor problem with PasswordData - objects remain in database cache
-    |
-    |   Revision 1.5.2.1  2004/02/23 19:43:47  dave
-    |   Refactored DatabaseManager tests to test the interface.
-    |   Refactored DatabaseManager tests to use common DatabaseManagerTest.
-    |
-    |   Revision 1.5  2004/02/20 21:11:05  dave
-    |   Merged development branch, dave-dev-200402120832, into HEAD
-    |
-    |   Revision 1.4.2.3  2004/02/19 14:51:00  dave
-    |   Changed DatabaseManager to DatabaseConfigurationFactory.
-    |
-    |   Revision 1.4.2.2  2004/02/16 15:20:54  dave
-    |   Changed tabs to spaces
-    |
-    |   Revision 1.4.2.1  2004/02/14 22:24:09  dave
-    |   Test toolkit for the install and tomcat sub-projects
-    |
-    |   Revision 1.4  2004/02/12 08:12:13  dave
-    |   Merged development branch, dave-dev-200401131047, into HEAD
-    |
-    |   Revision 1.2.4.3  2004/02/10 01:18:13  dave
-    |   Changed internal depends to use ${pom.currentVersion}.
-    |   Tried using a properties file, but depends from project.xml are loaded before any of the properties.
-    |   TODO Need to make this configurable, to set the versions of other astrogrid depends.
-    |
-    |   Revision 1.2.4.2  2004/02/10 00:40:37  dave
-    |   Added install tooklit to the Maven build.
-    |   Changed Maven project to use 'org.astrogrid' as the group name.
-    |   Fixed dependencies that used the original group name.
-    |
-    |   Revision 1.2.4.1  2004/01/26 13:18:08  dave
-    |   Added new DatabaseManager to enable local JUnit testing
-    |
-    |   Revision 1.2  2004/01/07 10:45:45  dave
-    |   Merged development branch, dave-dev-20031224, back into HEAD
-    |
-    |   Revision 1.1.2.3  2004/01/07 04:29:15  dave
-    |   Moved properties into shared files and tested deployment goals
-    |
-    |   Revision 1.1.2.2  2004/01/01 01:44:29  dave
-    |   Moved common code into parent maven.xml script
+    |   Revision 1.8.2.1  2004/03/18 13:40:16  dave
+    |   Added astrogrid-common
     |
     | </cvs:log>
     +-->
@@ -134,6 +77,16 @@
         | The external libraries required to build our component.
         +-->
     <dependencies>
+        <!--+
+            | The AstroGrid common components.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-common</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
         <!--+
             | The Community common components.
             +-->

@@ -4,110 +4,18 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/19 14:43:15 $</cvs:date>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
-    |   Revision 1.8  2004/03/15 07:49:30  dave
-    |   Merged development branch, dave-dev-200403121536, into HEAD
+    |   Revision 1.9  2004/03/19 14:43:15  dave
+    |   Merged development branch, dave-dev-200403151155, into HEAD
     |
-    |   Revision 1.7.12.2  2004/03/12 17:42:09  dave
-    |   Replaced tabs with spaces
+    |   Revision 1.8.2.2  2004/03/19 00:15:55  dave
+    |   Changed clean target
     |
-    |   Revision 1.7.12.1  2004/03/12 17:30:00  dave
-    |   Fixed Castor JTA dependencies
-    |
-    |   Revision 1.7  2004/03/08 13:42:33  dave
-    |   Updated Maven goals.
-    |   Replaced tabs with Spaces.
-    |
-    |   Revision 1.6.2.2  2004/03/08 12:53:18  dave
-    |   Changed tabs to spaces
-    |
-    |   Revision 1.6.2.1  2004/03/08 12:10:05  dave
-    |   Modified Maven build scripts to use new AstroGrid goals
-    |
-    |   Revision 1.6  2004/03/05 17:20:00  dave
-    |   Merged development branch, dave-dev-200402211936, into HEAD
-    |
-    |   Revision 1.5.2.3  2004/03/05 16:28:28  dave
-    |   Added SecurityManager delegate test casees.
-    |   Refactored Maven JUnit properties.
-    |
-    |   Revision 1.5.2.2  2004/03/04 08:57:10  dave
-    |   Started work on the install xdocs.
-    |   Started work on the Security delegates.
-    |
-    |   Revision 1.5.2.1  2004/02/22 01:50:48  dave
-    |   Refactored install and deploy goals
-    |
-    |   Revision 1.5  2004/02/20 21:11:05  dave
-    |   Merged development branch, dave-dev-200402120832, into HEAD
-    |
-    |   Revision 1.4.2.4  2004/02/20 12:44:23  dave
-    |   Adding JNDI DataSource reference.
-    |
-    |   Revision 1.4.2.3  2004/02/20 01:02:38  dave
-    |   Added database config files to webapp.
-    |
-    |   Revision 1.4.2.2  2004/02/19 21:09:27  dave
-    |   Refactored ServiceStatusData into a common package.
-    |   Refactored CommunityServiceImpl constructor to take a parent service.
-    |   Refactored default database for CommunityServiceImpl
-    |
-    |   Revision 1.4.2.1  2004/02/16 15:20:54  dave
-    |   Changed tabs to spaces
-    |
-    |   Revision 1.4  2004/02/12 08:12:13  dave
-    |   Merged development branch, dave-dev-200401131047, into HEAD
-    |
-    |   Revision 1.2.4.3  2004/02/10 00:40:37  dave
-    |   Added install tooklit to the Maven build.
-    |   Changed Maven project to use 'org.astrogrid' as the group name.
-    |   Fixed dependencies that used the original group name.
-    |
-    |   Revision 1.2.4.2  2004/01/17 13:54:18  dave
-    |   Removed password from AccountData
-    |
-    |   Revision 1.2.4.1  2004/01/13 14:29:41  dave
-    |   Added initial JUnit tests
-    |
-    |   Revision 1.2  2004/01/07 10:45:45  dave
-    |   Merged development branch, dave-dev-20031224, back into HEAD
-    |
-    |   Revision 1.1.2.12  2004/01/07 08:01:43  dave
-    |   Fixed remote ln command
-    |
-    |   Revision 1.1.2.11  2004/01/07 07:48:02  dave
-    |   Replaced war:deploy-snapshot with hacked version of jar:deploy-snapshot
-    |
-    |   Revision 1.1.2.10  2004/01/07 07:22:08  dave
-    |   Fixed XML namespace
-    |
-    |   Revision 1.1.2.9  2004/01/07 07:20:13  dave
-    |   Fixed XML namespace
-    |
-    |   Revision 1.1.2.8  2004/01/07 07:18:08  dave
-    |   Tried replacing war:deploy-snapshot with jar:deploy-snapshot
-    |
-    |   Revision 1.1.2.7  2004/01/07 07:01:06  dave
-    |   Tried to fix war file name
-    |
-    |   Revision 1.1.2.6  2004/01/07 06:06:53  dave
-    |   Added tidy up for jar_deploy-snapshot
-    |
-    |   Revision 1.1.2.5  2004/01/07 04:29:15  dave
-    |   Moved properties into shared files and tested deployment goals
-    |
-    |   Revision 1.1.2.4  2004/01/05 04:45:34  dave
-    |   Removed the maven.xml import ... seems to work without it ?
-    |
-    |   Revision 1.1.2.3  2004/01/05 04:11:05  dave
-    |   Fixed the maven.xml import
-    |   Changed the primary goal to install-artifact
-    |
-    |   Revision 1.1.2.2  2004/01/01 01:44:29  dave
-    |   Moved common code into parent maven.xml script
+    |   Revision 1.8.2.1  2004/03/18 13:37:22  dave
+    |   Added default clean-build goal
     |
     | </cvs:log>
     |
@@ -120,7 +28,7 @@
     xmlns:log="jelly:log"
     xmlns:define="jelly:define"
     xmlns:local="org.astrogrid.community"
-    default="astrogrid-install-snapshot"
+    default="astrogrid-rebuild-snapshot"
     >
 
     <!--+
@@ -139,6 +47,17 @@
     </goal>
 
     <!-- ================ Custom tag library ================ -->
+
+    <!--+
+        | Clean, build and install our snapshot jar.
+        +-->
+    <goal name="astrogrid-rebuild-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <attainGoal name="clean"/>
+        <attainGoal name="astrogrid-install-snapshot"/>
+    </goal>
 
     <!--+
         | Define our local tag library.

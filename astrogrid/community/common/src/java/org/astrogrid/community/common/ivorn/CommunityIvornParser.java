@@ -1,42 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/ivorn/CommunityIvornParser.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityIvornParser.java,v $
- *   Revision 1.3  2004/03/15 07:49:30  dave
- *   Merged development branch, dave-dev-200403121536, into HEAD
+ *   Revision 1.4  2004/03/19 14:43:14  dave
+ *   Merged development branch, dave-dev-200403151155, into HEAD
  *
- *   Revision 1.2.2.4  2004/03/15 06:52:08  dave
- *   Refactored PolicyManagerMockDelegate to use ivorn identifiers.
- *   Refactored CommunityAccountResolver to just handle AccountData.
- *   Added CommunityAccountSpaceResolver to resolve home space ivorn.
- *
- *   Revision 1.2.2.3  2004/03/13 17:57:20  dave
- *   Remove RemoteException(s) from delegate interfaces.
- *   Protected internal API methods.
- *
- *   Revision 1.2.2.2  2004/03/13 16:08:08  dave
- *   Added CommunityAccountResolver and CommunityEndpointResolver.
- *
- *   Revision 1.2.2.1  2004/03/12 17:42:09  dave
- *   Replaced tabs with spaces
- *
- *   Revision 1.2  2004/03/12 15:22:17  dave
- *   Merged development branch, dave-dev-200403101018, into HEAD
- *
- *   Revision 1.1.2.3  2004/03/12 13:44:43  dave
- *   Moved MockIvornFactory to MockIvorn
- *
- *   Revision 1.1.2.2  2004/03/12 13:38:03  dave
- *   Added test case for MockIvorn.
- *   Fixed bugs in CommunityIvornParser.
- *
- *   Revision 1.1.2.1  2004/03/12 00:46:25  dave
- *   Added CommunityIvornFactory and CommunityIvornParser.
- *   Added MockIvorn (to be moved to common project).
+ *   Revision 1.3.2.4  2004/03/18 13:41:19  dave
+ *   Added Exception handling to AccountManager
  *
  * </cvs:log>
  *
@@ -53,6 +27,8 @@ import java.util.regex.Pattern ;
 
 import org.astrogrid.store.Ivorn ;
 import org.astrogrid.common.ivorn.MockIvorn ;
+
+import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
 /**
  * A parser for handling Ivorn identifiers.
@@ -76,9 +52,12 @@ public class CommunityIvornParser
 
     /**
      * Public constructor, for a specific Ivorn.
+     * @param A vaild Ivorn identifier.
+     * @throws CommunityIdentifierException If the identifier is not valid.
      *
      */
     public CommunityIvornParser(Ivorn ivorn)
+		throws CommunityIdentifierException
         {
         this.setIvorn(ivorn) ;
         }
@@ -136,9 +115,12 @@ public class CommunityIvornParser
 
     /**
      * Set our target Ivorn.
+     * @param A vaild Ivorn identifier.
+     * @throws CommunityIdentifierException If the identifier is not valid.
      *
      */
-    public void setIvorn(Ivorn ivorn)
+    protected void setIvorn(Ivorn ivorn)
+		throws CommunityIdentifierException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -146,7 +128,7 @@ public class CommunityIvornParser
         if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
 		//
 		// Check for null param.
-        if (null == ivorn) { throw new IllegalArgumentException("Null ivorn") ; }
+        if (null == ivorn) { throw new CommunityIdentifierException("Null identifier") ; }
         //
         // Save the ivorn.
         this.ivorn     = ivorn ;
@@ -170,13 +152,11 @@ public class CommunityIvornParser
             }
         //
         // All Ivorn should be valid URI.
-        // Log this as an error.
         catch (URISyntaxException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("ERROR ----") ;
-            if (DEBUG_FLAG) System.out.println("Ivorn is not a valid URI") ;
-            if (DEBUG_FLAG) System.out.println(ouch) ;
-            if (DEBUG_FLAG) System.out.println("----------") ;
+			throw new CommunityIdentifierException(
+				ouch
+				) ;
             }
         }
 
@@ -184,7 +164,7 @@ public class CommunityIvornParser
      * Parse the Community ident.
      *
      */
-    private void parseCommunityIdent()
+    protected void parseCommunityIdent()
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -223,36 +203,6 @@ public class CommunityIvornParser
             return new Ivorn(
                 this.getCommunityIdent(),
                 null
-                ) ;
-            }
-		//
-		// If we don't have a community ident.
-        else {
-            return null ;
-            }
-        }
-
-    /**
-     * Get a new Ivorn for a Community service.
-     * At the moment, this will add the service type as a fragment to the end of the Ivorn.
-     * This may change to add the type to the end of the authority ident.
-     * @param type The Community service type.
-     * @return A new Ivorn, or null if the Community ident is null.
-     * @TODO Confirm that we can use the fragment in this way.
-     *
-     */
-    public Ivorn getServiceIvorn(String type)
-        {
-		//
-		// Check for null param.
-        if (null == type) { throw new IllegalArgumentException("Null type")   ; }
-		//
-		// If we have a community ident.
-        if (null != this.getCommunityIdent())
-            {
-            return new Ivorn(
-                this.getCommunityIdent(),
-                type
                 ) ;
             }
 		//
@@ -539,11 +489,11 @@ public class CommunityIvornParser
      *
      */
     public Ivorn getAccountIvorn()
-        throws URISyntaxException
+		throws CommunityIdentifierException
         {
-        if (null != this.getAccountIdent())
+        if ((null != this.getCommunityIdent()) && (null != this.getAccountName()))
             {
-            return CommunityIvornFactory.createIvorn(
+            return CommunityAccountIvornFactory.createIvorn(
                 this.getCommunityIdent(),
                 this.getAccountName()
                 ) ;
@@ -619,7 +569,8 @@ public class CommunityIvornParser
         }
 
     /**
-     * Returns true if the Ivorn is a mock identifier.
+     * Checks if the Ivorn is a mock identifier.
+     * @return true if the Ivorn is a mock identifier.
      *
      */
     public boolean isMock()

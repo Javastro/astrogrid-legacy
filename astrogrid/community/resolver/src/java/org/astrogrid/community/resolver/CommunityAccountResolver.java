@@ -1,11 +1,25 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityAccountResolver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 14:43:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountResolver.java,v $
+ *   Revision 1.3  2004/03/19 14:43:15  dave
+ *   Merged development branch, dave-dev-200403151155, into HEAD
+ *
+ *   Revision 1.2.2.3  2004/03/19 04:51:46  dave
+ *   Updated resolver with new Exceptions
+ *
+ *   Revision 1.2.2.2  2004/03/17 01:08:48  dave
+ *   Added AccountNotFoundException
+ *   Added DuplicateAccountException
+ *   Added InvalidIdentifierException
+ *
+ *   Revision 1.2.2.1  2004/03/16 19:51:17  dave
+ *   Added Exception reporting to resolvers
+ *
  *   Revision 1.2  2004/03/15 07:49:30  dave
  *   Merged development branch, dave-dev-200403121536, into HEAD
  *
@@ -27,20 +41,20 @@
 package org.astrogrid.community.resolver ;
 
 import java.net.URL ;
-import java.net.URISyntaxException ;
-import java.net.MalformedURLException ;
-
 import org.astrogrid.store.Ivorn ;
 
 import org.astrogrid.community.common.policy.data.AccountData ;
 
 import org.astrogrid.community.common.ivorn.CommunityIvornParser ;
-import org.astrogrid.community.common.exception.CommunityException ;
 import org.astrogrid.community.client.policy.manager.PolicyManagerDelegate ;
 
 import org.astrogrid.community.resolver.policy.manager.PolicyManagerResolver ;
 
 import org.astrogrid.registry.RegistryException;
+import org.astrogrid.community.common.exception.CommunityPolicyException ;
+import org.astrogrid.community.common.exception.CommunityServiceException ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException ;
+import org.astrogrid.community.resolver.exception.CommunityResolverException ;
 
 /**
  * A utility to resolve Ivorn identifiers into Community Account data.
@@ -55,25 +69,21 @@ public class CommunityAccountResolver
 	private static boolean DEBUG_FLAG = true ;
 
     /**
-     * Public constructor, using default registry delegate.
+     * Public constructor, using the default Registry service.
      *
      */
     public CommunityAccountResolver()
         {
-		//
-		// Initialise our default resolver.
 		resolver = new PolicyManagerResolver() ;
         }
 
     /**
-     * Public constructor, with a specific registry delegate.
-     * @param registry The endpoint address for our registry delegate.
+     * Public constructor, for a specific Registry service.
+     * @param registry The endpoint address for our RegistryDelegate.
      *
      */
     public CommunityAccountResolver(URL registry)
         {
-		//
-		// Initialise our resolver with the url.
 		resolver = new PolicyManagerResolver(registry) ;
         }
 
@@ -84,22 +94,35 @@ public class CommunityAccountResolver
 	private PolicyManagerResolver resolver ;
 
 	/**
-	 * Resolve an Ivorn into an AccountData.
-	 * @param ivorn An Ivorn containing the Community authority and Account ident.
-	 * @return A reference to an AccountData, or null if none found.
-	 * @TODO Better Exceptions for error reporting.
+	 * Resolve a Community identifier into an AccountData.
+	 * @param ivorn The Community Account identifier.
+	 * @return An AccountData for the Account.
+     * @throws CommunityPolicyException If the Community cannot locate the Account.
+     * @throws CommunityServiceException If an error occurs in the Community service.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityResolverException If the Community is unable to resolve the identifier.
+     * @throws RegistryException If the Registry is unable to resolve the identifier.
 	 *
 	 */
 	public AccountData resolve(Ivorn ivorn)
-		throws CommunityException, RegistryException, MalformedURLException, URISyntaxException
+		throws CommunityServiceException,
+			CommunityIdentifierException,
+			CommunityPolicyException,
+			CommunityResolverException,
+			RegistryException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("CommunityAccountResolver.resolve()") ;
 		if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
 		//
-		// Check for null ivorn.
-		if (null == ivorn) { throw new IllegalArgumentException("Null ivorn") ; }
+		// Check for null param.
+		if (null == ivorn)
+			{
+			throw new CommunityIdentifierException(
+				"Null identifier"
+				) ;
+			}
 		//
 		// Parse the Ivorn and then resolve the result.
 		return resolve(
@@ -108,37 +131,42 @@ public class CommunityAccountResolver
 		}
 
 	/**
-	 * Resolve data from a CommunityIvornParser into an AccountData.
-	 * @param parser An CommunityIvornParser containing the Community authority and Account ident.
-	 * @return A reference to an AccountData, or null if none found.
-	 * @TODO Better Exceptions for error reporting.
+	 * Resolve a Community identifier into an AccountData.
+	 * @param parser The Community Account identifier.
+	 * @return An AccountData for the Account.
+     * @throws CommunityPolicyException If the Community cannot locate the Account.
+     * @throws CommunityServiceException If an error occurs in the Community service.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityResolverException If the Community is unable to resolve the identifier.
+     * @throws RegistryException If the Registry is unable to resolve the identifier.
 	 *
 	 */
 	protected AccountData resolve(CommunityIvornParser parser)
-		throws CommunityException, RegistryException, MalformedURLException
+		throws CommunityServiceException,
+			CommunityIdentifierException,
+			CommunityPolicyException,
+			CommunityResolverException,
+			RegistryException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("CommunityAccountResolver.resolve()") ;
 		if (DEBUG_FLAG) System.out.println("  Ivorn : " + ((null != parser) ? parser.getIvorn() : null)) ;
 		//
-		// Check for null parser.
-		if (null == parser) { throw new IllegalArgumentException("Null parser") ; }
+		// Check for null param.
+		if (null == parser)
+			{
+			throw new CommunityIdentifierException(
+				"Null identifier"
+				) ;
+			}
 		//
 		// Resolve the ivorn into a PolicyManagerDelegate.
 		PolicyManagerDelegate delegate = resolver.resolve(parser) ;
 		//
-		// If we found a PolicyManagerDelegate.
-		if (null != delegate)
-			{
-			//
-			// Ask the PolicyManagerDelegate for the AccountData.
-			return delegate.getAccount(parser.getAccountIdent()) ;
-			}
-		//
-		// If didn't find a PolicyManagerDelegate.
-		else {
-			return null ;
-			}
+		// Ask the PolicyManagerDelegate for the AccountData.
+		return delegate.getAccount(
+			parser.getAccountIdent()
+			) ;
 		}
 	}

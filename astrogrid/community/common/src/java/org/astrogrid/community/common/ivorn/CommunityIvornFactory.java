@@ -1,11 +1,24 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/ivorn/CommunityIvornFactory.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityIvornFactory.java,v $
+ *   Revision 1.4  2004/03/19 14:43:14  dave
+ *   Merged development branch, dave-dev-200403151155, into HEAD
+ *
+ *   Revision 1.3.2.3  2004/03/18 13:41:19  dave
+ *   Added Exception handling to AccountManager
+ *
+ *   Revision 1.3.2.2  2004/03/16 14:05:21  dave
+ *   Added CommunityIvornFactoryTestCase
+ *   Added CommunityAccountIvornFactoryTestCase
+ *
+ *   Revision 1.3.2.1  2004/03/16 11:55:15  dave
+ *   Split CommunityIvornFactory into CommunityAccountIvornFactory and CommunityServiceIvornFactory.
+ *
  *   Revision 1.3  2004/03/15 07:49:30  dave
  *   Merged development branch, dave-dev-200403121536, into HEAD
  *
@@ -37,14 +50,13 @@
  */
 package org.astrogrid.community.common.ivorn ;
 
-import java.net.URISyntaxException ;
 import org.astrogrid.store.Ivorn ;
-
 import org.astrogrid.common.ivorn.MockIvorn ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
 /**
- * A factory for generating Community Ivorn identifiers.
- * @TODO - Combine this woth the MockIvorn ....
+ * A factory for generating Community related Ivorn identifiers.
+ * @todo Need better integration with the MockIvorn factory.
  *
  */
 public class CommunityIvornFactory
@@ -56,93 +68,76 @@ public class CommunityIvornFactory
     private static boolean DEBUG_FLAG = true ;
 
     /**
-     * Create a community Ivorn.
-     * @param ident   The Community ident, with no extra fields.
-     * @param account The Account name, without the Community ident.
+     * Create a new ident.
+     * @param  community    The Community ident, with no extra fields.
+     * @param  resource The resource name.
+     * @return A new identifer.
+     * @throws CommunityIdentifierException if the community or resource identifiers are null.
      *
      */
-    public static Ivorn createIvorn(String ident, String account)
-        throws URISyntaxException
+    protected static String createIdent(String community, String resource)
+        throws CommunityIdentifierException
         {
-        return new Ivorn(
-            createIdent(ident, account)
-            ) ;
-        }
-
-    /**
-     * Create a mock community Ivorn.
-     * @param ident   The Community ident, with no extra fields.
-     * @param account The Account name, without the Community ident.
-     *
-     */
-    public static Ivorn createMock(String ident, String account)
-        throws URISyntaxException
-        {
-        return new MockIvorn(
-            ident,
-            account
-            ) ;
+        return createIdent(community, resource, null, null, null) ;
         }
 
     /**
      * Create a Community ident.
-     * @param ident   The Community ident, with no extra fields.
-     * @param account The Account name, without the Community ident.
+     * @param  community    The Community ident, with no extra fields.
+     * @param  resource The resource name.
+     * @param  path     The URI path, added after the resource.
+     * @return A new identifer.
+     * @throws CommunityIdentifierException if the community or resource identifiers are null.
      *
      */
-    protected static String createIdent(String ident, String account)
+    protected static String createIdent(String community, String resource, String path)
+        throws CommunityIdentifierException
         {
-        return createIdent(ident, account, null, null, null) ;
+        return createIdent(community, resource, path, null, null) ;
         }
 
     /**
      * Create a Community ident.
-     * @param ident   The Community ident, with no extra fields.
-     * @param account The Account name, without the Community ident.
-     * @param path    The path, added after the ident.
+     * @param  community The Community ident, with no extra fields.
+     * @param  resource  The resource name.
+     * @param  path      The URI path, added after the resource.
+     * @param  fragment  The URI fragment, added after the path.
+     * @return A new identifer.
+     * @throws CommunityIdentifierException if the community or resource identifiers are null.
      *
      */
-    protected static String createIdent(String ident, String account, String path)
+    protected static String createIdent(String community, String resource, String path, String fragment)
+        throws CommunityIdentifierException
         {
-        return createIdent(ident, account, path, null, null) ;
+        return createIdent(community, resource, path, null, fragment) ;
         }
 
     /**
      * Create a Community ident.
-     * @param ident     The Community ident, with no extra fields.
-     * @param account   The Account name, without the Community ident.
-     * @param path      The path, added after the ident.
-     * @param fragment  The URI fragment string.
+     * @param  community The Community ident, with no extra fields.
+     * @param  resource  The resource name.
+     * @param  path      The URI path, added after the resource.
+     * @param  query     The URI query string, added after the path.
+     * @param  fragment  The URI fragment, added after the query.
+     * @return A new identifer.
+     * @throws CommunityIdentifierException if the community or resource identifiers are null.
      *
      */
-    protected static String createIdent(String ident, String account, String path, String fragment)
-        {
-        return createIdent(ident, account, path, null, fragment) ;
-        }
-
-    /**
-     * Create a Community ident.
-     * @param ident     The Community ident, with no extra fields.
-     * @param account   The Account name, without the Community ident.
-     * @param path      The path, added after the ident.
-     * @param query     The URI query string.
-     * @param fragment  The URI fragment string.
-     *
-     */
-    protected static String createIdent(String ident, String account, String path, String query, String fragment)
+    protected static String createIdent(String community, String resource, String path, String query, String fragment)
+        throws CommunityIdentifierException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("CommunityIvornFactory.createIdent()") ;
-        if (DEBUG_FLAG) System.out.println("  Ident    : " + ident) ;
-        if (DEBUG_FLAG) System.out.println("  Account  : " + account) ;
-        if (DEBUG_FLAG) System.out.println("  Path     : " + path) ;
-        if (DEBUG_FLAG) System.out.println("  Query    : " + query) ;
-        if (DEBUG_FLAG) System.out.println("  Fragment : " + fragment) ;
+        if (DEBUG_FLAG) System.out.println("  Community : " + community) ;
+        if (DEBUG_FLAG) System.out.println("  Resource  : " + resource) ;
+        if (DEBUG_FLAG) System.out.println("  Path      : " + path) ;
+        if (DEBUG_FLAG) System.out.println("  Query     : " + query) ;
+        if (DEBUG_FLAG) System.out.println("  Fragment  : " + fragment) ;
         //
         // Check for null params.
-        if (null == ident)   { throw new IllegalArgumentException("Null Community identifier") ; }
-        if (null == account) { throw new IllegalArgumentException("Null Account identifier") ; }
+        if (null == community) { throw new CommunityIdentifierException("Null Community identifier") ; }
+        if (null == resource)  { throw new CommunityIdentifierException("Null Resource identifier") ; }
         //
         // Put it all together.
         StringBuffer buffer = new StringBuffer() ;
@@ -150,9 +145,9 @@ public class CommunityIvornFactory
         buffer.append(Ivorn.SCHEME) ;
         buffer.append("://") ;
 
-        buffer.append(ident) ;
+        buffer.append(community) ;
         buffer.append("/") ;
-        buffer.append(account) ;
+        buffer.append(resource) ;
         if (null != path)
             {
             buffer.append("/") ;
@@ -168,7 +163,7 @@ public class CommunityIvornFactory
             buffer.append("#") ;
             buffer.append(fragment) ;
             }
-        if (DEBUG_FLAG) System.out.println("  Result   : " + buffer.toString()) ;
+        if (DEBUG_FLAG) System.out.println("  Result    : " + buffer.toString()) ;
         //
         // Return the new string.
         return buffer.toString() ;

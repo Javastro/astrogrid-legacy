@@ -1,11 +1,25 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityAccountSpaceResolver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 14:43:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountSpaceResolver.java,v $
+ *   Revision 1.3  2004/03/19 14:43:15  dave
+ *   Merged development branch, dave-dev-200403151155, into HEAD
+ *
+ *   Revision 1.2.2.3  2004/03/19 04:51:46  dave
+ *   Updated resolver with new Exceptions
+ *
+ *   Revision 1.2.2.2  2004/03/17 01:08:48  dave
+ *   Added AccountNotFoundException
+ *   Added DuplicateAccountException
+ *   Added InvalidIdentifierException
+ *
+ *   Revision 1.2.2.1  2004/03/16 19:51:17  dave
+ *   Added Exception reporting to resolvers
+ *
  *   Revision 1.2  2004/03/15 07:49:30  dave
  *   Merged development branch, dave-dev-200403121536, into HEAD
  *
@@ -24,15 +38,19 @@ package org.astrogrid.community.resolver ;
 
 import java.net.URL ;
 import java.net.URISyntaxException ;
-import java.net.MalformedURLException ;
 
 import org.astrogrid.store.Ivorn ;
 
 import org.astrogrid.community.common.policy.data.AccountData ;
 import org.astrogrid.community.common.ivorn.CommunityIvornParser ;
-import org.astrogrid.community.common.exception.CommunityException ;
 
 import org.astrogrid.registry.RegistryException;
+
+import org.astrogrid.community.common.exception.CommunityPolicyException ;
+import org.astrogrid.community.common.exception.CommunityServiceException ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException ;
+
+import org.astrogrid.community.resolver.exception.CommunityResolverException ;
 
 /**
  * A utility to resolve an Ivorn identifier for a Community Account into an Ivorn for the Account home space..
@@ -47,7 +65,7 @@ public class CommunityAccountSpaceResolver
 	private static boolean DEBUG_FLAG = true ;
 
     /**
-     * Public constructor, using default registry delegate.
+     * Public constructor, using the default Registry service.
      *
      */
     public CommunityAccountSpaceResolver()
@@ -58,8 +76,8 @@ public class CommunityAccountSpaceResolver
         }
 
     /**
-     * Public constructor, with a specific registry delegate.
-     * @param registry The endpoint address for our registry delegate.
+     * Public constructor, for a specific Registry service.
+     * @param registry The endpoint address for our RegistryDelegate.
      *
      */
     public CommunityAccountSpaceResolver(URL registry)
@@ -76,11 +94,22 @@ public class CommunityAccountSpaceResolver
 	private CommunityAccountResolver resolver ;
 
 	/**
-	 * Resolve an Ivorn into the corresponding VoSpace Ivorn.
+	 * Resolve a Community Account identifier into the corresponding VoSpace identifier.
+	 * @param ivorn The Community Account identifier.
+	 * @return A new Ivorn for the corresponding VoSpace.
+     * @throws CommunityPolicyException If the Community cannot locate the Account.
+     * @throws CommunityServiceException If an error occurs in the Community service.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityResolverException If the Community is unable to resolve the identifier.
+     * @throws RegistryException If the Registry is unable to resolve the identifier.
 	 *
 	 */
 	public Ivorn resolve(Ivorn ivorn)
-		throws CommunityException, RegistryException, MalformedURLException, URISyntaxException
+		throws CommunityServiceException,
+			CommunityIdentifierException,
+			CommunityPolicyException,
+			CommunityResolverException,
+			RegistryException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -88,7 +117,12 @@ public class CommunityAccountSpaceResolver
 		if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
 		//
 		// Check for null ivorn.
-		if (null == ivorn) { throw new IllegalArgumentException("Null ivorn") ; }
+		if (null == ivorn)
+			{
+			throw new CommunityIdentifierException(
+				"Null identifier"
+				) ;
+			}
 		//
 		// Parse the Ivorn and then resolve the result.
 		return resolve(
@@ -97,14 +131,22 @@ public class CommunityAccountSpaceResolver
 		}
 
 	/**
-	 * Resolve data from a CommunityIvornParser.
-	 * @param parser A CommunityIvornParser containing the Community authority and Account ident.
-	 * @return A new Ivorn for the corresponding VoSpace, or null if none found.
-	 * @TODO Better Exceptions for error reporting.
+	 * Resolve a Community Account identifier into the corresponding VoSpace identifier.
+	 * @param parser The Community Account identifier.
+	 * @return A new Ivorn for the corresponding VoSpace.
+     * @throws CommunityPolicyException If the Community cannot locate the Account.
+     * @throws CommunityServiceException If an error occurs in the Community service.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityResolverException If the Community is unable to resolve the identifier.
+     * @throws RegistryException If the Registry is unable to resolve the identifier.
 	 *
 	 */
 	protected Ivorn resolve(CommunityIvornParser parser)
-		throws CommunityException, RegistryException, MalformedURLException, URISyntaxException
+		throws CommunityServiceException,
+			CommunityIdentifierException,
+			CommunityPolicyException,
+			CommunityResolverException,
+			RegistryException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -112,47 +154,50 @@ public class CommunityAccountSpaceResolver
 		if (DEBUG_FLAG) System.out.println("  Ivorn : " + ((null != parser) ? parser.getIvorn() : null)) ;
 		//
 		// Check for null parser.
-		if (null == parser) { throw new IllegalArgumentException("Null parser") ; }
+		if (null == parser)
+			{
+			throw new CommunityIdentifierException(
+				"Null identifier"
+				) ;
+			}
 		//
 		// Resolve the ivorn into an AccountData.
 		AccountData account = resolver.resolve(parser) ;
+		if (DEBUG_FLAG) System.out.println("PASS : Got Account.") ;
+		if (DEBUG_FLAG) System.out.println("Account : " + account.getIdent()) ;
 		//
-		// If we found an Account.
-		if (null != account)
+		// Get the Account home space Ivorn.
+		String home = account.getHomeSpace() ;
+		//
+		// If the Account has a home space.
+		if (null != home)
 			{
-			if (DEBUG_FLAG) System.out.println("PASS : Got Account.") ;
-			if (DEBUG_FLAG) System.out.println("Account : " + account.getIdent()) ;
+			if (DEBUG_FLAG) System.out.println("PASS : Got Account home.") ;
+			if (DEBUG_FLAG) System.out.println("Building new Ivorn based on Account home") ;
+			if (DEBUG_FLAG) System.out.println("  Home : " + home) ;
+			if (DEBUG_FLAG) System.out.println("  Path : " + parser.getRemainder()) ;
 			//
-			// Get the Account home space Ivorn.
-			String home = account.getHomeSpace() ;
-			//
-			// If the Account has a home space.
-			if (null != home)
-				{
-				if (DEBUG_FLAG) System.out.println("PASS : Got Account home.") ;
-				if (DEBUG_FLAG) System.out.println("Building new Ivorn based on Account home") ;
-				if (DEBUG_FLAG) System.out.println("  Home : " + home) ;
-				if (DEBUG_FLAG) System.out.println("  Path : " + parser.getRemainder()) ;
-				//
-				// Create a new Ivorn based on the home.
-				Ivorn ivorn = new Ivorn(
+			// Create a new Ivorn from the home address.
+			try {
+				return new Ivorn(
 					(home + parser.getRemainder())
 					) ;
-				if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
-				return ivorn ;
 				}
-			//
-			// If the Account does not have a home space.
-			else {
-				if (DEBUG_FLAG) System.out.println("FAIL : Null Account home.") ;
-				return null ;
+			catch (URISyntaxException ouch)
+				{
+				throw new CommunityIdentifierException(
+					"Unable to parse Account home into an Ivorn",
+					ouch
+					) ;
 				}
 			}
 		//
-		// If we didn't find the Account.
+		// If the Account does not have a home space.
 		else {
-			if (DEBUG_FLAG) System.out.println("FAIL : Null Account.") ;
-			return null ;
+			throw new CommunityResolverException(
+				"Account does not have a home space defined",
+				parser.getIvorn()
+				) ;
 			}
 		}
 	}

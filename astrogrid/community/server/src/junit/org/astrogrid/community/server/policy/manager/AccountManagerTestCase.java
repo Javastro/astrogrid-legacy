@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/server/policy/manager/Attic/AccountManagerTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 14:43:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerTestCase.java,v $
+ *   Revision 1.4  2004/03/19 14:43:15  dave
+ *   Merged development branch, dave-dev-200403151155, into HEAD
+ *
+ *   Revision 1.3.14.1  2004/03/19 03:31:21  dave
+ *   Changed AccountManagerMock to recognise DatabaseManager reset()
+ *
  *   Revision 1.3  2004/03/08 13:42:33  dave
  *   Updated Maven goals.
  *   Replaced tabs with Spaces.
@@ -83,45 +89,4 @@ public class AccountManagerTestCase
         // Reset our database tables.
         this.resetDatabase() ;
         }
-
-//
-// Old tests, left over after refactoring.
-// These might not be required any more.
-
-    /**
-     * Check we can create an AccountManager, using default database configuration.
-     *
-    public void testCreateDefaultManager()
-        throws Exception
-        {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testCreateDefaultManager()") ;
-        //
-        // Try creating our manager.
-        assertNotNull("Null manager",
-            new AccountManagerImpl()
-            ) ;
-        }
-     */
-
-    /**
-     * Check we can create an AccountManager, with test database configuration.
-     *
-    public void testCreateTestManager()
-        throws Exception
-        {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testCreateTestManager()") ;
-        //
-        // Try creating our manager.
-        assertNotNull("Null manager",
-            new AccountManagerImpl(
-                this.getDatabaseConfiguration()
-                )
-            ) ;
-        }
-     */
-
     }

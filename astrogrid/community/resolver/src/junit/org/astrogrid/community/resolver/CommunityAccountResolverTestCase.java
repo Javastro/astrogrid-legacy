@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/junit/org/astrogrid/community/resolver/CommunityAccountResolverTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 14:43:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountResolverTestCase.java,v $
+ *   Revision 1.3  2004/03/19 14:43:15  dave
+ *   Merged development branch, dave-dev-200403151155, into HEAD
+ *
+ *   Revision 1.2.2.1  2004/03/16 11:55:15  dave
+ *   Split CommunityIvornFactory into CommunityAccountIvornFactory and CommunityServiceIvornFactory.
+ *
  *   Revision 1.2  2004/03/15 07:49:30  dave
  *   Merged development branch, dave-dev-200403121536, into HEAD
  *
@@ -35,6 +41,7 @@ import org.astrogrid.store.Ivorn ;
 import org.astrogrid.common.ivorn.MockIvorn ;
 
 import org.astrogrid.community.common.ivorn.CommunityIvornParser ;
+import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory ;
 
 import org.astrogrid.community.common.policy.data.AccountData ;
 import org.astrogrid.community.common.policy.manager.PolicyManager ;
@@ -65,10 +72,12 @@ public class CommunityAccountResolverTestCase
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("CommunityAccountResolverTestCase.testResolveMock()") ;
-
-		//
-		// Create our account Ivorn.
-		Ivorn ident = new MockIvorn("community", "frog") ;
+        //
+        // Create our Account Ivorn.
+        Ivorn ident = CommunityAccountIvornFactory.createMock(
+        	"community",
+        	"frog"
+        	) ;
 		if (DEBUG_FLAG) System.out.println("  Ident  : " + ident) ;
 		//
 		// Create our myspace Ivorn.
@@ -87,7 +96,10 @@ public class CommunityAccountResolverTestCase
 
 		//
 		// Create our target Ivorn.
-		Ivorn target = new MockIvorn("community", "frog/public#qwertyuiop.xml") ;
+        Ivorn target = CommunityAccountIvornFactory.createMock(
+        	"community",
+        	"frog/public#qwertyuiop.xml"
+        	) ;
 		if (DEBUG_FLAG) System.out.println("  Target : " + target) ;
 		//
 		// Create our resolver.

@@ -1,165 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/PolicyManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 14:43:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
- *   Revision 1.7  2004/03/08 13:42:33  dave
- *   Updated Maven goals.
- *   Replaced tabs with Spaces.
+ *   Revision 1.8  2004/03/19 14:43:15  dave
+ *   Merged development branch, dave-dev-200403151155, into HEAD
  *
- *   Revision 1.6.2.1  2004/03/08 12:53:18  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.6  2004/03/05 17:19:59  dave
- *   Merged development branch, dave-dev-200402211936, into HEAD
- *
- *   Revision 1.5.2.3  2004/02/23 19:43:47  dave
- *   Refactored DatabaseManager tests to test the interface.
- *   Refactored DatabaseManager tests to use common DatabaseManagerTest.
- *
- *   Revision 1.5.2.2  2004/02/23 08:55:20  dave
- *   Refactored CastorDatabaseConfiguration into DatabaseConfiguration
- *
- *   Revision 1.5.2.1  2004/02/22 20:03:16  dave
- *   Removed redundant DatabaseConfiguration interfaces
- *
- *   Revision 1.5  2004/02/20 21:11:05  dave
- *   Merged development branch, dave-dev-200402120832, into HEAD
- *
- *   Revision 1.4.2.3  2004/02/20 19:34:11  dave
- *   Added JNDI Resource for community database.
- *   Removed multiple calls to loadDatabaseConfiguration .
- *
- *   Revision 1.4.2.2  2004/02/19 21:09:27  dave
- *   Refactored ServiceStatusData into a common package.
- *   Refactored CommunityServiceImpl constructor to take a parent service.
- *   Refactored default database for CommunityServiceImpl
- *
- *   Revision 1.4.2.1  2004/02/16 15:20:54  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.4  2004/02/12 08:12:13  dave
- *   Merged development branch, dave-dev-200401131047, into HEAD
- *
- *   Revision 1.2.4.10  2004/02/06 13:49:09  dave
- *   Moved CommunityManagerBase into server.common.CommunityServer.
- *   Moved getServiceStatus into server.common.CommunityServer.
- *   Moved JUnit tests to match.
- *
- *   Revision 1.2.4.9  2004/01/27 18:55:08  dave
- *   Removed unused imports listed in PMD report
- *
- *   Revision 1.2.4.8  2004/01/27 17:10:00  dave
- *   Refactored database handling in JUnit tests
- *
- *   Revision 1.2.4.7  2004/01/27 07:43:03  dave
- *   Removed old DatabaseManager code
- *
- *   Revision 1.2.4.6  2004/01/27 07:10:11  dave
- *   Refactored ResourceManagerImpl
- *
- *   Revision 1.2.4.5  2004/01/27 06:46:19  dave
- *   Refactored PermissionManagerImpl and added initial JUnit tests
- *
- *   Revision 1.2.4.4  2004/01/27 06:16:20  dave
- *   Removed calls to GroupManagerImpl.init()
- *
- *   Revision 1.2.4.3  2004/01/26 23:23:23  dave
- *   Changed CommunityManagerImpl to use the new DatabaseManager.
- *   Moved rollback and close into CommunityManagerBase.
- *
- *   Revision 1.2.4.2  2004/01/26 13:18:08  dave
- *   Added new DatabaseManager to enable local JUnit testing
- *
- *   Revision 1.2.4.1  2004/01/17 13:54:18  dave
- *   Removed password from AccountData
- *
- *   Revision 1.2  2004/01/07 10:45:45  dave
- *   Merged development branch, dave-dev-20031224, back into HEAD
- *
- *   Revision 1.1.2.2  2004/01/05 06:47:18  dave
- *   Moved policy data classes into policy.data package
- *
- *   Revision 1.1.2.1  2003/12/24 05:54:48  dave
- *   Initial Maven friendly structure (only part of the service implemented)
- *
- *   Revision 1.22  2003/11/06 15:35:26  dave
- *   Replaced tabs with spaces
- *
- *   Revision 1.21  2003/09/24 21:56:06  dave
- *   Added setPassword() to AccountManager
- *
- *   Revision 1.20  2003/09/17 19:47:21  dave
- *   1) Fixed classnotfound problems in the build.
- *   2) Added the JUnit task to add the initial accounts and groups.
- *   3) Got the build to work together with the portal.
- *   4) Fixed some bugs in the Account handling.
- *
- *   Revision 1.19  2003/09/15 16:05:45  KevinBenson
- *   *** empty log message ***
- *
- *   Revision 1.18  2003/09/13 02:18:52  dave
- *   Extended the jConfig configuration code.
- *
- *   Revision 1.17  2003/09/12 12:59:17  dave
- *   1) Fixed RemoteException handling in the manager and service implementations.
- *
- *   Revision 1.16  2003/09/11 03:15:06  dave
- *   1) Implemented PolicyService internals - no tests yet.
- *   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
- *   3) Added remote access to groups.
- *
- *   Revision 1.15  2003/09/10 17:21:43  dave
- *   Added remote functionality to groups.
- *
- *   Revision 1.14  2003/09/10 06:19:14  dave
- *   Fixed typos ...
- *
- *   Revision 1.13  2003/09/10 06:03:27  dave
- *   Added remote capability to Accounts
- *
- *   Revision 1.12  2003/09/10 02:56:03  dave
- *   Added PermissionManager and tests
- *
- *   Revision 1.11  2003/09/10 00:08:45  dave
- *   Added getGroupMembers, ResourceIdent and JUnit tests for ResourceManager
- *
- *   Revision 1.10  2003/09/09 19:13:32  KevinBenson
- *   New resource managerr stuff
- *
- *   Revision 1.9  2003/09/09 14:51:47  dave
- *   Added delGroupMember - only local accounts and groups to start with.
- *
- *   Revision 1.8  2003/09/09 13:48:09  dave
- *   Added addGroupMember - only local accounts and groups to start with.
- *
- *   Revision 1.7  2003/09/09 10:57:47  dave
- *   Added corresponding SINGLE Group to addAccount and delAccount.
- *
- *   Revision 1.6  2003/09/08 20:28:50  dave
- *   Added CommunityIdent, with isLocal() and isValid()
- *
- *   Revision 1.5  2003/09/08 11:01:35  KevinBenson
- *   A check in of the Authentication authenticateToken roughdraft and some changes to the groudata and community data
- *   along with an AdministrationDelegate
- *
- *   Revision 1.4  2003/09/06 20:10:07  dave
- *   Split PolicyManager into separate components.
- *
- *   Revision 1.3  2003/09/04 23:33:05  dave
- *   Implemented the core account manager methods - needs data object to return results
- *
- *   Revision 1.2  2003/09/03 15:23:33  dave
- *   Split API into two services, PolicyService and PolicyManager
- *
- *   Revision 1.1  2003/09/03 06:39:13  dave
- *   Rationalised things into one set of SOAP stubs and one set of data objects for both client and server.
- *
- *   Revision 1.1  2003/08/28 17:33:56  dave
- *   Initial policy prototype
+ *   Revision 1.7.14.1  2004/03/18 13:41:19  dave
+ *   Added Exception handling to AccountManager
  *
  * </cvs:log>
  *
@@ -182,6 +33,10 @@ import org.astrogrid.community.common.policy.manager.PolicyManager ;
 
 import org.astrogrid.community.server.service.CommunityServiceImpl ;
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration ;
+
+import org.astrogrid.community.common.exception.CommunityPolicyException     ;
+import org.astrogrid.community.common.exception.CommunityServiceException    ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
 public class PolicyManagerImpl
     extends CommunityServiceImpl
@@ -230,50 +85,16 @@ public class PolicyManagerImpl
         }
 
     /**
-     * Set our database configuration.
-     * This makes it easier to run JUnit tests with a different database configurations.
-     * This calls our base class method and then updates all of our local managers.
-     *
-    public void setDatabaseConfiguration(DatabaseConfiguration config)
-        {
-        //
-        // Call our base class method.
-        super.setDatabaseConfiguration(config) ;
-        //
-        // Notify our local managers.
-        if (null != groupManager)
-            {
-            groupManager.setDatabaseConfiguration(config) ;
-            }
-        if (null != accountManager)
-            {
-            accountManager.setDatabaseConfiguration(config) ;
-            }
-        if (null != resourceManager)
-            {
-            resourceManager.setDatabaseConfiguration(config) ;
-            }
-        if (null != communityManager)
-            {
-            communityManager.setDatabaseConfiguration(config) ;
-            }
-        if (null != permissionManager)
-            {
-            permissionManager.setDatabaseConfiguration(config) ;
-            }
-        }
-     */
-
-    /**
      * Initialise our local managers, passing a reference to 'this' as their parent.
+     * @todo Refactor this into default initialiser.
      *
      */
     private void initManagers()
         {
-        groupManager = new GroupManagerImpl(this) ;
-        accountManager = new AccountManagerImpl(this) ; 
-        resourceManager = new ResourceManagerImpl(this) ;
-        communityManager = new CommunityManagerImpl(this) ;
+        groupManager      = new GroupManagerImpl(this)      ;
+        accountManager    = new AccountManagerImpl(this)    ;
+        resourceManager   = new ResourceManagerImpl(this)   ;
+        communityManager  = new CommunityManagerImpl(this)  ;
         permissionManager = new PermissionManagerImpl(this) ;
         }
 
@@ -308,48 +129,59 @@ public class PolicyManagerImpl
     private PermissionManagerImpl permissionManager ;
 
     /**
-     * Get the password for an Account.
-     * This should only be available via an encrypted connection.
-     *
-     * Removed for refactoring.
-    public String getPassword(String name)
-        {
-        return this.accountManager.getPassword(name);
-        }
-     */
-
-    /**
-     * Set the password for an Account.
-     * This should only be available via an encrypted connection.
-     *
-     * Removed for refactoring.
-    public AccountData setPassword(String ident, String password)
-        {
-        return this.accountManager.setPassword(ident, password);
-        }
-     */
-
-    /**
-     * Create a new Account, given the Account name.
+     * Add a new Account, given the Account ident.
+     * @param  ident The Account identifier.
+     * @return An AccountData for the Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is already in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws RemoteException If the Account is in a remote Community and the WebService call fails.
+     * @todo Use resolver to find the remote service.
      *
      */
-    public AccountData addAccount(String name)
+    public AccountData addAccount(String ident)
+        throws RemoteException, CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        return this.addAccount(new CommunityIdent(name)) ;
+        //
+        // Check for null ident.
+        if (null == ident)
+            {
+            throw new CommunityIdentifierException(
+				"Null identifier"
+            	) ;
+            }
+		//
+		// Parse the ident and process the result.
+        return this.addAccount(new CommunityIdent(ident)) ;
         }
 
     /**
-     * Create a new Account, given the Account ident.
+     * Add a new Account, given the Account ident.
+     * @param  ident The Account identifier.
+     * @return An AccountData for the Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is already in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws RemoteException If the Account is in a remote Community and the WebService call fails.
+     * @todo Use CommunityIvornParser to handle the identifier.
+     * @todo Use resolver to find the remote service.
      *
      */
     protected AccountData addAccount(CommunityIdent ident)
+        throws RemoteException, CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.addAccount()") ;
         if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
-
-        AccountData result = null ;
+        //
+        // Check for null ident.
+        if (null == ident)
+            {
+            throw new CommunityIdentifierException(
+				"Null identifier"
+            	) ;
+            }
         //
         // If the ident is valid.
         if (ident.isValid())
@@ -362,10 +194,7 @@ public class PolicyManagerImpl
                 if (DEBUG_FLAG) System.out.println("PASS : Ident is local") ;
                 //
                 // Use our local manager.
-                result = accountManager.addAccount(ident) ;
-// TODO
-// Need to add the account to the account group.
-// Need to add the account to the guest group.
+                return accountManager.addAccount(ident) ;
                 }
             //
             // If the ident is not local.
@@ -379,35 +208,14 @@ public class PolicyManagerImpl
                 if (null != remote)
                     {
                     if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
-                    //
-                    // Try asking the remote manager.
-                    try {
-                        result = remote.addAccount(ident.toString()) ;
-                        }
-                    //
-                    // Catch a remote Exception from the SOAP call.
-                    catch (RemoteException ouch)
-                        {
-                        if (DEBUG_FLAG) System.out.println("FAIL : Remote service call failed.") ;
-                        result = null ;
-                        }
-                    //
-                    // If we got a result.
-                    if (null != result)
-                        {
-                        if (DEBUG_FLAG) System.out.println("PASS : Created remote account") ;
-                        }
-                    //
-                    // If we didn't get a result.
-                    else {
-                        if (DEBUG_FLAG) System.out.println("FAIL : Failed to create remote account") ;
-                        }
+                    if (DEBUG_FLAG) System.out.println("Asking remote manager to create the account") ;
+                    return remote.addAccount(ident.toString()) ;
                     }
                 //
                 // If we didn't get a remote manager.
                 else {
                     if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
-                    result = null ;
+return null ;
                     }
                 }
             }
@@ -415,34 +223,65 @@ public class PolicyManagerImpl
         // If the ident is not valid.
         else {
             if (DEBUG_FLAG) System.out.println("FAIL : Ident not valid") ;
-            result = null ;
+return null ;
             }
-
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        return result ;
         }
 
     /**
-     * Request an Account data, given the Account name.
+     * Request an Account details, given the Account ident.
+     * @param  ident The Account identifier.
+     * @return An AccountData for the Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws RemoteException If the Account is in a remote Community and the WebService call fails.
+     * @todo Use CommunityIvornParser to handle the identifier.
+     * @todo Use resolver to find the remote service.
      *
      */
-    public AccountData getAccount(String name)
+    public AccountData getAccount(String ident)
+        throws RemoteException, CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        return this.getAccount(new CommunityIdent(name)) ;
+        //
+        // Check for null ident.
+        if (null == ident)
+            {
+            throw new CommunityIdentifierException(
+				"Null identifier"
+            	) ;
+            }
+		//
+		// Parse the ident and process that.
+        return this.getAccount(new CommunityIdent(ident)) ;
         }
 
     /**
-     * Request an Account data, given the Account ident.
+     * Request an Account details, given the Account ident.
+     * @param  ident The Account identifier.
+     * @return An AccountData for the Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws RemoteException If the Account is in a remote Community and the WebService call fails.
+     * @todo Use CommunityIvornParser to handle the identifier.
+     * @todo Use resolver to find the remote service.
      *
      */
     protected AccountData getAccount(CommunityIdent ident)
+        throws RemoteException, CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.getAccount()") ;
         if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
-
-        AccountData result = null ;
+        //
+        // Check for null ident.
+        if (null == ident)
+            {
+            throw new CommunityIdentifierException(
+				"Null identifier"
+            	) ;
+            }
         //
         // If the ident is valid.
         if (ident.isValid())
@@ -455,7 +294,7 @@ public class PolicyManagerImpl
                 if (DEBUG_FLAG) System.out.println("PASS : Ident is local") ;
                 //
                 // Use our local manager.
-                result = accountManager.getAccount(ident) ;
+                return accountManager.getAccount(ident) ;
                 }
             //
             // If the ident is not local.
@@ -469,35 +308,14 @@ public class PolicyManagerImpl
                 if (null != remote)
                     {
                     if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
-                    //
-                    // Try asking the remote manager.
-                    try {
-                        result = remote.getAccount(ident.toString()) ;
-                        }
-                    //
-                    // Catch a remote Exception from the SOAP call.
-                    catch (RemoteException ouch)
-                        {
-                        if (DEBUG_FLAG) System.out.println("FAIL : Remote service call failed.") ;
-                        result = null ;
-                        }
-                    //
-                    // If we got a result.
-                    if (null != result)
-                        {
-                        if (DEBUG_FLAG) System.out.println("PASS : Found remote account") ;
-                        }
-                    //
-                    // If we didn't get a result.
-                    else {
-                        if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote account") ;
-                        }
+                    if (DEBUG_FLAG) System.out.println("Asking remote manager for the account") ;
+                    return remote.getAccount(ident.toString()) ;
                     }
                 //
                 // If we didn't get a remote manager.
                 else {
                     if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
-                    result = null ;
+return null ;
                     }
                 }
             }
@@ -505,25 +323,45 @@ public class PolicyManagerImpl
         // If the ident is not valid.
         else {
             if (DEBUG_FLAG) System.out.println("FAIL : Ident not valid") ;
-            result = null ;
+return null ;
             }
-
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        return result ;
         }
 
     /**
-     * Update an existing Account data.
+     * Update an Account.
+     * @param  account The new AccountData to update.
+     * @return A new AccountData for the Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws RemoteException If the Account is in a remote Community and the WebService call fails.
+     * @todo Use CommunityIvornParser to handle the identifier.
+     * @todo Use resolver to find the remote service.
      *
      */
     public AccountData setAccount(AccountData account)
+        throws RemoteException, CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.setAccount()") ;
         if (DEBUG_FLAG) System.out.println("  ident : " + account.getIdent()) ;
-
-        AccountData result = null ;
+        //
+        // Check for null account.
+        if (null == account)
+            {
+            throw new CommunityIdentifierException(
+				"Null account"
+            	) ;
+            }
+        //
+        // Check for null ident.
+        if (null == account.getIdent())
+            {
+            throw new CommunityIdentifierException(
+				"Null identifier"
+            	) ;
+            }
         CommunityIdent ident = new CommunityIdent(account.getIdent()) ;
         //
         // If the ident is valid.
@@ -537,7 +375,7 @@ public class PolicyManagerImpl
                 if (DEBUG_FLAG) System.out.println("PASS : Ident is local") ;
                 //
                 // Use our local manager.
-                result = accountManager.setAccount(account) ;
+                return accountManager.setAccount(account) ;
                 }
             //
             // If the ident is not local.
@@ -551,35 +389,14 @@ public class PolicyManagerImpl
                 if (null != remote)
                     {
                     if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
-                    //
-                    // Try asking the remote manager.
-                    try {
-                        result = remote.setAccount(account) ;
-                        }
-                    //
-                    // Catch a remote Exception from the SOAP call.
-                    catch (RemoteException ouch)
-                        {
-                        if (DEBUG_FLAG) System.out.println("FAIL : Remote service call failed.") ;
-                        result = null ;
-                        }
-                    //
-                    // If we got a result.
-                    if (null != result)
-                        {
-                        if (DEBUG_FLAG) System.out.println("PASS : Found remote account") ;
-                        }
-                    //
-                    // If we didn't get a result.
-                    else {
-                        if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote account") ;
-                        }
+                    if (DEBUG_FLAG) System.out.println("Asking remote manager to update the account") ;
+                    return remote.setAccount(account) ;
                     }
                 //
                 // If we didn't get a remote manager.
                 else {
                     if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
-                    result = null ;
+return null ;
                     }
                 }
             }
@@ -587,34 +404,63 @@ public class PolicyManagerImpl
         // If the ident is not valid.
         else {
             if (DEBUG_FLAG) System.out.println("FAIL : Ident not valid") ;
-            result = null ;
+return null ;
             }
-
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        return result ;
         }
 
     /**
-     * Delete an Account, given the Account name.
+     * Delete an Account.
+     * @param  ident The Account identifier.
+     * @return The AccountData for the old Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws RemoteException If the Account is in a remote Community and the WebService call fails.
+     * @todo Use CommunityIvornParser to handle the identifier.
+     * @todo Use resolver to find the remote service.
      *
      */
-    public AccountData delAccount(String name)
+    public AccountData delAccount(String ident)
+        throws RemoteException, CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        return this.delAccount(new CommunityIdent(name)) ;
+        //
+        // Check for null ident.
+        if (null == ident)
+            {
+            throw new CommunityIdentifierException(
+				"Null identifier"
+            	) ;
+            }
+        return this.delAccount(new CommunityIdent(ident)) ;
         }
 
     /**
-     * Delete an Account, given the Account ident.
+     * Delete an Account.
+     * @param  ident The Account identifier.
+     * @return The AccountData for the old Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws RemoteException If the Account is in a remote Community and the WebService call fails.
+     * @todo Use CommunityIvornParser to handle the identifier.
+     * @todo Use resolver to find the remote service.
      *
      */
     protected AccountData delAccount(CommunityIdent ident)
+        throws RemoteException, CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.delAccount()") ;
         if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
-
-        AccountData result = null ;
+        //
+        // Check for null ident.
+        if (null == ident)
+            {
+            throw new CommunityIdentifierException(
+				"Null identifier"
+            	) ;
+            }
         //
         // If the ident is valid.
         if (ident.isValid())
@@ -627,7 +473,7 @@ public class PolicyManagerImpl
                 if (DEBUG_FLAG) System.out.println("PASS : Ident is local") ;
                 //
                 // Use our local manager.
-                result = accountManager.delAccount(ident) ;
+                return accountManager.delAccount(ident) ;
                 }
             //
             // If the ident is not local.
@@ -641,35 +487,14 @@ public class PolicyManagerImpl
                 if (null != remote)
                     {
                     if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
-                    //
-                    // Try asking the remote manager.
-                    try {
-                        result = remote.delAccount(ident.toString()) ;
-                        }
-                    //
-                    // Catch a remote Exception from the SOAP call.
-                    catch (RemoteException ouch)
-                        {
-                        if (DEBUG_FLAG) System.out.println("FAIL : Remote service call failed.") ;
-                        result = null ;
-                        }
-                    //
-                    // If we got a result.
-                    if (null != result)
-                        {
-                        if (DEBUG_FLAG) System.out.println("PASS : Found remote account") ;
-                        }
-                    //
-                    // If we didn't get a result.
-                    else {
-                        if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote account") ;
-                        }
+                    if (DEBUG_FLAG) System.out.println("Asking remote manager to update the account") ;
+                    return remote.delAccount(ident.toString()) ;
                     }
                 //
                 // If we didn't get a remote manager.
                 else {
                     if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
-                    result = null ;
+return null ;
                     }
                 }
             }
@@ -677,27 +502,33 @@ public class PolicyManagerImpl
         // If the ident is not valid.
         else {
             if (DEBUG_FLAG) System.out.println("FAIL : Ident not valid") ;
-            result = null ;
+return null ;
             }
-
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        return result ;
         }
 
     /**
      * Request a list of local Accounts.
+     * @return An array of AccountData objects.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
     public Object[] getLocalAccounts()
+        throws CommunityServiceException
         {
         return accountManager.getLocalAccounts() ;
         }
 
     /**
-     * Request a list of Accounts, given a remote Community name.
+     * Request a list of Accounts from another Community.
+     * @param  ident The Community identifier.
+     * @return An array of AccountData objects.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @todo Use CommunityIvornParser to handle the identifier.
+     * @todo Use resolver to find the remote service.
      *
-     */
     public Object[] getRemoteAccounts(String name)
+		throws CommunityServiceException, CommunityIdentifierException
         {
         Object[] results = null ;
         //
@@ -707,7 +538,7 @@ public class PolicyManagerImpl
             if (DEBUG_FLAG) System.out.println("PASS : Community is local") ;
             //
             // Call our local manager.
-            results = accountManager.getLocalAccounts() ;
+            return accountManager.getLocalAccounts() ;
             }
         //
         // If the community is remote.
@@ -721,40 +552,18 @@ public class PolicyManagerImpl
             if (null != remote)
                 {
                 if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
-                //
-                // Try asking the remote manager.
-                try {
-                    results = remote.getLocalAccounts() ;
-                    }
-                //
-                // Catch a remote Exception from the SOAP call.
-                catch (RemoteException ouch)
-                    {
-                    if (DEBUG_FLAG) System.out.println("FAIL : Remote service call failed.") ;
-                    results = null ;
-                    }
-                //
-                // If we got a result.
-                if (null != results)
-                    {
-                    if (DEBUG_FLAG) System.out.println("PASS : Found remote accounts") ;
-                    }
-                //
-                // If we didn't get a result.
-                else {
-                    if (DEBUG_FLAG) System.out.println("FAIL : Missing remote accounts") ;
-                    }
+                if (DEBUG_FLAG) System.out.println("Asking remote manager for accounts") ;
+                return remote.getLocalAccounts() ;
                 }
             //
             // If we didn't get a remote manager.
             else {
                 if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
-                results = null ;
+return null ;
                 }
             }
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        return results ;
         }
+     */
 
     /**
      * Create a new Group, given the Group name.
@@ -1185,21 +994,37 @@ public class PolicyManagerImpl
         }
 
     /**
-     * Add an Account to a Group, given the Account and Group names.
+     * Add an Account to a Group.
+     * The group must be local, but Account can be local or remote.
+     * @param  account The Account identifier.
+     * @param  group   The Group identifier.
+     * @return An GroupMemberData to confirm the membership.
+     * @throws CommunityIdentifierException If one of the identifiers is not valid.
+     * @throws CommunityPolicyException If one the identifiers is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws RemoteException If the Group is in a remote Community and the WebService call fails.
      *
      */
     public GroupMemberData addGroupMember(String account, String group)
+        throws RemoteException, CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         return this.addGroupMember(new CommunityIdent(account), new CommunityIdent(group)) ;
         }
 
     /**
-     * Add an Account to a Group, given the Account and Group idents.
-     * Group must be local, but Account can be local or remote.
-     * For a remote Account, the Account Community needs to be accessible.
+     * Add an Account to a Group.
+     * The group must be local, but Account can be local or remote.
+     * @param  account The Account identifier.
+     * @param  group   The Group identifier.
+     * @return An GroupMemberData to confirm the membership.
+     * @throws CommunityIdentifierException If one of the identifiers is not valid.
+     * @throws CommunityPolicyException If one the identifiers is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws RemoteException If the Group is in a remote Community and the WebService call fails.
      *
      */
     protected GroupMemberData addGroupMember(CommunityIdent account, CommunityIdent group)
+        throws RemoteException, CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -1482,16 +1307,15 @@ public class PolicyManagerImpl
     /**
      * Get a list of remote Groups that an Account belongs to, given the Account and Community names.
      *
-     */
     public Object[] getRemoteAccountGroups(String account, String community)
         {
         return this.getRemoteAccountGroups(new CommunityIdent(account), community) ;
         }
+     */
 
     /**
      * Get a list of remote Groups that an Account belongs to, given the Account and Community idents.
      *
-     */
     protected Object[] getRemoteAccountGroups(CommunityIdent account, String community)
         {
         if (DEBUG_FLAG) System.out.println("") ;
@@ -1555,6 +1379,7 @@ public class PolicyManagerImpl
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         return results ;
         }
+     */
 
     /**
      * Create a new Community.

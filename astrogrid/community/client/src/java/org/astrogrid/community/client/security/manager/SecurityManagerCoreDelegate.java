@@ -1,27 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/security/manager/SecurityManagerCoreDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityManagerCoreDelegate.java,v $
- *   Revision 1.3  2004/03/08 13:42:33  dave
- *   Updated Maven goals.
- *   Replaced tabs with Spaces.
+ *   Revision 1.4  2004/03/19 14:43:14  dave
+ *   Merged development branch, dave-dev-200403151155, into HEAD
  *
- *   Revision 1.2.2.1  2004/03/08 12:53:17  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.2  2004/03/05 17:19:59  dave
- *   Merged development branch, dave-dev-200402211936, into HEAD
- *
- *   Revision 1.1.2.2  2004/03/04 16:09:37  dave
- *   Added PolicyService delegates
- *
- *   Revision 1.1.2.1  2004/03/04 08:57:10  dave
- *   Started work on the install xdocs.
- *   Started work on the Security delegates.
+ *   Revision 1.3.14.1  2004/03/19 00:18:09  dave
+ *   Refactored delegate Exception handling
  *
  * </cvs:log>
  *
@@ -30,9 +19,8 @@ package org.astrogrid.community.client.security.manager ;
 
 import java.rmi.RemoteException ;
 
-import org.astrogrid.community.common.service.data.ServiceStatusData ;
-
 import org.astrogrid.community.common.security.manager.SecurityManager ;
+import org.astrogrid.community.client.service.CommunityServiceCoreDelegate ;
 
 /**
  * The core delegate code for our SecurityManager service.
@@ -40,7 +28,8 @@ import org.astrogrid.community.common.security.manager.SecurityManager ;
  *
  */
 public class SecurityManagerCoreDelegate
-    implements SecurityManagerDelegate
+	extends CommunityServiceCoreDelegate
+    implements SecurityManager, SecurityManagerDelegate
     {
     /**
      * Switch for our debug statements.
@@ -52,7 +41,7 @@ public class SecurityManagerCoreDelegate
      * Public constructor.
      *
      */
-    public SecurityManagerCoreDelegate()
+    protected SecurityManagerCoreDelegate()
         {
         }
 
@@ -77,6 +66,7 @@ public class SecurityManagerCoreDelegate
      */
     protected void setSecurityManager(SecurityManager manager)
         {
+		this.setCommunityService(manager) ;
         this.manager = manager ;
         }
 
@@ -98,36 +88,6 @@ public class SecurityManagerCoreDelegate
             // Try calling the service method.
             try {
                 result = this.manager.setPassword(ident, value) ;
-                }
-            //
-            // Catch anything that went BANG.
-            catch (RemoteException ouch)
-                {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
-                }
-            }
-        return result ;
-        }
-
-    /**
-     * Service health check.
-     * @return ServiceStatusData with details of the Service status.
-     * TODO -refactor this to a base class
-     *
-     */
-    public ServiceStatusData getServiceStatus()
-        {
-        ServiceStatusData result = null ;
-        //
-        // If we have a valid service reference.
-        if (null != this.manager)
-            {
-            //
-            // Try calling the service method.
-            try {
-                result = this.manager.getServiceStatus() ;
                 }
             //
             // Catch anything that went BANG.

@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/junit/org/astrogrid/community/client/security/manager/SecurityManagerMockDelegateTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityManagerMockDelegateTestCase.java,v $
+ *   Revision 1.5  2004/03/19 14:43:14  dave
+ *   Merged development branch, dave-dev-200403151155, into HEAD
+ *
+ *   Revision 1.4.2.1  2004/03/19 00:18:09  dave
+ *   Refactored delegate Exception handling
+ *
  *   Revision 1.4  2004/03/15 07:49:30  dave
  *   Merged development branch, dave-dev-200403121536, into HEAD
  *
@@ -72,5 +78,8 @@ public class SecurityManagerMockDelegateTestCase
         this.setSecurityManager(
             new SecurityManagerMockDelegate()
             ) ;
+        //
+        // Reset our database tables.
+        this.resetDatabase() ;
         }
     }

@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/data/AccountData.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountData.java,v $
+ *   Revision 1.8  2004/03/19 14:43:14  dave
+ *   Merged development branch, dave-dev-200403151155, into HEAD
+ *
+ *   Revision 1.7.2.1  2004/03/18 13:41:19  dave
+ *   Added Exception handling to AccountManager
+ *
  *   Revision 1.7  2004/03/15 07:49:30  dave
  *   Merged development branch, dave-dev-200403121536, into HEAD
  *
@@ -308,7 +314,7 @@ public class AccountData
     /**
      * Generate a hash code for comparison tests.
      * At the moment, this just uses the ident.hashCode().
-     * @TODO This needs to refactored to check for local community in the ident.
+     * @todo This needs to refactored to check for local community in the ident.
      *
      */
     public synchronized int hashCode()
