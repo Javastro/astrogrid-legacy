@@ -1,4 +1,4 @@
-/*$Id: VoSpaceTest.java,v 1.6 2004/04/21 16:53:53 mch Exp $
+/*$Id: VoSpaceTest.java,v 1.7 2004/05/11 08:07:40 pah Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,7 +45,7 @@ public class VoSpaceTest extends TestCase {
       
       root = "localtest/";
       
-      testUser = new User("testuser", "org.astrogrid.localhost", "token");
+      testUser = new User("testuser", "org.astrogrid.localhost", "group", "token");
    
       client = new VoSpaceClient(testUser);
       
@@ -221,6 +221,9 @@ public class VoSpaceTest extends TestCase {
 
 /*
 $Log: VoSpaceTest.java,v $
+Revision 1.7  2004/05/11 08:07:40  pah
+corrected the creation of the user object
+
 Revision 1.6  2004/04/21 16:53:53  mch
 Fixes to tests
 
