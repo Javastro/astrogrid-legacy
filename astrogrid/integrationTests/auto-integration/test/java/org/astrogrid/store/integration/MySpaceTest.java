@@ -1,4 +1,4 @@
-/*$Id: MySpaceTest.java,v 1.1 2004/04/15 13:35:38 jdt Exp $
+/*$Id: MySpaceTest.java,v 1.1 2004/04/15 13:39:39 jdt Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.
  *
 **/
-package org.astrogrid.integrationtest.store;
+package org.astrogrid.store.integration;
 
 import java.io.IOException;
 import junit.framework.Test;
@@ -122,6 +122,9 @@ public class MySpaceTest extends StoreClientTestHelper {
 
 /*
 $Log: MySpaceTest.java,v $
+Revision 1.1  2004/04/15 13:39:39  jdt
+Moved from integrationTests to auto-integration
+
 Revision 1.1  2004/04/15 13:35:38  jdt
 Moved from integrationTests to auto-integration
 They'll break the build momentarily....
