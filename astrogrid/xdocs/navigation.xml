@@ -22,34 +22,34 @@
 				| and rely on deploying to Apache 2.x 
 				+--> 
             <item name="Server Applications" href="/server.html" collapse="true">
-                <item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*-SNAPSHOT.war"/>
-                <item name="Applications" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-cea-*-SNAPSHOT.war"/>
-                <item name="Community" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-community-*-SNAPSHOT.war"/>
-                <item name="DataCenter" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*pal-SNAPSHOT.war"/>
-                <item name="FileStore" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-filestore-SNAPSHOT.war"/>
-                <item name="Job Management" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-jes-SNAPSHOT.war"/>
-                <item name="mySpace" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-mySpace-SNAPSHOT.war"/>
-                <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-portal-*-SNAPSHOT.war"/>
-                <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-registry-SNAPSHOT.war"/>
+                <item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*-b*.war"/>
+                <item name="Applications" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-cea-*-b*.war"/>
+                <item name="Community" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-community-*-b*.war"/>
+                <item name="DataCenter" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*pal-b*.war"/>
+                <item name="FileStore" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-filestore-b*.war"/>
+                <item name="Job Management" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-jes-b*.war"/>
+                <item name="mySpace" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-mySpace-b*.war"/>
+                <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-portal-*-b*.war"/>
+                <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-registry-b*.war"/>
             </item>
             <item name="Client/Delegate" href="/delegate.html" collapse="true">
-                <item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-*-SNAPSHOT.jar"/>
-                <item name="Applications" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-cea-client-SNAPSHOT.jar"/>
-                <item name="Community" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-community-client-SNAPSHOT.jar"/>
-                <item name="DataCenter" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-datacenter-client-SNAPSHOT.jar"/>
-                <item name="FileStore" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-filestore-client-SNAPSHOT.jar"/>
-                <item name="Job Management" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-jes-delegate-SNAPSHOT.jar"/>
-                <item name="StoreClient" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-store-client-SNAPSHOT.jar"/>
-                <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-registry-client-lite-SNAPSHOT.jar"/>
+                <item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-*-b*.jar"/>
+                <item name="Applications" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-cea-client-b*.jar"/>
+                <item name="Community" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-community-client-b*.jar"/>
+                <item name="DataCenter" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-datacenter-client-b*.jar"/>
+                <item name="FileStore" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-filestore-client-b*.jar"/>
+                <item name="Job Management" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-jes-delegate-b*.jar"/>
+                <item name="StoreClient" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-store-client-b*.jar"/>
+                <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-registry-client-lite-b*.jar"/>
             </item>
             <item name="Common Libraries" href="/delegate.html" collapse="true">
-                <item name="Common" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-common-SNAPSHOT.jar"/>
-                <item name="Community" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-community-*-SNAPSHOT.jar"/>
-                <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-registry-common-SNAPSHOT.jar"/>
-                <item name="Security" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-security-SNAPSHOT.jar" />
-                <item name="Workflow" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-workflow-SNAPSHOT.jar"/>
+                <item name="Common" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-common-b*.jar"/>
+                <item name="Community" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-community-*-b*.jar"/>
+                <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-registry-common-b*.jar"/>
+                <item name="Security" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-security-b*.jar" />
+                <item name="Workflow" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-workflow-b*.jar"/>
                 <item name="Workflow Common Objects" 
-                    href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-workflow-objects-SNAPSHOT.jar" />
+                    href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-workflow-objects-b*.jar" />
             </item>
             <!--item name="Distributions" href="/downloaddocs/distributions.html" collapse="true">
 				<item name="Community - complete me" href=""/>
