@@ -89,9 +89,12 @@ public class AdqlNvoConeTest extends TestCase
    /**
     * Tests a blocking query against a real service - Messier
     * @see http://voservices.org/cone/register/showlist.asp for a list of nvo cone search implementations
+    * 
+    * @todo temporarily commented out 25/11/03 - query just blocked. for ever. no time out or anything. weird.
     */
    public void testMessier() throws MalformedURLException, IOException, ServiceException, MarshalException, ValidationException
    {
+       fail("This test blocks for ever");
       AdqlQuerier querier = DatacenterDelegateFactory.makeAdqlQuerier("http://virtualsky.org/servlet/cover?CAT=messier");
       
       Select adql = loadAdql("coneQuery2.xml");
@@ -179,6 +182,10 @@ public class AdqlNvoConeTest extends TestCase
 
 /*
  $Log: AdqlNvoConeTest.java,v $
+ Revision 1.3  2003/11/25 15:26:00  nw
+ temporarily disabled tests that were halting the build.
+ server gone down?
+
  Revision 1.2  2003/11/18 00:53:51  mch
  New Adql-compliant cone search
 
