@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceEntry.java,v 1.1 2004/02/15 23:16:06 mch Exp $
+ * $Id: MySpaceEntry.java,v 1.2 2004/02/19 23:30:30 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -46,16 +46,22 @@ public class MySpaceEntry extends File {
       this.type = aType;
    }
    
-   public String getType() {
-      return type.toString();
-   }
+   public String getType() {       return type.toString();   }
    
-   public String toString() {
-      return getName();
-   }
+   public String toString() {      return getName();   }
    
-   public String getCanonicalPath()
-   {
+   public String getOwner() {    return owner; }
+   
+   /** Returns the date the file was created */
+   public String getCreated() { return created; }
+      
+   public String getExpires() { return expires; }
+
+   public String getSize() { return size; }
+
+   public String getPermissions() { return permissions; }
+
+   public String getCanonicalPath()   {
       return super.getPath();
    }
    
@@ -63,10 +69,22 @@ public class MySpaceEntry extends File {
    {
       return parentFolder.getPath()+"/"+getName();
    }
+   
+   /** Returns the parent folder - differs from getParent() with makes
+    * a guess at the path from the initial filename... */
+   public MySpaceFolder getParentFolder() { return parentFolder; }
+   
+   /**
+    * Original File.getParent() returns a string based partly ont he filename
+    */
+   public String getParent() { return parentFolder.getPath() +"/"; }
 }
 
 /*
  $Log: MySpaceEntry.java,v $
+ Revision 1.2  2004/02/19 23:30:30  mch
+ Added getXxxxx properties
+
  Revision 1.1  2004/02/15 23:16:06  mch
  New-style VoSpace delegates.  Not agreed so private to datacenter for the moment
 
