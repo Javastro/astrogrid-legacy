@@ -1,4 +1,4 @@
-/*$Id: SchedulerTaskQueueDecorator.java,v 1.5 2004/07/01 21:15:00 nw Exp $
+/*$Id: SchedulerTaskQueueDecorator.java,v 1.6 2004/09/16 21:43:10 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.picocontainer.Startable;
 
 import EDU.oswego.cs.dl.util.concurrent.Executor;
 import EDU.oswego.cs.dl.util.concurrent.QueuedExecutor;
@@ -38,7 +39,7 @@ import junit.framework.Test;
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Feb-2004
  *
  */
-public class SchedulerTaskQueueDecorator implements JobScheduler , ComponentDescriptor{
+public class SchedulerTaskQueueDecorator implements JobScheduler , ComponentDescriptor, Startable{
 
     /** 
      *  Construct a new MemoryQueueSchedulerNotifier, that will use a Queued executor to service each of the tasks in turn.
@@ -49,7 +50,7 @@ public class SchedulerTaskQueueDecorator implements JobScheduler , ComponentDesc
         this.factory = new TaskFactory(scheduler);
     }
     /** concurrency framework component that provides a task queue */
-    protected final Executor executor;
+    protected final QueuedExecutor executor;
     /** factory component that creates tasks to add to the queue*/
     protected final TaskFactory factory;
     /**adds a task to the queue that will call 'scheduleNewJob' with the current parameters on the wrapped job scheduler
@@ -190,6 +191,17 @@ public class SchedulerTaskQueueDecorator implements JobScheduler , ComponentDesc
     public Test getInstallationTest() {
         return null;
     }
+    /**
+     * @see org.picocontainer.Startable#start()
+     */
+    public void start() {
+    }
+    /**shuts down the scheduler thread.
+     * @see org.picocontainer.Startable#stop()
+     */
+    public void stop() {
+        executor.shutdownNow();
+    }
 
 
 
@@ -199,6 +211,9 @@ public class SchedulerTaskQueueDecorator implements JobScheduler , ComponentDesc
 
 /* 
 $Log: SchedulerTaskQueueDecorator.java,v $
+Revision 1.6  2004/09/16 21:43:10  nw
+enabled worker thread to be shut down.
+
 Revision 1.5  2004/07/01 21:15:00  nw
 added results-listener interface to jes
 
