@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.29 2003/09/24 21:02:45 nw Exp $
+ * $Id: DatabaseQuerier.java,v 1.30 2003/09/26 11:00:56 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -342,10 +342,15 @@ public abstract class DatabaseQuerier implements Runnable
    public void close() throws IOException
    {
       //remove from list
-     DatabaseQuerierManager.queriers.remove(getHandle());
+      /* be extra cautious here */
+      if (DatabaseQuerierManager.queriers != null && getHandle() != null) {
+        DatabaseQuerierManager.queriers.remove(getHandle());
+      }
 
       //clean up workspace
-      workspace.close();
+      if (workspace != null) {
+       workspace.close();
+      }
    }
 
 
@@ -353,7 +358,7 @@ public abstract class DatabaseQuerier implements Runnable
     * Sets the status.  NB if the new status is ordered before the existing one,
     * throws an exception (as each querier should only handle one query).
     * Synchronised as the queriers may be running under a different thread
-    */
+    */ 
    public synchronized void setStatus(QueryStatus newStatus)
    {
       Log.affirm(status != QueryStatus.ERROR,
