@@ -75,24 +75,14 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    {
       this.operator = operator;
       this.endPoint = endPoint;
+      System.out.println("entered MyspaceIt05Delegate: operator = " + operator.toString() + " endpoint = " + endPoint);
 
-      managerMsrl = new Msrl(new URL(endPoint));
+      //managerMsrl = new Msrl(new URL(endPoint));
 
-//      if (endPoint.startsWith(Msrl.SCHEME)) {
-//         endPoint = endPoint.substring(Msrl.SCHEME.length()+1);
-//      }
-
-//      //@todo this is a Bad Assumption, remove during it06 - mch.
-//      if (endPoint.startsWith("http") && 
-//          (endPoint.indexOf("/services/MySpaceManager") == -1))
-//      {
-//         endPoint = endPoint + "/services/MySpaceManager";
-//      }
-//      depIt04Delegate = MySpaceDelegateFactory.createDelegate(endPoint);
-
-//   [TODO] probably need to reinstate some varient of the above and
-//     perhaps replace the following couple of lines.
-
+      if (endPoint.startsWith(Msrl.SCHEME)) {
+         endPoint = endPoint.substring(Msrl.SCHEME.length()+1);
+      }
+      System.out.println("the endpoint in myspaceitn05delegate = " + endPoint);
       try
       {  ManagerService service = new ManagerServiceLocator();
          innerDelegate = service.getAstrogridMyspace(
@@ -222,8 +212,14 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  * @return The Agsl of the service to which this client is connected.
  */
    public Agsl getEndpoint()
-   {  Agsl agsl = new Agsl( managerMsrl.getDelegateEndpoint() );
-      return agsl;
+   {  
+      try {
+         Agsl agsl = new Agsl( Msrl.SCHEME + ":" + endPoint );      
+         return agsl;
+      }catch(MalformedURLException mue) {
+         mue.printStackTrace();
+      }
+      return null;
    }
 
 

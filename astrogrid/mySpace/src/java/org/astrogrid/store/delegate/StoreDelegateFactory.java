@@ -1,5 +1,5 @@
 /*
- * $Id: StoreDelegateFactory.java,v 1.9 2004/03/22 10:25:42 mch Exp $
+ * $Id: StoreDelegateFactory.java,v 1.10 2004/04/05 14:15:27 KevinBenson Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -15,6 +15,7 @@ import java.net.URL;
 import org.astrogrid.community.User;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
+import org.astrogrid.store.delegate.myspaceItn05.MySpaceIt05Delegate;
 
 /**
  * Creates the appropriate delegates to access the various vospace servers
@@ -31,6 +32,11 @@ public class StoreDelegateFactory
     */
    public static StoreClient createDelegate(User operator, Agsl location) throws IOException
    {
+
+      if (location.getScheme().startsWith(Agsl.SCHEME+":"+Msrl.SCHEME) && location.getEndpoint().endsWith("/Manager")) {
+         System.out.println("the endpoint location = " + location.getEndpoint().toString());
+         return new MySpaceIt05Delegate(operator, location.getEndpoint().toString());
+      }
       if (location.getScheme().startsWith(Agsl.SCHEME+":"+Msrl.SCHEME)) {
          return new org.astrogrid.store.delegate.myspace.MySpaceIt04Delegate(operator, location.getEndpoint().toString());
       }
@@ -58,6 +64,9 @@ public class StoreDelegateFactory
 
 /*
 $Log: StoreDelegateFactory.java,v $
+Revision 1.10  2004/04/05 14:15:27  KevinBenson
+change to strip out the myspace.  And call the myspaceitn05
+
 Revision 1.9  2004/03/22 10:25:42  mch
 Added VoSpaceClient, StoreDelegate, some minor changes to StoreClient interface
 
