@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.64 2004/07/09 10:00:46 nw Exp $ -->
+<!-- $Id: project.xml,v 1.65 2004/07/09 10:32:52 nw Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
@@ -334,4 +334,27 @@
             <!-- hsqldb - for testing -->
         </dependency>
     </dependencies>
+    <!-- override list of respots given in base project
+        - as java xref one breaks on jes at the moment
+        -->
+    <reports>
+        <report> maven-changelog-plugin </report>
+        <report> maven-changes-plugin </report>
+        <report> maven-checkstyle-plugin </report>
+        <report> maven-clover-plugin </report>
+        <report> maven-developer-activity-plugin </report>
+        <report> maven-file-activity-plugin </report>
+        <report> maven-javadoc-plugin </report>
+        <report> maven-jdepend-plugin </report>
+        <report> maven-junit-report-plugin </report>
+        <!-- breaks
+        <report> maven-jxr-plugin </report>
+        -->
+        <report> maven-license-plugin </report>
+                <!-- The link check report takes a long time to run...only enable for special occasions!-->
+        <!--report> maven-linkcheck-plugin </report-->
+        <report> maven-pmd-plugin </report>
+        <report> maven-tasklist-plugin </report>
+        <report> maven-simian-plugin </report>
+    </reports>
 </project>
