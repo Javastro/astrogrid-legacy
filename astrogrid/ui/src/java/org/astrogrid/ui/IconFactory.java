@@ -1,5 +1,5 @@
 /*
- * $Id: IconFactory.java,v 1.3 2004/04/15 16:34:53 mch Exp $
+ * $Id: IconFactory.java,v 1.4 2005/04/03 12:51:31 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -10,11 +10,16 @@
 
 package org.astrogrid.ui;
 
-import java.awt.Toolkit;
 import java.awt.Image;
-import javax.swing.*;
-import java.util.*;
+import java.awt.Toolkit;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.Hashtable;
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * a cached factory of images stored off this package, for things such as
@@ -25,7 +30,7 @@ import java.net.URL;
  */
 
 
-public class IconFactory
+public class IconFactory extends ImageFactory
 {
    public static final int SMALL = 0;   //for lines, status bars, etc
    public static final int MEDIUM = 1; //size suitable for toolbar buttons
@@ -43,15 +48,6 @@ public class IconFactory
    public static Icon getIcon(String iconName)
    {
       return getIcon(iconName, LARGE);
-   }
-
-   /** Get an image suitable for message boxes, etc.  Does a typecast of getIcon()
-    * for file, then for icons used by option pane in UI Manager
-    */
-   public static Image getImage(String iconName)
-   {
-      ImageIcon i = (ImageIcon) getIcon(iconName);
-      if (i == null) { return null; } else { return i.getImage(); }
    }
 
    /** Get an icon suitable for display on lines, status bars, etc.
@@ -107,64 +103,18 @@ public class IconFactory
     */
    private static ImageIcon loadIcon(String filename)
    {
-      //path is subdirectory of this package, called images
-      URL url = IconFactory.class.getResource("./images/"+filename+".gif");
-      if (url != null)
-         return new ImageIcon(Toolkit.getDefaultToolkit().getImage(url));
-
+      Image image = loadImage(filename);
+      if (image != null) {
+         return new ImageIcon(image);
+      }
       return null;
    }
-
-   /**
-    * Loads Icon from file in the images subdirectory of the given class
-    */
-   private static ImageIcon loadClassIcon(Class givenClass, String filename)
-   {
-      //path is subdirectory of this package, called images
-      URL url = givenClass.getResource("./images/"+filename+".gif");
-      if (url != null)
-         return new ImageIcon(Toolkit.getDefaultToolkit().getImage(url));
-
-      return null;
-   }
-
-   /**
-    * Sets an ordinary icon
-    *
-   public static void setIcon(String iconName, Icon anIcon)
-   {
-      bigIcons.put(iconName, anIcon);
-   }
-
-   /**
-    * Sets a small icon
-    *
-   public static void setSmallIcon(String iconName, Icon anIcon)
-   {
-      smallIcons.put(iconName, anIcon);
-   }
-    */
-
 }
 /*
 $Log: IconFactory.java,v $
-Revision 1.3  2004/04/15 16:34:53  mch
-Tidied up, introduced stuff from datacenter ui
+Revision 1.4  2005/04/03 12:51:31  mch
+split imagefactory from iconfactory
 
-Revision 1.1  2004/03/03 17:40:58  mch
-Moved ui package
-
-Revision 1.2  2004/02/19 23:29:30  mch
-Added getImage
-
-Revision 1.1  2004/02/17 16:04:06  mch
-New Desktop GUI
-
-Revision 1.3  2004/02/17 03:53:43  mch
-Nughtily large number of fixes for demo
-
-Revision 1.2  2004/02/15 23:25:30  mch
-Datacenter and MySpace desktop client GUIs
 
  */
 
