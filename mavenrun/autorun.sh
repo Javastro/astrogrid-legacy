@@ -17,7 +17,7 @@ echo "Waiting for tomcat to shutdown...." >> $LOGFILE
 sleep 15
 $CATALINA_HOME/bin/startup.sh >> $LOGFILE 2>&1
 
-#update from cvs
+#update from cvs 
 cd $CHECKOUTHOME/astrogrid/integrationTests >> $LOGFILE 2>&1
 cvs update -PCd  >> $LOGFILE 2>&1
 
