@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.8 2004/03/17 15:48:33 kea Exp $
+ * $Id: WarehouseQuerier.java,v 1.9 2004/03/17 18:24:15 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -169,6 +169,7 @@ public class WarehouseQuerier extends QuerierPlugin {
     cmdArgs[3] = sql;
     cmdArgs[4] = getOgsaDaiRegistryString();
     cmdArgs[5] = "file://" + tempFile.getAbsolutePath();
+    //cmdArgs[5] = "gsiftp://" + tempFile.getAbsolutePath();
     log.debug("Command is: " + cmdArgs[0] + " " + cmdArgs[1] +
           " " + cmdArgs[2] + " " + cmdArgs[3] + " " + cmdArgs[4]);
     // TOFIX REMOVE
@@ -355,6 +356,9 @@ public class WarehouseQuerier extends QuerierPlugin {
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.9  2004/03/17 18:24:15  kea
+Integrating new javaapp using del-to-file, del-to-gridftp.
+
 Revision 1.8  2004/03/17 15:48:33  kea
 Tidying method sigs.
 

@@ -1,13 +1,17 @@
 /*
- * $Id: WarehouseResults.java,v 1.8 2004/03/17 12:25:51 kea Exp $
+ * $Id: WarehouseResults.java,v 1.9 2004/03/17 18:24:15 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.ogsadai;
 
+import org.astrogrid.datacenter.queriers.DatabaseAccessException;
+
+
 import java.io.IOException;
 import java.io.Writer;
+import java.io.FileReader;
 import java.io.File;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
@@ -33,7 +37,10 @@ public class WarehouseResults extends QueryResults
   /**
    * Construct this wrapper around the given VOTable Document.
    */
-  public WarehouseResults(File results) {
+  public WarehouseResults(File results) throws DatabaseAccessException {
+    if (results == null) {
+      throw new DatabaseAccessException("Null results file specified.");
+    }
     this.results = results;
   }
    
@@ -47,7 +54,18 @@ public class WarehouseResults extends QueryResults
    */
   public void toVotable(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
   {
-     throw new UnsupportedOperationException("Not yet implemented - here RSN");
+    if (results == null) {
+      throw new DatabaseAccessException(
+          "WarehouseResults has null results file");
+    }
+    //TOFIX - quick hack, make this more efficient!
+    FileReader in = new FileReader(results);
+    int c;
+    while ((c = in.read()) != -1) {
+      out.write(c);
+    }
+    in.close();
+    out.close();
   }
   
   /**
@@ -62,6 +80,9 @@ public class WarehouseResults extends QueryResults
 
 /*
  $Log: WarehouseResults.java,v $
+ Revision 1.9  2004/03/17 18:24:15  kea
+ Integrating new javaapp using del-to-file, del-to-gridftp.
+
  Revision 1.8  2004/03/17 12:25:51  kea
  Oops, fixing slips.
 
