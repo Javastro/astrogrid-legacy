@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.17 2004/03/05 12:28:01 mch Exp $
+ * $Id: Config.java,v 1.18 2004/03/06 22:22:08 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,6 +7,8 @@
 package org.astrogrid.config;
 
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.MalformedURLException;
@@ -221,6 +223,63 @@ public abstract class Config {
          throw new ConfigException("Invalid XML in '"+source+"' from Config Key '"+key+"'");
       }
    }
+
+   /** There are several occasions when an application needs a complete file.  For
+    * example, a metadata file.  This method provides a way of locating that file
+    * in different environments.
+    * If the filename includes a ${..} then the contents of the
+    * brackets are resolved using the system properties.  This allows us to make
+    * use of Tomcat's locations for example.
+    * If the filename is then absolute, the file is resolved normally.
+    * If the filename is relative, the file is searched for first in the classpath
+    * then in the working directory.
+    * If the path is not found, a FileNotFoundException is thrown listing
+    * the places looked.  If the path is found, a url to it is returned.
+    * Hmm not sure if this is really a Configuration thing....
+    */
+   public URL resolveFilename(String givenFilename) throws IOException {
+      
+      String filename = givenFilename; //so we preserve the original
+      
+      while (filename.indexOf("${")>-1) {
+         int s = filename.indexOf("${");
+         int e = filename.indexOf("}");
+         if (e==-1) throw new IllegalArgumentException("filename "+givenFilename+" has mismatched brackets");
+         
+         String sysEnvKey = filename.substring(s+2,e);
+         String sysEnvValue = System.getProperty(sysEnvKey);
+         if (sysEnvValue == null) throw new ConfigException("Sys Env '"+sysEnvKey+"' not found for filename "+givenFilename);
+         
+         filename = filename.substring(0, s)+ sysEnvValue + filename.substring(e+1);
+         //resolve system environment value
+      }
+
+      File f = new File(filename);
+      String workingDir = new File("relative").getParent();
+      if (f.isAbsolute()) {
+         if (f.exists() && f.isFile()) {
+            return f.toURL();
+         }
+         throw new FileNotFoundException("filename "+givenFilename+" resolves to "+filename+" but not found");
+      }
+      else
+      {
+         //not absolute so look in classpath
+         URL url = ClassLoader.getSystemResource(filename);
+   
+         if (url != null) {
+            return url;
+         }
+         else {
+            //not found so look in working directory
+            if (f.exists() && f.isFile()) {
+               return f.toURL();
+            }
+         }
+         throw new FileNotFoundException("filename "+givenFilename+" resolves to "+filename+" but not found in classpath or working directory "+workingDir);
+      }
+   }
+   
    
 }
 

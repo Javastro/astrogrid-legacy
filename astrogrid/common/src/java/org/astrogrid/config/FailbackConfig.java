@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.14 2004/03/06 14:58:17 mch Exp $
+ * $Id: FailbackConfig.java,v 1.15 2004/03/06 22:22:08 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -278,44 +278,61 @@ public class FailbackConfig extends Config {
    }
 
    /**
-    * Looks for given filename in classpath and working directory, and loads
+    * Looks for given filename absolutely or in classpath and working directory, and loads
     * it if found.  Returns false if not found.
+    * This could probably make use of Config.resolveFile()
     */
    private boolean lookForFile(String filename)  {
-         //look for file in classpath.
-         //see http://www.javaworld.com/javaworld/javaqa/2003-08/01-qa-0808-property.html
-         log.debug("Looking for '"+filename+"' on classpath");
-         URL configUrl = ClassLoader.getSystemResource(filename);
-         if (configUrl != null) {
-            try {
-               loadFromUrl(configUrl);
-               
-               log.info("Configuration file loaded from '"+configUrl+"' (found in classpath)");
-               
-               return true;
-               
-            } catch (IOException ioe) {
-               throw new ConfigException(ioe+" loading property file at '"+configUrl+"' (from classpath)", ioe);
-            }
-         }
-         
-         
-         //look for it in the working directory
-         log.debug("Looking for '"+filename+"' in working directory");
-         File f = new File(configFilename);
+      
+      //if it's absolute, look absolutely
+      File f = new File(filename);
+      if (f.isAbsolute()) {
          if (f.exists()) {
-            try {
-               loadFromUrl(f.toURL());
-               log.info("Configuration file loaded from working directory '"+f.getAbsolutePath()+"'");
-               return true;
-            }
-            catch (IOException ioe) {
-               throw new ConfigException(ioe+" loading property file at '"+f.getAbsolutePath()+"' (ie in working directory)", ioe);
-            }
+            loadFromFile(f);
+            return true;
          }
-         
          return false;
       }
+      
+      //look for file in classpath.
+      //see http://www.javaworld.com/javaworld/javaqa/2003-08/01-qa-0808-property.html
+      log.debug("Looking for '"+filename+"' on classpath");
+      URL configUrl = ClassLoader.getSystemResource(filename);
+      if (configUrl != null) {
+         try {
+            loadFromUrl(configUrl);
+            
+            log.info("Configuration file loaded from '"+configUrl+"' (found in classpath)");
+            
+            return true;
+            
+         } catch (IOException ioe) {
+            throw new ConfigException(ioe+" loading property file at '"+configUrl+"' (from classpath)", ioe);
+         }
+      }
+      
+      
+      //look for it in the working directory
+      log.debug("Looking for '"+filename+"' in working directory");
+      if (f.exists()) {
+         loadFromFile(f);
+         return true;
+      }
+      
+      return false;
+   }
+   
+   private void loadFromFile(File f) {
+      try {
+         loadFromUrl(f.toURL());
+         log.info("Configuration file loaded from working directory '"+f.getAbsolutePath()+"'");
+         return;
+      }
+      catch (IOException ioe) {
+         throw new ConfigException(ioe+" loading property file at '"+f.getAbsolutePath()+"' (ie in working directory)", ioe);
+      }
+   }
+   
   
    
    /**
@@ -522,6 +539,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.15  2004/03/06 22:22:08  mch
+Added resolveFile
+
 Revision 1.14  2004/03/06 14:58:17  mch
 Added more failback config files, incl default.properties
 
@@ -577,6 +597,7 @@ Revision 1.2  2004/02/17 03:54:35  mch
 Nughtily large number of fixes for demo
 
  */
+
 
 
 

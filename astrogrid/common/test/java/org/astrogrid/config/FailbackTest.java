@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackTest.java,v 1.3 2004/03/01 23:13:31 mch Exp $
+ * $Id: FailbackTest.java,v 1.4 2004/03/06 22:22:17 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -191,6 +191,31 @@ public class FailbackTest extends TestCase
    }
    
     /**
+     * Test file locator
+     */
+    public void testFileFinder() throws IOException {
+      FailbackConfig config = new FailbackConfig(FailbackTest.class);
+      
+      //check bad brackets throws exception
+      try {
+         config.resolveFilename("${badlyformed/thing");
+         fail("Did not throw exception for bad int");
+      }
+      catch (IllegalArgumentException ce) { } //ignore
+   
+      //check substitution works
+      System.setProperty("FailbackTest.path", "org/astrogrid/config/");
+      URL url = config.resolveFilename("${FailbackTest.path}test.properties");
+      if (url.toString().indexOf("org/astrogrid/config")==-1) {
+         fail("Substitution didn't work");
+      }
+
+      //check it found the test.properties file in this package.
+      assertNotNull(url);
+      
+    }
+    
+    /**
      * Assembles and returns a test suite made up of all the testXxxx() methods
       * of this class.
      */
@@ -210,6 +235,9 @@ public class FailbackTest extends TestCase
 
 /*
  $Log: FailbackTest.java,v $
+ Revision 1.4  2004/03/06 22:22:17  mch
+ Added resolveFile
+
  Revision 1.3  2004/03/01 23:13:31  mch
  Fixed failed tests
 
