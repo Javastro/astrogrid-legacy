@@ -9,7 +9,7 @@
    contentType="text/xml"
 %><%
    try {
-      VoResourcePlugin plugin = new RdbmsResourcePlugin();
+      RdbmsResourceGenerator  plugin = new RdbmsResourceGenerator();
       String resources[] = plugin.getVoResources();
       out.write(VoDescriptionServer.VODESCRIPTION_ELEMENT);
       for (int i = 0; i < resources.length; i++) {

@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.8 2004/11/03 00:17:56 mch Exp $
+/*$Id: MetadataTest.java,v 1.9 2004/11/05 12:25:23 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 import org.astrogrid.applications.component.CEAComponentManagerFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.DsaDomHelper;
-import org.astrogrid.datacenter.queriers.sql.RdbmsResourcePlugin;
+import org.astrogrid.datacenter.queriers.sql.RdbmsResourceGenerator;
 import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
@@ -77,7 +77,7 @@ public class MetadataTest extends TestCase {
    
    public void testJdbc() throws Exception {
      
-      SimpleConfig.setProperty(VoResourcePlugin.RESOURCE_PLUGIN_KEY, RdbmsResourcePlugin.class.getName());
+      SimpleConfig.setProperty(VoResourcePlugin.RESOURCE_PLUGIN_KEY, RdbmsResourceGenerator.class.getName());
       
       //generate metadata
       Document metaDoc = VoDescriptionServer.getVoDescription();
@@ -91,7 +91,7 @@ public class MetadataTest extends TestCase {
 
     //checks we can get individual resources from the metadata
    public void testGetResouce() throws Exception {
-      SimpleConfig.setProperty(VoResourcePlugin.RESOURCE_PLUGIN_KEY, RdbmsResourcePlugin.class.getName());
+      SimpleConfig.setProperty(VoResourcePlugin.RESOURCE_PLUGIN_KEY, RdbmsResourceGenerator.class.getName());
       
 //not required      Element auth = VoDescriptionServer.getAuthorityResource();
 //      assertNotNull("No AuthorityType in VOdescription", auth);
@@ -104,7 +104,7 @@ public class MetadataTest extends TestCase {
    public void testSampleGenerator() throws Throwable{
       SampleStarsPlugin.initConfig();
       
-      VoResourcePlugin plugin = new RdbmsResourcePlugin();
+      RdbmsResourceGenerator plugin = new RdbmsResourceGenerator();
       String[] resources = plugin.getVoResources();
       StringBuffer resource = new StringBuffer(VoDescriptionServer.VODESCRIPTION_ELEMENT+"\n");
       for (int i = 0; i < resources.length; i++) {
@@ -174,6 +174,9 @@ public class MetadataTest extends TestCase {
 
 /*
  $Log: MetadataTest.java,v $
+ Revision 1.9  2004/11/05 12:25:23  mch
+ renamed RdbmsResourcePlugin
+
  Revision 1.8  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 
