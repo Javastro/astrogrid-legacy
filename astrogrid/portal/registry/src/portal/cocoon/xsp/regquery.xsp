@@ -150,7 +150,10 @@
                authTemp = xml.indexOf("<Title");
                title = xml.substring(authTemp+(xml.indexOf(">",authTemp+1)-authTemp)+1,xml.indexOf("</Title>"));
                authTemp = xml.indexOf("<Description");
-               description = xml.substring(authTemp+(xml.indexOf(">",authTemp+1)-authTemp)+1,xml.indexOf("</Description>"));
+               description = "";
+               if(xml.indexOf("</Description>") != -1) {
+                 description = xml.substring(authTemp+(xml.indexOf(">",authTemp+1)-authTemp)+1,xml.indexOf("</Description>"));
+               }
          ]]>
                <xsp:element name="xmlresult">
                   <xsp:attribute name="val"><xsp:expr>xml</xsp:expr></xsp:attribute>
