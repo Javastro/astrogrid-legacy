@@ -1,4 +1,4 @@
-/*$Id: CeaTest.java,v 1.2 2004/05/12 09:17:51 mch Exp $
+/*$Id: CeaTest.java,v 1.3 2004/05/13 12:17:07 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -59,7 +59,7 @@ public class CeaTest  extends TestCase {
 
       try {
          StoreAdminClient admin = StoreDelegateFactory.createAdminDelegate(User.ANONYMOUS, new Agsl("myspace:http://localhost:8080/astrogrid-mySpace-SNAPSHOT/services/Manager"));
-         admin.createUser(new User("CeaTest", "org.astrogrid.localhost", ""));
+         admin.createUser(new User("CeaTest@Unknown", "org.astrogrid.localhost", ""));
       }
       catch (StoreException se) {
          se.printStackTrace(); //but otherwise ignore - user mihgt already exist
@@ -167,6 +167,9 @@ public class CeaTest  extends TestCase {
 
 /*
 $Log: CeaTest.java,v $
+Revision 1.3  2004/05/13 12:17:07  mch
+Fixed createUser
+
 Revision 1.2  2004/05/12 09:17:51  mch
 Various fixes - forgotten whatfors...
 
