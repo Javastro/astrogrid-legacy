@@ -18,12 +18,13 @@
             </ag-onload>
           </xsl:if>
         </xsl:if>
-        <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="name_desc_form">        
-            <table border="1">
+                
+        <table border="1">
+            <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="workflow_form">
                 <tr>
-                  <td colspan="3">
-                    <ag-menu name="workflow-menu"/>
-                  </td>
+                    <td colspan="4">
+                        <ag-menu name="workflow-menu"/>
+                    </td>
                 </tr>
                 <tr>
                     <td width="30">Name:</td>
@@ -33,11 +34,14 @@
                             <xsl:attribute name="size">40</xsl:attribute>
                             <xsl:attribute name="value"><xsl:value-of select="@workflow-name"/></xsl:attribute>
                             <xsl:attribute name="name">workflow-name</xsl:attribute>
+                            <xsl:attribute name="id">open-workflow-agsl</xsl:attribute>
                         </xsl:element>           
                     </td>
                     <td rowspan="2">
-                        <input type="submit" value="update" />
-                        <input type="hidden" name="action" value="add-name-description" />
+                        <input type="submit" name="action" value="add-name-description" />
+                    </td>
+                    <td>
+                        <input type="submit" name="action" value="read-workflow" />                        
                     </td>                                
                 </tr>
                 <tr>
@@ -50,16 +54,21 @@
                             <xsl:attribute name="name">workflow-description</xsl:attribute>
                         </xsl:element>                  
                     </td>
-                </tr>                    
-            </table>
-          </form>            
-            <table border="0" cellpadding="0" cellspacing="0">  
-                <tr>
-                    <xsl:apply-templates select="*"/>
+                    <td>
+                        <input type="hidden" name="workflow-ivorn" id="workflow-ivorn"/>
+                        <input type="hidden" name="save-workflow-agsl" id="save-workflow-agsl"/>
+                        <input type="submit" name="action" value="save-workflow"/>                                                                       
+                    </td>
                 </tr>
-            </table>
-        <xsl:call-template name="tool-details"/>
-        </ag-div>
+            </form>                    
+        </table>                     
+        <table border="0" cellpadding="0" cellspacing="0">  
+            <tr>
+                <xsl:apply-templates select="*"/>
+            </tr>
+        </table>
+    <xsl:call-template name="tool-details"/>
+    </ag-div>
     </xsl:template>
 
     <xsl:template match="*"> 
