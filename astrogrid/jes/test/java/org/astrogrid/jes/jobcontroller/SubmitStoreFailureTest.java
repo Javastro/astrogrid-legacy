@@ -1,4 +1,4 @@
-/*$Id: SubmitStoreFailureTest.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: SubmitStoreFailureTest.java,v 1.3 2004/03/09 14:23:54 nw Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,8 +13,7 @@ package org.astrogrid.jes.jobcontroller;
 import org.astrogrid.jes.comm.MockSchedulerNotifier;
 import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
 import org.astrogrid.jes.impl.workflow.MockJobFactoryImpl;
-import org.astrogrid.jes.types.v1.SubmissionResponse;
-
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 /** Test behaviour of job controller when store breaks down.
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Feb-2004
  *
@@ -29,11 +28,8 @@ public class SubmitStoreFailureTest extends AbstractTestForJobController {
     /** failed to store item.
      * @see org.astrogrid.jes.jobcontroller.AbstractTest#performTest(org.astrogrid.jes.types.v1.SubmissionResponse)
      */
-    protected void performTest(SubmissionResponse result) throws Exception {
-        assertNotNull(result);
-        assertFalse(result.isSubmissionSuccessful());
-        assertNotNull(result.getMessage());        
-        assertNull(result.getJobURN());
+    protected void performTest(JobURN urn) throws Exception {
+        assertNotNull(seenException);
         // don't expect notifier to have been called.
         assertEquals(0,((MockSchedulerNotifier)nudger).getCallCount());
     }
@@ -49,6 +45,9 @@ public class SubmitStoreFailureTest extends AbstractTestForJobController {
 
 /* 
 $Log: SubmitStoreFailureTest.java,v $
+Revision 1.3  2004/03/09 14:23:54  nw
+tests that exercise the job contorller service implememntiton
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

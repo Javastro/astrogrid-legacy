@@ -1,4 +1,4 @@
-/*$Id: ListJobsSuccessTest.java,v 1.3 2004/03/03 01:13:42 nw Exp $
+/*$Id: ListJobsSuccessTest.java,v 1.4 2004/03/09 14:23:54 nw Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,10 +9,11 @@
  *
 **/
 package org.astrogrid.jes.jobcontroller;
-import org.astrogrid.jes.types.v1.ListCriteria;
-import org.astrogrid.jes.types.v1.SubmissionResponse;
-import org.astrogrid.jes.types.v1.WorkflowList;
+import org.astrogrid.community.beans.v1.axis.Identifier;
+import org.astrogrid.community.beans.v1.axis._Account;
+import org.astrogrid.jes.types.v1.WorkflowSummary;
 import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import java.io.StringReader;
 /** Test the listJobs method of the job controller
@@ -22,7 +23,6 @@ import java.io.StringReader;
 public class ListJobsSuccessTest extends AbstractTestForJobController {
     public final static String COMMUNITY = "jodrell";
     public final static String USERID = "nww";
-    protected ListCriteria criteria;
     /**
      * Constructor for ListJobsTest.
      * @param arg0
@@ -35,41 +35,35 @@ public class ListJobsSuccessTest extends AbstractTestForJobController {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        this.criteria = new ListCriteria();
-        criteria.setCommunity(COMMUNITY);
-        criteria.setUserId(USERID);
+        this.acc = new _Account();
+        acc.setCommunity(new Identifier(ListJobsSuccessTest.COMMUNITY));
+        acc.setName(new Identifier(ListJobsSuccessTest.USERID));
     }
-    public void testCriteria() {
-        assertNotNull(criteria);
-        assertNotNull(criteria.getCommunity());
-        assertNotNull(criteria.getUserId());
-    }    
+    protected _Account acc;
+    
+
     /**
      * @see org.astrogrid.jes.jobcontroller.AbstractTest#performTest(org.astrogrid.jes.types.v1.SubmissionResponse)
      */
-    protected void performTest(SubmissionResponse subResp) throws Exception {
-        assertTrue(subResp.isSubmissionSuccessful());
-        WorkflowList wl = jc.readJobList(criteria);
-        assertNotNull(wl);
-        assertNull(wl.getMessage()); //i.e. no errors
-        assertEquals(wl.getUserId(), USERID);
-        assertEquals(wl.getCommunity(), COMMUNITY);
-        String[] rawArr = wl.getWorkflow();
+    protected void performTest(JobURN urn) throws Exception {
+        WorkflowSummary[]  rawArr = jc.readJobList(acc);
+
         assertNotNull(rawArr);
         // we're creating a new job controller each time, so should expect either 1 or 0 elements in the result list.
         assertTrue(rawArr.length >= 0 && rawArr.length <= 1);
         for (int i = 0; i < rawArr.length; i++) {
             assertNotNull(rawArr[i]);
-            Workflow wf = Workflow.unmarshalWorkflow(new StringReader(rawArr[i]));
-            assertNotNull(wf);
-            assertEquals(USERID, wf.getCredentials().getAccount().getName());
-            assertEquals(COMMUNITY, wf.getCredentials().getAccount().getCommunity());
+            assertNotNull(rawArr[i].getJobUrn());
+            assertNotNull(rawArr[i].getWorkflowName());
         }
     }
 
 }
 /* 
 $Log: ListJobsSuccessTest.java,v $
+Revision 1.4  2004/03/09 14:23:54  nw
+tests that exercise the job contorller service implememntiton
+
 Revision 1.3  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
 

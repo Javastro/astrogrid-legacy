@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForJobController.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: AbstractTestForJobController.java,v 1.3 2004/03/09 14:23:54 nw Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,8 +19,10 @@ import org.astrogrid.jes.impl.workflow.InMemoryJobFactoryImpl;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.job.SubmitJobRequest;
 import org.astrogrid.jes.testutils.io.FileResourceLoader;
-import org.astrogrid.jes.types.v1.SubmissionResponse;
+import org.astrogrid.jes.util.JesUtil;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 /**Abstract base class for testing the job controller - handles the donkey work of feeding the controller jobs.
@@ -70,7 +72,7 @@ public abstract class AbstractTestForJobController extends AbstractTestWorkflowI
 
 
     /** fill this in to test behaviour of job submission */
-    protected abstract void performTest(SubmissionResponse result) throws Exception;
+    protected abstract void performTest(JobURN urn) throws Exception;
 
 
     protected AbstractJobFactoryImpl fac;
@@ -89,25 +91,32 @@ public abstract class AbstractTestForJobController extends AbstractTestWorkflowI
      * @see org.astrogrid.jes.impl.workflow.WorkflowInputs#testIt(java.io.InputStream, int)
      */
     protected void testIt(InputStream is, int resourceNum) throws Exception {
-        SubmissionResponse result = submitJob(is);
-        performTest(result);
+        JobURN urn = submitJob(is);
+        performTest(urn);
         
     }
 
+    protected Exception seenException; 
     /** helper method to submit a job */
-    protected SubmissionResponse submitJob(InputStream is) throws Exception {
+    protected JobURN submitJob(InputStream is) throws Exception {
         String workflowXML = FileResourceLoader.streamToString(is);
         SubmitJobRequest req = facade.createSubmitJobRequest(workflowXML);
         assertNotNull(req);
-        
-        SubmissionResponse result = (SubmissionResponse)jc.submitJob(req);
-        return result;
+        try {
+            return JesUtil.axis2castor(jc.submitJob(req));
+        } catch (IOException e) {
+            seenException = e;
+            return null;
+        }
     }
 }
 
 
 /* 
 $Log: AbstractTestForJobController.java,v $
+Revision 1.3  2004/03/09 14:23:54  nw
+tests that exercise the job contorller service implememntiton
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

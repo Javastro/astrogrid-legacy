@@ -1,4 +1,4 @@
-/*$Id: ListJobsStoreFailureTest.java,v 1.3 2004/03/04 01:57:35 nw Exp $
+/*$Id: ListJobsStoreFailureTest.java,v 1.4 2004/03/09 14:23:54 nw Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,18 @@
 **/
 package org.astrogrid.jes.jobcontroller;
 
+import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.community.beans.v1.axis.Identifier;
+import org.astrogrid.community.beans.v1.axis._Account;
+import org.astrogrid.jes.delegate.v1.jobcontroller.JesFault;
 import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
 import org.astrogrid.jes.impl.workflow.MockJobFactoryImpl;
 import org.astrogrid.jes.job.JobException;
-import org.astrogrid.jes.types.v1.ListCriteria;
-import org.astrogrid.jes.types.v1.SubmissionResponse;
-import org.astrogrid.jes.types.v1.WorkflowList;
+import org.astrogrid.jes.types.v1.WorkflowSummary;
+import org.astrogrid.jes.util.JesUtil;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
+import java.io.IOException;
 import java.util.Iterator;
 
 /** test behaviour of job controller listing tests when store fails.
@@ -32,26 +37,20 @@ public class ListJobsStoreFailureTest extends AbstractTestForJobController {
     }
     protected void setUp() throws Exception {
         super.setUp();
-        this.criteria = new ListCriteria();
-        criteria.setCommunity(ListJobsSuccessTest.COMMUNITY);
-        criteria.setUserId(ListJobsSuccessTest.USERID);
+        this.acc = new _Account();
+        acc.setCommunity(new Identifier(ListJobsSuccessTest.COMMUNITY));
+        acc.setName(new Identifier(ListJobsSuccessTest.USERID));
     }
-    protected ListCriteria criteria;    
+    protected _Account acc;
     /**
      * @see org.astrogrid.jes.jobcontroller.AbstractTest#performTest(org.astrogrid.jes.types.v1.SubmissionResponse)
      */
-    protected void performTest(SubmissionResponse result) throws Exception {
-        assertNotNull(result);   
-        assertTrue(result.isSubmissionSuccessful());
-
-        WorkflowList wl = jc.readJobList(criteria);
-        assertNotNull(wl);
-        assertNotNull(wl.getMessage(),wl.getMessage()); //i.e. no errors
-        assertEquals(wl.getUserId(), ListJobsSuccessTest.USERID);
-        assertEquals(wl.getCommunity(), ListJobsSuccessTest.COMMUNITY);
-        String[] rawArr = wl.getWorkflow();
-        assertNotNull(rawArr);
-        assertEquals(0,rawArr.length);
+    protected void performTest(JobURN urn) throws Exception {
+        try {
+        WorkflowSummary[] wl = jc.readJobList(acc);
+        fail("expected to throw exception");
+        } catch (JesFault e) {
+        }
     }
     /**
      * @see org.astrogrid.jes.jobcontroller.AbstractTest#createJobFactory()
@@ -67,7 +66,7 @@ public class ListJobsStoreFailureTest extends AbstractTestForJobController {
             /**
          * @see org.astrogrid.jes.job.JobFactory#findUserJobs(java.lang.String, java.lang.String, java.lang.String)
          */
-        public Iterator findUserJobs(String userid, String community, String jobListXML) throws JobException {
+        public Iterator findUserJobs(Account acc) throws JobException {
             throw new JobException("You wanted me to fail");
         }
 
@@ -78,6 +77,9 @@ public class ListJobsStoreFailureTest extends AbstractTestForJobController {
 
 /* 
 $Log: ListJobsStoreFailureTest.java,v $
+Revision 1.4  2004/03/09 14:23:54  nw
+tests that exercise the job contorller service implememntiton
+
 Revision 1.3  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

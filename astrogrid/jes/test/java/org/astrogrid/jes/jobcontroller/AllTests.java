@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.3 2004/02/27 00:46:03 nw Exp $
+/*$Id: AllTests.java,v 1.4 2004/03/09 14:23:54 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,17 +22,26 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("Tests for jobcontroller service");
         //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(SubmitSuccessTest.class));
+        suite.addTest(new TestSuite(ListJobsStoreFailureTest.class));
+        suite.addTest(new TestSuite(ListJobsSuccessTest.class));
         suite.addTest(new TestSuite(SubmitNotifierFailureTest.class));
         suite.addTest(new TestSuite(SubmitStoreFailureTest.class));
-        suite.addTest(new TestSuite(ListJobsSuccessTest.class));
-        suite.addTest(new TestSuite(ListJobsStoreFailureTest.class));
+        suite.addTest(new TestSuite(SubmitSuccessTest.class));
+        suite.addTest(new TestSuite(DeleteJobTest.class));
+        suite.addTest(new TestSuite(CancelJobTest.class));
+        suite.addTest(new TestSuite(ListJobsUnknownFailureTest.class));
+        suite.addTest(new TestSuite(ReadJobSuccessTest.class));
+        suite.addTest(new TestSuite(ReadJobUnknownFailureTest.class));
+        suite.addTest(new TestSuite(ReadJobStoreFailureTest.class));
         //$JUnit-END$
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.4  2004/03/09 14:23:54  nw
+tests that exercise the job contorller service implememntiton
+
 Revision 1.3  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

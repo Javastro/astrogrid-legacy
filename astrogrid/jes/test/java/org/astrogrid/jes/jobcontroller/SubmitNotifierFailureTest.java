@@ -1,4 +1,4 @@
-/*$Id: SubmitNotifierFailureTest.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: SubmitNotifierFailureTest.java,v 1.3 2004/03/09 14:23:54 nw Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.jes.jobcontroller;
 import org.astrogrid.jes.comm.MockSchedulerNotifier;
 import org.astrogrid.jes.comm.SchedulerNotifier;
 import org.astrogrid.jes.impl.workflow.InMemoryJobFactoryImpl;
-import org.astrogrid.jes.types.v1.SubmissionResponse;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 /** Test what happens when notifier fails.
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Feb-2004
@@ -31,14 +31,11 @@ public class SubmitNotifierFailureTest extends AbstractTestForJobController {
     /** expect the submit to fail - so there should be a message, and jobURN should be null.
      * @see org.astrogrid.jes.jobcontroller.AbstractTest#performTest(org.astrogrid.jes.types.v1.SubmissionResponse)
      */
-    protected void performTest(SubmissionResponse result) throws Exception {
-        
+    protected void performTest(JobURN urn) throws Exception {
+        assertNotNull(seenException);
         // check notifier was called - double check we failed in the right place.
         assertTrue(((MockSchedulerNotifier)nudger).getCallCount() > 0);
-        assertNotNull(result);
-        assertFalse(result.isSubmissionSuccessful());
-        assertNotNull(result.getMessage());
-        assertNull(result.getJobURN());
+
         // look into store - shoudn't be an entry in the store for it. (i.e. should have been cleaned out when failed to submit).
         // in this case, means the store should be empty.
         assertEquals(0,((InMemoryJobFactoryImpl)fac).getInternalStore().size());
@@ -56,6 +53,9 @@ public class SubmitNotifierFailureTest extends AbstractTestForJobController {
 
 /* 
 $Log: SubmitNotifierFailureTest.java,v $
+Revision 1.3  2004/03/09 14:23:54  nw
+tests that exercise the job contorller service implememntiton
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 
