@@ -1,4 +1,4 @@
-/*$Id: InMemorySystemTest.java,v 1.8 2004/03/09 14:24:16 nw Exp $
+/*$Id: InMemorySystemTest.java,v 1.9 2004/03/09 14:42:18 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,7 @@ import org.apache.axis.utils.XMLUtils;
 import org.exolab.castor.xml.Marshaller;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.defaults.CachingComponentAdapter;
-import org.picocontainer.defaults.ConstructorComponentAdapter;
+import org.picocontainer.defaults.ConstructorComponentAdapterFactory;
 import org.picocontainer.defaults.ImplementationHidingComponentAdapter;
 import org.w3c.dom.Document;
 
@@ -74,10 +74,12 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
                        
             // scheduler that notifies of completion by releasing a barrier
             pico.unregisterComponent(JobScheduler.class);
+            ConstructorComponentAdapterFactory fac = new ConstructorComponentAdapterFactory();
             pico.registerComponent(
                 new ImplementationHidingComponentAdapter(
                     new CachingComponentAdapter(
-                        new ConstructorComponentAdapter(JobScheduler.class,ObservableJobScheduler.class)
+                        fac.createComponentAdapter(JobScheduler.class,ObservableJobScheduler.class,null)
+                        //new ConstructorComponentAdapter(JobScheduler.class,ObservableJobScheduler.class)
                     )
                   )
                 );
@@ -167,6 +169,9 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemorySystemTest.java,v $
+Revision 1.9  2004/03/09 14:42:18  nw
+updated to track version change in picocontainer
+
 Revision 1.8  2004/03/09 14:24:16  nw
 upgraded to new job controller wsdl
 
