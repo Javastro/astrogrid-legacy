@@ -16,7 +16,7 @@ import javax.naming.NamingException;
 /**
  * @author peter.shillan <mailto:gps@roe.ac.uk />
  */
-public class OpenJmsReceiver extends OpenJmsBase {
+public class OpenJmsReceiver extends OpenJmsBase implements OpenJmsReceiverInterface {
   // Queue receiver.
   private QueueReceiver queueReceiver;
   

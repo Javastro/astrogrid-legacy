@@ -13,7 +13,7 @@ import javax.naming.NamingException;
 /**
  * @author peter.shillan <mailto:gps@roe.ac.uk />
  */
-public class OpenJmsSender extends OpenJmsBase {
+public class OpenJmsSender extends OpenJmsBase implements OpenJmsSenderInterface {
   // Queue sender.
   private QueueSender queueSender;
   

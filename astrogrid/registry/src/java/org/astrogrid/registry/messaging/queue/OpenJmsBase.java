@@ -16,7 +16,7 @@ import javax.naming.NamingException;
 /**
  * @author peter.shillan <mailto:gps@roe.ac.uk />
  */
-public class OpenJmsBase {
+public class OpenJmsBase implements OpenJms {
   // JNDI naming context.
   private InitialContext jndiContext;
 
