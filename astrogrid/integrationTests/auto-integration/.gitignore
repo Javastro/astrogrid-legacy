@@ -1,3 +1,6 @@
 maven.log
 tmp
 build.properties
+target
+.classpath
+.project
