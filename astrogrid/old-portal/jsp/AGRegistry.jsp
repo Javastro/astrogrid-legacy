@@ -18,10 +18,9 @@
   Enter Web Server:
   <SELECT name="WebServerOpt" value="<%=agserver%>">
       <OPTGROUP label="Web Servers">
-	  <OPTION label="other"> </OPTION>
-      <OPTION label="leicester"> Leicester </OPTION>
-      <OPTION label="stargrid1"> stargrid1 </OPTION>
-	  <OPTION label="Roy's PC">   rlspc14 </OPTION>
+	  <OPTION> </OPTION>
+      <OPTION> Leicester </OPTION>
+      <OPTION> Rutherford </OPTION>
       </OPTGROUP>
    </SELECT>
    <INPUT name="WebServer" type = "TEXT" value="<%=agserver%>">
@@ -45,17 +44,9 @@
 </FORM>
 <HR/>
 <%for (int i = 0; jspheaders != null && i < jspheaders.length; i++) {%>
-   <%=jspheaders[i]%></BR>
+   <%=jspheaders[i]%> </BR>
 <%}%>
 
 <P><PRE>
-<%  StringBuffer cs = new StringBuffer();
-    for ( int i = 0; taskoutput != null && i < taskoutput.length(); i++ ) {
-       char c = taskoutput.charAt(i);
-       if ( c == '<' ) cs = cs.append("&lt;");
-       else if ( c == '>' ) cs = cs.append("&gt;");
-       else cs = cs.append(c);
-   }
-   String str = cs.toString();
-   if ( str != null ) %> <%=str%>
+<%if ( taskoutput != null ) %> <%=taskoutput%>
 </PRE></P>
