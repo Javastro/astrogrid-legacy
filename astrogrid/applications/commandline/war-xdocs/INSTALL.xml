@@ -39,7 +39,7 @@
 	</subsubsection>
     <subsubsection name="cea.registry.template.url" >
         <p>When registering itself the server needs to know a certain amount of meta information about itself. This information can be supplied in the this template file. If this is not set then some default values will be used, but these will probably lead to misleading registry entries for the server that you are installing.</p>
-        <p>A suitable template file for customization can be found in <a href="http://www.astrogrid.org/viewcvs/astrogrid/applications/server/src/java/CEARegistryTemplate.xml?rev=HEAD&content-type=text/vnd.viewcvs-markup">cvs</a> and the meaning of the various entries is explained in the <a href="http://www.ivoa.net/Documents/latest/RM.html">IVOA Resource Metadata Standard</a> </p>
+        <p>A suitable template file for customization can be found in <a href="http://www.astrogrid.org/viewcvs/astrogrid/applications/server/src/java/CEARegistryTemplate.xml?rev=HEAD&amp;content-type=text/vnd.viewcvs-markup">cvs</a> and the meaning of the various entries is explained in the <a href="http://www.ivoa.net/Documents/latest/RM.html">IVOA Resource Metadata Standard</a> </p>
 		</subsubsection>
         <subsubsection name="cea.service.endpoint.url">
             The service endpoint URL needs to be explicitly set because the service might be behind a firewall and have a different apparent address to the outside world. This is used when telling other services about the location of this service. e.g.
