@@ -1,4 +1,4 @@
-/* $Id: DatacenterProdder.java,v 1.7 2004/04/15 16:11:21 mch Exp $
+/* $Id: DatacenterProdder.java,v 1.8 2004/08/02 11:33:32 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -13,6 +13,7 @@ import java.io.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Properties;
 import javax.swing.JButton;
@@ -23,12 +24,14 @@ import javax.swing.ProgressMonitor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
+import org.astrogrid.community.IvoAccount;
 import org.astrogrid.community.User;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.io.Piper;
 import org.astrogrid.store.Agsl;
+import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.ui.EscEnterListener;
@@ -71,7 +74,7 @@ public class DatacenterProdder extends JFrame
    /**
     * Initializes the frame.
     */
-   public DatacenterProdder()
+   public DatacenterProdder() throws URISyntaxException
    {
       super("AstroGrid Datacenter Prodder");
       
@@ -178,8 +181,9 @@ public class DatacenterProdder extends JFrame
       
       new EscEnterListener(this, null, cancelButton, true);
       
-      setUser(new Account("avodemo","test.astrogrid.org","EmptyToken"));
-
+//      setUser(new IvoAccount(new Ivorn("ivo://test.astrogrid.org/avodemo")));
+      setUser(Account.ANONYMOUS);
+      
       loadEntries();
    }
    
@@ -396,7 +400,7 @@ public class DatacenterProdder extends JFrame
     * Runs the box
     */
    
-   public static void main(String[] args) {
+   public static void main(String[] args) throws Exception {
 
       
       Splash s = new Splash("Datacenter Prodder","Desktop Client",
@@ -416,6 +420,9 @@ public class DatacenterProdder extends JFrame
 
 /*
  $Log: DatacenterProdder.java,v $
+ Revision 1.8  2004/08/02 11:33:32  mch
+ Adapted for new Agsl/etc forms
+
  Revision 1.7  2004/04/15 16:11:21  mch
  Moved common ui stuff to ui project
 
