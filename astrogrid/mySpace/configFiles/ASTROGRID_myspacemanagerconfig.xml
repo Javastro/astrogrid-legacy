@@ -36,7 +36,7 @@
     
     <!-- REGISTRYCONF
         This is the directory where MySpace Registry will get/log info, please add /example at the end of your path -->
-    <property name="REGISTRYCONF" value="/tmp/example" />
+    <property name="REGISTRYCONF" value="astrogrid1" />
  
     <!-- URL MYSPACE MANAGER
         This is the URL for the MySpace Manager facility for the installed 
