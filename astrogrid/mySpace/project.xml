@@ -203,6 +203,7 @@
 				<include>${maven.build.dest}/*.xml</include>
 				<include>${maven.build.dest}/*.properties</include>
 				<include>${maven.build.dest}/*.servers</include>
+				<include>${maven.build.dest}/*.sh</include>
 			</includes>
 		</resource>
 	</resources>

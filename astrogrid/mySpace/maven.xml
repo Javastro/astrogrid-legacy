@@ -29,6 +29,14 @@
 				<include name="INSTALL"/>
 			</fileset>
 		</copy>
+		<!--Temporary measure - we need to find a better way to set up the database, and a better place to store the config files-->
+		<echo message="copying across database setup files - see xdocs/createregistry_v02.lis to see what they're for"/>
+		<copy todir="${maven.war.webapp.dir}" overwrite="yes">
+			<fileset dir="${basedir}/demoData">
+				<include name="*.servers"/>
+				<include name="*.sh"/>
+			</fileset>
+		</copy>
 		<copy todir="${maven.war.webapp.dir}" overwrite="yes">
 			<fileset dir="${maven.conf.dir}">
 				<include name="ASTROGRID_myspace*config.xml"/>
