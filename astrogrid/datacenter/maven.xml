@@ -2,31 +2,27 @@
 <!-- extension maven script -->
 <project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
 <!-- hooks to farm out everything to subprojects -->
-<preGoal name="jar">
-	<attainGoal name="multiproject:artifact" />
-	<maven:maven descriptor="pal/project.xml" goals="war:war" />
-</preGoal>
 
-<preGoal name="jar:deploy">
-	<attainGoal name="multiproject:deploy" />
-	<maven:maven descriptor="pal/project.xml" goals="war:deploy" />
-</preGoal>
+
+<goal name="nww">
+</goal>
+
 
 <!-- this is the goal called by nightly build -->
 <preGoal name="jar:deploy-snapshot">
-	<attainGoal name="multiproject:deploy-snapshot" />
-	<!-- necessary to call this one by hand - as multiproject seems to conflict with calling maven scripts by hand -->
-	<maven:maven descriptor="pal/project.xml" goals="war:deploy-snapshot" />
+	<!-- workaround for a bug -->
+	<maven:maven descriptor="${basedir}/pal/project.xml" goals="webapp-site" />
+	${systemScope.setProperty('goal','dist')}
+	<attainGoal name="multiproject:goal" /> <!-- packages everythin -->
+	<attainGoal name="multiproject:deploy-snapshot" /> <!-- make the artefacts -->
 </preGoal>
 
-<preGoal name="jar:install">
-	<attainGoal name="multiproject:install" />
-	<maven:maven descriptor="pal/project.xml" goals="war:install" />
-</preGoal>
 
 <preGoal name="jar:install-snapshot">
-	<attainGoal name="multiproject:install-snapshot" />
-	<maven:maven descriptor="pal/project.xml" goals="war:install-snapshot" />
+	<maven:maven descriptor="${basedir}/pal/project.xml" goals="webapp-site" />
+	${systemScope.setProperty('goal','dist')}
+	<attainGoal name="multiproject:goal" /> <!-- packages everythin -->
+	<attainGoal name="multiproject:install-snapshot" /> <!-- make the artefacts -->
 </preGoal>
 
 <!-- goal called by nightly build -->
@@ -40,44 +36,6 @@
 new goals
 -->
 
-<goal name="datacenter-test-client-jar" prereqs="java:compile" description="create executable jar for datacenter test client">
-  <delete dir="tmp" />
-  <mkdir dir="tmp" />
-  <deploy:copy-deps todir="tmp"
-  	excludes="breezetk,objectwiz-votable,VOTableUtil,castor,mm-mysql,jconn,hsqldb"
-	/>
-  <!-- want to bundle everything required into a single jar file - easy to run, with no classpath greif. -->
-  <jar destfile="packaging/pal/bin/test-server.jar">
-  	<manifest>
-	  <attribute name="Main-Class" value="org.astrogrid.datacenter.integration.axisdataserver.TestInstallation" />
-	  <attribute name="Version" value="${DSTAMP}" />
-	</manifest>
-	<fileset dir="${maven.build.dest}" /> <!-- all our sources - just to be safe -->
-	<zipgroupfileset dir="tmp" includes="*.jar" />
-  </jar>
-</goal>
-
-<goal name="datacenter-register-client-jar" prereqs="java:compile"
-	description="create executable jar for that registers datacenter service with axis">
-  <delete dir="tmp" />
-  <mkdir dir="tmp" />
-  <deploy:copy-deps todir="tmp"
-  	excludes="astrogrid-common,breezetk,objectwiz-votable,VOTableUtil,castor,xerces,mm-mysql,jconn,hsqldb"
-	/>
-  <jar destfile="packaging/pal/bin/register-service.jar">
-  	<manifest>
-	  <attribute name="Main-Class" value="org.astrogrid.datacenter.integration.axisdataserver.DeployServer" />
-	  <attribute name="Version" value="${DSTAMP}" />
-	</manifest>
-	<zipgroupfileset dir="tmp" includes="*.jar" />
-	<fileset dir="${maven.build.dest}">
-		<include name="org/astrogrid/datacenter/integration/axisdataserver/DeployServer*.class" />
-	</fileset>
-	<fileset dir="${basedir}">
-		<include  name="wsdd/*.wsdd" />
-	</fileset>
-  </jar>
-</goal>
 <!--
 stand - alone goals - development helpers, not additions to main build
 -->

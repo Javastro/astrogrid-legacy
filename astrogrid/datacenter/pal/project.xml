@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project>
 
-<extend>${basedir}/../project-base.xml</extend>
+<extend>${basedir}/../build/project-base.xml</extend>
   <!-- the version of maven's project object model -->
   <pomVersion>3</pomVersion>
 
   <!-- a unique name for this project -->
-  <id>astrogrid-datacenter-pal</id>
+  <id>pal</id>
   <name>Publishers Astrogrid Library</name>
   <currentVersion>HEAD</currentVersion>
 
@@ -20,7 +20,7 @@
 	   ...
 	  	&lt;dependency&gt;
 		&lt;groupId&gt;astrogrid-datacenter&lt;/groupId&gt;
-		&lt;artifactId&gt;astrogrid-datacenter-pal&lt;/artifactId&gt;
+		&lt;artifactId&gt;pal&lt;/artifactId&gt;
 		&lt;version&gt;SNAPSHOT&lt;/version&gt;
 		&lt;type&gt;war&lt;/type&gt;
 		&lt;/dependency&gt;

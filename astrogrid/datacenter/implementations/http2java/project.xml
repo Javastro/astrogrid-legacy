@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-  <extend>${basedir}/../../project-base.xml</extend>
+  <extend>${basedir}/../../build/project-base.xml</extend>
   <!-- the version of maven's project object model -->
   <pomVersion>3</pomVersion>
 
