@@ -1,4 +1,4 @@
-/*$Id: CatApplicationDescription.java,v 1.3 2004/09/03 13:19:14 nw Exp $
+/*$Id: CatApplicationDescription.java,v 1.4 2004/09/07 12:54:55 nw Exp $
  * Created on 16-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -143,17 +143,26 @@ public class CatApplicationDescription extends AbstractApplicationDescription
         public boolean execute() throws CeaException {
             createAdapters();
             setStatus(Status.INITIALIZED);
-            setStatus(Status.RUNNING);
-            List streams = new ArrayList();
-            for (Iterator i = inputParameterAdapters(); i.hasNext();) {
-                ParameterAdapter input = (ParameterAdapter)i.next();
-                reportMessage("reading in parameter " + input.getWrappedParameter().getValue());
-                streams.add(input.process());
-            }            
-            setStatus(Status.WRITINGBACK);
-            ParameterAdapter out= (ParameterAdapter)outputParameterAdapters().next(); // we know there's just the one.
-            out.writeBack(streams);
-            setStatus(Status.COMPLETED);
+            Runnable r = new Runnable() {
+                public void run() {
+                    try {
+                        setStatus(Status.RUNNING);
+                        List streams = new ArrayList();
+                        for (Iterator i = inputParameterAdapters(); i.hasNext();) {
+                                ParameterAdapter input = (ParameterAdapter)i.next();
+                                reportMessage("reading in parameter " + input.getWrappedParameter().getValue());
+                                streams.add(input.process());
+                        }            
+                        setStatus(Status.WRITINGBACK);
+                        ParameterAdapter out= (ParameterAdapter)outputParameterAdapters().next(); // we know there's just the one.
+                        out.writeBack(streams);
+                        setStatus(Status.COMPLETED);
+                    } catch (CeaException e) {
+                        reportError("something failed",e);
+                    }
+                }
+            };
+            (new Thread(r)).start();
             return true;
                         
         }
@@ -211,6 +220,9 @@ public class CatApplicationDescription extends AbstractApplicationDescription
 
 /* 
 $Log: CatApplicationDescription.java,v $
+Revision 1.4  2004/09/07 12:54:55  nw
+put body in new thread - needs to be really.
+
 Revision 1.3  2004/09/03 13:19:14  nw
 added some progress messages
 
