@@ -347,7 +347,7 @@ public class JobController {
       * @see ?Response.xsd in CVS
       * 
       **/     
-    public String jobList( String jobListXML ) {
+    public String readJobList( String jobListXML ) {
         if( TRACE_ENABLED ) logger.debug( "jobList() entry") ;
         
         String
