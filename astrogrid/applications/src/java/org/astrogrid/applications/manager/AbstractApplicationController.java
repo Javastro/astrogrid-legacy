@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationController.java,v 1.21 2004/04/19 17:34:08 pah Exp $
+ * $Id: AbstractApplicationController.java,v 1.22 2004/04/21 09:10:02 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -12,6 +12,8 @@
 package org.astrogrid.applications.manager;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -126,15 +128,24 @@ public abstract class AbstractApplicationController
          logger.error("failed to load application config", e);
       }
 
+      register();
+   }
+
+   /**
+    * Create a registry entry for this server and add to the registry service specified in config.
+    */
+   protected void register() {
       try {
          ApplicationList applist = RegistryEntryBuilder.makeApplist(clconf);
          // create the builder....
          Unmarshaller um2 = new Unmarshaller(VODescription.class);
-         InputSource saxis =
-            new InputSource(config.getRegistryTemplateURL().openStream());
-         VODescription template = (VODescription)um2.unmarshal(saxis);
+         logger.info("using "+config.getRegistryTemplateURL()+ " as registry template");
+        InputStreamReader istream = new InputStreamReader(config.getRegistryTemplateURL().openStream());
+      
+         VODescription template = (VODescription)um2.unmarshal(istream);
          
          if (serviceDesc != null) { // if running within the axis container....
+            logger.info("registering the server to "+serviceDesc.getEndpointURL());
             URL endpointURL = new URL(serviceDesc.getEndpointURL());
             RegistryEntryBuilder builder =
                new RegistryEntryBuilder(applist, template, endpointURL);
@@ -143,7 +154,7 @@ public abstract class AbstractApplicationController
                new RegistryUploader(regEntry, registryAdminLocator);
             uploader.write();
          }
-
+      
       }
       catch (CastorException e) {
          status.addError("failed to read in the castor template registry descriptio");
@@ -165,7 +176,10 @@ public abstract class AbstractApplicationController
          status.addError("Problem creating registry entry");
          logger.error("Problem creating registry entry", e);
       }
-
+      catch (Exception e) {
+         status.addError("Totally unknown error"); //TODO perhaps remove me...
+         logger.error("Totally unknown problem creating registry entry", e);
+      }
    }
 
    /**
@@ -223,7 +237,7 @@ public abstract class AbstractApplicationController
 
          result.addApplicationDefn(app);
       }
-
+      register();//FIXME this should be removed when working
       return result;
 
    }

@@ -1,5 +1,5 @@
 /*
- * $Id: RegEntryBaseTestCase.java,v 1.1 2004/03/29 12:38:39 pah Exp $
+ * $Id: RegEntryBaseTestCase.java,v 1.2 2004/04/21 09:10:02 pah Exp $
  * 
  * Created on 29-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,6 +13,7 @@
 
 package org.astrogrid.applications.description.registry;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -44,7 +45,7 @@ public abstract class RegEntryBaseTestCase extends DescriptionBaseTestCase {
    public RegEntryBaseTestCase(String arg0) {
       super(arg0);
       try {
-         ENDPOINT = new URL("http://fake.end.point");
+         ENDPOINT = new URL("http://locahost:8080/astrogrid-applications-SNAPSHOT/services/CommonExecutionConnectorService");
       }
       catch (MalformedURLException e) {
 
@@ -83,6 +84,10 @@ public abstract class RegEntryBaseTestCase extends DescriptionBaseTestCase {
       template = (VODescription)um2.unmarshal(saxis);
       assertNotNull(template);
       builder = new RegistryEntryBuilder(applist, template, ENDPOINT);
+      //TODO should make this an os independent path - want to look at the file contents at the moment though
+           testfile = new File("/tmp/CeaRegEntry.xml");
    }
+
+   protected File testfile;
 
 }

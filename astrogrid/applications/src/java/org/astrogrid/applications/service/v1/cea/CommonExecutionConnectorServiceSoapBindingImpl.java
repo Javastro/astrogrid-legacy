@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.4 2004/04/20 12:26:42 pah Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.5 2004/04/21 09:10:02 pah Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -46,7 +46,7 @@ public class CommonExecutionConnectorServiceSoapBindingImpl
          org.apache.commons.logging.LogFactory.getLog(
             CommonExecutionConnectorServiceSoapBindingImpl.class);
       
-      protected final CommandLineApplicationController clec;
+      protected  CommandLineApplicationController clec;
 
    /**
     * 
@@ -55,7 +55,14 @@ public class CommonExecutionConnectorServiceSoapBindingImpl
       //REFACTORME - need to use picocontainer to get full IoC - this constructor uses configuration based locators...
       ServiceDesc servicedesc = org.apache.axis.MessageContext.getCurrentContext().getService().getServiceDescription();
       //FIXME - need to pass thsi into the application controller
-      clec = new CommandLineApplicationController(servicedesc);
+      clec=null;
+      try {
+         clec = new CommandLineApplicationController(servicedesc);
+      }
+      catch (Exception e) {
+         
+         logger.error("problem instatiating applicationController", e);
+      }
       
    }
 

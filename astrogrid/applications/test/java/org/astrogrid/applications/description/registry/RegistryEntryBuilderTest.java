@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryEntryBuilderTest.java,v 1.6 2004/04/15 18:16:48 pah Exp $
+ * $Id: RegistryEntryBuilderTest.java,v 1.7 2004/04/21 09:10:02 pah Exp $
  * 
  * Created on 24-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -41,16 +41,13 @@ import org.astrogrid.registry.beans.resource.VODescription;
  */
 public class RegistryEntryBuilderTest extends RegEntryBaseTestCase {
 
-   private File testfile;
-
    /**
     * Constructor for RegistryEntryBuilderTest.
     * @param arg0
     */
    public RegistryEntryBuilderTest(String arg0) {
       super(arg0);
-      //TODO should make this an os independent path - want to look at the file contents at the moment though
-      testfile = new File("/tmp/CeaRegEntry.xml");
+     
    }
 
    public static void main(String[] args) {

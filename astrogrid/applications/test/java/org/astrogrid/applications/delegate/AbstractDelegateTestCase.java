@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractDelegateTestCase.java,v 1.2 2004/04/14 13:19:48 pah Exp $
+ * $Id: AbstractDelegateTestCase.java,v 1.3 2004/04/21 09:10:02 pah Exp $
  * 
  * Created on 22-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -73,17 +73,11 @@ public abstract class AbstractDelegateTestCase extends WorkFlowUsingTestCase {
       applicationid = TestAppConst.TESTAPP_NAME;
    }
 
-   public final void testListApplications() {
-      try {
+   public final void testListApplications() throws CEADelegateException {
          ApplicationList apps = delegate.listApplications();
          assertNotNull("application name list", apps);
          assertEquals("number of test applications", 2, apps.getApplicationDefnCount());
 
-      }
-      catch (CEADelegateException e) {
-         fail("unknown exception");
-         e.printStackTrace();
-      }
    }
 
    public final void testExecuteApplication() throws CEADelegateException {
@@ -95,8 +89,8 @@ public abstract class AbstractDelegateTestCase extends WorkFlowUsingTestCase {
       //TODO Implement queryApplicationExecutionStatus().
    }
 
-   public final void testReturnRegistryEntry() {
-      //TODO Implement returnRegistryEntry().
+   public final void testReturnRegistryEntry() throws CEADelegateException {
+      String regent = delegate.returnRegistryEntry();
    }
    
 

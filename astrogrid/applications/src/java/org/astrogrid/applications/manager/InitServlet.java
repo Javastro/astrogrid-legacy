@@ -1,5 +1,5 @@
 /*
- * $Id: InitServlet.java,v 1.5 2004/04/19 17:34:08 pah Exp $
+ * $Id: InitServlet.java,v 1.6 2004/04/21 09:10:02 pah Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -89,6 +89,7 @@ public class InitServlet extends HttpServlet {
          out.println("</body></html>");
       }
       catch (CEADelegateException e) {
+         e.printStackTrace();
          throw new ServletException(
             "problem prompting initialization of application controller",
             e);

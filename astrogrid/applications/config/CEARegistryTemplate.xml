@@ -18,7 +18,7 @@
 		     
 		     The name of the resource might be better categorised by prepending "cea/" not sure if this is necessary....-->
 		<vr:Identifier>
-			<vr:AuthorityID>org.astrogrid.test.mssl</vr:AuthorityID>
+			<vr:AuthorityID>org.astrogrid.localhost</vr:AuthorityID>
 			<vr:ResourceKey>TemplateEntry</vr:ResourceKey>
 		</vr:Identifier>
 		<vr:Title>TemplateEntry</vr:Title>
@@ -60,7 +60,7 @@
 	<vr:Resource xsi:type="java:org.astrogrid.registry.beans.cea.CeaServiceType">
 		<!--The autorityID has been chosen to be astrogrid.org as I believe that these should be defined at this level - however the registry is probably using this identifier to determine which are "local" registry entries, so there might be something else set as standard. The name of the resource might be better categorised by prepending "cea/" not sure if this is necessary....-->
 		<vr:Identifier>
-			<vr:AuthorityID>org.astrogrid.test.mssl</vr:AuthorityID>
+			<vr:AuthorityID>org.astrogrid.localhost</vr:AuthorityID>
 			<vr:ResourceKey>TemplateEntry</vr:ResourceKey>
 		</vr:Identifier>
 		<vr:Title>TemplateEntry</vr:Title>
@@ -101,7 +101,7 @@
 		</vr:Interface>
 		<ManagedApplications>
 			<ApplicationReference>
-				<vr:AuthorityID>org.astrogrid.test.mssl</vr:AuthorityID>
+				<vr:AuthorityID>org.astrogrid.localhost</vr:AuthorityID>
 				<vr:ResourceKey>TemplateEntry</vr:ResourceKey>
 			</ApplicationReference>
 		</ManagedApplications>
