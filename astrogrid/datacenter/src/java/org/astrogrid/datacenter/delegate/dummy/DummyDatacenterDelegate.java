@@ -1,0 +1,128 @@
+/*
+ * $Id: DummyDatacenterDelegate.java,v 1.1 2003/08/27 23:30:10 mch Exp $
+ *
+ * (C) Copyright AstroGrid...
+ */
+
+package org.astrogrid.datacenter.delegate.dummy;
+import java.io.IOException;
+import java.net.URL;
+import java.rmi.RemoteException;
+import javax.xml.parsers.ParserConfigurationException;
+import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.delegate.DatacenterDelegate;
+import org.astrogrid.datacenter.delegate.DatacenterStatusListener;
+import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.query.QueryException;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+/**
+ * A convenience class for java clients of datacenters.  They can create and
+ * use this class to manage all the connections/calls/etc without having to
+ * mess around with all the SOAP messages directly.
+ *
+ * An instance of one of these corresponds to one connection to one database
+ *
+ * @author M Hill
+ * @author Jeff Lusted (from DatasetAgentDelegate)
+ */
+
+public class DummyDatacenterDelegate extends DatacenterDelegate
+{
+   /** used for generating random results... */
+   protected static java.util.Random random = new java.util.Random();
+
+   /** Don't use this directly - use the factory method DatacenterDelegate.makeDelegate()
+    * so that it can make decisions on new sorts
+    * of datacenter delegates in the future...
+    */
+   public DummyDatacenterDelegate()
+   {
+   }
+
+   /**
+    * Dummy call does nothing
+    */
+   public void setTimeout(int givenTimeout)
+   {
+      //nothing needs done
+   }
+
+   /**
+    * Checks that the given ADQL is valid (makes a query from it), returns an
+    * example VOTable in this package
+    * @todo returning a VOTable is not quite right - need to return the DOM
+    * representation of the returning message which might contain admin info also
+    */
+   public Element adqlQueryDatacenter(Element adql) throws RemoteException, QueryException
+   {
+      Query query = new Query(adql);
+
+      try
+      {
+         //load example response votable
+         URL url = getClass().getResource("testQuery.xml");
+         return XMLUtils.newDocument(url.openConnection().getInputStream()).getDocumentElement();
+      }
+      catch (SAXException se)
+      {
+         //rethrow as runtime exception - somethings gone wrong that shouldn't
+         throw new RuntimeException(se);
+      }
+      catch (IOException ioe)
+      {
+         //rethrow as runtime exception - somethings gone wrong that shouldn't
+         throw new RuntimeException(ioe);
+      }
+      catch (ParserConfigurationException pce)
+      {
+         //should never happen, so rethrow as runtime (is this naughty?)
+         throw new RuntimeException(pce);
+      }
+
+   }
+
+   /**
+    * Returns a random number between 0 and 100...
+    */
+   public int adqlCountDatacenter(Element adql)
+   {
+      return random.nextInt(100);
+   }
+
+   /**
+    * returns an example metadata file.
+    * @todo not supported yet.  Need to make a metadata file & return it
+    */
+   public Element getRegistryMetadata()
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   /**
+    * Returns unknown
+    */
+   public String getStatus()
+   {
+      return DatacenterStatusListener.UNKNOWN;
+   }
+
+}
+
+/*
+$Log: DummyDatacenterDelegate.java,v $
+Revision 1.1  2003/08/27 23:30:10  mch
+Introduced DummyDatacenterDelegate, selfcontained package for other workgroups to test with
+
+Revision 1.3  2003/08/27 22:40:55  mch
+removed unnecessary import (maven report...!)
+
+Revision 1.2  2003/08/25 22:52:11  mch
+Combined code from DatasetAgentDelegate with DatacenterDelegate
+
+Revision 1.1  2003/08/25 15:19:28  mch
+initial checkin
+
+
+*/
+
