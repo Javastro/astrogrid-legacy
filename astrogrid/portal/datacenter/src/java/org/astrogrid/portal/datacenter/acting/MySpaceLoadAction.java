@@ -88,12 +88,13 @@ public class MySpaceLoadAction extends AbstractAction {
 
       String adqlDocument = delegate.getDataHolding(userId, communityId, credential, mySpaceName);
       
-      request.setAttribute("adql-document", adqlDocument);
+      request.setAttribute("adql-document", adqlDocument); //@TODO are these needed? JDT
       request.setAttribute("adql-document-loaded", "true");
 
       logger.debug("[act] adql-document: " + adqlDocument);
       logger.debug("[act] adql-document-loaded: true");
 
+      sitemapParams.put("adql-document", adqlDocument); //@TODO added by JDT
       sitemapParams.put("adql-document-loaded", "true");
     }
     catch(Throwable t) {
