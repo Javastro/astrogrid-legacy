@@ -232,7 +232,7 @@ public class JobScheduler {
             
             final Job parent = step.getParent();
             final User user = new User();
-            user.setAccount(parent.getUserId());
+            user.setAccount(parent.getUserId()+"@"+parent.getCommunity());
             user.setGroup(parent.getGroup());
             user.setToken(parent.getToken());
             
