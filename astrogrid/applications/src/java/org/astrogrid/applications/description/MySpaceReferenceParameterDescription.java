@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceReferenceParameterDescription.java,v 1.7 2004/04/14 13:24:55 pah Exp $
+ * $Id: MySpaceReferenceParameterDescription.java,v 1.8 2004/04/14 13:45:47 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -23,8 +23,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.cocoon.util.IOUtils;
 
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.CeaException;
