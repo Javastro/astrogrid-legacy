@@ -1,4 +1,4 @@
-/*$Id: Query2MySpaceTest.java,v 1.3 2004/05/12 09:17:51 mch Exp $
+/*$Id: Query2MySpaceTest.java,v 1.4 2004/05/13 12:25:04 mch Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,15 +37,13 @@ public class Query2MySpaceTest extends TestCase {
    private static final Log log = LogFactory.getLog(Query2MySpaceTest.class);
    
    protected QuerySearcher delegate;
-   protected final static String MYSPACE = "myspace:http://localhost:8080/astrogrid-pal-SNAPSHOT/services/AxisDataServer";
-   protected final static String DSA = "http://localhost:8080/astrogrid-pal-SNAPSHOT/services/AxisDataServer";
 
    private static final String resultsPath = "avodemo/autoIntegrationTest.results";
 
    protected void setUp() throws Exception {
       delegate = DatacenterDelegateFactory.makeQuerySearcher(
          Account.ANONYMOUS,
-         DSA,
+         StdKeys.PAL_v05_ENDPOINT,
          DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE
       );
       assertNotNull("delegate was null",delegate);
@@ -56,7 +54,7 @@ public class Query2MySpaceTest extends TestCase {
     */
    public void testSubmit() throws Exception {
       
-      Agsl resultsTarget = new Agsl(MYSPACE, resultsPath);
+      Agsl resultsTarget = new Agsl(StdKeys.MYSPACE, resultsPath);
       
       String queryId = delegate.submitQuery(
          new ConeQuery(30,30,6),
@@ -99,6 +97,9 @@ public class Query2MySpaceTest extends TestCase {
 
 /*
 $Log: Query2MySpaceTest.java,v $
+Revision 1.4  2004/05/13 12:25:04  mch
+Fixes to create user, and switched to mostly testing it05 interface
+
 Revision 1.3  2004/05/12 09:17:51  mch
 Various fixes - forgotten whatfors...
 

@@ -1,4 +1,4 @@
-/*$Id: AdqlTest.java,v 1.2 2004/04/26 12:16:25 nw Exp $
+/*$Id: AdqlTest.java,v 1.3 2004/05/13 12:25:04 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,7 +45,7 @@ public class AdqlTest extends TestCase implements StdKeys {
       Piper.pipe(new InputStreamReader(is),out);
       AdqlQuery query = new AdqlQuery(out.toString());
       
-      QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v041_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v05_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       assertNotNull("delegate was null",delegate);
 
       InputStream results = delegate.askQuery(query, "VOTABLE");
@@ -75,6 +75,9 @@ public class AdqlTest extends TestCase implements StdKeys {
 
 /*
 $Log: AdqlTest.java,v $
+Revision 1.3  2004/05/13 12:25:04  mch
+Fixes to create user, and switched to mostly testing it05 interface
+
 Revision 1.2  2004/04/26 12:16:25  nw
 fixed static suite() method
 

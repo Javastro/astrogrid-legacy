@@ -1,4 +1,4 @@
-/*$Id: Jes2QueryTest.java,v 1.3 2004/05/12 09:17:51 mch Exp $
+/*$Id: Jes2QueryTest.java,v 1.4 2004/05/13 12:25:04 mch Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,6 @@ import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.portal.workflow.intf.JobExecutionService;
 import org.astrogrid.portal.workflow.intf.WorkflowManager;
 import org.astrogrid.portal.workflow.intf.WorkflowManagerFactory;
-import org.astrogrid.scripting.Astrogrid;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -46,7 +45,6 @@ public class Jes2QueryTest extends TestCase {
     protected Credentials creds;
     protected Workflow wf;
     protected WorkflowManager manager;
-   protected Astrogrid ag;
    
    /*
      * @see AbstractTestForIntegration#setUp()
@@ -54,7 +52,7 @@ public class Jes2QueryTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
       
-      User user = new User("avodemo", "test.astrogrid.org", "loony");
+      User user = new User("avodemo@test.astrogrid.org", "unknown group", "loony");
       
       acc = new Account();
         acc.setName("avodemo");
@@ -188,6 +186,9 @@ public class Jes2QueryTest extends TestCase {
 
 /*
 $Log: Jes2QueryTest.java,v $
+Revision 1.4  2004/05/13 12:25:04  mch
+Fixes to create user, and switched to mostly testing it05 interface
+
 Revision 1.3  2004/05/12 09:17:51  mch
 Various fixes - forgotten whatfors...
 

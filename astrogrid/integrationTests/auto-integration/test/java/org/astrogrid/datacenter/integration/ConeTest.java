@@ -1,4 +1,4 @@
-/*$Id: ConeTest.java,v 1.4 2004/05/12 09:17:51 mch Exp $
+/*$Id: ConeTest.java,v 1.5 2004/05/13 12:25:04 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
  * Test the cone-search delegate against std PAL
  *
  */
-public class ConeTest extends TestCase {
+public class ConeTest extends TestCase implements StdKeys {
 
    private static final Log log = LogFactory.getLog(ConeTest.class);
 
@@ -34,8 +34,7 @@ public class ConeTest extends TestCase {
     */
    public void testStdConeSearch04() throws IOException {
       
-      String endpoint = "http://localhost:8080/astrogrid-pal-SNAPSHOT/services/AxisDataServer";
-      ConeSearcher delegate = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS,endpoint,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      ConeSearcher delegate = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, PAL_v041_ENDPOINT, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       assertNotNull("delegate was null",delegate);
 
       InputStream is = delegate.coneSearch(10,10,2);
@@ -54,8 +53,7 @@ public class ConeTest extends TestCase {
     */
    public void testStdConeSearch05() throws IOException {
       
-      String endpoint = "http://localhost:8080/astrogrid-pal-SNAPSHOT/services/AxisDataService05";
-      ConeSearcher delegate = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS,endpoint,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      ConeSearcher delegate = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, PAL_v05_ENDPOINT, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       assertNotNull("delegate was null",delegate);
 
       InputStream is = delegate.coneSearch(10,10,2);
@@ -87,6 +85,9 @@ public class ConeTest extends TestCase {
 
 /*
 $Log: ConeTest.java,v $
+Revision 1.5  2004/05/13 12:25:04  mch
+Fixes to create user, and switched to mostly testing it05 interface
+
 Revision 1.4  2004/05/12 09:17:51  mch
 Various fixes - forgotten whatfors...
 

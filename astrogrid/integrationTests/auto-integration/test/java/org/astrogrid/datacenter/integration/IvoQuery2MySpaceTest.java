@@ -1,4 +1,4 @@
-/*$Id: IvoQuery2MySpaceTest.java,v 1.2 2004/04/16 15:55:08 mch Exp $
+/*$Id: IvoQuery2MySpaceTest.java,v 1.3 2004/05/13 12:25:04 mch Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * IVORNs
  *
  */
-public class IvoQuery2MySpaceTest extends TestCase {
+public class IvoQuery2MySpaceTest extends TestCase implements StdKeys {
 
    private static final Log log = LogFactory.getLog(Query2MySpaceTest.class);
    
@@ -42,10 +42,10 @@ public class IvoQuery2MySpaceTest extends TestCase {
    private static final String resultsPath = "avodemo/autoIntegrationTest.results";
 
    protected void setUp() throws Exception {
-      String datacenterEndpoint = "http://localhost:8080/astrogrid-pal-SNAPSHOT/services/AxisDataServer";
+
       delegate = DatacenterDelegateFactory.makeQuerySearcher(
          Account.ANONYMOUS,
-         datacenterEndpoint,
+         PAL_v05_ENDPOINT,
          DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE
       );
       assertNotNull("delegate was null",delegate);
@@ -103,6 +103,9 @@ public class IvoQuery2MySpaceTest extends TestCase {
 
 /*
 $Log: IvoQuery2MySpaceTest.java,v $
+Revision 1.3  2004/05/13 12:25:04  mch
+Fixes to create user, and switched to mostly testing it05 interface
+
 Revision 1.2  2004/04/16 15:55:08  mch
 added alltests
 
