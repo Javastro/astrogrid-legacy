@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+    
+    <head>
+        <title>org.astrogrid.filestore.streamer: package description</title>
+    </head>
+    
+    <body>
+        
+        <h1>Secured streaming of files to web browsers</h1>
+        
+        <p>
+            This package provides a secured file-streaming servlet that can stream any file visible to a 
+            filestore server while respecting the filestore's access controls. {@link StreamServlet} is the
+            servlet itself. {@link StreamTicket}, {@link StreamTicketList} and {@link StreamTicketException}
+            are the API by which a filestore web-service can authorize the servlet to stream certain files.
+        </p>
+        
+        <p>When viewing files in a filestore with a web browser, a user wants three things:</p>
+        
+        <ul>
+            <li>a link to click on, which implies that the file is on a server somewhere;</li>
+            <li>correct MIME-type information, such the right veiwer can be selected;</li>
+            <li>privacy of the files: only authorized users must be able to see the files.</li>
+        </ul>
+        
+         <p>
+             Authorization relies on authentication and single-sign-on authentication, 
+             as required by AstroGrid, is difficult to achive with web browsers as clients.
+             Notably, web browsers cannot use the SOAP security favours for AstroGrid
+            services in ordinary downloads.
+         </p>
+            
+         <p>
+             In this package, a web-service client authenticates to the filestore web-service
+             and asks for a specific file to be made available via HTTP. The service creates
+             a {@link StreamTicket} for the file and registers it in a {@link StreamTicketList}.
+             All instances of {@link StreamTicketList} inside one JVM share the same list of 
+             tickets, so the streaming servlet can read back the tickets from its own
+             StreamTicketList. The service returns a URL to the client with the name of the
+             ticket embedded.
+         </p>
+            
+         <p>
+             The web-service client passes the URL to a browser. When the browser is 
+             sent to that URL,  the request passes to the streaming servlet. The servlet
+             identifies the ticket from the name embedded in the URL. If the named ticket is
+             not in the {@StreamTicketList}, then the servlet refuses the request. If the ticket
+             is present, then the servlet removes the ticket from the list and streams the file.
+         </p>
+            
+         <p>
+             The ticket names are random and obscure; therefore, they are effectively secrets,
+             provided that the client software does not expose them on public web pages.
+             The ticket names are thus used as single-use passwords.
+         </p>
+            
+       </body>
+   
+    </html>
