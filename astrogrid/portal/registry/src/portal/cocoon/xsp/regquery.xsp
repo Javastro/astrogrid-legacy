@@ -122,48 +122,52 @@
 			</xsp:logic>
 		</criteria_number>	
 				
-		<xmlresults>
-			<xsp:logic>
-			<![CDATA[
-				ArrayList xmlresult = (ArrayList)request.getAttribute("resultxml");
-				String xml = null;
-				if(xmlresult != null && xmlresult.size() > 0 ) {
-				iter = xmlresult.iterator();				
-				boolean update = false;
-				String description = null;
-				String title = null;
-				String identifier = null;
-				int authTemp = 0;
-				int resTemp = 0;
-				while (iter.hasNext()) {
-					xml = (String)iter.next();
-					authTemp = xml.indexOf("</AuthorityID>");
-					resTemp = xml.indexOf("<ResourceKey>");
-					identifier = xml.substring(xml.indexOf("<AuthorityID>")+13,authTemp);
-					if(xml.indexOf("</ResourceKey>") != -1 && resTemp < (authTemp + 10) ) {
-						identifier += "/" + xml.substring(resTemp+13,xml.indexOf("</ResourceKey>"));
-					}
-					title = xml.substring(xml.indexOf("<Title>")+7,xml.indexOf("</Title>"));
-					description = xml.substring(xml.indexOf("<Description>")+13,xml.indexOf("</Description>"));
-			 					 
-					
-			]]>
-					<xsp:element name="xmlresult">
-						<xsp:attribute name="val"><xsp:expr>xml</xsp:expr></xsp:attribute>
-						<xsp:attribute name="update"><xsp:expr>update</xsp:expr></xsp:attribute>
-						<xsp:attribute name="title"><xsp:expr>title</xsp:expr></xsp:attribute>
-						<xsp:attribute name="desc"><xsp:expr>description</xsp:expr></xsp:attribute>
-						<xsp:attribute name="ident"><xsp:expr>identifier</xsp:expr></xsp:attribute>						
-					</xsp:element>
-					<xsp:element name="testtry">
-						<xsp:expr>xml</xsp:expr>
-					</xsp:element>
-			<![CDATA[
-				}
-					}
-			]]>
-			</xsp:logic>
-		</xmlresults>
+      <xmlresults>
+         <xsp:logic>
+         <![CDATA[
+            ArrayList xmlresult = (ArrayList)request.getAttribute("resultxml");
+            String xml = null;
+            if(xmlresult != null && xmlresult.size() > 0 ) {
+            iter = xmlresult.iterator();           
+            boolean update = false;
+            String description = null;
+            String title = null;
+            String identifier = null;
+            int authTemp = 0;
+            int authTemp2 = 0;
+            int resTemp = 0;
+            int resTemp2 = 0;
+            while (iter.hasNext()) {
+               xml = (String)iter.next();
+               authTemp = xml.indexOf("<AuthorityID");
+               authTemp2 = xml.indexOf("</AuthorityID>");
+               resTemp = xml.indexOf("<ResourceKey");
+               identifier = xml.substring(authTemp+(xml.indexOf(">",authTemp+1)-authTemp)+1,authTemp2);
+               authTemp2 = xml.indexOf("</Identifier>");               
+               if(xml.indexOf("</ResourceKey>") != -1 && resTemp < authTemp2 ) {
+                  identifier += "/" + xml.substring(resTemp+(xml.indexOf(">",resTemp+1)-resTemp)+1,xml.indexOf("</ResourceKey>"));
+               }
+               authTemp = xml.indexOf("<Title");
+               title = xml.substring(authTemp+(xml.indexOf(">",authTemp+1)-authTemp)+1,xml.indexOf("</Title>"));
+               authTemp = xml.indexOf("<Description");
+               description = xml.substring(authTemp+(xml.indexOf(">",authTemp+1)-authTemp)+1,xml.indexOf("</Description>"));
+         ]]>
+               <xsp:element name="xmlresult">
+                  <xsp:attribute name="val"><xsp:expr>xml</xsp:expr></xsp:attribute>
+                  <xsp:attribute name="update"><xsp:expr>update</xsp:expr></xsp:attribute>
+                  <xsp:attribute name="title"><xsp:expr>title</xsp:expr></xsp:attribute>
+                  <xsp:attribute name="desc"><xsp:expr>description</xsp:expr></xsp:attribute>
+                  <xsp:attribute name="ident"><xsp:expr>identifier</xsp:expr></xsp:attribute>                  
+               </xsp:element>
+               <xsp:element name="testtry">
+                  <xsp:expr>xml</xsp:expr>
+               </xsp:element>
+         <![CDATA[
+            }
+               }
+         ]]>
+         </xsp:logic>
+      </xmlresults>
 		
 		<xmlresultnodes>
 			<xsp:logic>

@@ -148,12 +148,12 @@
 					<input type="submit" name="harvest" value="Harvest" />
 				</form>
 			</xsl:if>
-			<form method="post" action="registrymetadata.xml">
-				<input type="hidden" name="xmlcontent">
+	         <form method="post" action="/astrogrid-portal/mount/registry/viewregistrydata.xml">
+				<input type="hidden" name="registryXMLDoc">
 					<xsl:attribute name="value"><xsl:value-of select="@val"/></xsl:attribute>
 				</input>
 				<input type="submit" name="update" value="See Full XML" />
-			</form>	
+	 		 </form>	
 			</td>
 			<td><xsl:value-of select="@ident"/></td>
 			<td><xsl:value-of select="@title"/></td>

@@ -52,7 +52,7 @@
 			<input type="submit" name="Harvest" />			
 		</form>
 		<br />
-		<form method="post" action="registryharvest.html" name="UploadMetaData" enctype="multipart/form-data">>
+		<form method="post" action="registryharvest.html" name="UploadMetaData" enctype="multipart/form-data">
 			<input type="hidden" name="addmetadatafromfile" />
 			Harvest from a local file:
 			<input type="file" name="metadata_file" />
@@ -62,16 +62,16 @@
 			<i>The above approach is limited possible errors because of time situations.</i>
 		</form>
 		<br />
-		Query our Registries to find Registry entries to harvest.
+		Click below to see an automatic query of all our Registries to perform a harvest.
 		<br />
-		<a href="registryquery.html?mainelement=Registry">Query Registries</a>
-		<br />
-		<form method="post" action="registryharvest.html" name="UploadMetaData">
+		<form method="post" action="registryquery.html" name="RegistryQuery">
+			<input type="hidden" name="action" value="selectquery" />		
 			<input type="text" name="registry_identifier" />
+			<input type="text" name="selectitem0" value="@xsi:type" />
+			<input type="text" name="selectitemop0" value="EQ"/>
+			<input type="text" name="selectitemvalue0" value="RegistryType"/>
 			<br />
-			<input type="text" name="dateFrom" value="1980-02-28" />
-			<br />
-			<input type="submit" name="Harvest" />
+			<input type="submit" name="Query" />
 		</form>
 		<br /><br />		
 		<a href="registrystatus.html">Link to Registry Status</a>

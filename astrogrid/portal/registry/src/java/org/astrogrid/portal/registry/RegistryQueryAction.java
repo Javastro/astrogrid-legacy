@@ -29,6 +29,9 @@ import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
 
+import org.astrogrid.registry.NoResourcesFoundException;
+import org.astrogrid.registry.RegistryException;
+
 import org.astrogrid.config.Config;
 
 
@@ -198,7 +201,7 @@ public class RegistryQueryAction extends AbstractAction
             String selItemValue = null;
             String selJoinType = null;
             String query = "<query><selectionSequence>" +
-            "<selection item='searchElements' itemOp='EQ' value='" + mainElem + "'/>";
+            "<selection item='searchElements' itemOp='EQ' value='Resource'/>";
             query += "<selectionOp op='$and$'/>";
             selItem = request.getParameter("selectitem0");
             selItemOperation = request.getParameter("selectitemop0");
@@ -221,8 +224,7 @@ public class RegistryQueryAction extends AbstractAction
                String url = null;               
                RegistryService rs = RegistryDelegateFactory.createQuery();
                Document doc = rs.submitQueryStringDOM(query);
-               errorMessage = getResultMessage(doc);
-               if(errorMessage == null) {
+//               errorMessage = getResultMessage(doc);
                   //create the results and put it in the request.
                   resultXML = createFormResults(doc,mainElem);
                   request.setAttribute("resultxml",resultXML);
@@ -245,7 +247,12 @@ public class RegistryQueryAction extends AbstractAction
                         session.setAttribute("ManageAuthorities",hm);
                      }//if              
                   }//if
-               }//if
+            }catch(NoResourcesFoundException nrfe) {
+               nrfe.printStackTrace();
+               errorMessage = "Your query produced no results";
+            }catch(RegistryException re) {
+               re.printStackTrace();
+               errorMessage = "A error occurred in processing your query with the Registry.";
             }catch(Exception e) {
                e.printStackTrace();
             }
@@ -312,7 +319,7 @@ public class RegistryQueryAction extends AbstractAction
    private String getResultMessage(Document doc) {
       String message = null;
       NodeList nl = doc.getElementsByTagName("error");      
-      if(nl.getLength() > 0) {
+      if(nl != null && nl.getLength() > 0) {
          message = nl.item(0).getFirstChild().getNodeValue();
       }//if
       return message;  

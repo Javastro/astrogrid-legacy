@@ -16,7 +16,10 @@
 <!-- ======================== Components ================================ -->
 
    <map:components>
-      <map:generators default="file"/>
+      <map:generators default="file">
+	      <map:generator name="registry-xml" src="org.astrogrid.portal.cocoon.registry.RegistryXMLGeneration"/>      
+      </map:generators>
+      
       <map:transformers default="xslt"/>
       <map:serializers default="html"/>
       <map:selectors default="browser"/>
@@ -142,6 +145,11 @@
             </map:act>
              <map:serialize type="html"/>
          </map:match>
+         
+      <map:match pattern="viewregistrydata.xml">
+        <map:generate type="registry-xml"/>
+        <map:serialize type="xml"/>
+      </map:match>
          
       <!-- xsp -->
       <map:match pattern="**.xsp">
