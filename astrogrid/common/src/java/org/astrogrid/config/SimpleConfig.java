@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleConfig.java,v 1.2 2003/10/07 22:41:10 mch Exp $
+ * $Id: SimpleConfig.java,v 1.3 2003/10/08 14:38:56 maven Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,14 +16,14 @@ import java.net.URL;
  * from several files.  So although this configuration is a common access point, it can be used to
  * access several configuration files.  Any application can call the 'loadXxxx'
  * methods and properties will be loaded from the given file/url/etc.
- * <p>
+ * <p/>
  * This does mean that packages using the configuration file must make sure their
  * keys are unique. The most reliable way to do this is to prefix each key with
  * the package name (ie the code namespace) but this doesn't produce very nice
  * property files for humans to edit.
- * <p>
+ * <p/>
  * @todo work out a nice way of ensuring keys are unique.
- * <p>
+ * <p/>
  * Not entirely happy with the mixed static/instanceness of this - maybe ought
  * to break it into two but don't see it's necessary yet...
  *
