@@ -6,6 +6,7 @@
     ! Version 1.1
     !
     ! Authors: Brian McIlwrath (bkm@star.rl.ac.uk)
+    !          Kevin Benson    (kmb@mssl.ucl.ac.uk)
     !          Dave Morris     (dave@cam.as.ac.uk)
     ! Date: 14th August 2003
     +-->
@@ -56,19 +57,19 @@
       <!-- Original XML, displayed as XML/HTML -->
       <map:view name="001" from-label="001">
          <!-- Convert into XML/HTML -->
-         <map:transform src="common/xsl/xml-html.xsl"/>
+         <map:transform src="web/style/xsl/xml-html.xsl"/>
          <map:serialize type="html"/>
       </map:view>
       <!-- XML processed into a page, displayed as XML/HTML -->
       <map:view name="002" from-label="002">
          <!-- Convert into XML/HTML -->
-         <map:transform src="common/xsl/xml-html.xsl"/>
+         <map:transform src="web/style/xsl/xml-html.xsl"/>
          <map:serialize type="html"/>
       </map:view>
       <!-- Page wrapped in our template, displayed as XML/HTML -->
       <map:view name="003" from-label="003">
          <!-- Convert into XML/HTML -->
-         <map:transform src="common/xsl/xml-html.xsl"/>
+         <map:transform src="web/style/xsl/xml-html.xsl"/>
          <map:serialize type="html"/>
       </map:view>
    </map:views>
@@ -109,7 +110,7 @@
          
          <map:match pattern="registryquery.html">
             <map:act type="astrogrid-registry-query">
-              <map:generate src="web/style/xsl/regquery.xsp" type="serverpages" label="000, 001"/>  
+              <map:generate src="web/style/xsp/regquery.xsp" type="serverpages" label="000, 001"/>  
               <map:transform src="web/style/xsl/regquery.xsl" label="002">
                   <map:parameter name="errormessage" value="{errormessage}"/>
                   <map:parameter name="criteria_number" value="{criteria_number}" />

@@ -23,12 +23,9 @@
 	    | Match the admin element.
 		+-->
 	<xsl:template match="registryquery">
-		<page>
-			<!-- Add our page content -->
-			<content>
+		<div>
 				<xsl:call-template name="regquery_form"/>
-			</content>
-		</page>
+		</div>
 	</xsl:template>
 
 	<!--+

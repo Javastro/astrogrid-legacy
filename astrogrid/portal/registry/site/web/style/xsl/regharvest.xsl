@@ -22,12 +22,9 @@
 	    | Match the admin element.
 		+-->
 	<xsl:template match="harvest">
-		<page>
-			<!-- Add our page content -->
-			<content>
-				<xsl:call-template name="regharvest_form"/>
-			</content>
-		</page>
+		<div>
+			<xsl:call-template name="regharvest_form"/>
+		</div>
 	</xsl:template>
 
 	<!--+

@@ -17,12 +17,9 @@
 	    | Match the admin element.
 		+-->
 	<xsl:template match="registrystatus">
-		<page>
-			<!-- Add our page content -->
-			<content>
-				<xsl:call-template name="regstatus"/>
-			</content>
-		</page>
+		<div>
+			<xsl:call-template name="regstatus"/>
+		</div>
 	</xsl:template>
 
 	<!--+
