@@ -1,5 +1,5 @@
 /*
- * $Id: StoreFile.java,v 1.3 2004/03/01 22:38:46 mch Exp $
+ * $Id: StoreFile.java,v 1.4 2004/04/06 13:40:52 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -40,7 +40,7 @@ public interface StoreFile {
    /** Lists children files if this is a container - returns null otherwise */
    public StoreFile[] listFiles();
    
-   /** Returns the path to this file on the server */
+   /** Returns the path to this file on the server, including the filename */
    public String getPath();
    
    /** Returns where to find this file using an AStrogrid Store Locator */
