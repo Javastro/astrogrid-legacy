@@ -1,4 +1,4 @@
-/*$Id: StressTest.java,v 1.3 2004/10/12 23:05:16 mch Exp $
+/*$Id: StressTest.java,v 1.4 2004/10/28 18:22:12 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,22 +11,22 @@
 package org.astrogrid.datacenter.stress;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
 import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.integration.DatacenterTestCase;
-import org.astrogrid.datacenter.integration.clientside.RdbmsTest;
 import org.astrogrid.datacenter.integration.StdKeys;
+import org.astrogrid.datacenter.integration.clientside.RdbmsTest;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.slinger.TargetIndicator;
-import org.astrogrid.store.Agsl;
-import java.net.URISyntaxException;
-import java.net.MalformedURLException;
-import org.xml.sax.SAXException;
-import javax.xml.parsers.ParserConfigurationException;
 import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.slinger.NullTarget;
+import org.astrogrid.slinger.TargetIndicator;
+import org.xml.sax.SAXException;
 
 /**
  * Fires off a stupidly large number of queries to the local datacenter
@@ -48,7 +48,7 @@ public class StressTest extends DatacenterTestCase implements StdKeys {
       String[] queryIds = new String[100];
       for (int i = 0; i < 100; i++) {
    
-         query.getResultsDef().setTarget(TargetIndicator.makeIndicator("astrogrid:store:file://results.vot"));
+         query.getResultsDef().setTarget(TargetIndicator.makeIndicator(NullTarget.NULL_TARGET_URI));
          query.getResultsDef().setFormat("VOTABLE");
          queryIds[i] = delegate.submitQuery(query);
          assertNotNull(queryIds[i]);
@@ -70,6 +70,9 @@ public class StressTest extends DatacenterTestCase implements StdKeys {
 
 /*
 $Log: StressTest.java,v $
+Revision 1.4  2004/10/28 18:22:12  mch
+Fix - pass in null target instead of file which breaks
+
 Revision 1.3  2004/10/12 23:05:16  mch
 Seperated tests properly
 
