@@ -1,5 +1,5 @@
 /*
- * $Id: SocketDelegate.java,v 1.13 2003/09/16 16:56:07 mch Exp $
+ * $Id: SocketDelegate.java,v 1.14 2003/09/16 17:36:13 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -172,6 +172,9 @@ public class SocketDelegate extends DatacenterDelegate
     */
    public Element startQuery(String queryId) throws RemoteException, IOException
    {
+      Log.affirm(queryId != null, "queryId is null");
+      Log.affirm(queryId.length()>0, "queryId is empty");
+
       String reqTag = "<"+START_QUERY_TAG+">\n"
                      +getUserTag()+"\n"
                      +QueryIdHelper.makeQueryIdTag(queryId)+"\n"
@@ -184,6 +187,9 @@ public class SocketDelegate extends DatacenterDelegate
     */
    public Element getResults(String queryId) throws RemoteException, IOException
    {
+      Log.affirm(queryId != null, "queryId is null");
+      Log.affirm(queryId.length()>0, "queryId is empty");
+
       String reqTag = "<"+REQ_RESULTS_TAG+">\n"
                      +getUserTag()+"\n"
                      +QueryIdHelper.makeQueryIdTag(queryId)+"\n"
@@ -219,6 +225,9 @@ public class SocketDelegate extends DatacenterDelegate
     */
    public QueryStatus getQueryStatus(String queryId) throws IOException
    {
+      Log.affirm(queryId != null, "queryId is null");
+      Log.affirm(queryId.length()>0, "queryId is empty");
+
       String reqTag = "<"+REQ_STATUS_TAG+">\n"
                      +getUserTag()+"\n"
                      +QueryIdHelper.makeQueryIdTag(queryId)+"\n"
@@ -334,6 +343,9 @@ public class SocketDelegate extends DatacenterDelegate
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.14  2003/09/16 17:36:13  mch
+Added checks for null query ids
+
 Revision 1.13  2003/09/16 16:56:07  mch
 Fix for no listeners
 
