@@ -1,12 +1,12 @@
 /**
- * $Id: Workspace.java,v 1.6 2004/02/24 16:00:42 mch Exp $
+ * $Id: Workspace.java,v 1.7 2004/03/12 16:49:00 mch Exp $
  */
 
 package org.astrogrid.util;
 
 import java.io.File;
 import java.io.IOException;
-
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
 
 /**
@@ -47,6 +47,7 @@ public class Workspace
 
    /** default workroot, if no other is provided - a directory called <tt>workspaces</tt> in the current directory */
   public static final String DEFAULT_WORKSPACE_DIRECTORY = System.getProperty("user.dir") + System.getProperty("file.separator") + "workspaces";
+   
    /**
     * Creates a temporary directory with the name prefixed by the given workspaceId
     * in the workspace directory given in the configuration file
@@ -79,8 +80,8 @@ public class Workspace
       }
       else
       {
-            workspaceFile = new File(workRoot,workspaceId);
-       }
+         workspaceFile = new File(workRoot,workspaceId);
+      }
   
 
       if (workspaceFile.exists())
@@ -99,6 +100,8 @@ public class Workspace
       {
          workspaceFile.deleteOnExit();
       }
+      
+      LogFactory.getLog(Workspace.class).debug("Workspace created at "+workspaceFile);
    }
 
    /**
@@ -135,12 +138,8 @@ public class Workspace
     */
    protected void finalize() throws Throwable
    {
-      try
-      {
-         if (!isClosed())
-         {
-            close();
-         }
+      try  {
+        close();
       }
       finally
       {
@@ -256,6 +255,11 @@ public class Workspace
    }
 }
 
+/*
+$Log: Workspace.java,v $
+Revision 1.7  2004/03/12 16:49:00  mch
+Added debug logging, more robust close?
 
+ */
 
 
