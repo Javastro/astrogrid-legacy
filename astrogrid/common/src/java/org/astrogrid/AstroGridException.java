@@ -16,17 +16,22 @@ import org.astrogrid.i18n.AstroGridMessage;
 public class AstroGridException extends Exception {
 	
 	private AstroGridMessage
-	    message ;
+	    message = null ;
 	    
 	public AstroGridException( AstroGridMessage message ) {
 		this.message = message ;
 	}
 
 
-	public AstroGridException( AstroGridMessage message, Exception exception ) {
-		super( exception ) ;
+	public AstroGridException( AstroGridMessage message, Throwable throwable ) {
+		super( throwable ) ;
 		this.message = message ;
 	}
+    
+    
+    public AstroGridException( Throwable throwable ) {
+        super( throwable ) ;
+    }
 
 
     public AstroGridMessage getAstroGridMessage() {
