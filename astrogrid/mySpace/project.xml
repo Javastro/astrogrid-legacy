@@ -48,12 +48,23 @@
       <id>clq2</id>
       <email>clq2@star.le.ac.uk</email>
     </developer>
+    <developer>
+      <name>Guy Rixon</name>
+      <id>gtr</id>
+      <email>gtr@ast.cam.ac.uk</email>
+    </developer>
+    
   </developers>
   
   <dependencies>
     <dependency>
       <id>astrogrid-common</id>
       <version>SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <id>cog-jglobus</id>
+      <version>OGSA3.0</version>
     </dependency>
 
     <dependency>
