@@ -60,7 +60,7 @@ import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
  */
 
 public class RegistryManager
-{  private boolean DEBUG = true;
+{  private boolean DEBUG = false;
 
    private String jdbcDriverClass = "org.hsqldb.jdbcDriver";
 

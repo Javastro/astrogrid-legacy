@@ -12,13 +12,9 @@ import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
 
 /**
  * Junit tests for the <code>RegistryManager</code> class.
- * 
- * <p>
- * Note that this test requires the example registry to be present
- * in the test directory.
  *
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 3.
+ * @version Iteration 4.
  */
 
 public class RegistryManagerTest extends TestCase
@@ -34,23 +30,37 @@ public class RegistryManagerTest extends TestCase
 
 
 /**
- * Test the <code>rewriteRegistryFile</code> method.  
+ * Test the <code>getServerNames</code> method.
+ *
+ * <p>
+ * This method retrieves the list of servers in the MySpace system.
+ * The test is to get the list and check that it contains the expected
+ * entries.
  */
 
-   public void testRewriteRegistryFile()
+   public void testGetServerNames()
    {  RegistryManager reg = new RegistryManager("testreg");
 
-//
-//   Attempt to rewrite the registry file and then check that it has
-//   succeeded by asserting that the status is still ok and no warnings
-//   have been issued.
+      Vector serverNames = reg.getServerNames();
 
-      reg.rewriteRegistryFile();
+      Assert.assertTrue(serverNames != null);
+
+      if (serverNames != null)
+      {  Assert.assertEquals(serverNames.size(), 3);
+
+         String firstServer = (String)serverNames.elementAt(0);
+         Assert.assertEquals(firstServer, "serv1");
+      }
+
+//
+//   Also check that the status is still ok and no warnings have been 
+//   issued.
 
       MySpaceStatus status = new MySpaceStatus();
       Assert.assertTrue(status.getSuccessStatus() );
       Assert.assertTrue(!status.getWarningStatus() );
    }
+
 
 /**
  * Test the <code>isServerName</code> method.  
@@ -68,6 +78,7 @@ public class RegistryManagerTest extends TestCase
       Assert.assertTrue(!reg.isServerName("burble") );
    }
 
+
 /**
  * Test the <code>getServerURI</code> method.  
  *
@@ -83,6 +94,7 @@ public class RegistryManagerTest extends TestCase
         "http://www.blue.nowhere.org/s1/");
    }
 
+
 /**
  * Test the <code>getServerDirectory</code> method.  
  *
@@ -97,6 +109,7 @@ public class RegistryManagerTest extends TestCase
       Assert.assertEquals(reg.getServerDirectory("serv2"),
         "/base/direct/s2/");
    }
+
 
 /**
  * Test the <code>addDataItemRecord</code>,
@@ -126,19 +139,20 @@ public class RegistryManagerTest extends TestCase
       Date creation = new Date();
 
       DataItemRecord itemRec = new DataItemRecord(
-        "/acd@roe/serv1/fred", 99999, "fred.VOT", "acd@roe",
+        "/acd@roe/serv1/fred", -1, "fred.VOT", "acd@roe",
         creation, creation, 0, 0, "permissions");
 
-      Assert.assertTrue(reg.addDataItemRecord(itemRec) );
+      int dataItemID = reg.addDataItemRecord(itemRec);
+      Assert.assertTrue(dataItemID > -1);
 
       System.out.println("Tested addDataItemRecord...");
 
 //
 //   Lookup the details of the new DataItemRecord by identifier.
 
-      DataItemRecord itemRec1 = reg.lookupDataItemRecord(99999);
+      DataItemRecord itemRec1 = reg.lookupDataItemRecord(dataItemID);
 
-      Assert.assertEquals(itemRec1.getDataItemID(), 99999);
+      Assert.assertEquals(itemRec1.getDataItemID(), dataItemID);
       Assert.assertEquals(itemRec1.getDataItemFile(), "fred.VOT");
       Assert.assertEquals(itemRec1.getOwnerID(), "acd@roe");
 
@@ -154,7 +168,7 @@ public class RegistryManagerTest extends TestCase
       if (vec.size() == 1)
       {  DataItemRecord itemRec2 = (DataItemRecord)vec.elementAt(0);
 
-         Assert.assertEquals(itemRec2.getDataItemID(), 99999);
+         Assert.assertEquals(itemRec2.getDataItemID(), dataItemID);
          Assert.assertEquals(itemRec2.getDataItemFile(), "fred.VOT");
          Assert.assertEquals(itemRec2.getOwnerID(), "acd@roe");
       }
@@ -172,11 +186,11 @@ public class RegistryManagerTest extends TestCase
 //   Update the DataItemRecord.
 
       DataItemRecord itemRec3 = new DataItemRecord(
-        "/acd@roe/serv1/fred", 99999, "fred.VOT", "acd@roe",
+        "/acd@roe/serv1/fred", dataItemID, "fred.VOT", "acd@roe",
         creation, creation, 0, 0, "different");
       Assert.assertTrue(reg.updateDataItemRecord(itemRec3) );
 
-      DataItemRecord itemRec4 = reg.lookupDataItemRecord(99999);
+      DataItemRecord itemRec4 = reg.lookupDataItemRecord(dataItemID);
       Assert.assertEquals(itemRec4.getPermissionsMask(), "different");
 
       System.out.println("Tested updateDataItemRecord...");
@@ -184,7 +198,7 @@ public class RegistryManagerTest extends TestCase
 //
 //   Delete the DataItemRecord from the registry.
 
-      Assert.assertTrue(reg.deleteDataItemRecord(99999) );
+      Assert.assertTrue(reg.deleteDataItemRecord(dataItemID) );
 
       System.out.println("Tested deleteDataItemRecord...");
 
@@ -203,6 +217,7 @@ public class RegistryManagerTest extends TestCase
       System.out.println("Tested for spurious bad error status.");
    }
 
+
 // --------------------------------------------------------------------
 
 /**
@@ -216,74 +231,34 @@ public class RegistryManagerTest extends TestCase
  */
 
    protected void setUp()
-   {  boolean success = true;
+   {  
+//
+//   Create and populate a Vector of servers.
+
+      Vector servers = new Vector();
+
+      ServerDetails server = new ServerDetails("serv1", 23,
+        "http://www.blue.nowhere.org/s1/", "/base/direct/s1/");
+      servers.add(server);
+
+      server = new ServerDetails("serv2", 34,
+        "http://www.blue.nowhere.org/s2/", "/base/direct/s2/");
+      servers.add(server);
+
+      server = new ServerDetails("serv3", 45,
+        "http://www.blue.nowhere.org/s3/", "/base/direct/s3/");
+      servers.add(server);
 
 //
-//   Write the configuraton file.
+//   Create a registry object.
 
-      try
-      {  File configFile = new File("./testreg.config");
-         FileOutputStream fos = new FileOutputStream(configFile);
-         PrintWriter pos = new PrintWriter(fos);
-
-         pos.write("\n");
-         pos.write("# Config. file for RegistryManager JUnit test.\n\n");
-         pos.write("expiryperiod 35\n\n");
-
-         pos.write(
-          "server serv1 http://www.blue.nowhere.org/s1/ /base/direct/s1/\n");
-         pos.write(
-          "server serv2 http://www.blue.nowhere.org/s2/ /base/direct/s2/\n");
-
-         pos.close();
-         fos.flush();
-         fos.close();
-      }
-      catch (IOException ioe)
-      {  System.out.println("*** Failed to write configuration file.");
-         ioe.printStackTrace();
-         success = false;
-      }
+      RegistryManager reg = new RegistryManager("testreg", servers);
 
 //
-//   Create the registry.
+//   Check that all is ok.
 
-      RegistryManager reg = new RegistryManager("testreg", "new");
-
-//
-//   Add a couple of entries to the registry.
-
-      Date creation = new Date();
-
-      int seqNo = reg.getNextDataItemID();
-      DataItemRecord itemRec1 = new DataItemRecord("/acd@roe/serv1/f1",
-        seqNo, "fred1.VOT", "acd@roe", creation, creation, 0, 0,
-        "permissions");
-      if (!reg.addDataItemRecord(itemRec1) )
-      {  success = false;
-      }
-
-      seqNo = reg.getNextDataItemID();
-      DataItemRecord itemRec2 = new DataItemRecord("/acd@roe/serv1/f2",
-        seqNo, "fred1.VOT", "acd@roe", creation, creation, 0, 0,
-        "permissions");
-      if (!reg.addDataItemRecord(itemRec2) )
-      {  success = false;
-      }
-
-//
-//   (Re)-write the registry.
-
-      reg.rewriteRegistryFile();
       MySpaceStatus status = new MySpaceStatus();
       if (!status.getSuccessStatus() )
-      {  success = false;
-      }
-
-//
-//   Report error if anything is amiss.
-
-      if (!success)
       {  System.out.println("*** Failed to create test registry.");
          status.outputCodes();
       }
@@ -295,28 +270,31 @@ public class RegistryManagerTest extends TestCase
  */
 
    protected void tearDown()
-   {  boolean configSuccess = true;
-      boolean registSuccess = true;
+   {  boolean propertiesSuccess = true;
+      boolean scriptSuccess = true;
 
       try
-      {  File configFile = new File("./testreg.config");
-         configFile.delete();
+      {  File propertiesFile = new File("./testreg.db.properties");
+         propertiesFile.delete();
       }
       catch (Exception e)
       {  e.printStackTrace();
-         configSuccess = false;
+         propertiesSuccess = false;
       }
 
       try
-      {  File registFile = new File("./testreg.reg");
-         registFile.delete();
+      {  File scriptFile = new File("./testreg.db.script");
+         scriptFile.delete();
       }
       catch (Exception e)
       {  e.printStackTrace();
-         registSuccess = false;
+         scriptSuccess = false;
       }
 
-      if (!configSuccess || !registSuccess)
+//      System.out.println("propertiesSuccess, scriptSuccess: " +
+//        propertiesSuccess + "  " + scriptSuccess);
+
+      if (!propertiesSuccess || !scriptSuccess)
       {  System.out.println("*** Failed to delete registry files.");
       }
    }

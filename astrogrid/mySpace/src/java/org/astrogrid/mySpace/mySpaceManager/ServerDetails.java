@@ -34,8 +34,13 @@ public class ServerDetails
 // Constructors.
 
 /**
- * Constructor in which arguments are passed to set all the member
- * variables.
+ * Constructor in which arguments comprising the details of the server
+ * are passed.
+ *
+ * @param serverName The name of the server.
+ * @param expiryPeriod The expiry period, in days.
+ * @param URI The URI to access the server.
+ * @param directory The base directory of files on the server
  */
 
    public ServerDetails (String name, int expiryPeriod, String URI,
@@ -67,32 +72,40 @@ public class ServerDetails
 // The Server class has a get method for every member variable.
 
 /**
-  * Return the name of the server.
-  */
+ * Return the name of the server.
+ *
+ * @return The name of the server.
+ */
 
    public String getName()
    {  return name;
    }
 
 /**
-  * Return the expiry period of the server (in days).
-  */
+ * Return the expiry period of the server.
+ *
+ * @return The expiry period, in days, of the server.
+ */
 
    public int getExpiryPeriod()
    {  return expiryPeriod;
    }
 
 /**
-  * Return the URI to access the server.
-  */
+ * Return the URI to access the server.
+ *
+ * @return The URI of the server.
+ */
 
    public String getURI()
    {  return URI;
    }
 
 /**
-  * Return the base directory for the server.
-  */
+ * Return the base directory for the server.
+ *
+ * @return The base directory of the server.
+ */
 
    public String getDirectory()
    {  return directory;
@@ -105,13 +118,22 @@ public class ServerDetails
 // Other methods.
 
 /**
- * Produce a reasonable string representation of a <code>Server</code>.
+ * Produce a reasonable string representation of a
+ * <code>ServerDetails</code>.
+ *
+ * @return A String representation of the server details.
  */
 
    public String toString()
    {  String returnString;
 
-      returnString = name + " (" + expiryPeriod + " days, " + URI + ").";
+      if ( (name== null) && (expiryPeriod == -1) && (URI == null) &&
+           (directory == null) )
+      {  returnString = "(The object is undefined.)";
+      }
+      else
+      {  returnString = name + " (" + expiryPeriod + " days, " + URI + ").";
+      }
 
       return returnString;
    }
