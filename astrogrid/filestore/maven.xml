@@ -3,10 +3,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/14 13:50:29 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/07/20 09:56:19 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.3  2004/07/20 09:56:19  dave
+    |   Updated site deploy goal
+    |
     |   Revision 1.2  2004/07/14 13:50:29  dave
     |   Merged development branch, dave-dev-200406301228, into HEAD
     |
@@ -164,7 +167,11 @@
         <!--+
             | Deploy our project site.
             +-->
+        <echo message="About to do local site deploy"/>
         <attainGoal name="deploy-local-site"/>
+        <echo message="Finished local site deploy"/>
+        <attainGoal name="site:sshdeploy"/>
+        <echo message="Finished   site deploy"/>
     </goal>
 
 </project>
