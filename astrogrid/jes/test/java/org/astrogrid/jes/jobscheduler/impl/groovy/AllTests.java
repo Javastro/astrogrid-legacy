@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.5 2004/08/05 10:57:03 nw Exp $
+/*$Id: AllTests.java,v 1.6 2004/08/05 14:38:30 nw Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -60,12 +60,18 @@ public class AllTests {
         suite.addTestSuite(WhileOnceFeatureTest.class);
         suite.addTestSuite(WhileNeverFeatureTest.class);
         suite.addTestSuite(WhileManyFeatureTest.class);
+        suite.addTestSuite(ForEmptyFeatureTest.class);
+        suite.addTestSuite(ForSingletonFeatureTest.class);
+        suite.addTestSuite(ForManyFeatureTest.class);
         //$JUnit-END$
         return suite;
     }
 }
 /* 
  $Log: AllTests.java,v $
+ Revision 1.6  2004/08/05 14:38:30  nw
+ tests for sequential for construct
+
  Revision 1.5  2004/08/05 10:57:03  nw
  tests for while construct
 
