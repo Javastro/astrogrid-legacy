@@ -9,7 +9,7 @@
  *
  */
 
-package org.astrogrid.workflow.design ;
+package org.astrogrid.portal.workflow.design;
 
 /**
  * The <code>NullTool</code> class represents... 

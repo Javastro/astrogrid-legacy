@@ -8,10 +8,10 @@
  * with this distribution in the LICENSE.txt file.  
  *
  */
-package org.astrogrid.workflow.design.activity;
+package org.astrogrid.portal.workflow.design.activity;
 
 import org.apache.log4j.Logger ;
-import org.astrogrid.workflow.design.Workflow;
+import org.astrogrid.portal.workflow.design.Workflow;
 
 
 /**

@@ -9,8 +9,9 @@
  *
  */
 
-package org.astrogrid.workflow.design ;
+package org.astrogrid.portal.workflow.design;
 
+import org.astrogrid.portal.workflow.design.activity.*;
 import org.astrogrid.workflow.design.activity.*;
 
 /**

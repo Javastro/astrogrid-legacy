@@ -9,13 +9,13 @@
  *
  */
 
-package org.astrogrid.workflow.design.activity;
+package org.astrogrid.portal.workflow.design.activity;
 
 import java.util.LinkedList;
 
-import org.astrogrid.workflow.design.Flow;
-import org.astrogrid.workflow.design.Sequence;
-import org.astrogrid.workflow.design.Step;
+import org.astrogrid.portal.workflow.design.Flow;
+import org.astrogrid.portal.workflow.design.Sequence;
+import org.astrogrid.portal.workflow.design.Step;
 
 /**
  * The <code>ActivityContainer</code> class represents... 

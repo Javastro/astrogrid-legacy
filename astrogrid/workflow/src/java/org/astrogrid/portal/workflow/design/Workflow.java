@@ -9,7 +9,7 @@
  *
  */
  
-package org.astrogrid.workflow.design ;
+package org.astrogrid.portal.workflow.design;
 
 import java.util.HashMap ;
 import java.util.ListIterator;
@@ -25,6 +25,8 @@ import org.astrogrid.workflow.design.activity.*;
 import org.astrogrid.AstroGridException ;
 
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
+import org.astrogrid.portal.workflow.*;
+import org.astrogrid.portal.workflow.design.activity.*;
 import org.w3c.dom.Document ;
 
 /**
@@ -190,11 +192,17 @@ public class Workflow extends Sequence {
          
      try {
         
+         //JBL serialize the Workflow to a suiteable XML file to be picked
+         // up by MySpace. This is where we make use of the toXML() method
+         // to pull the whole tree together...
+        
+        
          MySpaceManagerDelegate
              mySpace = new MySpaceManagerDelegate( Workflow.locateMySpace( workflow.getUserid()
                                                                          , workflow.getCommunity() ) ) ;
-                
-         //JBL format`the MySpace request here
+              
+         //JBL format the MySpace request here
+         
             
          String
              responseXML = mySpace.upLoad( "" ) ;
@@ -264,6 +272,7 @@ public class Workflow extends Sequence {
             //JBL todo: Parse XML string to document...
         
             //JBL todo: Fill object model from document... 
+            
         }
         finally {
             if( TRACE_ENABLED ) logger.debug( "Workflow(String) exit") ;

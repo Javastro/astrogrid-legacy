@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
  */
-package org.astrogrid.workflow;
+package org.astrogrid.portal.workflow;
 
 import org.astrogrid.Configurator ;
 

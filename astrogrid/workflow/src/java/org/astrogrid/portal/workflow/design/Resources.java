@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
  */
-package org.astrogrid.workflow.design ;
+package org.astrogrid.portal.workflow.design;
 
 import java.util.ArrayList ;
 import java.util.Collections ;
