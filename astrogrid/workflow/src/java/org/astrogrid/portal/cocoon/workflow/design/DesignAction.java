@@ -103,7 +103,8 @@ public class DesignAction extends AbstractAction {
         EDIT_CONDITION_PARAMETER = "edit-condition",
         ACTIVITY_KEY_PARAMETER = "activity-key",
         WORKFLOW_LIST_PARAMETER = "workflow-list",
-        QUERY_LIST_PARAMETER = "query-list" ;
+        QUERY_LIST_PARAMETER = "query-list",
+		STEP_KEY_PARAMETER = "step-key";
         
     public static final String
     QUERY_NAME_PARAMETER = "query-name",
@@ -120,7 +121,8 @@ public class DesignAction extends AbstractAction {
         ACTION_CHOOSE_QUERY = "choose-query" ,
         ACTION_EDIT_JOINCONDITION = "edit-join-condition",
         ACTION_READ_QUERY = "read-query",
-        ACTION_READ_QUERY_LIST = "read-query-list";
+        ACTION_READ_QUERY_LIST = "read-query-list",
+        ACTION_INSERT_QUERY_INTO_STEP = "insert-query-into-step" ;
 
     /**
     * Our action method.
@@ -279,6 +281,9 @@ public class DesignAction extends AbstractAction {
                 }
                 else if( action.equals( ACTION_READ_QUERY_LIST ) ) {
                     this.readQueryList() ; 
+                }
+				else if( action.equals( ACTION_INSERT_QUERY_INTO_STEP ) ) {
+					this.insertQueryIntoStep() ;                     								
                 }
                 else {
                     debug( "unsupported action") ; 
@@ -679,10 +684,39 @@ public class DesignAction extends AbstractAction {
             }
                     
         } // end of readQueryList()   
+
            
+		private void insertQueryIntoStep() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertQueryIntoStep() entry" ) ;
+              
+			try {
+				String
+					queryName = request.getParameter( WORKFLOW_NAME_PARAMETER ) ;
+					
+				String
+					stepKey = request.getParameter( STEP_KEY_PARAMETER ) ;
+                    
+				if( queryName == null || stepKey == null ) {
+					; // some logging here
+					throw new ConsistencyException() ;
+				}   
+				
+				boolean response = Workflow.insertQueryIntoStep( stepKey, queryName, workflow ) ;
+				
+				if ( response == false ) {
+					; // some logging here
+					throw new ConsistencyException() ;					          
+				}
+			}
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertQueryIntoStep() exit" ) ;
+			}
+                    
+		} // end of insertQueryIntoStep()   
+  		
                       
     } // end of inner class DesignActionImpl
-    
+        
     
     private class ConsistencyException extends Exception {
     }
