@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: AGApplicationBase.xsd,v 1.7 2004/03/23 16:20:34 pah Exp $ -->
+<!-- $Id: AGApplicationBase.xsd,v 1.8 2004/03/25 16:47:01 pah Exp $ -->
 <!-- This is refactored from the AGParameterDefinition.xsd -->
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
 <xs:schema targetNamespace="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:agab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
@@ -66,6 +66,7 @@
 			<xs:documentation>description of an interface</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
+		<!-- from a castor point of view it would be nicer to change these to be inputdefn,outputdefn -->
 			<xs:element name="input">
 				<xs:complexType>
 					<xs:sequence>
@@ -88,8 +89,8 @@
 			<xs:documentation>reference to an existing parameter. Used in the interface</xs:documentation>
 		</xs:annotation>
 		<xs:attribute name="ref" type="xs:string"/>
-		<xs:attribute name="minoccurs" type="xs:integer" use="optional" default="1"/>
-		<xs:attribute name="maxoccurs" type="xs:integer" use="optional" default="1">
+		<xs:attribute name="minoccurs" type="xs:int" use="optional" default="1"/>
+		<xs:attribute name="maxoccurs" type="xs:int" use="optional" default="1">
 			<xs:annotation>
 				<xs:documentation>a value of 0 implies unbounded</xs:documentation>
 			</xs:annotation>
@@ -110,7 +111,7 @@
 		<xs:complexContent>
 			<xs:extension base="agpd:BaseParameterDefinition">
 				<xs:attribute name="commandSwitch" type="xs:string" use="optional"/>
-				<xs:attribute name="commandPosition" type="xs:integer" use="optional"/>
+				<xs:attribute name="commandPosition" type="xs:int" use="optional"/>
 				<xs:attribute name="stdio" type="xs:boolean" use="optional" default="false"/>
 				<xs:attribute name="switchType" type="agab:switchTypes" use="optional" default="normal"/>
 			</xs:extension>
@@ -126,7 +127,7 @@
 	</xs:complexType>
 	<xs:simpleType name="switchTypes">
 		<xs:annotation>
-			<xs:documentation>normal is the  -x value style and keyword is the x=value style</xs:documentation>
+			<xs:documentation>normal is the -x value style and keyword is the x=value style</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="normal"/>
