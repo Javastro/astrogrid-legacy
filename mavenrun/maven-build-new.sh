@@ -81,6 +81,8 @@ fi
 echo `date` "[ag-build-$PROJECT_NAME] deploy build log"
 cp $LOG_FILE $DOC_HOME/$ASTROGRID_VERSION/log
 
+scp $LOG_FILE maven@uluru.star.le.ac.uk:/home/maven/maven/docs/SNAPSHOT/log
+
 echo `date` "[ag-build-$PROJECT_NAME] back to start dir: $OLDDIR"
 cd $OLDDIR
 
