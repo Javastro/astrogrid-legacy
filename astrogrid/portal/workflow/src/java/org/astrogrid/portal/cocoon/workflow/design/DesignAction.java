@@ -132,7 +132,7 @@ public class DesignAction extends AbstractAction {
         
     public static final String
         EDIT_CONDITION_PARAMETER = "edit-condition",
-        ACTIVITY_KEY_PARAMETER = "activity-key",
+        ACTIVITY_KEY_PARAMETER = "activity_key",
         WORKFLOW_LIST_PARAMETER = "workflow-list",
         QUERY_LIST_PARAMETER = "query-list",
 	    TOOL_LIST_PARAMETER = "tool-list",
@@ -148,7 +148,7 @@ public class DesignAction extends AbstractAction {
     public static final String
         FLOW_KEY_PARAMETER = "flow-key",
         SEQUENCE_KEY_PARAMETER = "sequence-key",
-        ACTIVITY_INDEX_PARAMETER = "activity-index-key";
+        ACTIVITY_INDEX_PARAMETER = "activity_index_key";
         
     public static final String
         QUERY_NAME_PARAMETER = "query-name",
@@ -527,7 +527,8 @@ public class DesignAction extends AbstractAction {
                     workflow = workflowBuilder.createWorkflow( credentials, name, description ) ;
                 }
                 else {
-                    debug( "Create ignored - bConfirm == false" ) ;
+                    debug( "Create ignored - bConfirm == false: however at the minute I am ignoring bConfirm and creating workflow regardless!" ) ;
+					workflow = workflowBuilder.createWorkflow( credentials, name, description ) ;
                 }
         
             }
@@ -1335,8 +1336,10 @@ public class DesignAction extends AbstractAction {
               
            try {
 
-              String activityTargetKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;                                     
+              String activityTargetKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
+              debug("activityTargetKey: " + activityTargetKey ) ;                                     
               String activityIndex = request.getParameter( ACTIVITY_INDEX_PARAMETER ) ;
+              debug("activityIndex: " + activityIndex ) ;
                             
               if ( activityTargetKey == null) {
                   debug( "activityTargetKey is null" ) ;
@@ -1352,6 +1355,8 @@ public class DesignAction extends AbstractAction {
                   index = -1;
               }
               
+			  activityContainer = locateActivityContainer( workflow, activityTargetKey );
+
               highWaterMark = activityContainer.getActivityCount() - 1;
               if( highWaterMark < 0 ) {
                   highWaterMark = 0;
@@ -1361,7 +1366,6 @@ public class DesignAction extends AbstractAction {
                   index = highWaterMark;
               }
                   
-              activityContainer = locateActivityContainer( workflow, activityTargetKey );
               activityContainer.addActivity( index, activity ) ;
                         
             }
