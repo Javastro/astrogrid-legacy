@@ -1,4 +1,4 @@
-/*$Id: OptionalTestCase.java,v 1.3 2004/01/23 11:10:27 nw Exp $
+/*$Id: OptionalTestCase.java,v 1.4 2004/01/23 11:39:10 nw Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,17 +16,37 @@ import junit.framework.TestCase;
 import junit.framework.TestResult;
 
 /** Extension of the standard junit TestCase that allows tests to be enabled / disabled.
- * <p>
- * Class provides static methods to turn individual tests cases on and off. 
- * <p>
- * Works from settings in System.properties (which can be set on the command-line using the <tt>-D<i>key</i>=<i>value</i></tt>)
- * <p>
- * Setting the system property <tt>optional.test.skip.ALL</tt> to <tt>true</tt> will cause the execution of all optional test cases to be skipped<br>
- * An individual test case named <tt>org.foo.wibbleTest</tt> can be disabled by setting the system property
- * <tt>optional.test.skip.org.foo.wibbleTest</tt> to <tt>true</tt>
- * 
- * @author Noel Winstanley nw@jb.man.ac.uk 23-Jan-2004
- *
+ <p>
+  Test classes that extend OptionalTestCase, rather than the normal junit.framework.TestCase, can be disabled / enabled as needed.
+ <p>
+ Class provides static methods to turn individual tests cases on and off. 
+ <p>
+ Works from settings in System.properties (which can be set on the command-line using the <tt>-D<i>key</i>=<i>value</i></tt> option)
+ <p>
+ Setting the system property <tt>optional.test.skip.ALL</tt> to <tt>true</tt> will cause the execution of all optional test cases to be skipped 
+ (a log message is printed out for each test instead)
+ <p>
+ An siingle test case named <tt>org.foo.wibbleTest</tt> can be disabled by setting the system property
+ <tt>optional.test.skip.org.foo.wibbleTest</tt> to <tt>true</tt>
+ 
+   <hr>
+System properties can be set on the java commandline like this..
+<tt>java -Doptional.test.skip.All=true ....</tt>
+<p>
+Most IDEs provide a way to pass system properties to unit test executions. 
+For eclipse its 'Run' -> 'Run..' -> 'Arguments', then add <tt>-D<i>key</i>=<i>value</i></tt> to the 'VM Arguments' field
+<p>
+To pass system properties to tests in maven, its best to set them in your~/build.properties. The property <tt>maven.junit.sysproperties</tt>
+should be set to the list of properties to pass to the tests. (separated by spaces). 
+<p>
+An example, that skips all optional tests apart from foo.bar.ChooTest
+<pre>
+optional.test.skip.ALL=false
+optional.test.skip.foo.bar.ChooTest=true
+maven.junit.sysproperties=optional.test.skip.All optional.test.skip.foo.bar.ChooTest
+</pre>
+  @author Noel Winstanley nw@jb.man.ac.uk 23-Jan-2004
+ 
  */
 public class OptionalTestCase extends TestCase {
    /**
@@ -103,6 +123,9 @@ public class OptionalTestCase extends TestCase {
 
 /* 
 $Log: OptionalTestCase.java,v $
+Revision 1.4  2004/01/23 11:39:10  nw
+tarted up javadoc
+
 Revision 1.3  2004/01/23 11:10:27  nw
 works fine now.
 
