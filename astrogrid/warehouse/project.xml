@@ -203,50 +203,30 @@
 
     <resources>
     
-      <!-- This the is product of the build of the ogsadai sub-project. 
-           It's listed twice, in two separate directories, because Maven can't
-           make up its mind where to build the jar.  If you go to the ogsadai
-           sub-project and build it manually, it's in ogsadai/target.  If
-           you build war in the parent project, thereby triggering the
-           javaapp goal in the sub-project, then the jar is in  
-           ogsadai/ogsadai/target.  It;'s the same jar going to the same location
-           in the web-app, so the duplication ought not to matter. -->
+      <!-- This the is product of the build of the ogsadai sub-project. -->
       <resource>
         <directory>ogsadai/target</directory>
         <includes>
           <include>astrogrid-datawarehouse-ogsadai-app-HEAD.jar</include>
         </includes>
       </resource>
-     <resource>
-        <directory>ogsadai/ogsadai/target</directory>
+      
+      <resource><!-- config files -->
+        <directory>${basedir}/src/java</directory>
+          <includes>
+            <include>**/*.xml</include>
+            <include>**/*.properties</include>
+          </includes>
+      </resource>
+        
+      <resource> <!-- webservice related files -->
+        <directory>${basedir}</directory>
         <includes>
-          <include>astrogrid-datawarehouse-ogsadai-app-HEAD.jar</include>
+	  <include>src/webapp/WEB-INF/server-config.wsdd</include>
         </includes>
       </resource>
-    	
-        <resource><!-- config files -->
-		<directory>${basedir}/src/java</directory>
-		<includes>
-			<include>**/*.xml</include>
-			<include>**/*.properties</include>
-		</includes>
-	</resource>
-	<resource> <!-- schemas  - may be needed for validation -->
-		<directory>${basedir}</directory>
-		<includes>
-			<include>schema/*.xsd</include>
-			<include>schema/*.dtd</include>
-		</includes>
-	</resource>
         
-    <resource> <!-- webservice related files -->
-      <directory>${basedir}</directory>
-      <includes>
-	<include>src/webapp/WEB-INF/server-config.wsdd</include>
-      </includes>
-    </resource>
-        
-  </resources>
+    </resources>
 
   </build>
 
