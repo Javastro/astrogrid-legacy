@@ -23,7 +23,12 @@ import org.astrogrid.Configurator;
  */
 public class MMC extends Configurator {
 	
-	public static final String 
+  /**
+   * JNDI name of URL of config file
+   */
+  private static final String JNDI_NAME ="java:comp/env/mmcConfigFileURL";
+
+  public static final String 
 	/** Three letter acronym for this subsystem within the overall AstroGrid system... 
 	 *  "MMC" stands for MySpaceManagerComponent  */  
 		SUBSYSTEM_ACRONYM = "MMC" ; 
@@ -93,7 +98,16 @@ public class MMC extends Configurator {
 		return Configurator.getProperty( SUBSYSTEM_ACRONYM, key, category ) ;
 	}
         
-	protected String getConfigFileName() { return CONFIG_FILENAME ;	}
+	public String getConfigFileName() { return CONFIG_FILENAME ;	}
 	protected String getSubsystemAcronym() { return SUBSYSTEM_ACRONYM ; }
 	
+  /**
+   * Name to look for under JNDI for location of config file
+   * @see org.astrogrid.Configurator#getJNDIName()
+   * @return the jndi name
+   */
+  public String getJNDIName() {
+    return JNDI_NAME;
+  }
+
 }

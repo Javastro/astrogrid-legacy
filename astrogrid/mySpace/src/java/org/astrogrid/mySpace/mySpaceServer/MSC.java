@@ -23,7 +23,9 @@ import org.astrogrid.Configurator;
  */
 public class MSC extends Configurator {
 	
-	public static final String 
+	private static final String JNDI_NAME="java:comp/env/mscConfigFileURL";
+
+  public static final String 
 	/** Three letter acronym for this subsystem within the overall AstroGrid system... 
 	 *  "MSC" stands for MySpaceServerComponent  */  
 		SUBSYSTEM_ACRONYM = "MSC" ; 
@@ -80,7 +82,15 @@ public class MSC extends Configurator {
 		return Configurator.getProperty( SUBSYSTEM_ACRONYM, key, category ) ;
 	}
         
-	protected String getConfigFileName() { return CONFIG_FILENAME ;	}
+	public String getConfigFileName() { return CONFIG_FILENAME ;	}
 	protected String getSubsystemAcronym() { return SUBSYSTEM_ACRONYM ; }
 	
+  /** 
+   * Get JNDI name of URL of configuration file
+   * @see org.astrogrid.Configurator#getJNDIName()
+   */
+  protected String getJNDIName() {
+    return JNDI_NAME;
+  }
+
 }
