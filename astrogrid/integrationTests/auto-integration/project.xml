@@ -4,6 +4,7 @@
     <currentVersion>SNAPSHOT</currentVersion>
     <artifactId>auto-integration</artifactId>
     <name>Automated Integration Testing</name>
+    <logo>/images/catsEye_hst_c1.jpg</logo>
     <groupId>auto-integration</groupId>
     <description> Automated integration testing. This project will install all
         the astrogrid components (someday) to a local tomcat5 server, and set
