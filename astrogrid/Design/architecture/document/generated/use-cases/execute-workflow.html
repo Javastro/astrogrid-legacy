@@ -24,7 +24,7 @@ A:visited {text-decoration: underline; color: darkmagenta;}
 </STYLE>
 <BODY BGCOLOR="white">
 <BASEFONT ID="f0">
-<DIV STYLE="margin-left:2pt;margin-top:5pt;"><IMG SRC="doc-images/ActivityDiagram8.png"> <FONT ID="f6">Activity Diagram</FONT> <FONT ID="f5"><U>execute-workflow</U></FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:5pt;"><IMG SRC="doc-images/ActivityDiagram9.png"> <FONT ID="f6">Activity Diagram</FONT> <FONT ID="f5"><U>execute-workflow</U></FONT></DIV>
 <DIV STYLE="margin-left:3pt;margin-top:4pt;"><FONT ID="f2">package:</FONT> <FONT ID="f7"><A HREF="Package.html">use-cases</A></FONT></DIV>
 <DIV STYLE="margin-top:16pt;margin-left:2pt;"><IMG SRC="doc-images/execute-workflow_ActivityDiagram.gif" USEMAP="#M1"><MAP NAME="M1"><AREA SHAPE="rect" COORDS="30,452,106,468" HREF="execute-workflow.html#R1"><AREA SHAPE="rect" COORDS="149,578,211,594" HREF="execute-workflow.html#R2"><AREA SHAPE="rect" COORDS="565,324,704,340" HREF="execute-workflow.html#R3"><AREA SHAPE="rect" COORDS="476,581,544,597" HREF="execute-workflow.html#R4"><AREA SHAPE="rect" COORDS="321,410,474,426" HREF="execute-workflow.html#R5"><AREA SHAPE="rect" COORDS="760,340,903,380" HREF="execute-workflow.html#R6"><AREA SHAPE="rect" COORDS="750,390,913,410" HREF="execute-workflow.html#R7"><AREA SHAPE="rect" COORDS="291,78,521,118" HREF="execute-workflow.html#R8"><AREA SHAPE="rect" COORDS="381,608,551,628" HREF="execute-workflow.html#R9"><AREA SHAPE="rect" COORDS="431,538,502,570" HREF="execute-workflow.html#R10"><AREA SHAPE="rect" COORDS="331,508,631,514" HREF="execute-workflow.html#R11"><AREA SHAPE="rect" COORDS="471,468,640,488" HREF="execute-workflow.html#R12"><AREA SHAPE="rect" COORDS="470,420,640,440" HREF="execute-workflow.html#R13"><AREA SHAPE="rect" COORDS="521,178,700,218" HREF="execute-workflow.html#R14"><AREA SHAPE="rect" COORDS="281,238,581,244" HREF="execute-workflow.html#R15"><AREA SHAPE="rect" COORDS="470,350,642,370" HREF="execute-workflow.html#R16"><AREA SHAPE="rect" COORDS="341,308,641,314" HREF="execute-workflow.html#R17"><AREA SHAPE="rect" COORDS="281,190,471,210" HREF="execute-workflow.html#R18"><AREA SHAPE="rect" COORDS="391,268,581,288" HREF="execute-workflow.html#R19"><AREA SHAPE="rect" COORDS="40,660,230,680" HREF="execute-workflow.html#R20"><AREA SHAPE="rect" COORDS="130,700,145,715" HREF="execute-workflow.html#R21"><AREA SHAPE="rect" COORDS="100,480,179,513" HREF="execute-workflow.html#R22"><AREA SHAPE="rect" COORDS="130,50,142,62" HREF="execute-workflow.html#R23"><AREA SHAPE="rect" COORDS="460,650,475,665" HREF="execute-workflow.html#R24"><AREA SHAPE="rect" COORDS="40,420,230,440" HREF="execute-workflow.html#R25"><AREA SHAPE="rect" COORDS="50,90,230,110" HREF="execute-workflow.html#R26"><AREA SHAPE="rect" COORDS="50,140,230,160" HREF="execute-workflow.html#R27"><AREA SHAPE="rect" COORDS="730,21,929,790" HREF="execute-workflow.html#R28"><AREA SHAPE="rect" COORDS="270,20,711,790" HREF="execute-workflow.html#R29"><AREA SHAPE="rect" COORDS="10,20,250,790" HREF="execute-workflow.html#R30"></MAP></DIV>
 <DIV STYLE="margin-top:11pt;margin-left:2pt;"><FONT ID="f2"><p>  
@@ -42,37 +42,37 @@ The invocation of JES is synchronous up to the point where the job is accepted a
 The invocation of the CEA service is synchronous at the logical level (JES waits for job-steps to finish) but asynchronous at the level of the web service (the job-step does not complete in the lifetime of the web-service operation that launched it). See the discussion of CEA in this model for more details of the interfaces.  
 </p></FONT></DIV>
 <DIV STYLE="margin-top:13pt;margin-left:2pt;"><FONT ID="f8" STYLE="background-color:#DCDCDC;">Diagram Contents Summary</FONT></DIV>
-<DIV STYLE="margin-left:10pt;margin-top:8pt;"><IMG SRC="doc-images/tv-swimLane4.png"> <FONT ID="f7">Swim Lane </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R28">CEA service</A></U></FONT></DIV>
-<DIV STYLE="margin-left:31pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity8.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R7">Execute job-step</A></U></FONT></DIV>
-<DIV STYLE="margin-left:31pt;margin-top:3pt;"><IMG SRC="doc-images/tv-object4.png"> <FONT ID="f7">Object </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R6">jobStep</A></U></FONT></DIV>
-<DIV STYLE="margin-left:10pt;margin-top:1pt;"><IMG SRC="doc-images/tv-swimLane4.png"> <FONT ID="f7">Swim Lane </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R29">Job Execution Service  (JES)</A></U></FONT></DIV>
-<DIV STYLE="margin-left:31pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity8.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R18">Create job</A></U></FONT></DIV>
-<DIV STYLE="margin-left:31pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity8.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R19">Determine ready job- steps</A></U></FONT></DIV>
-<DIV STYLE="margin-left:31pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity8.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R16">Launch job-step</A></U></FONT></DIV>
-<DIV STYLE="margin-left:31pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity8.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R9">Record job status</A></U></FONT></DIV>
-<DIV STYLE="margin-left:31pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity8.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R12">Record job-step status</A></U></FONT></DIV>
-<DIV STYLE="margin-left:31pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity8.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R13">Recover job-step</A></U></FONT></DIV>
-<DIV STYLE="margin-left:31pt;margin-top:3pt;"><IMG SRC="doc-images/tv-decision6.png"> <FONT ID="f7">Decision </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R10">Decision1</A></U></FONT></DIV>
-<DIV STYLE="margin-left:31pt;margin-top:1pt;"><IMG SRC="doc-images/tv-syncBar_h4.png"> <FONT ID="f7">SyncBar </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R17">SyncBar1</A></U></FONT></DIV>
-<DIV STYLE="margin-left:31pt;margin-top:3pt;"><IMG SRC="doc-images/tv-syncBar_h4.png"> <FONT ID="f7">SyncBar </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R11">SyncBar2</A></U></FONT></DIV>
-<DIV STYLE="margin-left:31pt;margin-top:3pt;"><IMG SRC="doc-images/tv-syncBar_h4.png"> <FONT ID="f7">SyncBar </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R15">SyncBar4</A></U></FONT></DIV>
-<DIV STYLE="margin-left:31pt;margin-top:4pt;"><IMG SRC="doc-images/tv-object4.png"> <FONT ID="f7">Object </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R14">job</A></U></FONT></DIV>
-<DIV STYLE="margin-left:31pt;margin-top:2pt;"><IMG SRC="doc-images/tv-object4.png"> <FONT ID="f7">Object </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R8">workflowDefinition</A></U></FONT></DIV>
-<DIV STYLE="margin-left:10pt;margin-top:1pt;"><IMG SRC="doc-images/tv-swimLane4.png"> <FONT ID="f7">Swim Lane </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R30">Portal</A></U></FONT></DIV>
-<DIV STYLE="margin-left:31pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity8.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R20">Get job results</A></U></FONT></DIV>
-<DIV STYLE="margin-left:31pt;margin-top:2pt;"><IMG SRC="doc-images/tv-endState4.png"> <FONT ID="f7">EndState </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R21">EndState2</A></U></FONT></DIV>
-<DIV STYLE="margin-left:10pt;margin-top:3pt;"><IMG SRC="doc-images/tv-activity8.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R26">Get workflow from storage</A></U></FONT></DIV>
-<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity8.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R25">Poll job status</A></U></FONT></DIV>
-<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity8.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R27">Submit workflow as job</A></U></FONT></DIV>
-<DIV STYLE="margin-left:10pt;margin-top:3pt;"><IMG SRC="doc-images/tv-decision6.png"> <FONT ID="f7">Decision </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R22">Decision2</A></U></FONT></DIV>
-<DIV STYLE="margin-left:10pt;margin-top:1pt;"><IMG SRC="doc-images/tv-endState4.png"> <FONT ID="f7">EndState </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R24">EndState1</A></U></FONT></DIV>
-<DIV STYLE="margin-left:10pt;margin-top:3pt;"><IMG SRC="doc-images/tv-startState4.png"> <FONT ID="f7">StartState </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R23">StartState1</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:8pt;"><IMG SRC="doc-images/tv-swimLane5.png"> <FONT ID="f7">Swim Lane </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R28">CEA service</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity9.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R7">Execute job-step</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:3pt;"><IMG SRC="doc-images/tv-object5.png"> <FONT ID="f7">Object </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R6">jobStep</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:1pt;"><IMG SRC="doc-images/tv-swimLane5.png"> <FONT ID="f7">Swim Lane </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R29">Job Execution Service  (JES)</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity9.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R18">Create job</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity9.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R19">Determine ready job- steps</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity9.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R16">Launch job-step</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity9.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R9">Record job status</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity9.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R12">Record job-step status</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity9.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R13">Recover job-step</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:3pt;"><IMG SRC="doc-images/tv-decision7.png"> <FONT ID="f7">Decision </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R10">Decision1</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:1pt;"><IMG SRC="doc-images/tv-syncBar_h5.png"> <FONT ID="f7">SyncBar </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R17">SyncBar1</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:3pt;"><IMG SRC="doc-images/tv-syncBar_h5.png"> <FONT ID="f7">SyncBar </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R11">SyncBar2</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:3pt;"><IMG SRC="doc-images/tv-syncBar_h5.png"> <FONT ID="f7">SyncBar </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R15">SyncBar4</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:4pt;"><IMG SRC="doc-images/tv-object5.png"> <FONT ID="f7">Object </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R14">job</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:2pt;"><IMG SRC="doc-images/tv-object5.png"> <FONT ID="f7">Object </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R8">workflowDefinition</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:1pt;"><IMG SRC="doc-images/tv-swimLane5.png"> <FONT ID="f7">Swim Lane </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R30">Portal</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity9.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R20">Get job results</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:2pt;"><IMG SRC="doc-images/tv-endState5.png"> <FONT ID="f7">EndState </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R21">EndState2</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:3pt;"><IMG SRC="doc-images/tv-activity9.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R26">Get workflow from storage</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity9.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R25">Poll job status</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity9.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R27">Submit workflow as job</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:3pt;"><IMG SRC="doc-images/tv-decision7.png"> <FONT ID="f7">Decision </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R22">Decision2</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:1pt;"><IMG SRC="doc-images/tv-endState5.png"> <FONT ID="f7">EndState </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R24">EndState1</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:3pt;"><IMG SRC="doc-images/tv-startState5.png"> <FONT ID="f7">StartState </FONT><FONT ID="f2"><U><A HREF="execute-workflow.html#R23">StartState1</A></U></FONT></DIV>
 <DIV STYLE="margin-top:14pt;margin-left:2pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="98%"><TR BGCOLOR="#C0C0C0"><TD><FONT ID="f9">Swim Lane Detail</FONT></TD></TR></TABLE></DIV>
-<DIV STYLE="margin-left:2pt;margin-top:11pt;"><IMG SRC="doc-images/SwimLane4.png"> <FONT ID="f11"><A NAME="R28"></A>Swim Lane </FONT><FONT ID="f10">CEA service</FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:11pt;"><IMG SRC="doc-images/SwimLane5.png"> <FONT ID="f11"><A NAME="R28"></A>Swim Lane </FONT><FONT ID="f10">CEA service</FONT></DIV>
 <DIV STYLE="margin-left:16pt;margin-top:9pt;"><FONT ID="f7">backgroundColor</FONT><FONT ID="f7">:</FONT></DIV>
 <DIV STYLE="margin-top:2pt;margin-left:25pt;"><FONT ID="f2">200,200,200</FONT></DIV>
 <DIV STYLE="margin-top:16pt;margin-left:17pt;"><FONT ID="f8" STYLE="background-color:#C0C0C0;">Contained Elements</FONT></DIV>
-<DIV STYLE="margin-left:17pt;margin-top:11pt;"><IMG SRC="doc-images/Activity8.png"> <FONT ID="f11"><A NAME="R7"></A>Activity </FONT><FONT ID="f10">Execute job-step</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:11pt;"><IMG SRC="doc-images/Activity9.png"> <FONT ID="f11"><A NAME="R7"></A>Activity </FONT><FONT ID="f10">Execute job-step</FONT></DIV>
 <DIV STYLE="margin-top:8pt;margin-left:31pt;"><FONT ID="f2"><p> 
 The CEA service executes the job-step according to its internal logic and configuration and the arguments passed when the job-step was created.  
 </p> 
@@ -94,23 +94,23 @@ When the work completes or aborts, the service calls all the listeners registere
 <DIV STYLE="margin-left:36pt;margin-top:1pt;"><FONT ID="f2">to </FONT><FONT ID="f7">SequenceDiagram</FONT> <FONT ID="f15"><U><A HREF="delegate-application-to-http-service.html">delegate-application-to-http-service</A></U></FONT></DIV>
 <DIV STYLE="margin-top:14pt;margin-left:31pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
 <DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R31"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="execute-workflow.html#R13">Recover job-step</A></U></FONT></DIV>
-<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/Object4.png"> <FONT ID="f11"><A NAME="R6"></A>Object </FONT> <FONT ID="f10">jobStep</FONT></DIV>
-<DIV STYLE="margin-left:2pt;margin-top:14pt;"><IMG SRC="doc-images/SwimLane4.png"> <FONT ID="f11"><A NAME="R29"></A>Swim Lane </FONT><FONT ID="f10">Job Execution Service  (JES)</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/Object5.png"> <FONT ID="f11"><A NAME="R6"></A>Object </FONT> <FONT ID="f10">jobStep</FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:14pt;"><IMG SRC="doc-images/SwimLane5.png"> <FONT ID="f11"><A NAME="R29"></A>Swim Lane </FONT><FONT ID="f10">Job Execution Service  (JES)</FONT></DIV>
 <DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2">JES parses the file defining the workflow; it's an XML file. JES records internally that there is a job conrened with this file.</FONT></DIV>
 <DIV STYLE="margin-left:16pt;margin-top:11pt;"><FONT ID="f7">backgroundColor</FONT><FONT ID="f7">:</FONT></DIV>
 <DIV STYLE="margin-top:2pt;margin-left:25pt;"><FONT ID="f2">200,200,200</FONT></DIV>
 <DIV STYLE="margin-top:16pt;margin-left:17pt;"><FONT ID="f8" STYLE="background-color:#C0C0C0;">Contained Elements</FONT></DIV>
-<DIV STYLE="margin-left:17pt;margin-top:11pt;"><IMG SRC="doc-images/Activity8.png"> <FONT ID="f11"><A NAME="R18"></A>Activity </FONT><FONT ID="f10">Create job</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:11pt;"><IMG SRC="doc-images/Activity9.png"> <FONT ID="f11"><A NAME="R18"></A>Activity </FONT><FONT ID="f10">Create job</FONT></DIV>
 <DIV STYLE="margin-top:8pt;margin-left:31pt;"><FONT ID="f2">JES parses the workflow definition passed in the web-service call and creates from it a job. For that job, JES creates a file in MySpace that holds both the definition of the workflow and the status of the job, including the status of all the job-steps. That file is identified by a JobURN which encoded the MySpace location. JES returns the JobURN to Portal.</FONT></DIV>
 <DIV STYLE="margin-top:13pt;margin-left:31pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
 <DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R32"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">SyncBar</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="execute-workflow.html#R15">SyncBar4</A></U></FONT></DIV>
 <DIV STYLE="margin-top:13pt;margin-left:31pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Object Flow Links</FONT></DIV>
 <DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R33"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Object</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="execute-workflow.html#R14">job</A></U></FONT></DIV>
-<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/Activity8.png"> <FONT ID="f11"><A NAME="R19"></A>Activity </FONT><FONT ID="f10">Determine ready job- steps</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/Activity9.png"> <FONT ID="f11"><A NAME="R19"></A>Activity </FONT><FONT ID="f10">Determine ready job- steps</FONT></DIV>
 <DIV STYLE="margin-top:8pt;margin-left:31pt;"><FONT ID="f2">JES works out which of the steps in the job are ready to execute and which are blocked, waiting for other steps to happen. This logic is included in the workflow definition received from Portal; to the logic, JES adds the record of which steps have completed.</FONT></DIV>
 <DIV STYLE="margin-top:13pt;margin-left:31pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
 <DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R34"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">SyncBar</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="execute-workflow.html#R17">SyncBar1</A></U></FONT></DIV>
-<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/Activity8.png"> <FONT ID="f11"><A NAME="R16"></A>Activity </FONT><FONT ID="f10">Launch job-step</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/Activity9.png"> <FONT ID="f11"><A NAME="R16"></A>Activity </FONT><FONT ID="f10">Launch job-step</FONT></DIV>
 <DIV STYLE="margin-top:8pt;margin-left:31pt;"><FONT ID="f2"><p> 
 JES locates the service defined in the job-step. (This involves use of the resource registry which is not modelled here.) JES encodes the arguments of the job-step, which are taken from the workflow definition, as a Java bean and calls the CEA service passing that  bean.: this creates the job-step in the service. 
 <p> 
@@ -124,19 +124,19 @@ Finally, JES calls the CEA service a third time to start execution of the job-st
 <DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R35"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="execute-workflow.html#R7">Execute job-step</A></U></FONT></DIV>
 <DIV STYLE="margin-top:13pt;margin-left:31pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Object Flow Links</FONT></DIV>
 <DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R36"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Object</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="execute-workflow.html#R6">jobStep</A></U></FONT></DIV>
-<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/Activity8.png"> <FONT ID="f11"><A NAME="R9"></A>Activity </FONT><FONT ID="f10">Record job status</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/Activity9.png"> <FONT ID="f11"><A NAME="R9"></A>Activity </FONT><FONT ID="f10">Record job status</FONT></DIV>
 <DIV STYLE="margin-top:8pt;margin-left:31pt;"><FONT ID="f2">JES updates the job's file in MySpace to record the final outcome and to mark the job as no longer running.</FONT></DIV>
 <DIV STYLE="margin-top:13pt;margin-left:31pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
 <DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R37"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">EndState</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="execute-workflow.html#R24">EndState1</A></U></FONT></DIV>
-<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/Activity8.png"> <FONT ID="f11"><A NAME="R12"></A>Activity </FONT><FONT ID="f10">Record job-step status</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/Activity9.png"> <FONT ID="f11"><A NAME="R12"></A>Activity </FONT><FONT ID="f10">Record job-step status</FONT></DIV>
 <DIV STYLE="margin-top:8pt;margin-left:31pt;"><FONT ID="f2">JES records the final status of the job-step by updating the job's file in MySpace.</FONT></DIV>
 <DIV STYLE="margin-top:13pt;margin-left:31pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
 <DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R38"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">SyncBar</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="execute-workflow.html#R11">SyncBar2</A></U></FONT></DIV>
-<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/Activity8.png"> <FONT ID="f11"><A NAME="R13"></A>Activity </FONT><FONT ID="f10">Recover job-step</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/Activity9.png"> <FONT ID="f11"><A NAME="R13"></A>Activity </FONT><FONT ID="f10">Recover job-step</FONT></DIV>
 <DIV STYLE="margin-top:8pt;margin-left:31pt;"><FONT ID="f2">JES receives the callback from the CEA service at the end of the job-step and extracts the status.</FONT></DIV>
 <DIV STYLE="margin-top:13pt;margin-left:31pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
 <DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R39"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="execute-workflow.html#R12">Record job-step status</A></U></FONT></DIV>
-<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/Decision6.png"> <FONT ID="f11"><A NAME="R10"></A>Decision </FONT><FONT ID="f10">Decision1</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/Decision7.png"> <FONT ID="f11"><A NAME="R10"></A>Decision </FONT><FONT ID="f10">Decision1</FONT></DIV>
 <DIV STYLE="margin-top:11pt;margin-left:31pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
 <DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R4"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="execute-workflow.html#R9">Record job status</A></U></FONT></DIV>
 <DIV STYLE="margin-left:51pt;margin-top:6pt;"><FONT ID="f7">Condition</FONT><FONT ID="f7">:</FONT></DIV>
@@ -144,7 +144,7 @@ Finally, JES calls the CEA service a third time to start execution of the job-st
 <DIV STYLE="margin-left:37pt;margin-top:16pt;"><FONT ID="f14"><A NAME="R5"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="execute-workflow.html#R19">Determine ready job- steps</A></U></FONT></DIV>
 <DIV STYLE="margin-left:51pt;margin-top:6pt;"><FONT ID="f7">Condition</FONT><FONT ID="f7">:</FONT></DIV>
 <DIV STYLE="margin-top:2pt;margin-left:60pt;"><FONT ID="f2">more steps & not aborted</FONT></DIV>
-<DIV STYLE="margin-left:17pt;margin-top:19pt;"><IMG SRC="doc-images/SyncBar_h4.png"> <FONT ID="f11"><A NAME="R17"></A>SyncBar </FONT><FONT ID="f10">SyncBar1</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:19pt;"><IMG SRC="doc-images/SyncBar_h5.png"> <FONT ID="f11"><A NAME="R17"></A>SyncBar </FONT><FONT ID="f10">SyncBar1</FONT></DIV>
 <DIV STYLE="margin-left:28pt;margin-top:7pt;"><FONT ID="f7">backgroundColor</FONT><FONT ID="f7">:</FONT></DIV>
 <DIV STYLE="margin-top:2pt;margin-left:37pt;"><FONT ID="f2">0,0,0</FONT></DIV>
 <DIV STYLE="margin-top:15pt;margin-left:31pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
@@ -152,22 +152,22 @@ Finally, JES calls the CEA service a third time to start execution of the job-st
 <DIV STYLE="margin-left:51pt;margin-top:6pt;"><FONT ID="f7">Condition</FONT><FONT ID="f7">:</FONT></DIV>
 <DIV STYLE="margin-top:2pt;margin-left:60pt;"><FONT ID="f2">for each ready job-step</FONT></DIV>
 <DIV STYLE="margin-left:37pt;margin-top:16pt;"><FONT ID="f14"><A NAME="R40"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">SyncBar</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="execute-workflow.html#R11">SyncBar2</A></U></FONT></DIV>
-<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/SyncBar_h4.png"> <FONT ID="f11"><A NAME="R11"></A>SyncBar </FONT><FONT ID="f10">SyncBar2</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/SyncBar_h5.png"> <FONT ID="f11"><A NAME="R11"></A>SyncBar </FONT><FONT ID="f10">SyncBar2</FONT></DIV>
 <DIV STYLE="margin-left:28pt;margin-top:7pt;"><FONT ID="f7">backgroundColor</FONT><FONT ID="f7">:</FONT></DIV>
 <DIV STYLE="margin-top:2pt;margin-left:37pt;"><FONT ID="f2">0,0,0</FONT></DIV>
 <DIV STYLE="margin-top:15pt;margin-left:31pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
 <DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R41"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Decision</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="execute-workflow.html#R10">Decision1</A></U></FONT></DIV>
-<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/SyncBar_h4.png"> <FONT ID="f11"><A NAME="R15"></A>SyncBar </FONT><FONT ID="f10">SyncBar4</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/SyncBar_h5.png"> <FONT ID="f11"><A NAME="R15"></A>SyncBar </FONT><FONT ID="f10">SyncBar4</FONT></DIV>
 <DIV STYLE="margin-top:12pt;margin-left:31pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
 <DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R42"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="execute-workflow.html#R19">Determine ready job- steps</A></U></FONT></DIV>
 <DIV STYLE="margin-left:37pt;margin-top:13pt;"><FONT ID="f14"><A NAME="R43"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="execute-workflow.html#R25">Poll job status</A></U></FONT></DIV>
-<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/Object4.png"> <FONT ID="f11"><A NAME="R14"></A>Object </FONT> <FONT ID="f10">job</FONT></DIV>
-<DIV STYLE="margin-left:17pt;margin-top:14pt;"><IMG SRC="doc-images/Object4.png"> <FONT ID="f11"><A NAME="R8"></A>Object </FONT> <FONT ID="f10">workflowDefinition</FONT></DIV>
-<DIV STYLE="margin-left:2pt;margin-top:14pt;"><IMG SRC="doc-images/SwimLane4.png"> <FONT ID="f11"><A NAME="R30"></A>Swim Lane </FONT><FONT ID="f10">Portal</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/Object5.png"> <FONT ID="f11"><A NAME="R14"></A>Object </FONT> <FONT ID="f10">job</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:14pt;"><IMG SRC="doc-images/Object5.png"> <FONT ID="f11"><A NAME="R8"></A>Object </FONT> <FONT ID="f10">workflowDefinition</FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:14pt;"><IMG SRC="doc-images/SwimLane5.png"> <FONT ID="f11"><A NAME="R30"></A>Swim Lane </FONT><FONT ID="f10">Portal</FONT></DIV>
 <DIV STYLE="margin-left:16pt;margin-top:9pt;"><FONT ID="f7">backgroundColor</FONT><FONT ID="f7">:</FONT></DIV>
 <DIV STYLE="margin-top:2pt;margin-left:25pt;"><FONT ID="f2">200,200,200</FONT></DIV>
 <DIV STYLE="margin-top:16pt;margin-left:17pt;"><FONT ID="f8" STYLE="background-color:#C0C0C0;">Contained Elements</FONT></DIV>
-<DIV STYLE="margin-left:17pt;margin-top:11pt;"><IMG SRC="doc-images/Activity8.png"> <FONT ID="f11"><A NAME="R20"></A>Activity </FONT><FONT ID="f10">Get job results</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:11pt;"><IMG SRC="doc-images/Activity9.png"> <FONT ID="f11"><A NAME="R20"></A>Activity </FONT><FONT ID="f10">Get job results</FONT></DIV>
 <DIV STYLE="margin-top:8pt;margin-left:31pt;"><FONT ID="f2"><p> 
 When the job has finished, its results are stored in MySpace at the locations specified in the workflow definition. User uses the MySpace Explorer tool in Portal to view or download  the results. 
 </p> 
@@ -176,11 +176,11 @@ The job results remain in MySpace (until User deletes them or User's lease on th
 </p></FONT></DIV>
 <DIV STYLE="margin-top:13pt;margin-left:31pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
 <DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R44"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">EndState</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="execute-workflow.html#R21">EndState2</A></U></FONT></DIV>
-<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/EndState4.png"> <FONT ID="f11"><A NAME="R21"></A>EndState </FONT><FONT ID="f10">EndState2</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/EndState5.png"> <FONT ID="f11"><A NAME="R21"></A>EndState </FONT><FONT ID="f10">EndState2</FONT></DIV>
 <DIV STYLE="margin-left:28pt;margin-top:7pt;"><FONT ID="f7">backgroundColor</FONT><FONT ID="f7">:</FONT></DIV>
 <DIV STYLE="margin-top:2pt;margin-left:37pt;"><FONT ID="f2">0,0,0</FONT></DIV>
 <DIV STYLE="margin-top:18pt;margin-left:2pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="98%"><TR BGCOLOR="#C0C0C0"><TD><FONT ID="f9">Activity Detail</FONT></TD></TR></TABLE></DIV>
-<DIV STYLE="margin-left:2pt;margin-top:11pt;"><IMG SRC="doc-images/Activity8.png"> <FONT ID="f11"><A NAME="R26"></A>Activity </FONT><FONT ID="f10">Get workflow from storage</FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:11pt;"><IMG SRC="doc-images/Activity9.png"> <FONT ID="f11"><A NAME="R26"></A>Activity </FONT><FONT ID="f10">Get workflow from storage</FONT></DIV>
 <DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2"><p> 
 User browses MySpace for a workflow previously defined and stored in a file. Portal provides a specific interface for this that is separate from the general MySpace Explorer. When User selects a workflow file, Portal loads the contents of that file into memory. 
 </p> 
@@ -191,20 +191,20 @@ Workflow files are written in XML, but portal does not parse the XML. Instead, i
 <DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R45"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="execute-workflow.html#R27">Submit workflow as job</A></U></FONT></DIV>
 <DIV STYLE="margin-top:13pt;margin-left:17pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Object Flow Links</FONT></DIV>
 <DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R46"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Object</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="execute-workflow.html#R8">workflowDefinition</A></U></FONT></DIV>
-<DIV STYLE="margin-left:2pt;margin-top:16pt;"><IMG SRC="doc-images/Activity8.png"> <FONT ID="f11"><A NAME="R25"></A>Activity </FONT><FONT ID="f10">Poll job status</FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:16pt;"><IMG SRC="doc-images/Activity9.png"> <FONT ID="f11"><A NAME="R25"></A>Activity </FONT><FONT ID="f10">Poll job status</FONT></DIV>
 <DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2"><p> 
 User navigates in Portal to the job-status page. Portal displays all the jobs for which it knows the JobURNs. It gets the details for the display by loading and parsing the job record-files in MySpace. 
 </p></FONT></DIV>
 <DIV STYLE="margin-top:13pt;margin-left:17pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
 <DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R47"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Decision</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="execute-workflow.html#R22">Decision2</A></U></FONT></DIV>
-<DIV STYLE="margin-left:2pt;margin-top:16pt;"><IMG SRC="doc-images/Activity8.png"> <FONT ID="f11"><A NAME="R27"></A>Activity </FONT><FONT ID="f10">Submit workflow as job</FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:16pt;"><IMG SRC="doc-images/Activity9.png"> <FONT ID="f11"><A NAME="R27"></A>Activity </FONT><FONT ID="f10">Submit workflow as job</FONT></DIV>
 <DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2">User tells portal to execute the selected workflow. Portal invokes JES asking that the workflow be instatiated as a job. Portal sends as an argument the definition of the workflow. This is actually XML, but it is transmitted to JES as a string.</FONT></DIV>
 <DIV STYLE="margin-top:10pt;margin-left:16pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Hyperlinks to elements:</FONT></DIV>
 <DIV STYLE="margin-left:22pt;margin-top:6pt;"><FONT ID="f2">to </FONT><FONT ID="f7">SequenceDiagram</FONT> <FONT ID="f15"><U><A HREF="invoke-jes.html">invoke-jes</A></U></FONT></DIV>
 <DIV STYLE="margin-top:14pt;margin-left:17pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
 <DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R48"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="execute-workflow.html#R18">Create job</A></U></FONT></DIV>
 <DIV STYLE="margin-top:16pt;margin-left:2pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="98%"><TR BGCOLOR="#C0C0C0"><TD><FONT ID="f9">Decision Detail</FONT></TD></TR></TABLE></DIV>
-<DIV STYLE="margin-left:2pt;margin-top:11pt;"><IMG SRC="doc-images/Decision6.png"> <FONT ID="f11"><A NAME="R22"></A>Decision </FONT><FONT ID="f10">Decision2</FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:11pt;"><IMG SRC="doc-images/Decision7.png"> <FONT ID="f11"><A NAME="R22"></A>Decision </FONT><FONT ID="f10">Decision2</FONT></DIV>
 <DIV STYLE="margin-top:11pt;margin-left:17pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
 <DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R1"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="execute-workflow.html#R25">Poll job status</A></U></FONT></DIV>
 <DIV STYLE="margin-left:36pt;margin-top:6pt;"><FONT ID="f7">Condition</FONT><FONT ID="f7">:</FONT></DIV>
@@ -213,10 +213,10 @@ User navigates in Portal to the job-status page. Portal displays all the jobs fo
 <DIV STYLE="margin-left:36pt;margin-top:6pt;"><FONT ID="f7">Condition</FONT><FONT ID="f7">:</FONT></DIV>
 <DIV STYLE="margin-top:2pt;margin-left:45pt;"><FONT ID="f2">job done</FONT></DIV>
 <DIV STYLE="margin-top:19pt;margin-left:2pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="98%"><TR BGCOLOR="#C0C0C0"><TD><FONT ID="f9">State Detail</FONT></TD></TR></TABLE></DIV>
-<DIV STYLE="margin-left:2pt;margin-top:11pt;"><IMG SRC="doc-images/EndState4.png"> <FONT ID="f11"><A NAME="R24"></A>EndState </FONT><FONT ID="f10">EndState1</FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:11pt;"><IMG SRC="doc-images/EndState5.png"> <FONT ID="f11"><A NAME="R24"></A>EndState </FONT><FONT ID="f10">EndState1</FONT></DIV>
 <DIV STYLE="margin-left:13pt;margin-top:7pt;"><FONT ID="f7">backgroundColor</FONT><FONT ID="f7">:</FONT></DIV>
 <DIV STYLE="margin-top:2pt;margin-left:22pt;"><FONT ID="f2">0,0,0</FONT></DIV>
-<DIV STYLE="margin-left:2pt;margin-top:18pt;"><IMG SRC="doc-images/StartState4.png"> <FONT ID="f11"><A NAME="R23"></A>StartState </FONT><FONT ID="f10">StartState1</FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:18pt;"><IMG SRC="doc-images/StartState5.png"> <FONT ID="f11"><A NAME="R23"></A>StartState </FONT><FONT ID="f10">StartState1</FONT></DIV>
 <DIV STYLE="margin-left:13pt;margin-top:7pt;"><FONT ID="f7">backgroundColor</FONT><FONT ID="f7">:</FONT></DIV>
 <DIV STYLE="margin-top:2pt;margin-left:22pt;"><FONT ID="f2">0,0,0</FONT></DIV>
 <DIV STYLE="margin-top:15pt;margin-left:17pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>

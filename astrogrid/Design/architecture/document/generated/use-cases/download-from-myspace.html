@@ -1,0 +1,72 @@
+<HTML>
+<STYLE>
+A:link {text-decoration: underline; color: darkmagenta;}
+A:visited {text-decoration: underline; color: darkmagenta;}
+#f0 { font-family: "Helvetica"; font-size: 10pt;  }
+#f1 { font-family: "SansSerif"; font-size: 10pt;  }
+#f2 { font-family: "SansSerif"; font-size: 8pt;  }
+#f3 { font-family: "SansSerif"; font-size: 14pt; font-style: italic; font-weight: bold; color: #FFFFFF;  }
+#f4 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold; color: #FFFFFF;  }
+#f5 { font-family: "SansSerif"; font-size: 12pt; font-style: italic;  }
+#f6 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold;  }
+#f7 { font-family: "SansSerif"; font-size: 8pt; font-weight: bold;  }
+#f8 { font-family: "SansSerif"; font-size: 10pt; font-style: italic; font-weight: bold;  }
+#f9 { font-family: "SansSerif"; font-size: 11pt; font-style: italic; font-weight: bold;  }
+#f10 { font-family: "SansSerif"; font-size: 10pt; font-style: italic;  }
+#f11 { font-family: "SansSerif"; font-size: 10pt; font-weight: bold;  }
+#f12 { font-family: "SansSerif"; font-size: 9pt; font-style: italic; font-weight: bold;  }
+#f13 { font-family: "SansSerif"; font-size: 9pt; font-weight: bold;  }
+#f14 { font-family: "SansSerif"; font-size: 9pt;  }
+#f15 { font-family: "SansSerif"; font-size: 8pt; font-style: italic;  }
+#f16 { font-family: "monospace"; font-size: 9pt;  }
+#f17 { font-family: "SansSerif"; font-size: 9pt; font-weight: bold; color: #800080;  }
+#f18 { font-family: "SansSerif"; font-size: 8pt; font-style: italic; font-weight: bold;  }
+</STYLE>
+<BODY BGCOLOR="white">
+<BASEFONT ID="f0">
+<DIV STYLE="margin-left:2pt;margin-top:5pt;"><IMG SRC="doc-images/ActivityDiagram9.png"> <FONT ID="f6">Activity Diagram</FONT> <FONT ID="f5"><U>download-from-myspace</U></FONT></DIV>
+<DIV STYLE="margin-left:3pt;margin-top:4pt;"><FONT ID="f2">package:</FONT> <FONT ID="f7"><A HREF="Package.html">use-cases</A></FONT></DIV>
+<DIV STYLE="margin-top:16pt;margin-left:2pt;"><IMG SRC="doc-images/download-from-myspace_ActivityDiagram.gif" USEMAP="#M1"><MAP NAME="M1"><AREA SHAPE="rect" COORDS="270,217,410,233" HREF="download-from-myspace.html#R1"><AREA SHAPE="rect" COORDS="151,297,278,313" HREF="download-from-myspace.html#R2"><AREA SHAPE="rect" COORDS="61,93,221,120" HREF="download-from-myspace.html#R3"><AREA SHAPE="rect" COORDS="102,242,181,280" HREF="download-from-myspace.html#R4"><AREA SHAPE="rect" COORDS="60,170,222,200" HREF="download-from-myspace.html#R5"><AREA SHAPE="rect" COORDS="70,330,222,360" HREF="download-from-myspace.html#R6"><AREA SHAPE="rect" COORDS="60,30,220,61" HREF="download-from-myspace.html#R7"></MAP></DIV>
+<DIV STYLE="margin-top:11pt;margin-left:2pt;"><FONT ID="f2">This is the flow for downloading a file from MySpace via the web portal. Subsidiary flows of this are common to all MySpace operations.</FONT></DIV>
+<DIV STYLE="margin-top:13pt;margin-left:2pt;"><FONT ID="f8" STYLE="background-color:#DCDCDC;">Diagram Contents Summary</FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:8pt;"><IMG SRC="doc-images/tv-activity9.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="download-from-myspace.html#R5">Display MySpace page</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity9.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="download-from-myspace.html#R6">download file</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity9.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="download-from-myspace.html#R3">Find user's MySpace</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity9.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="download-from-myspace.html#R7">Navigate to MySpace</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:3pt;"><IMG SRC="doc-images/tv-decision7.png"> <FONT ID="f7">Decision </FONT><FONT ID="f2"><U><A HREF="download-from-myspace.html#R4">Decision1</A></U></FONT></DIV>
+<DIV STYLE="margin-top:12pt;margin-left:2pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="98%"><TR BGCOLOR="#C0C0C0"><TD><FONT ID="f9">Activity Detail</FONT></TD></TR></TABLE></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:11pt;"><IMG SRC="doc-images/Activity9.png"> <FONT ID="f11"><A NAME="R5"></A>Activity </FONT><FONT ID="f10">Display MySpace page</FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2"><p> 
+Portal obtains the metadata for the current display of MySpace and displays them in a tree structure. The defaultl display shows just the files and directories in the home directory. Subsequent tree-walking commands can expand some of the sub-directories. User "walks the tree" to find the appropriate file. 
+</p> 
+<p> 
+For each file displayed , there is a download link.  Portal has to interrogate MySpace to get the target URL for the link. When the appropriate file is found, user follows that link. 
+</p></FONT></DIV>
+<DIV STYLE="margin-top:10pt;margin-left:16pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Hyperlinks to elements:</FONT></DIV>
+<DIV STYLE="margin-left:22pt;margin-top:6pt;"><FONT ID="f2">to </FONT><FONT ID="f7">ActivityDiagram</FONT> <FONT ID="f15"><U><A HREF="determine-url-for-myspace-file.html">determine-url-for-myspace-file</A></U></FONT></DIV>
+<DIV STYLE="margin-top:14pt;margin-left:17pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R8"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Decision</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="download-from-myspace.html#R4">Decision1</A></U></FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:16pt;"><IMG SRC="doc-images/Activity9.png"> <FONT ID="f11"><A NAME="R6"></A>Activity </FONT><FONT ID="f10">download file</FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2">User's browser invokes a HTTP download for the file. The contents are sent back from MySpace. The browser handles the contents according to the MIME-type in the HTTP headers.</FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:16pt;"><IMG SRC="doc-images/Activity9.png"> <FONT ID="f11"><A NAME="R3"></A>Activity </FONT><FONT ID="f10">Find user's MySpace</FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:16pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Hyperlinks to elements:</FONT></DIV>
+<DIV STYLE="margin-left:22pt;margin-top:6pt;"><FONT ID="f2">to </FONT><FONT ID="f7">ActivityDiagram</FONT> <FONT ID="f15"><U><A HREF="find-users-my-space.html">find-users-my-space</A></U></FONT></DIV>
+<DIV STYLE="margin-top:14pt;margin-left:17pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R9"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="download-from-myspace.html#R5">Display MySpace page</A></U></FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:16pt;"><IMG SRC="doc-images/Activity9.png"> <FONT ID="f11"><A NAME="R7"></A>Activity </FONT><FONT ID="f10">Navigate to MySpace</FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2">User opens the MySpace Exploer page of the portal.</FONT></DIV>
+<DIV STYLE="margin-top:13pt;margin-left:17pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R10"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="download-from-myspace.html#R3">Find user's MySpace</A></U></FONT></DIV>
+<DIV STYLE="margin-left:36pt;margin-top:5pt;"><FONT ID="f7">Documentation</FONT><FONT ID="f7">:</FONT></DIV>
+<DIV STYLE="margin-left:53pt;"><FONT ID="f2">Looks up user's records and find the AGSL for user's MySpace. This is the virtual file name for User's home directory on the MySpace Manager service that manages User's virtual files.</FONT></DIV>
+<DIV STYLE="margin-top:16pt;margin-left:2pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="98%"><TR BGCOLOR="#C0C0C0"><TD><FONT ID="f9">Decision Detail</FONT></TD></TR></TABLE></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:11pt;"><IMG SRC="doc-images/Decision7.png"> <FONT ID="f11"><A NAME="R4"></A>Decision </FONT><FONT ID="f10">Decision1</FONT></DIV>
+<DIV STYLE="margin-top:11pt;margin-left:17pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R1"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="download-from-myspace.html#R5">Display MySpace page</A></U></FONT></DIV>
+<DIV STYLE="margin-left:36pt;margin-top:6pt;"><FONT ID="f7">Condition</FONT><FONT ID="f7">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:45pt;"><FONT ID="f2">tree-walking command</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:16pt;"><FONT ID="f14"><A NAME="R2"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="download-from-myspace.html#R6">download file</A></U></FONT></DIV>
+<DIV STYLE="margin-left:36pt;margin-top:6pt;"><FONT ID="f7">Condition</FONT><FONT ID="f7">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:45pt;"><FONT ID="f2">download command</FONT></DIV>
+</BODY>
+</HTML>
