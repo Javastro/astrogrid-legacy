@@ -42,17 +42,16 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <Subject>???</Subject>
                 <cea:ApplicationDefinition>
                         <cea:Parameters>
-                                <cea:ParameterDefinition name="InputFiles" type="text" minOccurs="1" maxOccurs="unbounded">
+                                <cea:ParameterDefinition name="InputFiles" type="binary" minOccurs="1" maxOccurs="unbounded">
                                         <ceapd:DefaultValue>InputFiles</ceapd:DefaultValue>
                                         <ceapd:UI_Description >
-                                                Filename of a text file containing the filenames of a
-                                                series of FITS images.
+                                                FITS images used to create a solar movie (repeatable parameter)
                                         </ceapd:UI_Description>
                                 </cea:ParameterDefinition>
                                 <cea:ParameterDefinition name="OutputFile" type="binary">
                                         <ceapd:DefaultValue>OutputFile</ceapd:DefaultValue>
                                         <ceapd:UI_Description >
-                                                Filename of solar movie MPEG file created from fits images.
+                                                Solar movie MPEG file created from fits images.
                                         </ceapd:UI_Description>
                                 </cea:ParameterDefinition>
                         </cea:Parameters>
@@ -105,7 +104,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                                 <cea:ParameterDefinition name="InputFile" type="FITS">
                                         <ceapd:DefaultValue>InputFile</ceapd:DefaultValue>
                                         <ceapd:UI_Description >
-                                                Filename of a binary IDL .sav file containing a
+                                                Binary IDL .sav file containing a
                                                 datacube.
                                         </ceapd:UI_Description>
                                 </cea:ParameterDefinition>
@@ -121,7 +120,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                                         type="binary">
                                         <ceapd:DefaultValue>OutputFile</ceapd:DefaultValue>
                                         <ceapd:UI_Description >
-                                                Filename of solar movie MPEG file created from fits images.
+                                                Solar movie MPEG file created from fits images.
                                         </ceapd:UI_Description>
                                 </cea:ParameterDefinition>
                         </cea:Parameters>
