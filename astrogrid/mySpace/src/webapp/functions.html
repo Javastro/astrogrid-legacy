@@ -3,7 +3,7 @@
 <html>
   <head>
     <title>
-      AstroGrid Project - AstroGrid MySpace
+      AstroGrid Project - MySpace Test Pages
     </title>
     <style type="text/css">
           @import url("maven/style/tigris.css");
@@ -68,46 +68,74 @@
           <div id="bodycol">
             <div class="app">
               <div class="h3">
-                <h3>
-                  <a name="AstroGrid MySpace">AstroGrid
-                  MySpace</a>
-                </h3>
-                <p>
-                  From here you can:
-                </p>
-                <ul class="noindent">
-                  <li>
-                    Browse the <a href=
-                    "maven/target/docs/index.html">Maven
-                    documentation</a> for this release,
-                  </li>
-                  <li>
-                    Check <a href="happyaxis.jsp">HappyAxis</a>
-                    to see if Axis has installed successfully, or
-                  </li>
-                  <li>
-                    Check <a href=
-                    "happyMySpace.jsp">HappyMySpace</a> to see if
-                    MySpace has installed successfully, or
-                  </li>
-                  <li>
-                    See what <a href=
-                    "functions.html">functions</a> are
-                    available. 
-                  </li>
-                </ul>
-                <p>
-                  To install the latest MySpace go to the <a href=
-                  "maven/index.html">Maven documentation</a> and follow
-                  the links on the left.
-                </p>
-                <p>
-                  Several papers describing the MySpace service have
-                  been published or are in preparation.
-                  <a href="http://www.roe.ac.uk/acdwww/myspace/pubs.html">
-                  On-line versions</a> are available which can be
-                  consulted for background information.
-                </p>
+
+<h3><a name="AstroGrid MySpace">MySpace Service Test Pages</a></h3>
+
+<p>
+These pages allow you to test a few of the functions of this MySpace
+service.  The functions cannot be used in an arbitrary order.  It is,
+for example, necessary to create at least one user of the service before
+you use any of the other functions.  Similarly, you must create a container
+before you can put a file in that container (though some standard
+containers are created automatically when you create a user).  It is
+necessary to import a file into the MySpace service before you can copy or
+export a file.
+</p>
+
+<p>
+User `<code>clq</code>' belonging to AstroGrid community
+`<code>lei</code>' is used as the default in the example pages.  You
+can, of course, substitute your own values if you wish.
+</p>
+
+<h4>Creating and Deleting Users</h4>
+
+<ul class="noindent">
+
+  <li> <a href="createUserForm.jsp">create a user</a>,
+  </li>
+
+  <li> <a href="deleteUserForm.jsp">delete a user</a>.
+  </li>
+
+</ul>
+
+<h4>File Manipulation</h4>
+
+<ul class="noindent">
+
+  <li> <a href="createContainerForm.jsp">create a new container</a>,
+  </li>
+
+  <li> <a href="importContentsForm.jsp">import a file by supplying its
+   contents</a>,
+  </li>
+
+  <li> <a href="exportContentsForm.jsp">export the contents of a file</a>,
+  </li>
+
+  <li> <a href="copyFileForm.jsp">copy a file</a>,
+  </li>
+
+  <li> <a href="deleteFileForm.jsp">delete a file</a>.
+  </li>
+
+</ul>
+
+<h4>Queries</h4>
+
+<ul class="noindent">
+
+  <li> <a href="queryShortForm.jsp">short-form list of entries matching
+   a query</a>,
+  </li>
+
+  <li> <a href="queryFullForm.jsp">full list of entries matching
+   a query</a>.
+  </li>
+
+</ul>
+
               </div>
             </div>
           </div>
@@ -117,6 +145,12 @@
     <div id="footer">
       <table border="0" style="width:100%" cellpadding="4"
       cellspacing="0">
+        <tr>
+          <td>
+            Return to the <a href="index.html">home page</a> for this
+            MySpace service.
+         </td>
+        </tr>
         <tr>
           <td>
             (c) 2002-2004, AstroGrid

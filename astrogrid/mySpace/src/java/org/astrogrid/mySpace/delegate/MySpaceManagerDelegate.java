@@ -19,7 +19,11 @@ public class MySpaceManagerDelegate implements MySpaceClient {
     private String mssUrl = " ";       // MSS the delegate is operating on.
     private Vector queryMssUrl = new Vector(); // Vector of MSSs to query.
     private boolean DEBUG = false;
-   
+//    private boolean DEBUG = true;
+
+    private static DeLogger logger = new DeLogger (false, false,
+      "./delegate.log");
+
     private String value ="";
 
 //
@@ -45,7 +49,7 @@ public class MySpaceManagerDelegate implements MySpaceClient {
 
     public MySpaceManagerDelegate(String mssUrl) {
         this.mssUrl = mssUrl;
-        if (DEBUG) System.out.println("initializor: mssUrl: "+mssUrl);
+        if (DEBUG) logger.appendMessage("initializor: mssUrl: "+mssUrl);
         (this.queryMssUrl).add(mssUrl);
     }
     
@@ -181,34 +185,50 @@ public class MySpaceManagerDelegate implements MySpaceClient {
  * containing the MySpace names which matched the query.
  */
  
-    public Vector listDataHoldings(String userId, String communityId, String credential,
-      String query)throws Exception {
+    public Vector listDataHoldings(String userId, String communityId,
+      String credential, String query) throws Exception {
         Vector returnList = new Vector();
-        if (DEBUG) System.out.println("listDataholdings..."+userId +":   :"+communityId+": query:"+query);
+        if (DEBUG)
+        {  logger.appendMessage("listDataholdings..." + userId +
+             ":   :" + communityId + ": query:" + query);
+        }
+
         try {
             for (int loop = 0; loop<queryMssUrl.size(); loop++) {
                 String currentResponse = this.internalDataHoldings(
                   userId, communityId, credential, query,
                   (String)queryMssUrl.elementAt(loop) );
+
+                if (DEBUG)
+                {  logger.appendMessage(
+                     "currentResponse from internalDataHoldings: "
+                     +currentResponse);
+                }
+
                 MySpaceHelper helper = new MySpaceHelper();
-            if (DEBUG) System.out.println("currentResponse from internalDataHoldings: "+currentResponse);
-                Vector currentList  = helper.getList(currentResponse, "dataItemName");
-            if (DEBUG){
-               if (DEBUG) System.out.println("size: "+currentList.size());
-               for (int j=0;j<currentList.size();j++){
-                  if (DEBUG) System.out.println(" currentlist: "+currentList.elementAt(j));
-               }
-            }
+                Vector currentList  = helper.getList(currentResponse,
+                  "dataItemName");
+
+                if (DEBUG)
+                {  logger.appendMessage("size: " + currentList.size());
+                   for (int j=0; j<currentList.size(); j++)
+                   {  logger.appendMessage(" currentlist: " +
+                        currentList.elementAt(j));
+                   }
+                 }
+
                 returnList.add(currentList);
-                if (DEBUG){
-                  for (int i=0;i<returnList.size();i++){
-                     if (DEBUG) System.out.println("returnList from delegate: "+returnList.elementAt(i));
-                  }
+                if (DEBUG)
+                {  for (int i=0; i<returnList.size(); i++)
+                   {  logger.appendMessage("returnList from delegate: "
+                        + returnList.elementAt(i));
+                   }
                 }
             }
            
         }catch(java.rmi.RemoteException re) {
             re.printStackTrace();
+            logger.appendMessage("Exception: " + re.toString() );
         }
 
         return returnList;

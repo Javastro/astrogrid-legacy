@@ -1440,6 +1440,9 @@ public class MySpaceActions
       {  status.addCode(MySpaceStatusCode.AGMMCE00100,
            MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
            this.getClassName() );
+
+         Logger log = new Logger("Registry name = " + registryName);
+
       }
 
       return returnStatus;

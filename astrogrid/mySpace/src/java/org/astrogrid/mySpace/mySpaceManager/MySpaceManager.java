@@ -59,8 +59,12 @@ import org.astrogrid.mySpace.mySpaceUtil.*;
  */
 
 public class MySpaceManager {
-	private static Logger logger = new Logger (true, true, true,
-	  "./myspace.log");
+// private static Logger logger = new Logger (true, true, true,
+//   "./myspace.log");
+
+        private static Logger logger = new Logger (true, true, true,
+          "./myspace.log");
+
 	private static boolean DEBUG = true;
 	private static MySpaceStatus status = new MySpaceStatus();
 	
@@ -120,6 +124,7 @@ public class MySpaceManager {
 	 * Upload/save dataholder.
 	 */
 	public String upLoad(String jobDetails){
+	        setUp();
 		if ( DEBUG )  logger.appendMessage("MySpaceManager.upLoad");
 		DataItemRecord dataitem = null;
 		Call call = null;
@@ -187,6 +192,7 @@ public class MySpaceManager {
 	 * Upload/save dataholder.
 	 */
 	public String upLoadURL(String jobDetails){
+	        setUp();
 		if ( DEBUG )  logger.appendMessage("MySpaceManager.upLoad");
 		DataItemRecord dataitem = null;
 		Call call = null;
@@ -249,6 +255,7 @@ public class MySpaceManager {
   */
 
    public String lookupDataHolderDetails(String jobDetails){
+	setUp();
 	if ( DEBUG )  logger.appendMessage("MySpaceManager.lookupDataHolderDetails");
 	DataItemRecord dataitem = null;
 
@@ -326,6 +333,7 @@ public class MySpaceManager {
   */
 
    public String lookupDataHoldersDetails(String jobDetails){
+	setUp();
 	if ( DEBUG )  logger.appendMessage("MySpaceManager.lookupDataHolderSDetails CATHERINE"+jobDetails);
 	DataItemRecord dataitem = null;
 	Vector itemRecVector = new Vector();
@@ -399,6 +407,7 @@ public class MySpaceManager {
 			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
 			else
 			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode+","+generalMessage.toString(),"");			
+			logger.close();
 			return response;
 		}
 		
@@ -412,6 +421,7 @@ public class MySpaceManager {
   */
 
    public String copyDataHolder(String jobDetails){
+	setUp();
 	if ( DEBUG )  logger.appendMessage("MySpaceManager.copyDataHolder "+jobDetails);
 	DataItemRecord dataitem = null;
 
@@ -500,7 +510,8 @@ public class MySpaceManager {
   * touched.
   */
 
-   public String moveDataHolder(String jobDetails){ 
+   public String moveDataHolder(String jobDetails){
+	setUp();
 	if ( DEBUG )  logger.appendMessage("MySpaceManager.moveDataHolder");
 	DataItemRecord dataitem = null;
 
@@ -571,6 +582,7 @@ public class MySpaceManager {
 
 
    public String exportDataHolder(String jobDetails){
+	setUp();
 	if ( DEBUG )  logger.appendMessage("MySpaceManager.exportDataHolder");
 	DataItemRecord dataitem = null;
 	String dataHolderURI = "";
@@ -642,6 +654,7 @@ public class MySpaceManager {
   */
 
    public String createContainer(String jobDetails){
+	setUp();
 	if ( DEBUG )  logger.appendMessage("MySpaceManager.createContainer");
 	DataItemRecord dataitem = null;
 
@@ -700,6 +713,7 @@ public class MySpaceManager {
   */
 
    public String deleteDataHolder(String jobDetails){
+	setUp();
 	if ( DEBUG )  logger.appendMessage("MySpaceManager.deleteDataHolder");
 	boolean isDeleted = false;
 	DataItemRecord dataitem = null;	
@@ -924,6 +938,7 @@ public class MySpaceManager {
     
     
 	public String extendLease(String jobDetails){
+	        setUp();
 		if ( DEBUG )  logger.appendMessage("MySpaceManager.extendLease");
 		DataItemRecord dataitem = null;
 		Call call = null;
@@ -999,7 +1014,9 @@ public class MySpaceManager {
 			return "Not Implemented";
 		}		
 		
-	public boolean createUser(String userid, String communityid, Vector servers){
+	public boolean createUser(String userid, String communityid,
+	  Vector servers){
+//	        setUp();
 		if ( DEBUG ) { 
 			logger.appendMessage("MySpaceManager.createUser"); 
 			for (int i=0;i<servers.size();i++){
@@ -1007,8 +1024,9 @@ public class MySpaceManager {
 			}
 		}  
 		boolean isUserCreated = false;
-			try{			
-				setUp();		
+			try{		
+				setUp();
+				msA.setRegistryName(registryName);
 				isUserCreated = msA.createUser(userid, communityid, credential, servers);
 			}catch(Exception e){
 				logger.appendMessage("ERROR CREATEUSER MYSPACEMANAGER" +e.toString());
@@ -1019,15 +1037,17 @@ public class MySpaceManager {
 				else
 				  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode+","+generalMessage.toString(),""); 		  
 			}
+			logger.close();
 			return isUserCreated;
 
 		}		
 		
 	public boolean deleteUser(String userid, String communityid){
+	        setUp();
 		if ( DEBUG )  logger.appendMessage("MySpaceManager.deleteUser");  
 		boolean isUserDeleted = false;
 			try{			
-				setUp();		
+				msA.setRegistryName(registryName);
 				isUserDeleted = msA.deleteUser(userid,communityid, credential);
 			}catch(Exception e){
 				logger.appendMessage("ERROR DELETEUSER MYSPACEMANAGER" +e.toString());
@@ -1041,12 +1061,12 @@ public class MySpaceManager {
 			return isUserDeleted;
 		}		
 		
-	public String changeOwner(String userid, String communityid, String dataHolderName, String newOwnerID){
+	public String changeOwner(String userid, String communityid,
+  	  String dataHolderName, String newOwnerID){
+	        setUp();
 		if ( DEBUG )  logger.appendMessage("MySpaceManager.changeOwner");
 		DataItemRecord dataitem = null;	     
 			try{
-				//response = getValues(jobDetails);
-				setUp();
 				msA.setRegistryName(registryName);
 
 				Vector dataItemRecords = msA.lookupDataHoldersDetails(
@@ -1109,9 +1129,22 @@ public class MySpaceManager {
 			return "Not Implemented";
 		}				
 		
-		private void setUp()throws Exception{
+		private void setUp() {
+		   try{
 			MMC.getInstance().checkPropertiesLoaded();
-			registryName = MMC.getProperty(MMC.REGISTRYCONF, MMC.CATLOG);	
+			registryName = MMC.getProperty(MMC.REGISTRYCONF,
+			  MMC.CATLOG);	
+			String logFileName = registryName + ".log";
+			logger = new Logger (true, true, true,
+			  logFileName);
+		   }catch (Exception e){
+		        e.printStackTrace();
+                        logger = new Logger (true, true, true,
+                         "./myspace.log");
+                        logger.appendMessage("Failed setting up " +
+                          "registry and log file names.");
+                        logger.appendMessage(e.toString() );
+                   }
 		}
 		
 		public Vector getServerURLs() throws Exception{

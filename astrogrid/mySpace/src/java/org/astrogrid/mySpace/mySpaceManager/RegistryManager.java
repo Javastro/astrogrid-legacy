@@ -1,3 +1,4 @@
+
 package org.astrogrid.mySpace.mySpaceManager;
 
 import java.sql.*;
@@ -6,7 +7,6 @@ import java.util.*;
 import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatus;
 import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
 
-import org.apache.log4j.Logger;
 /**
  * The <code>RegistryManager</code> class is used to access entries in
  * a MySpace registry and to access details of the servers in the MySpace
@@ -58,15 +58,10 @@ import org.apache.log4j.Logger;
  * 
  * @author A C Davenhall (Edinburgh)
  * @version Iteration 4.
- * @TODO Rationalise the logging.  Remove loggin dependent on a flag - easier to do this via log4j.properties
- * @TODO Access the logger via commons-logging rather than directly to log4j
- * 
- * 
  */
 
 public class RegistryManager
-{  private boolean DEBUG = true;
-	private static Logger logger = Logger.getLogger(RegistryManager.class);
+{  private boolean DEBUG = false;
 
    private String jdbcDriverClass = "org.hsqldb.jdbcDriver";
 
@@ -87,9 +82,7 @@ public class RegistryManager
  */
 
    public RegistryManager(String registryName)
-   {  
-   	  assert registryName!=null;
-   	  this.registryName = registryName;
+   {  this.registryName = registryName;
       registryDBName = "jdbc:hsqldb:" + registryName + ".db";
    }
 
@@ -105,8 +98,8 @@ public class RegistryManager
  */
 
    public RegistryManager(String registryName, Vector servers)
-   {  
-	  this(registryName);
+   {  this.registryName = registryName;
+      registryDBName = "jdbc:hsqldb:" + registryName + ".db";
 
       try
       {
@@ -186,6 +179,15 @@ public class RegistryManager
    }
 
 // -------------------------------------------------------------------
+
+/**
+ * Dummy constructor with no arguments.
+ */
+
+   public RegistryManager()
+   {  registryName = null;
+      registryDBName = null;
+   }
 
 //
 // -- Methods --------------------------------------------------------
@@ -338,9 +340,7 @@ public class RegistryManager
       catch (Exception all)
       {  returnDataItem = null;
 
-         if (DEBUG) 	logger.error("16thDecDebug"); 
-         all.printStackTrace();
-         
+         if (DEBUG) all.printStackTrace();
 
          MySpaceStatus exStatus = new MySpaceStatus(
            MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
@@ -858,9 +858,7 @@ public class RegistryManager
 
 //
 //      Establish a connection to the database.
-		logger.debug("RegistryDBName: " + registryDBName);
-		logger.debug("RegistryName: " + registryName);
-		
+
          Connection conn = DriverManager.getConnection(
            registryDBName, "sa", "");
 

@@ -5,20 +5,20 @@
     session="false" %>
 
 <html>
-<head><title>Create User</title>
+<head><title>Create Container</title>
 </head>
 
 <body>
-<h1>Create User</h1>
+<h1>Create Container</h1>
 
 <%
-  String[] paramNames={"userId","communityId","credential","server"};
+  String[] paramNames={"userId","communityId","credential","container"};
   String userId = request.getParameter("userId");
   String communityId = request.getParameter("communityId");
   String credential = request.getParameter("credential");
-  String server = request.getParameter("server");
-  Vector servers = new Vector();
-  servers.add(server);
+  String container = request.getParameter("container");
+
+  String query = "/" + userId + "@" + communityId + "/*";
 %>
 
 
@@ -35,33 +35,36 @@ The end point for this service is: <%=serviceURL%>
 <%
   MySpaceClient client = MySpaceDelegateFactory.createDelegate(
     serviceURL.toString());
-  boolean ok = client.createUser(userId, communityId, credential, servers);
+
+  String result = client.createContainer(userId, communityId,
+    credential, container);
 %>
 
 <p>
-The result from createUser was <%=ok%>.
+The result from createUser was:
 </p>
 
 <%
-  String query = "/" + userId + "@" +communityId +  "/*";
-  out.print("Query: " + query + "<br>");
+  out.print(result + "<BR>");
+%>
 
-  Vector results = client.listDataHoldings(userId, communityId,
+<p>
+The new state of account <%=query%> is:
+</p>
+
+<%
+  Vector results = client.listDataHoldingsGen(userId, communityId,
     credential, query);
-%>
 
-<p>
-The following containers have been created for user
-<code><%=userId%>@<%=communityId%></code>:
-</p>
+  int resultsSize = results.size();
 
-<%
-  for (int i=0; i<results.size(); i++)
-  {  Vector system = (Vector)results.elementAt(i);
-
-     for (int k=0; k<system.size(); k++)
-     {  out.print(system.elementAt(k) + "<BR>");
+  if (resultsSize > 0)
+  {  for (int i=0; i<resultsSize; i++)
+     {  out.print(results.elementAt(i) + "<BR>");
      }
+  }
+  else
+  {  out.print("No entries satisfied the query." + "<BR>");
   }
 
 %>

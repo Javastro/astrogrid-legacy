@@ -1,33 +1,27 @@
-package org.astrogrid.mySpace.mySpaceStatus;
+package org.astrogrid.mySpace.delegate.helper;
 
 import java.io.*;
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
- * The <code>Logger</code> class is the MySpace class for logging
- * messages.
+ * The <code>DeLogger</code> class is for logging messages from within 
+ * the mySpace delegate.
  * 
  * <p>
- * The <code>Logger</code> class is used to log both error and
- * informational messages.  The messages may optionally be sent to
- * any combination of: (i) the standard AstroGrid log file (using
- * commons logging). (ii) a log file local to the MySpace System and
- * (iii) standard output.
+ * The <code>DeLogger</code> class is mostly used to log debugging
+ * imessages.  The messages may optionally be sent to either of: (i)
+ * a log file local to the MySpace delegate or (ii) standard output.
  *
  * @author A C Davenhall (Edinburgh)
  * @version Iteration 4.
  */
 
-public class Logger
-{  private static boolean astroGridLog = true; // Write AstroGrid log?
-   private static boolean mySpaceLog = true;   // Write MySpace log?
+public class DeLogger
+{  private static boolean mySpaceLog = true;   // Write MySpace log?
    private static boolean echoLog = true;      // Echo log to standard out?
 
 //    MySpace log file name.
-   private static String mySpaceLogFileName = "./myspace.log";
+   private static String mySpaceLogFileName = "./myspacedelegate.log";
 
    private static String userId = null;        // User Identifier.
    private static String communityId = null;   // Community Identifier.
@@ -38,11 +32,6 @@ public class Logger
    private static PrintWriter mySpaceLogWriter;
 
 //
-//Logger for the Jakata commons logging.
-
-   private static Log commonsLog = LogFactory.getLog(Logger.class); 
-
-//
 // ------------------------------------------------------------------------
 //
 // Constructors.
@@ -50,38 +39,19 @@ public class Logger
 /**
  * Create a <code>MySpaceStatus</code> object.
  *
- * @param astroGridLog Flag indicating whether messages are to be
- *   written to the standard AstroGrid log.
  * @param mySpaceLog Flag indicating whether messages are to be
- *   written to the local MySpace log file.
+ *   written to the local MySpace delegate log file.
  * @param echoLog Flag indicating whether messages are to be
  *   written to standard output.
- * @param  mySpaceLogFileName Name of the local MySpace log file.  The
- *   name should include the full, absolute directory path of the name.
+ * @param  mySpaceLogFileName Name of the local MySpace delegate log file.
+ *   The name should include the full, absolute directory path of the name.
  */
 
-   public Logger (boolean astroGridLog, boolean mySpaceLog, boolean echoLog,
+   public DeLogger (boolean mySpaceLog, boolean echoLog,
      String mySpaceLogFileName)
-   {  this.astroGridLog = astroGridLog;
-      this.mySpaceLog = mySpaceLog;
+   {  this.mySpaceLog = mySpaceLog;
       this.echoLog = echoLog;
       this.mySpaceLogFileName = mySpaceLogFileName;
-
-//
-//   If required attempt to create an AstroGrid logging object using
-//   commons logging.
-//
-//   Note that the error reporting is quite crude because the Logger
-//   objects exist `beneath' the error reporting system.
-
-      if (astroGridLog)
-      {  try
-         {
-         }
-         catch (Exception all)
-         {  all.printStackTrace();
-         }
-      }
 
 //
 //   If required attempt to open a local MySpace log file.  The file
@@ -96,8 +66,8 @@ public class Logger
             mySpaceLogWriter = new PrintWriter(fos);
 
             Date startDate = new Date();
-            String startMessage = " ===== Start of MySpace logging "
-              + "session " + startDate.toString();
+            String startMessage = " ===== Start of MySpace delegate "
+              + "logging session " + startDate.toString();
 
             mySpaceLogWriter.println(startMessage);
             mySpaceLogWriter.flush();
@@ -109,7 +79,6 @@ public class Logger
       }
    }
 
-
 /**
  * Create a <code>Logger</code> object and pass a message.  The
  * logging configuration parameters are unaltered.
@@ -117,7 +86,7 @@ public class Logger
  * @param message Message to be logged.
  */
 
-   public Logger (String message)
+   public DeLogger (String message)
    {  this.appendMessage(message);
    }
 
@@ -126,7 +95,7 @@ public class Logger
  * Constructor with no arguments.
  */
 
-  public Logger ()
+  public DeLogger ()
   {
   }
 
@@ -158,7 +127,7 @@ public class Logger
 
       Date currentDate = new Date();
 
-      String messageHead = "--- MySpace service " + currentDate.toString()
+      String messageHead = "--- MySpace delegate " + currentDate.toString()
         + " (";
 
       if (userId != null)
@@ -175,18 +144,6 @@ public class Logger
 //   Assemble the complete, final message.
 
       String completeMessage = messageHead + message;
-
-//
-//   If required append the message to the AstroGrid log.
-
-      if (astroGridLog)
-      {  try
-         {  commonsLog.info(completeMessage);
-         }
-         catch (Exception all)
-         {  all.printStackTrace();
-         }
-      }
 
 //
 //   If required append the message to the local MySpace log.
@@ -223,10 +180,6 @@ public class Logger
 
    public void close()
    {
-
-//
-//   The standard AstroGrid log would be closed here if any closing
-//   was required.
 
 //
 //   If required close the local MySpace log.

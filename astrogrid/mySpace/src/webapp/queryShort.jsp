@@ -5,20 +5,18 @@
     session="false" %>
 
 <html>
-<head><title>Create User</title>
+<head><title>Query (Short Form)</title>
 </head>
 
 <body>
-<h1>Create User</h1>
+<h1>Query (Short Form)</h1>
 
 <%
-  String[] paramNames={"userId","communityId","credential","server"};
+  String[] paramNames={"userId","communityId","credential","query"};
   String userId = request.getParameter("userId");
   String communityId = request.getParameter("communityId");
   String credential = request.getParameter("credential");
-  String server = request.getParameter("server");
-  Vector servers = new Vector();
-  servers.add(server);
+  String query = request.getParameter("query");
 %>
 
 
@@ -35,33 +33,36 @@ The end point for this service is: <%=serviceURL%>
 <%
   MySpaceClient client = MySpaceDelegateFactory.createDelegate(
     serviceURL.toString());
-  boolean ok = client.createUser(userId, communityId, credential, servers);
-%>
-
-<p>
-The result from createUser was <%=ok%>.
-</p>
-
-<%
-  String query = "/" + userId + "@" +communityId +  "/*";
-  out.print("Query: " + query + "<br>");
 
   Vector results = client.listDataHoldings(userId, communityId,
     credential, query);
 %>
 
 <p>
-The following containers have been created for user
-<code><%=userId%>@<%=communityId%></code>:
+The following entries satisfied query <code><%=query%></code>:
 </p>
 
 <%
-  for (int i=0; i<results.size(); i++)
-  {  Vector system = (Vector)results.elementAt(i);
+  int resultsSize = results.size();
 
-     for (int k=0; k<system.size(); k++)
-     {  out.print(system.elementAt(k) + "<BR>");
+  if (resultsSize > 0)
+  {  for (int i=0; i<resultsSize; i++)
+     {  Vector system = (Vector)results.elementAt(i);
+
+        int systemSize = system.size();
+        if (systemSize > 0)
+        {  for (int k=0; k<system.size(); k++)
+           {  out.print(system.elementAt(k) + "<BR>");
+           }
+        }
+        else
+        {  out.print("No entries on MySpace Service " + i + "<BR>");
+        }
+        out.print("<BR>");
      }
+  }
+  else
+  {  out.print("No entries satisfied the query." + "<BR>");
   }
 
 %>
