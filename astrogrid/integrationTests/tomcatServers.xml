@@ -6,17 +6,17 @@
       <a>
         <url>http://vm05.astrogrid.org:8080/manager/</url>
         <user>tomcat</user>
-        <password></password>
+        <password>gandalf</password>
       </a>
       <b>
-        <url>vm06.astrogrid.org:8080/manager/</url>
+        <url>http://vm06.astrogrid.org:8080/manager/</url>
         <user>tomcat</user>
-        <password></password>
+        <password>tomcat</password>
       </b>
       <c>
-        <url>vm07.astrogrid.org:8080/manager/</url>
-        <user>tomcat</user>
-        <password></password>
+        <url>http://vm07.astrogrid.org:8080/manager/</url>
+        <user>eca</user>
+        <password>allareas</password>
       </c>
       <d>
         <url>vm08.astrogrid.org:8080/manager/</url>
