@@ -230,6 +230,14 @@
         <AuthorityID xmlns="http://www.ivoa.net/xml/VOResource/v0.9">@REGAUTHORITY@</AuthorityID>
         <ResourceKey xmlns="http://www.ivoa.net/xml/VOResource/v0.9">helloYou</ResourceKey>
       </ns37:ApplicationReference>
+      <ns37:ApplicationReference xmlns:ns37="http://www.ivoa.net/xml/CEAService/v0.1">
+        <AuthorityID xmlns="http://www.ivoa.net/xml/VOResource/v0.9">@REGAUTHORITY@</AuthorityID>
+        <ResourceKey xmlns="http://www.ivoa.net/xml/VOResource/v0.9">sendmail</ResourceKey>
+      </ns37:ApplicationReference>
+      <ns37:ApplicationReference xmlns:ns37="http://www.ivoa.net/xml/CEAService/v0.1">
+        <AuthorityID xmlns="http://www.ivoa.net/xml/VOResource/v0.9">@REGAUTHORITY@</AuthorityID>
+        <ResourceKey xmlns="http://www.ivoa.net/xml/VOResource/v0.9">concat</ResourceKey>
+      </ns37:ApplicationReference>
     </ns37:ManagedApplications>
   </Resource>
 </VODescription>
