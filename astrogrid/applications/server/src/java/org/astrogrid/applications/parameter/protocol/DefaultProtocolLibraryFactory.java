@@ -1,4 +1,4 @@
-/*$Id: DefaultProtocolLibraryFactory.java,v 1.2 2004/11/22 18:26:37 clq2 Exp $
+/*$Id: DefaultProtocolLibraryFactory.java,v 1.3 2004/11/29 20:00:56 clq2 Exp $
  * Created on 22-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,6 +39,12 @@ public class DefaultProtocolLibraryFactory {
 
 /* 
 $Log: DefaultProtocolLibraryFactory.java,v $
+Revision 1.3  2004/11/29 20:00:56  clq2
+nww-itn07-684
+
+Revision 1.2.2.1  2004/11/26 15:14:21  nw
+stuff brougt over from head
+
 Revision 1.2  2004/11/22 18:26:37  clq2
 nww-itn07-715a
 

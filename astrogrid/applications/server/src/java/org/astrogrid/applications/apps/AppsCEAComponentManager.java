@@ -1,4 +1,4 @@
-/*$Id: AppsCEAComponentManager.java,v 1.4 2004/08/27 10:56:38 nw Exp $
+/*$Id: AppsCEAComponentManager.java,v 1.5 2004/11/29 20:00:56 clq2 Exp $
  * Created on 11-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,6 +27,7 @@ public class AppsCEAComponentManager extends JavaClassCEAComponentManager {
         registerContainerApplicationDescriptionLibrary(pico);        
         pico.registerComponentImplementation(SendMailApplicationDescription.class);
         pico.registerComponentImplementation(CatApplicationDescription.class);
+        pico.registerComponentImplementation(SiapImageFetchDescription.class);
     }
 
 }
@@ -34,6 +35,12 @@ public class AppsCEAComponentManager extends JavaClassCEAComponentManager {
 
 /* 
 $Log: AppsCEAComponentManager.java,v $
+Revision 1.5  2004/11/29 20:00:56  clq2
+nww-itn07-684
+
+Revision 1.4.46.1  2004/11/22 14:06:13  nw
+start on implementing these.
+
 Revision 1.4  2004/08/27 10:56:38  nw
 removed container-inspecting applicationDescriptionLibrary from default setup - cea-commandline doesn't like it.
 

@@ -261,11 +261,23 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+        <!-- libraries used in specific java-applications -->
     <dependency>
       <groupId>sun</groupId>
       <artifactId>mail</artifactId>
       <version>1.3.1</version>
     </dependency>
+
+        <dependency>
+                <groupId>starlink</groupId>
+                <artifactId>stil</artifactId>
+                <version>2.0-1</version>
+                <url>http://www.star.bristol.ac.uk/~mbt/stil/</url>
+                <properties>
+                        <war.bundle>true</war.bundle>
+                </properties>
+        </dependency>
+
     <!-- used to provide in-war unit testing only -->
     <dependency>
       <artifactId>junitee</artifactId>
@@ -326,7 +338,7 @@
         <includes>
           <include>**/*.xml</include>
           <include>**/*.properties</include>
-		  <include>**/*.xsl</include>
+                  <include>**/*.xsl</include>
         </includes>
       </resource>
     </resources>
