@@ -1,4 +1,4 @@
-/*$Id: RegistryServiceClientTest.java,v 1.4 2004/08/05 12:13:58 KevinBenson Exp $
+/*$Id: RegistryServiceClientTest.java,v 1.5 2004/09/03 09:43:30 nw Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,8 +27,7 @@ import junit.framework.TestCase;
 import java.net.URL;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 15-Apr-2004
- * @author Paul Harrison pah@jb.man.ac.uk 07-May-2004
+ * @author Kevin Benson
  *
  */
 public class RegistryServiceClientTest extends RegistryBaseTest {
