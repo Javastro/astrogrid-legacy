@@ -1,4 +1,4 @@
-/*$Id: SsaProxyPluginTest.java,v 1.1 2004/10/12 23:05:16 mch Exp $
+/*$Id: SsaProxyPluginTest.java,v 1.2 2004/10/13 01:31:34 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,9 +34,7 @@ import org.astrogrid.slinger.WriterTarget;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
-/** test out the vanilla sql querier on the Dummy SQL Plugin
- * @author Noel Winstanley nw@jb.man.ac.uk 04-Sep-2003
- * @author mch
+/**
  *
  */
 public class SsaProxyPluginTest extends TestCase {
@@ -91,6 +89,7 @@ public class SsaProxyPluginTest extends TestCase {
       manager.askQuerier(q);
       log.info("Checking results...");
       String s = sw.toString();
+      System.out.println(s);
       Document results = DomHelper.newDocument(s);
       //assertIsVotable(results);
       long numResults = results.getElementsByTagName("TR").getLength();
@@ -151,6 +150,9 @@ public class SsaProxyPluginTest extends TestCase {
 
 /*
  $Log: SsaProxyPluginTest.java,v $
+ Revision 1.2  2004/10/13 01:31:34  mch
+ Added screen dump of returned values.  Need to add better check
+
  Revision 1.1  2004/10/12 23:05:16  mch
  Seperated tests properly
 
