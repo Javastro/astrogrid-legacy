@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.4 2003/11/25 12:25:26 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.5 2003/11/26 22:07:24 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -12,11 +12,11 @@
 package org.astrogrid.applications.manager;
 
 import org.astrogrid.applications.Application;
-import org.astrogrid.applications.ApplicationDescription;
 import org.astrogrid.applications.Parameter;
 import org.astrogrid.applications.ParameterValues;
+import org.astrogrid.applications.description.ApplicationDescription;
 
-public class CommandLineApplicationController extends AbstractApplicationController {
+public class CommandLineApplicationController extends AbstractApplicationController  {
  
 
    /* (non-Javadoc)

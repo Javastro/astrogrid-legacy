@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationDescription.java,v 1.2 2003/11/18 17:58:49 pah Exp $
+ * $Id: ApplicationDescription.java,v 1.1 2003/11/26 22:07:24 pah Exp $
  * 
  * Created on 14-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -11,8 +11,9 @@
  *
  */ 
 
-package org.astrogrid.applications;
+package org.astrogrid.applications.description;
 
+import java.util.Map;
 /**
  * This class represents the description of the application. This will be in an extension of wsdl.
  * @author Paul Harrison (pah@jb.man.ac.uk)
@@ -22,7 +23,23 @@ package org.astrogrid.applications;
  */
 public class ApplicationDescription {
    private String name;
-   private String parameter;
+
+   /**
+    * The class that is used to instantiate this particular application. 
+    */
+   private String InstanceClass;
+
+   /**
+    *@link aggregation
+    *      @associates org.astrogrid.applications.description.ApplicationInterface
+    */
+   private Map interfaces;
+
+   /**
+    *@link aggregation
+    *      @associates org.astrogrid.applications.description.ParameterDescription
+    */
+   private Map allParameters;
    
    public ApplicationDescription()
    {
@@ -41,24 +58,9 @@ public class ApplicationDescription {
    }
 
    /**
-    * @return
-    */
-   public String getParameter() {
-      return parameter;
-   }
-
-   /**
     * @param string
     */
    public void setName(String string) {
       name = string;
    }
-
-   /**
-    * @param string
-    */
-   public void setParameter(String string) {
-      parameter = string;
-   }
-
 }

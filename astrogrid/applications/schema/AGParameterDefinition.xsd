@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: AGParameterDefinition.xsd,v 1.1 2003/11/23 22:21:43 pah Exp $ -->
+<!-- $Id: AGParameterDefinition.xsd,v 1.2 2003/11/26 22:07:24 pah Exp $ -->
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<xs:schema targetNamespace="http://www.astrogrid.org/schema/AGParameterDefinition" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema targetNamespace="http://www.astrogrid.org/schema/AGParameterDefinition" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:annotation>
 		<xs:documentation>this file captures some of the ideas used in the WSDL-like parameter definition files, but as yet is not used for validation</xs:documentation>
 	</xs:annotation>
@@ -18,12 +18,12 @@
 	</xs:complexType>
 	<xs:complexType name="BaseParameterDefinition">
 		<xs:all>
-			<xs:element name="UI_Name" type="xs:string">
+			<xs:element name="UI_Name" type="xs:string" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>The name that is to be used to display this parameter in te UI</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="UI_Description" type="agpd:tDocumentation">
+			<xs:element name="UI_Description" type="agpd:tDocumentation" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>A long description of the parameter that might be displayed in the UI to help the user</xs:documentation>
 				</xs:annotation>
@@ -90,4 +90,74 @@
 		</xs:annotation>
 		<xs:restriction base="xs:string"/>
 	</xs:simpleType>
+	<xs:complexType name="Application">
+		<xs:annotation>
+			<xs:documentation>Application definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ExecutionPath" type="xs:string"/>
+			<xs:element name="Parameters">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Parameter" type="agpd:BaseParameterDefinition" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Interfaces">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Interface" type="agpd:Interface" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="ApplicationController">
+		<xs:annotation>
+			<xs:documentation>configuration for an application controller</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Application" type="agpd:Application" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="Interface">
+		<xs:annotation>
+			<xs:documentation>description of an interface</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="input">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="agpd:pref" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="output">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="agpd:pref" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:ID" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="parameterRef" mixed="false">
+		<xs:annotation>
+			<xs:documentation>reference to an existing parameter</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="ref" type="xs:IDREF" use="required"/>
+	</xs:complexType>
+	<xs:element name="pref">
+		<xs:annotation>
+			<xs:documentation>a reference to a parameter</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:restriction base="agpd:parameterRef"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
 </xs:schema>

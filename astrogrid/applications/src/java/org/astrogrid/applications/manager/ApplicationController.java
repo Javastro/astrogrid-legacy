@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationController.java,v 1.5 2003/11/25 12:55:09 pah Exp $
+ * $Id: ApplicationController.java,v 1.6 2003/11/26 22:07:24 pah Exp $
  *
  * Created on 03 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@
 package org.astrogrid.applications.manager;
 
 import org.astrogrid.applications.Application;
-import org.astrogrid.applications.ApplicationDescription;
+import org.astrogrid.applications.description.ApplicationDescription;
 
 /**
  * Describes the operations that are required of an application Controller. This includes listing the applications managed by the controller, including the detailed description of each application.

@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationsConstants.java,v 1.1 2003/11/17 18:48:58 pah Exp $
+ * $Id: ApplicationsConstants.java,v 1.2 2003/11/26 22:07:24 pah Exp $
  * 
  * Created on 17-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -19,5 +19,28 @@ package org.astrogrid.applications.common;
  * @since iteration4
  */
 public final class ApplicationsConstants {
+   
 
+/**
+ * The key used to look up the location of the configuration file
+ */
+public final static String ConfigFileKey = "AstrogridApplicationsConfigURL";
+
+/**
+ * the JNDI key for the datasource that represents the applicationController datasource
+ */
+public final static String DataSourceName = "AstrogridApplicationControllerDatasource";
+
+// the keys below are found in the configuration file.
+
+/**
+ * The value of the property pointed to by this key is the application configuration file
+ */
+public final static String ApplicationConfigKey="ApplicationConfigFile";
+
+
+/**
+ * The value of the property pointed to bey this key is the directory used as a base for running the applications.
+ */
+public final static String WorkingDirectory = "WorkingDirectory";
 }
