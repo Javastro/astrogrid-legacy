@@ -1,5 +1,5 @@
 /*
- * $Id: SocketXmlOutputStream.java,v 1.4 2003/09/15 16:19:12 mch Exp $
+ * $Id: SocketXmlOutputStream.java,v 1.5 2003/09/16 15:30:01 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Element;
+import org.w3c.dom.Document;
 
 /**
  * Adds some convenience routines for socket streams writing XML documents
@@ -52,6 +53,15 @@ public class SocketXmlOutputStream extends FilterOutputStream implements AsciiCo
 //      out.write(hdr.getBytes());
       XMLUtils.DocumentToStream(element.getOwnerDocument(), out);
       out.write(SocketXmlInputStream.EOD);
+   }
+
+   /**
+    * Writes a document to the output stream
+    */
+   public void writeDoc(Document doc) throws IOException
+   {
+      XMLUtils.DocumentToStream(doc, out);
+      out.write(SocketXmlInputStream.EOD);   //end of document character
    }
 }
 
