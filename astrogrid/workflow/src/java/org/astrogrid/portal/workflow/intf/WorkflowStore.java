@@ -1,4 +1,4 @@
-/*$Id: WorkflowStore.java,v 1.4 2004/03/09 15:32:19 nw Exp $
+/*$Id: WorkflowStore.java,v 1.5 2004/04/14 13:02:57 nw Exp $
  * Created on 01-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,9 @@
 **/
 package org.astrogrid.portal.workflow.intf;
 
+import org.astrogrid.community.User;
 import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.store.Ivorn;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
 /** A component that can store and retreive workflow documents
@@ -26,7 +28,7 @@ public interface WorkflowStore {
      * @param name name of the workflow
      * @throws WorkflowInterfaceException
      */
-    void deleteWorkflow(Account acc, String name) throws WorkflowInterfaceException;
+   // void deleteWorkflow(Account acc, String name) throws WorkflowInterfaceException;
 
     /** Read a query from the store
      * 
@@ -35,49 +37,59 @@ public interface WorkflowStore {
      * @return a string representation of the query. will never return null
      * @throws WorkflowInterfaceException if fails to read query
      */
-    String readQuery( Account acc
+    /*String readQuery( Account acc
                                   , String name ) throws WorkflowInterfaceException ;
-
+*/
     /** return list of names of queries present in the store
      * 
      * @param acc account details for the owner of the list of queries
      * @return list of query names. never returns null
      * @throws WorkflowInterfaceException
      */
-    String[] listQueries(Account acc) throws WorkflowInterfaceException;
+   // String[] listQueries(Account acc) throws WorkflowInterfaceException;
                                            
 
     /** read workflow from the store 
      * 
-     * @param acc account details for the owner of the workflow document 
-     * @param name name of the workflow document
+     * @param user account details for the owner of the workflow document 
+     * @param  locationToReadFrom ivorn location to read the workflow from.
      * @return workflow document object. will never return null
      * @throws WorkflowInterfaceException if document can't be loaded
      */
-    Workflow readWorkflow( Account acc
+    Workflow readWorkflow(User user, Ivorn locationToReadFrom) throws WorkflowInterfaceException;
+   /* Workflow readWorkflow( Account acc
                                        , String name ) throws WorkflowInterfaceException;
-
+*/
    /** read list of workflow names from myspace 
     * 
     * @param acc account details for the owner of the workflow documents listed
     * @return list of workflow names. never returns null
     * @throws WorkflowInterfaceException
     */                                        
-   String[] listWorkflows(Account acc) throws WorkflowInterfaceException;                                         
+   //String[] listWorkflows(Account acc) throws WorkflowInterfaceException;                                         
     /** save workflow to myspace 
      * 
-     * @param acc account details for the owner of the workflow
+     * @param user account details for the owner of the workflow
+     * @param locationToSaveTo ivorn location to save the document
      * @param workflow workflow document to save
      * @throws WorkflowInterfaceException
-     */           
-    void saveWorkflow( Account acc
+     */
+    void saveWorkflow(User user,Ivorn locationToSaveTo,  Workflow workflow) throws WorkflowInterfaceException;
+             
+  /*  void saveWorkflow( Account acc
                                       , Workflow workflow ) throws WorkflowInterfaceException;
+*/
+
+
 
 }
 
 
 /* 
 $Log: WorkflowStore.java,v $
+Revision 1.5  2004/04/14 13:02:57  nw
+cut down workflow store interface. now to implement it.
+
 Revision 1.4  2004/03/09 15:32:19  nw
 removed deprecated methods - no need for them
 

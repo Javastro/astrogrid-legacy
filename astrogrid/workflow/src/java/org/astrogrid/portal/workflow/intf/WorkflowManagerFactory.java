@@ -1,4 +1,4 @@
-/*$Id: WorkflowManagerFactory.java,v 1.7 2004/04/14 13:02:57 nw Exp $
+/*$Id: WorkflowManagerFactory.java,v 1.8 2004/04/14 13:05:20 nw Exp $
  * Created on 24-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -206,7 +206,7 @@ public class WorkflowManagerFactory {
     private WorkflowStore buildDefaultStore() throws PropertyNotFoundException, IOException{
         log.info("Creating myspace-backed workflow store");
         URL endpoint = conf.getUrl(WORKFLOW_MYSPACE_STORE_ENDPOINT_KEY);
-        return new MySpaceWorkflowStore(endpoint);
+        return null;//new MySpaceWorkflowStore(endpoint);
         
     }
 }
@@ -214,6 +214,9 @@ public class WorkflowManagerFactory {
 
 /* 
 $Log: WorkflowManagerFactory.java,v $
+Revision 1.8  2004/04/14 13:05:20  nw
+cut down workflow store interface. now to implement it.
+
 Revision 1.7  2004/04/14 13:02:57  nw
 cut down workflow store interface. now to implement it.
 

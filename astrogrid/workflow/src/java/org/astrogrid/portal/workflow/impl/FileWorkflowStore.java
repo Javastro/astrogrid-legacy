@@ -1,4 +1,4 @@
-/*$Id: FileWorkflowStore.java,v 1.2 2004/03/11 13:53:36 nw Exp $
+/*$Id: FileWorkflowStore.java,v 1.3 2004/04/14 13:02:57 nw Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,9 +35,9 @@ import java.util.List;
 
 /** Implementation of a workflow store based on a local filesystem 
  * @author Noel Winstanley nw@jb.man.ac.uk 09-Mar-2004
- *
+ *  @deprecated - old implementation of the workflow store, before interface changes.
  */
-public class FileWorkflowStore implements WorkflowStore {
+public class FileWorkflowStore/* implements WorkflowStore */{
     private static final Log log = LogFactory.getLog(FileWorkflowStore.class);
     /** Construct a new FileWorkflowStore
      * 
@@ -165,6 +165,9 @@ public class FileWorkflowStore implements WorkflowStore {
 
 /* 
 $Log: FileWorkflowStore.java,v $
+Revision 1.3  2004/04/14 13:02:57  nw
+cut down workflow store interface. now to implement it.
+
 Revision 1.2  2004/03/11 13:53:36  nw
 merged in branch bz#236 - implementation of interfaces
 
