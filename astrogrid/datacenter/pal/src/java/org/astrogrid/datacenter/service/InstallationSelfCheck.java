@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.6 2004/10/06 21:12:17 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.7 2004/10/06 22:14:38 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -93,8 +93,8 @@ public class InstallationSelfCheck extends TestCase {
    public void testConeSearch() throws Throwable {
       StringWriter sw = new StringWriter(); //although we throw away the results
       DataServer server = new DataServer();
-      server.askQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(30,30,2),
-                      new ReturnTable(TargetIndicator.makeIndicator(sw), ReturnTable.VOTABLE));
+      server.askQuery(Account.ANONYMOUS,
+                      SimpleQueryMaker.makeConeQuery(30,30,2, TargetIndicator.makeIndicator(sw), ReturnTable.VOTABLE));
    }
 
    /** Checks that the delegates can connect correctly */
@@ -113,8 +113,8 @@ public class InstallationSelfCheck extends TestCase {
       DataServer server = new DataServer();
 
       for (int i=0;i<100;i++) {
-         server.submitQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(30, 30, 6+i),
-                            new ReturnTable(TargetIndicator.makeIndicator(new NullWriter()), ReturnTable.CSV));
+         server.submitQuery(Account.ANONYMOUS,
+                            SimpleQueryMaker.makeConeQuery(30, 30, 6+i, TargetIndicator.makeIndicator(new NullWriter()), ReturnTable.CSV));
       }
    }
 
@@ -154,6 +154,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.7  2004/10/06 22:14:38  mch
+ Added default cone scope
+
  Revision 1.6  2004/10/06 21:12:17  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 
