@@ -309,6 +309,12 @@
     -->
     <load-on-startup>1</load-on-startup>
   </servlet>
+  
+  <!-- make the default session timeout an hour -->
+  <session-config>
+    <session-timeout>60</session-timeout>
+  </session-config>
+  
 
   <!-- URL space mappings ============================================= -->
 
