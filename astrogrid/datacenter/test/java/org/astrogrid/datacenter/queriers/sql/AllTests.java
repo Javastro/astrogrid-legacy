@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.1 2003/09/05 01:05:32 nw Exp $
+/*$Id: AllTests.java,v 1.2 2003/10/14 12:59:40 nw Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,7 @@ public class AllTests {
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(SqlResultsTest.class));
         suite.addTest(new TestSuite(SqlQuerierTest.class));
+        suite.addTest(new TestSuite(SqlQueryTranslatorTest.class));
         //$JUnit-END$
         return suite;
     }
@@ -33,6 +34,9 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.2  2003/10/14 12:59:40  nw
+moved SqlQueryTranslator here from removed adql package
+
 Revision 1.1  2003/09/05 01:05:32  nw
 added testing of SQLQuerier over an in-memory Hsql database,
 

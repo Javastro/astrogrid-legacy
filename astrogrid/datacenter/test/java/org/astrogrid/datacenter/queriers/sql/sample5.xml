@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- XML equiuvalent
+SELECT t.b, b.* FROM Tab t, Bob b WHERE AVG(b.dd) < 4.56 ORDER BY b.dd
+-->
+<Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://tempuri.org/adql /home/noel/eclipse/datacenter/schema/ADQLschema.xsd"
+  xmlns="http://tempuri.org/adql"
+>
+  <SelectionList>
+    <ColumnExpr>
+      <SingleColumnReference>
+        <TableName>t</TableName>
+        <Name>b</Name>
+      </SingleColumnReference>
+    </ColumnExpr>
+    <ColumnExpr>
+      <AllColumnReference>
+        <TableName>b</TableName>
+      </AllColumnReference>
+    </ColumnExpr>
+  </SelectionList>
+  <TableClause>
+    <FromClause>
+      <TableReference>
+        <Table>
+          <Name>Tab</Name>
+          <AliasName>t</AliasName>
+        </Table>
+        <Table>
+          <Name>Bob</Name>
+          <AliasName>b</AliasName>
+        </Table>
+      </TableReference>
+    </FromClause>
+    <WhereClause>
+      <PredicateSearch>
+        <ComparisonPred>
+          <FirstExpr xsi:type="FunctionExpr">
+            <ExpressionFunction>
+              <FunctionReference>AVG</FunctionReference>
+              <Expr xsi:type="ColumnExpr">
+                <SingleColumnReference>
+                  <TableName>b</TableName>
+                  <Name>dd</Name>
+                </SingleColumnReference>
+              </Expr>
+            </ExpressionFunction>
+          </FirstExpr>
+          <Compare>&lt;</Compare>
+          <SecondExpr xsi:type="AtomExpr">
+            <Value>
+              <NumberLiteral>
+                <ApproxNum>
+                  <Value>4.56</Value>
+                </ApproxNum>
+              </NumberLiteral>
+            </Value>
+          </SecondExpr>
+        </ComparisonPred>
+      </PredicateSearch>
+    </WhereClause>
+  </TableClause>
+  <OrderBy>
+    <OrderList>
+      <Order>
+        <Expr xsi:type="ColumnExpr">
+          <SingleColumnReference>
+            <TableName>b</TableName>
+            <Name>dd</Name>
+          </SingleColumnReference>
+        </Expr>
+      </Order>
+    </OrderList>
+  </OrderBy>
+</Select>
