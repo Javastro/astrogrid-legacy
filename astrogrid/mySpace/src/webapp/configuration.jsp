@@ -99,9 +99,9 @@ if (!createPressed) {
 
    if (guessPressed) {
 
-      defaultsBean.setMsmUrl(baseURL+"/services/MySpaceManager");
+      defaultsBean.setMsmUrl(baseURL+"/services/Manager");
       defaultsBean.setMssUrl("NotRequired");
-      defaultsBean.setMsmsUrl(baseURL+"/services/MySpaceManager,");
+      defaultsBean.setMsmsUrl(baseURL+"/services/Manager,");
       message="Based on the location of the webapp, these are the best guesses for the URLs.  Press change to apply them, followed by export if you wish to save them to the config file.";
    } 
      
