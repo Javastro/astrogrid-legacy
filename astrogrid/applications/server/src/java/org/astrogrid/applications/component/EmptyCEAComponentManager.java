@@ -1,4 +1,4 @@
-/*$Id: EmptyCEAComponentManager.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: EmptyCEAComponentManager.java,v 1.3 2004/07/05 18:45:09 nw Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,9 @@
 **/
 package org.astrogrid.applications.component;
 
+import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
+import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.CompositeApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.registry.RegistryAdminLocator;
@@ -230,12 +232,37 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
             }
         });        
     }
+    /** register an application description library that will assemble all applicaitoinDescrption components registered with the container 
+     *  - this allows applicatonDescriptions to be setup and configured individually at the picocontainer level.
+     * @author Noel Winstanley nw@jb.man.ac.uk 05-Jul-2004
+     *
+     */
+   public static void registerContainerApplicationDescriptionLibrary(final MutablePicoContainer pico) {
+       pico.registerComponentImplementation(BaseApplicationDescriptionLibrary.class);
+       // register a throwaway component that adds all applicationDescriptions in the container into the library on container startup.
+       pico.registerComponentInstance(new Startable() {
+
+        public void start() {
+            BaseApplicationDescriptionLibrary lib = (BaseApplicationDescriptionLibrary)pico.getComponentAdapter(BaseApplicationDescriptionLibrary.class);
+            for (Iterator i = pico.getComponentAdaptersOfType(ApplicationDescription.class).iterator(); i.hasNext();) {
+                ComponentAdapter ca = (ComponentAdapter)i.next();
+                ApplicationDescription appDesc = (ApplicationDescription)ca.getComponentInstance();
+                lib.addApplicationDescription(appDesc);
+            }
+        }
+        public void stop() {
+        }
+       }); 
+    }
 
 }
 
 
 /* 
 $Log: EmptyCEAComponentManager.java,v $
+Revision 1.3  2004/07/05 18:45:09  nw
+added helper method to assemble lib from registered descriptions
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization
