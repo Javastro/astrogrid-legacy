@@ -1,4 +1,5 @@
 <!-- Include this file in forms that require the results to be specified -->
+<!-- The parameters (input field names) should match the ServletHelper.makeReturnSpec -->
 <div id='resultsSpec'>
         <p>
           Results Format
@@ -11,7 +12,9 @@
           <select name='Compression'>
              <option value="NONE">None</option>
           </select>
-          Send them to
+          Send them
+          <input type='radio' name='TargetBrowser'/>to Browser
+          <input type='radio' name='TargetURI'/>
           <input type="text" name="Target"/> (Optional)
           <a href="http://wiki.astrogrid.org/bin/view/Support/HelpTargetIndicators">(Help)</a>
         </p>

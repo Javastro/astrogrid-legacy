@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.3 2004/09/02 08:02:17 mch Exp $
+ * $Id: ServletHelper.java,v 1.4 2004/09/06 11:17:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -35,15 +35,23 @@ public class ServletHelper
 
    /**
     * Convenience routine for JSPs; decides where target should be from
-    * the parameters in the given request */
+    * the parameters in the given request.  The parameter names should match
+    * those assigned in resultsForm.xml */
    public static ReturnSpec makeReturnSpec(HttpServletRequest request)  {
 
       TargetIndicator target = null;
-      String targetParam = request.getParameter("Target");   //direction - eg URI
-      if ( (targetParam != null) && (targetParam.trim().length()>0)) {
-         
+
+      if (request.getParameter("TargetBrowser") != null) {
+         target = null;
+      }
+      else if (request.getParameter("TargetURI") != null) {
+         String targetUri = request.getParameter("Target");   //direction - eg URI
+         if ( (targetUri == null) || (targetUri.trim().length()==0)) {
+            throw new IllegalArgumentException("No Target URI given");
+         }
+            
          try {
-            target = TargetIndicator.makeIndicator(targetParam);
+            target = TargetIndicator.makeIndicator(targetUri);
          }
          catch (URISyntaxException e) {
             throw new IllegalArgumentException("Invalid target: "+target+" ("+e+")");
