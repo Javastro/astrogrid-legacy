@@ -3,11 +3,14 @@
     | Maven project description for the AstroGrid community component.
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/11/16 18:24:34 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2003/11/27 15:01:54 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.3  2003/11/27 15:01:54  jdt
+    |   Filled in site directory
+    |
     |   Revision 1.2  2003/11/16 18:24:34  dave
     |   Merged dev branch back into HEAD
     |
@@ -137,8 +140,9 @@
         | Optional.
         | The directory on the web server where the public web site for this project resides.
         | This is used when the web site is deployed.
-    <siteDirectory></siteDirectory>
         +-->
+    <siteDirectory>/var/www/www/maven/build/community</siteDirectory>
+        
 
     <!--+
         | Optional.
