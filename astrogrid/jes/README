@@ -28,13 +28,13 @@ is included with the distribution. Further details are given later.
 1.2 Internals.
 ----------------
 
-Two important software prerequisites are the datacenter's two properties files:
+Two important software prerequisites are the jes's two properties files:
 
 (1) The configuration file ASTROGRID_jesconfig.properties. A great deal
 of setup-configurable data is held here. The file is well commented and bears
 reading... <<<MUST>>> be read!
 
-(2) The datacenter's messages file ASTROGRID_jesmessages.properties.
+(2) The jes's messages file ASTROGRID_jesmessages.properties.
 All messages issued by JES are detailed here. The file name is 
 configurable within the ASTROGRID_jesconfig.properties file.
 
@@ -71,7 +71,7 @@ JES uses JNDI to lookup it's associated database, two files require
 altering to enable this to happen:
 
 (1) The axis WEB.XML file - $CATALINA_HOME/webapps/axis/WEB-INF/web.xml:
-Add the JNDI names (as per ASTROGRID_datasetconfig.properties) under which the 
+Add the JNDI names (as per ASTROGRID_jesconfig.properties) under which the 
 web services will look up preconfigured datasources (1 for each datasource eg: 
 jes-datasource):
 
@@ -142,11 +142,11 @@ Most if not all of these will be available shortly.
 Unjar to some convenient temporary directory. The archive contains the following:
 
 . This README, so presumably you have already got this far!
-. jesBIN.jar     -    the datacenter executables
+. jesBIN.jar            -    the jes executables
 . jconn2.jar            -    the Sybase jdbc executables
-. config directory      -    contains datacenter configuration files
+. config directory      -    contains jes configuration files
 . dbscripts             -    contains script for creating database tables.
-. wsdd                  -    contains deployment descriptors for deploying datacenter as a SOAP service within Axis
+. wsdd                  -    contains deployment descriptors for deploying jes as a SOAP service within Axis
 
 4.2 Make sure the external prerequisites are fullfilled.
 ----------------------------------------------------------
