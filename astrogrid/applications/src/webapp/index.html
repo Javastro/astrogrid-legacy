@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<!-- $Id: index.html,v 1.5 2004/01/17 00:24:23 pah Exp $ --><!-- this is a bit of a hack - it should be generated during the site build so
+<!-- $Id: index.html,v 1.6 2004/02/02 16:49:44 pah Exp $ --><!-- this is a bit of a hack - it should be generated during the site build so
 that the styles are correct -->
   <title>AstroGrid Project - AstroGrid Applications Integration</title>
   <style type="text/css">
@@ -9,9 +9,9 @@ that the styles are correct -->
           @import url("maven/style/maven.css");
         </style>
   <link rel="stylesheet" href="maven/style/print.css" type="text/css"
- media="print">
+ media="print"/>
   <meta http-equiv="Content-Type"
- content="text/html; charset=ISO-8859-1">
+ content="text/html; charset=ISO-8859-1"/>
 </head>
 <body class="composite">
 <div id="banner">
@@ -20,11 +20,11 @@ that the styles are correct -->
     <tr>
       <td> <a href="http://www.astrogrid.org"> <img border="0"
  alt="AstroGrid" src="http://www.astrogrid.org/images/AGlogo"
- align="left"> </a> </td>
+ align="left"/> </a> </td>
       <td>
       <div id="login" align="right"> <a href=""> <img border="0"
  alt="AstroGrid MySpace" src="http://www.astrogrid.org/images/AGlogo"
- align="right"> </a> </div>
+ align="right"/> </a> </div>
       </td>
     </tr>
   </tbody>
@@ -36,7 +36,7 @@ that the styles are correct -->
     <tr>
       <td>
       <div align="right"> <a href="http://www.astrogrid.org"><img
- class="handle" src="./images/none.png" alt="">AstroGrid</a> </div>
+ class="handle" src="./images/none.png" alt="" />AstroGrid</a> </div>
       </td>
     </tr>
   </tbody>
@@ -56,32 +56,32 @@ that the styles are correct -->
       <div style="margin-top: 20px; width: 100%; text-align: center;"> <a
  href="http://maven.apache.org/" title="Powered by Maven"><img
  style="border: 1px solid black;" alt="Powered by Maven"
- src="maven/images/logos/maven-propaganda.png"></a> </div>
+ src="maven/images/logos/maven-propaganda.png"/></a> </div>
       </div>
       </td>
       <td rowspan="2">
       <div id="bodycol">
       <div class="app">
       <div class="h3">
-      <h3> <a name="AstroGrid Applicatons">AstroGrid Applications
+      <h3> <a name="AstroGridApplicatons">AstroGrid Applications
 Integration - Version $Name:  $</a> </h3>
       <h4>Configuration</h4>
       <p> From here you can: </p>
       <ul>
         <li> Check <a href="happyaxis.jsp">HappyAxis</a> to see if
-you've installed the necessary jars in tomcat to run axis properly.<br>
+you've installed the necessary jars in tomcat to run axis properly.<br/>
         </li>
         <li> See what <a href="servlet/AxisServlet">services</a> are
 available. There should be an applicationController service...&nbsp;</li>
         <li>Before you can run the service you need to configure the
 ApplicationController - see the <a href="Configuration.html">instructions</a>
 which need to be followed
-before trying to invoke the service. <br>
+before trying to invoke the service. <br/>
         </li>
         <li><a
  href="/manager/html/reload?path=/astrogrid-applications">restart
           </a>the application in the <a
- href="/manager/html">tomcat manager</a>.<br>
+ href="/manager/html">tomcat manager</a>.<br/>
         </li>
         <li>You can then check your <a href="check_config.jsp">configuration</a></li>
         <li>There is a test application in the <a href="test">test
@@ -91,13 +91,14 @@ to allow the installation to be&nbsp;<a href="Troubleshooting.html">tested</a></
       <h5>Application Configuration</h5>
       <p>It does take some work work to <a
  href="ApplicationConfiguration.html">configure&nbsp; a new application</a>
-that the command line application controller can run, however. <br>
+that the command line application controller can run, however. <br/>
       </p>
       <p> Browse the <a
  href="maven/index.html">Maven
 documentation</a> for this ApplicationController service. </p>
 <h4>Using the Service</h4>
-<p>It is possible to call the service directly, with a knowledge of the <a href="/astrogrid-applications/services/ApplicationControllerService?wsdl">wsdl</a>, but if you are programming in java, then you might find it easier to use the delegate contained in the <a href="ApplicationControllerDelegate.jar">this jar</a>.
+<p>It is possible to call the service directly, with a knowledge of the <a href="/astrogrid-applications/services/ApplicationControllerService?wsdl">wsdl</a>, but if you are programming in java, then you might find it easier to use the delegate contained in the <a href="ApplicationControllerDelegate.jar">this jar</a>. 
+	The main calling interface is described by the <a href="/astrogrid-applications/maven/apidocs/org/astrogrid/applications/manager/ApplicationController.html">ApplicationController</a> </p>
       </div>
       </div>
       </div>

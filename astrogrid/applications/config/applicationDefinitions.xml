@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<!--$Id: applicationDefinitions.xml,v 1.8 2004/01/25 12:26:52 pah Exp $-->
+<!--$Id: applicationDefinitions.xml,v 1.9 2004/02/02 16:49:44 pah Exp $-->
 <!--This is the configuration file for the Iteration4 application controller-->
-<ApplicationController xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/AGParameterDefinition
-http://www.astrogrid.org/schema/AGParameterDefinition/AGParameterDefinition.xsd">
+<ApplicationController xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/AGParameterDefinition http://www.astrogrid.org/schema/AGParameterDefinition/AGParameterDefinition.xsd">
 	<Application name="SExtractor" instanceClass="org.astrogrid.applications.commandline.sextractor.SExtractor">
 		<!--This is the application to concentrate on for the end of this iteration-->
 		<ExecutionPath>/home/applications/tools/sextractor-2.3/sex</ExecutionPath>
 		<Parameters>
-		<!-- temporarily turn the images into direct file references - for performance during the AVO demo -->
+			<!-- temporarily turn the images into direct file references - for performance during the AVO demo -->
 			<Parameter name="DetectionImage" type="agpd:FileReference" commandPosition="1">
 				<UI_Name>Detection Image</UI_Name>
 				<UI_Description>The image that is used to detect sources. Basic position, shape and size informtaion is derived from this image</UI_Description>
@@ -17,7 +15,7 @@ http://www.astrogrid.org/schema/AGParameterDefinition/AGParameterDefinition.xsd"
 				<UI_Name>Measurement Image</UI_Name>
 				<UI_Description>The Image that is used to measure photometric parameters</UI_Description>
 			</Parameter>
-			<Parameter name="config_file" type="agpd:FileReference"  commandSwitch="c">
+			<Parameter name="config_file" type="agpd:FileReference" commandSwitch="c">
 				<UI_Name>Configuration File</UI_Name>
 				<UI_Description>File containing the main configuration parameters for SExtractor</UI_Description>
 			</Parameter>
@@ -48,7 +46,7 @@ http://www.astrogrid.org/schema/AGParameterDefinition/AGParameterDefinition.xsd"
 		<!--HyperZ is another tool that will be driven by config files - however this might not be the full set necessary to run this tool.-->
 		<ExecutionPath>/home/applications/tools/ZPHOT/hyperzwrapper.sh</ExecutionPath>
 		<Parameters>
-			<Parameter name="config_file" type="agpd:FileReference"  commandPosition="1" >
+			<Parameter name="config_file" type="agpd:FileReference" commandPosition="1">
 				<UI_Name>Configuration File</UI_Name>
 				<UI_Description>A HyperZ configuration file</UI_Description>
 			</Parameter>
@@ -79,7 +77,7 @@ http://www.astrogrid.org/schema/AGParameterDefinition/AGParameterDefinition.xsd"
 		<ExecutionPath>/home/applications/tools/dft/bin/dft</ExecutionPath>
 		<!-- these parameters are incorrect in the latest verison of the tool -->
 		<Parameters>
-			<Parameter name="targets" type="agpd:MySpace_VOTableReference" switchType="keyword" >
+			<Parameter name="targets" type="agpd:MySpace_VOTableReference" switchType="keyword">
 				<UI_Name>Target votable</UI_Name>
 				<UI_Description>The VOTable file containing the target sources</UI_Description>
 			</Parameter>
@@ -91,15 +89,15 @@ http://www.astrogrid.org/schema/AGParameterDefinition/AGParameterDefinition.xsd"
 				<UI_Name>Resulting VOTable</UI_Name>
 				<UI_Description>The VOTable file containing result of the match</UI_Description>
 			</Parameter>
-			<Parameter name="matchRadius" type="xs:double"  commandSwitch="String">
+			<Parameter name="matchRadius" type="xs:double" commandSwitch="String">
 				<UI_Name>Match Radius</UI_Name>
 				<UI_Description>??</UI_Description>
 			</Parameter>
-			<Parameter name="radMax" type="xs:double"  commandSwitch="String">
+			<Parameter name="radMax" type="xs:double" commandSwitch="String">
 				<UI_Name>Maximum search radius</UI_Name>
 				<UI_Description>??</UI_Description>
 			</Parameter>
-			<Parameter name="output" type="xs:string" commandswitch="String">
+			<Parameter name="output" type="xs:string" commandSwitch="String">
 				<UI_Name>output type</UI_Name>
 				<UI_Description>This can be one of HTML VOTable of Ascii, with the default being VOTable</UI_Description>
 				<DefaultValue>VOTable</DefaultValue>

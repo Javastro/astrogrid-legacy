@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplication.java,v 1.14 2004/01/25 12:26:52 pah Exp $
+ * $Id: CmdLineApplication.java,v 1.15 2004/02/02 16:49:44 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -35,7 +35,7 @@ import org.astrogrid.jes.delegate.jobMonitor.JobMonitorDelegate;
  * A generic model for a command line application. This generally assumes that the application can be run from a command line obtaining all of its parameters from commandline arguments and possibly standard in. 
  * The application can interact with the filesystem.
  * 
- * This is achieved with the {@link java.lang.Runtime#exec(java.lang.String[], java.lang.String[], java.io.File) call,
+ * This is achieved with the {@link java.lang.Runtime#exec(java.lang.String[], java.lang.String[], java.io.File) }call,
  * 
  * It was programmed/tested under unix, but I think that the code would work with windows based systems with very little alteration.
  * @author Paul Harrison (pah@jb.man.ac.uk)

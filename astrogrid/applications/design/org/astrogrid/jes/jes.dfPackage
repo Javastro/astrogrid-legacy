@@ -52,6 +52,18 @@ class reference80 {
 @__modelType reference 
 */
 class reference81 {
+}/**
+@__ref <oiref:design#Class#id2q77zdq6d6uu9dq6d7asf.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.webapp:oiref> 
+*/
+class reference1 {
+}/**
+@__ref <oiref:design#Class#id14bl2dq6d6uu9dq6d7arv.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.installationTests:oiref> 
+*/
+class reference4 {
 }}/**
 @__tags
 @shapeType ClassDiagram 

@@ -1,0 +1,42 @@
+package id4b26xdq6d6uu9dq6d7ajh;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.applications.avodemo.AVODemoRunner:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.avodemo.AVODemoSetup:oiref><oihard>
+@__modelType reference 
+*/
+class reference14 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.avodemo.Utils:oiref><oihard>
+@__modelType reference 
+*/
+class reference15 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.avodemo.AVODemoConstants:oiref><oihard>
+@__modelType reference 
+*/
+class reference16 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+*/
+class __positions {
+}

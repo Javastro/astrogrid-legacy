@@ -156,6 +156,22 @@ class reference35 {
 @__modelType reference 
 */
 class reference3 {
+}/**
+@__ref <oiref:design#Class#id4b26xdq6d6uu9dq6d7ajh.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.applications.avodemo:oiref> 
+*/
+class reference8 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.MySpaceReferenceParameter:oiref><oihard>
+@__modelType reference 
+*/
+class reference12 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.CmdLineApplicationCreator:oiref><oihard>
+@__modelType reference 
+*/
+class reference13 {
 }}/**
 @__tags
 @shapeType ClassDiagram 
@@ -167,72 +183,78 @@ class __tags {
 */
 class __options {
 }/**
-@__positions <oigroup:<oiref:java#Extends#org.astrogrid.applications.datacentre.DataCentreApplication#org.astrogrid.applications.AbstractApplication:oiref>=420,828,360,828:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.Parameter:oiref>=730,560,200,299,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.commandline.SExtractor#org.astrogrid.applications.commandline.CmdLineApplication:oiref>=470,978,230,908:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Status#UNKNOWN:oiref>=785,284,785,322,851,322,851,256,813,256:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.VOTableParameter#org.astrogrid.applications.Parameter:oiref>=785,505,785,560:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Application#lnkResult:oiref>=406,584,861,890:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.AbstractApplication#parameters:oiref>=360,636,730,636:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.CmdLineApplication:oiref>=50,910,200,618,1:oigroup>
-<oigroup:Composite#clientRole#MemberLink#<oiref:java#Member#org.astrogrid.applications.ApplicationFactory#_application:oiref>=379,267,46,23,0,1.0,0.0:oigroup>
-<oigroup:<oiref:design#Class#id22onrdmemcb5ndmemchy7.diagram:oiref>=10,290,200,203,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.VOTableResult#org.astrogrid.applications.Result:oiref>=970,934,903,934:oigroup>
-<oigroup:<oiref:design#Class#id1xdjxdlid04undlid0thh.node22.link:oiref>=484,1210,160,1090:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.VOTableParameter:oiref>=750,390,142,115,1:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.ApplicationFactory#_dataCentreApplicationCreator:oiref>=460,193,670,193:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.AbstractApplication:oiref>=160,610,200,453,1:oigroup>
-<oigroup:<oiref:java#Member#org.astrogrid.applications.AbstractApplication#parameters:oiref>=250,200,148,23,1:oigroup>
-<oigroup:<oiref:design#Class#id1xdjxdlid04undlid0thh.node:oiref>=1521,419,382,40,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.FileParameter#org.astrogrid.applications.Parameter:oiref>=960,730,930,724:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.Status:oiref>=671,8,142,276,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.CommandLineApplicationDescription#org.astrogrid.applications.ApplicationDescription:oiref>=930,1285,852,1285:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.ADQLParameter#org.astrogrid.applications.Parameter:oiref>=1150,684,930,684:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.FileResult:oiref>=970,1020,115,94,0:oigroup>
-<oigroup:<oiref:design#Class#id1xdjxdlid04undlid0thh.node22:oiref>=370,1210,229,153,0:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Status#NEW:oiref>=691,284,691,462,945,462,945,116,813,116:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.commandline.CmdLineApplication#org.astrogrid.applications.AbstractApplication:oiref>=250,920,360,915:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.FileReferenceParameter:oiref>=1250,400,194,138,1:oigroup>
-<oigroup:<oiref:design#Class#id2yszjdnexiqy8dney5c5g.diagram:oiref>=270,960,200,226,1:oigroup>
-<oigroup:<oiref:java#Implements#org.astrogrid.applications.ApplicationCreator#org.astrogrid.applications.ApplicationFactory:oiref>=670,226,460,226:oigroup>
-<oigroup:<oiref:design#Class#id4j2pmdmemcb5ndmemchxm.diagram:oiref>=9,99,200,164,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.Application:oiref>=300,370,161,214,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.ParameterValues:oiref>=860,1150,180,310,0:oigroup>
-<oigroup:Composite#clientRole#MemberLink#<oiref:java#Member#org.astrogrid.applications.Application#lnkResult:oiref>=441,577,45,23,0,0.55806255,0.8297989:oigroup>
-<oigroup:<oiref:design#Class#id1f9fmdnym1eprdnym8a0f.diagram:oiref>=1150,910,165,118,1:oigroup>
-<oigroup:<oiref:design#Class#idenx9dnexiqy8dneyah3w.diagram:oiref>=650,1020,166,118,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.ADQLParameter:oiref>=1150,640,122,99,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.CommandLineParameter:oiref>=1010,380,183,115,1:oigroup>
-<oigroup:<oiref:design#Class#id1xdjxdlid04undlid0thh.node24:oiref>=690,330,357,40,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.CommandLineParameter#org.astrogrid.applications.Parameter:oiref>=1101,495,833,560:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.AbstractApplication#status:oiref>=335,610,681,284:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.FileResult#org.astrogrid.applications.Result:oiref>=1027,1020,861,979:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.VOTableResult:oiref>=970,890,116,89,1:oigroup>
-<oigroup:<oiref:design#Class#id1xdjxdlid04undlid0thh.node24.link:oiref>=821,370,821,390:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Application#_applicationFactory:oiref>=406,370,406,262:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.FileReferenceParameter#org.astrogrid.applications.Parameter:oiref>=1250,511,930,600:oigroup>
+@__positions <oigroup:<oiref:design#Class#id1xdjxdlid04undlid0thh.node.link:oiref>=1521,439,1444,439:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.ApplicationFactory#_application:oiref>=353,262,353,370:oigroup>
-<oigroup:<oiref:design#Class#id1xdjxdlid04undlid0thh.node30:oiref>=42,49,251,40,1:oigroup>
-<oigroup:Composite#stereotype#MemberLink#<oiref:java#Member#org.astrogrid.applications.Application#lnkResult:oiref>=717,793,82,23,0,-0.55806255,-0.8297989:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.commandline.XYZApplication#org.astrogrid.applications.commandline.CmdLineApplication:oiref>=132,970,132,932:oigroup>
-<oigroup:<oiref:design#Class#id24evtdnh9yy0ndnh9zb4x.diagram:oiref>=1400,860,200,732,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.description.ParameterDescription:oiref>=1373,521,200,342,1:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Parameter#application:oiref>=730,747,360,747:oigroup>
-<oigroup:<oiref:design#Class#id2cs16dnd776t5dnd77jow.diagram:oiref>=491,278,167,157,1:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Status#RUNNING:oiref>=711,284,711,406,925,406,925,172,813,172:oigroup>
-<oigroup:<oiref:java#Implements#org.astrogrid.applications.AbstractApplication#org.astrogrid.applications.Application:oiref>=310,610,310,584:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.applications.webservice.WebServiceApplication#org.astrogrid.applications.AbstractApplication:oiref>=480,817,301,742:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.Result:oiref>=820,890,83,89,1:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Status#ERROR:oiref>=757,284,757,350,879,350,879,228,813,228:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Status#COMPLETED:oiref>=729,284,729,378,907,378,907,200,813,200:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.FileParameter:oiref>=960,720,135,138,1:oigroup>
-<oigroup:<oiref:design#Class#id377okdmemcb5ndmemchyu.diagram:oiref>=880,40,83,102,1:oigroup>
-<oigroup:<oiref:design#Class#id1xdjxdlid04undlid0thh.node.link:oiref>=1521,439,1444,439:oigroup>
-<oigroup:Composite#supplierRole#MemberLink#<oiref:java#Member#org.astrogrid.applications.Application#_applicationFactory:oiref>=432,267,46,23,0,1.0,0.0:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.ApplicationFactory:oiref>=260,140,200,122,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.FileParameter#org.astrogrid.applications.Parameter:oiref>=960,730,930,724:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.CmdLineApplication:oiref>=50,910,200,710,1:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Parameter#parameterDescription:oiref>=930,617,1373,617:oigroup>
-<oigroup:Composite#supplierRole#MemberLink#<oiref:java#Member#org.astrogrid.applications.ApplicationFactory#_application:oiref>=356,365,48,23,0,-1.0,0.0:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.commandline.XYZApplication#org.astrogrid.applications.commandline.CmdLineApplication:oiref>=132,970,132,932:oigroup>
+<oigroup:<oiref:java#Implements#org.astrogrid.applications.AbstractApplication#org.astrogrid.applications.Application:oiref>=310,610,310,584:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.MySpaceReferenceParameter:oiref>=372,759,200,122,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.ADQLParameter#org.astrogrid.applications.Parameter:oiref>=1150,684,930,684:oigroup>
+<oigroup:<oiref:design#Class#id1xdjxdlid04undlid0thh.node22:oiref>=370,1210,229,153,0:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.VOTableParameter#org.astrogrid.applications.Parameter:oiref>=785,505,785,560:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.FileResult:oiref>=970,1020,115,94,0:oigroup>
+<oigroup:<oiref:design#Class#id1xdjxdlid04undlid0thh.node:oiref>=1521,419,382,40,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.Status:oiref>=671,8,142,276,1:oigroup>
+<oigroup:<oiref:design#Class#id4b26xdq6d6uu9dq6d7ajh.diagram:oiref>=477,4,151,187,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.CmdLineApplicationCreator:oiref>=472,449,200,207,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Status#UNKNOWN:oiref>=785,284,785,322,851,322,851,256,813,256:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.CommandLineParameter#org.astrogrid.applications.Parameter:oiref>=1101,495,833,560:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.AbstractApplication#parameters:oiref>=360,636,730,636:oigroup>
+<oigroup:Composite#stereotype#MemberLink#<oiref:java#Member#org.astrogrid.applications.Application#lnkResult:oiref>=717,793,82,23,0,-0.55806255,-0.8297989:oigroup>
+<oigroup:<oiref:design#Class#id4j2pmdmemcb5ndmemchxm.diagram:oiref>=9,99,200,164,1:oigroup>
+<oigroup:<oiref:java#Implements#org.astrogrid.applications.ApplicationCreator#org.astrogrid.applications.ApplicationFactory:oiref>=670,226,460,226:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Application#lnkResult:oiref>=406,584,861,890:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.CmdLineApplicationCreator#instance:oiref>=632,656,632,706,722,706,722,616,672,616:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.CommandLineApplicationDescription#org.astrogrid.applications.ApplicationDescription:oiref>=930,1285,852,1285:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.FileReferenceParameter:oiref>=1250,400,194,161,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.ADQLParameter:oiref>=1150,640,122,99,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.commandline.CmdLineApplication#org.astrogrid.applications.AbstractApplication:oiref>=250,920,360,915:oigroup>
+<oigroup:Composite#supplierRole#MemberLink#<oiref:java#Member#org.astrogrid.applications.Application#_applicationFactory:oiref>=432,267,46,23,0,1.0,0.0:oigroup>
+<oigroup:<oiref:design#Class#id1xdjxdlid04undlid0thh.node24.link:oiref>=821,370,821,390:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.FileResult#org.astrogrid.applications.Result:oiref>=1027,1020,861,979:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.ParameterValues:oiref>=860,1150,180,310,0:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.VOTableResult:oiref>=970,890,116,89,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Application#_applicationFactory:oiref>=406,370,406,262:oigroup>
+<oigroup:<oiref:design#Class#idenx9dnexiqy8dneyah3w.diagram:oiref>=650,1020,166,118,1:oigroup>
+<oigroup:<oiref:design#Class#id1f9fmdnym1eprdnym8a0f.diagram:oiref>=1150,910,165,118,1:oigroup>
+<oigroup:<oiref:java#Member#org.astrogrid.applications.AbstractApplication#parameters:oiref>=250,200,148,23,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.CmdLineApplicationCreator#org.astrogrid.applications.ApplicationFactory:oiref>=572,449,433,262:oigroup>
+<oigroup:<oiref:design#Class#id1xdjxdlid04undlid0thh.node22.link:oiref>=484,1210,160,1090:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.datacentre.DataCentreApplication#org.astrogrid.applications.AbstractApplication:oiref>=420,828,360,828:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.ParameterDescription:oiref>=1373,521,200,342,1:oigroup>
+<oigroup:<oiref:design#Class#id2yszjdnexiqy8dney5c5g.diagram:oiref>=270,960,200,249,1:oigroup>
+<oigroup:<oiref:design#Class#id2cs16dnd776t5dnd77jow.diagram:oiref>=491,278,167,157,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Status#NEW:oiref>=691,284,691,462,945,462,945,116,813,116:oigroup>
+<oigroup:Composite#clientRole#MemberLink#<oiref:java#Member#org.astrogrid.applications.ApplicationFactory#_application:oiref>=379,267,46,23,0,1.0,0.0:oigroup>
+<oigroup:<oiref:design#Class#id1xdjxdlid04undlid0thh.node30:oiref>=42,49,251,40,1:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Status#INITIALIZED:oiref>=701,284,701,434,935,434,935,144,813,144:oigroup>
+<oigroup:<oiref:design#Class#id22onrdmemcb5ndmemchy7.diagram:oiref>=10,290,200,203,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.VOTableParameter:oiref>=750,390,142,115,1:oigroup>
+<oigroup:<oiref:design#Class#id377okdmemcb5ndmemchyu.diagram:oiref>=880,40,83,102,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.ApplicationFactory#_dataCentreApplicationCreator:oiref>=460,193,670,193:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.webservice.WebServiceApplication#org.astrogrid.applications.AbstractApplication:oiref>=480,817,301,742:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.AbstractApplication#status:oiref>=335,610,681,284:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Status#RUNNING:oiref>=711,284,711,406,925,406,925,172,813,172:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Status#ERROR:oiref>=757,284,757,350,879,350,879,228,813,228:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.commandline.SExtractor#org.astrogrid.applications.commandline.CmdLineApplication:oiref>=470,978,230,908:oigroup>
+<oigroup:Composite#clientRole#MemberLink#<oiref:java#Member#org.astrogrid.applications.Application#lnkResult:oiref>=441,577,45,23,0,0.55806255,0.8297989:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.AbstractApplication:oiref>=160,610,200,499,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Parameter#application:oiref>=730,747,360,747:oigroup>
+<oigroup:<oiref:design#Class#id24evtdnh9yy0ndnh9zb4x.diagram:oiref>=1400,860,200,732,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Status#COMPLETED:oiref>=729,284,729,378,907,378,907,200,813,200:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.ApplicationFactory:oiref>=260,140,200,122,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.Application:oiref>=300,370,161,214,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.VOTableResult#org.astrogrid.applications.Result:oiref>=970,934,903,934:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.FileParameter:oiref>=960,720,135,138,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.FileReferenceParameter#org.astrogrid.applications.Parameter:oiref>=1250,511,930,600:oigroup>
+<oigroup:Composite#supplierRole#MemberLink#<oiref:java#Member#org.astrogrid.applications.ApplicationFactory#_application:oiref>=356,365,48,23,0,-1.0,0.0:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.Parameter:oiref>=730,560,200,338,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.CommandLineParameter:oiref>=1010,380,183,115,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.Result:oiref>=820,890,83,89,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.MySpaceReferenceParameter#org.astrogrid.applications.FileReferenceParameter:oiref>=472,759,1347,561:oigroup>
+<oigroup:<oiref:design#Class#id1xdjxdlid04undlid0thh.node24:oiref>=690,330,357,40,1:oigroup>
 
 
 */

@@ -7,6 +7,12 @@
 
 package org.astrogrid.applications.delegate.beans;
 
+/**
+ * @TODO do not want a special delegate side version of the beans - just refactor to use the server side version.
+ * @author Paul Harrison (pah@jb.man.ac.uk)
+ * @version $Name:  $
+ * @since iteration4.1
+ */
 public class ParameterValues  implements java.io.Serializable {
     private java.lang.String methodName;
     private java.lang.String parameterSpec;

@@ -1,0 +1,37 @@
+package id2z8nkdq6d6uu9dq6d7ann;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.applications.commandline.hyperz.HyperZVOTableReader:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.commandline.hyperz.HyperZVOTableWriter:oiref><oihard>
+@__modelType reference 
+*/
+class reference17 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.commandline.hyperz.HyperZ:oiref><oihard>
+@__modelType reference 
+*/
+class reference18 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+*/
+class __positions {
+}

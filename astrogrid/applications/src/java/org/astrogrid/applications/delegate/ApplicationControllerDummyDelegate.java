@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerDummyDelegate.java,v 1.5 2003/12/17 17:16:54 pah Exp $
+ * $Id: ApplicationControllerDummyDelegate.java,v 1.6 2004/02/02 16:49:44 pah Exp $
  * 
  * Created on 25-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -41,14 +41,14 @@ public class ApplicationControllerDummyDelegate
      {
      }
 
-   /* (non-Javadoc)
+   /**
     * @see org.astrogrid.applications.delegate.ApplicationController#listApplications()
     */
    public String[] listApplications() throws RemoteException {
       return applicationList;
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.astrogrid.applications.delegate.ApplicationController#getApplicationDescription(java.lang.String)
     */
    public SimpleApplicationDescription getApplicationDescription(String applicationID)
@@ -59,7 +59,7 @@ public class ApplicationControllerDummyDelegate
         return d;
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.astrogrid.applications.delegate.ApplicationController#initializeApplication(java.lang.String, java.lang.String, java.lang.String, org.astrogrid.applications.delegate.beans.ParameterValues)
     */
    public String initializeApplication(
@@ -73,14 +73,14 @@ public class ApplicationControllerDummyDelegate
     }
     
 
-   /* (non-Javadoc)
+   /**
     * @see org.astrogrid.applicationss.delegate.ApplicationController#executeApplication(int)
     */
    public boolean executeApplication(String executionId) throws RemoteException {
       return true;
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.astrogrid.applications.delegate.ApplicationController#queryApplicationExecutionStatus(int)
     */
    public String queryApplicationExecutionStatus(String executionId)
@@ -88,7 +88,7 @@ public class ApplicationControllerDummyDelegate
       return "Running";
     }
 
-   /* (non-Javadoc)
+   /**
     * @see org.astrogrid.applications.delegate.ApplicationController#returnRegistryEntry()
     */
    public String returnRegistryEntry() throws RemoteException {

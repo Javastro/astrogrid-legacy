@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerDelegate.java,v 1.4 2003/12/17 17:16:54 pah Exp $
+ * $Id: ApplicationControllerDelegate.java,v 1.5 2004/02/02 16:49:44 pah Exp $
  * 
  * Created on 25-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -26,7 +26,7 @@ import org.astrogrid.applications.delegate.beans.User;
 
 
 /**
- * ApplicationController Delegate
+ * ApplicationController Delegate. At the moment the delegate mirrors the methods supplied by the applicationController service so documentation is kept up to date @see org.astrogrid.applications.manager.ApplicationController
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
@@ -77,23 +77,23 @@ public class ApplicationControllerDelegate implements ApplicationController {
       return retval;
    }
    
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.delegate.ApplicationController#listApplications()
+   /**
+    * @see org.astrogrid.applications.manager.ApplicationController#listApplications()
     */
    public String[] listApplications() throws RemoteException {
         return binding.listApplications(); 
     }
 
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.delegate.ApplicationController#getApplicationDescription(java.lang.String)
+   /**
+    * @see org.astrogrid.applications.manager.ApplicationController#getApplicationDescription(java.lang.String)
     */
    public SimpleApplicationDescription getApplicationDescription(String applicationID)
       throws RemoteException {
          return binding.getApplicationDescription(applicationID);
    }
 
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.delegate.ApplicationController#initializeApplication(java.lang.String, java.lang.String, java.lang.String, org.astrogrid.applications.delegate.beans.ParameterValues)
+   /**
+    * @see org.astrogrid.applications.manager.ApplicationController#initializeApplication(java.lang.String, java.lang.String, org.astrogrid.community.User, org.astrogrid.applications.ParameterValues)
     */
    public String initializeApplication(
       String applicationID,
@@ -105,23 +105,24 @@ public class ApplicationControllerDelegate implements ApplicationController {
        return binding.initializeApplication(applicationID, jobstepID, jobMonitorURL, user, parameters);
    }
 
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.delegate.ApplicationController#executeApplication(int)
+   /**
+    * @see org.astrogrid.applications.manager.ApplicationController#executeApplication(java.lang.String)
     */
    public boolean executeApplication(String executionId) throws RemoteException {
       return binding.executeApplication(executionId);
    }
 
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.delegate.ApplicationController#queryApplicationExecutionStatus(int)
+   /**
+    * @see org.astrogrid.applications.manager.ApplicationController#queryApplicationExecutionStatus(java.lang.String)
     */
    public String queryApplicationExecutionStatus(String executionId)
       throws RemoteException {
          return binding.queryApplicationExecutionStatus(executionId);
    }
 
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.delegate.ApplicationController#returnRegistryEntry()
+   /**
+    * 
+    * @see org.astrogrid.applications.manager.ApplicationController#returnRegistryEntry()
     */
    public String returnRegistryEntry() throws RemoteException {
       return binding.returnRegistryEntry();
