@@ -1,179 +1,184 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
-	<pomVersion>3</pomVersion>
-  	<groupId>astrogrid-scripting</groupId>
-	<id>astrogrid-scripting</id>
-	<name>Astrogrid Scripting Language Interface</name>
-	<currentVersion>SNAPSHOT</currentVersion>
-	<organization>
-		<name>AstroGrid</name>
-		<url>http://www.astrogrid.org</url>
-		<logo>http://www.astrogrid.org/images/AGlogo</logo>
-	</organization>
-	<inceptionYear>2002</inceptionYear>
-	<description><![CDATA[
-	  This project provides a unified interface to the astrogrid webservice delegates and supporting code. This is
-	  intended to make it simple to call astrogrid services from scripting languages.
-	  <p/>
-	  This project collects the delegates and dependent jars from the other projects, and adds some front-end classes to tie it
-	  all together (see javadocs)
-	  <p />
-	  <section name="Scripting Language Bundles">
-	  <p>
-		At present, preconfigured tarballs containing a scripting language interpreter and
-		all the necessary astrogrid libraries are available for:
-	  </p>
-	   <!--http://www.astrogrid.org/maven/astrogrid-datacenter/-->
-	    <subsection name="Javascript"><p>
-		<a href="http://www.mozilla.org/rhino">Rhino</a> is an implementation of javascript in Java.
-		<a href="http://www.astrogrid.org/maven/astrogrid-scripting/distributions/astrogrid-scripting-rhino-SNAPSHOT.tar.gz">Download</a> the
-		snapshot tarball, unpack, and configure by setting the <tt>JS_HOME</tt> environment variable to
-		the root of the unpackaged code, and adding <tt>${JS_HOME}/bin</tt> to your path.
-		<p />
-		The <tt>bin</tt> directory contains programs to run the javascript interpreter - as a commandline, as a shell, and as a debugger
-		<p />
-		The <tt>examples</tt> directory contains some example programs that use the astrogrid delegates
-		</p></subsection>
-		<subsection name="Groovy"><p>
-		<a href="http://groovy.codehaus.org/">Groovy</a> is
-		<blockquote><i>
-		 a powerful new high level dynamic language for the JVM combining lots of great features from
-		 languages like Python, Ruby and Smalltalk and making them available to the Java developers
-		 using a Java-like syntax.
-		</i></blockquote>
-		Installation is similar to that for Javascript.
-		<a href="http://www.astrogrid.org/maven/astrogrid-scripting/distributions/astrogrid-scripting-groovy-SNAPSHOT.tar.gz">Download</a> the tarball snapshot, unzip, and configure
-		by setting the <tt>GROOVY_HOME</tt> environment variable to point to the unpackaged code.
-		<p />
-		Again, <tt>bin</tt> contains to run groovy, <tt>examples</tt> has groovy versions of the example programs.
-		</p></subsection>
-		<subsection name="Jython"><p>
-			<a href="http://www.jython.org">Jython</a> is an implementation of
-			<a href="http://www.python.org">Python</a> written in Java, that will run on any Java platform.
-			<p />
-			I've not managed to get the astrogrid scripting working from jython yet.
-		</p></subsection>
-		<subsection name="Java"><p>
-		 The assembled set of delegates and supporting libraries is a convenient starting point for writing
-		 java client applications. The set of libraries can be <a href="http://www.astrogrid.org/maven/astrogrid-scripting/distributions/astrogrid-scripting-SNAPSHOT.tar.gz">downloaded here</a>
-		</p></subsection>
-		<subsection name="Other languages"><p>
-			Other possible scripting languages targets are
-			<ul>
-				<li>TCL - via <a href="http://www.tcl.tk/software/java/">JACL and Tcl-Blend</a></li>
-				<li>Perl (any idea how?)</li>
-			</ul>
-		</p></subsection>
-	  </section>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+        <pomVersion>3</pomVersion>
+          <groupId>org.astrogrid</groupId>
+        <id>astrogrid-scripting</id>
+        <name>Astrogrid Scripting Language Interface</name>
+        <currentVersion>SNAPSHOT</currentVersion>
+        <organization>
+                <name>AstroGrid</name>
+                <url>http://www.astrogrid.org</url>
+                <logo>http://www.astrogrid.org/images/AGlogo</logo>
+        </organization>
+        <inceptionYear>2002</inceptionYear>
+        <description><![CDATA[
+          This project provides a unified interface to the astrogrid webservice delegates and supporting code. This is
+          intended to make it simple to call astrogrid services from scripting languages.
+          <p/>
+          This project collects the delegates and dependent jars from the other projects, and adds some front-end classes to tie it
+          all together (see javadocs)
+          <p />
+          <section name="Scripting Language Bundles">
+          <p>
+                At present, preconfigured tarballs containing a scripting language interpreter and
+                all the necessary astrogrid libraries are available for:
+          </p>
+           <!--http://www.astrogrid.org/maven/astrogrid-datacenter/-->
+            <subsection name="Javascript"><p>
+                <a href="http://www.mozilla.org/rhino">Rhino</a> is an implementation of javascript in Java.
+                <a href="http://www.astrogrid.org/maven/org.astrogrid/distributions/astrogrid-scripting-rhino-SNAPSHOT.tar.gz">Download</a> the
+                snapshot tarball, unpack, and configure by setting the <tt>JS_HOME</tt> environment variable to
+                the root of the unpackaged code, and adding <tt>${JS_HOME}/bin</tt> to your path.
+                <p />
+                The <tt>bin</tt> directory contains programs to run the javascript interpreter - as a commandline, as a shell, and as a debugger
+                <p />
+                The <tt>examples</tt> directory contains some example programs that use the astrogrid delegates
+                </p></subsection>
+                <subsection name="Groovy"><p>
+                <a href="http://groovy.codehaus.org/">Groovy</a> is
+                <blockquote><i>
+                 a powerful new high level dynamic language for the JVM combining lots of great features from
+                 languages like Python, Ruby and Smalltalk and making them available to the Java developers
+                 using a Java-like syntax.
+                </i></blockquote>
+                Installation is similar to that for Javascript.
+                <a href="http://www.astrogrid.org/maven/org.astrogrid/distributions/astrogrid-scripting-groovy-SNAPSHOT.tar.gz">Download</a> the tarball snapshot, unzip, and configure
+                by setting the <tt>GROOVY_HOME</tt> environment variable to point to the unpackaged code.
+                <p />
+                Again, <tt>bin</tt> contains to run groovy, <tt>examples</tt> has groovy versions of the example programs.
+                </p></subsection>
+                <subsection name="Jython"><p>
+                        <a href="http://www.jython.org">Jython</a> is an implementation of
+                        <a href="http://www.python.org">Python</a> written in Java, that will run on any Java platform.
+                        <p />
+                        I've not managed to get the astrogrid scripting working from jython yet.
+                </p></subsection>
+                <subsection name="Java"><p>
+                 The assembled set of delegates and supporting libraries is a convenient starting point for writing
+                 java client applications. The set of libraries can be <a href="http://www.astrogrid.org/maven/org.astrogrid/distributions/astrogrid-scripting-SNAPSHOT.tar.gz">downloaded here</a>
+                </p></subsection>
+                <subsection name="Other languages"><p>
+                        Other possible scripting languages targets are
+                        <ul>
+                                <li>TCL - via <a href="http://www.tcl.tk/software/java/">JACL and Tcl-Blend</a></li>
+                                <li>Perl (any idea how?)</li>
+                        </ul>
+                </p></subsection>
+          </section>
 
-	 ]]></description>
-	<shortDescription>AstroGrid Scripting</shortDescription>
-	<siteDirectory>/var/www/www/maven/build/scripting</siteDirectory>
-	<issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
-	<package>org.astrogrid</package>
-	<logo>http://www.astrogrid.org/images/AGlogo</logo>
-	<build>
-		<sourceDirectory>src/java</sourceDirectory>
-		<unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-		<unitTest>
-			<includes>
-				<include>**/*.java</include>
-			</includes>
-			<resources>
-				<resource>
-					<directory>${basedir}/test/java</directory>
-					<includes>
-						<include>**/*.properties</include>
-						<include>**/*.xml</include>
-					</includes>
-				</resource>
-			</resources>
-		</unitTest>
-		<resources>
-			<resource>
-				<directory>${basedir}/src/java</directory>
-				<includes>
-					<include>*.properties</include>
-					<include>**/*.xml</include>
-				</includes>
-			</resource>
-		</resources>
-	</build>
-	<developers>
-		<developer>
-			<name>Paul Harrison</name>
-			<id>pah</id>
-			<email>pah@jb.man.ac.uk</email>
-		</developer>
-		<developer>
-			<name>Noel Winstanley</name>
-			<id>nw</id>
-			<email>nw@jb.man.ac.uk</email>
-			<organization>Jodrell Bank</organization>
-		</developer>
-	</developers>
-	<repository>
-		<connection>
+         ]]></description>
+        <shortDescription>AstroGrid Scripting</shortDescription>
+        <siteDirectory>/var/www/www/maven/build/scripting</siteDirectory>
+        <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
+        <package>org.astrogrid</package>
+        <logo>http://www.astrogrid.org/images/AGlogo</logo>
+        <build>
+                <sourceDirectory>src/java</sourceDirectory>
+                <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+                <unitTest>
+                        <includes>
+                                <include>**/*.java</include>
+                        </includes>
+                        <resources>
+                                <resource>
+                                        <directory>${basedir}/test/java</directory>
+                                        <includes>
+                                                <include>**/*.properties</include>
+                                                <include>**/*.xml</include>
+                                        </includes>
+                                </resource>
+                        </resources>
+                </unitTest>
+                <resources>
+                        <resource>
+                                <directory>${basedir}/src/java</directory>
+                                <includes>
+                                        <include>*.properties</include>
+                                        <include>**/*.xml</include>
+                                </includes>
+                        </resource>
+                </resources>
+        </build>
+        <developers>
+                <developer>
+                        <name>Paul Harrison</name>
+                        <id>pah</id>
+                        <email>pah@jb.man.ac.uk</email>
+                </developer>
+                <developer>
+                        <name>Noel Winstanley</name>
+                        <id>nw</id>
+                        <email>nw@jb.man.ac.uk</email>
+                        <organization>Jodrell Bank</organization>
+                </developer>
+        </developers>
+        <repository>
+                <connection>
       scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:/astrogrid/scripting
     </connection>
-		<developerConnection>
+                <developerConnection>
       scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:/astrogrid/scripting
     </developerConnection>
-		<url>http://www.astrogrid.org/viewcvs/astrogrid/scripting/</url>
-	</repository>
-	<dependencies>
-		<!-- used within scripting interface -->
-		<dependency>
-			<artifactId>commons-digester</artifactId>
-			<groupId>commons-digester</groupId>
-			<version>1.5</version>
-		</dependency>
-    	<dependency>
-    		<id>commons-beanutils</id>
-			<version>1.6</version>
-	    </dependency>
-	    <dependency>
-	    	<id>commons-collections</id>
-	    	<version>3.0</version>
-	    </dependency>	
-		<!-- delegates, and dependent libs -->
-		<dependency>
-			<artifactId>astrogrid-mySpace</artifactId>
-			<groupId>astrogrid-mySpace</groupId>
-			<version>SNAPSHOT</version>
-		</dependency>
-		<dependency>
-           <groupId>astrogrid-jes</groupId>
-           <artifactId>astrogrid-jes</artifactId>
+                <url>http://www.astrogrid.org/viewcvs/astrogrid/scripting/</url>
+        </repository>
+        <dependencies>
+                <!-- used within scripting interface -->
+                <dependency>
+                        <artifactId>commons-digester</artifactId>
+                        <groupId>commons-digester</groupId>
+                        <version>1.5</version>
+                </dependency>
+            <dependency>
+                    <id>commons-beanutils</id>
+                        <version>1.6</version>
+            </dependency>
+            <dependency>
+                    <id>commons-collections</id>
+                    <version>3.0</version>
+            </dependency>
+                <!-- delegates, and dependent libs -->
+                <dependency>
+                        <artifactId>astrogrid-mySpace</artifactId>
+                        <groupId>org.astrogrid</groupId>
+                        <version>SNAPSHOT</version>
+                </dependency>
+                <dependency>
+           <groupId>org.astrogrid</groupId>
+           <artifactId>astrogrid-jes-delegate</artifactId>
            <version>SNAPSHOT</version>
-	    </dependency>
+            </dependency>
         <dependency>
-           <groupId>astrogrid-common</groupId>
+           <groupId>org.astrogrid</groupId>
            <artifactId>astrogrid-common</artifactId>
            <version>SNAPSHOT</version>
         </dependency>
         <dependency>
-           <groupId>astrogrid-workflow</groupId>
+           <groupId>org.astrogrid</groupId>
+           <artifactId>astrogrid-workflow-objects</artifactId>
+           <version>SNAPSHOT</version>
+        </dependency>
+        <dependency>
+           <groupId>org.astrogrid</groupId>
            <artifactId>astrogrid-workflow</artifactId>
            <version>SNAPSHOT</version>
         </dependency>
         <dependency>
-           <groupId>astrogrid-applications</groupId>
+           <groupId>org.astrogrid</groupId>
            <artifactId>astrogrid-applications</artifactId>
            <version>SNAPSHOT</version>
         </dependency>
         <!-- doesn't build at the moment - so will have to be commented out for now
         <dependency>
-        	<groupId>astrogrid-registry</groupId>
-        	<artifactId>astrogrid-registry</artifactId>
-        	<version>SNAPSHOT</version>
+                <groupId>astrogrid-registry</groupId>
+                <artifactId>astrogrid-registry</artifactId>
+                <version>SNAPSHOT</version>
         </dependency>
-    	-->
+            -->
     <!-- stuff for datacenter -->
     <dependency>
-    	<groupId>astrogrid-datacenter</groupId>
-    	<artifactId>astrogrid-datacenter-client</artifactId>
-    	<version>SNAPSHOT</version>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-datacenter-client</artifactId>
+            <version>SNAPSHOT</version>
     </dependency>
     <dependency><!-- think this is neded -->
       <id>breezetk</id>
@@ -206,73 +211,73 @@
     </dependency>
 
     <dependency>
-	<id>xerces</id>
-	<version>2.4.0</version>
+        <id>xerces</id>
+        <version>2.4.0</version>
     </dependency>
     <!-- end of stuff for datacenter -->
 
-		<dependency>
-			<artifactId>jconfig</artifactId>
-			<groupId>jconfig</groupId>
-			<version>2.1</version>
-		</dependency>
-		<dependency>
-			<artifactId>junit</artifactId>
-			<groupId>junit</groupId>
-			<version>3.8</version>
-		</dependency>
-		<dependency>
-			<artifactId>log4j</artifactId>
-			<groupId>log4j</groupId>
-			<version>1.2.4</version>
-		</dependency>
-		<dependency>
-			<artifactId>commons-logging</artifactId>
-			<groupId>commons-logging</groupId>
-			<version>1.0.3</version>
-		</dependency>
-		<dependency>
-			<artifactId>commons-discovery</artifactId>
-			<groupId>commons-discovery</groupId>
-			<version>20030211.213356</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-		</dependency>
-		<!--find out which of these are actually necessary-->
-		<dependency>
-			<artifactId>cog-jglobus</artifactId>
-			<groupId>cog-jglobus</groupId>
-			<version>OGSA3.0</version>
-		</dependency>
-		<dependency>
-			<artifactId>axis</artifactId>
-			<groupId>axis</groupId>
-			<version>1.1</version>
-		</dependency>
-		<dependency>
-			<artifactId>jax-qname</artifactId>
-			<groupId>jax-qname</groupId>
-			<version>UNKNOWN</version>
-			<jar>jax-qname.jar</jar>
-		</dependency>
-		<dependency>
-			<artifactId>jaxrpc-api</artifactId>
-			<groupId>jaxrpc-api</groupId>
-			<version>1.0.3</version>
-		</dependency>
-		<dependency>
-			<artifactId>saaj-api</artifactId>
-			<groupId>saaj-api</groupId>
-			<version>1.1.1</version>
-		</dependency>
-		<dependency>
-			<artifactId>wsdl4j</artifactId>
-			<groupId>wsdl4j</groupId>
-			<jar>wsdl4j.jar</jar>
-		</dependency>
-	</dependencies>
-	<reports>
+                <dependency>
+                        <artifactId>jconfig</artifactId>
+                        <groupId>jconfig</groupId>
+                        <version>2.1</version>
+                </dependency>
+                <dependency>
+                        <artifactId>junit</artifactId>
+                        <groupId>junit</groupId>
+                        <version>3.8</version>
+                </dependency>
+                <dependency>
+                        <artifactId>log4j</artifactId>
+                        <groupId>log4j</groupId>
+                        <version>1.2.4</version>
+                </dependency>
+                <dependency>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                        <version>1.0.3</version>
+                </dependency>
+                <dependency>
+                        <artifactId>commons-discovery</artifactId>
+                        <groupId>commons-discovery</groupId>
+                        <version>20030211.213356</version>
+                        <properties>
+                                <war.bundle>true</war.bundle>
+                        </properties>
+                </dependency>
+                <!--find out which of these are actually necessary-->
+                <dependency>
+                        <artifactId>cog-jglobus</artifactId>
+                        <groupId>cog-jglobus</groupId>
+                        <version>OGSA3.0</version>
+                </dependency>
+                <dependency>
+                        <artifactId>axis</artifactId>
+                        <groupId>axis</groupId>
+                        <version>1.1</version>
+                </dependency>
+                <dependency>
+                        <artifactId>jax-qname</artifactId>
+                        <groupId>jax-qname</groupId>
+                        <version>UNKNOWN</version>
+                        <jar>jax-qname.jar</jar>
+                </dependency>
+                <dependency>
+                        <artifactId>jaxrpc-api</artifactId>
+                        <groupId>jaxrpc-api</groupId>
+                        <version>1.0.3</version>
+                </dependency>
+                <dependency>
+                        <artifactId>saaj-api</artifactId>
+                        <groupId>saaj-api</groupId>
+                        <version>1.1.1</version>
+                </dependency>
+                <dependency>
+                        <artifactId>wsdl4j</artifactId>
+                        <groupId>wsdl4j</groupId>
+                        <jar>wsdl4j.jar</jar>
+                </dependency>
+        </dependencies>
+        <reports>
     <report>
       maven-changelog-plugin
     </report>
