@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.5 2004/03/14 04:13:16 mch Exp $
+/*$Id: DataServiceTest.java,v 1.6 2004/07/06 20:43:17 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.metadata.MetadataServer;
 import org.astrogrid.datacenter.queriers.TargetIndicator;
+import org.astrogrid.datacenter.queriers.sql.SqlPluginTest;
 import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
@@ -49,11 +50,11 @@ public class DataServiceTest extends ServerTestCase {
        
        server = new DataServer();
        
-       query1 = new AdqlQuery(DomHelper.newDocument(this.getClass().getResourceAsStream("adqlQuery1.xml")).getDocumentElement());
+       query1 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.5-1.xml"));
 
-//       query2 = new AdqlQuery(DomHelper.newDocument(this.getClass().getResourceAsStream("adqlQuery2.xml")).getDocumentElement());
+       query2 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.5-2.xml"));
        
-       query3 = new AdqlQuery(DomHelper.newDocument(this.getClass().getResourceAsStream("adqlQuery3.xml")).getDocumentElement());
+       query3 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.5-3.xml"));
     }
 
     public void testGetMetatdata() throws Throwable{
@@ -69,12 +70,12 @@ public class DataServiceTest extends ServerTestCase {
         }
         SimpleConfig.setProperty(MetadataServer.METADATA_FILE_LOC_KEY, null);
 
-        SimpleConfig.setProperty(MetadataServer.METADATA_URL_LOC_KEY, this.getClass().getResource("metadata.xml").toString());
+        SimpleConfig.setProperty(MetadataServer.METADATA_URL_LOC_KEY, this.getClass().getResource("v05/metadata.xml").toString());
         Document metadata = server.getMetadata();
         assertNotNull(metadata);
         assertIsMetadata(metadata);
 
-         SimpleConfig.setProperty(MetadataServer.METADATA_FILE_LOC_KEY, "org/astrogrid/datacenter/service/metadata.xml");
+         SimpleConfig.setProperty(MetadataServer.METADATA_FILE_LOC_KEY, "org/astrogrid/datacenter/service/v05/metadata.xml");
          SimpleConfig.setProperty(MetadataServer.METADATA_URL_LOC_KEY, null);
          assertNotNull(MetadataServer.getMetadataUrl().openStream());
      }
@@ -148,6 +149,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.6  2004/07/06 20:43:17  mch
+Fixes to tests
+
 Revision 1.5  2004/03/14 04:13:16  mch
 Wrapped output target in TargetIndicator
 
