@@ -1,4 +1,4 @@
-/* $Id: JESTest.java,v 1.6 2004/01/20 17:59:08 jdt Exp $
+/* $Id: JESTest.java,v 1.7 2004/01/29 15:44:00 jdt Exp $
  * Created on 27-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -158,7 +158,6 @@ public class JESTest extends TestCase {
     try {
       String response = JES.getProperty(property, JES.CONTROLLER_CATEGORY);
 
-      log.debug("Response is " + response);
       assertNull(
         "The file does not exist, therefore a null response would be good",
         response);
@@ -207,6 +206,9 @@ public class JESTest extends TestCase {
 
 /*
 *$Log: JESTest.java,v $
+*Revision 1.7  2004/01/29 15:44:00  jdt
+*removed logging statement that was causing chaos by outputting all sorts of crap.
+*
 *Revision 1.6  2004/01/20 17:59:08  jdt
 *reformat
 *
