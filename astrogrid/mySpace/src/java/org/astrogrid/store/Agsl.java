@@ -1,5 +1,5 @@
 /*
- * $Id: Agsl.java,v 1.7 2004/03/14 01:24:54 mch Exp $
+ * $Id: Agsl.java,v 1.8 2004/03/14 03:09:16 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -92,12 +92,14 @@ public class Agsl
       {
          url = new URL(rl);
          
-         //for some reason picks up # in authority if there's no slashes...
-         if (url.getAuthority().indexOf('#')>-1) {
-            url = new URL(url.getProtocol(),
-                          url.getHost().substring(0,url.getHost().indexOf('#')),
-                          url.getPort(),
-                          "#"+url.getRef());
+         if (url.getAuthority() != null) {
+            //for some reason picks up # in authority if there's no slashes...
+            if (url.getAuthority().indexOf('#')>-1) {
+               url = new URL(url.getProtocol(),
+                             url.getHost().substring(0,url.getHost().indexOf('#')),
+                             url.getPort(),
+                             "#"+url.getRef());
+            }
          }
       }
    }
@@ -210,6 +212,9 @@ public class Agsl
 
 /*
 $Log: Agsl.java,v $
+Revision 1.8  2004/03/14 03:09:16  mch
+Fixed nulpointer exception for mailto:
+
 Revision 1.7  2004/03/14 01:24:54  mch
 Added experimental email target
 
