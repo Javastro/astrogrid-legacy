@@ -1,4 +1,4 @@
-//package org.astrogrid.mySpace.mySpaceServer;
+package org.astrogrid.mySpace.mySpaceServer;
 
 import java.util.*;
 import junit.framework.*;
