@@ -22,7 +22,7 @@ The end point for the service is: <%=serviceURL%> . <BR>
     String credential = "any";
     String serversVector = "serv1";
     
-    boolean createUserSubmitted = (request.getParameter("button").equals("createUser")); //depends on form request
+    boolean createUserSubmitted = ("createUser".equals(request.getParameter("button"))); //depends on form request
     
     if (createUserSubmitted) {  
        userId = request.getParameter("userId"); //these are going to need to be local to retain
