@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AstroGrid">
+
+  <title>AstroGrid Project</title>
+
+  <body>
+    <menu name="Subprojects">
+   		<item name="Common Area" href="multiproject/astrogrid-registry-common/index.html" />
+    	<item name="Client Area" href="multiproject/astrogrid-registry-client/index.html" />
+		<item name="Server Area" href="multiproject/astrogrid-registry-server/index.html" />
+   		<item name="Portal Area" href="multiproject/astrogrid-registry-portal/index.html" />				
+   		<item name="WebApp Area" href="multiproject/astrogrid-registry-webapp/index.html" />		
+    </menu>
+    <links>
+       <item name="AstroGrid"  href="http://www.astrogrid.org"/>
+       <item name="Projects"   href="http://www.astrogrid.org/maven/build/index.html"/>
+       <item name="Registry" href="./index.html"/>
+    </links>
+  </body>
+</project>

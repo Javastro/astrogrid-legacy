@@ -1,6 +1,7 @@
 package org.astrogrid.registry.common;
 
 import org.w3c.dom.Document;
+import org.exolab.castor.xml.ValidationException;
 
 /**
  * Small Interface used by the server side web service and the client delegate.  Used for
@@ -22,14 +23,14 @@ public interface RegistryHarvestInterface {
     * @param query
     * @return
     */
-   public Document harvestResource(Document query);
+   public Document harvestResource(Document query) throws ValidationException;
    
    /**
     * This method takes in a date/timestamp with a Resource entry.
     * @param query
     * @return
     */
-   public Document harvestFromResource(Document query);
+   public Document harvestFromResource(Document query)  throws ValidationException;
    
    
    /**
@@ -58,6 +59,6 @@ public interface RegistryHarvestInterface {
     * @param query
     * @return
     */   
-   public Document harvestAll(Document query);
+   public Document harvestAll(Document query) throws ValidationException;
    
 }

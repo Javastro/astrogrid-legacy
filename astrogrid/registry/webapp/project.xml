@@ -42,8 +42,23 @@
         | This is used to generate the front page of the projects web site. 
         +-->
     <description>
-       The Astrogrid Registry server .jar file bundled into a .war with axis
-       for easy deployment
+        <![CDATA[
+	<p>
+		The webapp portion breaks down an axis and registry-server installation war file.  With web services already deployed,
+		which can then be grabbed and placed in the web apps for deployment.
+	</p>
+	<section name="Builds">
+		<p>			
+			Here are the maven goals for building the registry, it has a one extra goal compared to the other sub-projects.
+			<ul>
+				<li>clean - cleans out and removes all previous builds.</li>
+				<li>install-snapshot - Builds all the necessry jar and war files.</li>
+				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
+				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
+			</ul>
+		</p>
+	</section>
+		]]>        
     </description>
 
     <!--+
@@ -157,11 +172,12 @@
             </excludes>
             <!--+
                 | The resources for our tests.
+            +-->
             <resources>
                 <resource>
                 </resource>
             </resources>
-                +-->
+
         </unitTest>
     </build>
 

@@ -53,8 +53,8 @@ public class RegistryQueryJunit extends TestCase{
        if (DEBUG_FLAG) System.out.println("----\"----") ;
        if (DEBUG_FLAG) System.out.println("RegistryQueryJunit:setup()") ;
        System.out.println("Property for config = " + System.getProperty("org.astrogrid.config.url"));
-       System.out.println("Property for config = " + System.getProperty("org.astrogrid.registry.junitcache.url"));      
-       String junitDir = System.getProperty("org.astrogrid.registry.junitcache.url");
+       System.out.println("Property for config = " + System.getProperty("org.astrogrid.registry.junitcache.build.url"));      
+       String junitDir = System.getProperty("org.astrogrid.registry.junitcache.build.url");
        if(junitDir == null) {
           rs = null;
           return;

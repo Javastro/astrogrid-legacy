@@ -9,6 +9,9 @@ package org.astrogrid.registry.server.harvest;
 import org.astrogrid.registry.server.QueryParser3_0;
 import java.rmi.RemoteException; 
 
+import java.io.IOException;
+import org.xml.sax.SAXException;
+import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
@@ -26,8 +29,20 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.ArrayList;
 
+import org.apache.axis.client.Call; 
+import org.apache.axis.client.Service; 
+import org.apache.axis.message.SOAPBodyElement;
+import javax.xml.rpc.ServiceException; 
+import org.astrogrid.util.DomLoader;
 import org.astrogrid.config.Config;
+import org.exolab.castor.xml.*;
+import org.astrogrid.registry.beans.resource.*;
+import org.astrogrid.registry.beans.resource.types.InvocationType;
+import org.astrogrid.registry.beans.resource.registry.RegistryType;
+
 
 
 
@@ -69,7 +84,7 @@ public class RegistryHarvestService implements
          
          Document registryDoc = rs.loadRegistry(null);
          //NodeList regNL = registryDoc.getElementsByTagName("ManagedAuthority");
-         NodeList regNL = registryDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","ManagedAuthority");
+         NodeList regNL = registryDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority");
          String selectQuery = "<query><selectionSequence>" +
               "<selection item='searchElements' itemOp='EQ' value='all'/>" +
               "<selectionOp op='AND'/>";
@@ -152,11 +167,33 @@ public class RegistryHarvestService implements
     * @return XML docuemnt object representing the result of the query.
     * @author Kevin Benson 
     */  
-   public Document harvestResource(Document query){
+   public Document harvestResource(Document query) throws ValidationException{
 
-      Document harvestedDoc = null;
-      //This next statement will go away with Castor.            
-      NodeList nl = query.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","Identifier");
+      //This next statement will go away with Castor.
+      try {
+         VODescription vodesc = (VODescription)Unmarshaller.unmarshal(VODescription.class,query);
+         HashMap auths = RegistryFileHelper.getManagedAuthorities();
+         int count = vodesc.getResourceCount();
+         ArrayList al = new ArrayList();
+         
+         for(int i = 0;i < count;i++) {
+            ResourceType rtTemp = vodesc.getResource(i);
+            if(rtTemp instanceof ServiceType) {            
+               if(rtTemp instanceof RegistryType) {
+                  al.add(rtTemp);                        
+               }else {
+                  if(auths != null && auths.containsKey(rtTemp.getIdentifier().getAuthorityID())) {
+                     al.add(rtTemp);
+                  }//if
+               }//else
+            }//if
+         }//for
+         for(int i = 0;i < al.size();i++) {
+            beginHarvest(null,(ServiceType)al.get(i));
+         }
+      }catch(MarshalException me) {
+         me.printStackTrace();
+      }
       /*
        * 
        * Lets throw it to Castor and get an Object model instead and get the identifier that way.
@@ -169,16 +206,7 @@ public class RegistryHarvestService implements
        *       
        */      
        
-      for(int i = 0;i < nl.getLength();i++) {
-           //DocumentFragment df = query.createDocumentFragment();
-           //df.appendChild(nl.item(i));
-         try {
-            harvestedDoc = harvestCallableRegistry(nl.item(i));   
-         }catch(Exception e) {
-            e.printStackTrace();
-         }//catch                    
-      }//for      
-      return harvestedDoc;
+      return null;
    }
    
    /**
@@ -189,34 +217,37 @@ public class RegistryHarvestService implements
      * @return XML docuemnt object representing the result of the query.
      * @author Kevin Benson 
      */  
-    public Document harvestFromResource(Document query){
-
-       Document harvestedDoc = null;
-       //This next statement will go away with Castor.            
-       NodeList nl = query.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","Identifier");
-       /*
-        * 
-        * Lets throw it to Castor and get an Object model instead and get the identifier that way.
-        * Now make sure this identifier is  one that we manage.  (has an authorityID that is in our ManagedAuthority
-        * element in the Registry resource entry.) Unless it is a Registry resource entry they do not need to have
-        * a authority id we manage. 
-        * Get a modification date from the db for this resource entry if it is in our db.
-        * Call beginHarvest(date,resource entry)
-        *        
-        * 
-       
-        */      
-       
-       for(int i = 0;i < nl.getLength();i++) {
-            //DocumentFragment df = query.createDocumentFragment();
-            //df.appendChild(nl.item(i));
-          try {
-             harvestedDoc = harvestCallableRegistry(nl.item(i));   
-          }catch(Exception e) {
-             e.printStackTrace();
-          }//catch                    
-       }//for      
-       return harvestedDoc;
+   public Document harvestFromResource(Document query) throws ValidationException{
+      try {
+          //Now get the dateFrom element value as well.
+          NodeList nl = query.getElementsByTagName("VODescription");
+          if(nl.getLength() > 0) {
+             VODescription vodesc = (VODescription)Unmarshaller.unmarshal(VODescription.class,nl.item(0));
+             HashMap auths = RegistryFileHelper.getManagedAuthorities();
+             int count = vodesc.getResourceCount();
+             ArrayList al = new ArrayList();
+         
+             for(int i = 0;i < count;i++) {
+                ResourceType rtTemp = vodesc.getResource(i);
+                if(rtTemp instanceof ServiceType) {            
+                   if(rtTemp instanceof RegistryType) {
+                      al.add(rtTemp);                        
+                   }else {
+                      if(auths != null && auths.containsKey(rtTemp.getIdentifier().getAuthorityID())) {
+                         al.add(rtTemp);
+                      }//if
+                   }//else
+                }//if
+             }//for
+             for(int i = 0;i < al.size();i++) {
+                //remember to use the dateFrom element.
+                beginHarvest(null,(ServiceType)al.get(i));
+             }
+         }//if
+      }catch(MarshalException me) {
+          me.printStackTrace();
+      }
+      return null;         
     }
    
    
@@ -228,57 +259,63 @@ public class RegistryHarvestService implements
        * @return XML docuemnt object representing the result of the query.
        * @author Kevin Benson 
        */  
-      public Document harvestAll(Document query){
-
+      public Document harvestAll(Document query) throws ValidationException {
          Document harvestedDoc = null;
          //This next statement will go away with Castor.            
          NodeList nl = query.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","Identifier");
-         /*
-          * Now lets see if this Document is null or empty.  If so then query for all a Registries and Service
-          * resource entries we know of and manage.
-          *   Now start calling beginHarvest(null,resource Entry)
-          * Now if the dom object is not empty.
-          * Lets throw it to Castor and get an Object model instead and get the identifier that way.
-          * Now make sure this identifier is  one that we manage.  (has an authorityID that is in our ManagedAuthority
-          * element in the Registry resource entry.) Unless it is a Registry resource entry they do not need to have
-          * a authority id we manage.
-          * Call beginHarvest(null,resource entry)
-          */      
-       
-         for(int i = 0;i < nl.getLength();i++) {
-              //DocumentFragment df = query.createDocumentFragment();
-              //df.appendChild(nl.item(i));
-            try {
-               harvestedDoc = harvestCallableRegistry(nl.item(i));   
-            }catch(Exception e) {
-               e.printStackTrace();
-            }//catch                    
-         }//for      
-         return harvestedDoc;
+         if(query.getElementsByTagName("VODescription").getLength() > 0) {
+            return harvestResource(query);   
+         }else {
+            return harvestResource(harvest(null));   
+         }
       }
+      
+      /**
+       * Method to establish a Service and a Call to the server side web service.
+       * @return Call object which has the necessary properties set for an Axis message style.
+       * @throws Exception
+       * @author Kevin Benson
+       */     
+      private Call getCall(String endPoint) {
+         Call _call = null;
+         try {
+            Service  service = new Service();      
+            _call = (Call) service.createCall();
+            _call.setTargetEndpointAddress(endPoint);
+            _call.setSOAPActionURI("");
+            _call.setOperationStyle(org.apache.axis.enum.Style.MESSAGE);
+            _call.setOperationUse(org.apache.axis.enum.Use.LITERAL);        
+            _call.setEncodingStyle(null);
+         } catch(ServiceException se) {
+            se.printStackTrace();
+            _call = null;            
+         }finally {
+            return _call;   
+         }       
+      }      
    
-   private void beginHarvest(Date dt, Document doc /*This should be the castor object model*/) {
-      /*
-       * Get the Invocation object
-       * set a boolean if this is a Registry resource entry.
-       * if it is a web browser
-       *    set a string to the accessURL.
-       *    if it registry resource browser and dt is not null then
-       *       then add a "from" + date  to the end of the url
-       *    Now doa document.parse on this url.
-       * if it is a web service
-       *    instantiate a Call object pointing to the WSDL.
-       *    if it is a registry resource then
-       *       if dt is null then
-       *          call harvestAll(null) web service
-       *       if dt is not null then
-       *          call harvestFrom(dt) web service
-       *    if it is not a registry resource then
-       *       set the call object to the ResourceKey.
-       */            
+   private void beginHarvest(Date dt, ServiceType st) {
+      String accessURL = st.getInterface().getAccessURL().getContent();
+      Document doc = null;
+      if(InvocationType.WEBSERVICE_TYPE == st.getInterface().getInvocation().getType()) {
+         //call the service
+         //remeber to look at the date
+         
+      }else if(InvocationType.WEBBROWSER_TYPE == st.getInterface().getInvocation().getType()) {
+         try {
+            //might need to put some oai date stuff on the end.  This is unknown.
+            doc = DomLoader.readDocument(new URL(st.getInterface().getAccessURL().getContent()));
+         }catch(ParserConfigurationException pce) {
+            pce.printStackTrace();
+         }catch(SAXException sax) {
+            sax.printStackTrace();   
+         }catch(IOException ioe){
+            ioe.printStackTrace();   
+         }
+      }//elseif
    }
    
-  
+  /*
    public Document harvestCallableRegistry(Node regNode) throws Exception {
       RegistryFileHelper.writeRegistryFile();
       Node invoc = RegistryFileHelper.findElementNode("Invocation",regNode);
@@ -286,7 +323,7 @@ public class RegistryHarvestService implements
       System.out.println("Okay in havestCallableRegistry");
       
       if("WebService".equals(invoc.getFirstChild().getNodeValue())) {
-        
+        //call the service
       }else if("WebBrowser".equals(invoc.getFirstChild().getNodeValue())) { 
          String accessURL = RegistryFileHelper.findElementNode("AccessURL",regNode).getFirstChild().getNodeValue();
          System.out.println("the harvestcallregistry's accessurl = " + accessURL);
@@ -333,6 +370,6 @@ public class RegistryHarvestService implements
       }//elseif
      return doc;
   }
-  
+  */
   
 }

@@ -48,7 +48,28 @@
         | This is used to generate the front page of the projects web site. 
         +-->
     <description>
-        The Astrogrid Registry class files bundled into a .jar
+        <![CDATA[
+	<p>
+		The Client area's main purpose is to give the users a delegate to go by and to interact with a Registry server or cache.
+		The Client section will read in a config file and determine to use a Registry server which will be the most common or
+		use a a local cache through it's config file.  Able to look up identifiers in a config file to point to a particular xml
+		file for grabbing the necessary information.  This can be used with other Astrogrid components not wishing to use a 
+		Registry server.
+	</p>
+	<section name="Builds">
+		<p>
+			The registry allows you to build at the top level or at it's sub-project level.  
+			Here are the maven goals for building the registry.
+			<ul>
+				<li>clean - cleans out and removes all previous builds.</li>
+				<li>install-snapshot - Builds all the necessry jar and war files.</li>
+				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
+				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
+			</ul>
+		</p>
+	</section>
+		]]>        
+    
     </description>
 
     <!--+
@@ -180,19 +201,13 @@
                 <include>**/*Junit.java</include>
             </includes>
             <!--+
-                | Which tests to exclude.
-                +-->
-            <excludes>
-                <exclude>**/*Test.frog</exclude>
-            </excludes>
-            <!--+
                 | The resources for our tests.
-                                +-->
+
             <resources>
                 <resource>
                 </resource>
             </resources>
-
+                                +-->
         </unitTest>
     </build>
 

@@ -48,7 +48,35 @@
         | This is used to generate the front page of the projects web site. 
         +-->
     <description>
-        Astrogrid Registry classes used on the server side
+        <![CDATA[
+	<p>
+		The Server area takes in request from a web service and does various tasks on the Registry.  Currently the Registry
+		information is stored in a flat file, but will soon be using an XMLDB of eXist.
+		See <a href="exist.sourceforge.net">eXist</a>
+		<br />
+		Web Service Interface methods:
+		<ul>
+			<li>update(Resource schema) - updates the Registry with one to many Resources.</li>
+			<li>harvestFrom(date) - return all resource information modified from a particular date.</li>
+			<li>havest() - return all resource information.</li>
+			<li>submitQuery - Query for entries based on a particular criteria.</li>
+			<li>harvestResource - Registers a resource entry into the db and performs a harvest on that entry if possible.</li>
+			<li>loadRegistry() - just returns the Registry Resource metadata entry for this resource.</li>
+		</ul>
+	</p>
+	<section name="Builds">
+		<p>
+			The registry allows you to build at the top level or at it's sub-project level.  
+			Here are the maven goals for building the registry.
+			<ul>
+				<li>clean - cleans out and removes all previous builds.</li>
+				<li>install-snapshot - Builds all the necessry jar and war files.</li>
+				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
+				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
+			</ul>
+		</p>
+	</section>
+		]]>        
     </description>
 
     <!--+
@@ -90,12 +118,18 @@
         	<artifactId>commons-jxpath</artifactId>
             <groupId>commons-jxpath</groupId>
             <version>1.1</version>
+            <properties>
+            	<war.bundle>true</war.bundle>
+            </properties>            
         </dependency>
         
         <dependency>
         	<artifactId>jakarta-regexp</artifactId>
             <groupId>jakarta-regexp</groupId>
             <version>1.3</version>
+            <properties>
+            	<war.bundle>true</war.bundle>
+            </properties>            
         </dependency>
         
         
@@ -105,6 +139,9 @@
             <groupId>castor</groupId>
             <version>0.9.5</version>
             <jar>castor-0.9.5-xml.jar</jar>
+            <properties>
+            	<war.bundle>true</war.bundle>
+            </properties>            
         </dependency>
         
         
@@ -187,22 +224,17 @@
             <includes>
                 <include>**/*Junit.java</include>
             </includes>
-            <!--+
-                | Which tests to exclude.
-            <excludes>
-                <exclude>**/*Test.frog</exclude>
-            </excludes>
-             +-->            
+
             <!--+
                 | The resources for our tests.
-            +-->
+
             <resources>
                 <resource>
                 </resource>
                 <resource>
                 </resource>
             </resources>
-
+            +-->
         </unitTest>
     </build>
 

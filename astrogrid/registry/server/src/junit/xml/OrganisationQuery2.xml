@@ -1,7 +1,0 @@
-<query>
-	<selectionSequence>
-		<selection item="searchElements" itemOp="EQ" value="Organisation"/>
-		<selectionOp op="$and$"/>
-		<selection item="ContentLevel" itemOp="CONTAINS" value="search"/>
-	</selectionSequence>
-</query>

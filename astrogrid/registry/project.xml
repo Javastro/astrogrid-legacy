@@ -57,8 +57,56 @@
 		<logo>http://www.astrogrid.org/images/AGlogo</logo>
 	</organization>
 	<inceptionYear>2002</inceptionYear>
-        <description>Registry provides astronomers with a means of storing
-catalog metadata according to an IVOA schema.</description>
-        <shortDescription>Astrogrid Registry components</shortDescription>
+        <description>
+        <![CDATA[
+	<p>
+		The registry is based around information or metadata.  A registry holds vast amounts of metadata for particular Resources.
+		A Resource can be a data sets, web services, services, information on other registries.  For the registry to be interoperable with
+		other registries in other varous Virtual observatories, the registry must conform to an international recognized schema.  The registry
+		currently conforms to the IVOA Resoruce metatadata schema.
+		See the <a href="http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03">IVOA website for the current schema</a>
+	</p>
+	<p>
+		The registry gathers its information from either user input by file, url, or through the portal.  Or more commonly most metadata is
+		obtainged through harvesting.  Which is a means of reading in a url or web service described in the metadata (usually of another Registry)
+		and make a call to extract the metadata from one resource and place it in the current registry.
+	</p>
+	<p>
+	Follow the links on the left to subprojects for
+	<ul>
+	  <li>Client Area</li>
+	  <li>Server Area</li>
+	</ul>
+	</p>
+	<section name="Registry known to Astrogrid">
+	<p>
+		Retgistry main objective is for the use of querying the registry to gain information about Resource or Resources to be
+		obtained by other registries.  This information can then be used for these other components.  Here is a quick look at other
+		components and the use they have for Registry.
+		<ul>
+			<li>Workflow - To Discover Services such as Applications to be used.</li>
+			<li>Data Center (Actually Data Sets)- To upload metadata to the registry.</li>
+			<li>Data Query - To obtain information about Data Sets for particular querying on a data center.</li>
+			<li>Application Controller - To uplaod metadata to the registry.</li>
+			<li>Community - To obtain a users Myspace/VOSpace location.</li>
+			<li>Myspace - To obtain Myspace/VOSpace servers, and remote Myspace services usually via the Community.</li>
+		</ul>
+	</p>
+	</section>	
+	<section name="Builds">
+		<p>
+			The registry allows you to build at the top level or at it's sub-project level.  
+			Here are the maven goals for building the registry.
+			<ul>
+				<li>clean - cleans out and removes all previous builds.</li>
+				<li>install-snapshot - Builds all the necessry jar and war files.</li>
+				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
+				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
+			</ul>
+		</p>
+	</section>
+		]]>        
+</description>
+        <shortDescription>Astrogrid Registry</shortDescription>
         
 </project>

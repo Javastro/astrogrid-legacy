@@ -39,8 +39,27 @@
         | This element is usually specified as CDATA to enable the use of HTML tags within the description.
         | This description is used to generate the front page of the project's web site. 
         +-->
-    <description>Astrogrid Registry Classes which are common to both the client
-and server sides</description>
+    <description>
+        <![CDATA[
+	<p>
+		The Common area are what is common between both the Client and Server areas.  Registry also uses Castor to generate
+		java objects which are used both in the common and server areas.
+	</p>
+	<section name="Builds">
+		<p>			
+			Here are the maven goals for building the registry, it has a one extra goal compared to the other sub-projects.
+			<ul>
+				<li>clean - cleans out and removes all previous builds.</li>
+				<li>install-snapshot - Builds all the necessry jar and war files.</li>
+				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
+				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
+				<li>generate-castor - generates the castor objects.  This is automatically done though because it is done
+				as a pre-goal to java:compile.</li>				
+			</ul>
+		</p>
+	</section>
+		]]>        
+</description>
 
     <!--+
         | A short description of the project.
@@ -131,12 +150,7 @@ and server sides</description>
             <includes>
                 <include>**/*JUnitTest.java</include>
             </includes>
-            <!--+
-                | Which tests to exclude.
-                +-->
-            <excludes>
-                <exclude>**/TestBase.frog</exclude>
-            </excludes>
+            
             <!--+
                 | The resources for our tests.
             <resources>

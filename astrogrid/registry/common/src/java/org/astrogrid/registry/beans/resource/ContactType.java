@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ContactType.java,v 1.3 2004/03/05 09:52:01 KevinBenson Exp $
+ * $Id: ContactType.java,v 1.4 2004/03/09 09:45:24 KevinBenson Exp $
  */
 
 package org.astrogrid.registry.beans.resource;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class ContactType.
  * 
- * @version $Revision: 1.3 $ $Date: 2004/03/05 09:52:01 $
+ * @version $Revision: 1.4 $ $Date: 2004/03/09 09:45:24 $
  */
 public class ContactType extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

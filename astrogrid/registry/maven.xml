@@ -47,6 +47,7 @@
     
     <goal name="astrogrid-deploy-site">
     	<attainGoal name="site" />
+        <attainGoal name="site:fsdeploy"/>
     </goal>
 
     <!--+

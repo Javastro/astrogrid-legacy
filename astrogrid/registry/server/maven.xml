@@ -152,7 +152,7 @@
     <!--+
         | Prepare the database config files for our JUnit tests.
         +-->
-    <preGoal name="test:test-resources">
+    <preGoal name="test:test">
     
         <ant:echo message=""/>
         <ant:echo message="Artifact : ${pom.artifactId}"/>

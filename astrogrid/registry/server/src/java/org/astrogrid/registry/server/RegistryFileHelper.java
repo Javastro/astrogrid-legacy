@@ -387,6 +387,13 @@ public class RegistryFileHelper {
       return replacedDocument;
    }
    
+   public static HashMap getManagedAuthorities() {
+      if(manageAuthorities == null || manageAuthorities.size() <= 0) {
+         doManageAuthorities();   
+      }
+      return manageAuthorities;      
+   }
+   
    public static HashMap doManageAuthorities() {
       RegistryService rs = new RegistryService();
       Document regEntry = null;

@@ -42,7 +42,25 @@
         | This is used to generate the front page of the projects web site. 
         +-->
     <description>
-        Astrogrid Registry .jar files bundled ready to deploy in the portal
+        <![CDATA[
+	<p>
+		The Portal area is the visual look given to the user about the Registry and allowing them to perform all 
+		necessary web service calls with the delegate in the Registry client.
+		<br />
+	</p>
+	<section name="Builds">
+		<p>
+			The registry allows you to build at the top level or at it's sub-project level.  
+			Here are the maven goals for building the registry.
+			<ul>
+				<li>clean - cleans out and removes all previous builds.</li>
+				<li>install-snapshot - Builds all the necessry jar and war files.</li>
+				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
+				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
+			</ul>
+		</p>
+	</section>
+		]]>
     </description>
 
     <!--+
@@ -81,6 +99,9 @@
             <version>SNAPSHOT</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>            
         </dependency>
         
         <dependency>
@@ -88,6 +109,9 @@
             <groupId>castor</groupId>
             <version>0.9.5</version>
             <jar>castor-0.9.5-xml.jar</jar>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>            
         </dependency>
         
         
@@ -145,12 +169,7 @@
             <includes>
                 <include>**/*Test.java</include>
             </includes>
-            <!--+
-                | Which tests to exclude.
-                +-->
-            <excludes>
-                <exclude>**/*Test.frog</exclude>
-            </excludes>
+
             <!--+
                 | The resources for our tests.
             <resources>
