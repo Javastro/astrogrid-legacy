@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationCEAComponentManager.java,v 1.4 2004/09/01 15:42:26 jdt Exp $
+/*$Id: HttpApplicationCEAComponentManager.java,v 1.1 2004/09/02 10:19:17 jdt Exp $
  * Created on Jul 24, 2004 or thereabouts
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,11 +8,12 @@
  * with this distribution in the LICENSE.txt file.  
  *
  **/
-package org.astrogrid.applications.component;
+package org.astrogrid.applications.http;
 
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.applications.component.EmptyCEAComponentManager;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.http.HttpApplicationDescriptionLibrary;
 import org.astrogrid.applications.http.registry.RegistryQuerier;
@@ -99,33 +100,10 @@ public class HttpApplicationCEAComponentManager extends EmptyCEAComponentManager
 
 /*
  * $Log: HttpApplicationCEAComponentManager.java,v $
+ * Revision 1.1  2004/09/02 10:19:17  jdt
+ * Moved to a more sensible package (from org.astrogrid.applications.component)
+ *
  * Revision 1.4  2004/09/01 15:42:26  jdt
  * Merged in Case 3
- *
- * Revision 1.1.2.9  2004/08/30 16:10:06  jdt
- * changed docs
- *
- * Revision 1.1.2.8  2004/08/30 14:54:25  jdt
- * Corrected logger to commons logging.
- *
- * Revision 1.1.2.7  2004/08/16 16:03:04  jdt
- * added some logging, and included correct RegistryQuerier
- *
- * Revision 1.1.2.6  2004/08/09 16:37:13  jdt
- * Brought into line following pah's suggested schema changes
- *
- * Revision 1.1.2.5  2004/07/30 13:11:44  jdt
- * reformatted
- * Revision 1.1.2.4 2004/07/30
- * 11:02:30 jdt Added unit tests, refactored the RegistryQuerier anf finished
- * off HttpApplicationCEAComponentManager.
- * 
- * Revision 1.1.2.3 2004/07/29 21:30:47 jdt ** empty log message ***
- * 
- * Revision 1.1.2.2 2004/07/29 17:08:22 jdt Think about how I'm going to get
- * stuff out of the registry
- * 
- * Revision 1.1.2.1 2004/07/29 16:35:05 jdt Safety checkin, while I think about
- * what happens next.
  *  
  */
