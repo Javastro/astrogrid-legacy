@@ -1,8 +1,19 @@
 <Context path="/astrogrid-portal">
-  <!-- dunno what it needs -->
-     <Environment name="org.astrogrid.config.url" override="false" type="java.lang.String"
-           value="@CONFIGPATH@/AstroGridConfig.properties"/>
-     <!-- require this for the login page -->
-     <Environment name="org.astrogrid.community.config" override="false" type="java.lang.String"
-           value="@CONFIGPATH@/AstroGridConfig.properties"/>
+    <!--@TODO - merge the following with the endpoint property required by community (below)-->
+    <Environment name="org.astrogrid.portal.registry.url" override="false" type="java.lang.String" value="@CENTRALREGISTRY@Query" 
+        description="Registry Query 
+        Service endpoint"/>
+    <!--these are the defaults anyway, but are put in here as place holders-->
+    <Environment name="emailserver.address" override="false" type="java.lang.String" value="127.0.0.1" description="Address of SMTP server"/>
+    <Environment name="emailserver.user" override="false" type="java.lang.String" value="astrogrid" 
+        description="account on server from which message are sent"/>
+    <Environment name="emailserver.password" override="false" type="java.lang.String" value="" description="password for this account"/>
+    <Environment name="emailserver.from" override="false" type="java.lang.String" value="astrogrid@star.le.ac.uk" description="Return address"/>
+    <Environment name="astrogrid.portal.admin.email" override="false" type="java.lang.String" value="jdt@roe.ac.uk" 
+        description="Administrator's address to whom registration requests are sent"/>
+    <!--for the community client-->
+    <Environment name="org.astrogrid.community.ident" override="false" type="java.lang.String" value="@REGAUTHORITY@" description="Local community identifier"/>
+    <Environment name="org.astrogrid.registry.query.endpoint" override="false" type="java.lang.String" value="@CENTRALREGISTRY@Query" 
+        description="Registry Query 
+        Service endpoint"/>
 </Context>

@@ -1,5 +1,10 @@
-<Context path="/astrogrid-cea-http-SNAPSHOT">
-  <!-- configuration file for the HTTP cea server webapp -->
-  <Environment name="org.astrogrid.config.url" override="false" type="java.lang.String" value="@CONFIGPATH@/AstroGridConfig.properties" />
-  <Environment name="cea.filestore.basedir" override="false" type="java.lang.String" value="@WORKDIR@/cea/http/store" />
+<Context path="/astrogrid-cea-http-@VERSION@">
+    <Environment name="cea.filestore.basedir" override="false" type="java.lang.String" value="@WORKDIR@/cea/http/store" />
+    <!-- registry endpoints - these are essential for the proper working of CEA - 
+	it needs to be able to query the registry to do myspace operations and can update the registry with its own configuration 
+	I suspect that most of the components will need the query endpoint-->
+    <Environment name="org.astrogrid.registry.admin.endpoint" description="registry update service endpoint URL" type="java.lang.String" 
+        value="@CENTRALREGISTRY@Update" />
+    <Environment name="org.astrogrid.registry.query.endpoint" description="registry query service endpoint URL" type="java.lang.String" 
+        value="@CENTRALREGISTRY@Query" />
 </Context>
