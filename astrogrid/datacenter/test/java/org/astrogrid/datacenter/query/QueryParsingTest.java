@@ -47,14 +47,14 @@ public class QueryParsingTest extends TestCase {
 
             NodeList nodeList =
                 document.getDocumentElement().getElementsByTagName(
-                    RunJobRequestDD.QUERY_ELEMENT);
+                    AdqlTags.QUERY_ELEMENT);
 
             for (int i = 0; i < nodeList.getLength(); i++) {
 
                 if (nodeList.item(i).getNodeType() != Node.ELEMENT_NODE)
                     continue;
                 element = (Element) nodeList.item(i);
-                if (element.getTagName().equals(RunJobRequestDD.QUERY_ELEMENT))
+                if (element.getTagName().equals(AdqlTags.QUERY_ELEMENT))
                     break;
 
             }
@@ -69,6 +69,7 @@ public class QueryParsingTest extends TestCase {
     public void testQueryToString_CONE() throws Exception {
 
         // This is the pseudo-SQL... "SELECT URA, UDEC, PMPROB FROM USNOB WHERE CONE(234.56, -12.34, 0.01)"
+       // that we expect to be produced from the query_CONE.xml file
         final String sqlString =
             "SELECT  URA, UDEC, PMPROB FROM USNOB..USNOB  WHERE "
                 + "( ((2 * ASIN(SQRT(POW(SIN(-12.34-UDEC)/2),2) + COS(UDEC) + POW(SIN(234.56-URA)/2),2)) < 0.01 )",
@@ -80,7 +81,7 @@ public class QueryParsingTest extends TestCase {
 
             query = new Query(queryElement, factory);
             resultString = query.toSQLString();
-            //       logger.info( "testQueryToString_CONE: " + resultString ) ;
+            // logger.info( "testQueryToString_CONE: " + resultString ) ;
             assertEquals(resultString,sqlString);
 
 
