@@ -39,3 +39,8 @@ The subproject-template/ directory in /astrogrid/portal is designed as a base fo
 
 - your subsitemap will receive your-url
   - your pipeline matcher should return an XHTML <div> tag with your content enclosed
+
+- install your subproject
+  - run maven war:war to produce target/astrogrid-portal-subproject.war
+  - cd to the $CATALINA_HOME/webapps/astrogrid-portal directory
+  - extract your war here
