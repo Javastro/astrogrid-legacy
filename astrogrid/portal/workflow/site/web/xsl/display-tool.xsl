@@ -11,7 +11,7 @@
        | Step name/description can be set from here.
        |
        | Also includes container_insert_form which simply holds value of selected id and index
-       | that is used when user attempts to insert a sequence/flow/step
+       | that is used when user attempts to insert a sequence/flow/step/script
        +-->
     <xsl:template name="tool-details">
     <p />
@@ -94,7 +94,7 @@
                     <input type="hidden" name="action" id="workflow_action"/>                    
                 </form>                
             </div> 
-<!-- This is not right, and temporary! -->                
+<!-- There must be a better way to do this part -->                
                 <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="insert_sequence_form">
                    <input type="hidden" name="activity_key" id="activity_key"/>                   
                    <input type="hidden" name="activity_index_key"/>
@@ -119,6 +119,14 @@
                    <input type="hidden" name="activity_type" id="activity_type"/>
                    <input type="hidden"  name="action" value="insert-step"/>            
                 </form>
+                <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="insert_script_form">
+                   <input type="hidden" name="activity_key" id="activity_key"/>
+                   <input type="hidden" name="activity_index_key"/>
+                   <input type="hidden" name="activity_index_order"  id="activity_index_order_script"/>
+                   <input type="hidden" name="parent_activity_key"/>
+                   <input type="hidden" name="activity_type" id="activity_type"/>
+                   <input type="hidden"  name="action" value="insert-script"/>            
+                </form>                
                 <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="remove_activity_form">
                    <input type="hidden" name="activity_key"/>
                    <input type="hidden" name="parent_activity_key"/>

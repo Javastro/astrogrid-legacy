@@ -10,7 +10,6 @@
     <ag-div>        
        <agComponentTitle>Workflow</agComponentTitle>        
         <ag-script type="text/javascript" src="/astrogrid-portal/mount/workflow/workflow-functions.js"/>
-<!--        <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/workflow/workflow.css"/>   -->
         <xsl:if test="$activity_key != ''">
           <xsl:if test="$display_parameter_values = 'true'">
             <ag-onload>
@@ -48,7 +47,8 @@
                           <td>
                             <font color="RED" size="-2"><img src="/astrogrid-portal/mount/workflow/red.gif"/> Sequence</font><br/>
                             <font color="GREEN" size="-2"><img src="/astrogrid-portal/mount/workflow/green.gif"/> Flow</font><br/>
-                            <font color="YELLOW" size="-2"><img src="/astrogrid-portal/mount/workflow/yellow.gif"/> Step</font><br/>                    
+                            <font color="YELLOW" size="-2"><img src="/astrogrid-portal/mount/workflow/yellow.gif"/> Step</font><br/>
+                            <font color="YELLOW" size="-2"><img src="/astrogrid-portal/mount/workflow/green.gif"/> Script</font><br/>                    
                           </td>
                         </tr>
                       </table>
@@ -77,8 +77,9 @@
                 <xsl:apply-templates select="*"/>
             </tr>
         </table>
-    <xsl:call-template name="tool-details"/>
-    </ag-div>
+        <xsl:call-template name="tool-details"/>
+        <xsl:call-template name="script-details"/>
+      </ag-div>
     <script type="text/javascript" src="/astrogrid-portal/mount/workflow/wz_tooltip.js"/>
     </xsl:template>
 
@@ -98,7 +99,12 @@
             <xsl:call-template name="format-cells">
                 <xsl:with-param name="count" select="count(ancestor::*)"/>
             </xsl:call-template>                    
-          </xsl:if>            
+          </xsl:if> 
+          <xsl:if test="name() = 'script'">
+            <xsl:call-template name="format-cells">
+                <xsl:with-param name="count" select="count(ancestor::*)"/>
+            </xsl:call-template>                    
+          </xsl:if>                      
             <td valign="top" align="left">
                 <xsl:choose>                                      
                     <xsl:when test="name() = 'sequence'">  <!--  SEQUENCE -->                             
@@ -109,7 +115,7 @@
                             <xsl:attribute name="width">70</xsl:attribute>
                             <xsl:attribute name="height">25</xsl:attribute>
                             <xsl:attribute name="alt">sequence</xsl:attribute>
-                            <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>');hide_select('step_tool_details');populate_activity_container_insert_form('<xsl:value-of select="@key"/>','<xsl:value-of select="../@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>','<xsl:value-of select="name()"/>');</xsl:attribute>
+                            <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>');hide_select('step_tool_details');hide_select('script_details');populate_activity_container_insert_form('<xsl:value-of select="@key"/>','<xsl:value-of select="../@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>','<xsl:value-of select="name()"/>');</xsl:attribute>
                             <xsl:if test="count(child::*) = 0">
                                 <ag-onload function="change_image('/sequence','sequence');populate_activity_container_insert_form('/sequence','/','0','sequence');"/>
                             </xsl:if>
@@ -124,9 +130,21 @@
                             <xsl:attribute name="width">70</xsl:attribute>
                             <xsl:attribute name="height">25</xsl:attribute>
                             <xsl:attribute name="alt">flow</xsl:attribute>
-                            <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>');hide_select('step_tool_details');populate_activity_container_insert_form('<xsl:value-of select="@key"/>','<xsl:value-of select="../@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>','<xsl:value-of select="name()"/>');</xsl:attribute>
+                            <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>');hide_select('step_tool_details');hide_select('script_details');populate_activity_container_insert_form('<xsl:value-of select="@key"/>','<xsl:value-of select="../@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>','<xsl:value-of select="name()"/>');</xsl:attribute>
                         </xsl:element>                                                                                        
                     </xsl:when>
+                     
+                    <xsl:when test="name() = 'script'">  <!--  SCRIPT -->                            
+                        <xsl:element name="img">
+                            <xsl:attribute name="src"><xsl:value-of select="$image_path"/>script.gif</xsl:attribute>
+                            <xsl:attribute name="id"><xsl:value-of select="@key"/></xsl:attribute>
+                            <xsl:attribute name="index"><xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
+                            <xsl:attribute name="width">70</xsl:attribute>
+                            <xsl:attribute name="height">25</xsl:attribute>
+                            <xsl:attribute name="alt">flow</xsl:attribute>
+                            <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>');hide_select('step_tool_details');populate_activity_container_insert_form('<xsl:value-of select="@key"/>','<xsl:value-of select="../@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>','<xsl:value-of select="name()"/>');show_select('script_details');</xsl:attribute>
+                        </xsl:element>                                                                                        
+                    </xsl:when>                    
                             
                     <xsl:when test="name() = 'step'">  <!-- STEP -->                   
                         <xsl:attribute name="background">  <!-- prevent gaps appearing in 'trunk' when parameters are viewed - not req'd with step -->
@@ -138,7 +156,7 @@
                             <xsl:attribute name="width">70</xsl:attribute>
                             <xsl:attribute name="height">25</xsl:attribute>
                             <xsl:attribute name="alt">step</xsl:attribute>
-                            <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>'); populate_tool_details('<xsl:value-of select="@step-name"/>','<xsl:value-of select="@joinCondition"/>','<xsl:value-of select="@step-description"/>','<xsl:value-of select="@key"/>', '<xsl:value-of select="./tool/@tool-name"/>','<xsl:value-of select="./tool/@tool-documentation"/>'); show_select('step_tool_details');populate_activity_container_insert_form('<xsl:value-of select="@key"/>','<xsl:value-of select="../@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>','<xsl:value-of select="name()"/>')</xsl:attribute>             
+                            <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>'); hide_select('script_details');populate_tool_details('<xsl:value-of select="@step-name"/>','<xsl:value-of select="@joinCondition"/>','<xsl:value-of select="@step-description"/>','<xsl:value-of select="@key"/>', '<xsl:value-of select="./tool/@tool-name"/>','<xsl:value-of select="./tool/@tool-documentation"/>'); show_select('step_tool_details');populate_activity_container_insert_form('<xsl:value-of select="@key"/>','<xsl:value-of select="../@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>','<xsl:value-of select="name()"/>')</xsl:attribute>             
                             <xsl:attribute name="onClick">toggle('parameters:<xsl:value-of select="@key"/>');</xsl:attribute>
                         </xsl:element>
                         <xsl:if test="@key = $activity_key">
@@ -253,6 +271,7 @@
  
     <xsl:include href="display-tool.xsl"/>
     <xsl:include href="display-parameters.xsl"/>
+    <xsl:include href="display-script.xsl"/>    
     <xsl:include href="display-workflow-map.xsl"/>   
 
 

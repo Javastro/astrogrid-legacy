@@ -12,10 +12,6 @@ package org.astrogrid.portal.cocoon.workflow.design;
 
 import org.apache.log4j.Logger;  
    
-//import org.astrogrid.i18n.*;
-//import org.astrogrid.AstroGridException;
-//import org.astrogrid.portal.workflow.WKF;
-//import org.astrogrid.portal.workflow.WorkflowException;
 import org.astrogrid.portal.workflow.intf.*;
 import org.astrogrid.portal.cocoon.workflow.WorkflowHelper;
 
@@ -27,6 +23,7 @@ import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.Flow;
 import org.astrogrid.workflow.beans.v1.Sequence;
 import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.types.JoinType;
 
@@ -192,6 +189,8 @@ public class DesignAction extends AbstractAction {
         ACTION_INSERT_STEP = "insert-step",
         ACTION_INSERT_SEQUENCE = "insert-sequence", 
         ACTION_INSERT_FLOW = "insert-flow",
+	    ACTION_INSERT_SCRIPT = "insert-script",
+	    ACTION_INSERT_SCRIPT_CODE = "insert-script-code",        
 		ACTION_INSERT_PARAMETER = "insert-parameter-value",
 	    ACTION_INSERT_INPUT_PARAMETER_INTO_TOOL = "insert-input-parameter-into-tool",
 	    ACTION_INSERT_OUTPUT_PARAMETER_INTO_TOOL = "insert-output-parameter-into-tool",
@@ -350,13 +349,6 @@ public class DesignAction extends AbstractAction {
                 }      
                 else if( action.equals( ACTION_CREATE_WORKFLOW ) ) {
                     this.createWorkflow();
-//					template = request.getParameter( TEMPLATE_PARAM_TAG ); 
-//					if ( template.equals( EMPTY_TEMPLATE ) ) {
-//						this.createWorkflow();
-//					}
-//                    else {
-//						this.createWorkflowFromTemplate( template ); 
-//                    }
                 }
                 else if( action.equals( ACTION_SAVE_WORKFLOW ) ) { 
                     this.saveWorkflow();
@@ -424,7 +416,13 @@ public class DesignAction extends AbstractAction {
                 } 
                 else if( action.equals( ACTION_INSERT_STEP ) ) {
                     this.insertStep();                                                    
-                }   
+                }
+				else if( action.equals( ACTION_INSERT_SCRIPT ) ) {
+					this.insertScript();                                                    
+				}
+				else if( action.equals( ACTION_INSERT_SCRIPT_CODE ) ) {
+					this.insertScript();                                                    
+				}								
                 else if( action.equals( ACTION_REMOVE_ACTIVITY ) ) {
                     this.removeActivity();                                                    
                 }       			                
@@ -1265,9 +1263,33 @@ public class DesignAction extends AbstractAction {
                   if( TRACE_ENABLED ) trace( "DesignActionImpl.insertFlow() exit" ) ;
             }
                     
-        } // end of insertFlow()       
-
-
+        } // end of insertFlow()
+        
+        
+		private void insertScript() throws ConsistencyException {
+		    if( TRACE_ENABLED ) trace( "DesignActionImpl.insertScript() entry" ) ;
+              
+			try {
+			    this.insertActivity( new Script() ) ;          
+			}
+			finally {
+			    if( TRACE_ENABLED ) trace( "DesignActionImpl.insertScript() exit" ) ;
+			}                    
+		} // end of insertScript()
+		
+		
+		private void insertScriptCode() throws ConsistencyException {
+		    if( TRACE_ENABLED ) trace( "DesignActionImpl.insertScriptCode() entry" ) ;
+              
+			try {
+				 debug("Insert script code here!");         
+			}
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertScriptCode() exit" ) ;
+			}                    
+		} // end of insertCodeScript()
+			
+			
         private void insertSequence() throws ConsistencyException {
            if( TRACE_ENABLED ) trace( "DesignActionImpl.insertSequence() entry" ) ;
               

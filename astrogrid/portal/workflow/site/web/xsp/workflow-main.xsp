@@ -25,7 +25,8 @@
       <xsp:include>org.astrogrid.workflow.beans.v1.Flow</xsp:include>      
       <xsp:include>org.astrogrid.workflow.beans.v1.Sequence</xsp:include> 
       <xsp:include>org.astrogrid.workflow.beans.v1.Step</xsp:include> 
-      <xsp:include>org.astrogrid.workflow.beans.v1.Tool</xsp:include>                                 
+      <xsp:include>org.astrogrid.workflow.beans.v1.Tool</xsp:include>
+      <xsp:include>org.astrogrid.workflow.beans.v1.Script</xsp:include>                                 
    </xsp:structure>
 
    <xsp:logic>
@@ -209,6 +210,9 @@
                else if( activity instanceof Step ) {
                   step( (Step)activity) ;
                }
+               else if( activity instanceof Script ) {
+                  script( (Script)activity) ;
+               }               
                else {
                   debug( "unsupported Activity" ) ;
                } 
@@ -259,6 +263,26 @@
                if( TRACE_ENABLED ) trace( "workflow-main-xsp.flow() exit") ;
             }		
          } // end of flow()
+         
+         
+       //====================================================================		
+         private void script( Script script ) throws SAXException {
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp.script() entry") ; 
+            
+            AttributesImpl xspAttr = new AttributesImpl();
+        	
+        	try {
+                 <xsp:element name="script">
+                    <xsp:attribute name="key"><xsp:expr>getXPathKey( script )</xsp:expr></xsp:attribute>
+                 </xsp:element>
+        	}
+            catch(Exception e) {
+               e.printStackTrace() ;
+            }        	
+        	finally {
+               if( TRACE_ENABLED ) trace( "workflow-main-xsp.script() exit") ;
+            }		
+         } // end of flow()         
 		
         
          //====================================================================

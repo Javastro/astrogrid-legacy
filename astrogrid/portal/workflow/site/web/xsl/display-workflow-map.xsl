@@ -70,7 +70,26 @@
     <tr>
       <xsl:apply-templates mode="mapping"/>
     </tr>                        
-  </xsl:template>    
+  </xsl:template> 
+  
+  <xsl:template match="script" mode="mapping"> <!-- SCRIPT -->
+    <tr>       
+      <xsl:call-template name="format-cells-map">
+        <xsl:with-param name="count" select="count(ancestor::*)"/>
+      </xsl:call-template>                                      
+      <td valign="top" align="left">                              
+        <xsl:element name="img">
+          <xsl:attribute name="src"><xsl:value-of select="$image_path"/>green.gif</xsl:attribute>
+          <xsl:attribute name="width">10</xsl:attribute>
+          <xsl:attribute name="height">5</xsl:attribute>
+          <xsl:attribute name="alt">flow</xsl:attribute>
+        </xsl:element>                                                                                        
+      </td>
+    </tr>
+    <tr>
+      <xsl:apply-templates mode="mapping"/>
+    </tr>                        
+  </xsl:template>      
 
 
   <!--+

@@ -52,7 +52,11 @@
        document.insert_step_form.activity_index_key.value = index;
        document.insert_step_form.activity_key.value = activityID;
        document.insert_step_form.parent_activity_key.value = parentActivityID;
-       document.insert_step_form.activity_type.value = activityType;              
+       document.insert_step_form.activity_type.value = activityType; 
+       document.insert_script_form.activity_index_key.value = index;
+       document.insert_script_form.activity_key.value = activityID;
+       document.insert_script_form.parent_activity_key.value = parentActivityID;
+       document.insert_script_form.activity_type.value = activityType;                     
        document.remove_activity_form.activity_index_key.value = index;
        document.remove_activity_form.activity_key.value = activityID; 
        document.remove_activity_form.parent_activity_key.value = parentActivityID;             
