@@ -11,7 +11,7 @@
         
     </menu>     
     <menu name="CEA" >
-        <item name="Design Document" href="design//>
+        <item name="Design Document" href="design/"/>
      	<item name="UML Diagrams" href="http://www.astrogrid.org/maven/design/applications/" />   
         <!-- would be nice to have a submenu here  - how? -->
     	<item name="Schema"  href="http://www.astrogrid.org/viewcvs/astrogrid/applications/schema/"/>
