@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.48 2004/03/18 20:42:37 mch Exp $
+ * $Id: Querier.java,v 1.49 2004/03/18 23:41:32 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -216,23 +216,22 @@ public class Querier implements Runnable {
             
       }
 
-      /*
+      // test to see that the agsl for the results is valid
       if (resultsTarget.resolveAgsl() != null) {
          
-         String testFilename = user.getIndividual()+"@"+user.getCommunity()+"/serv1/votable/testFile.txt";
          StoreClient store = StoreDelegateFactory.createDelegate(user.toUser(), resultsTarget.resolveAgsl());
 
          try {
-            store.putString("This is a test file to make sure we can create a file in the given myspace, so our query results are not lost",
-                              testFilename, false);
+            store.putString("This is a test file to make sure we can create a file at the target before we start, so our query results are not lost",
+                              resultsTarget.resolveAgsl().getPath(), false);
          }
          catch (StoreException se) {
             //rethrow with more info
-            throw new StoreException("Test to create file '"+testFilename+"' on target store failed "+se.getMessage(), se.getCause());
+            throw new StoreException("Test to create '"+resultsTarget.resolveAgsl().getPath()+"' on target store failed "+se.getMessage(), se.getCause());
          }
          
          try {
-            store.delete(testFilename);
+            store.delete(resultsTarget.resolveAgsl().getPath());
          }
          catch (StoreException se) {
             //log it but don't fail
@@ -240,7 +239,6 @@ public class Querier implements Runnable {
          }
             
       }
-       */
    }
 
    /** Sets results target.
@@ -405,6 +403,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.49  2004/03/18 23:41:32  mch
+ Reintroduced more thorough pre-query storepoint test
+
  Revision 1.48  2004/03/18 20:42:37  mch
  Removed test myspace
 
