@@ -87,7 +87,7 @@ public class JesAction extends AbstractAction {
 	public static final String CONFIRM_PARAM_TAG = "confirm";
     
     public static final String HTTP_JOBLIST_TAG = "job-list-tag" ,
-                               COMMUNITY_ACCOUNT_TAG = "community_account" ,
+                               COMMUNITY_ACCOUNT_TAG = "user" ,
                                COMMUNITY_NAME_TAG = "community_name" ,
                                CREDENTIAL_TAG = "credential" ,
                                COMMUNITY_TOKEN_TAG = "community-token";
@@ -263,6 +263,8 @@ public class JesAction extends AbstractAction {
                 // PJN note: alterred slightly,
                 // also not sure if LoginAction intends to put security token
                 // into session?
+
+                                
                 this.userid =
                    (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG );
 			debug( "userid: " + this.userid );
@@ -276,7 +278,7 @@ public class JesAction extends AbstractAction {
 //                   (SecurityToken)session.getAttribute( COMMUNITY_TOKEN_TAG );
 //                this.token = secToken.getToken();
 			debug( "token: " + this.token ); 
-                
+  
 /*               
                 JL Note: This is PortalB Iteration 2 way of doing things,...
                 
