@@ -7,7 +7,7 @@
 
 <html>
 <head>
-<title>JES Happiness Page</title>
+<title>JES Happiness Page</title> 
 </head>
 <body bgcolor='#ffffff'>
 <h1>JES Happiness Page</h1>
@@ -27,8 +27,8 @@ Attempting to locate a configuration URL using JNDI under name <%=jndiName%>...<
           } catch (NamingException ne) {
 					  jndiName = null;
 			%> ...no entry found in the JNDI naming service.  If you expected one, check your $CATALINA_HOME/tomcat/conf/servers.xml file.  You need to place the following entry under the 
-			&ltcontext&gt element for your webapp: <BR>
-			&ltEnvironment description="URL of config file" name="jesConfigFileURL" override="false" type="java.lang.String" value="&ltYour URL&gt"/&gt
+			&lt;context&gt; element for your webapp: <BR>
+			&lt;Environment description="URL of config file" name="jesConfigFileURL" override="false" type="java.lang.String" value="&lt;Your URL&gt"/&gt;
 			
 			<P>
 			   Attempting to locate a configuration file <%=JES.getInstance().getConfigFileName()%> on the CLASSPATH instead.<P> 
