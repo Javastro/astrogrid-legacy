@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplication.java,v 1.4 2003/12/08 15:00:47 pah Exp $
+ * $Id: AbstractApplication.java,v 1.5 2003/12/08 17:06:35 pah Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,6 +11,8 @@
 
 package org.astrogrid.applications;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import org.astrogrid.applications.commandline.exceptions.ApplicationExecutionException;
@@ -25,6 +27,11 @@ public class AbstractApplication implements Application {
     */
    protected List parameters;   
    protected ApplicationDescription applicationDescription;
+   
+   public AbstractApplication()
+   {
+      parameters = new ArrayList();
+   }
    
    /* (non-Javadoc)
     * @see org.astrogrid.applications.Application#completionStatus()
@@ -53,9 +60,13 @@ public class AbstractApplication implements Application {
    /* (non-Javadoc)
     * @see org.astrogrid.applications.Application#setParameter()
     */
-   public void setParameter() {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("AbstractApplication.setParameter() not implemented");
+   public void addParameter(Parameter p) {
+      parameters.add(p);
+   }
+   
+   public Parameter[] getParameters()
+   {
+      return (Parameter[])parameters.toArray(new Parameter[0]);
    }
 
    private ApplicationInterface applicationInterface;

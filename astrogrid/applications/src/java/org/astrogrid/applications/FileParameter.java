@@ -1,5 +1,5 @@
 /*
- * $Id: FileParameter.java,v 1.1 2003/10/30 14:12:25 pah Exp $
+ * $Id: FileParameter.java,v 1.2 2003/12/08 17:06:35 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,7 +11,17 @@
 
 package org.astrogrid.applications;
 
+import org.astrogrid.applications.description.ParameterDescription;
+
 public class FileParameter extends Parameter {
    private byte[] filecontents;
    private String filename;
+   /**
+    * @param parameterDescription
+    */
+   public FileParameter(ParameterDescription parameterDescription) {
+      super(parameterDescription);
+      // TODO Auto-generated constructor stub
+   }
+
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineParameter.java,v 1.2 2003/12/08 15:00:47 pah Exp $
+ * $Id: CommandLineParameter.java,v 1.3 2003/12/08 17:06:35 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,6 +11,16 @@
 
 package org.astrogrid.applications;
 
+import org.astrogrid.applications.description.ParameterDescription;
+
 public class CommandLineParameter extends Parameter {
    private int position;
+   /**
+    * @param parameterDescription
+    */
+   public CommandLineParameter(ParameterDescription parameterDescription) {
+      super(parameterDescription);
+      // TODO Auto-generated constructor stub
+   }
+
 }

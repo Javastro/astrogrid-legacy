@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationControllerTest.java,v 1.5 2003/12/08 15:00:47 pah Exp $
+ * $Id: CommandLineApplicationControllerTest.java,v 1.6 2003/12/08 17:06:35 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,7 +14,9 @@
 package org.astrogrid.applications.manager;
 
 
+import org.astrogrid.applications.Parameter;
 import org.astrogrid.applications.ParameterValues;
+import org.astrogrid.applications.commandline.CmdLineApplication;
 import org.astrogrid.applications.common.config.BaseDBTestCase;
 import org.astrogrid.applications.description.ApplicationDescriptionConstants;
 import org.astrogrid.applications.description.TestAppConst;
@@ -98,8 +100,17 @@ public class CommandLineApplicationControllerTest extends BaseDBTestCase {
    final public void testInitializeApplication() {
       
       parameters.setMethodName(TestAppConst.MAIN_INTERFACE);
-      parameters.setParameterSpec("<input><parameter name='P1'>1</parameter><parameter name='P1'>2</parameter><parameter name='P2'>p2</parameter><parameter name='P3'>p3</parameter><parameter name='P4'>p4</parameter></input><output><parameter name='P3'>3</parameter></output>");
+      parameters.setParameterSpec("<app><input><parameter name='P1'>1</parameter><parameter name='P1'>2</parameter><parameter name='P2'>p2</parameter><parameter name='P3'>p3</parameter><parameter name='P4'>p4</parameter></input><output><parameter name='P3'>3</parameter></output></app>");
       executionId = controller.initializeApplication(applicationid, jobstepid, monitorURL, user, parameters);
+      CmdLineApplication app = controller.getRunningApplication(executionId);
+      assertNotNull("applicaton object not returned after initialization", app);
+      Parameter[] params = app.getParameters();
+      //print the paramter values out so that we can see what went in
+      System.out.println("Parameter values");
+      for (int i = 0; i < params.length; i++) {
+         System.out.println(i + " " + params[i]);
+      }
+      
    }
 
 }

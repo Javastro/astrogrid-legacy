@@ -1,5 +1,5 @@
 /*
- * $Id: FileReferenceParameter.java,v 1.1 2003/12/08 15:00:47 pah Exp $
+ * $Id: FileReferenceParameter.java,v 1.2 2003/12/08 17:06:35 pah Exp $
  *
  * Created on 08 December 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -12,6 +12,16 @@
 package org.astrogrid.applications;
 
 import java.io.File;
+
+import org.astrogrid.applications.description.ParameterDescription;
 public class FileReferenceParameter extends Parameter {
    private File realFile;
+   /**
+    * @param parameterDescription
+    */
+   public FileReferenceParameter(ParameterDescription parameterDescription) {
+      super(parameterDescription);
+      // TODO Auto-generated constructor stub
+   }
+
 }

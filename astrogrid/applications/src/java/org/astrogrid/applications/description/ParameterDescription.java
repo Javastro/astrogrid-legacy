@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterDescription.java,v 1.1 2003/11/26 22:07:24 pah Exp $
+ * $Id: ParameterDescription.java,v 1.2 2003/12/08 17:06:35 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -12,6 +12,9 @@
 package org.astrogrid.applications.description;
 
 import java.util.List;
+
+import org.astrogrid.applications.CommandLineParameter;
+import org.astrogrid.applications.Parameter;
 /**
  * The basic parameter definition description. 
  */
@@ -36,6 +39,16 @@ public abstract class ParameterDescription {
    private String displayName;
    private String displayDescription;
    private String ucd;
+   
+   /**
+    * Creates a parameter value object. This should be overriden in subclasses where specialzed behaviour is required.
+    * @return
+    */
+   public Parameter createValueObject()
+   {
+      Parameter param = new CommandLineParameter(this);
+      return param;
+   }
 
 
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.11 2003/12/08 15:00:47 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.12 2003/12/08 17:06:35 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import org.astrogrid.applications.commandline.CmdLineApplication;
 import org.astrogrid.applications.commandline.CmdLineApplicationCreator;
 import org.astrogrid.applications.commandline.exceptions.ApplicationExecutionException;
 import org.astrogrid.applications.commandline.exceptions.CannotCreateWorkingDirectoryException;
+import org.astrogrid.applications.description.ParameterLoader;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.community.User;
 
@@ -97,6 +98,10 @@ public class CommandLineApplicationController extends AbstractApplicationControl
                  executionId = environment.getExecutionId();
                  
               //TODO parse the parameter values and set up the parameter array
+              ParameterLoader pl = new ParameterLoader(cmdLineApplication);
+              pl.loadParamters(parameters.getParameterSpec());
+         
+              
             
               // add this application to the execution map
               runningApplications.put(new Integer(executionId), cmdLineApplication);
@@ -119,9 +124,22 @@ public class CommandLineApplicationController extends AbstractApplicationControl
    }
 
    /**
-    *@link aggregation
+    *@link aggregation 
     *      @associates org.astrogrid.applications.commandline.ApplicationEnvironment
     */
-   private Map runningApplications;
+    private Map runningApplications;
+   /**
+    * Return a running application object.this is package private to assist with the unit tests primarily.
+    * @return
+    */
+    CmdLineApplication getRunningApplication(int executionID) {
+      CmdLineApplication app = null;
+      Integer i = new Integer(executionID);
+      if (runningApplications.containsKey(i)) {
+         app = (CmdLineApplication)runningApplications.get(i);         
+      }
+      return app;
+   }
+
 }
 

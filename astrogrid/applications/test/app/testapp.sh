@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: testapp.sh,v 1.3 2003/12/08 15:00:47 pah Exp $
+# $Id: testapp.sh,v 1.4 2003/12/08 17:06:35 pah Exp $
 #Paul Harrison
 #This is a small command line test application - it attempts to parse the major types of command line arguments
 
@@ -11,7 +11,7 @@ done
 
 # parse the parameter values
 # input raw
-echo $0
+echo "application location = " $0
 
 # treat the first paramters as positional only
 
