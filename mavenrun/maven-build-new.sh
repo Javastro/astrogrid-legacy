@@ -7,7 +7,7 @@ DATE=`date`
 BUILD_HOME=~/build/HEAD
 SCRIPTHOME=~/mavenrun
 PROJECT_HOME=$BUILD_HOME/astrogrid/$PROJECT_NAME
-DOC_HOME=/var/www/www/maven/docs
+DOC_HOME=/var/www/www/maven/docs/HEAD
 ASTROGRID_VERSION=HEAD
 LOG_FILE=$BUILD_HOME/maven-build-$PROJECT_NAME.log
 
@@ -59,7 +59,7 @@ echo "Executing astrogrid-deploy-artifact" >> $LOG_FILE 2>&1
 #Use old style download counter
 MY_OPTS=-Dmaven.download.meter=bootstrap
 #Skip the tests for the jar run, since they'll get run during site anyway
-if maven $MY_OPTS -Dmaven.test.skip=true -Dmaven.site.central.directory=$DOC_HOME astrogrid-deploy-artifact >> $LOG_FILE 2>&1
+if maven $MY_OPTS -Dmaven.test.skip=true  astrogrid-deploy-artifact >> $LOG_FILE 2>&1
 then
    echo "*** SUCCESS ***" >> $LOG_FILE
 else
@@ -69,7 +69,7 @@ fi
 
 echo `date` "[ag-build-$PROJECT_NAME] generate and deploy site" 
 echo "Executing astrogrid-deploy-site" >> $LOG_FILE 2>&1 
-if maven $MY_OPTS  -Dmaven.site.central.directory=$DOC_HOME astrogrid-deploy-site >> $LOG_FILE 2>&1 
+if maven $MY_OPTS  -Dastrogrid.docs.root=$DOC_HOME astrogrid-deploy-site >> $LOG_FILE 2>&1 
 then
    echo "*** SUCCESS ***" >> $LOG_FILE
 else
