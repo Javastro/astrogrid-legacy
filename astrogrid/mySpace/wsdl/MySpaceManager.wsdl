@@ -1,119 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions targetNamespace="mySpace:MySpaceManager" xmlns:impl="mySpace:MySpaceManager" xmlns:intf="mySpace:MySpaceManager" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns1="http://mySpaceManager.mySpace.astrogrid.org" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
- <wsdl:types>
-  <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://mySpaceManager.mySpace.astrogrid.org">
-   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
-   <complexType name="DataItemRecord">
-    <sequence>
-     <element name="creationDate" nillable="true" type="xsd:dateTime"/>
-     <element name="dataItemFile" nillable="true" type="xsd:string"/>
-     <element name="dataItemID" type="xsd:int"/>
-     <element name="dataItemName" nillable="true" type="xsd:string"/>
-     <element name="expiryDate" nillable="true" type="xsd:dateTime"/>
-     <element name="ownerID" nillable="true" type="xsd:string"/>
-     <element name="permissionsMask" nillable="true" type="xsd:string"/>
-     <element name="size" type="xsd:int"/>
-     <element name="type" nillable="true" type="xsd:string"/>
-    </sequence>
-   </complexType>
-  </schema>
-  <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://xml.apache.org/xml-soap">
-   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
-   <complexType name="Vector">
-    <sequence>
-     <element name="item" minOccurs="0" maxOccurs="unbounded" type="xsd:anyType"/>
-    </sequence>
-   </complexType>
-  </schema>
- </wsdl:types>
+<wsdl:definitions targetNamespace="mySpace:MySpaceManager" xmlns:impl="mySpace:MySpaceManager" xmlns:intf="mySpace:MySpaceManager" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
 
    <wsdl:message name="lookupDataHoldersDetailsResponse">
 
-      <wsdl:part name="lookupDataHoldersDetailsReturn" type="apachesoap:Vector"/>
+      <wsdl:part name="lookupDataHoldersDetailsReturn" type="xsd:string"/>
 
    </wsdl:message>
 
    <wsdl:message name="deleteDataHolderRequest">
 
-      <wsdl:part name="userID" type="xsd:string"/>
-
-      <wsdl:part name="communityID" type="xsd:string"/>
-
-      <wsdl:part name="jobID" type="xsd:string"/>
-
-      <wsdl:part name="dataItemID" type="xsd:int"/>
+      <wsdl:part name="jobDetails" type="xsd:string"/>
 
    </wsdl:message>
 
    <wsdl:message name="copyDataHolderResponse">
 
-      <wsdl:part name="copyDataHolderReturn" type="tns1:DataItemRecord"/>
+      <wsdl:part name="copyDataHolderReturn" type="xsd:string"/>
 
    </wsdl:message>
 
    <wsdl:message name="deleteDataHolderResponse">
 
-      <wsdl:part name="deleteDataHolderReturn" type="xsd:boolean"/>
+      <wsdl:part name="deleteDataHolderReturn" type="xsd:string"/>
 
    </wsdl:message>
 
-   <wsdl:message name="setRegistryNameResponse">
+   <wsdl:message name="createContainerResponse">
+
+      <wsdl:part name="createContainerReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="exportDataHolderRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="exportDataHolderResponse">
+
+      <wsdl:part name="exportDataHolderReturn" type="xsd:string"/>
 
    </wsdl:message>
 
    <wsdl:message name="lookupDataHolderDetailsRequest">
 
-      <wsdl:part name="userID" type="xsd:string"/>
-
-      <wsdl:part name="communityID" type="xsd:string"/>
-
-      <wsdl:part name="jobID" type="xsd:string"/>
-
-      <wsdl:part name="dataItemID" type="xsd:int"/>
+      <wsdl:part name="jobDetails" type="xsd:string"/>
 
    </wsdl:message>
 
    <wsdl:message name="lookupDataHolderDetailsResponse">
 
-      <wsdl:part name="lookupDataHolderDetailsReturn" type="tns1:DataItemRecord"/>
+      <wsdl:part name="lookupDataHolderDetailsReturn" type="xsd:string"/>
 
    </wsdl:message>
 
-   <wsdl:message name="setRegistryNameRequest">
+   <wsdl:message name="moveDataHolderResponse">
 
-      <wsdl:part name="registryName" type="xsd:string"/>
+      <wsdl:part name="moveDataHolderReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="moveDataHolderRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
 
    </wsdl:message>
 
    <wsdl:message name="copyDataHolderRequest">
 
-      <wsdl:part name="userID" type="xsd:string"/>
+      <wsdl:part name="jobDetails" type="xsd:string"/>
 
-      <wsdl:part name="communityID" type="xsd:string"/>
+   </wsdl:message>
 
-      <wsdl:part name="jobID" type="xsd:string"/>
+   <wsdl:message name="createContainerRequest">
 
-      <wsdl:part name="oldDataItemID" type="xsd:int"/>
-
-      <wsdl:part name="newDataItemName" type="xsd:string"/>
+      <wsdl:part name="jobDetails" type="xsd:string"/>
 
    </wsdl:message>
 
    <wsdl:message name="lookupDataHoldersDetailsRequest">
 
-      <wsdl:part name="userID" type="xsd:string"/>
-
-      <wsdl:part name="communityID" type="xsd:string"/>
-
-      <wsdl:part name="jobID" type="xsd:string"/>
-
-      <wsdl:part name="query" type="xsd:string"/>
+      <wsdl:part name="jobDetails" type="xsd:string"/>
 
    </wsdl:message>
 
    <wsdl:portType name="MySpaceManager">
 
-      <wsdl:operation name="lookupDataHolderDetails" parameterOrder="userID communityID jobID dataItemID">
+      <wsdl:operation name="lookupDataHolderDetails" parameterOrder="jobDetails">
 
          <wsdl:input name="lookupDataHolderDetailsRequest" message="impl:lookupDataHolderDetailsRequest"/>
 
@@ -121,7 +95,7 @@
 
       </wsdl:operation>
 
-      <wsdl:operation name="lookupDataHoldersDetails" parameterOrder="userID communityID jobID query">
+      <wsdl:operation name="lookupDataHoldersDetails" parameterOrder="jobDetails">
 
          <wsdl:input name="lookupDataHoldersDetailsRequest" message="impl:lookupDataHoldersDetailsRequest"/>
 
@@ -129,7 +103,7 @@
 
       </wsdl:operation>
 
-      <wsdl:operation name="copyDataHolder" parameterOrder="userID communityID jobID oldDataItemID newDataItemName">
+      <wsdl:operation name="copyDataHolder" parameterOrder="jobDetails">
 
          <wsdl:input name="copyDataHolderRequest" message="impl:copyDataHolderRequest"/>
 
@@ -137,19 +111,35 @@
 
       </wsdl:operation>
 
-      <wsdl:operation name="deleteDataHolder" parameterOrder="userID communityID jobID dataItemID">
+      <wsdl:operation name="moveDataHolder" parameterOrder="jobDetails">
+
+         <wsdl:input name="moveDataHolderRequest" message="impl:moveDataHolderRequest"/>
+
+         <wsdl:output name="moveDataHolderResponse" message="impl:moveDataHolderResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="exportDataHolder" parameterOrder="jobDetails">
+
+         <wsdl:input name="exportDataHolderRequest" message="impl:exportDataHolderRequest"/>
+
+         <wsdl:output name="exportDataHolderResponse" message="impl:exportDataHolderResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createContainer" parameterOrder="jobDetails">
+
+         <wsdl:input name="createContainerRequest" message="impl:createContainerRequest"/>
+
+         <wsdl:output name="createContainerResponse" message="impl:createContainerResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteDataHolder" parameterOrder="jobDetails">
 
          <wsdl:input name="deleteDataHolderRequest" message="impl:deleteDataHolderRequest"/>
 
          <wsdl:output name="deleteDataHolderResponse" message="impl:deleteDataHolderResponse"/>
-
-      </wsdl:operation>
-
-      <wsdl:operation name="setRegistryName" parameterOrder="registryName">
-
-         <wsdl:input name="setRegistryNameRequest" message="impl:setRegistryNameRequest"/>
-
-         <wsdl:output name="setRegistryNameResponse" message="impl:setRegistryNameResponse"/>
 
       </wsdl:operation>
 
@@ -213,6 +203,60 @@
 
       </wsdl:operation>
 
+      <wsdl:operation name="moveDataHolder">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="moveDataHolderRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="moveDataHolderResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="exportDataHolder">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="exportDataHolderRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="exportDataHolderResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createContainer">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="createContainerRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="createContainerResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
       <wsdl:operation name="deleteDataHolder">
 
          <wsdlsoap:operation soapAction=""/>
@@ -231,31 +275,13 @@
 
       </wsdl:operation>
 
-      <wsdl:operation name="setRegistryName">
-
-         <wsdlsoap:operation soapAction=""/>
-
-         <wsdl:input name="setRegistryNameRequest">
-
-            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
-
-         </wsdl:input>
-
-         <wsdl:output name="setRegistryNameResponse">
-
-            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
-
-         </wsdl:output>
-
-      </wsdl:operation>
-
    </wsdl:binding>
 
    <wsdl:service name="MySpaceManagerService">
 
       <wsdl:port name="MySpaceManager" binding="impl:MySpaceManagerSoapBinding">
 
-         <wsdlsoap:address location="http://143.210.36.107:8080/axis/services/MySpaceManager"/>
+         <wsdlsoap:address location="http://143.210.36.131:8080/services/MySpaceManager"/>
 
       </wsdl:port>
 
