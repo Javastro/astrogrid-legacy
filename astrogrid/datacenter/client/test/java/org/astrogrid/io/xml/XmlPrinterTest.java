@@ -1,5 +1,5 @@
 /*
- $Id: XmlPrinterTest.java,v 1.5 2004/07/06 14:42:52 mch Exp $
+ $Id: XmlPrinterTest.java,v 1.6 2004/09/01 12:06:54 mch Exp $
 
  (c) Copyright...
  */
@@ -27,7 +27,7 @@ public class XmlPrinterTest extends TestCase {
    public void testValid() throws IOException, ParserConfigurationException, SAXException {
       StringWriter sw = new StringWriter();
       
-      XmlPrinter xOut = new XmlPrinter(sw);
+      XmlPrinter xOut = new XmlPrinter(sw, true);
 //      XmlPrinter xOut = new XmlPrinter(System.out);
       
       //test new tag
@@ -61,7 +61,7 @@ public class XmlPrinterTest extends TestCase {
    public void testNewTag() throws IOException, ParserConfigurationException, SAXException {
       StringWriter sw = new StringWriter();
       
-      XmlPrinter xOut = new XmlPrinter(sw);
+      XmlPrinter xOut = new XmlPrinter(sw, true);
       
       //test new tag
       XmlTagPrinter ftag = xOut.newTag("FRUIT");
@@ -116,6 +116,9 @@ public class XmlPrinterTest extends TestCase {
 
 /*
  $Log: XmlPrinterTest.java,v $
+ Revision 1.6  2004/09/01 12:06:54  mch
+ Optional initial processing instruction
+
  Revision 1.5  2004/07/06 14:42:52  mch
  Fixed problems
 
