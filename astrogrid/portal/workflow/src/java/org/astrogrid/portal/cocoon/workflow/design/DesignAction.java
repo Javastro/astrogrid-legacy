@@ -150,6 +150,8 @@ public class DesignAction extends AbstractAction {
         DIRECTION_PARAMETER = "direction",
 	    STEP_NAME_PARAMETER = "step_name",
 	    STEP_DESCRIPTION_PARAMETER = "step_description",
+	    SCRIPT_DESCRIPTION_PARAMETER = "script_description",
+	    SCRIPT_BODY_PARAMETER = "script_body",
 	    PARAM_INDIRECT = "param_indirect";
         
     public static final String
@@ -190,7 +192,8 @@ public class DesignAction extends AbstractAction {
         ACTION_INSERT_SEQUENCE = "insert-sequence", 
         ACTION_INSERT_FLOW = "insert-flow",
 	    ACTION_INSERT_SCRIPT = "insert-script",
-	    ACTION_INSERT_SCRIPT_CODE = "insert-script-code",        
+	    ACTION_INSERT_SCRIPT_DESCRIPTION = "insert-script-description", 
+	    ACTION_INSERT_SCRIPT_BODY = "insert-script-body",       
 		ACTION_INSERT_PARAMETER = "insert-parameter-value",
 	    ACTION_INSERT_INPUT_PARAMETER_INTO_TOOL = "insert-input-parameter-into-tool",
 	    ACTION_INSERT_OUTPUT_PARAMETER_INTO_TOOL = "insert-output-parameter-into-tool",
@@ -420,9 +423,12 @@ public class DesignAction extends AbstractAction {
 				else if( action.equals( ACTION_INSERT_SCRIPT ) ) {
 					this.insertScript();                                                    
 				}
-				else if( action.equals( ACTION_INSERT_SCRIPT_CODE ) ) {
-					this.insertScript();                                                    
-				}								
+				else if( action.equals( ACTION_INSERT_SCRIPT_BODY ) ) {
+					this.insertScriptBody();                                                    
+				}
+				else if( action.equals( ACTION_INSERT_SCRIPT_DESCRIPTION ) ) {
+					this.insertScriptDescription();                                                    
+				}				
                 else if( action.equals( ACTION_REMOVE_ACTIVITY ) ) {
                     this.removeActivity();                                                    
                 }       			                
@@ -1278,16 +1284,57 @@ public class DesignAction extends AbstractAction {
 		} // end of insertScript()
 		
 		
-		private void insertScriptCode() throws ConsistencyException {
-		    if( TRACE_ENABLED ) trace( "DesignActionImpl.insertScriptCode() entry" ) ;
+		private void insertScriptBody() throws ConsistencyException {
+		    if( TRACE_ENABLED ) trace( "DesignActionImpl.insertScriptBody() entry" ) ;
+              
+			Script script = null ;              
               
 			try {
-				 debug("Insert script code here!");         
+				
+				String xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
+				String body = request.getParameter( SCRIPT_BODY_PARAMETER ) ;
+				
+				debug( "xpathKey: " + xpathKey ) ;
+				debug( "body: " + body ) ;
+                                
+				if ( xpathKey == null) {
+					debug( "xpathKey is null" ) ;
+				}
+
+				script = locateScript( workflow, xpathKey );  
+				script.setBody( body );        
 			}
 			finally {
-				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertScriptCode() exit" ) ;
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertScriptBody() exit" ) ;
 			}                    
-		} // end of insertCodeScript()
+		} // end of insertCodeBody()
+
+
+		private void insertScriptDescription() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertScriptDescription() entry" ) ;
+            
+			Script script = null ;
+              
+			try {
+
+				String xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
+				String desc = request.getParameter( SCRIPT_DESCRIPTION_PARAMETER ) ;
+				
+				debug( "xpathKey: " + xpathKey ) ;
+				debug( "desc: " + desc ) ;
+                                
+				if ( xpathKey == null) {
+					debug( "xpathKey is null" ) ;
+				}
+
+				script = locateScript( workflow, xpathKey );  
+				script.setDescription( desc );
+         
+			}
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertScriptDescription() exit" ) ;
+			}                    
+		} // end of insertDescriptionBody()
 			
 			
         private void insertSequence() throws ConsistencyException {
@@ -1724,6 +1771,18 @@ public class DesignAction extends AbstractAction {
                 throw new ConsistencyException() ;
             }   
         }
+        
+		private Script locateScript( Workflow workflow, String xpathKey ) throws ConsistencyException {
+        
+			Object obj = workflow.findXPathValue( xpathKey );
+                    
+			if( obj instanceof Script ) {
+			    return (Script)obj ;
+			}
+		    else {
+			    throw new ConsistencyException() ;
+			}   
+		}        
         
         
         private ActivityContainer locateActivityContainer( Workflow workflow, String xpathKey ) throws ConsistencyException {
