@@ -9,9 +9,10 @@
 
     <!--+
         | Extend the common project descriptor.
-        +-->
-    <extend>../maven/project.xml</extend>
 
+    <extend>../maven/project.xml</extend>
+        +-->
+    <extend>${basedir}/../maven/project.xml</extend>
     <!--+
         | The current version of the Maven project descriptor.
         +-->
@@ -150,24 +151,15 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>SNAPSHOT</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
         
         <dependency>
-            <artifactId>astrogrid-workflow-objects</artifactId>
-            <groupId>org.astrogrid</groupId>
-            <version>${pom.currentVersion}</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-        
-        <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>SNAPSHOT</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
@@ -185,46 +177,17 @@
         </dependency>
 
        <dependency>
-            <artifactId>exist</artifactId>
-            <groupId>exist</groupId>
-            <version>1.0b1</version>
-        </dependency>
-
-       <dependency>
             <artifactId>commons-pool</artifactId>
             <groupId>exist</groupId>
             <version>1.1</version>
         </dependency>
-        
-        
-        <!-- required by castor -->
-        <dependency>
-            <artifactId>castor</artifactId>
-            <groupId>castor</groupId>
-            <version>0.9.5</version>
-            <jar>castor-0.9.5-xml.jar</jar>
-        </dependency>
-        
+
        <dependency>
             <artifactId>commons-logging</artifactId>
             <groupId>commons-logging</groupId>
             <version>1.0.3</version>
         </dependency>
-        
-       <dependency>
-            <artifactId>xmldb</artifactId>
-            <groupId>exist</groupId>
-           <version>unknown</version>            
-        </dependency>
-
-       <dependency>
-            <artifactId>xmlrpc</artifactId>
-            <groupId>exist</groupId>
-            <version>1.2</version>
-            <url>http://www.astrogrid.org</url>
-        </dependency>
-        
-                
+                        
         <dependency>
         	<id>xerces</id>
             <version>2.4.0</version>
@@ -234,7 +197,6 @@
        		<id>xml-apis</id>
           	<version>1.0.b2</version>
         </dependency>
-        
         
         <dependency>
             <artifactId>commons-discovery</artifactId>
@@ -257,12 +219,6 @@
            <id>saaj</id>
            <version>unknown</version>
            <jar>saaj.jar</jar>
-        </dependency>
-        
-        <dependency>
-            <id>ipsi</id>
-            <version>1.0.2</version>
-            <url>http://www.astrogrid.org/</url>
         </dependency>
         
     </dependencies>
