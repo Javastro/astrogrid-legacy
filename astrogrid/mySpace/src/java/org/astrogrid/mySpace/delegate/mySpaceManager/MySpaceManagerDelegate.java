@@ -190,7 +190,7 @@ public class MySpaceManagerDelegate {
                   (String)queryMssUrl.elementAt(loop) );
                 MySpaceHelper helper = new MySpaceHelper();
 				if (DEBUG) System.out.println("currentResponse from internalDataHoldings: "+currentResponse);
-                Vector currentList  = helper.getList(currentResponse);
+                Vector currentList  = helper.getList(currentResponse, "dataItemName");
 				if (DEBUG){ 
 					System.out.println("size: "+currentList.size()); 
 					for (int j=0;j<currentList.size();j++){
@@ -607,13 +607,22 @@ public class MySpaceManagerDelegate {
 //     Obtain the URL of the required dataHolder.
 
         boolean isOk = false;
-        String dataHolderUrl = null;
+        String responsXML = " ";
+        String dataHolderUrl = " ";
 
         try{
             MySpaceHelper helper = new MySpaceHelper();
             String jobDetails = helper.buildDownload(userId,
               communityId, credential, mySpaceName);
-            dataHolderUrl = binding.exportDataHolder(jobDetails);
+			responsXML = binding.exportDataHolder(jobDetails);
+			System.out.println("2222jobDetails : "+responsXML);
+			Vector dataHolderUrlReturn  = helper.getList(responsXML, "dataHolderURI");
+			for (int i=0;i<dataHolderUrlReturn.size();i++){
+				//System.out.println("$*********size: "+dataHolderUrlReturn.size());
+				dataHolderUrl = (String)dataHolderUrlReturn.elementAt(i);
+				//System.out.println("$*********elementat i:: "+dataHolderUrl);
+			}
+			//System.out.println("$*********** dataHolderUrl:0000000"+dataHolderUrl);
             if (dataHolderUrl != null) {
                isOk = true;
             }
@@ -628,6 +637,7 @@ public class MySpaceManagerDelegate {
         if (isOk) {
             try {
                 URL url = new URL(dataHolderUrl);
+                //System.out.println("$*********** url: "+url);
                 InputStream iStream = url.openStream();
 
                 int b;
@@ -645,7 +655,7 @@ public class MySpaceManagerDelegate {
             }
 
         }
-
+         // System.out.println("  YYYYYYYYYYYY content: "+contents);
         return contents;
     }        
     

@@ -31,7 +31,7 @@ public class MySpaceHelper{
 	public MySpaceHelper (){}
 		
     public String buildSave(String userid, String communityid, String credential, String fileName, String fileContent, String category, String action){
-        String fileFullName = "/"+userid.trim()+"/"+communityid.trim()+"/serv1/"+category.toLowerCase().trim()+"/"+fileName.trim();
+        String fileFullName = "/"+userid.trim()+"@"+communityid.trim()+"/serv1/"+category.toLowerCase().trim()+"/"+fileName.trim();
 		StringBuffer request = new StringBuffer() ;
 		try {		
 			request.append("<request>") ;
@@ -361,7 +361,7 @@ public class MySpaceHelper{
 		return request.toString();
 	}		
 
-	public Vector getList( String xmlRequest ){
+	public Vector getList( String xmlRequest , String key){
 		Vector request = new Vector();
 		try{		
 			Document doc = parseRequest( xmlRequest );
@@ -380,9 +380,12 @@ public class MySpaceHelper{
 								if(checker.getFirstChild().getNodeType()==Node.TEXT_NODE) {
 									text = checker.getFirstChild().getNodeValue();
 									if( DEBUG )  System.out.println("BEFORE.PUT.DOWN" +checker.getNodeName()+" TEXT " +text);
-									if (checker.getNodeName().equalsIgnoreCase("dataItemName")){
-										text = text.substring(text.lastIndexOf('/')+1,text.trim().length());
-									    request.add(text);
+									if (checker.getNodeName().equalsIgnoreCase(key)){
+										if(key.equals("dataItemName")){
+										    text = text.substring(text.lastIndexOf('/')+1,text.trim().length());
+										}else{
+											request.add(text);
+										}
 									}								
 									if( DEBUG )  System.out.println("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
 								}
@@ -398,9 +401,12 @@ public class MySpaceHelper{
 							if(checker.getFirstChild()!=null){
 								if(checker.getFirstChild().getNodeType()==Node.TEXT_NODE) {
 									text = checker.getFirstChild().getNodeValue();
-									if (checker.getNodeName().equalsIgnoreCase("dataItemName")){
-										text = text.substring(text.lastIndexOf('/')+1,text.trim().length());
-										request.add(text);
+									if (checker.getNodeName().equalsIgnoreCase(key)){
+										if(key.equals("dataItemName")){
+											text = text.substring(text.lastIndexOf('/')+1,text.trim().length());
+										}else{
+											request.add(text);
+										}
 									}
 																
 									System.out.println("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
@@ -414,9 +420,12 @@ public class MySpaceHelper{
 							if(checker.getFirstChild()!=null){
 								if(checker.getFirstChild().getNodeType()==Node.TEXT_NODE) {
 									text = checker.getFirstChild().getNodeValue();
-									if (checker.getNodeName().equalsIgnoreCase("dataItemName")){
-										text = text.substring(text.lastIndexOf('/')+1,text.trim().length());
-										request.add(text);
+									if (checker.getNodeName().equalsIgnoreCase(key)){
+										if(key.equals("dataItemName")){
+											text = text.substring(text.lastIndexOf('/')+1,text.trim().length());
+										}else{
+											request.add(text);
+										}
 									}								
 									
 									System.out.println("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
