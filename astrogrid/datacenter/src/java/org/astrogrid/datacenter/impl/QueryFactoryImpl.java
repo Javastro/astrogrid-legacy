@@ -11,23 +11,24 @@
 package org.astrogrid.datacenter.impl;
 
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Hashtable;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.DatasetAgent;
-import org.astrogrid.datacenter.i18n.*;
+import org.astrogrid.Configurator ;
+import org.astrogrid.datacenter.DTC;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryFactory;
-
-// import javax.xml.parsers.*;
-import org.w3c.dom.*;
-
-import javax.sql.DataSource ;
-import javax.naming.*; 
-import java.sql.Connection ;
-import java.sql.Statement ;
-import java.sql.ResultSet ;
-import java.sql.SQLException ;
-import java.util.Hashtable ;
+import org.astrogrid.i18n.AstroGridMessage;
+import org.w3c.dom.Element;
 
 
 public class QueryFactoryImpl implements QueryFactory {
@@ -37,6 +38,9 @@ public class QueryFactoryImpl implements QueryFactory {
 	
 	private static Logger 
 		logger = Logger.getLogger( QueryFactoryImpl.class ) ;
+        
+    private final static String
+        SUBCOMPONENT_NAME = Configurator.getClassName( QueryFactoryImpl.class );
 	
 	private static InitialContext 
 	    initialContext = null ;
@@ -98,11 +102,11 @@ public class QueryFactoryImpl implements QueryFactory {
 			
 		}
 		catch( NamingException ne ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_DATASOURCE
-				                     , (datasourceName != null ? datasourceName : "") 
-                                     , (catalogName != null ? catalogName : "") ) ;
-				                     
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_DATASOURCE
+                                              , SUBCOMPONENT_NAME
+				                              , (datasourceName != null ? datasourceName : "") 
+                                              , (catalogName != null ? catalogName : "") ) ;
 			logger.error( message.toString(), ne ) ;
 			throw new QueryException( message, ne );
 		}
@@ -129,8 +133,9 @@ public class QueryFactoryImpl implements QueryFactory {
 			}
 		}
 		catch( SQLException e) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_CONNECTION ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_CONNECTION
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), e ) ;
 			throw new QueryException( message, e );
 		}
@@ -158,8 +163,9 @@ public class QueryFactoryImpl implements QueryFactory {
 		    statement = getConnection( catalogName ).createStatement() ;
 		    resultSet = statement.executeQuery( selectString );
 		} catch (SQLException e) {
-			Message
-				message = new Message( ASTROGRIDERROR_QUERY_EXECUTION_FAILED ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_QUERY_EXECUTION_FAILED
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), e ) ;
 			throw new QueryException( message, e );
 		} finally {
@@ -228,10 +234,12 @@ public class QueryFactoryImpl implements QueryFactory {
 		if( TRACE_ENABLED ) logger.debug( "getDataSourceName(): entry") ;  	
 			
 		String
-		    datasourceName = DatasetAgent.getProperty( catalogName.toUpperCase() + ".DATASOURCE" ) ;
+		    datasourceName = DTC.getProperty( catalogName.toUpperCase() + ".DATASOURCE" 
+                                            , DTC.CATALOG_CATEGORY ) ;
 		    
 		if( datasourceName == null ) { 
-			datasourceName = DatasetAgent.getProperty( ".DATASOURCE" ) ;
+			datasourceName = DTC.getProperty( DTC.CATALOG_DEFAULT_QUERYFACTORY
+                                            , DTC.CATALOG_CATEGORY ) ;
 		}
 		
 		if( TRACE_ENABLED ) logger.debug( "getDataSourceName(): exit") ;  		

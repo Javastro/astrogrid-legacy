@@ -10,24 +10,21 @@
  */
 package org.astrogrid.datacenter.datasetagent;
 
-import org.astrogrid.datacenter.i18n.* ;
+import java.io.StringReader;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.log4j.Logger;
+import org.astrogrid.Configurator ;
+import org.astrogrid.AstroGridException ;
+import org.astrogrid.datacenter.DTC;
 import org.astrogrid.datacenter.job.Job;
 import org.astrogrid.datacenter.myspace.Allocation;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.votable.VOTable;
-
-import org.apache.log4j.Logger;
-
-import java.util.Properties;
-import java.util.ResourceBundle ;
-import java.util.Locale ;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.StringReader ;
-
-import javax.xml.parsers.*;
-import org.w3c.dom.*;
-import org.xml.sax.InputSource ;
+import org.astrogrid.i18n.AstroGridMessage;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 
 /**
@@ -74,180 +71,23 @@ public class DatasetAgent {
 	private static final boolean 
 		TRACE_ENABLED = true ;
 			
-	private static final String 
-	/** Properties' file for this component. */  
-		CONFIG_FILENAME              = "ASTROGRID_datasetconfig.properties",
-	/** Key within the component's Properties' file which helps identify the appropriate
-	 *  language ResourceBundle. */  
-		CONFIG_MESSAGES_BASENAME     = "MESSAGES.INSTALLATION.BASENAME" ,
-	/** Key within the component's Properties' file which helps identify the appropriate
-	 *  language ResourceBundle. */  
-		CONFIG_MESSAGES_LANGUAGECODE = "MESSAGES.INSTALLATION.LANGUAGECODE" ,
-	/** Key within the component's Properties' file which helps identify the appropriate
-	 *  language ResourceBundle. */  
-	    CONFIG_MESSAGES_COUNTRYCODE  = "MESSAGES.INSTALLATION.COUNTRYCODE" ;
-	    
 	private static final String
-	    ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE    = "AGDTCZ00001:DatasetAgent: Could not read my configuration file {0}",
-	    ASTROGRIDERROR_DATASETAGENT_NOT_INITIALIZED = "AGDTCZ00002:DatasetAgent: Not initialized. Perhaps my configuration file is missing.",
 	    ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGDTCE00030",
 	    ASTROGRIDERROR_ULTIMATE_QUERYFAILURE        = "AGDTCE00040";
-	    
-	/** Key within the component's Properties' file signifying whether the web service request
-	 *  document is to be parsed with validation turned on or off*/  
-	private static final String
-		PARSER_VALIDATION = "PARSER.VALIDATION" ;	    
 		
 	/** Log4J logger for this class. */    			    			   			
 	private static Logger 
 		logger = Logger.getLogger( DatasetAgent.class ) ;
 	
-	/** The DatasetAgent's properties' file. */  	
-	private static Properties
-	    configurationProperties = null ;
 	
-	static {
-		doConfigure();
-	}
-	
-	
-	/**
-	  *  
-	  * Static initialization routine called during class loading.
-	  * <p>
-	  * Attempts to load the component's configuration properties
-	  * from a properties file. If it fails, a log message is
-	  * produced. If it succeeds, attempts to configure the
-	  * component's default language basis for messages.
-	  * <p>
-	  * @see configureMessages()
-	  * <p>
-	  * A candidate for refactoring...
-	  * @see org.astrogrid.jes.JobController
-	  * @see org.astrogrid.jes.JobScheduler
-	  * @see org.astrogrid.jes.JobMonitor
-	  * 
-	  **/             
-	private static void doConfigure() {
-		if( TRACE_ENABLED ) logger.debug( "doConfigure(): entry") ;
-				
-		configurationProperties = new Properties() ;
-		
-		try {
-
-		    InputStream 
-		        istream = DatasetAgent.class.getClassLoader().getResourceAsStream( CONFIG_FILENAME ) ;
-		    configurationProperties.load(istream);
-		    istream.close();
-			logger.debug( configurationProperties.toString() ) ;
-			
-			// If successful so far, load installation-type messages
-			configureMessages() ;
-		}
-		catch ( IOException ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE, CONFIG_FILENAME ) ;
-			logger.error( message.toString(), ex ) ;
-		    configurationProperties = null ;
-		}
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "doConfigure(): exit") ;			
-		}
-		
-		return ;
-
-	} // end of doConfigure()
-	  
-	  
-	/**
-	  *  
-	  * Configures the component's language basis for messages.
-	  * This is the installation's default language.
-	  * <p>
-	  * @see org.astrogrid.datacenter.i18n.Message
-	  * <p>
-	  * A candidate for refactoring...
-	  * @see org.astrogrid.jes.JobController
-	  * @see org.astrogrid.jes.JobScheduler
-	  * @see org.astrogrid.jes.JobMonitor
-	  * 
-	  **/               
-    private static void configureMessages() {
-		if( TRACE_ENABLED ) logger.debug( "configureMessages(): entry") ;
-			
-		try {
-			
-			String 
-			    messageBundleBaseName = getProperty( CONFIG_MESSAGES_BASENAME ), 
-			    language = getProperty( CONFIG_MESSAGES_LANGUAGECODE ),
-			    country = getProperty( CONFIG_MESSAGES_COUNTRYCODE ) ;
-
-			logger.debug( "messageBundleBaseName[" + messageBundleBaseName + "]\t" +
-						  "language[" + language + "]\t" +
-						  "country[" + country + "]" ) ;		
-			
-			// JBL Note: various things are done here to make failure
-			// relative and more tasteful. Whether these are worthwhile
-			// remains to be seen.
-			if( messageBundleBaseName != null ) {
-				     
-			    if( (language != null) && (!language.equals("")) )  {
-			    	
-				   Locale
-				      locale =  new Locale( language, (country != null ? country : "") );
-				   Message.setMessageResource( ResourceBundle.getBundle( messageBundleBaseName, locale ) ) ;	
-				   
-			    }
-			    else {
-                   Message.setMessageResource( ResourceBundle.getBundle( messageBundleBaseName ) ) ;	
-			    }
-			    
-			}
-			
-		}
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "configureMessages(): exit") ;	 
-		}
-		 	  
-	} // end of configureMessages()
-	  
-	
-	/**
-	  *  
-	  * Static getter for properties from the component's properties' file.
-	  * <p>
-	  * 
-	  * A candidate for refactoring...
-	  * @see org.astrogrid.jes.JobController
-	  * @see org.astrogrid.jes.JobScheduler
-	  * @see org.astrogrid.jes.JobMonitor
-	  * 
-	  * @param key - the property key
-	  * @return the String value of the property, or the empty string if null
-	  * 
-	  **/       
-	public static String getProperty( String key ) {
-		if( TRACE_ENABLED ) logger.debug( "getProperty(): entry") ;
-		
-		String
-			retValue = configurationProperties.getProperty( key.toUpperCase() ) ;
-
-		if( TRACE_ENABLED ) logger.debug( "getProperty(): exit") ;			
-		return ( retValue == null ? "" : retValue.trim() ) ;
-		
-	} // end of getProperty()
-	
-
 	/**
 	  *  
 	  * Default constructor.
 	  * <p>
-	  * Debug purposes - here for the trace statements.
 	  * 
 	  **/       	
 	public DatasetAgent() {
-		if( TRACE_ENABLED ) logger.debug( "DatasetAgent(): entry") ;
-		if( TRACE_ENABLED ) logger.debug( "DatasetAgent(): exit") ;	
+		if( TRACE_ENABLED ) logger.debug( "DatasetAgent(): entry/exit") ;
 	}
 	
 	
@@ -318,8 +158,8 @@ public class DatasetAgent {
 		try { 
 			// If properties file is not loaded, we bail out...
 			// Each DatasetAgent MUST be properly initialized! 
-	        checkPropertiesLoaded() ;
-    		
+            DTC.getInstance().checkPropertiesLoaded() ;
+  		
     		// Parse the request and create the necessary Job structures, including Query...
          	Document
     		   queryDoc = parseRequest( jobXML ) ;
@@ -346,10 +186,11 @@ public class DatasetAgent {
 			// temporary, for testing
 			response = votable.toString() ;	
     	}
-    	catch( DatacenterException dex ) {
-			Message
+    	catch( AstroGridException dex ) {
+			AstroGridMessage
 			    detailMessage = dex.getAstroGridMessage() ,  
-				generalMessage = new Message( ASTROGRIDERROR_ULTIMATE_QUERYFAILURE ) ;
+				generalMessage = new AstroGridMessage( ASTROGRIDERROR_ULTIMATE_QUERYFAILURE
+                                                     , this.getComponentName() ) ;
 			logger.error( detailMessage.toString(), dex ) ;
 			logger.error( generalMessage.toString() ) ;
 			
@@ -373,24 +214,6 @@ public class DatasetAgent {
     } // end runQuery()
 
 
-    private void checkPropertiesLoaded() throws DatasetAgentException {
-		if( TRACE_ENABLED ) logger.debug( "checkPropertiesLoaded() entry") ;
-		
-		try{
-			if( configurationProperties == null ) {
-				Message
-					message = new Message( ASTROGRIDERROR_DATASETAGENT_NOT_INITIALIZED ) ;
-				logger.error( message.toString() ) ;
-				throw new DatasetAgentException( message ) ;
-			}
-		}
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "checkPropertiesLoaded() exit") ;
-		}
-
-    } // end checkPropertiesLoaded()
-    
-
     private Document parseRequest( String jobXML ) throws DatasetAgentException {  	
 		if( TRACE_ENABLED ) logger.debug( "parseRequest() entry") ;
 		
@@ -402,7 +225,9 @@ public class DatasetAgent {
 	       builder = null;
 	       
 		try {
-		   factory.setValidating( Boolean.getBoolean( getProperty( PARSER_VALIDATION ) ) ) ; 		
+                    
+		   factory.setValidating( Boolean.getBoolean( DTC.getProperty( DTC.DATASETAGENT_PARSER_VALIDATION
+		                                                             , DTC.DATASETAGENT_CATEGORY )  )  ) ; 		
 		   builder = factory.newDocumentBuilder();
 		   logger.debug( jobXML ) ;
 		   InputSource
@@ -410,8 +235,9 @@ public class DatasetAgent {
 		   queryDoc = builder.parse( jobSource );
 		}
 		catch ( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST ) ; 
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST
+                                              , this.getComponentName() ) ; 
 			logger.error( message.toString(), ex ) ;
 			throw new DatasetAgentException( message, ex );
 		} 
@@ -432,4 +258,7 @@ public class DatasetAgent {
     }
 
  
+	public String getComponentName() { return Configurator.getClassName( DatasetAgent.class ) ; }
+
+
 } // end of class DatasetAgent
