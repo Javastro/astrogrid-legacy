@@ -13,41 +13,27 @@ package org.astrogrid.datacenter.queriers.fits;
  * @author M Hill
  */
 
+import java.io.*;
 import org.astrogrid.datacenter.fits.*;
 
-import java.io.File;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.io.FileWriter;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.HttpURLConnection;
-
-import org.astrogrid.datacenter.queriers.QuerierPluginException;
-import org.xml.sax.SAXException;
-import javax.xml.parsers.ParserConfigurationException;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Locale;
+import javax.xml.parsers.ParserConfigurationException;
+import org.astrogrid.datacenter.queriers.QuerierPluginException;
 import org.astrogrid.log.Log;
 import org.astrogrid.util.DomHelper;
-import java.util.Date;
-import java.util.ArrayList;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import org.w3c.dom.Document;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.text.ParseException;
-import java.util.Locale;
+import org.xml.sax.SAXException;
 
 
 public class IndexGenerator
 {
-//   private static Log log = LogFactory.getLog(IndexGenerator.class); //because it's a pain to configure
+//   private static Log log = LogFactory.getLog(IndexGenerator.class); //because it's a pain to configure for quick runtime classes like this
    
    /**
     * Generates a single index FitsFile 'snippet' for the FITS file at the
@@ -213,10 +199,10 @@ public class IndexGenerator
     * Generates an index XML file for the FITS files at the URLs listed in the
     * given file
     */
-   public static String generateIndex(FileReader urlFile) throws IOException
+   public static String generateIndex(InputStream urlsIn) throws IOException
    {
          BufferedReader in
-            = new BufferedReader(urlFile);
+            = new BufferedReader(new InputStreamReader(urlsIn));
          ArrayList al = new ArrayList();
          String line = null;
          while( (line = in.readLine()) != null) {
@@ -229,9 +215,6 @@ public class IndexGenerator
          return indexFile;
    }
 
-   
-   /**
-   
    
    /**
      * Test harness
@@ -252,7 +235,7 @@ public class IndexGenerator
       }
       String indexFile = null;
       if("-f".equals(args[0])) {
-         indexFile = generateIndex(new FileReader(args[1]));
+         indexFile = generateIndex(new FileInputStream(args[1]));
       }else if("-u".equals(args[0])) {
          Object []fitsURLS = new Object[(args.length-1)];
          for(int i = 1;i < args.length;i++) {
@@ -354,6 +337,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.15  2004/09/06 21:38:34  mch
+Changed to take InputStream
+
 Revision 1.14  2004/09/06 21:20:01  mch
 Factored out generateIndex for a filename for tests
 
@@ -413,3 +399,4 @@ Revision 1.1  2003/11/28 18:22:18  mch
 IndexGenerator now working
 
 */
+
