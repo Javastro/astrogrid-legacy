@@ -1,5 +1,5 @@
 /*
- * $Id: WebNotifyServiceListener.java,v 1.1 2003/09/07 18:46:42 mch Exp $
+ * $Id: WebNotifyServiceListener.java,v 1.2 2003/09/09 17:52:29 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -7,7 +7,7 @@
 package org.astrogrid.datacenter.service;
 
 import java.net.URL;
-import org.astrogrid.datacenter.servicestatus.ServiceStatus;
+import org.astrogrid.datacenter.common.ServiceStatus;
 
 
 /**
@@ -51,6 +51,9 @@ public class WebNotifyServiceListener implements ServiceListener
 
 /*
 $Log: WebNotifyServiceListener.java,v $
+Revision 1.2  2003/09/09 17:52:29  mch
+ServiceStatus move and config key fix
+
 Revision 1.1  2003/09/07 18:46:42  mch
 Added stateful (threaded) queries and typesafe service status
 

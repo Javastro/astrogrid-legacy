@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.7 2003/09/08 16:35:07 mch Exp $
+ * $Id: AxisDataServer.java,v 1.8 2003/09/09 17:52:29 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,7 +10,7 @@ import java.io.IOException;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.datacenter.servicestatus.ServiceStatus;
+import org.astrogrid.datacenter.common.ServiceStatus;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 

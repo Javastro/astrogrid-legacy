@@ -1,5 +1,5 @@
 /*
- * $Id: ResultsHelper.java,v 1.1 2003/09/07 18:46:42 mch Exp $
+ * $Id: ResultsHelper.java,v 1.2 2003/09/09 17:52:29 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,7 +8,7 @@ package org.astrogrid.datacenter.service;
 
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
-import org.astrogrid.datacenter.servicestatus.ServiceStatus;
+import org.astrogrid.datacenter.common.ServiceStatus;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 

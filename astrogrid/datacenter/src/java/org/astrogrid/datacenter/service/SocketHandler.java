@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.1 2003/09/07 18:41:42 mch Exp $
+ * $Id: SocketHandler.java,v 1.2 2003/09/09 17:52:29 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -15,7 +15,7 @@ import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.ServiceListener;
-import org.astrogrid.datacenter.servicestatus.ServiceStatus;
+import org.astrogrid.datacenter.common.ServiceStatus;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -114,6 +114,9 @@ public class SocketHandler extends ServiceServer implements Runnable, ServiceLis
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.2  2003/09/09 17:52:29  mch
+ServiceStatus move and config key fix
+
 Revision 1.1  2003/09/07 18:41:42  mch
 Direct Socket (apacheless) server
 

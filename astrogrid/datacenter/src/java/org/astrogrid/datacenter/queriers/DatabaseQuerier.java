@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.11 2003/09/08 19:15:46 mch Exp $
+ * $Id: DatabaseQuerier.java,v 1.12 2003/09/09 17:51:04 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,7 +15,7 @@ import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.ServiceListener;
 import org.astrogrid.datacenter.service.Workspace;
-import org.astrogrid.datacenter.servicestatus.ServiceStatus;
+import org.astrogrid.datacenter.common.ServiceStatus;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
 
@@ -39,7 +39,7 @@ public abstract class DatabaseQuerier implements Runnable
 {
    /** Key to configuration files' entry that tells us what database querier
     * to use with this service   */
-   public static final String DATABASE_QUERIER_KEY = "Database Querier Class";
+   public static final String DATABASE_QUERIER_KEY = "DatabaseQuerierClass";
 
    /** List of serviceListeners who will be updated when the status changes */
    private Vector serviceListeners = new Vector();

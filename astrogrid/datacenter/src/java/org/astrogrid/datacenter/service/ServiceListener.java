@@ -1,12 +1,12 @@
 /*
- * $Id: ServiceListener.java,v 1.4 2003/09/07 18:46:42 mch Exp $
+ * $Id: ServiceListener.java,v 1.5 2003/09/09 17:52:29 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.service;
 
-import org.astrogrid.datacenter.servicestatus.ServiceStatus;
+import org.astrogrid.datacenter.common.ServiceStatus;
 
 
 /**
@@ -26,6 +26,9 @@ public interface ServiceListener
 
 /*
 $Log: ServiceListener.java,v $
+Revision 1.5  2003/09/09 17:52:29  mch
+ServiceStatus move and config key fix
+
 Revision 1.4  2003/09/07 18:46:42  mch
 Added stateful (threaded) queries and typesafe service status
 

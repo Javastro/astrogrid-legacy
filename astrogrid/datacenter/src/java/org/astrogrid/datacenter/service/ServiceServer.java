@@ -1,17 +1,23 @@
 /*
- * $Id: ServiceServer.java,v 1.1 2003/09/07 18:42:19 mch Exp $
+ * $Id: ServiceServer.java,v 1.2 2003/09/09 17:52:29 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import org.apache.axis.utils.XMLUtils;
+import org.apache.xpath.XPathAPI;
+import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
+import org.w3c.dom.NodeList;
 
 /**
  * This abstract class provides the framework for managing the datacenter.  It
@@ -24,45 +30,83 @@ import org.xml.sax.SAXException;
 
 public abstract class ServiceServer
 {
-   /** List of service instances, keyed by their handle, so we can access them
-    * for non-blocking calls
-    *
-   private Hashtable services = new Hashtable();
-    */
+   /** Configuration key to where the metadata file is located */
+   public static final String METADATA_FILE_LOC_KEY = "Metadata File";
+
    /**
     * Returns the metadata in the registry form (VOResource)
     * @todo implement
     */
    public Element getVOResource()
    {
-      throw new UnsupportedOperationException();
+      Element fullMetadata = getMetadata();
+
+      //do some transformation thing
+      Element voResource = fullMetadata; //for now...
+
+      //return transformed document
+      return voResource;
    }
 
    /**
-    * Returns the while metadata file
+    * Returns the whole metadata file as a DOM document
     * @todo implement
     */
    public Element getMetadata()
    {
-      throw new UnsupportedOperationException();
+      try
+      {
+         File metaFile = new File(Configuration.getProperty(METADATA_FILE_LOC_KEY, "Metadata.xml"));
+
+         return XMLUtils.newDocument(new FileInputStream(metaFile)).getDocumentElement();
+      }
+      catch (javax.xml.parsers.ParserConfigurationException e)
+      {
+         Log.logError("XML Parser not configured properly",e);
+         throw new RuntimeException("Server not configured properly",e);
+      }
+      catch (org.xml.sax.SAXException e)
+      {
+         Log.logError("Invalid metadata",e);
+         throw new RuntimeException("Server not configured properly - invalid metadata",e);
+      }
+      catch (IOException e)
+      {
+         Log.logError("Metadata file error",e);
+         throw new RuntimeException("Server not configured properly - metadata i/o error",e);
+      }
    }
 
    /**
-    * Returns the elements of the metadata corresponding to the given XPath
+    * Returns the list of nodes of the metadata corresponding to the given XPath
+    *
     * @todo implement
     */
-   public Element getMetadata(String xpath)
+   public NodeList getMetadata(String xpathExpression) throws IOException
    {
-      throw new UnsupportedOperationException();
-   }
+      Element metadata = getMetadata();
 
+      //do some xpathing
+      try
+      {
+         NodeList nodes = XPathAPI.selectNodeList(metadata, xpathExpression);
+
+         return nodes;
+      }
+      catch (javax.xml.transform.TransformerException e)
+      {
+         throw new IOException("Could not transform metadata using xpath '"+xpathExpression+"'");
+      }
+
+   }
+    /**/
 
    /**
     * Runs a blocking query - ie, starts the query, waits for it to finish
     * and then returns the results.
     *
     */
-   public Element runQuery(Element soapBody) throws QueryException, DatabaseAccessException, IOException
+   public Element runQuery(Element soapBody) throws QueryException, IOException
    {
       return DatabaseQuerier.doQueryGetVotable(soapBody);
    }

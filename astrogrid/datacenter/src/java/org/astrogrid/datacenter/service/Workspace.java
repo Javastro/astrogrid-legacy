@@ -1,5 +1,5 @@
 /**
- * $Id: Workspace.java,v 1.9 2003/09/08 19:39:46 mch Exp $
+ * $Id: Workspace.java,v 1.10 2003/09/09 17:52:29 mch Exp $
  */
 
 package org.astrogrid.datacenter.service;
@@ -24,7 +24,7 @@ import org.astrogrid.log.Log;
 
 public class Workspace
 {
-   public static final String WORKSPACE_DIRECTORY = "Workspace Directory";
+   public static final String WORKSPACE_DIRECTORY = "WorkspaceDirectory";
 
    private static final String ERR_WORKSPACE_ALREADY_IN_USE = "Workspace Already In Use";
 
@@ -33,7 +33,7 @@ public class Workspace
     * for examination
     */
    public static boolean PERSIST = false;
-   
+
    /** File representation of this workspace instance */
    protected File workspaceFile = null;
 
@@ -66,7 +66,7 @@ public class Workspace
          workspaceFile.deleteOnExit();
       }
    }
-   
+
    /**
     * Creates a temporary directory with the name prefixed by the given workspaceId
     * in the workspace directory given in the configuration file
@@ -81,7 +81,7 @@ public class Workspace
          //if a working root is not given, use the working directory
          //File temp = File.createTempFile(workspaceId+"-", "");
          //workRoot = temp.getAbsolutePath();
-         
+
          //or just use the working directory
          workspaceFile = new File(workspaceId);
       }
@@ -90,10 +90,10 @@ public class Workspace
          //if a working root path has been given, create the workspace from that
          File workDir = new File(workRoot);
          Log.affirm(workDir.isDirectory(), "Working root '"+workRoot+"' given by configuration key '"+WORKSPACE_DIRECTORY+"' is not a directory");
-         
+
          workspaceFile = new File(workRoot + File.separator + workspaceId);
       }
-         
+
       if (workspaceFile.exists())
       {
          throw new IllegalArgumentException(ERR_WORKSPACE_ALREADY_IN_USE);
@@ -134,7 +134,7 @@ public class Workspace
    {
       return (workspaceFile == null);
    }
-   
+
    /**
     * Called by teh garbage collector when there are no more references to
     * it - check it's been closed and close if not
@@ -153,7 +153,7 @@ public class Workspace
          super.finalize();
       }
    }
-   
+
    /**
     * Deletes the contents of the workspace
     */
@@ -202,7 +202,7 @@ public class Workspace
    public static void emptyDirectory(File dir) throws IOException
    {
       Log.affirm(dir != null, "Null File given as directory");
-      
+
       if (!dir.exists())
       {
          throw new IOException("'"+dir + "' does not exist");

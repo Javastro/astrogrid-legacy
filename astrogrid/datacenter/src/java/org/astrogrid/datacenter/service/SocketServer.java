@@ -1,5 +1,5 @@
 /*
- * $Id: SocketServer.java,v 1.1 2003/09/07 18:41:59 mch Exp $
+ * $Id: SocketServer.java,v 1.2 2003/09/09 17:52:29 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,7 +8,9 @@ package org.astrogrid.datacenter.service;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+
 import org.astrogrid.datacenter.service.ServiceServer;
+import org.astrogrid.datacenter.config.Configuration;
 
 /**
  * A quick and dirty tcp/ip socket server that listens on a port, reading
@@ -22,6 +24,15 @@ import org.astrogrid.datacenter.service.ServiceServer;
 public class SocketServer
 {
    ServerSocket serverSocket = null;
+
+   /**
+    * Constructs a server socket on the standard/configured port and starts
+    * to listen on it
+    */
+   public SocketServer() throws IOException
+   {
+      this(Integer.parseInt(Configuration.getProperty("SocketServerPort", "1901")));
+   }
 
    /** Constructs a server socket on the given port and
     * starts to listen on it
@@ -45,7 +56,7 @@ public class SocketServer
 
    public static void main(String args[]) throws IOException
    {
-      SocketServer server = new SocketServer(4040);
+      SocketServer server = new SocketServer();
 
       server.run();
    }

@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.8 2003/09/08 19:15:46 mch Exp $
+ * $Id: SqlQuerier.java,v 1.9 2003/09/09 17:51:18 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -43,13 +43,13 @@ public class SqlQuerier extends DatabaseQuerier
    protected Connection jdbcConnection = null;
 
    /** configuration file key, that gives us the name of a datasource in JNDI to use for this database querier */
-   public static final String JNDI_DATASOURCE_KEY = "Database Querier JNDI Datasource";
+   public static final String JNDI_DATASOURCE_KEY = "DatabaseQuerier.JndiDatasource";
    /** configuration file key, stores a JDBC connection URL for tis database querier */
-   public static final String JDBC_URL_KEY = "Database Querier JDBC URL";
+   public static final String JDBC_URL_KEY = "DatabaseQuerier.JdbcUrl";
    /** configuration file key, stores a set of properties for the connection */
-   public static final String JDBC_CONNECTION_PROPERTIES_KEY = "Database Querier Connection Properties";
+   public static final String JDBC_CONNECTION_PROPERTIES_KEY = "DatabaseQuerier.ConnectionProperties";
    /** JDBC Driver(s) - list each one on a separate line */
-   public static final String JDBC_DRIVERS_KEY = "Database JDBC Drivers";
+   public static final String JDBC_DRIVERS_KEY = "DatabaseQuerier.JdbcDrivers";
 
    /** Default constructur
     * Looks for JNDI connection, if that fails look for JDBC connection
@@ -135,13 +135,16 @@ public class SqlQuerier extends DatabaseQuerier
       {
          //read value
          String drivers = Configuration.getProperty(JDBC_DRIVERS_KEY);
-         //break down into lines
-         StringTokenizer tokenizer = new StringTokenizer(drivers, ",");
-         while (tokenizer.hasMoreTokens())
+         if (drivers != null)
          {
-            String driver = tokenizer.nextToken().trim();
-            Log.trace("Starting JDBC driver '"+driver+"'...");
-            Class.forName(driver).newInstance();
+            //break down into lines
+            StringTokenizer tokenizer = new StringTokenizer(drivers, ",");
+            while (tokenizer.hasMoreTokens())
+            {
+               String driver = tokenizer.nextToken().trim();
+               Log.trace("Starting JDBC driver '"+driver+"'...");
+               Class.forName(driver).newInstance();
+            }
          }
       }
       catch (IllegalAccessException e)
