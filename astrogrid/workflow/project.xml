@@ -67,14 +67,177 @@
 </developers>
  
   <dependencies> <!-- hope to be able to remove some of these soon. -->
+    <!-- astrogrid -specific deps -->
+    <dependency>
+      <id>astrogrid-common</id>
+      <version>SNAPSHOT</version>
+    </dependency>
 
+
+    <!-- more standard deps -->
+    <dependency>
+      <id>commons-logging</id>
+      <version>1.0.3</version>
+    </dependency>
+        	<!-- logging and testing -->
+    <dependency>
+      <id>junit</id>
+      <version>3.8</version>
+    </dependency>
+    <dependency>
+      <id>log4j</id>
+      <version>1.2.4</version>
+    </dependency>   
+     <dependency>
+      <id>cocoon</id>
+      <version>2.0.4</version>
+    </dependency>
+    <dependency>
+      <artifactId>axis</artifactId>
+      <groupId>axis</groupId>
+      <version>1.1</version>
+    </dependency>
+    <!-- Don't know where this one comes from!-->
+    <!-- who builds this and where does it go? -->
+    <dependency>
+	   	<artifactId>policy-client</artifactId>  
+	   	<groupId>policy-client</groupId>  
+     	<version>1.0</version>
+    </dependency>
+     <!-- Don't know where this one comes from!-doesn't exist on repo -->
+    <dependency>
+    	<artifactId>authentication-client</artifactId>
+    	<groupId>authentication-client</groupId>
+    	<version>1.0</version>
+    </dependency>          
+  
+    <!--not entirely sure this is pointing to the right version (is 4.1.4 in original non-maven build)-->   
+    <dependency>
+	   	<artifactId>avalon-framework</artifactId>  
+	   	<groupId>avalon-framework</groupId>  
+     	<version>20020627</version>
+    </dependency> 
+    <!--this was jesdelegates-1.0.jar in the non-maven build-->
+     <dependency>
+	   	<artifactId>astrogrid-jes</artifactId>  
+	   	<groupId>astrogrid-jes</groupId>  
+     	<version>SNAPSHOT</version>
+    </dependency>     
+        <dependency>
+    	<artifactId>jconfig</artifactId>
+    	<groupId>jconfig</groupId>
+    	<version>2.1</version>
+    </dependency>  
+    <dependency>
+    	<artifactId>logkit</artifactId>
+    	<groupId>logkit</groupId>
+    	<version>1.2</version><!--1.2.2 available-->
+    </dependency>     
+    
+    <!-- we need the myspace client to compile. fix this later when mySpace packaging is better. -->
+    <!--IMPORTANT!  This dependency must go after authentication-client for now since
+        it contains a duff version of CommunityMessage.  Otherwise the build errors generated
+        by Maven will drive you nuts!  Temporary fix this - don't think we can rely 
+        on this ordering.-->
+    <dependency>
+    	<id>astrogrid-mySpace</id>
+	<version>SNAPSHOT</version>
+    </dependency>
            
   </dependencies>
 
   <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
 
+    <unitTest>
+      <includes>
+        <include>**/*Test*.java</include>
+      </includes>
+
+      <resources>
+        <resource>
+          <directory>${basedir}/test/java</directory>
+          <includes>
+            <include>**/*.xml</include>
+	    <include>**/*.properties</include>
+	    <include>**/*.sql</include>
+          </includes>
+        </resource>
+      </resources>
+    </unitTest>
+
+    <resources>
+    	<resource><!-- config files -->
+		<directory>${basedir}/src/java</directory>
+		<includes>
+			<include>**/*.xml</include>
+			<include>**/*.properties</include>
+		</includes>
+	</resource>
+	<resource> <!-- schemas  - may be needed for validation -->
+		<directory>${basedir}</directory>
+		<includes>
+			<include>schema/*.xsd</include>
+			<include>schema/*.dtd</include>
+		</includes>
+	</resource>
+	<resource> <!-- webservice related files -->
+		<directory>${basedir}</directory>
+		<includes>
+			<include>wsdl/*.wsdl</include>
+			<include>wsdd/*.wsdd</include>
+		</includes>
+	</resource>
+    </resources>
 
   </build>
 
-
+  <reports>
+    <report>
+      maven-changelog-plugin
+    </report>
+    <report>
+      maven-changes-plugin
+    </report>
+    <report>
+      maven-checkstyle-plugin
+    </report>
+    <report>
+      maven-clover-plugin
+    </report>
+    <report>
+      maven-developer-activity-plugin
+    </report>
+    <report>
+      maven-file-activity-plugin
+    </report>
+    <report>
+      maven-javadoc-plugin
+    </report>
+    <report>
+      maven-jdepend-plugin
+    </report>
+    <report>
+      maven-junit-report-plugin
+    </report>
+    <report>
+      maven-jxr-plugin
+    </report>
+    <report>
+      maven-license-plugin
+    </report>
+    <report>
+      maven-linkcheck-plugin
+    </report>
+    <report>
+      maven-pmd-plugin
+    </report>
+    <report>
+      maven-tasklist-plugin
+    </report>
+    <report>
+      maven-simian-plugin
+    </report>
+  </reports>
 </project>
