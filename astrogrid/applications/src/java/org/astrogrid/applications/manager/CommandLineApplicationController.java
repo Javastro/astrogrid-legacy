@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.30 2004/04/23 11:01:44 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.31 2004/05/17 06:21:00 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -281,7 +281,6 @@ public class CommandLineApplicationController extends AbstractApplicationControl
          retval.setLevel(LogLevel.INFO);
          retval.setPhase(ExecutionPhase.RUNNING);
          retval.setSource(app.getApplicationDescription().getExecutionPath() + " running at "+app.getApplicationEnvironment().getExecutionDirectory().toString());
-         retval.setTimestamp(new Date());
       }
       else // look in the persistance store
       {
@@ -294,6 +293,8 @@ public class CommandLineApplicationController extends AbstractApplicationControl
          retval.setSource("not enough information is being returned here");
          
       }
+      retval.setTimestamp(new Date());
+
       return retval;
 
    }
