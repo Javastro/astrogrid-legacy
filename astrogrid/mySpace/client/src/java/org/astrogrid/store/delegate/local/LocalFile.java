@@ -1,5 +1,5 @@
 /*
- * $Id: LocalFile.java,v 1.2 2004/06/14 23:08:53 jdt Exp $
+ * $Id: LocalFile.java,v 1.3 2004/09/06 11:27:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -88,6 +88,11 @@ public class LocalFile implements StoreFile {
    
    /** Returns the mime type (null if unknown) */
    public String getMimeType() {
+      if (file.getName().endsWith(".txt"))   return "text/plain";
+      if (file.getName().endsWith(".xml"))   return "text/xml";
+      if (file.getName().endsWith(".vot"))   return "text/xml+votable";
+      if (file.getName().endsWith(".adql"))  return "text/xml+adql";
+      if (file.getName().endsWith(".job"))   return "text/xml+job";
       return null;
    }
    
@@ -129,19 +134,30 @@ public class LocalFile implements StoreFile {
 
 /*
 $Log: LocalFile.java,v $
+Revision 1.3  2004/09/06 11:27:16  mch
+Added softwired mime types
+
 Revision 1.2  2004/06/14 23:08:53  jdt
 Merge from branches
+
 ClientServerSplit_JDT
+
 and
+
 MySpaceClientServerSplit_JDT
 
+
+
 MySpace now split into a client/delegate jar
+
 astrogrid-myspace-<version>.jar
+
 and a server/manager war
+
 astrogrid-myspace-server-<version>.war
 
 Revision 1.1.2.1  2004/06/14 22:33:21  jdt
-Split into delegate jar and server war.  
+Split into delegate jar and server war.
 Delegate: astrogrid-myspace-SNAPSHOT.jar
 Server/Manager: astrogrid-myspace-server-SNAPSHOT.war
 
