@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlQuery.java,v 1.5 2004/04/22 15:14:34 mch Exp $
+ * $Id: AdqlQuery.java,v 1.6 2004/09/28 15:06:47 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,8 +11,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import javax.xml.parsers.ParserConfigurationException;
-import org.astrogrid.datacenter.adql.ADQLUtils;
-import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.io.Piper;
 import org.astrogrid.util.DomHelper;
 import org.exolab.castor.xml.CastorException;
@@ -40,20 +38,6 @@ public class AdqlQuery implements Query {
       this.adqlXml = givenAdql;
    }
 
-   /** Constructs query from Object model representation
-    */
-   public AdqlQuery(Select givenAdql) throws QueryException {
-      try {
-         //rather wastfully just converts back to a string...
-         this.adqlXml = ADQLUtils.queryToString(givenAdql);
-      }
-      catch (CastorException e) {
-         throw new QueryException("Caster error: ",e);
-      }
-      catch (IOException e) {
-         throw new QueryException("IO error: ",e);
-      }
-   }
    /** Constructs query from Object model representation
     */
    public AdqlQuery(Element givenAdql) throws QueryException {
@@ -104,6 +88,9 @@ public class AdqlQuery implements Query {
 }
 /*
  $Log: AdqlQuery.java,v $
+ Revision 1.6  2004/09/28 15:06:47  mch
+ Removed ADQL 0.5 object model
+
  Revision 1.5  2004/04/22 15:14:34  mch
  Introduced WebDelegate_v05
 
