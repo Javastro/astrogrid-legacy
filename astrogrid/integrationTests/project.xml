@@ -24,6 +24,14 @@
 			<includes>
 				<include>**/*Test.java</include>
 			</includes>
+			<resources>
+				<resource>
+					<directory>${basedir}/test/java</directory>
+					<includes>
+						<include>**/*.properties</include>
+					</includes>
+				</resource>
+			</resources>
 		</unitTest>
 	</build>
 	<developers>
@@ -82,49 +90,19 @@
 	</dependencies>
 	<reports>
 		<report>
-      maven-changelog-plugin
-    </report>
+      		maven-junit-report-plugin
+    	</report>
 		<report>
-      maven-changes-plugin
-    </report>
+      		maven-changelog-plugin
+    	</report>
 		<report>
-      maven-checkstyle-plugin
-    </report>
+      		maven-changes-plugin
+    	</report>
 		<report>
-      maven-clover-plugin
-    </report>
+      		maven-developer-activity-plugin
+    	</report>
 		<report>
-      maven-developer-activity-plugin
-    </report>
-		<report>
-      maven-file-activity-plugin
-    </report>
-		<report>
-      maven-javadoc-plugin
-    </report>
-		<report>
-      maven-jdepend-plugin
-    </report>
-		<report>
-      maven-junit-report-plugin
-    </report>
-		<report>
-      maven-jxr-plugin
-    </report>
-		<report>
-      maven-license-plugin
-    </report>
-		<report>
-      maven-linkcheck-plugin
-    </report>
-		<report>
-      maven-pmd-plugin
-    </report>
-		<report>
-      maven-tasklist-plugin
-    </report>
-		<report>
-      maven-simian-plugin
-    </report>
-	</reports>
+      		maven-file-activity-plugin
+   	 	</report>
+   	</reports>
 </project>
