@@ -1,5 +1,5 @@
 /*
- * $Id: Sql2Adql05.java,v 1.3 2004/08/18 09:17:36 mch Exp $
+ * $Id: Sql2Adql05.java,v 1.4 2004/08/18 16:27:15 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,62 +20,14 @@ import org.astrogrid.io.xml.XmlTagPrinter;
 
 public class Sql2Adql05  {
    
-   
    public static String translate(String sql) throws IOException {
       SqlParser parser = new SqlParser();
       parser.parseStatement(sql);
 
-      TableResultsDefinition resultsDef = (TableResultsDefinition) parser.getResultsDef();
-      Condition whereClause = parser.getWhere();
-      String[] scope = parser.getScope();
-      
-      
-      StringWriter sw = new StringWriter();
-      XmlPrinter xw = new XmlPrinter(sw);
-      xw.writeComment("ADQL generated from SQL: "+sql);
-
-      //--- SELECT ---
-      XmlTagPrinter selectTag = xw.newTag("Select", "xmlns='http://tempuri.org/adql'");
-
-      if (resultsDef.getColDefs() == null) {
-         selectTag.writeTag("SelectionAll",null);
-      }
-      else {
-         XmlTagPrinter selectionList = selectTag.newTag("SelectionList");
-         for (int i = 0; i < resultsDef.getColDefs().length; i++) {
-            ColumnReference colRef = (ColumnReference) resultsDef.getColDefs()[i];
-            XmlTagPrinter col = selectionList.newTag("ColumnExpr");
-            XmlTagPrinter singleCol = col.newTag("SingleColumnReference");
-            singleCol.writeTag("TableName",colRef.getTableName());
-            singleCol.writeTag("Name",colRef.getColName());
-         }
-      }
-
-      XmlTagPrinter tableClauseTag = selectTag.newTag("TableClause");
-      
-      //-- FROM ---
-      // we just duplicate alias names as table names for now
-      XmlTagPrinter tableRefTag = tableClauseTag.newTag("FromClause").newTag("TableReference");
-
-      for (int i = 0; i < scope.length; i++) {
-         XmlTagPrinter tableTag = tableRefTag.newTag("Table");
-         tableTag.writeTag("Name", scope[i]);
-         tableTag.writeTag("AliasName", scope[i]);
-      }
-
-      //-- WHERE --
-      if (whereClause != null) {
-         XmlTagPrinter whereClauseTag = tableClauseTag.newTag("WhereClause");
-      
-      }
-      
-      //-- tidy up --
-      selectTag.close();
-      
-      return sw.toString();
+      return Query2Adql05.makeAdql(parser.getQuery(), "ADQL generated from SQL: "+sql);
    }
    
-   
+  
    /**
     * Test harness
     */
@@ -104,12 +56,19 @@ public class Sql2Adql05  {
          adql = Sql2Adql05.translate(s);
      
          System.out.println(adql);
+         
+         //example
+         s = "SELECT t.a, g.d FROM Tab as a, Tab as d WHERE a.d < d.e AND a.f < d.f";
+         System.out.println(Sql2Adql05.translate(s));
       }
    }
 }
 
 /*
  $Log: Sql2Adql05.java,v $
+ Revision 1.4  2004/08/18 16:27:15  mch
+ Combining ADQL generators from SQL parser and query builder
+
  Revision 1.3  2004/08/18 09:17:36  mch
  Improvement: split literals to strings vs numerics, added functions, better class/interface structure, brackets, etc
 

@@ -30,25 +30,35 @@
    }
 %>
 <html>
-<header>
+<head>
 <title>ADQL/sql Translator Form</title>
-</header>
+<%=HtmlDataServer.getCssLink() %>
+<link rel="stylesheet" href="default.css" type="text/css">
+</head>
 <body>
+  <%=HtmlDataServer.getPageHeader() %>
   <h1>Translate ADQL/sql to ADQL/xml</h1>
   <p>
    <form action="translateAdql.jsp" method="GET">
     <p>
-      ADQL/sql <textarea name="AdqlSql" rows='1' cols='100'><%=adqlSql %></textarea><br />
+      <table><tr>
+        <td>ADQL/sql</td>
+        <td><textarea name="AdqlSql" rows='1' cols='100'><%=adqlSql %></textarea></td>
+      </tr></table>
     </p>
     <p>
        <input type='submit' name='MakeAdql05' value='Make ADQL v0.5' />
        <input type='submit' name='MakeAdql074' value='Make ADQL v0.7.4' />
     </p>
     <p>
-      ADQL/xml <textarea name="AdqlXml" rows='50' cols='100'><%=adqlXml %></textarea><br/>
+      <table><tr>
+        <td>ADQL/xml</td>
+        <td><textarea name="AdqlXml" rows='50' cols='100'><%=adqlXml %></textarea></td>
+      </tr></table>
     </p>
    </form>
   </p>
+  <%=HtmlDataServer.getPageFooter() %>
 </body>
 </html>
 

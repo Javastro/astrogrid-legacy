@@ -24,6 +24,7 @@
       out.write("</pre>\n");
       
    } catch (Throwable th) {
+      th.printStackTrace();   //in case logging isn't working...
       LogFactory.getLog(request.getContextPath()).error(th);
       out.write(HtmlDataServer.exceptionAsHtmlPage("Getting metadata", th));
    }

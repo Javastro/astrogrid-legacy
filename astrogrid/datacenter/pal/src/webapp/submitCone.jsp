@@ -29,7 +29,7 @@
       double dec = Double.parseDouble(param_dec);
       double sr = Double.parseDouble(param_sr);
 
-      TargetIndicator target =server.makeTarget(resultsTarget);
+      TargetIndicator target = server.makeTarget(resultsTarget);
 
       if (target == null) {
          server.askQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), out, resultsFormat);

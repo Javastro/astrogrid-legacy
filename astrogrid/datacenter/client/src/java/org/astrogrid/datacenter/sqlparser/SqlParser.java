@@ -1,5 +1,5 @@
 /*
- * $Id: SqlParser.java,v 1.3 2004/08/18 09:17:36 mch Exp $
+ * $Id: SqlParser.java,v 1.4 2004/08/18 16:27:15 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -40,10 +40,14 @@ public class SqlParser  {
       whereClause = parseBoolean(expression);
    }
    
-   public Condition getWhere() { return whereClause; }
-   public ResultsDefinition getResultsDef() { return resultsDef; }
-   public String[] getScope() { return (String[]) scope.toArray( new String[] {} ); }
+//   public Condition getWhere() { return whereClause; }
+//   public ResultsDefinition getResultsDef() { return resultsDef; }
+//   public String[] getScope() { return (String[]) scope.toArray( new String[] {} ); }
 
+   public Query getQuery() {
+      return new Query((String[]) scope.toArray( new String[] {} ), whereClause, resultsDef);
+   }
+   
    //contains results of a breakExpression call
    private class BrokenExpression {
       String left;
@@ -437,6 +441,9 @@ public class SqlParser  {
 
 /*
  $Log: SqlParser.java,v $
+ Revision 1.4  2004/08/18 16:27:15  mch
+ Combining ADQL generators from SQL parser and query builder
+
  Revision 1.3  2004/08/18 09:17:36  mch
  Improvement: split literals to strings vs numerics, added functions, better class/interface structure, brackets, etc
 

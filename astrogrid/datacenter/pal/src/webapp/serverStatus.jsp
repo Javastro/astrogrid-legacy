@@ -23,6 +23,7 @@
       out.write(server.serverStatusAsHtml());
       out.write(server.makeRefreshSnippet(10, statusUrl.toString()));
    } catch (Throwable th) {
+      th.printStackTrace();   //in case logging isn't working...
       LogFactory.getLog(request.getContextPath()).error(th);
       out.write(server.exceptionAsHtmlPage("Getting server status", th));
    }
