@@ -20,7 +20,6 @@ class CreateRegistry
    {  if (argv.length == 1)
       {  String registryName = argv[0]; //argv[0] is "example"
 
-         String registryFileName = registryName + ".reg";
          String registryInitialName = registryName + ".initial";
 
 //
