@@ -1,5 +1,5 @@
 /*
- * $Id: AuthorityConfigPlugin.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: AuthorityConfigPlugin.java,v 1.2 2004/10/01 18:04:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,7 +8,9 @@ package org.astrogrid.datacenter.metadata;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Date;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.service.AxisDataServer;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.io.xml.XmlPrinter;
 import org.astrogrid.io.xml.XmlTagPrinter;
@@ -30,7 +32,12 @@ public class AuthorityConfigPlugin implements VoResourcePlugin {
       StringWriter sw = new StringWriter();
       
       XmlPrinter resourceSnippet = new XmlPrinter(sw, false);
-      XmlTagPrinter authResource = resourceSnippet.newTag("Resource", new String[] {"xsi:type='AuthorityType'"});
+      XmlTagPrinter authResource = resourceSnippet.newTag("Resource",
+            new String[] {
+               "xsi:type='AuthorityType'",
+               "status='active'",
+               "updated='"+new Date()+"'"
+            });
       XmlTagPrinter identifier = authResource.newTag("Identifier");
       identifier.writeTag("AuthorityID", SimpleConfig.getSingleton().getString("datacenter.authorityId"));
       identifier.writeTag("ResourceKey", SimpleConfig.getSingleton().getString("datacenter.resourceKey"));
@@ -52,6 +59,10 @@ public class AuthorityConfigPlugin implements VoResourcePlugin {
       contact.writeTag("Name", SimpleConfig.getSingleton().getString("datacenter.contact.name",""));
       contact.writeTag("Email", SimpleConfig.getSingleton().getString("datacenter.contact.email",""));
       contact.writeTag("Date", SimpleConfig.getSingleton().getString("datacenter.contact.date",""));
+
+      XmlTagPrinter iface = authResource.newTag("Interface");
+      iface.writeTag("Invocation", "WebService");
+      iface.writeTag("AccessURL", new String[] { "use='full'" }, AxisDataServer.getUrlStem()+"/services/AxisDataServer");
       
       resourceSnippet.close();
       sw.close();

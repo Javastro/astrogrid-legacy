@@ -1,14 +1,13 @@
 /*
- * $Id: TaskStatus.java,v 1.1 2004/10/01 09:42:56 mch Exp $
+ * $Id: TaskStatus.java,v 1.1 2004/10/01 18:04:59 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.status.task;
+package org.astrogrid.status;
 
-import java.util.Vector;
-import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.query.QueryState;
+import java.util.Date;
+import org.astrogrid.community.Account;
 
 /**
  * Defines the things that a task status must be able to return
@@ -24,32 +23,40 @@ public interface TaskStatus
 
    /** Returns the ID of the task */
    public String getId();
-   
-   /** Return true if this task should come before the given task */
-   public boolean isBefore(TaskStatus status);
 
-   /** Returns one of the above state constants */
-   public String getState();
+   /** Returns the time the task started */
+   public Date getStartTime();
+   
+   /** Returns who owns the task */
+   public Account getOwner();
+   
+   /** Returns one of the above stage constants */
+   public String getStage();
    
    /** Returns true if the task has finished, whether it has completed successfully or not */
    public boolean isFinished();
    
    /** Some kind of progress indication.  */
    public long getProgress();
-   
    public long getProgressMax();
+   public long getProgressMin();
 
    /** A user description of the state of the current task */
    public String getMessage();
 
    /** A list of messages or some kind of history of the task.  For example, for datacenters
-    * this records what SQL was submitted, where the results are going to */
+    * this records what SQL was submitted, where the results are going to, etc that are concatinated
+    * as they occur
+    */
    public String[] getDetails();
    
 }
 
 /*
 $Log: TaskStatus.java,v $
+Revision 1.1  2004/10/01 18:04:59  mch
+Some factoring out of status stuff, added monitor page
+
 Revision 1.1  2004/10/01 09:42:56  mch
 Began to factor out Status
 

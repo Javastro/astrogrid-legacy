@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.1 2004/09/28 15:11:33 mch Exp $
+/*$Id: DataServiceTest.java,v 1.2 2004/10/01 18:04:59 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,8 @@ import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.datacenter.returns.TargetIndicator;
+import org.astrogrid.status.SelfMonitorBody;
+import org.astrogrid.status.TaskStatus;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
@@ -81,13 +83,21 @@ public class DataServiceTest extends ServerTestCase {
       
    }
 
+   /**
+    * Tests the status */
+   public void testStatus() throws Throwable {
+      //submit queries
+      StringWriter sw = new StringWriter();
+      server.submitQuery(Account.ANONYMOUS, new ConeQuery(30, 30, 6), new ReturnTable(new TargetIndicator(sw), "VOTABLE"));
+      server.submitQuery(Account.ANONYMOUS, query1, new ReturnTable(new TargetIndicator(sw), "VOTABLE"));
 
-    /*
-    public void testMakeQueryWithId() throws Exception {
-        String qid = server.makeQueryWithId(query,"foo");
-        assertEquals("foo",qid);
-    }
-     */
+      DataServiceStatus status = DataServer.getStatus();
+      TaskStatus[] tasks = status.getTasks();
+      assertTrue(tasks.length>1);
+      
+      String s = SelfMonitorBody.getHtmlStatus(status);
+      assertNotNull(s);
+   }
     
     public void testAbort() throws Exception {
        //@todo
@@ -125,6 +135,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.2  2004/10/01 18:04:59  mch
+Some factoring out of status stuff, added monitor page
+
 Revision 1.1  2004/09/28 15:11:33  mch
 Moved server test directory to pal
 

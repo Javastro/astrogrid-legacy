@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.1 2004/09/28 15:11:33 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.2 2004/10/01 18:04:59 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,7 +45,7 @@ public class SqlPluginTest extends ServerTestCase {
       super(arg0);
    }
 
-   QuerierManager manager = new QuerierManager("SqlQuerierTest");
+   QuerierManager manager = QuerierManager.getManager("SqlQuerierTest");
    
    /**
     * @see TestCase#setUp()
@@ -215,6 +215,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.2  2004/10/01 18:04:59  mch
+ Some factoring out of status stuff, added monitor page
+
  Revision 1.1  2004/09/28 15:11:33  mch
  Moved server test directory to pal
 

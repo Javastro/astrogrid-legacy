@@ -1,5 +1,5 @@
 /*
- * $Id: CutoutPlugin.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: CutoutPlugin.java,v 1.2 2004/10/01 18:04:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -36,7 +36,7 @@ public class CutoutPlugin extends QuerierPlugin {
     * tidied up and discarded as nec before returning - there is no close() method
     */
    public void askQuery() throws IOException {
-      querier.setStatus(new QuerierQuerying(querier));
+      querier.setStatus(new QuerierQuerying(querier.getStatus()));
       
       Query query = querier.getQuery();
 
@@ -47,11 +47,11 @@ public class CutoutPlugin extends QuerierPlugin {
       }
       else {
          RuntimeException t = new IllegalArgumentException("This plugin supports only cone queries");
-         querier.setStatus(new QuerierError(querier, "", t));
+         querier.setStatus(new QuerierError(querier.getStatus(), "", t));
          throw t;
       }
       
-      querier.setStatus(new QuerierComplete(querier));
+      querier.setStatus(new QuerierComplete(querier.getStatus()));
 
    
    
@@ -64,6 +64,9 @@ public class CutoutPlugin extends QuerierPlugin {
 
 /*
  $Log: CutoutPlugin.java,v $
+ Revision 1.2  2004/10/01 18:04:58  mch
+ Some factoring out of status stuff, added monitor page
+
  Revision 1.1  2004/09/28 15:02:13  mch
  Merged PAL and server packages
 

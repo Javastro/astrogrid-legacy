@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v05.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: AxisDataService_v05.java,v 1.2 2004/10/01 18:04:59 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,6 +9,7 @@ package org.astrogrid.datacenter.service.v05;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import javax.xml.rpc.server.ServiceLifecycle;
 import org.apache.axis.AxisFault;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
@@ -22,6 +23,7 @@ import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.service.AxisDataServer;
 import org.astrogrid.datacenter.service.DataServer;
+import javax.xml.rpc.ServiceException;
 
 /**
  * The implementation of the Datacenter web service for It4.1.
@@ -35,7 +37,7 @@ import org.astrogrid.datacenter.service.DataServer;
 
 public class AxisDataService_v05 extends AxisDataServer implements AxisDataServer_v05_Port  {
    
-
+   
    /**
     * Ask adql query for blocking operation - returns the results
     */
@@ -119,7 +121,7 @@ public class AxisDataService_v05 extends AxisDataServer implements AxisDataServe
       soapyStatus.setQueryID(queryId);
       QuerierStatus status = super.getQueryStatus(getUser(), queryId);
       soapyStatus.setState(status.getState().toString());
-      soapyStatus.setNote(status.getNote());
+      soapyStatus.setNote(status.getMessage());
       return soapyStatus;
    }
    
@@ -133,6 +135,9 @@ public class AxisDataService_v05 extends AxisDataServer implements AxisDataServe
 
 /*
 $Log: AxisDataService_v05.java,v $
+Revision 1.2  2004/10/01 18:04:59  mch
+Some factoring out of status stuff, added monitor page
+
 Revision 1.1  2004/09/28 15:02:13  mch
 Merged PAL and server packages
 

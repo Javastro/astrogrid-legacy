@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: AxisDataServer.java,v 1.2 2004/10/01 18:04:59 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,19 +9,22 @@ package org.astrogrid.datacenter.service;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.rpc.ServiceException;
+import javax.xml.rpc.server.ServiceLifecycle;
+import javax.xml.rpc.server.ServletEndpointContext;
 import org.apache.axis.AxisEngine;
 import org.apache.axis.AxisFault;
 import org.apache.axis.server.AxisServer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.store.Agsl;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.util.DomHelper;
 
 /**
@@ -37,7 +40,7 @@ import org.astrogrid.util.DomHelper;
  *
  */
 
-public abstract class AxisDataServer  {
+public abstract class AxisDataServer implements ServiceLifecycle {
    
    protected Log log = LogFactory.getLog(AxisDataServer.class);
 
@@ -47,6 +50,30 @@ public abstract class AxisDataServer  {
    protected final static boolean CLIENTFAULT = true;
    /** Constant for makeFault - problem with server (or unknown) */
    protected final static boolean SERVERFAULT = false;
+
+   /** set during init to the url stem for this context, eg http://grendel12.roe.ac.uk/pal-6df  */
+   protected static String contextUrlStem = null;
+   
+   /** Called when the context is instantiated? */
+   public void init(Object context) throws ServiceException {
+      if (context instanceof ServletEndpointContext) {
+         ServletEndpointContext endpointcontext = (ServletEndpointContext) context;
+         log.info("Initialising AxisDataServer with context "+endpointcontext.getServletContext().getServletContextName());
+      }
+      else {
+         log.info("Initialising AxisDataServer with unknown context type "+context.getClass()+": "+context.toString());
+      }
+   }
+   
+   /** When endpoint instance is finished, this gets called */
+   public void destroy() {
+         log.info("Destroying AxisDataServer");
+   }
+   
+   /** Returns the url stem for this context, eg http://grendel12.roe.ac.uk/pal-6df  */
+   public static String getUrlStem() {
+      return contextUrlStem;
+   }
    
    /**
     * Axis provides an AxisFault for reporting errors through SOAP.  This method
@@ -171,6 +198,9 @@ public abstract class AxisDataServer  {
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.2  2004/10/01 18:04:59  mch
+Some factoring out of status stuff, added monitor page
+
 Revision 1.1  2004/09/28 15:02:13  mch
 Merged PAL and server packages
 

@@ -1,4 +1,4 @@
-/*$Id: EgsoQuerierTest.java,v 1.7 2004/09/29 13:55:27 mch Exp $
+/*$Id: EgsoQuerierTest.java,v 1.8 2004/10/01 18:04:58 mch Exp $
  * Created on 01-Dec-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  */
 public class EgsoQuerierTest extends ServerTestCase {
    
-   QuerierManager manager = new QuerierManager("SqlQuerierTest");
+   QuerierManager manager = QuerierManager.getManager("SqlQuerierTest");
    
    public EgsoQuerierTest(String arg0) {
       super(arg0);
@@ -92,6 +92,9 @@ public class EgsoQuerierTest extends ServerTestCase {
 
 /*
  $Log: EgsoQuerierTest.java,v $
+ Revision 1.8  2004/10/01 18:04:58  mch
+ Some factoring out of status stuff, added monitor page
+
  Revision 1.7  2004/09/29 13:55:27  mch
  Updated ADQL versions
 

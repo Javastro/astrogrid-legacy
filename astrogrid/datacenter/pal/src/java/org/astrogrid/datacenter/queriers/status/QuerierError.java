@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierError.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: QuerierError.java,v 1.2 2004/10/01 18:04:59 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,15 +12,16 @@ import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPluginException;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryState;
+import org.astrogrid.status.TaskStatus;
 
 public class QuerierError extends QuerierStatus implements QuerierClosed
 {
    Throwable cause;
-   String message;
+   String errorMsg;
    
-   public QuerierError(Querier querier, String givenMessage, Throwable causeOfError) {
-      super(querier);
-      this.message = givenMessage;
+   public QuerierError(QuerierStatus previousStatus, String givenMessage, Throwable causeOfError) {
+      super(previousStatus);
+      this.errorMsg = givenMessage;
 
       //unwrap wrapping exceptions
       if ((causeOfError != null) && (causeOfError.getCause() != null) && (
@@ -47,17 +48,26 @@ public class QuerierError extends QuerierStatus implements QuerierClosed
    }
    
    public String message() {
-      return message;
+      return errorMsg;
    }
 
    public String toString() {
-      return super.toString()+": "+cause.getMessage()+" ("+message+")";
+      return super.toString()+": "+cause.getMessage()+" ("+errorMsg+")";
    }
+
+   /** Returns a standard TaskStatus stage string */
+   public String getStage() {    return TaskStatus.ERROR; }
+   
+   /** Returns true */
+   public boolean isFinished() { return true; }
    
 }
 
 /*
 $Log: QuerierError.java,v $
+Revision 1.2  2004/10/01 18:04:59  mch
+Some factoring out of status stuff, added monitor page
+
 Revision 1.1  2004/09/28 15:02:13  mch
 Merged PAL and server packages
 

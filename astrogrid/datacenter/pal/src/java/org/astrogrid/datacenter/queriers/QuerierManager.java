@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+/*$Id: QuerierManager.java,v 1.2 2004/10/01 18:04:58 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,10 +11,11 @@
 package org.astrogrid.datacenter.queriers;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Hashtable;
+import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.status.QuerierClosed;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 
@@ -33,6 +34,9 @@ public class QuerierManager implements QuerierListener {
    /** Identifier for this manager/querier container */
    private String managerId;
    
+   /** List of managers */
+   private static Hashtable managers = new Hashtable();
+   
    /** lookup table of all the current queriers indexed by their handle*/
    private Hashtable runningQueriers = new Hashtable();
 
@@ -45,9 +49,21 @@ public class QuerierManager implements QuerierListener {
    /** This isn't the right place to keep this, but it will do for now */
    public final static String DEFAULT_MYSPACE = "DefaultMySpace";
    
-   /** Constructor.   */
-   public QuerierManager(String givenId) {
+   /** Constructor. Protected because we want to force people to use the factory method   */
+   protected QuerierManager(String givenId) {
       this.managerId = givenId;
+   }
+   
+   /** Factory method - checks to see if the givenId already exists and returns that if so */
+   public synchronized static QuerierManager getManager(String givenId) {
+      if (managers.get(givenId) != null) {
+         return (QuerierManager) managers.get(givenId);
+      }
+      else {
+         QuerierManager manager = new QuerierManager(givenId);
+         managers.put(givenId, manager);
+         return manager;
+      }
    }
 
    /** Return the querier with the given id */
@@ -62,15 +78,41 @@ public class QuerierManager implements QuerierListener {
    
    /** Returns a list of all the ids of the currently running queriers
     */
-   public String[] getRunning() {
-      return (String[]) runningQueriers.keySet().toArray(new String[] {});
+   public QuerierStatus[] getRunning() {
+      Querier[] running = (Querier[]) runningQueriers.values().toArray(new Querier[] {} );
+      QuerierStatus[] statuses = new QuerierStatus[running.length];
+      for (int i = 0; i < running.length; i++) {
+         statuses[i] = running[i].getStatus();
+      }
+      return statuses;
    }
    
-   /** Returns the IDs of the queriers already run
+   /** Returns a list of all the ids of the currently running queriers
     */
-   public String[] getRan() {
-      return (String[]) closedQueriers.keySet().toArray(new String[] {});
+   public QuerierStatus[] getClosed() {
+      Querier[] closed = (Querier[]) closedQueriers.values().toArray(new Querier[] {} );
+      QuerierStatus[] statuses = new QuerierStatus[closed.length];
+      for (int i = 0; i < closed.length; i++) {
+         statuses[i] = closed[i].getStatus();
+      }
+      return statuses;
    }
+   
+   /** Returns the status's of all the queriers */
+   public QuerierStatus[] getAllStatus() {
+      Querier[] running = (Querier[]) runningQueriers.values().toArray(new Querier[] {} );
+      Querier[] ran = (Querier[]) closedQueriers.values().toArray(new Querier[] {} );
+
+      Vector statuses = new Vector();
+      for (int i = 0; i < running.length; i++) {
+         statuses.add(running[i].getStatus());
+      }
+      for (int i = 0; i < ran.length; i++) {
+         statuses.add(ran[i].getStatus());
+      }
+      return (QuerierStatus[]) statuses.toArray(new QuerierStatus[] {} );
+   }
+   
    /**
     * Adds the given querier to this manager, and starts it off on a new
     * thread
@@ -127,6 +169,9 @@ public class QuerierManager implements QuerierListener {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.2  2004/10/01 18:04:58  mch
+ Some factoring out of status stuff, added monitor page
+
  Revision 1.1  2004/09/28 15:02:13  mch
  Merged PAL and server packages
 

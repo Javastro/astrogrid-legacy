@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: Querier.java,v 1.2 2004/10/01 18:04:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -150,7 +150,7 @@ public class Querier implements Runnable {
       catch (Throwable th) {
          log.error("Exception during Asynchronous Run",th);
          if (!(getStatus() instanceof QuerierError)) {
-            setStatus(new QuerierError(this, "", th));
+            setStatus(new QuerierError(getStatus(), "", th));
          }
       }
       log.info("...Ending asynchronous Query ["+id+"]");
@@ -193,7 +193,7 @@ public class Querier implements Runnable {
     * Closes & tidies up
     */
    public void close() {
-      setStatus(new QuerierComplete(this));
+      setStatus(new QuerierComplete(getStatus()));
       if (plugin != null) plugin.close();
       plugin = null;  //release plugin reference (-> can be garbage collected)
    }
@@ -226,7 +226,7 @@ public class Querier implements Runnable {
       //if it's already completed stopped, plugin will be null
       if (plugin != null) {
          plugin.abort();
-         setStatus(new QuerierAborted(this));
+         setStatus(new QuerierAborted(getStatus()));
       }
          
       return getStatus();
@@ -350,6 +350,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.2  2004/10/01 18:04:58  mch
+ Some factoring out of status stuff, added monitor page
+
  Revision 1.1  2004/09/28 15:02:13  mch
  Merged PAL and server packages
 

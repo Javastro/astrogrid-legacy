@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierTest.java,v 1.7 2004/09/29 18:45:55 mch Exp $
+/*$Id: VizierQuerierTest.java,v 1.8 2004/10/01 18:04:58 mch Exp $
  * Created on 01-Dec-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -85,7 +85,7 @@ public class VizierQuerierTest extends ServerTestCase {
 //
 //    Generate a QuerierManager, generate the query and perform it.
 
-       QuerierManager manager = new QuerierManager("DummyTest");
+       QuerierManager manager = QuerierManager.getManager("DummyTest");
 
        StringWriter sw = new StringWriter();
 
@@ -172,6 +172,9 @@ public class VizierQuerierTest extends ServerTestCase {
 
 /*
 $Log: VizierQuerierTest.java,v $
+Revision 1.8  2004/10/01 18:04:58  mch
+Some factoring out of status stuff, added monitor page
+
 Revision 1.7  2004/09/29 18:45:55  mch
 Bringing Vizier into line with new(er) metadata stuff
 

@@ -27,6 +27,7 @@
 
 <%
    String queryId = request.getParameter("ID");
+   boolean isFinished = false;
    try {
       QuerierStatus status = server.getQueryStatus(Account.ANONYMOUS, queryId);
 %>
@@ -39,23 +40,33 @@
 <h2> <%= ServletHelper.makeSafeForHtml(status.getState().toString()) %></h2>
 
 <p>
-<b>  <%= ServletHelper.makeSafeForHtml(status.getNote()) %></b>
+<b>  <%= ServletHelper.makeSafeForHtml(status.getMessage()) %></b>
 </p>
       
 <%
-      String[] details= status.getDetails();
-      
-      for (int i=0;i<details.length;i++) {
-         out.write("<p>"+ServletHelper.makeSafeForHtml(details[i])+"</p>\n");
-      }
+      while (status != null) {
+         String[] details= status.getDetails();
+         
+         for (int i=0;i<details.length;i++) {
+            out.write("<p>"+ServletHelper.makeSafeForHtml(details[i])+"</p>\n");
+         }
+   
+         out.write("<p>"+status.getProgressMsg()+"</p>");
 
-      out.write("<p>"+status.getProgressMsg()+"</p>");
-      
-      if (!(status instanceof QuerierClosed)) {
+         //if any status is finsihed, the whole thing is finished
+         if (status.isFinished()) isFinished = true;
+         
+         out.write("<hr>");
+         status = status.getPrevious();
+      }
+         
+      if (!isFinished) {
          //automatic refresh
          URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
          out.write(ServletHelper.makeRefreshSnippet(3, statusUrl+"?ID="+queryId));
       }
+         
+         
    } catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
       out.write(ServletHelper.exceptionAsHtmlPage("Getting status of query '"+queryId+"'", th));

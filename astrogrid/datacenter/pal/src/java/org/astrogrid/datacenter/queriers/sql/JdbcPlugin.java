@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.2 2004/10/01 18:04:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -83,14 +83,14 @@ public class JdbcPlugin extends QuerierPlugin implements VoResourcePlugin  {
          jdbcConnection = getJdbcConnection();
          Statement statement = jdbcConnection.createStatement();
          
-         querier.setStatus(new QuerierQuerying(querier));
+         querier.setStatus(new QuerierQuerying(querier.getStatus()));
          
          //execute query
          log.info("Performing Query: " + sql);
          statement.execute(sql);
          ResultSet results = statement.getResultSet();
 
-         querier.setStatus(new QuerierQueried(querier));
+         querier.setStatus(new QuerierQueried(querier.getStatus()));
          
          if (!aborted) {
             
@@ -104,7 +104,7 @@ public class JdbcPlugin extends QuerierPlugin implements VoResourcePlugin  {
          
       }
       catch (SQLException e) {
-         querier.setStatus(new QuerierError(querier, "JDBC Query Failed",e));
+         querier.setStatus(new QuerierError(querier.getStatus(), "JDBC Query Failed",e));
          //we don't really need to store stack info for the SQL exception, which saves logging...
          throw new DatabaseAccessException("Could not query database using '" + sql + "': "+e);
       }

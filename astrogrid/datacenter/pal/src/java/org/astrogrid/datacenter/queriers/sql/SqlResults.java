@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: SqlResults.java,v 1.2 2004/10/01 18:04:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -120,7 +120,7 @@ public class SqlResults extends QueryResults
          printOut.println("<DATA>");
          printOut.println("<TABLEDATA>");
 
-         String note = statusToUpdate.getNote();
+         String note = statusToUpdate.getMessage();
          
 //         sqlResults.beforeFirst();
          int row = 0;
@@ -207,7 +207,7 @@ public class SqlResults extends QueryResults
          while (sqlResults.next())
          {
             row++;
-            statusToUpdate.setNote("Processing Row "+row+ofMax);
+            statusToUpdate.setMessage("Processing Row "+row+ofMax);
 
             printOut.println("<TR>");
             for (int i=1;i<=cols;i++)
@@ -261,7 +261,7 @@ public class SqlResults extends QueryResults
 
          printOut.println();
 
-         String note = statusToUpdate.getNote();
+         String note = statusToUpdate.getMessage();
 
          int row = 0;
          int maxRow = getCount();
@@ -270,7 +270,7 @@ public class SqlResults extends QueryResults
          while (sqlResults.next())
          {
             row++;
-            statusToUpdate.setNote(note+"\nProcessing Row "+row+ofMax);
+            statusToUpdate.setMessage(note+"\nProcessing Row "+row+ofMax);
 
             for (int c=1;c<=cols;c++)
             {
@@ -311,6 +311,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.2  2004/10/01 18:04:58  mch
+ Some factoring out of status stuff, added monitor page
+
  Revision 1.1  2004/09/28 15:02:13  mch
  Merged PAL and server packages
 

@@ -1,5 +1,5 @@
 /*
- * $Id: QueryResults.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: QueryResults.java,v 1.2 2004/10/01 18:04:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -100,7 +100,7 @@ public abstract class QueryResults
     */
    public void send(ReturnSpec returns, Account user) throws IOException {
       
-      QuerierProcessingResults status = new QuerierProcessingResults(querier);
+      QuerierProcessingResults status = new QuerierProcessingResults(querier.getStatus());
       querier.setStatus(status);
 
       log.info(querier+", sending results to "+returns);
@@ -111,7 +111,7 @@ public abstract class QueryResults
       }
       else {
 
-         status.setNote("Sending results to "+returns.getTarget());
+         status.setMessage("Sending results to "+returns.getTarget());
 
          Writer writer = returns.getTarget().resolveWriter(user);
       
@@ -130,7 +130,7 @@ public abstract class QueryResults
       String s = "Results sent to "+returns.getTarget();
       if (returns.getTarget().isIvorn()) s = s + " => "+returns.getTarget().resolveAgsl();
       status.addDetail(s);
-      status.setNote("");
+      status.setMessage("");
         
       log.info(querier+" results sent");
    }
@@ -140,7 +140,7 @@ public abstract class QueryResults
     */
    protected void email(ReturnSpec returns, QuerierProcessingResults status) throws IOException {
 
-      status.setNote("emailing results to "+returns.getTarget().getEmail());
+      status.setMessage("emailing results to "+returns.getTarget().getEmail());
          
       String targetAddress = returns.getTarget().getEmail();
       

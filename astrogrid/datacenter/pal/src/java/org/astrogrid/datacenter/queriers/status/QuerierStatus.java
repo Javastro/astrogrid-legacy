@@ -1,20 +1,23 @@
 /*
- * $Id: QuerierStatus.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: QuerierStatus.java,v 1.2 2004/10/01 18:04:59 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.status;
 
+import java.util.Date;
 import java.util.Vector;
+import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.query.QueryState;
+import org.astrogrid.status.TaskStatus;
 
 /**
  * Records the status and past activity of a querier
  */
 
-public abstract class QuerierStatus
+public abstract class QuerierStatus implements TaskStatus
 {
    /** List of messages for user - eg errors, information, etc */
    Vector details = new Vector();
@@ -30,23 +33,59 @@ public abstract class QuerierStatus
    
    /** Progress max */
    long progressMax = -1;
+
+   /** Previous status */
+   QuerierStatus previous = null;
+
+   /** Timestamp of when this status occured */
+   Date timestamp = new Date();
    
    /** A constructor makes a status from a previous status.  This means
     * we can carry previous information along with it
-    */
+    *
    public QuerierStatus(Querier querier) {
       if ( (querier!= null) && (querier.getStatus() != null)) {
          //copy in old details to new ones
          String[] oldDetails = querier.getStatus().getDetails();
          for (int i=0;i<oldDetails.length;i++) { addDetail(oldDetails[i]); }
+         id = querier.getId();
       }
    }
+
+   /** Initial constructor - should only be called by subclasses that form
+    * the beginning of the task status chain (see 'previous')*/
+   protected QuerierStatus() {
+   }
    
+   /** Makes a status from a previous status.  This means
+    * we can carry previous information along with it
+    */
+   public QuerierStatus(QuerierStatus previousStatus) {
+      assert previousStatus != null;
+      
+      this.previous = previousStatus;
+   }
+   
+   /** Returns ID of query this status refers to */
+   public String getId() { return previous.getId(); }
+
+   /** Returns the start time of the task */
+   public Date getStartTime() { return previous.getStartTime(); }
+   
+   /** Returns the owner of the task */
+   public Account getOwner() { return previous.getOwner(); }
+
+   /** Returns the timestamp of this status - ie when the task reached this status */
+   public Date getTimestamp() { return timestamp; }
+   
+   
+   /** Returns true if this status should come before the given status */
    public boolean isBefore(QuerierStatus status)
    {
       return this.getState().getOrder() < status.getState().getOrder();
    }
-   
+
+   /** Subclasses should return the appropriate enumerated state */
    public abstract QueryState getState();
    
    public String toString() {
@@ -61,10 +100,14 @@ public abstract class QuerierStatus
    public String[] getDetails() {
       return (String[]) details.toArray(new String[] {} );
    }
+
+   public QuerierStatus getPrevious() {
+      return previous;
+   }
    
-   public void setNote(String newNote) { this.note = newNote; }
+   public void setMessage(String newNote) { this.note = newNote; }
    
-   public String getNote() { return note; }
+   public String getMessage() { return note; }
    
    public void newProgress(String note, long max) {
       progressNote = note;
@@ -81,6 +124,7 @@ public abstract class QuerierStatus
    }
    public long getProgress() { return progressPos; }
    public long getProgressMax() { return progressMax; }
+   public long getProgressMin() { return 0; }
    
    /** Returns the progress as a human readable string */
    public String getProgressMsg() {
@@ -97,6 +141,9 @@ public abstract class QuerierStatus
 
 /*
 $Log: QuerierStatus.java,v $
+Revision 1.2  2004/10/01 18:04:59  mch
+Some factoring out of status stuff, added monitor page
+
 Revision 1.1  2004/09/28 15:02:13  mch
 Merged PAL and server packages
 

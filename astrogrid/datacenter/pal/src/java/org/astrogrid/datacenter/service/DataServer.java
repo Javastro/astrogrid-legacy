@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.2 2004/10/01 09:42:56 mch Exp $
+ * $Id: DataServer.java,v 1.3 2004/10/01 18:04:59 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -49,10 +49,10 @@ public class DataServer
     * we can access the same queriers through different interfaces; eg start a querier
     * using the AxisDataServer, but then watch its progress using a browser
     */
-   protected final static QuerierManager querierManager = new QuerierManager("DataServer");
+   protected final static QuerierManager querierManager = QuerierManager.getManager("DataServer");
 
    /** Start Time for status info */
-   public final Date startTime = new Date();
+   public final static DataServiceStatus status = new DataServiceStatus();
 
    /** Configuration setting used to mark whether raw sql is allowed */
    public final static String SQL_PASSTHROUGH_ENABLED = "datacenter.sql.passthrough.enabled";
@@ -85,13 +85,19 @@ public class DataServer
          log.error(msg, th);
          if (querier != null) {
             if (!(querier.getStatus() instanceof QuerierError)) {
-               querier.setStatus(new QuerierError(querier, msg,th));
+               querier.setStatus(new QuerierError(querier.getStatus(), msg,th));
             }
          }
          throw th;
       }
    }
- 
+
+   /**
+    * Returns the status object */
+   public static DataServiceStatus getStatus() {
+      return status;
+   }
+   
    /**
     * Submits a (non-blocking) ADQL/XML/OM query, returning the query's external
     * reference id.  Results will be output to given Agsl
@@ -109,7 +115,7 @@ public class DataServer
          log.error(msg, th);
          if (querier != null) {
             if (!(querier.getStatus() instanceof QuerierError)) {
-               querier.setStatus(new QuerierError(querier, msg,th));
+               querier.setStatus(new QuerierError(querier.getStatus(), msg,th));
             }
          }
          throw th;
@@ -141,7 +147,7 @@ public class DataServer
          log.error(msg, th);
          if (querier != null) {
             if (!(querier.getStatus() instanceof QuerierError)) {
-               querier.setStatus(new QuerierError(querier, msg,th));
+               querier.setStatus(new QuerierError(querier.getStatus(), msg,th));
             }
          }
          throw th;
@@ -181,18 +187,7 @@ public class DataServer
       return querier.abort();
    }
    
-   /**
-    * Returns number of queries tracked that are running */
-   public static String[] getRunning() {
-      return querierManager.getRunning();
-   }
-   
-   /**
-    * Returns number of queries tracked that have completed */
-   public static String[] getDone() {
-      return querierManager.getRan();
-   }
-   
+ 
    
    
    

@@ -1,10 +1,10 @@
 /*
- * $Id: ServiceStatusSnapshot.java,v 1.1 2004/10/01 09:42:56 mch Exp $
+ * $Id: ServiceStatusSnapshot.java,v 1.1 2004/10/01 18:04:59 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.status.service;
+package org.astrogrid.status;
 
 /**
  * Basic status information for a service.  Particular astrogrid components might

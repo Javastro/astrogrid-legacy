@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierTest.java,v 1.1 2004/09/28 15:11:33 mch Exp $
+ * $Id: QuerierTest.java,v 1.2 2004/10/01 18:04:59 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -61,18 +61,18 @@ public class QuerierTest extends ServerTestCase {
       assertEquals(QueryState.CONSTRUCTED, querier.getStatus().getState());
 
       // check we can change to next step.
-      querier.setStatus(new QuerierQuerying(querier));
+      querier.setStatus(new QuerierQuerying(querier.getStatus()));
       assertEquals(QueryState.RUNNING_QUERY,querier.getStatus().getState());
       listener.reset();
       
       // check we can jump some steps..
-      querier.setStatus(new QuerierComplete(querier));
+      querier.setStatus(new QuerierComplete(querier.getStatus()));
       assertEquals(QueryState.FINISHED,querier.getStatus().getState());
       listener.reset();
       
       //check that we can;t go back a step however
       try {
-         querier.setStatus(new QuerierProcessingResults(querier));
+         querier.setStatus(new QuerierProcessingResults(querier.getStatus()));
          fail("Should have failed trying to go back a step");
       } catch (IllegalStateException e) {
          //expected
@@ -86,14 +86,14 @@ public class QuerierTest extends ServerTestCase {
 
       // now set an error
       Exception e = new Exception("blerghh");
-      querier.setStatus(new QuerierError(querier, "More bleurgh",e));
+      querier.setStatus(new QuerierError(querier.getStatus(), "More bleurgh",e));
       assertEquals(QueryState.ERROR,querier.getStatus().getState());
       listener.reset();
       assertEquals(e, ((QuerierError) querier.getStatus()).getCause());
 
       // now check we can't alter status any further
       try {
-         querier.setStatus(new QuerierComplete(querier));
+         querier.setStatus(new QuerierComplete(querier.getStatus()));
          fail("expected to barf");
       } catch (IllegalStateException ignored) {
          //expected

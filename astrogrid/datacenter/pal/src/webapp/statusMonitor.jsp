@@ -1,0 +1,36 @@
+<%@ page import="java.io.*,
+       org.w3c.dom.*,
+       java.net.URL,
+       java.util.Date,
+       org.astrogrid.io.*,
+       org.astrogrid.datacenter.service.ServletHelper,
+       org.astrogrid.status.monitor.Monitor"
+   isThreadSafe="false"
+   session="false"
+%>
+<%!
+    Monitor monitor = new Monitor();
+%>
+
+<html>
+<head><title>Service Status Monitoring Page</title>
+<style type="text/css" media="all">
+          @import url("./style/maven-base.css");
+          @import url("./style/maven-theme.css");
+</style>
+</head>
+<body>
+<%@ include file="header.xml" %>
+<div id='bodyColumn'>
+
+<h1>Services Status Monitor  at <%= new Date() %></h1>
+
+<%= monitor.writeHtmlTables(new PrintWriter(out)) %>
+
+<%= ServletHelper.makeRefreshSnippet(10,
+         new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/statusMonitor.jsp").toString()
+      ) %>
+</div>
+</body>
+</html>
+

@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierQueried.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: QuerierQueried.java,v 1.2 2004/10/01 18:04:59 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,6 +9,7 @@ package org.astrogrid.datacenter.queriers.status;
 import java.util.Date;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.query.QueryState;
+import org.astrogrid.status.TaskStatus;
 
 /** Defines the state after a query has been run on the database but before,
  * for example, the results have been processed.  States after this one should
@@ -17,17 +18,27 @@ import org.astrogrid.datacenter.query.QueryState;
 public class QuerierQueried extends QuerierStatus
 {
    
-   public QuerierQueried(Querier querier) {
-      super(querier);
+   public QuerierQueried(QuerierStatus previousStatus) {
+      super(previousStatus);
       addDetail("Finished Query phase at "+new Date());
    }
    
    public QueryState getState() { return QueryState.QUERY_COMPLETE; }
+
+   /** Returns a standard TaskStatus stage string */
+   public String getStage() {    return TaskStatus.RUNNING; }
+   
+   /** Returns false */
+   public boolean isFinished() { return false; }
+   
    
 }
 
 /*
 $Log: QuerierQueried.java,v $
+Revision 1.2  2004/10/01 18:04:59  mch
+Some factoring out of status stuff, added monitor page
+
 Revision 1.1  2004/09/28 15:02:13  mch
 Merged PAL and server packages
 
