@@ -11,6 +11,7 @@
       <item name="Summary Results"     href="junit-report.html"/>
       <item name="Detailed Results" href="junit-full/index.html" />
       <item name="I and R Wiki Page" href="http://wiki.astrogrid.org/bin/view/Astrogrid/Itn05IntegrationRelease"/>
+      <item name="Build Log" href="../log/integration.log"/>
     </menu>
  </body>
 </project>
