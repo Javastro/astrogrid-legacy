@@ -1,18 +1,14 @@
-/*$Id: XMLHelper.java,v 1.3 2004/08/09 11:28:17 nw Exp $
+/*$Id: XMLHelper.java,v 1.4 2004/09/29 13:28:13 mch Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.scripting;
-
-import org.astrogrid.datacenter.adql.ADQLException;
-import org.astrogrid.datacenter.adql.ADQLUtils;
-import org.astrogrid.datacenter.adql.generated.Select;
 
 import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
@@ -27,29 +23,17 @@ import javax.xml.parsers.ParserConfigurationException;
 
 /** helper methods for working with xml.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
+ * BTW - these methods, and more, are now available through the DomHelper
+ * class in the common package.
  *
  */
 public class XMLHelper {
     /** Construct a new XMLHelper
-     * 
+     *
      */
     public XMLHelper() {
         super();
     }
-
-    // helper methods related to datacenter - maybe these are better moved into a child object?
-    /** convert an adql query to an Element
-     * @see org.astrogrid.datacenter.adql.ADQLUtils */
-    public Element toQueryBody(Select s) throws ADQLException {
-       return ADQLUtils.toQueryBody(s);
-    }
-    /*convert an sql string query to an Element
-     * @see org.astrogrid.datacenter.sql.SQLUtils 
-    public Element toQueryBody(String s) throws IOException {
-       return SQLUtils.toQueryBody(s);
-    }
-*/
-
 
     // XML helper methods
     /** parse contents of input stream into document */
@@ -77,8 +61,11 @@ public class XMLHelper {
 }
 
 
-/* 
+/*
 $Log: XMLHelper.java,v $
+Revision 1.4  2004/09/29 13:28:13  mch
+Removed obsolete ADQL 0.5
+
 Revision 1.3  2004/08/09 11:28:17  nw
 improvied behaviour when no service list is found.
 tidied imports.
