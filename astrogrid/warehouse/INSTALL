@@ -1,0 +1,43 @@
+Copy AstroGridConfig.properties to $CATALINA_HOME/conf/ where 
+$CATALINA_HOME stands for the absolute path to the Tomcat installation.
+
+Load warehouse.war using Tomcat's manager interface (see the Tomcat 
+manual). This will create a web-application called warehouse.
+
+Now stop the warehouse web-application, using the manager interface.
+This prevents users from running the web-application until you have it 
+properly configured.
+
+Open Tomcat's administration interface (see the Tomcat manual). In the
+tree display at the left of the screen, open the service object, the
+host object and then the context object called "warehouse". Open the
+"Environmental Entries" object. From the drop-down menu, labelled
+"Available Actions", select "Create New Env Entry". Make an entry as
+follows:
+
+   * name  = org.astrogrid.config.url
+   * type  = java.lang.String
+   * value = $CATALINA_HOME/conf/AstroGridConfig.properties 
+   * description = Path to AstroGrid central configuration.
+
+but you must replace $CATALINA_HOME with the full path to the Tomcat 
+directory when typing the entry.
+
+Edit the warehouse configuration if needed to suit your site. Q.v. the 
+configuration guide (the file CONFIG in the installation kit).  The 
+default configuration is correct for operation with the GDW back-end
+service on hydra.star.le.ac.uk.
+
+Go back to the manager interface and start the warehouse web-application.
+This makes it available to users over the Internet.
+
+Check the installation.
+
+   1 Validate the Axis installation: all the core jars should be
+     present, but some optional jars may be missing.
+
+   2 View the list of available services: AxisDataServer should be 
+     present.
+
+   3 Submit a test query using the web form; the ADQL linked from 
+     the query page is suitable for the GDW database at Leicester.
