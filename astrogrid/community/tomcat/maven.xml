@@ -4,10 +4,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/tomcat/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/04/15 02:27:46 $</cvs:date>
-    | <cvs:version>$Revision: 1.9 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/16 11:11:40 $</cvs:date>
+    | <cvs:version>$Revision: 1.10 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.10  2004/04/16 11:11:40  dave
+    |   Added gofor it task.
+    |
     |   Revision 1.9  2004/04/15 02:27:46  dave
     |   Merged development branch, dave-dev-200404071355, into HEAD
     |
@@ -755,6 +758,18 @@
             dir="${maven.build.dir}/resolver"
             antfile="${maven.build.dir}/resolver/resolver.xml"
             />
+    </goal>
+
+    <!-- ================ Test goals ================ -->
+
+    <!--+
+        | Install and go ....
+        +-->
+    <goal name="go">
+        <attainGoal name="clean"/>
+        <attainGoal name="toolkit.install"/>
+        <attainGoal name="toolkit.config"/>
+        <attainGoal name="tomcat.start"/>
     </goal>
 
 </project>
