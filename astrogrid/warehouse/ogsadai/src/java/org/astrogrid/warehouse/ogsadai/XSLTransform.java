@@ -74,7 +74,10 @@ public class XSLTransform extends Activity {
     }
 
     /**
+     * Internal method to produce OGSA-DAI XML Perform document.
      * @see uk.org.ogsadai.client.toolkit.Activity#generateXML()
+     *
+     * @return String containing XML perform document for this activity.
      */
     protected String generateXML() {
 

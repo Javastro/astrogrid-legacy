@@ -1,5 +1,5 @@
 /*
- * $Id: GdsQueryDelegate.java,v 1.16 2004/03/25 20:33:39 kea Exp $
+ * $Id: GdsQueryDelegate.java,v 1.17 2004/03/29 07:36:03 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -405,9 +405,9 @@ public class GdsQueryDelegate
    * - the URL of the results destination (file:// or gsiftp://).l
    *
    * So, for example:
-   * java org.astrogrid.warehouse.ogsadai.GdsQueryDelegate \\
-   *   "SELECT * from first * LIMIT 5000" \\
-   *   http://localhost:8080/ogsa/services/ogsadai/DAIServiceGroupRegistry \\
+   * java org.astrogrid.warehouse.ogsadai.GdsQueryDelegate <br>
+   *   "SELECT * from first * LIMIT 5000" <br>
+   *   http://localhost:8080/ogsa/services/ogsadai/DAIServiceGroupRegistry <br>
    *   file:///tmp/TEMPFILE
    */
   public static void main(String args[]) throws Exception {
@@ -490,6 +490,9 @@ public class GdsQueryDelegate
 }
 /*
 $Log: GdsQueryDelegate.java,v $
+Revision 1.17  2004/03/29 07:36:03  kea
+Updating javadocs.
+
 Revision 1.16  2004/03/25 20:33:39  kea
 Error reporting.
 Change of default service location in test.

@@ -1,5 +1,5 @@
 /*
- * $Id: CredentialHolder.java,v 1.1 2004/03/15 12:32:00 kea Exp $
+ * $Id: CredentialHolder.java,v 1.2 2004/03/29 07:36:03 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -28,20 +28,22 @@ import org.globus.gsi.gssapi.GlobusGSSCredentialImpl;
  */
 public class CredentialHolder
 {
-  /**
-   * Default empty constructor.
-   * 
-   * @throws Exception
-   * @throws IOException
-   * @throws SAXException
-   */
   
   static Logger logger = Logger.getLogger("CredentialHolder");
 
   /* The created credential */
   private GSSCredential credential = null;
   
-
+  /**
+   * Constructor.  Initialised with location of host certificate and host 
+   * key (for use if no user credential is found).  These must be readable
+   * by the user executing this code (usually, they are readable by
+   * root only).
+   * 
+   * @param hostCertLocation String containing location of host certificate.
+   * @param hostKeyLocation String containing location of host key.
+   * @throws Exception
+   */
   public CredentialHolder(String hostCertLocation, String hostKeyLocation) 
       throws Exception {
 
@@ -90,7 +92,20 @@ public class CredentialHolder
     }
   }
 
+  /** Returns the GSS credential created at instantiation (a user
+   * credential if one was found, otherwise a host credential).
+   *
+   * @return GSSCredential holding credential information.
+   */
   public GSSCredential getCredential() {
     return credential;
   }
 }
+
+/*
+$Log: CredentialHolder.java,v $
+Revision 1.2  2004/03/29 07:36:03  kea
+Updating javadocs.
+
+*/
+
