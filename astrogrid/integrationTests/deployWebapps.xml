@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: deployWebapps.xml,v 1.18 2004/03/26 18:14:03 jdt Exp $ --><!--
+<!-- $Id: deployWebapps.xml,v 1.19 2004/03/29 12:08:35 jdt Exp $ --><!--
 	Example Deploy Script for Astrogrid War files
 	This script uses the Tomcat Manager to deploy war files built nightly by Maven
 
@@ -15,8 +15,12 @@
 
 <!--==================================================================================-->
 
-	<target depends="RedeployMySpace,Redeployportal" name="RedeployTheLot"/>
-	<target depends="DeployMySpace,Deployportal" name="DeployTheLot"/>
+	<target name="RedeployTheLot"
+	    depends="RedeployMySpace, Redeployportal, Redeploycommunity, Redeployapplications,
+	    Redeployregistry, Redeployjes, RedeployPALSimple" "/>
+	<target name="DeployTheLot"
+	    depends="DeployMySpace, Deployportal, Deploycommunity, Deployapplications,
+	    Deployregistry, Deployjes, DeployPALSimple"  />
 
 <!--==================================================================================-->
 
@@ -29,60 +33,66 @@
     <!-- URLs of the wars-->
     <property name="mavenURL" value="http://www.astrogrid.org/maven/"/>
 
-    <property name="mySpace.path" value="/astrogrid-mySpace"/>
+    <property name="mySpace.path" value="/astrogrid-mySpace-night"/>
     <property name="mySpace.war.url" value="${mavenURL}/org.astrogrid/wars/astrogrid-mySpace-SNAPSHOT.war"/>
     <property name="mySpace.host.url" value="${servers.a.url}"/>
     <property name="mySpace.host.user" value="${servers.a.user}"/>
     <property name="mySpace.host.password" value="${servers.a.password}"/> <!-- would be nice if this could be assigned as an "array".  Might be possible in Ant 1.6...-->
   
-    <property name="jes.path" value="/intTest-jes"/>   
+    <property name="jes.path" value="/astrogrid-jes-night"/>   
     <property name="jes.war.url" value="${mavenURL}/org.astrogrid/wars/astrogrid-jes-SNAPSHOT.war"/>
     <property name="jes.host.url" value="${servers.a.url}"/>
     <property name="jes.host.user" value="${servers.a.user}"/>
     <property name="jes.host.password" value="${servers.a.password}"/> 
     
+    <property name="palSimple.path" value="/astrogrid-pal-night"/>   
+    <property name="palSimple.war.url" value="${mavenURL}/org.astrogrid/wars/pal-SNAPSHOT.war"/>
+    <property name="palSimple.host.url" value="${servers.a.url}"/>
+    <property name="palSimple.host.user" value="${servers.a.user}"/>
+    <property name="palSimple.host.password" value="${servers.a.password}"/>
+    <!--
     <property name="palSkyServer.path" value="/intTest-palSkyServer"/>   
     <property name="palSkyServer.war.url" value="${mavenURL}/org.astrogrid/wars/pal-SNAPSHOT.war"/>
     <property name="palSkyServer.host.url" value="${servers.e.url}"/>
     <property name="palSkyServer.host.user" value="${servers.e.user}"/>
-    <property name="palSkyServer.host.password" value="${servers.e.password}"/> 
-
+    <property name="palSkyServer.host.password" value="${servers.e.password}"/>--> 
+    <!--
     <property name="palMartin.path" value="/intTest-palMartin"/>   
     <property name="palMartin.war.url" value="${mavenURL}/org.astrogrid/wars/pal-SNAPSHOT.war"/>
     <property name="palMartin.host.url" value="${servers.c.url}"/>
     <property name="palMartin.host.user" value="${servers.c.user}"/>
-    <property name="palMartin.host.password" value="${servers.c.password}"/>     
+    <property name="palMartin.host.password" value="${servers.c.password}"/> -->    
 
     
-    <property name="applications.path" value="/intTest-applications"/>   
+    <property name="applications.path" value="/astrogrid-applications-night"/>   
     <property name="applications.war.url" value="${mavenURL}/org.astrogrid/wars/astrogrid-applications-SNAPSHOT.war"/>
-    <property name="applications.host.url" value="${servers.b.url}"/>
-    <property name="applications.host.user" value="${servers.b.user}"/>
-    <property name="applications.host.password" value="${servers.b.password}"/>
+    <property name="applications.host.url" value="${servers.a.url}"/>
+    <property name="applications.host.user" value="${servers.a.user}"/>
+    <property name="applications.host.password" value="${servers.a.password}"/>
     
-    <property name="community.path" value="/intTest-community"/>   
+    <property name="community.path" value="/astrogrid-community-night"/>   
     <property name="community.war.url" value="${mavenURL}/org.astrogrid/wars/astrogrid-community-SNAPSHOT.war"/>
-    <property name="community.host.url" value="${servers.b.url}"/>
-    <property name="community.host.user" value="${servers.b.user}"/>
-    <property name="community.host.password" value="${servers.b.password}"/>
+    <property name="community.host.url" value="${servers.a.url}"/>
+    <property name="community.host.user" value="${servers.a.user}"/>
+    <property name="community.host.password" value="${servers.a.password}"/>
     
-    <property name="portal.path" value="/astrogrid-portal-lo3"/>   
+    <property name="portal.path" value="/astrogrid-portal-night"/>   
     <property name="portal.war.url" value="${mavenURL}/org.astrogrid/wars/astrogrid-portal-SNAPSHOT.war"/> 
-    <property name="portal.host.url" value="${servers.b.url}"/>
-    <property name="portal.host.user" value="${servers.b.user}"/>
-    <property name="portal.host.password" value="${servers.b.password}"/>     
+    <property name="portal.host.url" value="${servers.a.url}"/>
+    <property name="portal.host.user" value="${servers.a.user}"/>
+    <property name="portal.host.password" value="${servers.a.password}"/>     
         
-    <property name="registry.path" value="/intTest-registry"/>   
+    <property name="registry.path" value="/astrogrid-registry-night"/>   
     <property name="registry.war.url" value="${mavenURL}/org.astrogrid/wars/astrogrid-registry-SNAPSHOT.war"/>
     <property name="registry.host.url" value="${servers.c.url}"/>
     <property name="registry.host.user" value="${servers.c.user}"/>
     <property name="registry.host.password" value="${servers.c.password}"/>     
-    
+    <!--
     <property name="datawarehouse.path" value="/intTest-datawarehouse"/>   
     <property name="datawarehouse.war.url" value="${mavenURL}/org.astrogrid/wars/astrogrid-datawarehouse-SNAPSHOT.war"/>
     <property name="datawarehouse.host.url" value="${servers.c.url}"/>
     <property name="datawarehouse.host.user" value="${servers.c.user}"/>
-    <property name="datawarehouse.host.password" value="${servers.c.password}"/>     
+    <property name="datawarehouse.host.password" value="${servers.c.password}"/>   -->  
      
   </target>
 
@@ -200,7 +210,23 @@
 
 <!--==================================================================================-->
 
+<!--==================================================================================-->
+  <!-- PAL/Simple-->
+  <!--An out of the box pal, just relying on its build in default "database"-->
 
+    <target name="DeployPALSimple" depends="loadServersProperties" description="obtain latest pal war and deploy it" >
+	    <echo message="Deploying PAL/Simple from ${palSimple.war.url} to ${palSimple.host.url} at ${palSimple.path}"/>
+		<deploy password="${palSimple.host.password}" path="${palSimple.path}" url="${palSimple.host.url}" username="${palSimple.host.user}" war="${palSimple.war.url}"/>
+    </target>
+    
+    <target name="UndeployPALSimple">
+		<remove password="${palSimple.host.password}" 
+		    path="${palSimple.path}" url="${palSimple.host.url}" username="${palSimple.host.user}"/>
+	</target>
+	
+    <target name="RedeployPALSimple" depends="UndeployPALSimple, DeployPALSimple" />
+
+<!--==================================================================================-->
 
 <!--==================================================================================-->
   <!-- PAL/SkyServer-->
