@@ -32,7 +32,7 @@
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="WebNotifyServiceListener">
     <sequence>
-     <element name="clientListener" nillable="true" type="xsd:anyType"/>
+     <element name="clientListener" nillable="true" type="xsd:string"/>
     </sequence>
    </complexType>
   </schema>

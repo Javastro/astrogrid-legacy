@@ -26,5 +26,7 @@
 		, registerWebListener
 		"/>
       <parameter name="className" value="org.astrogrid.datacenter.service.AxisDataServer"/>
+      <beanMapping qname="agd:WebNotifyServiceListener" xmlns:agd="http://delegate.datacenter.astrogrid.org"
+      	languageSpecificType="java:org.astrogrid.datacenter.delegate.WebNotifyServiceListener" />
    </service>
 </deployment>
