@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.98 2004/09/09 15:53:03 dave Exp $ -->
+<!-- $Id: maven.xml,v 1.99 2004/09/09 16:04:53 pah Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -24,8 +24,12 @@
         xmlns:http="jelly:http"
     default="jar:jar">
 
-
-<property name="tomcat.host" value="localhost"/>
+<property environment="env"/>
+	<!--use immutability in the next three lines...-->
+	<property name="tomcat.host" value="${env.HOSTNAME}"/> <!-- unix -->
+	<property name="tomcat.host" value="${env.COMPUTERNAME}"/> <!-- windows -->
+    <property name="tomcat.host" value="localhost"/><!--default-->
+	
 <property name="tomcat.port" value="8080"/>
 <property name="tomcat.url" value="http://${tomcat.host}:${tomcat.port}"/>
 <property name="tomcat.manager.url" value="${tomcat.url}/manager"/>
