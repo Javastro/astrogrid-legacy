@@ -121,7 +121,7 @@ This functionality is provided with the ApplicationController service, of which 
            </properties>
         </dependency>
     <dependency>
-    <groupId>astrogrid-workflow</groupId>
+    <groupId>org.astrogrid</groupId>
 <artifactId>astrogrid-workflow</artifactId>
     <version>SNAPSHOT</version>
         <properties>
