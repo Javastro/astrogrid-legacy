@@ -63,8 +63,8 @@
          <xsl:if test="$action = 'save-workflow'">
             <xsl:call-template name="list_workflow"/>             
          </xsl:if>
-         <xsl:if test="$action = 'view-workflow'">
-            <xsl:call-template name="view_workflow"/>             
+         <xsl:if test="$action = 'read-workflow'">
+            <xsl:call-template name="view_workflow_details"/>             
          </xsl:if>
          <xsl:if test="$action = 'create-workflow'">
             <xsl:call-template name="create_workflow"/>             
@@ -77,7 +77,10 @@
          </xsl:if>                                 
          <xsl:if test="$action = 'templates'">
             <xsl:call-template name="templates"/>             
-         </xsl:if>                                                                                                                            
+         </xsl:if>
+         <xsl:if test="$action = 'read-job-list'">
+            <xsl:call-template name="monitor_jobs"/>             
+         </xsl:if>                                                                                                                                     
       </xsl:template>
 
       <!--+
@@ -103,7 +106,7 @@
                  Spacing.
                  -->
                <td width="100%"></td>
-               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="?action=monitor">Monitor</a></td>                  
+               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="agjobmanager-jes.html?action=read-job-list">Monitor</a></td>                  
             </tr>
          </table>
       </xsl:template>  
@@ -229,6 +232,44 @@
             </table> 
          </form>     
       </xsl:template>
+
+      <!--+
+          | View workflow details
+          +-->          
+      <xsl:template name="view_workflow_details">               
+         <table cellpadding="0" cellspacing="0">                                                           
+            <tr>
+               <td>Workflow Name:</td>
+               <td><xsl:value-of select="@workflow-name" /></td>                                    
+            </tr>
+            <tr>
+               <td>Workflow Description:</td>
+               <td><xsl:value-of select="@workflow-description" /></td>                  
+            </tr>
+            <p />
+            <tr>
+               <td>
+                  <xsl:if test="@template = 'OneStepJob'"><img src="OneStepJob.gif" alt="OneStepJob" /></xsl:if>
+                  <xsl:if test="@template = 'TwoSequentialJobsteps'"><img src="TwoStepSequence.gif" alt="TwoStepSequence" /></xsl:if>
+                  <xsl:if test="@template = 'TwoParallelJobsteps'"><img src="TwoStepFlow.gif" alt="TwoStepFlow" /></xsl:if>
+                  <xsl:if test="@template = 'TwoStepFlowAndMerge'"><img src="SequenceWithTwoStepFlow.gif" alt="SequenceWithTwoStepFlow" /></xsl:if>                
+               </td>
+               <td>
+                  <xsl:for-each select="//step">
+                     <tr>
+                        <td>
+                           key: <xsl:value-of select="@key"/>
+                           step-name: <xsl:value-of select="@step-name"/>
+                           step desc: <xsl:value-of select="@step-description"/>
+                           tool: <xsl:value-of select="@tool"/>
+                        </td>
+                     </tr>
+                  </xsl:for-each>    
+               </td>
+            </tr>
+         </table> 
+      </xsl:template>
+
     
       <!--+
           | View workflow
@@ -375,6 +416,22 @@
           | Monitor jobs
           +-->   
       <xsl:template name="monitor_jobs">
+         <table cellpadding="0" cellspacing="0">
+            <tr>
+               <td>Name</td>
+               <td>Description</td>
+               <td>Time</td>
+               <td>Status</td>
+               <td>Job ID</td> 
+            </tr>
+            <xsl:for-each select="//job">
+               <td><xsl:value-of select="@name"/></td>
+               <td><xsl:value-of select="@description"/></td>
+               <td><xsl:value-of select="@time"/></td>
+               <td><xsl:value-of select="@status"/></td>
+               <td><xsl:value-of select="@jobid"/></td>               
+            </xsl:for-each>
+         </table>
       </xsl:template>
       
     <!--+
