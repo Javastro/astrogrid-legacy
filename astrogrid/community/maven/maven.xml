@@ -2,11 +2,14 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/maven.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/14 13:50:07 $</cvs:date>
-    | <cvs:version>$Revision: 1.13 $</cvs:version>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/07/27 11:57:58 $</cvs:date>
+    | <cvs:version>$Revision: 1.14 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.14  2004/07/27 11:57:58  jdt
+    |   removed reference to astrogrid.iteration
+    |
     |   Revision 1.13  2004/07/14 13:50:07  dave
     |   Merged development branch, dave-dev-200406301228, into HEAD
     |
@@ -387,7 +390,7 @@
         <!--+
             | Set the target name and directory.
             +-->
-        <core:set var="targetPath" value="${maven.site.central.directory}/${astrogrid.iteration}/${astrogrid.name}"/>
+        <core:set var="targetPath" value="${maven.site.central.directory}/${pom.currentVersion}/${astrogrid.name}"/>
         <ant:echo message="  Source location  : ${maven.docs.dest}"/>
         <ant:echo message="  Default location : ${targetPath}"/>
         <ant:echo message="  Custom location  : ${astrogrid.community.deploy.site}"/>
