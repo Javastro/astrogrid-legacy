@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityEndpointResolver.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/02 21:47:39 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityEndpointResolver.java,v $
+ *   Revision 1.10  2004/11/02 21:47:39  jdt
+ *   Merge of Comm_KMB_583
+ *
+ *   Revision 1.9.20.1  2004/10/26 06:10:39  KevinBenson
+ *   sprucing up admin interface and getting it where it grabs communities and accounts from external communities
+ *
  *   Revision 1.9  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -42,6 +48,7 @@ import java.net.MalformedURLException ;
 import org.astrogrid.store.Ivorn ;
 import org.astrogrid.registry.client.RegistryDelegateFactory ;
 import org.astrogrid.registry.client.query.RegistryService ;
+import org.astrogrid.registry.client.query.ServiceData ;
 
 import org.astrogrid.config.Config ;
 import org.astrogrid.config.SimpleConfig ;
@@ -247,6 +254,62 @@ public class CommunityEndpointResolver
             throw new CommunityResolverException(
                 "Registry returned null endpoint address for ivorn",
                 ivorn
+                ) ;
+            }
+        }
+    
+    /**
+     * Resolve data from a CommunityIvornParser.
+     * @param parser A CommunityIvornParser containing the Community identifier.
+     * @param type   The Java class of the service interface we want.
+     * @return The endpoint address for the service.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityResolverException If the Community is unable to resolve the identifier.
+     * @throws RegistryException If the Registry is unable to resolve the identifier.
+     * @todo relies on ivorn.getPath()
+     *
+     */
+    public ServiceData[] resolve()
+        throws RegistryException, CommunityIdentifierException, CommunityResolverException
+        {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityEndpointResolver.resolve()") ;
+
+        //
+        // Lookup the service in the registry.
+        ServiceData []sd = null ;
+        try {
+            sd = registry.getResourcesByInterfaceType(
+                    new org.astrogrid.registry.common.CommunityInterfaceType()
+                ) ;
+            }
+        catch (Throwable ouch)
+            {
+            log.debug("FAIL : Registry lookup failed")  ;
+            //log.debug("  Exception : " + ouch)  ;
+            //ouch.printStackTrace() ;
+            throw new CommunityResolverException(
+                "Registry lookup failed",
+                ouch
+                ) ;
+            }
+        //
+        // If we found an entry in the Registry.
+        if (null != sd && sd.length > 0)
+            {
+            log.debug("PASS : Got service endpoints")  ;
+            //
+            // Convert it into an endpoint URL.
+            return sd;
+            }
+        //
+        // If we didn't get a service endpoint.
+        else {
+            //
+            // Report the problem in a Exception.
+            throw new CommunityResolverException(
+                "Registry returned no endpoints address for communities"
                 ) ;
             }
         }
