@@ -1,5 +1,5 @@
 /*
- * $Id: TestDelegate.java,v 1.2 2003/08/28 13:22:09 mch Exp $
+ * $Id: DelegateTest.java,v 1.1 2003/08/29 15:22:53 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -27,7 +27,7 @@ import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-public class TestDelegate extends TestCase implements DatacenterStatusListener
+public class DelegateTest extends TestCase implements DatacenterStatusListener
 {
    Vector statusChangedList = new Vector();
 
@@ -74,7 +74,7 @@ public class TestDelegate extends TestCase implements DatacenterStatusListener
      */
     public static Test suite() {
         // Reflection is used here to add all the testXXX() methods to the suite.
-        return new TestSuite(TestDelegate.class);
+        return new TestSuite(DelegateTest.class);
     }
 
     /**
