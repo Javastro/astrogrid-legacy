@@ -141,6 +141,28 @@
       <version>gt3.0.2</version>
     </dependency>
 
+    <dependency>
+      <id>jce-jdk13-117</id>
+      <version>gt3.0.2</version>
+    </dependency>
+
+    <dependency>
+      <id>puretls</id>
+      <version>gt3.0.2</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>cryptix</groupId>
+        <artifactId>cryptix32</artifactId>
+        <version>gt3.0.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>cryptix</groupId>
+        <artifactId>cryptix-asn1</artifactId>
+        <version>gt3.0.2</version>
+    </dependency>
+
   </dependencies>
 
   <build>
