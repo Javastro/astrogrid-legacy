@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractRunTestForCEA.java,v 1.1 2004/07/01 11:43:33 nw Exp $
+ * $Id: AbstractRunTestForCEA.java,v 1.2 2004/07/23 08:44:08 nw Exp $
  * 
  * Created on 14-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -59,7 +59,7 @@ public abstract class AbstractRunTestForCEA
        // check status, etc.
        MessageType status = delegate.queryExecutionStatus(execId);
        assertNotNull(status);
-       softAssertEquals("Application should be in pending phase",ExecutionPhase.PENDING,status.getPhase());
+       softAssertEquals("Application should be in initializing phase",ExecutionPhase.INITIALIZING,status.getPhase());
        // execute the application
        delegate.execute(execId);
        softAssertTrue("Appllication should now be running",ExecutionPhase.RUNNING_TYPE <= delegate.queryExecutionStatus(execId).getPhase().getType());
