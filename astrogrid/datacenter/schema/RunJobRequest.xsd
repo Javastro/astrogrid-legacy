@@ -75,7 +75,7 @@
     <xsd:element name="query">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element maxOccurs="1" minOccurs="1" ref="criteria"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="criteria"/>
                 <xsd:element maxOccurs="1" minOccurs="1" ref="return"/>
                 <xsd:element maxOccurs="1" minOccurs="0" ref="from"/>
             </xsd:sequence>
@@ -176,7 +176,7 @@
     
     <xsd:group name="opsSequenceA">
         <xsd:sequence>
-            <xsd:element maxOccurs="1" minOccurs="1" ref="operation"/>
+            <xsd:element maxOccurs="10" minOccurs="1" ref="operation"/>
         </xsd:sequence>
     </xsd:group>
     

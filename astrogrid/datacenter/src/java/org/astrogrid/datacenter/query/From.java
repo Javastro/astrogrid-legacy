@@ -66,9 +66,6 @@ public class From {
 				if( catalogElement.getTagName().equals( RunJobRequestDD.CATALOG_ELEMENT ) ) {
 					this.addCatalog( new Catalog( catalogElement ) ) ;
 				}
-				else  {
-                    ; // JBL Note: What do I do here?
-				}
 				
 			} // end for		
 			
@@ -99,12 +96,10 @@ public class From {
 			buffer = new StringBuffer(64) ;
 		
     	try {
-//            Catalog 
-//                catalog[] = this.catalogs;
+
             Iterator
                 iterator = this.getCatalogs() ;
-        
-        	//for (int i=0; i < catalogs.size(); i++) {		    
+        	    
         	while( iterator.hasNext() ) {
         		
         		Catalog

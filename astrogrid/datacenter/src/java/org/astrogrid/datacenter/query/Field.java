@@ -40,6 +40,9 @@ public class Field implements Operand {
 	private static Logger 
 		logger = Logger.getLogger( Field.class ) ;
 		
+	private static final String
+	   ASTROGRIDERROR_UNKNOWN_FIELD_TYPE_ENCOUNTERED = "AGDTCE00430" ;
+		
 	private static final String 
 	   TYPE_UCD      = new String( "UCD" ).intern() ,
 	   TYPE_COLUMN   = new String( "COLUMN" ).intern() ,
@@ -77,7 +80,7 @@ public class Field implements Operand {
 			// Whoops! Some non-existent type has been used...
 			else {
 				Message
-				   message = new Message( "" ) ;
+				   message = new Message( ASTROGRIDERROR_UNKNOWN_FIELD_TYPE_ENCOUNTERED, type ) ;
 				logger.error( message.toString() ) ;
 				throw new QueryException( message ) ; 
 			}

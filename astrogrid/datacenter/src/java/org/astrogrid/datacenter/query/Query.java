@@ -58,35 +58,44 @@ public class Query {
 				element ;
 			Catalog
 			    catalog = null;
+			
+			// JBL Note: the following piece of code is fragile...
+			// If the FROM element is not the first, the constructors for
+			// Criteria and Return will contain a null Catalog
 						   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {	
+				
 				if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
 					continue ;				
 				element = (Element) nodeList.item(i) ;
 				
 				if( element.getTagName().equals( RunJobRequestDD.FROM_ELEMENT ) ) {
+					
 					setFrom(new From( element )) ;
+					
+					// OK! We have a From element. Now we need to hunt for a catalog...
 					NodeList nodeList2 = element.getChildNodes();
-					for( int j=0 ; j < nodeList2.getLength() ; j++ ) {
+					middle_for: for( int j=0 ; j < nodeList2.getLength() ; j++ ) {
+						
 					    if (nodeList2.item(j).getNodeType() != Node.ELEMENT_NODE) 
 						    continue;
-						    for (int k= 0 ; k < nodeList2.getLength() ; k++) {
-								if (nodeList2.item(k).getNodeType() != Node.ELEMENT_NODE) 
-									continue;
-								element = (Element) nodeList2.item(k) ;
-								if (element.getTagName().equals(RunJobRequestDD.CATALOG_ELEMENT)) 
-									catalog = new Catalog( element );
-						    } // end of k						 
+						for (int k= 0 ; k < nodeList2.getLength() ; k++) {
+							if (nodeList2.item(k).getNodeType() != Node.ELEMENT_NODE) 
+								continue;
+							element = (Element) nodeList2.item(k) ;
+							if (element.getTagName().equals(RunJobRequestDD.CATALOG_ELEMENT)) 
+								catalog = new Catalog( element );
+								break middle_for; // OK! We've got the Catalog. Abandon search.
+						} // end of k
+												 
 					} // end of for j
+					
 				} // end of if( element.getTagName().equals( RunJobRequestDD.FROM_ELEMENT ) ) {
 				else if( element.getTagName().equals( RunJobRequestDD.CRITERIA_ELEMENT ) ) {
 					setCriteria(new Criteria( element, catalog )) ;
 				}
 				else if( element.getTagName().equals( RunJobRequestDD.RETURN_ELEMENT ) ) {
 				    setReturn(new Return( element, catalog )) ;
-				}
-				else {
-					; // JBL Note: What do I do here?
 				}
 				
 			} // end for		
@@ -111,7 +120,7 @@ public class Query {
 
 
     public static QueryFactory getFactory( String catalogName ) throws QueryException { 
-		if( TRACE_ENABLED ) logger.debug( "getFactory(): entry") ;   	
+		if( TRACE_ENABLED ) logger.debug( "Query.getFactory(): entry") ;   	
     	
     	QueryFactory 
     		factory ;
@@ -135,7 +144,7 @@ public class Query {
 			throw new QueryException( message, ex );
 		}
 		finally {
-			if( TRACE_ENABLED ) logger.debug( "getFactory(): exit") ;			
+			if( TRACE_ENABLED ) logger.debug( "Query.getFactory(): exit") ;			
 		}    	
     	return factory; 
     	
@@ -143,19 +152,26 @@ public class Query {
     
     
     public void execute() throws QueryException  {
-		if( TRACE_ENABLED ) logger.debug( "execute(): entry") ;   	
+		if( TRACE_ENABLED ) logger.debug( "Query.execute(): entry") ;   	
     	factory.execute( this ) ;
-		if( TRACE_ENABLED ) logger.debug( "execute(): exit") ;   	
+		if( TRACE_ENABLED ) logger.debug( "Query.execute(): exit") ;   	
     }
     
     
     public VOTable toVOTable( Allocation allocation ) throws VOTableException {  
-    	
+		if( TRACE_ENABLED ) logger.debug( "Query.toVOTable(): entry") ;   	
+		   	
     	VOTable
-    	   votable = VOTable.getFactory().createVOTable( this ) ; 
-    	   
-    	votable.stream( allocation ) ;
-    		
+    	   votable =  null ;
+    	
+    	try {
+    	   votable = VOTable.getFactory().createVOTable( this ) ;
+		   votable.stream( allocation ) ;
+    	} 
+    	finally {  
+			if( TRACE_ENABLED ) logger.debug( "Query.toVOTable(): exit") ; 	 
+    	}
+    	  		
     	return votable ;
     	
     } // end of toVOTable()
@@ -165,6 +181,7 @@ public class Query {
     	factory.end() ;
     }
     
+    
     public String toSQLString() {
 		if( TRACE_ENABLED ) logger.debug( "Query.toSQLString(): entry") ;
 		
@@ -173,20 +190,21 @@ public class Query {
     	   	   
 		try {
 			
+			// Some queries may have no criteria 
+			// (That means all rows will be selected!)...
+			// The test for null Criteria in the following is to allow for this.
+			
 			buffer
 			    .append( "SELECT " )
 			    .append( getReturn().toSQLString() )
 			    .append( " FROM ")
 			    .append( getFrom().toSQLString() )
-			    .append( " WHERE ")
-			    .append( getCriteria().toSQLString() );
-			     logger.debug("SQL Query: "+ buffer.toString()); 
+			    .append( (this.criteria == null)  ?  ""  :  " WHERE "  )
+			    .append( (this.criteria == null)  ?  ""  :  getCriteria().toSQLString()  ) ;
 			     
-		} catch (RuntimeException e) {
-		     ;
 		}
 		finally {
-			logger.debug( buffer.toString() ) ;
+			logger.debug( "SQL Query: " + buffer.toString() ) ;
 			if( TRACE_ENABLED ) logger.debug( "Query.toSQLString(): exit") ;
 		}
     	     	   
@@ -195,28 +213,13 @@ public class Query {
     } // end of toSQLString() 
 
 
-	public void setCriteria(Criteria criteria) {
-		this.criteria = criteria;
-	}
+	public void setCriteria(Criteria criteria) { this.criteria = criteria; }
+	public Criteria getCriteria() {	return criteria; }
 
-	public Criteria getCriteria() {
-		return criteria;
-	}
+	public void setReturn(Return returnObject) { this.returnObject = returnObject; }
+	public Return getReturn() {	return returnObject; }
 
-	public void setReturn(Return returnObject) {
-		this.returnObject = returnObject;
-	}
-
-	public Return getReturn() {
-		return returnObject;
-	}
-
-	public void setFrom(From fromObject) {
-		this.fromObject = fromObject;
-	}
-
-	public From getFrom() {
-		return fromObject;
-	}    
+	public void setFrom(From fromObject) { this.fromObject = fromObject; }
+	public From getFrom() {	return fromObject; }    
     
 } // end of class Query

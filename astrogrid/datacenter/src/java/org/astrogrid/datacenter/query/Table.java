@@ -38,8 +38,8 @@ public class Table {
 		logger = Logger.getLogger( Table.class ) ;
 		
 	private static final String
-		ASTROGRIDERROR_COULD_NOT_dosomething = "AGDTCE00???" ;
-	
+		ASTROGRIDERROR_COULD_NOT_CREATE_TABLE_FROM_ELEMENT = "AGDTCE00440" ;
+
 	private String 
 	   name ;
 	   
@@ -51,7 +51,7 @@ public class Table {
 		}
 		catch( Exception ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_dosomething ) ;
+				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_TABLE_FROM_ELEMENT ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new QueryException( message, ex );    		
 		}
@@ -62,12 +62,7 @@ public class Table {
 	} // end of Table( Element )
 
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return name;
-	}	   
+	public void setName(String name) { this.name = name; }
+	public String getName() { return name; }	   
 
 } // end of class Table 

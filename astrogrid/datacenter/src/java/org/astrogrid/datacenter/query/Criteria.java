@@ -68,9 +68,6 @@ public class Criteria {
 				if( operationElement.getTagName().equals( RunJobRequestDD.OP_ELEMENT ) ) {
 					setOperation( Operation.createOperation( operationElement, catalog) ) ;
 				}
-				else  {
-                    ; // JBL Note: What do I do here?
-				}
 				
 			} // end for		
 			

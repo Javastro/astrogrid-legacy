@@ -50,7 +50,9 @@ public abstract class Operation implements Operand {
 		ASTROGRIDERROR_COULD_NOT_CREATE_OPERATION_FROM_ELEMENT = "AGDTCE00410",
 	    ASTROGRIDERROR_UNSUPPORTED_SQL_OPERATION = "AGDTCE00400" ;
 		
-    public static final String     	// JBL Note: I've ignored "AVERAGE", "ANY" and "ALL"
+    public static final String     	
+    // JBL Note: I've ignored "AVERAGE", "ANY" and "ALL" for this iteration (AG 1.2). 
+    // I'm not sure, in any case, that "AVERAGE" belongs here.
         AND = "AND",
         OR  = "OR",
         NOT = "NOT",
@@ -62,7 +64,9 @@ public abstract class Operation implements Operand {
         NOT_EQUALS = "NOT_EQUALS",
         GREATER_THAN_OR_EQUALS = "GREATER_THAN_OR_EQUALS",
         LESS_THAN_OR_EQUALS = "LESS_THAN_OR_EQUALS",
-        IN = "IN" ;
+        IN = "IN",
+        NOT_NULL = "NOT_NULL",
+        BETWEEN = "BETWEEN" ;
 	
 	private String
 		name = null ;
@@ -83,6 +87,10 @@ public abstract class Operation implements Operand {
 			
 			opName = opElement.getAttribute( RunJobRequestDD.OP_NAME_ATTR ).trim().toUpperCase() ;
 			
+			// JBL Note: This is the nearest I've come to designing a virtual constructor,
+			// which is - of course - logically impossible. With a little ingenuity I believe
+			// it could accommodate most if not all of the possible SQL operations within 
+			// a selection statement, including sub-queries. 
 			if( opName.equals( Operation.AND) ) {
 				newOp = new Operation_AND( opElement, catalog ) ;				
 			}
@@ -119,12 +127,20 @@ public abstract class Operation implements Operand {
 			else if( opName.equals( Operation.NOT_EQUALS ) ) {
 				newOp = new Operation_NOT_EQUALS( opElement, catalog ) ;
 			}
+			else if( opName.equals( Operation.NOT_NULL ) ) {
+				newOp = new Operation_NOT_NULL( opElement, catalog ) ;
+			}
+			else if( opName.equals( Operation.BETWEEN ) ) {
+				newOp = new Operation_BETWEEN( opElement, catalog ) ;
+			}
 			else {
 				Message
-	               message = new Message( ASTROGRIDERROR_UNSUPPORTED_SQL_OPERATION, newOp ) ;
+	               message = new Message( ASTROGRIDERROR_UNSUPPORTED_SQL_OPERATION, opName ) ;
                 logger.error( message.toString() ) ;
                 throw new QueryException( message );    	
 			}
+			
+			newOp.setName( opName ) ;
 			
 		}
 		finally {
@@ -178,7 +194,7 @@ public abstract class Operation implements Operand {
 			if( TRACE_ENABLED ) logger.debug( "Operation(Element): exit") ;   	
 		}
 		
-	}
+	} // end of Operation( Element operationElement , Catalog catalog )
 
 
 	public void setName(String name) { this.name = name; }

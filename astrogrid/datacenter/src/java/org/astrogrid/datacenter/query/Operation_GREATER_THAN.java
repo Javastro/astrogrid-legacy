@@ -28,7 +28,7 @@ import org.w3c.dom.* ;
  * @author  Jeff Lusted
  * @author  Phill Nicolson
  * @version 1.0 27-May-2003
- * @see     org.astrogrid.datacenter.Query
+ * @see     org.astrogrid.datacenter.query.Query
  * @since   AstroGrid 1.2
  */
 public class Operation_GREATER_THAN extends Operation_MagnitudeComparison {

@@ -74,9 +74,6 @@ public class Catalog {
 				if( tableElement.getTagName().equals( RunJobRequestDD.TABLE_ELEMENT ) ) {
 					this.addTable( new Table( tableElement ) ) ;
 				}
-				else  {
-					; // JBL Note: What do I do here?
-				}
 				
 			} // end for		
 			
@@ -86,9 +83,6 @@ public class Catalog {
 				serviceElement = (Element) nodeList.item(i) ;
 				if( serviceElement.getTagName().equals( RunJobRequestDD.SERVICE_ELEMENT ) ) {
 					this.addService( new Service( serviceElement ) ) ;
-				}
-				else  {
-					; // JBL Note: What do I do here?
 				}
 				
 			} // end for

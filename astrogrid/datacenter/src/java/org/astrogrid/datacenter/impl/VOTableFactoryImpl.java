@@ -1,5 +1,5 @@
 /*
- * @(#)DatasetAgent.java   1.0
+ * @(#)VOTableFactoryImpl.java   1.0
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
