@@ -1,5 +1,5 @@
 /*
- * $Id: User.java,v 1.3 2003/12/16 13:35:06 mch Exp $
+ * $Id: User.java,v 1.4 2003/12/16 15:49:17 mch Exp $
  *
  * Created on 27-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -15,27 +15,45 @@ package org.astrogrid.community;
 
 /**
  * A bean to hold what is passed in the "community snippet".
- * @author Paul Harrison (pah@jb.man.ac.uk)
+ * @author Paul Harrison (pah@jb.man.ac.uk), mch
  * @version $Name:  $
  * @since iteration4
  */
 public class User {
 
-    String account;
-    String group;
-    String token;
+    String account = null;
+    String group = null;
+    String token = null;
    
-    public final static User ANONYMOUS = new User("Anonymous","Anonymous","None");
-    
+    public final static User ANONYMOUS = new User("Anon","Anonymous","None");
+
+   /** Default constructor - creates null user
+    * @deprecated (MCH) I don't think creating null-content users is a good
+    * idea?
+    */
     public User(){
     }
-    
-    public User(String account, String group, String token)
+
+    /**
+     * Creates a user from the given account group & token.  The account &
+     * group cannot be null
+     */
+    public User(String givenAccount, String givenGroup, String givenToken)
     {
-       this.account = account;
-       this.group = group;
-       this.token = token;
+       this.account = givenAccount;
+       this.group = givenGroup;
+       this.token = givenToken;
     }
+    
+    /**
+     * Creates a user from the given string representation
+     */
+    public User(String givenString)
+    {
+        this.account = givenString.substring(0,account.indexOf("@"));
+        this.group = givenString.substring(account.indexOf("@")+1,account.length());
+    }
+    
    /**
     * @return
     */
@@ -78,10 +96,31 @@ public class User {
       token = string;
    }
 
+
+   /**
+    * Checks to see if this user refers to the same account as the given
+    * user
+    */
+   public boolean equals(User user)
+   {
+      return (user.getAccount().equals(this.account) && (user.getGroup().equals(this.group)));
+   }
+
+   /**
+    * Returns a string with the 'normal' representation of account@group
+    */
+   public String toString()
+   {
+      return account+"@"+group;
+   }
+   
 }
 
 /* $Log: User.java,v $
- * Revision 1.3  2003/12/16 13:35:06  mch
- * Added anonymous class constant for 'default' user
- * */
+ * Revision 1.4  2003/12/16 15:49:17  mch
+ * Extended to include Certification functionality - in prep to replace it
+ *
+/* Revision 1.3  2003/12/16 13:35:06  mch
+/* Added anonymous class constant for 'default' user
+/* */
 
