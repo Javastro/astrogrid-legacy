@@ -23,7 +23,7 @@
     <description>JUnitEE test runner</description>
     <servlet-class>org.junitee.servlet.JUnitEEServlet</servlet-class>
   </servlet>
-
+  
   <servlet-mapping>
     <servlet-name>AxisServlet</servlet-name>
     <url-pattern>/servlet/AxisServlet</url-pattern>
@@ -38,6 +38,7 @@
     <servlet-name>JUnitEETestServlet</servlet-name>
     <url-pattern>/TestServlet/*</url-pattern>
   </servlet-mapping>
+
   
     <!-- currently the W3C havent settled on a media type for WSDL;
     http://www.w3.org/TR/2003/WD-wsdl12-20030303/#ietf-draft
@@ -68,4 +69,5 @@
     <taglib-uri>http://jakarta.apache.org/taglibs/input-1.0</taglib-uri>
     <taglib-location>/WEB-INF/tld/taglibs-input-tld-20040115.tld</taglib-location>
   </taglib>
+
 </web-app>

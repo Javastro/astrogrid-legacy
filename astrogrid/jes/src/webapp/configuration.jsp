@@ -50,10 +50,10 @@ boolean guessPressed = request.getParameterValues(guessBtn)!=null;
       String baseURL = new URL ("http", request.getServerName(),
                                         request.getServerPort(), 
                                         request.getContextPath()).toString();
-   //   defaultsBean.setMsmUrl(baseURL+"/MySpaceManager");
-  //    defaultsBean.setMssUrl("NotRequired");
-  //   defaultsBean.setMsmsUrl(baseURL+"/MySpaceManager,");
-      message="Based on the location of the webapp, these are the best guesses for the URLs.  Press change to apply them, followed by export if you wish to save them to the config file.";
+      defaultsBean.setControllerUrl(baseURL+"/JobControllerService");
+      defaultsBean.setMonitorUrl(baseURL+"/JobMonitorService");
+      defaultsBean.setSchedulerUrl(baseURL+"/JobSchedulerService");
+      message="Based on the location of the webapp, these are the best guesses for the URLs.  Press change to apply them, followed by export if you wish to save them to the config file.  The exported file will need to be moved into the correct location and the webapp restarted.";
    } 
      
 //If export pressed let's save 'em
@@ -71,7 +71,7 @@ boolean guessPressed = request.getParameterValues(guessBtn)!=null;
 
 //If change pressed let's change 'em
    if (changePressed) {
-     //  defaultsBean.update();
+       defaultsBean.update();
        message="The values have been set as below for this session only.  If you reload "+
                "the webapp or restart the webserver they will revert to their saved values.";
    }
@@ -238,7 +238,7 @@ boolean guessPressed = request.getParameterValues(guessBtn)!=null;
       
     <div class="h4">
       
-      
+    <%=message%>  
         <h4>
           <a name="Job Entry System Manager">Job Entry System Manager</a>
         </h4>
@@ -251,7 +251,7 @@ boolean guessPressed = request.getParameterValues(guessBtn)!=null;
 
 
 
-<%=message%>
+
 
 <%
 if (loadedConfig) {
@@ -259,20 +259,31 @@ if (loadedConfig) {
 <input:form  bean="defaultsBean" method="post">
   Version: 
   <input:text name="version"  attributesText='size="15"' /><br>
-  Location of Registry DB file: 
-  <input:text name="registryconf" attributesText='size="100"'/> <br> 
-  Job Entry SystemManagerURL: 
-  <input:text name="msmUrl"  attributesText='size="100"'/><br>
-  Job Entry SystemServerURL: 
-  <input:text name="mssUrl"  attributesText='size="100"'/><br>
-  Job Entry SystemMangerURLs: 
-  <input:text name="msmsUrl" attributesText='size="100"'/><br>
-  <button type="submit" name="<%=changeBtn%>" onmouseover="javascript:window.status='Update these values for this session only (will reset to config files values after server is bounced)';" onmouseout="javascript:window.status='';">Change</button>
+  <span style="color: #800080;">Job Controller Url:</span> 
+  <input:text name="controllerUrl" attributesText='size="100"'/> <br> 
+	  <span style="color: #800080;">Job Scheduler Url:</span> 
+  <input:text name="schedulerUrl" attributesText='size="100"'/> <br> 
+	  <span style="color: #800080;">Job Monitor Url:</span> 
+  <input:text name="monitorUrl" attributesText='size="100"'/> <br>
+	<button type="submit" name="<%=guessBtn%>"  onmouseover="javascript:window.status='The URLs in purple can be guessed from the webapps installation location (need to press change use the values)';" onmouseout="javascript:window.status='';">Guess URLs</button> 
+  <h4>Tools:</h4><P>
+		  HyperZ URL: 
+  <input:text name="hyperZUrl" attributesText='size="100"'/> <br> 
+		  Data Federation URL: 
+  <input:text name="dataFederationUrl" attributesText='size="100"'/> <br> 
+		  Query Tool URL: 
+  <input:text name="queryToolUrl" attributesText='size="100"'/> <br> 
+		  S-Extractor URL: 
+  <input:text name="sExtractorUrl" attributesText='size="100"'/> <br> 
+
+	
+	
+  <button type="submit" name="<%=changeBtn%>" onmouseover="javascript:window.status='Update these values for this session only (will reset to values in config file after server is bounced)';" onmouseout="javascript:window.status='';">Change</button>
   
-  <button type="submit" name="<%=guessBtn%>"  onmouseover="javascript:window.status='Guess the URLs from the webapps installation location (need to press change use the values)';" onmouseout="javascript:window.status='';">Guess URLs</button>
+
   <BR>
   <button type="submit" name="<%=exportBtn%>" onmouseover="javascript:window.status='Export these values to the named config file.';" onmouseout="javascript:window.status='';">Export</button> to 
-<input:text name="<%=filenameTxt%>" attributesText='size="50"' default="../ASTROGRID_Job Entry Systemmanagerconfig.export"/>
+<input:text name="<%=filenameTxt%>" attributesText='size="50"' default="../ASTROGRID_jesconfig.export"/>
 </input:form>
 <%  } %>
 <p>Run the <a href="TestServlet?suite=org.astrogrid.Job Entry System.installationTests.DeploymentTests">Installation Tests</a> to see if the configuration is correct.<BR>
