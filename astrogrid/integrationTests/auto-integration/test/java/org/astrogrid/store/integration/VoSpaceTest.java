@@ -1,4 +1,4 @@
-/*$Id: VoSpaceTest.java,v 1.5 2004/04/21 16:50:35 KevinBenson Exp $
+/*$Id: VoSpaceTest.java,v 1.6 2004/04/21 16:53:53 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import org.astrogrid.community.User;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.VoSpaceClient;
+import org.astrogrid.store.delegate.StoreException;
 import org.astrogrid.store.delegate.StoreFile;
 import org.astrogrid.store.delegate.VoSpaceResolver;
 
@@ -51,10 +52,16 @@ public class VoSpaceTest extends TestCase {
    }
    
    public void testCreateUser() throws IOException, URISyntaxException {
-      System.out.println("entered testCreateUser()");
+      
+      //delete user first in case previous test failed
+      try {
+         client.deleteUser(HOMESPACETARGETIVO, TESTUSERIVO);
+      }
+      catch (StoreException se) {
+         //ignore
+      }
+      
       Ivorn iv = client.createUser(HOMESPACETARGETIVO,TESTUSERIVO);
-      System.out.println("the result of createUser = " + iv.toString());
-      System.out.println("exit testCreateUser()");      
    }
    
    public void testResolver() throws IOException
@@ -92,7 +99,6 @@ public class VoSpaceTest extends TestCase {
    
    public void testGetFile() throws IOException, URISyntaxException
    {
-      System.out.println("entering testGetFile and creating newfile.txt");
       Ivorn fileRn = createTestFile("newfile.txt");
       
       //check it's created OK
@@ -103,40 +109,52 @@ public class VoSpaceTest extends TestCase {
       assertTrue(file.isFile());
       
       //tidy up
-      System.out.println("now deleting the newfile.txt");
       client.delete(fileRn);
-      System.out.println("exiting testGetFile");
    }
   
    public void testMove() throws IOException, URISyntaxException
    {
-      System.out.println("enter testMove moving- moveSource.txt to moveTarget.txt");
       Ivorn source = createTestFile("moveSource.txt");
       Ivorn target = new Ivorn(MYSPACEIVO.toString()+"#"+root+"moveTarget.txt");
+
+      //delete target in case it's already there
+      try {
+         client.delete(target);
+      }
+      catch (StoreException se) {
+         //ignore
+      }
       
-      System.out.println("now moving");
       client.move(source, target);
+
+      //check the source is gone
+      StoreFile file = client.getFile(source);
+      assertNull(file);
       
-      StoreFile file = client.getFile(target);
+      //check the target exists
+      file = client.getFile(target);
       assertNotNull(file);
       assertTrue(file.isFile());
       
       //@todo check that the new file is the same as the created file... sometime
       
       //tidy up
-      System.out.println("now deleting the moveSource and moveTarget");
-      client.delete(source);
       client.delete(target);
-      System.out.println("exiting testMove");      
    }
 
    public void testCopy() throws IOException, URISyntaxException
    {
-      System.out.println("enter testCopy() copySource.txt to copyTarget.txt");
       Ivorn source = createTestFile("copySource.txt");
       Ivorn target = new Ivorn(MYSPACEIVO.toString()+"#"+root+"copyTarget.txt");
       
-      System.out.println("copying");
+      //delete target in case it's already there
+      try {
+         client.delete(target);
+      }
+      catch (StoreException se) {
+         //ignore
+      }
+
       client.copy(source, target);
       
       
@@ -147,10 +165,8 @@ public class VoSpaceTest extends TestCase {
       //@todo check that the new file is the same as the created file... sometime
 
       //tidy up
-      System.out.println("now deleting copySource and copyTarget");
       client.delete(source);
       client.delete(target);
-      System.out.println("exiting testCopy()");
    }
    
    public void testDelete() throws IOException, URISyntaxException
@@ -176,10 +192,10 @@ public class VoSpaceTest extends TestCase {
    
    public void testDeleteUser() throws IOException, URISyntaxException {
       System.out.println("entered testDeleteUser()");
-      client.deleteUser(HOMESPACETARGETIVO,TESTUSERIVO);
+      //client.deleteUser(HOMESPACETARGETIVO,TESTUSERIVO);
       //Ivorn iv = client.(HOMESPACETARGETIVO,TESTUSERIVO);
       //System.out.println("the result of createUser = " + iv.toString());
-      System.out.println("exit testCreateUser()");      
+      System.out.println("exit testCreateUser()");
    }
 
    
@@ -205,6 +221,9 @@ public class VoSpaceTest extends TestCase {
 
 /*
 $Log: VoSpaceTest.java,v $
+Revision 1.6  2004/04/21 16:53:53  mch
+Fixes to tests
+
 Revision 1.5  2004/04/21 16:50:35  KevinBenson
 just addeda  few more comments.  And setup the user corectly.
 
@@ -222,5 +241,6 @@ New IVORN resolver tester
 
 
 */
+
 
 
