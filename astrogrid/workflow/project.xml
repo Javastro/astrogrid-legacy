@@ -79,7 +79,7 @@
 		<dependency>
 			<artifactId>policy-client</artifactId>
 			<version>1.0</version>
-			<groupId>policy-client</groupId>
+			<groupId>astrogrid-community</groupId>
 		</dependency>
 		<dependency>
 			<artifactId>astrogrid-jes</artifactId>
@@ -89,7 +89,7 @@
 		<dependency>
 			<artifactId>authentication-client</artifactId>
 			<version>1.0</version>
-			<groupId>authentication-client</groupId>
+			<groupId>astrogrid-community</groupId>
 		</dependency>
 		<!-- Third party dependencies -->
 		<dependency>

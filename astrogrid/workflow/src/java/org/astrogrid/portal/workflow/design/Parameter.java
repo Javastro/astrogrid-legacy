@@ -11,10 +11,12 @@
 
 package org.astrogrid.portal.workflow.design;
 
-import java.net.*; 
-import org.w3c.dom.* ;
-import org.apache.log4j.Logger ;
-import java.text.MessageFormat ;
+import java.text.MessageFormat;
+
+import org.apache.log4j.Logger;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * The <code>Parameter</code> class represents... 
@@ -31,193 +33,180 @@ import java.text.MessageFormat ;
  * @since   AstroGrid 1.4
  */
 public class Parameter {
-    
-    /** Compile-time switch used to turn tracing on/off. 
-      * Set this to false to eliminate all trace statements within the byte code.*/         
-    private static final boolean 
-        TRACE_ENABLED = true ;
-        
-    private static Logger 
-        logger = Logger.getLogger( Parameter.class ) ;    
-    
-    private String
-        name = null,
-        type = null,
-        documentation = null ;
-        
-    private String
-        location = null ;
-        
-    private String
-        contents = null ;
-        
-    private Cardinality
-        cardinality = null ;
-        
-    private Parameter() {
-    }
-     
-    protected Parameter( String name ) {
-        this.name = name ;   
-    }
-    
-    public Parameter( Element element ) {
-        if( TRACE_ENABLED ) trace( "Parameter(Element) exit") ; 
-             
-        try {
-            
-            this.name = element.getAttribute( WorkflowDD.PAREMETER_NAME_ATTR ) ;
-            this.type = element.getAttribute( WorkflowDD.PAREMETER_TYPE_ATTR ) ;
-            this.location = element.getAttribute( WorkflowDD.PAREMETER_LOCATION_ATTR ) ;
-            this.cardinality = 
-                new Cardinality( element.getAttribute( WorkflowDD.PARAMETER_MIN_CARDINALITY ) 
-                               , element.getAttribute( WorkflowDD.PARAMETER_MAX_CARDINALITY ) ) ;
-                               
-            this.contents = element.getNodeValue() ;
-                     
-            NodeList
-               nodeList = element.getChildNodes() ; 
-                           
-            for( int i=0 ; i < nodeList.getLength() ; i++ ) {           
-                
-                if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
-                    
-                    element = (Element) nodeList.item(i) ;
-                
-                    if ( element.getTagName().equals( WorkflowDD.DOCUMENTATION_ELEMENT ) ) {
-                        this.documentation = element.getNodeValue() ;  
-                    }
-                    
-                } // end if
-                                
-            } // end for       
-             
-        }
-        finally {
-            if( TRACE_ENABLED ) trace( "Parameter(Element)() exit") ;
-        }
 
-    } // end of Parameter(Element)
-        
-  
-    public String getName() {
-        return this.name ;  
-    }
-    
-    public String getDocumentation() {
-        return this.documentation ;
-    }
-    
-    public String getType() {
-        return this.type ;
-    }
-   
-    public Cardinality getCardinality() {
-        return this.cardinality ;
+  /** Compile-time switch used to turn tracing on/off. 
+    * Set this to false to eliminate all trace statements within the byte code.*/
+  private static final boolean TRACE_ENABLED = true;
+
+  private static Logger logger = Logger.getLogger(Parameter.class);
+
+  private String name = null, type = null, documentation = null;
+
+  private String location = null;
+
+  private String contents = null;
+
+  private Cardinality cardinality = null;
+
+  private Parameter() {
+  }
+
+  protected Parameter(String name) {
+    this.name = name;
+  }
+
+  public Parameter(Element element) {
+    if (TRACE_ENABLED)
+      trace("Parameter(Element) exit");
+
+    try {
+
+      this.name = element.getAttribute(WorkflowDD.PAREMETER_NAME_ATTR);
+      this.type = element.getAttribute(WorkflowDD.PAREMETER_TYPE_ATTR);
+      this.location = element.getAttribute(WorkflowDD.PAREMETER_LOCATION_ATTR);
+      this.cardinality =
+        new Cardinality(
+          element.getAttribute(WorkflowDD.PARAMETER_MIN_CARDINALITY),
+          element.getAttribute(WorkflowDD.PARAMETER_MAX_CARDINALITY));
+
+      this.contents = element.getNodeValue();
+
+      NodeList nodeList = element.getChildNodes();
+
+      for (int i = 0; i < nodeList.getLength(); i++) {
+
+        if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
+
+          element = (Element) nodeList.item(i);
+
+          if (element.getTagName().equals(WorkflowDD.DOCUMENTATION_ELEMENT)) {
+            this.documentation = element.getNodeValue();
+          }
+
+        } // end if
+
+      } // end for       
+
+    } finally {
+      if (TRACE_ENABLED)
+        trace("Parameter(Element)() exit");
     }
 
+  } // end of Parameter(Element)
 
-	public String getContents() {
-		return contents;
-	}
+  public String getName() {
+    return this.name;
+  }
 
+  public String getDocumentation() {
+    return this.documentation;
+  }
 
-	public String getLocation() {
-		return location;
-	}
+  public String getType() {
+    return this.type;
+  }
 
+  public Cardinality getCardinality() {
+    return this.cardinality;
+  }
 
-	public void setContents(String string) {
-		contents = string;
-	}
+  public String getContents() {
+    return contents;
+  }
 
+  public String getLocation() {
+    return location;
+  }
 
-	public void setLocation( String url ) {
-		location = url;
-	}
-    
-    
-    protected String toXMLString() {
-        if( TRACE_ENABLED ) trace( "Parameter.toXMLString() entry") ;
-          
-      String 
-         response = null ;
-                                     
-      try {
-            
-          Object []
-             inserts = new Object[7] ;
-          inserts[0] = this.getName() ;
-          inserts[1] = this.getType() ;
-          inserts[2] = this.getLocation() ;
-          inserts[3] = new Integer( this.getCardinality().getMinimum() ).toString();
-          inserts[4] = new Integer( this.getCardinality().getMaximum() ).toString(); ;
-          inserts[5] = this.getDocumentation() ;
-          inserts[6] = ( this.getContents() == null ) ? " " :  this.getContents() ;
+  public void setContents(String string) {
+    contents = string;
+  }
 
-          response = MessageFormat.format( WorkflowDD.PARAMETER_TEMPLATE, inserts ) ;
+  public void setLocation(String url) {
+    location = url;
+  }
 
-      }
-      finally {
-          if( TRACE_ENABLED ) trace( "Parameter.toXMLString() exit") ;    
-      }       
-        
-      return response ;        
-    }
-    
-    
-    protected String toJESXMLString() {
-        if( TRACE_ENABLED ) trace( "Parameter.toJESXMLString() entry") ;
-        String 
-         response = null ;
-                                     
-        try {
-            
-            Object []
-                inserts = new Object[4] ;
-            inserts[0] = this.getName() ;
-            inserts[1] = this.getType() ;
-            inserts[2] = ( this.getLocation() == null ) ? " " :  "location=\"" + this.getLocation() + "\"" ;
-            inserts[3] = ( this.getContents() == null ) ? " " :  this.getContents() ;
+  protected String toXMLString() {
+    if (TRACE_ENABLED)
+      trace("Parameter.toXMLString() entry");
 
-            response = MessageFormat.format( WorkflowDD.JOBPARAMETER_TEMPLATE, inserts ) ;
+    String response = null;
 
-        }
-        finally {
-            if( TRACE_ENABLED ) trace( "Parameter.toJESXMLString() exit") ;    
-        }       
-        
-        return response ;       
-    }
-    
-     
-    private static void trace( String traceString ) {
-        System.out.println( traceString ) ;
-        // logger.debug( traceString ) ;
-    }
-    
-    
-    private static void debug( String logString ){
-        System.out.println( logString ) ;
-        // logger.debug( logString ) ;
+    try {
+
+      Object[] inserts = new Object[7];
+      inserts[0] = this.getName();
+      inserts[1] = this.getType();
+      inserts[2] = this.getLocation();
+      inserts[3] = new Integer(this.getCardinality().getMinimum()).toString();
+      inserts[4] = new Integer(this.getCardinality().getMaximum()).toString();
+      ;
+      inserts[5] = this.getDocumentation();
+      inserts[6] = (this.getContents() == null) ? " " : this.getContents();
+
+      response = MessageFormat.format(WorkflowDD.PARAMETER_TEMPLATE, inserts);
+
+    } finally {
+      if (TRACE_ENABLED)
+        trace("Parameter.toXMLString() exit");
     }
 
-	/**
-	   */
-	public void setCardinality(Cardinality cardinality) {
-		this.cardinality = cardinality;
-	}
+    return response;
+  }
 
-	/**
-	   */
-	public void setDocumentation(String string) {
-		documentation = string;
-	}
+  protected String toJESXMLString() {
+    if (TRACE_ENABLED)
+      trace("Parameter.toJESXMLString() entry");
+    String response = null;
 
-	/**
-	   */
-	public void setType(String string) {
-		type = string;
-	}
+    try {
+
+      Object[] inserts = new Object[4];
+      inserts[0] = this.getName();
+      inserts[1] = this.getType();
+      inserts[2] =
+        (this.getLocation() == null)
+          ? " "
+          : "location=\"" + this.getLocation() + "\"";
+      inserts[3] = (this.getContents() == null) ? " " : this.getContents();
+
+      response =
+        MessageFormat.format(WorkflowDD.JOBPARAMETER_TEMPLATE, inserts);
+
+    } finally {
+      if (TRACE_ENABLED)
+        trace("Parameter.toJESXMLString() exit");
+    }
+
+    return response;
+  }
+
+  private static void trace(String traceString) {
+    System.out.println(traceString);
+    // logger.debug( traceString ) ;
+  }
+
+  private static void debug(String logString) {
+    System.out.println(logString);
+    // logger.debug( logString ) ;
+  }
+
+  /**
+     */
+  public void setCardinality(Cardinality cardinality) {
+    this.cardinality = cardinality;
+  }
+
+  /**
+     */
+  public void setDocumentation(String string) {
+    documentation = string;
+  }
+
+  /**
+     */
+  public void setType(String string) {
+    type = string;
+  }
 
 } // end of class Parameter

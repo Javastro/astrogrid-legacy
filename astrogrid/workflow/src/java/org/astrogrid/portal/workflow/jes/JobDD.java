@@ -9,7 +9,7 @@
  *
  */
 
-package org.astrogrid.portal.workflow.jes ;
+package org.astrogrid.portal.workflow.jes;
 
 /**
  * The <code>JobDD</code> class represents 
@@ -20,20 +20,18 @@ package org.astrogrid.portal.workflow.jes ;
  * @since   AstroGrid 1.2
  */
 public class JobDD {
-    
-    public static final String
-        RESPONSE_ELEMENT = "response",
-        MESSAGE_ELEMENT = "message",
-        JOBLIST_ELEMENT = "joblist",       
-        JOB_ELEMENT = "job",
-        DESCRIPTION_ELEMENT = "description",
-        STATUS_ELEMENT = "status",
-        TIME_ELEMENT = "time",
-        JOBID_ELEMENT = "jobid" ;
-        
-    public static final String  
-        NAME_ATTR = "name",
-        USERID_ATTR = "userid",
-        COMMUNITY_ATTR = "community" ;
-        
+
+  public static final String RESPONSE_ELEMENT = "response",
+    MESSAGE_ELEMENT = "message",
+    JOBLIST_ELEMENT = "joblist",
+    JOB_ELEMENT = "job",
+    DESCRIPTION_ELEMENT = "description",
+    STATUS_ELEMENT = "status",
+    TIME_ELEMENT = "time",
+    JOBID_ELEMENT = "jobid";
+
+  public static final String NAME_ATTR = "name",
+    USERID_ATTR = "userid",
+    COMMUNITY_ATTR = "community";
+
 } // end of class JobDD

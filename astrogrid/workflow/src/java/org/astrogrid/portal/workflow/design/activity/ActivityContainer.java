@@ -11,16 +11,16 @@
 
 package org.astrogrid.portal.workflow.design.activity;
 
-import java.util.LinkedList; 
-import java.util.ListIterator ;
-import org.apache.log4j.Logger ;
+import java.util.LinkedList;
+import java.util.ListIterator;
+import org.apache.log4j.Logger;
 import org.astrogrid.portal.workflow.design.Flow;
 import org.astrogrid.portal.workflow.design.Sequence;
 import org.astrogrid.portal.workflow.design.Step;
 
 import org.astrogrid.portal.workflow.design.*;
 
-import org.w3c.dom.* ;
+import org.w3c.dom.*;
 
 /**
  * The <code>ActivityContainer</code> class represents... 
@@ -38,196 +38,178 @@ import org.w3c.dom.* ;
  */
 public abstract class ActivityContainer extends Activity {
 
-    /** Compile-time switch used to turn tracing on/off. 
-      * Set this to false to eliminate all trace statements within the byte code.*/         
-    private static final boolean 
-        TRACE_ENABLED = true ;
-        
-    private static Logger 
-        logger = Logger.getLogger( ActivityContainer.class ) ; 
-    
-    private LinkedList
-        children = new LinkedList() ;
-      
-    public ActivityContainer( Activity parent ) {
-        super( parent ) ;
-    }
-    
-    
-    public ActivityContainer( String communitySnippet
-                            , Element element
-                            , Activity parent ) {
-        super( parent ) ;
-        if( TRACE_ENABLED ) trace( "ActivityContainer(Element) entry") ; 
-        
-        try {
-                       
-            NodeList
-               nodeList = element.getChildNodes() ; 
-                           
-            for( int i=0 ; i < nodeList.getLength() ; i++ ) {           
-                if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
-                    
-                    element = (Element) nodeList.item(i) ;
-                
-                    if ( element.getTagName().equals( WorkflowDD.SEQUENCE_ELEMENT ) ) {
-                        this.add( new Sequence( communitySnippet, element, this ) ) ;   
-                    }   
-                    else if( element.getTagName().equals( WorkflowDD.FLOW_ELEMENT ) ) {
-                        this.add( new Flow( communitySnippet, element, this ) ) ;                
-                    }
-                    else if( element.getTagName().equals( WorkflowDD.STEP_ELEMENT ) ) {
-                        this.add( new Step( communitySnippet, element, this ) ) ;                
-                    }
-                    
-                } // end if
-                                
-            } // end for        
+  /** Compile-time switch used to turn tracing on/off. 
+    * Set this to false to eliminate all trace statements within the byte code.*/
+  private static final boolean TRACE_ENABLED = true;
 
-            
-        }
-        finally {
-            if( TRACE_ENABLED ) trace( "ActivityContainer(Element) exit") ;
-        }
-        
-     }
-    
-    
-    
-    public synchronized Sequence createSequence() {
-        return this.createSequence( children.size() ) ;
-    }
-    
-    
-    public synchronized Sequence createSequence( int index ) {
-        return (Sequence)this.add( index, new Sequence( this ) ) ;
-    }
-    
-    
-    public synchronized Flow createFlow() {
-        return this.createFlow( children.size() ) ;
-    }
-    
-    
-    public synchronized Flow createFlow( int index ) {
-        return (Flow)this.add( index, new Flow( this ) ) ;
-    }
-    
-    
-    public synchronized Step createStep( int index ) {
-        return (Step)this.add( index, new Step( this ) ) ;        
-    }
-   
-    
-    public Activity add( int index, Activity activity ) {
-        if( TRACE_ENABLED ) trace( "Activity.add(int,Activity) entry") ;
-        
-        try {
-            children.add( index, activity ) ;
-            activity.setParent( this ) ;
-            this.getWorkflow().putActivity( activity ) ;
-        }
-        finally {
-            if( TRACE_ENABLED ) trace( "Activity.add(int,Activity) exit") ;
-        }
+  private static Logger logger = Logger.getLogger(ActivityContainer.class);
 
-        return activity ;    
-                        
-    }
-    
-    
-    public Activity add( Activity activity ) {
-        if( TRACE_ENABLED ) trace( "Activity.add(Activity) entry") ;
-        
-        try {
-            children.add( activity ) ;
-//           activity.setParent( this ) ;
-            this.getWorkflow().putActivity( activity ) ;
-        }
-        finally {
-            if( TRACE_ENABLED ) trace( "Activity.add(Activity) exit") ;
-        }
+  private LinkedList children = new LinkedList();
 
-        return activity ;    
-                        
-    }
-    
-    
-    public boolean removeChild( Activity activity ) { 
-        this.remove() ;     
-        return children.remove( activity ) ;
+  public ActivityContainer(Activity parent) {
+    super(parent);
+  }
+
+  public ActivityContainer(
+    String communitySnippet,
+    Element element,
+    Activity parent) {
+    super(parent);
+    if (TRACE_ENABLED)
+      trace("ActivityContainer(Element) entry");
+
+    try {
+
+      NodeList nodeList = element.getChildNodes();
+
+      for (int i = 0; i < nodeList.getLength(); i++) {
+        if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
+
+          element = (Element) nodeList.item(i);
+
+          if (element.getTagName().equals(WorkflowDD.SEQUENCE_ELEMENT)) {
+            this.add(new Sequence(communitySnippet, element, this));
+          } else if (element.getTagName().equals(WorkflowDD.FLOW_ELEMENT)) {
+            this.add(new Flow(communitySnippet, element, this));
+          } else if (element.getTagName().equals(WorkflowDD.STEP_ELEMENT)) {
+            this.add(new Step(communitySnippet, element, this));
+          }
+
+        } // end if
+
+      } // end for        
+
+    } finally {
+      if (TRACE_ENABLED)
+        trace("ActivityContainer(Element) exit");
     }
 
+  }
 
-    public ActivityIterator getChildren() { return new ActivityIterator( children.listIterator() ) ; }
-    
-    
-    public int getIndex( Activity activity ) {
-        return children.indexOf( activity ) ; 
+  public synchronized Sequence createSequence() {
+    return this.createSequence(children.size());
+  }
+
+  public synchronized Sequence createSequence(int index) {
+    return (Sequence) this.add(index, new Sequence(this));
+  }
+
+  public synchronized Flow createFlow() {
+    return this.createFlow(children.size());
+  }
+
+  public synchronized Flow createFlow(int index) {
+    return (Flow) this.add(index, new Flow(this));
+  }
+
+  public synchronized Step createStep(int index) {
+    return (Step) this.add(index, new Step(this));
+  }
+
+  public Activity add(int index, Activity activity) {
+    if (TRACE_ENABLED)
+      trace("Activity.add(int,Activity) entry");
+
+    try {
+      children.add(index, activity);
+      activity.setParent(this);
+      this.getWorkflow().putActivity(activity);
+    } finally {
+      if (TRACE_ENABLED)
+        trace("Activity.add(int,Activity) exit");
     }
-    
-    public void setIndex( int index, Activity activity ) {
-        this.children.remove( activity ) ;
-        this.children.add( index, activity ) ;
+
+    return activity;
+
+  }
+
+  public Activity add(Activity activity) {
+    if (TRACE_ENABLED)
+      trace("Activity.add(Activity) entry");
+
+    try {
+      children.add(activity);
+      //           activity.setParent( this ) ;
+      this.getWorkflow().putActivity(activity);
+    } finally {
+      if (TRACE_ENABLED)
+        trace("Activity.add(Activity) exit");
     }
-    
-    
-    public String toXMLString() {
-        if( TRACE_ENABLED ) trace( "toXMLString() entry") ;   
-              
-        StringBuffer 
-            childrenBuffer = new StringBuffer( 256 ) ;
-        ListIterator
-            iterator = this.children.listIterator() ;
-                                              
-        try {
-            
-            while ( iterator.hasNext() ) {   
-                childrenBuffer.append( ((Activity) iterator.next()).toXMLString() ) ;
-            }
-            
-        }
-        finally {
-            if( TRACE_ENABLED ) trace( "toXMLString() exit") ;    
-        }       
-        
-        return childrenBuffer.toString() ;
-          
-    } // end of toXMLString()
-    
-    
-    public String toJESXMLString() {
-        if( TRACE_ENABLED ) trace( "toJESXMLString() entry") ;   
-              
-        StringBuffer 
-            childrenBuffer = new StringBuffer( 256 ) ;
-        ListIterator
-            iterator = this.children.listIterator() ;
-                                              
-        try {
-            
-            while ( iterator.hasNext() ) {   
-                childrenBuffer.append( ((Activity) iterator.next()).toJESXMLString() ) ;
-            }
-            
-        }
-        finally {
-            if( TRACE_ENABLED ) trace( "toJESXMLString() exit") ;    
-        }       
-        
-        return childrenBuffer.toString() ;
-          
-    } // end of toJESXMLString()
-    
-    
-    private static void trace( String traceString ) {
-        System.out.println( traceString ) ;
-        // logger.debug( traceString ) ;
+
+    return activity;
+
+  }
+
+  public boolean removeChild(Activity activity) {
+    this.remove();
+    return children.remove(activity);
+  }
+
+  public ActivityIterator getChildren() {
+    return new ActivityIterator(children.listIterator());
+  }
+
+  public int getIndex(Activity activity) {
+    return children.indexOf(activity);
+  }
+
+  public void setIndex(int index, Activity activity) {
+    this.children.remove(activity);
+    this.children.add(index, activity);
+  }
+
+  public String toXMLString() {
+    if (TRACE_ENABLED)
+      trace("toXMLString() entry");
+
+    StringBuffer childrenBuffer = new StringBuffer(256);
+    ListIterator iterator = this.children.listIterator();
+
+    try {
+
+      while (iterator.hasNext()) {
+        childrenBuffer.append(((Activity) iterator.next()).toXMLString());
+      }
+
+    } finally {
+      if (TRACE_ENABLED)
+        trace("toXMLString() exit");
     }
-    
-    private static void debug( String logString ){
-        System.out.println( logString ) ;
-        // logger.debug( logString ) ;
-    }  
-    
+
+    return childrenBuffer.toString();
+
+  } // end of toXMLString()
+
+  public String toJESXMLString() {
+    if (TRACE_ENABLED)
+      trace("toJESXMLString() entry");
+
+    StringBuffer childrenBuffer = new StringBuffer(256);
+    ListIterator iterator = this.children.listIterator();
+
+    try {
+
+      while (iterator.hasNext()) {
+        childrenBuffer.append(((Activity) iterator.next()).toJESXMLString());
+      }
+
+    } finally {
+      if (TRACE_ENABLED)
+        trace("toJESXMLString() exit");
+    }
+
+    return childrenBuffer.toString();
+
+  } // end of toJESXMLString()
+
+  private static void trace(String traceString) {
+    System.out.println(traceString);
+    // logger.debug( traceString ) ;
+  }
+
+  private static void debug(String logString) {
+    System.out.println(logString);
+    // logger.debug( logString ) ;
+  }
+
 } // end of class ActivityContainer

@@ -26,28 +26,26 @@ package org.astrogrid.portal.workflow.design;
  * @since   AstroGrid 1.3
  */
 public class JoinCondition {
-    
-    public static final JoinCondition
-        TRUE = new JoinCondition( "TRUE".intern() ),
-        FALSE = new JoinCondition( "FALSE".intern() ),
-        ANY = new JoinCondition( "ANY".intern() );
-    
-    private String
-        type ;
-    
-    private JoinCondition() {
-    }
-    
-    private JoinCondition( String type ) {
-        this.type = type ;
-    }
-    
-    public boolean equals( JoinCondition joinCondition ) {
-        return this == joinCondition ; 
-    }
-    
-    public String toString() {
-        return type.toLowerCase() ;
-    }
+
+  public static final JoinCondition TRUE = new JoinCondition("TRUE".intern()),
+    FALSE = new JoinCondition("FALSE".intern()),
+    ANY = new JoinCondition("ANY".intern());
+
+  private String type;
+
+  private JoinCondition() {
+  }
+
+  private JoinCondition(String type) {
+    this.type = type;
+  }
+
+  public boolean equals(JoinCondition joinCondition) {
+    return this == joinCondition;
+  }
+
+  public String toString() {
+    return type.toLowerCase();
+  }
 
 } // end of class JoinCondition
