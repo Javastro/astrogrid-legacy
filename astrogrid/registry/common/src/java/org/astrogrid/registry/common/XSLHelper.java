@@ -48,7 +48,7 @@ public class XSLHelper {
    
    
    
-   public Document transformDatabaseProcess(Document doc) {
+   public Document transformDatabaseProcess(Node doc) {
       
       Source xmlSource = new DOMSource(doc);
       Document resultDoc = null;
@@ -80,7 +80,7 @@ public class XSLHelper {
       
    }
    
-   public Document transformCastorProcess(Document doc) {
+   public Document transformCastorProcess(Node doc) {
       
       Source xmlSource = new DOMSource(doc);
       Document resultDoc = null;

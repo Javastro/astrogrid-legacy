@@ -1,7 +1,6 @@
 <query>
 	<selectionSequence>
 		<selection item="searchElements" itemOp="EQ" value="Resource"/>
-		<selectionOp op="$and$"/>
-		<selection item="AuthorityID" itemOp="CONTAINS" value=""/>
+		<selection item="AuthorityID" itemOp="CONTAINS" value="digit"/>
 	</selectionSequence>
 </query>

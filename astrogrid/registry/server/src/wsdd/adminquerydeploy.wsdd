@@ -15,6 +15,6 @@
   <service name="RegistryAdmin" style="message">
       <parameter name="wsdlTargetNamespace" value="urn:org.astrogrid.registry"/>
       <parameter name="className" value="org.astrogrid.registry.server.admin.RegistryAdminService"/>
-      <parameter name="allowedMethods" value="getStatus add update remove addRegistryEntries"/>
+      <parameter name="allowedMethods" value="getStatus update"/>
   </service>
 </deployment>

@@ -6,7 +6,7 @@
  */
 package org.astrogrid.registry.server.harvest;
 
-import org.astrogrid.registry.server.QueryParser3_0;
+import org.astrogrid.registry.server.XQueryExecution;
 import java.rmi.RemoteException; 
 
 import java.io.IOException;
@@ -21,6 +21,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.astrogrid.registry.server.RegistryFileHelper;
 import org.astrogrid.registry.server.query.RegistryService;
+import org.astrogrid.registry.server.admin.RegistryAdminService;
 import java.net.URL;
 import java.io.Reader;
 import java.io.StringReader;
@@ -87,6 +88,11 @@ public class RegistryHarvestService implements
          if(regNL.getLength() == 0) {
             regNL = registryDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority" );
          }
+
+         if(regNL.getLength() == 0) {
+            regNL = registryDoc.getElementsByTagName("vg:ManagedAuthority" );
+         }
+
          
          //NodeList regNL = registryDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority");
          String selectQuery = "<query><selectionSequence>" +
@@ -108,7 +114,7 @@ public class RegistryHarvestService implements
          registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
          Document doc = registryBuilder.parse(inputSource);
          
-         Document responseDoc = QueryParser3_0.parseFullNodeQuery(doc);
+         Document responseDoc = XQueryExecution.parseFullNodeQuery(doc);
          return responseDoc;
       }catch(Exception e) {
          e.printStackTrace();
@@ -142,6 +148,11 @@ public class RegistryHarvestService implements
          if(regNL.getLength() == 0) {
             regNL = registryDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority" );
          }
+
+         if(regNL.getLength() == 0) {
+            regNL = registryDoc.getElementsByTagName("vg:ManagedAuthority" );
+         }
+
          
          String selectQuery = "<query><selectionSequence>" +
              "<selection item='searchElements' itemOp='EQ' value='all'/>" +
@@ -161,7 +172,7 @@ public class RegistryHarvestService implements
          DocumentBuilder registryBuilder = null;
          registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
          Document doc = registryBuilder.parse(inputSource);
-         Document responseDoc = QueryParser3_0.parseFullNodeQuery(doc);
+         Document responseDoc = XQueryExecution.parseFullNodeQuery(doc);
          return responseDoc;
       }catch(Exception e) {
         e.printStackTrace();
@@ -177,16 +188,34 @@ public class RegistryHarvestService implements
     * @return XML docuemnt object representing the result of the query.
     * @author Kevin Benson 
     */  
-   public Document harvestResource(Document resources) throws RegistryException{
+   public Document harvestResource(Document resources){
 
       //This next statement will go away with Castor.
       ArrayList al = new ArrayList();
+      RegistryAdminService ras = new RegistryAdminService();
       try {
          System.out.println("what was passed in at harvestResoruce = " + DomHelper.DocumentToString(resources));
+         
+         
+         NodeList voList = resources.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","VODescription");
+         
+         if(voList.getLength() == 0) {
+            voList = resources.getElementsByTagNameNS("vr","VODescription");
+         }
+         if(voList.getLength() == 0) {
+            voList = resources.getElementsByTagName("VODescription");
+         }
+         if(voList.getLength() == 0) {
+            voList = resources.getElementsByTagName("vr:VODescription");
+         }
+         if(voList.getLength() == 0) {
+            return null;   
+         }
+         
          XSLHelper xs = new XSLHelper();
-         Document resourceChange = xs.transformDatabaseProcess(resources);
+         Document resourceChange = xs.transformDatabaseProcess(voList.item(0));
          System.out.println("the resourceChange = " + DomHelper.DocumentToString(resourceChange));
-         Document castorXS = xs.transformCastorProcess(resourceChange);
+         Document castorXS = xs.transformCastorProcess((Node)resourceChange);
          System.out.println("castorxs = " + DomHelper.DocumentToString(castorXS));
          VODescription vodesc = (VODescription)Unmarshaller.unmarshal(VODescription.class,castorXS);
          HashMap auths = RegistryFileHelper.getManagedAuthorities();
@@ -205,9 +234,10 @@ public class RegistryHarvestService implements
                   try {                                       
                      Marshaller.marshal(rtTemp,doc);
                      System.out.println("updating the ResourceType document from the marshaller doc = " + DomHelper.DocumentToString(doc));
-                     resultDoc = RegistryFileHelper.updateDocument(doc,true,false);
-                     if(resultDoc != null) 
-                        System.out.println("after updating the ResourceType document = " + DomHelper.DocumentToString(resultDoc));
+                     ras.updateNoCheck(doc);
+//                     resultDoc = RegistryFileHelper.updateDocument(doc,true,false);
+//                     if(resultDoc != null) 
+//                        System.out.println("after updating the ResourceType document = " + DomHelper.DocumentToString(resultDoc));
                   }catch(ValidationException ve) {
                      ve.printStackTrace();
                   }catch(MarshalException me) {
@@ -220,8 +250,9 @@ public class RegistryHarvestService implements
                      doc = registryBuilder.newDocument();
                      try {
                         Marshaller.marshal(rtTemp,doc);
-                        resultDoc = RegistryFileHelper.updateDocument(doc,true,false);
-                        System.out.println("after updating the ResourceType document = " + DomHelper.DocumentToString(resultDoc));
+                        ras.updateNoCheck(doc);
+//                        resultDoc = RegistryFileHelper.updateDocument(doc,true,false);
+//                        System.out.println("after updating the ResourceType document = " + DomHelper.DocumentToString(resultDoc));
                      }catch(ValidationException ve) {
                         ve.printStackTrace();
                      }catch(MarshalException me) {
@@ -232,11 +263,14 @@ public class RegistryHarvestService implements
             }//if
          }//for
       }catch(MarshalException me) {
-         throw new RegistryException(me);
+         me.printStackTrace();
+         //throw new RegistryException(me);
       }catch(ValidationException ve) {
-         throw new RegistryException(ve);
+         ve.printStackTrace();
+       //  throw new RegistryException(ve);
       }catch(ParserConfigurationException pce) {
-         throw new RegistryException(pce);   
+         pce.printStackTrace();
+         //throw new RegistryException(pce);   
       }
       
       for(int i = 0;i < al.size();i++) {
@@ -271,11 +305,26 @@ public class RegistryHarvestService implements
      * @return XML docuemnt object representing the result of the query.
      * @author Kevin Benson 
      */  
-   public Document harvestFromResource(Document resource) throws RegistryException {
+   public Document harvestFromResource(Document resource) {
       try {
+         NodeList voList = resource.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","VODescription");
+         
+         if(voList.getLength() == 0) {
+            voList = resource.getElementsByTagNameNS("vr","VODescription");
+         }
+         if(voList.getLength() == 0) {
+            voList = resource.getElementsByTagName("VODescription");
+         }
+         if(voList.getLength() == 0) {
+            voList = resource.getElementsByTagName("vr:VODescription");
+         }
+         if(voList.getLength() == 0) {
+            return null;   
+         }
+         
          XSLHelper xs = new XSLHelper();
-         Document resourceChange = xs.transformDatabaseProcess(resource);
-         Document castorXS = xs.transformCastorProcess(resourceChange);
+         Document resourceChange = xs.transformDatabaseProcess(voList.item(0));
+         Document castorXS = xs.transformCastorProcess((Node)resourceChange);
          
           //Now get the dateFrom element value as well.
           //NodeList nl = resource.getElementsByTagName("VODescription");
@@ -304,9 +353,13 @@ public class RegistryHarvestService implements
              }
          }//if
       }catch(MarshalException me) {
-         throw new RegistryException(me);
+         me.printStackTrace();
+         //throw new RegistryException(me);
       }catch(ValidationException ve) {
-         throw new RegistryException(ve);
+         ve.printStackTrace();
+         //throw new RegistryException(ve);
+      }catch(RegistryException re) {
+         re.printStackTrace();   
       }
       return null;         
     }
@@ -320,7 +373,7 @@ public class RegistryHarvestService implements
        * @return XML docuemnt object representing the result of the query.
        * @author Kevin Benson 
        */  
-      public Document harvestAll(Document resources) throws RegistryException {
+      public Document harvestAll(Document resources) {
          Document harvestedDoc = null;
          //This next statement will go away with Castor.            
          //NodeList nl = query.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","Identifier");
@@ -359,6 +412,7 @@ public class RegistryHarvestService implements
       String accessURL = st.getInterface().getAccessURL().getContent();
       System.out.println("accessURL = " + accessURL);
       Document doc = null;
+      RegistryAdminService ras = new RegistryAdminService();
       if(InvocationType.WEBSERVICE_TYPE == st.getInterface().getInvocation().getType()) {
          //call the service
          //remeber to look at the date
@@ -389,8 +443,9 @@ public class RegistryHarvestService implements
                   sbeRequest.setNamespaceURI(wsdlBasic.getTargetNameSpace());
                   Vector result = (Vector) callObj.invoke (new Object[] {sbeRequest});
                   SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
-                  RegistryFileHelper.updateResources(sbe.getAsDocument(),true,false);
-                  RegistryFileHelper.writeRegistryFile();
+                  ras.updateNoCheck(sbe.getAsDocument());
+                  //RegistryFileHelper.updateResources(sbe.getAsDocument(),true,false);
+                  //RegistryFileHelper.writeRegistryFile();
                }
             }catch(RemoteException re) {
               //log error
@@ -424,8 +479,9 @@ public class RegistryHarvestService implements
             
             doc = DomHelper.newDocument(new URL(accessURL + ending));
             System.out.println("Okay got this far to reading the url doc = " + DomHelper.DocumentToString(doc));
-            RegistryFileHelper.updateResources(doc,true,false);
-            RegistryFileHelper.writeRegistryFile();
+            ras.updateNoCheck(doc);
+            //RegistryFileHelper.updateResources(doc,true,false);
+            //RegistryFileHelper.writeRegistryFile();
             
             NodeList moreTokens = null;
             while( (moreTokens = doc.getElementsByTagName("resumptionToken")).getLength() > 0) {
@@ -437,9 +493,10 @@ public class RegistryHarvestService implements
                System.out.println("the harvestcallregistry's accessurl for resumptionToken = " + accessURL + ending);
                doc = DomHelper.newDocument(new URL(accessURL + ending));
                //System.out.println("in harvestcallregistry the harvestDoc2 = " + XMLUtils.DocumentToString(harvestDoc));
-               RegistryFileHelper.updateResources(doc,true,false);
+               ras.updateNoCheck(doc);
+               //RegistryFileHelper.updateResources(doc,true,false);
             }//while
-            RegistryFileHelper.writeRegistryFile();
+            //RegistryFileHelper.writeRegistryFile();
          }catch(ParserConfigurationException pce) {
             pce.printStackTrace();
          }catch(SAXException sax) {

@@ -23,14 +23,14 @@ public interface RegistryHarvestInterface {
     * @param resources
     * @return
     */
-   public Document harvestResource(Document resources) throws RegistryException;
+   public Document harvestResource(Document resources);
    
    /**
     * This method takes in a date/timestamp with a Resource entry.
     * @param resource
     * @return
     */
-   public Document harvestFromResource(Document resource)  throws RegistryException;
+   public Document harvestFromResource(Document resource);
    
    
    /**
@@ -59,6 +59,6 @@ public interface RegistryHarvestInterface {
     * @param resources
     * @return
     */   
-   public Document harvestAll(Document resources) throws RegistryException;
+   public Document harvestAll(Document resources);
    
 }

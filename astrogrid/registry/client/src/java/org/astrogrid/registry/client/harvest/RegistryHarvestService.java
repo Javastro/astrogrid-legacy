@@ -180,8 +180,9 @@ public class RegistryHarvestService {
    public void harvestResource(Document query) {
       try {
          //get a call object operation to the web service.
+         System.out.println("okay doing Call and endpoint = " + endPoint.toString());
          Call call = getCall();
-          
+
          DocumentBuilder registryBuilder = null;
          registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
          Document doc = registryBuilder.newDocument();
@@ -191,8 +192,10 @@ public class RegistryHarvestService {
          root.appendChild(nd);
 
          SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
+         //SOAPBodyElement sbeRequest = new SOAPBodyElement(query.getDocumentElement());
          sbeRequest.setName("harvestResource");
          sbeRequest.setNamespaceURI(NAMESPACE_URI);
+         System.out.println("Invoking this doc = " + XMLUtils.DocumentToString(query));
          call.invokeOneWay (new Object[] {sbeRequest});
       }catch(ParserConfigurationException pce) {
          pce.printStackTrace();   

@@ -29,6 +29,8 @@ import org.astrogrid.registry.beans.resource.*;
 import org.astrogrid.registry.beans.resource.dataservice.*;
 import org.astrogrid.registry.beans.resource.types.*;
 import org.astrogrid.registry.beans.resource.registry.*;
+import org.astrogrid.registry.beans.resource.conesearch.*;
+import org.astrogrid.registry.beans.resource.community.*;
 
 
 public class RegistryQueryConfigJunit extends TestCase{ 
@@ -67,8 +69,8 @@ public class RegistryQueryConfigJunit extends TestCase{
        rs.conf.setProperty("vm05.astrogrid.org/DataCollectionTest",junitDir+"/DataCollectionTest.xml");
        rs.conf.setProperty("vm05.astrogrid.org/AuthorityTest",junitDir+"/AuthorityTest.xml");
        rs.conf.setProperty("vm05.astrogrid.org/RegistryTest",junitDir+"/RegistryTest.xml");
-       rs.conf.setProperty("vm05.astrogrid.org/vm05.astrogrid.org/TabularSkyServiceTest",junitDir+"/vm05.astrogrid.org/TabularSkyServiceTest.xml");
-       rs.conf.setProperty("vm05.astrogrid.org/vm05.astrogrid.org/Combo1Test",junitDir+"/vm05.astrogrid.org/ResourcesCombo1.xml");
+       rs.conf.setProperty("vm05.astrogrid.org/TabularSkyServiceTest",junitDir+"/TabularSkyServiceTest.xml");
+       rs.conf.setProperty("vm05.astrogrid.org/Combo1Test",junitDir+"/ResourcesCombo1.xml");
        
        
        //System.out.println("Property for config = " + System.getProperty("org.astrogrid.config.url"));
@@ -84,9 +86,51 @@ public class RegistryQueryConfigJunit extends TestCase{
       Enumeration enum = pr.keys();
       while(enum.hasMoreElements()) {
          System.out.println(enum.nextElement());
-      }
-                  
+      }                  
    }
+   
+   public void testRegistryCastorToXML() throws Exception {
+      
+      assertNotNull(rs);
+      if(rs.conf == null) return;
+      System.out.println("entered testRegistryCastorToXML");
+      if(rs.conf.getString("vm05.astrogrid.org/RegistryTest",null) == null) return;
+      DataCollectionType rt;
+      VODescription vodesc = new VODescription();
+      vodesc.addResource(rt = new DataCollectionType());
+      rt.addSubject("test subject");
+      IdentifierType it = new IdentifierType();
+      it.setAuthorityID("TestAuthorityIDFromCastor");
+      it.setResourceKey("Some/resourcekey");
+      rt.setIdentifier(it);
+      rt.setTitle("CastorTestTitle");
+      SummaryType st = new SummaryType();
+      st.setDescription("Castor description");
+      st.setReferenceURL("http://castortest.org");
+      rt.setSummary(st);
+      CurationType ct = new CurationType();
+      ResourceReferenceType rrt = new ResourceReferenceType();
+      rrt.setTitle("Resource Castor type");
+      ct.setPublisher(rrt);
+      ContactType cct = new ContactType();
+      cct.setName("Castor");
+      ct.setContact(cct);
+      rt.setCuration(ct);
+      
+      
+      //FileWriter fw = new FileWriter("c:\\marshalwrite.xml");
+      DocumentBuilder registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      Document castorDoc = registryBuilder.newDocument();
+      //Marshaller.marshal(vodesc,fw);
+      Marshaller.marshal(vodesc,castorDoc);
+      System.out.println("received in junit test = " + XMLUtils.DocumentToString(castorDoc));
+      VODescription vdTest;
+      System.out.println("try unmarshalling back");
+      vdTest = (VODescription)Unmarshaller.unmarshal(VODescription.class,castorDoc);
+      System.out.println("okay vdtest was written");
+      
+   }
+   
    
    public void testServiceXML() throws Exception {
       if(DEBUG_FLAG) System.out.println("entered testServiceXML");      
@@ -140,48 +184,6 @@ public class RegistryQueryConfigJunit extends TestCase{
       
    }   
 
-   public void testRegistryCastorToXML() throws Exception {
-      
-      assertNotNull(rs);
-      if(rs.conf == null) return;
-      System.out.println("entered testRegistryCastorToXML");
-      if(rs.conf.getString("vm05.astrogrid.org/RegistryTest",null) == null) return;
-      DataCollectionType rt;
-      VODescription vodesc = new VODescription();
-      vodesc.addResource(rt = new DataCollectionType());
-      rt.addSubject("test subject");
-      IdentifierType it = new IdentifierType();
-      it.setAuthorityID("TestAuthorityIDFromCastor");
-      it.setResourceKey("Some/resourcekey");
-      rt.setIdentifier(it);
-      rt.setTitle("CastorTestTitle");
-      SummaryType st = new SummaryType();
-      st.setDescription("Castor description");
-      st.setReferenceURL("http://castortest.org");
-      rt.setSummary(st);
-      CurationType ct = new CurationType();
-      ResourceReferenceType rrt = new ResourceReferenceType();
-      rrt.setTitle("Resource Castor type");
-      ct.setPublisher(rrt);
-      ContactType cct = new ContactType();
-      cct.setName("Castor");
-      ct.setContact(cct);
-      rt.setCuration(ct);
-      
-      
-      //FileWriter fw = new FileWriter("c:\\marshalwrite.xml");
-      DocumentBuilder registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      Document castorDoc = registryBuilder.newDocument();
-      //Marshaller.marshal(vodesc,fw);
-      Marshaller.marshal(vodesc,castorDoc);
-      System.out.println("received in junit test = " + XMLUtils.DocumentToString(castorDoc));
-      VODescription vdTest;
-      System.out.println("try unmarshalling back");
-      vdTest = (VODescription)Unmarshaller.unmarshal(VODescription.class,castorDoc);
-      System.out.println("okay vdtest was written");
-      
-   }
-
    public void testTabularSkyService() throws Exception {
       if(DEBUG_FLAG) System.out.println("entered tabularskyservicewithconesearch");      
       assertNotNull(rs);
@@ -202,6 +204,22 @@ public class RegistryQueryConfigJunit extends TestCase{
       assertNotNull(doc);
       if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
       
-   }   
+   }
+
+
+   public void testResourcesCombo2() throws Exception {
+      if(DEBUG_FLAG) System.out.println("entered testcombo2");
+      assertNotNull(rs);
+      if(rs.conf == null) return;
+      if(rs.conf.getString("vm05.astrogrid.org/Combo1Test",null) == null) return;
+      VODescription vodesc = rs.getResourceByIdentifier("vm05.astrogrid.org/Combo1Test");
+      if(vodesc != null) {
+         Document test = XMLUtils.newDocument();
+         Marshaller.marshal(vodesc,test);
+         System.out.println("The marshaller from testcombo2 = " + XMLUtils.DocumentToString(test));
+      }
+      
+   }  
+      
 } 
 

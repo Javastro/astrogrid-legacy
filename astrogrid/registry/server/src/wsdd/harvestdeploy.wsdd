@@ -15,6 +15,6 @@
   <service name="RegistryHarvest" style="message">
       <parameter name="wsdlTargetNamespace" value="urn:org.astrogrid.registry"/>
       <parameter name="className" value="org.astrogrid.registry.server.harvest.RegistryHarvestService"/>
-      <parameter name="allowedMethods" value="harvestRegistry"/>
+      <parameter name="allowedMethods" value="harvestResource harvestAll harvestFrom harvestFromResource harvest"/>
   </service>
 </deployment>

@@ -1,6 +1,7 @@
 package org.astrogrid.registry.common;
 
 import org.w3c.dom.Document;
+import org.astrogrid.registry.RegistryException;
 
 /**
  * Small Interface used by the server side web service and the client delegate.  For determining what
@@ -12,23 +13,6 @@ import org.w3c.dom.Document;
  */
 public interface RegistryAdminInterface {
  
-   /**
-    * Takes an XML Document and will either update and insert the data in the registry.  If a client is
-    * intending for an insert, but the primarykey (AuthorityID and ResourceKey) are already in the registry
-    * an automatic update will occur.  This method will only update main pieces of data/elements
-    * conforming to the IVOA schema.
-    * 
-    * Main Pieces: Organisation, Authority, Registry, Resource, Service, SkyService, TabularSkyService, 
-    * DataCollection 
-    * 
-    * @param update Document a XML document dom object to be updated on the registry.
-    * @return the document updated on the registry is returned.
-    * @author Kevin Benson
-    * 
-    */   
-   public Document add(Document update);
-
-
    /**
     * Takes an XML Document and will either update and insert the data in the registry.  If a client is
     * intending for an insert, but the primarykey (AuthorityID and ResourceKey) are already in the registry
@@ -53,5 +37,5 @@ public interface RegistryAdminInterface {
     * @throws Exception
     */
    public Document getStatus(Document status);
-   
+     
 }

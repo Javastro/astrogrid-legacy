@@ -2,6 +2,13 @@
 #sample registry.xml file.
 org.astrogrid.registry.authorityid=astrogrid
 
+#Normally you just need to change the url piece.
+#registry.exist.db.uri=xmldb:exist://localhost:8080/exist/xmlrpc
+
+
+
+#All the below lines are old and no longer needed. But will keep around for now.
+
 #next line at the moment is not used.
 org.astrogrid.registry.writefile.timedelay.minutes=10
 

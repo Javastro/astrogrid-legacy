@@ -4,18 +4,26 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+/*
 import org.xml.sax.InputSource;
 import java.io.StringReader;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.Reader;
+*/
 import java.util.Date;
-import java.text.DateFormat;
+//import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import de.gmd.ipsi.xql.XQL;
-import de.gmd.ipsi.xql.XQLRelationship;
-import org.astrogrid.registry.server.RegistryFileHelper;
+//import de.gmd.ipsi.xql.XQL;
+//import de.gmd.ipsi.xql.XQLRelationship;
+//import org.astrogrid.registry.server.RegistryFileHelper;
+import org.xmldb.api.*;
+import org.xmldb.api.base.*;
+import org.xmldb.api.modules.*;
+import org.exist.xmldb.*;
+import org.astrogrid.util.DomHelper;
+import org.astrogrid.config.Config;
 
 
 /**
@@ -40,21 +48,32 @@ import org.astrogrid.registry.server.RegistryFileHelper;
  *
  */
 
-public class QueryParser3_0
+public class XQueryExecution
  {
-	static String nodeDetails = "";
-	static String searchElements = "";
+	private static String nodeDetails = "";
+	private static String searchElements = "";
+   
+   public static Config conf = null;
+
+   static {
+      if(conf == null) {
+         conf = org.astrogrid.config.SimpleConfig.getSingleton();
+      }      
+   }   
+   
+   public XQueryExecution() {
+      System.out.println("empty constructor for queryparser3_0");
+   }
    
    /**
     * parseQuery is for submitting a query and goes with the submitQuery from the server side
     * web service.  Currently being depegrecated.
     * 
     * @param query XML document object representing the query language used on the registry.
-    * @return XML docuemnt object representing the result of the query. 
-    * @deprecated Not used at the moment and will be factored out in later versions.
+    * @return XML docuemnt object representing the result of the query.    
     * @author Kevin Benson
     */
-	public static Document parseQuery (Document query) throws ClassNotFoundException {
+	public static Document parseQuery (Document query) {
 
 		/**
 		* Input string "query" is the XML formatted query from the Registry
@@ -66,7 +85,8 @@ public class QueryParser3_0
 		* returned to the RegistryInterface3_0 web service.
 		* 
 		*/
-      addXQLRelationShips();
+      //System.out.println("entered parseQuery");
+      //addXQLRelationShips();
       return prepareQuery(query);
 	}
    
@@ -77,7 +97,7 @@ public class QueryParser3_0
     * @param query XML document object representing the query language used on the registry.
     * @return XML docuemnt object representing the result of the query.
     */   
-	public static Document parseFullNodeQuery (Document query) throws ClassNotFoundException {
+	public static Document parseFullNodeQuery (Document query) {
 
 		/**
 		* Input string "query" is the XML formatted query from the Registry
@@ -87,20 +107,22 @@ public class QueryParser3_0
 		* the RegistryInterface3_0 web service.
 		* 
 		*/
-      addXQLRelationShips();
+      //addXQLRelationShips();
       return prepareQuery(query);
 		//String xqlResponse = prepareQuery(query);
 		//return xqlResponse;	
 	}
    
+   
+   /**
+    * 
+    * @deprecated - No longer in use because of xmldb
+    *
+    */
+   /*
    private static void addXQLRelationShips() {
       
 
-      /**
-       * User-defined comparison to test whether a text element (Object l) is numerically
-       * greater than the number value (Object r) supplied. If either the text element 'l' or
-       * the supplied number value 'r' does not evaluate to a number, the test fails.
-       */
       XQL.addRelationship("$isgt$",
        new XQLRelationship() {
         public boolean holdsBetween(Object l, Object r) {
@@ -111,12 +133,6 @@ public class QueryParser3_0
         }
        });
        
-      /**
-       * User-defined comparison to test whether a text element (Object l) is numerically
-       * greater than or equal to the number value (Object r) supplied. If either the 
-       * text element 'l' or the supplied number value 'r' does not evaluate to a number, 
-       * the test fails.
-       */
        XQL.addRelationship("$isge$",
        new XQLRelationship() {
         public boolean holdsBetween(Object l, Object r) {
@@ -127,13 +143,6 @@ public class QueryParser3_0
         }
        });
        
-      /**
-       * User-defined comparison to test whether a text element (Object l) is numerically
-       * greater than or equal to the number value (Object r) supplied. If either the 
-       * text element 'l' or the supplied number value 'r' does not evaluate to a number, 
-       * the test fails.
-       */
-      
        XQL.addRelationship("$after$",
        new XQLRelationship() {
         public boolean holdsBetween(Object l, Object r) {
@@ -160,11 +169,6 @@ public class QueryParser3_0
        });
        
        
-      /**
-       * User-defined comparison to test whether a text element (Object l) is numerically
-       * less than the number value (Object r) supplied. If either the text element 'l' or
-       * the supplied number value 'r' does not evaluate to a number, the test fails.
-       */
       XQL.addRelationship("$islt$",
        new XQLRelationship() {
         public boolean holdsBetween(Object l, Object r) {
@@ -175,12 +179,6 @@ public class QueryParser3_0
         }
        });
        
-      /**
-       * User-defined comparison to test whether a text element (Object l) is numerically
-       * less than or equal to the number value (Object r) supplied. If either the 
-       * text element 'l' or the supplied number value 'r' does not evaluate to a number, 
-       * the test fails.
-       */
       XQL.addRelationship("$isle$",
        new XQLRelationship() {
         public boolean holdsBetween(Object l, Object r) {
@@ -201,6 +199,19 @@ public class QueryParser3_0
        });       
        
    }
+*/   
+  private static Collection loadDataBase() throws Exception {
+     String driver = "org.exist.xmldb.DatabaseImpl";
+     String uri = conf.getString("registry.exist.db.uri");//"xmldb:exist://localhost:8080/exist/xmlrpc"; 
+      
+     String collection = "/db";
+     Class cl = Class.forName(driver);
+     Database database = (Database)cl.newInstance();
+     DatabaseManager.registerDatabase(database);
+     System.out.println("Loading Database URI: " + uri + collection);
+     Collection col = DatabaseManager.getCollection(uri+collection,"admin","");
+     return col;
+  }
 	
    /**
     * Input Document is the XML formatted query from either the parseQuery
@@ -216,12 +227,8 @@ public class QueryParser3_0
     * @return XML docuemnt object representing the result of the query.
     * @throws ClassNotFoundException
     */   
-	static Document prepareQuery (Document query) throws ClassNotFoundException {
-
-		/**
-		* 
-		*/
-
+	private static Document prepareQuery (Document query) {
+            
 		/**
 		* First build a DOM tree out of the XML query.  
 		*/
@@ -232,7 +239,8 @@ public class QueryParser3_0
      String msg = null;
 
      String xml_to_xql = null;
-      //System.out.println("entered prepareQuery");
+     
+      //System.out.println("entered prepareQuery with = " + DomHelper.DocumentToString(query));
       /**
 		 * The registry query that requires conversion to XQL will be contained 
 			* inside an element called "selectionSequence".  If the selectionSequence 
@@ -260,7 +268,11 @@ public class QueryParser3_0
 			catch (Exception e) {
 				msg = "QUERY 1 - " + e.toString();
 				goodQuery = false;
+            e.printStackTrace();
 			}
+         
+         return runQuery(xml_to_xql,null);
+            
 
 			/**
 			* Now determine how much metadata the user has requested with the "searchElements" 
@@ -274,6 +286,7 @@ public class QueryParser3_0
 			* "content"                -> return identity and content metadata
 			* "serviceMetadataConcept" -> return identity and serviceMetadataConcept metadata
 			*/
+         /*
 			if (goodQuery == true){
             if (searchElements.equals("") || searchElements.equals("all") || searchElements.equals("*")){
                xml_to_xql = "//VODescription/* [" + xml_to_xql + "]";  
@@ -297,12 +310,6 @@ public class QueryParser3_0
            
 
 				System.out.println("the query = " + xml_to_xql);
-				/**
-				* When the XQL query has been constructed, send it to the registry instance
-				* by calling reg.xmlQuery.  Send the registry response from this method, along with
-				* searchElements, to the xqlToXML method to filter the relevant metadata (ie, identity,
-				* curation, content, serviceMetadataConcepts) out of the registry response.
-				*/
 				//xqlResponse = xqlToXML(new Registry3_0().xmlQuery(xml_to_xql,RegistryFileHelper.loadRegistryFile()), searchElements);								
             return new Registry3_0().xmlQuery(xml_to_xql,RegistryFileHelper.loadRegistryFile());
             //System.out.println("the xqlresponse = " + xqlResponse);
@@ -312,7 +319,53 @@ public class QueryParser3_0
             return null;
           //   queryResponse = "<queryResponse><recordKeyPair item='ERROR1:' value='" + query + "' /></queryResponse>";
          }
+         */
 	}
+   
+   public static Document runQuery(String xql,Node updateNode) {
+
+      Collection col = null;
+      try {
+         String fullQuery = null;
+         System.out.println("the xmlxql query = " + xql);
+         col = loadDataBase();         
+         XQueryService xqs = (XQueryService) col.getService("XQueryService", "1.0");
+         
+         fullQuery = "document()//*:Resource[" + xql + "]";
+         System.out.println("Query being Ran = " + fullQuery);
+         ResourceSet rset = xqs.query(fullQuery);
+         Document resultDoc = DomHelper.newDocument();
+         Element root = resultDoc.createElementNS("http://www.ivoa.net/xml/VOResource/v0.9","VODescription");
+         root.setPrefix("vr");
+         resultDoc.appendChild(root);
+            
+         Node nd = null;
+         for(int i = 0;i < rset.getSize();i++) {
+            XMLResource resTime = (XMLResource)rset.getResource(i);
+//            System.out.println("the resTime ids = " + resTime.getId() + " the doc id = " + resTime.getDocumentId());
+            nd = resTime.getContentAsDOM();
+            Node resultNode = resultDoc.importNode(nd,true);
+            root.appendChild(resultNode);
+            if(updateNode != null && rset.getSize() == 1) {
+               Resource deleteResource = col.getResource(resTime.getDocumentId());
+               col.removeResource(deleteResource);
+            }
+         }
+         if(updateNode != null) {
+            XMLResource addResource = (XMLResource)col.createResource(null,"XMLResource");
+            addResource.setContentAsDOM(updateNode);
+            col.storeResource(addResource);
+         }
+         if(col != null) {
+            col.close();
+         }            
+         return resultDoc;
+      }catch(Exception e) {
+         col = null;
+         e.printStackTrace();   
+      }
+      return null;
+   }
 
 	private static String xmlToXQL(Node node) {
 
@@ -329,6 +382,8 @@ public class QueryParser3_0
 		boolean itOp = true;
 		boolean val = true;
 		boolean goodQuery = true;
+      String itemName = null;
+      String xqlStart = null;
 		
       System.out.println("enters xmltoxql");
 		/**
@@ -336,6 +391,7 @@ public class QueryParser3_0
 		 * elements, operators, and element values to the XQL query.
 		 */      
 		for (int z=0; z < nlSS.getLength(); z++){
+         boolean wildcardon = false;
 			if (nlSS.item(z).getNodeName().equals("selectionOp")){				
 				/**
 				 * The selectionOp element contains one attribute specifying XML 
@@ -343,13 +399,13 @@ public class QueryParser3_0
 				 */
 				String selOp = "";
 				if (((Element) nlSS.item(z)).getAttribute("op").equals("AND")){
-					selOp = "$and$";
+					selOp = " and ";
 				}
 				if (((Element) nlSS.item(z)).getAttribute("op").equals("OR")){
-					selOp = "$or$";
+					selOp = " or ";
 				}
 				if (((Element) nlSS.item(z)).getAttribute("op").equals("NOT")){
-					selOp = "$and$ $not$"; //Added 21/08/03
+					selOp = " and not"; //Added 21/08/03
 				}
 				response = response + " "+ selOp + " ";
 			}
@@ -357,6 +413,7 @@ public class QueryParser3_0
 			if (nlSS.item(z).getNodeName().equals("selection")){
 				se = true;
 				String itemOp = "";
+           
 				
 				/**
 				 * The selection element contains three attributes: itemOp contains
@@ -371,22 +428,20 @@ public class QueryParser3_0
 					itemOp = "!=";
 				}
 				else if (((Element) nlSS.item(z)).getAttribute("itemOp").equals("GE")){
-					itemOp = "$isge$";
+					itemOp = " ge ";
 				}
 				else if (((Element) nlSS.item(z)).getAttribute("itemOp").equals("LE")){
-					itemOp = "$isle$";
+					itemOp = " le ";
 				}
 				else if (((Element) nlSS.item(z)).getAttribute("itemOp").equals("GT")){
-					itemOp = "$isgt$";
+					itemOp = " gt ";
 				}
-            else if (((Element) nlSS.item(z)).getAttribute("itemOp").equals("AFTER")){
-               itemOp = "$after$";
-            }
             else if (((Element) nlSS.item(z)).getAttribute("itemOp").equals("CONTAINS")){
-               itemOp = "$contains$";
+               itemOp = " |= ";
+               wildcardon = true;
             }            
 				else if (((Element) nlSS.item(z)).getAttribute("itemOp").equals("LT")){
-					itemOp = "$islt$";
+					itemOp = " lt ";
 				}
 				else itOp = false;
 				
@@ -401,14 +456,30 @@ public class QueryParser3_0
 				/**
 				 * Build the query component contained in this selectionSequence element.
 				 */
-				else {			
+				else {
+               
+               itemName = ((Element) nlSS.item(z)).getAttribute("item");
+               xqlStart = "(.//*:" + itemName;
+               if(itemName.indexOf("@") != -1) {
+                  if(itemName.indexOf(":") != -1) {
+                     itemName = itemName.substring(itemName.indexOf(":")+1);
+                  } else{
+                     itemName = itemName.substring(itemName.indexOf("@")+1);
+                  }
+                  xqlStart = "(.//@*:" + itemName; 			
+               }
 					response = response + "";
-					response = response + "(.//";
-					response = response + ((Element) nlSS.item(z)).getAttribute("item");
+					response = response + xqlStart;
 					String value = ((Element) nlSS.item(z)).getAttribute("value");
 					if  (!(value.equals("") || value.equals("*") || value.equals("all"))) {
 						response = response + " "+ itemOp + " ";
-						response = response + "'"+((Element) nlSS.item(z)).getAttribute("value")+ "'";
+                  if(wildcardon) {
+                     response = response + "'*"+((Element) nlSS.item(z)).getAttribute("value")+ "*'";
+                     wildcardon = false;
+                  }else {
+                     response = response + "'"+((Element) nlSS.item(z)).getAttribute("value")+ "'";
+                  }
+						
 					}
 					response = response + ")";
 				}
@@ -434,244 +505,5 @@ public class QueryParser3_0
       System.out.println("the response = " + response);
 		return response;
 	}
-	
-	private static String xqlToXML(String xqlResponse, String searchElements){
 		
-		/**
-		 * The xqlToXML method takes an XML formatted registry response and filters out
-		 * the appropriate metadata: all, identity, curation, content, or serviceMetadataConcepts.
-		 * Identity metadata is always returned, either alone or with curation, content, 
-		 * serviceMetadataConcept, or all metadata.
-		 */
-		String response = "";
-      System.out.println("xqltoxml enter 2 params");
-		if (searchElements.equals("identity")){
-			response = xqlResponse.replaceAll("<identity", "<service><identity");
-			xqlResponse = null;
-			xqlResponse = response.replaceAll("</identity>", "</identity></service>");	
-		}	
-		else if (searchElements.equals("curation")){
-			response = xqlResponse.replaceAll("<identity", "<service><identity");
-			xqlResponse = null;
-			xqlResponse = response.replaceAll("</curation>", "</curation></service>");		
-		}	
-		else if (searchElements.equals("content")){
-			response = xqlResponse.replaceAll("<identity", "<service><identity");
-			xqlResponse = null;
-			xqlResponse = response.replaceAll("</content>", "</content></service>");		
-		}
-		else if (searchElements.equals("serviceMetadataConcept")){
-			response = xqlResponse.replaceAll("<identity", "<service><identity");
-			xqlResponse = null;
-			xqlResponse = response.replaceAll("</serviceMetadataConcept>", "</serviceMetadataConcept></service>");
-		}
-		String xmlResponse = xqlResponse.replaceAll("<.*xql.*>", "");
-		return xmlResponse;
-	}
-	
-   /**
-    * @deprecated Not used anymore.
-    * 
-    * @param xqlResponse
-    * @return
-    */
-	private static String returnRecordKeyPairs(String xqlResponse){
-		
-		/**
-		 * The returnRecordKeyPairs method reformats a registry response from
-		 * the registry_v1_1.xsd schema format to the registryQueryResponse schema format
-		 * specified at http://wiki.astrogrid.org/bin/view/Astrogrid/RegistryQueryResponseSchema.
-		 */
-		
-        String xmlResponse = "";
-		String nodeResponse = "";
-		
-		/**
-		 * First build a DOM tree from the registry response XML string.
-		 */
-		
-		Reader reader2 = new StringReader(xqlResponse);
-		InputSource inputSource = new InputSource(reader2);
-		String queryResponse = "";
-      
-		Document doc2 = null;
-		DocumentBuilderFactory factory2 = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder2 = null;
-		try {
-			builder2 = factory2.newDocumentBuilder();
-			doc2 = builder2.parse(inputSource);
-		}
-		catch (ParserConfigurationException e) {
-			xmlResponse = "QUERY 2 - " + e.toString();
-		}
-		catch (Exception e){
-			xmlResponse = "QUERY 3 - " + e.toString();
-		}
-
-		try{
-			Element docElement2 = doc2.getDocumentElement();
-
-			/**
-			 * Next, check whether there were any error messages from the registry.  If so,
-			 * construct a item / value key pair containing the error message.
-			 */
-			
-			NodeList errorNodes = docElement2.getElementsByTagName("error");
-			if (errorNodes.getLength() != 0) {
-				xmlResponse = xmlResponse = "<recordKeyPair item='ERROR:' value='" + errorNodes.item(0).getFirstChild().getNodeValue() + "/>";
-			}
-			
-			/**
-			 * If there were no error messages, extract the metadata elements with corresponding
-			 * text child nodes containing element values.  Present these elements and values as
-			 * item / value key pairs.
-			 */
-			
-			else {
-				try{
-					/**
-					 * Build a nodeList from the top level element "service" contained in each 
-					 * matching service in the registry.
-					 */
-					NodeList serviceNodes = docElement2.getElementsByTagName("service");
-					if (serviceNodes.getLength() != 0) {
-						Element serviceNodesParent = (Element)serviceNodes.item(0).getParentNode();
-						Node node = serviceNodesParent;
-						
-						/**
-						 * Recursively call getNodeDetails for each childNode and its children to
-						 * build them into item / value key pairs.  WARNING: recursive calls can 
-						 * make your brain hurt.
-						 */
-						if(node.hasChildNodes()) {
-							NodeList children = node.getChildNodes();
-							if (children != null) {
-								for (int k=1; k< children.getLength(); k=k+2) {
-									if(children.item(k).hasChildNodes()) {
-										String nodeDetails = "";
-										nodeResponse = getNodeDetails(children.item(k));
-										nodeDetails = null;
-										if (k == (children.getLength()-2)){
-											xmlResponse = nodeResponse;
-										}
-										nodeResponse = null;
-									}
-								}
-							}
-						}
-					}
-					else {
-						/** 
-						 * If there were no matching registry entries, return an item / value
-						 * key pair with an error message to that effect.
-						 */						
-						xmlResponse = "<recordKeyPair item='ERROR:' value='No matching registry entries found.'/>";
-					}
-				}
-				catch (Exception e) {
-				  /**
-				   * If something went wrong building the service element child nodes, return an
-				   * error message. 
-				   */				 
-				  xmlResponse = "<recordKeyPair item='ERROR:' value='QUERY 4- " + e.toString() + "'/>";
-				}
-			}
-		}
-		catch (Exception e) {
-  		   /**
-		    * If something went wrong building the registry response DOM tree, return an
-		    * error message. 
-		    */		
-		    xmlResponse = "<recordKeyPair item='ERROR:' value='QUERY 5- " + e.toString() + "'/>";
-		}
-		xmlResponse = "<queryResponse>"+ xmlResponse + "</queryResponse>";
- 
-        /**
-         * Return the xmlResponse back to the parseQuery method in this class.  This string contains
-         * one or more response records containing item / value key pairs.  Error messages are in
-         * this format too.
-         */
-		return xmlResponse;
-	}
-
-   /**
-    * @deprecated Not used anymore.
-    * @param node
-    * @return
-    */
-	private static String getNodeDetails (Node node) {
-
-        /**
-         * The getNodeDetails method is called recursively from other methods to build
-         * the strings containing each response record and its item / value key pairs.
-         */
-        
-		String content = "";
-		String itemName = "";
-		int type = node.getNodeType();
-		
-		/**
-		 * First construct the top level responseRecord element and specify which category
-		 * of metadata (identity, curation, etc) that subsequent item / value key pairs will be. 
-		 */
-		
-		if ((type == Node.ELEMENT_NODE)&&(node.getNodeName().equals("service"))) {
-		  nodeDetails = nodeDetails + "<responseRecord>";
-		}  
-
-		if ((type == Node.ELEMENT_NODE)&&(node.getNodeName().equals("identity"))) {
-		  nodeDetails = nodeDetails + "<recordKeyPair item='metadataType' value='identity'/>";
-		}  
-		if ((type == Node.ELEMENT_NODE)&&(node.getNodeName().equals("curation"))) {
-		  nodeDetails = nodeDetails + "<recordKeyPair item='metadataType' value='curation'/>";
-		}
-		if ((type == Node.ELEMENT_NODE)&&(node.getNodeName().equals("content"))) {
-		  nodeDetails = nodeDetails + "<recordKeyPair item='metadataType' value='content'/>";
-		}
-		if ((type == Node.ELEMENT_NODE)&&(node.getNodeName().equals("serviceMetadataConcept"))) {
-		  nodeDetails = nodeDetails + "<recordKeyPair item='metadataType' value='serviceMetadataConcept'/>";
-		}
-
-		/**
-		 * If the node is a text node, then the value of the text node is added to the nodeDetails 
-		 * string as the "value" attribute. The name of its parent is added to nodeDetails as the
-		 * "item" attribute. Thus, the format of the key pair is 
-		 * <recordKeyPair item="[parent node name]" value="[text node value]"/>
-		 */
-		if (type == Node.TEXT_NODE) {
-			content = node.getNodeValue();
-			itemName = node.getParentNode().getNodeName();
-			if (!content.trim().equals("")){
-				nodeDetails = nodeDetails + "<recordKeyPair item='" + itemName + "' value='" + content + "'/>";
-			}			
-		}
-		NodeList children = node.getChildNodes();
-		
-		/**
-		 * If the element node has children, recursively call getNodeDetails with this
-		 * element node.
-		 */
-		
-		if (children != null) {
-			for (int m=0; m< children.getLength(); m++) {
-				getNodeDetails(children.item(m));
-			}
-		}
-		
-		/**
-		 * If the element name "service" is found at this point, it indicates the end of
-		 * a complete matching service entry.  End the response record here.
-		 */ 
-		
-		if ((type == Node.ELEMENT_NODE)&&(node.getNodeName().equals("service"))) {
-		  nodeDetails = nodeDetails + "</responseRecord>";
-		}
-		
-		/**
-		 * Return the nodeDetails string; it will either be a complete list of response records
-		 * or contain a partial list that will be further used in recursive calls to this 
-		 * method.
-		 */  
-		return nodeDetails;
-	}	
 }

@@ -248,7 +248,7 @@ public class RegistryService  {
       Document resultDoc = submitQueryDOM(query);
       try {
          XSLHelper xs = new XSLHelper();
-         Document castorXS = xs.transformCastorProcess(resultDoc);                     
+         Document castorXS = xs.transformCastorProcess((Node)resultDoc);                     
          vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,castorXS);
       }catch(ValidationException ve) {
          vo = null;
@@ -296,8 +296,13 @@ public class RegistryService  {
       VODescription vo = null;
       Document resultDoc = loadRegistryDOM();     
       try {
+         System.out.println("inside loadretisty castor = " + XMLUtils.DocumentToString(resultDoc));
          XSLHelper xs = new XSLHelper();
-         Document castorXS = xs.transformCastorProcess(resultDoc);                     
+         //Document xsDoc = xs.transformDatabaseProcess((Node)resultDoc);
+         //System.out.println("inside loadretisty xsdoc = " + XMLUtils.DocumentToString(xsDoc));
+         //Document castorXS = xs.transformCastorProcess((Node)xsDoc);
+         Document castorXS = xs.transformCastorProcess((Node)resultDoc);
+         System.out.println("the castor xsl in loadregistry = " + XMLUtils.DocumentToString(castorXS));                     
          vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,castorXS);
       }catch (Exception e) {
          vo = null;
@@ -327,11 +332,20 @@ public class RegistryService  {
    }
    
    public Document getResourceByIdentifierDOM(Ivorn ident) throws RegistryException {
-      return getResourceByIdentifierDOM(ident.getPath());   
+      if(ident == null)  {
+         throw new RegistryException("Cannot call this method with a null ivorn identifier");
+      }      
+      return getResourceByIdentifierDOM(ident.toRegistryString());   
    }
    
    public Document getResourceByIdentifierDOM(String ident)  throws RegistryException {
       Document doc = null;
+      if(ident == null)  {
+         throw new RegistryException("Cannot call this method with a null identifier");
+      }
+      if(ident.indexOf("ivo://") != -1) {
+         ident = ident.substring(6);         
+      }
       if(!useCache) {
          int iTemp = 0;
          iTemp = ident.indexOf("/");
@@ -358,7 +372,7 @@ public class RegistryService  {
       try {
          Document doc = getResourceByIdentifierDOM(ident);
          XSLHelper xs = new XSLHelper();
-         Document castorXS = xs.transformCastorProcess(doc);         
+         Document castorXS = xs.transformCastorProcess((Node)doc);         
          vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,castorXS);
       }catch(MarshalException me) {
        throw new RegistryException(me);   

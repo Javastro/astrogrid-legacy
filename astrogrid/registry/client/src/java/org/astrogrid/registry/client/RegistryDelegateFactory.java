@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryDelegateFactory.java,v 1.3 2004/03/03 13:06:43 KevinBenson Exp $
+ * $Id: RegistryDelegateFactory.java,v 1.4 2004/03/29 09:43:26 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -52,6 +52,8 @@ public class RegistryDelegateFactory {
     * @return
     */
    public static synchronized RegistryService createQuery(URL endPoint) {
+      if(endPoint != null)
+         System.out.println("the ENDPOINT AT DELEGATE = " + endPoint.toString());
       return new org.astrogrid.registry.client.query.RegistryService(endPoint);
    }
    

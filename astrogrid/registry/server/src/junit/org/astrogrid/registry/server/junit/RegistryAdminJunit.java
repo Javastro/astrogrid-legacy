@@ -71,7 +71,7 @@ public class RegistryAdminJunit extends TestCase{
        if (DEBUG_FLAG) System.out.println("----\"----") ;
    }
    
-
+/*
    public void testGetStatus() throws Exception {
        if (DEBUG_FLAG) System.out.println("Begin testGetStatus");
        Document doc = ras.getStatus(null);
@@ -80,7 +80,7 @@ public class RegistryAdminJunit extends TestCase{
        if(doc != null)      
           if (DEBUG_FLAG) System.out.println("getStatus returned = " + XMLUtils.DocumentToString(doc));
     }
-      
+  */    
    
    public void testUpdateService() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testUpdateService");
@@ -89,7 +89,7 @@ public class RegistryAdminJunit extends TestCase{
       if(doc != null)      
          if (DEBUG_FLAG) System.out.println("loadRegistry returned = " + XMLUtils.DocumentToString(doc));
    }
-   
+   /*
    public void testUpdateVizerEntry() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testUpdateService");
       System.out.println("the xml document of harvestvizier = " + XMLUtils.DocumentToString(ras.conf.getDom("registry.junit.test/HarvestVizier")));
@@ -108,7 +108,7 @@ public class RegistryAdminJunit extends TestCase{
       if(doc != null)
          if (DEBUG_FLAG) System.out.println("loadRegistry returned = " + XMLUtils.DocumentToString(doc));
    }
-      
+     */ 
 /*   
    public void testSubmitQueryEqualsOrganisationQuery() throws Exception {
       Document doc = rs.conf.getDom("org.astrogrid.registry.junit.orgQuery1");  

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | Maven build tasks for the AstroGrid registry server.
+    |
+    +-->
+<project
+    xmlns:core="jelly:core"
+    xmlns:maven="jelly:maven"
+    xmlns:ant="jelly:ant"
+    xmlns:util="jelly:util"
+    xmlns:log="jelly:log"
+    xmlns:define="jelly:define"
+    xmlns:deploy="deploy"
+    >
+
+    <!--+
+        | Primary goals are :
+        |     clean
+        |     install-artifact
+        |     install-snapshot
+        |     site
+        +-->
+
+    <!--+
+        | Debug info ....
+        +-->
+    <goal name="info">
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+    </goal>
+
+    <!--+
+        | Import our plugin goals from our parent project.
+        | Looks like this gets included anyway ...
+        | Possibly because our project inherits from ../maven.project.xml ?
+        | Maven : Any more unexpected suprises !?
+    <core:import inherit="true" file="${maven.build.dir}/../../maven/maven.xml"/>
+        +-->
+        
+    <goal name="reg-installer">
+        <attainGoal name="jar:jar"/>
+                <attainGoal name="run-installer"/>
+
+    
+    </goal>
+    
+    <goal name="run-installer">
+    
+        <ant:java classname="regsetup.RegistrySetup"
+            fork="false"
+            >
+            <classpath>
+        	   <pathelement location="${maven.build.dir}/${pom.artifactId}-${pom.currentVersion}.jar"/>
+    	       <pathelement path="${maven.build.dir}"/>
+	         </classpath>            
+        </ant:java>
+    
+    
+    </goal>
+
+    <!--+
+        | Project goals.
+        | These are the main project goals.
+        +-->
+
+    <!--+
+        | Prepare the files for the jar goal.
+        | Adds the generated WSDL and WSDD files into the jar META-INF.
+        +-->
+    <preGoal name="jar:jar">
+        <ant:echo message=""/>
+        <ant:echo message="Artifact : ${pom.artifactId}"/>
+        <ant:echo message="Preparing for jar:jar ...."/>
+        
+            <!--+
+                | Project.getDependencyPath() only works for jar and ejb files.
+                | See : http://maven.apache.org/xref/org/apache/maven/DependencyClasspathBuilder.html#100
+                | Means we have to do this the long way round .... by iterating through our list of artifacts.
+                 and artifact.getDependency().getId().equals('axis:axis')
+                +-->
+            <core:forEach var="artifact" items="${pom.getArtifacts()}">
+                <!--+
+                    | If the artifact matches our criteria.
+                    +-->
+                <core:if test="${artifact.getDependency().getType().equals('jar')}">
+                    <ant:echo message="Found jars"/>
+                    <ant:echo message="  Ident    : ${artifact.getDependency().getId()}"/>
+                    <ant:echo message="  Version  : ${artifact.getDependency().getVersion()}"/>
+                    <ant:echo message="  Type     : ${artifact.getDependency().getType()}"/>
+                    <ant:echo message="  Name     : ${artifact.getName()}"/>
+                    <ant:echo message="  Path     : ${artifact.getPath()}"/>
+                    <ant:echo message="  dest     : ${maven.build.dir}"/>
+                    <!--+
+                        | Unpack the Axis war file.
+					+-->
+                    <ant:echo message="Unpacking jar file"/>
+                    <ant:unjar src="${artifact.getPath()}" dest="${maven.build.dir}/classes"/>
+                                            
+                </core:if>
+            </core:forEach>
+        
+        
+        <!--+
+            | Create the META-INF directory.
+
+        <ant:mkdir dir="${maven.build.dest}/META-INF"/>
+        <ant:mkdir dir="${maven.build.dest}/META-INF/wsdd"/>
+            +-->        
+        <!--+
+            | Copy our WSDD service deployment files.
+        <ant:copy verbose="false" todir="${maven.build.dest}/META-INF/wsdd">
+            <ant:fileset dir="${maven.src.dir}/wsdd">
+                <include name="**/*.wsdd"/>
+            </ant:fileset>
+        </ant:copy>        
+            +-->        
+    </preGoal>
+    
+    
+
+</project>

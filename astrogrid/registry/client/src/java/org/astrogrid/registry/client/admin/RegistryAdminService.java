@@ -84,7 +84,7 @@ public class RegistryAdminService {
     */ 
    public RegistryAdminService(URL endPoint) {
       this.endPoint = endPoint;
-      dummyMode = Boolean.valueOf(conf.getString(DUMMY_MODE_PROPERTY,"false")).booleanValue();
+     // dummyMode = Boolean.valueOf(conf.getString(DUMMY_MODE_PROPERTY,"false")).booleanValue();
    }
     
    /**
@@ -141,8 +141,8 @@ public class RegistryAdminService {
       boolean valid = false;
       try {
          XSLHelper xs = new XSLHelper();
-         Document resultDoc = xs.transformDatabaseProcess(validDocument);
-         Document castorXS = xs.transformCastorProcess(resultDoc);            
+         Document resultDoc = xs.transformDatabaseProcess((Node)validDocument);
+         Document castorXS = xs.transformCastorProcess((Node)resultDoc);            
          VODescription vo = (VODescription)Unmarshaller.unmarshal(VODescription.class,castorXS);
          valid = true;
       }catch(MarshalException me) {
@@ -150,6 +150,7 @@ public class RegistryAdminService {
       }catch(ValidationException ve) {
          valid = false;   
       }finally {
+         System.out.println("tried validating and results = " + valid);
          return valid;   
       }
       
@@ -188,6 +189,7 @@ public class RegistryAdminService {
       }
       
       if(doc == null) {
+         System.out.println("doc was null for some reason in update");
          return null;   
       }
       
@@ -196,11 +198,14 @@ public class RegistryAdminService {
       
       //Build up a SoapBodyElement to be sent in a Axis message style.
       //Go ahead and reset a name and namespace to this as well.
+      System.out.println("the endpoint = " + this.endPoint.toString());
+      System.out.println("okay calling update service with doc = " + DomHelper.DocumentToString(doc));
       SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
       sbeRequest.setName("update");
       sbeRequest.setNamespaceURI(NAMESPACE_URI);
       
-      try {            
+      try {
+                     
          Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
          if(result.size() > 0) {
             SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
@@ -336,6 +341,7 @@ public class RegistryAdminService {
       SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());
       sbeRequest.setName("getStatus");
       sbeRequest.setNamespaceURI(NAMESPACE_URI);
+      
       try {            
          Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
          SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);

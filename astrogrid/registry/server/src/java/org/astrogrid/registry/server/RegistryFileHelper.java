@@ -432,6 +432,55 @@ public class RegistryFileHelper {
       return replacedDocument;
    }
    
+   private static HashMap otherManagedAuths = null;
+   
+   public static HashMap getOtherManagedAuthorities() {
+      if(otherManagedAuths == null || otherManagedAuths.size() <= 0) {
+         doOtherManageAuthorities();   
+      }
+      return otherManagedAuths;            
+   }
+   
+   public static HashMap doOtherManageAuthorities() {
+      RegistryService rs = new RegistryService();
+      Document regEntry = null;
+      if(otherManagedAuths == null) {
+         otherManagedAuths = new HashMap();
+      }
+      otherManagedAuths.clear();
+      String regAuthID = conf.getString("org.astrogrid.registry.authorityid");   
+      String xqlQuery = ".//@*:type='RegistryType' and .//*:AuthorityID != '" + regAuthID +"'";   
+      
+      try {
+         regEntry = XQueryExecution.runQuery(xqlQuery,null);
+      }catch(Exception e) {
+         e.printStackTrace();
+         regEntry = null;   
+      }
+      
+      if(regEntry != null) {
+         NodeList nl = regEntry.getElementsByTagNameNS("vg","ManagedAuthority" );
+         //Okay for some reason vg seems to pick up the ManagedAuthority.
+         //Lets try to find it by the url namespace.
+         if(nl.getLength() == 0) {
+            nl = regEntry.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority" );
+         }
+         if(nl.getLength() == 0) {
+            nl = regEntry.getElementsByTagName("vg:ManagedAuthority" );
+         }
+         //System.out.println("the nodelist size for getting manageauthority2 = " + nl2.getLength());
+         System.out.println("the nodelist size for getting manageauthority = " + nl.getLength());
+         if(nl.getLength() > 0) {
+            for(int i=0;i < nl.getLength();i++) {
+               System.out.println("the namespace uri = " + nl.item(i).getNamespaceURI());
+               otherManagedAuths.put(nl.item(i).getFirstChild().getNodeValue(),null);
+            }//for
+         }//if
+      }//if
+      return otherManagedAuths;
+   }  
+   
+   
    public static HashMap getManagedAuthorities() {
       if(manageAuthorities == null || manageAuthorities.size() <= 0) {
          doManageAuthorities();   
@@ -447,7 +496,12 @@ public class RegistryFileHelper {
       }
       manageAuthorities.clear();
       try {
+         System.out.println("lookup reg now for manageauths");
          regEntry = rs.loadRegistry(null);
+         if(regEntry == null) {
+            System.out.println("could not do loadregistry");
+         }else
+            System.out.println("regentry = " + XMLUtils.DocumentToString(regEntry));
       }catch(Exception e) {
          e.printStackTrace();
          regEntry = null;   

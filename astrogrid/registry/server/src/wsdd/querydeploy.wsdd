@@ -15,6 +15,6 @@
   <service name="Registry" style="message">
       <parameter name="wsdlTargetNamespace" value="urn:org.astrogrid.registry"/>
       <parameter name="className" value="org.astrogrid.registry.server.query.RegistryService"/>
-      <parameter name="allowedMethods" value="submitQuery fullNodeQuery harvestQuery loadRegistry"/>
+      <parameter name="allowedMethods" value="submitQuery loadRegistry"/>
   </service>
 </deployment>

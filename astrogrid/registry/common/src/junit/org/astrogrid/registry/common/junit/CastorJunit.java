@@ -120,11 +120,11 @@ public class CastorJunit extends TestCase{
       
             XSLHelper xs = new XSLHelper();
             //xs.testCheck();
-            Document resultDoc = xs.transformDatabaseProcess(doc);
+            Document resultDoc = xs.transformDatabaseProcess((Node)doc);
             System.out.println("Document tranformed = " + DomHelper.DocumentToString(resultDoc));
             //System.out.println("the nodespace stuff1 = " + resultDoc.getElementsByTagNameNS("vr","Resource").getLength());
             //System.out.println("the nodespace stuff2 = " + resultDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","Resource").getLength());
-            Document castorXS = xs.transformCastorProcess(resultDoc);
+            Document castorXS = xs.transformCastorProcess((Node)resultDoc);
             System.out.println("castorXS = " + DomHelper.DocumentToString(castorXS));
             VODescription vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,castorXS);            
    }

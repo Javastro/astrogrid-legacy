@@ -21,7 +21,7 @@
         | The short name of the project.
         | This is used when naming jars and distribution files.
         +-->
-    <id>astrogrid-registry-server</id>
+    <id>astrogrid-registry-installer</id>
 
     <!--+
         | The full name of the project.
@@ -33,14 +33,14 @@
         | The Java package name of the project.
         | This value is used when generating JavaDoc.
         +-->
-    <package>org.astrogrid.registry.server</package>
+    <package>regsetup</package>
 
     <!--+
         | A short description of the project.
         | The short description should be limited to a single line.
         +-->
     <shortDescription>
-        Astrogrid Registry classes used on the server side
+        Astrogrid Registry installer
     </shortDescription>
 
     <!--+
@@ -50,47 +50,11 @@
     <description>
         <![CDATA[
 	<p>
-		The Server area takes in request from a web service and does various tasks on the Registry.  Currently the Registry
-		information is stored in a flat file, but will soon be using an XMLDB of eXist.
-		See <a href="exist.sourceforge.net">eXist</a>
+		Small Instaler to help install and configure the registry server side.
+		Call by extracting the war file: jar xvf astrogrid-registry-installer.war <br />
+		Then run by calling "java regsetup.RegistrySetup"
 		<br />
 	</p>
-	<section name="Interface">
-		<p>
-				Web Service Interface methods:
-			<ul>
-				<li>update(Resource schema) - updates the Registry with one to many Resources.</li>
-				<li>harvestFrom(date) - return all resource information modified from a particular date.</li>
-				<li>havest() - return all resource information.</li>
-				<li>submitQuery - Query for entries based on a particular criteria.</li>
-				<li>harvestResource - Registers a resource entry into the db and performs a harvest on that entry if possible.</li>
-				<li>loadRegistry() - just returns the Registry Resource metadata entry for this resource.</li>
-			</ul>
-		</p>
-	</section>
-	<section name="Builds">
-		<p>
-			The registry allows you to build at the top level or at it's sub-project level.  
-			Here are the maven goals for building the registry.
-			<ul>
-				<li>clean - cleans out and removes all previous builds.</li>
-				<li>install-snapshot - Builds all the necessry jar and war files.</li>
-				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
-				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
-			</ul>
-		</p>
-	</section>
-	<section name="Installation">
-		<p>
-			This only builds the server jar and is expected to be bundled up with a war file.  See the WebApp portion of
-			the registry which bundles up the full server installation into a war file.
-			After a build a jar file is produced in the "target"
-			directory.  When ever it is bundled with another component, it is expected to have in the System properties or
-			JNDI a key value of "org.astrogrid.config.url" pointing to a config file.  An example config file is given in
-			cvs under the config directory.  Currently the config file requires pointing to a xml file which will be your
-			registry, this will be factored out as we come online with the eXist XMLDB.
-		</p>
-	</section>	
 		]]>        
     </description>
 
@@ -119,7 +83,32 @@
             <version>SNAPSHOT</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
+          	<properties>
+          		<war.bundle>true</war.bundle>
+          	</properties>                        
         </dependency>
+        
+        <dependency>
+            <groupId>astrogrid-registry</groupId>
+            <artifactId>astrogrid-registry-client</artifactId>
+            <version>SNAPSHOT</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+          	<properties>
+          		<war.bundle>true</war.bundle>
+          	</properties>            
+        </dependency>
+        
+        <!--
+        <dependency>
+            <groupId>astogrid-registry</groupId>
+            <artifactId>astrogrid-registry-webapp</artifactId>
+            <version>SNAPSHOT</version>
+            <type>war</type>
+            <url>http://www.astrogrid.org/</url>            
+        </dependency>
+        -->
+       
         
         <dependency>
             <groupId>org.astrogrid</groupId>
@@ -127,101 +116,100 @@
             <version>SNAPSHOT</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
+          	<properties>
+          		<war.bundle>true</war.bundle>
+          	</properties>            
         </dependency>
         
         <dependency>
         	<artifactId>commons-jxpath</artifactId>
             <groupId>commons-jxpath</groupId>
             <version>1.1</version>
+            <properties>
+            	<war.bundle>true</war.bundle>
+            </properties>            
         </dependency>
         
         <dependency>
         	<artifactId>jakarta-regexp</artifactId>
             <groupId>jakarta-regexp</groupId>
             <version>1.3</version>
+            <properties>
+            	<war.bundle>true</war.bundle>
+            </properties>            
         </dependency>
-
-       <dependency>
-            <artifactId>exist</artifactId>
-            <groupId>exist</groupId>
-            <version>1.0b1</version>
-        </dependency>
-
-       <dependency>
-            <artifactId>commons-pool</artifactId>
-            <groupId>exist</groupId>
-            <version>1.1</version>
+        
+        <dependency>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+            <version>1.0.3</version>
         </dependency>
         
         
+               
         <!-- required by castor -->
         <dependency>
             <artifactId>castor</artifactId>
             <groupId>castor</groupId>
             <version>0.9.5</version>
             <jar>castor-0.9.5-xml.jar</jar>
+            <properties>
+            	<war.bundle>true</war.bundle>
+            </properties>            
         </dependency>
+                        
         
-       <dependency>
-            <artifactId>commons-logging</artifactId>
-            <groupId>commons-logging</groupId>
-            <version>1.0.3</version>
-        </dependency>
-        
-       <dependency>
-            <artifactId>xmldb</artifactId>
-            <groupId>exist</groupId>
-           <version>unknown</version>            
-        </dependency>
-
-       <dependency>
-            <artifactId>xmlrpc</artifactId>
-            <groupId>exist</groupId>
-            <version>1.2</version>
-            <url>http://www.astrogrid.org</url>
-        </dependency>
-        
-                
         <dependency>
         	<id>xerces</id>
             <version>2.4.0</version>
+            <properties>
+            	<war.bundle>true</war.bundle>
+            </properties>
         </dependency>
+        
+        <dependency >
+           <id>wsdl4j</id>
+           <version>1.4</version>
+          	<properties>
+          		<war.bundle>true</war.bundle>
+          	</properties>           
+        </dependency>
+        
+        
         
         <dependency>
        		<id>xml-apis</id>
           	<version>1.0.b2</version>
+          	<properties>
+          		<war.bundle>true</war.bundle>
+          	</properties>
         </dependency>
-        
-        
-        <dependency>
-            <artifactId>commons-discovery</artifactId>
-            <groupId>commons-discovery</groupId>
-            <version>20030211.213356</version>
-        </dependency>        
         
         <dependency >
             <id>axis</id>
             <version>1.1</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
         </dependency>
         
         <dependency>
            <id>jaxrpc</id>
            <version>unknown</version>
            <jar>jaxrpc.jar</jar>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>           
         </dependency>
 
         <dependency>
            <id>saaj</id>
            <version>unknown</version>
            <jar>saaj.jar</jar>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>           
         </dependency>
-        
-        <dependency>
-            <id>ipsi</id>
-            <version>1.0.2</version>
-            <url>http://www.astrogrid.org/</url>
-        </dependency>
-        
     </dependencies>
 
     <!--+
@@ -259,5 +247,11 @@
             +-->
         </unitTest>
     </build>
+    <reports>
+        <report><!--few reports for this subproject-->
+            maven-changelog-plugin
+        </report>
+    </reports>     
+    
 
 </project>

@@ -1,21 +1,20 @@
 package org.astrogrid.registry.server.query;
 
-import org.astrogrid.registry.server.QueryParser3_0;
+
 
 import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
-import org.apache.axis.utils.XMLUtils;
+
 import java.io.Reader;
 import java.io.StringReader;
 import org.xml.sax.InputSource;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 import java.io.IOException;
-
-
+import org.astrogrid.util.DomHelper;
 import org.astrogrid.config.Config;
-
+import org.astrogrid.registry.server.XQueryExecution;
 
 /**
  * 
@@ -56,56 +55,17 @@ public class RegistryService implements
    */
    public Document submitQuery(Document query) {
       Document registryDoc = null;
-      System.out.println("received = " + XMLUtils.DocumentToString(query));    
-      try {
-   		registryDoc = QueryParser3_0.parseQuery(query);
-         System.out.println("the registryDoc = " + XMLUtils.DocumentToString(registryDoc));
-   	} catch (ClassNotFoundException e) {
+      System.out.println("received = " + DomHelper.DocumentToString(query));    
+      //try {
+   		registryDoc = XQueryExecution.parseQuery(query);
+         if(registryDoc != null)
+            System.out.println("the registryDoc = " + DomHelper.DocumentToString(registryDoc));
+   	//} catch (ClassNotFoundException e) {
    		// TODO Auto-generated catch block
-   		e.printStackTrace();
-   	}
+   	//	e.printStackTrace();
+   	//}
       return registryDoc;
    }
-
-/*  
-   public Document harvestQuery(Document query) throws Exception {
-      System.out.println("received = " + XMLUtils.DocumentToString(query));
-      NodeList nl = query.getElementsByTagName("date_since");
-      if(nl.getLength() > 1) {
-         //throw an error trying to do more dates than expected.
-      }
-      Document registryDoc = loadRegistry(null);
-      NodeList regNL = registryDoc.getElementsByTagName("ManagedAuthority");
-      
-      
-      Node nd = nl.item(0);
-      String updateVal = nd.getFirstChild().getNodeValue();
-      String selectQuery = "<query><selectionSequence>" +
-      "<selection item='searchElements' itemOp='EQ' value='all'/>" +
-      "<selectionOp op='$and$'/>" +
-      "<selection item='@updated' itemOp='AFTER' value='" + updateVal + "'/>";
-      if(regNL.getLength() > 0) {
-         selectQuery += "<selectionOp op='AND'/>" + 
-         "<selection item='AuthorityID' itemOp='EQ' value='" + regNL.item(0).getFirstChild().getNodeValue() + "'/>";
-      }
-      for(int i = 1;i < regNL.getLength();i++) {
-         selectQuery += "<selectionOp op='OR'/>" +
-         "<selection item='AuthorityID' itemOp='EQ' value='" + regNL.item(i).getFirstChild().getNodeValue() + "'/>";
-      }
-      selectQuery += "</selectionSequence></query>";      
-      
-      Reader reader2 = new StringReader(selectQuery);
-      InputSource inputSource = new InputSource(reader2);
-      DocumentBuilder registryBuilder = null;
-      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      Document doc = registryBuilder.parse(inputSource);
-      //System.out.println("the select/harvest query = " + XMLUtils.DocumentToString(doc));
-      
-      Document responseDoc = QueryParser3_0.parseFullNodeQuery(doc);
-      //System.out.println("the responsedoc in harvestQuery = " + XMLUtils.DocumentToString(responseDoc));
-      return responseDoc;
-   }
-  */
    
    public Document loadRegistry(Document query) {
       //System.out.println("received = " + XMLUtils.DocumentToString(query));
@@ -113,13 +73,16 @@ public class RegistryService implements
       authorityID = authorityID.trim();
       Document doc = null;
       Document responseDoc = null;
+      
       String selectQuery = "<query><selectionSequence>" +
       "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
       "<selectionOp op='$and$'/>" +
       "<selection item='AuthorityID' itemOp='EQ' value='" + authorityID + "'/>" +
+      "<selectionOp op='AND'/>" +
+      "<selection item='@*:type' itemOp='EQ' value='RegistryType'/>"  +
       "</selectionSequence></query>";
       
-      try {      
+      try {
          Reader reader2 = new StringReader(selectQuery);
          InputSource inputSource = new InputSource(reader2);
          DocumentBuilder registryBuilder = null;
@@ -134,12 +97,7 @@ public class RegistryService implements
       }
       
       if(doc != null) {
-         try {
-            responseDoc = QueryParser3_0.parseFullNodeQuery(doc);
-         }catch(ClassNotFoundException cfe) {
-            responseDoc = null;
-            cfe.printStackTrace();
-         }
+         responseDoc = XQueryExecution.parseQuery(doc);
       }
       return responseDoc;
    }

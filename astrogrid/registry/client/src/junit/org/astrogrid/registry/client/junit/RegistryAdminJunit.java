@@ -59,13 +59,15 @@ public class RegistryAdminJunit extends TestCase {
           rs = null;
           return;
        }
-
-       rs = RegistryDelegateFactory.createAdmin();
-       rs.conf.setProperty("vm05.astrogrid.org/MyspaceManager",cacheDir+"/Myspace.xml");
-       rs.conf.setProperty("org.astrogrid.registry.junit.authUpdate1",junitDir+"/AuthorityTest.xml");
-       rs.conf.setProperty("org.astrogrid.registry.junit.orgUpdate1",junitDir+"/OrganisationTest.xml");
-       junitEndPoint = rs.conf.getUrl("org.astrogrid.registry.admin.junit.endpoint",null);
-       assertNotNull(rs);
+       junitEndPoint = RegistryDelegateFactory.conf.getUrl("org.astrogrid.registry.admin.junit.endpoint",null);
+       if(junitEndPoint != null)
+         rs = RegistryDelegateFactory.createAdmin(junitEndPoint);
+         
+       RegistryDelegateFactory.conf.setProperty("vm05.astrogrid.org/MyspaceManager",cacheDir+"/Myspace.xml");
+       RegistryDelegateFactory.conf.setProperty("org.astrogrid.registry.junit.authUpdate1",junitDir+"/AuthorityTest.xml");
+       RegistryDelegateFactory.conf.setProperty("org.astrogrid.registry.junit.orgUpdate1",junitDir+"/OrganisationTest.xml");
+      
+       //assertNotNull(rs);
        if (DEBUG_FLAG) System.out.println("----\"----") ;
        }
             
@@ -80,8 +82,7 @@ public class RegistryAdminJunit extends TestCase {
   
    public void testUpdateOnAuthority() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testUpdateOnAuthority");
-      if(junitEndPoint == null) return;      
-      rs = RegistryDelegateFactory.createAdmin(junitEndPoint);
+      if(rs == null) return;
       if (DEBUG_FLAG) System.out.println("Endpoint = " + rs.conf.getString("org.astrogrid.registry.admin.junit.endpoint"));             
       Document doc = rs.conf.getDom("org.astrogrid.registry.junit.authUpdate1");  
       Document responseDoc = rs.update(doc);
@@ -91,8 +92,7 @@ public class RegistryAdminJunit extends TestCase {
    
    public void testUpdateOnOrg() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testUpdateOnOrg");
-      if(junitEndPoint == null) return;      
-      rs = RegistryDelegateFactory.createAdmin(junitEndPoint);
+      if(rs == null) return;
       if (DEBUG_FLAG) System.out.println("Endpoint = " + rs.conf.getString("org.astrogrid.registry.admin.junit.endpoint"));
       //File fi = new File(rs.conf.getString("org.astrogrid.registry.junit.orgUpdate1"));
       //Document responseDoc = rs.updateFromFile(fi);
@@ -105,14 +105,9 @@ public class RegistryAdminJunit extends TestCase {
    
    public void testGetStatus() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testGetStatus");
-      if(junitEndPoint == null) return;
-      rs = RegistryDelegateFactory.createAdmin(junitEndPoint);
+      if(rs == null) return;
       String result = rs.getCurrentStatus();
       assertNotNull(result);
       if (DEBUG_FLAG) System.out.println("received " + result);         
-   }
-   
- 
-   
-} 
-
+   }  
+}

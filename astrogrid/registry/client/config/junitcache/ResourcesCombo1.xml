@@ -19,7 +19,7 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
-<vr:Resource xsi:type="java:org.astrogrid.registry.beans.resource.dataservice.DataCollectionType">
+<vr:Resource xsi:type="DataCollectionType">
     <Identifier>
       <AuthorityID>vm05.astrogrid.org</AuthorityID>
       <ResourceKey>DataCollectionTest</ResourceKey>
@@ -69,9 +69,7 @@
       <vs:Rights>public</vs:Rights>
     </vs:Access>
   </vr:Resource>
-  
-  
-  <vr:Resource  xsi:type="java:org.astrogrid.registry.beans.resource.community.OrganisationType">
+  <vr:Resource  xsi:type="OrganisationType">
     <Identifier>
       <AuthorityID>vm05.astrogrid.org</AuthorityID>
       <ResourceKey>OrganisationTest</ResourceKey>
@@ -108,7 +106,7 @@
     <Subject>grid-based processing</Subject>
     <ContentLevel>Research</ContentLevel>
   </vr:Resource>
-<vr:Resource  xsi:type="java:org.astrogrid.registry.beans.resource.registry.AuthorityType">
+<vr:Resource  xsi:type="AuthorityType">
     <Identifier>
       <AuthorityID>vm05.astrogrid.org</AuthorityID>
       <ResourceKey>AuthorityTest</ResourceKey>
@@ -135,7 +133,7 @@
       <Date>2003-08-30</Date>
     </Curation>
   </vr:Resource>
-<vr:Resource xsi:type="java:org.astrogrid.registry.beans.resource.ServiceType">
+<vr:Resource xsi:type="ServiceType">
     <vr:Identifier>
       <AuthorityID>vm05.astrogrid.org</AuthorityID>
       <ResourceKey>ServiceTest</ResourceKey>
@@ -187,8 +185,7 @@
       <AccessURL use="base">http://vm05.astrogrid.org:8080/astrogrid-mySpace/services/MySpaceManager</AccessURL>
     </Interface>
   </vr:Resource>
-
- <vr:Resource xsi:type="java:org.astrogrid.registry.beans.resource.registry.RegistryType">
+ <vr:Resource xsi:type="RegistryType">
     <Identifier>
       <AuthorityID>vm05.astrogrid.org</AuthorityID>
       <ResourceKey>RegistryTest</ResourceKey>
@@ -236,7 +233,5 @@
       <Invocation>WebBrowser</Invocation>
       <AccessURL use="dir">http://adil.ncsa.uiuc.edu/QueryPage.html</AccessURL>
     </Interface>
-  </vr:Resource>
-
-  
+  </vr:Resource>  
   </VODescription>
