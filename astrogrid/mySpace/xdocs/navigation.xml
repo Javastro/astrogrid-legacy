@@ -4,6 +4,12 @@
   <title>AstroGrid Project</title>
 
   <body>
+    <menu name="Install">
+	<item name="README" href="README" />
+	<item name="CreateRegistry" href="createregistry_v02.lis" />
+	
+	
+    </menu>
     <links>
        <item name="AstroGrid" href="http://www.astrogrid.org"/>
        <item name="Projects"  href="http://www.astrogrid.org/maven/build/index.html"/>
