@@ -1,5 +1,5 @@
 /*
- * $Id: DirectDelegate.java,v 1.5 2003/09/17 14:51:30 nw Exp $
+ * $Id: DirectDelegate.java,v 1.6 2003/09/18 13:13:24 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -50,12 +50,12 @@ public class DirectDelegate extends DatacenterDelegate
     * results part of the returned document, which may be VOTable or otherwise
     * depending on the results format specified in the ADQL
     */
-   public Element query(Element adql) throws IOException
+   public Element doQuery(Element adql) throws IOException
    {
       throw new UnsupportedOperationException("Not implemented yet");
    }
 
-   public Element getResults(String id) throws RemoteException
+   public Element getResultsAndClose(String id) throws RemoteException
    {
       throw new UnsupportedOperationException("Not implemented yet");
    }
@@ -86,7 +86,7 @@ public class DirectDelegate extends DatacenterDelegate
     * center serves) in the form required by registries. See the VOResource
     * schema; I think that is what this should return...
     */
-   public Element getRegistryMetadata() throws IOException
+   public Element getVoRegistryMetadata() throws IOException
    {
       throw new UnsupportedOperationException();
    }
@@ -94,7 +94,7 @@ public class DirectDelegate extends DatacenterDelegate
    /**
     * Polls the service and asks for the current status
     */
-   public QueryStatus getQueryStatus(String queryId)
+   public QueryStatus getStatus(String queryId)
    {
       return QueryStatus.UNKNOWN;
    }
@@ -112,6 +112,9 @@ public class DirectDelegate extends DatacenterDelegate
 
 /*
 $Log: DirectDelegate.java,v $
+Revision 1.6  2003/09/18 13:13:24  nw
+renamed delegate methods to match those in web service
+
 Revision 1.5  2003/09/17 14:51:30  nw
 tidied imports - will stop maven build whinging
 

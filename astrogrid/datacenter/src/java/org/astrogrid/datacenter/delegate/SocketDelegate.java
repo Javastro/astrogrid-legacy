@@ -1,5 +1,5 @@
 /*
- * $Id: SocketDelegate.java,v 1.15 2003/09/17 14:51:30 nw Exp $
+ * $Id: SocketDelegate.java,v 1.16 2003/09/18 13:12:27 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -143,7 +143,7 @@ public class SocketDelegate extends DatacenterDelegate
     * results part of the returned document, which may be VOTable or otherwise
     * depending on the results format specified in the ADQL
     */
-   public Element query(Element adql) throws IOException
+   public Element doQuery(Element adql) throws IOException
    {
       //need to construct a wrapper around the given element, bit messy this
       String query = XMLUtils.ElementToString(adql);
@@ -186,7 +186,7 @@ public class SocketDelegate extends DatacenterDelegate
 
    /** Get the results of a query (or the status so far)
     */
-   public Element getResults(String queryId) throws RemoteException, IOException
+   public Element getResultsAndClose(String queryId) throws RemoteException, IOException
    {
       Log.affirm(queryId != null, "queryId is null");
       Log.affirm(queryId.length()>0, "queryId is empty");
@@ -214,7 +214,7 @@ public class SocketDelegate extends DatacenterDelegate
     * center serves) in the form required by registries. See the VOResource
     * schema; I think that is what this should return...
     */
-   public Element getRegistryMetadata() throws IOException
+   public Element getVoRegistryMetadata() throws IOException
    {
       Element response = atomicSendReceive("<"+REQ_REGISTRY_METADATA_TAG+"/>\n");
 
@@ -224,7 +224,7 @@ public class SocketDelegate extends DatacenterDelegate
    /**
     * Polls the service and asks for the current status
     */
-   public QueryStatus getQueryStatus(String queryId) throws IOException
+   public QueryStatus getStatus(String queryId) throws IOException
    {
       Log.affirm(queryId != null, "queryId is null");
       Log.affirm(queryId.length()>0, "queryId is empty");
@@ -340,10 +340,27 @@ public class SocketDelegate extends DatacenterDelegate
       }
    }
 
+/* (non-Javadoc)
+ * @see org.astrogrid.datacenter.delegate.DatacenterDelegate#abortQuery(java.lang.String)
+ */
+public void abortQuery(String queryId) throws IOException {
+    throw new UnsupportedOperationException();    
+}
+
+/* (non-Javadoc)
+ * @see org.astrogrid.datacenter.delegate.DatacenterDelegate#getMetadata()
+ */
+public Element getMetadata() throws IOException {
+    throw new UnsupportedOperationException();
+}
+
 }
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.16  2003/09/18 13:12:27  nw
+renamed delegate methods to match those in web service
+
 Revision 1.15  2003/09/17 14:51:30  nw
 tidied imports - will stop maven build whinging
 

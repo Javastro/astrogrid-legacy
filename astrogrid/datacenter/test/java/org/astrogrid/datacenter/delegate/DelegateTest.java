@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.11 2003/09/17 14:53:02 nw Exp $
+ * $Id: DelegateTest.java,v 1.12 2003/09/18 13:16:46 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -79,7 +79,7 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
       int count = delegate.adqlCountDatacenter(adqlQuery);
 
       //submit query for votable results
-      Element results = delegate.query(adqlQuery);
+      Element results = delegate.doQuery(adqlQuery);
 
       checkResults(results);
    }
@@ -124,17 +124,17 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
       delegate.registerListener(queryId, this);
 
       //check status
-      QueryStatus status = delegate.getQueryStatus(queryId);
+      QueryStatus status = delegate.getStatus(queryId);
 
       //start query
       response = delegate.startQuery(queryId);
 
       //check status
       assertEquals(QueryIdHelper.getQueryId(response), queryId);
-      status = delegate.getQueryStatus(queryId);
+      status = delegate.getStatus(queryId);
 
       //get results
-      response = delegate.getResults(queryId);
+      response = delegate.getResultsAndClose(queryId);
       checkResults(response);
    }
 
@@ -145,7 +145,7 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
    {
       DatacenterDelegate delegate = DatacenterDelegate.makeDelegate(null);
 
-      Element voRegistry = delegate.getRegistryMetadata();
+      Element voRegistry = delegate.getVoRegistryMetadata();
    }
 
    /** 'Callback' method called by Delegate when its status changes.  Stores

@@ -1,4 +1,4 @@
-/*$Id: TestInstallation.java,v 1.8 2003/09/17 18:52:12 nw Exp $
+/*$Id: TestInstallation.java,v 1.9 2003/09/18 13:14:55 nw Exp $
  * Created on 08-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -170,7 +170,7 @@ public class TestInstallation extends TestCase {
     public void testGetRegistryMetadata() {
         DatacenterDelegate del = createDelegate();
         try {
-            Element result = del.getRegistryMetadata();
+            Element result = del.getVoRegistryMetadata();
             assertNotNull(result);
             assertEquals("Registry Metadata not in expected format","DataCenterMetadata",result.getLocalName());
             System.out.println("Registry Metadata:");
@@ -285,7 +285,7 @@ public class TestInstallation extends TestCase {
         Element input = parseInput(is);
         Element result =null;
         try {
-            result = del.query(input);
+            result = del.doQuery(input);
         } catch (IOException e1) {           
             e1.printStackTrace();
             fail("Call to web service failed with exception: " + e1.getMessage());
@@ -344,7 +344,7 @@ public class TestInstallation extends TestCase {
         // should be seeing some things happen now with the listener.
         // wait till completed.
         
-        Element result = del.getResults(queryId);
+        Element result = del.getResultsAndClose(queryId);
         assertNotNull("result of query is null",result);
         assertEquals("Result of query not in expected format","DatacenterResults",result.getLocalName());
         System.out.println("Results for query");
@@ -362,6 +362,9 @@ public class TestInstallation extends TestCase {
 
 /* 
 $Log: TestInstallation.java,v $
+Revision 1.9  2003/09/18 13:14:55  nw
+renamed delegate methods to match those in web service
+
 Revision 1.8  2003/09/17 18:52:12  nw
 added more to the installation test
 

@@ -48,11 +48,11 @@ public class HomeClient
 //         Thread.currentThread().sleep(5000);
 
          //basic tests
-         Element voRegistry = delegate.getRegistryMetadata();
+         Element voRegistry = delegate.getVoRegistryMetadata();
 
          //query test
          InputStream in = HomeClient.class.getResourceAsStream("adqlQuery.xml");
-         Element results = delegate.query(XMLUtils.newDocument(in).getDocumentElement());
+         Element results = delegate.doQuery(XMLUtils.newDocument(in).getDocumentElement());
           /**/
       }
       catch (Exception e)
@@ -64,6 +64,9 @@ public class HomeClient
 
 /*
  $Log: HomeClient.java,v $
+ Revision 1.4  2003/09/18 13:15:23  nw
+ renamed delegate methods to match those in web service
+
  Revision 1.3  2003/09/17 14:53:02  nw
  tidied imports
 

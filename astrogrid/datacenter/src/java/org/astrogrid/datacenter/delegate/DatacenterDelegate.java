@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegate.java,v 1.21 2003/09/17 14:51:30 nw Exp $
+ * $Id: DatacenterDelegate.java,v 1.22 2003/09/18 13:12:27 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -114,7 +114,7 @@ public abstract class DatacenterDelegate
     * results part of the returned document, which may include VOTable or otherwise
     * depending on the results format specified in the ADQL
     */
-   public abstract Element query(Element adql) throws IOException;
+   public abstract Element doQuery(Element adql) throws IOException;
 
    /**
     * Returns the number of items that match the given query.  This is useful for
@@ -128,26 +128,39 @@ public abstract class DatacenterDelegate
     * described in ADQL (Astronomical Data Query Language).  Returns the
     * response document including the query id that corresponds to that query.
     * Does not start the query @see startAdqlQuery
+    * @todo - add helper method to extract queryId from response document - as this is what is required by other methods.
     */
    public abstract Element makeQuery(Element adql) throws IOException;
 
    /**
     * Starts a query running */
    public abstract Element startQuery(String queryId) throws IOException;
+   
+   /** 
+    * Abort a  query
+    * 
+    */
+   public abstract void abortQuery(String queryId) throws IOException;
 
 
    /**
     * Polls the status of the service, returning the results when they're
     * ready
     */
-   public abstract Element getResults(String queryId) throws IOException;
+   public abstract Element getResultsAndClose(String queryId) throws IOException;
 
    /**
     * returns metadata (an XML document describing the data the
     * center serves) in the form required by registries. See the VOResource
     * schema; I think that is what this should return...
     */
-   public abstract Element getRegistryMetadata() throws IOException;
+   public abstract Element getVoRegistryMetadata() throws IOException;
+
+    /** 
+     * return metadata 
+     */
+    public abstract Element getMetadata() throws IOException;
+
 
    /**
     * returns the full metadata document (an XML document describing the data the
@@ -159,7 +172,7 @@ public abstract class DatacenterDelegate
    /**
     * Polls the service and asks for the current status
     */
-   public abstract QueryStatus getQueryStatus(String queryId) throws IOException;
+   public abstract QueryStatus getStatus(String queryId) throws IOException;
 
 
    /**
@@ -193,6 +206,9 @@ public abstract class DatacenterDelegate
 
 /*
 $Log: DatacenterDelegate.java,v $
+Revision 1.22  2003/09/18 13:12:27  nw
+renamed delegate methods to match those in web service
+
 Revision 1.21  2003/09/17 14:51:30  nw
 tidied imports - will stop maven build whinging
 

@@ -1,11 +1,12 @@
 /*
- * $Id: WebDelegate.java,v 1.11 2003/09/17 14:51:30 nw Exp $
+ * $Id: WebDelegate.java,v 1.12 2003/09/18 13:12:27 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate;
 
+import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
 
@@ -61,7 +62,7 @@ public class WebDelegate extends DatacenterDelegate
     * @todo - seems bad to have to hide these exceptions to fit in with interface - can we loosen interface instead.
     * or even get rid of it - what does it give us over the machine generated AxisDataServerSoapBindingStub ?
     */
-   public Element query(Element adql) throws RemoteException
+   public Element doQuery(Element adql) throws RemoteException
    {
        try {
           return binding.doQuery(adql);
@@ -75,7 +76,7 @@ public class WebDelegate extends DatacenterDelegate
     * Returns votable results (or status info if results not ready)
     * @todo change getResultsAndClose() to take the query Id as string
     */
-   public Element getResults(String queryId) throws RemoteException
+   public Element getResultsAndClose(String queryId) throws RemoteException
    {
       try
       {
@@ -153,7 +154,7 @@ public class WebDelegate extends DatacenterDelegate
     * center serves) in the form required by registries. See the VOResource
     * schema; I think that is what this should return...
     */
-   public Element getRegistryMetadata() throws RemoteException
+   public Element getVoRegistryMetadata() throws RemoteException
    {
      return binding.getVoRegistryMetadata();
    }
@@ -161,7 +162,7 @@ public class WebDelegate extends DatacenterDelegate
    /**
     * Polls the service and asks for the current status
     */
-   public QueryStatus getQueryStatus(String id) throws RemoteException
+   public QueryStatus getStatus(String id) throws RemoteException
    {
       return QueryStatus.getFor(binding.getStatus(id));
    }
@@ -187,10 +188,26 @@ public class WebDelegate extends DatacenterDelegate
       }
    }
 
+
+public void abortQuery(String queryId) throws IOException {
+    binding.abortQuery(DocHelper.wrap(QueryIdHelper.makeQueryIdTag(queryId)).getDocumentElement());
+    
+}
+
+/* (non-Javadoc)
+ * @see org.astrogrid.datacenter.delegate.DatacenterDelegate#getMetadata()
+ */
+public Element getMetadata() throws IOException {
+    return binding.getMetadata();
+}
+
 }
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.12  2003/09/18 13:12:27  nw
+renamed delegate methods to match those in web service
+
 Revision 1.11  2003/09/17 14:51:30  nw
 tidied imports - will stop maven build whinging
 

@@ -77,7 +77,7 @@ public class SixdfDataCenter extends SocketServer
          DatacenterDelegate delegate = DatacenterDelegate.makeDelegate("socket://localhost:"+SocketServer.DEFAULT_PORT);
          
          //basic tests
-         Element voRegistry = delegate.getRegistryMetadata();
+         Element voRegistry = delegate.getVoRegistryMetadata();
       }
       catch (Exception e)
       {
@@ -88,6 +88,9 @@ public class SixdfDataCenter extends SocketServer
 
 /*
  $Log: SixdfDataCenter.java,v $
+ Revision 1.3  2003/09/18 13:16:15  nw
+ renamed delegate methods to match those in web service
+
  Revision 1.2  2003/09/17 14:53:02  nw
  tidied imports
 

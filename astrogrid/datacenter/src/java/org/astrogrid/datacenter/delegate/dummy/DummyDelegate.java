@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDelegate.java,v 1.9 2003/09/17 14:51:30 nw Exp $
+ * $Id: DummyDelegate.java,v 1.10 2003/09/18 13:12:14 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -76,7 +76,7 @@ public class DummyDelegate extends DatacenterDelegate
     * Checks that the given ADQL is valid (makes a query from it), returns an
     * example VOTable supplied in this package
     */
-   public Element query(Element adql) throws RemoteException
+   public Element doQuery(Element adql) throws RemoteException
    {
       setStatus(QueryStatus.STARTING);
 
@@ -169,7 +169,7 @@ public class DummyDelegate extends DatacenterDelegate
    /**
     * Returns a sample votable
     */
-   public Element getResults(String id) throws RemoteException
+   public Element getResultsAndClose(String id) throws RemoteException
    {
       if (id.equals(QUERY_ID))
       {
@@ -193,7 +193,7 @@ public class DummyDelegate extends DatacenterDelegate
    /**
     * returns example voregistry - formatted metadata file.
     */
-   public Element getRegistryMetadata() throws IOException
+   public Element getVoRegistryMetadata() throws IOException
    {
          //load example response votable
       try
@@ -226,7 +226,7 @@ public class DummyDelegate extends DatacenterDelegate
    /**
     * Returns unknown
     */
-   public QueryStatus getQueryStatus(String queryId)
+   public QueryStatus getStatus(String queryId)
    {
       return lastStatus;
    }
@@ -239,11 +239,29 @@ public class DummyDelegate extends DatacenterDelegate
       addListener(listener);
    }
 
+/* (non-Javadoc)
+ * @see org.astrogrid.datacenter.delegate.DatacenterDelegate#abortQuery(java.lang.String)
+ */
+public void abortQuery(String queryId) throws IOException {
+    //do nothing.
+    
+}
+
+/* (non-Javadoc)
+ * @see org.astrogrid.datacenter.delegate.DatacenterDelegate#getMetadata()
+ */
+public Element getMetadata() throws IOException {
+    return null;
+}
+
 
 }
 
 /*
 $Log: DummyDelegate.java,v $
+Revision 1.10  2003/09/18 13:12:14  nw
+renamed delegate methods to match those in web service
+
 Revision 1.9  2003/09/17 14:51:30  nw
 tidied imports - will stop maven build whinging
 
