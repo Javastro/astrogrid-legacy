@@ -1,4 +1,4 @@
-/*$Id: DefaultParameterAdapter.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: DefaultParameterAdapter.java,v 1.3 2004/07/20 02:03:23 nw Exp $
  * Created on 04-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,6 +40,7 @@ public class DefaultParameterAdapter implements ParameterAdapter {
      * if the parameter is direct, just return the value of the parameter value itself, 
      * if indirect, retreive the value first
      * @returrn always retirns the string value of this parameter
+     * @todo check that this is the best behaviour - only reads a line of the file - not so good.
      *  */
     public Object process() throws CeaException {
         if (indirectVal == null) {
@@ -84,6 +85,9 @@ public class DefaultParameterAdapter implements ParameterAdapter {
 
 /* 
 $Log: DefaultParameterAdapter.java,v $
+Revision 1.3  2004/07/20 02:03:23  nw
+doc
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization
