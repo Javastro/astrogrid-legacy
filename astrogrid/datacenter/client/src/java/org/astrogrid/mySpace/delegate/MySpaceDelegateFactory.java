@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceDelegateFactory.java,v 1.1 2003/12/02 18:03:53 mch Exp $
+ * $Id: MySpaceDelegateFactory.java,v 1.2 2003/12/03 18:24:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,14 +17,14 @@ import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 
 public class MySpaceDelegateFactory
 {
-   
+
    /**
     * Creates the correct delegate for the given url.  The url is either the DUMMY
     * constant from MySpaceDummyDelegate, or an http:// url to access a 'real'
     * myspace.  We could also add a FTP and GridFTP delegates for services
     * without accounts on MySpace servers.
     */
-   public static MySpaceManagerDelegate createDelegate(String endPoint) throws IOException
+   public static MySpaceClient createDelegate(String endPoint) throws IOException
    {
       if (endPoint.equals(MySpaceDummyDelegate.DUMMY))   {
          return new MySpaceDummyDelegate(endPoint);
@@ -42,6 +42,9 @@ public class MySpaceDelegateFactory
 
 /*
 $Log: MySpaceDelegateFactory.java,v $
+Revision 1.2  2003/12/03 18:24:28  mch
+Temporary add to make a self-contained jar for warehouse testing
+
 Revision 1.1  2003/12/02 18:03:53  mch
 Moved MySpaceDummyDelegate
 
