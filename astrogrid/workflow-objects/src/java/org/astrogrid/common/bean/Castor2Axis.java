@@ -1,5 +1,5 @@
 /*
- * $Id: Castor2Axis.java,v 1.1 2004/03/18 21:24:03 pah Exp $
+ * $Id: Castor2Axis.java,v 1.2 2004/03/25 15:03:56 pah Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -99,7 +99,10 @@ public class Castor2Axis {
     * @return
     */
    private static ParameterTypes convert(org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes type) {
-      ParameterTypes result = ParameterTypes.fromValue(new QName(type.toString()));
+      ParameterTypes result = null;
+      if (type != null) {
+         result = ParameterTypes.fromValue(new QName(type.toString()));
+      }
       return result;
    }
 
