@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: document-component.sh,v 1.3 2004/12/05 23:35:23 jdt Exp $ 
+# $Id: document-component.sh,v 1.4 2004/12/05 23:39:32 jdt Exp $ 
 ####################################################################
 # Document a component on our website
 # First argument (required) cvs name of component _under_ astrogrid
@@ -57,7 +57,7 @@ maven astrogrid-echo-versions >> $LOGFILE 2>&1
 echo >> $LOGFILE 2>&1
 
 echo "Building and deploying artifacts" >> $LOGFILE 2>&1
-if maven $MY_MAVEN_OPTS astrogrid-deploy-site >> $LOGFILE 2>&1
+if maven $MY_MAVEN_OPTS astrogrid-deploy-site -Dastrogrid.docs.root=$DOCLOCATION >> $LOGFILE 2>&1
 then
     echo "OK" >> $LOGFILE 2>&1
 else
