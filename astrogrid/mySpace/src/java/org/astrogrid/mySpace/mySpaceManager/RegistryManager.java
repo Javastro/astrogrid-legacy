@@ -47,8 +47,16 @@ import org.astrogrid.mySpace.mySpaceStatus.*;
 public class RegistryManager
 {  private Map dataItemRecordHashMap = new HashMap ();
                            // Hash map holding the MySpace system registry.
+   private String registryName;
+                           // Name of the registry.
    private String registryFileName;
                            // Name of the file holding the registry.
+   private int dataItemIDSeqNo;
+                           // Sequence number for new dataItems.
+   private int expiryPeriod = 30;
+                           // Expiry period for the registry (days).
+   private String serverURI = "http://www.blue.nowhere.org/";
+                           // Base URI for the server.
 
 //
 // Constructors.
@@ -59,57 +67,24 @@ public class RegistryManager
  * the name of this file.
  */
 
-   public RegistryManager(String registryFileName)
-   {  this.registryFileName = registryFileName;
+   public RegistryManager(String registryName)
+   {  this.registryName = registryName;
 
 //
-//   Attempt to open the file containing the MySpace registry and set
-//   for reading and de-serialising from it.
+//   Attempt to read the registry configuration file.
 
-      try
-      {  File registryFile = new File(registryFileName);
-         FileInputStream ris = new FileInputStream(registryFile);
-         ObjectInputStream ois = new ObjectInputStream(ris);
+//    TBD.
 
 //
-//      Read and de-serialise DataItemRecord from the input file.
+//   Attempt to read the user details file for the registry.
 
-         boolean more = true;
-         int count = 0;
-
-         while (more == true)
-         {  try
-            {  DataItemRecord itemRec = (DataItemRecord)ois.readObject();
-               count = count + 1;
+//    TBD.
 
 //
-//            Generate a key from the DataItem identifier and and the
-//            DataItemRecord to the Hash Map.
+//   Attempt to read the file containing the MySpace registry.
 
-               String key = "" + itemRec.getDataItemID();
-               dataItemRecordHashMap.put(key, itemRec);
-            }
-            catch (IOException e)
-            {  more = false;
-            }
-            catch (ClassNotFoundException cnfe)
-            {  more = false;
-               MySpaceStatus stat1  = new MySpaceStatus(
-                 "Registry file " + registryFileName + " is corrupt.",
-                 "e");
-            }
-         }
-
-//
-//      Close the input file.
-
-         ois.close();
-      }
-      catch (IOException e)
-      {  MySpaceStatus stat1  = new MySpaceStatus(
-           "Failure reading registry file " + registryFileName + ".",
-           "e");
-      }
+      registryFileName = registryName + ".reg";
+      this.ReadRegistryFile(registryFileName);
    }
 
 /**
@@ -119,8 +94,25 @@ public class RegistryManager
  * is a dummy, but is conventionally set to <code>"new"</code>.
  */
 
-   public RegistryManager(String registryFileName, String dummy)
-   {  this.registryFileName = registryFileName;
+   public RegistryManager(String registryName, String dummy)
+   {  this.registryName = registryName;
+
+//
+//   Attempt to read the registry configuration file.
+
+//    TBD.
+
+//
+//   Attempt to read the user details file for the registry.
+
+//    TBD.
+
+//
+//   Set the name of the (currently empty) file which will contain the
+//   MySpace registry.
+
+      registryFileName = registryName + ".reg";
+      dataItemIDSeqNo = 0;
    }
 
 /**
@@ -128,7 +120,10 @@ public class RegistryManager
  */
 
    public RegistryManager()
-   {  registryFileName = "";
+   {  registryName = "";
+      registryFileName = "";
+
+      dataItemIDSeqNo = 0;
    }
 
 //
@@ -172,9 +167,98 @@ public class RegistryManager
       catch (IOException e)
       {  MySpaceStatus stat1  = new MySpaceStatus(
            "Failure writing registry file " + registryFileName + ".",
-           "e");
+           MySpaceMessage.ERROR);
       }
    }
+
+/**
+  * Read an existing Registry file.
+  */
+
+   private void ReadRegistryFile(String registryFileName)
+   {
+
+//
+//   Attempt to open the file containing the MySpace registry and set
+//   for reading and de-serialising from it.
+
+      try
+      {  File registryFile = new File(registryFileName);
+         FileInputStream ris = new FileInputStream(registryFile);
+         ObjectInputStream ois = new ObjectInputStream(ris);
+
+//
+//      Read and de-serialise DataItemRecord from the input file.
+
+         boolean more = true;
+         int count = 0;
+         dataItemIDSeqNo = 0;
+
+         while (more == true)
+         {  try
+            {  DataItemRecord itemRec = (DataItemRecord)ois.readObject();
+               count = count + 1;
+
+//
+//            Generate a key from the DataItem identifier and and the
+//            DataItemRecord to the Hash Map.
+
+               String key = "" + itemRec.getDataItemID();
+               dataItemRecordHashMap.put(key, itemRec);
+               if (itemRec.getDataItemID() > dataItemIDSeqNo)
+               {  dataItemIDSeqNo = itemRec.getDataItemID();
+               }
+            }
+            catch (IOException e)
+            {  more = false;
+            }
+            catch (ClassNotFoundException cnfe)
+            {  more = false;
+               MySpaceStatus stat1  = new MySpaceStatus(
+                 "Registry file " + registryFileName + " is corrupt.",
+                 MySpaceMessage.ERROR);
+            }
+         }
+
+//         System.out.println("dataItemIDSeqNo: " + dataItemIDSeqNo);
+
+//
+//      Close the input file.
+
+         ois.close();
+      }
+      catch (IOException e)
+      {  MySpaceStatus stat1  = new MySpaceStatus(
+           "Failure reading registry file " + registryFileName + ".",
+           MySpaceMessage.ERROR);
+      }
+   }
+
+/**
+  * Return the expiry period of the registry (in days).
+  */
+
+  public int getExpiryPeriod()
+  {  return expiryPeriod;
+  }
+
+/**
+  * Return the base URI for the server.
+  */
+
+  public String getServerURI()
+  {  return serverURI;
+  }
+
+/**
+  * Return the sequence number to be used for a new DataItemRecord.
+  */
+
+  public int getNextDataItemID()
+  {  dataItemIDSeqNo = dataItemIDSeqNo + 1;
+     return dataItemIDSeqNo;
+  }
+
 
 /**
  * Add a <code>DataItemRecord</code> to the registry.
@@ -284,7 +368,9 @@ public class RegistryManager
 //
 //   Initialise the returned vector of DataItemRecords.
 
-      Vector itemRecords = new Vector();
+      Comparator comparator = new DataItemRecordComparator();
+      Set itemRecords = new TreeSet(comparator);
+      Vector returnItemRecords = new Vector();
       int count = 0;
 
 //
@@ -334,7 +420,8 @@ public class RegistryManager
 
 //
 //         Check the name against the comparison string.  If it matches
-//         then add the current DataItemRecord to the return vector.
+//         then add the current DataItemRecord to the (alphabetically
+//         sorted) TreeSet holding the list of matches.
 
             if (!wildCard)
             {  if (dataItemName.equals(comparisonString))
@@ -349,6 +436,15 @@ public class RegistryManager
          }
       }
 
-      return itemRecords;
+//
+//   Copy the enties in the alphabetically sorted TreeSet into the
+//   the return Vector.  Consequently, the elements in the Vector are
+//   also alphabetically sorted.
+
+      for(Iterator iter = itemRecords.iterator();  iter.hasNext(); )
+      {  returnItemRecords.add(iter.next());
+      }
+
+      return returnItemRecords;
    }
 }

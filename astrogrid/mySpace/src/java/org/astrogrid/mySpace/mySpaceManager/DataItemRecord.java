@@ -3,6 +3,8 @@ package org.astrogrid.mySpace.mySpaceManager;
 import java.io.*;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+import java.text.*;
 
 /**
  * The <code>DataItemRecord</code> class represents the details held in
@@ -40,14 +42,23 @@ import java.util.Date;
  */
 
 public class DataItemRecord implements Serializable
-{  private String dataItemName;     // Full Name.
+{  
+
+//
+//Public constants defining the permitted codes for the DataHolder type.
+
+   public static final int UNKNOWN = 0; // Unknown.
+   public static final int CON = 1;     // Container.
+   public static final int VOT = 2;     // VOTable.
+
+   private String dataItemName;     // Full Name.
    private int    dataItemID;       // Identifier in the registry.
    private String dataItemFile;     // Corresponding server file name.
    private String ownerID;          // Owner's identifier.
    private Date   creationDate;     // Creation date.
    private Date   expiryDate;       // Expiry date.
    private int    size;             // Size (in bytes).
-   private String type;             // Type (VOTable etc).
+   private int    type;             // Type code (VOTable etc).
    private String permissionsMask;  // Access permissions mask.
 
 //
@@ -60,7 +71,7 @@ public class DataItemRecord implements Serializable
 
    public DataItemRecord (String dataItemName,  int dataItemID,
      String dataItemFile,  String ownerID,  Date creationDate,
-     Date expiryDate,  int size,  String type,  String permissionsMask)
+     Date expiryDate,  int size,  int type,  String permissionsMask)
    {  this.dataItemName = dataItemName;
       this.dataItemID = dataItemID;
       this.dataItemFile = dataItemFile;
@@ -85,7 +96,7 @@ public class DataItemRecord implements Serializable
       this.creationDate = null;
       this.expiryDate = null;
       this.size = -1;
-      this.type = null;
+      this.type = UNKNOWN;
       this.permissionsMask = null;
    }
 
@@ -155,7 +166,7 @@ public class DataItemRecord implements Serializable
   * Return the type of the <code>DataHolder</code>.
   */
 
-   public String getType()
+   public int getType()
    {  return type;
    }
 
@@ -171,12 +182,40 @@ public class DataItemRecord implements Serializable
 // Other methods.
 
 /**
+ * Reset the DataItemFile.  The DataItemFile name should not be exported
+ * out of the mySpace system.  This method resets the name in the current
+ * DataItemRecord to null.  It is typically invoked prior to exporting
+ * the DataItemRecord.
+ */
+
+   public void resetDataItemFile()
+   {  this.dataItemFile = null;
+   }
+
+/**
  * Produce a reasonable string representation of a
  * <code>DataItemRecord</code>.
  */
 
    public String toString()
-   {  return dataItemName + " (" + size + " bytes, created " +
-        creationDate + ")";
+   {  String returnString;
+
+      DateFormat dateRepn = DateFormat.getDateTimeInstance(
+        DateFormat.SHORT, DateFormat.SHORT, Locale.UK);
+
+      if (type == CON)
+      {  returnString = dataItemName + " (container, created " +
+           dateRepn.format(creationDate) + ")";
+      }
+      else if (type == VOT)
+      {  returnString = dataItemName + " (" + size + " bytes, created " +
+           dateRepn.format(creationDate) + ")";
+      }
+      else
+      {  returnString = dataItemName + " (unknown, created " +
+           dateRepn.format(creationDate) + ")";
+      }
+
+      return returnString;
    }
 }

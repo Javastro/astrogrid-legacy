@@ -27,7 +27,16 @@ import java.io.*;
  */
 
 public class UserAccount
-{  private String userID;
+{
+
+//Public constants defining the permitted codes for attempted read,
+//write and delete operations.
+
+   public static final int READ   = 1;   // Read.
+   public static final int WRITE  = 2;   // Write.
+   public static final int DELETE = 3;   // Delete.
+
+   private String userID;
    private String communityID;
    private String userName;
 
@@ -81,6 +90,21 @@ public class UserAccount
    public String getUserName()
    {  return userName;
    }
+/**
+ * Return the User's identifier.
+ */
+
+   public String getUserID()
+   {  return userID;
+   }
+
+/**
+ * Return the User's community identifier.
+ */
+
+   public String getCommunityID()
+   {  return communityID;
+   }
 
 //
 // Authentication and Authorisation methods.
@@ -114,8 +138,8 @@ public class UserAccount
  * always returns true.
  * 
  * @param oper The operation to be performed, coded as follows:
- * <code>"r"</code> - read; <code>"w"</code> - write;
- * <code>"d"</code> - delete.
+ * <code>UserAccount.READ</code> - read; <code>UserAccount.WRITE</code> -
+ * write; <code>UserAccount.DELETE</code> - delete.
  * @param ownerID The identifer of the owner of the <code>DataHolder</code>
  * on which the operation is to be performed.
  * @param permissions The permissions mask of the <code>DataHolder</code>
@@ -124,7 +148,7 @@ public class UserAccount
  * perform the requested given operation, otherwise returns false.
  */
 
-  public boolean checkAuthorisation(String oper, String ownerID,
+  public boolean checkAuthorisation(int oper, String ownerID,
     String permissions)
   {  return true;
   }
