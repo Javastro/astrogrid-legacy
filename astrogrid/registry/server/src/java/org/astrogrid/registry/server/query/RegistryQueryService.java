@@ -16,12 +16,16 @@ import org.astrogrid.util.DomHelper;
 import org.astrogrid.config.Config;
 import org.astrogrid.registry.server.XQueryExecution;
 import org.astrogrid.registry.common.XSLHelper;
+import java.net.URL;
+
+import java.net.MalformedURLException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.io.*;
 import org.apache.axis.AxisFault;
 import org.astrogrid.xmldb.eXist.server.QueryDBService;
+import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.server.harvest.RegistryHarvestService;
 
 /**
@@ -214,62 +218,96 @@ public class RegistryQueryService {
       String xqlString = "for $x in //vr:Resource where @xsi:type='RegistryType' return $x";
       return queryExist(xqlString);
    }
-
-   public Document Identify(Document query) {
-      DomHelper.DocumentToStream(query,System.out);
-      return query;
-   }
-
-   public Document ListMetadataFormats(Document query) {
-      DomHelper.DocumentToStream(query,System.out);
-      return query;
-   }
-
-   public Document ListSets(Document query) {
-      DomHelper.DocumentToStream(query,System.out);
-      return query;
-   }
-
-   public Document ResumeListSets(Document query) {
-      DomHelper.DocumentToStream(query,System.out);
-      return query;
-   }
-
-   public Document GetRecord(Document query) {
-      DomHelper.DocumentToStream(query,System.out);
-      return query;
-   }
-
-   public Document ListIdentifiers(Document query) {
-      DomHelper.DocumentToStream(query,System.out);
-      return query;
-   }
-
-   public Document ResumeListIdentifiers(Document query) {
-      DomHelper.DocumentToStream(query,System.out);
-      return query;
-   }
-
-   public Document ListRecords(Document query) {
-      DomHelper.DocumentToStream(query,System.out);
-      return query;
-   }
    
-   public Document ResumeListRecords(Document query) {
-      DomHelper.DocumentToStream(query,System.out);
-      return query;
+   private Document queryOAI(String oaiServlet) throws AxisFault {
+      try {
+          System.out.println("the oaiservlet url = '" + oaiServlet + "'");
+        return DomHelper.newDocument(new URL(oaiServlet));
+       }catch(MalformedURLException me) {
+        throw new AxisFault("Incorrect url for calling oai servlet", me);
+       }catch(ParserConfigurationException pce) {
+         throw new AxisFault("Parser Config error", pce);
+       }catch(SAXException sax) {
+         throw new AxisFault("SAX problem parsing xml" , sax);
+       }catch(IOException ioe) {
+         throw new AxisFault("IO Problem", ioe);
+       }    
    }
-   
-   public Document harvestResource(Document resources)  throws AxisFault {
-         RegistryHarvestService rhs = new RegistryHarvestService();
-         try {         
-            NodeList nl = DomHelper.getNodeListTags(resources,"Resource","vr");
-            for(int i = 0;i < nl.getLength();i++) {
-               rhs.harvestResource(nl.item(i), null);
-            }//for
-         }catch(IOException ioe) {
-            throw new AxisFault("IOE problem",ioe);
-         }
-         return resources;      
+
+   public Document Identify(Document query) throws AxisFault {
+      String oaiServlet = conf.getString("oai.servlet.url") + "?verb=Identify";
+      return queryOAI(oaiServlet);
    }
+    
+   public Document ListMetadataFormats(Document query) throws AxisFault {
+      String oaiServlet = conf.getString("oai.servlet.url") + "?verb=ListMetadataFormats";       
+      NodeList nl = null;
+      if( (nl = query.getElementsByTagName("identifier")).getLength() > 0  )
+           oaiServlet += "&identifier=" + nl.item(0).getFirstChild().getNodeValue(); 
+      return queryOAI(oaiServlet);
+   }
+
+   public Document ListSets(Document query) throws AxisFault {
+    throw new AxisFault("Sorry but this method is currently not implemented");
+   }
+
+   public Document ResumeListSets(Document query) throws AxisFault {
+      throw new AxisFault("Sorry but this method is currently not implemented");
+   }
+
+   public Document GetRecord(Document query) throws AxisFault {
+       String oaiServlet = conf.getString("oai.servlet.url") + "?verb=GetRecord";       
+       NodeList nl = null;
+       if( (nl = query.getElementsByTagName("identifier")).getLength() > 0  ) 
+          oaiServlet += "&identifier=" + nl.item(0).getFirstChild().getNodeValue();
+       if( (nl = query.getElementsByTagName("metadataPrefix")).getLength() > 0  )
+        oaiServlet += "&metadataPrefix=" + nl.item(0).getFirstChild().getNodeValue();
+       else
+        oaiServlet += "&metadataPrefix=ivo_vor";
+       return queryOAI(oaiServlet);
+   }
+
+   public Document ListIdentifiers(Document query) throws AxisFault {
+      String oaiServlet = conf.getString("oai.servlet.url") + "?verb=ListIdentifiers";
+      NodeList nl = null;      
+      if( (nl = query.getElementsByTagName("metadataPrefix")).getLength() > 0  )
+       oaiServlet += "&metadataPrefix=" + nl.item(0).getFirstChild().getNodeValue();
+      else 
+        oaiServlet += "&metadataPrefix=ivo_vor";        
+      if( (nl = query.getElementsByTagName("from")).getLength() > 0  ) 
+        oaiServlet += "&from=" + nl.item(0).getFirstChild().getNodeValue();
+      if( (nl = query.getElementsByTagName("until")).getLength() > 0  )
+        oaiServlet += "&until=" + nl.item(0).getFirstChild().getNodeValue();
+      return queryOAI(oaiServlet);
+   }
+
+    public Document ResumeListIdentifiers(Document query) throws AxisFault {
+        String oaiServlet = conf.getString("oai.servlet.url") + "?verb=ListIdentifiers";
+        NodeList nl = null;        
+        if( (nl = query.getElementsByTagName("resumptionToken")).getLength() > 0  ) 
+          oaiServlet += "&resumptionToken=" + nl.item(0).getFirstChild().getNodeValue();
+        return queryOAI(oaiServlet);          
+   }
+
+    public Document ListRecords(Document query) throws AxisFault {
+        String oaiServlet = conf.getString("oai.servlet.url") + "?verb=ListRecords";
+        NodeList nl = null;        
+        if( (nl = query.getElementsByTagName("metadataPrefix")).getLength() > 0  )
+         oaiServlet += "&metadataPrefix=" + nl.item(0).getNodeValue();
+        else
+         oaiServlet += "&metadataPrefix=ivo_vor";
+        if( (nl = query.getElementsByTagName("from")).getLength() > 0  ) 
+          oaiServlet += "&from=" + nl.item(0).getFirstChild().getNodeValue();
+        if( (nl = query.getElementsByTagName("until")).getLength() > 0  )
+          oaiServlet += "&until=" + nl.item(0).getFirstChild().getNodeValue();
+        return queryOAI(oaiServlet);
+    }
+
+   public Document ResumeListRecords(Document query) throws AxisFault {
+       String oaiServlet = conf.getString("oai.servlet.url") + "?verb=ListRecords";
+       NodeList nl = null;       
+       if( (nl = query.getElementsByTagName("resumptionToken")).getLength() > 0  ) 
+         oaiServlet += "&resumptionToken=" + nl.item(0).getFirstChild().getNodeValue();
+       return queryOAI(oaiServlet);          
+   }   
 }

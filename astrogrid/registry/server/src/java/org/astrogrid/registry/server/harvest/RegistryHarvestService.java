@@ -7,6 +7,7 @@ package org.astrogrid.registry.server.harvest;
 import org.astrogrid.registry.server.XQueryExecution;
 import java.rmi.RemoteException;
 
+
 import java.io.IOException;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -24,6 +25,7 @@ import java.net.URL;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -44,6 +46,7 @@ import org.astrogrid.registry.common.XSLHelper;
 
 import java.net.MalformedURLException;
 import org.apache.axis.AxisFault;
+import org.astrogrid.xmldb.eXist.server.QueryDBService;
 
 /**
  *
@@ -67,130 +70,6 @@ public class RegistryHarvestService {
       }
    }
 
-  /**
-    * Queries for all Resource entries managed by this registry.
-    * And returns all of the Resource entries.  The use of this method is for all other
-    * registries who wish to replicate this registry.
-    *
-    * @param registry This parameter is null.  Kicks off returning everything managed by this registry.
-    * @return XML docuemnt object representing the result of the query.
-    * @author Kevin Benson
-    */
-   public Document harvest(Document registry) throws AxisFault {
-      log.debug("start harvest");
-      try {
-         RegistryService rs = new RegistryService();
-         Document registryDoc = rs.loadRegistry(null);
-
-         //Grab all the authority id's that is managed by this registry.
-         NodeList regNL = DomHelper.getNodeListTags(registryDoc,"ManagedAuthority","vg"); 
-         //Construct the query in a string.
-         String selectQuery = "<query><selectionSequence>" +
-              "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
-              "<selectionOp op='$and$'/>";
-         if(regNL.getLength() > 0) {
-            selectQuery +=
-            "<selection item='Identifer/AuthorityID' itemOp='EQ' value='" +
-            regNL.item(0).getFirstChild().getNodeValue() + "'/>";
-         }
-         for(int i = 1;i < regNL.getLength();i++) {
-            selectQuery += "<selectionOp op='OR'/>" +
-            "<selection item='Identifier/AuthorityID' itemOp='EQ' value='" +
-            regNL.item(i).getFirstChild().getNodeValue() + "'/>";
-         }
-         selectQuery += "</selectionSequence></query>";
-
-         Reader reader2 = new StringReader(selectQuery);
-         InputSource inputSource = new InputSource(reader2);
-         DocumentBuilder registryBuilder = null;
-         registryBuilder = DocumentBuilderFactory.newInstance().
-                                                  newDocumentBuilder();
-         Document doc = registryBuilder.parse(inputSource);
-
-         //performs the query and return the results.
-         Document responseDoc = null;//XQueryExecution.parseFullNodeQuery(doc);
-         return responseDoc;
-      }catch(Exception e) {
-         e.printStackTrace();
-         log.error(e);
-      }
-      log.debug("end harvest");
-      return null;
-  }
-
-  /**
-    * Queries for all Resource entries managed by this registry based around a date.
-    *
-    * And returns all of the Resource entries.  The use of this method is for all other
-    * registries who wish to harvest the resource entries based around a date.  This will
-    * more commonly be used as other Registries will harvest daily or weekly.
-    *
-    * If no date is given then the results are the same as calling harvest method.
-    *
-    * @param registry This parameter is null.  Kicks off returning everything managed by this registry.
-    * @return XML docuemnt object representing the result of the query.
-    * @author Kevin Benson
-    */
-   public Document harvestFrom(Document dateDom)  throws AxisFault  {
-      log.debug("start harvestFrom");
-      try {
-         //if there is no date or xml tag at all then call harvest
-         if(dateDom == null)
-            return harvest(dateDom);
-
-         //grab the date_since tag.
-         NodeList nl = dateDom.getElementsByTagName("date_since");
-         //if there is no date_since element then replicate/harvest
-         if(nl.getLength() == 0) {
-            return harvest(dateDom);
-         }
-
-         //get the date value as a string.
-         String updateVal = nl.item(0).getFirstChild().getNodeValue();
-
-         //Probably should parse this with a date  and validat it is a date.
-
-         RegistryService rs = new RegistryService();
-         Document registryDoc = rs.loadRegistry(null);
-
-         //NodeList regNL = registryDoc.getElementsByTagNameNS("vg",
-         //                                               "ManagedAuthority" );
-         NodeList regNL = DomHelper.getNodeListTags(registryDoc,"ManagedAuthority","vg");
-
-         //This query for the moment is the same as harvest.  When the statistical
-         //data is added which is coming soon, then this will be changed to get the
-         //identifiers first of all the resources that have recently changed.
-         String selectQuery = "<query><selectionSequence>" +
-             "<selection item='searchElements' itemOp='EQ' value='Resource'/>"+
-             "<selectionOp op='$and$'/>" +
-             "<selection item='@updated' itemOp='AFTER' value='" + updateVal
-                + "'/>";;
-         if(regNL.getLength() > 0) {
-            selectQuery +=
-            "<selection item='AuthorityID' itemOp='EQ' value='" +
-            regNL.item(0).getFirstChild().getNodeValue() + "'/>";
-         }
-         for(int i = 1;i < regNL.getLength();i++) {
-            selectQuery += "<selectionOp op='OR'/>" +
-            "<selection item='AuthorityID' itemOp='EQ' value='" +
-            regNL.item(i).getFirstChild().getNodeValue() + "'/>";
-         }
-         selectQuery += "</selectionSequence></query>";
-         Reader reader2 = new StringReader(selectQuery);
-         InputSource inputSource = new InputSource(reader2);
-         DocumentBuilder registryBuilder = null;
-         registryBuilder = DocumentBuilderFactory.newInstance().
-                                                  newDocumentBuilder();
-         Document doc = registryBuilder.parse(inputSource);
-         //perform the query and return it.
-         Document responseDoc = null;//XQueryExecution.parseFullNodeQuery(doc);
-         return responseDoc;
-      }catch(Exception e) {
-        e.printStackTrace();
-        log.error(e);
-      }
-      return null;
-   }
 
   /**
     * Takes a Resource entry (a Registry type entry).  And performs a full replicate
@@ -201,37 +80,23 @@ public class RegistryHarvestService {
     * @return null (nothing is returned on this web service operation).
     * @author Kevin Benson
     */
-   public Document harvestResource(Node resource,Date dt)  throws AxisFault {
+   public Document harvestResource(Document resource,Date dt)  throws RegistryException, IOException {
       log.debug("start harvestResource");
       log.info("update harvestResource");
       
-      /*
-      RegistryAdminService ras = new RegistryAdminService();
+      
+      //RegistryAdminService ras = new RegistryAdminService();
 
-      Change this up to look at the Node make sure it is a REgistryType or a Web service
-      if not then throw an exception if so then try to call it.
+      //Change this up to look at the Node make sure it is a REgistryType or a Web service
+      //if not then throw an exception if so then try to call it.
 
       //Okay this is just a small xsl sheet to make sure the xml is formatted in
       //a nice consistent way.  Because currently the schema espcially version 0.9
       //allows the user to put the xml in a few different ways.
-      XSLHelper xs = new XSLHelper();
-      Document resourceChange = xs.transformDatabaseProcess
-                                ((Node)resources.getDocumentElement());
 
-      //Okay update this one resource entry.
-      Node harvestCopy = resourceChange.cloneNode(true);
-      ras.updateResource(resourceChange);
-      log.info("THE RESOURCECHANGE IN HARVESTRESOURCE1 = " +
-               DomHelper.DocumentToString((Document)harvestCopy));
-      //Start a full (replicate) harvest on this registry.
-      try {
-         beginHarvest(null,(Document)harvestCopy);
-      }catch(IOException ioe) {
-         throw new AxisFault("IO problem", ioe);   
-      }
-      */
-      
-
+      //Okay update this one resource entry.      
+      //ras.updateResource(resource);
+      beginHarvest(resource,dt);
       log.info("exiting harvestResource");
       log.debug("end harvestResource");
       return null;
@@ -244,55 +109,61 @@ public class RegistryHarvestService {
        * @return XML docuemnt object representing the result of the query.
        * @author Kevin Benson
        */
-   public Document harvestAll(boolean onlyRegistries, boolean useDates)  {
+   public void harvestAll(boolean onlyRegistries, boolean useDates) throws RegistryException  {
       log.debug("start harvestAll");
-      Document harvestedDoc = null;
-      //This next statement will go away with Castor.
-      //NodeList nl = query.getElementsByTagNameNS(
-      //              "http://www.ivoa.net/xml/VOResource/v0.9","Identifier");
-      /*
-      if(resources != null && resources.getElementsByTagName("VODescription").
-                                        getLength() > 0) {
-         return harvestResource(resources);
-      } else {
-         return harvestResource(harvest(null));
-      }
-      */
-      if(onlyRegistries) {
-         //query for all the Registry types which should be all of them with an xsi:type="RegistryType"
-         
-         /*
-          NodeList nl = DomHelper.getNodeList(doc,"Resource","vr");
-          for(int i = 0; i < nl.getLenth();i++) {
-            Element elem = (Element) nl.item(i);
-            if(useDates) {
-               // now look up the stats data for the last time it was harvestes.
-               //this should be fairly easy we can get the identifier and the stats file should be that
-               //get identifier name.  
-               //once you get the stats Document dom get the lastharvestdate element. 
-               //harvestResource(elem,lastharvestdate); 
-            }
-            harvestResource(elem);
+      Document harvestDoc = null;
+      String xqlQuery = null;
+      String ident = null;
+            
+      String versionNumber = conf.getString("org.astrogrid.registry.version");
+      String collectionName = "astrogridv" + versionNumber;
+      QueryDBService qdb = new QueryDBService();
+      try {
+          if(onlyRegistries) {
+             //query for all the Registry types which should be all of them with an xsi:type="RegistryType"
+             xqlQuery = "//vr:Resource[@xsi:type='RegistryType']";
+             harvestDoc = qdb.runQuery(collectionName,xqlQuery);
+    
+             NodeList nl = DomHelper.getNodeListTags(harvestDoc,"Resource","vr");
+             for(int i = 0; i < nl.getLength();i++) {
+               Element elem = (Element) nl.item(i);
+               if(useDates) {
+                  Document statDoc = qdb.getResource("statv"+versionNumber,RegistryServerHelper.getIdentifier(elem));
+                  String dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
+                  Date dt = new Date(Long.parseLong(dateString));
+                  //harvestResource(elem,dt);
+                  beginHarvest(elem,dt);
+               }else {
+                //harvestResource(elem,null);
+                beginHarvest(elem,null);
+               }//else
+             }//for
+          }else {
+            //query for all RegistryTypes or WebService interface
+             xqlQuery = "//vr:Resource[vr:Interface/vr:Invocation='WebBrowser' or vr:Interface/vr:Invocation='WebService']";
+             harvestDoc = qdb.runQuery(collectionName,xqlQuery);
+             NodeList nl = DomHelper.getNodeListTags(harvestDoc,"Resource","vr");
+             for(int i = 0; i < nl.getLength();i++) {
+               Element elem = (Element) nl.item(i);
+               if(useDates) {
+                  Document statDoc = qdb.getResource("statv"+versionNumber,RegistryServerHelper.getIdentifier(elem));
+                  String dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
+                  Date dt = new Date(Long.parseLong(dateString));
+                  //harvestResource(elem,dt);
+                  beginHarvest(elem,dt);
+               }else {
+               	//harvestResource(elem,null);
+                beginHarvest(elem,null);
+               }//else
+             }//for
           }
-          */
-      }else {
-        //query for all RegistryTypes or WebService interface
-        /*
-         NodeList nl = DomHelper.getNodeList(doc,"Resource","vr");
-         for(int i = 0; i < nl.getLenth();i++) {
-           Element elem = (Element) nl.item(i);
-           if(useDates) {
-              // now look up the stats data for the last time it was harvestes.
-              //this should be fairly easy we can get the identifier and the stats file should be that
-              //get identifier name.  
-              //once you get the stats Document dom get the lastharvestdate element. 
-              //harvestResource(elem,lastharvestdate); 
-           }
-           harvestResource(elem);
-         }
-         */
+      }catch(ParserConfigurationException pce) {
+      	throw new RegistryException(pce);
+      }catch(IOException ioe) {
+      	throw new RegistryException(ioe);        
+      }catch(SAXException sax) {
+         throw new RegistryException(sax); 
       }
-      return null;
    }
 
 /**
@@ -314,9 +185,18 @@ private class HarvestThread extends Thread {
     * @param ras The RegistryAdminService class which does updates of Resources
     * @param updateDoc a set of one or more Resources.
     */
-   public HarvestThread(RegistryAdminService ras, Document updateDoc) {
+   public HarvestThread(RegistryAdminService ras, Node updateDoc) throws RegistryException {
       this.ras = ras;
-      this.updateDoc = updateDoc;
+      if(updateDoc instanceof Element) {
+        try {
+      	updateDoc = DomHelper.newDocument();
+         updateDoc.appendChild(updateDoc);
+        }catch(ParserConfigurationException pce) {
+        	throw new RegistryException(pce);
+        }
+      }else if(updateDoc instanceof Document) {
+        this.updateDoc = (Document)updateDoc;  
+      }      
    }
 
    /**
@@ -348,7 +228,7 @@ private class HarvestThread extends Thread {
     * @param dt An optional date used to harvest from a particular date
     * @param resources Set of Resources to harvest on, normally a Registry Resource.
     */
-   public void beginHarvest(Date dt, Document resources)  throws AxisFault, IOException  {
+   public void beginHarvest(Node resources,Date dt)  throws RegistryException, IOException  {
       log.debug("start beginHarvest");
       log.info("entered beginharvest");
       String accessURL = null;
@@ -359,18 +239,26 @@ private class HarvestThread extends Thread {
       //log.info("THE FULL RESOURCES IN BEGINHARVEST = " +
       //         DomHelper.DocumentToString(resources));
       NodeList resourceList = DomHelper.getNodeListTags(resources,"Resource","vr");
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");            
       //log.info("the getLength = " + resourceList.getLength());
       //go through all the resources
+      boolean isRegistryType = false;
       for(int i = 0; i < resourceList.getLength();i++) {
          //get the accessurl and invocation type.
          //invocationtype is either WEbService or WebBrowser.
-            accessURL = DomHelper.getNodeTextValue((Element)resourceList.item(i),"AccessURL","vr");
-            invocationType = DomHelper.getNodeTextValue((Element)resourceList.item(i),"Invocation","vr");
-         log.info("The access URL = " + accessURL + " invocationType = " +
-                  invocationType);
+         if("RegistryType".equals(DomHelper.getNodeAttrValue((Element)resourceList.item(i),"type","xsi")))  {
+           isRegistryType = true;            
+         }else {
+           isRegistryType = false;
+         }
+         accessURL = DomHelper.getNodeTextValue((Element)resourceList.item(i),"AccessURL","vr");
+         invocationType = DomHelper.getNodeTextValue((Element)resourceList.item(i),"Invocation","vr");
+         log.info("The access URL = " + accessURL + " invocationType = " + invocationType);
          if("WEBSERVICE".equals(invocationType)) {
             //call the service
             //remeber to look at the date
+            Element childElem = null;
+            Element root = null;
 
             if("?wsdl".indexOf(accessURL) == -1) {
                accessURL += "?wsdl";
@@ -390,27 +278,26 @@ private class HarvestThread extends Thread {
                //create a call object
                Call callObj = getCall((String)wsdlBasic.getEndPoint().
                               values().iterator().next());
-               DocumentBuilder registryBuilder = null;
+
                try {
-                  DocumentBuilderFactory dbf = DocumentBuilderFactory.
-                                               newInstance();
-                  dbf.setNamespaceAware(true);
-                  registryBuilder = dbf.newDocumentBuilder();
-                  doc = registryBuilder.newDocument();
-                  Element root = null;
+                  doc = DomHelper.newDocument();
                   //set the operation name/interface method to ListResources
-                  String interfaceMethod = "ListResources";
+                  String interfaceMethod = "GetMetaData";
+                  if(isRegistryType) interfaceMethod = "ListRecords";
                   String nameSpaceURI = WSDLInformation.
                             getNameSpaceFromBinding(accessURL,interfaceMethod);
 
                   root = doc.createElementNS(nameSpaceURI,interfaceMethod);
+                  if(dt != null) {
+                  	 childElem = doc.createElement("from");
+                      childElem.appendChild(doc.createTextNode(sdf.format(dt)));
+                      root.appendChild(childElem);
+                  }
                   doc.appendChild(root);
                   log.info("Creating soap request for operation name = " +
                             interfaceMethod + " with namespaceuri = " +
                             nameSpaceURI);
-                  //log.info("the doc webservice = " + DomHelper.
-                  //                                   DocumentToString(doc));
-                  //
+
                   SOAPBodyElement sbeRequest = new SOAPBodyElement(
                                                    doc.getDocumentElement());
                   //sbeRequest.setName("harvestAll");
@@ -421,7 +308,26 @@ private class HarvestThread extends Thread {
                                            (new Object[] {sbeRequest});
                   //Take the results and harvest.
                   SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
-                  (new HarvestThread(ras,sbe.getAsDocument())).start();
+                  Document soapDoc = sbe.getAsDocument();
+                  (new HarvestThread(ras,soapDoc.getDocumentElement().cloneNode(true))).start();
+                  if(isRegistryType) {
+                  	NodeList nl = DomHelper.getNodeListTags(soapDoc,"resumptionToken");
+                        while(nl.getLength() > 0) {
+                        	Document resumeDoc = DomHelper.newDocument();
+                           root = doc.createElementNS(nameSpaceURI,"ResumeListRecords");
+                           childElem = doc.createElement("resumptionToken");
+                           childElem.appendChild(doc.createTextNode(nl.item(0).getFirstChild().getNodeValue()));                            
+                           sbeRequest = new SOAPBodyElement(resumeDoc.getDocumentElement());
+                           sbeRequest.setName("ResumeListRecords");
+                           sbeRequest.setNamespaceURI(wsdlBasic.getTargetNameSpace());
+                           //invoke the web service call
+                           result = (Vector) callObj.invoke
+									    (new Object[] {sbeRequest});
+                           soapDoc = sbe.getAsDocument();
+                           (new HarvestThread(ras,soapDoc.getDocumentElement().cloneNode(true))).start();                           
+                           nl = DomHelper.getNodeListTags(soapDoc,"resumptionToken");
+                        }//while
+                  }//if
                } catch(RemoteException re) {
                  //log error
                  re.printStackTrace();
@@ -443,14 +349,10 @@ private class HarvestThread extends Thread {
                log.info("inside the web browser");
 
                if(accessURL.indexOf("?") == -1) {
-                  ending = "?verb=ListRecords"; //&from=" + date;
-               } else {
-                  /*
-                  if(accessURL.indexOf("verb") == -1)
-                     ending = "&verb=ListRecords&from=" + date;
-                  else
-                     ending = "&from=" + date;
-                  */
+                  ending = "?verb=ListRecords&metadataPrefix=ivo_vor"; //&from=" + date;
+                  if(dt != null) {
+                  	ending += "&from" + sdf.format(dt);
+                  }
                }
 
                log.info("Grabbing Document from this url = " +
@@ -458,7 +360,7 @@ private class HarvestThread extends Thread {
                doc = DomHelper.newDocument(new URL(accessURL + ending));
                log.info("Okay got this far to reading the url doc = " +
                         DomHelper.DocumentToString(doc));
-               (new HarvestThread(ras,doc)).start();
+               (new HarvestThread(ras,doc.getDocumentElement().cloneNode(true))).start();
                NodeList moreTokens = null;
                //log.info("resumptionToken length = " +
                //         doc.getElementsByTagName("resumptionToken").
