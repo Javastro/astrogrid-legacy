@@ -83,7 +83,9 @@ This is for your local community system.
 5.) At the Insert permission select your groups/account, resource, and the action/policy string you are wanting to authorize. ex: "Guest" group has "read" action for "myspace" resource.
 
 On the portal page where you want to check the authorization.
-1.) First import in your Custom Action object preferbly (or xsp if you want to)
+1.) First import in your Custom Action object preferbly (or xsp if you want to). 
+// If you do a Custom Action object remember to pass the errorMessage to your xsl page through the sitemap.xmap by placing
+//the errorMessage in the results Hashmap. And then in the xsl page display the errormessage and show certain pieces or none of the page.
 import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
 import org.astrogrid.community.delegate.policy.PolicyPermission;
 
