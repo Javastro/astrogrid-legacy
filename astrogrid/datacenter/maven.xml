@@ -1,14 +1,22 @@
 <?xml version="1.0" ?>
-<project name="datacenter-castor" basedir="." default="generate">
-<!-- single-task ant script that captures how to generate ADQL object model 
+<project xmlns:j="jelly:core"
+>
+<!-- extension maven script -->
 
+<!--
 run with care. will delete all java sources and classes in 
 src/java/org/astrogrid/datacenter/adql/generated
 and then regenerate them using schema/ADSQLschema.xsd
+
+not such a good idea a thte moment - as we're editing these classes by hand
+to work arond 'features' in castor.
 -->
-	<!-- needed to override the default configuration file - knew there was a reason I disliked Castor.. -->
-	<property name="castor.config.path" location="lib/config" />
-	
+  <goal name="generate-adql" description="regenerate the ADQL object model">
+
+  <!-- needed to override the default configuration file - knew there was a reason I disliked Castor.. -->
+  <property name="castor.config.path" location="lib/config" />
+  <!-- alter this to have the generated classes placed somewhere else -->
+  <property name="src.base" location="src/java" />
 	<!-- set up the classpath for the source generator tool -->
   <path id="castor.class.path">
 	<pathelement location="${castor.config.path}" />
@@ -17,13 +25,8 @@ and then regenerate them using schema/ADSQLschema.xsd
   		<include name="xerces*.jar" />
   	</fileset>
   </path>
-  
-  <!-- alter this to have the generated classes placed somewhere else -->
-  <property name="src.base" location="src/java" />
-  
-    
-  <target name="generate" description="regenerate the ADQL object model">
-  <delete>
+  <!-- right, get down to business -->
+    <delete>
    <fileset dir="${src.base}/org/astrogrid/datacenter/adql/generated">
    	<include name="**/*.java" />
    	<include name="**/*.class" />
@@ -40,6 +43,6 @@ and then regenerate them using schema/ADSQLschema.xsd
   	  <!-- <arg value="-nodesc" /> disables generation of data descriptor classes - so marshalling uses vanilla techniques -->
   	  <!--<arg value="-nomarshall" /> disables generation of the marshalling code in each class - need to refer to the marshaller instead -->
   	  </java>
-  </target>
+  </goal>
 
 </project>
