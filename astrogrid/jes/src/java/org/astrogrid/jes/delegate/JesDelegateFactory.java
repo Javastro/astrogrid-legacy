@@ -1,4 +1,4 @@
-/*$Id: JesDelegateFactory.java,v 1.5 2004/03/10 12:13:37 nw Exp $
+/*$Id: JesDelegateFactory.java,v 1.6 2004/03/10 12:15:32 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.jes.delegate;
 
-import org.astrogrid.applications.delegate.beans.SimpleApplicationDescription;
 import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.jes.delegate.impl.JobControllerDelegate;
@@ -93,6 +92,9 @@ public class JesDelegateFactory {
 
 /* 
 $Log: JesDelegateFactory.java,v $
+Revision 1.6  2004/03/10 12:15:32  nw
+fixed goof
+
 Revision 1.5  2004/03/10 12:13:37  nw
 added default delegate factory methods
 
