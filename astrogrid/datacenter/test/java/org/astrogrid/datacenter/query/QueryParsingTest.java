@@ -1,14 +1,13 @@
 package org.astrogrid.datacenter.query;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
+import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.impl.QueryFactoryImpl;
 import org.w3c.dom.Document;
@@ -16,7 +15,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import org.astrogrid.AstroGridException;
 
 /** Unit / system testing for the query parser.
  * <p>
@@ -37,34 +35,33 @@ public class QueryParsingTest extends TestCase {
     public QueryFactoryImpl factory = new QueryFactoryImpl();
 
     /** package name of test resource files */
-    public final static String RESOURCE_PREFIX="org/astrogrid/datacenter/query/inputs/";
-    public Element setUpQueryElement(String fileName) throws IOException, SAXException, ParserConfigurationException {
-        Element element = null;
-            //DatasetAgent someDatasetAgent = new DatasetAgent();
-            InputStream sourceStream = ClassLoader.getSystemResourceAsStream(RESOURCE_PREFIX + fileName);
-            assertNotNull("input file is missing: " + fileName,sourceStream);
-            Document document = XMLUtils.newDocument(sourceStream);
+    //public final static String RESOURCE_PREFIX="org/astrogrid/datacenter/query/inputs/";
+   
+   /** Given a filename, locates that filename as a subdirectory ./input/ from
+    * this class, loads it as a DOM document and extracts the QUERY element to
+    * return
+    */
+   public Element setUpQueryElement(String fileName) throws IOException, SAXException, ParserConfigurationException
+   {
+      //locate test query file
+      fileName = "."+File.separator+"inputs"+File.separator+fileName;
+      URL url = getClass().getResource(fileName);
+      
+      assertTrue("Cannot find file '"+fileName+"'", url != null);
+      
+      //load it as a DOM
+      Document fileDoc = XMLUtils.newDocument(url.openConnection().getInputStream());
 
-            NodeList nodeList =
-                document.getDocumentElement().getElementsByTagName(
-                    AdqlTags.QUERY_ELEMENT);
+      //extract QUERY element(s)
+      NodeList queryNodes = fileDoc.getDocumentElement().getElementsByTagName(AdqlTags.QUERY_ELEMENT);
 
-            for (int i = 0; i < nodeList.getLength(); i++) {
+      //check there is only 1
+      assertTrue("Should be exactly one <QUERY> tag in query", queryNodes.getLength()==1);
+      Element queryElement = (Element) queryNodes.item(0); //should only be 1
 
-                if (nodeList.item(i).getNodeType() != Node.ELEMENT_NODE)
-                    continue;
-                element = (Element) nodeList.item(i);
-                if (element.getTagName().equals(AdqlTags.QUERY_ELEMENT))
-                    break;
-
-            }
-
-            if (element == null) {
-                 fail("Failed to pick up a Query element");
-            }
-        return element;
-
-    } // end setUpQueryElement()
+      //return it
+      return queryElement;
+    }
 
     public void testQueryToString_CONE() throws Exception {
 
