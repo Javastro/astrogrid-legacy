@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/xsp/Attic/login-form.xsp,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/01/09 10:32:14 $</cvs:date>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:date>$Date: 2004/01/09 10:34:03 $</cvs:date>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     |   $Log: login-form.xsp,v $
+    |   Revision 1.7  2004/01/09 10:34:03  dave
+    |   Changed form method to post to hide params
+    |
     |   Revision 1.6  2004/01/09 10:32:14  dave
     |   Added default name to login-form
     |
@@ -63,7 +66,7 @@
 				String name    = (String) request.getParameter(LoginAction.NAME_PARAM) ;
 			]]>
 		</xsp:logic>
-		<form method="get" action="login-form">
+		<form method="post" action="login-form">
 			<input type="hidden" name="action" value="login"/>
 			<table border="1">
 				<tr>
