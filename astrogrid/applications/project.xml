@@ -161,7 +161,7 @@ This functionality is provided with the ApplicationController service, of which 
         <!-- we need the myspace client to compile. fix this later when mySpace packaging is better. -->
         <dependency>
             <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-mySpace</artifactId>
+            <artifactId>astrogrid-store-client</artifactId>
             <version>${pom.currentVersion}</version>
             <properties>
                 <war.bundle>true</war.bundle>

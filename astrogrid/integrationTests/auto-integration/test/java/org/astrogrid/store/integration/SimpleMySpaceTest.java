@@ -1,4 +1,4 @@
-/*$Id: SimpleMySpaceTest.java,v 1.11 2004/05/11 09:25:30 pah Exp $
+/*$Id: SimpleMySpaceTest.java,v 1.12 2004/06/16 21:16:55 jdt Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import java.net.URL;
 import junit.framework.TestCase;
 import org.astrogrid.community.User;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.StoreFile;
 import org.astrogrid.store.delegate.myspaceItn05.MySpaceIt05Delegate;
 /**
@@ -81,7 +82,7 @@ public final class SimpleMySpaceTest extends TestCase {
                 "org.astrogrid.myspace.endpoint");
         log.info("Running test against endpoint " + endPoint);
         final User operator = new User("someuser@somecommunity", "group", "token");
-        myspace = new MySpaceIt05Delegate(operator, endPoint);
+        myspace = new MySpaceIt05Delegate(operator, new Msrl(endPoint).toString());
         //
         //      Configure the delegate to (i) not generate test responses and
         //      (ii) to throw exceptions if errors are returned.
@@ -124,10 +125,7 @@ public final class SimpleMySpaceTest extends TestCase {
      *
      * @param userID userId
      * @param communityID communityId
-     * @param endPoint myspace webservice end point
      * @throws IOException if the mySpace delegate chucks one
-     * @return the value from the delegate method. Bad mix of exceptions and
-     *         return codes.
      */
     private void createUser(final String userID, final String communityID)
         throws IOException {
@@ -139,6 +137,10 @@ public final class SimpleMySpaceTest extends TestCase {
         myspace.createUser(testAccount);
         log.info("Account created...");
     }
+    /**
+     * Is there even a myspace there?
+     * @throws IOException
+     */
     public void testUpAndRunning() throws IOException {
         assertTrue("Expect heartbeat true", myspace.heartBeat());
     }
@@ -336,6 +338,12 @@ public final class SimpleMySpaceTest extends TestCase {
 }
 /*
  $Log: SimpleMySpaceTest.java,v $
+ Revision 1.12  2004/06/16 21:16:55  jdt
+ Merged from branch MySpace_JDT_BZ340
+
+ Revision 1.11.10.1  2004/06/16 20:37:42  jdt
+ Unfinished attempt to fix some myspace integration tests.
+
  Revision 1.11  2004/05/11 09:25:30  pah
  make sure that the user object is created properly
 

@@ -1,3 +1,4 @@
 junit*.properties
 target
 transfer-tests-result.dat
+testfile*

@@ -163,7 +163,7 @@ WAREHOUSE_ExecutableJarName=astrogrid-ogsadai-app-{VERSION}.jar
          the datacentre stuff needs it. -->
         <dependency>
             <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-mySpace</artifactId>
+            <artifactId>astrogrid-store-client</artifactId>
             <version>${pom.currentVersion}</version>
         </dependency>
 		<!-- surely it does not have a dependency on applications - pah

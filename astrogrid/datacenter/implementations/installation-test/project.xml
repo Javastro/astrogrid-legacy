@@ -53,7 +53,7 @@
 	</dependency>
 	    <dependency>
 	    <groupId>org.astrogrid</groupId>
-        <id>astrogrid-mySpace</id>
+        <artifactId>astrogrid-store-client</artifactId>
 		
         <version>${pom.currentVersion}</version>
 	    <properties>

@@ -14,6 +14,7 @@ import junit.framework.TestCase;
 import org.astrogrid.community.User;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.store.Agsl;
+import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.myspaceItn05.MySpaceIt05Delegate;
 import org.astrogrid.store.delegate.myspaceItn05.StatusCodes;
 import org.astrogrid.store.delegate.myspaceItn05.StatusMessage;
@@ -76,14 +77,14 @@ public class DeployedManagerTest extends TestCase
 //      Create a delegate to access the remote Manager.
 //
 
-         final String endPoint = SimpleConfig.getSingleton().getString("org.astrogrid.myspace.endpoint");
+         final URL endPoint = new URL(SimpleConfig.getSingleton().getString("org.astrogrid.myspace.endpoint"));
          assertNotNull(endPoint);
          log.debug("Running test against endpoint "+endPoint);
 
          User operator = new User("someuser@somecommunity", "group", "token");
 
          MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
-           operator, endPoint);
+           operator, new Msrl(endPoint).toString());
 
 //
 //      Configure the delegate to (i) not generate test responses and
@@ -109,16 +110,16 @@ public class DeployedManagerTest extends TestCase
 //
 //      Copy this file.
 
-         Agsl someAgsl = new Agsl(new URL("http://blue.nowhere.org"),
+         Agsl someAgsl = new Agsl(new Msrl(endPoint),
            "/testxyz/file2");
-
+System.out.println(someAgsl);
          middle.copy("/testxyz/file1", someAgsl);
          System.out.println("File copied...");
 
 //
 //      Move this file.
 
-         someAgsl = new Agsl(new URL("http://blue.nowhere.org"),
+         someAgsl = new Agsl(new URL("http://blue.nowhere.org/Manager"),
            "/testxyz/file3");
 
          middle.move("/testxyz/file1", someAgsl);

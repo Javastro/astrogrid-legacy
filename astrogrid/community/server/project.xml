@@ -3,11 +3,17 @@
     | Maven project description for the AstroGrid community server.
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/Attic/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/04/15 16:39:47 $</cvs:date>
-    | <cvs:version>$Revision: 1.12 $</cvs:version>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/06/16 21:16:59 $</cvs:date>
+    | <cvs:version>$Revision: 1.13 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.13  2004/06/16 21:16:59  jdt
+    |   Merged from branch MySpace_JDT_BZ340
+    |
+    |   Revision 1.12.16.1  2004/06/16 20:34:24  jdt
+    |   Renamed myspace delegate jar to astrogrid-store-client
+    |
     |   Revision 1.12  2004/04/15 16:39:47  dave
     |   Updated webapp depends to include VoSpaceClient
     |
@@ -117,8 +123,8 @@
             +-->
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>astrogrid-mySpace</artifactId>
-            <version>SNAPSHOT</version>
+            <artifactId>astrogrid-store-client</artifactId>
+            <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>

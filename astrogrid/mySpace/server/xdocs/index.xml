@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<document>
+	<properties>
+		<title>MySpace Server/Manager</title>
+		<author email="jdt%40roe.ac.uk">John Taylor</author>
+	</properties>
+	<body>
+		<section name="Introduction">
+			<p> This subproject creates a single war file for a combined myspace
+			    manager/server webapp.
+			    </p> 
+		</section>
+	</body>
+</document>

@@ -3,11 +3,17 @@
     | Maven project description for the AstroGrid community webapp.
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: pah $</cvs:author>
-    | <cvs:date>$Date: 2004/06/11 19:28:24 $</cvs:date>
-    | <cvs:version>$Revision: 1.13 $</cvs:version>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/06/16 21:16:59 $</cvs:date>
+    | <cvs:version>$Revision: 1.14 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.14  2004/06/16 21:16:59  jdt
+    |   Merged from branch MySpace_JDT_BZ340
+    |
+    |   Revision 1.13.2.1  2004/06/16 20:34:24  jdt
+    |   Renamed myspace delegate jar to astrogrid-store-client
+    |
     |   Revision 1.13  2004/06/11 19:28:24  pah
     |   changes for iteration 5 release build
     |
@@ -221,7 +227,7 @@
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>astrogrid-registry-client</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -233,8 +239,8 @@
             +-->
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>astrogrid-mySpace</artifactId>
-            <version>SNAPSHOT</version>
+            <artifactId>astrogrid-store-client</artifactId>
+            <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>

@@ -66,7 +66,7 @@
 
         <!-- myspace -->
                 <dependency>
-                        <artifactId>astrogrid-mySpace</artifactId>
+                        <artifactId>astrogrid-store-client</artifactId>
                         <version>${pom.currentVersion}</version>
                         <groupId>org.astrogrid</groupId>
                 </dependency>

@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.3 2004/06/14 23:42:26 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.4 2004/06/16 21:17:02 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../../maven-base/project.xml</extend>
-    <id>astrogrid-mySpace-server</id>
+    <id>astrogrid-mySpace</id>
     <name>Astrogrid MySpace Server</name>
-    <description> The server/manager war </description>
+    <description> The server/manager war - see xdocs/index.xml </description>
     <shortDescription>AstroGrid MySpace Manager/Server</shortDescription>
     <dependencies>
     
-    
+        <!--+
+           | store delegate jar, also serves as common jar
+           |
+           +-->
+       <dependency>
+            <artifactId>astrogrid-store-client</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${pom.currentVersion}</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+           
       <!-- for VoSpaceResolver -->
         <dependency>
             <artifactId>astrogrid-registry-client</artifactId>
@@ -38,21 +50,8 @@
             </properties>
  
        </dependency>
-       <!--+
-           | store delegate jar, also serves as common jar
-           | name to be changed....
-           |
-           +-->
-       <dependency>
-            <artifactId>astrogrid-mySpace</artifactId>
-            <groupId>org.astrogrid</groupId>
-            <version>${pom.currentVersion}</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-
-       <dependency>
+ 
+        <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
             <version>${pom.currentVersion}</version>

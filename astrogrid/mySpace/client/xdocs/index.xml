@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<document>
+	<properties>
+		<title>Store Client</title>
+		<author email="jdt%40roe.ac.uk">John Taylor</author>
+	</properties>
+	<body>
+		<section name="Introduction">
+			<p> This subproject creates a single jar file which provides a delegate
+			    to access Store-spaces such as MySpace.  All access should be through the
+			    VoSpaceClient class.
+			    </p> 
+			 <p>
+			     For more detailed information, see the javadocs for the <a href="apidocs/index.html">org.astrogrid.mySpace.store</a> package.
+			 </p>
+		</section>
+	</body>
+</document>

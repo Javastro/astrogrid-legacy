@@ -138,7 +138,7 @@
             </dependency>
                 <!-- delegates, and dependent libs -->
                 <dependency>
-                        <artifactId>astrogrid-mySpace</artifactId>
+                        <artifactId>astrogrid-store-client</artifactId>
                         <groupId>org.astrogrid</groupId>
                         <version>${pom.currentVersion}</version>
                 </dependency>

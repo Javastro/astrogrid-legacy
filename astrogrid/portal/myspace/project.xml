@@ -30,7 +30,7 @@
     <!-- MySpace -->
     <dependency>
       <groupId>org.astrogrid</groupId>
-      <artifactId>astrogrid-mySpace</artifactId>
+      <artifactId>astrogrid-store-client</artifactId>
       <version>${pom.currentVersion}</version>
       <properties>
         <war.bundle>true</war.bundle>

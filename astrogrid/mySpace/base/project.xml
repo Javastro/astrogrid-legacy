@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: project.xml,v 1.2 2004/06/16 21:17:02 jdt Exp $ -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <extend>../maven-base/project.xml</extend>
+    <id>astrogrid-mySpace-base</id>
+    <name>Astrogrid MySpace Base POM</name>
+    <description> When we've installed Maven RC3 this will form a base POM
+        for all the myspace components.
+        </description>
+    <shortDescription>AstroGrid MySpace Base POM</shortDescription>
+</project>

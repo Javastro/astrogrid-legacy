@@ -1,5 +1,5 @@
 /*
- * $Id: Agsl.java,v 1.2 2004/06/14 23:08:53 jdt Exp $
+ * $Id: Agsl.java,v 1.3 2004/06/16 21:17:02 jdt Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -68,22 +68,8 @@ public class Agsl
       this.msrl = aMyspaceResourceLocation;
    }
 
-   /** Makes a reference from the given endpoint (eg myspace:http://asdfasdf or ftp://)
-    * and filepath
-    * @deprecated - use typed ones
-    *
-   public Agsl(String endpoint, String path) throws MalformedURLException
-   {
-      if (endpoint == null) throw new IllegalArgumentException("endpoint must not be null");
-      
-      if (path == null) {
-         init(endpoint);
-      }
-      else {
-         init(endpoint.trim()+"#"+path.trim());
-      }
-   }
-   
+
+
    /** Makes a reference from the given endpoint (eg myspace:http://asdfasdf or ftp://)
     * and filepath
     */
@@ -353,6 +339,12 @@ public class Agsl
 
 /*
 $Log: Agsl.java,v $
+Revision 1.3  2004/06/16 21:17:02  jdt
+Merged from branch MySpace_JDT_BZ340
+
+Revision 1.2.2.1  2004/06/16 20:36:47  jdt
+deleted a commented out method
+
 Revision 1.2  2004/06/14 23:08:53  jdt
 Merge from branches
 ClientServerSplit_JDT
