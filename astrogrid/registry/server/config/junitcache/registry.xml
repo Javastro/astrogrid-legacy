@@ -19,7 +19,7 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
- <Resource xsi:type="java:org.astrogrid.registry.beans.resource.registry.RegistryType">
+ <vr:Resource xsi:type="RegistryType">
     <Identifier>
       <AuthorityID>astrogrid</AuthorityID>
       <ResourceKey>RegistryTest</ResourceKey>
@@ -68,5 +68,5 @@
       <Invocation>WebBrowser</Invocation>
       <AccessURL use="dir">http://adil.ncsa.uiuc.edu/QueryPage.html</AccessURL>
     </Interface>
-  </Resource>
+  </vr:Resource>
   </VODescription>
