@@ -14,7 +14,7 @@ This document is an incomplete draft.  Please send comments to acd@roe.ac.uk
                                --- DRAFT ---
 
                         A C Davenhall and J D Taylor
-                         Version 1, 4 January 2004
+                         Version 2, 6 January 2004
 
 
 Purpose and Status of this Document
@@ -36,14 +36,19 @@ Prerequisites
 In order to install MySpace you require access to a computer (in practice
 a PC) running the following:
 
-* RedHat Linux version 7.2,
-
-* (a Web server??),
+* RedHat Linux version 7.2 is recommended.  However, MySpace has been
+  installed successfully on a machine running RedHat Linux version 7.1.
 
 * Tomcat version 1.2.24 or better.  Tomcat is available from the Apache
   Software Foundation.  See http://jakarta.apache.org/tomcat/.
 
-* A copy of the MySpace war file, which can be obtained from ???????
+* Though Tomcat can, in principle, be used in isolation, it is usually
+  installed with a conventional HTTP server, one of which is also
+  available from Apache (see http://www.apache.org/ and
+  http://httpd.apache.org/).
+
+* A copy of the MySpace war file, which can be obtained from
+  http://www.astrogrid.org/maven/build/mySpace/index.html
 
 You need to be able to log in to Tomcat with the role of `manager'.  A
 list of Tomcat users can be found in file:
@@ -60,9 +65,12 @@ Installation Procedure
 
 To install an AstroGrid MySpace service proceed as follows.
 
-
 1. If you have not already done so then download a copy of the MySpace war
    file and save it as a file on a local disk.
+
+   If you wish to build the war file from the MySpace source code,
+   rather than using a downloaded copy, the final section of this note
+   gives the details.
 
    The name of the war file is astrogrid-mySpace.war and by default the
    Web service adopts the name of the war file.  Thus, for the remainder
@@ -118,43 +126,46 @@ To install an AstroGrid MySpace service proceed as follows.
    kludge adopted because I didn't understand the relationship between
    directories and URLs on grendel12.)
 
-4. Having chosen a directory for the server files edit file:
+4. You also need to choose the directory where the HSQLDB DBMS which
+   MySpace uses to record the files in the MySpace system is to be
+   located.  Again it is sensible to locate this file outside the Web
+   service directory, so that it is not deleted when the service is
+   removed.  It is probably sensible (for security) to choose a
+   directory not accessible as a URL, though the MySpace Web service
+   does need to be able to read and write to it.
 
-     $CATALINA_HOME/webapps/astrogrid-mySpace/simple.servers
+5. You have now chosen directories where:
 
-   Most of this file is comments and you need to edit only the final
-   line:
+  - the server files are to be held,
 
-    server serv1  23  http://www.blue.nowhere.org/s1/    /home/acd/serverdir/
+  - the HSQLDB DBMS is to be located.
+
+   Make the directory you have chosen for the HSQLDB DBMS your current
+   directory and type:
+
+   cp $CATALINA_HOME/webapps/astrogrid-mySpace/astrogrid-mySpace.servers .
+
+   Note that the servers file, here astrogrid-mySpace.servers, must
+   have the same name as your Web service, but with file-type `servers'.
+
+6. Edit the copy of astrogrid-mySpace.servers.  Most of this file is
+   comments and you need to edit only the final line:
+
+    server serv1  23  http://www.blue.nowhere.org/s1/  /base/direct/s1/
 
    Replace:
 
-     http://www.blue.nowhere.org/s1/ with the URL for your server
+     http://www.blue.nowhere.org/s1/ with the URL for your server directory
 
-   and
+   and:
 
-     /home/acd/serverdir/ with the actual directory.
+     /base/direct/s1/ with the server directory's full path and name.
 
    Note that the server name must be left at `serv1' and that the `23'
    is the expiry period in days.  You can substitute any value you
    prefer, but expiry periods are not fully implemented in Iteration 4.
 
-5. The next step is to set up the HSQLDB DBMS which MySpace uses to
-   record the files in the MySpace system.  Again it is sensible to
-   locate this file outside the Web service directory, so that it is not
-   deleted when the service is removed.  It is probably sensible (for
-   security) to choose a directory not accessible as a URL, though the
-   MySpace Web service does need to be able to read and write to it.
-
-   Having chosen a directory and made it your current directory type:
-
-     cp $CATALINA_HOME/webapps/astrogrid-mySpace/simple.servers  .
-     mv simple.servers astrogrid-mySpace.servers
-
-   Note the renaming of file simple.servers; the servers file should
-   have the same name as your Web service, but with file-type `servers'.
-
-6. Now make:
+7. Now make:
 
      $CATALINA_HOME/webapps/astrogrid-mySpace/
  
@@ -179,7 +190,7 @@ To install an AstroGrid MySpace service proceed as follows.
 
      astrogrid/mySpace/xdocs/createregistry_v02.lis
 
-7. Go to directory:
+8. Go to directory:
 
      $CATALINA_HOME/webapps/astrogrid-mySpace/WEB-INF/classes
 
@@ -202,15 +213,37 @@ To install an AstroGrid MySpace service proceed as follows.
    You can check the address by browsing to it; you should get a page
    saying `this is a web service'.
 
+   Now edit the property REGISTRYCONF and set it to the full name of
+   the HSQLDB database, including the full directory path.  For example,
+   if the database where being put in directory 
+   /home/astrogrid/myspacedata you would set it to:
+
+     /home/astrogrid/myspacedata/astrogrid-mySpace
+
    It is sensible to make a copy of ASTROGRID_myspacemanagerconfig.xml
    outside the MySpace server directories, so that you retain a copy
    when you remove the Web service.
 
-8. Go back to the Tomcat Manager Web page and reload the MySpace Web
+9. You can optionally customise the introductory Web page for your
+   MySpace service.  Edit file:
+
+     $CATALINA_HOME/webapps/astrogrid-mySpace/index.html
+
+   A title and introductory paragraph can be inserted between the lines:
+
+     <!-- Start customisation
+     <!-- End customisation -->
+
+   You can, of course, edit other parts of the file if you wish, but
+   this is not recommended.  Again it is sensible to make a copy of the
+   file outside the MySpace server directories, so that you retain a copy
+   when you remove the Web service.
+
+10.Go back to the Tomcat Manager Web page and reload the MySpace Web
    service (note: do not remove the Web service since this will wipe out
    your configuration).
 
-9. The MySpace Web service should now be deployed.
+11.The MySpace Web service should now be deployed.
 
    You can access it either by following the link from the Tomcat
    Manager page, or by accessing URL:
@@ -219,6 +252,43 @@ To install an AstroGrid MySpace service proceed as follows.
 
    There are various test and example pages that you can try out to
    check that all is well.
+
+
+Building the MySpace War File from Source
+-----------------------------------------
+
+To build the MySpace war file from source proceed as follows.
+
+1. If you do not have a copy of Maven (http://maven.apache.org/)
+   then obtain and install a copy and set up for using it.
+
+2. Obtain a copy of the source.  It can be extracted anonymously from
+   the AstroGrid CVS repository:
+
+     cvs -d :pserver:anoncvs@cvs.astrogrid.org:/devel \
+                                       checkout -P astrogrid/mySpace
+     cvs -d :pserver:anoncvs@cvs.astrogrid.org:/devel \
+                                       checkout -P astrogrid/maven-site
+
+3. Make:
+
+     astrogrid/mySpace
+
+   your current directory and type:
+
+     maven clean
+     maven site
+     maven war
+
+   All three commands produce output, the last two voluminously so.
+   If all has gone well then the last two commands include towards the
+   end of their spiel the welcome salutation:
+
+     BUILD SUCCESSFUL
+
+4. The war file should have been created as file:
+
+     astrogrid/mySpace/target/astrogrid-mySpace.war
 
 
 
@@ -233,8 +303,9 @@ Royal Observatory, Blackford Hill, Edinburgh, EH9 3HJ, UK.
 Revision History
 ----------------
 
-Version 1, 4/1/04:  Original version for Iteration 4. (ACD, JDT)
-
+Version 1, 4/1/04:  Original version for Iteration 4.              (ACD, JDT)
+Version 2, 6/1/04:  Minor corrections, added section on building   (ACD, JDT)
+                    from source.                                  
 
 -----------------------------------------------------------------------------
 AstroGrid Iteration 4 Kit.                                    MySpace service

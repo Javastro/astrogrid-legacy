@@ -36,15 +36,15 @@
     
     <!-- REGISTRYCONF
         This is the directory where MySpace Registry will get/log info, please add /example at the end of your path -->
-    <property name="REGISTRYCONF" value="astrogrid1" />
+    <property name="REGISTRYCONF" value="/home/astrogrid/myspacedata/astrogrid-mySpace" />
  
     <!-- URL MYSPACE MANAGER
         This is the URL for the MySpace Manager facility for the installed 
         instance of MySpaceManager -->
-    <property name="MYSPACEMANAGERURL" value="http://astrogrid1.jb.man.ac.uk:8080/mySpace-SNAPSHOT/services/MySpaceManager" /> 
+    <property name="MYSPACEMANAGERURL" value="http://astrogrid1.jb.man.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager" /> 
     
     <!-- URL MYSPACE MANAGER including remote MySpace Systems -->
-    <property name="MYSPACEMANAGERURLs" value="http://astrogrid1.jb.man.ac.uk:8080/mySpace-SNAPSHOT/services/MySpaceManager,http://hydra.star.le.ac.uk:8080/axis/services/MySpaceManager,http://bbc.co.uk/news," /> 
+    <property name="MYSPACEMANAGERURLs" value="http://astrogrid1.jb.man.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager," /> 
     
      <!-- URL SERVERMANAGER
         This is the URL for the MySpace Server facility for the installed 
