@@ -87,6 +87,16 @@ public class AdministrationDelegate {
       PolicyManager secureService = getService(policyURL);
       return secureService.getPassword(name);      
    }
+
+   public AccountData setPassword(String account,String password) throws Exception {
+      String policyURL = getSecureURL();
+      if(policyURL == null) {
+         throw new Exception("This operation requires a secure ssl connection which cannot be found for retrieving the password.");
+      }
+      PolicyManager secureService = getService(policyURL);
+      return secureService.setPassword(account,password);      
+   }
+
    
    
    /**
