@@ -1,15 +1,13 @@
 OLDDIR=$PWD
 
-# Maven repository.
-MAVEN_PUBLIC_REPO=/var/www/www/maven
 PROJECT_NAME=$1
 
 # Change to Maven repository directory for project.
-cd $MAVEN_PUBLIC_REPO/org.astrogrid/
+cd $MAVEN_PUBLIC/org.astrogrid/
 
 # Ensure snapshot is not deleted.
-SNAPSHOT_VERSION=`cat astrogrid-$PROJECT_NAME-snapshot-version`
-REAL_SNAPSHOT_JAR=astrogrid-$PROJECT_NAME-$SNAPSHOT_VERSION.jar
+#SNAPSHOT_VERSION=`cat astrogrid-$PROJECT_NAME-snapshot-version`
+#REAL_SNAPSHOT_JAR=astrogrid-$PROJECT_NAME-$SNAPSHOT_VERSION.jar
 
 # Remove all but current and today's snapshot.
 #if [ -e $REAL_SNAPSHOT_JAR ]
