@@ -53,7 +53,9 @@ public class FileTransferFake
  */
 
   public final void transfer ()
-  {  try
+  {  
+     //REFACTORME - this is a mixture of streams and writers - probably not a good idea...
+     try
      {  URL url = new URL(importUrl);
         InputStream iStream = url.openStream();
 
