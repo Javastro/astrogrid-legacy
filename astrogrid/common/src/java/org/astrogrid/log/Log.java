@@ -1,13 +1,13 @@
 /*
- $Id: Log.java,v 1.2 2003/09/06 17:31:49 mch Exp $
+ $Id: Log.java,v 1.3 2003/09/11 16:33:59 mch Exp $
  */
 
 package org.astrogrid.log;
 
+import java.util.logging.*;
+
 import java.io.IOException;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.OutputStream;
 
 /**
  * A covenience singleton, providing easy to use access to logging facilities,
@@ -215,17 +215,49 @@ public class Log
    /** Switch trace off - ie stop trace messages from being logged */
    public static void traceOff()    { traceOn = false; }
 
-   /** Output goes to given file as well as console
+   /** Direct output to file (as well)
     */
    public static void logToFile(String filename) throws IOException
    {
-      //the net.mchill.log implementation assumes that if you're logging to file
-      //before you call any log statements, and you haven't explicitly specified
-      //logging to console, then it will log to file instead of console.  So here
-      //we specify console explicitly
       logger.addHandler(new FileHandler(filename));
    }
 
+   /**
+    * Direct output to stream (as well) in simple format
+    */
+   public static void logToStream(OutputStream out) throws IOException
+   {
+      logger.addHandler(new StreamHandler(out, new SimpleFormatter()));
+   }
+   
+   /**
+    * Direct output to stream (as well) in XML format
+    */
+   public static void logXmlToStream(OutputStream out) throws IOException
+   {
+      logger.addHandler(new StreamHandler(out, new XMLFormatter()));
+   }
+
+   /**
+    * Direct output to console (as well)
+    */
+   public static void logToConsole() throws IOException
+   {
+      logger.addHandler(new ConsoleHandler());
+   }
+   
+   /**
+    * Returns implementation - this allows applications to do what they need
+    * with the logger, while still letting 99% of the code do its stuff through
+    * the standard methods above.  Hopefully giving us the best of all worlds...
+    * <p>Note that this returns the correct class, not some abstract Object,
+    * so that code using it is correctly checked at compile time
+    */
+   public static Logger getImplementation()
+   {
+      return logger;
+   }
+   
    /**
     * Test harness
     */
@@ -242,6 +274,9 @@ public class Log
 }
 /*
 $Log: Log.java,v $
+Revision 1.3  2003/09/11 16:33:59  mch
+Added logToXxxx methods
+
 Revision 1.2  2003/09/06 17:31:49  mch
 Logger Wrapper for JDK1.4 built-in logging
 
