@@ -18,7 +18,7 @@ import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
  * @version Iteration 3.
  */
 
-class CreateMySpaceRegistry
+public class CreateMySpaceRegistry
 {  private static MySpaceStatus status = new MySpaceStatus();
 
 /**
