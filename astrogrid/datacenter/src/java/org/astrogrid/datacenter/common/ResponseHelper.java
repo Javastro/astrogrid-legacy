@@ -1,5 +1,5 @@
 /*
- * $Id: ResponseHelper.java,v 1.12 2003/09/22 16:51:24 mch Exp $
+ * $Id: ResponseHelper.java,v 1.13 2003/10/06 18:51:05 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -35,6 +35,9 @@ public class ResponseHelper
    /** Tag used to describe an error */
    public static final String ERROR_TAG = "Error";
 
+   /** Tag used to describe results */
+   public static final String RESULTS_TAG = "Results";
+   
    /**
     * Returns an element that indicates the query has started
     *<p>
@@ -121,21 +124,16 @@ public class ResponseHelper
     * If the query has already got an exception, throws this so that
     * client gets it (don't like this, very general)
     */
-   public static Document makeResultsResponse(DatabaseQuerier querier, Element results) throws Throwable
+   public static Document makeResultsResponse(DatabaseQuerier querier, Element results)
    {
-      if (querier.getStatus() == QueryStatus.ERROR)
-      {
-         throw querier.getError();
-      }
-
       Log.affirm(results != null, "Results=null");
 
       String doc =
           QueryIdHelper.makeTagWithQueryIdAttr(DATACENTER_RESULTS_TAG, querier.getHandle())+"\n"
          +"   <TIME>"+querier.getQueryTimeTaken()+"</TIME>\n"
-         +"   <Results type='votable'>\n"
+         +"   <"+RESULTS_TAG+" type='votable'>\n"
          +XMLUtils.ElementToString(results)
-         +"   </Results>\n"
+         +"   </"+RESULTS_TAG+">\n"
          +"</"+DATACENTER_RESULTS_TAG+">\n";
 
       return DocHelper.wrap(doc);
@@ -148,21 +146,14 @@ public class ResponseHelper
     * If the query has already got an exception, throws this so that
     * client gets it (don't like this, very general)
     */
-   public static Document makeResultsResponse(DatabaseQuerier querier, URL results) throws Throwable
+   public static Document makeResultsResponse(DatabaseQuerier querier, URL results)
    {
-      if (querier.getStatus() == QueryStatus.ERROR)
-      {
-         throw querier.getError();
-      }
-
       Log.affirm(results != null, "Results=null");
 
       String doc =
           QueryIdHelper.makeTagWithQueryIdAttr(DATACENTER_RESULTS_TAG, querier.getHandle())+"\n"
          +"   <TIME>"+querier.getQueryTimeTaken()+"</TIME>\n"
-         +"   <Results type='url'>\n"
-         +"       "+results
-         +"   </Results>\n"
+         +"   <"+RESULTS_TAG+" type='url'>"+results+"</"+RESULTS_TAG+">\n"
          +"</"+DATACENTER_RESULTS_TAG+">\n";
 
       return DocHelper.wrap(doc);
