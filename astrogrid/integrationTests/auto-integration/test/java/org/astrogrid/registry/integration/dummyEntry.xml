@@ -6,7 +6,7 @@
 	<Resource created="1967-08-13" updated="1967-08-13" status="active">
 		<Identifier>
 			<AuthorityID>org.astrogrid.localhost</AuthorityID>
-			<ResourceKey>dummy/entry</ResourceKey>
+			<ResourceKey>dummy.entry</ResourceKey>
 		</Identifier>
 		<Title>String</Title>
 		<ShortName>String</ShortName>
