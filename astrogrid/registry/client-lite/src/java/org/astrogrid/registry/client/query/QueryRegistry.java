@@ -24,6 +24,8 @@ import java.util.Set;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Iterator;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.common.XSLHelper;
@@ -177,6 +179,300 @@ public class QueryRegistry implements RegistryService {
       }
       return null;
    }
+   
+   public Document getRegistries() throws RegistryException {
+       Document doc = null;
+       Document resultDoc = null;
+
+       try {
+          if (DEBUG_FLAG)
+             System.out.println("creating full soap element.");
+          doc = DomHelper.newDocument();
+          Element root = doc.createElementNS(NAMESPACE_URI, "GetRegistries");
+          doc.appendChild(root);
+       } catch (ParserConfigurationException pce) {
+          throw new RegistryException(pce);
+       }
+       
+       try {
+          Call call = getCall();
+          SOAPBodyElement sbeRequest =
+             new SOAPBodyElement(doc.getDocumentElement());
+          sbeRequest.setName("GetRegistries");
+          sbeRequest.setNamespaceURI(NAMESPACE_URI);
+          Vector result = (Vector)call.invoke(new Object[] { sbeRequest });
+          SOAPBodyElement sbe = null;
+          if (result.size() > 0) {
+             sbe = (SOAPBodyElement)result.get(0);
+             return sbe.getAsDocument();
+          }
+       } catch (RemoteException re) {
+          throw new RegistryException(re);
+       } catch (ServiceException se) {
+          throw new RegistryException(se);
+       } catch (Exception e) {
+          throw new RegistryException(e);
+       }
+       //should not reach here.
+       throw new RegistryException("Error from server it returned nothing");
+   }
+   
+   public Document identify() throws RegistryException {
+      Document doc = null;
+      Document resultDoc = null;
+
+      try {
+         if (DEBUG_FLAG)
+            System.out.println("creating full soap element.");
+         doc = DomHelper.newDocument();
+         Element root = doc.createElementNS(NAMESPACE_URI, "Identify");
+         doc.appendChild(root);
+      } catch (ParserConfigurationException pce) {
+         throw new RegistryException(pce);
+      }
+      
+      try {
+         Call call = getCall();
+         SOAPBodyElement sbeRequest =
+            new SOAPBodyElement(doc.getDocumentElement());
+         sbeRequest.setName("Identify");
+         sbeRequest.setNamespaceURI(NAMESPACE_URI);
+         Vector result = (Vector)call.invoke(new Object[] { sbeRequest });
+         SOAPBodyElement sbe = null;
+         if (result.size() > 0) {
+            sbe = (SOAPBodyElement)result.get(0);
+            return sbe.getAsDocument();
+         }
+      } catch (RemoteException re) {
+         throw new RegistryException(re);
+      } catch (ServiceException se) {
+         throw new RegistryException(se);
+      } catch (Exception e) {
+         throw new RegistryException(e);
+      }
+      //should not reach here.
+      throw new RegistryException("Error from server it returned nothing");
+   }
+   
+   
+   public Document listRecords() throws RegistryException {
+   	return listRecords(null,null,null);
+   }
+   
+   public Document listRecords(Date fromDate) throws RegistryException {
+   	return listRecords(null,fromDate,null);    
+   }
+   
+   public Document listRecords(String metadataPrefix, Date fromDate, Date untilDate) throws RegistryException {
+      Document doc = null;
+      Document resultDoc = null;
+
+      try {
+         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+         if (DEBUG_FLAG)
+            System.out.println("creating full soap element.");
+         doc = DomHelper.newDocument();
+         Element root = doc.createElementNS(NAMESPACE_URI, "ListRecords");
+         doc.appendChild(root);
+         Element temp = null;
+         if(metadataPrefix != null && metadataPrefix.trim().length() > 0) {
+         	temp = doc.createElement("metadataPrefix");
+            temp.appendChild(doc.createTextNode(metadataPrefix));
+            root.appendChild(temp);    
+         }         
+         if(fromDate != null) {
+            temp = doc.createElement("from");
+            temp.appendChild(doc.createTextNode(sdf.format(fromDate)));
+            root.appendChild(temp);
+         }
+         if(untilDate != null) {
+            temp = doc.createElement("until");
+            temp.appendChild(doc.createTextNode(sdf.format(untilDate)));
+            root.appendChild(temp);            
+         }
+      } catch (ParserConfigurationException pce) {
+         throw new RegistryException(pce);
+      }
+      
+      try {
+         Call call = getCall();
+         SOAPBodyElement sbeRequest =
+            new SOAPBodyElement(doc.getDocumentElement());
+         sbeRequest.setName("ListRecords");
+         sbeRequest.setNamespaceURI(NAMESPACE_URI);
+         System.out.println("List Records Client-side = " + DomHelper.DocumentToString(doc));
+         Vector result = (Vector)call.invoke(new Object[] { sbeRequest });
+         SOAPBodyElement sbe = null;
+         if (result.size() > 0) {
+            sbe = (SOAPBodyElement)result.get(0);
+            return sbe.getAsDocument();
+         }
+      } catch (RemoteException re) {
+         throw new RegistryException(re);
+      } catch (ServiceException se) {
+         throw new RegistryException(se);
+      } catch (Exception e) {
+         throw new RegistryException(e);
+      }
+      //should not reach here.
+      throw new RegistryException("Error from server it returned nothing");
+   }
+   
+   public Document listMetadataFormats(String identifier) throws RegistryException {
+      Document doc = null;
+      Document resultDoc = null;
+
+      try {
+         if (DEBUG_FLAG)
+            System.out.println("creating full soap element.");
+         doc = DomHelper.newDocument();
+         Element root = doc.createElementNS(NAMESPACE_URI, "ListMetadataFormats");
+         doc.appendChild(root);
+         Element temp = null;
+         if(identifier == null || identifier.trim().length() <= 0) 
+            throw new RegistryException("Error From Client: No identifier found for calling GetRecord");         
+         temp = doc.createElement("identifier");
+         temp.appendChild(doc.createTextNode(identifier));
+         root.appendChild(temp);    
+      } catch (ParserConfigurationException pce) {
+         throw new RegistryException(pce);
+      }
+      
+      try {
+         Call call = getCall();
+         SOAPBodyElement sbeRequest =
+            new SOAPBodyElement(doc.getDocumentElement());
+         sbeRequest.setName("ListMetadataFormats");
+         sbeRequest.setNamespaceURI(NAMESPACE_URI);
+         Vector result = (Vector)call.invoke(new Object[] { sbeRequest });
+         SOAPBodyElement sbe = null;
+         if (result.size() > 0) {
+            sbe = (SOAPBodyElement)result.get(0);
+            return sbe.getAsDocument();
+         }
+      } catch (RemoteException re) {
+         throw new RegistryException(re);
+      } catch (ServiceException se) {
+         throw new RegistryException(se);
+      } catch (Exception e) {
+         throw new RegistryException(e);
+      }
+      //should not reach here.
+      throw new RegistryException("Error from server it returned nothing");    
+   }
+   
+   public Document getRecord(String identifier) throws RegistryException {
+   	return getRecord(identifier,null);
+   }
+   
+   public Document getRecord(String identifier, String metadataPrefix) throws RegistryException {
+      Document doc = null;
+      Document resultDoc = null;
+
+      try {
+         if (DEBUG_FLAG)
+            System.out.println("creating full soap element.");
+         doc = DomHelper.newDocument();
+         Element root = doc.createElementNS(NAMESPACE_URI, "GetRecord");
+         doc.appendChild(root);
+         Element temp = null;
+         if(identifier == null || identifier.trim().length() <= 0) 
+            throw new RegistryException("Error From Client: No identifier found for calling GetRecord");
+         
+         temp = doc.createElement("identifier");
+         temp.appendChild(doc.createTextNode(identifier));
+         root.appendChild(temp);    
+
+         if(metadataPrefix != null && metadataPrefix.trim().length() > 0) {
+            temp = doc.createElement("metadataPrefix");
+            temp.appendChild(doc.createTextNode(metadataPrefix));
+            root.appendChild(temp);    
+         }         
+ 
+      } catch (ParserConfigurationException pce) {
+         throw new RegistryException(pce);
+      }
+      
+      try {
+         Call call = getCall();
+         SOAPBodyElement sbeRequest =
+            new SOAPBodyElement(doc.getDocumentElement());
+         sbeRequest.setName("GetRecord");
+         sbeRequest.setNamespaceURI(NAMESPACE_URI);
+         Vector result = (Vector)call.invoke(new Object[] { sbeRequest });
+         SOAPBodyElement sbe = null;
+         if (result.size() > 0) {
+            sbe = (SOAPBodyElement)result.get(0);
+            return sbe.getAsDocument();
+         }
+      } catch (RemoteException re) {
+         throw new RegistryException(re);
+      } catch (ServiceException se) {
+         throw new RegistryException(se);
+      } catch (Exception e) {
+         throw new RegistryException(e);
+      }
+      //should not reach here.
+      throw new RegistryException("Error from server it returned nothing");
+   }
+   
+   public Document listIdentifiers() throws RegistryException {
+   	return listIdentifiers(null,null,null);
+   }
+   
+   public Document listIdentifiers(String metadataPrefix, Date fromDate, Date untilDate) throws RegistryException {
+      Document doc = null;
+      Document resultDoc = null;
+
+      try {
+         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+         if (DEBUG_FLAG)
+            System.out.println("creating full soap element.");
+         doc = DomHelper.newDocument();
+         Element root = doc.createElementNS(NAMESPACE_URI, "ListIdentifiers");
+         doc.appendChild(root);
+         Element temp = null;
+         if(metadataPrefix != null && metadataPrefix.trim().length() > 0) {
+            temp = doc.createElement("metadataPrefix");
+            temp.appendChild(doc.createTextNode(metadataPrefix));
+            root.appendChild(temp);    
+         }         
+         if(fromDate != null) {
+            temp = doc.createElement("from");
+            temp.appendChild(doc.createTextNode(sdf.format(fromDate)));
+            root.appendChild(temp);
+         }
+         if(untilDate != null) {
+            temp = doc.createElement("until");
+            temp.appendChild(doc.createTextNode(sdf.format(untilDate)));
+            root.appendChild(temp);            
+         }
+      } catch (ParserConfigurationException pce) {
+         throw new RegistryException(pce);
+      }
+      
+      try {
+         Call call = getCall();
+         SOAPBodyElement sbeRequest =
+            new SOAPBodyElement(doc.getDocumentElement());
+         sbeRequest.setName("ListIdentifiers");
+         sbeRequest.setNamespaceURI(NAMESPACE_URI);
+         Vector result = (Vector)call.invoke(new Object[] { sbeRequest });
+         SOAPBodyElement sbe = null;
+         if (result.size() > 0) {
+            sbe = (SOAPBodyElement)result.get(0);
+            return sbe.getAsDocument();
+         }
+      } catch (RemoteException re) {
+         throw new RegistryException(re);
+      } catch (ServiceException se) {
+         throw new RegistryException(se);
+      } catch (Exception e) {
+         throw new RegistryException(e);
+      }
+      //should not reach here.
+      throw new RegistryException("Error from server it returned nothing");
+   }   
 
    public Document submitQuery(String query) throws RegistryException {
       if (DEBUG_FLAG)
@@ -189,24 +485,19 @@ public class QueryRegistry implements RegistryService {
          throw new RegistryException(ioe);
       } catch (SAXException sax) {
          throw new RegistryException(sax);
-      } finally {
-
       }
    }
 
    public Document submitQuery(Document query) throws RegistryException {
       if (DEBUG_FLAG)
          System.out.println("entered submitQueryDOM()");
-      DocumentBuilder registryBuilder = null;
       Document doc = null;
       Document resultDoc = null;
 
       try {
          if (DEBUG_FLAG)
             System.out.println("creating full soap element.");
-         registryBuilder =
-            DocumentBuilderFactory.newInstance().newDocumentBuilder();
-         doc = registryBuilder.newDocument();
+         doc = DomHelper.newDocument();
          Element root = doc.createElementNS(NAMESPACE_URI, "submitQuery");
          doc.appendChild(root);
          Node nd = doc.importNode(query.getDocumentElement(), true);
@@ -324,12 +615,12 @@ public class QueryRegistry implements RegistryService {
             "<query><selectionSequence>"
                + "<selection item='searchElements' itemOp='EQ' value='all'/>"
                + "<selectionOp op='$and$'/>"
-               + "<selection item='Identifier/AuthorityID' itemOp='EQ' value='"
+               + "<selection item='*:Identifier/*:AuthorityID' itemOp='EQ' value='"
                + ident.substring(0, iTemp)
                + "'/>";
          if (iTemp < ident.length()) {
             selectQuery += "<selectionOp op='AND'/>"
-               + "<selection item='Identifier/ResourceKey' itemOp='EQ' value='"
+               + "<selection item='*:Identifier/*:ResourceKey' itemOp='EQ' value='"
                + ident.substring((iTemp + 1))
                + "'/>";
          }
