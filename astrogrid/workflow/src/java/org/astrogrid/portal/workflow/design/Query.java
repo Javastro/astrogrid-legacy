@@ -24,6 +24,7 @@ import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 import org.astrogrid.portal.workflow.*;
 import org.astrogrid.community.common.util.CommunityMessage ;
 
+import org.astrogrid.portal.workflow.design.unittest.* ;
 
 /**
  * The <code>Query</code> class represents... 
@@ -69,9 +70,19 @@ public final class Query implements Tool {
            pathBuffer = new StringBuffer( 64 ) ;
         String
            xmlString = null ;
+           String
+               mySpaceLocation = null ;
          
         try {
             
+            mySpaceLocation =  WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ;
+           
+            // This is here purely for test situations...
+            if( mySpaceLocation == null || mySpaceLocation.trim().equals("") ) {
+                query = WorkflowHelper.readQuery( userid, community, communitySnippet, name ) ;
+               return query ;
+            }
+               
             MySpaceManagerDelegate
                 mySpace = new MySpaceManagerDelegate( WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ) ;
                 
@@ -114,7 +125,7 @@ public final class Query implements Tool {
     public static Iterator readQueryList( String userid
                                         , String community
                                         , String communitySnippet
-                                        , String name ) {
+                                        , String filter ) {
         if( TRACE_ENABLED ) trace( "Query.readQuery() entry") ; 
         
         // JBL: For the moment we are ignoring filter.
@@ -125,8 +136,18 @@ public final class Query implements Tool {
           vector = null ;
        StringBuffer
           argumentBuffer = new StringBuffer( 64 ) ;
+       String
+          mySpaceLocation ;
         
        try {
+           
+           mySpaceLocation =  WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ;
+           
+            // This is here purely for test situations...
+            if( mySpaceLocation == null || mySpaceLocation.trim().equals("") ) {
+                vector = WorkflowHelper.readQueryList( userid, community, communitySnippet, filter) ;
+                return vector.iterator() ;
+            } 
                 
           MySpaceManagerDelegate
              mySpace = new MySpaceManagerDelegate( WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ) ;

@@ -291,12 +291,222 @@ public class WorkflowHelper {
         "</step>" +
         "</sequence>" +
         "</workflow>" ;    
-       
-       
-    // Workflow name followed by workflow "file"   
+        
     private static String[] workflowTable =
         { 
             "JobOne", "JobTwo" 
+        };
+
+
+
+    private static String queryOne =
+    "<?xml version=\"1.0\" encoding=\"UTF8\"?>" +
+    "<query type=\"adql\" target=\"http://aife.jb.man.ac.uk:8080/axis/services/AxisDataCenter\">" +
+               
+     "<!-- SQL equivalent" +
+     "SELECT t.a, g.d FROM Tab a, Tab d WHERE a.d < d.e AND a.f < d.f ORDER BY t.f, g.b" +
+     " -->" +
+     "<Select xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " + 
+     "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">" +
+     "<SelectionList>" +
+       "<ColumnExpr>" +
+         "<SingleColumnReference>" +
+           "<TableName>t</TableName>" +
+           "<Name>a</Name>" +
+         "</SingleColumnReference>" +
+       "</ColumnExpr>" +
+       "<ColumnExpr>" +
+         "<SingleColumnReference>" +
+           "<TableName>g</TableName>" +
+           "<Name>d</Name>" +
+         "</SingleColumnReference>" +
+       "</ColumnExpr>" +
+     "</SelectionList>" +
+     "<TableClause>" +
+       "<FromClause>" +
+         "<TableReference>" +
+           "<Table>" +
+             "<Name>Tab</Name>" +
+             "<AliasName>a</AliasName>" +
+           "</Table>" +
+           "<Table>" +
+             "<Name>Tab</Name>" +
+             "<AliasName>d</AliasName>" +
+           "</Table>" +
+         "</TableReference>" +
+       "</FromClause>" +
+       "<WhereClause>" +
+         "<IntersectionSearch>" +
+           "<FirstCondition xsi:type=\"PredicateSearch\">" +
+             "<ComparisonPred>" +
+               "<FirstExpr xsi:type=\"ColumnExpr\">" +
+                 "<SingleColumnReference>" +
+                   "<TableName>a</TableName>" +
+                   "<Name>d</Name>" +
+                 "</SingleColumnReference>" +
+               "</FirstExpr>" +
+               "<Compare>&lt;</Compare>" +
+               "<SecondExpr xsi:type=\"ColumnExpr\">" +
+                 "<SingleColumnReference>" +
+                   "<TableName>d</TableName>" +
+                   "<Name>e</Name>" +
+                 "</SingleColumnReference>" +
+               "</SecondExpr>" +
+             "</ComparisonPred>" +
+           "</FirstCondition>" +
+           "<SecondCondition xsi:type=\"PredicateSearch\">" +
+             "<ComparisonPred>" +
+               "<FirstExpr xsi:type=\"ColumnExpr\">" +
+                 "<SingleColumnReference>" +
+                   "<TableName>a</TableName>" +
+                   "<Name>f</Name>" +
+                 "</SingleColumnReference>" +
+               "</FirstExpr>" +
+               "<Compare>&lt;</Compare>" +
+               "<SecondExpr xsi:type=\"ColumnExpr\">" +
+                 "<SingleColumnReference>" +
+                   "<TableName>d</TableName>" +
+                   "<Name>f</Name>" +
+                 "</SingleColumnReference>" +
+               "</SecondExpr>" +
+             "</ComparisonPred>" +
+           "</SecondCondition>" +
+         "</IntersectionSearch>" +
+       "</WhereClause>" +
+     "</TableClause>" +
+     "<OrderBy>" +
+       "<OrderList>" +
+         "<Order>" +
+           "<Expr xsi:type=\"ColumnExpr\">" +
+             "<SingleColumnReference>" +
+               "<TableName>t</TableName>" +
+               "<Name>f</Name>" +
+             "</SingleColumnReference>" +
+           "</Expr>" +
+         "</Order>" +
+         "<Order>" +
+           "<Expr xsi:type=\"ColumnExpr\">" +
+             "<SingleColumnReference>" +
+               "<TableName>g</TableName>" +
+               "<Name>b</Name>" +
+             "</SingleColumnReference>" +
+           "</Expr>" +
+         "</Order>" +
+       "</OrderList>" +
+     "</OrderBy>" +
+   "</Select>" +
+      
+      
+   "</query>" ;
+
+	    private static String queryTwo =
+	    "<?xml version=\"1.0\" encoding=\"UTF8\"?>" +
+	    "<query type=\"adql\" target=\"http://aife.jb.man.ac.uk:8080/axis/services/AxisDataCenter\">" +
+	               
+	     "<!-- SQL equivalent" +
+	     "SELECT t.a, g.d FROM Tab a, Tab d WHERE a.d < d.e AND a.f < d.f ORDER BY t.f, g.b" +
+	     " -->" +
+	     "<Select xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " + 
+	     "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">" +
+	     "<SelectionList>" +
+	       "<ColumnExpr>" +
+	         "<SingleColumnReference>" +
+	           "<TableName>t</TableName>" +
+	           "<Name>a</Name>" +
+	         "</SingleColumnReference>" +
+	       "</ColumnExpr>" +
+	       "<ColumnExpr>" +
+	         "<SingleColumnReference>" +
+	           "<TableName>g</TableName>" +
+	           "<Name>d</Name>" +
+	         "</SingleColumnReference>" +
+	       "</ColumnExpr>" +
+	     "</SelectionList>" +
+	     "<TableClause>" +
+	       "<FromClause>" +
+	         "<TableReference>" +
+	           "<Table>" +
+	             "<Name>Tab</Name>" +
+	             "<AliasName>a</AliasName>" +
+	           "</Table>" +
+	           "<Table>" +
+	             "<Name>Tab</Name>" +
+	             "<AliasName>d</AliasName>" +
+	           "</Table>" +
+	         "</TableReference>" +
+	       "</FromClause>" +
+	       "<WhereClause>" +
+	         "<IntersectionSearch>" +
+	           "<FirstCondition xsi:type=\"PredicateSearch\">" +
+	             "<ComparisonPred>" +
+	               "<FirstExpr xsi:type=\"ColumnExpr\">" +
+	                 "<SingleColumnReference>" +
+	                   "<TableName>a</TableName>" +
+	                   "<Name>d</Name>" +
+	                 "</SingleColumnReference>" +
+	               "</FirstExpr>" +
+	               "<Compare>&lt;</Compare>" +
+	               "<SecondExpr xsi:type=\"ColumnExpr\">" +
+	                 "<SingleColumnReference>" +
+	                   "<TableName>d</TableName>" +
+	                   "<Name>e</Name>" +
+	                 "</SingleColumnReference>" +
+	               "</SecondExpr>" +
+	             "</ComparisonPred>" +
+	           "</FirstCondition>" +
+	           "<SecondCondition xsi:type=\"PredicateSearch\">" +
+	             "<ComparisonPred>" +
+	               "<FirstExpr xsi:type=\"ColumnExpr\">" +
+	                 "<SingleColumnReference>" +
+	                   "<TableName>a</TableName>" +
+	                   "<Name>f</Name>" +
+	                 "</SingleColumnReference>" +
+	               "</FirstExpr>" +
+	               "<Compare>&lt;</Compare>" +
+	               "<SecondExpr xsi:type=\"ColumnExpr\">" +
+	                 "<SingleColumnReference>" +
+	                   "<TableName>d</TableName>" +
+	                   "<Name>f</Name>" +
+	                 "</SingleColumnReference>" +
+	               "</SecondExpr>" +
+	             "</ComparisonPred>" +
+	           "</SecondCondition>" +
+	         "</IntersectionSearch>" +
+	       "</WhereClause>" +
+	     "</TableClause>" +
+	     "<OrderBy>" +
+	       "<OrderList>" +
+	         "<Order>" +
+	           "<Expr xsi:type=\"ColumnExpr\">" +
+	             "<SingleColumnReference>" +
+	               "<TableName>t</TableName>" +
+	               "<Name>f</Name>" +
+	             "</SingleColumnReference>" +
+	           "</Expr>" +
+	         "</Order>" +
+	         "<Order>" +
+	           "<Expr xsi:type=\"ColumnExpr\">" +
+	             "<SingleColumnReference>" +
+	               "<TableName>g</TableName>" +
+	               "<Name>b</Name>" +
+	             "</SingleColumnReference>" +
+	           "</Expr>" +
+	         "</Order>" +
+	       "</OrderList>" +
+	     "</OrderBy>" +
+	   "</Select>" +
+	      
+	      
+	   "</query>" ;
+
+
+
+
+
+
+    private static String[] queryTable =
+        { 
+            "QueryOne", "QueryTwo" 
         };
        
         
@@ -313,12 +523,8 @@ public class WorkflowHelper {
         
         // JBL: For the moment we are ignoring filter.
         
-        Iterator
-           iterator = null ;
         java.util.Vector
            vector = null ;
-        StringBuffer
-           argumentBuffer = new StringBuffer( 64 ) ;
         
         try {
             
@@ -427,11 +633,75 @@ public class WorkflowHelper {
     } // end of saveWorkflow()
     
     
-    public WorkflowHelper(){
-    }
+    public static Vector readQueryList( String userid
+                                      , String community
+                                      , String communitySnippet
+                                      , String filter ) {
+        if( TRACE_ENABLED ) trace( "WorkflowHelper.readQuery() entry") ; 
+        
+        // JBL: For the moment we are ignoring filter.
+        
+         java.util.Vector
+            vector = null ;
+        
+         try {
+            
+             vector = new Vector( 10 ) ;
+                                              
+             for( int i = 0; i < queryTable.length; i++ ) {
+                 vector.add( i, queryTable[i] ) ;
+             }
+                          
+         }
+         catch ( Exception ex ) {
+             ex.printStackTrace() ;
+         }
+         finally {
+             if( TRACE_ENABLED ) trace( "WorkflowHelper.readWorkflowList() exit") ; 
+         }
+       
+         return vector ;
+
+    } // end of readQueryList()
+    
+    
+    
+    public static Query readQuery( String userid
+                                 , String community
+                                 , String communitySnippet
+                                 , String name ) {
+        if( TRACE_ENABLED ) trace( "Query.readQuery() entry") ; 
+        
+        Query
+           query = null;
+        StringBuffer
+           pathBuffer = new StringBuffer( 64 ) ;
+         
+        try {
+            InputSource
+               source = new InputSource( new StringReader( queryOne ) );
+                         
+            query = new Query( XMLUtils.newDocument(source) ) ;
+            query.setName( name ) ;
+
+         }
+         catch ( Exception ex ) {
+             ex.printStackTrace() ;
+         }
+         finally {
+             if( TRACE_ENABLED ) trace( "Query.readQuery() exit") ; 
+         }
+       
+         return query ;
+        
+    } // end of readQuery()
+    
     
 
-  
+
+    
+    
+       
     private static void trace( String traceString ) {
         System.out.println( traceString ) ;
         // logger.debug( traceString ) ;

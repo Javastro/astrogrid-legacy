@@ -95,7 +95,9 @@ public class JesTestSuite extends TestCase {
                  logger.info( "job.getTimestamp(): " + job.getTimestamp() ) ;
                  logger.info( "job.getJobid(): " + job.getJobid() ) ;
                  logger.info( "job.getUserid(): " + job.getUserid() ) ;
+                 assertTrue( userid.equals( job.getUserid() ) ) ;
                  logger.info( "job.getCommunity(): " + job.getCommunity() ) ;
+                 assertTrue( community.equals( job.getCommunity() ) ) ;
              }
              logger.info( "====*====" ) ;
              assertTrue( true ) ;    
