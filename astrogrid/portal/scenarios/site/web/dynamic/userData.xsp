@@ -2,28 +2,36 @@
 
 <!--+
     | Author: Patricio F. Ortiz "pfo@star.le.ac.uk"
-    | Date: Fri Mar  5 17:29:46 2004
+    | Date: Fri Mar  5 17:40:33 2004
     +-->
 
 <xsp:page language="java"
 	  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
           xmlns:xsp="http://apache.org/xsp"
-          xmlns:xsp-session="http://apache.org/xsp/session/2.0"
 	  xmlns:util="http://apache.org/xsp/util/2.0"
-	  xmlns:xsp-request="http://apache.org/xsp/request/2.0">
+	  xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+	  xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+          xmlns:jpath="http://apache.org/xsp/jpath/1.0">
   
+  <!--
+  -->
   <AstroGrid>
-
-<!--
-<agComponentTitle>Locate resources in the Virtual Observatory</agComponentTitle>
-The name of the resource to consult is passed to the XSL in the form of a
-variable, which could be used by invoking some xpath way
-<DQtableID><xsp-request:get-parameter name="tableID"/></DQtableID>
--->
-<DQtableID>Registry</DQtableID>
-
+<ProducePage>
 <xsp:logic>
-	String profile, Profiler, user, dynamic, profiFile;
+	String profile, Profiler, uzi, user, dynamic, profiFile;
+	int     lastSlash, length;
+
+	user =(String)<xsp-session:get-attribute default="nadie" name="user"/>;
+
+	lastSlash = user.lastIndexOf('/');
+	length = user.length();
+		if(length &lt; 0) {
+		lastSlash = 0;
+	} else {
+		lastSlash++;
+	}
+	uzi = (String) user.substring(lastSlash, length);
+
 	dynamic=(String) <xsp-session:get-attribute name="dynamic-profiles"/>;
 	user=(String) <xsp-session:get-attribute default="nadie" name="uzer"/>;
 
@@ -40,20 +48,10 @@ variable, which could be used by invoking some xpath way
 	<util:href><xsp:expr>Profiler</xsp:expr></util:href>
 </util:include-uri>
 	}
+
+<userID><xsp:expr>uzi</xsp:expr></userID>
+
 </xsp:logic>
-
-<mainarea>
-<OneTableID>Registry</OneTableID>
-<QUERYAREA>
-<textarea name="adqlQuery" class="areaInput" id="ag_data-query" cols="55" rows="8">
-SELECT * FROM AstroGridHydra/Registry as T1 
-</textarea>
-</QUERYAREA>
-</mainarea>
-
-<util:include-file>
-	   <util:name>/data/datoz2k/scratch/registry.xml</util:name>
-</util:include-file>
-
+</ProducePage>
   </AstroGrid>
 </xsp:page>

@@ -12,6 +12,7 @@
 
   <xsl:template match="ProducePage">
 <agComponentTitle>AstroGrid: <xsl:value-of select="userID"/>  personal data</agComponentTitle>
+<!--
 <form name="updateData" method="Post">
 <div style="padding-left: 40px; padding-top: 20px">
 <table class="compact">
@@ -33,14 +34,12 @@
 <td><input name="semail" size="40"/>
 </td>
 </tr>
-<!--
 <tr>
 <td>Your mother's maiden name:
 </td>
 <td><input name="mama" size="40"/>
 </td>
 </tr>
--->
 <tr>
 <td>Institution:
 </td>
@@ -97,6 +96,7 @@
 </table>
 </div>
 </form>
+-->
 
 <form name="updatePass" method="Post">
 <div style="padding-left: 40px; padding-top: 2px">

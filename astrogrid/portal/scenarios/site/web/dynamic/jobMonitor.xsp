@@ -41,12 +41,6 @@
 	nada = new String("null");
 
         user = (String) <xsp-session:get-attribute default="pfo" name="user"/>;
-	url = new
-	String("http://barbara.star.le.ac.uk/datoz-bin/coneSearchStep1?z=");
-	urlCL = new
-	String("http://barbara.star.le.ac.uk/datoz-bin/catalogueLocator1?z=");
-	urlSex = new
-	String("http://barbara.star.le.ac.uk/datoz-bin/gs?what=sourceExtraction1&amp;z=");
 
 	<!--
 	if(user.equals(nada)){
@@ -87,48 +81,6 @@ climb the learning curve faster.
 -->
 
 <AGScenarios>
-<userID><xsp:expr>user</xsp:expr></userID>
-
-<AGscenario name="Your Profile">
-<link><xsp:expr>url</xsp:expr><xsp:expr>user</xsp:expr></link>
-<inBrief>
-Change your password, e-mail or other personal data
-</inBrief>
-<inExtenso>
-Perform a search based purely on position around a list of locations using
-a number of resources. If you don't know what resource to use you'll be
-offered the chance to select them.
-</inExtenso>
-</AGscenario>
-
-<AGscenario name="Portal Preferences">
-<link>javascript:newWindow('http://barbara.star.le.ac.uk:8080/astrogrid-portal/bare/mount/login/prefs.i07','newBy', 780, 480, 100, 20);</link>
-<inBrief>
-Modify preferences related to the portal pages
-</inBrief>
-<inExtenso>
-Use the registry to locate catalogues available in the VO which are
-relevant for your research. You will be able to save lists of catalogues to
-your mySpace area for future usage, eg, cross correlation, neighbour
-location, etc.
-</inExtenso>
-</AGscenario>
-
-<!--
-<AGscenario name="Source Extraction">
-<link><xsp:expr>urlSex</xsp:expr><xsp:expr>user</xsp:expr></link>
-<inBrief>
-Extract source information from one or more images
-</inBrief>
-<inExtenso>
-Perform a Source extraction (using some of the algorithms available as
-tools to AstroGrid) in a number of images. If the images are in your
-computer, fine, otherwise you will be given the chance to select images
-from some of the archive sites.
-</inExtenso>
-</AGscenario>
--->
-
 </AGScenarios>
 </ProducePage>
 

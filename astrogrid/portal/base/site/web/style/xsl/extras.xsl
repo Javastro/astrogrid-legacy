@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<!-- CVS $Id: extras.xsl,v 1.8 2004/12/10 09:50:49 jdt Exp $ -->
+<!-- CVS $Id: extras.xsl,v 1.9 2004/12/10 20:17:58 clq2 Exp $ -->
 
 <xsl:stylesheet version="1.0"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -41,26 +41,34 @@ onClick="popupBrowser('{$bugURL}',400,700)"/>
 name="bugURL">/astrogrid-portal/bare/mount/help/bugsy.bug?item=<xsl:value-of
 select="."/></xsl:variable>
 
-<!--
 <table width="100%" cellpadding="0" cellspacing="0" bgcolor="#eeffff">
 <tr><td align="left" height="20px">
--->
-<div class="coolishTitleBar">
 <span class="agCoolishTitle"><xsl:value-of select="."/></span>
-</div>
-
-<!--
   </td>
--->
   <!--
   <td width="100" align="right">
   <a style="colour: #000000; padding-right: 20px; font-size: 12pt;" href="/astrogrid-portal/main/mount/login/logout">Log out</a>
   </td>
   -->
-<!--
   </tr></table>
--->
+<script language="javascript">
+document.title = '<xsl:value-of select="."/>';
+</script>
+  </xsl:template>
 
+  <xsl:template match="agPageUnderConstruction">
+<xsl:variable
+name="bugURL">/astrogrid-portal/bare/mount/help/bugsy.bug?item=<xsl:value-of
+select="."/></xsl:variable>
+
+<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#eeffff">
+<tr><td align="left" height="20px">
+<span class="agCoolishTitle"><xsl:value-of select="."/></span>
+  </td>
+  <td align="right">
+<span class="underConstruction">Page Under Construction</span>
+  </td>
+  </tr></table>
 <script language="javascript">
 document.title = '<xsl:value-of select="."/>';
 </script>
@@ -160,6 +168,21 @@ onClick="hinter(this)" width="{$iconWidth}" title="Click to open or close a Hint
 <span style="background-color: #ffc">Hint:</span><br />
           <xsl:apply-templates/>
 	  </div>
+  </xsl:template>
+
+  <xsl:template match="agTip">
+<xsl:if test="//*/profile/hintsOn = 'true'">
+<div id="{@name}tip" style="border: solid 2px orange; background-color: white; display:show; width: {@width}px; height:{@height}px; position:absolute; left: {@xposi}px; top:{@yposi}px">
+<table class="compact14" border="0" width="100%">
+<tr><td align="left">
+<xsl:value-of select="@rhead"/>
+</td><td align="right">
+<span class="agActionButton" title="Close this box"
+onclick="closeDynamic('{@name}tip')">X</span>
+</td></tr><tr>
+<td colspan="2"><xsl:apply-templates/></td></tr></table>
+	  </div>
+</xsl:if>
   </xsl:template>
 
   <xsl:template match="@*|node()" priority="-2"><xsl:copy><xsl:apply-templates select="@*|node()"/></xsl:copy></xsl:template>

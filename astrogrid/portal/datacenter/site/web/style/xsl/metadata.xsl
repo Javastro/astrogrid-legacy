@@ -20,138 +20,9 @@
 
   <xsl:template match="agVaribleDisplayFrame">
 
-<!--
-<script type="text/javascript">
-SET_DHTML(CURSOR_MOVE, RESIZABLE, NO_ALT, SCROLL, "scratchArea2", "itchy4", "esemplar", "esemplar2");
-</script>
-<xsl:element name="script">
-<xsl:attribute name="src">/astrogrid-portal/extras.js</xsl:attribute>
-<xsl:attribute name="type">text/javascript</xsl:attribute>
-<xsl:attribute name="language">javascript</xsl:attribute>
-</xsl:element>
-<script src="/astrogrid-portal/extras.js" langage="javascript">
-var i=0;
--->
 <script src="/astrogrid-portal/extras.js" langage="javascript">
 null;
 </script>
-
-<script langage="javascript">
-var afgColour = "#000066";
-var vfgColour = "#000000";
-var abgColour = "#ddddff";
-var vbgColour = "#ffffff";
-var target = null;
-var upperPart = null;
-var newtext, ogreen, cgreen, breik;
-
-function locateTarget(helpy){
-	var turgid = parent.document.getElementById(helpy);
-/*	var upper = parent.varsAid.document.getElementById("tablePicker");*/
-	var refImg = parent.document.getElementById("underSelect");
-	var hand = parent.document.getElementById("hand").innerHTML;
-	var w;
-/*	getOzSize();*/
-	getParentSize();
-	if(hand == "right"){
-		riY = 0;
-		w = winW - 250;
-	} else {
-		riY = 0;
-		w = 5;
-	}
-	var h = riY;
-/*	if(upper != null){ upperPart = upper; }*/
-	if(turgid != null){
-		target = turgid;
-		target.style.position="absolute";
-/*		target.style.left= riX + "px";*/
-		target.style.left= w + "px";
-		target.style.top= "0px";
-		target.style.textAlign="left";
-/*		target.style.height = h + "px";*/
-		target.style.height = "100px";
-		target.style.width= "240px";
-		target.style.backgroundColor= "#ffffcc";
-/*		alert("target color: " + target.style.backgroundColor);*/
-	}
-	ogreen = '<b><font color="blue">';
-	cgreen = "</font></b>";
-	breik = "<br />";
-}
-
-function xTEK(i){
-var update, old, ass;
-old = parent.document.qb_form.adqlQuery.value;
-ass = document.getElementById("derriere");
-var	aus = ass.value;
-if(aus == ""){
-	alert("Please give an ALIAS (AS) to the table. eg, T1");
-} else {
-update = old + ass.value + "." + i ;
-parent.document.qb_form.adqlQuery.value = update;
-parent.document.qb_form.adqlQuery.focus();
-}
-}
-
-function xTEK2(i){
-var update, old, ass;
-old = parent.document.qb_form.adqlQuery.value;
-ass = document.getElementById("derriere");
-var	aus = ass.value;
-if(aus == ""){
-	alert("Please give an ALIAS (AS) to the table. eg, T1");
-} else {
-/*update = old + "FROM " + i + " AS " + ass.value;*/
-update = old + i + " AS " + ass.value + " ";
-parent.document.qb_form.adqlQuery.value = update;
-parent.document.qb_form.adqlQuery.focus();
-}
-}
-
-function cabc(linkObj, name, ucd, units, explanation){
-/*	var afgColour = "#000066";*/
-/*	var vfgColour = "#000000";*/
-/*	var abgColour = "#ddddff";*/
-/*	var vbgColour = "#ffffff";*/
-	linkObj.style.backgroundColor = abgColour;
-	linkObj.style.color = afgColour;
-	newtext = name + " | " + ogreen + units + cgreen + " | " + breik;
-/*	newtext = name + " | " + units + " |\n";*/
-	newtext += ucd + breik + explanation;
-	if(target != null){
-/*		target.firstChild.nodeValue = newtext;*/
-/*		target.style.backgroundColor= "#ffffcc";*/
-/*		target.backgroundColor= "#ffffcc";*/
-		target.innerHTML = newtext;
-		target.style.display = "";
-/*		alert("target color: " + target.style.backgroundColor);*/
-/*		upperPart.style.display = "none";*/
-	}
-}
-
-function cvbc(linkObj){
-	linkObj.style.backgroundColor = vbgColour;
-	linkObj.style.color = vfgColour;
-	if(target != null){
-		target.style.display = "none";
-/*		upperPart.style.display = "";*/
-	}
-}	
-
-function focusit(a){
-	a.style.background = "#ffff00";
-}
-
-function defocusit(a){
-	a.style.background = "#ffffff";
-}
-</script>
-
-
-<!--
-<body style="font-size: 90%" onLoad="locateTarget('MDsummary')" >
--->
 
 
 <xsl:choose>
@@ -159,57 +30,41 @@ function defocusit(a){
 <xsl:variable name="requestedTable"><xsl:value-of select="DQtableID"/></xsl:variable>
 
 <body style="font-size: 90%" >
-<script language="javascript">
-locateTarget("MDsummary");
-</script>
-<agComponentMessage>Table: <xsl:value-of select="DQtableID"/></agComponentMessage>
+<agOtherWindowTitle>Table: <xsl:value-of select="DQtableID"/></agOtherWindowTitle>
 
-       <center>
-       <form name="fake">
-<table border="2" bgcolor="#FFFFcc">
-<tr><td>
-<table class="compact">
-<tr>
-<td align="left">FROM:</td>
-<td align="left" colspan="2">
-<xsl:value-of select="DQtableID"/>
-<xsl:value-of select="DQtableID2"/>
-<!--
-<input name="none" size="20">
-<xsl:attribute name="value">
-</xsl:attribute>
-</input>
--->
-</td>
-</tr>
-<tr>
-<td align="right">AS:</td>
-<td align="left"><input onFocus="focusit(this)" onBlur="defocusit(this)"  id="derriere" name="derriere" size="5" value="T1"/></td>
-<td align="right">
-<span class="agActionButton">
-<xsl:attribute name="title">Click here to paste <xsl:value-of select="DQtableID"/> As .. to the main box</xsl:attribute>
-<xsl:attribute name="onClick">xTEK2('<xsl:value-of select="DQtableID"/>');</xsl:attribute>
-C&amp;P
-</span></td></tr>
-</table>
-</td></tr></table>
+<center>
 
-<img width="150px" src="/astrogrid-portal/ClickUndPaste.jpg" border="2" />
-
-
+<table width="90%" cellpadding="0" cellspacing="3">
 <xsl:for-each select="//*/agResource">
   <xsl:for-each select="agTable">
      <xsl:if test="agName = $requestedTable">
         <xsl:for-each select="agColumn">
-	<xsl:variable name="desi"><xsl:value-of select='translate(agDescription, "&#39;", "^")' /></xsl:variable>
-<input class="AGwideButton" type="button" onClick="xTEK('{agName}\040')" value=" {agName} " onMouseOver="cabc(this, '{agName}', '{agUCD}', '{agUnit}', '{$desi}')" onMouseOut="cvbc(this)"/>
+<tr >
+<td align="left">
+<span class="agCoolTitle"><xsl:value-of select="agName"/></span>
+</td>
+<td bgcolor="#ffffcc" align="left">
+<xsl:value-of select="agUnit"/>
+</td>
+<td bgcolor="#ccffcc" align="left">
+<xsl:value-of select="agUCD"/>
+</td>
+</tr>
+<tr>
+<td bgcolor="#ccffff" align="left" colspan="3">
+<xsl:value-of select="agDescription"/>
+</td>
+<!--
+<input class="AGwideButton" type="button" onClick="xTEK('{agName}\040')" value=" {agName} " onMouseOver="cabc(this, '{agName}', '{agUCD}', '{agUnit}', '{agDescription}')" onMouseOut="cvbc(this)"/>
+-->
+</tr>
         </xsl:for-each>
      </xsl:if>
   </xsl:for-each>
 </xsl:for-each>
+</table>
 
 <!--
-<input class="AGwideButton" type="button" onClick="xTEK('{agName}\040')" value=" {agName} " onMouseOver="cabc(this, '{agName}', '{agUCD}', '{agUnit}', '{agDescription}')" onMouseOut="cvbc(this)"/>
 <xsl:for-each select="//*/vr:Resource">
   <xsl:for-each select="vs:Table">
      <xsl:if test="vr:Name = $requestedTable or Name = $requestedTable">
@@ -237,15 +92,16 @@ C&amp;P
      </xsl:if>
   </xsl:for-each>
 </xsl:for-each>
--->
 
 
 </form>
+-->
 </center>
 
        <xsl:apply-templates/>
 </body>
 </xsl:when>
+
 <xsl:otherwise>
 <body style="font-size: 90%; background: #ffffcc;" onLoad="locateTarget('MDsummary')">
 <agComponentMessage>I n s t r u c t i o n s:</agComponentMessage>
@@ -267,14 +123,6 @@ This is an empty query page. You can: <p />
 metadata to create Click and paste buttons. <p />
 Use the "Select a Table" button.<p /></li>
 <li> "ADQL helpers" let you click and paste ADQL keywords to the entry area.</li>
-<!--
-<li> Load existing queries : you can cut and paste them or <b>load</b> them from
-MySpace.<p /></li>
-<li> You may add table metadata, to click and paste column names
-into the query area.<p /></li>
-<li> Add table metadata by either entering a full table identifier above or by
-selecting a table interactively.</li>
--->
 </ul>
 </div>
        <xsl:apply-templates/>

@@ -41,56 +41,15 @@
 	nada = new String("null");
 
         user = (String) <xsp-session:get-attribute default="pfo" name="user"/>;
-	url = new
-	String("http://barbara.star.le.ac.uk/datoz-bin/coneSearchStep1?z=");
-	urlCL = new
-	String("http://barbara.star.le.ac.uk/datoz-bin/catalogueLocator1?z=");
-	urlSex = new
-	String("http://barbara.star.le.ac.uk/datoz-bin/gs?what=sourceExtraction1&amp;z=");
 
-	<!--
-	if(user.equals(nada)){
-		theStep = 1;
-	} else {
-		theStep = Integer.parseInt(step);
-		theStep++;
-	}
-	tomcat = java.lang.System.getProperty("catalina.home");
-	tomcat += "/webapps/astrogrid-portal/mount/help/web/static/FAQ.xml";
-	<util:include-file>
-	<util:name><xsp:expr>tomcat</xsp:expr></util:name>
-	</util:include-file>
-	-->
-<!--
-  <step><xsp:expr>theStep</xsp:expr></step>
-	Before ending the logical part, we use java to produce some code or
-	to communicate with another component before passing the control
-	back to the XSL stylesheet which should produce the GUI.
-	Notice that it might be necessary to extract some of the input
-	paramenters here to be passed onto new forms.
-<agComponentTitle>Scenarios or Encapsulated Tasks</agComponentTitle>
--->
 
 <ProducePage>
 <userID><xsp:expr>user</xsp:expr></userID>
 
-<!--
-<p>
-We propose you a number of encapsulated tasks which will take you step
-by step to obtain the results you want.</p>
-
-<p>
-Under no circumstance these Scenarios prevents you from using the full
-flexibility offered by AstroGrid. Using them should only help you to
-climb the learning curve faster.
-</p>
-
--->
-
 <AGScenarios>
 
 <AGscenario name="Your Profile">
-<link>/astrogrid-portal/main/mount/login/userData.i07</link>
+<link>/astrogrid-portal/main/mount/scenarios/userData.scn</link>
 <inBrief>
 Change your password, e-mail or other personal data
 </inBrief>
@@ -114,20 +73,6 @@ location, etc.
 </inExtenso>
 </AGscenario>
 
-<!--
-<AGscenario name="Source Extraction">
-<link><xsp:expr>urlSex</xsp:expr><xsp:expr>user</xsp:expr></link>
-<inBrief>
-Extract source information from one or more images
-</inBrief>
-<inExtenso>
-Perform a Source extraction (using some of the algorithms available as
-tools to AstroGrid) in a number of images. If the images are in your
-computer, fine, otherwise you will be given the chance to select images
-from some of the archive sites.
-</inExtenso>
-</AGscenario>
--->
 
 </AGScenarios>
 </ProducePage>

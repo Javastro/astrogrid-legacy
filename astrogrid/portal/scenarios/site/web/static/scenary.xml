@@ -16,29 +16,6 @@ climb the learning curve faster.
 
 <AGScenarios>
 
-<AGscenario name="Cone Search" link="http://barbara.star.le.ac.uk/datoz-bin/coneSearchStep1">
-<inBrief>
-Look for objects located near a location or list of locations
-</inBrief>
-<inExtenso>
-Perform a search based purely on position around a list of locations using
-a number of resources. If you don't know what resource to use you'll be
-offered the chance to select them.
-</inExtenso>
-</AGscenario>
-
-<AGscenario name="Source Extraction" link="sextract/step1.scn">
-<inBrief>
-Extract source information from a series of images
-</inBrief>
-<inExtenso>
-Perform a Source extraction (using some of the algorithms available as
-tools to AstroGrid) in a number of images. If the images are in your
-computer, fine, otherwise you will be given the chance to select images
-from some of the archive sites.
-</inExtenso>
-</AGscenario>
-
 </AGScenarios>
 
 

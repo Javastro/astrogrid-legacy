@@ -17,6 +17,7 @@
   
 <AstroGrid>
 <xsp:logic>
+<!--
 	String user, uzy, profile;
 	int	lastSlash, length;
         user=(String) <xsp-session:get-attribute default="nadie" name="user"/>;
@@ -28,23 +29,22 @@
 		lastSlash++;
 	}
 	uzy = (String) user.substring(lastSlash, length);
-/*	profile = "http://barbara.star.le.ac.uk/datoz-bin/profiler?act=whole&amp;z=" + uzy;*/
-	profile = "http://localhost/cgi-bin/profiler?act=whole&amp;z=" + uzy;
-<xsp-session:set-attribute name="dynamic-profiles">yes</xsp-session:set-attribute>
-<xsp-session:set-attribute name="profiler">http://localhost/cgi-bin/profiler</xsp-session:set-attribute>
-<xsp-session:set-attribute name="blankPage">http://localhost/cgi-bin/blankPage</xsp-session:set-attribute>
-
+	profile = "http://barbara.star.le.ac.uk/datoz-bin/profiler?act=whole&amp;z=" + uzy;
 <userID><xsp:expr>uzy</xsp:expr></userID>
 <util:include-uri>
      <util:href><xsp:expr>profile</xsp:expr></util:href>
 </util:include-uri>
-
-<!--
-<xsp-session:set-attribute name="profiler">http://barbara.star.le.ac.uk/datoz-bin/profiler</xsp-session:set-attribute>
-<util:include-file>
-        <util:name>/data/datoz2k/scratch/profileX.xml</util:name>
-</util:include-file>
 -->
+	String tomcat;
+	tomcat = java.lang.System.getProperty("catalina.home");
+	tomcat += "/webapps/astrogrid-portal/mount/scenarios/web/static/profileX.xml";
+
+<xsp-session:set-attribute name="dynamic-profiles">no</xsp-session:set-attribute>
+<xsp-session:set-attribute name="profiFile"><xsp:expr>tomcat</xsp:expr></xsp-session:set-attribute>
+
+<util:include-file>
+        <util:name><xsp:expr>tomcat</xsp:expr></util:name>
+</util:include-file>
 
 </xsp:logic>
 

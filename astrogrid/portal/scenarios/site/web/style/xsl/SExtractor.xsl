@@ -12,8 +12,6 @@
 
   <xsl:template match="AGScenarios">
 <center>
-This page is under construction
-<p />
 <table width="70%">
 <tr><td align="left">Roadmap</td></tr>
 <!--

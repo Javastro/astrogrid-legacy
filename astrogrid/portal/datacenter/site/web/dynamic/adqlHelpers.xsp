@@ -49,13 +49,23 @@ variable, which could be used by invoking some xpath way
 </mainarea>
   
 <xsp:logic>
-	String profile, user;
-	user=(String) <xsp-session:get-attribute default="nadie" name="user"/>;
+	String profile, Profiler, user, dynamic, profiFile;
+	dynamic=(String) <xsp-session:get-attribute name="dynamic-profiles"/>;
+	user=(String) <xsp-session:get-attribute default="nadie" name="uzer"/>;
 
-	profile = "http://barbara.star.le.ac.uk/datoz-bin/profiler?act=whole&amp;z=" + user;
-	<util:include-uri>
-		<util:href><xsp:expr>profile</xsp:expr></util:href>
-	</util:include-uri>
+	if(dynamic.equals("no")){
+	   profiFile=(String) <xsp-session:get-attribute name="profiFile"/>;
+<util:include-file>
+        <util:name><xsp:expr>profiFile</xsp:expr></util:name>
+</util:include-file>
+
+	} else {
+	   Profiler=(String) <xsp-session:get-attribute name="profiler"/>;
+	   Profiler += "?act=whole&amp;z=" + user;
+<util:include-uri>
+	<util:href><xsp:expr>Profiler</xsp:expr></util:href>
+</util:include-uri>
+	}
 </xsp:logic>
 
 

@@ -3,9 +3,6 @@
 <AGScenarios>
 
 <AGscenario name="Cone Search">
-<!--
-<link>http://barbara.star.le.ac.uk/datoz-bin/coneSearchStep1</link>
--->
 <link>/astrogrid-portal/main/mount/scenarios/ConeSearch.scn</link>
 <inBrief>
 Look for objects located near one or more celestial locations
@@ -18,10 +15,7 @@ offered the chance to select them.
 </AGscenario>
 
 <AGscenario name="Locate catalogues">
-<link>http://barbara.star.le.ac.uk/datoz-bin/catalogueLocator1</link>
-<!--
-<link>/astrogrid-portal/main/mount/resources/resources.scn</link>
--->
+<link>/astrogrid-portal/main/mount/scenarios/catalogLocator.scn</link>
 <inBrief>
 Locate catalogues suitable for your research and save them to mySpace
 </inBrief>

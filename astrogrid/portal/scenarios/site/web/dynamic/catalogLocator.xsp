@@ -2,7 +2,7 @@
 
 <!--+
     | Author: Patricio F. Ortiz "pfo@star.le.ac.uk"
-    | Date: Fri Sep  3 17:40:33 2004
+    | Date: Fri Mar  5 17:40:33 2004
     +-->
 
 <xsp:page language="java"
@@ -16,7 +16,7 @@
   <!--
   -->
   <AstroGrid>
-  <AGScenario>Cone Search</AGScenario>
+  <AGScenario>Catalog Locator</AGScenario>
     <!--
   <title>AstroGrid's <xsp-request:get-parameter name="item"/> FAQ</title>
     <jpath:param name="topico" select="topico"/>
@@ -40,20 +40,17 @@
 	int	theStep = 0;
 	nada = new String("null");
 
-        user = (String) <xsp-session:get-attribute default="pfo" name="uzer"/>;
-	tomcat = java.lang.System.getProperty("catalina.home");
-	tomcat += "/webapps/astrogrid-portal/mount/scenarios/web/static/scenarios.xml";
-
+        user = (String) <xsp-session:get-attribute default="pfo" name="user"/>;
 
 <ProducePage>
 <userID><xsp:expr>user</xsp:expr></userID>
 
-
-<util:include-file>
-	<util:name><xsp:expr>tomcat</xsp:expr></util:name>
-</util:include-file>
 <!--
+<agComponentTitle>Catalogue locator</agComponentTitle>
 -->
+<agPageUnderConstruction>Catalogue Locator</agPageUnderConstruction>
+
+<AGScenarios></AGScenarios>
 
 </ProducePage>
 

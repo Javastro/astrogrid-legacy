@@ -234,29 +234,19 @@ onClick="popupBrowser('/astrogrid-portal/lean/mount/registry/registrybrowser.htm
 
 <xsl:variable name="leftClass">
   <xsl:choose>
-  <xsl:when test="//*/OneTableID != 'NoSource' and //*/profile/queryStyle = 'ADQL'">
-activeTab
-  </xsl:when>
-  <xsl:when test="//*/OneTableID != 'NoSource' and //*/profile/queryStyle != 'ADQL'">
-inactiveTab
-  </xsl:when>
-  <xsl:otherwise>
-activeTab
-  </xsl:otherwise>
+  <xsl:when test="//*/friendly = 'no'">activeTab</xsl:when>
+  <xsl:when test="//*/OneTableID != 'NoSource' and //*/profile/queryStyle = 'ADQL'">activeTab</xsl:when>
+  <xsl:when test="//*/OneTableID != 'NoSource' and //*/profile/queryStyle != 'ADQL'">inactiveTab</xsl:when>
+  <xsl:otherwise>activeTab</xsl:otherwise>
   </xsl:choose>
 </xsl:variable>
 
 <xsl:variable name="rightClass">
   <xsl:choose>
-  <xsl:when test="//*/OneTableID != 'NoSource' and //*/profile/queryStyle = 'ADQL'">
-inactiveTab
-  </xsl:when>
-  <xsl:when test="//*/OneTableID != 'NoSource' and //*/profile/queryStyle != 'ADQL'">
-activeTab
-  </xsl:when>
-  <xsl:otherwise>
-inactiveTab
-  </xsl:otherwise>
+  <xsl:when test="//*/friendly = 'no'">inactiveTab</xsl:when>
+  <xsl:when test="//*/OneTableID != 'NoSource' and //*/profile/queryStyle = 'ADQL'">inactiveTab</xsl:when>
+  <xsl:when test="//*/OneTableID != 'NoSource' and //*/profile/queryStyle != 'ADQL'">activeTab</xsl:when>
+  <xsl:otherwise>inactiveTab</xsl:otherwise>
   </xsl:choose>
 </xsl:variable>
 
@@ -268,6 +258,13 @@ href="http://www.ivoa.net/twiki/bin/view/IVOA/IvoaVOQL">(s)ADQL</a>)</span><br/>
 <xsl:if test="/AstroGrid/DQtableID != 'null'">
 -->
 <xsl:if test="//*/OneTableID != 'NoSource' and //*/friendly != 'no'">
+
+<xsl:if test="//*/profile/mdWindow = 'view' and $tableID != 'AGblank'">
+<script language="javascript">
+newWindow('/astrogrid-portal/bare//mount/datacenter/metadata.i07?tableID=<xsl:value-of select="$tableID"/>', "metadata", 600, 700, 100, 0);
+</script>
+</xsl:if>
+
 <td id="vizyTD" class="{$rightClass}">
 <span onClick="openMidTab()" class="AGtITLEcLASS" id="vizyTab">
 User friendly Table-Query Form
@@ -300,18 +297,12 @@ onClick="popupBrowser('/astrogrid-portal/lean/mount/datacenter/catalogueBrowser.
 <!-- so far so good, this element is detached from others -->
 <xsl:variable name="displayADQL">
   <xsl:choose>
-  <xsl:when test="//*/OneTableID != 'NoSource' and //*/profile/queryStyle = 'ADQL'">
-show
-  </xsl:when>
-  <xsl:when test="//*/OneTableID != 'NoSource' and //*/profile/queryStyle != 'ADQL'">
-none
-  </xsl:when>
-  <xsl:otherwise>
-show
-  </xsl:otherwise>
+  <xsl:when test="//*/friendly = 'no'">show</xsl:when>
+  <xsl:when test="//*/OneTableID != 'NoSource' and //*/profile/queryStyle = 'ADQL'">show</xsl:when>
+  <xsl:when test="//*/OneTableID != 'NoSource' and //*/profile/queryStyle != 'ADQL'">none</xsl:when>
+  <xsl:otherwise>show</xsl:otherwise>
   </xsl:choose>
 </xsl:variable>
-
 
 
 <div width="100%" id="adqlSection" style="display: {$displayADQL}">
@@ -481,11 +472,11 @@ width="100%">
 </td>
 <td class="agInActiveSpan2" align="center" id="exampleExplanationTab1">
 <span onclick="openUp('exampleExplanation', 1, 6, 'paddington');"
->Cone Search</span>
+>Cone Search (ivoa)</span>
 </td>
 <td class="agInActiveSpan2" align="center" id="exampleExplanationTab2">
 <span onclick="openUp('exampleExplanation', 2, 6, 'paddington');"
->Example 2</span>
+>Cone Search (roe)</span>
 </td>
 <td class="agInActiveSpan2" align="center" id="exampleExplanationTab3">
 <span onclick="openUp('exampleExplanation', 3, 6, 'paddington');"
@@ -495,10 +486,12 @@ width="100%">
 <span onclick="openUp('exampleExplanation', 4, 6, 'paddington');"
 >Example 4</span>
 </td>
+<!--
 <td class="agInActiveSpan2" align="center" id="exampleExplanationTab5">
 <span onclick="openUp('exampleExplanation', 5, 6, 'paddington');"
 >Example 5</span>
 </td>
+-->
 <!--
 <td class="agInActiveSpan2" align="center" id="exampleExplanationTab6">
 <span onclick="closeAllTabs('exampleExplanation', 6);"
@@ -515,24 +508,27 @@ Just click on the corresponding tab to see the example.<p />
 </div>
 <div style="display: none" class="courier" id="exampleExplanationBox1">
 <pre>
-SELECT * FROM USNO AS u WHERE REGION('CIRCLE J2000 12.34 -1.23 0.01')
+SELECT * FROM USNO AS u
+	WHERE REGION('CIRCLE J2000 12.34 -1.23 0.01')
 which retrieves all the data in that region, or 
 
-SELECT COUNT(*) FROM USNO AS u WHERE REGION('CIRCLE J2000 12.34 -1.23 0.01')
+SELECT COUNT(*) FROM USNO AS u
+	WHERE REGION('CIRCLE J2000 12.34 -1.23 0.01')
 which retrieves a count of the number of sources located in the region
 </pre>
 </div>
 <div style="display: none" class="courier" id="exampleExplanationBox2">
-FROM USNO as u SELECT * where u.bmag1 &lt; 12
+SELECT * FROM USNO AS u WHERE CIRCLE('J2000', 12.34, -1.23, 0.01)
 </div>
 <div style="display: none" class="courier" id="exampleExplanationBox3">
-FROM USNO as u SELECT * where u.bmag2 &lt; 13
+SELECT * FROM USNO as u where u.bmag2 &lt; 13
 </div>
 <div style="display: none" class="courier" id="exampleExplanationBox4">
-FROM USNO as u SELECT * where u.bmag2 &lt; 14
+SELECT u.src, u.RA, u.Dec, u.bmag2 FROM USNO as u
+	where u.bmag2 &lt; 14
 </div>
 <div style="display: none" class="courier" id="exampleExplanationBox5">
-FROM USNO as u SELECT * where u.bmag2 &lt; 15
+SELECT * FROM USNO as u where u.bmag2 &lt; 15
 </div>
 </td>
 </tr>
@@ -552,6 +548,7 @@ FROM USNO as u SELECT * where u.bmag2 &lt; 15
 </center>
 </form>
 
+<!--
 <xsl:if test="//*/profile/hintsOn = 'true' and $DQtableID = 'AGblank'">
 <div id="tipsi" height="100" width="300" style="border: solid 1px orange; display: none">
 <table class="compact14" border="0" width="100%">
@@ -569,6 +566,17 @@ Please read the instructions shown to the <xsl:value-of select="$RL"/>.
 </tr>
 </table>
 </div>
+</xsl:if>
+-->
+
+<!--
+<xsl:if test="//*/profile/hintsOn = 'true' and $DQtableID = 'AGblank'">
+-->
+<xsl:if test="$DQtableID = 'AGblank'">
+<agTip name="tip1" width="400" height="200" xposi="200" yposi="90"
+rhead="Basic Tips">
+Please read the instructions shown to the <xsl:value-of select="$RL"/>. 
+</agTip>
 </xsl:if>
 
 <center>

@@ -36,7 +36,7 @@
 	-->
 <ProducePage>
 <xsp:logic>
-	String profile, uzi, user;
+	String profile, Profiler, uzi, user, dynamic, profiFile, blank;
 	int     lastSlash, length;
 
 	user =(String)<xsp-session:get-attribute default="nadie" name="user"/>;
@@ -50,10 +50,26 @@
 	}
 	uzi = (String) user.substring(lastSlash, length);
 
-	profile = "http://barbara.star.le.ac.uk/datoz-bin/profiler?act=whole&amp;z=" + uzi;
-	<util:include-uri>
-		<util:href><xsp:expr>profile</xsp:expr></util:href>
-	</util:include-uri>
+	dynamic=(String) <xsp-session:get-attribute name="dynamic-profiles"/>;
+	user=(String) <xsp-session:get-attribute default="nadie" name="uzer"/>;
+
+	if(dynamic.equals("no")){
+	   profiFile=(String) <xsp-session:get-attribute name="profiFile"/>;
+<PROFILER>NONDYNAMIC</PROFILER>
+<util:include-file>
+        <util:name><xsp:expr>profiFile</xsp:expr></util:name>
+</util:include-file>
+
+	} else {
+	   Profiler=(String) <xsp-session:get-attribute name="profiler"/>;
+	   blank=(String) <xsp-session:get-attribute name="blankPage"/>;
+<PROFILER><xsp:expr>Profiler</xsp:expr></PROFILER>
+<blankPage><xsp:expr>blank</xsp:expr></blankPage>
+	   Profiler += "?act=whole&amp;z=" + user;
+<util:include-uri>
+	<util:href><xsp:expr>Profiler</xsp:expr></util:href>
+</util:include-uri>
+	}
 
 	<!--
 	if(user.equals(nada)){

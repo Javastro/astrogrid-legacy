@@ -24,15 +24,24 @@
 
   <AstroGrid>
 <xsp:logic>
-	String profile, user;
-	user=(String) <xsp-session:get-attribute default="nadie" name="user"/>;
+	String profile, Profiler, user, dynamic, profiFile;
+	dynamic=(String) <xsp-session:get-attribute name="dynamic-profiles"/>;
+	user=(String) <xsp-session:get-attribute default="nadie" name="uzer"/>;
 
-	profile = "http://barbara.star.le.ac.uk/datoz-bin/profiler?act=whole&amp;z=" + user;
-	<util:include-uri>
-	   <util:href><xsp:expr>profile</xsp:expr></util:href>
-	</util:include-uri>
+	if(dynamic.equals("no")){
+	   profiFile=(String) <xsp-session:get-attribute name="profiFile"/>;
+<util:include-file>
+        <util:name><xsp:expr>profiFile</xsp:expr></util:name>
+</util:include-file>
+
+	} else {
+	   Profiler=(String) <xsp-session:get-attribute name="profiler"/>;
+	   Profiler += "?act=whole&amp;z=" + user;
+<util:include-uri>
+	<util:href><xsp:expr>Profiler</xsp:expr></util:href>
+</util:include-uri>
+	}
 </xsp:logic>
-
 <!--
 <DQtableID><xsp-request:get-parameter default="null" name="tableID"/></DQtableID>
 -->
@@ -40,36 +49,40 @@
 <mainarea>
   <xsp:logic>
 	String quString = "null";
-	String uniqueID = "null";
+	String uniqueID = "NoSource";
 	String sessionTable = "null";
 	String errorMessage = "noError";
     	errorMessage=(String) <xsp-session:get-attribute default="noError" name="query-builder-adql-error"/>;
     	quString=(String) <xsp-session:get-attribute name="adqlQuery"/>;
     	uniqueID=(String) <xsp-session:get-attribute default="NoSource" name="uniqueID"/>;
 
-		Object ob = null;
+	Object ob = null;
 
-/*		ob = session.getAttribute("uniqueID");*/
-		ob = session.getAttribute("tableID");
-		if (ob != null )
-		{
-			sessionTable = ob.toString();
-		}
+/*	ob = session.getAttribute("uniqueID");*/
+	ob = session.getAttribute("tableID");
+	if (ob != null )
+	{
+		sessionTable = ob.toString();
+	}
 <DQtableID><xsp:expr>sessionTable</xsp:expr></DQtableID>
 <OneTableID><xsp:expr>sessionTable</xsp:expr></OneTableID>
 
-		ob = session.getAttribute("resultSingleCatalog");
-		if ((ob != null) &amp;&amp; (ob instanceof Document))
-		{
+	ob = session.getAttribute("resultSingleCatalog");
+	if ((ob != null) &amp;&amp; (ob instanceof Document))
+	{
 		<util:include-expr>
 		  <util:expr>
 		    DomHelper.DocumentToString((Document)ob)
 		  </util:expr>
 		</util:include-expr>
-		}
+	}
 
-
+	if(uniqueID.equals("NoSource")){
+<friendly>no</friendly>
+	} else {
 <friendly>yes</friendly>
+	}
+
 <ErrorMsg><xsp:expr>errorMessage</xsp:expr></ErrorMsg>
 <OneTableID><xsp:expr>uniqueID</xsp:expr></OneTableID>
 <QUERYAREA>

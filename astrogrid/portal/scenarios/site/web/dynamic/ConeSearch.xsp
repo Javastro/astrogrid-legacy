@@ -16,29 +16,23 @@
   <!--
   -->
   <AstroGrid>
-<ProducePage>
+  <AGScenario>Cone Search</AGScenario>
 <xsp:logic>
-	String profile, uzi, user;
-	int     lastSlash, length;
+	String user;
+        user = (String) <xsp-session:get-attribute default="pfo" name="uzer"/>;
 
-	user =(String)<xsp-session:get-attribute default="nadie" name="user"/>;
+<ProducePage>
 
-	lastSlash = user.lastIndexOf('/');
-	length = user.length();
-		if(length &lt; 0) {
-		lastSlash = 0;
-	} else {
-		lastSlash++;
-	}
-	uzi = (String) user.substring(lastSlash, length);
+<!--
+<agComponentTitle>Cone Search Scenario</agComponentTitle>
+  -->
+<agPageUnderConstruction>Cone Search Scenario</agPageUnderConstruction>
+<AGScenarios>
+<userID><xsp:expr>user</xsp:expr></userID>
+</AGScenarios>
 
-	profile = "http://barbara.star.le.ac.uk/datoz-bin/profiler?act=whole&amp;z=" + uzi;
-	<util:include-uri>
-		<util:href><xsp:expr>profile</xsp:expr></util:href>
-	</util:include-uri>
-<userID><xsp:expr>uzi</xsp:expr></userID>
+</ProducePage>
 
 </xsp:logic>
-</ProducePage>
   </AstroGrid>
 </xsp:page>

@@ -14,40 +14,31 @@
 <center>
 <table width="70%">
 <tr><td align="left">Roadmap</td></tr>
-<!--
-Scenario
-</td><td align="center" colspan="2">
-Explanation
-</td></tr>
-<td><a href="{@link}/step1.scn"><div class="agActionButton" ><xsl:value-of select="@name"/></div></a></td>
-       <xsl:apply-templates/>
--->
 <tr><td>
 <pre>
-  Ingredients:<ul>
-  <li> List of targets (in valid celestial coordinates)
-         origin:	user list | local file | mySpace File</li>
-  <li> List of resources
-         origin: 	* already known (typed | from a list in mySpace file)
-	 		* discovered and selected from the registry</li>
-  <li> Search Radius (one for all targets | one for each target)</li>
-  </ul>
-  Procedure:
-  - for each target listed:
-      - query the specified resources in ConeSearch mode
-        results come back as VOTables
+  GOAL: 
+	- to locate electronic version of catalogues available to AstroGrid or IVO
 
-     OR
-  - for each specified resource
-      - request a list of matches for the list of targets
-        collect results as VOTables
+  FEATURES:
+	- you set your own search criteria
+	- flexible logics let you combine criteria
+	- lists of catalogues can be stored in mySpace for future use.
 
-  -merge the resulting VOTables on a target by target basis
+  SEARCH CRITERIA
+  	- table (resource) name
+	- astronomical keywords
+	- mission (especially space-born)
+	- resource author
+	- resource title
+	- resource description
+	- wavelength coverage
+	- column content (name and/or UCDs)
 </pre>
 </td></tr>
 <tr><td align="right">
-<a class="compact"
-href="http://barbara.star.le.ac.uk/datoz-bin/coneSearchStep1?z=pfo">Mockup</a>
+<a class="compact" href="http://barbara.star.le.ac.uk/datoz-bin/catalogueLocator1">Do not
+click here</a>
+
 </td></tr>
 </table>
 </center>

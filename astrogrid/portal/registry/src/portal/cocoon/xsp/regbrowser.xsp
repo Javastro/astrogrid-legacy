@@ -116,7 +116,12 @@
           ]]>
                      Node tab = (Node) tablesVS.item(j);
                      tablenameVS = DomHelper.getNodeTextValue(tab,"Name","vs");
+		     if(tablenameVS != null){
 <xsp:attribute name="tableVS"><xsp:expr>tablenameVS</xsp:expr></xsp:attribute>
+		     } else {
+                     	tablenameVS = DomHelper.getNodeTextValue(tab,"Name","vr");
+<xsp:attribute name="tableVS"><xsp:expr>tablenameVS</xsp:expr></xsp:attribute>
+                     }
                    }  // end for loop j (table)
 <!--
                      tablenameVS = DomHelper.getNodeTextValue(tab,"Name","vs");
