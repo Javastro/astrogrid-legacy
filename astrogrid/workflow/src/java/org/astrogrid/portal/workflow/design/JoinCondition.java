@@ -12,12 +12,16 @@
 package org.astrogrid.portal.workflow.design;
 
 /**
- * The <code>JoinCondition</code> class represents... 
+ * The <code>JoinCondition</code> class represents the condition
+ * under which a Step will execute according to the outcome of
+ * some previous Step 
  * <p>
- *
- * <p>
- * The class... 
- * 
+ * There are only three fixed instances, representing...
+ * <p><blockquote><pre>
+ * (1) true - previous step must execute cleanly, 
+ * (2) false - previous step must fail, and
+ * (3) any - previous step can succeed or fail
+ * </pre></blockquote><p>
  *
  * @author  Jeff Lusted
  * @version 1.0 04-Sep-2003
@@ -25,12 +29,16 @@ package org.astrogrid.portal.workflow.design;
  * @see     
  * @since   AstroGrid 1.3
  */
-public class JoinCondition {
+public final class JoinCondition {
     
     public static final JoinCondition
-        TRUE = new JoinCondition( "TRUE".intern() ),
-        FALSE = new JoinCondition( "FALSE".intern() ),
-        ANY = new JoinCondition( "ANY".intern() );
+        TRUE = new JoinCondition( "TRUE".intern() ) ;
+          
+    public static final JoinCondition
+        FALSE = new JoinCondition( "FALSE".intern() ) ;
+        
+    public static final JoinCondition
+        ANY = new JoinCondition( "ANY".intern() ) ;
     
     private String
         type ;
