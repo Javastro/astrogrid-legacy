@@ -1,20 +1,54 @@
-AstroGrid JES (Job Entry System) README.
+#=============================================================================#
+#                    AstroGrid JES README.                                    #
+#=============================================================================#
+JES - Job Entry System
 
-Two important software prerequisites are JES's two properties files:
+1.0 SOFTWARE PREREQUISITES:
+***************************
+
+1.1 Externals.
+--------------
+
+These are the environments under which the datacenter was developed:
+. RedHat Linux 7.3 
+. Java sdk j2sdk1.4.1_02
+. Tomcat 4.1.24
+. Axis-1_1RC2
+
+You should also ensure the following are available:
+. junit 3.8.1 or later
+. log4j 1.2.4 or later
+
+We have only tested so far using Sybase as the database. The appropriate jdbc jar
+is included with the distribution. Further details are given later.
+
+***NOTE*** Sybase is not a prerequisite. Please try other jdbc compliant databases.
+
+
+1.2 Internals.
+--------------
+
+Two important software prerequisites are the datacenter's two properties files:
 
 (1) The configuration file ASTROGRID_jesconfig.properties. A great deal
 of setup-configurable data is held here. The file is well commented and bears
-reading.
+reading... <<<MUST>>> be read!
 
 (2) The datacenter's messages file ASTROGRID_jesmessages.properties.
 All messages issued by JES are detailed here. The file name is 
-configurable within the ASTROGRID_jesconfig file.
+configurable within the ASTROGRID_jesconfig.properties file.
 
-The jes package will not work without these files being available within
-Tomcat. BEWARE: we have had some difficulty with Tomcat picking up properties
-files.
+The JES package will not work without these files being available. 
 
-DATABASES.
+Other prerequisites are included with the distribution. 
+See section 3.0 Install below.
+
+
+2.0 DATABASES:
+**************
+
+2.1 Overview of Databases.
+--------------------------
 
 JES requires one database:
 
@@ -26,9 +60,13 @@ configurable within the ASTROGRID_jesconfig file.
 At the present state of play, we have only had the opportunity of testing
 using Sybase on the hydra machine.
 
+
+2.2 JNDI.        **** IMPORTANT ****
+---------
+
 JNDI.
 
-The datacenter uses JNDI to lookup it's associated databases, two files require 
+JES uses JNDI to lookup it's associated database, two files require 
 altering to enable this to happen:
 
 (1) The axis WEB.XML file - $CATALINA_HOME/webapps/axis/WEB-INF/web.xml:
@@ -77,3 +115,68 @@ by JNDI (eg. driverClassName, URL, User, Password):
      </DefaultContext>
 
 
+3.0 INSTALL:
+************
+
+3.1 Unjar the jes.jar archive.
+-------------------------------------
+
+Unjar to some convenient temporary directory. The archive contains the following:
+
+. This README, so presumably you have already got this far!
+. jesBIN.jar     -    the datacenter executables
+. jconn2.jar            -    the Sybase jdbc executables
+. config directory      -    contains datacenter configuration files
+. dbscripts             -    contains script for creating database tables.
+. wsdd                  -    contains deployment descriptors for deploying datacenter as a SOAP service within Axis
+
+3.2 Make sure the external prerequisites are fullfilled.
+--------------------------------------------------------
+See section 1.1
+
+
+3.3 Copy archive files into appropriate classpath location for Axis.
+--------------------------------------------------------------------
+Suggest the best location is the webapps/axis/WEB-INF/lib directory
+that is created when Axis is installed, but any convenient place
+where they can be picked up as part of a classpath.
+
+
+3.4 READ THE JES CONFIGURATION PROPERTIES FILE.
+-------------------------------------------------------
+Look in the config directory.
+
+
+3.4 Fullfill Database conditions.
+---------------------------------
+. Create job database by running script held in dbscripts directory.
+  This may <<will>> require alteration for your flavour of RDBMS.
+. Alter Tomcat and Axis files to allow for JNDI (see section 2.2 above)
+
+
+3.5 Alter the JES configuration file.
+----------------------------------------------
+. You must make appropriate database configuration details and other
+  items available by altering this file. ***Please read it***.
+. Place the configuration file and the messages file in a convenient
+  classpath-aware location. See section 3.3 above.
+
+
+3.6 Ensure Database, Tomcat and Axis are running.
+-------------------------------------------------
+You may have to restart Tomcat after step 3.4
+
+
+3.7 Deploy JES as three SOAP service within Axis.
+----------------------------------------------------
+See the wsdd descriptors within the wsdd directory.
+You must deploy the three JES subcomponents:
+. JobController
+. JobScheduler
+. JobMonitor
+The files are commented to show which command is required to execute deployment.
+The jesBIN.jar must be available when the command is executed. 
+
+
+3.8 You are ready to go! Happy Astronomical Hunting!
+----------------------------------------------------
