@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.11 2003/09/16 15:23:16 mch Exp $
+ * $Id: SocketHandler.java,v 1.12 2003/09/16 16:00:15 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -84,116 +84,127 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
     * Runs forever handling dociments sent to the
     * socket, and returning responses, until socket is
     * closed or some kind of timeout...
+    * <p>
     * NB each request/response is still a pair, so that we don't end
-    * up with responses getting mixed up.
+    * up with responses getting mixed up.  Only status notifications get around
+    * this...
+    * <p>
     */
    public void run()
    {
-         //InputStream in = socket.getInputStream();
-         boolean fatal = false;
+      // This is quite a large method, handling all the various calls, but
+      // given each one is only a few lines it seems a bit overkill to seperate
+      // them all out into different methods
 
-         while (socket.isConnected() && !fatal)
+      boolean fatal = false;
+
+      while (socket.isConnected() && !fatal)
+      {
+         try
          {
-            try
+            Log.trace("SocketHandler: Reading/Waiting on incoming document");
+            //read incoming document
+            Document docRequest = in.readDoc();
+
+            //what kind of operation is it?
+            if (docRequest.getElementsByTagName(SocketDelegate.REQ_REGISTRY_METADATA_TAG).getLength() > 0)
             {
-               Log.trace("SocketHandler: Reading/Waiting on incoming document");
-               //read incoming document
-               Document docRequest = in.readDoc();
+               //requested registry metadata
+               Log.trace("SocketHandler: Writing registry metadata");
 
-               //what kind of operation is it?
-               if (docRequest.getElementsByTagName(SocketDelegate.REQ_REGISTRY_METADATA_TAG).getLength() > 0)
-               {
-                  //requested registry metadata
-                  Log.trace("SocketHandler: Writing registry metadata");
-
-                  out.writeAsDoc(getVOResource());
-               }
-               else if (docRequest.getElementsByTagName(SocketDelegate.CREATE_QUERY_TAG).getLength() > 0)
-               {
-                  //create a query
-                  Log.trace("SocketHandler: Creating a query");
-                  DatabaseQuerier querier = DatabaseQuerier.createQuerier(docRequest.getDocumentElement());
-                  out.writeAsDoc(ResponseHelper.makeQueryCreatedResponse(querier).getDocumentElement());
-               }
-               else if (docRequest.getElementsByTagName(SocketDelegate.START_QUERY_TAG).getLength() > 0)
-               {
-                  //start an existing query
-                  Log.trace("SocketHandler: Starting a query");
-                  DatabaseQuerier querier = DatabaseQuerier.getQuerier(QueryIdHelper.getQueryId(docRequest.getDocumentElement()));
-
-                  Thread queryThread = new Thread(querier);
-                  queryThread.start();
-
-                  out.writeAsDoc(ResponseHelper.makeQueryStartedResponse(querier).getDocumentElement());
-               }
-               else if (docRequest.getElementsByTagName(SocketDelegate.REGISTER_LISTENER_TAG).getLength() > 0)
-               {
-                  //register listeners
-                  DatabaseQuerier querier = DatabaseQuerier.getQuerier(QueryIdHelper.getQueryId(docRequest.getDocumentElement()));
-                  querier.registerWebListeners(docRequest.getDocumentElement());
-                  out.writeAsDoc(ResponseHelper.makeStatusResponse(querier).getDocumentElement());
-               }
-               else if (docRequest.getElementsByTagName(SocketDelegate.ABORT_QUERY_TAG).getLength() > 0)
-               {
-                  Log.logError("Not implemented yet: "+ docRequest.getDocumentElement().getNodeName());
-               }
-               else if (docRequest.getElementsByTagName(SocketDelegate.REQ_RESULTS_TAG).getLength() > 0)
-               {
-                  Log.logError("Not implemented yet: "+ docRequest.getDocumentElement().getNodeName());
-               }
-               else if (docRequest.getElementsByTagName(SocketDelegate.REQ_STATUS_TAG).getLength() > 0)
-               {
-                  Log.logError("Not implemented yet: "+ docRequest.getDocumentElement().getNodeName());
-               }
-               else if (docRequest.getElementsByTagName(SocketDelegate.DO_QUERY_TAG).getLength() > 0)
-               {
-                  //a blocking/synchronous query
-                  DatabaseQuerier querier = DatabaseQuerier.createQuerier(docRequest.getDocumentElement());
-                  querier.registerListener(this);
-                  querier.doQuery();
-
-                  querier.setStatus(QueryStatus.RUNNING_RESULTS);
-
-                  Document response = ResponseHelper.makeResultsResponse(querier, querier.getResults().toVotable().getDocumentElement());
-
-                  out.writeAsDoc(response.getDocumentElement());
-               }
-               else
-               {
-                  //unknown command
-                  Log.logError("Document received but don't know how to handle it.  Root element="+
-                                 docRequest.getDocumentElement().getNodeName());
-               }
+               out.writeAsDoc(getVOResource());
             }
-            catch (SocketException e)
+            else if (docRequest.getElementsByTagName(SocketDelegate.CREATE_QUERY_TAG).getLength() > 0)
             {
-               Log.logWarning(this, "(assuming fatal & terminating handler)", e);
-               fatal = true;
+               Log.trace("SocketHandler: Creating a query");
+               DatabaseQuerier querier = DatabaseQuerier.createQuerier(docRequest.getDocumentElement());
+               out.writeDoc(ResponseHelper.makeQueryCreatedResponse(querier));
             }
-            catch (IOException e)
+            else if (docRequest.getElementsByTagName(SocketDelegate.START_QUERY_TAG).getLength() > 0)
             {
-               Log.logError("", e);
+               Log.trace("SocketHandler: Starting a query");
+               DatabaseQuerier querier = DatabaseQuerier.getQuerier(QueryIdHelper.getQueryId(docRequest.getDocumentElement()));
+
+               Thread queryThread = new Thread(querier);
+               queryThread.start();
+
+               out.writeDoc(ResponseHelper.makeQueryStartedResponse(querier));
             }
-            catch (SAXException e)
+            else if (docRequest.getElementsByTagName(SocketDelegate.REGISTER_LISTENER_TAG).getLength() > 0)
             {
-               String s = "XML Error with message: (unknown)";
-               Log.logError(s, e);
-               writeError(s,e);
+               Log.trace("SocketHandler: Registering listeners");
+               DatabaseQuerier querier = DatabaseQuerier.getQuerier(QueryIdHelper.getQueryId(docRequest.getDocumentElement()));
+               querier.registerWebListeners(docRequest.getDocumentElement());
+               out.writeDoc(ResponseHelper.makeStatusResponse(querier));
             }
-            catch (QueryException e)
+            else if (docRequest.getElementsByTagName(SocketDelegate.ABORT_QUERY_TAG).getLength() > 0)
             {
-               //need to tell user
-               String s = "Given Query is invalid";
-               Log.logError(s, e);
-               writeError(s,e);
+               Log.logError("Not implemented yet: "+ docRequest.getDocumentElement().getNodeName());
             }
-            catch (Throwable e)
+            else if (docRequest.getElementsByTagName(SocketDelegate.REQ_RESULTS_TAG).getLength() > 0)
             {
-               String s = "Oh no it's all gone horribly wrong";
-               Log.logError(s, e);
-               writeError(s,e);
+               Log.trace("SocketHandler: Results Requested");
+               DatabaseQuerier querier = DatabaseQuerier.getQuerier(QueryIdHelper.getQueryId(docRequest.getDocumentElement()));
+               Document response = ResponseHelper.makeResultsResponse(querier, querier.getResults().toVotable().getDocumentElement());
+               out.writeDoc(response);
+            }
+            else if (docRequest.getElementsByTagName(SocketDelegate.REQ_STATUS_TAG).getLength() > 0)
+            {
+               Log.trace("SocketHandler: Status Requested");
+               DatabaseQuerier querier = DatabaseQuerier.getQuerier(QueryIdHelper.getQueryId(docRequest.getDocumentElement()));
+               Document response = ResponseHelper.makeStatusResponse(querier);
+               out.writeDoc(response);
+            }
+            else if (docRequest.getElementsByTagName(SocketDelegate.DO_QUERY_TAG).getLength() > 0)
+            {
+               //a blocking/synchronous query
+               DatabaseQuerier querier = DatabaseQuerier.createQuerier(docRequest.getDocumentElement());
+               querier.registerListener(this);
+               querier.doQuery();
+
+               querier.setStatus(QueryStatus.RUNNING_RESULTS);
+
+               Document response = ResponseHelper.makeResultsResponse(querier, querier.getResults().toVotable().getDocumentElement());
+
+               out.writeAsDoc(response.getDocumentElement());
+            }
+            else
+            {
+               //unknown command
+               Log.logError("Document received but don't know how to handle it.  Root element="+
+                               docRequest.getDocumentElement().getNodeName());
             }
          }
+         catch (SocketException e)
+         {
+            Log.logWarning(this, "(assuming fatal & terminating handler)", e);
+            fatal = true;
+         }
+         catch (IOException e)
+         {
+            Log.logError("", e);
+            //hmm should this be fatal too?
+         }
+         catch (SAXException e)
+         {
+            String s = "XML Error with message: (unknown)";
+            Log.logError(s, e);
+            writeError(s,e);
+         }
+         catch (QueryException e)
+         {
+            //need to tell user
+            String s = "Given Query is invalid";
+            Log.logError(s, e);
+            writeError(s,e);
+         }
+         catch (Throwable e)
+         {
+            String s = "Oh no it's all gone horribly wrong";
+            Log.logError(s, e);
+            writeError(s,e);
+         }
+      }
    }
 
 
@@ -214,6 +225,9 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.12  2003/09/16 16:00:15  mch
+Added more message handlers
+
 Revision 1.11  2003/09/16 15:23:16  mch
 Listener fixes and rationalisation
 
