@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2003/11/18 11:08:55 mch Exp $
+/*$Id: AllTests.java,v 1.3 2003/11/18 14:37:35 nw Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,6 @@ public class AllTests {
             new TestSuite("Test for org.astrogrid.datacenter.service");
         //$JUnit-BEGIN$
         suite.addTest(ServerTest.suite());
-        suite.addTest(WorkspaceTest.suite());
         suite.addTest(DataQueryServiceTest.suite());
         suite.addTest(ListenerTest.suite());
         //$JUnit-END$
@@ -45,6 +44,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.3  2003/11/18 14:37:35  nw
+removed references to WorkspaceTest - has now been moved to astrogrid-common
+
 Revision 1.2  2003/11/18 11:08:55  mch
 Removed client dependencies on server
 

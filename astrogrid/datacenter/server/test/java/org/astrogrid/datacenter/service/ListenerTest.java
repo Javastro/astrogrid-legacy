@@ -82,7 +82,7 @@ public class ListenerTest extends TestCase implements DelegateQueryListener
      */
     public static Test suite() {
         // Reflection is used here to add all the testXXX() methods to the suite.
-        return new TestSuite(WorkspaceTest.class);
+        return new TestSuite(ListenerTest.class);
     }
 
     /**
@@ -98,6 +98,9 @@ public class ListenerTest extends TestCase implements DelegateQueryListener
 
 /*
 $Log: ListenerTest.java,v $
+Revision 1.4  2003/11/18 14:37:35  nw
+removed references to WorkspaceTest - has now been moved to astrogrid-common
+
 Revision 1.3  2003/11/18 11:08:55  mch
 Removed client dependencies on server
 
