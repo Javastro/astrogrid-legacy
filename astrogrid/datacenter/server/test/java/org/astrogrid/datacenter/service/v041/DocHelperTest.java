@@ -1,10 +1,9 @@
-package org.astrogrid.datacenter.snippet;
-import org.astrogrid.datacenter.service.v041.*;
+package org.astrogrid.datacenter.service.v041;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
+import org.astrogrid.datacenter.service.v041.DocHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 

@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.6 2004/03/12 04:54:07 mch Exp $
+/*$Id: AllTests.java,v 1.7 2004/03/13 01:10:10 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,6 +23,7 @@ public class AllTests {
             new TestSuite("Test for org.astrogrid.datacenter.service");
         //$JUnit-BEGIN$
         suite.addTest(DataServiceTest.suite());
+        suite.addTest(org.astrogrid.datacenter.service.v041.AllTests.suite());
         //$JUnit-END$
         return suite;
     }
@@ -40,6 +41,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.7  2004/03/13 01:10:10  mch
+It05 Refactor (Client)
+
 Revision 1.6  2004/03/12 04:54:07  mch
 It05 MCH Refactor
 
