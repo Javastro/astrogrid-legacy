@@ -1,4 +1,4 @@
-/* $Id: AccountTest.java,v 1.4 2004/02/19 11:23:36 mch Exp $
+/* $Id: AccountTest.java,v 1.5 2004/02/19 23:26:10 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -77,18 +77,17 @@ public class AccountTest extends TestCase
    }
 
    /**
-	* Tests user representation
-	*/
+   * Tests user representation
+   */
    public void testAccount()
    {
-	  Account me = new Account("me","community", "SomeToken");
+     Account me = new Account("me","community", "SomeToken");
       
-	  assertEquals("me", me.getIndividual());
-	  assertEquals("community", me.getCommunity());
-	  assertEquals("SomeToken", me.getToken());
-	  assertEquals("me@community", me.getAstrogridId());
+     assertEquals("me", me.getIndividual());
+     assertEquals("community", me.getCommunity());
+     assertEquals("SomeToken", me.getToken());
+     assertEquals("me@community", me.getAstrogridId());
       
-	  assertTrue(me.equals(meToo));
    }
 
     /**
@@ -111,6 +110,9 @@ public class AccountTest extends TestCase
 
 /*
 $Log: AccountTest.java,v $
+Revision 1.5  2004/02/19 23:26:10  mch
+Fixed meToo bug
+
 Revision 1.4  2004/02/19 11:23:36  mch
 Removed Group property from Account.  Added tests
 
