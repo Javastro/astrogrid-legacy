@@ -6,15 +6,15 @@
   <body>
     <menu name="Install">
     <item name="Install" href="INSTALL"/>
-    <item name="Download" href="http://www.astrogrid.org/maven/astrogrid-mySpace/wars/astrogrid-mySpace-SNAPSHOT.war"/>
+    <item name="Download" href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-mySpace-SNAPSHOT.war"/>
 	<item name="createregistry_v02.lis" href="createregistry_v02.lis" />
 	
 	
     </menu>
     <links>
        <item name="AstroGrid" href="http://www.astrogrid.org"/>
-       <item name="Projects"  href="http://www.astrogrid.org/maven/build/index.html"/>
-       <item name="mySpace"   href="http://www.astrogrid.org/maven/build/mySpace/index.html"/>
+       <item name="Projects"  href="index.html"/>
+       <item name="mySpace"   href="mySpace/index.html"/>
     </links>
   </body>
 </project>
