@@ -39,8 +39,8 @@ public class MySpaceUtils {
 		try{
 			if (file == null || !file.exists()) {
 				//throw new IOException("File does not exist");
-				msstatus.addCode(MySpaceStatusCode.AGMSCE00047,MySpaceStatusCode.ERROR);
-				response = MMC.FAULT+MySpaceStatusCode.AGMSCE00047;
+				msstatus.addCode(MySpaceStatusCode.AGMSCE01047,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, new MySpaceUtils().getComponentName());
+				response = MMC.FAULT+MySpaceStatusCode.AGMSCE01047;
 				return response;
 			}
 			//open file to read from
@@ -67,8 +67,8 @@ public class MySpaceUtils {
 			return strbufFileContent.toString();
 		}catch (Exception e) {
 			logger.error("Exception caught while reading from file MySpaceUtils.readFromFile: "+e.toString());
-			msstatus.addCode(MySpaceStatusCode.AGMSCE00032,MySpaceStatusCode.ERROR);
-			response = MMC.FAULT+MySpaceStatusCode.AGMSCE00032;
+			msstatus.addCode(MySpaceStatusCode.AGMMCE00103,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, new MySpaceUtils().getComponentName());
+			response = MMC.FAULT+MySpaceStatusCode.AGMMCE00103;
 			return response;
 		}finally{
 			try{
@@ -135,7 +135,7 @@ public class MySpaceUtils {
 		catch ( Exception ex ) {
 			if (DEBUG)  logger.error("MYSPACEUTILS ERROR_READING_FILE :" +ex.getMessage());
 			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00032", this.getComponentName()) ;
-			msstatus.addCode(MySpaceStatusCode.AGMSCE00032,MySpaceStatusCode.ERROR);
+			msstatus.addCode(MySpaceStatusCode.AGMMCE00103,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 			response = MMC.FAULT+generalMessage.toString();
 			return response;
 		}
@@ -154,7 +154,7 @@ public class MySpaceUtils {
 		catch ( Exception ex ) {
 			if (DEBUG)  logger.error("MYSPACEUTILS ERROR_READING_FILE :" +ex.getMessage());
 			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00032", this.getComponentName()) ;
-			msstatus.addCode(MySpaceStatusCode.AGMSCE00032,MySpaceStatusCode.ERROR);
+			msstatus.addCode(MySpaceStatusCode.AGMMCE00103,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 			response = MMC.FAULT+generalMessage.toString();
 			return response;
 		}
@@ -179,7 +179,7 @@ public class MySpaceUtils {
 		catch ( Exception ex ) {
 			if (DEBUG)  logger.error("MYSPACEUTILS ERROR_READING_FILE :" +ex.getMessage());
 			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00032", this.getComponentName()) ;
-			msstatus.addCode(MySpaceStatusCode.AGMSCE00032,MySpaceStatusCode.ERROR);
+			msstatus.addCode(MySpaceStatusCode.AGMMCE00103,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 			response = MMC.FAULT+generalMessage.toString();
 			return response;
 		}
@@ -212,7 +212,7 @@ public class MySpaceUtils {
 		catch ( Exception ex ) {
 			if (DEBUG)  logger.error("MYSPACEUTILS ERROR_READING_FILE :" +ex.getMessage());
 			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00032", this.getComponentName()) ;
-			msstatus.addCode(MySpaceStatusCode.AGMSCE00032,MySpaceStatusCode.ERROR);
+			msstatus.addCode(MySpaceStatusCode.AGMMCE00103,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 			response = MMC.FAULT+generalMessage.toString();
 			return response;
 		}
