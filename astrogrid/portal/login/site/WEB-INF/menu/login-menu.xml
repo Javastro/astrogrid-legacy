@@ -23,5 +23,12 @@
         icon="/astrogrid-portal/icons/DeleteUser.png"
         target="_self"
         status-text="Logout of the AstroGrid Portal"/>
+    <agp:item
+        contents="Register"
+        contents-hover="Register"
+        uri="/astrogrid-portal/main/mount/login/register"
+        icon="/astrogrid-portal/icons/EnvelopeIn.png"
+        target="_self"
+        status-text="Register for an AstroGrid account"/>
   </agp:menu>
 </agp:menu-def>
