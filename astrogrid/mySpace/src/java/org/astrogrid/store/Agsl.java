@@ -1,5 +1,5 @@
 /*
- * $Id: Agsl.java,v 1.5 2004/03/02 01:27:00 mch Exp $
+ * $Id: Agsl.java,v 1.6 2004/03/09 23:18:58 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -68,23 +68,11 @@ public class Agsl
     */
    public Agsl(String rl) throws MalformedURLException
    {
-      if (rl.toLowerCase().startsWith("vospace:"))
+      if (rl.toLowerCase().startsWith(Vorl.SCHEME+":"))
       {
-         try {
-            URI asUri = new URI(rl);
-         
-            //break down authority into delegate protocol and authority
-            String auth = asUri.getAuthority();
-            int dot = auth.indexOf(".");
-            String delegateEndpoint = auth.substring(0,dot)+"://"+auth.substring(dot+1)+asUri.getPath();
-            msrl = new Msrl(new URL(delegateEndpoint), asUri.getFragment());
-         }
-         catch (URISyntaxException use) {
-            throw new MalformedURLException(use+": "+rl);
-         }
+         rl = new Vorl(rl).toAgsl().toString();
       }
-      else
-      {
+
          if (rl.toLowerCase().startsWith(SCHEME+":"))
          {
             rl = rl.substring(SCHEME.length()+1);
@@ -106,7 +94,6 @@ public class Agsl
                              "#"+url.getRef());
             }
          }
-      }
    }
 
    /**
@@ -140,7 +127,7 @@ public class Agsl
          return url.getProtocol()+"://"+url.getAuthority()+url.getPath();
       }
       else {
-         return msrl.SCHEME+":"+msrl.getDelegateEndpoint().toString();
+         return Msrl.SCHEME+":"+msrl.getDelegateEndpoint().toString();
       }
    }
    
@@ -217,6 +204,9 @@ public class Agsl
 
 /*
 $Log: Agsl.java,v $
+Revision 1.6  2004/03/09 23:18:58  mch
+Added Vorl for 4.1 access
+
 Revision 1.5  2004/03/02 01:27:00  mch
 Minor fixes
 

@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceClient.java,v 1.3 2004/03/09 11:48:19 mch Exp $
+ * $Id: VoSpaceClient.java,v 1.4 2004/03/09 23:18:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import org.astrogrid.community.User;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.registry.client.query.RegistryService;
+//import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
@@ -30,7 +30,7 @@ import org.astrogrid.store.delegate.StoreDelegateFactory;
 
 public class VoSpaceClient {
    
-   RegistryService registry = new RegistryService();
+//   RegistryService registry = new RegistryService();
    
    /**
     * Given an IVO Resource Name, resolves the AGSL
@@ -90,6 +90,9 @@ public class VoSpaceClient {
 
 /*
 $Log: VoSpaceClient.java,v $
+Revision 1.4  2004/03/09 23:18:58  mch
+Added Vorl for 4.1 access
+
 Revision 1.3  2004/03/09 11:48:19  mch
 Updated design for community call
 
