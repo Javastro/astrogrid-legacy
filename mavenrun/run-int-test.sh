@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: run-int-test.sh,v 1.5 2004/11/29 18:02:59 anoncvs Exp $ 
+# $Id: run-int-test.sh,v 1.6 2004/11/29 18:17:49 anoncvs Exp $ 
 ######################################################
 # Script to install AGINAB, run the integration
 # tests and publish the results
@@ -14,7 +14,7 @@
 # DOCLOCATION = /var/www/www/maven/docs/HEAD
 # DOCMACHINE = maven@www.astrogrid.org
 # These scripts need to be on your path!
-
+#no way!
 # Some reminders
 if [ -z "$CHECKOUTHOME" ]; then
 	echo "Value of CHECKOUTHOME (ie where to checkout sources) must be set"
