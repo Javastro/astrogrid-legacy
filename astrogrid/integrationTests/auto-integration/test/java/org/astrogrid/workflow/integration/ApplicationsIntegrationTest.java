@@ -1,4 +1,4 @@
-/*$Id: ApplicationsIntegrationTest.java,v 1.5 2004/04/14 16:42:37 nw Exp $
+/*$Id: ApplicationsIntegrationTest.java,v 1.6 2004/04/15 10:28:40 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.scripting.Service;
 import org.astrogrid.workflow.beans.v1.Tool;
 
+import java.util.Iterator;
 import java.util.List;
 
 /** 
@@ -39,9 +40,22 @@ public class ApplicationsIntegrationTest extends AbstractTestForIntegration {
         List apps = ag.getApplications();
         assertNotNull(apps);
         assertTrue("no application servers found",apps.size() > 0);
-        serv = (Service)apps.get(0);
+        serv = findRequiredService(apps.iterator());        
         delegate = (CommonExecutionConnectorClient)serv.createDelegate();
+    } 
+    
+    protected Service findRequiredService(Iterator apps) {
+        while( apps.hasNext() ) { // find the correct one
+            Service s = (Service)apps.next();
+            if (s.getDescription().indexOf("command-line") != -1) {
+                return s;
+            }           
+        }
+        fail("failed to find command-line service");
+        // never reached.
+        return null;
     }
+    
     protected Service serv;
     protected CommonExecutionConnectorClient delegate;
     
@@ -90,6 +104,9 @@ public class ApplicationsIntegrationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: ApplicationsIntegrationTest.java,v $
+Revision 1.6  2004/04/15 10:28:40  nw
+improving testing
+
 Revision 1.5  2004/04/14 16:42:37  nw
 fixed tests to break more sensibly
 
