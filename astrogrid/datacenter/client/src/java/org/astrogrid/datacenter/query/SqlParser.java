@@ -1,5 +1,5 @@
 /*
- * $Id: SqlParser.java,v 1.3 2004/11/09 17:42:22 mch Exp $
+ * $Id: SqlParser.java,v 1.4 2004/11/09 18:13:51 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -223,7 +223,7 @@ public class SqlParser  {
             parseBoolean(broken.left),
             parseBoolean(broken.right) );
       }
-      else if (broken.left.trim().startsWith("'") || (broken.right.trim().startsWith("'"))) {
+      else if (broken.left.trim().startsWith("'") || (broken.right.trim().startsWith("'")) || broken.left.trim().startsWith("\"") || (broken.right.trim().startsWith("\""))) {
          //one side is a string
          return new StringComparison(
             parseString(broken.left),
@@ -358,6 +358,14 @@ public class SqlParser  {
       String trimmed = expression.trim();
       if (trimmed.startsWith("'")) {
          if (!trimmed.endsWith("'")) {
+            throw new QueryException("No closing quote after "+trimmed);
+         }
+         //remove start and end quotes
+         trimmed = trimmed.substring(1, trimmed.length()-1);
+         return new LiteralString(trimmed);
+      }
+      else if (trimmed.startsWith("\"")) {
+         if (!trimmed.endsWith("\"")) {
             throw new QueryException("No closing quote after "+trimmed);
          }
          //remove start and end quotes
@@ -721,6 +729,9 @@ public class SqlParser  {
 
 /*
  $Log: SqlParser.java,v $
+ Revision 1.4  2004/11/09 18:13:51  mch
+ Fix so that double quotes can indicate string constant
+
  Revision 1.3  2004/11/09 17:42:22  mch
  Fixes to tests after fixes for demos, incl adding closable to targetIndicators
 
