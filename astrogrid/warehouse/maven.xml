@@ -9,7 +9,8 @@
 		<mkdir dir="${basedir}/target/src/java" />
 
 		<!-- declares new src tree to maven -->
-		<path id="generated.src" location="${basedir}/target/src/java"/>
+		<path id="generated.src" 
+          location="${basedir}/target/src/java"/>
 		<maven:addPath id="maven.compile.src.set" refid="generated.src"/>  
 
 		<!-- generate classes from schema and wsdl before compiling -->
@@ -135,7 +136,7 @@
        <path refid="maven.dependency.classpath"/>
      </path>
      <java classname="org.astrogrid.warehouse.service.Server" 
-        dir="/data/cass123a/gtr/" classpathref="classpath" fork="yes"/>
+        dir="/data/cass123a/gtr/electric" classpathref="classpath" fork="yes"/>
    </target>
 
   <!-- Start a glue-based server running -->
@@ -150,6 +151,17 @@
       </java>
    </target>
 
+   <target name="querierTest">
+     <path id="classpath">
+       <pathelement location="target/classes"/>
+       <path refid="maven.dependency.classpath"/>
+     </path>
+      <java classname="org.astrogrid.warehouse.queriers.ogsadai.WarehouseQuerier"
+            dir="target/classes" fork="yes" failonerror="true"
+            classpathref="classpath">
+        <arg value= "SELECT * FROM catalogue WHERE POS_EQ_DEC > 89.9"/>
+      </java>
+   </target>
 
    <!-- TEMPORARY TEST HARNESS -TOFIX REMOVE -->
    <target name="tempTest">
@@ -164,15 +176,3 @@
    </target>
 
 </project>
-
-<!--
-#!/bin/tcsh
-set JAVA_HOME=/data/cass123a/gtr/jdk-ogsa
-
-cd target/classes
-
-/data/cass123a/gtr/jdk-ogsa/bin/java org.astrogrid.warehouse.service.Server &
-
-/data/cass123a/gtr/jdk-ogsa/bin/java org.astrogrid.warehouse.delegate.GlueDelegate http://localhost:8004/services/WarehouseServiceIfc
-
--->

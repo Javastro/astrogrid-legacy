@@ -63,12 +63,42 @@
       <version>SNAPSHOT</version>
     </dependency>
 
+    <!-- This is needed for runtime tests because the datacentre stuff
+    needs it. -->
+    <dependency>
+      <id>astrogrid-mySpace</id>
+      <version>SNAPSHOT</version>
+    </dependency>
+
+<!--
+    <dependency>
+      <id>astrogrid-datacenter-server</id>
+      <version>SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <id>astrogrid-datacenter-client</id>
+      <version>SNAPSHOT</version>
+    </dependency>
+-->
+<!-- THIS IS A TEMPORARY HACK UNTIL THE NIGHTLY SNAPSHOT IS AVAILABLE -->
+    <dependency>
+      <id>astrogrid-datacenter-server</id>
+      <version>TEMP</version>
+    </dependency>
+    <dependency>
+      <id>astrogrid-datacenter-client</id>
+      <version>TEMP</version>
+    </dependency>
+
+
     <!-- more standard deps -->
       <!-- axis, and the jars it relies upon -->
+      <!--
     <dependency>
       <id>axis</id>
       <version>1.1</version>
     </dependency>
+    -->
 
     <dependency>
       <id>wsdl4j</id>
