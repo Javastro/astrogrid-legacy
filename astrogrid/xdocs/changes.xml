@@ -10,7 +10,10 @@
       </action>
       <action dev="dm" type="add"  >
         New FileManager project.
-      </action>                 
+      </action>
+      <action dev="mch" type="add"  >
+        New Slinger project.
+      </action>                            
     </release>    
     <release version="astrogrid-portal-SNAPSHOT" date="16/11/04" description="head rebuild">
       <action dev="rtp" type="fix" issue="683" >

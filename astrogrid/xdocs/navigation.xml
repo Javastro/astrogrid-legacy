@@ -72,6 +72,7 @@
             <item name="Registry" href="registry/index.html"/>
             <item name="Scripting" href="scripting/index.html" />
             <item name="Security" href="security/index.html" />
+            <item name="Slinger *NEW*" href="filemanager/index.html"/>            
             <item name="UI" href="ui/index.html" />
             <!--item name="Warehouse" href="warehouse/index.html"/-->
             <item name="Workflow" href="workflow/index.html"/>
