@@ -3,19 +3,21 @@
 
   <title>AstroGrid Project</title>
   <body>
-      <menu name="Install">
-	<item name="INSTALL" href="INSTALL.html" />
-	<item name="RELEASE" href="RELEASE.html" />
-	<item name="Sample Configuration" href="AstroGridConfig.properties" />
-	<item name="Installation Test" href="self-test.html" />
-      </menu>
-      <menu name="Query">
-     	<item name="Query the Datacenter" href="query-form.html" />
-		<item name="Sample Queries" href="adql" />
-        <item name="XML Schema" href="schema.html" />
-
-    </menu>
-
+   <menu name="Install">
+      <item name="INSTALL" href="INSTALL.html" />
+      <item name="RELEASE" href="RELEASE.html" />
+      <item name="Sample Configuration" href="AstroGridConfig.properties" />
+      <item name="Installation Test" href="self-test.html" />
+   </menu>
+   <menu name="Server">
+      <item name="Status" href="serverStatus.jsp" />
+      <item name="Metadata" href="metadata.jsp" />
+   </menu>
+   <menu name="Query">
+      <item name="Ask Query" href="query-form.html" />
+      <item name="Sample Queries" href="adql" />
+      <item name="XML Schema" href="schema.html" />
+   </menu>
    <menu name="Develop">
      <item name="Writing a new back-end" href="other-back-end.html" />
      <item name="Example back-ends" href="implementations" />
@@ -26,13 +28,13 @@
      <item name="Delegate source dist" href="delegate-dist/astrogrid-datacenter-client-HEAD-src.zip" />
      <item name="Server binary dist" href="server-dist/astrogrid-datacenter-server-HEAD.zip" />
      <item name="Server source dist" href="server-dist/astrogrid-datacenter-server-HEAD-src.zip" />
-	<!-- download client
-	- single jar,
-	- supporting libs -->
-
+      <!-- download client
+      - single jar,
+      - supporting libs -->
    </menu>
-    <links>
-       <item name="AstroGrid"  href="http://www.astrogrid.org"/>
+
+   <links>
+     <item name="AstroGrid"  href="http://www.astrogrid.org"/>
 
     </links>
   </body>
