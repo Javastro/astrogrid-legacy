@@ -8,11 +8,9 @@ package org.astrogrid.datacenter.delegate.nvocone;
 import org.astrogrid.datacenter.delegate.*;
 
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.Vector;
@@ -29,6 +27,7 @@ import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.webnotify.WebNotifier;
 import org.astrogrid.io.Piper;
+import org.astrogrid.store.Agsl;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.util.Workspace;
@@ -228,7 +227,7 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
        */
       public void sendResults(InputStream resultsIn) throws IOException
       {
-         StoreClient myspace = StoreDelegateFactory.createDelegate(user, destinationServer.toString());
+         StoreClient myspace = StoreDelegateFactory.createDelegate(user.toUser(), new Agsl(destinationServer.toString()));
          
          String myspaceFilename = "/"+user.getAstrogridId()+"/"+getId()+"_results";
 
@@ -357,6 +356,9 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
 
 /*
 $Log: AdqlNvoConeDelegate.java,v $
+Revision 1.13  2004/03/02 01:37:50  mch
+Updates from changes to StoreClient and AGSLs
+
 Revision 1.12  2004/02/24 16:04:29  mch
 Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
 

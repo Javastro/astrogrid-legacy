@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.26 2004/02/24 19:31:06 mch Exp $
+ * $Id: AxisDataServer.java,v 1.27 2004/03/02 01:37:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -138,6 +138,8 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
             querier,
             results.toVotable().getDocumentElement()
          ).getDocumentElement();
+         querier.setStatus(QueryStatus.FINISHED);
+         
          return XMLUtils.ElementToString(result);
       }
       catch (SAXException e) {
@@ -172,6 +174,8 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     */
    public String makeQueryWithId(Query q, String assignedId) throws QueryException, IOException, SAXException {
       
+      log.debug("MakeQueryWithId ["+assignedId+"]");
+                   
       if (assignedId == null || assignedId.length() == 0)  {
          throw new IllegalArgumentException("Empty assigned id");
       }
@@ -291,6 +295,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     */
    public void registerJobMonitor(String queryId, URI uri) throws RemoteException  {
       // check we can create an URL first..
+      log.debug("Querier ["+queryId+"] registering JobMonitor at "+uri);
       try  {
          URL u = new URL(uri.toString());
          Querier querier = getQuerier(queryId);
@@ -318,6 +323,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
    }
    
 }
+
 
 
 

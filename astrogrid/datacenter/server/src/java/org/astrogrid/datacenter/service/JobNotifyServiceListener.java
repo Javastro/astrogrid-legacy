@@ -1,5 +1,5 @@
 /*
- * $Id: JobNotifyServiceListener.java,v 1.11 2004/02/15 23:17:05 mch Exp $
+ * $Id: JobNotifyServiceListener.java,v 1.12 2004/03/02 01:37:20 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -7,14 +7,16 @@
 package org.astrogrid.datacenter.service;
 
 import java.net.URL;
+import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.webnotify.WebNotifier;
 import org.astrogrid.jes.delegate.JesDelegateException;
+import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.jes.delegate.JobMonitor;
-import org.astrogrid.jes.delegate.jobMonitor.JobMonitorDelegate;
+import org.astrogrid.jes.delegate.impl.JobMonitorDelegate;
 
 /**
  * Very much like the WebNotifyServiceListener, this one creates a special
@@ -27,6 +29,8 @@ import org.astrogrid.jes.delegate.jobMonitor.JobMonitorDelegate;
 public class JobNotifyServiceListener implements QuerierListener
 {
    private URL jobMonitor = null;
+
+   Log log = LogFactory.getLog(JobNotifyServiceListener.class);
    
    /**
     * Create a listener which will send service updates to the given URL
@@ -41,33 +45,28 @@ public class JobNotifyServiceListener implements QuerierListener
     */
    public void queryStatusChanged(Querier querier)
    {
-      try {
-         JobMonitorDelegate jmd = JobMonitorDelegate.buildDelegate(jobMonitor.toString());
+//      try {
+ 
+         JobMonitor jmd = JesDelegateFactory.createJobMonitor(jobMonitor.toString());
+
          
-         JobMonitorDelegate.Status status = jmd.STATUS_RUNNING;
-         String message = querier.getStatus().toString();
-         if (querier.getStatus() == QueryStatus.FINISHED)
-         {
-            status = jmd.STATUS_COMPLETED;
-            message = "results sent to "+querier.getResultsLoc();
-         }
-         else if (querier.getStatus() == QueryStatus.ERROR)
-         {
-            status = jmd.STATUS_IN_ERROR;
-            message = querier.getError().toString();
-         }
+         //create Job Info bean
          
-         jmd.monitorJob(querier.getExtRef(), status, message);
-      }
-      catch (JesDelegateException e) {
-         LogFactory.getLog(WebNotifier.class).error("Failed to contact job monitor at "+jobMonitor, e);
-      }
+         log.debug("Querier ["+querier.getExtRef()+"] telling "+jobMonitor+" of status '"+querier.getStatus());
+//         jmd.monitorJob(querier.getExtRef(), status, message);
+//      }
+//      catch (JesDelegateException e) {
+//         LogFactory.getLog(WebNotifier.class).error("Failed to contact job monitor at "+jobMonitor, e);
+//      }
    }
    
 }
 
 /*
 $Log: JobNotifyServiceListener.java,v $
+Revision 1.12  2004/03/02 01:37:20  mch
+Updates from changes to StoreClient and AGSLs
+
 Revision 1.11  2004/02/15 23:17:05  mch
 Naughty Big Lump of Changes cont: fixes for It04.1 myspace
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.24 2004/02/24 19:12:39 mch Exp $
+ * $Id: Querier.java,v 1.25 2004/03/02 01:37:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,11 +22,11 @@ import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.service.JobNotifyServiceListener;
 import org.astrogrid.datacenter.service.WebNotifyServiceListener;
 import org.astrogrid.datacenter.snippet.DocMessageHelper;
-import org.astrogrid.util.Workspace;
-import org.astrogrid.store.IvoRN;
-import org.astrogrid.store.AGSL;
+import org.astrogrid.store.Agsl;
+import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
+import org.astrogrid.util.Workspace;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -67,6 +67,11 @@ public abstract class Querier implements Runnable {
     * basis for any temporary storage. */
    private final String id;
    
+   /** Queries might also be associated with some kind of external reference, assigned
+    * by the service user */
+   private final String extRef = null;
+   
+   
    /** certification information */
    private final Account user;
 
@@ -84,7 +89,7 @@ public abstract class Querier implements Runnable {
     * server URL
     * initialized to value stored in configuration under {@link QuerierManager#RESULTS_TARGET_KEY}
     */
-   private AGSL resultsDestination = null;
+   private Agsl resultsDestination = null;
    
    /** Handle to the results from the query - the location (prob myspace) where
     * the results can be found */
@@ -106,11 +111,11 @@ public abstract class Querier implements Runnable {
             //this.user = query.getUser();
        }
        
-       //default results destination
+       //default results destination is taken from default myspace given in config
        URL defaultMySpace = SimpleConfig.getSingleton().getUrl(QuerierManager.DEFAULT_MYSPACE, null);
        if (defaultMySpace != null) {
-          IvoRN ivorn = new IvoRN(user.getCommunity(), user.getIndividual(), "/votable/"+queryId+".vot");
-          resultsDestination = new AGSL(defaultMySpace, ivorn);
+          String path = user.getIndividual()+"@"+user.getCommunity()+"/serv1/votable/"+queryId+".vot";
+          resultsDestination = new Agsl(new Msrl(defaultMySpace, path));
        }
    }
 
@@ -146,7 +151,7 @@ public abstract class Querier implements Runnable {
     * Sets up the target of where the results will be sent to
     */
    public void setResultsDestination(String resultsDestination) throws MalformedURLException {
-      this.resultsDestination = new AGSL(resultsDestination);
+      this.resultsDestination = new Agsl(resultsDestination);
    }
    
    /**
@@ -243,9 +248,9 @@ public abstract class Querier implements Runnable {
          throw new IllegalStateException("no results destination");
       }
       
-      StoreClient myspace = StoreDelegateFactory.createDelegate(user, resultsDestination.getDelegateEndpoint().toString());
+      StoreClient store = StoreDelegateFactory.createDelegate(user.toUser(), resultsDestination);
       
-      myspace.putString("This is a test file to make sure we can create a file in the given myspace, so our query results are not lost",
+      store.putString("This is a test file to make sure we can create a file in the given myspace, so our query results are not lost",
                         "testFile", false);
    }
    
@@ -260,10 +265,10 @@ public abstract class Querier implements Runnable {
          throw new IllegalStateException("No results to send");
       }
 
-      log.info("Query ["+id+"] for "+user+", sending results to "+resultsDestination);
+      log.info("Querier ["+id+"] for "+user+", sending results to "+resultsDestination);
       
       
-      StoreClient myspace = StoreDelegateFactory.createDelegate(user, resultsDestination.getDelegateEndpoint().toString());
+      StoreClient myspace = StoreDelegateFactory.createDelegate(user.toUser(), resultsDestination);
   
       try {
          //stream results to string for outputting to myspace.   At
@@ -272,8 +277,10 @@ public abstract class Querier implements Runnable {
          ByteArrayOutputStream ba = new ByteArrayOutputStream();
          results.toVotable(ba);
          ba.close();
-         myspace.putString(ba.toString(), resultsDestination.getDelegateFileRef(), false);
+         myspace.putString(ba.toString(), resultsDestination.getPath(), false);
          
+         log.info("Querier ["+id+"] results sent");
+      
          //resultsLoc = myspace.getUrl("/"+user.getAstrogridId()+"/"+myspaceFilename).toString();
       }
       catch (SAXException se) {
@@ -443,6 +450,9 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.25  2004/03/02 01:37:20  mch
+ Updates from changes to StoreClient and AGSLs
+
  Revision 1.24  2004/02/24 19:12:39  mch
  Added logging info trace
 

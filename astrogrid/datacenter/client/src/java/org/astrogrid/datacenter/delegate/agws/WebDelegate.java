@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.22 2004/02/24 16:04:29 mch Exp $
+ * $Id: WebDelegate.java,v 1.23 2004/03/02 01:37:50 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -33,9 +33,8 @@ import org.astrogrid.datacenter.axisdataserver.AxisDataServerServiceLocator;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.store.AGSL;
-import org.astrogrid.store.delegate.StoreClient;
-import org.astrogrid.store.delegate.StoreDelegateFactory;
+import org.astrogrid.store.Agsl;
+import org.astrogrid.store.Msrl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -308,10 +307,18 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
          assert queryUri != null : "Query URI not givem in parameters";
          assert resultsDestinationUri != null : "Results Destination URI not given in parameters";
 
-         //convert query myspace reference to url
-         if (AGSL.isVoRL(queryUri))
+         //check that query reference resolves OK
+         if (Agsl.isAgsl(queryUri))
          {
-            queryUri = new AGSL(queryUri).resolveURL().toString();
+            queryUri = new Agsl(queryUri).resolveURL().toString();
+         }
+         else if (Msrl.isMsrl(queryUri))
+         {
+            queryUri = new Msrl(queryUri).resolveURL().toString();
+         }
+         else
+         {
+            queryUri = new URL(queryUri).toString();
          }
          
          //Transform to the right types
@@ -338,10 +345,10 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
          return query.getId();
       }
       catch (IOException e) {
-         throw new RuntimeException("Error creating query",e);
+         throw new RuntimeException(""+e,e);
       }
       catch (ADQLException e) {
-         throw new RuntimeException("Error creating query",e);
+         throw new RuntimeException(""+e,e);
       }
       
    }
@@ -415,6 +422,9 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
 
 /*
  $Log: WebDelegate.java,v $
+ Revision 1.23  2004/03/02 01:37:50  mch
+ Updates from changes to StoreClient and AGSLs
+
  Revision 1.22  2004/02/24 16:04:29  mch
  Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
 
@@ -439,6 +449,9 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
  Revision 1.16  2004/01/08 15:48:17  mch
  Allow myspace references to be given
 $Log: WebDelegate.java,v $
+Revision 1.23  2004/03/02 01:37:50  mch
+Updates from changes to StoreClient and AGSLs
+
 Revision 1.22  2004/02/24 16:04:29  mch
 Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
 
