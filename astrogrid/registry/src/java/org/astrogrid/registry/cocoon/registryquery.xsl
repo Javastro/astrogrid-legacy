@@ -11,16 +11,23 @@
      </body>
    </xsl:template>
 
-   <xsl:template match="queryResponse">
-     <xsl:apply-templates/>
+   <xsl:template match="queryResponse/responseRecord">
+       <p> <table>
+         <tr> <th>Item</th> <th>Value</th> </tr>
+         <xsl:apply-templates/>
+       </table>
+       </p>
    </xsl:template>
 
-   <xsl:template match="responseRecord">
-     <p> <table>
-       <tr> <th>Item</th> <th>Value</th> </tr>
-       <xsl:apply-templates/>
-     </table>
-     </p>
+   <xsl:template match="queryResponse">
+      <xsl:choose>
+        <xsl:when test="text() = 'java.lang.NullPointerException'">
+           <strong>No Records selected</strong>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates/>
+        </xsl:otherwise>
+      </xsl:choose>
    </xsl:template>
 
    <xsl:template match="recordKeyPair">
