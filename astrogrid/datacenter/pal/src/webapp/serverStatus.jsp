@@ -10,7 +10,7 @@
     HtmlDataServer server = new HtmlDataServer();
 %><%
    try {
-      out.write(server.getServerStatus());
+      out.write(server.serverStatusAsHtml());
    } catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
       out.write(server.exceptionAsHtml("Getting server status", th));
