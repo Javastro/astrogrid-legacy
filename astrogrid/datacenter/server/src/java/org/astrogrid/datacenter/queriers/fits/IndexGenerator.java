@@ -19,7 +19,10 @@ import org.astrogrid.datacenter.fits.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Locale;
 import javax.xml.parsers.ParserConfigurationException;
@@ -49,7 +52,13 @@ public class IndexGenerator
 
    /** Configures which axis is the DEC (if any) */
    public int decAxis = -1;
-   
+
+   /** Configures the format of dates in the fits file headers so they can be parsed*/
+   public DateFormat fitsDateFormat = DateFormat.getDateTimeInstance();
+
+   /** Defines the format of the dates in the index - although they will also be output in seconds */
+   public SimpleDateFormat indexDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+
    /**
     * Generates a single index FitsFile 'snippet' for the FITS file at the
     * given url
@@ -114,59 +123,32 @@ public class IndexGenerator
     */
    public String makeIndexSnippet(FitsHeader header, String fileLocation) throws IOException
    {
+      if(header == null) {
+        return "";
+      }
+                                
+      //run trhough all keywords adding them
       StringBuffer keywordSnippet = new StringBuffer();
-      StringBuffer coverageSnippet = new StringBuffer();
       String key = null;
       String val = null;
       
-      if(header == null)
-        return "";
-
-      if (header.getNumAxis() >= 2) {
-         //return "";
-      
-         //work out coverage.  This is not a straightforward rectangle, as the
-         //image may be rotated and possibly even skewed.  So just give it as a
-         //polygon with 4 points.
-         FitsWCS wcsCalculator = new FitsWCS(header);
-         double maxPixelX = header.get("NAXIS1").toInt();
-         double maxPixelY = header.get("NAXIS2").toInt();
-   
-         double[] point1 = wcsCalculator.toWCS( new double[] {0,0});
-         double[] point2 = wcsCalculator.toWCS( new double[] {0,maxPixelY});
-         double[] point3 = wcsCalculator.toWCS( new double[] {maxPixelX,maxPixelY});
-         double[] point4 = wcsCalculator.toWCS( new double[] {maxPixelX,0});
-         
-         //NB origin pixels might not be the min RA & DEC - the picture might be 'upside down'
-         coverageSnippet.append(
-            "   <Coverage shape='Polygon'>\n"+
-            "      <Point><RA>"+point1[0]+"</RA><Dec>"+point1[1]+"</Dec></Point>\n"+
-            "      <Point><RA>"+point2[0]+"</RA><Dec>"+point2[1]+"</Dec></Point>\n"+
-            "      <Point><RA>"+point3[0]+"</RA><Dec>"+point3[1]+"</Dec></Point>\n"+
-            "      <Point><RA>"+point4[0]+"</RA><Dec>"+point4[1]+"</Dec></Point>\n"+
-            "   </Coverage>\n"
-         );
-      }//if
-                                
-      //run trhough all keywords adding them
       Enumeration enum = header.getKeywords();
       while (enum.hasMoreElements())
       {
          FitsKeyword keyword = (FitsKeyword) enum.nextElement();
          val = keyword.getValue();
-         try {
-           if (keyword.isDate()) {
-              keywordSnippet.append("      <"+keyword.getKey()+" units='s'>"+keyword.toDate().getTime()+"</"+keyword.getKey()+">\n");
-              val = keyword.toUTCStringDate();
-           }
-         }catch(ParseException pe) {
-            //it is not a date or cannot be parsed into a date that is okay.
-            //pe.printStackTrace();
-         }
+         
          //could probably do with tidying this up a bit, for example so that multiline comments become one tag
          if (val == null) {
             keywordSnippet.append("      <"+keyword.getKey()+"/>\n");
          } else {
+            try {
+               Date dateVal = fitsDateFormat.parse(val);
+               keywordSnippet.append("      <"+keyword.getKey()+" units='s'>"+dateVal.getTime()+"</"+keyword.getKey()+">\n");
+               val = indexDateFormat.format(dateVal);
+            } catch (ParseException e) {
+               //ignore
+            }
             keywordSnippet.append("      <"+keyword.getKey()+">"+val+"</"+keyword.getKey()+">\n");
          }
       }
@@ -175,6 +157,7 @@ public class IndexGenerator
       //assemble snippet
       String snippet = "<FitsFile>\n"+
                "   <Filename>"+fileLocation+"</Filename>\n"+
+               makeCoverageSnippet(header)+
                "   <Keywords>\n"+
                keywordSnippet.toString()+
                "   </Keywords>\n"+
@@ -185,6 +168,36 @@ public class IndexGenerator
       return snippet;
    }
 
+   /**
+    * Makes a Coverage snippet from the keywords in the given header, depending
+    * on the raAxis, decAxis settings */
+   private String makeCoverageSnippet(FitsHeader header) {
+      if (header.getNumAxis() >= 2) {
+         //return "";
+      
+         //work out coverage.  This is not a straightforward rectangle, as the
+         //image may be rotated and possibly even skewed.  So just give it as a
+         //polygon with 4 points.
+         FitsWCS wcsCalculator = new FitsWCS(header);
+         double maxPixelRA  = header.get("NAXIS"+raAxis).toInt();
+         double maxPixelDec = header.get("NAXIS"+decAxis).toInt();
+   
+         double[] point1 = wcsCalculator.toWCS( new double[] {0,0});
+         double[] point2 = wcsCalculator.toWCS( new double[] {0,maxPixelDec});
+         double[] point3 = wcsCalculator.toWCS( new double[] {maxPixelRA,maxPixelDec});
+         double[] point4 = wcsCalculator.toWCS( new double[] {maxPixelRA,0});
+         
+         //NB origin pixels might not be the min RA & DEC - the picture might be 'upside down'
+         return
+            "   <Coverage shape='Polygon'>\n"+
+            "      <Point><RA>"+point1[0]+"</RA><Dec>"+point1[1]+"</Dec></Point>\n"+
+            "      <Point><RA>"+point2[0]+"</RA><Dec>"+point2[1]+"</Dec></Point>\n"+
+            "      <Point><RA>"+point3[0]+"</RA><Dec>"+point3[1]+"</Dec></Point>\n"+
+            "      <Point><RA>"+point4[0]+"</RA><Dec>"+point4[1]+"</Dec></Point>\n"+
+            "   </Coverage>\n";
+      }
+      return "";
+   }
    /** Checks that the given snippet is valid XML */
    public static void validate(String snippet) throws IOException
    {
@@ -362,6 +375,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.20  2004/09/07 14:52:10  mch
+Fixes etc for SEC
+
 Revision 1.19  2004/09/07 13:50:43  mch
 Added fix so generator continues even if there's a problem reading a file
 
@@ -436,4 +452,5 @@ Revision 1.1  2003/11/28 18:22:18  mch
 IndexGenerator now working
 
 */
+
 

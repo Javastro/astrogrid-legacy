@@ -1,5 +1,5 @@
 /*
- $Id: FitsStreamReader.java,v 1.5 2004/09/07 01:39:27 mch Exp $
+ $Id: FitsStreamReader.java,v 1.6 2004/09/07 14:52:00 mch Exp $
 
  Copyright (c) etc
  */
@@ -47,7 +47,9 @@ public class FitsStreamReader implements FitsReader
    public FitsStreamReader(URL url) throws IOException
    {
       fitsName = url.toString();
-      in = url.openStream();
+      InputStream urlIn = url.openStream();
+      assert urlIn != null : "Stream to URL "+url+" returned null";
+      in = new BufferedInputStream(urlIn);
    }
    
    public FitsStreamReader(File file) throws IOException
@@ -112,8 +114,7 @@ public class FitsStreamReader implements FitsReader
          //quick check for binary data, just in case there is something
          //wrong with the header we don't want to have to read the whole
          // image
-            //you get some nulls in some text lines, on the other hand you also get some complete 0 blocks...
-         /**/
+         //you get some nulls in some text lines, on the other hand you also get some complete 0 blocks...
          for (int i=0;i<block.length;i++)
          {
             if ( ((block[i] >128) || (block[i] <32)) && (block[i] != 0)   )
@@ -132,10 +133,11 @@ public class FitsStreamReader implements FitsReader
                break;
             }
          }
-         if (isNuls) throw new FitsFormatException("All-Nuls block in header of "+fitsName);
+         if (isNuls) throw new FitsFormatException("All-Nuls block in header of "+fitsName+", line "+lineNum);
 
          //parse keyword
          keyword = new FitsKeyword(block);
+
          //add keyword if not null - *do* want to add END so that we can check that
          //the whole lot has been read
          if ( (keyword.getKey() != null) && (keyword.getKey().length() >0))
@@ -207,6 +209,9 @@ public class FitsStreamReader implements FitsReader
 
 /*
  $Log: FitsStreamReader.java,v $
+ Revision 1.6  2004/09/07 14:52:00  mch
+ Fixes etc for SEC
+
  Revision 1.5  2004/09/07 01:39:27  mch
  Moved email keys from TargetIndicator to Slinger
 

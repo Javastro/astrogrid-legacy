@@ -1,4 +1,4 @@
-/*$Id: Initialise.java,v 1.4 2004/09/07 09:48:56 mch Exp $
+/*$Id: Initialise.java,v 1.5 2004/09/07 14:52:19 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.datacenter.sec.initialiser;
 
 import java.io.IOException;
-import org.apache.log4j.BasicConfigurator;
+import java.text.SimpleDateFormat;
 import org.astrogrid.datacenter.queriers.fits.IndexGenerator;
 
 
@@ -26,7 +26,8 @@ public class Initialise {
     */
    public static void main(String[] args) throws IOException {
       IndexGenerator generator = new IndexGenerator();
-      BasicConfigurator.configure();
+      generator.checkForExtensions = false;
+      generator.fitsDateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
       generator.generateIndex(Initialise.class.getResourceAsStream("secUrls.txt"), System.out);
    }
 }
@@ -34,6 +35,9 @@ public class Initialise {
 
 /*
 $Log: Initialise.java,v $
+Revision 1.5  2004/09/07 14:52:19  mch
+Fixes etc for SEC
+
 Revision 1.4  2004/09/07 09:48:56  mch
 Logging updates
 

@@ -26,6 +26,7 @@ public class FitsKeyword
    
    public static final String NAXIS = "NAXIS";  //keyword for number of axis
    public static final String END   = "END";    //keyword for end-of-header marker
+
    /**
     * Create an instance based on the given key and value
     */
@@ -55,7 +56,7 @@ public class FitsKeyword
             //is there a second quote?
             if ((value.indexOf("'",1) > -1))
             {
-               value = value.substring(1,value.indexOf("'",1)-1).trim();
+               value = value.substring(1,value.indexOf("'",1)).trim();
             }
          }
          else
@@ -115,30 +116,15 @@ public class FitsKeyword
       return Double.parseDouble(getValue());
    }
    
-   DateFormat df = DateFormat.getDateTimeInstance();
-
-   public boolean isDate() throws ParseException {
-     if(getValue() == null || getValue().trim().length() <= 0)
-        return false;
-     Date dt = df.parse(getValue());
-     if(dt != null) return true;
-     return false;
-   }
-
-   public Date toDate() throws ParseException {
-     return df.parse(getValue());
-   }
-
-   public  String toUTCStringDate() throws ParseException {
-     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-     return sdf.format(toDate());
-   }
    
    
 }
 
 /*
 $Log: FitsKeyword.java,v $
+Revision 1.4  2004/09/07 14:52:00  mch
+Fixes etc for SEC
+
 Revision 1.3  2004/08/05 15:14:22  KevinBenson
 small bug fix in the FitsREsults.  And now uses dates was teh result of the mber of kevin-dev-03-08-04
 
