@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.10 2003/11/27 17:28:09 nw Exp $
+ * $Id: SocketHandler.java,v 1.11 2003/11/28 16:10:30 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.URL;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.delegate.agss.SocketDelegate;
 import org.astrogrid.datacenter.io.SocketXmlInputStream;
@@ -70,7 +71,7 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
       {
          String notifyTag =
             "<"+SocketDelegate.NOTIFY_STATUS_TAG+">\n"+
-            StatusHelper.makeStatusTag(querier.getHandle(), querier.getStatus())+
+            StatusHelper.makeStatusTag(querier.getQueryId().getId(), querier.getStatus())+
             "</"+SocketDelegate.NOTIFY_STATUS_TAG+">";
 
          out.writeAsDoc(notifyTag);
@@ -251,6 +252,11 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.11  2003/11/28 16:10:30  nw
+finished plugin-rewrite.
+added tests to cover plugin system.
+cleaned up querier & queriermanager. tested
+
 Revision 1.10  2003/11/27 17:28:09  nw
 finished plugin-refactoring
 

@@ -1,18 +1,17 @@
-/* @(#)FitsWCS.java     $Revision: 1.1 $    $Date: 2003/11/26 18:46:55 $
+/* @(#)FitsWCS.java     $Revision: 1.2 $    $Date: 2003/11/28 16:10:30 $
  *
  * Copyright (C) 2003 European Southern Observatory
  * License:  GNU General Public License version 2 or later
  */
 package org.astrogrid.datacenter.fits;
 
-import VOTableUtil.Fits;
 
 /** Calculates World COordinates from the given FITS header.
  *
  * NB THIS IS BLATENTLY STOLEN FROM Pierre Grosbol TO TEST WITH, THIS NEEDS
  * TO BE SORTED BEFORE RELEASE!
  *
- *  @version $Revision: 1.1 $ $Date: 2003/11/26 18:46:55 $
+ *  @version $Revision: 1.2 $ $Date: 2003/11/28 16:10:30 $
  *  @author  P.Grosbol, DMD/ESO, <pgrosbol@eso.org>
  */
 public class FitsWCS {

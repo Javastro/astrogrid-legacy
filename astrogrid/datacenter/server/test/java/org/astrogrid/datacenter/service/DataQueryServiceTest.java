@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.8 2003/11/27 17:28:09 nw Exp $
+/*$Id: DataQueryServiceTest.java,v 1.9 2003/11/28 16:10:30 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,7 +9,6 @@
  *
 **/
 package org.astrogrid.datacenter.service;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -22,17 +21,18 @@ import javax.sql.DataSource;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.axisdataserver.types.QueryHelper;
+import org.astrogrid.datacenter.axisdataserver.types._QueryId;
+import org.astrogrid.datacenter.axisdataserver.types._language;
 import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.QuerierManager;
-import org.astrogrid.datacenter.queriers.DummyQuerierSPI;
 import org.astrogrid.datacenter.queriers.QuerierListener;
+import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Document;
@@ -61,14 +61,23 @@ public class DataQueryServiceTest extends ServerTestCase {
         //wsTest.setUp(); //sets up workspace
         HsqlTestCase.initializeConfiguration();
         SimpleConfig.setProperty(QuerierManager.RESULTS_TARGET_KEY,Querier.TEMPORARY_DUMMY);
+        SimpleConfig.setProperty(ServiceServer.METADATA_FILE_LOC_KEY,"/org/astrogrid/datacenter/test-metadata.xml");
         DataSource ds = new HsqlTestCase.HsqlDataSource();
         //File tmpDir = WorkspaceTest.setUpWorkspace(); // dunno if we need to hang onto this for any reason..
         conn = ds.getConnection();
           String script = getResourceAsString("/org/astrogrid/datacenter/queriers/sql/create-test-db.sql");
         HsqlTestCase.runSQLScript(script,conn);
+        server = new AxisDataServer();
+        InputStream adqlIn = this.getClass().getResourceAsStream("/org/astrogrid/datacenter/queriers/sql/sql-querier-test-3.xml");
+        assertNotNull(adqlIn);
+        Select s =Select.unmarshalSelect(new InputStreamReader(adqlIn));
+        query = new _query();
+         query.setQueryBody(ADQLUtils.marshallSelect(s).getDocumentElement());
     }
 
     protected Connection conn;
+    protected AxisDataServer server;
+    protected _query query;
     //protected final MyWorkspaceTest wsTest = new MyWorkspaceTest(null);
 
     /*
@@ -84,56 +93,71 @@ public class DataQueryServiceTest extends ServerTestCase {
         super.tearDown();
     }
 
-    public void testHandleUniqueness() throws Exception {
-        SimpleConfig.setProperty(QuerierManager.QUERIER_SPI_KEY,DummyQuerierSPI.class.getName());
-         Querier s1 = QuerierManager.createQuerier(QueryHelper.buildMinimalQuery());
-         assertNotNull(s1);
-         Querier s2 = QuerierManager.createQuerier(QueryHelper.buildMinimalQuery());
-         assertNotNull(s2);
-         assertNotSame(s1,s2);
-         assertTrue(! s1.getHandle().trim().equals(s2.getHandle().trim()));
-     }
+
+    public void testDoOneShotQuery() throws Exception {
+        String results = server.doQuery("VOTABLE",query);
+        Document doc = stringToDocument(results);
+        assertIsVotableResultsResponse(doc);
+    }
+    
+    public void testGetLanguageInfo() throws Exception {
+        _language[] langs = server.getLanguageInfo(null);
+        assertNotNull(langs);
+        assertEquals(2,langs.length);
+    }
+    
+    public void testGetMetadata() throws Exception {
+        String result = server.getMetadata(new Object());
+        assertNotNull(result);
+        Document doc = stringToDocument(result);
+        assertIsMetadata(doc);
+    }
+    
+    public void testMakeQueryWithId() throws Exception {
+        _QueryId qid = server.makeQueryWithId(query,"foo");
+        assertEquals("foo",qid.getId());        
+    }
+    
+    public void testAbort() throws Exception {
+        _QueryId qid = server.makeQuery(query);
+        assertNotNull(qid);
+        server.abortQuery(qid);
+        // should have gone now.. i.e. we can't do this..    
+        try {    
+        server.setResultsDestination(qid,new URI(Querier.TEMPORARY_DUMMY));
+        fail("Expected to barf");
+        }catch (IllegalArgumentException e) {
+            //ignored it
+        }
+    }
 
 
-    public void testRunQuery() throws Exception
-    {
-       //set up
-       //get test query
-        InputStream adqlIn = this.getClass().getResourceAsStream("/org/astrogrid/datacenter/queriers/sql/sql-querier-test-3.xml");
-        assertNotNull(adqlIn);
-        Select s =Select.unmarshalSelect(new InputStreamReader(adqlIn));
-        _query query = new _query();
-         query.setQueryBody(ADQLUtils.marshallSelect(s).getDocumentElement());
-        
-        Querier querier =  QuerierManager.createQuerier(query);
-        querier.setResultsDestination(Querier.TEMPORARY_DUMMY);
-        assertNotNull(querier);
-        assertEquals(QueryStatus.UNKNOWN,querier.getStatus());
-        assertEquals(-1.0,querier.getQueryTimeTaken(),0.001);
-        TestListener l = new TestListener();
-        querier.registerListener(l);
+    public void testDoStagedQueryQuery() throws Exception    {
+             _QueryId qid = server.makeQuery(query);
+             assertNotNull(qid);
+             server.setResultsDestination(qid,new URI(Querier.TEMPORARY_DUMMY));
+             assertEquals(QueryStatus.UNKNOWN.toString(),server.getStatus(qid));
+
+            TestListener l = new TestListener();
+            //server.registerWebListener()       
+            server.startQuery(qid);
+            String results = null;
+            while (results == null) {
+                results = server.getResultsAndClose(qid);
+            }
+            URL votableLoc = new URL(results); // probably won't work - need to extract from xml I tbink. this is why we need beans.
+            Document votable = XMLUtils.newDocument(votableLoc.openStream());
+            assertIsVotable(votable);
        
 
-       //run query
-        querier.run(); // note this is running in the same thread - simpler for testing - we don't mind wating.
-        if (querier.getStatus().equals(QueryStatus.ERROR)){
-            Throwable t = querier.getError();
-            t.printStackTrace();
-            fail("querier raised error" + t.getMessage());
-        }        
-        assertEquals(QueryStatus.FINISHED,querier.getStatus());
-        assertTrue(querier.getQueryTimeTaken() > 0);
-        URL votableLoc = new URL(querier.getResultsLoc());
-        assertNotNull(votableLoc);
-        Document votable = XMLUtils.newDocument(votableLoc.openStream());       
-        assertIsVotable(votable);
-    
-       // check what the listener recorded. - should always be the same pattern for this query.
+        /*
+       // check what the listener recorded. - should always be the same pattern for this query.       
         assertEquals(4,l.statusList.size());
         QueryStatus[] expected = new QueryStatus[]{QueryStatus.RUNNING_QUERY,QueryStatus.QUERY_COMPLETE,QueryStatus.RUNNING_RESULTS,QueryStatus.FINISHED};
         for (int i = 0; i < l.statusList.size(); i++) {
             assertEquals(expected[i],l.statusList.get(i));
         }
+      */
     }
 
  
@@ -169,6 +193,11 @@ public class DataQueryServiceTest extends ServerTestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.9  2003/11/28 16:10:30  nw
+finished plugin-rewrite.
+added tests to cover plugin system.
+cleaned up querier & queriermanager. tested
+
 Revision 1.8  2003/11/27 17:28:09  nw
 finished plugin-refactoring
 

@@ -1,5 +1,5 @@
 /*
- $Id: FitsReader.java,v 1.2 2003/11/26 18:46:55 mch Exp $
+ $Id: FitsReader.java,v 1.3 2003/11/28 16:10:30 nw Exp $
 
  Copyright (c) etc
  */
@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -178,6 +179,11 @@ public class FitsReader
 
 /*
  $Log: FitsReader.java,v $
+ Revision 1.3  2003/11/28 16:10:30  nw
+ finished plugin-rewrite.
+ added tests to cover plugin system.
+ cleaned up querier & queriermanager. tested
+
  Revision 1.2  2003/11/26 18:46:55  mch
  First attempt to generate index from FITS files
 

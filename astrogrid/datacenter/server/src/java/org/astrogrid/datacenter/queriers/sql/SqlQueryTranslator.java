@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslator.java,v 1.3 2003/11/27 00:52:58 nw Exp $
+/*$Id: SqlQueryTranslator.java,v 1.4 2003/11/28 16:10:30 nw Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,6 +31,12 @@ public class SqlQueryTranslator implements Translator {
             return e.getFirstChild().getNodeValue();
         } else {
             NodeList nodes = e.getElementsByTagName("sql");
+            if (nodes.getLength() == 0) {
+                throw new IllegalArgumentException("No element named 'sql' found in document");
+            }
+            if (nodes.getLength() > 1) {
+                throw new IllegalArgumentException("More than one element named 'sql' found in document - there can be only 0ne");
+            }
             if (nodes.item(0).getFirstChild() != null) {
                return nodes.item(0).getFirstChild().getNodeValue();
             } else {                
@@ -53,6 +59,11 @@ public class SqlQueryTranslator implements Translator {
 
 /* 
 $Log: SqlQueryTranslator.java,v $
+Revision 1.4  2003/11/28 16:10:30  nw
+finished plugin-rewrite.
+added tests to cover plugin system.
+cleaned up querier & queriermanager. tested
+
 Revision 1.3  2003/11/27 00:52:58  nw
 refactored to introduce plugin-back end and translator maps.
 interfaces in place. still broken code in places.

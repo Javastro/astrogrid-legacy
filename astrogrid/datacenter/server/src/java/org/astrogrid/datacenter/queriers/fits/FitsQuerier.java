@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerier.java,v 1.2 2003/11/27 00:52:58 nw Exp $
+ * $Id: FitsQuerier.java,v 1.3 2003/11/28 16:10:30 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,8 +7,8 @@
 package org.astrogrid.datacenter.queriers.fits;
 
 import java.net.URL;
+
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.spi.BaseQuerierSPI;
 import org.astrogrid.datacenter.queriers.spi.QuerierSPI;
@@ -52,6 +52,11 @@ public String getPluginInfo() {
 
 /*
 $Log: FitsQuerier.java,v $
+Revision 1.3  2003/11/28 16:10:30  nw
+finished plugin-rewrite.
+added tests to cover plugin system.
+cleaned up querier & queriermanager. tested
+
 Revision 1.2  2003/11/27 00:52:58  nw
 refactored to introduce plugin-back end and translator maps.
 interfaces in place. still broken code in places.

@@ -1,4 +1,4 @@
-/*$Id: HsqlQuerier.java,v 1.3 2003/11/27 00:52:58 nw Exp $
+/*$Id: HsqlQuerier.java,v 1.4 2003/11/28 16:10:30 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,39 +30,17 @@ public class HsqlQuerier extends SqlQuerierSPI {
         super();
     }
 
-   /**
-    * Also starts Hypersonic jdbc driver... hardcoded, don't like this!
-    * @todo - check reason for hardcoded driver - MCH
-    *
-   public void startDrivers() throws DatabaseAccessException
-   {
-      //new com.sybase.jdbc2.jdbc.SybDriver(); //compile-time check
-      try
-      {
-         Class.forName("org.hsqldb.jdbcDriver").newInstance();
-      }
-      catch (IllegalAccessException e)
-      {
-         throw new DatabaseAccessException(e,"JDBC Driver error: " + e.toString());
-      }
-      catch (InstantiationException e)
-      {
-         throw new DatabaseAccessException(e, "JDBC Driver error: " + e.toString());
-      }
-      catch (ClassNotFoundException e)
-      {
-         throw new DatabaseAccessException(e, "JDBC Driver error: " + e.toString());
-      }
 
-      //start usual config ones
-      super.startDrivers();
-   }
-     /**/
 }
 
 
 /*
 $Log: HsqlQuerier.java,v $
+Revision 1.4  2003/11/28 16:10:30  nw
+finished plugin-rewrite.
+added tests to cover plugin system.
+cleaned up querier & queriermanager. tested
+
 Revision 1.3  2003/11/27 00:52:58  nw
 refactored to introduce plugin-back end and translator maps.
 interfaces in place. still broken code in places.

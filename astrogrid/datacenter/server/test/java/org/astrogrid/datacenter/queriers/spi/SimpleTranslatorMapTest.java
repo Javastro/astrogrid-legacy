@@ -1,4 +1,4 @@
-/*$Id: SimpleTranslatorMapTest.java,v 1.1 2003/11/27 17:28:09 nw Exp $
+/*$Id: SimpleTranslatorMapTest.java,v 1.2 2003/11/28 16:10:30 nw Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,9 @@
 **/
 package org.astrogrid.datacenter.queriers.spi;
 
-import org.astrogrid.datacenter.axisdataserver.types._language;
-import org.w3c.dom.Element;
-
 import junit.framework.TestCase;
+
+import org.astrogrid.datacenter.axisdataserver.types._language;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Nov-2003
@@ -87,6 +86,11 @@ public class SimpleTranslatorMapTest extends TestCase {
 
 /* 
 $Log: SimpleTranslatorMapTest.java,v $
+Revision 1.2  2003/11/28 16:10:30  nw
+finished plugin-rewrite.
+added tests to cover plugin system.
+cleaned up querier & queriermanager. tested
+
 Revision 1.1  2003/11/27 17:28:09  nw
 finished plugin-refactoring
  

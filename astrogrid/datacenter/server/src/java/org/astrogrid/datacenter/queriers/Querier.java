@@ -11,12 +11,12 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
-import java.util.List;
 import java.util.Vector;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.axisdataserver.types._QueryId;
 import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.delegate.Certification;
 import org.astrogrid.datacenter.queriers.spi.QuerierSPI;
@@ -56,7 +56,7 @@ public class Querier implements Runnable {
    
     protected static final Log log = org.apache.commons.logging.LogFactory.getLog(Querier.class);
        
-   public Querier(QuerierSPI spi,_query query, Workspace workspace, String handle) {
+   public Querier(QuerierSPI spi,_query query, Workspace workspace,_QueryId qid) {
        this.spi = spi;
        this.workspace = workspace;
        this.query = query;
@@ -66,7 +66,7 @@ public class Querier implements Runnable {
        } else {
             this.cert = new Certification(query.getCommunity());
        }
-       this.handle = handle;
+       this.qid = qid;
    }
    /** the plugin we're managing */
    protected final QuerierSPI spi;
@@ -77,7 +77,7 @@ public class Querier implements Runnable {
    protected final Workspace workspace;
    /** A handle is used to identify a particular service.  It is also used as the
     * basis for any temporary storage. */
-   protected final String handle;
+   protected final _QueryId qid;
    /** certification information */
    protected final Certification cert;
       
@@ -109,8 +109,8 @@ public class Querier implements Runnable {
    /**
     * Returns this instances handle
     */
-   public String getHandle() {
-      return handle;
+   public _QueryId getQueryId() {
+      return qid;
    }
    
 
@@ -219,7 +219,7 @@ public class Querier implements Runnable {
                 throw new DatabaseAccessException("Translation result " + intermediateRep.getClass().getName() + " not of expected type " + expectedType.getName());
             }
         } catch (Throwable t) {
-            throw new DatabaseAccessException(t,"Translation phase failed");
+            throw new DatabaseAccessException(t,"Translation phase failed:" + t.getMessage());
         } 
 
         
@@ -232,7 +232,7 @@ public class Querier implements Runnable {
             setStatus(QueryStatus.QUERY_COMPLETE);      
             return results;
         } catch (Throwable t) {
-            throw new DatabaseAccessException(t,"Query phase failed"); 
+            throw new DatabaseAccessException(t,"Query phase failed:" + t.getMessage()); 
         }
     }
 
@@ -295,7 +295,7 @@ public class Querier implements Runnable {
          myspace = new MySpaceManagerDelegate(resultsDestination);
       }
       
-      String myspaceFilename = getHandle()+"_results";
+      String myspaceFilename = getQueryId()+"_results";
       
       try {
          //stream results to string for outputting to myspace.   At
@@ -387,7 +387,7 @@ public class Querier implements Runnable {
     * For debugging/display
     */
    public String toString() {
-      return "["+getHandle()+"] "+this.getClass();
+      return "Querier ["+getQueryId()+"] "+this.spi.getPluginInfo();
    }
    
    /** close the querier - removes itself from the list and so will eventually
@@ -398,8 +398,8 @@ public class Querier implements Runnable {
    public void close() throws IOException {
       //remove from list
       /* be extra cautious here */
-      if (QuerierManager.queriers != null && getHandle() != null) {
-         QuerierManager.queriers.remove(getHandle());
+      if (QuerierManager.queriers != null && getQueryId() != null) {
+         QuerierManager.queriers.remove(getQueryId().getId());
       }
       if (spi != null) {
           try {
@@ -447,7 +447,7 @@ public class Querier implements Runnable {
     * Special error status - generated when querier is in its own thread, so
     * that it can be accessed by polling clients
     */
-   protected void setErrorStatus(Throwable th) {
+   public void setErrorStatus(Throwable th) {
       setStatus(QueryStatus.ERROR);
       
       error = th;
@@ -466,11 +466,7 @@ public class Querier implements Runnable {
       return error;
    }
    
-   /** set the error - 0only really used for testing */
-   public void setError(Throwable t) {
-       setStatus(QueryStatus.ERROR);
-       this.error =t;
-   }
+
    
    
    /**
@@ -517,6 +513,11 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.5  2003/11/28 16:10:30  nw
+ finished plugin-rewrite.
+ added tests to cover plugin system.
+ cleaned up querier & queriermanager. tested
+
  Revision 1.4  2003/11/27 17:28:09  nw
  finished plugin-refactoring
 

@@ -1,4 +1,4 @@
-/*$Id: AbstractTestInstallation.java,v 1.5 2003/11/27 17:28:09 nw Exp $
+/*$Id: AbstractTestInstallation.java,v 1.6 2003/11/28 16:10:30 nw Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,15 +20,10 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.client.Call;
-import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.adql.ADQLException;
-import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
@@ -37,7 +32,6 @@ import org.astrogrid.datacenter.delegate.Metadata;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 /** Abstract base class that captures commonality between top level unit test and installation test.
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Sep-2003
@@ -281,6 +275,11 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
 
 /*
 $Log: AbstractTestInstallation.java,v $
+Revision 1.6  2003/11/28 16:10:30  nw
+finished plugin-rewrite.
+added tests to cover plugin system.
+cleaned up querier & queriermanager. tested
+
 Revision 1.5  2003/11/27 17:28:09  nw
 finished plugin-refactoring
 

@@ -68,7 +68,7 @@ public class ServerTest extends ServerTestCase
       //submit query
       String result = server.doQuery(AdqlQuerier.VOTABLE,q);
       assertNotNull(result);  
-      assertIsResultsResponse(result);
+      assertIsVotableResultsResponse(result);
       
       
       
@@ -104,6 +104,11 @@ public class ServerTest extends ServerTestCase
 
 /*
 $Log: ServerTest.java,v $
+Revision 1.5  2003/11/28 16:10:30  nw
+finished plugin-rewrite.
+added tests to cover plugin system.
+cleaned up querier & queriermanager. tested
+
 Revision 1.4  2003/11/27 00:52:58  nw
 refactored to introduce plugin-back end and translator maps.
 interfaces in place. still broken code in places.

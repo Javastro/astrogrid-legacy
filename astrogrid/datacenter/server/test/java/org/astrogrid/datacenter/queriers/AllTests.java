@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2003/11/21 17:37:56 nw Exp $
+/*$Id: AllTests.java,v 1.3 2003/11/28 16:10:30 nw Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,7 @@ public class AllTests {
         //$JUnit-BEGIN$
         suite.addTest(DummyQuerierTest.suite());
         suite.addTest(QueryTranslatorTest.suite());
+        suite.addTest(new TestSuite(QuerierManagerTest.class));
         //$JUnit-END$
         return suite;
     }
@@ -42,6 +43,11 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.3  2003/11/28 16:10:30  nw
+finished plugin-rewrite.
+added tests to cover plugin system.
+cleaned up querier & queriermanager. tested
+
 Revision 1.2  2003/11/21 17:37:56  nw
 made a start tidying up the server.
 reduced the number of failing tests

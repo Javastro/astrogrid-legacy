@@ -1,4 +1,4 @@
-/*$Id: FitsTest.java,v 1.2 2003/11/27 17:28:09 nw Exp $
+/*$Id: FitsTest.java,v 1.3 2003/11/28 16:10:30 nw Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -11,6 +11,7 @@ package org.astrogrid.datacenter.fits;
 
 import java.io.IOException;
 import java.net.URL;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -53,6 +54,11 @@ public class FitsTest extends TestCase
 
 /*
  $Log: FitsTest.java,v $
+ Revision 1.3  2003/11/28 16:10:30  nw
+ finished plugin-rewrite.
+ added tests to cover plugin system.
+ cleaned up querier & queriermanager. tested
+
  Revision 1.2  2003/11/27 17:28:09  nw
  finished plugin-refactoring
 

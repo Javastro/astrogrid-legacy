@@ -5,10 +5,9 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.axisdataserver.types.QueryHelper;
-import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.DummyQuerierSPI;
 import org.astrogrid.datacenter.queriers.DummyQueryResults;
+import org.astrogrid.datacenter.queriers.Querier;
 import org.w3c.dom.Document;
 
 
@@ -56,7 +55,7 @@ public class ResponseHelperTest extends ServerTestCase
       
       DummyQueryResults results = new DummyQueryResults("ResponseHelperTest");
       Document d = ResponseHelper.makeResultsResponse(querier, results.toVotable().getDocumentElement());
-      assertIsResultsResponse(d);      
+      assertIsVotableResultsResponse(d);      
    }
 
    /**
@@ -64,7 +63,7 @@ public class ResponseHelperTest extends ServerTestCase
     */
    public void testErrorResponses() throws Throwable
    {
-      querier.setError(new IOException("Test error"));
+      querier.setErrorStatus(new IOException("Test error"));
 
       try {
          ResponseHelper.makeQueryCreatedResponse(querier);
@@ -104,6 +103,7 @@ public class ResponseHelperTest extends ServerTestCase
      * @see junit.framework.TestCase#tearDown()
      */
     protected void tearDown() throws Exception {
+        querier.close();
         super.tearDown();
     }
 

@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.4 2003/11/27 17:28:09 nw Exp $
+/*$Id: QuerierManager.java,v 1.5 2003/11/28 16:10:30 nw Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,20 +16,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.axisdataserver.types._QueryId;
+import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.queriers.spi.QuerierSPI;
-import org.astrogrid.datacenter.queriers.sql.SqlQuerierSPI;
-import org.astrogrid.datacenter.snippet.CommunityHelper;
-import org.astrogrid.datacenter.snippet.DocHelper;
-import org.astrogrid.datacenter.snippet.DocMessageHelper;
 import org.astrogrid.util.Workspace;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Element;
 
 /** Manages the construction and initialization of Queriers,
@@ -77,7 +71,7 @@ public class QuerierManager {
     */
    public static Querier createQuerier(Element rootElement)
       throws DatabaseAccessException {
-      
+      /*
       Querier querier = new Querier(instantiateQuerierSPI(),null,null,null); // bodge
       //assigns handle
       try {
@@ -117,7 +111,7 @@ public class QuerierManager {
       }
       catch (IOException e) {
          reportException(e);
-      }
+      }*/
       /*
       catch (MarshalException e) {
          reportException(e);
@@ -133,7 +127,7 @@ public class QuerierManager {
     * Creates an adql querier with a generated (unique-to-this-service) handle
     */
    public static Querier createQuerier(_query q) throws DatabaseAccessException {
-      return QuerierManager.createQuerier(q, generateHandle());
+      return QuerierManager.createQuerier(q, generateQueryId());
    }
    
  
@@ -144,23 +138,23 @@ public class QuerierManager {
     * @throws DatabaseAccessException on error (contains cause exception)
     * @todo - add parsing of results target?
     */
-   public static Querier createQuerier(_query query, String handle) throws DatabaseAccessException {
+   public static Querier createQuerier(_query query, _QueryId qid) throws DatabaseAccessException {
       
       QuerierSPI spi = instantiateQuerierSPI();
       //assigns handle
       try {
-         if (queriers.get(handle) != null) {
-            log.error( "Handle '" + handle + "' already in use");
-            throw new IllegalArgumentException("Handle " + handle + "already in use");
+         if (queriers.get(qid) != null) {
+            log.error( "Handle '" + qid + "' already in use");
+            throw new IllegalArgumentException("Handle " + qid + "already in use");
          }
-         Workspace workspace = new Workspace(handle);
-         Querier querier = new Querier(spi,query,workspace,handle);
-         queriers.put(handle, querier);
+         Workspace workspace = new Workspace(qid.getId());
+         Querier querier = new Querier(spi,query,workspace,qid);
+         queriers.put(qid.getId(), querier);
 
          return querier;
       }
       catch (IOException e) {
-         throw new DatabaseAccessException(e,"Could not create workspace for id:"+handle);
+         throw new DatabaseAccessException(e,"Could not create workspace for id:"+qid);
       }
    }
    
@@ -225,10 +219,11 @@ public class QuerierManager {
     * see which was the last run). Later we could add service/user information
     * if available
     */
-   static String generateHandle() {
+   static _QueryId generateQueryId() {
       Date todayNow = new Date();
-      
-      return todayNow.getYear()
+      _QueryId qid = new _QueryId();
+      qid.setId(
+         todayNow.getYear()
          + "-"
          + todayNow.getMonth()
          + "-"
@@ -240,7 +235,9 @@ public class QuerierManager {
          + "."
          + todayNow.getSeconds()
          + "_"
-         + (random.nextInt(8999999) + 1000000);
+         + (random.nextInt(8999999) + 1000000)
+         );
+       return qid;
       //plus botched bit... not really unique
       
    }
@@ -249,6 +246,11 @@ public class QuerierManager {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.5  2003/11/28 16:10:30  nw
+ finished plugin-rewrite.
+ added tests to cover plugin system.
+ cleaned up querier & queriermanager. tested
+
  Revision 1.4  2003/11/27 17:28:09  nw
  finished plugin-refactoring
 

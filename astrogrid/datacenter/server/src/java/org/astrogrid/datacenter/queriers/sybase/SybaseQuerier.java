@@ -1,4 +1,4 @@
-/*$Id: SybaseQuerier.java,v 1.3 2003/11/27 00:52:58 nw Exp $
+/*$Id: SybaseQuerier.java,v 1.4 2003/11/28 16:10:30 nw Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.datacenter.queriers.sybase;
 import java.io.IOException;
 
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.queriers.QueryTranslator;
 import org.astrogrid.datacenter.queriers.sql.SqlQuerierSPI;
 import org.xml.sax.SAXException;
 
@@ -32,19 +31,20 @@ public class SybaseQuerier extends SqlQuerierSPI
         super();
    }
 
-
-    /* (non-Javadoc)
-     * @see org.astrogrid.datacenter.queriers.sql.SqlQuerier#createQueryTranslator()
-     */
-    protected QueryTranslator createQueryTranslator() {
-        return new SybaseQueryTranslator();
-    }
+   static {
+       map.add("http://tempuri.org/adql",new SybaseQueryTranslator());
+   }
 
 }
 
 
 /*
 $Log: SybaseQuerier.java,v $
+Revision 1.4  2003/11/28 16:10:30  nw
+finished plugin-rewrite.
+added tests to cover plugin system.
+cleaned up querier & queriermanager. tested
+
 Revision 1.3  2003/11/27 00:52:58  nw
 refactored to introduce plugin-back end and translator maps.
 interfaces in place. still broken code in places.

@@ -1,5 +1,5 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.3 2003/11/27 00:52:58 nw Exp $
- * Created on 29-Aug-2003
+/*$Id: SqlQueryTranslatorTest.java,v 1.4 2003/11/28 16:10:30 nw Exp $
+ * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -9,23 +9,19 @@
  *
 **/
 package org.astrogrid.datacenter.queriers.sql;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.Properties;
 
-import junit.framework.TestCase;
+import org.astrogrid.datacenter.ServerTestCase;
+import org.astrogrid.datacenter.queriers.spi.Translator;
+import org.w3c.dom.Document;
 
-import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.queriers.QueryTranslator;
-/** test the query translator - maybe n the wrong package, but convenient to have it here for now.
- * @author Noel Winstanley nw@jb.man.ac.uk 29-Aug-2003
- * * @todo add wider range of tests.
+/**
+ * @author Noel Winstanley nw@jb.man.ac.uk 28-Nov-2003
+ *
  */
-public class SqlQueryTranslatorTest extends TestCase {
+public class SqlQueryTranslatorTest extends ServerTestCase {
 
     /**
-     * Constructor for MySQLVisitorTest.
+     * Constructor for SqlQueryTranslatorTest.
      * @param arg0
      */
     public SqlQueryTranslatorTest(String arg0) {
@@ -35,84 +31,84 @@ public class SqlQueryTranslatorTest extends TestCase {
     public static void main(String[] args) {
         junit.textui.TestRunner.run(SqlQueryTranslatorTest.class);
     }
-    public void test1() throws Exception {
-        processFile("sample1.xml");
+
+    /*
+     * @see ServerTestCase#setUp()
+     */
+    protected void setUp() throws Exception {
+        super.setUp();
+        trans = new SqlQueryTranslator();
+    }
+    protected Translator trans; 
+    /*
+     * @see ServerTestCase#tearDown()
+     */
+    protected void tearDown() throws Exception {
+        super.tearDown();
     }
 
-    public void test2() throws Exception {
-        processFile("sample2.xml");
+    public void testReturnType() {
+        assertEquals(String.class,trans.getResultType());
     }
+    public final static String QUERY = "select * from bling";    
+    public final static String VALID_XML = "<?xml version='1.0'?><sql>" + QUERY + "</sql>";
+    public final static String INVALID_XML = "<?xml version='1.0'?><Sql>" + QUERY + "</Sql>";
+    public final static String DUPLICATE_XML = "<?xml version='1.0'?><foo><sql></sql><sql></sql></foo>";
+    public final static String QUERY1 = "select * from hens where teeth < 1"; // has a < in it
+    public final static String CDATA_XML = "<?xml version='1.0'?><sql><![CDATA[" + QUERY1 + "]]></sql>";
+    public final static String NESTED_XML = "<?xml version='1.0'?><some><tags><foo /><sql>"+QUERY +"</sql></tags></some>";
 
-    public void test3() throws Exception {
-        processFile("sample3.xml");
+    
+    public void testValid() throws Exception {
+        Document doc = stringToDocument(VALID_XML);
+        Object o = trans.translate(doc.getDocumentElement());
+        assertNotNull(o);
+        assertEquals(trans.getResultType(),o.getClass());
+        assertEquals(QUERY,o);               
     }
     
-    public void test4() throws Exception {
-        processFile("sample4.xml");
+    public void testInvalid() throws Exception {
+        try {
+        Document doc = stringToDocument(INVALID_XML);
+        Object o = trans.translate(doc.getDocumentElement());
+        fail("should have barfed");
+        } catch (IllegalArgumentException e) {
+            //expected
+        }
     }
     
-    public void test5() throws Exception {
-        processFile("sample5.xml");
+    public void testMultiple() throws Exception {
+        try {
+            Document doc = stringToDocument(DUPLICATE_XML);
+            Object o = trans.translate(doc.getDocumentElement());
+            fail("should have barfed");
+        } catch (IllegalArgumentException e) {
+            //expected
+        }
     }
-    public void test6() throws Exception {
-        processFile("sample6.xml");
+    
+    public void testCDATA() throws Exception {
+        Document doc= stringToDocument(CDATA_XML);
+        Object o = trans.translate(doc.getDocumentElement());
+        assertNotNull(o);
+        assertEquals(QUERY1,o);
     }
-    protected void processFile(String path) throws Exception {
-          InputStream is = this.getClass().getResourceAsStream(path);
-          assertNotNull(is);
-          Reader reader = new InputStreamReader(is);
-          Select query = Select.unmarshalSelect(reader);
-          assertNotNull(query);
-          assertTrue(query.isValid());
 
-          Properties results = new Properties();
-          InputStream propsStream  = this.getClass().getResourceAsStream("mysql-translations.properties");
-          results.load(propsStream);
-          assertFalse(results.isEmpty());
-            try {
-            QueryTranslator visitor = new AdqlQueryTranslator();
-            String sql = visitor.translate(query);
-            assertNotNull(sql);
-             System.out.println(sql);
-             String expectedSQL = results.getProperty(path);
-             assertNotNull(expectedSQL);
-             assertEquals(expectedSQL.trim(),sql.trim());
-          } catch (Exception e) {
-              e.printStackTrace();
-              fail("Caught Exception " + e.getMessage());
-          }
- 
-        
-
-      }
+    public void testNested() throws Exception {
+        Document doc = stringToDocument(NESTED_XML);
+        Object o = trans.translate(doc.getDocumentElement());
+        assertNotNull(o);
+        assertEquals(QUERY,o);
+    }
 
 }
 
 
 /* 
 $Log: SqlQueryTranslatorTest.java,v $
-Revision 1.3  2003/11/27 00:52:58  nw
-refactored to introduce plugin-back end and translator maps.
-interfaces in place. still broken code in places.
-
-Revision 1.2  2003/11/21 17:37:56  nw
-made a start tidying up the server.
-reduced the number of failing tests
-found commented out code
-
-Revision 1.1  2003/11/14 00:38:29  mch
-Code restructure
-
-Revision 1.1  2003/10/14 12:59:40  nw
-moved SqlQueryTranslator here from removed adql package
-
-Revision 1.2  2003/09/17 14:53:02  nw
-tidied imports
-
-Revision 1.1  2003/09/03 14:45:59  nw
-renamed test to match renamed class
-
-Revision 1.1  2003/09/02 14:41:15  nw
-added tests for ADQL parser
+Revision 1.4  2003/11/28 16:10:30  nw
+finished plugin-rewrite.
+added tests to cover plugin system.
+cleaned up querier & queriermanager. tested
  
 */

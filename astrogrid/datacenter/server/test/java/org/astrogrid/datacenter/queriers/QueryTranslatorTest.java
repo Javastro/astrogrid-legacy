@@ -1,4 +1,4 @@
-/*$Id: QueryTranslatorTest.java,v 1.2 2003/11/27 00:52:58 nw Exp $
+/*$Id: QueryTranslatorTest.java,v 1.3 2003/11/28 16:10:30 nw Exp $
  * Created on 02-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.astrogrid.datacenter.adql.QOM;
-import org.w3c.dom.Element;
 
 /** test behaviour of the QueryTranslator isInternalNode method.
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Sep-2003
@@ -81,6 +80,11 @@ public class QueryTranslatorTest extends TestCase {
 
 /* 
 $Log: QueryTranslatorTest.java,v $
+Revision 1.3  2003/11/28 16:10:30  nw
+finished plugin-rewrite.
+added tests to cover plugin system.
+cleaned up querier & queriermanager. tested
+
 Revision 1.2  2003/11/27 00:52:58  nw
 refactored to introduce plugin-back end and translator maps.
 interfaces in place. still broken code in places.

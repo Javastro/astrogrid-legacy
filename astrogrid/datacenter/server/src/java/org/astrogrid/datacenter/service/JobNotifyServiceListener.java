@@ -1,5 +1,5 @@
 /*
- * $Id: JobNotifyServiceListener.java,v 1.8 2003/11/25 14:17:24 mch Exp $
+ * $Id: JobNotifyServiceListener.java,v 1.9 2003/11/28 16:10:30 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -42,7 +42,7 @@ public class JobNotifyServiceListener implements QuerierListener
    public void queryStatusChanged(Querier querier)
    {
       try {
-         notifier.tellServer(querier.getHandle(), querier.getStatus());
+         notifier.tellServer(querier.getQueryId().getId(), querier.getStatus());
       }
       catch (ServiceException e) {
          LogFactory.getLog(WebNotifier.class).error("Failed to contact service using "+notifier, e);
@@ -53,6 +53,11 @@ public class JobNotifyServiceListener implements QuerierListener
 
 /*
 $Log: JobNotifyServiceListener.java,v $
+Revision 1.9  2003/11/28 16:10:30  nw
+finished plugin-rewrite.
+added tests to cover plugin system.
+cleaned up querier & queriermanager. tested
+
 Revision 1.8  2003/11/25 14:17:24  mch
 Extracting Querier from DatabaseQuerier to handle non-database backends
 

@@ -1,4 +1,4 @@
-/*$Id: ServerTestCase.java,v 1.2 2003/11/27 17:28:09 nw Exp $
+/*$Id: ServerTestCase.java,v 1.3 2003/11/28 16:10:30 nw Exp $
  * Created on 20-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.datacenter;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -128,11 +129,21 @@ public class ServerTestCase extends XMLTestCase {
             assertNotNull(str);
         return str;
     }
+    
+    /** parse string to Document */
+    public static Document stringToDocument(String xml) throws ParserConfigurationException, SAXException, IOException {
+        assertNotNull(xml);
+        InputStream is = new ByteArrayInputStream(xml.getBytes());
+        assertNotNull(is);
+        Document doc =  XMLUtils.newDocument(is);
+        assertNotNull(doc);
+        return doc;
+    }
 
     /**
      * @param d
      */
-    public void assertIsResultsResponse(Document d) throws Exception {
+    public void assertIsVotableResultsResponse(Document d) throws Exception {
         assertXpathExists("/DatacenterResults",d);
         assertXpathExists("/DatacenterResults/@queryid",d);
         assertXpathExists("/DatacenterResults/TIME",d);
@@ -142,11 +153,15 @@ public class ServerTestCase extends XMLTestCase {
          
     }
     
-    public void assertIsResultsResponse(String s) throws Exception{
+    public void assertIsVotableResultsResponse(String s) throws Exception{
         //XMLUtils.PrettyDocumentToStream(d,System.out);
         Document d = XMLUnit.buildControlDocument(s);
-        assertIsResultsResponse(d);
+        assertIsVotableResultsResponse(d);
     }
+    
+    
+    
+    
     /**
      * @param d
      */
@@ -201,6 +216,11 @@ public class ServerTestCase extends XMLTestCase {
 
 /* 
 $Log: ServerTestCase.java,v $
+Revision 1.3  2003/11/28 16:10:30  nw
+finished plugin-rewrite.
+added tests to cover plugin system.
+cleaned up querier & queriermanager. tested
+
 Revision 1.2  2003/11/27 17:28:09  nw
 finished plugin-refactoring
 

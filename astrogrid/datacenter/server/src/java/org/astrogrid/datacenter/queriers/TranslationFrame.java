@@ -1,4 +1,4 @@
-/*$Id: TranslationFrame.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+/*$Id: TranslationFrame.java,v 1.2 2003/11/28 16:10:30 nw Exp $
  * Created on 01-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -197,46 +197,7 @@ public class TranslationFrame {
             return buf.toString();
         }    
     
-    /**
-     * <p>Joins the elements of the provided array into a single String
-     * containing the provided list of elements.</p>
-     *
-     * <p>No delimiter is added before or after the list.
-     * Null objects or empty strings within the array are represented by 
-     * empty strings.</p>
-     *
-     * <pre>
-     * StringUtils.join(null, *)               = null
-     * StringUtils.join([], *)                 = ""
-     * StringUtils.join([null], *)             = ""
-     * StringUtils.join(["a", "b", "c"], ';')  = "a;b;c"
-     * StringUtils.join(["a", "b", "c"], null) = "abc"
-     * StringUtils.join([null, "", "a"], ';')  = ";;a"
-     * </pre>
-   *<i>Lifted from commons.lang.StringUtil</i>
-     * @param array  the array of values to join together, may be null
-     * @param separator  the separator character to use
-     * @return the joined String, <code>null</code> if null array input
-     */
-    public static String join(Object[] array, char separator) {
-        if (array == null) {
-            return null;
-        }
-        int arraySize = array.length;
-        int bufSize = (arraySize == 0 ? 0 : ((array[0] == null ? 16 : array[0].toString().length()) + 1) * arraySize);
-        StringBuffer buf = new StringBuffer(bufSize);
-
-        for (int i = 0; i < arraySize; i++) {
-            if (i > 0) {
-                buf.append(separator);
-            }
-            if (array[i] != null) {
-                buf.append(array[i]);
-            }
-        }
-        return buf.toString();
-    }
-    
+ 
     /**
       * <p>Joins the elements of the provided <code>Iterator</code> into
       * a single String containing the provided elements.</p>
@@ -310,6 +271,11 @@ public class TranslationFrame {
 
 /* 
 $Log: TranslationFrame.java,v $
+Revision 1.2  2003/11/28 16:10:30  nw
+finished plugin-rewrite.
+added tests to cover plugin system.
+cleaned up querier & queriermanager. tested
+
 Revision 1.1  2003/11/14 00:38:29  mch
 Code restructure
 

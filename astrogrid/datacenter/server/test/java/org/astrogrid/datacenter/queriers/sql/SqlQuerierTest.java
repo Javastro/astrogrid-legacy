@@ -1,4 +1,4 @@
-/*$Id: SqlQuerierTest.java,v 1.5 2003/11/27 17:28:09 nw Exp $
+/*$Id: SqlQuerierTest.java,v 1.6 2003/11/28 16:10:30 nw Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.axisdataserver.types._QueryId;
 import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
@@ -106,7 +107,9 @@ public class SqlQuerierTest extends ServerTestCase {
         assertNotNull(select);          
         _query q = new _query();
         q.setQueryBody(ADQLUtils.marshallSelect(select).getDocumentElement());
-        Querier querier = new Querier(new SqlQuerierSPI(),q,new Workspace("handle"),"handle");
+        _QueryId qid = new _QueryId();
+        qid.setId("Handle");
+        Querier querier = new Querier(new SqlQuerierSPI(),q,new Workspace(qid.getId()),qid);
         assertNotNull(querier);
         QueryResults results = querier.doQuery();
         assertNotNull(results);
@@ -123,6 +126,11 @@ public class SqlQuerierTest extends ServerTestCase {
 
 /*
 $Log: SqlQuerierTest.java,v $
+Revision 1.6  2003/11/28 16:10:30  nw
+finished plugin-rewrite.
+added tests to cover plugin system.
+cleaned up querier & queriermanager. tested
+
 Revision 1.5  2003/11/27 17:28:09  nw
 finished plugin-refactoring
 

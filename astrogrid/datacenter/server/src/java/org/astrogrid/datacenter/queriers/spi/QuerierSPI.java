@@ -1,4 +1,4 @@
-/*$Id: QuerierSPI.java,v 1.1 2003/11/27 00:52:58 nw Exp $
+/*$Id: QuerierSPI.java,v 1.2 2003/11/28 16:10:30 nw Exp $
  * Created on 26-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,8 +9,6 @@
  *
 **/
 package org.astrogrid.datacenter.queriers.spi;
-
-import java.util.List;
 
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.util.Workspace;
@@ -78,6 +76,11 @@ public interface QuerierSPI {
 
 /* 
 $Log: QuerierSPI.java,v $
+Revision 1.2  2003/11/28 16:10:30  nw
+finished plugin-rewrite.
+added tests to cover plugin system.
+cleaned up querier & queriermanager. tested
+
 Revision 1.1  2003/11/27 00:52:58  nw
 refactored to introduce plugin-back end and translator maps.
 interfaces in place. still broken code in places.
