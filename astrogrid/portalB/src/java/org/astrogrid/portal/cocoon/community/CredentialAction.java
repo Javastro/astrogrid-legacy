@@ -10,7 +10,7 @@ import org.apache.cocoon.environment.ObjectModelHelper;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.astrogrid.community.delegate.policy.AdministrationDelegate;
+//import org.astrogrid.community.delegate.policy.AdministrationDelegate;
 /**
  *
  * Class Name: DataQueryServlet
