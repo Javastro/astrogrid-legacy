@@ -1,0 +1,41 @@
+/* AstroGrid Pfo test Style */
+.agHint {
+    padding: 2px 4px 2px 4px;
+    font-size: 14px;
+    font-family: arial, verdana, sans-serif;
+/*    background-color: lightblue;*/
+    background-color: yellow;
+    border-color: red;
+    border-left: 2px;
+    border: 2px 2px 2px 2px;
+    width: 400px;
+}
+
+.HintButton {
+    font-size: 10px;
+    font-family: verdana, arial, sans-serif;
+    cursor: pointer;
+    padding: 2px 4px 0 4px;
+/*    background-color: lightblue;*/
+    background-color: transparent;
+    border-color: orange;
+}
+
+
+.agTitle {
+    font-size: 25px;
+    font-family: arial, verdana, sans-serif;
+    letter-spacing: 10px;
+    color: yellow;
+    font-style: italic;
+    font-weight: bold;
+    border-bottom-width:            2;
+    border-bottom-style:            solid;
+    border-right-width:             2;
+    border-right-style:             solid;
+    padding-right:	40px;
+    padding-left:	20px;
+	    
+    margin-left:                    8%;
+    margin-right:                   15%;
+}
