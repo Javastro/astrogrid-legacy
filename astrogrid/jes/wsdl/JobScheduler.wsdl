@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions targetNamespace="urn:jobScheduler.astrogrid.org" 
-                  xmlns:impl="urn:jobScheduler.astrogrid.org" 
-                  xmlns:intf="urn:jobScheduler.astrogrid.org" 
+<wsdl:definitions targetNamespace="jobScheduler.delegate.jes.astrogrid.org" 
+                  xmlns:impl="jobScheduler.delegate.jes.astrogrid.org" 
+                  xmlns:intf="jobScheduler.delegate.jes.astrogrid.org" 
                   xmlns:apachesoap="http://xml.apache.org/xml-soap" 
                   xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" 
                   xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
