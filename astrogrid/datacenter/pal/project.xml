@@ -124,16 +124,6 @@ tomcat.password=secret<br />
     </dependency>
     
     <dependency>
-      <groupId>astrogrid-applications</groupId>
-      <artifactId>astrogrid-applications</artifactId>
-      <version>SNAPSHOT</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    
-    
-    <dependency>
       <groupId>astrogrid-ogsadai</groupId>
       <type>jar</type>
       <artifactId>astrogrid-ogsadai-app</artifactId>
@@ -160,15 +150,6 @@ tomcat.password=secret<br />
     </dependency>
 
     <dependency>
-      <id>objectwiz-votable</id>
-      <version>UNKNOWN</version>
-      <jar>objectwiz-votable.jar</jar>
-          <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
-    </dependency>
-
-    <dependency>
       <id>VOTableUtil</id>
       <version>UNKNOWN</version>
       <jar>VOTableUtil.jar</jar>
@@ -177,6 +158,16 @@ tomcat.password=secret<br />
     </properties>
     </dependency>
     
+    <!-- required for the CEA interface -->
+    <dependency>
+      <id>astrogrid-workflow-objects</id>
+      <groupId>org.astrogrid</groupId>
+      <version>SNAPSHOT</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
     <dependency>
       <id>junitee</id>
       <version>1.8</version>

@@ -87,9 +87,10 @@
          <war.bundle>true</war.bundle>
       </properties>
     </dependency>
-    <!-- required for the ApplicationController interface -->
+
+    <!-- required for the CEA interface -->
     <dependency>
-      <id>astrogrid-applications</id>
+      <id>astrogrid-workflow-objects</id>
       <groupId>org.astrogrid</groupId>
       <version>SNAPSHOT</version>
       <properties>
