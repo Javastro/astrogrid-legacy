@@ -85,7 +85,7 @@
       <Param>
         <vr:Name>RA</vr:Name>
         <vr:Description>The right ascension of the search cone center</vr:Description>
-   <DatatType>float</DataType>
+   <DataType>float</DataType>
         <Unit>degrees</Unit>
    <UCD>POS_EQ_RA_MAIN</UCD>
       </Param>
