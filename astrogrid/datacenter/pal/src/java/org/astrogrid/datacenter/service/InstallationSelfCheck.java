@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.9 2004/10/08 17:14:22 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.10 2004/10/12 12:33:22 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -135,7 +135,8 @@ public class InstallationSelfCheck extends TestCase {
       assertNotNull(vodata);
    }
 
-   /** Submits a number of cone searches, starting small and getting larger */
+   /** Submits a number of cone searches, starting small and getting larger
+   - this is a silly idea to run on real services. ahem.  MC
    public void testMiniSoak() throws Throwable
    {
       DataServer server = new DataServer();
@@ -145,7 +146,8 @@ public class InstallationSelfCheck extends TestCase {
                             SimpleQueryMaker.makeConeQuery(30, 30, 6+i, TargetIndicator.makeIndicator(new NullWriter()), ReturnTable.CSV));
       }
    }
-
+    */
+   
    /* not used
    public void testCanCreateWorkspace() throws IOException {
          Workspace ws = new Workspace("test-workspace");
@@ -182,6 +184,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.10  2004/10/12 12:33:22  mch
+ Removed soak test as it's inappropriate to run on real services
+
  Revision 1.9  2004/10/08 17:14:22  mch
  Clearer separation of metadata and querier plugins, and improvements to VoResource plugin mechanisms
 
