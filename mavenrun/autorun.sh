@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: autorun.sh,v 1.19 2004/07/20 13:09:07 jdt Exp $ 
+# $Id: autorun.sh,v 1.20 2004/08/19 10:50:54 clq2 Exp $ 
 # Script to run the integration tests/AGINAB
 OLDDIR=$PWD
 
@@ -12,7 +12,7 @@ BUILDHOME=$CHECKOUTHOME/$TESTMODULE
 LOGFILE=/home/integration/mavenrun/auto.log
 DATE=`date`
 TIMESTAMP=`date +%Y%m%d-%T`
-ADMIN_EMAIL=jdt@roe.ac.uk
+ADMIN_EMAIL="clq2@star.le.ac.uk jdt@roe.ac.uk"
 export CVS_RSH=ssh
 export CVSROOT=:pserver:anoncvs@cvs.astrogrid.org:/devel
 
@@ -60,6 +60,11 @@ else
    echo "*** FAILURE ***" >> $LOGFILE
    cat $LOGFILE | mail -s "deploy-all Failure in integration tests" $ADMIN_EMAIL 
 fi
+
+#before running tests, backup the previous tests results 
+CURRENT=`pwd`
+echo $CURRENT
+ssh maven@uluru ./mavenrun/backup.sh
 
 echo "Running tests..." >> $LOGFILE
 
