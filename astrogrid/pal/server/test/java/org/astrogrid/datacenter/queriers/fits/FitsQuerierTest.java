@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.3 2005/02/28 19:36:39 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.4 2005/03/08 15:03:24 KevinBenson Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -28,6 +28,7 @@ import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.NullTarget;
 import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.xmldb.client.XMLDBFactory;
 
 /** Test the Fits processing classes
  */
@@ -36,7 +37,17 @@ public class FitsQuerierTest extends TestCase
    private static File indexFile = null;
    
    protected void setUp() throws Exception{
+       /*
+        * xmldb.uri=xmldb:exist://
+xmldb.driver=org.exist.xmldb.DatabaseImpl
+xmldb.query.service=XQueryService
+xmldb.admin.user=admin
+xmldb.admin.password=
       SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, FitsQuerierPlugin.class.getName());
+        File fi = new File("target/test-classes/exist.xml");
+        if(fi != null) {
+          XMLDBFactory.registerDB(fi.getAbsolutePath());
+        }
      
       //set up test index first if not already done
       if (indexFile == null) {
@@ -50,6 +61,7 @@ public class FitsQuerierTest extends TestCase
       }
       
       SimpleConfig.setProperty(FitsQuerierPlugin.FITS_INDEX_FILENAME, indexFile.getCanonicalPath());
+      */
    }
 
    /** Check to see the right plugin is made */
@@ -59,8 +71,9 @@ public class FitsQuerierTest extends TestCase
       assertTrue("Plugin '"+querier.getPlugin()+"' not FitsQuerierPlugin", querier.getPlugin() instanceof FitsQuerierPlugin);
    }
    
-   public void testCone() throws IOException
+   public void testQuery() throws IOException
    {
+      /*
       StringWriter sw = new StringWriter();
       Querier querier = Querier.makeQuerier(LoginAccount.ANONYMOUS, SimpleQueryMaker.makeConeQuery(300, 60, 12, TargetMaker.makeTarget(sw), ReturnTable.VOTABLE), this);
       
@@ -68,6 +81,7 @@ public class FitsQuerierTest extends TestCase
 
       //have a look in sw for results
       String results = sw.toString();
+      */
   }
 
    
@@ -92,6 +106,9 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.4  2005/03/08 15:03:24  KevinBenson
+ new stuff for Fits querier to work with an internal xml database
+
  Revision 1.3  2005/02/28 19:36:39  mch
  Fixes to tests
 

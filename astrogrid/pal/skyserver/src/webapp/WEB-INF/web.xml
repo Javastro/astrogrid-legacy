@@ -82,6 +82,20 @@
     <servlet-class>org.astrogrid.datacenter.service.ssap.SimpleSpectraQuery</servlet-class>
   </servlet>
 
+	<servlet>
+   		<servlet-name>ExistDatabaseManager</servlet-name>
+   		<servlet-class>org.astrogrid.dataservice.queriers.fits.ExistDatabaseManager</servlet-class>
+		<init-param>
+	        <param-name>configuration</param-name>
+        	<param-value>exist.xml</param-value>
+      	</init-param>
+       	<init-param>
+        	<param-name>basedir</param-name>
+         	<param-value>WEB-INF/</param-value>
+       	</init-param>
+   		<load-on-startup>100</load-on-startup>
+	</servlet>
+
   <!-- Admin servlets -->
   <servlet>
     <servlet-name>GetLog</servlet-name>
@@ -141,6 +155,12 @@
   </servlet>
 
   <!-- Query Managing tasks -->
+
+	<servlet-mapping>
+		<servlet-name>ExistDatabaseManager</servlet-name>
+		<url-pattern>/ExistDatabaseManager</url-pattern>
+	</servlet-mapping>
+
   <servlet-mapping>
     <servlet-name>SubmitQuery</servlet-name>
     <url-pattern>/SubmitQuery</url-pattern>
@@ -265,6 +285,60 @@
         <servlet-name>cec-http</servlet-name>
         <url-pattern>/cec-http</url-pattern>
   </servlet-mapping>
+
+	<env-entry>
+		<description>
+			The XMLDB server location url. By default it is set to use the internal eXist db.  
+			You may set it to xmldb:exist://host:port/exist/xmlrpc for external eXist db. e.g. xmldb:exist://localhost:8080/exist/xmlrpc.  
+			In general you can switch to another db but this is untested read configuration page from your context on that.</description>
+		<env-entry-name>xmldb.uri</env-entry-name>
+		<env-entry-value>xmldb:exist://</env-entry-value>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
+
+	<env-entry>
+		<description>The XMLDB driver to be the registered xml database.</description>
+		<env-entry-name>xmldb.driver</env-entry-name>
+		<env-entry-value>org.exist.xmldb.DatabaseImpl</env-entry-value>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
+
+	<env-entry>
+		<description>What type of query service, XQueryService or XPathQueryService.</description>
+		<env-entry-name>xmldb.query.service</env-entry-name>
+		<env-entry-value>XQueryService</env-entry-value>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
+
+	<env-entry>
+		<description>The user used to create Resources or collections, and shutdown the internal eXist database if it is internally being ran.</description>
+		<env-entry-name>xmldb.admin.user</env-entry-name>
+		<env-entry-value>admin</env-entry-value>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
+
+	<env-entry>
+		<description>The admin password used to create Resources or collections, and shutdown the internal eXist database if it is internally being ran.</description>
+		<env-entry-name>xmldb.admin.password</env-entry-name>
+		<env-entry-value></env-entry-value>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
+
+	<env-entry>
+		<description>The user used to create Resources or collections, and shutdown the internal eXist database if it is internally being ran.</description>
+		<env-entry-name>xmldb.query.user</env-entry-name>
+		<env-entry-value></env-entry-value>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
+
+	<env-entry>
+		<description>The query password used to create Resources or collections, and shutdown the internal eXist database if it is internally being ran.</description>
+		<env-entry-name>xmldb.query.password</env-entry-name>
+		<env-entry-value></env-entry-value>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
+
+
 
 
     <!-- currently the W3C havent settled on a media type for WSDL;

@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerierPlugin.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: FitsQuerierPlugin.java,v 1.2 2005/03/08 15:03:24 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -24,11 +24,19 @@ import org.astrogrid.dataservice.queriers.status.QuerierQuerying;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.xql.XqlMaker;
 import org.astrogrid.util.DomHelper;
-import org.astrogrid.xmldb.eXist.server.QueryDBService;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import org.astrogrid.xmldb.client.QueryService;
+import org.astrogrid.xmldb.client.XMLDBFactory;
+
+import org.xmldb.api.base.ResourceSet;
+import org.xmldb.api.modules.XMLResource;
+import org.xmldb.api.base.Resource;
+import org.xmldb.api.base.Collection;
+import org.xmldb.api.base.XMLDBException;
 
 /**
  * The Standard Fits Querier plugin uses an XML 'index' document to search on.
@@ -47,20 +55,16 @@ import org.xml.sax.SAXException;
  */
 
 public class FitsQuerierPlugin extends DefaultPlugin
-{
-   private static Document index = null;
-
-   public final static String FITS_INDEX_URL = "datacenter.fits.index.url";
-   public final static String FITS_INDEX_FILENAME = "datacenter.fits.index.filename";
+{   
+   public final static String FITS_DEFAULT_COLLECTION = "dcfitsfiles";  
+   
+   private XMLDBFactory xdb = new XMLDBFactory();
    
 
    /** Plugin implementation - carries out query.
     */
    public void askQuery(Principal user, Query query, Querier querier) throws IOException {
 
-      if (index == null) {
-         loadIndex();
-      }
       String[] filenames = null;
 
       XqlMaker maker = new XqlMaker();
@@ -81,9 +85,6 @@ public class FitsQuerierPlugin extends DefaultPlugin
     */
    public long getCount(Principal user, Query query, Querier querier) throws IOException {
 
-      if (index == null) {
-         loadIndex();
-      }
       String[] filenames = null;
 
       XqlMaker maker = new XqlMaker();
@@ -98,12 +99,27 @@ public class FitsQuerierPlugin extends DefaultPlugin
    
    private String[] useeXist(String xql) throws IOException {
       Document resultDoc = null;
-      String []files = null;
+      String []files = new String[0];
+      Collection coll = null;
       try {
-         QueryDBService qdb = new QueryDBService();
-         resultDoc = qdb.runQuery("dcfitsfiles",xql);
+          coll = xdb.openCollection(FITS_DEFAULT_COLLECTION);
+          //log.info("Got Collection");
+          QueryService xqs = xdb.getQueryService(coll);
+          
+          long beginQ = System.currentTimeMillis(); 
+          ResourceSet rs = xqs.query(xql);
+          //log.info("Total Query Time = " + (System.currentTimeMillis() - beginQ));
+          //log.info("Number of results found in query = " + rs.getSize());
+          if(rs.getSize() > 0) {
+              Resource xmlr = rs.getMembersAsResource();
+              resultDoc = DomHelper.newDocument(xmlr.getContent().toString());
+          }//if
+      }catch(XMLDBException xdbe) {
+          xdbe.printStackTrace();
+          throw new IOException("XMLDB exception, query most likely wrong or xml db is down XMLDB Exception");
       }catch(ParserConfigurationException pce) {
-         throw new RuntimeException("Server configuration error",pce);
+         
+         throw new IOException("Server configuration error Parser Configuration Exception");
       }catch(SAXException se) {
          throw new IOException("FitsQuerierPlugin index not valid xml");
       }
@@ -126,6 +142,7 @@ public class FitsQuerierPlugin extends DefaultPlugin
     */
    public String[] coneSearch(double ra, double dec, double sr) throws IOException
    {
+       /*
       Ellipse2D cone = new Ellipse2D.Double(ra-sr, dec-sr, sr*2,sr*2);
       Area matchingArea = new Area(cone);
       
@@ -158,6 +175,8 @@ public class FitsQuerierPlugin extends DefaultPlugin
       }
       
       return (String[]) intersectingFits.values().toArray(new String[] {});
+      */
+      throw new IOException("ConeSearches currently not supported by FitsQuerierPlugin.");
    }
    
    /**
@@ -167,6 +186,8 @@ public class FitsQuerierPlugin extends DefaultPlugin
     */
    public GeneralPath getCoverageFromIndex(Element dom)
    {
+       return null;
+      /*
       GeneralPath region = new GeneralPath();
       
       NodeList points = dom.getElementsByTagName("Point");
@@ -184,6 +205,7 @@ public class FitsQuerierPlugin extends DefaultPlugin
       }
       
       return region;
+      */
    }
    
    /**
@@ -201,59 +223,23 @@ public class FitsQuerierPlugin extends DefaultPlugin
     * Loads the index - one off operation
     */
    protected synchronized void loadIndex() throws IOException {
-      if (index != null) return;
-
-      //find the index
-      URL url = SimpleConfig.getSingleton().getUrl(FITS_INDEX_URL, null);
-      
-      if (url == null) {
-         String filename = SimpleConfig.getSingleton().getString(FITS_INDEX_FILENAME, null);
-         if (filename != null) {
-            File f = new File(filename);
-            if (!f.exists()) {
-               throw new ConfigException("Fits index "+filename+" given by "+FITS_INDEX_FILENAME+" in config ("+SimpleConfig.loadedFrom()+") does not exist");
-            }
-            url = f.toURL();
-         }
-         if (url == null) {
-            throw new ConfigException("Fits index not specified with "+FITS_INDEX_URL+" or "+FITS_INDEX_FILENAME+" in config ("+SimpleConfig.loadedFrom()+")");
-         }
-      }
-      else {
-         String strURL = url.toExternalForm();
-
-         //not quite sure what this does - and it won't work if the index has been made from a file (eg during unit tests)
-         SimpleConfig.getSingleton().setProperty("exist.db.url",strURL.substring(0,strURL.indexOf("/servlet")));
-      }
-      
-      
-      //load & parse index
-      try {
-         index = DomHelper.newDocument(url.openStream());
-      }
-      catch (ParserConfigurationException e) {
-         throw new RuntimeException("Server configuration error",e);
-      }
-      catch (SAXException e) {
-         //throw new QuerierPluginException("FitsQuerierPlugin index not valid xml",e);
-         throw new IOException(e+"reading index from "+url);
-
-      }
+      return;
    }
    
    /** Returns the formats that this plugin can provide.  Asks the results class; override in subclasse if nec */
    public String[] getFormats() {
       return UrlListResults.listFormats();
    }
-   
-   
  
 }
 
 /*
  $Log: FitsQuerierPlugin.java,v $
- Revision 1.1  2005/02/17 18:37:35  mch
- *** empty log message ***
+ Revision 1.2  2005/03/08 15:03:24  KevinBenson
+ new stuff for Fits querier to work with an internal xml database
+
+ Revision 1.1.1.1  2005/02/17 18:37:35  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:24  mch
  Initial checkin
