@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.33 2004/03/12 04:45:26 mch Exp $
+ * $Id: Querier.java,v 1.34 2004/03/12 05:12:29 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,7 +9,6 @@ package org.astrogrid.datacenter.queriers;
 import org.astrogrid.datacenter.queriers.status.*;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.Writer;
 import java.net.URL;
 import java.util.Date;
@@ -22,6 +21,7 @@ import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
+import org.astrogrid.store.delegate.StoreException;
 
 /**
  * Represents a single running query.
@@ -224,7 +224,14 @@ public class Querier implements Runnable {
       
          store.putString("This is a test file to make sure we can create a file in the given myspace, so our query results are not lost",
                            "testFile", false);
-         store.delete("testFile");
+         
+         try {
+            store.delete("testFile");
+         }
+         catch (StoreException se) {
+            log.error("Could not delete test file",se);
+         }
+            
       }
    }
 
@@ -388,6 +395,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.34  2004/03/12 05:12:29  mch
+ Made sure failed delete doens't stop query
+
  Revision 1.33  2004/03/12 04:45:26  mch
  It05 MCH Refactor
 
