@@ -1,3 +1,17 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/sitemap.xmap,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/01/09 07:25:42 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:log>
+    |   $Log: sitemap.xmap,v $
+    |   Revision 1.4  2004/01/09 07:25:42  dave
+    |   Changed redirect to welcome page
+    |
+    | </cvs:log>
+    |
+    +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
 <!-- ======================== Components ================================ -->
@@ -72,9 +86,9 @@
 					+-->
 				<map:act type="astro-login">
 					<!--+
-						| If we are logged in, redirect to the front page.
+						| If we are logged in, display the nice page.
 						+-->
-					<map:redirect-to uri="/astrogrid-portal/main/test.xml"/>
+					<map:generate type="file" src="xml/login-pass.xml"/>
 				</map:act>
 				<!--+
 					| If we are not logged in, display the login form.

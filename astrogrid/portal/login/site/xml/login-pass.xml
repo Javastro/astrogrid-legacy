@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/xml/Attic/login-pass.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/01/09 07:25:42 $</cvs:date>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    |   $Log: login-pass.xml,v $
+    |   Revision 1.1  2004/01/09 07:25:42  dave
+    |   Changed redirect to welcome page
+    |
+    | </cvs:log>
+    |
+    +-->
+<div>
+	Welcome to astrogrid.
+</div>
