@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/09/17 19:50:13 $</cvs:author>
-    | <cvs:version>$Revision: 1.44 $</cvs:version>
+    | <cvs:author>$Date: 2003/09/18 16:02:09 $</cvs:author>
+    | <cvs:version>$Revision: 1.45 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.45  2003/09/18 16:02:09  dave
+    | Fixed community config
+    |
     | Revision 1.44  2003/09/17 19:50:13  dave
     | 1) Updated build to add community config.
     | 2) Updated build to work with community.
@@ -2355,7 +2358,7 @@
 		<!-- Replace the main cocoon sitemap -->
 		<copy verbose="false" file="src/ral/cocoon.xmap" toFile="build/release/cocoon/webapp/sitemap.xmap"/>
 
-		<!-- Copy the portal config -->
+		<!-- Create the portal config -->
 <!-- ZRQ Need to update the community name when we do this ....-->
 		<mkdir dir="build/release/cocoon/webapp/WEB-INF/config"/>
 		<copy verbose="false" file="src/config/config.xml" toDir="build/release/cocoon/webapp/WEB-INF/config"/>
