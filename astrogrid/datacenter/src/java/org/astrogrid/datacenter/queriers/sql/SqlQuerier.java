@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.16 2003/09/17 14:51:30 nw Exp $
+ * $Id: SqlQuerier.java,v 1.17 2003/09/19 15:10:17 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -98,11 +98,13 @@ public class SqlQuerier extends DatabaseQuerier
          }
          catch (NamingException ne)
          {
-            throw new DatabaseAccessException(ne,"Failed to lookup datasource for '"+jndiDataSourceName+"'");
+             ne.printStackTrace();
+            throw new DatabaseAccessException(ne,"Failed to lookup datasource for '"+jndiDataSourceName+"'" + ne.getMessage());
          }
          catch (SQLException ne)
          {
-            throw new DatabaseAccessException(ne,"Failed to connect to datasource '"+jndiDataSourceName+"'");
+             ne.printStackTrace();
+            throw new DatabaseAccessException(ne,"Failed to connect to datasource '"+jndiDataSourceName+"'" + ne.getMessage());
          }
       }
       else
