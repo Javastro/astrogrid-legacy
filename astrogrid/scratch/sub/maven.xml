@@ -3,15 +3,18 @@
 <project default="astrogrid-build-site" xmlns:j="jelly:core">
 
 	<postGoal name="clean:clean">
-        <echo message="==Sub POM=="/>
-        <echo message="Master: ${astrogrid.master}"/>
-        <echo message="BaseBase: ${astrogrid.basebase}"/>        
-        <echo message="Base: ${astrogrid.base}"/>
-        <echo message="Sub: ${astrogrid.sub}"/>
-        <echo message="maven.repo.central = ${maven.repo.central}"/>
-        <echo message="currentVersion=${pom.currentVersion}"/>
-        <echo message="groupId=${pom.groupId}"/>
+		<attainGoal name="showprops"/>
     </postGoal>
-
+    
+    <goal name="showprops">
+        <echo message="====Properties visible in Sub POM=="/>
+        <echo message="Defined in master POM: astrogrid.master= ${astrogrid.master}"/>
+        <echo message="Defined in super-super POM: astrogrid.basebase= ${astrogrid.basebase}"/>         
+        <echo message="Defined in super POM: astrogrid.base= ${astrogrid.base}"/>
+        <echo message="Defined in sub POM: astrogrid.sub= ${astrogrid.sub}"/>
+        <echo message="Defined in super POM: maven.repo.central= ${maven.repo.central}"/>
+        <echo message="Defined in super POM: currentVersion= ${pom.currentVersion}"/>
+        <echo message="Defined in super-super POM: groupId=${pom.groupId}"/>
+	</goal>
 	
 </project>
