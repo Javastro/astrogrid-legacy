@@ -86,6 +86,9 @@ public class MySpaceManager {
 	private String fileContent = " ";
 	private String category = " ";
 	private String action = " ";
+	private String credential = " ";
+	private String downloadPath = " ";
+	private String fileName = " ";
 	private int fileSize = 1;
 	private String errCode="";
 	private Vector v = new Vector();
@@ -132,8 +135,8 @@ public String upLoad(String jobDetails){
 			//this need to be considered when to invoke import when to invoke upload.
 			reg.rewriteRegistryFile();
 			dataitem = msA.upLoadDataHolder(
-				userID, communityID, jobID, newDataHolderName,
-				mySpaceFileName, contentsType );
+				userID, communityID, credential, newDataHolderName,
+			fileContent, contentsType );
 
 			if ( DEBUG ) logger.debug("userid:"+userID+"comID"+communityID+"jobid"+jobID+"newDataHN"+newDataHolderName+"filenm:"+mySpaceFileName
 								   +"fileSize"+fileSize);
@@ -639,6 +642,7 @@ public String upLoadURL(String jobDetails){
   * can be retrieved.
   */
 
+
    public String exportDataHolder(String jobDetails){
 	if ( DEBUG )  logger.debug("MySpaceManager.exportDataHolder");
 	DataItemRecord dataitem = null;
@@ -666,6 +670,7 @@ public String upLoadURL(String jobDetails){
 			//create a instance of DataItemRecord
 			dataHolderURI = msA.exportDataHolder(
 			userID,communityID, jobID, dataItemID);	
+			
 			if ( errCode!="" )
 			  errCode = errCode +"," +checkStatus("EXPORTDATAHOLDER STATUS AFTERCALLING MSA.LOOKUPDATAHOLDERSDETAILS ");
 			else
@@ -921,6 +926,10 @@ public String upLoadURL(String jobDetails){
 			if(request.get("serverFileName")!=null) serverFileName = request.get("serverFileName").toString();
 			if(request.get("fileContent")!=null) fileContent = request.get("fileContent").toString();
 			if(request.get("category")!=null) category = request.get("category").toString();
+			if(request.get("credential")!=null) credential = request.get("credential").toString();
+			if(request.get("downloadPath")!=null) downloadPath = request.get("downloadPath").toString();
+			if(request.get("fileName")!=null) fileName = request.get("fileName").toString();
+			
 			if(request.get("importURI")!=null) importURI = request.get("importURI").toString();
 			if(request.get("contentsType")!=null) contentsType = request.get("contentsType").toString();
 			if(request.get("action")!=null) action = request.get("action").toString();
@@ -972,8 +981,19 @@ public String upLoadURL(String jobDetails){
 								  " filesize:"+fileSize+
 								  " serverFileName == "+serverFileName+
 								  " query = "+query+
-								  " newDataItemName"+newDataItemName+
-								  " newContainerName"+newContainerName);
+								  " newDataItemName: "+newDataItemName+
+								  " newContainerName: "+newContainerName+
+								  " category: "+category+
+								  " fileContent: "+fileContent+
+								  " credential: "+credential+
+								  " downloadPath: "+
+								  " fileName: "+fileName+
+								  " importURI: "+importURI+
+								  " contentsType: "+contentsType+
+								  " action: "+action+
+								  " fileSize: "+fileSize+
+								  " extentionPeriod: "+extentionPeriod);
+								  
 		if ( DEBUG ) logger.debug("getValue msManager response :"+response);                              
 		return response;
 	}
