@@ -22,11 +22,12 @@
    * generate war 'site' and include this
    -->
    <property name="working.dir" location="${basedir}/target/tmp" />
-   <preGoal name="war:war">
+   <!--preGoal name="war:war">
         <attainGoal name="package-war" />
-   </preGoal>
-   <goal name="package-war"
-     description="top-level goal for war packaging">
+   </preGoal-->
+   <!--Run this goal to regenerate the cea wsdd.  This must then be merged by hand with the pal wsdd for now.
+       Sorry about this!-->
+   <goal name="package-war" prereqs="war:init" description="top-level goal for war packaging"> <!--this prereq added just to setup vars-->
         <attainGoal name="grab-resources" />
         <attainGoal name="configure-webapp" />
    </goal>
