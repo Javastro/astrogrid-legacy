@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParameterRef.java,v 1.3 2004/03/02 16:50:20 nw Exp $
+ * $Id: ParameterRef.java,v 1.4 2004/03/02 16:57:19 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * reference to an existing parameter
  * 
- * @version $Revision: 1.3 $ $Date: 2004/03/02 16:50:20 $
+ * @version $Revision: 1.4 $ $Date: 2004/03/02 16:57:19 $
  */
 public class ParameterRef extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

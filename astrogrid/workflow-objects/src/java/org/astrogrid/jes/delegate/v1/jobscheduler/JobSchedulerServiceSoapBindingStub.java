@@ -76,13 +76,6 @@ public class JobSchedulerServiceSoapBindingStub extends org.apache.axis.client.S
             cachedSerFactories.add(simplesf);
             cachedDeserFactories.add(simpledf);
 
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "log-level");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.cea.axis.LogLevel.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(enumsf);
-            cachedDeserFactories.add(enumdf);
-
             qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "execution-phase");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase.class;
@@ -96,6 +89,13 @@ public class JobSchedulerServiceSoapBindingStub extends org.apache.axis.client.S
             cachedSerClasses.add(cls);
             cachedSerFactories.add(simplesf);
             cachedDeserFactories.add(simpledf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "log-level");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.jes.types.v1.cea.axis.LogLevel.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(enumsf);
+            cachedDeserFactories.add(enumdf);
 
     }
 

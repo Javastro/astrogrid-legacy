@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: JobExecutionRecord.java,v 1.1 2004/03/02 16:50:20 nw Exp $
+ * $Id: JobExecutionRecord.java,v 1.2 2004/03/02 16:57:19 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.execution;
@@ -15,7 +15,9 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.exolab.castor.xml.MarshalException;
@@ -27,7 +29,7 @@ import org.xml.sax.ContentHandler;
 /**
  * A record of a single execution of a job
  * 
- * @version $Revision: 1.1 $ $Date: 2004/03/02 16:50:20 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/02 16:57:19 $
  */
 public class JobExecutionRecord extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -59,9 +61,9 @@ implements java.io.Serializable
     private org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase _status = org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase.valueOf("UNKNOWN");
 
     /**
-     * Field _message
+     * Field _messageList
      */
-    private org.astrogrid.applications.beans.v1.cea.castor.MessageType _message;
+    private java.util.ArrayList _messageList;
 
 
       //----------------/
@@ -71,12 +73,52 @@ implements java.io.Serializable
     public JobExecutionRecord() {
         super();
         setStatus(org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase.valueOf("UNKNOWN"));
+        _messageList = new ArrayList();
     } //-- org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord()
 
 
       //-----------/
      //- Methods -/
     //-----------/
+
+    /**
+     * Method addMessage
+     * 
+     * @param vMessage
+     */
+    public void addMessage(org.astrogrid.applications.beans.v1.cea.castor.MessageType vMessage)
+        throws java.lang.IndexOutOfBoundsException
+    {
+        _messageList.add(vMessage);
+    } //-- void addMessage(org.astrogrid.applications.beans.v1.cea.castor.MessageType) 
+
+    /**
+     * Method addMessage
+     * 
+     * @param index
+     * @param vMessage
+     */
+    public void addMessage(int index, org.astrogrid.applications.beans.v1.cea.castor.MessageType vMessage)
+        throws java.lang.IndexOutOfBoundsException
+    {
+        _messageList.add(index, vMessage);
+    } //-- void addMessage(int, org.astrogrid.applications.beans.v1.cea.castor.MessageType) 
+
+    /**
+     * Method clearMessage
+     */
+    public void clearMessage()
+    {
+        _messageList.clear();
+    } //-- void clearMessage() 
+
+    /**
+     * Method enumerateMessage
+     */
+    public java.util.Enumeration enumerateMessage()
+    {
+        return new org.exolab.castor.util.IteratorEnumeration(_messageList.iterator());
+    } //-- java.util.Enumeration enumerateMessage() 
 
     /**
      * Returns the value of field 'finishTime'.
@@ -99,14 +141,41 @@ implements java.io.Serializable
     } //-- java.lang.String getJobID() 
 
     /**
-     * Returns the value of field 'message'.
+     * Method getMessage
      * 
-     * @return the value of field 'message'.
+     * @param index
      */
-    public org.astrogrid.applications.beans.v1.cea.castor.MessageType getMessage()
+    public org.astrogrid.applications.beans.v1.cea.castor.MessageType getMessage(int index)
+        throws java.lang.IndexOutOfBoundsException
     {
-        return this._message;
-    } //-- org.astrogrid.applications.beans.v1.cea.castor.MessageType getMessage() 
+        //-- check bounds for index
+        if ((index < 0) || (index > _messageList.size())) {
+            throw new IndexOutOfBoundsException();
+        }
+        
+        return (org.astrogrid.applications.beans.v1.cea.castor.MessageType) _messageList.get(index);
+    } //-- org.astrogrid.applications.beans.v1.cea.castor.MessageType getMessage(int) 
+
+    /**
+     * Method getMessage
+     */
+    public org.astrogrid.applications.beans.v1.cea.castor.MessageType[] getMessage()
+    {
+        int size = _messageList.size();
+        org.astrogrid.applications.beans.v1.cea.castor.MessageType[] mArray = new org.astrogrid.applications.beans.v1.cea.castor.MessageType[size];
+        for (int index = 0; index < size; index++) {
+            mArray[index] = (org.astrogrid.applications.beans.v1.cea.castor.MessageType) _messageList.get(index);
+        }
+        return mArray;
+    } //-- org.astrogrid.applications.beans.v1.cea.castor.MessageType[] getMessage() 
+
+    /**
+     * Method getMessageCount
+     */
+    public int getMessageCount()
+    {
+        return _messageList.size();
+    } //-- int getMessageCount() 
 
     /**
      * Returns the value of field 'startTime'.
@@ -167,6 +236,17 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
+     * Method removeMessage
+     * 
+     * @param vMessage
+     */
+    public boolean removeMessage(org.astrogrid.applications.beans.v1.cea.castor.MessageType vMessage)
+    {
+        boolean removed = _messageList.remove(vMessage);
+        return removed;
+    } //-- boolean removeMessage(org.astrogrid.applications.beans.v1.cea.castor.MessageType) 
+
+    /**
      * Sets the value of field 'finishTime'.
      * 
      * @param finishTime the value of field 'finishTime'.
@@ -187,13 +267,33 @@ implements java.io.Serializable
     } //-- void setJobID(java.lang.String) 
 
     /**
-     * Sets the value of field 'message'.
+     * Method setMessage
      * 
-     * @param message the value of field 'message'.
+     * @param index
+     * @param vMessage
      */
-    public void setMessage(org.astrogrid.applications.beans.v1.cea.castor.MessageType message)
+    public void setMessage(int index, org.astrogrid.applications.beans.v1.cea.castor.MessageType vMessage)
+        throws java.lang.IndexOutOfBoundsException
     {
-        this._message = message;
+        //-- check bounds for index
+        if ((index < 0) || (index > _messageList.size())) {
+            throw new IndexOutOfBoundsException();
+        }
+        _messageList.set(index, vMessage);
+    } //-- void setMessage(int, org.astrogrid.applications.beans.v1.cea.castor.MessageType) 
+
+    /**
+     * Method setMessage
+     * 
+     * @param messageArray
+     */
+    public void setMessage(org.astrogrid.applications.beans.v1.cea.castor.MessageType[] messageArray)
+    {
+        //-- copy array
+        _messageList.clear();
+        for (int i = 0; i < messageArray.length; i++) {
+            _messageList.add(messageArray[i]);
+        }
     } //-- void setMessage(org.astrogrid.applications.beans.v1.cea.castor.MessageType) 
 
     /**

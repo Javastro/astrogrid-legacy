@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: JobExecutionRecordDescriptor.java,v 1.1 2004/03/02 16:50:20 nw Exp $
+ * $Id: JobExecutionRecordDescriptor.java,v 1.2 2004/03/02 16:57:19 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.execution;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class JobExecutionRecordDescriptor.
  * 
- * @version $Revision: 1.1 $ $Date: 2004/03/02 16:50:20 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/02 16:57:19 $
  */
 public class JobExecutionRecordDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -202,8 +202,8 @@ public class JobExecutionRecordDescriptor extends org.exolab.castor.xml.util.XML
         desc.setValidator(fieldValidator);
         //-- initialize element descriptors
         
-        //-- _message
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.cea.castor.MessageType.class, "_message", "message", org.exolab.castor.xml.NodeType.Element);
+        //-- _messageList
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.cea.castor.MessageType.class, "_messageList", "message", org.exolab.castor.xml.NodeType.Element);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
@@ -216,7 +216,7 @@ public class JobExecutionRecordDescriptor extends org.exolab.castor.xml.util.XML
             {
                 try {
                     JobExecutionRecord target = (JobExecutionRecord) object;
-                    target.setMessage( (org.astrogrid.applications.beans.v1.cea.castor.MessageType) value);
+                    target.addMessage( (org.astrogrid.applications.beans.v1.cea.castor.MessageType) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
@@ -228,13 +228,12 @@ public class JobExecutionRecordDescriptor extends org.exolab.castor.xml.util.XML
         } );
         desc.setHandler(handler);
         desc.setNameSpaceURI("http://www.astrogrid.org/schema/CEATypes/v1");
-        desc.setRequired(true);
-        desc.setMultivalued(false);
+        desc.setMultivalued(true);
         addFieldDescriptor(desc);
         
-        //-- validation code for: _message
+        //-- validation code for: _messageList
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        fieldValidator.setMinOccurs(1);
+        fieldValidator.setMinOccurs(0);
         { //-- local scope
         }
         desc.setValidator(fieldValidator);

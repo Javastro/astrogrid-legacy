@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: StepJoinConditionType.java,v 1.3 2004/03/02 16:50:20 nw Exp $
+ * $Id: StepJoinConditionType.java,v 1.4 2004/03/02 16:57:20 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.types;
@@ -20,7 +20,7 @@ import org.exolab.castor.xml.Unmarshaller;
 /**
  * Class StepJoinConditionType.
  * 
- * @version $Revision: 1.3 $ $Date: 2004/03/02 16:50:20 $
+ * @version $Revision: 1.4 $ $Date: 2004/03/02 16:57:20 $
  */
 public class StepJoinConditionType implements java.io.Serializable {
 
