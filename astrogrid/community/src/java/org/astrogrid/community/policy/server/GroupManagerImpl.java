@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/GroupManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/09/09 16:43:48 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2003/09/10 00:08:45 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerImpl.java,v $
+ *   Revision 1.8  2003/09/10 00:08:45  dave
+ *   Added getGroupMembers, ResourceIdent and JUnit tests for ResourceManager
+ *
  *   Revision 1.7  2003/09/09 16:43:48  KevinBenson
  *   Added the setType for the update groupdata method
  *
@@ -552,7 +555,7 @@ public class GroupManagerImpl
 			//
 			// Create our OQL query.
 			OQLQuery query = database.getOQLQuery(
-				"SELECT groups FROM org.astrogrid.community.policy.data.GroupData groups"
+				"SELECT group FROM org.astrogrid.community.policy.data.GroupData group"
 				);
 			//
 			// Execute our query.
@@ -779,6 +782,9 @@ public class GroupManagerImpl
 			if (DEBUG_FLAG) System.out.println("Exit - Group is not local") ;
 			return null ;
 			}
+//
+// Check the group isn't an account group.
+//
 		//
 		// Create our new GroupMemberData.
 		GroupMemberData member = new GroupMemberData(account.toString(), group.toString()) ;
@@ -874,6 +880,10 @@ public class GroupManagerImpl
 		// Still want to delete the record even if the ident is invalid.
 		//
 
+//
+// Check the group is local
+// Check the group isn't an account group.
+//
 		//
 		// Try update the database.
 		GroupMemberData member = null ;
@@ -960,6 +970,110 @@ public class GroupManagerImpl
 		// Should return a DataObject with status response.
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		return (null != member) ;
+		}
+
+	/**
+	 * Get a list of group members.
+	 * This is not part of the GroupManager interface, and should only be called from the PolicyManager.
+	 *
+	 */
+	public Object[] getGroupMembers(CommunityIdent groupIdent)
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getGroupMembers()") ;
+		if (DEBUG_FLAG) System.out.println("  group    : " + groupIdent) ;
+
+		Object[] array = null ;
+		//
+		// If the Group is local.
+		if (groupIdent.isLocal())
+			{
+			if (DEBUG_FLAG) System.out.println("PASS : Group is local") ;
+			//
+			// Try to query the database.
+			try {
+				//
+				// Begin a new database transaction.
+				database.begin();
+				//
+				// Create our OQL query.
+				OQLQuery query = database.getOQLQuery(
+					"SELECT members FROM org.astrogrid.community.policy.data.GroupMemberData members WHERE members.group = $1"
+					);
+				//
+				// Bind the query param.
+				query.bind(groupIdent.toString()) ;
+				//
+				// Execute our query.
+				QueryResults results = query.execute();
+				//
+				// Transfer our results to a vector.
+				Collection collection = new Vector() ;
+				while (results.hasMore())
+					{
+					collection.add(results.next()) ;
+					}
+				// 
+				// Convert it into an array.
+				array = collection.toArray() ;
+				}
+			//
+			// If anything went bang.
+			catch (Exception ouch)
+				{
+				if (DEBUG_FLAG) System.out.println("") ;
+				if (DEBUG_FLAG) System.out.println("  ----") ;
+				if (DEBUG_FLAG) System.out.println("Generic exception in getGroupList()") ;
+
+				//
+				// Set the response to null.
+				array = null ;
+
+				if (DEBUG_FLAG) System.out.println("  ----") ;
+				if (DEBUG_FLAG) System.out.println("") ;
+				}
+			//
+			// Commit the transaction.
+			finally
+				{
+				try {
+					if (null != array)
+						{
+						database.commit() ;
+						}
+					else {
+						database.rollback() ;
+						}
+					}
+				catch (Exception ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("") ;
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("Generic exception in getGroupList() finally clause") ;
+
+					//
+					// Set the response to null.
+					array = null ;
+
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("") ;
+					}
+				}
+			}
+		//
+		// If the Group is not local.
+		else {
+			//
+			// Fail : Unknown Group
+			if (DEBUG_FLAG) System.out.println("FAIL : Group is remote") ;
+			//
+			// Set the response to null.
+			array = null ;
+			}
+
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return array;
 		}
 
 	}

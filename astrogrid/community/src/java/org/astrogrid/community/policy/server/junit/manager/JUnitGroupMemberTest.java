@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/manager/Attic/JUnitGroupMemberTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/09 14:51:47 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/10 00:08:45 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitGroupMemberTest.java,v $
+ *   Revision 1.3  2003/09/10 00:08:45  dave
+ *   Added getGroupMembers, ResourceIdent and JUnit tests for ResourceManager
+ *
  *   Revision 1.2  2003/09/09 14:51:47  dave
  *   Added delGroupMember - only local accounts and groups to start with.
  *
@@ -22,6 +25,7 @@ import junit.framework.TestCase ;
 import org.astrogrid.community.policy.data.GroupData ;
 import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.AccountData ;
+import org.astrogrid.community.policy.data.GroupMemberData ;
 
 import org.astrogrid.community.policy.server.PolicyManager ;
 import org.astrogrid.community.policy.server.PolicyManagerImpl ;
@@ -85,6 +89,39 @@ public class JUnitGroupMemberTest
 		}
 
 	/**
+	 * Display a list of group members.
+	 *
+	 */
+	private void displayMemberList(Object[] array)
+		throws Exception
+		{
+		if (null != array)
+			{
+			for (int i = 0 ; i < array.length ; i++)
+				{
+				GroupMemberData member = (GroupMemberData) array[i] ;
+				System.out.println("  Member[" + i + "]") ;
+				System.out.println("    group   : " + member.getGroup()) ;
+				System.out.println("    account : " + member.getAccount()) ;
+				}
+			}
+		}
+
+	/**
+	 * Display the members of a group.
+	 *
+	 */
+	private void displayGroupMembers(String group)
+		throws Exception
+		{
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("displayGroupMembers()") ;
+		if (DEBUG_FLAG) System.out.println("  group : " + group) ;
+		displayMemberList(manager.getGroupMembers(group)) ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		}
+
+	/**
 	 * Check we can add a member to a local group.
 	 * Assumes database is empty.
 	 *
@@ -95,6 +132,10 @@ public class JUnitGroupMemberTest
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("testAddLocalMember()") ;
+
+		//
+		// Display the group members.
+		displayGroupMembers(LOCAL_GROUP_IDENT) ;
 
 		//
 		// Check the account is not a member.
@@ -108,6 +149,10 @@ public class JUnitGroupMemberTest
 		if (DEBUG_FLAG) System.out.println("  Account") ;
 		if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
 		if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
+
+		//
+		// Display the group members.
+		displayGroupMembers(LOCAL_GROUP_IDENT) ;
 
 		//
 		// Check the account is not a member.
@@ -128,12 +173,16 @@ public class JUnitGroupMemberTest
 
 		//
 		// Add the account to the group
-		boolean result = manager.addGroupMember(LOCAL_ACCOUNT_IDENT, LOCAL_GROUP_IDENT) ;
-		assertTrue("Failed to add group member", result) ;
+		GroupMemberData result = manager.addGroupMember(LOCAL_ACCOUNT_IDENT, LOCAL_GROUP_IDENT) ;
+		assertNotNull("Failed to add group member", result) ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("  Added account to group") ;
-		if (DEBUG_FLAG) System.out.println("    account : " + account.getIdent()) ;
-		if (DEBUG_FLAG) System.out.println("    group   : " + group.getIdent()) ;
+		if (DEBUG_FLAG) System.out.println("    account : " + result.getAccount()) ;
+		if (DEBUG_FLAG) System.out.println("    group   : " + result.getGroup()) ;
+
+		//
+		// Display the group members.
+		displayGroupMembers(LOCAL_GROUP_IDENT) ;
 
 		//
 		// Check the account is a member.
@@ -156,9 +205,17 @@ public class JUnitGroupMemberTest
 		if (DEBUG_FLAG) System.out.println("testDelLocalMember()") ;
 
 		//
+		// Display the group members.
+		displayGroupMembers(LOCAL_GROUP_IDENT) ;
+
+		//
 		// Remove the member from the group.
 		boolean result = manager.delGroupMember(LOCAL_ACCOUNT_IDENT, LOCAL_GROUP_IDENT) ;
 		assertTrue("Failed to remove group member", result) ;
+
+		//
+		// Display the group members.
+		displayGroupMembers(LOCAL_GROUP_IDENT) ;
 
 		//
 		// Check the account is not a member.

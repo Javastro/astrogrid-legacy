@@ -1,26 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/ResourceData.java,v $</cvs:source>
- * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/09/09 19:15:10 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2003/09/10 00:08:45 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceData.java,v $
+ *   Revision 1.2  2003/09/10 00:08:45  dave
+ *   Added getGroupMembers, ResourceIdent and JUnit tests for ResourceManager
+ *
  *   Revision 1.1  2003/09/09 19:15:10  KevinBenson
  *   New ResourceData file
- *
- *   Revision 1.4  2003/09/09 16:41:53  KevinBenson
- *   Added password field
- *
- *   Revision 1.3  2003/09/06 20:10:07  dave
- *   Split PolicyManager into separate components.
- *
- *   Revision 1.2  2003/09/04 23:58:10  dave
- *   Experimenting with using our own DataObjects rather than the Axis generated ones ... seems to work so far
- *
- *   Revision 1.1  2003/09/03 06:39:13  dave
- *   Rationalised things into one set of SOAP stubs and one set of data objects for both client and server.
- *
  * </cvs:log>
  *
  */

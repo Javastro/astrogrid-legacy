@@ -1,25 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/ResourceManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/09/09 19:13:32 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2003/09/10 00:08:45 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceManagerImpl.java,v $
+ *   Revision 1.2  2003/09/10 00:08:45  dave
+ *   Added getGroupMembers, ResourceIdent and JUnit tests for ResourceManager
+ *
  *   Revision 1.1  2003/09/09 19:13:32  KevinBenson
  *   New resource managerr stuff
- *
- *   Revision 1.4  2003/09/09 16:48:48  KevinBenson
- *   added setpassword in their on the update
- *
- *   Revision 1.3  2003/09/09 10:57:47  dave
- *   Added corresponding SINGLE Group to addResource and delResource.
- *
- *   Revision 1.2  2003/09/08 20:28:50  dave
- *   Added CommunityIdent, with isLocal() and isValid()
- *
- *   Revision 1.1  2003/09/06 20:10:07  dave
- *   Split PolicyManager into separate components.
  *
  * </cvs:log>
  *
@@ -43,7 +34,7 @@ import org.exolab.castor.jdo.ClassNotPersistenceCapableException ;
 
 import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.ResourceData ;
-import org.astrogrid.community.policy.data.CommunityIdent ;
+import org.astrogrid.community.policy.data.ResourceIdent ;
 import org.astrogrid.community.policy.data.CommunityConfig ;
 
 public class ResourceManagerImpl
@@ -101,8 +92,8 @@ public class ResourceManagerImpl
 
       ResourceData resource = null ;
       //
-      // Create a CommunityIdent for our Resource.
-      CommunityIdent ident = new CommunityIdent(name) ;
+      // Create a ResourceIdent for our Resource.
+      ResourceIdent ident = new ResourceIdent(name) ;
       if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
       //
       // If the ident is valid.
@@ -216,8 +207,8 @@ public class ResourceManagerImpl
 
       ResourceData resource = null ;
       //
-      // Create a CommunityIdent for our Resource.
-      CommunityIdent ident = new CommunityIdent(name) ;
+      // Create a ResourceIdent for our Resource.
+      ResourceIdent ident = new ResourceIdent(name) ;
       if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
       //
       // If the ident is valid.
@@ -329,7 +320,7 @@ public class ResourceManagerImpl
 
       //
       // Get the resource ident.
-      CommunityIdent ident = new CommunityIdent(resource.getIdent()) ;
+      ResourceIdent ident = new ResourceIdent(resource.getIdent()) ;
       //
       // If the ident is valid.
       if (ident.isValid())
@@ -526,8 +517,8 @@ public class ResourceManagerImpl
       if (DEBUG_FLAG) System.out.println("  name  : " + name) ;
 
       //
-      // Create a CommunityIdent for our Resource.
-      CommunityIdent ident = new CommunityIdent(name) ;
+      // Create a ResourceIdent for our Resource.
+      ResourceIdent ident = new ResourceIdent(name) ;
       if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
       //
       // If the ident is valid.

@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
-    | <cvs:author>$Author: KevinBenson $</cvs:author>
-    | <cvs:date>$Date: 2003/09/09 19:21:18 $</cvs:date>
-    | <cvs:version>$Revision: 1.21 $</cvs:version>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2003/09/10 00:08:45 $</cvs:date>
+    | <cvs:version>$Revision: 1.22 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.22  2003/09/10 00:08:45  dave
+    |   Added getGroupMembers, ResourceIdent and JUnit tests for ResourceManager
+    |
     |   Revision 1.21  2003/09/09 19:21:18  KevinBenson
     |   added ResourceManager include to the build.xml
     |
@@ -1820,9 +1823,11 @@
 			<!-- Run the target JUnitTestCase tests -->
 			<batchtest todir="${policy.base}/junit">
 				<fileset dir="${policy.server.base}/classes">
-					<include name="org/astrogrid/community/policy/server/junit/**/JUnitCommunity*.class"/>
-					<include name="org/astrogrid/community/policy/server/junit/**/JUnitAccount*.class"/>
 					<include name="org/astrogrid/community/policy/server/junit/**/JUnitGroup*.class"/>
+					<include name="org/astrogrid/community/policy/server/junit/**/JUnitAccount*.class"/>
+					<include name="org/astrogrid/community/policy/server/junit/**/JUnitResource*.class"/>
+					<include name="org/astrogrid/community/policy/server/junit/**/JUnitCommunity*.class"/>
+					<include name="org/astrogrid/community/policy/server/junit/**/JUnitGroupMember*.class"/>
 				</fileset>
 			</batchtest>
 		</junit>
@@ -1845,9 +1850,11 @@
 			<!-- Run the target JUnitTestCase tests -->
 			<batchtest todir="${policy.base}/junit">
 				<fileset dir="${policy.client.base}/classes">
-					<include name="org/astrogrid/community/policy/client/junit/**/JUnitCommunity*.class"/>
-					<include name="org/astrogrid/community/policy/client/junit/**/JUnitAccount*.class"/>
 					<include name="org/astrogrid/community/policy/client/junit/**/JUnitGroup*.class"/>
+					<include name="org/astrogrid/community/policy/client/junit/**/JUnitAccount*.class"/>
+					<include name="org/astrogrid/community/policy/client/junit/**/JUnitResource*.class"/>
+					<include name="org/astrogrid/community/policy/client/junit/**/JUnitCommunity*.class"/>
+					<include name="org/astrogrid/community/policy/client/junit/**/JUnitGroupMember*.class"/>
 				</fileset>
 			</batchtest>
 		</junit>

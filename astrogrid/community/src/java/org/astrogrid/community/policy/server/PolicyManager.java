@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManager.java,v $</cvs:source>
- * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/09/09 19:13:32 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2003/09/10 00:08:45 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManager.java,v $
+ *   Revision 1.9  2003/09/10 00:08:45  dave
+ *   Added getGroupMembers, ResourceIdent and JUnit tests for ResourceManager
+ *
  *   Revision 1.8  2003/09/09 19:13:32  KevinBenson
  *   New resource managerr stuff
  *
@@ -42,6 +45,7 @@ import java.rmi.Remote ;
 import java.rmi.RemoteException ;
 
 import org.astrogrid.community.policy.data.ServiceData ;
+import org.astrogrid.community.policy.data.GroupMemberData ;
 
 /**
  * Interface for our PolicyManager service.
@@ -62,7 +66,7 @@ public interface PolicyManager
 	 * Add a member to a Group.
 	 *
 	 */
-	public boolean addGroupMember(String account, String group)
+	public GroupMemberData addGroupMember(String account, String group)
 		throws RemoteException;
 
 	/**
@@ -70,6 +74,13 @@ public interface PolicyManager
 	 *
 	 */
 	public boolean delGroupMember(String account, String group)
+		throws RemoteException;
+
+	/**
+	 * Get a list of group members.
+	 *
+	 */
+	public Object[] getGroupMembers(String groupName)
 		throws RemoteException;
 
 	}
