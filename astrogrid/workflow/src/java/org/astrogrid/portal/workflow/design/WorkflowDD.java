@@ -24,7 +24,8 @@ public class WorkflowDD {
     
     public static final String
         WORKFLOW_ELEMENT = "workflow",
-        WORKFLOW_NAME_ATTR = "name" ;
+        WORKFLOW_NAME_ATTR = "name",
+        WORKFLOW_TEMPLATENAME_ATTR = "templateName";
         
     public static final String
         USERID_ELEMENT = "userid",
@@ -53,8 +54,8 @@ public class WorkflowDD {
         
     public static final String
         WORKFLOW_TEMPLATE =
-        "<?xml version='1.0' encoding='UTF-8'?>" +        "<workflow name=\"{0}\">" +        "   <userid>{1}</userid>" +        "   <community>{2}</community>" +
-        "   <description>{3}</description>" +                "       {4}" +                      // sequence by default        "</workflow>" ;
+        "<?xml version='1.0' encoding='UTF-8'?>" +        "<workflow name=\"{0}\" {1}>" +        "   <userid>{2}</userid>" +        "   <community>{3}</community>" +
+        "   <description>{4}</description>" +              "       {5}" +                      // sequence by default        "</workflow>" ;
         
     public static final String
         SEQUENCE_TEMPLATE =

@@ -159,6 +159,7 @@ public class Workflow extends Activity {
              workflow.setCommunity( community ) ;
              workflow.setName( name ) ;
              workflow.setDescription( description ) ; 
+             workflow.setTemplateName( templateName ) ;
          }
          catch( Exception ex) {
              ;
@@ -274,7 +275,8 @@ public class Workflow extends Activity {
         name,
         description,
         userid,
-        community ;
+        community,
+        templateName ;
         
     private ActivityContainer 
         child = null ;
@@ -324,6 +326,7 @@ public class Workflow extends Activity {
                element = document.getDocumentElement() ;   
                
             name = element.getAttribute( WorkflowDD.WORKFLOW_NAME_ATTR ) ;
+            templateName = element.getAttribute( WorkflowDD.WORKFLOW_TEMPLATENAME_ATTR ) ;
                        
             NodeList
                nodeList = element.getChildNodes() ; 
@@ -343,13 +346,11 @@ public class Workflow extends Activity {
                         this.description = element.getFirstChild().getNodeValue().trim() ;
                     }  
                     else if ( element.getTagName().equals( WorkflowDD.SEQUENCE_ELEMENT ) ) {
-                        // We must be certain these appear in StepNumber order!
                         setChild(new Sequence( element )) ;   
                     } 
                     else if ( element.getTagName().equals( WorkflowDD.FLOW_ELEMENT ) ) {
-                         // We must be certain these appear in StepNumber order!
-                         setChild(new Flow( element )) ;   
-                     } 
+                        setChild(new Flow( element )) ;   
+                    } 
                                       
                     
                 } // end if
@@ -432,10 +433,12 @@ public class Workflow extends Activity {
             Object []
                inserts = new Object[5] ;
             inserts[0] = this.name ;
-            inserts[1] = this.userid ;
-            inserts[2] = this.community ;
-            inserts[3] = this.description ;
-            inserts[4] = getChild().toXMLString() ;
+            inserts[1] = (this.templateName == null)  ?  "" :  ("templateName=\"" + this.templateName + "\"") ;
+            inserts[2] = this.userid ;
+            inserts[3] = this.community ;
+            inserts[4] = this.description ;
+
+            inserts[5] = getChild().toXMLString() ;
             
             response = MessageFormat.format( response, inserts ) ;
 
@@ -543,6 +546,14 @@ public class Workflow extends Activity {
 
 	public Activity getChild() {
 		return child;
+	}
+
+	public void setTemplateName(String templateName) {
+		this.templateName = templateName;
+	}
+
+	public String getTemplateName() {
+		return templateName;
 	}  
 /*     
     private Document parseRequest( String jobXML ) throws DatasetAgentException {   
