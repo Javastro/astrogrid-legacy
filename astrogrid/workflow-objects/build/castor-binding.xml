@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- $Id: castor-binding.xml,v 1.5 2004/03/13 00:33:01 pah Exp $
+<!-- $Id: castor-binding.xml,v 1.6 2004/03/15 13:53:59 pah Exp $
 castor binding file : configures the process of generating java classes from xml schema
 
 
@@ -34,7 +34,7 @@ at present, just defined package - namespace mappings
   
  <!-- The registry stuff for cea -->
    <package>
-  	<name>org.astrogrid.registy.beans.cea</name>
+  	<name>org.astrogrid.registry.beans.cea</name>
   	<namespace>http://www.ivoa.net/xml/CEAService/v0.1</namespace>
   </package>
   
