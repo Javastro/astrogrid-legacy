@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>AVO Demo - Photometric redshift determination</title>
-<!--<link href="http://vm06.astrogrid.org:8080/astrogrid-portal/test/portal.css" rel="stylesheet" type="text/css" /> -->
+<!--<link href="http://vm06.astrogrid.org:8080/astrogrid-portal/test/portal.css" rel="stylesheet" type="text/css" />-->
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 </head>
 <body>
@@ -56,19 +56,18 @@
   </tr>
   <tr>
     <td>
-      <div align="right">email address to notify</div>
+      <div align="right">username</div>
     </td>
     <td>
-      <input name="email" type="text" id="email" size="40" />
+      <input name="username" type="text" id="username" size="15" />
     </td>
   </tr>
 <tr><td>
-<input name="Submit" type="submit" value="submit and run job" />
 <input name="workflow" type="submit" value="create workflow" />
 </td></tr>
 </table>
 </form>
-<h3>CDF-S Section Layout</h3>    
+<<h3>CDF-S Section Layout</h3>    
 <img src="ftp://archive.stsci.edu/pub/hlsp/goods/v1/h_cdfs_v1.0sects_plt.jpg" alt="CDF-S Section Layout"/>
 
 

@@ -1,5 +1,5 @@
 /*
- * $Id: AVODemoRunner.java,v 1.1 2004/09/06 17:18:12 pah Exp $
+ * $Id: AVODemoRunner.java,v 1.2 2004/09/06 23:01:52 pah Exp $
  * 
  * Created on 23-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -15,30 +15,18 @@ package org.astrogrid.applications.avodemo;
 
 import java.io.StringWriter;
 
-import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
-import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
-import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
-import org.astrogrid.applications.delegate.CEADelegateException;
-import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
-import org.astrogrid.applications.delegate.DelegateFactory;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.beans.v1.Group;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
-import org.astrogrid.scripting.Astrogrid;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.store.delegate.StoreFile;
-import org.astrogrid.store.delegate.myspace.MySpaceFile;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Sequence;
@@ -70,7 +58,6 @@ public class AVODemoRunner implements Runnable {
    private String hemi = "s";
    private String myspacebase;
    private String username;
-   CommonExecutionConnectorClient controller;
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(AVODemoRunner.class);
    
@@ -79,7 +66,6 @@ public class AVODemoRunner implements Runnable {
     */
    public AVODemoRunner() {
 
-      controller = DelegateFactory.createDelegate(AVODemoConstants.appconEndPoint);
       myspacebase = MYSPACEBASECONT;
       try {
          ccdests = new InternetAddress[] { new InternetAddress("pah@jb.man.ac.uk")};
@@ -204,16 +190,8 @@ public class AVODemoRunner implements Runnable {
       mailresult(fout.toString());
    }
 
-   private String runHyperZ() throws CEADelegateException {
-      Step step = new Step();
-      String monitorURL = null;
-      String applicationid = AVODemoConstants.COMMUNITY+"/HyperZ";
-      String exid = null;
-      populateHyperZStep(step);
-      exid = controller.init(step.getTool(), jobstepid);
-      controller.execute(exid);
-
-      return exid;
+   private String runHyperZ() {
+       throw new UnsupportedOperationException("direct running not supported anymore");
    }
 
    private void populateHyperZStep(Step step) {
@@ -250,14 +228,9 @@ public class AVODemoRunner implements Runnable {
 
    }
 
-   private String runDft() throws CEADelegateException {
-      String monitorURL = null;
-      Step step = new Step();
-      populateDftStep(step);
-      String exid = controller.init(step.getTool(), jobstepid);
-      controller.execute(exid);
-      return exid;
-   }
+   private String runDft()  {
+       throw new UnsupportedOperationException("direct running not supported anymore");
+  }
 
    private void populateDftStep(Step step) {
       Output output = new Output();
@@ -305,15 +278,9 @@ public class AVODemoRunner implements Runnable {
       step.setName("dft");
    }
 
-   private String runSExtractor(String band) throws CEADelegateException {
-      Step step = new Step();
-      String monitorURL = null;
-      String applicationid = AVODemoConstants.COMMUNITY+"/SExtractor";
-      populateSExtractorStep(step, band);
-      String exid = null;
-      exid = controller.init(step.getTool(), jobstepid);
-      controller.execute(exid);
-      return exid;
+   private String runSExtractor(String band)  {
+       throw new UnsupportedOperationException("direct running not supported anymore");
+
    }
 
    private void populateSExtractorStep(Step step, String band) {
@@ -379,30 +346,31 @@ public class AVODemoRunner implements Runnable {
 
    private void waitForCompletion(String executionId) {
 
-      if (executionId != null) {
-         try {
-            MessageType runStatus = controller.queryExecutionStatus(executionId);
-            try {
-               while (runStatus.getPhase() != ExecutionPhase.COMPLETED) {
-                  Thread.sleep(20000);
-                  runStatus = controller.queryExecutionStatus(executionId);
-
-               }
-
-            }
-            catch (InterruptedException e) {
-               // TODO Auto-generated catch block
-               e.printStackTrace();
-            }
-         }
-         catch (CEADelegateException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-         }
-      }
-      else {
-         logger.error("the executionid is null - application error");
-      }
+       //not doing this any more
+//      if (executionId != null) {
+//         try {
+//            MessageType runStatus = controller.queryExecutionStatus(executionId);
+//            try {
+//               while (runStatus.getPhase() != ExecutionPhase.COMPLETED) {
+//                  Thread.sleep(20000);
+//                  runStatus = controller.queryExecutionStatus(executionId);
+//
+//               }
+//
+//            }
+//            catch (InterruptedException e) {
+//               // TODO Auto-generated catch block
+//               e.printStackTrace();
+//            }
+//         }
+//         catch (CEADelegateException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//         }
+//      }
+//      else {
+//         logger.error("the executionid is null - application error");
+//      }
 
    }
    private void mailresult(String url) throws MessagingException {

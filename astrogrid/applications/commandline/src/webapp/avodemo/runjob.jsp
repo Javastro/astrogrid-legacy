@@ -5,6 +5,7 @@
    runner.setToAddress(request.getParameter("email"));
    runner.setHemi(request.getParameter("hemi"));
    runner.setSector(request.getParameter("sector"));
+   runner.setUsername(request.getParameter("username"));
    isworkflow = request.getParameterMap().containsKey("workflow");
    if(!isworkflow)
    {
@@ -26,7 +27,7 @@
 <p>The workflow for discovery of sources in GOODS field <%= request.getParameter("sector") %><%= request.getParameter("hemi") %> and the determination of their photometric redshifts using hyperz
   has been created.</p>
   
-<p>You can log in to the <a href="http://vm06.astrogrid.org:8080/astrogrid-portal/main/mount/login/login-form">Astrogrid portal</a> as the avodemo@test.astrogrid.org user to view and run this workflow</p>
+<p>You can log in to the <a href="http://cadairidris.star.le.ac.uk:8080/astrogrid-portal/main/mount/login/login-form">Astrogrid portal</a> to view and run this workflow</p>
 
 <% }else{ %>
 <h1>Job Submitted</h1>
