@@ -679,8 +679,16 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 //
 //   Append and check any status messages.
 
-      this.appendAndCheckStatusMessages(results);
-
+      //ignore messages where folder already exists...
+      //@todo better still we want a way of noting this but not failing...?
+      try {
+         this.appendAndCheckStatusMessages(results);
+      }
+      catch (StoreException e) {
+         if (e.getMessage().indexOf("AGMMCE00215")==-1) {
+            throw e;
+         }
+      }
    }
 
 
