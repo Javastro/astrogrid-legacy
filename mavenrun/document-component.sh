@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: document-component.sh,v 1.2 2004/12/02 00:45:06 jdt Exp $ 
+# $Id: document-component.sh,v 1.3 2004/12/05 23:35:23 jdt Exp $ 
 ####################################################################
 # Document a component on our website
 # First argument (required) cvs name of component _under_ astrogrid
@@ -20,24 +20,10 @@ COMPONENT_NAME=$1
 
 
 # Some reminders
-if [ -z "$COMPONENT_NAME" ]; then
-	echo "A component name must be specified as the first argument (e.g. common)"
-	exit 1
-fi
-
-if [ -z "$CHECKOUTHOME" ]; then
-	echo "Value of CHECKOUTHOME (ie where to checkout sources) must be set"
-	exit 1
-fi
-if [ -z "$DOCLOCATION" ]; then
-	echo "Value of DOCLOCATION (ie where to send docs) must be set"
-	exit 1
-fi
-if [ -z "$DOCMACHINE" ]; then
-	echo "Value of DOCMACHINE (e.g. maven@www.astrogrid.org) must be set"
-	exit 1
-fi
-
+echo Documenting ${COMPONENT_NAME?"A component name must be specified as the first argument (e.g. common)"}
+echo Checking out to ${CHECKOUTHOME?"Value of CHECKOUTHOME (ie where to checkout sources) must be set"}
+echo Deploying docs to ${DOCLOCATION?"Value of DOCLOCATION (ie where to send docs) must be set"}
+echo under user ${DOCMACHINE?"Value of DOCMACHINE (e.g. maven@www.astrogrid.org) must be set"}
 
 OLDDIR=$PWD
 

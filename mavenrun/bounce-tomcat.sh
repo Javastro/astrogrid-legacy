@@ -1,12 +1,12 @@
 #!/bin/bash
-# $Id: bounce-tomcat.sh,v 1.4 2004/12/02 21:41:10 jdt Exp $ 
+# $Id: bounce-tomcat.sh,v 1.5 2004/12/05 23:35:23 jdt Exp $ 
 ######################################################
 # Script to do a hard bounce of tomcat
 # Sometimes all processes fail to shutdown properly
 # so this attempts to kill any hanging processes
 ######################################################
 # Some reminders
-${CATALINA_HOME?"Value of CATALINA_HOME must be set"}
+echo Tomcat is installed at ${CATALINA_HOME?"Value of CATALINA_HOME must be set"}
 
 $CATALINA_HOME/bin/shutdown.sh
 echo "Waiting for Tomcat to shutdown..."
