@@ -32,7 +32,7 @@
     <!--+
         | The location of our deployed web site.
         +-->
-    <siteDirectory>/var/www/www/maven/build/registry</siteDirectory>
+    <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/registry</siteDirectory>
 
     <!--+
         | Our cvs repository location.
