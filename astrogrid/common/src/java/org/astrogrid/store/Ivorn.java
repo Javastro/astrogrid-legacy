@@ -1,5 +1,5 @@
 /*
- * $Id: Ivorn.java,v 1.9 2004/07/06 19:45:53 mch Exp $
+ * $Id: Ivorn.java,v 1.10 2004/07/07 10:55:24 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -31,6 +31,9 @@ import java.net.URISyntaxException;
  * <p>
  * Ivorns are immutable - ie once created, they cannot be changed.  You can
  * make new ones out of old ones.
+ * <p>
+ * This is a badly named package.  IVORNs can be used for things other than
+ * stores...
  *
  * @author MCH, KMB, KTN, DM, ACD
  */
@@ -40,9 +43,9 @@ public class Ivorn
 {
    public final static String SCHEME = "ivo";
    
-   private String key;
-   private String authority;
-   private String fragment;
+   private String key = null;
+   private String authority = null;
+   private String fragment = null;
    
    /** Construct from given string */
    public Ivorn(String ivorn) throws URISyntaxException
@@ -57,11 +60,27 @@ public class Ivorn
       fragment = uri.getFragment();
    }
    
+   /** Construct from given authority, key and fragment */
    public Ivorn(String anAuthority, String aKey, String aFragment)
    {
       this.key = "/"+aKey;
       this.authority = anAuthority;
       this.fragment = aFragment;
+   }
+   
+   /** Construct from 'path' and fragment; path consists of anAuthority
+    * and a key, eg 'roe.ac.uk/myspace'.
+    * @deprecated? use three part constructor
+    */
+   public Ivorn(String aPath, String aFragment)  {
+
+      int slash = aPath.indexOf('/');
+      if (slash == -1) {
+         throw new IllegalArgumentException("path should consist of <authority>/<key>");
+      }
+      authority = aPath.substring(0,slash);
+      key = aPath.substring(slash);
+      fragment = aFragment;
    }
    
    /** Returns identifier scheme */
@@ -79,7 +98,9 @@ public class Ivorn
    }
 
    /** Returns specific-to-service - ie fragment */
-   public String getFragment() {  return fragment;   }
+   public String getFragment() {
+      return fragment;
+   }
 
    /** String representation */
    public String toString() {
@@ -107,6 +128,9 @@ public class Ivorn
 
 /*
 $Log: Ivorn.java,v $
+Revision 1.10  2004/07/07 10:55:24  mch
+Replaced two-string constructor
+
 Revision 1.9  2004/07/06 19:45:53  mch
 Added isIvorn
 
@@ -152,4 +176,5 @@ Revision 1.1  2004/02/16 23:31:47  mch
 IVO Resource Name representation
 
  */
+
 
