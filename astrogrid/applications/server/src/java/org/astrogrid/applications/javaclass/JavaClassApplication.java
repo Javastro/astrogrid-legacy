@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplication.java,v 1.5 2004/07/26 12:07:38 nw Exp $
+/*$Id: JavaClassApplication.java,v 1.6 2004/08/11 16:53:32 nw Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -53,6 +53,7 @@ public class JavaClassApplication extends AbstractApplication {
     
     /** Starts the application executing.
      * standard pattern - processes all input parameters, then starts a background thread to perform the execution itself.
+     * @todo bug here - we assume our parameters are in the correct order to pass to the java method. should sort them into correct order first.
      * @see org.astrogrid.applications.Application#execute(org.astrogrid.applications.ApplicationExitMonitor)
      */
     public boolean execute() throws CeaException {
@@ -118,6 +119,9 @@ public class JavaClassApplication extends AbstractApplication {
 
 /* 
 $Log: JavaClassApplication.java,v $
+Revision 1.6  2004/08/11 16:53:32  nw
+added @todo for bug
+
 Revision 1.5  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package
