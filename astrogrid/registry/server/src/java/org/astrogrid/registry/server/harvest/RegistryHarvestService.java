@@ -131,6 +131,8 @@ public class RegistryHarvestService implements
     */  
    public Document harvestFrom(Document dateDom) {
       try {
+         if(dateDom == null)
+            return harvest(dateDom);
          NodeList nl = dateDom.getElementsByTagName("date_since");
          if(nl.getLength() == 0) {
             return harvest(dateDom);   
