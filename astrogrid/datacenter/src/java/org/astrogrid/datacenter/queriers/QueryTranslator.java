@@ -1,4 +1,4 @@
-/*$Id: QueryTranslator.java,v 1.3 2003/09/07 18:56:42 mch Exp $
+/*$Id: QueryTranslator.java,v 1.4 2003/09/08 09:35:34 nw Exp $
  * Created on 02-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,9 @@ package org.astrogrid.datacenter.queriers;
 
 import org.astrogrid.datacenter.adql.*;
 import org.astrogrid.datacenter.adql.DynamicVisitor;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
+
 import java.util.*;
 import org.w3c.dom.Element;
 
@@ -33,7 +36,7 @@ public abstract  class QueryTranslator implements DynamicVisitor {
     * XML query
     * and it returns the query as an SQL an SQL SELECT statment
     */
-   public String translate(Element query) throws Exception
+   public String translate(Element query) throws ADQLException, MarshalException, ValidationException
    {
       QOM qom = ADQLUtils.unmarshalSelect(query);
       return translate(qom);
@@ -44,9 +47,9 @@ public abstract  class QueryTranslator implements DynamicVisitor {
      *  i.e. to translate to a SQL SELECT query, pass in a {@link org.astrogrid.datacenter.adql.generated.Select}
      * @param q query object to translate
      * @return string translation of this object
-     * @throws Exception if error occurs (unlikely, indicates a falure of the traversal machinery)
+     * @throws ADQLException if error occurs (unlikely, indicates a falure of the traversal machinery)
      */
-   public String translate(QOM q) throws Exception
+   public String translate(QOM q) throws ADQLException
    {
         stack.pushNew();
         traverse(q);
@@ -57,9 +60,9 @@ public abstract  class QueryTranslator implements DynamicVisitor {
 /**
  * traverse one node in the QOM tree
  * @param q the node to process
- * @throws Exception if error occurs.
+ * @throws ADQLException if error occurs.
  */
-    protected void traverse(QOM q) throws Exception {
+    protected void traverse(QOM q) throws ADQLException {
         /* similar to the acceptBottomUp, etc methods in AbstractQOM
          access the children of this node (i.e. the QOM elements it links to)
          if required, push a new frame onto the stack - this is to be
@@ -107,6 +110,9 @@ public abstract  class QueryTranslator implements DynamicVisitor {
 
 /*
 $Log: QueryTranslator.java,v $
+Revision 1.4  2003/09/08 09:35:34  nw
+now returns more descriptive exception types
+
 Revision 1.3  2003/09/07 18:56:42  mch
 Moved ADQL package dependency to QueryTranslator only
 
