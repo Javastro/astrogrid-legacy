@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.41 2004/05/03 13:39:40 mch Exp $ -->
+<!-- $Id: project.xml,v 1.42 2004/05/04 13:19:55 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
@@ -20,7 +20,7 @@
       <!-- for VoSpaceResolver -->
         <dependency>
             <artifactId>astrogrid-registry-client</artifactId>
-         <groupId>astrogrid-registry</groupId>
+         <groupId>org.astrogrid</groupId>
             <version>SNAPSHOT</version>
             <properties>
                 <war.bundle>true</war.bundle>
@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <artifactId>astrogrid-registry-common</artifactId>
-         <groupId>astrogrid-registry</groupId>
+         <groupId>org.astrogrid</groupId>
             <version>SNAPSHOT</version>
             <properties>
                 <war.bundle>true</war.bundle>
@@ -38,7 +38,7 @@
     
         <dependency>
             <artifactId>astrogrid-common</artifactId>
-            <groupId>astrogrid-common</groupId>
+            <groupId>org.astrogrid</groupId>
             <version>SNAPSHOT</version>
             <properties>
                 <war.bundle>true</war.bundle>
@@ -207,7 +207,6 @@
       </properties>
       <jar>JavaMail.jar</jar>
     </dependency>
-
 
         <!--+
             | The Community common components.
