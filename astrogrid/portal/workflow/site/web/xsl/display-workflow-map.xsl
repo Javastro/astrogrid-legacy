@@ -79,10 +79,10 @@
       </xsl:call-template>                                      
       <td valign="top" align="left">                              
         <xsl:element name="img">
-          <xsl:attribute name="src"><xsl:value-of select="$image_path"/>green.gif</xsl:attribute>
+          <xsl:attribute name="src"><xsl:value-of select="$image_path"/>purple.gif</xsl:attribute>
           <xsl:attribute name="width">10</xsl:attribute>
           <xsl:attribute name="height">5</xsl:attribute>
-          <xsl:attribute name="alt">flow</xsl:attribute>
+          <xsl:attribute name="alt">script</xsl:attribute>
         </xsl:element>                                                                                        
       </td>
     </tr>

@@ -51,7 +51,7 @@
                             <font color="RED" size="-2"><img src="/astrogrid-portal/mount/workflow/red.gif"/> Sequence</font><br/>
                             <font color="GREEN" size="-2"><img src="/astrogrid-portal/mount/workflow/green.gif"/> Flow</font><br/>
                             <font color="YELLOW" size="-2"><img src="/astrogrid-portal/mount/workflow/yellow.gif"/> Step</font><br/>
-                            <font color="BLUE" size="-2"><img src="/astrogrid-portal/mount/workflow/blue.gif"/> Script</font><br/>                    
+                            <font color="PURPLE" size="-2"><img src="/astrogrid-portal/mount/workflow/purple.gif"/> Script</font><br/>                    
                           </td>
                         </tr>
                       </table>
