@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.18 2004/03/06 19:34:21 mch Exp $
+/*$Id: DataQueryServiceTest.java,v 1.19 2004/03/07 00:33:50 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,7 @@ import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.mySpace.delegate.MySpaceDummyDelegate;
 import org.w3c.dom.Document;
 
@@ -61,7 +61,7 @@ public class DataQueryServiceTest extends ServerTestCase {
         //wsTest.setUp(); //sets up workspace
         HsqlTestCase.initializeConfiguration();
         SimpleConfig.setProperty(QuerierManager.DEFAULT_MYSPACE, MySpaceDummyDelegate.DUMMY);
-        SimpleConfig.setProperty(ServiceServer.METADATA_FILE_LOC_KEY,"/org/astrogrid/datacenter/test-metadata.xml");
+        SimpleConfig.setProperty(DataServer.METADATA_FILE_LOC_KEY,"/org/astrogrid/datacenter/test-metadata.xml");
         DataSource ds = new HsqlTestCase.HsqlDataSource();
         //File tmpDir = WorkspaceTest.setUpWorkspace(); // dunno if we need to hang onto this for any reason..
         conn = ds.getConnection();
@@ -136,7 +136,7 @@ public class DataQueryServiceTest extends ServerTestCase {
              String qid = server.makeQuery(query);
              assertNotNull(qid);
              server.setResultsDestination(qid,new URI(MySpaceDummyDelegate.DUMMY));
-             assertEquals(QueryStatus.UNKNOWN.toString(),server.getStatus(qid));
+             assertEquals(QueryState.CONSTRUCTED.toString(),server.getStatus(qid));
 
             TestListener l = new TestListener();
             //server.registerWebListener()
@@ -171,12 +171,12 @@ public class DataQueryServiceTest extends ServerTestCase {
          */
 
         public void queryStatusChanged(Querier querier) {
-            statusList.add(querier.getStatus());
+            statusList.add(querier.getState());
         }
 
-        public QueryStatus getLast()
+        public QueryState getLast()
         {
-           return (QueryStatus) statusList.get(statusList.size()-1);
+           return (QueryState) statusList.get(statusList.size()-1);
         }
     }
     
@@ -193,6 +193,9 @@ public class DataQueryServiceTest extends ServerTestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.19  2004/03/07 00:33:50  mch
+Started to separate It4.1 interface from general server services
+
 Revision 1.18  2004/03/06 19:34:21  mch
 Merged in mostly support code (eg web query form) changes
 

@@ -1,5 +1,5 @@
 /*
- * $Id: WebNotifyServiceListener.java,v 1.7 2003/12/01 16:43:52 nw Exp $
+ * $Id: WebNotifyServiceListener.java,v 1.8 2004/03/07 00:33:50 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -42,7 +42,7 @@ public class WebNotifyServiceListener implements QuerierListener
    public void queryStatusChanged(Querier querier)
    {
       try {
-         notifier.tellServer(querier.getQueryId(), querier.getStatus());
+         notifier.tellServer(querier.getQueryId(), querier.getState());
       }
       catch (ServiceException e) {
          LogFactory.getLog(WebNotifier.class).error("Failed to contact service using "+notifier, e);
@@ -72,6 +72,9 @@ public void setClientListener(String url) {
 
 /*
 $Log: WebNotifyServiceListener.java,v $
+Revision 1.8  2004/03/07 00:33:50  mch
+Started to separate It4.1 interface from general server services
+
 Revision 1.7  2003/12/01 16:43:52  nw
 dropped _QueryId, back to string
 

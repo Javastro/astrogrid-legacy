@@ -4,7 +4,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 import org.w3c.dom.Document;
 
 
@@ -31,7 +31,7 @@ public class StatusHelperTest extends TestCase {
    }
    public void testMakeStatusTag()  throws Exception{
 
-      String result = StatusHelper.makeStatusTag("foo", QueryStatus.STARTING);
+      String result = StatusHelper.makeStatusTag("foo", QueryState.STARTING);
         Document doc = DocHelper.wrap(result); // just test its correct XML.
         assertNotNull(doc);
 
@@ -52,23 +52,23 @@ public class StatusHelperTest extends TestCase {
     /** Tests that service status un/marshalling works */
    public void testGetServiceStatus() throws Exception {
 
-      String src = StatusHelper.makeStatusTag("foo",QueryStatus.RUNNING_QUERY);
+      String src = StatusHelper.makeStatusTag("foo",QueryState.RUNNING_QUERY);
         Document doc = DocHelper.wrap("<bar>"+src+"</bar>"); //also tests that src is valid XML
         assertNotNull(doc);
-      QueryStatus result = StatusHelper.getServiceStatus("foo", doc.getDocumentElement());
+      QueryState result = StatusHelper.getServiceStatus("foo", doc.getDocumentElement());
         assertNotNull(result);
-        assertEquals(result, QueryStatus.RUNNING_QUERY);
+        assertEquals(result, QueryState.RUNNING_QUERY);
 
    }
    
    /** test the getServiceStatus method works in the case when the required element is the root one */
    public void testGetServiceStatusFromRootElement() throws Exception {
-       String src = StatusHelper.makeStatusTag("foo",QueryStatus.RUNNING_QUERY);
+       String src = StatusHelper.makeStatusTag("foo",QueryState.RUNNING_QUERY);
        Document doc = DocHelper.wrap(src);
        assertNotNull(doc);
-       QueryStatus result = StatusHelper.getServiceStatus("foo",doc.getDocumentElement());
+       QueryState result = StatusHelper.getServiceStatus("foo",doc.getDocumentElement());
        assertNotNull(result);
-       assertEquals(result,QueryStatus.RUNNING_QUERY);
+       assertEquals(result,QueryState.RUNNING_QUERY);
        
    }
 }

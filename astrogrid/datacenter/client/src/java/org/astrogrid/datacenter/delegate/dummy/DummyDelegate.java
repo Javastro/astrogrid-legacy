@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDelegate.java,v 1.10 2004/03/06 19:34:21 mch Exp $
+ * $Id: DummyDelegate.java,v 1.11 2004/03/07 00:33:50 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -19,7 +19,7 @@ import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.astrogrid.datacenter.delegate.FullSearcher;
 import org.astrogrid.datacenter.delegate.Metadata;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -55,7 +55,7 @@ public class DummyDelegate implements FullSearcher, ConeSearcher
    public static final String QUERY_ID = "DummyId";
 
    /** Last status set */
-   private QueryStatus lastStatus = QueryStatus.CONSTRUCTED;
+   private QueryState lastStatus = QueryState.CONSTRUCTED;
 
    /** Sample results file */
    public static final String RESULTSFILENAME = "ExampleResults.xml";
@@ -213,6 +213,9 @@ public class DummyDelegate implements FullSearcher, ConeSearcher
 
 /*
 $Log: DummyDelegate.java,v $
+Revision 1.11  2004/03/07 00:33:50  mch
+Started to separate It4.1 interface from general server services
+
 Revision 1.10  2004/03/06 19:34:21  mch
 Merged in mostly support code (eg web query form) changes
 

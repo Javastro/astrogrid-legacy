@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.11 2004/03/06 22:34:58 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.12 2004/03/07 00:33:50 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
 import org.astrogrid.datacenter.service.AxisDataServer;
-import org.astrogrid.datacenter.service.ServiceServer;
+import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.StoreClient;
@@ -125,7 +125,7 @@ public class InstallationSelfCheck extends TestCase {
     * Checks metadata is OK
     */
    public void testMetadata() throws IOException {
-      new ServiceServer().getVODescription();
+      new DataServer().getVODescription();
    }
    
 }
@@ -133,6 +133,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.12  2004/03/07 00:33:50  mch
+ Started to separate It4.1 interface from general server services
+
  Revision 1.11  2004/03/06 22:34:58  mch
  Added metadata test
 

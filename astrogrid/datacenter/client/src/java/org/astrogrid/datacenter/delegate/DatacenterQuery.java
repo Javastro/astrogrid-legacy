@@ -8,7 +8,7 @@ package org.astrogrid.datacenter.delegate;
 import java.io.IOException;
 import java.net.URL;
 
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 
 /**
  * Handles the interface to the query at the server.  Implementations are tightly
@@ -61,7 +61,7 @@ public interface DatacenterQuery
     * spawn asynchronous queries but cannot publish a url for the service to
     * send status updates to.
     */
-   public QueryStatus getStatus() throws IOException;
+   public QueryState getStatus() throws IOException;
    
    /**
     * Polls the status of the service; when the results are ready, the service
@@ -83,6 +83,9 @@ public interface DatacenterQuery
 
 /*
 $Log: DatacenterQuery.java,v $
+Revision 1.5  2004/03/07 00:33:50  mch
+Started to separate It4.1 interface from general server services
+
 Revision 1.4  2004/02/15 23:09:04  mch
 Naughty Big Lump of changes: Updated myspace access, applicationcontroller interface, some tidy ups.
 

@@ -15,7 +15,7 @@ import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
 import org.apache.axis.encoding.XMLType;
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.datacenter.snippet.DocHelper;
 import org.w3c.dom.Document;
 
@@ -33,7 +33,7 @@ public class JobMonitorNotifier extends WebNotifier
       super(givenEndPoint);
    }
    
-   public void tellServer(String queryId, QueryStatus status) throws ServiceException
+   public void tellServer(String queryId, QueryState status) throws ServiceException
    {
 //         String
 //            requestTemplate = Configuration.getProperty( MONITOR_REQUEST_TEMPLATE) ;
@@ -80,7 +80,7 @@ public class JobMonitorNotifier extends WebNotifier
   </job>
      </pre>
       */
-     public static String makeJobNotificationTag(String queryId, QueryStatus status)
+     public static String makeJobNotificationTag(String queryId, QueryState status)
      {
         return
               "<job name='"+queryId+"'  time="+new Date()+"' >"+
@@ -92,6 +92,9 @@ public class JobMonitorNotifier extends WebNotifier
 
 /*
 $Log: JobMonitorNotifier.java,v $
+Revision 1.7  2004/03/07 00:33:50  mch
+Started to separate It4.1 interface from general server services
+
 Revision 1.6  2004/02/13 15:30:30  mch
 Deprecated
 

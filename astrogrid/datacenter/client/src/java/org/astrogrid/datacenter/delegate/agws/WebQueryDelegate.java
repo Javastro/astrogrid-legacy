@@ -1,5 +1,5 @@
 /*
- * $Id: WebQueryDelegate.java,v 1.2 2004/02/15 23:09:04 mch Exp $
+ * $Id: WebQueryDelegate.java,v 1.3 2004/03/07 00:33:50 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -14,7 +14,7 @@ import org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.astrogrid.datacenter.delegate.DelegateQueryListener;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 
 
 /**
@@ -61,8 +61,8 @@ class WebQueryDelegate implements DatacenterQuery {
     * spawn asynchronous queries but cannot publish a url for the service to
     * send status updates to.
     */
-   public QueryStatus getStatus() throws RemoteException {
-      return QueryStatus.getFor(binding.getStatus(queryId));
+   public QueryState getStatus() throws RemoteException {
+      return QueryState.getFor(binding.getStatus(queryId));
    }
    
    /**
@@ -121,6 +121,9 @@ class WebQueryDelegate implements DatacenterQuery {
 
 /*
 $Log: WebQueryDelegate.java,v $
+Revision 1.3  2004/03/07 00:33:50  mch
+Started to separate It4.1 interface from general server services
+
 Revision 1.2  2004/02/15 23:09:04  mch
 Naughty Big Lump of changes: Updated myspace access, applicationcontroller interface, some tidy ups.
 

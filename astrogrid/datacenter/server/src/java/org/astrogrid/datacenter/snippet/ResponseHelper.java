@@ -1,5 +1,5 @@
 /*
- * $Id: ResponseHelper.java,v 1.5 2003/12/01 16:43:52 nw Exp $
+ * $Id: ResponseHelper.java,v 1.6 2004/03/07 00:33:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,7 +12,7 @@ import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -47,7 +47,7 @@ public class ResponseHelper
    public static Document makeQueryStartedResponse(Querier querier) throws Throwable
    {
        log.debug("makeQueryStartedResponse");
-      if (querier.getStatus() == QueryStatus.ERROR)
+      if (querier.getState() == QueryState.ERROR)
       {
           log.info("querier in error",querier.getError());
          throw querier.getError();
@@ -56,7 +56,7 @@ public class ResponseHelper
       String doc =
           "<"+QUERY_STARTED_RESP_TAG+">\n"
          +"   "+QueryIdHelper.makeQueryIdTag(querier.getQueryId())
-         +"   "+StatusHelper.makeStatusTag(querier.getStatus())
+         +"   "+StatusHelper.makeStatusTag(querier.getState())
          +"</"+QUERY_STARTED_RESP_TAG+">\n";
 
       return DocHelper.wrap(doc);
@@ -71,7 +71,7 @@ public class ResponseHelper
    public static Document makeQueryCreatedResponse(Querier querier) throws Throwable
    {
        log.debug("makeQueryCreatedResponse");
-      if (querier.getStatus() == QueryStatus.ERROR)
+      if (querier.getState() == QueryState.ERROR)
       {
           log.info("querier in error",querier.getError());
          throw querier.getError();
@@ -80,7 +80,7 @@ public class ResponseHelper
       String doc =
           "<"+QUERY_CREATED_RESP_TAG+">\n"
          +"   "+QueryIdHelper.makeQueryIdTag(querier.getQueryId())
-         +"   "+StatusHelper.makeStatusTag(querier.getStatus())
+         +"   "+StatusHelper.makeStatusTag(querier.getState())
          +"</"+QUERY_CREATED_RESP_TAG+">\n";
 
       return DocHelper.wrap(doc);
@@ -96,14 +96,14 @@ public class ResponseHelper
    public static Document makeStatusResponse(Querier querier) throws Throwable
    {
        log.debug("makeStatusResponse");
-      if (querier.getStatus() == QueryStatus.ERROR)
+      if (querier.getState() == QueryState.ERROR)
       { 
           log.info("querier in error");
          throw querier.getError();
       }
 
       String doc =
-         StatusHelper.makeStatusTag(querier.getQueryId(), querier.getStatus());
+         StatusHelper.makeStatusTag(querier.getQueryId(), querier.getState());
 
       return DocHelper.wrap(doc);
    }

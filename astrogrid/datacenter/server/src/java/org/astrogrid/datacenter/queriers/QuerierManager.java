@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.16 2004/02/24 19:13:47 mch Exp $
+/*$Id: QuerierManager.java,v 1.17 2004/03/07 00:33:50 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 
 /** Manages the construction and initialization of Queriers, and maintains a collection of current Queriers
  *
@@ -144,7 +144,7 @@ public class QuerierManager {
       }
       Querier querier = instantiateQuerier(query, qid);
       queriers.put(qid, querier);
-      querier.setStatus(QueryStatus.CONSTRUCTED);
+      querier.setState(QueryState.CONSTRUCTED);
       return querier;
    }
    
@@ -275,6 +275,9 @@ public class QuerierManager {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.17  2004/03/07 00:33:50  mch
+ Started to separate It4.1 interface from general server services
+
  Revision 1.16  2004/02/24 19:13:47  mch
  Added logging info trace
 

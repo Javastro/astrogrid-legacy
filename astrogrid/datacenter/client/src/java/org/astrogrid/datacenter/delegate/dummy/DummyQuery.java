@@ -11,7 +11,7 @@ import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.astrogrid.datacenter.delegate.DelegateQueryListener;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 
 
 /**
@@ -62,7 +62,7 @@ public class DummyQuery implements DatacenterQuery
     * spawn asynchronous queries but cannot publish a url for the service to
     * send status updates to.
     */
-   public QueryStatus getStatus() throws DatacenterException
+   public QueryState getStatus() throws DatacenterException
    {
       return null;
    }
@@ -90,6 +90,9 @@ public class DummyQuery implements DatacenterQuery
 
 /*
 $Log: DummyQuery.java,v $
+Revision 1.5  2004/03/07 00:33:50  mch
+Started to separate It4.1 interface from general server services
+
 Revision 1.4  2004/02/15 23:09:04  mch
 Naughty Big Lump of changes: Updated myspace access, applicationcontroller interface, some tidy ups.
 

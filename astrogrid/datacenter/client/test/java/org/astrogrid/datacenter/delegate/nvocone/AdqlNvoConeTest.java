@@ -35,7 +35,7 @@ import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.astrogrid.datacenter.delegate.FullSearcher;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.test.OptionalTestCase;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -195,6 +195,9 @@ public class AdqlNvoConeTest extends OptionalTestCase
 
 /*
  $Log: AdqlNvoConeTest.java,v $
+ Revision 1.9  2004/03/07 00:33:50  mch
+ Started to separate It4.1 interface from general server services
+
  Revision 1.8  2004/03/02 01:33:24  mch
  Updates from chagnes to StoreClient and Agsls
 

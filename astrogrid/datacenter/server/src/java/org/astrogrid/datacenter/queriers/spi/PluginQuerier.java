@@ -17,7 +17,7 @@ import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 import org.w3c.dom.Element;
 
 /** Back-end Plugin Adapter - loads & wraps a {@link QuerierSPI} so that it appears as a {@link org.astrogrid.datacenter.queriers.Querier}
@@ -72,7 +72,7 @@ public class PluginQuerier extends Querier {
     public QueryResults doQuery() throws DatabaseAccessException {
         // initialize the spi.
         spi.setWorkspace(workspace);
-        setStatus(QueryStatus.CONSTRUCTED);
+        setState(QueryState.CONSTRUCTED);
         
         // find the translator
         Element queryBody = query.getQueryBody();
@@ -104,12 +104,12 @@ public class PluginQuerier extends Querier {
 
         
         //do the query.
-        setStatus(QueryStatus.RUNNING_QUERY);
+        setState(QueryState.RUNNING_QUERY);
         setStartTime(new Date());
         try {
             QueryResults results = spi.doQuery(intermediateRep,expectedType);
             setCompletedTime(new Date());
-            setStatus(QueryStatus.QUERY_COMPLETE);
+            setState(QueryState.QUERY_COMPLETE);
             return results;
         } catch (Throwable t) {
             throw new DatabaseAccessException(t,"Query phase failed:" + t.getMessage());
@@ -191,6 +191,9 @@ public class PluginQuerier extends Querier {
 }
 /*
  $Log: PluginQuerier.java,v $
+ Revision 1.7  2004/03/07 00:33:50  mch
+ Started to separate It4.1 interface from general server services
+
  Revision 1.6  2004/02/24 16:04:18  mch
  Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
 

@@ -1,5 +1,5 @@
 /*
- * $Id: QueryStatus.java,v 1.2 2003/11/17 20:47:57 mch Exp $
+ * $Id: QueryState.java,v 1.1 2004/03/07 00:33:50 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -15,32 +15,34 @@ import org.astrogrid.util.TypeSafeEnumerator;
  * @author M Hill
  */
 
-public class QueryStatus extends TypeSafeEnumerator
+public class QueryState extends TypeSafeEnumerator
 {
    /** Service has been initialised (ie created) but no other methods called */
-   public static final QueryStatus CONSTRUCTED = new QueryStatus(0, "Constructed");
+   public static final QueryState CONSTRUCTED = new QueryState(0, "Constructed");
    /** Service instance is starting, ie initialising... */
-   public static final QueryStatus STARTING = new QueryStatus(10, "Starting");
+   public static final QueryState STARTING = new QueryState(10, "Starting");
    /** Service instance is running, ie query is being processed... */
-   public static final QueryStatus RUNNING_QUERY = new QueryStatus(20, "Querying");
+   public static final QueryState RUNNING_QUERY = new QueryState(20, "Querying");
    /** Service instance is running, query has finished (probably waiting for results to be processed)... */
-   public static final QueryStatus QUERY_COMPLETE = new QueryStatus(30, "Query Complete");
+   public static final QueryState QUERY_COMPLETE = new QueryState(30, "Query Complete");
    /** Service is processing results, eg converting to VOTable */
-   public static final QueryStatus RUNNING_RESULTS = new QueryStatus(40, "Processing Results");
+   public static final QueryState RUNNING_RESULTS = new QueryState(40, "Processing Results");
    /** Service instance has finished/closed/no longer available */
-   public static final QueryStatus FINISHED = new QueryStatus(50, "COMPLETED");
+   public static final QueryState FINISHED = new QueryState(50, "COMPLETED");
+   /** Service instance has aborted, is finished */
+   public static final QueryState ABORTED = new QueryState(50, "ABORTED");
    /** Service instance is unknown, or cannot provide state */
-   public static final QueryStatus UNKNOWN = new QueryStatus(-1, "Unknown");
+   public static final QueryState UNKNOWN = new QueryState(-1, "Unknown");
    /** Service has had an error (usually in spawned thread).  'Last' in order
     * as no other activities should take place afterwards! */
-   public static final QueryStatus ERROR = new QueryStatus(999, "ERROR");
+   public static final QueryState ERROR = new QueryState(999, "ERROR");
 
    /** A job can only progress in a particular order; this ordering is defined
     * by this variable. -1 means irrelevent (eg for UNKNOWN) */
    private int order = 0;
 
    /** Creates a new instance with the given order position and description */
-   private QueryStatus(int givenOrder, String description)
+   private QueryState(int givenOrder, String description)
    {
       super(description);
       this.order = givenOrder;
@@ -50,7 +52,7 @@ public class QueryStatus extends TypeSafeEnumerator
     * Returns true if the order of this instance is before the given one, ie
     * this.order < givenStatus.order
     */
-   public boolean isBefore(QueryStatus givenStatus)
+   public boolean isBefore(QueryState givenStatus)
    {
       return (this.order < givenStatus.order);
    }
@@ -59,15 +61,18 @@ public class QueryStatus extends TypeSafeEnumerator
     * Returns the Service Status for the given string.  Used to re-establish
     * the typesafe enumeration after reading status from streams
     */
-   public static QueryStatus getFor(String status)
+   public static QueryState getFor(String status)
    {
-      return (QueryStatus) getFor(QueryStatus.class, status);
+      return (QueryState) getFor(QueryState.class, status);
    }
 
 }
 
 /*
-$Log: QueryStatus.java,v $
+$Log: QueryState.java,v $
+Revision 1.1  2004/03/07 00:33:50  mch
+Started to separate It4.1 interface from general server services
+
 Revision 1.2  2003/11/17 20:47:57  mch
 Adding Adql-like access to Nvo cone searches
 

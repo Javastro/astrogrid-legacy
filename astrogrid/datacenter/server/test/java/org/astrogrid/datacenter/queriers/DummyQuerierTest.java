@@ -1,5 +1,5 @@
 /*
- * $Id: DummyQuerierTest.java,v 1.8 2004/02/16 23:07:04 mch Exp $
+ * $Id: DummyQuerierTest.java,v 1.9 2004/03/07 00:33:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,7 +16,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 import org.w3c.dom.Document;
 
 /**
@@ -48,18 +48,18 @@ public class DummyQuerierTest extends ServerTestCase
 
     public void testStatusBehaviour() {
         // just been created.
-        assertEquals(QueryStatus.UNKNOWN,querier.getStatus());
+        assertEquals(QueryState.UNKNOWN,querier.getState());
         // check we can change to next step.
-        querier.setStatus(QueryStatus.CONSTRUCTED);
-        assertEquals(QueryStatus.CONSTRUCTED,querier.getStatus());
+        querier.setState(QueryState.CONSTRUCTED);
+        assertEquals(QueryState.CONSTRUCTED,querier.getState());
         listener.reset();
         // check we can jump some steps..
-        querier.setStatus(QueryStatus.QUERY_COMPLETE);
-        assertEquals(QueryStatus.QUERY_COMPLETE,querier.getStatus());
+        querier.setState(QueryState.QUERY_COMPLETE);
+        assertEquals(QueryState.QUERY_COMPLETE,querier.getState());
         listener.reset();
         //check that we can;t go back a step however
         try {
-            querier.setStatus(QueryStatus.RUNNING_QUERY);
+            querier.setState(QueryState.RUNNING_QUERY);
             fail("Should have failed trying to go back a step");
         } catch (IllegalStateException e) {
             //expected
@@ -75,16 +75,16 @@ public class DummyQuerierTest extends ServerTestCase
         } catch (IllegalStateException e) {
             //expected
         }
-        assertEquals(QueryStatus.UNKNOWN,querier.getStatus());
+        assertEquals(QueryState.UNKNOWN,querier.getState());
         // now set an error
         Exception e = new Exception("blerghh");
         querier.setErrorStatus(e);
-        assertEquals(QueryStatus.ERROR,querier.getStatus());
+        assertEquals(QueryState.ERROR,querier.getState());
         listener.reset();
         assertEquals(e,querier.getError());
         // now check we can't alter status any further
         try {
-            querier.setStatus(QueryStatus.FINISHED);
+            querier.setState(QueryState.FINISHED);
             fail("expected to barf");
         } catch (IllegalStateException ignored) {
             //expected
@@ -103,7 +103,7 @@ public class DummyQuerierTest extends ServerTestCase
 
       //dummy one should accept a null
       results = querier.doQuery();
-       assertEquals(QueryStatus.QUERY_COMPLETE,querier.getStatus());
+       assertEquals(QueryState.QUERY_COMPLETE,querier.getState());
        
        System.out.println(listener.statusList); // test on something here?
        
@@ -126,7 +126,7 @@ public class DummyQuerierTest extends ServerTestCase
         List statusList = new ArrayList();
         public void queryStatusChanged(Querier querier) {
             heard = true;
-            statusList.add(querier.getStatus());
+            statusList.add(querier.getState());
         }
         boolean heard ;
         public void reset() {

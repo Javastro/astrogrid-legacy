@@ -1,4 +1,4 @@
-/*$Id: AbstractTestInstallation.java,v 1.11 2004/03/04 23:43:48 mch Exp $
+/*$Id: AbstractTestInstallation.java,v 1.12 2004/03/07 00:33:50 mch Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.astrogrid.datacenter.delegate.FullSearcher;
 import org.astrogrid.datacenter.delegate.Metadata;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -183,9 +183,9 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
 
         System.out.println("Non blocking QueryID:" + query.getId());
                
-        QueryStatus stat = query.getStatus();
+        QueryState stat = query.getStatus();
         assertNotNull("status is null",stat);
-        assertEquals("status code is not as expected",QueryStatus.CONSTRUCTED,stat);
+        assertEquals("status code is not as expected",QueryState.CONSTRUCTED,stat);
        // need to add this back in later - maybe a web listener that can't find its endpoint should just failsafe..
        // URL notifyURL = new URL("http://www.nobody.there.com");
        // query.registerWebListener(notifyURL);
@@ -198,7 +198,7 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
         }
         stat = query.getStatus();
         assertNotNull("status is null",stat);
-        assertEquals("status code not as expected",QueryStatus.FINISHED,stat);
+        assertEquals("status code not as expected",QueryState.FINISHED,stat);
         
         DatacenterResults result = query.getResultsAndClose();
         assertNotNull("result of query is null",result);
@@ -287,6 +287,9 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
 
 /*
 $Log: AbstractTestInstallation.java,v $
+Revision 1.12  2004/03/07 00:33:50  mch
+Started to separate It4.1 interface from general server services
+
 Revision 1.11  2004/03/04 23:43:48  mch
 Fixes for tests that broke with changes to config
 

@@ -1,5 +1,5 @@
 /*
- * $Id: StatusHelper.java,v 1.3 2003/11/18 10:35:46 mch Exp $
+ * $Id: StatusHelper.java,v 1.4 2004/03/07 00:33:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,7 +7,7 @@
 package org.astrogrid.datacenter.snippet;
 
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -27,7 +27,7 @@ public class StatusHelper
     * Returns a status tag for the given service id with the value of the given
     * status
     */
-   public static String makeStatusTag(String queryId, QueryStatus status)
+   public static String makeStatusTag(String queryId, QueryState status)
    {
        return
           "<"+STATUS_TAG+"  "+QueryIdHelper.QUERY_ID_ATT+"='"+queryId+"'>"
@@ -39,7 +39,7 @@ public class StatusHelper
     * Returns a status tag for the given service status with the value of the given
     * status
     */
-   public static String makeStatusTag(QueryStatus status)
+   public static String makeStatusTag(QueryState status)
    {
        return
           "<"+STATUS_TAG+">"
@@ -77,7 +77,7 @@ public class StatusHelper
     * the given dom document
     * NWW: fixed for case when status tag is the root element
     */
-   public static QueryStatus getServiceStatus(String queryId, Element domContainingStatuses)
+   public static QueryState getServiceStatus(String queryId, Element domContainingStatuses)
    {
      if (STATUS_TAG.equals(domContainingStatuses.getLocalName())) {
          String queryIdAttr = domContainingStatuses.getAttribute(QueryIdHelper.QUERY_ID_ATT);
@@ -86,7 +86,7 @@ public class StatusHelper
              if (status == null) {
                  status = domContainingStatuses.getFirstChild().getNodeValue();
              }
-             return QueryStatus.getFor( status.trim());
+             return QueryState.getFor( status.trim());
          }
      }
 
@@ -115,7 +115,7 @@ public class StatusHelper
                {
                   status = ((Element) idNodes.item(i)).getFirstChild().getNodeValue();
                }
-               return QueryStatus.getFor(status.trim());
+               return QueryState.getFor(status.trim());
             }
          }
 
@@ -129,7 +129,7 @@ public class StatusHelper
     * Returns the status, given by a status tag in
     * the given dom document.
     */
-   public static QueryStatus getServiceStatus(Element domContainingStatuses)
+   public static QueryState getServiceStatus(Element domContainingStatuses)
    {
       NodeList idNodes = domContainingStatuses.getElementsByTagName(STATUS_TAG);
 
@@ -140,7 +140,7 @@ public class StatusHelper
               if (status ==  null) {
                   status = domContainingStatuses.getFirstChild().getNodeValue();
               }
-              return QueryStatus.getFor(status.trim());
+              return QueryState.getFor(status.trim());
           }
          return null;
       }
@@ -152,7 +152,7 @@ public class StatusHelper
       {
           status = ((Element) idNodes.item(0)).getFirstChild().getNodeValue();
       }
-      return QueryStatus.getFor(status.trim());
+      return QueryState.getFor(status.trim());
 
    }
 

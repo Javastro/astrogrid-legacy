@@ -1,5 +1,5 @@
 /*
- * $Id: QueryPollingMonitor.java,v 1.1 2004/03/03 10:08:01 mch Exp $
+ * $Id: QueryPollingMonitor.java,v 1.2 2004/03/07 00:33:50 mch Exp $
  */
 
 package org.astrogrid.datacenter.ui;
@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.ui.EscEnterListener;
 
@@ -121,9 +121,9 @@ public class QueryPollingMonitor extends JFrame implements Runnable
    
    /** Polling activity */
    public void run() {
-      QueryStatus status = QueryStatus.UNKNOWN;
+      QueryState status = QueryState.UNKNOWN;
       
-      while (status != QueryStatus.FINISHED) {
+      while (status != QueryState.FINISHED) {
          try {
             status = query.getStatus();
             

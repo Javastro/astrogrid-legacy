@@ -1,11 +1,11 @@
-/*$Id: ServerTestCase.java,v 1.3 2003/11/28 16:10:30 nw Exp $
+/*$Id: ServerTestCase.java,v 1.4 2004/03/07 00:33:50 mch Exp $
  * Created on 20-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter;
@@ -37,7 +37,7 @@ import org.xml.sax.SAXException;
  *<p />
  *Provides a bunch of methods for checking xml document and snippet formats. These methods are implemented
  *so that they do not reference the generating code - if a snippet format changes, the assertion in this class should be updated
- *too... its a double check that we are generating the correct documents. 
+ *too... its a double check that we are generating the correct documents.
  *<p />
  *in turn, this class extends XMLTestCase, which provides lots of nice xml unit testing methods
  * @author Noel Winstanley nw@jb.man.ac.uk 20-Nov-2003
@@ -105,13 +105,13 @@ public class ServerTestCase extends XMLTestCase {
      * @return
      * @throws IOException
      */
-        public static String getResourceAsString(String resource) throws IOException {
-              InputStream is = HsqlTestCase.class.getResourceAsStream(resource);
-                assertNotNull(is);
-                  String script = ServerTestCase.streamToString(is);
-                  assertNotNull(script);
-            return script;
-        }
+    public static String getResourceAsString(String resource) throws IOException {
+       InputStream is = HsqlTestCase.class.getResourceAsStream(resource);
+       assertNotNull(is);
+       String script = ServerTestCase.streamToString(is);
+       assertNotNull(script);
+       return script;
+    }
 
     /** load stream into a string */
     public static String streamToString(InputStream is) throws IOException {
@@ -186,7 +186,7 @@ public class ServerTestCase extends XMLTestCase {
     public void assertIsQueryStartedResponse(Document d) throws Exception {
         assertXpathExists("/QueryStarted",d);
         assertHasQueryId(d);
-        assertHasStatus(d);              
+        assertHasStatus(d);
     }
 
     /**
@@ -195,7 +195,7 @@ public class ServerTestCase extends XMLTestCase {
     public void assertIsQueryCreatedResponse(Document d) throws Exception{
         assertXpathExists("/QueryCreated",d);
         assertHasQueryId(d);
-        assertHasStatus(d);        
+        assertHasStatus(d);
     }
     
     /** @todo implement this once, we have a schema */
@@ -208,14 +208,17 @@ public class ServerTestCase extends XMLTestCase {
     }
     /** check the document has a 'Status' lement */
     public void assertHasStatus(Document d) throws Exception{
-        assertXpathExists("//Status",d);        
+        assertXpathExists("//Status",d);
     }
 
 }
 
 
-/* 
+/*
 $Log: ServerTestCase.java,v $
+Revision 1.4  2004/03/07 00:33:50  mch
+Started to separate It4.1 interface from general server services
+
 Revision 1.3  2003/11/28 16:10:30  nw
 finished plugin-rewrite.
 added tests to cover plugin system.

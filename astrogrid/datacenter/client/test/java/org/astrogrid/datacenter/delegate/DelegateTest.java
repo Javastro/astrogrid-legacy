@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.8 2004/02/15 23:22:55 mch Exp $
+ * $Id: DelegateTest.java,v 1.9 2004/03/07 00:33:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -33,7 +33,7 @@ import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.delegate.agws.WebDelegate;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -122,7 +122,7 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
       query.registerListener(this);
 
       //check status
-      QueryStatus status = query.getStatus();
+      QueryState status = query.getStatus();
 
       //start query
       query.start();
@@ -150,7 +150,7 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
    /** 'Callback' method called by Delegate when its status changes.  Stores
     * the status returned so that the tests above can examine them
     */
-   public void delegateQueryChanged(DatacenterQuery query, QueryStatus newStatus)
+   public void delegateQueryChanged(DatacenterQuery query, QueryState newStatus)
    {
       statusChangedList.add(newStatus);
    }
@@ -174,6 +174,9 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
 
 /*
  * $Log: DelegateTest.java,v $
+ * Revision 1.9  2004/03/07 00:33:50  mch
+ * Started to separate It4.1 interface from general server services
+ *
  * Revision 1.8  2004/02/15 23:22:55  mch
  * Removed socket-based services
  *

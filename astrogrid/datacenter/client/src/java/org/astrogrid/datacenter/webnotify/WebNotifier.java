@@ -15,7 +15,7 @@ import javax.xml.rpc.encoding.XMLType;
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.datacenter.snippet.DocHelper;
 import org.astrogrid.datacenter.snippet.StatusHelper;
 import org.w3c.dom.Document;
@@ -39,7 +39,7 @@ public class WebNotifier
       this.endPoint = givenEndPoint;
    }
 
-   public void tellServer(String queryId, QueryStatus status) throws ServiceException
+   public void tellServer(String queryId, QueryState status) throws ServiceException
    {
       Document statusDoc = DocHelper.wrap(makeNotificationTag(queryId, status));
 
@@ -62,7 +62,7 @@ public class WebNotifier
    /**
     * Returns a string XML element with the notification document
     */
-   public static String makeNotificationTag(String queryId, QueryStatus status)
+   public static String makeNotificationTag(String queryId, QueryState status)
    {
       return StatusHelper.makeStatusTag(queryId, status);
    }
@@ -71,6 +71,9 @@ public class WebNotifier
 
 /*
  $Log: WebNotifier.java,v $
+ Revision 1.6  2004/03/07 00:33:50  mch
+ Started to separate It4.1 interface from general server services
+
  Revision 1.5  2003/12/15 14:32:00  mch
  Added doc, changed from JobMonitor to general
 

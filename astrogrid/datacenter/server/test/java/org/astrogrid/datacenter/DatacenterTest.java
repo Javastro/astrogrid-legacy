@@ -1,4 +1,4 @@
-/*$Id: DatacenterTest.java,v 1.14 2004/03/06 19:34:21 mch Exp $
+/*$Id: DatacenterTest.java,v 1.15 2004/03/07 00:33:50 mch Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ import org.apache.axis.client.AdminClient;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
-import org.astrogrid.datacenter.service.ServiceServer;
+import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.mySpace.delegate.MySpaceDummyDelegate;
 
 /**
@@ -59,7 +59,7 @@ public class DatacenterTest extends AbstractTestInstallation {
         // set configuration parameters
         HsqlTestCase.initializeConfiguration();
         // set location of metadata
-        SimpleConfig.setProperty(ServiceServer.METADATA_FILE_LOC_KEY,"/org/astrogrid/datacenter/test-metadata.xml");
+        SimpleConfig.setProperty(DataServer.METADATA_FILE_LOC_KEY,"/org/astrogrid/datacenter/test-metadata.xml");
         // set myspace to use
         SimpleConfig.setProperty(QuerierManager.DEFAULT_MYSPACE, MySpaceDummyDelegate.DUMMY);
        
@@ -111,6 +111,9 @@ public class DatacenterTest extends AbstractTestInstallation {
 
 /*
 $Log: DatacenterTest.java,v $
+Revision 1.15  2004/03/07 00:33:50  mch
+Started to separate It4.1 interface from general server services
+
 Revision 1.14  2004/03/06 19:34:21  mch
 Merged in mostly support code (eg web query form) changes
 

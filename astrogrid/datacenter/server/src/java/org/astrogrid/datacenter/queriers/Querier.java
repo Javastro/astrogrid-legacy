@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.27 2004/03/06 19:34:21 mch Exp $
+ * $Id: Querier.java,v 1.28 2004/03/07 00:33:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,7 +18,7 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.datacenter.service.JobNotifyServiceListener;
 import org.astrogrid.datacenter.service.WebNotifyServiceListener;
 import org.astrogrid.datacenter.snippet.DocMessageHelper;
@@ -79,7 +79,7 @@ public abstract class Querier implements Runnable {
    private Vector serviceListeners = new Vector();
    
    /** status of call */
-   private QueryStatus status = QueryStatus.UNKNOWN;
+   private QueryState state = QueryState.UNKNOWN;
    
    /** If an error is thrown in the spawned thread, this holds the exception */
    private Throwable error = null;
@@ -193,12 +193,12 @@ public abstract class Querier implements Runnable {
          
          QueryResults results = doQuery();
          
-         setStatus(QueryStatus.RUNNING_RESULTS);
+         setState(QueryState.RUNNING_RESULTS);
          
          //send the results to the desstinateion
          sendResults(results);
          
-         setStatus(QueryStatus.FINISHED);
+         setState(QueryState.FINISHED);
          
       }
       catch (QueryException e) {
@@ -323,13 +323,15 @@ public abstract class Querier implements Runnable {
    /**
     * Abort - stops query (if poss) and tidies up
     */
-   public void abort() {
+   public QuerierStatus abort() {
       try {
          close();
       }
       catch (IOException e) {
          log.error("Aborting querier "+this,e);
       }
+      setState(QueryState.ABORTED);
+      return getStatus();
    }
    
    /**
@@ -360,28 +362,28 @@ public abstract class Querier implements Runnable {
     * throws an exception (as each querier should only handle one query).
     * Synchronised as the queriers may be running under a different thread
     */
-   public synchronized void setStatus(QueryStatus newStatus) {
+   public synchronized void setState(QueryState newStatus) {
 
       log.info("Query ["+id+"] for "+user+", now "+newStatus);
       
-      if (status == QueryStatus.ERROR) {
+      if (state == QueryState.ERROR) {
          log.error(
             "Trying to start a step '"+newStatus+"' when the status is '"
-               +status+"'");
-         throw new IllegalStateException("Trying to start a step " + newStatus + " when the status is " + status);
+               +state+"'");
+         throw new IllegalStateException("Trying to start a step " + newStatus + " when the status is " + state);
       }
       
-      if (newStatus.isBefore(status)) {
+      if (newStatus.isBefore(state)) {
          log.error(
             "Trying to start a step '"+newStatus
                +"' that has already been completed:"
-               +" status '"+status);
-         throw new IllegalStateException("Trying to start a step " + newStatus + "that has already been completed" + status);
+               +" status '"+state);
+         throw new IllegalStateException("Trying to start a step " + newStatus + "that has already been completed" + state);
       }
       
-      status = newStatus;
+      state = newStatus;
       
-      fireStatusChanged(status);
+      fireStatusChanged(state);
    }
    
    
@@ -390,7 +392,7 @@ public abstract class Querier implements Runnable {
     * that it can be accessed by polling clients
     */
    public void setErrorStatus(Throwable th) {
-      setStatus(QueryStatus.ERROR);
+      setState(QueryState.ERROR);
       
       error = th;
    }
@@ -399,23 +401,28 @@ public abstract class Querier implements Runnable {
     * Returns the exception if an error has occured
     */
    public Throwable getError() {
-      if (status != QueryStatus.ERROR){
+      if (state != QueryState.ERROR){
          log.error(
-            "Trying to get exception but there is no error, status='"+status+"'");
-         throw new IllegalStateException("Trying to get an ecception, but there is no error, status=" + status);
+            "Trying to get exception but there is no error, status='"+state+"'");
+         throw new IllegalStateException("Trying to get an ecception, but there is no error, status=" + state);
       }
       
       return error;
    }
    
-
+   /**
+    * Returns the status - contains more info than the state
+    */
+   public QuerierStatus getStatus() {
+      return new QuerierStatus(id, state);
+   }
    
    
    /**
-    * Returns the current status
+    * Returns the current state
     */
-   public QueryStatus getStatus() {
-      return status;
+   public QueryState getState() {
+      return state;
    }
    
    /**
@@ -431,7 +438,7 @@ public abstract class Querier implements Runnable {
    /** informs all listeners of the new status change. Not threadsafe... should
     * call setStatus() rather than this directly
     */
-   private void fireStatusChanged(QueryStatus newStatus) {
+   private void fireStatusChanged(QueryState newStatus) {
       for (int i=0;i<serviceListeners.size();i++) {
          try {
             ((QuerierListener) serviceListeners.get(i)).queryStatusChanged(this);
@@ -450,6 +457,9 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.28  2004/03/07 00:33:50  mch
+ Started to separate It4.1 interface from general server services
+
  Revision 1.27  2004/03/06 19:34:21  mch
  Merged in mostly support code (eg web query form) changes
 

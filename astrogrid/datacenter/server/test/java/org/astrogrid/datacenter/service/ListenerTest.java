@@ -24,7 +24,7 @@ import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DelegateQueryListener;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.datacenter.sitedebug.DummyQuerierSPI;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -43,7 +43,7 @@ public class ListenerTest extends ServerTestCase implements DelegateQueryListene
    /** Called by the delegate query when it has been notified of a
     * status change.
     */
-   public void delegateQueryChanged(DatacenterQuery query, QueryStatus newStatus)
+   public void delegateQueryChanged(DatacenterQuery query, QueryState newStatus)
    {
       // TODO
    }
@@ -121,6 +121,9 @@ public class ListenerTest extends ServerTestCase implements DelegateQueryListene
 
 /*
 $Log: ListenerTest.java,v $
+Revision 1.10  2004/03/07 00:33:50  mch
+Started to separate It4.1 interface from general server services
+
 Revision 1.9  2004/02/16 23:07:05  mch
 Moved DummyQueriers to std server and switched to AttomConfig
 

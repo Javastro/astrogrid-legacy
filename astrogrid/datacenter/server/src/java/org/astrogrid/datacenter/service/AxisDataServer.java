@@ -1,25 +1,20 @@
 /*
- * $Id: AxisDataServer.java,v 1.29 2004/03/06 19:34:21 mch Exp $
+ * $Id: AxisDataServer.java,v 1.30 2004/03/07 00:33:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
-
 import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.axisdataserver.types.Language;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.delegate.DatacenterException;
@@ -30,123 +25,77 @@ import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
 import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.datacenter.snippet.ResponseHelper;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
- * The implementation of the Datacenter web service
+ * The implementation of the Datacenter web service for It4.1.
  * <p>
  * When Axis receives a SOAP message from the client it is routed to this class for processing.
- * It is a singleton
- * - all state depends on the DataService instances, one of
- * which is created for each data query call.
- *<p>
- * @soap this should be configured to be constructed once (not on every call).
- * <p>
- * This is what was DatasetAgent in the It02 but with the extensions to handle
- * all the service methods required (eg metadata etc)
- *
+ * It is a singleton; state comes from the Queriers.
 
  * @author M Hill
  * @author Noel Winstanly
- * @modified nww - added a load of parameter checking, to ensure all requests passed on to query system are valid.
  *
  */
 
-public class AxisDataServer extends ServiceServer implements org.astrogrid.datacenter.axisdataserver.AxisDataServer  {
+public class AxisDataServer extends SoapDataServer implements org.astrogrid.datacenter.axisdataserver.AxisDataServer  {
    
-   public static Log log = LogFactory.getLog(AxisDataServer.class);
+   //overrides parent
+   protected static Log log = LogFactory.getLog(AxisDataServer.class);
    
-//   public static String CONFIG_URL = AttomConfig.CONFIG_URL;//"java:comp/env/org.astrogrid.config.url";
-   
-   /**
-    * Initialises the configuration.
-    * extodo NW this is a quick hack to get config from JNDI, as code in AttomConfig doesn't want to work.
-    * later find out why the library code isn't doing the job.
-    * extodo MCH another hack to see if the SimpleConfig.loadJndi is now OK
-    * I think this is now solved by the new lazyloading AttomConfig...
-   public AxisDataServer()  throws IOException {
-
-      AttomConfig.autoLoad();
-   }
-    */
    /**
     * Returns the metadata file
     * NWW - at present pass in a dummy parameter - haven't worked out how to say 'no parameters please' yet.
     * @soap
-    * @todo - improve type of this method. - return an object model? or element?
     */
    public String getMetadata(Object ignored) {
-      BufferedReader is = null;
-      PrintWriter os = null;
-      try  {
-         is = new BufferedReader( new InputStreamReader (super.getMetadataStream()));
-         StringWriter sw = new StringWriter();
-         os = new PrintWriter(sw);
-         String line = null;
-         while ( (line = is.readLine()) != null)  {
-            os.println(line);
-         }
-         return sw.toString();
-      }
-      catch (IOException e)  {
-         throw new RuntimeException("Could not access metadata",e);
-      }
-      finally  {
-         try  {
-            if (is != null)  {
-               is.close();
-            }
-            if (os != null)  {
-               os.close();
-            }
-         }
-         catch (IOException notBothered)  {
-         }
-      }
+      return getMetadataString();
    }
-   
-   
+
    /**
     * Carries out a full synchronous (ie blocking) adql query.  Note that queries
     * that take a long time might therefore cause a timeout at the client as
     * it waits for its response.
-    * Returns a document
-    * including the results (or location of the results)
     * <p>
     * @soap
     */
-   public String doQuery(String resultsFormat,  Query q) throws IOException {
+   public String doQuery(String resultsFormat,  Query q)  {
       
       if (resultsFormat == null || resultsFormat.length() == 0)  {
          log.error("Empty parameter for results format");
-         throw new IllegalArgumentException("Empty parameter for results format");
+         throw makeSoapFault("Empty parameter for results format");
       }
       if (!resultsFormat.toLowerCase().equals(FullSearcher.VOTABLE.toLowerCase()))  {
          log.error("Can only produce votable results");
-         throw new IllegalArgumentException("Can only produce votable results");
+         throw makeSoapFault("Can only produce votable results");
       }
-      
+
+      //for iteration 4.1, there is no security checking
       Querier querier = null;
       try {
          querier =  QuerierManager.createQuerier(q);
          QueryResults results = querier.doQuery();
-         querier.setStatus(QueryStatus.RUNNING_RESULTS);
+         querier.setState(QueryState.RUNNING_RESULTS);
          Element result = ResponseHelper.makeResultsResponse(
             querier,
             results.toVotable().getDocumentElement()
          ).getDocumentElement();
-         querier.setStatus(QueryStatus.FINISHED);
+         querier.setState(QueryState.FINISHED);
          
          return XMLUtils.ElementToString(result);
       }
-      catch (SAXException e) {
-         throw new DatacenterException("Failed to convert results to VOTable", e);
+      catch (Exception e) {
+         throw makeSoapFault("Failed to convert results to VOTable", e);
       }
       finally  {
-         QuerierManager.closeQuerier(querier);
+         try {
+            QuerierManager.closeQuerier(querier);
+         } catch (IOException ioe) {
+            log.error(ioe+" closing querier "+querier,ioe);
+         }
       }
    }
    
@@ -169,7 +118,6 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * Does not start the query running - may want to register listeners with
     * it first
     * <p>
-    * @todo - add our own prefix to this assigned id before using it internally to ensure its unique?
     * @soap
     */
    public String makeQueryWithId(Query q, String assignedId) throws QueryException, IOException, SAXException {
@@ -192,7 +140,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
       if (resultsDestination == null )  {
          throw new IllegalArgumentException("Empty results destination");
       }
-      Querier querier = getQuerier(queryId);
+      Querier querier = server.getQuerier(queryId);
       if (querier == null) {
          throw new IllegalArgumentException("Unknown qid: " + queryId);
       }
@@ -211,12 +159,12 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * @soap
     */
    public String getResultsAndClose(String queryId) {
-      Querier querier =getQuerier(queryId);
+      Querier querier =server.getQuerier(queryId);
       if (querier == null) {
          throw new IllegalArgumentException("Unknown qid:" + queryId);
       }
       //has querier finished?
-      if (!querier.getStatus().isBefore(QueryStatus.FINISHED)) {
+      if (!querier.getState().isBefore(QueryState.FINISHED)) {
          String results = querier.getResultsLoc();
          try {
             QuerierManager.closeQuerier(querier);
@@ -238,10 +186,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * @soap
     */
    public void abortQuery(String queryId) {
-      Querier querier = getQuerier(queryId);
-      if (querier != null)  {
-         querier.abort();
-      }
+      abortQuery(Account.ANONYMOUS, queryId);
    }
    
    /**
@@ -249,21 +194,18 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * @soap
     */
    public void startQuery(String id) {
-      Querier querier = getQuerier(id);
-      startQuery(querier);
+      Querier querier = server.getQuerier(id);
+      Thread queryThread = new Thread(querier);
+      queryThread.start();
    }
    
    /**
-    * Returns the status of the service with the given id
+    * Returns the state of the query with the given id
     * <p>
     * @soap
     */
    public String getStatus(String queryId) {
-      Querier querier = getQuerier(queryId);
-      if (querier == null) {
-         throw new IllegalArgumentException("Unknown qid:" + queryId);
-      }
-      return querier.getStatus().toString();
+      return getQueryStatus(Account.ANONYMOUS, queryId).getState().toString();
    }
    
    /**
@@ -272,20 +214,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * @soap
     */
    public void registerWebListener(String queryId , URI uri) throws RemoteException {
-      
-      try  {
-         URL u = new URL(uri.toString());
-         Querier querier = getQuerier(queryId);
-         if (querier == null) {
-            throw new IllegalArgumentException("Unknown qid" + queryId);
-         }
-         
-         
-         querier.registerListener(new WebNotifyServiceListener(u));
-      }
-      catch (MalformedURLException e)  {
-         throw new RemoteException("Malformed URL",e);
-      }
+      throw new UnsupportedOperationException();
    }
    
    /**
@@ -298,7 +227,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
       log.debug("Querier ["+queryId+"] registering JobMonitor at "+uri);
       try  {
          URL u = new URL(uri.toString());
-         Querier querier = getQuerier(queryId);
+         Querier querier = server.getQuerier(queryId);
          if (querier == null) {
             throw new IllegalArgumentException("Unknown qid" + queryId);
          }
@@ -324,6 +253,10 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
    
 }
 
+/*
+$Log: AxisDataServer.java,v $
+Revision 1.30  2004/03/07 00:33:50  mch
+Started to separate It4.1 interface from general server services
 
-
+ */
 

@@ -24,7 +24,7 @@ import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Circle;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.datacenter.webnotify.WebNotifier;
 import org.astrogrid.io.Piper;
 import org.astrogrid.store.Agsl;
@@ -66,7 +66,7 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
       String destinationServer = null; //MySpaceDummyDelegate.DUMMY;
       URL resultsUrl = null; //where to find the results
       //DatacenterResults results = null;
-      QueryStatus status = null;
+      QueryState status = null;
       Vector listeners = new Vector();
       Workspace workspace = null; //somewhere to put results if required
       
@@ -77,7 +77,7 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
          this.sr = givenSr;
          this.queryId = givenId;
          
-         setStatus(QueryStatus.CONSTRUCTED);
+         setStatus(QueryState.CONSTRUCTED);
          
          workspace = new Workspace();
       }
@@ -127,7 +127,7 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
        * spawn asynchronous queries but cannot publish a url for the service to
        * send status updates to.
        */
-      public QueryStatus getStatus() throws IOException
+      public QueryState getStatus() throws IOException
       {
          return status;
       }
@@ -135,7 +135,7 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
       /**
        * Sets the status - including informing any listeners
        */
-      private void setStatus(QueryStatus newStatus)
+      private void setStatus(QueryState newStatus)
       {
          this.status = newStatus;
          
@@ -148,19 +148,19 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
        */
       public void start() throws IOException
       {
-         setStatus(QueryStatus.STARTING);
+         setStatus(QueryState.STARTING);
          
          //run cone search
          InputStream stream = coneSearch(ra, dec, sr);
          
          //set status to complete
-         setStatus(QueryStatus.QUERY_COMPLETE);
+         setStatus(QueryState.QUERY_COMPLETE);
             
          //send results to myspace if required
          sendResults(stream);
             
          //set status to complete
-         setStatus(QueryStatus.FINISHED);
+         setStatus(QueryState.FINISHED);
          
       }
       
@@ -206,7 +206,7 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
       /**
        * Fire status changed - inform listener
        */
-      public void fireStatusChanged(QueryStatus newStatus)
+      public void fireStatusChanged(QueryState newStatus)
       {
          for (int i=0;i<listeners.size();i++)
          {
@@ -356,6 +356,9 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
 
 /*
 $Log: AdqlNvoConeDelegate.java,v $
+Revision 1.14  2004/03/07 00:33:50  mch
+Started to separate It4.1 interface from general server services
+
 Revision 1.13  2004/03/02 01:37:50  mch
 Updates from changes to StoreClient and AGSLs
 

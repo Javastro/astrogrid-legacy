@@ -1,5 +1,5 @@
 /*
- * $Id: JobNotifyServiceListener.java,v 1.14 2004/03/06 19:34:21 mch Exp $
+ * $Id: JobNotifyServiceListener.java,v 1.15 2004/03/07 00:33:50 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -11,7 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.datacenter.webnotify.WebNotifier;
 import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
@@ -52,7 +52,7 @@ public class JobNotifyServiceListener implements QuerierListener
          
          //create Job Info bean
          
-         log.debug("Querier ["+querier.getExtRef()+"] telling "+jobMonitor+" of status '"+querier.getStatus());
+         log.debug("Querier ["+querier.getExtRef()+"] telling "+jobMonitor+" of status '"+querier.getState());
 //         jmd.monitorJob(querier.getExtRef(), status, message);
 //      }
 //      catch (JesDelegateException e) {
@@ -64,6 +64,9 @@ public class JobNotifyServiceListener implements QuerierListener
 
 /*
 $Log: JobNotifyServiceListener.java,v $
+Revision 1.15  2004/03/07 00:33:50  mch
+Started to separate It4.1 interface from general server services
+
 Revision 1.14  2004/03/06 19:34:21  mch
 Merged in mostly support code (eg web query form) changes
 
