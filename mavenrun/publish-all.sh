@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: publish-all.sh,v 1.2 2004/12/20 11:08:46 jdt Exp $ 
+# $Id: publish-all.sh,v 1.3 2005/01/13 11:52:39 jdt Exp $ 
 #
 #####################################################
 #  Assumes there won't be any dependency problems...
@@ -14,8 +14,8 @@ publish-component.sh registry $1
 publish-component.sh filestore $1
 publish-component.sh filemanager $1
 publish-component.sh community $1
-publish-component.sh slinger $1
 publish-component.sh mySpace $1
+publish-component.sh slinger $1
 publish-component.sh security $1
 publish-component.sh applications $1
 publish-component.sh scripting $1

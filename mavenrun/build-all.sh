@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: build-all.sh,v 1.4 2004/12/23 14:16:28 jdt Exp $ 
+# $Id: build-all.sh,v 1.5 2005/01/13 11:51:58 jdt Exp $ 
 ##################################################
 #
 #  Build all the astrogrid components
@@ -21,9 +21,9 @@ build-component.sh registry $1
 build-component.sh filestore $1
 build-component.sh community $1       #client
 build-component.sh filemanager $1
-build-component.sh slinger $1
 build-component.sh security $1
 build-component.sh mySpace $1
+build-component.sh slinger $1
 build-component.sh community $1       #server
 
 build-component.sh jes $1 #client - will fail, build client only
