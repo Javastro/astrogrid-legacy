@@ -42,21 +42,6 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <Subject>???</Subject>
                 <cea:ApplicationDefinition>
                         <cea:Parameters>
-							<!-- NWW: why is the 'output file name' an input parameter? Don't think this is necessary.-->
-                                 <cea:ParameterDefinition name="OutputFileName"
-                                        type="text">
-                                        <ceapd:DefaultValue>OutputFileName</ceapd:DefaultValue>
-                                        <ceapd:UI_Description >
-                                                Name of the mpeg file that will be created by the script.
-                                        </ceapd:UI_Description>
-                                </cea:ParameterDefinition>
-								<!-- NWW: this isn't schema-valid: there's not minOccurs or maxOccurs attributes on this element
-									
-									why would this parameter be repeated if its a text file containing filenames anyhow?
-									
-									I thought we were going to pass in fits images individually, as a repeated parameter.
-									
-									 -->
                                 <cea:ParameterDefinition name="InputFiles" type="text" minOccurs="1" maxOccurs="unbounded">
                                         <ceapd:DefaultValue>InputFiles</ceapd:DefaultValue>
                                         <ceapd:UI_Description >
@@ -64,10 +49,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                                                 series of FITS images.
                                         </ceapd:UI_Description>
                                 </cea:ParameterDefinition>
-								<!-- NWW: its not correct to be asking for a 'filename'. The output of this tool is the movie MPEG itself.
-									the resource locaton where this movie is to be stored by CEA may be specified by an 'indirect' parameter - 
-									but this isn't a requirement -->
-                                <cea:ParameterDefinition name="OutputFile" type="binary">									
+                                <cea:ParameterDefinition name="OutputFile" type="binary">
                                         <ceapd:DefaultValue>OutputFile</ceapd:DefaultValue>
                                         <ceapd:UI_Description >
                                                 Filename of solar movie MPEG file created from fits images.
@@ -77,8 +59,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                         <cea:Interfaces>
                                 <ceab:Interface name="Simple">
                                         <ceab:input>
-                                                <ceab:pref ref="OutputFileName"/> <!-- NWW: don't think this is needed -->
-                                                <ceab:pref ref="InputFiles"/><!-- NWW: should have maxOccurs="0" on this (0, non-intuitively meaning unbounded) -->
+                                                <ceab:pref ref="InputFiles"/>
                                         </ceab:input>
                                         <ceab:output>
                                                 <ceab:pref ref="OutputFile"/>
@@ -136,14 +117,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                                                 to save as an MPEG
                                         </ceapd:UI_Description>
                                 </cea:ParameterDefinition>
-                                 <cea:ParameterDefinition name="OutputFileName"
-                                        type="text">
-                                        <ceapd:DefaultValue>OutputFileName</ceapd:DefaultValue>
-                                        <ceapd:UI_Description >
-                                                Name of the mpeg file that will be created by the script.
-                                        </ceapd:UI_Description>
-                                </cea:ParameterDefinition>
-        <cea:ParameterDefinition name="OutputFile"
+                                <cea:ParameterDefinition name="OutputFile"
                                         type="binary">
                                         <ceapd:DefaultValue>OutputFile</ceapd:DefaultValue>
                                         <ceapd:UI_Description >
@@ -156,7 +130,6 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                                         <ceab:input>
                                                 <ceab:pref ref="InputFile"/>
                                                 <ceab:pref ref="ArrayName"/>
-                                                 <ceab:pref ref="OutputFileName"/>
                                         </ceab:input>
                                         <ceab:output>
                                                 <ceab:pref ref="OutputFile"/>
@@ -207,9 +180,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 </Capability>
                 <Interface>
                         <Invocation>WebService</Invocation>
-                        <!-- NWW: removed version - the endpoint of this service is fixed, as is external to auto-integration 
-							18/08/04: this service doesn't seem to be available yet
-							-->
+                        <!-- nww set to localhost commandline for now - needs to  be set to mssl as an external service really -->
                         <AccessURL use="base">http://msslxy.mssl.ucl.ac.uk:8080/astrogrid-cea-commandline-SNAPSHOT/services/CommonExecutionConnectorService</AccessURL>
                 </Interface>
                 <cea:ManagedApplications>
