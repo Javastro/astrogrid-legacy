@@ -11,6 +11,7 @@
 
   <!-- Services from AxisDataServerService WSDL service -->
 
+  <service name="AxisDataServer"/>
   <service name="AxisDataServer_v05"/>
   <service name="CeaDataServer"/>
   <!--service name="SkyNode_v07"/-->
