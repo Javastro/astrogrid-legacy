@@ -1,5 +1,5 @@
 /*
- * $Id: ConfManager.java,v 1.1 2004/02/17 02:03:03 jdt Exp $ Created on
+ * $Id: ConfManager.java,v 1.2 2004/02/17 15:21:17 jdt Exp $ Created on
  * 19-Jan-2004 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,106 +22,112 @@ import org.apache.commons.logging.LogFactory;
  * working properly again
  */
 public final class ConfManager {
-	/**
-	 * Logger
-	 */
-	private static final Log log = LogFactory.getLog(ConfManager.class);
-	/**
-	 * Name of properties file
-	 */
-	public static final String WEBSERVICES_PROPS = "/webservices.properties";
-	/**
-	 * Name of key in property file for endpoint
-	 *  
-	 */
-	public static final String MYSPACE_ENDPOINT = "mySpaceEndPoint";
+  /**
+   * Logger
+   */
+  private static final Log log = LogFactory.getLog(ConfManager.class);
+  /**
+   * Name of properties file
+   */
+  public static final String WEBSERVICES_PROPS = "/webservices.properties";
+  /**
+   * Name of key in property file for endpoint
+   *  
+   */
+  public static final String MYSPACE_ENDPOINT = "mySpaceEndPoint";
 
-	/**
-	 * name of key in properties file for merlin endpoint
-	 */
-	public static final String MERLIN_ENDPOINT = "merlinDatacenterEndPoint";
+  /**
+   * name of key in properties file for merlin endpoint
+   */
+  public static final String MERLIN_ENDPOINT = "merlinDatacenterEndPoint";
 
-	/**
-	 * Singleton
-	 */
-	private static final ConfManager instance = new ConfManager();
-	/**
-	 * since we're loading up the props in a statically called ctor, can't
-	 * throw an exception so gotta use a flag.
-	 */
-	private boolean fileNotLoaded = true;
-	/**
-	 * The class's raison d'etre
-	 */
-	private Properties props;
-	/**
-	 * ctor
-	 *  
-	 */
-	private ConfManager() {
-		try {
-			props = new Properties();
-			log.debug("Attempting to load " + ConfManager.WEBSERVICES_PROPS);
-			InputStream inputStream =
-				this.getClass().getResourceAsStream(
-					ConfManager.WEBSERVICES_PROPS);
-			assert inputStream != null : "No file found";
-			props.load(inputStream);
-			fileNotLoaded = false;
-		} catch (IOException ex) {
-			fileNotLoaded = true;
-			log.error("Problem loading test properties", ex);
-		}
-	}
-	/**
-	 * singleton pattern
-	 * 
-	 * @return the oneandonlyinstance
-	 */
-	public static ConfManager getInstance() {
-		return instance;
-	}
-	/**
-	 * Get the endpoint of our integration test myspace server
-	 * 
-	 * @return string containing url
-	 * @throws IOException
-	 *             if we couldn't load the props
-	 *  
-	 */
-	public String getMySpaceEndPoint() throws IOException {
-		return getProperty(ConfManager.MYSPACE_ENDPOINT, "MySpace Web service end-point");
-	}
-	/**
-	 * Gets the names property from the props file
-	 * @param propertyDescription description of the property (just used for logging)
-	 * @param propertyName name of the property in the props file
-	 * @return string requested property
-	 * @throws IOException
-	 *             if we couldn't load the props
-	 */
-	private String getProperty(String propertyName, String propertyDescription) throws IOException {
-		if (fileNotLoaded) {
-			throw new IOException("Configuration file not loaded");
-		}
-		final String property =
-			props.getProperty(propertyName);
-		log.debug(propertyDescription + ": " + property);
-		assert property != null && property.length() > 0;
-		return property;
-	}
-	/**
-	 * get the endpoint of a datacenter server containing the merlin dataset
-	 * 
-	 * @return string containing url @thows IOException if we can't load props
-	 */
-	public String getMerlinDatacenterEndPoint() throws Exception {
-		return getProperty(ConfManager.MERLIN_ENDPOINT, "Merlin Datacenter endpoint");
-	}
+  /**
+   * Singleton
+   */
+  private static final ConfManager instance = new ConfManager();
+  /**
+   * since we're loading up the props in a statically called ctor, can't
+   * throw an exception so gotta use a flag.
+   */
+  private boolean fileNotLoaded = true;
+  /**
+   * The class's raison d'etre
+   */
+  private Properties props;
+  /**
+   * ctor
+   *  
+   */
+  private ConfManager() {
+    try {
+      props = new Properties();
+      log.debug("Attempting to load " + ConfManager.WEBSERVICES_PROPS);
+      InputStream inputStream =
+        this.getClass().getResourceAsStream(ConfManager.WEBSERVICES_PROPS);
+      assert inputStream != null : "No file found";
+      props.load(inputStream);
+      fileNotLoaded = false;
+    } catch (IOException ex) {
+      fileNotLoaded = true;
+      log.error("Problem loading test properties", ex);
+    }
+  }
+  /**
+   * singleton pattern
+   * 
+   * @return the oneandonlyinstance
+   */
+  public static ConfManager getInstance() {
+    return instance;
+  }
+  /**
+   * Get the endpoint of our integration test myspace server
+   * 
+   * @return string containing url
+   * @throws IOException
+   *             if we couldn't load the props
+   *  
+   */
+  public String getMySpaceEndPoint() throws IOException {
+    return getProperty(
+      ConfManager.MYSPACE_ENDPOINT,
+      "MySpace Web service end-point");
+  }
+  /**
+   * Gets the names property from the props file
+   * @param propertyDescription description of the property (just used for logging)
+   * @param propertyName name of the property in the props file
+   * @return string requested property
+   * @throws IOException
+   *             if we couldn't load the props
+   */
+  private String getProperty(String propertyName, String propertyDescription)
+    throws IOException {
+    if (fileNotLoaded) {
+      throw new IOException("Configuration file not loaded");
+    }
+    final String property = props.getProperty(propertyName);
+    log.debug(propertyDescription + ": " + property);
+    assert property != null && property.length() > 0;
+    return property;
+  }
+  /**
+   * get the endpoint of a datacenter server containing the merlin dataset
+   * 
+   * @return string containing url @thows IOException if we can't load props
+   */
+  public String getMerlinDatacenterEndPoint() throws Exception {
+    return getProperty(
+      ConfManager.MERLIN_ENDPOINT,
+      "Merlin Datacenter endpoint");
+  }
 }
 
 /*
  * $Log: ConfManager.java,v $
+ * Revision 1.2  2004/02/17 15:21:17  jdt
+ * formatted to remove tags (cf coding standards)
+ *
  * Revision 1.1  2004/02/17 02:03:03  jdt
  * Moved some things around, and added more mySpace tests. 
  * URL tests, and threaded tests not yet complete.

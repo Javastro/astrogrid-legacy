@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleMySpaceTest.java,v 1.10 2004/02/17 02:03:03 jdt Exp $ Created on
+ * $Id: SimpleMySpaceTest.java,v 1.11 2004/02/17 15:21:17 jdt Exp $ Created on
  * 28-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,362 +31,438 @@ import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
  * @author john taylor
  */
 public final class SimpleMySpaceTest extends TestCase {
-	/**
-	 * Constructor for SimpleMySpaceTest.
-	 * 
-	 * @param arg0
-	 *            test name
-	 */
-	public SimpleMySpaceTest(final String arg0) {
-		super(arg0);
-	}
-	/**
-	 * fire up the test ui
-	 * 
-	 * @param args
-	 *            ignored
-	 */
-	public static void main(final String[] args) {
-		junit.textui.TestRunner.run(SimpleMySpaceTest.class);
-	}
-	private final static Log log = LogFactory.getLog(SimpleMySpaceTest.class);
+  /**
+   * Constructor for SimpleMySpaceTest.
+   * 
+   * @param arg0
+   *            test name
+   */
+  public SimpleMySpaceTest(final String arg0) {
+    super(arg0);
+  }
+  /**
+   * fire up the test ui
+   * 
+   * @param args
+   *            ignored
+   */
+  public static void main(final String[] args) {
+    junit.textui.TestRunner.run(SimpleMySpaceTest.class);
+  }
+  private final static Log log = LogFactory.getLog(SimpleMySpaceTest.class);
 
-	/**
-	 * Location of MySpace webservice property file
-	 */
-	private String mySpaceEndPoint;
-	/**
-	 * most tests will require a user
-	 */
-	private String defaultUser = "NeilHamilton";
-	/**
-	 * mosts tests will also require a community
-	 */
-	private String defaultCommunity = "pentonville";
-	/**
-	 * similarly a credential, though this is empty at the mo.
-	 */
-	private String defaultCredential = "any";
-	/**
-	 * default server
-	 */
-	private String defaultServer = "serv1";
-	/**
-	 * Called before each test. Sets up a default user
-	 * 
-	 * @throws Exception
-	 *             on failure to load the config file, or a problem accessing
-	 *             the web service
-	 */
-	public final void setUp() throws Exception {
-		log.debug("\n\nSetting up...");
-		mySpaceEndPoint = ConfManager.getInstance().getMySpaceEndPoint();
-		assert(mySpaceEndPoint != null);
-		boolean ok = createUser(defaultUser, defaultCommunity, mySpaceEndPoint);
-		if (!ok){
-			log.error("Failed to create user - check the mySpace by hand");
-		}
-	}
-	/**
-	 * Tidy up following test. Deletes the default user
-	 * 
-	 * @throws Exception
-	 *             on failure to load the config file, or a problem accessing
-	 *             the web service
-	 */
-	public final void tearDown() throws Exception {
-		log.debug("Tearing down...");
-		boolean ok = deleteUser(defaultUser, defaultCommunity, mySpaceEndPoint);
-		if (!ok){
-			log.error("Failed to delete user - check the mySpace by hand");
-		}
-	}
+  /**
+   * Location of MySpace webservice property file
+   */
+  private String mySpaceEndPoint;
+  /**
+   * most tests will require a user
+   */
+  private String defaultUser = "NeilHamilton";
+  /**
+   * mosts tests will also require a community
+   */
+  private String defaultCommunity = "pentonville";
+  /**
+   * similarly a credential, though this is empty at the mo.
+   */
+  private String defaultCredential = "any";
+  /**
+   * default server
+   */
+  private String defaultServer = "serv1";
+  /**
+   * Called before each test. Sets up a default user
+   * 
+   * @throws Exception
+   *             on failure to load the config file, or a problem accessing
+   *             the web service
+   */
+  public final void setUp() throws Exception {
+    log.debug("\n\nSetting up...");
+    mySpaceEndPoint = ConfManager.getInstance().getMySpaceEndPoint();
+    assert(mySpaceEndPoint != null);
+    boolean ok = createUser(defaultUser, defaultCommunity, mySpaceEndPoint);
+    if (!ok) {
+      log.error("Failed to create user - check the mySpace by hand");
+    }
+  }
+  /**
+   * Tidy up following test. Deletes the default user
+   * 
+   * @throws Exception
+   *             on failure to load the config file, or a problem accessing
+   *             the web service
+   */
+  public final void tearDown() throws Exception {
+    log.debug("Tearing down...");
+    boolean ok = deleteUser(defaultUser, defaultCommunity, mySpaceEndPoint);
+    if (!ok) {
+      log.error("Failed to delete user - check the mySpace by hand");
+    }
+  }
 
-	/**
-	 * The simplest test. Add a user, and delete it again.
-	 *  
-	 */
-	public void testAddDeleteUser() {
-		String communityId = "roe";
-		String userId = "jdtTesting";
-		boolean ok1 = false;
-		boolean ok2 = false;
-		try {
-			ok1 = createUser(userId, communityId, mySpaceEndPoint);
-			log.debug("Created OK?" + ok1);
-		} catch (Exception e) {
-			log.error("Error creating user: " + e);
-			fail("Exception creating user: " + e);
-		} finally {
-			log.debug("Attempting to delete user");
-			try {
-				ok2 = deleteUser(userId, communityId, mySpaceEndPoint);
-				log.debug("Deleted OK? " + ok2);
-			} catch (Exception e) {
-				log.error("Error deleting user: " + e);
-				log.error(
-					"Warning - failed to delete user; mySpace database may now be corrupt and require some TLC");
-				fail("Exception deleting user:  " + e);
-			}
-		}
-		assertTrue("Result from createUser was false", ok1);
-		assertTrue("Result from deleteUser was false", ok2);
-	}
+  /**
+   * The simplest test. Add a user, and delete it again.
+   *  
+   */
+  public void testAddDeleteUser() {
+    String communityId = "roe";
+    String userId = "jdtTesting";
+    boolean ok1 = false;
+    boolean ok2 = false;
+    try {
+      ok1 = createUser(userId, communityId, mySpaceEndPoint);
+      log.debug("Created OK?" + ok1);
+    } catch (Exception e) {
+      log.error("Error creating user: " + e);
+      fail("Exception creating user: " + e);
+    } finally {
+      log.debug("Attempting to delete user");
+      try {
+        ok2 = deleteUser(userId, communityId, mySpaceEndPoint);
+        log.debug("Deleted OK? " + ok2);
+      } catch (Exception e) {
+        log.error("Error deleting user: " + e);
+        log.error(
+          "Warning - failed to delete user; mySpace database may now be corrupt and require some TLC");
+        fail("Exception deleting user:  " + e);
+      }
+    }
+    assertTrue("Result from createUser was false", ok1);
+    assertTrue("Result from deleteUser was false", ok2);
+  }
 
-	/**
-	 *  
-	 */
-	private boolean deleteUser(
-		final String userID,
-		final String communityID,
-		final String endPoint)
-		throws Exception {
+  /**
+   *  
+   */
+  private boolean deleteUser(
+    final String userID,
+    final String communityID,
+    final String endPoint)
+    throws Exception {
 
-		MySpaceClient client = getDelegate(endPoint);
-		// Attempt to add, and then delete a user
-		Vector servers = new Vector();
-		servers.add(defaultServer);
-		String credential = "any";
-		boolean ok2 = false;
-		try {
-			log.debug("Attempting to deleteUser with the following params:");
-			log.debug("userID: " + userID);
-			log.debug("communityId: " + communityID);
-			log.debug("credential: " + credential);
-			log.debug("servers: " + servers);
-			ok2 = client.deleteUser(userID, communityID, credential);
-			log.debug("Deleted? " + ok2);
-		} catch (Exception e) {
-			log.error("Error deleting user: " + e);
-			log.error(
-				"Warning - failed to delete user; mySpace database may now be corrupt and require some TLC");
-			throw e;
-		}
+    MySpaceClient client = getDelegate(endPoint);
+    // Attempt to add, and then delete a user
+    Vector servers = new Vector();
+    servers.add(defaultServer);
+    String credential = "any";
+    boolean ok2 = false;
+    try {
+      log.debug("Attempting to deleteUser with the following params:");
+      log.debug("userID: " + userID);
+      log.debug("communityId: " + communityID);
+      log.debug("credential: " + credential);
+      log.debug("servers: " + servers);
+      ok2 = client.deleteUser(userID, communityID, credential);
+      log.debug("Deleted? " + ok2);
+    } catch (Exception e) {
+      log.error("Error deleting user: " + e);
+      log.error(
+        "Warning - failed to delete user; mySpace database may now be corrupt and require some TLC");
+      throw e;
+    }
 
-		return ok2;
-	}
-	/**
-	 *  
-	 */
-	private boolean createUser(
-		final String userID,
-		final String communityID,
-		final String endPoint)
-		throws Exception {
-		
-		MySpaceClient client = getDelegate(endPoint);
-		// Attempt to add, and then delete a user
-		Vector servers = new Vector();
-		servers.add(defaultServer);
-		String credential = "any";
-		boolean ok = false;
-		try {
-			log.debug("Attempting to createUser with the following params:");
-			log.debug("userID: " + userID);
-			log.debug("communityId: " + communityID);
-			log.debug("credential: " + credential);
-			log.debug("servers: " + servers);
-			ok = client.createUser(userID, communityID, credential, servers);
-			log.debug("Created? " + ok);
-		} catch (Exception e) {
-			log.error("Error creating user: " + e);
-			throw e;
-		} finally {
+    return ok2;
+  }
+  /**
+   *  
+   */
+  private boolean createUser(
+    final String userID,
+    final String communityID,
+    final String endPoint)
+    throws Exception {
 
-		}
-		return ok;
-	}
-	/**
-	 * @param endPoint
-	 * @return a mySpace delegate
-	 * @throws IOException on failure to obtain delegate
-	 */
-	private MySpaceClient getDelegate(final String endPoint) throws IOException {
-		assert endPoint != null;
-		MySpaceClient client = null;
-		try {
-			client = MySpaceDelegateFactory.createDelegate(endPoint);
-			log.debug("MySpace delegate obtained: " + client);
-		} catch (IOException ex) {
-			log.error("Failed to obtain a mySpace delegate");
-			throw ex;
-		}
-		assert(client != null);
-		return client;
-	}
-	/**
-	 * Let's start with something trivial - can we save and return text?
-	 * @throws Exception no idea
-	 */
-	public void testImportExportDeleteSimpleText() throws Exception {
-		for (int i =0;i<10;++i) {
-			final String name="foo_"+Integer.toString(i)+"_"+Long.toString(System.currentTimeMillis());
-			final String string = "argle"+Integer.toString(i);
-			importExportDelete(getFullPath(defaultUser, defaultCommunity, name), string);
-		}
-	}
-	
-	/**
-	 * Now a bit harder - can we save and return xml?
-	 * @throws Exception no idea
-	 */
-	public void testImportExportDeleteXMLTextAgain() throws Exception {
-		final String name="bar"+Long.toString(System.currentTimeMillis());
-		final String xml="<?xml version=\"1.0\"?><properties><title>Integration Tests</title><author email=\"jdt@roe.ac.uk\">John Taylor</author></properties>";
-		importExportDelete(getFullPath(defaultUser, defaultCommunity, name), xml);
-	}
+    MySpaceClient client = getDelegate(endPoint);
+    // Attempt to add, and then delete a user
+    Vector servers = new Vector();
+    servers.add(defaultServer);
+    String credential = "any";
+    boolean ok = false;
+    try {
+      log.debug("Attempting to createUser with the following params:");
+      log.debug("userID: " + userID);
+      log.debug("communityId: " + communityID);
+      log.debug("credential: " + credential);
+      log.debug("servers: " + servers);
+      ok = client.createUser(userID, communityID, credential, servers);
+      log.debug("Created? " + ok);
+    } catch (Exception e) {
+      log.error("Error creating user: " + e);
+      throw e;
+    } finally {
 
-	/**
-	 * Again, with single quotes
-	 * @throws Exception no idea
-	 */
-	public void testImportExportDeleteXMLText() throws Exception {
-		final String name="foo"+Long.toString(System.currentTimeMillis());
-		final String xml="<?xml version='1.0'?><properties><title>Integration Tests</title><author email='jdt@roe.ac.uk'>John Taylor</author></properties>";
-		importExportDelete(getFullPath(defaultUser, defaultCommunity, name), xml);
-	}	
-	
-	/**
-	 * Now lets really go mad - multiline text. Note this has just been done by the addition
-	 * of a few \n chars....maybe need to think about this a bit more
-	 * @throws Exception nfi
-	 */
-	public void testImportExportDeleteMultilineText() throws Exception {
-		final String name="foo"+Long.toString(System.currentTimeMillis());
-		final String xml="<?xml version=\"1.0\"?>\n<properties>\n<title>Integration Tests</title>\n<author email=\"jdt@roe.ac.uk\">John Taylor</author>\n</properties>";
-		importExportDelete(getFullPath(defaultUser, defaultCommunity, name), xml);
-	}
-	
-	/**
-	 * Construct the full path name of a myspace artifact
-	 * @param user user
-	 * @param community community
-	 * @param file filename
-	 * @return full path
-	 */
-	private String getFullPath(final String user, final String community, final String file) {
-		return "/"+user+"@"+community+"/"+defaultServer+"/"+file;
-	}
-	/**
-	 * Utility method extracting the commonality of the saveDataHolding tests
-	 * @param name full path name to save into myspace
-	 * @param text the text to store
-	 * @throws Exception who knows
-	 * 
-	 */
-	private void importExportDelete(final String name, final String text) throws Exception  {
-		importExportDeleteDelayed(name, text, 0);
-	}
-	
-	/**
-	 * Just as importExportDelete, except a random delay is inserted between the calls to import/export/delete
-	 * @see importExportDelete(String, String)
-	 * @param name full myspace path name
-	 * @param text text to insert
-	 * @param maxDelay maximum delay in milliseconds between calls
-	 * @throws Exception who knows
-	 */
-	private void importExportDeleteDelayed(final String name, final String text, final int maxDelay) throws Exception {
-		try {
-			Thread.sleep((int) (maxDelay*Math.random()));
-		} catch (InterruptedException e) {
-			;
-		}
-		
-		final MySpaceClient client = getDelegate(mySpaceEndPoint);
-		try {
-			Thread.sleep((int) (maxDelay*Math.random()));
-		} catch (InterruptedException e) {
-			;
-		}
-		
-		boolean ok = client.saveDataHolding(defaultUser, defaultCommunity, defaultCredential, name,text,"any",MySpaceClient.OVERWRITE);
-		assertTrue("saveDataHolding problem - note test database may now be corrupt", ok);
-		try {
-			Thread.sleep((int) (maxDelay*Math.random()));
-		} catch (InterruptedException e) {
-			;
-		}
-		
-		String result = client.getDataHolding(defaultUser, defaultCommunity, defaultCredential, name);
-		assertNotNull("Returned result from getDataHolding was null", result);
-		log.debug("Attempted to save '"+text+"' under name "+name);
-		log.debug("Received back '" + result+"'");
-		String testText = text +"\n"; //@TODO see bug 119
-		assertEquals("data returned from myspace not same as saved",result,testText);
-		try {
-			Thread.sleep((int) (maxDelay*Math.random()));
-		} catch (InterruptedException e) {
-			;
-		}
-		
-		String ok2 = client.deleteDataHolding(defaultUser, defaultCommunity, defaultCredential, name);
-		assertTrue("deleteDataHolding should return success ", ok2.indexOf("SUCCESS")!=-1);
-	}
-	/**
-	 * Utility method extracting the commonality of the saveDataHolding tests
-	 * @throws Exception who knows
-	 */
-	private void importURLExportDelete(final String name, final String urlTxt) throws  Exception {
-		MySpaceClient client = getDelegate(mySpaceEndPoint);
-		boolean ok = client.saveDataHoldingURL(defaultUser, defaultCommunity, defaultCredential, name, urlTxt, "any", MySpaceClient.OVERWRITE);
-		assertTrue("saveDataHolding problem - note test database may now be corrupt", ok);
-		String result = client.getDataHolding(defaultUser, defaultCommunity, defaultCredential, name);
-		assertNotNull("Returned result from getDataHolding was null", result);
-		URL url = new URL(urlTxt);
-		InputStream is = url.openStream();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		String text = reader.readLine(); //@TODO - readline isn't enough...got toread the lot
-		
-		log.debug("Attempted to save from'"+url+"' under name "+name);
-		log.debug("Received back '" + result+"'");
-		log.debug("Expected: " + text);
-		assertEquals("data returned from myspace not same as saved",result,text);
-		String ok2 = client.deleteDataHolding(defaultUser, defaultCommunity, defaultCredential, name);
-		log.debug("What is this returning?"+ok2);
-	}
-	/**
-	 * test reading from url
-	 * @throws Exception no idea
-	 */
-	public void testImportExportDeleteURL() throws Exception {
-		String name="foo"+Long.toString(System.currentTimeMillis());
-		String url = "http://wiki.astrogrid.org/pub/Main/JohnTaylor/urlTestConfig.xml";
-		importURLExportDelete(getFullPath(defaultUser, defaultCommunity, name), url);
-	}
-	/**
-	 * Create a number of threads all trying to read, write and delete and watch the
-	 * chaos.  @TODO consider moving the threaded tests to another class
-	 * @throws Exception no idea
-	 */
-	public void testImportExportDeleteSimpleTextThreaded() throws Exception {
-		final int nTheads = 100;
-		final int maxDelay = 1000; //milliseconds
-		for (int i =0;i<nTheads;++i) {
-			final String name="foo_"+Integer.toString(i)+"_"+Long.toString(System.currentTimeMillis());
-			final String text = "argle"+Integer.toString(i);
-			new Thread() {
-				public void run()  {
-					try {
-						threadCount++;
-						importExportDeleteDelayed(getFullPath(defaultUser, defaultCommunity, name), text, maxDelay);
-					} catch (Exception e) {
-						fail("Exception in testImportExportDeleteSimpleTextThreaded" +e);
-					} finally {
-						threadCount--;
-						this.notify(); //@TODO blurgh this lot needs fixing- synch methods etc...manana manana
-					}
-				}
-			}.start();
-		}
-		while(threadCount>0) {
-			try {
-				wait();
-			} catch (InterruptedException ie) {
-				; //do nothing
-			}
-		}
-	} 
-	private int threadCount=0;
-	
+    }
+    return ok;
+  }
+  /**
+   * @param endPoint
+   * @return a mySpace delegate
+   * @throws IOException on failure to obtain delegate
+   */
+  private MySpaceClient getDelegate(final String endPoint) throws IOException {
+    assert endPoint != null;
+    MySpaceClient client = null;
+    try {
+      client = MySpaceDelegateFactory.createDelegate(endPoint);
+      log.debug("MySpace delegate obtained: " + client);
+    } catch (IOException ex) {
+      log.error("Failed to obtain a mySpace delegate");
+      throw ex;
+    }
+    assert(client != null);
+    return client;
+  }
+  /**
+   * Let's start with something trivial - can we save and return text?
+   * @throws Exception no idea
+   */
+  public void testImportExportDeleteSimpleText() throws Exception {
+    for (int i = 0; i < 10; ++i) {
+      final String name =
+        "foo_"
+          + Integer.toString(i)
+          + "_"
+          + Long.toString(System.currentTimeMillis());
+      final String string = "argle" + Integer.toString(i);
+      importExportDelete(
+        getFullPath(defaultUser, defaultCommunity, name),
+        string);
+    }
+  }
+
+  /**
+   * Now a bit harder - can we save and return xml?
+   * @throws Exception no idea
+   */
+  public void testImportExportDeleteXMLTextAgain() throws Exception {
+    final String name = "bar" + Long.toString(System.currentTimeMillis());
+    final String xml =
+      "<?xml version=\"1.0\"?><properties><title>Integration Tests</title><author email=\"jdt@roe.ac.uk\">John Taylor</author></properties>";
+    importExportDelete(getFullPath(defaultUser, defaultCommunity, name), xml);
+  }
+
+  /**
+   * Again, with single quotes
+   * @throws Exception no idea
+   */
+  public void testImportExportDeleteXMLText() throws Exception {
+    final String name = "foo" + Long.toString(System.currentTimeMillis());
+    final String xml =
+      "<?xml version='1.0'?><properties><title>Integration Tests</title><author email='jdt@roe.ac.uk'>John Taylor</author></properties>";
+    importExportDelete(getFullPath(defaultUser, defaultCommunity, name), xml);
+  }
+
+  /**
+   * Now lets really go mad - multiline text. Note this has just been done by the addition
+   * of a few \n chars....maybe need to think about this a bit more
+   * @throws Exception nfi
+   */
+  public void testImportExportDeleteMultilineText() throws Exception {
+    final String name = "foo" + Long.toString(System.currentTimeMillis());
+    final String xml =
+      "<?xml version=\"1.0\"?>\n<properties>\n<title>Integration Tests</title>\n<author email=\"jdt@roe.ac.uk\">John Taylor</author>\n</properties>";
+    importExportDelete(getFullPath(defaultUser, defaultCommunity, name), xml);
+  }
+
+  /**
+   * Construct the full path name of a myspace artifact
+   * @param user user
+   * @param community community
+   * @param file filename
+   * @return full path
+   */
+  private String getFullPath(
+    final String user,
+    final String community,
+    final String file) {
+    return "/" + user + "@" + community + "/" + defaultServer + "/" + file;
+  }
+  /**
+   * Utility method extracting the commonality of the saveDataHolding tests
+   * @param name full path name to save into myspace
+   * @param text the text to store
+   * @throws Exception who knows
+   * 
+   */
+  private void importExportDelete(final String name, final String text)
+    throws Exception {
+    importExportDeleteDelayed(name, text, 0);
+  }
+
+  /**
+   * Just as importExportDelete, except a random delay is inserted between the calls to import/export/delete
+   * @see importExportDelete(String, String)
+   * @param name full myspace path name
+   * @param text text to insert
+   * @param maxDelay maximum delay in milliseconds between calls
+   * @throws Exception who knows
+   */
+  private void importExportDeleteDelayed(
+    final String name,
+    final String text,
+    final int maxDelay)
+    throws Exception {
+    try {
+      Thread.sleep((int) (maxDelay * Math.random()));
+    } catch (InterruptedException e) {
+      ;
+    }
+
+    final MySpaceClient client = getDelegate(mySpaceEndPoint);
+    try {
+      Thread.sleep((int) (maxDelay * Math.random()));
+    } catch (InterruptedException e) {
+      ;
+    }
+
+    boolean ok =
+      client.saveDataHolding(
+        defaultUser,
+        defaultCommunity,
+        defaultCredential,
+        name,
+        text,
+        "any",
+        MySpaceClient.OVERWRITE);
+    assertTrue(
+      "saveDataHolding problem - note test database may now be corrupt",
+      ok);
+    try {
+      Thread.sleep((int) (maxDelay * Math.random()));
+    } catch (InterruptedException e) {
+      ;
+    }
+
+    String result =
+      client.getDataHolding(
+        defaultUser,
+        defaultCommunity,
+        defaultCredential,
+        name);
+    assertNotNull("Returned result from getDataHolding was null", result);
+    log.debug("Attempted to save '" + text + "' under name " + name);
+    log.debug("Received back '" + result + "'");
+    String testText = text + "\n"; //@TODO see bug 119
+    assertEquals(
+      "data returned from myspace not same as saved",
+      result,
+      testText);
+    try {
+      Thread.sleep((int) (maxDelay * Math.random()));
+    } catch (InterruptedException e) {
+      ;
+    }
+
+    String ok2 =
+      client.deleteDataHolding(
+        defaultUser,
+        defaultCommunity,
+        defaultCredential,
+        name);
+    assertTrue(
+      "deleteDataHolding should return success ",
+      ok2.indexOf("SUCCESS") != -1);
+  }
+  /**
+   * Utility method extracting the commonality of the saveDataHolding tests
+   * @throws Exception who knows
+   */
+  private void importURLExportDelete(final String name, final String urlTxt)
+    throws Exception {
+    MySpaceClient client = getDelegate(mySpaceEndPoint);
+    boolean ok =
+      client.saveDataHoldingURL(
+        defaultUser,
+        defaultCommunity,
+        defaultCredential,
+        name,
+        urlTxt,
+        "any",
+        MySpaceClient.OVERWRITE);
+    assertTrue(
+      "saveDataHolding problem - note test database may now be corrupt",
+      ok);
+    String result =
+      client.getDataHolding(
+        defaultUser,
+        defaultCommunity,
+        defaultCredential,
+        name);
+    assertNotNull("Returned result from getDataHolding was null", result);
+    URL url = new URL(urlTxt);
+    InputStream is = url.openStream();
+    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+    String text = reader.readLine();
+    //@TODO - readline isn't enough...got toread the lot
+
+    log.debug("Attempted to save from'" + url + "' under name " + name);
+    log.debug("Received back '" + result + "'");
+    log.debug("Expected: " + text);
+    assertEquals("data returned from myspace not same as saved", result, text);
+    String ok2 =
+      client.deleteDataHolding(
+        defaultUser,
+        defaultCommunity,
+        defaultCredential,
+        name);
+    log.debug("What is this returning?" + ok2);
+  }
+  /**
+   * test reading from url
+   * @throws Exception no idea
+   */
+  public void testImportExportDeleteURL() throws Exception {
+    String name = "foo" + Long.toString(System.currentTimeMillis());
+    String url =
+      "http://wiki.astrogrid.org/pub/Main/JohnTaylor/urlTestConfig.xml";
+    importURLExportDelete(
+      getFullPath(defaultUser, defaultCommunity, name),
+      url);
+  }
+  /**
+   * Create a number of threads all trying to read, write and delete and watch the
+   * chaos.  @TODO consider moving the threaded tests to another class
+   * @throws Exception no idea
+   */
+  public void testImportExportDeleteSimpleTextThreaded() throws Exception {
+    final int nTheads = 100;
+    final int maxDelay = 1000; //milliseconds
+    for (int i = 0; i < nTheads; ++i) {
+      final String name =
+        "foo_"
+          + Integer.toString(i)
+          + "_"
+          + Long.toString(System.currentTimeMillis());
+      final String text = "argle" + Integer.toString(i);
+      new Thread() {
+        public void run() {
+          try {
+            threadCount++;
+            importExportDeleteDelayed(
+              getFullPath(defaultUser, defaultCommunity, name),
+              text,
+              maxDelay);
+          } catch (Exception e) {
+            fail("Exception in testImportExportDeleteSimpleTextThreaded" + e);
+          } finally {
+            threadCount--;
+            this.notify();
+            //@TODO blurgh this lot needs fixing- synch methods etc...manana manana
+          }
+        }
+      }
+      .start();
+    }
+    while (threadCount > 0) {
+      try {
+        wait();
+      } catch (InterruptedException ie) {
+        ; //do nothing
+      }
+    }
+  }
+  private int threadCount = 0;
+
 }
