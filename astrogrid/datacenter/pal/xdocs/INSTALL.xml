@@ -113,7 +113,7 @@ The deployment descriptor (web.xml) for pal.war specifies two external dependenc
 The external dependencies are called:
 <dl>
 <dt><tt>org.astrogrid.config.url</tt></dt>
-<dd> a <tt>java.lang.String</tt> giving the filepath of the pal configuration file
+<dd> a <tt>java.lang.String</tt> giving the URL of the pal configuration file. (for a local file, use <tt>'file:/..'</tt> url format)
 </dd>
 <dt><tt>jdbc/pal-datasource</tt></dt>
 <dd>a <tt>javax.sql.DataSource</tt> object used to connect to the back-end database.
@@ -159,7 +159,7 @@ In <tt>${CATALINA_HOME}/conf/<b>server.xml</b></tt> add the following XML fragme
     </ResourceParams>
 
     <!-- set the value attribute to point to the configuration file -->
-    <Environment name="org.astrogrid.config.url" value="/file/path/to/AstroGridConfig.properties"
+    <Environment name="org.astrogrid.config.url" value="file:/path/to/AstroGridConfig.properties"
     	type="java.lang.String" override="false"/>
 </DefaultContext>
 ]]>
