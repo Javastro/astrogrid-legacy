@@ -67,7 +67,7 @@
                                         <td></td>
                                         <td>
                                             <div id="tool_select_dropdown">                                                
-                                                <select name="tool_list" size="1" id="select_list" onClick="if(document.properties_form.select_list.value=='browse') javascript:void(window.open('/astrogrid-portal/mount/registry/registrybrowser.html?mainelement=Tool&amp;authId=tool_name', 'RegistryMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200')); 
+                                                <select name="tool_list" size="1" id="select_list" onClick="if(document.properties_form.select_list.value=='browse') javascript:void(window.open('/astrogrid-portal/lean/mount/registry/registrybrowser.html?mainelement=Tool&amp;authId=tool_name', 'RegistryMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=450, height=500')); 
                                                                                                             else if (document.properties_form.select_list.value=='none') alert('Please select....');
                                                                                                             else document.properties_form.tool_name.value = document.properties_form.select_list.value;">
 	                                                <option value="none" selected="true">-- Select tool --</option>
