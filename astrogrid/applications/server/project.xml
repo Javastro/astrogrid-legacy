@@ -7,6 +7,29 @@
     <![CDATA[ This project provides a jar of common components that can be used to construct different cea servers <p /> It also provides a pre-packaged war file, configured to expose simple java methds as cea applications. This war file can be used for testing, and also as a starting point for packaging other types of cea server <p /> <i> describe workaround for how to depend on both types of artifact with the same name. </i>]]>
 </description>
   <shortDescription>AstroGrid CEA Server common components</shortDescription>
+  <packageGroups>
+  		<packageGroup>
+  			<title>Application Execution</title>
+  			<packages>org.astrogrid.applications</packages>
+  		</packageGroup>
+  		<packageGroup>
+  			<title>Application Metadata</title>
+  			<packages>org.astrogrid.applications.description*</packages>
+  		</packageGroup>
+  		<packageGroup>
+  			<title>Parameters and Handlers</title>
+  			<packages>org.astrogrid.applications.parameter*</packages>
+  		</packageGroup>
+  		<packageGroup>
+  			<title>JavaClass CEA Provider</title>
+  			<packages>org.astrogrid.applications.javaclass</packages>
+  		</packageGroup>
+  		<packageGroup>
+  			<title>CEA Server</title>
+  			<packages>org.astrogrid.applications.manager*, org.astrogrid.applications.service*, org.astrogrid.applications.component</packages>
+  		</packageGroup>
+  		  		  		
+  </packageGroups>
   <dependencies>
     <!-- astrogrid -specific deps -->
     <dependency>
