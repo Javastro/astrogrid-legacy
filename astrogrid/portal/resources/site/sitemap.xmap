@@ -256,7 +256,37 @@
         </map:transform>
         <!-- Serialize as HTML -->
         <map:serialize type="html" />
-      </map:match>                                           
+      </map:match>
+      
+      <map:match pattern="agresourcesMB.html">            
+        <map:generate src="xsp/resourceBrowserMain.xsp"
+                      type="serverpages" label="XML" />
+        <map:transform src="xsl/microbrowserMain.xsl">
+          <map:parameter name="use-request-parameters" value="true"/>
+          <map:parameter name="mainelement" value="{mainelement}" />
+          <map:parameter name="parent_authId" value="{parent_authId}" />                              
+          <map:parameter name="resourceNameField" value="{resourceNameField}"/>
+          <map:parameter name="publisherField" value="{publisherField}"/>
+          <map:parameter name="titleField" value="{titleField}"/>
+          <map:parameter name="descriptionField" value="{descriptionField}"/> 
+          <map:parameter name="authorityIdField" value="{authorityIdField}"/>
+        </map:transform>
+        <!-- Serialize as HTML -->
+        <map:serialize type="html" />
+      </map:match>
+
+      <map:match pattern="resourceResultsMB.html">            
+        <map:act type="astrogrid-resource" />
+        <map:generate src="xsp/resultFrame.xsp" type="serverpages"
+                      label="XML" />
+        <map:transform src="xsl/microbrowserResults.xsl">
+          <map:parameter name="use-request-parameters" value="true"/>
+          <map:parameter name="parent_authId" value="{parent_authId}" /> 
+          <map:parameter name="mainelement" value="{mainelement}" />                             
+        </map:transform>
+        <!-- Serialize as HTML -->
+        <map:serialize type="html" />
+      </map:match>                                                 
 
     
       <!-- xml -->
