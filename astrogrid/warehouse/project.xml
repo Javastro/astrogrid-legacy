@@ -147,6 +147,11 @@
       <version>1.2.4</version>
     </dependency>
 
+    <dependency>
+      <id>xercesImpl</id>
+      <version>2.1.0</version>
+    </dependency>
+
    <dependency>
       <id>ogsa</id>
       <version>3.0.2</version>
