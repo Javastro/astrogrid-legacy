@@ -3,7 +3,7 @@
         <vr:Resource xsi:type="CeaApplicationType"  updated="2004-11-20T15:34:22Z" status="active">
                 <vr:Identifier>
                         <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
-                        <vr:ResourceKey>testdsa</vr:ResourceKey>
+                        <vr:ResourceKey>pal-sample/ceaApplication</vr:ResourceKey>
                 </vr:Identifier>
                 <vr:Title>TemplateEntry</vr:Title>
                 <vr:ShortName>TemplateEntry</vr:ShortName>
