@@ -127,7 +127,7 @@ public class LoginAction extends AbstractAction
             errorMessage = "Password cannot be empty";
          }else {
             password = password.trim();
-            password = String.valueOf(password.hashCode());
+//            password = String.valueOf(password.hashCode());
          }
          
          if(errorMessage == null || errorMessage.trim().length() <= 0) {
