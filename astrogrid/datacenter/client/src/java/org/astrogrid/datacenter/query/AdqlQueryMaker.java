@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlQueryMaker.java,v 1.6 2004/10/18 13:11:30 mch Exp $
+ * $Id: AdqlQueryMaker.java,v 1.7 2004/11/03 05:14:33 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,12 +16,8 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
- * Makes an Query from an ADQL document or model
+ * Convenience routines for making a Query from an ADQL document, string or SOAP-generated model
  * <p>
- * @todo At the moment this is a horrible botch where the string is translated to SQL
-    * using the StdSqlMaker, then parsed in again, whereas it should (one day) be
-    * read directly from DOM or some generated model
- *
  *
  * @author M Hill
  */
@@ -41,20 +37,10 @@ public class AdqlQueryMaker  {
    }
 
    
-   /** Constructs a Query from the given ADQL DOM.  Nasty horrible thing converts
-    * to SQL and parses it... */
+   /** Constructs a Query from the given ADQL DOM.  */
    public static Query makeQuery(Element adql) throws QueryException {
       
       return AdqlXml074Parser.makeQuery(adql);
-      
-      /*
-      //yeuch
-      StdSqlMaker maker = new StdSqlMaker();
-      
-      String sql = maker.getAdqlSql(adql);
-      
-      return SqlQueryMaker.makeQuery(sql);
-       */
    }
 
    /** Convenience routine - creates a Query (object model) from the given ADQL string.
@@ -96,6 +82,9 @@ public class AdqlQueryMaker  {
 }
 /*
  $Log: AdqlQueryMaker.java,v $
+ Revision 1.7  2004/11/03 05:14:33  mch
+ Bringing Vizier back online
+
  Revision 1.6  2004/10/18 13:11:30  mch
  Lumpy Merge
 

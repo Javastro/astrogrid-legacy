@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleQueryMaker.java,v 1.8 2004/11/03 00:17:56 mch Exp $
+ * $Id: SimpleQueryMaker.java,v 1.9 2004/11/03 05:14:33 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,7 +16,7 @@ package org.astrogrid.datacenter.query;
 import org.astrogrid.datacenter.query.condition.*;
 
 import java.util.Enumeration;
-import java.util.Properties;
+import java.util.Hashtable;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.datacenter.returns.ReturnTable;
@@ -77,12 +77,12 @@ public class SimpleQueryMaker  {
 
    /** Constructs condition from a list of keywords and values which will be ANDed
     */
-   public static Condition makeKeywordCondition(Properties properties) {
-      Enumeration keys = properties.keys();
+   public static Condition makeKeywordCondition(Hashtable keywords) {
+      Enumeration keys = keywords.keys();
       Intersection intersection = null;
       while (keys.hasMoreElements()) {
          String key = (String) keys.nextElement();
-         String value = (String) properties.get(key);
+         String value = (String) keywords.get(key);
 
          Condition comparison = new StringComparison(new RawSearchField(key), StringCompareOperator.LIKE, new LiteralString(value));
          
@@ -96,9 +96,13 @@ public class SimpleQueryMaker  {
       }
       return intersection;
    }
+
 }
 /*
  $Log: SimpleQueryMaker.java,v $
+ Revision 1.9  2004/11/03 05:14:33  mch
+ Bringing Vizier back online
+
  Revision 1.8  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 

@@ -1,4 +1,4 @@
-/*$Id: VizierResourcePlugin.java,v 1.2 2004/10/18 13:11:30 mch Exp $
+/*$Id: VizierResourcePlugin.java,v 1.3 2004/11/03 05:14:33 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,7 @@
 package org.astrogrid.datacenter.impl.cds;
 
 import java.io.IOException;
-import javax.xml.rpc.ServiceException;
-import org.astrogrid.datacenter.impl.cds.vizier.VizierDelegate;
+import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.metadata.VoResourcePlugin;
 
 /** returns resources for Vizier service
@@ -26,17 +25,20 @@ public class VizierResourcePlugin implements VoResourcePlugin {
     * so that we can combine them easily; some DOMs do not mix well.
     */
    public String[] getVoResources() throws IOException {
-      try {
-         VizierDelegate delegate = new VizierDelegate();
-         String votableHeader = delegate.getAllMetadata();
-         //do something to it to make it a Resource
-         //@todo
-         //return it
-         return new String[] { votableHeader };
-      }
-      catch (ServiceException e) {
-         throw new IOException("Could not connect to Vizier:"+e);
-      }
+         String resource = VoDescriptionServer.VODESCRIPTION_ELEMENT+"\n"+
+            "<Resource xsi:type='Queryable'>\n"+
+              "<ForceFlat>Intersection</ForceFlat>\n"+
+              "<Field name='Target' optional='true' datatype='varchar'/>"+
+              "<Field name='Wavelength' optional='true' datatype='varchar'/>"+
+              "<Field name='Radius' optional='false' datatype='varchar'/>"+
+              "<Field name='Unit' optional='false' datatype='varchar'/>"+
+              "<Field name='RA' optional='true' datatype='varchar'/>"+
+              "<Field name='DEC' optional='true' datatype='varchar'/>"+
+              "<Functions><Function>CIRCLE</Function></Functions>"+
+            "</Resource>\n"+
+            VoDescriptionServer.VODESCRIPTION_ELEMENT_END;
+         
+         return new String[] { resource };
 
    }
    
@@ -46,6 +48,9 @@ public class VizierResourcePlugin implements VoResourcePlugin {
 
 /*
  $Log: VizierResourcePlugin.java,v $
+ Revision 1.3  2004/11/03 05:14:33  mch
+ Bringing Vizier back online
+
  Revision 1.2  2004/10/18 13:11:30  mch
  Lumpy Merge
 

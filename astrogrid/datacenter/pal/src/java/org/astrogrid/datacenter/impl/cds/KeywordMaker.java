@@ -1,0 +1,152 @@
+/*$Id: KeywordMaker.java,v 1.1 2004/11/03 05:14:33 mch Exp $
+ * Created on 27-Nov-2003
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
+ *
+**/
+package org.astrogrid.datacenter.impl.cds;
+
+import java.util.Hashtable;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.datacenter.impl.cds.vizier.DecimalDegreesTarget;
+import org.astrogrid.datacenter.impl.cds.vizier.VizierUnit;
+import org.astrogrid.datacenter.query.AdqlQueryMaker;
+import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.datacenter.query.condition.*;
+
+/**
+ * Takes a 'flat' query - one that consists of no nested equals conditions and only AND
+ * intersection conjunctions - and creates a list of keyword/value pairs.
+ * <p>
+ * Used for things like proxies to simple services or bespoke apps that only take a few keyword parameters
+ * *
+ * Circle functions translate to three keyword/value pairs; RA, DEC and RADIUS
+ * <p>
+ * Note that all keys are stored as upper case to make it case insensitive.
+ */
+public class KeywordMaker  {
+
+   private static final Log log = LogFactory.getLog(KeywordMaker.class);
+
+   public static final String COORD_KEYWORD = "COORDSYS";
+   public static final String RA_KEYWORD = "RA";
+   public static final String DEC_KEYWORD = "DEC";
+   public static final String RADIUS_KEYWORD = "RADIUS";
+   public static final String UNIT_KEYWORD = "UNIT";
+   
+   /**
+    * Makes an SQL string from the given Query */
+   public Hashtable makeKeywords(Query query) throws QueryException {
+      Condition c = query.getCriteria();
+      Hashtable keywords = new Hashtable();
+      addKeywordPair(keywords, c);
+      return keywords;
+   }
+
+   /**
+    * Takes a single condition and extracts keyword pair
+    */
+   private void addKeywordPair(Hashtable keywords, Condition c) {
+      if (c instanceof Intersection) {
+         Condition[] conditions = ((Intersection) c).getConditions();
+         for (int i = 0; i < conditions.length; i++) {
+            addKeywordPair(keywords, conditions[i]);
+         }
+      }
+      else if (c instanceof Union) {
+         throw new IllegalArgumentException("Cannot handle union (OR) conditions");
+      }
+      else if (c instanceof Function) {
+         Function f = (Function) c;
+         if (f.getName().toLowerCase().equals("circle")) {
+            keywords.put(COORD_KEYWORD, ((LiteralString) f.getArg(0)).getValue());
+            keywords.put(RA_KEYWORD, ((LiteralNumber) f.getArg(1)).getValue());
+            keywords.put(DEC_KEYWORD, ((LiteralNumber) f.getArg(2)).getValue());
+            keywords.put(RADIUS_KEYWORD, ((LiteralNumber) f.getArg(3)).getValue());
+            keywords.put(UNIT_KEYWORD, "deg");
+         }
+         else {
+            throw new IllegalArgumentException("Cannot handle "+f.getName()+" functions");
+         }
+      }
+      else if (c instanceof StringComparison) {
+         StringComparison s = (StringComparison) c;
+         if ( (s.getOperator() == StringCompareOperator.EQ) || (s.getOperator() == StringCompareOperator.LIKE) ) {
+            if ( (s.getLHS() instanceof SearchFieldReference) && (s.getRHS() instanceof LiteralString) ) {
+               keywords.put( ((SearchFieldReference) s.getLHS()).getField().toUpperCase(), ((LiteralString) s.getRHS()).getValue());
+            }
+            else {
+               throw new IllegalArgumentException("String Comparisons must be {SearchField} = {LiteralString}, not "+s.getLHS() +" = "+s.getRHS());
+            }
+         }
+         else {
+            throw new IllegalArgumentException("String Comparisons must be {SearchField} = {LiteralString}, not "+s.getLHS() +" = "+s.getRHS());
+         }
+      }
+      else if (c instanceof NumericComparison) {
+         NumericComparison n = (NumericComparison) c;
+         if ( (n.getOperator() == NumericCompareOperator.EQ) ) {
+            if ( (n.getLHS() instanceof SearchFieldReference) && (n.getRHS() instanceof LiteralNumber) ) {
+               keywords.put( ((SearchFieldReference) n.getLHS()).getField().toUpperCase(), ((LiteralNumber) n.getRHS()).getValue());
+            }
+            else {
+               throw new IllegalArgumentException("Numeric Comparisons must be {SearchField} = {LiteralNumber}, not "+n.getLHS() +" = "+n.getRHS());
+            }
+         }
+         else {
+            throw new IllegalArgumentException("Numeric Comparisons must be {SearchField} = {LiteralNumber}, not "+n.getLHS() +" = "+n.getRHS());
+         }
+      }
+   }
+   
+
+}
+
+
+/*
+$Log: KeywordMaker.java,v $
+Revision 1.1  2004/11/03 05:14:33  mch
+Bringing Vizier back online
+
+Revision 1.2  2004/10/06 21:12:17  mch
+Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
+
+Revision 1.1  2004/10/05 19:19:18  mch
+Merged CDS implementation into PAL
+
+Revision 1.5  2004/09/29 18:45:55  mch
+Bringing Vizier into line with new(er) metadata stuff
+
+Revision 1.4  2004/09/28 15:05:27  mch
+Temporary compile-only fix for removing obsolete ADQL 0.5
+
+Revision 1.3  2004/09/10 10:31:17  mch
+Added cause to thrown error
+
+Revision 1.2  2004/09/07 00:54:20  mch
+Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
+
+Revision 1.1  2004/03/13 23:40:59  mch
+Changes to adapt to It05 refactor
+
+Revision 1.4  2004/03/12 20:04:57  mch
+It05 Refactor (Client)
+
+Revision 1.3  2004/03/12 05:03:23  mch
+Removed unused code
+
+Revision 1.2  2004/03/12 05:01:22  mch
+Changed doc
+
+Revision 1.1  2004/03/12 04:45:26  mch
+It05 MCH Refactor
+
+ 
+*/
+

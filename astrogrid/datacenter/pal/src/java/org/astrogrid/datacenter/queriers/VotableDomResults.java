@@ -1,4 +1,4 @@
-/*$Id: VotableDomResults.java,v 1.3 2004/11/03 00:17:56 mch Exp $
+/*$Id: VotableDomResults.java,v 1.4 2004/11/03 05:14:33 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,6 +41,7 @@ public class VotableDomResults extends QueryResults {
      */
     public VotableDomResults(Querier querier, String doc) throws SAXException, IOException, ParserConfigurationException {
       super(querier);
+       assert doc != null : "Can't make a VoTable from a null string";
       this.doc = DomHelper.newDocument(doc);
     }
     
@@ -81,6 +82,9 @@ public class VotableDomResults extends QueryResults {
 
 /*
 $Log: VotableDomResults.java,v $
+Revision 1.4  2004/11/03 05:14:33  mch
+Bringing Vizier back online
+
 Revision 1.3  2004/11/03 00:17:56  mch
 PAL_MCH Candidate 2 merge
 

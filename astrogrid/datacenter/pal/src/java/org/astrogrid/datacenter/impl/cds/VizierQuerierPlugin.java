@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierPlugin.java,v 1.5 2004/11/03 00:31:17 mch Exp $
+/*$Id: VizierQuerierPlugin.java,v 1.6 2004/11/03 05:14:33 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,36 +11,42 @@
 package org.astrogrid.datacenter.impl.cds;
 
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Hashtable;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.DatacenterException;
-import org.astrogrid.datacenter.impl.cds.vizier.VizierDelegate;
+import org.astrogrid.datacenter.impl.cds.generated.vizier.VizieR;
+import org.astrogrid.datacenter.impl.cds.generated.vizier.VizieRService;
+import org.astrogrid.datacenter.impl.cds.generated.vizier.VizieRServiceLocator;
+import org.astrogrid.datacenter.impl.cds.vizier.VizierUnit;
+import org.astrogrid.datacenter.impl.cds.vizier.VizierWavelength;
 import org.astrogrid.datacenter.queriers.DefaultPlugin;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.VotableDomResults;
+import org.astrogrid.datacenter.queriers.VotableInResults;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
 import org.astrogrid.datacenter.query.Query;
 import org.xml.sax.SAXException;
 
 /** Datacenter querier SPI that performs queries against CDS Vizier webservice.
- * @see AdqlVizierTranslator
- * @author Noel Winstanley nw@jb.man.ac.uk 13-Nov-2003
+ * <p>
+ * The Vizier SOAP services take the following arguments:
+ *   String target - name of an object, or RA DEC, eg "12.0 23.2" in decimal degrees (can also handle sexagesimal but let's ignore that...)
+ *   double radius - in units given by:
+ *   double units  - not sure what's valid. @see VizierUnits for enuemeration
+ *   String text - no idea.  Some kind of keyword?
+ *   String wavelength - not sure what's valid.  @see VizierWavelengths for enumeration
+ *
+ * @see http://cdsweb.u-strasbg.fr/cdsws/vizierAccess.gml
+ * @author M Hill
  */
 public class VizierQuerierPlugin extends DefaultPlugin  {
    
-   
-
-  /** Key specifying which Vizier catalogue to query. */
-   public static final String CATALOGUE_NAME =
-     "datacenter.vizier.querier.catalogueName";
-
-   /** delegate */
-   VizierDelegate delegate;
-   
-
-   /** @todo check configuration for endpoint setting before settling with default */
-   public VizierQuerierPlugin() throws ServiceException {
+   /** default constructor */
+   public VizierQuerierPlugin() {
       super();
    }
    
@@ -51,19 +57,81 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
 
       querier.setStatus(new QuerierQuerying(querier.getStatus()));
 
+      //extract query to specific keys
+      KeywordMaker maker = new KeywordMaker();
+      Hashtable keywords = maker.makeKeywords(query);
+      
+      String text = (String) keywords.get("TEXT");
+      String r = (String) keywords.get(KeywordMaker.RADIUS_KEYWORD);
+      if (r == null) {
+         throw new IllegalArgumentException(KeywordMaker.RADIUS_KEYWORD+" must be specified in query");
+      }
+      double radius = 0;
       try {
-         delegate = new VizierDelegate();
+         radius = Double.parseDouble(r);
+      }
+      catch (NumberFormatException nfe) {
+         throw new IllegalArgumentException(KeywordMaker.RADIUS_KEYWORD+" has non-numeric value "+r);
+      }
+      
+      String u = (String) keywords.get("UNIT");
+      if (u == null) {
+         throw new IllegalArgumentException("UNIT must be specified in query");
+      }
+      VizierUnit unit = VizierUnit.getFor(u);
+      
+      String w = (String) keywords.get("WAVELENGTH");
+      VizierWavelength wavelength = null;
+      if (w != null) { wavelength = VizierWavelength.getFor(w); }
+      
+      String target = (String) keywords.get("TARGET");
+      String ra = (String) keywords.get(KeywordMaker.RA_KEYWORD);
+      String dec = (String) keywords.get(KeywordMaker.DEC_KEYWORD);
+      if (  ((ra == null) && (dec != null)) || ((ra != null) && (dec == null))  ) {
+         throw new IllegalArgumentException("RA is "+ra+" but DEC is "+dec);
+      }
+      if ( (target == null) && (ra == null) ) {
+         throw new IllegalArgumentException("TARGET or RA + DEC or CIRCLE must be specified in query");
+      }
+      if ( (target != null) && (ra != null) ) {
+         throw new IllegalArgumentException("Don't specify both TARGET and RA + DEC in query");
+      }
+      if (target == null) {
+         target = ra+" "+dec;
+      }
+      
+      try {
+         VizieRService service = new VizieRServiceLocator();
+         VizieR vizier = service.getVizieR(new URL("http://cdsws.u-strasbg.fr/axis/services/VizieR"));
 
-       //public java.lang.String cataloguesData(java.lang.String target, double radius, java.lang.String unit, java.lang.String text, java.lang.String wavelength) throws java.rmi.RemoteException {
-
-         VizierQueryMaker translator = new VizierQueryMaker();
-         VizierQuery vquery = translator.getVizierQuery(query);
-   
-         String votableDoc = vquery.askQuery(delegate);
-         
-         if (!aborted) {
-            VotableDomResults results = new VotableDomResults(querier, votableDoc);
-            results.send(query.getResultsDef(), Account.ANONYMOUS);
+         /* SOAP access - no good for large datasets but required for now if ra/dec given */
+         if (target.indexOf(" ")>-1) {
+            String response;
+            if (wavelength == null) {
+               System.out.println("Calling vizier via SOAP...");
+               response = vizier.cataloguesData(target, radius, unit.toString(), text);
+            }
+            else {
+               System.out.println("Calling vizier (with wavelength) via SOAP...");
+               response = vizier.cataloguesData(target, radius, unit.toString(), text, wavelength.toString());
+            }
+            System.out.println("...vizier responded");
+            if (!aborted) {
+               VotableDomResults results = new VotableDomResults(querier, response);
+               results.send(query.getResultsDef(), user);
+            }
+         }
+         else {
+            //but this times out....
+            String url = "http://cdsws.u-strasbg.fr/axis/services/VizieR?method=cataloguesData&target="+target+"&radius="+radius+"&unit="+unit+"&text="+text;
+            if (wavelength != null) {
+               url = url + "&wavelength="+wavelength;
+            }
+            System.out.println("Calling vizier via Url "+url+"...");
+            URLConnection connection = new URL(url).openConnection();
+            VotableInResults results = new VotableInResults(querier, new URL(url).openStream());
+            System.out.println("...vizier responded");
+            results.send(query.getResultsDef(), user);
          }
 
       }
@@ -85,25 +153,6 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
       throw new UnsupportedOperationException("Todo");
       
    }
-   /**
-    * Returns the VOResource element of the metadata.  Returns a string (rather than
-    * DOM element)
-    * so that we can combine them easily; some DOMs do not mix well.
-    */
-   public String getVoResource() throws IOException {
-      try {
-         VizierDelegate delegate = new VizierDelegate();
-         String votableHeader = delegate.getAllMetadata();
-         //do something to it to make it a Resource
-         //@todo
-         //return it
-         return votableHeader;
-      }
-      catch (ServiceException e) {
-         throw new IOException("Could not connect to Vizier:"+e);
-      }
-
-   }
    
    
 }
@@ -111,6 +160,9 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
 
 /*
  $Log: VizierQuerierPlugin.java,v $
+ Revision 1.6  2004/11/03 05:14:33  mch
+ Bringing Vizier back online
+
  Revision 1.5  2004/11/03 00:31:17  mch
  PAL_MCH Candidate 2 merge
 

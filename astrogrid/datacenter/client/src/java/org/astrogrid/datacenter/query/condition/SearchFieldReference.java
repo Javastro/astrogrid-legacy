@@ -1,5 +1,5 @@
 /*
- * $Id: SearchFieldReference.java,v 1.2 2004/10/18 13:11:30 mch Exp $
+ * $Id: SearchFieldReference.java,v 1.3 2004/11/03 05:14:33 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -33,10 +33,17 @@ public abstract class SearchFieldReference implements NumericExpression, StringE
       return datasetName;
    }
 
+   /** Returns some kind of general reference - this is a bit of a cheat just now
+    * to get ADQL 0.7.4 to provide keyword searches */
+   public abstract String getField();
+   
 }
 
 /*
 $Log: SearchFieldReference.java,v $
+Revision 1.3  2004/11/03 05:14:33  mch
+Bringing Vizier back online
+
 Revision 1.2  2004/10/18 13:11:30  mch
 Lumpy Merge
 

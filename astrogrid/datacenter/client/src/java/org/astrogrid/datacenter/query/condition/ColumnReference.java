@@ -1,5 +1,5 @@
 /*
- * $Id: ColumnReference.java,v 1.5 2004/10/18 13:11:30 mch Exp $
+ * $Id: ColumnReference.java,v 1.6 2004/11/03 05:14:33 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -51,10 +51,18 @@ public class ColumnReference extends SearchFieldReference {
          return "[ColRef "+tableName+"."+colName+"]";
       }
    }
+   
+   /** See parent, bit of a botch just now */
+   public String getField() {
+      return colName;
+   }
 }
 
 /*
 $Log: ColumnReference.java,v $
+Revision 1.6  2004/11/03 05:14:33  mch
+Bringing Vizier back online
+
 Revision 1.5  2004/10/18 13:11:30  mch
 Lumpy Merge
 
