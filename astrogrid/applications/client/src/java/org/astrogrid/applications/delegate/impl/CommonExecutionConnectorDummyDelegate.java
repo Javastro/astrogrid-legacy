@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorDummyDelegate.java,v 1.2 2004/07/01 11:07:10 nw Exp $
+ * $Id: CommonExecutionConnectorDummyDelegate.java,v 1.3 2004/08/18 12:30:43 nw Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -41,8 +41,7 @@ public class CommonExecutionConnectorDummyDelegate extends CommonExecutionConnec
     * @see org.astrogrid.applications.delegate.CommonExecutionConnectorClient#abort(java.lang.String)
     */
    public boolean abort(final String executionId) throws CEADelegateException {
-      // TODO Auto-generated method stub
-      throw new  UnsupportedOperationException("CommonExecutionConnectorDummyDelegate.abort() not implemented");
+       return true;
    }
 
    /* (non-Javadoc)
@@ -74,25 +73,19 @@ public String init(Tool tool, JobIdentifierType jobstepID) throws CEADelegateExc
  * @see org.astrogrid.applications.delegate.CommonExecutionConnectorClient#registerProgressListener(java.lang.String, java.net.URI)
  */
 public void registerProgressListener(String executionId, URI listenerEndpoint) throws CEADelegateException {
-    // TODO Auto-generated method stub
-     throw new  UnsupportedOperationException("CommonExecutionConnectorDummyDelegate.registerProgressListener() not implemented");
- }
+  }
 
 /**
  * @see org.astrogrid.applications.delegate.CommonExecutionConnectorClient#registerResultsListener(java.lang.String, java.net.URI)
  */
 public void registerResultsListener(String executionId, URI listenerEndpoint) throws CEADelegateException {
-    // TODO Auto-generated method stub
-     throw new  UnsupportedOperationException("CommonExecutionConnectorDummyDelegate.registerResultsListener() not implemented");
- }
+  }
 
 /**
  * @see org.astrogrid.applications.delegate.CommonExecutionConnectorClient#execute(java.lang.String)
  */
 public boolean execute(String executionId) throws CEADelegateException {
-    // TODO Auto-generated method stub
-     throw new  UnsupportedOperationException("CommonExecutionConnectorDummyDelegate.execute() not implemented");
- 
+    return true;
 }
 
 /**
