@@ -36,6 +36,12 @@
     		<version>${astrogrid.aggregate.version}</version>
     	</dependency>
     	<dependency>
+    		<artifactId>astrogrid-cdk-scripting</artifactId>
+    		<groupId>org.astrogrid</groupId>
+    		<type>war</type>
+    		<version>${astrogrid.aggregate.version}</version>
+    	</dependency>    	
+    	<dependency>
     		<artifactId>jescript-shell</artifactId>
     		<groupId>org.astrogrid</groupId>
     		<type>war</type>
