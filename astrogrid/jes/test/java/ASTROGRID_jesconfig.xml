@@ -71,9 +71,9 @@
    A job factory, database and table names are required of each JES -->
   <category name="JOB">
     <!-- The Job Factory -->
-    <property name="FACTORY" value="org.astrogrid.jes.impl.JobFactoryImpl" />
+    <property name="FACTORY" value="org.astrogrid.jes.impl.DummyJobFactoryImpl" /> <!--dummy for testing-->
     <!-- The Job Data Source -->
-    <property name="DATASOURCE" value="java:comp/env/jdbc/jes-datasource" />
+    <property name="DATASOURCE" value="foo" /> <!-- HSQL Test database-->
     <!-- The Job table names -->
     <property name="JOB" value="jes..job" />
     <property name="JOBSTEP" value="jes..jobstep" />

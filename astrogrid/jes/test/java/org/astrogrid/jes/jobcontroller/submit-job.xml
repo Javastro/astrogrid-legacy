@@ -1,0 +1,20 @@
+<?xml version = "1.0" encoding = "UTF8"?>
+<!-- need to check this-->
+<job name = "TwoSequentialJobsteps">
+   <userid>jlusted</userid>
+   <community>leicester</community>
+
+   <sequence>
+      <jobstep name="StepOne" >
+         <query>      
+            ...
+         </query>
+      </jobstep>
+
+      <jobstep name="StepTwo" condition="true" >
+         <query>
+            ...
+         </query>
+      </jobstep>
+   </sequence>
+</job>
