@@ -117,8 +117,9 @@
     	    <br />
     	    Steps involved in "Astrogrid in a Box":
     	    <ul>
-    	       <li>1.) First you must have maven installed on your system. And be connected to 
-    	               astrogrid/integrationtests/auto-integration.</li>
+    	       <li>1.) First you must have maven installed on your system. And CVS synced up to 
+    				astrogrid/registry and astrogrid/maven-base.
+		   	   </li>
     	       <li>2.) Set in your build.properties a registry.authorityid to the main authority id you will be using.</li>
     	       <li>3.) You may optionally as well set a astrogrid.iteration property to another previous version the default if not
     	               placed in the properties file is SNAPSHOT.</li>
@@ -126,7 +127,7 @@
     	               need to change the AuthorityID.</li>
     	       <li>5.) Now delete or modify any other entries in that registry-entries directory.</li>
     	       <li>6.) Be sure your servlet container (currently Astrogrid in a Box is only compatible with Tomcat 5 and above) is started.</li>
-    	       <li>7.) Run "maven reg-deploy" then "maven setup-registry".</li>
+    	       <li>7.) Run "maven reg-deploy" then "maven setup".</li>
     	       <li>8.) Change the astrogrid.properties and optionally the oaicat.properties in your new installed registry located in the "regdeployedarea"/WEB-INF/classes.
     	               See the properties section a the bottom of this section for a guide or look at the comments in the properties file themselves.</li>
     	       <li>9.) Your main part of the registry is complete. Skip to number 3 in the "Setup Steps" below for being a full registry or registering yourself with another registry.</li>
