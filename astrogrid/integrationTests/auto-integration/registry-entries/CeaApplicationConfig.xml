@@ -1,67 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<!--$Id: CeaApplicationConfig.xml,v 1.1 2004/08/02 10:59:50 eca Exp $-->
+<!--$Id: CeaApplicationConfig.xml,v 1.2 2004/08/12 15:15:05 nw Exp $-->
 <!--This is the configuration file for the Iteration5 application controller-->
 <!-- \\pahlaptop\work\astrogrid\src\workflow-objects\schema\AGParameterDefinition.xsd -->
-<CommandLineExecutionControllerConfig xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" 
-xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" 
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<CommandLineExecutionControllerConfig xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"
+xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1
 AGApplicationBase.xsd">
 
 <Application name="@REGAUTHORITY@/CallMakeMPEGFitsImages">
-		<!--This is the application to concentrate on for the end of this iteration-->
-		<Parameters>
-			<!-- temporarily turn the images into direct file references - for performance during the AVO demo -->
-			<CmdLineParameterDefn name="InputFile" type="MySpace_FileReference" commandPosition="1">
-				<agpd:UI_Name>InputFile</agpd:UI_Name>
-				<agpd:UI_Description>Filename of a text file containing the filenames of a series of FITS images.</agpd:UI_Description>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="OutputFile" type="MySpace_FileReference" commandPosition="2">
-				<agpd:UI_Name>OutputFile</agpd:UI_Name>
-				<agpd:UI_Description>Filename of solar movie MPEG file created from fits images.</agpd:UI_Description>
-			</CmdLineParameterDefn>
-		</Parameters>
-		<Interfaces>
-			<Interface name="Simple">
-				<input>
-					<pref ref="InputFile"/>
-				</input>
-				<output>
-					<pref ref="OutputFile"/>
-				</output>
-			</Interface>
-		</Interfaces>
-		<ExecutionPath>@TOOLBASEDIR@/idl/Astrogrid/SolarMovie/applications/CallMakeMPEGFitsImages.sh</ExecutionPath>
-	</Application>
-		<Application name="@REGAUTHORITY@/CallMakeMPEGDataCube">
-		<!--This is the application to concentrate on for the end of this iteration-->
-		<Parameters>
-			<!-- temporarily turn the images into direct file references - for performance during the AVO demo -->
-			<CmdLineParameterDefn name="InputFile" type="MySpace_FileReference" commandPosition="1">
-				<agpd:UI_Name>InputFile</agpd:UI_Name>
-				<agpd:UI_Description>Filename of a binary IDL .sav file containing a datacube.</agpd:UI_Description>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="ArrayName" type="string" commandPosition="2">
-				<agpd:UI_Name>ArrayName</agpd:UI_Name>
-				<agpd:UI_Description>Name of the 3-D array inside the datacube restore file to save as an MPEG</agpd:UI_Description>
-			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="OutputFile" type="MySpace_FileReference" commandPosition="3">
-				<agpd:UI_Name>OutputFile</agpd:UI_Name>
-				<agpd:UI_Description>Filename of solar movie MPEG file created from fits images.</agpd:UI_Description>
-			</CmdLineParameterDefn>
-		</Parameters>
-		<Interfaces>
-			<Interface name="Simple">
-				<input>
-					<pref ref="InputFile"/>
-					<pref ref="ArrayName"/>
+                <!--This is the application to concentrate on for the end of this iteration-->
+                <Parameters>
+                        <!-- temporarily turn the images into direct file references - for performance during the AVO demo -->
+                        <CmdLineParameterDefn name="InputFile" type="text" commandPosition="1">
+                                <agpd:UI_Name>InputFile</agpd:UI_Name>
+                                <agpd:UI_Description>Filename of a text file containing the filenames of a series of FITS images.</agpd:UI_Description>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="OutputFile" type="binary" commandPosition="2">
+                                <agpd:UI_Name>OutputFile</agpd:UI_Name>
+                                <agpd:UI_Description>Filename of solar movie MPEG file created from fits images.</agpd:UI_Description>
+                        </CmdLineParameterDefn>
+                </Parameters>
+                <Interfaces>
+                        <Interface name="Simple">
+                                <input>
+                                        <pref ref="InputFile"/>
                                 </input>
-				<output>
-					<pref ref="OutputFile"/>
-				</output>
-			</Interface>
-		</Interfaces>
-		<ExecutionPath>@TOOLBASEDIR@/idl/Astrogrid/SolarMovie/applications/CallMakeMPEGDataCube.sh</ExecutionPath>
-	</Application>
+                                <output>
+                                        <pref ref="OutputFile"/>
+                                </output>
+                        </Interface>
+                </Interfaces>
+                <ExecutionPath>@TOOLBASEDIR@/idl/Astrogrid/SolarMovie/applications/CallMakeMPEGFitsImages.sh</ExecutionPath>
+        </Application>
+                <Application name="@REGAUTHORITY@/CallMakeMPEGDataCube">
+                <!--This is the application to concentrate on for the end of this iteration-->
+                <Parameters>
+                        <!-- temporarily turn the images into direct file references - for performance during the AVO demo -->
+                        <CmdLineParameterDefn name="InputFile" type="binary" commandPosition="1">
+                                <agpd:UI_Name>InputFile</agpd:UI_Name>
+                                <agpd:UI_Description>Filename of a binary IDL .sav file containing a datacube.</agpd:UI_Description>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="ArrayName" type="text" commandPosition="2">
+                                <agpd:UI_Name>ArrayName</agpd:UI_Name>
+                                <agpd:UI_Description>Name of the 3-D array inside the datacube restore file to save as an MPEG</agpd:UI_Description>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="OutputFile" type="binary" commandPosition="3">
+                                <agpd:UI_Name>OutputFile</agpd:UI_Name>
+                                <agpd:UI_Description>Filename of solar movie MPEG file created from fits images.</agpd:UI_Description>
+                        </CmdLineParameterDefn>
+                </Parameters>
+                <Interfaces>
+                        <Interface name="Simple">
+                                <input>
+                                        <pref ref="InputFile"/>
+                                        <pref ref="ArrayName"/>
+                                </input>
+                                <output>
+                                        <pref ref="OutputFile"/>
+                                </output>
+                        </Interface>
+                </Interfaces>
+                <ExecutionPath>@TOOLBASEDIR@/idl/Astrogrid/SolarMovie/applications/CallMakeMPEGDataCube.sh</ExecutionPath>
+        </Application>
 </CommandLineExecutionControllerConfig>
