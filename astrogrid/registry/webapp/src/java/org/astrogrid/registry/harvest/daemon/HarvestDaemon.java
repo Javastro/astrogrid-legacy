@@ -38,6 +38,14 @@ public class HarvestDaemon extends HttpServlet implements Runnable
       }
    }
    
+   public void destroy() {
+       super.destroy();
+       if(myThread != null && myThread.isAlive()) {
+           myThread.interrupt();
+       }//if
+   }
+   
+   
    public void init(ServletConfig config)
                 throws ServletException
    {
@@ -54,12 +62,14 @@ public class HarvestDaemon extends HttpServlet implements Runnable
       System.out.println("finished yielding in init");      
       */
       
-       System.out.println("in init of harvestDaemon and staring thread.");
+       System.out.println("initialized HarvestDaemon");
+       
        servletInitTime = new Date();
        rhs = new RegistryHarvestService();
        timer = new Timer();
        boolean harvestEnabled = conf.getBoolean("registry.harvest.enabled",false);
        if(harvestEnabled) {
+          
           if(!valuesSet) {
               System.out.println("harvest is enabled");
               valuesSet = true;
@@ -67,10 +77,11 @@ public class HarvestDaemon extends HttpServlet implements Runnable
               //lets not start a harvest off the bat, wait till next cycle.
               harvestOnLoad = false;
               if(harvestInterval <= 0) {
-                  System.out.println("ERROR CANNOT HAVE A HARVESTINTERVAL LESS THAN 1; DEFAULTING TO 12");
-                  harvestInterval = 12;
+                  System.out.println("ERROR CANNOT HAVE A HARVESTINTERVAL LESS THAN 1; DEFAULTING TO 2");
+                  harvestInterval = 2;
               }
           }
+          System.out.println("in init of harvestDaemon and starting thread.");          
           Thread myThread = new Thread(this);
           myThread.start();
        }else {
@@ -80,6 +91,7 @@ public class HarvestDaemon extends HttpServlet implements Runnable
        }       
       
    }
+   
 
    public void doGet(HttpServletRequest req, HttpServletResponse res)
                 throws IOException, ServletException
@@ -169,32 +181,28 @@ public class HarvestDaemon extends HttpServlet implements Runnable
            return;
        }
        */
-            
-	  while(true) {
-         
-         lastHarvestTime = new Date();
-      
-         if(harvestOnLoad) {
-           try {              
-               rhs.harvestAll(true,true);
-               myCounter++;
-    	     }
-           catch (RegistryException e)
-           {
-               e.printStackTrace();
-           }                      
-         }//if
-         harvestOnLoad = true;
+       try {
+           while(true) {
+               lastHarvestTime = new Date();
 
- 		 try {
-            myThread.sleep(harvestInterval*3600*1000);
-	     }
-	     catch(InterruptedException e)
-	     {
-			 e.printStackTrace();
-	     }
-         //System.out.println("Still looping in run() method! ...waiting 10 secs");
-     }//while
+               if(harvestOnLoad) {
+                   try {              
+                       rhs.harvestAll(true,true);
+                       myCounter++;
+                   }
+                   catch (RegistryException e)
+                   {
+                       e.printStackTrace();
+                   }                      
+               }//if
+               harvestOnLoad = true;
+               myThread.sleep(harvestInterval*3600*1000);
+           }//while
+       } catch(InterruptedException e) {
+           System.out.println("Interupting a thread, now exiting run normally");
+           //e.printStackTrace();
+       }
+           
    }
    
    
@@ -208,29 +216,32 @@ public class HarvestDaemon extends HttpServlet implements Runnable
        
        public void run() {
 
-           if("HarvestNow".equals(task)) {
-                 System.out.println("Immediate harvesting will be commenced!");
-                 try {
-                    rhs.harvestAll(true,true);
-                 }
-                 catch(RegistryException e)
-                 {
-                    e.printStackTrace();
-                }
+           try {
+               if("HarvestNow".equals(task)) {
+                     System.out.println("Immediate harvesting will be commenced!");
+                     try {
+                        rhs.harvestAll(true,true);
+                     }
+                     catch(RegistryException e)
+                     {
+                        e.printStackTrace();
+                    }
+               }
+               if("ReplicateNow".equals(task)) {
+                   System.out.println("Immediate replicate is beginning!");
+                   try {
+                                
+                      rhs.harvestAll(true,false);
+                   }
+                   catch(RegistryException e)
+                   {
+                      e.printStackTrace();
+                   }
+               }//if
+           }finally {
+               //turn off
+               HarvestDaemon.harvestStarted = false;
            }
-           if("ReplicateNow".equals(task)) {
-               System.out.println("Immediate replicate is beginning!");
-               try {
-                            
-                  rhs.harvestAll(true,false);
-               }
-               catch(RegistryException e)
-               {
-                  e.printStackTrace();
-               }
-           }//if
-           //turn off
-           HarvestDaemon.harvestStarted = false;
        }//run       
    }
 
