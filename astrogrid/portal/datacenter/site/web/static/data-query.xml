@@ -1,23 +1,28 @@
-<div
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.w3.org/1999/xhtml http://www.w3.org/2002/08/xhtml/xhtml1-transitional.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE div PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<div>
+  <div id="ag-content-tab-top">
+    <span class="ag-content-tab-top"><a class="ag-content-tab-link" href="">Welcome</a></span>
+    <span class="ag-content-tab-top"><a class="ag-content-tab-link" href="data-query-help.xml">Help</a></span>
+  </div>
+
   <div id="ag-content-panelbar">
     <div id="ag-content-panelbar-header">
-      Data Query Helper
+      PanelBar Header
     </div>
     
     <div class="ag-content-panelbar-separator"><hr/></div>
     
-    <div class="ag-content-panelbar-tabs">
+    <div class="ag-content-panelbar-tab">
       <span class="ag-content-panelbar-tab" onclick="ag_content_panelbar_tab_click('ag-content-panelbar-content-1');">
-        ADQL XML
+        tab-1
       </span>
       <span class="ag-content-panelbar-tab" onclick="ag_content_panelbar_tab_click('ag-content-panelbar-content-2');">
-        ADQL SQL
+        tab-2
       </span>
       <span class="ag-content-panelbar-tab" onclick="ag_content_panelbar_tab_click('ag-content-panelbar-content-3');">
-        Meta Data
+        tab-3
       </span>
     </div>
 
@@ -46,9 +51,45 @@
     </div>
   </div>
   
-  <form action="">
-    <p>Data Query Builder</p>
-    <textarea cols="50" rows="20" name="query" style="ag-form"> </textarea>
-    <p>ADQL Query</p>
-  </form>
+  <div>
+    <form action="forms/adql">
+      <!--
+        Text editor.
+        -->
+      <div>
+        <p>Data Query Builder</p>
+        <textarea cols="50" rows="20" name="query" style="ag-form"> </textarea>
+      </div>
+      
+      <!--
+        MySpace actions
+        -->
+      <div>
+        <div style="float:left;width:50%;">
+            <input name="action" type="submit" value="Load"/>
+            <input name="action" type="submit" value="Save"/>
+        </div>
+        <div style="float:right;width:50%;">
+            <input name="myspace-name" type="text"/>
+            <input name="action" type="submit" value="Browse"/>
+        </div>
+      </div>
+      
+      <!--
+        DataCenter actions
+        -->
+      <div style="clear:both">
+        <input name="action" type="submit" value="Test"/>
+      </div>
+    </form>
+  </div>
+
+  <div id="ag-content-tab-bottom">
+    <span class="ag-content-tab-bottom">
+      <a class="ag-content-tab-link" href="">Welcome</a>
+    </span>
+    <span class="ag-content-tab-bottom">
+      <a class="ag-content-tab-link" href="">Help</a>
+    </span>
+  </div>
 </div>

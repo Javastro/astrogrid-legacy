@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.4 2003/12/16 12:01:17 gps Exp $
+    | CVS $Id: sitemap.xmap,v 1.5 2003/12/18 10:57:51 gps Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -266,13 +266,20 @@
           
           <map:when test="Test">
             <map:act type="test-adql">
-              <map:parameter name="datacenter-delegate-service" value="Dummy"/>
-              <map:parameter name="datacenter-end-point" value="http://not.used"/>
-              <map:parameter name="username" value="gps"/>
+              <map:parameter name="datacenter-delegate-service" value="NVO Cone Service"/>
+              <map:parameter name="datacenter-end-point" value="http://virtualsky.org/servlet/cover?CAT=messier&amp;"/>
+              <map:parameter name="username" value="Anon"/>
               <map:parameter name="community-id" value="gps@star.le.ac.uk"/>
-              <map:parameter name="password" value="breadstick"/>
+              <map:parameter name="password" value="None"/>
               <map:parameter name="adql-query" value="query"/>
               
+<!--
+              <map:generate type="request">
+                <map:parameter name="generate-attributes" value="true"/>
+              </map:generate>
+              
+              <map:serialize type="xml"/>
+-->
               <map:call resource="test-adql-results"/>
             </map:act>
           </map:when>
@@ -282,11 +289,7 @@
           </map:otherwise>
         </map:select>
 
-        <map:generate type="request">
-          <map:parameter name="generate-attributes" value="true"/>
-        </map:generate>
-        
-        <map:serialize type="xml"/>
+        <map:call resource="test-adql-results"/>
       </map:match>
       
       <!-- xml -->
