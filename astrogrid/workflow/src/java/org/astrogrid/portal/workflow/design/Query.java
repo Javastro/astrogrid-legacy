@@ -127,7 +127,7 @@ public final class Query implements Tool {
                                         , String community
                                         , String communitySnippet
                                         , String filter ) {
-        if( TRACE_ENABLED ) trace( "Query.readQuery() entry") ; 
+        if( TRACE_ENABLED ) trace( "Query.readQueryList() entry") ; 
         
         // JBL: For the moment we are ignoring filter.
         
@@ -169,6 +169,9 @@ public final class Query implements Tool {
                                             , community
                                             , CommunityMessage.getGroup( communitySnippet )
                                             , argumentBuffer.toString() ) ;
+                                            
+//           debug( "vector.size(): " + vector.size() ) ;
+//           debug( "element 0: " + vector.elementAt(0)) ;
                                               
            iterator = vector.iterator() ;  
                           
@@ -177,7 +180,7 @@ public final class Query implements Tool {
            ex.printStackTrace() ;
        }
        finally {
-           if( TRACE_ENABLED ) trace( "Workflow.readWorkflowList() exit") ; 
+           if( TRACE_ENABLED ) trace( "Workflow.readQueryList() exit") ; 
        }
        
        return iterator ;

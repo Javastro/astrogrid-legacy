@@ -102,7 +102,7 @@ public class WorkflowDD {
         "<job name=\"{0}\" >" +
         "   <userid>{1}</userid>" +
         "   <jes_community>{2}</jes_community>" +
-        "   <description>{3}</description>" +        "   {4}" +       // the community snippet      
+        "   <description>{3}</description>" +        "   <AssignID>dummy</AssignID>" +        "   {4}" +       // the community snippet      
         "   {5}" +       // variable number of job steps               
         "</job>" ;        
         
