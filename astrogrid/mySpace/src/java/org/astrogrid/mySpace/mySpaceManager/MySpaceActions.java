@@ -14,9 +14,10 @@ import org.apache.log4j.Logger;
  */
 
 public class MySpaceActions
-{   private static Logger logger = Logger.getLogger(MySpaceActions.class);
-	private static boolean DEBUG = true;
-	private static String registryName;
+{  private static Logger logger = Logger.getLogger(MySpaceActions.class);
+   private static boolean DEBUG = true;
+
+   private static String registryName;
 
 //
 // Constructor.
@@ -42,7 +43,7 @@ public class MySpaceActions
   */
 
    public DataItemRecord lookupDataHolderDetails(String userID,
-     String communityID, String jobID, int dataItemID)
+     String communityID, String credentials, int dataItemID)
    {  DataItemRecord dataItem = new DataItemRecord();
       dataItem = null;
 
@@ -50,7 +51,7 @@ public class MySpaceActions
       {  RegistryManager reg = new RegistryManager(registryName);
 
          dataItem = this.internalLookupDataHolderDetails(userID,
-           communityID, jobID, dataItemID, reg);
+           communityID, credentials, dataItemID, reg);
       }
       catch (Exception all)
       {  MySpaceStatus status  = new MySpaceStatus(
@@ -68,14 +69,14 @@ public class MySpaceActions
   */
 
    public Vector lookupDataHoldersDetails(String userID, 
-     String communityID, String jobID, String query)
+     String communityID, String credentials, String query)
    {  Vector dataItemVector = new Vector();
 
       try
       {  RegistryManager reg = new RegistryManager(registryName);
 
          dataItemVector = this.internalLookupDataHoldersDetails(
-           userID,  communityID, jobID, query, reg);
+           userID,  communityID, credentials, query, reg);
       }
       catch (Exception all)
       {  MySpaceStatus status  = new MySpaceStatus(
@@ -97,7 +98,7 @@ public class MySpaceActions
   */
 
    public Vector listExpiredDataHolders(String userID, 
-     String communityID, String jobID, String query)
+     String communityID, String credentials, String query)
    {  Vector expiredDataItemVector = new Vector();
 
       try
@@ -108,7 +109,7 @@ public class MySpaceActions
 //      any were found.
 
          Vector dataItemVector = this.internalLookupDataHoldersDetails(
-           userID,  communityID, jobID, query, reg);
+           userID,  communityID, credentials, query, reg);
          if (dataItemVector.size() > 0)
          {
 
@@ -150,7 +151,7 @@ public class MySpaceActions
   */
 
    public DataItemRecord copyDataHolder(String userID, String communityID,
-     String jobID, int oldDataItemID, String newDataItemName)
+     String credentials, int oldDataItemID, String newDataItemName)
    {  DataItemRecord returnedDataItem = new DataItemRecord();
       returnedDataItem = null;
 
@@ -169,12 +170,13 @@ public class MySpaceActions
 //
 //         Assemble the UserAccount from the UserID and CommunityID.
 
-            UserAccount userAcc = new UserAccount(userID, communityID);
+            UserAccount userAcc = new UserAccount(userID, communityID,
+              credentials);
 
 //
-//         Check the user's authentication and proceed if ok.
+//         Check the user's system authorisation and proceed if ok.
 
-            if (userAcc.checkAuthentication() )
+            if (userAcc.checkSystemAuthorisation(UserAccount.WRITE) )
             {
 
 //
@@ -183,7 +185,7 @@ public class MySpaceActions
 
                DataItemRecord oldDataItem = 
                  this.internalLookupDataHolderDetails(userID, communityID,
-                   jobID, oldDataItemID, reg);
+                   credentials, oldDataItemID, reg);
                if (status.getSuccessStatus())
                {
 
@@ -199,7 +201,7 @@ public class MySpaceActions
 //                  created.
 
                      if(this.checkCanBeCreated(newDataItemName, userAcc,
-                       jobID, reg) == true)
+                       credentials, reg) == true)
                      {
 
 //
@@ -417,7 +419,7 @@ public class MySpaceActions
   */
 
    public DataItemRecord moveDataHolder(String userID, String communityID,
-     String jobID, int oldDataItemID, String newDataItemName)
+     String credentials, int oldDataItemID, String newDataItemName)
    {  DataItemRecord returnedDataItem = new DataItemRecord();
       returnedDataItem = null;
 
@@ -436,12 +438,13 @@ public class MySpaceActions
 //
 //         Assemble the UserAccount from the UserID and CommunityID.
 
-            UserAccount userAcc = new UserAccount(userID, communityID);
+            UserAccount userAcc = new UserAccount(userID, communityID,
+              credentials);
 
 //
-//         Check the user's authentication and proceed if ok.
+//         Check the user's system authorisation and proceed if ok.
 
-            if (userAcc.checkAuthentication() )
+            if (userAcc.checkSystemAuthorisation(UserAccount.WRITE) )
             {
 
 //
@@ -450,7 +453,7 @@ public class MySpaceActions
 
                DataItemRecord oldDataItem = 
                  this.internalLookupDataHolderDetails(userID, communityID,
-                   jobID, oldDataItemID, reg);
+                   credentials, oldDataItemID, reg);
                if (status.getSuccessStatus())
                {
 
@@ -466,7 +469,7 @@ public class MySpaceActions
 //                  created.
 
                      if(this.checkCanBeCreated(newDataItemName, userAcc,
-                       jobID, reg) == true)
+                       credentials, reg) == true)
                      { 
 
 //
@@ -553,7 +556,7 @@ public class MySpaceActions
   */
 
    public DataItemRecord importDataHolder(String userID, String communityID,
-     String jobID, String importURI, String newDataItemName,
+     String credentials, String importURI, String newDataItemName,
      String contentsType)
    {  DataItemRecord returnedDataItem = new DataItemRecord();
       returnedDataItem = null;
@@ -572,19 +575,20 @@ public class MySpaceActions
 //
 //         Assemble the UserAccount from the UserID and CommunityID.
 
-            UserAccount userAcc = new UserAccount(userID, communityID);
+            UserAccount userAcc = new UserAccount(userID, communityID,
+              credentials);
 
 //
-//         Check the user's authentication and proceed if ok.
+//         Check the user's system authorisation and proceed if ok.
 
-            if (userAcc.checkAuthentication() )
+            if (userAcc.checkSystemAuthorisation(UserAccount.WRITE) )
             {
 
 //
 //            Check that the specified dataHolder can be created.
 
                if(this.checkCanBeCreated(newDataItemName, userAcc,
-                 jobID, reg) == true)
+                 credentials, reg) == true)
                {
 
 //
@@ -697,15 +701,6 @@ public class MySpaceActions
       return returnedDataItem;
    }
 
-
-
-
-
-
-
-
-
-
 // -----------------------------------------------------------------
 
 /**
@@ -719,7 +714,7 @@ public class MySpaceActions
   */
 
    public DataItemRecord upLoadDataHolder(String userID, String communityID,
-     String jobID, String newDataItemName, String contents,
+     String credentials, String newDataItemName, String contents,
      String contentsType)
    {  DataItemRecord returnedDataItem = new DataItemRecord();
       returnedDataItem = null;
@@ -738,19 +733,20 @@ public class MySpaceActions
 //
 //         Assemble the UserAccount from the UserID and CommunityID.
 
-            UserAccount userAcc = new UserAccount(userID, communityID);
+            UserAccount userAcc = new UserAccount(userID, communityID,
+              credentials);
 
 //
-//         Check the user's authentication and proceed if ok.
+//         Check the user's system authorisation and proceed if ok.
 
-            if (userAcc.checkAuthentication() )
+            if (userAcc.checkSystemAuthorisation(UserAccount.WRITE) )
             {
 
 //
 //            Check that the specified dataHolder can be created.
 
                if(this.checkCanBeCreated(newDataItemName, userAcc,
-                 jobID, reg) == true)
+                 credentials, reg) == true)
                {
 
 //
@@ -870,7 +866,7 @@ public class MySpaceActions
   */
 
    public String exportDataHolder(String userID, String communityID,
-     String jobID, int dataItemID)
+     String credentials, int dataItemID)
    {  String dataHolderURI = null;
 
       MySpaceStatus status = new MySpaceStatus();
@@ -887,12 +883,13 @@ public class MySpaceActions
 //
 //         Assemble the UserAccount from the UserID and CommunityID.
 
-            UserAccount userAcc = new UserAccount(userID, communityID);
+            UserAccount userAcc = new UserAccount(userID, communityID,
+              credentials);
 
 //
-//         Check the user's authentication and proceed if ok.
+//         Check the user's system authorisation and proceed if ok.
 
-            if (userAcc.checkAuthentication() )
+            if (userAcc.checkSystemAuthorisation(UserAccount.READ) )
             {
 
 //
@@ -901,7 +898,7 @@ public class MySpaceActions
 
                DataItemRecord dataItem = 
                  this.internalLookupDataHolderDetails(userID, communityID,
-                   jobID, dataItemID, reg);
+                   credentials, dataItemID, reg);
                if (status.getSuccessStatus())
                {
 
@@ -995,7 +992,7 @@ public class MySpaceActions
   */
 
    public DataItemRecord createContainer(String userID, String communityID,
-     String jobID, String newContainerName)
+     String credentials, String newContainerName)
    {  DataItemRecord newContainer = new DataItemRecord();
       newContainer = null;
 
@@ -1014,19 +1011,20 @@ public class MySpaceActions
 //
 //         Assemble the UserAccount from the UserID and CommunityID.
 
-            UserAccount userAcc = new UserAccount(userID, communityID);
+            UserAccount userAcc = new UserAccount(userID, communityID,
+              credentials);
 
 //
-//         Check the user's authentication and proceed if ok.
+//         Check the user's system authorisation and proceed if ok.
 
-            if (userAcc.checkAuthentication() )
+            if (userAcc.checkSystemAuthorisation(UserAccount.WRITE) )
             {
 
 //
 //            Check that the specified container can be created.
 
                if(this.checkCanBeCreated(newContainerName, userAcc,
-                 jobID, reg) == true)
+                 credentials, reg) == true)
                {
 
 //
@@ -1084,7 +1082,7 @@ public class MySpaceActions
   */
 
    public boolean deleteDataHolder(String userID, String communityID,
-     String jobID, int dataItemID)
+     String credentials, int dataItemID)
    {  boolean returnStatus = false;
 
       MySpaceStatus status = new MySpaceStatus();
@@ -1103,12 +1101,13 @@ public class MySpaceActions
 //
 //         Assemble the UserAccount from the UserID and CommunityID.
 
-            UserAccount userAcc = new UserAccount(userID, communityID);
+            UserAccount userAcc = new UserAccount(userID, communityID,
+              credentials);
 
 //
-//         Check the user's authentication and proceed if ok.
+//         Check the user's system authorisation and proceed if ok.
 
-            if (userAcc.checkAuthentication() )
+            if (userAcc.checkSystemAuthorisation(UserAccount.WRITE) )
             {
 
 //
@@ -1117,7 +1116,7 @@ public class MySpaceActions
 
                DataItemRecord dataItem = 
                  this.internalLookupDataHolderDetails(userID, communityID,
-                   jobID, dataItemID, reg);
+                   credentials, dataItemID, reg);
                if (dataItem != null)
                {
 
@@ -1132,7 +1131,7 @@ public class MySpaceActions
 
                      Vector childrenDataItemVector = 
                        this.internalLookupDataHoldersDetails(userID,
-                         communityID, jobID, query, reg);
+                         communityID, credentials, query, reg);
                      if (status.getSuccessStatus())
                      {  status.reset();
                      }
@@ -1250,7 +1249,7 @@ public class MySpaceActions
   */
 
    public DataItemRecord changeOwnerDataHolder(String userID,
-     String communityID, String jobID, int dataItemID, String newOwnerID)
+     String communityID, String credentials, int dataItemID, String newOwnerID)
    {  DataItemRecord returnedDataItem = new DataItemRecord();
       returnedDataItem = null;
 
@@ -1268,12 +1267,13 @@ public class MySpaceActions
 //
 //         Assemble the UserAccount from the UserID and CommunityID.
 
-            UserAccount userAcc = new UserAccount(userID, communityID);
+            UserAccount userAcc = new UserAccount(userID, communityID,
+              credentials);
 
 //
-//         Check the user's authentication and proceed if ok.
+//         Check the user's system authorisation and proceed if ok.
 
-            if (userAcc.checkAuthentication() )
+            if (userAcc.checkSystemAuthorisation(UserAccount.WRITE) )
             {
 
 //
@@ -1282,7 +1282,7 @@ public class MySpaceActions
 
                DataItemRecord dataItem = 
                  this.internalLookupDataHolderDetails(userID, communityID,
-                   jobID, dataItemID, reg);
+                   credentials, dataItemID, reg);
                if (status.getSuccessStatus())
                {
 
@@ -1366,7 +1366,7 @@ public class MySpaceActions
   */
 
    public DataItemRecord advanceExpiryDataHolder(String userID,
-     String communityID, String jobID, int dataItemID, int advance)
+     String communityID, String credentials, int dataItemID, int advance)
    {  DataItemRecord returnedDataItem = new DataItemRecord();
       returnedDataItem = null;
 
@@ -1384,12 +1384,13 @@ public class MySpaceActions
 //
 //         Assemble the UserAccount from the UserID and CommunityID.
 
-            UserAccount userAcc = new UserAccount(userID, communityID);
+            UserAccount userAcc = new UserAccount(userID, communityID,
+              credentials);
 
 //
-//         Check the user's authentication and proceed if ok.
+//         Check the user's system authorisation and proceed if ok.
 
-            if (userAcc.checkAuthentication() )
+            if (userAcc.checkSystemAuthorisation(UserAccount.WRITE) )
             {
 
 //
@@ -1398,7 +1399,7 @@ public class MySpaceActions
 
                DataItemRecord dataItem = 
                  this.internalLookupDataHolderDetails(userID, communityID,
-                   jobID, dataItemID, reg);
+                   credentials, dataItemID, reg);
                if (status.getSuccessStatus())
                {
 
@@ -1495,8 +1496,8 @@ public class MySpaceActions
   * has been allocated.
   */
 
-   public boolean createUser(String userID, String communityID, String jobID,
-     Vector servers)
+   public boolean createUser(String userID, String communityID,
+     String credentials, Vector servers)
    {  boolean returnStatus = true;
 
       MySpaceStatus status = new MySpaceStatus();
@@ -1514,12 +1515,13 @@ public class MySpaceActions
 //
 //         Assemble the UserAccount from the UserID and CommunityID.
 
-            UserAccount userAcc = new UserAccount(userID, communityID);
+            UserAccount userAcc = new UserAccount(userID, communityID,
+              credentials);
 
 //
-//         Check the user's authentication and proceed if ok.
+//         Check the user's system authorisation and proceed if ok.
 
-            if (userAcc.checkAuthentication() )
+            if (userAcc.checkSystemAuthorisation(UserAccount.WRITE) )
             {
 
 //
@@ -1641,7 +1643,7 @@ public class MySpaceActions
   * being deleted.  Thus the user is `deleting himself'.
   */
 
-   public boolean deleteUser(String userID, String communityID, String jobID)
+   public boolean deleteUser(String userID, String communityID, String credentials)
    {  boolean returnStatus = false;
 
       MySpaceStatus status = new MySpaceStatus();
@@ -1659,12 +1661,13 @@ public class MySpaceActions
 //
 //         Assemble the UserAccount from the UserID and CommunityID.
 
-            UserAccount userAcc = new UserAccount(userID, communityID);
+            UserAccount userAcc = new UserAccount(userID, communityID,
+              credentials);
 
 //
-//         Check the user's authentication and proceed if ok.
+//         Check the user's system authorisation and proceed if ok.
 
-            if (userAcc.checkAuthentication() )
+            if (userAcc.checkSystemAuthorisation(UserAccount.WRITE) )
             {
 
 //
@@ -1783,7 +1786,7 @@ public class MySpaceActions
   */
 
    private DataItemRecord internalLookupDataHolderDetails(String userID,
-     String communityID, String jobID, int dataItemID,
+     String communityID, String credentials, int dataItemID,
      RegistryManager reg)
    {  DataItemRecord dataItem = new DataItemRecord();
       dataItem = null;
@@ -1796,12 +1799,13 @@ public class MySpaceActions
 //
 //      Assemble the UserAccount from the UserID and CommunityID.
 
-         UserAccount userAcc = new UserAccount(userID, communityID);
+         UserAccount userAcc = new UserAccount(userID, communityID,
+           credentials);
 
 //
-//      Check the user's authentication and proceed if ok.
+//      Check the user's system authorisation and proceed if ok.
 
-         if (userAcc.checkAuthentication() )
+         if (userAcc.checkSystemAuthorisation(UserAccount.READ) )
          {
 
 //
@@ -1871,7 +1875,7 @@ public class MySpaceActions
   */
 
    private Vector internalLookupDataHoldersDetails(String userID, 
-     String communityID, String jobID, String query,
+     String communityID, String credentials, String query,
      RegistryManager reg)
    {  Vector dataItemVector = new Vector();
       dataItemVector = null;
@@ -1884,12 +1888,13 @@ public class MySpaceActions
 //
 //      Assemble the UserAccount from the UserID and CommunityID.
 
-         UserAccount userAcc = new UserAccount(userID, communityID);
+         UserAccount userAcc = new UserAccount(userID, communityID,
+           credentials);
 
 //
-//      Check the user's authentication and proceed if ok.
+//      Check the user's system authorisation and proceed if ok.
 
-         if (userAcc.checkAuthentication() )
+         if (userAcc.checkSystemAuthorisation(UserAccount.READ) )
          {
 
 //
@@ -1986,7 +1991,7 @@ public class MySpaceActions
  */
 
    private boolean checkCanBeCreated(String newDataItemName,
-     UserAccount userAcc, String jobID, RegistryManager reg)
+     UserAccount userAcc, String credentials, RegistryManager reg)
    {  boolean canBeCreated = false;
       MySpaceStatus status = new MySpaceStatus();
 
@@ -1996,12 +2001,12 @@ public class MySpaceActions
 //
 //      Check that the output DataHolder does not already exist.
 
-         String userID = userAcc.getUserID();
-         String communityID = userAcc.getCommunityID();
+         String userID = userAcc.getUserId();
+         String communityID = userAcc.getCommunityId();
 
          Vector checkOutputContainter = 
            this.internalLookupDataHoldersDetails(userID, communityID,
-             jobID, newDataItemName, reg);
+             credentials, newDataItemName, reg);
          if (status.getSuccessStatus())
          {  status.reset();
          }
@@ -2041,7 +2046,7 @@ public class MySpaceActions
                     (0, newDataItemName.lastIndexOf("/") );
                   Vector parentDataItemVector = 
                     this.internalLookupDataHoldersDetails(userID,
-                      communityID, jobID, parentContainer, reg);
+                      communityID, credentials, parentContainer, reg);
                   if (status.getSuccessStatus())
                   {  status.reset();
                   }

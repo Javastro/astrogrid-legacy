@@ -2,18 +2,22 @@ package org.astrogrid.mySpace.mySpaceManager;
 
 import java.io.*;
 
+import org.astrogrid.community.common.util.CommunityMessage;
+import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
+
+import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatus;
+import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
+
 /**
  * The <code>UserAccount</code> class represents details of an AstroGrid
  * User within the MySpace system.  It encapsulates details such as his
- * identifier (ID), community and (in principle) any privileges that he
- * might have.
+ * identifier (ID), community and any privileges that he might have.
  * <p>
  * Many of the details of how Users are to be represented are still
- * unclear, so in Iteration 2 the class is largely a dummy.  It contains
- * some details for representing the user, but no information about, for
- * example, privileges.  Further, most of the MySpace system merely passes
+ * unclear, so in Iteration 3 some of the details of the class are
+ * provisional.  Most of the MySpace system merely passes
  * <code>UserAccount</code> objects about, but does not inquire they
- * contents, precisely because they are uncertain.
+ * contents, precisely because they may change in future iterations.
  * </p>
  * <p>
  * A <code>UserAccount</code> object is created immediately the MySpace
@@ -36,8 +40,9 @@ public class UserAccount
    public static final int WRITE  = 2;      // Write.
    public static final int DELETE = 3;      // Delete.
 
-   private String userID;
-   private String communityID;
+   private String userId;
+   private String communityId;
+   private String credentials;
    private String userName;
 
 //
@@ -45,25 +50,42 @@ public class UserAccount
 
 /**
  * The simplest constructor to create a new <code>UserAccount</code>.
- * Identifiers for the User and the community to which he belongs must
- * be supplied.  For Iteration 2 these identifiers are assumed to be
- * simple strings.
+ * Note that in Iteration 3 all the arguments are simple Strings.
+ *
+ * @param userId User identifier; the user's unique identifier within
+ *   his AstroGrid community.
+ * @param communityId Community identifier; the unique identifier for
+ *   the user's AstroGrid community.
+ * @param credentials The user's credentials; a String specifying the
+ *   operations that he is allowed to perform.
  */
 
-   public UserAccount (String userID, String communityID)
-   {  this.userID = userID;
-      this.communityID = communityID;
-      this.userName = "unknown";
+   public UserAccount (String userId, String communityId, String credentials)
+   {  this.userId = userId;
+      this.communityId = communityId;
+      this.credentials = credentials;
+      this.userName = null;
    }
 
 /**
- * A constructor to create a new UserAccount in the case where the
- * User's identifier, community and name are all known.
+ * A constructor to create a new UserAccount in the case where in
+ * addition to the mandatory parameters a (human-readable) name for
+ * the user is also known.
+ *
+ * @param userId User identifier; the user's unique identifier within
+ *   his AstroGrid community.
+ * @param communityId Community identifier; the unique identifier for
+ *   the user's AstroGrid community.
+ * @param credentials The user's credentials; a String specifying the
+ *   operations that he is allowed to perform.
+ * @param userName The user's name (in a human-readable form)
  */
 
-   public UserAccount (String userID, String communityID, String userName)
-   {  this.userID = userID;
-      this.communityID = communityID;
+   public UserAccount (String userId, String communityId, String credentials,
+     String userName)
+   {  this.userId = userId;
+      this.communityId = communityId;
+      this.credentials = credentials;
       this.userName = userName;
    }
 
@@ -75,12 +97,12 @@ public class UserAccount
  * AstroGrid system.  The User's identifier is assumed to be unique within
  * his community and the community identifiers are assumed to be unique.
  * Therefore a globally unique identifier is created by concatenating the
- * User identifier and the community identifier.  A colon (`:') is
- * inserted as a separator between the user and community identifiers.
+ * User identifier and the community identifier.  An `@'is inserted as a
+ * separator between the user and community identifiers.
  */
 
-   public String getURI()
-   {  return userID + ":" + communityID;
+   public String getUserAGrId()
+   {  return userId + "@" + communityId;
    }
 
 /**
@@ -90,59 +112,68 @@ public class UserAccount
    public String getUserName()
    {  return userName;
    }
+
 /**
  * Return the User's identifier.
  */
 
-   public String getUserID()
-   {  return userID;
+   public String getUserId()
+   {  return userId;
    }
 
 /**
  * Return the User's community identifier.
  */
 
-   public String getCommunityID()
-   {  return communityID;
+   public String getCommunityId()
+   {  return communityId;
+   }
+
+/**
+ * Return the User's credentials.
+ */
+
+   public String getCredentials()
+   {  return credentials;
    }
 
 /**
  * Return the User's base container.
  *
  * The base container starts with a leading `/'.  It then comprises
- * the user's userID concatenated with the his communityID.  The
- * combination of userID and communityID should be unique throughout
+ * the user's userId concatenated with the his communityId.  The
+ * combination of userId and communityId should be unique throughout
  * the AstroGrid system.
  */
 
    public String getBaseContainer()
-   {  return "/" +  userID + "@" + communityID;
+   {  return "/" +  userId + "@" + communityId;
    }
 
 //
 // Authentication and Authorisation methods.
 // 
-// The two following methods, checkAuthentication and checkAuthorisation,
-// should not be confused.  checkAuthentication is used to check that
-// a User is an accredited user of both AstroGrid and the current MySpace
-// System, whereas checkAuthorisation is used to determine whether a user
-// has the necessary privileges to perform a given operation on a given
-// DataHolder.  For example, I might be an accredited user of a given
-// MySpace System, but nonetheless I'm unlikely to have sufficient
-// privileges to delete another user's DataHolders.
-
-/**
- * Check that the <code>UserAccount</code> is an accredited user of
- * both AstroGrid and the current MySpace System.  The current
- * implementation is a dummy which always returns true.
- *
- * @returns Returns true if the user authenticates ok, otherwise returns
- *    false.
- */
-
-  public boolean checkAuthentication()
-  {  return true;
-  }
+// The UserAccount class, and indeed, the MySpace system does not
+// perform any user authentication.  That is, no checks are made to
+// ensure that the user is who he says that he is.  Such checks are
+// assumed to have been made elsewhere in the AstroGrid system.
+//
+// There are, however, two methods for checking the user's authorisation.
+// That is, whether he is permitted to perform the operation that he
+// is attempting:
+//
+// checkAuthorisation: provides fine-grained checks on operations
+//   attempted on individual dataHolders.  The current implementation
+//   is a dummy,
+//
+// checkSystemAuthorisation: provides a coarse-grained check on whether
+//   the user is permitted to use the MySpace system for a given class
+//   of operations.  Currently a simple implementation is available.
+//
+// The difference in usage is (typically) that checkAuthorisation would
+// be invoked every time an operation is attempted on a dataHolder,
+// whereas checkSystemAuthorisation is be invoked once by every `action'
+// method in the MySpaceActions class.
 
 /**
  * Check whether the <code>UserAccount</code> has the necessary
@@ -150,7 +181,7 @@ public class UserAccount
  * <code>DataHolder</code>.  The current implementation is a dummy which
  * always returns true.
  * 
- * @param oper The operation to be performed, coded as follows:
+ * @param opCode The operation to be performed, coded as follows:
  * <code>UserAccount.READ</code> - read; <code>UserAccount.WRITE</code> -
  * write; <code>UserAccount.DELETE</code> - delete.
  * @param ownerID The identifer of the owner of the <code>DataHolder</code>
@@ -161,9 +192,66 @@ public class UserAccount
  * perform the requested given operation, otherwise returns false.
  */
 
-  public boolean checkAuthorisation(int oper, String ownerID,
+  public boolean checkAuthorisation(int opCode, String ownerID,
     String permissions)
   {  return true;
+  }
+
+/**
+ * Check whether the <code>UserAccount</code> has the necessary
+ * privileges to perform a given class of operation on the current
+ * MySpace system.
+ *
+ * @param opCode <code>UserAccount.READ</code> code for the class of
+ *   operation being attempted.
+ */
+
+  public boolean checkSystemAuthorisation(int opCode)
+  {  boolean authorised = true;
+
+     String oper = null;
+
+//
+//  Translate the operation codes into the form required by the
+//  permissions manager.
+
+     if (opCode == UserAccount.READ)
+     {  oper = "read";
+     }
+     else if (opCode == UserAccount.WRITE)
+     {  oper = "write";
+     }
+     else
+     {  authorised = false;
+
+        MySpaceStatus status  = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00050, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.NOLOG, this.getClassName() );
+     }
+
+//
+//  If ok then create a permissions manager delegate and check whether
+//  the user is authorised for this type of operation.
+
+     if (authorised)
+     {  PolicyServiceDelegate psd = new PolicyServiceDelegate();
+
+        try
+        {  String agUserId = this.getUserAGrId();
+
+           authorised = psd.checkPermissions(agUserId, credentials,
+             "myspace", oper);
+        }
+        catch (Exception e)
+        {  authorised = false;
+
+           MySpaceStatus status  = new MySpaceStatus(
+              MySpaceStatusCode.AGMMCE00050, MySpaceStatusCode.ERROR,
+              MySpaceStatusCode.NOLOG, this.getClassName() );
+        }
+     }
+
+     return authorised;
   }
 
 
@@ -176,13 +264,36 @@ public class UserAccount
   {  return true;
   }
 
-
 /**
  * Produce a reasonable string representation of a
  * <code>UserAccount</code>.
  */
 
    public String toString()
-   {  return userID + ":" + communityID + " (" + userName + ")";
+   {  String userRepn = null;
+
+      if (userName != null)
+      {  userRepn = userId + "@" + communityId + " (" + userName + ")";
+      }
+      else
+      {  userRepn = userId + "@" + communityId;
+      }
+
+      return userRepn;
+   }
+
+/**
+ * Obtain the name of the current Java class.
+ */
+
+   protected String getClassName()
+   { Class currentClass = this.getClass();
+     String name =  currentClass.getName();
+     int dotPos = name.lastIndexOf(".");
+     if (dotPos > -1)
+     {  name = name.substring(dotPos+1, name.length() );
+     }
+
+     return name;
    }
 }

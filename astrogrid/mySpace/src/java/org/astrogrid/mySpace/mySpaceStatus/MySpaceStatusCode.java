@@ -57,58 +57,59 @@ public class MySpaceStatusCode
    public static final int AGMMCZ00005 = 5;
    public static final int AGMMCE00030 = 6;
    public static final int AGMMCE00031 = 7;
-   public static final int AGMMCE00100 = 8;
-   public static final int AGMMCE00101 = 9;
-   public static final int AGMMCE00102 = 10;
-   public static final int AGMMCE00103 = 11;
-   public static final int AGMMCE00104 = 12;
-   public static final int AGMMCE00105 = 13;
-   public static final int AGMMCE00106 = 14;
-   public static final int AGMMCW00150 = 15;
-   public static final int AGMMCW00151 = 16;
-   public static final int AGMMCW00152 = 17;
-   public static final int AGMMCW00153 = 18;
-   public static final int AGMMCW00154 = 19;
-   public static final int AGMMCE00201 = 20;
-   public static final int AGMMCE00202 = 21;
-   public static final int AGMMCE00203 = 22;
-   public static final int AGMMCE00204 = 23;
-   public static final int AGMMCE00205 = 24;
-   public static final int AGMMCE00206 = 25;
-   public static final int AGMMCE00207 = 26;
-   public static final int AGMMCE00208 = 27;
-   public static final int AGMMCE00209 = 28;
-   public static final int AGMMCE00210 = 29;
-   public static final int AGMMCE00211 = 30;
-   public static final int AGMMCE00212 = 31;
-   public static final int AGMMCE00213 = 32;
-   public static final int AGMMCE00214 = 33;
-   public static final int AGMMCE00215 = 34;
-   public static final int AGMMCE00216 = 35;
-   public static final int AGMMCE00217 = 36;
-   public static final int AGMMCE00218 = 37;
-   public static final int AGMMCE00219 = 38;
-   public static final int AGMMCE00220 = 39;
-   public static final int AGMMCE00221 = 40;
-   public static final int AGMMCI00250 = 41;
-   public static final int AGMMCE00300 = 42;
-   public static final int AGMMCE00301 = 43;
-   public static final int AGMSCE01000 = 44;
-   public static final int AGMSCE01001 = 45;
-   public static final int AGMSCE01002 = 46;
-   public static final int AGMSCE01003 = 47;
-   public static final int AGMSCE01004 = 48;
-   public static final int AGMSCE01005 = 49;
-   public static final int AGMSCE01006 = 50;
-   public static final int AGMSCE01040 = 51;
-   public static final int AGMSCE01041 = 52;
-   public static final int AGMSCE01042 = 53;
-   public static final int AGMSCE01043 = 54;
-   public static final int AGMSCE01044 = 55;
-   public static final int AGMSCE01045 = 56;
-   public static final int AGMSCE01046 = 57;
-   public static final int AGMSCE01047 = 58;
-   public static final int AGMSCE01048 = 59;
+   public static final int AGMMCE00050 = 8;
+   public static final int AGMMCE00100 = 9;
+   public static final int AGMMCE00101 = 10;
+   public static final int AGMMCE00102 = 11;
+   public static final int AGMMCE00103 = 12;
+   public static final int AGMMCE00104 = 13;
+   public static final int AGMMCE00105 = 14;
+   public static final int AGMMCE00106 = 15;
+   public static final int AGMMCW00150 = 16;
+   public static final int AGMMCW00151 = 17;
+   public static final int AGMMCW00152 = 18;
+   public static final int AGMMCW00153 = 19;
+   public static final int AGMMCW00154 = 20;
+   public static final int AGMMCE00201 = 21;
+   public static final int AGMMCE00202 = 22;
+   public static final int AGMMCE00203 = 23;
+   public static final int AGMMCE00204 = 24;
+   public static final int AGMMCE00205 = 25;
+   public static final int AGMMCE00206 = 26;
+   public static final int AGMMCE00207 = 27;
+   public static final int AGMMCE00208 = 28;
+   public static final int AGMMCE00209 = 29;
+   public static final int AGMMCE00210 = 30;
+   public static final int AGMMCE00211 = 31;
+   public static final int AGMMCE00212 = 32;
+   public static final int AGMMCE00213 = 33;
+   public static final int AGMMCE00214 = 34;
+   public static final int AGMMCE00215 = 35;
+   public static final int AGMMCE00216 = 36;
+   public static final int AGMMCE00217 = 37;
+   public static final int AGMMCE00218 = 38;
+   public static final int AGMMCE00219 = 39;
+   public static final int AGMMCE00220 = 40;
+   public static final int AGMMCE00221 = 41;
+   public static final int AGMMCI00250 = 42;
+   public static final int AGMMCE00300 = 43;
+   public static final int AGMMCE00301 = 44;
+   public static final int AGMSCE01000 = 45;
+   public static final int AGMSCE01001 = 46;
+   public static final int AGMSCE01002 = 47;
+   public static final int AGMSCE01003 = 48;
+   public static final int AGMSCE01004 = 49;
+   public static final int AGMSCE01005 = 50;
+   public static final int AGMSCE01006 = 51;
+   public static final int AGMSCE01040 = 52;
+   public static final int AGMSCE01041 = 53;
+   public static final int AGMSCE01042 = 54;
+   public static final int AGMSCE01043 = 55;
+   public static final int AGMSCE01044 = 56;
+   public static final int AGMSCE01045 = 57;
+   public static final int AGMSCE01046 = 58;
+   public static final int AGMSCE01047 = 59;
+   public static final int AGMSCE01048 = 60;
 
 
    private int code;    // Code.
@@ -163,6 +164,9 @@ public class MySpaceStatusCode
       }
       else if (code == MySpaceStatusCode.AGMMCE00031)
       {  codeString = "AGMMCE00031";
+      }
+      else if (code == MySpaceStatusCode.AGMMCE00050)
+      {  codeString = "AGMMCE00050";
       }
       else if (code == MySpaceStatusCode.AGMMCE00100)
       {  codeString = "AGMMCE00100";
@@ -363,7 +367,10 @@ public class MySpaceStatusCode
       {  message = "({0}) Error writing error codes to standard output.";
       }
       else if (code == MySpaceStatusCode.AGMMCE00031)
-      {  message = "({0})  Class not found.";
+      {  message = "({0}) Class not found.";
+      }
+      else if (code == MySpaceStatusCode.AGMMCE00050)
+      {  message = "({0}) User is not authorised for operation attempted.";
       }
       else if (code == MySpaceStatusCode.AGMMCE00100)
       {  message = "({0}) Failed to create registry manager object.";

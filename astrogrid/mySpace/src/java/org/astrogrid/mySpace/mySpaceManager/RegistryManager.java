@@ -845,5 +845,5 @@ public class RegistryManager
      }
 
      return name;
-   }    
+   }
 }
