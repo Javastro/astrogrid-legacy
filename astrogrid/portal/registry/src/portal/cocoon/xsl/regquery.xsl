@@ -48,9 +48,9 @@
 			<input type="hidden" name="mainelement">
 				<xsl:attribute name="value"><xsl:value-of select="$mainelement"/></xsl:attribute>
 			</input>			
-			<input type="hidden" name="mainelement">
-				<xsl:attribute name="value"><xsl:value-of select="$mainelement"/></xsl:attribute>
-			</input>			
+			<input type="hidden" name="criteria_number">
+				<xsl:attribute name="value"><xsl:value-of select="$criteria_number"/></xsl:attribute>
+			</input>
 			<br />
 			<select name="selectitem0">
 				<xsl:for-each select="//registryquery/selectitems/selectitem">
