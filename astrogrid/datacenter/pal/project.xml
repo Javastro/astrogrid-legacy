@@ -131,6 +131,14 @@ tomcat.password=secret<br />
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+    
+    
+    <dependency>
+      <groupId>astrogrid-ogsadai</groupId>
+      <type>jar</type>
+      <artifactId>astrogrid-ogsadai-app</artifactId>
+      <version>SNAPSHOT</version>
+    </dependency>
 
 	<!-- supporting libraries -->
     <dependency>

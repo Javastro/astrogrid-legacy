@@ -21,6 +21,7 @@
 	<attainGoal name="grab-delegate" />
 	<attainGoal name="grab-server" />
 	<attainGoal name="grab-implementations" />
+        <attainGoal name="grab-ogsadai-app"/>
 </preGoal>
 
 <goal name="webapp-site" prereqs="configure-webapp"
@@ -91,6 +92,18 @@
 		</fileset>
 	</unzip>
 </goal>
+
+
+<goal name="grab-ogsadai-app"
+      description="copy the executable jar used for talking to OGSA-DAI">
+	<j:forEach var="deps" items="${pom.artifacts}">
+		<j:if test="${deps.dependency.artifactId=='astrogrid-ogsadai-app'}">
+			<copy file="${deps.path}" 
+                              todir="${basedir}/target/pal/WEB-INF/classes"/>
+		</j:if>
+	</j:forEach>
+</goal>
+
 
 <goal name="configure-webapp" description="set properties in web.xml, server-config.wsdd, etc">
 	<echo> grabbing schema from client.jar</echo>
