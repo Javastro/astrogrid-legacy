@@ -1,4 +1,4 @@
-/*$Id: CompositeFitsVotableParsingSolarMovieWorkflowTest.java,v 1.1 2004/08/26 21:50:43 eca Exp $
+/*$Id: CompositeFitsVotableParsingSolarMovieWorkflowTest.java,v 1.2 2004/09/07 12:57:23 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -73,8 +73,10 @@ public class CompositeFitsVotableParsingSolarMovieWorkflowTest extends SimpleFit
                 "parser = new XmlParser(); //create new parser \n" +
                 "nodes = parser.parseText(votable); //parse votable into node tree\n" +
                 "urls = nodes.depthFirst().findAll{it.name() == 'STREAM'}.collect{it.value()}.flatten(); // filter node tree on 'STREAM', project value\n" +
-                "movieStep = jes.getSteps().find {it.getName() == 'CallMakeMPEGFitsImages'}; // find next step in workflow\n" +
-                "inputs = movieStep.getTool().getInput(); // get to set of input parameters" +
+                "print(urls); // show what we've got\n" + 
+                "concatStep = jes.getSteps().find {it.getName() == 'concat-step'}; // find next step in workflow\n" +
+                "inputs = concatStep.getTool().getInput(); // get to set of input parameters\n" +
+                "inputs.clearParameter(); // clear what's there already \n" +
                 "urls.each { p = jes.newParameter(); p.setName('src'); p.setIndirect(true); p.setValue(it); inputs.addParameter(p);} // add a new parameter for each url\n"                
         );
         wf.getSequence().addActivity(sc);
@@ -112,6 +114,9 @@ public class CompositeFitsVotableParsingSolarMovieWorkflowTest extends SimpleFit
 
 /* 
 $Log: CompositeFitsVotableParsingSolarMovieWorkflowTest.java,v $
+Revision 1.2  2004/09/07 12:57:23  nw
+fixed little bug in embedded script - need to clear existing parameters first.
+
 Revision 1.1  2004/08/26 21:50:43  eca
 Integration test of CallMakeMPEGFitsImage based on Noel's concat test.
 

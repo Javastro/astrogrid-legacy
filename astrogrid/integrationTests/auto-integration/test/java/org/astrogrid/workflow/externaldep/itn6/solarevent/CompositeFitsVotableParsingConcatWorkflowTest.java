@@ -1,4 +1,4 @@
-/*$Id: CompositeFitsVotableParsingConcatWorkflowTest.java,v 1.4 2004/09/03 13:28:15 nw Exp $
+/*$Id: CompositeFitsVotableParsingConcatWorkflowTest.java,v 1.5 2004/09/07 12:57:23 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.VoSpaceClient;
+import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -68,6 +69,7 @@ public class CompositeFitsVotableParsingConcatWorkflowTest extends SimpleFitsWor
         // now the script that mangles the results.
         // not very sophisticated parsing here. - pity votable isn't so easy to parse.
         Script sc = new Script();
+
         sc.setBody(
                 "votable = source.Result; // access result of previous step\n" +
                 "parser = new XmlParser(); //create new parser \n" +
@@ -76,6 +78,7 @@ public class CompositeFitsVotableParsingConcatWorkflowTest extends SimpleFitsWor
                 "print(urls); // show what we've got\n" + 
                 "concatStep = jes.getSteps().find {it.getName() == 'concat-step'}; // find next step in workflow\n" +
                 "inputs = concatStep.getTool().getInput(); // get to set of input parameters\n" +
+                "inputs.clearParameter(); // clear what's there already \n" +
                 "urls.each { p = jes.newParameter(); p.setName('src'); p.setIndirect(true); p.setValue(it); inputs.addParameter(p);} // add a new parameter for each url\n"                
         );
         wf.getSequence().addActivity(sc);
@@ -112,6 +115,9 @@ public class CompositeFitsVotableParsingConcatWorkflowTest extends SimpleFitsWor
 
 /* 
 $Log: CompositeFitsVotableParsingConcatWorkflowTest.java,v $
+Revision 1.5  2004/09/07 12:57:23  nw
+fixed little bug in embedded script - need to clear existing parameters first.
+
 Revision 1.4  2004/09/03 13:28:15  nw
 fixed buglet.
 
