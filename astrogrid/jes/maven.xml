@@ -160,14 +160,12 @@
         <j:set var="maven.ui.banner.background" value="#FF0000" />
         <j:set var="maven.ui.banner.foreground" value="#000000" />
         <mkdir dir="${webapp.docs}" />
-        <attainGoal name="site:generate" />
-        <!-- site:generate contains too much. would prefer to do..
-        <attainGoal name="javadoc" />
-        <attainGoal name="maven-jxr-plugin:report" />
-        <attainGoal name="license" />
+        <!-- <attainGoal name="site:generate" /> -->
+        <attainGoal name="xdoc:generate-from-pom" />
+        <attainGoal name="javadoc:generate" />
+        <!--<attainGoal name="maven-jxr-plugin:report" /> - seems to fail at the moment. odd -->
         <attainGoal name="xdoc" />
-        but need to sort out a custom navigation first - otherwise we've got links to the reports nwe didn't generate -->
-
+        <!-- todo - sort out custom navigation bit -->
 
 </goal>
 
