@@ -1,4 +1,4 @@
-/*$Id: SQLUtils.java,v 1.3 2004/01/14 11:15:12 nw Exp $
+/*$Id: SQLUtils.java,v 1.4 2004/01/14 12:29:52 nw Exp $
  * Created on 07-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -53,6 +53,7 @@ public class SQLUtils {
       }
    }
    
+   /** @deprecated - less robust, doesn't escape entities in text. use {@link #toQueryBody} instead */  
    public static Element toQueryBodyOld(String sql) throws IOException {
       String docString = "<sql xmlns='" + SQL_XMLNS + "'>"
          + sql
@@ -74,6 +75,9 @@ public class SQLUtils {
 
 /* 
 $Log: SQLUtils.java,v $
+Revision 1.4  2004/01/14 12:29:52  nw
+improved documentation
+
 Revision 1.3  2004/01/14 11:15:12  nw
 changed constant to final.
 
