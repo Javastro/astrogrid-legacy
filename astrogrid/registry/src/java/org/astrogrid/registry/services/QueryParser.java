@@ -1,4 +1,4 @@
-/*
+  /*
  * Created on 25-Apr-2003
  *
  * To change this generated comment go to 
@@ -19,7 +19,6 @@ import java.sql.SQLException;
  */
 public class QueryParser
  {
- 	
 	static String nodeDetails = "";
 
 	public static String parseQuery (String query) throws SQLException, ClassNotFoundException {
@@ -69,9 +68,12 @@ public class QueryParser
 			catch (Exception e) {
 			  queryResponse = "";
 			}
-			query = "//service [" + query + "]";			
+			query = "//service [" + query + "]";		
 			xqlResponse = reg.xmlQuery(query);
 			queryResponse = xqlToXML(xqlResponse);	  		
+		}
+		else if (!(registrySource.equals("db") | registrySource.equals("xml"))){
+			queryResponse = "<queryResponse>" +registrySource + "</queryResponse>";
 		}
 	  }
 	  return queryResponse;
@@ -127,7 +129,7 @@ public class QueryParser
 					itemOp = "<";
 				}
 				response = response + "";
-				response = response + "(";
+				response = response + "(.//";
 				response = response + ((Element) nlSS.item(z)).getAttribute("item");
 				response = response + " "+ itemOp + " ";
 				response = response + "'"+((Element) nlSS.item(z)).getAttribute("value")+ "'";
@@ -142,7 +144,6 @@ public class QueryParser
 					selOp = "$or$";
 				}
 				if (((Element) nlSS.item(z)).getAttribute("op").equals("NOT")){
-					System.out.println("selection op equals NOT");
 					selOp = "$not$";
 				}
 				response = response + " "+ selOp + " ";
@@ -172,10 +173,10 @@ public class QueryParser
 			doc2 = builder2.parse(inputSource);
 		}
 		catch (ParserConfigurationException e) {
-			System.err.println(e);
+			xmlResponse = e.toString();
 		}
 		catch (Exception e){
-			System.out.println("oops!: " + e);
+			xmlResponse = e.toString();
 		}
 		try{
 			Element docElement2 = doc2.getDocumentElement();
@@ -201,7 +202,7 @@ public class QueryParser
 			}
 		}
 		catch (Exception e) {
-		  xmlResponse = "";
+		  xmlResponse = e.toString();
 		}
 		xmlResponse = "<queryResponse>"+ xmlResponse + "</queryResponse>";
 		return xmlResponse;
@@ -252,18 +253,17 @@ public class QueryParser
  		parameterDoc = parameterBuilder.parse("http://msslxy.mssl.ucl.ac.uk:8080/org/astrogrid/registry/qpParameters.xml");
  	}
  	catch (ParserConfigurationException e) {
- 		System.err.println(e);
+ 		registrySource = e.toString();
  	}
  	catch (Exception e){
- 		System.out.println("oops!: " + e);
+		registrySource = e.toString();
  	}
  	Element parameterDocElement = parameterDoc.getDocumentElement();
  	NodeList parameterNL = parameterDocElement.getElementsByTagName("registrySource");
     registrySource = parameterNL.item(0).getFirstChild().getNodeValue();
     
     if (!(registrySource.equals("db") | registrySource.equals("xml"))){
-    	System.out.println("Invalid registry source: must be database or xml file.");
-    	registrySource = null;
+    	registrySource = "Invalid registry source: must be database or xml file.";
     } 
 	return registrySource;
  }
