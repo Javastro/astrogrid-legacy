@@ -1,4 +1,4 @@
-/*$Id: AxisDataService05QueryTest.java,v 1.2 2004/10/06 21:12:17 mch Exp $
+/*$Id: AxisDataService05QueryTest.java,v 1.3 2004/10/13 01:27:24 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,10 +30,6 @@ public class AxisDataService05QueryTest extends ServerTestCase {
 
    protected AxisDataService_v05 server;
 
-   protected Query query1;
-   protected Query query2;
-   protected Query query3;
-   
    public AxisDataService05QueryTest(String arg0) {
         super(arg0);
     }
@@ -44,16 +40,14 @@ public class AxisDataService05QueryTest extends ServerTestCase {
        SampleStarsPlugin.initConfig();
        
        server = new AxisDataService_v05();
-       
-       query1 = AdqlQueryMaker.makeQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-1.xml"));
-
-       query2 = AdqlQueryMaker.makeQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-3.xml"));
-       
-//       query3 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-3.xml"));
     }
 
     public void testDoOneShotAdql() throws Exception {
        
+       Query query1 = AdqlQueryMaker.makeQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-1.xml"));
+//       Query query2 = AdqlQueryMaker.makeQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-3.xml"));
+       
+
         String results = server.askAdqlQuery(Query2Adql074.makeAdql(query1), "VOTABLE");
         Document doc = DomHelper.newDocument(results);
         assertIsVotableResultsResponse(doc);
@@ -69,6 +63,8 @@ public class AxisDataService05QueryTest extends ServerTestCase {
     
     public void testAbort() throws Exception {
        
+       Query query1 = AdqlQueryMaker.makeQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-1.xml"));
+
        String qid = server.submitAdqlQuery(Query2Adql074.makeAdql(query1), "astrogrid:store:myspace:http://wibble/wobble#some/path", "VOTABLE");
        assertNotNull(qid);
        server.abortQuery(qid);
@@ -102,6 +98,9 @@ public class AxisDataService05QueryTest extends ServerTestCase {
 
 /*
 $Log: AxisDataService05QueryTest.java,v $
+Revision 1.3  2004/10/13 01:27:24  mch
+removed query createion in setup (which sometimes crashed)
+
 Revision 1.2  2004/10/06 21:12:17  mch
 Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 
