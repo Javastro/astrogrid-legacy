@@ -119,12 +119,13 @@ public class Angle
 
    /**
     * Returns hours mins secs, with secs inc millisecs
-    */
+    *
    public String toHrsMinSec()
    {
-      return padZero(getDegrees())+" "+padZero(getMins())+" "+padZero(getSecs());
+      //divide by 15
+      return padZero(asDegrees()/15)
    }
-
+    */
 
    private String padZero(int i)
    {
