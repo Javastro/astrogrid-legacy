@@ -6,7 +6,7 @@
    <menu name="Install">
       <item name="INSTALL" href="INSTALL.html" />
       <item name="RELEASE" href="RELEASE.html" />
-      <item name="Sample Configuration" href="AstroGridConfig.properties" />
+      <item name="Sample Configuration" href="WEB-INF/classes/default.properties" />
       <item name="Installation Test" href="self-test.html" />
    </menu>
    <menu name="Query">

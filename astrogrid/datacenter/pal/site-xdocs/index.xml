@@ -17,8 +17,8 @@ datacenter interface to the publisher's data.
 <section name="Install Notes">
 <p>
 If you have just installed PAL, then you can now run some
-<a href="self-test.html">self-tests</a> to run diagnostics, or go the
-read how to <a href="configuration.html">configure your datacenter</a>
+<a href="self-test.html">self-tests</a> to run diagnostics, or
+read how to <a href="configuration.html">configure</a> your datacenter.
 </p>
 </section>
 </body>

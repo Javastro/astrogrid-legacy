@@ -14,17 +14,19 @@ components.</p>
 'default.properties' file in its context's WEB-INF/classes directory.  This file
 is overwritten whenever you upgrade PAL, so it is useful as a template but we
 do not recommend you edit it directly.</p>
-<p>Instead, you can create a new file (or edit the existing one) 'astrogrid.properties'
+<p>Instead, you can create a new file (or edit the existing one if you have other
+Astrogrid components already installed) 'astrogrid.properties'
 and make sure this is in your classpath; a suitable place on Tomcat might be
 the common/classes directory so it is not overwritten on updates.</p>
 <p>If you want to place your configuration file somewhere specific, do so and
 then set the environment variable 'astrogrid.config.filename' to the appropriate path and
-filename.  You can use environment variables in this variable, eg ${catalina.home}/conf/datacenter.properties
+filename, or the environment variable 'astrogrid.config.url' to the appropriate URL.
+  You can use environment variables in this variable, eg ${catalina.home}/conf/datacenter.properties
 will cause the datacenter to look in tomcat's configuration directory if you are running tomcat.</p>
 <p>If you have several datacenters it will be necessary to do this, and set the
 environment variable under each context to a different properties file.</p>
 <p>If you are using Tomcat, you can change environment variables by editing the 'Environment Entries'
-as a Tomcat Administrator.</p>
+as a Tomcat Administrator, or editing the server.xml file to define them.</p>
 <p>You will need to restart the application after any change to a configuration file.</p>
 
 </section>
