@@ -1,5 +1,5 @@
 /*
- * $Id: DummySqlPlugin.java,v 1.8 2004/08/06 12:04:19 mch Exp $
+ * $Id: DummySqlPlugin.java,v 1.9 2004/08/18 18:44:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -47,7 +47,7 @@ public class DummySqlPlugin extends JdbcPlugin
 
       SimpleConfig.setProperty(SqlMaker.CONE_SEARCH_RA_COL_KEY, "RA");
       SimpleConfig.setProperty(SqlMaker.CONE_SEARCH_DEC_COL_KEY,"DEC");
-      SimpleConfig.setProperty(SqlMaker.CONE_SEARCH_TABLE_KEY,  "SampleStars");
+      SimpleConfig.setProperty(SqlMaker.CONE_SEARCH_TABLE_KEY,  "ssIndex");
       
       SimpleConfig.setProperty(SqlMaker.DB_TRIGFUNCS_IN_RADIANS, "True");
 
@@ -98,8 +98,14 @@ public class DummySqlPlugin extends JdbcPlugin
          connection.createStatement().execute(
             "CREATE TABLE SampleStars (Id INTEGER IDENTITY,  Name VARCHAR(30), Ra DOUBLE,  Dec DOUBLE,  Mag DOUBLE)  "
          );
+
+         //create table
+         connection.createStatement().execute(
+            "CREATE INDEX ssIndex ON SampleStars (Ra, Dec)  "
+         );
          
-         //add stars
+         
+         //add some stars
          for (int i=0;i<20;i++) {
             connection.createStatement().execute(
                "INSERT INTO SampleStars VALUES ("+i+", 'A star', "+(30+i*2)+", "+(30-i*2)+", "+i+")"
@@ -125,13 +131,14 @@ public class DummySqlPlugin extends JdbcPlugin
          
          //add even spread (in coordinate space) of background stars
          for (int ra=0;ra<360;ra++) {
-            StringBuffer sql = new StringBuffer("INSERT INTO SampleStars VALUES ");
+//            StringBuffer sql = new StringBuffer("INSERT INTO SampleStars VALUES ");
             for (int dec=-90;dec<90;dec++) {
-               sql.append(" ("+id+", 'Background', "+ra+", "+dec+", 20) "); id++;
+//               sql.append(" ("+id+", 'Background', "+ra+", "+dec+", 20) "); id++;
+               connection.createStatement().execute("INSERT INTO SampleStars VALUES  ("+id+", 'Background', "+ra+", "+dec+", 20)"); id++;
             }
-            connection.createStatement().execute(sql.toString());
+//           connection.createStatement().execute(sql.toString());
+            System.out.print(".");
          }
-         
          
          //populate galaxies
          //create table
@@ -139,7 +146,7 @@ public class DummySqlPlugin extends JdbcPlugin
             "CREATE TABLE SampleGalaxies (Id INTEGER IDENTITY,  Ra DOUBLE,  Dec DOUBLE,  Shape VARCHAR(20)) "
          );
          
-         //add galaxies
+         //add individual galaxies
          String[] shapes = new String[] {"ELLIPTICAL", "SPIRAL", "IRREGULAR" };
          for (int i=0;i<20;i++) {
             
@@ -157,6 +164,7 @@ public class DummySqlPlugin extends JdbcPlugin
 
       populated = true;
       
+      log.info("...database populated"); //so that we can mark how long it took
       //check metadata
       /*
       try {
@@ -191,6 +199,9 @@ public class DummySqlPlugin extends JdbcPlugin
 }
    /*
    $Log: DummySqlPlugin.java,v $
+   Revision 1.9  2004/08/18 18:44:12  mch
+   Created metadata plugin service and added helper methods
+
    Revision 1.8  2004/08/06 12:04:19  mch
    Added unit description to conesearch columns to cope with ESO milliarcseconds (& others in future)
 

@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.7 2004/08/17 20:19:36 mch Exp $
+/*$Id: DataServiceTest.java,v 1.8 2004/08/18 18:44:12 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,8 +16,10 @@ import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.metadata.MetadataServer;
 import org.astrogrid.datacenter.TargetIndicator;
+import org.astrogrid.datacenter.metadata.FileServer;
+import org.astrogrid.datacenter.metadata.MetadataPlugin;
+import org.astrogrid.datacenter.metadata.MetadataServer;
 import org.astrogrid.datacenter.queriers.sql.SqlPluginTest;
 import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.query.AdqlQuery;
@@ -57,27 +59,35 @@ public class DataServiceTest extends ServerTestCase {
        query3 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.5-3.xml"));
     }
 
-    public void testGetMetatdata() throws Throwable{
-        MetadataServer server = new MetadataServer();
+    public void testMetatdataPlugin() throws Throwable{
+       
+       //check plugin works
+       MetadataPlugin plugin = MetadataServer.createPlugin();
+       
+       assertNotNull(plugin);
+    }
+    
+    public void testMetatdataFileServer() throws Throwable{
 
         //get non-existent file
-        SimpleConfig.setProperty(MetadataServer.METADATA_FILE_LOC_KEY, "doesntexist");
+        SimpleConfig.setProperty(FileServer.METADATA_FILE_LOC_KEY, "doesntexist");
         try {
-           Document metadata = server.getMetadata();
+           Document metadata = MetadataServer.getMetadata();
            fail("Should have complained no metadata file");
         } catch (FileNotFoundException fnfe) {
             //ignore, supposed to happen
         }
-        SimpleConfig.setProperty(MetadataServer.METADATA_FILE_LOC_KEY, null);
+        SimpleConfig.setProperty(FileServer.METADATA_FILE_LOC_KEY, null);
 
-        SimpleConfig.setProperty(MetadataServer.METADATA_URL_LOC_KEY, this.getClass().getResource("v05/metadata.xml").toString());
-        Document metadata = server.getMetadata();
+        SimpleConfig.setProperty(FileServer.METADATA_URL_LOC_KEY, this.getClass().getResource("v05/metadata.xml").toString());
+        Document metadata = MetadataServer.getMetadata();
         assertNotNull(metadata);
         assertIsMetadata(metadata);
 
-         SimpleConfig.setProperty(MetadataServer.METADATA_FILE_LOC_KEY, "org/astrogrid/datacenter/service/v05/metadata.xml");
-         SimpleConfig.setProperty(MetadataServer.METADATA_URL_LOC_KEY, null);
-         assertNotNull(MetadataServer.getMetadataUrl().openStream());
+         SimpleConfig.setProperty(FileServer.METADATA_FILE_LOC_KEY, "org/astrogrid/datacenter/service/v05/metadata.xml");
+         SimpleConfig.setProperty(FileServer.METADATA_URL_LOC_KEY, null);
+        FileServer plugin = (FileServer) MetadataServer.createPlugin();
+         assertNotNull(plugin.getMetadata());
      }
 
     public void testConeSearch() throws Throwable {
@@ -149,6 +159,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.8  2004/08/18 18:44:12  mch
+Created metadata plugin service and added helper methods
+
 Revision 1.7  2004/08/17 20:19:36  mch
 Moved TargetIndicator to client
 

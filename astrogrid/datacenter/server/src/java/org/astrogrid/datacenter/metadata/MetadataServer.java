@@ -1,5 +1,5 @@
 /*
- * $Id: MetadataServer.java,v 1.7 2004/08/11 14:57:21 mch Exp $
+ * $Id: MetadataServer.java,v 1.8 2004/08/18 18:44:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,24 +7,16 @@
 package org.astrogrid.datacenter.metadata;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.rmi.RemoteException;
-import javax.xml.parsers.ParserConfigurationException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.Config;
-import org.astrogrid.config.ConfigException;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.axisdataserver.types.Language;
 import org.astrogrid.datacenter.delegate.DatacenterException;
-import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * Serves the service's metadata file.  See package documentation.
@@ -35,15 +27,54 @@ import org.xml.sax.SAXException;
 public class MetadataServer
 {
    protected static Log log = LogFactory.getLog(MetadataServer.class);
-   
-   /** Configuration key to where the metadata file is located */
-   public static final String METADATA_FILE_LOC_KEY = "datacenter.metadata.filename";
-   
-   /** Configuration key to where the metadata file is located */
-   public static final String METADATA_URL_LOC_KEY = "datacenter.metadata.url";
 
-   /** Default metadata filename */
-   public static final String METADATA_DEFAULT_FILENAME = "datacenter.metadata.xml";
+   public final static String PLUGIN_KEY = "datacenter.metadata.plugin";
+   
+   /** Instantiates the class with the given name.  This is useful for things
+    * such as 'plugins', where a class name might be given in a configuration file.
+    * Rather messily throws Throwable because anything might have
+    * gone wrong in the constructor.
+    */
+   public static MetadataPlugin createPlugin() {
+      
+      String pluginClassName = SimpleConfig.getSingleton().getString("datacenter.metadata.plugin",org.astrogrid.datacenter.metadata.FileServer.class.getName());
+      Object plugin = null;
+      
+      try {
+         log.debug("Creating MetadataPlugin '"+pluginClassName+"'");
+         
+         Class qClass = Class.forName(pluginClassName);
+
+         /* NWW - interesting bug here.
+          original code used class.newInstance(); this method doesn't declare it throws InvocationTargetException,
+          however, this exception _is_ thrown if an exception is thrown by the constructor (as is often the case at the moment)
+          worse, as InvocatioinTargetException is a checked exception, the compiler rejects code with a catch clause for
+          invocationTargetExcetpion - as it thinks it cannot be thrown.
+          this means the exception boils out of the code, and is unstoppable - dodgy
+          work-around - use the equivalent methods on java.lang.reflect.Constructor - which do throw the correct exceptions */
+
+         Constructor constr = qClass.getConstructor(new Class[] { });
+         plugin = constr.newInstance(new Object[] { } );
+         
+      }
+      catch (ClassNotFoundException cnfe) {
+         throw new RuntimeException("Could not find metadata plugin class "+pluginClassName);
+      }
+      catch (NoSuchMethodException nsme) {
+         throw new RuntimeException("Bad metadata plugin specified ("+pluginClassName+") - has no zero-argument constructor");
+      }
+      catch (Throwable th) {
+         throw new RuntimeException("Bad metadata plugin specified ("+pluginClassName+")",th);
+      }
+      
+      if (!(plugin instanceof MetadataPlugin)) {
+         throw new RuntimeException("Bad metadata plugin specified ("+pluginClassName+") - does not implement MetadataPlugin");
+      }
+      
+      return (MetadataPlugin) plugin;
+   
+   }
+   
    /**
     * Returns the VODescription element of the metadata
     * If there is more than one, logs an error but does not fail.
@@ -63,65 +94,13 @@ public class MetadataServer
       return (Element) nodes.item(0);
    }
    
-   /** Returns a stream to the metadata file */
-   public static URL getMetadataUrl() throws IOException {
-
-      String filename = SimpleConfig.getSingleton().getString(METADATA_FILE_LOC_KEY, null);
-      URL url = SimpleConfig.getSingleton().getUrl(METADATA_URL_LOC_KEY, null);
-      
-      if ((filename != null) && (url != null)) {
-         throw new ConfigException("Server not configured properly: both file "+filename+" and url "+url+" given in config ("+SimpleConfig.loadedFrom()+") to locate metadata file.  Specify only one.");
-      }
-
-      if ((filename == null) && (url == null)) {
-         log.warn("Server not configured properly: neither file "+METADATA_FILE_LOC_KEY+" nor url "+METADATA_URL_LOC_KEY+" are given in config ("+SimpleConfig.loadedFrom()+") to locate metadata file. Looking in classpath for "+METADATA_DEFAULT_FILENAME);
-         filename = METADATA_DEFAULT_FILENAME;
-      }
-
-      //file given - get a url to it
-      if (filename != null) {
-         url = Config.resolveFilename(filename);
-
-         if (url == null) {
-            throw new IOException("metadata file at '"+filename+"' not found");
-         }
-      }
-      
-      log.info("Returning metadata from "+url);
-      return url;
-   }
-   
    
    /**
     * Returns the whole metadata file as a DOM document
     */
    public static Document getMetadata() throws IOException
    {
-      InputStream is = getMetadataUrl().openStream();
-      
-      try
-      {
-         return DomHelper.newDocument(is);
-      }
-      catch (ParserConfigurationException e)
-      {
-         log.error("XML Parser not configured properly",e);
-         throw new RuntimeException("Server not configured properly",e);
-      }
-      catch (SAXException e)
-      {
-         log.error("Invalid metadata",e);
-         throw new RuntimeException("Server not configured properly - invalid metadata",e);
-      }
-      finally {
-         if (is != null) {
-            try {
-               is.close();
-            } catch (IOException e) {
-               // not bothered
-            }
-         }
-      }
+      return createPlugin().getMetadata();
    }
    
    
@@ -168,6 +147,29 @@ public class MetadataServer
    
    
    /** Returns a list of the columns for the given table */
+   public static String[] getColumns(String tableName) throws IOException {
+      NodeList tables = getMetadata().getElementsByTagName("Table");
+
+      Element tableElement = null;
+      for (int t=0;t<tables.getLength();t++) {
+         if (((Element) tables.item(t)).getAttribute("name").equals(tableName)) {
+            tableElement = (Element) tables.item(t);
+         }
+      }
+      
+      if (tableElement == null) {
+         throw new IllegalArgumentException("No such table '"+tableName+"' in metadata");
+      }
+
+      NodeList colNodes = tableElement.getElementsByTagName("Column");
+      
+      String[] columns = new String[colNodes.getLength()];
+      for (int t=0;t<columns.length;t++) {
+         columns[t] = ((Element) colNodes.item(t)).getAttribute("name");
+      }
+      return columns;
+      
+   }
    
    /** Returns the units of the given table/column */
    public static String getUnits(String tableName, String columnName) throws IOException {

@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.30 2004/08/04 09:27:03 mch Exp $
+ * $Id: SqlResults.java,v 1.31 2004/08/18 18:44:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -110,7 +110,7 @@ public class SqlResults extends QueryResults
 //             }
             printOut.println("<FIELD ID='"+tablename+metadata.getColumnName(i)+"' "
                                 +" name='"+metadata.getColumnLabel(i)+"' "
-                                +JdbcPlugin.getVotableType(sqlResults.getMetaData().getColumnType(i))
+                                +JdbcPlugin.getVotableTypeAttr(sqlResults.getMetaData().getColumnType(i))
                                 +" ucd='"+getUcdFor(metadata.getColumnName(i))+"' "
                                 +"/>");
          }
@@ -235,6 +235,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.31  2004/08/18 18:44:12  mch
+ Created metadata plugin service and added helper methods
+
  Revision 1.30  2004/08/04 09:27:03  mch
  Added metadata, converted sql data type to VOTable data type
 

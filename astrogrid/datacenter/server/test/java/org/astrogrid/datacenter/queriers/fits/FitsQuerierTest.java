@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.16 2004/08/17 20:19:36 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.17 2004/08/18 18:44:12 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -41,16 +41,20 @@ public class FitsQuerierTest extends TestCase
       out.write(index.getBytes());
 
       SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY, FitsQuerierPlugin.class.getName());
-      
-      
    }
 
+   public void testPluginClass() throws IOException {
+      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(300, 60, 12), new TargetIndicator("astrogrid:store:null"), QueryResults.FORMAT_VOTABLE);
+      
+      assertTrue("Plugin not FitsQuerierPlugin", querier.getPlugin() instanceof FitsQuerierPlugin);
+   }
+   
    public void testCone() throws IOException
    {
       StringWriter sw = new StringWriter();
       Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(300, 60, 12), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
       
-      assertTrue(querier.getPlugin() instanceof FitsQuerierPlugin);
+      assertTrue("Plugin not FitsQuerierPlugin", querier.getPlugin() instanceof FitsQuerierPlugin);
       
       querier.ask();
       
@@ -79,6 +83,9 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.17  2004/08/18 18:44:12  mch
+ Created metadata plugin service and added helper methods
+
  Revision 1.16  2004/08/17 20:19:36  mch
  Moved TargetIndicator to client
 

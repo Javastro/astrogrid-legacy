@@ -1,5 +1,5 @@
 /*
- * $Id: SoapDataServer.java,v 1.3 2004/03/12 04:45:26 mch Exp $
+ * $Id: SoapDataServer.java,v 1.4 2004/08/18 18:44:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,6 +20,7 @@ import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.metadata.MetadataServer;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.io.Piper;
+import org.astrogrid.util.DomHelper;
 
 /**
  * Provides methods suitable for a SOAP implementation of the Datacenter.  This
@@ -46,9 +47,7 @@ public abstract class SoapDataServer    {
     */
    public String getMetadata() throws SOAPFaultException {
       try  {
-         StringWriter sw = new StringWriter();
-         Piper.pipe(new InputStreamReader(MetadataServer.getMetadataUrl().openStream()), sw);
-         return sw.toString();
+         return DomHelper.DocumentToString(MetadataServer.getMetadata());
       }
       catch (Throwable e)  {
          throw makeSoapFault("Server", "Could not access metadata", e);
@@ -155,6 +154,9 @@ public abstract class SoapDataServer    {
 
 /*
 $Log: SoapDataServer.java,v $
+Revision 1.4  2004/08/18 18:44:12  mch
+Created metadata plugin service and added helper methods
+
 Revision 1.3  2004/03/12 04:45:26  mch
 It05 MCH Refactor
 

@@ -1,10 +1,10 @@
 /*
- * $Id: MetadataGenerator.java,v 1.2 2004/08/12 15:00:13 mch Exp $
+ * $Id: MetadataGenerator.java,v 1.1 2004/08/18 18:44:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.datacenter.admin;
+package org.astrogrid.datacenter.metadata;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;

@@ -1,4 +1,4 @@
-/*$Id: AxisDataService05QueryTest.java,v 1.2 2004/08/02 14:59:43 mch Exp $
+/*$Id: AxisDataService05QueryTest.java,v 1.3 2004/08/18 18:44:12 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,24 +10,16 @@
 **/
 package org.astrogrid.datacenter.service.v05;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import org.apache.axis.AxisFault;
-import org.apache.axis.types.URI;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.metadata.MetadataServer;
-import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.QuerierListener;
+import org.astrogrid.datacenter.metadata.FileServer;
 import org.astrogrid.datacenter.queriers.sql.SqlPluginTest;
 import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.util.DomHelper;
-import org.astrogrid.util.Workspace;
 import org.w3c.dom.Document;
 
 /** Exercises the It4.1 AxisDataServices interface
@@ -67,7 +59,7 @@ public class AxisDataService05QueryTest extends ServerTestCase {
     }
     
     public void testGetMetadata() throws Exception {
-       SimpleConfig.setProperty(MetadataServer.METADATA_URL_LOC_KEY, ""+this.getClass().getResource("metadata.xml"));
+       SimpleConfig.setProperty(FileServer.METADATA_URL_LOC_KEY, ""+this.getClass().getResource("metadata.xml"));
         String result = server.getMetadata();
         assertNotNull(result);
         Document doc = DomHelper.newDocument(result);
@@ -109,6 +101,9 @@ public class AxisDataService05QueryTest extends ServerTestCase {
 
 /*
 $Log: AxisDataService05QueryTest.java,v $
+Revision 1.3  2004/08/18 18:44:12  mch
+Created metadata plugin service and added helper methods
+
 Revision 1.2  2004/08/02 14:59:43  mch
 Fix to have valid Agsl
 

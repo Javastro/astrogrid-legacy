@@ -1,27 +1,28 @@
 /*
- * $Id: AxisDataServer.java,v 1.42 2004/08/17 20:19:36 mch Exp $
+ * $Id: AxisDataServer.java,v 1.43 2004/08/18 18:44:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
 
-import java.io.*;
-
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import org.apache.axis.AxisEngine;
 import org.apache.axis.AxisFault;
 import org.apache.axis.server.AxisServer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
+import org.astrogrid.datacenter.TargetIndicator;
 import org.astrogrid.datacenter.metadata.MetadataServer;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
-import org.astrogrid.datacenter.TargetIndicator;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.io.Piper;
 import org.astrogrid.store.Agsl;
+import org.astrogrid.util.DomHelper;
 
 /**
  * A class for serving data through an Axis webservice implementation.  It is
@@ -96,11 +97,7 @@ public abstract class AxisDataServer  {
     */
    public String getMetadata() throws AxisFault {
       try  {
-         StringWriter sw = new StringWriter();
-         InputStream in = MetadataServer.getMetadataUrl().openStream();
-         if (in == null) throw new FileNotFoundException("Metadata file at "+MetadataServer.getMetadataUrl()+" missing");
-         Piper.pipe(new InputStreamReader(in), sw);
-         return sw.toString();
+         return DomHelper.DocumentToString(MetadataServer.getMetadata());
       }
       catch (Throwable e)  {
          throw makeFault(SERVERFAULT, "Could not access metadata", e);
@@ -174,6 +171,9 @@ public abstract class AxisDataServer  {
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.43  2004/08/18 18:44:12  mch
+Created metadata plugin service and added helper methods
+
 Revision 1.42  2004/08/17 20:19:36  mch
 Moved TargetIndicator to client
 

@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.18 2004/08/13 08:57:21 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.19 2004/08/18 18:44:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,6 +11,7 @@ import java.sql.*;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.util.StringTokenizer;
 import javax.xml.parsers.ParserConfigurationException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
@@ -213,7 +214,7 @@ public class JdbcPlugin extends QuerierPlugin  {
          StringWriter sw = new StringWriter();
          XmlPrinter xw = new XmlPrinter(sw);
 
-         XmlTagPrinter metaTag = xw.newTag("MetaTables");
+         XmlTagPrinter metaTag = xw.newTag("RdbmsMetadata");
 
          /** Get general info */
          String name = metadata.getDatabaseProductName();
@@ -228,8 +229,18 @@ public class JdbcPlugin extends QuerierPlugin  {
          metaTag.writeTag("Version", version);
          metaTag.writeTag("Driver", driver);
          metaTag.writeTag("Catalog", cat);
-         metaTag.writeTag("Functions", funcs);
-         
+
+         XmlTagPrinter funcTag = metaTag.newTag("Functions");
+         StringTokenizer tokenizer = new StringTokenizer(funcs,",");
+         while (tokenizer.hasMoreTokens()) {
+            funcTag.writeTag("Function", tokenizer.nextToken());
+         }
+         if (SimpleConfig.getSingleton().getBoolean("datacenter.implements.circle",false)) {
+            funcTag.writeTag("Function", "CIRCLE");
+         }
+         if (SimpleConfig.getSingleton().getBoolean("datacenter.implements.xmatch",false)) {
+            funcTag.writeTag("Function", "XMATCH");
+         }
          
          /*
          ResultSet schemas = metadata.getSchemas();
