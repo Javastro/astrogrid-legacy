@@ -19,13 +19,23 @@ import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 
 import org.astrogrid.workflow.beans.v1.AbstractActivity;
 import org.astrogrid.workflow.beans.v1.ActivityContainer;
-import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.Catch;
+import org.astrogrid.workflow.beans.v1.Else;
 import org.astrogrid.workflow.beans.v1.Flow;
+import org.astrogrid.workflow.beans.v1.For;
+import org.astrogrid.workflow.beans.v1.If;
+import org.astrogrid.workflow.beans.v1.Parfor;
 import org.astrogrid.workflow.beans.v1.Sequence;
-import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Script;
+import org.astrogrid.workflow.beans.v1.Scope;
+import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Then;
 import org.astrogrid.workflow.beans.v1.Tool;
-import org.astrogrid.workflow.beans.v1.types.JoinType;
+import org.astrogrid.workflow.beans.v1.Try;
+import org.astrogrid.workflow.beans.v1.Unset;
+import org.astrogrid.workflow.beans.v1.While;
+import org.astrogrid.workflow.beans.v1.Workflow;
 
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.beans.v1.Account;
@@ -62,6 +72,8 @@ import org.apache.cocoon.environment.Session;
 import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.SourceResolver;
 import org.apache.cocoon.environment.ObjectModelHelper;
+
+import com.sun.rsasign.s;
 
 
 /**
@@ -148,23 +160,35 @@ public class DesignAction extends AbstractAction {
         ORIG_PARAM_VALUE_PARAMETER = "original-param-value",
         IVORN_VALUE_PARAMETER = "ivorn-value",        
         DIRECTION_PARAMETER = "direction",
+	    SET_VALUE_PARAMETER = "set-value",
+	    SET_VAR_PARAMETER = "set-var",
+	    UNSET_VAR_PARAMETER = "unset-var",
 	    STEP_NAME_PARAMETER = "step_name",
+	    STEP_VAR_PARAMETER = "step_var",
 	    STEP_DESCRIPTION_PARAMETER = "step_description",
 	    SCRIPT_DESCRIPTION_PARAMETER = "script_description",
 	    SCRIPT_BODY_PARAMETER = "script_body",
-	    PARAM_INDIRECT = "param_indirect";
+	    PARAM_INDIRECT = "param_indirect",
+	    FOR_ITEMS_PARAMETER = "for_item",
+	    FOR_VAR_PARAMETER = "for_get",
+	    IF_TEST_PARAMETER = "if_test",
+	    WHILE_TEST_PARAMETER = "while_test",
+	    COPY_ACTIVITY_KEY = "copy_activity_key";
         
     public static final String
-        TOOLS_CACHE = "tools-cache-";
+        TOOLS_CACHE = "tools-cache-",
+        WORKFLOW_SUBMIT_MESSAGE = "workflow_submit_message";
         
     public static final String
         FLOW_KEY_PARAMETER = "flow-key",
         SEQUENCE_KEY_PARAMETER = "sequence-key",
         ACTIVITY_INDEX_PARAMETER = "activity_index_key",
 	    ACTIVITY_KEY_PARAMETER = "activity_key",
+	    INSERTED_ACTIVITY_KEY_PARAMETER = "inserted_activity_key",
 	    PARENT_ACTIVITY_KEY_PARAMETER = "parent_activity_key",	    
 	    ACTIVITY_ORDER_PARAMETER = "activity_index_order",
-	    ACTIVITY_TYPE_PARAMETER = "activity_type";
+	    ACTIVITY_TYPE_PARAMETER = "activity_type",
+	    INSERT_ACTIVITY_TYPE_PARAMETER = "insert_activity_type";
         
     public static final String
         QUERY_NAME_PARAMETER = "query-name",
@@ -182,27 +206,29 @@ public class DesignAction extends AbstractAction {
         ACTION_READ_TOOL_LIST = "read-tool-list",        
 		ACTION_COPY_WORKFLOW = "copy-workflow",
         ACTION_CHOOSE_QUERY = "choose-query",
-        ACTION_EDIT_JOINCONDITION = "edit-join-condition",
-		ACTION_ADD_NAME_DESCRIPTION = "add-name-description",
+		ACTION_ADD_NAME_DESCRIPTION = "update workflow details",
         ACTION_READ_QUERY = "read-query",
         ACTION_READ_QUERY_LIST = "read-query-list",
 	    ACTION_CREATE_TOOL = "create-tool-for-step",
-        ACTION_INSERT_TOOL_INTO_STEP = "insert-task-into-step",
+        ACTION_INSERT_TOOL_INTO_STEP = "insert-tool-into-step",
         ACTION_INSERT_STEP = "insert-step",
-        ACTION_INSERT_SEQUENCE = "insert-sequence", 
-        ACTION_INSERT_FLOW = "insert-flow",
 	    ACTION_INSERT_SCRIPT = "insert-script",
-	    ACTION_INSERT_SCRIPT_DESCRIPTION = "insert-script-description", 
-	    ACTION_INSERT_SCRIPT_BODY = "insert-script-body",       
+	    ACTION_INSERT_SCRIPT_DETAILS = "update script details",
+	    ACTION_INSERT_ACTIVITY = "insert_activity",
+	    ACTION_INSERT_FOR_DETAILS = "update for loop details",
+	    ACTION_INSERT_IF_DETAILS = "update if details",
+	    ACTION_INSERT_WHILE_DETAIL = "update while loop details",
+	    ACTION_INSERT_PARFOR_DETAILS = "update parallel for loop details",	
+	    ACTION_INSERT_SET_DETAILS = "update set details", 
+	    ACTION_INSERT_UNSET_DETAILS = "update unset details",   
+	    ACTION_INSERT_STEP_DETAILS = "update step details",	         
 		ACTION_INSERT_PARAMETER = "insert-parameter-value",
 	    ACTION_INSERT_INPUT_PARAMETER_INTO_TOOL = "insert-input-parameter-into-tool",
 	    ACTION_INSERT_OUTPUT_PARAMETER_INTO_TOOL = "insert-output-parameter-into-tool",
 	    ACTION_INSERT_INPUT_PARAMETER = "insert-input-value",
 	    ACTION_INSERT_OUTPUT_PARAMETER = "insert-output-value",
 	    ACTION_RESET_PARAMETER = "reset-parameter",
-	    ACTION_REMOVE_TOOL_FROM_STEP = "remove-tool-from-step",
-	    ACTION_ADD_STEP_DESCRIPTION = "add-step-description",
-	    ACTION_ADD_STEP_NAME = "add-step-name", 	    
+	    ACTION_REMOVE_TOOL_FROM_STEP = "remove-tool-from-step", 	    
         ACTION_READ_LISTS = "read-lists",
         ACTION_REMOVE_WORKFLOW_FROM_SESSION = "remove-workflow-from-session",
         ACTION_RESET_WORKFLOW = "reset-workflow",
@@ -365,9 +391,6 @@ public class DesignAction extends AbstractAction {
                 else if( action.equals( ACTION_SUBMIT_WORKFLOW ) ) {
                     this.submitWorkflow(); 
                 }
-                else if( action.equals( ACTION_EDIT_JOINCONDITION ) ) {
-                    this.editJoinCondition(); 
-                }
 				else if( action.equals( ACTION_ADD_NAME_DESCRIPTION ) ) {
 					this.addWorkflowNameAndDescription(); 
 				}			
@@ -376,10 +399,7 @@ public class DesignAction extends AbstractAction {
                 }
 				else if( action.equals( ACTION_READ_LISTS ) ) {
 					this.readLists(); 
-				}			
-				else if( action.equals( ACTION_INSERT_TOOL_INTO_STEP ) ) {
-					this.insertToolIntoStep();       													
-			    }
+				}
 			    else if( action.equals( ACTION_INSERT_INPUT_PARAMETER ) ) {
 					this.insertInputValue();         	
 				}                
@@ -398,37 +418,40 @@ public class DesignAction extends AbstractAction {
 				else if( action.equals( ACTION_CREATE_TOOL ) ) {
 					this.createTool();                     								
 				}
-				else if( action.equals( ACTION_ADD_STEP_DESCRIPTION )){
-					this.insertStepDescription();  
-				}
-				else if( action.equals( ACTION_ADD_STEP_NAME )){
-					this.insertStepName();  
-				}				
+				else if( action.equals( ACTION_INSERT_STEP_DETAILS )){
+					this.insertStepDetails();  
+				}														
 				else if( action.equals( ACTION_REMOVE_WORKFLOW_FROM_SESSION )){
 					this.removeWorkflow();  
 				}
 				else if( action.equals( ACTION_RESET_WORKFLOW )){
 					this.removeWorkflow() ;
 					this.createWorkflow() ;  
-				}								
-                else if( action.equals( ACTION_INSERT_FLOW ) ) {
-                    this.insertFlow();                                                    
-                }   
-                else if( action.equals( ACTION_INSERT_SEQUENCE ) ) {
-                    this.insertSequence();                                                    
-                } 
-                else if( action.equals( ACTION_INSERT_STEP ) ) {
-                    this.insertStep();                                                    
-                }
-				else if( action.equals( ACTION_INSERT_SCRIPT ) ) {
-					this.insertScript();                                                    
+				}																
+				else if( action.equals( ACTION_INSERT_FOR_DETAILS ) ) {
+					this.insertForDetails();                                                    
 				}
-				else if( action.equals( ACTION_INSERT_SCRIPT_BODY ) ) {
-					this.insertScriptBody();                                                    
+				else if( action.equals( ACTION_INSERT_IF_DETAILS ) ) {
+					this.insertIfDetails();                                                    
 				}
-				else if( action.equals( ACTION_INSERT_SCRIPT_DESCRIPTION ) ) {
-					this.insertScriptDescription();                                                    
+				else if( action.equals( ACTION_INSERT_PARFOR_DETAILS ) ) {
+					this.insertParforDetails();                                                    
+				}
+				else if( action.equals( ACTION_INSERT_SET_DETAILS ) ) {
+					this.insertSetDetails();                                                    
+				}
+				else if( action.equals( ACTION_INSERT_UNSET_DETAILS ) ) {
+					this.insertUnsetDetails();                                                    
+				}
+				else if( action.equals( ACTION_INSERT_SCRIPT_DETAILS ) ) {
+					this.insertScriptDetails();                                                    
+				}
+				else if( action.equals( ACTION_INSERT_WHILE_DETAIL ) ) {
+					this.insertWhileDetails();                                                    
 				}				
+				else if( action.equals( ACTION_INSERT_ACTIVITY ) ) {
+						this.insertActivity();                                                    
+				}																													
                 else if( action.equals( ACTION_REMOVE_ACTIVITY ) ) {
                     this.removeActivity();                                                    
                 }       			                
@@ -682,6 +705,7 @@ public class DesignAction extends AbstractAction {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.submitWorkflow() entry" ) ;
             
             String ivornName = request.getParameter( WORKFLOW_IVORN_PARAMETER ) ;
+            String submitWorkflowMessage = "Workflow successfully submitted to JES; you can monitor it's progress in the job monitor page.";
             Ivorn ivorn = null;
                 
             try {
@@ -713,54 +737,14 @@ public class DesignAction extends AbstractAction {
 //            }
             catch( WorkflowInterfaceException wix ) {
                 wix.printStackTrace(); // JBL note
-            }            
+				submitWorkflowMessage =  "Unable to submit workflow: " + wix.getMessage() ;
+            }                        
             finally {
+				this.session.setAttribute( WORKFLOW_SUBMIT_MESSAGE, submitWorkflowMessage ) ;
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.submitWorkflow() exit" ) ;
             }
          
         } // end of submitQuery()
-        
-        
-        
-        private void editJoinCondition() throws ConsistencyException {
-            if( TRACE_ENABLED ) trace( "DesignActionImpl.editJoinCondition() entry" ) ;
-              
-            Step step = null;
-            JoinType joinCondition = null;
-              
-            try {
-                
-                if( workflow == null ) {
-                    throw new ConsistencyException() ; 
-                }
-                
-                String editCondition = request.getParameter( EDIT_CONDITION_PARAMETER ) ;
-                    
-                if( editCondition == null ) {
-                    throw new ConsistencyException() ;
-                }
-                else if( editCondition.equalsIgnoreCase( JoinType.ANY.toString() ) ) {
-                    joinCondition =  JoinType.ANY ;
-                }
-                else if( editCondition.equalsIgnoreCase( JoinType.TRUE.toString() ) ) {
-                    joinCondition =  JoinType.TRUE ;
-                }
-                else if( editCondition.equalsIgnoreCase( JoinType.FALSE.toString() ) ) {
-                    joinCondition =  JoinType.FALSE ;
-                }
-                else {
-                    throw new ConsistencyException() ; 
-                }
-             
-                step = locateStep( workflow, request.getParameter( ACTIVITY_KEY_PARAMETER ) );
-                step.setJoinCondition( joinCondition ) ;                
-                               
-            }
-            finally {
-                if( TRACE_ENABLED ) trace( "DesignActionImpl.editJoinCondition() exit" ) ;
-            }
-         
-        } // end of editJoinCondition()
         
         
         private void createTool() throws ConsistencyException {
@@ -825,25 +809,26 @@ public class DesignAction extends AbstractAction {
         private void readToolList() {
            if( TRACE_ENABLED ) trace( "DesignActionImpl.readToolList() entry" ) ;
            
-           String[] tools = (String[])this.session.getAttribute(TOOL_LIST_PARAMETER) ;
+		   LinkedList tools = new LinkedList();
+		   if (session.getAttribute(TOOL_LIST_PARAMETER) != null) {
+			   tools = (LinkedList) session.getAttribute(TOOL_LIST_PARAMETER) ;				
+		   }
               
            try {
                          
-              if( tools == null ) {
+              if( tools.size() <= 0 ) {
                   ApplicationRegistry toolRegistry = workflowManager.getToolRegistry();
-                  tools = toolRegistry.listApplications();
-//                  debug( "tools list: " ); 
-//                  if(tools != null){
-//                      for( int i=0; i<tools.length; i++ ){
-//                          debug( tools[i]);
-//                      }
-//                  }
-//                  else {
-//                      debug( "tools list is null" );
-//                  } 
+                  String[] toolsArray = toolRegistry.listApplications();
+                  for (int i=0;i < toolsArray.length ;i++)
+                  {
+                  	tools.add(toolsArray[i].toString()) ;
+                  	if (i > 14)
+                  	break;
+                  }
+ 
                   this.session.setAttribute( TOOL_LIST_PARAMETER, tools ) ;   
               }
-              this.request.setAttribute( TOOL_LIST_PARAMETER, tools ) ; 
+              this.session.setAttribute( TOOL_LIST_PARAMETER, tools ) ; 
        
            }
            catch( WorkflowInterfaceException wix ) {
@@ -863,11 +848,18 @@ public class DesignAction extends AbstractAction {
             LinkedList tools = new LinkedList();
             boolean toolPresent = false;
 
-			if (session.getAttribute(USER_TOOL_LIST_PARAMETER) != null) {
-				tools = (LinkedList) session.getAttribute(USER_TOOL_LIST_PARAMETER) ;
+			try {
+			if (session.getAttribute(TOOL_LIST_PARAMETER) != null) {
+				tools = (LinkedList) session.getAttribute(TOOL_LIST_PARAMETER) ;				
+			}
+			else {
+				ApplicationRegistry toolRegistry = workflowManager.getToolRegistry();
+				String[] toolsArray = toolRegistry.listApplications();
+				for (int i=0; i < 15; i++) {
+					tools.add(toolsArray[i]) ;
+				}
 			}
                           
-			try {
 				for (int i=0; i < tools.size(); i++){
 					if (tools.get(i).toString().equalsIgnoreCase(toolName)){
 						toolPresent = true;
@@ -878,18 +870,17 @@ public class DesignAction extends AbstractAction {
 				}
 				if (!toolPresent){
 					tools.addFirst(toolName) ;
-					if (tools.size() > 10)
+					if (tools.size() > 14)
 					    tools.removeLast() ;
 				}			    					
 
-				this.session.setAttribute( USER_TOOL_LIST_PARAMETER, tools ) ;   												        			
-			
-				debug("USER_TOOL_LIST:");
-				for (int i=0; i < tools.size(); i++){
-					debug( tools.get(i).toString() );
-				}			
+				this.session.setAttribute( TOOL_LIST_PARAMETER, tools ) ;   												        			
+						
 			}
-          
+			catch( WorkflowInterfaceException wix ) {
+					 debug( "wix exception: " + wix.toString() );
+					 this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wix.toString() ) ;
+			}          
 			finally {
 				if( TRACE_ENABLED ) trace( "DesignActionImpl.updateUserToolList() exit" ) ;
 			}
@@ -909,7 +900,7 @@ public class DesignAction extends AbstractAction {
 //                     
 //                    this.readWorkflowList();          
 //                    this.readQueryList();
-                    this.readToolList();
+                    this.readToolList() ;
 
 				}
 				catch( Exception ex ) {              
@@ -920,44 +911,6 @@ public class DesignAction extends AbstractAction {
 				}
                     
 			} // end of readLists()
-           
-		private void insertToolIntoStep() throws ConsistencyException {
-			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertToolIntoStep() entry" ) ;
-			
-            Tool tool = null;
-			LinkedList tools = null;
-            Step step = null;
-            boolean exists = false;
-            String temp = null;
-              
-			try {
-				
-//				this.tool = (Tool) request.getAttribute( HTTP_TOOL_TAG ) ;
-					
-                String toolname = request.getParameter( TOOL_NAME_PARAMETER ) ;					
-//				if (toolname == null) {
-//					debug("tool-name is null") ;
-//				}
-                
-                step = locateStep( workflow, request.getParameter( ACTIVITY_KEY_PARAMETER ) );     
-                
-                tool = this.createTool( toolname ) ; 
-                
-                if ( tool == null ) {
-                	debug( "tool is null" ) ;
-                }
-                else {                	
-				    step.setTool( tool );
-				    updateUserToolList( toolname );				    
-                }
-              
-						
-			}
-			finally {
-				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertQueryIntoStep() exit" ) ;
-			}
-                    
-		} // end of insertToolIntoStep() 
 
            
         private void removeToolFromStep() throws ConsistencyException {
@@ -1006,7 +959,7 @@ public class DesignAction extends AbstractAction {
          Step step = null;
          Tool tool = null ;
          ParameterValue p = null ;
-         boolean parameterIndirect = false;
+		 boolean parameterIndirect = false;
               
          try {
             // Tool should already have been inserted into step
@@ -1018,14 +971,14 @@ public class DesignAction extends AbstractAction {
 			String ivornValue = request.getParameter( IVORN_VALUE_PARAMETER ) ;
 //		Bug #560: PARAM_INDIRECT is now a radio button			
 			if (request.getParameter( PARAM_INDIRECT ).equalsIgnoreCase("on") )
-				parameterIndirect = true;
-//			boolean parameterIndirect = new Boolean(request.getParameter( PARAM_INDIRECT ) ).booleanValue() ;			
+			  parameterIndirect = true;
+//			boolean parameterIndirect = new Boolean(request.getParameter( PARAM_INDIRECT ) ).booleanValue() ;
 			debug( "ivornValue: " + ivornValue );
 			debug( "parameterName:" + parameterName ) ;
 			debug( "parameterValue: " + parameterValue ) ;
 			debug( "oldParameterValue: " + oldParameterValue ) ;
 			debug( "activityKey: " + activityKey ) ;
-			debug( "parameterIndirect: " + parameterIndirect  ) ;    
+			debug( "parameterIndirect: " + parameterIndirect  ) ;   
                             
 			if ( parameterName == null) {
 				debug( "parameterName is null" ) ;
@@ -1071,7 +1024,7 @@ public class DesignAction extends AbstractAction {
 		   Step step = null;
 		   Tool tool = null ;
 		   ParameterValue p = null ;
-		   boolean parameterIndirect = false;
+		   boolean parameterIndirect = false ;
               
 	       try {
 				 // Tool should already have been inserted into step
@@ -1081,10 +1034,10 @@ public class DesignAction extends AbstractAction {
 					parameterName = request.getParameter( PARAM_NAME_PARAMETER ),			  
 					parameterValue = request.getParameter( PARAM_VALUE_PARAMETER ) ;
 					String ivornValue = request.getParameter( IVORN_VALUE_PARAMETER ) ;
-//				Bug #560: PARAM_INDIRECT is now a radio button			
+// Bug #560: PARAM_INDIRECT is now a radio button
 					if (request.getParameter( PARAM_INDIRECT ).equalsIgnoreCase("on") )
-						parameterIndirect = true;
-//					boolean parameterIndirect = new Boolean(request.getParameter( PARAM_INDIRECT ) ).booleanValue() ;										
+						parameterIndirect = true;					
+//					boolean parameterIndirect = new Boolean( request.getParameter( PARAM_INDIRECT ) ).booleanValue() ;
 					debug( "ivornValue: " + ivornValue );					
                             
 			     if ( parameterName == null) {
@@ -1173,89 +1126,40 @@ public class DesignAction extends AbstractAction {
 	   }
                     
     } // end of deleteParameter() 
-
- 
- 
-//		private void insertInputParameterIntoTool() throws ConsistencyException {
-//			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertInputParameterIntoTool() entry" ) ;
-//			
-//            Step step = null ;
-//            Tool tool = null ;
-//              
-//			try {
-//				// Tool should already have been inserted into step
-//									
-//				String contents = request.getParameter( LOCATION_PARAMETER ) ;				    					
-//                
-//                if ( contents == null) {
-//					debug( "contents is null" ) ;
-//				}
-//
-//				step = locateStep( workflow, request.getParameter( ACTIVITY_KEY_PARAMETER ) );				
-//				Enumeration iterator = step.getTool().getInput().enumerateParameter() ;
-//				ParameterValue p = null;
-//             
-//				while( iterator.hasMoreElements() ) {
-//				
-//				    p = (ParameterValue)iterator.nextElement() ;
-//					{
-//
-//						if ( p.getContent().length() <= 0 ) //look for 1st parameter where location (?) hasn't been set,
-//
-//							 p.setContent( contents ) ;     //for query tool this will be 1st parameter, for tools with greater 
-//							 break ;                        //cardinality than 1 this may not be the case.
-//					}		 
-//				}
-//			
-//				
-//			}
-//			finally {
-//				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertInputParameterIntoTool() exit" ) ;
-//			}
-//                    
-//		} // end of inserInputParameterIntoTool()       
+	
+	
+	private void pasteActivity() throws ConsistencyException {
+		if( TRACE_ENABLED ) trace( "DesignActionImpl.pasteActivity() entry" ) ;
         
-
-//		private void insertOutputParameterIntoTool() throws ConsistencyException {
-//			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertOutputParameterIntoTool() entry" ) ;
-//			
-//						Step
-//								step = null ;
-//						Tool
-//								tool = null ;
-//						Parameter
-//								param = null ;
-//              
-//			try {
-//				// Tool should already have been inserted into step
-//									
-//				String
-//						stepActivityKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;					
-//                
-//				if ( stepActivityKey == null) {
-//						debug( "stepActivityKey is null" ) ;
-//				}
-//
-//				step = locateStep( workflow, stepActivityKey );
-//				
-//				ListIterator ListIt = step.getTool().getOutputParameters() ;
-//			
-//				
-//			}
-//			finally {
-//				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertOutputParameterIntoTool() exit" ) ;
-//			}
-//                    
-//		} // end of insertOutputParameterIntoTool()
+		AbstractActivity abstractActivity = null ;      
+		try {
+			String xpathKey = (String)session.getAttribute( COPY_ACTIVITY_KEY ) ;			   
+			if ( xpathKey == null) {
+				debug( "xpathKey is null" ) ;
+				throw new ConsistencyException();
+			}
+			else
+			{				
+                 Step copyStep = new Step() ;
+				 Step origionalStep = new Step() ;
+				 origionalStep = locateStep( workflow, xpathKey ) ;
+                 copyStep.setName( origionalStep.getName()+"_COPY" ) ;
+                 copyStep.setDescription( origionalStep.getDescription() ) ;
+                 copyStep.setTool( origionalStep.getTool() ) ;                 
+                 this.insertActivity( copyStep ) ; 
+			}          
+		}
+		finally {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.pasteActivity() exit" ) ;
+		}                    
+	} // end of pasteActivity()	
 
 
         private void insertStep() throws ConsistencyException {
            if( TRACE_ENABLED ) trace( "DesignActionImpl.insertStep() entry" ) ;
               
            try {
-			  String name = "no name set";
            	  Step step = new Step() ;
-           	  step.setName( name ) ;
               this.insertActivity( step ) ;
             }
             finally {
@@ -1276,7 +1180,304 @@ public class DesignAction extends AbstractAction {
             }
                     
         } // end of insertFlow()
-        
+
+		private void insertElse() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertFor() entry" ) ;
+              
+			try {
+				If ifActivity = new If() ;
+				Else elseActivity = new Else() ;			
+				elseActivity.setActivity(new Sequence() );					
+				
+				String xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;    
+				if ( xpathKey == null) {
+				    debug( "xpathKey is null" ) ;
+				    throw new ConsistencyException();
+				}
+				else
+				{				
+				    ifActivity = locateIf( workflow, xpathKey ) ;				  				    
+				    ifActivity.setElse( elseActivity ) ;
+				}          
+			}
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertElse() exit" ) ;
+			}                    
+		} // end of insertElse()        
+
+		private void insertFor() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertFor() entry" ) ;
+              
+		    try {
+		    	For forActivity = new For();
+		    	forActivity.setActivity(new Sequence() );		    	
+			    this.insertActivity( forActivity ) ;          
+		    }
+		    finally {
+		        if( TRACE_ENABLED ) trace( "DesignActionImpl.insertFor() exit" ) ;
+		    }                    
+		} // end of insertFor()
+		
+		
+		private void insertParfor() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertParfor() entry" ) ;
+              
+			try {
+				Parfor parForActivity = new Parfor() ;
+				parForActivity.setActivity( new Sequence() ) ;
+				this.insertActivity( parForActivity ) ; 
+			}
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertParfor() exit" ) ;
+			}                    
+		} // end of insertParfor()
+		
+		
+		private void insertParforDetails() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertParforDetails() entry" ) ;
+              
+			Parfor parForObject = null ;
+            
+			try {
+				String defaultVar = "(the name of the loop variable...)" ;
+				String defaultItems = "(A sequence or iterator of items - the loop variable will be assigned to each in turn, and then loop body executed...)" ;					
+			    String xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
+			    String items = request.getParameter( FOR_ITEMS_PARAMETER ) ;
+				String var = request.getParameter( FOR_VAR_PARAMETER ) ;
+                                
+				if ( xpathKey == null) {
+					debug( "xpathKey is null" ) ;
+				}
+
+				parForObject = locateParfor( workflow, xpathKey ); 
+				if (!(items.equalsIgnoreCase(defaultItems))) {				 
+				    parForObject.setItems(items);
+				}
+				if (!(var.equalsIgnoreCase(defaultVar))) {				
+				    parForObject.setVar(var);
+				}
+			}
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertParforDetails() exit" ) ;
+			}                    
+		} // end of insertParforDetails()						
+		
+		
+		private void insertForDetails() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertForDetails() entry" ) ;
+              
+			 For forObject = null ;
+            
+             try {
+             	String defaultVar = "(the name of the loop variable...)" ;
+             	String defaultItems = "(A sequence or iterator of items - the loop variable will be assigned to each in turn, and then loop body executed...)" ;	
+		        String xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
+	            String items = request.getParameter( FOR_ITEMS_PARAMETER ).trim() ;
+				String var = request.getParameter( FOR_VAR_PARAMETER ).trim() ;				
+                                
+	            if ( xpathKey == null) {
+		           debug( "xpathKey is null" ) ;
+	            }
+
+				forObject = locateFor( workflow, xpathKey );
+				if (!(items.equalsIgnoreCase(defaultItems))) {
+					forObject.setItems(items);				  
+				}				    
+
+				if (!(var.equalsIgnoreCase(defaultVar))) {
+				    forObject.setVar(var);
+				}
+				
+            }
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertForDetails() exit" ) ;
+			}                    
+		} // end of insertForDetails()	
+		
+		
+		private void insertThen() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertThen() entry" ) ;
+              
+			try {
+				If ifActivity = new If() ;
+				Then thenActivity = new Then() ;			
+				thenActivity.setActivity( new Sequence() );					
+				
+				String xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;    
+				if ( xpathKey == null) {
+						debug( "xpathKey is null" ) ;
+				}
+				else
+				{				
+						ifActivity = locateIf( workflow, xpathKey ) ;				  				    
+						ifActivity.setThen( thenActivity ) ;
+				}          
+			}
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertThen() exit" ) ;
+			}                    
+		} // end of insertThen()
+		
+		
+		private void insertWhile() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertWhile() entry" ) ;
+              
+				try {
+					While whileActivity = new While();
+					whileActivity.setActivity(new Sequence() );
+					this.insertActivity( whileActivity ) ;
+				}
+				finally {
+						if( TRACE_ENABLED ) trace( "DesignActionImpl.insertWhile() exit" ) ;
+				}                    
+		} // end of insertWhile()
+
+		
+		private void insertWhileDetails() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertWhileDetails() entry" ) ;
+              
+			 While whileObject = null ;
+            
+			try {	
+			    String xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
+				String test = request.getParameter( WHILE_TEST_PARAMETER ) ;				
+                                
+				if ( xpathKey == null) {
+			        debug( "xpathKey is null" ) ;
+				}
+
+				whileObject = locateWhile( workflow, xpathKey );  
+				whileObject.setTest(test);				
+				
+			}
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertWhileDetails() exit" ) ;
+			}                    
+		} // end of insertWhileDetails()		
+		
+				
+		private void insertIf() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertIf() entry" ) ;
+              
+			try {
+				If ifActivity = new If() ;
+				Then thenActivity = new Then() ;
+				thenActivity.setActivity(new Sequence() ) ;
+				ifActivity.setThen(thenActivity) ;
+				this.insertActivity( ifActivity ) ;          
+			}
+			finally {
+			    if( TRACE_ENABLED ) trace( "DesignActionImpl.insertIf() exit" ) ;
+			}                    
+		} // end of insertIf()	
+		
+		
+		private void insertIfDetails() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertIfDetails() entry" ) ;
+              
+			If ifObject = null ;						
+            
+			try {	
+			    String xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
+				String ifTest = request.getParameter( IF_TEST_PARAMETER ) ;
+                                
+				if ( xpathKey == null) {
+				    debug( "xpathKey is null" ) ;
+				}
+
+				ifObject = locateIf( workflow, xpathKey );  
+				ifObject.setTest(ifTest);				
+			}
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertIfDetails() exit" ) ;
+			}                    
+		} // end of insertIfDetails()
+
+
+		private void insertScope() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertScope() entry" ) ;
+              
+			try {
+				Scope scopeActivity = new Scope();
+				scopeActivity.setActivity(new Sequence() );
+				this.insertActivity( scopeActivity ) ;         
+			}
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertScope() exit" ) ;
+			}                    
+		} // end of insertScope()
+
+
+		private void insertSet() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertSet() entry" ) ;
+              
+			try {
+					this.insertActivity( new Set() ) ;          
+			}
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertSet() exit" ) ;
+			}                    
+		} // end of insertSet()
+
+
+		private void insertSetDetails() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertSetDetails() entry" ) ;
+              
+			Set setObject = null ;
+            
+			try {	
+				String xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
+				String val = request.getParameter( SET_VALUE_PARAMETER ) ;
+				String var = request.getParameter( SET_VAR_PARAMETER ) ;
+                                
+				if ( xpathKey == null) {
+					debug( "xpathKey is null" ) ;
+				}
+
+				setObject = locateSet( workflow, xpathKey );  
+				setObject.setValue(val);
+				setObject.setVar(var);
+				
+						}
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertSetDetails() exit" ) ;
+			}                    
+		} // end of insertSetDetails()
+		
+		
+		private void insertUnset() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertUnset() entry" ) ;
+              
+			try {
+					this.insertActivity( new Unset() ) ;          
+			}
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertUnset() exit" ) ;
+			}                    
+		} // end of insertUnset()
+		
+		
+		private void insertUnsetDetails() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertUnsetDetails() entry" ) ;
+              
+			Unset unsetObject = null ;
+            
+			try {	
+				String xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
+				String var = request.getParameter( UNSET_VAR_PARAMETER ) ;
+                                
+				if ( xpathKey == null) {
+					debug( "xpathKey is null" ) ;
+				}
+
+				unsetObject = locateUnset( workflow, xpathKey );  
+				unsetObject.setVar(var);				
+			}
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertUnsetDetails() exit" ) ;
+			}                    
+		} // end of insertUnsetDetails()
+
         
 		private void insertScript() throws ConsistencyException {
 		    if( TRACE_ENABLED ) trace( "DesignActionImpl.insertScript() entry" ) ;
@@ -1290,7 +1491,7 @@ public class DesignAction extends AbstractAction {
 		} // end of insertScript()
 		
 		
-		private void insertScriptBody() throws ConsistencyException {
+		private void insertScriptDetails() throws ConsistencyException {
 		    if( TRACE_ENABLED ) trace( "DesignActionImpl.insertScriptBody() entry" ) ;
               
 			Script script = null ;              
@@ -1299,48 +1500,20 @@ public class DesignAction extends AbstractAction {
 				
 				String xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
 				String body = request.getParameter( SCRIPT_BODY_PARAMETER ) ;
-				
-				debug( "xpathKey: " + xpathKey ) ;
-				debug( "body: " + body ) ;
+				String desc = request.getParameter( SCRIPT_DESCRIPTION_PARAMETER ) ;
                                 
 				if ( xpathKey == null) {
 					debug( "xpathKey is null" ) ;
 				}
 
 				script = locateScript( workflow, xpathKey );  
-				script.setBody( body );        
+				script.setBody( body );
+				script.setDescription( desc );        
 			}
 			finally {
 				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertScriptBody() exit" ) ;
 			}                    
-		} // end of insertCodeBody()
-
-
-		private void insertScriptDescription() throws ConsistencyException {
-			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertScriptDescription() entry" ) ;
-            
-			Script script = null ;
-              
-			try {
-
-				String xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
-				String desc = request.getParameter( SCRIPT_DESCRIPTION_PARAMETER ) ;
-				
-				debug( "xpathKey: " + xpathKey ) ;
-				debug( "desc: " + desc ) ;
-                                
-				if ( xpathKey == null) {
-					debug( "xpathKey is null" ) ;
-				}
-
-				script = locateScript( workflow, xpathKey );  
-				script.setDescription( desc );
-         
-			}
-			finally {
-				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertScriptDescription() exit" ) ;
-			}                    
-		} // end of insertDescriptionBody()
+		} // end of insertScriptBody()
 			
 			
         private void insertSequence() throws ConsistencyException {
@@ -1383,79 +1556,7 @@ public class DesignAction extends AbstractAction {
 			finally {
 				if( TRACE_ENABLED ) trace( "DesignActionImpl.addWorkflowNameAndDescription() exit" ) ;
 			}                    
-		} // end of addWorkflowNameAndDescription() 
-
-//      private void insertInputParameterIntoTool() throws ConsistencyException {
-//          if( TRACE_ENABLED ) trace( "DesignActionImpl.insertInputParameterIntoTool() entry" ) ;
-//          
-//            Step step = null ;
-//            Tool tool = null ;
-//              
-//          try {
-//              // Tool should already have been inserted into step
-//                                  
-//              String contents = request.getParameter( LOCATION_PARAMETER ) ;                                      
-//                
-//                if ( contents == null) {
-//                  debug( "contents is null" ) ;
-//              }
-//
-//              step = locateStep( workflow, request.getParameter( ACTIVITY_KEY_PARAMETER ) );              
-//              Enumeration iterator = step.getTool().getInput().enumerateParameter() ;
-//              ParameterValue p = null;
-//             
-//              while( iterator.hasMoreElements() ) {
-//              
-//                  p = (ParameterValue)iterator.nextElement() ;
-//                  {
-//
-//                      if ( p.getContent().length() <= 0 ) //look for 1st parameter where location (?) hasn't been set,
-//
-//                           p.setContent( contents ) ;     //for query tool this will be 1st parameter, for tools with greater 
-//                           break ;                        //cardinality than 1 this may not be the case.
-//                  }        
-//              }
-//          
-//              
-//          }
-//          finally {
-//              if( TRACE_ENABLED ) trace( "DesignActionImpl.insertInputParameterIntoTool() exit" ) ;
-//          }
-//                    
-//      } // end of inserInputParameterIntoTool()       
-        
-
-//      private void insertOutputParameterIntoTool() throws ConsistencyException {
-//          if( TRACE_ENABLED ) trace( "DesignActionImpl.insertOutputParameterIntoTool() entry" ) ;
-//          
-//                      Step
-//                              step = null ;
-//                      Tool
-//                              tool = null ;
-//                      Parameter
-//                              param = null ;
-//              
-//          try {
-//              // Tool should already have been inserted into step
-//                                  
-//              String
-//                      stepActivityKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;                  
-//                
-//              if ( stepActivityKey == null) {
-//                      debug( "stepActivityKey is null" ) ;
-//              }
-//
-//              step = locateStep( workflow, stepActivityKey );
-//              
-//              ListIterator ListIt = step.getTool().getOutputParameters() ;
-//          
-//              
-//          }
-//          finally {
-//              if( TRACE_ENABLED ) trace( "DesignActionImpl.insertOutputParameterIntoTool() exit" ) ;
-//          }
-//                    
-//      } // end of insertOutputParameterIntoTool()
+		} // end of addWorkflowNameAndDescription()         
 
 
         private void insertActivity( AbstractActivity activity ) throws ConsistencyException {
@@ -1519,87 +1620,54 @@ public class DesignAction extends AbstractAction {
 			      index ++;
 			  }
          	                                                            
-              activityContainer.addActivity( index, activity ) ;              
+              activityContainer.addActivity( index, activity ) ;
+			  request.setAttribute( INSERTED_ACTIVITY_KEY_PARAMETER, workflow.getXPathFor( activity ) ) ;
+			  debug("request inserted_activity_key: " + request.getAttribute(INSERTED_ACTIVITY_KEY_PARAMETER));              
                         
             }
             finally {
                   if( TRACE_ENABLED ) trace( "DesignActionImpl.insertActivity() exit" ) ;
             }
                     
-        } // end of insertActivity()       
+        } // end of insertActivity()                     
 
 
-//      private void insertInputParameterIntoTool() throws ConsistencyException {
-//          if( TRACE_ENABLED ) trace( "DesignActionImpl.insertInputParameterIntoTool() entry" ) ;
-//          
-//            Step step = null ;
-//            Tool tool = null ;
-//              
-//          try {
-//              // Tool should already have been inserted into step
-//                                  
-//              String contents = request.getParameter( LOCATION_PARAMETER ) ;                                      
-//                
-//                if ( contents == null) {
-//                  debug( "contents is null" ) ;
-//              }
-//
-//              step = locateStep( workflow, request.getParameter( ACTIVITY_KEY_PARAMETER ) );              
-//              Enumeration iterator = step.getTool().getInput().enumerateParameter() ;
-//              ParameterValue p = null;
-//             
-//              while( iterator.hasMoreElements() ) {
-//              
-//                  p = (ParameterValue)iterator.nextElement() ;
-//                  {
-//
-//                      if ( p.getContent().length() <= 0 ) //look for 1st parameter where location (?) hasn't been set,
-//
-//                           p.setContent( contents ) ;     //for query tool this will be 1st parameter, for tools with greater 
-//                           break ;                        //cardinality than 1 this may not be the case.
-//                  }        
-//              }
-//          
-//              
-//          }
-//          finally {
-//              if( TRACE_ENABLED ) trace( "DesignActionImpl.insertInputParameterIntoTool() exit" ) ;
-//          }
-//                    
-//      } // end of inserInputParameterIntoTool()       
-        
-
-//      private void insertOutputParameterIntoTool() throws ConsistencyException {
-//          if( TRACE_ENABLED ) trace( "DesignActionImpl.insertOutputParameterIntoTool() entry" ) ;
-//          
-//                      Step
-//                              step = null ;
-//                      Tool
-//                              tool = null ;
-//                      Parameter
-//                              param = null ;
-//              
-//          try {
-//              // Tool should already have been inserted into step
-//                                  
-//              String
-//                      stepActivityKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;                  
-//                
-//              if ( stepActivityKey == null) {
-//                      debug( "stepActivityKey is null" ) ;
-//              }
-//
-//              step = locateStep( workflow, stepActivityKey );
-//              
-//              ListIterator ListIt = step.getTool().getOutputParameters() ;
-//          
-//              
-//          }
-//          finally {
-//              if( TRACE_ENABLED ) trace( "DesignActionImpl.insertOutputParameterIntoTool() exit" ) ;
-//          }
-//                    
-//      } // end of insertOutputParameterIntoTool()
+        private void insertActivity() throws ConsistencyException {
+		    if( TRACE_ENABLED ) trace( "DesignActionImpl.insertActivity() entry" ) ;           
+              
+			try {
+			    String insertActivityType = request.getParameter( INSERT_ACTIVITY_TYPE_PARAMETER ) ;
+				debug("insertActivityType: " + insertActivityType ) ;
+				if (insertActivityType == null){
+					debug( "insertActivityType is null" ) ;
+				}
+				else if (insertActivityType.equals("ELSE")){this.insertElse();}
+				else if (insertActivityType.equals("FLOW")){this.insertFlow();}
+				else if (insertActivityType.equals("FORLOOP")){this.insertFor();}
+				else if (insertActivityType.equals("PARLOOP")){this.insertParfor();}
+				else if (insertActivityType.equals("IF")){this.insertIf();}
+				else if (insertActivityType.equals("SCOPE")){this.insertScope();}											
+				else if (insertActivityType.equals("SCRIPT")){this.insertScript();}
+				else if (insertActivityType.equals("SEQUENCE")){this.insertSequence();}
+				else if (insertActivityType.equals("SET")){this.insertSet();}
+				else if (insertActivityType.equals("STEP")){this.insertStep();}
+				else if (insertActivityType.equals("THEN")){this.insertThen();}
+				else if (insertActivityType.equals("UNSET")){this.insertUnset();}
+				else if (insertActivityType.equals("WHILELOOP")){this.insertWhile();}
+				else if (insertActivityType.equals("PASTE")){this.pasteActivity();}
+				else if (insertActivityType.equals("COPY"))
+				    {
+				    	session.setAttribute( COPY_ACTIVITY_KEY, request.getParameter( ACTIVITY_KEY_PARAMETER ) );
+				    }								
+				else {
+					debug("Unknown activity: " + insertActivityType);
+				}					
+			}                                   			
+					
+			finally {
+			    if( TRACE_ENABLED ) trace( "DesignActionImpl.insertActivity() exit" ) ;
+			}                    
+		} // end of insertActivity() 
 
 
         private void removeActivity() throws ConsistencyException {
@@ -1637,19 +1705,7 @@ public class DesignAction extends AbstractAction {
 				}					
               	
               }
-//              else if( activityTargetKey.equals( "/sequence" ) && index == 0) {
-//                  ; // ignore the top sequence
-//              }
-//              else {
-//                  parentKey = activityTargetKey.substring( 0, activityTargetKey.lastIndexOf('/'));
-//				  debug("parentKey: " + parentKey ) ;
-//                  activity = (AbstractActivity)workflow.findXPathValue( activityTargetKey );
-//				  debug("activity: " + activity ) ;
-//                  activityContainer = locateActivityContainer( workflow, parentKey );
-//                  if( activityContainer != null ) {
-//                      activityContainer.removeActivity( activity ) ;
-//                 }
-//              }
+
                                     
            }
            catch (Exception e) {
@@ -1662,59 +1718,37 @@ public class DesignAction extends AbstractAction {
                     
         } // end of removeActivity()       
 
-
-		private void insertStepName() throws ConsistencyException {
-			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertStepName() entry" ) ;
+	    private void insertStepDetails() throws ConsistencyException {
+		    if( TRACE_ENABLED ) trace( "DesignActionImpl.insertStepDetails() entry" ) ;
 			
 			Step step = null ;
+			Tool tool = null;
             
 			try {
-	
-				String xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
-				String name = request.getParameter( STEP_NAME_PARAMETER ) ;
-				
-				debug( "xpathKey: " + xpathKey ) ;
-				debug( "name: " + name ) ;
+		        String xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
+				String toolName = request.getParameter( TOOL_NAME_PARAMETER ) ;
+				String stepName = request.getParameter( STEP_NAME_PARAMETER ) ;
+				String stepVar = request.getParameter( STEP_VAR_PARAMETER ) ;
+				String stepDescription = request.getParameter( STEP_DESCRIPTION_PARAMETER ) ;
                                 
 				if ( xpathKey == null) {
 					debug( "xpathKey is null" ) ;
 				}
 
-				step = locateStep( workflow, xpathKey );  
-				step.setName( name );
+				step = locateStep( workflow, xpathKey ); 
+				step.setName( stepName );
+				step.setResultVar( stepVar ) ; 
+				step.setDescription( stepDescription );
 				
-				
-			}
-			finally {
-				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertStepName() exit" ) ;
-			}
-                    
-		} // end of insertStepName()
-
-		private void insertStepDescription() throws ConsistencyException {
-			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertStepDescription() entry" ) ;
-			
-             Step step = null ;
-            
-			 try {
-	
-			    String xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
-				String description = request.getParameter( STEP_DESCRIPTION_PARAMETER ) ;
-                                
-				if ( xpathKey == null) {
-					debug( "xpathKey is null" ) ;
-				}
-
-                step = locateStep( workflow, xpathKey );  
-                step.setDescription( description );
+				tool = this.createTool( toolName ) ;
+				step.setTool( tool );
+				updateUserToolList( toolName );				
 				
 			}
 			finally {
 				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertStepDescription() exit" ) ;
-			}
-                    
-		} // end of insertStepDescription()
-
+			}                   
+		} // end of insertStepDetails()
 
         
         private void checkPermissions ( String someResource, String anAction ) 
@@ -1750,7 +1784,8 @@ public class DesignAction extends AbstractAction {
          * Get the policy delegate.  
          * Looks for the property org.astrogrid.portal.community.url
          * if this property is not found (or is set to "dummy")
-         * then a mock delegate is returned.  
+         * then a mock delegate is returned.
+         *   
          * @return either a genuine or mock delegate
          * @throws MalformedURLException if the url is malformed
          */
@@ -1765,6 +1800,18 @@ public class DesignAction extends AbstractAction {
                 return new PolicyServiceSoapDelegate(endpoint);
             }
         }
+
+		private Set locateSet( Workflow workflow, String xpathKey ) throws ConsistencyException {
+        
+			Object obj = workflow.findXPathValue( xpathKey );
+                    
+			if( obj instanceof Set ) {
+				return (Set)obj ;
+			}
+			else {
+				throw new ConsistencyException() ;
+			}   
+		}
         
         private Step locateStep( Workflow workflow, String xpathKey ) throws ConsistencyException {
         
@@ -1778,6 +1825,30 @@ public class DesignAction extends AbstractAction {
             }   
         }
         
+		private Unset locateUnset( Workflow workflow, String xpathKey ) throws ConsistencyException {
+        
+			Object obj = workflow.findXPathValue( xpathKey );
+                    
+			if( obj instanceof Unset ) {
+				return (Unset)obj ;
+			}
+			else {
+				throw new ConsistencyException() ;
+			}   
+		}        
+        
+		private While locateWhile( Workflow workflow, String xpathKey ) throws ConsistencyException {
+        
+			Object obj = workflow.findXPathValue( xpathKey );
+                    
+			if( obj instanceof While ) {
+					return (While)obj ;
+			}
+			else {
+				throw new ConsistencyException() ;
+			}   
+		}        
+        
 		private Script locateScript( Workflow workflow, String xpathKey ) throws ConsistencyException {
         
 			Object obj = workflow.findXPathValue( xpathKey );
@@ -1789,7 +1860,42 @@ public class DesignAction extends AbstractAction {
 			    throw new ConsistencyException() ;
 			}   
 		}        
+
+		private If locateIf( Workflow workflow, String xpathKey ) throws ConsistencyException {
         
+			Object obj = workflow.findXPathValue( xpathKey );
+                    
+			if( obj instanceof If ) {
+				return (If)obj ;
+			}
+			else {
+				throw new ConsistencyException() ;
+			}   
+		}
+
+		private For locateFor( Workflow workflow, String xpathKey ) throws ConsistencyException {
+        
+			Object obj = workflow.findXPathValue( xpathKey );
+                    
+			if( obj instanceof For ) {
+					return (For)obj ;
+			}
+			else {
+				throw new ConsistencyException() ;
+			}   
+		}
+		
+		private Parfor locateParfor( Workflow workflow, String xpathKey ) throws ConsistencyException {
+        
+			Object obj = workflow.findXPathValue( xpathKey );
+                    
+			if( obj instanceof Parfor ) {
+					return (Parfor)obj ;
+			}
+			else {
+				throw new ConsistencyException() ;
+			}   
+		}		
         
         private ActivityContainer locateActivityContainer( Workflow workflow, String xpathKey ) throws ConsistencyException {
             
@@ -1806,6 +1912,27 @@ public class DesignAction extends AbstractAction {
             return activityContainer;  
             
         } // end of locateActivityContainer()
+        
+        
+		private AbstractActivity locateAbstractActivity( Workflow workflow, String xpathKey ) throws ConsistencyException {
+            
+			Object obj = workflow.findXPathValue( xpathKey );
+		    AbstractActivity abstractActivity = null;
+                
+			if( obj instanceof Flow || obj instanceof Sequence ) {
+				 // do something
+			}
+			else if( obj instanceof Step || obj instanceof Script ) {
+			    abstractActivity = (AbstractActivity)obj ;
+			    // success
+			}
+			else {
+				 throw new ConsistencyException() ;
+			} 
+                              
+			return abstractActivity;  
+            
+		} // end of locateActivity()        
         
         
         private ApplicationDescription locateDescription( String toolName ) throws WorkflowInterfaceException {
@@ -1834,8 +1961,6 @@ public class DesignAction extends AbstractAction {
         } // end of locateDescription(toolName)
            
            
-
-
                           
     } // end of inner class DesignActionImpl
     

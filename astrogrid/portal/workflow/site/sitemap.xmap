@@ -237,7 +237,7 @@
       <map:match pattern="agjobmanager.html">            
         <map:act type="astrogrid-workflow" />
         <map:generate src="web/xsp/workflow-main.xsp" type="serverpages" label="000" />
-        <map:transform src="web/xsl/display-workflow.xsl">       
+        <map:transform src="web/xsl/workflow-outer-frame.xsl">       
         <map:parameter name="use-request-parameters" value="true"/>
           <!-- Add the action params -->
           <map:parameter name="action"  value="{action}"/>
@@ -247,7 +247,30 @@
         </map:transform>
         <!-- Serialize as HTML -->
         <map:serialize type="html" />
-        </map:match>  
+        </map:match>
+        
+      <map:match pattern="workflowInnerFrame.html"> 
+        <map:generate src="web/xsp/workflow-main.xsp" type="serverpages" label="000" />
+        <map:transform src="web/xsl/workflow-inner-frame.xsl">       
+        <map:parameter name="use-request-parameters" value="true"/>
+          <!-- Add the action params -->
+          <map:parameter name="action"  value="{action}"/>
+          <map:parameter name="activity_key"  value="{activity_key}"/>
+          <map:parameter name="display_parameter_values"  value="{display_parameter_values}"/>
+          <map:parameter name="display_tool_values"  value="{display_tool_values}"/>
+        </map:transform>
+        <!-- Serialize as HTML -->
+        <map:serialize type="html" />
+        </map:match>
+        
+      <map:match pattern="statusInnerFrame.html"> 
+        <map:generate src="web/xsp/job-status.xsp" type="serverpages" label="000" />
+        <map:transform src="web/xsl/status-inner-frame.xsl">       
+        <map:parameter name="use-request-parameters" value="true"/>
+        </map:transform>
+        <!-- Serialize as HTML -->
+        <map:serialize type="html" />
+        </map:match>                          
 
         <map:match pattern="agjobmanager-jes.html">            
           <map:act type="astrogrid-jes" />
@@ -264,7 +287,7 @@
         <map:match pattern="agjobmanager-job-status.html">            
           <map:act type="astrogrid-jes" />
           <map:generate src="web/xsp/job-status.xsp" type="serverpages" label="000" />
-          <map:transform src="web/xsl/display-job-status.xsl">
+          <map:transform src="web/xsl/status-outer-frame.xsl">
           <map:parameter name="use-request-parameters" value="true"/>
           <!-- Add the action params -->
           <map:parameter name="action"  value="{action}"/>

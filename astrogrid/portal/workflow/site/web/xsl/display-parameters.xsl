@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
+  <!--+ 
+       | Author: Phil Nicolson "pjn3@star.le.ac.uk"
+       | Date:   Sept 2004
+       +-->
+       
  <!--+
           | Display tool details
           |
@@ -10,11 +15,42 @@
           |
           +-->
     <xsl:template name="parameter-details">
+      <script language="javascript">    
+        function toggleHelp(id)
+        {
+	  	  if(document.getElementById(id).style.display == "none")
+	  	  {
+		    document.getElementById(id).style.display = "";
+		  } 
+		  else 
+		  {
+			document.getElementById(id).style.display = "none";
+		  }        
+	    }        
+      </script>  
+        
       <table border="2" cellpadding="0" cellspacing="0">
         <tr>
           <td align="center" colspan="6">
             <div style="color: blue; background-color: lightblue; text-align: center;">
-              Parameters for step: <b><xsl:value-of select="@step-name"/></b>; tool: <b><xsl:value-of select="./tool/@tool-name"/></b>.
+              Parameters for step:
+              <xsl:choose>
+                <xsl:when test="@step-name != 'null'"> 
+                  <b> <xsl:value-of select="@step-name"/></b>;
+                </xsl:when>
+                <xsl:otherwise>
+                  --
+                </xsl:otherwise>
+              </xsl:choose>
+              task: 
+              <xsl:choose>
+                <xsl:when test="./tool/@tool-name != 'null'"> 
+                  <b> <xsl:value-of select="./tool/@tool-name"/></b>.
+                </xsl:when>
+                <xsl:otherwise>
+                  --
+                </xsl:otherwise>
+              </xsl:choose>             
             </div>
           </td>
         </tr>
@@ -35,8 +71,25 @@
           </xsl:when>
           <xsl:otherwise>
             <tr>
-              <td colspan="6" >There is currently no tool associated with this step</td>
-            </tr>    
+              <td colspan="5" > There is currently no task associated with this step </td>
+              <td style="cursor: help; text-align: center">                                     
+                <xsl:element name="img">
+                  <xsl:attribute name="src">/astrogrid-portal/mount/workflow/Help3.png</xsl:attribute>
+                  <xsl:attribute name="alt">info</xsl:attribute>
+                  <xsl:attribute name="onClick">toggleHelp('helpDiv<xsl:value-of select="@key"/>');</xsl:attribute>
+                </xsl:element>                                    
+              </td>              
+            </tr>
+            <tr>
+              <td colspan="6">
+                <div style="display: none; color: blue;  text-align: left;">
+                  <xsl:attribute name="id">helpDiv<xsl:value-of select="@key"/></xsl:attribute>                    
+                    Select a <b>task</b> from the dropdown list (below). <br />
+                    Once inserted the parameters will be displayed <br />
+                    when the step is clicked, and values can be entered. 
+                </div>
+              </td>
+            </tr>                
           </xsl:otherwise>
         </xsl:choose>                        
       </table>
@@ -124,6 +177,75 @@
         <input type="hidden" name="direction"><xsl:attribute name="value"><xsl:value-of select="$direction"/></xsl:attribute></input>
         <input type="hidden" name="display_parameter_values"><xsl:attribute name="value">true</xsl:attribute></input>                                
         <input type="hidden" name="param_indirect" id="param_indirect" value="false" />                               
+      </form>
+    </xsl:template>
+
+
+
+ <!--+
+          | Display tool details for job status page
+          |
+          |
+          +-->
+    <xsl:template name="parameter-details-status">
+      <table border="2" cellpadding="0" cellspacing="0">
+        <tr>
+          <td align="center" colspan="2">
+            <div style="color: blue; background-color: lightblue; text-align: center;">
+              Parameters for step:
+              <xsl:choose>
+                <xsl:when test="@step-name != 'null'"> 
+                  <b> <xsl:value-of select="@step-name"/></b>;
+                </xsl:when>
+                <xsl:otherwise>
+                  --
+                </xsl:otherwise>
+              </xsl:choose>
+              task: 
+              <xsl:choose>
+                <xsl:when test="./tool/@tool-name != 'null'"> 
+                  <b> <xsl:value-of select="./tool/@tool-name"/></b>.
+                </xsl:when>
+                <xsl:otherwise>
+                  --
+                </xsl:otherwise>
+              </xsl:choose>              
+            </div>
+          </td>
+        </tr>
+        <xsl:choose>
+          <xsl:when test="@step-tool != 'null'">            
+            <xsl:for-each select="./inputParam">
+              <xsl:call-template name="parameter_status">
+              </xsl:call-template>
+            </xsl:for-each>
+            <xsl:if test="/outputParam" >              
+              <xsl:for-each select="./outputParam">  <!-- Email tool has no output params, so don't display -->
+                <xsl:call-template name="parameter_status">
+                </xsl:call-template>
+              </xsl:for-each>
+            </xsl:if>            
+          </xsl:when>
+          <xsl:otherwise>
+            <tr>
+              <td colspan="2" >There is currently no tool associated with this step</td>
+            </tr>    
+          </xsl:otherwise>
+        </xsl:choose>                        
+      </table>
+    </xsl:template>
+
+
+    <!--+
+          | Match the parameter element.
+          +-->
+    <xsl:template name="parameter_status">
+
+        <form name="parameter_form" id="parameter_form">
+          <tr>
+            <td><xsl:value-of select="@param-name"/></td>                                                       
+            <td><xsl:value-of select="@param-value" /></td>                            
+        </tr>                             
       </form>
     </xsl:template>
 

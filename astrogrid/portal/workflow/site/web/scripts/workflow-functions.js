@@ -2,7 +2,7 @@
 	var previously_selected=null;
 	var previously_selected_node = null;
     function change_image(id, node_type)
-    { 
+    {     
         if (image_selected==false) 
         {
             image_selected=true;
@@ -20,88 +20,60 @@
     }
 
 
-    function populate_tool_details(step_name, edit_condition, step_description, stepNumber, tool_name, tool_documentation)
-    {
-        if (step_description == "null")
+    /*
+     * showTable()
+     *
+     * Changes display setting of div
+     *
+     * @param id        id of div         
+     */
+    var table_selected=false;
+	var previously_selected_table = null;
+    function show_table(id)
+    { 
+        if (table_selected==false) 
         {
-            step_description = "no description enetered..";
-        } 
-        if (tool_name == "null")
-        {
-            tool_name = "please select..";
-        }                              
-        document.properties_form.step_name.value = step_name;
-        document.properties_form.edit_condition.value = edit_condition; 
-        document.properties_form.step_description.value = step_description;  
-        document.properties_form.activity_key.value = stepNumber;  
-        document.properties_form.tool_name.value = tool_name;
-        document.properties_form.tool_documentation.value = tool_documentation;                    
+            table_selected=true;
+            if (parent.document.getElementById(id))
+            {
+              parent.document.getElementById(id).style.display="";
+		      previously_selected_table=id;
+		    }
+        }
+        else
+        {	
+            if (previously_selected_table )
+            {
+		      parent.document.getElementById(previously_selected_table).style.display="none"; 
+		    }
+            parent.document.getElementById(id).style.display="";
+		    previously_selected_table=id;
+		    table_selected = true;		  
+        }
     }
     
-    
-    function populate_script_details(script_description, script_body, stepNumber)
-    {
-        if (script_description == "null")
-        {
-            script_description = "no description enetered..";
-        } 
-        if (script_body == "null")
-        {
-            script_body = "....";
-        }                              
-        document.script_form.script_description.value = script_description;
-        document.script_form.script_body.value = script_body;  
-        document.script_form.activity_key.value = stepNumber;                     
-    }    
- 
- 
-    function populate_activity_container_insert_form(activityID,parentActivityID, index, activityType)
-    {
-       document.getElementById("activity_key").value = activityID;
-       document.insert_sequence_form.activity_index_key.value = index;
-       document.insert_sequence_form.activity_key.value = activityID;
-       document.insert_sequence_form.parent_activity_key.value = parentActivityID;
-       document.insert_sequence_form.activity_type.value = activityType;
-       document.insert_flow_form.activity_index_key.value = index;
-       document.insert_flow_form.activity_key.value = activityID;
-       document.insert_flow_form.parent_activity_key.value = parentActivityID;
-       document.insert_flow_form.activity_type.value = activityType;       
-       document.insert_step_form.activity_index_key.value = index;
-       document.insert_step_form.activity_key.value = activityID;
-       document.insert_step_form.parent_activity_key.value = parentActivityID;
-       document.insert_step_form.activity_type.value = activityType; 
-       document.insert_script_form.activity_index_key.value = index;
-       document.insert_script_form.activity_key.value = activityID;
-       document.insert_script_form.parent_activity_key.value = parentActivityID;
-       document.insert_script_form.activity_type.value = activityType;                     
-       document.remove_activity_form.activity_index_key.value = index;
-       document.remove_activity_form.activity_key.value = activityID; 
-       document.remove_activity_form.parent_activity_key.value = parentActivityID;             
-    } 
-  
-               
                
     function show_select(object)
     {
-        if (document.getElementById)
-        {
-            if ( document.getElementById(object) != null)
-                node = document.getElementById(object).style.display = "";
+        if (parent.document.getElementById)
+        {        
+            if ( parent.document.getElementById(object) != null)
+                node = parent.document.getElementById(object).style.display="";
         }
-        else if (document.layers)
-        {
-            if (document.layers[object] != null)
-                document.layers[object].style.display = "";
+        else if (parent.document.layers)
+        {        
+            if (parent.document.layers[object] != null)
+                parent.document.layers[object].style.display = "";
         }
-        else if (document.all)
-        {
-            document.all[object].style.display = "";
+        else if (parent.document.all)
+        {        
+            parent.document.all[object].style.display = "";
         }
     }
                
                
     function toggle(id) 
-    {
+    {      
         var element = document.getElementById(id);
         with (element.style) 
         {
@@ -119,19 +91,19 @@
                
 
     function hide_select(object) 
-    {
-        if (document.getElementById)
+    {    
+        if (parent.document.getElementById)
         {
-            if (document.getElementById(object) != null)
-                node = document.getElementById(object).style.display = "none";
+            if (parent.document.getElementById(object) != null)
+                node = parent.document.getElementById(object).style.display="none";
         }     
-        else if (document.layers)
+        else if (parent.document.layers)
         {
-            if (document.layers[object] != null)
-                document.layers[object].style.display =  "none";
+            if (parent.document.layers[object] != null)
+                parent.document.layers[object].style.display = "none";
         }
-        else if (document.all)
-            document.all[object].style.display = "none";
+        else if (parent.document.all)
+            parent.document.all[object].style.display = "none";
     }
                    
                                    
@@ -167,4 +139,28 @@
             }
         }
     }
+
     
+    /*
+     * setActivityDetails()
+     *
+     * Called from display-inner-frame.xsl. Sets values within insert_activity_form and remove_activity_form
+     * (display-workflow-iframe.xsl). Values are used within desginAction() when submitted
+     * from menu (workflow-menu.xml).
+     *
+     * @param activity_key      
+     * @param parent_activity_key  activity key of activity container  
+     * @param index                position of activity within activity container
+     * @param activity_type        
+     */
+    function setActivityDetails(activity_key, parent_activity_key, index, activity_type)
+    {
+       parent.document.insert_activity_form.activity_index_key.value = index;
+       parent.document.insert_activity_form.activity_key.value = activity_key;
+       parent.document.insert_activity_form.parent_activity_key.value = parent_activity_key;
+       parent.document.insert_activity_form.activity_type.value = activity_type;
+       
+       parent.document.remove_activity_form.activity_key.value = activity_key;       
+       parent.document.remove_activity_form.parent_activity_key.value = parent_activity_key;       
+       parent.document.remove_activity_form.activity_index_key.value = index;       
+    }   

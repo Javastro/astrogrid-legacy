@@ -27,20 +27,19 @@
       <agp:item
         contents="Open"
         contents-hover="Open"
-        uri='javascript:void(window.open("/astrogrid-portal/lean/mount/myspace/myspace-micro?ivorn=open-workflow-ivorn&amp;agsl=open-workflow-agsl&amp;form_name=workflow_form&amp;field_name=workflow_action&amp;field_value=read-workflow", "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=no, scrollbars=yes, width=300, height=300"));'
+        uri='javascript:void(window.open("/astrogrid-portal/lean/mount/myspace/myspace-micro?ivorn=open-workflow-ivorn&amp;agsl=open-workflow-agsl&amp;form_name=workflow_form&amp;field_name=workflow_action&amp;field_value=read-workflow", "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=no, scrollbars=yes, width=300, height=200"));'
         target="_self"
         status-text="Open a workflow"/>
       <agp:item
         contents="Save"
         contents-hover="Save"
-        uri='javascript:void(window.open("/astrogrid-portal/lean/mount/myspace/myspace-micro?ivorn=save-workflow-ivorn&amp;agsl=save-workflow-agsl&amp;form_name=workflow_form&amp;field_name=workflow_action&amp;field_value=save-workflow", "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=no, scrollbars=yes, width=300, height=300"));'
+        uri='javascript:void(window.open("/astrogrid-portal/lean/mount/myspace/myspace-micro?ivorn=save-workflow-ivorn&amp;agsl=save-workflow-agsl&amp;form_name=workflow_form&amp;field_name=workflow_action&amp;field_value=save-workflow", "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=no, scrollbars=yes, width=300, height=200"));'
         target="_self"
         status-text="Save a workflow"/>
       <agp:item
         contents="Submit"
         contents-hover="Submit"
-        uri='javascript:alert("Your workflow is being submitted. \n The status can be viewed in the job monitor page.");
-                        document.getElementById("workflow_action").value = "submit-workflow";
+        uri='javascript:document.getElementById("workflow_action").value = "submit-workflow";
                         document.workflow_form.submit();'
         target="_self"
         status-text="Submit a workflow to the Job Entry System..."/>        
@@ -70,8 +69,9 @@
                  }                                
                  else if (document.getElementById("activity_key").value) 
                  { 
-                     document.getElementById("activity_index_order_step").value = "BEFORE";
-                     document.insert_step_form.submit(); 
+                     document.getElementById("activity_index_order").value = "BEFORE";
+                     document.getElementById("insert_activity_type").value = "STEP";
+                     document.insert_activity_form.submit(); 
                  } 
                  else 
                  { 
@@ -83,22 +83,23 @@
             contents="here"
             contents-hover="here"
             uri='javascript:
-                 if (document.getElementById("activity_type").value == "step")
+                 if (document.getElementById("activity_type").value == "") 
                  {
-                     alert("Not possible here (cannot insert into step)....");
+                     alert("Please highlight where...."); 
                  }
-                 else if (document.getElementById("activity_type").value == "script")
+                 else if(!(document.getElementById("activity_type").value == "sequence" | document.getElementById("activity_type").value == "flow"))
                  {
-                     alert("Not possible here (cannot insert into script)....");
+                     alert("Not possible here (cannot insert into " + document.getElementById("activity_type").value + ")....");
                  }                     
                  else if (document.getElementById("activity_key").value) 
                  {
-                     document.getElementById("activity_index_order_step").value = "HERE";
-                     document.insert_step_form.submit(); 
-                 } 
-                 else 
-                 { 
-                     alert("Please highlight where...."); 
+                     document.getElementById("activity_index_order").value = "HERE";
+                     document.getElementById("insert_activity_type").value = "STEP";                     
+                     document.insert_activity_form.submit(); 
+                 }
+                 else
+                 {
+                 alert("key " + document.getElementById("activity_key").value + "type " + document.getElementById("insert_activity_type").value);
                  }'
             target="_self"
             status-text="Insert step into workflow...."/>                
@@ -112,8 +113,9 @@
                  }                
                  else if (document.getElementById("activity_key").value) 
                  { 
-                     document.getElementById("activity_index_order_step").value = "AFTER";
-                     document.insert_step_form.submit(); 
+                     document.getElementById("activity_index_order").value = "AFTER";
+                     document.getElementById("insert_activity_type").value = "STEP";                     
+                     document.insert_activity_form.submit(); 
                  } 
                  else 
                  { 
@@ -140,8 +142,9 @@
                      }                
                      else if (document.getElementById("activity_key").value) 
                      { 
-                         document.getElementById("activity_index_order_flow").value = "BEFORE";
-                         document.insert_flow_form.submit(); 
+                         document.getElementById("activity_index_order").value = "BEFORE";
+                         document.getElementById("insert_activity_type").value = "FLOW";                         
+                         document.insert_activity_form.submit(); 
                      } 
                      else 
                      { 
@@ -153,18 +156,15 @@
                 contents="here"
                 contents-hover="here"
                 uri='javascript:
-                     if (document.getElementById("activity_type").value == "step")
+                     if (!(document.getElementById("activity_type").value == "sequence" | document.getElementById("activity_type").value == "flow"))
                      {
-                         alert("Not possible here (cannot insert into step)....");
-                     }
-                     else if (document.getElementById("activity_type").value == "script")
-                     {
-                         alert("Not possible here (cannot insert into script)....");
+                         alert("Not possible here (cannot insert into " + document.getElementById("activity_type").value + ")....");
                      }
                      else if (document.getElementById("activity_key").value) 
                      {
-                         document.getElementById("activity_index_order_flow").value = "HERE"; 
-                         document.insert_flow_form.submit(); 
+                         document.getElementById("activity_index_order").value = "HERE";
+                         document.getElementById("insert_activity_type").value = "FLOW"; 
+                         document.insert_activity_form.submit(); 
                      } 
                      else 
                      { 
@@ -182,8 +182,9 @@
                      }                
                      else if (document.getElementById("activity_key").value) 
                      {
-                         document.getElementById("activity_index_order_flow").value = "AFTER"; 
-                         document.insert_flow_form.submit(); 
+                         document.getElementById("activity_index_order").value = "AFTER";
+                         document.getElementById("insert_activity_type").value = "FLOW"; 
+                         document.insert_activity_form.submit(); 
                      } 
                      else 
                      { 
@@ -210,8 +211,9 @@
                      }                
                      else if (document.getElementById("activity_key").value) 
                      {
-                         document.getElementById("activity_index_order_sequence").value = "BEFORE"; 
-                         document.insert_sequence_form.submit(); 
+                         document.getElementById("activity_index_order").value = "BEFORE";
+                         document.getElementById("insert_activity_type").value = "SEQUENCE"; 
+                         document.insert_activity_form.submit(); 
                      } 
                      else 
                      { 
@@ -223,18 +225,15 @@
                 contents="here"
                 contents-hover="here"
                 uri='javascript:
-                     if (document.getElementById("activity_type").value == "step")
+                     if (!(document.getElementById("activity_type").value == "sequence" | document.getElementById("activity_type").value == "flow"))
                      {
-                         alert("Not possible here (cannot insert into step)....");
-                     }
-                     else if (document.getElementById("activity_type").value == "script")
-                     {
-                         alert("Not possible here (cannot insert into script)....");
+                         alert("Not possible here (cannot insert into " + document.getElementById("activity_type").value + ")....");
                      }                     
                      else if (document.getElementById("activity_key").value) 
                      { 
-                         document.getElementById("activity_index_order_sequence").value = "HERE";
-                         document.insert_sequence_form.submit(); 
+                         document.getElementById("activity_index_order").value = "HERE";
+                         document.getElementById("insert_activity_type").value = "SEQUENCE";
+                         document.insert_activity_form.submit(); 
                      } 
                      else 
                      { 
@@ -252,8 +251,9 @@
                      }                
                      else if (document.getElementById("activity_key").value) 
                      { 
-                         document.getElementById("activity_index_order_sequence").value = "AFTER";
-                         document.insert_sequence_form.submit(); 
+                         document.getElementById("activity_index_order").value = "AFTER";
+                         document.getElementById("insert_activity_type").value = "SEQUENCE";
+                         document.insert_activity_form.submit(); 
                      } 
                      else 
                      { 
@@ -266,13 +266,178 @@
                
         
     <agp:menu
-      contents="Logic:"
+      contents="Insert logic:"
       contents-hover="Insert logic..."
       uri=""
       target="_self"
       status-text="Insert logic...">        
+
         <agp:menu
-            contents="Insert script"
+            contents="If"
+            contents-hover="Insert if"
+            uri=""
+            target="_self"
+            status-text="Insert...">
+            <agp:item
+                contents="before"
+                contents-hover="before"
+                uri='javascript:
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert before root element)....");
+                     }                
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order").value = "BEFORE";
+                         document.getElementById("insert_activity_type").value = "IF";                         
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert if into workflow...."/>
+            <agp:item
+                contents="here"
+                contents-hover="here"
+                uri='javascript:
+                     if (!(document.getElementById("activity_type").value == "sequence" | document.getElementById("activity_type").value == "flow"))
+                     {
+                         alert("Not possible here (cannot insert into " + document.getElementById("activity_type").value + ")....");
+                     }                     
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order").value = "HERE";
+                         document.getElementById("insert_activity_type").value = "IF";
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert if into workflow...."/>                 
+            <agp:item
+                contents="after"
+                contents-hover="after"
+                uri='javascript:
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert after root element)....");
+                     }                
+                     else if (document.getElementById("activity_key").value) 
+                     {
+                         document.getElementById("activity_index_order").value = "AFTER";
+                         document.getElementById("insert_activity_type").value = "IF"; 
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert if into workflow...."/>
+        </agp:menu>                
+
+        <agp:menu
+            contents="-- Else"
+            contents-hover="Insert else"
+            uri=""
+            target="_self"
+            status-text="Insert...">
+            <agp:item
+                contents="here"
+                contents-hover="here"
+                uri='javascript:
+                     if (!(document.getElementById("activity_type").value == "ifObj" ) )
+                     {
+                         alert("Not possible here (then can only be inserted into an if activity)....");
+                     }                     
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order").value = "HERE";
+                         document.getElementById("insert_activity_type").value = "ELSE";
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert if into workflow...."/>                 
+        </agp:menu>
+
+        <agp:menu
+            contents="Scope"
+            contents-hover="Insert scope"
+            uri=""
+            target="_self"
+            status-text="Insert...">
+            <agp:item
+                contents="before"
+                contents-hover="before"
+                uri='javascript:
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert before root element)....");
+                     }                
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order").value = "BEFORE";
+                         document.getElementById("insert_activity_type").value = "SCOPE";                         
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert if into workflow...."/>
+            <agp:item
+                contents="here"
+                contents-hover="here"
+                uri='javascript:
+                     if (!(document.getElementById("activity_type").value == "sequence" | document.getElementById("activity_type").value == "flow"))
+                     {
+                         alert("Not possible here (cannot insert into " + document.getElementById("activity_type").value + ")....");
+                     }                     
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order").value = "HERE";
+                         document.getElementById("insert_activity_type").value = "SCOPE";
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert if into workflow...."/>                 
+            <agp:item
+                contents="after"
+                contents-hover="after"
+                uri='javascript:
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert after root element)....");
+                     }                
+                     else if (document.getElementById("activity_key").value) 
+                     {
+                         document.getElementById("activity_index_order").value = "AFTER";
+                         document.getElementById("insert_activity_type").value = "SCOPE"; 
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert if into workflow...."/>
+        </agp:menu>                
+        
+        <agp:menu
+            contents="Script"
             contents-hover="Insert script"
             uri=""
             target="_self"
@@ -284,62 +449,526 @@
                      if (document.getElementById("activity_key").value == "/sequence")
                      {
                          alert("Not possible here (cannot insert before root element)....");
-                     }                                
+                     }                
                      else if (document.getElementById("activity_key").value) 
                      { 
-                         document.getElementById("activity_index_order_script").value = "BEFORE";
-                         document.insert_script_form.submit(); 
-                     } 
-                     else 
-                     { 
-                         alert("Please highlight where...."); 
-                      }'
-                target="_self"
-                status-text="Insert step into workflow...."/>
-            <agp:item
-                contents="here"
-                contents-hover="here"
-                uri='javascript:
-                     if (document.getElementById("activity_type").value == "step")
-                     {
-                         alert("Not possible here (cannot insert into step)....");
-                     }
-                     else if (document.getElementById("activity_type").value == "script")
-                     {
-                         alert("Not possible here (cannot insert into script)....");
-                     }                     
-                     else if (document.getElementById("activity_key").value) 
-                     {
-                         document.getElementById("activity_index_order_script").value = "HERE";
-                         document.insert_script_form.submit(); 
+                         document.getElementById("activity_index_order").value = "BEFORE";
+                         document.getElementById("insert_activity_type").value = "SCRIPT";                         
+                         document.insert_activity_form.submit(); 
                      } 
                      else 
                      { 
                          alert("Please highlight where...."); 
                      }'
                 target="_self"
-                status-text="Insert step into workflow...."/>                 
+                status-text="Insert script into workflow...."/>
+            <agp:item
+                contents="here"
+                contents-hover="here"
+                uri='javascript:
+                     if (!(document.getElementById("activity_type").value == "sequence" | document.getElementById("activity_type").value == "flow"))
+                     {
+                         alert("Not possible here (cannot insert into " + document.getElementById("activity_type").value + ")....");
+                     }                     
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order").value = "HERE";
+                         document.getElementById("insert_activity_type").value = "SCRIPT";
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert script into workflow...."/>                 
             <agp:item
                 contents="after"
                 contents-hover="after"
-                uri='javascript: 
+                uri='javascript:
                      if (document.getElementById("activity_key").value == "/sequence")
                      {
                          alert("Not possible here (cannot insert after root element)....");
                      }                
                      else if (document.getElementById("activity_key").value) 
-                     { 
-                         document.getElementById("activity_index_order_script").value = "AFTER";
-                         document.insert_script_form.submit(); 
+                     {
+                         document.getElementById("activity_index_order").value = "AFTER";
+                         document.getElementById("insert_activity_type").value = "SCRIPT"; 
+                         document.insert_activity_form.submit(); 
                      } 
                      else 
                      { 
                          alert("Please highlight where...."); 
                      }'
                 target="_self"
-                status-text="Insert step into workflow...."/>
-        </agp:menu>        
-    </agp:menu>        
+                status-text="Insert script into workflow...."/>
+        </agp:menu>                                                                                            
+
+        <agp:menu
+            contents="Set"
+            contents-hover="Insert set"
+            uri=""
+            target="_self"
+            status-text="Insert...">
+            <agp:item
+                contents="before"
+                contents-hover="before"
+                uri='javascript:
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert before root element)....");
+                     }                
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order").value = "BEFORE";
+                         document.getElementById("insert_activity_type").value = "SET";                         
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert script into workflow...."/>
+            <agp:item
+                contents="here"
+                contents-hover="here"
+                uri='javascript:
+                     if (!(document.getElementById("activity_type").value == "sequence" | document.getElementById("activity_type").value == "flow"))
+                     {
+                         alert("Not possible here (cannot insert into " + document.getElementById("activity_type").value + ")....");
+                     }                     
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order").value = "HERE";
+                         document.getElementById("insert_activity_type").value = "SET";
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert script into workflow...."/>                 
+            <agp:item
+                contents="after"
+                contents-hover="after"
+                uri='javascript:
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert after root element)....");
+                     }                
+                     else if (document.getElementById("activity_key").value) 
+                     {
+                         document.getElementById("activity_index_order").value = "AFTER";
+                         document.getElementById("insert_activity_type").value = "SET"; 
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert script into workflow...."/>
+        </agp:menu>                                                                                            
+        <agp:menu
+            contents="Unset"
+            contents-hover="Insert unset"
+            uri=""
+            target="_self"
+            status-text="Insert...">
+            <agp:item
+                contents="before"
+                contents-hover="before"
+                uri='javascript:
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert before root element)....");
+                     }                
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order").value = "BEFORE";
+                         document.getElementById("insert_activity_type").value = "UNSET";                         
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert script into workflow...."/>
+            <agp:item
+                contents="here"
+                contents-hover="here"
+                uri='javascript:
+                     if (!(document.getElementById("activity_type").value == "sequence" | document.getElementById("activity_type").value == "flow"))
+                     {
+                         alert("Not possible here (cannot insert into " + document.getElementById("activity_type").value + ")....");
+                     }                     
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order").value = "HERE";
+                         document.getElementById("insert_activity_type").value = "UNSET";
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert script into workflow...."/>                 
+            <agp:item
+                contents="after"
+                contents-hover="after"
+                uri='javascript:
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert after root element)....");
+                     }                
+                     else if (document.getElementById("activity_key").value) 
+                     {
+                         document.getElementById("activity_index_order").value = "AFTER";
+                         document.getElementById("insert_activity_type").value = "UNSET"; 
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert script into workflow...."/>
+        </agp:menu>                                                                                            
+
+
+    </agp:menu> 
+
+    <agp:menu
+      contents="Insert loop:"
+      contents-hover="Loops"
+      uri=""
+      target="_self"
+      status-text="Loops...">
+        <agp:menu
+            contents="For loop"
+            contents-hover="Insert for loop"
+            uri=""
+            target="_self"
+            status-text="Insert...">
+            <agp:item
+                contents="before"
+                contents-hover="before"
+                uri='javascript:
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert before root element)....");
+                     }                
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order").value = "BEFORE";
+                         document.getElementById("insert_activity_type").value = "FORLOOP";                         
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert for loop into workflow...."/>
+            <agp:item
+                contents="here"
+                contents-hover="here"
+                uri='javascript:
+                     if (!(document.getElementById("activity_type").value == "sequence" | document.getElementById("activity_type").value == "flow"))
+                     {
+                         alert("Not possible here (cannot insert into " + document.getElementById("activity_type").value + ")....");
+                     }                     
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order").value = "HERE";
+                         document.getElementById("insert_activity_type").value = "FORLOOP";
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert for loop into workflow...."/>                 
+            <agp:item
+                contents="after"
+                contents-hover="after"
+                uri='javascript:
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert after root element)....");
+                     }                
+                     else if (document.getElementById("activity_key").value) 
+                     {
+                         document.getElementById("activity_index_order").value = "AFTER";
+                         document.getElementById("insert_activity_type").value = "FORLOOP"; 
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert for loop into workflow...."/>
+        </agp:menu>                 
+
+        <agp:menu
+            contents="Parallel For loop (beta)"
+            contents-hover="Insert parallel for loop"
+            uri=""
+            target="_self"
+            status-text="Insert parallel for loop...">
+            <agp:item
+                contents="before"
+                contents-hover="before"
+                uri='javascript:
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert before root element)....");
+                     }                
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order").value = "BEFORE";
+                         document.getElementById("insert_activity_type").value = "PARLOOP";                         
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert parallel for loop into workflow...."/>
+            <agp:item
+                contents="here"
+                contents-hover="here"
+                uri='javascript:
+                     if (!(document.getElementById("activity_type").value == "sequence" | document.getElementById("activity_type").value == "flow"))
+                     {
+                         alert("Not possible here (cannot insert into " + document.getElementById("activity_type").value + ")....");
+                     }                     
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order").value = "HERE";
+                         document.getElementById("insert_activity_type").value = "PARLOOP";
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert for loop into workflow...."/>                 
+            <agp:item
+                contents="after"
+                contents-hover="after"
+                uri='javascript:
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert after root element)....");
+                     }                
+                     else if (document.getElementById("activity_key").value) 
+                     {
+                         document.getElementById("activity_index_order").value = "AFTER";
+                         document.getElementById("insert_activity_type").value = "PARLOOP"; 
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert parallel for loop into workflow...."/>
+        </agp:menu>                 
+
+        <agp:menu
+            contents="While loop"
+            contents-hover="Insert while loop"
+            uri=""
+            target="_self"
+            status-text="Insert...">
+            <agp:item
+                contents="before"
+                contents-hover="before"
+                uri='javascript:
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert before root element)....");
+                     }                
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order").value = "BEFORE";
+                         document.getElementById("insert_activity_type").value = "WHILELOOP";                         
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert while loop into workflow...."/>
+            <agp:item
+                contents="here"
+                contents-hover="here"
+                uri='javascript:
+                     if (!(document.getElementById("activity_type").value == "sequence" | document.getElementById("activity_type").value == "flow"))
+                     {
+                         alert("Not possible here (cannot insert into " + document.getElementById("activity_type").value + ")....");
+                     }                     
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order").value = "HERE";
+                         document.getElementById("insert_activity_type").value = "WHILELOOP";
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert while loop into workflow...."/>                 
+            <agp:item
+                contents="after"
+                contents-hover="after"
+                uri='javascript:
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert after root element)....");
+                     }                
+                     else if (document.getElementById("activity_key").value) 
+                     {
+                         document.getElementById("activity_index_order").value = "AFTER";
+                         document.getElementById("insert_activity_type").value = "WHILELOOP"; 
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert while loop into workflow...."/>
+        </agp:menu>                                
+    </agp:menu>
+
+    <agp:menu
+      contents="Error handling:"
+      contents-hover="Error handling"
+      uri=""
+      target="_self"
+      status-text="Error handling...">           
+      <agp:item
+          contents="Try (to follow)"
+          contents-hover="Try"
+          uri=''
+          target="_self"
+          status-text="try...."/>
+      <agp:item
+          contents="Catch (to follow)"
+          contents-hover="Catch"
+          uri=''
+          target="_self"
+          status-text="catch...."/>                                 
+    </agp:menu>
+
+    <agp:menu
+        contents="Copy"
+        contents-hover="Copy"
+        uri=""
+        target="_self"
+        status-text="Copy.....">
+        <agp:item
+            contents="copy"
+            contents-hover="copy"
+            uri='javascript:
+                 if (document.getElementById("activity_type").value != "step")
+                 {
+                     alert("Not possible (can only copy + paste steps at present)....");
+                 }                
+                 else if (document.getElementById("activity_key").value) 
+                 { 
+                     document.getElementById("insert_activity_type").value = "COPY";
+                     document.insert_activity_form.submit(); 
+                 } 
+                 else 
+                 { 
+                     alert("Please highlight where...."); 
+                 }'
+            target="_self"
+            status-text="Insert while loop into workflow...."/>
+    </agp:menu>                
+
+
+        <agp:menu
+            contents="Paste"
+            contents-hover="Paste"
+            uri=""
+            target="_self"
+            status-text="Paste">
+            <agp:item
+                contents="before"
+                contents-hover="before"
+                uri='javascript:
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert before root element)....");
+                     }                
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order").value = "BEFORE";
+                         document.getElementById("insert_activity_type").value = "PASTE";                         
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Paste...."/>
+            <agp:item
+                contents="here"
+                contents-hover="here"
+                uri='javascript:
+                     if (!(document.getElementById("activity_type").value == "sequence" | document.getElementById("activity_type").value == "flow"))
+                     {
+                         alert("Not possible here (cannot insert into " + document.getElementById("activity_type").value + ")....");
+                     }                     
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order").value = "HERE";
+                         document.getElementById("insert_activity_type").value = "PASTE";
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Paste...."/>                 
+            <agp:item
+                contents="after"
+                contents-hover="after"
+                uri='javascript:
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert after root element)....");
+                     }                
+                     else if (document.getElementById("activity_key").value) 
+                     {
+                         document.getElementById("activity_index_order").value = "AFTER";
+                         document.getElementById("insert_activity_type").value = "PASTE"; 
+                         document.insert_activity_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Paste...."/>
+        </agp:menu>
+
                 
     <agp:item
         contents="Remove"

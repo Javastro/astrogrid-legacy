@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
- 
+
+  <!--+ 
+       | Author: Phil Nicolson "pjn3@star.le.ac.uk"
+       | Date:   Sept 2004
+       +--> 
   
       <!--+
           | Match the root element.
