@@ -1,0 +1,159 @@
+package id193h3debthurfdebw81l8;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id193h3debthurfdebw81l8.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id193h3debthurfdebw81l8.node38:oiref><oihard>
+@__modelType reference 
+*/
+class reference39 {
+}/**
+@__ref <oiref:design#Class#id193h3debthurfdebw81l8.node40:oiref><oihard>
+@__modelType reference 
+*/
+class reference41 {
+}/**
+@__ref <oiref:design#Class#id193h3debthurfdebw81l8.node42:oiref><oihard>
+@__modelType reference 
+*/
+class reference43 {
+}/**
+@__ref <oiref:design#Class#id193h3debthurfdebw81l8.node44:oiref><oihard>
+@__modelType reference 
+*/
+class reference45 {
+}/**
+@__ref <oiref:design#Class#id193h3debthurfdebw81l8.node47:oiref><oihard>
+@__modelType reference 
+*/
+class reference48 {
+}/**
+@__ref <oiref:design#Class#id193h3debthurfdebw81l8.node49:oiref><oihard>
+@__modelType reference 
+*/
+class reference50 {
+}/**
+@__ref <oiref:design#Class#id193h3debthurfdebw81l8.node1:oiref><oihard>
+@__modelType reference 
+*/
+class reference2 {
+}}/**
+User examines VOTable data
+@__tags
+@shapeType UseCaseDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id193h3debthurfdebw81l8.node42.link3:oiref>=450,200,747,153:oigroup>
+<oigroup:<oiref:design#Class#id193h3debthurfdebw81l8.node44.link:oiref>=738,267,800,314:oigroup>
+<oigroup:<oiref:design#Class#id193h3debthurfdebw81l8.node.link:oiref>=137,258,300,217:oigroup>
+<oigroup:<oiref:design#Class#id193h3debthurfdebw81l8.node42:oiref>=300,200,200,27,0:oigroup>
+<oigroup:<oiref:design#Class#id193h3debthurfdebw81l8.node:oiref>=85,248,52,77,1:oigroup>
+<oigroup:<oiref:design#Class#id193h3debthurfdebw81l8.node1:oiref>=673,126,149,27,1:oigroup>
+<oigroup:<oiref:design#Class#id193h3debthurfdebw81l8.node47:oiref>=600,450,105,27,1:oigroup>
+<oigroup:<oiref:design#Class#id193h3debthurfdebw81l8.node38.link:oiref>=836,377,652,450:oigroup>
+<oigroup:<oiref:design#Class#id193h3debthurfdebw81l8.node40:oiref>=500,50,188,27,0:oigroup>
+<oigroup:<oiref:design#Class#id193h3debthurfdebw81l8.node42.link:oiref>=400,200,594,77:oigroup>
+<oigroup:<oiref:design#Class#id193h3debthurfdebw81l8.node38:oiref>=800,300,73,77,1:oigroup>
+<oigroup:<oiref:design#Class#id193h3debthurfdebw81l8.node42.link46:oiref>=500,217,600,260:oigroup>
+<oigroup:<oiref:design#Class#id193h3debthurfdebw81l8.node44:oiref>=600,250,138,27,0:oigroup>
+<oigroup:<oiref:design#Class#id193h3debthurfdebw81l8.node49:oiref>=206,387,75,77,1:oigroup>
+*/
+class __positions {
+}/**
+@shapeType Actor
+@__modelType node
+@name User 
+*/
+class node {
+/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id193h3debthurfdebw81l8.node42:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Actor
+@__modelType node
+@name DataSource 
+*/
+class node38 {
+/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id193h3debthurfdebw81l8.node47:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name Portal-Astropass 
+*/
+class node40 {
+}/**
+@shapeType UseCase
+@__modelType node
+@name Obtain  data
+*/
+class node42 {
+/**
+@shapeType IncludesLink
+@__modelType link
+@__ref <oiref:design#Class#id193h3debthurfdebw81l8.node40:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType IncludesLink
+@__modelType link
+@__ref <oiref:design#Class#id193h3debthurfdebw81l8.node44:oiref><oihard> 
+*/
+class link46 {
+}/**
+@shapeType IncludesLink
+@__modelType link
+@__ref <oiref:design#Class#id193h3debthurfdebw81l8.node1:oiref><oihard> 
+*/
+class link3 {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name Request data 
+*/
+class node44 {
+/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id193h3debthurfdebw81l8.node38:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name Supply data 
+*/
+class node47 {
+}/**
+@shapeType Actor
+@__modelType node
+@name PortalServer 
+*/
+class node49 {
+}/**
+@shapeType UseCase
+@__modelType node
+@name Obtain list of data 
+*/
+class node1 {
+}

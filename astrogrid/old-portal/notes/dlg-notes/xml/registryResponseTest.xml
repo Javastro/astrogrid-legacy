@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queryResponse xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="C:\Documents and Settings\dlg25\My Documents\dlg\GRIDS\Iterations\IterationTwo\project\registryQueryResponse.xsd">
+<responseRecord>
+<recordKeyPair item='id' value='SURF'/>
+<recordKeyPair item='servicelocation' 
+value='http://surfwww.mssl.ucl.ac.uk/surf/data_request.html'/>
+<recordKeyPair item='master' 
+value='http://surfwww.mssl.ucl.ac.uk/surf/data_request.html'/>
+<recordKeyPair item='community' value='MSSL'/>
+<recordKeyPair item='title' value='Solar U.K. Research Facility'/>
+<recordKeyPair item='publisher' value='Dr. Carl Foley'/>
+<recordKeyPair item='creator' value='Dr. Carl Foley'/>
+<recordKeyPair item='subject' value='Solar data'/>
+<recordKeyPair item='subject' value='Solar Flares'/>
+<recordKeyPair item='spacecraft' value='Yohkoh'/>
+<recordKeyPair item='spacecraft' value='TRACE'/>
+<recordKeyPair item='spacecraft' value='SOHO'/>
+<recordKeyPair item='spacecraft' value='ReSIK'/>
+<recordKeyPair item='instrument' value='BCS'/>
+<recordKeyPair item='instrument' value='HXT'/>
+<recordKeyPair item='instrument' value='SXT (FFI)'/>
+<recordKeyPair item='instrument' value='SXT (PFI)'/>
+<recordKeyPair item='instrument' value='WBS'/>
+<recordKeyPair item='instrument' value='CDS'/>
+<recordKeyPair item='date' value='2003-03-06'/>
+<recordKeyPair item='name' value='Carl Foley'/>
+<recordKeyPair item='email' value='caf@mssl.ucl.ac.uk'/>
+</responseRecord>
+</queryResponse>

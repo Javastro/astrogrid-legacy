@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:simpleType name="selectionItem">
+        <xs:extension base="xs:string"/>
+    </xs:simpleType>
+    <xs:simpleType name="selectionItemOp">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="EQ"/>
+            <xs:enumeration value="NE"/>
+            <xs:enumeration value="GT"/>
+            <xs:enumeration value="GE"/>
+            <xs:enumeration value="LT"/>
+            <xs:enumeration value="LE"/>
+            <xs:enumeration value="STARTS WITH"/>
+            <xs:enumeration value="CONTAINS"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="selectionValue">
+        <xs:extension base="xs:string"/>
+    </xs:simpleType>
+    <xs:simpleType name="selectionSequenceOp">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="AND"/>
+            <xs:enumeration value="OR"/>
+            <xs:enumeration value="NOT"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:element name="selection">
+        <xs:complexType>
+            <xs:simpleContent>
+               <xs:extension base="xs:string">
+                  <xs:attribute name="item" maxOccurs="1" minOccurs="1"  maxOccurs="1" type="selectionItem"/>
+                  <xs:attribute name="itemOp" maxOccurs="1" minOccurs="1" maxOccurs="1" type="selectionItemOp"/>
+                  <xs:attribute name="value" maxOccurs="1" minOccurs="1" maxOccurs="1" type="selectionValue"/>
+               </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="selectionOp">
+        <xs:complexType>
+            <xs:simpleContent>
+               <xs:extension base="xs:string">
+                  <xs:attribute name="op" maxOccurs="1" minOccurs="1"  maxOccurs="1" type="selectionSequenceOp"/>
+               </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="selectionSequence">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" minOccurs="1" ref="selection"/>
+                <xs:element maxOccurs="unbounded" minOccurs="0" ref="selectionOp"/>
+                <xs:element maxOccurs="unbounded" minOccurs="1" ref="selectionSequence"/>
+           </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

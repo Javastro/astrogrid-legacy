@@ -1,0 +1,39 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Build Query</title>
+</head>
+
+<body>
+<form method="POST" action="BuildQueryAction">
+
+  <h2><font color="#FF0000">Build Query</font></h2>
+  <select size="7" name="D2">
+<option value="RAJ2000">RAJ2000 (degree)   </option>
+<option value="DEJ2000">DEJ2000 (degree)   </option>
+<option value="e_RAdeg">e_RAdeg (mas)</option>
+<option value="e_DEdeg">e_DEdeg (mas)</option>
+<option value="Epoch">Epoch (yr)     </option>
+<option value="pmRA">pmRA (mas/yr)      </option>
+<option value="pmDE">pmDE (mas/yr)      </option>
+<option>Ndet      </option>
+<option value="B1mag">B1mag (mag)     </option>
+<option value="R1mag">R1mag (mag)     </option>
+<option value="B2mag">B2mag (mag)     </option>
+<option value="R2mag">R2mag (mag)     </option>
+<option value="Imag">Imag (mag)      </option>
+    </select> <select size="7" name="Function">
+      <option>&lt;</option>
+      <option>&gt;</option>
+      <option>=</option>
+      <option>NOT</option>
+    </select> <input type="text" name="T1" size="20"> <input type="radio" name="-sort" value="V1" checked>
+  OR <input type="radio" name="-sort" value="V2">AND <input type="button" value="Insert criterion" name="B3">
+  <input type="button" value="Remove criterion" name="B4"> <textarea rows="7" name="S1" cols="40"></textarea>
+  <p>
+  <input type="submit" value="Submit" name="B1"><input type="reset" value="Reset" name="B2"></p>
+</form>
+</body>
+
+</html>

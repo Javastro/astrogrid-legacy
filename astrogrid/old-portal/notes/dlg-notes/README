@@ -1,0 +1,5 @@
+This directory contains a variety of test files  including
+- Together files generated when using Together to look at the whole cvs repository
+- xml directory - various schema and other xml related files
+- html directory - various mock-up Web pages
+- java directory - various java classes for testing

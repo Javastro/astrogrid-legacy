@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:include schemaLocation="registryService.xsd"/>
+    <xs:include schemaLocation="dataService.xsd"/>
+    <xs:include schemaLocation="workspaceService.xsd"/>
+    <xs:include schemaLocation="processingService.xsd"/>
+    <xs:element name="id" type="xs:string"/>
+    <xs:element name="title" type="xs:string"/>
+    <xs:element name="publisher" type="xs:string"/>
+    <xs:element name="creator" type="xs:string"/>
+    <xs:element name="description" type="xs:string"/>
+    <xs:element name="contributor" type="xs:string"/>
+    <xs:element name="date" type="xs:date"/>
+    <xs:element name="version" type="xs:string"/>
+    <!-- next element is a pointer to information about service -->
+    <xs:element name="serviceURL" type="xs:anyURI"/>
+    <xs:element name="serviceType">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element maxOccurs="1" minOccurs="1" ref="registrySvc"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="dataSvc"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="workspaceSvc"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="processingSvc"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="subjectList">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" minOccurs="0" name="subject" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="contact">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="1" minOccurs="1" name="name" type="xs:string"/>
+                <xs:element maxOccurs="1" minOccurs="1" name="email" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="service">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="1" minOccurs="1" ref="id"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="serviceType"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="title"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="publisher"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="creator"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="subjectList"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="description"/>
+                <xs:element maxOccurs="1" minOccurs="0" ref="contributor"/>
+                <xs:element maxOccurs="1" minOccurs="0" ref="date"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="version"/>
+                <xs:element maxOccurs="1" minOccurs="0" ref="serviceURL"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="contact"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
