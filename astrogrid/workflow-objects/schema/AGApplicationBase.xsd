@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: AGApplicationBase.xsd,v 1.4 2004/03/09 18:21:23 pah Exp $ -->
+<!-- $Id: AGApplicationBase.xsd,v 1.5 2004/03/10 17:13:11 pah Exp $ -->
 <!-- This is refactored from the AGParameterDefinition.xsd -->
 <!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Paul Harrison (Jodrell Bank Observatory) -->
 <xs:schema targetNamespace="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:agab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
@@ -21,7 +21,7 @@
 			<xs:element name="Parameters">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element ref="agab:Parameter" maxOccurs="unbounded"/>
+						<xs:element ref="agab:Parameter" minOccurs="0" maxOccurs="unbounded"/>
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -137,15 +137,10 @@
 			<xs:element name="Interface" type="agab:Interface" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:element name="Parameter" abstract="true">
+	<xs:element name="Parameter" type="agpd:BaseParameterDefinition" abstract="true">
 		<xs:annotation>
 			<xs:documentation>A generalised parameter - this is a substitution point</xs:documentation>
 		</xs:annotation>
-		<xs:complexType>
-			<xs:complexContent>
-				<xs:extension base="agpd:BaseParameterDefinition"/>
-			</xs:complexContent>
-		</xs:complexType>
 	</xs:element>
 	<xs:complexType name="CommonExecutionConnectorConfigType">
 		<xs:annotation>
@@ -257,7 +252,8 @@
 		</xs:complexType>
 	</xs:element>
 	<!--need a way to represent a list of applications-->
-	<xs:complexType name="ApplicationList">
+	<xs:element name="ApplicationList">
+	<xs:complexType >
 		<xs:annotation>
 			<xs:documentation>list of applications</xs:documentation>
 		</xs:annotation>
@@ -269,4 +265,5 @@
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
+	</xs:element>
 </xs:schema>
