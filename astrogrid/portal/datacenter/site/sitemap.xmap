@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.10 2004/07/06 13:04:20 jl99 Exp $
+    | CVS $Id: sitemap.xmap,v 1.11 2004/07/07 14:25:23 pfo Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -319,3 +319,7 @@
   </map:pipelines>
 
 </map:sitemap>
+
+<!--
+ verifying the cvs branching system
+ -->
