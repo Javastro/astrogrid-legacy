@@ -1,15 +1,5 @@
 <project name="install" default="install-portal" basedir=".">
-    <!-- Configure the custom Ant tasks for the Manager application -->
-    <taskdef name="tomcat-deploy" classname="org.apache.catalina.ant.DeployTask" />
-    <taskdef name="tomcat-install" classname="org.apache.catalina.ant.InstallTask" />
-    <taskdef name="tomcat-list" classname="org.apache.catalina.ant.ListTask" />
-    <taskdef name="tomcat-reload" classname="org.apache.catalina.ant.ReloadTask" />
-    <taskdef name="tomcat-remove" classname="org.apache.catalina.ant.RemoveTask" />
-    <taskdef name="tomcat-resources" classname="org.apache.catalina.ant.ResourcesTask" />
-    <taskdef name="tomcat-roles" classname="org.apache.catalina.ant.RolesTask" />
-    <taskdef name="tomcat-start" classname="org.apache.catalina.ant.StartTask" />
-    <taskdef name="tomcat-stop" classname="org.apache.catalina.ant.StopTask" />
-    <taskdef name="tomcat-undeploy" classname="org.apache.catalina.ant.UndeployTask" />
+ 
     
     <property file="default.properties"/>
     <property name="portal.temporary.dir" value="portal-tmp"/>
@@ -92,11 +82,21 @@
     <target name="createTmpDir">
         <mkdir dir="${portal.temporary.dir}"/>
     </target>
-    <target name="portal-deploy" depends="createTmpDir,checkTomcat,checkRegistry,downloadPortal,updatePortalWar">
+	
+    <!-- Configure the custom Ant tasks for the Manager application -->
+	<!-- The reason for making these optional is that they might be already
+	     set by an enclosing Maven? script-->
+	<target name="define-custom-tasks" unless="tasks.already.set">
+    	<taskdef name="tomcat-deploy" classname="org.apache.catalina.ant.DeployTask" />	
+    	<taskdef name="tomcat-undeploy" classname="org.apache.catalina.ant.UndeployTask" />
+	</target>
+	
+	
+    <target name="portal-deploy" depends="define-custom-tasks,createTmpDir,checkTomcat,checkRegistry,downloadPortal,updatePortalWar">
         <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}" 
             path="${portal.contextpath}" war="${local.portal.war}" />
     </target>
-    <target name="portal-undeploy" depends="checkTomcat">
+    <target name="portal-undeploy" depends="define-custom-tasks,checkTomcat">
         <tomcat-remove url="${tomcat.manager.url}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}" 
             path="${portal.contextpath}"  />
     </target>    
