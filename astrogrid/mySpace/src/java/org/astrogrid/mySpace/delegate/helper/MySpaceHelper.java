@@ -5,7 +5,7 @@ import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource ;
 
-import org.astrogrid.community.User;
+// import org.astrogrid.community.User;
 
 import java.util.Vector;
 
@@ -16,12 +16,14 @@ import java.util.Vector;
 
 public class MySpaceHelper{
     
-    private static boolean DEBUG = true;
+    private static boolean DEBUG = false;
 	
 	//Constructor
 	public MySpaceHelper (){}
 		
     public String buildSave(String userid, String communityid, String credential, String fileName, String fileContent, String category, String action){
+  //This does not allow a general reference to be made - in addition does not allow for general container and the userid in the call could be making an upload into another users myspace
+  //      String fileFullName = "/"+userid.trim()+"@"+communityid.trim()+"/serv1/"+category.toLowerCase().trim()+"/"+fileName.trim();
 		StringBuffer request = new StringBuffer() ;
 		try {		
 			request.append("<request>") ;
@@ -58,7 +60,8 @@ public class MySpaceHelper{
 	}
 	
 	public String buildSaveURL(String userid, String communityid, String credential, String fileName, String importURL, String category, String action){
- 		StringBuffer request = new StringBuffer() ;
+//		String fileFullName = "/"+userid.trim()+"/"+communityid.trim()+"/serv1/"+category.toLowerCase().trim()+"/"+fileName.trim();
+		StringBuffer request = new StringBuffer() ;
 		try {		
 			request.append("<request>") ;
 			request.append("<userID>") ;
@@ -396,7 +399,7 @@ public class MySpaceHelper{
 										request.add(text);
 									}
 																
-									System.out.println("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
+									if (DEBUG) System.out.println("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
 								}
 							}
 							ascending = false;					
@@ -414,7 +417,7 @@ public class MySpaceHelper{
 										request.add(text);
 									}								
 									
-									System.out.println("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
+									if (DEBUG) System.out.println("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
 								}
 							}
 							ascending = true;
@@ -450,7 +453,6 @@ public class MySpaceHelper{
    public static String formatMyspaceReference(User user, String server, String container, String file)
    {
       return "/"+user.getUserId()+"@"+user.getCommunity()+"/"+server+"/"+container+"/"+file;
-   
    }
 
    public static String formatMyspaceContainerReference(User user, String server, String container)
@@ -458,4 +460,4 @@ public class MySpaceHelper{
       return "/"+user.getUserId()+"@"+user.getCommunity()+"/"+server+"/"+container;
    }
 	
-}	
+}

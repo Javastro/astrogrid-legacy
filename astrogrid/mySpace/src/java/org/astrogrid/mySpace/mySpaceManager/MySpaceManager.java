@@ -65,7 +65,7 @@ public class MySpaceManager {
         private static Logger logger = new Logger (true, true, true,
           "./myspace.log");
 
-	private static boolean DEBUG = true;
+	private static boolean DEBUG = false;
 	private static MySpaceStatus status = new MySpaceStatus();
 	
 	private MySpaceUtils util = new MySpaceUtils();
@@ -131,7 +131,24 @@ public class MySpaceManager {
 		
 			try{
 				response = getValues(jobDetails);
-	
+
+//
+//				Decode the file contents (they have been
+//				encoded in order to prevent Axis etc. getting
+//				confused if the contents are an XML-fragment.
+
+				int contentLength = fileContent.length();
+				byte[] contentBytes = fileContent.getBytes("UTF-8");
+
+				int temp;
+
+				for (int loop = 0; loop<contentLength; loop++)
+				{  temp = contentBytes[loop] - 1;
+				   contentBytes[loop] = (byte)temp;
+				}
+
+				String decodedContent = new String(contentBytes);
+
 				if ( DEBUG ) logger.appendMessage("About to invoke myspaceaction.upLoadDataHolder");  
 				msA.setRegistryName(registryName);
 
@@ -145,11 +162,11 @@ public class MySpaceManager {
 				  "action, dispatchExisting: " + action
 				   + "  " +   dispatchExisting);
 
-				//this need to be considered when to invoke import when to invoke upload.
+				//this need to be considered: when to invoke import when to invoke upload.
 
 				dataitem = msA.upLoadDataHolder(
 					userID, communityID, credential, newDataHolderName,
-					fileContent, contentsType, dispatchExisting);
+					decodedContent, contentsType, dispatchExisting);
 	
 				if( DEBUG ) logger.appendMessage("UploaderroCode is:" +errCode);
 				if ( errCode!="" )    

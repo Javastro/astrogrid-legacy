@@ -18,8 +18,8 @@ public class MySpaceManagerDelegate implements MySpaceClient {
 
     private String mssUrl = " ";       // MSS the delegate is operating on.
     private Vector queryMssUrl = new Vector(); // Vector of MSSs to query.
-    private boolean DEBUG = false;
-//    private boolean DEBUG = true;
+//    private boolean DEBUG = false;
+    private boolean DEBUG = true;
 
     private static DeLogger logger = new DeLogger (false, false,
       "./delegate.log");
@@ -558,8 +558,25 @@ public class MySpaceManagerDelegate implements MySpaceClient {
             }
         }
         try{
+//
+//         Encode the string (in order to prevent an XML-snippet from
+//         confusing Axis etc).
+
+            int contentLength = fileContent.length();
+            byte[] contentBytes = fileContent.getBytes("UTF-8");
+
+            int temp;
+
+            for (int loop = 0; loop<contentLength; loop++)
+            {  temp = contentBytes[loop] + 1;
+               contentBytes[loop] = (byte)temp;
+            }
+
+            String transport = new String(contentBytes);
+
+
             MySpaceHelper helper = new MySpaceHelper();
-            String jobDetails = helper.buildSave(userId, communityId, credential, fileName, fileContent, category, action);
+            String jobDetails = helper.buildSave(userId, communityId, credential, fileName, transport, category, action);
             binding.upLoad(jobDetails);
             isSaved = true;
         }catch(java.rmi.RemoteException re) {
@@ -588,10 +605,13 @@ public class MySpaceManagerDelegate implements MySpaceClient {
                                    String category, String action) throws Exception {
         org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
 
+        DeLogger herelogger = new DeLogger (true, true, 
+           "/home/avo/myspacedata/delegate.log");
+
 	if (DEBUG)
-	{  logger.appendMessage("Entering saveDataHoldingURL...");
-	   logger.appendMessage("  fileName: " + fileName);
-	   logger.appendMessage("  importURL: " + importURL);
+	{  herelogger.appendMessage("Entering saveDataHoldingURL...");
+	   herelogger.appendMessage("  fileName: " + fileName);
+	   herelogger.appendMessage("  importURL: " + importURL);
 	}
 
         boolean isSaved = false;
@@ -608,16 +628,16 @@ public class MySpaceManagerDelegate implements MySpaceClient {
         }
         try{
             MySpaceHelper helper = new MySpaceHelper();
-	    if (DEBUG) logger.appendMessage("    before buildSaveURL...");
+	    if (DEBUG) herelogger.appendMessage("    before buildSaveURL...");
             String jobDetails = helper.buildSaveURL(userId, communityId,
         credential, fileName, importURL, category, action);
 	    if (DEBUG)
-	    {  logger.appendMessage("    before upLoadURL...");
-               logger.appendMessage("    filename: "+fileName+ 
+	    {  herelogger.appendMessage("    before upLoadURL...");
+               herelogger.appendMessage("    filename: "+fileName+ 
 	          "importURL: "+importURL);
             }
             binding.upLoadURL(jobDetails);
-	    if (DEBUG) logger.appendMessage("    after upLoadURL...");
+	    if (DEBUG) herelogger.appendMessage("    after upLoadURL...");
             isSaved = true;
         }catch(java.rmi.RemoteException re) {
             isSaved = false;

@@ -1,5 +1,10 @@
 package org.astrogrid.mySpace.mySpaceManager;
 
+import org.astrogrid.Configurator;
+import org.astrogrid.i18n.*;
+
+import org.astrogrid.mySpace.mySpaceManager.MMC;
+
 /**
  * The <code>Configuration</code> class controls the configuration of a
  * MySpace manager.
@@ -10,6 +15,7 @@ package org.astrogrid.mySpace.mySpaceManager;
  * hence the way that it behaves.
  *
  * @author A C Davenhall (Edinburgh)
+ * @since Iteration 4.
  * @version Iteration 4.
  */
 
@@ -25,15 +31,14 @@ public class Configuration
 //
 // Specify whether de-bugging output is to be produced.
 
-//   private static boolean DEBUG = false;
-   private static boolean DEBUG = true;
+   private static boolean DEBUG = false;
 
 //
 // Specify whether the MySpace manager will check whether the requested
 // operation is permitted by calling an AstroGrid permissions server.
 // If permissions are disabled then operations are always permitted.
 
-   private static boolean CHECKPERMISSIONS = false;
+   private static boolean CHECKPERMISSIONS = true;
 
 //
 // Specify how the MySpace system is to be configured.  The options are
@@ -66,14 +71,52 @@ public class Configuration
    }
 
 /**
- * Create a <code>Configuration</code> object and reset the configuration
- * options.  A single dummy argument is passed.
+ * Create a <code>Configuration</code> object and read the configuration
+ * options from the properties file.
+ *
+ * @param dummy A dummy argument to specify this constructor.  By
+ *  convention this argument has the value "properties");
  */
 
    public Configuration (String dummy)
-   {  this.DEBUG = false;
-      this.CHECKPERMISSIONS = false;
-      this.SERVERDEPLOYMENT = INTERNALSERVERS;
+   {  
+//
+//   Obtain the DEBUG option.
+
+      String debugProperty = MMC.getProperty(MMC.DEBUG, MMC.CATLOG);
+
+      DEBUG = false;
+
+      if (debugProperty.equalsIgnoreCase("true") )
+      {  DEBUG = true;
+      }
+
+//
+//   Obtain the CHECKPERMISSIONS option.
+
+      String checkPermissionsProperty =
+        MMC.getProperty(MMC.CHECKPERMISSIONS, MMC.CATLOG);
+
+      CHECKPERMISSIONS = false;
+
+      if (checkPermissionsProperty.equalsIgnoreCase("true") )
+      {  CHECKPERMISSIONS = true;
+      }
+
+//
+//   Obtain the SERVERDEPLOYMENT option.
+
+      String serverDeploymentProperty =
+        MMC.getProperty(MMC.SERVERDEPLOYMENT, MMC.CATLOG);
+
+      SERVERDEPLOYMENT = INTERNALSERVERS;
+
+      if (serverDeploymentProperty.equalsIgnoreCase("SEPARATESERVERS") )
+      {  SERVERDEPLOYMENT = SEPARATESERVERS;
+      }
+      else if (serverDeploymentProperty.equalsIgnoreCase("MANAGERONLY") )
+      {  SERVERDEPLOYMENT = MANAGERONLY;
+      }
    }
 
 /**
@@ -135,5 +178,22 @@ public class Configuration
 
    public int getSERVERDEPLOYMENT()
    {  return SERVERDEPLOYMENT;
+   }
+
+//
+// ----------------------------------------------------------------------
+//
+// Other methods.
+
+/**
+ * Reset a <code>Configuration</code> object.  The configuration options
+ * are reset to the initial, hard-wired values that they had when the
+ * object was created.
+ */
+
+   public void reset ()
+   {  this.DEBUG = false;
+      this.CHECKPERMISSIONS = true;
+      this.SERVERDEPLOYMENT = INTERNALSERVERS;
    }
 }

@@ -4,6 +4,8 @@ import java.io.*;
 import java.util.*;
 
 import org.astrogrid.mySpace.mySpaceManager.*;
+
+import org.astrogrid.mySpace.mySpaceStatus.Logger;
 import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatus;
 import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
 
@@ -18,8 +20,12 @@ import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
  * @version Iteration 3.
  */
 
-public class CreateMySpaceRegistry
-{  private static MySpaceStatus status = new MySpaceStatus();
+class CreateMySpaceRegistry
+{  private Logger logger = new Logger(false, true, true, "./myspace.log");
+   private Configuration config = new Configuration(true, false,
+     Configuration.MANAGERONLY);
+
+   private static MySpaceStatus status = new MySpaceStatus();
 
 /**
  * Read the file containing details of the servers known to the

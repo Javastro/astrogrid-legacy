@@ -4,12 +4,14 @@ import java.util.*;
 import junit.framework.*;
 
 import org.astrogrid.mySpace.mySpaceServer.ServerManager;
+import org.astrogrid.mySpace.mySpaceStatus.Logger;
 
 /**
  * Junit tests for the <code>ServerManager</code> class.
  *
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 3.
+ * @since Iteration 3.
+ * @version Iteration 4.
  */
 
 public class ServerManagerTest extends TestCase
@@ -40,6 +42,8 @@ public class ServerManagerTest extends TestCase
 
    public void testAllMethods()
    {  String response;
+
+      Logger logger = new Logger(false, true, true, "./myspace.log");
 
       ServerManager server = new ServerManager();
 
