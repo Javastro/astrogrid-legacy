@@ -96,7 +96,7 @@ public class WhoAmITest extends TestCase {
     String result = p.whoAmI();
     assertNotNull(result);
     System.out.println("Result of whoAmI() in client: " + result);
-    assertEquals(result, account);
+    assertEquals(account, result);
   }
 
 }
