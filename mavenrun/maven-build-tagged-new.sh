@@ -41,6 +41,7 @@ rm -fr $BUILD_HOME/astrogrid/maven* >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] removing astrogrid files from local maven repository"
 rm -rf  ~/.maven/repository/astrogrid*
+rm -rf  ~/.maven/repository/org.astrogrid
 
 echo "[ag-build-$PROJECT_NAME] cvs checkout for tag $TAGNAME"
 #first need to check out the common maven stuff
