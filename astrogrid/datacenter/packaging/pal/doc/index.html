@@ -3,9 +3,11 @@
     <title>Astrogrid Datacenter Documentation</title>
     <meta content="">
     <style>dt{font-weight:bold;padding-top:5px;}
-    h1,h2{background-color:#CCCCCC;}
-    h3,h4{background-color:#DDDDDD;margin-left:10px;}
-    pre{background-color:#EEEEEE;margin-left:20px;padding:5px;}
+    h1,h2{background-color:#CCEEEE;}
+    h3,h4{background-color:#EECCEE;}
+    pre{background-color:#EEEECC;margin-left:20px;padding:5px;}
+    div.nw{margin-left:50px;margin-right:50px;color:#FF0000;
+    	background-color:yellow;padding:5px;}
     </style>
   </head>
   <body>
@@ -30,118 +32,198 @@ The Datacenter Server relies upon the following software components, which must 
 <dl>
 <dt>Java Virtual Machine</dt>
 <dd>
-Specify version. Available from <a href="">find link</a>
+Requires Java (J2SE) version 1.4 or higher. Available from <a href="http://java.sun.com/j2se/downloads.html">http://java.sun.com/j2se/downloads.html</a>
 </dd>
 <dt>Tomcat Server</dt>
-<dd>Available from <a href="">find link</a>; Installation instructions <a href="">find link</a>. Specify versions.
+<dd>Requires version 4.1. Available from <a href="http://jakarta.apache.org/tomcat/">http://jakarta.apache.org/tomcat/</a>; Installation instructions <a href="http://jakarta.apache.org/tomcat/tomcat-4.1-doc/RUNNING.txt">http://jakarta.apache.org/tomcat/tomcat-4.1-doc/RUNNING.txt</a>.
 <p>
-Set shell variable <tt>CATALINA_HOME</tt> to the root of your tomcat installation, as detailed in their instructions.
+Set shell variable <tt>CATALINA_HOME</tt> to the root of your tomcat installation, as described in the installation instructions.
 </dd>
-<dt>A JDBC-compliant database</dt>
+<dt>A JDBC-compliant RDBMS</dt>
 <dd>
-The Datacenter Server connects to the data collection via a JDBC driver. Hence the collection should be stored in a database for which a JDBC driver is available. The Publishers Astrogrid Library bundles drivers for
+The Datacenter Server connects to the data collection via a <a href="http://java.sun.com/products/jdbc/">JDBC</a> driver. Hence the collection should be stored in a database within a Relational DataBase Management System (RDBMS) for which a JDBC driver is available. The Publishers Astrogrid Library bundles drivers for for the following RDBMS:
 <ul>
-<li>MySQL - the MM-MySQL JDBC Driver
-<li>Sybase -
-<li>HSQL -
+<li><a href="http://www.mysql.com/">MySQL</a> - the MM-MySQL JDBC Driver
+<li><a href="http://hsqldb.sourceforge.net/">HSQL</a> - pure-Java RDBMS. For testing purposes or serving small databases based on textfiles.
+<li>Sybase - <i>find driver &amp; details</i>
+<li>Microsoft SQL Server - <i>find driver &amp; details</i>
 </ul>
 <p>
-Interfacing to other databases is also possible, but requires an appropriate JDBC driver.
+Interfacing to other RDBMS is also possible, but requires an appropriate JDBC driver.
 <p>
-Accessing forms of data storage other than JDBC-databases is theoretically possible, but would require writing custom code to interface with the database.
+Accessing forms of data storage other than JDBC-compliant RDBMS is theoretically possible, but would require writing custom code to interface with the database, and is outside the scope of this document. <i>add link to mailing list or something for further info</i>
+</dd>
+
+<dt>Publishers Astrogrid Library</dt>
+<dd>
+<div class="nw">add link to latest version</div>
+The PAL is a zip of documentation and code necessary to install a dataserver.
+As you're reading this document, you've probably already got this. In the instructions that follow, the environment variable <tt>${PAL}</tt> is used to refer to the root directory of the unzipped PAL library. (e.g. if you unzipped PAL in your home directory, then <tt>${PAL}</tt> is equivalent to <tt>~/pal</tt>
 </dd>
 <dt>Axis SOAP Server</dt>
 <dd>
-For your convenience, we provide a stripped-down version of the Axis web application
-at <tt>lib/axis.war</tt>
+For your convenience, we provide a stripped-down version of the <a href="http://ws.apache.org/axis/">Axis</a> web application
+at <tt>${PAL}/lib/axis.war</tt><p>
+
 Place this in the <tt>${CATALINA_HOME}/webapps</tt> directory of your tomcat installation, and restart tomcat (run <tt>${CATALINA_HOME}/bin/shutdown.sh</tt>
 followed by <tt>${CATALINA_HOME}/bin/startup.sh</tt>). This will unzip the web application into the directory <tt>${CATALINA_HOME}/webapps/axis</tt>
 </dd>
 </dl>
+
 <h2>Install the Datacenter</h2>
-Unzip the file <tt>lib/datacenter-server.zip</tt> over the top of the previously installed axis web application.
+Unzip the file <tt>${PAL}/lib/datacenter-server.zip</tt> over the top of the previously installed axis web application.
 
 <pre>
 % cd ${CATALINA_HOME}/webapps/axis/
-% unzip <i>path/to/pal/</i>lib/datacenter-server.zip
+% unzip <i>${PAL}/lib/datacenter-server.zip
 </pre>
-<!--
-NWW - remove axis-ant from datacenter-server.zip - already present.
--->
 
-<h2>Set Database Connections</h2>
-Next the connection to the astronomical data collection must be configured. At present this is limited to JDBC-compliant databases.
-<h3>Supported databases</h3>
-Any database that accepts standard SQL and has a JDBC driver available should be sufficient. The method of connecting to the dat
-<h3>Database Configuration</h3>
-<h4>Via configuration file</h4>
- set properties in config file
- <h4>Via DataSource</h4>
-set up datasource - requires editing of web.xml and server.xml
-</i>
-web.xml in axis/WEB-INF - add declaration of datasource right at bottom, just within </web-app> tag.
+<h2>Configuration</h2>
+Configuration parameters for the datacenter server are set in the <tt>AstroGridConfig.properties</tt> file in the <tt>${CATALINA_HOME}/webapps/axis/WEB-INF/classes</tt> directory. This file consists of <i>key</i>=<i>value</i> lines. Any line starting with <tt>#</tt> are comments and are ignored by the application.
+
+<h2>Set Connection to the Database</h2>
+Next the connection to the astronomical data collection must be configured. At present this is limited to relational database management systems (RDBMS) that have a JDBC driver available.
+<h3>Create a database account</h3>
+Many RDBMS have a user account system, where different accounts may be provided with different acces privileges to the database. If this is the case with your target RDBMS, we recommend that a new user account be created for the datacenter service.
+<p>
+The datacenter account should only have read / query privileges granted. <b>Do not</b> grant permissions to write to tables / create tables / delete tables, or to access other databases or tables than those that are to be published - these abilities are not needed and present a security risk.
+<p>
+Refer to the documentation for the target RDBMS for details on account creation and access privileges.
+<p>
+You may also wish to consider making a duplicate of the original data collection database, or even running a separate RDBMS server on a different machine specifically for access from web-services.
+
+<h3>Configure the Connection</h3>
+The connection between the datacenter server and database can either be specified as a direct connection (simpler) or as a server connection (more efficient and robust). We recommend the second method where possible.
+<h4>Direct Connection</h4>
+In this configuration the datacenter server manages its own connections to the database.
+ The following configuration keys should be set directly in the <tt>AstroGridConfig.properties</tt> file.
+ <dl>
+ <dt>JDBC_URL</dt>
+ <dd>blah.. </dd>
+ </dl>
+<div class="nw">
+fill this in
+</div>
+
+ <h4>Server Connection</h4>
+In this configuration the Tomcat Server manages a pool of connections. This leads to faster response times for the datacenter, and reduced load on the RDBMS. The details of the database connection are set in the Tomcat configuration files.
+
+<h5>web.xml</h5>
+
+In <tt>${CATALINA_HOME}/webapps/axis/WEB-INF/<b>web.xml</b></tt>, add the following XML fragment at the bottom, just within <tt>&lt;/web-app&gt;</tt> closing tag. This fragment defines a reference to a server connection.
 <pre>
-  <resource-ref>
-  	<res-ref-name>jdbc/merlin-datasource</res-ref-name>
-	<res-type>javax.sql.DataSource</res-type>
-	<res-auth>Container</res-auth>
-  </resource-ref>
+  &lt;resource-ref&gt;
+  	&lt;res-ref-name&gt;jdbc/dataset-connection&lt;/res-ref-name&gt;
+	&lt;res-type&gt;javax.sql.DataSource&lt;/res-type&gt;
+	&lt;res-auth&gt;Container&lt;/res-auth&gt;
+  &lt;/resource-ref&gt;
 </pre>
 
-server.xml in tomcat/conf - add definition of datasource,within chosen 'Engine' tag
+<h5>server.xml</h5>
+In <tt>${CATALINA_HOME}/conf/<b>server.xml</b></tt> add the following XML fragment within the <tt>&lt;Engine&gt;</tt> tag -- replacing the italicized sections with the settings for your target RDBMS, as described in the previous section.
+<p>
+<div class="nw">specify this location better</div>
 
 <pre>
-    <!-- default context - place to set up jndi database connections -->
-      <DefaultContext>
-
-
-    <Resource name="jdbc/merlin-datasource"
-    	auth="Container"
-	type="javax.sql.DataSource" />
-        <ResourceParams name="jdbc/merlin-datasource">
-      <parameter>
-        <name>driverClassName</name>
-        <value>com.mysql.jdbc.Driver</value>
-      </parameter>
-      <parameter>
-        <name>url</name>
-        <value>jdbc:mysql://localhost/merlin</value>
-      </parameter>
-      <parameter>
-        <name>username</name>
-        <value>noel</value>
-      </parameter>
-      <parameter>
-        <name>password</name>
-        <value>appleapple</value>
-      </parameter>
-      <parameter>
-        <name>removeAbandoned</name>
-        <value>true</value>
-      </parameter>
-    </ResourceParams>
-    </DefaultContext>
-
+   &lt;DefaultContext&gt;
+   	&lt;Resource name="jdbc/dataset-connection"
+    		auth="Container"
+		type="javax.sql.DataSource" /&gt;
+        &lt;ResourceParams name="jdbc/dataset-connection"&gt;
+		&lt;parameter&gt;
+        		&lt;name&gt;driverClassName&lt;/name&gt;
+        		&lt;value&gt;<i>com.mysql.jdbc.Driver</i>&lt;/value&gt;
+      		&lt;/parameter&gt;
+      		&lt;parameter&gt;
+        		&lt;name&gt;url&lt;/name&gt;
+        		&lt;value&gt;<i>jdbc:mysql://localhost/merlin</i>&lt;/value&gt;
+      		&lt;/parameter&gt;
+      		&lt;parameter&gt;
+        		&lt;name&gt;username&lt;/name&gt;
+        		&lt;value&gt;<i>noel</i>&lt;/value&gt;
+      		&lt;/parameter&gt;
+      		&lt;parameter&gt;
+        		&lt;name&gt;password&lt;/name&gt;
+        		&lt;value&gt;<i>appleapple</i>&lt;/value&gt;
+      		&lt;/parameter&gt;
+      		&lt;parameter&gt;
+        		&lt;name&gt;removeAbandoned&lt;/name&gt;
+        		&lt;value&gt;true&lt;/value&gt;
+      		&lt;/parameter&gt;
+    	&lt;/ResourceParams&gt;
+    &lt;/DefaultContext&gt;
 </pre>
 
-then need to copy mysql driver class into /tomcat/common/lib
+<h5>AstroGridConfig.properties</h5>
+Set the <tt>JNDI_SRC</tt> property as follows
+<pre>
+	JNDI_SRC=jdbc/dataset-connection
+</pre>
+<div class="nw">
+sort this
+</div>
+<p>
+Finally, copy the JAR file containing the JDBC driver for the target RDBMS into the
+<tt>${CATALINA_HOME}/common/lib</tt> directory. If needed, JDBC jar files for the databases listed previously can be found in the <tt>${CATALINA_HOME}/webapps/axis/WEB-INF/lib</tt> directory.
 
 then edit AstroGridConfig.properties.
-<h3>Configure the ADQL translator</h3>
-<h3>Adapting or writing your own dataprovider</h3>
-<i>link to separate document</i>
 
-<h2>Metadata - Describe te data collection</h2>
-<i>provide link to schema for this document</i>
+<h3>Configure the ADQL translator</h3>
+The translation between ADQL and SQL can be configured to specify the dialect of SQL to generate. The dialect to use is given by the <tt>Fooble</tt> key in <tt>AstroGridConfig.properties</tt>, and may take the following values
+<dl>
+</dl>
+<div class="nw">
+ add 'trim' to the configurtion.getProperty method - will fix breaks here
+ </div>
+If none of these pre-defined translators are suitable, it is possible to write a new translator and plug it in. However, this is beyond the scope of this document. <i>Link to mailing list</i>
+
+<h2>Metadata - Describe the data collection</h2>
+The datacenter server requires a metadata document that describes the contents of the dataset. The metadata document must conform to the following schema <a href="not.yet.written">not.yet.written</a>, which is documented <a href="not.yet.written">here</a>.
+<div class="nw">add links to metadata schema and documentation</div>
+<p>
+By default the location of this file is <tt>${CATALINA_HOME}/webapps/axis/WEB-INF/classes/metadata.xml</tt>, although this may be altered in the configuration file. An example metadata document is provided to get you started.
+
+<div class="nw">
+add schema for this and ADQL to the pal distro
+</div>
 
 <h2>Enable the Datacenter webservice</h2>
-<i>Execute java -jar bin/register-service.jar</i>
-check this is being build correctly.
+Right, thats all the configration file tweaking done. You now need to register the datacenter webservice with Axis. Check that tomcat server is started, then run
+<pre>
+% java -jar bin/register-service.jar
+</pre>
+If the registration is successful, you should see the following response
+<pre>
+&lt;Admin&gt;Succeeded&lt;/Admin&gt;
+</pre>
+<div class="nw">
+check this
+</div>
+If you look in <tt>${CATALINA_HOME}/webapps/axis/WEB-INF</tt> you should see that a file named <tt>server-config.xml</tt>  has been created.
+<div class="nw">
+add note about setting directory permissions
+</div>
+
+The service is now installed. Whenever the tomcat server is restarted, the dataserver web service will start along with it.
 
 <h2>Verify the installation</h2>
-<i>Execute java -jar bin/test-server.jar</i>
+To check that the datacenter server is working correctly, run:
+<pre>
+% java -jar bin/test-server.jar
+</pre>
+This will run a series of tests that verify that the tomcat server, axis server and datacenter service are all functioning correctly. If all the tests succeed (i.e. the bar remains green) then the datacenter is up and running.
+<p>
+<b>Congratulations!</b>
+<div class="nw">
+mention running remotely
+mention creating a query.xml first
+</div>
 
 <h2>Add the datacenter to the Astrogrid Registry</h2>
+Finally your newly-published dataset must be added to an Astrogrid Registry.
+<div class="nw">
+Find out how to do this
+</div>
 
 <h2>Development Documentation</h2>
 <ul>
@@ -152,11 +234,11 @@ check this is being build correctly.
 <h2>References</h2>
 <ul>
 <li><a href="http://www.astrogrid.org">Astrogrid Homepage</a>
-<li><a href="">Java Homepage</a>
-<li><a href="">Jakarta Tomcat Homepage</a>
-<li><a href="">Apache Axis Homepage</a>
-<li><a href="">JDBC</a>
-<li><a href="">List of known JDBC drivers</a>
+<li><a href="http://java.sun.com">Java Homepage</a>
+<li><a href="http://jakarta.apache.org/tomcat">Jakarta Tomcat Homepage</a>
+<li><a href="http://ws.apache.org/axis/">Apache Axis Homepage</a>
+<li><a href="http://java.sun.com/products/jdbc/">JDBC</a>
+<li><a href="http://servlet.java.sun.com/products/jdbc/drivers">List of known JDBC drivers</a>
 </ul>
 
 </body>

@@ -1,4 +1,4 @@
-/*$Id: AbstractTestInstallation.java,v 1.6 2003/09/26 11:02:35 nw Exp $
+/*$Id: AbstractTestInstallation.java,v 1.7 2003/10/14 13:07:12 nw Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ import javax.xml.rpc.ServiceException;
 import org.apache.axis.client.Call;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.common.QueryStatus;
-import org.astrogrid.datacenter.delegate.DatacenterDelegate;
+import org.astrogrid.datacenter.delegate.deprecated.*;
 import org.astrogrid.datacenter.delegate.DatacenterStatusListener;
 import org.astrogrid.datacenter.delegate.WebNotifyServiceListener;
 
@@ -280,6 +280,9 @@ public abstract class AbstractTestInstallation extends TestCase {
 
 /* 
 $Log: AbstractTestInstallation.java,v $
+Revision 1.7  2003/10/14 13:07:12  nw
+moved to common subproject
+
 Revision 1.6  2003/09/26 11:02:35  nw
 added new method to test getting metadata
 
