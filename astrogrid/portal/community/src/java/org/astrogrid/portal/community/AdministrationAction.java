@@ -502,7 +502,7 @@ public class AdministrationAction extends AbstractAction
          try {
             //String ivo_account = (String)session.getAttribute("community_authority") + "/" + (String)session.getAttribute(SessionKeys.USER); 
             String ivo_account = (String)session.getAttribute(SessionKeys.USER);
-            SecurityServiceDelegate ssd = ssr.resolve(userIvo = new Ivorn(ivo_account,null));
+            SecurityServiceDelegate ssd = ssr.resolve(userIvo = new Ivorn(ivo_account));
             smd = smr.resolve(userIvo);
             
             st = ssd.checkPassword(userIvo.toString(),password);
