@@ -23,13 +23,16 @@ function getSelectionId(authId, resourceKey) {
      j = identifier.indexOf( '/' );
      id = identifier.substring(0, j);
      key = identifier.substring(j+1);
-     if ( parentId ) {
-       parentId.value = id;
-     }
-     if ( parentKey ) {
+
+     if ( parentId && parentKey ) 
+     {
        parentKey.value = key;
+       parentId.value = id;       
      }
-     if ( parentId && parentKey ) ;
+     else if (parentId)
+     {
+       parentId.value = identifier;
+     }
      else alert ( "\nauthId = " + id +
             "\nresourceKey = " + key );
      var choice=false;
