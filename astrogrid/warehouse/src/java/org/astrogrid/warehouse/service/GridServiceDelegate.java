@@ -247,16 +247,6 @@ public class GridServiceDelegate {
     OGSIServiceGridLocator l = new OGSIServiceGridLocator();
     this.instanceGridServicePort = l.getGridServicePort(this.instanceLocator);    
   }
-
-
-  /**
-   * Makes the grid-service port of the instance available via a stub
-   * stored in the attribute instanceGridServicePort.
-   *
-   * @deprecated The work of this method is now done by
-   * {@link #createServiceInstance}.
-   */
-  protected void findInstanceGridServicePort () throws Exception {}
   
 
   /**
