@@ -1,5 +1,5 @@
 /*
- * $Id: MySqlQuerierTest.java,v 1.3 2003/09/17 14:53:02 nw Exp $
+ * $Id: MySqlQuerierTest.java,v 1.4 2003/09/22 17:38:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -52,7 +52,7 @@ public class MySqlQuerierTest extends TestCase
      // Query query = new Query(queryElement);
 
       //make connection to database
-      MySqlQuerier querier = new MySqlQuerier();
+      MySqlQuerier querier = new MySqlQuerier(fileDoc.getDocumentElement());
 
       //send query & store results
       QueryResults results = querier.queryDatabase(new Query(queryElement));
