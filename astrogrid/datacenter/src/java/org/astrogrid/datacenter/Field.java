@@ -7,7 +7,6 @@
 package org.astrogrid.datacenter;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 
 /**
@@ -50,7 +49,7 @@ public class Field {
 		   		   
 		}
 		finally {
-			if( TRACE_ENABLED ) logger.debug( "JobStep(): exit") ; 			 
+			if( TRACE_ENABLED ) logger.debug( "Field(): exit") ; 			 
 		}
 		
     } // end of Field()
