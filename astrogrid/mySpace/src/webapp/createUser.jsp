@@ -12,7 +12,9 @@ String[] paramNames={"userId","communityId","credential","servers"};
 String userId = request.getParameter("userId");
 String communityId = request.getParameter("communityId");
 String credential = request.getParameter("credential");
-Vector servers = null; //request.getParameter("servers");
+String server = request.getParameter("servers");
+Vector servers = new Vector();
+servers.add(server);
 %>
 The stuff you typed was: <BR>
 <%
@@ -30,5 +32,15 @@ The end point for the service is: <%=serviceURL%> . <BR>
 	boolean ok = client.createUser(userId, communityId, credential, servers);
 %>
 Result from createUser was <%=ok%>.
+<P>
+Attempting to list holdings:<BR>
+<%
+	String query = "*";
+	Vector results = client.listDataHoldings(userId, communityId, credential, query);
+	int resultSize = results.size();
+	for (int i=0; i<resultSize;++i) {
+		out.print(results.elementAt(i)+"<BR>");
+	}
+%>
 </body>
 </html>
