@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.47 2004/06/14 23:10:52 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.48 2004/06/14 23:53:25 jdt Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -611,7 +611,7 @@
         url="${tomcat.manager.url}"
         username="${tomcat.manager.username}"
         password="${tomcat.manager.password}"
-        path="/astrogrid-community" />
+        path="/astrogrid-community-SNAPSHOT" />
   </j:catch>
 </goal>
 
