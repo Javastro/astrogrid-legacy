@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<project name="datacenter-castor" basedir="." default="generate">
+<!-- single-task ant script that captures how to generate ADQL object model 
+
+run with care. will delete all java sources and classes in 
+src/java/org/astrogrid/datacenter/adql/generated
+and then regenerate them using schema/ADSQLschema.xsd
+-->
+	<!-- needed to override the default configuration file - knew there was a reason I disliked Castor.. -->
+	<property name="castor.config.path" location="lib/config" />
+	
+	<!-- set up the classpath for the source generator tool -->
+  <path id="castor.class.path">
+	<pathelement location="${castor.config.path}" />
+  	<fileset dir="lib">
+  		<include name="castor*.jar" />
+  		<include name="xerces*.jar" />
+  	</fileset>
+  </path>
+  
+  <!-- alter this to have the generated classes placed somewhere else -->
+  <property name="src.base" location="src/java" />
+  
+    
+  <target name="generate" description="regenerate the ADQL object model">
+  <delete>
+   <fileset dir="${src.base}/org/astrogrid/datacenter/adql/generated">
+   	<include name="**/*.java" />
+   	<include name="**/*.class" />
+   </fileset>
+   </delete>
+  	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="castor.class.path">
+  	  <arg value="-i"/>
+  	  <arg file="schema/ADQLschema.xsd" />
+  	  <arg value="-package" />
+  	  <arg value="org.astrogrid.datacenter.adql.generated" />
+  	  <arg value="-dest" />
+  	  <arg file="${src.base}" />
+  	  <arg value="-verbose" />
+  	  <!-- <arg value="-nodesc" /> disables generation of data descriptor classes - so marshalling uses vanilla techniques -->
+  	  <!--<arg value="-nomarshall" /> disables generation of the marshalling code in each class - need to refer to the marshaller instead -->
+  	  </java>
+  </target>
+
+</project>
