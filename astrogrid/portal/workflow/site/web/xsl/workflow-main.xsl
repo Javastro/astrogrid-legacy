@@ -89,7 +89,10 @@
          </xsl:if>                        
          <xsl:if test="$action = 'parameters-complete'">
             <xsl:call-template name="create_workflow"/>             
-         </xsl:if>         
+         </xsl:if>
+         <xsl:if test="$action = 'remove-tool-from-step'">
+            <xsl:call-template name="create_workflow"/>             
+         </xsl:if>                  
          <xsl:if test="$action = 'templates'">
             <xsl:call-template name="templates"/>             
          </xsl:if>
@@ -234,8 +237,7 @@
                <td>
                   <xsl:for-each select="//step">
                      <form method="get" name="ToolSelectForm">                          
-                        <input type="hidden" name="activity-key"><xsl:attribute name="value"><xsl:value-of select="@key"/></xsl:attribute></input>
-		                <input type="hidden" name="action" value="insert-tool-into-step" />		                     	                 		                 		                 
+                        <input type="hidden" name="activity-key"><xsl:attribute name="value"><xsl:value-of select="@key"/></xsl:attribute></input>     	                     	                 		                 		                 
                         Step: (<xsl:value-of select="@step-name" />)                           
                         <xsl:for-each select="tool">
                            <xsl:if test="@tool-name = 'null'">
@@ -248,10 +250,13 @@
 				                    </xsl:element>
                                  </xsl:for-each>
 		                      </select>
-                           <input type="submit" value="Select" />		                         
+                              <input type="hidden" name="action" value="insert-tool-into-step" />	                               		                      
+                              <input type="submit" value="Select" />		                         
                            </xsl:if>
                            <xsl:if test="@tool-name != 'null'">
                               <xsl:value-of select="@tool-name" />
+                              <input type="submit" value="Reset" />
+                              <input type="hidden" name="action"  value="remove-tool-from-step" />
                            </xsl:if>
                         </xsl:for-each><!-- end of tool -->
                      </form>
