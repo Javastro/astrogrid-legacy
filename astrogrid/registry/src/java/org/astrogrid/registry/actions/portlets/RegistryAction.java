@@ -42,46 +42,39 @@ import java.util.*;
 
 public class RegistryAction extends JspPortletAction
 {
-  private static final boolean DEBUG = true;       
-  private static final String INPUT = "RegInput";       
+// Debug Flag
+  private static final boolean DEBUG = false;
 
 //  Local parameter file for registry file and style sheet
+//  Note - This should be changed for other servers ******
   private static final String PARAMETERHOST =
-                               "http://rlspc14.bnsc.rl.ac.uk:8080";
+                               "http://stargrid1.bnsc.rl.ac.uk:8080";
   private static final String PARAMETERFILE =
                                "org/astrogrid/registry/localparameters.xml";
+
+//  Local defaults
   private static final String STYLESHEET = "RegistryInterfaceStylesheet";
   private static final String SERVICES = "RegistryServers";
   private static final String DEFAULTSERVICE = 
                                           "/axis/services/RegistryInterface";
+  private static final String DEFAULTPORT = "8080";
 
-// Return parameters for JspPortlet action
+//  Return parameters for JspPortlet action
+  private static final String INPUT = "RegInput";
   private static final String HEADERS = "RegistryHeader";
   private static final String OUTPUT = "RegistryOutput";       
-  private static final String[][] SERVERS = {  
-    { "Testing",    "rlspc14.bnsc.rl.ac.uk",
-                    "/axis/services/AstrogridRegistryQuery" },
-    { "MSSL",       "msslxy.mssl.ucl.ac.uk",
-                    "/soap/servlet/rpcrouter/",
-                    "urn:org.astrogrid.registry.RegistryInterface" },
-    { "Leicester",  "katatjuta.star.le.ac.uk", 
-                    "/axis/services/RegistryInterface" },
-    { "Rutherford", "stargrid1.bnsc.rl.ac.uk",
-                    "/axis/services/AstrogridRegistryQuery" }
-  };       
   private static final String SERVICE = "AstrogridRegistryInterface";       
   private static final String LOCALSERVER = "stargrid1.bnsc.rl.ac.uk";
-  private static final String REGISTRYMSG = "[Astrogrid Registry] ";
+//  Preamble for Log messages
+  private static final String PREAMBLE = "[Astrogrid Registry Query] ";
 
 
 // Web service stuff
 // Set "server" and "port" - allow property overrides eventually!
-  private String StyleSheet = null;
-  private static String DEFAULTPORT = "8080";
-  private String results = null;
-  private static String services[][] = SERVERS;
-  private static String service = null;
+  private static String StyleSheet = null;
+  private static String webservice = null;
   private static String soapservice = null;
+  private String results = null;
 
 /**
  * Build the normal state content for this portlet.
@@ -93,8 +86,9 @@ public class RegistryAction extends JspPortletAction
   {   
     String output = null;
 
-    Log.debug( REGISTRYMSG + "Start of Action" );
-// Get query from boxes
+    Log.debug( PREAMBLE + "Start of Registry Query" );
+
+// Get query from form data
     String element1 = (String) PortletSessionState.getAttributeWithFallback
                                  ( portlet, rundata, "Element1" );
     String operator1 = (String) PortletSessionState.getAttributeWithFallback
@@ -109,8 +103,9 @@ public class RegistryAction extends JspPortletAction
                                  ( portlet, rundata, "Operator2" );
     String value2 = (String) PortletSessionState.getAttributeWithFallback
                                  ( portlet, rundata, "Value2" );
-//      String Query = (String) PortletSessionState.getAttributeWithFallback
-//                                  ( portlet, rundata, "ComplexQuery" );
+//  Reserved for more general Queries - Not used yet
+      String Query = (String) PortletSessionState.getAttributeWithFallback
+                                  ( portlet, rundata, "ComplexQuery" );
 // Check the Web Server Name from list
     String webserveropt = (String) PortletSessionState.getAttributeWithFallback
                                   ( portlet, rundata, "WebServerOpt" );
@@ -124,11 +119,6 @@ public class RegistryAction extends JspPortletAction
 /* First check that this isn't the initial form */
      rundata.getRequest().setAttribute( HEADERS, "" );
      rundata.getRequest().setAttribute( OUTPUT, "" );
-
-     if ( webserveropt == null && webserver == null ) {
-       Log.debug( REGISTRYMSG + "Blank form" );
-       return;
-     }
 
 //  Open Parameter file to get Style Sheet */
      Document parameterDoc = null;
@@ -144,12 +134,12 @@ public class RegistryAction extends JspPortletAction
        NodeList key = parameterDocElement.getElementsByTagName( STYLESHEET );
 
        StyleSheet = key.item(0).getFirstChild().getNodeValue();
-       if ( DEBUG) Log.debug( REGISTRYMSG + StyleSheet );
+       if ( DEBUG) Log.debug( PREAMBLE + StyleSheet );
 // Check for local Proxy Server from the localparameters file
        key = parameterDocElement.getElementsByTagName( "ProxyHost" );
        if ( key != null ) { 
          String proxyhost = key.item(0).getFirstChild().getNodeValue();
-         if ( DEBUG ) Log.debug( REGISTRYMSG + "Proxy " + proxyhost);
+         if ( DEBUG ) Log.debug( PREAMBLE + "Proxy " + proxyhost);
          System.setProperty( "http.proxyHost", proxyhost );
          key = parameterDocElement.getElementsByTagName( "ProxyPort" );
          if ( key != null ) System.setProperty( "http.proxyPort", 
@@ -158,14 +148,36 @@ public class RegistryAction extends JspPortletAction
 // Check for list of servers from the localparameters file       
        key = parameterDocElement.getElementsByTagName( "RegistryServers" );
        if ( key != null ) {
-         NodeList servers = parameterDocElement.getElementsByTagName( "server" );
-         if ( servers != null ) {
-            Log.debug( REGISTRYMSG + servers.getLength() + " Servers " );
-         }
-         for ( int i = 0; i < servers.getLength(); i++ ) {
-            Node namenode = servers.item(0);
-            String name = namenode.getFirstChild().getNodeValue();
-            Log.debug( REGISTRYMSG + " Server: " + i + " " + name );
+         String server = "";
+         String uri = "";
+         String urn = null;
+         String service = "";
+         String webport = "";
+         NodeList serverlist = parameterDocElement.getElementsByTagName( "server" );
+         if ( serverlist != null ) {
+           for ( int i = 0; i < serverlist.getLength(); i++ ) {
+             NodeList serverdetails = serverlist.item(i).getChildNodes();
+             for ( int j=0; j < serverdetails.getLength(); j++ ) {
+               Node namenode = serverdetails.item(j);
+               if( namenode != null ) {
+                 String name = namenode.getNodeName();
+                 if ( namenode.hasChildNodes() ) {
+                   String value = namenode.getFirstChild().getNodeValue();
+                   if ( name.equals( "name" ) ) server = value;
+                   if ( name.equals( "uri" ) ) uri = value;
+                   if ( name.equals( "urn" ) ) urn = value;
+                   if ( name.equals( "service" ) ) service = value;
+                   if ( name.equals( "port" ) ) webport = value;
+                 }
+               }
+             }
+             if ( webserveropt != null && webserveropt.equals( server ) ) {
+               webserver = uri;
+               webservice = service;
+               soapservice = urn;
+               port = webport;
+             }
+           }
          }
        } 
      }
@@ -178,19 +190,9 @@ public class RegistryAction extends JspPortletAction
        rundata.getRequest().setAttribute( HEADERS, output );
      }
 
-// Check for known servers and setup their addresses
-// This should get the servers from the localparameters file
-     if ( webserveropt != null ) {
-       if ( DEBUG ) Log.debug( REGISTRYMSG + "Services " +
-                                services.length + ":" + webserveropt );
-       for ( int i = 0; i < services.length; i++ ) {
-         if ( services[i][0].equals("") ) break;
-         if ( webserveropt.equals( services[i][0] ) ) {
-           webserver = services[i][1];
-           service = services[i][2];
-           if ( services[i].length == 4 ) soapservice = services[i][3];
-         }       
-       }
+     if ( webserveropt == null && webserver == null ) {
+       Log.debug( PREAMBLE + "Blank form" );
+       return;
      }
 
      if ( StyleSheet == null ) {
@@ -216,7 +218,7 @@ public class RegistryAction extends JspPortletAction
          out = out.concat( "<br/><em>Service:</em> " + soapservice );
      out = out.concat( "<br/>" );
 
-     if ( DEBUG) Log.debug( REGISTRYMSG + out );
+     if ( DEBUG) Log.debug( PREAMBLE + out );
      output = out;
 
      String input = " (" + element1 + " " + operator1 + " " + value1 + ")";
@@ -224,31 +226,31 @@ public class RegistryAction extends JspPortletAction
        input = input.concat ( " " + seperator1
                  + " (" + element2 + " " + operator2 + " " + value2 + ")" );
      if ( DEBUG ) 
-       Log.debug( REGISTRYMSG + "Query obtained from jsp form "
+       Log.debug( PREAMBLE + "Query obtained from jsp form "
           + input + " [" + webserveropt + "*" + webserver + ":" + port + "]" );
 
 
      try {
 
-       if ( DEBUG) Log.debug( REGISTRYMSG + out );
+       if ( DEBUG) Log.debug( PREAMBLE + out );
        output = out;
 
 // Setup Registry Service command
 
        if ( DEBUG ) Log.debug( "\nSend message to: "
-                               + webserver + ":" + port + "/" + service );       
+                               + webserver + ":" + port + "/" + webservice );       
        axisSOAPService connection =
-               new axisSOAPService( webserver, port, service );
+               new axisSOAPService( webserver, port, webservice );
        String query = constructQuery( element1, operator1, value1,
                seperator1, element2, operator2, value2 );
        String querystring = printQuery( query );
        output = output.concat ( "<em>Sending Query:</em> <br/>"
                        + querystring + "<br/>" );
 
-       if ( DEBUG) Log.debug( REGISTRYMSG + "Query: \n" + query );
+       if ( DEBUG) Log.debug( PREAMBLE + "Query: \n" + query );
        results = connection.sendRequest ( "submitQuery", query,
                                           soapservice );
-       if ( DEBUG) Log.debug( REGISTRYMSG + "Result length:"
+       if ( DEBUG) Log.debug( PREAMBLE + "Result length:"
                                + results.length() );
        String htmlout = null;
        if ( results != null ) {
@@ -269,7 +271,7 @@ public class RegistryAction extends JspPortletAction
 // Place Current Element and value
        rundata.getRequest().setAttribute( "agr_element1", element1 );
        rundata.getRequest().setAttribute( "agr_value1", value1 );
-       Log.debug( REGISTRYMSG + "End of Portal Action");
+       Log.debug( PREAMBLE + "End of Portal Action");
      }
      catch (Exception e) {
        output = output + "<br/>**** Execution exception raised **** <br/>"
