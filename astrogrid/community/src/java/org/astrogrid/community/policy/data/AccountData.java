@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/AccountData.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/06 20:10:07 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:author>$Author: KevinBenson $</cvs:author>
+ * <cvs:date>$Date: 2003/09/09 16:41:53 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountData.java,v $
+ *   Revision 1.4  2003/09/09 16:41:53  KevinBenson
+ *   Added password field
+ *
  *   Revision 1.3  2003/09/06 20:10:07  dave
  *   Split PolicyManager into separate components.
  *
@@ -44,10 +47,10 @@ public class AccountData
 	 * Public constructor.
 	 *
 	 */
-	public AccountData(String ident, String description)
+	public AccountData(String ident, String password)
 		{
 		this.ident = ident ;
-		this.description = description ;
+		this.password = password ;
 		}
 
 	/**
@@ -74,28 +77,54 @@ public class AccountData
 		this.ident = value ;
 		}
 
+
+      /**
+       * Our Account description.
+       *
+       */
+      private String description ;
+
+      /**
+       * Access to our Account description.
+       *
+       */
+      public String getDescription()
+         {
+         return this.description ;
+         }
+
+      /**
+       * Access to our Account description.
+       *
+       */
+      public void setDescription(String value)
+         {
+         this.description = value ;
+         }
+
+
 	/**
 	 * Our Account description.
 	 *
 	 */
-	private String description ;
+	private String password ;
 
 	/**
 	 * Access to our Account description.
 	 *
 	 */
-	public String getDescription()
+	public String getPassword()
 		{
-		return this.description ;
+		return this.password ;
 		}
 
 	/**
 	 * Access to our Account description.
 	 *
 	 */
-	public void setDescription(String value)
+	public void setPassword(String value)
 		{
-		this.description = value ;
+		this.password = value ;
 		}
 
 	}
