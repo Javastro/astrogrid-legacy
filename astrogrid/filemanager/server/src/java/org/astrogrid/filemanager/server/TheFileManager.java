@@ -1,4 +1,4 @@
-/*$Id: TheFileManager.java,v 1.2 2005/03/11 13:37:06 clq2 Exp $
+/*$Id: TheFileManager.java,v 1.3 2005/03/31 14:56:08 nw Exp $
  * Created on 28-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,6 +51,7 @@ public class TheFileManager extends SecurityGuardFileManagerDecorator {
     public static final String FILEMANAGER_BASE_DIR_KEY  = "org.astrogrid.filemanager.basedir";
     
     protected static final FileManagerPortType buildFileManager() {
+        try {
         // access config
         logger.info("Assembling file manager");
         logger.info("Creating config");
@@ -70,7 +71,7 @@ public class TheFileManager extends SecurityGuardFileManagerDecorator {
         
         //assemble node storage.
         NodeStore nodeStore = null;
-        try {
+        
             logger.info("Creating nameGen");
             NameGen nameGen = new FileNameGen(nameGenDir);   
             logger.info(nameGen);
@@ -82,21 +83,26 @@ public class TheFileManager extends SecurityGuardFileManagerDecorator {
                     );
             nodeStore = new CautiousNodeStoreDecorator(innerStore);
             logger.info(nodeStore);
+            
+            
+            //assemble delegates to data storage.
+            logger.info("Creating dataStore");
+            FileStoreDelegateResolver resolver = new FileStoreDelegateResolverImpl();        
+            StoreFacade dataStore = new DefaultStoreFacade(resolver);
+            logger.info(dataStore);
+            return new CoreFileManager(config,nodeStore,dataStore);   
+            
         } catch (ResourceManagerException e) {
             logger.fatal("Could not create node storage",e);
             throw new RuntimeException("Fatal: Could not create node storage",e);
         } catch (FileManagerFault e) {
             logger.fatal("Could not ascertain default file store URI",e);
             throw new RuntimeException("Fatal: Could not ascertain default file store URI",e);
+        } catch (Throwable t) {
+            logger.fatal("Encountered throwable from the depths",t);
+            throw new RuntimeException("Fatal: Encountered throwable from the depths",t);
         }
-        
-        
-        //assemble delegates to data storage.
-        logger.info("Creating dataStore");
-        FileStoreDelegateResolver resolver = new FileStoreDelegateResolverImpl();        
-        StoreFacade dataStore = new DefaultStoreFacade(resolver);
-        logger.info(dataStore);
-        return new CoreFileManager(config,nodeStore,dataStore);                           
+                        
     }
 
 }
@@ -104,6 +110,9 @@ public class TheFileManager extends SecurityGuardFileManagerDecorator {
 
 /* 
 $Log: TheFileManager.java,v $
+Revision 1.3  2005/03/31 14:56:08  nw
+improved error trapping
+
 Revision 1.2  2005/03/11 13:37:06  clq2
 new filemanager merged with filemanager-nww-jdt-903-943
 
