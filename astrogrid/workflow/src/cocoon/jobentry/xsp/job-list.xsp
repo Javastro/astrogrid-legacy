@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+
+<xsp:page language="java" 
+		  create-session="true"
+		  xmlns:xsp="http://apache.org/xsp"
+		  xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+  		  xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+		>
+
+<xsp:structure>
+	<xsp:include>java.util.Iterator</xsp:include>
+	<xsp:include>org.astrogrid.portal.workflow.jes.*</xsp:include>
+	<xsp:include>org.astrogrid.portal.cocoon.workflow.jes.JesAction</xsp:include>
+	<xsp:include>org.astrogrid.jes.job.*</xsp:include>
+	<xsp:include>java.util.Iterator</xsp:include>
+</xsp:structure>
+
+<job-list>
+
+	<xsp:logic>		
+	
+      String action = (String) request.getParameter( "action" );
+      debug( "XSP Action = " + action + "(" + JesAction.HTTP_JOBLIST_TAG + ")" );
+      
+		Iterator jobIterator =
+         (Iterator) request.getAttribute( JesAction.HTTP_JOBLIST_TAG );			
+      debug( "XSP jobs = " + jobIterator ); 			
+					
+		jobList( jobIterator );
+						
+	</xsp:logic>
+
+</job-list>
+
+<xsp:logic>
+		
+		private static final boolean TRACE_ENABLED = true ;       	
+        	
+		public void jobList ( Iterator iterator ) throws SAXException {
+        	if( TRACE_ENABLED ) trace("job-list-xsp() entry") ; 
+        	
+        	AttributesImpl xspAttr = new AttributesImpl() ;
+        
+        	try {
+        	
+        		Job job;
+        	
+				while( iterator.hasNext() ) {
+					job = (Job)iterator.next() ;
+					outputJob( job, xspAttr ) ;			
+				}
+       
+        	}
+        	catch ( Exception e ) {
+			<content>	
+				<xsp:element name="job">
+					<xsp:attribute name="name"> </xsp:attribute>
+					<xsp:attribute name="description">No Job Found</xsp:attribute>										
+					<xsp:attribute name="status">Finished</xsp:attribute>										
+				</xsp:element>
+			</content>
+        		if( TRACE_ENABLED ) trace( "job-list-xsp() exit " + e) ;
+         }
+        	finally {
+        		if( TRACE_ENABLED ) trace( "job-list-xsp() exit") ;
+        	}
+          
+		} // end of jobList() 
+			
+		private void outputJob( Job job, AttributesImpl xspAttr )
+                                                        throws SAXException {  	
+			if( TRACE_ENABLED ) trace( "job-list-xsp.outputJob() entry") ;
+		        	
+		    try { 
+
+<xsp:content>		     	
+			<content>	
+				<xsp:element name="job">
+					<xsp:attribute name="name"><xsp:expr>job.getName()</xsp:expr></xsp:attribute>
+					<xsp:attribute name="description"><xsp:expr>job.getDescription()</xsp:expr></xsp:attribute>										
+				</xsp:element>
+			</content>
+</xsp:content>		     	
+		
+
+		       	}
+        	finally {
+        		if( TRACE_ENABLED ) trace( "job-list-xsp.outputJob() exit") ;
+        	}
+		
+		} // end of outputJob()
+
+		
+		private static void trace( String traceString ) {
+			System.out.println( traceString ) ;
+		}
+		
+		private static void debug( String traceString ) {
+			System.out.println( traceString ) ;
+		}
+			
+</xsp:logic>
+
+</xsp:page>

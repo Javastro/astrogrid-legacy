@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<agtemplate title="Job Administration" help="jes.html">
+
+<form method="POST" action="jesstatus.xsp">
+   Current Jobs: <br/>
+   <input type="CHECK" name="jobs" value="job1"/>
+      Concurrent Search of Stars 01/08/2003 <br/>
+
+   Check a Job action: <br/>
+   <input type="RADIO" name="jesType" value="New"/>
+      New Job <br/>
+   <input type="RADIO" name="jesType" value="Submit" checked="checked"/>
+      Submit Job <br/>
+   <input type="RADIO" NAME="jesType" value="Edit"/>
+      Edit Job <br/>
+   <input type="RADIO" NAME="jesType" value="Copy"/>
+      Copy Job <br/>
+   <input type="RADIO" NAME="QueryType" value="Delete"/>
+      Delete Job <br/>
+   <input type="RADIO" NAME="QueryType" value="Send"/>
+      Copy Job to another user <br/>
+
+   Job Name: <input name="JobName" type="TEXT" value=""/> 
+   <input type="SUBMIT" name="submit" value="Submit"/>
+   <input type="RESET" name="reset" value="Reset"/>
+</form> 
+</agtemplate>

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<agtemplate title="Job Entry Index" help="agregistryhelp.html">
+
+  <h2><a href="job-list.xsp?action=read-job-list"> List Jobs </a></h2>
+
+</agtemplate>
