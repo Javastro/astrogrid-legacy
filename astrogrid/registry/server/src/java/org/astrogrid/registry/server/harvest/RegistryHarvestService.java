@@ -81,11 +81,10 @@ public class RegistryHarvestService implements
     */  
    public Document harvest(Document query) {
       try {
-         RegistryService rs = new RegistryService();
-         
+         RegistryService rs = new RegistryService();         
          Document registryDoc = rs.loadRegistry(null);
-         //NodeList regNL = registryDoc.getElementsByTagName("ManagedAuthority");
-         NodeList regNL = registryDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority");
+         NodeList regNL = registryDoc.getElementsByTagName("vg:ManagedAuthority");
+         //NodeList regNL = registryDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority");
          String selectQuery = "<query><selectionSequence>" +
               "<selection item='searchElements' itemOp='EQ' value='all'/>" +
               "<selectionOp op='AND'/>";
@@ -268,7 +267,7 @@ public class RegistryHarvestService implements
       public Document harvestAll(Document query) throws RegistryException {
          Document harvestedDoc = null;
          //This next statement will go away with Castor.            
-         NodeList nl = query.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","Identifier");
+         //NodeList nl = query.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","Identifier");
          if(query.getElementsByTagName("VODescription").getLength() > 0) {
             return harvestResource(query);   
          }else {

@@ -26,7 +26,9 @@ import org.exolab.castor.xml.*;
 import org.astrogrid.registry.beans.resource.*;
 import org.astrogrid.registry.RegistryException;
 
-
+import java.io.File;
+import java.io.IOException;
+import org.astrogrid.util.DomLoader;
 import org.astrogrid.config.Config;
 
 
@@ -198,6 +200,30 @@ public class RegistryAdminService {
          return resultDoc;
       }
    }
+   
+   public Document updateFromFile(File fi) throws RegistryException {
+      try {
+         return update(DomLoader.readDocument(fi));
+      }catch(IOException ioe) {         
+         throw new RegistryException(ioe);      
+      }catch(SAXException sax) {
+         throw new RegistryException(sax);   
+      }catch(ParserConfigurationException pce) {
+         throw new RegistryException(pce);
+      }
+   }
+   
+   public Document updateFromURL(URL location) throws RegistryException {
+      try {
+         return update(DomLoader.readDocument(location));
+      }catch(IOException ioe) {         
+         throw new RegistryException(ioe);      
+      }catch(SAXException sax) {
+         throw new RegistryException(sax);   
+      }catch(ParserConfigurationException pce) {
+         throw new RegistryException(pce);
+      }
+   }      
    
    /**
     * Takes an XML Document to send to the update server side web service call.  Establishes

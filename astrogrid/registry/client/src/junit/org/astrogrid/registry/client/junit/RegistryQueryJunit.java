@@ -26,10 +26,10 @@ import java.util.Date;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
 import java.util.*;
+import org.astrogrid.registry.common.WSDLBasicInformation;
 
 
 public class RegistryQueryJunit extends TestCase{ 
-   
 
    /**
     * Switch for our debug statements.
@@ -95,7 +95,17 @@ public class RegistryQueryJunit extends TestCase{
       if(DEBUG_FLAG) System.out.println("endPoint = " + endPoint);
    }
    
+   public void testMyspaceGetResourceWSDLBasic() throws Exception {
+      assertNotNull(rs);
+      if(DEBUG_FLAG) System.out.println("entered testMyspaceGetResourceEndPoint");      
+      if(rs.conf == null) return;
+      if(rs.conf.getString("vm05.astrogrid.org/MyspaceManager",null) == null) return;      
+      WSDLBasicInformation ws  = rs.getBasicWSDLInformation("vm05.astrogrid.org/MyspaceManager");
+      System.out.println("WSDLInfo = " + ws.toString());
+      assertNotNull(ws);
+   }   
    
+   /*
    public void testSubmitQueryContainsAuthorityQuery() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testSubmitQueryContainsAuthorityQuery");
       rs = RegistryDelegateFactory.createQuery(rs.conf.getUrl("org.astrogrid.registry.query.junit.endpoint"));
@@ -105,7 +115,7 @@ public class RegistryQueryJunit extends TestCase{
       assertNotNull(responseDoc);
       if (DEBUG_FLAG) System.out.println("received " + XMLUtils.DocumentToString(responseDoc));         
    }
- 
+ */
    
 } 
 

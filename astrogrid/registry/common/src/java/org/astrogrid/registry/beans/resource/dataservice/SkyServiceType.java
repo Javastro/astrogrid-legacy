@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: SkyServiceType.java,v 1.4 2004/03/09 09:45:23 KevinBenson Exp $
+ * $Id: SkyServiceType.java,v 1.5 2004/03/11 14:08:05 KevinBenson Exp $
  */
 
 package org.astrogrid.registry.beans.resource.dataservice;
@@ -27,7 +27,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class SkyServiceType.
  * 
- * @version $Revision: 1.4 $ $Date: 2004/03/09 09:45:23 $
+ * @version $Revision: 1.5 $ $Date: 2004/03/11 14:08:05 $
  */
 public class SkyServiceType extends org.astrogrid.registry.beans.resource.ServiceType 
 implements java.io.Serializable

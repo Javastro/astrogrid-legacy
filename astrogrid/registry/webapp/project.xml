@@ -58,6 +58,19 @@
 			</ul>
 		</p>
 	</section>
+	<section name="Installation">
+		<p>			
+			After the builds a war file is produced in the "target" area.  This war file can be dropped into the webapps
+			portion of your java server (servlet container) such as tomcat.			
+			directory. Once installed as a System property or JNDI entry in the web.xml file located in the 
+			astrogrid-registry-webapp/WEB-INF/web.xml file there needs to be a "org.astrogrid.config.url" pointing to a config file.  
+			An example config file is given in
+			cvs under the registry/server/config directory.  
+			Currently the config file requires pointing to a xml file which will be your
+			registry, this will be factored out as we come online with the eXist XMLDB.  Once the properties are set you
+			need to restart the server.
+		</p>
+	</section>
 		]]>        
     </description>
 

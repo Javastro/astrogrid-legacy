@@ -408,14 +408,16 @@ public class RegistryFileHelper {
          regEntry = null;   
       }
       if(regEntry != null) {
-         System.out.println("The Registry entry = " + XMLUtils.DocumentToString(regEntry));
+         //System.out.println("The Registry entry = " + XMLUtils.DocumentToString(regEntry));
          //TODO fix this so it uses namespaces instead.  This should go away anyways with the new db.
          //NodeList nl =  regEntry.getElementsByTagNameNS("*","ManagedAuthority" );
          NodeList nl = regEntry.getElementsByTagName("vg:ManagedAuthority");
+         
          //System.out.println("the nodelist size for getting manageauthority2 = " + nl2.getLength());
          System.out.println("the nodelist size for getting manageauthority = " + nl.getLength());
          if(nl.getLength() > 0) {
             for(int i=0;i < nl.getLength();i++) {
+               System.out.println("the namespace uri = " + nl.item(i).getNamespaceURI());
                manageAuthorities.put(nl.item(i).getFirstChild().getNodeValue(),null);
             }//for
          }//if

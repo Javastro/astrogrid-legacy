@@ -20,18 +20,30 @@ import org.xml.sax.InputSource;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Calendar;
 import java.util.Set;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Iterator;
 
 import org.exolab.castor.xml.*;
 import org.astrogrid.registry.beans.resource.*;
+import org.astrogrid.registry.beans.resource.types.InvocationType;
 import org.astrogrid.registry.RegistryException;
 
-
+import javax.xml.namespace.QName;
 import javax.xml.rpc.ServiceException;
+import javax.wsdl.xml.WSDLReader;
+import javax.wsdl.*;
+import javax.wsdl.extensions.ExtensibilityElement;
+import javax.wsdl.extensions.soap.SOAPAddress;
+
+
 import org.xml.sax.SAXException;
 import java.rmi.RemoteException;
+
+import org.astrogrid.registry.common.WSDLBasicInformation;
+
+import javax.wsdl.factory.WSDLFactory;
 
 import org.astrogrid.config.Config;
 
@@ -387,15 +399,77 @@ public class RegistryService  {
    }
    
    public String getEndPointByIdentifier(String ident) throws RegistryException {
-      Document doc = getResourceByIdentifierDOM(ident);
       //check for an AccessURL
       //if AccessURL is their and it is a web service then get the wsdl
       //into a DOM object and run an XSL on it to get the endpoint.
-      NodeList nl = doc.getElementsByTagName("AccessURL");
-      if(nl.getLength() > 0) {
-         return nl.item(0).getFirstChild().getNodeValue();
+      try {
+         WSDLBasicInformation wsdlBasic = getBasicWSDLInformation(ident);
+         return (String)wsdlBasic.getEndPoint().values().iterator().next();
+      }catch(RegistryException re) {
+         //Log warning this was supposed to be a web service.
+         Document doc = getResourceByIdentifierDOM(ident);
+         NodeList nl = doc.getElementsByTagName("AccessURL");
+         if(nl.getLength() > 0) {
+            return nl.item(0).getFirstChild().getNodeValue();
+         }
       }
       return null;   
+   }
+   
+   
+   public WSDLBasicInformation getBasicWSDLInformation(String ident) throws RegistryException {
+      VODescription vodesc = getResourceByIdentifier(ident);
+      WSDLBasicInformation wsdlBasic = null;
+      //check for an AccessURL
+      //if AccessURL is their and it is a web service then get the wsdl
+      //into a DOM object and run an XSL on it to get the endpoint.
+      //NodeList nl = doc.getElementsByTagName("AccessURL");
+      ResourceType rt = vodesc.getResource(0);
+      ServiceType st = null; 
+      if(rt instanceof ServiceType) {
+         st = (ServiceType)rt;
+         String accessURL = st.getInterface().getAccessURL().getContent();         
+         if(InvocationType.WEBSERVICE_TYPE == st.getInterface().getInvocation().getType()) {
+            try {
+               WSDLFactory wf = WSDLFactory.newInstance();
+               WSDLReader wr = wf.newWSDLReader();
+               wsdlBasic = new WSDLBasicInformation();               
+               Definition def = wr.readWSDL(accessURL);
+               wsdlBasic.setTargetNameSpace(def.getTargetNamespace());
+               Map mp = def.getServices();               
+               Set serviceSet = mp.keySet();
+               Iterator iter = serviceSet.iterator();
+               while(iter.hasNext()) {
+                  //I think this is actually a QName may need to change.
+                  //String serviceName = (String)iter.next();
+//                javax.wsdl.Service service = (javax.wsdl.Service)mp.get(serviceName);
+                  QName serviceQName = (QName)iter.next();
+                  javax.wsdl.Service service = (javax.wsdl.Service)mp.get(serviceQName);
+                  Set portSet = service.getPorts().keySet();
+                  Iterator portIter = portSet.iterator();
+                  while(portIter.hasNext()) {
+                     //Probably also a QName
+                     String portName = (String)portIter.next();
+                     Port port = (Port)service.getPorts().get(portName);
+                     List lst = port.getExtensibilityElements();
+                     for(int i = 0; i < lst.size();i++) {
+                        ExtensibilityElement extElement = (ExtensibilityElement)lst.get(i);                        
+                        if(extElement instanceof SOAPAddress) {
+                           SOAPAddress soapAddress = (SOAPAddress)extElement;                           
+                           wsdlBasic.addEndPoint(port.getName(),soapAddress.getLocationURI());   
+                        }   
+                     }                        
+                  }                     
+               }
+            }catch(WSDLException wsdle) {
+               wsdle.printStackTrace();
+               throw new RegistryException(wsdle);
+            }        
+         }else {
+            throw new RegistryException("Invalid Entry in Method: This method only accepts WEBSERVICE InvocationTypes");   
+         }
+      }
+      return wsdlBasic;     
    }
       
    public static Document buildOAIDocument(Document responseDoc,String accessURL, String dateStamp,Map requestVars) {
