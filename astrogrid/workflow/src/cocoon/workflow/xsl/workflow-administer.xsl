@@ -22,7 +22,8 @@
 			<content>
 			    <xsl:call-template name="main_menu"/>
 			    <xsl:if test="$action = ''">
-		          <xsl:call-template name="list_workflow" />			    
+		          <xsl:call-template name="list_workflow" />
+		          <xsl:call-template name="list_query" />			    
 		        </xsl:if>			    
 			    <xsl:if test="$action = 'new'">
 		          <xsl:call-template name="create_worklow" />			    
@@ -107,6 +108,15 @@
 	    <strong>List of workflows currently stored in mySpace to be displayed here</strong>
 	    </p>
 	</xsl:template>
+	
+	<!--+
+	    | List queries currently stored in MySpace
+	    +-->	
+	<xsl:template name="list_query">
+	    <p>
+	    <strong>List of queries currently stored in mySpace to be displayed here</strong>
+	    </p>
+	</xsl:template>	
 
 	<!--+
 	    | Create workflow
@@ -158,14 +168,13 @@
                  Template:
                </td>
                <td>
-                 <br><input type="radio" name="template" value="" checked="true">None</input></br>
-                 <br><input type="radio" name="template" value="OneStepJob">one step sequence</input></br>
-                 <br><input type="radio" name="template" value="TwoParallelJobsteps">two step flow</input></br>
-                 <br><input type="radio" name="template" value="TwoSequentialJobsteps">two step sequence</input></br>      
-<!--                 <input type="checkbox" name="template" value="OneStepJob">one step sequence</input>
-                 <input type="checkbox" name="template" value="TwoParallelJobsteps">two step flow</input>
-                 <input type="checkbox" name="template" value="TwoSequentialJobsteps">two step sequence</input>  
--->               </td>
+<!--                 <br><input type="radio" name="template" value="none_selected" checked="true">None</input></br>  -->
+                 <table>
+                   <tr><td><input type="radio" name="template" value="OneStepJob">one step sequence</input></td></tr>
+                   <tr><td><input type="radio" name="template" value="TwoParallelJobsteps">two step flow</input></td></tr>
+                   <tr><td><input type="radio" name="template" value="TwoSequentialJobsteps">two step sequence</input></td></tr>
+                 </table>
+               </td>
              </tr>
              <tr>
                <td>

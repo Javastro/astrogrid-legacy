@@ -3,6 +3,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 	<xsl:param name="view=source" />
+	
 
 	<!--+
 	    | Match the explorer element.
@@ -20,38 +21,173 @@
 
 	<xsl:template name="workflow-detail">
 	      <strong>Maintain Workflow</strong>
-	      <p>
-	          Workflow name:<xsl:value-of select="@workflow-name"/>
-	      </p>
-	      <p>
-	          Workflow description:<xsl:value-of select="@workflow-description"/>	          
-	      </p>
-	      <p>
-	          Workflow template: <xsl:value-of select="@template-name"/>	         
-	      </p>	      
+	      <table border="0">
+	          <tr>
+	              <td>
+	                  Workflow name:<xsl:value-of select="@workflow-name"/>
+	              </td>
+	          </tr>
+	          <tr>
+	              <td>
+           	          Workflow description:<xsl:value-of select="@workflow-description"/>
+           	      </td>
+           	  </tr>
+           	  <tr>
+           	      <td>
+	                  Workflow template: <xsl:value-of select="@template-name"/>
+	              </td>
+	          </tr>
+	      </table> 
+	      <p></p>
+<xsl:for-each select="//step">
+<xsl:value-of select="@step-name"/>
+</xsl:for-each>
+	      	        
 	</xsl:template>
 	
 	<xsl:template name="workflow-description">
-	    <xsl:if test="@template-name = ''">
+      <xsl:choose>	    
+
+	    <xsl:when test="@template-name = ''">
 		    <a href="http://www.astrogrid.org">
-			    <img src="OneStepJob.gif" title="AstroGrid Home" alt="" style="border: 0px solid ; width: 200px; height: 250px;"/>
+			    <img src="OneStepJob.gif" title="OneStepJob" alt="" style="border: 0px solid ; width: 200px; height: 250px;"/>
 		    </a>
-		</xsl:if>
-	    <xsl:if test="@template-name = 'OneStepJob'">
-		    <a href="http://www.astrogrid.org">
-			    <img src="OneStepJob.gif" title="AstroGrid Home" alt="" style="border: 0px solid ; width: 200px; height: 250px;"/>
-		    </a>
-		</xsl:if>
-	    <xsl:if test="@template-name = 'TwoParallelJobstep'">
-		    <a href="http://www.astrogrid.org">
-			    <img src="OneStepJob.gif" title="AstroGrid Home" alt="" style="border: 0px solid ; width: 200px; height: 250px;"/>
-		    </a>
-		</xsl:if>
-	    <xsl:if test="@template-name = 'TwoSequentialJobsteps'">
-		    <a href="http://www.astrogrid.org">
-			    <img src="OneStepJob.gif" title="AstroGrid Home" alt="" style="border: 0px solid ; width: 200px; height: 250px;"/>
-		    </a>
-		</xsl:if>
+		</xsl:when>
+
+
+	<!--+
+	    | One Job Step
+	    +-->
+	    <xsl:when test="@template-name = 'OneStepJob'">
+	      <form method="get" name="oneJobStepForm">
+             <table border="0">
+                 <tr>
+                     <td>
+		                 <a href="http://www.astrogrid.org">
+			                 <img src="OneStepJob.gif" title="OneStepJob" alt="" style="border: 0px solid ;"/>
+		                 </a>
+		             </td>
+		             <xsl:for-each select="//step">
+		             <td valign="center">
+		                 Select query: 
+		                 <select name="query-name">
+                    		<xsl:for-each select="//query/options/name">
+					            <xsl:element name="option">
+                    			    <xsl:attribute name="value">
+                					    <xsl:value-of select="@val"/>
+				                    </xsl:attribute>				                    
+                					<xsl:value-of select="@val"/>
+				                </xsl:element>
+				            </xsl:for-each>
+		                 </select>
+		                 <input type="hidden" name="activity-key">
+		                     <xsl:attribute name="value">
+                                 <xsl:value-of select="@key"/>
+                             </xsl:attribute>
+		                 </input>
+		                 </td>
+		                 <td>	                 		                 		                 
+		                     <input type="submit" name="action" value="choose-query" />
+		                 </td>		                 
+		             </xsl:for-each>
+		         </tr>
+		    </table>
+		  </form>
+		</xsl:when>
+
+	<!--+
+	    | Two Parallel Job Steps
+	    +-->
+	    <xsl:when test="@template-name='TwoParallelJobsteps'">	        
+             <table border="0">
+                 <tr>
+                     <td rowspan="6">
+		                 <a href="http://www.astrogrid.org">
+			                 <img src="TwoStepFlow.gif" title="TwoStepFlow" alt="" style="border: 0px solid ;"/>
+		                 </a>
+		             </td>
+		         </tr>
+		         <xsl:for-each select="//step">
+<!--		         <xsl:if test="@step-name = ''">  -->
+		           <form method="get" name="twoParalleJobStepsForm">
+		             <tr>
+		                 <td>
+		                     Select query: 
+		                     <select name="query-name">
+                           		<xsl:for-each select="//query/options/name">
+					                <xsl:element name="option">
+                    					<xsl:attribute name="value">
+               				        		<xsl:value-of select="@val"/>
+				                   		</xsl:attribute>
+                					<xsl:value-of select="@val"/>
+				               	</xsl:element>
+				              </xsl:for-each>
+		                     </select>
+		                     <input type="hidden" name="activity-key">
+		                         <xsl:attribute name="value">
+                                     <xsl:value-of select="@key"/>
+                                 </xsl:attribute>
+		                     </input>		                     
+		                 </td>
+		                 <td>	                 		                 		                 
+		                     <input type="submit" name="action" value="choose-query" />
+		                 </td>		                 
+		             </tr>
+		            </form>
+<!--		            </xsl:if>
+		            <xsl:else>
+		                Query: <xsl:value-of select="@step-name"/>
+		            </xsl:else>
+-->		         </xsl:for-each>
+		    </table>		 
+		</xsl:when>
+
+
+	<!--+
+	    | Two Sequential Job Steps
+	    +-->
+	    <xsl:when test="@template-name = 'TwoSequentialJobsteps'">
+             <table border="0">
+                 <tr>
+                     <td rowspan="6">
+		                 <a href="http://www.astrogrid.org">
+			                 <img src="TwoStepSequence.gif" title="TwoStepSequence" alt="" style="border: 0px solid ;"/>
+		                 </a>
+		             </td>
+		         </tr>
+		         <xsl:for-each select="//step">
+		           <form method="get" name="twoParalleJobStepsForm">
+		             <tr>
+		                 <td>
+		                     Select query: 
+		                     <select name="query-name">
+                           		<xsl:for-each select="//query/options/name">
+					                <xsl:element name="option">
+                    					<xsl:attribute name="value">
+               				        		<xsl:value-of select="@val"/>
+				                   		</xsl:attribute>
+                					<xsl:value-of select="@val"/>
+				               	</xsl:element>
+				              </xsl:for-each>
+		                     </select>
+		                     <input type="hidden" name="activity-key">
+		                         <xsl:attribute name="value">
+                                     <xsl:value-of select="@key"/>
+                                 </xsl:attribute>
+		                     </input>		                     
+		                 </td>
+		                 <td>	                 		                 		                 
+		                     <input type="submit" name="action" value="choose-query" />
+		                 </td>		                 
+		             </tr>
+		            </form>
+		         </xsl:for-each>
+		    </table>
+		</xsl:when>
+
+		
+	    <xsl:otherwise>Unknown template: <xsl:value-of select="@template-name"/></xsl:otherwise>
+	  </xsl:choose>
 	</xsl:template>			
 		
 	<!--+
@@ -79,7 +215,7 @@
             </td>
           </tr>      
         </tbody>
-      </table>
+      </table> 
 	</xsl:template>
 	
 	
