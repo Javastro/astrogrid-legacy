@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.23 2004/03/15 21:31:40 mch Exp $
+ * $Id: SqlResults.java,v 1.24 2004/03/15 21:44:54 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -111,6 +111,8 @@ public class SqlResults extends QueryResults
 
          printOut.println("<DATA>");
          printOut.println("<TABLEDATA>");
+
+         String note = statusToUpdate.getNote();
          
 //         sqlResults.beforeFirst();
          int row = 0;
@@ -118,7 +120,7 @@ public class SqlResults extends QueryResults
          while (sqlResults.next())
          {
             row++;
-            statusToUpdate.setNote("Processing Row "+row+" of "+maxRow);
+            statusToUpdate.setNote(note+"\nProcessing Row "+row+" of "+maxRow);
 
             printOut.println("               <TR>");
             for (int i=1;i<=cols;i++)
@@ -175,12 +177,14 @@ public class SqlResults extends QueryResults
 
          printOut.println();
 
+         String note = statusToUpdate.getNote();
+
          int row = 0;
          int maxRow = getCount();
          while (sqlResults.next())
          {
             row++;
-            statusToUpdate.setNote("Processing Row "+row+" of "+maxRow);
+            statusToUpdate.setNote(note+"\nProcessing Row "+row+" of "+maxRow);
 
             for (int c=1;c<=cols;c++)
             {
@@ -243,6 +247,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.24  2004/03/15 21:44:54  mch
+ Better note update
+
  Revision 1.23  2004/03/15 21:31:40  mch
  Added limit warning to querier status
 
