@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <extend>${basedir}/../../project-base.xml</extend>
+  <!-- the version of maven's project object model -->
+  <pomVersion>3</pomVersion>
+
+  <!-- a unique name for this project -->
+  <id>http2soap</id>
+
+  <!-- a short but descriptive name for the project -->
+  <name>HTTP - SOAP Adapter</name>
+
+  <!-- The version of the project under development, e.g.
+       1.1, 1.2, 2.0-dev -->
+  <currentVersion>HEAD</currentVersion>
+
+
+  <description>
+	Adapater SOAP service that wraps a legacy web application
+	converts between SOAP messages and HTTP-POST / HTTP-GET to
+	CGI scripts.
+  </description>
+  <!-- a short description of what the project does -->
+  <shortDescription>
+    Adapter that wraps legacy web applications as SOAP web services.
+  </shortDescription>
+
+  <siteDirectory>/var/www/www/maven/build/datacenter/implementations/http2soap</siteDirectory>
+
+  <!-- the version control repository and http url for online access
+       the connection element has the form:
+       scm:<system>:<system specific connection string> -->
+  <repository>
+    <connection>
+      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/datacenter/implementations/http2soap
+    </connection>
+    <developerConnection>
+      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/datacenter/implementations/http2soap
+    </developerConnection>
+  </repository>
+
+
+
+  <!-- jar files the project is dependent on -->
+  <dependencies>
+    <dependency>
+    	<id>bsf</id>
+	<version>2.2</version>
+    </dependency>
+    <dependency>
+    	<groupId>rhino</groupId>
+    	<artifactId>js</artifactId>
+    	<version>1.5R4.1</version>
+    </dependency>
+
+
+    <dependency>
+    	<id>commons-httpclient</id>
+	<version>2.0-beta1</version>
+    </dependency>
+    <!-- digester and things it relies upon -->
+    <dependency>
+    	<id>commons-digester</id>
+	<version>1.5</version>
+    </dependency>
+    <dependency>
+    	<id>commons-beanutils</id>
+	<version>1.6</version>
+    </dependency>
+    <dependency>
+    	<id>commons-collections</id>
+	<version>2.1</version>
+    </dependency>
+
+  </dependencies>
+
+</project>
+
