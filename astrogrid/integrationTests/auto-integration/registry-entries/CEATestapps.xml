@@ -1,444 +1,530 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<VODescription xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:vt="http://www.ivoa.net/xml/VOTable/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/CEAService/v0.1
-\\pahlaptop\work\astrogrid\indsrc\workflow-objects\schema\VOCEA.xsd">
-	<Resource  xsi:type="CeaApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-		<Identifier>
-			<AuthorityID>@REGAUTHORITY@</AuthorityID>
-			<ResourceKey>testap2</ResourceKey>
-		</Identifier>
-		<Title>TemplateEntry</Title>
-		<ShortName>TemplateEntry</ShortName>
-		<Summary>
-			<Description>This is part of the astrogrid CEA.</Description>
-			<ReferenceURL>http://www.astrogrid.org/maven/build/applications/</ReferenceURL>
-		</Summary>
-		<Type>Other</Type>
-		<Curation>
-			<Publisher>
-				<Title>Astrogrid</Title>
-				<Description>blah blab</Description>
-				<ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
-			</Publisher>
-			<Contact>
-				<Name>Paul Harrison</Name>
-				<Email>pah@jb.man.ac.uk</Email>
-			</Contact>
-			<Date role="representative">2004-03-26</Date>
-			<Creator>
-				<Name>Astrogrid</Name>
-				<Logo>??</Logo>
-			</Creator>
-			<Version>Iteration 5</Version>
-		</Curation>
-		<Subject>???</Subject>
-		<cea:ApplicationDefinition>
-			<cea:Parameters>
-				<cea:ParameterDefinition name="P9d" type="text">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description>The contents of this file will be copied to the output</ceapd:UI_Description>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P10" type="boolean">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description/>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P6" type="RA">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description/>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P4" type="text">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description/>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P7" type="Dec">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description/>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P12" type="text">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description/>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P1" type="integer">
-					<ceapd:UI_Name>Pause Time</ceapd:UI_Name>
-					<ceapd:UI_Description>Text
+<vr:VODescription xmlns="http://www.ivoa.net/xml/CEAService/v0.1"
+	xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1"
+    xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
+    xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9">
+    <vr:Resource status="active" xsi:type="cea:CeaApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <vr:Identifier>
+            <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+            <vr:ResourceKey>testap2</vr:ResourceKey>
+        </vr:Identifier>
+        <vr:Title>TemplateEntry</vr:Title>
+
+        <vr:ShortName>TemplateEntry</vr:ShortName>
+        <vr:Summary>
+            <vr:Description>This is part of the astrogrid CEA.</vr:Description>
+            <vr:ReferenceURL>http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+        </vr:Summary>
+        <vr:Type>Other</vr:Type>
+        <vr:Curation>
+
+            <vr:Publisher>
+                <vr:Title>Astrogrid</vr:Title>
+                <vr:Description>blah blab</vr:Description>
+                <vr:ReferenceURL>http://www.astrogrid.org/</vr:ReferenceURL>
+            </vr:Publisher>
+            <vr:Contact>
+                <vr:Name>Paul Harrison</vr:Name>
+
+                <vr:Email>pah@jb.man.ac.uk</vr:Email>
+            </vr:Contact>
+            <vr:Date role="representative">2004-03-26</vr:Date>
+            <vr:Creator>
+                <vr:Name>Astrogrid</vr:Name>
+                <vr:Logo>??</vr:Logo>
+            </vr:Creator>
+
+            <vr:Version>Iteration 5</vr:Version>
+        </vr:Curation>
+        <vr:Subject>???</vr:Subject>
+        <cea:ApplicationDefinition>
+            <cea:Parameters>
+                <cea:ParameterDefinition name="P9d" type="text"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description>The contents of this file will be copied to the output</ceapd:UI_Description>
+
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P10" type="boolean"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P6" type="RA"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+
+                <cea:ParameterDefinition name="P4" type="text"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P7" type="Dec"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P12" type="text"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P1" type="integer"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name>Pause Time</ceapd:UI_Name>
+                    <ceapd:UI_Description>Text
                                         this is the time tha the application will pause in seconds before continuing to give the appearance of doing something...</ceapd:UI_Description>
-					<ceapd:UCD>AAD</ceapd:UCD>
-					<ceapd:DefaultValue>1.0</ceapd:DefaultValue>
-					<ceapd:Units>String</ceapd:Units>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P8" type="ADQL">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description/>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P9" type="text">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description>The contents of this file will be copied to the output</ceapd:UI_Description>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P2" type="double">
-					<ceapd:UI_Name>String</ceapd:UI_Name>
-					<ceapd:UI_Description>Text This can be anything</ceapd:UI_Description>
-					<ceapd:UCD>String</ceapd:UCD>
-					<ceapd:DefaultValue>Text</ceapd:DefaultValue>
-					<ceapd:Units>String</ceapd:Units>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P11" type="anyURI">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description/>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P3d" type="text">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description/>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P5" type="VOTable">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description/>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P3" type="text">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description/>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-			</cea:Parameters>
-			<cea:Interfaces>
-				<ceab:Interface name="I1">
-					<ceab:input>
-						<ceab:pref ref="P1" minoccurs="1" maxoccurs="1"/>
-						<ceab:pref ref="P9" minoccurs="1" maxoccurs="1"/>
-						<ceab:pref ref="P4" minoccurs="1" maxoccurs="1"/>
-						<ceab:pref ref="P2" minoccurs="1" maxoccurs="1"/>
-					</ceab:input>
-					<ceab:output>
-						<ceab:pref ref="P3" minoccurs="1" maxoccurs="1"/>
-					</ceab:output>
-				</ceab:Interface>
-				<ceab:Interface name="I2">
-					<ceab:input>
-						<ceab:pref ref="P9" minoccurs="1" maxoccurs="1"/>
-					</ceab:input>
-					<ceab:output>
-						<ceab:pref ref="P3" minoccurs="1" maxoccurs="1"/>
-					</ceab:output>
-				</ceab:Interface>
-				<ceab:Interface name="Ilocal">
-					<ceab:input>
-						<ceab:pref ref="P9d" minoccurs="1" maxoccurs="1"/>
-						<ceab:pref ref="P1" minoccurs="1" maxoccurs="1"/>
-						<ceab:pref ref="P4" minoccurs="1" maxoccurs="1"/>
-						<ceab:pref ref="P2" minoccurs="1" maxoccurs="1"/>
-					</ceab:input>
-					<ceab:output>
-						<ceab:pref ref="P3d" minoccurs="1" maxoccurs="1"/>
-					</ceab:output>
-				</ceab:Interface>
-			</cea:Interfaces>
-		</cea:ApplicationDefinition>
-	</Resource>
-	<Resource  xsi:type="CeaApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-		<Identifier>
-			<AuthorityID>@REGAUTHORITY@</AuthorityID>
-			<ResourceKey>testapp</ResourceKey>
-		</Identifier>
-		<Title>TemplateEntry</Title>
-		<ShortName>TemplateEntry</ShortName>
-		<Summary>
-			<Description>This is part of the astrogrid CEA.</Description>
-			<ReferenceURL>http://www.astrogrid.org/maven/build/applications/</ReferenceURL>
-		</Summary>
-		<Type>Other</Type>
-		<Curation>
-			<Publisher>
-				<Title>Astrogrid</Title>
-				<Description>blah blab</Description>
-				<ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
-			</Publisher>
-			<Contact>
-				<Name>Paul Harrison</Name>
-				<Email>pah@jb.man.ac.uk</Email>
-			</Contact>
-			<Date role="representative">2004-03-26</Date>
-			<Creator>
-				<Name>Astrogrid</Name>
-				<Logo>??</Logo>
-			</Creator>
-			<Version>Iteration 5</Version>
-		</Curation>
-		<Subject>???</Subject>
-		<cea:ApplicationDefinition>
-			<cea:Parameters>
-				<cea:ParameterDefinition name="P10" type="boolean">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description/>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P6" type="RA">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description/>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P4" type="text">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description/>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P7" type="Dec">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description/>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P12" type="text">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description/>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P1" type="integer">
-					<ceapd:UI_Name>Pause Time</ceapd:UI_Name>
-					<ceapd:UI_Description>Text
+                    <ceapd:UCD>AAD</ceapd:UCD>
+
+                    <ceapd:DefaultValue>1.0</ceapd:DefaultValue>
+                    <ceapd:Units>String</ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P8" type="ADQL"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P9" type="text"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description>The contents of this file will be copied to the output</ceapd:UI_Description>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P2" type="double"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name>String</ceapd:UI_Name>
+                    <ceapd:UI_Description>Text This can be anything</ceapd:UI_Description>
+                    <ceapd:UCD>String</ceapd:UCD>
+                    <ceapd:DefaultValue>Text</ceapd:DefaultValue>
+                    <ceapd:Units>String</ceapd:Units>
+
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P11" type="anyURI"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P3d" type="text"
+                    accept-encodings="" sub-type="">
+
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P5" type="VOTable"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P3" type="text"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+            </cea:Parameters>
+            <cea:Interfaces>
+                <ceab:Interface name="I1">
+                    <ceab:input>
+                        <ceab:pref ref="P1" minoccurs="1" maxoccurs="1"/>
+                        <ceab:pref ref="P9" minoccurs="1" maxoccurs="1"/>
+                        <ceab:pref ref="P4" minoccurs="1" maxoccurs="1"/>
+
+                        <ceab:pref ref="P2" minoccurs="1" maxoccurs="1"/>
+                    </ceab:input>
+                    <ceab:output>
+                        <ceab:pref ref="P3" minoccurs="1" maxoccurs="1"/>
+                    </ceab:output>
+                </ceab:Interface>
+                <ceab:Interface name="I2">
+                    <ceab:input>
+                        <ceab:pref ref="P9" minoccurs="1" maxoccurs="1"/>
+
+                    </ceab:input>
+                    <ceab:output>
+                        <ceab:pref ref="P3" minoccurs="1" maxoccurs="1"/>
+                    </ceab:output>
+                </ceab:Interface>
+                <ceab:Interface name="Ilocal">
+                    <ceab:input>
+                        <ceab:pref ref="P9d" minoccurs="1" maxoccurs="1"/>
+                        <ceab:pref ref="P1" minoccurs="1" maxoccurs="1"/>
+
+                        <ceab:pref ref="P4" minoccurs="1" maxoccurs="1"/>
+                        <ceab:pref ref="P2" minoccurs="1" maxoccurs="1"/>
+                    </ceab:input>
+                    <ceab:output>
+                        <ceab:pref ref="P3d" minoccurs="1" maxoccurs="1"/>
+                    </ceab:output>
+                </ceab:Interface>
+            </cea:Interfaces>
+        </cea:ApplicationDefinition>
+
+    </vr:Resource>
+    <vr:Resource status="active" xsi:type="cea:CeaApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <vr:Identifier>
+            <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+            <vr:ResourceKey>testapp</vr:ResourceKey>
+        </vr:Identifier>
+        <vr:Title>TemplateEntry</vr:Title>
+
+        <vr:ShortName>TemplateEntry</vr:ShortName>
+        <vr:Summary>
+            <vr:Description>This is part of the astrogrid CEA.</vr:Description>
+            <vr:ReferenceURL>http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+        </vr:Summary>
+        <vr:Type>Other</vr:Type>
+        <vr:Curation>
+
+            <vr:Publisher>
+                <vr:Title>Astrogrid</vr:Title>
+                <vr:Description>blah blab</vr:Description>
+                <vr:ReferenceURL>http://www.astrogrid.org/</vr:ReferenceURL>
+            </vr:Publisher>
+            <vr:Contact>
+                <vr:Name>Paul Harrison</vr:Name>
+
+                <vr:Email>pah@jb.man.ac.uk</vr:Email>
+            </vr:Contact>
+            <vr:Date role="representative">2004-03-26</vr:Date>
+            <vr:Creator>
+                <vr:Name>Astrogrid</vr:Name>
+                <vr:Logo>??</vr:Logo>
+            </vr:Creator>
+
+            <vr:Version>Iteration 5</vr:Version>
+        </vr:Curation>
+        <vr:Subject>???</vr:Subject>
+        <cea:ApplicationDefinition>
+            <cea:Parameters>
+                <cea:ParameterDefinition name="P10" type="boolean"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P6" type="RA"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P4" type="text"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+
+                <cea:ParameterDefinition name="P7" type="Dec"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P12" type="text"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P1" type="integer"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name>Pause Time</ceapd:UI_Name>
+                    <ceapd:UI_Description>Text
                                         this is the time tha the application will pause in seconds before continuing to give the appearance of doing something...</ceapd:UI_Description>
-					<ceapd:UCD>AAD</ceapd:UCD>
-					<ceapd:DefaultValue>1.0</ceapd:DefaultValue>
-					<ceapd:Units>String</ceapd:Units>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P13" type="double">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description/>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P8" type="ADQL">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description/>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P9" type="text">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description>The contents of this file will be copied to the output</ceapd:UI_Description>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P2" type="binary">
-					<ceapd:UI_Name>String</ceapd:UI_Name>
-					<ceapd:UI_Description>This is the file to which the parameters will be written</ceapd:UI_Description>
-					<ceapd:UCD>String</ceapd:UCD>
-					<ceapd:DefaultValue>Text</ceapd:DefaultValue>
-					<ceapd:Units>String</ceapd:Units>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P11" type="anyURI">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description/>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P5" type="VOTable">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description/>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="P3" type="text">
-					<ceapd:UI_Name/>
-					<ceapd:UI_Description/>
-					<ceapd:UCD/>
-					<ceapd:DefaultValue/>
-					<ceapd:Units/>
-				</cea:ParameterDefinition>
-			</cea:Parameters>
-			<cea:Interfaces>
-				<ceab:Interface name="I1">
-					<ceab:input>
-						<ceab:pref ref="P1" minoccurs="1" maxoccurs="1"/>
-						<ceab:pref ref="P6" minoccurs="0" maxoccurs="1"/>
-						<ceab:pref ref="P9" minoccurs="1" maxoccurs="1"/>
-						<ceab:pref ref="P4" minoccurs="1" maxoccurs="1"/>
-					</ceab:input>
-					<ceab:output>
-						<ceab:pref ref="P2" minoccurs="1" maxoccurs="1"/>
-						<ceab:pref ref="P3" minoccurs="1" maxoccurs="1"/>
-					</ceab:output>
-				</ceab:Interface>
-				<ceab:Interface name="I2">
-					<ceab:input>
-						<ceab:pref ref="P9" minoccurs="1" maxoccurs="1"/>
-					</ceab:input>
-					<ceab:output>
-						<ceab:pref ref="P3" minoccurs="1" maxoccurs="1"/>
-					</ceab:output>
-				</ceab:Interface>
-				<ceab:Interface name="Ilocal">
-					<ceab:input>
-						<ceab:pref ref="P1" minoccurs="1" maxoccurs="1"/>
-						<ceab:pref ref="P4" minoccurs="1" maxoccurs="1"/>
-						<ceab:pref ref="P2" minoccurs="1" maxoccurs="1"/>
-					</ceab:input>
-					<ceab:output>
-						<ceab:pref ref="P3" minoccurs="1" maxoccurs="1"/>
-					</ceab:output>
-				</ceab:Interface>
-			</cea:Interfaces>
-		</cea:ApplicationDefinition>
-	</Resource>
-	<Resource  xsi:type="CeaApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-		<Identifier>
-			<AuthorityID>@REGAUTHORITY@</AuthorityID>
-			<ResourceKey>testap3</ResourceKey>
-		</Identifier>
-		<Title>TemplateEntry</Title>
-		<ShortName>TemplateEntry</ShortName>
-		<Summary>
-			<Description>This is part of the astrogrid CEA.</Description>
-			<ReferenceURL>http://www.astrogrid.org/maven/build/applications/</ReferenceURL>
-		</Summary>
-		<Type>Other</Type>
-		<Curation>
-			<Publisher>
-				<Title>Astrogrid</Title>
-				<Description>blah blab</Description>
-				<ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
-			</Publisher>
-			<Contact>
-				<Name>Paul Harrison</Name>
-				<Email>pah@jb.man.ac.uk</Email>
-			</Contact>
-			<Date role="representative">2004-03-26</Date>
-			<Creator>
-				<Name>Astrogrid</Name>
-				<Logo>??</Logo>
-			</Creator>
-			<Version>Iteration 5</Version>
-		</Curation>
-		<Subject>???</Subject>
-		<cea:ApplicationDefinition>
-			<cea:Parameters>
-				<cea:ParameterDefinition name="p1" type="integer">
-					<ceapd:UI_Name>String</ceapd:UI_Name>
-					<ceapd:UI_Description>Text</ceapd:UI_Description>
-					<ceapd:UCD>String</ceapd:UCD>
-					<ceapd:DefaultValue>Text</ceapd:DefaultValue>
-					<ceapd:Units>String</ceapd:Units>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="p2" type="integer">
-					<ceapd:UI_Name>String</ceapd:UI_Name>
-					<ceapd:UI_Description>Text</ceapd:UI_Description>
-					<ceapd:UCD>String</ceapd:UCD>
-					<ceapd:DefaultValue>Text</ceapd:DefaultValue>
-					<ceapd:Units>String</ceapd:Units>
-				</cea:ParameterDefinition>
-			</cea:Parameters>
-			<cea:Interfaces>
-				<ceab:Interface name="ID000001">
-					<ceab:input>
-						<ceab:pref ref="p2" minoccurs="1" maxoccurs="1"/>
-					</ceab:input>
-					<ceab:output>
-						<ceab:pref ref="p1" minoccurs="1" maxoccurs="1"/>
-					</ceab:output>
-				</ceab:Interface>
-			</cea:Interfaces>
-		</cea:ApplicationDefinition>
-	</Resource>
-	<Resource  xsi:type="CeaServiceType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-		<Identifier>
-			<AuthorityID>@REGAUTHORITY@</AuthorityID>
-			<ResourceKey>TemplateEntry</ResourceKey>
-		</Identifier>
-		<Title>TemplateEntry</Title>
-		<ShortName>TemplateEntry</ShortName>
-		<Summary>
-			<Description>This is part of the astrogrid CEA.</Description>
-			<ReferenceURL>http://www.astrogrid.org/maven/build/applications/</ReferenceURL>
-		</Summary> 
-		<Type>Other</Type>
-		<Curation>
-			<Publisher>
-				<Title>Astrogrid</Title>
-				<Description>blah blab</Description>
-				<ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
-			</Publisher>
-			<Contact>
-				<Name>Paul Harrison</Name>
-				<Email>pah@jb.man.ac.uk</Email>
-			</Contact>
-			<Date role="representative">2004-03-26</Date>
-			<Creator>
-				<Name>Astrogrid</Name>
-				<Logo>??</Logo>
-			</Creator>
-			<Version>Iteration 5</Version>
-		</Curation>
-		<Subject>???</Subject>
-		<Capability>
-			<StandardURL>http://www.astrogrid.org/maven/build/applications/</StandardURL>
-			<StandardID>
-				<AuthorityID>astrogrid.og</AuthorityID>
-				<ResourceKey>CommonExecutionArchitucture</ResourceKey>
-			</StandardID>
-		</Capability>
-		<Interface>
-			<Invocation>WebService</Invocation>
-			<AccessURL use="base">@TOMCATROOT@/astrogrid-cea-commandline-SNAPSHOT/services/CommonExecutionConnectorService</AccessURL>
-		</Interface>
-		<cea:ManagedApplications>
-			<cea:ApplicationReference>
-				<AuthorityID>@REGAUTHORITY@</AuthorityID>
-				<ResourceKey>testap2</ResourceKey>
-			</cea:ApplicationReference>
-			<cea:ApplicationReference>
-				<AuthorityID>@REGAUTHORITY@</AuthorityID>
-				<ResourceKey>testapp</ResourceKey>
-			</cea:ApplicationReference>
-			<cea:ApplicationReference>
-				<AuthorityID>@REGAUTHORITY@</AuthorityID>
-				<ResourceKey>testap3</ResourceKey>
-			</cea:ApplicationReference>
-		</cea:ManagedApplications>
-	</Resource>
-</VODescription>
+
+                    <ceapd:UCD>AAD</ceapd:UCD>
+                    <ceapd:DefaultValue>1.0</ceapd:DefaultValue>
+                    <ceapd:Units>String</ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P13" type="double"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P8" type="ADQL"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P9" type="text"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description>The contents of this file will be copied to the output</ceapd:UI_Description>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P2" type="binary"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name>String</ceapd:UI_Name>
+                    <ceapd:UI_Description>This is the file to which the parameters will be written</ceapd:UI_Description>
+                    <ceapd:UCD>String</ceapd:UCD>
+                    <ceapd:DefaultValue>Text</ceapd:DefaultValue>
+                    <ceapd:Units>String</ceapd:Units>
+
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P11" type="anyURI"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P5" type="VOTable"
+                    accept-encodings="" sub-type="">
+
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="P3" type="text"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name></ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+
+                    <ceapd:UCD></ceapd:UCD>
+                    <ceapd:DefaultValue></ceapd:DefaultValue>
+                    <ceapd:Units></ceapd:Units>
+                </cea:ParameterDefinition>
+            </cea:Parameters>
+            <cea:Interfaces>
+                <ceab:Interface name="I1">
+                    <ceab:input>
+                        <ceab:pref ref="P1" minoccurs="1" maxoccurs="1"/>
+
+                        <ceab:pref ref="P6" minoccurs="0" maxoccurs="1"/>
+                        <ceab:pref ref="P9" minoccurs="1" maxoccurs="1"/>
+                        <ceab:pref ref="P4" minoccurs="1" maxoccurs="1"/>
+                    </ceab:input>
+                    <ceab:output>
+                        <ceab:pref ref="P2" minoccurs="1" maxoccurs="1"/>
+                        <ceab:pref ref="P3" minoccurs="1" maxoccurs="1"/>
+                    </ceab:output>
+                </ceab:Interface>
+
+                <ceab:Interface name="I2">
+                    <ceab:input>
+                        <ceab:pref ref="P9" minoccurs="1" maxoccurs="1"/>
+                    </ceab:input>
+                    <ceab:output>
+                        <ceab:pref ref="P3" minoccurs="1" maxoccurs="1"/>
+                    </ceab:output>
+                </ceab:Interface>
+                <ceab:Interface name="Ilocal">
+
+                    <ceab:input>
+                        <ceab:pref ref="P1" minoccurs="1" maxoccurs="1"/>
+                        <ceab:pref ref="P4" minoccurs="1" maxoccurs="1"/>
+                        <ceab:pref ref="P2" minoccurs="1" maxoccurs="1"/>
+                    </ceab:input>
+                    <ceab:output>
+                        <ceab:pref ref="P3" minoccurs="1" maxoccurs="1"/>
+                    </ceab:output>
+                </ceab:Interface>
+
+            </cea:Interfaces>
+        </cea:ApplicationDefinition>
+    </vr:Resource>
+    <vr:Resource status="active" xsi:type="cea:CeaApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <vr:Identifier>
+            <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+            <vr:ResourceKey>testap3</vr:ResourceKey>
+        </vr:Identifier>
+
+        <vr:Title>TemplateEntry</vr:Title>
+        <vr:ShortName>TemplateEntry</vr:ShortName>
+        <vr:Summary>
+            <vr:Description>This is part of the astrogrid CEA.</vr:Description>
+            <vr:ReferenceURL>http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+        </vr:Summary>
+        <vr:Type>Other</vr:Type>
+
+        <vr:Curation>
+            <vr:Publisher>
+                <vr:Title>Astrogrid</vr:Title>
+                <vr:Description>blah blab</vr:Description>
+                <vr:ReferenceURL>http://www.astrogrid.org/</vr:ReferenceURL>
+            </vr:Publisher>
+            <vr:Contact>
+
+                <vr:Name>Paul Harrison</vr:Name>
+                <vr:Email>pah@jb.man.ac.uk</vr:Email>
+            </vr:Contact>
+            <vr:Date role="representative">2004-03-26</vr:Date>
+            <vr:Creator>
+                <vr:Name>Astrogrid</vr:Name>
+                <vr:Logo>??</vr:Logo>
+
+            </vr:Creator>
+            <vr:Version>Iteration 5</vr:Version>
+        </vr:Curation>
+        <vr:Subject>???</vr:Subject>
+        <cea:ApplicationDefinition>
+            <cea:Parameters>
+                <cea:ParameterDefinition name="p1" type="integer"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name>String</ceapd:UI_Name>
+
+                    <ceapd:UI_Description>Text</ceapd:UI_Description>
+                    <ceapd:UCD>String</ceapd:UCD>
+                    <ceapd:DefaultValue>Text</ceapd:DefaultValue>
+                    <ceapd:Units>String</ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="p2" type="integer"
+                    accept-encodings="" sub-type="">
+                    <ceapd:UI_Name>String</ceapd:UI_Name>
+
+                    <ceapd:UI_Description>Text</ceapd:UI_Description>
+                    <ceapd:UCD>String</ceapd:UCD>
+                    <ceapd:DefaultValue>Text</ceapd:DefaultValue>
+                    <ceapd:Units>String</ceapd:Units>
+                </cea:ParameterDefinition>
+            </cea:Parameters>
+            <cea:Interfaces>
+
+                <ceab:Interface name="ID000001">
+                    <ceab:input>
+                        <ceab:pref ref="p2" minoccurs="1" maxoccurs="1"/>
+                    </ceab:input>
+                    <ceab:output>
+                        <ceab:pref ref="p1" minoccurs="1" maxoccurs="1"/>
+                    </ceab:output>
+                </ceab:Interface>
+            </cea:Interfaces>
+
+        </cea:ApplicationDefinition>
+    </vr:Resource>
+    <vr:Resource status="active" xsi:type="cea:CeaServiceType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <vr:Identifier>
+            <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+            <vr:ResourceKey>TemplateEntry</vr:ResourceKey>
+        </vr:Identifier>
+        <vr:Title>TemplateEntry</vr:Title>
+
+        <vr:ShortName>TemplateEntry</vr:ShortName>
+        <vr:Summary>
+            <vr:Description>This is part of the astrogrid CEA.</vr:Description>
+            <vr:ReferenceURL>http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+        </vr:Summary>
+        <vr:Type>Other</vr:Type>
+        <vr:Curation>
+
+            <vr:Publisher>
+                <vr:Title>Astrogrid</vr:Title>
+                <vr:Description>blah blab</vr:Description>
+                <vr:ReferenceURL>http://www.astrogrid.org/</vr:ReferenceURL>
+            </vr:Publisher>
+            <vr:Contact>
+                <vr:Name>Paul Harrison</vr:Name>
+
+                <vr:Email>pah@jb.man.ac.uk</vr:Email>
+            </vr:Contact>
+            <vr:Date role="representative">2004-03-26</vr:Date>
+            <vr:Creator>
+                <vr:Name>Astrogrid</vr:Name>
+                <vr:Logo>??</vr:Logo>
+            </vr:Creator>
+
+            <vr:Version>Iteration 5</vr:Version>
+        </vr:Curation>
+        <vr:Subject>???</vr:Subject>
+        <vr:Capability>
+            <vr:StandardURL>http://www.astrogrid.org/maven/build/applications/</vr:StandardURL>
+            <vr:StandardID>
+                <vr:AuthorityID>astrogrid.og</vr:AuthorityID>
+
+                <vr:ResourceKey>CommonExecutionArchitucture</vr:ResourceKey>
+            </vr:StandardID>
+        </vr:Capability>
+        <vr:Interface>
+            <vr:Invocation>WebService</vr:Invocation>
+            <vr:AccessURL use="base">@TOMCATROOT@/astrogrid-cea-commandline-SNAPSHOT/services/CommonExecutionConnectorService</vr:AccessURL>
+        </vr:Interface>
+
+        <cea:ManagedApplications>
+            <cea:ApplicationReference>
+                <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+                <vr:ResourceKey>testap2</vr:ResourceKey>
+            </cea:ApplicationReference>
+            <cea:ApplicationReference>
+                <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+
+                <vr:ResourceKey>testapp</vr:ResourceKey>
+            </cea:ApplicationReference>
+            <cea:ApplicationReference>
+                <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+                <vr:ResourceKey>testap3</vr:ResourceKey>
+            </cea:ApplicationReference>
+        </cea:ManagedApplications>
+
+    </vr:Resource>
+</vr:VODescription>
