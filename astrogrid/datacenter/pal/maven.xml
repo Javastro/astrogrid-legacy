@@ -15,7 +15,6 @@
 	<copy todir="${webapp.root}" overwrite="yes">
 		<fileset dir="${webapp.docs}" />
 	</copy>
-	<attainGoal name="generate-docs" />
 	<attainGoal name="grab-delegate" />
 	<attainGoal name="grab-implementations" />
 	<attainGoal name="configure-webapp" />
