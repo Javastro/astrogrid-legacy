@@ -1,34 +1,16 @@
 <?xml version="1.0"?>
-
-<xsl:stylesheet
-   version="1.0"
-   xmlns="http://www.astrogrid.org/portal"
-   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-
-   <xsl:output
-      method="xml"
-      version="1.0"
-      indent="yes"/>
-
-      <xsl:param name="action" />
-      <xsl:param name="errormessage" />
-      <xsl:param name="activity-key" />  
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+ 
   
       <!--+
           | Match the root element.
           +-->
       <xsl:template match="/">
-         <html>
-            <head>
-               <link rel="stylesheet" type="text/css" href="main.css" />              
-               <title>AstroGrid Portal</title>
-            </head>
-            <body onload="verifyName(); ">
-               <div> <!-- div encloses content to be displayed in main portal pages -->          
-                  <xsl:apply-templates/>
-               </div> <!-- End div encloses content to be displayed in main portal pages -->
-            </body>
-         </html>
+         <ag-div>
+            <agComponentTitle>Job list</agComponentTitle>
+            <ag-script type="text/javascript" src="/astrogrid-portal/mount/workflow/workflow-functions.js"/>                                         
+            <xsl:apply-templates/>               
+         </ag-div>
       </xsl:template>
   
       <!--+
@@ -42,7 +24,33 @@
                <td style="color: blue; background-color: lightblue; text-align: center;">Description</td>
                <td style="color: blue; background-color: lightblue; text-align: center;">Time submitted</td>
                <td style="color: blue; background-color: lightblue; text-align: center;">Status</td>
-               <td style="color: blue; background-color: lightblue; text-align: center;">Job ID</td>
+               <td style="color: blue; background-color: lightblue; text-align: center;">
+                  <div class="jobIdColumn" style="display: none;">
+                     <xsl:attribute name="id">full_column_heading</xsl:attribute>               
+                     <xsl:element name="a">  
+                        <xsl:attribute name="onClick">toggleColumn('jobIdColumn');</xsl:attribute>                
+                        <xsl:attribute name="href">javascript:void(0);</xsl:attribute> 
+                        <xsl:attribute name="class">jobIdColumn</xsl:attribute>
+                     </xsl:element>
+                     <font>
+                        <small><b>[less]</b></small>
+                     </font>
+                     <xsl:element name="/a"></xsl:element> 
+                  </div>
+                  <div class="jobIdColumn">
+                     <xsl:attribute name="id">short_column_heading</xsl:attribute>              
+                     <xsl:element name="a">  
+                        <xsl:attribute name="onClick">toggleColumn('jobIdColumn');</xsl:attribute>                
+                        <xsl:attribute name="href">javascript:void(0);</xsl:attribute>
+                        <xsl:attribute name="class">jobIdColumn</xsl:attribute>
+                     </xsl:element>
+                     <font>
+                        <small><b>[more]</b></small>
+                     </font>
+                     <xsl:element name="/a"></xsl:element> 
+                  </div>                                      
+                  Job ID   
+               </td>
                <td style="color: blue; background-color: lightblue; text-align: center;">Delete/Cancel?</td> 
             </tr>
             <xsl:for-each select="//job">
@@ -56,18 +64,29 @@
                         <xsl:when test="@status = 'n/a'">  <!--  EMPLTY LIST -->
                            n/a
                         </xsl:when>
-                        <xsl:otherwise>                      
-                           <xsl:element name="a">
+                        <xsl:otherwise>
+                           <div class="jobIdColumn" style="display: none;">                      
+                              <xsl:attribute name="id">full_<xsl:value-of select="@jobid"/></xsl:attribute> 
+                              <xsl:element name="a">
+                                 <xsl:attribute name="href">/astrogrid-portal/main/mount/workflow/agjobmanager-job-status.html?action=read-job&amp;jobURN=<xsl:value-of select="@jobid"/></xsl:attribute>
+                              </xsl:element>
+                              <xsl:value-of select="@jobid"/>
+                              <xsl:element name="/a"></xsl:element>
+                           </div>
+                           <div class="jobIdColumn">
+                           <xsl:attribute name="id">short_<xsl:value-of select="@jobid"/></xsl:attribute>
+                           <xsl:element name="a">                  
                               <xsl:attribute name="href">/astrogrid-portal/main/mount/workflow/agjobmanager-job-status.html?action=read-job&amp;jobURN=<xsl:value-of select="@jobid"/></xsl:attribute>
+                              <xsl:attribute name="class">jobIdColumn</xsl:attribute>              
                            </xsl:element>
-                           <xsl:value-of select="@jobid"/>
-                           <xsl:element name="/a">
-                           </xsl:element>
+                              ......<xsl:value-of select="@jobid-short"/>
+                           <xsl:element name="/a"></xsl:element>                                                       
+                        </div>                           
                         </xsl:otherwise>                                                                 
-                     </xsl:choose>
-                  </td>
-                  <td align="center">
-                      <xsl:choose>                                      
+                     </xsl:choose>                     
+                     </td>
+                     <td align="center">
+                       <xsl:choose>                                      
                           <xsl:when test="@status = 'ERROR'">  <!--  ERROR -->
                               <form action="/astrogrid-portal/main/mount/workflow/agjobmanager-jes.html" name="job_form">
                                   <xsl:element name="input">                              
