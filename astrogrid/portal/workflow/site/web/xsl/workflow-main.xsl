@@ -491,7 +491,7 @@
                      <td>Name: <xsl:value-of select="@param-name" /></td>
                      <td>Type: <xsl:value-of select="@param-type" /></td>
                      <xsl:if test="@param-type != 'boolean'">
-                        <td>Value: <input type="text" name="param-value" /></td>
+                        <td>Value: <input type="text" size="25" name="param-value" /></td>
                         <td><input type="submit" value="Submit" /></td>
                      </xsl:if>
                      <xsl:if test="@param-type = 'boolean'">
@@ -517,8 +517,13 @@
                   <tr> 
                      <td>Name: <xsl:value-of select="@param-name" /></td>
                      <td>Type: <xsl:value-of select="@param-type" /></td>
-                     <td>Value: 
-                        <xsl:value-of select="@param-value" />
+                     <td>Value:
+                        <xsl:element name="input">
+                           <xsl:attribute name="value"><xsl:value-of select="@param-value" /></xsl:attribute>
+                           <xsl:attribute name="type">text</xsl:attribute>
+                           <xsl:attribute name="size">25</xsl:attribute>
+                           <xsl:attribute name="readonly">readonly</xsl:attribute>
+                        </xsl:element>
                      </td>
                      <td>
                         <input type="submit" value="Delete" />
@@ -545,7 +550,7 @@
                <tr> 
                   <td>Name: <xsl:value-of select="@param-name" /></td>
                   <td>Type: <xsl:value-of select="@param-type" /></td>
-                  <td>Value: <input type="text" name="param-value" /></td>
+                  <td>Value: <input type="text" size="25" name="param-value" /></td>
                   <td><input type="submit" value="Submit" /></td>
                   <td>Cardinality (max): <xsl:value-of select="@param-cardinality-max" /></td>
                   <td>(min): <xsl:value-of select="@param-cardinality-min" /></td>
@@ -560,7 +565,14 @@
                <tr> 
                   <td>Name: <xsl:value-of select="@param-name" /></td>
                   <td>Type: <xsl:value-of select="@param-type" /></td>
-                  <td>Value: <xsl:value-of select="@param-location" /></td>
+                  <td>Value:
+                     <xsl:element name="input">
+                        <xsl:attribute name="value"><xsl:value-of select="@param-location" /></xsl:attribute>
+                        <xsl:attribute name="type">text</xsl:attribute>
+                        <xsl:attribute name="size">25</xsl:attribute>
+                        <xsl:attribute name="readonly">readonly</xsl:attribute>
+                     </xsl:element>
+                  </td>
                   <td><input type="submit" value="Delete" /></td>
                   <td>Cardinality (max): <xsl:value-of select="@param-cardinality-max" /></td>
                   <td>(min): <xsl:value-of select="@param-cardinality-min" /></td>
