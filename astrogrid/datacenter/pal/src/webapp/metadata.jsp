@@ -20,7 +20,7 @@
    try {
       Document metadata = MetadataServer.getMetadata();
       out.write("<pre>\n");
-      DomHelper.DocumentToWriter(out);
+      DomHelper.DocumentToWriter(metadata, out);
       out.write("</pre>\n");
       
    } catch (Throwable th) {
