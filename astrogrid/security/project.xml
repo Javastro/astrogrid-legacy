@@ -8,16 +8,6 @@
   <id>astrogrid-security</id>
   <name>AstroGrid security facade</name>
 
-  <currentVersion>HEAD</currentVersion>
-  
-  <organization>
-    <name>AstroGrid</name>
-    <url>http://www.astrogrid.org</url>
-    <logo>http://www.astrogrid.org/images/AGlogo</logo>
-  </organization>
-
-  <inceptionYear>2002</inceptionYear>
-  <package>org.astrogrid</package> <logo>http://www.astrogrid.org/images/AGlogo</logo> 
   <shortDescription>A collection of APIs abstracting security in web services.</shortDescription>
   
   <description>
@@ -61,17 +51,6 @@
     ]]>
   </description>
   
-  <siteDirectory>/var/www/www/maven/build/security</siteDirectory>
-
-  <repository>
-    <connection>
-      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/security
-    </connection>
-    <developerConnection>
-      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/security
-    </developerConnection>
-  </repository>
-
   <dependencies>
     
     <dependency>
