@@ -12,7 +12,7 @@
    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java"
    xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance">
    <service name="AxisDataServer" provider="java:RPC">
-      <parameter name="className" value="org.astrogrid.datacenter.service.AxisDataServer"/>
+   <!-- for maven build to work, ensure this parameter occurs before any others in this file -->
       <parameter name="allowedMethods"
        value="
 		doQuery
@@ -25,5 +25,6 @@
 		, getStatus
 		, registerWebListener
 		"/>
+      <parameter name="className" value="org.astrogrid.datacenter.service.AxisDataServer"/>
    </service>
 </deployment>
