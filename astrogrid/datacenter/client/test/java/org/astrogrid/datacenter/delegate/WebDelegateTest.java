@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegateTest.java,v 1.8 2004/08/02 14:48:01 mch Exp $
+ * $Id: WebDelegateTest.java,v 1.9 2004/08/02 14:57:32 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,26 +16,28 @@ package org.astrogrid.datacenter.delegate;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.agws.WebDelegate_v041;
+import org.astrogrid.datacenter.delegate.agws.WebDelegate_v05;
 
 public class WebDelegateTest extends TestCase
 {
 
    //an astrogrid web service
-   private static String TEST_PAL = "http://twmbarlwm.star.le.ac.uk/astrogrid-pal-SNAPSHOT/services/AxisDataServer";
+   private static String TEST_PAL_041 = "http://twmbarlwm.star.le.ac.uk/astrogrid-pal-SNAPSHOT/services/AxisDataServer";
+
+      //an astrogrid web service
+   private static String TEST_PAL_05 = "http://twmbarlwm.star.le.ac.uk/astrogrid-pal-SNAPSHOT/services/AxisDataService05";
 
    /**
-    * Tests an SQL-pass through query on the dummy
+    * Tests a cone search on the old delegate
     */
-   public void testConeSearch() throws IOException
+   public void testConeSearch041() throws IOException
    {
-      WebDelegate_v041 delegate = (WebDelegate_v041) DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, TEST_PAL, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      WebDelegate_v041 delegate = (WebDelegate_v041) DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, TEST_PAL_041, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       
       InputStream results = delegate.coneSearch(308, 60, 12);
       
@@ -43,6 +45,18 @@ public class WebDelegateTest extends TestCase
       
    }
    
+   /**
+    * Tests a cone search on the itn05 delegate
+    */
+   public void testConeSearch05() throws IOException
+   {
+      WebDelegate_v05 delegate = (WebDelegate_v05) DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, TEST_PAL_05, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      
+      InputStream results = delegate.coneSearch(308, 60, 12);
+      
+      assertNotNull(results);
+      
+   }
 
 
 
@@ -63,6 +77,9 @@ public class WebDelegateTest extends TestCase
 
 /*
  * $Log: WebDelegateTest.java,v $
+ * Revision 1.9  2004/08/02 14:57:32  mch
+ * Fixed to use twmbarlwm as server to test against
+ *
  * Revision 1.8  2004/08/02 14:48:01  mch
  * Fixed to use twmbarlwm as server to test against
  *
@@ -113,5 +130,6 @@ public class WebDelegateTest extends TestCase
  * Added Log to end
  *
  */
+
 
 
