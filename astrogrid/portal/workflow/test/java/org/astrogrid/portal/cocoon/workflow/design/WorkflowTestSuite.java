@@ -11,6 +11,7 @@ import org.astrogrid.portal.workflow.intf.*;
 import org.astrogrid.portal.cocoon.workflow.WorkflowHelper;
 
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.applications.beans.v1.ParameterRef;
 
 import org.astrogrid.workflow.beans.v1.AbstractActivity;
 import org.astrogrid.workflow.beans.v1.ActivityContainer;
@@ -19,6 +20,7 @@ import org.astrogrid.workflow.beans.v1.Flow;
 import org.astrogrid.workflow.beans.v1.Sequence;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
+import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.types.JoinType;
 
 import org.astrogrid.community.beans.v1.Credentials;
@@ -105,12 +107,23 @@ public class WorkflowTestSuite extends TestCase {
          GROUP = "pjn3@test.astrogrid.org" ;      // group
      
     private static DummyRequest request = new DummyRequest();
-    private static Session session = request.getSession() ;   
+    private static Session session = request.getSession() ;  
     
+    private static WorkflowManager workflowManager ;
     private Workflow workflow = null; 
 
     private final Date
         runDate = new Date() ;
+        
+    {
+        try {
+            workflowManager = (new WorkflowManagerFactory()).getManager() ; 
+        }
+        catch( WorkflowInterfaceException wix ) {
+            wix.printStackTrace();
+        }
+  
+    }
         
 	/**
 	 * Sets up the test fixture.
@@ -131,8 +144,8 @@ public class WorkflowTestSuite extends TestCase {
 
 
     public void test_AA_CreateWorkflow() {
-        logger.info( "---------------------------------------------------------" ); 
-        logger.info( "enter: WorkflowTestSuite.testCreateWorkflow()" ); 
+        trace( "---------------------------------------------------------" ); 
+        trace( "enter: WorkflowTestSuite.testCreateWorkflow()" ); 
         final DesignAction action = new DesignAction();
         final Map objectModel = new HashMap(); 
 //      final DummyRequest request = new DummyRequest();
@@ -150,7 +163,7 @@ public class WorkflowTestSuite extends TestCase {
             objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
             final Map results = action.act(null, null, objectModel, null, null);
             workflow = (Workflow)session.getAttribute( DesignAction.HTTP_WORKFLOW_TAG ) ;
-            logger.info( workflow.getName() ); 
+            trace( workflow.getName() ); 
             
             File f1 = new File("/tmp/" + workflow.getName() + ".xml");
             FileWriter writer = new FileWriter(f1);
@@ -162,7 +175,7 @@ public class WorkflowTestSuite extends TestCase {
             ex.printStackTrace();
         }
         finally {
-            logger.info( "exit: WorkflowTestSuite.testCreateWorkflow()" ); 
+            trace( "exit: WorkflowTestSuite.testCreateWorkflow()" ); 
         }
              
     }
@@ -170,8 +183,8 @@ public class WorkflowTestSuite extends TestCase {
 
     
     public void test_AB_SaveWorkflow() {
-        logger.info( "---------------------------------------------------------" ); 
-        logger.info( "enter: WorkflowTestSuite.testSaveWorkflow()" ); 
+        trace( "---------------------------------------------------------" ); 
+        trace( "enter: WorkflowTestSuite.testSaveWorkflow()" ); 
         final DesignAction action = new DesignAction();
         final Map objectModel = new HashMap(); 
 //        final DummyRequest request = new DummyRequest();
@@ -194,14 +207,14 @@ public class WorkflowTestSuite extends TestCase {
             ex.printStackTrace();
         }
         finally {
-            logger.info( "exit: WorkflowTestSuite.testSaveWorkflow()" ); 
+            trace( "exit: WorkflowTestSuite.testSaveWorkflow()" ); 
         }
              
     }
 
 	    public void test_AM_ReadToolsList() {
-	        logger.info( "---------------------------------------------------------" ); 
-	        logger.info( "enter: WorkflowTestSuite.test_AM_ReadToolsList()" ); 
+	        trace( "---------------------------------------------------------" ); 
+	        trace( "enter: WorkflowTestSuite.test_AM_ReadToolsList()" ); 
 	        final DesignAction action = new DesignAction();
 	        final Map objectModel = new HashMap(); 
 	//        final DummyRequest request = new DummyRequest();
@@ -210,7 +223,7 @@ public class WorkflowTestSuite extends TestCase {
 	        try {
 	//            request.addParameter( DesignAction.WORKFLOW_NAME_PARAMETER,"JL_Workflow" );
 	//            request.addParameter( DesignAction.WORKFLOW_DESCRIPTION_PARAMETER,"JL_WorkflowDescription" ) ;
-	            request.addParameter( DesignAction.ACTION_PARAM_TAG, DesignAction.ACTION_READ_LISTS );     
+	            request.addParameter( DesignAction.ACTION_PARAM_TAG, DesignAction.ACTION_READ_TOOL_LIST );     
 	        
 	            session.setAttribute( DesignAction.USER_TAG, "jl99" );
 	            session.setAttribute( DesignAction.COMMUNITY_NAME_TAG,"leicester" );
@@ -219,25 +232,177 @@ public class WorkflowTestSuite extends TestCase {
 	            objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
 	            final Map results = action.act(null, null, objectModel, null, null);
 	            assertNotNull(results);
-                logger.info( "tools list: " );
+                trace( "tools list: " );
                 String[] tools = (String[])request.getAttribute( DesignAction.TOOL_LIST_PARAMETER );
                 if(tools != null){
                     for( int i=0; i<tools.length; i++ ){
-                        logger.info( tools[i]);
+                        trace( tools[i]);
                     }
                 }
                 else {
-                    logger.info( "tools list is null" );
+                    trace( "tools list is null" );
                 }
 	        }
 	        catch( Exception ex ) {
 	            ex.printStackTrace();
 	        }
 	        finally {
-	            logger.info( "exit: WorkflowTestSuite.test_AM_ReadToolsList()" ); 
+	            trace( "exit: WorkflowTestSuite.test_AM_ReadToolsList()" ); 
 	        }
 	             
 	    }
+
+		    public void test_BA_CreateTool() {
+		        trace( "---------------------------------------------------------" ); 
+		        trace( "enter: WorkflowTestSuite.test_BA_CreateTool()" ); 
+		        final DesignAction action = new DesignAction();
+		        final Map objectModel = new HashMap(); 
+		//        final DummyRequest request = new DummyRequest();
+		//        final Session session = request.getSession() ;
+		        
+		        try {
+		//            request.addParameter( DesignAction.WORKFLOW_NAME_PARAMETER,"JL_Workflow" );
+		//            request.addParameter( DesignAction.WORKFLOW_DESCRIPTION_PARAMETER,"JL_WorkflowDescription" ) ;
+		            request.addParameter( DesignAction.ACTION_PARAM_TAG, DesignAction.ACTION_CREATE_TOOL );    
+                    request.addParameter( DesignAction.TOOL_NAME_PARAMETER, "org.astrogrid.test.mssl/testapp" ) ;
+		        
+		            session.setAttribute( DesignAction.USER_TAG, "jl99" );
+		            session.setAttribute( DesignAction.COMMUNITY_NAME_TAG,"leicester" );
+		            session.setAttribute( DesignAction.CREDENTIAL_TAG, "star" );
+		
+		            objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
+		            final Map results = action.act(null, null, objectModel, null, null);
+		            assertNotNull(results);
+		            Tool tool = (Tool)request.getAttribute( DesignAction.HTTP_TOOL_TAG );
+		            if(tool != null){
+		                trace( "tool name: " + tool.getName() );
+                        trace( "tool interface: " + tool.getInterface() );
+		            }
+		            else {
+		                trace( "tool is null" );
+		            }
+		        }
+		        catch( Exception ex ) {
+		            ex.printStackTrace();
+		        }
+		        finally {
+		            trace( "exit: WorkflowTestSuite.test_BA_CreateTool()" ); 
+		        }
+		             
+		    }
+
+			    public void test_BD_GetToolInputParameters() {
+			        trace( "---------------------------------------------------------" ); 
+			        trace( "enter: WorkflowTestSuite.test_BD_GetToolInputParameters()" ); 
+			        
+			        try {
+
+			            Tool tool = (Tool)request.getAttribute( DesignAction.HTTP_TOOL_TAG );
+			            if(tool != null) {
+                            ApplicationRegistry applRegistry = workflowManager.getToolRegistry();
+                            ApplicationDescription applDescription = applRegistry.getDescriptionFor( tool.getName() );
+			                trace( "tool name: " + tool.getName() );
+			                trace( "tool interface: " + tool.getInterface() );
+                            ParameterValue[] pvs = tool.getInput().getParameter();
+                            ParameterRef pr = null;
+                            trace( "tool input parameters...");
+                            for( int i=0; i<pvs.length; i++ ){
+                                trace( "parameterValue name: " + pvs[i].getName() );
+                                trace( "parameterValue type: " + pvs[i].getType().toString() );
+                                trace( "parameterValue value: " + pvs[i].getValue() );
+                                pr = WorkflowHelper.getParameterRef( applDescription, tool, pvs[i] ) ;
+                                trace( "min occurs: " + pr.getMinoccurs() ) ;
+                                trace( "max occurs: " + pr.getMaxoccurs() ) ;
+                            }
+			            }
+			            else {
+			                trace( "tool is null" );
+			            }
+			        }
+			        catch( Exception ex ) {
+			            ex.printStackTrace();
+			        }
+			        finally {
+			            trace( "exit: WorkflowTestSuite.test_BD_GetToolInputParameters()" ); 
+			        }
+			             
+			    }
+
+				public void test_BE_GetToolOutputParameters() {
+				    trace( "---------------------------------------------------------" ); 
+				    trace( "enter: WorkflowTestSuite.test_BE_GetToolOutputParameters()" ); 
+				    
+				    try {
+				
+				        Tool tool = (Tool)request.getAttribute( DesignAction.HTTP_TOOL_TAG );
+                        
+				        if(tool != null) {
+                            ApplicationRegistry applRegistry = workflowManager.getToolRegistry();
+                            ApplicationDescription applDescription = applRegistry.getDescriptionFor( tool.getName() );
+				            trace( "tool name: " + tool.getName() );
+				            trace( "tool interface: " + tool.getInterface() );
+				            ParameterValue[] pvs = tool.getOutput().getParameter();
+                            ParameterRef pr = null;
+                            trace( "tool output parameters...");
+				            for( int i=0; i<pvs.length; i++ ){
+				                trace( "parameterValue name: " + pvs[i].getName() );
+				                trace( "parameterValue type: " + pvs[i].getType().toString() );
+				                trace( "parameterValue value: " + pvs[i].getValue() );
+                                pr = WorkflowHelper.getParameterRef( applDescription, tool, pvs[i] ) ;
+                                trace( "min occurs: " + pr.getMinoccurs() ) ;
+                                trace( "max occurs: " + pr.getMaxoccurs() ) ;
+				            }
+				        }
+				        else {
+				            trace( "tool is null" );
+				        }
+				    }
+				    catch( Exception ex ) {
+				        ex.printStackTrace();
+				    }
+				    finally {
+				        trace( "exit: WorkflowTestSuite.test_BE_GetToolOutputParameters()" ); 
+				    }
+				         
+				}
+
+				public void test_BH_InsertValue_InputParameter() {
+				    trace( "---------------------------------------------------------" ); 
+				    trace( "enter: WorkflowTestSuite.test_BH_InsertValue_InputParameter()" ); 
+				    
+				    try {
+				
+				        Tool tool = (Tool)request.getAttribute( DesignAction.HTTP_TOOL_TAG );
+				        
+				        if(tool != null) {
+				            ApplicationRegistry applRegistry = workflowManager.getToolRegistry();
+				            ApplicationDescription applDescription = applRegistry.getDescriptionFor( tool.getName() );
+				            trace( "tool name: " + tool.getName() );
+				            trace( "tool interface: " + tool.getInterface() );
+                            
+                            WorkflowHelper.insertInputParameterValue( applDescription, tool, "P2", "Text", "3.1415926535" ) ;
+                                        
+				            ParameterValue[] pvs = tool.getInput().getParameter();
+				            ParameterRef pr = null;
+				            trace( "tool input parameters...");         
+				            for( int i=0; i<pvs.length; i++ ){
+				                trace( "parameterValue name: " + pvs[i].getName() );
+				                trace( "parameterValue type: " + pvs[i].getType().toString() );
+				                trace( "parameterValue value: " + pvs[i].getValue() );
+				            }
+				        }
+				        else {
+				            trace( "tool is null" );
+				        }
+				    }
+				    catch( Exception ex ) {
+				        ex.printStackTrace();
+				    }
+				    finally {
+				        trace( "exit: WorkflowTestSuite.test_BH_InsertValue_InputParameter()" ); 
+				    }
+				         
+				}
     
     
 
@@ -250,7 +415,7 @@ public class WorkflowTestSuite extends TestCase {
 //                                , String config_file
 //                                , String input_catalog
 //                                , String output_catalog ) {
-//        logger.info( "enter: WorkflowTestSuite.setUpHyperZStep()" );
+//        trace( "enter: WorkflowTestSuite.setUpHyperZStep()" );
 //       
 //        ListIterator iterator ;
 //        
@@ -287,7 +452,7 @@ public class WorkflowTestSuite extends TestCase {
 //                                                                
 //        }
 //        finally {
-//            logger.info( "exit: WorkflowTestSuite.setUpHyperZStep()" );  
+//            trace( "exit: WorkflowTestSuite.setUpHyperZStep()" );  
 //        }
 //        
 //        return targetStep ;
@@ -303,7 +468,7 @@ public class WorkflowTestSuite extends TestCase {
 //                                    , String config_file
 //                                    , String parameters_name
 //                                    , String catalog_name ) {
-//        logger.info( "enter: WorkflowTestSuite.setUpSExtractorStep()" );
+//        trace( "enter: WorkflowTestSuite.setUpSExtractorStep()" );
 //       
 //        ListIterator iterator ;
 //        
@@ -343,7 +508,7 @@ public class WorkflowTestSuite extends TestCase {
 //                                                                
 //        }
 //        finally {
-//            logger.info( "exit: WorkflowTestSuite.setUpSExtractorStep()" );  
+//            trace( "exit: WorkflowTestSuite.setUpSExtractorStep()" );  
 //        }
 //        
 //        return targetStep ;
@@ -366,7 +531,7 @@ public class WorkflowTestSuite extends TestCase {
 //                                        , String output
 //                                        , int maxent
 //                                        , String merged_output ) {
-//        logger.info( "enter: WorkflowTestSuite.setUpDataFederationStep()" );
+//        trace( "enter: WorkflowTestSuite.setUpDataFederationStep()" );
 //       
 //        ListIterator iterator ;
 //        
@@ -435,7 +600,7 @@ public class WorkflowTestSuite extends TestCase {
 //                                                                
 //        }
 //        finally {
-//            logger.info( "exit: WorkflowTestSuite.setUpDataFederationStep()" );  
+//            trace( "exit: WorkflowTestSuite.setUpDataFederationStep()" );  
 //        }
 //        
 //        return targetStep ;
@@ -460,12 +625,19 @@ public class WorkflowTestSuite extends TestCase {
      */
     public static void main( String args[] )  {
 
-//		PropertyConfigurator.configure( log4jproperties ) ;
-			
-	   logger.info("Entering WorkflowTestSuite application.");
+//		PropertyConfigurator.configure( log4jproperties ) ;			
        junit.textui.TestRunner.run( suite() ) ;
-	   logger.info("Exit WorkflowTestSuite application.");
 		
+    }
+    
+    private void trace( String traceString ) {
+        // logger.debug( traceString ) ;
+        System.out.println( traceString ) ;
+    }
+    
+    private void debug( String logString ){
+        // logger.debug( logString ) ;
+        System.out.println( logString ) ;
     }
     
 } // end of class WorkflowTestSuite

@@ -1,4 +1,4 @@
-/* $Id: DummyRequest.java,v 1.2 2004/04/06 07:34:50 jl99 Exp $
+/* $Id: DummyRequest.java,v 1.3 2004/04/07 13:22:28 jl99 Exp $
  * Created on Mar 22, 2004 by jdt
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -70,9 +70,9 @@ public final class DummyRequest implements Request {
      * @param arg0
      * @return
      */
-    public Object getAttribute(String arg0) {
+    public Object getAttribute(String name) {
         // TODO Auto-generated method stub
-        return null;
+        return parameters.get( name );
     }
     /**
      * @see org.apache.cocoon.environment.Request#getAttributeNames()
@@ -87,15 +87,15 @@ public final class DummyRequest implements Request {
      * @param arg0
      * @param arg1
      */
-    public void setAttribute(String arg0, Object arg1) {
-        // TODO Auto-generated method stub
+    public void setAttribute(String name, Object value) {
+        parameters.put(name,value);
     }
     /**
      * @see org.apache.cocoon.environment.Request#removeAttribute(java.lang.String)
      * @param arg0
      */
-    public void removeAttribute(String arg0) {
-        // TODO Auto-generated method stub
+    public void removeAttribute(String name) {
+        parameters.remove( name );
     }
     /**
      * @see org.apache.cocoon.environment.Request#getAuthType()
@@ -432,6 +432,9 @@ public final class DummyRequest implements Request {
 
 /*
  *  $Log: DummyRequest.java,v $
+ *  Revision 1.3  2004/04/07 13:22:28  jl99
+ *  Unit tests extended into parameter metadata
+ *
  *  Revision 1.2  2004/04/06 07:34:50  jl99
  *  PWRK_PN_230 merged
  *
