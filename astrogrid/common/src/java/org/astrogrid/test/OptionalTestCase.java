@@ -1,4 +1,4 @@
-/*$Id: OptionalTestCase.java,v 1.4 2004/01/23 11:39:10 nw Exp $
+/*$Id: OptionalTestCase.java,v 1.5 2004/01/23 11:40:52 nw Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,7 @@ import junit.framework.TestResult;
  <tt>optional.test.skip.org.foo.wibbleTest</tt> to <tt>true</tt>
  
    <hr>
+   <h2>Setting System Properties</h2>
 System properties can be set on the java commandline like this..
 <tt>java -Doptional.test.skip.All=true ....</tt>
 <p>
@@ -123,6 +124,9 @@ public class OptionalTestCase extends TestCase {
 
 /* 
 $Log: OptionalTestCase.java,v $
+Revision 1.5  2004/01/23 11:40:52  nw
+tarted up javadoc
+
 Revision 1.4  2004/01/23 11:39:10  nw
 tarted up javadoc
 
