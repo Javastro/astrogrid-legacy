@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: project.xml,v 1.75 2004/11/29 20:00:24 clq2 Exp $ -->
+<!-- $Id: project.xml,v 1.76 2004/12/23 12:52:33 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
   <extend>../maven-base/project.xml</extend>
-  <artifactId>astrogrid-jes</artifactId>
+  <id>astrogrid-jes</id>
   <currentVersion>${astrogrid.jes.version}</currentVersion>
   <name>AstroGrid Job Management</name>
  <description>Astrogrid Workflow Execuction Engine</description>
