@@ -17,8 +17,8 @@ echo >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-new.sh common >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-new.sh workflow-objects >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-new.sh scripting >> $BUILD_DIR/$LOG_FILE 2>&1
-$SCRIPTHOME/maven-build-new.sh registry >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-new.sh eXist >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-new.sh registry >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-new.sh community >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-new.sh filestore >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-new.sh mySpace >> $BUILD_DIR/$LOG_FILE 2>&1
