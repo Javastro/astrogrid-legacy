@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: AGApplicationBase.xsd,v 1.6 2004/03/13 00:36:02 pah Exp $ -->
+<!-- $Id: AGApplicationBase.xsd,v 1.7 2004/03/23 16:20:34 pah Exp $ -->
 <!-- This is refactored from the AGParameterDefinition.xsd -->
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
 <xs:schema targetNamespace="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:agab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
@@ -60,6 +60,7 @@
 			<xs:extension base="agab:ApplicationBase"/>
 		</xs:complexContent>
 	</xs:complexType>
+	<!--really need to add a description element to the interface, so that the UI can present the user with more infromation than just names -->
 	<xs:complexType name="Interface">
 		<xs:annotation>
 			<xs:documentation>description of an interface</xs:documentation>
