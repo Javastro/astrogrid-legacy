@@ -1,4 +1,4 @@
-/*$Id: Vars.java,v 1.4 2004/08/09 17:34:10 nw Exp $
+/*$Id: Vars.java,v 1.5 2004/11/05 16:52:42 jdt Exp $
  * Created on 28-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -116,8 +116,8 @@ public void removeScope()     {
      * @param bodyBinding
      */
     public void readFromBinding(Binding bodyBinding) {
-        for (Iterator j = l.iterator(); j.hasNext(); ) {
-            Map e = (Map)j.next();
+        for (int j = 0; j < l.size(); j++){
+            Map e = (Map)l.get(j);           
             for (Iterator i = e.entrySet().iterator(); i.hasNext(); ) {
                 Map.Entry var = (Map.Entry)i.next();
                 Object newValue = bodyBinding.getVariable(var.getKey().toString());
@@ -175,6 +175,12 @@ public void removeScope()     {
 
 /* 
 $Log: Vars.java,v $
+Revision 1.5  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.4.58.1  2004/11/05 16:03:57  nw
+optimized: uses int rather than iterator
+
 Revision 1.4  2004/08/09 17:34:10  nw
 implemented parfor.
 removed references to rulestore

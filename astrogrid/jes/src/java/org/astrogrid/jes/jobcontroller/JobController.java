@@ -22,6 +22,7 @@ import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.WorkflowString;
 import org.astrogrid.jes.types.v1.WorkflowSummary;
 import org.astrogrid.jes.util.JesUtil;
+import org.astrogrid.jes.util.TemporaryBuffer;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
 import org.apache.commons.logging.Log;
@@ -29,7 +30,6 @@ import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.xml.CastorException;
 
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -53,20 +53,22 @@ import junit.framework.Test;
  */
 public class JobController implements org.astrogrid.jes.delegate.v1.jobcontroller.JobController, ComponentDescriptor{
     
-    public JobController(JobFactory factory,JobScheduler nudger) {
+    public JobController(JobFactory factory,JobScheduler nudger, TemporaryBuffer buff) {
         assert factory != null;
         assert nudger != null;
         this.factory = factory;
         this.nudger = nudger;
+        this.buff = buff;
     }
     protected final JobFactory factory;
     protected final JobScheduler nudger;
+    protected final TemporaryBuffer buff;
 
 	private static final Log
 		logger = LogFactory.getLog( JobController.class ) ;
     
     /** Submit a job to the execution service
-     * 
+     *@todo rewrite to use buffer?
      * @see org.astrogrid.jes.delegate.v1.jobcontroller.JobController#submitWorkflow(org.astrogrid.jes.types.v1.WorkflowString)
      */
     public JobURN submitWorkflow(WorkflowString workflowXML) throws JesFault{
@@ -194,7 +196,7 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
 
     /**
      * @see org.astrogrid.jes.delegate.v1.jobcontroller.JobController#readJob(org.astrogrid.jes.types.v1.JobURN)
-
+     @nb converted to use buffer
      */
     public WorkflowString readJob(JobURN arg0) throws JesFault {
         try {
@@ -205,10 +207,10 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
             logger.error("Factory  returned null workflow");
             throw new JesFault("factory returned null workflow");
         }
-        StringWriter sw = new StringWriter();
-        w.marshal(sw); 
-        sw.close(); 
-        return new WorkflowString(sw.toString());
+        buff.writeMode();
+        w.marshal(buff.getWriter());
+        buff.readMode();
+        return new WorkflowString(buff.getContents());
         } catch (Exception e) {
             throw createFault("Failed to read job",e);
         }        

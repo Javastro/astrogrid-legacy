@@ -1,4 +1,4 @@
-/*$Id: GroovyDeleteJobTest.java,v 1.1 2004/08/18 21:50:59 nw Exp $
+/*$Id: GroovyDeleteJobTest.java,v 1.2 2004/11/05 16:52:42 jdt Exp $
  * Created on 18-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,6 @@
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
 import org.astrogrid.jes.job.NotFoundException;
-import org.astrogrid.jes.jobcontroller.AbstractTestForJobController;
-import org.astrogrid.jes.jobscheduler.impl.AbstractJobSchedulerImpl;
 import org.astrogrid.jes.jobscheduler.impl.AbstractTestForSchedulerImpl;
 import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
@@ -49,6 +47,12 @@ public class GroovyDeleteJobTest extends AbstractTestForSchedulerImpl{
 
 /* 
 $Log: GroovyDeleteJobTest.java,v $
+Revision 1.2  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.1.46.1  2004/11/05 16:08:26  nw
+tidied imports
+
 Revision 1.1  2004/08/18 21:50:59  nw
 worked on tests
  

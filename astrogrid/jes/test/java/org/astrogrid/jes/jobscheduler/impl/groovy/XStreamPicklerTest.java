@@ -1,4 +1,4 @@
-/*$Id: XStreamPicklerTest.java,v 1.5 2004/09/16 21:46:45 nw Exp $
+/*$Id: XStreamPicklerTest.java,v 1.6 2004/11/05 16:52:42 jdt Exp $
  * Created on 28-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -34,7 +35,8 @@ public class XStreamPicklerTest extends TestCase {
         rule.setBody("foo\n bar \n\t boo; i< 10 && x > 1");
         rule.setName("a rule");
         rule.setTrigger("trigger code here");
-        interp.addRule(rule);
+        interp.ruleStore.add(rule);
+        interp.ruleStore.computeIndexScript();
         actStatus = new ActivityStatus();
         Vars b = new Vars();
         b.set("name","value");
@@ -62,16 +64,27 @@ public class XStreamPicklerTest extends TestCase {
         GroovyInterpreter interp1 = pickler.unmarshallInterpreter(in);
         assertNotNull(interp1);
         assertEquals(interp,interp1); 
+        if (interp.ruleStore.indexScript == null) {
+            assertNull(interp1.ruleStore.indexScript);
+        } else {
+            assertNotNull(interp1.ruleStore.indexScript);
+        }
+    }
+    
+    
+    public void testRoundTripInterpreterWithNullRuleStoreIndex() throws Exception {
+        interp.ruleStore.indexScript = null;
+        testRoundTripInterpreter();
     }
 
     public void testRoundTripRuleStore() throws IOException  {
-        List rs = interp.ruleStore;
+        Map rs = interp.ruleStore;
         StringWriter out = new StringWriter();
-        pickler.getXstream().toXML(rs,out);
+        pickler.getXstream().toXML(new ArrayList(rs.values()),out);
         out.close();
         System.out.println(out.toString());
         StringReader in = new StringReader(out.toString());
-        List rs1 = pickler.unmarshallRuleStore(in);
+        Map rs1 = pickler.unmarshallRuleStore(in);
         assertNotNull(rs1);
         assertEquals(rs,rs1);
     }
@@ -81,6 +94,12 @@ public class XStreamPicklerTest extends TestCase {
 
 /* 
 $Log: XStreamPicklerTest.java,v $
+Revision 1.6  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.5.18.1  2004/11/05 16:09:02  nw
+tests serialization of rulestore
+
 Revision 1.5  2004/09/16 21:46:45  nw
 made 3rd-party objects only persist for so many calls. - in case they're space leaking.
 

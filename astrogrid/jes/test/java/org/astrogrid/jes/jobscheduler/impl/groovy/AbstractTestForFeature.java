@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForFeature.java,v 1.3 2004/08/18 21:50:59 nw Exp $
+/*$Id: AbstractTestForFeature.java,v 1.4 2004/11/05 16:52:42 jdt Exp $
  * Created on 08-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,7 @@ import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
 import org.astrogrid.jes.util.JesUtil;
+import org.astrogrid.jes.util.TemporaryBuffer;
 import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Sequence;
 import org.astrogrid.workflow.beans.v1.Step;
@@ -48,7 +49,7 @@ public abstract class AbstractTestForFeature extends TestCase{
         jobFactory = new InMemoryJobFactoryImpl();
         trans = new GroovyTransformers();
         disp = new MockDispatcher();
-        interpFactory = new GroovyInterpreterFactory(new XStreamPickler());
+        interpFactory = new GroovyInterpreterFactory(new XStreamPickler(),new TemporaryBuffer());
         sched = new GroovySchedulerImpl(jobFactory,trans,disp,interpFactory); 
     }
     
@@ -196,6 +197,12 @@ public abstract class AbstractTestForFeature extends TestCase{
 
 /* 
 $Log: AbstractTestForFeature.java,v $
+Revision 1.4  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.3.46.1  2004/11/05 16:07:21  nw
+updated test to provide temporary buffer
+
 Revision 1.3  2004/08/18 21:50:59  nw
 worked on tests
 

@@ -1,4 +1,4 @@
-/*$Id: JesInterface.java,v 1.11 2004/09/16 21:47:29 nw Exp $
+/*$Id: JesInterface.java,v 1.12 2004/11/05 16:52:42 jdt Exp $
  * Created on 12-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,10 +14,10 @@ import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.impl.AbstractJobSchedulerImpl;
 import org.astrogrid.jes.util.JesUtil;
+import org.astrogrid.jes.util.TemporaryBuffer;
 import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Step;
@@ -27,23 +27,23 @@ import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
-import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 
 /** provides an interface for executing groovy scripts in rulebase to call back into jes server 
  * also provides some 'helper' methods that can be called from scripts to create usefule objects, etc. Maybe these should be split into a libraru class, and a JesServerINterface class.
+ * @modified - added temporary buffers (under soft reference) for capturing system err and out. 
  */
 public class  JesInterface extends WorkflowLogger {
+    private static final String ENCODING = "UTF-16";
     /** construct a new interpreter environment
      * @param wf workflow object
      * @param disp ToolDispatcher
@@ -55,7 +55,8 @@ public class  JesInterface extends WorkflowLogger {
     
     protected final GroovySchedulerImpl sched;
     protected final Dispatcher disp;
-
+    private SoftReference softErrBuff = new SoftReference(new TemporaryBuffer());
+    private SoftReference softOutBuff = new SoftReference(new TemporaryBuffer());
     
     
     
@@ -108,7 +109,7 @@ public class  JesInterface extends WorkflowLogger {
      * dispatach a tool step to a cea server for execution. 
      * @param id - the identifier of the step to execute
      * */ 
-    public boolean dispatchStep(String id, JesShell shell, ActivityStatusStore states, List rules)  {
+    public boolean dispatchStep(String id, JesShell shell, ActivityStatusStore states, Map rules)  {
         Step step = (Step)getId(id);
           StepExecutionRecord er = AbstractJobSchedulerImpl.newStepExecutionRecord();
           step.addStepExecutionRecord(er);
@@ -129,7 +130,7 @@ public class  JesInterface extends WorkflowLogger {
     }
     
     /** execute a set activity */
-    public boolean executeSet(String id,JesShell shell,ActivityStatusStore map,List rules)  {
+    public boolean executeSet(String id,JesShell shell,ActivityStatusStore map,Map rules)  {
         Set set = (Set)getId(id);
         try {
             shell.executeSet(set,id,map,rules);
@@ -140,18 +141,37 @@ public class  JesInterface extends WorkflowLogger {
         }
     }    
     /** dispatch / execute a script activity */
-    public boolean dispatchScript(String id,JesShell shell,ActivityStatusStore map,List rules) {
+    public boolean dispatchScript(String id,JesShell shell,ActivityStatusStore map,Map rules) {
         Script script = (Script)getId(id);        
         StepExecutionRecord er = AbstractJobSchedulerImpl.newStepExecutionRecord();
         script.addStepExecutionRecord(er);
         er.setStatus(ExecutionPhase.RUNNING);
 
-        ByteArrayOutputStream err = new ByteArrayOutputStream();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();        
-        PrintStream errStream = new PrintStream(err);
-        PrintStream outStream = new PrintStream(out);
+        TemporaryBuffer errB = (TemporaryBuffer)softErrBuff.get();
+        if (errB == null) {
+            errB = new TemporaryBuffer();
+            softErrBuff = new SoftReference(errB);
+        }
+        
+        TemporaryBuffer outB = (TemporaryBuffer)softOutBuff.get();
+        if (outB == null) {
+            outB = new TemporaryBuffer();
+            softOutBuff = new SoftReference(outB);
+        }
+        
+        errB.writeMode();
+        outB.writeMode();
+        PrintStream errStream = null;
+        PrintStream outStream = null;
         try {
- 
+            errStream = new PrintStream(errB.getOutputStream(),false,ENCODING);
+            outStream = new PrintStream(outB.getOutputStream(),false,ENCODING);            
+        } catch (UnsupportedEncodingException e) {
+            logger.fatal("JVM doesn't support UTF-16 - which is required by specs",e);
+            throw new RuntimeException("JVM doesn't support UTF-16 - which is required by specs",e);
+        }
+
+        try { 
             shell.executeScript(script.getBody(),id,map,rules,errStream,outStream);
             er.setStatus(ExecutionPhase.COMPLETED);
             return true;
@@ -165,12 +185,14 @@ public class  JesInterface extends WorkflowLogger {
         } finally { // want to record results, no matter what happened.
             errStream.close();
             outStream.close();            
-           MessageType message =buildMessage(err.toString());
+            errB.readMode();
+            outB.readMode();
+           MessageType message =buildMessage(errB.getContents(ENCODING));
            message.setLevel(LogLevel.INFO);
            message.setSource("stderr");
            er.addMessage(message);
            
-           message = buildMessage(out.toString());
+           message = buildMessage(outB.getContents(ENCODING));
            message.setLevel(LogLevel.INFO);
            message.setSource("stdout");
            er.addMessage(message);
@@ -196,6 +218,13 @@ public class  JesInterface extends WorkflowLogger {
 
 /* 
 $Log: JesInterface.java,v $
+Revision 1.12  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.11.18.1  2004/11/05 16:15:04  nw
+uses temporary buffers,
+updated to new rulestore type.
+
 Revision 1.11  2004/09/16 21:47:29  nw
 made sure all streams are closed
 

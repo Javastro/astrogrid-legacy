@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForSchedulerImpl.java,v 1.4 2004/08/18 21:51:17 nw Exp $
+/*$Id: AbstractTestForSchedulerImpl.java,v 1.5 2004/11/05 16:52:42 jdt Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import org.astrogrid.jes.jobscheduler.impl.groovy.GroovyInterpreterFactory;
 import org.astrogrid.jes.jobscheduler.impl.groovy.GroovySchedulerImpl;
 import org.astrogrid.jes.jobscheduler.impl.groovy.GroovyTransformers;
 import org.astrogrid.jes.jobscheduler.impl.groovy.XStreamPickler;
+import org.astrogrid.jes.util.TemporaryBuffer;
 
 /** Base class that creates framework for testing the scheduler. 
  * <p>
@@ -59,7 +60,7 @@ public abstract class AbstractTestForSchedulerImpl extends AbstractTestForJobCon
      */
     protected AbstractJobSchedulerImpl createScheduler() throws Exception {
     
-        return new GroovySchedulerImpl(fac,new GroovyTransformers(),dispatcher,new GroovyInterpreterFactory(new XStreamPickler())); 
+        return new GroovySchedulerImpl(fac,new GroovyTransformers(),dispatcher,new GroovyInterpreterFactory(new XStreamPickler(),new TemporaryBuffer())); 
     }
     
 
@@ -68,6 +69,12 @@ public abstract class AbstractTestForSchedulerImpl extends AbstractTestForJobCon
 
 /* 
 $Log: AbstractTestForSchedulerImpl.java,v $
+Revision 1.5  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.4.46.1  2004/11/05 15:48:09  nw
+updated test to provide temporary buffer
+
 Revision 1.4  2004/08/18 21:51:17  nw
 removed - inlined code instead
 

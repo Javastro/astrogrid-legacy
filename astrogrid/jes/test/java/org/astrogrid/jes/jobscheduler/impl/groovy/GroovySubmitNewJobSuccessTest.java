@@ -1,4 +1,4 @@
-/*$Id: GroovySubmitNewJobSuccessTest.java,v 1.3 2004/08/18 21:50:59 nw Exp $
+/*$Id: GroovySubmitNewJobSuccessTest.java,v 1.4 2004/11/05 16:52:42 jdt Exp $
  * Created on 12-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,9 +11,7 @@
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.jes.jobcontroller.AbstractTestForJobController;
 import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
-import org.astrogrid.jes.jobscheduler.impl.AbstractJobSchedulerImpl;
 import org.astrogrid.jes.jobscheduler.impl.AbstractTestForSchedulerImpl;
 import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -60,6 +58,12 @@ public class GroovySubmitNewJobSuccessTest extends AbstractTestForSchedulerImpl{
 
 /* 
 $Log: GroovySubmitNewJobSuccessTest.java,v $
+Revision 1.4  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.3.46.1  2004/11/05 16:08:26  nw
+tidied imports
+
 Revision 1.3  2004/08/18 21:50:59  nw
 worked on tests
 

@@ -1,4 +1,4 @@
-/*$Id: SOAPResultListenerTest.java,v 1.1 2004/09/16 21:45:10 nw Exp $
+/*$Id: SOAPResultListenerTest.java,v 1.2 2004/11/05 16:52:42 jdt Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,16 +12,11 @@ package org.astrogrid.jes.delegate.impl;
 
 import org.astrogrid.jes.component.JesComponentManager;
 import org.astrogrid.jes.component.JesComponentManagerFactory;
-import org.astrogrid.jes.delegate.JesDelegateFactory;
-import org.astrogrid.jes.delegate.JobMonitor;
 import org.astrogrid.jes.jobscheduler.impl.MockSchedulerImpl;
 import org.astrogrid.jes.service.v1.cearesults.ResultsListener;
 import org.astrogrid.jes.service.v1.cearesults.ResultsListenerServiceLocator;
 import org.astrogrid.jes.testutils.io.FileResourceLoader;
-import org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
-import org.astrogrid.jes.types.v1.cea.axis.LogLevel;
-import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
 
 import org.apache.axis.client.AdminClient;
@@ -33,7 +28,6 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URL;
-import java.util.Calendar;
 
 /** tests result listener.
  * this test sets up a proper SOAP connection, and checks that what we pass in is what we get out.

@@ -1,4 +1,4 @@
-/*$Id: GroovyComponentManager.java,v 1.3 2004/08/03 16:31:25 nw Exp $
+/*$Id: GroovyComponentManager.java,v 1.4 2004/11/05 16:52:42 jdt Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,10 +36,12 @@ import org.astrogrid.jes.jobscheduler.locator.RegistryToolLocator;
 import org.astrogrid.jes.jobscheduler.locator.XMLFileLocator;
 import org.astrogrid.jes.resultlistener.JesResultsListener;
 import org.astrogrid.jes.service.v1.cearesults.ResultsListener;
+import org.astrogrid.jes.util.TemporaryBuffer;
 
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.Parameter;
 import org.picocontainer.defaults.ComponentParameter;
+import org.picocontainer.defaults.ConstructorInjectionComponentAdapter;
 
 import javax.sql.DataSource;
 
@@ -62,7 +64,8 @@ public class GroovyComponentManager extends EmptyJesComponentManager {
            
            pico.registerComponentImplementation(Dispatcher.class,ApplicationControllerDispatcher.class);
            pico.registerComponentImplementation(ApplicationControllerDispatcher.Endpoints.class,EndpointsFromConfig.class);
-           
+           // register factory for temp buffers- so each component that requires one is passed it.
+           pico.registerComponent(new ConstructorInjectionComponentAdapter(TemporaryBuffer.class,TemporaryBuffer.class));
            registerStandardComponents(pico);
            registerLocator(pico,conf);                    
            registerJobFactory(pico,conf);
@@ -81,14 +84,15 @@ public class GroovyComponentManager extends EmptyJesComponentManager {
       );    
 
       public static void registerGroovyEngine(MutablePicoContainer pico) {
-               pico.registerComponentImplementation(SCHEDULER_ENGINE,GroovySchedulerImpl.class);
-          
+               pico.registerComponentImplementation(SCHEDULER_ENGINE,GroovySchedulerImpl.class);          
                  pico.registerComponentImplementation(GroovySchedulerImpl.Transformers.class,GroovyTransformers.class);         
                  pico.registerComponentImplementation(GroovyInterpreterFactory.class,GroovyInterpreterFactory.class);
                  pico.registerComponentImplementation(GroovyInterpreterFactory.Pickler.class,XStreamPickler.class);
+                 
         }
       /** registers standard web-interface implementations (monitor / controller / listener),standard facade., standard scheduler task queue. */
       public static void registerStandardComponents(MutablePicoContainer pico) {   
+          
           pico.registerComponentImplementation(JobMonitor.class,org.astrogrid.jes.jobmonitor.JobMonitor.class);
           pico.registerComponentImplementation(JobController.class,org.astrogrid.jes.jobcontroller.JobController.class);       
           pico.registerComponentImplementation(ResultsListener.class,JesResultsListener.class);
@@ -196,6 +200,12 @@ public class GroovyComponentManager extends EmptyJesComponentManager {
 
 /* 
 $Log: GroovyComponentManager.java,v $
+Revision 1.4  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.3.60.1  2004/11/05 15:25:44  nw
+added temporary buffers into the component manager
+
 Revision 1.3  2004/08/03 16:31:25  nw
 simplified interface to dispatcher and locator components.
 removed redundant implementations.

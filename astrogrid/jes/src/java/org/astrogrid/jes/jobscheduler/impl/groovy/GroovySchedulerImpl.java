@@ -1,4 +1,4 @@
-/*$Id: GroovySchedulerImpl.java,v 1.4 2004/09/06 16:47:04 nw Exp $
+/*$Id: GroovySchedulerImpl.java,v 1.5 2004/11/05 16:52:42 jdt Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,14 +17,13 @@ import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.impl.AbstractJobSchedulerImpl;
+import org.astrogrid.jes.util.TemporaryBuffer;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.stream.StreamResult;
@@ -67,22 +66,30 @@ public class GroovySchedulerImpl extends AbstractJobSchedulerImpl
      *
      */ 
     protected Workflow initializeJob(Workflow job) throws Exception {
-        StringWriter originalWorkflowDoc = new StringWriter();        
-        Marshaller.marshal(job,originalWorkflowDoc);
-        originalWorkflowDoc.close();
-        // document / DOM results don't work - more picky, throws a bunch of errors. which isn't nice.
-        StringWriter annotatedWorkflowDoc = new StringWriter();
-        //Document annotatedWorkflowDoc = XMLUtils.newDocument();        
-        transformers.getWorkflowAnnotator().transform(new StreamSource(new StringReader(originalWorkflowDoc.toString())),new StreamResult(annotatedWorkflowDoc));
-        Workflow annotatedJob = (Workflow)Unmarshaller.unmarshal(Workflow.class,new StringReader(annotatedWorkflowDoc.toString()));
-        // now compile down the original document
+        // serialize input workflow to string
+        StringWriter wfWriter = new StringWriter();
+        job.marshal(wfWriter);
+        wfWriter.close();
+        String originalWorkflowDoc  = wfWriter.toString();        
+
+        TemporaryBuffer buff = interpFactory.getBuffer();
+        // annotate this workflow
+        buff.writeMode();
+        Writer annotatedWorkflowDoc = buff.getWriter();
+        transformers.getWorkflowAnnotator().transform(new StreamSource(new StringReader(originalWorkflowDoc)),new StreamResult(annotatedWorkflowDoc));
         
-        StringWriter rules = new StringWriter();  // xml states.      
-        transformers.getCompiler().transform(new StreamSource(new StringReader(originalWorkflowDoc.toString())),new StreamResult(rules));
-        rules.close();
-        //@todo a bit redundant - should be able to add in xml directly - but this is a good sanity check - no point going any further if
+        buff.readMode();
+        Workflow annotatedJob =  Workflow.unmarshalWorkflow(buff.getReader());
+        
+        // now compile the workflow into a set of rules.
+        buff.writeMode();
+        Writer rules = buff.getWriter();
+        transformers.getCompiler().transform(new StreamSource(new StringReader(originalWorkflowDoc)),new StreamResult(rules));
+               
+        //maybe a bit redundant - should be able to add in xml directly - but this is a good sanity check - no point going any further if
         // we can't deserialize the generated rules as an interpreter.
-        GroovyInterpreter interp = interpFactory.newInterpreter(rules.toString(),new JesInterface(annotatedJob,disp,this));
+        buff.readMode();
+        GroovyInterpreter interp = interpFactory.newInterpreter(buff.getContents(),new JesInterface(annotatedJob,disp,this));
         interpFactory.pickleTo(interp,annotatedJob);
 
        return annotatedJob;
@@ -190,6 +197,12 @@ public class GroovySchedulerImpl extends AbstractJobSchedulerImpl
 
 /* 
 $Log: GroovySchedulerImpl.java,v $
+Revision 1.5  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.4.26.1  2004/11/05 16:15:30  nw
+optimized by uising temporary buffers.
+
 Revision 1.4  2004/09/06 16:47:04  nw
 javadoc
 

@@ -1,0 +1,901 @@
+nvidia-installer log file '/var/log/nvidia-installer.log'
+creation time: Tue May 18 12:21:09 2004
+
+option status:
+  license pre-accepted    : false
+  update                  : false
+  force update            : false
+  expert                  : false
+  uninstall               : false
+  driver info             : false
+  no precompiled interface: false
+  no ncurses color        : false
+  query latest driver ver : false
+  OpenGL header files     : false
+  no questions            : false
+  silent                  : false
+  XFree86 install prefix  : /usr/X11R6
+  OpenGL install prefix   : /usr
+  Installer install prefix: /usr
+  kernel include path     : (not specified)
+  kernel install path     : (not specified)
+  proc mount point        : /proc
+  ui                      : (not specified)
+  tmpdir                  : /tmp
+  ftp site                : ftp://download.nvidia.com
+
+Using: nvidia-installer ncurses user interface
+-> License accepted.
+-> There appears to already be a driver installed on your system (version: 1.0-
+   4496).  As part of installing this driver (version: 1.0-5328), the existing 
+   driver will be uninstalled.  Are you sure you want to continue? ('no' will a
+   bort installation) (Answer: Yes)
+-> No precompiled kernel interface was found to match your kernel; would you li
+   ke the installer to attempt to download a kernel interface for your kernel f
+   rom the NVIDIA ftp site (ftp://download.nvidia.com)? (Answer: Yes)
+-> No matching precompiled kernel interface was found on the NVIDIA ftp site;
+   this means that the installer will need to compile a kernel interface for
+   your kernel.
+-> Kernel include path: '/lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include'
+-> Performing cc_version_check with CC="cc".
+-> Cleaning kernel module build directory.
+   executing: 'cd ./usr/src/nv; make clean'...
+   rm -f nv.o os-agp.o os-interface.o os-registry.o  nv-linux.o nv_compiler.h *
+   .d NVdriver nvidia.o
+-> Building kernel module:
+   executing: 'cd ./usr/src/nv; make nvidia.o SYSINCLUDE=/lib/modules/2.4.22-1.
+   2129.2.nptl_dsc/build/include'...
+   echo \#define NV_COMPILER \"`cc -v 2>&1 | tail -n 1`\" > nv_compiler.h
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5
+   328  -DNV_UNIX   -DNV_LINUX   -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_
+   RANGE_4  -I. -I/lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include -Wno-cast
+   -qual -Wno-error nv.c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from nv.c:14:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5
+   328  -DNV_UNIX   -DNV_LINUX   -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_
+   RANGE_4  -I. -I/lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include -Wno-cast
+   -qual -Wno-error os-agp.c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from os-agp.c:24:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_
+   VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5328  -DNV_UNIX   -DNV_LINUX 
+    -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_RANGE_4  -I. -I/lib/modules/2
+   .4.22-1.2129.2.nptl_dsc/build/include -Wno-cast-qual -Wno-error os-interface
+   .c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from os-interface.c:26:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5
+   328  -DNV_UNIX   -DNV_LINUX   -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_
+   RANGE_4  -I. -I/lib/modu
+   les/2.4.22-1.2129.2.nptl_dsc/build/include -Wno-cast-qual -Wno-error os-regi
+   stry.c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from os-registry.c:14:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   ld -r -o nv-linux.o nv.o os-agp.o os-interface.o os-registry.o 
+   ld -r -o nvidia.o nv-linux.o nv-kernel.o
+-> done.
+-> Kernel module compilation complete.
+-> Installing both new and classic TLS OpenGL libraries (but only new XFree86
+   TLS libraries.
+-> Parsing log file:
+-> done.
+-> Validating previous installation:
+-> The previously installed symlink '/usr/lib/libGL.so' has target
+   '../../usr/X11R6/lib/libGL.so.1.2', but it was installed with target
+   'libGL.so.1'.  /usr/lib/libGL.so will not be uninstalled.
+-> done.
+WARNING: Your driver installation has been altered since it was initially
+         installed; this may happen, for example, if you have since installed
+         the NVIDIA driver through a mechanism other than the nvidia-installer
+         (such as rpm or with the NVIDIA tarballs).  The nvidia-installer will
+         attempt to uninstall as best it can.  Please see the file
+         '/var/log/nvidia-installer.log' for details.
+-> Uninstalling NVIDIA Accelerated Graphics Driver for Linux-x86 (1.0-4496):
+-> Unable to restore symbolic link /usr/X11R6/lib/libGL.so.1 -> libGL.so.1.2
+   (File exists).
+-> Unable to restore symbolic link /usr/X11R6/lib/libGL.so -> libGL.so.1.2
+   (File exists).
+-> done.
+-> Uninstallation of existing driver: NVIDIA Accelerated Graphics Driver for
+   Linux-x86 (1.0-4496) is complete.
+-> Installing 'NVIDIA Accelerated Graphics Driver for Linux-x86' (1.0-5328):
+   executing: './usr/src/nv/makedevices.sh'...
+   executing: '/sbin/ldconfig'...
+   executing: '/sbin/depmod -aq'...
+-> done.
+-> Driver file installation is complete.
+-> Running post-install sanity check:
+-> done.
+-> Sanity check passed.
+-> Shared memory test passed.
+-> Installation of the NVIDIA Accelerated Graphics Driver for Linux-x86
+   (version: 1.0-5328) is now complete.  Please update your XF86Config file as
+   appropriate; see the file /usr/share/doc/NVIDIA_GLX-1.0/README for details.
+   nvidia-installer log file '/var/log/nvidia-installer.log'
+creation time: Tue May 18 12:21:09 2004
+
+option status:
+  license pre-accepted    : false
+  update                  : false
+  force update            : false
+  expert                  : false
+  uninstall               : false
+  driver info             : false
+  no precompiled interface: false
+  no ncurses color        : false
+  query latest driver ver : false
+  OpenGL header files     : false
+  no questions            : false
+  silent                  : false
+  XFree86 install prefix  : /usr/X11R6
+  OpenGL install prefix   : /usr
+  Installer install prefix: /usr
+  kernel include path     : (not specified)
+  kernel install path     : (not specified)
+  proc mount point        : /proc
+  ui                      : (not specified)
+  tmpdir                  : /tmp
+  ftp site                : ftp://download.nvidia.com
+
+Using: nvidia-installer ncurses user interface
+-> License accepted.
+-> There appears to already be a driver installed on your system (version: 1.0-
+   4496).  As part of installing this driver (version: 1.0-5328), the existing 
+   driver will be uninstalled.  Are you sure you want to continue? ('no' will a
+   bort installation) (Answer: Yes)
+-> No precompiled kernel interface was found to match your kernel; would you li
+   ke the installer to attempt to download a kernel interface for your kernel f
+   rom the NVIDIA ftp site (ftp://download.nvidia.com)? (Answer: Yes)
+-> No matching precompiled kernel interface was found on the NVIDIA ftp site;
+   this means that the installer will need to compile a kernel interface for
+   your kernel.
+-> Kernel include path: '/lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include'
+-> Performing cc_version_check with CC="cc".
+-> Cleaning kernel module build directory.
+   executing: 'cd ./usr/src/nv; make clean'...
+   rm -f nv.o os-agp.o os-interface.o os-registry.o  nv-linux.o nv_compiler.h *
+   .d NVdriver nvidia.o
+-> Building kernel module:
+   executing: 'cd ./usr/src/nv; make nvidia.o SYSINCLUDE=/lib/modules/2.4.22-1.
+   2129.2.nptl_dsc/build/include'...
+   echo \#define NV_COMPILER \"`cc -v 2>&1 | tail -n 1`\" > nv_compiler.h
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5
+   328  -DNV_UNIX   -DNV_LINUX   -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_
+   RANGE_4  -I. -I/lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include -Wno-cast
+   -qual -Wno-error nv.c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from nv.c:14:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5
+   328  -DNV_UNIX   -DNV_LINUX   -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_
+   RANGE_4  -I. -I/lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include -Wno-cast
+   -qual -Wno-error os-agp.c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from os-agp.c:24:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_
+   VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5328  -DNV_UNIX   -DNV_LINUX 
+    -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_RANGE_4  -I. -I/lib/modules/2
+   .4.22-1.2129.2.nptl_dsc/build/include -Wno-cast-qual -Wno-error os-interface
+   .c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from os-interface.c:26:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5
+   328  -DNV_UNIX   -DNV_LINUX   -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_
+   RANGE_4  -I. -I/lib/modu
+   les/2.4.22-1.2129.2.nptl_dsc/build/include -Wno-cast-qual -Wno-error os-regi
+   stry.c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from os-registry.c:14:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   ld -r -o nv-linux.o nv.o os-agp.o os-interface.o os-registry.o 
+   ld -r -o nvidia.o nv-linux.o nv-kernel.o
+-> done.
+-> Kernel module compilation complete.
+-> Installing both new and classic TLS OpenGL libraries (but only new XFree86
+   TLS libraries.
+-> Parsing log file:
+-> done.
+-> Validating previous installation:
+-> The previously installed symlink '/usr/lib/libGL.so' has target
+   '../../usr/X11R6/lib/libGL.so.1.2', but it was installed with target
+   'libGL.so.1'.  /usr/lib/libGL.so will not be uninstalled.
+-> done.
+WARNING: Your driver installation has been altered since it was initially
+         installed; this may happen, for example, if you have since installed
+         the NVIDIA driver through a mechanism other than the nvidia-installer
+         (such as rpm or with the NVIDIA tarballs).  The nvidia-installer will
+         attempt to uninstall as best it can.  Please see the file
+         '/var/log/nvidia-installer.log' for details.
+-> Uninstalling NVIDIA Accelerated Graphics Driver for Linux-x86 (1.0-4496):
+-> Unable to restore symbolic link /usr/X11R6/lib/libGL.so.1 -> libGL.so.1.2
+   (File exists).
+-> Unable to restore symbolic link /usr/X11R6/lib/libGL.so -> libGL.so.1.2
+   (File exists).
+-> done.
+-> Uninstallation of existing driver: NVIDIA Accelerated Graphics Driver for
+   Linux-x86 (1.0-4496) is complete.
+-> Installing 'NVIDIA Accelerated Graphics Driver for Linux-x86' (1.0-5328):
+   executing: './usr/src/nv/makedevices.sh'...
+   executing: '/sbin/ldconfig'...
+   executing: '/sbin/depmod -aq'...
+-> done.
+-> Driver file installation is complete.
+-> Running post-install sanity check:
+-> done.
+-> Sanity check passed.
+-> Shared memory test passed.
+-> Installation of the NVIDIA Accelerated Graphics Driver for Linux-x86
+   (version: 1.0-5328) is now complete.  Please update your XF86Config file as
+   appropriate; see the file /usr/share/doc/NVIDIA_GLX-1.0/README for details.
+   nvidia-installer log file '/var/log/nvidia-installer.log'
+creation time: Tue May 18 12:21:09 2004
+
+option status:
+  license pre-accepted    : false
+  update                  : false
+  force update            : false
+  expert                  : false
+  uninstall               : false
+  driver info             : false
+  no precompiled interface: false
+  no ncurses color        : false
+  query latest driver ver : false
+  OpenGL header files     : false
+  no questions            : false
+  silent                  : false
+  XFree86 install prefix  : /usr/X11R6
+  OpenGL install prefix   : /usr
+  Installer install prefix: /usr
+  kernel include path     : (not specified)
+  kernel install path     : (not specified)
+  proc mount point        : /proc
+  ui                      : (not specified)
+  tmpdir                  : /tmp
+  ftp site                : ftp://download.nvidia.com
+
+Using: nvidia-installer ncurses user interface
+-> License accepted.
+-> There appears to already be a driver installed on your system (version: 1.0-
+   4496).  As part of installing this driver (version: 1.0-5328), the existing 
+   driver will be uninstalled.  Are you sure you want to continue? ('no' will a
+   bort installation) (Answer: Yes)
+-> No precompiled kernel interface was found to match your kernel; would you li
+   ke the installer to attempt to download a kernel interface for your kernel f
+   rom the NVIDIA ftp site (ftp://download.nvidia.com)? (Answer: Yes)
+-> No matching precompiled kernel interface was found on the NVIDIA ftp site;
+   this means that the installer will need to compile a kernel interface for
+   your kernel.
+-> Kernel include path: '/lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include'
+-> Performing cc_version_check with CC="cc".
+-> Cleaning kernel module build directory.
+   executing: 'cd ./usr/src/nv; make clean'...
+   rm -f nv.o os-agp.o os-interface.o os-registry.o  nv-linux.o nv_compiler.h *
+   .d NVdriver nvidia.o
+-> Building kernel module:
+   executing: 'cd ./usr/src/nv; make nvidia.o SYSINCLUDE=/lib/modules/2.4.22-1.
+   2129.2.nptl_dsc/build/include'...
+   echo \#define NV_COMPILER \"`cc -v 2>&1 | tail -n 1`\" > nv_compiler.h
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5
+   328  -DNV_UNIX   -DNV_LINUX   -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_
+   RANGE_4  -I. -I/lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include -Wno-cast
+   -qual -Wno-error nv.c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from nv.c:14:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5
+   328  -DNV_UNIX   -DNV_LINUX   -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_
+   RANGE_4  -I. -I/lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include -Wno-cast
+   -qual -Wno-error os-agp.c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from os-agp.c:24:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_
+   VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5328  -DNV_UNIX   -DNV_LINUX 
+    -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_RANGE_4  -I. -I/lib/modules/2
+   .4.22-1.2129.2.nptl_dsc/build/include -Wno-cast-qual -Wno-error os-interface
+   .c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from os-interface.c:26:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5
+   328  -DNV_UNIX   -DNV_LINUX   -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_
+   RANGE_4  -I. -I/lib/modu
+   les/2.4.22-1.2129.2.nptl_dsc/build/include -Wno-cast-qual -Wno-error os-regi
+   stry.c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from os-registry.c:14:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   ld -r -o nv-linux.o nv.o os-agp.o os-interface.o os-registry.o 
+   ld -r -o nvidia.o nv-linux.o nv-kernel.o
+-> done.
+-> Kernel module compilation complete.
+-> Installing both new and classic TLS OpenGL libraries (but only new XFree86
+   TLS libraries.
+-> Parsing log file:
+-> done.
+-> Validating previous installation:
+-> The previously installed symlink '/usr/lib/libGL.so' has target
+   '../../usr/X11R6/lib/libGL.so.1.2', but it was installed with target
+   'libGL.so.1'.  /usr/lib/libGL.so will not be uninstalled.
+-> done.
+WARNING: Your driver installation has been altered since it was initially
+         installed; this may happen, for example, if you have since installed
+         the NVIDIA driver through a mechanism other than the nvidia-installer
+         (such as rpm or with the NVIDIA tarballs).  The nvidia-installer will
+         attempt to uninstall as best it can.  Please see the file
+         '/var/log/nvidia-installer.log' for details.
+-> Uninstalling NVIDIA Accelerated Graphics Driver for Linux-x86 (1.0-4496):
+-> Unable to restore symbolic link /usr/X11R6/lib/libGL.so.1 -> libGL.so.1.2
+   (File exists).
+-> Unable to restore symbolic link /usr/X11R6/lib/libGL.so -> libGL.so.1.2
+   (File exists).
+-> done.
+-> Uninstallation of existing driver: NVIDIA Accelerated Graphics Driver for
+   Linux-x86 (1.0-4496) is complete.
+-> Installing 'NVIDIA Accelerated Graphics Driver for Linux-x86' (1.0-5328):
+   executing: './usr/src/nv/makedevices.sh'...
+   executing: '/sbin/ldconfig'...
+   executing: '/sbin/depmod -aq'...
+-> done.
+-> Driver file installation is complete.
+-> Running post-install sanity check:
+-> done.
+-> Sanity check passed.
+-> Shared memory test passed.
+-> Installation of the NVIDIA Accelerated Graphics Driver for Linux-x86
+   (version: 1.0-5328) is now complete.  Please update your XF86Config file as
+   appropriate; see the file /usr/share/doc/NVIDIA_GLX-1.0/README for details.
+   nvidia-installer log file '/var/log/nvidia-installer.log'
+creation time: Tue May 18 12:21:09 2004
+
+option status:
+  license pre-accepted    : false
+  update                  : false
+  force update            : false
+  expert                  : false
+  uninstall               : false
+  driver info             : false
+  no precompiled interface: false
+  no ncurses color        : false
+  query latest driver ver : false
+  OpenGL header files     : false
+  no questions            : false
+  silent                  : false
+  XFree86 install prefix  : /usr/X11R6
+  OpenGL install prefix   : /usr
+  Installer install prefix: /usr
+  kernel include path     : (not specified)
+  kernel install path     : (not specified)
+  proc mount point        : /proc
+  ui                      : (not specified)
+  tmpdir                  : /tmp
+  ftp site                : ftp://download.nvidia.com
+
+Using: nvidia-installer ncurses user interface
+-> License accepted.
+-> There appears to already be a driver installed on your system (version: 1.0-
+   4496).  As part of installing this driver (version: 1.0-5328), the existing 
+   driver will be uninstalled.  Are you sure you want to continue? ('no' will a
+   bort installation) (Answer: Yes)
+-> No precompiled kernel interface was found to match your kernel; would you li
+   ke the installer to attempt to download a kernel interface for your kernel f
+   rom the NVIDIA ftp site (ftp://download.nvidia.com)? (Answer: Yes)
+-> No matching precompiled kernel interface was found on the NVIDIA ftp site;
+   this means that the installer will need to compile a kernel interface for
+   your kernel.
+-> Kernel include path: '/lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include'
+-> Performing cc_version_check with CC="cc".
+-> Cleaning kernel module build directory.
+   executing: 'cd ./usr/src/nv; make clean'...
+   rm -f nv.o os-agp.o os-interface.o os-registry.o  nv-linux.o nv_compiler.h *
+   .d NVdriver nvidia.o
+-> Building kernel module:
+   executing: 'cd ./usr/src/nv; make nvidia.o SYSINCLUDE=/lib/modules/2.4.22-1.
+   2129.2.nptl_dsc/build/include'...
+   echo \#define NV_COMPILER \"`cc -v 2>&1 | tail -n 1`\" > nv_compiler.h
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5
+   328  -DNV_UNIX   -DNV_LINUX   -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_
+   RANGE_4  -I. -I/lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include -Wno-cast
+   -qual -Wno-error nv.c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from nv.c:14:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5
+   328  -DNV_UNIX   -DNV_LINUX   -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_
+   RANGE_4  -I. -I/lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include -Wno-cast
+   -qual -Wno-error os-agp.c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from os-agp.c:24:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_
+   VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5328  -DNV_UNIX   -DNV_LINUX 
+    -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_RANGE_4  -I. -I/lib/modules/2
+   .4.22-1.2129.2.nptl_dsc/build/include -Wno-cast-qual -Wno-error os-interface
+   .c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from os-interface.c:26:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5
+   328  -DNV_UNIX   -DNV_LINUX   -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_
+   RANGE_4  -I. -I/lib/modu
+   les/2.4.22-1.2129.2.nptl_dsc/build/include -Wno-cast-qual -Wno-error os-regi
+   stry.c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from os-registry.c:14:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   ld -r -o nv-linux.o nv.o os-agp.o os-interface.o os-registry.o 
+   ld -r -o nvidia.o nv-linux.o nv-kernel.o
+-> done.
+-> Kernel module compilation complete.
+-> Installing both new and classic TLS OpenGL libraries (but only new XFree86
+   TLS libraries.
+-> Parsing log file:
+-> done.
+-> Validating previous installation:
+-> The previously installed symlink '/usr/lib/libGL.so' has target
+   '../../usr/X11R6/lib/libGL.so.1.2', but it was installed with target
+   'libGL.so.1'.  /usr/lib/libGL.so will not be uninstalled.
+-> done.
+WARNING: Your driver installation has been altered since it was initially
+         installed; this may happen, for example, if you have since installed
+         the NVIDIA driver through a mechanism other than the nvidia-installer
+         (such as rpm or with the NVIDIA tarballs).  The nvidia-installer will
+         attempt to uninstall as best it can.  Please see the file
+         '/var/log/nvidia-installer.log' for details.
+-> Uninstalling NVIDIA Accelerated Graphics Driver for Linux-x86 (1.0-4496):
+-> Unable to restore symbolic link /usr/X11R6/lib/libGL.so.1 -> libGL.so.1.2
+   (File exists).
+-> Unable to restore symbolic link /usr/X11R6/lib/libGL.so -> libGL.so.1.2
+   (File exists).
+-> done.
+-> Uninstallation of existing driver: NVIDIA Accelerated Graphics Driver for
+   Linux-x86 (1.0-4496) is complete.
+-> Installing 'NVIDIA Accelerated Graphics Driver for Linux-x86' (1.0-5328):
+   executing: './usr/src/nv/makedevices.sh'...
+   executing: '/sbin/ldconfig'...
+   executing: '/sbin/depmod -aq'...
+-> done.
+-> Driver file installation is complete.
+-> Running post-install sanity check:
+-> done.
+-> Sanity check passed.
+-> Shared memory test passed.
+-> Installation of the NVIDIA Accelerated Graphics Driver for Linux-x86
+   (version: 1.0-5328) is now complete.  Please update your XF86Config file as
+   appropriate; see the file /usr/share/doc/NVIDIA_GLX-1.0/README for details.
+   nvidia-installer log file '/var/log/nvidia-installer.log'
+creation time: Tue May 18 12:21:09 2004
+
+option status:
+  license pre-accepted    : false
+  update                  : false
+  force update            : false
+  expert                  : false
+  uninstall               : false
+  driver info             : false
+  no precompiled interface: false
+  no ncurses color        : false
+  query latest driver ver : false
+  OpenGL header files     : false
+  no questions            : false
+  silent                  : false
+  XFree86 install prefix  : /usr/X11R6
+  OpenGL install prefix   : /usr
+  Installer install prefix: /usr
+  kernel include path     : (not specified)
+  kernel install path     : (not specified)
+  proc mount point        : /proc
+  ui                      : (not specified)
+  tmpdir                  : /tmp
+  ftp site                : ftp://download.nvidia.com
+
+Using: nvidia-installer ncurses user interface
+-> License accepted.
+-> There appears to already be a driver installed on your system (version: 1.0-
+   4496).  As part of installing this driver (version: 1.0-5328), the existing 
+   driver will be uninstalled.  Are you sure you want to continue? ('no' will a
+   bort installation) (Answer: Yes)
+-> No precompiled kernel interface was found to match your kernel; would you li
+   ke the installer to attempt to download a kernel interface for your kernel f
+   rom the NVIDIA ftp site (ftp://download.nvidia.com)? (Answer: Yes)
+-> No matching precompiled kernel interface was found on the NVIDIA ftp site;
+   this means that the installer will need to compile a kernel interface for
+   your kernel.
+-> Kernel include path: '/lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include'
+-> Performing cc_version_check with CC="cc".
+-> Cleaning kernel module build directory.
+   executing: 'cd ./usr/src/nv; make clean'...
+   rm -f nv.o os-agp.o os-interface.o os-registry.o  nv-linux.o nv_compiler.h *
+   .d NVdriver nvidia.o
+-> Building kernel module:
+   executing: 'cd ./usr/src/nv; make nvidia.o SYSINCLUDE=/lib/modules/2.4.22-1.
+   2129.2.nptl_dsc/build/include'...
+   echo \#define NV_COMPILER \"`cc -v 2>&1 | tail -n 1`\" > nv_compiler.h
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5
+   328  -DNV_UNIX   -DNV_LINUX   -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_
+   RANGE_4  -I. -I/lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include -Wno-cast
+   -qual -Wno-error nv.c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from nv.c:14:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5
+   328  -DNV_UNIX   -DNV_LINUX   -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_
+   RANGE_4  -I. -I/lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include -Wno-cast
+   -qual -Wno-error os-agp.c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from os-agp.c:24:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_
+   VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5328  -DNV_UNIX   -DNV_LINUX 
+    -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_RANGE_4  -I. -I/lib/modules/2
+   .4.22-1.2129.2.nptl_dsc/build/include -Wno-cast-qual -Wno-error os-interface
+   .c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from os-interface.c:26:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5
+   328  -DNV_UNIX   -DNV_LINUX   -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_
+   RANGE_4  -I. -I/lib/modu
+   les/2.4.22-1.2129.2.nptl_dsc/build/include -Wno-cast-qual -Wno-error os-regi
+   stry.c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from os-registry.c:14:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   ld -r -o nv-linux.o nv.o os-agp.o os-interface.o os-registry.o 
+   ld -r -o nvidia.o nv-linux.o nv-kernel.o
+-> done.
+-> Kernel module compilation complete.
+-> Installing both new and classic TLS OpenGL libraries (but only new XFree86
+   TLS libraries.
+-> Parsing log file:
+-> done.
+-> Validating previous installation:
+-> The previously installed symlink '/usr/lib/libGL.so' has target
+   '../../usr/X11R6/lib/libGL.so.1.2', but it was installed with target
+   'libGL.so.1'.  /usr/lib/libGL.so will not be uninstalled.
+-> done.
+WARNING: Your driver installation has been altered since it was initially
+         installed; this may happen, for example, if you have since installed
+         the NVIDIA driver through a mechanism other than the nvidia-installer
+         (such as rpm or with the NVIDIA tarballs).  The nvidia-installer will
+         attempt to uninstall as best it can.  Please see the file
+         '/var/log/nvidia-installer.log' for details.
+-> Uninstalling NVIDIA Accelerated Graphics Driver for Linux-x86 (1.0-4496):
+-> Unable to restore symbolic link /usr/X11R6/lib/libGL.so.1 -> libGL.so.1.2
+   (File exists).
+-> Unable to restore symbolic link /usr/X11R6/lib/libGL.so -> libGL.so.1.2
+   (File exists).
+-> done.
+-> Uninstallation of existing driver: NVIDIA Accelerated Graphics Driver for
+   Linux-x86 (1.0-4496) is complete.
+-> Installing 'NVIDIA Accelerated Graphics Driver for Linux-x86' (1.0-5328):
+   executing: './usr/src/nv/makedevices.sh'...
+   executing: '/sbin/ldconfig'...
+   executing: '/sbin/depmod -aq'...
+-> done.
+-> Driver file installation is complete.
+-> Running post-install sanity check:
+-> done.
+-> Sanity check passed.
+-> Shared memory test passed.
+-> Installation of the NVIDIA Accelerated Graphics Driver for Linux-x86
+   (version: 1.0-5328) is now complete.  Please update your XF86Config file as
+   appropriate; see the file /usr/share/doc/NVIDIA_GLX-1.0/README for details.
+   nvidia-installer log file '/var/log/nvidia-installer.log'
+creation time: Tue May 18 12:21:09 2004
+
+option status:
+  license pre-accepted    : false
+  update                  : false
+  force update            : false
+  expert                  : false
+  uninstall               : false
+  driver info             : false
+  no precompiled interface: false
+  no ncurses color        : false
+  query latest driver ver : false
+  OpenGL header files     : false
+  no questions            : false
+  silent                  : false
+  XFree86 install prefix  : /usr/X11R6
+  OpenGL install prefix   : /usr
+  Installer install prefix: /usr
+  kernel include path     : (not specified)
+  kernel install path     : (not specified)
+  proc mount point        : /proc
+  ui                      : (not specified)
+  tmpdir                  : /tmp
+  ftp site                : ftp://download.nvidia.com
+
+Using: nvidia-installer ncurses user interface
+-> License accepted.
+-> There appears to already be a driver installed on your system (version: 1.0-
+   4496).  As part of installing this driver (version: 1.0-5328), the existing 
+   driver will be uninstalled.  Are you sure you want to continue? ('no' will a
+   bort installation) (Answer: Yes)
+-> No precompiled kernel interface was found to match your kernel; would you li
+   ke the installer to attempt to download a kernel interface for your kernel f
+   rom the NVIDIA ftp site (ftp://download.nvidia.com)? (Answer: Yes)
+-> No matching precompiled kernel interface was found on the NVIDIA ftp site;
+   this means that the installer will need to compile a kernel interface for
+   your kernel.
+-> Kernel include path: '/lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include'
+-> Performing cc_version_check with CC="cc".
+-> Cleaning kernel module build directory.
+   executing: 'cd ./usr/src/nv; make clean'...
+   rm -f nv.o os-agp.o os-interface.o os-registry.o  nv-linux.o nv_compiler.h *
+   .d NVdriver nvidia.o
+-> Building kernel module:
+   executing: 'cd ./usr/src/nv; make nvidia.o SYSINCLUDE=/lib/modules/2.4.22-1.
+   2129.2.nptl_dsc/build/include'...
+   echo \#define NV_COMPILER \"`cc -v 2>&1 | tail -n 1`\" > nv_compiler.h
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5
+   328  -DNV_UNIX   -DNV_LINUX   -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_
+   RANGE_4  -I. -I/lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include -Wno-cast
+   -qual -Wno-error nv.c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from nv.c:14:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5
+   328  -DNV_UNIX   -DNV_LINUX   -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_
+   RANGE_4  -I. -I/lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include -Wno-cast
+   -qual -Wno-error os-agp.c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from os-agp.c:24:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_
+   VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5328  -DNV_UNIX   -DNV_LINUX 
+    -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_RANGE_4  -I. -I/lib/modules/2
+   .4.22-1.2129.2.nptl_dsc/build/include -Wno-cast-qual -Wno-error os-interface
+   .c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from os-interface.c:26:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   cc -c -Wall -Wimplicit -Wreturn-type -Wswitch -Wformat -Wchar-subscripts -Wp
+   arentheses -Wpointer-arith  -Wno-multichar  -Werror -O -MD -D__KERNEL__ -DMO
+   DULE -D_LOOSE_KERNEL_NAMES -DNTRM -D_GNU_SOURCE -D_LOOSE_KERNEL_NAMES -D__KE
+   RNEL__ -DMODULE  -DNV_MAJOR_VERSION=1 -DNV_MINOR_VERSION=0 -DNV_PATCHLEVEL=5
+   328  -DNV_UNIX   -DNV_LINUX   -DNV_INT64_OK   -DNVCPU_X86      -DREMAP_PAGE_
+   RANGE_4  -I. -I/lib/modu
+   les/2.4.22-1.2129.2.nptl_dsc/build/include -Wno-cast-qual -Wno-error os-regi
+   stry.c
+   In file included from /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/li
+   nux/vmalloc.h:8,
+                    from nv-linux.h:72,
+                    from os-registry.c:14:
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h: In func
+   tion `bh_kmap':
+   /lib/modules/2.4.22-1.2129.2.nptl_dsc/build/include/linux/highmem.h:20: warn
+   ing: pointer of type `void *' used in arithmetic
+   ld -r -o nv-linux.o nv.o os-agp.o os-interface.o os-registry.o 
+   ld -r -o nvidia.o nv-linux.o nv-kernel.o
+-> done.
+-> Kernel module compilation complete.
+-> Installing both new and classic TLS OpenGL libraries (but only new XFree86
+   TLS libraries.
+-> Parsing log file:
+-> done.
+-> Validating previous installation:
+-> The previously installed symlink '/usr/lib/libGL.so' has target
+   '../../usr/X11R6/lib/libGL.so.1.2', but it was installed with target
+   'libGL.so.1'.  /usr/lib/libGL.so will not be uninstalled.
+-> done.
+WARNING: Your driver installation has been altered since it was initially
+         installed; this may happen, for example, if you have since installed
+         the NVIDIA driver through a mechanism other than the nvidia-installer
+         (such as rpm or with the NVIDIA tarballs).  The nvidia-installer will
+         attempt to uninstall as best it can.  Please see the file
+         '/var/log/nvidia-installer.log' for details.
+-> Uninstalling NVIDIA Accelerated Graphics Driver for Linux-x86 (1.0-4496):
+-> Unable to restore symbolic link /usr/X11R6/lib/libGL.so.1 -> libGL.so.1.2
+   (File exists).
+-> Unable to restore symbolic link /usr/X11R6/lib/libGL.so -> libGL.so.1.2
+   (File exists).
+-> done.
+-> Uninstallation of existing driver: NVIDIA Accelerated Graphics Driver for
+   Linux-x86 (1.0-4496) is complete.
+-> Installing 'NVIDIA Accelerated Graphics Driver for Linux-x86' (1.0-5328):
+   executing: './usr/src/nv/makedevices.sh'...
+   executing: '/sbin/ldconfig'...
+   executing: '/sbin/depmod -aq'...
+-> done.
+-> Driver file installation is complete.
+-> Running post-install sanity check:
+-> done.
+-> Sanity check passed.
+-> Shared memory test passed.
+-> Installation of the NVIDIA Accelerated Graphics Driver for Linux-x86
+   (version: 1.0-5328) is now complete.  Please update your XF86Config file as
+   appropriate; see the file /usr/share/doc/NVIDIA_GLX-1.0/README for details.
+   

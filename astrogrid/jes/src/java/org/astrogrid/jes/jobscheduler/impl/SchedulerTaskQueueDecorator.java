@@ -1,4 +1,4 @@
-/*$Id: SchedulerTaskQueueDecorator.java,v 1.6 2004/09/16 21:43:10 nw Exp $
+/*$Id: SchedulerTaskQueueDecorator.java,v 1.7 2004/11/05 16:52:42 jdt Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.picocontainer.Startable;
 
-import EDU.oswego.cs.dl.util.concurrent.Executor;
 import EDU.oswego.cs.dl.util.concurrent.QueuedExecutor;
 import junit.framework.Test;
 
@@ -211,6 +210,12 @@ public class SchedulerTaskQueueDecorator implements JobScheduler , ComponentDesc
 
 /* 
 $Log: SchedulerTaskQueueDecorator.java,v $
+Revision 1.7  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.6.18.1  2004/11/05 15:43:49  nw
+tidied imports
+
 Revision 1.6  2004/09/16 21:43:10  nw
 enabled worker thread to be shut down.
 

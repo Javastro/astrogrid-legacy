@@ -1,4 +1,4 @@
-/*$Id: RuleTest.java,v 1.5 2004/08/09 17:33:02 nw Exp $
+/*$Id: RuleTest.java,v 1.6 2004/11/05 16:52:42 jdt Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,8 +13,8 @@ package org.astrogrid.jes.jobscheduler.impl.groovy;
 import org.codehaus.groovy.control.CompilationFailedException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
@@ -33,20 +33,14 @@ public class RuleTest extends TestCase {
         shell = new JesShell();
         shell.setJesInterface(new MockJes());
         store = new ActivityStatusStore();
-        rules = new ArrayList();
-        rules.add(rule);
+        rules = new HashMap();
+        rules.put(rule.getName(),rule);
     }
     protected Rule rule;
     protected JesShell shell;
     protected ActivityStatusStore store;
-    protected List rules;
+    protected Map rules;
     
-    public void testIsTriggered() throws CompilationFailedException, IOException {
-        assertNull(rule.getCompiledTrigger());
-        assertTrue(rule.isTriggered(shell,store));
-        // check caching of compiled script has happened
-        assertNotNull(rule.getCompiledTrigger());
-    }
 
     public void testFire() throws CompilationFailedException, IOException {
         rule.fire(shell,store,rules); 
@@ -62,7 +56,8 @@ public class RuleTest extends TestCase {
     }
 
     public void testRewriteAs() {
-        Rule r1 = rule.rewriteAs(Pattern.compile("[\"'](testEnv)[\"']"),"'$1-1'");
+        Rule r1 = rule.rewriteAs(Pattern.compile("[\"'](testEnv)[\"']"),1);
+        assertEquals(r1.getName(),rule.getName() + "-1");
         assertTrue(r1.matches(Pattern.compile("[\"']testEnv-1[\"']")));
         assertFalse(r1.matches(Pattern.compile("[\"']testEnv[\"']")));
         
@@ -78,6 +73,12 @@ public class RuleTest extends TestCase {
 
 /* 
 $Log: RuleTest.java,v $
+Revision 1.6  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.5.58.1  2004/11/05 16:09:24  nw
+removed tests for trigger
+
 Revision 1.5  2004/08/09 17:33:02  nw
 optimized string handling - all done via regexps now.
 

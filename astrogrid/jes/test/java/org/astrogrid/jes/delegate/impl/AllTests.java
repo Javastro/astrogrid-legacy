@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.4 2004/09/16 21:45:10 nw Exp $
+/*$Id: AllTests.java,v 1.5 2004/11/05 16:52:42 jdt Exp $
  * Created on 09-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,6 @@ public class AllTests {
         TestSuite suite = new TestSuite(
             "Test for org.astrogrid.jes.delegate.impl");
         //$JUnit-BEGIN$
-        suite.addTestSuite(AbstractTestForSOAPService.class);
         suite.addTestSuite(SOAPJobMonitorTest.class);
         suite.addTest(SOAPJobControllerTest.suite());
         suite.addTestSuite(AbstractDelegateTest.class);
@@ -34,6 +33,12 @@ public class AllTests {
 }
 /* 
  $Log: AllTests.java,v $
+ Revision 1.5  2004/11/05 16:52:42  jdt
+ Merges from branch nww-itn07-scratchspace
+
+ Revision 1.4.18.1  2004/11/05 16:01:46  nw
+ removed abstract test
+
  Revision 1.4  2004/09/16 21:45:10  nw
  added test for result listener
 

@@ -1,4 +1,4 @@
-/*$Id: LifecycleListener.java,v 1.1 2004/09/16 21:44:14 nw Exp $
+/*$Id: LifecycleListener.java,v 1.2 2004/11/05 16:52:42 jdt Exp $
  * Created on 16-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,10 @@
 **/
 package org.astrogrid.jes.servlet;
 
+import org.astrogrid.jes.component.JesComponentManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.astrogrid.jes.component.JesComponentManagerFactory;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -59,6 +59,12 @@ public class LifecycleListener implements ServletContextListener {
 
 /* 
 $Log: LifecycleListener.java,v $
+Revision 1.2  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.1.18.1  2004/11/05 15:45:26  nw
+tidied imports
+
 Revision 1.1  2004/09/16 21:44:14  nw
 added lifecycle listener to shut things down cleanly
  

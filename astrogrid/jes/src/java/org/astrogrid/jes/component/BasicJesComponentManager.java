@@ -1,4 +1,4 @@
-/*$Id: BasicJesComponentManager.java,v 1.4 2004/08/03 16:31:25 nw Exp $
+/*$Id: BasicJesComponentManager.java,v 1.5 2004/11/05 16:52:42 jdt Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,9 +26,11 @@ import org.astrogrid.jes.jobscheduler.impl.SchedulerTaskQueueDecorator;
 import org.astrogrid.jes.jobscheduler.locator.XMLFileLocator;
 import org.astrogrid.jes.resultlistener.JesResultsListener;
 import org.astrogrid.jes.service.v1.cearesults.ResultsListener;
+import org.astrogrid.jes.util.TemporaryBuffer;
 
 import org.picocontainer.Parameter;
 import org.picocontainer.defaults.ComponentParameter;
+import org.picocontainer.defaults.ConstructorInjectionComponentAdapter;
 
 import java.net.URI;
 import java.net.URL;
@@ -80,7 +82,10 @@ public class BasicJesComponentManager extends EmptyJesComponentManager {
         pico.registerComponentImplementation(AbstractJobFactoryImpl.class,InMemoryJobFactoryImpl.class); // could possibly get away with file here..
         pico.registerComponentImplementation(JobMonitor.class,org.astrogrid.jes.jobmonitor.JobMonitor.class);
         pico.registerComponentImplementation(ResultsListener.class,JesResultsListener.class);
-        pico.registerComponentImplementation(JobController.class,org.astrogrid.jes.jobcontroller.JobController.class);       
+        pico.registerComponentImplementation(JobController.class,org.astrogrid.jes.jobcontroller.JobController.class);
+        // register factory for temp buffers- so each component that requires one is passed it.
+        pico.registerComponent(new ConstructorInjectionComponentAdapter(TemporaryBuffer.class,TemporaryBuffer.class));
+               
         } catch (Exception e) {
             log.fatal("Could not create component manager",e);
             throw new ComponentManagerException(e);
@@ -103,6 +108,12 @@ public class BasicJesComponentManager extends EmptyJesComponentManager {
 
 /* 
 $Log: BasicJesComponentManager.java,v $
+Revision 1.5  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.4.60.1  2004/11/05 15:25:22  nw
+added temporary buffers into the component manager
+
 Revision 1.4  2004/08/03 16:31:25  nw
 simplified interface to dispatcher and locator components.
 removed redundant implementations.

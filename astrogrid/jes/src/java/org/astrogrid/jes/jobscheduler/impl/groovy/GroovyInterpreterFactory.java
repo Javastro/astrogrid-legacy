@@ -1,4 +1,4 @@
-/*$Id: GroovyInterpreterFactory.java,v 1.5 2004/09/16 21:47:56 nw Exp $
+/*$Id: GroovyInterpreterFactory.java,v 1.6 2004/11/05 16:52:42 jdt Exp $
  * Created on 14-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
+import org.astrogrid.jes.util.TemporaryBuffer;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.Extension;
 
@@ -18,9 +19,8 @@ import org.apache.commons.logging.LogFactory;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.io.Writer;
-import java.util.List;
+import java.util.Map;
 
 /** Factory object that takes care of creating fresh and unpickling existing groovy interpreters.
  * @see GroovyInterpreter
@@ -51,13 +51,21 @@ public class GroovyInterpreterFactory {
          * @return
          * @throws Exception
          */
-        List unmarshallRuleStore(Reader reader)  throws Exception;        
+        Map unmarshallRuleStore(Reader reader)  throws Exception;        
     }
     /** construct a new factory, passing in the pickler implementatio to use */
-    public GroovyInterpreterFactory(Pickler p) {
+    public GroovyInterpreterFactory(Pickler p, TemporaryBuffer buff) {
         this.pickler = p;
+        this.buff = buff;
     }
     protected final Pickler pickler;
+    /** @todo maybe better to soft-reference wrap this */
+    protected final TemporaryBuffer buff; //
+    
+    /** so our buffer can be shared amongst friends.. */
+    public TemporaryBuffer getBuffer() {
+        return buff;
+    }
     
     private static final Log log = LogFactory.getLog(GroovyInterpreterFactory.class);
     /** key used in workflow extension to store pickled workflow.
@@ -75,11 +83,14 @@ public class GroovyInterpreterFactory {
 
             wf.getJobExecutionRecord().addExtension(pickleJar);
         }
-        StringWriter writer =  new StringWriter();
+        //StringWriter writer =  new StringWriter();
+        buff.writeMode();
+        Writer writer = buff.getWriter();
         try {
             pickler.marshallInterpreter(writer,interp);
             writer.close();
-            pickleJar.setContent(writer.toString());
+            buff.readMode();
+            pickleJar.setContent(buff.getContents());
         }catch (Exception e) {
             throw new PickleException("Could not pickle interpreter",e);
         }
@@ -105,7 +116,7 @@ public class GroovyInterpreterFactory {
     public GroovyInterpreter newInterpreter(String rulesDoc,JesInterface env) throws PickleException{
         StringReader sr = new StringReader(rulesDoc);
         try {
-        List rs = pickler.unmarshallRuleStore(sr);
+        Map rs = pickler.unmarshallRuleStore(sr);
         GroovyInterpreter interp = new GroovyInterpreter(rs);
         interp.setJesInterface(env);        
         return interp;
@@ -122,6 +133,13 @@ public class GroovyInterpreterFactory {
 
 /* 
 $Log: GroovyInterpreterFactory.java,v $
+Revision 1.6  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.5.18.1  2004/11/05 16:13:08  nw
+replaced stringWriter with TemporaryBuffer
+updated to work with new ruleStore
+
 Revision 1.5  2004/09/16 21:47:56  nw
 made sure all streams are closed
 

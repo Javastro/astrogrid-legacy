@@ -1,4 +1,4 @@
-/*$Id: GroovyInterpreter.java,v 1.5 2004/09/06 16:30:25 nw Exp $
+/*$Id: GroovyInterpreter.java,v 1.6 2004/11/05 16:52:42 jdt Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,11 +17,14 @@ import org.astrogrid.workflow.beans.v1.Step;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.groovy.control.CompilationFailedException;
 
-import java.util.ArrayList;
+import groovy.lang.Script;
+
+import java.io.IOException;
+import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**(misnamed) Top level class of rules engine / state machine.
@@ -37,6 +40,7 @@ import java.util.Map;
  * @see ActivityStatusStore
  * @see ActivityStatus
  * @see Rule
+ * @see RuleStore
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2004
  *
  */
@@ -46,57 +50,32 @@ public class GroovyInterpreter  {
      * used by XStreamPickler to marshal / unmarshal from xml.
      */
     public GroovyInterpreter() {
-        this(new ArrayList());
+        this(new RuleStore());
     }
     /** construct a new interpreter, passing in a list of rules 
      *  Construct a new GroovyInterpreter
      * @param rs list of {@link Rule} objects
      */
-    public GroovyInterpreter(List rs) {
-        this.ruleStore = rs;    
-        
-       
+    public GroovyInterpreter(Map rs) {
+        this.ruleStore = new RuleStore(rs);   
+               
     }
     private  static final Log logger = LogFactory.getLog(GroovyInterpreter.class);
-    /** set of rules 
-     * @todo would be better modelled as a Set actually.*/
-    protected List ruleStore;
+    /** set of rules - keyed on their name..*/
+    protected RuleStore ruleStore;
     /** store of states */
     protected ActivityStatusStore stateMap = new ActivityStatusStore();
     /** interface into scripting engine - used to execute script embedded within rules */
     protected final transient JesShell shell = new JesShell();
-    
-    /** add a rule to the rulestore */
-    public void addRule(Rule r) {
-        ruleStore.add(r);
-    }
-        
-    /** find a  triggered rule that can be validly executed
-     * 
-     * @return a triggered rule, or null if no rules are currently triggered.
-     * @throws ScriptEngineException if evaluati;on of triggers fails in some way.
-     */
-    public Rule findNext() throws ScriptEngineException {
-        try {
-            for (Iterator i = ruleStore.iterator(); i.hasNext(); ) {
-                Rule r = (Rule)i.next();
-                if (r.isTriggered(shell,stateMap)) {
-                    return r;
-                }
-            } 
-            return null;
-        } catch (Exception e) {
-            throw new ScriptEngineException("Failed to find next",e);
-        }
-    } 
+
+     
     /** select a triggered rule, and then run it
      * @see #findNext
      * @throws ScriptEngineException
      */
     public void runNext() throws ScriptEngineException{
         try {
-            Rule rule = findNext();
-            logger.debug("Running " + rule.getName());
+            Rule rule = ruleStore.findNext(shell,stateMap);
             rule.fire(shell,stateMap,ruleStore);
         } catch (Exception e) {
             throw new ScriptEngineException("Failed to run next",e);
@@ -106,10 +85,10 @@ public class GroovyInterpreter  {
      * @see #runNext */
     public void run() throws ScriptEngineException {
         try {
-        for (Rule rule= findNext(); rule != null; rule = findNext()) {
-            logger.debug("Running " + rule.getName());
+        for (Rule rule= ruleStore.findNext(shell,stateMap); rule != null; rule = ruleStore.findNext(shell,stateMap)) {
             rule.fire(shell,stateMap,ruleStore);
-        }
+        } 
+           
         }catch (Exception e) {
             throw new ScriptEngineException("Failed to run interpreter",e);
         }
@@ -205,6 +184,12 @@ public class GroovyInterpreter  {
 
 /* 
 $Log: GroovyInterpreter.java,v $
+Revision 1.6  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.5.26.1  2004/11/05 16:12:13  nw
+moved findNext into RuleStore
+
 Revision 1.5  2004/09/06 16:30:25  nw
 javadoc
 

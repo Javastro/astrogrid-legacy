@@ -113,7 +113,7 @@ as it allows you to travese and select on all the different xpath axis...
 <!-- rules for entry and exit points into the interpreter -->
 <rule>
 	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == UNSTARTED</trigger>
-		<name>workflow-start</name>
+		<name>workflow-start-<xsl:value-of select="generate-id()"/></name>
 	<body>
 states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED);
 jes.setWorkflowStatus(STARTED);
@@ -123,7 +123,7 @@ states.setStatus('<xsl:value-of select="generate-id(./wf:sequence | ./wf:Activit
 
 <rule> 
 	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; states.getStatus('<xsl:value-of select="generate-id(./wf:sequence | ./wf:Activity[@xsi:type='sequence'])"/>') == FINISHED</trigger>
-	<name>workflow-end</name>
+	<name>workflow-end-<xsl:value-of select="generate-id()"/></name>
 	<body>
 states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
 jes.setWorkflowStatus(FINISHED);
@@ -132,7 +132,7 @@ jes.setWorkflowStatus(FINISHED);
 
 <rule>
 	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == ERROR</trigger>
-	<name>workflow-error</name>
+	<name>workflow-error-<xsl:value-of select="generate-id()"/></name>
 	<body>
 		states.setStatus('<xsl:value-of select="generate-id()"/>',ERRED);
 		jes.setWorkflowStatus(ERROR);
@@ -149,7 +149,7 @@ jes.setWorkflowStatus(FINISHED);
 <xsl:template mode="errors" match="wf:set|wf:scope|wf:unset|wf:catch|wf:try|wf:flow|wf:sequence|wf:script|wf:step|wf:while|wf:for|wf:if|wf:then|wf:else|wf:parfor|wf:Activity">
   <rule>
 	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == ERROR</trigger>
-	<name>error-handler</name>
+	<name>error-handler-<xsl:value-of select="generate-id()"/></name>
     <body>
 states.setStatus('<xsl:value-of select="generate-id()"/>',ERRED);
 states.setStatus('<xsl:value-of select="generate-id(..)"/>',ERROR);
@@ -163,7 +163,7 @@ states.setStatus('<xsl:value-of select="generate-id(..)"/>',ERROR);
 <xsl:template match="wf:set" name="set">
 	<rule>
 		<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
-		<name>set-variable</name>
+		<name>set-variable-<xsl:value-of select="generate-id()"/></name>
 		<body>
 			if (jes.executeSet('<xsl:value-of select="generate-id()"/>',shell,states,rules)) {
 				states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
@@ -177,7 +177,7 @@ states.setStatus('<xsl:value-of select="generate-id(..)"/>',ERROR);
 <xsl:template match="wf:unset" name="unset">
 	<rule>
 		<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
-		<name>unset-variable</name>
+		<name>unset-variable-<xsl:value-of select="generate-id()"/></name>
 		<body>
 			states.getEnv('<xsl:value-of select="generate-id()"/>').unset('<xsl:value-of select="@var"/>');
 			states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
@@ -188,7 +188,7 @@ states.setStatus('<xsl:value-of select="generate-id(..)"/>',ERROR);
 <xsl:template match="wf:scope" name="scope">
 	<rule>
 		<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
-		<name>introduce-scope</name>
+		<name>introduce-scope-<xsl:value-of select="generate-id()"/></name>
 		<body>
 			e = states.getEnv('<xsl:value-of select="generate-id()"/>');
 			e.newScope();
@@ -199,7 +199,7 @@ states.setStatus('<xsl:value-of select="generate-id(..)"/>',ERROR);
 	</rule>
 	<rule>
 		<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; states.getStatus('<xsl:value-of select="generate-id(./*)"/>') == FINISHED</trigger>
-		<name>remove-scope</name>
+		<name>remove-scope-<xsl:value-of select="generate-id()"/></name>
 		<body>
 			states.getEnv('<xsl:value-of select="generate-id()"/>').removeScope();
 			states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
@@ -217,7 +217,7 @@ trigger is standard, env taken from associated state
 <xsl:comment>script</xsl:comment>
 <rule> 
 	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
-	<name>script</name>
+	<name>script-<xsl:value-of select="generate-id()"/></name>
 	<body>
 states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED);
 if(jes.dispatchScript('<xsl:value-of select="generate-id()"/>',shell,states,rules)) {
@@ -236,7 +236,7 @@ start - get envronment from associated state, create tool object, populate with 
 finish - triggered by response from cea. collects any results from the call back into environment-->
 <xsl:comment>step <xsl:value-of select="@name"/></xsl:comment>
 <rule>
-	<name>step-start</name>
+	<name>step-start-<xsl:value-of select="generate-id()"/></name>
 	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
 <body>
 if (jes.dispatchStep('<xsl:value-of select="generate-id()"/>',shell,states,rules)) {
@@ -248,7 +248,7 @@ if (jes.dispatchStep('<xsl:value-of select="generate-id()"/>',shell,states,rules
 </rule>
 
 <rule> 
-	<name>step-end</name>
+	<name>step-end-<xsl:value-of select="generate-id()"/></name>
 	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == FINISH
 		<xsl:if test="@result-var and @result-var != ''"><!-- need to wait for results too, if workflow is going to use them - modelled as a separate sub state-->
 			&amp;&amp; states.getStatus('<xsl:value-of select="generate-id()"/>' + "-results") == FINISHED
@@ -277,7 +277,7 @@ states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
 <xsl:comment>sequence</xsl:comment>
 <rule>
 	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
-	 <name>sequence-start</name>
+	 <name>sequence-start-<xsl:value-of select="generate-id()"/></name>
 	<body>
 <xsl:if test="./*"><!-- i.e. we've got children -->
 states.setStatus('<xsl:value-of select="generate-id(./*)"/>',START);
@@ -290,7 +290,7 @@ states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED)
 <xsl:for-each select="./*[not(position() = last())]">
 <rule>
 	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == FINISHED &amp;&amp; states.getStatus('<xsl:value-of select="generate-id(./following-sibling::*)"/>') == UNSTARTED</trigger>
-	 <name>sequence chain</name>
+	 <name>sequence chain-<xsl:value-of select="generate-id()"/></name>
 	<body>
 states.setStatus('<xsl:value-of select="generate-id(./following-sibling::*)"/>',START);
 states.setEnv('<xsl:value-of select="generate-id(./following-sibling::*)"/>',states.getEnv('<xsl:value-of select="generate-id()"/>'));
@@ -303,7 +303,7 @@ states.setEnv('<xsl:value-of select="generate-id(./following-sibling::*)"/>',sta
 		<xsl:if test="./*"><!-- we've got children -->
 		&amp;&amp; states.getStatus('<xsl:value-of select="generate-id(./*[position() = last()])"/>') == FINISHED
 		</xsl:if></trigger>
-	<name>sequence-end</name>
+	<name>sequence-end-<xsl:value-of select="generate-id()"/></name>
 	<body>
 states.setStatus('<xsl:value-of select="generate-id()"/>', FINISHED) ;
 
@@ -322,7 +322,7 @@ states.setStatus('<xsl:value-of select="generate-id()"/>', FINISHED) ;
 <xsl:comment>flow</xsl:comment>
 <rule>
 	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
-	 <name>flow-start</name>
+	 <name>flow-start-<xsl:value-of select="generate-id()"/></name>
 	 <body>
 	<xsl:for-each select="./*">
 states.setStatus('<xsl:value-of select="generate-id()"/>',START);
@@ -332,7 +332,7 @@ states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED);
 	</body>
 </rule>
 <rule>
-	<name>flow-end</name>
+	<name>flow-end-<xsl:value-of select="generate-id()"/></name>
 	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED 
 			<xsl:for-each select="./*"> 
 				&amp;&amp; states.getStatus('<xsl:value-of select="generate-id()"/>') == FINISHED
@@ -356,7 +356,7 @@ nusciance having to handle two forms of xml element - name, and via xsi type.
 -->
 <xsl:comment>if</xsl:comment>
 <rule>
-	 <name>if-start</name>
+	 <name>if-start-<xsl:value-of select="generate-id()"/></name>
 	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
 <body>
 ifObj = jes.getId('<xsl:value-of select="generate-id()"/>');
@@ -387,7 +387,7 @@ if (condition) {
 </body>
 </rule>
 <rule>
-	<name>if-end</name>
+	<name>if-end-<xsl:value-of select="generate-id()"/></name>
 	<trigger>
 	  <xsl:choose>
 	    <xsl:when test="./wf:else | ./wf:Activity[@xsi:type='else']">states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; (states.getStatus('<xsl:value-of select="generate-id(./wf:then/* | ./wf:Activity[@xsi:type='then']/*)"/>') == FINISHED || states.getStatus('<xsl:value-of select="generate-id(./wf:else/* | ./wf:Activity[@xsi:type='else']/*)"/>') == FINISHED)</xsl:when>
@@ -411,7 +411,7 @@ to continue - if test passes, re-trigger body rule.
 -->
 <xsl:comment>while</xsl:comment>
 <rule>
-	 <name>while-init</name>
+	 <name>while-init-<xsl:value-of select="generate-id()"/></name>
 	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
 	<body>
 whileObj = jes.getId('<xsl:value-of select="generate-id()"/>');
@@ -432,7 +432,7 @@ if (condition) {
 	</body>
 </rule>
 <rule>
-	 <name>while-loop</name>
+	 <name>while-loop-<xsl:value-of select="generate-id()"/></name>
 	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; states.getStatus('<xsl:value-of select="generate-id(./*)"/>') == FINISHED</trigger>
 	<body>
 whileObj = jes.getId('<xsl:value-of select="generate-id()"/>');
@@ -457,7 +457,7 @@ if (condition) {
 <xsl:comment>for</xsl:comment>
 <!-- set up loop variables etc -->
 <rule>
-	 <name>for-init</name>
+	 <name>for-init-<xsl:value-of select="generate-id()"/></name>
 	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger> 
 	<body>
 	forObj = jes.getId('<xsl:value-of select="generate-id()"/>');
@@ -479,7 +479,7 @@ if (condition) {
 </rule>
 
 <rule>
-	 <name>for-loop</name>
+	 <name>for-loop-<xsl:value-of select="generate-id()"/></name>
 	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED 
 		&amp;&amp; (states.getStatus('<xsl:value-of select="generate-id(./*)"/>') == FINISHED || states.getStatus('<xsl:value-of select="generate-id(./*)"/>') == UNSTARTED)</trigger> 
 	<body>
@@ -519,7 +519,7 @@ issues
 -->
 <xsl:comment>parfor</xsl:comment>
 <rule>
-	<name>parfor-init</name>
+	<name>parfor-init-<xsl:value-of select="generate-id()"/></name>
 	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
 	<body>
 myID = '<xsl:value-of select="generate-id()"/>';
@@ -538,12 +538,12 @@ ID
 </xsl:for-each> ].join("|")
 
 pattern = ~( "[\"'](" + stateNames + ")[\"']");
-templateRules = rules.findAll{it.matches(pattern)}
+templateRules = rules.values().findAll{it.matches(pattern)}
 branchNames = [];
 items.inject(0) {ix, val |
 	branchName = '<xsl:value-of select="generate-id(./*)"/>-' + ix;
 	branchNames.add(branchName);	
-	templateRules.each{rules.add(it.rewriteAs(pattern,"'$1-" + ix + "'"))}
+	templateRules.each{r = it.rewriteAs(pattern,ix); rules.add(r)}
 	states.setStatus(branchName,START);
 	env = states.getEnv(myID).branchVars();
 	env.newScope();
@@ -556,7 +556,7 @@ states.setStatus(myID,STARTED)
 	</body>
 </rule>
 <rule>
-	<name>parfor-end</name>
+	<name>parfor-end-<xsl:value-of select="generate-id()"/></name>
 	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED 
 		&amp;&amp; states.getEnv('<xsl:value-of select="generate-id()"/>' + '-branches').get('names').every {states.getStatus(it) == FINISHED}		
 	</trigger>
@@ -565,9 +565,10 @@ states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
 	</body>
 </rule>
 <rule>
-	<name>parfor-error</name>
+	<name>parfor-error-<xsl:value-of select="generate-id()"/></name>
 	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED 
-		&amp;&amp; states.getEnv('<xsl:value-of select="generate-id()"/>' + '-branches').get('names').every {states.getStatus(it) == FINISHED || states.getStatus(it) == ERROR}		
+		&amp;&amp; states.getEnv('<xsl:value-of select="generate-id()"/>' + '-branches').get('names').every {states.getStatus(it) == FINISHED || states.getStatus(it) == ERROR}	
+		&amp;&amp; states.getEnv('<xsl:value-of select="generate-id()"/>'+'-branches').get('names').any {states.getStatus(it) == ERROR}	
 	</trigger>
 	<body>
 states.setStatus('<xsl:value-of select="generate-id()"/>',ERROR);		

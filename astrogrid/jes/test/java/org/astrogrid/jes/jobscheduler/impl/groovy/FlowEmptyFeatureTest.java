@@ -1,4 +1,4 @@
-/*$Id: FlowEmptyFeatureTest.java,v 1.3 2004/09/16 12:04:21 nw Exp $
+/*$Id: FlowEmptyFeatureTest.java,v 1.4 2004/11/05 16:52:42 jdt Exp $
  * Created on 29-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,8 @@
 **/
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
-import org.astrogrid.util.DomHelper;
 import org.astrogrid.workflow.beans.v1.Flow;
 import org.astrogrid.workflow.beans.v1.Workflow;
-
-import org.exolab.castor.xml.Marshaller;
-import org.w3c.dom.Document;
 
 /** test behaviur of workflow containing an empty flow.
  * @author Noel Winstanley nw@jb.man.ac.uk 29-Jul-2004
@@ -53,6 +49,12 @@ public class FlowEmptyFeatureTest extends AbstractTestForFeature {
 
 /* 
 $Log: FlowEmptyFeatureTest.java,v $
+Revision 1.4  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.3.18.1  2004/11/05 16:07:41  nw
+tidied imports
+
 Revision 1.3  2004/09/16 12:04:21  nw
 *** empty log message ***
 

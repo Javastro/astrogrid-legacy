@@ -1,4 +1,4 @@
-/*$Id: GroovyInterpreterFactoryTest.java,v 1.3 2004/09/16 21:46:45 nw Exp $
+/*$Id: GroovyInterpreterFactoryTest.java,v 1.4 2004/11/05 16:52:42 jdt Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,11 @@
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
 import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
+import org.astrogrid.jes.util.TemporaryBuffer;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
+
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
@@ -27,14 +30,14 @@ public class GroovyInterpreterFactoryTest extends TestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        fac = new GroovyInterpreterFactory(new XStreamPickler());
+        fac = new GroovyInterpreterFactory(new XStreamPickler(),new TemporaryBuffer());
         workflow = new Workflow();
         workflow.setJobExecutionRecord(new JobExecutionRecord());
         interp = new GroovyInterpreter();
         Rule rule = new Rule();
         rule.setName("test rule");
         rule.setBody("fsdfs fgdgf\n gdgf");
-        interp.addRule(rule);
+        interp.ruleStore.add(rule);
     }
     protected GroovyInterpreterFactory fac;
     protected Workflow workflow;
@@ -52,7 +55,7 @@ public class GroovyInterpreterFactoryTest extends TestCase {
 
     public void testNewInterpreter() throws PickleException {
         // setup up rulestre.
-        String rulesDoc = ((XStreamPickler) fac.pickler).getXstream().toXML(interp.ruleStore);
+        String rulesDoc = ((XStreamPickler) fac.pickler).getXstream().toXML(new ArrayList(interp.ruleStore.values()));
         GroovyInterpreter interp1 = fac.newInterpreter(rulesDoc,new JesInterface(workflow,new MockDispatcher(),null));
         assertNotNull(interp1.shell.jes);
         assertNotSame(interp,interp1);
@@ -64,6 +67,12 @@ public class GroovyInterpreterFactoryTest extends TestCase {
 
 /* 
 $Log: GroovyInterpreterFactoryTest.java,v $
+Revision 1.4  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.3.18.1  2004/11/05 16:14:01  nw
+updated to worrk with rulestore
+
 Revision 1.3  2004/09/16 21:46:45  nw
 made 3rd-party objects only persist for so many calls. - in case they're space leaking.
 

@@ -1,4 +1,4 @@
-/*$Id: JesShell.java,v 1.14 2004/09/16 21:43:47 nw Exp $
+/*$Id: JesShell.java,v 1.15 2004/11/05 16:52:42 jdt Exp $
  * Created on 29-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,9 +9,6 @@
  *
 **/
 package org.astrogrid.jes.jobscheduler.impl.groovy;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.community.User;
@@ -26,6 +23,8 @@ import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.While;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.control.CompilationFailedException;
 
 import groovy.lang.Binding;
@@ -34,8 +33,8 @@ import groovy.lang.Script;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.Iterator;
-import java.util.List;
+import java.lang.ref.SoftReference;
+import java.util.Map;
 
 /** class that encapuslates the execution and evaluation of grouvy code.
  * @author Noel Winstanley nw@jb.man.ac.uk 29-Jul-2004
@@ -59,38 +58,43 @@ public class JesShell {
      * this will be ok - as we parse-run all code we pass through it.
      * plus, we know it is being called in a single thread (the scheduler) only.
      * however, don't know for sure that this isn't memory leaking. so will be more cautious, and create a new one for each new shell
-     * (i.e. for each workflow processed). but this seems really slow. will implement a kind of pool instead - reuse each object 50 times, then get shot of it.
+     * (i.e. for each workflow processed). but this seems really slow. will implement a kind of pool instead - reuse each object 500 times, then get shot of it.
+     * @modified - made this an soft reference too - so can get reclaimed if things get tight. Done the same with the cached scripts - incase they hold references back to the shell that created them
      */
-    private static GroovyShell shell = new GroovyShell();
+    private static SoftReference shell = new SoftReference(new GroovyShell());
     private static int useCount = 0;
-    private static final int USE_LIMIT = 50;
+    private static final int USE_LIMIT = 500; // as shell gets accessed a lot.
     protected static GroovyShell getGroovyShell() {
-        if (useCount++ > USE_LIMIT) {
+        // logic a little tricky here.
+        GroovyShell s = (GroovyShell)shell.get();
+        if (useCount++ > USE_LIMIT || s == null) {
+            logger.info("Recreating groovy shell");
             useCount = 0;
-            shell = new GroovyShell();
+            shell.clear();
+            s = new GroovyShell();
+            shell = new SoftReference(s);
         }
-        return shell;
+        return s;
     }
     
     protected JesInterface jes;
     
-    /** evaluate the condition (trigger) of a rule */
-    public boolean evaluateTrigger(Rule r,ActivityStatusStore map) throws CompilationFailedException, IOException {        
-        Binding triggerBinding = createTriggerBinding(map);
-        Script sc = r.getCompiledTrigger();
-        if (sc == null) { // not there, compile it up..        
-            sc =  getGroovyShell().parse(r.getTrigger());
-            r.setCompiledTrigger(sc);
-        }
-        sc.setBinding(triggerBinding);
-        Boolean result = (Boolean)sc.run();
-        System.gc();
-        return result.booleanValue();
+
+    
+    public String evaluateIndex(Script indexScript,ActivityStatusStore statusStore) {
+        Binding triggerBinding = createTriggerBinding(statusStore);
+        indexScript.setBinding(triggerBinding);
+        return (String)indexScript.run();
     }
+    
+    public Script compile (String script) throws CompilationFailedException, IOException {
+        return getGroovyShell().parse(script);
+    }
+    
     /** execute the body (concequence) of a rule */
-    public void executeBody(Rule r,ActivityStatusStore map, List store) throws CompilationFailedException, IOException {
+    public void executeBody(Rule r,ActivityStatusStore statusStore, Map rules) throws CompilationFailedException, IOException {
         logger.info("firing " + r.getName());
-        Binding bodyBinding = createBodyBinding(map,store);
+        Binding bodyBinding = createBodyBinding(statusStore,rules);
         logger.debug(r);    
         Script sc = r.getCompiledBody();
         if (sc == null) { // not there, compile it up..
@@ -99,14 +103,13 @@ public class JesShell {
         }
         sc.setBinding(bodyBinding);
         sc.run();
-        System.gc();
     }
     /** execute a script activity */
-    public void executeScript(String script,String id, ActivityStatusStore map,List rules, PrintStream errStream, PrintStream outStream) throws CompilationFailedException, IOException {
+    public void executeScript(String script,String id, ActivityStatusStore statusStore,Map rules, PrintStream errStream, PrintStream outStream) throws CompilationFailedException, IOException {
         logger.info("Running script for id " + id);
         logger.debug(script);
-        Binding scriptBinding = createScriptBinding(map,rules);
-        Vars vars= map.getEnv(id);
+        Binding scriptBinding = createScriptBinding(statusStore,rules);
+        Vars vars= statusStore.getEnv(id);
         vars.addToBinding(scriptBinding);
         Script sc = getGroovyShell().parse(script);
         sc.setBinding(scriptBinding);
@@ -119,7 +122,6 @@ public class JesShell {
         } finally {
             System.setErr(originalErr);
             System.setOut(originalOut);
-            System.gc();
         }
         logger.debug("Completed Script execution");
         vars.readFromBinding(scriptBinding);
@@ -128,30 +130,33 @@ public class JesShell {
     /** used to evaluate user-supplied expressions - if tests, etc 
      * @throws IOException
      * @throws CompilationFailedException*/
-public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, List rules) throws CompilationFailedException, IOException {
+public Object evaluateUserExpr(String expr,String id,ActivityStatusStore statusStore, Map rules) throws CompilationFailedException, IOException {
     logger.debug("exaluating " + expr);
-    Binding scriptBinding = createScriptBinding(map,rules);
-    Vars vars = map.getEnv(id);
+    Binding scriptBinding = createScriptBinding(statusStore,rules);
+    Vars vars = statusStore.getEnv(id);
     vars.addToBinding(scriptBinding);
     // wrap it in a here-document
     // want to return a string if it has more thatn just a single embedded ${..}, or is just a simple string.
     // otherwise want to return the object.
-    String gExpr = "x = <<<GSTRING\n" + expr+ "\n" + "GSTRING\n " +
-        "(x instanceof GString && x.getValueCount() == 1 && x.getStrings().find{it.size() > 0} == null) ? x.getValue(0) : x"; 
+    StringBuffer gExpr = (new StringBuffer("x = <<<GSTRING\n")) 
+            .append(expr)
+            .append("\nGSTRING\n ")
+            .append("(x instanceof GString && x.getValueCount() == 1 && x.getStrings().find{it.size() > 0} == null) ? x.getValue(0) : x"); 
    
-    Script sc = getGroovyShell().parse(gExpr);
+    Script sc = getGroovyShell().parse(gExpr.toString());
     sc.setBinding(scriptBinding);
      Object result = sc.run();
-     System.gc();
-     logger.debug("result: '" + result + "' type: " + result.getClass().getName());
+     if (logger.isDebugEnabled()) {
+         logger.debug("result: '" + result + "' type: " + result.getClass().getName());
+     }
      return result;
     
 }
     /** executes a 'set' activity */
-    public void executeSet(Set set,String state,ActivityStatusStore map, List rules) throws CompilationFailedException, IOException {
-        Vars vars = map.getEnv(state);
+    public void executeSet(Set set,String state,ActivityStatusStore statusStore, Map rules) throws CompilationFailedException, IOException {
+        Vars vars = statusStore.getEnv(state);
         if (set.getValue() != null) {
-            Object result = evaluateUserExpr(set.getValue(),state,map,rules);
+            Object result = evaluateUserExpr(set.getValue(),state,statusStore,rules);
             vars.set(set.getVar(),result);
         } else {
             // just a declaration, with no initialization.
@@ -162,34 +167,34 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Li
     // necessary to have these, rather than pass the string directly into evaluateUserExpr - 
    // otherwise the gstirng gets substituted into before it reaches us.
     /** evaluates the test of  an 'if' activity */
-    public Object evaluateIfCondition(If ifObj,ActivityStatusStore map,List rules) throws CompilationFailedException, IOException {
-        return evaluateUserExpr(ifObj.getTest(),ifObj.getId(),map,rules);
+    public Object evaluateIfCondition(If ifObj,ActivityStatusStore statusStore,Map rules) throws CompilationFailedException, IOException {
+        return evaluateUserExpr(ifObj.getTest(),ifObj.getId(),statusStore,rules);
         
     }
     /** evaluates the test of a while activity */
-    public Object evaluateWhileCondition(While whileObj,ActivityStatusStore map,List rules) throws CompilationFailedException, IOException {
-        return evaluateUserExpr(whileObj.getTest(), whileObj.getId(),map,rules);
+    public Object evaluateWhileCondition(While whileObj,ActivityStatusStore statusStore,Map rules) throws CompilationFailedException, IOException {
+        return evaluateUserExpr(whileObj.getTest(), whileObj.getId(),statusStore,rules);
     }
     /** evaluates the items of a for activity */
-    public Object evaluateForItems(For forObj,ActivityStatusStore map,List rules) throws CompilationFailedException, IOException {
-        return  evaluateUserExpr(forObj.getItems(),forObj.getId(),map,rules);
+    public Object evaluateForItems(For forObj,ActivityStatusStore statusStore,Map rules) throws CompilationFailedException, IOException {
+        return  evaluateUserExpr(forObj.getItems(),forObj.getId(),statusStore,rules);
    
     }
     /** evaluate the items of a parfor activity */
-    public Object evaluateParforItems(Parfor forObj,ActivityStatusStore map,List rules) throws CompilationFailedException, IOException {
-        return  evaluateUserExpr(forObj.getItems(),forObj.getId(),map,rules);
+    public Object evaluateParforItems(Parfor forObj,ActivityStatusStore statusStore,Map rules) throws CompilationFailedException, IOException {
+        return  evaluateUserExpr(forObj.getItems(),forObj.getId(),statusStore,rules);
    
     }    
     /** evaluate the parameter values of a tool */
-    public Tool evaluateTool(Tool original,String id,ActivityStatusStore map, List rules) throws CompilationFailedException, IOException {
+    public Tool evaluateTool(Tool original,String id,ActivityStatusStore statusStore, Map rules) throws CompilationFailedException, IOException {
         Tool copy = new Tool();
         copy.setInterface(original.getInterface());
         copy.setName(original.getName());
         Input input = new Input();
         copy.setInput(input);
         
-        Vars vars = map.getEnv(id);
-        Binding scriptBinding = createScriptBinding(map,rules);
+        Vars vars = statusStore.getEnv(id);
+        Binding scriptBinding = createScriptBinding(statusStore,rules);
         vars.addToBinding(scriptBinding);
         if (original.getInput() != null) { // possible we have no inputs, I suppose
         for (int i = 0; i < original.getInput().getParameterCount(); i++) {
@@ -226,28 +231,27 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Li
         copyP.setIndirect(originalP.getIndirect());
         copyP.setEncoding(originalP.getEncoding());
         // evaluate value.. -- always to string.
-        String expr = "<<<GSTRING\n" + originalP.getValue()  + "\nGSTRING\n";
-        Script sc = getGroovyShell().parse(expr);
+        StringBuffer expr = (new StringBuffer("<<<GSTRING\n")).append(originalP.getValue()).append("\nGSTRING\n");
+        Script sc = getGroovyShell().parse(expr.toString());
         sc.setBinding(scriptBinding);
         Object result = sc.run();
-        System.gc();
         copyP.setValue( result.toString());
         return copyP;
     }
 
     //  binding creation functions - so that scripts can access the status store.
-    private Binding createTriggerBinding(ActivityStatusStore map) {
+    private Binding createTriggerBinding(ActivityStatusStore statusStore) {
         Binding b = new Binding();
-        b.setVariable("states",map);
-        for (Iterator i = Status.allStatus.iterator(); i.hasNext(); ) {
-            Status stat = (Status)i.next();
+        b.setVariable("states",statusStore);
+        for (int i = 0;  i < Status.allStatus.size() ; i++ ) {
+            Status stat = (Status)Status.allStatus.get(i);
             b.setVariable(stat.getName(),stat);
         }
         return b;
     }
 
-    private  Binding createBodyBinding(ActivityStatusStore map,List rules){
-        Binding b = createTriggerBinding(map);
+    private  Binding createBodyBinding(ActivityStatusStore statusStore,Map rules){
+        Binding b = createTriggerBinding(statusStore);
         b.setVariable("rules",rules);
         b.setVariable("jes",jes);
         b.setVariable("shell",this);
@@ -256,12 +260,12 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Li
     
     /** create environment for user scripts to run in - don't provide access to system objects.
      * @param state
-     * @param map
+     * @param statusStore
      * @return
      * @todo we're using the static singleton provided by astrogrid object here. may be issues with scripts interfering with each other - i.e. corrupting service list, etc.
      * however, don't want to rebuild astrogird object each time. future solution - remove setters, etc - make immutable.
      */
-    private Binding createScriptBinding(ActivityStatusStore map, List rules) {
+    private Binding createScriptBinding(ActivityStatusStore statusStore, Map rules) {
         Binding b = new Binding();
         b.setVariable("jes",jes);
         Astrogrid ag = Astrogrid.getInstance();
@@ -271,12 +275,12 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Li
         b.setVariable("currentAccount",creds.getAccount());
         User u = new User(creds.getAccount().getName(),creds.getAccount().getCommunity(),creds.getGroup().getName(),creds.getSecurityToken());
         b.setVariable("currentUser",u);
-        for (Iterator i = Status.allStatus.iterator(); i.hasNext(); ) {
-            Status stat = (Status)i.next();
+        for (int i = 0;  i < Status.allStatus.size() ; i++ ) {
+            Status stat = (Status)Status.allStatus.get(i);
             b.setVariable(stat.getName(),stat);
         }
         // ah, what the hell, who knows - it might be useful.
-        b.setVariable("__states",map);
+        b.setVariable("__states",statusStore);
         b.setVariable("__rules",rules);
         b.setVariable("__shell",this);
         
@@ -299,6 +303,15 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Li
 
 /* 
 $Log: JesShell.java,v $
+Revision 1.15  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.14.18.1  2004/11/05 16:06:57  nw
+optimized: cached GroovyShell in softreference
+optimized: replaced + with stringBuffers
+removed unused execute-trigger methods
+added methods to compile / evaluate index code
+
 Revision 1.14  2004/09/16 21:43:47  nw
 made 3rd-party objects only persist for so many calls. - in case they're space leaking.
 

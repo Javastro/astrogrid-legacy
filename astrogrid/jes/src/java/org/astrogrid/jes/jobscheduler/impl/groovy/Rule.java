@@ -1,4 +1,4 @@
-/*$Id: Rule.java,v 1.7 2004/09/06 16:47:04 nw Exp $
+/*$Id: Rule.java,v 1.8 2004/11/05 16:52:42 jdt Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,13 +17,15 @@ import org.codehaus.groovy.control.CompilationFailedException;
 import groovy.lang.Script;
 
 import java.io.IOException;
-import java.util.List;
+import java.lang.ref.SoftReference;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**   represents a rule that is fired - has a trigger, name, and body of actions to execute
  Written as a bean, for easy serialization.
  <p>
- also caches compiled version of trigger and body after first use - for faster execution the next time round.
+ also caches compiled version of  body after first use - for faster execution the next time round.
+ @modified - changed these cached scripts to be soft references - don't want the code blowing up unnecessarily.
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2004
  *
  */
@@ -42,22 +44,15 @@ public class Rule {
     protected String trigger;
     protected String name;
     protected String body;
+
     /** cache variable, not persisted */
-    protected transient Script compiledTrigger;
-    /** cache variable, not persisted */
-    protected transient Script compiledBody;
-    /** returns true if trigger of rule succeeds. 
-     * @throws IOException
-     * @throws CompilationFailedException*/
-    public boolean isTriggered(JesShell shell,ActivityStatusStore map) throws CompilationFailedException, IOException {
-            return shell.evaluateTrigger(this,map);
-    }
-    
+    protected transient SoftReference compiledBody;
+
     /** execute the body of a rule 
      * @throws IOException
      * @throws CompilationFailedExceptiont*/
-    public void fire(JesShell shell,ActivityStatusStore map, List store) throws CompilationFailedException, IOException {
-        shell.executeBody(this,map,store);
+    public void fire(JesShell shell,ActivityStatusStore statusStore, Map rules) throws CompilationFailedException, IOException {
+        shell.executeBody(this,statusStore,rules);
     }
     
     /** return true if any trigger, env or body action references this key */
@@ -67,9 +62,10 @@ public class Rule {
     }
        
     /** create a copy of this rule, rewritten so that all references to old key reference new key*/
-    public Rule rewriteAs(Pattern regexp, String replacement) {
+    public Rule rewriteAs(Pattern regexp, int branchId) {
         Rule result = new Rule();
-        result.setName(this.name);
+        result.setName(this.name + "-" + branchId);
+        String replacement = "'$1-" + branchId + "'";
         result.setTrigger(regexp.matcher(this.trigger).replaceAll(replacement));
         result.setBody(regexp.matcher(this.body).replaceAll(replacement));
         logger.debug("generated new rule " + result.toString());
@@ -118,23 +114,18 @@ public class Rule {
      */
     public void setTrigger(String trigger) {
         this.trigger = trigger.trim();
-        this.compiledTrigger = null;
     }
     
-    public void setCompiledTrigger(Script script) {
-        this.compiledTrigger = script;
-    }
-    
-    public Script getCompiledTrigger() {
-        return this.compiledTrigger;
-    }
     
     public void setCompiledBody(Script script) {
-        this.compiledBody = script;
+        this.compiledBody = new SoftReference(script);
     }
     
     public Script getCompiledBody() {
-        return this.compiledBody;
+        if (compiledBody == null) {
+            return null;
+        }
+        return (Script)this.compiledBody.get();
     }
     
     public String toString() {
@@ -172,9 +163,7 @@ public class Rule {
             && (this.name == null ? castedObj.name == null : this.name
                 .equals(castedObj.name))
             && (this.body == null ? castedObj.body == null : this.body
-                .equals(castedObj.body)) && (this.compiledTrigger == null
-            ? castedObj.compiledTrigger == null
-            : this.compiledTrigger.equals(castedObj.compiledTrigger)));
+                .equals(castedObj.body))) ;
     }
     /**
      * Override hashCode.
@@ -187,9 +176,7 @@ public class Rule {
         hashCode = 31 * hashCode + (trigger == null ? 0 : trigger.hashCode());
         hashCode = 31 * hashCode + (name == null ? 0 : name.hashCode());
         hashCode = 31 * hashCode + (body == null ? 0 : body.hashCode());
-        hashCode = 31
-            * hashCode
-            + (compiledTrigger == null ? 0 : compiledTrigger.hashCode());
+  
         return hashCode;
     }
 }
@@ -197,6 +184,14 @@ public class Rule {
 
 /* 
 $Log: Rule.java,v $
+Revision 1.8  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.7.26.1  2004/11/05 16:04:56  nw
+removed cached trigger
+cached body in soft reference.
+updated rewrite() to work with new rulestore (map-based)
+
 Revision 1.7  2004/09/06 16:47:04  nw
 javadoc
 

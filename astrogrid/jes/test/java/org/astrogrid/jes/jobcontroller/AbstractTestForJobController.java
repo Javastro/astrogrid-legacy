@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForJobController.java,v 1.9 2004/07/30 15:42:34 nw Exp $
+/*$Id: AbstractTestForJobController.java,v 1.10 2004/11/05 16:52:42 jdt Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
 import org.astrogrid.jes.impl.workflow.InMemoryJobFactoryImpl;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.impl.MockSchedulerImpl;
+import org.astrogrid.jes.util.TemporaryBuffer;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
@@ -40,7 +41,7 @@ public abstract class AbstractTestForJobController extends AbstractTestWorkflowI
         super.setUp();
         fac = createJobFactory();
         nudger = createNotifier();
-        jc = new JobController(fac,nudger);
+        jc = new JobController(fac,nudger,new TemporaryBuffer());
     }
     
     /**
@@ -101,6 +102,12 @@ public abstract class AbstractTestForJobController extends AbstractTestWorkflowI
 
 /* 
 $Log: AbstractTestForJobController.java,v $
+Revision 1.10  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.9.64.1  2004/11/05 16:01:01  nw
+updated test to provide temporary buffer
+
 Revision 1.9  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

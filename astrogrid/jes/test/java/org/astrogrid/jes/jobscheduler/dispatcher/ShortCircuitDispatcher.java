@@ -1,4 +1,4 @@
-/*$Id: ShortCircuitDispatcher.java,v 1.4 2004/09/16 21:45:23 nw Exp $
+/*$Id: ShortCircuitDispatcher.java,v 1.5 2004/11/05 16:52:42 jdt Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,6 @@
 **/
 package org.astrogrid.jes.jobscheduler.dispatcher;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
 import org.astrogrid.jes.service.v1.cearesults.ResultsListener;
@@ -22,9 +19,11 @@ import org.astrogrid.jes.types.v1.cea.axis.LogLevel;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
 import org.astrogrid.jes.util.JesUtil;
-import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.rmi.RemoteException;
 import java.util.Calendar;
@@ -111,6 +110,12 @@ public class ShortCircuitDispatcher extends MockDispatcher {
 
 /* 
 $Log: ShortCircuitDispatcher.java,v $
+Revision 1.5  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.4.18.1  2004/11/05 16:00:12  nw
+tidied imports
+
 Revision 1.4  2004/09/16 21:45:23  nw
 got this test working again - had to add in result listener
 

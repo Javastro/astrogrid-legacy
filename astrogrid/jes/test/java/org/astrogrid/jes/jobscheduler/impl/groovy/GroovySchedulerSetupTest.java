@@ -1,4 +1,4 @@
-/*$Id: GroovySchedulerSetupTest.java,v 1.4 2004/08/18 21:50:59 nw Exp $
+/*$Id: GroovySchedulerSetupTest.java,v 1.5 2004/11/05 16:52:42 jdt Exp $
  * Created on 12-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,8 @@
 **/
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
-import org.astrogrid.jes.jobscheduler.impl.AbstractJobSchedulerImpl;
 import org.astrogrid.jes.jobscheduler.impl.AbstractTestForSchedulerImpl;
+import org.astrogrid.jes.util.TemporaryBuffer;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.Extension;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
@@ -56,7 +56,7 @@ public class GroovySchedulerSetupTest extends AbstractTestForSchedulerImpl {
         JesInterface env = new JesInterface(wf1,dispatcher,sched); 
         
 
-        GroovyInterpreter interp = (new GroovyInterpreterFactory(new XStreamPickler())).unpickleFrom(env);
+        GroovyInterpreter interp = (new GroovyInterpreterFactory(new XStreamPickler(),new TemporaryBuffer())).unpickleFrom(env);
         assertNotNull(interp);
         assertTrue(interp.ruleStore.size() > 0); // we've got some rules.
         //@todo add some equality checking in here..
@@ -68,6 +68,12 @@ public class GroovySchedulerSetupTest extends AbstractTestForSchedulerImpl {
 
 /* 
 $Log: GroovySchedulerSetupTest.java,v $
+Revision 1.5  2004/11/05 16:52:42  jdt
+Merges from branch nww-itn07-scratchspace
+
+Revision 1.4.46.1  2004/11/05 16:10:00  nw
+updated test to provide temporary buffer
+
 Revision 1.4  2004/08/18 21:50:59  nw
 worked on tests
 
