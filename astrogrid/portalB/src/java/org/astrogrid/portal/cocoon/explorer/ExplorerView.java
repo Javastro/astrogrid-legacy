@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/cocoon/explorer/Attic/ExplorerView.java,v $</cvs:source>
  * <cvs:date>$Author: clq2 $</cvs:date>
- * <cvs:author>$Date: 2003/09/09 13:56:43 $</cvs:author>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Date: 2003/09/18 11:53:14 $</cvs:author>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  * $Log: ExplorerView.java,v $
+ * Revision 1.5  2003/09/18 11:53:14  clq2
+ * added action create/delete user and change owner.
+ *
  * Revision 1.4  2003/09/09 13:56:43  clq2
  * MySpace new UI
  *
@@ -995,6 +998,29 @@ public class ExplorerView
 		public DataNode extendLease(String path){
 			if (DEBUG_FLAG) System.out.println("Entering ExplorerView.extendLease()..path: "+path) ;
 			DataNode   data   = null ;
+			//call to mySpaceService.extendLease
+			
+			return data;
+		}
+		
+		public DataNode changeOwner(String path){
+			if (DEBUG_FLAG) System.out.println("Entering ExplorerView.changeOwner()..path: "+path) ;
+			DataNode   data   = null ;
+			//call to mySpaceService.changeOwner
+			return data;
+		}
+		
+		public DataNode createUser(String path){
+			if (DEBUG_FLAG) System.out.println("Entering ExplorerView.createUser()..path: "+path) ;
+			DataNode   data   = null ;
+			//call to mySpaceService.createUser.
+			return data;
+		}
+		
+		public DataNode deleteUser(String path){
+			if (DEBUG_FLAG) System.out.println("Entering ExplorerView.deleteUser()..path: "+path) ;
+			DataNode   data   = null ;
+			//call to mySpaceService.deleteUser
 			return data;
 		}
 

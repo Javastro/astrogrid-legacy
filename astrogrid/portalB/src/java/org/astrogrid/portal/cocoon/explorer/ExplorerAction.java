@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/cocoon/explorer/Attic/ExplorerAction.java,v $</cvs:source>
  * <cvs:date>$Author: clq2 $</cvs:date>
- * <cvs:author>$Date: 2003/09/09 13:56:43 $</cvs:author>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Date: 2003/09/18 11:53:14 $</cvs:author>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  * $Log: ExplorerAction.java,v $
+ * Revision 1.5  2003/09/18 11:53:14  clq2
+ * added action create/delete user and change owner.
+ *
  * Revision 1.4  2003/09/09 13:56:43  clq2
  * MySpace new UI
  *
@@ -171,6 +174,22 @@ public class ExplorerAction
 	 * Http request param for extentionPeriod value
 	 */
 	//public static final int EXTENTION_PERIOD ="AST-EXTENT-PERIOD";
+	
+	/**
+	 * Http request action to changeOwner for an item.
+	 */
+	public static final String CHANGE_OWNER = "change-owner";
+	
+	/**
+	 * Http request action to create a user.
+	 */
+	public static final String CREATE_USER = "create-user";
+	
+	/**
+	 * Http request action to delete a user.
+	 */
+	public static final String DELETE_USER = "delete-user";
+
 
 	/**
 	 * Our action method.
@@ -711,7 +730,88 @@ public class ExplorerAction
 						// FIXME : Only do this is the action worked.
 						action  = null ;
 						confirm = null ;						
-					}					
+					}			
+					
+					if(CHANGE_OWNER.equals(action))	{
+						if (DEBUG_FLAG) System.out.println("ExplorerAction.act: ChangeOwner for an item") ;
+						//
+						// Get the path from the request params.
+						String path = request.getParameter(EXPLORER_PATH_PARAM) ;
+						
+						if (DEBUG_FLAG) System.out.println("Change Owner for an item") ;
+						if (DEBUG_FLAG) System.out.println("Path    : " + path) ;
+						//
+						// Change the current path.
+						view.setCurrentPath(path) ;
+						//
+						// Change the selected path.
+						view.setSelectedPath(path) ;
+						//
+						// Change the selected action.
+						view.setSelectedAction(CHANGE_OWNER) ;
+						
+						view.changeOwner(path);
+						
+						//
+						// Clear the action and confirm values.
+						// FIXME : Only do this is the action worked.
+						action  = null ;
+						confirm = null ;
+					}
+					
+					if(CREATE_USER.equals(action))	{
+						if (DEBUG_FLAG) System.out.println("ExplorerAction.act: create user account") ;
+						//
+						// Get the path from the request params.
+						String path = request.getParameter(EXPLORER_PATH_PARAM) ;
+						
+						if (DEBUG_FLAG) System.out.println("CreateUserAccount") ;
+						if (DEBUG_FLAG) System.out.println("Path    : " + path) ;
+						//
+						// Change the current path.
+						view.setCurrentPath(path) ;
+						//
+						// Change the selected path.
+						view.setSelectedPath(path) ;
+						//
+						// Change the selected action.
+						view.setSelectedAction(CREATE_USER) ;
+						
+						view.createUser(path);
+						
+						//
+						// Clear the action and confirm values.
+						// FIXME : Only do this is the action worked.
+						action  = null ;
+						confirm = null ;
+					}
+					
+					if(DELETE_USER.equals(action))	{
+						if (DEBUG_FLAG) System.out.println("ExplorerAction.act: delete user account") ;
+						//
+						// Get the path from the request params.
+						String path = request.getParameter(EXPLORER_PATH_PARAM) ;
+						
+						if (DEBUG_FLAG) System.out.println("DeleteUserAccount") ;
+						if (DEBUG_FLAG) System.out.println("Path    : " + path) ;
+						//
+						// Change the current path.
+						view.setCurrentPath(path) ;
+						//
+						// Change the selected path.
+						view.setSelectedPath(path) ;
+						//
+						// Change the selected action.
+						view.setSelectedAction(DELETE_USER) ;
+						
+						view.createUser(path);
+						
+						//
+						// Clear the action and confirm values.
+						// FIXME : Only do this is the action worked.
+						action  = null ;
+						confirm = null ;
+					}
 				}
 				
 				
