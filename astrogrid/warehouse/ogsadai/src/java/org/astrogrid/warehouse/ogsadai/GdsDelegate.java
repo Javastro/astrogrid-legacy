@@ -224,23 +224,22 @@ public class GdsDelegate extends GridServiceDelegate {
           new URL(registryUrl));
    
       // Set timeout of SOAP calls
-     ((Stub) gdsrGpt).setTimeout(timeoutValue * 1000);
-    }
-    catch (Exception e) {
-      logger.error("Could not locate registry at: " + registryUrl, e);
-      throw new Exception(
-        "Could not locate registry at: " + registryUrl, e);
-    }
-
+      ((Stub) gdsrGpt).setTimeout(timeoutValue * 1000);
 
       QName[] portTypes = new QName[1];
       portTypes[0] = OGSADAIConstants.GDSF_PORT_TYPE;
       ExtensibilityType query = 
           DAIServiceGroupQueryHelper.getPortTypeQuery(portTypes);
       ExtensibilityType result = gdsrGpt.findServiceData(query);
+      String gsh = this.chooseFactoryFromRegistry(result);
+      this.setFactoryHandle(gsh);
+    }
+    catch (Exception e) {
+      throw new Exception("Can't get the GSH for the GDS factory "
+                          + " the OGSA-DAI registry at "
+                          + registryUrl);
+    }
 
-    String gsh = this.chooseFactoryFromRegistry(result);
-    this.setFactoryHandle(gsh);
   }
 
 
@@ -313,7 +312,8 @@ public class GdsDelegate extends GridServiceDelegate {
       throw new Exception(
          "Couldn't find factory URL at the OGSA-DAI registry at ");
     }
-    
+
+    logger.info("Chosen GDSF: " + factoryURLString);    
     return factoryURLString;
   }
 
