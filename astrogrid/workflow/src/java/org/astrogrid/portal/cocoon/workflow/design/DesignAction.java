@@ -19,7 +19,7 @@ import org.astrogrid.i18n.*;
 
 import org.astrogrid.AstroGridException ;
 
-import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
+// import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 import org.astrogrid.portal.workflow.design.*;
 import org.astrogrid.portal.workflow.design.activity.*;
 
@@ -82,6 +82,12 @@ public class DesignAction extends AbstractAction {
 	 *
 	 */
 	public static final String CONFIRM_PARAM_TAG = "confirm" ;
+	
+	/**
+	 * Http request param for the action.
+	 *
+	 */
+	public static final String TEMPLATE_PARAM_TAG = "template" ;	
     
     public static final String
         HTTP_WORKFLOW_TAG = "workflow-tag" ;
@@ -152,6 +158,8 @@ public class DesignAction extends AbstractAction {
             bConfirm ;
         private Workflow
             workflow ;
+		private String
+			template ;            
         
         public DesignActionImpl( Redirector redirector
                                , SourceResolver resolver
@@ -204,7 +212,13 @@ public class DesignAction extends AbstractAction {
                     debug( "action is null") ;  
                 }      
                 if( action.equals( ACTION_CREATE_WORKFLOW ) ) {
-                    this.createWorkflow() ;
+					template = request.getParameter( TEMPLATE_PARAM_TAG ) ; 
+					if ( template == null ) {
+						this.createWorkflow() ;
+					}
+                    else {
+						this.createWorkflowFromTemplate( template ) ; 
+                    }
                 }
                 else if( action.equals( ACTION_SAVE_WORKFLOW ) ) { 
                     this.saveWorkflow() ;
@@ -215,9 +229,9 @@ public class DesignAction extends AbstractAction {
                 else if( action.equals( ACTION_DELETE_WORKFLOW ) ) {
                     this.deleteWorkflow() ; 
                 }
-                else if( action.equals( ACTION_CREATE_WORKFLOW_FROM_TEMPLATE ) ) {
-                    this.createWorkflowFromTemplate() ; 
-                }
+//                else if( action.equals( ACTION_CREATE_WORKFLOW_FROM_TEMPLATE ) ) {
+//                    this.createWorkflowFromTemplate() ; 
+//                }
                 else if( action.equals( ACTION_SUBMIT_WORKFLOW ) ) {
                     this.submitWorkflow() ; 
                 }
@@ -284,8 +298,8 @@ public class DesignAction extends AbstractAction {
         
         private void consistencyCheck() throws ConsistencyException {
 			if( TRACE_ENABLED ) trace( "consistencyCheck() entry" ) ;
-			debug( "userid: " + this.userid ) ;
-			debug( "community: " + this.community ) ;
+			debug( "userid: " + userid ) ;
+			debug( "community: " + community ) ;
 			debug( "name: "  ) ; 
 			debug( "description: "  ) ; 
             
@@ -326,16 +340,16 @@ public class DesignAction extends AbstractAction {
 				}                
                 
                 if( workflow == null ) {
-                    workflow = Workflow.createWorkflow( userid, community, name ) ;
-                    workflow.setDescription( description ) ; 
+                    workflow = Workflow.createWorkflow( userid, community, name, description ) ;
+                    // workflow.setDescription( description ) ; 
                 }
                 else if( workflow.isDirty() && (bConfirm == true) ) {
-                    workflow = Workflow.createWorkflow( userid, community, name ) ;
-                    workflow.setDescription( description ) ;
+                    workflow = Workflow.createWorkflow( userid, community, name, description ) ;
+                    // workflow.setDescription( description ) ;
                 }
                 else if( !workflow.isDirty() ) {
-                    workflow = Workflow.createWorkflow( userid, community, name ) ;
-                    workflow.setDescription( description ) ;
+                    workflow = Workflow.createWorkflow( userid, community, name, description ) ;
+                    // workflow.setDescription( description ) ;
                 }
                 else {
                     debug( "Create ignored - bConfirm == false" ) ;
@@ -376,6 +390,9 @@ public class DesignAction extends AbstractAction {
                 
                 String
                     name = request.getParameter( WORKFLOW_NAME_PARAMETER ) ;
+                    
+				String
+					description = request.getParameter( WORKFLOW_DESCRIPTION_PARAMETER ) ;                    
                   
                 // name = "jeff1" ;
                     
@@ -436,11 +453,37 @@ public class DesignAction extends AbstractAction {
         }
         
         
-        private void createWorkflowFromTemplate() {
+        private void createWorkflowFromTemplate( String template ) throws ConsistencyException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.createWorkflowFromTemplate() entry" ) ;
+            debug ( "template: " + template ) ;
               
             try {
-                           
+				String
+					name = request.getParameter( WORKFLOW_NAME_PARAMETER ) ;
+				String
+					description = request.getParameter( WORKFLOW_DESCRIPTION_PARAMETER ) ;                    
+                    
+				if( name == null ) {
+					; // some logging here
+					throw new ConsistencyException() ;
+				}
+                
+				if( description == null ) {
+					description = "no description entered" ;
+				}                
+       
+				if( workflow == null ) {
+					workflow = Workflow.createWorkflowFromTemplate( userid, community, name, description, template  ) ; 
+				}
+				else if( workflow.isDirty() && (bConfirm == true) ) {
+				    workflow = Workflow.createWorkflowFromTemplate( userid, community, name, description, template ) ;
+				}
+				else if( !workflow.isDirty() ) {
+					workflow = Workflow.createWorkflowFromTemplate( userid, community, name, description, template ) ;
+				}
+				else {
+					debug( "Create ignored - bConfirm == false" ) ;
+				}                           
             }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.createWorkflowFromTemplate() exit" ) ;
