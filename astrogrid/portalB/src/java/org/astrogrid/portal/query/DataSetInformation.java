@@ -56,6 +56,14 @@ public class DataSetInformation {
 	public String getDbName() {
 		return this.dbName;
 	}
+	
+	public void setDataSetColumns(ArrayList dataSetColumns) {
+		this.dataSetColumns = dataSetColumns;
+	}
+	
+	public ArrayList getDataSetColumns() {
+		return this.dataSetColumns;
+	}
 
 	/**
 	 * add a new DataSetColumn with the Default type of Column.
@@ -96,10 +104,6 @@ public class DataSetInformation {
 		}
   	}
 
-
-  	public ArrayList getDataSetColumns(){
-  		return this.dataSetColumns;
-  	}
 
 	public CriteriaInformation addCriteriaInformation(String columnName,String filterType,String value,String joinType,String functionValues) {
 		return addCriteriaInformation(columnName,null,filterType,value,joinType,null);

@@ -50,7 +50,7 @@ public class QueryRegistryInformation {
 		}
 		return null;
 		*/
-		return "<query><selectionSequence><selection item='searchElements' itemOp='EQ' value='all'/><selectionOp op='$and$'/><selection item='ticker' itemOp='EQ' value='all'/></selectionSequence></query>";
+		return 	"<query><selectionSequence>" +				"<selection item='searchElements' itemOp='EQ' value='all'/>" +				"<selectionOp op='$and$'/>" +				"<selection item='ticker' itemOp='EQ' value='all'/>" +				"</selectionSequence></query>";
 	}
 
 	public static String getAllContentInformationFromRegistryForDataSet(String dsName) {
@@ -80,7 +80,7 @@ public class QueryRegistryInformation {
 			e.printStackTrace();
 		}
 		*/
-		return "<query><selectionSequence><selection item='searchElements' itemOp='EQ' value='content'/><selectionOp op='$and$'/><selection item='ticker' itemOp='EQ' value='" + dsName + "'/></selectionSequence></query>"; 
+		return 	"<query><selectionSequence>" +				"<selection item='searchElements' itemOp='EQ' value='content'/>" +				"<selectionOp op='$and$'/>" +				"<selection item='ticker' itemOp='EQ' value='" + dsName + "'/>" +				"</selectionSequence></query>"; 
 	}
 
 	public static Object[] getDataSetItemsFromRegistryResponse(String response) {
@@ -89,59 +89,63 @@ public class QueryRegistryInformation {
 		int start = 0,end = 0;
 		String temp = "";
 		while( (end = response.indexOf("item='ticker'",end)) != -1) {
-//			System.out.println("Current start index = " + start + " Current end index = " + end + " IndexOf item = " + response.indexOf("item=",end));
 			start = response.indexOf("value=",end) + 7;
 			end = response.indexOf("'",start+1);
 			if(end <= 0) { end = response.indexOf("\"",start+1); }
 			items.add( (temp = response.substring(start,end)));
-//			System.out.println("The substring added = " + temp);
 			end++;
 		}
 		return items.toArray();
 	}
 
 
-	public static Object[] getItemsFromRegistryResponse(String response) {
+	public static ArrayList getItemsFromRegistryResponse(String response) {
 		//okay lets cheat instead of examining the xml with a sax parser lets just substring this thing.
 		ArrayList items = new ArrayList();
 		int start = 0,end = 0;
 		String temp = "";
 		temp = "<recordKeyPair item='metadataType' value='content'/>";
 		end = response.indexOf(temp) + temp.length(); 
+		DataSetColumn dsColumn = null;
 		while(response.indexOf("item=",end) != -1) {
 //			System.out.println("Current start index = " + start + " Current end index = " + end + " IndexOf item = " + response.indexOf("item=",end));
 			start = response.indexOf("item=",end) + 6;
 			end = response.indexOf("\"",start+1);
 			if(end <= 0) { end = response.indexOf("'",start+1); }
 			temp = response.substring(start,end);
-			if(items.indexOf(temp) == -1) {
-				items.add(temp);
-			}			
+			if(temp.equals("ucd")) {
+				start = response.indexOf("value=",end) + 7;
+				end = response.indexOf("\"",start+1);
+				if(end <= 0) { end = response.indexOf("'",start+1); }
+				temp = response.substring(start,end);
+				dsColumn = new DataSetColumn(temp,"UCD");
+				if(items.indexOf(dsColumn) == -1) {
+					items.add(dsColumn);
+				}
+			}else {
+				dsColumn = new DataSetColumn(temp,"COLUMN");
+				if(items.indexOf(dsColumn) == -1) {
+					items.add(dsColumn);
+				}
+			}
 			end++;
 		}
-		return items.toArray();
+		return items;
 	}
 
 	public static String sendRegistryQuery(String req) {
-		org.astrogrid.portal.generated.registry.client.RegistryInterface_Port binding;
-		  String xmlBuildResult = null;
-		  try {
-			  CreateRequest cr = new CreateRequest();
-//			  Document doc = cr.buildXMLRequest(qb);
-
-//			  xmlBuildResult = cr.writeDocument(doc);
-
+		RegistryInterface_Port binding;
+		String xmlBuildResult = null;
+		try {
+			CreateRequest cr = new CreateRequest();
 			  System.out.println("The registry XmL going to the webservice is = " + req);
-			  binding = new org.astrogrid.portal.generated.registry.client.RegistryInterfaceLocator().getRegistryInterfacePort();
-
+			  binding = new RegistryInterfaceLocator().getRegistryInterfacePort();
 			  String response = binding.submitQuery(req);
-			  //String response = binding.submitQuery(new String());
 			  System.out.println("the response from the call to the webservice = " + response);
 			  return response;
 		  }catch (Exception e) {
 			  e.printStackTrace();
 		  }
 		  return null;
-		  //if(xmlBuildResult != null && xmlBuildResult.length() > 0) xmlBuildResult = xmlBuildResult.replaceAll(">",">\n");
 	}
 }
