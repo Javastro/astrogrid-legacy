@@ -6,6 +6,18 @@
   <name>AstroGrid CEA Services</name>
   <description>
     <![CDATA[ The applications integration component provides an implementation of the Common Execution Architecture (CEA).
+	The implementation consists of
+	<ul>
+	<li>The Server Framework - this is a common library used to build the server components, know as Common Execution Connectors (CEC), that are used as adaptors for various classes of application</li>
+	<li>
+	    A set of CECs
+		<ul>
+		  <li>For legacy command line applications</li>
+		  <li>For legacy HTTP GET/POST applications</li>
+		</ul>
+	</li>
+	<li>A small client library to assist in communicating with a CEC</li>
+	</ul>
 	
  ]]>
 </description>
