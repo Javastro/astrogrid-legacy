@@ -33,7 +33,6 @@ import org.astrogrid.jes.delegate.jobController.*;
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 import org.astrogrid.portal.workflow.*;
 import org.astrogrid.portal.workflow.design.activity.*;
-import org.astrogrid.portal.workflow.design.myspace.*;
 import org.w3c.dom.Document ;
 
 /**
@@ -591,7 +590,9 @@ public class Workflow extends Activity {
     public Activity getActivity( String key ) {
         if( TRACE_ENABLED ) trace( "Workflow.getActivity() entry") ; 
         try { 
+            if( TRACE_ENABLED ) debug( "activities: " + activities.toString() ) ;
             return (Activity)activities.get( new ActivityKey( key ) ) ;
+            
         }
         finally {
             if( TRACE_ENABLED ) trace( "Workflow.getActivity() exit") ;  
@@ -631,7 +632,6 @@ public class Workflow extends Activity {
         if( TRACE_ENABLED ) trace( "Workflow.toXMLString() entry") ;  
           
         String 
-           xmlTemplate = WorkflowDD.WORKFLOW_TEMPLATE,
            response = null ;
                                      
         try {
@@ -646,7 +646,7 @@ public class Workflow extends Activity {
 
             inserts[5] = getChild().toXMLString() ;
             
-            response = MessageFormat.format( response, inserts ) ;
+            response = MessageFormat.format( WorkflowDD.WORKFLOW_TEMPLATE, inserts ) ;
 
         }
         finally {
@@ -662,7 +662,6 @@ public class Workflow extends Activity {
         if( TRACE_ENABLED ) trace( "Workflow.toJESXMLString() entry") ;  
           
         String 
-           xmlTemplate = WorkflowDD.JOB_TEMPLATE,
            response = null ;
                                      
         try {
@@ -676,7 +675,7 @@ public class Workflow extends Activity {
 
             inserts[4] = getChild().toXMLString() ;
             
-            response = MessageFormat.format( response, inserts ) ;
+            response = MessageFormat.format( WorkflowDD.JOB_TEMPLATE, inserts ) ;
 
         }
         finally {
