@@ -84,7 +84,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
 
         // Test operation
         try {
-            org.astrogrid.datacenter.axisdataserver.types.QueryId value = null;
+            org.astrogrid.datacenter.axisdataserver.types._QueryId value = null;
             value = binding.makeQuery(org.astrogrid.datacenter.common.QueryHelper.buildMinimalQuery());
         }
         catch (java.io.IOException e1) {
@@ -117,7 +117,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
 
         // Test operation
         try {
-            org.astrogrid.datacenter.axisdataserver.types.QueryId value = null;
+            org.astrogrid.datacenter.axisdataserver.types._QueryId value = null;
             value = binding.makeQueryWithId(org.astrogrid.datacenter.common.QueryHelper.buildMinimalQuery(), new java.lang.String());
         }
         catch (java.io.IOException e1) {
@@ -149,7 +149,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         binding.setTimeout(60000);
 
         // Test operation
-        binding.setResultsDestination(new org.astrogrid.datacenter.axisdataserver.types.QueryId(), new org.apache.axis.types.URI("urn:testing"));
+        binding.setResultsDestination(new org.astrogrid.datacenter.axisdataserver.types._QueryId(), new org.apache.axis.types.URI("urn:testing"));
         // TBD - validate results
     }
 
@@ -170,7 +170,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         binding.setTimeout(60000);
 
         // Test operation
-        binding.startQuery(new org.astrogrid.datacenter.axisdataserver.types.QueryId());
+        binding.startQuery(new org.astrogrid.datacenter.axisdataserver.types._QueryId());
         // TBD - validate results
     }
 
@@ -192,7 +192,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
 
         // Test operation
         java.lang.String value = null;
-        value = binding.getResultsAndClose(new org.astrogrid.datacenter.axisdataserver.types.QueryId());
+        value = binding.getResultsAndClose(new org.astrogrid.datacenter.axisdataserver.types._QueryId());
         // TBD - validate results
     }
 
@@ -213,7 +213,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         binding.setTimeout(60000);
 
         // Test operation
-        binding.abortQuery(new org.astrogrid.datacenter.axisdataserver.types.QueryId());
+        binding.abortQuery(new org.astrogrid.datacenter.axisdataserver.types._QueryId());
         // TBD - validate results
     }
 
@@ -235,7 +235,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
 
         // Test operation
         java.lang.String value = null;
-        value = binding.getStatus(new org.astrogrid.datacenter.axisdataserver.types.QueryId());
+        value = binding.getStatus(new org.astrogrid.datacenter.axisdataserver.types._QueryId());
         // TBD - validate results
     }
 
@@ -256,7 +256,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         binding.setTimeout(60000);
 
         // Test operation
-        binding.registerWebListener(new org.astrogrid.datacenter.axisdataserver.types.QueryId(), new org.apache.axis.types.URI("urn:testing"));
+        binding.registerWebListener(new org.astrogrid.datacenter.axisdataserver.types._QueryId(), new org.apache.axis.types.URI("urn:testing"));
         // TBD - validate results
     }
 
@@ -277,7 +277,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         binding.setTimeout(60000);
 
         // Test operation
-        binding.registerJobMonitor(new org.astrogrid.datacenter.axisdataserver.types.QueryId(), new org.apache.axis.types.URI("urn:testing"));
+        binding.registerJobMonitor(new org.astrogrid.datacenter.axisdataserver.types._QueryId(), new org.apache.axis.types.URI("urn:testing"));
         // TBD - validate results
     }
 

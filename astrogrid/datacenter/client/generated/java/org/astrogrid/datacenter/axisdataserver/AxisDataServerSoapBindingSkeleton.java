@@ -43,7 +43,7 @@ public class AxisDataServerSoapBindingSkeleton implements org.astrogrid.datacent
         ((java.util.List)_myOperations.get("getMetadata")).add(_oper);
         _params = new org.apache.axis.description.ParameterDesc [] {
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "resultsFormat"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false), 
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query"), org.astrogrid.datacenter.axisdataserver.types.Query.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query"), org.astrogrid.datacenter.axisdataserver.types._query.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("doQuery", _params, new javax.xml.namespace.QName("", "doQueryReturn"));
         _oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
@@ -72,7 +72,7 @@ public class AxisDataServerSoapBindingSkeleton implements org.astrogrid.datacent
         _fault.setXmlType(new javax.xml.namespace.QName("http://sax.xml.org", "SAXException"));
         _oper.addFault(_fault);
         _params = new org.apache.axis.description.ParameterDesc [] {
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query"), org.astrogrid.datacenter.axisdataserver.types.Query.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query"), org.astrogrid.datacenter.axisdataserver.types._query.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("makeQuery", _params, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"));
         _oper.setReturnType(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"));
@@ -101,7 +101,7 @@ public class AxisDataServerSoapBindingSkeleton implements org.astrogrid.datacent
         _fault.setXmlType(new javax.xml.namespace.QName("http://sax.xml.org", "SAXException"));
         _oper.addFault(_fault);
         _params = new org.apache.axis.description.ParameterDesc [] {
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query"), org.astrogrid.datacenter.axisdataserver.types.Query.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query"), org.astrogrid.datacenter.axisdataserver.types._query.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "assignedId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("makeQueryWithId", _params, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"));
@@ -131,7 +131,7 @@ public class AxisDataServerSoapBindingSkeleton implements org.astrogrid.datacent
         _fault.setXmlType(new javax.xml.namespace.QName("http://sax.xml.org", "SAXException"));
         _oper.addFault(_fault);
         _params = new org.apache.axis.description.ParameterDesc [] {
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.astrogrid.datacenter.axisdataserver.types.QueryId.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.astrogrid.datacenter.axisdataserver.types._QueryId.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "myspaceUrl"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyURI"), org.apache.axis.types.URI.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("setResultsDestination", _params, null);
@@ -142,7 +142,7 @@ public class AxisDataServerSoapBindingSkeleton implements org.astrogrid.datacent
         }
         ((java.util.List)_myOperations.get("setResultsDestination")).add(_oper);
         _params = new org.apache.axis.description.ParameterDesc [] {
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.astrogrid.datacenter.axisdataserver.types.QueryId.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.astrogrid.datacenter.axisdataserver.types._QueryId.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("startQuery", _params, null);
         _oper.setElementQName(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "startQuery"));
@@ -152,7 +152,7 @@ public class AxisDataServerSoapBindingSkeleton implements org.astrogrid.datacent
         }
         ((java.util.List)_myOperations.get("startQuery")).add(_oper);
         _params = new org.apache.axis.description.ParameterDesc [] {
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.astrogrid.datacenter.axisdataserver.types.QueryId.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.astrogrid.datacenter.axisdataserver.types._QueryId.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("getResultsAndClose", _params, new javax.xml.namespace.QName("", "getResultsAndCloseReturn"));
         _oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
@@ -163,7 +163,7 @@ public class AxisDataServerSoapBindingSkeleton implements org.astrogrid.datacent
         }
         ((java.util.List)_myOperations.get("getResultsAndClose")).add(_oper);
         _params = new org.apache.axis.description.ParameterDesc [] {
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.astrogrid.datacenter.axisdataserver.types.QueryId.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.astrogrid.datacenter.axisdataserver.types._QueryId.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("abortQuery", _params, null);
         _oper.setElementQName(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "abortQuery"));
@@ -173,7 +173,7 @@ public class AxisDataServerSoapBindingSkeleton implements org.astrogrid.datacent
         }
         ((java.util.List)_myOperations.get("abortQuery")).add(_oper);
         _params = new org.apache.axis.description.ParameterDesc [] {
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.astrogrid.datacenter.axisdataserver.types.QueryId.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.astrogrid.datacenter.axisdataserver.types._QueryId.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("getStatus", _params, new javax.xml.namespace.QName("", "getStatusReturn"));
         _oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
@@ -184,7 +184,7 @@ public class AxisDataServerSoapBindingSkeleton implements org.astrogrid.datacent
         }
         ((java.util.List)_myOperations.get("getStatus")).add(_oper);
         _params = new org.apache.axis.description.ParameterDesc [] {
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.astrogrid.datacenter.axisdataserver.types.QueryId.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.astrogrid.datacenter.axisdataserver.types._QueryId.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "url"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyURI"), org.apache.axis.types.URI.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("registerWebListener", _params, null);
@@ -195,7 +195,7 @@ public class AxisDataServerSoapBindingSkeleton implements org.astrogrid.datacent
         }
         ((java.util.List)_myOperations.get("registerWebListener")).add(_oper);
         _params = new org.apache.axis.description.ParameterDesc [] {
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.astrogrid.datacenter.axisdataserver.types.QueryId.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"), org.astrogrid.datacenter.axisdataserver.types._QueryId.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "url"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyURI"), org.apache.axis.types.URI.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("registerJobMonitor", _params, null);
@@ -220,57 +220,57 @@ public class AxisDataServerSoapBindingSkeleton implements org.astrogrid.datacent
         return ret;
     }
 
-    public java.lang.String doQuery(java.lang.String resultsFormat, org.astrogrid.datacenter.axisdataserver.types.Query query) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException
+    public java.lang.String doQuery(java.lang.String resultsFormat, org.astrogrid.datacenter.axisdataserver.types._query query) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException
     {
         java.lang.String ret = impl.doQuery(resultsFormat, query);
         return ret;
     }
 
-    public org.astrogrid.datacenter.axisdataserver.types.QueryId makeQuery(org.astrogrid.datacenter.axisdataserver.types.Query query) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException
+    public org.astrogrid.datacenter.axisdataserver.types._QueryId makeQuery(org.astrogrid.datacenter.axisdataserver.types._query query) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException
     {
-        org.astrogrid.datacenter.axisdataserver.types.QueryId ret = impl.makeQuery(query);
+        org.astrogrid.datacenter.axisdataserver.types._QueryId ret = impl.makeQuery(query);
         return ret;
     }
 
-    public org.astrogrid.datacenter.axisdataserver.types.QueryId makeQueryWithId(org.astrogrid.datacenter.axisdataserver.types.Query query, java.lang.String assignedId) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException
+    public org.astrogrid.datacenter.axisdataserver.types._QueryId makeQueryWithId(org.astrogrid.datacenter.axisdataserver.types._query query, java.lang.String assignedId) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException
     {
-        org.astrogrid.datacenter.axisdataserver.types.QueryId ret = impl.makeQueryWithId(query, assignedId);
+        org.astrogrid.datacenter.axisdataserver.types._QueryId ret = impl.makeQueryWithId(query, assignedId);
         return ret;
     }
 
-    public void setResultsDestination(org.astrogrid.datacenter.axisdataserver.types.QueryId queryId, org.apache.axis.types.URI myspaceUrl) throws java.rmi.RemoteException
+    public void setResultsDestination(org.astrogrid.datacenter.axisdataserver.types._QueryId queryId, org.apache.axis.types.URI myspaceUrl) throws java.rmi.RemoteException
     {
         impl.setResultsDestination(queryId, myspaceUrl);
     }
 
-    public void startQuery(org.astrogrid.datacenter.axisdataserver.types.QueryId queryId) throws java.rmi.RemoteException
+    public void startQuery(org.astrogrid.datacenter.axisdataserver.types._QueryId queryId) throws java.rmi.RemoteException
     {
         impl.startQuery(queryId);
     }
 
-    public java.lang.String getResultsAndClose(org.astrogrid.datacenter.axisdataserver.types.QueryId queryId) throws java.rmi.RemoteException
+    public java.lang.String getResultsAndClose(org.astrogrid.datacenter.axisdataserver.types._QueryId queryId) throws java.rmi.RemoteException
     {
         java.lang.String ret = impl.getResultsAndClose(queryId);
         return ret;
     }
 
-    public void abortQuery(org.astrogrid.datacenter.axisdataserver.types.QueryId queryId) throws java.rmi.RemoteException
+    public void abortQuery(org.astrogrid.datacenter.axisdataserver.types._QueryId queryId) throws java.rmi.RemoteException
     {
         impl.abortQuery(queryId);
     }
 
-    public java.lang.String getStatus(org.astrogrid.datacenter.axisdataserver.types.QueryId queryId) throws java.rmi.RemoteException
+    public java.lang.String getStatus(org.astrogrid.datacenter.axisdataserver.types._QueryId queryId) throws java.rmi.RemoteException
     {
         java.lang.String ret = impl.getStatus(queryId);
         return ret;
     }
 
-    public void registerWebListener(org.astrogrid.datacenter.axisdataserver.types.QueryId queryId, org.apache.axis.types.URI url) throws java.rmi.RemoteException
+    public void registerWebListener(org.astrogrid.datacenter.axisdataserver.types._QueryId queryId, org.apache.axis.types.URI url) throws java.rmi.RemoteException
     {
         impl.registerWebListener(queryId, url);
     }
 
-    public void registerJobMonitor(org.astrogrid.datacenter.axisdataserver.types.QueryId queryId, org.apache.axis.types.URI url) throws java.rmi.RemoteException
+    public void registerJobMonitor(org.astrogrid.datacenter.axisdataserver.types._QueryId queryId, org.apache.axis.types.URI url) throws java.rmi.RemoteException
     {
         impl.registerJobMonitor(queryId, url);
     }

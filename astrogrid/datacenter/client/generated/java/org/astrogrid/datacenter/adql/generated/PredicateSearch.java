@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: PredicateSearch.java,v 1.6 2003/11/21 17:30:19 nw Exp $
+ * $Id: PredicateSearch.java,v 1.7 2003/11/26 16:22:19 nw Exp $
  */
 
 package org.astrogrid.datacenter.adql.generated;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class PredicateSearch.
  * 
- * @version $Revision: 1.6 $ $Date: 2003/11/21 17:30:19 $
+ * @version $Revision: 1.7 $ $Date: 2003/11/26 16:22:19 $
  */
 public class PredicateSearch extends org.astrogrid.datacenter.adql.generated.Search 
 implements java.io.Serializable

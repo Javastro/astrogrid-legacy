@@ -88,7 +88,7 @@ Requires:
 	<delete>
 		<fileset dir="${generated.src}">
 			<include name="**/*.java" />
-			<exclude name="org/astrogrid/datacenter/axisdataserver/*.java" />
+			<exclude name="org/astrogrid/datacenter/axisdataserver/**/*.java" />
 		</fileset>
 	</delete>
    </goal>
@@ -102,7 +102,6 @@ Requires:
     	<delete quiet="true">
    		<fileset dir="${basedir}/generated/java/org/astrogrid/datacenter">
   	 		<include name="adql/generated/**/*.java" />
-			<include name="axisdataserver/types/*.java" />
    		</fileset>
    	</delete>
 	<!-- generate adql object model -->
@@ -116,6 +115,7 @@ Requires:
 		<arg arg="-verbose" />
 	</java>
 	<!-- generate axis dataserver types -->
+	<!-- don't want this anymore
   	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="castor.class.path">
   	  	<arg value="-i"/>
 		<arg file="${basedir}/src/xsd/AxisDataServer.xsd" />
@@ -125,6 +125,7 @@ Requires:
   	  	<arg file="${generated.src}" />
 		<arg arg="-verbose" />
  	  </java>
+	  -->
  	  <!-- now do some patching of the output - hope to do away with this in time. -->
  	  <patch patchfile="${basedir}/build/patch/groupByChoiceItem.patch" originalfile="${generated.src}/org/astrogrid/datacenter/adql/generated/GroupByChoiceItem.java"/>
  	  <patch patchfile="${basedir}/build/patch/selectionListChoiceItem.patch" originalfile="${generated.src}/org/astrogrid/datacenter/adql/generated/SelectionListChoiceItem.java"/>
@@ -139,29 +140,35 @@ Requires:
   </goal>
 
  <goal name="munge-files" description="do all the search and replace work">
+ 	<!--
 	<replace summary="true" replacefilterfile="${basedir}/build/subst.properties"
 		 dir="${generated.src}/org/astrogrid/datacenter/axisdataserver/">
 			<include name="*.java" />
 			<include name="*.wsdd" />
 	</replace>
+	-->
 		<!-- fix axis-wsdl bug - sometimes introduces spurious &gt; at start of strings -->
 	<replaceregexp flags="sg" match='"&gt;([^"]+)"'	replace='"\1"' >
 		  <fileset dir="${generated.src}/org/astrogrid/datacenter/axisdataserver/">
 		  		<include name="*.java" />
 		  	</fileset>
 		</replaceregexp>
+
 	<attainGoal name="transform-wsdd" />
+	<!--
 	<attainGoal name="munge-stub" />
+	-->
 	<attainGoal name="munge-test" />
   </goal>
 
    <goal name="transform-wsdd">
    	<!-- hack from mailing list to fix Maven XLST bug -->
 	${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+
 	<xslt basedir="${generated.src}/org/astrogrid/datacenter/axisdataserver"
 	      includes="*.wsdd" style="${basedir}/build/xslt/generate-wsdd.xsl"
 	      destdir="${generated.wsdd}" extension=".wsdd" />
-	<!-- now a search and replace on class names -->
+	<!--
 	<replace summary="true" file="${generated.wsdd}/deploy.wsdd" >
 			<replacefilter
 			token='org.astrogrid.datacenter.adql.generated.Comparison"'
@@ -185,6 +192,13 @@ Requires:
 			token="org.astrogrid.datacenter.axisdataserver.types.QueryType"
 			value="org.astrogrid.datacenter.axisdataserver.types.types.QueryType" />
 	</replace>
+
+	<move todir="${generated.wsdd}">
+		<fileset dir="${generated.src}/org/astrogrid/datacenter/axisdataserver">
+			<include name="*.wsdd" />
+		</fileset>
+	</move>
+	-->
 	<!-- transform once more to create test version here.. -->
 	<xslt style="${basedir}/build/xslt/generate-test-wsdd.xsl" in="${generated.wsdd}/deploy.wsdd" out="${generated.wsdd}/test-deploy.wsdd" />
    </goal>
@@ -262,7 +276,7 @@ Requires:
 		    	value="org.astrogrid.datacenter.adql.ADQLUtils.buildMinimalQuery()" />
 			<!-- do same for query object -->
 		    <replacefilter
-		    	token="new org.astrogrid.datacenter.axisdataserver.types.Query()"
+		    	token="new org.astrogrid.datacenter.axisdataserver.types._query()"
 			value="org.astrogrid.datacenter.common.QueryHelper.buildMinimalQuery()" />
 		</replace>
 	</goal>
