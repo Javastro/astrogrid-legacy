@@ -4,6 +4,19 @@
     <author email="jdt@roe.ac.uk">John Taylor</author>
   </properties>
   <body>
+   <release version="TBA" >
+        <action dev="kea" type="fix" issue="862">
+            Cosmetic tweak to portal
+        </action>
+        <action dev="gps" type="fix" issue="724">
+            myspace browser perf. enhancements
+        </action>
+        <action dev="pfo" type="fix" issue="845">
+            Pat's fixes for metadata WFS and registry browse
+        </action>
+        <action dev="pjn" type="fix" issue="839">
+        </action>      
+    </release>
     <release version="Baseline-20041208" date="7/12/04">
         <action dev="nw" type="fix" issue="776">
             Summary objects return more data.
