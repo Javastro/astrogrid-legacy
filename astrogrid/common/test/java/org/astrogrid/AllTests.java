@@ -25,12 +25,13 @@ public class AllTests {
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(AstroGridExceptionTest.class));
         //suite.addTest(new TestSuite(ConfiguratorTest.class));
-		suite.addTest(org.astrogrid.common.test.AllTests.suite());
-		suite.addTest(org.astrogrid.config.AllTests.suite());
-		suite.addTest(org.astrogrid.test.AllTests.suite());
-		suite.addTest(org.astrogrid.testutils.naming.AllTests.suite());
-		suite.addTest(org.astrogrid.util.AllTests.suite());
-		
+      suite.addTest(org.astrogrid.common.test.AllTests.suite());
+      suite.addTest(org.astrogrid.config.AllTests.suite());
+      suite.addTest(org.astrogrid.community.AllTests.suite());
+      suite.addTest(org.astrogrid.test.AllTests.suite());
+      suite.addTest(org.astrogrid.testutils.naming.AllTests.suite());
+      suite.addTest(org.astrogrid.util.AllTests.suite());
+      
         //$JUnit-END$
         return suite;
     }
