@@ -17,35 +17,56 @@
     </p><p>
     It contains the necessary delegate jars, plus their dependencies, and example configuration.
     </p>
+	<p>
+	For documentation on the Astrogrid Workflow system, see the usergude: <a href="http://www.astrogrid.org/maven/docs/HEAD/jes/userguide.html">html</a>, 
+	<a href="http://www.astrogrid.org/maven/docs/HEAD/jes/astrogrid-jes-userguide.pdf">pdf</a>
+	</p>
 
     <section name="Workflow Builder"><p>
+	This library is the preferred interface into the Astrogrid Workflow system. It presents a facade over the Registry, JES and VOSpace clients, and provides the user with convenient methods for
+	<ul>
+	<li>Building Workflow documents</li>
+	<li>Querying the Registry for available CEA applications</li>
+	<li>Constructing workflow steps that callCEA applications</li>
+	<li>Loading and Saving workflow documents to VOSpace</li>
+	<li>Submitting Workflow documents to JES</li>
+	<li>Tracking execution progress, retreiving results</li>
+	</ul>
+	<a href="http://www.astrogrid.org/maven/docs/HEAD/workflow/index.html">project</a>, 
+	<a href="http://www.astrogrid.org/maven/docs/HEAD/workflow/apidocs/org/astrogrid/portal/workflow/intf/package-summary.html">javadoc</a>
     </p>
     </section>
     <section name="Job Execution Service (JES)"><p>
+	It's also possible to call the JES webservice directly via it's delegate:
+	<a href="http://www.astrogrid.org/maven/docs/HEAD/jes/index.html">project</a>,
+	<a href="http://www.astrogrid.org/maven/docs/HEAD/jes/apidocs/index.html">javadoc</a>
     </p>
     </section>
     <section name="Common Execution Architecture (CEA)"><p>
+	The JES server dispatches computation steps to CEA servers, which publish applications and data sources. To interact directly with a CEA webservice, use the following delegate.
+	<a href="http://www.astrogrid.org/maven/docs/HEAD/applications/multiproject/astrogrid-cea-client/">project</a>
+	<a href="http://www.astrogrid.org/maven/docs/HEAD/applications/multiproject/astrogrid-cea-client/apidocs/index.html">javadoc</a>
     </p>
     </section>
     <section name="Core Clients"><p>
-        The delegates for the core astrogrid services (myspace, vospace, registry) are also available in this package.
-        The documentation for these clients is avalable <a href="">here</a>
+        The delegates for the core astrogrid services (community, vospace, registry) are also available in this package.
+        The documentation for these clients is avalable in the <a href="http://www.astrogrid.org/maven/docs/HEAD/aggregate/multiproject/astrogrid-cdk-core/index.html">core CDK project</a>
     </p>
     </section>
 
     <section name="Common Classes"><p>
     Some common classes
-    (such as <a href="http://www.astrogrid.org/maven/docs/snapshot/common/apidocs/org/astrogrid/store/Ivorn.html">Ivorn</a> and
-    <a href="http://www.astrogrid.org/maven/docs/snapshot/common/apidocs/org/astrogrid/community/User.html">User</a>) are defined in a separaete project
-    <a href="http://www.astrogrid.org/maven/docs/snapshot/common/index.html">Project page</a>,
-    <a href="http://www.astrogrid.org/maven/docs/snapshot/common/apidocs/index.html">Javadoc</a>
+    (such as <a href="http://www.astrogrid.org/maven/docs/HEAD/common/apidocs/org/astrogrid/store/Ivorn.html">Ivorn</a> and
+    <a href="http://www.astrogrid.org/maven/docs/HEAD/common/apidocs/org/astrogrid/community/User.html">User</a>) are defined in a separaete project
+    <a href="http://www.astrogrid.org/maven/docs/HEAD/common/index.html">Project page</a>,
+    <a href="http://www.astrogrid.org/maven/docs/HEAD/common/apidocs/index.html">Javadoc</a>
     </p></section>
 
     <section name="Configuration"><p>
     All astrogrid components use a common configuration system.
     This allows properties to be set using either JNDI (if available), a configuration file, or System properties.
     The simplest method is to have a file named <code>astrogrid.properties</code> on the classpath.
-    See the <a href="http://www.astrogrid.org/maven/docs/snapshot/common/apidocs/org/astrogrid/config/package-summary.html">javadoc</a>
+    See the <a href="http://www.astrogrid.org/maven/docs/HEAD/common/apidocs/org/astrogrid/config/package-summary.html">javadoc</a>
     for further details.
 
     This CDK requires the following keys to be set:
@@ -69,7 +90,7 @@
     <section name="Development"><p>
     It's possible to deploy a mini-astrogrid (<i>Astrogrid in a Box</i>) to a single machine. This provides
     a convenient target to test clients against.
-    <a href="http://www.astrogrid.org/maven/docs/snapshot/integrationTests/install.html">Installation Instructions</a>
+    <a href="http://www.astrogrid.org/maven/docs/HEAD/integrationTests/install.html">Installation Instructions</a>
     </p></section>
     ]]></description>
     <shortDescription>Workflow CDK</shortDescription>
