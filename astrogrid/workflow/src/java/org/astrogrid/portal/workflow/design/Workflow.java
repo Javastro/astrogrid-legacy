@@ -11,38 +11,30 @@
  
 package org.astrogrid.portal.workflow.design;
 
-import java.util.HashMap ;
-//import java.util.ListIterator;
-import java.util.Map ;
-import java.util.Collections ;
-import java.util.Vector ;
-import java.util.Iterator ;
-import java.util.ArrayList ;
-import java.text.MessageFormat ;
-//import java.io.InputStream ;
-import org.xml.sax.* ;
-import java.io.StringReader ;
-
-import org.apache.log4j.Logger ;
-import org.apache.axis.utils.XMLUtils ;
-import org.w3c.dom.* ;
-
-import org.astrogrid.community.common.util.CommunityMessage ;
-
-//import org.astrogrid.i18n.*;
-//import org.astrogrid.AstroGridException ;
-import org.astrogrid.jes.delegate.jobController.*;
+import org.astrogrid.community.common.util.CommunityMessage;
 import org.astrogrid.jes.delegate.JesDelegateException;
-
-// import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
+import org.astrogrid.jes.delegate.jobController.JobControllerDelegate;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
+import org.astrogrid.portal.workflow.WKF;
+import org.astrogrid.portal.workflow.intf.*;
 
-import org.astrogrid.portal.workflow.*;
-import org.astrogrid.portal.workflow.design.activity.*;
-import org.w3c.dom.Document ;
-import java.util.ListIterator ;
-import org.astrogrid.portal.workflow.design.unittest.* ;
+import org.apache.axis.utils.XMLUtils;
+import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import java.io.StringReader;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * The <code>Workflow</code> class represents a complex tree of Activities.
@@ -86,7 +78,7 @@ import org.astrogrid.portal.workflow.design.unittest.* ;
  * @version 1.0 21-Aug-2003    
  * @since   AstroGrid 1.3
  */
-public class Workflow extends Activity {
+class Workflow extends Activity implements IWorkflow {
 	
 	private static final String oneStepSequenceTemplate = 		"<?xml version=\"1.0\" encoding=\"UTF8\"?>" +
 		"<!-- Workflow Template contains a sequence of one step ======================================== -->" +
@@ -693,7 +685,7 @@ public class Workflow extends Activity {
             tool = null ;
         int
             numberParams = 0 ;
-        Parameter
+        IParameter
             param = null ;
         Cardinality 
             cardinality = null ;
@@ -967,7 +959,7 @@ public class Workflow extends Activity {
       * @param document          workflow as xml Document.
       *                          Its origination could be from MySpace or from a template.
       **/        
-    public Workflow( String communitySnippet, Document document ) {
+    protected Workflow( String communitySnippet, Document document ) {
         super(null) ;   // null because no parent 
         if( TRACE_ENABLED ) trace( "entry: Workflow(communitySnippet,document): cvsVersion " + cvsVersion) ;
               
@@ -1021,13 +1013,14 @@ public class Workflow extends Activity {
       * <p>
       * 
       * @param key - the key of the activity
+      * @deprecated - don't want to support this - it'd be hard to reimplement.
       **/     
-    public Activity getActivity( String key ) {
+    public IActivity getActivity( String key ) {
         if( TRACE_ENABLED ) trace( "entry: Workflow.getActivity()") ; 
         try { 
             if( TRACE_ENABLED )debug( "key: [" + key +"]" ) ;
             if( TRACE_ENABLED )debug( "activities: " + activities.toString() ) ;
-            return (Activity)activities.get( new ActivityKey( key ) ) ;
+            return (IActivity)activities.get( new ActivityKey( key ) ) ;
             
         }
         finally {
@@ -1051,7 +1044,7 @@ public class Workflow extends Activity {
       * @param activity  an activity that has just been newly created.
       * @return boolean indicating success or failure.
       **/         
-    public boolean putActivity( Activity activity ) {
+    protected boolean putActivity( Activity activity ) {
         if( TRACE_ENABLED ) trace( "entry: Workflow.putActivity()") ;  
                
         boolean
@@ -1091,7 +1084,7 @@ public class Workflow extends Activity {
       * @param activity  an activity to be removed.
       * @return boolean indicating success or failure.
       **/      
-    public boolean removeActivity( Activity activity ) {
+    protected boolean removeActivity( Activity activity ) {
         return ( activities.remove( activity.getKey() ) == null ? false : true ) ;
     }
     
@@ -1113,7 +1106,7 @@ public class Workflow extends Activity {
       * @return the workflow as an xml String.
       **/      
     // had to make this public for a quick fix to avodemo
-    public String constructWorkflowXML( String communitySnippet ) {
+    protected String constructWorkflowXML( String communitySnippet ) {
         if( TRACE_ENABLED ) trace( "entry: Workflow.constructWorkflowXML()") ;  
           
         String response = null ;
@@ -1318,11 +1311,11 @@ public class Workflow extends Activity {
         return retVal; 
     }
     
-
+    /** @deprecated - hard to implement. better placed in the controller logic. */
     protected void setDirty(boolean dirty) {
 		this.dirty = dirty;
 	}
-
+    /** @deprecated - hard to replicate. better maintained in the controller logic */
 	public boolean isDirty() {
 		return dirty;
 	}
@@ -1336,11 +1329,11 @@ public class Workflow extends Activity {
     } 
      
      
-	public void setChild( Activity child ) {
+	public void setChild( IActivity child ) {
 		this.child = (ActivityContainer)child;
 	}
 
-	public Activity getChild() {
+	public IActivity getChild() {
 		return child;
 	}
 
@@ -1478,7 +1471,7 @@ public class Workflow extends Activity {
       * @param fileName  just the file name
       * @return the url within MySpace for the given path and file, as a String
       **/   
-    public static String formatMySpaceURL( String communitySnippet
+    protected static String formatMySpaceURL( String communitySnippet
                                          , String logicalDirectoryPath
                                          , String fileName ) {
         if( TRACE_ENABLED ) trace( "entry: Workflow.formatMySpaceURL()") ;  
@@ -1533,15 +1526,16 @@ public class Workflow extends Activity {
       * @param tool             the tool to be inserted
       * @param workflow         the relevant workflow.
       * @return boolean indication success or failure
+      * @deprecated - needs to be moved elsewhere.
       **/   
     public static boolean insertToolIntoStep( String stepActivityKey
-                                            , Tool tool
-                                            , Workflow workflow ) {
+                                            , ITool tool
+                                            , IWorkflow workflow ) {
             if( TRACE_ENABLED ) trace( "entry: Workflow.insertToolIntoStep(stepActivityKey,tool,workflow)") ; 
 
             boolean retValue = false ;
-            Step step = null ;
-            Activity activity = null ;
+            IStep step = null ;
+            IActivity activity = null ;
             
             try {
             
@@ -1550,11 +1544,11 @@ public class Workflow extends Activity {
                 if( activity == null ) {
                     debug( "activity not found" ) ;
                 }
-                else if( (activity instanceof Step) == false ) {
+                else if( (activity instanceof IStep) == false ) {
                     debug( "activity not a Step") ;
                 }
                 else {
-                    step = (Step)activity ;
+                    step = (IStep)activity ;
                             step.setTool( tool ) ;
                             retValue = true ;
                     }
@@ -1601,7 +1595,7 @@ public class Workflow extends Activity {
       * @return boolean indicating success or failure.
       * 
       **/   
-    public static boolean deleteParameter( Tool tool
+    protected static boolean deleteParameter( ITool tool
                                          , String paramName
                                          , String direction
                                          , int arrayPosition ) {
@@ -1613,7 +1607,7 @@ public class Workflow extends Activity {
             
             // We need two iterators. The first will be used to count the occurances
             // of the requested parameter name. The second will be used for deletion.
-            ListIterator it1, it2 ;
+            Iterator it1, it2 ;
             
             // index is used to establish the actual parameter to be deleted
             // count is used to count the actual cardinality
@@ -1621,7 +1615,7 @@ public class Workflow extends Activity {
             // for deletion purposes.
             int index = 0, count = 0, minimumAllowedCardinality ;
             
-            Parameter p ;
+            IParameter p ;
      
         try {
             
@@ -1636,7 +1630,7 @@ public class Workflow extends Activity {
             }
             
             while( it1.hasNext() ) {
-                p = (Parameter)it1.next() ;
+                p = (IParameter)it1.next() ;
                 if( p.getName().equals( paramName ) ) {
                     count++ ;
                 }
@@ -1645,7 +1639,7 @@ public class Workflow extends Activity {
             it1 = null ;
             
             while( it2.hasNext() ) {
-                p = (Parameter)it2.next() ;
+                p = (IParameter)it2.next() ;
                 if( p.getName().equals( paramName ) ) {
                     if( index == arrayPosition ) {
                         // OK. We have established that this
@@ -1699,7 +1693,7 @@ public class Workflow extends Activity {
       * @return boolean indicating success or failure.
       * 
       **/      
-    public static boolean deleteParameter( Tool tool
+    protected static boolean deleteParameter( ITool tool
                                          , String paramName
                                          , String value
                                          , String direction ) {
@@ -1707,7 +1701,7 @@ public class Workflow extends Activity {
         if( TRACE_ENABLED ) trace( "entry: Workflow.deleteParameter(tool,paramName,value,direction)") ; 
         
             boolean retValue = false ;
-            ListIterator iterator = null ;
+            Iterator iterator = null ;
             Parameter p ;
      
         try {
@@ -1776,7 +1770,7 @@ public class Workflow extends Activity {
       * @return  boolean indicating success or failure.
       * 
       **/      
-    public static boolean insertParameterValue( Tool tool
+    protected static boolean insertParameterValue( ITool tool
                                               , String paramName
                                               , String paramValue
                                               , String direction
@@ -1785,9 +1779,9 @@ public class Workflow extends Activity {
         if( TRACE_ENABLED ) trace( "entry: Workflow.insertParameterValue()") ; 
         
             boolean retValue = false ;
-            ListIterator iterator = null ;
+            Iterator iterator = null ;
             int index = 0 ;
-            Parameter p ;
+            IParameter p ;
      
         try {
             
@@ -1802,7 +1796,7 @@ public class Workflow extends Activity {
             }
             
             while( iterator.hasNext() ) {
-                p = (Parameter)iterator.next() ;
+                p = (IParameter)iterator.next() ;
                 if( p.getName().equals( paramName ) ) {
                     if( index == arrayPosition ) {
                         p.setValue( paramValue ) ;
@@ -1846,9 +1840,9 @@ public class Workflow extends Activity {
       *                   type. 
       * @param direction  either "input" or "output".
       * @return  boolean indicating success or failure.
-      * 
+      * @deprecated move elsewhere.
       **/      
-    public static boolean insertParameterValue( Tool tool
+    public static boolean insertParameterValue( ITool tool
                                               , String paramName
                                               , String oldValue
                                               , String newValue
@@ -1857,7 +1851,7 @@ public class Workflow extends Activity {
         if( TRACE_ENABLED ) trace( "entry: Workflow.insertParameterValue(tool,paramName,oldValue,newValue,direction)") ; 
         
             boolean retValue = false ;
-            ListIterator iterator = null ;
+            Iterator iterator = null ;
             Parameter 
                 p = null,
                 savedNewInsertTarget = null ;
@@ -1925,7 +1919,7 @@ public class Workflow extends Activity {
                 // then for the convenience of the gui we create a further empty 
                 // parameter... 
                 if( countOfEmptyParams == 0 ) { 
-                    tool.newInputParameter( paramName ) ;
+                    ((Tool)tool).newInputParameter( paramName ) ;
                 }
                                  
             } // endif

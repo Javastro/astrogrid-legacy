@@ -12,10 +12,15 @@
 package org.astrogrid.portal.workflow.design;
 
 // import java.net.*; 
-import org.w3c.dom.* ;
-import org.apache.log4j.Logger ;
-import java.text.MessageFormat ;
-import org.apache.axis.utils.XMLUtils ;
+import org.astrogrid.portal.workflow.intf.*;
+
+import org.apache.axis.utils.XMLUtils;
+import org.apache.log4j.Logger;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.text.MessageFormat;
 
 /**
  * The <code>Parameter</code> class represents... 
@@ -31,7 +36,7 @@ import org.apache.axis.utils.XMLUtils ;
  * @see     
  * @since   AstroGrid 1.4
  */
-public class Parameter {
+public class Parameter implements IParameter {
     
     /** Compile-time switch used to turn tracing on/off. 
       * Set this to false to eliminate all trace statements within the byte code.*/         
@@ -62,7 +67,7 @@ public class Parameter {
         this.name = name ;   
     }
     
-    public Parameter( Element element ) {
+    protected Parameter( Element element ) {
         if( TRACE_ENABLED ) trace( "Parameter(Element) entry") ; 
              
         try {
@@ -144,7 +149,7 @@ public class Parameter {
         return this.type ;
     }
    
-    public Cardinality getCardinality() {
+    public ICardinality getCardinality() {
         return this.cardinality ;
     }
 
@@ -281,8 +286,8 @@ public class Parameter {
 
 	/**
 	   */
-	public void setCardinality(Cardinality cardinality) {
-		this.cardinality = cardinality;
+	public void setCardinality(ICardinality cardinality) {
+		this.cardinality = (Cardinality)cardinality;
 	}
 
 	/**

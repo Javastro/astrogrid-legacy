@@ -9,17 +9,19 @@
  *
  */
 
-package org.astrogrid.portal.workflow.design.unittest ;
+package org.astrogrid.portal.workflow.design;
 
 
-import org.astrogrid.portal.workflow.design.*;
-import java.util.Vector ;
-import java.text.MessageFormat ;
-import org.xml.sax.* ;
-import java.io.StringReader ;
 
-import org.apache.log4j.Logger ;
-import org.apache.axis.utils.XMLUtils ;
+import org.astrogrid.portal.workflow.intf.*;
+
+import org.apache.axis.utils.XMLUtils;
+import org.apache.log4j.Logger;
+import org.xml.sax.InputSource;
+
+import java.io.StringReader;
+import java.text.MessageFormat;
+import java.util.Vector;
 
 
 /**
@@ -35,8 +37,10 @@ import org.apache.axis.utils.XMLUtils ;
  * @see     
  * @see     
  * @since   AstroGrid 1.3
+ * @modified NWW moved into workflow.design package, where it is used.
+ * @modified NWW made package private. seems to be some kind of mock, just used within the package.
  */
-public class WorkflowHelper {
+class WorkflowHelper {
     
     /** Compile-time switch used to turn tracing on/off. 
       * Set this to false to eliminate all trace statements within the byte code.*/         
@@ -491,7 +495,7 @@ public class WorkflowHelper {
     
     
 
-    public static boolean saveWorkflow( Workflow workflow ) {
+    public static boolean saveWorkflow( IWorkflow workflow ) {
         if( TRACE_ENABLED ) trace( "WorkflowHelper.saveWorkflow() entry") ; 
         
      boolean

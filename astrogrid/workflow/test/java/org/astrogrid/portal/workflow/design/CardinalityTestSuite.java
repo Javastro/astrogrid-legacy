@@ -1,6 +1,8 @@
 package org.astrogrid.portal.workflow.design ;
 
 
+import org.astrogrid.portal.workflow.intf.ICardinality;
+
 import junit.framework.Test; 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -43,7 +45,7 @@ public class CardinalityTestSuite extends TestCase {
          logger.info( "---------------------------------------------------------" ); 
          logger.info( "enter: CardinalityTestSuite.testMaxCardinalityLessThanMinusOne()" ); 
         
-         Cardinality cardinality = null ;
+         ICardinality cardinality = null ;
             
          try {
              cardinality = new Cardinality( 1, -2 ) ;
@@ -78,7 +80,7 @@ public class CardinalityTestSuite extends TestCase {
          logger.info( "---------------------------------------------------------" ); 
          logger.info( "enter: CardinalityTestSuite.testMinCardinalityLessThanZero()" ); 
         
-         Cardinality cardinality = null ;
+         ICardinality cardinality = null ;
             
          try {
              cardinality = new Cardinality( -1, 1 ) ;
@@ -113,7 +115,7 @@ public class CardinalityTestSuite extends TestCase {
          logger.info( "---------------------------------------------------------" ); 
          logger.info( "enter: CardinalityTestSuite.testMinCardinalityGreaterThanMax()" ); 
         
-         Cardinality cardinality = null ;
+         ICardinality cardinality = null ;
             
          try {
              cardinality = new Cardinality( 1, 0 ) ;
@@ -151,7 +153,7 @@ public class CardinalityTestSuite extends TestCase {
          logger.info( "---------------------------------------------------------" ); 
          logger.info( "enter: CardinalityTestSuite.testMaxCardinalityOfZero()" ); 
         
-         Cardinality cardinality = null ;
+         ICardinality cardinality = null ;
             
          try {
              cardinality = new Cardinality( 0, 0 ) ;
@@ -184,7 +186,7 @@ public class CardinalityTestSuite extends TestCase {
          logger.info( "---------------------------------------------------------" ); 
          logger.info( "enter: CardinalityTestSuite.testSensibleCardinality()" ); 
         
-         Cardinality cardinality = null ;
+         ICardinality cardinality = null ;
             
          try {
              cardinality = new Cardinality( 2, 3 ) ;
@@ -217,7 +219,7 @@ public class CardinalityTestSuite extends TestCase {
          logger.info( "---------------------------------------------------------" ); 
          logger.info( "enter: CardinalityTestSuite.testRandomCardinalities()" ); 
         
-         Cardinality cardinality = null ;
+         ICardinality cardinality = null ;
          int max, min ;
             
          try {

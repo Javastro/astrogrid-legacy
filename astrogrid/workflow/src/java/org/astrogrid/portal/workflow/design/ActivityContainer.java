@@ -9,18 +9,17 @@
  *
  */
 
-package org.astrogrid.portal.workflow.design.activity;
+package org.astrogrid.portal.workflow.design;
 
-import java.util.LinkedList; 
-import java.util.ListIterator ;
-import org.apache.log4j.Logger ;
-import org.astrogrid.portal.workflow.design.Flow;
-import org.astrogrid.portal.workflow.design.Sequence;
-import org.astrogrid.portal.workflow.design.Step;
+import org.astrogrid.portal.workflow.intf.*;
 
-import org.astrogrid.portal.workflow.design.*;
+import org.apache.log4j.Logger;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-import org.w3c.dom.* ;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 /**
  * The <code>ActivityContainer</code> class represents... 
@@ -35,8 +34,10 @@ import org.w3c.dom.* ;
  * @see     
  * @see     
  * @since   AstroGrid 1.3
+ * @modified NWW moved into workflow.design package
+ * @modified NWW made package private.
  */
-public abstract class ActivityContainer extends Activity {
+abstract class ActivityContainer extends Activity {
 
     /** Compile-time switch used to turn tracing on/off. 
       * Set this to false to eliminate all trace statements within the byte code.*/         
@@ -49,12 +50,12 @@ public abstract class ActivityContainer extends Activity {
     private LinkedList
         children = new LinkedList() ;
       
-    public ActivityContainer( Activity parent ) {
+    protected ActivityContainer( Activity parent ) {
         super( parent ) ;
     }
     
     
-    public ActivityContainer( String communitySnippet
+    protected ActivityContainer( String communitySnippet
                             , Element element
                             , Activity parent ) {
         super( parent ) ;
@@ -94,32 +95,32 @@ public abstract class ActivityContainer extends Activity {
     
     
     
-    public synchronized Sequence createSequence() {
+    protected synchronized ISequence createSequence() {
         return this.createSequence( children.size() ) ;
     }
     
     
-    public synchronized Sequence createSequence( int index ) {
-        return (Sequence)this.add( index, new Sequence( this ) ) ;
+    protected synchronized ISequence createSequence( int index ) {
+        return (ISequence)this.add( index, new Sequence( this ) ) ;
     }
     
     
-    public synchronized Flow createFlow() {
+    protected synchronized IFlow createFlow() {
         return this.createFlow( children.size() ) ;
     }
     
     
-    public synchronized Flow createFlow( int index ) {
+    protected synchronized Flow createFlow( int index ) {
         return (Flow)this.add( index, new Flow( this ) ) ;
     }
     
     
-    public synchronized Step createStep( int index ) {
-        return (Step)this.add( index, new Step( this ) ) ;        
+    protected synchronized IStep createStep( int index ) {
+        return (IStep)this.add( index, new Step( this ) ) ;        
     }
    
     
-    public Activity add( int index, Activity activity ) {
+    protected IActivity add( int index, Activity activity ) {
         if( TRACE_ENABLED ) trace( "Activity.add(int,Activity) entry") ;
         
         try {
@@ -136,7 +137,7 @@ public abstract class ActivityContainer extends Activity {
     }
     
     
-    public Activity add( Activity activity ) {
+    protected IActivity add( Activity activity ) {
         if( TRACE_ENABLED ) trace( "Activity.add(Activity) entry") ;
         
         try {
@@ -153,20 +154,19 @@ public abstract class ActivityContainer extends Activity {
     }
     
     
-    public boolean removeChild( Activity activity ) { 
+    protected boolean removeChild( Activity activity ) { 
         this.remove() ;     
         return children.remove( activity ) ;
     }
 
-
-    public ActivityIterator getChildren() { return new ActivityIterator( children.listIterator() ) ; }
+    protected ActivityIterator getChildren() { return new ActivityIterator( children.listIterator() ) ; }
     
     
-    public int getIndex( Activity activity ) {
+    protected int getIndex( Activity activity ) {
         return children.indexOf( activity ) ; 
     }
     
-    public void setIndex( int index, Activity activity ) {
+    protected void setIndex( int index, Activity activity ) {
         this.children.remove( activity ) ;
         this.children.add( index, activity ) ;
     }

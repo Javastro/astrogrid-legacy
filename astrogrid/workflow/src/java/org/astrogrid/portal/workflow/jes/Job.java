@@ -35,8 +35,11 @@ import org.w3c.dom.Document ;
  * @see     
  * @see     
  * @since   AstroGrid 1.3
+ * @deprecated. hid behind facade in preparation for removal.
+ * @see JobManager
+ * @see WorkflowJob
  */
-public class Job {
+class Job implements WorkflowJob {// NWW: made package private.
 	
     /** Compile-time switch used to turn tracing on/off. 
       * Set this to false to eliminate all trace statements within the byte code.*/         
@@ -50,10 +53,10 @@ public class Job {
         ASTROGRIDERROR_SOMEMESSAGE = "AGWKFE00050" ; // none so far 
         
         
-    public static Job readJob( String userid, String community, String name ) {
+    public static WorkflowJob readJob( String userid, String community, String name ) {
         if( TRACE_ENABLED ) trace( "Job.readJob() entry") ; 
         
-        Job
+        WorkflowJob
             job = null;
         StringBuffer
             pathBuffer = new StringBuffer( 64 ) ;
@@ -96,7 +99,7 @@ public class Job {
     } // end of deleteJob()
     
     
-    public static boolean cancelJob( Job job ) {
+    public static boolean cancelJob( WorkflowJob job ) {
         if( TRACE_ENABLED ) trace( "Job.cancelJob() entry") ; 
 
         boolean

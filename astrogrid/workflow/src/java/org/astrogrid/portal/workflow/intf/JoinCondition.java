@@ -9,7 +9,7 @@
  *
  */
 
-package org.astrogrid.portal.workflow.design;
+package org.astrogrid.portal.workflow.intf;
 
 /**
  * The <code>JoinCondition</code> class represents the condition
@@ -28,16 +28,17 @@ package org.astrogrid.portal.workflow.design;
  * @see     
  * @see     
  * @since   AstroGrid 1.3
+ * @modified replaced constants by static methods. this allows us to extract an interface, and substitute one constants implementation by another.
  */
 public final class JoinCondition {
     
-    public static final JoinCondition
+    private static final JoinCondition
         TRUE = new JoinCondition( "TRUE".intern() ) ;
           
-    public static final JoinCondition
+    private static final JoinCondition
         FALSE = new JoinCondition( "FALSE".intern() ) ;
         
-    public static final JoinCondition
+    private static final JoinCondition
         ANY = new JoinCondition( "ANY".intern() ) ;
     
     private String
@@ -56,6 +57,18 @@ public final class JoinCondition {
     
     public String toString() {
         return type.toLowerCase() ;
+    }
+
+    public  static  JoinCondition FALSE() {
+        return FALSE;
+    }
+
+    public static  JoinCondition ANY() {
+        return ANY;
+    }
+
+    public static JoinCondition TRUE() {
+        return TRUE;
     }
 
 } // end of class JoinCondition

@@ -10,10 +10,12 @@
  */
 package org.astrogrid.portal.workflow.design;
 
-import java.text.MessageFormat ;
-import org.apache.log4j.Logger ;
-import org.astrogrid.portal.workflow.design.activity.*;
-import org.w3c.dom.* ;
+import org.astrogrid.portal.workflow.intf.*;
+
+import org.apache.log4j.Logger;
+import org.w3c.dom.Element;
+
+import java.text.MessageFormat;
 
 /**
  * The <code>Flow</code> class represents... 
@@ -28,8 +30,9 @@ import org.w3c.dom.* ;
  * @see     
  * @see     
  * @since   AstroGrid 1.3
+ * @modified NWW - closed down type, made things protected where possible.
  */
-public class Flow extends ActivityContainer {
+public class Flow extends ActivityContainer implements IFlow {
  
     /** Compile-time switch used to turn tracing on/off. 
       * Set this to false to eliminate all trace statements within the byte code.*/         
@@ -39,13 +42,13 @@ public class Flow extends ActivityContainer {
     private static Logger 
         logger = Logger.getLogger( Flow.class ) ;  
     
-    public Flow( Activity parent ) {
+    protected Flow( Activity parent ) {
         super( parent ) ;
         if( TRACE_ENABLED ) trace( "Flow() entry/exit") ; 
     }
    
    
-    public Flow( String communitySnippet
+    protected Flow( String communitySnippet
                , Element element
                ,  Activity parent ) {
         super( communitySnippet, element, parent) ;

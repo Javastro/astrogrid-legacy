@@ -9,10 +9,13 @@
  *
  */
 
-package org.astrogrid.portal.workflow.design.activity;
+package org.astrogrid.portal.workflow.design;
 
-import java.util.ListIterator ;
-import org.apache.log4j.Logger ;
+import org.astrogrid.portal.workflow.intf.*;
+
+import org.apache.log4j.Logger;
+
+import java.util.ListIterator;
 /**
  * The <code>ActivityIterator</code> class represents... 
  * <p>
@@ -26,8 +29,10 @@ import org.apache.log4j.Logger ;
  * @see     
  * @see     
  * @since   AstroGrid 1.3
+ * @modified NWW moved into workflow.design package.
+ * @modified NWW - made package private.
  */
-public class ActivityIterator {
+final class ActivityIterator {
     
     /** Compile-time switch used to turn tracing on/off. 
       * Set this to false to eliminate all trace statements within the byte code.*/         
@@ -48,8 +53,8 @@ public class ActivityIterator {
         return iterator.hasNext() ;
     }
     
-    public Activity next() {
-        return (Activity)iterator.next() ;
+    public IActivity next() {
+        return (IActivity)iterator.next() ;
     }
     
     public void remove() {

@@ -18,8 +18,9 @@ package org.astrogrid.portal.workflow.jes ;
  * @version 1.0 09-Jun-2003
  *
  * @since   AstroGrid 1.2
+ * @modified NWW made package private.
  */
-public class JobDD {
+class JobDD {
     
     public static final String
         RESPONSE_ELEMENT = "response",

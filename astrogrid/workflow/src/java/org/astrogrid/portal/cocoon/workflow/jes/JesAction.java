@@ -332,7 +332,7 @@ public class JesAction extends AbstractAction {
                 
                 //NB: The filter argument is ignored at present (Sept 2003).
                 Iterator
-                    iterator =  Job.readJobList( userid,
+                    iterator =  JobManager.getManager().readJobList( userid,
                                                  community,
                                                  communitySnippet(),
                                                  "*" );

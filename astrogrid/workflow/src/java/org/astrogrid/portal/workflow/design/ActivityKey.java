@@ -9,9 +9,9 @@
  *
  */
 
-package org.astrogrid.portal.workflow.design.activity;
+package org.astrogrid.portal.workflow.design;
 
-import org.apache.log4j.Logger ;
+import org.apache.log4j.Logger;
 /**
  * The <code>ActivityKey</code> class is a thin wrapper
  * for the String key of an Activiy.
@@ -21,8 +21,10 @@ import org.apache.log4j.Logger ;
  * @see  org.astrogrid.workflow.design.Activity   
  * @see     
  * @since   AstroGrid 1.3
+ * @modified NWW moved into workflow.design package.
+ * @modified NWW made package private.
  */
-public class ActivityKey {
+final class ActivityKey {
     
     /** Compile-time switch used to turn tracing on/off. 
       * Set this to false to eliminate all trace statements within the byte code.*/         

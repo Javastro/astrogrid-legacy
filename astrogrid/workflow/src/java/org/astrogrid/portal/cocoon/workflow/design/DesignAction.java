@@ -10,42 +10,37 @@
  */
 package org.astrogrid.portal.cocoon.workflow.design;
 
-import org.apache.log4j.Logger;
-
-//import org.astrogrid.i18n.*;
-
-// import org.astrogrid.workflow.*;
-// import org.astrogrid.workflow.design.activity.*;
-
 import org.astrogrid.AstroGridException;
-
-//import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
-//import org.astrogrid.community.policy.data.PolicyPermission;
-import org.astrogrid.community.service.authentication.data.SecurityToken;
-
-// import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
-import org.astrogrid.portal.workflow.*;
-import org.astrogrid.portal.workflow.design.*;
-import org.astrogrid.portal.workflow.design.activity.*;
-
 import org.astrogrid.community.common.util.CommunityMessage;
-
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
+import org.astrogrid.community.service.authentication.data.SecurityToken;
+import org.astrogrid.portal.workflow.WKF;
+import org.astrogrid.portal.workflow.WorkflowException;
+import org.astrogrid.portal.workflow.intf.IActivity;
+import org.astrogrid.portal.workflow.intf.IParameter;
+import org.astrogrid.portal.workflow.intf.IStep;
+import org.astrogrid.portal.workflow.intf.ITool;
+import org.astrogrid.portal.workflow.intf.IWorkflow;
+import org.astrogrid.portal.workflow.intf.JoinCondition;
+import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
+import org.astrogrid.portal.workflow.intf.WorkflowManager;
+import org.astrogrid.portal.workflow.intf.WorkflowManagerFactory;
 
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.acting.AbstractAction;
+import org.apache.cocoon.environment.ObjectModelHelper;
+import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.environment.Session;
-import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.SourceResolver;
-import org.apache.cocoon.environment.ObjectModelHelper;
+import org.apache.log4j.Logger;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * A Cocoon action to handle our workflow design commands.
- *
+ *@modified NWW removed direct references to Workflow - add indirection through manager instead. means implementation can be swapped when needed.
  */
 public class DesignAction extends AbstractAction {
 
@@ -186,6 +181,8 @@ public class DesignAction extends AbstractAction {
         return retMap ; 
  
     } // end of act() 
+    
+    
 
 
     private class DesignActionImpl {
@@ -200,9 +197,10 @@ public class DesignAction extends AbstractAction {
         private String userid, community, group, token;
         private String action;
         private boolean bConfirm;
-        private Workflow workflow;
+        private IWorkflow workflow;
+        private final WorkflowManager manager; //NWW - link to manager object
 		private String template;
-		private Tool tool;            
+		private ITool tool;            
         
         public DesignActionImpl( Redirector redirector
                                , SourceResolver resolver
@@ -226,7 +224,9 @@ public class DesignAction extends AbstractAction {
                 this.session = request.getSession();
             
                 // Load current Workflow - if any - from our HttpSession.
-                this.workflow = (Workflow) session.getAttribute( HTTP_WORKFLOW_TAG );
+                this.workflow = (IWorkflow) session.getAttribute( HTTP_WORKFLOW_TAG );
+                // set up manager.
+                this.manager = (new WorkflowManagerFactory()).getManager();
             
                 // Get user and community 
                 this.retrieveUserDetails();
@@ -444,13 +444,13 @@ public class DesignAction extends AbstractAction {
 				}                
                 
                 if( workflow == null ) {
-                    workflow = Workflow.createWorkflow( communitySnippet(), name, description ) ;
+                    workflow = manager.createWorkflow( communitySnippet(), name, description ) ;
                 }
                 else if( workflow.isDirty() && (bConfirm == true) ) {
-                    workflow = Workflow.createWorkflow( communitySnippet(), name, description ) ;
+                    workflow = manager.createWorkflow( communitySnippet(), name, description ) ;
                 }
                 else if( !workflow.isDirty() ) {
-                    workflow = Workflow.createWorkflow( communitySnippet(), name, description ) ;
+                    workflow = manager.createWorkflow( communitySnippet(), name, description ) ;
                 }
                 else {
                     debug( "Create ignored - bConfirm == false" ) ;
@@ -464,7 +464,7 @@ public class DesignAction extends AbstractAction {
         } // end of createWorkflow()
         
         
-        private void saveWorkflow() throws ConsistencyException {
+        private void saveWorkflow() throws ConsistencyException, WorkflowInterfaceException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.saveWorkflow() entry" ) ;
               
             try {
@@ -474,7 +474,7 @@ public class DesignAction extends AbstractAction {
                     throw new ConsistencyException() ; 
                 }
                 else {
-                    Workflow.saveWorkflow( communitySnippet(), workflow ) ;
+                    manager.saveWorkflow( communitySnippet(), workflow ) ;
                     session.setAttribute( HTTP_WORKFLOW_TAG, null) ;
                     workflow = null ;
                 }            
@@ -486,7 +486,7 @@ public class DesignAction extends AbstractAction {
         } // end of createWorkflow()
         
         
-        private void readWorkflow() throws ConsistencyException {
+        private void readWorkflow() throws ConsistencyException, WorkflowInterfaceException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflow() entry" ) ;
               
             try {
@@ -500,13 +500,13 @@ public class DesignAction extends AbstractAction {
                 }
                 
                 if( workflow == null ) {
-                    workflow = Workflow.readWorkflow( communitySnippet(), name ) ; 
+                    workflow = manager.readWorkflow( communitySnippet(), name ) ; 
                 }
                 else if( workflow.isDirty() == false ) {
-                    workflow = Workflow.readWorkflow( communitySnippet(), name ) ; 
+                    workflow = manager.readWorkflow( communitySnippet(), name ) ; 
                 }
                 else if( bConfirm == true ) {
-                    workflow = Workflow.readWorkflow( communitySnippet(), name ) ;
+                    workflow = manager.readWorkflow( communitySnippet(), name ) ;
                 }        
                 debug( "userid: " + workflow.getUserid() ) ;
                 debug( "name: " + workflow.getName() ) ; 
@@ -520,7 +520,7 @@ public class DesignAction extends AbstractAction {
         }
         
         
-        private void deleteWorkflow() throws ConsistencyException {
+        private void deleteWorkflow() throws ConsistencyException, WorkflowInterfaceException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.deleteWorkflow() entry" ) ;
               
             try {
@@ -534,13 +534,13 @@ public class DesignAction extends AbstractAction {
                 }
                 
                 if( workflow == null ) {
-                    Workflow.deleteWorkflow( communitySnippet(), name ) ; 
+                    manager.deleteWorkflow( communitySnippet(), name ) ; 
                 }
                 else if( workflow.isDirty() == false ) {
-                    Workflow.deleteWorkflow( communitySnippet(), name ) ;  
+                    manager.deleteWorkflow( communitySnippet(), name ) ;  
                 }
                 else if( bConfirm == true ) {
-                    Workflow.deleteWorkflow( communitySnippet(), name ) ;  
+                    manager.deleteWorkflow( communitySnippet(), name ) ;  
                 }                              
             }
             finally {
@@ -550,7 +550,8 @@ public class DesignAction extends AbstractAction {
         }
         
         
-        private void createWorkflowFromTemplate( String template ) throws ConsistencyException {
+        private void createWorkflowFromTemplate( String template ) throws ConsistencyException, WorkflowInterfaceException
+         {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.createWorkflowFromTemplate() entry" ) ;
             debug ( "template: " + template ) ;
            
@@ -571,13 +572,13 @@ public class DesignAction extends AbstractAction {
 				}                
        
 				else if( workflow == null ) {
-					workflow = Workflow.createWorkflowFromTemplate( communitySnippet(), name, description, template  ) ; 
+					workflow = manager.createWorkflowFromTemplate( communitySnippet(), name, description, template  ) ; 
 				}
 				else if( workflow.isDirty() && (bConfirm == true) ) {
-				    workflow = Workflow.createWorkflowFromTemplate( communitySnippet(), name, description, template ) ;
+				    workflow = manager.createWorkflowFromTemplate( communitySnippet(), name, description, template ) ;
 				}
 				else if( !workflow.isDirty() ) {
-					workflow = Workflow.createWorkflowFromTemplate( communitySnippet(), name, description, template ) ;
+					workflow = manager.createWorkflowFromTemplate( communitySnippet(), name, description, template ) ;
 				}
 				else {
 					debug( "Create ignored - bConfirm == false" ) ;
@@ -590,7 +591,7 @@ public class DesignAction extends AbstractAction {
         } // end of createWorkflowFromTemplate()
         
         
-        private void submitWorkflow() throws ConsistencyException {
+        private void submitWorkflow() throws ConsistencyException, WorkflowInterfaceException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.submitWorkflow() entry" ) ;
 
             try {
@@ -604,7 +605,7 @@ public class DesignAction extends AbstractAction {
                }
 
 			   if( workflow == null ) {
-			      workflow = Workflow.readWorkflow( communitySnippet(), name ) ;
+			      workflow = manager.readWorkflow( communitySnippet(), name ) ;
 			   }
 
                 if( workflow == null ) {
@@ -612,7 +613,7 @@ public class DesignAction extends AbstractAction {
                     throw new ConsistencyException() ; 
                 }
                 else {
-                    Workflow.submitWorkflow( communitySnippet(), workflow ) ;
+                    manager.submitWorkflow( communitySnippet(), workflow ) ;
                 }          
             }
             finally {
@@ -626,7 +627,7 @@ public class DesignAction extends AbstractAction {
         private void chooseQuery() throws ConsistencyException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.chooseQuery() entry" ) ;
               
-            Step
+            IStep
                 step = null;
             String
                 activityKey = null,
@@ -646,11 +647,11 @@ public class DesignAction extends AbstractAction {
                      throw new ConsistencyException() ;
                  }
              
-                 Activity
+                 IActivity
                      activity = workflow.getActivity( activityKey ) ;
                     
-                 if( activity instanceof Step ) {
-                     step = (Step)activity ;
+                 if( activity instanceof IStep ) {
+                     step = (IStep)activity ;
 //                     Workflow.insertQueryIntoStep( step, queryName ) ;
                  }
                  else {
@@ -667,7 +668,7 @@ public class DesignAction extends AbstractAction {
         private void editJoinCondition() throws ConsistencyException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.editJoinCondition() entry" ) ;
               
-            Step
+            IStep
                 step ;
             JoinCondition 
                 joinCondition ;
@@ -687,25 +688,25 @@ public class DesignAction extends AbstractAction {
                     throw new ConsistencyException() ;
                 }
                 
-                if( editCondition.equalsIgnoreCase( JoinCondition.ANY.toString() ) ) {
-                    joinCondition =  JoinCondition.ANY ;
+                if( editCondition.equalsIgnoreCase( JoinCondition.ANY().toString() ) ) {
+                    joinCondition =  JoinCondition.ANY() ;
                 }
-                else if( editCondition.equalsIgnoreCase( JoinCondition.TRUE.toString() ) ) {
-                    joinCondition =  JoinCondition.TRUE ;
+                else if( editCondition.equalsIgnoreCase( JoinCondition.TRUE().toString() ) ) {
+                    joinCondition =  JoinCondition.TRUE() ;
                 }
-                else if( editCondition.equalsIgnoreCase( JoinCondition.FALSE.toString() ) ) {
-                    joinCondition =  JoinCondition.FALSE ;
+                else if( editCondition.equalsIgnoreCase( JoinCondition.FALSE().toString() ) ) {
+                    joinCondition =  JoinCondition.FALSE() ;
                 }
                 else {
                     ; // some logging here
                     throw new ConsistencyException() ; 
                 }
              
-                Activity
+                IActivity
                     activity = workflow.getActivity( activityKey ) ;
                     
-                if( activity instanceof Step ) {
-                    step = (Step)activity ;
+                if( activity instanceof IStep ) {
+                    step = (IStep)activity ;
                     step.setJoinCondition( joinCondition ) ;
                 }
                 else {
@@ -730,8 +731,8 @@ public class DesignAction extends AbstractAction {
 			  if( toolName == null ) {
 			     throw new ConsistencyException() ;		   	
 			  }
-			  Tool 
-			     tool = Workflow.createTool( communitySnippet()
+			  ITool 
+			     tool = manager.createTool( communitySnippet()
 				                           , toolName ) ;
 				                           
 			  this.request.setAttribute( HTTP_TOOL_TAG, tool ) ;
@@ -740,9 +741,9 @@ public class DesignAction extends AbstractAction {
 				trace("Name:" + tool.getName() ) ;
 				trace("Documentation: " + tool.getDocumentation() ) ;
 				trace("Input parameters:") ;
-				ListIterator li = tool.getInputParameters() ;
+				Iterator li = tool.getInputParameters() ;
 				while(li.hasNext()) {
-					Parameter p = (Parameter)li.next() ;
+					IParameter p = (IParameter)li.next() ;
 					trace("input param: Name " + p.getName()) ;
 					trace("input param: Documentation " + p.getDocumentation()) ;
 					trace("input param: Type " + p.getType()) ;
@@ -769,7 +770,7 @@ public class DesignAction extends AbstractAction {
                                
                 //NB: The filter argument is ignored at present (Sept 2003).
                 Iterator
-                    iterator =  Workflow.readWorkflowList( communitySnippet()
+                    iterator =  manager.readWorkflowList( communitySnippet()
                                                          , "*" ) ;
                 this.request.setAttribute( WORKFLOW_LIST_PARAMETER, iterator ) ;               
             }
@@ -778,6 +779,9 @@ public class DesignAction extends AbstractAction {
                 this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wfex.toString() ) ;
                 
             }
+            catch (WorkflowInterfaceException e) {
+                this.request.setAttribute(ERROR_MESSAGE_PARAMETER,e.getMessage());
+            }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflowList() exit" ) ;
             }
@@ -785,13 +789,13 @@ public class DesignAction extends AbstractAction {
         } // end of readWorkflowList()   
            
    
-        private void readQueryList() {
+        private void readQueryList() throws WorkflowInterfaceException{
             if( TRACE_ENABLED ) trace( "DesignActionImpl.readQueryList() entry" ) ;
               
             try {
 //              NB: The filter argument is ignored at present (Sept 2003).
                 Iterator
-                    iterator =  Workflow.readQueryList( communitySnippet(), "*" ) ;
+                    iterator =  manager.readQueryList( communitySnippet(), "*" ) ;
                 this.request.setAttribute( QUERY_LIST_PARAMETER, iterator ) ;               
             }
             finally {
@@ -800,12 +804,12 @@ public class DesignAction extends AbstractAction {
                     
         } // end of readQueryList()
         
-        private void readToolList() {
+        private void readToolList() throws WorkflowInterfaceException{
            if( TRACE_ENABLED ) trace( "DesignActionImpl.readToolList() entry" ) ;
               
            try {
               Iterator
-                 iterator =  Workflow.readToolList( communitySnippet() ) ;
+                 iterator =  manager.readToolList( communitySnippet() ) ;
                  this.request.setAttribute( TOOL_LIST_PARAMETER, iterator ) ;               
            }
            finally {
@@ -825,15 +829,15 @@ public class DesignAction extends AbstractAction {
                                
 					//NB: The filter argument is ignored at present (Sept 2003).
 					Iterator
-						workflowIterator =  Workflow.readWorkflowList( communitySnippet()
+						workflowIterator =  manager.readWorkflowList( communitySnippet()
 																	 , "*" ) ;
 					this.request.setAttribute( WORKFLOW_LIST_PARAMETER, workflowIterator ) ;
 					Iterator
-						queryIterator = Workflow.readQueryList( communitySnippet(), "*" ) ;
+						queryIterator = manager.readQueryList( communitySnippet(), "*" ) ;
 					this.request.setAttribute( QUERY_LIST_PARAMETER, queryIterator ) ; 
 				
 				    Iterator
-					    toolIterator = Workflow.readToolList( communitySnippet() ) ;
+					    toolIterator = manager.readToolList( communitySnippet() ) ;
 				    this.request.setAttribute( TOOL_LIST_PARAMETER, toolIterator ) ;
 
 				}
@@ -842,21 +846,23 @@ public class DesignAction extends AbstractAction {
 					this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wfex.toString() ) ;
                 
 				}
+                catch (WorkflowInterfaceException e) {
+                    this.request.setAttribute(ERROR_MESSAGE_PARAMETER,e.getMessage());
+                }
 				finally {
 					if( TRACE_ENABLED ) trace( "DesignActionImpl.readLists() exit" ) ;
 				}
                     
 			} // end of readLists()
            
-		private void insertToolIntoStep() throws ConsistencyException {
+		private void insertToolIntoStep() throws ConsistencyException, WorkflowInterfaceException {
 			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertToolIntoStep() entry" ) ;
 			
-			boolean 
-				response = false;
+
               
 			try {
 				
-				this.tool = (Tool) request.getAttribute( HTTP_TOOL_TAG ) ;
+				this.tool = (ITool) request.getAttribute( HTTP_TOOL_TAG ) ;
 					
                 String
                    toolname = request.getParameter( TOOL_NAME_PARAMETER ) ;					
@@ -871,20 +877,17 @@ public class DesignAction extends AbstractAction {
                 	debug( "stepActivityKey is null" ) ;
                 }
                 
-                Tool
-                   tool = workflow.createTool( communitySnippet(), toolname ) ; 
+                ITool
+                   tool = manager.createTool( communitySnippet(), toolname ) ; 
                 
                 if ( tool == null ) {
                 	debug( "tool is null" ) ;
                 }
                 else {                	
-				    response = Workflow.insertToolIntoStep( stepActivityKey, tool, workflow ) ;
+				    manager.insertToolIntoStep( stepActivityKey, tool, workflow ) ;
                 }   
 				
-				if ( response == false ) {
-					; // some logging here
-					throw new ConsistencyException() ;					          
-				}				
+		
 			}
 			finally {
 				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertQueryIntoStep() exit" ) ;
@@ -894,14 +897,14 @@ public class DesignAction extends AbstractAction {
 
 
 
-      private void insertInputValue() throws ConsistencyException {
+      private void insertInputValue() throws ConsistencyException, WorkflowInterfaceException {
          if( TRACE_ENABLED ) trace( "DesignActionImpl.insertInputValue() entry" ) ;
 			
-         Step 
+         IStep 
             step = null;
-         Tool
+         ITool
             tool = null ;
-         Parameter
+         IParameter
             param = null ;
               
          try {
@@ -924,18 +927,18 @@ public class DesignAction extends AbstractAction {
             debug( "parameterValue is null" ) ;
          }
 
-         Activity
+         IActivity
             activity = workflow.getActivity( stepActivityKey ) ;
                     
-         if( activity instanceof Step ) {
-            step = (Step)activity ;
+         if( activity instanceof IStep ) {
+            step = (IStep)activity ;
          }
          else {
             throw new ConsistencyException() ;
          }
          tool = step.getTool() ;
 				
-         workflow.insertParameterValue(tool,
+         manager.insertParameterValue(tool,
                                         parameterName,
                                         null,
                                         parameterValue,
@@ -949,14 +952,14 @@ public class DesignAction extends AbstractAction {
 		} // end of insertInputValue()       
 
 
-		private void insertOutputValue() throws ConsistencyException {
+		private void insertOutputValue() throws ConsistencyException, WorkflowInterfaceException {
 			 if( TRACE_ENABLED ) trace( "DesignActionImpl.insertOutputValue() entry" ) ;
 			
-			 Step 
+			 IStep 
 					step = null;
-			 Tool
+			 ITool
 					tool = null ;
-			 Parameter
+			 IParameter
 					param = null ;
               
 			 try {
@@ -979,11 +982,11 @@ public class DesignAction extends AbstractAction {
 					debug( "parameterValue is null" ) ;
 			 }
 
-			 Activity
+			 IActivity
 					activity = workflow.getActivity( stepActivityKey ) ;
                     
-			 if( activity instanceof Step ) {
-					step = (Step)activity ;
+			 if( activity instanceof IStep ) {
+					step = (IStep)activity ;
 			 }
 			 else {
 					throw new ConsistencyException() ;
@@ -991,7 +994,7 @@ public class DesignAction extends AbstractAction {
 			  
 			 tool = step.getTool() ; 
 				
-			 workflow.insertParameterValue( tool,
+			 manager.insertParameterValue( tool,
 			                                 parameterName,
 			                                 null,
 			                                 parameterValue,
@@ -1010,11 +1013,11 @@ public class DesignAction extends AbstractAction {
 		private void insertInputParameterIntoTool() throws ConsistencyException {
 			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertInputParameterIntoTool() entry" ) ;
 			
-            Step
+            IStep
                 step = null ;
-            Tool
+            ITool
                 tool = null ;
-            Parameter
+            IParameter
                 param = null ;
               
 			try {
@@ -1033,25 +1036,25 @@ public class DesignAction extends AbstractAction {
 					debug( "queryLocation is null" ) ;
 				}
 
-				Activity
+				IActivity
 					activity = workflow.getActivity( stepActivityKey ) ;
                     
-				if( activity instanceof Step ) {
-				    step = (Step)activity ;
+				if( activity instanceof IStep ) {
+				    step = (IStep)activity ;
 				}
 				else {
 					throw new ConsistencyException() ;
 				}
 				
 				
-				ListIterator listIt = step.getTool().getInputParameters() ;
+				Iterator listIt = step.getTool().getInputParameters() ;
 
-				Parameter
+				IParameter
 				    p ;
              
 				while( listIt.hasNext() ) {
 				
-				    p = (Parameter)listIt.next() ;
+				    p = (IParameter)listIt.next() ;
 					{
 
 						if ( p.getLocation().length() <= 0 )   //look for 1st parameter where location hasn't been set,
@@ -1073,11 +1076,11 @@ public class DesignAction extends AbstractAction {
 		private void insertOutputParameterIntoTool() throws ConsistencyException {
 			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertOutputParameterIntoTool() entry" ) ;
 			
-						Step
+						IStep
 								step = null ;
-						Tool
+						ITool
 								tool = null ;
-						Parameter
+						IParameter
 								param = null ;
               
 			try {
@@ -1090,18 +1093,18 @@ public class DesignAction extends AbstractAction {
 						debug( "stepActivityKey is null" ) ;
 				}
 
-				Activity
+				IActivity
 						activity = workflow.getActivity( stepActivityKey ) ;
                     
-				if( activity instanceof Step ) {
-						step = (Step)activity ;
+				if( activity instanceof IStep ) {
+						step = (IStep)activity ;
 				   
 				}
 				else {
 						throw new ConsistencyException() ;
 				}
 				
-				ListIterator ListIt = step.getTool().getOutputParameters() ;
+				Iterator ListIt = step.getTool().getOutputParameters() ;
 			
 				
 			}

@@ -8,10 +8,12 @@
  * with this distribution in the LICENSE.txt file.  
  *
  */
-package org.astrogrid.portal.workflow.design.activity;
+package org.astrogrid.portal.workflow.design;
 
-import org.apache.log4j.Logger ;
-import org.astrogrid.portal.workflow.design.Workflow;
+import org.astrogrid.portal.workflow.intf.*;
+
+import org.apache.log4j.Logger;
+
 
 
 /**
@@ -28,8 +30,9 @@ import org.astrogrid.portal.workflow.design.Workflow;
  * @see     
  * @since   AstroGrid 1.3
  * @testcase org.astrogrid.portal.workflow.test.org.astrogrid.portal.workflow.design.activity.TestActivity
+ * @modified NWW moved into workflow.design
  */
-public abstract class Activity {
+public abstract class Activity implements IActivity {
     
     /** Compile-time switch used to turn tracing on/off. 
       * Set this to false to eliminate all trace statements within the byte code.*/         
@@ -62,8 +65,9 @@ public abstract class Activity {
      * 
      * (2) A key unique within a Workflow.
      * 
+     * @modified NWW made protected.
      */    
-    public Activity( Activity parent ) {
+     protected Activity( Activity parent ) {
         if( TRACE_ENABLED ) trace( "Activity() entry") ; 
         
         try {  
@@ -78,12 +82,12 @@ public abstract class Activity {
     } // end of Activity( Activity parent )
     
 
-	public ActivityKey getKey() { return key; }
+	protected ActivityKey getKey() { return key; }
         
-	public void setParent( Activity parent ) { this.parent = parent ; }
-	public Activity getParent() { return parent ; }
+	protected void setParent( Activity parent ) { this.parent = parent ; }
+	protected Activity getParent() { return parent ; }
     
-    public boolean delete() {
+    protected boolean delete() {
         return ((ActivityContainer)this.getParent()).removeChild( this ) ;    
     }
     
@@ -123,14 +127,15 @@ public abstract class Activity {
     /*
      * To be overridden by ActivityContainer
      */
-    public ActivityIterator getChildren() { return null ; }
+    protected ActivityIterator getChildren() { return null ; }
     
     
     /*
      * Attempts to walk up the Activity tree to find the Workflow,
      * which is the top of the tree.
+     * @modified NWW - not used outside package, made package private.
      */
-    public Workflow getWorkflow() {
+    Workflow getWorkflow() {
         if( TRACE_ENABLED ) trace( "Activity.getWorkflow() entry") ;       
               
         Workflow
@@ -140,8 +145,8 @@ public abstract class Activity {
             
             // If this gets invoked on a Workflow, 
             // we are already at the top of the tree...
-            if( this instanceof Workflow ) {
-                workflow = (Workflow)this ;
+            if( this instanceof IWorkflow ) {
+                workflow =(Workflow)this ;
             }
             else {
                 
@@ -158,7 +163,7 @@ public abstract class Activity {
                      parent = parent.getParent() ;
                  }
              
-                 if( workflowCandidate instanceof Workflow ) {
+                 if( workflowCandidate instanceof IWorkflow ) {
                      workflow = (Workflow)workflowCandidate ;
                  }
                  else {
@@ -183,7 +188,7 @@ public abstract class Activity {
     /*
      * Returns relative postion of a child within its parent container
      */
-    public int getIndex() {
+    protected int getIndex() {
         return ( (ActivityContainer)this.getParent() ).getIndex( this ) ;
     }
     
@@ -193,7 +198,7 @@ public abstract class Activity {
      * NB: This will alter the position of other children of the same
      *     container.
      */
-    public void setIndex( int index ) {
+    protected void setIndex( int index ) {
         ( (ActivityContainer)this.getParent() ).setIndex( index, this ) ;
     }
     
@@ -208,7 +213,7 @@ public abstract class Activity {
          boolean
              retValue = false ;
             
-         if( (o != null) && (o instanceof Activity) ){
+         if( (o != null) && (o instanceof IActivity) ){
              retValue = ( o.hashCode() == this.hashCode() ) ;         
          }
         

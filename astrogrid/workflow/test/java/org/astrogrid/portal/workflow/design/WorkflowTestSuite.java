@@ -1,22 +1,28 @@
-package org.astrogrid.portal.workflow.design ;
+package org.astrogrid.portal.workflow.design;
 
-import org.astrogrid.i18n.*;
-import org.astrogrid.AstroGridException ;
-import java.util.Iterator;
-import junit.framework.Test; 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.astrogrid.AstroGridException;
+import org.astrogrid.community.common.util.CommunityMessage;
+import org.astrogrid.portal.workflow.WKF;
+import org.astrogrid.portal.workflow.intf.IActivity;
+import org.astrogrid.portal.workflow.intf.IParameter;
+import org.astrogrid.portal.workflow.intf.ISequence;
+import org.astrogrid.portal.workflow.intf.IStep;
+import org.astrogrid.portal.workflow.intf.ITool;
+import org.astrogrid.portal.workflow.intf.IWorkflow;
+import org.astrogrid.portal.workflow.intf.JoinCondition;
+
 import org.apache.axis.utils.XMLUtils;
 import org.apache.log4j.Logger;
-import org.astrogrid.portal.workflow.*;
-import org.astrogrid.community.common.util.CommunityMessage;
-import java.util.Date ;
-import org.astrogrid.portal.workflow.design.activity.*;
-import org.astrogrid.portal.workflow.design.Step ; 
-import org.w3c.dom.*;
-import org.xml.sax.InputSource ;
-import java.io.StringReader ; 
-import java.util.ListIterator ;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
+import java.io.StringReader;
+import java.util.Date;
+import java.util.Iterator;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 public class WorkflowTestSuite extends TestCase {
 	
@@ -97,9 +103,9 @@ public class WorkflowTestSuite extends TestCase {
          Workflow
             workflow = null ,
             workflowActivity = null ;
-         Sequence
+         ISequence
             sequenceActivity = null ;
-         Step
+         IStep
             stepActivity = null ;
             
          try{
@@ -112,11 +118,11 @@ public class WorkflowTestSuite extends TestCase {
                  logger.info( "workflowActivity is null" ) ;
                  assertTrue( false ) ;
              }
-             if( (sequenceActivity = (Sequence)workflow.getActivity( "1" )) == null ) {
+             if( (sequenceActivity = (ISequence)workflow.getActivity( "1" )) == null ) {
                  logger.info( "sequenceActivity is null" ) ;
                  assertTrue( false ) ;
              } 
-             if( (stepActivity = (Step)workflow.getActivity( "2" )) == null ) {
+             if( (stepActivity = (IStep)workflow.getActivity( "2" )) == null ) {
                  logger.info( "stepActivity is null" ) ;
                  assertTrue( false ) ;
              }  
@@ -149,7 +155,7 @@ public class WorkflowTestSuite extends TestCase {
             description = "Workflow should fail because of missing template",
             templateName = "IncorrectName" ;
             
-        Workflow workflow = null ;
+        IWorkflow workflow = null ;
             
         try{
             workflow = Workflow.createWorkflowFromTemplate( communitySnippet()
@@ -281,7 +287,7 @@ public class WorkflowTestSuite extends TestCase {
             workflow = null ;
         Sequence
             sequence = null ;
-        Step
+        IStep
             step = null ;
         String
             wfXML = null ;            
@@ -296,7 +302,7 @@ public class WorkflowTestSuite extends TestCase {
             step = sequence.createStep( 0 ) ;
             step.setName( "One step sequence" ) ;
             step.setDescription( "One step sequence containing DataFederation tool" ) ;
-            step.setJoinCondition( JoinCondition.ANY ) ;
+            step.setJoinCondition( JoinCondition.ANY() ) ;
             
             // Setting sequence and step numbers shows a weakness in the current approach.
             // These should be auto-generated in some fashion...
@@ -395,7 +401,7 @@ public class WorkflowTestSuite extends TestCase {
         Workflow workflow = null ;
         Sequence sequence = null ;
         Flow flow = null ;
-        Step step = null ;
+        IStep step = null ;
         int i = 0 ; // The workflow step number          
                        
         try{
@@ -416,7 +422,7 @@ public class WorkflowTestSuite extends TestCase {
                 step = flow.createStep( i ) ;
                 step.setName( "SExtractor job step") ;
                 step.setDescription( "++++++++++++++++ SExtractor against image number " + i + "+++++++++++++" ) ;  
-                step.setJoinCondition( JoinCondition.ANY ) ; 
+                step.setJoinCondition( JoinCondition.ANY() ) ; 
                 // Setting sequence and step numbers shows a weakness in the current approach.
                 // These should be auto-generated in some fashion...
                 step.setSequenceNumber( 1 ) ;
@@ -434,7 +440,7 @@ public class WorkflowTestSuite extends TestCase {
             step = sequence.createStep( 1 ) ; 
             step.setName( "DataFederation job step") ;
             step.setDescription( "+++++++++++++++ DataFederation against the output from the SExtractor steps +++++++++++++++" ) ;  
-            step.setJoinCondition( JoinCondition.TRUE ) ; 
+            step.setJoinCondition( JoinCondition.TRUE() ) ; 
             // Setting sequence and step numbers shows a weakness in the current approach.
             // These should be auto-generated in some fashion...
             step.setSequenceNumber( 2 ) ;
@@ -454,7 +460,7 @@ public class WorkflowTestSuite extends TestCase {
             step = sequence.createStep( 2 ) ;  
             step.setName( "HyperZ job step" ) ;
             step.setDescription( "++++++++++++++ HyperZ ++++++++++++++" ) ;  
-            step.setJoinCondition( JoinCondition.TRUE ) ; 
+            step.setJoinCondition( JoinCondition.TRUE() ) ; 
             // Setting sequence and step numbers shows a weakness in the current approach.
             // These should be auto-generated in some fashion...
             step.setSequenceNumber( 3 ) ;
@@ -782,7 +788,7 @@ public class WorkflowTestSuite extends TestCase {
          Iterator  
             iterator,
             iterator2 ;
-         Tool
+         ITool
             tool ;
          Parameter
             param ;
@@ -862,7 +868,7 @@ public class WorkflowTestSuite extends TestCase {
                                                           , description
                                                           , templateName ) ;
                                                           
-            Activity
+            IActivity
                 activity = workflow.getChild() ;
                 
             Tool
@@ -871,11 +877,11 @@ public class WorkflowTestSuite extends TestCase {
                                           
             Iterator
                 it = tool.getInputParameters() ;
-            Parameter
+            IParameter
                 p ;
                 
             while( it.hasNext() ) {
-                p = (Parameter)it.next() ;
+                p = (IParameter)it.next() ;
                 if( p.getName().equals("DetectionImage") ) {
                     p.setLocation( Workflow.formatMySpaceURL( communitySnippet()
                                                             , "imagefiles"
@@ -896,7 +902,7 @@ public class WorkflowTestSuite extends TestCase {
             it = tool.getOutputParameters() ;
             
             while( it.hasNext() ) {
-                p = (Parameter)it.next() ;
+                p = (IParameter)it.next() ;
                 if( p.getName().equals("CATALOG_NAME") ) {
                     p.setLocation( Workflow.formatMySpaceURL( communitySnippet()
                                                             , "catalogfiles"
@@ -905,11 +911,11 @@ public class WorkflowTestSuite extends TestCase {
             }
             
                 
-            if( activity instanceof Sequence ) {
+            if( activity instanceof ISequence ) {
                 Sequence
                     sequence = (Sequence) activity ;
-                Step
-                    step = (Step)sequence.getChildren().next() ;
+                IStep
+                    step = (IStep)sequence.getChildren().next() ;
                 step.setTool( tool ) ;    
             }
              
@@ -970,11 +976,11 @@ public class WorkflowTestSuite extends TestCase {
               rc = false ;
           ActivityIterator
               iterator = null ;
-          Activity
+          IActivity
               activity = null ;
-          Step
+          IStep
               step = null ;
-          ListIterator
+          Iterator
               listIt = null ;
             
           try{
@@ -999,11 +1005,11 @@ public class WorkflowTestSuite extends TestCase {
                                                         , "votable_0123.xml" ) ;
              
              listIt = tool.getInputParameters() ;
-             Parameter
+             IParameter
                 p ;
              
              while( listIt.hasNext() ) {
-                 p = (Parameter)listIt.next() ;
+                 p = (IParameter)listIt.next() ;
                  if( p.getName().equals("query") )
                     p.setLocation( queryLocation ) ;
                     break ;
@@ -1012,7 +1018,7 @@ public class WorkflowTestSuite extends TestCase {
              listIt = tool.getOutputParameters() ;
              
              while( listIt.hasNext() ) {
-                 p = (Parameter)listIt.next() ;
+                 p = (IParameter)listIt.next() ;
                  if( p.getName().equals("result") )
                     p.setLocation( votableLocation ) ;
                     break ;
@@ -1024,8 +1030,8 @@ public class WorkflowTestSuite extends TestCase {
              
              while( iterator.hasNext() ) {
                  activity = iterator.next() ;
-                 if( activity instanceof Step ) {
-                     step = (Step)activity ;
+                 if( activity instanceof IStep ) {
+                     step = (IStep)activity ;
                      step.setTool( tool ) ;
                      break ;
                  }
@@ -1174,9 +1180,9 @@ public class WorkflowTestSuite extends TestCase {
             sequence = null ;
         ActivityIterator
             iterator = null ;
-        Activity
+        IActivity
             activity = null ;
-        Step
+        IStep
             step = null ;
         String
             jesXML = null ;
@@ -1193,8 +1199,8 @@ public class WorkflowTestSuite extends TestCase {
              
             while( iterator.hasNext() ) {
                 activity = iterator.next() ;
-                if( activity instanceof Step ) {
-                    step = (Step)activity ;
+                if( activity instanceof IStep ) {
+                    step = (IStep)activity ;
                     break ;
                 }
             }
@@ -1267,9 +1273,9 @@ public class WorkflowTestSuite extends TestCase {
             sequence = null ;
         ActivityIterator
             iterator = null ;
-        Activity
+        IActivity
             activity = null ;
-        Step
+        IStep
             step = null ;
         String
             jesXML = null ;
@@ -1286,8 +1292,8 @@ public class WorkflowTestSuite extends TestCase {
              
             while( iterator.hasNext() ) {
                 activity = iterator.next() ;
-                if( activity instanceof Step ) {
-                    step = (Step)activity ;
+                if( activity instanceof IStep ) {
+                    step = (IStep)activity ;
                     break ;
                 }
             }
@@ -1364,9 +1370,9 @@ public class WorkflowTestSuite extends TestCase {
             sequence = null ;
         ActivityIterator
             iterator = null ;
-        Activity
+        IActivity
             activity = null ;
-        Step
+        IStep
             step = null ;
         String
             jesXML = null ;
@@ -1383,8 +1389,8 @@ public class WorkflowTestSuite extends TestCase {
              
             while( iterator.hasNext() ) {
                 activity = iterator.next() ;
-                if( activity instanceof Step ) {
-                    step = (Step)activity ;
+                if( activity instanceof IStep ) {
+                    step = (IStep)activity ;
                     break ;
                 }
             }
@@ -1447,24 +1453,24 @@ public class WorkflowTestSuite extends TestCase {
     /**
      * Helper method which sets up HyperZ specific job step details.
      */ 
-    private Step setUpHyperZStep( Step targetStep
+    private IStep setUpHyperZStep( IStep targetStep
                                 , String config_file
                                 , String input_catalog
                                 , String output_catalog ) {
         logger.info( "enter: WorkflowTestSuite.setUpHyperZStep()" );
        
-        ListIterator iterator ;
+        Iterator iterator ;
         
         try {
             
             Tool tool = Workflow.createTool( communitySnippet(), "HyperZ" ) ;
-            Parameter p ;
+            IParameter p ;
             String pName ;
             
             iterator = tool.getInputParameters() ;            
             while( iterator.hasNext() ) {
                 
-                p = (Parameter)iterator.next() ;
+                p = (IParameter)iterator.next() ;
                 pName = p.getName() ;
                 
                 if( pName.equals("config_file") ) {
@@ -1478,7 +1484,7 @@ public class WorkflowTestSuite extends TestCase {
             
             iterator = tool.getOutputParameters() ;            
             while( iterator.hasNext() ) {
-                p = (Parameter)iterator.next() ;
+                p = (IParameter)iterator.next() ;
                 if( p.getName().equals("output_catalog") )
                    p.setValue( output_catalog ) ;
                    break ;
@@ -1499,25 +1505,25 @@ public class WorkflowTestSuite extends TestCase {
     /**
      * Helper method which sets up SExtractor specific job step details.
      */ 
-    private Step setUpSExtractorStep( Step targetStep
+    private IStep setUpSExtractorStep( IStep targetStep
                                     , String detectionImage
                                     , String config_file
                                     , String parameters_name
                                     , String catalog_name ) {
         logger.info( "enter: WorkflowTestSuite.setUpSExtractorStep()" );
        
-        ListIterator iterator ;
+        Iterator iterator ;
         
         try {
             
             Tool tool = Workflow.createTool( communitySnippet(), "SExtractor" ) ;
-            Parameter p ;
+            IParameter p ;
             String pName ;
             
             iterator = tool.getInputParameters() ;            
             while( iterator.hasNext() ) {
                 
-                p = (Parameter)iterator.next() ;
+                p = (IParameter)iterator.next() ;
                 pName = p.getName() ;
                 
                 if( pName.equals("DetectionImage") ) {
@@ -1534,7 +1540,7 @@ public class WorkflowTestSuite extends TestCase {
             
             iterator = tool.getOutputParameters() ;            
             while( iterator.hasNext() ) {
-                p = (Parameter)iterator.next() ;
+                p = (IParameter)iterator.next() ;
                 if( p.getName().equals("CATALOG_NAME") )
                    p.setValue( catalog_name ) ;
                    break ;
@@ -1557,7 +1563,7 @@ public class WorkflowTestSuite extends TestCase {
      * Note: this shows how to setup added optional input parameters.
      * 
      */ 
-    private Step setUpDataFederationStep( Step targetStep
+    private IStep setUpDataFederationStep( IStep targetStep
                                         , String [] votables
                                         , boolean mergeCols
                                         , String show
@@ -1569,19 +1575,19 @@ public class WorkflowTestSuite extends TestCase {
                                         , String merged_output ) {
         logger.info( "enter: WorkflowTestSuite.setUpDataFederationStep()" );
        
-        ListIterator iterator ;
+        Iterator iterator ;
         
         try {
             
             Tool tool = Workflow.createTool( communitySnippet(), "DataFederation" ) ;
-            Parameter p ;
+            IParameter p ;
             int votablesIndex = 0 ;
             String pName ;
             
             iterator = tool.getInputParameters() ;            
             while( iterator.hasNext() ) {
                 
-                p = (Parameter)iterator.next() ;
+                p = (IParameter)iterator.next() ;
                 pName = p.getName() ;
                 
                 // There can be a variable number of VOTfiles.
@@ -1626,7 +1632,7 @@ public class WorkflowTestSuite extends TestCase {
             
             iterator = tool.getOutputParameters() ;            
             while( iterator.hasNext() ) {
-                p = (Parameter)iterator.next() ;
+                p = (IParameter)iterator.next() ;
                 if( p.getName().equals("merged_output") )
                    p.setValue( merged_output ) ;
                    break ;

@@ -11,11 +11,15 @@
 
 package org.astrogrid.portal.workflow.design;
 
-import org.astrogrid.portal.workflow.design.activity.*;
-import org.apache.log4j.Logger ;
-import java.text.MessageFormat ;
-import org.w3c.dom.* ;
-import org.apache.axis.utils.XMLUtils ;
+import org.astrogrid.portal.workflow.intf.*;
+
+import org.apache.axis.utils.XMLUtils;
+import org.apache.log4j.Logger;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.text.MessageFormat;
 
 /**
  * The <code>Step</code> class represents an individual job step with
@@ -47,7 +51,7 @@ import org.apache.axis.utils.XMLUtils ;
  * @see     org.astrogrid.portal.workflow.design.JoinCondition
  * @since   AstroGrid 1.3
  */
-public class Step extends Activity {
+public class Step extends Activity implements IStep {
     
     /** Compile-time switch used to turn tracing on/off. 
       * Set this to false to eliminate all trace statements within the byte code.*/         
@@ -79,10 +83,10 @@ public class Step extends Activity {
       * The default join condition is JoinCondition.ANY
       * 
       **/       
-    public Step( Activity parent ) {
+    protected Step( Activity parent ) {
         super( parent ) ;
         if( TRACE_ENABLED ) trace( " entry: Step(parent)") ;
-        joinCondition = JoinCondition.ANY ; 
+        joinCondition = JoinCondition.ANY() ; 
         if( TRACE_ENABLED ) trace( " exit: Step(parent)") ;
     }
     
@@ -93,7 +97,7 @@ public class Step extends Activity {
       * <p> 
       * 
       **/       
-    public Step( String communitySnippet
+    protected Step( String communitySnippet
                , Element element
                , Activity parent  ) {
         super( parent ) ;
@@ -107,19 +111,19 @@ public class Step extends Activity {
                 condition = element.getAttribute( WorkflowDD.STEP_JOINCONDITION_ATTR ) ;
              
             if( condition == null ) { 
-                this.joinCondition = JoinCondition.ANY ;    
+                this.joinCondition = JoinCondition.ANY() ;    
             }
             else {
                 condition.trim() ;
                 
                 if( condition.equalsIgnoreCase("true") ) {
-                    this.joinCondition = JoinCondition.TRUE ;
+                    this.joinCondition = JoinCondition.TRUE() ;
                 }
                 else if( condition.equalsIgnoreCase("false") ) {
-                    this.joinCondition = JoinCondition.FALSE ;
+                    this.joinCondition = JoinCondition.FALSE() ;
                 }
                 else {
-                    this.joinCondition = JoinCondition.ANY ; 
+                    this.joinCondition = JoinCondition.ANY() ; 
                 }
                 
             }
@@ -192,7 +196,7 @@ public class Step extends Activity {
      * Tester for the condition JoinCondition.TRUE
      */ 
 	public boolean isJoinConditionTrue() {
-		return joinCondition == JoinCondition.TRUE ;
+		return joinCondition == JoinCondition.TRUE() ;
 	}
     
       
@@ -200,7 +204,7 @@ public class Step extends Activity {
      * Tester for the condition JoinCondition.FALSE
      */ 
     public boolean isJoinConditionFalse() {
-        return joinCondition == JoinCondition.FALSE ;
+        return joinCondition == JoinCondition.FALSE() ;
     }
     
     
@@ -208,22 +212,22 @@ public class Step extends Activity {
      * Tester for the condition JoinCondition.ANY
      */ 
     public boolean isJoinConditionAny() {
-        return joinCondition == JoinCondition.ANY ;
+        return joinCondition == JoinCondition.ANY() ;
     }
 
 
     /**
      * Sets this step's Tool
      */  
-	public void setTool( Tool tool ) {
-		this.tool = tool;
+	public void setTool( ITool tool ) {
+		this.tool = (Tool)tool;
 	}
 
 
     /**
      * Gets this step's Tool
      */  
-	public Tool getTool() {  
+	public ITool getTool() {  
 		return tool;
 	}
 

@@ -1,5 +1,6 @@
 package org.astrogrid.portal.workflow.jes;
 
+import java.util.Iterator;
 import java.util.ListIterator;
 
 import junit.framework.Test;
@@ -54,14 +55,14 @@ public class JesTestSuite extends TestCase {
           userid + "@" + community,
           "xray@" + community);
 
-    ListIterator iterator = null;
-    Job job = null;
+    Iterator iterator = null;
+    WorkflowJob job = null;
 
     try {
-      iterator = Job.readJobList(userid, community, communitySnippet, "*");
+      iterator = JobManager.getManager().readJobList(userid, community, communitySnippet, "*");
 
       while (iterator.hasNext()) {
-        job = (Job) iterator.next();
+        job = (WorkflowJob) iterator.next();
         logger.info("====*====");
         logger.info("job.getName(): " + job.getName());
         logger.info("job.getDescription(): " + job.getDescription());
