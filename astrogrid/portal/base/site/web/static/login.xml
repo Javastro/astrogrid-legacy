@@ -1,0 +1,31 @@
+<div>
+  <p>
+    This portal's community branch is star.le.ac.uk.
+  </p>
+  
+  <img src="/astrogrid-portal/grid_trans_wording.gif" alt="GridLogo" hspace="5" vspace="0" align="left"/>
+  
+  <p class="ag-special-notice">
+    For access to this facility please consult the Astrogrid Administrator<br/>
+    Administrator for this community is Keith Noddle<br/>
+    Administrator's Email for this community is ktn@star.le.ac.uk<br/>
+  </p>
+  
+  <table style="text-align: right;" align="center">
+    <tr>
+      <td>Username:&#160;</td>
+      <td><input type="text"/></td>
+    </tr>
+    <tr>
+      <td>Password:&#160;</td>
+      <td><input type="text"/></td>
+    </tr>
+    <tr>
+      <td colspan="2" style="text-align: center;"><input type="button" value="Login"/></td>
+    </tr>
+  </table>
+  
+  <p>
+    If you are new to Astrogrid please sign in here click: <a href="">Register</a>
+  </p>
+</div>

@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>X Drag Demo 1</title>
+<meta name='author' content='Mike Foster (Cross-Browser.com)' />
+<meta name='description' content='Cross-Browser DHTML Libraries and Applications' />
+<meta name='keywords' content='menu,dhtml,crossbrowser,layout,css,dom,api,library,demo,code' />
+<link rel='stylesheet' type='text/css' href='../../css/s1.css' />
+<style type='text/css'>
+#d2Container {
+  position:absolute; margin:0; padding:0; font-size:x-small;
+  width:200px; height:auto; color:#000; background:#963; overflow:hidden;
+}
+#d2Contents {
+  padding:10px;
+}
+.draggable {
+  position:absolute; margin:0; padding:10px; font-size:x-small;
+  width:100px; height:auto; color:#000; background:#369; overflow:hidden;
+}
+</style>
+<script type='text/javascript' src='../x.js'></script>
+<script type='text/javascript' src='../x_drag.js'></script>
+<script type='text/javascript'>
+var hiZ = 2;
+window.onload = function()
+{
+  var ele = xGetElementById('d1');
+  xMoveTo(ele, (xClientWidth() - xWidth(ele)) / 2, (xClientHeight() - xHeight(ele)) / 2);
+  xEnableDrag(ele, myOnDragStart, myOnDrag, myOnDragEnd);
+
+  var ele = xGetElementById('d2Container');
+  xMoveTo(ele, xClientWidth() - xWidth(ele) - 10, (xClientHeight() - xHeight(ele)) / 2);
+  xResizeTo('d2', 20, 20);
+  xMoveTo('d2', xWidth('d2Container') - xWidth('d2'), 0);
+  xEnableDrag('d2', myOnDragStart, myOnDrag, myOnDragEnd);
+}
+function myOnDragStart(ele, mx, my)
+{
+  window.status = '';
+  if (ele.id == 'd2') xZIndex('d2Container', hiZ++);
+  else xZIndex(ele, hiZ++);
+  ele.myTotalMX = 0;
+  ele.myTotalMY = 0;
+}
+function myOnDrag(ele, mdx, mdy)
+{
+  if (ele.id == 'd2') {
+    xMoveTo('d2Container', xLeft('d2Container') + mdx, xTop('d2Container') + mdy);
+  }
+  else {
+    xMoveTo(ele, xLeft(ele) + mdx, xTop(ele) + mdy);
+  }  
+  ele.myTotalMX += mdx;
+  ele.myTotalMY += mdy;
+}
+function myOnDragEnd(ele, mx, my)
+{
+  window.status =
+    ele.id +
+    ':  Thanks for the drag!  Total X movement: ' + ele.myTotalMX +
+    ',  Total Y movement: ' + ele.myTotalMY;
+}
+</script>
+</head>
+<body>
+<h1>X Drag Demo 1</h1>
+<p>Drag events implemented with the <a href='http://cross-browser.com/'>X Library</a>.</p>
+<p>I threw this together quickly... so it's probably not perfect -
+but it should give you some ideas :-)</p>
+<h2>Event Listener Example Code</h2>
+<pre>
+var hiZ = 2;
+window.onload = function()
+{
+  xEnableDrag('d1', myOnDragStart, myOnDrag, myOnDragEnd);
+  xEnableDrag('d2', myOnDragStart, myOnDrag, myOnDragEnd);
+}
+function myOnDragStart(ele, mx, my)
+{
+  window.status = '';
+  if (ele.id == 'd2') xZIndex('d2Container', hiZ++);
+  else xZIndex(ele, hiZ++);
+  ele.myTotalMX = 0;
+  ele.myTotalMY = 0;
+}
+function myOnDrag(ele, mdx, mdy)
+{
+  if (ele.id == 'd2') {
+    xMoveTo('d2Container', xLeft('d2Container') + mdx, xTop('d2Container') + mdy);
+  }
+  else {
+    xMoveTo(ele, xLeft(ele) + mdx, xTop(ele) + mdy);
+  }  
+  ele.myTotalMX += mdx;
+  ele.myTotalMY += mdy;
+}
+function myOnDragEnd(ele, mx, my)
+{
+  window.status =
+    ele.id +
+    ':  Thanks for the drag!  Total X movement: ' + ele.myTotalMX +
+    ',  Total Y movement: ' + ele.myTotalMY;
+}
+</pre>
+<h2>System Code</h2>
+<pre>
+// x_drag.js
+// X v3.14, Cross-Browser DHTML Library from Cross-Browser.com
+// Copyright (c) 2002,2003 Michael Foster (mike@cross-browser.com)
+// This library is distributed under the terms of the LGPL (gnu.org)
+
+var xDragMgr = {ele:null, mm:false};
+
+function xEnableDrag(id, fnDragStart, fnDrag, fnDragEnd)
+{
+  var ele = xGetElementById(id);
+  ele.xDraggable = true;
+  ele.xOnDragStart = fnDragStart;
+  ele.xOnDrag = fnDrag;
+  ele.xOnDragEnd = fnDragEnd;
+  xAddEventListener(ele, 'mousedown', xdOnMousedown, false);
+  if (!xDragMgr.mm) {
+    xDragMgr.mm = true;
+    xAddEventListener(document, 'mousemove', xdOnMousemove, false);
+  }
+}
+function xdOnMousedown(e) // drag start
+{
+  var evt = new xEvent(e);
+  var ele = evt.target;
+  while(ele && !ele.xDraggable) {
+    ele = xParent(ele);
+  }
+  if (ele) {
+    if (e.preventDefault) e.preventDefault();
+    else if (window.event) window.event.returnValue = false;
+    ele.xDragX = evt.pageX;
+    ele.xDragY = evt.pageY;
+    xDragMgr.ele = ele;
+    xAddEventListener(ele, 'mouseup', xdOnMouseup, false);
+    if (ele.xOnDragStart) {
+      ele.xOnDragStart(ele, evt.pageX, evt.pageY);
+    }
+  }
+}
+function xdOnMousemove(e) // drag
+{
+  var evt = new xEvent(e);
+  if (xDragMgr.ele) {
+    if (e.preventDefault) e.preventDefault();
+    else if (window.event) window.event.returnValue = false;
+    var ele = xDragMgr.ele;
+    var dx = evt.pageX - ele.xDragX;
+    var dy = evt.pageY - ele.xDragY;
+    ele.xDragX = evt.pageX;
+    ele.xDragY = evt.pageY;
+    if (ele.xOnDrag) {
+      ele.xOnDrag(ele, dx, dy);
+    }
+    else {
+      xMoveTo(ele, xLeft(ele) + dx, xTop(ele) + dy);
+    }
+  }  
+}
+function xdOnMouseup(e) // drag end
+{
+  if (xDragMgr.ele) {
+    if (e.preventDefault) e.preventDefault();
+    else if (window.event) window.event.returnValue = false;
+    xRemoveEventListener(xDragMgr.ele, 'mouseup', xdOnMouseup, false);
+    if (xDragMgr.ele.xOnDragEnd) {
+      var evt = new xEvent(e);
+      xDragMgr.ele.xOnDragEnd(xDragMgr.ele, evt.pageX, evt.pageY);
+    }
+    xDragMgr.ele = null;
+  }  
+}
+</pre>
+
+<div id='d1' class='draggable'>
+  <p><strong>I am 'd1'</strong></p>
+  <p>You can drag me anywhere on this element or one of its child elements.</p>
+</div>
+
+<div id='d2Container'>
+  <div id='d2' class='draggable'></div>
+  <div id='d2Contents'>
+    <p><strong>I am 'd2Container'</strong></p>
+    <p>You can only drag me by dragging 'd2',
+    which is the blue element in the upper right corner.</p>
+  </div>  
+</div>
+
+</body>
+</html>

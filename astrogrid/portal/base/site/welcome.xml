@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | This is a very simple XML page done just to show how a simple 
+    | cocoon pipeline works.
+    |
+    | CVS $Id: welcome.xml,v 1.1 2004/01/08 22:57:17 gps Exp $
+    +--><welcome>
+ <message>
+   Congratulations! If you are reading this page, it means that
+   your Apache Cocoon installation was successful.
+ </message>
+
+
+  <message id="samples">
+   To know more about Cocoon capabilities, look at the <link href="samples/">samples</link>.
+  </message>
+  
+
+
+  <message id="docs">
+   Here you find the <link href="docs/">Cocoon Documentation</link>.
+  </message>
+  
+
+
+  <message id="javadocs">
+   Here you find the <link href="api/java/index.html">Java API documentation</link> of the Cocoon internals.
+  </message>
+  
+
+
+  <message id="idldocs">
+   Here you find the <link href="api/fom/index.html">Flow Object Model (FOM) documentation</link>.
+  </message>
+  
+</welcome>

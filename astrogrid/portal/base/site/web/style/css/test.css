@@ -1,0 +1,131 @@
+div
+{
+  /*
+    Borders.
+    */
+/*
+  border-style:                   dotted;
+  border-width:                   thin;
+*/
+  border-style:                   none;
+  border-width:                   0;
+}
+
+#ag-body-content
+{
+}
+
+#ag-body-content-text
+{
+  /*
+    Margins and Padding.
+    */
+  margin-left:                    180px;
+  padding:                        0 10px 0 5px;
+}
+
+#ag-body-content-logo
+{
+  /*
+    Dimensions.
+    */
+  width:                          180px;
+
+  /*
+    Positioning.
+    */
+  float:                          left;
+}
+
+#ag-body-content-logo
+{
+}
+
+#ag-body-panelbar
+{
+  /*
+    Dimensions.
+    */
+  width:                          20%;
+  
+  /*
+    Positioning.
+    */
+  position:                       relative;
+  float:                          right;
+}
+
+#ag-body-panelbar-header
+{
+  /*
+    Colors.
+    */
+  background-color:               lightgray;
+  color:                          black;
+  
+  /*
+    Cursor.
+    */
+  cursor:                         pointer;
+}
+
+span.ag-body-panelbar-tab
+{
+  /*
+    Borders.
+    */
+  border-style:                   outset;
+  border-width:                   thin;
+  
+  /*
+    Colors.
+    */
+  background-color:               blue;
+  color:                          lightblue;
+  
+  /*
+    Cursor.
+    */
+  cursor:                         pointer;
+}
+
+#ag-body-panelbar-toggle
+{
+  /*
+    Colors.
+    */
+  background-color:               lightgray;
+  color:                          black;
+  
+  /*
+    Cursor.
+    */
+  cursor:                         pointer;
+  
+  /*
+    Positioning.
+    */
+  float:                          right;
+}
+
+.ag-body-panelbar-content
+{
+  /*
+    Dimensions.
+    */
+/*
+  width:                          15%;
+*/
+
+  /*
+    Margins and Padding.
+    */
+  margin-right:                   2%;
+  
+  /*
+    Positioning.
+    */
+  position:                       absolute;
+  visibility:                     hidden;
+}
+

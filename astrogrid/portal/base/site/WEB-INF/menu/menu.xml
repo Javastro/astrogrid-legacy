@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<menu
+    name="default"
+    display="AstroGrid"
+
+    xmlns="http://www.astrogrid.org/portal"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.astrogrid.org/portal menu-schema.xsd">
+  <link>/astrogrid-portal</link>
+  <description>AstroGrid Menu</description>
+</menu>

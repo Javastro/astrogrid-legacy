@@ -1,0 +1,451 @@
+body
+{
+  /*
+    Colours.
+    */
+  background-color:                         white;
+
+
+  /*
+    Borders, margins and padding.
+    */
+  margin:                                   0% 0% 0% 0%;
+}
+
+/*
+  Main block.
+  */
+#ag-main
+{
+  /*
+    Colours.
+    */
+  background-color:                         lightblue;
+  
+  /*
+    Dimensions.
+    */
+
+  /*
+    Borders, margins and padding.
+    */
+  margin:                                   0% 0% 0% 0%;
+}
+
+/*
+  Title bar.
+  */
+#ag-title-bar
+{
+  /*
+    Borders, margins and padding.
+    */
+  margin:                                   0% 0% 3% 0%;
+  padding-top:                              10px;
+
+  /*
+    Colours.
+    */
+  background-color:                         lightblue;
+}
+
+/*
+  Main menu.
+  */
+#ag-main-menu
+{
+  /*
+    Borders, margins and padding.
+    */
+  border-color:                             mediumblue;
+  border-style:                             solid;
+  
+  /*
+    Colours.
+    */
+  background-color:                         lightgray;
+  color:                                    mediumblue;
+
+  /*
+    Dimensions.
+    */
+  width:                                    19%;
+
+  /*
+    Positioning.
+  z-index:                                  5;
+    */
+  position:                                 fixed;
+  float:                                    left;
+}
+
+/*
+  Main menu header
+  */
+#ag-main-menu-header
+{
+  /*
+    Alignment.
+    */
+  text-align:                               center;
+  
+  /*
+    Borders, margins and padding.
+  border-bottom-color:                      mediumblue;
+  border-bottom-style:                      solid;
+  border-bottom-width:                      1px;
+    */
+  
+  margin-bottom:                            10px;
+
+  /*
+    Colours.
+    */
+  background-color:                         lightblue;
+}
+
+/*
+  Main menu contents.
+  */
+.ag-main-menu-content
+{
+  /*
+    Borders, margins and padding.
+    */
+  padding-left:                             10%;
+}
+
+/*
+  Main menu separator.
+  */
+.ag-main-menu-separator
+{
+  /*
+    NO STYLE AS YET.
+    */
+}
+
+`/*
+  Main menu footer
+  */
+#ag-main-menu-footer
+{
+  /*
+    Dimensions.
+    */
+  width:                                    100%;
+  
+  /*
+    Font.
+    */
+  font-size:                                small;
+
+  /*
+    Text alignment.
+    */
+  text-align:                               right;
+}
+
+/*
+  Main content.
+  */
+#ag-content
+{
+  /*
+    Borders, margins and padding.
+    */
+  margin:                                   0% 0% 0% 0%;
+  margin-left:                              20%;
+  
+  /*
+    Colours.
+    */
+  background-color:                         white;
+}
+
+/*
+  Main content tabs.
+  */
+#ag-content-tab-top,
+#ag-content-tab-bottom
+{
+  /*
+    Colours.
+    */
+  background-color:                         lightblue;
+}
+
+.ag-content-tab-top
+{
+  /*
+    Borders, margins and padding.
+    */
+  border-right-style:                       outset;
+  border-top-style:                         outset;
+  border-left-style:                        outset;
+  border-left-width:                        1px;
+}
+
+.ag-content-tab-bottom
+{
+  /*
+    Borders, margins and padding.
+    */
+  border-right-style:                       outset;
+  border-bottom-style:                      outset;
+  border-left-style:                        outset;
+  border-left-width:                        1px;
+}
+
+a.ag-content-tab-link
+{
+  color:                                    midnightblue;
+}
+
+a.ag-content-tab-link:link
+{
+  text-decoration:                          none;
+}
+
+a.ag-content-tab-link:visited
+{
+  text-decoration:                          none;
+}
+
+a.ag-content-tab-link:active
+{
+  text-decoration:                          none;
+}
+
+a.ag-content-tab-link:hover
+{
+  text-decoration:                          none;
+}
+
+/*
+  Main content panels
+  */
+#ag-content-panelbar
+{
+  /*
+    Borders, margins and padding.
+    */
+  border-style:                             outset;
+  margin-top:                               2px;
+  margin-right:                             2px;
+  
+  /*
+    Colours.
+    */
+  background-color:                         lightgray;
+  color:                                    mediumblue;
+
+  /*
+    Dimensions.
+    */
+  width:                                    30%;
+
+  /*
+    Positioning.
+    */
+  float:                                    right;
+}
+
+/*
+  Main content of the screen... the working section.
+  */
+#ag-content-main
+{
+  /*
+    Borders, margins and padding.
+  border-top-width:                         1px;
+  border-top-style:                         solid;
+  border-bottom-width:                      1px;
+  border-bottom-style:                      solid;
+  padding-right:                            21%;
+  padding-left:                             21%;
+    */
+  margin-left:                              20%;
+  
+  /*
+    Colours.
+    */
+  background-color:                         white;
+   
+  /*
+    Positioning.
+    */
+  clear:                                    none;
+}
+
+/*
+  Footer bar.
+  */
+#ag-footer-bar
+{
+  /*
+    Alignment.
+    */
+  text-align:                               right;
+  
+  /*
+    Colours.
+    */
+  background-color:                         midnightblue;
+  color:                                    white;
+
+  /*
+    Positioning.
+    */
+  clear:                                    both;
+}
+
+/*
+  Panel bar.
+  */
+div.ag-content-panelbar-tab
+{
+  /*
+    Borders, margins and padding.
+    */
+  border-bottom-width:                      1px;
+  border-bottom-style:                      inset;
+  border-color:                             lightblue;
+  
+  /*
+    Colours.
+    */
+  background-color:                         lightblue;
+  
+  /*
+    Dimensions.
+    */
+  width:                                    20%;
+  
+  /*
+    Positioning.
+    */
+  clear:                                    both;
+  float:                                    left;
+  overflow:                                 auto;
+}
+
+span.ag-content-panelbar-tab
+{
+  /*
+    Cursor.
+    */
+  cursor:                                   pointer;
+}
+
+#ag-content-panelbar-content-1
+{
+  /*
+    Positioning.
+    */
+  position:                                 relative;
+}
+
+#ag-content-panelbar-content
+{
+  /*
+    Borders, margins and padding.
+    */
+  margin-left:                              21%;
+
+  /*
+    Positioning.
+    */
+  position:                                 relative;
+  clear:                                    right;
+}
+
+.ag-content-panelbar-content
+{
+  /*
+    Positioning.
+    */
+  position:                                 absolute;
+  top:                                      0;
+  left:                                     0;
+  visibility:                               hidden;
+}
+
+/*
+  Main headers.
+  */
+h1.ag-main-header,
+h2.ag-main-header,
+h3.ag-main-header,
+h4.ag-main-header,
+h5.ag-main-header,
+h6.ag-main-header
+{
+  /*
+    Borders, margins and padding.
+    */
+  margin:                                   0% 0% 0% 0%;
+} 
+
+h1.ag-main-header
+{
+  /*
+    Borders, margins and padding.
+    */
+  border-bottom-width:                      2;
+  border-bottom-style:                      double;
+
+  margin-left:                              20%;
+  margin-bottom:                            1%;
+}
+
+h2.ag-main-header
+{
+  /*
+    Borders, margins and padding.
+    */
+  border-bottom-width:                      2;
+  border-bottom-style:                      solid;
+  border-right-width:                       2;
+  border-right-style:                       solid;
+  
+  margin-left:                              25%;
+  margin-right:                             10%;
+}
+
+/*
+  Images.
+  */
+#img-logo
+{
+  /*
+    Alignment.
+    */
+  text-align:                               center;
+
+  /*
+    Dimensions.
+    */
+  width:                                    20%;
+  
+  /*
+    Positioning.
+    */
+  float:                                    left;
+}
+
+/*
+  Miscellaneous.
+  */
+p.ag-special-notice
+{
+  /*
+    Alignment.
+    */
+  text-align:                               center;
+  
+  /*
+    Fonts.
+    */
+  font-weight: bold;
+}

@@ -1,0 +1,108 @@
+/*
+xmenu4_1.css
+xMenu4 Demo 1, Cascading menus from nested ULs!
+This code is distributed under the terms of the LGPL (gnu.org)
+Mike Foster, Cross-Browser.com
+*/
+
+/* Default Page Styles */
+
+html {margin:0; padding:0;}
+body {
+  color:#000; background:#fff; margin:0; padding:0;
+  font-family:verdana,arial,sans-serif;
+  font-size:small;
+}
+
+a {
+  color:#000; background:transparent; text-decoration:underline;
+  padding:1px;
+}
+a:hover {
+  color:#000; background:#ccc; text-decoration:none;
+  border:1px solid #008; padding:0;
+}
+
+pre {
+  font-family:'courier new',monospace; font-size:small;
+  color:#000; background:#eee; border:1px dotted #ccc;
+  padding:10px; overflow:hidden;
+}
+
+h1 {
+  color:#008; background:#eee;
+  font-size:x-large; font-weight:bold;
+  margin:10px 20px 0 20px; padding:8px;
+  border-left:3px solid #ccc;
+  border-top:1px solid #ccc;
+}
+h2 {
+  color:#008; background:transparent;
+  margin:1% 0 0 0; padding:2px 4px;
+  font-size:large; font-weight:bold;
+  border-left:3px solid #ccc;
+  border-top:1px solid #ccc;
+}
+h3 {
+  color:#008; background:transparent;
+  font-size:medium; font-weight:bold;
+}
+
+.content {
+  margin:10px 20px 30px 20px; overflow:hidden;
+  padding:0; line-height:1.5em;
+  color:#000; background:#fff;
+}
+#footer {
+  margin:10px 20px; padding:4px 0 4px 0; border-top:1px solid #999;
+  color:#000; background:#eee;
+}
+
+/* xMenu4 Downgrade (non-js) Styles (see xmenu4_1_dhtml.css for dhtml rules) */
+
+/* Bar */
+
+/* Outermost UL */
+ul.myBar {
+  background:#fff;
+  width:40%;
+  float:right;
+}
+/* All LIs in ul.myBar */
+ul.myBar li {
+  list-style:none;
+  margin:0; padding:0;
+}
+
+/* Box */
+
+/* All ULs except outermost */
+ul.myBox {
+  background:#fff;
+  margin:0 0 .5em 1.25em; padding:0;
+  border-left:1px dotted #666;
+/*  font-size:small; font-weight:normal; */
+}
+/* All LIs in ul.myBox */
+ul.myBox li {
+  list-style:none;
+  margin:0 0 .25em 0; padding:0;
+}
+
+/* Label/Item A element over-rides */
+
+.myBarLblA {
+  font-weight:bold;
+}
+.myBarItmA {
+  font-weight:bold;
+}
+.myBoxLblA {
+  font-weight:bold;
+}
+
+/* Misc */
+
+#menuMarker {
+  display:none;
+}

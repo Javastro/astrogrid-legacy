@@ -1,0 +1,295 @@
+div
+{
+  /*
+    Borders.
+    */
+/*
+  border-style:                   dotted;
+  border-width:                   thin;
+*/
+  border-style:                   none;
+  border-width:                   0;
+
+  /*
+    Margins and Padding.
+    */
+  margin-left:                    0;
+  margin-right:                   0;
+  margin-top:                     0;
+  margin-bottom:                  0;
+  
+  padding-left:                   0;
+  padding-right:                  0;
+  padding-top:                    0;
+  padding-bottom:                 0;
+}
+
+body
+{
+  /*
+    Borders.
+    */
+/*
+  border-style:                   dotted;
+  border-width:                   1;
+*/
+  border-style:                   none;
+  border-width:                   0;
+
+  /*
+    Colors.
+    */
+  background-color:               lightblue;
+
+  /*
+    Margins and Padding.
+    */
+  margin-left:                    1%;
+  margin-right:                   1%;
+  margin-top:                     1%;
+  margin-bottom:                  1%;
+  
+  padding-left:                   0;
+  padding-right:                  0;
+  padding-top:                    0;
+  padding-bottom:                 0;
+}
+
+#ag-body
+{
+  /*
+    Colors.
+    */
+  background-color:               white;
+  
+  /*
+    Margins and Padding.
+    */
+  margin-left:                    23%;
+}
+
+#ag-header
+{
+  /*
+    Colors.
+    */
+  background-color:               lightblue;
+  color:                          blue;
+}
+
+#ag-header-content
+{
+}
+
+#ag-logo
+{
+  /*
+    Alignment.
+    */
+  text-align:                     center;
+  
+  /*
+    Dimensions.
+    */
+  width:                          23%;
+
+  /*
+    Positioning.
+    */
+  float:                          left;
+}
+
+#ag-logo-img
+{
+  /*
+    Alignment.
+    */
+  vertical-align:                 middle;
+}
+
+#ag-footer
+{
+  /*
+    Colors.
+    */
+  background-color:               blue;
+  color:                          white;
+  
+  /*
+    Formatting.
+    */
+  text-align:                     right;
+  
+  /*
+    Positioning.
+    */
+  clear:                          both;
+}
+
+#ag-main
+{
+  /*
+    Positioning.
+    */
+  clear:                          both;
+}
+
+#ag-menu
+{
+  /*
+    Borders.
+    */
+  border-style:                   solid;
+  border-width:                   thin;
+
+  /*
+    Colors.
+    */
+  background-color:               lightblue;
+  
+  /*
+    Dimensions.
+    */
+  width:                          20%;
+
+  /*
+    Margins and Padding.
+    */
+  margin-left:                    1%;
+
+  /*
+    Positioning.
+    */
+  float:                          left;
+}
+
+
+#ag-menu-title
+{
+  /*
+    Colors.
+    */
+  background-color:               blue;
+  color:                          lightblue;
+
+  /*
+    Text.
+    */
+  text-align:                     center;
+}
+
+.ag-menu-content
+{
+  /*
+    Positioning.
+    */
+  position:                       relative;
+  left:                           5%;
+  
+  /*
+    Text.
+    */
+  text-decoration:                none;
+}
+
+.ag-menu-item
+{
+  /*
+    Positioning.
+    */
+  position:                       relative;
+  left:                           5%;
+  
+  /*
+    Text.
+    */
+  text-decoration:                none;
+}
+
+.ag-menu-display
+{
+  /*
+    Positioning.
+    */
+  position:                       relative;
+  left:                           5%;
+
+  /*
+    Text.
+    */
+  text-decoration:                underline;
+}
+
+a.ag-menu-link
+{
+  /*
+    Colors.
+    */
+  color:                          blue;
+  
+  /*
+    Text.
+    */
+  text-decoration:                none;
+}
+
+a.ag-menu-link:link
+{
+  /*
+    Text.
+    */
+  text-decoration:                none;
+}
+
+a.ag-menu-link:visited
+{
+  /*
+    Text.
+    */
+  text-decoration:                none;
+}
+
+a.ag-menu-link:active
+{
+  /*
+    Text.
+    */
+  text-decoration:                none;
+}
+
+a.ag-menu-link:hover
+{
+  /*
+    Text.
+    */
+  text-decoration:                none;
+}
+
+.ag-h1
+{
+  /*
+    Borders.
+    */
+  border-bottom-width:            2;
+  border-bottom-style:            double;
+  
+  /*
+    Margins and Padding.
+    */
+  margin-left:                    23%;
+  margin-right:                   10%;
+}
+
+.ag-h2
+{
+  /*
+    Borders.
+    */
+  border-bottom-width:            2;
+  border-bottom-style:            solid;
+  border-right-width:             2;
+  border-right-style:             solid;
+  
+  margin-left:                    28%;
+  margin-right:                   20%;
+}
