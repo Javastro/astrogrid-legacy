@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: project.xml,v 1.69 2004/08/25 11:42:02 KevinBenson Exp $ -->
+<!-- $Id: project.xml,v 1.70 2004/09/16 12:07:21 nw Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
   <extend>../maven-base/project.xml</extend>
   <id>astrogrid-jes</id>
@@ -13,15 +13,11 @@
   </repository>
   <packageGroups>
     <packageGroup>
-      <title>Web Service Delegate - Public Interface</title>
-      <packages>org.astrogrid.jes.delegate</packages>
+      <title>Delegate</title>
+      <packages>org.astrogrid.jes.delegate*</packages>
     </packageGroup>
     <packageGroup>
-      <title>Web Service Delegate - Implementation</title>
-      <packages>org.astrogrid.jes.delegate.impl</packages>
-    </packageGroup>
-    <packageGroup>
-      <title>Service Components Configuration</title>
+      <title>Component Container and Server assembly</title>
       <packages>org.astrogrid.jes.component*</packages>
     </packageGroup>
     <packageGroup>
@@ -33,8 +29,12 @@
       <packages>org.astrogrid.jes.jobscheduler*</packages>
     </packageGroup>
     <packageGroup>
-      <title>Controller and Monitor</title>
-      <packages>org.astrogrid.jes.jobcontroller:org.astrogrid.jes.jobmonitor</packages>
+      <title>Controller</title>
+      <packages>org.astrogrid.jes.jobcontroller:org.astrogrid.jes.delegate.v1.jobcontroller</packages>
+    </packageGroup>
+    <packageGroup>
+    	<title>Job Monitor and Result Listener</title>
+	<packages>org.astrogrid.jes.jobmonitor:org.astrogrid.jes.delegate.v1.jobmonitor:org.astrogrid.jes.resultlistener</packages>
     </packageGroup>
   </packageGroups>
   <!-- end of overrides -->
