@@ -243,6 +243,10 @@ public class DesignAction extends AbstractAction {
         AUTHORIZATION_RESOURCE_WORKFLOW = "workflow" ,
         AUTHORIZATION_ACTION_EDIT = "edit" ;
 
+	public static final String        
+	    INPUT_PARAMETER_COUNT_PARAM = "input_param_count",
+	    OUTPUT_PARAMETER_COUNT_PARAM = "output_param_count";
+
     /**
     * Our action method.
     *
@@ -410,7 +414,7 @@ public class DesignAction extends AbstractAction {
 					this.insertOutputValue();
 				}
 				else if( action.equals( ACTION_INSERT_PARAMETER ) ) {
-					this.insertValue();
+					this.insertMultipleValue();
 				}
 				else if( action.equals( ACTION_RESET_PARAMETER ) ) {
 				    this.resetParameter();         	
@@ -423,7 +427,7 @@ public class DesignAction extends AbstractAction {
 				}
 				else if( action.equals( ACTION_INSERT_STEP_DETAILS )){
 					this.insertStepDetails();  
-				}														
+				}
 				else if( action.equals( ACTION_REMOVE_WORKFLOW_FROM_SESSION )){
 					this.removeWorkflow();  
 				}
@@ -963,12 +967,32 @@ public class DesignAction extends AbstractAction {
                     
 		} // end of removeToolFromStep() 
 
+		private void insertMultipleValue() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertMultipleValue() entry" ) ;
+			try {		
+				int input_param_count = new Integer(request.getParameter( INPUT_PARAMETER_COUNT_PARAM )).intValue();
+				int output_param_count = new Integer(request.getParameter( OUTPUT_PARAMETER_COUNT_PARAM )).intValue();
+				int total_param_count = input_param_count + output_param_count ;
+                
+				for (int i = 0 ; i < input_param_count; i++)
+				{
+					insertInputValue(i) ;				
+				}
+				for (int i = input_param_count ; i < total_param_count; i++)
+				{
+					insertOutputValue(i) ;				
+				}				 
+			}
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertMultipleValue() exit" ) ;
+			}
+				}
 
 		private void insertValue() throws ConsistencyException {
 			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertValue() entry" ) ;
 			try {		
 				String direction = request.getParameter( DIRECTION_PARAMETER ) ;
-				debug("direction: " + direction);
+				
 				if (direction.equalsIgnoreCase("input")) 
 				{
 					insertInputValue() ;
@@ -1052,6 +1076,100 @@ public class DesignAction extends AbstractAction {
                     
 	  } // end of insertInputValue()       
 
+	  private void insertInputValue(int i) throws ConsistencyException {
+	      if( TRACE_ENABLED ) trace( "DesignActionImpl.insertInputValue() entry" ) ;
+			
+		  Step step = null;
+		  Tool tool = null ;
+		  ParameterValue p = null ;
+	      boolean parameterIndirect = false;
+	      String paramCount = "" + i ;
+              
+	      try {
+			   // Tool should already have been inserted into step
+			
+			   String oldParameterValue = request.getParameter( ORIG_PARAM_VALUE_PARAMETER+"#input#"+paramCount );						
+		       String parameterName = request.getParameter( PARAM_NAME_PARAMETER+"#input#"+paramCount ) ;				    					
+		       String parameterValue = request.getParameter( PARAM_VALUE_PARAMETER+"#input#"+paramCount ) ;
+		       String activityKey = request.getParameter( ACTIVITY_KEY_PARAMETER+"#input#"+paramCount ) ;
+		       String ivornValue = request.getParameter( IVORN_VALUE_PARAMETER+"#input#"+paramCount ) ;
+			
+		       if (request.getParameter( PARAM_INDIRECT+"#input#"+paramCount ).equalsIgnoreCase("on") )
+			     parameterIndirect = true;
+
+		debug( "multi: ivornValue: " + i + ": " + ivornValue );
+		debug( "multi: parameterName:" + i + ": " + parameterName ) ;
+		debug( "multi: parameterValue: " + i + ": " + parameterValue ) ;
+		debug( "multi: oldParameterValue: " + i + ": " + oldParameterValue ) ;
+		debug( "multi: activityKey: " + i + ": " + activityKey ) ;
+		debug( "multi: parameterIndirect: " + i + ": " + parameterIndirect  ) ;   
+                            
+		if ( parameterName == null) {
+			debug( "parameterName is null" ) ;
+		}
+		else if ( parameterValue == null) {
+			debug( "parameterValue is null" ) ;
+		}
+		else if ( activityKey == null) {
+			debug( "activityKey is null" ) ;
+		}
+		else if (ivornValue != null && ivornValue.length() > 0) {
+			debug( "setting parameterValue to equal ivornValue" ) ;
+			parameterValue = ivornValue ;          
+			debug( "parameterValue now: " + parameterValue ) ;
+		}
+		
+		if ( (parameterValue != null && parameterValue.length() > 0 ) || (oldParameterValue.length() > 0) )
+		{			
+		    step = locateStep( workflow, activityKey );
+		    tool = step.getTool() ;
+		    ApplicationRegistry applRegistry = workflowManager.getToolRegistry();
+		    ApplicationDescription applDescription = applRegistry.getDescriptionFor( tool.getName() );
+
+            if (parameterValue.indexOf(",") == -1 ) // single parameter value
+                {
+		            WorkflowHelper.insertInputParameterValue( applDescription
+					        							    , tool
+							        					    , parameterName
+									        			    , oldParameterValue
+											        	    , parameterValue
+												            , parameterIndirect ) ;
+                }
+            else // multiple parameter values
+            {
+            	while (parameterValue.indexOf(",") != -1)
+            	{
+                    String singleParamValue = parameterValue.substring( 0, parameterValue.indexOf(",") );
+                    parameterValue = parameterValue.substring(singleParamValue.length() + 1 , parameterValue.length() ) ;
+
+					WorkflowHelper.insertInputParameterValue( applDescription
+															, tool
+															, parameterName
+															, ""
+															, singleParamValue.trim()
+															, parameterIndirect ) ;
+        		
+            	}
+            	// and the final value
+				WorkflowHelper.insertInputParameterValue( applDescription
+														, tool
+														, parameterName
+														, ""
+														, parameterValue.trim()
+														, parameterIndirect ) ;            	
+            }
+		}				
+		}
+		catch( WorkflowInterfaceException wix ) {
+			wix.printStackTrace();
+		}
+		finally {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertInputValue() exit" ) ;
+		}
+                    
+	} // end of insertInputValue()       
+
+
 
         private void insertOutputValue() throws ConsistencyException {
            if( TRACE_ENABLED ) trace( "DesignActionImpl.insertOutputValue() entry" ) ;
@@ -1087,9 +1205,6 @@ public class DesignAction extends AbstractAction {
 					parameterValue = ivornValue ;          
 					debug( "parameterValue now: " + parameterValue ) ;
 				}			     
-
-                 step = locateStep( workflow, request.getParameter( ACTIVITY_KEY_PARAMETER ) );
-			     tool = step.getTool() ; 
 				
                step = locateStep( workflow, request.getParameter( ACTIVITY_KEY_PARAMETER ) );
                tool = step.getTool() ;
@@ -1112,6 +1227,67 @@ public class DesignAction extends AbstractAction {
 		   }
                     
 	} // end of insertOutputValue()
+
+		private void insertOutputValue(int i) throws ConsistencyException {
+		    if( TRACE_ENABLED ) trace( "DesignActionImpl.insertOutputValue() entry" ) ;
+	
+		    Step step = null;
+		    Tool tool = null ;
+		    ParameterValue p = null ;
+		    boolean parameterIndirect = false ;
+			String paramCount = "" + i ;
+			try {
+			// Tool should already have been inserted into step
+									
+			String oldParameterValue = request.getParameter( ORIG_PARAM_VALUE_PARAMETER+"#output#"+paramCount ) ;
+			String parameterName = request.getParameter( PARAM_NAME_PARAMETER+"#output#"+paramCount ) ;
+			String parameterValue = request.getParameter( PARAM_VALUE_PARAMETER+"#output#"+paramCount ) ;
+			String activityKey = request.getParameter( ACTIVITY_KEY_PARAMETER+"#output#"+paramCount ) ;
+			String ivornValue = request.getParameter( IVORN_VALUE_PARAMETER+"#output#"+paramCount ) ;
+			if (request.getParameter( PARAM_INDIRECT+"#output#"+paramCount ).equalsIgnoreCase("on") )
+				parameterIndirect = true;
+
+				debug( "multi: ivornValue: " + i + ": " + ivornValue );
+				debug( "multi: parameterName:" + i + ": " + parameterName ) ;
+				debug( "multi: parameterValue: " + i + ": " + parameterValue ) ;
+				debug( "multi: oldParameterValue: " + i + ": " + oldParameterValue ) ;
+				debug( "multi: activityKey: " + i + ": " + activityKey ) ;
+				debug( "multi: parameterIndirect: " + i + ": " + parameterIndirect  ) ;									
+
+			if ( parameterName == null) {
+				debug( "parameterName is null" ) ;
+			}
+			else if ( parameterValue == null) {
+				debug( "parameterValue is null" ) ;
+			}
+			    
+			else if (ivornValue != null && ivornValue.length() > 0) {
+				debug( "setting parameterValue to equal ivornValue" ) ;
+				parameterValue = ivornValue ;          
+				debug( "parameterValue now: " + parameterValue ) ;
+			}			     
+
+			step = locateStep( workflow, activityKey );
+			tool = step.getTool() ;
+			ApplicationRegistry applRegistry = workflowManager.getToolRegistry();
+			ApplicationDescription applDescription = applRegistry.getDescriptionFor( tool.getName() );
+                
+			WorkflowHelper.insertOutputParameterValue( applDescription
+													, tool
+													, parameterName
+													, oldParameterValue
+													, parameterValue
+													, parameterIndirect ) ;
+				
+		    }
+			catch( WorkflowInterfaceException wix ) {
+			   wix.printStackTrace();
+		    }
+		    finally {
+			  if( TRACE_ENABLED ) trace( "DesignActionImpl.insertOutputValue() exit" ) ;
+		   }
+                    
+    } // end of insertOutputValue()
 
 
     private void resetParameter() throws ConsistencyException {

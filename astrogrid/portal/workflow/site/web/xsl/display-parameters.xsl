@@ -26,8 +26,13 @@
 		  {
 			document.getElementById(id).style.display = "none";
 		  }        
-	    }        
-      </script>  
+	    }
+	    
+        function showHelp(id)
+        {	  	  
+		  document.getElementById(id).style.display = "";
+	    }	            
+      </script>                    
         
       <table border="2" cellpadding="0" cellspacing="0">
         <tr>
@@ -55,19 +60,42 @@
           </td>
         </tr>
         <xsl:choose>
-          <xsl:when test="./tool/@tool-name != 'null'">            
-            <xsl:for-each select="./tool/inputParam">
-              <xsl:call-template name="parameter">
-                <xsl:with-param name="direction">input</xsl:with-param>
-              </xsl:call-template>
-            </xsl:for-each>
-            <xsl:if test="./tool/outputParam" >              
-              <xsl:for-each select="./tool/outputParam">  <!-- Email tool has no output params, so don't display -->
+          <xsl:when test="./tool/@tool-name != 'null'"> 
+            <form name="parameter_form" id="parameter_form" action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" target="workflowOuterFrame">                       
+              <xsl:for-each select="./tool/inputParam">
                 <xsl:call-template name="parameter">
-                  <xsl:with-param name="direction">output</xsl:with-param>
+                  <xsl:with-param name="direction">input</xsl:with-param>
                 </xsl:call-template>
               </xsl:for-each>
-            </xsl:if>            
+              <xsl:if test="./tool/outputParam" >              
+                <xsl:for-each select="./tool/outputParam">  <!-- Email tool has no output params, so don't display -->
+                  <xsl:call-template name="parameter">
+                    <xsl:with-param name="direction">output</xsl:with-param>
+                  </xsl:call-template>
+                </xsl:for-each>
+              </xsl:if>
+              <tr>
+                <td colspan="5">
+                  <div id="multiParamDiv" style="display: none; color: blue;">
+                    * parameter will accept more than one value, enter as a comma seperated list.
+                  </div>
+                </td>                        
+              </tr>              
+              <tr>
+                <td colspan="5">
+                  <div style="color: blue; background-color: lightblue; text-align: center;">
+                    <input class="agActionButton" type="submit" value="Update parameter values" />                    
+                  </div>
+                </td>                        
+              </tr>                          
+            <input type="hidden" name="action" value="insert-parameter-value" />
+            <input type="hidden" name="display_parameter_values"><xsl:attribute name="value">true</xsl:attribute></input> 
+            <input type="hidden" name="input_param_count"><xsl:attribute name="value"><xsl:value-of select="count(./tool/inputParam)"/></xsl:attribute></input>
+            <input type="hidden" name="output_param_count"><xsl:attribute name="value"><xsl:value-of select="count(./tool/outputParam)"/></xsl:attribute></input>
+            <input type="hidden" name="activity_key"><xsl:attribute name="value"><xsl:value-of select="@key"/></xsl:attribute></input>                        
+          </form>
+             
+         
           </xsl:when>
           <xsl:otherwise>
             <tr>
@@ -76,7 +104,7 @@
                 <xsl:element name="img">
                   <xsl:attribute name="src">/astrogrid-portal/mount/workflow/Help3.png</xsl:attribute>
                   <xsl:attribute name="alt">info</xsl:attribute>
-                  <xsl:attribute name="onClick">toggleHelp('helpDiv<xsl:value-of select="@key"/>');</xsl:attribute>
+                  <xsl:attribute name="onClick">showHelp('helpDiv<xsl:value-of select="@key"/>');</xsl:attribute>
                 </xsl:element>                                    
               </td>              
             </tr>
@@ -100,48 +128,49 @@
           | Match the parameter element.
           +-->
     <xsl:template name="parameter">
-      <xsl:param name="direction"/>
-        <form name="parameter_form" id="parameter_form" action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" target="workflowOuterFrame">
+      <xsl:param name="direction"/>      
           <tr>
-            <td><xsl:value-of select="@param-name"/></td>
-            <td style="color: blue;">
-              <font size="-1">
-                <xsl:element name="a">                                    
-                  <xsl:attribute name="href">javascript:void(0);</xsl:attribute>
-                  <xsl:attribute name="onMouseOver">this.T_TITLE='Parameter: <xsl:value-of select="@param-UI-name" /> '; this.T_WIDTH=250; this.T_DELAY=500; this.T_STICKY=true; return escape('' +
+            <td>
+              <xsl:attribute name="style">cursor: help</xsl:attribute>                                    
+              <xsl:attribute name="href">javascript:void(0);</xsl:attribute>
+              <xsl:attribute name="onMouseOver">this.T_TITLE='Parameter: <xsl:value-of select="@param-UI-name" /> '; this.T_WIDTH=250; this.T_DELAY=500; this.T_STICKY=true; return escape('' +
                                  ' &lt;b&gt;Description: &lt;/b&gt; <xsl:value-of select="@param-UI-description" /> ' +
                                  ' &lt;br/&gt; &lt;b&gt;Type:&lt;/b&gt; <xsl:value-of select="@param-type" /> ' +
                                  ' &lt;br/&gt; &lt;b&gt;Subtype:&lt;/b&gt; <xsl:value-of select="@param-subtype"/> ' +
                                  ' &lt;br/&gt; &lt;b&gt;Units:&lt;/b&gt; <xsl:value-of select="@param-units"/> ' +
                                  ' &lt;br/&gt; &lt;b&gt;UCD:&lt;/b&gt; <xsl:value-of select="@param-ucd"/> ' +
-                                 ' &lt;br/&gt; &lt;b&gt;Default:&lt;/b&gt; <xsl:value-of select="@param-defaultValue"/> ');
-<!--                             ' &lt;br/&gt; &lt;b&gt;Indirect?:&lt;/b&gt; <xsl:value-of select="@param-indirect"/> 
-                                 ' &lt;br/&gt; Cardinality max: <xsl:value-of select="@param-cardinality-max"/> ' 
-                                 ' &lt;br/&gt; Cardinality min: <xsl:value-of select="@param-cardinality-min"/> 
--->
-                  </xsl:attribute>
-                </xsl:element>
-              <small><b>(more)</b></small>
-              </font>
-            <xsl:element name="/a"></xsl:element>                                                       
+                                 ' &lt;br/&gt; &lt;b&gt;Default:&lt;/b&gt; <xsl:value-of select="@param-defaultValue"/> ' +
+<!--       ' &lt;br/&gt; &lt;b&gt;Indirect?:&lt;/b&gt; <xsl:value-of select="@param-indirect"/> ' +   -->
+                                 ' &lt;br/&gt; Cardinality max: <xsl:value-of select="@param-cardinality-max"/> ' +
+                                 ' &lt;br/&gt; Cardinality min: <xsl:value-of select="@param-cardinality-min"/> ' ) ;
+              </xsl:attribute>            
+            <xsl:value-of select="@param-name"/> 
+            <xsl:if test="@param-cardinality-max='0'">
+              <b> *</b>
+              <ag-onload>             
+                <xsl:attribute name="function">showHelp('multiParamDiv');</xsl:attribute>                 	
+              </ag-onload>                
+            </xsl:if>                                                    
           </td>
           <xsl:variable name="ivorn-id"><xsl:value-of select="count(preceding-sibling::*)"/>ivorn</xsl:variable>
           <xsl:variable name="agsl-id"><xsl:value-of select="count(preceding-sibling::*)"/>agsl</xsl:variable>
           <xsl:variable name="indirect-id"><xsl:value-of select="count(preceding-sibling::*)"/>param</xsl:variable>
           <td>
-            <input type="text" name="param-value" size="50">
+            <input type="text" size="50">
+              <xsl:attribute name="name">param-value#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>                
               <xsl:attribute name="id"><xsl:value-of select="$agsl-id"/></xsl:attribute>
               <xsl:attribute name="value"><xsl:value-of select="@param-value" /></xsl:attribute>
             </input>                                                                    
             <input type="hidden">
-              <xsl:attribute name="name">original-param-value</xsl:attribute>
+              <xsl:attribute name="name">original-param-value#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
               <xsl:attribute name="value"><xsl:value-of select="@param-value" /></xsl:attribute>
             </input>
-            <input type="hidden" name="ivorn-value">                              
+            <input type="hidden">
+              <xsl:attribute name="name">ivorn-value#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
               <xsl:attribute name="id"><xsl:value-of select="$ivorn-id"/></xsl:attribute>
             </input>                                                                                                
           </td>                            
-          <td>
+          <td align="center">
             <input class="agActionButton" name="myspace-name" type="button" value="Browse...">
               <xsl:attribute name="onClick">                
                              javascript:document.getElementById('<xsl:value-of select="$indirect-id"/>').checked = 'true'; 
@@ -149,35 +178,42 @@
               </xsl:attribute>
             </input>
           </td>
-          <td nowrap="true">                                   
-            <input type="checkbox" name="param_indirect">                
-              <xsl:attribute name="id"><xsl:value-of select="$indirect-id"/></xsl:attribute>
-              <xsl:if test="@param-indirect = 'true'">
-                <xsl:attribute name="checked">true</xsl:attribute>
-              </xsl:if>              
-            </input>
-            <xsl:element name="a">                                    
-              <xsl:attribute name="href">javascript:void(0);</xsl:attribute>
-                <xsl:attribute name="onMouseOver">this.T_TITLE='Indirect flag: '; this.T_WIDTH=250; this.T_DELAY=500; return escape('' +                                                            
+          <td nowrap="true">
+            <xsl:attribute name="style">cursor: help</xsl:attribute>                                    
+            <xsl:attribute name="href">javascript:void(0);</xsl:attribute>
+            <xsl:attribute name="onMouseOver">this.T_TITLE='Indirect flag: '; this.T_WIDTH=250; this.T_DELAY=500; return escape('' +                                                            
                                  'The indirect attribute alters how the value of the parameter is interpreted by CEA.&lt;br/&gt;' +
                                  'If set to &lt;b&gt;true&lt;/b&gt;, the parameter value is expected to be a URI that points to a resource that contains the actual value for this parameter.&lt;br/&gt;' +
                                  'If set to &lt;b&gt;false&lt;/b&gt; (the default), then the parameter value is expected inline.' +
                                  'Finally the indirect attribute alters how the value of the parameter is interpreted by CEA.&lt;br/&gt;' +
                                  'Browsing myspace sets the indirect flag to true. ');
-                </xsl:attribute>
-              </xsl:element>
-            <b>(?)</b>
-            <xsl:element name="/a"></xsl:element>                        
+              </xsl:attribute>                                             
+            <input type="checkbox">
+              <xsl:attribute name="name">param_indirect#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>                
+              <xsl:attribute name="id"><xsl:value-of select="$indirect-id"/></xsl:attribute>
+              <xsl:if test="@param-indirect = 'true'">
+                <xsl:attribute name="checked">true</xsl:attribute>
+              </xsl:if>              
+            </input>                        
           </td>
-          <td><input class="agActionButton" type="submit" value="submit" /></td>
         </tr>
-        <input type="hidden" name="action" value="insert-parameter-value" />
-        <input type="hidden" name="param-name"><xsl:attribute name="value"><xsl:value-of select="@param-name"/></xsl:attribute></input>
-        <input type="hidden" name="activity_key"><xsl:attribute name="value"><xsl:value-of select="../../@key"/></xsl:attribute></input>            
-        <input type="hidden" name="direction"><xsl:attribute name="value"><xsl:value-of select="$direction"/></xsl:attribute></input>
-        <input type="hidden" name="display_parameter_values"><xsl:attribute name="value">true</xsl:attribute></input>                                
-        <input type="hidden" name="param_indirect" id="param_indirect" value="false" />                               
-      </form>
+        <input type="hidden">
+          <xsl:attribute name="name">param-name#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
+          <xsl:attribute name="value"><xsl:value-of select="@param-name"/></xsl:attribute>
+        </input>
+        <input type="hidden">
+          <xsl:attribute name="name">activity_key#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
+          <xsl:attribute name="value"><xsl:value-of select="../../@key"/></xsl:attribute>
+        </input>            
+        <input type="hidden">
+          <xsl:attribute name="name">direction#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/>></xsl:attribute>
+          <xsl:attribute name="value"><xsl:value-of select="$direction"/></xsl:attribute>
+        </input>                                        
+        <input type="hidden">
+            <xsl:attribute name="name">param_indirect#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
+            <xsl:attribute name="id">param_indirect#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
+            <xsl:attribute name="value">false</xsl:attribute>
+        </input>                               
     </xsl:template>
 
 
