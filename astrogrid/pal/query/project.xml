@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.1 2005/02/17 18:37:34 mch Exp $ -->
+<!-- $Id: project.xml,v 1.2 2005/02/25 15:40:03 mch Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -12,7 +12,7 @@
 
     <currentVersion>${astrogrid.pal.version}</currentVersion>
 
-    <id>astrogrid-query</id>
+    <id>astrogrid-pal-query</id>
 
     <name>Astrogrid Query Package</name>
 

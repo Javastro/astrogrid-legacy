@@ -84,7 +84,7 @@ Parameter names in this request:
                newCriteria = new NumericComparison(
                            new ColumnReference(tableName,colName),
                            operand,
-                           new LiteralNumber(conditionValues[con])
+                           new LiteralReal(conditionValues[con])
                         );
             }
             catch (NumberFormatException nfe) {
