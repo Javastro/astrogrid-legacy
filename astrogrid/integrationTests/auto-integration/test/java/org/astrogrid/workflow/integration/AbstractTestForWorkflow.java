@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForWorkflow.java,v 1.14 2004/08/22 01:32:30 nw Exp $
+/*$Id: AbstractTestForWorkflow.java,v 1.15 2004/08/22 01:40:05 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -194,9 +194,13 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
      */
     protected void assertStepCompleted(Step step) {
         softAssertEquals("expected a single execution",1,step.getStepExecutionRecordCount());
-        StepExecutionRecord rec = step.getStepExecutionRecord(0);
-        softAssertEquals("expected step to complete",ExecutionPhase.COMPLETED, rec.getStatus());
-        softAssertTrue("expected some messages",rec.getMessageCount() > 0);
+        if (step.getStepExecutionRecordCount() > 0) {
+            StepExecutionRecord rec = step.getStepExecutionRecord(0);
+            softAssertEquals("expected step to complete",ExecutionPhase.COMPLETED, rec.getStatus());
+            softAssertTrue("expected some messages",rec.getMessageCount() > 0);
+        } else {
+            softFail("No execution record");
+        }
     }
     
 
@@ -251,6 +255,9 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
 
 /* 
 $Log: AbstractTestForWorkflow.java,v $
+Revision 1.15  2004/08/22 01:40:05  nw
+improved assertions
+
 Revision 1.14  2004/08/22 01:32:30  nw
 increased standoff time too
 
