@@ -1,4 +1,4 @@
-/*$Id: CEAComponentManagerFactory.java,v 1.3 2004/07/23 13:21:21 nw Exp $
+/*$Id: CEAComponentManagerFactory.java,v 1.4 2004/08/17 15:07:55 nw Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -75,7 +75,12 @@ public class CEAComponentManagerFactory {
         static void clearInstance() {
             theInstance = null;
         }
-    
+        public static final void stop() {
+            if (theInstance != null) { 
+                theInstance.getContainer().stop();
+                theInstance.getContainer().dispose();
+            }
+        }    
         private CEAComponentManagerFactory() {    
         }
     
@@ -94,6 +99,9 @@ public class CEAComponentManagerFactory {
 
 /* 
 $Log: CEAComponentManagerFactory.java,v $
+Revision 1.4  2004/08/17 15:07:55  nw
+tried to improve behaviour on webapp stop
+
 Revision 1.3  2004/07/23 13:21:21  nw
 Javadocs
 

@@ -1,5 +1,5 @@
 /*
- * $Id: InitServlet.java,v 1.5 2004/07/26 12:07:38 nw Exp $
+ * $Id: InitServlet.java,v 1.6 2004/08/17 15:07:55 nw Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -87,8 +87,7 @@ public class InitServlet extends HttpServlet {
      * @see javax.servlet.Servlet#destroy()
      */
     public void destroy() {
-        CEAComponentManagerFactory.getInstance().getContainer().stop();
-        CEAComponentManagerFactory.getInstance().getContainer().dispose();   
+        CEAComponentManagerFactory.stop();
         super.destroy();
     }
 
