@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceClient.java,v 1.1 2003/12/03 17:26:00 mch Exp $
+ * $Id: MySpaceClient.java,v 1.2 2003/12/08 20:33:40 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,14 +14,13 @@ import java.util.Vector;
 /**
  * These are the methods that myspace delegates must implement.
  * <p>
- * At the moment this is a bit artificial - the main NtSpaceManagerDelegate
- * does not implement this.  It does exist however so that other delegates have
- * a common reference point - if MySpaceManagerDelegate changes its interface, it
- * can be easy to miss a subclass's nethod when changing them.  By changing this
- * one interface, the compiler can spot such missing changes.
- * @todo have MySpaceManagerDelegate implement this.
- * @todo throw Exception (or similar) not Exception...
- * @author M Hill
+ * It exists so that th delegates have
+ * a common reference point - if the MySpaceManagerDelegate interface changes, this
+ * will have to be changed as well, and so all delegates that implement it.  Thus we
+ * can spot & fix such changes at build time.
+ *
+ * @todo throw proper exceptions not the generic Exception...
+ *
  */
 
 public interface MySpaceClient {
@@ -251,6 +250,9 @@ public interface MySpaceClient {
 
 /*
  $Log: MySpaceClient.java,v $
+ Revision 1.2  2003/12/08 20:33:40  mch
+ Updated documentation
+
  Revision 1.1  2003/12/03 17:26:00  mch
  Added generalised myspaceFactory with MySpaceClient interface and Myspace-like FTP server delegate
 
