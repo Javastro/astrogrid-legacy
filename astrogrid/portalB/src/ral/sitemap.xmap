@@ -132,7 +132,7 @@
 
             <map:match pattern="agdataquery.html">
 <!-- <map:read type="jsp" mime-type="text/html" src="jsp/DataQuery.jsp"/> -->
-               <map:generate src="xml/agdataquery.xml"/>
+               <map:generate type="serverpages" src="xsp/dataquery.xsp"/>
                <map:transform src="xsl/redirect.xsl"/>
                <map:serialize type="html"/>
             </map:match>
