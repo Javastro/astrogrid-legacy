@@ -1,7 +1,8 @@
 package org.astrogrid.portal.datacenter.acting;
 
 import java.util.HashMap;
-import java.util.Map;    
+import java.util.Map;  
+import java.io.IOException;  
 
 import org.apache.avalon.framework.logger.Logger;
 import org.apache.avalon.framework.parameters.Parameters;
@@ -73,9 +74,6 @@ public class MySpaceSaveAction extends AbstractAction {
     
     try {
         
-      // For initial testing purposes only...
-      // session.setAttribute( SESSIONKEY_RESOURCE_ID, "org.astrogrid.localhost/noaa_trace/sgas_event" ) ;
-        
       // Set the current user.
       User user = UserHelper.getCurrentUser(params, request, session);
       
@@ -92,6 +90,7 @@ public class MySpaceSaveAction extends AbstractAction {
       String adqlAsXML ;
       String adqlAsString = utils.getAnyParameter(SESSIONKEY_ADQL_AS_STRING, params, request, session);
       session.setAttribute( SESSIONKEY_ADQL_AS_STRING, adqlAsString ) ; 
+      session.removeAttribute( SESSIONKEY_ADQL_ERROR ) ;
       Object resourceId = session.getAttribute( SESSIONKEY_RESOURCE_ID ) ;  
       logger.debug("[act] adqlAsString (s): " + adqlAsString);
       
@@ -99,25 +98,25 @@ public class MySpaceSaveAction extends AbstractAction {
           
           // First, attempt to filter out any error messages
           // left over from a previous attempt ...
-          int i = adqlAsString.indexOf( "Error returned: ") ;
+//          int i = adqlAsString.indexOf( "Error returned: ") ;
+//          
+//          if( i > 0 ) {
+//              char c = adqlAsString.charAt(i--);         
+//              while( c == '\n' || c == '\t' || c == ' ') {
+//                  i--;
+//                  if(i<0) break;
+//                  c = adqlAsString.charAt(i) ;
+//              }             
+//          }
+//
+//          if( i > 0 ) {
+//              adqlAsString = adqlAsString.substring(0, i) ;
+//          }
+//          else if( i == 0 ) {
+//              adqlAsString = " " ;
+//          }
           
-          if( i > 0 ) {
-              char c = adqlAsString.charAt(i--);         
-              while( c == '\n' || c == '\t' || c == ' ') {
-                  i--;
-                  if(i<0) break;
-                  c = adqlAsString.charAt(i) ;
-              }             
-          }
-
-          if( i > 0 ) {
-              adqlAsString = adqlAsString.substring(0, i) ;
-          }
-          else if( i == 0 ) {
-              adqlAsString = " " ;
-          }
-          
-          session.setAttribute( SESSIONKEY_ADQL_AS_STRING, adqlAsString ) ;       
+//          session.setAttribute( SESSIONKEY_ADQL_AS_STRING, adqlAsString ) ;       
           adqlAsXML = Sql2Adql074.translate( adqlAsString ) ;      
           logger.debug("[act] adqlAsXML (x): " + adqlAsXML);
       
@@ -163,15 +162,15 @@ public class MySpaceSaveAction extends AbstractAction {
             .append( resourceId != null ? (String)resourceId : "none" )
             .append( " ?>" ) ;
             
-          StringBuffer adqlBuffer = new StringBuffer( adqlAsString.length() + 64 ) ;
-          
-          adqlBuffer
-            .append( adqlAsString )
-            .append( "\n\n")
-            .append( "Error returned: ")
-            .append( ex.getLocalizedMessage() ) ;
-            
-          session.setAttribute( SESSIONKEY_ADQL_AS_STRING, adqlBuffer.toString() ) ;                     
+//          StringBuffer adqlBuffer = new StringBuffer( adqlAsString.length() + 64 ) ;
+//          
+//          adqlBuffer
+//            .append( adqlAsString )
+//            .append( "\n\n")
+//            .append( "Error returned: ")
+//            .append( ex.getLocalizedMessage() ) ;
+//            
+//          session.setAttribute( SESSIONKEY_ADQL_AS_STRING, adqlBuffer.toString() ) ;                     
           session.setAttribute( SESSIONKEY_ADQL_ERROR, ex.getLocalizedMessage() ) ;
           logger.debug("[act] adql error: " + ex.getLocalizedMessage() ) ;
                   
@@ -185,11 +184,15 @@ public class MySpaceSaveAction extends AbstractAction {
 //      request.setAttribute("adql-document-saved", "true");
 //      sitemapParams.put("adql-document-saved", "true");
     }
-		catch(Throwable t) {
-			request.setAttribute("adql-document-saved", "false");
-			request.setAttribute("adql-document-error-message", t.getLocalizedMessage());
-			sitemapParams = null;
+		catch( IOException myioex) {
+            session.setAttribute( SESSIONKEY_ADQL_ERROR, myioex.getLocalizedMessage() ) ;
 		}
+        
+//        catch(Throwable t) {
+//            request.setAttribute("adql-document-saved", "false");
+//            request.setAttribute("adql-document-error-message", t.getLocalizedMessage());
+//            sitemapParams = null;
+//        }
       
     return sitemapParams;
   }

@@ -3,6 +3,7 @@ package org.astrogrid.portal.datacenter.acting;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.IOException;
 
 import org.apache.avalon.framework.logger.Logger;
 import org.apache.avalon.framework.parameters.Parameters;
@@ -85,6 +86,9 @@ public class MySpaceLoadAction extends AbstractAction {
     StringBuffer outputBuffer = new StringBuffer();
     
     try {
+        
+      session.removeAttribute( SESSIONKEY_ADQL_ERROR ) ;
+      
       // Set the current user.
       User user = UserHelper.getCurrentUser(params, request, session);
       
@@ -129,7 +133,7 @@ public class MySpaceLoadAction extends AbstractAction {
          session.setAttribute( SESSIONKEY_RESOURCE_ID, resourceId ) ;
          this.retrieveMetadata( resourceId, logger, request, session) ;
       }
-      session.removeAttribute( SESSIONKEY_ADQL_ERROR ) ;
+
       logger.debug( "[act] adql source set to: " + adqlSource ) ;
       logger.debug( "[act] resource key set to: " + resourceId ) ;
            
@@ -145,14 +149,17 @@ public class MySpaceLoadAction extends AbstractAction {
       logger.debug( "[act]" + SESSIONKEY_ADQL_AS_STRING + ": " + session.getAttribute( SESSIONKEY_ADQL_AS_STRING ) );
       
     }
-    catch(Throwable t) {
-      request.setAttribute("adql-document-loaded", "false");
-      request.setAttribute("adql-document-error-message", t.getLocalizedMessage());
-      sitemapParams = null;
-      
-      logger.debug("[act] throwable: " + t.getClass() + ", msg: " + t.getLocalizedMessage());
-      logger.debug( "[act] outputBuffer: " + outputBuffer.toString() ) ;
+    catch( IOException myioex) {
+        session.setAttribute( SESSIONKEY_ADQL_ERROR, myioex.getLocalizedMessage() ) ;
     }
+//    catch(Throwable t) {
+//      request.setAttribute("adql-document-loaded", "false");
+//      request.setAttribute("adql-document-error-message", t.getLocalizedMessage());
+//      sitemapParams = null;
+//      
+//      logger.debug("[act] throwable: " + t.getClass() + ", msg: " + t.getLocalizedMessage());
+//      logger.debug( "[act] outputBuffer: " + outputBuffer.toString() ) ;
+//    }
     finally {
       try {
         if(inStream != null) {

@@ -276,6 +276,20 @@ textarea</li>
 </td></tr>
 </table>
 
+<xsl:if test="//*/ErrorMsg != ''">
+<div id="errorArea" class="agHint" style="text-align: left; width: 600px; position: absolute; left: 30px; top: 200">
+<table width="100%">
+<tr><td align="left">
+<b>Error</b></td>
+<td align="right">
+<img onClick="closeIt();" src="/astrogrid-portal/CloseWindow.gif"/>
+
+</td>
+</tr></table>
+<xsl:value-of select="//*/ErrorMsg"/>
+</div>
+</xsl:if>
+
 <!--
 <div id="exemplar"><ilayer name="exemplar2" bgcolor="#eeeeee">
 <div>
@@ -393,6 +407,11 @@ F['this'] = "phrase";
   -->
 function closeMe(){
 	var scar = document.getElementById('scratchArea');
+	scar.style.display = "none";
+}
+
+function closeIt(){
+	var scar = document.getElementById('errorArea');
 	scar.style.display = "none";
 }
 
