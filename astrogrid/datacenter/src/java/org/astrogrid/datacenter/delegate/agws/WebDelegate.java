@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.3 2003/11/05 18:52:53 mch Exp $
+ * $Id: WebDelegate.java,v 1.4 2003/11/06 22:04:48 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -17,6 +17,7 @@ import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.delegate.axisdataserver.AxisDataServerServiceLocator;
 import org.astrogrid.datacenter.delegate.axisdataserver.AxisDataServerSoapBindingStub;
+import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -104,7 +105,11 @@ public class WebDelegate implements AdqlQuerier
       */
       public void setResultsDestination(URL resultsDestination) throws RemoteException
       {
-         binding.setResultsDestination(queryId, resultsDestination);
+         //binding.setResultsDestination(queryId, resultsDestination);
+         
+         //replace this with the above one when the binding is updated
+         binding.setResultsDestination(resultsDestination.toString());
+         
       }
       
       /**
@@ -191,7 +196,12 @@ public class WebDelegate implements AdqlQuerier
     */
    public DatacenterQuery makeQuery(Select adql, String givenId) throws IOException
    {
-      return new WebQueryDelegate(binding.makeQuery(adql,  givenId));
+      try
+      {
+         return new WebQueryDelegate(binding.makeQueryWithId(adql, givenId));
+      }
+      catch (QueryException e) { throw new DatacenterException("Illegal Query", e); }
+      catch (SAXException e) { throw new DatacenterException("Illegal Query", e); }
    }
    
    /**
@@ -203,7 +213,12 @@ public class WebDelegate implements AdqlQuerier
     */
    public DatacenterQuery makeQuery(Select adql) throws IOException
    {
+      try
+      {
       return new WebQueryDelegate(binding.makeQuery(adql));
+      }
+      catch (QueryException e) { throw new DatacenterException("Illegal Query", e); }
+      catch (SAXException e) { throw new DatacenterException("Illegal Query", e); }
    }
    
    /**
@@ -221,10 +236,11 @@ public class WebDelegate implements AdqlQuerier
          
          
          //run query on server
-         Element results = binding.doQuery(resultsFormat, adql);
+         Element resultsDoc = binding.doQuery(resultsFormat, adql);
          
          //extract results to DatacenterResults
          //only one type for It03 servers - votable
+         return new DatacenterResults(resultsDoc);
          
       }
       catch (Exception e) {
@@ -237,6 +253,9 @@ public class WebDelegate implements AdqlQuerier
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.4  2003/11/06 22:04:48  mch
+Temporary fixes to work with old version of AxisDataServer
+
 Revision 1.3  2003/11/05 18:52:53  mch
 Build fixes for change to SOAPy Beans and new delegates
 
