@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZVOTableWriter.java,v 1.2 2004/01/25 12:26:52 pah Exp $
+ * $Id: HyperZVOTableWriter.java,v 1.3 2004/01/26 17:45:50 pah Exp $
  * 
  * Created on 20-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -90,12 +90,86 @@ public class HyperZVOTableWriter {
       resource.setDescription("This is the ouput of running the hyperz from within the ASTROGRID job system as part of the AVO Demo Jan 2004 - Paul Harrison (pah@jb.man.ac.uk)");
       TRSet tr = resource.getTRSet(0);
       FieldSet fieldSet = resource.getFieldSet(0);
-      SavotField photzfield = new SavotField();
-      photzfield.setDescription("photometric redshift estimated by hyperz");
-      photzfield.setName("photoz");
-      photzfield.setUcd("REDSHIFT_PHOT");
-      photzfield.setDataType("float");
-      fieldSet.addItem(photzfield);
+      SavotField field = new SavotField();
+      field.setDescription("photometric redshift primary solution estimated by hyperz");
+      field.setName("photoz");
+      field.setUcd("REDSHIFT_PHOT");
+      field.setDataType("float");
+      fieldSet.addItem(field);
+      
+      field = new SavotField();
+      field.setDescription("chi**2");
+      field.setName("chisquared");
+      field.setDataType("float");
+      fieldSet.addItem(field);
+      
+      field = new SavotField();
+      field.setDescription("p(chi**2)");
+      field.setName("pchi2");
+      field.setDataType("float");
+      field.setUcd("STAT_PROBABILITY");
+      fieldSet.addItem(field);
+
+      field = new SavotField();
+      field.setDescription("the number of the spectral type");
+      field.setName("nspectype");
+      field.setDataType("float");
+      fieldSet.addItem(field);
+
+      field = new SavotField();
+      field.setDescription("the age record");
+      field.setName("agerec");
+      field.setDataType("float");
+      field.setUcd("TIME_AGE");
+      fieldSet.addItem(field);
+
+      field = new SavotField();
+      field.setDescription("the age in Gyr");
+      field.setName("ageGy");
+      field.setDataType("float");
+      field.setUcd("TIME_AGE");
+      fieldSet.addItem(field);
+      
+      field = new SavotField();
+      field.setDescription("the absorption in the V band to ba applied to the fbest fit SED");
+      field.setName("absorptionV");
+      field.setDataType("float");
+      fieldSet.addItem(field);
+      
+      field = new SavotField();
+      field.setDescription("the normalization factor b of equation 1 needed to minimise chi**");
+      field.setName("normb");
+      field.setDataType("float");
+      fieldSet.addItem(field);
+
+      field = new SavotField();
+       field.setDescription("the weighted mean redshift zwm");
+       field.setName("zwm");
+       field.setDataType("float");
+       fieldSet.addItem(field);
+
+      field = new SavotField();
+       field.setDescription("absolute magnitude");
+       field.setName("mag_abs");
+       field.setDataType("float");
+       field.setUcd("PHOT_ABS-MAG");
+       fieldSet.addItem(field);
+
+      field = new SavotField();
+       field.setDescription("the secondary peak of the probability function");
+       field.setName("z_secondary");
+       field.setDataType("float");
+       fieldSet.addItem(field);
+      field = new SavotField();
+       field.setDescription("probability associated with secondary solution");
+       field.setName("z_secondary_prob");
+       field.setDataType("float");
+       fieldSet.addItem(field);
+       
+       
+       
+      
+     
       
       try {
           FileReader in = new FileReader(tmpfile);
@@ -110,8 +184,17 @@ public class HyperZVOTableWriter {
                int j = Integer.parseInt(vals[0]);
                TDSet theTDs = tr.getTDSet(j-1);
                SavotTD td = new SavotTD();
-               td.setContent(vals[1]);
-               theTDs.addItem(td);
+               for (int i = 1; i < 9; i++) {
+                  td.setContent(vals[i]);
+                  theTDs.addItem(td);
+                  
+               }
+               for (int i = 15; i < 20; i++) {
+                  td.setContent(vals[i]);
+                  theTDs.addItem(td);
+                  
+               }
+             
                
             }
          }
