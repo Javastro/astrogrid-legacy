@@ -7,8 +7,6 @@
          <li><a href="RELEASE.html">RELEASE</a>
          <!-- <li><a href="WEB-INF/classes/default.properties">Sample Configuration</a> -->
          <li><a href="self-test.jsp">Installation Test</a>
-         <li><a href="fingerprint.jsp">Fingerprint</a>
-         <li><a href="servlet/AxisServlet">SOAP WSDL</a>
          <li><a href="client-dist/astrogrid-datacenter-client-SNAPSHOT.zip">Java client API</a>
       </ul>
    </div>
@@ -29,11 +27,14 @@
          <li><a href="serverStatus.jsp">Status</a>
          <li><a href="viewMetadata.jsp">Metadata</a>
          <li><a href="admin/GetLog">Log</a>
+         <li><a href="fingerprint.jsp">Fingerprint</a>
       </ul>
    </div>
    <div id='menuDevelop'>
       <h5>Develop</h5>
       <ul>
+         <li><a href="servlet/AxisServlet">SOAP WSDL</a>
+         <li><a href="services/AxisDataService05">SOAP endpoint (v0.5)</a>
          <li><a href="other-back-end.html">Writing a new back-end</a>
          <li><a href="implementations" >Example back-ends </a>
          <li><a href="server/index.html" >Server Development Documentation </a>

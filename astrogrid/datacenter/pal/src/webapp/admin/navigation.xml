@@ -1,0 +1,22 @@
+<div id='leftColumn'>
+<div id='navcolumn'>
+   <div id='menuServer'>
+      <h5>Server</h5>
+      <ul>
+         <li><a href="../serverStatus.jsp">Status</a>
+         <li><a href="GetLog">Log</a>
+         <li><a href="../fingerprint.jsp">Fingerprint</a>
+      </ul>
+   </div>
+   <div id='menuMetadata'>
+      <h5>Metadata</h5>
+      <ul>
+         <li><a href="../viewMetadata.jsp">View</a>
+         <li><a href="editMetadata.jsp">Edit</a>
+         <li><a href="pushMetadata.jsp">Register</a>
+      </ul>
+   </div>
+
+</div>
+</div>
+

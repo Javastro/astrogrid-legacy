@@ -19,7 +19,7 @@
 
 <body>
 <%@ include file='../header.xml' %>
-<%--don't include this as the links aren't right include file='../navigation.xml' --%>
+<%@ include file='navigation.xml' %>
 
 <div id='bodyColumn'>
 <h1>Metadata Editor for <%=DataServer.getDatacenterName() %></h1>
