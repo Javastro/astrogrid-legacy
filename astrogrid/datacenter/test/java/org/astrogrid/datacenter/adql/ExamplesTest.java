@@ -1,4 +1,4 @@
-/*$Id: ExamplesTest.java,v 1.2 2003/09/02 14:41:15 nw Exp $
+/*$Id: ExamplesTest.java,v 1.3 2003/09/17 14:53:02 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,14 @@
 **/
 package org.astrogrid.datacenter.adql;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+
 import junit.framework.TestCase;
-import java.io.*;
-import org.astrogrid.datacenter.adql.generated.*;
+
+import org.astrogrid.datacenter.adql.generated.Select;
 /** Run through a set of sample files, loading and outputting each in turn.
  * @author Noel Winstanley nw@jb.man.ac.uk 28-Aug-2003
  *
@@ -81,6 +86,9 @@ public class ExamplesTest extends TestCase {
 
 /* 
 $Log: ExamplesTest.java,v $
+Revision 1.3  2003/09/17 14:53:02  nw
+tidied imports
+
 Revision 1.2  2003/09/02 14:41:15  nw
 added tests for ADQL parser
 

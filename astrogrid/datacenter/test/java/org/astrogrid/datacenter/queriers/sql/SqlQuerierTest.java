@@ -1,4 +1,4 @@
-/*$Id: SqlQuerierTest.java,v 1.8 2003/09/11 11:06:10 nw Exp $
+/*$Id: SqlQuerierTest.java,v 1.9 2003/09/17 14:53:02 nw Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,9 +11,11 @@
 package org.astrogrid.datacenter.queriers.sql;
 
 import java.io.InputStream;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.queriers.Query;
@@ -123,6 +125,9 @@ public class SqlQuerierTest extends TestCase {
 
 /*
 $Log: SqlQuerierTest.java,v $
+Revision 1.9  2003/09/17 14:53:02  nw
+tidied imports
+
 Revision 1.8  2003/09/11 11:06:10  nw
 fixed to work with new query format
 

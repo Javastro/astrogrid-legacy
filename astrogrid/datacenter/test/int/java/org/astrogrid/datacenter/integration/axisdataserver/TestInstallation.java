@@ -1,4 +1,4 @@
-/*$Id: TestInstallation.java,v 1.6 2003/09/16 13:25:47 nw Exp $
+/*$Id: TestInstallation.java,v 1.7 2003/09/17 14:53:02 nw Exp $
  * Created on 08-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,22 +10,28 @@
 **/
 package org.astrogrid.datacenter.integration.axisdataserver;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.rpc.ServiceException;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.delegate.DatacenterDelegate;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import java.io.*; 
-import java.net.*;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.rpc.ServiceException;
 /** integration test for validating an installation
  * <p>
  * First checks that axis is running, then that the datacenter web application is present and installed.
@@ -158,6 +164,18 @@ public class TestInstallation extends TestCase {
         }
         
     }
+    
+    public void testGetRegistryMetadata() {
+        DatacenterDelegate del = createDelegate();
+        try {
+            Element result = del.getRegistryMetadata();
+            assertNotNull(result);
+            assertEquals("Registry Metadata not in expected format","DataCenterMetaData",result.getLocalName());
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail("Could not get registryMetaData: " + e.getMessage());
+        }
+    }
     /** run a series of sample queries through the service
      *  <p>
      *  examines value of {@link #QUERY_FILE_KEY}, searches for input files in following order
@@ -168,25 +186,7 @@ public class TestInstallation extends TestCase {
      * @throws Exception
      */
     public void testDoQuery()  {
-        URL serviceURL = null;
-        try {
-            serviceURL = new URL(baseURL,"services/" + serviceName);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            fail("Service endpoint URL malformed: " + e.getMessage());
-        }
-        System.out.println("Connecting to datacenter service at " + serviceURL.toString());
-        DatacenterDelegate del = null;
-        try {
-            del = DatacenterDelegate.makeDelegate( serviceURL.toString()) ;// pity it can't take a URL
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Exception while creating delegate: " + e.getMessage());
-        } catch (ServiceException e) {
-            e.printStackTrace();
-            fail("Could not access service: " + e.getMessage());
-        }
-        assertNotNull("Could not create delegate",del);
+        DatacenterDelegate del = createDelegate();
         if (queryFile.exists()) { // on local file system.
             if (queryFile.isFile()) {
                 System.out.println ("Taking VOQL query from local file: " + queryFile.getPath());
@@ -220,7 +220,30 @@ public class TestInstallation extends TestCase {
             doQuery(del,is);
         }
     }
-    
+    /** helper method to create a datacenter delegate, based on properties initialized in {@link setUp} */
+    protected DatacenterDelegate createDelegate() {
+        URL serviceURL = null;
+        try {
+            serviceURL = new URL(baseURL,"services/" + serviceName);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            fail("Service endpoint URL malformed: " + e.getMessage());
+        }
+        System.out.println("Connecting to datacenter service at " + serviceURL.toString());
+        DatacenterDelegate del = null;
+        try {
+            del = DatacenterDelegate.makeDelegate( serviceURL.toString()) ;// pity it can't take a URL
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail("Exception while creating delegate: " + e.getMessage());
+        } catch (ServiceException e) {
+            e.printStackTrace();
+            fail("Could not access service: " + e.getMessage());
+        }
+        assertNotNull("Could not create delegate",del);
+        return del;
+    }
+    /** helper method to do a query */
     protected void doQuery(DatacenterDelegate del,InputStream is)  {
         Document doc = null;
         try {
@@ -258,6 +281,9 @@ public class TestInstallation extends TestCase {
 
 /* 
 $Log: TestInstallation.java,v $
+Revision 1.7  2003/09/17 14:53:02  nw
+tidied imports
+
 Revision 1.6  2003/09/16 13:25:47  nw
 fixed to use new delegate api
 

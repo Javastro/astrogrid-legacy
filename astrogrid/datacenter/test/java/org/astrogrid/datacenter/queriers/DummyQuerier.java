@@ -1,5 +1,5 @@
 /*
- * $Id: DummyQuerier.java,v 1.9 2003/09/15 17:39:36 mch Exp $
+ * $Id: DummyQuerier.java,v 1.10 2003/09/17 14:53:02 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,7 +8,6 @@ package org.astrogrid.datacenter.queriers;
 
 import java.io.IOException;
 import java.util.Date;
-import org.w3c.dom.Element;
 
 /**
  * DummyQuerier.java

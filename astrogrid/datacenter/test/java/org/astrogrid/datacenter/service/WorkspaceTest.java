@@ -14,9 +14,11 @@ package org.astrogrid.datacenter.service;
 
 import java.io.File;
 import java.io.IOException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.astrogrid.datacenter.config.Configuration;
 
 public class WorkspaceTest extends TestCase
@@ -253,6 +255,9 @@ public class WorkspaceTest extends TestCase
 
 /*
 $Log: WorkspaceTest.java,v $
+Revision 1.10  2003/09/17 14:53:02  nw
+tidied imports
+
 Revision 1.9  2003/09/15 18:01:45  mch
 Better test coverage
 

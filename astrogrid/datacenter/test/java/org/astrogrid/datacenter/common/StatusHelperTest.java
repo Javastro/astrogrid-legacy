@@ -1,11 +1,10 @@
 package org.astrogrid.datacenter.common;
 
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
-import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 /**
  * JUnit test case for StatusHelperTest

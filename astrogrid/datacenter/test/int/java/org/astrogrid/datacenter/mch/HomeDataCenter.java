@@ -6,19 +6,13 @@
 package org.astrogrid.datacenter.mch;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import org.apache.axis.utils.XMLUtils;
+
 import org.astrogrid.datacenter.config.Configuration;
-import org.astrogrid.datacenter.delegate.DatacenterDelegate;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
-import org.astrogrid.datacenter.queriers.Query;
 import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
 import org.astrogrid.datacenter.service.ServiceServer;
 import org.astrogrid.datacenter.service.SocketServer;
 import org.astrogrid.log.Log;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * A socket server implementation of an AstroGrid datacenter, serving
@@ -86,6 +80,9 @@ public class HomeDataCenter extends SocketServer
 
 /*
  $Log: HomeDataCenter.java,v $
+ Revision 1.3  2003/09/17 14:53:02  nw
+ tidied imports
+
  Revision 1.2  2003/09/17 06:55:44  mch
  Changed metadata loc
 

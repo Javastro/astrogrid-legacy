@@ -1,4 +1,4 @@
-/*$Id: VisitorTest.java,v 1.1 2003/09/02 14:41:15 nw Exp $
+/*$Id: VisitorTest.java,v 1.2 2003/09/17 14:53:02 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,11 @@
 **/
 package org.astrogrid.datacenter.adql;
 
-import junit.framework.TestCase;
-import java.io.*;
-import org.astrogrid.datacenter.adql.generated.*;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+
+import org.astrogrid.datacenter.adql.generated.Select;
 /** Run through a set of sample files, running visitor object over each in turn.
  *  just to test visitor pattern is funcitoning.
  *  Extends Examples test - in this way we can add more examples to that test, 
@@ -80,6 +82,9 @@ public class VisitorTest extends ExamplesTest{
 
 /* 
 $Log: VisitorTest.java,v $
+Revision 1.2  2003/09/17 14:53:02  nw
+tidied imports
+
 Revision 1.1  2003/09/02 14:41:15  nw
 added tests for ADQL parser
 

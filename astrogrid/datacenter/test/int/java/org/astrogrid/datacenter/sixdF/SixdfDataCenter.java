@@ -8,11 +8,11 @@ package org.astrogrid.datacenter.sixdF;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.delegate.DatacenterDelegate;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
-import org.astrogrid.datacenter.queriers.Query;
 import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
 import org.astrogrid.datacenter.service.ServiceServer;
 import org.astrogrid.datacenter.service.SocketServer;
@@ -88,6 +88,9 @@ public class SixdfDataCenter extends SocketServer
 
 /*
  $Log: SixdfDataCenter.java,v $
+ Revision 1.2  2003/09/17 14:53:02  nw
+ tidied imports
+
  Revision 1.1  2003/09/11 17:44:53  mch
  New 6dF data service & integration test
 

@@ -1,9 +1,11 @@
 package org.astrogrid.datacenter.common;
 
 import java.io.IOException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.astrogrid.datacenter.queriers.DummyQuerier;
 import org.astrogrid.datacenter.queriers.DummyQueryResults;
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.10 2003/09/16 15:24:39 mch Exp $
+ * $Id: DelegateTest.java,v 1.11 2003/09/17 14:53:02 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,18 +15,21 @@ package org.astrogrid.datacenter.delegate;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.UnknownHostException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Vector;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.common.ResponseHelper;
 import org.astrogrid.datacenter.common.QueryIdHelper;
 import org.astrogrid.datacenter.common.QueryStatus;
+import org.astrogrid.datacenter.common.ResponseHelper;
 import org.astrogrid.datacenter.common.StatusHelper;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.datacenter.query.QueryException;

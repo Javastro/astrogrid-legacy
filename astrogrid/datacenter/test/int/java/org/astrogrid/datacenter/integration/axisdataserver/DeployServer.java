@@ -1,4 +1,4 @@
-/*$Id: DeployServer.java,v 1.1 2003/09/16 12:49:51 nw Exp $
+/*$Id: DeployServer.java,v 1.2 2003/09/17 14:53:02 nw Exp $
  * Created on 16-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.datacenter.integration.axisdataserver;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 
-import org.apache.axis.client.*;
+import org.apache.axis.client.AdminClient;
 import org.apache.axis.utils.Options;
 /** little utility that just fires the correct wsdd at the web server.
  *  -- wraps around classes supplied by axis - hence accepts all parameters (port, host, password, etc) that
@@ -45,6 +45,9 @@ public class DeployServer {
 
 /* 
 $Log: DeployServer.java,v $
+Revision 1.2  2003/09/17 14:53:02  nw
+tidied imports
+
 Revision 1.1  2003/09/16 12:49:51  nw
 integration / installation testing
  

@@ -1,4 +1,4 @@
-/*$Id: QueryTranslatorTest.java,v 1.2 2003/09/05 01:04:02 nw Exp $
+/*$Id: QueryTranslatorTest.java,v 1.3 2003/09/17 14:53:02 nw Exp $
  * Created on 02-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,14 @@
 **/
 package org.astrogrid.datacenter.queriers;
 
-import org.astrogrid.datacenter.adql.QOM;
-import java.util.*;
+import java.util.AbstractList;
+import java.util.ArrayList;
 
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+import org.astrogrid.datacenter.adql.QOM;
 
 /** test behaviour of the QueryTranslator isInternalNode method.
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Sep-2003
@@ -69,6 +73,9 @@ public class QueryTranslatorTest extends TestCase {
 
 /* 
 $Log: QueryTranslatorTest.java,v $
+Revision 1.3  2003/09/17 14:53:02  nw
+tidied imports
+
 Revision 1.2  2003/09/05 01:04:02  nw
 minor bugfix
 

@@ -5,8 +5,9 @@
 
 package org.astrogrid.datacenter.mch;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.delegate.DatacenterDelegate;
 import org.astrogrid.datacenter.service.SocketServer;
@@ -63,6 +64,9 @@ public class HomeClient
 
 /*
  $Log: HomeClient.java,v $
+ Revision 1.3  2003/09/17 14:53:02  nw
+ tidied imports
+
  Revision 1.2  2003/09/15 23:01:06  mch
  fix for delegate method rename
 

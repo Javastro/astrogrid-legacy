@@ -2,6 +2,7 @@ package org.astrogrid.datacenter.config;
 
 import java.io.IOException;
 import java.net.URL;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

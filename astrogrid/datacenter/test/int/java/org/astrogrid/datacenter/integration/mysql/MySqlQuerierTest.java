@@ -1,5 +1,5 @@
 /*
- * $Id: MySqlQuerierTest.java,v 1.2 2003/09/11 13:53:02 mch Exp $
+ * $Id: MySqlQuerierTest.java,v 1.3 2003/09/17 14:53:02 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,9 +14,11 @@ package org.astrogrid.datacenter.integration.mysql;
  */
 
 import java.net.URL;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.queriers.Query;

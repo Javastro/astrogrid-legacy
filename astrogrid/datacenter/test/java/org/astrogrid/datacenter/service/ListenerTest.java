@@ -7,10 +7,13 @@ package org.astrogrid.datacenter.service;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import javax.xml.rpc.ServiceException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.astrogrid.datacenter.delegate.DatacenterDelegate;
 import org.astrogrid.datacenter.delegate.WebNotifyServiceListener;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
@@ -58,6 +61,9 @@ public class ListenerTest extends TestCase
 
 /*
 $Log: ListenerTest.java,v $
+Revision 1.3  2003/09/17 14:53:02  nw
+tidied imports
+
 Revision 1.2  2003/09/15 22:09:00  mch
 Renamed service id to query id throughout to make identifying state clearer
 

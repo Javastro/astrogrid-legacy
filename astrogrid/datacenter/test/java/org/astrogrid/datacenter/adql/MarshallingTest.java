@@ -1,4 +1,4 @@
-/*$Id: MarshallingTest.java,v 1.2 2003/08/28 22:45:47 nw Exp $
+/*$Id: MarshallingTest.java,v 1.3 2003/09/17 14:53:02 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,12 @@
 **/
 package org.astrogrid.datacenter.adql;
 
+import java.io.Reader;
+import java.io.StringReader;
+
 import junit.framework.TestCase;
-import org.astrogrid.datacenter.adql.generated.*;
-import org.astrogrid.datacenter.adql.ADQLUtils;
-import java.io.*;
+
+import org.astrogrid.datacenter.adql.generated.Select;
 /** unit test to exercise the marshalling / unmarshalling / validation framework of the generated castor classes
  * <p>
  * NB - to run this test, must have the castor-xml jar on classpath, and <i>also</i> the xerces.jar . Any other xml parser wont't do - 
@@ -92,6 +94,9 @@ public class MarshallingTest extends TestCase {
 
 /* 
 $Log: MarshallingTest.java,v $
+Revision 1.3  2003/09/17 14:53:02  nw
+tidied imports
+
 Revision 1.2  2003/08/28 22:45:47  nw
 added unit test that runs a set of sample ADQL documents through the object model
 

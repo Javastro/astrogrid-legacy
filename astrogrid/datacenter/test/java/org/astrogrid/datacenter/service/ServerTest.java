@@ -14,10 +14,13 @@ package org.astrogrid.datacenter.service;
 
 import java.io.IOException;
 import java.net.URL;
+
 import javax.xml.parsers.ParserConfigurationException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
@@ -85,6 +88,9 @@ public class ServerTest extends TestCase
 
 /*
 $Log: ServerTest.java,v $
+Revision 1.5  2003/09/17 14:53:02  nw
+tidied imports
+
 Revision 1.4  2003/09/10 12:16:44  mch
 Changes to make web interface more consistent
 

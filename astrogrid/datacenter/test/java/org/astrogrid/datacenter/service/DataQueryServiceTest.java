@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.10 2003/09/15 22:09:00 mch Exp $
+/*$Id: DataQueryServiceTest.java,v 1.11 2003/09/17 14:53:02 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,25 +9,26 @@
  *
 **/
 package org.astrogrid.datacenter.service;
-import org.astrogrid.datacenter.queriers.*;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.sql.DataSource;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DummyQuerier;
+import org.astrogrid.datacenter.queriers.QueryListener;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
 import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
-import org.astrogrid.datacenter.common.QueryStatus;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /** Test the entire DataQueryService, end-to-end, over a Hsql database
  * @author Noel Winstanley nw@jb.man.ac.uk 05-Sep-2003
@@ -158,6 +159,9 @@ public class DataQueryServiceTest extends HsqlTestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.11  2003/09/17 14:53:02  nw
+tidied imports
+
 Revision 1.10  2003/09/15 22:09:00  mch
 Renamed service id to query id throughout to make identifying state clearer
 

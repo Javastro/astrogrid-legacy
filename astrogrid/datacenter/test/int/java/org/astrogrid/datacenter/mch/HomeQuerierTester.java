@@ -1,5 +1,5 @@
 /*
- * $Id: HomeQuerierTester.java,v 1.1 2003/09/15 11:46:18 mch Exp $
+ * $Id: HomeQuerierTester.java,v 1.2 2003/09/17 14:53:02 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,10 +8,13 @@ package org.astrogrid.datacenter.mch;
 
 import java.io.IOException;
 import java.net.URL;
+
 import javax.xml.parsers.ParserConfigurationException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;

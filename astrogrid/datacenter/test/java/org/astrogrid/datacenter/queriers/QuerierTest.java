@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierTest.java,v 1.5 2003/09/16 15:48:25 mch Exp $
+ * $Id: QuerierTest.java,v 1.6 2003/09/17 14:53:02 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,11 +7,12 @@
 package org.astrogrid.datacenter.queriers;
 
 import java.io.IOException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.w3c.dom.Document;
-import org.apache.axis.utils.XMLUtils;
 
 /**
  * Tests the dummy querier and resultset.

@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.1 2003/09/03 14:45:59 nw Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.2 2003/09/17 14:53:02 nw Exp $
  * Created on 29-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,12 +9,14 @@
  *
 **/
 package org.astrogrid.datacenter.adql;
-import java.io.*;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.Properties;
 
-import org.astrogrid.datacenter.adql.generated.*;
+import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.queriers.QueryTranslator;
 import org.astrogrid.datacenter.queriers.sql.SqlQueryTranslator;
-import java.util.Properties;
 /** test the query translator - maybe n the wrong package, but convenient to have it here for now.
  * @author Noel Winstanley nw@jb.man.ac.uk 29-Aug-2003
  * * @todo add wider range of tests.
@@ -67,6 +69,9 @@ public class SqlQueryTranslatorTest extends ExamplesTest {
 
 /* 
 $Log: SqlQueryTranslatorTest.java,v $
+Revision 1.2  2003/09/17 14:53:02  nw
+tidied imports
+
 Revision 1.1  2003/09/03 14:45:59  nw
 renamed test to match renamed class
 

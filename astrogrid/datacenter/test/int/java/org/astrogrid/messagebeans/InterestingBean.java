@@ -1,4 +1,4 @@
-/*$Id: InterestingBean.java,v 1.1 2003/09/11 09:30:10 nw Exp $
+/*$Id: InterestingBean.java,v 1.2 2003/09/17 14:53:02 nw Exp $
  * Created on 11-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,8 +9,10 @@
  *
 **/
 package org.astrogrid.messagebeans;
-import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 11-Sep-2003
  *
@@ -90,6 +92,9 @@ public class InterestingBean {
 
 /* 
 $Log: InterestingBean.java,v $
+Revision 1.2  2003/09/17 14:53:02  nw
+tidied imports
+
 Revision 1.1  2003/09/11 09:30:10  nw
 demonstrator for using castor to map javabeans to xml
  
