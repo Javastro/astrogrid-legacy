@@ -218,12 +218,9 @@ public class JobScheduler {
             toolInterface = null ;
         ApplicationController
             applicationController = null ;
-        int
-            applicationID = 0;
-        ParameterValues
-            parameterValues = new ParameterValues() ;
-        boolean
-            bSubmit = true ;
+        String applicationID = null ;
+        ParameterValues parameterValues = new ParameterValues() ;
+        boolean bSubmit = true ;
         
         try {
            
@@ -241,14 +238,18 @@ public class JobScheduler {
             
             // set the URL for the JobMonitor so that it can be contacted... 
             jobMonitorURL = JES.getProperty( JES.MONITOR_URL, JES.MONITOR_CATEGORY ) ; 
-           
-//            applicationID = applicationController.initializeApplication( step.getParent().getId()
-//                                                                       , step.getStepNumber().toString()
-//                                                                       , jobMonitorURL
-//                                                                       , user
-//                                                                       , parameterValues ) ;
-//                                                                        
-//            bSubmit = applicationController.executeApplication( applicationID ) ;
+ 
+            // This conditional is for short-term testing purposes only (JBL - Dec 2003)
+            if( (toolLocation != null) && (!toolLocation.equals("")) ) { 
+                
+                applicationID = applicationController.initializeApplication( step.getParent().getId()
+                                                                           , step.getStepNumber().toString()
+                                                                           , jobMonitorURL
+                                                                           , user
+                                                                           , parameterValues ) ;
+                                                                        
+                bSubmit = applicationController.executeApplication( applicationID ) ;         
+            }
  
             if( bSubmit == true ) { 
                 step.setStatus( JobStep.STATUS_RUNNING ) ;                                                          
