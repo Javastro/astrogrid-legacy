@@ -285,8 +285,8 @@ public class QueryParser3_0
                xml_to_xql = "//VODescription/vs:DataCollection [" + xml_to_xql + "]";   
             } else if (searchElements.equals("Service")){
                xml_to_xql = "//VODescription/Service [" + xml_to_xql + "]";   
-            } else if (searchElements.equals("Service")){
-               xml_to_xql = "//VODescription/Service [" + xml_to_xql + "]";   
+            } else if (searchElements.equals("Resource")){
+               xml_to_xql = "//VODescription/Resource [" + xml_to_xql + "]";   
             } else if (searchElements.equals("SkyService")){
                xml_to_xql = "//VODescription/vs:SkyService [" + xml_to_xql + "]";   
             } else if (searchElements.equals("TabularSkyService")){

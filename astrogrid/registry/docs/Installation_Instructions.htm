@@ -1,0 +1,70 @@
+<html>
+<head>
+<title>Installation Instructions for Current Iteration04 Registry</title>
+</head>
+<body>
+<p>
+This is the Installation Instructions for the Registry which currently requires several manual jobs, but is expected
+to be easier in future iteration 05.  
+</i>AssumptionsK/i>
+<ul>
+<li>These instructions assume you have access to the CVS system.</li>
+<li>You have an Apache Tomcat server installed.</li>
+<li>You have an Apache Axis installed <i>(For Server Side Install Only)</i>.</li>
+<li>You have an Apache Cocoon installed <i>(For Client Side Install Only, must have access though to axis classes ex: axis.jar file can be used in cocoon)</i>.</li>
+<li>A jconfig.jar file is accessible for both Server side and Client side access.</li>
+</ul>
+</p>
+<i>Server Side</i>
+<ul>
+<li>From CVS Grab the registry-server-4_0.jar file located in astrogrid/registry/Release/server cvs location.</li>
+<li>Place the registry-server-4_0.jar file in the axis/WEB-INF/lib directory.</li>
+<li><i>Be sure the jconfg.jar file is also in this axis/WEB-INF/lib directory.</i></li>
+<li>Make a config file.  A sample config file is in cvs under astrogrid/registry/src/config</li>
+<li><i>The config file is now well documented please read it. It tells of cvs locations of where to find templates and example 
+registry file plus the editing of a registry file which is required for new registries.</i></li>
+<li><i>The example config file points to a more full Registry file, for setting up new registries please use and point in your config file
+to another registry file.  An example sample registry is given in cvs at location astrogrid/registry/src/xml/
+called new_registry_sample.xml.  Be sure to read this xml file for setting up your registry.</li>
+<li>Edit the tomcat/webapps/axis/WEB-INF/web.xml file.  And an env-entry right before the "</web-app>" closing tag:.  An example entry is given below please change to
+accomodate to your config file directory.
+<i>
+<env-entry>
+<!--JNDI property for registry config-->
+<env-entry-name>org.astrogrid.registry.config</env-entry-name>
+<env-entry-value>C:\astro_registry_server.xml</env-entry-value>
+<env-entry-type>java.lang.String</env-entry-type>
+</env-entry>
+</i>
+</li>
+<li>Start the tomcat server</li>
+<li>deploy the registry wsdd files.  Normal command is java org.apache.axis.client.AdminClient <wsddfile>
+	<li>astrogrid/registry/src/wsdd/adminquerydeploy.wsdd</li>
+	<li>astrogrid/registry/src/wsdd/querydeploy.wsdd</li>
+</li>
+<li><b>Server side is complete</b></li>
+</ul>
+<br />
+<i>Client Side</i>
+<ul>
+<li>Not much to say a portalB install is waht you need.</li>
+<li><i>Be sure the jconfg.jar file is also in this cocoon/WEB-INF/lib directory.</i></li>
+<li>Make a config file.  A sample config file is in cvs under astrogrid/registry/src/config</li>
+<li><i>The config file is now well documented please read it. It tells of cvs locations of where to find templates and example 
+registry file plus the editing of a registry file which is required for new registries.</i></li>
+<li>Edit the cocoon/WEB-INF/web.xml file.  And an env-entry right before the "</web-app>" closing tag:.  An example entry is given below please change to
+accomodate to your config file directory.
+<i>
+<env-entry>
+<!--JNDI property for registry config-->
+<env-entry-name>org.astrogrid.registry.config</env-entry-name>
+<env-entry-value>C:\astro_registry_server.xml</env-entry-value>
+<env-entry-type>java.lang.String</env-entry-type>
+</env-entry>
+</i>
+</li>
+<li>The Current portalB is having several problems.l   Hopefully fairly soon the registry will be integrated to the new portal harness.</li>
+</ul>
+
+</body>
+</html>

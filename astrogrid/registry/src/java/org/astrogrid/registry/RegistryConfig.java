@@ -1,13 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/registry/src/java/org/astrogrid/registry/Attic/RegistryConfig.java,v $</cvs:source>
  * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/12/08 09:30:16 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2003/12/16 21:51:57 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: RegistryConfig.java,v $
- *   Revision 1.3  2003/12/08 09:30:16  KevinBenson
- *   New result from merger with Itn04-Dec-08_RB tag
+ *   Revision 1.4  2003/12/16 21:51:57  KevinBenson
+ *   *** empty log message ***
+ *
+ *   Revision 1.1.2.5  2003/12/16 20:21:38  KevinBenson
+ *   New config file and some instructions.  Still debugging 1 last thing.
  *
  *   Revision 1.1.2.4  2003/12/02 16:11:56  KevinBenson
  *   Dusting off the harvester still some more work to do on the harvester, but
@@ -141,6 +144,12 @@ public class RegistryConfig
     *
     */
    public static final String REGISTRY_XML_TEMPLATE = "registry.xml.template";
+
+   /**
+    * The name of the Authority Template used by portal
+    *
+    */
+   public static final String RESOURCE_XML_TEMPLATE = "resource.xml.template";
    
 
 	/**
@@ -497,6 +506,32 @@ public class RegistryConfig
     File fi = new File(regRegistryTemplate);
     return fi;
    }
+   
+   /**
+   * Organisatin Template file and location
+   *
+   */
+   private static String regResourceTemplate = null ;
+
+   /**
+   * Static method to get our Organisation template
+   *
+   */
+   public static File getResourceTemplate() {
+    //
+    // Try reading our config property.
+    if ((null == regResourceTemplate) || (regResourceTemplate.length() <= 0))
+       {
+       if (DEBUG_FLAG) System.out.println("getResourceTemplate()") ;
+       if (DEBUG_FLAG) System.out.println("  Trying config property '" + RESOURCE_XML_TEMPLATE + "'") ;
+       regResourceTemplate = getProperty(RESOURCE_XML_TEMPLATE);
+       if (null != regResourceTemplate) regResourceTemplate = regResourceTemplate.trim();
+       if (DEBUG_FLAG) System.out.println("  Config property result : " + regResourceTemplate);
+    }
+    File fi = new File(regResourceTemplate);
+    return fi;
+   }
+   
    
 
    /**

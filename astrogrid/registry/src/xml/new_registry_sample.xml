@@ -1,3 +1,11 @@
+<!--
+This is a sample registry that can be used for setting up a new registry.
+This registry contains 2 simple entries a Authority and a Registry entry.  A Registry entry describes
+about the registry your setting up.  And normally a Registry entry must have a corresponding Authority 
+entry that describes about the Authority and Authority ID's.  Please be sure to change the AuthorityID and 
+ResouceKey appropriately for your Registry and Authority Entry.  And change the AccessURL to the appropriate
+cocoon location to show the oai registry.
+-->
 <?xml version="1.0" encoding="UTF-8"?>
 <VODescription
   xmlns="http://www.ivoa.net/xml/VOResource/v0.9"
@@ -19,10 +27,38 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
- <vs:SkyService>
+
+  <!-- Now, define some authority IDs we will use -->
+  <vg:Authority created="2002-12-17T09:30:47-05:00" updated="2002-12-17T09:30:47-05:00" status="active">
     <Identifier>
-      <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
-      <ResourceKey>QueryPage.html</ResourceKey>
+      <AuthorityID>vm05.astrogrid.org</AuthorityID>
+      <ResourceKey xsi:nil="true"/>
+    </Identifier>
+    <Title>NCSA Radio Astronomy Imaging Naming Authority</Title>
+    <ShortName>NCSA-RAI</ShortName>
+    <Summary>
+      <Description>
+        This authority ID will be used to identify generic resources 
+	related to the NCSA Radio Astronomy Imaging Group at the 
+	National Center for Supercomputing Applications (NCSA)
+      </Description>
+      <ReferenceURL>http://rai.ncsa.uiuc.edu/</ReferenceURL>
+    </Summary>
+    <Curation>
+      <Publisher>
+         <Title>NCSA Radio Astronomy Imaging</Title>
+      </Publisher>
+      <Contact>
+        <Name>Dr. Raymond Plante</Name>
+	<Email>rplante@ncsa.uiuc.edu</Email>
+      </Contact>
+      <Date>2003-08-30</Date>
+    </Curation>
+  </vg:Authority>
+ <vg:Registry>
+    <Identifier>
+      <AuthorityID>vm05.astrogrid.org</AuthorityID>
+      <ResourceKey>Registry.html</ResourceKey>
     </Identifier>
     <Title>NCSA Astronomy Digital Image Library Query Form</Title>
     <ShortName>ADIL</ShortName>
@@ -34,16 +70,6 @@
       <ReferenceURL>http://adil.ncsa.uiuc.edu/</ReferenceURL>
     </Summary>
     <Type>Archive</Type>
-    <RelatedResource>
-       <Relationship>service-for</Relationship>
-       <RelatedTo>
-          <Identifier>
-            <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
-            <ResourceKey>ADIL</ResourceKey>
-          </Identifier>
-	  <Title>NCSA Astronomy Digital Image Library</Title>
-       </RelatedTo>
-    </RelatedResource>
     <Curation>
       <Publisher>
     	 <Identifier>
@@ -72,61 +98,11 @@
     <ContentLevel>Research</ContentLevel>
     <ContentLevel>University</ContentLevel>
     <ContentLevel>Community College</ContentLevel>
+    <ManagedAuthority>vm05.astrogrid.org</ManagedAuthority>
     <Interface>
       <Invocation>WebBrowser</Invocation>
-      <AccessURL use="dir">http://adil.ncsa.uiuc.edu/QueryPage.html</AccessURL>
+      <AccessURL use="dir">http://vm08.astrogrid.org/cocoon/astrogrid/agoairegistry</AccessURL>
     </Interface>
-
-    <cs:ConeSearch>
-       <vr:StandardURL>http://www.us-vo.org/metadata/conesearch/</vr:StandardURL>
-       <cs:MaxSR>10</cs:MaxSR>
-       <cs:MaxRecords>5000</cs:MaxRecords>
-       <cs:Verbosity>false</cs:Verbosity>
-    </cs:ConeSearch>
-    
-    <ParamHTTP qtype="GET" xmlns="http://www.ivoa.net/xml/VODataService/v0.4">
-      <vr:Invocation>Extended</vr:Invocation>
-      <vr:AccessURL use="base">http://adil.ncsa.uiuc.edu/vocone?survey=f&amp;</vr:AccessURL>
-      <HTTPResults>text/xml</HTTPResults>
-
-      <!-- These are the supported input parameters -->
-      <Param>
-        <vr:Name>RA</vr:Name>
-        <vr:Description>The right ascension of the search cone center</vr:Description>
-	<DataType>float</DataType>
-        <Unit>degrees</Unit>
-	<UCD>POS_EQ_RA_MAIN</UCD>
-      </Param>
-      <Param>
-        <vr:Name>Dec</vr:Name>
-        <vr:Description>The declination of the search cone center</vr:Description>
-	<DataType>float</DataType>
-        <Unit>degrees</Unit>
-	<UCD>POS_EQ_DEC_MAIN</UCD>
-      </Param>
-      <Param>
-        <vr:Name>SR</vr:Name>
-        <vr:Description>The search cone radius</vr:Description>
-	<DataType>float</DataType>
-        <Unit>degrees</Unit>
-	<UCD>POS_ANG_DIST_REL</UCD>
-      </Param>
-    </ParamHTTP>
-    
-    
-    <vs:Coverage>
-      <vs:Spatial>
-        <vs:AllSky/>
-	<vs:RegionOfRegard>180</vs:RegionOfRegard>
-      </vs:Spatial>
-      <vs:Spectral>
-        <vs:Waveband>Radio</vs:Waveband>
-        <vs:Waveband>Millimeter</vs:Waveband>
-        <vs:Waveband>Infrared</vs:Waveband>
-        <vs:Waveband>Optical</vs:Waveband>
-        <vs:Waveband>UV</vs:Waveband>
-      </vs:Spectral>
-    </vs:Coverage>
-  </vs:SkyService>
-
+  </vg:Registry>
+  
 </VODescription>
