@@ -562,12 +562,14 @@
     </map:resource>
 
     <map:resource name="ag-menu-trans">
-
     <!-- include any files referenced initially -->
       <map:transform type="xinclude"/>
 
     <!-- add custom astrogrid menu <xi:include/>'s (not already defined) -->
-      <map:transform type="ag-menu"/>
+      <map:transform type="ag-menu">
+        <map:parameter name="menu-directory" value="/work/apps/tomcat/webapps/astrogrid-portal/WEB-INF/menu"/>
+        <map:parameter name="menu-href" value="WEB-INF/menu/"/>
+      </map:transform>
 
     <!-- include any referenced files -->
       <map:transform type="xinclude"/>
