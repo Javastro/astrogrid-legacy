@@ -1,4 +1,4 @@
-/* $Id: AllTests.java,v 1.2 2004/03/12 13:20:28 mch Exp $
+/* $Id: AllTests.java,v 1.3 2004/03/15 17:26:18 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -7,12 +7,11 @@
  *
  */
 package org.astrogrid.store;
-import org.astrogrid.store.*;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.astrogrid.store.delegate.FactoryTest;
 import org.astrogrid.store.delegate.LocalFileStoreTest;
+import org.astrogrid.store.delegate.VoSpaceResolverTest;
 
 /**
  */
@@ -31,6 +30,7 @@ public class AllTests {
       
       suite.addTest(FactoryTest.suite());
       suite.addTest(LocalFileStoreTest.suite());
+      suite.addTest(VoSpaceResolverTest.suite());
       
       return suite;
    }
@@ -38,6 +38,9 @@ public class AllTests {
 
 /*
  $Log: AllTests.java,v $
+ Revision 1.3  2004/03/15 17:26:18  mch
+ Added Vospace resolver test
+
  Revision 1.2  2004/03/12 13:20:28  mch
  Moved Ivorn to common
 
