@@ -135,7 +135,7 @@ public class DesignAction extends AbstractAction {
         WORKFLOW_IVORN_PARAMETER = "workflow-ivorn";
         
     public static final String
-        EDIT_CONDITION_PARAMETER = "edit-condition",
+        EDIT_CONDITION_PARAMETER = "edit_condition",
         ACTIVITY_KEY_PARAMETER = "activity_key",
         WORKFLOW_LIST_PARAMETER = "workflow-list",
         QUERY_LIST_PARAMETER = "query-list",
@@ -147,7 +147,8 @@ public class DesignAction extends AbstractAction {
 	    PARAM_NAME_PARAMETER = "param-name",
 	    PARAM_VALUE_PARAMETER = "param-value",
         DIRECTION_PARAMETER = "direction",
-	    STEP_DESCRIPTION_PARAMETER = "step-description";
+	    STEP_NAME_PARAMETER = "step_name",
+	    STEP_DESCRIPTION_PARAMETER = "step_description";
         
     public static final String
         FLOW_KEY_PARAMETER = "flow-key",
@@ -184,7 +185,8 @@ public class DesignAction extends AbstractAction {
 	    ACTION_INSERT_OUTPUT_PARAMETER = "insert-output-value",
 	    ACTION_RESET_PARAMETER = "reset-parameter",
 	    ACTION_REMOVE_TOOL_FROM_STEP = "remove-tool-from-step",
-	    ACTION_ADD_STEP_DESCRIPTION = "add-step-description", 	    
+	    ACTION_ADD_STEP_DESCRIPTION = "add-step-description",
+	    ACTION_ADD_STEP_NAME = "add-step-name", 	    
         ACTION_READ_LISTS = "read-lists",
         ACTION_REMOVE_WORKFLOW_FROM_SESSION = "remove-workflow-from-session";
         
@@ -352,7 +354,7 @@ public class DesignAction extends AbstractAction {
                 }
                 else if( action.equals( ACTION_EDIT_JOINCONDITION ) ) {
                     this.editJoinCondition(); 
-                }
+                } 
                 else if( action.equals( ACTION_READ_TOOL_LIST ) ) {
                     this.readToolList(); 
                 }
@@ -380,6 +382,9 @@ public class DesignAction extends AbstractAction {
 				else if( action.equals( ACTION_ADD_STEP_DESCRIPTION )){
 					this.insertStepDescription();  
 				}
+				else if( action.equals( ACTION_ADD_STEP_NAME )){
+					this.insertStepName();  
+				}				
 				else if( action.equals( ACTION_REMOVE_WORKFLOW_FROM_SESSION )){
 					this.removeWorkflow();  
 				}				
@@ -404,7 +409,7 @@ public class DesignAction extends AbstractAction {
         	        session.setAttribute( HTTP_WORKFLOW_TAG, workflow ) ;
             	    debug( session.getAttribute(HTTP_WORKFLOW_TAG).toString() ); 
                 }
-                
+
 //				this.readLists() ; // Ensure request object contains latest Workflow/Query
 
             }
@@ -629,6 +634,48 @@ public class DesignAction extends AbstractAction {
          
         }
 
+        private void copyWorkflow() throws ConsistencyException {
+            if( TRACE_ENABLED ) trace( "DesignActionImpl.copyWorkflow() entry" ) ;
+              
+            try {
+                
+				String
+                	name = request.getParameter( WORKFLOW_NAME_PARAMETER ) ;
+            	String
+                	newName = request.getParameter( WORKFLOW_NEW_NAME_PARAMETER ) ;
+                trace("Copying workflow: ") ;
+                trace("Origional name: " + name) ;
+                trace("New name: " + newName ) ;    
+            	if( name == null ) {
+                	trace( "DesignActionImpl.copyWorkflow(): WORKFLOW_NAME_PARAMETER was null" );
+                	throw new ConsistencyException() ;
+            	}
+            	else if( newName == null ) {
+					trace( "DesignActionImpl.copyWorkflow(): WORKFLOW_NEW_NAME_PARAMETER was null" );
+					throw new ConsistencyException() ;
+				}
+				else{
+                    WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
+//                    workflow = wfStore.readWorkflow( credentials.getAccount(), name ) ;
+//					workflow.setName( newName ) ;
+//                    wfStore.saveWorkflow( credentials.getAccount(), workflow ) ;
+					workflow = null ;   //JBL Is this OK?             
+				}
+            }
+//            catch( WorkflowInterfaceException wix ) {
+//                wix.printStackTrace(); //JBL note
+//            }
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.copyWorkflow() exit" ) ;
+			}
+		}        
+        
+        
+        private void createWorkflowFromTemplate( String template ) throws ConsistencyException {       
+            throw new UnsupportedOperationException("DesignActionImpl.createWorkflowFromTemplate() no longer supported");
+        } 
+        
+        
         private void submitWorkflow() throws ConsistencyException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.submitWorkflow() entry" ) ;
             
@@ -773,12 +820,63 @@ public class DesignAction extends AbstractAction {
         } // end of createTool(toolName)
            
            
+        private void readWorkflowList() {
+            if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflowList() entry" ) ;
+            
+            String[] workflows = null;
+              
+            try {
+                    
+                // For the moment this is where we have placed the door.
+                // If users cannot see a list, then they cannot do anything...
+//                this.checkPermissions( AUTHORIZATION_RESOURCE_WORKFLOW
+//                                     , AUTHORIZATION_ACTION_EDIT ) ;
+                               
+
+                WorkflowStore wfStore = workflowManager.getWorkflowStore();
+//                workflows = wfStore.listWorkflows( credentials.getAccount() ) ;
+                this.request.setAttribute( WORKFLOW_LIST_PARAMETER, workflows ) ;               
+            }
+//            catch( WorkflowInterfaceException wix ) {
+//                this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wix.toString() ) ;
+//            }
+            catch( Exception ex ) { 
+                this.request.setAttribute( ERROR_MESSAGE_PARAMETER, "permission denied" ) ;
+            }
+            finally {
+                if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflowList() exit" ) ;
+            }
+                    
+        } // end of readWorkflowList()   
+           
+   
+        private void readQueryList() {
+            if( TRACE_ENABLED ) trace( "DesignActionImpl.readQueryList() entry" ) ;
+              
+            String[] queries = null;
+              
+            try {   
+                WorkflowStore wfStore = workflowManager.getWorkflowStore();
+//                queries = wfStore.listQueries( credentials.getAccount() ) ;
+                this.request.setAttribute( QUERY_LIST_PARAMETER, queries ) ;               
+            }
+//            catch( WorkflowInterfaceException wix ) {
+//                this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wix.toString() ) ;                       
+//            }
+            finally {
+                if( TRACE_ENABLED ) trace( "DesignActionImpl.readQueryList() exit" ) ;
+            }
+                    
+        } // end of readQueryList()
+        
+        
         private void readToolList() {
            if( TRACE_ENABLED ) trace( "DesignActionImpl.readToolList() entry" ) ;
            
            String[] tools = (String[])this.session.getAttribute(TOOL_LIST_PARAMETER) ;
               
            try {
+
                          
               if( tools == null ) {
                   ApplicationRegistry toolRegistry = workflowManager.getToolRegistry();
@@ -1254,6 +1352,33 @@ public class DesignAction extends AbstractAction {
         } // end of insertActivity()       
 
 
+		private void insertStepName() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertStepName() entry" ) ;
+			
+			Step step = null ;
+            
+			try {
+	
+				String xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
+				String name = request.getParameter( STEP_NAME_PARAMETER ) ;
+				
+				debug( "xpathKey: " + xpathKey ) ;
+				debug( "name: " + name ) ;
+                                
+				if ( xpathKey == null) {
+					debug( "xpathKey is null" ) ;
+				}
+
+				step = locateStep( workflow, xpathKey );  
+				step.setName( name );
+				
+				
+			}
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertStepName() exit" ) ;
+			}
+                    
+		} // end of insertStepName()
 
 
 		private void insertStepDescription() throws ConsistencyException {
