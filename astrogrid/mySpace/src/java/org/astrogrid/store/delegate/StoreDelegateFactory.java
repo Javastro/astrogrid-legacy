@@ -1,5 +1,5 @@
 /*
- * $Id: StoreDelegateFactory.java,v 1.6 2004/03/04 12:51:31 mch Exp $
+ * $Id: StoreDelegateFactory.java,v 1.7 2004/03/05 19:24:43 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -8,9 +8,6 @@
  */
 
 package org.astrogrid.store.delegate;
-import org.astrogrid.store.delegate.myspace.*;
-import org.astrogrid.store.delegate.local.*;
-import org.astrogrid.store.delegate.ftp.*;
 
 
 import java.io.IOException;
@@ -37,13 +34,13 @@ public class StoreDelegateFactory
    public static StoreClient createDelegate(User operator, Agsl location) throws IOException
    {
       if (location.getScheme().startsWith(Agsl.SCHEME+":"+Msrl.SCHEME)) {
-         return new MySpaceIt04Delegate(operator, location.getEndpoint().toString());
+         return new org.astrogrid.store.delegate.myspace.MySpaceIt04Delegate(operator, location.getEndpoint().toString());
       }
       if (location.getScheme().startsWith(Agsl.SCHEME+":ftp")) {
-         return new FtpStore(location);
+         return new org.astrogrid.store.delegate.ftp.FtpStore(location);
       }
       if (location.getScheme().startsWith(Agsl.SCHEME+":file")) {
-         return new LocalFileStore(location);
+         return new org.astrogrid.store.delegate.local.LocalFileStore(location);
       }
       
       throw new IllegalArgumentException("Don't know how to create delegate for AGSL '"+location+"'");
@@ -53,6 +50,9 @@ public class StoreDelegateFactory
 
 /*
 $Log: StoreDelegateFactory.java,v $
+Revision 1.7  2004/03/05 19:24:43  mch
+Store delegates were moved
+
 Revision 1.6  2004/03/04 12:51:31  mch
 Moved delegate implementations into subpackages
 

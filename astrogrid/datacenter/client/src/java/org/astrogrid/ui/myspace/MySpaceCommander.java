@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceCommander.java,v 1.1 2004/03/03 17:40:58 mch Exp $
+ * $Id: MySpaceCommander.java,v 1.2 2004/03/05 19:23:52 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -26,11 +26,11 @@ import java.io.*;
 import org.astrogrid.community.User;
 import org.astrogrid.io.Piper;
 import org.astrogrid.store.Agsl;
-import org.astrogrid.store.delegate.MySpaceFile;
-import org.astrogrid.store.delegate.MySpaceFolder;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.store.delegate.StoreFile;
+import org.astrogrid.store.delegate.myspace.MySpaceFile;
+import org.astrogrid.store.delegate.myspace.MySpaceFolder;
 
 public class MySpaceCommander
 {
@@ -163,6 +163,9 @@ public class MySpaceCommander
 
 /*
 $Log: MySpaceCommander.java,v $
+Revision 1.2  2004/03/05 19:23:52  mch
+Store delegates were moved
+
 Revision 1.1  2004/03/03 17:40:58  mch
 Moved ui package
 

@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.16 2004/02/24 16:03:48 mch Exp $
+/*$Id: DataQueryServiceTest.java,v 1.17 2004/03/05 19:23:52 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,12 +15,9 @@ import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.sql.DataSource;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.config.SimpleConfig;
@@ -34,7 +31,6 @@ import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
 import org.astrogrid.datacenter.query.QueryStatus;
-import org.astrogrid.mySpace.delegate.MySpaceDummyDelegate;
 import org.w3c.dom.Document;
 
 /** Test the entire DataQueryService, end-to-end, over a Hsql database
@@ -60,7 +56,7 @@ public class DataQueryServiceTest extends ServerTestCase {
         super.setUp();
         //wsTest.setUp(); //sets up workspace
         HsqlTestCase.initializeConfiguration();
-        SimpleConfig.setProperty(QuerierManager.DEFAULT_MYSPACE, MySpaceDummyDelegate.DUMMY);
+        SimpleConfig.setProperty(QuerierManager.DEFAULT_MYSPACE, "myspace:file://DataQueryServiceTest");
         SimpleConfig.setProperty(ServiceServer.METADATA_FILE_LOC_KEY,"/org/astrogrid/datacenter/test-metadata.xml");
         DataSource ds = new HsqlTestCase.HsqlDataSource();
         //File tmpDir = WorkspaceTest.setUpWorkspace(); // dunno if we need to hang onto this for any reason..
@@ -124,7 +120,7 @@ public class DataQueryServiceTest extends ServerTestCase {
         server.abortQuery(qid);
         // should have gone now.. i.e. we can't do this..
         try {
-        server.setResultsDestination(qid,new URI(MySpaceDummyDelegate.DUMMY));
+        server.setResultsDestination(qid,new URI("myspace:file://DataQueryServiceTest"));
         fail("Expected to barf");
         }catch (IllegalArgumentException e) {
             //ignored it
@@ -135,7 +131,7 @@ public class DataQueryServiceTest extends ServerTestCase {
     public void testDoStagedQueryQuery() throws Exception    {
              String qid = server.makeQuery(query);
              assertNotNull(qid);
-             server.setResultsDestination(qid,new URI(MySpaceDummyDelegate.DUMMY));
+             server.setResultsDestination(qid,new URI("myspace:file://DataQueryServiceTest"));
              assertEquals(QueryStatus.UNKNOWN.toString(),server.getStatus(qid));
 
             TestListener l = new TestListener();
@@ -193,6 +189,9 @@ public class DataQueryServiceTest extends ServerTestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.17  2004/03/05 19:23:52  mch
+Store delegates were moved
+
 Revision 1.16  2004/02/24 16:03:48  mch
 Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
 

@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceIt04Delegate.java,v 1.1 2004/03/04 12:51:31 mch Exp $
+ * $Id: MySpaceIt04Delegate.java,v 1.2 2004/03/05 19:24:43 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -8,17 +8,6 @@
  */
 
 package org.astrogrid.store.delegate.myspace;
-import org.astrogrid.store.delegate.*;
-
-
-
-
-/**
- * Delegate to the MySpace VoSpace servers; this one provides an interface
- * to the 'old' Iteration 4 servers.
- *
- * @author M Hill
- */
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -34,6 +23,9 @@ import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
+import org.astrogrid.store.delegate.StoreClient;
+import org.astrogrid.store.delegate.StoreException;
+import org.astrogrid.store.delegate.StoreFile;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -364,6 +356,9 @@ public class MySpaceIt04Delegate implements StoreClient
 
 /*
 $Log: MySpaceIt04Delegate.java,v $
+Revision 1.2  2004/03/05 19:24:43  mch
+Store delegates were moved
+
 Revision 1.1  2004/03/04 12:51:31  mch
 Moved delegate implementations into subpackages
 
