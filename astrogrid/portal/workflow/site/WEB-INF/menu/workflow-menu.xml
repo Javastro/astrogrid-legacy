@@ -15,13 +15,13 @@
         uri="/astrogrid-portal/main/mount/workflow/agjobmanager.html"
         icon=""
         target="_self"
-        status-text="AstroGrid Portal Workflow: Job Manager"/>
+        status-text="Astrogrid Portal Workflow: Job Manager..."/>
     <agp:item
         contents="Job Monitor"
         contents-hover="Job Monitor"
         uri="/astrogrid-portal/main/workflow/agjobmanager-jes.html"
         icon=""
         target="_self"
-        status-text="Astrogrid Portal Workflow: Job Monitor"/>
+        status-text="Astrogrid Portal Workflow: Job Monitor..."/>
   </agp:menu>
 </agp:menu-def>
