@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
-	<extend>${basedir}/../project.xml</extend>
-	<pomVersion>3</pomVersion>
-	<id>astrogrid-scripting-groovy</id>
+        <extend>${basedir}/../project.xml</extend>
+        <pomVersion>3</pomVersion>
+        <id>astrogrid-scripting-groovy</id>
 
-	<build />
+        <build />
 
-	<dependencies>
-		<dependency>
-			<artifactId>astrogrid-scripting</artifactId>
-			<groupId>astrogrid-scripting</groupId>
-			<version>SNAPSHOT</version>
-		</dependency>
-	</dependencies>
+        <dependencies>
+                <dependency>
+                        <artifactId>astrogrid-scripting</artifactId>
+                        <groupId>org.astrogrid</groupId>
+                        <version>SNAPSHOT</version>
+                </dependency>
+        </dependencies>
 
-	<reports />
+        <reports />
 
 </project>
