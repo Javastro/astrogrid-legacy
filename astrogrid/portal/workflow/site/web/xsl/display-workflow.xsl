@@ -36,7 +36,7 @@
                         </xsl:element>           
                     </td>
                     <td rowspan="2">
-                        <input type="submit" value="change" />
+                        <input type="submit" value="update" />
                         <input type="hidden" name="action" value="add-name-description" />
                     </td>                                
                 </tr>
