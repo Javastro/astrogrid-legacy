@@ -1,4 +1,4 @@
-/*$Id: SimpleJavaWorkflowEndToEndTest.java,v 1.1 2004/07/01 11:47:39 nw Exp $
+/*$Id: SimpleJavaWorkflowEndToEndTest.java,v 1.2 2004/07/02 09:12:27 nw Exp $
  * Created on 23-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,7 +43,8 @@ public class SimpleJavaWorkflowEndToEndTest extends AbstractTestForSimpleWorkflo
     super.checkExecutionResults(wf);
     // get the result, check its what we expect.
     String value = (String)wf.findXPathValue("sequence/activity/tool/output/parameter/value");
-    softAssertNotNull(value);
+    softAssertNotNull("result is null",value);
+    softAssertTrue("result is empty",value.trim().length() > 0);
     softAssertEquals("result ins't as expected",42,Integer.parseInt(value));
     }
 }
@@ -51,6 +52,9 @@ public class SimpleJavaWorkflowEndToEndTest extends AbstractTestForSimpleWorkflo
 
 /* 
 $Log: SimpleJavaWorkflowEndToEndTest.java,v $
+Revision 1.2  2004/07/02 09:12:27  nw
+better checking of result value
+
 Revision 1.1  2004/07/01 11:47:39  nw
 cea refactor
  
