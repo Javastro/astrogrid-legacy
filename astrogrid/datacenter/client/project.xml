@@ -92,6 +92,14 @@
       </properties>
     </dependency>
 
+    <dependency>
+      <id>astrogrid-ui</id>
+      <version>SNAPSHOT</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
     <!-- required for the ApplicationController interface
     <dependency>
       <groupId>astrogrid-applications</groupId>
@@ -112,14 +120,12 @@
     </properties>
     </dependency>
 
-    <dependency>
-      <id>VOTableUtil</id>
-      <version>UNKNOWN</version>
-      <jar>VOTableUtil.jar</jar>
-          <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
-    </dependency>
+
+   <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis-ant</artifactId>
+      <version>1.1</version>
+   </dependency>
 
 
    <!-- used as part of build - no need to deploy with final app.-->
@@ -129,7 +135,6 @@
       <artifactId>axis-ant</artifactId>
       <version>1.1</version>
    </dependency>
-
 
   </dependencies>
 

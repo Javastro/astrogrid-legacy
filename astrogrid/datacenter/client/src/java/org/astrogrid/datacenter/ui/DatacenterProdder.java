@@ -1,4 +1,4 @@
-/* $Id: DatacenterProdder.java,v 1.6 2004/03/22 10:26:20 mch Exp $
+/* $Id: DatacenterProdder.java,v 1.7 2004/04/15 16:11:21 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -36,8 +36,8 @@ import org.astrogrid.ui.GridBagHelper;
 import org.astrogrid.ui.IconFactory;
 import org.astrogrid.ui.JHistoryComboBox;
 import org.astrogrid.ui.Splash;
-import org.astrogrid.ui.myspace.MySpaceBrowser;
-import org.astrogrid.ui.myspace.VoFileSelector;
+import org.astrogrid.ui.store.StoreBrowser;
+import org.astrogrid.ui.store.VoFileSelector;
 import org.astrogrid.ui.votable.JVotBox;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Element;
@@ -77,7 +77,7 @@ public class DatacenterProdder extends JFrame
       
       //query locator
       JPanel queryPanel = new JPanel(new BorderLayout());
-      queryLocator = new VoFileSelector("Query", MySpaceBrowser.OPEN_ACTION, Account.ANONYMOUS);
+      queryLocator = new VoFileSelector("Query", StoreBrowser.OPEN_ACTION, Account.ANONYMOUS);
       queryPanel.add(queryLocator, BorderLayout.NORTH);
       
       //datacenter locator
@@ -87,7 +87,7 @@ public class DatacenterProdder extends JFrame
       
       //results locator
       JPanel resultsPanel = new JPanel(new BorderLayout());
-      resultsLocator = new VoFileSelector("Results", MySpaceBrowser.SAVE_ACTION, Account.ANONYMOUS);
+      resultsLocator = new VoFileSelector("Results", StoreBrowser.SAVE_ACTION, Account.ANONYMOUS);
       resultsPanel.add(resultsLocator, BorderLayout.NORTH);
       
       //job monitor field
@@ -416,6 +416,9 @@ public class DatacenterProdder extends JFrame
 
 /*
  $Log: DatacenterProdder.java,v $
+ Revision 1.7  2004/04/15 16:11:21  mch
+ Moved common ui stuff to ui project
+
  Revision 1.6  2004/03/22 10:26:20  mch
  StoreClient putStream() now takes append
 
