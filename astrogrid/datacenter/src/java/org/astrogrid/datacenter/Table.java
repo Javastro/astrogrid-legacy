@@ -43,7 +43,7 @@ public class Table {
 		if( TRACE_ENABLED ) logger.debug( "Table(Element): entry") ;   
 				
 		try {
-			setName(tableElement.getAttribute( JobDocDescriptor.TABLE_NAME_ATTR )) ;			
+			setName(tableElement.getFirstChild().toString()) ;			
 		}
 		catch( Exception ex ) {
 			Message
