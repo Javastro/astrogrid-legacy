@@ -188,7 +188,7 @@
         <jar destfile="${temporary.dir}/${config.webapp.name}.war" basedir="${temporary.dir}/astrogrid-configuration">
         </jar>
         <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                path="/${config.webapp.name}" war="file://${temporary.dir}/${config.webapp.name}.war" />
+                path="/${config.webapp.name}" war="file:///${temporary.dir}/${config.webapp.name}.war" />
 </goal>
 
 <!-- need a webspace store for myspace?? - this is a first stab -->
@@ -199,7 +199,7 @@
         <jar destfile="${temporary.dir}/myspace-store.war" basedir="${temporary.dir}/myspace-store">
         </jar>
         <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                path="/myspace-store" war="file://${temporary.dir}/myspace-store.war" />
+                path="/myspace-store" war="file:///${temporary.dir}/myspace-store.war" />
 </goal>
 
 <!-- context- driven webapps ////////////////////////////////-->
@@ -211,7 +211,7 @@
                 <metainf dir="${temporary.dir}/jes"/>
         </war>
   <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-jes-SNAPSHOT" war="file://${temporary.dir}/astrogrid-jes-SNAPSHOT.war"/>
+          path="/astrogrid-jes-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-jes-SNAPSHOT.war"/>
 </goal>
 
 <goal name="apps-deploy" >
@@ -222,7 +222,7 @@
                 <metainf dir="${temporary.dir}/applications"/>
         </war>
   <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-applications-SNAPSHOT" war="file://${temporary.dir}/astrogrid-applications-SNAPSHOT.war"/>
+          path="/astrogrid-applications-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-applications-SNAPSHOT.war"/>
 </goal>
 
 <goal name="reg-deploy" >
@@ -233,10 +233,10 @@
                 <metainf dir="${temporary.dir}/registry"/>
         </war>
   <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-registry-SNAPSHOT" war="file://${temporary.dir}/astrogrid-registry-SNAPSHOT.war"/>
+          path="/astrogrid-registry-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-registry-SNAPSHOT.war"/>
 
   <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/exist" war="file://${temporary.dir}/exist-inttest.war"/>
+          path="/exist" war="file:///${temporary.dir}/exist-inttest.war"/>
 </goal>
 
 <goal name="myspace-deploy" >
@@ -247,7 +247,7 @@
                 <metainf dir="${temporary.dir}/myspace"/>
         </war>
   <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-mySpace-SNAPSHOT" war="file://${temporary.dir}/astrogrid-mySpace-SNAPSHOT.war"/>
+          path="/astrogrid-mySpace-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-mySpace-SNAPSHOT.war"/>
 </goal>
 
 <goal name="pal-deploy" >
@@ -258,7 +258,7 @@
                 <metainf dir="${temporary.dir}/pal"/>
         </war>
   <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-pal-SNAPSHOT" war="file://${temporary.dir}/pal-SNAPSHOT.war"/>
+          path="/astrogrid-pal-SNAPSHOT" war="file:///${temporary.dir}/pal-SNAPSHOT.war"/>
 </goal>
 
 <goal name="portal-deploy">
@@ -269,7 +269,7 @@
                 <metainf dir="${temporary.dir}/portal" />
         </war>
         <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                path="/astrogrid-portal-SNAPSHOT" war="file://${temporary.dir}/astrogrid-portal-SNAPSHOT.war" />
+                path="/astrogrid-portal-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-portal-SNAPSHOT.war" />
 </goal>
 
 <!--+
@@ -305,7 +305,7 @@
             url="${tomcat.manager.url}"
             username="${tomcat.manager.username}"
             password="${tomcat.manager.password}"
-            path="/astrogrid-community" war="file://${temporary.dir}/astrogrid-community-webapp-SNAPSHOT.war"/>
+            path="/astrogrid-community" war="file:///${temporary.dir}/astrogrid-community-webapp-SNAPSHOT.war"/>
         <!--+
             | Wait for our service to respond.
             +-->
