@@ -1,4 +1,4 @@
-/*$Id: QuerierSpiContractTest.java,v 1.2 2003/11/28 16:10:30 nw Exp $
+/*$Id: QuerierSpiContractTest.java,v 1.3 2003/12/01 16:12:01 nw Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -82,16 +82,13 @@ public class QuerierSpiContractTest extends TestCase {
             return "MOCK";
         }
 
-        public void receiveConfig(Config conf) {
-          assertNotNull(conf);
-          seenConf++;
-        }
+
         
         private int seenConf;
         private int seenWorkspace;
         private int seenQuery;
         private int seenClose;
-        public void receiveWorkspace(Workspace ws) {
+        public void setWorkspace(Workspace ws) {
             assertSame(workspace,ws);
             seenWorkspace++;
             
@@ -121,6 +118,9 @@ public class QuerierSpiContractTest extends TestCase {
 
 /* 
 $Log: QuerierSpiContractTest.java,v $
+Revision 1.3  2003/12/01 16:12:01  nw
+removed config
+
 Revision 1.2  2003/11/28 16:10:30  nw
 finished plugin-rewrite.
 added tests to cover plugin system.
