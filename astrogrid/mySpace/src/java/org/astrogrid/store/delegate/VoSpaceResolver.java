@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolver.java,v 1.18 2004/04/21 10:35:50 mch Exp $
+ * $Id: VoSpaceResolver.java,v 1.19 2004/04/21 11:51:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -77,32 +77,44 @@ public class VoSpaceResolver {
          
       }
 
-      //if not found, see if it's an account identifier, and if so get that account's homespace (eg that community's myspace)
-      if (agsl == null) {
-         Ivorn homespace = getCommunityMySpace(ivorn);
-         lookedIn += ", Community "+community+ "(->"+homespace+")";
-         if (homespace != null)  {
-            ivorn = homespace;
-            /*
-            try {
-               //new Ivorn(homespace.toString()+fragment); //now resolve this
+      try {
+
+         //if not found, see if it's an account identifier, and if so get that account's homespace (eg that community's myspace)
+         if (agsl == null) {
+            Ivorn homespace = getCommunityMySpace(ivorn);
+   
+            lookedIn += ", Community "+community+ "(->"+homespace+")";
+            if (homespace != null)  {
+               ivorn = homespace;
+               /*
+               try {
+                  //new Ivorn(homespace.toString()+fragment); //now resolve this
+               }
+               catch (URISyntaxException e) {
+                  throw new ResolverException("community resolved "+ivorn+" to myspace "+homespace+", but "+homespace+"#"+fragment+" is not a valid IVORN");
+               }
+                */
             }
-            catch (URISyntaxException e) {
-               throw new ResolverException("community resolved "+ivorn+" to myspace "+homespace+", but "+homespace+"#"+fragment+" is not a valid IVORN");
-            }
-             */
+         }
+         
+         //if not found, see if the registry can resolve it
+         if (agsl == null) {
+            agsl = resolveUsingRegistry(ivorn);
+            lookedIn += ", Registry "+registry;
          }
       }
-      
-      //if not found, see if the registry can resolve it
-      if (agsl == null) {
-         agsl = resolveUsingRegistry(ivorn);
-         lookedIn += ", Registry "+registry;
+      catch (ResolverException re) {
+         //if it's the special hardcoded auto-integration resolver then we want
+         //to ignore any problems and continue to hard-resolve it.  Otherwise
+         //rethrow the exception
+         if (!ivorn.getPath().toString().equals(AUTOINT_MYSPACE_IVOKEY)) {
+            throw re;
+         }
       }
-      
+         
       //if not found, use hardcoded entries for auto-integration tests
       if (agsl == null) {
-         if (ivorn.getPath().toString().trim().toLowerCase().equals(AUTOINT_MYSPACE_IVOKEY.toLowerCase())) {
+         if (ivorn.getPath().toString().equals(AUTOINT_MYSPACE_IVOKEY)) {
             agsl = new Agsl(AUTOINT_MYSPACE_AGSL+fragment);
          }
       }
@@ -379,6 +391,9 @@ public class VoSpaceResolver {
 
 /*
 $Log: VoSpaceResolver.java,v $
+Revision 1.19  2004/04/21 11:51:58  mch
+Fix to resolve hardcoded ivorn if registry/community exceptions thrown
+
 Revision 1.18  2004/04/21 10:35:50  mch
 Fixes to ivorn/fragment resolving
 
