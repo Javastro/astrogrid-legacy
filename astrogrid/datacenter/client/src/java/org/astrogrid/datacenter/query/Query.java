@@ -1,5 +1,5 @@
 /*
- * $Id: Query.java,v 1.3 2004/10/08 09:40:52 mch Exp $
+ * $Id: Query.java,v 1.4 2004/10/12 22:46:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -47,6 +47,10 @@ public class Query  {
       this.results = aResultsDef;
    }
    
+   public void setScope(String[] givenScope) {
+      this.scope = givenScope;
+   }
+   
    /** Sets maximum number of results   */
    public void setLimit(long limit) {     this.limit = limit;  }
    
@@ -91,6 +95,9 @@ public class Query  {
 
 /*
  $Log: Query.java,v $
+ Revision 1.4  2004/10/12 22:46:42  mch
+ Introduced typed function arguments
+
  Revision 1.3  2004/10/08 09:40:52  mch
  Started proper ADQL parsing
 

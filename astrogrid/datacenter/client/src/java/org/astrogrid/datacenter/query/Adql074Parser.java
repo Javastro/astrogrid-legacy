@@ -1,5 +1,5 @@
 /*
- * $Id: Adql074Parser.java,v 1.1 2004/10/08 09:40:52 mch Exp $
+ * $Id: Adql074Parser.java,v 1.2 2004/10/12 22:46:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,15 +25,30 @@ public class Adql074Parser  {
 
    Hashtable alias = new Hashtable();
 
+   /** Static convenience method, creates an instance, parses the given string
+    * and returns a Query model */
+   public static Query makeQuery(String adql) {
+      Adql074Parser parser = new Adql074Parser();
+      return parser.parse(adql);
+   }
+   
+   /** Static convenience method, creates an instance, parses the given ADQL object model
+    * and returns a Query model */
+   public static Query makeQuery(SelectType adql) {
+      Adql074Parser parser = new Adql074Parser();
+      return parser.parse(adql);
+   }
+   
+   
    /** Constructs a Query from the given ADQL 0.7.4 document */
-   public Query makeQuery(String adql) {
+   public Query parse(String adql) {
       throw new UnsupportedOperationException();
    }
    
    /** Constructs a Query from the given ADQL (0.7.4) OM which is generated from the
     * SkyNode (0.7.4) WSDL
     */
-   public Query makeQuery(SelectType adql) {
+   public Query parse(SelectType adql) {
 
       //scope (from)
       FromTableType[] tables = adql.getFrom().getTable();
@@ -146,8 +161,8 @@ public class Adql074Parser  {
       else if (condition instanceof RegionSearchType) {
          RegionSearchType adqlRegion = (RegionSearchType) condition;
          String func = adqlRegion.getRegion().getNote();
-         SqlQueryMaker sqlMaker = new SqlQueryMaker();
-         return sqlMaker.parseFunction(func);
+         SqlParser sqlParser = new SqlParser();
+         return sqlParser.parseFunction(func);
       }
       else {
          throw new UnsupportedOperationException("Can't cope with ADQL 0.7.4 condition "+condition.getClass());
@@ -235,6 +250,9 @@ public class Adql074Parser  {
 }
 /*
  $Log: Adql074Parser.java,v $
+ Revision 1.2  2004/10/12 22:46:42  mch
+ Introduced typed function arguments
+
  Revision 1.1  2004/10/08 09:40:52  mch
  Started proper ADQL parsing
 

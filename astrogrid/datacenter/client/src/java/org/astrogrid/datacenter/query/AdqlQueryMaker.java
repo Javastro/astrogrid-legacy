@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlQueryMaker.java,v 1.3 2004/10/08 09:40:52 mch Exp $
+ * $Id: AdqlQueryMaker.java,v 1.4 2004/10/12 22:46:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -21,6 +21,7 @@ import org.xml.sax.SAXException;
  * @todo At the moment this is a horrible botch where the string is translated to SQL
     * using the StdSqlMaker, then parsed in again, whereas it should (one day) be
     * read directly from DOM or some generated model
+ *
  *
  * @author M Hill
  */
@@ -88,6 +89,9 @@ public class AdqlQueryMaker  {
 }
 /*
  $Log: AdqlQueryMaker.java,v $
+ Revision 1.4  2004/10/12 22:46:42  mch
+ Introduced typed function arguments
+
  Revision 1.3  2004/10/08 09:40:52  mch
  Started proper ADQL parsing
 
