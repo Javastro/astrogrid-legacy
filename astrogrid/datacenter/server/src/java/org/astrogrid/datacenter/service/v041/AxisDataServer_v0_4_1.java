@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer_v0_4_1.java,v 1.13 2004/08/27 17:47:19 mch Exp $
+ * $Id: AxisDataServer_v0_4_1.java,v 1.14 2004/09/01 12:10:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -93,7 +93,7 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
    public String  makeQuery(Query axisQ) throws AxisFault {
 
       try {
-         Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new AdqlQuery(axisQ.getQueryBody()), null, QueryResults.FORMAT_VOTABLE);
+         Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new AdqlQuery(axisQ.getQueryBody()), null, ReturnTable.VOTABLE);
          madeQueriers.put(querier.getId(), querier);
          return querier.getId();
       }
@@ -113,7 +113,7 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
    public String makeQueryWithId(Query axisQ, String assignedId) throws AxisFault {
       
       try {
-         Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new AdqlQuery(axisQ.getQueryBody()), null, QueryResults.FORMAT_VOTABLE);
+         Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new AdqlQuery(axisQ.getQueryBody()), null, ReturnTable.VOTABLE);
          madeQueriers.put(querier.getId(), querier);
          return querier.getId();
       }
@@ -258,6 +258,9 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
 
 /*
 $Log: AxisDataServer_v0_4_1.java,v $
+Revision 1.14  2004/09/01 12:10:58  mch
+added results.toHtml
+
 Revision 1.13  2004/08/27 17:47:19  mch
 Added first servlet; started making more use of ReturnSpec
 

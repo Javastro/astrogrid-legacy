@@ -1,5 +1,5 @@
 /*
- * $Id: PrecannedResults.java,v 1.3 2004/07/20 02:14:24 nw Exp $
+ * $Id: PrecannedResults.java,v 1.4 2004/09/01 12:10:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -60,9 +60,17 @@ public class PrecannedResults extends QueryResults
       Piper.bufferedPipe(in, out);
       in.close();
       /**NWW:  shouldn't close output stream - causes failure in QueryerPlugin.processResults(line 104) */
-      out.close();      
+      out.close();
    }
    
+   /**
+    * Converts results to HTML to given writer
+    */
+   public void toHtml(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
+   {
+      throw new UnsupportedOperationException("Don't support HTML yet");
+   }
+
    /**
     * Pipes the example file to the given output stream
     */
@@ -77,7 +85,7 @@ public class PrecannedResults extends QueryResults
       
       Reader in = new InputStreamReader(table);
       
-      Piper.bufferedPipe(in, out);      
+      Piper.bufferedPipe(in, out);
       in.close();
       /**NWW:  shouldn't close output stream - causes failure in QueryerPlugin.processResults(line 104) */
       //out.close();

@@ -1,5 +1,5 @@
 /*
- * $Id: QueryResults.java,v 1.9 2004/03/14 16:55:48 mch Exp $
+ * $Id: QueryResults.java,v 1.10 2004/09/01 12:10:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,6 +9,7 @@ package org.astrogrid.datacenter.queriers;
 import java.io.IOException;
 import java.io.Writer;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
+import org.astrogrid.datacenter.returns.ReturnTable;
 
 /** A container interface that holds the results of a query until needed.
  * <p>
@@ -25,8 +26,6 @@ import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
 
 public abstract class QueryResults
 {
-   public static final String FORMAT_VOTABLE = "VOTABLE"; //request results to be in votable format
-   public static final String FORMAT_CSV     = "CSV";    //request results in CSV
    
    /** All Virtual Observatories must be able to provide the results in VOTable
     * format.  The statusToUpdate can be used to change the querier's status so that
@@ -34,6 +33,10 @@ public abstract class QueryResults
     */
    public abstract void toVotable(Writer out, QuerierProcessingResults statusToUpdate) throws IOException;
    
+   /** HTML output suitable for display in a browser
+    */
+   public abstract void toHtml(Writer out, QuerierProcessingResults statusToUpdate) throws IOException;
+
    /** Comma Seperated Variable format does not contain the metadata of VOtable, but is
     * very common and can be put straight into spreadsheets, etc.
     */
@@ -48,14 +51,17 @@ public abstract class QueryResults
       assert (out != null);
       
       if (format == null) {
-         format = FORMAT_VOTABLE; //default to votable
+         format = ReturnTable.VOTABLE; //default to votable
       }
       
-      if (format.toUpperCase().equals(FORMAT_VOTABLE)) {
+      if (format.toUpperCase().equals(ReturnTable.VOTABLE.toUpperCase())) {
          toVotable(out, statusToUpdate);
       }
-      else if (format.toUpperCase().equals(FORMAT_CSV)) {
+      else if (format.toUpperCase().equals(ReturnTable.CSV.toUpperCase())) {
          toCSV(out, statusToUpdate);
+      }
+      else if (format.toUpperCase().equals(ReturnTable.HTML.toUpperCase())) {
+         toHtml(out, statusToUpdate);
       }
       else {
          throw new IllegalArgumentException("Unknown results format "+format+" given");

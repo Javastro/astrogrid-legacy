@@ -2,14 +2,17 @@
 <!-- extension maven script -->
 <project xmlns:j="jelly:core" xmlns:ant="jelly:ant"  xmlns:artifact="artifact" xmlns:doc="doc" xmlns:util="jelly:util" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
 
-<!-- location of generated source tree -->
-<property name="generated.src" location="${basedir}/generated/java" />
-<property name="generated.wsdd" location="${basedir}/generated/wsdd" />
- <!-- override the default astrogrid goals with our own
+  <!-- location of generated source tree -->
+  <property name="generated.src" location="${basedir}/generated/java" />
+  <property name="generated.wsdd" location="${basedir}/generated/wsdd" />
+ 
+ 
+  <!-- override the default astrogrid goals with our own
          - builds a jar, and a dist zip too.
          - dist.zip used in the pal build
--->
- <goal name="astrogrid-build-artifact" prereqs="jar" />
+  -->
+  <goal name="astrogrid-build-artifact" prereqs="jar" />
+  
   <goal name="astrogrid-install-artifact" prereqs="jar:install,dist:build-bin">
         <artifact:install
                 artifact="${maven.dist.dir}/${maven.final.name}.zip"
@@ -17,6 +20,7 @@
                 project="${pom}"
         />
   </goal>
+  
   <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot,dist:build-bin">
         <artifact:install-snapshot
                 artifact="${maven.dist.dir}/${maven.final.name}.zip"
@@ -24,7 +28,9 @@
                 project="${pom}"
         />
   </goal>
+
   <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot" />
+
   <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,dist:build-bin">
         <!-- can't use dist:deploy-bin-snapshot - puts it in different / wrong / inaccessible part of repository -->
         <artifact:deploy-snapshot

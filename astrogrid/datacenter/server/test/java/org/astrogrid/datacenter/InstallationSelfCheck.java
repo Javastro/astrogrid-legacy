@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.22 2004/08/27 17:47:19 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.23 2004/09/01 12:10:58 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -84,7 +84,7 @@ public class InstallationSelfCheck extends TestCase {
       StringWriter sw = new StringWriter(); //although we throw away the results
       DataServer server = new DataServer();
       server.askQuery(Account.ANONYMOUS, new ConeQuery(30,30,2),
-                      new ReturnTable(new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE));
+                      new ReturnTable(new TargetIndicator(sw), ReturnTable.VOTABLE));
    }
 
    public void testCanCreateWorkspace() throws IOException {
@@ -121,6 +121,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.23  2004/09/01 12:10:58  mch
+ added results.toHtml
+
  Revision 1.22  2004/08/27 17:47:19  mch
  Added first servlet; started making more use of ReturnSpec
 

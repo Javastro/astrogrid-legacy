@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseResults.java,v 1.11 2004/04/05 11:29:32 kea Exp $
+ * $Id: WarehouseResults.java,v 1.12 2004/09/01 12:10:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -68,7 +68,15 @@ public class WarehouseResults extends QueryResults
     // DON'T CLOSE OUT!!
   }
   
-  /**
+   /**
+    * Converts results to HTML to given writer
+    */
+   public void toHtml(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
+   {
+      throw new UnsupportedOperationException("Don't support HTML yet");
+   }
+
+   /**
    * Return results as CSV to given outputstream.
    * Not supported yet.
    */
@@ -81,6 +89,9 @@ public class WarehouseResults extends QueryResults
 
 /*
  $Log: WarehouseResults.java,v $
+ Revision 1.12  2004/09/01 12:10:58  mch
+ added results.toHtml
+
  Revision 1.11  2004/04/05 11:29:32  kea
  Don't close output stream
 
@@ -89,6 +100,7 @@ public class WarehouseResults extends QueryResults
 
  Revision 1.9  2004/03/17 18:24:15  kea
  Integrating new javaapp using del-to-file, del-to-gridftp.
+
 
  Revision 1.8  2004/03/17 12:25:51  kea
  Oops, fixing slips.

@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.12 2004/08/25 23:38:34 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.13 2004/09/01 12:10:58 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,16 +19,15 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
-import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.sql.SqlPluginTest;
 import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.query.RawSqlQuery;
+import org.astrogrid.datacenter.returns.ReturnTable;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
@@ -87,7 +86,7 @@ public class SqlPluginTest extends ServerTestCase {
       //DummySqlPlugin.initConfig();
       
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(ra,dec,r), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
+      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(ra,dec,r), new TargetIndicator(sw), ReturnTable.VOTABLE);
       manager.askQuerier(q);
       log.info("Checking results...");
       Document results = DomHelper.newDocument(sw.toString());
@@ -130,7 +129,7 @@ public class SqlPluginTest extends ServerTestCase {
       assertNotNull("Could not open query file :" + queryFile,is);
 
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new AdqlQuery(is), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
+      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new AdqlQuery(is), new TargetIndicator(sw), ReturnTable.VOTABLE);
 
       manager.askQuerier(q);
       
@@ -161,7 +160,7 @@ public class SqlPluginTest extends ServerTestCase {
 
    private void askRawSql() throws Exception {
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new RawSqlQuery("select * from SampleStars"), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
+      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new RawSqlQuery("select * from SampleStars"), new TargetIndicator(sw), ReturnTable.VOTABLE);
 
       manager.askQuerier(q);
    
@@ -209,6 +208,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.13  2004/09/01 12:10:58  mch
+ added results.toHtml
+
  Revision 1.12  2004/08/25 23:38:34  mch
  (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 

@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.33 2004/08/27 17:47:19 mch Exp $
+ * $Id: SqlResults.java,v 1.34 2004/09/01 12:10:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -165,6 +165,78 @@ public class SqlResults extends QueryResults
       //don't close sqlResults - seems to cause the results to cycle through
    }
 
+   /**
+    * Converts results to HTML to given writer
+    */
+   public void toHtml(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
+   {
+      assert (out != null);
+      
+      long maxAllowed = SimpleConfig.getSingleton().getInt(MAX_RETURN_ROWS_KEY, DEFAULT_MAX_RETURN_ROWS);
+      
+      try
+      {
+         PrintWriter printOut = new PrintWriter(new BufferedWriter(out));
+         
+         printOut.println("<HTML>");
+         
+         printOut.println("<HEAD>");
+         printOut.println("<TITLE>Query Results</TITLE>");
+         printOut.println("</HEAD>");
+
+         printOut.println("<BODY>");
+         
+         printOut.println("<TABLE>");
+         
+         //list columns
+         ResultSetMetaData metadata = sqlResults.getMetaData();
+         
+         int cols = metadata.getColumnCount();
+         printOut.println("</TR>");
+         for (int i=1;i<=cols;i++)
+         {
+            printOut.print("<TH>"+metadata.getColumnName(i)+"</TH>");
+         }
+         printOut.println("</TR>");
+
+         int row = 0;
+         int maxRow = getCount();
+         String ofMax = " of "+maxRow;
+         if (maxRow == -1) ofMax = "";
+         while (sqlResults.next())
+         {
+            row++;
+            statusToUpdate.setNote("Processing Row "+row+ofMax);
+
+            printOut.println("<TR>");
+            for (int i=1;i<=cols;i++)
+            {
+               printOut.println("<TD>"+sqlResults.getString(i)+"</TD>");
+            }
+            printOut.println("</TR>");
+            
+            if ((maxAllowed!=-1) && (row>maxAllowed)) {
+               statusToUpdate.addDetail("Results limited to "+maxAllowed+" rows by datacenter");
+               log.warn("Limiting returned results to "+maxAllowed);
+               break;
+            }
+         }
+         statusToUpdate.addDetail(row+" rows sent");
+         
+         printOut.println("</TABLE>");
+         printOut.println("</BODY>");
+         
+         printOut.println("</HTML>");
+         printOut.flush();
+      }
+      catch (SQLException sqle)
+      {
+         log.error("Could not convert results",sqle);
+         throw new IOException(sqle+", converting to Html");
+      }
+      
+      //don't close sqlResults - seems to cause the results to cycle through
+   }
    
    /**
     * Converts results to CSV to given writer
@@ -238,6 +310,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.34  2004/09/01 12:10:58  mch
+ added results.toHtml
+
  Revision 1.33  2004/08/27 17:47:19  mch
  Added first servlet; started making more use of ReturnSpec
 

@@ -1,4 +1,4 @@
-/*$Id: FitsResultsTest.java,v 1.3 2004/08/25 23:38:34 mch Exp $
+/*$Id: FitsResultsTest.java,v 1.4 2004/09/01 12:10:58 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -9,24 +9,20 @@
  **/
 package org.astrogrid.datacenter.queriers.fits;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.query.ConeQuery;
-import org.astrogrid.datacenter.fits.FitsTest;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
-import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.returns.TargetIndicator;
-import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
+import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.returns.ReturnTable;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 
 /** Test the Fits processing classes
  */
@@ -38,20 +34,20 @@ public class FitsResultsTest extends TestCase
    FitsResults fr = new FitsResults(fileURLS);
    QuerierProcessingResults qpr;
    protected Querier querier;
-   protected StringWriter sw;      
+   protected StringWriter sw;
    
    protected void setUp() throws Exception{
       SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY, FitsQuerierPlugin.class.getName());
       sw = new StringWriter();
-      querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
-      qpr = new QuerierProcessingResults(querier);             
+      querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), new TargetIndicator(sw), ReturnTable.VOTABLE);
+      qpr = new QuerierProcessingResults(querier);
       
    }
 
-   public void testToVOotable() throws IOException   
+   public void testToVOotable() throws IOException
    {
       PrintWriter pw = new PrintWriter(System.out);
-      fr.toVotable(pw, qpr);      
+      fr.toVotable(pw, qpr);
    }
 
    
@@ -76,6 +72,9 @@ public class FitsResultsTest extends TestCase
 
 /*
  $Log: FitsResultsTest.java,v $
+ Revision 1.4  2004/09/01 12:10:58  mch
+ added results.toHtml
+
  Revision 1.3  2004/08/25 23:38:34  mch
  (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 

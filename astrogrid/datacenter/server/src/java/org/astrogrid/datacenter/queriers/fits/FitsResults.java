@@ -1,5 +1,5 @@
 /*
- * $Id: FitsResults.java,v 1.10 2004/08/05 15:14:22 KevinBenson Exp $
+ * $Id: FitsResults.java,v 1.11 2004/09/01 12:10:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -75,7 +75,7 @@ public class FitsResults extends QueryResults {
       for (int i=0;i<filenames.length;i++) {
          statusToUpdate.setNote("Adding File "+i+" of "+getCount());
          printOut.println("<FITS>");
-         printOut.println("   <STREAM>"+filenames[i]+"</STREAM>");
+         printOut.println("   <FileName>"+filenames[i]+"</STREAM>");
          
          printOut.println("</FITS>");
       }
@@ -88,6 +88,32 @@ public class FitsResults extends QueryResults {
       printOut.println("</RESOURCE>");
       
       printOut.println("</VOTABLE>");
+      
+      printOut.flush();
+   }
+   
+  /**
+    * Converts results to HTML to given outputstream.
+    */
+   public void toHtml(Writer out, QuerierProcessingResults statusToUpdate) throws IOException {
+
+      PrintWriter printOut = new PrintWriter(new BufferedWriter(out));
+      
+      printOut.println("<HTML>");
+      
+         printOut.println("<TITLE>Query Results</TITLE>");
+         printOut.println("</HEAD>");
+
+         printOut.println("<BODY>");
+      
+      for (int i=0;i<filenames.length;i++) {
+         statusToUpdate.setNote("Adding File "+i+" of "+getCount());
+         printOut.println("   <P>"+filenames[i]+"</P>");
+      }
+
+        printOut.println("</BODY>");
+         
+         printOut.println("</HTML>");
       
       printOut.flush();
    }
@@ -112,6 +138,9 @@ public class FitsResults extends QueryResults {
 
 /*
  $Log: FitsResults.java,v $
+ Revision 1.11  2004/09/01 12:10:58  mch
+ added results.toHtml
+
  Revision 1.10  2004/08/05 15:14:22  KevinBenson
  small bug fix in the FitsREsults.  And now uses dates was teh result of the mber of kevin-dev-03-08-04
 

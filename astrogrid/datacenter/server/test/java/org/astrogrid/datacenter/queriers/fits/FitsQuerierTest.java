@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.20 2004/08/25 23:38:34 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.21 2004/09/01 12:10:58 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -21,9 +21,9 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.fits.FitsTest;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
-import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.returns.ReturnTable;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 
 /** Test the Fits processing classes
  */
@@ -44,7 +44,7 @@ public class FitsQuerierTest extends TestCase
    }
 
    public void testPluginClass() throws IOException {
-      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(300, 60, 12), new TargetIndicator("mailto:mch@roe.ac.uk"), QueryResults.FORMAT_VOTABLE);
+      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(300, 60, 12), new TargetIndicator("mailto:mch@roe.ac.uk"), ReturnTable.VOTABLE);
       
       assertTrue("Plugin '"+querier.getPlugin()+"' not FitsQuerierPlugin", querier.getPlugin() instanceof FitsQuerierPlugin);
    }
@@ -52,7 +52,7 @@ public class FitsQuerierTest extends TestCase
    public void testCone() throws IOException
    {
       StringWriter sw = new StringWriter();
-      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(300, 60, 12), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
+      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(300, 60, 12), new TargetIndicator(sw), ReturnTable.VOTABLE);
       
       assertTrue("Plugin '"+querier.getPlugin()+"' not FitsQuerierPlugin", querier.getPlugin() instanceof FitsQuerierPlugin);
       
@@ -83,6 +83,9 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.21  2004/09/01 12:10:58  mch
+ added results.toHtml
+
  Revision 1.20  2004/08/25 23:38:34  mch
  (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 

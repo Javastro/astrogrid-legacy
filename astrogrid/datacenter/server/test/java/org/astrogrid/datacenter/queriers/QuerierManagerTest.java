@@ -1,4 +1,4 @@
-/*$Id: QuerierManagerTest.java,v 1.9 2004/03/14 04:13:16 mch Exp $
+/*$Id: QuerierManagerTest.java,v 1.10 2004/09/01 12:10:58 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,12 +9,11 @@
  *
  **/
 package org.astrogrid.datacenter.queriers;
-import java.io.Writer;
 import org.astrogrid.community.Account;
-import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
+import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.returns.ReturnTable;
 
 /**
  * test behaviours the querier manager.
@@ -45,9 +44,9 @@ public class QuerierManagerTest extends ServerTestCase {
    }
    public void testHandleUniqueness() throws Exception {
       
-      s1 = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), null, QueryResults.FORMAT_VOTABLE);
+      s1 = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), null, ReturnTable.VOTABLE);
       assertNotNull(s1);
-      s2 = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), null, QueryResults.FORMAT_VOTABLE);
+      s2 = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), null, ReturnTable.VOTABLE);
       assertNotNull(s2);
       assertNotSame(s1,s2);
       assertFalse(s1.getId().equals(s2.getId()));
@@ -66,6 +65,9 @@ public class QuerierManagerTest extends ServerTestCase {
 
 /*
  $Log: QuerierManagerTest.java,v $
+ Revision 1.10  2004/09/01 12:10:58  mch
+ added results.toHtml
+
  Revision 1.9  2004/03/14 04:13:16  mch
  Wrapped output target in TargetIndicator
 

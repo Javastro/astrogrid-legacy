@@ -1,4 +1,4 @@
-/*$Id: EgsoResults.java,v 1.2 2004/07/07 14:32:54 KevinBenson Exp $
+/*$Id: EgsoResults.java,v 1.3 2004/09/01 12:10:58 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -50,6 +50,13 @@ public class EgsoResults extends QueryResults {
     public void toVotable(Writer out, QuerierProcessingResults querierStatus) throws IOException {
         XMLUtils.DocumentToWriter(doc,out);
     }
+
+    /**
+     * Writes out results in HTML form
+     */
+    public void toHtml(Writer out, QuerierProcessingResults querierStatus) throws IOException {
+        throw new UnsupportedOperationException("Not yet impelmeneted");
+    }
     
     /**
      * writes out VOTable in memory to writer in CSV form
@@ -63,6 +70,9 @@ public class EgsoResults extends QueryResults {
 
 /*
 $Log: EgsoResults.java,v $
+Revision 1.3  2004/09/01 12:10:58  mch
+added results.toHtml
+
 Revision 1.2  2004/07/07 14:32:54  KevinBenson
 Few small changes because I had it referencing "cds" at the moment.
 
