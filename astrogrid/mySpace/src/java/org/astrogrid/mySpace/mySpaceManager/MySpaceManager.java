@@ -109,7 +109,19 @@ public String upLoad(String jobDetails){
 	//if ( DEBUG ) logger.debug("cotent ="+content+"path="+path);
 		try{
 			request = util.getRequestAttributes(jobDetails);
+			logger.debug("FILE LOCATION:......."+request.containsKey("fileLocation") +"SIZE: "+request.size());
+			//Object o[] = request.keySet().toArray();
+			//logger.debug("ARRAY SIZE: "+o.length);
+			//for(int i=0;i<o.length;i++){
+				//logger.debug("%%%%%%%"+o[i] +request.get(o[i]).toString());
+			//}
+			//Enumeration e = request.propertyNames();
+			//while(e.hasMoreElements()){
+			//	logger.debug("%%%"+e.nextElement());
+			//}
+			logger.debug("FILE lOCATION: "+request.get("fileLocation"));
 			fileLocation = request.get("fileLocation").toString();
+			if ( DEBUG ) logger.debug("filelocation == "+fileLocation);
 			content = MySpaceUtils.readFromFile(new File(fileLocation));
 
 			call = createServerManagerCall();
@@ -139,6 +151,7 @@ public String upLoad(String jobDetails){
 		
 			response = util.buildMySpaceManagerResponse(dataitem, returnStatus, details); 
 		}catch(Exception e){
+			logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
 			MySpaceMessage message =  new MySpaceMessage("MS-E-FLMOVDH");
 			response = message.getMessage(e.toString());  
 			return response;
