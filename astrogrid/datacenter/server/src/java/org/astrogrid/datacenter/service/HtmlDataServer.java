@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlDataServer.java,v 1.14 2004/07/15 17:07:35 mch Exp $
+ * $Id: HtmlDataServer.java,v 1.15 2004/08/11 18:53:33 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,15 +10,15 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.TargetIndicator;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.store.Agsl;
-import java.net.URISyntaxException;
 
 /**
  * A set of dataserver methods for serving data in HTML form, eg for servlets
@@ -177,10 +177,41 @@ public class HtmlDataServer
       
       return html.toString();
    }
-   
+
+   /** Convenience routine for returning the correct 'HTML' snippet that
+    * refreshes the page given by the URL - which should point to the same page
+    * that contains the snippet */
    public static String makeRefreshSnippet(int secs, String url) {
          return("(Refreshes every "+secs+" seconds)"+
                 "<META HTTP-EQUIV='Refresh' CONTENT='"+secs+";URL="+url+"'>");
+   }
+
+   /** Returns the name of this datacenter if it is configured, and 'AstroGrid
+    * Datacenter Installation' by default.
+    */
+   public static String getDatacenterName() {
+      return SimpleConfig.getProperty("datacenter.name","AstroGrid Datacenter Installation");
+   }
+
+   /** Returns the stylesheet to be used for the center's html pages in the form
+    * of a 'link' element.  Returns an empty string if none configured */
+   public static String getCssLink() {
+      String cssName = SimpleConfig.getProperty("datacenter.stylesheet",  "");
+      if (cssName.length() == 0) {
+         return "";
+      }
+      else {
+         return "<LINK href='"+cssName+"' rel='stylesheet' type='text/css'>";
+      }
+   }
+
+   /** Convenience routine that returns the complete <HEAD> element for the
+    * standard datacenter page */
+   public static String getHeadElement(String title) {
+      return "<HEAD>\n"+
+             "  <TITLE>"+title+" ("+getDatacenterName()+")</TITLE>\n"+
+             "  "+getCssLink()+"\n"+
+             "</HEAD>\n";
    }
    
    /**
