@@ -82,6 +82,53 @@ public class UserAccount
    {  return userName;
    }
 
+//
+// Authentication and Authorisation methods.
+// 
+// The two following methods, checkAuthentication and checkAuthorisation,
+// should not be confused.  checkAuthentication is used to check that
+// a User is an accredited user of both AstroGrid and the current MySpace
+// System, whereas checkAuthorisation is used to determine whether a user
+// has the necessary privileges to perform a given operation on a given
+// DataHolder.  For example, I might be an accredited user of a given
+// MySpace System, but nonetheless I'm unlikely to have sufficient
+// privileges to delete another user's DataHolders.
+
+/**
+ * Check that the <code>UserAccount</code> is an accredited user of
+ * both AstroGrid and the current MySpace System.  The current
+ * implementation is a dummy which always returns true.
+ *
+ * @returns Returns true if the user authenticates ok, otherwise returns
+ *    false.
+ */
+
+  public boolean checkAuthentication()
+  {  return true;
+  }
+
+/**
+ * Check whether the <code>UserAccount</code> has the necessary
+ * privileges to perform a given operation on a given
+ * <code>DataHolder</code>.  The current implementation is a dummy which
+ * always returns true.
+ * 
+ * @param oper The operation to be performed, coded as follows:
+ * <code>"r"</code> - read; <code>"w"</code> - write;
+ * <code>"d"</code> - delete.
+ * @param ownerID The identifer of the owner of the <code>DataHolder</code>
+ * on which the operation is to be performed.
+ * @param permissions The permissions mask of the <code>DataHolder</code>
+ * on which the operation is to be performed.
+ * @returns Returns true if the user has the necessary privileges to
+ * perform the requested given operation, otherwise returns false.
+ */
+
+  public boolean checkAuthorisation(String oper, String ownerID,
+    String permissions)
+  {  return true;
+  }
+
 /**
  * Produce a reasonable string representation of a
  * <code>UserAccount</code>.
