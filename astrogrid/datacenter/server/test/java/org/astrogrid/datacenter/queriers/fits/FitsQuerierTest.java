@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.10 2004/03/08 15:58:26 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.11 2004/03/09 21:05:57 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -28,7 +28,7 @@ import org.astrogrid.test.OptionalTestCase;
 public class FitsQuerierTest extends OptionalTestCase
 {
    
-
+   /** Temporarily comment ouy until we get some smaller FITs files!
    public void testCone() throws IOException
    {
       FitsQuerier querier = new FitsQuerier("DummyId", null);
@@ -55,6 +55,7 @@ public class FitsQuerierTest extends OptionalTestCase
       }
    }
 
+   
    public void setIndex(FitsQuerier querier) throws IOException
    {
       File indexFile = new File("fitsIndex.xml");
@@ -76,7 +77,7 @@ public class FitsQuerierTest extends OptionalTestCase
       
       querier.setIndex(new FileInputStream(indexFile));
    }
-
+    */
    /**
     *  Tests that it works OK as a plugin
     */
@@ -110,6 +111,9 @@ public class FitsQuerierTest extends OptionalTestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.11  2004/03/09 21:05:57  mch
+ Removed hugely long Fits tests
+
  Revision 1.10  2004/03/08 15:58:26  mch
  Fixes to ensure old ADQL interface works alongside new one and with old plugins
 
