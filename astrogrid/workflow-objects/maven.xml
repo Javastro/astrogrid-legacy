@@ -12,10 +12,12 @@
 
 <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot"/>
 
+<goal name="astrogrid-deploy-artifact" prereqs="jar:deploy" />
+
 
 <!-- hooks into existing goals -->
   <preGoal name="java:compile"><!-- generate classes from schema and wsdl first -->
-    
+
      <mkdir dir="${basedir}/target/classes" />     <!-- Clover fails if this dir is not present -->
 
   </preGoal>
@@ -84,6 +86,38 @@
                 <arg value="arraylist"/>
         </java>
  
+           <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+                <classpath>
+                        <pathelement location="${basedir}/build" />
+                        <path refid="maven.dependency.classpath" />
+                </classpath>
+                    <arg value="-i"/>
+                    <arg file="${basedir}/schema/CEATypes.xsd" />
+                <arg value="-binding-file" />
+                <arg file="${basedir}/build/castor-binding.xml" />
+                    <arg value="-dest" />
+                    <arg file="${generated.src}" />
+                <arg value="-verbose" />
+                <arg value="-types"/>
+                <arg value="arraylist"/>
+        </java>
+
+          <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+                <classpath>
+                        <pathelement location="${basedir}/build" />
+                        <path refid="maven.dependency.classpath" />
+                </classpath>
+                    <arg value="-i"/>
+                    <arg file="${basedir}/schema/ExecutionRecord.xsd" />
+                <arg value="-binding-file" />
+                <arg file="${basedir}/build/castor-binding.xml" />
+                    <arg value="-dest" />
+                    <arg file="${generated.src}" />
+                <arg value="-verbose" />
+                <arg value="-types"/>
+                <arg value="arraylist"/>
+        </java> 		
+ 
         <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
                 <classpath>
                         <pathelement location="${basedir}/build" />
@@ -118,27 +152,27 @@
         <goal name="controller-wsdl">
           <axis-wsdl2java output="${generated.src}"             verbose="true"
             serverside="true"
-            skeletondeploy="false"            
+            skeletondeploy="false"
             deployscope="Application"
             testcase="false"
         url="${basedir}/wsdl/JobController.wsdl"
         namespacemappingfile="${basedir}/build/axis-namespace-mappings.properties"
         />
         <move file="${generated.src}/org/astrogrid/jes/delegate/v1/jobcontroller/deploy.wsdd"
-        	tofile="${basedir}/wsdd/JobController-deploy.wsdd" />
+                tofile="${basedir}/wsdd/JobController-deploy.wsdd" />
         </goal>
 
         <goal name="scheduler-wsdl">
           <axis-wsdl2java output="${generated.src}"             verbose="true"
             serverside="true"
             skeletondeploy="false"
-            deployscope="Application"            
+            deployscope="Application"
             testcase="false"
         url="${basedir}/wsdl/JobScheduler.wsdl"
         namespacemappingfile="${basedir}/build/axis-namespace-mappings.properties"
         />
                 <move file="${generated.src}/org/astrogrid/jes/delegate/v1/jobscheduler/deploy.wsdd"
-        	tofile="${basedir}/wsdd/JobScheduler-deploy.wsdd" />
+                tofile="${basedir}/wsdd/JobScheduler-deploy.wsdd" />
         </goal>
 
    <goal name="monitor-wsdl" prereqs="axis-declare-tasks">
@@ -151,21 +185,21 @@
         namespacemappingfile="${basedir}/build/axis-namespace-mappings.properties"
         />
        <move file="${generated.src}/org/astrogrid/jes/delegate/v1/jobmonitor/deploy.wsdd"
-        	tofile="${basedir}/wsdd/JobMonitor-deploy.wsdd" />
+                tofile="${basedir}/wsdd/JobMonitor-deploy.wsdd" />
 
    </goal>
-   
+
    <goal name="wsdd-postprocess">
-   	  <!-- first delete the remaining undeploy wsdd files in source tree 
-   	  	want to remove any *Impl.java files too-->
-   	  <delete>
-   	  	<fileset dir="${generated.src}">
-   	  		<include name="**/*.wsdd" />
-   	  		<include name="**/*Impl.java" />
-   	  	</fileset>
-   	  </delete>
-   	  
-   	  <!-- now need to mangle things together into a deployment descriptor -->
+             <!-- first delete the remaining undeploy wsdd files in source tree
+                     want to remove any *Impl.java files too-->
+             <delete>
+                     <fileset dir="${generated.src}">
+                             <include name="**/*.wsdd" />
+                             <include name="**/*Impl.java" />
+                     </fileset>
+             </delete>
+
+             <!-- now need to mangle things together into a deployment descriptor -->
    </goal>
 <!-- end of generation stuff -->
 
