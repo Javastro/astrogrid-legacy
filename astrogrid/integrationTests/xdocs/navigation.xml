@@ -6,11 +6,15 @@
   <body>
     <links>
        <item name="AstroGrid" href="http://www.astrogrid.org"/>
-       <item name="Projects" href="http://www.astrogrid.org/maven/build/index.html"/>
+       <item name="Projects" href="../index.html"/>
+       <item name="Applicatons" href="../applications/index.html"/>
+       <item name="Datacenter" href="../datacenter/index.html"/>
+       <item name="mySpace" href="../mySpace/index.html"/>
     </links>
     <menu name="Testing">
       <item name="Results"     href="junit-report.html"/>
       <item name="I and R Wiki Page" href="http://wiki.astrogrid.org/bin/view/Astrogrid/Itn04IntegrationRelease"/>
+      <item name="Build log" href="../log/maven-build-integrationTests.log"/>
     </menu>
  </body>
 </project>
