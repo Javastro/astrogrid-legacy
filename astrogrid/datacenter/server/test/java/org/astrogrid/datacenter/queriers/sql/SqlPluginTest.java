@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.1 2004/03/12 04:54:06 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.2 2004/03/12 20:11:09 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,12 +21,11 @@ import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
-import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.query.AdqlQuery;
-import org.astrogrid.datacenter.queriers.query.ConeQuery;
-import org.astrogrid.datacenter.queriers.query.RawSqlQuery;
 import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
+import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.query.RawSqlQuery;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
@@ -105,7 +104,7 @@ public class SqlPluginTest extends ServerTestCase {
       }
       catch (IllegalArgumentException iae) {} //should throw this
       
-      SimpleConfig.setProperty(RawSqlQuery.SQL_PASSTHROUGH_ENABLED,"true");
+      SimpleConfig.setProperty(Querier.SQL_PASSTHROUGH_ENABLED,"true");
       
       doSql();
    }
@@ -145,6 +144,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.2  2004/03/12 20:11:09  mch
+ It05 Refactor (Client)
+
  Revision 1.1  2004/03/12 04:54:06  mch
  It05 MCH Refactor
 

@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.8 2004/03/12 04:54:07 mch Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.9 2004/03/12 20:11:09 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,8 +13,8 @@ package org.astrogrid.datacenter.queriers.sql;
 import java.io.InputStream;
 import java.util.Properties;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.queriers.query.AdqlQuery;
-import org.astrogrid.datacenter.queriers.query.ConeQuery;
+import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
@@ -91,6 +91,9 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: SqlQueryTranslatorTest.java,v $
+Revision 1.9  2004/03/12 20:11:09  mch
+It05 Refactor (Client)
+
 Revision 1.8  2004/03/12 04:54:07  mch
 It05 MCH Refactor
 

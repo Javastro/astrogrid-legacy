@@ -1,4 +1,4 @@
-/*$Id: SiteTestWebService.java,v 1.3 2004/03/08 15:58:26 mch Exp $
+/*$Id: SiteTestWebService.java,v 1.4 2004/03/12 20:11:09 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,8 +21,8 @@ import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
-import org.astrogrid.datacenter.delegate.DatacenterResults;
-import org.astrogrid.datacenter.delegate.FullSearcher;
+import org.astrogrid.datacenter.delegate.QuerySearcher;
+import org.astrogrid.datacenter.query.AdqlQuery;
 
 /**
  * For testing astrogrid datacenter web services and their delegates
@@ -45,7 +45,7 @@ public class SiteTestWebService extends TestCase {
    
    public void testMetadata() throws IOException, ServiceException
    {
-      FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher(Account.ANONYMOUS, endPoint, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      QuerySearcher querier = DatacenterDelegateFactory.makeFullSearcher(Account.ANONYMOUS, endPoint, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       
       assertNotNull(querier.getMetadata());
       
@@ -53,14 +53,14 @@ public class SiteTestWebService extends TestCase {
    
    public void testBlockingQuery() throws Exception
    {
-      FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher(Account.ANONYMOUS, endPoint, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      QuerySearcher querier = DatacenterDelegateFactory.makeFullSearcher(Account.ANONYMOUS, endPoint, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
 
       InputStream is = SiteTestWebService.class.getResourceAsStream("test-query.adql");
 
         Select select = Select.unmarshalSelect(new InputStreamReader(is));
         assertNotNull(select);
 
-      DatacenterResults results = querier.doQuery(FullSearcher.VOTABLE, ADQLUtils.toQueryBody(select));
+      InputStream results = querier.askQuery(new AdqlQuery(ADQLUtils.toQueryBody(select)), QuerySearcher.VOTABLE);
       
       assertNotNull(results);
    }
@@ -89,6 +89,9 @@ public class SiteTestWebService extends TestCase {
 
 /*
 $Log: SiteTestWebService.java,v $
+Revision 1.4  2004/03/12 20:11:09  mch
+It05 Refactor (Client)
+
 Revision 1.3  2004/03/08 15:58:26  mch
 Fixes to ensure old ADQL interface works alongside new one and with old plugins
 

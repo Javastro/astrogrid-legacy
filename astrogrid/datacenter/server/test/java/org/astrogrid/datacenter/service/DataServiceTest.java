@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.1 2004/03/12 04:54:07 mch Exp $
+/*$Id: DataServiceTest.java,v 1.2 2004/03/12 20:11:09 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.metadata.MetadataServer;
-import org.astrogrid.datacenter.queriers.query.AdqlQuery;
+import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
@@ -147,6 +147,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.2  2004/03/12 20:11:09  mch
+It05 Refactor (Client)
+
 Revision 1.1  2004/03/12 04:54:07  mch
 It05 MCH Refactor
 

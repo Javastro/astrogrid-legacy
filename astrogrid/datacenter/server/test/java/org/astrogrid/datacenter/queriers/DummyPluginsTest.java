@@ -1,5 +1,5 @@
 /*
- * $Id: DummyPluginsTest.java,v 1.1 2004/03/12 04:54:06 mch Exp $
+ * $Id: DummyPluginsTest.java,v 1.2 2004/03/12 20:11:09 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,7 +12,7 @@ import java.sql.Statement;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.astrogrid.datacenter.queriers.sql.JdbcQuerier;
+import org.astrogrid.datacenter.queriers.sql.JdbcConnections;
 import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.queriers.test.PrecannedResults;
 import org.xml.sax.SAXException;
@@ -35,7 +35,7 @@ public class DummyPluginsTest extends TestCase
        //test the dummy sql ones
        DummySqlPlugin.populateDb();
 
-       Connection connection = JdbcQuerier.createConnection();
+       Connection connection = JdbcConnections.makeFromConfig().createConnection();
        Statement s = connection.createStatement();
        s.execute("SELECT * FROM SampleStars WHERE Ra<100");
        assertNotNull(s.getResultSet());

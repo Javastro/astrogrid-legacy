@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.12 2004/03/12 04:54:06 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.13 2004/03/12 20:11:09 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -26,7 +26,7 @@ import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.query.ConeQuery;
+import org.astrogrid.datacenter.query.ConeQuery;
 
 /** Test the Fits processing classes
  */
@@ -82,6 +82,9 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.13  2004/03/12 20:11:09  mch
+ It05 Refactor (Client)
+
  Revision 1.12  2004/03/12 04:54:06  mch
  It05 MCH Refactor
 

@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.14 2004/03/12 04:54:06 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.15 2004/03/12 20:11:09 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,17 +11,22 @@
 package org.astrogrid.datacenter;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import junit.framework.TestCase;
+import org.astrogrid.community.Account;
 import org.astrogrid.community.User;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.metadata.MetadataServer;
 import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.queriers.QuerierManager;
-import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
+import org.astrogrid.datacenter.queriers.QuerierPlugin;
+import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
+import org.astrogrid.datacenter.queriers.QueryResults;
+import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.service.CeaService;
+import org.astrogrid.datacenter.service.v041.AxisDataServer_v0_4_1;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.StoreClient;
@@ -50,55 +55,36 @@ public class InstallationSelfCheck extends TestCase {
       junit.textui.TestRunner.run(InstallationSelfCheck.class);
    }
    
+   /** Checks we can create the various interfaces */
    public void testInstantiateServer() throws IOException {
-      // needs to come first.
-//no longer needed - properties load automatically      AxisDataServer serv = new AxisDataServer_v0_4_1(); // loads properties in.
-      
+      new AxisDataServer_v0_4_1();
+      new CeaService();
+      //new SkyNode();
    }
    
-   
-   
-   public void testLoadPlugin() throws Exception {
+   /** Checks the characteristics of the plugin */
+   public void testPluginDefinition() throws Exception {
       String pluginClass = SimpleConfig.getSingleton().getString(QuerierPluginFactory.DATABASE_QUERIER_KEY);
       assertNotNull(QuerierPluginFactory.DATABASE_QUERIER_KEY + " is not defined",pluginClass);
       // try to load plugin class.
       Class plugin = null;
 //      try {
-         plugin = Class.forName(pluginClass);
-         assertNotNull(QuerierPluginFactory.DATABASE_QUERIER_KEY + " could not be found",plugin);
-         // check its type
-         assertTrue(QuerierPluginFactory.DATABASE_QUERIER_KEY + " does not extend Querier",Querier.class.isAssignableFrom(plugin));
-         // we expect a contructor as follows
-         Constructor constr = plugin.getConstructor(new Class[]{String.class,Query.class});
-         assertNotNull("Plugin class must provide constructor(String,Query)",constr);
-         // if its not the plugin querier, then we stop.
-         if (! PluginQuerier.class.isAssignableFrom(plugin)) {
-            return;
-         }
-//      } catch (ClassNotFoundException e) {
-//         fail("Plugin class " + pluginClass + " not found");
-//      } catch (NoSuchMethodException e) {
-//         fail("Plugin class "+pluginClass+" missing correct constructor ");
-//      }
-      // else, go on and check the SPI too.
-      String spiClass = SimpleConfig.getSingleton().getString(PluginQuerier.QUERIER_SPI_KEY);
-      assertNotNull(PluginQuerier.QUERIER_SPI_KEY + " is not defined",spiClass);
-      Class clazz = null;
-//      try {
-         clazz = Class.forName(spiClass);
-         assertNotNull("SPI class " + spiClass + " could not be found",clazz);
-//      } catch (ClassNotFoundException e) {
-//         fail("SPI class " + spiClass + " could not be found");
-//      }
-      // try to instantiate it.
-//      try {
-         Object o = clazz.newInstance();
-//      } catch (Exception e) {
-//         fail("Could not instantiate SPI Object of class " + spiClass);
-//      }
-      
+      plugin = Class.forName(pluginClass);
+      assertNotNull(QuerierPluginFactory.DATABASE_QUERIER_KEY + " could not be found",plugin);
+      // check its type
+      assertTrue(QuerierPluginFactory.DATABASE_QUERIER_KEY + " does not extend QuerierPlugin",QuerierPlugin.class.isAssignableFrom(plugin));
+      // we expect a contructor as follows
+      Constructor constr = plugin.getConstructor(new Class[]{ Querier.class });
+      assertNotNull("Plugin class must provide constructor(String,Query)",constr);
    }
-   
+
+   /** Checks the querier/plugin operates - runs a cone query that will exercise it - so
+    * this will also test the connection to the backend database. */
+   public void testConeSearch() throws Exception {
+      StringWriter sw = new StringWriter(); //although we throw away the results
+      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,2), sw, QueryResults.FORMAT_VOTABLE);
+   }
+
    public void testCanCreateWorkspace() throws IOException {
          Workspace ws = new Workspace("test-workspace");
          assertNotNull("Could not create test workspace - returned null", ws);
@@ -133,6 +119,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.15  2004/03/12 20:11:09  mch
+ It05 Refactor (Client)
+
  Revision 1.14  2004/03/12 04:54:06  mch
  It05 MCH Refactor
 

@@ -1,4 +1,4 @@
-/*$Id: QuerierManagerTest.java,v 1.6 2004/03/12 04:54:06 mch Exp $
+/*$Id: QuerierManagerTest.java,v 1.7 2004/03/12 20:11:09 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ import java.io.Writer;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.queriers.query.ConeQuery;
+import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 
 /**
@@ -66,6 +66,9 @@ public class QuerierManagerTest extends ServerTestCase {
 
 /*
  $Log: QuerierManagerTest.java,v $
+ Revision 1.7  2004/03/12 20:11:09  mch
+ It05 Refactor (Client)
+
  Revision 1.6  2004/03/12 04:54:06  mch
  It05 MCH Refactor
 

@@ -1,4 +1,4 @@
-/*$Id: AbstractTestInstallation.java,v 1.14 2004/03/09 02:02:06 mch Exp $
+/*$Id: AbstractTestInstallation.java,v 1.15 2004/03/12 20:11:09 mch Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,10 +19,6 @@ import org.apache.axis.client.Call;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
-import org.astrogrid.datacenter.delegate.DatacenterQuery;
-import org.astrogrid.datacenter.delegate.DatacenterResults;
-import org.astrogrid.datacenter.delegate.FullSearcher;
 import org.astrogrid.datacenter.metadata.MetadataServer;
 import org.astrogrid.datacenter.query.QueryState;
 import org.w3c.dom.Document;
@@ -76,21 +72,6 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
         System.out.println(QUERY_FILE_KEY + "=" + queryFile.getPath());
 
     }
-/* unimplemented
-    public void testGetRegistryMetadata() {
-        FullSearcher del = createDelegate();
-        try {
-            Element result = del.getVoRegistryMetadata();
-            assertNotNull(result);
-            assertEquals("Registry Metadata not in expected format","DatacenterMetadata",result.getLocalName());
-            System.out.println("Registry Metadata:");
-            System.out.println(XMLUtils.ElementToString(result));
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Could not get registryMetaData: " + e.getMessage());
-        }
-    }
- */
     
     public void testGetMetatdata() throws Throwable{
         try {
@@ -104,175 +85,7 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
         }
     }
 
-    /** do a standard (blocking) query for each query file found */
-    public void testDoBlockingQuery() throws Throwable {
-        try {
-        FullSearcher del = createDelegate();
-        FileProcessor fp = new FileProcessor() {
-            protected void processStream(FullSearcher del, InputStream is) throws Exception{
-                doQuery(del,is);
-            }
-        };
-        fp.findFiles(del);
-        } catch (Throwable t) {
-            t.printStackTrace();
-            throw t;
-        }
-    }
-
-    /**do a nonblocking query for each file found */
-    public void testDoNonblockingQuery() throws Throwable{
-        try {
-        FullSearcher del = createDelegate();
-        FileProcessor fp = new FileProcessor() {
-            protected void processStream(FullSearcher del, InputStream is) throws Exception{
-                doNonBlockingQuery(del,is);
-            }
-        };
-        fp.findFiles(del);
-        } catch (Throwable t) {
-            t.printStackTrace();
-            throw t;
-        }
-    }
-
-    /** helper method to create a datacenter delegate, based on properties initialized in {@link setUp} */
-    protected FullSearcher createDelegate() {
-
-        System.out.println("Connecting to datacenter service at " + serviceURL.toString());
-        FullSearcher del = null;
-        try {
-            del = DatacenterDelegateFactory.makeFullSearcher( serviceURL.toString()) ;// pity it can't take a URL
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Exception while creating delegate: " + e.getMessage());
-        } catch (ServiceException e) {
-            e.printStackTrace();
-            fail("Could not access service: " + e.getMessage());
-        }
-        assertNotNull("Could not create delegate",del);
-        return del;
-    }
-
-    /** helper method to do a query */
-    protected void doQuery(FullSearcher del, InputStream is) throws Exception {
-       assertNotNull(is);
-       Select adql = Select.unmarshalSelect(new InputStreamReader(is));
-       assertNotNull("query input is null",adql);
-       DatacenterResults result = del.doQuery(FullSearcher.VOTABLE, ADQLUtils.toQueryBody(adql));
-        assertNotNull("Result of query was null",result);
-       Element vo = result.getVotable();
-       assertNotNull(vo);
-       XMLUtils.PrettyDocumentToStream(vo.getOwnerDocument(),System.out);
-       assertIsVotableResultsResponse(vo.getOwnerDocument());
-       
-    }
-
-
-
-    /** helper test method to do a non-blockinig query */
-    protected void doNonBlockingQuery(FullSearcher del, InputStream is) throws Exception {
-        assertNotNull(is);
-        Select adql = Select.unmarshalSelect(new InputStreamReader(is));
-        assertNotNull(adql);
-        DatacenterQuery query = del.makeQuery(ADQLUtils.toQueryBody(adql));
-        // check the response document.
-        assertNotNull("query creation response document is null",query);
-        assertNotNull("Query response document has not ID",query.getId());
-
-        System.out.println("Non blocking QueryID:" + query.getId());
-               
-        QueryState stat = query.getStatus();
-        assertNotNull("status is null",stat);
-        assertEquals("status code is not as expected",QueryState.CONSTRUCTED,stat);
-       // need to add this back in later - maybe a web listener that can't find its endpoint should just failsafe..
-       // URL notifyURL = new URL("http://www.nobody.there.com");
-       // query.registerWebListener(notifyURL);
-                 
-        query.start();
-        try { // bit ad-hoc really- results may depend on load / processor speed
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            fail("Been interrupted");
-        }
-        stat = query.getStatus();
-        assertNotNull("status is null",stat);
-        assertEquals("status code not as expected",QueryState.FINISHED,stat);
-        
-        DatacenterResults result = query.getResultsAndClose();
-        assertNotNull("result of query is null",result);
-        
-        // specific to what query is being performed - works for {@link DatacenterTest} - should be moved into there
-        assertFalse(result.isFits());
-        assertFalse(result.isVotable());
-        assertTrue(result.isUrls());
-        
-        String[] resultUrls = result.getUrls();
-        assertNotNull(resultUrls);
-        assertTrue(resultUrls.length > 0);
-        for (int i = 0; i < resultUrls.length; i++) {
-        System.out.println(resultUrls[i]);
-        }
-        URL url = new URL(resultUrls[0]);
-        Document resultDoc = XMLUtils.newDocument(url.openStream());
-        assertNotNull(resultDoc);
-        XMLUtils.PrettyDocumentToStream(resultDoc,System.out);
-        assertIsVotable(resultDoc);
-  
-    }
     
-    /** abstract class that captures the pattern of scanning for query files
-     * implement processStream to do something once query files are found
-     * @author Noel Winstanley nw@jb.man.ac.uk 17-Sep-2003
-     *
-     */
-   protected abstract class FileProcessor {
-       /** extender-defined method that consumes the files that are found */
-    protected abstract void processStream(FullSearcher del,InputStream is) throws Exception;
-    /** run a series of sample queries through the service
-     *  <p>
-     *  examines value of {@link #QUERY_FILE_KEY}, searches for input files in following order
-     * <ol>
-     * <li>a directory named ${QUERY_FILE_KEY} - uses each *.xml file within it as an input
-     * <li>a file named ${QUERY_FILE_KEY} - uses this as the single input
-     * <li>a resource on classpath named ${QUERY_FILE_KEY} - uses this as the single input.
-     * @throws Exception */
-    public void findFiles(FullSearcher del) throws Exception{
-        if (queryFile.exists()) { // on local file system.
-            if (queryFile.isFile()) {
-                System.out.println ("Taking VOQL query from local file: " + queryFile.getPath());
-                try {
-                   this.processStream(del,new FileInputStream(queryFile));
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    fail("Could not find file: " + e.getMessage());
-                }
-            } else if (queryFile.isDirectory()) {
-                System.out.println("Taking VOQL queries from files in local directory: " + queryFile.getPath());
-                File[] inputs = queryFile.listFiles(new FileFilter() {
-                    public boolean accept(File pathname) {
-                        return pathname.getName().toLowerCase().endsWith(".xml");
-                    }
-                });
-                for (int i  = 0; i < inputs.length; i++) {
-                    System.out.println("Processing file: " + inputs[i].getName());
-                    try {
-                        processStream(del,new FileInputStream(inputs[i]));
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                        fail("Could not find file: " + e.getMessage());
-                    }
-                }
-            }
-        } else { // try loading from classpath.
-            System.out.println("Taking VOQL query from classpath resource" + queryFile.getPath());
-            InputStream is = this.getClass().getResourceAsStream(queryFile.getPath());
-            assertNotNull("VOQL query file :" + queryFile.getPath() + " not found on filesystem, or as resource",is);
-            processStream(del,is);
-        }
-    }
-    
-   }
 
     /* (non-Javadoc)
      * @see junit.framework.TestCase#tearDown()
@@ -286,6 +99,9 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
 
 /*
 $Log: AbstractTestInstallation.java,v $
+Revision 1.15  2004/03/12 20:11:09  mch
+It05 Refactor (Client)
+
 Revision 1.14  2004/03/09 02:02:06  mch
 MetadataServer now returns Document - test server not delegate
 

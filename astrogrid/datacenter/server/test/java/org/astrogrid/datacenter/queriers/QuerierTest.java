@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierTest.java,v 1.3 2004/03/12 04:54:06 mch Exp $
+ * $Id: QuerierTest.java,v 1.4 2004/03/12 20:11:09 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,7 +12,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.queriers.query.ConeQuery;
+import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.queriers.status.QuerierComplete;
 import org.astrogrid.datacenter.queriers.status.QuerierError;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
