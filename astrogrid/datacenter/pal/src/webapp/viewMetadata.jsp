@@ -46,6 +46,7 @@
       } else {
          out.println("<p>Authority ID: <b>"+DomHelper.getValue(identity, "AuthorityID")+"</b>");
          out.println("<p>Resource Key: <b>"+DomHelper.getValue(identity, "ResourceKey")+"</b>");
+         out.println("<p>--> IVORN: <b>ivo://"+DomHelper.getValue(identity, "AuthorityID")+"/"+DomHelper.getValue(identity, "ResourceKey")+"</b>");
       }
    }
    
