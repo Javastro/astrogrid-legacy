@@ -4,8 +4,8 @@
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
 
   <pomVersion>3</pomVersion>
-  <id>project-id</id>
-  <name>project-name</name>
+  <id>astrogrid-registry</id>
+  <name>AstroGrid Registry</name>
 
   <currentVersion>HEAD</currentVersion>
   
@@ -17,7 +17,7 @@
   <inceptionYear>2002</inceptionYear>
   <package>org.astrogrid</package>
   
-  <shortDescription>AstroGrid Project Description</shortDescription>
+  <shortDescription>AstroGrid Registry Components</shortDescription>
   
   <repository>
     <connection>
@@ -52,6 +52,32 @@
     <dependency>
       <id>junit</id>
       <version>3.8</version>
+    </dependency>
+
+    <dependency>
+      <id>axis</id>
+      <version>1_1RC2</version>
+    </dependency>
+
+    <dependency>
+      <id>jetspeed</id>
+      <version>1.4-b4</version>
+    </dependency>
+
+    <dependency>
+      <id>turbine</id>
+      <version>2.2</version>
+    </dependency>
+
+    <dependency>
+      <id>jaxrpc</id>
+      <version>unknown</version>
+      <jar>jaxrpc.jar</jar>
+    </dependency>
+
+    <dependency>
+      <id>servletapi</id>
+      <version>2.2</version>
     </dependency>
 
     <dependency>
