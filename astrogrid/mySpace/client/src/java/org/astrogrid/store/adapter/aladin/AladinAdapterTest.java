@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/client/src/java/org/astrogrid/store/adapter/aladin/AladinAdapterTest.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/10/05 15:39:29 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2004/11/11 17:50:42 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: AladinAdapterTest.java,v $
+ *   Revision 1.3  2004/11/11 17:50:42  clq2
+ *   Noel's aladin stuff
+ *
+ *   Revision 1.2.6.1  2004/11/11 13:12:36  nw
+ *   added some further checking of the root container
+ *
  *   Revision 1.2  2004/10/05 15:39:29  dave
  *   Merged changes to AladinAdapter ...
  *
@@ -321,9 +327,11 @@ public class AladinAdapterTest
 			) ;
 		//
 		// Check we have a root node.
-		assertNotNull(
-			adapter.getRoot()
+		AladinAdapterContainer root = adapter.getRoot();
+        assertNotNull(
+			root
 			) ;
+        assertTrue(root.isContainer());
 		}
 
 	/**

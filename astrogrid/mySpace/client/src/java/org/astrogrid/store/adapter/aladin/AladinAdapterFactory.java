@@ -1,4 +1,4 @@
-/*$Id: AladinAdapterFactory.java,v 1.1 2004/11/05 17:10:41 nw Exp $
+/*$Id: AladinAdapterFactory.java,v 1.2 2004/11/11 17:50:42 clq2 Exp $
  * Created on 05-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,9 +23,10 @@ public class AladinAdapterFactory {
         super();
     }
     
-    /** create a new instance of an aladin adapter */
+    /** create a new instance of an aladin adapter 
+     * @todo add seleciton of implementaiton based on config key*/
     public AladinAdapter createAdapter() {
-        return new AladinAdapterMock();
+        return new IterationSixAladinAdapter();
     }
 
 }
@@ -33,6 +34,12 @@ public class AladinAdapterFactory {
 
 /* 
 $Log: AladinAdapterFactory.java,v $
+Revision 1.2  2004/11/11 17:50:42  clq2
+Noel's aladin stuff
+
+Revision 1.1.2.1  2004/11/09 13:56:38  nw
+first stab at an iteration6 implementation
+
 Revision 1.1  2004/11/05 17:10:41  nw
 created factory class to return instance of aladin adapter.
 returns the mock for now.

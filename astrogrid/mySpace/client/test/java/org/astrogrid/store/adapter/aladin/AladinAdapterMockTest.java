@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/client/test/java/org/astrogrid/store/adapter/aladin/Attic/AladinAdapterMockTest.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/10/05 15:39:29 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2004/11/11 17:50:42 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  * <cvs:log>
  *   $Log: AladinAdapterMockTest.java,v $
+ *   Revision 1.4  2004/11/11 17:50:42  clq2
+ *   Noel's aladin stuff
+ *
+ *   Revision 1.3.6.1  2004/11/11 13:11:01  nw
+ *   modifed way that the user ivorn is created
+ *
  *   Revision 1.3  2004/10/05 15:39:29  dave
  *   Merged changes to AladinAdapter ...
  *
@@ -71,7 +77,9 @@ public class AladinAdapterMockTest
 		//
 		// Create our test account identifier.
 		// This uses currentTimeMillis to make the identifier unique between tests.
-		Ivorn ivorn = CommunityAccountIvornFactory.createLocal("frog") ;
+//		Ivorn ivorn = CommunityAccountIvornFactory.createLocal("frog") ;
+        //@modified NWW - creating a mock means you don't need to have keys set up.
+        Ivorn ivorn = CommunityAccountIvornFactory.createMock("org.astrogrid.localhost","frog");
 		//
 		// Setup the adapter account.
 		mock.setTestAccount(ivorn) ;
