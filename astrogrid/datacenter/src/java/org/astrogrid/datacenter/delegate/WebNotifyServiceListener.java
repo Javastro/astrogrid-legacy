@@ -1,11 +1,12 @@
 /*
- * $Id: WebNotifyServiceListener.java,v 1.6 2003/09/17 14:51:30 nw Exp $
+ * $Id: WebNotifyServiceListener.java,v 1.7 2003/09/25 01:22:50 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.xml.rpc.ParameterMode;
@@ -87,21 +88,28 @@ public class WebNotifyServiceListener implements DatacenterStatusListener
 /**
  * @return
  */
-public URL getClientListener() {
-    return clientListener;
+public String getClientListener() {
+    return clientListener.toString();
 }
 
-/**
+/** 
  * @param url
  */
-public void setClientListener(URL url) {
-    clientListener = url;
+public void setClientListener(String url) {
+    try {
+        clientListener = new URL(url);
+    } catch (MalformedURLException e) {
+        throw new IllegalArgumentException("Malformed URL:" + e.getMessage());
+    }
 }
 
 }
 
 /*
 $Log: WebNotifyServiceListener.java,v $
+Revision 1.7  2003/09/25 01:22:50  nw
+altered getter/setter types from URL to String to make this soap-portable
+
 Revision 1.6  2003/09/17 14:51:30  nw
 tidied imports - will stop maven build whinging
 
