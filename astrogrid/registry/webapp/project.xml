@@ -107,13 +107,25 @@
     </section>
 	<section name="Deployment/Installation">
 		<p>			
-			After the builds a war file is produced in the "target" area.  This war file can be dropped into the webapps
-			portion of your java server (servlet container) such as tomcat.			
-			Once installed as a System property or JNDI entry in the web.xml file located in the 
-			/WEB-INF/web.xml file there needs to be a "org.astrogrid.config.url" pointing to a config file. Or you may
-    	    place in the default AstrogridConfig.properties file in your WEB-INF/classes to be picked up.
-    	    If your using the registry servlet contained in this install for OAI then
-    		remember to modify the oaicat.properties file under src/oaicat or modify it after the install in the WEB-INF/classes.
+    	   	Here we list the steps involved to deploy the registry (and eXist) onto a servlet container.  An 
+    	   	assumption is made that you know basic knowledge of servlet containers such as tomcat.
+    	   	Steps involved:
+    	   	<ul>
+    			<li>1.) Download the latest copy of astrogrid-registry from <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/">Astrogrid repository</a>
+    	            You may grab the latest copy as: <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-registry-SNAPSHOT.war">Latest Registry</a></li>
+    	        <li>2.) Also download the exist war <a href="http://www.astrogrid.org/maven/exist/wars/exist.war">here</a>
+    	            <i>See exist section above for more available options</i></li>
+    	        <li>3.) You may rename the registry war file to anything you like, it is advisable to keep the exist one as exist to use
+    	            the cocoon features of browsing, but this is not required.</li>
+    	        <li>4.) Deploy these 2 war files into your servlet containger normally by dropping them into the webapps directory or through
+    	            some time of manager interface.</li>
+    	        <li>5.) Finally go to the registry deployed area and go to "regdeployedarea"/WEB-INF/classes and edit the astrogrid.properties and
+                    optionally if you are using the astrogrid oai facilities then the oaicat.properties.  The properties
+                    files should be well commented to guide you, the main registry properties are below</li>
+    	        <li>6.) Your done.  If you tried to use registry before editing the properties file then a restart of your
+    	            servlet containger will be required.</li>
+    	   	</ul>
+
     	    See the properties below, you may point to another OAI web based instance if you like.
     		<i>Below are the properties and examples from the registry-server documentation plus some additions for the servlets, 
     	       which are needed for the installation of the registry.</i>
@@ -126,7 +138,6 @@
 		  <li>oai.servlet.url - required, the url to the servlet for the OAI, OAICat type servlet, Does not have to be a servlet could point to oai cgi,perl or other web based implementation.</li>
     	  <li>org.astrogrid.registry.harvest.daemon.interval-hours - required, for harvesting other registries, the time intervals for automatic harvests to be started.</li>
 	  	  <li>registry.harvest.enabled - required, Does this registry do harvesting of other registries.</li>
-	  	  <li>registry.harvest.onload - optional, Start a harvest when servlet container starts.  Recommend false.</li>
 	  	  <li>declare.namespace.0_9 - recommended, namespaces to be declared on the queries in xquery type form meaning seperated by ";"</li>
 		  <li>keyword.query.path.0_9 - required, the xpaths to elements to be used on the keyword search comma seperated.</li>
   	      <li>identifier.path.hasauthorityid.0_9 - required, is the key (identifier) split up, normally only 0_9 will be true
@@ -357,6 +368,7 @@
             +-->
         <sourceDirectory>src/java</sourceDirectory>
     	
+    	<!--
         <resources>
             <resource>
 				<directory>src/oaicatconfig</directory>
@@ -365,7 +377,7 @@
 		        </includes>
             </resource>
         </resources>
-    
+    	-->
     	
     	
         <!--+
