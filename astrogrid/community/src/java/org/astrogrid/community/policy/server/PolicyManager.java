@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/03 06:39:13 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/03 15:23:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManager.java,v $
+ *   Revision 1.2  2003/09/03 15:23:33  dave
+ *   Split API into two services, PolicyService and PolicyManager
+ *
  *   Revision 1.1  2003/09/03 06:39:13  dave
  *   Rationalised things into one set of SOAP stubs and one set of data objects for both client and server.
  *
@@ -55,20 +58,6 @@ public interface PolicyManager
 	 *
 	 */
 	public Object[] getAccountList()
-		throws RemoteException ;
-
-	/**
-	 * Confirm access permissions.
-	 *
-	 */
-	public PolicyPermission checkPermissions(PolicyCredentials credentials, String resource, String action)
-		throws RemoteException ;
-
-	/**
-	 * Confirm group membership.
-	 *
-	 */
-	public PolicyCredentials checkMembership(PolicyCredentials credentials)
 		throws RemoteException ;
 
 	}

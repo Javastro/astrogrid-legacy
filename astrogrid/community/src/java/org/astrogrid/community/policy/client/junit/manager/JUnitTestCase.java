@@ -1,33 +1,26 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/client/junit/Attic/JUnitTestCase.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/client/junit/manager/Attic/JUnitTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/03 06:39:13 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/03 15:23:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.1 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitTestCase.java,v $
- *   Revision 1.2  2003/09/03 06:39:13  dave
- *   Rationalised things into one set of SOAP stubs and one set of data objects for both client and server.
- *
- *   Revision 1.1  2003/08/28 17:33:56  dave
- *   Initial policy prototype
+ *   Revision 1.1  2003/09/03 15:23:33  dave
+ *   Split API into two services, PolicyService and PolicyManager
  *
  * </cvs:log>
  *
  */
-package org.astrogrid.community.policy.client.junit ;
+package org.astrogrid.community.policy.client.junit.manager ;
 
 import junit.framework.TestCase ;
 
 import java.util.Iterator ;
 import java.util.Collection ;
 
-//
-// Import the WSDL generated client stubs.
 import org.astrogrid.community.policy.data.AccountData ;
 import org.astrogrid.community.policy.data.ServiceData ;
-import org.astrogrid.community.policy.data.PolicyPermission ;
-import org.astrogrid.community.policy.data.PolicyCredentials ;
 
 import org.astrogrid.community.policy.server.PolicyManager ;
 import org.astrogrid.community.policy.server.PolicyManagerService ;
@@ -240,53 +233,6 @@ public class JUnitTestCase
 			if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
 			if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
 			}
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
-
-	/**
-	 * Check that we can call the checkPermissions() method.
-	 *
-	 */
-	public void testCheckPermissions()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testCheckPermissions") ;
-
-		//
-		// Create a ServiceLocator.
-		PolicyManagerService locator = new PolicyManagerServiceLocator() ;
-		assertNotNull("Null service locator", locator) ;
-		//
-		// Locate a reference to our service.
-		PolicyManager service = locator.getPolicyManager() ;
-		assertNotNull("Null service", service) ;
-		//
-		// Create our credentials.
-		PolicyCredentials credentials = new PolicyCredentials() ;
-		credentials.setGroup("solar@mssl") ;
-		credentials.setAccount("dave@cambridge") ;
-		//
-		// Create our resource name and action.
-		String resource = "joderell:database/table/field" ;
-		String action   = "UPDATE" ;
-		//
-		// Call the checkPermissions method.
-		PolicyPermission result = service.checkPermissions(credentials, resource, action) ;
-		assertNotNull("Null result", result) ;
-		//
-		// Check the resulting permissions.
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("Result") ;
-		if (DEBUG_FLAG) System.out.println("  Group    : " + result.getGroup()) ;
-		if (DEBUG_FLAG) System.out.println("  Resource : " + result.getResource()) ;
-		if (DEBUG_FLAG) System.out.println("  Action   : " + result.getAction()) ;
-		if (DEBUG_FLAG) System.out.println("  Status   : " + result.getStatus()) ;
-		if (DEBUG_FLAG) System.out.println("  Reason   : " + result.getReason()) ;
-		if (DEBUG_FLAG) System.out.println("") ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;

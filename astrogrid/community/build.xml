@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/03 10:42:19 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/03 15:23:33 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.4  2003/09/03 15:23:33  dave
+    |   Split API into two services, PolicyService and PolicyManager
+    |
     |   Revision 1.3  2003/09/03 10:42:19  dave
     |   Fixed missing task in build.xml
     |
@@ -1052,6 +1055,7 @@
 
 	<property name="policy.base" value="${basedir}/build/policy"/>
 
+	<property name="policy.service.base" value="${policy.base}/service"/>
 	<property name="policy.manager.base" value="${policy.base}/manager"/>
 	<property name="policy.server.base"  value="${policy.base}/server"/>
 	<property name="policy.client.base"  value="${policy.base}/client"/>
@@ -1091,13 +1095,34 @@
 	</target>
 
 	<!--+
+		| Compile our PolicyService interface classes.
+		| These are the Java classes for the service interface, used to generate the service WSDL.
+		+-->
+	<target name="policy.service.javac" depends="">
+		<!-- Create our build directory -->
+		<mkdir dir="${policy.service.base}/classes"/>
+		<!-- Compile the interface classes -->
+		<javac srcdir="src/java"
+		       destdir="${policy.service.base}/classes"
+		       debug="on"
+		       deprecation="on"
+		       optimize="on"
+		       >
+			<include name="org/astrogrid/community/policy/data/*.java"/>
+			<include name="org/astrogrid/community/policy/server/PolicyService.java"/>
+			<classpath>
+			</classpath>
+		</javac>
+	</target>
+
+	<!--+
 		| Compile our PolicyManager interface classes.
 		| These are the Java classes for the service interface, used to generate the service WSDL.
 		+-->
 	<target name="policy.manager.javac" depends="">
 		<!-- Create our build directory -->
 		<mkdir dir="${policy.manager.base}/classes"/>
-		<!-- Compile the service classes -->
+		<!-- Compile the interface classes -->
 		<javac srcdir="src/java"
 		       destdir="${policy.manager.base}/classes"
 		       debug="on"
@@ -1112,8 +1137,34 @@
 	</target>
 
 	<!--+
-		| Generate the PolicyManager WSDL description from our Java class.
+		| Generate the PolicyService WSDL description from our Java class.
 		| This generates the service WSDL based on the Java interface classes.
+		+-->
+	<target name="policy.service.java2wsdl" depends="axis.tasks">
+		<echo message=""/>
+		<echo message="Creating PolicyService WSDL from Java ...."/>
+		<!-- Create our wsdl directory -->
+		<mkdir dir="${policy.service.base}/wsdl/java2wsdl"/>
+		<!-- Generate our WSDL description -->
+		<axis.java2wsdl
+			output="${policy.service.base}/wsdl/java2wsdl/PolicyService.wsdl"
+			classname="org.astrogrid.community.policy.server.PolicyService"
+			location="${axis.url}/services/PolicyService"
+			methods="getServiceStatus, checkPermissions, checkMembership"
+			namespace="urn:server.policy.community.astrogrid.org"
+			namespaceimpl="urn:impl.server.policy.community.astrogrid.org"
+			style="RPC"
+			>
+			<!-- The classpath to find the PolicyService classes -->
+			<classpath>
+				<path location="${policy.service.base}/classes"/>
+			</classpath>
+		</axis.java2wsdl>
+	</target>
+
+	<!--+
+		| Generate the PolicyManager WSDL description from our Java class.
+		| This generates the manager WSDL based on the Java interface classes.
 		+-->
 	<target name="policy.manager.java2wsdl" depends="axis.tasks">
 		<echo message=""/>
@@ -1125,7 +1176,7 @@
 			output="${policy.manager.base}/wsdl/java2wsdl/PolicyManager.wsdl"
 			classname="org.astrogrid.community.policy.server.PolicyManager"
 			location="${axis.url}/services/PolicyManager"
-			methods="getServiceStatus, getAccountData, setAccountData, getAccountList, checkPermissions, checkMembership"
+			methods="getServiceStatus, getAccountData, setAccountData, getAccountList"
 			namespace="urn:server.policy.community.astrogrid.org"
 			namespaceimpl="urn:impl.server.policy.community.astrogrid.org"
 			style="RPC"
@@ -1135,6 +1186,28 @@
 				<path location="${policy.manager.base}/classes"/>
 			</classpath>
 		</axis.java2wsdl>
+	</target>
+
+	<!--+
+		| Generate the PolicyService code from our WSDL description.
+		| This generates the Axis stubs and templates from the WSDL description.
+		+-->
+	<target name="policy.service.wsdl2java" depends="axis.tasks">
+		<echo message=""/>
+		<echo message="Creating PolicyService code from WSDL ...."/>
+		<!-- Create our java directory -->
+		<mkdir dir="${policy.service.base}/java"/>
+		<!-- Generate the Java code -->
+		<axis.wsdl2java
+			verbose="false"
+			serverside="true"
+			skeletondeploy="false"
+			output="${policy.service.base}/java"
+			url="file://${policy.service.base}/wsdl/java2wsdl/PolicyService.wsdl"
+			>
+			<mapping namespace="urn:server.policy.community.astrogrid.org" package="org.astrogrid.community.policy.server"/>
+			<mapping namespace="urn:data.policy.community.astrogrid.org"   package="org.astrogrid.community.policy.data"/>
+		</axis.wsdl2java>
 	</target>
 
 	<!--+
@@ -1160,16 +1233,40 @@
 	</target>
 
 	<!--+
+		| Modify the PolicyService WSDD deployment descriptor.
+		| This modifies the deployment descriptor to use our own implementation classes rather than the template generated from the WSDL.
+		+-->
+	<target name="policy.service.wsdd.xslt" depends="">
+		<!-- Create our wsdd directory -->
+		<mkdir dir="${policy.service.base}/wsdd"/>
+		<!-- Transform the deploy wsdd -->
+		<xslt style="src/xsl/build/policy/wsdd.xsl"
+		      in="${policy.service.base}/java/org/astrogrid/community/policy/server/deploy.wsdd"
+		      out="${policy.service.base}/wsdd/PolicyServiceDeploy.wsdd">
+			<outputproperty name="method" value="xml"/>
+			<outputproperty name="indent" value="yes"/>
+			<!-- Set the XSL params -->
+			<param name="impl"    expression="org.astrogrid.community.policy.server.PolicyServiceImpl"/>
+			<param name="service" expression="PolicyService"/>
+		</xslt>
+		<!-- Copy the undeploy wsdd -->
+		<copy verbose="false"
+		      tofile="${policy.service.base}/wsdd/PolicyServiceUndeploy.wsdd"
+		      file="${policy.service.base}/java/org/astrogrid/community/policy/server/undeploy.wsdd"
+		      />
+	</target>
+
+	<!--+
 		| Modify the PolicyManager WSDD deployment descriptor.
 		| This modifies the deployment descriptor to use our own implementation classes rather than the template generated from the WSDL.
 		+-->
-	<target name="policy.manager.wsdd" depends="">
+	<target name="policy.manager.wsdd.xslt" depends="">
 		<!-- Create our wsdd directory -->
 		<mkdir dir="${policy.manager.base}/wsdd"/>
 		<!-- Transform the deploy wsdd -->
 		<xslt style="src/xsl/build/policy/wsdd.xsl"
 		      in="${policy.manager.base}/java/org/astrogrid/community/policy/server/deploy.wsdd"
-		      out="${policy.manager.base}/wsdd/deploy.wsdd">
+		      out="${policy.manager.base}/wsdd/PolicyManagerDeploy.wsdd">
 			<outputproperty name="method" value="xml"/>
 			<outputproperty name="indent" value="yes"/>
 			<!-- Set the XSL params -->
@@ -1178,7 +1275,7 @@
 		</xslt>
 		<!-- Copy the undeploy wsdd -->
 		<copy verbose="false"
-		      toDir="${policy.manager.base}/wsdd"
+		      toFile="${policy.manager.base}/wsdd/PolicyManagerUndeploy.wsdd"
 		      file="${policy.manager.base}/java/org/astrogrid/community/policy/server/undeploy.wsdd"
 		      />
 	</target>
@@ -1186,13 +1283,25 @@
 	<!--+
 		| Prepare the server code.
 		| This combines our own Java source with the code generated from the service WSDL.
+		| Uses the Axis generated stubs and data objects.
+		| Uses our service interface and implementation.
+		| I plan to use our data objects when I update them.
 		+-->
 	<target name="policy.server.prepare" depends="">
 		<!-- Copy the Java source code -->
 		<copy verbose="false" todir="${policy.server.base}/java">
-			<!-- Copy the wsdl2java generated source -->
+			<!-- Copy the PolicyService wsdl2java generated source -->
+			<fileset dir="${policy.service.base}/java">
+				<!-- Include the generated PolicyService stubs -->
+				<include name="org/astrogrid/community/policy/server/PolicyServiceService.java"/>
+				<include name="org/astrogrid/community/policy/server/PolicyServiceServiceLocator.java"/>
+				<include name="org/astrogrid/community/policy/server/PolicyServiceSoapBindingStub.java"/>
+				<!-- Include the generated data objects -->
+				<include name="org/astrogrid/community/policy/data/*.java"/>
+			</fileset>
+			<!-- Copy the PolicyService wsdl2java generated source -->
 			<fileset dir="${policy.manager.base}/java">
-				<!-- Include the generated PolicyManager service and locator -->
+				<!-- Include the generated PolicyManager stubs -->
 				<include name="org/astrogrid/community/policy/server/PolicyManagerService.java"/>
 				<include name="org/astrogrid/community/policy/server/PolicyManagerServiceLocator.java"/>
 				<include name="org/astrogrid/community/policy/server/PolicyManagerSoapBindingStub.java"/>
@@ -1201,6 +1310,9 @@
 			</fileset>
 			<!-- Copy our own Java source -->
 			<fileset dir="src/java">
+				<!-- Include our PolicyService interface and implementation -->
+				<include name="org/astrogrid/community/policy/server/PolicyService.java"/>
+				<include name="org/astrogrid/community/policy/server/PolicyServiceImpl.java"/>
 				<!-- Include our PolicyManager interface and implementation -->
 				<include name="org/astrogrid/community/policy/server/PolicyManager.java"/>
 				<include name="org/astrogrid/community/policy/server/PolicyManagerImpl.java"/>
@@ -1213,11 +1325,23 @@
 	<!--+
 		| Prepare the client code.
 		| This combines our own Java source with the code generated from the service WSDL.
+		| Uses the Axis generated stubs and data objects.
+		| Uses our service interface and implementation.
+		| I plan to use our data objects when I update them.
 		+-->
 	<target name="policy.client.prepare" depends="">
 		<!-- Copy the Java source code -->
 		<copy verbose="false" todir="${policy.client.base}/java">
-			<!-- Copy the wsdl2java generated source -->
+			<!-- Copy the PolicyService wsdl2java generated source -->
+			<fileset dir="${policy.service.base}/java">
+				<!-- Include the generated PolicyService service and locator -->
+				<include name="org/astrogrid/community/policy/server/PolicyServiceService.java"/>
+				<include name="org/astrogrid/community/policy/server/PolicyServiceServiceLocator.java"/>
+				<include name="org/astrogrid/community/policy/server/PolicyServiceSoapBindingStub.java"/>
+				<!-- Include the generated data objects -->
+				<include name="org/astrogrid/community/policy/data/*.java"/>
+			</fileset>
+			<!-- Copy the PolicyManager wsdl2java generated source -->
 			<fileset dir="${policy.manager.base}/java">
 				<!-- Include the generated PolicyManager service and locator -->
 				<include name="org/astrogrid/community/policy/server/PolicyManagerService.java"/>
@@ -1228,6 +1352,8 @@
 			</fileset>
 			<!-- Copy our own Java source -->
 			<fileset dir="src/java">
+				<!-- Include our PolicyService interface -->
+				<include name="org/astrogrid/community/policy/server/PolicyService.java"/>
 				<!-- Include our PolicyManager interface -->
 				<include name="org/astrogrid/community/policy/server/PolicyManager.java"/>
 				<!-- Include our client classes -->
@@ -1344,10 +1470,15 @@
 	<target name="policy.BUILD" depends="">
 		<antcall target="policy.delete"/>
 
+		<antcall target="policy.service.javac"/>
+		<antcall target="policy.service.java2wsdl"/>
+		<antcall target="policy.service.wsdl2java"/>
+		<antcall target="policy.service.wsdd.xslt"/>
+
 		<antcall target="policy.manager.javac"/>
 		<antcall target="policy.manager.java2wsdl"/>
 		<antcall target="policy.manager.wsdl2java"/>
-		<antcall target="policy.manager.wsdd"/>
+		<antcall target="policy.manager.wsdd.xslt"/>
 
 		<antcall target="policy.server.prepare"/>
 		<antcall target="policy.server.javac"/>
@@ -1399,25 +1530,49 @@
 	</target>
 
 	<!--+
-		| Deploy our Axis service.
+		| Deploy our PolicyService service.
 		+-->
-	<target name="policy.server.deploy" depends="axis.tasks">
+	<target name="policy.service.deploy" depends="axis.tasks">
 		<!-- Wait for the Axis service -->
 		<antcall target="axis.wait"/>
-		<!-- Deploy our service -->
+		<!-- Deploy our PolicyService service -->
 		<axis.admin
 			port="${axis.port}"
 			hostname="${axis.host}"
 			servletpath="/${axis.servlet}/services/AdminService"
 			debug="true"
-			xmlfile="${policy.manager.base}/wsdd/deploy.wsdd"
+			xmlfile="${policy.service.base}/wsdd/PolicyServiceDeploy.wsdd"
 			/>
 	</target>
 
 	<!--+
-		| Undeploy our Axis service.
+		| Deploy our PolicyManager service.
 		+-->
-	<target name="policy.server.undeploy" depends="axis.tasks">
+	<target name="policy.manager.deploy" depends="axis.tasks">
+		<!-- Wait for the Axis service -->
+		<antcall target="axis.wait"/>
+		<!-- Deploy our PolicyManager service -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="/${axis.servlet}/services/AdminService"
+			debug="true"
+			xmlfile="${policy.manager.base}/wsdd/PolicyManagerDeploy.wsdd"
+			/>
+	</target>
+
+	<!--+
+		| Deploy our Axis services.
+		+-->
+	<target name="policy.server.deploy" depends="axis.tasks">
+		<antcall target="policy.service.deploy"/>
+		<antcall target="policy.manager.deploy"/>
+	</target>
+
+	<!--+
+		| Undeploy our PolicyService service.
+		+-->
+	<target name="policy.service.undeploy" depends="axis.tasks">
 		<!-- Wait for the Axis service -->
 		<antcall target="axis.wait"/>
 		<!-- Remove our WebService -->
@@ -1426,7 +1581,47 @@
 			hostname="${axis.host}"
 			servletpath="/${axis.servlet}/services/AdminService"
 			debug="true"
-			xmlfile="src/axis/wsdd/policy/undeploy.wsdd"
+			xmlfile="${policy.service.base}/wsdd/PolicyServiceUndeploy.wsdd"
+			/>
+	</target>
+
+	<!--+
+		| Undeploy our PolicyManager service.
+		+-->
+	<target name="policy.manager.undeploy" depends="axis.tasks">
+		<!-- Wait for the Axis service -->
+		<antcall target="axis.wait"/>
+		<!-- Remove our WebService -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="/${axis.servlet}/services/AdminService"
+			debug="true"
+			xmlfile="${policy.manager.base}/wsdd/PolicyManagerUndeploy.wsdd"
+			/>
+	</target>
+
+	<!--+
+		| Undeploy our Axis services.
+		+-->
+	<target name="policy.server.undeploy" depends="axis.tasks">
+		<antcall target="policy.service.undeploy"/>
+		<antcall target="policy.manager.undeploy"/>
+	</target>
+
+	<!--+
+	    | Request the WSDL description from our PolicyService service.
+	    | Used as an initial check that our service has been deployed.
+	    +-->
+	<target name="policy.service.axis2wsdl" depends="">
+		<echo message=""/>
+		<echo message="Requesting WSDL from Axis ...."/>
+		<!-- Create our wsdl directory -->
+		<mkdir dir="${policy.service.base}/wsdl/axis2wsdl"/>
+		<!-- Request our WSDL description -->
+		<get verbose="true" usetimestamp="true"
+			src="${axis.url}/services/PolicyService?wsdl"
+			dest="${policy.service.base}/wsdl/axis2wsdl/PolicyService.wsdl"
 			/>
 	</target>
 
@@ -1447,7 +1642,15 @@
 	</target>
 
 	<!--+
-	    | Deploy our policy service.
+		| Request the WSDL description for our Axis services.
+		+-->
+	<target name="policy.server.axis2wsdl" depends="axis.tasks">
+		<antcall target="policy.service.axis2wsdl"/>
+		<antcall target="policy.manager.axis2wsdl"/>
+	</target>
+
+	<!--+
+	    | Deploy our policy services.
 	    | If we were just copying our classes into the Axis/WEB-INF/classes directory, then no need to re-load Axis.
 	    | Because we are installing our classes as a jar file into the Axis/WEB-INF/lib directory, we need to re-load Axis before we can deploy the service.
 	    +-->
@@ -1458,8 +1661,8 @@
 		<antcall target="axis.webapp.reload"/>
 		<!-- Deploy our service -->
 		<antcall target="policy.server.deploy"/>
-		<!-- Check we can read our PolicyManager WSDL -->
-		<antcall target="policy.manager.axis2wsdl"/>
+		<!-- Check we can read our service WSDL -->
+		<antcall target="policy.server.axis2wsdl"/>
 	</target>
 
 	<!--+
@@ -1512,10 +1715,10 @@
 		<antcall target="policy.client.junit"/>
 	</target>
 
-<!-- ===================== -->
-
-
-
+<!--+
+	| Deprecated tests ..... code has changed since these were written ....
+	| Start
+	+-->
 
 	<!--+
 		| Run our server JUnit tests.
@@ -1543,8 +1746,6 @@
 			</batchtest>
 		</junit>
 	</target>
-
-<!-- +++++++++++++++++++++++++++++++++++ -->
 
 	<!--+
 		| Run our database load JUnit tests.
@@ -1583,6 +1784,11 @@
 			</batchtest>
 		</junit>
 	</target>
+
+<!--+
+	| End
+	| Deprecated tests ..... code has changed since these were written ....
+	+-->
 
 	<!-- ================ Project tasks ================ -->
 	<!--+

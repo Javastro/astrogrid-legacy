@@ -1,19 +1,13 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManagerImpl.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyServiceImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
  * <cvs:date>$Date: 2003/09/03 15:23:33 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:version>$Revision: 1.1 $</cvs:version>
  *
  * <cvs:log>
- *   $Log: PolicyManagerImpl.java,v $
- *   Revision 1.2  2003/09/03 15:23:33  dave
+ *   $Log: PolicyServiceImpl.java,v $
+ *   Revision 1.1  2003/09/03 15:23:33  dave
  *   Split API into two services, PolicyService and PolicyManager
- *
- *   Revision 1.1  2003/09/03 06:39:13  dave
- *   Rationalised things into one set of SOAP stubs and one set of data objects for both client and server.
- *
- *   Revision 1.1  2003/08/28 17:33:56  dave
- *   Initial policy prototype
  *
  * </cvs:log>
  *
@@ -42,12 +36,11 @@ import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.persist.spi.Complex ;
 
 import org.astrogrid.community.policy.data.ServiceData ;
-import org.astrogrid.community.policy.data.AccountData ;
 import org.astrogrid.community.policy.data.PolicyPermission  ;
 import org.astrogrid.community.policy.data.PolicyCredentials ;
 
-public class PolicyManagerImpl
-	implements PolicyManager
+public class PolicyServiceImpl
+	implements PolicyService
 	{
 	/**
 	 * Switch for our debug statements.
@@ -107,11 +100,11 @@ public class PolicyManagerImpl
 	 * Public constructor.
 	 *
 	 */
-	public PolicyManagerImpl()
+	public PolicyServiceImpl()
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl()") ;
+		if (DEBUG_FLAG) System.out.println("PolicyServiceImpl()") ;
 		//
 		// Initialise our service.
 		this.init() ;
@@ -190,7 +183,7 @@ public class PolicyManagerImpl
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.getServiceStatus()") ;
+		if (DEBUG_FLAG) System.out.println("PolicyServiceImpl.getServiceStatus()") ;
 
 		ServiceData result =  new ServiceData() ;
 		result.setIdent("service@localhost") ;
@@ -200,69 +193,78 @@ public class PolicyManagerImpl
 		}
 
 	/**
-	 * Request an Account details.
+	 * Confirm access permissions
 	 *
 	 */
-	public AccountData getAccountData(String ident)
+	public PolicyPermission checkPermissions(PolicyCredentials credentials, String resource, String action)
 		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.getAccountData()") ;
-		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+		if (DEBUG_FLAG) System.out.println("PolicyServiceImpl.checkPermissions()") ;
 
-		AccountData account = new AccountData() ;
-		account.setIdent("frog@pond") ;
-		account.setDescription("Frog in a pond") ;
+		if (DEBUG_FLAG) System.out.println("  Credentials") ;
+		if (DEBUG_FLAG) System.out.println("    Group   : " + credentials.getGroup()) ;
+		if (DEBUG_FLAG) System.out.println("    Account : " + credentials.getAccount()) ;
+		if (DEBUG_FLAG) System.out.println("  Resource") ;
+		if (DEBUG_FLAG) System.out.println("    Name    : " + resource) ;
+		if (DEBUG_FLAG) System.out.println("    Action  : " + action) ;
+
+		//
+		// Create the complex key.
+		Complex key = new Complex(
+			new Object[]
+				{
+				resource,
+				credentials.getGroup(),
+				action
+				}
+			) ;
+
+		//
+		// Try loading the permission.
+		PolicyPermission permission = null ;
+		try {
+			//
+			// Begin a new database transaction.
+			database.begin();
+			//
+			// Try loading the target object.
+			permission = (PolicyPermission) database.load(PolicyPermission.class, key);
+			}
+		catch (Exception ouch)
+			{
+			if (DEBUG_FLAG) System.out.println("Exception") ;
+			if (DEBUG_FLAG) System.out.println(ouch) ;
+			}
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return account ;
+		return permission ;
+
 		}
 
 	/**
-	 * Update an Account details.
+	 * Confirm group membership.
 	 *
 	 */
-	public void setAccountData(AccountData account)
+	public PolicyCredentials checkMembership(PolicyCredentials credentials)
 		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.setAccountData()") ;
-		if (DEBUG_FLAG) System.out.println("  Account") ;
-		if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
-		if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
+		if (DEBUG_FLAG) System.out.println("PolicyServiceImpl.checkMembership()") ;
+
+		if (DEBUG_FLAG) System.out.println("  Credentials") ;
+		if (DEBUG_FLAG) System.out.println("    Group   : " + credentials.getGroup()) ;
+		if (DEBUG_FLAG) System.out.println("    Account : " + credentials.getAccount()) ;
+
+		//
+		// Test code ... yes.
+		credentials.setStatus(0xFF) ;
+		credentials.setReason("Test check, always returns true") ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return credentials ;
+
 		}
-
-	/**
-	 * Request a list of Accounts.
-	 *
-	 */
-	public Object[] getAccountList()
-		throws RemoteException
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.getAccountList()") ;
-
-		Collection collection = new Vector() ;
-
-		AccountData frog = new AccountData() ;
-		frog.setIdent("frog@pond") ;
-		frog.setDescription("Frog in a pond") ;
-
-		AccountData toad = new AccountData() ;
-		toad.setIdent("toad@pond") ;
-		toad.setDescription("Toad in a pond") ;
-
-		collection.add(frog) ;
-		collection.add(toad) ;
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return collection.toArray() ;
-		}
-
-
 	}
