@@ -1,4 +1,4 @@
-/*$Id: MockLocator.java,v 1.3 2004/03/04 01:57:35 nw Exp $
+/*$Id: MockLocator.java,v 1.4 2004/03/24 11:51:29 pah Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.jes.jobscheduler.locator;
 
-import org.astrogrid.applications.delegate.ApplicationControllerDummyDelegate;
+import org.astrogrid.applications.delegate.Delegate;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.workflow.beans.v1.Step;
@@ -37,7 +37,7 @@ public class MockLocator implements Locator {
      * @see org.astrogrid.jes.jobscheduler.ToolLocator#locateTool(org.astrogrid.jes.job.JobStep)
      */
     public String locateTool(Step js) throws JesException {
-        return willSucceed ? ApplicationControllerDummyDelegate.DUMMYADDRESS : null;
+        return willSucceed ? Delegate.TEST_URI : null;
     }
     /**
      * @see org.astrogrid.jes.jobscheduler.ToolLocator#getToolInterface(org.astrogrid.jes.job.JobStep)
@@ -50,6 +50,9 @@ public class MockLocator implements Locator {
 
 /* 
 $Log: MockLocator.java,v $
+Revision 1.4  2004/03/24 11:51:29  pah
+update the test for the new dummydelegate URI
+
 Revision 1.3  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.
