@@ -1,5 +1,5 @@
 /*
- * $Id: FtpDelegateTest.java,v 1.2 2004/06/14 23:08:53 jdt Exp $
+ * $Id: FtpDelegateTest.java,v 1.1 2004/06/15 08:27:21 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -73,6 +73,11 @@ public class FtpDelegateTest extends OptionalTestCase {
 
 /*
  $Log: FtpDelegateTest.java,v $
+ Revision 1.1  2004/06/15 08:27:21  jdt
+ Moved the old myspace delegate from server to client.  It's
+ still used be a large number of components and needs to 
+ be deprecated.
+
  Revision 1.2  2004/06/14 23:08:53  jdt
  Merge from branches
  ClientServerSplit_JDT
