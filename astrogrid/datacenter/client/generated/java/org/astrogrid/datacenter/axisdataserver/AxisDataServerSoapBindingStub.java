@@ -265,7 +265,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
 
             qName = new javax.xml.namespace.QName("http://community.astrogrid.org", "User");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.community.User.class;
+            cls = org.astrogrid.community.Account.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);

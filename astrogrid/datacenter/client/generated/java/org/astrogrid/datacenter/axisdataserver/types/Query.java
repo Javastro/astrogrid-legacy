@@ -8,17 +8,17 @@
 package org.astrogrid.datacenter.axisdataserver.types;
 
 public class Query  implements java.io.Serializable {
-    private org.astrogrid.community.User user;
+    private org.astrogrid.community.Account user;
     private org.w3c.dom.Element queryBody;
 
     public Query() {
     }
 
-    public org.astrogrid.community.User getUser() {
+    public org.astrogrid.community.Account getUser() {
         return user;
     }
 
-    public void setUser(org.astrogrid.community.User user) {
+    public void setUser(org.astrogrid.community.Account user) {
         this.user = user;
     }
 
