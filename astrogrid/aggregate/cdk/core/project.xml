@@ -19,8 +19,13 @@
     <subsection name="Myspace Tree Model"><p>
     This interface creates an abstraction similar to the <code>java.io.File</code> class - each file and folder
     in the store is represented as an object in a tree, which the client code can traverse and manipulate.
-    <a href="http://www.astrogrid.org/maven/docs/snapshot/mySpace/multiproject/astrogrid-store-client/apidocs/org/astrogrid/store/adapter/aladin/package-summary.html">Javadoc</a>
-    </p></subsection>
+    <a href="http://www.astrogrid.org/maven/docs/snapshot/mySpace/multiproject/astrogrid-store-client/apidocs/org/astrogrid/store/tree/package-summary.html"><code>org.astrogrid.store.tree</code> (javadoc)</a>
+    </p>
+    <p>
+    <i>NB this interface is a renamed copy of the classes in
+       <a href="http://www.astrogrid.org/maven/docs/snapshot/mySpace/multiproject/astrogrid-store-client/apidocs/org/astrogrid/store/adapter/aladin/package-summary.html"><code>org.astrogrid.store.adapter.aladin</code></a>
+       which is still available, but has been deprecated. All clients should transfer to <code>org.astrogrid.store.tree</code>.
+    </i></p></subsection>
     <subsection name="Vospace Client"><p>
     This is a lower-level interface that allows access to a single store location, but no traversal of the store structure.
     <a href="http://www.astrogrid.org/maven/docs/snapshot/mySpace/multiproject/astrogrid-store-client/apidocs/org/astrogrid/store/package-summary.html">Javadoc</a>
@@ -65,10 +70,6 @@
     <dt><code>org.astrogrid.registry.admin.endpoint</code></dt>
         <dd>Endpoint of the registry admin service. For example
         <code>http://katatjuta.star.le.ac.uk:8080/astrogrid-registry-SNAPSHOT/services/RegistryAdmin</code></dd>
-    <dt><code>org.astrogrid.community.default.vospace</code></dt>
-        <dd>Ivorn of default myspace. (unsure whether this is mandatory). For example <code>ivo://org.astrogrid.release/myspace</code></dd>
-
-
 
     </dl>
     </p></section>
@@ -86,9 +87,10 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-common</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
+            <url>http://www.astrogrid.org/</url>
             <properties>
-                <jnlp.jar>true</jnlp.jar>
+                <jnlp.jar>${shall.bundle.core}</jnlp.jar>
             </properties>
         </dependency>
 
@@ -98,8 +100,9 @@
             <artifactId>astrogrid-store-client</artifactId>
             <groupId>org.astrogrid</groupId>
             <version>${pom.currentVersion}</version>
+            <url>http://www.astrogrid.org/</url>
             <properties>
-                    <jnlp.jar>true</jnlp.jar>
+                    <jnlp.jar>${shall.bundle.core}</jnlp.jar>
             </properties>
         </dependency>
 
@@ -110,7 +113,7 @@
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
-                <jnlp.jar>true</jnlp.jar>
+                <jnlp.jar>${shall.bundle.core}</jnlp.jar>
             </properties>
         </dependency>
 
@@ -122,7 +125,7 @@
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
-                   <jnlp.jar>true</jnlp.jar>
+                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
             </properties>
         </dependency>
 
@@ -133,7 +136,7 @@
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
-                   <jnlp.jar>true</jnlp.jar>
+                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
             </properties>
         </dependency>
 
@@ -144,7 +147,7 @@
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
-                   <jnlp.jar>true</jnlp.jar>
+                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
             </properties>
         </dependency>
 
@@ -153,8 +156,9 @@
             <artifactId>astrogrid-registry-common</artifactId>
             <groupId>org.astrogrid</groupId>
             <version>${pom.currentVersion}</version>
+            <url>http://www.astrogrid.org/</url>
             <properties>
-                   <jnlp.jar>true</jnlp.jar>
+                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
             </properties>
         </dependency>
 
@@ -162,45 +166,12 @@
             <artifactId>astrogrid-registry-client-lite</artifactId>
          <groupId>org.astrogrid</groupId>
             <version>${pom.currentVersion}</version>
+            <url>http://www.astrogrid.org/</url>
             <properties>
-                   <jnlp.jar>true</jnlp.jar>
-            </properties>
-        </dependency>
-<!-- don't need these.
-       <dependency>
-         <artifactId>commons-jxpath</artifactId>
-            <groupId>commons-jxpath</groupId>
-            <version>1.1</version>
-            <type>jar</type>
-            <url></url>
-            <properties>
-                   <jnlp.jar>true</jnlp.jar>
+                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
             </properties>
         </dependency>
 
-      <dependency>
-         <artifactId>jakarta-regexp</artifactId>
-            <groupId>jakarta-regexp</groupId>
-            <version>1.3</version>
-            <type>jar</type>
-            <url></url>
-            <properties>
-                   <jnlp.jar>true</jnlp.jar>
-            </properties>
-        </dependency>
-
-        <dependency>
-            <groupId>castor</groupId>
-            <artifactId>castor-xml</artifactId>
-            <version>0.9.5</version>
-            <jar>castor-0.9.5-xml.jar</jar>
-            <type>jar</type>
-            <url>http://www.castor.org/</url>
-            <properties>
-                   <jnlp.jar>true</jnlp.jar>
-            </properties>
-        </dependency>
--->
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xerces</artifactId>
@@ -208,7 +179,7 @@
             <type>jar</type>
             <url>http://xml.apache.org/</url>
             <properties>
-                   <jnlp.jar>true</jnlp.jar>
+                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
             </properties>
         </dependency>
 
@@ -219,7 +190,7 @@
             <type>jar</type>
             <url>http://xml.apache.org/</url>
             <properties>
-                   <jnlp.jar>true</jnlp.jar>
+                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
             </properties>
         </dependency>
 
@@ -227,8 +198,9 @@
             <artifactId>axis</artifactId>
             <groupId>axis</groupId>
             <version>1.1</version>
+            <url>http://ws.apache.org/axis/</url>
             <properties>
-                   <jnlp.jar>true</jnlp.jar>
+                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
             </properties>
         </dependency>
         <dependency>
@@ -236,16 +208,18 @@
             <groupId>jax-qname</groupId>
             <version>UNKNOWN</version>
             <jar>jax-qname.jar</jar>
+            <url>http://ws.apache.org/axis/</url>
             <properties>
-                   <jnlp.jar>true</jnlp.jar>
+                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
             </properties>
         </dependency>
         <dependency>
             <artifactId>jaxrpc-api</artifactId>
             <groupId>jaxrpc-api</groupId>
             <version>1.0.3</version>
+            <url>http://ws.apache.org/axis/</url>
             <properties>
-                   <jnlp.jar>true</jnlp.jar>
+                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
             </properties>
         </dependency>
 
@@ -253,26 +227,28 @@
             <artifactId>saaj-api</artifactId>
             <groupId>saaj-api</groupId>
             <version>1.1.1</version>
+            <url>http://ws.apache.org/axis/</url>
             <properties>
-                   <jnlp.jar>true</jnlp.jar>
+                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
             </properties>
         </dependency>
         <dependency>
             <artifactId>wsdl4j</artifactId>
             <groupId>wsdl4j</groupId>
             <jar>wsdl4j.jar</jar>
+            <url>http://ws.apache.org/axis/</url>
             <properties>
-                   <jnlp.jar>true</jnlp.jar>
+                   <jnlp.jar>${shall.bundle.core}</jnlp.jar>
             </properties>
         </dependency>
 
-<!-- know we certainly need the things below here -->
         <dependency>
             <artifactId>commons-discovery</artifactId>
             <groupId>commons-discovery</groupId>
             <version>20030211.213356</version>
+            <url>http://jakarta.apache.org/commons/</url>
             <properties>
-                <jnlp.jar>true</jnlp.jar>
+                <jnlp.jar>${shall.bundle.core}</jnlp.jar>
             </properties>
         </dependency>
 
@@ -280,8 +256,9 @@
             <artifactId>commons-logging</artifactId>
             <groupId>commons-logging</groupId>
             <version>1.0.3</version>
+            <url>http://jakarta.apache.org/commons/</url>
             <properties>
-                <jnlp.jar>true</jnlp.jar>
+                <jnlp.jar>${shall.bundle.core}</jnlp.jar>
             </properties>
         </dependency>
 
@@ -289,8 +266,9 @@
                 <artifactId>commons-collections</artifactId>
                 <groupId>commons-collections</groupId>
                 <version>3.1</version>
+                <url>http://jakarta.apache.org/commons/</url>
                 <properties>
-                    <jnlp.jar>true</jnlp.jar>
+                    <jnlp.jar>${shall.bundle.core}</jnlp.jar>
                 </properties>
         </dependency>
         <!-- stuff required in maven build -->

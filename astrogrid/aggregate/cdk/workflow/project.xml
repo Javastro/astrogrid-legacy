@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+<!--
+    <extend>${basedir}/../../../maven-base/project.xml</extend>
+    -->
+
+    <extend>${basedir}/../core/project.xml</extend>
+
+    <id>astrogrid-cdk-workflow</id>
+    <name>Workflow Client Developer Kit (WCDK)</name>
+    <description><![CDATA[
+    <p>
+    This project assembles a Client Developer Kit (CDK) for developers that wish to
+    interact with the Astrogrid workflow services (Jes, CEA). It also contains
+    the delegates for accessing the core Astrogrid services (Myspace / VoSpace, Registry, Community).
+    (which are also available separately in the smaller Core CDK).
+    </p><p>
+    It contains the necessary delegate jars, plus their dependencies, and example configuration.
+    </p>
+
+    <section name="Workflow Builder"><p>
+    </p>
+    </section>
+    <section name="Job Execution Service (JES)"><p>
+    </p>
+    </section>
+    <section name="Common Execution Architecture (CEA)"><p>
+    </p>
+    </section>
+    <section name="Core Clients"><p>
+        The delegates for the core astrogrid services (myspace, vospace, registry) are also available in this package.
+        The documentation for these clients is avalable <a href="">here</a>
+    </p>
+    </section>
+
+    <section name="Common Classes"><p>
+    Some common classes
+    (such as <a href="http://www.astrogrid.org/maven/docs/snapshot/common/apidocs/org/astrogrid/store/Ivorn.html">Ivorn</a> and
+    <a href="http://www.astrogrid.org/maven/docs/snapshot/common/apidocs/org/astrogrid/community/User.html">User</a>) are defined in a separaete project
+    <a href="http://www.astrogrid.org/maven/docs/snapshot/common/index.html">Project page</a>,
+    <a href="http://www.astrogrid.org/maven/docs/snapshot/common/apidocs/index.html">Javadoc</a>
+    </p></section>
+
+    <section name="Configuration"><p>
+    All astrogrid components use a common configuration system.
+    This allows properties to be set using either JNDI (if available), a configuration file, or System properties.
+    The simplest method is to have a file named <code>astrogrid.properties</code> on the classpath.
+    See the <a href="http://www.astrogrid.org/maven/docs/snapshot/common/apidocs/org/astrogrid/config/package-summary.html">javadoc</a>
+    for further details.
+
+    This CDK requires the following keys to be set:
+    <dl>
+    <dt><code>org.astrogrid.community.ident</code></dt>
+        <dd>The identifier of the local community. For example <code>org.astrogrid.release</code></dd>
+    <dt><code>org.astrogrid.registry.query.endpoint</code></dt>
+        <dd>Endpoint of the registry query service. For example
+        <code>http://katatjuta.star.le.ac.uk:8080/astrogrid-registry-SNAPSHOT/services/RegistryQuery</code></dd>
+    <dt><code>org.astrogrid.registry.admin.endpoint</code></dt>
+        <dd>Endpoint of the registry admin service. For example
+        <code>http://katatjuta.star.le.ac.uk:8080/astrogrid-registry-SNAPSHOT/services/RegistryAdmin</code></dd>
+    <dt><code>jes.job.controller.endpoint</code></dt>
+        <dd>The endpoint of the jes server. For example
+        <code>http://katatjuta.star.le.ac.uk:8080/astrogrid-jes-SNAPSHOT/services/JobControllerService</code>
+        </dd>
+
+    </dl>
+    </p></section>
+
+    <section name="Development"><p>
+    It's possible to deploy a mini-astrogrid (<i>Astrogrid in a Box</i>) to a single machine. This provides
+    a convenient target to test clients against.
+    <a href="http://www.astrogrid.org/maven/docs/snapshot/integrationTests/install.html">Installation Instructions</a>
+    </p></section>
+    ]]></description>
+    <shortDescription>Workflow CDK</shortDescription>
+    <dependencies>
+        <!-- workflow objects -->
+                <dependency>
+                        <groupId>org.astrogrid</groupId>
+                        <artifactId>astrogrid-workflow</artifactId>
+                        <version>${pom.currentVersion}</version>
+                        <url>http://www.astrogrid.org/</url>
+                        <properties>
+                                <jnlp.jar>true</jnlp.jar>
+                        </properties>
+                </dependency>
+        <!-- jes -->
+                <dependency>
+                           <groupId>org.astrogrid</groupId>
+                           <artifactId>astrogrid-jes-delegate</artifactId>
+                           <version>${pom.currentVersion}</version>
+                        <url>http://www.astrogrid.org/</url>
+                        <properties>
+                                <jnlp.jar>true</jnlp.jar>
+                        </properties>
+                    </dependency>
+                <dependency>
+                           <groupId>org.astrogrid</groupId>
+                           <artifactId>astrogrid-workflow-objects</artifactId>
+                           <version>${pom.currentVersion}</version>
+                        <url>http://www.astrogrid.org/</url>
+                        <properties>
+                                <jnlp.jar>true</jnlp.jar>
+                        </properties>
+                </dependency>
+        <!-- cea client -->
+                <dependency>
+                           <groupId>org.astrogrid</groupId>
+                           <artifactId>astrogrid-cea-client</artifactId>
+                           <version>${pom.currentVersion}</version>
+                        <url>http://www.astrogrid.org/</url>
+                        <properties>
+                                <jnlp.jar>true</jnlp.jar>
+                        </properties>
+                </dependency>
+        <!-- external libs -->
+                  <!-- helper for object models -->
+                <dependency>
+                        <artifactId>commons-jxpath</artifactId>
+                        <groupId>commons-jxpath</groupId>
+                        <url>http://jakarta.apache.org/commons/</url>
+                        <version>1.1</version>
+                        <properties>
+                                <jnlp.jar>true</jnlp.jar>
+                        </properties>
+                </dependency>
+                <!-- required by castor -->
+                <dependency>
+                        <artifactId>castor</artifactId>
+                        <groupId>castor</groupId>
+                        <version>0.9.5-xml</version>
+                        <url>http://castor.exolab.org/</url>
+                        <properties>
+                                <jnlp.jar>true</jnlp.jar>
+                        </properties>
+                </dependency>
+               <dependency>
+                    <id>regexp</id>
+                <version>1.3</version>
+                <url>http://jakarta.apache.org/commons/</url>
+                        <properties>
+                                <jnlp.jar>true</jnlp.jar>
+                        </properties>
+                </dependency>
+    </dependencies>
+</project>

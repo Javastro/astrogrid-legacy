@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!-- extension maven script -->
+<project default="astrogrid-build-site" xmlns:j="jelly:core" xmlns:deploy="deploy" xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml">
+
+        <goal name="astrogrid-deploy-site">
+            <echo message="Please deploy the site docs from the base aggregate project"/>
+        </goal>
+        <goal name="astrogrid-deploy-snapshot" prereqs="dist:deploy-bin-snapshot,war:deploy-snapshot"/>
+
+        <goal name="astrogrid-build-snapshot" prereqs="dist:build-bin,war:war">
+                <echo>NB - no goal exists to build dist snapshot - called dist:build-bin instead</echo>
+                <echo>NB - no goal exists to build war snapshot - called war:war instead </echo>
+        </goal>
+        <goal name="astrogrid-install-snapshot" prereqs="dist:build-bin,war:install-snapshot">
+                <echo>NB - no goal exist to install dist - calling dist:build-bin instead</echo>
+        </goal>
+        <goal name="astrogrid-deploy-artifact" prereqs="dist:deploy-bin,war:deploy"/>
+        <goal name="astrogrid-build-artifact" prereqs="dist:build-bin,war:war"/>
+        <goal name="astrogrid-install-artifact" prereqs="dist:build-bin,war:install">
+                <echo>NB - no goal exist to install dist - calling dist:build-bin instead</echo>
+        </goal>
+
+<!-- set up dist to do what we want -->
+        <!-- remove artificial jar, but add in dependencies -->
+        <postGoal name="dist:prepare-bin-filesystem">
+                <delete>
+                 <fileset dir="${maven.dist.bin.assembly.dir}">
+                        <include name="*.jar" />
+                 </fileset>
+                </delete>
+                <deploy:copy-deps todir="${maven.dist.bin.assembly.dir}"
+                        excludes="commons-jelly-tags-xml,commons-jelly-tags-jsl"/>
+        </postGoal>
+
+<!-- now adjust war goal, so that it creates a jnlp thingie -->
+        <preGoal name="jnlp:init">
+                <!-- set jnlp to run into same dir as is later used for war -->
+                <j:set var="maven.jnlp.dir" value="${maven.build.dir}/${pom.artifactId}" />
+        </preGoal>
+
+        <postGoal name="war:webapp">
+                <attainGoal name="jnlp:generate-jnlp" />
+                <delete includeEmptyDirs="true">
+                        <fileset dir="${maven.build.dir}/${pom.artifactId}">
+                                <include name="WEB-INF/**" />
+                                <include name="${pom.artifactId}*.jar" />
+                        </fileset>
+                </delete>
+                <!-- sign jars by hand - as maven jnlp task is flakey -->
+                <signjar alias="astrogrid" storepass="qwertyuiop">
+                        <fileset dir="${maven.build.dir}/${pom.artifactId}">
+                                <include name="*.jar" />
+                        </fileset>
+                </signjar>
+                <attainGoal name="patch-jnlp" />
+        </postGoal>
+
+        <goal name="patch-jnlp">
+                <!-- remove dependency on dummy jar - as breaks jnlp
+                a bit convoluted - as template priorities, and jxml:if appears to be broken ..
+                and there's a barrier between jelly variables and expressions in jsl..
+                upshot is that the stylesheet becomes more brittle - need to watch it.
+                ..
+                also add link to core astrogrid extension
+                -->
+             ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+             <jsl:stylesheet var="patch">
+                <jsl:template match="jar[starts-with(@href,'astrogrid-cdk-workflow')]"> <!-- gah- ${pom.artifactId} won't work here -->
+                </jsl:template>
+                <jsl:template match="jar[not(starts-with(@href,'astrogrid-cdk-workflow')]">
+                        <jxml:copyOf select="." />
+                </jsl:template>
+                <jsl:template match="information|security|application-desc|component-desc|property"> <!-- deliberately omitted j2se - as an extension descriptor shouldn't specify this -->
+                        <jxml:copyOf select="." />
+                </jsl:template>
+                <jsl:template match="jnlp|@*">
+                                <jxml:copy>
+                                        <jsl:applyTemplates select="@* | node()" />
+                                </jxml:copy>
+                </jsl:template>
+                <jsl:template match="resources">
+                                <jxml:copy>
+                                        <jxml:element name="extension">
+                                                <jxml:attribute name="name">Astrogrid Core CDK</jxml:attribute>
+                                                <jxml:attribute name="href">http://software.astrogrid.org/jnlp/astrogrid-cdk-core/astrogrid-cdk-core.jnlp</jxml:attribute>
+                                        </jxml:element>
+                                        <jsl:applyTemplates select="@* | node()" />
+                                </jxml:copy>
+                </jsl:template>
+             </jsl:stylesheet>
+             <!-- read in original jnlp -->
+             <jxml:parse var="originalJNLP" xml="file://${basedir}/target/${pom.artifactId}/${pom.artifactId}.jnlp" />
+             <!-- apply stylesheet -->
+             <j:file name="${maven.build.dir}/${pom.artifactId}/${pom.artifactId}.jnlp">
+                <jsl:style stylesheet="${patch}" select="$originalJNLP" />
+             </j:file>
+        </goal>
+
+
+</project>
