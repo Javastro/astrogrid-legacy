@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.17 2004/03/13 23:38:56 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.18 2004/03/14 00:50:31 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.query.ConeQuery;
-import org.astrogrid.datacenter.service.AxisDataServer;
+import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.v041.AxisDataServer_v0_4_1;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
@@ -79,9 +79,10 @@ public class InstallationSelfCheck extends TestCase {
 
    /** Checks the querier/plugin operates - runs a cone query that will exercise it - so
     * this will also test the connection to the backend database. */
-   public void testConeSearch() throws Exception {
+   public void testConeSearch() throws Throwable {
       StringWriter sw = new StringWriter(); //although we throw away the results
-      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,2), sw, QueryResults.FORMAT_VOTABLE);
+      DataServer server = new DataServer();
+      server.askQuery(Account.ANONYMOUS, new ConeQuery(30,30,2), sw, QueryResults.FORMAT_VOTABLE);
    }
 
    public void testCanCreateWorkspace() throws IOException {
@@ -118,6 +119,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.18  2004/03/14 00:50:31  mch
+ Fixed to submit cone query test
+
  Revision 1.17  2004/03/13 23:38:56  mch
  Test fixes and better front-end JSP access
 
