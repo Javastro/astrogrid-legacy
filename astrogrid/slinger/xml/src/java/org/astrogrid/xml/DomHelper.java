@@ -1,5 +1,5 @@
 /*
-   $Id: DomHelper.java,v 1.1 2005/02/15 18:31:57 mch Exp $
+   $Id: DomHelper.java,v 1.2 2005/03/10 14:45:37 mch Exp $
 
    (c) Copyright...
 */
@@ -92,7 +92,7 @@ public class DomHelper
    /**
     * Convenience method parses Document from given <b>String of XML</b>.
     */
-   public static Document newDocument(String xmlDocument) throws ParserConfigurationException, SAXException, IOException
+   public static Document newDocument(String xmlDocument) throws SAXException, IOException
    {
       return newDocument(new InputSource(new StringReader(xmlDocument)));
    }
@@ -100,7 +100,7 @@ public class DomHelper
    /**
     * Convenience method parses Document from given file
     */
-   public static Document newDocument(File documentFile) throws ParserConfigurationException, SAXException, IOException
+   public static Document newDocument(File documentFile) throws SAXException, IOException
    {
       return newDocument(new BufferedInputStream(new FileInputStream(documentFile)));
    }
@@ -108,7 +108,7 @@ public class DomHelper
    /**
     * Convenience method returns Document from given stream
     */
-   public static Document newDocument(InputStream in) throws ParserConfigurationException, SAXException, IOException
+   public static Document newDocument(InputStream in) throws SAXException, IOException
    {
       return newDocument(new InputSource(in));
    }
@@ -117,8 +117,9 @@ public class DomHelper
    /**
     * Parses and returns the Document at the given source
     */
-   public static Document newDocument(InputSource in) throws ParserConfigurationException, SAXException, IOException
+   public static Document newDocument(InputSource in) throws SAXException, IOException
    {
+      try {
          DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
          //dbf.setValidating(true);
          //dbf.setIgnoringElementContentWhitespace(true);  //not available in 1.3
@@ -126,17 +127,31 @@ public class DomHelper
          
          DocumentBuilder builder = dbf.newDocumentBuilder();
          return builder.parse(in);
+      }
+      catch (ParserConfigurationException e) {
+         //this is really a one-off environment configuration error, and rather
+         //than having to check all the time for it in code, I think it is better
+         //to throw it as a RuntimeException.
+         throw new RuntimeException(e);
+      }
    }
 
    /**
     * Creates an empty document
    */
-   public static Document newDocument() throws ParserConfigurationException {
+   public static Document newDocument()  {
 
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-      DocumentBuilder builder = dbf.newDocumentBuilder();
-      return builder.newDocument();
-      
+      try {
+         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+         DocumentBuilder builder = dbf.newDocumentBuilder();
+         return builder.newDocument();
+      }
+      catch (ParserConfigurationException e) {
+         //this is really a one-off environment configuration error, and rather
+         //than having to check all the time for it in code, I think it is better
+         //to throw it as a RuntimeException.
+         throw new RuntimeException(e);
+      }
    }
       
    /**
