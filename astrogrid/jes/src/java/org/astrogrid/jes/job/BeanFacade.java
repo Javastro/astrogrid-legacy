@@ -1,4 +1,4 @@
-/*$Id: BeanFacade.java,v 1.3 2004/03/03 01:13:42 nw Exp $
+/*$Id: BeanFacade.java,v 1.4 2004/03/04 01:57:35 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,10 +9,12 @@
  *
 **/
 package org.astrogrid.jes.job;
+import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.SubmissionResponse;
 import org.astrogrid.jes.types.v1.WorkflowList;
+import org.astrogrid.workflow.beans.v1.Workflow;
 
 import java.util.Iterator;
 /** Interface that separates details of object model implementation from the service implementations
@@ -26,24 +28,20 @@ public interface  BeanFacade {
     /** factory method to create a request object for the job controller */
     public abstract SubmitJobRequest createSubmitJobRequest(String xmlDoc) throws JesException;
     /** facotry method to create a response object */
-    public abstract WorkflowList createListJobsErrorResponse(
-        String userid,
-        String community,
-        String message);
-    public abstract WorkflowList createListJobsSuccessResponse(String userid, String community, Iterator iterator);
-    public abstract SubmissionResponse createSubmitJobSuccessResponse(Job j);
-    public abstract SubmissionResponse createSubmitJobErrorResponse(Job j, String msg);
-    /** convert between object models.
-     * @param jobURN
-     * @return
-     */
-    public abstract org.astrogrid.workflow.beans.v1.execution.JobURN axis2castor(JobURN jobURN);
-    
-    /** and the inverse */
-    public abstract JobURN castor2axis(org.astrogrid.workflow.beans.v1.execution.JobURN jobURN);
+    public abstract WorkflowList createListJobsErrorResponse(Account acc,       String message);
+    public abstract WorkflowList createListJobsSuccessResponse(Account acc, Iterator iterator);
+    public abstract SubmissionResponse createSubmitJobSuccessResponse(Workflow j);
+    public abstract SubmissionResponse createSubmitJobErrorResponse(Workflow j, String msg);
+
 }
 /* 
 $Log: BeanFacade.java,v $
+Revision 1.4  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.3  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
 

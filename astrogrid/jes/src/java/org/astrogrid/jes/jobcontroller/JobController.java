@@ -10,16 +10,17 @@
  */
 package org.astrogrid.jes.jobcontroller;
 
+import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.comm.SchedulerNotifier;
 import org.astrogrid.jes.job.BeanFacade;
-import org.astrogrid.jes.job.Job;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.job.SubmitJobRequest;
 import org.astrogrid.jes.types.v1.ListCriteria;
 import org.astrogrid.jes.types.v1.SubmissionResponse;
 import org.astrogrid.jes.types.v1.WorkflowList;
+import org.astrogrid.workflow.beans.v1.Workflow;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -105,20 +106,15 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
 	  **/     
     public SubmissionResponse submitJob( SubmitJobRequest req ) {
 		JobFactory factory = null ;
-        Job job= null;
+        Workflow job= null;
 
 			
         try { 
-	        // If properties file is not loaded, we bail out...
-	        // Each JES MUST be properly initialized! 
-	       // JES.getInstance().checkPropertiesLoaded() ;       		
-	           
-			// Create the necessary Job structures.
-			// This involves persistence, so we bracket the transaction before creating...
+
 	        factory = facade.getJobFactory() ;
 	        factory.begin() ;
 	        job = factory.createJob( req) ;
-            nudger.scheduleNewJob(job.getId());                    		
+            nudger.scheduleNewJob(job.getJobExecutionRecord().getJobId());                    		
 			factory.end ( true ) ;   // Commit and cleanup                    		
             return facade.createSubmitJobSuccessResponse(job);
         }
@@ -128,7 +124,7 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
                 try {
                    factory.deleteJob(job);
                 } catch (JobException e) {
-                    logger.warn("failed to delete corrupted job - " + job.getId() );
+                    logger.warn("failed to delete corrupted job - " + job.getJobExecutionRecord().getJobId() );
                 }
             }
             return facade.createSubmitJobErrorResponse( job, jex.getMessage() ) ;
@@ -150,20 +146,24 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
       * 
       **/     
     public WorkflowList readJobList( ListCriteria req ) {
-
-            
+        // temporary - will be passed into job controller soon..
+        Account acc = new Account();
+        acc.setName(req.getUserId());
+        acc.setCommunity(req.getCommunity());            
         try { 
             // If properties file is not loaded, we bail out...
             // Each JES MUST be properly initialized! 
            // JES.getInstance().checkPropertiesLoaded() ;   
             
             JobFactory factory = facade.getJobFactory() ;
-            Iterator iterator = factory.findUserJobs( req.getUserId(), req.getCommunity(),null) ; 
-            return  facade.createListJobsSuccessResponse(req.getUserId(), req.getCommunity(), iterator ) ;
+
+            
+            Iterator iterator = factory.findUserJobs( acc) ; 
+            return  facade.createListJobsSuccessResponse(acc, iterator ) ;
         }
         catch( Exception jex ) {
             logger.error(jex);
-            return facade.createListJobsErrorResponse( req.getUserId(), req.getCommunity(), jex.getMessage()) ;
+            return facade.createListJobsErrorResponse(acc, jex.getMessage()) ;
                               
         }        
 

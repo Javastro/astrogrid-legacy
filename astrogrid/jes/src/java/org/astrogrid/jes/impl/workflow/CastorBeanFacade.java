@@ -1,4 +1,4 @@
-/*$Id: CastorBeanFacade.java,v 1.3 2004/03/03 01:13:41 nw Exp $
+/*$Id: CastorBeanFacade.java,v 1.4 2004/03/04 01:57:35 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,19 @@
 **/
 package org.astrogrid.jes.impl.workflow;
 
+import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.job.BeanFacade;
-import org.astrogrid.jes.job.Job;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.job.SubmitJobRequest;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.SubmissionResponse;
 import org.astrogrid.jes.types.v1.WorkflowList;
+import org.astrogrid.workflow.beans.v1.Workflow;
 
 import org.exolab.castor.xml.CastorException;
 
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -58,28 +60,36 @@ public class CastorBeanFacade implements BeanFacade {
     /**
      * @see org.astrogrid.jes.job.BeanFacade#createListJobsErrorResponse(java.lang.String, java.lang.String, org.astrogrid.i18n.AstroGridMessage)
      */
-    public WorkflowList createListJobsErrorResponse(String userid, String community, String message) {
+    public WorkflowList createListJobsErrorResponse(Account acc, String message) {
         WorkflowList l = new WorkflowList();
-        l.setCommunity(community);
-        l.setUserId(userid);
+        l.setCommunity(acc.getCommunity());
+        l.setUserId(acc.getName());
         l.setMessage(message);
         l.setWorkflow(new String[0]);
         return l;
     }
     /**
      * @see org.astrogrid.jes.job.BeanFacade#createListJobsSuccessResponse(java.lang.String, java.lang.String, java.util.Iterator)
+     * @todo tidy up exception handling.
      */
-    public WorkflowList createListJobsSuccessResponse(String userid, String community, Iterator iterator) {
+    public WorkflowList createListJobsSuccessResponse(Account acc, Iterator iterator) {
         WorkflowList l = new WorkflowList();
         List wfList = new ArrayList();
         while (iterator.hasNext()) {
-            Job j = (Job)iterator.next();            
-            wfList.add(j.getDocumentXML());
+            Workflow j = (Workflow)iterator.next();
+            StringWriter sw = new StringWriter();
+            try {
+            j.marshal(sw);
+            sw.close();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }            
+            wfList.add(sw.toString());
         }
         String[] example = new String[wfList.size()];
         l.setWorkflow((String[] )wfList.toArray(example));
-        l.setCommunity(community);
-        l.setUserId(userid);        
+        l.setCommunity(acc.getCommunity());
+        l.setUserId(acc.getName());        
         return l;
     }
     
@@ -87,9 +97,9 @@ public class CastorBeanFacade implements BeanFacade {
     /**
      * @see org.astrogrid.jes.job.BeanFacade#createSubmitJobSuccessResponse(org.astrogrid.jes.job.Job)
      */
-    public SubmissionResponse createSubmitJobSuccessResponse(Job j) {
+    public SubmissionResponse createSubmitJobSuccessResponse(Workflow j) {
         SubmissionResponse sr= new SubmissionResponse();
-        sr.setJobURN(new JobURN(j.getId().getContent()));
+        sr.setJobURN(new JobURN(j.getJobExecutionRecord().getJobId().getContent()));
         sr.setSubmissionSuccessful(true);
         return sr;
         
@@ -97,7 +107,7 @@ public class CastorBeanFacade implements BeanFacade {
     /**
      * @see org.astrogrid.jes.job.BeanFacade#createSubmitJobErrorResponse(org.astrogrid.jes.job.Job, org.astrogrid.i18n.AstroGridMessage)
      */
-    public SubmissionResponse createSubmitJobErrorResponse(Job j, String msg) {
+    public SubmissionResponse createSubmitJobErrorResponse(Workflow j, String msg) {
         SubmissionResponse sr = new SubmissionResponse();
         /* shouldn't return job back, as its all duff..
         if (j.getId() != null) {
@@ -110,21 +120,6 @@ public class CastorBeanFacade implements BeanFacade {
         return sr;
     }
 
-    /**
-     * @see org.astrogrid.jes.job.BeanFacade#axis2castor(org.astrogrid.jes.types.v1.JobURN)
-     */
-    public org.astrogrid.workflow.beans.v1.execution.JobURN axis2castor(JobURN jobURN) {
-        org.astrogrid.workflow.beans.v1.execution.JobURN result = new org.astrogrid.workflow.beans.v1.execution.JobURN();
-        result.setContent(jobURN.toString());
-        return result;
-    }
-
-    /**
-     * @see org.astrogrid.jes.job.BeanFacade#castor2axis(org.astrogrid.workflow.beans.v1.execution.JobURN)
-     */
-    public JobURN castor2axis(org.astrogrid.workflow.beans.v1.execution.JobURN jobURN) {
-        return new JobURN(jobURN.getContent());
-    }
     
     
 }
@@ -132,6 +127,12 @@ public class CastorBeanFacade implements BeanFacade {
 
 /* 
 $Log: CastorBeanFacade.java,v $
+Revision 1.4  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.3  2004/03/03 01:13:41  nw
 updated jes to work with regenerated workflow object model
 

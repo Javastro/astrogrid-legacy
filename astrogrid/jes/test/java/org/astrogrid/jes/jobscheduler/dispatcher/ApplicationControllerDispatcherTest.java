@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcherTest.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: ApplicationControllerDispatcherTest.java,v 1.3 2004/03/04 01:57:35 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,14 +13,15 @@ package org.astrogrid.jes.jobscheduler.dispatcher;
 import org.astrogrid.applications.delegate.beans.ParameterValues;
 import org.astrogrid.applications.delegate.beans.User;
 import org.astrogrid.jes.AbstractTestWorkflowInputs;
-import org.astrogrid.jes.impl.workflow.JobImpl;
-import org.astrogrid.jes.job.Job;
-import org.astrogrid.jes.job.JobStep;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.jes.jobscheduler.locator.MockLocator;
 import org.astrogrid.jes.testutils.io.FileResourceLoader;
+import org.astrogrid.jes.util.JesUtil;
+import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -48,18 +49,11 @@ public class ApplicationControllerDispatcherTest extends AbstractTestWorkflowInp
     }
     protected ApplicationControllerDispatcher disp;
     
-    public void testDispatchStep(JobStep js) throws Exception {
-        disp.dispatchStep(null,js);
+    public void testDispatchStep(Workflow w,Step js) throws Exception {
+        disp.dispatchStep(w,js);
     }
-    /** @todo - broken at the moment - need to sort out community / authentication, etc.*/
-    public void testBuildUser(JobStep js) throws Exception {
-        User u = disp.buildUser(js);
-        assertNotNull(u);
-        //assertNotNull(u.getToken());
-        //assertNotNull(u.getAccount());
-        //assertNotNull(u.getGroup());
-    }
-    public void testBuildParameterValues(JobStep js) throws Exception{
+
+    public void testBuildParameterValues(Step js) throws Exception{
         ParameterValues val = disp.buildParameterValues(js);
         assertNotNull(val);
         assertNotNull(val.getMethodName());
@@ -70,12 +64,16 @@ public class ApplicationControllerDispatcherTest extends AbstractTestWorkflowInp
      */
     protected void testIt(InputStream is, int resourceNum) throws Exception {
        Workflow w = Workflow.unmarshalWorkflow(new InputStreamReader(is));
-        Job job =new JobImpl(w);
-        JobStep js = (JobStep)job.getJobSteps().next();
+       // add in an execution block.
+       JobExecutionRecord jex = new JobExecutionRecord();
+       JobURN urn = new JobURN();
+        urn.setContent("jes:dummy:job");
+       jex.setJobId(urn);
+       w.setJobExecutionRecord(jex);
+        Step js = (Step)JesUtil.getJobSteps(w).next();
         assertNotNull(js); 
-        testDispatchStep(js);
-        testBuildParameterValues(js);        
-        testBuildUser(js);
+        testDispatchStep(w,js);
+        testBuildParameterValues(js);   
 
     }
 }
@@ -83,6 +81,12 @@ public class ApplicationControllerDispatcherTest extends AbstractTestWorkflowInp
 
 /* 
 $Log: ApplicationControllerDispatcherTest.java,v $
+Revision 1.3  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

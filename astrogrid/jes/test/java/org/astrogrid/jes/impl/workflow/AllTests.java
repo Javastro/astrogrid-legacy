@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: AllTests.java,v 1.3 2004/03/04 01:57:35 nw Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,6 @@ public class AllTests {
         suite.addTest(DBJobFactoryImplTest.suite());
         suite.addTest(FileJobFactoryImplTest.suite());
         suite.addTest(InMemoryJobFactoryImplTest.suite());
-        suite.addTest(new TestSuite(JobImplTest.class));
         //$JUnit-END$
         return suite;
     }
@@ -37,6 +36,12 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.3  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

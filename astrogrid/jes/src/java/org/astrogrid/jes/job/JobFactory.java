@@ -1,4 +1,4 @@
-/*$Id: JobFactory.java,v 1.9 2004/03/03 01:13:42 nw Exp $
+/*$Id: JobFactory.java,v 1.10 2004/03/04 01:57:35 nw Exp $
  * Created on 09-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,8 @@
 package org.astrogrid.jes.job;
 
 
+import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import java.util.Iterator;
@@ -21,9 +23,9 @@ import java.util.Iterator;
 public interface JobFactory {
     void begin();
     boolean end(boolean bCommit) throws JobException;
-    Job createJob(SubmitJobRequest req) throws JobException;
+    Workflow createJob(SubmitJobRequest req) throws JobException;
     //Iterator findJobsWhere(String queryString) throws JobException;
-    Job findJob(JobURN urn) throws JobException;
+    Workflow findJob(JobURN urn) throws JobException;
     /** 
      * 
      * @param userid
@@ -32,13 +34,19 @@ public interface JobFactory {
      * @return iterator of job objects.
      * @throws JobException
      */
-    public Iterator findUserJobs(String userid, String community, String jobListXML) throws JobException;
+    public Iterator findUserJobs(Account acc) throws JobException;
 
-    JobURN deleteJob(Job job) throws JobException;
-    void updateJob(Job job) throws JobException;
+    void deleteJob(Workflow job) throws JobException;
+    void updateJob(Workflow job) throws JobException;
 }
 /* 
 $Log: JobFactory.java,v $
+Revision 1.10  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.9  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
 

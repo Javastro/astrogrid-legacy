@@ -1,4 +1,4 @@
-/*$Id: MockJobFactoryImpl.java,v 1.3 2004/03/03 01:13:41 nw Exp $
+/*$Id: MockJobFactoryImpl.java,v 1.4 2004/03/04 01:57:35 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,11 @@
 **/
 package org.astrogrid.jes.impl.workflow;
 
-import org.astrogrid.jes.job.Job;
+import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.job.SubmitJobRequest;
+import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import java.util.Iterator;
@@ -42,7 +43,7 @@ public class MockJobFactoryImpl extends AbstractJobFactoryImpl {
     /**
      * @see org.astrogrid.jes.job.JobFactory#createJob(org.astrogrid.jes.job.SubmitJobRequest)
      */
-    public Job createJob(SubmitJobRequest req) throws JobException {
+    public Workflow createJob(SubmitJobRequest req) throws JobException {
             if (! willSucceed) {
                 throw new JobException("You wanted me to fail");
             }
@@ -51,7 +52,7 @@ public class MockJobFactoryImpl extends AbstractJobFactoryImpl {
     /**
      * @see org.astrogrid.jes.job.JobFactory#findJob(java.lang.String)
      */
-    public Job findJob(JobURN jobURN) throws JobException {
+    public Workflow findJob(JobURN jobURN) throws JobException {
         if (! willSucceed) {
             throw new NotFoundException("You wanted me to fail");
         }
@@ -60,7 +61,7 @@ public class MockJobFactoryImpl extends AbstractJobFactoryImpl {
     /**
      * @see org.astrogrid.jes.job.JobFactory#findUserJobs(java.lang.String, java.lang.String, java.lang.String)
      */
-    public Iterator findUserJobs(String userid, String community, String jobListXML) throws JobException {
+    public Iterator findUserJobs(Account acc) throws JobException {
         if (! willSucceed) {
             throw new JobException("You wanted me to fail");
         }
@@ -81,16 +82,15 @@ public class MockJobFactoryImpl extends AbstractJobFactoryImpl {
     /**
      * @see org.astrogrid.jes.job.JobFactory#deleteJob(org.astrogrid.jes.job.Job)
      */
-    public JobURN deleteJob(Job job) throws JobException {
+    public void deleteJob(Workflow job) throws JobException {
         if (! willSucceed) {
             throw new NotFoundException("You wanted me to fail");
         }
-        return job.getId();
     }
     /**
      * @see org.astrogrid.jes.job.JobFactory#updateJob(org.astrogrid.jes.job.Job)
      */
-    public void updateJob(Job job) throws JobException {
+    public void updateJob(Workflow job) throws JobException {
         if (! willSucceed) {
             throw new NotFoundException("You wanted me to fail");
         }
@@ -100,6 +100,12 @@ public class MockJobFactoryImpl extends AbstractJobFactoryImpl {
 
 /* 
 $Log: MockJobFactoryImpl.java,v $
+Revision 1.4  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.3  2004/03/03 01:13:41  nw
 updated jes to work with regenerated workflow object model
 

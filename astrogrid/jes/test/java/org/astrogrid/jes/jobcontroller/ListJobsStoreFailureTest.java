@@ -1,4 +1,4 @@
-/*$Id: ListJobsStoreFailureTest.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: ListJobsStoreFailureTest.java,v 1.3 2004/03/04 01:57:35 nw Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,7 +46,7 @@ public class ListJobsStoreFailureTest extends AbstractTestForJobController {
 
         WorkflowList wl = jc.readJobList(criteria);
         assertNotNull(wl);
-        assertNotNull(wl.getMessage()); //i.e. no errors
+        assertNotNull(wl.getMessage(),wl.getMessage()); //i.e. no errors
         assertEquals(wl.getUserId(), ListJobsSuccessTest.USERID);
         assertEquals(wl.getCommunity(), ListJobsSuccessTest.COMMUNITY);
         String[] rawArr = wl.getWorkflow();
@@ -78,6 +78,12 @@ public class ListJobsStoreFailureTest extends AbstractTestForJobController {
 
 /* 
 $Log: ListJobsStoreFailureTest.java,v $
+Revision 1.3  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

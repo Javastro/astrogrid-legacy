@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.5 2004/03/03 01:13:42 nw Exp $
+/*$Id: AllTests.java,v 1.6 2004/03/04 01:57:35 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("JES Tests");
         //$JUnit-BEGIN$
+        suite.addTest(new TestSuite(CastorWorkflowTest.class));
         suite.addTest(new TestSuite(InMemorySystemTest.class));
         suite.addTest(new TestSuite(JESTest.class));
         suite.addTest(new TestSuite(LocalSOAPSystemTest.class));
@@ -39,6 +40,12 @@ public class AllTests {
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.6  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.5  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
 

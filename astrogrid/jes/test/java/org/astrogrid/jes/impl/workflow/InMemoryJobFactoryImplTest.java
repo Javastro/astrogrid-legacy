@@ -1,4 +1,4 @@
-/*$Id: InMemoryJobFactoryImplTest.java,v 1.3 2004/03/03 01:13:41 nw Exp $
+/*$Id: InMemoryJobFactoryImplTest.java,v 1.4 2004/03/04 01:57:35 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,11 +11,12 @@
 package org.astrogrid.jes.impl.workflow;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
+import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.jes.AbstractTestWorkflowInputs;
-import org.astrogrid.jes.job.Job;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.job.SubmitJobRequest;
+import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import java.io.InputStream;
@@ -81,26 +82,26 @@ public class InMemoryJobFactoryImplTest extends AbstractTestWorkflowInputs {
         SubmitJobRequest req = new SubmitJobRequestImpl(is);
         assertNotNull(req);
         // create job
-        Job j = jf.createJob(req);
+        Workflow j = jf.createJob(req);
         assertNotNull(j);
-        JobURN jobURN = j.getId();
+        JobURN jobURN = j.getJobExecutionRecord().getJobId();
         lastURN = jobURN;
         assertNotNull(jobURN);
         // find job
-        Job j1 = jf.findJob(jobURN);
+        Workflow j1 = jf.findJob(jobURN);
         assertNotNull(j1);
-        assertEquals(j,j1);
+        assertEquals(jobURN.getContent(),j1.getJobExecutionRecord().getJobId().getContent());
         //update job - change the status code
         ExecutionPhase newStatus = ExecutionPhase.RUNNING;
         // quick check its not already that..
-        if (newStatus.equals(j.getStatus())) {
+        if (newStatus.equals(j.getJobExecutionRecord().getStatus())) {
             newStatus = ExecutionPhase.COMPLETED;
         }
-        j.setStatus(newStatus);
+        j.getJobExecutionRecord().setStatus(newStatus);
         jf.updateJob(j);
-        Job j2 = jf.findJob(jobURN);
+        Workflow j2 = jf.findJob(jobURN);
         assertNotNull(j2);
-        assertEquals(newStatus,j2.getStatus());
+        assertEquals(newStatus,j2.getJobExecutionRecord().getStatus());
         
     }
     /** used to record an arbitrary urn, for use later */
@@ -108,22 +109,29 @@ public class InMemoryJobFactoryImplTest extends AbstractTestWorkflowInputs {
     
     /** another unit test to run at the end */
     public void finallyTestListJobs() throws Exception {
-        Iterator i = jf.findUserJobs(USER_ID,GROUP_ID,"not used");
+        Account acc = new Account();
+        acc.setName(USER_ID);
+        acc.setCommunity(GROUP_ID);
+        Iterator i = jf.findUserJobs(acc);
         assertNotNull(i);
         assertTrue(i.hasNext());
         while (i.hasNext()) {
             Object o = i.next();
             assertNotNull(o);
-            assertTrue(o instanceof Job);
-            Job j = (Job)o;
-            assertEquals(USER_ID,j.getUserId());
-            assertEquals(GROUP_ID,j.getGroup());
+            assertTrue(o instanceof Workflow);
+            Account j = ((Workflow)o).getCredentials().getAccount();
+            
+            assertEquals(USER_ID,j.getName());
+            assertEquals(GROUP_ID,j.getCommunity());
         }
     }   
     
     public void finallyTestListUnknownJobs() throws Exception {
         // should still return an iterator. just an empty one.
-        Iterator i = jf.findUserJobs("non existent user","no community","not used");
+        Account acc = new Account();
+        acc.setName("non existent");
+        acc.setCommunity("no community");
+        Iterator i = jf.findUserJobs(acc);
         assertNotNull(i);
         assertFalse(i.hasNext());                
     }    
@@ -132,7 +140,7 @@ public class InMemoryJobFactoryImplTest extends AbstractTestWorkflowInputs {
         JobURN unknownURN = new JobURN();
         unknownURN.setContent("unknown:urn:job");
         try {
-        Job j = jf.findJob(unknownURN);
+        Workflow j = jf.findJob(unknownURN);
         fail("should have thrown");
         } catch (NotFoundException ne) {
             // ok expected
@@ -142,7 +150,7 @@ public class InMemoryJobFactoryImplTest extends AbstractTestWorkflowInputs {
     
     /** this is a unit test, but doesn't follow naming convention of test* so that it isn't picked up by reflection - needs to be run last*/
     public void finallyTestDeleteLast() throws Exception {
-        Job j = jf.findJob(lastURN);
+        Workflow j = jf.findJob(lastURN);
         assertNotNull("lastURN has no corresponding job",j);
         jf.deleteJob(j);
         try {
@@ -161,6 +169,12 @@ public class InMemoryJobFactoryImplTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemoryJobFactoryImplTest.java,v $
+Revision 1.4  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.3  2004/03/03 01:13:41  nw
 updated jes to work with regenerated workflow object model
 

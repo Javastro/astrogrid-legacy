@@ -1,4 +1,4 @@
-/*$Id: ResumeJobSuccessTest.java,v 1.3 2004/03/03 01:13:42 nw Exp $
+/*$Id: ResumeJobSuccessTest.java,v 1.4 2004/03/04 01:57:35 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,12 +11,14 @@
 package org.astrogrid.jes.jobscheduler;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.jes.job.Job;
-import org.astrogrid.jes.job.JobStep;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.SubmissionResponse;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
+import org.astrogrid.jes.util.JesUtil;
+import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 /** test behaviour of 'resumeTest' method.
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Feb-2004
@@ -38,32 +40,44 @@ public class ResumeJobSuccessTest extends AbstractTestForJobScheduler {
         JobURN urn = result.getJobURN();
         assertNotNull(urn);
         // find job, get first jobstep out of it.
-        Job j = fac.findJob(facade.axis2castor(urn));
+        Workflow j = fac.findJob(JesUtil.axis2castor(urn));
         assertNotNull(j);
-        JobStep step = (JobStep)j.getJobSteps().next(); // got to have at least one job step
+        Step step = (Step)JesUtil.getJobSteps(j).next(); // got to have at least one job step
         //use this job step to build an info object
-        MessageType info = new MessageType();
-        JobIdentifierType id = new JobIdentifierType();
-        id.setValue(urn.toString());
-        /*
-        info.setComment("TEST COMMENT");
-        info.setStatus(ExecutionPhase.COMPLETED);
-        info.setStepNumber(step.getStepNumber());
-        */
+        MessageType info = new MessageType();   
+             
+        /***** fill this in **.
+         * 
+         */
+        String xpath = null;
+        JobIdentifierType id = JesUtil.createJobId(JesUtil.axis2castor(urn),xpath);       
+        info.setValue("TEST COMMENT");
+        info.setPhase(org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase.COMPLETED);
+        
         // could take copy of job here from store (need to clone, as using in-memory store). then compare it to result after scheduling.
         js.resumeJob(id,info);
         //now check behaviour is as expected.
         //as we're using in-memory job store, changes happen to objects directly.
-        assertEquals("TEST COMMENT",step.getComment());
-        assertEquals(ExecutionPhase.COMPLETED,step.getStatus());
+        StepExecutionRecord exRec = JesUtil.getLatestRecord(step);
+        int count = exRec.getMessageCount();
+        assertEquals(1,count);
+        
+        assertEquals("TEST COMMENT",exRec.getMessage(0).getContent());
+        assertEquals(ExecutionPhase.COMPLETED,exRec.getStatus());
 
-        assertEquals(ExecutionPhase.RUNNING,j.getStatus());
+        assertEquals(ExecutionPhase.RUNNING,j.getJobExecutionRecord().getStatus());
     }
 }
 
 
 /* 
 $Log: ResumeJobSuccessTest.java,v $
+Revision 1.4  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.3  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
 

@@ -1,4 +1,4 @@
-/*$Id: MockPolicy.java,v 1.3 2004/03/03 01:13:42 nw Exp $
+/*$Id: MockPolicy.java,v 1.4 2004/03/04 01:57:35 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,9 +11,10 @@
 package org.astrogrid.jes.jobscheduler.policy;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.jes.job.Job;
-import org.astrogrid.jes.job.JobStep;
 import org.astrogrid.jes.jobscheduler.Policy;
+import org.astrogrid.jes.util.JesUtil;
+import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Workflow;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -33,17 +34,18 @@ public class MockPolicy implements Policy {
     /**
      * @see org.astrogrid.jes.policy.SchedulingPolicy#calculateJobStatus(org.astrogrid.jes.job.Job)
      */
-    public ExecutionPhase calculateJobStatus(Job job) {
+    public ExecutionPhase calculateJobStatus(Workflow job) {
         return ExecutionPhase.RUNNING;
     }
     /**
      * @see org.astrogrid.jes.policy.SchedulingPolicy#calculateDispatchableCandidates(org.astrogrid.jes.job.Job)
      */
-    public Iterator calculateDispatchableCandidates(Job job) {
+    public Iterator calculateDispatchableCandidates(Workflow job) {
         List result = new ArrayList();
-        for (Iterator i = job.getJobSteps(); i.hasNext(); ) {
-            JobStep js = (JobStep)i.next();
-            if (ExecutionPhase.UNKNOWN.equals(js.getStatus())) {
+        for (Iterator i = JesUtil.getJobSteps(job); i.hasNext(); ) {
+            Step js = (Step)i.next();
+            ExecutionPhase status = JesUtil.getLatestRecord(js).getStatus();
+            if (ExecutionPhase.UNKNOWN.equals(status)) {
                 result.add(js);
             }
         }
@@ -56,6 +58,12 @@ public class MockPolicy implements Policy {
 
 /* 
 $Log: MockPolicy.java,v $
+Revision 1.4  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.3  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
 

@@ -1,4 +1,4 @@
-/*$Id: InMemoryJobFactoryImpl.java,v 1.3 2004/03/03 01:13:41 nw Exp $
+/*$Id: InMemoryJobFactoryImpl.java,v 1.4 2004/03/04 01:57:35 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,11 @@
 **/
 package org.astrogrid.jes.impl.workflow;
 
-import org.astrogrid.jes.job.Job;
+import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.job.SubmitJobRequest;
+import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import java.util.ArrayList;
@@ -41,38 +42,35 @@ public class InMemoryJobFactoryImpl extends AbstractJobFactoryImpl {
         return m;
     }
     
-    protected Object getHashKey(JobImpl j) {
-        return j.getId(); // some issues about efficient hashing of long strings, but we don't care right now.
-    }
+
     
     /**
      * @see org.astrogrid.jes.job.JobFactory#createJob(org.astrogrid.jes.job.SubmitJobRequest)
      */
-    public Job createJob(SubmitJobRequest req) throws JobException {
-        JobImpl j = super.buildJob(req);
-        m.put(getHashKey(j),j);
+    public Workflow createJob(SubmitJobRequest req) throws JobException {
+        Workflow j = super.buildJob(req);
+        m.put(id(j),j);
         return j;
     }
     /**
      * @see org.astrogrid.jes.job.JobFactory#findJob(java.lang.String)
      */
-    public Job findJob(JobURN jobURN) throws JobException {
-        Job j = (Job)m.get(jobURN);
+    public Workflow findJob(JobURN jobURN) throws JobException {
+        Workflow j = (Workflow)m.get(jobURN.getContent());
         if (j == null) {
-            throw new NotFoundException("Job for urn " + jobURN + " not found"); 
+            throw new NotFoundException("Job for urn " + jobURN.getContent() + " not found"); 
         }
         return j;
     }
     /**
      * @see org.astrogrid.jes.job.JobFactory#findUserJobs(java.lang.String, java.lang.String, java.lang.String)
      */
-    public Iterator findUserJobs(String userid, String community, String __ignored) {
-        assert userid != null;
-        assert community != null;
+    public Iterator findUserJobs(Account acc) {
         Collection results = new ArrayList();
         for (Iterator i = m.values().iterator(); i.hasNext(); ) {
-            JobImpl j = (JobImpl)i.next();
-            if (community.equalsIgnoreCase(j.getCommunity()) && userid.equalsIgnoreCase(j.getUserId())) {
+            Workflow j = (Workflow)i.next();
+            Account candidate = j.getCredentials().getAccount();
+            if (acc.getCommunity().equalsIgnoreCase(candidate.getCommunity()) && acc.getName().equalsIgnoreCase(candidate.getName())) {
                 results.add(j);
             }
         }
@@ -81,20 +79,20 @@ public class InMemoryJobFactoryImpl extends AbstractJobFactoryImpl {
     /**
      * @see org.astrogrid.jes.job.JobFactory#deleteJob(org.astrogrid.jes.job.Job)
      */
-    public JobURN deleteJob(Job job) throws JobException {
-        if (m.get(job.getId()) == null) {
-            throw new NotFoundException("no job for " + job.getId());
+    public void deleteJob(Workflow job) throws JobException {
+        if (m.get(id(job)) == null) {
+            throw new NotFoundException("no job for " + id(job));
         }
-        m.remove(getHashKey((JobImpl)job));
-        return job.getId();
+        m.remove(id(job));
     }
     /**
      * @see org.astrogrid.jes.job.JobFactory#updateJob(org.astrogrid.jes.job.Job)
      */
-    public void updateJob(Job job) throws JobException {
+    public void updateJob(Workflow job) throws JobException {
         // a no-op - we're not cloning or anything, so its already happened!!
-        if (m.get(job.getId()) == null) {
-            throw new NotFoundException("no job for" + job.getId());
+        Object hashKey = id(job);
+        if (m.get(hashKey) == null) {
+            throw new NotFoundException("no job for" + hashKey);
         }
         log.info("Using in-memory store - updateJob is a no-op");
     }
@@ -103,6 +101,12 @@ public class InMemoryJobFactoryImpl extends AbstractJobFactoryImpl {
 
 /* 
 $Log: InMemoryJobFactoryImpl.java,v $
+Revision 1.4  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.3  2004/03/03 01:13:41  nw
 updated jes to work with regenerated workflow object model
 

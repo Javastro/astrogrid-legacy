@@ -1,4 +1,4 @@
-/*$Id: Dispatcher.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: Dispatcher.java,v 1.3 2004/03/04 01:57:35 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,12 @@
 **/
 package org.astrogrid.jes.jobscheduler;
 
+import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.job.JobStep;
-
+import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 /** Interface to a component that dispatches (executes) a job step.
  * This may be done by communicating to an application controller, to by other means. 
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Feb-2004
@@ -25,12 +28,18 @@ public interface Dispatcher {
      * @param js
      * @throws JesException
      */
-    void dispatchStep(String communitySnippet,JobStep js) throws JesException;
+    void dispatchStep(Workflow wf, Step js) throws JesException;
 }
 
 
 /* 
 $Log: Dispatcher.java,v $
+Revision 1.3  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

@@ -1,4 +1,4 @@
-/*$Id: RoughPolicy.java,v 1.3 2004/03/03 01:13:42 nw Exp $
+/*$Id: RoughPolicy.java,v 1.4 2004/03/04 01:57:35 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,9 +11,11 @@
 package org.astrogrid.jes.jobscheduler.policy;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.jes.job.Job;
-import org.astrogrid.jes.job.JobStep;
 import org.astrogrid.jes.jobscheduler.*;
+import org.astrogrid.jes.util.JesUtil;
+import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.types.JoinType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,54 +38,54 @@ public class RoughPolicy implements Policy {
     /** 
          * 
          *  */
-        public ExecutionPhase calculateJobStatus( Job job ) {
+        public ExecutionPhase calculateJobStatus( Workflow job ) {
             // JBL Note: Does a JobStep in error mean a Job is in error?
             // i.e. Does a JobStep in error mean a Job has stopped (finished)?
             boolean   isJobFinished = true ;
             boolean  bStepStatus = true ; // what does this signify?
             Map guardSteps = new HashMap() ;
         
-              for(Iterator i = job.getJobSteps();i.hasNext();  ) {
+              for(Iterator i = JesUtil.getJobSteps(job);i.hasNext();  ) {
                 
-                    JobStep jobStep = (JobStep)i.next() ;
+                    Step jobStep = (Step)i.next() ;
                     guardSteps.put( new Integer(jobStep.getSequenceNumber()), jobStep ) ;
-                    
+                    ExecutionPhase status = JesUtil.getLatestRecord(jobStep).getStatus();
                     // If anything is running, then job is obviously not finished...
-                    if( jobStep.getStatus().equals( ExecutionPhase.RUNNING ) ) { 
+                    if(status.equals( ExecutionPhase.RUNNING ) ) { 
                         isJobFinished = false ;                
                         break ;              
                     }
-                    else if( jobStep.getStatus().equals( ExecutionPhase.COMPLETED ) ) {
+                    else if( status.equals( ExecutionPhase.COMPLETED ) ) {
                         continue ;
                     }
-                    else if( jobStep.getStatus().equals( ExecutionPhase.ERROR ) ) {
+                    else if( status.equals( ExecutionPhase.ERROR ) ) {
                         bStepStatus = false ;
                         continue ;
                     }                 
                     // If step status is initialized, the guardstep must be checked
                     // for its status against the join condition for this step...
-                    else if( jobStep.getStatus().equals( ExecutionPhase.INITIALIZING ) ) {
+                    else if( status.equals( ExecutionPhase.INITIALIZING ) ) {
                     
-                        String joinCondition = jobStep.getJoinCondition() ;
-                        JobStep guardStep = (JobStep)guardSteps.get( new Integer( jobStep.getSequenceNumber() - 1 ) ) ;
-                    
+                        JoinType joinCondition = jobStep.getJoinCondition() ;
+                        Step guardStep = (Step)guardSteps.get( new Integer( jobStep.getSequenceNumber() - 1 ) ) ;
                         // If there is no guard step, assume this step should execute...
                         if( guardStep == null )  {
                             isJobFinished = false ;
                             break ;   //JL questionable
                         }
-                        
+                                                
                         // Eliminate those that should execute in any case... 
-                        if( joinCondition.equals( JobStep.JOINCONDITION_ANY ) ) {
+                        if( joinCondition.equals( JoinType.ANY ) ) {
                             isJobFinished = false ;
                             break ;   
                         }
-                       
+
+                        ExecutionPhase guardStatus = JesUtil.getLatestRecord(guardStep).getStatus();
                         // Eliminate those that should execute provided the previous
                         // guardstep completed successfully... 
-                        if( guardStep.getStatus().equals( ExecutionPhase.COMPLETED ) 
+                        if( guardStatus.equals( ExecutionPhase.COMPLETED ) 
                             &&
-                            joinCondition.equals( JobStep.JOINCONDITION_TRUE )
+                            joinCondition.equals( JoinType.TRUE )
                           ) {
                             isJobFinished = false ;
                             break ;   
@@ -91,9 +93,9 @@ public class RoughPolicy implements Policy {
                     
                         // Eliminate those that should execute only when the previous
                         // guardstep completed with an error...
-                        if( guardStep.getStatus().equals( ExecutionPhase.ERROR ) 
+                        if( guardStatus.equals( ExecutionPhase.ERROR ) 
                             &&
-                            joinCondition.equals( JobStep.JOINCONDITION_FALSE )
+                            joinCondition.equals( JoinType.FALSE )
                           ) {
                             isJobFinished = false ;
                             break ;   
@@ -125,25 +127,26 @@ public class RoughPolicy implements Policy {
     /** 
      * @return an iterator of job steps
      */
-   public Iterator calculateDispatchableCandidates( Job job ) {
+   public Iterator calculateDispatchableCandidates( Workflow job ) {
         
 
-       String
+       JoinType
           joinCondition = null ;
        Map  guardSteps = new HashMap() ;
        List candidates = new ArrayList() ;
 
-          for(Iterator iterator = job.getJobSteps(); iterator.hasNext(); ) {
+          for(Iterator iterator = JesUtil.getJobSteps(job); iterator.hasNext(); ) {
                 
-             JobStep jobStep = (JobStep)iterator.next() ;
+             Step jobStep = (Step)iterator.next() ;
              guardSteps.put( new Integer(jobStep.getSequenceNumber()), jobStep ) ;
                   
              // If step status is initialized, the guardstep must be checked
              // for its status against the join condition for this step...
-             if( jobStep.getStatus().equals( ExecutionPhase.INITIALIZING ) ) {
+             ExecutionPhase jobStatus = JesUtil.getLatestRecord(jobStep).getStatus();
+             if( jobStatus.equals( ExecutionPhase.INITIALIZING ) ) {
                     
                 joinCondition = jobStep.getJoinCondition() ;
-                JobStep guardStep = (JobStep)guardSteps.get( new Integer( jobStep.getSequenceNumber() - 1 ) ) ;
+                Step guardStep = (Step)guardSteps.get( new Integer( jobStep.getSequenceNumber() - 1 ) ) ;
                     
                 // If there is no guard step (the first step in a job?), 
                 // assume this step should execute...
@@ -153,13 +156,14 @@ public class RoughPolicy implements Policy {
                 }  
                       
                 // If a guardstep has finished (either OK or in error)
-                // and the join condition is "any", the step should execute... 
+                // and the join condition is "any", the step should execute...
+                ExecutionPhase guardStatus = JesUtil.getLatestRecord(guardStep).getStatus(); 
                 if( 
-                    ( guardStep.getStatus().equals( ExecutionPhase.COMPLETED )
+                    ( guardStatus.equals( ExecutionPhase.COMPLETED )
                       ||
-                      guardStep.getStatus().equals( ExecutionPhase.ERROR ) )
+                      guardStatus.equals( ExecutionPhase.ERROR ) )
                     && 
-                    joinCondition.equals( JobStep.JOINCONDITION_ANY ) 
+                    joinCondition.equals( JoinType.ANY ) 
                   ) {
                          
                     this.maintainCandidateList( candidates, jobStep ) ;
@@ -168,9 +172,9 @@ public class RoughPolicy implements Policy {
                        
                 // Those that should execute provided the previous
                 // guardstep completed successfully are candidates... 
-                if( guardStep.getStatus().equals( ExecutionPhase.COMPLETED ) 
+                if( guardStatus.equals( ExecutionPhase.COMPLETED ) 
                     &&
-                    joinCondition.equals( JobStep.JOINCONDITION_TRUE )
+                    joinCondition.equals( JoinType.TRUE )
                 ) {
                     this.maintainCandidateList( candidates, jobStep ) ;
                     continue ;   
@@ -178,9 +182,9 @@ public class RoughPolicy implements Policy {
                     
                 // Those that should execute only when the previous
                 // guardstep completed with an error are candidates...
-                if( guardStep.getStatus().equals(ExecutionPhase.ERROR ) 
+                if( guardStatus.equals(ExecutionPhase.ERROR ) 
                     &&
-                    joinCondition.equals( JobStep.JOINCONDITION_FALSE )
+                    joinCondition.equals( JoinType.FALSE )
                 ) {
                     this.maintainCandidateList( candidates, jobStep ) ;
                     continue ;   
@@ -199,7 +203,7 @@ public class RoughPolicy implements Policy {
    } // end of identifyDispatchableCandidates()
     
     
-   protected void maintainCandidateList( List list, JobStep candidate ) {
+   protected void maintainCandidateList( List list, Step candidate ) {
            // If the list is empty, no problems in adding this candidate...
            if( list.isEmpty() ) {
                list.add( candidate ) ;
@@ -207,7 +211,7 @@ public class RoughPolicy implements Policy {
            }
             
            // Get the sequence number of any member of the candidate collection...
-           int sequenceNumber = ((JobStep)list.get(0)).getSequenceNumber() ;
+           int sequenceNumber = ((Step)list.get(0)).getSequenceNumber() ;
                
            // If the sequence numbers match, add the candidate...               
            if( sequenceNumber == candidate.getSequenceNumber()) {
@@ -234,6 +238,12 @@ public class RoughPolicy implements Policy {
 
 /* 
 $Log: RoughPolicy.java,v $
+Revision 1.4  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.3  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
 

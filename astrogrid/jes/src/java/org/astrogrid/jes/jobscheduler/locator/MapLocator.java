@@ -1,4 +1,4 @@
-/*$Id: MapLocator.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: MapLocator.java,v 1.3 2004/03/04 01:57:35 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,10 +11,10 @@
 package org.astrogrid.jes.jobscheduler.locator;
 
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.job.JobStep;
 import org.astrogrid.jes.job.NotFoundException;
-import org.astrogrid.jes.job.Tool;
 import org.astrogrid.jes.jobscheduler.Locator;
+import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Tool;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,13 +43,13 @@ public class MapLocator implements Locator {
     /**
      * @see org.astrogrid.jes.jobscheduler.ToolLocator#locateTool(org.astrogrid.jes.job.JobStep)
      */
-    public String locateTool(JobStep js) throws JesException{
+    public String locateTool(Step js) throws JesException{
         ToolInfo nfo = getToolInfo(js);
         return nfo.getLocation();
         
     }
     /** return tool for this job step, or throw not found excepton */
-    private ToolInfo getToolInfo(JobStep js) throws JesException {
+    private ToolInfo getToolInfo(Step js) throws JesException {
         Tool tool = js.getTool();
         if (tool == null) {
             throw new JesException("Job Step contains no tool");
@@ -64,7 +64,7 @@ public class MapLocator implements Locator {
     /**
      * @see org.astrogrid.jes.jobscheduler.ToolLocator#getToolInterface(org.astrogrid.jes.job.JobStep)
      */
-    public String getToolInterface(JobStep js) throws JesException {
+    public String getToolInterface(Step js) throws JesException {
         ToolInfo nfo = getToolInfo(js);
         return nfo.getInterface();
     }
@@ -109,6 +109,12 @@ public class MapLocator implements Locator {
 
 /* 
 $Log: MapLocator.java,v $
+Revision 1.3  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

@@ -1,4 +1,4 @@
-/*$Id: CastorWorkflowTest.java,v 1.1 2004/03/03 01:13:42 nw Exp $
+/*$Id: CastorWorkflowTest.java,v 1.2 2004/03/04 01:57:35 nw Exp $
  * Created on 03-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,9 +13,9 @@ package org.astrogrid.jes;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.beans.v1.Group;
-import org.astrogrid.workflow.beans.v1.ActivityChoice;
-import org.astrogrid.workflow.beans.v1.ActivitySequence;
 import org.astrogrid.workflow.beans.v1.Sequence;
+import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
 import java.io.StringWriter;
@@ -52,18 +52,20 @@ public class CastorWorkflowTest extends TestCase {
         wf.setCredentials(creds);
         wf.setDescription("Text description");
         wf.setName("demonstration workflow");
+        
         Sequence seq = new Sequence();
-        ActivitySequence aSeq = new ActivitySequence();
-        ActivityChoice aChoice = new ActivityChoice();
-        aSeq.addActivityChoice(aChoice);
-        
-        seq.setActivitySequence(aSeq);
-        
+        Step step = new Step();
+        Tool tool = new Tool();
+        step.setTool(tool);
+        step.setName("single step");
+        tool.setName("dummy");
+        tool.setInterface("unknown");
+        seq.addActivity(step);
         
         wf.setSequence(seq);
         
         //
-        //assertTrue(wf.isValid());
+        assertTrue(wf.isValid());
         StringWriter sw = new StringWriter();
         wf.marshal(sw);
         sw.close();
@@ -74,6 +76,12 @@ public class CastorWorkflowTest extends TestCase {
 
 /* 
 $Log: CastorWorkflowTest.java,v $
+Revision 1.2  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.1  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
  

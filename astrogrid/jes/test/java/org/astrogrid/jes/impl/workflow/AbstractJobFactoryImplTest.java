@@ -1,4 +1,4 @@
-/*$Id: AbstractJobFactoryImplTest.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: AbstractJobFactoryImplTest.java,v 1.3 2004/03/04 01:57:35 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,9 +11,9 @@
 package org.astrogrid.jes.impl.workflow;
 
 import org.astrogrid.jes.AbstractTestWorkflowInputs;
-import org.astrogrid.jes.job.Job;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.SubmitJobRequest;
+import org.astrogrid.workflow.beans.v1.Workflow;
 
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -42,9 +42,9 @@ public class AbstractJobFactoryImplTest extends AbstractTestWorkflowInputs {
     protected  void testIt(InputStream is,int resourceNum) throws MarshalException, ValidationException, JobException {
         SubmitJobRequest req = new SubmitJobRequestImpl(is);
         assertNotNull(req);
-        Job job = fac.buildJob(req);
+        Workflow job = fac.buildJob(req);
         assertNotNull(job);
-        assertNotNull(job.getId());
+        assertNotNull(job.getJobExecutionRecord().getJobId());
         assertNotNull(job.getName());        
     }
 }
@@ -52,6 +52,12 @@ public class AbstractJobFactoryImplTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: AbstractJobFactoryImplTest.java,v $
+Revision 1.3  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

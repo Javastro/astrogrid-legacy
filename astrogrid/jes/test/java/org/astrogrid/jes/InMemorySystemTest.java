@@ -1,4 +1,4 @@
-/*$Id: InMemorySystemTest.java,v 1.3 2004/03/03 01:13:42 nw Exp $
+/*$Id: InMemorySystemTest.java,v 1.4 2004/03/04 01:57:35 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,8 +21,6 @@ import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
 import org.astrogrid.jes.impl.workflow.CastorBeanFacade;
 import org.astrogrid.jes.impl.workflow.InMemoryJobFactoryImpl;
 import org.astrogrid.jes.job.BeanFacade;
-import org.astrogrid.jes.job.Job;
-import org.astrogrid.jes.job.JobStep;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.jes.jobscheduler.Policy;
@@ -31,11 +29,16 @@ import org.astrogrid.jes.jobscheduler.policy.RoughPolicy;
 import org.astrogrid.jes.testutils.io.FileResourceLoader;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.SubmissionResponse;
+import org.astrogrid.jes.util.JesUtil;
+import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 import EDU.oswego.cs.dl.util.concurrent.Mutex;
 import EDU.oswego.cs.dl.util.concurrent.Sync;
 
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.util.Iterator;
 
@@ -106,15 +109,21 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
         barrier.attempt(Sync.ONE_SECOND * 3); // will block for up to three seconds waiting for notification.
         // need to wait until message queue is empty - i.e. need some sort of call back from scheduler.
         // anyhoo, get finished document from store, output it.
-        Job job = factory.findJob(facade.axis2castor(resp.getJobURN()));
+        Workflow job = factory.findJob(JesUtil.axis2castor(resp.getJobURN()));
         assertNotNull(job);
-        System.out.println(job.getDocumentXML());
-        assertEquals(ExecutionPhase.COMPLETED,job.getStatus());
+        
+        StringWriter sw = new StringWriter();
+        job.marshal(sw);
+        sw.close();
+        System.out.println(sw.toString());
+        
+        assertEquals(ExecutionPhase.COMPLETED,job.getJobExecutionRecord().getStatus());
         // verify that all steps have been run
-        for (Iterator i = job.getJobSteps(); i.hasNext(); ) {
-            JobStep step = (JobStep)i.next();
-            assertNotNull(step.getComment()); // as mock notifier always returns a comment
-            assertEquals(ExecutionPhase.COMPLETED,step.getStatus());
+        for (Iterator i = JesUtil.getJobSteps(job); i.hasNext(); ) {
+            Step step = (Step)i.next();
+            StepExecutionRecord exRec = JesUtil.getLatestRecord(step);
+            assertEquals(1,exRec.getMessageCount());
+            assertEquals(ExecutionPhase.COMPLETED,exRec.getStatus());
         }
          
     }
@@ -141,7 +150,7 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
         /**
          * @see org.astrogrid.jes.jobscheduler.JobScheduler#notifyJobFinished(org.astrogrid.jes.job.Job)
          */
-        public void notifyJobFinished(Job job) {
+        public void notifyJobFinished(Workflow job) {
             barrier.release();
         }
         /**
@@ -158,6 +167,12 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemorySystemTest.java,v $
+Revision 1.4  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.3  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
 

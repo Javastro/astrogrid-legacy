@@ -1,4 +1,4 @@
-/*$Id: MapLocatorTest.java,v 1.3 2004/03/03 01:13:42 nw Exp $
+/*$Id: MapLocatorTest.java,v 1.4 2004/03/04 01:57:35 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,10 +11,10 @@
 package org.astrogrid.jes.jobscheduler.locator;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.jes.job.Job;
-import org.astrogrid.jes.job.JobStep;
 import org.astrogrid.jes.job.NotFoundException;
-import org.astrogrid.jes.job.Tool;
+import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Tool;
+import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 import junit.framework.TestCase;
 
@@ -52,15 +52,15 @@ public class MapLocatorTest extends TestCase {
     protected final static String UNKNOWN_TOOL = "UNKNOWN_TOOL";
     
     public void testLocationSuccess() throws Exception {
-        JobStep js = buildJobStep(KNOWN_TOOL);
+        Step js = buildJobStep(KNOWN_TOOL);
         assertNotNull(l.locateTool(js));
     }
     public void testInterfaceSuccess() throws Exception {
-        JobStep js = buildJobStep(KNOWN_TOOL);
+        Step js = buildJobStep(KNOWN_TOOL);
         assertNotNull(l.getToolInterface(js));
     }
     public void testLocationFailure() throws Exception {
-        JobStep js = buildJobStep(UNKNOWN_TOOL);
+        Step js = buildJobStep(UNKNOWN_TOOL);
          try {
              l.locateTool(js);
              fail("expected to fail");
@@ -69,7 +69,7 @@ public class MapLocatorTest extends TestCase {
          }        
     }
     public void testInterfaceFailure() throws Exception{
-        JobStep js = buildJobStep(UNKNOWN_TOOL);
+        Step js = buildJobStep(UNKNOWN_TOOL);
         try {
             l.getToolInterface(js);
             fail("expected to fail");
@@ -81,53 +81,16 @@ public class MapLocatorTest extends TestCase {
     /**
     Build a noddy implementation of a job step.
      */
-    private JobStep buildJobStep(final String name) {
-        final Tool t = new Tool() {
+    private Step buildJobStep(final String name) {
+         Tool t = new Tool();
+         t.setName(name);
+        Step js = new Step();
+        js.setTool(t);
+        StepExecutionRecord rec = new StepExecutionRecord();
+        js.addStepExecutionRecord(rec);
+        rec.setStatus(ExecutionPhase.INITIALIZING);
 
-            public String getName() {
-                return name;
-            }
 
-            public String toXML() {
-                return null;
-            }
-        };
-        JobStep js = new JobStep() {
-
-            public Job getParent() {
-                return null;
-            }
-
-            public int getStepNumber() {
-                return 0;
-            }
-
-            public void setStatus(ExecutionPhase status) {
-            }
-
-            public ExecutionPhase getStatus() {
-                return ExecutionPhase.INITIALIZING;
-            }
-
-            public void setComment(String comment) {
-            }
-
-            public int getSequenceNumber() {
-                return 0;
-            }
-
-            public String getJoinCondition() {
-                return null;
-            }
-
-            public Tool getTool() {
-                return t;
-            }
-
-            public String getComment() {
-                return null;
-            }
-        };
         return js;
     }
 }
@@ -135,6 +98,12 @@ public class MapLocatorTest extends TestCase {
 
 /* 
 $Log: MapLocatorTest.java,v $
+Revision 1.4  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.3  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
 

@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcher.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: ApplicationControllerDispatcher.java,v 1.3 2004/03/04 01:57:35 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,12 +14,18 @@ import org.astrogrid.applications.delegate.ApplicationController;
 import org.astrogrid.applications.delegate.DelegateFactory;
 import org.astrogrid.applications.delegate.beans.ParameterValues;
 import org.astrogrid.applications.delegate.beans.User;
+import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.job.Job;
-import org.astrogrid.jes.job.JobStep;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.Locator;
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.jes.util.JesUtil;
+import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URL;
 import java.rmi.RemoteException;
 
@@ -42,17 +48,18 @@ public class ApplicationControllerDispatcher implements Dispatcher {
     /**
      * @see org.astrogrid.jes.jobscheduler.Dispatcher#dispatchStep(java.lang.String, org.astrogrid.jes.job.JobStep)
      */
-    public void dispatchStep(String communitySnippet, JobStep js) throws JesException {
+    public void dispatchStep( Workflow job, Step js) throws JesException {
         boolean succeeded = false;
         try {
         String toolLocation = locator.locateTool(js);
         ApplicationController appController = DelegateFactory.createDelegate(toolLocation);
 
-        User user = buildUser(js);
+        User user = buildUser(job);
         ParameterValues params = buildParameterValues(js);
-
+            String xpath = null;
+            JobIdentifierType id = JesUtil.createJobId(job.getJobExecutionRecord().getJobId(),xpath);
             String applicationID = appController.initializeApplication( js.getTool().getName() 
-                                                                       , js.getParent().getId() + ":" + js.getStepNumber()
+                                                                       , id.getValue()
                                                                        , monitorURL.toString()
                                                                        , user
                                                                        , params ) ;
@@ -68,27 +75,39 @@ public class ApplicationControllerDispatcher implements Dispatcher {
     }
     
     /** factored into separate method, as have feeling this may change .. */
-    protected User buildUser(JobStep js) throws JesException {
-        Job parent = js.getParent();
+    protected User buildUser(Workflow parent) throws JesException {
         User user = new User();
-        user.setAccount(parent.getUserId()+"@"+parent.getCommunity());
-        user.setGroup(parent.getGroup());
-        user.setToken(parent.getToken());
+        user.setAccount(parent.getCredentials().getAccount().getName()+"@"+parent.getCredentials().getAccount().getCommunity());
+        user.setGroup(parent.getCredentials().getGroup().getName());
+        user.setToken(parent.getCredentials().getSecurityToken());
         return user;
     }
     
     /** factored out again, for changes sake*/
-    protected ParameterValues buildParameterValues(JobStep js) throws JesException{
+    protected ParameterValues buildParameterValues(Step js) throws JesException{
+        try {
         ParameterValues params = new ParameterValues();
         params.setMethodName(locator.getToolInterface(js));
-        params.setParameterSpec(js.getTool().toXML());
+        StringWriter sw = new StringWriter();
+        js.getTool().marshal(sw);
+        sw.close();
+        params.setParameterSpec(sw.toString());
         return params;
+        } catch (Exception e) {
+            throw new JesException("cold not serialize to xml",e);
+        }
     }
 }
 
 
 /* 
 $Log: ApplicationControllerDispatcher.java,v $
+Revision 1.3  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

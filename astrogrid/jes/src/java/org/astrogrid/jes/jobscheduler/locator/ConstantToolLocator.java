@@ -1,4 +1,4 @@
-/*$Id: ConstantToolLocator.java,v 1.1 2004/03/03 01:13:42 nw Exp $
+/*$Id: ConstantToolLocator.java,v 1.2 2004/03/04 01:57:35 nw Exp $
  * Created on 27-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,8 @@
 package org.astrogrid.jes.jobscheduler.locator;
 
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.job.JobStep;
 import org.astrogrid.jes.jobscheduler.Locator;
+import org.astrogrid.workflow.beans.v1.Step;
 
 import java.net.URL;
 
@@ -34,14 +34,14 @@ public class ConstantToolLocator implements Locator {
     /**
      * @see org.astrogrid.jes.jobscheduler.Locator#locateTool(org.astrogrid.jes.job.JobStep)
      */
-    public String locateTool(JobStep js) throws JesException {
+    public String locateTool(Step js) throws JesException {
         return endpoint.toString();
         
     }
     /**
      * @see org.astrogrid.jes.jobscheduler.Locator#getToolInterface(org.astrogrid.jes.job.JobStep)
      */
-    public String getToolInterface(JobStep js) throws JesException {
+    public String getToolInterface(Step js) throws JesException {
         return interfaceName;
     }
 }
@@ -49,6 +49,12 @@ public class ConstantToolLocator implements Locator {
 
 /* 
 $Log: ConstantToolLocator.java,v $
+Revision 1.2  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.1  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
  

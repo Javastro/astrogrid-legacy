@@ -1,4 +1,4 @@
-/*$Id: MockLocator.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: MockLocator.java,v 1.3 2004/03/04 01:57:35 nw Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,8 +12,8 @@ package org.astrogrid.jes.jobscheduler.locator;
 
 import org.astrogrid.applications.delegate.ApplicationControllerDummyDelegate;
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.job.JobStep;
 import org.astrogrid.jes.jobscheduler.Locator;
+import org.astrogrid.workflow.beans.v1.Step;
 
 /** mock implementation of a tool locator.
  * <p />
@@ -36,13 +36,13 @@ public class MockLocator implements Locator {
     /**
      * @see org.astrogrid.jes.jobscheduler.ToolLocator#locateTool(org.astrogrid.jes.job.JobStep)
      */
-    public String locateTool(JobStep js) throws JesException {
+    public String locateTool(Step js) throws JesException {
         return willSucceed ? ApplicationControllerDummyDelegate.DUMMYADDRESS : null;
     }
     /**
      * @see org.astrogrid.jes.jobscheduler.ToolLocator#getToolInterface(org.astrogrid.jes.job.JobStep)
      */
-    public String getToolInterface(JobStep js) throws JesException {
+    public String getToolInterface(Step js) throws JesException {
         return willSucceed ? "toolInterface" : null;
     }
 }
@@ -50,6 +50,12 @@ public class MockLocator implements Locator {
 
 /* 
 $Log: MockLocator.java,v $
+Revision 1.3  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

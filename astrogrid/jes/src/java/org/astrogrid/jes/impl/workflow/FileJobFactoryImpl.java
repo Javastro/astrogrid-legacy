@@ -1,4 +1,4 @@
-/*$Id: FileJobFactoryImpl.java,v 1.3 2004/03/03 01:13:41 nw Exp $
+/*$Id: FileJobFactoryImpl.java,v 1.4 2004/03/04 01:57:35 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.jes.impl.workflow;
 
-import org.astrogrid.jes.job.Job;
+import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.job.SubmitJobRequest;
@@ -62,23 +62,23 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl {
         assert baseDir.canWrite();
     }
 
-    protected File mkOutputFile(Job j) {
-        return mkOutputFile(j.getId());
+    protected File mkOutputFile(Workflow j) {
+        return mkOutputFile(j.getJobExecutionRecord().getJobId());
     }
     
     protected File mkOutputFile(JobURN jobURN) {
-        return new File(baseDir,URLEncoder.encode(jobURN + WORKFLOW_SUFFIX));
+        return new File(baseDir,URLEncoder.encode(jobURN.getContent() + WORKFLOW_SUFFIX));
     }
 
     /**
      * @see org.astrogrid.jes.job.JobFactory#createJob(org.astrogrid.jes.job.SubmitJobRequest)
      */
-    public Job createJob(SubmitJobRequest req) throws JobException {
-            JobImpl j = buildJob(req);
+    public Workflow createJob(SubmitJobRequest req) throws JobException {
+            Workflow j = buildJob(req);
             try {
                 File outFile = mkOutputFile(j);
                 FileWriter fw = new FileWriter(outFile);
-                j.getWorkflow().marshal(fw);
+                j.marshal(fw);
                 fw.close();
             } catch (Exception e) {
                 throw new JobException("Problem with store",e);
@@ -89,14 +89,13 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl {
     /**
      * @see org.astrogrid.jes.job.JobFactory#findJob(java.lang.String)
      */
-    public Job findJob(JobURN jobURN) throws JobException {
+    public Workflow  findJob(JobURN jobURN) throws JobException {
         try {
         File f = mkOutputFile(jobURN);
         if (! f.exists()) {
             throw new NotFoundException("Couldn't find job " + jobURN);
         }
-        Workflow w = Workflow.unmarshalWorkflow(new FileReader(f));
-        return new JobImpl(w);
+        return Workflow.unmarshalWorkflow(new FileReader(f));
         } catch (CastorException e) {
             throw new JobException("Problem with creating object model",e);
         } catch (IOException e) {
@@ -107,9 +106,9 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl {
     /**
      * @see org.astrogrid.jes.job.JobFactory#findUserJobs(java.lang.String, java.lang.String, java.lang.String)
      */
-    public Iterator findUserJobs(final String userid, final String community, String jobListXML) throws JobException {
+    public Iterator findUserJobs(final Account acc) throws JobException {
         File[] jobFiles = baseDir.listFiles(new FilenameFilter() {
-            final String searchString = URLEncoder.encode("jes:" + userid.trim() +":" + community.trim() + ":");
+            final String searchString = URLEncoder.encode("jes:" + hostname + "/" + acc.getName() +"@" + acc.getCommunity() + "/");
             public boolean accept(File dir, String name) { 
                 return name.startsWith(searchString);  
             }
@@ -132,8 +131,7 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl {
                 if (! f.exists()) {
                     return null;
                 }
-                Workflow w = Workflow.unmarshalWorkflow(new FileReader(f));
-                return new JobImpl(w);
+                return Workflow.unmarshalWorkflow(new FileReader(f));
                 } catch (Exception e) {
                     throw new RuntimeException("Problem with store",e);
                 }
@@ -144,27 +142,25 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl {
     /**
      * @see org.astrogrid.jes.job.JobFactory#deleteJob(org.astrogrid.jes.job.Job)
      */
-    public JobURN deleteJob(Job job) throws JobException {
+    public void deleteJob(Workflow job) throws JobException {
         File f = mkOutputFile(job);
         if (f.exists()) {
             f.delete();
-            return job.getId();
         } else {
-            throw new NotFoundException("Job URN " + job.getId() + " not found");
+            throw new NotFoundException("Job URN " + id(job) + " not found");
         }
-    }
+    } 
     /**
      * @see org.astrogrid.jes.job.JobFactory#updateJob(org.astrogrid.jes.job.Job)
      */
-    public void updateJob(Job job) throws JobException {
-        JobImpl j = (JobImpl)job;
+    public void updateJob(Workflow j) throws JobException {
         try {
         File outFile = mkOutputFile(j);
         if (! outFile.exists()) {
-            throw new NotFoundException("Job URN " + job.getId() + " not found");
+            throw new NotFoundException("Job URN " + id(j) + " not found");
         }
         FileWriter fw = new FileWriter(outFile);
-        j.getWorkflow().marshal(fw);
+        j.marshal(fw);
         fw.close();
         } catch (Exception e) {
             throw new JobException("Problem with store",e);
@@ -175,6 +171,12 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl {
 
 /* 
 $Log: FileJobFactoryImpl.java,v $
+Revision 1.4  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.3  2004/03/03 01:13:41  nw
 updated jes to work with regenerated workflow object model
 

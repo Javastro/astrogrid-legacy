@@ -1,4 +1,4 @@
-/* $Id: SubmitSuccessTest.java,v 1.3 2004/03/03 01:13:42 nw Exp $
+/* $Id: SubmitSuccessTest.java,v 1.4 2004/03/04 01:57:35 nw Exp $
  * Created on 29-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,9 @@
 package org.astrogrid.jes.jobcontroller;
 
 import org.astrogrid.jes.comm.MockSchedulerNotifier;
-import org.astrogrid.jes.job.Job;
 import org.astrogrid.jes.types.v1.SubmissionResponse;
+import org.astrogrid.jes.util.JesUtil;
+import org.astrogrid.workflow.beans.v1.Workflow;
  
 /** Test class for the job controller. should succeed on each test.
 * try submitting a series of workflow documents, and watch what happens.
@@ -37,13 +38,19 @@ public class SubmitSuccessTest extends AbstractTestForJobController {
     // now check what job store and nudger have seen.
     assertTrue(((MockSchedulerNotifier)nudger).getCallCount() > 0);
     //
-    Job storedJob = fac.findJob(facade.axis2castor(result.getJobURN()));
+    Workflow storedJob = fac.findJob(JesUtil.axis2castor(result.getJobURN()));
     assertNotNull(storedJob);
 }
 }
 
 /*
 *$Log: SubmitSuccessTest.java,v $
+*Revision 1.4  2004/03/04 01:57:35  nw
+*major refactor.
+*upgraded to latest workflow object model.
+*removed internal facade
+*replaced community snippet with objects
+*
 *Revision 1.3  2004/03/03 01:13:42  nw
 *updated jes to work with regenerated workflow object model
 *

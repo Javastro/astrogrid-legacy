@@ -1,4 +1,4 @@
-/*$Id: DBJobFactoryImpl.java,v 1.3 2004/03/03 01:13:41 nw Exp $
+/*$Id: DBJobFactoryImpl.java,v 1.4 2004/03/04 01:57:35 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.jes.impl.workflow;
 
-import org.astrogrid.jes.job.Job;
+import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.job.SubmitJobRequest;
@@ -69,16 +69,17 @@ public class DBJobFactoryImpl extends AbstractJobFactoryImpl {
     /**
      * @see org.astrogrid.jes.job.JobFactory#createJob(org.astrogrid.jes.job.SubmitJobRequest)
      */
-    public Job createJob(SubmitJobRequest req) throws JobException {
-        final JobImpl j = super.buildJob(req);
+    public Workflow createJob(SubmitJobRequest req) throws JobException {
+        final Workflow j = super.buildJob(req);
         (new DBHelper(sql.getInsertSQL()) {
 
             Object dbMethod(PreparedStatement ps) throws SQLException, CastorException, IOException {
-                ps.setString(1,j.getId().toString());
-                ps.setString(2,j.getUserId());
-                ps.setString(3,j.getCommunity());
+                ps.setString(1,id(j));
+                Account acc = j.getCredentials().getAccount();
+                ps.setString(2,acc.getName());
+                ps.setString(3,acc.getCommunity());
                 StringWriter sw = new StringWriter();
-                j.getWorkflow().marshal(sw);
+                j.marshal(sw);
                 sw.close();
                 ps.setString(4,sw.toString());
                 ps.executeUpdate();
@@ -90,15 +91,14 @@ public class DBJobFactoryImpl extends AbstractJobFactoryImpl {
     /**
      * @see org.astrogrid.jes.job.JobFactory#findJob(java.lang.String)
      */
-    public Job findJob(final JobURN urn) throws JobException {
+    public Workflow findJob(final JobURN urn) throws JobException {
 
-        return (Job)(new DBHelper(sql.getRetrieveSQL()) {            
+        return (Workflow)(new DBHelper(sql.getRetrieveSQL()) {            
             Object dbMethod(PreparedStatement ps) throws SQLException, CastorException, NotFoundException {
-                ps.setString(1,urn.toString());
+                ps.setString(1,urn.getContent());
                 ResultSet rs = ps.executeQuery();
                 if (rs.next()) {
-                    Workflow wf = Workflow.unmarshalWorkflow(rs.getCharacterStream(1));
-                    return new JobImpl(wf);
+                    return Workflow.unmarshalWorkflow(rs.getCharacterStream(1));
                 } else {
                     throw new NotFoundException("Could not find job " + urn);
                 }
@@ -108,17 +108,17 @@ public class DBJobFactoryImpl extends AbstractJobFactoryImpl {
     /**
      * @see org.astrogrid.jes.job.JobFactory#findUserJobs(java.lang.String, java.lang.String, java.lang.String)
      */
-    public Iterator findUserJobs(final String userid, final String community, String jobListXML) throws JobException {
+    public Iterator findUserJobs(final Account acc) throws JobException {
         final Collection c = new ArrayList();
         (new DBHelper(sql.getListSQL()) {
 
-            Object dbMethod(PreparedStatement ps) throws SQLException, CastorException, IOException {
-                ps.setString(1,userid.trim());
-                ps.setString(2,community.trim());
+            Object dbMethod(PreparedStatement ps) throws SQLException, CastorException, IOException {                
+                ps.setString(1, acc.getName());
+                ps.setString(2,acc.getCommunity());
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     Workflow wf = Workflow.unmarshalWorkflow(rs.getCharacterStream(1));
-                    c.add(new JobImpl(wf));
+                    c.add(wf);
                 }
                 return null;
             }
@@ -128,34 +128,33 @@ public class DBJobFactoryImpl extends AbstractJobFactoryImpl {
     /**
      * @see org.astrogrid.jes.job.JobFactory#deleteJob(org.astrogrid.jes.job.Job)
      */
-    public JobURN deleteJob(final Job job) throws JobException {
-        presenceCheck.check(job.getId());
+    public void deleteJob(final Workflow job) throws JobException {
+        presenceCheck.check(job);
         (new DBHelper(sql.getDeleteSQL()) {
 
             Object dbMethod(PreparedStatement ps) throws SQLException {
-                ps.setString(1,job.getId().toString());
+                ps.setString(1,id(job));
                 ps.execute();
                 return null;
             }
         }).run();
-        return job.getId();
     }
     /**
      * @see org.astrogrid.jes.job.JobFactory#updateJob(org.astrogrid.jes.job.Job)
      */
-    public void updateJob(final Job job) throws JobException {
-        presenceCheck.check(job.getId());
-        final JobImpl j = (JobImpl)job;
+    public void updateJob(final Workflow j) throws JobException {
+        presenceCheck.check(j);
         (new DBHelper(sql.getUpdateSQL()) {
 
             Object dbMethod(PreparedStatement ps) throws SQLException , CastorException, IOException{
-                ps.setString(1,job.getUserId());
-                ps.setString(2,job.getCommunity());
+                Account acc = j.getCredentials().getAccount();
+                ps.setString(1,acc.getName());
+                ps.setString(2,acc.getCommunity());
                 StringWriter sw = new StringWriter();
-                j.getWorkflow().marshal(sw);
+                j.marshal(sw);
                 sw.close();
                 ps.setString(3,sw.toString());
-                ps.setString(4,job.getId().toString());                
+                ps.setString(4,id(j));                
                 ps.execute();
                 return null;
             }
@@ -176,8 +175,8 @@ public class DBJobFactoryImpl extends AbstractJobFactoryImpl {
                     }
                     return null;
                 }
-        public void check(JobURN urn) throws JobException {
-                    this.jobURN = urn.toString();
+        public void check(Workflow wf) throws JobException {
+                    this.jobURN = id(wf);
                     this.run();
                 }
     }
@@ -227,6 +226,12 @@ public class DBJobFactoryImpl extends AbstractJobFactoryImpl {
 
 /* 
 $Log: DBJobFactoryImpl.java,v $
+Revision 1.4  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.3  2004/03/03 01:13:41  nw
 updated jes to work with regenerated workflow object model
 

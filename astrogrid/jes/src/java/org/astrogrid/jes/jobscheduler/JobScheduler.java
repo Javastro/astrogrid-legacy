@@ -10,21 +10,27 @@
  */
 package org.astrogrid.jes.jobscheduler;
 
+import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
+import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
+import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.common.util.CommunityMessage;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.job.BeanFacade;
-import org.astrogrid.jes.job.Job;
 import org.astrogrid.jes.job.JobFactory;
-import org.astrogrid.jes.job.JobStep;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
-import org.astrogrid.jes.types.v1.cea.axis.MessageType;
+import org.astrogrid.jes.util.JesUtil;
+import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.util.Date;
 import java.util.Iterator;
 
 /**Scheduling framework. Composes together a set of different objects - this means that different behaviours can be gained by 
@@ -56,7 +62,7 @@ public class JobScheduler implements org.astrogrid.jes.delegate.v1.jobscheduler.
         try {
 	        JobFactory factory = facade.getJobFactory() ;
 	        factory.begin() ;
-	        Job job = factory.findJob( facade.axis2castor(jobURN)) ; 
+	        Workflow job = factory.findJob( JesUtil.axis2castor(jobURN)) ; 
             
             // Schedule one or more job steps....
             scheduleSteps( job ) ;
@@ -72,31 +78,34 @@ public class JobScheduler implements org.astrogrid.jes.delegate.v1.jobscheduler.
     
     /** 
      * Dispatch a series of steps. 
-     * @modified NWW I've changed type of this - does not throw exceptions now. instead will record any problems as comments in the job step */
-    protected void scheduleSteps( Job job ) {
+     * @modified NWW I've changed type of this - does not throw exceptions now. instead will record any problems as comments in the job step 
+     * @todo add creation of account object.*/
+    protected void scheduleSteps( Workflow job ) {
 
-          String communitySnippet = CommunityMessage.getMessage( job.getToken()
-                                                          , job.getUserId() + "@" + job.getCommunity()
-                                                          , job.getGroup() ) ;
-            
             Iterator i  = policy.calculateDispatchableCandidates(job);
-            JobStep step = null;
+            Step step = null;
+            StepExecutionRecord er = new StepExecutionRecord();
             try {
                 while( i.hasNext() ) {
-                        step = (JobStep)i.next() ;
-                        dispatcher.dispatchStep( communitySnippet, step ) ;
-                        step.setStatus(ExecutionPhase.RUNNING);
+                        step = (Step)i.next() ;
+                        step.addStepExecutionRecord(er);
+                        er.setStartTime(new Date());
+                        dispatcher.dispatchStep( job, step ) ;
+                        er.setStatus(ExecutionPhase.RUNNING);
                 }            
-                job.setStatus( ExecutionPhase.RUNNING ) ;   
+                job.getJobExecutionRecord().setStatus( ExecutionPhase.RUNNING ) ;   
             } catch (Throwable t) { //catch everything
                 logger.info("Step execution failed:",t);
-                if (step != null) {
-                    String message = "Failed: " + t.getClass().getName()
-                        + "\n " + t.getMessage();
-                    step.setComment(message);
-                    step.setStatus(ExecutionPhase.ERROR);
-                    job.setStatus(ExecutionPhase.ERROR);
-                    notifyJobFinished(step.getParent());
+                if (step != null) {                    
+                    MessageType message = new MessageType();
+                    message.setContent( "Failed: " + t.getClass().getName() + "\n " + t.getMessage());
+                    message.setLevel(LogLevel.ERROR);
+                    message.setSource("Job Controller");
+                    message.setPhase(ExecutionPhase.ERROR);
+                    message.setTimestamp(new Date());
+
+                    job.getJobExecutionRecord().setStatus(ExecutionPhase.ERROR);
+                    notifyJobFinished(job);
                 }
             }             
         
@@ -105,26 +114,26 @@ public class JobScheduler implements org.astrogrid.jes.delegate.v1.jobscheduler.
 
 
 //  stuff copied from job monitor
-    /** @todo implement this properly */
-	public void resumeJob(JobIdentifierType id,MessageType info) {
-        Job job = null;      
+    /** @todo implement xpath location part */
+	public void resumeJob(JobIdentifierType id,org.astrogrid.jes.types.v1.cea.axis.MessageType info) {
+        Workflow job = null;      
         try { 
-             // Create the necessary Job structures.
-             // This involves persistence, so we bracket the transaction 
-             // before finding and updating the JobStep status and comment...
-    
+
              JobFactory factory = facade.getJobFactory() ;
-             factory.begin() ;
-             /*
-             job = factory.findJob(info.getJobURN() ) ; // todo - match types.
-             JobStep jobStep = findJobStep( job,info ) ;
-                */
-                /*
-             jobStep.setStatus( info.ge() ) ;
-             jobStep.setComment(info.getComment());
-                */
+             factory.begin() ;             
+             job = factory.findJob(JesUtil.extractURN(id) ) ; // todo - match types.
+             // compute by applying xpath to workflow. has to wait until we remove job.
+             String xpath = JesUtil.extractXPath(id);
+             Step jobStep = (Step)job.findXPathValue(xpath);
+             // need to handle case of not finding job step here...
+                
+              // should have an execution record already..
+             StepExecutionRecord er =JesUtil.getLatestRecord(jobStep);
+             er.addMessage(JesUtil.axis2castor(info));
+
+               
              ExecutionPhase status = policy.calculateJobStatus(job);
-             job.setStatus(status);
+             job.getJobExecutionRecord().setStatus(status);
                 
              factory.updateJob( job ) ;             // Update any changed details to the database
              if( status.equals(ExecutionPhase.RUNNING) ) {
@@ -147,7 +156,7 @@ public class JobScheduler implements org.astrogrid.jes.delegate.v1.jobscheduler.
      * <p>
      * empty for now - extend as needed.
      */
-    public void notifyJobFinished(Job job) {
+    public void notifyJobFinished(Workflow job) {
     }
 
 

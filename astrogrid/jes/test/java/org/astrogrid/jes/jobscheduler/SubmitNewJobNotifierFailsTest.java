@@ -1,4 +1,4 @@
-/*$Id: SubmitNewJobNotifierFailsTest.java,v 1.3 2004/03/03 01:13:42 nw Exp $
+/*$Id: SubmitNewJobNotifierFailsTest.java,v 1.4 2004/03/04 01:57:35 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,10 +11,11 @@
 package org.astrogrid.jes.jobscheduler;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.jes.job.Job;
 import org.astrogrid.jes.jobscheduler.dispatcher.*;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.SubmissionResponse;
+import org.astrogrid.jes.util.JesUtil;
+import org.astrogrid.workflow.beans.v1.Workflow;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Feb-2004
@@ -44,9 +45,9 @@ public class SubmitNewJobNotifierFailsTest extends AbstractTestForJobScheduler{
         // don't know what happens when first error is encountered.
         
         //
-        Job job = fac.findJob(facade.axis2castor(urn));
+        Workflow job = fac.findJob(JesUtil.axis2castor(urn));
         assertNotNull(job);
-        assertEquals(ExecutionPhase.ERROR,job.getStatus());
+        assertEquals(ExecutionPhase.ERROR,job.getJobExecutionRecord().getStatus());
         // should probably check for step error codes too...
     }
     /**set up dispatcher to fail.
@@ -61,6 +62,12 @@ public class SubmitNewJobNotifierFailsTest extends AbstractTestForJobScheduler{
 
 /* 
 $Log: SubmitNewJobNotifierFailsTest.java,v $
+Revision 1.4  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.3  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
 

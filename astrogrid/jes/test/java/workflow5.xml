@@ -8,11 +8,11 @@ name="total tool">
     <step joinCondition="any" name="detailed step" sequenceNumber="1" status="RUNNING" stepNumber="1">
       <tool interface="com.foo.tool" name="a tool">
         <input>
-          <parameter name="var1" type="xs:anyURI"></parameter>
-          <parameter name="var2" type="agpd:MySpace_VOTableReference"></parameter>
+          <parameter name="var1" type="anyURI">http://www.slashdot.org</parameter>
+          <parameter name="var2" type="MySpace_VOTableReference"></parameter>
         </input>
         <output>
-          <parameter name="result" type="agpd:MySpace_FileReference"></parameter>
+          <parameter name="result" type="MySpace_FileReference"></parameter>
         </output>
       </tool>
       <description

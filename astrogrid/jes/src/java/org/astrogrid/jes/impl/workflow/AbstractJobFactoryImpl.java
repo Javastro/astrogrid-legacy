@@ -1,4 +1,4 @@
-/*$Id: AbstractJobFactoryImpl.java,v 1.3 2004/03/03 01:13:41 nw Exp $
+/*$Id: AbstractJobFactoryImpl.java,v 1.4 2004/03/04 01:57:35 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,11 @@
 **/
 package org.astrogrid.jes.impl.workflow;
 
-import org.astrogrid.jes.job.Job;
+import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.job.SubmitJobRequest;
+import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
@@ -50,18 +51,25 @@ public abstract class AbstractJobFactoryImpl implements JobFactory {
     /**
      * Build a new initialized job object.
      */
-    protected JobImpl buildJob(SubmitJobRequest req) throws JobException {
-        JobImpl job = new  JobImpl((SubmitJobRequestImpl)req);
+    protected Workflow buildJob(SubmitJobRequest req) throws JobException {
+        Workflow job = ((SubmitJobRequestImpl)req).getWorkflow();
         JobURN jobURN = generateUniqueJobURN(job);
         JobExecutionRecord exec = new JobExecutionRecord();
         exec.setJobId(jobURN);
-        job.getWorkflow().setJobExecutionRecord(exec);
+        job.setJobExecutionRecord(exec);
         return job;
         
     }
     
+    /** handy helper to get id string for a workflow 
+     *
+     */
+    protected String id(Workflow w) {
+        return w.getJobExecutionRecord().getJobId().getContent();
+    }
+    
     /** stuff for generating a unique job urn */
-    private static String hostname;
+    protected static String hostname;
     static {
         hostname = null;
         try {
@@ -77,18 +85,18 @@ public abstract class AbstractJobFactoryImpl implements JobFactory {
      * @return string in format <code>jes:<i>userid</i>:<i>community</i>:<i>jes-server-hostname</i>:<i>currentTime</i>:<i>randomNumber</i></code>
      * @throws JobException
      */
-    protected JobURN generateUniqueJobURN( Job job ) throws JobException {
+    protected JobURN generateUniqueJobURN( Workflow job ) throws JobException {
 
         StringBuffer
             buffer = new StringBuffer(128);
-            
+        Account acc = job.getCredentials().getAccount();
         buffer
             .append("jes:")
             .append(hostname)
             .append('/')         
-           .append( job.getUserId() )
+           .append( acc.getName() )
            .append( '@' )
-           .append( job.getCommunity() )
+           .append( acc.getCommunity() )
            .append( '/' )          
            .append( System.currentTimeMillis()) 
            .append( ':' )
@@ -105,6 +113,12 @@ public abstract class AbstractJobFactoryImpl implements JobFactory {
 
 /* 
 $Log: AbstractJobFactoryImpl.java,v $
+Revision 1.4  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.3  2004/03/03 01:13:41  nw
 updated jes to work with regenerated workflow object model
 

@@ -1,4 +1,4 @@
-/*$Id: MockDispatcher.java,v 1.3 2004/03/03 01:13:42 nw Exp $
+/*$Id: MockDispatcher.java,v 1.4 2004/03/04 01:57:35 nw Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,11 +12,13 @@ package org.astrogrid.jes.jobscheduler.dispatcher;
 
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
-import org.astrogrid.jes.job.JobStep;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
+import org.astrogrid.jes.util.JesUtil;
+import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Workflow;
 
 import java.lang.ref.PhantomReference;
 import java.rmi.RemoteException;
@@ -58,8 +60,9 @@ public class MockDispatcher implements Dispatcher {
     }
     /**
      * @see org.astrogrid.jes.jobscheduler.Dispatcher#dispatchStep(java.lang.String, org.astrogrid.jes.job.JobStep)
+     * @todo fix xpath
      */
-    public void dispatchStep(String communitySnippet, JobStep js) throws JesException {
+    public void dispatchStep(Workflow job, Step js) throws JesException {
         callCount ++;
         if (monitor == null) {
             if (!willSucceed) {
@@ -68,8 +71,9 @@ public class MockDispatcher implements Dispatcher {
         } else {
             // we've got a monitor, lets talk / barf through that.
             MessageType info = new MessageType();
-            JobIdentifierType id = new JobIdentifierType();
-            id.setValue(js.getParent().getId() + ":" + js.getStepNumber());
+            String xpath = job.getXPathFor(js) ;
+            JobIdentifierType id = JesUtil.createJobId(job.getJobExecutionRecord().getJobId(),xpath);
+            
             if (willSucceed) {
                 info.setValue("OK");
                 info.setPhase(ExecutionPhase.COMPLETED);
@@ -89,6 +93,12 @@ public class MockDispatcher implements Dispatcher {
 
 /* 
 $Log: MockDispatcher.java,v $
+Revision 1.4  2004/03/04 01:57:35  nw
+major refactor.
+upgraded to latest workflow object model.
+removed internal facade
+replaced community snippet with objects
+
 Revision 1.3  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
 
