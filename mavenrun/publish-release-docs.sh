@@ -46,11 +46,11 @@ fi
 
 cd $CHECKOUTHOME
 
-cvs-checkout-clean.sh astrogrid/maven-base $TAG  >> $LOGFILE
-cvs-checkout-clean.sh astrogrid/xdocs $TAG  >> $LOGFILE
-cvs-checkout-clean.sh astrogrid/project.xml $TAG  >> $LOGFILE
-cvs-checkout-clean.sh astrogrid/project.properties $TAG  >> $LOGFILE
-cvs-checkout-clean.sh astrogrid/maven.xml $TAG  >> $LOGFILE
+cvs-checkout-clean.sh astrogrid/maven-base $TAG  >> $LOGFILE 2>&1
+cvs-checkout-clean.sh astrogrid/xdocs $TAG  >> $LOGFILE 2>&1
+cvs-checkout-clean.sh astrogrid/project.xml $TAG  >> $LOGFILE 2>&1
+cvs-checkout-clean.sh astrogrid/project.properties $TAG  >> $LOGFILE 2>&1
+cvs-checkout-clean.sh astrogrid/maven.xml $TAG  >> $LOGFILE 2>&1
 
 
 cd $BUILDHOME
