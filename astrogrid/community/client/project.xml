@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/project.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2005/01/07 14:14:25 $</cvs:date>
-    | <cvs:version>$Revision: 1.14 $</cvs:version>
+    | <cvs:date>$Date: 2005/02/15 10:36:34 $</cvs:date>
+    | <cvs:version>$Revision: 1.15 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.15  2005/02/15 10:36:34  jdt
+    |   merge from  Reg_KMB_913
+    |
+    |   Revision 1.14.8.1  2005/02/10 12:59:56  KevinBenson
+    |   getting rid of jconfig stuff.  And moved things into web.xml and get rid of the META-INF/context.xml one.
+    |
     |   Revision 1.14  2005/01/07 14:14:25  jdt
     |   merged from Reg_KMB_787
     |
@@ -209,7 +215,7 @@
 
         <!--+
             | The JConfig jars.
-            +-->
+
         <dependency>
             <groupId>jconfig</groupId>
             <artifactId>jconfig</artifactId>
@@ -217,7 +223,7 @@
             <type>jar</type>
             <url>http://www.jconfig.org/</url>
         </dependency>
-
+            +-->
     </dependencies>
 
     <!--+

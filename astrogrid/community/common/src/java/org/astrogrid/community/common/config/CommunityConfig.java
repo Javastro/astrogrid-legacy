@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/config/CommunityConfig.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2005/02/15 10:36:34 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityConfig.java,v $
+ *   Revision 1.8  2005/02/15 10:36:34  jdt
+ *   merge from  Reg_KMB_913
+ *
+ *   Revision 1.7.48.1  2005/02/10 12:59:56  KevinBenson
+ *   getting rid of jconfig stuff.  And moved things into web.xml and get rid of the META-INF/context.xml one.
+ *
  *   Revision 1.7  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -39,10 +45,14 @@ import java.net.InetAddress ;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
+import org.astrogrid.config.Config;
+
+/*
 import org.jconfig.Configuration ;
 import org.jconfig.ConfigurationManager ;
 import org.jconfig.handler.URLHandler ;
 import org.jconfig.handler.XMLFileHandler ;
+*/
 
 /**
  * Class to encapsulate the Community configuration.
@@ -58,43 +68,11 @@ public class CommunityConfig
 	private static Log log = LogFactory.getLog(CommunityConfig.class);
 
     /**
-     * The configuration name to use within jConfig.
+     * The configuration name.
      *
      */
     public static final String CONFIG_NAME = "org.astrogrid.community";
 
-    /**
-     * The default category to use in the config file.
-     * Corresponds to the name of the category element in the config file.
-     * <pre>
-     *     &lt;properties&gt;
-     *         &lt;category name="org.astrogrid.community"&gt;
-     *         ....
-     *     &lt;/properties&gt;
-     * </pre>
-     *
-     */
-    public static final String DEFAULT_CATEGORY = "org.astrogrid.community";
-
-    /**
-     * The default JNDI name.
-     * Corresponds to the name in the env-entry-name entry in your web.xml.
-     * <pre>
-     *     &lt;env-entry&gt;
-     *         &lt;env-entry-name&gt;org.astrogrid.community.config&lt;/env-entry-name&gt;
-     *         &lt;env-entry-value&gt;....&lt;/env-entry-value&gt;
-     *         &lt;env-entry-type&gt;java.lang.String&lt;/env-entry-type&gt;
-     *     &lt;/env-entry&gt;
-     * </pre>
-     *
-     */
-    public static final String DEFAULT_JNDI_NAME = "org.astrogrid.community.config";
-
-    /**
-     * The default system property name.
-     *
-     */
-    public static final String DEFAULT_PROPERTY_NAME = "org.astrogrid.community.config";
 
     /**
      * The name of the config property for our local host name.
@@ -127,165 +105,20 @@ public class CommunityConfig
     public static final String AUTHENTICATOR_PROPERTY_NAME = "authentication.service.url";
 
     /**
-     * Our JConfig Configuration instance.
-     *
-     */
-    private static Configuration config = null ;
-
+     * conf - Config variable to access the configuration for the server normally
+     * jndi to a config file.
+     * @see org.astrogrid.config.Config
+     */   
+    public static Config config = null;
+    
     /**
-     * Static method to read a JNDI property.
-     *
+     * Static to be used on the initiatian of this class for the config
      */
-    public static String getJndiProperty(String name)
-        {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("CommunityConfig.getJndiProperty()") ;
-        String value = null ;
-        try {
-            log.debug("  JNDI name  : " + DEFAULT_JNDI_NAME) ;
-            Context initCtx = new InitialContext();
-            Context envCtx = (Context) initCtx.lookup("java:comp/env");
-            value = (String) envCtx.lookup(DEFAULT_JNDI_NAME);
-            log.debug("  JNDI value : " + value) ;
-            }
-        catch(Exception ouch)
-            {
-            log.debug("Exception while trying JNDI lookup") ;
-            value = null;
-            }
-        log.debug("----\"----") ;
-        log.debug("") ;
-        return value ;
-        }
-
-    /**
-     * Static method to load our configuration.
-     * Tries using the the default JNDI name, and then reverts to the default system property.
-     * The JNDI name corresponds to the name in the env-entry-name entry in your web.xml.
-     * <pre>
-     *     &lt;env-entry&gt;
-     *         &lt;env-entry-name&gt;org.astrogrid.community.config&lt;/env-entry-name&gt;
-     *         &lt;env-entry-value&gt;....&lt;/env-entry-value&gt;
-     *         &lt;env-entry-type&gt;java.lang.String&lt;/env-entry-type&gt;
-     *     &lt;/env-entry&gt;
-     * </pre>
-     *
-     */
-    public static Configuration loadConfig()
-        {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("CommunityConfig.loadConfig()") ;
-        //
-        // If we havn't already loaded our config.
-        if (null == config)
-            {
-            String path = null ;
-            //
-            // Try using the JNDI lookup.
-            if (null == path)
-                {
-                log.debug("Trying JNDI property") ;
-                path = getJndiProperty(DEFAULT_JNDI_NAME) ;
-                if (null != path)
-                    {
-                    log.debug("PASS : Got JNDI property") ;
-                    }
-                }
-            //
-            // Try using the System property.
-            if (null == path)
-                {
-                log.debug("Trying system property") ;
-                path = System.getProperty(DEFAULT_PROPERTY_NAME) ;
-                if (null != path)
-                    {
-                    log.debug("PASS : Got system property") ;
-                    }
-                }
-            //
-            // If we still don't have a path.
-            if (null == path)
-                {
-                log.debug("FAIL : Unable to get config file path") ;
-                }
-            //
-            // Try loading our config file.
-            if (null != path)
-                {
-                loadConfig(path) ;
-                }
-            }
-        log.debug("----\"----") ;
-        log.debug("") ;
-        return config ;
-        }
-
-    /**
-     * Static method to load our configuration, given the config file location.
-     *
-     */
-    public static Configuration loadConfig(String path)
-        {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("CommunityConfig.loadConfig()") ;
-        log.debug("  Path  : " + path) ;
-        //
-        // If we havn't already loaded our config.
-        if (null == config)
-            {
-            //
-            // If the path is not null.
-            if (null != path)
-                {
-                ConfigurationManager manager = ConfigurationManager.getInstance();
-                try {
-                    if (null != path)
-                        {
-                        if (path.startsWith("http"))
-                            {
-                            URLHandler handler = new URLHandler();
-                            handler.setURL(path);
-                            manager.load(handler, CONFIG_NAME);
-                            }
-                        else {
-                            File file = new File(path);
-                            XMLFileHandler handler = new XMLFileHandler();
-                            handler.setFile(file);
-                            handler.load(file);
-                            manager.load(handler, CONFIG_NAME);
-                            }
-                        config = ConfigurationManager.getConfiguration(CONFIG_NAME);
-                        }
-                    }
-                catch(Exception e)
-                    {
-                    e.printStackTrace();
-                    config = null;
-                    }
-                if (null != config)
-                    {
-                    //
-                    // Store the path used to load it.
-                    config.setProperty("config.location", path) ;
-                    log.debug("  ----") ;
-                    String[] names = config.getPropertyNames(DEFAULT_CATEGORY) ;
-                    for (int i = 0 ; i < names.length ; i++)
-                        {
-                        String name = names[i] ;
-                        String value = config.getProperty(name, "", DEFAULT_CATEGORY) ;
-                        log.debug("  '" + name + "' : '" + value + "'") ;
-                        }
-                    log.debug("  ----") ;
-                    }
-                }
-            }
-        log.debug("----\"----") ;
-        log.debug("") ;
-        return config ;
-        }
+    static {
+       if(config == null) {
+          config = org.astrogrid.config.SimpleConfig.getSingleton();
+       }      
+    }
 
     /**
      * Static method to get a config property.
@@ -293,30 +126,17 @@ public class CommunityConfig
      */
     public static String getProperty(String propName)
         {
-        return getProperty(propName, null, DEFAULT_CATEGORY);
+        return config.getString(propName);
         }
 
     /**
      * Static method to get a config property.
-     *
      */
     public static String getProperty(String propName, String defaultVal)
         {
-        return getProperty(propName, defaultVal, DEFAULT_CATEGORY);
+        return config.getString(propName, defaultVal);
         }
 
-    /**
-     * Static method to get a config property.
-     *
-     */
-    public static String getProperty(String propName, String defaultVal, String category)
-        {
-        if (null == config)
-            {
-            config = ConfigurationManager.getConfiguration(CONFIG_NAME);
-            }
-        return (null != config) ? config.getProperty(propName, defaultVal, category) : null ;
-        }
 
     /**
      * Our local host name.
