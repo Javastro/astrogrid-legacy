@@ -277,7 +277,7 @@ public class GridServiceDelegate {
     // more harmful.
     GridService port = this.instanceGridServicePort;
     this.recordServiceDisconnected();
-    this.instanceGridServicePort.destroy();
+    port.destroy();
   }
   
 
