@@ -32,28 +32,6 @@
           contents-hover="Status"
           uri="/astrogrid-portal/main/mount/registry/registrystatus.html"
           target="_top"
-          status-text="Registry... the final frontier"/>
-      <agp:item
-          contents="Catalogue Finder"
-          contents-hover="MicroBrowser"
-          uri='javascript:void( window.open(
-"/astrogrid-portal/lean/mount/registry/registrybrowser.html?mainelement=Catalog&amp;authId=null&amp;resourceKey=null",
-            "Registry Micro Browser",
-            "toolbar=no, directories=no, location=no, status=no, menubar=no,
-             resizable=yes, scrollbars=yes, width=500, height=400"
-             ) )'
-          target="_top"
-          status-text="Astrogrid Registry Micro-Browser"/>      
-      <agp:item
-          contents="Tool Finder"
-          contents-hover="MicroBrowser"
-          uri='javascript:void( window.open(
-"/astrogrid-portal/lean/mount/registry/registrybrowser.html?mainelement=Tool&amp;authId=null&amp;resourceKey=null",
-            "Registry Micro Browser",
-            "toolbar=no, directories=no, location=no, status=no, menubar=no,
-             resizable=yes, scrollbars=yes, width=400, height=300"
-             ) )'
-          target="_top"
-          status-text="Astrogrid Registry Micro-Browser"/>      
+          status-text="Registry... the final frontier"/>      
     </agp:menu>
   </agp:menu-def>
