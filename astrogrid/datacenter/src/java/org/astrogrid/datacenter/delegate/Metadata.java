@@ -5,14 +5,9 @@
 
 package org.astrogrid.datacenter.delegate;
 
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.xpath.XPathEvaluator;
-import org.w3c.dom.xpath.XPathException;
-import org.w3c.dom.xpath.XPathResult;
-//NWW import org.w3c.dom.xpath.XPathSetSnapshot;
+import org.w3c.dom.NodeList;
 
 /**
  * Represents the databases metadata, providing methods to access it.
@@ -20,9 +15,6 @@ import org.w3c.dom.xpath.XPathResult;
  * convenience methods for often-used activities.
  *
  * @author M Hill
- * @modifed nww - had to comment out chunks to get to compile. else breaks build.
- * can't find an implementation for org.w3c.dom.xpath.XPathSetSnapshot. Not present in Xalan 2.5.1 - which version should we be using?
- * @todo fix.
  */
 
 public class Metadata
@@ -41,26 +33,15 @@ public class Metadata
 
    /**
     * Returns metadata document for whatever the client wants to do with it
-    * For safety, it (tries to) return a clone, so that the client can't
-    * change it. If cloning is not supported, you get the real thing.
-    * @todo -fix.
+    * <p>
+    * For safety, it should return a clone so the client can't change it. However
+    * there seems to be a problem with some Document implementations that make
+    * the clone method private - highly naughty behaviour - so we have to return
+    * the real thing.
     */
    public Document getDocument()
    {
-       /* NWW - fails to compile - says clone() is not visible. 
-                is this an implementation thing?          
-                return (Document) metadataDom.clone();
-      try
-      {
-         
-         return metadataDom;
-      }
-      catch (CloneNotSupportedException cnse)
-      { */
-         return metadataDom;
-     /*NWW }
-      * 
-      */
+      return metadataDom;
    }
    
    /**
@@ -82,13 +63,14 @@ public class Metadata
     * The xpath stuff doesn't seem to have settled yet - which is why the results are
     * therefore an array of nodes, rather than a nodelist (can't get a NodeList
     * at Sep 2003)
-    * @todo fix
+    * <p> Even worse the xpath implementations don't seem to be settled, so this
+    * method just does a getElementByName...
      */
-   public Node[] getMetadata(String xpath) throws DatacenterException
+   public NodeList getMetadata(String elementName) throws DatacenterException
    {
-         /* NWW - sorry, had to temporarily comment out
-          *      try {
-         XPathEvaluator evaluator = (XPathEvaluator) metadataDom; //Document should implement XPathEvaluator          
+      /* Xpath version
+      try {
+         XPathEvaluator evaluator = (XPathEvaluator) metadataDom; //Document should implement XPathEvaluator
          XPathResult results = evaluator.evaluate(xpath, metadataDom,
                null, XPathResult.NODE_SET_TYPE, null);
 
@@ -108,7 +90,9 @@ public class Metadata
       catch (DOMException e) {
          throw new DatacenterException("Bleurgh", e);
       }*/
-      return null;
+
+      /** element by name version... */
+      return metadataDom.getElementsByTagName(elementName);
    }
    
    
@@ -116,6 +100,9 @@ public class Metadata
 
 /*
 $Log: Metadata.java,v $
+Revision 1.3  2003/11/05 16:06:41  mch
+Removed dependencies on Document.clone() and dodgy XPath implementations
+
 Revision 1.2  2003/10/13 14:11:41  nw
 commented out chunks that weren't compiling.
 need to fix later.
