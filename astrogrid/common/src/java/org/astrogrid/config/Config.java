@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.2 2003/10/07 22:21:27 mch Exp $
+ * $Id: Config.java,v 1.3 2003/10/07 22:41:10 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,6 +8,7 @@ package org.astrogrid.config;
 
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -33,8 +34,9 @@ public abstract class Config
    
    /**
     * loads the properties from the url specified in Jndi by the given Jndi name
+    * @return true if load succeeded
     */
-   public void loadJndiUrl(String jndiName) throws IOException {
+   public boolean loadJndiUrl(String jndiName) throws IOException {
       
       URL configUrl = null;
       
@@ -42,10 +44,12 @@ public abstract class Config
          configUrl = (URL) new InitialContext().lookup(jndiName);
          addLocation("JNDI ("+jndiName+"->"+configUrl+")");
          loadUrl(configUrl);
+         return true;
       }
       catch (NamingException e) {
          //ignore - just means it wasn't found
          log.debug(e);
+         return false;
       }
       catch (IOException ioe) {
          //rethrow with more info
@@ -58,8 +62,9 @@ public abstract class Config
    /**
     * loads the properties from the url specified in the system environment
     * variable of the given name
+    * @return true if load succeeded
     */
-   public void loadSysEnvUrl(String sysEnv) throws IOException {
+   public boolean loadSysEnvUrl(String sysEnv) throws IOException {
       
       URL configUrl = null;
 
@@ -70,9 +75,10 @@ public abstract class Config
             configUrl = new URL(sysVar);
             addLocation("System Environment ("+sysEnv+"->"+configUrl+")");
             loadUrl(configUrl);
+            return true;
          }
          catch (MalformedURLException e) {
-            //rethrow as a fatal runtime exception
+            //rethrow as a fatal runtime exception - it was specified but wrong
             throw new RuntimeException("System Variable '"+sysEnv+"' returned '"+sysVar+"', not a valid URL");
          }
          catch (IOException ioe) {
@@ -82,17 +88,44 @@ public abstract class Config
             throw nioe;
          }
       }
+      return false;
    }
       
- 
    /**
     * Loads the file at the given filepath as a properties file
+    * @return true if load succeeded
     */
-   public void loadFile(String filepath) throws IOException
+   public boolean loadFile(String filepath) throws IOException
    {
       addLocation(filepath);
 
       loadStream(new FileInputStream(filepath));
+      
+      return true;
+   }
+
+   /**
+    * Autoload looks for the properties file in jndi, then the environment variables,
+    * then the classpath, then the local (working) directory.
+    * @return true if load succeeded
+    */
+   public void autoLoad() throws IOException {
+
+         boolean loaded = loadJndiUrl(getJndiKey());
+         
+         if (!loaded) {
+            loaded = loadSysEnvUrl(getSysEnvKey());
+         }
+
+         if (!loaded) {
+            try {
+               loaded = loadFile(getDefaultFilename());
+            }
+            catch (FileNotFoundException fnfe) {
+               //not a problem if the default file is not found
+               log.debug(fnfe);
+            }
+         }
    }
 
    /**
@@ -110,8 +143,14 @@ public abstract class Config
     */
    protected abstract void loadStream(InputStream in) throws IOException;
 
+   /** Returns the jndi key used to find the url of the configuration file */
+   protected abstract String getJndiKey();
    
-   
+   /** Returns the System Environment variable used to find the url of the configuration file */
+   protected abstract String getSysEnvKey();
+
+   /** Returns the default configuration filename  */
+   protected abstract String getDefaultFilename();
    /**
     * Returns the location of the configuration file - useful when reporting
     * errors that things can't be found or are incorrect, so the user really
@@ -145,4 +184,5 @@ public abstract class Config
    }
 
 }
+
 

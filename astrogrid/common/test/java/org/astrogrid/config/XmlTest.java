@@ -56,14 +56,14 @@ public class XmlTest extends TestCase
     * Tests auto load.  Not entirely sure what this 'should' do - all depends
     * on the environment
     */
-   public void testAutoload() throws MalformedURLException
+   public void testAutoload() throws IOException
    {
       config.autoLoad();
       
 //      config.setProperty("TEST.FRUIT","Unix is not fruit");
       
       //try again, this time making sure that System Property is set
-      System.setProperty(PropertyConfig.SYS_ENV, getClass().getResource(testPropertyFile).toString());
+      System.setProperty("AG_XMLCONFIG", getClass().getResource(testPropertyFile).toString());
       
       config.autoLoad();
       

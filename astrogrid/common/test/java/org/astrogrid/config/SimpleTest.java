@@ -54,14 +54,14 @@ public class SimpleTest extends TestCase
     * Tests auto load.  Not entirely sure what this 'should' do - all depends
     * on the environment
     */
-   public void testAutoload() throws MalformedURLException
+   public void testAutoload() throws IOException
    {
       SimpleConfig.autoLoad();
       
       SimpleConfig.setProperty("TEST.FRUIT","Unix is not fruit");
       
       //try again, this time making sure that System Property is set
-      System.setProperty(PropertyConfig.SYS_ENV, getClass().getResource(testPropertyFile).toString());
+      System.setProperty("AG_CONFIG", getClass().getResource(testPropertyFile).toString());
       
       SimpleConfig.autoLoad();
       

@@ -1,5 +1,5 @@
 /*
- * $Id: PropertyConfig.java,v 1.2 2003/10/07 22:21:27 mch Exp $
+ * $Id: PropertyConfig.java,v 1.3 2003/10/07 22:41:10 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,46 +20,25 @@ import java.util.Properties;
 
 public class PropertyConfig extends Config
 {
-   /** Constant used to search JNDI for file */
-   public static final String JNDI = "org.astrogrid.config.propertyurl";
-
-   /** Constant used to search system environment for properties file */
-   public static final String SYS_ENV = "AG_CONFIG";
-
-   /** Default filename (look in working directory) */
-   public static final String DEFAULT_FILENAME = "AstroGridNode.cfg";
-   
    /** The set of key/value property pairs, using the java Properties class */
    private Properties properties = new Properties();
 
    /**
-    * Private constructor so that we keep it a singleton
+    * Protected constructor so that we keep the creations under control
     */
    protected PropertyConfig()
    {
    }
    
-   /**
-    * Autoload looks for the properties file in jndi, then the environment variables,
-    * then the classpath, then the local (working) directory
-    */
-   public void autoLoad() {
-
-      try {
-         loadJndiUrl(JNDI);
-
-         loadSysEnvUrl(SYS_ENV);
-         
-         loadFile(DEFAULT_FILENAME);
-      }
-      catch (FileNotFoundException fnfe) {
-         //not a problem if the default file is not found
-         log.debug(fnfe);
-      }
-      catch (IOException ioe) {
-         log.warn(ioe);
-      }
-   }
+   /** Returns the default configuration filename  */
+   protected String getDefaultFilename() { return "AstroGrid.cfg"; }
+   
+   /** Returns the jndi key used to find the url of the configuration file */
+   protected String getJndiKey()         { return "org.astrogrid.config.url"; }
+   
+   /** Returns the System Environment variable used to find the url of the configuration file */
+   protected String getSysEnvKey()       { return "AG_CONFIG"; }
+   
 
    /**
     * Loads the properties at the given inputstream.  Called by the various
@@ -120,4 +99,5 @@ public class PropertyConfig extends Config
    }
 
 }
+
 

@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleConfig.java,v 1.1 2003/10/07 16:42:36 mch Exp $
+ * $Id: SimpleConfig.java,v 1.2 2003/10/07 22:41:10 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -39,7 +39,9 @@ public abstract class SimpleConfig
     * Autoload looks for the properties file in jndi, then the environment variables,
     * then the classpath, then the local (working) directory
     */
-   public static void autoLoad() { instance.autoLoad(); }
+   public static void autoLoad() throws IOException {
+      instance.autoLoad();
+   }
 
    /**
     * Static access to load from a file
