@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.9 2003/09/09 17:51:18 mch Exp $
+ * $Id: SqlQuerier.java,v 1.10 2003/09/10 09:59:14 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */

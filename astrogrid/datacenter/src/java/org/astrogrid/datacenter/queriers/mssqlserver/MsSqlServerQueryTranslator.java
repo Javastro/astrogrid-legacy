@@ -1,4 +1,4 @@
-/*$Id: MsSqlServerQueryTranslator.java,v 1.1 2003/09/04 09:23:16 nw Exp $
+/*$Id: MsSqlServerQueryTranslator.java,v 1.2 2003/09/10 09:59:14 nw Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,19 +10,23 @@
 **/
 package org.astrogrid.datacenter.queriers.mssqlserver;
 
-import org.astrogrid.datacenter.queriers.sql.SqlQueryTranslator;
+import org.astrogrid.datacenter.queriers.sybase.SybaseQueryTranslator;
 
 /** ADQL query translator for Microsoft SQL Server.
+ * <p> Extended from sybase query translator - fair bet, as SQL Server is based on Sybase.
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Sep-2003
  * @todo  fill this in.
  */
-public class MsSqlServerQueryTranslator extends SqlQueryTranslator {
+public class MsSqlServerQueryTranslator extends SybaseQueryTranslator {
 
 }
 
 
 /* 
 $Log: MsSqlServerQueryTranslator.java,v $
+Revision 1.2  2003/09/10 09:59:14  nw
+added bits to the query translators
+
 Revision 1.1  2003/09/04 09:23:16  nw
 added martin's query results implementation
 abstract functionality from mysqlQuerier, places in SqlQuerier.

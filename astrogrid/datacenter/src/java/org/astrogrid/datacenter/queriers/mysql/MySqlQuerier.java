@@ -1,5 +1,5 @@
 /*
- * $Id: MySqlQuerier.java,v 1.11 2003/09/08 19:15:46 mch Exp $
+ * $Id: MySqlQuerier.java,v 1.12 2003/09/10 09:59:14 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,7 +23,7 @@ public class MySqlQuerier extends SqlQuerier
    {
       super();
    }
-
+ 
    /**
     * Also starts Sybase jdbc driver... hardcoded, don't like this!
     * @todo - check reason for hardcoded driver - MCH
