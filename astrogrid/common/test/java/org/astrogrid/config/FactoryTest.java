@@ -1,10 +1,8 @@
 package org.astrogrid.config;
 
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -65,11 +63,9 @@ public class FactoryTest extends TestCase
       assertEquals(configA, configC);
       
       //make sure property ones are not mixed in with xml ones
-      //JDT - not quite sure what's supposed to be going on here...
-      //..do we want an assertNotSame() and override .equals() on Config
-      // to compare the properties it contains?
-      //PropertyConfig configP = ConfigFactory.getPropertyConfig("Arthur");
-      //assertEquals(configA, configP);
+
+      PropertyConfig configP = ConfigFactory.getPropertyConfig("Arthur");
+      assertNotSame(configA, configP);
       
    }
 
