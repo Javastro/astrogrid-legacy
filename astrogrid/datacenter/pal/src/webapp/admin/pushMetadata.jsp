@@ -11,7 +11,7 @@
 %>
 <html>
 <head>
-<title>Metadata for <%=DataServer.getDatacenterName() %> pushed</title>
+<title><%=DataServer.getDatacenterName() %> Metadata pushed</title>
 <style type="text/css" media="all">
           @import url("./style/astrogrid.css");
 </style>

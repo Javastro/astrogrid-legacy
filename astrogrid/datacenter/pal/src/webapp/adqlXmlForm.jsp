@@ -6,7 +6,7 @@
 
 <html>
 <head>
-<title>Query Form for <%=DataServer.getDatacenterName() %> </title>
+<title><%=DataServer.getDatacenterName() %> Query Form</title>
 <style type="text/css" media="all">
           @import url("./style/astrogrid.css");
 </style>

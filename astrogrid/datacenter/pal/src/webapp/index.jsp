@@ -5,7 +5,7 @@
 
 <html>
 <head>
-<title>Publisher's Astrogrid Library for <%=DataServer.getDatacenterName() %> </title>
+<title><%=DataServer.getDatacenterName() %> </title>
 <style type="text/css" media="all">
           @import url("./style/astrogrid.css");
 </style>
