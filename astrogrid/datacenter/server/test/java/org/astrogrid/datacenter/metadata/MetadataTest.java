@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.4 2004/09/08 19:18:47 mch Exp $
+/*$Id: MetadataTest.java,v 1.5 2004/09/08 20:15:10 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,8 @@
 package org.astrogrid.datacenter.metadata;
 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import junit.framework.TestCase;
+import org.astrogrid.applications.component.CEAComponentManagerFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.sql.JdbcPlugin;
 import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
@@ -75,15 +75,21 @@ public class MetadataTest extends TestCase {
       assertNotNull("No RdbmsMetadata in VODescription", rdbms);
    }
 
+   /** Tests that the SampleStars generate metadata correctly */
    public void testSampleGenerator() throws Throwable{
       SampleStarsPlugin.initConfig();
       
       VoResourcePlugin plugin = new SampleStarsPlugin(null);
-      String resource = plugin.getVoResource();
+      String resource = VoDescriptionServer.VODESCRIPTION_ELEMENT+"\n"+plugin.getVoResource()+"</VODescription>";
       Document resourceDoc = DomHelper.newDocument(resource);
       assertHasRdbmsResource(resourceDoc);
    }
 
+   public void testCeaResource() throws Throwable {
+      String ceaVoDescription = CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry();
+      //extract the resource elements
+      Document ceaDoc = DomHelper.newDocument(ceaVoDescription);
+   }
       
    public void testMetatdataFileServer() throws Throwable{
       
@@ -119,6 +125,9 @@ public class MetadataTest extends TestCase {
 
 /*
  $Log: MetadataTest.java,v $
+ Revision 1.5  2004/09/08 20:15:10  mch
+ Some fixes and cea metadata test
+
  Revision 1.4  2004/09/08 19:18:47  mch
  Minor fixes and tidy up
 

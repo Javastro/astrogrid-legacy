@@ -9,7 +9,7 @@
 %>
 <html>
 <head>
-<title>Metadata Editor for <%=DataServer.getDatacenterName() %> </title>
+<title>Metadata Menu for <%=DataServer.getDatacenterName() %> </title>
 <style type="text/css" media="all">
           @import url("../style/maven-base.css");
           @import url("../style/maven-theme.css");
