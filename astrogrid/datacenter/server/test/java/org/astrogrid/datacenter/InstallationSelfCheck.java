@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.9 2004/02/24 16:03:48 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.10 2004/03/02 01:32:18 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,16 +14,18 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import junit.framework.TestCase;
-import org.astrogrid.community.Account;
+import org.astrogrid.community.User;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
 import org.astrogrid.datacenter.service.AxisDataServer;
-import org.astrogrid.util.Workspace;
+import org.astrogrid.store.Agsl;
+import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
+import org.astrogrid.util.Workspace;
 
 /** Unit test for checking an installation - checks location of config files, etc.
  * <p>
@@ -111,10 +113,10 @@ public class InstallationSelfCheck extends TestCase {
       if (defaultMyspace == null) {
          return;
       }
-
-      StoreClient myspace = StoreDelegateFactory.createDelegate(Account.ANONYMOUS, defaultMyspace.toString());
       
-      myspace.getEntries(Account.ANONYMOUS, "*");
+      StoreClient myspace = StoreDelegateFactory.createDelegate(User.ANONYMOUS, new Agsl(new Msrl(defaultMyspace)));
+      
+      myspace.listFiles("*");
    }
    
    
@@ -123,6 +125,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.10  2004/03/02 01:32:18  mch
+ Replaced Account in StoreClient with User
+
  Revision 1.9  2004/02/24 16:03:48  mch
  Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
 
