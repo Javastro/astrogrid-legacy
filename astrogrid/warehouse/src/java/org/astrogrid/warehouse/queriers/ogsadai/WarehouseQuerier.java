@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.15 2004/01/15 18:36:57 kea Exp $
+ * $Id: WarehouseQuerier.java,v 1.16 2004/01/16 12:19:09 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -186,7 +186,7 @@ public class WarehouseQuerier extends Querier
     return new WarehouseResults(results);
   }
 
-  /* 
+  /** 
    * Shells out to the command line to delegate the query operation to
    * a GdsQueryDelegate running in a separate JVM.
    * 
@@ -329,7 +329,7 @@ public class WarehouseQuerier extends Querier
     }
   }
 
-  /* 
+  /**
    * Assembles the URL of the OGSA-DAI registry to be used by the 
    * GdsQueryDelegate.
    * 
@@ -358,7 +358,7 @@ public class WarehouseQuerier extends Querier
     return host + registry;
   }
 
-  /* 
+  /**
    * Assembles the fully-qualified path of the Java JVM to be shelled
    * out to.
    * 
@@ -416,7 +416,7 @@ public class WarehouseQuerier extends Querier
     }
   }
 
-  /* 
+  /**
    * Assembles the fully-qualified path of the Java executable jar 
    * containing the OGSA-DAI GdsQueryDelegate.
    * 
@@ -527,6 +527,9 @@ public class WarehouseQuerier extends Querier
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.16  2004/01/16 12:19:09  kea
+Fixing broken Javadoc comments.
+
 Revision 1.15  2004/01/15 18:36:57  kea
 Now looks for properties in toplevel AstroGridConfig.properties,
 using SimpleConfig initialised by datacenter infrastructure.
