@@ -1,4 +1,4 @@
-/*$Id: AdqlQueryTranslator.java,v 1.4 2004/03/30 16:21:24 eca Exp $
+/*$Id: AdqlQueryTranslator.java,v 1.5 2004/04/01 11:25:27 eca Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -144,7 +144,7 @@ public class AdqlQueryTranslator extends QueryTranslator {
 		 buff.append(f.get(EXPR));
 		 buff.append(f.get(TABLE_EXPR));
 		 buff.append(f.get(ORDER_BY));
-		 stack.top().add(SELECT_STMNT,buff +  "LIMIT 50000;");
+		 stack.top().add(SELECT_STMNT,buff +  "LIMIT 100000;");
 		 
    }
   
@@ -687,6 +687,11 @@ public Class getResultType() {
 
 /*
  $Log: AdqlQueryTranslator.java,v $
+ Revision 1.5  2004/04/01 11:25:27  eca
+ Changed row limit from 50K to 100K
+ 
+ 01/04/04 ElizabethAuden
+
  Revision 1.4  2004/03/30 16:21:24  eca
  Updated ogsadai Postgres-optimized query translator, updated class
  references in PostgresSqlMaker.
