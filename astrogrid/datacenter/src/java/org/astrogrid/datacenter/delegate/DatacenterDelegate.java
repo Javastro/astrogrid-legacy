@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegate.java,v 1.5 2003/08/27 23:55:02 mch Exp $
+ * $Id: DatacenterDelegate.java,v 1.6 2003/08/31 15:22:07 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -11,7 +11,6 @@ import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.util.Vector;
 import javax.xml.rpc.ServiceException;
-import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Element;
 
 /**
@@ -103,6 +102,9 @@ public abstract class DatacenterDelegate
 
 /*
 $Log: DatacenterDelegate.java,v $
+Revision 1.6  2003/08/31 15:22:07  mch
+Removed unused QueryException
+
 Revision 1.5  2003/08/27 23:55:02  mch
 test bug fixes
 
