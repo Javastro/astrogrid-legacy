@@ -81,10 +81,7 @@ public class RegistryAdminService implements
     }
     
     Document xsDoc = xs.transformDatabaseProcess(voList.item(0));
-    //String query = formCompareXQLFromDocument(xsDoc);
-    //Document resultDoc = QueryParser3_0.runQuery(query);
-    
-    
+
     System.out.println("server side update the xsDoc = " + DomHelper.DocumentToString(xsDoc));
     
     //System.out.println("This is xsDoc = " + XMLUtils.DocumentToString(xsDoc));
@@ -108,9 +105,13 @@ public class RegistryAdminService implements
     Document resultDoc = null;
     String ident = null;
     String resKey = null;
+    String tempIdent = null;
     boolean addManageError = false;
     System.out.println("here is the nl length = " + nl.getLength() + " and manauths size = " + manageAuths.size() + " and otherAuths size = " + otherAuths.size());
-    //for(int i = 0;i < nl.getLength();i++) {
+
+    //This does seem a little strange as if an infinte loop,
+    //but later on an appendChild is performed to a DocumentFragment which
+    //automatically reduced the length by one.
     while(nl.getLength() > 0) {
       //ident = getAuthorityID((Element)nl.item(i));
       //resKey = getResourceKey((Element)nl.item(i));
@@ -118,6 +119,8 @@ public class RegistryAdminService implements
       ident = getAuthorityID((Element)nl.item(0));
       resKey = getResourceKey((Element)nl.item(0));
       Element currentResource = (Element)nl.item(0);
+      tempIdent = ident;
+      if(resKey != null) tempIdent += "/" + resKey;
       
       System.out.println("serverside update ident = " + ident + " reskey = " + resKey + " the nl getlenth here = " + nl.getLength());
       if(manageAuths.containsKey(ident)) {         
@@ -126,6 +129,7 @@ public class RegistryAdminService implements
          root = xsDoc.getDocumentElement().cloneNode(false);
          root.appendChild(currentResource);
          df.appendChild(root);
+         RegistryFileHelper.addStatusMessage("Entering new entry: " + tempIdent);
          resultDoc = XQueryExecution.runQuery(xql,df);
          System.out.println("the resultDoc to find an id = " + DomHelper.DocumentToString(resultDoc) + " and nlgetlength = " + nl.getLength());         
       }else {
@@ -145,6 +149,7 @@ public class RegistryAdminService implements
                   root.appendChild(currentResource);
                   df.appendChild(root);
                   System.out.println("running query with new registry entry = " + xql);
+                  RegistryFileHelper.addStatusMessage("Entering new entry: " + tempIdent);
                   resultDoc = XQueryExecution.runQuery(xql,df);                  
                }else if(nodeVal != null && nodeVal.indexOf("AuthorityType") != -1) {
                   if(!otherAuths.containsKey((String)ident)) {
@@ -172,6 +177,7 @@ public class RegistryAdminService implements
                         root.appendChild(currentResource);
                         df.appendChild(root);
                         System.out.println("running query with new authorityentry = " + xql);
+                        RegistryFileHelper.addStatusMessage("Entering new entry: " + tempIdent);
                         resultDoc = XQueryExecution.runQuery(xql,df);
                         System.out.println("the resultDoc to find an id = " + DomHelper.DocumentToString(resultDoc));
 
@@ -238,10 +244,19 @@ public class RegistryAdminService implements
       String ident = null;
       String resKey = null;
       boolean addManageError = false;
-      for(int i = 0;i < nl.getLength();i++) {
-         ident = getAuthorityID((Element)nl.item(i));
-         resKey = getResourceKey((Element)nl.item(i));
-         Element currentResource = (Element)nl.item(i);         
+      String tempIdent = null;
+
+      //This does seem a little strange as if an infinte loop,
+      //but later on an appendChild is performed to a DocumentFragment which
+      //automatically reduced the length by one.
+      while(nl.getLength() > 0) {         
+         ident = getAuthorityID((Element)nl.item(0));
+         resKey = getResourceKey((Element)nl.item(0));
+         Element currentResource = (Element)nl.item(0);
+
+         tempIdent = ident;
+         if(resKey != null) tempIdent += "/" + resKey;
+                  
          xql = formUpdateXQLQuery(currentResource,ident,resKey);
          df = xsDoc.createDocumentFragment();
          root = xsDoc.getDocumentElement().cloneNode(false);
@@ -250,6 +265,7 @@ public class RegistryAdminService implements
          }
          root.appendChild(currentResource);
          df.appendChild(root);
+         RegistryFileHelper.addStatusMessage("Entering new entry: " + tempIdent);
          resultDoc = XQueryExecution.runQuery(xql,df);
          System.out.println("the resultDoc to find an id = " + DomHelper.DocumentToString(resultDoc));         
       }//for

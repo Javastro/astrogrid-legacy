@@ -81,7 +81,7 @@ public class RegistryFileHelper {
    public static void initStatusMessage() {      
       statusMessage = "Current Registry Version = ";
       statusMessage += conf.getString(REGISTRY_VERSION_PROPERTY) + "\r\n";
-      statusMessage += "Current Registry Size = " + loadRegistryTable().size() + "\r\n";
+      //statusMessage += "Current Registry Size = " + loadRegistryTable().size() + "\r\n";
       
       RegistryService rs = new RegistryService();
       Document regEntry = null;
@@ -92,16 +92,19 @@ public class RegistryFileHelper {
          regEntry = null;   
       }
       if(regEntry != null) {         
-         NodeList nl = regEntry.getElementsByTagNameNS("vg","ManagedAuthority" );
+         NodeList nl = regEntry.getElementsByTagName("ManagedAuthority" );
          //Okay for some reason vg seems to pick up the ManagedAuthority.
          //Lets try to find it by the url namespace.
+         if(nl.getLength() == 0) {
+            nl = regEntry.getElementsByTagNameNS("vg","ManagedAuthority" );
+         }                     
          if(nl.getLength() == 0) {
             nl = regEntry.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority" );
          }
          if(nl.getLength() == 0) {
             nl = regEntry.getElementsByTagName("vg:ManagedAuthority" );
          }
-         System.out.println("nodelist length = " + nl.getLength());
+         //System.out.println("nodelist length = " + nl.getLength());
          
          if(nl.getLength() > 0) {
             statusMessage += "Authorities owned by this Registry: |";
@@ -109,12 +112,47 @@ public class RegistryFileHelper {
                statusMessage += nl.item(i).getFirstChild().getNodeValue() + "|";
             }
          }
-         nl = regEntry.getElementsByTagName("AccessURL");
          if(nl.getLength() > 0) {
-            statusMessage += "This Registries access url is " + nl.item(0).getFirstChild().getNodeValue() + "|";
+            statusMessage += "This Registries access url is " + getValueFromXML("vr","AccessURL",regEntry) + "|";
          }
       }//if
    }
+   
+   public static String getValueFromXML(String prefix, String lookFor,  Document lookDoc) {
+      NodeList nl = lookDoc.getElementsByTagName(lookFor);
+      //Okay for some reason vg seems to pick up the ManagedAuthority.
+      //Lets try to find it by the url namespace.
+      if(nl.getLength() == 0) {
+         nl = lookDoc.getElementsByTagNameNS(prefix,lookFor );
+      }                     
+      if(nl.getLength() == 0) {
+         nl = lookDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2",lookFor );
+      }
+      if(nl.getLength() == 0) {
+         nl = lookDoc.getElementsByTagName(prefix + ":ManagedAuthority" );
+      }
+      if(nl.getLength() > 0) {
+         return nl.item(0).getFirstChild().getNodeValue();   
+      }
+      return "";      
+   }
+   
+   public static NodeList getNodeListFromXML(String prefix, String lookFor,  Document lookDoc) {
+      NodeList nl = lookDoc.getElementsByTagName(lookFor);
+      //Okay for some reason vg seems to pick up the ManagedAuthority.
+      //Lets try to find it by the url namespace.
+      if(nl.getLength() == 0) {
+         nl = lookDoc.getElementsByTagNameNS(prefix,lookFor );
+      }                     
+      if(nl.getLength() == 0) {
+         nl = lookDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2",lookFor );
+      }
+      if(nl.getLength() == 0) {
+         nl = lookDoc.getElementsByTagName(prefix + ":ManagedAuthority" );
+      }
+      return nl;      
+   }
+   
    
    private static void checkAndWriteFile() {
       Calendar current = Calendar.getInstance();
