@@ -23,7 +23,7 @@
    }
    catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
-      out.write(server.exceptionAsHtml("Asking ADQL/xml ", th, adqlXml));
+      out.write(server.exceptionAsHtmlPage("Asking ADQL/xml ", th, adqlXml));
    }
 
 %>

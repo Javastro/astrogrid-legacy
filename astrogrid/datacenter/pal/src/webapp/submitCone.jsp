@@ -54,7 +54,7 @@
       }
    } catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
-      out.write(server.exceptionAsHtml("Searching Cone (RA="+param_ra+", DEC="+param_dec+", SR="+param_sr+") -> "+resultsTarget,th));
+      out.write(server.exceptionAsHtmlPage("Searching Cone (RA="+param_ra+", DEC="+param_dec+", SR="+param_sr+") -> "+resultsTarget,th));
    }
       
 

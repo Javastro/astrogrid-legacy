@@ -28,11 +28,11 @@
          server.askQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, size), out, formatList);
       } catch (Exception e) {
          LogFactory.getLog(request.getContextPath()).error(e);
-         out.write(server.exceptionAsHtml("SIAP; Searching Cone (RA="+ra+", DEC="+dec+", SIZE="+size+", FORMAT="+formatList, e));
+         out.write(server.exceptionAsHtmlPage("SIAP; Searching Cone (RA="+ra+", DEC="+dec+", SIZE="+size+", FORMAT="+formatList, e));
       }
       
    } catch (NumberFormatException e) {
-      out.write(server.exceptionAsHtml("Input Error", e));
+      out.write(server.exceptionAsHtmlPage("Input Error", e));
    }
 
 

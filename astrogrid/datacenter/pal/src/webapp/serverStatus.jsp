@@ -24,7 +24,7 @@
       out.write(server.makeRefreshSnippet(10, statusUrl.toString()));
    } catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
-      out.write(server.exceptionAsHtml("Getting server status", th));
+      out.write(server.exceptionAsHtmlPage("Getting server status", th));
    }
       
 

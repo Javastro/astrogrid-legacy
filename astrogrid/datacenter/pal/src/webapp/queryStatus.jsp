@@ -40,7 +40,7 @@
       }
    } catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
-      out.write(server.exceptionAsHtml("Getting status of query '"+id+"'", th));
+      out.write(server.exceptionAsHtmlPage("Getting status of query '"+id+"'", th));
    }
     
 

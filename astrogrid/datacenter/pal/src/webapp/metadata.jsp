@@ -25,7 +25,7 @@
       
    } catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
-      out.write(HtmlDataServer.exceptionAsHtml("Getting metadata", th));
+      out.write(HtmlDataServer.exceptionAsHtmlPage("Getting metadata", th));
    }
 
 %>
@@ -39,7 +39,7 @@
       
    } catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
-      out.write(HtmlDataServer.exceptionAsHtml("Getting metadata", th));
+      out.write(HtmlDataServer.exceptionAsHtmlPage("Getting metadata", th));
    }
 
 %>

@@ -24,7 +24,7 @@
       server.askQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), out, resultsFormat);
    } catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
-      out.write(server.exceptionAsHtml("Searching Cone (RA="+ra+", DEC="+dec+", SR="+sr, th));
+      out.write(server.exceptionAsHtmlPage("Searching Cone (RA="+ra+", DEC="+dec+", SR="+sr, th));
    }
       
 
