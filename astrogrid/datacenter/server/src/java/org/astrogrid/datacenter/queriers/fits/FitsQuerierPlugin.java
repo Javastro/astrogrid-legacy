@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerierPlugin.java,v 1.3 2004/03/15 19:16:12 mch Exp $
+ * $Id: FitsQuerierPlugin.java,v 1.4 2004/07/26 13:53:44 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,13 +19,17 @@ import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QuerierPluginException;
 import org.astrogrid.datacenter.queriers.query.ConeQueryMaker;
 import org.astrogrid.datacenter.queriers.status.QuerierAborted;
+import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.service.v041.DocHelper;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import org.astrogrid.xmldb.eXist.server.QueryDBService;
 
 /**
  *
@@ -56,12 +60,44 @@ public class FitsQuerierPlugin extends QuerierPlugin
       if (!indexLoaded) {
          loadIndex();
       }
-      
-      String[] filenames = coneSearch(new ConeQueryMaker().getConeQuery(querier.getQuery()));
-
-      if (!aborted) {
-         processResults(new FitsResults(filenames));
+      Query qr = querier.getQuery();
+      String[] filenames;
+      if (qr instanceof ConeQuery) {
+          filenames = coneSearch(new ConeQueryMaker().getConeQuery(qr));
+         if (!aborted) {
+            processResults(new FitsResults(filenames));
+         }          
+      } else if(qr instanceof AdqlQuery) {
+         FitsMaker fm = new FitsMaker();
+         String xql = fm.fromAdql((AdqlQuery)qr);
+         filenames = doQuery(xql);
+         if (!aborted) {
+            processResults(new FitsResults(filenames));
+         }
       }
+   }
+   
+   private String[] doQuery(String xql) throws IOException {
+      Document resultDoc = null;
+      String []files = null;
+      try {
+         QueryDBService qdb = new QueryDBService();      
+         resultDoc = qdb.runQuery("dcfitsfiles",xql);         
+      }catch(ParserConfigurationException pce) {
+         throw new RuntimeException("Server configuration error",pce);
+      }catch(SAXException se) {
+         throw new QuerierPluginException("FitsQuerierPlugin index not valid xml",se);
+      }
+      if(resultDoc != null) {
+         NodeList fileNames = resultDoc.getElementsByTagName("Filename");
+         files = new String[fileNames.getLength()];
+         for(int i = 0;i < fileNames.getLength();i++) {
+            if(fileNames.item(i).hasChildNodes()) {
+               files[i] = fileNames.item(i).getFirstChild().getNodeValue();
+            }//if
+         }//for
+      }//if
+      return files;
    }
 
    public String[] coneSearch(ConeQuery query) throws IOException {
@@ -152,6 +188,8 @@ public class FitsQuerierPlugin extends QuerierPlugin
       if (indexLoaded) return;
       
       URL url = SimpleConfig.getSingleton().getUrl(FITS_INDEX_URL, null);
+      String strURL = url.toExternalForm();
+      SimpleConfig.getSingleton().setProperty("exist.db.url",strURL.substring(0,strURL.indexOf("/db")));
       if (url != null) {
          try {
             index = DomHelper.newDocument(url.openStream());
@@ -172,6 +210,14 @@ public class FitsQuerierPlugin extends QuerierPlugin
 
 /*
  $Log: FitsQuerierPlugin.java,v $
+ Revision 1.4  2004/07/26 13:53:44  KevinBenson
+ Changes to Fits to do an xquery on an xml file dealing with fits data.
+ Small xsl style sheet to make the xql which will get the filename element
+
+ Revision 1.3.30.1  2004/07/26 08:53:40  KevinBenson
+ Still need to make a few more corrections, but wanted to check this in now.
+ It is the fits querier that now uses exist for doing adql->xquery
+
  Revision 1.3  2004/03/15 19:16:12  mch
  Lots of fixes to status updates
 
