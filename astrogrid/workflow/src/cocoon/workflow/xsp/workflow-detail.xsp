@@ -36,6 +36,8 @@
         		 else if( activity instanceof Step ) {
         		 	step( (Step)activity, xspAttr ) ;
         		 }
+        		 else if ( activity instanceof Workflow ) {
+        		 }
         		 else {
         		 	debug( "unsupported Activity" ) ;
         		 } 
@@ -183,8 +185,9 @@
 		//================================================================================
 		]]>
 	
-	
-		<xsp:attribute name="type">onestep-sequence</xsp:attribute>
+		<xsp:attribute name="template-name">
+			<xsp:expr>workflow.getTemplateName()</xsp:expr>
+		</xsp:attribute>
 		<xsp:attribute name="workflow-name">
 			<xsp:expr>workflow.getName()</xsp:expr>
 		</xsp:attribute> 
