@@ -26,29 +26,17 @@
                         excludes="commons-jelly-tags-xml,commons-jelly-tags-jsl"/>
         </goal>
 
-<!-- now adjust war goal, so that it creates a jnlp thingie -->
-
-                
-	<goal name="patch-webapp">                
-                <delete includeEmptyDirs="true">
-                        <fileset dir="${maven.build.dir}/${pom.artifactId}">
-                                <include name="WEB-INF/**" />
-                        </fileset>
-                </delete>
-                <!-- sign jars by hand - as maven jnlp task is flakey -->
-                <signjar alias="astrogrid" storepass="qwertyuiop">
-                        <fileset dir="${maven.build.dir}/${pom.artifactId}">
-                                <include name="*.jar" />
-                        </fileset>
-                </signjar>
-       </goal>
-
         <goal name="patch-jnlp">
                 <!--  alter jnlp to depend on workflow cdk extension
                 -->
              ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
              <jsl:stylesheet var="patch">
-                <jsl:template match="jar|information|security|application-desc|component-desc|property"> <!-- deliberately omitted j2se - as an extension descriptor shouldn't specify this -->
+			   <jsl:template match="jar[starts-with(@href,'astrogrid-cdk-scripting')]"> <!-- gah- ${pom.artifactId} won't work here -->
+                </jsl:template>
+                <jsl:template match="jar[not(starts-with(@href,'astrogrid-cdk-scripting')]">
+                        <jxml:copyOf select="." />
+                </jsl:template>             
+                <jsl:template match="information|security|application-desc|component-desc|property"> <!-- deliberately omitted j2se - as an extension descriptor shouldn't specify this -->
                         <jxml:copyOf select="." />
                 </jsl:template>
                 <jsl:template match="jnlp|@*">
