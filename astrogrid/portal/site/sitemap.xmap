@@ -199,7 +199,6 @@
 
     <map:transformer name="ldap" src="org.apache.cocoon.transformation.LDAPTransformer"/>
 
-
     <!-- =================== DASL Transformer ========================= -->
     <map:transformer name="dasl" src="org.apache.cocoon.transformation.DASLTransformer"/>
 
@@ -207,6 +206,10 @@
     <map:transformer name="session" pool-grow="4" pool-max="32" pool-min="8" src="org.apache.cocoon.webapps.session.transformation.SessionTransformer"/>
     <map:transformer name="session-pre" pool-grow="4" pool-max="32" pool-min="8" src="org.apache.cocoon.webapps.session.transformation.SessionPreTransformer"/>
     <map:transformer name="session-post" pool-grow="4" pool-max="32" pool-min="8" src="org.apache.cocoon.webapps.session.transformation.SessionPostTransformer"/>
+
+    <!-- =================== AstroGrid Transformers =================== -->
+    <map:transformer name="ag-menu" src="org.astrogrid.portal.transformation.MenuTransformer"/>
+
 </map:transformers>
 
   <!--+
@@ -216,7 +219,7 @@
   <map:serializers default="html">
     <map:serializer logger="sitemap.serializer.links" name="links" src="org.apache.cocoon.serialization.LinkSerializer"/>
     <map:serializer logger="sitemap.serializer.xml" mime-type="text/xml" name="xml" src="org.apache.cocoon.serialization.XMLSerializer"/>
-    <map:serializer logger="sitemap.serializer.html" mime-type="text/html" name="html" pool-grow="4" pool-max="32" pool-min="4" src="org.apache.cocoon.serialization.HTMLSerializer"/>
+    <map:serializer logger="sitemap.serializer.html" mime-type="text/html" name="html" indent="yes" pool-grow="4" pool-max="32" pool-min="4" src="org.apache.cocoon.serialization.HTMLSerializer"/>
     <map:serializer logger="sitemap.serializer.wml" mime-type="text/vnd.wap.wml" name="wml" src="org.apache.cocoon.serialization.XMLSerializer">
      <doctype-public>-//WAPFORUM//DTD WML 1.1//EN</doctype-public>
      <doctype-system>http://www.wapforum.org/DTD/wml_1.1.xml</doctype-system>
@@ -249,10 +252,15 @@
           | Default XHTML doctype in Cocoon is XHTML Strict. If you want to use more than one
           | XHTML DTD simultaneously, you can define several XHTML serializers.
           +-->
-      <doctype-public>-//W3C//DTD XHTML 1.0 Strict//EN</doctype-public>
-      <doctype-system>http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd</doctype-system>
+          <doctype-public>-//W3C//DTD XHTML 1.0 Transitional//EN</doctype-public>
+          <doctype-system>http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd</doctype-system>
       <encoding>UTF-8</encoding>
     </map:serializer>
+
+    <map:serializer logger="sitemap.serializer.xhtml" mime-type="text/html" name="ag-xhtml" indent="yes" pool-grow="2" pool-max="64" pool-min="2" src="org.apache.cocoon.serialization.XMLSerializer">
+      <encoding>UTF-8</encoding>
+    </map:serializer>
+
     <map:serializer logger="sitemap.serializer.xhtml" mime-type="application/xhtml+xml" name="xhtml11" pool-grow="2" pool-max="64" pool-min="2" src="org.apache.cocoon.serialization.XMLSerializer">
       <doctype-public>-//W3C//DTD XHTML 1.1//EN</doctype-public>
       <doctype-system>http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd</doctype-system>
@@ -539,6 +547,20 @@
       | Hence I will explain what's inside below for pipelines.
       +-->
  <map:resources>
+   <map:resource name="ag-menu-trans">
+
+    <!-- include any files referenced initially -->
+    <map:transform type="xinclude"/>
+
+    <!-- add custom astrogrid menu <xi:include/>'s (not already defined) -->
+    <map:transform type="ag-menu"/>
+
+    <!-- include any referenced files -->
+    <map:transform type="xinclude"/>
+
+    <!-- style the menu -->
+    <map:transform type="xslt" src="{ag-menu-stylesheet}"/>
+  </map:resource>
  </map:resources>
 
 <!-- ========================== Action sets ================================ -->
@@ -593,42 +615,68 @@
 
   <!-- main pipeline -->
   <map:pipeline>
-
     <!-- welcome page -->
     <map:match pattern="">
-      <map:redirect-to uri="index.html"/>
+      <map:redirect-to uri="portal"/>
+    </map:match>
+    
+    <!--
+      Portal page.
+      -->
+    <map:match pattern="portal">
+      <map:act type="request">
+        <map:parameter name="parameters" value="true"/>
+        <map:parameter name="default.link" value="test.xml"/>
+<!--
+        <map:parameter name="default.link" value="default.xml"/>
+-->
+        <map:aggregate element="page">
+          <!--
+            Main menu.
+            -->
+          <map:part
+              element="main-menu"
+              src="cocoon:/menu.xml"/>
+              
+          <!--
+            Main content.
+            -->
+          <map:part
+              element="main-content"
+              ns="http://www.w3.org/1999/xhtml"
+              src="cocoon:/{link}"/>
+        </map:aggregate>
+        
+        <map:transform type="xslt" src="web/style/xsl/test.xsl"/>
+        <map:serialize type="html"/>
+      </map:act>
     </map:match>
     
     <!-- html -->
     <map:match pattern="**.html">
-      <map:read mime-type="text/html" src="web/static/{1}.html"/>
+      <map:generate type="file" src="context://web/static/{1}.html"/>
+      <map:serialize type="xml"/>
     </map:match>
 
     <!-- menu -->
-    <map:match pattern="menu.xml">
-      <map:generate src="WEB-INF/menu/menu.xml" type="file"/>
-      <map:transform type="xinclude"/>
-      <map:transform src="web/style/xsl/menu.xsl">
-        <map:parameter name="menu-name" value="fred"/>
-      </map:transform>
-      <map:serialize type="xml"/>
-    </map:match>
-    
     <map:match pattern="*menu.xml">
-      <map:generate src="WEB-INF/menu/{1}menu.xml" type="file"/>
-
-      <map:transform src="web/style/xsl/{1}menu.xsl">
-        <map:parameter name="end-menu-name" value="miscellaneous"/>
-        <map:parameter name="end-menu-link" value="http://www.astrogrid.org"/>
-        <map:parameter name="end-menu-description" value="AstroGrid Miscellaneous Menu"/>
-      </map:transform>
-
+      <!-- base menu -->
+      <map:generate src="context://WEB-INF/menu/{1}menu.xml" type="file"/>
+      
+      <!-- standard menu transformation -->
+      <map:call resource="ag-menu-trans">
+        <map:parameter name="ag-menu-stylesheet" value="web/style/xsl/{1}menu.xsl"/>
+      </map:call>
+      
+      <!-- output the xml -->
       <map:serialize type="xml"/>
     </map:match>
 
     <!-- xml -->
     <map:match pattern="**.xml">
-      <map:read mime-type="text/xml" src="web/static/{1}.xml"/>
+      <map:generate type="file" src="context://web/static/{1}.xml"/>
+      <map:transform src="context://web/style/xsl/xml2html.xsl"/>
+      <map:serialize type="xml"/>
     </map:match>
 
     <!--+
@@ -681,10 +729,10 @@
 
     <!--+
         | Map the components.
-        +-->
     <map:match pattern="components/**">
       <map:read src="components/{1}"/>
     </map:match>
+        +-->
 
     <!--+
         | Mount everything else by calling the sitemap.xmap file located

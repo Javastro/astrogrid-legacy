@@ -1,10 +1,13 @@
 <?xml version="1.0"?>
 
-<menu name="job-monitor"
+<menu
+    name="job-monitor"
+    display="Job Monitor"
+    
     xmlns="http://www.astrogrid.org/portal"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.astrogrid.org/portal menu-schema.xsd">
-  <item>
+  <item display="Job Monitor">
     <link>job-monitor.html</link>
     <description>Job Monitor</description>
   </item>

@@ -34,7 +34,7 @@
     |        that you use the command line parameters to configure 
     |        the CLI.</note>
     |
-    | CVS: $Id: cli.xconf,v 1.1 2003/11/24 10:10:03 gps Exp $
+    | CVS: $Id: cli.xconf,v 1.2 2003/11/26 08:33:18 gps Exp $
     +-->
     
 <cocoon verbose="true"  
@@ -55,13 +55,21 @@
        |  be written (assuming the 'simple' mapper is used, see 
        |  below)
        +-->
-   <context-dir>/home/gps/projects/astrogrid/workspace/astrogrid-portal/build/webapp</context-dir>
-<!--
-   <config-file>/home/gps/projects/astrogrid/workspace/astrogrid-portal/build/webapp/WEB-INF/cocoon.xconf</config-file>
--->
+   <context-dir>./build/webapp</context-dir>
    <config-file>WEB-INF/cocoon.xconf</config-file>
+   <work-dir>./build/work</work-dir>
+   <dest-dir>.//build/dest</dest-dir>
+<!--
+   <context-dir>/home/gps/projects/astrogrid/workspace/astrogrid-portal/build/webapp</context-dir>
+   <config-file>/home/gps/projects/astrogrid/workspace/astrogrid-portal/build/webapp/WEB-INF/cocoon.xconf</config-file>
    <work-dir>/home/gps/projects/astrogrid/workspace/astrogrid-portal/build/work</work-dir>
    <dest-dir>/home/gps/projects/astrogrid/workspace/astrogrid-portal/build/dest</dest-dir>
+
+   <context-dir>./build/webapp</context-dir>
+   <config-file>WEB-INF/cocoon.xconf</config-file>
+   <work-dir>./build/work</work-dir>
+   <dest-dir>.//build/dest</dest-dir>
+-->
 
    <!--+
        | Broken link reporting options:

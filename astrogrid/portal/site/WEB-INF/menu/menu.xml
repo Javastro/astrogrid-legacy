@@ -1,12 +1,24 @@
 <?xml version="1.0"?>
 
-<menu name="default"
+<menu
+    name="default"
+    display="AstroGrid"
+
     xmlns="http://www.astrogrid.org/portal"
     xmlns:xi="http://www.w3.org/2001/XInclude"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.astrogrid.org/portal menu-schema.xsd">
+  <link>http://www.astrogrid.org</link>
   <description>AstroGrid Menu</description>
-
-  <xi:include href="data-query.xml"/>
-  <xi:include href="job-monitor.xml"/>
+  
+  <menu
+      name="data-tools"
+      display="Data Tools">
+    <item
+        name="myspace"
+        display="MySpace">
+      <link>portal?link=link-test.xml</link>
+      <description>Link Test</description>
+    </item>
+  </menu>
 </menu>

@@ -2,9 +2,13 @@ package org.astrogrid.portal.transformation;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.regex.Pattern;
 
 import org.apache.cocoon.transformation.AbstractDOMTransformer;
+import org.apache.commons.jxpath.JXPathContext;
+import org.apache.commons.jxpath.xml.DocumentContainer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -22,7 +26,7 @@ public class MenuTransformer extends AbstractDOMTransformer {
 
     Element menuEl =
       result.createElementNS("http://www.astrogrid.org/portal", "menu");
-    menuEl.setAttribute("id", "miscellaneous");
+    menuEl.setAttribute("display", "Miscellaneous");
     menuEl.setAttribute("name", "MenuTransformer");
 
     Element menuLinkEl =
@@ -34,12 +38,12 @@ public class MenuTransformer extends AbstractDOMTransformer {
     Element rootMenuEl = (Element) result.getFirstChild();
     rootMenuEl.appendChild(menuEl);
 
-    result = addMenus(result, menuEl);
+    result = addMenus(result, menuEl, doc);
 
     return result;
   }
 
-  private Document addMenus(Document doc, Element menuEl) {
+  private Document addMenus(Document doc, Element menuEl, Document sourceDoc) {
     Document result = doc;
 
     File menuFile = null;
@@ -53,7 +57,9 @@ public class MenuTransformer extends AbstractDOMTransformer {
         result.createElementNS("http://www.w3.org/2001/XInclude", "xi:include");
       xIncludeEl.setAttribute("href", "WEB-INF/menu/" + menuFile.getName());
 
-      menuEl.appendChild(xIncludeEl);
+      if(testMenuInclude(sourceDoc.getDocumentElement(), menuFile)) {
+        menuEl.appendChild(xIncludeEl);
+      }
     }
 
     return result;
@@ -71,5 +77,27 @@ public class MenuTransformer extends AbstractDOMTransformer {
         return Pattern.matches(".*\\.xml", name);
       }
     });
+  }
+
+  private boolean testMenuInclude(Element menu, File toInclude) {
+    boolean result = false;
+    
+    try {
+      URL includeUrl = new URL("file://" + toInclude.getAbsolutePath());
+      
+      JXPathContext menuContext = JXPathContext.newContext(menu);
+      JXPathContext fileContext = JXPathContext.newContext(new DocumentContainer(includeUrl));
+      
+      String fileMenuName = (String) fileContext.getValue("/menu/@name");
+      Double menuValue = (Double) menuContext.getValue("count(//menu[@name='" + fileMenuName + "'])");
+//      Object menuValue = menuContext.getValue("count(*/menu[@name='" + fileMenuName + "'])");
+      
+      result = (menuValue.doubleValue() == 0.0d);
+    }
+    catch(MalformedURLException e) {
+      result = false;
+    }
+    
+    return result;
   }
 }
