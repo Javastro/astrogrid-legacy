@@ -7,39 +7,73 @@ import org.xml.sax.InputSource;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.apache.axis.utils.XMLUtils;
- 
+import org.astrogrid.registry.server.RegistryFileHelper;
 
 
 /**
- * @author Elizabeth Auden
+ * Class Name: RegistryAdminService
+ * Description: This class represents the web service to the Administration piece of the
+ * registry.  This class will handle inserts/updates/remove's of data in the registry.
  * 
- * The RegistryAdminService is a web service that submits an XML formatted
- * administratio query to the RegistryAdmin class.  This web service allows
- * a user to add, edit, or delete a resource service entry inside the registry.
+ * @see org.astrogrid.registry.RegistryAdminInterface
+ * @author Kevin Benson
+ *
  * 
- * Elizabeth  Auden, 24 October 2003
  */
-
 public class RegistryAdminService implements org.astrogrid.registry.RegistryAdminInterface {
 
-  public Document adminQuery(Document adminQuery) {
-
-    String regAdminQuery = XMLUtils.DocumentToString(adminQuery);     
-    String adminResponse = RegistryAdmin.requestAdmin(regAdminQuery);
-    Document registryDoc = null;
+   /**
+    * Takes an XML Document and will either update and insert the data in the registry.  If a client is
+    * intending for an insert, but the primarykey (AuthorityID and ResourceKey) are already in the registry
+    * an automatic update will occur.  This method will only update main pieces of data/elements
+    * conforming to the IVOA schema.
+    * 
+    * Main Pieces: Organisation, Authority, Registry, Resource, Service, SkyService, TabularSkyService, 
+    * DataCollection 
+    * 
+    * @param query Document a XML document dom object to be updated on the registry.
+    * @return the document updated on the registry is returned.
+    * @author Kevin Benson
+    * 
+    */   
+  public Document update(Document query) {
     try {
-         
-       Reader reader2 = new StringReader(adminResponse);
-       InputSource inputSource = new InputSource(reader2);
-         
-       DocumentBuilder registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-       registryDoc = registryBuilder.parse(inputSource);
-       System.out.println("the registryDoc = " + XMLUtils.DocumentToString(registryDoc));
-         
+       //Load the registry first.
+       Document fileDocument = RegistryFileHelper.loadRegistryFile();
+       RegistryFileHelper.translateRegistry(query);
+       //call updateDocument method to go through the document objects
+       //and look for the primary key (resourcekey,AuthorityID) and determine
+       //an update or an add.
+
+       RegistryFileHelper.updateDocument(fileDocument,query);
     } catch (Exception e){
-       registryDoc = null;
+       e.printStackTrace();
     }
-    
-    return registryDoc;
+    return query;
   }
+  
+  /**
+   * Takes an XML Document and will remove the data in the registry.  This method will
+   * not remove small individual element pieces, but main pieces of the IVOA schema.  This
+   * method will look for the primary key first (resourceKey, AuthorityID) and then remove
+   * the main piece of the data in the registry.
+   *
+   * Main Pieces: Organisation, Authority, Registry, Resource, Service, SkyService, TabularSkyService, 
+   * DataCollection 
+   *  
+   * @param query Document a XML document dom object to be removed to the registry.
+   * @return the document removed from the registry is returned.
+   * @author Kevin Benson
+   * 
+   */
+  public Document remove(Document query) {
+     try {
+        Document fileDocument = RegistryFileHelper.loadRegistryFile();
+        RegistryFileHelper.removeDocument(fileDocument,query);
+     } catch (Exception e){
+        e.printStackTrace();
+     }
+     return query;
+  }
+   
 }

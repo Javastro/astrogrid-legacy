@@ -1,7 +1,3 @@
- /**
- * Created on 25-Apr-2003
- * @author Elizabeth Auden
- */
 package org.astrogrid.registry.server;
 
 import org.w3c.dom.Document;
@@ -14,9 +10,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.Reader;
-import java.io.File;
 import de.gmd.ipsi.xql.XQL;
 import de.gmd.ipsi.xql.XQLRelationship;
+import org.astrogrid.registry.server.RegistryFileHelper;
 
 
 /**
@@ -37,7 +33,7 @@ import de.gmd.ipsi.xql.XQLRelationship;
  * based on the IVOA's Resource Service Metadata document v0.7 - it does
  * not yet conform to the IVOA's VOResource 0.9 schema.
  * 
- * Elizabeth Auden, 17 October 2003
+ * @author Kevin Benson
  *
  */
 
@@ -45,7 +41,17 @@ public class QueryParser3_0
  {
 	static String nodeDetails = "";
 	static String searchElements = "";
-	public static String parseQuery (Document query) throws ClassNotFoundException {
+   
+   /**
+    * parseQuery is for submitting a query and goes with the submitQuery from the server side
+    * web service.  Currently being depegrecated.
+    * 
+    * @param query XML document object representing the query language used on the registry.
+    * @return XML docuemnt object representing the result of the query. 
+    * @deprecated Not used at the moment and will be factored out in later versions.
+    * @author Kevin Benson
+    */
+	public static Document parseQuery (Document query) throws ClassNotFoundException {
 
 		/**
 		* Input string "query" is the XML formatted query from the Registry
@@ -57,15 +63,18 @@ public class QueryParser3_0
 		* returned to the RegistryInterface3_0 web service.
 		* 
 		*/
-		
-		String xmlResponse = prepareQuery(query);
-      //System.out.println("end of preparequery the xmlresponse = " + xmlResponse);
-		String queryResponse = "";	
-		queryResponse = returnRecordKeyPairs(xmlResponse);	
-      System.out.println("after returnrecordkey = " + queryResponse);
-	    return queryResponse;
+      addXQLRelationShips();
+      return prepareQuery(query);
 	}
-	public static String parseFullNodeQuery (Document query) throws ClassNotFoundException {
+   
+   /**
+    * parseFullQuery is for submitting a query and goes with the fullNodeQuery from the server side
+    * web service.
+    *
+    * @param query XML document object representing the query language used on the registry.
+    * @return XML docuemnt object representing the result of the query.
+    */   
+	public static Document parseFullNodeQuery (Document query) throws ClassNotFoundException {
 
 		/**
 		* Input string "query" is the XML formatted query from the Registry
@@ -75,86 +84,103 @@ public class QueryParser3_0
 		* the RegistryInterface3_0 web service.
 		* 
 		*/
-
-		String xqlResponse = prepareQuery(query);
-		return xqlResponse;	
+      addXQLRelationShips();
+      return prepareQuery(query);
+		//String xqlResponse = prepareQuery(query);
+		//return xqlResponse;	
 	}
+   
+   private static void addXQLRelationShips() {
+      /**
+       * User-defined comparison to test whether a text element (Object l) is numerically
+       * greater than the number value (Object r) supplied. If either the text element 'l' or
+       * the supplied number value 'r' does not evaluate to a number, the test fails.
+       */
+      XQL.addRelationship("$isgt$",
+       new XQLRelationship() {
+        public boolean holdsBetween(Object l, Object r) {
+         double element = XQL.number(l);
+         double value = XQL.number(r);
+         if (((new Double(element).isNaN())) || ((new Double(value).isNaN()))) return false;
+         return (element > value);
+        }
+       });
+       
+      /**
+       * User-defined comparison to test whether a text element (Object l) is numerically
+       * greater than or equal to the number value (Object r) supplied. If either the 
+       * text element 'l' or the supplied number value 'r' does not evaluate to a number, 
+       * the test fails.
+       */
+       XQL.addRelationship("$isge$",
+       new XQLRelationship() {
+        public boolean holdsBetween(Object l, Object r) {
+         double element = XQL.number(l);
+         double value = XQL.number(r);
+         if (((new Double(element).isNaN())) || ((new Double(value).isNaN()))) return false;
+         return (element >= value);
+        }
+       });
+       
+      /**
+       * User-defined comparison to test whether a text element (Object l) is numerically
+       * less than the number value (Object r) supplied. If either the text element 'l' or
+       * the supplied number value 'r' does not evaluate to a number, the test fails.
+       */
+      XQL.addRelationship("$islt$",
+       new XQLRelationship() {
+        public boolean holdsBetween(Object l, Object r) {
+         double element = XQL.number(l);
+         double value = XQL.number(r);
+         if (((new Double(element).isNaN())) || ((new Double(value).isNaN()))) return false;
+         return (element < value);
+        }
+       });
+       
+      /**
+       * User-defined comparison to test whether a text element (Object l) is numerically
+       * less than or equal to the number value (Object r) supplied. If either the 
+       * text element 'l' or the supplied number value 'r' does not evaluate to a number, 
+       * the test fails.
+       */
+      XQL.addRelationship("$isle$",
+       new XQLRelationship() {
+        public boolean holdsBetween(Object l, Object r) {
+         double element = XQL.number(l);
+         double value = XQL.number(r);
+         if (((new Double(element).isNaN())) || ((new Double(value).isNaN()))) return false;
+         return (element <= value);
+        }
+       });
+      
+      XQL.addRelationship("$contains$",
+       new XQLRelationship() {
+        public boolean holdsBetween(Object l, Object r) {
+          return XQL.text(l).indexOf(XQL.text(r)) >= 0;
+        }
+       });       
+       
+   }
 	
-	static String prepareQuery (Document query) throws ClassNotFoundException {
+   /**
+    * Input Document is the XML formatted query from either the parseQuery
+    * or parseFullNodeQuery method in this class. The prepareQuery method converts
+    * this XML string into an XQL query and sends it to the Registry3_0 class.  
+    * 
+    * This method also registers four user-defined comparisons: isgt, isge, islt, and
+    * isle.  The GMD-IPSI implementation of XQuery only predefines lexical comparisons
+    * for the basic logical operators, so these four user-defined comparisons implement numerical
+    * comparisons as well.
+    *  
+    * @param query XML document object representing the query language used on the registry.
+    * @return XML docuemnt object representing the result of the query.
+    * @throws ClassNotFoundException
+    */   
+	static Document prepareQuery (Document query) throws ClassNotFoundException {
 
 		/**
-		* Input string "query" is the XML formatted query from either the parseQuery
-		* or parseFullNodeQuery method in this class. The prepareQuery method converts
-		* this XML string into an XQL query and sends it to the Registry3_0 class.  
-		* 
-		* This method also registers four user-defined comparisons: isgt, isge, islt, and
-		* isle.  The GMD-IPSI implementation of XQuery only predefines lexical comparisons
-		* for the basic logical operators, so these four user-defined comparisons implement numerical
-		* comparisons as well. 
 		* 
 		*/
-
-		/**
-		 * User-defined comparison to test whether a text element (Object l) is numerically
-		 * greater than the number value (Object r) supplied. If either the text element 'l' or
-		 * the supplied number value 'r' does not evaluate to a number, the test fails.
-		 */
-		XQL.addRelationship("$isgt$",
-		 new XQLRelationship() {
-		  public boolean holdsBetween(Object l, Object r) {
-			double element = XQL.number(l);
-			double value = XQL.number(r);
-			if (((new Double(element).isNaN())) || ((new Double(value).isNaN()))) return false;
-			return (element > value);
-		  }
-		 });
-		 
-		/**
-		 * User-defined comparison to test whether a text element (Object l) is numerically
-		 * greater than or equal to the number value (Object r) supplied. If either the 
-		 * text element 'l' or the supplied number value 'r' does not evaluate to a number, 
-		 * the test fails.
-		 */
-		 XQL.addRelationship("$isge$",
-		 new XQLRelationship() {
-		  public boolean holdsBetween(Object l, Object r) {
-			double element = XQL.number(l);
-			double value = XQL.number(r);
-			if (((new Double(element).isNaN())) || ((new Double(value).isNaN()))) return false;
-			return (element >= value);
-		  }
-		 });
-		 
-		/**
-		 * User-defined comparison to test whether a text element (Object l) is numerically
-		 * less than the number value (Object r) supplied. If either the text element 'l' or
-		 * the supplied number value 'r' does not evaluate to a number, the test fails.
-		 */
-		XQL.addRelationship("$islt$",
-		 new XQLRelationship() {
-		  public boolean holdsBetween(Object l, Object r) {
-			double element = XQL.number(l);
-			double value = XQL.number(r);
-			if (((new Double(element).isNaN())) || ((new Double(value).isNaN()))) return false;
-			return (element < value);
-		  }
-		 });
-		 
-		/**
-		 * User-defined comparison to test whether a text element (Object l) is numerically
-		 * less than or equal to the number value (Object r) supplied. If either the 
-		 * text element 'l' or the supplied number value 'r' does not evaluate to a number, 
-		 * the test fails.
-		 */
-		XQL.addRelationship("$isle$",
-		 new XQLRelationship() {
-		  public boolean holdsBetween(Object l, Object r) {
-			double element = XQL.number(l);
-			double value = XQL.number(r);
-			if (((new Double(element).isNaN())) || ((new Double(value).isNaN()))) return false;
-			return (element <= value);
-		  }
-		 });
 
 		/**
 		* First build a DOM tree out of the XML query.  
@@ -165,35 +191,10 @@ public class QueryParser3_0
      Document doc = query;
      String msg = null;
 
-	  /**
-	  * Create an instance of the Registry3_0 class. 
-	  */
-	  Registry3_0 reg = new Registry3_0();
-
-	  /**
-	  * Next, call the getRegistrySource method to determine whether
-	  * the registry is stored as an XML file or a database.  The registry
-	  * database has not yet been implemented, so proceed only if the 
-	  * registry response is "xml".
-	  */
-	  String registrySource = null;
-     try {
-        //System.out.println("go get the file");
-        registrySource = getRegistrySource();
-     }catch(Exception e) {
-        e.printStackTrace();
-     }
-     
      String xml_to_xql = null;
-	  if (goodQuery == true){
-		if (registrySource.equals("db")){
-			msg = "Database registry not implemented yet.  Use XML registry.";
-			goodQuery = false;
-		}
-	
-		else if (registrySource.equals("xml")){
-			/**
-			* The registry query that requires conversion to XQL will be contained 
+
+      /**
+		 * The registry query that requires conversion to XQL will be contained 
 			* inside an element called "selectionSequence".  If the selectionSequence 
 			* element is not present, the query is incorrectly formatted. For an example 
 			* of a registry query and links to the registry query schema, please see 
@@ -234,8 +235,25 @@ public class QueryParser3_0
 			*/
 			if (goodQuery == true){
             if (searchElements.equals("") || searchElements.equals("all") || searchElements.equals("*")){
-               xml_to_xql = "//VODescription [" + xml_to_xql + "]";  
-            }
+               xml_to_xql = "//VODescription/* [" + xml_to_xql + "]";  
+            } else if (searchElements.equals("Organisation")){
+               xml_to_xql = "//VODescription/*:Organisation [" + xml_to_xql + "]";   
+            } else if (searchElements.equals("Authority")){
+               xml_to_xql = "//VODescription/*:Authority [" + xml_to_xql + "]";   
+            } else if (searchElements.equals("DataCollection")){
+               xml_to_xql = "//VODescription/*:DataCollection [" + xml_to_xql + "]";   
+            } else if (searchElements.equals("Service")){
+               xml_to_xql = "//VODescription/Service [" + xml_to_xql + "]";   
+            } else if (searchElements.equals("Service")){
+               xml_to_xql = "//VODescription/Service [" + xml_to_xql + "]";   
+            } else if (searchElements.equals("SkyService")){
+               xml_to_xql = "//VODescription/*:SkyService [" + xml_to_xql + "]";   
+            } else if (searchElements.equals("TabularSkyService")){
+               xml_to_xql = "//VODescription/*:TabularSkyService [" + xml_to_xql + "]";   
+            } else if (searchElements.equals("Registry")){
+               xml_to_xql = "//VODescription/*:Regsistry [" + xml_to_xql + "]";   
+            }  
+
             /*
 				if (searchElements.equals("") || searchElements.equals("all") || searchElements.equals("*")){
                xml_to_xql = "//service [" + xml_to_xql + "]";	
@@ -253,38 +271,22 @@ public class QueryParser3_0
                xml_to_xql = "//service[" + xml_to_xql + "]/identity | //service[" + xml_to_xql + "]/serviceMetadataConcept";	
 				}
             */
-				System.out.println("the query = " + xml_to_xql);
+				//System.out.println("the query = " + xml_to_xql);
 				/**
 				* When the XQL query has been constructed, send it to the registry instance
 				* by calling reg.xmlQuery.  Send the registry response from this method, along with
 				* searchElements, to the xqlToXML method to filter the relevant metadata (ie, identity,
 				* curation, content, serviceMetadataConcepts) out of the registry response.
 				*/
-				xqlResponse = xqlToXML(reg.xmlQuery(xml_to_xql), searchElements);								
-                queryResponse = xqlResponse;
-			}
-			
-			/**
-			 * If the query is not well formatted, return the query with an error message.
-			 */
-			else queryResponse = "<queryResponse><recordKeyPair item='ERROR1:' value='" + query + "' /></queryResponse>";
-		}
-		
-		/**
-		 * Return an error if the registry source is neither xml or db.
-		 */
-		else if (!(registrySource.equals("db") | registrySource.equals("xml"))){
-			queryResponse = "<queryResponse><recordKeyPair item='ERROR2:' value='" +registrySource + "'></queryResponse>";
-		}
-	  }
-	  
-	  /**
-	   * If anything else has gone wrong with the query, return an error.
-	   */
-	  else queryResponse = "<queryResponse><recordKeyPair item='ERROR3:' value='" + query + "'></queryResponse>";
-
-      System.out.println("the response = " + queryResponse);
-      return queryResponse;
+				//xqlResponse = xqlToXML(new Registry3_0().xmlQuery(xml_to_xql,RegistryFileHelper.loadRegistryFile()), searchElements);								
+            return new Registry3_0().xmlQuery(xml_to_xql,RegistryFileHelper.loadRegistryFile());
+            //System.out.println("the xqlresponse = " + xqlResponse);
+            //queryResponse = xqlResponse;
+			} else {
+            //throw a not valid formatted document which should not happen since this afterall now a Document object.
+            return null;
+          //   queryResponse = "<queryResponse><recordKeyPair item='ERROR1:' value='" + query + "' /></queryResponse>";
+         }
 	}
 
 	private static String xmlToXQL(Node node) {
@@ -436,6 +438,12 @@ public class QueryParser3_0
 		return xmlResponse;
 	}
 	
+   /**
+    * @deprecated Not used anymore.
+    * 
+    * @param xqlResponse
+    * @return
+    */
 	private static String returnRecordKeyPairs(String xqlResponse){
 		
 		/**
@@ -555,6 +563,11 @@ public class QueryParser3_0
 		return xmlResponse;
 	}
 
+   /**
+    * @deprecated Not used anymore.
+    * @param node
+    * @return
+    */
 	private static String getNodeDetails (Node node) {
 
         /**
@@ -629,70 +642,5 @@ public class QueryParser3_0
 		 * method.
 		 */  
 		return nodeDetails;
-	}
-	
- private static String getRegistrySource(){
-
-    /**
-     * The getRegistrySource method reads an XML file that specifies whether
-     * the registry is stored as a database or an XML file.  
-     */
-    
-
-	String registryPathName = (System.getProperty("user.dir"));
-   System.out.println("regpathname = " + registryPathName);
-	File f = new File(registryPathName);
-	registryPathName = f.getAbsolutePath();
-   System.out.println("regpathname abspath = " + registryPathName);
-	String qpParametersFileName = registryPathName + "/../webapps/org/astrogrid/registry/qpParameters.xml";
-   System.out.println("qpparamaters = " + qpParametersFileName);
-	File qpParametersFile = new File(qpParametersFileName);
-	
-	Document parameterDoc = null;
-	DocumentBuilderFactory parameterFactory = DocumentBuilderFactory.newInstance();
-	DocumentBuilder parameterBuilder = null;
-	String registrySource = null;
- 	boolean goodRegSource = true;
- 	
-	Document doc = null;
-	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-	DocumentBuilder builder = null;
- 	
- 	/**
- 	 * First get read the XML file from the URL and build a DOM tree from the contents.
- 	 */
-	try {
-		parameterBuilder = parameterFactory.newDocumentBuilder();
-		parameterDoc = parameterBuilder.parse(qpParametersFile);
-	}
-	catch (ParserConfigurationException e) {
-		registrySource = "REGISTRY SOURCE - " + e.toString();
-      e.printStackTrace();
-		goodRegSource = false;
-	}
-	catch (Exception e){
-		registrySource = "REGISTRY SOURCE - " + e.toString();
-      e.printStackTrace();
-		goodRegSource = false;
-	}
-
-    /**
-     * If the DOM tree was successfully built, identify element "registrySource".
-     * If the value of this element is not "db" (for database) or "xml" (for XML file),
-     * return an error message.
-     */
-	if (goodRegSource == true){
-		Element parameterDocElement = parameterDoc.getDocumentElement();
-		NodeList parameterNL = parameterDocElement.getElementsByTagName("registrySource");
-		registrySource = parameterNL.item(0).getFirstChild().getNodeValue();
-		if (!(registrySource.equals("db") | registrySource.equals("xml"))){
-			registrySource = "REGISTRY SOURCE - Invalid registry source: must be database or xml file.";
-		}
-	}
-	
-	/** 
-	 * Return the registry source as "xml", "db", or an error message.
-	 */
-	return registrySource;
- }
+	}	
 }

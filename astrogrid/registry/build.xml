@@ -2,13 +2,27 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/registry/build.xml,v $</cvs:source>
     | <cvs:author>$Author: KevinBenson $</cvs:author>
-    | <cvs:date>$Date: 2003/11/14 09:27:01 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2003/11/24 13:53:18 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
-    |   Revision 1.4  2003/11/14 09:27:01  KevinBenson
-    |   What you see here is the result of merging 2 branches.  I branched off Registry a week ago and then really changed around directories more than I should.
-    |   Probably should have cleaned up the directories in the HEAD branch, but Oh well.  Anyways then I created some new files.
+    |   Revision 1.5  2003/11/24 13:53:18  KevinBenson
+    |   A commit of the merging of the registry branch with the HEAD branch version.
+    |
+    |   Revision 1.3.2.7  2003/11/20 14:33:24  KevinBenson
+    |   Added more junit information to get things from an xml file for sending for administration
+    |   Also revamped the query more where it doesn't do anything with strings much.
+    |   Just deals with Document object for the most part now.
+    |
+    |   Revision 1.3.2.6  2003/11/18 09:31:29  KevinBenson
+    |   Couple of new libraries added so the junit test reports can be ran.  
+    |   Added a Filehelper that will read and write document files along with
+    |   compare against Identifiers and can do an update and remove.
+    |
+    |   Revision 1.3.2.5  2003/11/17 10:28:00  KevinBenson
+    |   New build.xml file to run some junit tests and the recursion/conversion routines to
+    |   go between a Treemap and a w3c.dom.Document has been completed.
+    |   Now working on the server side Admin side of it.
     |
     |   Revision 1.3.2.4  2003/11/11 16:11:43  KevinBenson
     |   Added to the Build.xml some junit test in their.
@@ -52,7 +66,10 @@
     <property name="registry.classes" value="${project.build}/registry/classes"/>
     <property name="registry.junit.classes"   value="${project.build}/registry/junit/classes"/>
     <property name="registry.junit.reports"   value="${project.build}/registry/junit/reports"/>
-    <property name="junit.java"       value="${project.home}/test/java"/>    
+    <property name="registry.junit.xml"   value="${project.build}/registry/junit/xml"/>
+    <property name="junit.java"           value="${project.home}/test/java"/>
+    <property name="junit.xml.dir"        value="${project.home}/test/xml"/>
+
 
     <!--+
         | User preferences.
@@ -126,10 +143,21 @@
 		<pathelement location="${project.home}/lib/saaj.jar"/>
 		<pathelement location="${project.home}/lib/xqlpdom_1_0_2.jar"/>
 		<pathelement location="${project.home}/lib/axis.jar"/>
-		<pathelement location="${project.home}/lib/junit.jar"/>
 		<pathelement location="${project.home}/lib/jaxrpc.jar"/>
+		<pathelement location="${project.home}/lib/commons-logging.jar"/>
+		<pathelement location="${project.home}/lib/commons-discovery.jar"/>
 	</path>
     
+  	<path id="junit.classpath">
+	  	<pathelement location="${registry.classes}"/>
+		<pathelement location="${project.home}/lib/junit.jar"/>
+  	</path>
+  	
+  	<path id="junit.run.classpath">
+	  	<pathelement location="${registry.classes}"/>
+		<pathelement location="${project.home}/lib/junit.jar"/>
+		<pathelement location="${registry.junit.classes}"/>
+  	</path>  	
     
     
     <!--+
@@ -155,15 +183,12 @@
     </target>
     
     
-    
-    
-    
     <!--+
         | Compile our registry junit classes
         +-->
     <target name="registry.junit.javac" depends="">
-		<!-- Create our build directory -->
         <mkdir dir="${registry.junit.classes}"/>
+		<!-- Create our build directory -->
         <echo message=""/>
         <echo message="Compiling JavaBeans"/>
         <!-- Compile the classes -->
@@ -176,6 +201,7 @@
             <classpath>
                 <!-- No extra libraries required -->
 				<path refid="registry.classpath"/>
+				<path refid="junit.classpath"/>
             </classpath>
         </javac>
     </target>
@@ -189,18 +215,18 @@
 		<!-- Run our JUnitTestCase tests -->
 		<junit printsummary="yes" haltonfailure="true" haltonerror="true" showoutput="true" fork="true">
 			<classpath>
-				<!-- The Policy classes -->
 				<path refid="registry.classpath"/>
+				<path refid="junit.run.classpath"/>
 			</classpath>
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
+			<sysproperty key="junit.xml.dir" path="${junit.xml.dir}"/>
 			<!-- Run the target JUnitTestCase tests -->
 			<batchtest todir="${registry.junit.reports}">
 				<fileset dir="${registry.junit.classes}">
 					<include name="*.class"/>
 				</fileset>
 			</batchtest>
-			
 		</junit>
 	</target>
     

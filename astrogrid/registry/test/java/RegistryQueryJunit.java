@@ -11,9 +11,6 @@ import java.util.Vector;
 import javax.xml.parsers.DocumentBuilder; 
 import javax.xml.parsers.DocumentBuilderFactory; 
 import javax.xml.parsers.ParserConfigurationException; 
-import org.apache.axis.client.Call; 
-import org.apache.axis.client.Service; 
-import org.apache.axis.message.SOAPBodyElement; 
 import org.apache.axis.utils.XMLUtils; 
 import org.w3c.dom.Document; 
 import org.w3c.dom.Element; 
@@ -21,10 +18,11 @@ import java.io.Reader;
 import java.io.StringReader;
 import org.xml.sax.InputSource;
 import junit.framework.*;
+import java.io.File;
+import org.astrogrid.registry.client.query.RegistryService;
 
 
 public class RegistryQueryJunit extends TestCase{ 
-    private String port; 
 
     public static void main(String[] args) { 
        junit.textui.TestRunner.run(suite());
@@ -38,67 +36,47 @@ public class RegistryQueryJunit extends TestCase{
       return new TestSuite(RegistryQueryJunit.class);
    }
         
-   private Call getCall() throws Exception {
-      Service  service = new Service();
-      Call _call = (Call) service.createCall();
-      String endpoint = 
-          "http://localhost:8080/axis/services/Registry"; 
-      _call.setTargetEndpointAddress(new URL(endpoint));
-      _call.setSOAPActionURI("");
-      _call.setOperationStyle(org.apache.axis.enum.Style.MESSAGE);
-      _call.setOperationUse(org.apache.axis.enum.Use.LITERAL);        
-      _call.setEncodingStyle(null);
-      return _call;       
-    }
+   public void testRegistryFullNodeQueryEqualOrganisationQuery() throws Exception {
+      String fileName = System.getProperty("junit.xml.dir");
+      fileName += "/" + "OrganisationQuery1.xml";
+      File fi = new File(fileName);
+      
+      String requestQuery = " ";      
+      Reader reader2 = new StringReader(requestQuery);
+      InputSource inputSource = new InputSource(reader2);
 
-    private Document getDocument() throws ParserConfigurationException {
-       DocumentBuilder registryBuilder = null;
-       registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-       Document doc = registryBuilder.newDocument();
-       Element root = doc.createElementNS("http://query.server.registry.astrogrid.org","fullNodeQuery");
-       doc.appendChild(root);
-       Element child = doc.createElement("query");
-       root.appendChild(child);
-       Element child2 = doc.createElement("selectionSequence");
-       child.appendChild(child2);
-       Element child3 = doc.createElement("selection");
-       child3.setAttribute("item","searchElements");
-       child3.setAttribute("itemOp","EQ");
-       child3.setAttribute("value","all");
-       child2.appendChild(child3);
-       child3 = doc.createElement("selectionOp");
-       child3.setAttribute("op","AND");
-       child2.appendChild(child3);
-       child3 = doc.createElement("selectionSequence");
-       child2.appendChild(child3);
-       Element child4 = doc.createElement("selection");
-       child4.setAttribute("item","item");
-       child4.setAttribute("itemOp","EQ");
-       child4.setAttribute("value","FITS");
-       child3.appendChild(child4);       
-         return doc;         
-    }
+      DocumentBuilder registryBuilder = null;
+      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      Document doc = registryBuilder.parse(fi);
+      
+      System.out.println("sending " + XMLUtils.DocumentToString(doc));  
+      RegistryService rs = new RegistryService();
+      Document responseDoc = rs.fullNodeQuery(doc);
+      assertNotNull(responseDoc);
+      System.out.println("received " + XMLUtils.DocumentToString(responseDoc));         
+   }
     
-    private Document getDocument2() throws Exception {
-       String regQuery = " ";
-       Reader regReader = new StringReader(regQuery);
-       InputSource inputSource = new InputSource(regReader);
-         
-       DocumentBuilder registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-       Document registryDoc = registryBuilder.parse(inputSource);
-       return registryDoc;
-    }
+/*   
+   public void testRegistrySubmitQueryEqualQueryVODescription() throws Exception {
+      String fileName = System.getProperty("junit.xml.dir");
+      fileName += "/" + "OrganisationQuery1.xml";
+      File fi = new File(fileName);
+      
+      String requestQuery = " ";      
+      Reader reader2 = new StringReader(requestQuery);
+      InputSource inputSource = new InputSource(reader2);
 
-   public void testRegistryEqualQuery() throws Exception {
-      Document regQueryDocument = getDocument(); 
-      System.out.println("sending " + XMLUtils.DocumentToString(regQueryDocument));  
-      Call call = getCall();
-      System.out.println(call.getTargetEndpointAddress()); 
-      Vector result = (Vector) call.invoke (new Object[] {new SOAPBodyElement(regQueryDocument.getDocumentElement())});
-      assertNotNull(result);
-      assertEquals(1,result.size());
-      SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
-      System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));         
+      DocumentBuilder registryBuilder = null;
+      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      Document doc = registryBuilder.parse(fi);
+      
+ 
+      System.out.println("sending " + XMLUtils.DocumentToString(doc));  
+      RegistryService rs = new RegistryService();
+      Document responseDoc = rs.submitQuery(doc);
+      assertNotNull(responseDoc);
+      System.out.println("received " + XMLUtils.DocumentToString(responseDoc));         
     } 
+*/
 } 
 
