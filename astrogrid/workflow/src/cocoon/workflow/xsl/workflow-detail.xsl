@@ -3,6 +3,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 	<xsl:param name="view=source" />
+	<xsl:param name="errormessage" />	
 	
 
 	<!--+
@@ -20,22 +21,28 @@
 	</xsl:template>
 
 	<xsl:template name="workflow-detail">
-	      <strong>Maintain Workflow</strong>
-	      <table border="0">
-	          <tr>
-	              <td>
-	                  Workflow name:<xsl:value-of select="@workflow-name"/>
-	              </td>
-	          </tr>
-	          <tr>
-	              <td>
-           	          Workflow description:<xsl:value-of select="@workflow-description"/>
-           	      </td>
-           	  </tr>
-	      </table> 
-	      <p></p>
-
-	      	        
+	    <table border="0">
+	        <xsl:if test="$errormessage != ''">	
+	            <tr>
+	                <td>
+			            <font color="red">
+				            <xsl:value-of select="$errormessage" />
+			            </font>
+			        </td>
+			    </tr>
+		    </xsl:if>
+	        <tr>
+	            <td>
+	                Workflow name:<xsl:value-of select="@workflow-name"/>
+	             </td>
+	        </tr>
+	        <tr>
+	            <td>
+           	        Workflow description:<xsl:value-of select="@workflow-description"/>
+           	    </td>
+           	</tr>
+	    </table> 
+	    <p></p>  	        
 	</xsl:template>
 	
 	<xsl:template name="workflow-description">
