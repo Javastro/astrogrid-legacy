@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: project.xml,v 1.26 2004/07/27 11:50:00 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.27 2004/09/07 14:05:43 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="xsd/maven-project.xsd">
     <pomVersion>3</pomVersion>
     <name>Astrogrid Master Maven POM</name>
@@ -29,188 +29,204 @@
     </repository>
     <versions/>
     <branches/>
-    <mailingLists/>
-    <developers>
-        <developer>
-            <name>Brian McIlwrath</name>
-            <id>bkm</id>
-            <email>bkm@star.rl.ac.uk</email>
-            <organization> Leicester </organization>
-            <roles>
-                <role> Data Software Developer </role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Catherine Qin</name>
-            <id>clq2</id>
-            <email>clq2@star.le.ac.uk</email>
-            <organization> Leicester </organization>
-            <roles>
-                <role> Integration and Release WGL </role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Clive Davenhall</name>
-            <id>acd</id>
-            <email>acd@roe.ac.uk</email>
-            <organization> ROE </organization>
-            <roles>
-                <role> Data Software Developer </role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Clive Page</name>
-            <id>cgp</id>
-            <email>cgp@star.le.ac.uk</email>
-            <organization> Leicester </organization>
-            <roles>
-                <role> Grid Research Software Developer </role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Dave Morris</name>
-            <id>dave</id>
-            <email>maven-report@codon.demon.co.uk</email>
-            <organization> Cambridge </organization>
-            <roles>
-                <role> Data Software Developer </role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Elizabeth Auden</name>
-            <id>eca</id>
-            <email>eca@mssl.ucl.ac.uk</email>
-            <organization> MSSL </organization>
-            <roles>
-                <role> Grid Research Software Developer </role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Guy Rixon</name>
-            <id>gtr</id>
-            <email>gtr@ast.cam.ac.uk</email>
-            <organization> Cambridge </organization>
-            <roles>
-                <role> Architect </role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Jeff Lusted</name>
-            <id>jl99</id>
-            <email>jl99@star.le.ac.uk</email>
-            <organization> Leicester </organization>
-            <roles>
-                <role> Presentation WGL </role>
-            </roles>
-        </developer>
-        <developer>
-            <name>John Taylor</name>
-            <id>jdt</id>
-            <email>jdt@roe.ac.uk</email>
-            <organization> ROE </organization>
-            <roles>
-                <role> Integration and Release </role>
-                <role> Presentation Software Developer </role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Keith Noddle</name>
-            <id>ktn</id>
-            <email>ktn@star.le.ac.uk</email>
-            <organization> Leicester </organization>
-            <roles>
-                <role> Technical Lead </role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Kevin Benson</name>
-            <id>KevinBenson</id>
-            <email>kmb@mssl.ucl.ac.uk</email>
-            <organization> MSSL </organization>
-            <roles>
-                <role> Data WGL </role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Kona Andrews</name>
-            <id>kea</id>
-            <email>kea@ast.cam.ac.uk</email>
-            <organization> Cambridge </organization>
-            <roles>
-                <role> Grid Research WGL </role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Martin Hill</name>
-            <id>mch</id>
-            <email>mch@roe.ac.uk</email>
-            <organization> ROE </organization>
-            <roles>
-                <role> Data Software Developer </role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Noel Winstanley</name>
-            <id>nw</id>
-            <email>nw@jb.man.ac.uk</email>
-            <organization> Jodrell </organization>
-            <roles>
-                <role> Presentation Software Developer </role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Paul Harrison</name>
-            <id>pah</id>
-            <email>pah@jb.man.ac.uk</email>
-            <organization> Jodrell </organization>
-            <roles>
-                <role> Data Software Developer </role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Pedro Contreras</name>
-            <id>pcontrer</id>
-            <email>P.Contreras@qub.ac.uk</email>
-            <roles>
-                <role> Grid Research Software Developer </role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Peter Shillan</name>
-            <id>gps</id>
-            <email>gps@roe.ac.uk</email>
-            <organization> ROE </organization>
-            <roles>
-                <role> Presentation Software Developer </role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Phil Nicolson</name>
-            <id>pjn3</id>
-            <email>pjn3@star.le.ac.uk</email>
-            <organization> Leicester </organization>
-            <roles>
-                <role> Presentation Software Developer </role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Roy Platon</name>
-            <id>rtp</id>
-            <email>R.T.Platon@rl.ac.uk</email>
-            <roles>
-                <role> Presentation Software Developer </role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Tony Linde</name>
-            <id>ael</id>
-            <email>ael@star.le.ac.uk</email>
-            <organization> Leicester </organization>
-            <roles>
-                <role> Project Manager </role>
-            </roles>
-        </developer>
-    </developers>
+    <mailingLists>
+		<mailingList>
+			<name>Astrogrid Forum</name>
+			<subscribe>http://forum.astrogrid.org</subscribe>
+			<archive>http://forum.astrogrid.org</archive>
+		</mailingList>
+	</mailingLists>
+	<developers>
+		<developer>
+			<name>Tony Linde</name>
+			<id>ael</id>
+			<email>ael@star.le.ac.uk</email>
+			<organization> Leicester </organization>
+			<roles>
+				<role> Project Manager </role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Keith Noddle</name>
+			<id>ktn</id>
+			<email>ktn@star.le.ac.uk</email>
+			<organization> Leicester </organization>
+			<roles>
+				<role> Technical Lead </role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Guy Rixon</name>
+			<id>gtr</id>
+			<email>gtr@ast.cam.ac.uk</email>
+			<organization> Cambridge </organization>
+			<roles>
+				<role> Architect </role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Brian McIlwrath</name>
+			<id>bkm</id>
+			<email>bkm@star.rl.ac.uk</email>
+			<organization> Leicester </organization>
+			<roles>
+				<role> Registry Developer </role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Catherine Qin</name>
+			<id>clq2</id>
+			<email>clq2@star.le.ac.uk</email>
+			<organization> Leicester </organization>
+			<roles>
+				<role> Integration and Release WGL </role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Clive Davenhall</name>
+			<id>acd</id>
+			<email>acd@roe.ac.uk</email>
+			<organization> ROE </organization>
+			<roles>
+				<role> MySpace Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Clive Page</name>
+			<id>cgp</id>
+			<email>cgp@star.le.ac.uk</email>
+			<organization> Leicester </organization>
+			<roles>
+				<role> Grid Research Software Developer </role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Dave Morris</name>
+			<id>dave</id>
+			<email>maven-report@codon.demon.co.uk</email>
+			<organization> Cambridge </organization>
+			<roles>
+				<role> Community Developer</role>
+				<role> MySpace Developer</role>
+				<role> filestore Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Elizabeth Auden</name>
+			<id>eca</id>
+			<email>eca@mssl.ucl.ac.uk</email>
+			<organization> MSSL </organization>
+			<roles>
+				<role> Grid Research Software Developer </role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Jeff Lusted</name>
+			<id>jl99</id>
+			<email>jl99@star.le.ac.uk</email>
+			<organization> Leicester </organization>
+			<roles>
+				<role> Presentation WGL </role>
+				<role> Portal Developer </role>				
+				<role> Workflow Developer </role>				
+			</roles>
+		</developer>
+		<developer>
+			<name>John Taylor</name>
+			<id>jdt</id>
+			<email>jdt@roe.ac.uk</email>
+			<organization> ROE </organization>
+			<roles>
+				<role> Integration, Release, Testing </role>
+				<role> Common Execution Architecture Developer </role>
+				<role> Portal Developer </role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Kevin Benson</name>
+			<id>KevinBenson</id>
+			<email>kmb@mssl.ucl.ac.uk</email>
+			<organization> MSSL </organization>
+			<roles>
+				<role> Data WGL </role>
+				<roe> Registry Developer</roe>
+			</roles>
+		</developer>
+		<developer>
+			<name>Kona Andrews</name>
+			<id>kea</id>
+			<email>kea@ast.cam.ac.uk</email>
+			<organization> Cambridge </organization>
+			<roles>
+				<role> Grid Research WGL </role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Martin Hill</name>
+			<id>mch</id>
+			<email>mch@roe.ac.uk</email>
+			<organization> ROE </organization>
+			<roles>
+				<role> PAL/Datacenter Developer </role>
+				<role> MySpace Developer </role>				
+			</roles>
+		</developer>
+		<developer>
+			<name>Noel Winstanley</name>
+			<id>nw</id>
+			<email>nw@jb.man.ac.uk</email>
+			<organization> Jodrell </organization>
+			<roles>
+				<role> Common Execution Architecture Developer </role>
+				<role> JES/Workflow Developer </role>
+				<role> PAL/Datacenter Developer </role>								
+			</roles>
+		</developer>
+		<developer>
+			<name>Paul Harrison</name>
+			<id>pah</id>
+			<email>pah@jb.man.ac.uk</email>
+			<organization> Jodrell </organization>
+			<roles>
+				<role> Common Execution Architecture Developer </role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Pedro Contreras</name>
+			<id>pcontrer</id>
+			<email>P.Contreras@qub.ac.uk</email>
+			<roles>
+				<role> PAL/Datacenter Developer </role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Peter Shillan</name>
+			<id>gps</id>
+			<email>gps@roe.ac.uk</email>
+			<organization> ROE </organization>
+			<roles>
+				<role> Portal Developer </role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Phil Nicolson</name>
+			<id>pjn3</id>
+			<email>pjn3@star.le.ac.uk</email>
+			<organization> Leicester </organization>
+			<roles>
+				<role> Portal Developer </role>
+				<role> Workflow Developer </role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Roy Platon</name>
+			<id>rtp</id>
+			<email>R.T.Platon@rl.ac.uk</email>
+			<roles>
+				<role> Portal Developer </role>
+			</roles>
+		</developer>
+	</developers>
     <build>
         <sourceDirectory>src/java</sourceDirectory>
         <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
