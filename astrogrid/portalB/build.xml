@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: KevinBenson $</cvs:date>
-    | <cvs:author>$Date: 2003/09/08 14:10:54 $</cvs:author>
-    | <cvs:version>$Revision: 1.40 $</cvs:version>
+    | <cvs:author>$Date: 2003/09/09 22:46:45 $</cvs:author>
+    | <cvs:version>$Revision: 1.41 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.41  2003/09/09 22:46:45  KevinBenson
+    | *** empty log message ***
+    |
     | Revision 1.40  2003/09/08 14:10:54  KevinBenson
     | *** empty log message ***
     |
@@ -168,6 +171,10 @@
 	<property name="junit.src"    value="depends/junit/junit-3.8.1.zip"/>
 	<property name="junit.build"  value="build/junit"/>
 	<property name="junit.home"   value="build/junit"/>
+	
+	<!-- Community client jar -->
+	<property name="community.policy.client.jar" value="depends/community/policy-client-1.0.jar" />
+	<property name="community.home" value="depends/community/" />
 
 	<!-- plugins location -->
 	<property name="plugin.topcat.jar" value="depends/plugins/topcat-astrogrid.jar" />
@@ -261,6 +268,11 @@
 	<path id="plugins.classpath">
 		<pathelement location="${plugin.topcat.jar}"/>
 	</path>
+	
+	<!-- The Plugin libraries -->
+	<path id="community.classpath">
+		<pathelement location="${community.policy.client.jar}"/>
+	</path>	
 
 
 	<!-- ================ Ant tasks ================ -->
@@ -1127,6 +1139,8 @@
 				<path refid="cocoon.classpath"/>
 				
 				<path refid="plugins.classpath"/>
+				
+				<path refid="community.classpath" />
 				<!-- Tomcat servlet libraries (required for Axis 1.0) -->
 				<path refid="tomcat.servlet.classpath"/>
 				<!-- The JUnit libraries -->
@@ -2291,6 +2305,14 @@
 				<include name="**/*.jar"/>
 			</fileset>
 		</copy>
+		
+		<!-- Copy our Community jar -->
+		<copy verbose="false" toDir="build/release/cocoon/webapp/WEB-INF/lib">
+			<fileset dir="${community.home}">
+				<include name="**/*.jar"/>
+			</fileset>
+		</copy>
+		
 		
 		<!-- Copy the Axis client jars -->
 		<copy verbose="false" toDir="build/release/cocoon/webapp/WEB-INF/lib">
