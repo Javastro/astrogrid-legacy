@@ -6,7 +6,7 @@
 
   <!-- a unique name for this project -->
   <id>astrogrid-datawarehouse</id>
-  <name>AstroGrid Data Warehouse</name>
+  <name>Astrogrid Data Warehouse</name>
   
   <currentVersion>HEAD</currentVersion>
 
