@@ -53,10 +53,10 @@ public class JobFactoryImpl implements JobFactory {
 	public static final String
 		JOB_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, JOBNAME, STATUS, SUBMITTIMESTAMP, USERID, COMMUNITY, JOBXML ) " +
 												"VALUES ( ?, ?, ?, ?, ?, ?, ? )" ,	                          
-	    JOB_UPDATE_TEMPLATE = "UPDATE {0} SET STATUS = {1} WHERE JOBURN = {2}" ,
-	    JOB_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = {1}" ,
+	    JOB_UPDATE_TEMPLATE = "UPDATE {0} SET STATUS = {1} WHERE JOBURN = ''{2}''" ,
+	    JOB_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}''" ,
 	    JOB_GENERAL_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE {1}" ,	    
-	    JOB_DELETE_TEMPLATE = "DELETE FROM {0} WHERE JOBURN = {1}" ;
+	    JOB_DELETE_TEMPLATE = "DELETE FROM {0} WHERE JOBURN = ''{1}''" ;
 	    
 	private static final int
 	    COL_JOBURN = 1,
@@ -70,8 +70,8 @@ public class JobFactoryImpl implements JobFactory {
 	public static final String
 		JOBSTEP_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER, STEPNAME, STATUS, COMMENT ) " +
 							  "VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'', ''{5}'' )" ,
-        JOBSTEP_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = {1}",
-        JOBSTEP_UPDATE_TEMPLATE = "UPDATE {0} SET ( STATUS, COMMENT ) = ( {1}, {2} ) WHERE JOBURN = {3} AND STEPNUMBER = {4}"  ; 
+        JOBSTEP_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}''",
+        JOBSTEP_UPDATE_TEMPLATE = "UPDATE {0} SET ( STATUS, COMMENT ) = ( {1}, {2} ) WHERE JOBURN = ''{3}'' AND STEPNUMBER = ''{4}''"  ; 
 
 	private static final int
 		COL_JOBSTEP_JOBURN = 1,
@@ -282,7 +282,8 @@ public class JobFactoryImpl implements JobFactory {
 			inserts[2] = job.getId() ;
 
 			String
-			   updateString = MessageFormat.format( JOB_UPDATE_TEMPLATE, inserts ) ; 			
+			   updateString = MessageFormat.format( JOB_UPDATE_TEMPLATE, inserts ) ; 
+			if( TRACE_ENABLED ) logger.debug( "JobFactoryImp.updateJob() sql : " + updateString ) ; 			   			
 			statement = this.getConnection().createStatement() ;
 			statement.executeQuery( updateString );
 			updateJobSteps( job ) ;
@@ -317,7 +318,8 @@ public class JobFactoryImpl implements JobFactory {
 			inserts[1] = jobURN ;
 
 			String
-			   selectString = MessageFormat.format( JOB_SELECT_TEMPLATE, inserts ) ; 			
+			   selectString = MessageFormat.format( JOB_SELECT_TEMPLATE, inserts ) ;
+			if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.findJob() sql: " + selectString) ;			    			
 			statement = this.getConnection().createStatement() ;
 			rs = statement.executeQuery( selectString );
 			
@@ -385,7 +387,8 @@ public class JobFactoryImpl implements JobFactory {
 			inserts[1] = criteriaString ;
 
 			String
-			   selectString = MessageFormat.format( JOB_GENERAL_SELECT_TEMPLATE, inserts ) ; 			
+			   selectString = MessageFormat.format( JOB_GENERAL_SELECT_TEMPLATE, inserts ) ; 
+			if( TRACE_ENABLED ) logger.debug( "JobFactoryImp.findJobsWhere() sql : " + selectString ) ;			
 			statement = this.getConnection().createStatement() ;
 			rs = statement.executeQuery( selectString );
 			
@@ -452,7 +455,8 @@ public class JobFactoryImpl implements JobFactory {
 			inserts[1] = job.getId() ;
 
 			String
-			   deleteString = MessageFormat.format( JOB_DELETE_TEMPLATE, inserts ) ; 			
+			   deleteString = MessageFormat.format( JOB_DELETE_TEMPLATE, inserts ) ; 
+			if( TRACE_ENABLED ) logger.debug( "JobFactoryImp.deleteJob() sql : " + deleteString ) ; 			
 			statement = getConnection().createStatement() ;
 			statement.executeUpdate( deleteString );
 			   
