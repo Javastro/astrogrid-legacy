@@ -3,11 +3,6 @@
 <project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
 <!-- hooks to farm out everything to subprojects -->
 
-
-<goal name="nww">
-</goal>
-
-
 <!-- this is the goal called by nightly build -->
 <preGoal name="jar:deploy-snapshot">
 	<!-- workaround for a bug -->
