@@ -69,32 +69,6 @@ public class NvoConeTest extends OptionalTestCase
       
    }
    
-   /**
-    * Tests against a real service - Messier
-    * @see http://voservices.org/cone/register/showlist.asp for a list of nvo cone search implementations
-    *
-   public void testMessier() throws MalformedURLException, IOException
-   {
-      ConeSearcher searcher = DatacenterDelegateFactory.makeConeSearcher(" http://virtualsky.org/servlet/cover?CAT=messier");
-      
-      InputStream results = searcher.coneSearch(20,-30,20);
-      
-      checkResults(results);
-   }
-   
-   /**
-    * Tests against a real service - NCSA Radio
-    * @see http://voservices.org/cone/register/showlist.asp for a list of nvo cone search implementations
-    *
-   public void testNcsa() throws MalformedURLException, IOException
-   {
-      ConeSearcher searcher = DatacenterDelegateFactory.makeConeSearcher("http://adil.ncsa.uiuc.edu/cgi-bin/vocone?survey=f");
-      
-      InputStream results = searcher.coneSearch(120,90,10);
-      
-      checkResults(results);
-   }
-    /**/
    public void checkResults(InputStream results)
    {
       //horrible horrible Javot requiring a particular parser...
@@ -134,6 +108,9 @@ public class NvoConeTest extends OptionalTestCase
 
 /*
  $Log: NvoConeTest.java,v $
+ Revision 1.7  2004/03/22 16:33:15  mch
+ Added tests against real services
+
  Revision 1.6  2004/03/12 20:04:39  mch
  It05 Refactor (Client)
 
