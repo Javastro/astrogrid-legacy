@@ -20,7 +20,7 @@
          from the repository and (re-)deployed to a variety of test machines.  You can find out what goes where by looking at the ant 
          script deployWebapps.xml.
        </p>
-       <subsection name="What's next?"/>
+       <subsection name="What's next?">
        	<P>
        		All components bar registry are being deployed, but only mySpace and JES are configured correctly.  Rest are pending....
        	</P>
