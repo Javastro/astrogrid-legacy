@@ -313,6 +313,11 @@ public class MySpaceActions
 //                     Delete the original entry from the registry.
 
                         reg.deleteDataItemRecord(oldDataItemID);
+
+//
+//                     Set the return argument to the new dataItem.
+
+                        returnedDataItem = newDataItem;
                      }
                      else
                      {  status.addCode("MS-E-FLMOVDH",
