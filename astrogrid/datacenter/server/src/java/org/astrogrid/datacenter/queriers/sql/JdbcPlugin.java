@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.15 2004/08/11 13:34:22 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.16 2004/08/11 18:54:54 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -253,7 +253,10 @@ public class JdbcPlugin extends QuerierPlugin  {
                
                while (columns.next()) {
                   int sqlType = Integer.parseInt(getColumnValue(columns, "DATA_TYPE"));
-                  XmlTagPrinter colTag = tableTag.newTag("Column", "name='"+getColumnValue(columns, "COLUMN_NAME")+"' "+getVotableType(sqlType));
+                  XmlTagPrinter colTag = tableTag.newTag(
+                     "Column",
+                     "name='"+getColumnValue(columns, "COLUMN_NAME")+"' "+getVotableType(sqlType)+" indexed='false'"
+                  );
                   colTag.writeComment("schema='"+getColumnValue(columns, "TABLE_SCHEM")+"'");
                   colTag.writeComment("cat='"+getColumnValue(columns, "TABLE_CAT")+"'");
                   colTag.writeComment("table='"+getColumnValue(columns, "TABLE_NAME")+"'");
@@ -293,3 +296,4 @@ public class JdbcPlugin extends QuerierPlugin  {
    
    
 }
+
