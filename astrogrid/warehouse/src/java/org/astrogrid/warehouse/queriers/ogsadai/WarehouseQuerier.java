@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.3 2003/12/02 10:00:33 gtr Exp $
+ * $Id: WarehouseQuerier.java,v 1.4 2003/12/02 12:00:11 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,7 +8,7 @@ package org.astrogrid.warehouse.queriers.ogsadai;
 
 import org.astrogrid.warehouse.service.SystemTalker;
 import org.astrogrid.warehouse.service.TalkResult;
-import org.astrogrid.warehouse.service.GdsDelegate;
+import org.astrogrid.warehouse.ogsadai.GdsDelegate;
 
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
@@ -602,6 +602,9 @@ public class WarehouseQuerier extends SqlQuerierSPI
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.4  2003/12/02 12:00:11  gtr
+GdsDelegate is imported from its new package org.astrogrid.warehouse.ogsadai.
+
 Revision 1.3  2003/12/02 10:00:33  gtr
 Refectored to org.astrogrid.warehouse.ogsadai.
 
