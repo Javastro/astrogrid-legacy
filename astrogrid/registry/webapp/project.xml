@@ -381,7 +381,7 @@
         <!--+
             | The location of our Java source code.
             +-->
-        <sourceDirectory>src/java</sourceDirectory>
+        <sourceDirectory>src/java-tmp</sourceDirectory>
     	
     	<!--
         <resources>
@@ -398,32 +398,11 @@
         <!--+
             | The location of our JUnit source code.
             +-->
-        <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+        <unitTestSourceDirectory/>
         <!--+
             | Our JUnit test classes.
             +-->
-        <unitTest>
-            <!--+
-                | Which tests to include.
-                +-->
-            <includes>
-                <include>**/*Test.java</include>
-            </includes>
-            <!--+
-                | Which tests to exclude.
-                +-->
-            <excludes>
-                <exclude>**/*Test.frog</exclude>
-            </excludes>
-            <!--+
-                | The resources for our tests.
-            +-->
-            <resources>
-                <resource>
-                </resource>
-            </resources>
-
-        </unitTest>
+        <unitTest/>
     </build>
     <reports>
         <report><!--few reports for this subproject-->
