@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://adql.ivoa.net/v0.8">
+  <Selection>
+    <Items>
+      <SelectionItem xsi:type="AllSelectionItem" />
+    </Items>
+  </Selection>
+  <TableClause>
+    <FromClause>
+      <TableReference>
+        <Table>
+          <Name>Tab</Name>
+          <AliasName>t</AliasName>
+        </Table>
+      </TableReference>
+    </FromClause>
+  </TableClause>
+</Select>

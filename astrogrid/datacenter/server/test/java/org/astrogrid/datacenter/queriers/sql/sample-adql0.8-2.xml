@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SQL equivalent
+Select t.a, g.d from Tab a, Tab d where a.d < d.e and a.f < d.f order by t.f, g.b
+-->
+<Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://adql.ivoa.net/v0.8">
+  <Selection>
+    <Items>
+      <SelectionItem xsi:type="ExprSelectionItem">
+        <Expr xsi:type="ColumnExpr">
+          <Column xsi:type="SingleColumnReference">
+            <TableName>t</TableName>
+            <Name>a</Name>
+          </Column>
+        </Expr>
+      </SelectionItem>
+      <SelectionItem xsi:type="ExprSelectionItem">
+        <Expr xsi:type="ColumnExpr">
+          <Column xsi:type="SingleColumnReference">
+            <TableName>g</TableName>
+            <Name>d</Name>
+          </Column>
+        </Expr>
+      </SelectionItem>
+    </Items>
+  </Selection>
+  <TableClause>
+    <FromClause>
+      <TableReference>
+        <Table>
+          <Name>Tab</Name>
+          <AliasName>a</AliasName>
+        </Table>
+        <Table>
+          <Name>Tab</Name>
+          <AliasName>d</AliasName>
+        </Table>
+      </TableReference>
+    </FromClause>
+    <WhereClause>
+      <Condition xsi:type="IntersectionSearch">
+        <FirstCondition xsi:type="PredicateSearch">
+          <Pred xsi:type="ComparisonPred">
+            <FirstExpr xsi:type="ColumnExpr">
+              <Column xsi:type="SingleColumnReference">
+                <TableName>a</TableName>
+                <Name>d</Name>
+              </Column>
+            </FirstExpr>
+            <Compare>&lt;</Compare>
+            <SecondExpr xsi:type="ColumnExpr">
+              <Column xsi:type="SingleColumnReference">
+                <TableName>d</TableName>
+                <Name>e</Name>
+              </Column>
+            </SecondExpr>
+          </Pred>
+        </FirstCondition>
+        <SecondCondition xsi:type="PredicateSearch">
+          <Pred xsi:type="ComparisonPred">
+            <FirstExpr xsi:type="ColumnExpr">
+              <Column xsi:type="SingleColumnReference">
+                <TableName>a</TableName>
+                <Name>f</Name>
+              </Column>
+            </FirstExpr>
+            <Compare>&lt;</Compare>
+            <SecondExpr xsi:type="ColumnExpr">
+              <Column xsi:type="SingleColumnReference">
+                <TableName>d</TableName>
+                <Name>f</Name>
+              </Column>
+            </SecondExpr>
+          </Pred>
+        </SecondCondition>
+      </Condition>
+    </WhereClause>
+  </TableClause>
+  <OrderBy>
+    <OrderList>
+      <Order>
+        <Expr xsi:type="ColumnExpr">
+          <Column xsi:type="SingleColumnReference">
+            <TableName>t</TableName>
+            <Name>f</Name>
+          </Column>
+        </Expr>
+      </Order>
+      <Order>
+        <Expr xsi:type="ColumnExpr">
+          <Column xsi:type="SingleColumnReference">
+            <TableName>g</TableName>
+            <Name>b</Name>
+          </Column>
+        </Expr>
+      </Order>
+    </OrderList>
+  </OrderBy>
+</Select>

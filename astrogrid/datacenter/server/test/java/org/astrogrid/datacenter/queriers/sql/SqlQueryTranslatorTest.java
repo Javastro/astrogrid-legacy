@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.9 2004/03/12 20:11:09 mch Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.10 2004/03/17 18:02:01 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.datacenter.queriers.sql;
 
 import java.io.InputStream;
 import java.util.Properties;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
@@ -47,37 +48,46 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
     
     /** Test makes valid SQL from cone earch */
     public void testCone() throws Exception {
+       
+       SimpleConfig.getSingleton().setProperty("conesearch.table", "OBJECTS");
+       SimpleConfig.getSingleton().setProperty("conesearch.ra.column", "ra");
+       SimpleConfig.getSingleton().setProperty("conesearch.dec.column", "dec");
+       
        String sql = translator.fromCone(new ConeQuery(20,20,3));
        
        //this would be a nasty check...
     }
 
     /** ADQLn - run as separate tests so all get checked even if one fails */
-    public void testAdql1() throws Exception { doFromFile(1); }
+    public void testAdql051() throws Exception { doFromFile("adql0.5", 1); }
+    public void testAdql081() throws Exception { doFromFile("adql0.8", 1); }
+    public void testSadql111() throws Exception { doFromFile("sadql1.1", 1); }
     
     /** ADQLn - run as separate tests so all get checked even if one fails */
-    public void testAdql2() throws Exception { doFromFile(2); }
+    public void testAdql052() throws Exception { doFromFile("adql0.5", 2); }
+    public void testAdql082() throws Exception { doFromFile("adql0.5", 2); }
+    public void testSadql112() throws Exception { doFromFile("sadql1.1", 2); }
     
     /** ADQLn - run as separate tests so all get checked even if one fails */
-    public void testAdql3() throws Exception { doFromFile(3); }
+    public void testAdql3() throws Exception { doFromFile("adql0.5", 3); }
     
     /** ADQLn - run as separate tests so all get checked even if one fails */
-    public void testAdql4() throws Exception { doFromFile(4); }
+    public void testAdql4() throws Exception { doFromFile("adql0.5", 4); }
     
     /** ADQLn - run as separate tests so all get checked even if one fails */
-    public void testAdql5() throws Exception { doFromFile(5); }
+    public void testAdql5() throws Exception { doFromFile("adql0.5", 5); }
     
     /** ADQLn - run as separate tests so all get checked even if one fails */
-    public void testAdql6() throws Exception { doFromFile(6); }
+    public void testAdql6() throws Exception { doFromFile("adql0.5", 6); }
     
     /** Test makes valid SQL from simple adql */
-    public void doFromFile(int testNum) throws Exception {
-       String filename = "sample"+testNum+".xml";
+    public void doFromFile(String ver, int testNum) throws Exception {
+       String filename = "sample-"+ver+"-"+testNum+".xml";
        Document adqlDom = DomHelper.newDocument( this.getClass().getResourceAsStream(filename));
        AdqlQuery adqlQuery = new AdqlQuery(adqlDom.getDocumentElement());
        
        String result = translator.fromAdql(adqlQuery).trim();
-       String correct = correctSql.getProperty(filename).trim();
+       String correct = correctSql.getProperty("sample"+testNum).trim();
        assertEquals(correct, result);
     }
 
@@ -91,6 +101,9 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: SqlQueryTranslatorTest.java,v $
+Revision 1.10  2004/03/17 18:02:01  mch
+Adding translation tests
+
 Revision 1.9  2004/03/12 20:11:09  mch
 It05 Refactor (Client)
 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SELECT * FROM Tab t -->
+
+<ADQ xmlns="http://astrogrid.org/sadql/v1.1">
+   <From>
+      <Column>
+         <Alias>t</Alias>
+         <Table>Tab</Table>
+         <Column>spurious</Column>
+      </Column>
+   </From>
+   <Return>
+      <Set>
+         <All/>
+      </Set>
+   </Return>
+</ADQ>
+
