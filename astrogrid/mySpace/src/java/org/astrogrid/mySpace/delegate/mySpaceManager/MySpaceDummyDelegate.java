@@ -26,10 +26,12 @@ import java.util.Vector;
 
 public class MySpaceDummyDelegate extends MySpaceManagerDelegate
 {
-   File dir = null;
+   private File dir = null;
 
    public static final String OVERWRITE = "Overwrite";
    public static final String APPEND = "Append";
+   
+   public static final String DUMMY = "http://Dummy.address/"; //use this URL to ask for a dummy delegate
 
    /**
     * Class for filtering filenames based on the given criteria
@@ -66,7 +68,8 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
 
       //replace all ":"s and "/"s with "_"s,
       String dirName = givenEndPoint.replace(':', '_');
-      dirName = givenEndPoint.replace('/', '_');
+      dirName = dirName.replace('/', '_');
+      
       //use createTemporary file instead - will always be able to create it somewhere.
       try {
         dir = File.createTempFile("MySpaceDummy" + dirName,"");
@@ -97,7 +100,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
    * @param: criteria: eg./userid/communityid/workflows/A*
    * @return: Vector of String of fileNames
    */
-   public Vector listDataHoldings(String userid, String communityid, String criteria) {
+   public Vector listDataHoldings(String userid, String communityid, String credentials, String criteria) {
 
       String[] matchingFilenames = dir.list(new CriteriaFilenameFilter(criteria));
 
@@ -112,7 +115,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
     * @param criteria
     * @return Vector of strings, each one an XML snippet
     */
-   public Vector listDataHoldingsGen(String userid, String communityid, String criteria)  {
+   public Vector listDataHoldingsGen(String userid, String communityid, String credentials, String criteria)  {
 
       Vector matchingFilesXml = new Vector(); //list of xml strings
 
@@ -150,7 +153,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
     * @param serverFileName: full file name eg: /clq/serv1/File1.xml
     * @return
     */
-   public String listDataHolding(String userid, String communityid, String serverFileName)  {
+   public String listDataHolding(String userid, String communityid, String credentials, String serverFileName)  {
 
       File file = new File(getPath(userid, communityid)+serverFileName);
 
@@ -168,7 +171,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
     * @param destFileName: full file name copy to
     * @return
     */
-   public String copyDataHolding(String userid, String communityid, String sourceFileName, String destFileName)
+   public String copyDataHolding(String userid, String communityid, String credentials, String sourceFileName, String destFileName)
       throws IOException {
 
       File source = new File(getPath(userid, communityid)+sourceFileName);
@@ -207,7 +210,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
     * @return
     */
 
-   public String renameDataHolding(String userid, String communityid, String oldFileName, String newFileName)  throws IOException {
+   public String renameDataHolding(String userid, String communityid, String credentials, String oldFileName, String newFileName)  throws IOException {
 
       File file = new File(getPath(userid, communityid)+oldFileName);
       File dest = new File(getPath(userid, communityid)+newFileName);
@@ -234,7 +237,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
     * @return
     * @throws Exception
     */
-   public String deleteDataHolding(String userid, String communityid, String serverFileName)  throws IOException {
+   public String deleteDataHolding(String userid, String communityid, String credentials, String serverFileName)  throws IOException {
 
       File file = new File(getPath(userid, communityid)+serverFileName);
 
@@ -262,7 +265,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
    * @return: boolean true if file successfully stored in MySapce false otherwise.
    */
 
-   public boolean saveDataHolding(String userid, String communityid, String fileName, String fileContent,
+   public boolean saveDataHolding(String userid, String communityid, String credentials, String fileName, String fileContent,
                                   String category, String action) throws IOException
    {
       boolean append = false;
@@ -298,7 +301,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
     * @throws Exception
     */
 
-   public boolean saveDataHoldingURL(String userid, String communityid, String fileName, String importURL,
+   public boolean saveDataHoldingURL(String userid, String communityid, String credentials, String fileName, String importURL,
                            String category, String action) throws  IOException {
 
       boolean append = false;
@@ -342,7 +345,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
    * @param: fullFileName: full file name in mySpace for Workflow or Query you want to find
    * @return: URL of file
    */
-   public URL getDataHoldingUrl(String userid, String communityid, String fullFileName) throws IOException {
+   public String getDataHoldingUrl(String userid, String communityid, String credentials, String fullFileName) throws IOException {
 
       File file = new File(getPath(userid, communityid)+fullFileName);
 
@@ -350,7 +353,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
 
       String fullpath = file.getCanonicalPath();
 
-      return new URL("file://"+fullpath);
+      return "file://"+fullpath;
    }
 
    /**
@@ -361,9 +364,9 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
    * @param: fullFileName: full file name in mySpace for Workflow or Query you want be downloaded.
    * @return: file content in String format
    */
-   public InputStream getDataHoldingStream(String userid, String communityid, String fullFileName) throws IOException {
+   public InputStream getDataHoldingStream(String userid, String communityid, String credentials, String fullFileName) throws IOException {
 
-      URL url = getDataHoldingUrl(userid, communityid, fullFileName);
+      URL url = new URL( getDataHoldingUrl(userid, communityid, credentials, fullFileName));
 
       return url.openStream();
    }
@@ -377,9 +380,9 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
    * @param: fullFileName: full file name in mySpace for Workflow or Query you want be downloaded.
    * @return: file content in String format
    */
-   public String getDataHoldingContents(String userid, String communityid, String fullFileName) throws IOException {
+   public String getDataHoldingContents(String userid, String communityid, String credentials, String fullFileName) throws IOException {
 
-      InputStream in = new BufferedInputStream(getDataHoldingStream(userid, communityid, fullFileName));
+      InputStream in = new BufferedInputStream(getDataHoldingStream(userid, communityid, credentials, fullFileName));
       ByteArrayOutputStream out = new ByteArrayOutputStream();
 
       byte[] block = new byte[100];
@@ -400,7 +403,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
    /**
     * Release is permanent on dummy.  Does nothing
     */
-   public String extendLease(String userid, String communityid, String serverFileName, int extentionPeriod)
+   public String extendLease(String userid, String communityid, String credentials, String serverFileName, int extentionPeriod)
    {
       return "done";
    }
@@ -425,7 +428,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
     * @param newContainerName
     * @return
     */
-   public String createContainer(String userid, String communityid, String newContainerName)
+   public String createContainer(String userid, String communityid, String credentials, String newContainerName)
    {
       throw new UnsupportedOperationException();
    }
