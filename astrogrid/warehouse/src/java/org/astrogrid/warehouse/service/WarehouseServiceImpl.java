@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseServiceImpl.java,v 1.5 2003/10/29 17:01:05 kea Exp $
+ * $Id: WarehouseServiceImpl.java,v 1.6 2003/10/30 21:11:06 kea Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -7,10 +7,14 @@
 package org.astrogrid.warehouse.service;
 
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.io.FileInputStream;
 import java.rmi.RemoteException;
 
 import org.w3c.dom.Element;
+
+import java.util.Properties;
 
 // Java Classes from OGSA-DAI
 
@@ -60,6 +64,14 @@ import uk.org.ogsadai.wsdl.gdsf.GridDataServiceFactoryServiceLocator;
 
 /**
  * In-progress web service front-end for OGSA-DAI-based data warehouse.
+ *  
+ * The interface to the service has been designed to be compatible with
+ * the datacentre interface.
+ * 
+ * This implementation involves a nasty hack to get around incompatibilities
+ * between vanilla axis and ogsa axis:  when this class runs in Axis,
+ * it needs to shell out to the command-line and re-run itself using a 
+ * separate JVM (which knows where to find all of the OGSA-DAI jars).
  *
  * @author K Andrews 
  */
@@ -75,24 +87,32 @@ public class WarehouseServiceImpl
      */ 
     private boolean invokedViaAxis = true;
 
-    // ----------------------------------------------------------
-    // TOFIX: All these strings should be in a Properties file
-    //
-    private final String HOST_STRING = 
-        "http://astrogrid.ast.cam.ac.uk:4040";
-    private final String REGISTRY_STRING = 
-        "/ogsa/services/ogsadai/DAIServiceGroupRegistry";
-    private final String FACTORY_STRING = 
-        "/ogsa/services/ogsadai/GridDataServiceFactory";
+    /**
+     * Configuration properties for this service.
+     * These use the WarehouseServiceImpl.properties file to discover
+     * the location of the OGSA-DAI warehouse services, configure 
+     * OGSA-DAI input etc.
+     */
+    private Properties serviceProperties = null;
 
-    private final String WAREHOUSE_JVM = 
+    // ----------------------------------------------------------
+    // Fallback defaults for values that should be configured on a
+    // per-installation basis in the WarehouseServiceImpl.properties 
+    // file.
+    //
+    private final String DEFAULT_HOST_STRING = 
+        "http://astrogrid.ast.cam.ac.uk:4040";
+    private final String DEFAULT_REGISTRY_STRING = 
+        "/ogsa/services/ogsadai/DAIServiceGroupRegistry";
+
+    private final String DEFAULT_WAREHOUSE_JVM = 
         "/data/cass123a/gtr/jdk-ogsa/bin/java";
-    private final String WAREHOUSE_CLASSPATH =
+    private final String DEFAULT_WAREHOUSE_CLASSPATH =
         "/data/cass123a/kea/tomcat_cass111/webapps/axis/WEB-INF/classes";
-    private final String WAREHOUSE_SERVICE =
+    private final String DEFAULT_WAREHOUSE_SERVICE =
         "org.astrogrid.warehouse.service.WarehouseServiceImpl";
 
-    private final String PERFORM_HEAD = 
+    private final String DEFAULT_PERFORM_HEAD = 
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + 
       "<gridDataServicePerform " +
       "xmlns=\"http://ogsadai.org.uk/namespaces/2003/07/gds/types\" " +
@@ -103,14 +123,14 @@ public class WarehouseServiceImpl
       // SHOULD WE PUT THE SCHEMA ON AN ASTROGRID URL?
       " /data/cass123a/kea/ogsadai-src/schema/ogsadai/xsd/activities/activities.xsd\">";
 
-    private final String PERFORM_QUERY_START = 
+    private final String DEFAULT_PERFORM_QUERY_START = 
       "<sqlQueryStatement name=\"statement\"><expression>";
 
-    private final String PERFORM_QUERY_END = 
+    private final String DEFAULT_PERFORM_QUERY_END = 
       "</expression><webRowSetStream name=\"statementOutput\"/>" +
       "</sqlQueryStatement>";
 
-    private final String PERFORM_FOOT = "</gridDataServicePerform>";
+    private final String DEFAULT_PERFORM_FOOT = "</gridDataServicePerform>";
     // ----------------------------------------------------------
 
     // ----------------------------------------------------------
@@ -123,7 +143,32 @@ public class WarehouseServiceImpl
     //private String destFile = "";
     // ----------------------------------------------------------
 
-/**
+ /**
+  * Default constructor loads properties from co-located file.
+  * These properties are installation-dependent but user-independent.
+  */
+  public WarehouseServiceImpl() throws RemoteException {
+
+  // create and load default properties
+    serviceProperties = new Properties();
+    try {
+      FileInputStream in = 
+          new FileInputStream("WarehouseServiceImpl.properties");
+      serviceProperties.load(in);
+      in.close();
+    }
+    catch (FileNotFoundException e) {
+      throw new RemoteException(
+          "Couldn't find properties file WarehouseServiceImpl.properties", e);
+    }
+    catch (IOException e) {
+      throw new RemoteException(
+          "Couldn't load properties from WarehouseServiceImpl.properties: " + 
+           e.getMessage(), e);
+    }
+  }
+
+ /**
   * Returns the metadata file
   * @soap
   */
@@ -187,11 +232,16 @@ public class WarehouseServiceImpl
     if (invokedViaAxis) {
 
       String[] cmdArgs = new String[5];
-      cmdArgs[0] = WAREHOUSE_JVM;
+      cmdArgs[0] = serviceProperties.getProperty(
+                    "WAREHOUSE_JVM", DEFAULT_WAREHOUSE_JVM);
       cmdArgs[1] = "-cp";
-      cmdArgs[2] = WAREHOUSE_CLASSPATH;
-      cmdArgs[3] = WAREHOUSE_SERVICE; 
+      cmdArgs[2] = serviceProperties.getProperty(
+                    "WAREHOUSE_CLASSPATH", DEFAULT_WAREHOUSE_CLASSPATH);
+      cmdArgs[3] = serviceProperties.getProperty(
+                    "WAREHOUSE_SERVICE", DEFAULT_WAREHOUSE_SERVICE); 
       cmdArgs[4] = "startQuery";
+      // TOFIX SHOULD HAVE JOB ID HERE
+      cmdArgs[5] = "654321";
 
       SystemTalker talker = new SystemTalker();
       TalkResult result = talker.talk(cmdArgs, "");
@@ -206,7 +256,12 @@ public class WarehouseServiceImpl
 
     // Fallthrough case - not running in Axis, so do actual query!
 
-    String registryURLString = HOST_STRING + REGISTRY_STRING;
+    String registryURLString = 
+        serviceProperties.getProperty(
+            "HOST_STRING", DEFAULT_HOST_STRING) + 
+        serviceProperties.getProperty(
+            "REGISTRY_STRING", DEFAULT_REGISTRY_STRING);
+  
     int timeout = 300;  // TOFIX configurable?
 
     //TOFIX Just a hardwired query for initial testing
@@ -319,8 +374,16 @@ public class WarehouseServiceImpl
   * @param sqlString  A string containing a pure SQL query.
   */
   private String makeXMLPerformDoc(String sqlString) {
-    return PERFORM_HEAD + PERFORM_QUERY_START  + sqlString +
-        PERFORM_QUERY_END  + PERFORM_FOOT;
+    return 
+      serviceProperties.getProperty(
+          "PERFORM_HEAD", DEFAULT_PERFORM_HEAD) + 
+      serviceProperties.getProperty(
+          "PERFORM_QUERY_START", DEFAULT_PERFORM_QUERY_START) + 
+      sqlString +
+      serviceProperties.getProperty(
+          "PERFORM_QUERY_END", DEFAULT_PERFORM_QUERY_END) + 
+      serviceProperties.getProperty(
+          "PERFORM_FOOT", DEFAULT_PERFORM_FOOT);
   }
 
   /**
@@ -434,16 +497,33 @@ public class WarehouseServiceImpl
     // We're not running in axis
     service.invokedViaAxis = false;
 
-    // TOFIX - it's only startQuery that needs to be invoked like
-    // this, so add check on commandline args.
+    // This main() hack currently supports startQuery(), so check that
+    // this is the method requested.
+    String methodName;
+    String jobID;
+    try {
+      methodName = args[0];
+      if (! methodName.equals("startQuery")) {
+        throw new RemoteException(
+           "Method " + methodName + "is not supported at the command-line.");
+      }
+      jobID = args[1];
+    }
+    catch (ArrayIndexOutOfBoundsException e) {
+      throw new RemoteException(
+          "Unexpected number of command-line arguments (" + 
+         Integer.toString(args.length) + ")", e);
+    }
 
-    // TOFIX - need to have proper job ID and destination URL
-    // from command-line
-    service.startQuery("123456");
+    // TOFIX - need to have proper destination URL from command-line
+    service.startQuery(jobID);
   }
 }
 /*
 $Log: WarehouseServiceImpl.java,v $
+Revision 1.6  2003/10/30 21:11:06  kea
+Moved properties to properties file.
+
 Revision 1.5  2003/10/29 17:01:05  kea
 Due to problems with axis/ogsa-axis incompatibilities, altered web
 service implementation to shell out to separate JVM outside tomcat
