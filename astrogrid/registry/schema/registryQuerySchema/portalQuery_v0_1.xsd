@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    <xs:element name="typeList" type="xs:string"/>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" minOccurs="0" name="type" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="wavelength">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element maxOccurs="1" minOccurs="0" ref="radio"/>
+                <xs:element maxOccurs="1" minOccurs="0" ref="optical"/>
+                <xs:element maxOccurs="1" minOccurs="0" ref="uv"/>
+                <xs:element maxOccurs="1" minOccurs="0" ref="infrared"/>
+                <xs:element maxOccurs="1" minOccurs="0" ref="gammaRay"/>
+                <xs:element maxOccurs="1" minOccurs="0" ref="xRay"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="keywordList">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" minOccurs="0" name="keyword" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="portalQuery">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="1" minOccurs="1" ref="typeList"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="wavelength"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="keywordList"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
