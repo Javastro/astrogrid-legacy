@@ -14,5 +14,10 @@
             <property name="severity" value="error"/>
             <property name="tokens" value="CLASS_DEF, INTERFACE_DEF"/>
         </module>
+<module name="GenericIllegalRegexp">
+    <property name="format" value="System\.(out|err)\.print"/>
+    <property name="message" value="should this be using commons logging?"/>
+</module>
+
     </module>
 </module>
