@@ -12,6 +12,7 @@ import org.apache.cocoon.acting.AbstractAction;
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.Request;
+import org.apache.cocoon.environment.Session;
 import org.apache.cocoon.environment.SourceResolver;
 import org.apache.log4j.Category;
 import org.astrogrid.portal.utils.acting.ActionUtils;
@@ -71,22 +72,23 @@ public class TestAction extends AbstractAction {
     ActionUtils utils = ActionUtilsFactory.getActionUtils();
     
     Request request = ObjectModelHelper.getRequest(objectModel);
+    Session session = request.getSession(true);
 
     ValidationHandler handler = new ValidationHandler();
     try {
       String delegateService = params.getParameter("datacenter-delegate-service", DatacenterDelegateFactory.DUMMY_SERVICE);
       logger.debug("[act] delegate service type: " + delegateService);
 
-      String datacenterEndPoint = utils.getAnyParameter("datacenter-end-point", params, request);
+      String datacenterEndPoint = utils.getAnyParameter("datacenter-end-point", params, request, session);
       logger.debug("[act] datacenter end point: " + datacenterEndPoint);
       
-      String userId = utils.getAnyParameter("username", params, request);
+      String userId = utils.getAnyParameter("username", params, request, session);
       logger.debug("[act] userId: " + userId);
 
-      String communityId = utils.getAnyParameter("community-id", params, request);
+      String communityId = utils.getAnyParameter("community-id", params, request, session);
       logger.debug("[act] communityId: " + communityId);
 
-      String credential = utils.getAnyParameter("credential", params, request);
+      String credential = utils.getAnyParameter("credential", params, request, session);
       logger.debug("[act] credential: " + credential);
 
       AdqlQuerier delegate =
@@ -94,7 +96,7 @@ public class TestAction extends AbstractAction {
               new Certification(userId, credential), datacenterEndPoint, delegateService);
       logger.debug("[act] datacenter delegate class: " + delegate.getClass().getName());
       
-      String adql = utils.getAnyParameter("adql-query", params, request);
+      String adql = utils.getAnyParameter("adql-query", params, request, session);
       logger.debug("[act] adql: " + adql);
 
       DatacenterResults datacenterResult = null;

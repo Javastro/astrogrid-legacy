@@ -9,6 +9,7 @@ import org.apache.cocoon.acting.AbstractAction;
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.Request;
+import org.apache.cocoon.environment.Session;
 import org.apache.cocoon.environment.SourceResolver;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
@@ -58,27 +59,28 @@ public class MySpaceSaveAction extends AbstractAction {
     ActionUtils utils = ActionUtilsFactory.getActionUtils();
 
     Request request = ObjectModelHelper.getRequest(objectModel);
+    Session session = request.getSession(true);
     
-    String endPoint = utils.getAnyParameter("myspace-end-point", "http://localhost:8080/myspace", params, request);
+    String endPoint = utils.getAnyParameter("myspace-end-point", "http://localhost:8080/myspace", params, request, session);
 
     try {
       MySpaceClient delegate = MySpaceDelegateFactory.createDelegate(endPoint);
       logger.debug("[act] myspace-delegate-class: " + delegate.getClass().getName());
     
       // do something
-			String userId = utils.getAnyParameter("username", params, request);
+			String userId = utils.getAnyParameter("username", params, request, session);
 			logger.debug("[act] userId: " + userId);
 
-			String communityId = utils.getAnyParameter("community-id", params, request);
+			String communityId = utils.getAnyParameter("community-id", params, request, session);
 			logger.debug("[act] communityId: " + communityId);
 
-			String credential = utils.getAnyParameter("credential", params, request);
+			String credential = utils.getAnyParameter("credential", params, request, session);
 			logger.debug("[act] credential: " + credential);
 
-			String mySpaceName = utils.getAnyParameter("myspace-name", params, request);
+			String mySpaceName = utils.getAnyParameter("myspace-name", params, request, session);
 			logger.debug("[act] mySpaceName: " + mySpaceName);
 
-      String adqlDocument = utils.getAnyParameter("adql-query", params, request);
+      String adqlDocument = utils.getAnyParameter("adql-query", params, request, session);
       
       boolean saved =
           delegate.saveDataHolding(

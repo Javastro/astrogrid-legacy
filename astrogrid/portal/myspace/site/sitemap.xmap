@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.2 2004/01/13 11:02:24 gps Exp $
+    | CVS $Id: sitemap.xmap,v 1.3 2004/02/05 17:30:39 gps Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -189,10 +189,11 @@
         
         <map:when test="Copy">
           <map:act type="myspace-copy">
-            <map:parameter name="myspace-end-point" value="http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager"/>
-            <map:parameter name="username" value="gps"/>
-            <map:parameter name="community-id" value="lei"/>
-            <map:parameter name="credential" value="Any"/>
+            <map:parameter name="myspace-end-point" value="myspace-end-point"/>
+            <map:parameter name="username" value="username"/>
+            <map:parameter name="community-id" value="community-id"/>
+            <map:parameter name="credential" value="credential"/>
+
             <map:parameter name="myspace-old-name" value="myspace-old-name"/>
             <map:parameter name="myspace-new-name" value="myspace-new-name"/>
           </map:act>
@@ -200,41 +201,45 @@
         
         <map:when test="Delete">
           <map:act type="myspace-delete">
-            <map:parameter name="myspace-end-point" value="http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager"/>
-            <map:parameter name="username" value="gps"/>
-            <map:parameter name="community-id" value="lei"/>
-            <map:parameter name="credential" value="Any"/>
+            <map:parameter name="myspace-end-point" value="myspace-end-point"/>
+            <map:parameter name="username" value="username"/>
+            <map:parameter name="community-id" value="community-id"/>
+            <map:parameter name="credential" value="credential"/>
+
             <map:parameter name="myspace-old-name" value="myspace-old-name"/>
           </map:act>
         </map:when>
         
         <map:when test="Rename">
           <map:act type="myspace-rename">
-            <map:parameter name="myspace-end-point" value="http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager"/>
-            <map:parameter name="username" value="gps"/>
-            <map:parameter name="community-id" value="lei"/>
-            <map:parameter name="credential" value="Any"/>
             <map:parameter name="myspace-old-name" value="myspace-old-name"/>
+            <map:parameter name="myspace-end-point" value="myspace-end-point"/>
+            <map:parameter name="username" value="username"/>
+            <map:parameter name="community-id" value="community-id"/>
+            <map:parameter name="credential" value="credential"/>
+
             <map:parameter name="myspace-new-name" value="myspace-new-name"/>
           </map:act>
         </map:when>
         
         <map:when test="NewContainer">
           <map:act type="myspace-newcon">
-            <map:parameter name="myspace-end-point" value="http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager"/>
-            <map:parameter name="username" value="gps"/>
-            <map:parameter name="community-id" value="lei"/>
-            <map:parameter name="credential" value="Any"/>
+            <map:parameter name="myspace-end-point" value="myspace-end-point"/>
+            <map:parameter name="username" value="username"/>
+            <map:parameter name="community-id" value="community-id"/>
+            <map:parameter name="credential" value="credential"/>
+
             <map:parameter name="myspace-new-name" value="myspace-new-name"/>
           </map:act>
         </map:when>
         
         <map:when test="ExtendLease">
           <map:act type="myspace-extend-lease">
-            <map:parameter name="myspace-end-point" value="http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager"/>
-            <map:parameter name="username" value="gps"/>
-            <map:parameter name="community-id" value="lei"/>
-            <map:parameter name="credential" value="Any"/>
+            <map:parameter name="myspace-end-point" value="myspace-end-point"/>
+            <map:parameter name="username" value="username"/>
+            <map:parameter name="community-id" value="community-id"/>
+            <map:parameter name="credential" value="credential"/>
+
             <map:parameter name="myspace-old-name" value="myspace-old-name"/>
             <map:parameter name="myspace-extension-days" value="myspace-extension-days"/>
           </map:act>
@@ -242,10 +247,11 @@
         
         <map:when test="Chown">
           <map:act type="myspace-chown">
-            <map:parameter name="myspace-end-point" value="http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager"/>
-            <map:parameter name="username" value="gps"/>
-            <map:parameter name="community-id" value="lei"/>
-            <map:parameter name="credential" value="Any"/>
+            <map:parameter name="myspace-end-point" value="myspace-end-point"/>
+            <map:parameter name="username" value="username"/>
+            <map:parameter name="community-id" value="community-id"/>
+            <map:parameter name="credential" value="credential"/>
+
             <map:parameter name="myspace-old-name" value="myspace-old-name"/>
             <map:parameter name="myspace-chown" value="myspace-chown"/>
           </map:act>
@@ -257,10 +263,11 @@
         
         <map:when test="UploadURL">
           <map:act type="myspace-upload">
-            <map:parameter name="myspace-end-point" value="http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager"/>
-            <map:parameter name="username" value="gps"/>
-            <map:parameter name="community-id" value="lei"/>
-            <map:parameter name="credential" value="Any"/>
+            <map:parameter name="myspace-end-point" value="myspace-end-point"/>
+            <map:parameter name="username" value="username"/>
+            <map:parameter name="community-id" value="community-id"/>
+            <map:parameter name="credential" value="credential"/>
+
             <map:parameter name="myspace-name" value="myspace-new-name"/>
             <map:parameter name="myspace-upload-url" value="myspace-upload-url"/>
             <map:parameter name="myspace-upload-category" value="myspace-upload-category"/>
@@ -270,6 +277,16 @@
         <map:otherwise>
         </map:otherwise>
       </map:select>
+    </map:resource>
+    
+    <map:resource name="myspace-geturl">
+      <map:act type="myspace-geturl">
+        <map:parameter name="myspace-end-point" value="myspace-end-point"/>
+        <map:parameter name="username" value="username"/>
+        <map:parameter name="community-id" value="community-id"/>
+        <map:parameter name="credential" value="credential"/>
+        <map:parameter name="myspace-name" value="myspace-old-name"/>
+      </map:act>
     </map:resource>
   </map:resources>
 
@@ -322,27 +339,29 @@
 
   <!-- main pipeline -->
     <map:pipeline>
-      <map:match pattern="*tree.xml">
+      <map:match pattern="myspace-explorer">
+        <map:aggregate element="explorer">
+          <map:part element="tree" src="cocoon:/myspace-tree.xml"/>
+          <map:part element="select" src="cocoon:/myspace.xsp"/>
+        </map:aggregate>
+        
+        <map:transform src="web/style/xsl/myspace-explorer.xsl"/>
+
+        <map:serialize type="xml"/>
+      </map:match>
+      
+      <map:match pattern="myspace-tree.xml">
+
         <!-- Check for submitted action -->
-        <map:call resource="myspace-action-submit">
-<!--
-          <map:parameter name="myspace-end-point" value="http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager"/>
-          <map:parameter name="username" value="gps"/>
-          <map:parameter name="community-id" value="lei"/>
-          <map:parameter name="credential" value="Any"/>
--->
-        </map:call>
+        <map:call resource="myspace-action-submit"/>
         
         <!-- Call MySpace list XML generator -->
         <map:generate type="myspace-holding-gen">
-          <map:parameter name="myspace-end-point" value="http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager"/>
-          <map:parameter name="username" value="gps"/>
-          <map:parameter name="community-id" value="lei"/>
-          <map:parameter name="credential" value="Any"/>
-          <map:parameter name="myspace-query" value="/gps@lei/*"/>
-<!--
-          <map:parameter name="test-file" value="webapps/astrogrid-portal/mount/myspace/web/static/mys-holdings-01.xml"/>
--->
+          <map:parameter name="myspace-end-point" value="myspace-end-point"/>
+          <map:parameter name="username" value="username"/>
+          <map:parameter name="community-id" value="community-id"/>
+          <map:parameter name="credential" value="credential"/>
+          <map:parameter name="myspace-query" value="/avodemo@test.astrogrid.org/*"/>
         </map:generate>
         
         <!-- Transform using custom MySpace transformer -->
@@ -355,17 +374,17 @@
       </map:match>
 
       <!-- xml -->
-      <map:match pattern="webstart/topcat-full.xml">
+      <map:match pattern="webstart/**.xml">
         <map:act type="myspace-geturl">
-          <map:parameter name="myspace-end-point" value="http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager"/>
-          <map:parameter name="username" value="gps"/>
-          <map:parameter name="community-id" value="lei"/>
-          <map:parameter name="credential" value="Any"/>
+          <map:parameter name="myspace-end-point" value="myspace-end-point"/>
+          <map:parameter name="username" value="username"/>
+          <map:parameter name="community-id" value="community-id"/>
+          <map:parameter name="credential" value="credential"/>
           <map:parameter name="myspace-name" value="myspace-old-name"/>
-          
-          <map:generate type="file" src="webstart/topcat-full.xml"/>
+
+          <map:generate type="file" src="webstart/{../1}.xml"/>
         
-          <map:transform src="web/style/xsl/topcat.xsl">
+          <map:transform src="web/style/xsl/webstart.xsl">
             <map:parameter name="myspace-url" value="{myspace-url}"/>
           </map:transform>
         
@@ -383,7 +402,7 @@
       <map:match pattern="**.xsp">
         <map:generate type="serverpages" src="web/dynamic/{1}.xsp"/>
         <map:transform src="cocoon://xml2html.xsl"/>
-        <map:serialize type="xml"/>
+        <map:serialize type="xhtml"/>
       </map:match>
 
     <!-- images -->
@@ -400,6 +419,12 @@
     <!-- CSS stylesheets -->
       <map:match pattern="*.css">
         <map:read mime-type="text/css" src="web/style/css/{1}.css"/>
+      </map:match>
+
+    <!-- logicsheets -->
+      <map:match pattern="logicsheets/**.xsl">
+        <map:generate type="file" src="web/logicsheets/{1}.xsl"/>
+        <map:serialize type="xml"/>
       </map:match>
 
     <!-- XSLT stylesheets -->

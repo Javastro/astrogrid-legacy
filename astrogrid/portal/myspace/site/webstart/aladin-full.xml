@@ -2,11 +2,10 @@
 <!DOCTYPE jnlp SYSTEM "jnlp.dtd">
 <jnlp spec="1.0+" codebase="http://localhost:8080/astrogrid-portal/">
   <information>
-    <title>Topcat</title>
-    <vendor>Starlink</vendor>
-    <homepage href="http://www.starlink.ac.uk/topcat/"/>
-    <description>Generic table viewer/editor</description>
-    <icon href="topcat.gif"/>
+    <title>Aladin</title>
+    <vendor>CDS</vendor>
+    <homepage href="http://aladin.u-strasbg.fr/aladin.gml"/>
+    <description>interactive software sky atlas </description>
     <offline-allowed/>
   </information>
 
@@ -16,10 +15,10 @@
 
   <resources>
     <j2se version="1.4+" max-heap-size="256m"/>
-    <jar href="webstart/topcat-full.jar"/>
+    <jar href="webstart/aladin-full.jar"/>
   </resources>
   
-  <application-desc main-class="uk.ac.starlink.topcat.TableViewer">
+  <application-desc main-class="cds.aladin.Aladin">
   </application-desc>
 </jnlp>
 

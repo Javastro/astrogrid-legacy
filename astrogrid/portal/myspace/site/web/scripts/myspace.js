@@ -28,12 +28,21 @@ function myspace_chown() {
   }
 }
 
-function myspace_votable_view() {
-  form = document.getElementById('myspace-explorer-form');
-  if(form) {
-    form.action = "/astrogrid-portal/mount/myspace/webstart/topcat-full.xml";
-    form.submit();
+function myspace_votable_view(webstarter, mySpaceName) {
+  action = '/astrogrid-portal/mount/myspace/webstart/' + webstarter;
+  mySpace = document.getElementById(mySpaceName);
+  if(mySpace) {
+    url = action + "?myspace-old-name=" + mySpace.value;
+    window.open(url);
   }
+}
+
+function myspace_votable_topcat() {
+  myspace_votable_view('topcat-full.xml', 'myspace-old-name');
+}
+
+function myspace_votable_aladin() {
+  myspace_votable_view('aladin-full.xml', 'myspace-old-name');
 }
 
 function myspace_upload_url() {

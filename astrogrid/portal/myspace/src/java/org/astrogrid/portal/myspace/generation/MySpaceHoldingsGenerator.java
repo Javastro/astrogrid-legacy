@@ -14,6 +14,7 @@ import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.ProcessingException;
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Request;
+import org.apache.cocoon.environment.Session;
 import org.apache.cocoon.environment.SourceResolver;
 import org.apache.cocoon.generation.AbstractGenerator;
 import org.apache.cocoon.xml.dom.DOMStreamer;
@@ -46,11 +47,13 @@ public class MySpaceHoldingsGenerator extends AbstractGenerator {
     ActionUtils utils = ActionUtilsFactory.getActionUtils();
 
     Request request = ObjectModelHelper.getRequest(objectModel);
+    Session session = request.getSession(true);
     
-    logger.debug("[setup] params:  " + params);
-    logger.debug("[setup] request: " + request);
+    logger.debug("[act] params:  " + params);
+    logger.debug("[act] request: " + request);
+    logger.debug("[act] session: " + session);
     
-    String endPoint = utils.getAnyParameter("myspace-end-point", "http://localhost:8080/myspace", params, request);
+    String endPoint = utils.getAnyParameter("myspace-end-point", "http://localhost:8080/myspace", params, request, session);
     logger.debug("[setup] endPoint: " + endPoint);
 
     try {
@@ -58,19 +61,19 @@ public class MySpaceHoldingsGenerator extends AbstractGenerator {
     
       logger.debug("[setup] myspace-delegate-class: " + delegate.getClass().getName());
 
-      userId = utils.getAnyParameter("username", params, request);
+      userId = utils.getAnyParameter("username", params, request, session);
       logger.debug("[setup] userId: " + userId);
 
-      communityId = utils.getAnyParameter("community-id", params, request);
+      communityId = utils.getAnyParameter("community-id", params, request, session);
       logger.debug("[setup] communityId: " + communityId);
 
-      credential = utils.getAnyParameter("credential", params, request);
+      credential = utils.getAnyParameter("credential", params, request, session);
       logger.debug("[setup] credential: " + credential);
 
-      query = utils.getAnyParameter("myspace-query", MySpaceHoldingsGenerator.getDefaultQuery(userId, communityId), params, request);
+      query = utils.getAnyParameter("myspace-query", MySpaceHoldingsGenerator.getDefaultQuery(userId, communityId), params, request, session);
       logger.debug("[setup] query: " + query);
 
-      testFile = utils.getAnyParameter("test-file", "", params, request);
+      testFile = utils.getAnyParameter("test-file", "", params, request, session);
       logger.debug("[setup] testFile: " + testFile);
     }
     catch(Exception e) {

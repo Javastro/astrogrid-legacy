@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<?xml-logicsheet href="web/logicsheets/utils.xsl"?>
+
+<xsp:page
+    xmlns:xsp="http://apache.org/xsp"
+    xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+    xmlns:agp-utils="http://astrogrid.org/xsp/utils/1.0">
+  <html>
+    <head>
+      <title>MySpace Selection</title>
+      <script type="text/javascript" src="/astrogrid-portal/mount/myspace/utils.js">
+        null;
+      </script>
+    </head>
+    <body>
+      <form action="/astrogrid-portal/mount/myspace/myspace.xsp">
+        <b>Select a MySpace End Point:</b>
+        <select
+            id="myspace-end-point-select"
+            name="myspace-end-point-select"
+            onchange="copy_from_to('myspace-end-point-select', 'myspace-end-point');">
+          <agp-utils:option
+              compare-field="myspace-end-point-select"
+              value="http://astrogrid.jb.man.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager"
+              label="ASTROGRID@JODRELL.JB.MAN.AC.UK"/>
+      
+          <agp-utils:option
+              compare-field="myspace-end-point-select"
+              value="http://vm05.astrogrid.org:8080/astrogrid-mySpace/services/MySpaceManager"
+              label="VM05@ASTROGRID.ORG"/>
+      
+          <agp-utils:option
+              compare-field="myspace-end-point-select"
+              value="http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager"
+              label="GRENDEL@ROE.AC.UK"/>
+      
+          <agp-utils:option
+              compare-field="myspace-end-point-select"
+              value="http://localhost:8080/astrogrid-mySpace/services/MySpaceManager"
+              label="LOCALHOST"/>
+        </select>
+        
+        <input
+            id="myspace-end-point"
+            name="myspace-end-point"
+            type="text"
+            readonly="true"
+            style="visibility: hidden;">
+          <xsp:attribute name="value"><agp-utils:get-parameter name="myspace-end-point" default="http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager"/></xsp:attribute>
+        </input>
+        <br/><br/>
+        <input type="submit"/>
+      </form>
+    </body>
+  </html>
+</xsp:page>

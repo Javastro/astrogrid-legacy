@@ -1,37 +1,40 @@
 <?xml version="1.0"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-  <xsl:output method="html"></xsl:output>
+
+<xsl:stylesheet
+    version="1.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:agp-myspace="http://astrogrid.org/xsp/myspace/1.0">
+  <xsl:output method="html"/>
 
   <xsl:template match="/">
     <ag-div>
       <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/xmlTree.css"/>
       <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/myspace.css"/>
-      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js"> </ag-script>
-      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/myspace.js"> </ag-script>
+      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js"/>
+      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/myspace.js"/>
       
       <div>
-        <form id="myspace-explorer-form" action="/astrogrid-portal/main/mount/myspace/myspace-tree.xml">
+        <form id="myspace-explorer-form" action=".">
           <div id="myspace-tools">
             <div id="myspace-tools-header">
               MySpace Tools
             </div>
             
-            <input name="myspace-action" type="submit" value="Copy"/><br/>
-            <input name="myspace-action" type="submit" value="Delete"/><br/>
-            <input name="myspace-action" type="submit" value="Rename"/><br/>
-            <input name="myspace-action" type="button" value="ExtendLease" onclick="myspace_extension_days();"/><input class="myspace-hidden" id="myspace-extension-days" name="myspace-extension-days" type="text"/><br/>
-            <input name="myspace-action" type="submit" value="NewContainer"/><br/>
-            <input name="myspace-action" type="submit" value="ChangeOwner" onclick="myspace_chown();"/><input class="myspace-hidden" id="myspace-chown" name="myspace-chown" type="text"/><br/>
-            <input name="myspace-action" type="submit" value="View" onclick="myspace_votable_view();"/><br/>
-            <input name="myspace-action" type="submit" value="UploadURL" onclick="myspace_upload_url();"/><input class="myspace-hidden" id="myspace-upload-url" name="myspace-upload-url" type="text"/><input class="myspace-hidden" id="myspace-upload-category" name="myspace-upload-category" type="text"/>
+            <input name="myspace-action" type="submit" value="Copy"><br/></input>
+            <input name="myspace-action" type="submit" value="Delete"><br/></input>
+            <input name="myspace-action" type="submit" value="Rename"><br/></input>
+            <input name="myspace-action" type="button" value="ExtendLease" onclick="myspace_extension_days();"><br/></input><input class="myspace-hidden" id="myspace-extension-days" name="myspace-extension-days" type="text"><span/></input>
+            <input name="myspace-action" type="submit" value="NewContainer"><br/></input>
+            <input name="myspace-action" type="submit" value="ChangeOwner" onclick="myspace_chown();"><br/></input><input class="myspace-hidden" id="myspace-chown" name="myspace-chown" type="text"><span/></input>
+            <input name="myspace-action" type="submit" value="UploadURL" onclick="myspace_upload_url();"><span/></input><input class="myspace-hidden" id="myspace-upload-url" name="myspace-upload-url" type="text"/><input class="myspace-hidden" id="myspace-upload-category" name="myspace-upload-category" type="text"><span/></input>
+            <hr/>
+            <input name="myspace-action" type="submit" value="TopCat" onclick="myspace_votable_topcat();"><br/></input>
+            <input name="myspace-action" type="submit" value="Aladin" onclick="myspace_votable_aladin();"><br/></input>
+            <input name="myspace-temp" type="button" value="temp" onclick="myspace_votable_temp();"><br/></input>
           </div>
 
           <div>
-            <table>
-              <tr>
-                <td>End Point:</td>
-                <td style="width:100%"><input name="myspace-end-point" type="text" value="http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager" style="width:100%"/>&#160;<input type="submit" value="Browse"/></td>
-              </tr>
+            <table id="myspace-tree-header">
               <tr>
                 <td>Source:</td>
                 <td style="width:100%"><input name="myspace-old-name" id="myspace-old-name" type="text" readonly="true" style="width:100%;border-style:none;"/></td>
