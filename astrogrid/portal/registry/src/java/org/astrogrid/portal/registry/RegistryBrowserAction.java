@@ -98,6 +98,12 @@ public class RegistryBrowserAction extends AbstractAction
       
    public static final String PARAM_TABLE_NAME = "tabname";
       
+   public static final String PARAM_UCD = "colucd";
+      
+   public static final String PARAM_UNITS = "colunits";
+      
+   public static final String PARAM_Description = "coldescr";
+      
    public static final String PARAM_RESULT_LIST = "resultlist";
       
    public static final String QUERY_RESULT = "queryresult";
@@ -170,6 +176,15 @@ public class RegistryBrowserAction extends AbstractAction
       String tabname = request.getParameter(PARAM_TABLE_NAME);
       if ( tabname != null && ( tabname.length() == 0
                || tabname.equals("null") ) ) tabname = null;
+      String ucd = request.getParameter(PARAM_UCD);
+      if ( ucd != null && ( ucd.length() == 0
+               || ucd.equals("null") ) ) ucd = null;
+      String units = request.getParameter(PARAM_UNITS);
+      if ( units != null && ( units.length() == 0
+               || units.equals("null") ) ) units = null;
+      String coldesc = request.getParameter(PARAM_Description);
+      if ( coldesc != null && ( coldesc.length() == 0
+               || coldesc.equals("null") ) ) coldesc = null;
 
      
       if(DEBUG_FLAG) {
@@ -179,8 +194,11 @@ public class RegistryBrowserAction extends AbstractAction
 		 printDebug( method, "the authid = " + authid );
 		 printDebug( method, "the resourcekey = " + resourcekey );
 		 printDebug( method, "the identifier = " + identifier );
-		 printDebug( method, "table name = " + tabname );
 		 printDebug( method, "column name = " + colname );
+		 printDebug( method, "table name = " + tabname );
+		 printDebug( method, "UCD = " + ucd );
+		 printDebug( method, "units = " + units );
+		 printDebug( method, "descr = " + coldesc );
       }            
 
       // Initial Query Action.
@@ -188,7 +206,8 @@ public class RegistryBrowserAction extends AbstractAction
 
          // Lets build up the XML for a query.
          String query = buildQuery( mainElem, authid, resourcekey,
-                                              title, tabname, colname );
+                                              title, tabname, colname,
+                                              ucd, units, coldesc );
          printDebug( method, "Query = \n" + query);
 
          try {
@@ -250,7 +269,8 @@ public class RegistryBrowserAction extends AbstractAction
 				  printDebug( method, "uniqueID -table = " + table);	
 
 		          tableQuery = buildQuery( TABLE_SEARCH, authorityID, 
-                                           resourceKey, null, null, null);
+                                           resourceKey, null, null, null,
+                                           null, null, null);
 
 				  printDebug( method, "tableQuery = " + tableQuery);
 				
@@ -350,14 +370,31 @@ public class RegistryBrowserAction extends AbstractAction
    }
    
    /**
+    * This method build the query string for a Authentification key.
+    * @param main the type of query (either Catalog or Resource).
+    * @param id identifier keywords.
+    * @param key keywords in the description.
+    * @return the Query as a String.
+    */
+   private String buildQuery( String main, String id, String key ) {
+	 return buildQuery( main, id, key, null, null, null, null, null, null);
+   }
+
+   /**
     * This method build the query string with the specified criteria.
-    * @param mainElem the type of query (either Catalog or Resource).
-    * @param identifier keywords in the identifier.
+    * @param main the type of query (either Catalog or Resource).
+    * @param id keywords in the identifier.
+    * @param key keywords in the description.
     * @param title keywords in the description.
+    * @param tabname keywords in the description.
+    * @param colname keywords in the description.
+    * @param ucd keywords in the description.
+    * @param units keywords in the description.
     * @return the Query as a String.
     */
    private String buildQuery( String main, String id, String key,
-                              String title, String tabname, String colname ) {
+                              String title, String tabname, String colname,
+                              String ucd, String units, String desc ) {
      printDebug( "BuildQuery", main + " : " + id + "/" + key + " : " + title
                                     + " : " + tabname + " : " + colname );
      // Lets build up the XML for a query.
@@ -376,16 +413,15 @@ public class RegistryBrowserAction extends AbstractAction
        query += " value='CeaApplicationType'/>";
 //		Following removed as there seems to be a confusion over id or key and the value of
 //		authid was getting included as part of the search string in the form:
-//				 vr:Identifier/vr:AuthorityID = "tool_name" whch prevented anything from being found!
+//				 vr:Identifier/vr:AuthorityID = "tool_name" which prevented anything from being found!
 //		pjn 26/10/04
-id = null;
-key = null;       
-     }
+//       key = null;       
+      }
      else if ( TABLE_SEARCH.equals( main ) ) {
        query += "<selection item='vr:Type' itemOp='EQ' value='Catalog'/>";
      }
 
-     // Now lets check for other filters. 
+     // Now lets check for other filters.
      if ( id != null ) {
        query += "\n<selectionOp op='AND'/>";
        query += "<selection item='vr:Identifier/vr:AuthorityID' itemOp='CONTAINS'";
@@ -411,6 +447,21 @@ key = null;
        query += "\n<selectionOp op='AND'/>";
        query += "<selection item='*:Table/*:Column/vr:Name' "
                 + "itemOp='EQ' value='" + colname + "'/>";
+     }
+     if ( ucd != null ) {
+       query += "\n<selectionOp op='AND'/>";
+       query += "<selection item='*:Table/*:Column/*:UCD' "
+                + "itemOp='EQ' value='" + ucd + "'/>";
+     }
+     if ( units != null ) {
+       query += "\n<selectionOp op='AND'/>";
+       query += "<selection item='*:Table/*:Column/*:Unit' "
+                + "itemOp='EQ' value='" + units + "'/>";
+     }
+     if ( desc != null ) {
+       query += "\n<selectionOp op='AND'/>";
+       query += "<selection item='*:Table/*:Column/vr:Description' "
+                + "itemOp='CN' value='" + desc + "'/>";
      }
 
      // End of Query.

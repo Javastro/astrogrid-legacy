@@ -86,19 +86,6 @@
     <form method="post" action="registrybrowser.html"
                         name="RegistryBrowser">
       <input type="hidden" name="action" value="queryregistry" />
-      <xsl:element name="input">
-        <xsl:attribute name="type">hidden</xsl:attribute>
-        <xsl:attribute name="name">authId</xsl:attribute>
-        <xsl:attribute name="value"><xsl:value-of
-                       select="$authId"/></xsl:attribute>
-      </xsl:element>
-      <xsl:element name="input">
-        <xsl:attribute name="type">hidden</xsl:attribute>
-        <xsl:attribute name="name">resourceKey</xsl:attribute>
-        <xsl:attribute name="value"><xsl:value-of
-                       select="$resourceKey"/></xsl:attribute>
-      </xsl:element>
-      <input type="hidden" name="resourceKey"/>
       <input type="hidden" name="mainelement">
         <xsl:attribute name="value"><xsl:value-of
                        select="$mainelement"/></xsl:attribute>
@@ -111,43 +98,47 @@
       <br/>
       <p>
       <table>
-      <tr><td> Authority Id: </td>
+      <tr><td> Authority: </td>
           <td> contains </td>
-          <td> <input type="text" name="identifier"/> </td>
+          <td> <input type="text" name="authId"/> </td>
       </tr>
-      <tr><td> Title: </td>
+      <tr><td> Resource: </td>
+          <td> contains </td>
+          <td> <input type="text" name="resourceKey"/> </td>
+      </tr>
+      <tr><td> Description: </td>
           <td> contains </td>
           <td> <input type="text" name="title"/> </td>
       </tr>
       <xsl:if test="$mainelement='Catalog'" >
-        <tr><td> Table Names: </td>
+        <tr><td> Table Name: </td>
             <td> equals </td>
             <td> <input type="text" name="tabname"/> </td>
         </tr>
-        <tr><td> Column Names: </td>
+        <tr><td> Column Name: </td>
             <td> equals </td>
             <td> <input type="text" name="colname"/> </td>
         </tr>
-        <tr><td> Column UCDs: </td>
+        <tr><td> Column UCD: </td>
             <td> equals </td>
-            <td> <input disabled="true" type="text" name="colucds"/> </td>
+            <td> <input type="text" name="colucds"/> </td>
         </tr>
         <tr><td> Column Units: </td>
             <td> equals </td>
-            <td> <input disabled="true" type="text" name="colunits"/> </td>
+            <td> <input type="text" name="colunits"/> </td>
         </tr>
         <tr><td> Column Description: </td>
             <td> contains </td>
-            <td> <input disabled="true" type="text" name="coldescr"/> </td>
+            <td> <input type="text" name="coldescr"/> </td>
         </tr>
-        <tr><td> Number of rows in Catalogue: </td>
+        <!--tr><td> Number of rows in Catalogue: </td>
             <td> equals </td>
             <td> <input disabled="true" type="text" name="nrows"/> </td>
         </tr>
         <tr><td> Number of variables in Catalogue: </td>
             <td> equals </td>
             <td> <input disabled="true" type="text" name="nvar"/> </td>
-        </tr>
+        </tr-->
       </xsl:if>
       </table>
       </p>
@@ -159,6 +150,9 @@
         <xsl:text>          </xsl:text>
         <input class="agActionButton" type="button" value="Close"
                onclick="window.close()"/>
+        <xsl:text>          </xsl:text>
+        <input class="agActionButton" type="button" value="Help"
+               onclick="window.close()"/>
       </p>
     </form>
   </xsl:template>
@@ -167,9 +161,11 @@
     <xsl:choose>
       <xsl:when test="$mainelement = 'Catalog'">   <!-- CATALOG --> 
         <p>
-          <form method="post"
-        action="/astrogrid-portal/bare/mount/datacenter/variablesFromMB.html"
-                name="RegistryBrowser" id="RegistryBrowser">
+            <form method="post" action="registrybrowser.html"
+                  name="RegistryBrowser" id="RegistryBrowser">
+          <!-- form method="post"
+       action="/astrogrid-portal/bare/mount/datacenter/variablesFromMB.html"
+                name="RegistryBrowser" id="RegistryBrowser"-->
             <input type="hidden" name="mainelement">
               <xsl:attribute name="value">
                 <xsl:value-of select="$mainelement"/>
@@ -208,9 +204,13 @@
             <input class="agActionButton" name="queryregistry" type="button"
                    value="Select..." onclick="findSelection()"/>
             <xsl:text>          </xsl:text>
-            <input class="agActionButton" type="reset" value="Clear"/>
+            <input class="agActionButton" type="submit" name="queryregistry"
+                     value="Restart" />
             <xsl:text>          </xsl:text>
             <input class="agActionButton" type="button" value="Cancel"
+                   onclick="window.close()"/>
+            <xsl:text>          </xsl:text>
+            <input class="agActionButton" type="button" value="Help"
                    onclick="window.close()"/>
           </form>
         </p> 
@@ -259,6 +259,9 @@
                      value="Restart" />
               <xsl:text>          </xsl:text>
               <input class="agActionButton" type="button" value="Cancel"
+                     onclick="window.close()"/>
+              <xsl:text>          </xsl:text>
+              <input class="agActionButton" type="button" value="Help"
                      onclick="window.close()"/>
             </form>
           </p>
