@@ -33,6 +33,9 @@ public final class RunJobRequestDD {
 	    
 	public static final String 
 	    FROM_ELEMENT = "from";
+	
+	public static final String 
+		ORDER_ELEMENT = "order";	
 	    
 	public static final String
 	    CATALOG_ELEMENT = "catalog",
@@ -63,6 +66,7 @@ public final class RunJobRequestDD {
 	public static final String
 	    OP_ELEMENT = "operation",
 	    OP_NAME_ATTR = "name", 
+	    OP_NAME_ORDER = "order",
 	    OP_NAME_AND = "AND",
 	    OP_NAME_OR = "OR",
 	    OP_NAME_NOT = "NOT",
@@ -77,6 +81,6 @@ public final class RunJobRequestDD {
 	    OP_NAME_IN = "IN",
 	    OP_NAME_ANY = "ANY",
 	    OP_NAME_LIKE = "LIKE",
-	    OP_NAME_ALL = "ALL";
+	    OP_NAME_ALL = "ALL" ;
 	 
 }
