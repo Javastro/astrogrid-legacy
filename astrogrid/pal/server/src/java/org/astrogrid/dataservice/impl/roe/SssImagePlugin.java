@@ -1,5 +1,5 @@
 /*
- * $Id: SssImagePlugin.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: SssImagePlugin.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,7 +19,7 @@ import org.astrogrid.query.Query;
 import org.astrogrid.query.keyword.KeywordMaker;
 import org.astrogrid.query.returns.ReturnImage;
 import org.astrogrid.query.returns.ReturnTable;
-import org.astrogrid.sky.Angle;
+import org.astrogrid.geom.Angle;
 
 /**
  * A plugin that returns URLs based on the query suitable for accessing the

@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,7 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.dataservice.queriers.status.QuerierComplete;
 import org.astrogrid.dataservice.queriers.status.QuerierError;
@@ -83,7 +83,7 @@ public class JdbcPlugin extends DefaultPlugin {
          Statement statement = jdbcConnection.createStatement();
 
          if (query.getLocalLimit() >0) { statement.setMaxRows((int) query.getLocalLimit()); }
-//some problem with this on SSA         statement.setQueryTimeout(SimpleConfig.getSingleton().getInt(TIMEOUT, 30*60)); //default to half an hour
+//some problem with this on SSA         statement.setQueryTimeout(ConfigFactory.getCommonConfig().getInt(TIMEOUT, 30*60)); //default to half an hour
 
          querier.getStatus().addDetail("Submitted to JDBC at "+new Date());
          
@@ -209,7 +209,7 @@ public class JdbcPlugin extends DefaultPlugin {
     * Makes the right SqlQueryMaker for this database
     */
    public SqlMaker makeSqlMaker() throws QuerierPluginException {
-      String makerClass = SimpleConfig.getSingleton().getString(SQL_TRANSLATOR, "org.astrogrid.datacenter.queriers.sql.StdSqlMaker");
+      String makerClass = ConfigFactory.getCommonConfig().getString(SQL_TRANSLATOR, "org.astrogrid.datacenter.queriers.sql.StdSqlMaker");
       
       try {
          Object o = QuerierPluginFactory.instantiate(makerClass);

@@ -33,9 +33,9 @@ import nom.tam.fits.HeaderCard;
 import nom.tam.fits.BasicHDU;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.queriers.QuerierPluginException;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -136,7 +136,7 @@ public class IndexGenerator
       for (int i = 0; i < header.getNumberOfCards(); i++)
       {
          String key = header.getKey(i).trim();
-         String value = header.getStringValue(key);         
+         String value = header.getStringValue(key);
          //if the key is 'comment' leave it at that, if the comment comes from and-of-line comment, include that too
          String eolComment = null;
          String commentAtt = "";
@@ -225,14 +225,13 @@ public class IndexGenerator
         DomHelper.newDocument(new ByteArrayInputStream(snippet.getBytes()));
      }
      catch (org.xml.sax.SAXException e) { throw new IOException(e.toString()); }
-     catch (javax.xml.parsers.ParserConfigurationException e) { throw new IOException(e.toString()); }
       
    }
    
    private static File fileIndexDir = null;
    private File getIndexDirectory() {
-       String indexPath = String.valueOf(System.currentTimeMillis());       
-       String indexGenHomePath = SimpleConfig.getProperty("indexgen.path", ("." + File.separator) );
+       String indexPath = String.valueOf(System.currentTimeMillis());
+       String indexGenHomePath = ConfigFactory.getCommonConfig().getString("indexgen.path", ("." + File.separator) );
        if(!indexGenHomePath.endsWith(File.separator))
            indexGenHomePath += File.separator;
        fileIndexDir = new File(indexGenHomePath + indexPath);
@@ -322,13 +321,13 @@ public class IndexGenerator
        
        File fi = new File(directoryName);
        if(!fi.exists()) {
-           String indexGenHomePath = SimpleConfig.getProperty("indexgen.path", ("." + File.separator));
+           String indexGenHomePath = ConfigFactory.getCommonConfig().getString("indexgen.path", ("." + File.separator));
            if(!indexGenHomePath.endsWith(File.separator))
                indexGenHomePath += File.separator;
            fi = new File(indexGenHomePath + directoryName);
            if(!fi.exists()) {
                System.out.println("The directory or path does not seem to exist: directory=" + directoryName +
-                       "or " + indexGenHomePath + directoryName);               
+                       "or " + indexGenHomePath + directoryName);
                System.exit(1);
            }//if
        }
@@ -343,19 +342,19 @@ public class IndexGenerator
        
        String line = null;
        String correct = "N";
-       String uploadCollection = SimpleConfig.getProperty("upload.collection", null);
-       String adminUser = SimpleConfig.getProperty("xmldb.admin.user", "admin");
-       String adminPass = SimpleConfig.getProperty("xmldb.admin.password", "");
-       String xmldbURI = SimpleConfig.getProperty("xmldb.uri", "xmldb:exist://");
-       String xmldbConfig = SimpleConfig.getProperty("exist.config.file", "../exist.xml");
-       String xmldbDriver = SimpleConfig.getProperty("xmldb.driver", "org.exist.xmldb.DatabaseImpl");
-       String testBypass = SimpleConfig.getProperty("test.bypass", "no");
+       String uploadCollection = ConfigFactory.getCommonConfig().getString("upload.collection", null);
+       String adminUser = ConfigFactory.getCommonConfig().getString("xmldb.admin.user", "admin");
+       String adminPass = ConfigFactory.getCommonConfig().getString("xmldb.admin.password", "");
+       String xmldbURI = ConfigFactory.getCommonConfig().getString("xmldb.uri", "xmldb:exist://");
+       String xmldbConfig = ConfigFactory.getCommonConfig().getString("exist.config.file", "../exist.xml");
+       String xmldbDriver = ConfigFactory.getCommonConfig().getString("xmldb.driver", "org.exist.xmldb.DatabaseImpl");
+       String testBypass = ConfigFactory.getCommonConfig().getString("test.bypass", "no");
 
        if(testBypass.equals("no")) {
            InputStreamReader consoleReader = new InputStreamReader(System.in);
            BufferedReader consoleInput = new BufferedReader(consoleReader);
            System.out.println("What is the Table Name (Collection Name) you wish to put in the xml files into. Example: TraceData, EITData");
-           System.out.println("You may also do sub-tables (sub-collections) with a '/' such as: Soho/CDSData, MSSL/Soho/CDSData, RAL/Soho/Tape/CDSData");           
+           System.out.println("You may also do sub-tables (sub-collections) with a '/' such as: Soho/CDSData, MSSL/Soho/CDSData, RAL/Soho/Tape/CDSData");
            while(!correct.equals("Y")) {
                while( (line = consoleInput.readLine()) != null) ;
                line = line.replaceAll("[^\\w*]","_");
@@ -406,10 +405,10 @@ public class IndexGenerator
        }//bypassif
        
 
-       SimpleConfig.setProperty("xmldb.uri", xmldbURI);
-       SimpleConfig.setProperty("xmldb.driver", xmldbDriver);
-       SimpleConfig.setProperty("xmldb.admin.user", adminUser);
-       SimpleConfig.setProperty("xmldb.admin.password", adminPass);
+       ConfigFactory.getCommonConfig().setProperty("xmldb.uri", xmldbURI);
+       ConfigFactory.getCommonConfig().setProperty("xmldb.driver", xmldbDriver);
+       ConfigFactory.getCommonConfig().setProperty("xmldb.admin.user", adminUser);
+       ConfigFactory.getCommonConfig().setProperty("xmldb.admin.password", adminPass);
        //commented out until latest dependency arrives
        if(!dbRegistered) {
            XMLDBFactory.registerDB(xmldbConfig);
@@ -478,6 +477,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.7  2005/03/21 18:45:55  mch
+Naughty big lump of changes
+
 Revision 1.6  2005/03/14 16:09:31  KevinBenson
 Fixed up some more tests for the IndexGenerator
 

@@ -1,12 +1,12 @@
 /*
- * $Id: ConeConfigQueryableResource.java,v 1.4 2005/03/10 20:19:21 mch Exp $
+ * $Id: ConeConfigQueryableResource.java,v 1.5 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.dataservice.metadata.queryable;
 import java.io.IOException;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.tableserver.metadata.TableInfo;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 
@@ -34,7 +34,7 @@ public class ConeConfigQueryableResource extends TableMetaDocInterpreter {
     * fields suitable for spatial searching */
    public SearchGroup[] getSpatialGroups()
    {
-      String configTable = SimpleConfig.getSingleton().getString(CONE_SEARCH_TABLE_KEY);
+      String configTable = ConfigFactory.getCommonConfig().getString(CONE_SEARCH_TABLE_KEY);
       SearchGroup table = new TableInfo();
       table.setId(configTable);
       table.setName(configTable);
@@ -45,11 +45,11 @@ public class ConeConfigQueryableResource extends TableMetaDocInterpreter {
    /** botch botch botch */
    public SearchField[] getSpatialFields(SearchGroup parent) throws IOException
    {
-      if (parent.getId().equals(SimpleConfig.getSingleton().getString(CONE_SEARCH_TABLE_KEY))) {
+      if (parent.getId().equals(ConfigFactory.getCommonConfig().getString(CONE_SEARCH_TABLE_KEY))) {
          //get which columns given RA & DEC for cone searches
          SearchField[] fields = {
-            getColumn(getCatalogs()[0], parent.getName(), SimpleConfig.getSingleton().getString(CONE_SEARCH_RA_COL_KEY)),
-            getColumn(getCatalogs()[0], parent.getName(), SimpleConfig.getSingleton().getString(CONE_SEARCH_DEC_COL_KEY))
+            getColumn(getCatalogs()[0], parent.getName(), ConfigFactory.getCommonConfig().getString(CONE_SEARCH_RA_COL_KEY)),
+            getColumn(getCatalogs()[0], parent.getName(), ConfigFactory.getCommonConfig().getString(CONE_SEARCH_DEC_COL_KEY))
          };
          return fields;
       }

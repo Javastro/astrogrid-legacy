@@ -1,4 +1,4 @@
-/*$Id: QuerierPluginFactory.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: QuerierPluginFactory.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 
 /** Manages a single query; this is the root for a chain of possible chain
  * of plugins, translators, etc. It makes the right kind of querier for the job,
@@ -70,7 +70,7 @@ public class QuerierPluginFactory {
    public static QuerierPlugin instantiatePlugin(Querier querier) throws QuerierPluginException {
       
       //'default' org.astrogrid.datacenter.queriers.test.PrecannedPlugin should be given in default config, not here.
-      String querierClass = SimpleConfig.getSingleton().getString(QUERIER_PLUGIN_KEY);
+      String querierClass = ConfigFactory.getCommonConfig().getString(QUERIER_PLUGIN_KEY);
 
       try {
          Class qClass = Class.forName(querierClass);
@@ -108,8 +108,11 @@ public class QuerierPluginFactory {
 
 /*
  $Log: QuerierPluginFactory.java,v $
- Revision 1.1  2005/02/17 18:37:35  mch
- *** empty log message ***
+ Revision 1.2  2005/03/21 18:45:55  mch
+ Naughty big lump of changes
+
+ Revision 1.1.1.1  2005/02/17 18:37:35  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:24  mch
  Initial checkin

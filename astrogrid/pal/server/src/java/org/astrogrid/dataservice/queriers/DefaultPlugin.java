@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultPlugin.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: DefaultPlugin.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.TargetMaker;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 import org.xml.sax.SAXException;
 
 /**
@@ -44,9 +44,6 @@ public abstract class DefaultPlugin implements QuerierPlugin {
       try {
          return DomHelper.newDocument(sw.toString()).getElementsByTagName("TR").getLength();
       }
-      catch (ParserConfigurationException e) {
-         throw new RuntimeException("Server not configured correctly ",e);
-      }
       catch (SAXException e) {
          throw new IOException("Proxied service returned invalid VOTable: "+e);
       }
@@ -57,8 +54,11 @@ public abstract class DefaultPlugin implements QuerierPlugin {
 }
 /*
  $Log: DefaultPlugin.java,v $
- Revision 1.1  2005/02/17 18:37:34  mch
- *** empty log message ***
+ Revision 1.2  2005/03/21 18:45:55  mch
+ Naughty big lump of changes
+
+ Revision 1.1.1.1  2005/02/17 18:37:34  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:24  mch
  Initial checkin

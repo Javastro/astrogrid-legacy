@@ -3,8 +3,8 @@
        java.util.Date,
        org.astrogrid.io.*,
        org.astrogrid.dataservice.queriers.status.StatusLogger,
-       org.astrogrid.config.SimpleConfig,
-       org.astrogrid.util.DomHelper,
+       org.astrogrid.cfg.ConfigFactory,
+       org.astrogrid.xml.DomHelper,
        org.astrogrid.dataservice.service.*"
    isThreadSafe="false"
    session="false"

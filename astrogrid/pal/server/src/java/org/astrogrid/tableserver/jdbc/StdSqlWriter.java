@@ -1,5 +1,5 @@
 /*
- * $Id: StdSqlWriter.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+ * $Id: StdSqlWriter.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,7 +13,7 @@ import java.text.DecimalFormat;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.ConfigException;
+import org.astrogrid.cfg.ConfigException;
 import org.astrogrid.dataservice.metadata.queryable.ConeConfigQueryableResource;
 import org.astrogrid.dataservice.metadata.queryable.QueryableResourceReader;
 import org.astrogrid.dataservice.metadata.queryable.SearchField;
@@ -25,7 +25,7 @@ import org.astrogrid.query.adql.AdqlXml074Parser;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.query.sql.SqlParser;
-import org.astrogrid.sky.Angle;
+import org.astrogrid.geom.Angle;
 import org.astrogrid.units.Units;
 import org.xml.sax.SAXException;
 
@@ -34,26 +34,34 @@ import org.xml.sax.SAXException;
  * For writing out Querys as SQL statment strings, as close as we can to 'standard SQL'.
  */
 
-public class StdSqlWriter implements QueryVisitor
-{
+public class StdSqlWriter implements QueryVisitor {
+   
+   
 
    protected static Log log = LogFactory.getLog(Adql074Writer.class);
    
    private DecimalFormat longDec = new DecimalFormat("#############################0");
 
-   /** SQL String being built */
-   protected StringBuffer sql = new StringBuffer();
+   /** SQL String components being built */
+   protected StringBuffer select = new StringBuffer();
+   protected StringBuffer from = new StringBuffer();
+   protected StringBuffer where = new StringBuffer();
+   protected StringBuffer orderby = new StringBuffer();
+   
+   /* Because the methods are stateless, we have to set which stringbuffer we
+    * are working on - this is needed for visiting eg column references which
+    * appear in seleft, where, order by, etc */
+   protected StringBuffer current = null;
    
    /** Query being written */
    Query query = null;
    
    /** Root write call */
    public void visitQuery(Query queryToWrite)  throws IOException  {
-      sql = new StringBuffer();
       query = queryToWrite;
       log.debug("Making SQL from "+query.toString());
       
-      //--- SELECT ---
+      //--- SELECT, ORDER BY ---
       visitReturnSpec(query.getResultsDef());
       visitLimit(query.getLocalLimit());
       
@@ -65,48 +73,69 @@ public class StdSqlWriter implements QueryVisitor
 
       //-- WHERE --
       if (query.getCriteria() != null) {
-         sql.append(" WHERE ");
       
+         current = where;
          query.getCriteria().acceptVisitor(this);
       }
+      
    }
 
    public String getSql() {
-      return sql.toString();
+      String sql = "SELECT "+select.toString()+" FROM "+from.toString()+" WHERE "+where.toString();
+      if (orderby.toString().trim().length()>0) {
+         sql = sql + orderby.toString();
+      }
+      return sql;
    }
    
    public void visitScope(String[] scope) {
-         sql.append(" FROM ");
 
-         // we just duplicate alias names as table names for now
-         for (int i = 0; i < scope.length; i++) {
-         /*
-            String alias = scope[i];
-            if (query.getAlias(alias) != null) {
-               alias = query.getAlias(alias);
-            }
-            sql.append(" "+query.getScope()[i]+" as "+alias+" ");
-          */
-            sql.append(" "+scope[i]+" ");
-            if (i<scope.length-1) {
-               sql.append(",");
-            }
+      current = from;
+
+      // we just duplicate alias names as table names for now
+      for (int i = 0; i < scope.length; i++) {
+      /*
+         String alias = scope[i];
+         if (query.getAlias(alias) != null) {
+            alias = query.getAlias(alias);
          }
+         sql.append(" "+query.getScope()[i]+" as "+alias+" ");
+       */
+         from.append(" "+scope[i]+" ");
+         if (i<scope.length-1) {
+            from.append(",");
+         }
+      }
    }
 
    public void visitReturnSpec(ReturnSpec spec) throws IOException  {
-      sql.append("SELECT ");
-      if ( !(spec instanceof ReturnTable) ||
-             ( ((ReturnTable) spec).getColDefs()==null)  ) {
-         sql.append(" * ");
-      }
-      else {
-         Expression[] colDefs = ((ReturnTable) spec).getColDefs();
-
-         for (int i = 0; i < colDefs.length; i++) {
-            colDefs[i].acceptVisitor(this);
-            if (i<colDefs.length-1) {
-               sql.append(", ");
+ 
+      current = select; //so called visitors know what we're visiting
+      
+      if (spec instanceof ReturnTable) {
+         if (((ReturnTable) spec).getColDefs()==null)  {
+            current.append(" * ");
+         }
+         else {
+            Expression[] colDefs = ((ReturnTable) spec).getColDefs();
+   
+            for (int i = 0; i < colDefs.length; i++) {
+               colDefs[i].acceptVisitor(this);
+               if (i<colDefs.length-1) {
+                  current.append(", ");
+               }
+            }
+         }
+         
+         if (((ReturnTable) spec).getSortOrder() != null) {
+            current.append(" ORDER BY ");
+            Expression[] sortCols = ((ReturnTable) spec).getSortOrder();
+   
+            for (int i = 0; i < sortCols.length; i++) {
+               sortCols[i].acceptVisitor(this);
+               if (i<sortCols.length-1) {
+                  current.append(", ");
+               }
             }
          }
       }
@@ -117,67 +146,70 @@ public class StdSqlWriter implements QueryVisitor
    }
    
    public void visitIntersection(Intersection expression)  throws IOException {
-         sql.append(" (");
-         Condition[] conditions = ((Intersection) expression).getConditions();
+         current.append(" (");
+         Condition[] conditions = expression.getConditions();
          for (int i = 0; i < conditions.length; i++) {
             conditions[i].acceptVisitor(this);
             if (i<conditions.length-1) {
-               sql.append(" AND ");
+               current.append(" AND ");
             }
          }
-         sql.append(") ");
+         current.append(") ");
     }
     
     public void visitUnion(Union expression)  throws IOException {
-         sql.append(" (");
+         current.append(" (");
          Condition[] conditions = ((Union) expression).getConditions();
          for (int i = 0; i < conditions.length; i++) {
             conditions[i].acceptVisitor(this);
             if (i<conditions.length-1) {
-               sql.append(" OR ");
+               current.append(" OR ");
             }
          }
-         sql.append(") ");
+         current.append(") ");
     }
 
       
    public void visitNumericComparison(NumericComparison expression)  throws IOException {
 
        expression.getLHS().acceptVisitor(this);
-       sql.append( expression.getOperator().toString());
+       current.append( expression.getOperator().toString());
        expression.getRHS().acceptVisitor(this);
    }
 
    public void visitStringComparison(StringComparison expression)  throws IOException {
       
       expression.getLHS().acceptVisitor(this);
-      sql.append( expression.getOperator().toString());
+      current.append( expression.getOperator().toString());
       expression.getRHS().acceptVisitor(this);
    }
    
    public void visitNumber(LiteralNumber expression)  {
-      sql.append( " "+expression.getValue()+" ");
+      current.append( " "+expression.getValue()+" ");
    }
 
    public void visitAngle(LiteralAngle expression)  {
-      sql.append( " "+expression.getAngle().asDegrees()+" ");
+      current.append( " "+expression.getAngle().asDegrees()+" ");
    }
 
+   public void visitDate(LiteralDate date) throws IOException {
+      current.append( " "+date.getDate()+" ");
+   }
    
+   public void visitString(LiteralString string) {
+      current.append( " '"+string.getValue()+"' ");
+   }
+
    public void visitRawSearchField(RawSearchField field)  {
-      sql.append( " "+field.getField()+" "); //bit of a botch - should throw an exception?
+      current.append( " "+field.getField()+" "); //bit of a botch - should throw an exception?
    }
 
    public void visitMath(MathExpression math)   throws IOException {
          math.getLHS().acceptVisitor(this);
-         sql.append( " "+math.getOperator()+" ");
+         current.append( " "+math.getOperator()+" ");
          math.getRHS().acceptVisitor(this);
    }
    
-   public void visitString(LiteralString string) {
-      sql.append( " '"+string.getValue()+"' ");
-   }
-
    public void visitFunction(Function function)  throws IOException {
       
       if (function.getName().trim().toUpperCase().equals(CircleCondition.NAME.toUpperCase())) {
@@ -185,22 +217,22 @@ public class StdSqlWriter implements QueryVisitor
          return;
       }
       
-      sql.append(" "+function.getName()+"(");
+      current.append(" "+function.getName()+"(");
       
       for (int i = 0; i < function.getArgs().length; i++) {
          ((Expression) function.getArg(i)).acceptVisitor(this);
          if (i<function.getArgs().length-1) {
-            sql.append(", ");
+            current.append(", ");
          }
       }
-      sql.append(")");
+      current.append(")");
    }
    
    /** Writes out the ADQL tag for the given column as a child of the given parentTag with
     * the given elementName */
    public void visitColumnReference(ColumnReference colRef) {
 
-      sql.append(" ");
+      current.append(" ");
       String tableName = colRef.getTableName();
       //replace with alias is there is one
 //no don't - just use full table name      if (query.getAlias(tableName) != null) {
@@ -209,13 +241,13 @@ public class StdSqlWriter implements QueryVisitor
 
       
       if ((colRef.getDatasetName() != null) && (colRef.getDatasetName().trim().length()>0)) {
-         sql.append(colRef.getDatasetName()+":");
+         current.append(colRef.getDatasetName()+":");
       }
       if ((tableName != null) && (tableName.trim().length()>0)) {
-         sql.append(tableName+".");
+         current.append(tableName+".");
       }
 
-      sql.append(colRef.getColName()+" ");
+      current.append(colRef.getColName()+" ");
    }
    
    /** might be overridden? **/
@@ -248,14 +280,14 @@ public class StdSqlWriter implements QueryVisitor
          {
             if (tables[i].getId().equals(query.getScope()[j])) {
                if (spatialFound) { //a previous one was found, so add an OR to search this one too
-                  sql.append(" OR ");
+                  current.append(" OR ");
                }
                spatialFound = true; // found one
                SearchField[] cols = queryable.getSpatialFields(tables[i]);
 
                //assume, for the moment, that we get two columns, the first is RA and the
                //second is DEC
-               sql.append(makeSqlCircleCondition(cols[0], cols[1], ra, dec, radius));
+               current.append(makeSqlCircleCondition(cols[0], cols[1], ra, dec, radius));
             }
          }
       }
@@ -269,7 +301,7 @@ public class StdSqlWriter implements QueryVisitor
    public String makeSqlCircleCondition(SearchField raCol, SearchField decCol, Angle ra, Angle dec, Angle radius) {
       //Some db functions take radians, some degrees.  Fail if the config is not
       //specified, so we force people to get it right...
-      boolean funcsInRads = true; //SimpleConfig.getSingleton().getBoolean(SqlMaker.DB_TRIGFUNCS_IN_RADIANS);
+      boolean funcsInRads = true; //ConfigFactory.getCommonConfig().getBoolean(SqlMaker.DB_TRIGFUNCS_IN_RADIANS);
       
       String raColRad = makeColumnRadiansId(raCol);
       String decColRad = makeColumnRadiansId(decCol);
@@ -415,6 +447,9 @@ public class StdSqlWriter implements QueryVisitor
 
 /*
  $Log: StdSqlWriter.java,v $
+ Revision 1.2  2005/03/21 18:45:55  mch
+ Naughty big lump of changes
+
  Revision 1.1  2005/03/10 16:42:55  mch
  Split fits, sql and xdb
 

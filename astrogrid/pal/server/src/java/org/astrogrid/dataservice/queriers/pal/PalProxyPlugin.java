@@ -1,5 +1,5 @@
 /*
- * $Id: PalProxyPlugin.java,v 1.3 2005/03/10 13:49:52 mch Exp $
+ * $Id: PalProxyPlugin.java,v 1.4 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,7 +15,7 @@ import java.net.URLEncoder;
 import java.security.Principal;
 import java.util.Date;
 import javax.xml.parsers.ParserConfigurationException;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.VoResourcePlugin;
 import org.astrogrid.dataservice.metadata.v0_10.ProxyResourceSupport;
 import org.astrogrid.dataservice.queriers.DefaultPlugin;
@@ -47,7 +47,7 @@ public class PalProxyPlugin extends DefaultPlugin implements VoResourcePlugin {
    private boolean proxyResults = true;
    
    public PalProxyPlugin() {
-      proxyResults = SimpleConfig.getSingleton().getBoolean(PROXY_RESULTS, proxyResults);
+      proxyResults = ConfigFactory.getCommonConfig().getBoolean(PROXY_RESULTS, proxyResults);
    }
    
    /** performs a synchronous call to the database, submitting the given query
@@ -64,7 +64,7 @@ public class PalProxyPlugin extends DefaultPlugin implements VoResourcePlugin {
 
       proxyResults = true; //need an asynch way of specifying target. Or just use servlets
       
-      String endpoint = SimpleConfig.getSingleton().getUrl(PAL_TARGET)+"/services/AxisDataService05";
+      String endpoint = ConfigFactory.getCommonConfig().getUrl(PAL_TARGET)+"/services/AxisDataService05";
       
       QuerySearcher delegate = null;
       try {
@@ -91,7 +91,7 @@ public class PalProxyPlugin extends DefaultPlugin implements VoResourcePlugin {
    
    /** Use the remote PAL's servlet interface */
    public void useServlet(Query query, Querier querier) throws IOException {
-      URL targetPal = new URL(SimpleConfig.getSingleton().getUrl(PAL_TARGET)+"/SubmitAdql");
+      URL targetPal = new URL(ConfigFactory.getCommonConfig().getUrl(PAL_TARGET)+"/SubmitAdql");
       
       querier.getStatus().addDetail("Proxying to: "+targetPal);
       log.info("Proxying Query to: "+targetPal);
@@ -148,7 +148,7 @@ public class PalProxyPlugin extends DefaultPlugin implements VoResourcePlugin {
     * build the righr CEA stuff for *this* service
     */
    public String getVoResource() throws IOException {
-      URL targetPal = new URL(SimpleConfig.getSingleton().getUrl(PAL_TARGET)+"/GetMetadata");
+      URL targetPal = new URL(ConfigFactory.getCommonConfig().getUrl(PAL_TARGET)+"/GetMetadata");
       log.info("Proxying VoResources to: "+targetPal);
 
       ProxyResourceSupport proxyer = new ProxyResourceSupport();

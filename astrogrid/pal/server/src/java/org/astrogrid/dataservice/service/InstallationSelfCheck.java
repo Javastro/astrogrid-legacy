@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.2 2005/02/18 18:16:54 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.3 2005/03/21 18:45:55 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import java.security.Principal;
 import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.TestCase;
 import org.astrogrid.account.LoginAccount;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.api.nvocone.NvoConeSearcher;
 import org.astrogrid.dataservice.impl.roe.SssImagePlugin;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
@@ -37,7 +37,7 @@ import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.query.sql.SqlParser;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.targets.TargetMaker;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 import org.xml.sax.SAXException;
 
 /** Unit test for checking an installation - checks location of config files, etc.
@@ -60,7 +60,7 @@ public class InstallationSelfCheck extends TestCase {
    
    /** Checks the characteristics of the plugin */
    public void testPluginDefinition() throws Exception {
-      String pluginClass = SimpleConfig.getSingleton().getString(QuerierPluginFactory.QUERIER_PLUGIN_KEY);
+      String pluginClass = ConfigFactory.getCommonConfig().getString(QuerierPluginFactory.QUERIER_PLUGIN_KEY);
       assertNotNull(QuerierPluginFactory.QUERIER_PLUGIN_KEY + " is not defined",pluginClass);
       // try to load plugin class.
       Class plugin = null;
@@ -78,14 +78,14 @@ public class InstallationSelfCheck extends TestCase {
     * Creates a test query from properties, defaulting to cone(30,-80,0.1)
     */
    public Query makeTestQuery(TargetIdentifier target, String format) throws QueryException, ParserConfigurationException, IOException, SAXException {
-      String sql = SimpleConfig.getProperty("datacenter.testquery.sql", null);
+      String sql = ConfigFactory.getCommonConfig().getString("datacenter.testquery.sql", null);
       if (sql != null) {
          return SqlParser.makeQuery(sql, target, format);
       }
       //no sql given, make a cone searcher
-      String ra = SimpleConfig.getProperty("datacenter.testquery.ra","30");
-      String dec = SimpleConfig.getProperty("datacenter.testquery.dec","-80");
-      String radius = SimpleConfig.getProperty("datacenter.testquery.radius","0.1");
+      String ra = ConfigFactory.getCommonConfig().getString("datacenter.testquery.ra","30");
+      String dec = ConfigFactory.getCommonConfig().getString("datacenter.testquery.dec","-80");
+      String radius = ConfigFactory.getCommonConfig().getString("datacenter.testquery.radius","0.1");
       return SimpleQueryMaker.makeConeQuery(Double.parseDouble(ra),Double.parseDouble(dec),Double.parseDouble(radius), target, format);
    }
 
@@ -154,7 +154,7 @@ public class InstallationSelfCheck extends TestCase {
       String endpoint = ServletHelper.getUrlStem()+"/services/SkyNode074";
 
       //make the query - a cone search around the south pole
-      if (SimpleConfig.getSingleton().getString(StdSqlWriter.CONE_SEARCH_DEC_COL_KEY, null) == null) {
+      if (ConfigFactory.getCommonConfig().getString(StdSqlWriter.CONE_SEARCH_DEC_COL_KEY, null) == null) {
          fail("Would test using a search on DEC, but "+StdSqlWriter.CONE_SEARCH_DEC_COL_KEY+" and/or "+StdSqlWriter.CONE_SEARCH_TABLE_KEY+" is not set");
       }
       SelectType adql = new SelectType();
@@ -165,8 +165,8 @@ public class InstallationSelfCheck extends TestCase {
       //from
       FromType from = new FromType();
       TableType fromTable = new TableType();
-      fromTable.setName(SimpleConfig.getSingleton().getString(StdSqlWriter.CONE_SEARCH_TABLE_KEY));
-      fromTable.setAlias(SimpleConfig.getSingleton().getString(StdSqlWriter.CONE_SEARCH_TABLE_KEY));
+      fromTable.setName(ConfigFactory.getCommonConfig().getString(StdSqlWriter.CONE_SEARCH_TABLE_KEY));
+      fromTable.setAlias(ConfigFactory.getCommonConfig().getString(StdSqlWriter.CONE_SEARCH_TABLE_KEY));
       from.setTable(new FromTableType[] { fromTable});
       adql.setFrom(from);
       
@@ -176,8 +176,8 @@ public class InstallationSelfCheck extends TestCase {
       comp.setArg(new ScalarExpressionType[2]);
       adql.getWhere().setCondition(comp);
       ColumnReferenceType decCol = new ColumnReferenceType();
-      decCol.setName(SimpleConfig.getSingleton().getString(StdSqlWriter.CONE_SEARCH_DEC_COL_KEY));
-      decCol.setTable(SimpleConfig.getSingleton().getString(StdSqlWriter.CONE_SEARCH_TABLE_KEY));
+      decCol.setName(ConfigFactory.getCommonConfig().getString(StdSqlWriter.CONE_SEARCH_DEC_COL_KEY));
+      decCol.setTable(ConfigFactory.getCommonConfig().getString(StdSqlWriter.CONE_SEARCH_TABLE_KEY));
       comp.setArg(0, decCol);
       AtomType decValue = new AtomType();
       decValue.setLiteral(new RealType());
@@ -230,7 +230,7 @@ public class InstallationSelfCheck extends TestCase {
    /** For running standalone, so it can be used from an IDE for quick tests against services */
    public static void main(String[] args) {
       //temporary for testing SSA Image Plugin
-      SimpleConfig.getSingleton().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, SssImagePlugin.class.getName());
+      ConfigFactory.getCommonConfig().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, SssImagePlugin.class.getName());
       ServletHelper.setUrlStem("http://grendel12.roe.ac.uk:8080/pal-sss");
 //      ServletHelper.setUrlStem("http://localhost.roe.ac.uk:8080/pal-samples");
       
@@ -241,6 +241,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.3  2005/03/21 18:45:55  mch
+ Naughty big lump of changes
+
  Revision 1.2  2005/02/18 18:16:54  mch
  Fixed a few compile problems
 

@@ -1,5 +1,5 @@
 /*
- * $Id: VoResourceSupport.java,v 1.7 2005/03/11 15:09:48 mch Exp $
+ * $Id: VoResourceSupport.java,v 1.8 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,8 +15,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.Config;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigReader;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.xml.DomHelper;
@@ -79,11 +79,11 @@ public class VoResourceSupport {
     * in the configuration file to create it.
     */
    public String makeCore(String idEnd) throws IOException {
-      String coreFile = SimpleConfig.getSingleton().getString("dataserver.metadata.core", null);
+      String coreFile = ConfigFactory.getCommonConfig().getString("dataserver.metadata.core", null);
       if ( coreFile != null) {
          //use an on-disk resource file
          try {
-            Document coreDoc = DomHelper.newDocument(Config.resolveFilename(coreFile));//validate & load
+            Document coreDoc = DomHelper.newDocument(ConfigReader.resolveFilename(coreFile));//validate & load
 
             //set ID
             NodeList idNodes = coreDoc.getElementsByTagName("identifier");
@@ -111,19 +111,19 @@ public class VoResourceSupport {
          return makeCore(
             DataServer.getDatacenterName(),
             makeId(idEnd),
-            SimpleConfig.getSingleton().getString("datacenter.publisher",null),
-            SimpleConfig.getSingleton().getString("datacenter.contact.name", ""),
-            SimpleConfig.getSingleton().getString("datacenter.contact.email", ""),
-            //SimpleConfig.getSingleton().getString("datacenter.contact.date", ""));
-            SimpleConfig.getSingleton().getString("data.description", ""),
-            SimpleConfig.getSingleton().getString("datacenter.url", ""),
+            ConfigFactory.getCommonConfig().getString("datacenter.publisher",null),
+            ConfigFactory.getCommonConfig().getString("datacenter.contact.name", ""),
+            ConfigFactory.getCommonConfig().getString("datacenter.contact.email", ""),
+            //ConfigFactory.getCommonConfig().getString("datacenter.contact.date", ""));
+            ConfigFactory.getCommonConfig().getString("data.description", ""),
+            ConfigFactory.getCommonConfig().getString("datacenter.url", ""),
             "Other"
          );
    }
    
    /** Constructs an IVORN ID from an authority key and a resource key and the given extension */
    public String makeId(String idEnd) {
-      return "ivo://"+SimpleConfig.getSingleton().getString(AUTHID_KEY)+"/"+SimpleConfig.getSingleton().getString(RESKEY_KEY)+"/"+idEnd;
+      return "ivo://"+ConfigFactory.getCommonConfig().getString(AUTHID_KEY)+"/"+ConfigFactory.getCommonConfig().getString(RESKEY_KEY)+"/"+idEnd;
    }
    
    

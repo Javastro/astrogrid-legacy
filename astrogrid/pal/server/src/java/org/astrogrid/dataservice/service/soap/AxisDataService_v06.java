@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v06.java,v 1.1 2005/02/18 18:16:40 mch Exp $
+ * $Id: AxisDataService_v06.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,7 +23,7 @@ import org.astrogrid.query.sql.SqlParser;
 import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.status.DefaultTaskStatus;
 import org.astrogrid.status.ServiceStatus;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Element;
 
 /**
@@ -132,7 +132,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
     *
    public String askSql(String sql, String requestedFormat) throws AxisFault {
       try {
-         if (!SimpleConfig.getSingleton().getBoolean(DataServer.SQL_PASSTHROUGH_ENABLED, false)) {
+         if (!ConfigFactory.getCommonConfig().getBoolean(DataServer.SQL_PASSTHROUGH_ENABLED, false)) {
             throw new UnsupportedOperationException("This server does not support raw SQL queries - use ADQL");
          }
          
@@ -258,6 +258,9 @@ public class AxisDataService_v06 implements ServiceLifecycle {
 
 /*
 $Log: AxisDataService_v06.java,v $
+Revision 1.2  2005/03/21 18:45:55  mch
+Naughty big lump of changes
+
 Revision 1.1  2005/02/18 18:16:40  mch
 Added
 

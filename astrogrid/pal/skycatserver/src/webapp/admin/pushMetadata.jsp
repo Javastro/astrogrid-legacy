@@ -1,8 +1,7 @@
 <%@ page import="java.io.*,
        org.w3c.dom.*,
        org.astrogrid.io.*,
-       org.astrogrid.config.SimpleConfig,
-       org.astrogrid.util.DomHelper,
+       org.astrogrid.cfg.ConfigFactory,
        org.astrogrid.registry.client.RegistryDelegateFactory,
        org.astrogrid.dataservice.metadata.*,
        org.astrogrid.dataservice.service.*"
@@ -36,7 +35,7 @@
                      "",
                      e,
                      "Failed to send metadata (Config target "+
-                        SimpleConfig.getSingleton().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY)+")\n"
+                        ConfigFactory.getCommonConfig().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY)+")\n"
                   ));
    }
 %>

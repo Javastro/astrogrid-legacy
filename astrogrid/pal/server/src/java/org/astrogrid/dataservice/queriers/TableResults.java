@@ -1,5 +1,5 @@
 /*
- * $Id: TableResults.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: TableResults.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,22 +8,27 @@ package org.astrogrid.dataservice.queriers;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.security.Principal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.dataservice.out.tables.HtmlTableWriter;
-import org.astrogrid.dataservice.out.tables.TableWriter;
-import org.astrogrid.dataservice.out.tables.VoTableWriter;
-import org.astrogrid.dataservice.out.tables.XsvTableWriter;
+import org.astrogrid.cfg.ConfigException;
+import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.dataservice.DatacenterException;
 import org.astrogrid.dataservice.queriers.status.QuerierProcessingResults;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
-import org.astrogrid.dataservice.DatacenterException;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.SRI;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.vospace.HomespaceName;
 import org.astrogrid.slinger.vospace.IVOSRN;
+import org.astrogrid.tableserver.out.FilteredTableWriter;
+import org.astrogrid.tableserver.out.HtmlTableWriter;
+import org.astrogrid.tableserver.out.TableWriter;
+import org.astrogrid.tableserver.out.VoTableWriter;
+import org.astrogrid.tableserver.out.XsvTableWriter;
 
 /** A container interface that holds the results of a query that is in some
  * way a table.  Implementations might be SqlResults.
@@ -35,6 +40,8 @@ public abstract class TableResults implements QueryResults
 {
    
    Log log = LogFactory.getLog(TableResults.class);
+   
+   public final static String TABLE_FILTERS_KEY = "datacenter.table.filter";
    
    protected Querier querier = null;
 
@@ -113,7 +120,15 @@ public abstract class TableResults implements QueryResults
          throw new IllegalArgumentException("Unknown results format in return spec "+returns+" given");
       }
       
-      target.setMimeType(format, querier.getUser());
+      target.setMimeType(tableWriter.getMimeType(), querier.getUser());
+      
+      //add  a filteredtablewriters if any
+      Class filterClass = ConfigFactory.getCommonConfig().getClass(TABLE_FILTERS_KEY,  null);
+      if (filterClass != null) {
+         //wrap plugin around existing one
+         tableWriter = makeTableWriter(filterClass, tableWriter);
+      }
+
       writeTable(tableWriter, status);
 
       if (querier.isAborted()) {
@@ -144,6 +159,27 @@ public abstract class TableResults implements QueryResults
    }
 
 
+   public TableWriter makeTableWriter(Class filter, TableWriter writer) {
+      if (!filter.isInstance(FilteredTableWriter.class)) {
+         throw new ConfigException("tablewriter filter class given by "+TABLE_FILTERS_KEY+" is not a FilteredTableWriter");
+      }
+      try {
+         Constructor constr = filter.getConstructor(new Class[] { TableWriter.class });
+         return (TableWriter) constr.newInstance(new Object[] { writer } );
+      }
+      catch (NoSuchMethodException nsme) {
+         throw new ConfigException("Class "+filter+" given by "+TABLE_FILTERS_KEY+" must extend FilteredTableWriter and have a constructor that takes only a TableWriter");
+      }
+      catch (InvocationTargetException e) {
+         throw new ConfigException("Class "+filter+" given by "+TABLE_FILTERS_KEY+" fails to construct",e);
+      }
+      catch (IllegalAccessException e) {
+         throw new ConfigException("Class "+filter+" given by "+TABLE_FILTERS_KEY+" fails to construct",e);
+      }
+      catch (InstantiationException e) {
+         throw new ConfigException("Class "+filter+" given by "+TABLE_FILTERS_KEY+" fails to construct",e);
+      }
+   }
 
 }
 

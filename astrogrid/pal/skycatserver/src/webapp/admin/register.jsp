@@ -2,8 +2,7 @@
       java.net.URL,
        org.w3c.dom.*,
        org.astrogrid.io.*,
-       org.astrogrid.config.SimpleConfig,
-       org.astrogrid.util.DomHelper,
+       org.astrogrid.cfg.ConfigFactory,
        org.astrogrid.registry.client.RegistryDelegateFactory,
        org.astrogrid.dataservice.metadata.*,
        org.astrogrid.dataservice.service.*"
@@ -34,7 +33,7 @@
           <p>
             Registry URL <input type="text" name="RegistryUrl" size="60"/>
             (leave blank to register on the
-            <a href='<%= SimpleConfig.getSingleton().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY, "[WARNING: Property "+RegistryDelegateFactory.ADMIN_URL_PROPERTY+" not set]") %>'>Default Registry</a>)
+            <a href='<%= ConfigFactory.getCommonConfig().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY, "[WARNING: Property "+RegistryDelegateFactory.ADMIN_URL_PROPERTY+" not set]") %>'>Default Registry</a>)
             <br />
           </p>
            <p>
@@ -48,7 +47,7 @@
       <p>
 <%
    //put a link to the default registry page
-   URL registerUrl = SimpleConfig.getSingleton().getUrl(RegistryDelegateFactory.ADMIN_URL_PROPERTY, null);
+   URL registerUrl = ConfigFactory.getCommonConfig().getUrl(RegistryDelegateFactory.ADMIN_URL_PROPERTY, null);
    if (( registerUrl != null)) {
       String context = registerUrl.getPath().substring(1);
       context = context.substring(0, context.indexOf("/"));

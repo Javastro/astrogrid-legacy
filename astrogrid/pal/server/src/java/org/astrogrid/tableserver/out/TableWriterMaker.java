@@ -1,7 +1,7 @@
 /*
- * $Id: TableWriterMaker.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: TableWriterMaker.java,v 1.1 2005/03/21 18:45:55 mch Exp $
  */
-package org.astrogrid.dataservice.out.tables;
+package org.astrogrid.tableserver.out;
 
 /**
  * Builds the correct tableWriter depending on the mime type

@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.4 2005/03/10 16:42:55 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.5 2005/03/21 18:45:55 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.account.LoginAccount;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.queriers.Querier;
@@ -30,7 +30,7 @@ import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.adql.AdqlQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.WriterTarget;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 
 /** test out the vanilla sql querier on the Dummy SQL Plugin
@@ -55,7 +55,7 @@ public class SqlPluginTest extends ServerTestCase {
       super.setUp();
       
       //set max returns to something reasonably small as some of the results processing is a bit CPU intensive
-      SimpleConfig.getSingleton().setProperty(Query.MAX_RETURN_KEY, "300");
+      ConfigFactory.getCommonConfig().setProperty(Query.MAX_RETURN_KEY, "300");
       
    }
    
@@ -143,7 +143,7 @@ public class SqlPluginTest extends ServerTestCase {
       }
       catch (IllegalArgumentException iae) {} //should throw this
       
-      SimpleConfig.setProperty(DataServer.SQL_PASSTHROUGH_ENABLED,"true");
+      ConfigFactory.getCommonConfig().setProperty(DataServer.SQL_PASSTHROUGH_ENABLED,"true");
       
       askRawSql();
    }
@@ -186,7 +186,7 @@ public class SqlPluginTest extends ServerTestCase {
    public void testDescriptionMaker() throws Exception {
       setUp();
       
-      SimpleConfig.setProperty("datacenter.metadata.plugin", JdbcPlugin.class.getName());
+      ConfigFactory.getCommonConfig().setProperty("datacenter.metadata.plugin", JdbcPlugin.class.getName());
       
       //generate metadata
       Document metaDoc = VoDescriptionServer.getVoDescription();
@@ -218,6 +218,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.5  2005/03/21 18:45:55  mch
+ Naughty big lump of changes
+
  Revision 1.4  2005/03/10 16:42:55  mch
  Split fits, sql and xdb
 

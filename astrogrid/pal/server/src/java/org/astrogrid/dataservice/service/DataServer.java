@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.2 2005/03/10 15:13:49 mch Exp $
+ * $Id: DataServer.java,v 1.3 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.security.Principal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierManager;
@@ -23,7 +23,7 @@ import org.astrogrid.dataservice.DatacenterException;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.condition.Condition;
 import org.astrogrid.query.returns.ReturnSpec;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 
 /**
  * Framework for managing a datacenter.
@@ -68,7 +68,7 @@ public class DataServer
     * Datacenter Installation' by default.
     */
    public static String getDatacenterName() {
-      return SimpleConfig.getProperty("datacenter.name","Unnamed AstroGrid Datacenter");
+      return ConfigFactory.getCommonConfig().getString("datacenter.name","Unnamed AstroGrid Datacenter");
    }
 
    
@@ -80,7 +80,7 @@ public class DataServer
       log.info("Startup");
 
       //botch, need a better way of plugging into initialisation stuff
-      if (SimpleConfig.getSingleton().getString(QuerierPluginFactory.QUERIER_PLUGIN_KEY).equals("org.astrogrid.datacenter.queriers.test.SampleStarsPlugin")) {
+      if (ConfigFactory.getCommonConfig().getString(QuerierPluginFactory.QUERIER_PLUGIN_KEY).equals("org.astrogrid.datacenter.queriers.test.SampleStarsPlugin")) {
          SampleStarsPlugin.initConfig();
       }
    }
@@ -108,7 +108,7 @@ public class DataServer
 
       Querier querier = null;
       try {
-//         if ( (query instanceof RawSqlQuery) && !SimpleConfig.getSingleton().getBoolean(SQL_PASSTHROUGH_ENABLED)) {
+//         if ( (query instanceof RawSqlQuery) && !ConfigFactory.getCommonConfig().getBoolean(SQL_PASSTHROUGH_ENABLED)) {
 //            throw new UnsupportedOperationException("This service does not allow SQL to be directly submitted");
 //         }
    
@@ -213,7 +213,7 @@ public class DataServer
       assert(querier != null);
       
       try {
-//         if ( (querier.getQuery() instanceof RawSqlQuery) && !SimpleConfig.getSingleton().getBoolean(SQL_PASSTHROUGH_ENABLED)) {
+//         if ( (querier.getQuery() instanceof RawSqlQuery) && !ConfigFactory.getCommonConfig().getBoolean(SQL_PASSTHROUGH_ENABLED)) {
 //            throw new UnsupportedOperationException("This service does not allow SQL to be directly submitted");
 //         }
    

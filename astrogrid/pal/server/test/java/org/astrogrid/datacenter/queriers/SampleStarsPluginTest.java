@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.4 2005/03/10 16:42:55 mch Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.5 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,19 +20,19 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.account.LoginAccount;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
-import org.astrogrid.dataservice.out.tables.VoTableWriter;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierManager;
 import org.astrogrid.dataservice.queriers.TableResults;
-import org.astrogrid.tableserver.jdbc.JdbcConnections;
-import org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator;
-import org.astrogrid.tableserver.test.PrecannedResults;
-import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.io.NullOutputStream;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.TargetMaker;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.tableserver.jdbc.JdbcConnections;
+import org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator;
+import org.astrogrid.tableserver.out.VoTableWriter;
+import org.astrogrid.tableserver.test.PrecannedResults;
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
+import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 

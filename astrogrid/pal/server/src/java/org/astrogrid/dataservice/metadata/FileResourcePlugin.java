@@ -1,5 +1,5 @@
 /*
- * $Id: FileResourcePlugin.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: FileResourcePlugin.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,9 +8,9 @@ package org.astrogrid.dataservice.metadata;
 
 import java.io.IOException;
 import java.net.URL;
-import org.astrogrid.config.Config;
-import org.astrogrid.config.ConfigException;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigReader;
+import org.astrogrid.cfg.ConfigException;
+import org.astrogrid.cfg.ConfigFactory;
 
 /**
  * Serves a metadata resource from a file on disk.
@@ -26,16 +26,16 @@ public class FileResourcePlugin extends UrlResourcePlugin
    /** Returns the URLs to the metadata files given by the configuration properties */
    public URL[] getResourceUrls() throws IOException {
 
-      Object[] filenames = SimpleConfig.getSingleton().getProperties(METADATA_FILE_LOC_KEY);
+      Object[] filenames = ConfigFactory.getCommonConfig().getProperties(METADATA_FILE_LOC_KEY);
       
       if (filenames.length == 0 ) {
-         throw new ConfigException("Server not configured properly: no '"+METADATA_FILE_LOC_KEY+"' keys are set in config ("+SimpleConfig.loadedFrom()+") to locate metadata file.");
+         throw new ConfigException("Server not configured properly: no '"+METADATA_FILE_LOC_KEY+"' keys are set in config ("+ConfigFactory.getCommonConfig().loadedFrom()+") to locate metadata file.");
       }
 
       URL[] resourceUrls = new URL[filenames.length];
 
       for (int f = 0; f < filenames.length; f++) {
-         resourceUrls[f] = Config.resolveFilename(filenames[f].toString());
+         resourceUrls[f] = ConfigReader.resolveFilename(filenames[f].toString());
          
          if (resourceUrls[f] == null) {
             throw new IOException("Resource file at '"+filenames[f]+"' not found");

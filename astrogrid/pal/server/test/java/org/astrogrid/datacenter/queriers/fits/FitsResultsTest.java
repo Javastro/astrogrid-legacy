@@ -1,4 +1,4 @@
-/*$Id: FitsResultsTest.java,v 1.3 2005/03/10 20:19:21 mch Exp $
+/*$Id: FitsResultsTest.java,v 1.4 2005/03/21 18:45:55 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -21,7 +21,7 @@ import org.astrogrid.dataservice.queriers.UrlListResults;
 import org.astrogrid.dataservice.queriers.status.QuerierProcessingResults;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.slinger.targets.TargetMaker;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 import org.xml.sax.SAXException;
 
 /** Test the Fits processing classes
@@ -87,6 +87,9 @@ public class FitsResultsTest extends TestCase
 
 /*
  $Log: FitsResultsTest.java,v $
+ Revision 1.4  2005/03/21 18:45:55  mch
+ Naughty big lump of changes
+
  Revision 1.3  2005/03/10 20:19:21  mch
  Fixed tests more metadata fixes
 

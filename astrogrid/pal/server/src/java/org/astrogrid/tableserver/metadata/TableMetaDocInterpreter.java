@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocInterpreter.java,v 1.5 2005/03/11 15:18:13 mch Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.6 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,8 +9,8 @@ package org.astrogrid.tableserver.metadata;
 import java.io.IOException;
 import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
-import org.astrogrid.config.Config;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigReader;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
 import org.astrogrid.tableserver.metadata.TableInfo;
@@ -44,12 +44,12 @@ public class TableMetaDocInterpreter
    
    /** Construct to interpret the table metadoc given in the config file */
    public TableMetaDocInterpreter() throws IOException {
-      docUrl = SimpleConfig.getSingleton().getUrl(TABLE_METADOC_URL_KEY, null);
+      docUrl = ConfigFactory.getCommonConfig().getUrl(TABLE_METADOC_URL_KEY, null);
       if (docUrl != null) {
          loadUrl(docUrl);
       }
       else {
-         docUrl = Config.resolveFilename(SimpleConfig.getSingleton().getString(TABLE_METADOC_FILE_KEY));
+         docUrl = ConfigReader.resolveFilename(ConfigFactory.getCommonConfig().getString(TABLE_METADOC_FILE_KEY));
          loadUrl(docUrl);
       }
    }
@@ -269,12 +269,13 @@ public class TableMetaDocInterpreter
       for (int u = 0; u < ucdNodes.length; u++) {
          info.setUcd(DomHelper.getValueOf(ucdNodes[u]), ucdNodes[u].getAttribute("version"));
       }
-      
-      if (DomHelper.getValueOf(element, "Datatype") == null) {
-         throw new MetadataException("Column "+info.getName()+" has no DataType element in RdbmsResourec");
+
+      String datatype = nullIfEmpty(DomHelper.getValueOf(element, "Datatype"));
+      if (datatype == null) {
+         throw new MetadataException("Column "+info.getName()+" has no Datatype element in metadoc");
       }
       
-      info.setDatatype(nullIfEmpty(DomHelper.getValueOf(element, "Datatype")));
+      info.setDatatype(datatype);
       if (info.getDatatype() != null) {
          info.setJavaType(XmlTypes.getJavaType(info.getDatatype()));
       }

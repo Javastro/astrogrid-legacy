@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsTableMetaDocGenerator.java,v 1.2 2005/03/10 20:19:21 mch Exp $
+ * $Id: RdbmsTableMetaDocGenerator.java,v 1.3 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -66,21 +66,25 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
    public static String getType(int sqlType) {
       
       switch (sqlType) {
+         case Types.ARRAY    : log.error("Don't know how to cope with Arrays, storing as string", new RuntimeException()); return STRING;
          case Types.BIGINT:   return INT;
          case Types.BOOLEAN:  return BOOLEAN;
-         case Types.VARCHAR:  return STRING;
+         case Types.BIT:      return BOOLEAN;
          case Types.CHAR:     return STRING;
+         case Types.DATE:     return DATE;
+         case Types.DECIMAL:   return FLOAT;
          case Types.DOUBLE:   return FLOAT;
          case Types.FLOAT:    return FLOAT;
          case Types.INTEGER:  return INT;
+//         case Types.NUMERIC:  return STRING;  ?tel nums?
          case Types.REAL:     return FLOAT;
          case Types.SMALLINT: return INT;
          case Types.TINYINT:  return INT;
-         case Types.DATE:     return DATE;
          case Types.TIMESTAMP:return DATE;
+         case Types.VARCHAR:  return STRING;
          default: {
             log.error("Don't know what SQL type "+sqlType+" should be, storing as string", new RuntimeException()); //add runtime exception so we get a stack trace
-            return "char";
+            return STRING;
          }
       }
    }
@@ -97,7 +101,7 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
     * Writes the metadata to the given stream.  Writes just one catalog for now */
    public void writeTableMetaDoc(Writer out) throws IOException {
       
-      out.write("<DatasetDescription targetNamespace='urn:astrogrid:schema:TableMetaDoc_v1'>\n");
+      out.write("<DatasetDescription targetNamespace='urn:astrogrid:schema:TableMetaDoc:v1'>\n");
       
       Connection connection = null;
       try {
@@ -133,7 +137,7 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
                                     "indexed='false'" }
                   );
                   colTag.writeTag("Name", colName);
-                  colTag.writeTag("DataType", getType(sqlType));  //duplicate of attribute above, which includes width where nec,
+                  colTag.writeTag("Datatype", getType(sqlType));  //duplicate of attribute above, which includes width where nec,
                   colTag.writeTag("Description", getColumnValue(columns, "REMARKS")+" "); //add space so we don't get an empty tag <Description/> which is a pain to fill in
 //                  colTag.writeTag("Link", new String[] { "text=''" }, " "); //add space so we don't get an empty tag <Description/> which is a pain to fill in
                   colTag.writeTag("Units", " "); //for humans

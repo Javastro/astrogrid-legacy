@@ -1,4 +1,4 @@
-/*$Id: VotableDomResults.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: VotableDomResults.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,11 +12,11 @@ package org.astrogrid.dataservice.queriers;
 
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
-import org.astrogrid.dataservice.out.tables.TableWriter;
-import org.astrogrid.dataservice.out.tables.VoTableWriter;
 import org.astrogrid.dataservice.queriers.TableResults;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.tableserver.out.TableWriter;
+import org.astrogrid.tableserver.out.VoTableWriter;
+import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -64,8 +64,11 @@ public class VotableDomResults extends TableResults {
 
 /*
 $Log: VotableDomResults.java,v $
-Revision 1.1  2005/02/17 18:37:35  mch
-*** empty log message ***
+Revision 1.2  2005/03/21 18:45:55  mch
+Naughty big lump of changes
+
+Revision 1.1.1.1  2005/02/17 18:37:35  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:24  mch
 Initial checkin

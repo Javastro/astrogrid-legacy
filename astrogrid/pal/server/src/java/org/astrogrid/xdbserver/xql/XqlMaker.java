@@ -1,4 +1,4 @@
-/*$Id: XqlMaker.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+/*$Id: XqlMaker.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,11 +23,11 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
 import org.astrogrid.query.adql.Adql074Writer;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -51,9 +51,6 @@ public class XqlMaker {
       }
       catch (SAXException e) {
          throw new RuntimeException("Query2Adql074 procuced invalid XML from query "+query,e);
-      }
-      catch (ParserConfigurationException e) {
-         throw new RuntimeException("Server configuration error:"+e,e);
       }
       
       //Create DOM
@@ -105,7 +102,7 @@ public class XqlMaker {
       
       //look up in config but using above softcoded as defaults
       String key = "datacenter.sqlmaker.xslt."+namespaceURI.replaceAll(":","_");
-      xsltDoc = SimpleConfig.getSingleton().getString(key, xsltDoc);
+      xsltDoc = ConfigFactory.getCommonConfig().getString(key, xsltDoc);
       
       if (xsltDoc == null) {
          throw new RuntimeException("No XSLT sheet given for ADQL (namespace '"+namespaceURI+"'); set configuration key '" + key+"'");
@@ -167,6 +164,9 @@ public class XqlMaker {
 
 /*
 $Log: XqlMaker.java,v $
+Revision 1.2  2005/03/21 18:45:55  mch
+Naughty big lump of changes
+
 Revision 1.1  2005/03/10 16:42:55  mch
 Split fits, sql and xdb
 

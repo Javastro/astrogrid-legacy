@@ -1,4 +1,4 @@
-/*$Id: FitsTestSupport.java,v 1.3 2005/03/14 15:07:52 KevinBenson Exp $
+/*$Id: FitsTestSupport.java,v 1.4 2005/03/21 18:45:55 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -12,12 +12,12 @@ package org.astrogrid.datacenter.fits;
 import java.io.IOException;
 import java.net.URL;
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.astrogrid.test.OptionalTestCase;
 
 /** Test the Fits processing classes
  */
-public class FitsTestSupport extends OptionalTestCase
+public class FitsTestSupport extends TestCase
 {
 
 
@@ -60,6 +60,9 @@ public class FitsTestSupport extends OptionalTestCase
 
 /*
  $Log: FitsTestSupport.java,v $
+ Revision 1.4  2005/03/21 18:45:55  mch
+ Naughty big lump of changes
+
  Revision 1.3  2005/03/14 15:07:52  KevinBenson
  now the test works and writes to a xml file
 

@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.2 2005/03/10 22:39:17 mch Exp $
+ * $Id: SqlResults.java,v 1.3 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,10 +13,9 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Date;
 import org.apache.commons.logging.Log;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.DatacenterException;
 import org.astrogrid.dataservice.metadata.MetadataException;
-import org.astrogrid.dataservice.out.tables.TableWriter;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.TableResults;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
@@ -26,6 +25,7 @@ import org.astrogrid.query.condition.Expression;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
+import org.astrogrid.tableserver.out.TableWriter;
 
 /**
  * Implementation of <tt>QueryResults</tt> as a wrapper around a <tt>ResultSet</tt>
@@ -91,12 +91,12 @@ public class SqlResults extends TableResults {
    }
 
    /**
-    * Writes out results to table writer
+    * Writes out results to given table writer
     */
    public void writeTable(TableWriter tableWriter, QuerierStatus statusToUpdate) throws IOException
    {
       
-      long localLimit = SimpleConfig.getSingleton().getInt(Query.MAX_RETURN_KEY, -1);
+      long localLimit = ConfigFactory.getCommonConfig().getInt(Query.MAX_RETURN_KEY, -1);
       long queryLimit = querier.getQuery().getLimit();
       
       try
@@ -210,6 +210,9 @@ public class SqlResults extends TableResults {
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.3  2005/03/21 18:45:55  mch
+ Naughty big lump of changes
+
  Revision 1.2  2005/03/10 22:39:17  mch
  Fixed tests more metadata fixes
 

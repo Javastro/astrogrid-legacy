@@ -1,4 +1,4 @@
-/*$Id: AdqlSqlMaker.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+/*$Id: AdqlSqlMaker.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,11 +26,11 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
 import org.astrogrid.query.adql.Adql074Writer;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -54,7 +54,7 @@ public class AdqlSqlMaker implements SqlMaker {
       /* not needed any more
       if ( ((query.getScope() == null) || (query.getScope().length==0)) && (query.getCriteria() instanceof Function)) {
          if ( ((Function) query.getCriteria()).getName().toUpperCase().equals("CIRCLE")) {
-            query.setScope(new String[] { SimpleConfig.getProperty(StdSqlWriter.CONE_SEARCH_TABLE_KEY) });
+            query.setScope(new String[] { ConfigFactory.getCommonConfig().getProperty(StdSqlWriter.CONE_SEARCH_TABLE_KEY) });
          }
       }
        */
@@ -78,9 +78,6 @@ public class AdqlSqlMaker implements SqlMaker {
       }
       catch (IOException e) {
          throw new RuntimeException("Server error:"+e,e);
-      }
-      catch (ParserConfigurationException e) {
-         throw new RuntimeException("Server configuration error:"+e,e);
       }
       
    }
@@ -118,7 +115,7 @@ public class AdqlSqlMaker implements SqlMaker {
       
       //see if there's a config property set
       String key = "datacenter.sqlmaker.xslt."+namespaceURI.replaceAll(":","_");
-      xsltDoc = SimpleConfig.getSingleton().getString(key, null);
+      xsltDoc = ConfigFactory.getCommonConfig().getString(key, null);
       
       try {
          if (xsltDoc != null) {
@@ -223,6 +220,9 @@ public class AdqlSqlMaker implements SqlMaker {
 
 /*
  $Log: AdqlSqlMaker.java,v $
+ Revision 1.2  2005/03/21 18:45:55  mch
+ Naughty big lump of changes
+
  Revision 1.1  2005/03/10 16:42:55  mch
  Split fits, sql and xdb
 

@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: ServletHelper.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.account.LoginAccount;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.query.condition.CircleCondition;
 import org.astrogrid.query.returns.ReturnImage;
 import org.astrogrid.query.returns.ReturnSpec;
@@ -78,7 +78,7 @@ public class ServletHelper
       }
       
       //if not, get it we can get it from config
-      String configStem = SimpleConfig.getSingleton().getString("datacenter.url");
+      String configStem = ConfigFactory.getCommonConfig().getString("datacenter.url");
       if (configStem != null) {
          if (!configStem.endsWith("/")) {
             configStem = configStem+"/";
@@ -254,7 +254,7 @@ public class ServletHelper
    /** Returns the stylesheet to be used for the center's html pages in the form
     * of a 'link' element.  Returns an empty string if none configured */
    public static String getCssLink() {
-      String cssName = SimpleConfig.getProperty("datacenter.stylesheet",  "default.css");
+      String cssName = ConfigFactory.getCommonConfig().getString("datacenter.stylesheet",  "default.css");
       if (cssName.length() == 0) {
          return "";
       }

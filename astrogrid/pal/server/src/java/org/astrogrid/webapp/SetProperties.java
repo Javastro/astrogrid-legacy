@@ -1,5 +1,5 @@
 /*
- * $Id: SetProperties.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: SetProperties.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,7 +11,7 @@ import java.net.URL;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 
 /**
  * A servlet that can be called from JSPs etc to set properties.  BEWARE that
@@ -42,7 +42,7 @@ public class SetProperties extends DefaultServlet
       
       for (int i = 0; i < sets.length; i++) {
          String key = sets[i];
-         SimpleConfig.setProperty(key, request.getParameter(key));
+         ConfigFactory.getCommonConfig().setProperty(key, request.getParameter(key));
       }
       
       //forward
@@ -57,7 +57,7 @@ public class SetProperties extends DefaultServlet
          //look in JNDI for description?
       }
       
-      String value = SimpleConfig.getSingleton().getString(key, defaultValue);
+      String value = ConfigFactory.getCommonConfig().getString(key, defaultValue);
       
       return
          "<input type='checkbox' name='set' value='"+key+"' />"+

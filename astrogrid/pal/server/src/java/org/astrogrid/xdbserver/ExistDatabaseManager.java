@@ -3,7 +3,7 @@ package org.astrogrid.xdbserver;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-import org.astrogrid.config.Config;
+import org.astrogrid.cfg.ConfigReader;
 import org.astrogrid.xmldb.client.XMLDBFactory;
 import org.exist.xmldb.DatabaseInstanceManager;
 import org.xmldb.api.DatabaseManager;
@@ -37,14 +37,14 @@ public class ExistDatabaseManager extends HttpServlet {
    private static String xmldbURI = null;
    
    //Standard configuration class for obtaining entries in JNDI or property files.
-   public static Config conf = null;
+   public static ConfigReader conf = null;
    
    private static String pluginType = null;
    
 
    static {
       if(conf == null) {
-         conf = org.astrogrid.config.SimpleConfig.getSingleton();
+         conf = org.astrogrid.cfg.ConfigFactory.getCommonConfig();
          pluginType = conf.getString("datacenter.querier.plugin",null);
          if(isFitsPlugin()) {
              xmldbURI = conf.getString("xmldb.uri");

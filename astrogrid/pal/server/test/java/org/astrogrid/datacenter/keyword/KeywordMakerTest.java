@@ -1,4 +1,4 @@
-/*$Id: KeywordMakerTest.java,v 1.3 2005/02/28 19:36:39 mch Exp $
+/*$Id: KeywordMakerTest.java,v 1.4 2005/03/21 18:45:55 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -12,17 +12,17 @@ package org.astrogrid.datacenter.keyword;
 import java.io.IOException;
 import java.util.Hashtable;
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.astrogrid.geom.Angle;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.keyword.KeywordMaker;
 import org.astrogrid.query.sql.SqlParser;
-import org.astrogrid.sky.Angle;
-import org.astrogrid.test.OptionalTestCase;
 
 /** Test the Keyword maker from various queries
  */
-public class KeywordMakerTest extends OptionalTestCase
+public class KeywordMakerTest extends TestCase
 {
 
    public void testJustCircle() throws IOException
@@ -93,6 +93,9 @@ public class KeywordMakerTest extends OptionalTestCase
 
 /*
  $Log: KeywordMakerTest.java,v $
+ Revision 1.4  2005/03/21 18:45:55  mch
+ Naughty big lump of changes
+
  Revision 1.3  2005/02/28 19:36:39  mch
  Fixes to tests
 

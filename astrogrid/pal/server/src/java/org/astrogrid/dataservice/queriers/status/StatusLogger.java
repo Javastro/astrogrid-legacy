@@ -1,5 +1,5 @@
 /*
- * $Id: StatusLogger.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: StatusLogger.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  */
 
 package org.astrogrid.dataservice.queriers.status;
@@ -13,8 +13,8 @@ import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.account.LoginAccount;
-import org.astrogrid.config.PropertyNotFoundException;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.PropertyNotFoundException;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.service.ServletHelper;
 import org.astrogrid.io.Piper;
 import org.astrogrid.status.DefaultTaskStatus;
@@ -38,7 +38,7 @@ public class StatusLogger {
    Log log = LogFactory.getLog(StatusLogger.class);
    
    public StatusLogger() {
-      statusPageDirectory = new File(SimpleConfig.getSingleton().getString(STATUS_PAGE_DIRECTORY_KEY, "/tmp/"));
+      statusPageDirectory = new File(ConfigFactory.getCommonConfig().getString(STATUS_PAGE_DIRECTORY_KEY, "/tmp/"));
       statusLog = new File(statusPageDirectory, "palstatus.log");
    }
    

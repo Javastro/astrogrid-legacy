@@ -1,4 +1,4 @@
-/*$Id: ServerTestCase.java,v 1.2 2005/03/10 22:39:17 mch Exp $
+/*$Id: ServerTestCase.java,v 1.3 2005/03/21 18:45:55 mch Exp $
  * Created on 20-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.astrogrid.io.Piper;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 import org.custommonkey.xmlunit.Validator;
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -198,6 +198,9 @@ public class ServerTestCase extends XMLTestCase {
 
 /*
 $Log: ServerTestCase.java,v $
+Revision 1.3  2005/03/21 18:45:55  mch
+Naughty big lump of changes
+
 Revision 1.2  2005/03/10 22:39:17  mch
 Fixed tests more metadata fixes
 

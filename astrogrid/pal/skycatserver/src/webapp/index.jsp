@@ -1,5 +1,5 @@
 <%@ page import="org.astrogrid.dataservice.service.DataServer,
-                 org.astrogrid.dataservice.service.ServletHelper, org.astrogrid.config.SimpleConfig"
+                 org.astrogrid.dataservice.service.ServletHelper, org.astrogrid.cfg.ConfigFactory"
    isThreadSafe="false"
    session="false"
 %>
@@ -28,7 +28,7 @@ this dataset.
 <p> To query this data directly, you can use the 'Ask Query' on the left.
 </p>
 <h2><%=DataServer.getDatacenterName() %></h2>
-<p><%= SimpleConfig.getSingleton().getString("datacenter.description","(No description given)") %>
+<p><%= ConfigFactory.getCommonConfig().getString("datacenter.description","(No description given)") %>
 </p>
 <h1>Interfaces</h1>
 <p>PAL provides a variety of IVO interfaces, including:

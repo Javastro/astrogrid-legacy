@@ -1,4 +1,4 @@
-/*$Id: IndexGeneratorTest.java,v 1.9 2005/03/14 16:09:31 KevinBenson Exp $
+/*$Id: IndexGeneratorTest.java,v 1.10 2005/03/21 18:45:55 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -18,10 +18,10 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.datacenter.fits.FitsTestSupport;
 import org.astrogrid.fitsserver.setup.IndexGenerator;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 import org.xml.sax.SAXException;
 import java.io.File;
 
@@ -35,7 +35,7 @@ public class IndexGeneratorTest extends TestCase
    {
       URL []genURLS = FitsTestSupport.getTestFits();      
       System.out.println("length of urls = " + genURLS.length);
-      SimpleConfig.setProperty("indexgen.path","." + File.separator + "target");      
+      ConfigFactory.getCommonConfig().setProperty("indexgen.path","." + File.separator + "target");      
       IndexGenerator generator = new IndexGenerator();
       generator.raAxis = 1;
       generator.decAxis = 2;
@@ -57,17 +57,17 @@ public class IndexGeneratorTest extends TestCase
    public void testGenerateAndUpdate() throws Exception
    {
       URL []genURLS = FitsTestSupport.getTestFits();
-      SimpleConfig.setProperty("upload.collection","IndexGenTest/CDSData");      
-      SimpleConfig.setProperty("test.bypass","yes");
-      SimpleConfig.setProperty("xmldb.uri", "xmldb:exist://");
-      SimpleConfig.setProperty("xmldb.driver", "org.exist.xmldb.DatabaseImpl");
-      SimpleConfig.setProperty("xmldb.query.service", "XQueryService");
-      SimpleConfig.setProperty("xmldb.admin.user", "admin");
-      SimpleConfig.setProperty("xmldb.admin.password", "");
-      SimpleConfig.setProperty("exist.config.file", "target/test-classes/exist.xml");
+      ConfigFactory.getCommonConfig().setProperty("upload.collection","IndexGenTest/CDSData");      
+      ConfigFactory.getCommonConfig().setProperty("test.bypass","yes");
+      ConfigFactory.getCommonConfig().setProperty("xmldb.uri", "xmldb:exist://");
+      ConfigFactory.getCommonConfig().setProperty("xmldb.driver", "org.exist.xmldb.DatabaseImpl");
+      ConfigFactory.getCommonConfig().setProperty("xmldb.query.service", "XQueryService");
+      ConfigFactory.getCommonConfig().setProperty("xmldb.admin.user", "admin");
+      ConfigFactory.getCommonConfig().setProperty("xmldb.admin.password", "");
+      ConfigFactory.getCommonConfig().setProperty("exist.config.file", "target/test-classes/exist.xml");
 
       System.out.println("length of urls = " + genURLS.length);
-      SimpleConfig.setProperty("indexgen.path","." + File.separator + "target");      
+      ConfigFactory.getCommonConfig().setProperty("indexgen.path","." + File.separator + "target");      
       IndexGenerator generator = new IndexGenerator();
       generator.raAxis = 1;
       generator.decAxis = 2;
@@ -133,6 +133,9 @@ public class IndexGeneratorTest extends TestCase
 
 /*
  $Log: IndexGeneratorTest.java,v $
+ Revision 1.10  2005/03/21 18:45:55  mch
+ Naughty big lump of changes
+
  Revision 1.9  2005/03/14 16:09:31  KevinBenson
  Fixed up some more tests for the IndexGenerator
 

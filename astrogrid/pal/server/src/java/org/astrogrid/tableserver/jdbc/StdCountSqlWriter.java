@@ -1,5 +1,5 @@
 /*
- * $Id: StdCountSqlWriter.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+ * $Id: StdCountSqlWriter.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,8 +16,9 @@ import org.astrogrid.query.returns.ReturnSpec;
 public class StdCountSqlWriter extends StdSqlWriter
 {
 
+   /** Override all return spec to replace with count */
    public void visitReturnSpec(ReturnSpec spec) {
-      sql.append("SELECT COUNT(*)");
+      select.append(" COUNT(*) ");
    }
 
    /** Has no place in a count statement, so leave blank */
@@ -28,6 +29,9 @@ public class StdCountSqlWriter extends StdSqlWriter
 
 /*
  $Log: StdCountSqlWriter.java,v $
+ Revision 1.2  2005/03/21 18:45:55  mch
+ Naughty big lump of changes
+
  Revision 1.1  2005/03/10 16:42:55  mch
  Split fits, sql and xdb
 

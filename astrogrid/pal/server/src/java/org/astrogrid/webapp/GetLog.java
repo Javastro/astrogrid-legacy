@@ -1,5 +1,5 @@
 /*
- * $Id: GetLog.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: GetLog.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  */
 
 package org.astrogrid.webapp;
@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.astrogrid.config.FailbackConfig;
+import org.astrogrid.cfg.FailbackConfig;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.io.Piper;
 

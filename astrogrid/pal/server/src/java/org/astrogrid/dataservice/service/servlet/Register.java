@@ -1,5 +1,5 @@
 /*
- * $Id: Register.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: Register.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -12,7 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.service.ServletHelper;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
@@ -30,7 +30,7 @@ public class Register extends DefaultServlet {
       try {
          String regParam = request.getParameter("RegistryUrl");
          if ((regParam == null) || (regParam.trim().length()==0)) {
-            regParam =  SimpleConfig.getSingleton().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY);
+            regParam =  ConfigFactory.getCommonConfig().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY);
          }
 
          VoDescriptionServer.pushToRegistry(new URL(regParam));

@@ -1,10 +1,10 @@
 /*
- * $Id: HtmlTableWriter.java,v 1.3 2005/03/10 15:13:48 mch Exp $
+ * $Id: HtmlTableWriter.java,v 1.1 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.dataservice.out.tables;
+package org.astrogrid.tableserver.out;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,7 +13,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.apache.commons.logging.Log;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
 import org.astrogrid.slinger.mime.MimeTypes;
 
@@ -154,6 +154,9 @@ public class HtmlTableWriter extends AsciiTableSupport {
 
 /*
  $Log: HtmlTableWriter.java,v $
+ Revision 1.1  2005/03/21 18:45:55  mch
+ Naughty big lump of changes
+
  Revision 1.3  2005/03/10 15:13:48  mch
  Seperating out fits, table and xdb servers
 

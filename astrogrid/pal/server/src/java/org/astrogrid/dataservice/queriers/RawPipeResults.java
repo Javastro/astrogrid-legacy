@@ -1,4 +1,4 @@
-/*$Id: RawPipeResults.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: RawPipeResults.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,12 +14,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.Principal;
-import org.astrogrid.dataservice.out.tables.TableWriter;
 import org.astrogrid.dataservice.queriers.QueryResults;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
 import org.astrogrid.io.Piper;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.slinger.targets.TargetIdentifier;
+import org.astrogrid.tableserver.out.TableWriter;
 
 /**
  * Pipes results as-they-are from the given inputstream to the target.
@@ -75,8 +75,11 @@ public class RawPipeResults implements QueryResults {
 
 /*
 $Log: RawPipeResults.java,v $
-Revision 1.1  2005/02/17 18:37:35  mch
-*** empty log message ***
+Revision 1.2  2005/03/21 18:45:55  mch
+Naughty big lump of changes
+
+Revision 1.1.1.1  2005/02/17 18:37:35  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:24  mch
 Initial checkin

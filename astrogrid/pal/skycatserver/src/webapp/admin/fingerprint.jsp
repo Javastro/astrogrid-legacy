@@ -3,7 +3,7 @@
              org.astrogrid.tableserver.jdbc.*,
              java.util.*,
              java.sql.Driver,
-             org.astrogrid.config.*"
+             org.astrogrid.cfg.*"
     session="false" %>
 <html>
 <head>
@@ -197,19 +197,19 @@
 <%
    try {
       //force load
-      SimpleConfig.getProperty("Dummy",null);
+      ConfigFactory.getCommonConfig().getProperty("Dummy",null);
    } catch (Throwable t) {
       out.println("Error loading Config: "+t);
    }
    
-   SimpleConfig.getSingleton().dumpConfig(out);
+   ConfigFactory.getCommonConfig().dumpConfig(out);
 %>
 </pre>
 
 <hr />
 <h2>VoResource/Metadata Plugin Configuration</h2>
 <%
-   Object[] resourcePluginClasses =  SimpleConfig.getSingleton().getProperties(org.astrogrid.dataservice.metadata.VoDescriptionServer.RESOURCE_PLUGIN_KEY);
+   Object[] resourcePluginClasses =  ConfigFactory.getCommonConfig().getProperties(org.astrogrid.dataservice.metadata.VoDescriptionServer.RESOURCE_PLUGIN_KEY);
 
    for (int i = 0; i < resourcePluginClasses.length; i++) {
       out.println("Resource Plugin Class "+resourcePluginClasses[i].toString());
@@ -232,7 +232,7 @@
 <hr />
 <h2>Query Plugin Configuration</h2>
 <%
-   String pluginClass =  SimpleConfig.getProperty(org.astrogrid.dataservice.queriers.QuerierPluginFactory.QUERIER_PLUGIN_KEY, null);
+   String pluginClass =  ConfigFactory.getCommonConfig().getString(org.astrogrid.dataservice.queriers.QuerierPluginFactory.QUERIER_PLUGIN_KEY, null);
   
    out.println("Query Plugin Class <tt>"+pluginClass+"</tt>");
 
@@ -247,8 +247,8 @@
 
          if (plugin.getName().equals(JdbcPlugin.class.getName())) {
 
-            String sqlMaker = SimpleConfig.getProperty(org.astrogrid.tableserver.jdbc.JdbcPlugin.SQL_TRANSLATOR, null) ;
-            String jdbcUrl = SimpleConfig.getProperty(org.astrogrid.tableserver.jdbc.JdbcConnections.JDBC_URL_KEY, null) ;
+            String sqlMaker = ConfigFactory.getCommonConfig().getString(org.astrogrid.tableserver.jdbc.JdbcPlugin.SQL_TRANSLATOR, null) ;
+            String jdbcUrl = ConfigFactory.getCommonConfig().getString(org.astrogrid.tableserver.jdbc.JdbcConnections.JDBC_URL_KEY, null) ;
 
             if (sqlMaker != null) {
                   out.println("<br/>SQL Translator "+ sqlMaker );

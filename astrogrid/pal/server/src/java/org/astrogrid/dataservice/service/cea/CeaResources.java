@@ -1,5 +1,5 @@
 /*
- * $Id: CeaResources.java,v 1.4 2005/03/10 22:39:17 mch Exp $
+ * $Id: CeaResources.java,v 1.5 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,7 +9,7 @@ package org.astrogrid.dataservice.service.cea;
 import java.io.IOException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.metadata.VoResourcePlugin;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
@@ -35,7 +35,7 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
          makeCore("ceaService")+
          "<interface xsi:type='vs:WebService'>"+
             "<accessURL use='full'>"+
-               SimpleConfig.getSingleton().getString("datacenter.url")+"services/CommonExecutionConnectorService"+
+               ConfigFactory.getCommonConfig().getString("datacenter.url")+"services/CommonExecutionConnectorService"+
             "</accessURL>"+
          "</interface>"+
          //reference to the application that this serves

@@ -5,7 +5,6 @@
        org.astrogrid.io.*,
        org.astrogrid.ucd.UcdDictionary,
        org.astrogrid.units.UnitDictionary,
-       org.astrogrid.util.DomHelper,
        org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator,
        org.astrogrid.dataservice.metadata.*,
        org.astrogrid.tableserver.metadata.*,

@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.2 2005/03/10 20:19:21 mch Exp $
+ * $Id: SampleStarsPlugin.java,v 1.3 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,8 +11,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.astrogrid.config.Config;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigReader;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.metadata.queryable.ConeConfigQueryableResource;
 import org.astrogrid.dataservice.queriers.DatabaseAccessException;
@@ -48,29 +48,29 @@ public class SampleStarsPlugin extends JdbcPlugin
    /** Sets up the configuration etc for accessing this database */
    public static void initConfig() {
       
-      SimpleConfig.getSingleton().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, SampleStarsPlugin.class.getName());
+      ConfigFactory.getCommonConfig().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, SampleStarsPlugin.class.getName());
 
-      SimpleConfig.setProperty(JdbcPlugin.SQL_TRANSLATOR, StdSqlMaker.class.getName());
+      ConfigFactory.getCommonConfig().setProperty(JdbcPlugin.SQL_TRANSLATOR, StdSqlMaker.class.getName());
 
-      SimpleConfig.setProperty("datacenter.name", "Sample");
+      ConfigFactory.getCommonConfig().setProperty("datacenter.name", "Sample");
       
-      SimpleConfig.setProperty(ConeConfigQueryableResource.CONE_SEARCH_RA_COL_KEY, "RA");
-      SimpleConfig.setProperty(ConeConfigQueryableResource.CONE_SEARCH_DEC_COL_KEY,"DEC");
-      SimpleConfig.setProperty(ConeConfigQueryableResource.CONE_SEARCH_TABLE_KEY,  "SampleStars");
+      ConfigFactory.getCommonConfig().setProperty(ConeConfigQueryableResource.CONE_SEARCH_RA_COL_KEY, "RA");
+      ConfigFactory.getCommonConfig().setProperty(ConeConfigQueryableResource.CONE_SEARCH_DEC_COL_KEY,"DEC");
+      ConfigFactory.getCommonConfig().setProperty(ConeConfigQueryableResource.CONE_SEARCH_TABLE_KEY,  "SampleStars");
       
-//      SimpleConfig.setProperty(SqlWriter.DB_TRIGFUNCS_IN_RADIANS, "True");
+//      ConfigFactory.getCommonConfig().setProperty(SqlWriter.DB_TRIGFUNCS_IN_RADIANS, "True");
 
-      SimpleConfig.setProperty(ConeConfigQueryableResource.CONE_SEARCH_COL_UNITS_KEY, "deg");
+      ConfigFactory.getCommonConfig().setProperty(ConeConfigQueryableResource.CONE_SEARCH_COL_UNITS_KEY, "deg");
       
       //set up properties so we connect to the db
-      SimpleConfig.setProperty(JdbcConnections.JDBC_DRIVERS_KEY, "org.hsqldb.jdbcDriver");
-//      SimpleConfig.setProperty(JdbcConnections.JDBC_URL_KEY, "jdbc:hsqldb:."); //in memory db - doesn't seem to persist between calls...
-      SimpleConfig.setProperty(JdbcConnections.JDBC_URL_KEY, "jdbc:hsqldb:dummydb"); //db on disk
-      SimpleConfig.setProperty(JdbcConnections.JDBC_USER_KEY, "sa");
-      SimpleConfig.setProperty(JdbcConnections.JDBC_PASSWORD_KEY, "");
+      ConfigFactory.getCommonConfig().setProperty(JdbcConnections.JDBC_DRIVERS_KEY, "org.hsqldb.jdbcDriver");
+//      ConfigFactory.getCommonConfig().setProperty(JdbcConnections.JDBC_URL_KEY, "jdbc:hsqldb:."); //in memory db - doesn't seem to persist between calls...
+      ConfigFactory.getCommonConfig().setProperty(JdbcConnections.JDBC_URL_KEY, "jdbc:hsqldb:dummydb"); //db on disk
+      ConfigFactory.getCommonConfig().setProperty(JdbcConnections.JDBC_USER_KEY, "sa");
+      ConfigFactory.getCommonConfig().setProperty(JdbcConnections.JDBC_PASSWORD_KEY, "");
       
       //it's a bit naughty setting this, but it sorts out most tests
-      SimpleConfig.setProperty("datacenter.url", SimpleConfig.getProperty("datacenter.url", "http://localhost:8080/pal-Sample/"));
+      ConfigFactory.getCommonConfig().setProperty("datacenter.url", ConfigFactory.getCommonConfig().getProperty("datacenter.url", "http://localhost:8080/pal-Sample/"));
       
       //set where to find the data description meta document
       //this works OK for unit test, but not deployment...
@@ -78,16 +78,16 @@ public class SampleStarsPlugin extends JdbcPlugin
       if (url == null) {
          //this works OK for deployment, but not unit tests...
          try {
-            url = Config.resolveFilename("samplestars.metadoc.xml");
+            url = ConfigReader.resolveFilename("samplestars.metadoc.xml");
          }
          catch (IOException e) {
             throw new RuntimeException(e);
          }
       }
-      SimpleConfig.setProperty(TableMetaDocInterpreter.TABLE_METADOC_URL_KEY, url.toString());
+      ConfigFactory.getCommonConfig().setProperty(TableMetaDocInterpreter.TABLE_METADOC_URL_KEY, url.toString());
 
       //configure which resources to produce
-      SimpleConfig.getSingleton().setProperties(VoDescriptionServer.RESOURCE_PLUGIN_KEY, new Object[] {
+      ConfigFactory.getCommonConfig().setProperties(VoDescriptionServer.RESOURCE_PLUGIN_KEY, new Object[] {
                TabularSkyServiceResources.class.getName(),
                RdbmsMetadataResources.class.getName(),
                TabularDbResources.class.getName(),
@@ -95,15 +95,15 @@ public class SampleStarsPlugin extends JdbcPlugin
 
       
       //set up the properties for the authority bit
-      SimpleConfig.setProperty("datacenter.name", "SampleStars AstroGrid Datacenter");
-      SimpleConfig.setProperty("datacenter.shortname", "PAL-Sample");
-      SimpleConfig.setProperty("datacenter.publisher", "AstroGrid");
-      SimpleConfig.setProperty("datacenter.description", "An unconfigured datacenter; it contains two tables of sample stars and galaxies for testing and demonstration purposes.");
-      SimpleConfig.setProperty("datacenter.contact.name", "Martin Hill");
-      SimpleConfig.setProperty("datacenter.contact.email", "mch@roe.ac.uk");
+      ConfigFactory.getCommonConfig().setProperty("datacenter.name", "SampleStars AstroGrid Datacenter");
+      ConfigFactory.getCommonConfig().setProperty("datacenter.shortname", "PAL-Sample");
+      ConfigFactory.getCommonConfig().setProperty("datacenter.publisher", "AstroGrid");
+      ConfigFactory.getCommonConfig().setProperty("datacenter.description", "An unconfigured datacenter; it contains two tables of sample stars and galaxies for testing and demonstration purposes.");
+      ConfigFactory.getCommonConfig().setProperty("datacenter.contact.name", "Martin Hill");
+      ConfigFactory.getCommonConfig().setProperty("datacenter.contact.email", "mch@roe.ac.uk");
 
-      SimpleConfig.setProperty("datacenter.authorityId", "astrogrid.org");
-      SimpleConfig.setProperty("datacenter.resourceKey", "pal-sample");
+      ConfigFactory.getCommonConfig().setProperty("datacenter.authorityId", "astrogrid.org");
+      ConfigFactory.getCommonConfig().setProperty("datacenter.resourceKey", "pal-sample");
     }
    
     
@@ -265,6 +265,9 @@ public class SampleStarsPlugin extends JdbcPlugin
 }
    /*
    $Log: SampleStarsPlugin.java,v $
+   Revision 1.3  2005/03/21 18:45:55  mch
+   Naughty big lump of changes
+
    Revision 1.2  2005/03/10 20:19:21  mch
    Fixed tests more metadata fixes
 

@@ -1,5 +1,5 @@
 /*
- * $Id: UnitDictionary.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: UnitDictionary.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,6 +22,8 @@ public class UnitDictionary
    public static final String UNIT_REF = "http://vizier.u-strasbg.fr/cgi-bin/Unit";
    public static final String UNIT_LIST = "http://vizier.u-strasbg.fr/cgi-bin/Unit?%3f";
 
+   public static final String MILLISECONDS = "ms";
+   
    protected static Log log = LogFactory.getLog(UnitDictionary.class);
 
    public UnitDictionary() {

@@ -1,5 +1,5 @@
 <%@ page language="java"
-    import="java.util.*, org.astrogrid.config.SimpleConfig, java.io.*,
+    import="java.util.*, org.astrogrid.cfg.ConfigFactory, java.io.*,
     org.astrogrid.query.returns.*,
     org.astrogrid.query.condition.*,
     org.astrogrid.query.*,
@@ -7,7 +7,7 @@
     org.apache.commons.logging.LogFactory,
     org.astrogrid.dataservice.metadata.*, org.astrogrid.dataservice.service.ServletHelper,
     org.astrogrid.dataservice.service.DataServer,
-    org.w3c.dom.*, org.astrogrid.util.* " %>
+    org.w3c.dom.* " %>
 
 <%-- This page takes the entries from the queryBuilder forms, creates an ADQL/xml
      query from it, and forwards the user to the ADQL/xml entry form page to

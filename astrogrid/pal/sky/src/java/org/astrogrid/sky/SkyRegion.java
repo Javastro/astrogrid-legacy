@@ -1,12 +1,10 @@
 /*
- * $Id: SkyRegion.java,v 1.2 2005/03/16 12:00:47 mch Exp $
+ * $Id: SkyRegion.java,v 1.3 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.sky;
-
-import java.awt.Dimension;
 
 
 /**
@@ -17,12 +15,11 @@ import java.awt.Dimension;
 
 public interface SkyRegion {
 
-   /** Returns the overall bounds - ie min RA/DEC, max RA/DEC or opposite corner HTMs.
+   /** Returns the overall bounds - ie min RA/DEC, max RA/DEC
     * This can be useful for first-stage queries */
    public SkyQuad getBounds();
  
    /** Returns true if the given region intersects with this one
-    * @todo add some indication of intersection size
     */
    public boolean intersects(SkyRegion givenRegion);
    
@@ -32,6 +29,7 @@ public interface SkyRegion {
    /** Returns true if the given region is entirely inside this region */
    public boolean contains(SkyRegion givenPoint);
 }
+
 
 
 

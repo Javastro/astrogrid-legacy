@@ -3,7 +3,7 @@
     <extend>${basedir}/../../maven-base/project.xml</extend>
         <id>astrogrid-pal-server</id>
         <name>Astrogrid Server Library</name>
-  <currentVersion>${astrogrid.pal.version}</currentVersion>
+  <currentVersion>${astrogrid.pal.latest}</currentVersion>
   <description>A set of classes to manage queries made through plugins on data</description>
   <shortDescription>AstroGrid Server Library</shortDescription>
 
@@ -24,6 +24,12 @@
     </dependency>
    
     <dependency>
+      <id>astrogrid-config</id>
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.config.version}</version>
+    </dependency>
+
+    <dependency>
          <artifactId>log4j</artifactId>
          <groupId>log4j</groupId>
          <version>1.2.4</version>
@@ -37,9 +43,9 @@
     </dependency>
 
     <dependency>
-      <id>astrogrid-slinger-xml</id>
+      <id>astrogrid-xml</id>
       <groupId>org.astrogrid</groupId>
-      <version>${astrogrid.slinger.version}</version>
+      <version>${astrogrid.xml.version}</version>
     </dependency>
 
     <dependency>
@@ -57,31 +63,43 @@
       <dependency>
          <artifactId>astrogrid-pal-sky</artifactId>
          <groupId>org.astrogrid</groupId>
-         <version>${astrogrid.pal.version}</version>
+         <version>${astrogrid.pal.latest}</version>
+      </dependency>
+
+      <dependency>
+         <artifactId>astrogrid-pal-geom</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.pal.latest}</version>
+      </dependency>
+
+      <dependency>
+         <artifactId>astrogrid-pal-errors</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.pal.latest}</version>
       </dependency>
 
       <dependency>
          <artifactId>astrogrid-pal-units</artifactId>
          <groupId>org.astrogrid</groupId>
-         <version>${astrogrid.pal.version}</version>
+         <version>${astrogrid.pal.latest}</version>
       </dependency>
 
       <dependency>
          <artifactId>astrogrid-pal-api</artifactId>
          <groupId>org.astrogrid</groupId>
-         <version>${astrogrid.pal.version}</version>
+         <version>${astrogrid.pal.latest}</version>
       </dependency>
 
       <dependency>
          <artifactId>astrogrid-pal-ucd</artifactId>
          <groupId>org.astrogrid</groupId>
-         <version>${astrogrid.pal.version}</version>
+         <version>${astrogrid.pal.latest}</version>
       </dependency>
 
       <dependency>
          <artifactId>astrogrid-pal-query</artifactId>
          <groupId>org.astrogrid</groupId>
-         <version>${astrogrid.pal.version}</version>
+         <version>${astrogrid.pal.latest}</version>
       </dependency>
 
     <!-- more standard deps -->
@@ -366,7 +384,7 @@
                      <directory>${basedir}/test/java</directory>
                  <includes>
                     <include>**/*.xml</include>
-                 	<include>**/*.fits</include>
+                  <include>**/*.fits</include>
                     <include>**/*.properties</include>
                     <include>**/data</include>
                     <include>**/data/*</include>

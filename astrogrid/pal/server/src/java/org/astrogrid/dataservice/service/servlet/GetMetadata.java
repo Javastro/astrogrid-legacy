@@ -1,5 +1,5 @@
 /*
- * $Id: GetMetadata.java,v 1.2 2005/03/10 20:19:21 mch Exp $
+ * $Id: GetMetadata.java,v 1.3 2005/03/21 18:45:55 mch Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.astrogrid.applications.component.CEAComponentManagerFactory;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 import org.astrogrid.webapp.DefaultServlet;
 
 /**

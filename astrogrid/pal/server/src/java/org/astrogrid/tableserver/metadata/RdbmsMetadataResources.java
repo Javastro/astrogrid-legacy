@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsMetadataResources.java,v 1.2 2005/03/10 22:39:17 mch Exp $
+ * $Id: RdbmsMetadataResources.java,v 1.3 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -53,9 +53,19 @@ public class RdbmsMetadataResources extends VoResourceSupport implements VoResou
                "<Column datatype='"+columns[c].getDatatype()+"'>"+
                   "<Name>"+columns[c].getName()+"</Name>"+
                   "<Datatype>"+columns[c].getDatatype()+"</Datatype>"+
-                  "<Description>"+XmlPrinter.transformSpecials(columns[c].getDescription())+"</Description>"+
-                  "<UCD>"+columns[c].getUcd("1")+"</UCD>"+
-                  "<Units>"+columns[c].getUnits()+"</Units>"+
+                  "<Description>"+XmlPrinter.transformSpecials(columns[c].getDescription())+"</Description>"
+            );
+            if (columns[c].getUcd("1") != null) {
+               tabularDb.append(
+                  "<UCD>"+columns[c].getUcd("1")+"</UCD>"
+               );
+            }
+            if (columns[c].getUcd("1") != null) {
+               tabularDb.append(
+                  "<Units>"+columns[c].getUnits()+"</Units>"
+               );
+            }
+            tabularDb.append(
                "</Column>"
             );
          }

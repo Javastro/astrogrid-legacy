@@ -3,7 +3,7 @@
     org.astrogrid.dataservice.metadata.*,
     org.astrogrid.dataservice.service.DataServer,
     org.astrogrid.ucd.UcdDictionary,
-    org.w3c.dom.*, org.astrogrid.util.* " %>
+    org.w3c.dom.*, org.astrogrid.xml.* " %>
 
 <head>
 <title>Query Builder (p1) for <%=DataServer.getDatacenterName() %> </title>
@@ -37,11 +37,11 @@ empty you will receive all the columns in your results.
    }
    for (int t=0;t<tables.getLength();t++) {
       Element tableElement = (Element) tables.item(t);
-      String tableName = DomHelper.getValue(tableElement, "Name");
-      String link = DomHelper.getValue(tableElement, "Link");
+      String tableName = DomHelper.getValueOf(tableElement, "Name");
+      String link = DomHelper.getValueOf(tableElement, "Link");
 %>
       <h3><%=tableName %></h3>
-      <p><%= DomHelper.getValue(tableElement, "Description") %></p>
+      <p><%= DomHelper.getValueOf(tableElement, "Description") %></p>
       <% if (link.length()>0) { %> <p><a href='<%=link %>'>Link</a></p> <% } %>
       
       <table border="1" cellspacing="3" cellpadding="3" >
@@ -59,17 +59,17 @@ empty you will receive all the columns in your results.
       NodeList columns = tableElement.getElementsByTagName("Column");
       for (int c=0;c<columns.getLength();c++) {
          Element colElement = (Element) columns.item(c);
-         String colName = DomHelper.getValue(colElement, "Name");
+         String colName = DomHelper.getValueOf(colElement, "Name");
          String colId = tableName+"."+colName;
 %>
          <tr>
          <td><input type='checkbox' name='searchColumn' value='<%= colId %>' ></td>
          <td><input type='checkbox' name='resultColumn' value='<%= colId %>' ></td>
          <td><%= colName %></td>
-         <td><%= DomHelper.getValue(colElement, "Units") %></td>
-         <td><%= DomHelper.getValue(colElement, "UCD") %></td>
-         <td><%= DomHelper.getValue(colElement, "UcdPlus") %></td>
-         <td><%= DomHelper.getValue(colElement, "Description") %></td>
+         <td><%= DomHelper.getValueOf(colElement, "Units") %></td>
+         <td><%= DomHelper.getValueOf(colElement, "UCD") %></td>
+         <td><%= DomHelper.getValueOf(colElement, "UcdPlus") %></td>
+         <td><%= DomHelper.getValueOf(colElement, "Description") %></td>
 
 <%
       } //end for cols

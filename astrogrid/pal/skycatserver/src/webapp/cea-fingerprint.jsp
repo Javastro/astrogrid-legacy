@@ -1,7 +1,7 @@
 <%@ page import="java.io.*,
                                  java.net.*,
                  java.util.*,
-                                 org.astrogrid.config.*,
+                                 org.astrogrid.cfg.*,
                                  org.astrogrid.applications.component.CEAComponentManagerFactory"
     session="false" %>
 <html>
@@ -185,7 +185,7 @@
 
 CEA configuration loader details:
 <pre>
-   <% SimpleConfig.getSingleton().dumpConfig(out); %>
+   <% ConfigFactory.getCommonConfig().dumpConfig(out); %>
  </pre>
 <p />
 

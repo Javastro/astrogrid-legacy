@@ -2,7 +2,7 @@
          java.net.*,
          org.astrogrid.dataservice.metadata.*,
          org.astrogrid.dataservice.metadata.queryable.*,
-         org.astrogrid.config.SimpleConfig,
+         org.astrogrid.cfg.ConfigFactory,
          org.astrogrid.dataservice.metadata.*,
          org.astrogrid.dataservice.metadata.queryable.*,
          org.astrogrid.dataservice.service.*,
@@ -30,7 +30,7 @@
 
 <body>
 <%
-//   if (SimpleConfig.getSingleton().getString(SqlWriter.CONE_SEARCH_TABLE_KEY, null) == null) {
+//   if (ConfigFactory.getCommonConfig().getString(SqlWriter.CONE_SEARCH_TABLE_KEY, null) == null) {
 //      out.write("This server is not configured for cone searches");
 //   }
 //   else

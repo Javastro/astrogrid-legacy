@@ -1,5 +1,5 @@
 /*
- * $Id: ExistPlugin.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+ * $Id: ExistPlugin.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,14 +13,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.Principal;
 import javax.xml.parsers.ParserConfigurationException;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.queriers.DefaultPlugin;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.status.QuerierQuerying;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
 import org.astrogrid.query.xql.XqlMaker;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 import org.xml.sax.SAXException;
 
 /**
@@ -54,7 +54,7 @@ public class ExistPlugin extends DefaultPlugin {
 
    /** Returns the limit configured for this application */
    public long getLocalLimit() {
-      return SimpleConfig.getSingleton().getInt("datacenter.results.limit",300);
+      return ConfigFactory.getCommonConfig().getInt("datacenter.results.limit",300);
    }
    
    /** queries eXist with the given query */
@@ -74,7 +74,6 @@ public class ExistPlugin extends DefaultPlugin {
     * returning a stream ot the results */
    public InputStream askExist(String xql, long limit) throws IOException {
 
-      try {
          String query = "<query xmlns='http://exist.sourceforge.net/NS/exist'" +
             " start='1' max='" + limit + "\">" +
             "<text><![CDATA[" + xql + "]]></text></query>";
@@ -85,7 +84,7 @@ public class ExistPlugin extends DefaultPlugin {
          catch(SAXException se) {
             throw new QueryException(se+" in generated XQL (Internal Server Error)",se);
          }
-         URL postUrl = new URL(SimpleConfig.getSingleton().getUrl("exist.db.url")+
+         URL postUrl = new URL(ConfigFactory.getCommonConfig().getUrl("exist.db.url")+
                                   "/servlet/db/");
          
          HttpURLConnection huc = (HttpURLConnection) postUrl.openConnection();
@@ -105,10 +104,7 @@ public class ExistPlugin extends DefaultPlugin {
          else {
             return null;
          }
-      }
-      catch(ParserConfigurationException pce) {
-         throw new RuntimeException("Server configuration error",pce);
-      }
+      
       
    }
 
@@ -125,6 +121,9 @@ public class ExistPlugin extends DefaultPlugin {
 
 /*
  $Log: ExistPlugin.java,v $
+ Revision 1.2  2005/03/21 18:45:55  mch
+ Naughty big lump of changes
+
  Revision 1.1  2005/03/10 16:42:55  mch
  Split fits, sql and xdb
 

@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcConnections.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+ * $Id: JdbcConnections.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,7 +18,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.queriers.DatabaseAccessException;
 
 /**
@@ -123,9 +123,9 @@ public class JdbcConnections {
       }
 
       //try properties file
-      String userId = SimpleConfig.getSingleton().getString(JDBC_USER_KEY, null);
-      String password = SimpleConfig.getSingleton().getString(JDBC_PASSWORD_KEY, null);
-      String jdbcURL = SimpleConfig.getSingleton().getString(JDBC_URL_KEY, null);
+      String userId = ConfigFactory.getCommonConfig().getString(JDBC_USER_KEY, null);
+      String password = ConfigFactory.getCommonConfig().getString(JDBC_PASSWORD_KEY, null);
+      String jdbcURL = ConfigFactory.getCommonConfig().getString(JDBC_URL_KEY, null);
       if ( jdbcURL != null && jdbcURL.length() > 0)  {
          log.info("JNDI Key "+JDBC_URL_KEY+" returns database url "+jdbcURL);
          return new JdbcConnections(jdbcURL, userId, password);
@@ -195,7 +195,7 @@ public class JdbcConnections {
    public final static synchronized  Driver[] startDrivers() throws DatabaseAccessException {
       if (drivers == null) {
          //read value
-         String classList = SimpleConfig.getSingleton().getString(JDBC_DRIVERS_KEY, null);
+         String classList = ConfigFactory.getCommonConfig().getString(JDBC_DRIVERS_KEY, null);
          Vector v = new Vector();
          if (classList == null) {
             log.warn("No SQL drivers found from key "+JDBC_DRIVERS_KEY);

@@ -1,6 +1,6 @@
 
 /*
- * $Id: DatacenterApplicationTest.java,v 1.3 2005/03/10 16:42:55 mch Exp $
+ * $Id: DatacenterApplicationTest.java,v 1.4 2005/03/21 18:45:55 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,7 @@ import org.astrogrid.applications.manager.observer.AbstractProgressListener;
 import org.astrogrid.applications.manager.observer.AbstractResultsListener;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.community.User;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
@@ -78,7 +78,7 @@ public class DatacenterApplicationTest extends ServerTestCase {
    protected void setUp() throws Exception {
       super.setUp();
       ds = new DataServer();
-      SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY,PrecannedPlugin.class.getName());
+      ConfigFactory.getCommonConfig().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY,PrecannedPlugin.class.getName());
       env = new ApplicationDescriptionEnvironment(
                        new InMemoryIdGen(),
                        new DefaultProtocolLibrary(),
@@ -254,6 +254,9 @@ public class DatacenterApplicationTest extends ServerTestCase {
 
 /*
  $Log: DatacenterApplicationTest.java,v $
+ Revision 1.4  2005/03/21 18:45:55  mch
+ Naughty big lump of changes
+
  Revision 1.3  2005/03/10 16:42:55  mch
  Split fits, sql and xdb
 

@@ -2,7 +2,7 @@
     import="java.util.*, java.io.*,
     org.astrogrid.dataservice.metadata.*,
     org.astrogrid.dataservice.service.DataServer,
-    org.w3c.dom.*, org.astrogrid.util.* "
+    org.w3c.dom.* "
     %>
 <!-- %@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %> -->
 <!-- returns 'checked' if the given value is in the list of values -->

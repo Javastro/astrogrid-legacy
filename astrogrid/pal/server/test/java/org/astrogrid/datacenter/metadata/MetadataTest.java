@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.8 2005/03/10 22:39:17 mch Exp $
+/*$Id: MetadataTest.java,v 1.9 2005/03/21 18:45:55 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Locale;
 import junit.framework.TestCase;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.FileResourcePlugin;
 import org.astrogrid.dataservice.metadata.UrlResourcePlugin;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
@@ -39,7 +39,7 @@ public class MetadataTest extends TestCase {
   
    public void setUp() {
       SampleStarsPlugin.initConfig();
-      SimpleConfig.setProperty("datacenter.url", "http://localhost:8080/wossname");
+      ConfigFactory.getCommonConfig().setProperty("datacenter.url", "http://localhost:8080/wossname");
    }
    
    /** Checks that the identifiers are there and valid and not duplicates */
@@ -55,7 +55,7 @@ public class MetadataTest extends TestCase {
 
          Element idNode = idNodes[0];
          String id = DomHelper.getValueOf(idNode);
-         String configAuth = SimpleConfig.getSingleton().getString(VoResourceSupport.AUTHID_KEY);
+         String configAuth = ConfigFactory.getCommonConfig().getString(VoResourceSupport.AUTHID_KEY);
          assertTrue("identity doesn't start with config'd authority '"+configAuth+"'", id.startsWith(configAuth));
             
          //check for duplicates
@@ -145,9 +145,9 @@ public class MetadataTest extends TestCase {
 
    public void testMetadataFileServer() throws Throwable{
       
-      SimpleConfig.setProperty(VoDescriptionServer.RESOURCE_PLUGIN_KEY, FileResourcePlugin.class.getName());
+      ConfigFactory.getCommonConfig().setProperty(VoDescriptionServer.RESOURCE_PLUGIN_KEY, FileResourcePlugin.class.getName());
       //get non-existent file
-      SimpleConfig.setProperty(FileResourcePlugin.METADATA_FILE_LOC_KEY, "doesntexist");
+      ConfigFactory.getCommonConfig().setProperty(FileResourcePlugin.METADATA_FILE_LOC_KEY, "doesntexist");
       VoDescriptionServer.clearCache(); //force reload
       try {
          Document metadata = VoDescriptionServer.getVoDescription();
@@ -156,7 +156,7 @@ public class MetadataTest extends TestCase {
          //ignore, supposed to happen
       }
       
-      SimpleConfig.setProperty(FileResourcePlugin.METADATA_FILE_LOC_KEY, "org/astrogrid/datacenter/metadata/metadata.xml");
+      ConfigFactory.getCommonConfig().setProperty(FileResourcePlugin.METADATA_FILE_LOC_KEY, "org/astrogrid/datacenter/metadata/metadata.xml");
       VoDescriptionServer.clearCache(); //force reload
       Document metadata = VoDescriptionServer.getVoDescription();
       assertNotNull(metadata);
@@ -164,9 +164,9 @@ public class MetadataTest extends TestCase {
    }
    
    public void testMetatdataUrlServer() throws Throwable{
-      SimpleConfig.setProperty(VoDescriptionServer.RESOURCE_PLUGIN_KEY, UrlResourcePlugin.class.getName());
+      ConfigFactory.getCommonConfig().setProperty(VoDescriptionServer.RESOURCE_PLUGIN_KEY, UrlResourcePlugin.class.getName());
 
-      SimpleConfig.setProperty(FileResourcePlugin.METADATA_URL_LOC_KEY, this.getClass().getResource("metadata.xml").toString());
+      ConfigFactory.getCommonConfig().setProperty(FileResourcePlugin.METADATA_URL_LOC_KEY, this.getClass().getResource("metadata.xml").toString());
       Document metadata = VoDescriptionServer.getVoDescription();
       assertNotNull(metadata);
       assertIdentifiersOK(metadata);

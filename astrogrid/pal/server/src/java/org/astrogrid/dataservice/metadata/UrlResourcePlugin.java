@@ -1,5 +1,5 @@
 /*
- * $Id: UrlResourcePlugin.java,v 1.4 2005/03/10 15:13:48 mch Exp $
+ * $Id: UrlResourcePlugin.java,v 1.5 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,8 +14,8 @@ import java.net.URLConnection;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.ConfigException;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigException;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.v0_10.ProxyResourceSupport;
 import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
@@ -36,10 +36,10 @@ public class UrlResourcePlugin extends ProxyResourceSupport implements VoResourc
    /** Returns the URLs to the metadata given by the configuration properties */
    public URL[] getResourceUrls() throws IOException {
       
-      Object[] urls = SimpleConfig.getSingleton().getProperties(METADATA_URL_LOC_KEY);
+      Object[] urls = ConfigFactory.getCommonConfig().getProperties(METADATA_URL_LOC_KEY);
       
       if (urls.length == 0) {
-         throw new ConfigException("Server not configured properly: no url "+METADATA_URL_LOC_KEY+".* keys are given in config ("+SimpleConfig.loadedFrom()+") to locate metadata.");
+         throw new ConfigException("Server not configured properly: no url "+METADATA_URL_LOC_KEY+".* keys are given in config ("+ConfigFactory.getCommonConfig().loadedFrom()+") to locate metadata.");
       }
       
       URL[] resourceUrls = new URL[urls.length];

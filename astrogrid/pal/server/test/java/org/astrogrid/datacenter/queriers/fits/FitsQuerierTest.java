@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.8 2005/03/11 14:50:59 KevinBenson Exp $
+/*$Id: FitsQuerierTest.java,v 1.9 2005/03/21 18:45:55 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -18,7 +18,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.account.LoginAccount;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.datacenter.fits.FitsTestSupport;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
@@ -31,7 +31,7 @@ import org.astrogrid.slinger.targets.NullTarget;
 import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.xmldb.client.XMLDBFactory;
 import org.w3c.dom.Document;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 import java.io.*;
 import org.xmldb.api.base.Collection;
 
@@ -48,7 +48,7 @@ public class FitsQuerierTest extends TestCase
    
    public static void upload(String collName, org.w3c.dom.Node doc) {
        XMLDBFactory xdb2 = new XMLDBFactory();
-       Collection coll = null;       
+       Collection coll = null;
        try {
            coll = xdb2.openAdminCollection(FitsQuerierPlugin.FITS_DEFAULT_COLLECTION + "/" + collName);
            xdb2.storeXMLResource(coll,doc);
@@ -66,11 +66,11 @@ public class FitsQuerierTest extends TestCase
    public void setUp() throws Exception {
        super.setUp();
        System.out.println("Try to find exist.xml");
-       SimpleConfig.setProperty("xmldb.uri", "xmldb:exist://");
-       SimpleConfig.setProperty("xmldb.driver", "org.exist.xmldb.DatabaseImpl");
-       SimpleConfig.setProperty("xmldb.query.service", "XQueryService");
-       SimpleConfig.setProperty("xmldb.admin.user", "admin");
-       SimpleConfig.setProperty("xmldb.admin.password", "");
+       ConfigFactory.getCommonConfig().setProperty("xmldb.uri", "xmldb:exist://");
+       ConfigFactory.getCommonConfig().setProperty("xmldb.driver", "org.exist.xmldb.DatabaseImpl");
+       ConfigFactory.getCommonConfig().setProperty("xmldb.query.service", "XQueryService");
+       ConfigFactory.getCommonConfig().setProperty("xmldb.admin.user", "admin");
+       ConfigFactory.getCommonConfig().setProperty("xmldb.admin.password", "");
        if(!registeredDB) {
            File fi = new File("target/test-classes/exist.xml");
            System.out.println("Got the File now try to register the db");
@@ -80,7 +80,7 @@ public class FitsQuerierTest extends TestCase
            System.out.println("database registered now set the query plugin");
            registeredDB = true;
        }//if
-       SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, FitsQuerierPlugin.class.getName());
+       ConfigFactory.getCommonConfig().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, FitsQuerierPlugin.class.getName());
        
 
        if(!uploadedFiles) {
@@ -90,7 +90,7 @@ public class FitsQuerierTest extends TestCase
            System.out.println("the fitsFile = " + DomHelper.DocumentToString(fitsFile));
            upload("CDSDataTest",fitsFile);
            uploadedFiles = true;
-       }       
+       }
    }
 
    /** Check to see the right plugin is made */
@@ -124,7 +124,7 @@ public class FitsQuerierTest extends TestCase
        
        //Document queryDoc = DomHelper.newDocument(new File(queryFile));
        return queryDoc;
-   }    
+   }
 
 
    
@@ -141,7 +141,6 @@ public class FitsQuerierTest extends TestCase
 
    public static void main(String args[]) throws IOException
    {
-      org.astrogrid.log.Log.logToConsole();
       junit.textui.TestRunner.run(suite());
    }
 
@@ -151,6 +150,9 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.9  2005/03/21 18:45:55  mch
+ Naughty big lump of changes
+
  Revision 1.8  2005/03/11 14:50:59  KevinBenson
  added catch for parserconfigurationexception
 

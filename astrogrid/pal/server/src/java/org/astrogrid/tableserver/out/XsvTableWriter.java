@@ -1,10 +1,10 @@
 /*
- * $Id: XsvTableWriter.java,v 1.4 2005/03/10 22:39:17 mch Exp $
+ * $Id: XsvTableWriter.java,v 1.1 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.dataservice.out.tables;
+package org.astrogrid.tableserver.out;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -135,6 +135,9 @@ public class XsvTableWriter extends AsciiTableSupport {
 
 /*
  $Log: XsvTableWriter.java,v $
+ Revision 1.1  2005/03/21 18:45:55  mch
+ Naughty big lump of changes
+
  Revision 1.4  2005/03/10 22:39:17  mch
  Fixed tests more metadata fixes
 

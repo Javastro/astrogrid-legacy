@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.4 2005/03/10 22:39:17 mch Exp $
+/*$Id: ConeResources.java,v 1.5 2005/03/21 18:45:55 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.dataservice.service.cone;
 
 import java.io.IOException;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.VoResourcePlugin;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
 import org.astrogrid.dataservice.service.ServletHelper;
@@ -35,7 +35,7 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
         //"<ContentLevel>Research</ContentLevel>"+ //etc
          "<Capability xmlns:q1='http://www.ivoa.net/xml/ConeSearch/v0.2' xsi:type='q1:ConeSearchType'>"+
          "  <q1:MaxSR>180</q1:MaxSR>"+ //to do
-         "  <q1:MaxRecords>"+SimpleConfig.getSingleton().getString(Query.MAX_RETURN_KEY,"0")+"</q1:MaxRecords>"+
+         "  <q1:MaxRecords>"+ConfigFactory.getCommonConfig().getString(Query.MAX_RETURN_KEY,"0")+"</q1:MaxRecords>"+
          "  <q1:Verbosity>false</q1:Verbosity>"+ //no idea
          "</Capability>"+
          "<Interface>"+
@@ -53,6 +53,9 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
 
 /*
  $Log: ConeResources.java,v $
+ Revision 1.5  2005/03/21 18:45:55  mch
+ Naughty big lump of changes
+
  Revision 1.4  2005/03/10 22:39:17  mch
  Fixed tests more metadata fixes
 

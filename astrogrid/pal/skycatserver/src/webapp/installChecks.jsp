@@ -1,5 +1,5 @@
 <%@ page import="java.io.*,
-         org.astrogrid.config.SimpleConfig,
+         org.astrogrid.cfg.ConfigFactory,
          org.astrogrid.dataservice.service.DataServer"
    isThreadSafe="false"
    session="false"

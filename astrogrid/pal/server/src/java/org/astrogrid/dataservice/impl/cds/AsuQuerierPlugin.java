@@ -1,4 +1,4 @@
-/*$Id: AsuQuerierPlugin.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+/*$Id: AsuQuerierPlugin.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import java.net.URL;
 import java.security.Principal;
 import javax.xml.parsers.ParserConfigurationException;
 import org.astrogrid.account.LoginAccount;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.queriers.DefaultPlugin;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
@@ -57,7 +57,7 @@ public class AsuQuerierPlugin extends DefaultPlugin
     */
    public void askQuery(Principal user, Query query, final Querier querier) throws IOException {
 
-      String stemurl = SimpleConfig.getSingleton().getString("datacenter.asuplugin.dataurl", DEFAULT_ASU_URL);
+      String stemurl = ConfigFactory.getCommonConfig().getString("datacenter.asuplugin.dataurl", DEFAULT_ASU_URL);
 
       AsuTwigMaker twigmaker = new AsuTwigMaker();
       query.acceptVisitor(twigmaker);
@@ -112,7 +112,7 @@ public class AsuQuerierPlugin extends DefaultPlugin
    /** Returns just the number of matches rather than the list of matches. Since there's no way to do this yet
     * directly with Vizier (I don't think?), we just do a normal query then count the rows */
    public long getCount(Principal user, Query query, Querier querier) throws IOException {
-      String stemurl = SimpleConfig.getSingleton().getString("datacenter.asuplugin.dataurl", DEFAULT_ASU_URL);
+      String stemurl = ConfigFactory.getCommonConfig().getString("datacenter.asuplugin.dataurl", DEFAULT_ASU_URL);
 
       AsuTwigMaker twigmaker = new AsuCountTwigMaker();
       query.acceptVisitor(twigmaker);
@@ -158,7 +158,7 @@ public class AsuQuerierPlugin extends DefaultPlugin
     */
    public static void main(String[] args) throws IOException, QueryException, ParserConfigurationException, IOException, SAXException
    {
-      SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY,"org.astrogrid.datacenter.impl.cds.AsuQuerierPlugin");
+      ConfigFactory.getCommonConfig().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY,"org.astrogrid.datacenter.impl.cds.AsuQuerierPlugin");
 
       {
          StringWriter sw = new StringWriter();
@@ -196,8 +196,11 @@ public class AsuQuerierPlugin extends DefaultPlugin
 
 /*
  $Log: AsuQuerierPlugin.java,v $
- Revision 1.1  2005/02/17 18:37:34  mch
- *** empty log message ***
+ Revision 1.2  2005/03/21 18:45:55  mch
+ Naughty big lump of changes
+
+ Revision 1.1.1.1  2005/02/17 18:37:34  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:24  mch
  Initial checkin

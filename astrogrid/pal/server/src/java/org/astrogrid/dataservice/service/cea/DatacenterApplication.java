@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: DatacenterApplication.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -111,8 +111,9 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          try {
             return AdqlQueryMaker.makeQuery(queryString);
          }
-         catch (SAXException e) { throw new IllegalArgumentException(e+", reading Adql at "+querySource); }
-         catch (ParserConfigurationException e) { throw new CeaException("Server error:",e); }
+         catch (SAXException e) {
+            throw new IllegalArgumentException(e+", reading Adql at "+querySource);
+         }
       }
       else
       {
@@ -315,8 +316,11 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
- Revision 1.1  2005/02/17 18:37:35  mch
- *** empty log message ***
+ Revision 1.2  2005/03/21 18:45:55  mch
+ Naughty big lump of changes
+
+ Revision 1.1.1.1  2005/02/17 18:37:35  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:24  mch
  Initial checkin

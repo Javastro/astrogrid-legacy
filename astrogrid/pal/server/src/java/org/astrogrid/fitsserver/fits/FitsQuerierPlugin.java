@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerierPlugin.java,v 1.2 2005/03/11 14:50:59 KevinBenson Exp $
+ * $Id: FitsQuerierPlugin.java,v 1.3 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,15 +15,15 @@ import java.net.URL;
 import java.security.Principal;
 import java.util.Hashtable;
 import javax.xml.parsers.ParserConfigurationException;
-import org.astrogrid.config.ConfigException;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigException;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.queriers.DefaultPlugin;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.UrlListResults;
 import org.astrogrid.dataservice.queriers.status.QuerierQuerying;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.xql.XqlMaker;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -55,8 +55,8 @@ import org.xmldb.api.base.XMLDBException;
  */
 
 public class FitsQuerierPlugin extends DefaultPlugin
-{   
-   public final static String FITS_DEFAULT_COLLECTION = "dcfitsfiles";  
+{
+   public final static String FITS_DEFAULT_COLLECTION = "dcfitsfiles";
    
    private XMLDBFactory xdb = new XMLDBFactory();
    
@@ -106,7 +106,7 @@ public class FitsQuerierPlugin extends DefaultPlugin
           //log.info("Got Collection");
           QueryService xqs = xdb.getQueryService(coll);
           
-          long beginQ = System.currentTimeMillis(); 
+          long beginQ = System.currentTimeMillis();
           ResourceSet rs = xqs.query(xql);
           //log.info("Total Query Time = " + (System.currentTimeMillis() - beginQ));
           //log.info("Number of results found in query = " + rs.getSize());
@@ -117,9 +117,6 @@ public class FitsQuerierPlugin extends DefaultPlugin
       }catch(XMLDBException xdbe) {
           xdbe.printStackTrace();
           throw new IOException("XMLDB exception, query most likely wrong or xml db is down XMLDB Exception");
-      }catch(ParserConfigurationException pce) {
-         
-         throw new IOException("Server configuration error Parser Configuration Exception");
       }catch(SAXException se) {
          throw new IOException("FitsQuerierPlugin index not valid xml");
       }
@@ -235,6 +232,9 @@ public class FitsQuerierPlugin extends DefaultPlugin
 
 /*
  $Log: FitsQuerierPlugin.java,v $
+ Revision 1.3  2005/03/21 18:45:55  mch
+ Naughty big lump of changes
+
  Revision 1.2  2005/03/11 14:50:59  KevinBenson
  added catch for parserconfigurationexception
 

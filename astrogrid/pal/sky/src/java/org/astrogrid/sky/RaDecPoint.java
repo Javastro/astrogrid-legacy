@@ -1,10 +1,12 @@
 /*
- * $Id: RaDecPoint.java,v 1.2 2005/03/16 12:00:46 mch Exp $
+ * $Id: RaDecPoint.java,v 1.3 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.sky;
+
+import org.astrogrid.geom.Angle;
 
 /**
  * Represents a point on the sky using RA and Dec.

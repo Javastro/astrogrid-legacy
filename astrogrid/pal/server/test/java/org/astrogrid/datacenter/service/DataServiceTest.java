@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.3 2005/03/10 16:42:55 mch Exp $
+/*$Id: DataServiceTest.java,v 1.4 2005/03/21 18:45:55 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.status.TaskStatus;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -158,6 +158,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.4  2005/03/21 18:45:55  mch
+Naughty big lump of changes
+
 Revision 1.3  2005/03/10 16:42:55  mch
 Split fits, sql and xdb
 

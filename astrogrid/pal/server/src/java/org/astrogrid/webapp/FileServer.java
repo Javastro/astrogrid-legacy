@@ -1,5 +1,5 @@
 /*
- * $Id: FileServer.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: FileServer.java,v 1.2 2005/03/21 18:45:55 mch Exp $
  */
 
 package org.astrogrid.webapp;
@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.io.Piper;
 import org.astrogrid.webapp.DefaultServlet;
 
@@ -38,7 +38,7 @@ public class FileServer extends DefaultServlet {
          return;
       }
 
-      String root = SimpleConfig.getSingleton().getString(ROOT_KEY);
+      String root = ConfigFactory.getCommonConfig().getString(ROOT_KEY);
 
       File source = new File(root+relPath);
       InputStream in = new FileInputStream(source);

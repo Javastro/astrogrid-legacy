@@ -1,5 +1,5 @@
 /*
- * $Id: ProxyResourceSupport.java,v 1.3 2005/03/10 15:13:48 mch Exp $
+ * $Id: ProxyResourceSupport.java,v 1.4 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.net.URLConnection;
 import java.util.Date;
 import javax.xml.parsers.ParserConfigurationException;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
 import org.astrogrid.xml.DomHelper;

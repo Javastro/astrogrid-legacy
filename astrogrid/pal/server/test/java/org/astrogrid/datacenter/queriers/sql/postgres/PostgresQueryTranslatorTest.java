@@ -1,4 +1,4 @@
-/*$Id: PostgresQueryTranslatorTest.java,v 1.3 2005/03/10 16:42:55 mch Exp $
+/*$Id: PostgresQueryTranslatorTest.java,v 1.4 2005/03/21 18:45:55 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import org.astrogrid.tableserver.jdbc.SqlMaker;
 import org.astrogrid.tableserver.jdbc.postgres.PostgresSqlMaker;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.adql.AdqlQueryMaker;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 
 /**
@@ -44,11 +44,11 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
     /** Test makes valid SQL from cone earch
     public void testCone() throws Exception {
        
-       SimpleConfig.getSingleton().setProperty(SqlWriter.CONE_SEARCH_TABLE_KEY, "OBJECTS");
-       SimpleConfig.getSingleton().setProperty(SqlWriter.CONE_SEARCH_RA_COL_KEY, "ra");
-       SimpleConfig.getSingleton().setProperty(SqlWriter.CONE_SEARCH_DEC_COL_KEY, "dec");
-       SimpleConfig.getSingleton().setProperty(SqlMaker.DB_TRIGFUNCS_IN_RADIANS, "true");
-       SimpleConfig.getSingleton().setProperty(SqlMaker.CONE_SEARCH_COL_UNITS_KEY, "deg");
+       ConfigFactory.getCommonConfig().setProperty(SqlWriter.CONE_SEARCH_TABLE_KEY, "OBJECTS");
+       ConfigFactory.getCommonConfig().setProperty(SqlWriter.CONE_SEARCH_RA_COL_KEY, "ra");
+       ConfigFactory.getCommonConfig().setProperty(SqlWriter.CONE_SEARCH_DEC_COL_KEY, "dec");
+       ConfigFactory.getCommonConfig().setProperty(SqlMaker.DB_TRIGFUNCS_IN_RADIANS, "true");
+       ConfigFactory.getCommonConfig().setProperty(SqlMaker.CONE_SEARCH_COL_UNITS_KEY, "deg");
        
        String sql = translator.fromCone(new SimpleQueryMaker(20,20,3));
        
@@ -104,6 +104,9 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: PostgresQueryTranslatorTest.java,v $
+Revision 1.4  2005/03/21 18:45:55  mch
+Naughty big lump of changes
+
 Revision 1.3  2005/03/10 16:42:55  mch
 Split fits, sql and xdb
 

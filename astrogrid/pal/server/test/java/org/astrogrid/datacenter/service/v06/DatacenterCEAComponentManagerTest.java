@@ -1,4 +1,4 @@
-/*$Id: DatacenterCEAComponentManagerTest.java,v 1.3 2005/03/08 18:05:57 mch Exp $
+/*$Id: DatacenterCEAComponentManagerTest.java,v 1.4 2005/03/21 18:45:55 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.datacenter.service.v06;
 
 import org.astrogrid.applications.component.CEAComponentManager;
 import org.astrogrid.applications.component.JavaClassCEAComponentManagerTest;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
 import org.astrogrid.dataservice.service.cea.DatacenterCEAComponentManager;
@@ -25,8 +25,8 @@ import org.astrogrid.dataservice.service.cea.DatacenterCEAComponentManager;
 public class DatacenterCEAComponentManagerTest extends JavaClassCEAComponentManagerTest {
 
    public void setUp() throws Exception {
-      SimpleConfig.getSingleton().setProperty(VoResourceSupport.AUTHID_KEY, "org.astrogrid.test");
-      SimpleConfig.getSingleton().setProperty(VoResourceSupport.RESKEY_KEY, "test_dsa");
+      ConfigFactory.getCommonConfig().setProperty(VoResourceSupport.AUTHID_KEY, "org.astrogrid.test");
+      ConfigFactory.getCommonConfig().setProperty(VoResourceSupport.RESKEY_KEY, "test_dsa");
       super.setUp();
    }
    /** Construct a new DatacenterCEAComponentManagerTest
@@ -47,6 +47,9 @@ public class DatacenterCEAComponentManagerTest extends JavaClassCEAComponentMana
 
 /*
 $Log: DatacenterCEAComponentManagerTest.java,v $
+Revision 1.4  2005/03/21 18:45:55  mch
+Naughty big lump of changes
+
 Revision 1.3  2005/03/08 18:05:57  mch
 updating resources to v0.10
 

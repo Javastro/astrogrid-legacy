@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.6 2005/03/14 12:42:19 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.7 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,8 +10,8 @@ import java.lang.reflect.Constructor;
 import java.net.URL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.PropertyNotFoundException;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.PropertyNotFoundException;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.queryable.QueryableResourceReader;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
 import org.astrogrid.dataservice.service.cea.CeaResources;
@@ -100,7 +100,7 @@ public class VoDescriptionServer {
                throw new MetadataException("Resource "+i+" (xsi:type="+resource.getAttribute("xsi:type")+") has no <identifier>");
             }
             
-            String configAuth = SimpleConfig.getSingleton().getString(VoResourceSupport.AUTHID_KEY);
+            String configAuth = ConfigFactory.getCommonConfig().getString(VoResourceSupport.AUTHID_KEY);
             IVORN id = null;
             try {
                id = new IVORN(DomHelper.getValueOf(idNode));
@@ -221,13 +221,13 @@ public class VoDescriptionServer {
       //get plugin list from config - need to add a default to the common method...
       Object[] plugins  = null;
       try {
-         plugins = SimpleConfig.getSingleton().getProperties(RESOURCE_PLUGIN_KEY);
+         plugins = ConfigFactory.getCommonConfig().getProperties(RESOURCE_PLUGIN_KEY);
       } catch (PropertyNotFoundException pnfe)
       {
          log.warn("No config found for resource plugins, key="+RESOURCE_PLUGIN_KEY);
          
          //for backwards compatibility, look for old datacenter.metadata.plugin
-         String s = SimpleConfig.getSingleton().getString("datacenter.metadata.plugin",null);
+         String s = ConfigFactory.getCommonConfig().getString("datacenter.metadata.plugin",null);
          if (s != null) {
             plugins = new String[] { s };
          }
@@ -306,7 +306,7 @@ public class VoDescriptionServer {
    public static String[] pushToRegistry() throws IOException, RegistryException {
       RegistryAdminService service = RegistryDelegateFactory.createAdmin();
       service.update(getVoDescription());
-      return new String[] { SimpleConfig.getSingleton().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY) };
+      return new String[] { ConfigFactory.getCommonConfig().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY) };
    }
 
    /**
@@ -324,7 +324,7 @@ public class VoDescriptionServer {
    public static void main(String[] args) throws RegistryException, IOException
    {
       SampleStarsPlugin.initConfig();
-//    SimpleConfig.setProperty("datacenter.url","http://localhost:8080");
+//    ConfigFactory.getCommonConfig().setProperty("datacenter.url","http://localhost:8080");
       VoDescriptionServer.pushToRegistry(new URL("http://hydra.star.le.ac.uk:8080/astrogrid-registry/services/AdminService"));
    }
 }

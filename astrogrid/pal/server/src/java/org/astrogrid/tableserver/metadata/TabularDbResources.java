@@ -1,5 +1,5 @@
 /*
- * $Id: TabularDbResources.java,v 1.2 2005/03/10 22:39:17 mch Exp $
+ * $Id: TabularDbResources.java,v 1.3 2005/03/21 18:45:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,6 +8,7 @@ package org.astrogrid.tableserver.metadata;
 
 import java.io.IOException;
 import org.astrogrid.dataservice.metadata.VoResourcePlugin;
+import org.astrogrid.dataservice.metadata.VoTypes;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
 import org.astrogrid.io.xml.XmlPrinter;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
@@ -55,8 +56,20 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
                "<column>"+
                   "<name>"+columns[c].getName()+"</name>"+
                   "<description>"+XmlPrinter.transformSpecials(columns[c].getDescription())+"</description>"+
-                  "<ucd>"+columns[c].getUcd("1")+"</ucd>"+
-                  "<unit>"+columns[c].getUnits()+"</unit>"+
+                  "<datatype>"+VoTypes.getVoType(columns[c].getJavaType())+"</datatype>"
+            );
+         
+            if (columns[c].getUcd("1") != null) {
+               tabularDb.append(
+                  "<ucd>"+columns[c].getUcd("1")+"</ucd>"
+               );
+            }
+            if (columns[c].getUcd("1") != null) {
+               tabularDb.append(
+                  "<unit>"+columns[c].getUnits()+"</unit>"
+               );
+            }
+            tabularDb.append(
                "</column>"
             );
          }

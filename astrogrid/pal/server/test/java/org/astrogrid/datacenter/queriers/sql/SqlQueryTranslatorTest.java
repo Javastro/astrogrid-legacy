@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.3 2005/03/10 16:42:55 mch Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.4 2005/03/21 18:45:55 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.datacenter.queriers.sql;
 import java.io.InputStream;
 import java.util.Properties;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.dataservice.metadata.queryable.ConeConfigQueryableResource;
 import org.astrogrid.tableserver.jdbc.SqlMaker;
@@ -37,7 +37,7 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
 
        SampleStarsPlugin.initConfig();
        
-       SimpleConfig.getSingleton().setProperty(ConeConfigQueryableResource.CONE_SEARCH_TABLE_KEY, "o");
+       ConfigFactory.getCommonConfig().setProperty(ConeConfigQueryableResource.CONE_SEARCH_TABLE_KEY, "o");
 
        //read in sample sql out checks
        InputStream is = this.getClass().getResourceAsStream("samples-sqlout.properties");
@@ -103,6 +103,9 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: SqlQueryTranslatorTest.java,v $
+Revision 1.4  2005/03/21 18:45:55  mch
+Naughty big lump of changes
+
 Revision 1.3  2005/03/10 16:42:55  mch
 Split fits, sql and xdb
 
