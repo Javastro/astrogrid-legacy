@@ -1,4 +1,4 @@
-/*$Id: QueryRegistryClientTest.java,v 1.10 2004/09/22 10:47:25 nw Exp $
+/*$Id: QueryRegistryClientTest.java,v 1.11 2004/10/14 13:19:40 KevinBenson Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,8 @@
 package org.astrogrid.registry.integration;
 
 import org.astrogrid.registry.RegistryException;
+import org.astrogrid.registry.common.FileStoreInterfaceType;
+import org.astrogrid.registry.common.MyspaceInterfaceType;
 
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
@@ -65,6 +67,20 @@ public class QueryRegistryClientTest extends AbstractTestForRegistry {
       assertNotNull(result);
       DomHelper.DocumentToStream(result,System.out);
       assertNonEmptyVODescription(result);      
+   }
+
+   public void testFindFileStoreInterfaceType() throws Exception {
+       Document  result = rs.getResourcesByInterfaceType(new FileStoreInterfaceType());
+       assertNotNull(result);
+       DomHelper.DocumentToStream(result,System.out);
+       assertNonEmptyVODescription(result);      
+   }
+
+   public void testFindMyspaceInterfaceType() throws Exception {
+       Document  result = rs.getResourcesByInterfaceType(new MyspaceInterfaceType());
+       assertNotNull(result);
+       DomHelper.DocumentToStream(result,System.out);
+       assertNonEmptyVODescription(result);      
    }
 
 /*
