@@ -8,10 +8,10 @@
 package org.astrogrid.datacenter.axisdataserver;
 
 public interface AxisDataServer extends java.rmi.Remote {
-    public org.w3c.dom.Element getMetadata(java.lang.Object parameters) throws java.rmi.RemoteException;
-    public org.w3c.dom.Element doQuery(java.lang.String resultsFormat, org.astrogrid.datacenter.adql.generated.Select select) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException;
-    public java.lang.String makeQuery(org.astrogrid.datacenter.adql.generated.Select select) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException;
-    public java.lang.String makeQueryWithId(org.astrogrid.datacenter.adql.generated.Select select, java.lang.String assignedId) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException;
+    public java.lang.String getMetadata(java.lang.Object parameters) throws java.rmi.RemoteException;
+    public java.lang.String doQuery(java.lang.String resultsFormat, org.astrogrid.datacenter.axisdataserver.types.Query query) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException;
+    public java.lang.String makeQuery(org.astrogrid.datacenter.axisdataserver.types.Query query) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException;
+    public java.lang.String makeQueryWithId(org.astrogrid.datacenter.axisdataserver.types.Query query, java.lang.String assignedId) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException;
     public void setResultsDestination(java.lang.String myspaceUrl) throws java.rmi.RemoteException;
     public void startQuery(java.lang.String id) throws java.rmi.RemoteException;
     public java.lang.String getResultsAndClose(java.lang.String queryId) throws java.rmi.RemoteException, org.xml.sax.SAXException;

@@ -21,8 +21,8 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getMetadata");
         oper.addParameter(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "getMetadata"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"), java.lang.Object.class, org.apache.axis.description.ParameterDesc.IN, false, false);
-        oper.setReturnType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Element"));
-        oper.setReturnClass(org.w3c.dom.Element.class);
+        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        oper.setReturnClass(java.lang.String.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "getMetadataReturn"));
         oper.setStyle(org.apache.axis.enum.Style.WRAPPED);
         oper.setUse(org.apache.axis.enum.Use.LITERAL);
@@ -31,26 +31,26 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("doQuery");
         oper.addParameter(new javax.xml.namespace.QName("", "resultsFormat"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
-        oper.addParameter(new javax.xml.namespace.QName("", "Select"), new javax.xml.namespace.QName("http://tempuri.org/adql", "Select"), org.astrogrid.datacenter.adql.generated.Select.class, org.apache.axis.description.ParameterDesc.IN, false, false);
-        oper.setReturnType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Element"));
-        oper.setReturnClass(org.w3c.dom.Element.class);
+        oper.addParameter(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query"), new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query"), org.astrogrid.datacenter.axisdataserver.types.Query.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        oper.setReturnClass(java.lang.String.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "doQueryReturn"));
         oper.setStyle(org.apache.axis.enum.Style.WRAPPED);
         oper.setUse(org.apache.axis.enum.Use.LITERAL);
         oper.addFault(new org.apache.axis.description.FaultDesc(
-                      new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1", "fault"),
+                      new javax.xml.namespace.QName("", "fault"),
                       "java.io.IOException",
                       new javax.xml.namespace.QName("http://io.java", "IOException"), 
                       true
                      ));
         oper.addFault(new org.apache.axis.description.FaultDesc(
-                      new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1", "fault"),
+                      new javax.xml.namespace.QName("", "fault"),
                       "org.astrogrid.datacenter.query.QueryException",
                       new javax.xml.namespace.QName("http://query.datacenter.astrogrid.org", "QueryException"), 
                       true
                      ));
         oper.addFault(new org.apache.axis.description.FaultDesc(
-                      new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1", "fault"),
+                      new javax.xml.namespace.QName("", "fault"),
                       "org.xml.sax.SAXException",
                       new javax.xml.namespace.QName("http://sax.xml.org", "SAXException"), 
                       true
@@ -59,26 +59,26 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("makeQuery");
-        oper.addParameter(new javax.xml.namespace.QName("", "Select"), new javax.xml.namespace.QName("http://tempuri.org/adql", "Select"), org.astrogrid.datacenter.adql.generated.Select.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.addParameter(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query"), new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query"), org.astrogrid.datacenter.axisdataserver.types.Query.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         oper.setReturnClass(java.lang.String.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "getQueryReturn"));
         oper.setStyle(org.apache.axis.enum.Style.WRAPPED);
         oper.setUse(org.apache.axis.enum.Use.LITERAL);
         oper.addFault(new org.apache.axis.description.FaultDesc(
-                      new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1", "fault"),
+                      new javax.xml.namespace.QName("", "fault"),
                       "java.io.IOException",
                       new javax.xml.namespace.QName("http://io.java", "IOException"), 
                       true
                      ));
         oper.addFault(new org.apache.axis.description.FaultDesc(
-                      new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1", "fault"),
+                      new javax.xml.namespace.QName("", "fault"),
                       "org.astrogrid.datacenter.query.QueryException",
                       new javax.xml.namespace.QName("http://query.datacenter.astrogrid.org", "QueryException"), 
                       true
                      ));
         oper.addFault(new org.apache.axis.description.FaultDesc(
-                      new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1", "fault"),
+                      new javax.xml.namespace.QName("", "fault"),
                       "org.xml.sax.SAXException",
                       new javax.xml.namespace.QName("http://sax.xml.org", "SAXException"), 
                       true
@@ -87,7 +87,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("makeQueryWithId");
-        oper.addParameter(new javax.xml.namespace.QName("", "Select"), new javax.xml.namespace.QName("http://tempuri.org/adql", "Select"), org.astrogrid.datacenter.adql.generated.Select.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.addParameter(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query"), new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query"), org.astrogrid.datacenter.axisdataserver.types.Query.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.addParameter(new javax.xml.namespace.QName("", "assignedId"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         oper.setReturnClass(java.lang.String.class);
@@ -95,19 +95,19 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         oper.setStyle(org.apache.axis.enum.Style.WRAPPED);
         oper.setUse(org.apache.axis.enum.Use.LITERAL);
         oper.addFault(new org.apache.axis.description.FaultDesc(
-                      new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1", "fault"),
+                      new javax.xml.namespace.QName("", "fault"),
                       "java.io.IOException",
                       new javax.xml.namespace.QName("http://io.java", "IOException"), 
                       true
                      ));
         oper.addFault(new org.apache.axis.description.FaultDesc(
-                      new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1", "fault"),
+                      new javax.xml.namespace.QName("", "fault"),
                       "org.astrogrid.datacenter.query.QueryException",
                       new javax.xml.namespace.QName("http://query.datacenter.astrogrid.org", "QueryException"), 
                       true
                      ));
         oper.addFault(new org.apache.axis.description.FaultDesc(
-                      new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1", "fault"),
+                      new javax.xml.namespace.QName("", "fault"),
                       "org.xml.sax.SAXException",
                       new javax.xml.namespace.QName("http://sax.xml.org", "SAXException"), 
                       true
@@ -221,9 +221,129 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
             java.lang.Class arraydf = org.apache.axis.encoding.ser.ArrayDeserializerFactory.class;
             java.lang.Class simplesf = org.apache.axis.encoding.ser.SimpleSerializerFactory.class;
             java.lang.Class simpledf = org.apache.axis.encoding.ser.SimpleDeserializerFactory.class;
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "BinaryOperator");
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "UnionSearch");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.types.BinaryOperator.class;
+            cls = org.astrogrid.datacenter.adql.generated.UnionSearch.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "NumberLiteral");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.NumberLiteral.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "startQuery");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.axisdataserver.types.StartQuery.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Predicate");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.Predicate.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ColumnReference");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.ColumnReference.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ApproxNum");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.ApproxNum.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "SingleColumnReference");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.SingleColumnReference.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Circle");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.Circle.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Function");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.Function.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "OrderDirection");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.types.OrderDirection.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "AllExpressionsFunction");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.AllExpressionsFunction.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Atom");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.Atom.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "AllColumnReference");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.AllColumnReference.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "MutipleColumnsFunction");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.MutipleColumnsFunction.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ColumnExpr");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.ColumnExpr.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "From");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.From.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "IntNum");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.IntNum.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ArrayOfTable");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.ArrayOfTable.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "PredicateSearch");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.PredicateSearch.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ArrayOfOrder");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.ArrayOfOrder.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "GroupBy");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.GroupBy.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "DistinctColumnFunction");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.DistinctColumnFunction.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ArrayOfString");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.ArrayOfString.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "registerWebListener");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.axisdataserver.types.RegisterWebListener.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Literal");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.Literal.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
             qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Selection");
@@ -231,9 +351,124 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
             cls = org.astrogrid.datacenter.adql.generated.Selection.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "makeQueryResponse");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.axisdataserver.types.MakeQueryResponse.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "AggregateFunction");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.types.AggregateFunction.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Search");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.Search.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "InverseSearch");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.InverseSearch.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
             qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "BinaryExpr");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.datacenter.adql.generated.BinaryExpr.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Number");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.Number.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "UnaryOperator");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.types.UnaryOperator.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Having");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.Having.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "registerJobMonitor");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.axisdataserver.types.RegisterJobMonitor.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "getResultsAndClose");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.axisdataserver.types.GetResultsAndClose.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ClosedSearch");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.ClosedSearch.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "getStatusResponse");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.axisdataserver.types.GetStatusResponse.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Table");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.Table.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "AtomExpr");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.AtomExpr.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ComparisonPred");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.ComparisonPred.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "doQuery");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.axisdataserver.types.DoQuery.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Where");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.Where.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "StringLiteral");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.StringLiteral.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "OrderExpression");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.OrderExpression.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "AllOrDistinct");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.types.AllOrDistinct.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ArchiveTable");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.ArchiveTable.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "IntersectionSearch");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.IntersectionSearch.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "SelectionList");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.SelectionList.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ScalarExpression");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.ScalarExpression.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
             qName = new javax.xml.namespace.QName("http://io.java", "IOException");
@@ -243,143 +478,29 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "getStatusResponse");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.axisdataserver.types._getStatusResponse.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "registerWebListener");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.axisdataserver.types._registerWebListener.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "registerJobMonitor");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.axisdataserver.types._registerJobMonitor.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "OrderExpression");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.OrderExpression.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "InverseSearch");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.InverseSearch.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Function");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.Function.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "MutipleColumnsFunction");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.MutipleColumnsFunction.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "AggregateFunction");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.types.AggregateFunction.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "SelectionAll");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.SelectionAll.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ComparisonPred");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.ComparisonPred.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "AllOrDistinct");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.types.AllOrDistinct.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "doQuery");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.axisdataserver.types._doQuery.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://astrogrid.org", "AstroGridException");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.AstroGridException.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "makeQueryResponse");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.axisdataserver.types._makeQueryResponse.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Area");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.Area.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "setResultsDestination");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.axisdataserver.types._setResultsDestination.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
             qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ExpressionFunction");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.datacenter.adql.generated.ExpressionFunction.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "IntersectionSearch");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "doQueryResponse");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.IntersectionSearch.class;
+            cls = org.astrogrid.datacenter.axisdataserver.types.DoQueryResponse.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "LikePred");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "makeQueryWithId");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.LikePred.class;
+            cls = org.astrogrid.datacenter.axisdataserver.types.MakeQueryWithId.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Number");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "getResultsAndCloseResponse");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.Number.class;
+            cls = org.astrogrid.datacenter.axisdataserver.types.GetResultsAndCloseResponse.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "GroupBy");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.GroupBy.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ClosedSearch");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.ClosedSearch.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ArrayOfOrder");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.ArrayOfOrder.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Table");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.Table.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Circle");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.Circle.class;
+            cls = org.astrogrid.datacenter.axisdataserver.types.Query.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
             qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "BetweenPred");
@@ -387,133 +508,9 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
             cls = org.astrogrid.datacenter.adql.generated.BetweenPred.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "getResultsAndClose");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.axisdataserver.types._getResultsAndClose.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ApproxNum");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.ApproxNum.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ArchiveTable");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.ArchiveTable.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "getStatus");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.axisdataserver.types._getStatus.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "OrderOption");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.OrderOption.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "From");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.From.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "SelectionList");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.SelectionList.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "IntNum");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.IntNum.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://query.datacenter.astrogrid.org", "QueryException");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.query.QueryException.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ClosedExpr");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.ClosedExpr.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "abortQuery");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.axisdataserver.types._abortQuery.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "DistinctColumnFunction");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.DistinctColumnFunction.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
             qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "makeQuery");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.axisdataserver.types._makeQuery.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ScalarExpression");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.ScalarExpression.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "getMetadataResponse");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.axisdataserver.types._getMetadataResponse.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "PredicateSearch");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.PredicateSearch.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://sax.xml.org", "SAXException");
-            cachedSerQNames.add(qName);
-            cls = org.xml.sax.SAXException.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "UnionSearch");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.UnionSearch.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ColumnReference");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.ColumnReference.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "UnaryOperator");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.types.UnaryOperator.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "TableExpression");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.TableExpression.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "AtomExpr");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.AtomExpr.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "FunctionExpr");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.FunctionExpr.class;
+            cls = org.astrogrid.datacenter.axisdataserver.types.MakeQuery.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
             qName = new javax.xml.namespace.QName("http://net.java", "MalformedURLException");
@@ -523,36 +520,16 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Having");
+            qName = new javax.xml.namespace.QName("http://sax.xml.org", "SAXException");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.Having.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Atom");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.Atom.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Select");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.Select.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ColumnExpr");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.ColumnExpr.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "getResultsAndCloseResponse");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.axisdataserver.types._getResultsAndCloseResponse.class;
+            cls = org.xml.sax.SAXException.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Literal");
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Area");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.Literal.class;
+            cls = org.astrogrid.datacenter.adql.generated.Area.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
             qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Order");
@@ -560,43 +537,53 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
             cls = org.astrogrid.datacenter.adql.generated.Order.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Where");
+            qName = new javax.xml.namespace.QName("http://astrogrid.org", "AstroGridException");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.Where.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "doQueryResponse");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.axisdataserver.types._doQueryResponse.class;
+            cls = org.astrogrid.AstroGridException.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Comparison");
+            qName = new javax.xml.namespace.QName("http://query.datacenter.astrogrid.org", "QueryException");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.types.Comparison.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "startQuery");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.axisdataserver.types._startQuery.class;
+            cls = org.astrogrid.datacenter.query.QueryException.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "AllExpressionsFunction");
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "FunctionExpr");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.AllExpressionsFunction.class;
+            cls = org.astrogrid.datacenter.adql.generated.FunctionExpr.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "SelectionOption");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "setResultsDestination");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.SelectionOption.class;
+            cls = org.astrogrid.datacenter.axisdataserver.types.SetResultsDestination.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ArrayOfString");
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ClosedExpr");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.ArrayOfString.class;
+            cls = org.astrogrid.datacenter.adql.generated.ClosedExpr.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Select");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.Select.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "OrderOption");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.OrderOption.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "BinaryOperator");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.types.BinaryOperator.class;
+            cachedSerClasses.add(cls);
+    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "TableExpression");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.datacenter.adql.generated.TableExpression.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
             qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "UnaryExpr");
@@ -604,51 +591,39 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
             cls = org.astrogrid.datacenter.adql.generated.UnaryExpr.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Search");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "getStatus");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.Search.class;
+            cls = org.astrogrid.datacenter.axisdataserver.types.GetStatus.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "ArrayOfTable");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "getMetadataResponse");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.ArrayOfTable.class;
+            cls = org.astrogrid.datacenter.axisdataserver.types.GetMetadataResponse.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "SingleColumnReference");
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "LikePred");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.SingleColumnReference.class;
+            cls = org.astrogrid.datacenter.adql.generated.LikePred.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Predicate");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "abortQuery");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.Predicate.class;
+            cls = org.astrogrid.datacenter.axisdataserver.types.AbortQuery.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "NumberLiteral");
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "Comparison");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.NumberLiteral.class;
+            cls = org.astrogrid.datacenter.adql.generated.types.Comparison.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "AllColumnReference");
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "SelectionOption");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.AllColumnReference.class;
+            cls = org.astrogrid.datacenter.adql.generated.SelectionOption.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "makeQueryWithId");
+            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "SelectionAll");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.axisdataserver.types._makeQueryWithId.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "StringLiteral");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.StringLiteral.class;
-            cachedSerClasses.add(cls);
-    cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
-            qName = new javax.xml.namespace.QName("http://tempuri.org/adql", "OrderDirection");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.datacenter.adql.generated.types.OrderDirection.class;
+            cls = org.astrogrid.datacenter.adql.generated.SelectionAll.class;
             cachedSerClasses.add(cls);
     cachedSerFactories.add(castorsf);    cachedDeserFactories.add(castordf);     
     }
@@ -708,7 +683,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         }
     }
 
-    public org.w3c.dom.Element getMetadata(java.lang.Object parameters) throws java.rmi.RemoteException {
+    public java.lang.String getMetadata(java.lang.Object parameters) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -732,14 +707,14 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         else {
             extractAttachments(_call);
             try {
-                return (org.w3c.dom.Element) _resp;
+                return (java.lang.String) _resp;
             } catch (java.lang.Exception _exception) {
-                return (org.w3c.dom.Element) org.apache.axis.utils.JavaUtils.convert(_resp, org.w3c.dom.Element.class);
+                return (java.lang.String) org.apache.axis.utils.JavaUtils.convert(_resp, java.lang.String.class);
             }
         }
     }
 
-    public org.w3c.dom.Element doQuery(java.lang.String resultsFormat, org.astrogrid.datacenter.adql.generated.Select select) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException {
+    public java.lang.String doQuery(java.lang.String resultsFormat, org.astrogrid.datacenter.axisdataserver.types.Query query) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -755,7 +730,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
 
         setRequestHeaders(_call);
         setAttachments(_call);
-        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {resultsFormat, select});
+        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {resultsFormat, query});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -763,14 +738,14 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         else {
             extractAttachments(_call);
             try {
-                return (org.w3c.dom.Element) _resp;
+                return (java.lang.String) _resp;
             } catch (java.lang.Exception _exception) {
-                return (org.w3c.dom.Element) org.apache.axis.utils.JavaUtils.convert(_resp, org.w3c.dom.Element.class);
+                return (java.lang.String) org.apache.axis.utils.JavaUtils.convert(_resp, java.lang.String.class);
             }
         }
     }
 
-    public java.lang.String makeQuery(org.astrogrid.datacenter.adql.generated.Select select) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException {
+    public java.lang.String makeQuery(org.astrogrid.datacenter.axisdataserver.types.Query query) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -786,7 +761,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
 
         setRequestHeaders(_call);
         setAttachments(_call);
-        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {select});
+        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {query});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -801,7 +776,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         }
     }
 
-    public java.lang.String makeQueryWithId(org.astrogrid.datacenter.adql.generated.Select select, java.lang.String assignedId) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException {
+    public java.lang.String makeQueryWithId(org.astrogrid.datacenter.axisdataserver.types.Query query, java.lang.String assignedId) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -817,7 +792,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
 
         setRequestHeaders(_call);
         setAttachments(_call);
-        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {select, assignedId});
+        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {query, assignedId});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;

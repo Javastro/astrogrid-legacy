@@ -28,7 +28,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         binding.setTimeout(60000);
 
         // Test operation
-        org.w3c.dom.Element value = null;
+        java.lang.String value = null;
         value = binding.getMetadata(new java.lang.String());
         // TBD - validate results
     }
@@ -51,8 +51,8 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
 
         // Test operation
         try {
-            org.w3c.dom.Element value = null;
-            value = binding.doQuery(new java.lang.String(), org.astrogrid.datacenter.adql.ADQLUtils.buildMinimalQuery());
+            java.lang.String value = null;
+            value = binding.doQuery(new java.lang.String(), org.astrogrid.datacenter.common.QueryHelper.buildMinimalQuery());
         }
         catch (java.io.IOException e1) {
             throw new junit.framework.AssertionFailedError("IOException Exception caught: " + e1);
@@ -85,7 +85,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         // Test operation
         try {
             java.lang.String value = null;
-            value = binding.makeQuery(org.astrogrid.datacenter.adql.ADQLUtils.buildMinimalQuery());
+            value = binding.makeQuery(org.astrogrid.datacenter.common.QueryHelper.buildMinimalQuery());
         }
         catch (java.io.IOException e1) {
             throw new junit.framework.AssertionFailedError("IOException Exception caught: " + e1);
@@ -118,7 +118,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         // Test operation
         try {
             java.lang.String value = null;
-            value = binding.makeQueryWithId(org.astrogrid.datacenter.adql.ADQLUtils.buildMinimalQuery(), new java.lang.String());
+            value = binding.makeQueryWithId(org.astrogrid.datacenter.common.QueryHelper.buildMinimalQuery(), new java.lang.String());
         }
         catch (java.io.IOException e1) {
             throw new junit.framework.AssertionFailedError("IOException Exception caught: " + e1);

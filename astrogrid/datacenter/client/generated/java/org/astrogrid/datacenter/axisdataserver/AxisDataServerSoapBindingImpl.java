@@ -8,19 +8,19 @@
 package org.astrogrid.datacenter.axisdataserver;
 
 public class AxisDataServerSoapBindingImpl implements org.astrogrid.datacenter.axisdataserver.AxisDataServer{
-    public org.w3c.dom.Element getMetadata(java.lang.Object parameters) throws java.rmi.RemoteException {
+    public java.lang.String getMetadata(java.lang.Object parameters) throws java.rmi.RemoteException {
         return null;
     }
 
-    public org.w3c.dom.Element doQuery(java.lang.String resultsFormat, org.astrogrid.datacenter.adql.generated.Select select) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException {
+    public java.lang.String doQuery(java.lang.String resultsFormat, org.astrogrid.datacenter.axisdataserver.types.Query query) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException {
         return null;
     }
 
-    public java.lang.String makeQuery(org.astrogrid.datacenter.adql.generated.Select select) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException {
+    public java.lang.String makeQuery(org.astrogrid.datacenter.axisdataserver.types.Query query) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException {
         return null;
     }
 
-    public java.lang.String makeQueryWithId(org.astrogrid.datacenter.adql.generated.Select select, java.lang.String assignedId) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException {
+    public java.lang.String makeQueryWithId(org.astrogrid.datacenter.axisdataserver.types.Query query, java.lang.String assignedId) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException {
         return null;
     }
 

@@ -1,0 +1,134 @@
+/*
+ * This class was automatically generated with 
+ * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
+ * Schema.
+ * $Id: MakeQuery.java,v 1.1 2003/11/18 14:22:14 nw Exp $
+ */
+
+package org.astrogrid.datacenter.axisdataserver.types;
+
+  //---------------------------------/
+ //- Imported classes and packages -/
+//---------------------------------/
+
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Serializable;
+import java.io.Writer;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.xml.sax.ContentHandler;
+
+/**
+ * Class MakeQuery.
+ * 
+ * @version $Revision: 1.1 $ $Date: 2003/11/18 14:22:14 $
+ */
+public class MakeQuery implements java.io.Serializable {
+
+
+      //--------------------------/
+     //- Class/Member Variables -/
+    //--------------------------/
+
+    /**
+     * Field _query
+     */
+    private org.astrogrid.datacenter.axisdataserver.types.Query _query;
+
+
+      //----------------/
+     //- Constructors -/
+    //----------------/
+
+    public MakeQuery() {
+        super();
+    } //-- org.astrogrid.datacenter.axisdataserver.types.MakeQuery()
+
+
+      //-----------/
+     //- Methods -/
+    //-----------/
+
+    /**
+     * Returns the value of field 'query'.
+     * 
+     * @return the value of field 'query'.
+     */
+    public org.astrogrid.datacenter.axisdataserver.types.Query getQuery()
+    {
+        return this._query;
+    } //-- org.astrogrid.datacenter.axisdataserver.types.Query getQuery() 
+
+    /**
+     * Method isValid
+     */
+    public boolean isValid()
+    {
+        try {
+            validate();
+        }
+        catch (org.exolab.castor.xml.ValidationException vex) {
+            return false;
+        }
+        return true;
+    } //-- boolean isValid() 
+
+    /**
+     * Method marshal
+     * 
+     * @param out
+     */
+    public void marshal(java.io.Writer out)
+        throws org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException
+    {
+        
+        Marshaller.marshal(this, out);
+    } //-- void marshal(java.io.Writer) 
+
+    /**
+     * Method marshal
+     * 
+     * @param handler
+     */
+    public void marshal(org.xml.sax.ContentHandler handler)
+        throws java.io.IOException, org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException
+    {
+        
+        Marshaller.marshal(this, handler);
+    } //-- void marshal(org.xml.sax.ContentHandler) 
+
+    /**
+     * Sets the value of field 'query'.
+     * 
+     * @param query the value of field 'query'.
+     */
+    public void setQuery(org.astrogrid.datacenter.axisdataserver.types.Query query)
+    {
+        this._query = query;
+    } //-- void setQuery(org.astrogrid.datacenter.axisdataserver.types.Query) 
+
+    /**
+     * Method unmarshalMakeQuery
+     * 
+     * @param reader
+     */
+    public static org.astrogrid.datacenter.axisdataserver.types.MakeQuery unmarshalMakeQuery(java.io.Reader reader)
+        throws org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException
+    {
+        return (org.astrogrid.datacenter.axisdataserver.types.MakeQuery) Unmarshaller.unmarshal(org.astrogrid.datacenter.axisdataserver.types.MakeQuery.class, reader);
+    } //-- org.astrogrid.datacenter.axisdataserver.types.MakeQuery unmarshalMakeQuery(java.io.Reader) 
+
+    /**
+     * Method validate
+     */
+    public void validate()
+        throws org.exolab.castor.xml.ValidationException
+    {
+        org.exolab.castor.xml.Validator validator = new org.exolab.castor.xml.Validator();
+        validator.validate(this);
+    } //-- void validate() 
+
+}

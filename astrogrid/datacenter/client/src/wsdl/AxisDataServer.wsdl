@@ -77,8 +77,8 @@
     </wsdl:message>
     <wsdl:message name="doQueryResponse">
         <wsdl:part element="types:doQueryResponse" name="parameters"/>
-    </wsdl:message> 
-     
+    </wsdl:message>
+
     <wsdl:message name="makeQuery">
         <wsdl:part element="types:makeQuery" name="parameters"/>
     </wsdl:message>
@@ -146,24 +146,24 @@
     <wsdl:message name="MalformedURLException">
     	<wsdl:part name="fault" type="net:MalformedURLException" />
     </wsdl:message>
-    
-    
-    
+
+
+
     <!-- the port type -->
     <wsdl:portType name="AxisDataServer">
-        
+
         <wsdl:operation name="getMetadata">
             <wsdl:input message="getMetadata" name="getMetadata" />
             <wsdl:output message="getMetadataResponse" name="getMetadataResponse" />
-        </wsdl:operation>                   
-                
+        </wsdl:operation>
+
         <wsdl:operation name="doQuery">
             <wsdl:input message="doQuery" name="doQuery"/>
             <wsdl:output message="doQueryResponse" name="doQueryResponse"/>
             <wsdl:fault message="QueryException" name="QueryException"/>
             <wsdl:fault message="SAXException" name="SAXException"/>
 	    <wsdl:fault message="IOException" name="IOException" />
-        </wsdl:operation>  
+        </wsdl:operation>
 
         <wsdl:operation name="makeQuery">
             <wsdl:input message="makeQuery" name="makeQuery"/>
@@ -179,21 +179,21 @@
             <wsdl:fault message="SAXException" name="SAXException"/>
 	    <wsdl:fault message="IOException" name="IOException" />
         </wsdl:operation>
-        
+
         <wsdl:operation name="setResultsDestination">
             <wsdl:input message="setResultsDestination" name="setResultsDestination" />
             <wsdl:output message="setResultsDestinationResponse" name="setResultsDestinationResponse" />
         </wsdl:operation>
-        
+
         <wsdl:operation name="startQuery">
             <wsdl:input message="startQuery" name="startQuery" />
             <wsdl:output message="startQueryResponse" name="startQueryResponse" />
-        </wsdl:operation>      
-        
+        </wsdl:operation>
+
         <wsdl:operation name="getResultsAndClose">
             <wsdl:input message="getResultsAndClose" name="getResultsAndClose"/>
             <wsdl:output message="getResultsAndCloseResponse" name="getResultsAndCloseResponse"/>
-            <wsdl:fault message="SAXException" name="SAXException"/>              
+            <wsdl:fault message="SAXException" name="SAXException"/>
         </wsdl:operation>
         <wsdl:operation name="abortQuery">
             <wsdl:input message="abortQuery" name="abortQuery" />
@@ -208,79 +208,79 @@
             <wsdl:output message="registerWebListenerResponse" name="registerWebListenerResponse" />
 	    <wsdl:fault message="MalformedURLException" name="MalformedURLException" />
         </wsdl:operation>
-        
+
         <wsdl:operation name="registerJobMonitor">
             <wsdl:input message="registerJobMonitor" name="registerJobMonitor" />
             <wsdl:output message="registerJobMonitorResponse" name="registerJobMonitorResponse" />
 	    <wsdl:fault message="MalformedURLException" name="MalformedURLException" />
         </wsdl:operation>
-               
+
     </wsdl:portType>
-    
+
     <!-- the binding -->
     <wsdl:binding name="AxisDataServerSoapBinding" type="AxisDataServer">
         <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
 
         <wsdl:operation name="getMetadata">
             <wsdl:input name="getMetadata">
-                <wsdlsoap:body namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
+                <wsdlsoap:body use="literal"/>
             </wsdl:input>
             <wsdl:output name="getMetadataResponse">
-                <wsdlsoap:body namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
+                <wsdlsoap:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
 
           <wsdl:operation name="doQuery">
             <wsdl:input name="doQuery">
-                <wsdlsoap:body namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
+                <wsdlsoap:body  use="literal"/>
             </wsdl:input>
             <wsdl:output name="doQueryResponse">
-                <wsdlsoap:body namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
+                <wsdlsoap:body  use="literal"/>
             </wsdl:output>
            <wsdl:fault name="QueryException">
-            <wsdlsoap:fault  namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
+            <wsdlsoap:fault  use="literal"/>
          </wsdl:fault>
          <wsdl:fault name="SAXException">
-            <wsdlsoap:fault namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
+            <wsdlsoap:fault use="literal"/>
          </wsdl:fault>
          <wsdl:fault name="IOException">
-            <wsdlsoap:fault namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
+            <wsdlsoap:fault use="literal"/>
          </wsdl:fault>
         </wsdl:operation>
 
         <wsdl:operation name="makeQuery">
             <wsdl:input name="makeQuery">
-                <wsdlsoap:body namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
+                <wsdlsoap:body use="literal"/>
             </wsdl:input>
             <wsdl:output name="makeQueryResponse">
-                <wsdlsoap:body namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
+                <wsdlsoap:body  use="literal"/>
             </wsdl:output>
            <wsdl:fault name="QueryException">
-            <wsdlsoap:fault  namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
+            <wsdlsoap:fault use="literal"/>
          </wsdl:fault>
          <wsdl:fault name="SAXException">
-            <wsdlsoap:fault namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
+            <wsdlsoap:fault use="literal"/>
          </wsdl:fault>
          <wsdl:fault name="IOException">
-            <wsdlsoap:fault namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
+            <wsdlsoap:fault  use="literal"/>
          </wsdl:fault>
         </wsdl:operation>
 
         <wsdl:operation name="makeQueryWithId">
             <wsdl:input name="makeQueryWithId">
-                <wsdlsoap:body namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
+                <wsdlsoap:body use="literal"/>
             </wsdl:input>
             <wsdl:output name="makeQueryResponse">
-                <wsdlsoap:body namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
+                <wsdlsoap:body  use="literal"/>
             </wsdl:output>
            <wsdl:fault name="QueryException">
-            <wsdlsoap:fault  namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
+            <wsdlsoap:fault  use="literal"/>
          </wsdl:fault>
          <wsdl:fault name="SAXException">
-            <wsdlsoap:fault namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
+            <wsdlsoap:fault  use="literal"/>
          </wsdl:fault>
          <wsdl:fault name="IOException">
-            <wsdlsoap:fault namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
+            <wsdlsoap:fault use="literal"/>
          </wsdl:fault>
         </wsdl:operation>
 
