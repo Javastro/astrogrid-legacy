@@ -71,7 +71,8 @@
                     </td>                            
                 <input type="hidden" name="save-workflow-ivorn" id="save-workflow-ivorn"/>
                 <input type="hidden" name="save-workflow-agsl" id="save-workflow-agsl"/>
-                <input type="hidden" name="action" id="workflow_action"/>                        
+                <input type="hidden" name="action" id="workflow_action"/> 
+                <input type="hidden" name="activity_key" id="activity_key"/>                        
                 </tr>
             </form>                    
         </table>                             

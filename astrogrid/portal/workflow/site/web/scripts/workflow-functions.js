@@ -57,6 +57,7 @@
  
     function populate_activity_container_insert_form(activityID,parentActivityID, index, activityType)
     {
+       document.getElementById("activity_key").value = activityID;
        document.insert_sequence_form.activity_index_key.value = index;
        document.insert_sequence_form.activity_key.value = activityID;
        document.insert_sequence_form.parent_activity_key.value = parentActivityID;
