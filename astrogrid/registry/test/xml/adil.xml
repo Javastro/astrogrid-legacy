@@ -24,7 +24,7 @@
        management hierarchy for the ADIL -->
   <vc:Organisation created="2001-12-17T09:30:47-05:00" updated="2001-12-17T09:30:47-05:00" status="active">
     <Identifier>
-      <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+      <AuthorityID>astrogrid.nolookup.local</AuthorityID>
       <ResourceKey>RAI</ResourceKey>
     </Identifier>
     <Title>NCSA Radio Astronomy Imaging</Title>
@@ -63,7 +63,7 @@
   <!-- Now, define some authority IDs we will use -->
   <vg:Authority created="2002-12-17T09:30:47-05:00" updated="2002-12-17T09:30:47-05:00" status="active">
     <Identifier>
-      <AuthorityID>rai.ncsa.uiuc.edu</AuthorityID>
+      <AuthorityID>astrogrid.local</AuthorityID>
       <ResourceKey xsi:nil="true"/>
     </Identifier>
     <Title>NCSA Radio Astronomy Imaging Naming Authority</Title>
@@ -118,7 +118,7 @@
        collection -->
   <vs:DataCollection>
     <Identifier>
-      <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+      <AuthorityID>astrogrid.local</AuthorityID>
       <ResourceKey>ADIL</ResourceKey>
     </Identifier>
     <Title>NCSA Astronomy Digital Image Library</Title>
@@ -170,7 +170,7 @@
   <!-- Describe the ADIL Search Page as a service -->
   <vs:SkyService>
     <Identifier>
-      <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+      <AuthorityID>astrogrid.local</AuthorityID>
       <ResourceKey>QueryPage.html</ResourceKey>
     </Identifier>
     <Title>NCSA Astronomy Digital Image Library Query Form</Title>
@@ -395,7 +395,7 @@
   <!-- Describe the ADIL SIA service -->
   <vs:TabularSkyService>
     <Identifier>
-      <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+      <AuthorityID>astrogrid.local</AuthorityID>
       <ResourceKey>sia</ResourceKey>
     </Identifier>
     <Title>NCSA Astronomy Digital Image Library Simple Image Access</Title>
@@ -616,7 +616,7 @@
   </vs:TabularSkyService>
   <vc:Organisation created="2004-12-17T09:30:47-05:00" updated="2001-12-17T09:30:47-05:00" status="active">
     <Identifier>
-      <AuthorityID>rdsfgdsai.ncsa.uiuc.edu</AuthorityID>
+      <AuthorityID>astrogrid.local</AuthorityID>
       <ResourceKey>RAI</ResourceKey>
     </Identifier>
     <Title>NCSA Radio Astronomy sdgfdsImaging</Title>
@@ -653,7 +653,7 @@
   </vc:Organisation>
  <vg:Registry>
     <Identifier>
-      <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+      <AuthorityID>astrogrid.local</AuthorityID>
       <ResourceKey>Registry.html</ResourceKey>
     </Identifier>
     <Title>NCSA Astronomy Digital Image Library Query Form</Title>
@@ -695,12 +695,62 @@
     <ContentLevel>University</ContentLevel>
     <ContentLevel>Community College</ContentLevel>
     <ManagedAuthority>adil.ncsa.uiuc.edu</ManagedAuthority>
-    <ManagedAuthority>adilTEST.ncsa.uiuc.edu</ManagedAuthority>    
-    <ManagedAuthority>rai.ncsa.uiuc.edu</ManagedAuthority>
+    <ManagedAuthority>astrogrid.local</ManagedAuthority>
     <Interface>
       <Invocation>WebBrowser</Invocation>
-      <AccessURL use="dir">http://adil.ncsa.uiuc.edu/QueryPage.html</AccessURL>
+      <AccessURL use="dir">http://localhost:8080/cocoon/astrogrid/agoairegistry</AccessURL>
     </Interface>
   </vg:Registry>
+  
+ <vg:Registry>
+    <Identifier>
+      <AuthorityID>nvo.local</AuthorityID>
+      <ResourceKey>Registry.html</ResourceKey>
+    </Identifier>
+    <Title>NCSA Astronomy Digital Image Library Query Form</Title>
+    <ShortName>ADIL</ShortName>
+    <Summary>
+      <Description>
+        This Web page allows users to interactively search the contents
+        of the ADIL.
+      </Description>
+      <ReferenceURL>http://adil.ncsa.uiuc.edu/</ReferenceURL>
+    </Summary>
+    <Type>Archive</Type>
+    <Curation>
+      <Publisher>
+    	 <Identifier>
+    	   <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+	   <ResourceKey>ADIL</ResourceKey>
+    	 </Identifier>
+         <Title>NCSA Astronomy Digital Image Library</Title>
+      </Publisher>
+      <Contact>
+        <Name>Dr. Raymond Plante</Name>
+	<Email>rplante@ncsa.uiuc.edu</Email>
+      </Contact>
+      <Date>1994-09-01</Date>
+      <Creator>
+        <Name>Dr. Raymond Plante</Name>
+        <Logo>http://adil.ncsa.uiuc.edu/gifs/adilfooter.gif</Logo>
+      </Creator>
+      <Contributor>
+        <Name>Damien Guillaume</Name>
+      </Contributor>
+    </Curation>
+    <Subject>radio astronomy</Subject>
+    <Subject>data repositories</Subject>
+    <Subject>digital libraries</Subject>
+    <Subject>grid-based processing</Subject>
+    <ContentLevel>Research</ContentLevel>
+    <ContentLevel>University</ContentLevel>
+    <ContentLevel>Community College</ContentLevel>
+    <ManagedAuthority>nvo.local</ManagedAuthority>
+    <Interface>
+      <Invocation>WebBrowser</Invocation>
+      <AccessURL use="dir">http://sdssdbs1.stsci.edu/nvo/voregistry/registry.asmx/DumpVOResources</AccessURL>
+    </Interface>
+  </vg:Registry>
+  
   
 </VODescription>

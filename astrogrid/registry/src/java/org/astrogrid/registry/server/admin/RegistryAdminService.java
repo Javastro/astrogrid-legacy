@@ -56,7 +56,7 @@ public class RegistryAdminService implements org.astrogrid.registry.RegistryAdmi
     } catch (Exception e){
        e.printStackTrace();
     }
-    return query;
+    return RegistryFileHelper.loadRegistryFile();
   }
   
   /**

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/registry/src/config/Attic/config.xml,v $</cvs:source>
     | <cvs:author>$Author: KevinBenson $</cvs:author>
-    | <cvs:date>$Date: 2003/12/08 09:30:16 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/16 20:27:14 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     |   $Log: config.xml,v $
+    |   Revision 1.4  2003/12/16 20:27:14  KevinBenson
+    |   *** empty log message ***
+    |
     |   Revision 1.3  2003/12/08 09:30:16  KevinBenson
     |   New result from merger with Itn04-Dec-08_RB tag
     |
@@ -55,23 +58,92 @@
        +-->
    <category name="org.astrogrid.registry">
 
-      <property name="registry.authority.id" value="adil.ncsa.uiuc.edu"/>
+	  <!--
+	    This property is for server side use to get managed authorities for a registry entry conforming
+	    to this authority id.
+	  -->
+      <property name="registry.authority.id" value="vm05.astrogrid.org"/>
       
+      <!--
+      	This property is not actually in use anymore, but still gives the added benefit of seperating out
+      	a publish and a query registry.  Currently not used in the Astrogrid registries.  A portal is tied
+      	to one registry only, but an added benefit is it can be tied to 2 registries if needed.
+      -->
       <property name="publish.registry.query.url" value="http://localhost:8080/axis/services/Registry"/>
+      <!--
+      	The update web service url in which all data updated/added/ is inserted to a web service method.
+      	Used on the client side.
+      -->
       <property name="publish.registry.update.url" value="http://localhost:8080/axis/services/RegistryAdmin"/>
+      <!--
+      	Not used anymore, but leave it in for now.
+      -->
       <property name="publish.registry.name" value="Leicester Publish Registry"/>      
+      <!--
+      	Web service url to query a registry. Used for the client side.
+      -->
       <property name="search.registry.query.url" value="http://localhost:8080/axis/services/Registry"/>
-      <property name="search.registry.update.url" value="http://localhost:8080/axis/services/RegistryAdmin"/>      
+      <!--
+      	Not used anymore.  Allowed the ability to update to a search registry.  But now it is stated a portal
+      	is associated to 1 and 1 registry only.  So it uses the publish.registry.update.url property up above.
+      -->
+      <property name="search.registry.update.url" value="http://localhost:8080/axis/services/RegistryAdmin"/>
+      <!--
+      	Not used anymore.
+      -->
       <property name="search.registry.name" value="MSSL Search Registry"/>      
-
+	
+	  <!--
+	  	This is the registry file.  Please read this registry file's comments for setting up new registries.
+	  	Used on the server side.
+	  -->
       <property name="registry.file" value="C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\test\xml\adil.xml"/>
+      <!--
+      	A xml template to be used for harvest date queries.
+      	Used on the server side.
+      -->
       <property name="harvester.query.template" value="C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\server\HarvesterQueryTemplate.xml"/>
+      <!--
+      	Organisation template file used for the client for adding or getting text nodes and attribute nodes for the query
+      	and update screens.
+      	Again used for the client.
+      -->
       <property name="organisation.xml.template" value="C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\client\OrganisationTemplate.xml"/>
+      <!--
+      	Authority template file used for the client for adding or getting text nodes and attribute nodes for the query
+      	and update screens.
+      	Again used for the client.
+      -->      
       <property name="authority.xml.template" value="C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\client\AuthorityTemplate.xml"/>
+      <!--
+      	Service template file used for the client for adding or getting text nodes and attribute nodes for the query
+      	and update screens.
+      	Again used for the client.
+      -->      
       <property name="service.xml.template" value="C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\client\ServiceTemplate.xml"/>
+      <!--
+      	Sky Service template file used for the client for adding or getting text nodes and attribute nodes for the query
+      	and update screens.
+      	Again used for the client.
+      -->      
       <property name="sky.service.xml.template" value="C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\client\SkyServiceTemplate.xml"/>
+      <!--
+      	Tabular sky service template file used for the client for adding or getting text nodes and attribute nodes for the query
+      	and update screens.
+      	Again used for the client.
+      -->
       <property name="tabular.sky.service.xml.template" value="C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\client\TabularSkyServiceTemplate.xml"/>
+      <!--
+      	DataCollection template file used for the client for adding or getting text nodes and attribute nodes for the query
+      	and update screens.
+      	Again used for the client.
+      -->
       <property name="datacollection.xml.template" value="C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\client\DataCollectionTemplate.xml"/>
+      <!--
+      	Registry template file used for the client for adding or getting text nodes and attribute nodes for the query
+      	and update screens.
+      	Again used for the client.
+      -->
       <property name="registry.xml.template" value="C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\client\RegistryTemplate.xml"/>
       
    </category> 
