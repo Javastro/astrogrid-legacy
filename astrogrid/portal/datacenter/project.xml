@@ -48,9 +48,9 @@
     	
         <!-- for writing XML -->
        <dependency>
-          <artifactId>astrogrid-slinger-xml</artifactId>
+          <artifactId>astrogrid-xml</artifactId>
           <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.slinger.version}</version>
+          <version>${astrogrid.xml.version}</version>
         <properties>
             <war.bundle>true</war.bundle>
         </properties>       	
