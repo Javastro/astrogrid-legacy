@@ -1,5 +1,5 @@
 /*
- * $Id: Piper.java,v 1.3 2004/02/17 14:31:49 mch Exp $
+ * $Id: Piper.java,v 1.4 2004/03/02 11:58:00 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -46,7 +46,10 @@ public class Piper
     */
    public static void bufferedPipe(InputStream in, OutputStream out) throws IOException
    {
-      pipe(new BufferedInputStream(in), new BufferedOutputStream(out));
+      out = new BufferedOutputStream(out);
+      pipe(new BufferedInputStream(in), out);
+      out.flush();
+      
    }
 
    
@@ -70,15 +73,20 @@ public class Piper
     */
    public static void bufferedPipe(Reader in, Writer out) throws IOException
    {
-      pipe(new BufferedReader(in), new BufferedWriter(out));
+      out = new BufferedWriter(out);
+      pipe(new BufferedReader(in), out);
+      out.flush();
    }
    
 }
 
 /* $Log: Piper.java,v $
- * Revision 1.3  2004/02/17 14:31:49  mch
- * Minor changes to please checkstyle
+ * Revision 1.4  2004/03/02 11:58:00  mch
+ * Fixed buffer not flushing
  *
+/* Revision 1.3  2004/02/17 14:31:49  mch
+/* Minor changes to please checkstyle
+/*
 /* Revision 1.2  2004/02/15 23:17:59  mch
 /* minor doc changes
 /*
