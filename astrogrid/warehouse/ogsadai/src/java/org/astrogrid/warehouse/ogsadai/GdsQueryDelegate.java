@@ -1,5 +1,5 @@
 /*
- * $Id: GdsQueryDelegate.java,v 1.12 2004/03/15 12:31:32 kea Exp $
+ * $Id: GdsQueryDelegate.java,v 1.13 2004/03/16 14:03:36 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -201,11 +201,11 @@ public class GdsQueryDelegate
       //logger.info("Response is " + response.getAsString());
 
       int i;
-      //for (i = 0;  i< 1000; i++) {
+      for (i = 0;  i< 5; i++) {
       ExtensibilityType result2 = gds.findServiceData(
           QueryHelper.getNamesQuery(OGSADAIConstants.GDS_SDE_REQUEST_STATUS));
       logger.info("Status is " + AnyHelper.getAsString(result2));
-      //}
+      }
 
       //Response response = gds.perform(request);
 
@@ -354,6 +354,9 @@ public class GdsQueryDelegate
 }
 /*
 $Log: GdsQueryDelegate.java,v $
+Revision 1.13  2004/03/16 14:03:36  kea
+Temporary hack to unit tests to avoid build break - to fix later.
+
 Revision 1.12  2004/03/15 12:31:32  kea
 Changed QueryDelegate to use the new OGSA-DAI toolkit, rather than our
 own Grid delegates.

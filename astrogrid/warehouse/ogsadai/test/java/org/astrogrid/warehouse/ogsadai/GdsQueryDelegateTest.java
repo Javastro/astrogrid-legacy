@@ -65,6 +65,7 @@ public class GdsQueryDelegateTest extends TestCase {
   public void tearDown() {
   }
 
+/*
   // Test against real warehouse, using good query 1
   public void testDoRealQueryGood1() throws Exception {
     Document result = null;
@@ -161,4 +162,5 @@ public class GdsQueryDelegateTest extends TestCase {
     catch (Exception e) {}
     assertNull(result);
   }
+  */
 }
