@@ -65,6 +65,10 @@
 				<agpd:UI_Name>use filter</agpd:UI_Name>
 				<agpd:UI_Description>apply filter for detection</agpd:UI_Description>
 			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="FILTER_NAME" type="binary" >
+				<agpd:UI_Name>Filter file</agpd:UI_Name>
+				<agpd:UI_Description>name of the file containing the filter</agpd:UI_Description>
+			</CmdLineParameterDefn>
 		</Parameters>
 		<Interfaces>
 			<Interface name="Simple">
@@ -73,6 +77,8 @@
 					<pref ref="PhotoImage"/>
 					<pref ref="config_file"/>
 					<pref ref="PARAMETERS_NAME"/>
+					<pref ref="FILTER_NAME"/>
+					<pref ref="ANALYSIS_THRESH" fileRef="false" minOccurs="0"/>
 				</input>
 				<output>
 					<pref ref="CATALOG_NAME"/>
@@ -107,6 +113,9 @@
 			<CmdLineParameterDefn name="TEMPLATES_FILE" type="binary"  fileRef="true">
 				<agpd:UI_Name>Templates file</agpd:UI_Name>
 				<agpd:UI_Description>?</agpd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn type="binary" name="">
+				
 			</CmdLineParameterDefn>
 		</Parameters>
 		<Interfaces>
