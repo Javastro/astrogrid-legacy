@@ -1,4 +1,4 @@
-/*$Id: Services.java,v 1.13 2004/08/09 11:28:17 nw Exp $
+/*$Id: Services.java,v 1.14 2004/08/09 11:34:20 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -77,12 +77,11 @@ public class Services {
       dig.addBeanPropertySetter("services/service/type");      
       dig.addSetNext("services/service","addService");
       if (serviceListDocument == null){
-          try {
               serviceListDocument = SimpleConfig.getSingleton().getUrl(SERVICE_LIST_URL_KEY,this.getClass().getResource(DEFAULT_SERVICE_LIST));
-          } catch (NullPointerException e) { // not even found the default - silly config class throws when it shouldn;t.
-              logger.warn("No service document defined - service list will be empty");
-              return;
-          }
+              if (serviceListDocument == null) {// not even found the default??
+                  logger.warn("No service document specified - service list will be empty");
+                  return;
+              }
       }
       logger.info("Reading service list from " + serviceListDocument);
       InputStream is = serviceListDocument.openStream();
@@ -246,6 +245,9 @@ public class Services {
 
 /* 
 $Log: Services.java,v $
+Revision 1.14  2004/08/09 11:34:20  nw
+improvied behaviour when no service list is found.
+
 Revision 1.13  2004/08/09 11:28:17  nw
 improvied behaviour when no service list is found.
 tidied imports.
