@@ -32,81 +32,48 @@
             <artifactId>astrogrid-portal-deploy-script</artifactId>
             <version>${pom.currentVersion}</version>
             <properties>
-                <jnlp.main.jar>false</jnlp.main.jar>
-                <jnlp.jar>true</jnlp.jar>
+                <uberjar.bundle>false</uberjar.bundle>
             </properties>
         </dependency>        
         <dependency>
-            <groupId>antigen</groupId>
-            <artifactId>antigen</artifactId>
-            <version>0.1-SNAPSHOT</version>
-            <properties>
-                <jnlp.main.jar>false</jnlp.main.jar>
-                <jnlp.jar>true</jnlp.jar>
-            </properties>
-        </dependency>
-                <dependency>
             <groupId>ant</groupId>
             <artifactId>ant</artifactId>
             <version>1.5.3-1</version>
-            <properties>
-                <jnlp.main.jar>false</jnlp.main.jar>
-                <jnlp.jar>true</jnlp.jar>
-            </properties>
-        </dependency>
+         </dependency>
         <dependency>
             <groupId>ant</groupId>
             <artifactId>ant-optional</artifactId>
             <version>1.5.3-1</version>
-            <properties>
-                <jnlp.main.jar>false</jnlp.main.jar>
-                <jnlp.jar>true</jnlp.jar>
-            </properties>
+        </dependency>
+        <dependency>
+            <groupId>antigen</groupId>
+            <artifactId>antigen</artifactId>
+            <version>0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>catalina-ant</groupId>
             <artifactId>catalina-ant</artifactId>
             <version>5.0.18</version>
-            <properties>
-                <jnlp.main.jar>false</jnlp.main.jar>
-                <jnlp.jar>true</jnlp.jar>
-            </properties>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>1.0.3</version>
-            <properties>
-                <jnlp.main.jar>false</jnlp.main.jar>
-                <jnlp.jar>true</jnlp.jar>
-            </properties>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.8</version>
-            <properties>
-                <jnlp.main.jar>false</jnlp.main.jar>
-                <jnlp.jar>true</jnlp.jar>
-            </properties>
         </dependency>
         <dependency>
             <groupId>velocity</groupId>
             <artifactId>velocity</artifactId>
             <version>1.4</version>
-            <properties>
-                <jnlp.main.jar>false</jnlp.main.jar>
-                <jnlp.jar>true</jnlp.jar>
-            </properties>
             </dependency>
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
             <version>3.1</version>
-            <properties>
-                <jnlp.main.jar>false</jnlp.main.jar>
-                <jnlp.jar>true</jnlp.jar>
-            </properties>            
         </dependency>
         <dependency>
             <groupId>commons-cli</groupId>
