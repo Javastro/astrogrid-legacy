@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceServer.java,v 1.5 2003/09/10 17:57:31 mch Exp $
+ * $Id: ServiceServer.java,v 1.6 2003/09/11 13:59:47 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -30,7 +30,7 @@ import org.w3c.dom.NodeList;
 public abstract class ServiceServer
 {
    /** Configuration key to where the metadata file is located */
-   public static final String METADATA_FILE_LOC_KEY = "Metadata File";
+   public static final String METADATA_FILE_LOC_KEY = "MetadataFile";
 
    /**
     * Returns the metadata in the registry form (VOResource)
