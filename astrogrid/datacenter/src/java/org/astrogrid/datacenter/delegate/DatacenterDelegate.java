@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegate.java,v 1.9 2003/09/10 17:57:31 mch Exp $
+ * $Id: DatacenterDelegate.java,v 1.10 2003/09/11 16:10:50 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -48,21 +48,13 @@ public abstract class DatacenterDelegate
       }
       else
       {
-         //look at format
-         URL serviceUrl = new URL(givenEndPoint);
-
-         if ((serviceUrl.getProtocol() == null) ||
-             (serviceUrl.getProtocol().length() == 0) ||
-             (serviceUrl.getProtocol().equals("socket")))
+         if (givenEndPoint.toLowerCase().startsWith("socket"))
          {
-            //no protocol given, or 'socket' given, assume it's a direct socket one
-            InetSocketAddress address = new InetSocketAddress(serviceUrl.getHost(), serviceUrl.getPort());
-
-            return new SocketDelegate(address);
+            return new SocketDelegate(givenEndPoint);
          }
          else
          {
-            return new HtmlDelegate(serviceUrl);
+            return new HtmlDelegate(new URL(givenEndPoint));
          }
       }
 
@@ -157,6 +149,9 @@ public abstract class DatacenterDelegate
 
 /*
 $Log: DatacenterDelegate.java,v $
+Revision 1.10  2003/09/11 16:10:50  mch
+Correction for 'socket' protocol
+
 Revision 1.9  2003/09/10 17:57:31  mch
 Tidied xml doc helpers and fixed (?) job/web listeners
 
