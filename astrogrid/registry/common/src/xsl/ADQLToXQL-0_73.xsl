@@ -23,6 +23,8 @@
          declare namespace vt = "http://www.ivoa.net/xml/VOTable/v0.1";
          declare namespace cs = "http://www.ivoa.net/xml/ConeSearch/v0.2";
          declare namespace sia = "http://www.ivoa.net/xml/SIA/v0.6";
+		 declare namespace cea="http://www.ivoa.net/xml/CEAService/v0.1"; 
+         declare namespace ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1";
 		 for $x in //vr:Resource
       </xsl:text>
    
