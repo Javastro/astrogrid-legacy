@@ -1,5 +1,5 @@
 /*
- * $Id: StoreFile.java,v 1.4 2004/04/06 13:40:52 mch Exp $
+ * $Id: StoreFile.java,v 1.5 2004/04/21 13:50:40 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -24,7 +24,7 @@ import org.astrogrid.store.Agsl;
 
 public interface StoreFile {
 
-   /** Returns the filename/foldername/tablename/etc */
+   /** Returns the file/folder/table name without path */
    public String getName();
    
    /** Returns parent folder of this file/folder */

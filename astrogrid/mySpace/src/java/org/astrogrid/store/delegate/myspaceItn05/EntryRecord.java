@@ -23,7 +23,7 @@ import org.astrogrid.store.Agsl;
  * member variables, but no corresponding set methods.  Rather, there is
  * a constructor in which all the member variables are set.  This
  * constructor is usually only used inside the delegate.  There is also
- * a second constructor with no arguments (and which sets all its member 
+ * a second constructor with no arguments (and which sets all its member
  * variables to null or dummy values), which is more likely to be used
  * by an application invoking the delegate.
  * </p>
@@ -41,7 +41,7 @@ import org.astrogrid.store.Agsl;
  */
 
 public class EntryRecord implements StoreFile
-{  
+{
 //
 //Member variables defining the entry record.
 
@@ -135,18 +135,24 @@ public class EntryRecord implements StoreFile
 // Methods implementing the StoreFile interface.
 
 /**
- * Return the fully resolved MySpace name of the entry.
- *
- * @return The fully resolved MySpace name of the entry.
+ * Returns the name of the file without path information
  */
 
    public String getName()
-   {  return entryName;
+   {
+      int lastSlash = entryName.lastIndexOf('/');
+      if (lastSlash == -1) {
+         return entryName;
+      }
+      else {
+         return entryName.substring(lastSlash+1);
+      }
    }
 
 /**
  * Return the parent folder of this file/folder.  For this class null
  * is always returned.
+    * @todo fix this
  */
    public StoreFile getParent()
    {  return null;
@@ -169,7 +175,7 @@ public class EntryRecord implements StoreFile
       return isContainer;
    }
    
-/** 
+/**
  * Return true if this EntryRecord is a self-contained file.  For
  * example, a database table might be represented as a StoreFile but it
  * is not a file.  A value of false is always returned because currently
@@ -189,7 +195,7 @@ public class EntryRecord implements StoreFile
    {  return null;
    }
    
-/** 
+/**
  * Return the path to this file on the MySpace Service.
  */
    public String getPath()
@@ -296,8 +302,8 @@ public class EntryRecord implements StoreFile
 /**
  * Return the type of the entry.
  *
- * @return The type of the entry.  One of: <code>EntryCodes.UNKNOWN</code>, 
- *   <code>EntryCodes.CON</code>, <code>EntryCodes.VOT</code>, 
+ * @return The type of the entry.  One of: <code>EntryCodes.UNKNOWN</code>,
+ *   <code>EntryCodes.CON</code>, <code>EntryCodes.VOT</code>,
  *   <code>EntryCodes.QUERY</code>, <code>EntryCodes.WORKFLOW</code> or
  *   <code>EntryCodes.XML</code>.
  */
@@ -317,7 +323,7 @@ public class EntryRecord implements StoreFile
    }
 
 
-/** 
+/**
  * Return the container path to the file on the MySpace Service,
  * without the final file name.
  */

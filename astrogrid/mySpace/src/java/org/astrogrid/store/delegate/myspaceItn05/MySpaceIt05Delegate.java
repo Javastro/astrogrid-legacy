@@ -619,6 +619,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 
    public void move(String sourcePath, Agsl targetPath) throws IOException
    {  String targetFile = targetPath.getPath();
+      
       KernelResults results = innerDelegate.moveFile(sourcePath,
         targetFile, isTest);
 
