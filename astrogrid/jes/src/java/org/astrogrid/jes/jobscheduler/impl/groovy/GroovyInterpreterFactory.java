@@ -1,4 +1,4 @@
-/*$Id: GroovyInterpreterFactory.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: GroovyInterpreterFactory.java,v 1.3 2004/08/09 17:32:18 nw Exp $
  * Created on 14-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.List;
 
 /** Factory object that takes care of creating fresh and unpickling existing groovy interpreters.
  * @author Noel Winstanley nw@jb.man.ac.uk 14-May-2004
@@ -33,7 +34,7 @@ public class GroovyInterpreterFactory {
     public interface Pickler {
         void marshallInterpreter(Writer out, GroovyInterpreter interp) throws Exception;
         GroovyInterpreter unmarshallInterpreter(Reader in) throws Exception;     
-        RuleStore unmarshallRuleStore(Reader reader)  throws Exception;        
+        List unmarshallRuleStore(Reader reader)  throws Exception;        
     }
     
     public GroovyInterpreterFactory(Pickler p) {
@@ -81,7 +82,7 @@ public class GroovyInterpreterFactory {
     /** create a new workflow interpreter, populated with contents of rulesDoc */
     public GroovyInterpreter newInterpreter(String rulesDoc,JesInterface env) throws PickleException{
         try {
-        RuleStore rs = pickler.unmarshallRuleStore(new StringReader(rulesDoc));
+        List rs = pickler.unmarshallRuleStore(new StringReader(rulesDoc));
         GroovyInterpreter interp = new GroovyInterpreter(rs);
         interp.setJesInterface(env);        
         return interp;
@@ -96,6 +97,9 @@ public class GroovyInterpreterFactory {
 
 /* 
 $Log: GroovyInterpreterFactory.java,v $
+Revision 1.3  2004/08/09 17:32:18  nw
+updated due to removing RuleStore
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

@@ -1,4 +1,4 @@
-/*$Id: XStreamPicklerTest.java,v 1.3 2004/08/03 16:32:26 nw Exp $
+/*$Id: XStreamPicklerTest.java,v 1.4 2004/08/09 17:32:02 nw Exp $
  * Created on 28-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -64,13 +65,13 @@ public class XStreamPicklerTest extends TestCase {
     }
 
     public void testRoundTripRuleStore() throws IOException  {
-        RuleStore rs = interp.ruleStore;
+        List rs = interp.ruleStore;
         StringWriter out = new StringWriter();
         pickler.xstream.toXML(rs,out);
         out.close();
         System.out.println(out.toString());
         StringReader in = new StringReader(out.toString());
-        RuleStore rs1 = pickler.unmarshallRuleStore(in);
+        List rs1 = pickler.unmarshallRuleStore(in);
         assertNotNull(rs1);
         assertEquals(rs,rs1);
     }
@@ -80,6 +81,9 @@ public class XStreamPicklerTest extends TestCase {
 
 /* 
 $Log: XStreamPicklerTest.java,v $
+Revision 1.4  2004/08/09 17:32:02  nw
+updated due to removing RuleStore
+
 Revision 1.3  2004/08/03 16:32:26  nw
 remove unnecessary envId attrib from rules
 implemented variable propagation into parameter values.

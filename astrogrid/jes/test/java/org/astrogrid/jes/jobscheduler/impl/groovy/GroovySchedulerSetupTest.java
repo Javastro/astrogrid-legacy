@@ -1,4 +1,4 @@
-/*$Id: GroovySchedulerSetupTest.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: GroovySchedulerSetupTest.java,v 1.3 2004/08/09 17:32:18 nw Exp $
  * Created on 12-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,7 +58,7 @@ public class GroovySchedulerSetupTest extends AbstractTestForSchedulerImpl {
 
         GroovyInterpreter interp = (new GroovyInterpreterFactory(new XStreamPickler())).unpickleFrom(env);
         assertNotNull(interp);
-        assertTrue(interp.ruleStore.rules.size() > 0); // we've got some rules.
+        assertTrue(interp.ruleStore.size() > 0); // we've got some rules.
         //@todo add some equality checking in here..
         
     }
@@ -75,6 +75,9 @@ public class GroovySchedulerSetupTest extends AbstractTestForSchedulerImpl {
 
 /* 
 $Log: GroovySchedulerSetupTest.java,v $
+Revision 1.3  2004/08/09 17:32:18  nw
+updated due to removing RuleStore
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

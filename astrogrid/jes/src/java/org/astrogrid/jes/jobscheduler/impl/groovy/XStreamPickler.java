@@ -1,4 +1,4 @@
-/*$Id: XStreamPickler.java,v 1.3 2004/08/05 07:39:37 nw Exp $
+/*$Id: XStreamPickler.java,v 1.4 2004/08/09 17:32:02 nw Exp $
  * Created on 28-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,8 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import java.io.Reader;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 28-Jul-2004
@@ -33,7 +35,7 @@ public class XStreamPickler implements Pickler {
     static {
         xstream = new XStream(new PureJavaReflectionProvider(),new DomDriver());
         xstream.alias("interpreter",GroovyInterpreter.class);
-        xstream.alias("rules",RuleStore.class);
+        xstream.alias("rules",ArrayList.class);
         xstream.alias("rule",Rule.class);
         xstream.alias("state",ActivityStatus.class);
         xstream.alias("states",ActivityStatusStore.class);
@@ -57,8 +59,8 @@ public class XStreamPickler implements Pickler {
     /**
      * @see org.astrogrid.jes.jobscheduler.impl.groovy.GroovyInterpreterFactory.Pickler#unmarshallRuleStore(java.io.Reader)
      */
-    public RuleStore unmarshallRuleStore(Reader reader)  {
-        return (RuleStore)xstream.fromXML(reader);
+    public List unmarshallRuleStore(Reader reader)  {
+        return (List)xstream.fromXML(reader);
     }
 
 }
@@ -66,6 +68,9 @@ public class XStreamPickler implements Pickler {
 
 /* 
 $Log: XStreamPickler.java,v $
+Revision 1.4  2004/08/09 17:32:02  nw
+updated due to removing RuleStore
+
 Revision 1.3  2004/08/05 07:39:37  nw
 made xstream static for same reasons
 

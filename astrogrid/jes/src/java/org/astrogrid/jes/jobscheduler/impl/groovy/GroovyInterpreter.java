@@ -1,4 +1,4 @@
-/*$Id: GroovyInterpreter.java,v 1.3 2004/08/04 16:51:46 nw Exp $
+/*$Id: GroovyInterpreter.java,v 1.4 2004/08/09 17:32:18 nw Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,10 @@ import org.astrogrid.workflow.beans.v1.Step;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /** top level class from python prototype.
@@ -31,28 +34,34 @@ public class GroovyInterpreter  {
      * 
      */
     public GroovyInterpreter() {
-        this(new RuleStore());
+        this(new ArrayList());
     }
     
-    public GroovyInterpreter(RuleStore rs) {
+    public GroovyInterpreter(List rs) {
         this.ruleStore = rs;    
         
-        
+       
     }
     private  static final Log logger = LogFactory.getLog(GroovyInterpreter.class);
     
-    protected RuleStore ruleStore;
+    protected List ruleStore;
     protected ActivityStatusStore stateMap = new ActivityStatusStore();
     protected final transient JesShell shell = new JesShell();
     
     public void addRule(Rule r) {
-        ruleStore.addRule(r);
+        ruleStore.add(r);
     }
         
     /** find next candidate */
     public Rule findNext() throws ScriptEngineException {
         try {
-            return ruleStore.findTriggeredRules(shell,stateMap);
+            for (Iterator i = ruleStore.iterator(); i.hasNext(); ) {
+                Rule r = (Rule)i.next();
+                if (r.isTriggered(shell,stateMap)) {
+                    return r;
+                }
+            } 
+            return null;
         } catch (Exception e) {
             throw new ScriptEngineException("Failed to find next",e);
         }
@@ -167,6 +176,9 @@ public class GroovyInterpreter  {
 
 /* 
 $Log: GroovyInterpreter.java,v $
+Revision 1.4  2004/08/09 17:32:18  nw
+updated due to removing RuleStore
+
 Revision 1.3  2004/08/04 16:51:46  nw
 added parameter propagation out of cea step call.
 
