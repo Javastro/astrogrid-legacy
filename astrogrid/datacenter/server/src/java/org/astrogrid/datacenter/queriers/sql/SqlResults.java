@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.24 2004/03/15 21:44:54 mch Exp $
+ * $Id: SqlResults.java,v 1.25 2004/03/16 16:19:51 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -129,7 +129,7 @@ public class SqlResults extends QueryResults
             }
             printOut.println("               </TR>");
             
-            if ((maxAllowed==-1) || (row<maxAllowed)) {
+            if ((maxAllowed!=-1) && (row>maxAllowed)) {
                statusToUpdate.addDetail("Results limited to "+maxAllowed+" rows by datacenter");
                log.warn("Limiting returned results to "+maxAllowed);
                break;
@@ -192,7 +192,7 @@ public class SqlResults extends QueryResults
             }
             printOut.println();
             
-            if ((maxAllowed==-1) || (row<maxAllowed)) {
+            if ((maxAllowed!=-1) && (row>maxAllowed)) {
                statusToUpdate.addDetail("Results limited to "+maxAllowed+" rows by datacenter");
                log.warn("Limiting returned results to "+maxAllowed);
                break;
@@ -247,6 +247,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.25  2004/03/16 16:19:51  mch
+ Fix to limits stopping everything...
+
  Revision 1.24  2004/03/15 21:44:54  mch
  Better note update
 
