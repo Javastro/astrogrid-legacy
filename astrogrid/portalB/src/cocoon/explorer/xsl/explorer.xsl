@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/explorer/xsl/Attic/explorer.xsl,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/27 02:43:18 $</cvs:author>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/27 03:17:38 $</cvs:author>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     | $Log: explorer.xsl,v $
+    | Revision 1.4  2003/06/27 03:17:38  dave
+    | Simplified page path in sitemap
+    |
     | Revision 1.3  2003/06/27 02:43:18  dave
     | Added images to tree nodes
     |
@@ -30,7 +33,7 @@
 	<xsl:param name="paste"/>
 	<xsl:param name="action"/>
 	<xsl:param name="confirm"/>
-	<xsl:param name="page">explorer.003</xsl:param>
+	<xsl:param name="page">explorer</xsl:param>
 
 	<!--+
 	    | Match the top level page element.
@@ -147,7 +150,7 @@
 						<xsl:value-of select="/page/view/@service"/>
 					</td>
 				</tr>
-<!--
+<!-- Only need this section for debug ...
 				<tr>
 					<td>Explorer</td>
 					<td colspan="2">
@@ -211,8 +214,8 @@
 	    | Process our tree nodes.
 	    +-->
 	<xsl:template match="/page/view/tree//node">
-		<tr class="tree">
-			<td class="tree" width="200" align="left" valign="middle">
+		<tr class="tree" valign="center">
+			<td class="tree" width="200" align="left" valign="center">
 				<!-- Add the indentation -->
 				<xsl:call-template name="node-indent"/>
 				<!-- Add the node link -->
@@ -224,10 +227,8 @@
 							<xsl:if test="@path = /page/view/@path">
 								<xsl:attribute name="selected">true</xsl:attribute>
 							</xsl:if>
-							<image src="images/cont.icon.gif"/>
-							<text>
-								<xsl:value-of select="@name"/>
-							</text>
+							<image src="explorer/images/cont.icon.gif"/>
+							<text><xsl:value-of select="@name"/></text>
 							<href>
 								<base><xsl:value-of select="$page"/></base>
 								<param name="action">explorer-path</param>
@@ -243,10 +244,8 @@
 							<xsl:if test="@path = /page/view/current/@path">
 								<xsl:attribute name="selected">true</xsl:attribute>
 							</xsl:if>
-							<image src="images/item.icon.gif"/>
-							<text>
-								<xsl:value-of select="@name"/>
-							</text>
+							<image src="explorer/images/item.icon.gif"/>
+							<text><xsl:value-of select="@name"/></text>
 							<href>
 								<base><xsl:value-of select="$page"/></base>
 								<param name="action">current-path</param>
@@ -283,11 +282,11 @@
 				<xsl:choose>
 					<!-- If this node is not the last in its group -->
 					<xsl:when test="@more = 'true'">
-						<img border="0" src="images/cont.node.mid.gif"/>
+						<img border="0" src="explorer/images/cont.node.mid.gif"/>
 					</xsl:when>
 					<!-- If this node is the last in its group -->
 					<xsl:otherwise>
-						<img border="0" src="images/cont.node.end.gif"/>
+						<img border="0" src="explorer/images/cont.node.end.gif"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
@@ -296,11 +295,11 @@
 				<xsl:choose>
 					<!-- If this node is not the last in its group -->
 					<xsl:when test="@more = 'true'">
-						<img border="0" src="images/item.node.mid.gif"/>
+						<img border="0" src="explorer/images/item.node.mid.gif"/>
 					</xsl:when>
 					<!-- If this node is the last in its group -->
 					<xsl:otherwise>
-						<img border="0" src="images/item.node.end.gif"/>
+						<img border="0" src="explorer/images/item.node.end.gif"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
@@ -314,11 +313,11 @@
 		<xsl:choose>
 			<!-- If the PARENT node has more siblings -->
 			<xsl:when test="@more = 'true'">
-				<img border="0" src="images/tree.bar.gif"/>
+				<img border="0" src="explorer/images/tree.bar.gif"/>
 			</xsl:when>
 			<!-- If the PARENT node is the last in its group -->
 			<xsl:otherwise>
-				<img border="0" src="images/tree.gap.gif"/>
+				<img border="0" src="explorer/images/tree.gap.gif"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>

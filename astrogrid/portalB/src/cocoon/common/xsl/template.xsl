@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/common/xsl/Attic/template.xsl,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/27 02:55:11 $</cvs:author>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/27 03:17:38 $</cvs:author>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     | $Log: template.xsl,v $
+    | Revision 1.5  2003/06/27 03:17:38  dave
+    | Simplified page path in sitemap
+    |
     | Revision 1.4  2003/06/27 02:55:11  dave
     | Added images to tree nodes
     |
@@ -138,7 +141,7 @@
 					<xsl:value-of select="text()"/>
 				</xsl:for-each>
 			</xsl:attribute>
-			<img border="0">
+			<img valign="center" border="0">
 				<xsl:attribute name="src">
 					<xsl:value-of select="image/@src"/>
 				</xsl:attribute>
