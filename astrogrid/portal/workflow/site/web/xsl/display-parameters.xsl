@@ -10,21 +10,21 @@
           |
           +-->
     <xsl:template name="parameter-details">
-        <table border="1" cellpadding="0" cellspacing="0">
+        <table border="2" cellpadding="0" cellspacing="0">
             <tr>
                 <td align="center" colspan="5">
-                    <div class="agWorkflow_table_header">
-                        Parameters for step: <xsl:value-of select="@step-name"/>; tool: <xsl:value-of select="./tool/@tool-name"/>
+                    <div style="color: blue; background-color: lightblue; text-align: center;">
+                        Parameters for step: <b><xsl:value-of select="@step-name"/></b>; tool: <b><xsl:value-of select="./tool/@tool-name"/></b>.
                     </div>
                 </td>
             </tr>
           <xsl:choose>
             <xsl:when test="./tool/@tool-name != 'null'">            
               <tr>
-                <td align="center" colspan="5"> Input:</td>
+                <td colspan="5" style="color: blue; background-color: lightblue; text-align: center;">Input:</td>
               </tr>
               <tr>
-                <td>Name:</td><td>Type:</td><td>Value:</td><td></td><td></td>
+                <td align="center">Name:</td><td align="center">Type:</td><td align="center">Value:</td><td></td><td></td>
               </tr>                               
               <xsl:for-each select="./tool/inputParam">
                 <xsl:call-template name="parameter">
@@ -32,10 +32,10 @@
                 </xsl:call-template>
               </xsl:for-each>
               <tr>
-                <td align="center" colspan="5"> Output:</td>
+                <td colspan="5" style="color: blue; background-color: lightblue; text-align: center;">Output:</td>
               </tr>
               <tr>
-                <td>Name:</td><td>Type:</td><td>Value:</td><td></td><td></td>
+                <td align="center">Name:</td><td align="center">Type:</td><td align="center">Value:</td><td></td><td></td>
               </tr>                               
               <xsl:for-each select="./tool/outputParam">
                 <xsl:call-template name="parameter">
@@ -45,7 +45,7 @@
             </xsl:when>
           <xsl:otherwise>
             <tr>
-                <td colspan="5">There is currently no tool associated with this step</td>
+                <td colspan="5" >There is currently no tool associated with this step</td>
             </tr>    
           </xsl:otherwise>
         </xsl:choose>                        
@@ -66,9 +66,11 @@
                     <xsl:choose>
                         <xsl:when test="@param-value = '' ">
 -->
+                            <xsl:variable name="ivorn-id"><xsl:value-of select="../../@key"/><xsl:value-of select="@param-name" />ivorn</xsl:variable>
+                            <xsl:variable name="agsl-id"><xsl:value-of select="../../@key"/><xsl:value-of select="@param-name" />agsl</xsl:variable>
                             <td>
                                 <xsl:element name="input">
-                                  <xsl:attribute name="id"><xsl:value-of select="../../@key"/><xsl:value-of select="count(preceding-sibling::*)"/>myspace-agsl</xsl:attribute>
+                                  <xsl:attribute name="id"><xsl:value-of select="$agsl-id"/></xsl:attribute>
                                   <xsl:attribute name="type">text</xsl:attribute>
                                   <xsl:attribute name="name">param-value</xsl:attribute>
                                   <xsl:attribute name="size">30</xsl:attribute>
@@ -80,13 +82,15 @@
                                   <xsl:attribute name="value"><xsl:value-of select="@param-value" /></xsl:attribute>
                                 </xsl:element>                                
                                 <xsl:element name="input">
-                                  <xsl:attribute name="id"><xsl:value-of select="../../@key"/><xsl:value-of select="@param-value"/>myspace-ivorn</xsl:attribute>
+                                  <xsl:attribute name="id"><xsl:value-of select="$ivorn-id"/></xsl:attribute>
                                   <xsl:attribute name="type">hidden</xsl:attribute>
                                   <xsl:attribute name="name">ivorn-value</xsl:attribute>
                                 </xsl:element>
                             </td>
                             <td><input type="submit" value="submit" /></td>
-                            <td><input name="myspace-name" type="button" value="Browse..." onclick="javascript:void(window.open('/astrogrid-portal/mount/myspace/myspace-micro?ivorn=&agsl=', 'mySpaceMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200'))"/></td>    
+                            <td><input name="myspace-name" type="button" value="Browse...">
+<!--                              <xsl:attribute name="onclick">javascript:void(window.open('/astrogrid-portal/mount/myspace/myspace-micro?ivorn=<xsl:value-of select="$ivorn=id"/>&amp;agsl=<xsl:value-of select="$agsl-id"/>', 'mySpaceMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200'))"></xsl:attribute> -->
+                            </input></td>
 <!--                        </xsl:when>
                         <xsl:otherwise>
                             <td><xsl:value-of select="@param-value" /></td>
