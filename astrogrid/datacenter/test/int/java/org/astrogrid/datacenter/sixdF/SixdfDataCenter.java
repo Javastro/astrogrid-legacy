@@ -23,6 +23,7 @@ import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.ServiceServer;
 import org.astrogrid.datacenter.service.SocketServer;
 import org.astrogrid.log.Log;
+import org.astrogrid.util.ClassPathUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -41,7 +42,7 @@ public class SixdfDataCenter extends SocketServer
       //start logging
       Log.logToConsole();
       Log.logToFile("error.log");
-      Log.starting();
+      Log.starting(" $Id: SixdfDataCenter.java,v 1.5 2003/09/24 19:11:18 mch Exp $ ");
       
       //tell it the metadata file can be found here where the class is
       Log.logInfo("Initialising...");
@@ -72,6 +73,12 @@ public class SixdfDataCenter extends SocketServer
     */
    public void runInternalTests() throws SAXException, ParserConfigurationException, IOException, QueryException, ADQLException
    {
+      String[] invalidPaths = ClassPathUtils.getInvalidPaths();
+      if (invalidPaths != null) {
+         for (int i=0;i<invalidPaths.length;i++) {
+            Log.logWarning(invalidPaths[i]);
+         }
+      }
       
       //run a query direct
       Log.logInfo("Running test query...");
@@ -132,7 +139,7 @@ public class SixdfDataCenter extends SocketServer
          datacenter.runExternalTests();
          Log.logInfo("...Successfully started");
       }
-      catch (Exception e)
+      catch (Throwable e)
       {
          Log.logError("",e);
       }
@@ -141,6 +148,9 @@ public class SixdfDataCenter extends SocketServer
 
 /*
  $Log: SixdfDataCenter.java,v $
+ Revision 1.5  2003/09/24 19:11:18  mch
+ Various fixes for running at ROE, better error checking & reporting
+
  Revision 1.4  2003/09/23 18:10:06  mch
  Fixes and added tests
 
