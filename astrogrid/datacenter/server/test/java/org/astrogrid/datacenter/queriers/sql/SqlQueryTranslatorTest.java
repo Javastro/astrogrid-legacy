@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.17 2004/08/05 09:55:54 mch Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.18 2004/08/18 22:30:04 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,6 +34,10 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
     }
 
     protected void setUp() throws Exception {
+       
+       DummySqlPlugin.initConfig(); //so we have a valid config to build the SQL against
+       SimpleConfig.getSingleton().setProperty(SqlMaker.CONE_SEARCH_TABLE_KEY, "o");
+
        //read in sample sql out checks
        InputStream is = this.getClass().getResourceAsStream("samples-sqlout.properties");
        assertNotNull(is);
@@ -43,7 +47,6 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
     /** Test makes valid SQL from cone earch */
     public void testCone() throws Exception {
        
-       DummySqlPlugin.initConfig(); //so we have a valid config to build the SQL against
        
        
        String sql = translator.fromCone(new ConeQuery(20,20,3));
@@ -99,6 +102,9 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: SqlQueryTranslatorTest.java,v $
+Revision 1.18  2004/08/18 22:30:04  mch
+Improved some tests
+
 Revision 1.17  2004/08/05 09:55:54  mch
 Removed ADQL 073 tests (no longer used)
 

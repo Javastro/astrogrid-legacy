@@ -1,4 +1,4 @@
-/*$Id: AxisDataService05QueryTest.java,v 1.3 2004/08/18 18:44:12 mch Exp $
+/*$Id: AxisDataService05QueryTest.java,v 1.4 2004/08/18 22:30:04 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -68,7 +68,7 @@ public class AxisDataService05QueryTest extends ServerTestCase {
     
     public void testAbort() throws Exception {
        
-       String qid = server.submitAdqlQuery(query1.toAdqlString(), "astrogrid:store:email:mch@roe.ac.uk", "VOTABLE");
+       String qid = server.submitAdqlQuery(query1.toAdqlString(), "mailto:mch@roe.ac.uk", "VOTABLE");
        assertNotNull(qid);
        server.abortQuery(qid);
 
@@ -101,6 +101,9 @@ public class AxisDataService05QueryTest extends ServerTestCase {
 
 /*
 $Log: AxisDataService05QueryTest.java,v $
+Revision 1.4  2004/08/18 22:30:04  mch
+Improved some tests
+
 Revision 1.3  2004/08/18 18:44:12  mch
 Created metadata plugin service and added helper methods
 
