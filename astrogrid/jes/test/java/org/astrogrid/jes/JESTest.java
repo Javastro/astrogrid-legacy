@@ -1,4 +1,4 @@
-/* $Id: JESTest.java,v 1.4 2003/11/14 17:24:29 jdt Exp $
+/* $Id: JESTest.java,v 1.5 2004/01/20 17:58:28 jdt Exp $
  * Created on 27-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,14 +14,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.AstroGridException;
+import org.astrogrid.Configurator;
 
 /**
  * Test that JES loads up the properties correctly
  * @author jdt
- * @TODO Would like to test failure of JES when property file doesn't exist,
- * but don't know how to do this without lots of messing about with classloaders
- * since JES is a singleton, and once loaded with the properties files, is fine.
- * Perhaps investigate adding a package visible method to JES to reset it.
  *
  */
 public class JESTest extends TestCase {
@@ -51,6 +48,10 @@ public class JESTest extends TestCase {
     super.setUp();
   }
 
+  /** 
+   * clear up after a test
+   * @see junit.framework.TestCase#tearDown()
+   */
   protected final void tearDown() throws Exception {
     super.tearDown();
   }
@@ -119,7 +120,10 @@ public class JESTest extends TestCase {
       "This property should be present in the config file",
       response);
   }
-  static Log log = LogFactory.getLog(JESTest.class);
+  /**
+   * Log
+   */
+  private static Log log = LogFactory.getLog(JESTest.class);
   /**
    * The configurator has this bizarre API, where if the property you request
    * begins with  "TEMPLATE.", then instead of returning the property value,
@@ -161,10 +165,59 @@ public class JESTest extends TestCase {
       return; //An exception would be enough to pass this test
     }
   }
+  
+  /**
+   *  Can we set a property in the configuration?
+   */
+  public final void testSetAProperty() {
+    final String expect = "summit else";
+    final String key = Configurator.GENERAL_VERSION_NUMBER;
+    final String category = Configurator.GENERAL_CATEGORY;
+
+    final String oldValue =
+      JES.getProperty(
+        key,
+        category);
+
+    JES.setProperty(
+      key,
+      category,
+      expect);
+
+    assertNotEqual(
+      "Property hasn't been changed",
+      oldValue,
+      JES.getProperty(
+        key,
+        category));
+
+    assertEquals(
+      "Property didn't match",
+      expect,
+      JES.getProperty(
+        key,
+        category));
+  }
+  
+  /**
+   * A method I'd like to have in TestCase
+   * @param msg error msg 
+   * @param string1 to compare with...
+   * @param string2 ...this
+   */
+  public static void assertNotEqual(
+    final String msg,
+    final String string1,
+    final String string2) {
+    assertFalse(msg, string1.equals(string2));
+  }
 }
 
 /*
 *$Log: JESTest.java,v $
+*Revision 1.5  2004/01/20 17:58:28  jdt
+*new test for new method
+*
 *Revision 1.4  2003/11/14 17:24:29  jdt
 *A few new tests on TEMPLATE properties, and removed stuff trying to test
 *what happens when there's no config file.  Too difficult for too little gain.
