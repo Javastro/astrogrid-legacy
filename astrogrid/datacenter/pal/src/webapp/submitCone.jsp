@@ -10,9 +10,6 @@
        org.astrogrid.datacenter.service.HtmlDataServer"
    isThreadSafe="false"
    session="false" %>
-<html>
-<head><title>Submitting Query</title></head>
-<body>
 <%@ page language="java" %>
 <%!
     HtmlDataServer server = new HtmlDataServer();
@@ -32,12 +29,17 @@
       double dec = Double.parseDouble(param_dec);
       double sr = Double.parseDouble(param_sr);
 
-      TargetIndicator target =server.makeTarget(resultsTarget, out);
+      TargetIndicator target =server.makeTarget(resultsTarget);
 
-      if (resultsTarget == null) {
+      if (target == null) {
          server.askQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), out, resultsFormat);
       }
       else {
+%>
+<html>
+<head><title>Submitting Query</title></head>
+<body>
+<%
          String id = server.submitQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), target, resultsFormat);
       
          URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
@@ -45,6 +47,10 @@
          out.write("Cone Query has been submitted, and assigned ID "+id+".  <a href='"+statusUrl+"?ID="+id+"'>Query Status Page</a>\n");
          //redirect to status
          out.write("<META HTTP-EQUIV='Refresh' CONTENT='0;URL="+statusUrl+"?ID="+id+"'>");
+%>
+</body>
+</html>
+<%
       }
    } catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
@@ -53,6 +59,4 @@
       
 
 %>
-</body>
-</html>
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.42 2004/03/14 04:13:04 mch Exp $
+ * $Id: Querier.java,v 1.43 2004/03/15 11:25:35 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -201,7 +201,8 @@ public class Querier implements Runnable {
             props.put("mail.smtp.host", server);
             Session session = Session.getDefaultInstance(props, null);
    
-            Transport transport = session.getTransport(server);
+            Provider[] p = session.getProviders();
+            Transport transport = session.getTransport(session.getProvider("smtp"));
             transport.connect(server, user, password);
          }
          catch (MessagingException e) {
@@ -386,6 +387,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.43  2004/03/15 11:25:35  mch
+ Fixes to emailer and JSP targetting
+
  Revision 1.42  2004/03/14 04:13:04  mch
  Wrapped output target in TargetIndicator
 

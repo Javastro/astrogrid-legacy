@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.17 2004/03/14 16:55:48 mch Exp $
+ * $Id: SqlResults.java,v 1.18 2004/03/15 11:25:35 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -95,7 +95,7 @@ public class SqlResults extends QueryResults
          int cols = metadata.getColumnCount();
          for (int i=1;i<=cols;i++)
          {
-            printOut.println("<FIELD ID='"+metadata.getColumnName(i)+"' "
+            printOut.println("<FIELD ID='"+metadata.getTableName(i)+"."+metadata.getColumnName(i)+"' "
                                 +" name='"+metadata.getColumnLabel(i)+"' "
                                 + getVotableType(i)
                                 +" ucd='"+getUcdFor(metadata.getColumnName(i))+"' "
@@ -155,7 +155,7 @@ public class SqlResults extends QueryResults
          int cols = metadata.getColumnCount();
          for (int i=1;i<=cols;i++)
          {
-            printOut.print(metadata.getColumnName(i)+", ");
+            printOut.print(metadata.getTableName(i)+"."+metadata.getColumnName(i)+", ");
          }
 
          printOut.println();
@@ -221,6 +221,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.18  2004/03/15 11:25:35  mch
+ Fixes to emailer and JSP targetting
+
  Revision 1.17  2004/03/14 16:55:48  mch
  Added XSLT ADQL->SQL support
 

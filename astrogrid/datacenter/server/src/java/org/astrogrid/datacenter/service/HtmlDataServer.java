@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlDataServer.java,v 1.4 2004/03/14 19:12:54 mch Exp $
+ * $Id: HtmlDataServer.java,v 1.5 2004/03/15 11:25:35 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -82,10 +82,10 @@ public class HtmlDataServer
    /**
     * Convenience routine for JSPs; decides where target should be from
     * resultsTarget string */
-   public static TargetIndicator makeTarget(String resultsTarget, Writer out) throws MalformedURLException {
+   public static TargetIndicator makeTarget(String resultsTarget) throws MalformedURLException {
       TargetIndicator target = null;
       if ( (resultsTarget == null) || (resultsTarget.trim().length()==0)) {
-         target = new TargetIndicator(out);
+         target = null; //so caller knows that it has to use some other target
       }
       else {
          if (resultsTarget.startsWith("mailto:")) {

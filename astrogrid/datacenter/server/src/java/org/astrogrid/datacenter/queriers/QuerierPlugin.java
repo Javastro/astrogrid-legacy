@@ -1,20 +1,17 @@
 /*
- * $Id: QuerierPlugin.java,v 1.4 2004/03/14 16:55:48 mch Exp $
+ * $Id: QuerierPlugin.java,v 1.5 2004/03/15 11:25:35 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
 
+import javax.mail.*;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Properties;
-import javax.mail.Address;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.apache.commons.logging.Log;
@@ -82,15 +79,17 @@ public abstract class QuerierPlugin  {
 
          emailResults(results, target.getEmail(), resultsStatus);
       }
+      else {
 
-      Writer writer = target.resolveWriter(querier.getUser());
+         Writer writer = target.resolveWriter(querier.getUser());
       
-      if (writer == null) {
-         throw new IOException("Could not resolve writer from "+target);
-      }
+         if (writer == null) {
+            throw new IOException("Could not resolve writer from "+target);
+         }
 
-      results.write(writer, resultsStatus, querier.getRequestedFormat());
-      writer.close();
+         results.write(writer, resultsStatus, querier.getRequestedFormat());
+         writer.close();
+      }
         
       log.info(querier+" results sent");
    }
@@ -113,7 +112,7 @@ public abstract class QuerierPlugin  {
    
          //create message
          Message message = new MimeMessage(session);
-         message.setFrom(new InternetAddress("Datacenter"));
+         message.setFrom(new InternetAddress("pal@roe.ac.uk"));
          message.setRecipient(Message.RecipientType.TO, new InternetAddress(targetAddress));
          message.setSubject("Results of Query "+querier.getId());
          //message.setSentDate(new Date());
@@ -124,7 +123,7 @@ public abstract class QuerierPlugin  {
          message.setText(sw.toString());
 
          // Send
-         Transport transport = session.getTransport(emailServer);
+         Transport transport = session.getTransport(session.getProvider("smtp"));
          transport.connect(emailServer, emailUser, emailPassword);
          transport.sendMessage(message, new Address[] { new InternetAddress(targetAddress) });
          
@@ -140,6 +139,9 @@ public abstract class QuerierPlugin  {
 }
 /*
  $Log: QuerierPlugin.java,v $
+ Revision 1.5  2004/03/15 11:25:35  mch
+ Fixes to emailer and JSP targetting
+
  Revision 1.4  2004/03/14 16:55:48  mch
  Added XSLT ADQL->SQL support
 

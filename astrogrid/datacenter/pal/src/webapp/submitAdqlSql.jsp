@@ -22,9 +22,9 @@
    String resultsTarget = request.getParameter("Target");
 
    try {
-      TargetIndicator target =server.makeTarget(resultsTarget, out);
+      TargetIndicator target =server.makeTarget(resultsTarget);
 
-      if (resultsTarget == null) {
+      if (target == null) {
          server.askQuery(Account.ANONYMOUS, new AdqlQuery(adqlSql), out, resultsFormat);
       }
       else {
