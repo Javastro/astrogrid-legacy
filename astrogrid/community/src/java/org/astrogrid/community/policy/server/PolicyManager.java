@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManager.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/09 14:51:47 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:author>$Author: KevinBenson $</cvs:author>
+ * <cvs:date>$Date: 2003/09/09 19:13:32 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManager.java,v $
+ *   Revision 1.8  2003/09/09 19:13:32  KevinBenson
+ *   New resource managerr stuff
+ *
  *   Revision 1.7  2003/09/09 14:51:47  dave
  *   Added delGroupMember - only local accounts and groups to start with.
  *
@@ -45,7 +48,7 @@ import org.astrogrid.community.policy.data.ServiceData ;
  *
  */
 public interface PolicyManager
-	extends java.rmi.Remote, AccountManager, GroupManager, CommunityManager
+	extends java.rmi.Remote, AccountManager, GroupManager, CommunityManager, ResourceManager
 	{
 
 	/**

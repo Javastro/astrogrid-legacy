@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/09 14:51:47 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:author>$Author: KevinBenson $</cvs:author>
+ * <cvs:date>$Date: 2003/09/09 19:13:32 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.10  2003/09/09 19:13:32  KevinBenson
+ *   New resource managerr stuff
+ *
  *   Revision 1.9  2003/09/09 14:51:47  dave
  *   Added delGroupMember - only local accounts and groups to start with.
  *
@@ -60,6 +63,7 @@ import org.exolab.castor.jdo.ClassNotPersistenceCapableException ;
 import org.astrogrid.community.policy.data.GroupData ;
 import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.AccountData ;
+import org.astrogrid.community.policy.data.ResourceData;
 import org.astrogrid.community.policy.data.CommunityData ;
 import org.astrogrid.community.policy.data.CommunityIdent ;
 import org.astrogrid.community.policy.data.CommunityConfig ;
@@ -106,6 +110,12 @@ public class PolicyManagerImpl
 	 *
 	 */
 	private CommunityManagerImpl communityManager ;
+   
+   /**
+    * Our ResourceManager
+    *
+    */
+   private ResourceManagerImpl resourceManager;
 
 	/**
 	 * Initialise our service.
@@ -131,6 +141,10 @@ public class PolicyManagerImpl
 		// Initialise our CommunityManager.
 		communityManager = new CommunityManagerImpl() ;
 		communityManager.init(databaseManager) ;
+      
+      resourceManager = new ResourceManagerImpl();
+      resourceManager.init(databaseManager);
+      
 		}
 
 	/**
@@ -198,8 +212,55 @@ public class PolicyManagerImpl
 	public Object[] getAccountList()
 		throws RemoteException
 		{
-		return accountManager.getAccountList() ;
-		}
+		return accountManager.getAccountList() ;     
+      }
+      
+      /**
+       * Create a new Resource.
+       *
+       */
+      public ResourceData addResource(String name)
+         throws RemoteException {
+            return resourceManager.addResource(name);
+         }
+
+      /**
+       * Request an Resource details.
+       *
+       */
+      public ResourceData getResource(String ident)
+         throws RemoteException {
+            return resourceManager.getResource(ident);
+         }
+
+      /**
+       * Update an Resource details.
+       *
+       */
+      public ResourceData setResource(ResourceData resource)
+         throws RemoteException {
+            return resourceManager.setResource(resource);
+         }
+
+      /**
+       * Delete an Resource.
+       *
+       */
+      public boolean delResource(String ident)
+         throws RemoteException {
+            return resourceManager.delResource(ident);
+            
+         }
+
+      /**
+       * Request a list of Resources.
+       *
+       */
+      public Object[] getResourceList()
+         throws RemoteException {
+            return resourceManager.getResourceList();
+         }
+      
 
 	/**
 	 * Create a new Group.
