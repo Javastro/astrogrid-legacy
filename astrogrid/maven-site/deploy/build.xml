@@ -1,4 +1,4 @@
-<!-- $Id: build.xml,v 1.4 2003/12/29 00:34:05 jdt Exp $ -->
+<!-- $Id: build.xml,v 1.5 2003/12/29 01:27:25 jdt Exp $ -->
 <!--
 	Example Deploy Script for Astrogrid War files
 	This script uses the Tomcat Manager to deploy war files built nightly by Maven
@@ -17,12 +17,12 @@
 
   <property name="PALwarURL"     value="${mavenURL}/astrogrid-datacenter/wars/pal-SNAPSHOT.war"/>
   <property name="JESwarURL"     value="${mavenURL}/astrogrid-jes/wars/astrogrid-jes-SNAPSHOT.war"/>
-  <property name="MySpacewarURL"     value="${mavenURL}/astrogrid-myspace/wars/astrogrid-mySpace-SNAPSHOT.war"/>
+  <property name="MySpacewarURL"     value="${mavenURL}/astrogrid-mySpace/wars/astrogrid-mySpace-SNAPSHOT.war"/>
 
   <!-- Configure properties to access the Manager applications -->
   
   <!--Deployment machines see http://wiki.astrogrid.org/bin/view/Astrogrid/Itn04IREnvironment -->
-  <property name="url1"      value="vm05.astrogrid.org:8080/manager"/>
+  <property name="url1"      value="http://vm05.astrogrid.org:8080/manager"/>
   <property name="username1" value="tomcat"/>
   <property name="password1" value="secret"/><!--fill this in (can't be stored in CVS for security reasons)-->
   <property name="url2"      value="http://astrogrid2.jb.man.ac.uk:8080/manager"/>
