@@ -1,5 +1,5 @@
 /*
-   $Id: DomHelper.java,v 1.12 2004/08/19 19:45:10 mch Exp $
+   $Id: DomHelper.java,v 1.13 2004/08/20 13:25:29 mch Exp $
 
    (c) Copyright...
 */
@@ -34,25 +34,25 @@ public class DomHelper
 {
 
     /** Convenience routine for returning the value of an element of the given
-     * name that is a child of the given parent Element.  Allows for values that are
-     * child nodes (which seems to happen when the value is on a separate line from
-     * the opening tag) and returns null if no element is found. Throws exception
-     * if there is more than one node
+    * name that is a *direct* child of the given parent Element.
      * - Just noticed this is not quite a duplicate of getNodeTextValue - I'm not
      * sure they're quite right.
      */
-    public static String getValue(Element parent, String element) {
-       NodeList nodes = parent.getElementsByTagName(element);
-       if ((nodes==null) || (nodes.getLength()==0)) {
+    public static String getValue(Element parent, String child) {
+      
+      NodeList nodes = parent.getChildNodes();
+      
+      if ((nodes==null) || (nodes.getLength()==0)) {
           return "";
-       }
-       if (nodes.getLength()>1) {
-          throw new IllegalArgumentException("More than one "+element+" in element "+parent.getNodeName());
-       }
-       if (nodes.item(0) instanceof Element) {
-          return getValue((Element) nodes.item(0));
-       }
-       throw new IllegalArgumentException(element+" is not an element node of "+parent.getNodeName());
+      }
+      
+      for (int i = 0; i < nodes.getLength(); i++) {
+         if ((nodes.item(i) instanceof Element) && (nodes.item(i).getLocalName().equals(child))) {
+            return getValue( (Element) nodes.item(i));
+         }
+      }
+
+      return "";
     }
     
     /** Convenience routine for returning the value of an element.  Allows for values that are
@@ -65,7 +65,7 @@ public class DomHelper
        if (element.getNodeValue() != null) {
           return element.getNodeValue();
        }
-       if (element.getChildNodes().getLength() >0) {
+       if (element.hasChildNodes()) {
           return element.getChildNodes().item(0).getNodeValue();
        }
        return "";
