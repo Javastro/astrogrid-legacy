@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryDelegateFactory.java,v 1.2 2004/06/16 12:06:44 KevinBenson Exp $
+ * $Id: RegistryDelegateFactory.java,v 1.3 2004/08/05 12:04:30 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -28,9 +28,9 @@ public class RegistryDelegateFactory {
 
    public static Config conf = null;
    
-   private static final String QUERY_URL_PROPERTY = "org.astrogrid.registry.query.endpoint";
-   private static final String ADMIN_URL_PROPERTY = "org.astrogrid.registry.admin.endpoint";
-   private static final String HARVEST_URL_PROPERTY = "org.astrogrid.registry.harvest.endpoint";   
+   public static final String QUERY_URL_PROPERTY = "org.astrogrid.registry.query.endpoint";
+   public static final String ADMIN_URL_PROPERTY = "org.astrogrid.registry.admin.endpoint";
+   public static final String HARVEST_URL_PROPERTY = "org.astrogrid.registry.harvest.endpoint";   
    
    static {
       if(conf == null) {
@@ -54,7 +54,7 @@ public class RegistryDelegateFactory {
    public static synchronized RegistryService createQuery(URL endPoint) {
       if(endPoint != null)
          System.out.println("the ENDPOINT AT DELEGATE = " + endPoint.toString());
-      return new org.astrogrid.registry.client.query.RegistryService(endPoint);
+      return new org.astrogrid.registry.client.query.QueryRegistry(endPoint);
    }
    
    /**
