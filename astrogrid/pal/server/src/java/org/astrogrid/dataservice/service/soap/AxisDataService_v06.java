@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v06.java,v 1.2 2005/03/21 18:45:55 mch Exp $
+ * $Id: AxisDataService_v06.java,v 1.3 2005/03/22 12:57:37 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -80,7 +80,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
     * Ask adql query (blocking request) sending results to given target, returning
     * the target uri
     */
-   public String askAdql(Element adql, String requestedFormat, String target) throws AxisFault {
+   public String askAdqlTo(Element adql, String requestedFormat, String target) throws AxisFault {
       try {
          //horrible debuggy thing
          if (MessageContext.getCurrentContext() != null) {
@@ -258,6 +258,9 @@ public class AxisDataService_v06 implements ServiceLifecycle {
 
 /*
 $Log: AxisDataService_v06.java,v $
+Revision 1.3  2005/03/22 12:57:37  mch
+naughty bunch of changes
+
 Revision 1.2  2005/03/21 18:45:55  mch
 Naughty big lump of changes
 

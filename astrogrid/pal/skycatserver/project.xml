@@ -15,6 +15,16 @@
       </license>
    </licenses>
 
+ <resources>
+    <resource>
+      <directory>${basedir}</directory>
+      <includes>
+        <include>src/webapp/WEB-INF/server-config.wsdd</include>
+      </includes>
+    </resource>
+  </resources>
+  
+  
   <dependencies>
     <!-- astrogrid -specific deps -->
     <dependency>
@@ -30,6 +40,15 @@
       <id>astrogrid-config</id>
       <groupId>org.astrogrid</groupId>
       <version>${astrogrid.config.version}</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <id>astrogrid-utils</id>
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.utils.stable}</version>
       <properties>
          <war.bundle>true</war.bundle>
       </properties>
@@ -144,6 +163,15 @@
       </dependency>
 
 
+    <!-- sun's activation jar. we need to include it, as tomcat 5 lacks it -->
+    <dependency>
+      <id>activation</id>
+      <version>1.0.2</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
 
     <!-- HSQLDB for sample & temporary dbs -->
     <dependency>
@@ -213,6 +241,54 @@
       </properties>
     </dependency>
 
+    <dependency>
+      <id>astrogrid-slinger-api</id>
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.slinger.version}</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+   <!-- accessing file stores -->
+    <dependency>
+         <artifactId>astrogrid-filemanager-client</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.filemanager.version}</version>
+         <properties>
+            <war.bundle>true</war.bundle>
+         </properties>
+    </dependency>
+   
+    <dependency>
+        <artifactId>astrogrid-filemanager-contract</artifactId>
+        <groupId>org.astrogrid</groupId>
+        <version>${astrogrid.filemanager.version}</version>
+        <properties>
+           <war.bundle>true</war.bundle>
+        </properties>
+    </dependency>
+
+    <!-- accessing myspace services -->
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-store-client</artifactId>
+      <version>${astrogrid.mySpace.version}</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <!-- FTP access -->
+    <dependency>
+      <groupId>commons-net</groupId>
+      <artifactId>commons-net</artifactId>
+      <version>1.1.0</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
     <!-- axis, and the jars it relies upon -->
     <dependency>
       <id>axis</id>
@@ -239,6 +315,14 @@
       </properties>
     </dependency>
 
+    <!-- for logging -->
+    <dependency>
+      <id>log4j</id>
+      <version>1.2.8</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
     <dependency>
       <id>commons-logging</id>
       <version>1.0.3</version>

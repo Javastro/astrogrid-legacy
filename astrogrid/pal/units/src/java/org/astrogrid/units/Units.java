@@ -1,5 +1,5 @@
 /*
- * $Id: Units.java,v 1.3 2005/03/10 22:39:17 mch Exp $
+ * $Id: Units.java,v 1.4 2005/03/22 12:57:37 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,7 +8,8 @@ package org.astrogrid.units;
 
 
 /**
- * Describes the units attached to a value.
+ * Describes the units attached to a value.  At the moment this is pretty much
+ * a placeholder
  * <p>
  * @author M Hill
  */
@@ -18,10 +19,18 @@ public class Units
    String unitEquation = ""; // eg "km s-1"
    
    public Units(String unitEq) {
+      
       if (unitEq == null) {
          this.unitEquation = "";
       }
       else {
+         if (unitEq.equals("degrees")) {
+            unitEq = "deg";
+         }
+         if (unitEq.equals("radians")) {
+            unitEq = "rad";
+         }
+      
          this.unitEquation = unitEq;
       }
    }
@@ -31,11 +40,11 @@ public class Units
    }
    
    public String getDimEq() {
-      return "TODO";
+      return "(TBD)";
    }
    
    public String getDimScale() {
-      return "TODO";
+      return "(TBD)";
    }
 
    /** Will eventually returns true if the given units are equivelent - eg km s-1 and km/s, but

@@ -30,6 +30,12 @@
     </dependency>
 
     <dependency>
+      <id>astrogrid-utils</id>
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.utils.stable}</version>
+    </dependency>
+
+    <dependency>
          <artifactId>log4j</artifactId>
          <groupId>log4j</groupId>
          <version>1.2.4</version>

@@ -1,9 +1,9 @@
 /*
- * $Id: StringCompareOperator.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: StringCompareOperator.java,v 1.2 2005/03/22 12:57:37 mch Exp $
  */
 package org.astrogrid.query.condition;
 
-import org.astrogrid.util.TypeSafeEnumerator;
+import org.astrogrid.utils.TypeSafeEnumerator;
 
 /**
  * Typesafe enumerator for the string compare operator
@@ -32,8 +32,11 @@ public class StringCompareOperator extends TypeSafeEnumerator
 
 /*
  $Log: StringCompareOperator.java,v $
- Revision 1.1  2005/02/17 18:37:34  mch
- *** empty log message ***
+ Revision 1.2  2005/03/22 12:57:37  mch
+ naughty bunch of changes
+
+ Revision 1.1.1.1  2005/02/17 18:37:34  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:23  mch
  Initial checkin

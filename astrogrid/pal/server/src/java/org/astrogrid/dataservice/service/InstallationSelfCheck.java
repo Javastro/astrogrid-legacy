@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.3 2005/03/21 18:45:55 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.4 2005/03/22 12:57:37 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -132,16 +132,14 @@ public class InstallationSelfCheck extends TestCase {
       assertNotNull(is);
    }
 
-   /** Checks that we can reach the SOAP service *
+   /** Checks that we can reach the SOAP service
    public void testSoapv06() throws Throwable {
       
       //this test is called as a servlet, so get url stem from servlet context
       String endpoint = ServletHelper.getUrlStem()+"/services/AxisDataService05";
       
-      ConeSearcher searcher = DatacenterDelegateFactory.makeConeSearcher(testPrincipal,
-                                                                         endpoint,
-                                                                         DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
-      InputStream is = searcher.coneSearch(30, -80, 0.1);
+      
+      InputStream is = new URL(endpoint).openStream();
 
       assertNotNull(is);
    }
@@ -241,6 +239,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.4  2005/03/22 12:57:37  mch
+ naughty bunch of changes
+
  Revision 1.3  2005/03/21 18:45:55  mch
  Naughty big lump of changes
 

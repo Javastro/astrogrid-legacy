@@ -1,6 +1,6 @@
 package org.astrogrid.query.condition;
 
-import org.astrogrid.util.TypeSafeEnumerator;
+import org.astrogrid.utils.TypeSafeEnumerator;
 
 /**
  * Typesafe enumerator for the numeric compare operator

@@ -1,12 +1,12 @@
 /*
- * $Id: QueryState.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: QueryState.java,v 1.2 2005/03/22 12:57:37 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.query;
 
-import org.astrogrid.util.TypeSafeEnumerator;
+import org.astrogrid.utils.TypeSafeEnumerator;
 
 /**
  * Defines the service status' possible results.
@@ -76,8 +76,11 @@ public class QueryState extends TypeSafeEnumerator
 
 /*
 $Log: QueryState.java,v $
-Revision 1.1  2005/02/17 18:37:34  mch
-*** empty log message ***
+Revision 1.2  2005/03/22 12:57:37  mch
+naughty bunch of changes
+
+Revision 1.1.1.1  2005/02/17 18:37:34  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:23  mch
 Initial checkin
