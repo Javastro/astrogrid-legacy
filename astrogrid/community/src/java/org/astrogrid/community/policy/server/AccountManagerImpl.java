@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/AccountManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/24 21:56:06 $</cvs:date>
- * <cvs:version>$Revision: 1.12 $</cvs:version>
+ * <cvs:author>$Author: pah $</cvs:author>
+ * <cvs:date>$Date: 2003/09/30 16:07:30 $</cvs:date>
+ * <cvs:version>$Revision: 1.13 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.13  2003/09/30 16:07:30  pah
+ *   removed the password nulling in getAccount() - it was being written back to the database
+ *
  *   Revision 1.12  2003/09/24 21:56:06  dave
  *   Added setPassword() to AccountManager
  *
@@ -567,8 +570,8 @@ public class AccountManagerImpl
 					// Load the Account from the database.
 					account = (AccountData) database.load(AccountData.class, ident.toString()) ;
 					//
-					// Always set the password to null.
-					account.setPassword(null);
+					// Always set the password to null. FIXME - why was this done?  - pah - I think It might be an error that is causing authentication to fail remember that it is done in a castor transaction, so it will be persisted back to the database....
+//					account.setPassword(null);
 					}
 				//
 				// If we couldn't find the object.
