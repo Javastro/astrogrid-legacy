@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 
 /**
  * <p>
- * The mySpaceInterface class is the external interface to the
+ * The MySpaceManager class is the external interface to the
  * MySpace system.  It handles all interaction between a MySpace
  * manager and external components.  In particular it provides
  * methods to:
@@ -33,8 +33,9 @@ import org.apache.log4j.Logger;
  * The following actions are currently supported:
  * </p>
  * <ul>
- *   <li> lookup DataHolders details,
+ *   <li> upload (import) DataHolder,
  *   <li> lookup DataHolder details,
+ *   <li> lookup DataHolders details,
  *   <li> copy DataHolder,
  *   <li> move DataHolder,
  *   <li> export DataHolder,
@@ -44,7 +45,7 @@ import org.apache.log4j.Logger;
  * <p>
  * Each action is implemented as a separate method and this
  * method is a wrap-around for, and has the same name as, a
- * method in the MySpaceManager class.
+ * method in the MySpaceActions class.
  * </p>
  * <p>
  * The following operations on a MySpace server are currently
@@ -53,7 +54,8 @@ import org.apache.log4j.Logger;
  * <ul>
  *   <li> TBD.
  * </ul>
- * 
+ *
+ * @author C L Qin
  * @author A C Davenhall
  * @version Iteration 2.
  */
