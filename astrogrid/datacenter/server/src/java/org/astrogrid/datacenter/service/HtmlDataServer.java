@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlDataServer.java,v 1.10 2004/03/16 16:59:48 mch Exp $
+ * $Id: HtmlDataServer.java,v 1.11 2004/03/17 00:08:27 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -219,7 +219,8 @@ public class HtmlDataServer
    /**
     * Deals with special characters */
    public static String makeSafeForHtml(String s) {
-      return s.replaceAll(">", "&gt;").replaceAll("<", "&lt;").replaceAll("\n","<br/>");
+      s = s.replaceAll(">", "&gt;").replaceAll("<", "&lt;");
+      return s.replaceAll("\n","<br/>");
    }
    
    /** Convenience routine for exceptionAsHtml(String, Exception, String)   */

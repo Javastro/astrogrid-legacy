@@ -1,10 +1,11 @@
 /*
- * $Id: CeaService.java,v 1.2 2004/03/13 23:38:46 mch Exp $
+ * $Id: CeaDataService.java,v 1.1 2004/03/17 00:08:27 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.datacenter.service;
+package org.astrogrid.datacenter.service.v05;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
@@ -18,6 +19,7 @@ import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.service.AxisDataServer;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import org.astrogrid.store.Agsl;
@@ -31,7 +33,7 @@ import org.astrogrid.workflow.beans.v1.axis._tool;
  *
  */
 
-public class CeaService extends AxisDataServer implements org.astrogrid.applications.service.v1.cea.CommonExecutionConnector  {
+public class CeaDataService extends AxisDataServer implements org.astrogrid.applications.service.v1.cea.CommonExecutionConnector  {
    
    /**
     * Returns registry metadata
@@ -131,7 +133,10 @@ public class CeaService extends AxisDataServer implements org.astrogrid.applicat
 }
 
 /*
-$Log: CeaService.java,v $
+$Log: CeaDataService.java,v $
+Revision 1.1  2004/03/17 00:08:27  mch
+Moved and renamed CeaDataService
+
 Revision 1.2  2004/03/13 23:38:46  mch
 Test fixes and better front-end JSP access
 
