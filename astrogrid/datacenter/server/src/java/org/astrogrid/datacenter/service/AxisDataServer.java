@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.40 2004/03/17 00:27:21 mch Exp $
+ * $Id: AxisDataServer.java,v 1.41 2004/03/18 20:43:07 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,7 +8,9 @@ package org.astrogrid.datacenter.service;
 
 import java.io.*;
 
+import org.apache.axis.AxisEngine;
 import org.apache.axis.AxisFault;
+import org.apache.axis.server.AxisServer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
@@ -158,12 +160,23 @@ public abstract class AxisDataServer  {
       }
    }
     /**/
-   
+   public String getContext() {
+      try {
+         AxisEngine engine = AxisServer.getServer(null);
+         return engine.getApplicationSession().toString();
+      } catch (AxisFault af) {
+         log.error("Getting application context",af);
+         return null;
+      }
+   }
    
 }
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.41  2004/03/18 20:43:07  mch
+Context test cpde
+
 Revision 1.40  2004/03/17 00:27:21  mch
 Added v05 AxisDataServer
 
