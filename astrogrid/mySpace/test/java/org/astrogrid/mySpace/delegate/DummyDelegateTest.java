@@ -1,4 +1,4 @@
-/*$Id: DummyDelegateTest.java,v 1.3 2004/01/23 15:22:27 jdt Exp $
+/*$Id: DummyDelegateTest.java,v 1.4 2004/03/01 16:51:10 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,6 +52,8 @@ public class DummyDelegateTest extends TestCase {
       log.debug("URL1: "+url1);
       assertNotNull(url1.openStream());
 
+      /** These are in fact two different delegates in this case - I think to avoid
+       * overlap problems in other tests.
       //in both
       URL url2 = new URL(myspace2.getDataHoldingUrl(USER, COMMUNITY, CERTIFIED, "testSameness"));
       assertNotNull(url2);
@@ -59,7 +61,7 @@ public class DummyDelegateTest extends TestCase {
       assertNotNull(url2.openStream());
 
       assertEquals(url1, url2);
-
+       */
 
    }
 
@@ -142,6 +144,9 @@ public class DummyDelegateTest extends TestCase {
 
 /*
 $Log: DummyDelegateTest.java,v $
+Revision 1.4  2004/03/01 16:51:10  mch
+Removed test for equality between local filespaces
+
 Revision 1.3  2004/01/23 15:22:27  jdt
 added logging
 
