@@ -42,7 +42,7 @@
 </table>
 <h1>A Proposal for a Common Execution Architecture
 Version 0.1</h1>
-<h2>IVOA WG Internal Draft 2004-05-19 </h2>
+<h2>IVOA WG Internal Draft 2004-09-27 </h2>
 <dl>
   <dt>Working Group:</dt>
   <dd><a href="http://www.ivoa.net/twiki/bin/view/IVOA/Ivoa">http://www.ivoa.net/twiki/bin/view/IVOA/Ivoa<i>WG_name</i></a></dd>
@@ -218,7 +218,7 @@ uniform manner</li>
   <li>Monitoring Service - This is a service that the Common Execution
 Controller can report status to - it can of course be </li>
   <li>Storage Service - this is the mechanism by which the application
-can return its results. It can encompass a wide variety of mechanisms
+can return its results in the indirect parameter mode (see <a href="#indirectparameter">indirect parameters</a>). It can encompass a wide variety of mechanisms
 e.g.
     <ul>
       <li>SOAP messages</li>
@@ -230,6 +230,7 @@ e.g.
       <li>etc.</li>
     </ul>
   </li>
+  <li>Results Service</li>
 </ul>
 <br />
 <h3>2.2 Interactions</h3>
@@ -242,9 +243,9 @@ e.g.
 the CEA system interact when an application is executed.&nbsp; The
 steps are</p>
 <ol>
-  <li>The invoking process calls the execute method of the CommonExecutionConnector
+  <li>The invoking process calls the init method of the CommonExecutionConnector
     interface, which is implemented by the component known as the CommonExecutionController.
-    This will cause asynchronous execution of the application and will return
+    This will set up the execution environment for the  the application and will return
     immediately
     with
     an executionID
@@ -258,11 +259,17 @@ steps are</p>
       <li>A Tool object - This is described in more <a href="#Tool">detail below</a>.</li>
       <li>JobIdentifier - this is the identifier by which the <em>invoking process
         uses to keep track </em>of this particular execution instance.</li>
-      <li>Monitor endpoint URL - this is the endpoint of the service that implements
-        the Job Monitor interface that the CommonExecutionController can call
-        to inform the monitoring process of the status of the execution instance.</li>
+      <li>Monitor endpoint URL -</li>
     </ul>
   </li>
+  <li>the invoking process then has the opportunity to register two classes of listener 
+	<ol>
+		<li>Status Monitor -  this is the endpoint of the service that implements
+        the JobMonitor interface that the ExecutionController can call
+        to inform the monitoring process of the status of the execution instance.</li>
+		<li>Results Listener - this is the endpoint of a service that implements the ResultsListener port so that the ExecutionController can report the results of the application execution once they are ready</li>
+	</ol>
+	</li>
   <li>The CommonExecutionController will then start the application.</li>
   <li>The application can then optionally return status information to the CommonExecutionController
     which will then pass this on to the Monitor Service.</li>
@@ -272,9 +279,9 @@ steps are</p>
 </ol>
 <p>Some point of note;</p>
 <ul>
-  <li>The monitoring service could equally be the same as the invoking
+  <li>The monitoring/resultListening services could equally be the same as the invoking
 service - they are shown as conceptually separate, as the endpoint of
-this service is passed in as an argument to the call</li>
+this service is passed in as an argument to the call. Indeed if required there could be many status and results listeners for a single application execution.</li>
   <li>The only guaranteed status message that the monitoring service
 will receive is the one informing it that the application has finished
 (or failed). The application might be capable of sending intermediate
@@ -282,26 +289,39 @@ messages whilst it is sill executing, but this is not required. </li>
   <li>The results of the application running are not returned directly
 to the invoking process. The final destination for the results is
 implicit in the specification of the output parameters, and it is the
-responsibility of the CommonExecutionController to ensure that they get
-there.</li>
+responsibility of the ExecutionController to ensure that they get
+to the desired storage service if the output parameter is defined as indirect.</li>
+<li>The results will also always be passed to the resultsListener if registered. In the case of an indirect parameter, then only the URI that specifies the location will returned, otherwise the full value will be returned. </li>
 </ul>
+
 <h3>2.3 Interfaces</h3>
 <h5>CommonExecutionConnector</h5>
-<p>This is the main interface that is used to communicate with the
-application. The main methods (ports) are (please note that there are some
-extra methods defined in the WSDL that are defined for experimental
-purposes in the interaction with the registry - This interaction will be finalised
-  in the )</p>
-<ol>
-  <li>execute</li>
-  <li>abort (This can be used to abort the execution of an application)</li>
-</ol>
+<p>This is the main port that is used to communicate with the
+application. The main operations in this port are;</p>
+<ul>
+  <li>init - this will initialize the application environment - returns and executionId by which </li>
+  <li>registerResultsListener - any number of services can register themselves as wanting to receive the results from the run when they are available as long as they implement the <a href="#ResultsListenerPort">ResultsListener</a> port below</li>
+  <li>registerProgressListener - any number of services can register themselves as wanting to receive status messages during the run as long as they implement the <a href="#JobMonitorPort">JobMonitor</a> port below</li>
+  <li>execute - will actually start the asynchonous execution of the application specified in the init call.</li>
+  <li>queryExecutionStatus - this call can be used to actively obtain the execution status of a running application, rather than passively waiting for it as a JobMonitor</li>
+  <li>abort - will attempt to abort the execution of an application</li>
+  <li>getExecutionSummary - request summary information about the application execution</li>
+  <li>getResults - actively request the results of the application execution, rather than passively waiting for them as a ResultsListener.</li>
+  <li>returnRegistryEntry - this returns the registry entry for the particular CommonExecutionConnector instance - this will probably be removed from this interface to be replaced by the equivalent operation in the standard VO service definitions.</li>
+</ul>
 <p>The WSDL definition of this interface is stored in cvs at <a
  href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/CommonExecutionConnnector.wsdl?rev=HEAD">http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/CommonExecutionConnnector.wsdl?rev=HEAD</a></p>
 
-<h5>JobMonitorService</h5>
+<h5><a name="JobMonitorPort"></a>JobMonitor</h5>
 <p>The WSDL definition of this interface is stored in cvs at <a
  href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/JobMonitor.wsdl?rev=HEAD">http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/JobMonitor.wsdl?rev=HEAD</a></p>
+ <p>The only operation is the <code>JobmMonitor</code> port is the <code>monitorJob</code> operation, which expects to receive a message with the <a href="http://www.astrogrid.org/maven/docs/snapshot/astrogrid-workflow-objects/schema/CEATypes.html#type_job-identifier-type">job-identifier-type</a> (as specified in the original init operation of the CommonExectutionConnector port and a <a href="http://www.astrogrid.org/maven/docs/snapshot/astrogrid-workflow-objects/schema/CEATypes.html#type_message-type">status message</a></p>
+ 
+<h5><a name="ResultsListenerPort"></a>ResultsListener</h5>
+<p>The WSDL definition of this interface is stored in cvs at <a
+ href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/CeaResultsListener.wsdl?rev=HEAD">http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/CeaResultsListener.wsdl?rev=HEAD</a></p>
+ <p>The only operation is the <code>putResults</code> on the <code>ResultsListener</code> port. This accepts a message that contains a <a href="http://www.astrogrid.org/maven/docs/snapshot/astrogrid-workflow-objects/schema/CEATypes.html#type_job-identifier-type">job-identifier-type</a> and a <a href="http://www.astrogrid.org/maven/docs/snapshot/astrogrid-workflow-objects/schema/CEATypes.html#type_result-list-type">result-list-type</a>, which is just a list of <a href="http://www.astrogrid.org/maven/docs/snapshot/astrogrid-workflow-objects/schema/AGParameterDefinition.html#type_parameterValue">parameterValue</a>s.
+ 
 <h3><a name="objects" id="objects"></a>2.4 Objects</h3>
 <p>The objects that participate in CEA can be split into two groups</p>
 <ol>
@@ -358,19 +378,11 @@ to encompass any data models that the VO produces.</p>
 <p>The <a
  href="http://www.astrogrid.org/maven/docs/snapshot/astrogrid-workflow-objects/schema/AGParameterDefinition.html#type_parameterValue">parameterValue</a>
 model is simple but powerful representation of the parameters that are passed
-  to an application. The parameterValue element has 3 attributes</p>
+  to an application. The parameterValue element has 2 attributes</p>
 <ul>
-  <li><b>Name</b></li>
-  <li><b>Type</b> this describes the data type of the parameter. It can
-range from simple atomic types such and integer and string to specific
-astronomical types such as right ascension and declination all the way
-to complex structures such as VOTables and FITS files.</li>
-  <li><b>Transport</b> this describes the transport method to obtain or
-return a parameter. For an input parameter the default is for the
-parameter value to be contained within the calling SOAP message,
-however for an output parameter there is no such default and this
-attribute must be given a value. The different sorts of transport
-include
+  <li><b>name</b></li>
+  <li><a name="indirectparameter"/><b>indirect</b> This describes whether the value element of the parameter should be used as is (indirect=2false"), or if the value of the parameter represents a uri from which the actual value should be fetched (indirect="true"). It has not been defined what the minimum set of transport mechanisms a service should understand to be CEA compliant, but the different sorts of transport
+mechanism are expected to include
     <ul>
       <li>SOAP messages</li>
       <li>http get/put</li>
@@ -381,10 +393,6 @@ include
     </ul>
   </li>
 </ul>
-<p>Note that the current implementation has the type and transport
-attributes combined as one - so that there can be a type of
-MySpace_VOTableReference for instance - the full implementation will
-have them separated as described above for more flexibility.</p>
 <h3><a name="schema" id="schema"></a>2.5 Schema</h3>
 <p>The schema associated with the CEA fall into two categories</p>
 <ol>
@@ -521,7 +529,7 @@ be stored locally thus minimising network traffic</li>
   that are used by CEA based services in Astrogrid. Additionally it contains
   <a href="http://www.castor.org/">Castor</a> generated object bindings for the schema and the <a href="http://ws.apache.org/axis/">Axis</a> generated web
   services stubs for the service.</li>
-  <li>Job Execution System (maven documentation). This is the engine of the Astrogrid
+  <li>Job Execution System (<a href="http://www.astrogrid.org/maven/docs/SNAPSHOT/jes/index.html">maven documentation</a>). This is the engine of the Astrogrid
     workflow</li>
 </ul>
 <br />
@@ -539,7 +547,6 @@ interface.</li>
 </ul>
 <h3>4.2 Extensions</h3>
 <ul>
-  <li>Add an explicit method of returning results</li>
   <li><a
  href="http://www.ivoa.net/twiki/bin/view/IVOA/AsynchronousActivityProposal">
   AsynchronousActivityProposal</a></li>
@@ -564,8 +571,16 @@ class="inline" >This has been written in document style &quot;wrapped&quot; in o
 http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/JobMonitor.wsdl?rev=HEAD&amp;content-type=text/xml
 </iframe>
 
+<h2><a name="appC" id="appC">Appendix C:WSDL for the Results Listener Service<br />
+</a></h2>
+<iframe
+ src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/CEAResultsListener.wsdl?rev=HEAD&amp;content-type=text/xml"
+ class="inline">the contents of 
+http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/CEAResultsListener.wsdl?rev=HEAD&amp;content-type=text/xml
+</iframe>
 
-<h2><a name="appC" id="appC">Appendix C: Example Registry Entries</a></h2>
+
+<h2><a name="appC" id="appD">Appendix D: Example Registry Entries</a></h2>
 <p><em>Note </em>The <span class="element">AuthorityID</span> in this example is set to an illegal value of
   @REGAUTHORITY@ which is a token that is replaced by the astrogrid installation
   system.</p>
