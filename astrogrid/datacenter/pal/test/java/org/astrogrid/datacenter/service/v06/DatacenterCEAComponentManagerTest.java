@@ -1,4 +1,4 @@
-/*$Id: DatacenterCEAComponentManagerTest.java,v 1.2 2004/11/09 17:42:22 mch Exp $
+/*$Id: DatacenterCEAComponentManagerTest.java,v 1.3 2004/11/09 18:02:57 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,9 +23,9 @@ import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 public class DatacenterCEAComponentManagerTest extends JavaClassCEAComponentManagerTest {
 
    public void setUp() throws Exception {
-      super.setUp();
       SimpleConfig.getSingleton().setProperty(VoDescriptionServer.AUTHID_KEY, "org.astrogrid.test");
       SimpleConfig.getSingleton().setProperty(VoDescriptionServer.RESKEY_KEY, "test_dsa");
+      super.setUp();
    }
    /** Construct a new DatacenterCEAComponentManagerTest
      * @param arg0
@@ -45,6 +45,9 @@ public class DatacenterCEAComponentManagerTest extends JavaClassCEAComponentMana
 
 /*
 $Log: DatacenterCEAComponentManagerTest.java,v $
+Revision 1.3  2004/11/09 18:02:57  mch
+DatacenterCEAComponentManagerTest.java
+
 Revision 1.2  2004/11/09 17:42:22  mch
 Fixes to tests after fixes for demos, incl adding closable to targetIndicators
 
