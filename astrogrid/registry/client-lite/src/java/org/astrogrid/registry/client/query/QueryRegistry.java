@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.Date;
 import java.text.SimpleDateFormat;
-
+import java.net.MalformedURLException;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.common.XSLHelper;
 import org.astrogrid.registry.common.InterfaceType;
@@ -800,7 +800,16 @@ public class QueryRegistry implements RegistryService {
       }
    }
    
-   public Document getResourcesByInterfaceType(InterfaceType interfaceType) throws RegistryException  {
+   public URL[] getEndPointByInterfaceType(InterfaceType interfaceType) throws RegistryException {
+       ServiceData []sd = getResourcesByInterfaceType(interfaceType);
+       URL []serviceURL = new URL[sd.length];
+       for(int i = 0;i < sd.length;i++) {
+           serviceURL[i] = sd[i].getAccessURL();
+       }//for
+       return serviceURL;
+   }
+   
+   public ServiceData[] getResourcesByInterfaceType(InterfaceType interfaceType) throws RegistryException  {
       Document doc = null;
       if (interfaceType == null) {
          throw new RegistryException("No interfaceType defined");
@@ -812,16 +821,55 @@ public class QueryRegistry implements RegistryService {
       String selectQuery =
             "<query><selectionSequence>"
                + "<selection item='searchElements' itemOp='EQ' value='all'/>"
-               + "<selectionOp op='$and$'/>"
-               + "<selection item='vr:Interface/ag:InterfaceType' itemOp='EQ' value='"
+               + "<selectionOp op='$and$'/>"               
+               + "<selection item='vr:RelatedResource/vr:Relationship' itemOp='EQ' value='derived-from'/>"
+               + "<selectionOp op='AND'/>"
+               + "<selection item='vr:RelatedResource/vr:RelatedTo/vr:Identifier/vr:ResourceKey' itemOp='EQ' value='"
                + type
                + "'/>";
          selectQuery += "</selectionSequence></query>";
          doc = submitQuery(selectQuery);          
          logger
              .info("getResourcesByInterfaceType(InterfaceType) - exiting getResourcesByInterfaceType");
-               
-         return doc;
+         
+         return createServiceData(doc);
+   }
+   
+   private ServiceData[] createServiceData(Document doc) {
+       NodeList nl = doc.getElementsByTagNameNS("*","Resource");
+       ServiceData[] sd = new ServiceData[nl.getLength()];
+       NodeList serviceNodes = null;
+       String authority = null;
+       String resKey = null;
+       for(int i = 0;i < nl.getLength(); i++) {
+           sd[i] = new ServiceData();
+           serviceNodes = ((Element)nl.item(i)).getElementsByTagNameNS("*","Title");
+           if(serviceNodes.getLength() > 0)
+               sd[i].setTitle(DomHelper.getValue((Element)serviceNodes.item(0)));
+           serviceNodes = ((Element)nl.item(i)).getElementsByTagNameNS("*","Description");
+           if(serviceNodes.getLength() > 0)
+               sd[i].setDescription(DomHelper.getValue((Element)serviceNodes.item(0)));
+           serviceNodes = ((Element)nl.item(i)).getElementsByTagNameNS("*","AccessURL");
+           if(serviceNodes.getLength() > 0) {
+               try {
+                   sd[i].setAccessURL(new URL(DomHelper.getValue((Element)serviceNodes.item(0))));
+               }catch(MalformedURLException mfe) {
+                   logger.error(mfe);
+               }
+           }
+           serviceNodes = ((Element)nl.item(i)).getElementsByTagNameNS("*","AuthorityID");
+           if(serviceNodes.getLength() > 0) {
+               authority = DomHelper.getValue((Element)serviceNodes.item(0));
+               serviceNodes = ((Element)nl.item(i)).getElementsByTagNameNS("*","ResourceKey");
+               resKey = DomHelper.getValue((Element)serviceNodes.item(0));
+               if(resKey != null)
+                   sd[i].setIvorn(new Ivorn(authority, resKey,null));
+               else
+                   sd[i].setIvorn(new Ivorn(authority, null, null));
+           }//if
+           //lets skip getting all the interface types for now.
+       }//fors
+       return sd;
    }
 
    /**
@@ -873,11 +921,9 @@ public class QueryRegistry implements RegistryService {
       if (returnVal != null
          && returnVal.indexOf("wsdl") > 0
          && "WebService".equals(invocation)) {
-        logger.info("getEndPointByIdentifier(String) - Get URL from WSDL");
-         WSDLBasicInformation wsdlBasic = getBasicWSDLInformation(doc);
-         returnVal = (String)wsdlBasic.getEndPoint().values().iterator().next();
+          logger.info("getEndPointByIdentifier(String) - has ?wsdl stripping off");
+         returnVal = returnVal.substring(0,returnVal.indexOf("?wsdl"));
       }
-
       return returnVal;
    }
 
@@ -890,6 +936,7 @@ public class QueryRegistry implements RegistryService {
     * @see org.astrogrid.store.Ivorn
     * @see org.astrogrid.registry.common.WSDLBasicInformation
     * @return String of a url. 
+    * @deprecated no longer in use.
     */
    public WSDLBasicInformation getBasicWSDLInformation(Ivorn ident)
       throws RegistryException {
@@ -905,6 +952,8 @@ public class QueryRegistry implements RegistryService {
     * @see org.astrogrid.store.Ivorn
     * @see org.astrogrid.registry.common.WSDLBasicInformation
     * @return String of a url. 
+    * @deprecated there is no need for this anymore it has been said no ?wsdl, so if we fine
+    *   one in the accessurl just strip it off don't go to the wsdl.
     */
    public WSDLBasicInformation getBasicWSDLInformation(Document voDoc)
       throws RegistryException {
