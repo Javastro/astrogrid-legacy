@@ -1,59 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-<!--
-    <extend>${basedir}/../../../maven-base/project.xml</extend>
-    -->
-
     <extend>${basedir}/../workflow/project.xml</extend>
 
     <id>astrogrid-cdk-scripting</id>
     <name>Scripting Client Developer Kit (SCDK)</name>
-    <description><![CDATA[
-    <p>
-    This project assembles a Client Developer Kit (CDK) for developers that wish to
-	interact with the Astrogrid Scripting Interface. This combines the delegates for accessing the Astrogrid workflow 
-	services (JES, CEA) and the core Astrogrid services (Myspace / VoSpace, Registry, Community) with some scripting objects and helper
-	libraries.
-	</p><p>
-	The workflow delegates, and the core delegates are also available separately in the smaller Workflow CDK and Core CDK respectively.
-
-    </p>
-	<section name="Documentation">
-	<p>
-	link to jes scripting, etc
-	</p>
-  </section>
-    <section name="Configuration"><p>
-    All astrogrid components use a common configuration system.
-    This allows properties to be set using either JNDI (if available), a configuration file, or System properties.
-    The simplest method is to have a file named <code>astrogrid.properties</code> on the classpath.
-    See the <a href="http://www.astrogrid.org/maven/docs/HEAD/common/apidocs/org/astrogrid/config/package-summary.html">javadoc</a>
-    for further details.
-
-    This CDK requires the following keys to be set:
-    <dl>
-    <dt><code>org.astrogrid.community.ident</code></dt>
-        <dd>The identifier of the local community. For example <code>org.astrogrid.release</code></dd>
-    <dt><code>org.astrogrid.registry.query.endpoint</code></dt>
-        <dd>Endpoint of the registry query service. For example
-        <code>http://katatjuta.star.le.ac.uk:8080/astrogrid-registry-SNAPSHOT/services/RegistryQuery</code></dd>
-    <dt><code>org.astrogrid.registry.admin.endpoint</code></dt>
-        <dd>Endpoint of the registry admin service. For example
-        <code>http://katatjuta.star.le.ac.uk:8080/astrogrid-registry-SNAPSHOT/services/RegistryAdmin</code></dd>
-    <dt><code>jes.job.controller.endpoint</code></dt>
-        <dd>The endpoint of the jes server. For example
-        <code>http://katatjuta.star.le.ac.uk:8080/astrogrid-jes-SNAPSHOT/services/JobControllerService</code>
-        </dd>
-
-    </dl>
-    </p></section>
-
-    <section name="Development"><p>
-    It's possible to deploy a mini-astrogrid (<i>Astrogrid in a Box</i>) to a single machine. This provides
-    a convenient target to test clients against.
-    <a href="http://www.astrogrid.org/maven/docs/HEAD/integrationTests/install.html">Installation Instructions</a>
-    </p></section>
-    ]]></description>
+    <description>Astrogrid Scripting Client Developer Kit</description>
     <shortDescription>Scripting CDK</shortDescription>
     <dependencies>
    <dependency>

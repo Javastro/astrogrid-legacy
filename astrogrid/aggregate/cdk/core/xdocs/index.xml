@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <properties>
+    <author email="Noel.Winstanley@manchester.ac.uk">Noel Winstanley</author>
+
+    <title>Core Client Developer Kit</title>
+  </properties>
+
+  <body>
+	<section name="Core Client Developer Kit">
+   <p>
+    This project assembles a Client Developer Kit (CDK) for developers that wish to
+    interact with the core Astrogrid services (Myspace / VoSpace, Registry, Community).
+    </p><p>
+    It contains the necessary delegate jars, plus their dependencies, and example configuration.
+    </p>
+</section>
+    <section name="Store Clients"><p>
+    The astrogrid store is a distributed networked storage system (link to design docs)
+    <a href="http://www.astrogrid.org/maven/docs/HEAD/mySpace/multiproject/astrogrid-store-client/">Project page</a>
+    There are two ways that a client can interact with a store.
+    </p>
+    <subsection name="Myspace Tree Model"><p>
+    This interface creates an abstraction similar to the <code>java.io.File</code> class - each file and folder
+    in the store is represented as an object in a tree, which the client code can traverse and manipulate.
+    <a href="http://www.astrogrid.org/maven/docs/HEAD/mySpace/multiproject/astrogrid-store-client/apidocs/org/astrogrid/store/tree/package-summary.html"><code>org.astrogrid.store.tree</code> (javadoc)</a>
+    </p>
+    <p>
+    <i>NB this interface is a renamed copy of the classes in
+       <a href="http://www.astrogrid.org/maven/docs/HEAD/mySpace/multiproject/astrogrid-store-client/apidocs/org/astrogrid/store/adapter/aladin/package-summary.html"><code>org.astrogrid.store.adapter.aladin</code></a>
+       which is still available, but has been deprecated. All clients should transfer to <code>org.astrogrid.store.tree</code>.
+    </i></p></subsection>
+    <subsection name="Vospace Client"><p>
+    This is a lower-level interface that allows access to a single store location, but no traversal of the store structure.
+    <a href="http://www.astrogrid.org/maven/docs/HEAD/mySpace/multiproject/astrogrid-store-client/apidocs/org/astrogrid/store/package-summary.html">Javadoc</a>
+    </p></subsection>
+    </section>
+
+    <section name="Registry Client"><p>
+    The registry is an xml database containing documents that conform to the VOResource schema (link to design docs).
+    Two clients are provided - one for performing queries, the other for admin / modification of the registry. Both are
+    accessible from the <a href="http://www.astrogrid.org/maven/docs/HEAD/registry/multiproject/astrogrid-registry-client-lite/apidocs/org/astrogrid/registry/client/RegistryDelegateFactory.html"><code>RegistryDelegateFactory</code></a>.
+       <a href="http://www.astrogrid.org/maven/docs/HEAD/registry/multiproject/astrogrid-registry-client-lite/index.html">Project page</a>,
+        <a href="http://www.astrogrid.org/maven/docs/HEAD/registry/multiproject/astrogrid-registry-client-lite/apidocs/index.html">Javadoc</a>
+    </p></section>
+
+    <section name="Community"><p>
+    The community service manages user accounts, authentication and permissions. (need more info here).
+    <a href="http://www.astrogrid.org/maven/docs/HEAD/community/index.html">Project Page</a>
+    </p></section>
+
+    <section name="Common Classes"><p>
+    Some common classes
+    (such as <a href="http://www.astrogrid.org/maven/docs/HEAD/common/apidocs/org/astrogrid/store/Ivorn.html">Ivorn</a> and
+    <a href="http://www.astrogrid.org/maven/docs/HEAD/common/apidocs/org/astrogrid/community/User.html">User</a>) are defined in a separaete project
+    <a href="http://www.astrogrid.org/maven/docs/HEAD/common/index.html">Project page</a>,
+    <a href="http://www.astrogrid.org/maven/docs/HEAD/common/apidocs/index.html">Javadoc</a>
+    </p></section>
+
+    <section name="Configuration"><p>
+    All astrogrid components use a common configuration system.
+    This allows properties to be set using either JNDI (if available), a configuration file, or System properties.
+    The simplest method is to have a file named <code>astrogrid.properties</code> on the classpath.
+    See the <a href="http://www.astrogrid.org/maven/docs/HEAD/common/apidocs/org/astrogrid/config/package-summary.html">javadoc</a>
+    for further details.
+
+    This CDK requires the following keys to be set:
+    <dl>
+    <dt><code>org.astrogrid.community.ident</code></dt>
+        <dd>The identifier of the local community. For example <code>org.astrogrid.release</code></dd>
+    <dt><code>org.astrogrid.registry.query.endpoint</code></dt>
+        <dd>Endpoint of the registry query service. For example
+        <code>http://katatjuta.star.le.ac.uk:8080/astrogrid-registry-SNAPSHOT/services/RegistryQuery</code></dd>
+    <dt><code>org.astrogrid.registry.admin.endpoint</code></dt>
+        <dd>Endpoint of the registry admin service. For example
+        <code>http://katatjuta.star.le.ac.uk:8080/astrogrid-registry-SNAPSHOT/services/RegistryAdmin</code></dd>
+	<dt><code>org.astrogrid.community.default.vospace</code></dt>
+		<dd>Registry key for default myspace service for this community. E.g. <code>ivo://org.astrogrid.release/myspace</code></dd>
+    </dl>
+    </p></section>
+
+    <section name="Development"><p>
+    It's possible to deploy a mini-astrogrid (<i>Astrogrid in a Box</i>) to a single machine. This provides
+    a convenient target to test clients against.
+    <a href="http://www.astrogrid.org/maven/docs/HEAD/integrationTests/install.html">Installation Instructions</a>
+    </p></section>
+    
+	
+  </body>
+</project>
+
