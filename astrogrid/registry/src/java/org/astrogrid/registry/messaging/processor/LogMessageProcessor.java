@@ -16,92 +16,101 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xmlBlaster.client.qos.PublishReturnQos;
-import org.xmlBlaster.util.XmlBlasterException;
 
 /**
  * @author peter.shillan <mailto:gps@roe.ac.uk />
  */
 public class LogMessageProcessor implements ElementProcessor {
   // Constants.
-  private static String XSL_STYLESHEET = "astrolog-xmlblaster.xsl";
+  private static String XSL_STYLESHEET = "astrogrid-xmlblaster.xsl";
   
   // Logger.
-  private Category logger = Category.getInstance(LogMessageProcessor.class);
+  private Category logger = Category.getInstance(getClass());
   
   // Document builder.
-  // *** ACCESS VIA getNSAwareDocumentBuilder() ***
   private DocumentBuilder builder;
   
   // Stylesheet.
-  // *** ACCESS VIA getXslStyleSheet() ***
   private Document xslStyleSheet;
   
   /**
+   * @see org.astrogrid.registry.messaging.processor.ElementProcessor#init(javax.xml.rpc.server.ServletEndpointContext)
+   */
+  public void init(ServletEndpointContext servletEndpointContext) throws ProcessorException {
+    ServletContext servletContext = servletEndpointContext.getServletContext();
+    
+    // Create XML namespace-aware parser.
+    try {
+      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+      builderFactory.setNamespaceAware(true);
+      builder = builderFactory.newDocumentBuilder();
+    }
+    catch(ParserConfigurationException e) {
+      logger.error("[init] " + e.getMessage(), e);
+      throw new ProcessorException(e.getMessage(), e);
+    }
+
+    // Load message key stylesheet.
+    try {
+      xslStyleSheet = builder.parse(new File(servletContext.getRealPath(XSL_STYLESHEET)));
+    }
+    catch(Exception e) {
+      logger.error("[init] could not load stylesheet", e);
+      throw new ProcessorException("could not load stylesheet", e);
+    }
+  }
+
+  /**
+   * @see org.astrogrid.registry.messaging.processor.ElementProcessor#destroy()
+   */
+  public void destroy() throws ProcessorException {
+    xslStyleSheet = null;
+    builder = null;
+  }
+
+  /**
    * @see org.astrogrid.registry.messaging.ElementProcessor#process(org.w3c.dom.Element, javax.xml.rpc.server.ServletEndpointContext)
    */
-  public Element process(Element element, ServletEndpointContext servletEndpointContext) throws Exception {
-    String key = null;
+  public Element process(Element element, ServletEndpointContext servletEndpointContext) throws ProcessorException {
+    Element result = null;
+    
+    if(logger.isDebugEnabled()) {
+      logger.debug("[process] element: " + XMLUtils.ElementToString(element));
+    }
     
     try {
       ServletContext servletContext = servletEndpointContext.getServletContext();
       
       Document xmlDoc = getXmlDocument(element);
-      Document stylesheetDoc = getXslStyleSheet(servletContext);
       
       if(logger.isDebugEnabled()) {
         logger.debug("[process] xml: " + XMLUtils.ElementToString(element));
-        logger.debug("[process] xsl: " + XMLUtils.DocumentToString(stylesheetDoc));
+        logger.debug("[process] xsl: " + XMLUtils.DocumentToString(xslStyleSheet));
       }
 
-      key = XsltTransformer.transform(xmlDoc, stylesheetDoc);
+      String key = XsltTransformer.transform(xmlDoc, xslStyleSheet);
       logger.debug("[process] key: " + key);
       
-      try {
-        XmlBlasterUtil xmlBlaster = new XmlBlasterUtil();
-        xmlBlaster.connect(null, null);
-       
-        PublishReturnQos pubRetQos = xmlBlaster.publishString(XMLUtils.ElementToString(element), key);
-        
-        xmlBlaster.disconnect(null);
-      }
-      catch(XmlBlasterException e) {
-        throw new ProcessorException("failed to log message: " + e.getMessage(), e);
-      }
+      XmlBlasterUtil xmlBlaster = new XmlBlasterUtil();
+      xmlBlaster.connect(null, null);
+     
+      PublishReturnQos pubRetQos = xmlBlaster.publishString(XMLUtils.ElementToString(element), key);
       
-      // TODO return success or failure
+      xmlBlaster.disconnect(null);
     }
     catch(Exception e) {
       logger.error("[process] exception: " + e.getMessage(), e);
-      throw e;
+      throw new ProcessorException("error processing log message", e);
     }
-    
-    return null;
-  }
-  
-  private Document getXmlDocument(Element element) throws Exception {
-    Document result = getNSAwareDocumentBuilder().newDocument();
-    Node node = result.importNode(element, true);
-    result.appendChild(node);
     
     return result;
   }
   
-  private synchronized Document getXslStyleSheet(ServletContext servletContext) throws Exception {
-    if(xslStyleSheet == null) {
-      xslStyleSheet = getNSAwareDocumentBuilder().parse(
-        new File(servletContext.getRealPath(XSL_STYLESHEET)));
-    }
+  private Document getXmlDocument(Element element) throws Exception {
+    Document result = builder.newDocument();
+    Node node = result.importNode(element, true);
+    result.appendChild(node);
     
-    return xslStyleSheet;
-  }
-
-  private synchronized DocumentBuilder getNSAwareDocumentBuilder() throws ParserConfigurationException {
-    if(builder == null) {
-      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-      builderFactory.setNamespaceAware(true);
-      builder = builderFactory.newDocumentBuilder();
-    }
-    
-    return builder;
+    return result;
   }
 }

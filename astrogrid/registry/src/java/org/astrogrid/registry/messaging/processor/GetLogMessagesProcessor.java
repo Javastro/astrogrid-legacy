@@ -16,34 +16,76 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import org.xmlBlaster.util.MsgUnit;
-import org.xmlBlaster.util.XmlBlasterException;
 
 /**
  * @author peter.shillan <mailto:gps@roe.ac.uk />
  */
 public class GetLogMessagesProcessor implements ElementProcessor {
   // Constants.
-  private static String LOG_MESSAGES_DOC_FILE = "astrolog-messages-base.xml";
-  private static String XPATH_QUERY = "xpath-query";
+  private static String LOG_MESSAGES_DOC_FILE = "astrogrid-log-messages.xml";
+  private static String XPATH_QUERY = "query";
   
   // Logger.
-  private Category logger = Category.getInstance(GetLogMessagesProcessor.class);
+  private Category logger = Category.getInstance(getClass());
   
-  // Document base.
-  // *** ACCESS VIA getDocumentBase() ***
-  private Document documentBase;
+  // Base document for returning log messages.
+  private Document logMessageBase;
+  
+  // Namespace-aware document builder.
+  private DocumentBuilder nsBuilder;
   
   // Document builder.
-  // *** ACCESS VIA getNSAwareDocumentBuilder() ***
   private DocumentBuilder builder;
   
   /**
+   * @see org.astrogrid.registry.messaging.processor.ElementProcessor#init(javax.xml.rpc.server.ServletEndpointContext)
+   */
+  public void init(ServletEndpointContext servletEndpointContext) throws ProcessorException {
+    ServletContext servletContext = servletEndpointContext.getServletContext();
+    
+    // Create XML parsers.
+    try {
+      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+      builder = builderFactory.newDocumentBuilder();
+
+      builderFactory.setNamespaceAware(true);
+      nsBuilder = builderFactory.newDocumentBuilder();
+    }
+    catch(ParserConfigurationException e) {
+      logger.error("[init] " + e.getMessage(), e);
+      throw new ProcessorException(e.getMessage(), e);
+    }
+
+    // Get base log messages document.
+    try {
+      logMessageBase = nsBuilder.parse(new File(servletContext.getRealPath(LOG_MESSAGES_DOC_FILE)));
+    }
+    catch(Exception e) {
+      logger.error("[init] could not parse log messages base", e);
+      throw new ProcessorException("could not parse log messages base", e);
+    }
+  }
+  
+  /**
+   * @see org.astrogrid.registry.messaging.processor.ElementProcessor#destroy()
+   */
+  public void destroy() throws ProcessorException {
+    nsBuilder = null;
+    logMessageBase = null;
+  }
+
+  /**
+   * Run a given XPath query over the message log and return the matching messages.
+   * 
    * @see org.astrogrid.registry.messaging.ElementProcessor#process(org.w3c.dom.Element, javax.xml.rpc.server.ServletEndpointContext)
    */
-  public Element process(Element element, ServletEndpointContext servletEndpointContext) throws Exception {
+  public Element process(Element element, ServletEndpointContext servletEndpointContext) throws ProcessorException {
     Element result = null;
+    
+    if(logger.isDebugEnabled()) {
+      logger.debug("[process] element: " + XMLUtils.ElementToString(element));
+    }
     
     try {
       String xpathQuery = element.getAttribute(XPATH_QUERY);
@@ -58,7 +100,7 @@ public class GetLogMessagesProcessor implements ElementProcessor {
       logger.debug("[process] message units: " + msgUnits);
       
       if(msgUnits != null && msgUnits.length > 0) {
-        Document doc = buildDocumentFromMsgUnits(servletEndpointContext.getServletContext(), msgUnits);
+        Document doc = buildDocumentFromMsgUnits(msgUnits);
         result = doc.getDocumentElement();
         
         if(logger.isDebugEnabled()) {
@@ -68,28 +110,26 @@ public class GetLogMessagesProcessor implements ElementProcessor {
       
       xmlBlaster.disconnect(null);
     }
-    catch(XmlBlasterException e) {
+    catch(Exception e) {
+      logger.error("[process] failed to log message: " + e.getMessage(), e);
       throw new ProcessorException("failed to log message: " + e.getMessage(), e);
     }
       
     return result;
   }
   
-  private Document buildDocumentFromMsgUnits(ServletContext servletContext, MsgUnit[] msgUnits) throws Exception {
-    Document result = getDocumentBase(servletContext);
+  private Document buildDocumentFromMsgUnits(MsgUnit[] msgUnits) throws Exception {
+    Document result = (Document) logMessageBase.cloneNode(true);
     Element resultElement = result.getDocumentElement();
 
-    Node msgNode = null;    
-    Element msgElement = null;
     String msgContent = null;
-    MsgUnit msgUnit = null;
+    Element msgElement = null;
+    Node msgNode = null;    
     for(int msgUnitIndex = 0; msgUnitIndex < msgUnits.length; msgUnitIndex++) {
-      msgUnit = msgUnits[msgUnitIndex];
-      
-      msgContent = msgUnit.getContentStr();
-
       try {
+        msgContent = msgUnits[msgUnitIndex].getContentStr();
         msgElement = getXmlElement(msgContent);
+
         msgNode = result.importNode(msgElement, true);
         resultElement.appendChild(msgNode);
       }
@@ -114,13 +154,13 @@ public class GetLogMessagesProcessor implements ElementProcessor {
 
     try {
       InputSource is = new InputSource(reader);
-      Document doc = getNSAwareDocumentBuilder().parse(is);
+      Document doc = builder.parse(is);
       if(doc != null) {
         result = doc.getDocumentElement();
       }
     }
-    catch(SAXException e) {
-      logger.error("couldn't parse xml message: " + e.getMessage(), e);
+    catch(Exception e) {
+      // Catch allows finally to clean up.
       throw e;
     }
     finally {    
@@ -128,24 +168,5 @@ public class GetLogMessagesProcessor implements ElementProcessor {
     }
     
     return result;
-  }
-
-  private synchronized Document getDocumentBase(ServletContext servletContext) throws Exception {
-    if(documentBase == null) {
-      documentBase = getNSAwareDocumentBuilder().parse(
-        new File(servletContext.getRealPath(LOG_MESSAGES_DOC_FILE)));
-    }
-    
-    return documentBase;
-  }
-  
-  private synchronized DocumentBuilder getNSAwareDocumentBuilder() throws ParserConfigurationException {
-    if(builder == null) {
-      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-      builderFactory.setNamespaceAware(true);
-      builder = builderFactory.newDocumentBuilder();
-    }
-    
-    return builder;
   }
 }
