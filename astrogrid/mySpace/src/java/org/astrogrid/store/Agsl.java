@@ -1,5 +1,5 @@
 /*
- * $Id: Agsl.java,v 1.8 2004/03/14 03:09:16 mch Exp $
+ * $Id: Agsl.java,v 1.9 2004/03/14 03:31:01 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -11,9 +11,8 @@ package org.astrogrid.store;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import org.astrogrid.community.User;
 
@@ -172,12 +171,23 @@ public class Agsl
    /** Opens an inputstream to the file.  Just like url.openStream().... but
     * need to give User to authorise/etc
     */
-   public InputStream openStream(User user) throws IOException {
+   public InputStream openInputStream(User user) throws IOException {
       if (url != null) {
          return url.openStream();
       }
       else {
-         return msrl.openStream();
+         return msrl.openInputStream();
+      }
+   }
+
+   /** Opens an outputstream to the file.
+    */
+   public OutputStream openOutputStream(User user) throws IOException {
+      if (url != null) {
+         throw new UnsupportedOperationException("Cannot (currently) open outputs to URLs");
+      }
+      else {
+         return msrl.openOutputStream();
       }
    }
    
@@ -212,6 +222,9 @@ public class Agsl
 
 /*
 $Log: Agsl.java,v $
+Revision 1.9  2004/03/14 03:31:01  mch
+Added openOutputStream
+
 Revision 1.8  2004/03/14 03:09:16  mch
 Fixed nulpointer exception for mailto:
 

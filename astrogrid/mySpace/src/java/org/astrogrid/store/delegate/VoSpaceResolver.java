@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolver.java,v 1.1 2004/03/12 13:09:11 mch Exp $
+ * $Id: VoSpaceResolver.java,v 1.2 2004/03/14 03:32:14 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -81,7 +81,7 @@ public class VoSpaceResolver {
     * attempting to access the file.
     */
    public InputStream resolveStream(User user, Ivorn ivorn) throws IOException {
-      return resolveAgsl(ivorn).openStream(user);
+      return resolveAgsl(ivorn).openInputStream(user);
    }
    
 
@@ -90,6 +90,9 @@ public class VoSpaceResolver {
 
 /*
 $Log: VoSpaceResolver.java,v $
+Revision 1.2  2004/03/14 03:32:14  mch
+Added openOutputStream
+
 Revision 1.1  2004/03/12 13:09:11  mch
 Changed name
 

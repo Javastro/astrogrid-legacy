@@ -1,5 +1,5 @@
 /*
- * $Id: Msrl.java,v 1.4 2004/03/10 00:20:22 mch Exp $
+ * $Id: Msrl.java,v 1.5 2004/03/14 03:31:54 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -11,6 +11,7 @@ package org.astrogrid.store;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.astrogrid.community.User;
@@ -170,8 +171,15 @@ public class Msrl
    
    /** Opens an inputstream to the file.  Just like url.openStream()....
     */
-   public InputStream openStream() throws IOException {
+   public InputStream openInputStream() throws IOException {
       return resolveURL().openStream();
+   }
+   
+   /** Opens an inputstream to the file.  Just like url.openStream()....
+    */
+   public OutputStream openOutputStream() throws IOException {
+      StoreClient myspace = StoreDelegateFactory.createDelegate(User.ANONYMOUS, toAgsl());
+      return myspace.putStream(getPath());
    }
    
    /**
@@ -192,6 +200,9 @@ public class Msrl
 
 /*
 $Log: Msrl.java,v $
+Revision 1.5  2004/03/14 03:31:54  mch
+Added openOutputStream
+
 Revision 1.4  2004/03/10 00:20:22  mch
 Changed @ to ! in MSRL to be compatible with existing individaul@community myspace servers
 
