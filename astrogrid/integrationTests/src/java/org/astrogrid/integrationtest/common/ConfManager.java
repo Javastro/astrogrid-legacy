@@ -1,5 +1,5 @@
 /*
- * $Id: ConfManager.java,v 1.5 2004/03/22 16:31:08 mch Exp $
+ * $Id: ConfManager.java,v 1.6 2004/03/29 12:08:03 jdt Exp $
  * Created on 19-Jan-2004 by John Taylor jdt@roe.ac.uk .
  * Copyright (C) AstroGrid. All rights reserved.
  * This software is published under the terms of the AstroGrid
@@ -13,7 +13,9 @@ import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 /**
- * @author jdt Deal with properties common to all the tests
+ * Deal with properties common to all the tests
+ * @TODO refactor this to use Martin's config.
+ * @author jdt 
  */
 public final class ConfManager {
     /**
@@ -37,6 +39,10 @@ public final class ConfManager {
      */
     private static final String JOBCONTROLLER_ENDPOINT = "jobControlerEndPoint";
     /**
+     * name of key in properties file for the portal we;
+     */
+    private static final String PORTAL_SITE = "portalWebSite";
+    /**
      * Singleton
      */
     private static final ConfManager instance = new ConfManager();
@@ -56,7 +62,7 @@ public final class ConfManager {
         try {
             props = new Properties();
             log.debug("Attempting to load " + ConfManager.WEBSERVICES_PROPS);
-            InputStream inputStream =
+            final InputStream inputStream =
                 this.getClass().getResourceAsStream(
                     ConfManager.WEBSERVICES_PROPS);
             assert inputStream != null : "No file found";
@@ -96,6 +102,15 @@ public final class ConfManager {
         return getProperty(JOBCONTROLLER_ENDPOINT, "job controller end point");
     }
     /**
+     * Gets the portal website in the integration environment.
+     *
+     * @return the web site url
+     * @throws IOException if we couldn't load the props
+     */
+    public String getPortalURL() throws IOException {
+        return getProperty(PORTAL_SITE, "portal website");
+    }
+    /**
      * Gets the names property from the props file
      *
      * @param propertyDescription description of the property (just used for
@@ -131,6 +146,10 @@ public final class ConfManager {
 }
 /*
  * $Log: ConfManager.java,v $
+ * Revision 1.6  2004/03/29 12:08:03  jdt
+ * Added new prop for portal.  Think this class should be deprecated
+ * in favour of Martin's config thing.  Let's face it, it's  pants.
+ *
  * Revision 1.5  2004/03/22 16:31:08  mch
  * Changed merlin to std datacenter
  *
