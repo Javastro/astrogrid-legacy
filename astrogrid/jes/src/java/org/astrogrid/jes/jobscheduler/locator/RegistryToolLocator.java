@@ -1,4 +1,4 @@
-/*$Id: RegistryToolLocator.java,v 1.12 2005/03/02 12:11:31 clq2 Exp $
+/*$Id: RegistryToolLocator.java,v 1.13 2005/03/02 15:02:24 clq2 Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -163,7 +163,7 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
     private String buildQueryString(IdentifierType toolId) {
         String queryString = "Select * from Registry where " +
         "cea:ManagedApplications/cea:ApplicationReference='ivo://" +
-        toolId.getAuthorityID() + "/" + toolId.getResourceKey();
+        toolId.getAuthorityID() + "/" + toolId.getResourceKey() + "'";
         /*
         StringBuffer sb = new StringBuffer(PRE_QUERY);
         sb.append( toolId.getAuthorityID());
@@ -218,8 +218,11 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: RegistryToolLocator.java,v $
-Revision 1.12  2005/03/02 12:11:31  clq2
-for v10
+Revision 1.13  2005/03/02 15:02:24  clq2
+for v10 missing '
+
+Revision 1.11.36.2  2005/03/02 14:32:26  KevinBenson
+*** empty log message ***
 
 Revision 1.11.36.1  2005/03/02 12:03:15  KevinBenson
 changing to do adql queries now
