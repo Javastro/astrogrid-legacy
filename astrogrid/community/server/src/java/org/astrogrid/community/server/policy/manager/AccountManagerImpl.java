@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/AccountManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/04/15 15:04:29 $</cvs:date>
- * <cvs:version>$Revision: 1.14 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/16 09:36:21 $</cvs:date>
+ * <cvs:version>$Revision: 1.15 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.15  2004/04/16 09:36:21  dave
+ *   Changed string to Ivorn
+ *
  *   Revision 1.14  2004/04/15 15:04:29  dave
  *   Added exception logging
  *
@@ -901,7 +904,9 @@ String string = ident.getAccountIdent() ;
                     // Allocate the new home space.
                     Ivorn ivorn = resolver.createUser(
                         service,
-                        account.getIdent()
+                        new Ivorn(
+                        	account.getIdent()
+							)
                         ) ;
                     //
                     // Update the Account data
