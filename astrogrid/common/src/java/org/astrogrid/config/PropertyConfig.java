@@ -1,5 +1,5 @@
 /*
- * $Id: PropertyConfig.java,v 1.6 2003/12/16 13:43:31 mch Exp $
+ * $Id: PropertyConfig.java,v 1.7 2004/01/27 13:31:21 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,7 +13,7 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 /**
- * A proeprty-based implementation of the configuration file
+ * A property-based implementation of the configuration file
  *
  * @author M Hill
  */
