@@ -1,4 +1,4 @@
-/*$Id: RegistryApplicationRegistryTest.java,v 1.2 2004/03/11 13:53:51 nw Exp $
+/*$Id: RegistryApplicationRegistryTest.java,v 1.3 2004/04/05 15:15:18 nw Exp $
  * Created on 10-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,12 @@
  *
 **/
 package org.astrogrid.portal.workflow.impl;
+
+import org.astrogrid.portal.workflow.intf.ApplicationDescription;
+import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
+
+import java.net.URL;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
@@ -29,12 +35,35 @@ public class RegistryApplicationRegistryTest extends TestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
+        URL url = new URL(ENDPOINT);
+        reg = new RegistryApplicationRegistry(url);
+    }
+    public final static String ENDPOINT = "http://msslxy.mssl.ucl.ac.uk:8080/astrogrid-registry-webapp/services/Registry";
+    protected ApplicationRegistry reg;
+    
+    public void testListApplications() throws Exception {
+        String[] apps = reg.listApplications();
+        assertNotNull(apps);
+        assertTrue(apps.length > 0);
+        System.out.println(Arrays.asList(apps));
+        
+    }
+    
+    public void testGetDescriptionFor() throws Exception {
+        String[] apps = reg.listApplications();
+       for (int i = 0; i < apps.length; i++) {
+            ApplicationDescription descr = reg.getDescriptionFor(apps[i]);
+            assertNotNull(descr);
+        }
     }
 }
 
 
 /* 
 $Log: RegistryApplicationRegistryTest.java,v $
+Revision 1.3  2004/04/05 15:15:18  nw
+tests for the fresh implementation
+
 Revision 1.2  2004/03/11 13:53:51  nw
 merged in branch bz#236 - implementation of interfaces
 
