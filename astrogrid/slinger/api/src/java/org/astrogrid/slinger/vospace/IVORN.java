@@ -1,5 +1,5 @@
 /*
- * $Id: IVORN.java,v 1.2 2005/03/15 12:07:28 mch Exp $
+ * $Id: IVORN.java,v 1.3 2005/03/21 16:10:43 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
@@ -132,7 +132,7 @@ public class IVORN
       
       //look up in config first
       String key = "ivorn."+getPath();
-      String ms = SimpleConfig.getSingleton().getString(key, null);
+      String ms = ConfigFactory.getCommonConfig().getString(key, null);
       lookedIn += "Config (key="+key+") ";
       if (ms != null) {
          return ms;
@@ -166,6 +166,9 @@ public class IVORN
 
 /*
 $Log: IVORN.java,v $
+Revision 1.3  2005/03/21 16:10:43  mch
+Fixes to compile (including removing refs to FileManager clients)
+
 Revision 1.2  2005/03/15 12:07:28  mch
 Added FileManager support
 

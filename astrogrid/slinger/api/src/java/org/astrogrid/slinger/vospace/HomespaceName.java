@@ -1,5 +1,5 @@
 /*
- * $Id: HomespaceName.java,v 1.2 2005/03/15 12:07:28 mch Exp $
+ * $Id: HomespaceName.java,v 1.3 2005/03/21 16:10:43 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -16,8 +16,8 @@ import java.security.Principal;
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.community.resolver.CommunityAccountSpaceResolver;
 import org.astrogrid.community.resolver.exception.CommunityResolverException;
-import org.astrogrid.config.ConfigException;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigException;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.slinger.SRI;
 import org.astrogrid.slinger.SRL;
@@ -162,8 +162,9 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
     * Returns the registry-resolvable ivo resource name to this 'homespace'.  Looks first
     * in config file, and if not found there looks up the community server for the
     * accountname's community, which will return the IVORN to the storepoint.
+    * Public so it can be used for displays
     */
-   private IVOSRN resolveIvosrn() throws IOException {
+   public IVOSRN resolveIvosrn() throws IOException {
 
       //used for debug/user info - says somethign about where the ivorn has been looked for
       String lookedIn = "";
@@ -174,7 +175,7 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
 
       //look up in config first
       String key = "homespace."+getName();
-      String value = SimpleConfig.getSingleton().getString(key, null);
+      String value = ConfigFactory.getCommonConfig().getString(key, null);
       lookedIn += "Config (key=homespace."+getName()+") ";
       if (value != null) {
          if (IVOSRN.isIvorn(value)) {
@@ -190,29 +191,9 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
          }
       }
 
-      //look up old id in config
-      value = SimpleConfig.getSingleton().getString(oldHomespaceId.getPath(), null);
-      lookedIn += "Config (key="+oldHomespaceId.getPath()+") ";
-      if (value != null) {
-         if (value.startsWith("ivo:")) {
-            try {
-               return new IVOSRN( new IVOSRN(value), getPath());
-            }
-            catch (URISyntaxException use) {
-               throw new ConfigException(use+" config value for homespace key "+key+" is not a valid IVORN: "+value);
-            }
-         }
-         else {
-            throw new ConfigException("Config value for homespace key '"+key+"' is not a valid IVORN: "+value);
-         }
-      }
-      
-      
-      //lazy load delegate - also more robust in case it doesn't instantiate
-      CommunityAccountSpaceResolver communityResolver = new CommunityAccountSpaceResolver();
-
       try {
-//         Ivorn homespaceIvorn = community.resolve(homespace);
+         CommunityAccountSpaceResolver communityResolver = new CommunityAccountSpaceResolver();
+//        Ivorn homespaceIvorn = community.resolve(homespace);
          lookedIn += "Community ("+communityResolver+") ";
          IVOSRN storepoint = new IVOSRN(new IVOSRN(communityResolver.resolve(oldHomespaceId).toString()), getPath());
          return storepoint;
@@ -222,13 +203,13 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
       }
       catch (CommunityResolverException cre) {
          //don't ignore this - if it is trying to be resolved, use the config to do shortcut that
-         throw new StoreException(cre+" resolving "+this+" ("+oldHomespaceId+") from community "+communityResolver+", looked in "+lookedIn,cre);
+         throw new StoreException(cre+" resolving "+this+" ("+oldHomespaceId+") from community, looked in "+lookedIn,cre);
       }
       catch (CommunityException ce) {
-         throw new StoreException(ce+" resolving "+this+" ("+oldHomespaceId+") from community "+communityResolver+", looked in "+lookedIn,ce);
+         throw new StoreException(ce+" resolving "+this+" ("+oldHomespaceId+") from community, looked in "+lookedIn,ce);
       }
       catch (RegistryException re) {
-         throw new StoreException(re+" resolving "+this+" ("+oldHomespaceId+") from community "+communityResolver+", looked in "+lookedIn,re);
+         throw new StoreException(re+" resolving "+this+" ("+oldHomespaceId+") from communityb, looked in "+lookedIn,re);
       }
    }
    
@@ -256,9 +237,9 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
    public static void main(String[] args) throws URISyntaxException, IOException
    {
       
-      SimpleConfig.setProperty("org.astrogrid.registry.query.endpoint", "http://hydra.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery");
+      ConfigFactory.getCommonConfig().setProperty("org.astrogrid.registry.query.endpoint", "http://hydra.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery");
 
-      SimpleConfig.setProperty("homespace.agdemo1@org.astrogrid","ivo://astrogrid.org/myspace");
+      ConfigFactory.getCommonConfig().setProperty("homespace.agdemo1@org.astrogrid","ivo://astrogrid.org/myspace");
       
       HomespaceName name = new HomespaceName("homespace:agdemo1@org.astrogrid#/agdemo1/votable/MartinPlayingWithNamesYetAgain");
       System.out.println(name);
@@ -285,6 +266,9 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
 
 /*
 $Log: HomespaceName.java,v $
+Revision 1.3  2005/03/21 16:10:43  mch
+Fixes to compile (including removing refs to FileManager clients)
+
 Revision 1.2  2005/03/15 12:07:28  mch
 Added FileManager support
 

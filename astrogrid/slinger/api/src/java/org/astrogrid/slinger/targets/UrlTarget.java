@@ -1,5 +1,5 @@
 /*
- * $Id: UrlTarget.java,v 1.1 2005/02/14 20:47:38 mch Exp $
+ * $Id: UrlTarget.java,v 1.2 2005/03/21 16:10:43 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,7 +13,7 @@ import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.Principal;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.slinger.SRL;
 import org.astrogrid.slinger.StoreException;
 
@@ -33,7 +33,7 @@ public class UrlTarget implements SRL, TargetIdentifier {
       url = targetUrl;
 
       //for safety, refuse to allow file targets unless specifically configured to allow it
-      if (url.getProtocol().toLowerCase().startsWith("file") && !SimpleConfig.getSingleton().getBoolean("servefiles")) {
+      if (url.getProtocol().toLowerCase().startsWith("file") && !ConfigFactory.getCommonConfig().getBoolean("servefiles")) {
          throw new StoreException("This service is not configured to serve files");
       }
          
@@ -78,6 +78,9 @@ public class UrlTarget implements SRL, TargetIdentifier {
 }
 /*
  $Log: UrlTarget.java,v $
+ Revision 1.2  2005/03/21 16:10:43  mch
+ Fixes to compile (including removing refs to FileManager clients)
+
  Revision 1.1  2005/02/14 20:47:38  mch
  Split into API and webapp
 

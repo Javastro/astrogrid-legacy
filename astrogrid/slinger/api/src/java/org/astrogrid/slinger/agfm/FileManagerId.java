@@ -1,5 +1,5 @@
 /*
- * $Id: FileManagerId.java,v 1.1 2005/03/15 12:07:28 mch Exp $
+ * $Id: FileManagerId.java,v 1.2 2005/03/21 16:10:43 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -17,7 +17,7 @@ import java.security.Principal;
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.filemanager.client.FileManagerClientFactory;
-import org.astrogrid.filemanager.client.NodeMetadata;
+import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.slinger.SRL;
 import org.astrogrid.slinger.StoreException;
@@ -102,42 +102,40 @@ public class FileManagerId implements SRL, TargetIdentifier, SourceIdentifier
    }
 
    public OutputStream resolveOutputStream(Principal user) throws IOException {
+      return null;
+      /* temporarily commoneted as there appears to be a compile/maven bug in compiling the client.node() bit
       try {
          FileManagerClientFactory factory = new FileManagerClientFactory();
          FileManagerClient client = factory.login();
-         return client.node(id.toOldIvorn()).writeContent();
+         FileManagerNode node = client.node(id.toOldIvorn());
+         return node.writeContent();
       }
       catch (CommunityException e) {
-         throw new StoreException(e+" resolving output stream to "+id+" for "+user,e);
-      }
-      catch (URISyntaxException e) {
          throw new StoreException(e+" resolving output stream to "+id+" for "+user,e);
       }
       catch (RegistryException e) {
          throw new StoreException(e+" resolving output stream to "+id+" for "+user,e);
       }
+      catch (URISyntaxException e) {
+         throw new StoreException(e+" resolving output stream to "+id+" for "+user,e);
+      }
+       */
    }
 
    
    /** Used to set the mime type of the data about to be sent to the target. */
    public void setMimeType(String aMimeType, Principal user) throws IOException {
-      try {
-         FileManagerClientFactory factory = new FileManagerClientFactory();
-         FileManagerClient client = factory.login();
-         client.node(id.toOldIvorn()).getMetadata();
-      }
-      catch (CommunityException e) {
-         throw new StoreException(e+" setting mime type of "+id+" for "+user+" to "+aMimeType,e);
-      }
-      catch (URISyntaxException e) {
-         throw new StoreException(e+" setting mime type of "+id+" for "+user+" to "+aMimeType,e);
-      }
-      catch (RegistryException e) {
-         throw new StoreException(e+" setting mime type of "+id+" for "+user+" to "+aMimeType,e);
-      }
+      /* not yet supported */
    }
 
+   /** Used to set the mime type of the data about to be sent to the source. Does nothing. */
+   public String getMimeType(Principal user) throws IOException {
+      return null; /* not yet supported */
+   }
+   
    public InputStream resolveInputStream(Principal user) throws IOException {
+      return null;
+      /* temporarily commoneted as there appears to be a compile/maven bug in compiling the client.node() bit
       try {
          FileManagerClientFactory factory = new FileManagerClientFactory();
          FileManagerClient client = factory.login();
@@ -146,12 +144,13 @@ public class FileManagerId implements SRL, TargetIdentifier, SourceIdentifier
       catch (CommunityException e) {
          throw new StoreException(e+" resolving input stream to "+id+" for "+user,e);
       }
-      catch (URISyntaxException e) {
-         throw new StoreException(e+" resolving input stream to "+id+" for "+user,e);
-      }
       catch (RegistryException e) {
          throw new StoreException(e+" resolving input stream to "+id+" for "+user,e);
       }
+      catch (URISyntaxException e) {
+         throw new StoreException(e+" resolving input stream to "+id+" for "+user,e);
+      }
+       */
    }
    
    public Reader resolveReader(Principal user) throws IOException {
@@ -162,30 +161,15 @@ public class FileManagerId implements SRL, TargetIdentifier, SourceIdentifier
       return new OutputStreamWriter(resolveOutputStream(user));
    }
    
-   /** Used to set the mime type of the data about to be sent to the source. Does nothing. */
-   public String getMimeType(Principal user) throws IOException {
-      try {
-         FileManagerClientFactory factory = new FileManagerClientFactory();
-         FileManagerClient client = factory.login();
-         return client.node(id.toOldIvorn()).getMetadata().getAttributes().get(NodeMetadata.MIME_TYPE).toString();
-      }
-      catch (CommunityException e) {
-         throw new StoreException(e+" getting mime type of "+id+" for "+user,e);
-      }
-      catch (URISyntaxException e) {
-         throw new StoreException(e+" getting mime type of "+id+" for "+user,e);
-      }
-      catch (RegistryException e) {
-         throw new StoreException(e+" getting mime type of "+id+" for "+user,e);
-      }
-   }
-   
 
 }
 
 /*
 
 $Log: FileManagerId.java,v $
+Revision 1.2  2005/03/21 16:10:43  mch
+Fixes to compile (including removing refs to FileManager clients)
+
 Revision 1.1  2005/03/15 12:07:28  mch
 Added FileManager support
 
