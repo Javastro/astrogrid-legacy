@@ -1,19 +1,16 @@
 /*
- * $Id: JdbcPlugin.java,v 1.13 2004/07/16 17:11:03 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.14 2004/08/04 09:27:03 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.sql;
 
+import java.sql.*;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import javax.xml.parsers.ParserConfigurationException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
@@ -153,7 +150,8 @@ public class JdbcPlugin extends QuerierPlugin  {
 
    }
 
-   /** Convenience routine for finding a column in a result set, but ignoring
+   /** Convenience routine for finding the value of a column in a result set row,
+    * but ignoring
     * missing columns
     */
    public String getColumnValue(ResultSet table, String column) {
@@ -165,7 +163,33 @@ public class JdbcPlugin extends QuerierPlugin  {
       }
    }
    
-   /** Gets metadata about the database. For SQL servers, this is a list of columns */
+   /**
+    * Returns the votable datatype for the given column.
+    * @todo check these - these are made up/guessed
+    */
+   public static String getVotableType(int sqlType) throws SQLException {
+      
+      switch (sqlType)
+      {
+         case Types.BIGINT:   return "datatype='long'";
+         case Types.BOOLEAN:  return "datatype='boolean'";
+         case Types.VARCHAR:  return "datatype='char' arraysize='*'";
+         case Types.CHAR:     return "datatype='char'";
+         case Types.DOUBLE:   return "datatype='double'";
+         case Types.FLOAT:    return "datatype='float'";
+         case Types.INTEGER:  return "datatype='int'";
+         case Types.REAL:     return "datatype='float'";
+         case Types.SMALLINT: return "datatype='short'";
+         case Types.TINYINT:  return "datatype='short'";
+         default: {
+            log.error("Don't know what SQL type "+sqlType+" should be in VOTable, storing as string");
+            return "datatype='char' arraysize='*'";
+         }
+      }
+   }
+   
+   
+   /** Generates metadata about the database. For SQL servers, this is a list of columns */
    public Document getMetadata() throws IOException {
 
       Connection connection = null;
@@ -190,6 +214,13 @@ public class JdbcPlugin extends QuerierPlugin  {
          String funcs = metadata.getNumericFunctions();
          String cat = connection.getCatalog();
 
+         metaTag.writeTag("ProductName", name);
+         metaTag.writeTag("Version", version);
+         metaTag.writeTag("Driver", driver);
+         metaTag.writeTag("Catalog", cat);
+         metaTag.writeTag("Functions", funcs);
+         
+         
          /*
          ResultSet schemas = metadata.getSchemas();
 
@@ -218,11 +249,12 @@ public class JdbcPlugin extends QuerierPlugin  {
             ResultSet columns = metadata.getColumns(null, null, tables.getString("TABLE_NAME"), "%");
             
             while (columns.next()) {
-               XmlTagPrinter colTag = tableTag.newTag("Column", "name='"+getColumnValue(columns, "COLUMN_NAME")+"'");
+               int sqlType = Integer.parseInt(getColumnValue(columns, "DATA_TYPE"));
+               XmlTagPrinter colTag = tableTag.newTag("Column", "name='"+getColumnValue(columns, "COLUMN_NAME")+"' "+getVotableType(sqlType));
                colTag.writeComment("schema='"+getColumnValue(columns, "TABLE_SCHEM")+"'");
                colTag.writeComment("cat='"+getColumnValue(columns, "TABLE_CAT")+"'");
                colTag.writeComment("table='"+getColumnValue(columns, "TABLE_NAME")+"'");
-               colTag.writeTag("DataType", getColumnValue(columns, "DATA_TYPE"));
+//               colTag.writeTag("DataType", getColumnValue(columns, "DATA_TYPE"));
                colTag.writeTag("Description", getColumnValue(columns, "REMARKS"));
                colTag.writeTag("Units", " ");
                colTag.writeTag("UCD", " ");

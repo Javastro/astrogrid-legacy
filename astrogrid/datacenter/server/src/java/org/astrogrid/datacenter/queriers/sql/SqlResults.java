@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.29 2004/07/03 16:53:11 mch Exp $
+ * $Id: SqlResults.java,v 1.30 2004/08/04 09:27:03 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -110,7 +110,7 @@ public class SqlResults extends QueryResults
 //             }
             printOut.println("<FIELD ID='"+tablename+metadata.getColumnName(i)+"' "
                                 +" name='"+metadata.getColumnLabel(i)+"' "
-                                + getVotableType(i)
+                                +JdbcPlugin.getVotableType(sqlResults.getMetaData().getColumnType(i))
                                 +" ucd='"+getUcdFor(metadata.getColumnName(i))+"' "
                                 +"/>");
          }
@@ -223,32 +223,6 @@ public class SqlResults extends QueryResults
       }
    }
    
-   /**
-    * Returns the votable datatype for the given column.
-    * @todo check these - these are made up/guessed
-    */
-   public String getVotableType(int col) throws SQLException {
-      
-      int sqlType = sqlResults.getMetaData().getColumnType(col);
-      
-      switch (sqlType)
-      {
-         case Types.BIGINT:   return "datatype='long'";
-         case Types.BOOLEAN:  return "datatype='boolean'";
-         case Types.VARCHAR:  return "datatype='char' arraysize='*'";
-         case Types.CHAR:     return "datatype='char'";
-         case Types.DOUBLE:   return "datatype='double'";
-         case Types.FLOAT:    return "datatype='float'";
-         case Types.INTEGER:  return "datatype='int'";
-         case Types.REAL:     return "datatype='float'";
-         case Types.SMALLINT: return "datatype='short'";
-         case Types.TINYINT:  return "datatype='short'";
-         default: {
-            log.error("Cannot cope with type "+sqlResults.getMetaData().getColumnTypeName(col)+", storing as string");
-            return "datatype='char' arraysize='*'";
-         }
-      }
-   }
    
    public String getUcdFor(String columnName)
    {
@@ -261,6 +235,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.30  2004/08/04 09:27:03  mch
+ Added metadata, converted sql data type to VOTable data type
+
  Revision 1.29  2004/07/03 16:53:11  mch
  Removed getTableName() which is not always implemented
 
