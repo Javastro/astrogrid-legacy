@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/PermissionManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/04 15:51:47 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PermissionManager.java,v $
+ *   Revision 1.7  2004/04/04 15:51:47  dave
+ *   Merged development branch, dave-dev-200404011434, into HEAD
+ *
+ *   Revision 1.6.30.1  2004/04/04 15:50:07  dave
+ *   Changed SecurityToken generator to use RMI GUID values.
+ *
  *   Revision 1.6  2004/03/05 17:19:59  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -105,7 +111,7 @@ import org.astrogrid.community.common.service.CommunityService ;
 
     /**
      * Request a list of PolicyPermissions for a resource.
-     * TODO - Need to put somethinf like this back in.
+     * TODO - Need to put something like this back in.
      * TODO - Possibly requesting all permissions for a resource.
      * TODO - Possibly requesting all permissions for a group and resource.
      * 

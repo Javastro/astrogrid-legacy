@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/service/SecurityServiceMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/04 15:51:47 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceMock.java,v $
+ *   Revision 1.8  2004/04/04 15:51:47  dave
+ *   Merged development branch, dave-dev-200404011434, into HEAD
+ *
+ *   Revision 1.7.8.1  2004/04/04 15:50:07  dave
+ *   Changed SecurityToken generator to use RMI GUID values.
+ *
  *   Revision 1.7  2004/03/30 01:40:03  dave
  *   Merged development branch, dave-dev-200403242058, into HEAD
  *
@@ -70,6 +76,8 @@ import java.util.HashMap ;
 import java.util.Vector ;
 
 import org.astrogrid.store.Ivorn ;
+
+import java.rmi.server.UID ;
 
 import org.astrogrid.community.common.security.data.SecurityToken ;
 
@@ -179,17 +187,14 @@ public class SecurityServiceMock
     protected SecurityToken createToken(CommunityIvornParser account)
         throws CommunityIdentifierException
         {
-        String value = null ;
-        synchronized (sync)
-            {
-            value = "MOCK-TOKEN-" + counter++ ;
-            }
+		//
+		// Create a new UID.
+		UID uid = new UID() ;
         //
         // Create an Ivorn for the token.
         Ivorn ivorn = CommunityAccountIvornFactory.createMock(
             "",
-//            (account.getAccountName() + "/" + value)
-            value
+            uid.toString()
             ) ;
         //
         // Issue a new Security token to the account.
