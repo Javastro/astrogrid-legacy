@@ -49,11 +49,16 @@ public class Query
 
    public Query(Element domContainingQuery) throws SAXException
    {
-      NodeList queries = domContainingQuery.getElementsByTagName(DocMessageHelper.QUERY_TAG);
+       // NWW - possible that the root element passed in is the query element
+       if (DocMessageHelper.QUERY_TAG.equals(domContainingQuery.getLocalName())) {
+           queryXml = domContainingQuery;
+       } else { //search for  
+        NodeList queries = domContainingQuery.getElementsByTagName(DocMessageHelper.QUERY_TAG);
 
-      Log.affirm(queries.getLength() ==1, "Too many query tags in dom to make one query from");
+        Log.affirm(queries.getLength() == 1, "Either no  query tags in dom, or too many query tags to make one query from");
 
-      queryXml = (Element) queries.item(0);
+        queryXml = (Element) queries.item(0);
+       }
 
       String queryType = queryXml.getAttribute("type");
 
@@ -61,9 +66,12 @@ public class Query
       //into the correct object model
       if (queryType.toLowerCase().equals("adql"))
       {
+          NodeList adqlRoots = queryXml.getElementsByTagName("Select");
+          Log.affirm(adqlRoots.getLength() == 1,"Either no ADQL select tag within query, or too many");
          try
          {
-            adql = ADQLUtils.unmarshalSelect(queryXml);
+             
+            adql = ADQLUtils.unmarshalSelect(adqlRoots.item(0));
          }
          catch (org.exolab.castor.xml.ValidationException e)
          {
@@ -117,6 +125,11 @@ public class Query
 
 /*
 $Log: Query.java,v $
+Revision 1.3  2003/09/11 11:04:49  nw
+improved extraction of query element from document
+(handled case of query element being root element).
+fixed extraction of nested ADQL select
+
 Revision 1.2  2003/09/11 09:28:20  mch
 Added backwards compatibility for old queries
 
