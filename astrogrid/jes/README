@@ -64,6 +64,9 @@ using Sybase on the hydra machine.
 2.2 JNDI.        **** IMPORTANT ****
 -----------
 
+For reference see:    
+http://jakarta.apache.org/tomcat/tomcat-4.1-doc/jndi-datasource-examples-howto.html
+
 JES uses JNDI to lookup it's associated database, two files require 
 altering to enable this to happen:
 
@@ -162,27 +165,28 @@ where they can be picked up as part of a classpath.
 Look in the config directory.
 
 
-4.4 Fullfill Database conditions.
+4.5 Fullfill Database conditions.
 -----------------------------------
 . Create job database by running script held in dbscripts directory.
   This may <<will>> require alteration for your flavour of RDBMS.
 . Alter Tomcat and Axis files to allow for JNDI (see section 2.2 above)
 
 
-4.5 Alter the JES configuration file.
+4.6 Alter the JES configuration file.
 ----------------------------------------------
 . You must make appropriate database configuration details and other
   items available by altering this file. ***Please read it***.
 . Place the configuration file and the messages file in a convenient
-  classpath-aware location. See section 4.3 above.
+  classpath-aware location for resources and/or classes; we suggest
+  the webapps/axis/WEB-INF/classes directory .
 
 
-4.6 Ensure Database, Tomcat and Axis are running.
+4.7 Ensure Database, Tomcat and Axis are running.
 ---------------------------------------------------
-You may have to restart Tomcat after step 4.4
+You may have to restart Tomcat after step 4.6
 
 
-4.7 Deploy JES as three SOAP service within Axis.
+4.8 Deploy JES as three SOAP service within Axis.
 ------------------------------------------------------
 See the wsdd descriptors within the wsdd directory.
 You must deploy the three JES subcomponents:
@@ -193,5 +197,5 @@ The files are commented to show which command is required to execute deployment.
 The jesBIN.jar must be available when the command is executed. 
 
 
-4.8 You are ready to go! Happy Astronomical Hunting!
+4.9 You are ready to go! Happy Astronomical Hunting!
 ------------------------------------------------------
