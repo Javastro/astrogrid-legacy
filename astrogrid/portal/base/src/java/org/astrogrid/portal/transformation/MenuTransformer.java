@@ -144,8 +144,8 @@ public class MenuTransformer extends AbstractDOMTransformer {
     boolean result = false;
     
     try {
-      URL includeUrl = new URL("file://" + toInclude.getAbsolutePath());
-      
+      URL includeUrl = toInclude.toURL();
+            
       JXPathContext menuContext = JXPathContext.newContext(menu);
       JXPathContext fileContext = JXPathContext.newContext(new DocumentContainer(includeUrl));
       
