@@ -1,63 +1,69 @@
 package org.astrogrid.registry.services;
 
-import java.io.*;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 
-public class QueryServices {
-	
-	public static void main(String[] args){
+public class QueryServices
+{
 
-		if (args.length !=1) {
-			System.err.println("Usage: java QueryServices <queryElement>");
-		}
-		String queryElement = args[0];
+  public static void main(String[] args)
+  {
 
-		Document doc = null;
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = null;
-		try {
-			builder = factory.newDocumentBuilder();
-			doc = builder.parse("astrogrid/registry/services/services.xml");
-			QueryServices dom = new QueryServices();
-			
-			String response = dom.generateResponse(doc, queryElement);
-			System.out.println("\nServices matching query on " + queryElement + ": \n");
-			System.out.println(response);
-		}
-		catch (ParserConfigurationException e) {
-			System.err.println(e);
-		}
-		catch (Exception e){
-			System.out.println("oops!: " + e);
-		}
+    if (args.length != 1)
+    {
+      System.err.println("Usage: java QueryServices <queryElement>");
+    }
+    String queryElement = args[0];
 
-	}
+    Document doc = null;
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder builder = null;
+    try
+    {
+      builder = factory.newDocumentBuilder();
+      doc = builder.parse("astrogrid/registry/services/services.xml");
+      QueryServices dom = new QueryServices();
 
-	public String generateResponse(Document doc, String queryElement){
+      String response = dom.generateResponse(doc, queryElement);
+      System.out.println("\nServices matching query on " + queryElement + ": \n");
+      System.out.println(response);
+    }
+    catch (ParserConfigurationException e)
+    {
+      System.err.println(e);
+    }
+    catch (Exception e)
+    {
+      System.out.println("oops!: " + e);
+    }
 
-		String response = "";
+  }
 
-		Element docElement = doc.getDocumentElement();
+  public String generateResponse(Document doc, String queryElement)
+  {
 
-		NodeList nl = docElement.getElementsByTagName(queryElement);
+    String response = "";
 
-		for( int i=0;i<nl.getLength();i++){
-			
-			Element parent = (Element)nl.item(i).getParentNode();	
-			
-			String matchElementValue = 		
-				parent.getElementsByTagName(queryElement).item(0).getFirstChild().getNodeValue();
-				
-			String id = parent.getElementsByTagName("id").item(0).getFirstChild().getNodeValue();
-			String title = parent.getElementsByTagName("title").item(0).getFirstChild().getNodeValue();	
+    Element docElement = doc.getDocumentElement();
 
-			response = response + "<id>"+id +"</id> \n";
-			response = response + "<title>"+title +"</title> \n\n";
-		}
+    NodeList nl = docElement.getElementsByTagName(queryElement);
 
-		return response;
+    for (int i = 0; i < nl.getLength(); i++)
+    {
 
-	}
+      Element parent = (Element) nl.item(i).getParentNode();
+
+      String matchElementValue = parent.getElementsByTagName(queryElement).item(0).getFirstChild().getNodeValue();
+
+      String id = parent.getElementsByTagName("id").item(0).getFirstChild().getNodeValue();
+      String title = parent.getElementsByTagName("title").item(0).getFirstChild().getNodeValue();
+
+      response = response + "<id>" + id + "</id> \n";
+      response = response + "<title>" + title + "</title> \n\n";
+    }
+
+    return response;
+
+  }
 
 }

@@ -1,16 +1,19 @@
-package org.astrogrid.dataTransformationServices.services;
+package org.astrogrid.registry.dataTransformationServices.services;
 
-public class WavelengthConverter {
+public class WavelengthConverter
+{
   double c = 300000000.0;
-  public WavelengthConverter() {
-  }
+  public WavelengthConverter()
+  {}
 
-  public double wavelengthToFrequency(double wavelength) {
+  public double wavelengthToFrequency(double wavelength)
+  {
     double frequency = c / wavelength;
     return frequency;
   }
 
-  public double frequencyToWavelength(double frequency){
+  public double frequencyToWavelength(double frequency)
+  {
     double wavelength = c / frequency;
     return wavelength;
   }

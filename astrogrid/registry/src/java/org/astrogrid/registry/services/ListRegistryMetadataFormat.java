@@ -1,91 +1,102 @@
 package org.astrogrid.registry.services;
 
-import java.io.*;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 
-public class ListRegistryMetadataFormat {
-	
-	public static void main(String[] args){
+public class ListRegistryMetadataFormat
+{
 
-		if (args.length !=2) {
-			System.err.println("Usage: java ListRegistryMetadataFormat <queryElementValue>");
-		}
-		String queryElement = args[0];
-		String queryElementValue = args[1];
+  public static void main(String[] args)
+  {
 
-		Document doc = null;
-		Document doc2 = null;
+    if (args.length != 2)
+    {
+      System.err.println("Usage: java ListRegistryMetadataFormat <queryElementValue>");
+    }
+    String queryElement = args[0];
+    String queryElementValue = args[1];
 
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = null;
-		try {
-			builder = factory.newDocumentBuilder();
-			doc = builder.parse("astrogrid/registry/services/registry.xml");
-			doc2 = builder.parse("astrogrid/registry/services/metadataFormat.xml");
+    Document doc = null;
+    Document doc2 = null;
 
-			ListRegistryMetadataFormat dom = new ListRegistryMetadataFormat();
-			
-			String response = dom.generateResponse(doc, doc2, queryElement, queryElementValue);
-			System.out.println(response);
-		}
-		catch (ParserConfigurationException e) {
-			System.err.println(e);
-		}
-		catch (Exception e){
-			System.out.println("oops!: " + e);
-		}
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder builder = null;
+    try
+    {
+      builder = factory.newDocumentBuilder();
+      doc = builder.parse("astrogrid/registry/services/registry.xml");
+      doc2 = builder.parse("astrogrid/registry/services/metadataFormat.xml");
 
-	}
+      ListRegistryMetadataFormat dom = new ListRegistryMetadataFormat();
 
-	public String generateResponse(Document doc, Document doc2, String queryElement, String queryElementValue){
+      String response = dom.generateResponse(doc, doc2, queryElement, queryElementValue);
+      System.out.println(response);
+    }
+    catch (ParserConfigurationException e)
+    {
+      System.err.println(e);
+    }
+    catch (Exception e)
+    {
+      System.out.println("oops!: " + e);
+    }
 
-		String response = "";
+  }
 
-		Element docElement = doc.getDocumentElement();
-		NodeList nl = docElement.getElementsByTagName(queryElement);
+  public String generateResponse(Document doc, Document doc2, String queryElement, String queryElementValue)
+  {
 
-		for( int i=0;i<nl.getLength();i++){
-			
-			Element parent = (Element)nl.item(i).getParentNode();	
-			
-			String matchElementValue = 		
-				parent.getElementsByTagName(queryElement).item(0).getFirstChild().getNodeValue();
-			if (queryElementValue.equals(matchElementValue)){
-				String id = parent.getElementsByTagName("id").item(0).getFirstChild().getNodeValue();
-				String title = parent.getElementsByTagName("title").item(0).getFirstChild().getNodeValue();	
-				String metadataFormat = 														parent.getElementsByTagName("metadataFormat").item(0).getFirstChild().getNodeValue();	
-				String catalogElements = getMF(doc2, metadataFormat);
+    String response = "";
 
-				response = response + "<id>"+id +"</id> \n";
-				response = response + "<title>"+title +"</title> \n";
-				response = response + "<metadataFormat>"+metadataFormat+"</metadataFormat>\n\n";
-				response = response + "<catalogElements>\n"+catalogElements+"</catalogElements>\n\n";
-			}
-		}
+    Element docElement = doc.getDocumentElement();
+    NodeList nl = docElement.getElementsByTagName(queryElement);
 
-		return response;
+    for (int i = 0; i < nl.getLength(); i++)
+    {
 
-	}
+      Element parent = (Element) nl.item(i).getParentNode();
 
-	public String getMF(Document doc2, String metadataFormat){
+      String matchElementValue = parent.getElementsByTagName(queryElement).item(0).getFirstChild().getNodeValue();
+      if (queryElementValue.equals(matchElementValue))
+      {
+        String id = parent.getElementsByTagName("id").item(0).getFirstChild().getNodeValue();
+        String title = parent.getElementsByTagName("title").item(0).getFirstChild().getNodeValue();
+        String metadataFormat = parent.getElementsByTagName("metadataFormat").item(0).getFirstChild().getNodeValue();
+        String catalogElements = getMF(doc2, metadataFormat);
 
-		String catalogElements = "";
-		Element docElementMF = doc2.getDocumentElement();
-		NodeList nlMF = docElementMF.getElementsByTagName("id");
+        response = response + "<id>" + id + "</id> \n";
+        response = response + "<title>" + title + "</title> \n";
+        response = response + "<metadataFormat>" + metadataFormat + "</metadataFormat>\n\n";
+        response = response + "<catalogElements>\n" + catalogElements + "</catalogElements>\n\n";
+      }
+    }
 
-		for( int i=0;i<nlMF.getLength();i++){
+    return response;
 
-			Element parentMF = (Element)nlMF.item(i).getParentNode();
-			String matchMFValue = parentMF.getElementsByTagName("id").item(0).getFirstChild().getNodeValue();
-			if (matchMFValue.equals(metadataFormat)){
-				for (int j=0; j<parentMF.getElementsByTagName("catalogElement").getLength();j++) {
+  }
 
-				catalogElements = catalogElements + "<catalogElement>" + parentMF.getElementsByTagName("catalogElement").item(j).getFirstChild().getNodeValue() + "</catalogElement>\n";
-				}
-			}
-		}
-		return catalogElements;
-	}
+  public String getMF(Document doc2, String metadataFormat)
+  {
+
+    String catalogElements = "";
+    Element docElementMF = doc2.getDocumentElement();
+    NodeList nlMF = docElementMF.getElementsByTagName("id");
+
+    for (int i = 0; i < nlMF.getLength(); i++)
+    {
+
+      Element parentMF = (Element) nlMF.item(i).getParentNode();
+      String matchMFValue = parentMF.getElementsByTagName("id").item(0).getFirstChild().getNodeValue();
+      if (matchMFValue.equals(metadataFormat))
+      {
+        for (int j = 0; j < parentMF.getElementsByTagName("catalogElement").getLength(); j++)
+        {
+
+          catalogElements = catalogElements + "<catalogElement>" + parentMF.getElementsByTagName("catalogElement").item(j).getFirstChild().getNodeValue() + "</catalogElement>\n";
+        }
+      }
+    }
+    return catalogElements;
+  }
 
 }
