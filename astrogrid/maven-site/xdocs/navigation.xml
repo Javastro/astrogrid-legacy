@@ -24,7 +24,7 @@
     </menu>
     <menu name="Integration and Logs">
       <item name="Integration Testing" href="http://www.astrogrid.org/maven/build/integrationTests/index.html"/>
-      <item name="Maven Build Logs" collapse="true">
+      <item name="Maven Build Logs" href="howdoesthiswork.html" collapse="true">
        <item name="Applications Integration"           href="http://www.astrogrid.org/maven/build/log/maven-build-applications.log" />
        <item name="Common"           href="http://www.astrogrid.org/maven/build/log/maven-build-common.log" />
        <item name="Community"           href="http://www.astrogrid.org/maven/build/log/maven-build-community.log" />
