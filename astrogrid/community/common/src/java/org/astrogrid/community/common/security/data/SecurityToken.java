@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/data/SecurityToken.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityToken.java,v $
+ *   Revision 1.4  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.3.16.1  2004/03/22 15:31:10  dave
+ *   Added CommunitySecurityException.
+ *   Updated SecurityManager and SecurityService to use Exceptions.
+ *
  *   Revision 1.3  2004/03/08 13:42:33  dave
  *   Updated Maven goals.
  *   Replaced tabs with Spaces.
@@ -45,10 +52,16 @@ public class SecurityToken
     public static final int VALID_TOKEN = 0x01 ;
 
     /**
-     * Delimiter for String version of SecurityToken.
+     * Delimiter for to String.
      *
      */
-    public static final String DELIMTER_STRING = "," ;
+    public static final String DELIMTER_STRING = "|" ;
+
+    /**
+     * Delimiter for regexp split.
+     *
+     */
+    public static final String SPLIT_STRING = "\\|" ;
 
     /**
      * Public constructor.
@@ -69,7 +82,7 @@ public class SecurityToken
             {
             //
             // Split the string on delimiters.
-            String[] split = value.split(DELIMTER_STRING) ;
+            String[] split = value.split(SPLIT_STRING) ;
             //
             // If we have a Token value.
             if (split.length > 0)

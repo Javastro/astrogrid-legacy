@@ -4,10 +4,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
-    | <cvs:version>$Revision: 1.9 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+    | <cvs:version>$Revision: 1.10 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.10  2004/03/23 16:34:08  dave
+    |   Merged development branch, dave-dev-200403191458, into HEAD
+    |
+    |   Revision 1.9.2.1  2004/03/23 11:11:53  dave
+    |   No comment ....
+    |
     |   Revision 1.9  2004/03/19 14:43:14  dave
     |   Merged development branch, dave-dev-200403151155, into HEAD
     |
@@ -30,6 +36,7 @@
     xmlns:deploy="deploy"
     default="astrogrid-rebuild-snapshot"
     >
+
 
     <!--+
         | Import the goals from our parent project.

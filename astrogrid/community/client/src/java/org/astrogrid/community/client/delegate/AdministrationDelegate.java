@@ -2,7 +2,7 @@ package org.astrogrid.community.client.delegate ;
 
 import org.astrogrid.community.common.policy.data.GroupData;
 import org.astrogrid.community.common.policy.data.ResourceData;
-import org.astrogrid.community.common.policy.data.CommunityData;
+//import org.astrogrid.community.common.policy.data.CommunityData;
 import org.astrogrid.community.common.policy.data.AccountData;
 import org.astrogrid.community.common.policy.data.PolicyPermission;
 import org.astrogrid.community.common.policy.data.GroupMemberData;
@@ -391,49 +391,48 @@ public class AdministrationDelegate {
     * @param ident
     * @return
     * @throws Exception
-    */
    public CommunityData addCommunity(String ident) throws Exception  {
       return service.addCommunity(ident);
    }
+    */
 
    /**
     * Get a community
     * @param ident
     * @return
     * @throws Exception
-    */
    public CommunityData getCommunity(String ident) throws Exception  {
       return service.getCommunity(ident);
    }
+    */
 
    /**
     * Set a community.
     * @param commData
     * @return
     * @throws Exception
-    */
    public CommunityData setCommunity(CommunityData commData) throws Exception  {
       return service.setCommunity(commData);
    }
+    */
    
    /**
     * Delete a community
     * @param ident
     * @return
     * @throws Exception
-    */
    public boolean delCommunity(String ident) throws Exception  {
       return (null != service.delCommunity(ident));
    }
-   
+    */
    /**
     * Get a community list.
     * @return
     * @throws Exception
-    */
    public ArrayList getCommunityList()  throws Exception {
       return createArrayList(service.getCommunityList());
    }
+    */
    
    public ArrayList getGroupMembers(String group) throws Exception {
       return createArrayList(service.getGroupMembers(group));   

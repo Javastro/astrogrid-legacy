@@ -1,11 +1,21 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/service/SecurityServiceMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceMock.java,v $
+ *   Revision 1.4  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.3.16.2  2004/03/23 14:52:27  dave
+ *   Modified the mock ivorn syntax.
+ *
+ *   Revision 1.3.16.1  2004/03/22 15:31:10  dave
+ *   Added CommunitySecurityException.
+ *   Updated SecurityManager and SecurityService to use Exceptions.
+ *
  *   Revision 1.3  2004/03/08 13:42:33  dave
  *   Updated Maven goals.
  *   Replaced tabs with Spaces.
@@ -41,9 +51,18 @@ import java.util.Map ;
 import java.util.HashMap ;
 import java.util.Vector ;
 
+import org.astrogrid.store.Ivorn ;
+
 import org.astrogrid.community.common.security.data.SecurityToken ;
 
 import org.astrogrid.community.common.service.CommunityServiceMock ;
+
+import org.astrogrid.community.common.ivorn.CommunityIvornParser ;
+import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory ;
+
+import org.astrogrid.community.common.exception.CommunityServiceException  ;
+import org.astrogrid.community.common.exception.CommunitySecurityException ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException  ;
 
 /**
  * Mock implementation of our SecurityService service.
@@ -92,18 +111,50 @@ public class SecurityServiceMock
     /**
      * Generate a new token.
      * @param ident - The Account ident.
+     * @throws CommunityIdentifierException If the new Ivorn is invalid
      *
      */
-    protected SecurityToken createToken(String account)
+    protected SecurityToken createToken(String ident)
+		throws CommunityIdentifierException
+		{
+        //
+        // Get the Account ident.
+        CommunityIvornParser ivorn = new CommunityIvornParser(
+            ident
+            ) ;
+        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
+		//
+		// Generate a new token.
+		return this.createToken(ivorn) ;
+		}
+
+    /**
+     * Generate a new token.
+     * @param ident - The Account ident.
+     * @throws CommunityIdentifierException If the new Ivorn is invalid
+     *
+     */
+    protected SecurityToken createToken(CommunityIvornParser account)
+		throws CommunityIdentifierException
         {
         String value = null ;
         synchronized (sync)
             {
             value = "MOCK-TOKEN-" + counter++ ;
             }
+		//
+		// Create an Ivorn for the token.
+		Ivorn ivorn = CommunityAccountIvornFactory.createMock(
+			"",
+//			(account.getAccountName() + "/" + value)
+			value
+			) ;
         //
         // Issue a new Security token to the account.
-        SecurityToken token = new SecurityToken(account, value) ;
+        SecurityToken token = new SecurityToken(
+        	account.getAccountIdent(),
+        	ivorn.toString()
+        	) ;
         //
         // Add the token to our map.
         map.put(token.getToken(), token) ;
@@ -117,9 +168,12 @@ public class SecurityServiceMock
      * @param account The account ident.
      * @param pass The account password.
      * @return A valid SecurityToken if the ident and password are valid.
+     * @throws CommunityIdentifierException If the new Ivorn is invalid
+     * @todo Actually check the password ?
      *
      */
     public SecurityToken checkPassword(String ident, String value)
+		throws CommunityIdentifierException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -138,9 +192,12 @@ public class SecurityServiceMock
      * The client should use the new token for subsequent calls to the service.
      * @param The token to validate.
      * @return A new SecurityToken if the original was valid.
+     * @throws CommunitySecurityException If the original token is not valid.
+     * @throws CommunityIdentifierException If the new Ivorn is invalid
      *
      */
     public SecurityToken checkToken(SecurityToken original)
+		throws CommunitySecurityException, CommunityIdentifierException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -163,10 +220,9 @@ public class SecurityServiceMock
         //
         // If we don't have the original.
         else {
-            //
-            // Throw an Exception ?
-            // Just return null for now.
-            return null ;
+			throw new CommunitySecurityException(
+				"Original token not valid"
+				) ;
             }
         }
 
@@ -178,9 +234,12 @@ public class SecurityServiceMock
      * @param The token to validate.
      * @param The number of new tokens required.
      * @return An array of new tokens.
+     * @throws CommunitySecurityException If the original token is not valid.
+     * @throws CommunityIdentifierException If the new Ivorn is invalid
      *
      */
     public Object[] splitToken(SecurityToken original, int count)
+		throws CommunitySecurityException, CommunityIdentifierException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -211,10 +270,9 @@ public class SecurityServiceMock
         //
         // If we don't have the original.
         else {
-            //
-            // Throw an Exception ?
-            // Just return null for now.
-            return null ;
+			throw new CommunitySecurityException(
+				"Original token not valid"
+				) ;
             }
         }
     }

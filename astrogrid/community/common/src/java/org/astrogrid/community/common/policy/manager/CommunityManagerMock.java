@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/CommunityManagerMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityManagerMock.java,v $
+ *   Revision 1.6  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.5.2.1  2004/03/21 06:41:41  dave
+ *   Refactored to include Exception handling.
+ *
  *   Revision 1.5  2004/03/19 14:43:14  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
@@ -99,15 +105,15 @@ public class CommunityManagerMock
         if (null == ident)
             {
             throw new CommunityIdentifierException(
-				"Null identifier"
-            	) ;
+                "Null identifier"
+                ) ;
             }
         //
         // Check if we already have an existing community.
         if (map.containsKey(ident))
             {
             throw new CommunityPolicyException(
-				"Duplicate account",
+                "Duplicate account",
                 ident
                 ) ;
             }
@@ -142,8 +148,8 @@ public class CommunityManagerMock
         if (null == ident)
             {
             throw new CommunityIdentifierException(
-				"Null identifier"
-            	) ;
+                "Null identifier"
+                ) ;
             }
         //
         // Lookup the Account in our map.
@@ -158,7 +164,7 @@ public class CommunityManagerMock
         // If we didn't find a Community.
         else {
             throw new CommunityPolicyException(
-				"Community not found",
+                "Community not found",
                 ident
                 ) ;
             }
@@ -184,16 +190,16 @@ public class CommunityManagerMock
         if (null == update)
             {
             throw new CommunityIdentifierException(
-				"Null identifier"
-            	) ;
+                "Null identifier"
+                ) ;
             }
         //
         // Check for null ident.
         if (null == update.getIdent())
             {
             throw new CommunityIdentifierException(
-				"Null identifier"
-            	) ;
+                "Null identifier"
+                ) ;
             }
         //
         // Lookup the Community in our map.
@@ -201,9 +207,9 @@ public class CommunityManagerMock
         //
         // Replace the existing Community with the new data.
         map.put(found.getIdent(), update) ;
-		//
-		// Return the new data.
-		return update ;
+        //
+        // Return the new data.
+        return update ;
         }
 
     /**
@@ -226,8 +232,8 @@ public class CommunityManagerMock
         if (null == ident)
             {
             throw new CommunityIdentifierException(
-				"Null identifier"
-            	) ;
+                "Null identifier"
+                ) ;
             }
         //
         // Try to find the Community.

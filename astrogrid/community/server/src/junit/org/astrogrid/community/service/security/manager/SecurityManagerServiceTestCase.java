@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/service/security/manager/Attic/SecurityManagerServiceTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityManagerServiceTestCase.java,v $
+ *   Revision 1.4  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.3.16.1  2004/03/22 15:31:10  dave
+ *   Added CommunitySecurityException.
+ *   Updated SecurityManager and SecurityService to use Exceptions.
+ *
  *   Revision 1.3  2004/03/08 13:42:33  dave
  *   Updated Maven goals.
  *   Replaced tabs with Spaces.
@@ -49,7 +56,8 @@ import org.astrogrid.community.common.security.manager.SecurityManagerServiceLoc
 import org.astrogrid.community.common.security.manager.SecurityManagerTest ;
 
 /**
- * A JUnit test case for our SecurityManager service.
+ * Local service test case for our SecurityManager service.
+ * This test uses the Axis local:// protocol to invoke SOAP calls on an in-process WebService.
  *
  */
 public class SecurityManagerServiceTestCase

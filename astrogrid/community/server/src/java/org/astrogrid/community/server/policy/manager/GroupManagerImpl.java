@@ -1,110 +1,28 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/Attic/GroupManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerImpl.java,v $
- *   Revision 1.6  2004/03/05 17:19:59  dave
- *   Merged development branch, dave-dev-200402211936, into HEAD
+ *   Revision 1.7  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
  *
- *   Revision 1.5.2.3  2004/02/23 19:43:47  dave
- *   Refactored DatabaseManager tests to test the interface.
- *   Refactored DatabaseManager tests to use common DatabaseManagerTest.
+ *   Revision 1.6.18.3  2004/03/22 00:53:31  dave
+ *   Refactored GroupManager to use Ivorn identifiers.
+ *   Started removing references to CommunityManager.
  *
- *   Revision 1.5.2.2  2004/02/23 08:55:20  dave
- *   Refactored CastorDatabaseConfiguration into DatabaseConfiguration
+ *   Revision 1.6.18.2  2004/03/21 18:14:29  dave
+ *   Refactored GroupManagerImpl to use Ivorn identifiers.
  *
- *   Revision 1.5.2.1  2004/02/22 20:03:16  dave
- *   Removed redundant DatabaseConfiguration interfaces
- *
- *   Revision 1.5  2004/02/20 21:11:05  dave
- *   Merged development branch, dave-dev-200402120832, into HEAD
- *
- *   Revision 1.4.2.2  2004/02/19 21:09:27  dave
- *   Refactored ServiceStatusData into a common package.
- *   Refactored CommunityServiceImpl constructor to take a parent service.
- *   Refactored default database for CommunityServiceImpl
- *
- *   Revision 1.4.2.1  2004/02/16 15:20:54  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.4  2004/02/12 08:12:13  dave
- *   Merged development branch, dave-dev-200401131047, into HEAD
- *
- *   Revision 1.2.4.3  2004/02/06 13:49:09  dave
- *   Moved CommunityManagerBase into server.common.CommunityServer.
- *   Moved getServiceStatus into server.common.CommunityServer.
- *   Moved JUnit tests to match.
- *
- *   Revision 1.2.4.2  2004/01/27 18:55:08  dave
- *   Removed unused imports listed in PMD report
- *
- *   Revision 1.2.4.1  2004/01/27 05:19:17  dave
- *   Moved Exception logging into CommunityManagerBase
- *   Replaced if(null == database) with DatabaseNotFoundException
- *
- *   Revision 1.2  2004/01/07 10:45:45  dave
- *   Merged development branch, dave-dev-20031224, back into HEAD
- *
- *   Revision 1.1.2.2  2004/01/05 06:47:18  dave
- *   Moved policy data classes into policy.data package
- *
- *   Revision 1.1.2.1  2003/12/24 05:54:48  dave
- *   Initial Maven friendly structure (only part of the service implemented)
- *
- *   Revision 1.14  2003/11/06 15:35:26  dave
- *   Replaced tabs with spaces
- *
- *   Revision 1.13  2003/09/13 02:18:52  dave
- *   Extended the jConfig configuration code.
- *
- *   Revision 1.12  2003/09/12 12:59:17  dave
- *   1) Fixed RemoteException handling in the manager and service implementations.
- *
- *   Revision 1.11  2003/09/11 03:15:06  dave
- *   1) Implemented PolicyService internals - no tests yet.
- *   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
- *   3) Added remote access to groups.
- *
- *   Revision 1.10  2003/09/10 17:21:43  dave
- *   Added remote functionality to groups.
- *
- *   Revision 1.9  2003/09/10 02:56:03  dave
- *   Added PermissionManager and tests
- *
- *   Revision 1.8  2003/09/10 00:08:45  dave
- *   Added getGroupMembers, ResourceIdent and JUnit tests for ResourceManager
- *
- *   Revision 1.7  2003/09/09 16:43:48  KevinBenson
- *   Added the setType for the update groupdata method
- *
- *   Revision 1.6  2003/09/09 14:51:47  dave
- *   Added delGroupMember - only local accounts and groups to start with.
- *
- *   Revision 1.5  2003/09/09 13:48:09  dave
- *   Added addGroupMember - only local accounts and groups to start with.
- *
- *   Revision 1.4  2003/09/09 10:57:47  dave
- *   Added corresponding SINGLE Group to addAccount and delAccount.
- *
- *   Revision 1.3  2003/09/08 20:28:50  dave
- *   Added CommunityIdent, with isLocal() and isValid()
- *
- *   Revision 1.2  2003/09/08 11:01:35  KevinBenson
- *   A check in of the Authentication authenticateToken roughdraft and some changes to the groudata and community data
- *   along with an AdministrationDelegate
- *
- *   Revision 1.1  2003/09/06 20:10:07  dave
- *   Split PolicyManager into separate components.
+ *   Revision 1.6.18.1  2004/03/21 06:41:41  dave
+ *   Refactored to include Exception handling.
  *
  * </cvs:log>
  *
  */
 package org.astrogrid.community.server.policy.manager ;
-
-//import java.rmi.RemoteException ;
 
 import java.util.Vector ;
 import java.util.Collection ;
@@ -119,12 +37,21 @@ import org.exolab.castor.persist.spi.Complex ;
 
 import org.astrogrid.community.common.policy.data.GroupData ;
 import org.astrogrid.community.common.policy.data.GroupMemberData ;
-import org.astrogrid.community.common.policy.data.CommunityIdent ;
+
+import org.astrogrid.community.common.ivorn.CommunityIvornParser ;
 
 import org.astrogrid.community.common.policy.manager.GroupManager ;
 
 import org.astrogrid.community.server.service.CommunityServiceImpl ;
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration ;
+
+import org.astrogrid.community.common.exception.CommunityPolicyException     ;
+import org.astrogrid.community.common.exception.CommunityServiceException    ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException ;
+
+// TODO remove these
+import org.astrogrid.community.common.policy.data.CommunityIdent ;
+
 
 public class GroupManagerImpl
     extends CommunityServiceImpl
@@ -147,6 +74,7 @@ public class GroupManagerImpl
 
     /**
      * Public constructor, using specific database configuration.
+     * @param config A specific DatabaseConfiguration.
      *
      */
     public GroupManagerImpl(DatabaseConfiguration config)
@@ -156,6 +84,7 @@ public class GroupManagerImpl
 
     /**
      * Public constructor, using a parent service.
+     * @param parent A parent CommunityServiceImpl.
      *
      */
     public GroupManagerImpl(CommunityServiceImpl parent)
@@ -164,453 +93,534 @@ public class GroupManagerImpl
         }
 
     /**
-     * Create a new Group, given the Group name.
+     * Add a new Group, given the Group ident.
+     * @param  ident The Group identifier.
+     * @return A GroupData for the Group.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is already in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
-    public GroupData addGroup(String name)
+    public GroupData addGroup(String ident)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        return this.addGroup(new CommunityIdent(name)) ;
+        return this.addGroup(
+            new GroupData(
+                ident
+                )
+            ) ;
         }
 
     /**
-     * Create a new Group, given the Group ident.
+     * Add a new Group, given the Group ident.
+     * @param  ident The Group identifier.
+     * @return An GroupData for the Group.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is already in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
-     */
     protected GroupData addGroup(CommunityIdent ident)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("GroupManagerImpl.addGroup()") ;
-        if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
-
-        GroupData group    = null ;
-        Database  database = null ;
+        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
         //
-        // If the ident is valid.
-        if (ident.isValid())
+        // Check for null ident.
+        if (null == ident)
+            {
+            throw new CommunityIdentifierException(
+                "Null identifier"
+                ) ;
+            }
+        //
+        // Create our new Group object.
+        return this.addGroup(
+            new GroupData(
+                ident.toString()
+                )
+            ) ;
+        }
+     */
+
+    /**
+     * Add a new Group, given the Group data.
+     * @param  group The GroupData to add.
+     * @return A new GroupData for the Group.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not local.
+     * @throws CommunityPolicyException If the identifier is already in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @todo Verify that the finally gets executed, even if a new Exception is thrown.
+     * @todo Prevent private groups.
+     *
+     */
+    public GroupData addGroup(GroupData group)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("GroupManagerImpl.addGroup()") ;
+        if (DEBUG_FLAG) System.out.println("  Group : " + ((null != group) ? group.getIdent() : null)) ;
+        //
+        // Check for null group.
+        if (null == group)
+            {
+            throw new CommunityIdentifierException(
+                "Null group"
+                ) ;
+            }
+        //
+        // Get the Group ident.
+        CommunityIvornParser ident = new CommunityIvornParser(
+            group.getIdent()
+            ) ;
+		//
+		// Set the Group ident.
+		group.setIdent(
+			ident.getAccountIdent()
+			) ;
+        //
+        // If the ident is local.
+        if (ident.isLocal())
             {
             //
-            // If the ident is local.
-            if (ident.isLocal())
+            // Try performing our transaction.
+    		Database database = null ;
+            try {
+                //
+                // Open our database connection.
+                database = this.getDatabase() ;
+                //
+                // Begin a new database transaction.
+                database.begin();
+                //
+                // Try creating the group in the database.
+                database.create(group);
+                //
+                // Commit the transaction.
+                database.commit() ;
+                }
+            //
+            // If we already have an object with that ident.
+            catch (DuplicateIdentityException ouch)
                 {
                 //
-                // Create our new Group object.
-                group = new GroupData() ;
-                group.setIdent(ident.toString()) ;
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
                 //
-                // Try performing our transaction.
-                try {
-                    //
-                    // Open our database connection.
-                    database = this.getDatabase() ;
-                    //
-                    // Begin a new database transaction.
-                    database.begin();
-                    //
-                    // Try creating the group in the database.
-                    database.create(group);
-                    //
-                    // Commit the transaction.
-                    database.commit() ;
-                    }
-                //
-                // If we already have an object with that ident.
-// TODO
-// The only reason to treat this differently is that we might one day report it differently to the client.
-                catch (DuplicateIdentityException ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(ouch, "GroupManagerImpl.addGroup()") ;
-                    //
-                    // Set the response to null.
-                    group = null ;
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-                    }
-                //
-                // If anything else went bang.
-                catch (Exception ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(ouch, "GroupManagerImpl.addGroup()") ;
-                    //
-                    // Set the response to null.
-                    group = null ;
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-                    }
-                //
-                // Close our database connection.
-                finally
-                    {
-                    closeConnection(database) ;
-                    }
+                // Throw a new Exception.
+                throw new CommunityPolicyException(
+                    "Duplicate Group already exists",
+                    ident.getAccountIdent()
+                    ) ;
                 }
             //
-            // If the ident is not local.
-            else {
+            // If anything else went bang.
+            catch (Exception ouch)
+                {
                 //
-                // Set the response to null.
-                group = null ;
+                // Log the exception.
+                logException(
+                    ouch,
+                    "GroupManagerImpl.addGroup()"
+                    ) ;
+                //
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
+                //
+                // Throw a new Exception.
+                throw new CommunityServiceException(
+                    "Database transaction failed",
+                    ident.getAccountIdent(),
+                    ouch
+                    ) ;
                 }
+            //
+            // Close our database connection.
+            finally
+                {
+                closeConnection(database) ;
+                }
+	        return group ;
             }
-            //
-            // If the ident is not valid.
+        //
+        // If the ident is not local.
         else {
-            //
-            // Set the response to null.
-            group = null ;
+            throw new CommunityPolicyException(
+                "Group is not local",
+                ident.getAccountIdent()
+                ) ;
             }
-
-        // TODO
-        // Need to return something to the client.
-        // Possibly a new DataObject ... ?
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        return group ;
         }
 
     /**
-     * Request a Group data, given the Group name.
+     * Request a Group details, given the Group ident.
+     * @param  ident The Group identifier.
+     * @return An GroupData for the Group.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @todo Refactor to use Ivorn identifiers
      *
      */
-    public GroupData getGroup(String name)
+    public GroupData getGroup(String ident)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        //CommunityIdent ident = new CommunityIdent(name) ;
-        //ident.setIdent(name) ;
-        return this.getGroup(new CommunityIdent(name)) ;
+        return this.getGroup(
+            new CommunityIvornParser(
+                ident
+                )
+            ) ;
         }
 
     /**
-     * Request a Group data, given the Group ident.
+     * Request a Group details, given the Group ident.
+     * @param  ident The Group identifier.
+     * @return An GroupData for the Group.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not local.
+     * @throws CommunityPolicyException If the identifier is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @todo Verify that the finally gets executed, even if a new Exception is thrown.
      *
      */
-    protected GroupData getGroup(CommunityIdent ident)
+    protected GroupData getGroup(CommunityIvornParser ident)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getGroup()") ;
-        if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
-
-        GroupData group    = null ;
-        Database  database = null ;
+        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
         //
-        // If the ident is valid.
-        if (ident.isValid())
+        // Check for null ident.
+        if (null == ident)
             {
+            throw new CommunityIdentifierException(
+                "Null identifier"
+                ) ;
+            }
+        //
+        // If the ident is local.
+        if (ident.isLocal())
+            {
+	        Database  database = null ;
+	        GroupData group    = null ;
+            try {
+                //
+                // Open our database connection.
+                database = this.getDatabase() ;
+                //
+                // Begin a new database transaction.
+                database.begin();
+                //
+                // Load the Group from the database.
+                group = (GroupData) database.load(GroupData.class, ident.getAccountIdent()) ;
+                //
+                // Commit the transaction.
+                database.commit() ;
+                }
             //
-            // If the ident is local.
-            if (ident.isLocal())
+            // If we couldn't find the object.
+            catch (ObjectNotFoundException ouch)
                 {
-                try {
-                    //
-                    // Open our database connection.
-                    database = this.getDatabase() ;
-                    //
-                    // Begin a new database transaction.
-                    database.begin();
-                    //
-                    // Load the Group from the database.
-                    group = (GroupData) database.load(GroupData.class, ident.toString()) ;
-                    //
-                    // Commit the transaction.
-                    database.commit() ;
-                    }
                 //
-                // If we couldn't find the object.
-// TODO
-// The only reason to treat this differently is that we might one day report it differently to the client.
-                catch (ObjectNotFoundException ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(ouch, "GroupManagerImpl.getGroup()") ;
-                    //
-                    // Set the response to null.
-                    group = null ;
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-                    }
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
                 //
-                // If anything else went bang.
-                catch (Exception ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(ouch, "GroupManagerImpl.getGroup()") ;
-                    //
-                    // Set the response to null.
-                    group = null ;
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-                    }
-                //
-                // Close our database connection.
-                finally
-                    {
-                    closeConnection(database) ;
-                    }
+                // Throw a new Exception.
+                throw new CommunityPolicyException(
+                    "Group not found",
+                    ident.getAccountIdent()
+                    ) ;
                 }
             //
-            // If the ident is not local.
-            else {
+            // If anything else went bang.
+            catch (Exception ouch)
+                {
                 //
-                // Set the response to null.
-                group = null ;
+                // Log the exception.
+                logException(
+                    ouch,
+                    "GroupManagerImpl.getGroup()"
+                    ) ;
+                //
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
+                //
+                // Throw a new Exception.
+                throw new CommunityServiceException(
+                    "Database transaction failed",
+                    ident.getAccountIdent(),
+                    ouch
+                    ) ;
                 }
+            //
+            // Close our database connection.
+            finally
+                {
+                closeConnection(database) ;
+                }
+	        return group ;
             }
-            //
-            // If the ident is not valid.
+        //
+        // If the ident is not local.
         else {
-            //
-            // Set the response to null.
-            group = null ;
+            throw new CommunityPolicyException(
+                "Group is not local",
+                ident.getAccountIdent()
+                ) ;
             }
-
-        // TODO
-        // Need to return something to the client.
-        // Possibly a new DataObject ... ?
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        return group ;
         }
 
     /**
-     * Update an existing Group data.
+     * Update a Group.
+     * @param  account The new GroupData to update.
+     * @return A new GroupData for the Group.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not local.
+     * @throws CommunityPolicyException If the identifier is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @todo Verify that the finally gets executed, even if a new Exception is thrown.
      *
      */
     public GroupData setGroup(GroupData group)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("GroupManagerImpl.setGroup()") ;
-        if (DEBUG_FLAG) System.out.println("  Group") ;
-        if (DEBUG_FLAG) System.out.println("    ident : " + group.getIdent()) ;
-        if (DEBUG_FLAG) System.out.println("    desc  : " + group.getDescription()) ;
+        if (DEBUG_FLAG) System.out.println("  Group : " + ((null != group) ? group.getIdent() : null)) ;
         //
-        // Create a CommunityIdent from the group.
-        //CommunityIdent ident = new CommunityIdent() ;
-        //ident.setIdent(group.getIdent()) ;
-        CommunityIdent ident = new CommunityIdent(group.getIdent()) ;
-        Database database = null ;
+        // Check for null group.
+        if (null == group)
+            {
+            throw new CommunityIdentifierException(
+                "Null group"
+                ) ;
+            }
         //
-        // If the ident is valid.
-        if (ident.isValid())
+        // Get the Group ident.
+        CommunityIvornParser ident = new CommunityIvornParser(
+        	group.getIdent()
+        	) ;
+        //
+        // If the ident is local.
+        if (ident.isLocal())
             {
             //
-            // If the ident is local.
-            if (ident.isLocal())
+            // Try update the database.
+	        Database database = null ;
+            try {
+                //
+                // Open our database connection.
+                database = this.getDatabase() ;
+                //
+                // Begin a new database transaction.
+                database.begin();
+                //
+                // Load the Group from the database.
+                GroupData data = (GroupData) database.load(GroupData.class, ident.getAccountIdent()) ;
+                //
+                // Update the group data.
+                data.setDisplayName(group.getDisplayName()) ;
+                data.setDescription(group.getDescription()) ;
+                //
+                // Commit the transaction.
+                database.commit() ;
+                }
+            //
+            // If we couldn't find the object.
+            catch (ObjectNotFoundException ouch)
                 {
                 //
-                // Try update the database.
-                try {
-                    //
-                    // Open our database connection.
-                    database = this.getDatabase() ;
-                    //
-                    // Begin a new database transaction.
-                    database.begin();
-                    //
-                    // Load the Group from the database.
-                    GroupData data = (GroupData) database.load(GroupData.class, group.getIdent()) ;
-                    //
-                    // Update the group data.
-                    data.setDescription(group.getDescription()) ;
-//
-// Should not be able to modify the type.
-//                    data.setType(group.getType()) ;
-                    //
-                    // Commit the transaction.
-                    database.commit() ;
-                    }
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
                 //
-                // If we couldn't find the object.
-// TODO
-// The only reason to treat this differently is that we might one day report it differently to the client.
-                catch (ObjectNotFoundException ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(ouch, "GroupManagerImpl.setGroup()") ;
-                    //
-                    // Set the response to null.
-                    group = null ;
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-                    }
-                //
-                // If anything else went bang.
-                catch (Exception ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(ouch, "GroupManagerImpl.setGroup()") ;
-                    //
-                    // Set the response to null.
-                    group = null ;
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-                    }
-                //
-                // Close our database connection.
-                finally
-                    {
-                    closeConnection(database) ;
-                    }
+                // Throw a new Exception.
+                throw new CommunityPolicyException(
+                    "Group not found",
+                    ident.getAccountIdent()
+                    ) ;
                 }
             //
-            // If the ident is not local.
-            else {
+            // If anything else went bang.
+            catch (Exception ouch)
+                {
                 //
-                // Set the response to null.
-                group = null ;
+                // Log the exception.
+                logException(
+                    ouch,
+                    "GroupManagerImpl.setGroup()"
+                    ) ;
+                //
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
+                //
+                // Throw a new Exception.
+                throw new CommunityServiceException(
+                    "Database transaction failed",
+                    ident.getAccountIdent(),
+                    ouch
+                    ) ;
                 }
+            //
+            // Close our database connection.
+            finally
+                {
+                closeConnection(database) ;
+                }
+	        return group ;
             }
-            //
-            // If the ident is not valid.
+        //
+        // If the ident is not local.
         else {
-            //
-            // Set the response to null.
-            group = null ;
+            throw new CommunityPolicyException(
+                "Group is not local",
+                ident.getAccountIdent()
+                ) ;
             }
-
-        // TODO
-        // Need to return something to the client.
-        // Possibly a new DataObject ... ?
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        return group ;
         }
 
     /**
-     * Delete an Group, given the Group name.
+     * Delete a Group.
+     * @param  ident The Group identifier.
+     * @return The GroupData for the old Group.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
-    public GroupData delGroup(String name)
+    public GroupData delGroup(String ident)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        //CommunityIdent ident = new CommunityIdent() ;
-        //ident.setIdent(name) ;
-        return this.delGroup(new CommunityIdent(name)) ;
+        return this.delGroup(
+            new CommunityIvornParser(
+                ident
+                )
+            ) ;
         }
 
     /**
-     * Delete an Group, given the Group ident.
+     * Delete a Group.
+     * @param  ident The Group identifier.
+     * @return The GroupData for the old Group.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not local.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @todo Need to have a mechanism for notifying other Communities that the Group has been deleted.
+     * @todo Verify that the finally gets executed, even if a new Exception is thrown.
+     * @todo Refactor to use Ivorn identifiers.
+     * @todo Prevent the client from deleting a private Group if the Account still exists.
      *
      */
-    protected GroupData delGroup(CommunityIdent ident)
+    protected GroupData delGroup(CommunityIvornParser ident)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("GroupManagerImpl.delGroup()") ;
         if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
-//
-// TODO
-// Prevent the client from deleting an Account Group if the Account still exists.
-//
-        GroupData group    = null ;
-        Database  database = null ;
         //
-        // If the ident is valid.
-        if (ident.isValid())
+        // Check for null ident.
+        if (null == ident)
+            {
+            throw new CommunityIdentifierException(
+                "Null identifier"
+                ) ;
+            }
+        //
+        // If the ident is local.
+        if (ident.isLocal())
             {
             //
-            // If the ident is local.
-            if (ident.isLocal())
+            // Try update the database.
+	        GroupData group    = null ;
+	        Database  database = null ;
+            try {
+                //
+                // Open our database connection.
+                database = this.getDatabase() ;
+                //
+                // Begin a new database transaction.
+                database.begin();
+                //
+                // Load the Group from the database.
+                group = (GroupData) database.load(GroupData.class, ident.getAccountIdent()) ;
+                //
+                // Delete the Group.
+                database.remove(group) ;
+                //
+                // Commit the transaction.
+                database.commit() ;
+                }
+            //
+            // If we couldn't find the object.
+            catch (ObjectNotFoundException ouch)
                 {
                 //
-                // Try update the database.
-                try {
-                    //
-                    // Open our database connection.
-                    database = this.getDatabase() ;
-                    //
-                    // Begin a new database transaction.
-                    database.begin();
-                    //
-                    // Load the Group from the database.
-                    group = (GroupData) database.load(GroupData.class, ident.toString()) ;
-                    //
-                    // Delete the Group.
-                    database.remove(group) ;
-                    //
-                    // Commit the transaction.
-                    database.commit() ;
-                    }
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
                 //
-                // If we couldn't find the object.
-// TODO
-// The only reason to treat this differently is that we might one day report it differently to the client.
-                catch (ObjectNotFoundException ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(ouch, "GroupManagerImpl.delGroup()") ;
-                    //
-                    // Set the response to null.
-                    group = null ;
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-                    }
-                //
-                // If anything else went bang.
-                catch (Exception ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(ouch, "GroupManagerImpl.delGroup()") ;
-                    //
-                    // Set the response to null.
-                    group = null ;
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-                    }
-                //
-                // Close our database connection.
-                finally
-                    {
-                    closeConnection(database) ;
-                    }
+                // Throw a new Exception.
+                throw new CommunityPolicyException(
+                    "Group not found",
+                    ident.getAccountIdent()
+                    ) ;
                 }
             //
-            // If the ident is not local.
-            else {
+            // If anything else went bang.
+            catch (Exception ouch)
+                {
                 //
-                // Set the response to null.
-                group = null ;
+                // Log the exception.
+                logException(
+                    ouch,
+                    "GroupManagerImpl.delGroup()"
+                    ) ;
+                //
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
+                //
+                // Throw a new Exception.
+                throw new CommunityServiceException(
+                    "Database transaction failed",
+                    ident.getAccountIdent(),
+                    ouch
+                    ) ;
                 }
+            //
+            // Close our database connection.
+            finally
+                {
+                closeConnection(database) ;
+                }
+	        return group ;
             }
-            //
-            // If the ident is not valid.
+        //
+        // If the ident is not local.
         else {
-            //
-            // Set the response to null.
-            group = null ;
+            throw new CommunityPolicyException(
+                "Group is not local",
+                ident.getAccountIdent()
+                ) ;
             }
-
-        // TODO
-        // Need to return something to the client.
-        // Possibly a new DataObject ... ?
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        return group ;
         }
 
     /**
      * Request a list of local Groups.
+     * @return An array of GroupData objects.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @todo Return empty array rather than null.
      *
      */
     public Object[] getLocalGroups()
+        throws CommunityServiceException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getLocalGroups()") ;
-
         //
         // Try to query the database.
         Object[] array = null ;
@@ -654,13 +664,19 @@ public class GroupManagerImpl
             {
             //
             // Log the exception.
-            logException(ouch, "GroupManagerImpl.getLocalGroups()") ;
-            //
-            // Set the response to null.
-            array = null ;
+            logException(
+                ouch,
+                "GroupManagerImpl.getLocalGroups()"
+                ) ;
             //
             // Cancel the database transaction.
             rollbackTransaction(database) ;
+            //
+            // Throw a new Exception.
+            throw new CommunityServiceException(
+                "Database transaction failed",
+                ouch
+                ) ;
             }
         //
         // Close our database connection.
@@ -668,142 +684,221 @@ public class GroupManagerImpl
             {
             closeConnection(database) ;
             }
-        // TODO
-        // Need to return something to the client.
-        // Possibly a new DataObject ... ?
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
         return array ;
         }
 
     /**
-     * Add an Account to a Group, given the Account and Group idents.
+     * Add an Account to a Group.
      * Group must be local, but Account can be local or remote.
+     * @param account The Account identifier.
+     * @param group   The Group identifier.
+     * @return A GroupMemberData for the membership.
+     * @throws CommunityIdentifierException If one of the identifiers is not valid.
+     * @throws CommunityPolicyException If the group is not local.
+     * @throws CommunityPolicyException If the membership already exists.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
-    protected GroupMemberData addGroupMember(CommunityIdent account, CommunityIdent group)
+    public GroupMemberData addGroupMember(String account, String group)
+        throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
+        {
+		return this.addGroupMember(
+			new CommunityIvornParser(
+				account
+				),
+			new CommunityIvornParser(
+				group
+				)
+			) ;
+		}
+
+    /**
+     * Add an Account to a Group.
+     * Group must be local, but Account can be local or remote.
+     * @param account The Account identifier.
+     * @param group   The Group identifier.
+     * @return A GroupMemberData for the membership.
+     * @throws CommunityIdentifierException If one of the identifiers is not valid.
+     * @throws CommunityPolicyException If the group is not local.
+     * @throws CommunityPolicyException If the membership already exists.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @todo Check the actually exists.
+     * @todo Check the group isn't a private group.
+     *
+     */
+    protected GroupMemberData addGroupMember(CommunityIvornParser account, CommunityIvornParser group)
+        throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("GroupManagerImpl.addGroupMember()") ;
         if (DEBUG_FLAG) System.out.println("  account  : " + account) ;
         if (DEBUG_FLAG) System.out.println("  group    : " + group) ;
-
         //
-        // Exit if the account is not valid.
-        if (false == account.isValid())
+        // Check for null account.
+        if (null == account)
             {
-            //
-            // TODO
-            // Should return a DataObject with the reason.
-            if (DEBUG_FLAG) System.out.println("Exit - Account is not valid") ;
-            return null ;
+            throw new CommunityIdentifierException(
+                "Null account"
+                ) ;
             }
         //
-        // Exit if the group is not valid.
-        if (false == group.isValid())
+        // Check for null group.
+        if (null == group)
             {
-            //
-            // TODO
-            // Should return a DataObject with the reason.
-            if (DEBUG_FLAG) System.out.println("Exit - Group is not valid") ;
-            return null ;
-            }
-        //
-        // Exit if the group ident is not local.
-        if (false == group.isLocal())
-            {
-            //
-            // TODO
-            // Should return a DataObject with the reason.
-            if (DEBUG_FLAG) System.out.println("Exit - Group is not local") ;
-            return null ;
+            throw new CommunityIdentifierException(
+                "Null group"
+                ) ;
             }
 //
 // Check the group isn't an account group.
 //
         //
-        // Create our new GroupMemberData.
-        GroupMemberData member = new GroupMemberData() ;
-        member.setAccount(account.toString()) ;
-        member.setGroup(group.toString()) ;
-        //
-        // Try performing our transaction.
-        Database database = null ;
-        try {
-            //
-            // Open our database connection.
-            database = this.getDatabase() ;
-            //
-            // Begin a new database transaction.
-            database.begin();
-            //
-            // Try creating the record in the database.
-            database.create(member);
-            //
-            // Commit the transaction.
-            database.commit() ;
-            }
-        //
-        // If the account is already a member of this group.
-// TODO
-// The only reason to treat this differently is that we might one day report it differently to the client.
-        catch (DuplicateIdentityException ouch)
+        // If the group is local.
+        if (group.isLocal())
             {
             //
-            // Log the exception.
-            logException(ouch, "GroupManagerImpl.addGroupMember()") ;
+            // Create our new GroupMemberData.
+            GroupMemberData member = new GroupMemberData() ;
+            member.setAccount(
+            	account.getAccountIdent()
+            	) ;
+            member.setGroup(
+            	group.getAccountIdent()
+            	) ;
             //
-            // Set the response to null.
-            member = null ;
+            // Try performing our transaction.
+            Database database = null ;
+            try {
+                //
+                // Open our database connection.
+                database = this.getDatabase() ;
+                //
+                // Begin a new database transaction.
+                database.begin();
+                //
+                // Try creating the record in the database.
+                database.create(member);
+                //
+                // Commit the transaction.
+                database.commit() ;
+                }
             //
-            // Cancel the database transaction.
-            rollbackTransaction(database) ;
+            // If the account is already a member of this group.
+            catch (DuplicateIdentityException ouch)
+                {
+                //
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
+                //
+                // Throw a new Exception.
+                throw new CommunityPolicyException(
+                    "GroupMembership already exists",
+					(account.getAccountIdent() + "|" + group.getAccountIdent())
+                    ) ;
+                }
+            //
+            // If anything else went bang.
+            catch (Exception ouch)
+                {
+                //
+                // Log the exception.
+                logException(
+                    ouch,
+                    "GroupManagerImpl.addGroupMember()"
+                    ) ;
+                //
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
+                //
+                // Throw a new Exception.
+                throw new CommunityServiceException(
+                    "Database transaction failed",
+                    ouch
+                    ) ;
+                }
+            //
+            // Close our database connection.
+            finally
+                {
+                closeConnection(database) ;
+                }
+	        return member ;
             }
         //
-        // If anything else went bang.
-        catch (Exception ouch)
-            {
-            //
-            // Log the exception.
-            logException(ouch, "GroupManagerImpl.addGroupMember()") ;
-            //
-            // Set the response to null.
-            member = null ;
-            //
-            // Cancel the database transaction.
-            rollbackTransaction(database) ;
+        // If the group is not local.
+        else {
+            throw new CommunityPolicyException(
+                "Group is not local",
+                group.getAccountIdent()
+                ) ;
             }
-        //
-        // Close our database connection.
-        finally
-            {
-            closeConnection(database) ;
-            }
-        //
-        // TODO
-        // Should return a DataObject with status response.
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        return member ;
         }
 
     /**
-     * Remove an Account from a Group, given the Account and Group idents.
-     * Group should be local, but Account can be anything (local, remote, or deleted).
+     * Remove an Account from a Group.
+     * Group must be local, but Account can be local or remote.
+     * @param account The Account identifier.
+     * @param group   The Group identifier.
+     * @return A GroupMemberData for the membership.
+     * @throws CommunityIdentifierException If one of the identifiers is not valid.
+     * @throws CommunityPolicyException If the membership does not exist.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
-    protected GroupMemberData delGroupMember(CommunityIdent account, CommunityIdent group)
+    public GroupMemberData delGroupMember(String account, String group)
+        throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
+        {
+		return this.delGroupMember(
+			new CommunityIvornParser(
+				account
+				),
+			new CommunityIvornParser(
+				group
+				)
+			) ;
+		}
+
+    /**
+     * Remove an Account from a Group.
+     * Group must be local, but Account can be local or remote.
+     * @param account The Account identifier.
+     * @param group   The Group identifier.
+     * @return A GroupMemberData for the membership.
+     * @throws CommunityIdentifierException If one of the identifiers is not valid.
+     * @throws CommunityPolicyException If the membership does not exist.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @todo Check the group isn't a private group.
+     *
+     */
+    protected GroupMemberData delGroupMember(CommunityIvornParser account, CommunityIvornParser group)
+        throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("GroupManagerImpl.delGroupMember()") ;
         if (DEBUG_FLAG) System.out.println("  account  : " + account) ;
         if (DEBUG_FLAG) System.out.println("  group    : " + group) ;
-
+        //
+        // Check for null account.
+        if (null == account)
+            {
+            throw new CommunityIdentifierException(
+                "Null account"
+                ) ;
+            }
+        //
+        // Check for null group.
+        if (null == group)
+            {
+            throw new CommunityIdentifierException(
+                "Null group"
+                ) ;
+            }
         //
         // No checks if the account ident is valid.
         // Still want to delete the record even if the ident is invalid.
         //
-
 //
 // Check the group isn't an account group.
 // But, still proceed if the group does not exist.
@@ -830,8 +925,8 @@ public class GroupManagerImpl
             Complex key = new Complex(
                 new Object[]
                     {
-                    account.toString(),
-                    group.toString()
+                    account.getAccountIdent(),
+                    group.getAccountIdent()
                     }
                 ) ;
             //
@@ -846,19 +941,17 @@ public class GroupManagerImpl
             }
         //
         // If we couldn't find the object.
-// TODO
-// The only reason to treat this differently is that we might one day report it differently to the client.
         catch (ObjectNotFoundException ouch)
             {
             //
-            // Log the exception.
-            logException(ouch, "GroupManagerImpl.delGroupMember()") ;
-            //
-            // Set the response to null.
-            member = null ;
-            //
             // Cancel the database transaction.
             rollbackTransaction(database) ;
+            //
+            // Throw a new Exception.
+            throw new CommunityPolicyException(
+                "GroupMembership not found",
+				(account.getAccountIdent() + "|" + group.getAccountIdent())
+                ) ;
             }
         //
         // If anything else went bang.
@@ -866,13 +959,19 @@ public class GroupManagerImpl
             {
             //
             // Log the exception.
-            logException(ouch, "GroupManagerImpl.delGroupMember()") ;
-            //
-            // Set the response to null.
-            member = null ;
+            logException(
+                ouch,
+                "GroupManagerImpl.delGroupMember()"
+                ) ;
             //
             // Cancel the database transaction.
             rollbackTransaction(database) ;
+            //
+            // Throw a new Exception.
+            throw new CommunityServiceException(
+                "Database transaction failed",
+                ouch
+                ) ;
             }
         //
         // Close our database connection.
@@ -880,105 +979,195 @@ public class GroupManagerImpl
             {
             closeConnection(database) ;
             }
-        //
-        // TODO
-        // Should return a DataObject with status response.
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
         return member ;
         }
 
     /**
-     * Get a GroupMemberData, given the Account and Group idents.
-     * Group should be local, but Account can be anything.
+     * Request a Group Membership details.
+     * Group must be local, but Account can be local or remote.
+     * @param account The Account identifier.
+     * @param group   The Group identifier.
+     * @return A GroupMemberData for the membership.
+     * @throws CommunityIdentifierException If one of the identifiers is not valid.
+     * @throws CommunityPolicyException If the group is not local.
+     * @throws CommunityPolicyException If the membership does not exist.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
-    public GroupMemberData getGroupMember(CommunityIdent account, CommunityIdent group)
+    public GroupMemberData getGroupMember(String account, String group)
+        throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
+		{
+		return this.getGroupMember(
+			new CommunityIvornParser(
+				account
+				),
+			new CommunityIvornParser(
+				group
+				)
+			) ;
+		}
+
+    /**
+     * Request a Group Membership details.
+     * Group must be local, but Account can be local or remote.
+     * @param account The Account identifier.
+     * @param group   The Group identifier.
+     * @return A GroupMemberData for the membership.
+     * @throws CommunityIdentifierException If one of the identifiers is not valid.
+     * @throws CommunityPolicyException If the group is not local.
+     * @throws CommunityPolicyException If the membership does not exist.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     *
+     */
+    protected GroupMemberData getGroupMember(CommunityIvornParser account, CommunityIvornParser group)
+        throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getGroupMember()") ;
         if (DEBUG_FLAG) System.out.println("  account  : " + account) ;
         if (DEBUG_FLAG) System.out.println("  group    : " + group) ;
-
-        GroupMemberData member   = null ;
-        Database        database = null ;
-        try {
-            //
-            // Open our database connection.
-            database = this.getDatabase() ;
-            //
-            // Begin a new database transaction.
-            database.begin();
-            //
-            // Create the database key.
-            Complex key = new Complex(
-                new Object[]
-                    {
-                    account.toString(),
-                    group.toString()
-                    }
+        //
+        // Check for null account.
+        if (null == account)
+            {
+            throw new CommunityIdentifierException(
+                "Null account"
                 ) ;
-            //
-            // Load the GroupMember from the database.
-            member = (GroupMemberData) database.load(GroupMemberData.class, key) ;
-            //
-            // Commit the transaction.
-            database.commit() ;
             }
         //
-        // If we couldn't find the object.
-// TODO
-// The only reason to treat this differently is that we might one day report it differently to the client.
-        catch (ObjectNotFoundException ouch)
+        // Check for null group.
+        if (null == group)
             {
-            //
-            // Log the exception.
-            logException(ouch, "GroupManagerImpl.getGroupMember()") ;
-            //
-            // Set the response to null.
-            member = null ;
-            //
-            // Cancel the database transaction.
-            rollbackTransaction(database) ;
+            throw new CommunityIdentifierException(
+                "Null group"
+                ) ;
             }
         //
-        // If anything else went bang.
-        catch (Exception ouch)
+        // If the group is local.
+        if (group.isLocal())
             {
+            GroupMemberData member   = null ;
+            Database        database = null ;
+            try {
+                //
+                // Open our database connection.
+                database = this.getDatabase() ;
+                //
+                // Begin a new database transaction.
+                database.begin();
+                //
+                // Create the database key.
+                Complex key = new Complex(
+                    new Object[]
+                        {
+                        account.getAccountIdent(),
+                        group.getAccountIdent()
+                        }
+                    ) ;
+                //
+                // Load the GroupMember from the database.
+                member = (GroupMemberData) database.load(GroupMemberData.class, key) ;
+                //
+                // Commit the transaction.
+                database.commit() ;
+                }
             //
-            // Log the exception.
-            logException(ouch, "GroupManagerImpl.getGroupMember()") ;
+            // If we couldn't find the object.
+            catch (ObjectNotFoundException ouch)
+                {
+                //
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
+                //
+                // Throw a new Exception.
+                throw new CommunityPolicyException(
+                    "GroupMembership not found",
+					(account.getAccountIdent() + "|" + group.getAccountIdent())
+                    ) ;
+                }
             //
-            // Set the response to null.
-            member = null ;
+            // If anything else went bang.
+            catch (Exception ouch)
+                {
+                //
+                // Log the exception.
+                logException(
+                    ouch,
+                    "GroupManagerImpl.getGroupMember()"
+                    ) ;
+                //
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
+                //
+                // Throw a new Exception.
+                throw new CommunityServiceException(
+                    "Database transaction failed",
+                    ouch
+                    ) ;
+                }
             //
-            // Cancel the database transaction.
-            rollbackTransaction(database) ;
+            // Close our database connection.
+            finally
+                {
+                closeConnection(database) ;
+                }
+	        return member ;
             }
         //
-        // Close our database connection.
-        finally
-            {
-            closeConnection(database) ;
+        // If the group is not local.
+        else {
+            throw new CommunityPolicyException(
+                "Group is not local",
+                group.getAccountIdent()
+                ) ;
             }
-        //
-        // TODO
-        // Should return a DataObject with status response.
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        return member ;
         }
 
     /**
-     * Get a list of Group members, given a local Group ident.
+     * Request a list of Group Members.
+     * @param group The Group identifier.
+     * @return An array of GroupMemberData objects.
+     * @throws CommunityIdentifierException If one of the identifiers is not valid.
+     * @throws CommunityPolicyException If the group is not local.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
-    protected Object[] getGroupMembers(CommunityIdent group)
+    public Object[] getGroupMembers(String group)
+        throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
+        {
+		return this.getGroupMembers(
+			new CommunityIvornParser(
+				group
+				)
+			) ;
+		}
+
+    /**
+     * Request a list of Group Members.
+     * @param group The Group identifier.
+     * @return An array of GroupMemberData objects.
+     * @throws CommunityIdentifierException If one of the identifiers is not valid.
+     * @throws CommunityPolicyException If the group is not local.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @todo Return empty array rather than null.
+     *
+     */
+    protected Object[] getGroupMembers(CommunityIvornParser group)
+        throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getGroupMembers()") ;
         if (DEBUG_FLAG) System.out.println("  group    : " + group) ;
-
+        //
+        // Check for null group.
+        if (null == group)
+            {
+            throw new CommunityIdentifierException(
+                "Null group"
+                ) ;
+            }
         Object[] array    = null ;
         Database database = null ;
         //
@@ -1002,7 +1191,7 @@ public class GroupManagerImpl
                     );
                 //
                 // Bind the query param.
-                query.bind(group.toString()) ;
+                query.bind(group.getAccountIdent()) ;
                 //
                 // Execute our query.
                 QueryResults results = query.execute();
@@ -1026,13 +1215,19 @@ public class GroupManagerImpl
                 {
                 //
                 // Log the exception.
-                logException(ouch, "GroupManagerImpl.getGroupList()") ;
-                //
-                // Set the response to null.
-                array = null ;
+                logException(
+                    ouch,
+                    "GroupManagerImpl.getGroupMembers()"
+                    ) ;
                 //
                 // Cancel the database transaction.
                 rollbackTransaction(database) ;
+                //
+                // Throw a new Exception.
+                throw new CommunityServiceException(
+                    "Database transaction failed",
+                    ouch
+                    ) ;
                 }
             //
             // Close our database connection.
@@ -1042,107 +1237,120 @@ public class GroupManagerImpl
                 }
             }
         //
-        // If the Group is not local.
+        // If the group is not local.
         else {
-            if (DEBUG_FLAG) System.out.println("FAIL : Group is remote") ;
-            //
-            // Set the response to null.
-            array = null ;
+            throw new CommunityPolicyException(
+                "Group is not local",
+                group.getAccountIdent()
+                ) ;
             }
-
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
         return array;
         }
 
     /**
-     * Get a list of local Groups that an Account belongs to, given the Account name.
+     * Request a list of Groups that an Account belongs to.
+     * @param account The Account identifier.
+     * @return An array of GroupMemberData objects.
+     * @throws CommunityIdentifierException If one of the identifiers is not valid.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
     public Object[] getLocalAccountGroups(String account)
+        throws CommunityServiceException, CommunityIdentifierException
         {
-        //CommunityIdent ident = new CommunityIdent() ;
-        //ident.setIdent(account) ;
-        return this.getLocalAccountGroups(new CommunityIdent(account)) ;
+        return this.getLocalAccountGroups(
+            new CommunityIvornParser(
+                account
+                )
+            ) ;
         }
 
     /**
-     * Get a list of local Groups that an Account belongs to, given the Account ident.
+     * Request a list of Groups that an Account belongs to.
+     * @param account The Account identifier.
+     * @return An array of GroupMemberData objects.
+     * @throws CommunityIdentifierException If one of the identifiers is not valid.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @todo Return empty array rather than null.
      *
      */
-    protected Object[] getLocalAccountGroups(CommunityIdent account)
+    protected Object[] getLocalAccountGroups(CommunityIvornParser account)
+        throws CommunityServiceException, CommunityIdentifierException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getLocalAccountGroups()") ;
         if (DEBUG_FLAG) System.out.println("  account   : " + account) ;
+        //
+        // Check for null account.
+        if (null == account)
+            {
+            throw new CommunityIdentifierException(
+                "Null account"
+                ) ;
+            }
         Object[] array    = null ;
         Database database = null ;
         //
-        // If the Account ident is valid.
-        if (account.isValid())
-            {
-            if (DEBUG_FLAG) System.out.println("PASS : Account is valid") ;
+        // Try to query the database.
+        try {
             //
-            // Try to query the database.
-            try {
-                //
-                // Open our database connection.
-                database = this.getDatabase() ;
-                //
-                // Begin a new database transaction.
-                database.begin();
-                //
-                // Create our OQL query.
-                OQLQuery query = database.getOQLQuery(
-                    "SELECT members FROM org.astrogrid.community.policy.data.GroupMemberData members WHERE members.account = $1"
-                    );
-                //
-                // Bind the query param.
-                query.bind(account.toString()) ;
-                //
-                // Execute our query.
-                QueryResults results = query.execute();
-                //
-                // Transfer our results to a vector.
-                Collection collection = new Vector() ;
-                while (results.hasMore())
-                    {
-                    collection.add(results.next()) ;
-                    }
-                // 
-                // Convert it into an array.
-                array = collection.toArray() ;
-                //
-                // Commit the transaction.
-                database.commit() ;
-                }
+            // Open our database connection.
+            database = this.getDatabase() ;
             //
-            // If anything went bang.
-            catch (Exception ouch)
+            // Begin a new database transaction.
+            database.begin();
+            //
+            // Create our OQL query.
+            OQLQuery query = database.getOQLQuery(
+                "SELECT members FROM org.astrogrid.community.policy.data.GroupMemberData members WHERE members.account = $1"
+                );
+            //
+            // Bind the query param.
+            query.bind(account.getAccountIdent()) ;
+            //
+            // Execute our query.
+            QueryResults results = query.execute();
+            //
+            // Transfer our results to a vector.
+            Collection collection = new Vector() ;
+            while (results.hasMore())
                 {
-                //
-                // Log the exception.
-                logException(ouch, "GroupManagerImpl.getLocalAccountGroups()") ;
-                //
-                // Set the response to null.
-                array = null ;
-                //
-                // Cancel the database transaction.
-                rollbackTransaction(database) ;
+                collection.add(results.next()) ;
                 }
+            // 
+            // Convert it into an array.
+            array = collection.toArray() ;
             //
-            // Close our database connection.
-            finally
-                {
-                closeConnection(database) ;
-                }
+            // Commit the transaction.
+            database.commit() ;
             }
         //
-        // If the Account ident is not valid.
-        else {
-            if (DEBUG_FLAG) System.out.println("FAIL : Account is not valid") ;
+        // If anything went bang.
+        catch (Exception ouch)
+            {
+            //
+            // Log the exception.
+            logException(
+                ouch,
+                "GroupManagerImpl.getLocalAccountGroups()"
+                ) ;
+            //
+            // Cancel the database transaction.
+            rollbackTransaction(database) ;
+            //
+            // Throw a new Exception.
+            throw new CommunityServiceException(
+                "Database transaction failed",
+                ouch
+                ) ;
             }
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        //
+        // Close our database connection.
+        finally
+            {
+            closeConnection(database) ;
+            }
         return array ;
         }
     }

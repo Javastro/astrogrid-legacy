@@ -1,11 +1,25 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/PolicyManagerMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerMock.java,v $
+ *   Revision 1.5  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.4.2.3  2004/03/22 00:53:31  dave
+ *   Refactored GroupManager to use Ivorn identifiers.
+ *   Started removing references to CommunityManager.
+ *
+ *   Revision 1.4.2.2  2004/03/21 06:41:41  dave
+ *   Refactored to include Exception handling.
+ *
+ *   Revision 1.4.2.1  2004/03/20 06:54:11  dave
+ *   Added addAccount(AccountData) to PolicyManager et al.
+ *   Added XML loader for AccountData.
+ *
  *   Revision 1.4  2004/03/19 14:43:14  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
@@ -40,7 +54,6 @@ import java.rmi.RemoteException ;
 
 import org.astrogrid.community.common.policy.data.AccountData ;
 import org.astrogrid.community.common.policy.data.GroupData ;
-import org.astrogrid.community.common.policy.data.CommunityData ;
 import org.astrogrid.community.common.policy.data.ResourceData ;
 import org.astrogrid.community.common.policy.data.PolicyPermission ;
 import org.astrogrid.community.common.policy.data.GroupMemberData ;
@@ -98,6 +111,20 @@ public class PolicyManagerMock
         }
 
     /**
+     * Add a new Account, given the Account data.
+     * @param  account The AccountData to add.
+     * @return A new AccountData for the Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is already in the database.
+     *
+     */
+    public AccountData addAccount(AccountData account)
+        throws CommunityIdentifierException, CommunityPolicyException
+        {
+        return accountManager.addAccount(account) ;
+        }
+
+    /**
      * Request an Account details, given the Account ident.
      * @param  ident The Account identifier.
      * @return An AccountData for the Account.
@@ -149,6 +176,7 @@ public class PolicyManagerMock
         return accountManager.getLocalAccounts() ;
         }
 
+
     /**
      * Our GroupManager.
      *
@@ -156,61 +184,91 @@ public class PolicyManagerMock
     private GroupManagerMock groupManager = new GroupManagerMock() ;
 
     /**
-     * Create a new Group, given the Group ident.
+     * Add a new Group, given the Group ident.
+     * @param  ident The Group identifier.
+     * @return An GroupData for the Group.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is already in the database.
      *
      */
     public GroupData addGroup(String ident)
-        throws RemoteException
+        throws CommunityIdentifierException, CommunityPolicyException
         {
         return groupManager.addGroup(ident) ;
         }
 
     /**
-     * Request an Group data, given the Group ident.
+     * Add a new Group, given the Group data.
+     * @param  data The GroupData to add.
+     * @return A new GroupData for the Group.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is already in the database.
+     *
+     */
+    public GroupData addGroup(GroupData group)
+        throws CommunityIdentifierException, CommunityPolicyException
+        {
+        return groupManager.addGroup(group) ;
+        }
+
+    /**
+     * Request a Group details, given the Group ident.
+     * @param  ident The Group identifier.
+     * @return An GroupData for the Group.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
      *
      */
     public GroupData getGroup(String ident)
-        throws RemoteException
+        throws CommunityIdentifierException, CommunityPolicyException
         {
         return groupManager.getGroup(ident) ;
         }
 
     /**
-     * Update an Group data.
+     * Update a Group.
+     * @param  update The new Group data to update.
+     * @return A new GroupData for the Group.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
      *
      */
-    public GroupData setGroup(GroupData group)
-        throws RemoteException
+    public GroupData setGroup(GroupData update)
+        throws CommunityIdentifierException, CommunityPolicyException
         {
-        return groupManager.setGroup(group) ;
+        return groupManager.setGroup(update) ;
         }
 
     /**
-     * Delete an Group, given the Group ident.
+     * Delete a Group.
+     * @param  ident The Group identifier.
+     * @return The GroupData for the old Group.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is not in the database.
      *
      */
     public GroupData delGroup(String ident)
-        throws RemoteException
+        throws CommunityIdentifierException, CommunityPolicyException
         {
         return groupManager.delGroup(ident) ;
         }
 
     /**
      * Request a list of local Groups.
+     * @return An array of GroupData objects.
      *
      */
     public Object[] getLocalGroups()
-        throws RemoteException
         {
         return groupManager.getLocalGroups() ;
         }
 
     /**
-     * Get a list of local Groups that an Account belongs to, given the Account name.
+     * Get a list of local Groups that an Account belongs to.
+     * @return An array of GroupData objects.
      *
      */
     public Object[] getLocalAccountGroups(String account)
-        throws RemoteException
         {
         return groupManager.getLocalAccountGroups(account) ;
         }
@@ -218,8 +276,8 @@ public class PolicyManagerMock
     /**
      * Our CommunityManager.
      *
-     */
     private CommunityManagerMock communityManager = new CommunityManagerMock() ;
+     */
 
     /**
      * Add a new Community, given the Account ident.
@@ -228,12 +286,12 @@ public class PolicyManagerMock
      * @throws CommunityIdentifierException If the identifier is not valid.
      * @throws CommunityPolicyException If the identifier is already in the database.
      *
-     */
     public CommunityData addCommunity(String ident)
         throws CommunityIdentifierException, CommunityPolicyException
         {
         return communityManager.addCommunity(ident) ;
         }
+     */
 
     /**
      * Request a Community details, given the Community ident.
@@ -242,12 +300,12 @@ public class PolicyManagerMock
      * @throws CommunityIdentifierException If the identifier is not valid.
      * @throws CommunityPolicyException If the identifier is not in the database.
      *
-     */
     public CommunityData getCommunity(String ident)
         throws CommunityIdentifierException, CommunityPolicyException
         {
         return communityManager.getCommunity(ident) ;
         }
+     */
 
     /**
      * Update a Community.
@@ -256,12 +314,12 @@ public class PolicyManagerMock
      * @throws CommunityIdentifierException If the identifier is not valid.
      * @throws CommunityPolicyException If the identifier is not in the database.
      *
-     */
     public CommunityData setCommunity(CommunityData update)
         throws CommunityIdentifierException, CommunityPolicyException
         {
         return communityManager.setCommunity(update) ;
         }
+     */
 
     /**
      * Delete a Community.
@@ -270,22 +328,22 @@ public class PolicyManagerMock
      * @throws CommunityIdentifierException If the identifier is not valid.
      * @throws CommunityPolicyException If the identifier is not in the database.
      *
-     */
     public CommunityData delCommunity(String ident)
         throws CommunityIdentifierException, CommunityPolicyException
         {
         return communityManager.delCommunity(ident) ;
         }
+     */
 
     /**
      * Request a list of Communities.
      * @return An array of CommunityData objects.
      *
-     */
     public Object[] getCommunityList()
         {
         return communityManager.getCommunityList() ;
         }
+     */
 
     /**
      * Our ResourceManager.

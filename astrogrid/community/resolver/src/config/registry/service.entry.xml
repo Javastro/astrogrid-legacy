@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/config/registry/service.entry.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: service.entry.xml,v $
+    |   Revision 1.2  2004/03/23 16:34:08  dave
+    |   Merged development branch, dave-dev-200403191458, into HEAD
+    |
+    |   Revision 1.1.2.1  2004/03/23 10:48:32  dave
+    |   Registry configuration files and PolicyManagerResolver tests.
+    |
+    | </cvs:log>
+    |
+    +-->
 <VODescription
   xmlns="http://www.ivoa.net/xml/VOResource/v0.9"
   xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9"
@@ -21,54 +38,30 @@
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
  <vr:Resource xsi:type="ServiceType">
     <Identifier>
-      <AuthorityID>vm05.astrogrid.org</AuthorityID>
-      <ResourceKey>MyspaceManager</ResourceKey>
+      <AuthorityID>community ident</AuthorityID>
+      <ResourceKey>service class</ResourceKey>
     </Identifier>
-    <Title>Myspace Manager Service Entry</Title>
-    <ShortName>Myspace</ShortName>
+    <Title>Test service</Title>
+    <ShortName>Test service</ShortName>
     <Summary>
-      <Description>
-         This entry is a Myspace manager entry which is a particular service dealing with a user's VOSpace.
-      </Description>
-      <ReferenceURL>http://www.astrogrid.org/maven/build/myspace</ReferenceURL>
+      <Description/>
+      <ReferenceURL>http://www.astrogrid.org</ReferenceURL>
     </Summary>
     <Type>Archive</Type>
-    <RelatedResource>
-       <Relationship>related-to</Relationship>
-       <RelatedTo>
-          <Identifier>
-            <AuthorityID>vm08.astrogrid.org</AuthorityID>
-            <ResourceKey>MyspaceSvr</ResourceKey>
-          </Identifier>
-        <Title>Myspace Server</Title>
-       </RelatedTo>
-    </RelatedResource>
     <Curation>
       <Publisher>
-         <Title>Service test publisher</Title>
-      </Publisher>    
+         <Title>Test service</Title>
+      </Publisher>
       <Contact>
-        <Name>Clive Davenhall</Name>
-      	<Email>acd@roe.ac.uk</Email>
+        <Name>Test contact</Name>
+      	<Email>test@astrogrid.org</Email>
       </Contact>
       <Date>2004-02-02</Date>
-      <Creator>
-        <Name>Kevin Benson</Name>
-      </Creator>
-      <Contributor>
-        <Name>Dave Morris</Name>
-      </Contributor>
-      <Contributor>
-        <Name>Martin Hill</Name>
-      </Contributor>     
-      <Contributor>
-        <Name>Clive Davenhall</Name>
-      </Contributor>       
     </Curation>
-    <Subject>Users VOSpace</Subject>
+    <Subject>Test service</Subject>
     <Interface>
       <Invocation>WebService</Invocation>
-      <AccessURL use="base">http://vm05.astrogrid.org:8080/astrogrid-mySpace/services/MySpaceManager?wsdl</AccessURL>
+      <AccessURL use="base">local:///ServiceName</AccessURL>
     </Interface>
   </vr:Resource>
 </VODescription>

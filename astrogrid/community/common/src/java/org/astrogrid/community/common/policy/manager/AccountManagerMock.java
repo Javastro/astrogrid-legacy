@@ -1,11 +1,21 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/AccountManagerMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerMock.java,v $
+ *   Revision 1.7  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.6.2.2  2004/03/21 06:41:41  dave
+ *   Refactored to include Exception handling.
+ *
+ *   Revision 1.6.2.1  2004/03/20 06:54:11  dave
+ *   Added addAccount(AccountData) to PolicyManager et al.
+ *   Added XML loader for AccountData.
+ *
  *   Revision 1.6  2004/03/19 14:43:14  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
@@ -71,16 +81,16 @@ public class AccountManagerMock
      */
     private static Map map = new HashMap() ;
 
-	/**
-	 * Reset our map.
-	 *
-	 */
+    /**
+     * Reset our map.
+     *
+     */
     public static void reset()
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("AccountManagerMock.reset()") ;
-		map.clear() ;
+        map.clear() ;
         }
 
     /**
@@ -103,21 +113,69 @@ public class AccountManagerMock
         if (null == ident)
             {
             throw new CommunityIdentifierException(
-				"Null identifier"
-            	) ;
+                "Null identifier"
+                ) ;
             }
         //
         // Check if we already have an existing Account.
         if (map.containsKey(ident))
             {
             throw new CommunityPolicyException(
-				"Duplicate account",
+                "Duplicate account",
                 ident
                 ) ;
             }
         //
         // Create a new Account.
         AccountData account = new AccountData(ident) ;
+        //
+        // Add it to our map.
+        map.put(account.getIdent(), account) ;
+        //
+        // Return the new Account.
+        return account ;
+        }
+
+    /**
+     * Add a new Account, given the Account data.
+     * @param  data The AccountData to add.
+     * @return A new AccountData for the Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is already in the database.
+     *
+     */
+    public AccountData addAccount(AccountData account)
+        throws CommunityIdentifierException, CommunityPolicyException
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("AccountManagerMock.addAccount()") ;
+        if (DEBUG_FLAG) System.out.println("  Account : " + ((null != account) ? account.getIdent() : null)) ;
+        //
+        // Check for null account.
+        if (null == account)
+            {
+            throw new CommunityIdentifierException(
+                "Null account"
+                ) ;
+            }
+        //
+        // Check for null ident.
+        if (null == account.getIdent())
+            {
+            throw new CommunityIdentifierException(
+                "Null identifier"
+                ) ;
+            }
+        //
+        // Check if we already have an existing Account.
+        if (map.containsKey(account.getIdent()))
+            {
+            throw new CommunityPolicyException(
+                "Duplicate account",
+                account.getIdent()
+                ) ;
+            }
         //
         // Add it to our map.
         map.put(account.getIdent(), account) ;
@@ -146,8 +204,8 @@ public class AccountManagerMock
         if (null == ident)
             {
             throw new CommunityIdentifierException(
-				"Null identifier"
-            	) ;
+                "Null identifier"
+                ) ;
             }
         //
         // Lookup the Account in our map.
@@ -162,7 +220,7 @@ public class AccountManagerMock
         // If we didn't find an Account.
         else {
             throw new CommunityPolicyException(
-				"Account not found",
+                "Account not found",
                 ident
                 ) ;
             }
@@ -188,16 +246,16 @@ public class AccountManagerMock
         if (null == update)
             {
             throw new CommunityIdentifierException(
-				"Null inout data"
-            	) ;
+                "Null inout data"
+                ) ;
             }
         //
         // Check for null ident.
         if (null == update.getIdent())
             {
             throw new CommunityIdentifierException(
-				"Null inout data"
-            	) ;
+                "Null inout data"
+                ) ;
             }
         //
         // Lookup the Account in our map.
@@ -205,9 +263,9 @@ public class AccountManagerMock
         //
         // Replace the existing Account with the new data.
         map.put(found.getIdent(), update) ;
-		//
-		// Return the new data.
-		return update ;
+        //
+        // Return the new data.
+        return update ;
         }
 
     /**
@@ -230,8 +288,8 @@ public class AccountManagerMock
         if (null == ident)
             {
             throw new CommunityIdentifierException(
-				"Null identifier"
-            	) ;
+                "Null identifier"
+                ) ;
             }
         //
         // Try to find the Account.
@@ -251,7 +309,7 @@ public class AccountManagerMock
         // If we didn't find an Account.
         else {
             throw new CommunityPolicyException(
-				"Account not found",
+                "Account not found",
                 ident
                 ) ;
             }

@@ -1,55 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/data/GroupData.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupData.java,v $
- *   Revision 1.5  2004/02/20 21:11:05  dave
- *   Merged development branch, dave-dev-200402120832, into HEAD
+ *   Revision 1.6  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
  *
- *   Revision 1.4.2.1  2004/02/16 15:20:54  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.4  2004/02/12 08:12:13  dave
- *   Merged development branch, dave-dev-200401131047, into HEAD
- *
- *   Revision 1.2.4.3  2004/01/27 19:09:52  dave
- *   Fixed dumb typo ...
- *
- *   Revision 1.2.4.2  2004/01/27 19:07:28  dave
- *   Fixed PMD report violations
- *   1) Removed unused imports.
- *   2) Added override for hashCode() to match custom equals().
- *
- *   Revision 1.2.4.1  2004/01/27 05:48:02  dave
- *   Added custom equals() to GroupData
- *
- *   Revision 1.2  2004/01/07 10:45:38  dave
- *   Merged development branch, dave-dev-20031224, back into HEAD
- *
- *   Revision 1.1.2.1  2004/01/05 06:47:18  dave
- *   Moved policy data classes into policy.data package
- *
- *   Revision 1.1.2.1  2003/12/24 05:54:48  dave
- *   Initial Maven friendly structure (only part of the service implemented)
- *
- *   Revision 1.5  2003/11/06 15:35:26  dave
- *   Replaced tabs with spaces
- *
- *   Revision 1.4  2003/09/09 13:48:09  dave
- *   Added addGroupMember - only local accounts and groups to start with.
- *
- *   Revision 1.3  2003/09/09 10:02:17  dave
- *   Fixed problems introduced by conflicts.
- *
- *   Revision 1.2  2003/09/08 11:01:35  KevinBenson
- *   A check in of the Authentication authenticateToken roughdraft and some changes to the groudata and community data
- *   along with an AdministrationDelegate
- *
- *   Revision 1.1  2003/09/06 20:10:07  dave
- *   Split PolicyManager into separate components.
+ *   Revision 1.5.24.1  2004/03/21 06:41:41  dave
+ *   Refactored to include Exception handling.
  *
  * </cvs:log>
  *
@@ -60,12 +21,14 @@ public class GroupData
     {
     /**
      * Type value to for a normal Group.
+     * @todo Chnage this to public and private.
      *
      */
     public static final String MULTI_TYPE = "MULTI";
 
     /**
      * Type value to for an Account Group.
+     * @todo Chnage this to public and private.
      *
      */
     public static final String SINGLE_TYPE = "SINGLE";
@@ -76,36 +39,33 @@ public class GroupData
      */
     public GroupData()
         {
-        this(null, null) ;
+        this(null) ;
         }
 
     /**
      * Public constructor.
+     * @param ident The Account ident.
+     * @todo Add syntax checking.
      *
      */
     public GroupData(String ident)
         {
-        this(ident, null) ;
+        this.setIdent(ident) ;
         }
 
     /**
-     * Public constructor.
-     *
-     */
-    public GroupData(String ident, String description)
-        {
-        this.ident = ident ;
-        this.description = description ;
-        }
-
-    /**
-     * Our Group ident.
+     * The Group identifier.
+     * At the monet, the syntax is 'name@community', this will be refactored to 'ivo:community/name'.
+     * @todo Refactor to use Ivorns.
+     * @todo Move this to a common data object base class
      *
      */
     private String ident ;
 
     /**
-     * Access to our Group ident.
+     * Access to the Group identifier.
+     * @return The Group identifier.
+     * @todo Move this to a common data object base class
      *
      */
     public String getIdent()
@@ -114,22 +74,58 @@ public class GroupData
         }
 
     /**
-     * Access to our Group ident.
+     * Access to the Group identifier.
+     * This will fail the the identifier is already set - you can't change the identifier of an existing Group.
+     * @param value The Group identifier.
+     * @todo Refactor to use Ivorns.
+     * @todo Move this to a common data object base class
      *
      */
     public void setIdent(String value)
         {
-        this.ident = value ;
+        if (null == this.ident)
+            {
+            this.ident = value ;
+            }
         }
 
     /**
-     * Our Group description.
+     * The Group display name.
+     * This is intended for use in the portal display pages.
+     *
+     */
+    private String display ;
+
+    /**
+     * Access to the Group display name.
+     * @return The current display name.
+     *
+     */
+    public String getDisplayName()
+        {
+        return this.display ;
+        }
+
+    /**
+     * Access to the Group display name.
+     * @param value The new display name.
+     *
+     */
+    public void setDisplayName(String value)
+        {
+        this.display = value ;
+        }
+
+    /**
+     * The Group description.
+     * This is intended for use in the portal display pages.
      *
      */
     private String description ;
 
     /**
-     * Access to our Group description.
+     * Access to the Group description.
+     * @return The current description.
      *
      */
     public String getDescription()
@@ -138,7 +134,8 @@ public class GroupData
         }
 
     /**
-     * Access to our Group description.
+     * Access to the Group description.
+     * @param value The new description.
      *
      */
     public void setDescription(String value)
@@ -149,7 +146,7 @@ public class GroupData
     /**
      * Our Group type, MULTI_TYPE or SINGLE_TYPE.
      * Defaults to MULTI_TYPE if not set.
-     * Maybe should change this to an integer to make it easier to check in Java.
+     * @todo Change this to public and protected, and add a simple test method.
      *
      */
     private String type = MULTI_TYPE ;
@@ -164,7 +161,7 @@ public class GroupData
      }
 
     /**
-     * Access to our Group description.
+     * Access to our Group type.
      *
      */
     public void setType(String value)
@@ -175,7 +172,10 @@ public class GroupData
     /*
      * Compare this with another GroupData.
      * All we want to check is the Group ident.
-     * TODO This needs to refactored to check for local community in the ident.
+     * @param object The Object to compare.
+     * @return true if the two object represetnt the same Group (the idents are equivalent).
+     * @todo Needs to refactored to check for local community in the ident.
+     * @todo Move this to a common data object base class
      *
      */
     public synchronized boolean equals(Object that)
@@ -221,7 +221,8 @@ public class GroupData
     /**
      * Generate a hash code for comparison tests.
      * Just uses the ident.hashCode().
-     * TODO This needs to refactored to check for local community in the ident.
+     * @todo Needs to refactored to check for local community in the ident.
+     * @todo Move this to a common data object base class
      *
      */
     public synchronized int hashCode()

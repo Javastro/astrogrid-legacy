@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/ivorn/CommunityServiceIvornFactory.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityServiceIvornFactory.java,v $
+ *   Revision 1.3  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.2.2.1  2004/03/21 06:41:41  dave
+ *   Refactored to include Exception handling.
+ *
  *   Revision 1.2  2004/03/19 14:43:14  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
@@ -38,7 +44,7 @@ import org.astrogrid.community.common.exception.CommunityIdentifierException ;
  *
  */
 public class CommunityServiceIvornFactory
-	extends CommunityIvornFactory
+    extends CommunityIvornFactory
     {
     /**
      * Switch for our debug statements.
@@ -49,7 +55,7 @@ public class CommunityServiceIvornFactory
     /**
      * Create a community service Ivorn.
      * @param community The Community ident, with no extra fields.
-	 * @param service   The Java class of the service interface we want.
+     * @param service   The Java class of the service interface we want.
      * @return A new Ivorn, or null if the Community ident is null.
      * @throws CommunityIdentifierException If the identifiers are not valid.
      *
@@ -59,26 +65,26 @@ public class CommunityServiceIvornFactory
         {
         if (null == community) { throw new CommunityIdentifierException("Null Community identifier") ; }
         if (null == service)   { throw new CommunityIdentifierException("Null service type") ; }
-		try {
-	    	return new Ivorn(
-				createIdent(
-		        	community,
-		        	service.getName()
-		        	)
-	    		) ;
-			}
-		catch (URISyntaxException ouch)
-			{
-			throw new CommunityIdentifierException(
-				ouch
-				) ;
-			}
+        try {
+            return new Ivorn(
+                createIdent(
+                    community,
+                    service.getName()
+                    )
+                ) ;
+            }
+        catch (URISyntaxException ouch)
+            {
+            throw new CommunityIdentifierException(
+                ouch
+                ) ;
+            }
         }
 
     /**
      * Create a mock service Ivorn.
      * @param community The Community ident, with no extra fields.
-	 * @param service   The Java class of the service interface we want.
+     * @param service   The Java class of the service interface we want.
      * @return A new Ivorn, or null if the Community ident is null.
      * @throws CommunityIdentifierException If the identifiers are not valid.
      *
@@ -88,19 +94,19 @@ public class CommunityServiceIvornFactory
         {
         if (null == community) { throw new CommunityIdentifierException("Null Community identifier") ; }
         if (null == service)   { throw new CommunityIdentifierException("Null service type") ; }
-		try {
-	    	return new MockIvorn(
-				createIdent(
-        			community,
-        			service.getName()
-					)
-				) ;
-			}
-		catch (URISyntaxException ouch)
-			{
-			throw new CommunityIdentifierException(
-				ouch
-				) ;
-			}
+        try {
+            return new MockIvorn(
+                createIdent(
+                    community,
+                    service.getName()
+                    )
+                ) ;
+            }
+        catch (URISyntaxException ouch)
+            {
+            throw new CommunityIdentifierException(
+                ouch
+                ) ;
+            }
         }
     }

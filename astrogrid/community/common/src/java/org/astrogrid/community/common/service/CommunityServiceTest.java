@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/service/CommunityServiceTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityServiceTest.java,v $
+ *   Revision 1.4  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.3.16.1  2004/03/22 15:31:10  dave
+ *   Added CommunitySecurityException.
+ *   Updated SecurityManager and SecurityService to use Exceptions.
+ *
  *   Revision 1.3  2004/03/08 13:42:33  dave
  *   Updated Maven goals.
  *   Replaced tabs with Spaces.
@@ -28,11 +35,20 @@
  */
 package org.astrogrid.community.common.service ;
 
+import org.astrogrid.store.Ivorn ;
+
 import org.astrogrid.community.common.junit.JUnitTestBase ;
 
 import org.astrogrid.community.common.database.manager.DatabaseManager ;
 
 import org.astrogrid.community.common.service.data.ServiceStatusData ;
+
+import org.astrogrid.community.common.ivorn.CommunityIvornParser ;
+import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory ;
+
+import org.astrogrid.community.common.exception.CommunityPolicyException     ;
+import org.astrogrid.community.common.exception.CommunityServiceException    ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
 /**
  * A JUnit test case for our common CommunityService interface.
@@ -64,6 +80,16 @@ public class CommunityServiceTest
         {
         this.setCommunityService(service) ;
         }
+
+	/**
+	 * Create a local Ivorn.
+	 *
+	 */
+	public Ivorn createLocal(String ident)
+		throws CommunityServiceException, CommunityIdentifierException
+		{
+		return CommunityAccountIvornFactory.createLocal(ident) ;
+		}
 
     /**
      * Our target CommunityService.
@@ -98,7 +124,8 @@ public class CommunityServiceTest
     /**
      * Test the service status.
      * Just checks that the return is not null.
-     * TODO .... check that the service returns useful info.
+     * @todo Check that the service returns useful info.
+	 *
      */
     public void testServiceStatus()
         throws Exception

@@ -1,11 +1,27 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/junit/org/astrogrid/community/common/ivorn/CommunityIvornParserTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityIvornParserTestCase.java,v $
+ *   Revision 1.4  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.3.4.4  2004/03/22 15:31:10  dave
+ *   Added CommunitySecurityException.
+ *   Updated SecurityManager and SecurityService to use Exceptions.
+ *
+ *   Revision 1.3.4.3  2004/03/22 02:25:35  dave
+ *   Updated delegate interfaces to include Exception handling.
+ *
+ *   Revision 1.3.4.2  2004/03/21 07:21:34  dave
+ *   Added test for local community identifier.
+ *
+ *   Revision 1.3.4.1  2004/03/21 06:41:41  dave
+ *   Refactored to include Exception handling.
+ *
  *   Revision 1.3  2004/03/15 07:49:30  dave
  *   Merged development branch, dave-dev-200403121536, into HEAD
  *
@@ -212,7 +228,6 @@ public class CommunityIvornParserTestCase
     /**
      * Test that we can handle a null Ivorn.
      *
-     */
     public void testNullIvorn()
         throws Exception
         {
@@ -237,6 +252,7 @@ public class CommunityIvornParserTestCase
             parser.getAccountIdent()
             ) ;
         }
+     */
 
     /**
      * Test that we can resolve our test Community Ivorn(s).
@@ -273,9 +289,9 @@ public class CommunityIvornParserTestCase
         //
         // Check the community ident.
         assertEquals(
-            "Community ident not equal",
+            "Community name not equal",
             data[1],
-            parser.getCommunityIdent()
+            parser.getCommunityName()
             ) ;
         //
         // Check the account ident.
@@ -284,6 +300,8 @@ public class CommunityIvornParserTestCase
             data[2],
             parser.getAccountName()
             ) ;
+/*
+ *
         //
         // Check the account ident.
         assertEquals(
@@ -291,26 +309,36 @@ public class CommunityIvornParserTestCase
             data[3],
             parser.getAccountIdent()
             ) ;
+ *
+ */
         //
         // Check the ivorn path.
         assertEquals(
             "Path not equal",
             data[4],
-            ((null != parser.getPath()) ? parser.getPath() : null)
+            parser.getPath()
             ) ;
         //
         // Check the ivorn fragment.
         assertEquals(
             "Fragment not equal",
             data[5],
-            ((null != parser.getFragment()) ? parser.getFragment() : null)
+            parser.getFragment()
             ) ;
         //
         // Check the ivorn remainder.
         assertEquals(
             "Remainder not equal",
             data[6],
-            ((null != parser.getRemainder()) ? parser.getRemainder() : null)
+            parser.getRemainder()
+            ) ;
+
+        //
+        // Check the community ident.
+        assertEquals(
+            "Community ident not equal",
+            data[7],
+            parser.getCommunityIdent()
             ) ;
         //
         // Check the community ivorn.
@@ -319,6 +347,14 @@ public class CommunityIvornParserTestCase
             data[7],
             ((null != parser.getCommunityIvorn()) ? parser.getCommunityIvorn().toString() : null)
             ) ;
+
+        //
+        // Check the account ident.
+        assertEquals(
+            "Account ident not equal",
+            data[8],
+            parser.getAccountIdent()
+            ) ;
         //
         // Check the account ivorn.
         assertEquals(
@@ -326,6 +362,28 @@ public class CommunityIvornParserTestCase
             data[8],
             ((null != parser.getAccountIvorn()) ? parser.getAccountIvorn().toString() : null)
             ) ;
+        }
+
+	/**
+	 * Test a local Ivorn.
+	 *
+	 */
+    public void testLocalCommunity()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("testLocalCommunity") ;
+		//
+		// Check a local Ivorn
+		assertTrue(
+			"Didn't recognise local ident",
+	        new CommunityIvornParser(
+	            new Ivorn(
+	            	"ivo://org.astrogrid.local.community/frog"
+	            	)
+	            ).isLocal()
+			) ;
         }
     }
 

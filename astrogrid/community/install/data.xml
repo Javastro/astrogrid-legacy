@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<community ident="ivo://org.astrogrid.mock.community">
+	<accounts>
+
+		<account ident="ivo://org.astrogrid.mock.community/dave">
+			<display>Dave Morris</display>
+			<description>Java developer</description>
+			<home>ivo://org.astrogrid.mock.myspace/dave</home>
+			<email>dave@mail.astrogrid.org</email>
+		</account>
+
+		<account ident="ivo://org.astrogrid.mock.community/kevin">
+			<display>Kevin Benson</display>
+			<description>Java developer</description>
+			<home>ivo://org.astrogrid.mock.myspace/kevin</home>
+			<email>kevin@mail.astrogrid.org</email>
+		</account>
+
+		<account ident="ivo://org.astrogrid.mock.community/martin">
+			<display>Martin Hill</display>
+			<description>Java developer</description>
+			<home>ivo://org.astrogrid.mock.myspace/martin</home>
+			<email>martin@mail.astrogrid.org</email>
+		</account>
+
+	</accounts>
+</community>

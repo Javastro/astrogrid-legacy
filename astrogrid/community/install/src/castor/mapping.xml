@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<mapping>
+	<class name="org.astrogrid.community.common.policy.data.AccountData">
+		<map-to xml="account"/>
+		<field name="ident" type="java.lang.String">
+			<bind-xml name="ident" node="attribute"/>
+		</field>
+		<field name="displayName" type="java.lang.String">
+			<bind-xml name="display" node="element"/>
+		</field>
+		<field name="description" type="java.lang.String">
+			<bind-xml name="description" node="element"/>
+		</field>
+		<field name="homeSpace" type="java.lang.String">
+			<bind-xml name="home" node="element"/>
+		</field>
+		<field name="emailAddress" type="java.lang.String">
+			<bind-xml name="email" node="element"/>
+		</field>
+	</class>
+
+	<class name="org.astrogrid.community.install.loader.CommunityLoaderData">
+		<map-to xml="community"/>
+		<field name="ident" type="java.lang.String">
+			<bind-xml name="ident" node="attribute"/>
+		</field>
+		<field name="accounts" collection="collection" type="org.astrogrid.community.common.policy.data.AccountData">
+			<bind-xml name="account" location="accounts"/>
+		</field>
+	</class>
+
+</mapping>

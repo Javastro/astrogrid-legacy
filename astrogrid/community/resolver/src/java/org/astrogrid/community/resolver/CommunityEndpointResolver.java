@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityEndpointResolver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:15 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityEndpointResolver.java,v $
+ *   Revision 1.4  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.3.2.1  2004/03/23 10:48:32  dave
+ *   Registry configuration files and PolicyManagerResolver tests.
+ *
  *   Revision 1.3  2004/03/19 14:43:15  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
@@ -162,6 +168,7 @@ public class CommunityEndpointResolver
      * @throws CommunityIdentifierException If the identifier is not valid.
      * @throws CommunityResolverException If the Community is unable to resolve the identifier.
      * @throws RegistryException If the Registry is unable to resolve the identifier.
+     * @todo relies on ivorn.getPath()
      *
      */
     public URL resolve(CommunityIvornParser parser, Class type)
@@ -198,7 +205,9 @@ public class CommunityEndpointResolver
         if (DEBUG_FLAG) System.out.println("  Ivorn    : " + ivorn)  ;
         //
         // Lookup the service in the registry.
-        String endpoint = registry.getEndPointByIdentifier(ivorn.toString()) ;
+        String endpoint = registry.getEndPointByIdentifier(
+        	ivorn.getPath()
+        	) ;
         //
         // If we found an entry in the Registry.
         if (null != endpoint)

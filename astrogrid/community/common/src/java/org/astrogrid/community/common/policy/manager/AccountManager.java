@@ -1,11 +1,21 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/AccountManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManager.java,v $
+ *   Revision 1.10  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.9.2.2  2004/03/21 06:41:41  dave
+ *   Refactored to include Exception handling.
+ *
+ *   Revision 1.9.2.1  2004/03/20 06:54:11  dave
+ *   Added addAccount(AccountData) to PolicyManager et al.
+ *   Added XML loader for AccountData.
+ *
  *   Revision 1.9  2004/03/19 14:43:14  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
@@ -31,17 +41,15 @@ package org.astrogrid.community.common.policy.manager ;
 import java.rmi.Remote ;
 import java.rmi.RemoteException ;
 
+import org.astrogrid.community.common.policy.data.AccountData ;
+import org.astrogrid.community.common.service.CommunityService ;
+
 import org.astrogrid.community.common.exception.CommunityPolicyException     ;
 import org.astrogrid.community.common.exception.CommunityServiceException    ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
-import org.astrogrid.community.common.policy.data.AccountData ;
-
-import org.astrogrid.community.common.service.CommunityService ;
-
 /**
  * Public interface for the AccountManager services.
- * @todo Add addAccount(AccountData)
  *
  */
 public interface AccountManager
@@ -59,7 +67,20 @@ public interface AccountManager
      */
     public AccountData addAccount(String ident)
         throws RemoteException, CommunityServiceException, CommunityIdentifierException, CommunityPolicyException ;
-      
+
+    /**
+     * Add a new Account, given the Account data.
+     * @param  account The AccountData to add.
+     * @return A new AccountData for the Account.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     * @throws CommunityPolicyException If the identifier is already in the database.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws RemoteException If the WebService call fails.
+     *
+     */
+    public AccountData addAccount(AccountData account)
+        throws RemoteException, CommunityServiceException, CommunityIdentifierException, CommunityPolicyException ;
+
     /**
      * Request an Account details, given the Account ident.
      * @param  ident The Account identifier.

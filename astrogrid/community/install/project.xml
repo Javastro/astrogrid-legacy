@@ -4,10 +4,17 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.8  2004/03/23 16:34:08  dave
+    |   Merged development branch, dave-dev-200403191458, into HEAD
+    |
+    |   Revision 1.7.4.1  2004/03/20 06:54:11  dave
+    |   Added addAccount(AccountData) to PolicyManager et al.
+    |   Added XML loader for AccountData.
+    |
     |   Revision 1.7  2004/03/15 07:49:30  dave
     |   Merged development branch, dave-dev-200403121536, into HEAD
     |
@@ -113,6 +120,19 @@
         +-->
     <dependencies>
         <!--+
+            | The AstroGrid common components.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-common</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <lib.fileset>true</lib.fileset>
+            </properties>
+        </dependency>
+        <!--+
             | The Community common components.
             +-->
         <dependency>
@@ -139,6 +159,19 @@
             </properties>
         </dependency>
         <!--+
+            | The Community resolver components.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-community-resolver</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <jar.fileset>true</jar.fileset>
+            </properties>
+        </dependency>
+        <!--+
             | The Community webapp.
             +-->
         <dependency>
@@ -152,23 +185,64 @@
             </properties>
         </dependency>
         <!--+
-            | The Castor libraries.
+            | The Registry common classes.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-registry-common</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <lib.fileset>true</lib.fileset>
+            </properties>
+        </dependency>
+        <!--+
+            | The Registry client components.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-registry-client</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <lib.fileset>true</lib.fileset>
+            </properties>
+        </dependency>
+        <!--+
+            | The JXpath library - required for Registry delegate.
+            +-->
+       <dependency>
+        	<artifactId>commons-jxpath</artifactId>
+            <groupId>commons-jxpath</groupId>
+            <version>1.1</version>
+            <type>jar</type>
+            <url></url>
+            <properties>
+                <lib.fileset>true</lib.fileset>
+            </properties>
+        </dependency>
+        <!--+
+            | The Jakarta Regexp library - required for Registry delegate.
+            +-->
+	   <dependency>
+        	<artifactId>jakarta-regexp</artifactId>
+            <groupId>jakarta-regexp</groupId>
+            <version>1.3</version>
+            <type>jar</type>
+            <url></url>
+            <properties>
+                <lib.fileset>true</lib.fileset>
+            </properties>
+        </dependency>
+        <!--+
+            | The Castor JDO libraries.
             +-->
         <dependency>
             <groupId>castor</groupId>
             <artifactId>castor</artifactId>
             <version>0.9.5</version>
-            <type>jar</type>
-            <url>http://www.castor.org/</url>
-            <properties>
-                <lib.fileset>true</lib.fileset>
-            </properties>
-        </dependency>
-        <dependency>
-            <groupId>castor</groupId>
-            <artifactId>castor-xml</artifactId>
-            <version>0.9.5</version>
-            <jar>castor-0.9.5-xml.jar</jar>
             <type>jar</type>
             <url>http://www.castor.org/</url>
             <properties>
@@ -183,6 +257,20 @@
             <artifactId>jta</artifactId>
             <version>1.0.1</version>
             <type>jar</type>
+            <properties>
+                <lib.fileset>true</lib.fileset>
+            </properties>
+        </dependency>
+        <!--+
+            | The Castor XML libraries.
+            +-->
+        <dependency>
+            <groupId>castor</groupId>
+            <artifactId>castor-xml</artifactId>
+            <version>0.9.5</version>
+            <jar>castor-0.9.5-xml.jar</jar>
+            <type>jar</type>
+            <url>http://www.castor.org/</url>
             <properties>
                 <lib.fileset>true</lib.fileset>
             </properties>
@@ -262,6 +350,20 @@
             | The location of our Java source code.
             +-->
         <sourceDirectory>src/java</sourceDirectory>
+
+        <!--+
+            | The resources for our tests.
+            +-->
+        <resources>
+            <resource>
+				<targetPath>org/astrogrid/community/install/loader</targetPath>
+				<directory>src/castor</directory>
+				<includes>
+					<include>mapping.xml</include>
+				</includes>
+            </resource>
+        </resources>
+
         <!--+
             | The location of our JUnit source code.
             +-->
@@ -274,14 +376,8 @@
                 | Which tests to include.
                 +-->
             <includes>
-                <include>**/*Test.java</include>
+                <include>**/*TestCase.java</include>
             </includes>
-            <!--+
-                | Which tests to exclude.
-                +-->
-            <excludes>
-                <exclude>**/*Test.frog</exclude>
-            </excludes>
             <!--+
                 | The resources for our tests.
             <resources>

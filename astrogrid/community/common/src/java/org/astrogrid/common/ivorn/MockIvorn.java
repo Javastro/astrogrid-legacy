@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/common/ivorn/MockIvorn.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: MockIvorn.java,v $
+ *   Revision 1.5  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.4.2.2  2004/03/23 14:52:27  dave
+ *   Modified the mock ivorn syntax.
+ *
+ *   Revision 1.4.2.1  2004/03/21 06:41:41  dave
+ *   Refactored to include Exception handling.
+ *
  *   Revision 1.4  2004/03/19 14:43:14  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
@@ -59,11 +68,12 @@ import org.astrogrid.store.Ivorn ;
  * A factory for mock Ivorn identifiers.
  * Extends the basic Ivorn, but makes sure that the authority starts with a fixed prefix, 'org.astrogrid.mock'.
  * Our delegate factories can use this to create mock delegates.
- * @todo refactory this as a factory rather than extends Ivorn.
+ * @todo Refactor this as a factory rather than extends Ivorn.
+ * @todo Refactor this to be consistent with the other Ivorn factories.
  *
  */
 public class MockIvorn
-	extends Ivorn
+    extends Ivorn
     {
 
     /**

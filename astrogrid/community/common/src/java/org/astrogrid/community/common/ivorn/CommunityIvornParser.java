@@ -1,11 +1,31 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/ivorn/CommunityIvornParser.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityIvornParser.java,v $
+ *   Revision 1.5  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.4.2.5  2004/03/22 15:31:10  dave
+ *   Added CommunitySecurityException.
+ *   Updated SecurityManager and SecurityService to use Exceptions.
+ *
+ *   Revision 1.4.2.4  2004/03/22 02:25:35  dave
+ *   Updated delegate interfaces to include Exception handling.
+ *
+ *   Revision 1.4.2.3  2004/03/22 00:53:31  dave
+ *   Refactored GroupManager to use Ivorn identifiers.
+ *   Started removing references to CommunityManager.
+ *
+ *   Revision 1.4.2.2  2004/03/21 07:21:34  dave
+ *   Added test for local community identifier.
+ *
+ *   Revision 1.4.2.1  2004/03/21 06:41:41  dave
+ *   Refactored to include Exception handling.
+ *
  *   Revision 1.4  2004/03/19 14:43:14  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
@@ -28,6 +48,10 @@ import java.util.regex.Pattern ;
 import org.astrogrid.store.Ivorn ;
 import org.astrogrid.common.ivorn.MockIvorn ;
 
+import org.astrogrid.config.Config ;
+import org.astrogrid.config.SimpleConfig ;
+
+import org.astrogrid.community.common.exception.CommunityServiceException ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
 /**
@@ -43,23 +67,35 @@ public class CommunityIvornParser
     private static boolean DEBUG_FLAG = true ;
 
     /**
-     * Public constructor.
+     * Our AstroGrid configuration.
      *
      */
-    public CommunityIvornParser()
-        {
-        }
+    protected static Config config = SimpleConfig.getSingleton() ;
 
     /**
-     * Public constructor, for a specific Ivorn.
-     * @param A vaild Ivorn identifier.
+     * Public constructor for a specific Ivorn.
+     * @param ivorn A vaild Ivorn identifier.
      * @throws CommunityIdentifierException If the identifier is not valid.
      *
      */
     public CommunityIvornParser(Ivorn ivorn)
-		throws CommunityIdentifierException
+        throws CommunityIdentifierException
         {
         this.setIvorn(ivorn) ;
+        }
+
+    /**
+     * Public constructor for a specific identifier.
+     * @param ident A vaild identifier.
+     * @throws CommunityIdentifierException If the identifier is not valid.
+     *
+     */
+    public CommunityIvornParser(String ident)
+        throws CommunityIdentifierException
+        {
+        this.setIvorn(
+        	parse(ident)
+        	) ;
         }
 
     /**
@@ -120,15 +156,20 @@ public class CommunityIvornParser
      *
      */
     protected void setIvorn(Ivorn ivorn)
-		throws CommunityIdentifierException
+        throws CommunityIdentifierException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("CommunityIvornParser.setIvorn()") ;
         if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
-		//
-		// Check for null param.
-        if (null == ivorn) { throw new CommunityIdentifierException("Null identifier") ; }
+        //
+        // Check for null param.
+        if (null == ivorn)
+        	{
+        	throw new CommunityIdentifierException(
+        		"Null identifier"
+        		) ;
+        	}
         //
         // Save the ivorn.
         this.ivorn     = ivorn ;
@@ -143,20 +184,20 @@ public class CommunityIvornParser
         // Try convert it into a URI.
         try {
             this.uri = new URI(ivorn.toString()) ;
-	        //
-	        // Parse the Community ident.
-	        this.parseCommunityIdent() ;
-	        //
-	        // Parse Account ident.
-	        this.parseAccountIdent() ;
+            //
+            // Parse the Community ident.
+            this.parseCommunityIdent() ;
+            //
+            // Parse Account ident.
+            this.parseAccountIdent() ;
             }
         //
         // All Ivorn should be valid URI.
         catch (URISyntaxException ouch)
             {
-			throw new CommunityIdentifierException(
-				ouch
-				) ;
+            throw new CommunityIdentifierException(
+                ouch
+                ) ;
             }
         }
 
@@ -178,13 +219,27 @@ public class CommunityIvornParser
         }
 
     /**
+     * Get the Community name as a string.
+     * @return The Community name, or null if no match was found.
+     *
+     */
+    public String getCommunityName()
+        {
+        return this.community ;
+        }
+
+    /**
      * Get the Community ident as a string.
      * @return The Community ident, or null if no match was found.
      *
      */
     public String getCommunityIdent()
         {
-        return this.community ;
+        return new StringBuffer()
+            .append(Ivorn.SCHEME)
+            .append("://")
+            .append(this.community)
+            .toString() ;
         }
 
     /**
@@ -194,19 +249,19 @@ public class CommunityIvornParser
      */
     public Ivorn getCommunityIvorn()
         {
-		//
-		// If we have a community ident.
+        //
+        // If we have a community ident.
         if (null != this.getCommunityIdent())
             {
-			//
-			// Create a new Ivorn.
+            //
+            // Create a new Ivorn.
             return new Ivorn(
-                this.getCommunityIdent(),
-                null
+                this.getCommunityName(),
+				null
                 ) ;
             }
-		//
-		// If we don't have a community ident.
+        //
+        // If we don't have a community ident.
         else {
             return null ;
             }
@@ -254,7 +309,6 @@ public class CommunityIvornParser
             {
             //
             // Try the user part.
-            if (DEBUG_FLAG) System.out.println(" Trying user ....") ;
             this.account  = uri.getUserInfo() ;
             //
             // If we got the account from the URI user.
@@ -357,9 +411,6 @@ public class CommunityIvornParser
             // If we got a match.
             if (matcher.matches())
                 {
-                if (DEBUG_FLAG) System.out.println(" PASS : matched the regexp") ;
-                if (DEBUG_FLAG) System.out.println(" Count    : " + matcher.groupCount()) ;
-                if (DEBUG_FLAG) System.out.println(" Group[0] : " + matcher.group(0)) ;
                 //
                 // If we found an account.
                 if (matcher.groupCount() > 0)
@@ -367,13 +418,11 @@ public class CommunityIvornParser
                     //
                     // Use the first match as our account.
                     this.account = matcher.group(1) ;
-                    if (DEBUG_FLAG) System.out.println(" Group[1] : " + matcher.group(1)) ;
                     }
                 //
                 // If we found anything else.
                 if (matcher.groupCount() > 1)
                     {
-                    if (DEBUG_FLAG) System.out.println(" Group[2] : " + matcher.group(2)) ;
                     //
                     // Strip spaces from the remainder.
                     String temp = matcher.group(2).trim() ;
@@ -420,9 +469,6 @@ public class CommunityIvornParser
             // If we got a match.
             if (matcher.matches())
                 {
-                if (DEBUG_FLAG) System.out.println(" PASS : matched the regexp") ;
-                if (DEBUG_FLAG) System.out.println(" Count    : " + matcher.groupCount()) ;
-                if (DEBUG_FLAG) System.out.println(" Group[0] : " + matcher.group(0)) ;
                 //
                 // If we found an account.
                 if (matcher.groupCount() > 0)
@@ -430,7 +476,6 @@ public class CommunityIvornParser
                     //
                     // Use the first match as our account.
                     this.account = matcher.group(1) ;
-                    if (DEBUG_FLAG) System.out.println(" Group[1] : " + matcher.group(1)) ;
                     }
                 //
                 // If we found anything else.
@@ -438,7 +483,6 @@ public class CommunityIvornParser
                     {
                     //
                     // Save the rest as the fragment.
-                    if (DEBUG_FLAG) System.out.println(" Group[2] : " + matcher.group(2)) ;
                     //
                     // Strip spaces from the remainder.
                     String temp = matcher.group(2).trim() ;
@@ -455,46 +499,50 @@ public class CommunityIvornParser
 
     /**
      * Get the Account name as a string.
+     * This will contain just the account name, without the community identifier.
      * @return The Account name, or null if no match was found.
      *
      */
-    protected String getAccountName()
+    public String getAccountName()
         {
-		return this.account ;
+        return this.account ;
         }
 
     /**
      * Get the Account ident as a string.
+     * This will contain both the community ident and account name, 'community/account' 
      * @return The Account ident, or null if no match was found.
+     * @todo Should this add 'ivo://' to the ident ?
      *
      */
     public String getAccountIdent()
         {
         if ((null != this.getCommunityIdent()) && (null != this.getAccountName()))
             {
-			return new StringBuffer()
-				.append(this.getCommunityIdent())
-				.append("/")
-				.append(this.getAccountName())
-				.toString() ;
-			}
-		else {
-			return null ;
-			}
+            return new StringBuffer()
+                .append(this.getCommunityIdent())
+                .append("/")
+                .append(this.getAccountName())
+                .toString() ;
+            }
+        else {
+            return null ;
+            }
         }
 
     /**
      * Get the Account Ivorn.
+     * This will contain both the community ident and account name, 'ivo://community/account' 
      * @return A new Ivorn, or null if the Community or Account ident are null.
      *
      */
     public Ivorn getAccountIvorn()
-		throws CommunityIdentifierException
+        throws CommunityIdentifierException
         {
         if ((null != this.getCommunityIdent()) && (null != this.getAccountName()))
             {
             return CommunityAccountIvornFactory.createIvorn(
-                this.getCommunityIdent(),
+                this.getCommunityName(),
                 this.getAccountName()
                 ) ;
             }
@@ -579,4 +627,98 @@ public class CommunityIvornParser
             MockIvorn.isMock(this.ivorn)
             ) ;
         }
+
+	/**
+	 * Convert a string identifier into an Ivorn.
+	 * @param ident The identifier.
+	 * @return a new Ivorn containing the identifier.
+	 * @throws CommunityIdentifierException If the identifier is invalid.
+	 *
+	 */
+	protected static Ivorn parse(String ident)
+		throws CommunityIdentifierException
+		{
+        if (null == ident)
+        	{
+        	throw new CommunityIdentifierException(
+        		"Null identifier"
+        		) ;
+        	}
+		try {
+			return new Ivorn(ident) ;
+			}
+        catch (URISyntaxException ouch)
+            {
+            throw new CommunityIdentifierException(
+                ouch
+                ) ;
+            }
+		}
+
+	/**
+	 * The property name for our local Community identifier.
+	 *
+	 */
+	public static final String LOCAL_COMMUNITY_PROPERTY = "org.astrogrid.community.ident" ;
+
+	/**
+	 * Access to the local Community identifier.
+	 * @throws CommunityServiceException If the local Community identifier is not set.
+	 * @todo Trap org.astrogrid.config.PropertyNotFoundException and throw an Exception.
+	 *
+	 */
+	public static String getLocalIdent()
+		throws CommunityServiceException
+		{
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("CommunityIvornParser.getLocalIdent()") ;
+		//
+		// Get the local identifier from our configuration.
+		String local = (String) config.getProperty(LOCAL_COMMUNITY_PROPERTY) ;
+        if (DEBUG_FLAG) System.out.println("  Local : " + local) ;
+		//
+		// If we found the local ident.
+		if (null != local)
+			{
+			return local ;
+			}
+		//
+		// If we didn't find the local ident.
+		else {
+			throw new CommunityServiceException(
+				"Local Community identifier not configured"
+				) ;
+			}
+		}
+
+	/**
+	 * Check if the Community ident is local.
+	 * @return true If the Ivorn Community matches the local Community identifier.
+	 * @throws CommunityServiceException If the local Community identifier is not set.
+	 *
+	 */
+	public boolean isLocal()
+		throws CommunityServiceException
+		{
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("CommunityIvornParser.isLocal()") ;
+        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
+		//
+		// Compare the ident.
+		return getLocalIdent().equals(
+			this.getCommunityName()
+			) ;
+		}
+
+	/**
+	 * Convert the parser to a String.
+	 *
+	 */
+	public String toString()
+		{
+		return "CommunityIvornParser : " + ((null != ivorn) ? ivorn.toString() : null) ;
+		}
+
     }

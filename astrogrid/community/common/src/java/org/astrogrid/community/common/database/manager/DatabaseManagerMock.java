@@ -1,46 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/database/manager/DatabaseManagerMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseManagerMock.java,v $
- *   Revision 1.5  2004/03/19 14:43:14  dave
- *   Merged development branch, dave-dev-200403151155, into HEAD
+ *   Revision 1.6  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
  *
- *   Revision 1.4.2.2  2004/03/19 03:31:21  dave
- *   Changed AccountManagerMock to recognise DatabaseManager reset()
- *
- *   Revision 1.4.2.1  2004/03/18 13:41:19  dave
- *   Added Exception handling to AccountManager
- *
- *   Revision 1.4  2004/03/15 07:49:30  dave
- *   Merged development branch, dave-dev-200403121536, into HEAD
- *
- *   Revision 1.3.12.1  2004/03/13 17:57:20  dave
- *   Remove RemoteException(s) from delegate interfaces.
- *   Protected internal API methods.
- *
- *   Revision 1.3  2004/03/08 13:42:33  dave
- *   Updated Maven goals.
- *   Replaced tabs with Spaces.
- *
- *   Revision 1.2.2.1  2004/03/08 12:53:17  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.2  2004/03/05 17:19:59  dave
- *   Merged development branch, dave-dev-200402211936, into HEAD
- *
- *   Revision 1.1.2.3  2004/03/02 23:31:00  dave
- *   Added DatabaseManager to service tests
- *
- *   Revision 1.1.2.2  2004/02/26 13:10:28  dave
- *   Added AccountManagerMock
- *
- *   Revision 1.1.2.1  2004/02/23 19:43:47  dave
- *   Refactored DatabaseManager tests to test the interface.
- *   Refactored DatabaseManager tests to use common DatabaseManagerTest.
+ *   Revision 1.5.2.1  2004/03/21 06:41:41  dave
+ *   Refactored to include Exception handling.
  *
  * </cvs:log>
  *
@@ -48,6 +18,7 @@
 package org.astrogrid.community.common.database.manager ;
 
 import org.astrogrid.community.common.service.CommunityServiceMock ;
+import org.astrogrid.community.common.policy.manager.GroupManagerMock ;
 import org.astrogrid.community.common.policy.manager.AccountManagerMock ;
 
 /**
@@ -227,6 +198,9 @@ public class DatabaseManagerMock
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("DatabaseManagerMock.resetDatabaseTables()") ;
-		AccountManagerMock.reset() ;
+        //
+        // Reset our mock data.
+        GroupManagerMock.reset() ;
+        AccountManagerMock.reset() ;
         }
     }

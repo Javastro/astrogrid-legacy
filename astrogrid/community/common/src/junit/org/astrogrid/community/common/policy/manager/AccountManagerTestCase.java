@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/junit/org/astrogrid/community/common/policy/manager/AccountManagerTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerTestCase.java,v $
+ *   Revision 1.6  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.5.2.1  2004/03/21 06:41:41  dave
+ *   Refactored to include Exception handling.
+ *
  *   Revision 1.5  2004/03/19 14:43:14  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
@@ -29,21 +35,21 @@ public class AccountManagerTestCase
     {
     /**
      * Switch for our debug statements.
-     * @TODO Refactor to use the common logging.
+     * @todo Refactor to use the common logging.
      *
      */
     private static boolean DEBUG_FLAG = true ;
 
     /**
      * Setup our test.
-     * Creates an AccountManagerMock to test.
+     * Creates a target AccountManagerMock.
      *
      */
     public void setUp()
         throws Exception
         {
         //
-        // Set out test targets.
+        // Set up test targets.
         this.setDatabaseManager(
             new DatabaseManagerMock()
             ) ;

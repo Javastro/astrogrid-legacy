@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/manager/SecurityManagerTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityManagerTest.java,v $
+ *   Revision 1.4  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.3.16.1  2004/03/22 15:31:10  dave
+ *   Added CommunitySecurityException.
+ *   Updated SecurityManager and SecurityService to use Exceptions.
+ *
  *   Revision 1.3  2004/03/08 13:42:33  dave
  *   Updated Maven goals.
  *   Replaced tabs with Spaces.
@@ -26,6 +33,8 @@
  *
  */
 package org.astrogrid.community.common.security.manager ;
+
+import java.rmi.RemoteException ;
 
 import org.astrogrid.community.common.policy.data.AccountData ;
 import org.astrogrid.community.common.policy.manager.AccountManager ;
@@ -140,7 +149,9 @@ public class SecurityManagerTest
         if (DEBUG_FLAG) System.out.println("SecurityManagerTest.testSetPassword()") ;
         //
         // Setup our test account.
-        AccountData account = accountManager.addAccount(TEST_ACCOUNT) ;
+        AccountData account = accountManager.addAccount(
+			createLocal(TEST_ACCOUNT).toString()
+        	) ;
         assertNotNull(
             "addAccount returned null",
             account
@@ -168,7 +179,9 @@ public class SecurityManagerTest
         if (DEBUG_FLAG) System.out.println("SecurityManagerTest.testChangePassword()") ;
         //
         // Setup our test account.
-        AccountData account = accountManager.addAccount(TEST_ACCOUNT) ;
+        AccountData account = accountManager.addAccount(
+			createLocal(TEST_ACCOUNT).toString()
+        	) ;
         assertNotNull(
             "addAccount returned null",
             account
@@ -192,6 +205,5 @@ public class SecurityManagerTest
                 )
             ) ;
         }
-
     }
 

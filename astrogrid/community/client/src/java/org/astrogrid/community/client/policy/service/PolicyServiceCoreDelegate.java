@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/policy/service/PolicyServiceCoreDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyServiceCoreDelegate.java,v $
+ *   Revision 1.5  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.4.2.1  2004/03/22 02:25:35  dave
+ *   Updated delegate interfaces to include Exception handling.
+ *
  *   Revision 1.4  2004/03/19 14:43:14  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
@@ -23,6 +29,10 @@ import org.astrogrid.community.common.policy.data.PolicyPermission ;
 import org.astrogrid.community.common.policy.data.PolicyCredentials ;
 
 import org.astrogrid.community.common.policy.service.PolicyService ;
+
+import org.astrogrid.community.common.exception.CommunityPolicyException     ;
+import org.astrogrid.community.common.exception.CommunityServiceException    ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
 import org.astrogrid.community.client.service.CommunityServiceCoreDelegate ;
 
@@ -75,12 +85,19 @@ public class PolicyServiceCoreDelegate
         }
 
     /**
-     * Confirm access permissions.
+     * Confirm permissions.
+     * @param credentials The credentials, containing the account and group identifiers.
+     * @param resource The resource identifier.
+     * @param action The action you want to perform.
+     * @return A PolicyPermission object confirming the permission.
+     * @throws CommunityIdentifierException If one of the identifiers is invalid.
+     * @throws CommunityPolicyException If there is no matching permission.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
     public PolicyPermission checkPermissions(PolicyCredentials credentials, String resource, String action)
+        throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
         {
-        PolicyPermission result = null ;
         //
         // If we have a valid service reference.
         if (null != this.service)
@@ -88,27 +105,44 @@ public class PolicyServiceCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.service.checkPermissions(credentials, resource, action) ;
+                return this.service.checkPermissions(credentials, resource, action) ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
+				//
+				// Try converting the Exception.
+				convertCommunityException(ouch) ;
+				//
+				// If we get this far, then we don't know what it is.
+				throw new CommunityServiceException(
+					"WebService call failed - unexpected Exception type",
+					ouch
+					) ;
                 }
             }
-        return result ;
+		//
+		// If we don't have a valid service.
+		else {
+			throw new CommunityServiceException(
+				"Service not initialised"
+				) ;
+			}
         }
 
     /**
-     * Confirm group membership.
+     * Confirm membership.
+     * @param credentials The credentials, containing the account and group identifiers.
+     * @return A PolicyCredentials object confirming the membership.
+     * @throws CommunityIdentifierException If one of the identifiers is invalid.
+     * @throws CommunityPolicyException If there is no matching permission.
+     * @throws CommunityServiceException If there is an internal error in the service.
      *
      */
     public PolicyCredentials checkMembership(PolicyCredentials credentials)
+        throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
         {
-        PolicyCredentials result = null ;
         //
         // If we have a valid service reference.
         if (null != this.service)
@@ -116,17 +150,29 @@ public class PolicyServiceCoreDelegate
             //
             // Try calling the service method.
             try {
-                result = this.service.checkMembership(credentials) ;
+                return this.service.checkMembership(credentials) ;
                 }
             //
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
-                //
-                // Unpack the RemoteException, and re-throw the real Exception.
-                //
+				//
+				// Try converting the Exception.
+				convertCommunityException(ouch) ;
+				//
+				// If we get this far, then we don't know what it is.
+				throw new CommunityServiceException(
+					"WebService call failed - unexpected Exception type",
+					ouch
+					) ;
                 }
             }
-        return result ;
+		//
+		// If we don't have a valid service.
+		else {
+			throw new CommunityServiceException(
+				"Service not initialised"
+				) ;
+			}
         }
     }

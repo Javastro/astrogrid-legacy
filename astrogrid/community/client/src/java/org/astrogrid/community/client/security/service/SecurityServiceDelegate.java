@@ -1,11 +1,24 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/security/service/SecurityServiceDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceDelegate.java,v $
+ *   Revision 1.5  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.4.2.3  2004/03/23 16:28:49  dave
+ *   Fixed JavaDocs.
+ *
+ *   Revision 1.4.2.2  2004/03/23 15:51:46  dave
+ *   Added CommunityTokenResolver and CommunityPasswordResolver.
+ *
+ *   Revision 1.4.2.1  2004/03/22 16:47:55  dave
+ *   Updated SecurityManagerDelegate to include Exceptions.
+ *   Updated SecurityServiceDelegate to include Exceptions.
+ *
  *   Revision 1.4  2004/03/19 14:43:14  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
@@ -35,6 +48,10 @@ import org.astrogrid.community.common.security.data.SecurityToken ;
 
 import org.astrogrid.community.client.service.CommunityServiceDelegate ;
 
+import org.astrogrid.community.common.exception.CommunityServiceException  ;
+import org.astrogrid.community.common.exception.CommunitySecurityException ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException  ;
+
 /**
  * Public interface for our SecurityService delegate.
  * This mirrors the SecurityService interface, without the RemoteExceptions.
@@ -45,34 +62,42 @@ public interface SecurityServiceDelegate
     {
     /**
      * Check an Account password.
-     * @param account - The account ident.
-     * @param pass - The account password.
+     * @param account  The account ident.
+     * @param password The account password.
      * @return A valid SecurityToken if the ident and password are valid.
+     * @throws CommunitySecurityException If the security check fails.
+     * @throws CommunityServiceException If there is an internal error in service.
+     * @throws CommunityIdentifierException If the account identifier is invalid.
      *
      */
-    public SecurityToken checkPassword(String account, String pass) ;
+    public SecurityToken checkPassword(String account, String pass)
+        throws CommunityServiceException, CommunitySecurityException, CommunityIdentifierException ;
 
     /**
      * Validate a SecurityToken.
-     * Validates a token, and creates a new tokens issued to the same account.
-     * Note, this uses the original token, which now becomes invalid.
-     * The client should use the new token for subsequent calls to the service.
-     * @param - The token to validate.
+     * Validates a token, and creates a new token issued to the same account.
+     * @param token The token to validate.
      * @return A new SecurityToken if the original was valid.
+     * @throws CommunitySecurityException If the security check fails.
+     * @throws CommunityServiceException If there is an internal error in service.
+     * @throws CommunityIdentifierException If the token is invalid.
      *
      */
-    public SecurityToken checkToken(SecurityToken token) ;
+    public SecurityToken checkToken(SecurityToken token)
+        throws CommunityServiceException, CommunitySecurityException, CommunityIdentifierException ;
 
     /**
      * Split a SecurityToken.
      * Validates a token, and then creates a new set of tokens issued to the same account.
-     * Note, this uses the original token, which now becomes invalid.
-     * The client should use the first token in the array for subsequent calls to the service.
-     * @param - The token to validate.
-     * @param - The number of new tokens required.
-     * @return An array of new tokens.
+     * @param token The token to validate.
+     * @param count The number of new tokens required.
+     * @return An array of new SecurityToken(s).
+     * @throws CommunitySecurityException If the security check fails.
+     * @throws CommunityServiceException If there is an internal error in service.
+     * @throws CommunityIdentifierException If the token is invalid.
      *
      */
-    public Object[] splitToken(SecurityToken token, int count) ;
+    public Object[] splitToken(SecurityToken token, int count)
+        throws CommunityServiceException, CommunitySecurityException, CommunityIdentifierException ;
 
     }

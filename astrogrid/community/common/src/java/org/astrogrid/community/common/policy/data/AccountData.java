@@ -1,92 +1,33 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/data/AccountData.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountData.java,v $
- *   Revision 1.8  2004/03/19 14:43:14  dave
- *   Merged development branch, dave-dev-200403151155, into HEAD
+ *   Revision 1.9  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
  *
- *   Revision 1.7.2.1  2004/03/18 13:41:19  dave
- *   Added Exception handling to AccountManager
+ *   Revision 1.8.2.2  2004/03/21 06:41:41  dave
+ *   Refactored to include Exception handling.
  *
- *   Revision 1.7  2004/03/15 07:49:30  dave
- *   Merged development branch, dave-dev-200403121536, into HEAD
- *
- *   Revision 1.6.2.1  2004/03/12 17:42:09  dave
- *   Replaced tabs with spaces
- *
- *   Revision 1.6  2004/03/12 15:22:17  dave
- *   Merged development branch, dave-dev-200403101018, into HEAD
- *
- *   Revision 1.5.18.1  2004/03/10 13:32:00  dave
- *   Added home space to AccountData.
- *   Improved null param checking in AccountManager.
- *   Improved null param checking in AccountManager tests.
- *
- *   Revision 1.5  2004/02/20 21:11:05  dave
- *   Merged development branch, dave-dev-200402120832, into HEAD
- *
- *   Revision 1.4.2.1  2004/02/16 15:20:54  dave
- *   Changed tabs to spaces
- *
- *   Revision 1.4  2004/02/12 08:12:13  dave
- *   Merged development branch, dave-dev-200401131047, into HEAD
- *
- *   Revision 1.2.4.6  2004/01/30 03:21:23  dave
- *   Added initial code for SecurityManager and SecurityService
- *
- *   Revision 1.2.4.5  2004/01/27 19:09:52  dave
- *   Fixed dumb typo ...
- *
- *   Revision 1.2.4.4  2004/01/27 19:07:28  dave
- *   Fixed PMD report violations
- *   1) Removed unused imports.
- *   2) Added override for hashCode() to match custom equals().
- *
- *   Revision 1.2.4.3  2004/01/17 13:54:18  dave
- *   Removed password from AccountData
- *
- *   Revision 1.2.4.2  2004/01/13 15:17:40  dave
- *   Put password back in for a moment
- *
- *   Revision 1.2.4.1  2004/01/13 14:29:41  dave
- *   Added initial JUnit tests
- *
- *   Revision 1.2  2004/01/07 10:45:38  dave
- *   Merged development branch, dave-dev-20031224, back into HEAD
- *
- *   Revision 1.1.2.1  2004/01/05 06:47:18  dave
- *   Moved policy data classes into policy.data package
- *
- *   Revision 1.1.2.1  2003/12/24 05:54:48  dave
- *   Initial Maven friendly structure (only part of the service implemented)
- *
- *   Revision 1.5  2003/11/06 15:35:26  dave
- *   Replaced tabs with spaces
- *
- *   Revision 1.4  2003/09/09 16:41:53  KevinBenson
- *   Added password field
- *
- *   Revision 1.3  2003/09/06 20:10:07  dave
- *   Split PolicyManager into separate components.
- *
- *   Revision 1.2  2003/09/04 23:58:10  dave
- *   Experimenting with using our own DataObjects rather than the Axis generated ones ... seems to work so far
- *
- *   Revision 1.1  2003/09/03 06:39:13  dave
- *   Rationalised things into one set of SOAP stubs and one set of data objects for both client and server.
+ *   Revision 1.8.2.1  2004/03/20 06:54:11  dave
+ *   Added addAccount(AccountData) to PolicyManager et al.
+ *   Added XML loader for AccountData.
  *
  * </cvs:log>
  *
- * TODO : Refactor this into AccountData and AccountDetails.
- * TODO : Refactor this to inherit from CommunityBase (common code for equals and ident handling).
  *
  */
 package org.astrogrid.community.common.policy.data ;
 
+/**
+ * A data object to represent an Account.
+ * @todo Refactor this into AccountData and AccountDetails.
+ * @todo Refactor this to inherit from CommunityBase (common code for equals and ident handling).
+ *
+ */
 public class AccountData
     {
     /**
@@ -100,9 +41,8 @@ public class AccountData
 
     /**
      * Public constructor.
-     * No syntax checking is applied to the ident.
      * @param ident The Account ident.
-     * @TODO Add syntax checking.
+     * @todo Add syntax checking.
      *
      */
     public AccountData(String ident)
@@ -111,18 +51,18 @@ public class AccountData
         }
 
     /**
-     * The Account ident.
+     * The Account identifier.
      * At the monet, the syntax is 'name@community', this will be refactored to 'ivo:community/name'.
-     * No syntax checking is applied to the value.
-     * @TODO Refactor the Account ident to 'ivo:community/name'.
-     * @TODO Add syntax checking.
+     * @todo Refactor to use Ivorns.
+     * @todo Move this to a common data object base class
      *
      */
     private String ident ;
 
     /**
-     * Access to the Account ident.
-     * @return The current Account ident.
+     * Access to the Account identifier.
+     * @return The Account identifier.
+     * @todo Move this to a common data object base class
      *
      */
     public String getIdent()
@@ -131,11 +71,12 @@ public class AccountData
         }
 
     /**
-     * Access to the Account ident.
-     * This will fail the the ident is already set - you can't change the ident of an existing Account.
+     * Access to the Account identifier.
+     * This will fail the the identifier is already set - you can't change the identifier of an existing Account.
      * No syntax checking is applied to the value.
-     * @param value The Account ident.
-     * @TODO Add syntax checking.
+     * @param value The Account identifier.
+     * @todo Refactor to use Ivorns.
+     * @todo Move this to a common data object base class
      *
      */
     public void setIdent(String value)
@@ -149,7 +90,6 @@ public class AccountData
     /**
      * The Account display name.
      * This is intended for use in the portal display pages.
-     * Displaying 'DaveMorris' in the pages, rather than 'ivo:astrogrid.org/dave'
      *
      */
     private String display ;
@@ -204,8 +144,7 @@ public class AccountData
     /**
      * The Account home space URI.
      * This is the MySpace or VoSpace URI for the account home.
-     * No syntax checking is applied to the value.
-     * @TODO Add syntax checking.
+     * @todo Add syntax checking.
      *
      */
     private String home ;
@@ -221,10 +160,10 @@ public class AccountData
         }
 
     /**
-     * Access to the Account home space URI.
+     * Access to the Account home space URI (Ivorn).
      * No syntax checking is applied to the value.
      * @param value The new home space URI.
-     * @TODO Add syntax checking.
+     * @todo Add syntax checking.
      *
      */
     public void setHomeSpace(String value)
@@ -236,7 +175,7 @@ public class AccountData
      * The Account email address.
      * The contact email address for the Account owner.
      * No syntax checking is applied to the value.
-     * @TODO Add syntax checking.
+     * @todo Add syntax checking.
      *
      */
     private String email ;
@@ -255,7 +194,7 @@ public class AccountData
      * Access to the Account email address.
      * No syntax checking is applied to the value.
      * @param value The new email address.
-     * @TODO Add syntax checking.
+     * @todo Add syntax checking.
      *
      */
     public void setEmailAddress(String value)
@@ -266,9 +205,10 @@ public class AccountData
     /*
      * Compare this with another AccountData.
      * All we want to check is the Account ident.
-     * @TODO This needs to refactored to check for local community in the ident.
      * @param object The Object to compare.
      * @return true if the two object represetnt the same Account (the idents are equivalent).
+     * @todo Needs to refactored to check for local community in the ident.
+     * @todo Move this to a common data object base class
      *
      */
     public synchronized boolean equals(Object object)
@@ -315,6 +255,7 @@ public class AccountData
      * Generate a hash code for comparison tests.
      * At the moment, this just uses the ident.hashCode().
      * @todo This needs to refactored to check for local community in the ident.
+     * @todo Move this to a common data object base class
      *
      */
     public synchronized int hashCode()

@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/service/SecurityServiceTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceTest.java,v $
+ *   Revision 1.4  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.3.16.1  2004/03/22 15:31:10  dave
+ *   Added CommunitySecurityException.
+ *   Updated SecurityManager and SecurityService to use Exceptions.
+ *
  *   Revision 1.3  2004/03/08 13:42:33  dave
  *   Updated Maven goals.
  *   Replaced tabs with Spaces.
@@ -30,6 +37,8 @@
  */
 package org.astrogrid.community.common.security.service ;
 
+import java.rmi.RemoteException ;
+
 import org.astrogrid.community.common.policy.data.AccountData ;
 import org.astrogrid.community.common.policy.manager.AccountManager ;
 
@@ -38,9 +47,14 @@ import org.astrogrid.community.common.security.manager.SecurityManager ;
 
 import org.astrogrid.community.common.service.CommunityServiceTest ;
 
+import org.astrogrid.community.common.exception.CommunityServiceException  ;
+import org.astrogrid.community.common.exception.CommunitySecurityException ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException  ;
+
 /**
  * A JUnit test case for our SecurityService interface.
  * This is designed to be extended by each set of tests, mock, client and server.
+ * @todo Chech the Exception type wrapped in the RemoteException.
  *
  */
 public class SecurityServiceTest
@@ -173,7 +187,9 @@ public class SecurityServiceTest
         if (DEBUG_FLAG) System.out.println("SecurityServiceTest.testCheckPassword()") ;
         //
         // Setup our test account.
-        AccountData account = accountManager.addAccount(TEST_ACCOUNT) ;
+        AccountData account = accountManager.addAccount(
+			createLocal(TEST_ACCOUNT).toString()
+        	) ;
         assertNotNull(
             "addAccount returned null",
             account
@@ -189,7 +205,10 @@ public class SecurityServiceTest
             ) ;
         //
         // Check we can validate our password.
-        SecurityToken token = securityService.checkPassword(account.getIdent(), TEST_PASSWORD) ;
+        SecurityToken token = securityService.checkPassword(
+        	account.getIdent(),
+        	TEST_PASSWORD
+        	) ;
         //
         // Check that we got a token.
         assertNotNull(
@@ -204,51 +223,6 @@ public class SecurityServiceTest
             token.getAccount()
             ) ;
         }
-
-    /**
-     * Check an Account password (duplicate).
-     *
-     */
-    public void testCheckFrog()
-        throws Exception
-        {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityServiceTest.testCheckPassword()") ;
-        //
-        // Setup our test account.
-        AccountData account = accountManager.addAccount(TEST_ACCOUNT) ;
-        assertNotNull(
-            "addAccount returned null",
-            account
-            ) ;
-        //
-        // Setup our test password.
-        assertTrue(
-            "setPassword returned false",
-            securityManager.setPassword(
-                account.getIdent(),
-                TEST_PASSWORD
-                )
-            ) ;
-        //
-        // Check we can validate our password.
-        SecurityToken token = securityService.checkPassword(account.getIdent(), TEST_PASSWORD) ;
-        //
-        // Check that we got a token.
-        assertNotNull(
-            "checkPassword returned NULL",
-            token
-            ) ;
-        //
-        // Check that the token has the right account.
-        assertEquals(
-            "Token has wrong account",
-            account.getIdent(),
-            token.getAccount()
-            ) ;
-        }
-
 
     /**
      * Check tha we can validate a SecurityToken.
@@ -262,22 +236,13 @@ public class SecurityServiceTest
         if (DEBUG_FLAG) System.out.println("SecurityServiceTest.testCheckToken()") ;
         //
         // Setup our test account.
-        AccountData account = accountManager.addAccount(TEST_ACCOUNT) ;
+        AccountData account = accountManager.addAccount(
+			createLocal(TEST_ACCOUNT).toString()
+        	) ;
         assertNotNull(
             "addAccount returned null",
             account
             ) ;
-//
-// This should fail.
-/*
- *
-        AccountData other = accountManager.addAccount(TEST_ACCOUNT) ;
-        assertNotNull(
-            "addAccount returned null",
-            other
-            ) ;
- *
- */
         //
         // Setup our test password.
         assertTrue(
@@ -289,7 +254,10 @@ public class SecurityServiceTest
             ) ;
         //
         // Check we can validate our password.
-        SecurityToken original = securityService.checkPassword(account.getIdent(), TEST_PASSWORD) ;
+        SecurityToken original = securityService.checkPassword(
+        	account.getIdent(),
+        	TEST_PASSWORD
+        	) ;
         //
         // Check that we got a token.
         assertNotNull(
@@ -335,10 +303,22 @@ public class SecurityServiceTest
             ) ;
         //
         // Check that the original is no longer valid.
-        assertNull(
-            "Original token still valid",
-            securityService.checkToken(original)
-            ) ;
+		try {
+            securityService.checkToken(original) ;
+            fail("Expected CommunitySecurityException") ;
+            }
+		catch (CommunitySecurityException ouch)
+			{
+            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
+            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+			}
+		catch (RemoteException ouch)
+			{
+            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
+            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+			}
         }
 
     /**
@@ -359,7 +339,9 @@ public class SecurityServiceTest
         if (DEBUG_FLAG) System.out.println("SecurityServiceTest.testSplitToken()") ;
         //
         // Setup our test account.
-        AccountData account = accountManager.addAccount(TEST_ACCOUNT) ;
+        AccountData account = accountManager.addAccount(
+			createLocal(TEST_ACCOUNT).toString()
+        	) ;
         assertNotNull(
             "addAccount returned null",
             account
@@ -433,10 +415,21 @@ public class SecurityServiceTest
             }
         //
         // Check that the original is no longer valid.
-        assertNull(
-            "Original token still valid",
-            securityService.checkToken(original)
-            ) ;
+		try {
+            securityService.checkToken(original) ;
+            fail("Expected CommunitySecurityException") ;
+            }
+		catch (CommunitySecurityException ouch)
+			{
+            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
+            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+			}
+		catch (RemoteException ouch)
+			{
+            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
+            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+			}
         }
     }
 

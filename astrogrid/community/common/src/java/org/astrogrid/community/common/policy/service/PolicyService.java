@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/service/PolicyService.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyService.java,v $
+ *   Revision 1.6  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.5.24.2  2004/03/22 02:25:35  dave
+ *   Updated delegate interfaces to include Exception handling.
+ *
+ *   Revision 1.5.24.1  2004/03/21 06:41:41  dave
+ *   Refactored to include Exception handling.
+ *
  *   Revision 1.5  2004/02/20 21:11:05  dave
  *   Merged development branch, dave-dev-200402120832, into HEAD
  *
@@ -55,22 +64,40 @@ import org.astrogrid.community.common.policy.data.PolicyCredentials ;
 
 import org.astrogrid.community.common.service.CommunityService ;
 
+import org.astrogrid.community.common.exception.CommunityPolicyException     ;
+import org.astrogrid.community.common.exception.CommunityServiceException    ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException ;
+
 public interface PolicyService
     extends Remote, CommunityService
     {
 
     /**
-     * Confirm access permissions.
+     * Confirm permissions.
+     * @param credentials The credentials, containing the account and group identifiers.
+     * @param resource The resource identifier.
+     * @param action The action you want to perform.
+     * @return A PolicyPermission object confirming the permission.
+     * @throws CommunityIdentifierException If one of the identifiers is invalid.
+     * @throws CommunityPolicyException If there is no matching permission.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws RemoteException If the WebService call fails.
      *
      */
     public PolicyPermission checkPermissions(PolicyCredentials credentials, String resource, String action)
-        throws RemoteException ;
+        throws RemoteException, CommunityServiceException, CommunityPolicyException, CommunityIdentifierException ;
 
     /**
-     * Confirm group membership.
+     * Confirm membership.
+     * @param credentials The credentials, containing the account and group identifiers.
+     * @return A PolicyCredentials object confirming the membership.
+     * @throws CommunityIdentifierException If one of the identifiers is invalid.
+     * @throws CommunityPolicyException If there is no matching permission.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws RemoteException If the WebService call fails.
      *
      */
     public PolicyCredentials checkMembership(PolicyCredentials credentials)
-        throws RemoteException ;
+        throws RemoteException, CommunityServiceException, CommunityPolicyException, CommunityIdentifierException ;
 
     }

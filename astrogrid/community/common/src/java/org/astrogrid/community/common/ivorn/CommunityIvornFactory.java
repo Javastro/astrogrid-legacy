@@ -1,11 +1,22 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/ivorn/CommunityIvornFactory.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityIvornFactory.java,v $
+ *   Revision 1.5  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.4.2.2  2004/03/22 00:53:31  dave
+ *   Refactored GroupManager to use Ivorn identifiers.
+ *   Started removing references to CommunityManager.
+ *
+ *   Revision 1.4.2.1  2004/03/20 06:54:11  dave
+ *   Added addAccount(AccountData) to PolicyManager et al.
+ *   Added XML loader for AccountData.
+ *
  *   Revision 1.4  2004/03/19 14:43:14  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
@@ -69,8 +80,8 @@ public class CommunityIvornFactory
 
     /**
      * Create a new ident.
-     * @param  community    The Community ident, with no extra fields.
-     * @param  resource The resource name.
+     * @param  community The Community ident, with no extra fields.
+     * @param  resource  The resource name.
      * @return A new identifer.
      * @throws CommunityIdentifierException if the community or resource identifiers are null.
      *
@@ -83,9 +94,9 @@ public class CommunityIvornFactory
 
     /**
      * Create a Community ident.
-     * @param  community    The Community ident, with no extra fields.
-     * @param  resource The resource name.
-     * @param  path     The URI path, added after the resource.
+     * @param  community The Community ident, with no extra fields.
+     * @param  resource  The resource name.
+     * @param  path      The URI path, added after the resource.
      * @return A new identifer.
      * @throws CommunityIdentifierException if the community or resource identifiers are null.
      *
@@ -141,10 +152,13 @@ public class CommunityIvornFactory
         //
         // Put it all together.
         StringBuffer buffer = new StringBuffer() ;
-
-        buffer.append(Ivorn.SCHEME) ;
-        buffer.append("://") ;
-
+		//
+		// If the community identifier isn't an Ivorn yet.
+		if (false == community.startsWith(Ivorn.SCHEME))
+			{
+	        buffer.append(Ivorn.SCHEME) ;
+	        buffer.append("://") ;
+			}
         buffer.append(community) ;
         buffer.append("/") ;
         buffer.append(resource) ;

@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/CommunityManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityManager.java,v $
+ *   Revision 1.7  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.6.2.1  2004/03/22 00:53:31  dave
+ *   Refactored GroupManager to use Ivorn identifiers.
+ *   Started removing references to CommunityManager.
+ *
  *   Revision 1.6  2004/03/19 14:43:14  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
@@ -27,6 +34,10 @@ import org.astrogrid.community.common.exception.CommunityPolicyException     ;
 import org.astrogrid.community.common.exception.CommunityServiceException    ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
+/**
+ * JUnit test for CommunityManager.
+ *
+ */
 public interface CommunityManager
     extends Remote, CommunityService
     {

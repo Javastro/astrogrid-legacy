@@ -4,10 +4,22 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/19 14:43:15 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.5  2004/03/23 16:34:08  dave
+    |   Merged development branch, dave-dev-200403191458, into HEAD
+    |
+    |   Revision 1.4.2.3  2004/03/23 14:51:26  dave
+    |   Added SecurityManagerResolver and SecurityServiceResolver.
+    |
+    |   Revision 1.4.2.2  2004/03/23 11:01:44  dave
+    |   Removed old test data.
+    |
+    |   Revision 1.4.2.1  2004/03/23 10:48:32  dave
+    |   Registry configuration files and PolicyManagerResolver tests.
+    |
     |   Revision 1.4  2004/03/19 14:43:15  dave
     |   Merged development branch, dave-dev-200403151155, into HEAD
     |
@@ -28,6 +40,7 @@
     xmlns:define="jelly:define"
     xmlns:deploy="deploy"
     xmlns:astro="org.astrogrid.community"
+    xmlns:custom="org.astrogrid.community.resolver"
     default="astrogrid-rebuild-snapshot"
     >
 
@@ -45,6 +58,61 @@
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
     </goal>
+
+    <!-- ================ Custom tags ================ -->
+
+    <!--+
+        | Define our local tag library.
+        +-->
+    <define:taglib uri="org.astrogrid.community.resolver">
+        <!--+
+            | Deploy a service into the local Axis config.
+            | Attrib : service.name  eg. PolicyManager
+            | Attrib : service.class eg. org.astrogrid.community.common.policy.manager.PolicyManager
+            | Attrib : service.file  eg. local.manager.policy.xml
+            +-->
+        <define:tag name="register.service.local">
+            <ant:echo message=""/>
+            <ant:echo message="Registering local service"/>
+            <ant:echo message="  Service name  : ${service.name}"/>
+            <ant:echo message="  Service class : ${service.class}"/>
+            <ant:echo message="  Service file  : ${service.file}"/>
+            <ant:echo message="  Service wsdl  : ${wsdlDir}/${service.name}.wsdl"/>
+            <ant:echo message="  Service href  : local:///${service.name}"/>
+            <!--+
+                | Modify the service WSDL to include a 'local://..' url.
+                +-->
+            <ant:xslt style="${basedir}/src/xsl/registry/service.wsdl.xsl"
+                  in="${wsdlDir}/${service.name}.wsdl"
+                  out="${wsdlDir}/${service.name}.tmp">
+                <outputproperty name="method" value="xml"/>
+                <outputproperty name="indent" value="yes"/>
+                <param name="service.name" expression="${service.name}"/>
+                <param name="service.href" expression="local:///${service.name}"/>
+            </ant:xslt>
+            <ant:move overwrite="true" file="${wsdlDir}/${service.name}.tmp" toFile="${wsdlDir}/${service.name}.wsdl"/>
+            <!--+
+                | Create the registry entry that points to the service WSDL.
+                +-->
+            <ant:xslt style="${basedir}/src/xsl/registry/service.entry.xsl"
+                  in="${basedir}/src/config/registry/service.entry.xml"
+                  out="${org.astrogrid.registry.data}/${service.file}">
+                <outputproperty name="method" value="xml"/>
+                <outputproperty name="indent" value="yes"/>
+                <param name="service.authority" expression="${org.astrogrid.community.ident}"/>
+                <param name="service.resource"  expression="${service.class}"/>
+                <param name="service.wsdl"      expression="file://${wsdlDir}/${service.name}.wsdl"/>
+            </ant:xslt>
+            <!--+
+                | Add the config property reference.
+                +-->
+            <ant:propertyfile file="${maven.build.dir}/config/astrogrid.properties">
+                <entry
+                    key="${org.astrogrid.community.ident}/${service.class}"
+                    value="file://${org.astrogrid.registry.data}/${service.file}"/>
+            </ant:propertyfile>
+        </define:tag>
+    </define:taglib>
 
     <!-- ================ Reactor goals ================ -->
 
@@ -200,6 +268,14 @@
         <ant:echo message=""/>
         <ant:echo message="JUnit fork VM - ${maven.junit.fork}"/>
         <ant:echo message="JUnit test directory : ${maven.junit.dir}"/>
+        <!--+
+            | Initialise our config files.
+            +-->
+        <attainGoal name="init.config"/>
+        <!--+
+            | Initialise our mock services.
+            +-->
+        <attainGoal name="init.mocks"/>
     </preGoal>
 
     <!--+
@@ -230,4 +306,133 @@
         <ant:mkdir dir="${maven.build.dest}/META-INF/wsdl"/>
     </preGoal>
 
+    <!--+
+        | Initialise our mock WebServices.
+        | This generates and deploys the WSDL for our mock services.
+        +-->
+    <goal name="init.mocks">
+        <ant:echo message=""/>
+        <ant:echo message="Artifact : ${pom.artifactId}"/>
+        <ant:echo message="Initialising mock services ...."/>
+        <!--+
+            | Initialise our Axis tools
+            +-->
+        <attainGoal name="init.tools"/>
+        <!--+
+            | Create our output directories.
+            +-->
+        <ant:mkdir dir="${wsdlDir}"/>
+        <ant:mkdir dir="${tempDir}"/>
+        <ant:mkdir dir="${javaDir}"/>
+        <!--+
+            | Generate our DatabaseManager WSDL and stubs.
+            +-->
+        <astro:service.generate
+            service.name="DatabaseManager"
+            service.wsdd="org/astrogrid/community/common/database/manager/deploy.wsdd"
+            service.class="org.astrogrid.community.common.database.manager.DatabaseManagerMock"
+            service.interface="org.astrogrid.community.common.database.manager.DatabaseManager"
+            service.namespace="urn:manager.database.common.community.astrogrid.org"
+            />
+        <!--+
+            | Generate our PolicyManager WSDL and stubs.
+            +-->
+        <astro:service.generate
+            service.name="PolicyManager"
+            service.wsdd="org/astrogrid/community/common/policy/manager/deploy.wsdd"
+            service.class="org.astrogrid.community.common.policy.manager.PolicyManagerMock"
+            service.interface="org.astrogrid.community.common.policy.manager.PolicyManager"
+            service.namespace="urn:manager.policy.common.community.astrogrid.org"
+            />
+        <!--+
+            | Generate our PolicyService WSDL and stubs.
+            +-->
+        <astro:service.generate
+            service.name="PolicyService"
+            service.wsdd="org/astrogrid/community/common/policy/service/deploy.wsdd"
+            service.class="org.astrogrid.community.common.policy.service.PolicyServiceMock"
+            service.interface="org.astrogrid.community.common.policy.service.PolicyService"
+            service.namespace="urn:service.policy.common.community.astrogrid.org"
+            />
+        <!--+
+            | Generate our SecurityManager WSDL and stubs.
+            +-->
+        <astro:service.generate
+            service.name="SecurityManager"
+            service.wsdd="org/astrogrid/community/common/security/manager/deploy.wsdd"
+            service.class="org.astrogrid.community.common.security.manager.SecurityManagerMock"
+            service.interface="org.astrogrid.community.common.security.manager.SecurityManager"
+            service.namespace="urn:manager.security.common.community.astrogrid.org"
+            />
+        <!--+
+            | Generate our SecurityService WSDL and stubs.
+            +-->
+        <astro:service.generate
+            service.name="SecurityService"
+            service.wsdd="org/astrogrid/community/common/security/service/deploy.wsdd"
+            service.class="org.astrogrid.community.common.security.service.SecurityServiceMock"
+            service.interface="org.astrogrid.community.common.security.service.SecurityService"
+            service.namespace="urn:service.security.common.community.astrogrid.org"
+            />
+        <!--+
+            | Deploy our services.
+            +-->
+        <ant:echo message=""/>
+        <ant:echo message="Deploying WebServices ..."/>
+        <astro:service.deploy service.name="DatabaseManager"/>
+        <astro:service.deploy service.name="PolicyManager"/>
+        <astro:service.deploy service.name="PolicyService"/>
+        <astro:service.deploy service.name="SecurityManager"/>
+        <astro:service.deploy service.name="SecurityService"/>
+        <!--+
+            | Register our services
+            +-->
+        <custom:register.service.local
+            service.name="PolicyManager"
+            service.class="org.astrogrid.community.common.policy.manager.PolicyManager"
+            service.file="local.policy.manager.xml"
+            />
+        <custom:register.service.local
+            service.name="PolicyService"
+            service.class="org.astrogrid.community.common.policy.service.PolicyService"
+            service.file="local.policy.service.xml"
+            />
+        <custom:register.service.local
+            service.name="SecurityManager"
+            service.class="org.astrogrid.community.common.security.manager.SecurityManager"
+            service.file="local.security.manager.xml"
+            />
+        <custom:register.service.local
+            service.name="SecurityService"
+            service.class="org.astrogrid.community.common.security.service.SecurityService"
+            service.file="local.security.service.xml"
+            />
+    </goal>
+
+    <!--+
+        | Initialise our config files.
+        +-->
+    <goal name="init.config">
+        <ant:echo message=""/>
+        <ant:echo message="Artifact : ${pom.artifactId}"/>
+        <ant:echo message="Initialising config files ...."/>
+        <!--+
+            | Clean the config directory.
+            +-->
+        <ant:delete dir="${maven.build.dir}/config"/>
+        <ant:mkdir dir="${maven.build.dir}/config"/>
+        <!--+
+            | Clean the registry directory.
+            +-->
+        <ant:delete dir="${org.astrogrid.registry.data}"/>
+        <ant:mkdir dir="${org.astrogrid.registry.data}"/>
+        <!--+
+            | Copy the initial config file.
+            +-->
+        <ant:copy todir="${maven.build.dir}/config">
+            <fileset dir="src/config">
+                <include name="astrogrid.properties"/>
+            </fileset>
+        </ant:copy>
+    </goal>
 </project>

@@ -1,11 +1,29 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/AccountManagerTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerTest.java,v $
+ *   Revision 1.7  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.6.2.4  2004/03/22 15:31:10  dave
+ *   Added CommunitySecurityException.
+ *   Updated SecurityManager and SecurityService to use Exceptions.
+ *
+ *   Revision 1.6.2.3  2004/03/22 00:53:31  dave
+ *   Refactored GroupManager to use Ivorn identifiers.
+ *   Started removing references to CommunityManager.
+ *
+ *   Revision 1.6.2.2  2004/03/21 06:41:41  dave
+ *   Refactored to include Exception handling.
+ *
+ *   Revision 1.6.2.1  2004/03/20 06:54:11  dave
+ *   Added addAccount(AccountData) to PolicyManager et al.
+ *   Added XML loader for AccountData.
+ *
  *   Revision 1.6  2004/03/19 14:43:14  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
@@ -25,7 +43,13 @@
  */
 package org.astrogrid.community.common.policy.manager ;
 
+import java.rmi.RemoteException ;
+
+import org.astrogrid.store.Ivorn ;
+
 import org.astrogrid.community.common.policy.data.AccountData ;
+
+import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory ;
 
 import org.astrogrid.community.common.exception.CommunityPolicyException     ;
 import org.astrogrid.community.common.exception.CommunityServiceException    ;
@@ -33,6 +57,12 @@ import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
 import org.astrogrid.community.common.service.CommunityServiceTest ;
 
+/**
+ * Generic test case for AccountManager.
+ * @todo Change unknown to use the same ident - once reset is fixed.
+ * @todo Chech the Exception type wrapped in the RemoteException.
+ *
+ */
 public class AccountManagerTest
     extends CommunityServiceTest
     {
@@ -97,14 +127,39 @@ public class AccountManagerTest
         //
         // Try creating an Account.
         try {
-            accountManager.addAccount(null) ;
+            accountManager.addAccount((String)null) ;
             fail("Expected CommunityIdentifierException") ;
             }
         catch (CommunityIdentifierException ouch)
             {
             if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
             if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
             }
+		catch (RemoteException ouch)
+			{
+            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
+            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+			}
+        //
+        // Try creating an Account.
+        try {
+            accountManager.addAccount((AccountData)null) ;
+            fail("Expected CommunityIdentifierException") ;
+            }
+        catch (CommunityIdentifierException ouch)
+            {
+            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
+            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+            }
+		catch (RemoteException ouch)
+			{
+            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
+            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+			}
         }
 
     /**
@@ -120,7 +175,30 @@ public class AccountManagerTest
         //
         // Try creating an Account.
         assertNotNull("Null account",
-            accountManager.addAccount("test-account")
+            accountManager.addAccount(
+				createLocal("test-account").toString()
+            	)
+            ) ;
+        }
+
+    /**
+     * Check we can create a valid Account.
+     *
+     */
+    public void testCreateData()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testCreateData()") ;
+        //
+        // Try creating an Account.
+        assertNotNull("Null account",
+            accountManager.addAccount(
+                new AccountData(
+					createLocal("test-account").toString()
+                	)
+                )
             ) ;
         }
 
@@ -137,19 +215,30 @@ public class AccountManagerTest
         //
         // Try creating an Account.
         assertNotNull("Null account",
-            accountManager.addAccount("test-account")
+            accountManager.addAccount(
+				createLocal("test-account").toString()
+            	)
             ) ;
         //
         // Try creating the same Account.
         try {
-            accountManager.addAccount("test-account") ;
+            accountManager.addAccount(
+				createLocal("test-account").toString()
+            	) ;
             fail("Expected CommunityPolicyException") ;
             }
         catch (CommunityPolicyException ouch)
             {
             if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
             if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
             }
+		catch (RemoteException ouch)
+			{
+            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
+            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+			}
         }
 
     /**
@@ -172,7 +261,14 @@ public class AccountManagerTest
             {
             if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
             if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
             }
+		catch (RemoteException ouch)
+			{
+            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
+            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+			}
         }
 
     /**
@@ -188,14 +284,23 @@ public class AccountManagerTest
         //
         // Try getting the details.
         try {
-            accountManager.getAccount("unknown-account") ;
+            accountManager.getAccount(
+				createLocal("unknown-account").toString()
+            	) ;
             fail("Expected CommunityPolicyException") ;
             }
         catch (CommunityPolicyException ouch)
             {
             if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
             if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
             }
+		catch (RemoteException ouch)
+			{
+            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
+            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+			}
         }
 
     /**
@@ -208,16 +313,17 @@ public class AccountManagerTest
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("AccountManagerTest:testGetValid()") ;
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testCreateValid()") ;
         //
         // Try creating an Account.
-        AccountData created = accountManager.addAccount("test-account") ;
+        AccountData created = accountManager.addAccount(
+			createLocal("test-account").toString()
+        	) ;
         assertNotNull("Null account", created) ;
         //
         // Try getting the details.
-        AccountData found = accountManager.getAccount("test-account") ;
+        AccountData found = accountManager.getAccount(
+			createLocal("test-account").toString()
+        	) ;
         assertNotNull("Null account", found) ;
         //
         // Check that they refer to the same account.
@@ -242,7 +348,14 @@ public class AccountManagerTest
             {
             if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
             if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
             }
+		catch (RemoteException ouch)
+			{
+            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
+            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+			}
         }
 
     /**
@@ -259,7 +372,9 @@ public class AccountManagerTest
         // Try setting an unknown account.
         try {
             accountManager.setAccount(
-                new AccountData("unknown-account")
+                new AccountData(
+					createLocal("unknown-account").toString()
+                	)
                 ) ;
             fail("Expected CommunityPolicyException") ;
             }
@@ -267,7 +382,14 @@ public class AccountManagerTest
             {
             if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
             if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
             }
+		catch (RemoteException ouch)
+			{
+            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
+            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+			}
         }
 
     /**
@@ -282,7 +404,9 @@ public class AccountManagerTest
         if (DEBUG_FLAG) System.out.println("AccountManagerTest:testSetValid()") ;
         //
         // Try creating an Account.
-        AccountData account = accountManager.addAccount("test-account") ;
+        AccountData account = accountManager.addAccount(
+			createLocal("test-account").toString()
+        	) ;
         assertNotNull("Null account", account) ;
         //
         // Change the details.
@@ -302,7 +426,9 @@ public class AccountManagerTest
         assertEquals("Different details", "Test HomeSpace",    account.getHomeSpace())    ;
         //
         // Try getting the details.
-        account = accountManager.getAccount("test-account") ;
+        account = accountManager.getAccount(
+			createLocal("test-account").toString()
+        	) ;
         assertNotNull("Null account", account) ;
         //
         // Check the details have been changed.
@@ -330,7 +456,14 @@ public class AccountManagerTest
             {
             if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
             if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
             }
+		catch (RemoteException ouch)
+			{
+            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
+            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+			}
         }
 
     /**
@@ -344,14 +477,23 @@ public class AccountManagerTest
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("AccountManagerTest:testDeleteUnknown()") ;
         try {
-            accountManager.delAccount("unknown-account") ;
+            accountManager.delAccount(
+				createLocal("unknown-account").toString()
+            	) ;
             fail("Expected CommunityPolicyException") ;
             }
         catch (CommunityPolicyException ouch)
             {
             if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
             if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
             }
+		catch (RemoteException ouch)
+			{
+            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
+            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+			}
         }
 
     /**
@@ -366,11 +508,15 @@ public class AccountManagerTest
         if (DEBUG_FLAG) System.out.println("AccountManagerTest:testDeleteValid()") ;
         //
         // Try creating the Account.
-        AccountData created = accountManager.addAccount("test-account") ;
+        AccountData created = accountManager.addAccount(
+			createLocal("test-account").toString()
+        	) ;
         assertNotNull("Null account", created) ;
         //
         // Try deleting the Account.
-        AccountData deleted = accountManager.delAccount("test-account") ;
+        AccountData deleted = accountManager.delAccount(
+			createLocal("test-account").toString()
+        	) ;
         assertNotNull("Null account", deleted) ;
         //
         // Check that the two objects represent the same Account.
@@ -378,7 +524,7 @@ public class AccountManagerTest
         }
 
     /**
-     * Try deleting the same Account.
+     * Try deleting the same Account twice.
      *
      */
     public void testDeleteTwice()
@@ -389,11 +535,15 @@ public class AccountManagerTest
         if (DEBUG_FLAG) System.out.println("AccountManagerTest:testDeleteTwice()") ;
         //
         // Try creating the Account.
-        AccountData created = accountManager.addAccount("test-account") ;
+        AccountData created = accountManager.addAccount(
+			createLocal("test-account").toString()
+        	) ;
         assertNotNull("Null account", created) ;
         //
         // Try deleting the Account.
-        AccountData deleted = accountManager.delAccount("test-account") ;
+        AccountData deleted = accountManager.delAccount(
+			createLocal("test-account").toString()
+        	) ;
         assertNotNull("Null account", deleted) ;
         //
         // Check that the two objects represent the same Account.
@@ -401,13 +551,22 @@ public class AccountManagerTest
         //
         // Try deleting the Account again.
         try {
-            accountManager.delAccount("test-account") ;
+            accountManager.delAccount(
+				createLocal("test-account").toString()
+            	) ;
             fail("Expected CommunityPolicyException") ;
             }
         catch (CommunityPolicyException ouch)
             {
             if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
             if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
             }
+		catch (RemoteException ouch)
+			{
+            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
+            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+			}
         }
     }

@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/junit/org/astrogrid/community/resolver/CommunityAccountSpaceResolverTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:15 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountSpaceResolverTestCase.java,v $
+ *   Revision 1.4  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.3.2.1  2004/03/22 15:31:10  dave
+ *   Added CommunitySecurityException.
+ *   Updated SecurityManager and SecurityService to use Exceptions.
+ *
  *   Revision 1.3  2004/03/19 14:43:15  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
@@ -79,7 +86,6 @@ public class CommunityAccountSpaceResolverTestCase
 		// Create our myspace Ivorn.
 		Ivorn home = new MockIvorn("myspace", "toad") ;
 		if (DEBUG_FLAG) System.out.println("  Home   : " + home) ;
-
 		//
 		// Initialise our mock service.
 		PolicyManager manager = PolicyManagerMockDelegate.addManager(ident) ;
@@ -93,7 +99,6 @@ public class CommunityAccountSpaceResolverTestCase
 		// Set the Account home address.
 		created.setHomeSpace(home.toString()) ;
 		manager.setAccount(created) ;
-
 		//
 		// Create our target Ivorn.
         Ivorn target = CommunityAccountIvornFactory.createMock(

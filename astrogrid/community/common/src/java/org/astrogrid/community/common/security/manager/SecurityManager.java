@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/manager/SecurityManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityManager.java,v $
+ *   Revision 1.4  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.3.24.1  2004/03/22 15:31:10  dave
+ *   Added CommunitySecurityException.
+ *   Updated SecurityManager and SecurityService to use Exceptions.
+ *
  *   Revision 1.3  2004/02/20 21:11:05  dave
  *   Merged development branch, dave-dev-200402120832, into HEAD
  *
@@ -43,6 +50,10 @@ import java.rmi.RemoteException ;
 
 import org.astrogrid.community.common.service.CommunityService ;
 
+import org.astrogrid.community.common.exception.CommunityServiceException  ;
+import org.astrogrid.community.common.exception.CommunitySecurityException ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException  ;
+
 /**
  * Interface for our SecurityManager service.
  *
@@ -52,10 +63,17 @@ public interface SecurityManager
     {
 
     /**
-     * Set an account password.
+     * Set an Account password.
+     * @param account  The account ident.
+     * @param password The account password.
+     * @return True if the password was set.
+     * @throws CommunitySecurityException If the password change fails.
+     * @throws CommunityServiceException If there is an internal error in service.
+     * @throws CommunityIdentifierException If the account identifier is invalid.
+     * @throws RemoteException If the WebService call fails.
      *
      */
     public boolean setPassword(String ident, String value)
-        throws RemoteException ;
+        throws RemoteException, CommunityServiceException, CommunitySecurityException, CommunityIdentifierException ;
 
     }

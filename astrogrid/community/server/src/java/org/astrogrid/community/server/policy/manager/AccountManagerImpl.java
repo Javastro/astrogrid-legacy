@@ -1,11 +1,32 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/AccountManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:15 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.10  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.9.2.5  2004/03/22 00:53:31  dave
+ *   Refactored GroupManager to use Ivorn identifiers.
+ *   Started removing references to CommunityManager.
+ *
+ *   Revision 1.9.2.4  2004/03/21 18:14:29  dave
+ *   Refactored GroupManagerImpl to use Ivorn identifiers.
+ *
+ *   Revision 1.9.2.3  2004/03/21 17:13:54  dave
+ *   Added Ivorn handling to AccountManagerImpl.
+ *   Simplified Account handling in PolicyManagerImpl.
+ *
+ *   Revision 1.9.2.2  2004/03/21 06:41:41  dave
+ *   Refactored to include Exception handling.
+ *
+ *   Revision 1.9.2.1  2004/03/20 06:54:11  dave
+ *   Added addAccount(AccountData) to PolicyManager et al.
+ *   Added XML loader for AccountData.
+ *
  *   Revision 1.9  2004/03/19 14:43:15  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
@@ -32,20 +53,27 @@ import org.exolab.castor.jdo.DuplicateIdentityException ;
 // TODO - resolve MySpace dependency
 // import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 
+import org.astrogrid.store.Ivorn ;
+
 import org.astrogrid.community.common.policy.data.GroupData ;
 import org.astrogrid.community.common.policy.data.AccountData ;
 import org.astrogrid.community.common.policy.data.GroupMemberData ;
-import org.astrogrid.community.common.policy.data.CommunityIdent ;
+
+import org.astrogrid.community.common.ivorn.CommunityIvornParser ;
+import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory ;
 
 import org.astrogrid.community.common.policy.manager.AccountManager ;
 
-import org.astrogrid.community.common.config.CommunityConfig;
 import org.astrogrid.community.server.service.CommunityServiceImpl ;
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration ;
 
 import org.astrogrid.community.common.exception.CommunityPolicyException     ;
 import org.astrogrid.community.common.exception.CommunityServiceException    ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
+
+// TODO remove these
+//import org.astrogrid.community.common.policy.data.CommunityIdent ;
+//import org.astrogrid.community.common.config.CommunityConfig;
 
 /**
  * The core AccountManager implementation.
@@ -66,7 +94,26 @@ public class AccountManagerImpl
      * @todo This should be in a config file, not hard coded.
      *
      */
-    private static String DEFAULT_GROUP = "everyone" ;
+    private static String DEFAULT_GROUP_NAME = "everyone" ;
+
+    /**
+     * The default public group.
+     * @todo This should be in a config file, not hard coded.
+     * @todo Find a better way of initialising it.
+     *
+     */
+    private static Ivorn DEFAULT_GROUP_IVORN ;
+
+	static {
+		try {
+			DEFAULT_GROUP_IVORN = CommunityAccountIvornFactory.createLocal(
+				DEFAULT_GROUP_NAME
+				) ;
+			}
+		catch (Exception ouch)
+			{
+			}
+		}
 
     /**
      * Public constructor, using default database configuration.
@@ -104,32 +151,28 @@ public class AccountManagerImpl
      * @throws CommunityIdentifierException If the identifier is not valid.
      * @throws CommunityPolicyException If the identifier is already in the database.
      * @throws CommunityServiceException If there is an internal error in the service.
-     * @todo Refactor to use Ivorn identifiers
      *
      */
     public AccountData addAccount(String ident)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        //
-        // Check for null ident.
-        if (null == ident)
-            {
-            throw new CommunityIdentifierException(
-				"Null identifier"
-            	) ;
-            }
 		//
-		// Parse the ident and process the result.
-        return this.addAccount(new CommunityIdent(ident)) ;
+		// Create a new Accountdata.
+		return this.addAccount(
+			new AccountData(
+				ident
+				)
+            ) ;
         }
 
     /**
-     * Add a new Account, given the Account ident.
-     * @param  ident The Account identifier.
-     * @return An AccountData for the Account.
+     * Add a new Account, given the Account data.
+     * @param  account The AccountData to add.
+     * @return A new AccountData for the Account.
      * @throws CommunityIdentifierException If the identifier is not valid.
      * @throws CommunityPolicyException If the identifier is already in the database.
      * @throws CommunityServiceException If there is an internal error in the service.
+     * @throws RemoteException If the WebService call fails.
      * @todo Needs refactoring to make it more robust.
      * @todo If the 'everyone' group does not exist, then create it.
      * @todo If the account group already exists (as an AccountGroup) then don't throw a duplicate exception.
@@ -138,151 +181,142 @@ public class AccountManagerImpl
      * @todo If the MySpace call adds the Account, store the MySpace server and Account details.
      * @todo Tidy up fragments of old data, e.g. groups, membership and permissions,
      * @todo Verify that the finally gets executed, even if a new Exception is thrown.
-     * @todo Refactor to use Ivorn identifiers
      *
      */
-    protected AccountData addAccount(CommunityIdent ident)
+    public AccountData addAccount(AccountData account)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("AccountManagerImpl.addAccount()") ;
-        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
+        if (DEBUG_FLAG) System.out.println("  Account : " + ((null != account) ? account.getIdent() : null)) ;
         //
-        // Check for null ident.
-        if (null == ident)
+        // Check for null account.
+        if (null == account)
             {
             throw new CommunityIdentifierException(
-				"Null identifier"
-            	) ;
+                "Null account"
+                ) ;
             }
-        Database    database = null ;
-        AccountData account  = null ;
-        GroupData   group    = null ;
         //
-        // If the ident is valid.
-        if (ident.isValid())
+        // Get the Account ident.
+        CommunityIvornParser ident = new CommunityIvornParser(
+            account.getIdent()
+            ) ;
+        //
+        // If the account is local.
+        if (ident.isLocal())
             {
+//
+// Get the string ident.
+String string = ident.getAccountIdent() ;
+//
+// Set the Account ident.
+account.setIdent(string) ;
             //
-            // If the ident is local.
-            if (ident.isLocal())
-                {
-                //
-                // Create our new Account object.
-                account = new AccountData() ;
-                account.setIdent(ident.toString()) ;
-                //
-                // Create the corresponding Group object.
-                group = new GroupData() ;
-                group.setIdent(ident.toString()) ;
-                group.setType(GroupData.SINGLE_TYPE) ;
-                //
-                // Add the account to the group.
-                GroupMemberData groupmember = new GroupMemberData() ;
-                groupmember.setAccount(ident.toString()) ;
-                groupmember.setGroup(ident.toString()) ;
-                //
-                // Add the account to the guest group.
+            // Create the corresponding Group object.
+            GroupData group = new GroupData() ;
+            group.setIdent(string) ;
+            group.setType(GroupData.SINGLE_TYPE) ;
+            //
+            // Add the account to the group.
+            GroupMemberData groupmember = new GroupMemberData() ;
+            groupmember.setAccount(string) ;
+            groupmember.setGroup(string) ;
+            //
+            // Add the account to the guest group.
 //
 // TODO Need better 'default' group handling.
 //
-                GroupMemberData guestmember = new GroupMemberData() ;
-                guestmember.setAccount(ident.toString()) ;
-                guestmember.setGroup(new CommunityIdent(DEFAULT_GROUP)) ;
+            GroupMemberData guestmember = new GroupMemberData() ;
+            guestmember.setAccount(string) ;
+            guestmember.setGroup(
+				DEFAULT_GROUP_IVORN.toString()
+            	) ;
+            //
+            // Try performing our transaction.
+	        Database database = null ;
+            try {
                 //
-                // Try performing our transaction.
-                try {
-                    //
-                    // Open our database connection.
-                    database = this.getDatabase() ;
-                    //
-                    // Begin a new database transaction.
-                    database.begin();
-                    //
-                    // Try creating the account in the database.
-                    database.create(account);
-                    //
-                    // Try creating the group in the database.
-                    database.create(group);
-                    //
-                    // Try adding the account to the groups.
-                    database.create(groupmember);
+                // Open our database connection.
+                database = this.getDatabase() ;
+                //
+                // Begin a new database transaction.
+                database.begin();
+                //
+                // Try creating the account in the database.
+                database.create(account);
+                //
+                // Try creating the group in the database.
+                database.create(group);
+                //
+                // Try adding the account to the groups.
+                database.create(groupmember);
 // TODO BUG
 // Not sure why this one fails the tests.
 // Something about invalid primary key.
 //                        database.create(guestmember);
-                    //
-                    // Commit the transaction.
-                    database.commit() ;
-                    }
                 //
-                // If we already have an object with that ident.
-                catch (DuplicateIdentityException ouch)
-                    {
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-					//
-					// Throw a new Exception.
-					throw new CommunityPolicyException(
-						"Duplicate Account already exists",
-						ident.toString()
-						) ;
-                    }
-                //
-                // If anything else went bang.
-                catch (Exception ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(
-                    	ouch,
-                    	"AccountManagerImpl.addAccount()"
-                    	) ;
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-					//
-					// Throw a new Exception.
-					throw new CommunityServiceException(
-						"Database transaction failed",
-						ident.toString(),
-						ouch
-						) ;
-                    }
-                //
-                // Close our database connection.
-                finally
-                    {
-                    closeConnection(database) ;
-                    }
+                // Commit the transaction.
+                database.commit() ;
                 }
             //
-            // If the ident is not local.
-            else {
-				//
-				// Throw a new Exception.
-				throw new CommunityPolicyException(
-					"Account is not local",
-					ident.toString()
-					) ;
+            // If we already have an object with that ident.
+            catch (DuplicateIdentityException ouch)
+                {
+                //
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
+                //
+                // Throw a new Exception.
+                throw new CommunityPolicyException(
+                    "Duplicate Account already exists",
+                    ident.toString()
+                    ) ;
+                }
+            //
+            // If anything else went bang.
+            catch (Exception ouch)
+                {
+                //
+                // Log the exception.
+                logException(
+                    ouch,
+                    "AccountManagerImpl.addAccount()"
+                    ) ;
+                //
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
+                //
+                // Throw a new Exception.
+                throw new CommunityServiceException(
+                    "Database transaction failed",
+                    ident.toString(),
+                    ouch
+                    ) ;
+                }
+            //
+            // Close our database connection.
+            finally
+                {
+                closeConnection(database) ;
                 }
             }
         //
-        // If the ident is not valid.
+        // If the ident is not local.
         else {
-			//
-			// Throw a new Exception.
-			// @todo - remove when Ivorns used
-			throw new CommunityIdentifierException(
-				"Identifier is not valid",
-				ident.toString()
-				) ;
+            //
+            // Throw a new Exception.
+            throw new CommunityPolicyException(
+                "Account is not local",
+                ident.toString()
+                ) ;
             }
-
 //
 // Need to store the MySpace URL.
 // Move this to a separate method.
+/*
+ * TODO - resolve MySpace dependency
         //
         // Add the user to the local myspace.
         if(account != null)
@@ -292,8 +326,6 @@ public class AccountManagerImpl
             // If we have a local MySpace service.
             if ((null != myspaceUrl) && (myspaceUrl.length() > 0))
                 {
-/*
- * TODO - resolve MySpace dependency
                 try {
                     MySpaceManagerDelegate msmd = new MySpaceManagerDelegate(myspaceUrl);
                     Vector tempVector = new Vector();
@@ -304,10 +336,10 @@ public class AccountManagerImpl
                     {
                     ouch.printStackTrace();
                     }
- *
- */
                 }
             }
+ *
+ */
         return account ;
         }
 
@@ -318,23 +350,16 @@ public class AccountManagerImpl
      * @throws CommunityIdentifierException If the identifier is not valid.
      * @throws CommunityPolicyException If the identifier is not in the database.
      * @throws CommunityServiceException If there is an internal error in the service.
-     * @todo Refactor to use Ivorn identifiers
      *
      */
     public AccountData getAccount(String ident)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        //
-        // Check for null ident.
-        if (null == ident)
-            {
-            throw new CommunityIdentifierException(
-				"Null identifier"
-            	) ;
-            }
-		//
-		// Parse the identifier and process that.
-        return this.getAccount(new CommunityIdent(ident)) ;
+        return this.getAccount(
+            new CommunityIvornParser(
+                ident
+                )
+            ) ;
         }
 
     /**
@@ -345,113 +370,101 @@ public class AccountManagerImpl
      * @throws CommunityPolicyException If the identifier is not in the database.
      * @throws CommunityServiceException If there is an internal error in the service.
      * @todo Verify that the finally gets executed, even if a new Exception is thrown.
-     * @todo Refactor to use Ivorn identifiers
      *
      */
-    protected AccountData getAccount(CommunityIdent ident)
+    protected AccountData getAccount(CommunityIvornParser ident)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("AccountManagerImpl.getAccount()") ;
-        if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)
             {
             throw new CommunityIdentifierException(
-				"Null identifier"
-            	) ;
+                "Null identifier"
+                ) ;
             }
-        Database    database = null ;
-        AccountData account  = null ;
         //
-        // If the ident is valid.
-        if (ident.isValid())
+        // If the ident is local.
+        if (ident.isLocal())
             {
+			//
+			// Try finding the Account.
+	        Database    database = null ;
+	        AccountData account  = null ;
+            try {
+//
+// Get the string ident.
+String string = ident.getAccountIdent() ;
+                //
+                // Open our database connection.
+                database = this.getDatabase() ;
+                //
+                // Begin a new database transaction.
+                database.begin();
+                //
+                // Load the Account from the database.
+                account = (AccountData) database.load(AccountData.class, string) ;
+                //
+                // Commit the transaction.
+                database.commit() ;
+                }
             //
-            // If the ident is local.
-            if (ident.isLocal())
+            // If we couldn't find the object.
+            catch (ObjectNotFoundException ouch)
                 {
-                try {
-                    //
-                    // Open our database connection.
-                    database = this.getDatabase() ;
-                    //
-                    // Begin a new database transaction.
-                    database.begin();
-                    //
-                    // Load the Account from the database.
-                    account = (AccountData) database.load(AccountData.class, ident.toString()) ;
-                    //
-                    // Commit the transaction.
-                    database.commit() ;
-                    }
                 //
-                // If we couldn't find the object.
-                catch (ObjectNotFoundException ouch)
-                    {
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-					//
-					// Throw a new Exception.
-					throw new CommunityPolicyException(
-						"Account not found",
-						ident.toString()
-						) ;
-                    }
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
                 //
-                // If anything else went bang.
-                catch (Exception ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(
-                    	ouch,
-                    	"AccountManagerImpl.getAccount()"
-                    	) ;
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-					//
-					// Throw a new Exception.
-					throw new CommunityServiceException(
-						"Database transaction failed",
-						ident.toString(),
-						ouch
-						) ;
-                    }
-                //
-                // Close our database connection.
-                finally
-                    {
-                    closeConnection(database) ;
-                    }
+                // Throw a new Exception.
+                throw new CommunityPolicyException(
+                    "Account not found",
+                    ident.toString()
+                    ) ;
                 }
             //
-            // If the ident is not local.
-            else {
-				//
-				// Throw a new Exception.
-				throw new CommunityPolicyException(
-					"Account is not local",
-					ident.toString()
-					) ;
+            // If anything else went bang.
+            catch (Exception ouch)
+                {
+                //
+                // Log the exception.
+                logException(
+                    ouch,
+                    "AccountManagerImpl.getAccount()"
+                    ) ;
+                //
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
+                //
+                // Throw a new Exception.
+                throw new CommunityServiceException(
+                    "Database transaction failed",
+                    ident.toString(),
+                    ouch
+                    ) ;
                 }
+            //
+            // Close our database connection.
+            finally
+                {
+                closeConnection(database) ;
+                }
+			return account ;
             }
         //
-        // If the ident is not valid.
+        // If the ident is not local.
         else {
-			//
-			// Throw a new Exception.
-			// @todo - remove when Ivorns used
-			throw new CommunityIdentifierException(
-				"Identifier is not valid",
-				ident.toString()
-				) ;
+            //
+            // Throw a new Exception.
+            throw new CommunityPolicyException(
+                "Account is not local",
+                ident.toString()
+                ) ;
             }
-        return account ;
         }
 
     /**
@@ -462,7 +475,6 @@ public class AccountManagerImpl
      * @throws CommunityPolicyException If the identifier is not in the database.
      * @throws CommunityServiceException If there is an internal error in the service.
      * @todo Verify that the finally gets executed, even if a new Exception is thrown.
-     * @todo Refactor to use Ivorn identifiers
      *
      */
     public AccountData setAccount(AccountData account)
@@ -471,123 +483,103 @@ public class AccountManagerImpl
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("AccountManagerImpl.setAccount()") ;
-        if (DEBUG_FLAG) System.out.println("  Account") ;
-        if (DEBUG_FLAG) System.out.println("    ident : " + ((null != account) ? account.getIdent() : null)) ;
+        if (DEBUG_FLAG) System.out.println("  Account : " + ((null != account) ? account.getIdent() : null)) ;
         //
         // Check for null account.
         if (null == account)
             {
             throw new CommunityIdentifierException(
-				"Null account"
-            	) ;
+                "Null account"
+                ) ;
             }
         //
-        // Check for null ident.
-        if (null == account.getIdent())
-            {
-            throw new CommunityIdentifierException(
-				"Null identifier"
-            	) ;
-            }
+        // Get the Account ident.
+        CommunityIvornParser ident = new CommunityIvornParser(
+        	account.getIdent()
+        	) ;
         //
-        // Create a CommunityIdent from the account.
-        CommunityIdent ident = new CommunityIdent(account.getIdent()) ;
-        Database database = null ;
-        //
-        // If the ident is valid.
-        if (ident.isValid())
+        // If the ident is local.
+        if (ident.isLocal())
             {
             //
-            // If the ident is local.
-            if (ident.isLocal())
+            // Try update the database.
+	        Database database = null ;
+            try {
+//
+// Get the string ident.
+String string = ident.getAccountIdent() ;
+                //
+                // Open our database connection.
+                database = this.getDatabase() ;
+                //
+                // Begin a new database transaction.
+                database.begin();
+                //
+                // Load the Account from the database.
+                AccountData data = (AccountData) database.load(AccountData.class, string) ;
+                //
+                // Update the account data.
+                data.setHomeSpace(account.getHomeSpace()) ;
+                data.setDisplayName(account.getDisplayName()) ;
+                data.setDescription(account.getDescription()) ;
+                data.setEmailAddress(account.getEmailAddress()) ;
+                //
+                // Commit the transaction.
+                database.commit() ;
+                }
+            //
+            // If we couldn't find the object.
+            catch (ObjectNotFoundException ouch)
                 {
                 //
-                // Try update the database.
-                try {
-                    //
-                    // Open our database connection.
-                    database = this.getDatabase() ;
-                    //
-                    // Begin a new database transaction.
-                    database.begin();
-                    //
-                    // Load the Account from the database.
-                    AccountData data = (AccountData) database.load(AccountData.class, account.getIdent()) ;
-                    //
-                    // Update the account data.
-                    data.setHomeSpace(account.getHomeSpace()) ;
-                    data.setDisplayName(account.getDisplayName()) ;
-                    data.setDescription(account.getDescription()) ;
-                    data.setEmailAddress(account.getEmailAddress()) ;
-                    //
-                    // Commit the transaction.
-                    database.commit() ;
-                    }
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
                 //
-                // If we couldn't find the object.
-                catch (ObjectNotFoundException ouch)
-                    {
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-					//
-					// Throw a new Exception.
-					throw new CommunityPolicyException(
-						"Account not found",
-						ident.toString()
-						) ;
-                    }
-                //
-                // If anything else went bang.
-                catch (Exception ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(
-                    	ouch,
-                    	"AccountManagerImpl.setAccount()"
-                    	) ;
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-					//
-					// Throw a new Exception.
-					throw new CommunityServiceException(
-						"Database transaction failed",
-						ident.toString(),
-						ouch
-						) ;
-                    }
-                //
-                // Close our database connection.
-                finally
-                    {
-                    closeConnection(database) ;
-                    }
+                // Throw a new Exception.
+                throw new CommunityPolicyException(
+                    "Account not found",
+                    ident.toString()
+                    ) ;
                 }
             //
-            // If the ident is not local.
-            else {
-				//
-				// Throw a new Exception.
-				throw new CommunityPolicyException(
-					"Account is not local",
-					ident.toString()
-					) ;
+            // If anything else went bang.
+            catch (Exception ouch)
+                {
+                //
+                // Log the exception.
+                logException(
+                    ouch,
+                    "AccountManagerImpl.setAccount()"
+                    ) ;
+                //
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
+                //
+                // Throw a new Exception.
+                throw new CommunityServiceException(
+                    "Database transaction failed",
+                    ident.toString(),
+                    ouch
+                    ) ;
                 }
+            //
+            // Close our database connection.
+            finally
+                {
+                closeConnection(database) ;
+                }
+	        return account ;
             }
         //
-        // If the ident is not valid.
+        // If the ident is not local.
         else {
-			//
-			// Throw a new Exception.
-			// @todo - remove when Ivorns used
-			throw new CommunityIdentifierException(
-				"Identifier is not valid",
-				ident.toString()
-				) ;
+            //
+            // Throw a new Exception.
+            throw new CommunityPolicyException(
+                "Account is not local",
+                ident.toString()
+                ) ;
             }
-        return account ;
         }
 
     /**
@@ -601,17 +593,11 @@ public class AccountManagerImpl
     public AccountData delAccount(String ident)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        //
-        // Check for null ident.
-        if (null == ident)
-            {
-            throw new CommunityIdentifierException(
-				"Null identifier"
-            	) ;
-            }
-		//
-		// Parse the identifier and process that.
-        return this.delAccount(new CommunityIdent(ident)) ;
+        return this.delAccount(
+            new CommunityIvornParser(
+                ident
+                )
+            ) ;
         }
 
     /**
@@ -624,10 +610,9 @@ public class AccountManagerImpl
      * @todo Need to have a mechanism for tidying up references to an old Account.
      * @todo Need to have a mechanism for notifying other Communities that the Account has been deleted.
      * @todo Verify that the finally gets executed, even if a new Exception is thrown.
-     * @todo Refactor to use Ivorn identifiers.
      *
      */
-    protected AccountData delAccount(CommunityIdent ident)
+    protected AccountData delAccount(CommunityIvornParser ident)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         if (DEBUG_FLAG) System.out.println("") ;
@@ -639,186 +624,176 @@ public class AccountManagerImpl
         if (null == ident)
             {
             throw new CommunityIdentifierException(
-				"Null identifier"
-            	) ;
+                "Null identifier"
+                ) ;
             }
-        Database    database = null ;
-        AccountData account  = null ;
+
+	//
+	// @todo Refactor this.
+	AccountData account  = null ;
+
         //
-        // If the ident is valid.
-        if (ident.isValid())
+        // If the ident is local.
+        if (ident.isLocal())
             {
-            if (DEBUG_FLAG) System.out.println("  PASS : ident is valid") ;
+            if (DEBUG_FLAG) System.out.println("  PASS : ident is local") ;
             //
-            // If the ident is local.
-            if (ident.isLocal())
-                {
-                if (DEBUG_FLAG) System.out.println("  PASS : ident is local") ;
+            // Try update the database.
+	        Database    database = null ;
+            try {
+//
+// Get the string ident.
+String string = ident.getAccountIdent() ;
                 //
-                // Try update the database.
-                try {
+                // Open our database connection.
+                database = this.getDatabase() ;
+                //
+                // Begin a new database transaction.
+                database.begin();
+                //
+                // Load the Account from the database.
+                account = (AccountData) database.load(AccountData.class, string) ;
+                //
+                // If we found the Account.
+                if (null != account)
+                    {
+                    if (DEBUG_FLAG)System.out.println("  PASS : found account") ;
                     //
-                    // Open our database connection.
-                    database = this.getDatabase() ;
+                    // Find the group for this account (if it exists).
+                    OQLQuery groupQuery = database.getOQLQuery(
+                        "SELECT groups FROM org.astrogrid.community.common.policy.data.GroupData groups WHERE groups.ident = $1"
+                        );
                     //
-                    // Begin a new database transaction.
-                    database.begin();
+                    // Bind the query param.
+                    groupQuery.bind(string) ;
                     //
-                    // Load the Account from the database.
-                    account = (AccountData) database.load(AccountData.class, ident.toString()) ;
-                    //
-                    // If we found the Account.
-                    if (null != account)
+                    // Execute our query.
+                    QueryResults groups = groupQuery.execute();
+                    if (null != groups)
                         {
-                        if (DEBUG_FLAG)System.out.println("  PASS : found account") ;
-                        //
-                        // Find the group for this account (if it exists).
-                        OQLQuery groupQuery = database.getOQLQuery(
-                            "SELECT groups FROM org.astrogrid.community.common.policy.data.GroupData groups WHERE groups.ident = $1"
-                            );
-                        //
-                        // Bind the query param.
-                        groupQuery.bind(ident.toString()) ;
-                        //
-                        // Execute our query.
-                        QueryResults groups = groupQuery.execute();
-                        if (null != groups)
-                            {
-                            if (DEBUG_FLAG)System.out.println("  PASS : found groups") ;
-                            }
-                        else {
-                            if (DEBUG_FLAG)System.out.println("  FAIL : null groups") ;
-                            }
-                        //
-                        // Find all of the group memberships for this account.
-                        OQLQuery memberQuery = database.getOQLQuery(
-                            "SELECT members FROM org.astrogrid.community.common.policy.data.GroupMemberData members WHERE members.account = $1"
-                            );
-                        //
-                        // Bind the query param.
-                        memberQuery.bind(ident.toString()) ;
-                        //
-                        // Execute our query.
-                        QueryResults members = memberQuery.execute();
-                        if (null != members)
-                            {
-                            if (DEBUG_FLAG)System.out.println("  PASS : found members") ;
-                            }
-                        else {
-                            if (DEBUG_FLAG)System.out.println("  FAIL : null members") ;
-                            }
-                        //
-                        // Load all the permissions for this group.
-                        OQLQuery permissionQuery = database.getOQLQuery(
-                            "SELECT permissions FROM org.astrogrid.community.common.policy.data.PolicyPermission permissions WHERE permissions.group = $1"
-                            );
-                        //
-                        // Bind the query param.
-                        permissionQuery.bind(ident.toString()) ;
-                        //
-                        // Execute our query.
-                        QueryResults permissions = permissionQuery.execute();
-                        if (null != permissions)
-                            {
-                            if (DEBUG_FLAG)System.out.println("  PASS : found permissions") ;
-                            }
-                        else {
-                            if (DEBUG_FLAG)System.out.println("  FAIL : null permissions") ;
-                            }
-                        //
-                        // Delete the permissions.
-                        while (permissions.hasMore())
-                            {
-                            if (DEBUG_FLAG) System.out.println("  STEP : deleting permission") ;
-                            database.remove(permissions.next()) ;
-                            }
-                        //
-                        // Delete the group memberships.
-                        while (members.hasMore())
-                            {
-                            if (DEBUG_FLAG) System.out.println("  STEP : deleting membership") ;
-                            database.remove(members.next()) ;
-                            }
-                        //
-                        // Delete the Group.
-                        while (groups.hasMore())
-                            {
-                            if (DEBUG_FLAG) System.out.println("  STEP : deleting group") ;
-                            database.remove(groups.next()) ;
-                            }
-                        //
-                        // Delete the Account.
-                        database.remove(account) ;
+                        if (DEBUG_FLAG)System.out.println("  PASS : found groups") ;
                         }
-                    if (DEBUG_FLAG) System.out.println("  PASS : finished deleting") ;
+                    else {
+                        if (DEBUG_FLAG)System.out.println("  FAIL : null groups") ;
+                        }
                     //
-                    // Commit the transaction.
-                    database.commit() ;
-                    if (DEBUG_FLAG) System.out.println("  PASS : done commit") ;
+                    // Find all of the group memberships for this account.
+                    OQLQuery memberQuery = database.getOQLQuery(
+                        "SELECT members FROM org.astrogrid.community.common.policy.data.GroupMemberData members WHERE members.account = $1"
+                        );
+                    //
+                    // Bind the query param.
+                    memberQuery.bind(string) ;
+                    //
+                    // Execute our query.
+                    QueryResults members = memberQuery.execute();
+                    if (null != members)
+                        {
+                        if (DEBUG_FLAG)System.out.println("  PASS : found members") ;
+                        }
+                    else {
+                        if (DEBUG_FLAG)System.out.println("  FAIL : null members") ;
+                        }
+                    //
+                    // Load all the permissions for this group.
+                    OQLQuery permissionQuery = database.getOQLQuery(
+                        "SELECT permissions FROM org.astrogrid.community.common.policy.data.PolicyPermission permissions WHERE permissions.group = $1"
+                        );
+                    //
+                    // Bind the query param.
+                    permissionQuery.bind(string) ;
+                    //
+                    // Execute our query.
+                    QueryResults permissions = permissionQuery.execute();
+                    if (null != permissions)
+                        {
+                        if (DEBUG_FLAG)System.out.println("  PASS : found permissions") ;
+                        }
+                    else {
+                        if (DEBUG_FLAG)System.out.println("  FAIL : null permissions") ;
+                        }
+                    //
+                    // Delete the permissions.
+                    while (permissions.hasMore())
+                        {
+                        if (DEBUG_FLAG) System.out.println("  STEP : deleting permission") ;
+                        database.remove(permissions.next()) ;
+                        }
+                    //
+                    // Delete the group memberships.
+                    while (members.hasMore())
+                        {
+                        if (DEBUG_FLAG) System.out.println("  STEP : deleting membership") ;
+                        database.remove(members.next()) ;
+                        }
+                    //
+                    // Delete the Group.
+                    while (groups.hasMore())
+                        {
+                        if (DEBUG_FLAG) System.out.println("  STEP : deleting group") ;
+                        database.remove(groups.next()) ;
+                        }
+                    //
+                    // Delete the Account.
+                    database.remove(account) ;
                     }
+                if (DEBUG_FLAG) System.out.println("  PASS : finished deleting") ;
                 //
-                // If we couldn't find the object.
-                catch (ObjectNotFoundException ouch)
-                    {
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-					//
-					// Throw a new Exception.
-					throw new CommunityPolicyException(
-						"Account not found",
-						ident.toString()
-						) ;
-                    }
-                //
-                // If anything else went bang.
-                catch (Exception ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(
-                    	ouch,
-                    	"AccountManagerImpl.delAccount()"
-                    	) ;
-                    //
-                    // Cancel the database transaction.
-                    rollbackTransaction(database) ;
-					//
-					// Throw a new Exception.
-					throw new CommunityServiceException(
-						"Database transaction failed",
-						ident.toString(),
-						ouch
-						) ;
-                    }
-                //
-                // Close our database connection.
-                finally
-                    {
-                    closeConnection(database) ;
-                    }
+                // Commit the transaction.
+                database.commit() ;
+                if (DEBUG_FLAG) System.out.println("  PASS : done commit") ;
                 }
             //
-            // If the ident is not local.
-            else {
-				//
-				// Throw a new Exception.
-				throw new CommunityPolicyException(
-					"Account is not local",
-					ident.toString()
-					) ;
+            // If we couldn't find the object.
+            catch (ObjectNotFoundException ouch)
+                {
+                //
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
+                //
+                // Throw a new Exception.
+                throw new CommunityPolicyException(
+                    "Account not found",
+                    ident.toString()
+                    ) ;
+                }
+            //
+            // If anything else went bang.
+            catch (Exception ouch)
+                {
+                //
+                // Log the exception.
+                logException(
+                    ouch,
+                    "AccountManagerImpl.delAccount()"
+                    ) ;
+                //
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
+                //
+                // Throw a new Exception.
+                throw new CommunityServiceException(
+                    "Database transaction failed",
+                    ident.toString(),
+                    ouch
+                    ) ;
+                }
+            //
+            // Close our database connection.
+            finally
+                {
+                closeConnection(database) ;
                 }
             }
         //
-        // If the ident is not valid.
+        // If the ident is not local.
         else {
-			//
-			// Throw a new Exception.
-			// @todo - remove when Ivorns used
-			throw new CommunityIdentifierException(
-				"Identifier is not valid",
-				ident.toString()
-				) ;
+            //
+            // Throw a new Exception.
+            throw new CommunityPolicyException(
+                "Account is not local",
+                ident.toString()
+                ) ;
             }
 //
 // TODO .. should we notify other community services that the Account has gone ?
@@ -827,6 +802,8 @@ public class AccountManagerImpl
 //
 // TODO
 // Should this be inside our database transaction ?
+/*
+ *
         String myspaceUrl = CommunityConfig.getProperty("myspace.url.webservice");
         //
         // If we have a local MySpace service.
@@ -842,14 +819,17 @@ public class AccountManagerImpl
                 {
                 ouch.printStackTrace();
                 }
+            }
  *
  */
-            }
         return account ;
         }
 
     /**
      * Request a list of local Accounts.
+     * @return An array of AccountData objects.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @todo Return empty array rather than null.
      *
      */
     public Object[] getLocalAccounts()
@@ -881,8 +861,9 @@ public class AccountManagerImpl
             Collection collection = new Vector() ;
             while (results.hasMore())
                 {
-            AccountData ad = (AccountData)results.next();
-                collection.add(ad) ;
+                collection.add(
+                	(AccountData)results.next()
+                	) ;
                 }
             //
             // Convert it into an array.
@@ -911,10 +892,6 @@ public class AccountManagerImpl
             {
             closeConnection(database) ;
             }
-        // TODO
-        // Need to return something to the client.
-        // Possibly a new DataObject ... ?
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
         return array ;
         }
     }

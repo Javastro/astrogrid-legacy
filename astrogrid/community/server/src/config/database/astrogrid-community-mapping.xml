@@ -2,10 +2,17 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/config/database/astrogrid-community-mapping.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: astrogrid-community-mapping.xml,v $
+    |   Revision 1.5  2004/03/23 16:34:08  dave
+    |   Merged development branch, dave-dev-200403191458, into HEAD
+    |
+    |   Revision 1.4.6.1  2004/03/22 00:53:31  dave
+    |   Refactored GroupManager to use Ivorn identifiers.
+    |   Started removing references to CommunityManager.
+    |
     |   Revision 1.4  2004/03/12 15:22:17  dave
     |   Merged development branch, dave-dev-200403101018, into HEAD
     |
@@ -116,6 +123,9 @@
         <map-to table="groups"/>
         <field name="ident" type="string">
             <sql name="ident" type="char"/>
+        </field>
+        <field name="displayName" type="string">
+            <sql name="display" type="char"/>
         </field>
         <field name="description" type="string">
             <sql name="description" type="char"/>

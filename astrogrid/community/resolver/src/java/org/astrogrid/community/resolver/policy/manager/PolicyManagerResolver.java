@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/policy/manager/PolicyManagerResolver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:15 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerResolver.java,v $
+ *   Revision 1.5  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.4.2.2  2004/03/23 14:51:26  dave
+ *   Added SecurityManagerResolver and SecurityServiceResolver.
+ *
+ *   Revision 1.4.2.1  2004/03/23 11:11:53  dave
+ *   No comment ....
+ *
  *   Revision 1.4  2004/03/19 14:43:15  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
@@ -100,11 +109,11 @@ public class PolicyManagerResolver
         //
         // Check for null ivorn.
         if (null == ivorn)
-        	{
-        	throw new CommunityIdentifierException(
-        		"Null identifier"
-        		) ;
-        	}
+            {
+            throw new CommunityIdentifierException(
+                "Null identifier"
+                ) ;
+            }
         //
         // Parse the ivorn and resolve it.
         return this.resolve(
@@ -133,11 +142,11 @@ public class PolicyManagerResolver
         //
         // Check for null parser.
         if (null == parser)
-        	{
-        	throw new CommunityIdentifierException(
-        		"Null identifier"
-        		) ;
-        	}
+            {
+            throw new CommunityIdentifierException(
+                "Null identifier"
+                ) ;
+            }
         //
         // Check for a mock ivorn.
         if (parser.isMock())
@@ -146,9 +155,7 @@ public class PolicyManagerResolver
             if (DEBUG_FLAG) System.out.println("Creating mock delegate.") ;
             //
             // Return a mock delegate.
-            return new PolicyManagerMockDelegate(
-                parser.getIvorn()
-                ) ;
+            return new PolicyManagerMockDelegate() ;
             }
         //
         // If the ident is real.

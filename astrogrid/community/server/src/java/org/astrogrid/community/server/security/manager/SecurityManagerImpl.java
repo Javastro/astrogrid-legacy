@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/security/manager/Attic/SecurityManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/05 17:19:59 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityManagerImpl.java,v $
+ *   Revision 1.5  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.4.18.1  2004/03/22 15:31:10  dave
+ *   Added CommunitySecurityException.
+ *   Updated SecurityManager and SecurityService to use Exceptions.
+ *
  *   Revision 1.4  2004/03/05 17:19:59  dave
  *   Merged development branch, dave-dev-200402211936, into HEAD
  *
@@ -66,8 +73,15 @@ import org.astrogrid.community.common.policy.data.AccountData ;
 import org.astrogrid.community.server.security.data.PasswordData ;
 import org.astrogrid.community.common.security.manager.SecurityManager ;
 
+import org.astrogrid.community.common.ivorn.CommunityIvornParser ;
+import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory ;
+
 import org.astrogrid.community.server.service.CommunityServiceImpl ;
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration ;
+
+import org.astrogrid.community.common.exception.CommunityServiceException  ;
+import org.astrogrid.community.common.exception.CommunitySecurityException ;
+import org.astrogrid.community.common.exception.CommunityIdentifierException  ;
 
 /**
  * Implementation of our SecurityManager service.
@@ -111,34 +125,51 @@ public class SecurityManagerImpl
         }
 
     /**
-     * Set an account password.
+     * Set an Account password.
+     * @param account  The account ident.
+     * @param password The account password.
+     * @return True if the password was set.
+     * @throws CommunitySecurityException If the password change fails.
+     * @throws CommunityServiceException If there is an internal error in service.
+     * @throws CommunityIdentifierException If the account identifier is invalid.
+     * @todo Check Account is local.
      *
      */
-    public boolean setPassword(String ident, String value)
+    public boolean setPassword(String account, String password)
+        throws CommunityServiceException, CommunitySecurityException, CommunityIdentifierException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("SecurityManagerImpl.setPassword()") ;
-        if (DEBUG_FLAG) System.out.println("  Account : " + ident) ;
-        if (DEBUG_FLAG) System.out.println("  Value   : " + value) ;
+        if (DEBUG_FLAG) System.out.println("  Account : " + account) ;
+        if (DEBUG_FLAG) System.out.println("  Value   : " + password) ;
         //
-        // Check for null params
-        if (null == ident) return false ;
-        if (null == value) return false ;
+        // Check for null account.
+        if (null == account)
+            {
+            throw new CommunityIdentifierException(
+                "Null account"
+                ) ;
+            }
         //
-        // Trim spaces.
-        ident = ident.trim() ;
-        value = value.trim() ;
+        // Check for null password.
+        if (null == password)
+            {
+            throw new CommunityIdentifierException(
+                "Null password"
+                ) ;
+            }
         //
-        // Check for blank params.
-        if (ident.length() == 0) return false ;
-        if (value.length() == 0) return false ;
+        // Get the Account ident.
+        CommunityIvornParser ident = new CommunityIvornParser(
+            account
+            ) ;
         //
         // Set the response to false.
-        boolean  result   = false ;
-        Database database = null ;
+        boolean result = false ;
         //
         // Try update the database.
+        Database database = null ;
         try {
             //
             // Open our database connection.
@@ -148,69 +179,54 @@ public class SecurityManagerImpl
             database.begin();
             //
             // Try loading the Account from the database.
-//
-// TODO Use Account manager for this.
-            AccountData account = (AccountData) database.load(AccountData.class, ident) ;
+// Do we need this ?
+            AccountData check = (AccountData) database.load(AccountData.class, ident.getAccountIdent()) ;
+            if (DEBUG_FLAG)System.out.println("  PASS : found account") ;
             //
-            // If we found the Account.
-            if (null != account)
-                {
-                if (DEBUG_FLAG)System.out.println("  PASS : found account") ;
-                if (DEBUG_FLAG)System.out.println("    Account : " + account.getIdent()) ;
-                //
-                // Try loading the PasswordData.
-                PasswordData data = null ;
-                try {
-                    data = (PasswordData) database.load(PasswordData.class, account.getIdent()) ;
-                    }
-                //
-                // Don't worry if it isn't there.
-                catch (ObjectNotFoundException ouch)
-                    {
-                    logExpectedException(ouch, "SecurityManagerImpl.setPassword()") ;
-                    }
-                //
-                // If we found the PasswordData.
-                if (null != data)
-                    {
-                    if (DEBUG_FLAG)System.out.println("  PASS : found password") ;
-                    if (DEBUG_FLAG)System.out.println("    Account  : " + data.getAccount()) ;
-                    if (DEBUG_FLAG)System.out.println("    Password : " + data.getPassword()) ;
-                    //
-                    // Change the password value.
-                    data.setPassword(value) ;
-                    data.setEncryption(PasswordData.NO_ENCRYPTION) ;
-                    if (DEBUG_FLAG)System.out.println("  PASS : changed password") ;
-                    if (DEBUG_FLAG)System.out.println("    Account  : " + data.getAccount()) ;
-                    if (DEBUG_FLAG)System.out.println("    Password : " + data.getPassword()) ;
-                    }
-                //
-                // If we didn't find the password.
-                else {
-                    if (DEBUG_FLAG)System.out.println("  PASS : missing password") ;
-                    //
-                    // Try to create a new PasswordData in the database.
-                    data = new PasswordData(ident, value) ;
-                    database.create(data) ;
-                    if (DEBUG_FLAG)System.out.println("  PASS : created password") ;
-                    if (DEBUG_FLAG)System.out.println("    Account  : " + data.getAccount()) ;
-                    if (DEBUG_FLAG)System.out.println("    Password : " + data.getPassword()) ;
-                    }
-                //
-                // Set the response to true.
-                result = true ;
+            // Try loading the PasswordData.
+            PasswordData data = null ;
+            try {
+                data = (PasswordData) database.load(PasswordData.class, ident.getAccountIdent()) ;
                 }
             //
-            // If we didn't find the Account.
-            else {
-                if (DEBUG_FLAG)System.out.println("  FAIL : missing account") ;
+            // Don't worry if it isn't there.
+            catch (ObjectNotFoundException ouch)
+                {
+                logExpectedException(ouch, "SecurityManagerImpl.setPassword()") ;
+                }
+            //
+            // If we found the PasswordData.
+            if (null != data)
+                {
+                if (DEBUG_FLAG)System.out.println("  PASS : found password") ;
+                if (DEBUG_FLAG)System.out.println("    Account  : " + data.getAccount()) ;
+                if (DEBUG_FLAG)System.out.println("    Password : " + data.getPassword()) ;
                 //
-                // Set the response to false.
-                result = false ;
+                // Change the password value.
+                data.setPassword(password) ;
+                data.setEncryption(PasswordData.NO_ENCRYPTION) ;
+                if (DEBUG_FLAG)System.out.println("  PASS : changed password") ;
+                if (DEBUG_FLAG)System.out.println("    Account  : " + data.getAccount()) ;
+                if (DEBUG_FLAG)System.out.println("    Password : " + data.getPassword()) ;
+                }
+            //
+            // If we didn't find the password.
+            else {
+                if (DEBUG_FLAG)System.out.println("  PASS : missing password") ;
+                //
+                // Try to create a new PasswordData in the database.
+                data = new PasswordData(ident.getAccountIdent(), password) ;
+                database.create(data) ;
+                if (DEBUG_FLAG)System.out.println("  PASS : created password") ;
+                if (DEBUG_FLAG)System.out.println("    Account  : " + data.getAccount()) ;
+                if (DEBUG_FLAG)System.out.println("    Password : " + data.getPassword()) ;
                 }
             //
             // Commit the database transaction.
             database.commit() ;
+            //
+            // Set the response to true.
+            result = true ;
             }
         //
         // If anything went bang.
@@ -218,13 +234,20 @@ public class SecurityManagerImpl
             {
             //
             // Log the exception.
-            logException(ouch, "SecurityManagerImpl.setPassword()") ;
-            //
-            // Set the response to false.
-            result = false ;
+            logException(
+                ouch,
+                "SecurityManagerImpl.setPassword()"
+                ) ;
             //
             // Cancel the database transaction.
             rollbackTransaction(database) ;
+            //
+            // Throw a new Exception.
+            throw new CommunityServiceException(
+                "Database transaction failed",
+                ident.toString(),
+                ouch
+                ) ;
             }
         //
         // Close our database connection.
@@ -232,7 +255,6 @@ public class SecurityManagerImpl
             {
             closeConnection(database) ;
             }
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        return result ;
+		return result ;
         }
     }

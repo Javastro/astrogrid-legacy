@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/junit/org/astrogrid/community/resolver/CommunityAccountResolverTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:15 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountResolverTestCase.java,v $
+ *   Revision 1.4  2004/03/23 16:34:08  dave
+ *   Merged development branch, dave-dev-200403191458, into HEAD
+ *
+ *   Revision 1.3.2.1  2004/03/22 15:31:10  dave
+ *   Added CommunitySecurityException.
+ *   Updated SecurityManager and SecurityService to use Exceptions.
+ *
  *   Revision 1.3  2004/03/19 14:43:15  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
@@ -50,7 +57,7 @@ import org.astrogrid.community.client.policy.manager.PolicyManagerDelegate ;
 import org.astrogrid.community.client.policy.manager.PolicyManagerMockDelegate ;
 
 /**
- * Test case for the PolicyManagerResolver.
+ * Test case for the CommunityAccountResolver.
  *
  */
 public class CommunityAccountResolverTestCase
@@ -83,7 +90,6 @@ public class CommunityAccountResolverTestCase
 		// Create our myspace Ivorn.
 		Ivorn home = new MockIvorn("myspace", "toad") ;
 		if (DEBUG_FLAG) System.out.println("  Home   : " + home) ;
-
 		//
 		// Initialise our mock service.
 		PolicyManager manager = PolicyManagerMockDelegate.addManager(ident) ;
@@ -93,7 +99,6 @@ public class CommunityAccountResolverTestCase
 		//
 		// Add the account.
 		AccountData created = manager.addAccount(parser.getAccountIdent()) ;
-
 		//
 		// Create our target Ivorn.
         Ivorn target = CommunityAccountIvornFactory.createMock(
@@ -105,9 +110,8 @@ public class CommunityAccountResolverTestCase
 		// Create our resolver.
 		CommunityAccountResolver resolver = new CommunityAccountResolver() ;
 		//
-		// Ask our resolver for the home address.
+		// Ask our resolver for the account data.
 		AccountData found = resolver.resolve(target) ;
 		if (DEBUG_FLAG) System.out.println("  Found : " + found) ;
-
         }
     }
