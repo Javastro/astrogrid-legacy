@@ -1,4 +1,4 @@
-/* $Id: TrivialTest.java,v 1.2 2003/10/20 15:02:56 jdt Exp $ 
+/* $Id: TrivialTest.java,v 1.3 2003/10/20 15:08:30 jdt Exp $ 
  * Created on 20/10/03 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,5 +41,9 @@ public class TrivialTest extends TestCase {
 
 }
 /*
- * $log$
+ * $Log: TrivialTest.java,v $
+ * Revision 1.3  2003/10/20 15:08:30  jdt
+ * trivial change
+ *
  */
+
