@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer_v0_5.java,v 1.2 2004/03/17 01:47:26 mch Exp $
+ * $Id: AxisDataServer_v0_5.java,v 1.3 2004/03/18 23:42:09 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -34,14 +34,6 @@ import org.astrogrid.store.Agsl;
 
 public class AxisDataServer_v0_5 extends AxisDataServer implements AxisDataServer_v05_Port  {
    
-   /**
-    * Returns the metadata file
-    * NWW - at present pass in a dummy parameter - haven't worked out how to say 'no parameters please' yet.
-    * @soap
-    */
-   public String getMetadata(Object ignored) throws AxisFault {
-      return getMetadata();
-   }
 
    /**
     * Ask adql query for blocking operation - returns the results
@@ -135,6 +127,9 @@ public class AxisDataServer_v0_5 extends AxisDataServer implements AxisDataServe
 
 /*
 $Log: AxisDataServer_v0_5.java,v $
+Revision 1.3  2004/03/18 23:42:09  mch
+Removed dummy getMetadata
+
 Revision 1.2  2004/03/17 01:47:26  mch
 Added v05 Axis web interface
 
