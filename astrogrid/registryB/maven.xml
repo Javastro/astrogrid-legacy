@@ -1,0 +1,89 @@
+<project
+    xmlns:m="jelly:maven"
+    xmlns:j="jelly:core"
+    xmlns:u="jelly:util">
+
+    ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')} 
+
+	    <ant dir="src/xml/ant" target="init" antfile="ant.xml"/>
+        <ant dir="src/xml/ant" target="init" antfile="tomcat.xml"/>
+        <ant dir="src/xml/ant" target="init" antfile="axis.xml"/>
+
+	<goal name="xsl.beans">
+        <ant dir="${project.home}/src/xml/ant" antfile="beans.xml" target="beans.delete"/>
+        <ant dir="${project.home}/src/xml/ant" antfile="beans.xml" target="beans.ant"/>
+        <ant dir="${project.home}/src/xml/ant" antfile="beans.xml" target="beans.xsl"/>
+        <ant dir="${project.home}/src/xml/ant" antfile="beans.xml" target="beans.javac"/>
+	</goal>
+
+	<goal name="xsl.tables">
+        <!-- Generate the table definitions -->
+        <ant dir="${project.home}/src/xml/ant" antfile="beans.xml" target="tables.sql">
+            <property name="file.name" value="${project.build}/database/tables.sql"/>
+        </ant>
+	</goal>
+	
+	<goal name="xsl.mapping">
+		<ant dir="${project.home}/src/xml/ant" antfile="beans.xml" target="mapping.xml">
+        	<property name="file.name" value="${project.build}/database/mapping.xml"/>
+        </ant>
+	</goal>
+    
+    <goal name="registry.classes.clean">
+		<delete dir="${registry.classes}" failonerror="false"/>    
+	</goal>
+
+    <goal name="registry.jar.clean">
+		<delete dir="${project.build}/jar" failonerror="false"/>
+	</goal>
+	
+	<goal name="registry.javac">
+		<!-- Create our build directory -->
+        <mkdir dir="${registry.classes}"/>
+        <echo message=""/>
+        <echo message="Compiling JavaBeans"/>
+        <!-- Compile the classes -->
+        <javac srcdir="${registry.java}"
+               destdir="${registry.classes}"
+               debug="on"
+               deprecation="on"
+               optimize="on"
+               >
+            <classpath>
+                <!-- No extra libraries required -->
+            </classpath>
+        </javac>
+	</goal>
+	
+	<goal name="registry.client.jar">
+		<property name="registry.client.jar"  value="registry-client-${project.version}.jar"/>
+		<attainGoal name="registry.javac" /> 
+		<!-- Create our build directory -->
+        <mkdir dir="${project.build}/jar/client"/>
+        <echo message=""/>
+        <echo message="Jar the Beans"/>
+		<jar destfile="${project.build}/jar/client/${registry.client.jar}">
+			<!-- Copy our own Java source -->
+			<fileset dir="${registry.classes}">
+			    <exclude name="**/server/**" />
+			</fileset>
+		</jar>
+	</goal>
+	
+	<goal name="registry.server.jar">
+		<property name="registry.server.jar"  value="registry-server-${project.version}.jar"/>
+		<attainGoal name="registry.javac" /> 
+		<!-- Create our build directory -->
+        <mkdir dir="${project.build}/jar/server"/>
+        <echo message=""/>
+        <echo message="Jar the Beans"/>
+		<jar destfile="${project.build}/jar/server/${registry.server.jar}">
+			<!-- Copy our own Java source -->
+			<fileset dir="${registry.classes}">
+			    <exclude name="**/delegate/**" />
+			</fileset>
+		</jar>
+	</goal>
+
+	
+</project>

@@ -6,7 +6,7 @@
 <!--
   Temporary Test
 -->
-  <pomVersion>3</pomVersion>
+  <pomVersion>4</pomVersion>
   <id>astrogrid-registry</id>
   <name>AstroGrid Registry</name>
 
@@ -38,24 +38,19 @@
   
   <developers>
     <developer>
-      <name>Peter Shillan</name>
-      <id>gps</id>
-      <email>gps@roe.ac.uk</email>
+      <name>Kevin Benson</name>
+      <id>kmb</id>
+      <email>kmb@mssl.ucl.ac.uk</email>
     </developer>
     <developer>
-      <name>Elizabeth Auden</name>
-      <id>eca</id>
-      <email>eca@mssl.ucl.ac.uk</email>
+      <name>Dave Morris</name>
+      <id>dave</id>
+      <email>dave@ast.cam.ac.uk</email>
     </developer>
     <developer>
-      <name>Pedro Contreras</name>
-      <id>pc</id>
-      <email>P.Contreras@qub.ac.uk</email>
-    </developer>
-    <developer>
-      <name>Roy Platon</name>
-      <id>rtp</id>
-      <email>R.T.Platon@rl.ac.uk</email>
+      <name>Brian McIlwrath</name>
+      <id>bkm</id>
+      <email>B.K.McIlwrath@rl.ac.uk</email>
     </developer>
   </developers>
   
@@ -68,33 +63,6 @@
     <dependency>
       <id>axis</id>
       <version>1_1RC2</version>
-    </dependency>
-
-    <dependency>
-      <id>jetspeed</id>
-      <version>1.4-b4</version>
-    </dependency>
-
-    <dependency>
-      <id>turbine</id>
-      <version>2.2</version>
-    </dependency>
-
-    <dependency>
-      <id>jaxrpc</id>
-      <version>unknown</version>
-      <jar>jaxrpc.jar</jar>
-    </dependency>
-
-    <dependency>
-      <id>saaj</id>
-      <version>unknown</version>
-      <jar>saaj.jar</jar>
-    </dependency>
-
-    <dependency>
-      <id>commons-cli</id>
-      <version>1.0</version>
     </dependency>
 
     <dependency>
@@ -113,26 +81,6 @@
     </dependency>
 
     <dependency>
-      <id>jdom</id>
-      <version>1.0b8</version>
-    </dependency>
-
-    <dependency>
-      <id>servletapi</id>
-      <version>2.2</version>
-    </dependency>
-
-    <dependency>
-      <id>xmlBlaster</id>
-      <version>0.845</version>
-    </dependency>
-
-    <dependency>
-      <id>jms</id>
-      <version>1.0.2a</version>
-    </dependency>
-
-    <dependency>
       <id>activation</id>
       <version>1.0.2</version>
     </dependency>
@@ -141,20 +89,10 @@
       <id>log4j</id>
       <version>1.2.8</version>
     </dependency>
-    
-    <dependency>
-      <id>velocity</id>
-      <version>1.3.1</version>
-    </dependency>
-    
+        
     <dependency>
       <id>concurrent</id>
       <version>1.3.2</version>
-    </dependency>
-    
-    <dependency>
-      <id>ipsi</id>
-      <version>1.0.2</version>
     </dependency>
   </dependencies>
   

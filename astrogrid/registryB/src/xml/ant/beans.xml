@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/registryB/src/xml/ant/Attic/beans.xml,v $</cvs:source>
     | <cvs:author>$Author: KevinBenson $</cvs:author>
-    | <cvs:date>$Date: 2003/10/28 12:02:09 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2003/10/29 10:47:34 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: beans.xml,v $
+    |   Revision 1.3  2003/10/29 10:47:34  KevinBenson
+    |   Now compiling with maven.
+    |
     |   Revision 1.2  2003/10/28 12:02:09  KevinBenson
     |   Straiten up the build.xml where it will compile and started on a MockDelegate
     |
@@ -40,13 +43,14 @@
     <target name="beans.delete" depends="">
         <delete dir="${bean.base}" failonerror="false"/>
     </target>
-
+    
     <!--+
         | Generate an Ant script from our schema.
         +-->
     <target name="beans.ant" depends="">
         <mkdir dir="${bean.base}"/>
         <echo message=""/>
+        <echo message="basedir =    ${test.xmlapi}" />
         <echo message="Creating Ant script from service schema"/>
         <xslt style="${project.home}/src/xsl/v0_9/beans.xsl"
               in="${schema.src}/resource.xml"
