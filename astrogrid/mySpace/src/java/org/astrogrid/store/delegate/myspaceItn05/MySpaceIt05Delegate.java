@@ -342,7 +342,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 
 // ----------------------------------------------------------------------
 
-/**
+/*
  * Return a list of all the files that match the expression
  *
  * @param filter Filter (or query) which the files must match.  Queries
@@ -378,7 +378,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 
       return fileList;
    }
-
+*/
 
 // ----------------------------------------------------------------------
 
@@ -1329,6 +1329,9 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 
 /*
 $Log: MySpaceIt05Delegate.java,v $
+Revision 1.24  2004/05/04 14:36:29  jdt
+Javadoc comments were interfering with each other.
+
 Revision 1.23  2004/05/03 14:46:22  mch
 Fixes for int tests
 
