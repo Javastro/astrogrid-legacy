@@ -1,4 +1,4 @@
-/*$Id: SecTest.java,v 1.2 2004/09/08 13:58:48 mch Exp $
+/*$Id: SecTest.java,v 1.3 2004/09/10 10:28:57 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,7 +42,7 @@ public class SecTest extends DatacenterTestCase implements StdKeys {
 
    public void testAdqlSearchForSEC() throws ServiceException, SAXException, IOException, TransformerException, ParserConfigurationException {
       System.out.println("Start testAdqlSearchForSEC");
-      AdqlQuery query = loadSampleQuery(SecTest.class, "SimpleSECQuery-adql05.xml");
+      AdqlQuery query = loadSampleQuery(SecTest.class, "SimpleSECQuery-adql074.xml");
       
       QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v05_SEC_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       assertNotNull("delegate was null",delegate);
@@ -64,6 +64,9 @@ public class SecTest extends DatacenterTestCase implements StdKeys {
 
 /*
 $Log: SecTest.java,v $
+Revision 1.3  2004/09/10 10:28:57  mch
+Fix to load .7.4 query
+
 Revision 1.2  2004/09/08 13:58:48  mch
 Separated out tests by datacenter and added some
 
