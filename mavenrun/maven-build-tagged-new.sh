@@ -1,6 +1,4 @@
 OLDDIR=$PWD
-# builds a maven branch for a particular project
-# just like maven-build-tagged, but uses new astrogrid goals.
 PROJECT_NAME=$1
 TAGNAME=$2
 
@@ -18,6 +16,9 @@ LOG_FILE=$BUILD_HOME/maven-release-$TAGNAME-$PROJECT_NAME.log
 cd $BUILD_HOME
 echo "[ag-build-$PROJECT_NAME] remove old log"
 rm $LOG_FILE
+
+echo "Build Log for $PROJECT_NAME $TAGNAME on $DATE" >> $LOG_FILE 2>&1
+echo "====================================" >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] sourcing java"
 source $HOME/.bash-config/java >> $LOG_FILE 2>&1
