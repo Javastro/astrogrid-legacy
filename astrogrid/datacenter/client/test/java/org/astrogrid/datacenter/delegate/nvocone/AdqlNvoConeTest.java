@@ -18,7 +18,6 @@ import com.tbf.xml.XmlElement;
 import com.tbf.xml.XmlParser;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
-import java.util.Vector;
 import javax.xml.rpc.ServiceException;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -28,7 +27,9 @@ import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterException;
+import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
+import org.astrogrid.datacenter.query.QueryStatus;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 
@@ -107,7 +108,7 @@ public class AdqlNvoConeTest extends TestCase
    }
 
    /**
-    * Tests against a real service - NCSA Radio
+    * Tests an async query against a real service - NCSA Radio
     * @see http://voservices.org/cone/register/showlist.asp for a list of nvo cone search implementations
     */
    public void testNcsa() throws MalformedURLException, IOException, ServiceException, MarshalException, ValidationException
@@ -116,7 +117,13 @@ public class AdqlNvoConeTest extends TestCase
       
       Select adql = loadAdql("coneQuery3.xml");
       
-      DatacenterResults results = querier.doQuery(querier.VOTABLE, adql);
+      DatacenterQuery query = querier.makeQuery(adql);
+      
+      query.start();
+
+      assertTrue(query.getStatus() == QueryStatus.FINISHED);
+      
+      DatacenterResults results = query.getResultsAndClose();
       
       assertNotNull(results);
       
@@ -172,6 +179,9 @@ public class AdqlNvoConeTest extends TestCase
 
 /*
  $Log: AdqlNvoConeTest.java,v $
+ Revision 1.2  2003/11/18 00:53:51  mch
+ New Adql-compliant cone search
+
  Revision 1.1  2003/11/18 00:35:32  mch
  New Adql-compliant cone search
 
