@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForWorkflow.java,v 1.18 2004/09/09 01:19:50 dave Exp $
+/*$Id: AbstractTestForWorkflow.java,v 1.19 2004/09/16 21:58:06 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -83,7 +83,7 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
         JobURN urn = null;
         try {
             buildWorkflow();
-            writeWorkflowToVOSpace(wf);
+            //NWWwriteWorkflowToVOSpace(wf);
             assertTrue("workflow is not valid", wf.isValid());
             urn = jes.submitWorkflow(wf);
             assertNotNull("submitted workflow produced null urn", urn);
@@ -109,7 +109,7 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
         while (System.currentTimeMillis() < startTime + WAIT_TIME) {
             try {
                 Workflow w11 = jes.readJob(urn);
-                writeWorkflowResultToVOSpace(w11);
+               //NWW writeWorkflowResultToVOSpace(w11);
                 if (w11.getJobExecutionRecord() != null
                     && w11.getJobExecutionRecord().getStatus().getType() >= ExecutionPhase.COMPLETED_TYPE) {
                     completed = true;
@@ -357,6 +357,9 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
 
 /* 
 $Log: AbstractTestForWorkflow.java,v $
+Revision 1.19  2004/09/16 21:58:06  nw
+don'y seem able to write out workflow to myspace - seems to cause no end of problems - so commented out for now.
+
 Revision 1.18  2004/09/09 01:19:50  dave
 Updated MIME type handling in MySpace.
 Extended test coverage for MIME types in FileStore and MySpace.
