@@ -29,11 +29,15 @@ public class LoginAction extends AbstractAction
 	 */
 	public static boolean DEBUG_FLAG = true;
 
-	private static final String ACTION_PARAM = "action";
-	private static final String LOGIN_ACTION = "login";
+	private static final String ACTION_PARAM = "action" ;
+	private static final String LOGIN_ACTION = "login" ;
 
-	private static final String NAME_PARAM = "name";
-	private static final String PASS_PARAM = "pass";
+	private static final String NAME_PARAM = "name" ;
+	private static final String PASS_PARAM = "pass" ;
+
+	private static final String POLICY_GROUP    = "guest" ;
+	private static final String POLICY_ACTION   = "read" ;
+	private static final String POLICY_RESOURCE = "portal.site" ;
 
 	/**
 	 * Our action method.
@@ -64,6 +68,9 @@ public class LoginAction extends AbstractAction
 		//
 		// Setup our security token.
 		SecurityToken token = null ;
+		//
+		// Setup our authentication
+		boolean authorized = false ;
 		//
 		// If the action is login.
 		if (LOGIN_ACTION.equals(action))
@@ -106,18 +113,19 @@ public class LoginAction extends AbstractAction
 
 			//
 			// Try creating a Community delegate.
-			AuthenticationDelegate delegate = new AuthenticationDelegate();
-			if (null == delegate)
+			AuthenticationDelegate authenticator = new AuthenticationDelegate();
+			if (null == authenticator)
 				{
-				if (DEBUG_FLAG) System.out.println("FAIL : Null delegate") ;
+				if (DEBUG_FLAG) System.out.println("FAIL : Null AuthenticationDelegate") ;
 				}
-
+			//
+			// 
 			else {
-				if (DEBUG_FLAG) System.out.println("PASS : Got delegate") ;
+				if (DEBUG_FLAG) System.out.println("PASS : Got AuthenticationDelegate") ;
 				//
 				// Try logging in to the Community.
 				try {
-					token = delegate.authenticateLogin(name, pass);
+					token = authenticator.authenticateLogin(name, pass);
 					if (null == token)
 						{
 						if (DEBUG_FLAG) System.out.println("FAIL : Null token") ;
@@ -133,10 +141,38 @@ public class LoginAction extends AbstractAction
 						if (DEBUG_FLAG) System.out.println("  End     : " + token.getExpirationDate()) ;
 						}
 					}
-
 				catch(Exception ouch)
 					{
 					error = "Login failed" ;
+					ouch.printStackTrace();
+					}
+				}
+			//
+			// Try creating a policy delegate.
+			PolicyServiceDelegate delegate = new PolicyServiceDelegate();
+			if (null == delegate)
+				{
+				if (DEBUG_FLAG) System.out.println("FAIL : Null PolicyServiceDelegate") ;
+				}
+			//
+			// 
+			else {
+				if (DEBUG_FLAG) System.out.println("PASS : Got PolicyServiceDelegate") ;
+				//
+				// Check if the account has permission to see the site.
+				try {
+					authorized = delegate.checkPermissions(name, POLICY_GROUP, POLICY_RESOURCE, POLICY_ACTION);
+					if (authorized)
+						{
+						if (DEBUG_FLAG) System.out.println("PASS : Permission check ok") ;
+						}
+					else {
+						if (DEBUG_FLAG) System.out.println("FAIL : Permission check failed") ;
+						}
+					}
+				catch(Exception ouch)
+					{
+					error = "Permission check failed" ;
 					ouch.printStackTrace();
 					}
 				}
