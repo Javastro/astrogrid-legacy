@@ -2,9 +2,9 @@
 <!-- 
    | Workflow Template contains a sequence of two steps 
    ----------------------------------------------------- -->
-<workflow name = "TwoSequentialJobsteps">
-   <userid></userid>
-   <community></community>
+<workflow name="TwoSequentialJobsteps" templateName="TwoSequentialJobsteps">
+   <userid>user1</userid>
+   <community>community1</community>
    <description>This is a two step job executed in sequence</description>
    <!--
       | These two steps are run in sequence because they are

@@ -2,9 +2,9 @@
 <!-- 
    | Workflow Template contains a flow of two steps 
    ----------------------------------------------------- -->
-<workflow name = "TwoParallelJobsteps">
-   <userid></userid>
-   <community></community>
+<workflow name="TwoParallelJobsteps" templateName="TwoParallelJobsteps">
+   <userid>user1</userid>
+   <community>community1</community>
    <description>This is a two step job executed in parallel</description>   
    <!--
       | Every workflow begins with a top level sequence

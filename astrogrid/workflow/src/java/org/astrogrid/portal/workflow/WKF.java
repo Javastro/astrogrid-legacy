@@ -41,18 +41,6 @@ public class WKF extends org.astrogrid.Configurator {
         WORKFLOW_TEMPLATE_TWOSTEPSEQUENCE = "TEMPLATE.TWOSTEPSEQUENCE" ,
     /** Key within component's configuration identifying the template used for two step flow. */  
         WORKFLOW_TEMPLATE_TWOSTEPFLOW = "TEMPLATE.TWOSTEPFLOW" ;  
-        
-    public static final String 
-    /** Sequence category within the component's configuration */  
-        SEQUENCE_CATEGORY = "SEQUENCE" ,    
-    /** Key within component's configuration identifying the template used for the sequence element. */  
-        SEQUENCE_XML_TEMPLATE = "TEMPLATE.SEQUENCE_XML" ;
-         
-    public static final String 
-    /** Flow category within the component's configuration */  
-        FLOW_CATEGORY = "FLOW" ,    
-    /** Key within component's configuration identifying the template used for the flow element. */  
-        FLOW_XML_TEMPLATE = "TEMPLATE.FLOW_XML" ;         
     
     public static final String 
     /** MySpace category within the component's configuration */  
