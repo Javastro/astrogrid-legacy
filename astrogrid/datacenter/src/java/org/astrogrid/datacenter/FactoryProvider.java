@@ -1,21 +1,21 @@
 /*
- * $Id: FactoryProvider.java,v 1.2 2003/08/21 12:27:03 nw Exp $
+ * $Id: FactoryProvider.java,v 1.3 2003/08/25 20:59:57 mch Exp $
  * Created on 20-Aug-2003
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file. 
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  */
 package org.astrogrid.datacenter;
 
 import org.astrogrid.datacenter.job.JobFactory;
-import org.astrogrid.datacenter.myspace.MySpaceFactory;
+//import org.astrogrid.datacenter.myspace.MySpaceFactory; no longer used
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryFactory;
 import org.astrogrid.datacenter.votable.VOTableFactory;
 
-/** interface to a collection of factories 
+/** interface to a collection of factories
  * describes a container that maintains and configures the various factories used within the data access component.
  * <p>this interface just provides access to the factories - no details of updating / creating factories is specified
  * @author noel
@@ -27,11 +27,12 @@ public interface FactoryProvider {
      */
     public abstract JobFactory getJobFactory();
     /**
-     * Access the my space factory 
-     */
-    public abstract MySpaceFactory getMySpaceFactory();
+     * Access the my space factory
+     *
+    public abstract MySpaceFactory getMySpaceFactory(); no longer used
+    */
     /** access the votable factory */
-	public abstract VOTableFactory getVOTableFactory();
+   public abstract VOTableFactory getVOTableFactory();
     /** Access a query factory
      * @param catalogName name of the catalog to retrieve query factory for.
      * @return the query factory associated with this catalog, or the default query factory if a catalog specific one is not specified.
@@ -40,9 +41,9 @@ public interface FactoryProvider {
      */
     public abstract QueryFactory getQueryFactory(String catalogName)
         throws QueryException;
-    
+
     /** Access the default implementation of the query factory
-     * 
+     *
      * @return the default query factory
      */
     public abstract QueryFactory getDefaultQueryFactory();
@@ -55,6 +56,9 @@ public interface FactoryProvider {
 }
 /*
 $Log: FactoryProvider.java,v $
+Revision 1.3  2003/08/25 20:59:57  mch
+Removed dummy MySpace-related classes
+
 Revision 1.2  2003/08/21 12:27:03  nw
 renamed a method to make it more meaningful
 
