@@ -1,6 +1,7 @@
-<%@ page import="java.io.File,
-                 java.io.IOException,
-                 java.util.Date"
+<%@ page import="java.io.*,
+				 java.net.*,
+                 java.util.*,
+				 org.astrogrid.config.*"
     session="false" %>
 <html>
 <head>
@@ -83,7 +84,7 @@
             System.arraycopy(jars,0,temp,0,found);
             jars=temp;
         }
-        return jars;    
+        return jars;
     }
 
     private static final File[] NO_FILES=new File[0];
@@ -110,7 +111,7 @@
     }
 
     /** 
-     * scan a 'dirpath' (like the java.ext.dirs system property) for jars 
+     * scan a 'dirpath' (like the java.ext.dirs system property) for jars
      */   
     public File[] scanDirpath(String path) throws IOException {
         if (path==null) {
@@ -172,6 +173,93 @@
 
 %>
 <h1>System Fingerprint</h1>
+
+<hr />
+<h2>Datacenter Configuration</h2>
+<%
+   try {
+   SimpleConfig.autoLoad();
+   } catch (Throwable t) {
+     out.println(t.getMessage());
+   }
+%>
+Datacenter configuration loaded from:
+   <%= SimpleConfig.getLocations() %>
+<p />
+
+<%
+    java.util.Enumeration confs = SimpleConfig.keys();
+    if(confs!=null) {
+        out.write("<pre>");
+        for (;confs.hasMoreElements();) {
+            String key = (String) confs.nextElement();
+            out.write(key + "=" + SimpleConfig.getProperty(key)+"\n");
+        }
+        out.write("</pre><p>");
+    } else {
+        out.write("System properties are not accessible<p>");
+    }
+%>
+
+<hr />
+<h2>Plugin Configuration</h2>
+<%
+
+String pluginClass =  SimpleConfig.getProperty(org.astrogrid.datacenter.queriers.QuerierManager.DATABASE_QUERIER_KEY);
+String spiClass = SimpleConfig.getProperty(org.astrogrid.datacenter.queriers.spi.PluginQuerier.QUERIER_SPI_KEY) ;
+%>
+Plugin Class <%= pluginClass %>
+<%
+if (pluginClass != null) {
+  try {
+    Class plugin = Class.forName(pluginClass);
+	out.println(" - found on classpath");
+
+  } catch (Throwable t) {
+    out.println(" - Could not load plugin class");
+    out.println(t.getMessage());
+  }
+}
+%>
+<br />
+SPI Class <%= spiClass %>
+<%
+if (spiClass != null) {
+  try {
+    Class spi = Class.forName(spiClass);
+	out.println(" - found on classpath");
+  } catch (Throwable t) {
+    out.println(" - Could not load plugin class");
+	out.println(t.getMessage());
+  }
+}
+%>
+
+<hr />
+<h2>System Properties</h2>
+
+<%
+    /**
+     * Dump the system properties
+     */
+    java.util.Enumeration e=null;
+    try {
+        e= System.getProperties().propertyNames();
+    } catch (SecurityException se) {
+    }
+    if(e!=null) {
+        out.write("<pre>");
+        for (;e.hasMoreElements();) {
+            String key = (String) e.nextElement();
+            out.write(key + "=" + System.getProperty(key)+"\n");
+        }
+        out.write("</pre><p>");
+    } else {
+        out.write("System properties are not accessible<p>");
+    }
+%>
+
+<hr />
 <h2>JVM and Server Version</h2>
 <table>
 <tr>
