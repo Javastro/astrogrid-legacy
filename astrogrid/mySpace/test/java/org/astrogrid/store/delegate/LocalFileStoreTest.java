@@ -1,4 +1,4 @@
-/*$Id: LocalFileStoreTest.java,v 1.3 2004/03/02 01:25:39 mch Exp $
+/*$Id: LocalFileStoreTest.java,v 1.4 2004/03/08 13:46:25 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,12 +11,10 @@
 package org.astrogrid.store.delegate;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.store.Agsl;
+import org.astrogrid.store.delegate.local.LocalFileStore;
 
 /** Tests the dummy delegate
  * @author M Hill
@@ -95,6 +93,9 @@ public class LocalFileStoreTest extends StoreClientTest {
 
 /*
 $Log: LocalFileStoreTest.java,v $
+Revision 1.4  2004/03/08 13:46:25  mch
+Fixed imports
+
 Revision 1.3  2004/03/02 01:25:39  mch
 Minor fixes
 

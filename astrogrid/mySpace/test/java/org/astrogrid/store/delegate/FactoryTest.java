@@ -1,5 +1,5 @@
 /*
- * $Id: FactoryTest.java,v 1.2 2004/03/02 01:25:39 mch Exp $
+ * $Id: FactoryTest.java,v 1.3 2004/03/08 13:45:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,11 +11,10 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.community.User;
-import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
-import org.astrogrid.mySpace.delegate.MySpaceDummyDelegate;
-import org.astrogrid.mySpace.delegate.MySpaceManagerDelegate;
-import org.astrogrid.mySpace.delegate.MySpaceSunFtpDelegate;
 import org.astrogrid.store.Agsl;
+import org.astrogrid.store.delegate.ftp.FtpStore;
+import org.astrogrid.store.delegate.local.LocalFileStore;
+import org.astrogrid.store.delegate.myspace.MySpaceIt04Delegate;
 
 
 /**
@@ -62,6 +61,9 @@ public class FactoryTest extends TestCase {
 
 /*
  $Log: FactoryTest.java,v $
+ Revision 1.3  2004/03/08 13:45:57  mch
+ Fixed imports
+
  Revision 1.2  2004/03/02 01:25:39  mch
  Minor fixes
 
