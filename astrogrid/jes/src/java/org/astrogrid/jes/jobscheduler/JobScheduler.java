@@ -350,8 +350,10 @@ public class JobScheduler {
 	private String findService( Catalog catalog ) {		
 		if( TRACE_ENABLED ) logger.debug( "findService(): entry") ;
 		
-		String
+		org.astrogrid.jes.job.Service 
 		   service = null ;
+		String
+		   url = null ;
 		
 		try {
 			
@@ -361,8 +363,9 @@ public class JobScheduler {
 			
 			while( serviceIt.hasNext() ) {
 				
-               service = (String)serviceIt.next() ;
-               if( service != null  &&  !service.equals("") ) { 
+               service = (org.astrogrid.jes.job.Service)serviceIt.next() ;
+               url = service.getUrl() ;
+               if( url != null  &&  !url.equals("") ) { 
                    break  ;
                }
                
@@ -370,11 +373,11 @@ public class JobScheduler {
 			
 		}
 		finally {
-			logger.debug( "service: " + service ) ;
+			logger.debug( "url: " + url ) ;
 			if( TRACE_ENABLED ) logger.debug( "findService(): exit") ;	
 		}
 		
-		return service ;		
+		return url ;		
 		
 	} // end of findService()
 	
