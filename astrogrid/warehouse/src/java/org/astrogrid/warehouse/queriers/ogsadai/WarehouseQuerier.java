@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.2 2003/11/26 19:46:19 kea Exp $
+ * $Id: WarehouseQuerier.java,v 1.3 2003/12/02 10:00:33 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,7 +15,7 @@ import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Query;
 import org.astrogrid.datacenter.queriers.QueryTranslator;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
+import org.astrogrid.datacenter.queriers.sql.SqlQuerierSPI;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -73,7 +73,7 @@ import javax.xml.parsers.*;
  * @author K Andrews
  */
 
-public class WarehouseQuerier extends SqlQuerier
+public class WarehouseQuerier extends SqlQuerierSPI
 {
   /**
    * If true, running as an axis webservice, 
@@ -602,6 +602,9 @@ public class WarehouseQuerier extends SqlQuerier
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.3  2003/12/02 10:00:33  gtr
+Refectored to org.astrogrid.warehouse.ogsadai.
+
 Revision 1.2  2003/11/26 19:46:19  kea
 Basic datacenter-style querier, now fully integrated so it should
 when invoked via datacenter framework.

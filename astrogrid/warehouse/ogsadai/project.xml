@@ -59,18 +59,6 @@
 
   <dependencies> <!-- hope to be able to remove some of these soon. -->
 
-    <!-- astrogrid -specific deps -->
-    <dependency>
-      <id>astrogrid-common</id>
-      <version>SNAPSHOT</version>
-    </dependency>
-  
-    <dependency>
-      <groupId>astrogrid-datacenter</groupId>
-      <artifactId>astrogrid-datacenter-server</artifactId>
-      <version>SNAPSHOT</version>
-    </dependency>
-
     <dependency>
       <id>wsdl4j</id>
       <version>1.0</version>
@@ -141,12 +129,6 @@
     <dependency>
       <id>xmlsec</id>
       <version>gt3.0.2</version>
-    </dependency>
-
-    <!-- dependencies from datacenter -->
-    <dependency>
-      <id>castor</id>
-      <version>0.9.5-xml</version>
     </dependency>
 
   </dependencies>
