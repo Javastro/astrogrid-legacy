@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDatacenterDelegate.java,v 1.4 2003/09/05 12:01:56 mch Exp $
+ * $Id: DummyDatacenterDelegate.java,v 1.5 2003/09/07 18:52:39 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -14,8 +14,9 @@ import org.astrogrid.datacenter.delegate.DatacenterDelegate;
 import org.astrogrid.datacenter.delegate.DatacenterStatusListener;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryException;
-import org.w3c.dom.Element;
+import org.astrogrid.datacenter.servicestatus.ServiceStatus;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 /**
  * A convenience class for java clients of datacenters.  They can create and
@@ -57,9 +58,9 @@ public class DummyDatacenterDelegate extends DatacenterDelegate
     */
    public Element adqlQueryDatacenter(Element adql) throws RemoteException
    {
-      fireStatusChanged(DatacenterStatusListener.STARTING);
+      fireStatusChanged(ServiceStatus.STARTING);
 
-      fireStatusChanged(DatacenterStatusListener.RUNNING_QUERY);
+      fireStatusChanged(ServiceStatus.RUNNING_QUERY);
 
       //normally the given adql would be validated at the server, so we throw
       //a special runtimeexception here if it's wrong
@@ -73,7 +74,7 @@ public class DummyDatacenterDelegate extends DatacenterDelegate
          throw new RuntimeException("Query='"+adql+"',",e);
       }
 
-      fireStatusChanged(DatacenterStatusListener.RUNNING_RESULTS);
+      fireStatusChanged(ServiceStatus.RUNNING_RESULTS);
 
       try
       {
@@ -81,7 +82,7 @@ public class DummyDatacenterDelegate extends DatacenterDelegate
          URL url = getClass().getResource("ExampleVotable.xml");
          Document resultsDoc = XMLUtils.newDocument(url.openConnection().getInputStream());
 
-         fireStatusChanged(DatacenterStatusListener.FINISHED);
+         fireStatusChanged(ServiceStatus.FINISHED);
 
          return resultsDoc.getDocumentElement();
 
@@ -125,15 +126,18 @@ public class DummyDatacenterDelegate extends DatacenterDelegate
    /**
     * Returns unknown
     */
-   public String getStatus()
+   public ServiceStatus getStatus()
    {
-      return DatacenterStatusListener.UNKNOWN;
+      return ServiceStatus.UNKNOWN;
    }
 
 }
 
 /*
 $Log: DummyDatacenterDelegate.java,v $
+Revision 1.5  2003/09/07 18:52:39  mch
+Added typesafe ServiceStatus
+
 Revision 1.4  2003/09/05 12:01:56  mch
 Minor doc/error changes
 

@@ -1,5 +1,5 @@
 /*
- * $Id: StdDatacenterDelegate.java,v 1.2 2003/08/31 15:23:08 mch Exp $
+ * $Id: StdDatacenterDelegate.java,v 1.3 2003/09/07 18:51:12 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -9,11 +9,11 @@ package org.astrogrid.datacenter.delegate;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.util.Vector;
 import javax.xml.rpc.ServiceException;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.delegate.datasetAgent.DatasetAgentServiceLocator;
 import org.astrogrid.datacenter.delegate.datasetAgent.DatasetAgentSoapBindingStub;
+import org.astrogrid.datacenter.servicestatus.ServiceStatus;
 import org.w3c.dom.Element;
 
 /**
@@ -107,9 +107,9 @@ public class StdDatacenterDelegate extends DatacenterDelegate
    /**
     * Polls the service and asks for the current status
     */
-   public String getStatus()
+   public ServiceStatus getStatus()
    {
-      return DatacenterStatusListener.UNKNOWN;
+      return ServiceStatus.UNKNOWN;
    }
 
 
@@ -117,6 +117,9 @@ public class StdDatacenterDelegate extends DatacenterDelegate
 
 /*
 $Log: StdDatacenterDelegate.java,v $
+Revision 1.3  2003/09/07 18:51:12  mch
+Added typesafe ServiceStatus
+
 Revision 1.2  2003/08/31 15:23:08  mch
 Removed unused listeners
 

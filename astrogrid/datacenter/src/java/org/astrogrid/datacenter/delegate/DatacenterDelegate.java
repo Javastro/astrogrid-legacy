@@ -1,16 +1,16 @@
 /*
- * $Id: DatacenterDelegate.java,v 1.6 2003/08/31 15:22:07 mch Exp $
+ * $Id: DatacenterDelegate.java,v 1.7 2003/09/07 18:50:13 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate;
-import org.astrogrid.datacenter.delegate.dummy.*;
-
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.util.Vector;
 import javax.xml.rpc.ServiceException;
+import org.astrogrid.datacenter.delegate.dummy.DummyDatacenterDelegate;
+import org.astrogrid.datacenter.servicestatus.ServiceStatus;
 import org.w3c.dom.Element;
 
 /**
@@ -76,7 +76,7 @@ public abstract class DatacenterDelegate
    /**
     * Polls the service and asks for the current status
     */
-   public abstract String getStatus();
+   public abstract ServiceStatus getStatus();
 
    /**
     * Register a status listener.  This will be informed of changes in status
@@ -91,7 +91,7 @@ public abstract class DatacenterDelegate
 
    /** informs all listeners of the new status change. Not threadsafe...
     */
-   protected void fireStatusChanged(String newStatus)
+   protected void fireStatusChanged(ServiceStatus newStatus)
    {
       for (int i=0;i<statusListeners.size();i++)
       {
@@ -102,6 +102,9 @@ public abstract class DatacenterDelegate
 
 /*
 $Log: DatacenterDelegate.java,v $
+Revision 1.7  2003/09/07 18:50:13  mch
+Added typesafe ServiceStatus
+
 Revision 1.6  2003/08/31 15:22:07  mch
 Removed unused QueryException
 
