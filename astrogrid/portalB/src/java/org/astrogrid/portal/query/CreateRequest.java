@@ -61,9 +61,13 @@ public class CreateRequest {
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		Document doc = db.getDOMImplementation().createDocument(null,JOB_ELEMENT,null);
 		String dsNameTemp = null;
+		String opTemp = null;
 		int iTemp = 0;
 
-		Element userElem,commElem,jobStepElem,serviceElem,queryElem,fromElem,returnElem,criteriaElem,fieldElem,catalogElem,operationElem;
+		Element userElem,commElem,jobStepElem,serviceElem,queryElem;
+		Element fromElem,returnElem,criteriaElem,fieldElem,catalogElem;
+		Element opElement = null,opElem = null;
+		Element operationElem;
 
 		doc.getDocumentElement().setAttribute(NAME_ATTR,qb.getName());
 
@@ -106,11 +110,69 @@ public class CreateRequest {
 				}//for
 
 			queryElem.appendChild( (criteriaElem = doc.createElement(CRITERIA_ELEMENT)) );
+			criteriaElem.appendChild( (operationElem = doc.createElement(OPERATION_ELEMENT)) );
+			for(int k = 0;k < dsInfo.getCriteriaInformation().size();k++) {
+				CriteriaInformation ci = (CriteriaInformation)dsInfo.getCriteriaInformation().get(k);
+				if(k == 0 && dsInfo.getCriteriaInformation().size() == 1)  { 
+					doCriteria(doc,operationElem,ci);	
+				}else {
+					if(k == 0 && dsInfo.getCriteriaInformation().size() > 1)  {
+						CriteriaInformation ciTemp = (CriteriaInformation)dsInfo.getCriteriaInformation().get(1);
+						operationElem.setAttribute(NAME_ATTR,ciTemp.getJoinType());
+						opTemp = ciTemp.getJoinType();
+						operationElem.appendChild( (opElement = doc.createElement(OPERATION_ELEMENT)) );
+						doCriteria(doc,opElement,ci);					
+					}else {
+						operationElem.appendChild( (opElement = doc.createElement(OPERATION_ELEMENT)) );
+						if(k > 1 && ci.getJoinType() != null && ci.getJoinType().length() > 0) {
+							if(!ci.getJoinType().equals(opTemp)) {
+								opElement.setAttribute(NAME_ATTR,ci.getJoinType());
+								operationElem.appendChild( (opElem = doc.createElement(OPERATION_ELEMENT)) );
+								doCriteria(doc,opElem,ci);
+								opTemp = ci.getJoinType();							
+							}else {
+								doCriteria(doc,opElement,ci);							
+							}//else						
+						}else {
+							if(k == 1) {
+								doCriteria(doc,opElement,ci);	
+							}	
+						}
+																	
+					}//else
+				}//else
+			}
+			/*
+			for(int k = (dsInfo.getCriteriaInformation().size() -1) ;k >= 0;k--) {
+				CriteriaInformation ci = (CriteriaInformation)dsInfo.getCriteriaInformation().get(k);
+				if(ci.getJoinType() != null && ci.getJoinType().length() > 0) {
+					if(k == (dsInfo.getCriteriaInformation().size() -1) ) {
+						operationElem.setAttribute(NAME_ATTR,ci.getJoinType());
+						operationElem.appendChild( (opElement = doc.createElement(OPERATION_ELEMENT)) );
+						doCriteria(doc,opElement,ci);						
+					}else {
+						operationElem.appendChild( (opElement = doc.createElement(OPERATION_ELEMENT)) );
+						opElement.setAttribute(NAME_ATTR,ci.getJoinType());
+						opTemp = ci.getJoinType();
+						operationElem.appendChild( (opElement = doc.createElement(OPERATION_ELEMENT)) );					
+					}
+				}else {
+					if(k == (dsInfo.getCriteriaInformation().size() -1) ) {
+						doCriteria(doc,operationElem,ci);		
+					}//if
+				}//else
+				//else {opElement = operationElem;}
+				
+				//
+			}//for
+			*/
+			/*
 				for(int k = 0;k < dsInfo.getCriteriaInformation().size();k++) {
 					criteriaElem.appendChild( (operationElem = doc.createElement(OPERATION_ELEMENT)) );
 					CriteriaInformation ci = (CriteriaInformation)dsInfo.getCriteriaInformation().get(k);
 					doCriteria(doc,operationElem,ci);
 				}//for
+				*/
 			doc.getDocumentElement().appendChild(jobStepElem);
 		}//for
 
@@ -148,6 +210,42 @@ public class CreateRequest {
 		output.transform(new DOMSource(doc), new StreamResult(sw));
 		return sw.toString();
 	}
+	
+	private void doCriteria(Document doc,Element opElement,CriteriaInformation ci) {
+
+		Element fieldElem;
+		Element op,opTemp;
+		String []fValues;
+		if(ci.getDataSetColumn().getType() == null || !ci.getDataSetColumn().getType().equals("FUNCTION")) {
+			opElement.setAttribute(NAME_ATTR,ci.getFilterType());
+			opElement.appendChild( (fieldElem = doc.createElement(FIELD_ELEMENT)) );
+			fieldElem.setAttribute(NAME_ATTR,ci.getDataSetColumn().getName());
+			if(ci.getDataSetColumn().getType() != null) {
+				fieldElem.setAttribute(TYPE_ATTR,ci.getDataSetColumn().getType());
+			}//if
+		}else {
+			opElement.setAttribute(NAME_ATTR,ci.getDataSetColumn().getName());
+			fValues = ci.getFunctionValues().split(",");
+			for(int i = 0; i < fValues.length;i++) {
+				opElement.appendChild( (fieldElem = doc.createElement(FIELD_ELEMENT)) );
+				fieldElem.appendChild(doc.createTextNode(fValues[i]));
+			}//for
+			if(ci.getFilterType() != null && !ci.getFilterType().equals("NONE")) {
+			  opElement.appendChild( (opTemp = doc.createElement(OPERATION_ELEMENT)) );
+			  opTemp.setAttribute(NAME_ATTR,ci.getFilterType());
+			}
+		}//else
+		if(ci.getFilterType() != null && !ci.getFilterType().equals("NONE")) {
+			opElement.appendChild ( (fieldElem = doc.createElement(FIELD_ELEMENT)) );
+			fieldElem.appendChild(doc.createTextNode(ci.getValue()));
+		}
+		/*if(ci.getLinkedCriteria() != null) {
+			opElement.appendChild( (op = doc.createElement(OPERATION_ELEMENT)) );
+			doCriteria(doc,op,ci.getLinkedCriteria());
+		}//if
+		*/
+	}//doCriteria
+	
 
 	/**
 	 * This method recursively calls itself doing the <operation> part of the schema.  Which is held in all the different
@@ -156,6 +254,8 @@ public class CreateRequest {
 	 * @param operationElem
 	 * @param ci
 	 */
+	/*
+	 OLD VERSION
 	private void doCriteria(Document doc,Element operationElem,CriteriaInformation ci) {
 
 		Element opElement,fieldElem;
@@ -195,6 +295,7 @@ public class CreateRequest {
 			doCriteria(doc,op,ci.getLinkedCriteria());
 		}//if
 	}//doCriteria
+	*/
 
 	public static void main(String []args) {
 		try {
