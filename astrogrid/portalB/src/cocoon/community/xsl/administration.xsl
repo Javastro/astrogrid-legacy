@@ -154,23 +154,24 @@
 				<br />
 				<input type="submit" name="insertmermber" value="Insert Member" />
 				<br /><br />
-				<form method="get" name="AddRemoteAccountsToMembers">
-					<input type="hidden" name="action" value="insertmember" />
-					<strong>Add Remote Accounts from another community:</strong>
-					<select name="community">
-						<xsl:for-each select="//admin/options/communities/community">
-								<xsl:element name="option">
-									<xsl:attribute name="value">
-										<xsl:value-of select="@val"/>
-									</xsl:attribute>
-									<xsl:value-of select="@name"/>
-								</xsl:element>
-						</xsl:for-each>
-					</select>
-					<br />
-					<input type="submit" name="addremote" value="Add Remote Accounts" />			
-				</form>
 			</form>
+			<form method="get" name="AddRemoteAccountsToMembers">
+				<input type="hidden" name="action" value="insertmember" />
+				<strong>Add Remote Accounts from another community:</strong>
+				<select name="community">
+					<xsl:for-each select="//admin/options/communities/community">
+							<xsl:element name="option">
+								<xsl:attribute name="value">
+									<xsl:value-of select="@val"/>
+								</xsl:attribute>
+								<xsl:value-of select="@name"/>
+							</xsl:element>
+					</xsl:for-each>
+				</select>
+				<br />
+				<input type="submit" name="addremote" value="Add Remote Accounts" />			
+			</form>
+
 		</xsl:if>			
 		<xsl:if test="$action = 'removemember'">			
 			<form method="get" name="RemoveMember">

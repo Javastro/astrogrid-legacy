@@ -234,7 +234,9 @@ public class AdministrationAction extends AbstractAction
       session.setAttribute("actionlist",actionTable);
       
       String community = request.getParameter("community");
-      if(community == null || community.length() > 0) {
+// DAVE 2003.09.18 19:53
+//      if(community == null || community.length() > 0) {
+      if(community == null || community.length() <= 0) {
          community = (String)session.getAttribute("community_name");
       }
       
