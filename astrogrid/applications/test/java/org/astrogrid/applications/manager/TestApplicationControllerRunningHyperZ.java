@@ -1,5 +1,5 @@
 /*
- * $Id: TestApplicationControllerRunningHyperZ.java,v 1.2 2004/01/20 12:03:49 pah Exp $
+ * $Id: TestApplicationControllerRunningHyperZ.java,v 1.3 2004/01/22 12:41:36 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -124,7 +124,7 @@ public class TestApplicationControllerRunningHyperZ extends BaseApplicationTestC
       String exid;
       parameters.setMethodName("simple");
 //      parameters.setParameterSpec("<tool><input><parameter name='config_file'>/home/applications/demo/hyperz/zphot.param</parameter><parameter name='input_catalog'>/home/applications/demo/hyperz/bviz-mag-sample.cat</parameter></input><output><parameter name='output_catalog'>out1file</parameter></output></tool>");
-    parameters.setParameterSpec("<tool><input><parameter name='config_file'>/home/applications/demo/hyperz/zphot.param</parameter><parameter name='input_catalog'>/home/applications/demo/hyperz/join.xml</parameter></input><output><parameter name='output_catalog'>out1file</parameter></output></tool>");
+    parameters.setParameterSpec("<tool><input><parameter name='config_file'>/home/applications/demo/hyperz/zphot.param</parameter><parameter name='input_catalog'>/home/applications/demo/hyperz/join.xml</parameter></input><output><parameter name='output_catalog'>hyperzout</parameter></output></tool>");
       exid = controller.initializeApplication(applicationid, jobstepid, monitorURL, user, parameters);
       CmdLineApplication app = controller.getRunningApplication(exid);
       assertNotNull("applicaton object not returned after initialization", app);

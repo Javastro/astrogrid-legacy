@@ -159,6 +159,14 @@ This functionality is provided with the ApplicationController service, of which 
 	          <war.bundle>true</war.bundle>
 	</properties>
     </dependency>
+      <groupId>cds</groupId>
+<artifactId>samples</artifactId>
+      <version>UNKNOWN</version>
+      <jar>cds.savot.samples.jar</jar>
+	<properties>
+	          <war.bundle>true</war.bundle>
+	</properties>
+    </dependency>
 
 <!-- not really using the two below - cannot find documentation on their use -->
     <dependency>

@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZ.java,v 1.3 2004/01/20 12:03:49 pah Exp $
+ * $Id: HyperZ.java,v 1.4 2004/01/22 12:41:36 pah Exp $
  * 
  * Created on 16-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -15,6 +15,8 @@ package org.astrogrid.applications.commandline.hyperz;
 
 import java.io.File;
 
+import cds.savot.model.SavotVOTable;
+
 import org.astrogrid.applications.commandline.CmdLineApplication;
 import org.astrogrid.applications.manager.AbstractApplicationController;
 import org.astrogrid.community.User;
@@ -28,8 +30,7 @@ import org.astrogrid.community.User;
  */
 public class HyperZ extends CmdLineApplication {
    
-   private File originalInput;
-
+   private SavotVOTable inputVOTable;
    /**
     * 
     */
@@ -68,6 +69,8 @@ public class HyperZ extends CmdLineApplication {
     */
    protected void preWritebackHook() {
       // TODO convert the output file 
+      HyperZVOTableWriter wrt = new HyperZVOTableWriter(inputVOTable, findParameter("output_catalog"), applicationEnvironment);
+      wrt.write();
       
    }
 
@@ -75,9 +78,9 @@ public class HyperZ extends CmdLineApplication {
     * @see org.astrogrid.applications.commandline.CmdLineApplication#postParamSetupHook()
     */
    protected void postParamSetupHook() {
-      // TODO create read the input file from the VOTable
+      // create read the input file from the VOTable
       HyperZVOTableReader conv = new HyperZVOTableReader(findParameter("input_catalog"),applicationEnvironment);
-      conv.read();
+      inputVOTable = conv.read();
    }
 
 }

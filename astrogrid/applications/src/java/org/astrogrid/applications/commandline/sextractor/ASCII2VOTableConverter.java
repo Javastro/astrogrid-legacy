@@ -1,5 +1,5 @@
 /*
- * $Id: ASCII2VOTableConverter.java,v 1.2 2004/01/20 12:03:49 pah Exp $
+ * $Id: ASCII2VOTableConverter.java,v 1.3 2004/01/22 12:41:36 pah Exp $
  * 
  * Created on 17-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -41,7 +41,7 @@ import voi.vowrite.VOTableTable;
 public class ASCII2VOTableConverter {
 
 
-   private File outfile;
+   private File tmpfile;
    private FileReferenceParameter outFileparam; 
    private FileReferenceParameter paramsFileparam; 
    private CmdLineApplicationEnvironment env;
@@ -56,7 +56,7 @@ public class ASCII2VOTableConverter {
       this.paramsFileparam = (FileReferenceParameter)paramsFile;
       this.env = env;
       
-      outfile = env.getTempFile();
+      tmpfile = env.getTempFile();
       outputParams = new OutputParams(paramsFileparam.getRealFile(), band);
       
       
@@ -65,26 +65,15 @@ public class ASCII2VOTableConverter {
    public void writeVOTable()
    {
       FileReader in = null;
-      try {
-         in = new FileReader(outFileparam.getRealFile());
-      }
-      catch (FileNotFoundException e) {
-         // try with the full path in the execution directory
-         File fullpath = new File(env.getExecutionDirectory(), outFileparam.getRealFile().getPath());
-         try {
-            in = new FileReader(fullpath);
-         }
-         catch (FileNotFoundException e1) {
-            logger.error("sextractor output file not found",e1);
-            return;
-         }
-      }
+      File outputfile = new File(env.getExecutionDirectory(), outFileparam.getRealFile().getPath());
+      tmpfile.delete();
+      boolean renamesuccess = outputfile.renameTo(tmpfile);
 
          try {
-            FileOutputStream out = new FileOutputStream(outfile);
+            in = new FileReader(tmpfile);
+            FileOutputStream out = new FileOutputStream(outputfile);
             internalWriteVOTable(in, out);
             //reset the output file parameter so that it now refers to the newly generated VOTable
-            outFileparam.setRealFile(outfile);
          }
          catch (FileNotFoundException e1) {
             logger.error("sextractor output file not found",e1);

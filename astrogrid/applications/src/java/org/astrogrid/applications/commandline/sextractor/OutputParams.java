@@ -1,5 +1,5 @@
 /*
- * $Id: OutputParams.java,v 1.2 2004/01/20 12:03:49 pah Exp $
+ * $Id: OutputParams.java,v 1.3 2004/01/22 12:41:36 pah Exp $
  * 
  * Created on 17-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -68,20 +68,26 @@ public class OutputParams {
       //TODO - UCD handling needs to be done properly this is a quick fix
       if(fname.equals("X_WORLD"))
       {
+         retval.setName("RA");
          retval.setUcd("POS_EQ_RA_MAIN"); 
          retval.setRef("cs1");
          retval.setUnit("deg");
       }
       if(fname.equals("Y_WORLD"))
       {
+         retval.setName("DEC");
          retval.setUcd("POS_EQ_DEC_MAIN"); 
          retval.setRef("cs1");
          retval.setUnit("deg");
       }
-      if(fname.equals("MAG_AUTO") || fname.equals("MAGERR_AUTO"))
+      // use this t get our photometry...
+      if(fname.equals("MAG_ISO"))
       {
-         retval.setName(band+fname);
-         retval.setUcd(band+fname);
+         retval.setUcd("PHOT_MAG_"+band);
+      }
+      if(fname.equals("MAGERR_ISO"))
+      {
+         retval.setUcd("PHOT_MAG_"+band+"_ERR");
       }
 
       return retval;
