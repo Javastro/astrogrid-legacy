@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceIdHelper.java,v 1.2 2003/09/15 14:33:27 mch Exp $
+ * $Id: ServiceIdHelper.java,v 1.3 2003/09/15 15:19:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -43,6 +43,12 @@ public class ServiceIdHelper
    public static String getServiceId(Element domContainingId)
    {
       NodeList idNodes = domContainingId.getElementsByTagName(SERVICE_ID_TAG);
+
+      if (idNodes.getLength() == 0)
+      {
+         //no service id tag found, look for attribute in top tag
+         return domContainingId.getAttribute(ServiceIdHelper.SERVICE_ID_ATT);
+      }
 
       Log.affirm(idNodes.getLength() == 1, "Should only be 1 service id tag in an element");
 

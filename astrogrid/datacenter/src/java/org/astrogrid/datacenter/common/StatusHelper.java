@@ -1,5 +1,5 @@
 /*
- * $Id: StatusHelper.java,v 1.4 2003/09/15 14:33:27 mch Exp $
+ * $Id: StatusHelper.java,v 1.5 2003/09/15 15:19:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -91,5 +91,30 @@ public class StatusHelper
       return null; //no status found for that service id
 
    }
+
+   /**
+    * Returns the status, given by a status tag in
+    * the given dom document.
+    */
+   public static ServiceStatus getServiceStatus(Element domContainingStatuses)
+   {
+      NodeList idNodes = domContainingStatuses.getElementsByTagName(STATUS_TAG);
+
+      if (idNodes.getLength() == 0)
+      {
+         return null;
+      }
+
+      Log.affirm(idNodes.getLength() ==1, "Should only be 1 status in document...");
+
+      String status = ((Element) idNodes.item(0)).getNodeValue();
+      if (status == null)
+      {
+          status = ((Element) idNodes.item(0)).getFirstChild().getNodeValue();
+      }
+      return ServiceStatus.getFor(status.trim());
+
+   }
+
 }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: ResponseHelper.java,v 1.4 2003/09/15 11:10:42 mch Exp $
+ * $Id: ResponseHelper.java,v 1.5 2003/09/15 15:19:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -66,6 +66,28 @@ public class ResponseHelper
          StatusHelper.makeStatusTag(querier.getHandle(), querier.getStatus());
 
       return DocHelper.wrap(doc);
+   }
+
+   /**
+    * Returns a document indicating that the service id given in the request
+    * is unknown
+    */
+   public static Document makeUnknownIdResponse(String id)
+   {
+      try
+      {
+         String doc =
+            "<"+ERROR_TAG+">\n"
+            +"   Unknown Service ID submitted: "+id
+            +"</"+ERROR_TAG+">\n";
+
+         return DocHelper.wrap(doc);
+      }
+      catch (SAXException e)
+      {
+         //should never happen as xml is softwired!
+         throw new RuntimeException("Code error building XML document",e);
+      }
    }
 
    /**
