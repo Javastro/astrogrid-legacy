@@ -1,4 +1,4 @@
-/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.16 2004/11/19 10:27:29 clq2 Exp $
+/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.17 2004/11/19 14:17:56 clq2 Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,8 +34,8 @@ import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-/**
- * Test for a workflow that has a single step that calls the TESTAPP application
+/**end-to-end test - creates a single-step workflow, submits, expects results to be added to the workflow. 
+ * Test for a workflow that has a single step that calls the testapp
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
  * @author Paul Harrison pah@jb.man.ac.uk 23-Apr-2004
  *
@@ -71,11 +71,8 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForSimple
 }
 /* 
 $Log: SimpleCommandlineWorkflowEndToEndTest.java,v $
-Revision 1.16  2004/11/19 10:27:29  clq2
-nww-itn07-659
-
-Revision 1.15.26.1  2004/11/18 10:52:01  nw
-javadoc, some very minor tweaks.
+Revision 1.17  2004/11/19 14:17:56  clq2
+roll back beforeMergenww-itn07-659
 
 Revision 1.15  2004/09/22 00:42:26  nw
 fixed paul's bug.

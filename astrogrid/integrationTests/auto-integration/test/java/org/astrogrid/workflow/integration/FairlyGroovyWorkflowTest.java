@@ -1,4 +1,4 @@
-/*$Id: FairlyGroovyWorkflowTest.java,v 1.5 2004/11/19 10:27:29 clq2 Exp $
+/*$Id: FairlyGroovyWorkflowTest.java,v 1.6 2004/11/19 14:17:56 clq2 Exp $
  * Created on 04-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,8 +30,6 @@ import java.io.StringReader;
 
 /** integration test that executes a workflow containing some of the new features of the groovy-jes server
  *  - declaration of variables, script blocks, passing variabls into cea calls, accessing results of a cea call, propagating values between cea calls.
- * <p>
- * uses SUM and HELLO_YOU applications.
  * @author Noel Winstanley nw@jb.man.ac.uk 04-Aug-2004
  *
  */
@@ -136,11 +134,8 @@ public class FairlyGroovyWorkflowTest extends AbstractTestForWorkflow{
 
 /* 
 $Log: FairlyGroovyWorkflowTest.java,v $
-Revision 1.5  2004/11/19 10:27:29  clq2
-nww-itn07-659
-
-Revision 1.4.56.1  2004/11/18 10:52:01  nw
-javadoc, some very minor tweaks.
+Revision 1.6  2004/11/19 14:17:56  clq2
+roll back beforeMergenww-itn07-659
 
 Revision 1.4  2004/08/22 01:25:49  nw
 improved concurrent behaviour

@@ -1,4 +1,4 @@
-/*$Id: CompositeFitsVotableParsingSolarMovieWorkflowTest.java,v 1.6 2004/11/19 10:27:29 clq2 Exp $
+/*$Id: CompositeFitsVotableParsingSolarMovieWorkflowTest.java,v 1.7 2004/11/19 14:17:56 clq2 Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,8 +28,7 @@ import org.astrogrid.workflow.integration.itn6.solarevent.SolarEventKeys;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**  The big one - performs a fits query, extracts urls from votable, and then passes all urls to the solar movie tool.
- *
+/** Test of a workflow that performs a fits query, extracts urls from votable, and then passes all urls to the solar movie tool.
  * 
  * @see ExampleVOTableParsingWorkflowTest
  * @see SimpleConcatToolWorkflowTest
@@ -114,11 +113,8 @@ public class CompositeFitsVotableParsingSolarMovieWorkflowTest extends SimpleFit
 
 /* 
 $Log: CompositeFitsVotableParsingSolarMovieWorkflowTest.java,v $
-Revision 1.6  2004/11/19 10:27:29  clq2
-nww-itn07-659
-
-Revision 1.5.8.1  2004/11/18 10:52:01  nw
-javadoc, some very minor tweaks.
+Revision 1.7  2004/11/19 14:17:56  clq2
+roll back beforeMergenww-itn07-659
 
 Revision 1.5  2004/11/02 15:30:12  nw
 fixed name of input parameter that script is writing to.

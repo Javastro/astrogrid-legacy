@@ -1,4 +1,4 @@
-/*$Id: CommandLineProviderServerInfo.java,v 1.3 2004/11/19 10:27:29 clq2 Exp $
+/*$Id: CommandLineProviderServerInfo.java,v 1.4 2004/11/19 14:17:56 clq2 Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,10 +15,8 @@ import org.astrogrid.applications.integration.ServerInfo;
 import org.astrogrid.integration.AbstractTestForIntegration;
 import org.astrogrid.workflow.beans.v1.Tool;
 
-/** Configuration details for the commandline cea server.
- * Calls the 'TESTAPP' application
+/**
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Jun-2004
- * @see org.astrogrid.applications.integration.ServerInfo
  *
  */
 public class CommandLineProviderServerInfo implements ServerInfo {
@@ -85,11 +83,8 @@ public class CommandLineProviderServerInfo implements ServerInfo {
 
 /* 
 $Log: CommandLineProviderServerInfo.java,v $
-Revision 1.3  2004/11/19 10:27:29  clq2
-nww-itn07-659
-
-Revision 1.2.46.1  2004/11/18 10:52:01  nw
-javadoc, some very minor tweaks.
+Revision 1.4  2004/11/19 14:17:56  clq2
+roll back beforeMergenww-itn07-659
 
 Revision 1.2  2004/09/02 17:11:31  pah
 update for new test application which does more

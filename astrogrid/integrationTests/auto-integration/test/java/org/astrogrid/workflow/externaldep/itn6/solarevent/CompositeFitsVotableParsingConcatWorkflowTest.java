@@ -1,4 +1,4 @@
-/*$Id: CompositeFitsVotableParsingConcatWorkflowTest.java,v 1.7 2004/11/19 10:27:29 clq2 Exp $
+/*$Id: CompositeFitsVotableParsingConcatWorkflowTest.java,v 1.8 2004/11/19 14:17:56 clq2 Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,8 +29,7 @@ import org.astrogrid.workflow.integration.itn6.solarevent.SolarEventKeys;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**performs a fits query, extracts urls from votable, and then passes all urls to the concat tool.
- * 
+/** Test of a workflow that performs a fits query, extracts urls from votable, and then passes all urls to the concat tool.
  * 
  * @see ExampleVOTableParsingWorkflowTest
  * @see SimpleConcatToolWorkflowTest
@@ -117,11 +116,8 @@ public class CompositeFitsVotableParsingConcatWorkflowTest extends SimpleFitsWor
 
 /* 
 $Log: CompositeFitsVotableParsingConcatWorkflowTest.java,v $
-Revision 1.7  2004/11/19 10:27:29  clq2
-nww-itn07-659
-
-Revision 1.6.42.1  2004/11/18 10:52:01  nw
-javadoc, some very minor tweaks.
+Revision 1.8  2004/11/19 14:17:56  clq2
+roll back beforeMergenww-itn07-659
 
 Revision 1.6  2004/09/08 12:15:52  nw
 upped the timeout for this test.

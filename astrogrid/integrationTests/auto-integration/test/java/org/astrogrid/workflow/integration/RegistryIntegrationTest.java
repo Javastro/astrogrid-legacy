@@ -1,4 +1,4 @@
-/*$Id: RegistryIntegrationTest.java,v 1.12 2004/11/19 10:27:29 clq2 Exp $
+/*$Id: RegistryIntegrationTest.java,v 1.13 2004/11/19 14:17:56 clq2 Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.workflow.integration;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.integration.*;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
-import org.astrogrid.portal.workflow.intf.ApplicationDescriptionSummary;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.scripting.Service;
@@ -66,26 +65,6 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
             }
         }
     }
-    
-    /** should return the same list as listApplications, but fuller details */
-    public void testListUIApplications() throws Exception {
-        String[] appNames = reg.listApplications();
-        ApplicationDescriptionSummary[] summaries = reg.listUIApplications();
-        assertNotNull("application names are null",appNames);
-        assertNotNull("summaries are null",summaries);
-        assertEquals("expected same number of apps",appNames.length, summaries.length);
-        for (int i = 0; i < appNames.length; i++) {
-            assertEquals(appNames[i],summaries[i].getName());
-            assertNotNull(summaries[i].getUIName());
-            String[] interfaceNames = summaries[i].getInterfaceNames();
-            assertNotNull(interfaceNames);
-            assertTrue(interfaceNames.length > 0);
-            for (int j = 0; j < interfaceNames.length; j++) {
-                assertNotNull(interfaceNames[j]);
-                assertTrue(interfaceNames[j].trim().length() > 0);
-            }
-        }
-    }
         
     /** this is the functionality required by jes - we get list of application names, then call a backdoor into the jes webapp to exercise te resolver code. */
     public void testResolveApplications() throws Exception {
@@ -122,11 +101,8 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: RegistryIntegrationTest.java,v $
-Revision 1.12  2004/11/19 10:27:29  clq2
-nww-itn07-659
-
-Revision 1.11.24.1  2004/11/10 13:32:27  nw
-added test for new method in ApplicationDescriptionRegistry
+Revision 1.13  2004/11/19 14:17:56  clq2
+roll back beforeMergenww-itn07-659
 
 Revision 1.11  2004/09/22 11:23:18  nw
 made more tolerant of duff registyr entries

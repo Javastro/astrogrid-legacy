@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForSimpleWorkflow.java,v 1.3 2004/11/19 10:27:29 clq2 Exp $
+/*$Id: AbstractTestForSimpleWorkflow.java,v 1.4 2004/11/19 14:17:56 clq2 Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,9 +18,6 @@ import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 /** Abstract base class for tests that fire a single-step workflow into jes.
- * A more specialised form of the framework provided by {@link org.astrogrid.workflow.integration.AbstractTestForWorkflow},
- * where the application to call in the single-step workflow is defined by a {@link org.astrogrid.applications.integration.ServerInfo} object..
- * In this case, the test class must just implement {@link #configureToolParameters(Tool)}
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Jun-2004
  *
  */
@@ -35,7 +32,7 @@ public abstract class AbstractTestForSimpleWorkflow extends AbstractTestForWorkf
     protected final ServerInfo info;
     
     /** build a simple one-step workflow */
-      protected final void buildWorkflow() throws WorkflowInterfaceException {
+      protected void buildWorkflow() throws WorkflowInterfaceException {
           wf.setName(this.getClass().getName());
           ApplicationDescription descr = reg.getDescriptionFor(info.getApplicationName());
           assertNotNull("could not get application description", descr);
@@ -57,9 +54,8 @@ public abstract class AbstractTestForSimpleWorkflow extends AbstractTestForWorkf
           wf.getSequence().addActivity(step);
       }
 
-    /** abstract method that has to be implemented
-     * subclasses should set up parameter values for the tool here
-     * @param tool - preconfigured tool object
+    /**
+     * @param tool
      */
     protected abstract void configureToolParameters(Tool tool);
     
@@ -68,11 +64,8 @@ public abstract class AbstractTestForSimpleWorkflow extends AbstractTestForWorkf
 
 /* 
 $Log: AbstractTestForSimpleWorkflow.java,v $
-Revision 1.3  2004/11/19 10:27:29  clq2
-nww-itn07-659
-
-Revision 1.2.56.1  2004/11/18 10:52:01  nw
-javadoc, some very minor tweaks.
+Revision 1.4  2004/11/19 14:17:56  clq2
+roll back beforeMergenww-itn07-659
 
 Revision 1.2  2004/08/22 01:43:18  nw
 improved concurrent behaviour

@@ -1,4 +1,4 @@
-/*$Id: SimpleFitsWorkflowTest.java,v 1.10 2004/11/19 10:27:29 clq2 Exp $
+/*$Id: SimpleFitsWorkflowTest.java,v 1.11 2004/11/19 14:17:56 clq2 Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 
-/** workflow that tests the fits service
+/**
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Aug-2004
  *
  */
@@ -106,11 +106,8 @@ public class SimpleFitsWorkflowTest extends AbstractTestForWorkflow implements S
 
 /* 
 $Log: SimpleFitsWorkflowTest.java,v $
-Revision 1.10  2004/11/19 10:27:29  clq2
-nww-itn07-659
-
-Revision 1.9.14.1  2004/11/18 10:52:01  nw
-javadoc, some very minor tweaks.
+Revision 1.11  2004/11/19 14:17:56  clq2
+roll back beforeMergenww-itn07-659
 
 Revision 1.9  2004/10/22 08:21:57  pah
 input query file had moved

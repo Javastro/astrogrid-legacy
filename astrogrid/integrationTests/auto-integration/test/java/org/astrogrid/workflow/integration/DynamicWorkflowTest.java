@@ -1,4 +1,4 @@
-/*$Id: DynamicWorkflowTest.java,v 1.4 2004/11/19 10:27:29 clq2 Exp $
+/*$Id: DynamicWorkflowTest.java,v 1.5 2004/11/19 14:17:56 clq2 Exp $
  * Created on 27-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,8 +20,6 @@ import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
 /** Test the ability of scripts to dynamically add / alter parameters to a tool call. 
- * <P>
- * calls the SUM application
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Aug-2004
  *
  */
@@ -102,11 +100,8 @@ public class DynamicWorkflowTest extends AbstractTestForWorkflow {
 
 /* 
 $Log: DynamicWorkflowTest.java,v $
-Revision 1.4  2004/11/19 10:27:29  clq2
-nww-itn07-659
-
-Revision 1.3.52.1  2004/11/18 10:52:01  nw
-javadoc, some very minor tweaks.
+Revision 1.5  2004/11/19 14:17:56  clq2
+roll back beforeMergenww-itn07-659
 
 Revision 1.3  2004/08/28 11:14:50  nw
 tweaks

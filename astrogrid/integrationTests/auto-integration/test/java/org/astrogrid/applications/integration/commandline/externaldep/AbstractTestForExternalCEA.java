@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractTestForExternalCEA.java,v 1.2 2004/11/19 10:27:29 clq2 Exp $
+ * $Id: AbstractTestForExternalCEA.java,v 1.3 2004/11/19 14:17:56 clq2 Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -29,7 +29,6 @@ import org.astrogrid.workflow.beans.v1.Tool;
 
 /**
  * Base class for running tests on the real CEA applications. It deals with finding the application server etc.
- * @todo use this to write some tests
  * @author Paul Harrison (pah@jb.man.ac.uk) 23-Sep-2004
  * @version $Name:  $
  * @since iteration6

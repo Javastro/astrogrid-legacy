@@ -1,4 +1,4 @@
-/*$Id: SimpleEmailWorkflowTest.java,v 1.3 2004/11/19 10:27:29 clq2 Exp $
+/*$Id: SimpleEmailWorkflowTest.java,v 1.4 2004/11/19 14:17:56 clq2 Exp $
  * Created on 17-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,10 +19,7 @@ import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.integration.AbstractTestForWorkflow;
 
 /** tests out a simple workflow that sends an email message.
- * <p>
- * expects email application to be registered under key {@link #EMAIL}, sends mail to <tt>integration@twmbarlwm.star.le.ac.uk</tt>
- * @todo going to need some trickery to find out whether the email was received at the other end.
- * @todo will only work if there's a correctly configured mailserver present - outside the scope of this test - more of an installation issue.
+ * .. going to need some trickery to find out whether the email was received at the other end.
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Aug-2004
  *
  */
@@ -35,7 +32,7 @@ public class SimpleEmailWorkflowTest extends AbstractTestForWorkflow {
     public SimpleEmailWorkflowTest(String arg0) {
         super(new String[]{EMAIL}, arg0);
     }
-    
+
     public static final String EMAIL = "org.astrogrid.localhost/sendmail";
     
     /**
@@ -67,13 +64,9 @@ public class SimpleEmailWorkflowTest extends AbstractTestForWorkflow {
         wf.getSequence().addActivity(s);        
     }
     
-    /** 
-        @todo  step itself doesn't return any value - need to find a way of reading the mailbox itself. hmm.
-         * 
-         * @see org.astrogrid.workflow.integration.AbstractTestForWorkflow#checkExecutionResults(org.astrogrid.workflow.beans.v1.Workflow)
-         */
     public void checkExecutionResults(Workflow result) throws Exception {
         super.checkExecutionResults(result);
+        //@todo  step itself doesn't return any value - need to find a way of reading the mailbox itself. hmm.
         
     }    
 
@@ -82,11 +75,8 @@ public class SimpleEmailWorkflowTest extends AbstractTestForWorkflow {
 
 /* 
 $Log: SimpleEmailWorkflowTest.java,v $
-Revision 1.3  2004/11/19 10:27:29  clq2
-nww-itn07-659
-
-Revision 1.2.52.1  2004/11/18 10:52:01  nw
-javadoc, some very minor tweaks.
+Revision 1.4  2004/11/19 14:17:56  clq2
+roll back beforeMergenww-itn07-659
 
 Revision 1.2  2004/08/27 13:18:27  nw
 added todo

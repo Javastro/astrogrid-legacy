@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDirectExecutionTest.java,v 1.3 2004/11/19 10:27:29 clq2 Exp $
+ * $Id: CommandLineDirectExecutionTest.java,v 1.4 2004/11/19 14:15:38 clq2 Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -24,8 +24,6 @@ import java.io.File;
  * @author Paul Harrison (pah@jb.man.ac.uk) 11-May-2004
  * @version $Name:  $
  * @since iteration5
- * @see org.astrogrid.applications.integration.AbstractRunTestForCEA
- * @see org.astrogrid.applications.integration.commandline.CommandLineProviderServerInfo
  */
 public class CommandLineDirectExecutionTest extends AbstractRunTestForCEA {
 

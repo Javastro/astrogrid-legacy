@@ -1,4 +1,4 @@
-/*$Id: DataCenterFileIndirectExecutionTest.java,v 1.4 2004/11/19 10:27:29 clq2 Exp $
+/*$Id: DataCenterFileIndirectExecutionTest.java,v 1.5 2004/11/19 14:17:56 clq2 Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,11 +30,8 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URI;
 
-/** test the datacenter cea server against file-indirect parameters
+/**
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Jun-2004
- * 
- * @see org.astrogrid.applications.integration.AbstractRunTestForCEA
- * @see org.astrogrid.applications.integration.datacenter.DataCenterProviderServerInfo
  *
  */
 public class DataCenterFileIndirectExecutionTest extends AbstractRunTestForCEA {
@@ -92,11 +89,8 @@ public class DataCenterFileIndirectExecutionTest extends AbstractRunTestForCEA {
 
 /* 
 $Log: DataCenterFileIndirectExecutionTest.java,v $
-Revision 1.4  2004/11/19 10:27:29  clq2
-nww-itn07-659
-
-Revision 1.3.52.1  2004/11/18 10:52:01  nw
-javadoc, some very minor tweaks.
+Revision 1.5  2004/11/19 14:17:56  clq2
+roll back beforeMergenww-itn07-659
 
 Revision 1.3  2004/08/27 13:16:52  nw
 used AstrogridAssert to check results more thoroughly.

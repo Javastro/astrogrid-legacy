@@ -1,4 +1,4 @@
-/*$Id: SimpleConcatToolWorkflowTest.java,v 1.4 2004/11/19 10:27:29 clq2 Exp $
+/*$Id: SimpleConcatToolWorkflowTest.java,v 1.5 2004/11/19 14:17:56 clq2 Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.integration.AbstractTestForWorkflow;
 
-/** simple test to test operation of the concat tool - just joins two files together.
+/** simple test to test operation of the concat tool.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Aug-2004
  *
  */
@@ -83,11 +83,8 @@ public class SimpleConcatToolWorkflowTest extends AbstractTestForWorkflow implem
 
 /* 
 $Log: SimpleConcatToolWorkflowTest.java,v $
-Revision 1.4  2004/11/19 10:27:29  clq2
-nww-itn07-659
-
-Revision 1.3.56.1  2004/11/18 10:52:01  nw
-javadoc, some very minor tweaks.
+Revision 1.5  2004/11/19 14:17:56  clq2
+roll back beforeMergenww-itn07-659
 
 Revision 1.3  2004/08/22 01:45:10  nw
 improved concurrent behaviour

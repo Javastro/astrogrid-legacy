@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.16 2004/11/19 10:27:29 clq2 Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.17 2004/11/19 14:17:56 clq2 Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,29 +36,11 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-/** Abstract class that should be subclassed by integration tests
- * <h2>Helper Objects</h2>
- * Defines useful constants and helper objects for the AGINAB environment
- * <h2>Profiling</h2>
- * Defines methods to log memory useage of the tomcat server, and suggest it does a garbage collection.
- * <h2>Soft Assertions</h2>
- * Extends <tt>groboutils</tt> IntegrationTestCase, which defines a set of <i>soft assertions</i> - A test that calls a soft assertion
- * will continue regardless of whether the soft assertion succeeds or fails (compare this to normal 'hard' assertions, where the test halts on the first
- * failure). Soft assertions are useful when many things need to be checked after an expensive operation - for example, checking different features
- * of a document returned by a call to an astrogrid web service - and where it would be very inefficient to repeat the operation for each test in turn.
- * <p/>
- * Soft assertions appear in the test results as new dynamically generated tests. They take the name of the parent test that called them, plus a digit. It's
- * sometimes hard to track down which soft assertion is failing because of this - so it's wise to use the assertion methods that take a message as a first parameter.
- * @todo add url to IntegrationTestCase javadoc.
- * <p />
- * One quirk of using soft assertions is that the number of tests recorded may vary - if a test fails before reeaching some soft assertions, then the dynamic tests for their 
- * results will not be added to the results.
- * 
+/** abstract test for integration - sets up the Astorgrid scripting object, commonly used objects, etc.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
  *
  */
 public class AbstractTestForIntegration extends IntegrationTestCase {
-   
    /**
      * Constructor for AbstractTestForIntegration.
      * @param arg0
@@ -68,7 +50,7 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
     }
     private static final Log memLog = LogFactory.getLog("MEMORY");
         
-    /** Sets up a load of astrogrid system objects
+    /*
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
@@ -100,7 +82,7 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
 //        checkMemory("post: " + this.getClass().getName());
     }
     
-    /** call page on tomcat that produces memory statistics, output to logs */
+    /** call page on tomcat that produces memory statistics */
     protected void checkMemory(String checkpoint) {
         try {
         WebConversation conv = new WebConversation();
@@ -133,72 +115,32 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
         }
     }
    
-    /** Astrogird scripting object. initialized in {@link #setUp()} */
     protected Astrogrid ag;
-
-    /** Astrogird account object. initialized in {@link #setUp()}  to {@link #USERNAME} @ {@link #COMMUNITY}*/
     protected Account acc;
-
-    /** Astrogird grouop object. initialized in {@link #setUp()} to <tt>devel</tt> @ {@link #COMMUNITY}*/
     protected Group group;   
-
-    /** Astrogird credentials object. initialized in {@link #setUp()}, contains {@link #acc} and {@link #group}*/
     protected Credentials creds;
-
-    /** Astrogrid user object. initialized in {@link #setUp()}  to {@link #USERNAME} @ {@link #COMMUNITY}*/
     protected User user;
-
-    /** Template workflow document. initialized in {@link #setUp()}, contains {@link #creds} */
     protected Workflow wf;
-
-    /** IVORN representing user. initialized in {@link #setUp()}  to ivo://{@link #COMMUNITY}/{@link #USERNAME} */
    protected Ivorn userIvorn;
-
-   /** IVORN representing myspace initialized in {@link #setUp()}  to ivo://{@link #MYSPACE}*/
    protected Ivorn mySpaceIvorn;
     
-   // constants for things.
-   /** test username - something amphibious */
     public static final String USERNAME = "frog";
-    /** test community. Defaults to <tt>org.astrogrid.localhost</tt>, can be overridden by setting key <tt>org.astrogrid.registry.authorityid</tt> 
-     * @todo I don't think these keys are mixed up, but not brave enough to swap them myself. Kevin?*/
     public static final String COMMUNITY = SimpleConfig.getProperty("org.astrogrid.registry.authorityid", "org.astrogrid.localhost");
-
-    /** test authorityid. Defaults to <tt>org.astrogrid.localhost</tt>, can be overridden by setting key <tt>org.astrogrid.community.ident</tt>
-     * @todo I don't think these keys are mixed up, but not brave enough to swap them myself. Kevin? */    
     public static final String AUTHORITYID = SimpleConfig.getProperty("org.astrogrid.community.ident", "org.astrogrid.localhost");
-    /** registry key for myspace */
     public static final String MYSPACE = COMMUNITY + "/myspace";
-    /** registry key for test datacenter application */
     public static final String TESTDSA = COMMUNITY + "/testdsa";
-    /** registry key for test commandline application */
     public static final String TESTAPP = COMMUNITY + "/testapp";
-    /** registry key for another test commandline application */
     public static final String TESTAPP2 = COMMUNITY + "/testap2"; //note it isn't double 'p'
-    /** registry key for a test java application */
     public static final String HELLO_WORLD = COMMUNITY + "/helloWorld";
-    /** registry key for another test java application */
     public static final String HELLO_YOU = COMMUNITY + "/helloYou";
-    /** registry key for another test java application */
     public static final String SUM = COMMUNITY + "/sum";
     //New Http-based apps
-    /** registry key for a test http application */
     public static final String HTTP_HELLO_WORLD=COMMUNITY+"/HelloWorldHttpApp";
-    /** registry key for a test http application */    
     public static final String HTTP_ADDER_GET = COMMUNITY+"/AdderHttpGetApp";
-    /** registry key for a test http application */
     public static final String HTTP_ADDER_POST = COMMUNITY+"/AdderHttpPostApp";
-    /** registry key for a test http application */
     public static final String HTTP_INVALID = COMMUNITY+"/InvalidHttpApp";
-    /** registry key for a test http application */
     public static final String HTTP_HELLO_YOU = COMMUNITY+"/HelloYouXMLHttpApp";
-    /** registry key for a test http application */
     
-    /** create an myspace ivorn
-     * 
-     * @param path input path
-     * @return an ivorn of form <tt>ivo://{@link #MYSPACE}#{@link #USERNAME}/path</tt>
-     */
    protected Ivorn createIVORN(String path)
    {
       return new Ivorn(MYSPACE,user.getUserId()+path);
@@ -236,124 +178,13 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
      buffer.toString()
      );
    }
-   
-   // overridden soft assettion methods - to return more information about the context the assertion was called from.
-   private String getContext() {
-       return this.getClass().getName() + " : ";
-   }
-   public void softAssertEquals(boolean arg0, boolean arg1) {
-       super.softAssertEquals(getContext(),arg0, arg1);
-   }
-   public void softAssertEquals(byte arg0, byte arg1) {
-       super.softAssertEquals(getContext(),arg0, arg1);
-   }
-   public void softAssertEquals(char arg0, char arg1) {
-       super.softAssertEquals(getContext(),arg0, arg1);
-   }
-   public void softAssertEquals(double arg0, double arg1, double arg2) {
-       super.softAssertEquals(getContext(),arg0, arg1, arg2);
-   }
-   public void softAssertEquals(float arg0, float arg1, float arg2) {
-       super.softAssertEquals(getContext(),arg0, arg1, arg2);
-   }
-   public void softAssertEquals(int arg0, int arg1) {
-       super.softAssertEquals(getContext(),arg0, arg1);
-   }
-   public void softAssertEquals(long arg0, long arg1) {
-       super.softAssertEquals(getContext(),arg0, arg1);
-   }
-   public void softAssertEquals(Object arg0, Object arg1) {
-       super.softAssertEquals(getContext(),arg0, arg1);
-   }
-   public void softAssertEquals(short arg0, short arg1) {
-       super.softAssertEquals(getContext(),arg0, arg1);
-   }
-   public void softAssertEquals(String arg0, boolean arg1, boolean arg2) {
-       super.softAssertEquals(getContext() + arg0, arg1, arg2);
-   }
-   public void softAssertEquals(String arg0, byte arg1, byte arg2) {
-       super.softAssertEquals(getContext() + arg0, arg1, arg2);
-   }
-   public void softAssertEquals(String arg0, char arg1, char arg2) {
-       super.softAssertEquals(getContext() + arg0, arg1, arg2);
-   }
-   public void softAssertEquals(String arg0, double arg1, double arg2,
-           double arg3) {
-       super.softAssertEquals(getContext() + arg0, arg1, arg2, arg3);
-   }
-   public void softAssertEquals(String arg0, float arg1, float arg2, float arg3) {
-       super.softAssertEquals(getContext() + arg0, arg1, arg2, arg3);
-   }
-   public void softAssertEquals(String arg0, int arg1, int arg2) {
-       super.softAssertEquals(getContext() + arg0, arg1, arg2);
-   }
-   public void softAssertEquals(String arg0, long arg1, long arg2) {
-       super.softAssertEquals(getContext() + arg0, arg1, arg2);
-   }
-   public void softAssertEquals(String arg0, Object arg1, Object arg2) {
-       super.softAssertEquals(getContext() + arg0, arg1, arg2);
-   }
-   public void softAssertEquals(String arg0, short arg1, short arg2) {
-       super.softAssertEquals(getContext() + arg0, arg1, arg2);
-   }
-   public void softAssertEquals(String arg0, String arg1, String arg2) {
-       super.softAssertEquals(getContext() + arg0, arg1, arg2);
-   }
-   public void softAssertEquals(String arg0, String arg1) {
-       super.softAssertEquals(getContext() + arg0, arg1);
-   }
-   public void softAssertFalse(boolean arg0) {
-       super.softAssertFalse(getContext(),arg0);
-   }
-   public void softAssertFalse(String arg0, boolean arg1) {
-       super.softAssertFalse(getContext() + arg0, arg1);
-   }
-   public void softAssertNotNull(Object arg0) {
-       super.softAssertNotNull(getContext() ,arg0);
-   }
-   public void softAssertNotNull(String arg0, Object arg1) {
-       super.softAssertNotNull(getContext() + arg0, arg1);
-   }
-   public void softAssertNotSame(Object arg0, Object arg1) {
-       super.softAssertNotSame(getContext() ,arg0, arg1);
-   }
-   public void softAssertNotSame(String arg0, Object arg1, Object arg2) {
-       super.softAssertNotSame(getContext() + arg0, arg1, arg2);
-   }
-   public void softAssertNull(Object arg0) {
-       super.softAssertNull(getContext() ,arg0);
-   }
-   public void softAssertNull(String arg0, Object arg1) {
-       super.softAssertNull(getContext() + arg0, arg1);
-   }
-   public void softAssertSame(Object arg0, Object arg1) {
-       super.softAssertSame(getContext() ,arg0, arg1);
-   }
-   public void softAssertSame(String arg0, Object arg1, Object arg2) {
-       super.softAssertSame(getContext() + arg0, arg1, arg2);
-   }
-   public void softAssertTrue(boolean arg0) {
-       super.softAssertTrue(getContext() ,arg0);
-   }
-   public void softAssertTrue(String arg0, boolean arg1) {
-       super.softAssertTrue(getContext() + arg0, arg1);
-   }
-   public void softFail() {
-       super.softFail(getContext() );
-   }
-   public void softFail(String arg0) {
-       super.softFail(getContext() + arg0);
-   }
 }
 
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
-Revision 1.16  2004/11/19 10:27:29  clq2
-nww-itn07-659
-
-Revision 1.15.22.1  2004/11/18 10:52:01  nw
-javadoc, some very minor tweaks.
+Revision 1.17  2004/11/19 14:17:56  clq2
+roll back beforeMergenww-itn07-659
 
 Revision 1.15  2004/09/30 15:19:53  pah
 remove the GC force

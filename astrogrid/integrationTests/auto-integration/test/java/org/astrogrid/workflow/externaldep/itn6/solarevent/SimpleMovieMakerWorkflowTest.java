@@ -1,4 +1,4 @@
-/*$Id: SimpleMovieMakerWorkflowTest.java,v 1.4 2004/11/19 10:27:29 clq2 Exp $
+/*$Id: SimpleMovieMakerWorkflowTest.java,v 1.5 2004/11/19 14:17:56 clq2 Exp $
  * Created on 17-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 
-/** builds a single-step workflow document, that exercises the moviemaker tool, using hard-coded image inputs.
+/** integration test that builds a single-step workflow document, that exercises the moviemaker tool.
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Aug-2004
  *
  */
@@ -57,9 +57,7 @@ public class SimpleMovieMakerWorkflowTest extends AbstractTestForWorkflow
     }
     protected VoSpaceClient client;
     protected Ivorn target;
-    /** location of first input  file */
     protected static final String fits1 ="http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020728/tri20020728.0500";
-    /** location of second input file */
     protected static final String fits2 = "http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020728/tri20020728.0600";
 
 
@@ -137,11 +135,8 @@ public class SimpleMovieMakerWorkflowTest extends AbstractTestForWorkflow
 
 /* 
 $Log: SimpleMovieMakerWorkflowTest.java,v $
-Revision 1.4  2004/11/19 10:27:29  clq2
-nww-itn07-659
-
-Revision 1.3.42.1  2004/11/18 10:52:01  nw
-javadoc, some very minor tweaks.
+Revision 1.5  2004/11/19 14:17:56  clq2
+roll back beforeMergenww-itn07-659
 
 Revision 1.3  2004/09/08 16:30:01  eca
 SimpleMovieMakerWorkflowTest with some new corrections.
