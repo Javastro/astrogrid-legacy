@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolver.java,v 1.5 2004/03/19 12:39:37 mch Exp $
+ * $Id: VoSpaceResolver.java,v 1.6 2004/03/19 12:48:03 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,6 +9,7 @@ package org.astrogrid.store.delegate;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.User;
@@ -82,11 +83,20 @@ public class VoSpaceResolver {
    }
    
    /**
-    * Given an IVO Resource Name, resolves the Stream.  The user is the account
+    * Given an IVO Resource Name, resolves a Stream to read from the given
+    * lcoation.  The user is the account
     * attempting to access the file.
     */
    public InputStream resolveInputStream(User user, Ivorn ivorn) throws IOException {
       return resolveAgsl(ivorn).openInputStream(user);
+   }
+   
+   /**
+    * Given an IVO Resource Name, resolves a Stream to write to the given location.  The user is the account
+    * attempting to access the file.
+    */
+   public OutputStream resolveOutputStream(User user, Ivorn ivorn) throws IOException {
+      return resolveAgsl(ivorn).openOutputStream(user);
    }
    
    /** Resolve using Registry
@@ -162,6 +172,9 @@ public class VoSpaceResolver {
 
 /*
 $Log: VoSpaceResolver.java,v $
+Revision 1.6  2004/03/19 12:48:03  mch
+added outputStream
+
 Revision 1.5  2004/03/19 12:39:37  mch
 Added StoreAdminClient implementation to LocalFileStore
 
