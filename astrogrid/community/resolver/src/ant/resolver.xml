@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/ant/resolver.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/04/01 07:09:39 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/16 13:08:45 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: resolver.xml,v $
+    |   Revision 1.5  2004/04/16 13:08:45  dave
+    |   Added create account tool.
+    |
     |   Revision 1.4  2004/04/01 07:09:39  dave
     |   Merged development branch, dave-dev-200403300547, into HEAD
     |
@@ -245,6 +248,18 @@
             account="${org.astrogrid.community.account}/path/file?query#fragment"
             />
         <echo message="Result : ${frog}"/>
+    </target>
+
+    <!--+
+        | Create a new Account, using a live registry service.
+        +-->
+    <target name="account.create" depends="">
+        <echo message=""/>
+        <echo message="Account test ...."/>
+        <account.task
+            registry="${org.astrogrid.registry.url}"
+            account="${org.astrogrid.community.account}"
+            />
     </target>
 
 </project>
