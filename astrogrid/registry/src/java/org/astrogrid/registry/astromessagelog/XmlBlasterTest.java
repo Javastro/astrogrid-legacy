@@ -36,15 +36,6 @@ public class XmlBlasterTest extends TestCase {
 
   public void testPublishString() throws Exception {
     ConnectReturnQos connectReturnQos = blaster.connect(null, null);
-    
-    // Message content.
-    blaster.publishString(CONTENT);
-    
-    blaster.disconnect(null);
-  }
-
-  public void testGetMsgUnits() throws Exception {
-    ConnectReturnQos connectReturnQos = blaster.connect(null, null);
     blaster.publishString(CONTENT);
 
     MsgUnit[] msgUnits = blaster.getMessages(KEY);
