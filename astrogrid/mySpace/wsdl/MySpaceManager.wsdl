@@ -41,6 +41,12 @@
 
    </wsdl:message>
 
+   <wsdl:message name="upLoadURLRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
    <wsdl:message name="publishResponse">
 
       <wsdl:part name="publishReturn" type="xsd:string"/>
@@ -73,19 +79,29 @@
 
    <wsdl:message name="deleteUserResponse">
 
-      <wsdl:part name="deleteUserReturn" type="xsd:string"/>
+      <wsdl:part name="deleteUserReturn" type="xsd:boolean"/>
 
    </wsdl:message>
 
    <wsdl:message name="createUserResponse">
 
-      <wsdl:part name="createUserReturn" type="xsd:string"/>
+      <wsdl:part name="createUserReturn" type="xsd:boolean"/>
 
    </wsdl:message>
 
    <wsdl:message name="exportDataHolderResponse">
 
       <wsdl:part name="exportDataHolderReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="upLoadURLResponse">
+
+      <wsdl:part name="upLoadURLReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getServerURLsRequest">
 
    </wsdl:message>
 
@@ -131,7 +147,7 @@
 
       <wsdl:part name="communityid" type="xsd:string"/>
 
-      <wsdl:part name="subfolders" type="apachesoap:Vector"/>
+      <wsdl:part name="servers" type="apachesoap:Vector"/>
 
    </wsdl:message>
 
@@ -156,6 +172,12 @@
    <wsdl:message name="extendLeaseResponse">
 
       <wsdl:part name="extendLeaseReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getServerURLsResponse">
+
+      <wsdl:part name="getServerURLsReturn" type="apachesoap:Vector"/>
 
    </wsdl:message>
 
@@ -206,6 +228,14 @@
          <wsdl:input name="upLoadRequest" message="impl:upLoadRequest"/>
 
          <wsdl:output name="upLoadResponse" message="impl:upLoadResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="upLoadURL" parameterOrder="jobDetails">
+
+         <wsdl:input name="upLoadURLRequest" message="impl:upLoadURLRequest"/>
+
+         <wsdl:output name="upLoadURLResponse" message="impl:upLoadURLResponse"/>
 
       </wsdl:operation>
 
@@ -273,7 +303,7 @@
 
       </wsdl:operation>
 
-      <wsdl:operation name="createUser" parameterOrder="userid communityid subfolders">
+      <wsdl:operation name="createUser" parameterOrder="userid communityid servers">
 
          <wsdl:input name="createUserRequest" message="impl:createUserRequest"/>
 
@@ -302,6 +332,14 @@
          <wsdl:input name="listExpiredDataHoldersRequest" message="impl:listExpiredDataHoldersRequest"/>
 
          <wsdl:output name="listExpiredDataHoldersResponse" message="impl:listExpiredDataHoldersResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getServerURLs">
+
+         <wsdl:input name="getServerURLsRequest" message="impl:getServerURLsRequest"/>
+
+         <wsdl:output name="getServerURLsResponse" message="impl:getServerURLsResponse"/>
 
       </wsdl:operation>
 
@@ -340,6 +378,24 @@
          </wsdl:input>
 
          <wsdl:output name="upLoadResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="upLoadURL">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="upLoadURLRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="upLoadURLResponse">
 
             <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
 
@@ -556,6 +612,24 @@
          </wsdl:input>
 
          <wsdl:output name="listExpiredDataHoldersResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getServerURLs">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getServerURLsRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getServerURLsResponse">
 
             <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
 
