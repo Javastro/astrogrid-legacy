@@ -1,5 +1,5 @@
 /*
- * $Id: Units.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: Units.java,v 1.2 2005/03/10 13:49:53 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,6 +25,20 @@ public class Units
 
    public String toString() {
       return unitEquation;
+   }
+   
+   public String getDimEq() {
+      return "TODO";
+   }
+   
+   public String getDimScale() {
+      return "TODO";
+   }
+
+   /** Will eventually returns true if the given units are equivelent - eg km s-1 and km/s, but
+    * not if they are different. For the moment just does string.tolowercase.equals */
+   public boolean equals(Object o) {
+      return this.toString().toLowerCase().equals(o.toString().toLowerCase());
    }
    
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsMetaServer.java,v 1.2 2005/03/08 18:05:57 mch Exp $
+ * $Id: SampleStarsMetaServer.java,v 1.3 2005/03/10 13:49:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,8 +13,11 @@ import org.astrogrid.config.ConfigException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.metadata.FileResourcePlugin;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
+import org.astrogrid.dataservice.metadata.tables.TableMetaDocInterpreter;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
-import org.astrogrid.dataservice.queriers.sql.TabularSkyServicePlugin;
+import org.astrogrid.dataservice.queriers.sql.RdbmsMetadataResources;
+import org.astrogrid.dataservice.queriers.sql.TabularDbResources;
+import org.astrogrid.dataservice.queriers.sql.TabularSkyServiceResources;
 
 /**
  * A special file-serving metadata server; it checks that the SampleStarsPlugin
@@ -27,41 +30,32 @@ import org.astrogrid.dataservice.queriers.sql.TabularSkyServicePlugin;
 public class SampleStarsMetaServer extends FileResourcePlugin
 {
    
-   public SampleStarsMetaServer() throws IOException
-   {
-      SampleStarsPlugin.initialise();
-   }
-   
-   /** Returns a URL to the metadata file */
-   public URL[] getResourceUrls() throws IOException {
-
-      //check that this isn't still serving metadata for a non SampleStars query plugin
-      String pluginClass = SimpleConfig.getSingleton().getString(QuerierPluginFactory.QUERIER_PLUGIN_KEY);
-      String sampleStarsClass = SampleStarsPlugin.class.getName();
-      if (!pluginClass.equals(SampleStarsPlugin.class.getName())) {
-         throw new ConfigException("Server is configured to return sample stars metadata but the plugin is "+pluginClass);
-      }
-      //this works OK for unit test, but not deployment...
-      URL url = SampleStarsMetaServer.class.getResource("samplestars.metadata.xml");
-      if (url == null) {
-         //this works OK for deployment, but not unit tests...
-         url = Config.resolveFilename("samplestars.metadata.xml");
-      }
-      return new URL[] { url };
-   }
-   
    /**
-    * Initialises config so that authority ID, etc are set
+    * Initialises config so that authority ID, etc are set.
+      bear in mind that this is only called when SampleStarsPlugin is called,
+      so getmetadata may fail if called beforehand
     */
    public static void initConfig() {
 
-      //bear in mind that this is only called when SampleStarsPlugin is called,
-      //so getmetadata may fail if called beforehand
-      
-      //configure so it looks for itself
+      //set where to find the data description meta document
+      //this works OK for unit test, but not deployment...
+      URL url = SampleStarsMetaServer.class.getResource("samplestars.metadoc.xml");
+      if (url == null) {
+         //this works OK for deployment, but not unit tests...
+         try {
+            url = Config.resolveFilename("samplestars.metadoc.xml");
+         }
+         catch (IOException e) {
+            throw new RuntimeException(e);
+         }
+      }
+      SimpleConfig.setProperty(TableMetaDocInterpreter.TABLE_METADOC_KEY, url.toString());
+
+      //configure which resources to produce
       SimpleConfig.getSingleton().setProperties(VoDescriptionServer.RESOURCE_PLUGIN_KEY, new Object[] {
-               SampleStarsMetaServer.class.getName(),
-               TabularSkyServicePlugin.class.getName(),
+               TabularSkyServiceResources.class.getName(),
+               RdbmsMetadataResources.class.getName(),
+               TabularDbResources.class.getName(),
             });
 
       

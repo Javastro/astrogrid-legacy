@@ -1,5 +1,5 @@
 /*
- * $Id: PalProxyPlugin.java,v 1.2 2005/03/08 18:05:57 mch Exp $
+ * $Id: PalProxyPlugin.java,v 1.3 2005/03/10 13:49:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -152,7 +152,7 @@ public class PalProxyPlugin extends DefaultPlugin implements VoResourcePlugin {
       log.info("Proxying VoResources to: "+targetPal);
 
       ProxyResourceSupport proxyer = new ProxyResourceSupport();
-      return proxyer.makeMine(targetPal.openStream());
+      return proxyer.makeLocal(targetPal.openStream());
    }
    
    /** Returns the formats that this plugin can provide.  Asks the results class; override in subclasse if nec */

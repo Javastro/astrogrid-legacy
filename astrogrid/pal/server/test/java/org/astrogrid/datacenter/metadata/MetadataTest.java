@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.4 2005/03/08 18:05:57 mch Exp $
+/*$Id: MetadataTest.java,v 1.5 2005/03/10 13:49:53 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,21 +13,21 @@ package org.astrogrid.datacenter.metadata;
 import java.io.FileNotFoundException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Hashtable;
 import java.util.Locale;
 import junit.framework.TestCase;
-import org.astrogrid.applications.component.CEAComponentManagerFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.metadata.FileResourcePlugin;
 import org.astrogrid.dataservice.metadata.UrlResourcePlugin;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
-import org.astrogrid.dataservice.metadata.VoResourcePlugin;
+import org.astrogrid.dataservice.metadata.tables.TableMetaDocInterpreter;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
-import org.astrogrid.dataservice.queriers.sql.RdbmsResourceGenerator;
+import org.astrogrid.dataservice.queriers.sql.RdbmsTableMetaDocGenerator;
 import org.astrogrid.dataservice.queriers.test.SampleStarsPlugin;
-import org.astrogrid.dataservice.service.cea.CeaResources;
 import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import java.io.IOException;
 
 /**
  * tests the metadata generators, etc
@@ -40,17 +40,19 @@ public class MetadataTest extends TestCase {
       SimpleConfig.setProperty("datacenter.url", "http://localhost:8080/wossname");
    }
    
-   /** Checks that the identifiers are there and valid */
+   /** Checks that the identifiers are there and valid and not duplicates */
    public void assertIdentifiersOK(Document candidate) {
+      
+      Hashtable ids = new Hashtable();
       
       Element[] resources = DomHelper.getChildrenByTagName(candidate.getDocumentElement(), "Resource");
       for (int r = 0; r < resources.length; r++) {
          String xsitype = resources[r].getAttribute("xsi:type");
-         Element[] ids = DomHelper.getChildrenByTagName(resources[r], "Identifier");
-         assertTrue("Should only be one identifier tag", ids.length==1);
+         Element[] idNodes = DomHelper.getChildrenByTagName(resources[r], "Identifier");
+         assertTrue("Should only be one identifier tag", idNodes.length==1);
 
-         for (int i = 0; i < ids.length; i++) {
-            Element id = ids[i];
+         for (int i = 0; i < idNodes.length; i++) {
+            Element id = idNodes[i];
             String authId = DomHelper.getValueOf(id, "AuthorityID");
             String idConfig = SimpleConfig.getSingleton().getString(VoResourceSupport.AUTHID_KEY);
             assertEquals("Authority ID incorrect in Resource type "+xsitype, idConfig, authId);
@@ -60,16 +62,67 @@ public class MetadataTest extends TestCase {
             if (!xsitype.equals("AuthorityType")) {
                assertTrue("Resource Key is "+resKey+", should start with "+resConfig+" in Resource type "+xsitype, resKey.startsWith(resConfig));
             }
+            
+            //check for duplicates
+            if (ids.get(resKey) != null) {
+               fail("Duplicate ID "+resKey);
+            }
+            ids.put(resKey, resKey);
          }
       }
    }
    
+   /** Checks that it includes the CEA resources */
+   public void assertHasCeaResources(Document candidate) {
+
+      boolean hasService = false;
+      boolean hasApp = false;
+      
+      Element[] resources = DomHelper.getChildrenByTagName(candidate.getDocumentElement(), "Resource");
+      for (int r = 0; r < resources.length; r++) {
+         String xsitype = resources[r].getAttribute("xsi:type");
+
+         if (xsitype.equals("cea:CeaService")) {
+            if (hasService) {
+               fail("Duplicate cea:CeaService elements in VoDescription");
+            }
+            hasService = true;
+         }
+         
+         if (xsitype.equals("cea:CeaApplication")) {
+            if (hasApp) {
+               fail("Duplicate cea:CeaApplication elements in VoDescription");
+            }
+            hasApp = true;
+         }
+      }
+      
+      assertTrue("No cea:CeaService element", !hasService);
+      assertTrue("No cea:CeaApplication element", !hasApp);
+      
+   }
+
    public void assertHasRdbmsResource(Document candidate) {
       
-      //check for table data
-      long numTables = candidate.getElementsByTagName("Table").getLength();
-      assertEquals("Should be two tables in metadata", 3, numTables);
+      Element[] resources = DomHelper.getChildrenByTagName(candidate.getDocumentElement(), "Resource");
+      for (int r = 0; r < resources.length; r++) {
+         String xsitype = resources[r].getAttribute("xsi:type");
+
+         if (xsitype.equals("RdbmsMetadata")) {
+            //check for table data
+            long numTables = resources[r].getElementsByTagName("Table").getLength();
+            assertEquals("Number of table elements in metadata, ", 3, numTables);
+            return; //OK found it
+         }
+      }
+      fail("No RdbmsMetadata resource");
    }
+   
+   //checks that the metadoc is valid and reads OK
+   public void testMetadoc() throws IOException {
+      TableMetaDocInterpreter reader = new TableMetaDocInterpreter();
+   }
+   
    
    public void testServer() throws Exception {
       Document metadata = VoDescriptionServer.getVoDescription();
@@ -84,48 +137,18 @@ public class MetadataTest extends TestCase {
    /** Tests the resource generator */
    public void testGenerator() throws Exception {
      
-      RdbmsResourceGenerator generator = new RdbmsResourceGenerator();
-      
+      RdbmsTableMetaDocGenerator generator = new RdbmsTableMetaDocGenerator();
+
       //generate metadata
-      String resources = generator.getVoResources();
+      String metadoc = generator.getMetaDoc();
 
       //check it's valid
-      Document metaDoc = DomHelper.newDocument(resources);
+      Document metaDoc = DomHelper.newDocument(metadoc);
       
       //debug
       DomHelper.DocumentToStream(metaDoc, System.out);
-      
-      assertHasRdbmsResource(metaDoc);
-      //assertIdentifiersOK(metaDoc); not for generated stuff
     }
 
-    //checks we can get individual resources from the metadata
-   public void testGetResouce() throws Exception {
-      SimpleConfig.setProperty(VoDescriptionServer.RESOURCE_PLUGIN_KEY, RdbmsResourceGenerator.class.getName());
-      
-//not required      Element auth = VoDescriptionServer.getAuthorityResource();
-//      assertNotNull("No AuthorityType in VOdescription", auth);
-
-      Element rdbms = VoDescriptionServer.getResource("RdbmsMetadata");
-      assertNotNull("No RdbmsMetadata in VODescription", rdbms);
-   }
-
-
-   //checks that the document being returned by the CEA Library is OK
-   public void testCeaLibrary() throws Throwable {
-      String ceaVoDescription = CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry();
-      Document ceaDoc = DomHelper.newDocument(ceaVoDescription);
-//      assertIdentifiersOK(ceaDoc);
-   }
-   
-   public void testCeaResource() throws Throwable {
-      SimpleConfig.setProperty(VoDescriptionServer.RESOURCE_PLUGIN_KEY, CeaResources.class.getName());
-      //generate metadata
-      Document metaDoc = VoDescriptionServer.getVoDescription();
-      
-      assertIdentifiersOK(metaDoc);
-   }
-      
    public void testMetadataFileServer() throws Throwable{
       
       SimpleConfig.setProperty(VoDescriptionServer.RESOURCE_PLUGIN_KEY, FileResourcePlugin.class.getName());
@@ -168,79 +191,4 @@ public class MetadataTest extends TestCase {
 }
 
 
-/*
- $Log: MetadataTest.java,v $
- Revision 1.4  2005/03/08 18:05:57  mch
- updating resources to v0.10
 
- Revision 1.3  2005/03/01 17:51:59  mch
- fixes to tests
-
- Revision 1.2  2005/02/28 18:47:05  mch
- More compile fixes
-
- Revision 1.1.1.1  2005/02/17 18:37:35  mch
- Initial checkin
-
- Revision 1.1.1.1  2005/02/16 17:11:25  mch
- Initial checkin
-
- Revision 1.10  2004/11/09 17:42:22  mch
- Fixes to tests after fixes for demos, incl adding closable to targetIndicators
-
- Revision 1.9  2004/11/05 12:25:23  mch
- renamed RdbmsResourcePlugin
-
- Revision 1.8  2004/11/03 00:17:56  mch
- PAL_MCH Candidate 2 merge
-
- Revision 1.4.6.5  2004/10/22 09:13:37  mch
- Started on Registry GMT dates
-
- Revision 1.4.6.4  2004/10/20 22:19:19  mch
- Fix for checking authority type resource key
-
- Revision 1.4.6.3  2004/10/20 18:12:45  mch
- CEA fixes, resource tests and fixes, minor navigation changes
-
- Revision 1.4.6.2  2004/10/19 17:26:27  mch
- Odd fixes
-
- Revision 1.4.6.1  2004/10/19 14:01:31  mch
- Merged other PAL_MCH branches together
-
- Revision 1.4.4.1  2004/10/19 11:45:02  mch
- Started fixes to CEA metadata from DSAs
-
- Revision 1.4  2004/10/18 13:11:30  mch
- Lumpy Merge
-
- Revision 1.3.2.1  2004/10/15 19:59:06  mch
- Lots of changes during trip to CDS to improve int test pass rate
-
- Revision 1.3  2004/10/08 17:14:23  mch
- Clearer separation of metadata and querier plugins, and improvements to VoResource plugin mechanisms
-
- Revision 1.2  2004/10/05 20:26:43  mch
- Prepared for better resource metadata generators
-
- Revision 1.1  2004/09/28 15:11:33  mch
- Moved server test directory to pal
-
- Revision 1.5  2004/09/08 20:15:10  mch
- Some fixes and cea metadata test
-
- Revision 1.4  2004/09/08 19:18:47  mch
- Minor fixes and tidy up
-
- Revision 1.3  2004/09/08 17:51:49  mch
- Fixes to log and metadata views
-
- Revision 1.2  2004/09/08 15:03:02  mch
- Added tests
-
- Revision 1.1  2004/09/06 20:23:00  mch
- Replaced metadata generators/servers with plugin mechanism. Added Authority plugin
-
- 
- */

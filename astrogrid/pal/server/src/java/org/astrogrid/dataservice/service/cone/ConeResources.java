@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.1 2005/03/08 18:05:57 mch Exp $
+/*$Id: ConeResources.java,v 1.2 2005/03/10 13:49:53 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
  **/
 package org.astrogrid.dataservice.service.cone;
 
+import java.io.IOException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.metadata.VoResourcePlugin;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
@@ -24,7 +25,7 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
    /**
     * Returns ServiceType for cone search
     */
-   public String getVoResource()  {
+   public String getVoResource() throws IOException {
 
       String cone =
          makeVoResourceElement("ServiceType")+
@@ -52,6 +53,9 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
 
 /*
  $Log: ConeResources.java,v $
+ Revision 1.2  2005/03/10 13:49:53  mch
+ Updating metadata
+
  Revision 1.1  2005/03/08 18:05:57  mch
  updating resources to v0.10
 

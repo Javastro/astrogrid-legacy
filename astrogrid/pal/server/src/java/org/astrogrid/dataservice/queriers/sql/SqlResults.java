@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: SqlResults.java,v 1.2 2005/03/10 13:49:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.dataservice.metadata.tables.ColumnInfo;
+import org.astrogrid.dataservice.metadata.tables.TableMetaDocInterpreter;
 import org.astrogrid.dataservice.out.tables.TableWriter;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.TableResults;
@@ -106,7 +107,7 @@ public class SqlResults extends TableResults {
          int numCols = metadata.getColumnCount();
          ColumnInfo[] cols = new ColumnInfo[numCols];
          Expression[] colDefs = ((ReturnTable) querier.getQuery().getResultsDef()).getColDefs();
-         RdbmsResourceInterpreter rdbmsResource = new RdbmsResourceInterpreter();
+         TableMetaDocInterpreter interpreter = new TableMetaDocInterpreter();
          for (int i=1;i<=numCols;i++)
          {
             cols[i-1] = new ColumnInfo();
@@ -115,7 +116,7 @@ public class SqlResults extends TableResults {
             if (colDefs == null) {
                //erm. what do we do now?  eg *?
                try {
-                  cols[i-1] = rdbmsResource.guessColumn(querier.getQuery().getScope(), metadata.getColumnName(i));
+                  cols[i-1] = interpreter.guessColumn(querier.getQuery().getScope(), metadata.getColumnName(i));
                }
                catch (MetadataException me) {
                   log.error(me+" guessing which column "+metadata.getColumnName(i)+" belongs to which table");
@@ -125,10 +126,10 @@ public class SqlResults extends TableResults {
             else if (colDefs[i-1] instanceof ColumnReference) {
                ColumnReference colRef = (ColumnReference) colDefs[i-1];
                cols[i-1].setId(colRef.getTableName()+"."+colRef.getColName());
-               cols[i-1].setUcd(rdbmsResource.getColumn(null, colRef.getTableName(), colRef.getColName()).getUcd());
-               cols[i-1].setUnits(rdbmsResource.getColumn(null, colRef.getTableName(), colRef.getColName()).getUnits());
+               cols[i-1].setUcd(interpreter.getColumn(null, colRef.getTableName(), colRef.getColName()).getUcd("1"),"1");
+               cols[i-1].setUnits(interpreter.getColumn(null, colRef.getTableName(), colRef.getColName()).getUnits());
                cols[i-1].setJavaType(getJavaType(metadata.getColumnType(i)));
-               cols[i-1].setDatatype(rdbmsResource.getColumn(null, colRef.getTableName(), colRef.getColName()).getDatatype());
+               cols[i-1].setDatatype(interpreter.getColumn(null, colRef.getTableName(), colRef.getColName()).getDatatype());
             }
             else {
                //should probably throw an exception...
@@ -203,8 +204,11 @@ public class SqlResults extends TableResults {
 
 /*
  $Log: SqlResults.java,v $
- Revision 1.1  2005/02/17 18:37:35  mch
- *** empty log message ***
+ Revision 1.2  2005/03/10 13:49:52  mch
+ Updating metadata
+
+ Revision 1.1.1.1  2005/02/17 18:37:35  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:24  mch
  Initial checkin

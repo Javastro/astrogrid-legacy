@@ -1,5 +1,5 @@
 /*
- * $Id: UrlResourcePlugin.java,v 1.2 2005/03/08 18:05:57 mch Exp $
+ * $Id: UrlResourcePlugin.java,v 1.3 2005/03/10 13:49:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -69,7 +69,7 @@ public class UrlResourcePlugin extends ProxyResourceSupport implements VoResourc
          }
          
          try {
-            resources.append( makeMine(is));
+            resources.append( makeLocal(is));
             
          }
          catch (MetadataException me) {

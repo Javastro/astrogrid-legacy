@@ -1,5 +1,5 @@
 /*
- * $Id: CeaResources.java,v 1.1 2005/03/08 18:05:57 mch Exp $
+ * $Id: CeaResources.java,v 1.2 2005/03/10 13:49:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -28,7 +28,7 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
    /**
     * Returns a CeaServiceType resource element
     */
-   public String getVoResource()  {
+   public String getVoResource() throws IOException {
 
       String ceaService =
          makeVoResourceElement("cea:CeaServiceType")+

@@ -40,7 +40,7 @@
      <p>
 <%
       
-      QueryableResourceReader queryable = VoDescriptionServer.getQueryable();
+      ConeConfigQueryableResource queryable = new ConeConfigQueryableResource();
       
       if ((queryable == null) || (queryable.getSpatialGroups() == null)) {
          out.write("This server is not configured for cone searches");

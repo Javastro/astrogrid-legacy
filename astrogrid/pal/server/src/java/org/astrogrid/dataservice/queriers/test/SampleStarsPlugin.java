@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.2 2005/03/01 17:51:59 mch Exp $
+ * $Id: SampleStarsPlugin.java,v 1.3 2005/03/10 13:49:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -64,7 +64,6 @@ public class SampleStarsPlugin extends JdbcPlugin
       
       //it's a bit naughty setting this, but it sorts out most tests
       SimpleConfig.setProperty("datacenter.url", SimpleConfig.getProperty("datacenter.url", "http://localhost:8080/pal-Sample/"));
-      
       
       SampleStarsMetaServer.initConfig();
     }
@@ -228,6 +227,9 @@ public class SampleStarsPlugin extends JdbcPlugin
 }
    /*
    $Log: SampleStarsPlugin.java,v $
+   Revision 1.3  2005/03/10 13:49:52  mch
+   Updating metadata
+
    Revision 1.2  2005/03/01 17:51:59  mch
    fixes to tests
 

@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsQueryValidator.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: RdbmsQueryValidator.java,v 1.2 2005/03/10 13:49:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,6 +7,7 @@
 package org.astrogrid.dataservice.queriers.sql;
 
 import org.astrogrid.dataservice.metadata.MetadataException;
+import org.astrogrid.dataservice.metadata.tables.TableMetaDocInterpreter;
 import org.astrogrid.query.DefaultQueryTraverser;
 import org.astrogrid.query.condition.ColumnReference;
 
@@ -17,15 +18,15 @@ import org.astrogrid.query.condition.ColumnReference;
 
 public class RdbmsQueryValidator extends DefaultQueryTraverser {
    
-   RdbmsResourceInterpreter rdbmsRes = null;
+   TableMetaDocInterpreter interpreter = null;
 
-   public RdbmsQueryValidator(RdbmsResourceInterpreter reader)  {
-      rdbmsRes = reader;
+   public RdbmsQueryValidator(TableMetaDocInterpreter reader)  {
+      this.interpreter = reader;
    }
    
    public void visitScope(String[] scope) {
       for (int i = 0; i < scope.length; i++) {
-         if (rdbmsRes.getTable(null, scope[i]) ==null) {
+         if (interpreter.getTable(null, scope[i]) ==null) {
             throw new IllegalArgumentException("Table '"+scope[i]+"' is not available in this RDBMS Resource");
          }
       }
@@ -33,7 +34,7 @@ public class RdbmsQueryValidator extends DefaultQueryTraverser {
    
    public void visitColumnReference(ColumnReference expression) {
       try {
-         if (rdbmsRes.getColumn(null,expression.getTableName(), expression.getColName()) == null) {
+         if (interpreter.getColumn(null,expression.getTableName(), expression.getColName()) == null) {
             throw new IllegalArgumentException(expression+" is not in RDBMS Resource and so cannot be queried");
          }
       } catch (MetadataException me) {
@@ -46,8 +47,11 @@ public class RdbmsQueryValidator extends DefaultQueryTraverser {
 
 /*
  $Log: RdbmsQueryValidator.java,v $
- Revision 1.1  2005/02/17 18:37:35  mch
- *** empty log message ***
+ Revision 1.2  2005/03/10 13:49:52  mch
+ Updating metadata
+
+ Revision 1.1.1.1  2005/02/17 18:37:35  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:24  mch
  Initial checkin

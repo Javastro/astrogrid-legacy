@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.3 2005/03/10 13:49:53 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierManager;
 import org.astrogrid.dataservice.queriers.sql.JdbcPlugin;
-import org.astrogrid.dataservice.queriers.sql.RdbmsResourceGenerator;
+import org.astrogrid.dataservice.queriers.sql.RdbmsTableMetaDocGenerator;
 import org.astrogrid.dataservice.queriers.test.SampleStarsPlugin;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.SimpleQueryMaker;
@@ -167,10 +167,10 @@ public class SqlPluginTest extends ServerTestCase {
    public void testResourceMaker() throws Exception {
       setUp();
       
-      RdbmsResourceGenerator generator = new RdbmsResourceGenerator();
+      RdbmsTableMetaDocGenerator generator = new RdbmsTableMetaDocGenerator();
       
       //generate metadata
-      String resources = generator.getVoResources();
+      String resources = generator.getMetaDoc();
       
       Document metaDoc = DomHelper.newDocument(resources.toString());
       
@@ -218,6 +218,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.3  2005/03/10 13:49:53  mch
+ Updating metadata
+
  Revision 1.2  2005/02/28 18:47:05  mch
  More compile fixes
 

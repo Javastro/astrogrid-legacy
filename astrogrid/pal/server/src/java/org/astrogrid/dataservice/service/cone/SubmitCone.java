@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitCone.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: SubmitCone.java,v 1.2 2005/03/10 13:49:53 mch Exp $
  */
 
 package org.astrogrid.dataservice.service.cone;
@@ -9,7 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.dataservice.metadata.VoDescriptionServer;
+import org.astrogrid.dataservice.metadata.queryable.ConeConfigQueryableResource;
 import org.astrogrid.dataservice.metadata.queryable.SearchGroup;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.ServletHelper;
@@ -35,7 +35,7 @@ public class SubmitCone extends DefaultServlet {
 
       CircleCondition coneCondition = ServletHelper.makeCircleCondition(request);
       ReturnSpec tableDef = ServletHelper.makeReturnSpec(request);
-      SearchGroup[] coneScope = VoDescriptionServer.getQueryable().getSpatialGroups();
+      SearchGroup[] coneScope = new ConeConfigQueryableResource().getSpatialGroups();
       String[] scope = new String[coneScope.length];
       for (int i = 0; i < scope.length; i++)
       {

@@ -1,5 +1,5 @@
 /*
- * $Id: StilStarTableWriter.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: StilStarTableWriter.java,v 1.2 2005/03/10 13:49:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -93,8 +93,8 @@ public class StilStarTableWriter extends AbstractStarTable implements TableWrite
     */
    public uk.ac.starlink.table.ColumnInfo getColumnInfo(int icol) {
       uk.ac.starlink.table.ColumnInfo starColumn = new uk.ac.starlink.table.ColumnInfo(cols[icol].getName());
-      starColumn.setUnitString(cols[icol].getUnits());
-      starColumn.setUCD(cols[icol].getUcd());
+      starColumn.setUnitString(cols[icol].getUnits().toString());
+      starColumn.setUCD(cols[icol].getUcd("1"));
       starColumn.setContentClass(cols[icol].getJavaType());
       return starColumn;
    }
@@ -183,8 +183,11 @@ public class StilStarTableWriter extends AbstractStarTable implements TableWrite
 
 /*
  $Log: StilStarTableWriter.java,v $
- Revision 1.1  2005/02/17 18:37:34  mch
- *** empty log message ***
+ Revision 1.2  2005/03/10 13:49:52  mch
+ Updating metadata
+
+ Revision 1.1.1.1  2005/02/17 18:37:34  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:24  mch
  Initial checkin

@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlTableWriter.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: HtmlTableWriter.java,v 1.2 2005/03/10 13:49:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -93,14 +93,14 @@ public class HtmlTableWriter extends AsciiTableSupport {
       printOut.println("</TR>");
       printOut.println("<TH>UCD</TH>");
       for (int i = 0; i < cols.length; i++) {
-         printOut.print("<TH>"+emptyIfNull(cols[i].getUcd())+"</TH>");
+         printOut.print("<TH>"+emptyIfNull(cols[i].getUcd("1"))+"</TH>");
       }
       printOut.println("</TR>");
 
       printOut.println("</TR>");
       printOut.println("<TH>Units</TH>");
       for (int i = 0; i < cols.length; i++) {
-         printOut.print("<TH>"+emptyIfNull(cols[i].getUnits())+"</TH>");
+         printOut.print("<TH>"+emptyIfNull(cols[i].getUnits().toString())+"</TH>");
       }
       printOut.println("</TR>");
 
@@ -154,8 +154,11 @@ public class HtmlTableWriter extends AsciiTableSupport {
 
 /*
  $Log: HtmlTableWriter.java,v $
- Revision 1.1  2005/02/17 18:37:34  mch
- *** empty log message ***
+ Revision 1.2  2005/03/10 13:49:52  mch
+ Updating metadata
+
+ Revision 1.1.1.1  2005/02/17 18:37:34  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:24  mch
  Initial checkin

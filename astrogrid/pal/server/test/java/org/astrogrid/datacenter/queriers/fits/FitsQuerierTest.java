@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.4 2005/03/08 15:03:24 KevinBenson Exp $
+/*$Id: FitsQuerierTest.java,v 1.5 2005/03/10 13:49:53 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -62,6 +62,7 @@ xmldb.admin.password=
       
       SimpleConfig.setProperty(FitsQuerierPlugin.FITS_INDEX_FILENAME, indexFile.getCanonicalPath());
       */
+      SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, FitsQuerierPlugin.class.getName());
    }
 
    /** Check to see the right plugin is made */
@@ -106,6 +107,9 @@ xmldb.admin.password=
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.5  2005/03/10 13:49:53  mch
+ Updating metadata
+
  Revision 1.4  2005/03/08 15:03:24  KevinBenson
  new stuff for Fits querier to work with an internal xml database
 

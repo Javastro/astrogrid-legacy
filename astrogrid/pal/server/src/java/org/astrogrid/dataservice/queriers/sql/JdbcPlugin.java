@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.2 2005/03/10 13:49:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.dataservice.metadata.tables.TableMetaDocInterpreter;
 import org.astrogrid.dataservice.queriers.status.QuerierComplete;
 import org.astrogrid.dataservice.queriers.status.QuerierError;
 import org.astrogrid.dataservice.queriers.status.QuerierQuerying;
@@ -183,7 +184,7 @@ public class JdbcPlugin extends DefaultPlugin {
    /** Throws an IllegalArgumentException if the query is not appropriate to this site */
    public void validateQuery(Query query) {
       try {
-         RdbmsResourceInterpreter reader = new RdbmsResourceInterpreter();
+         TableMetaDocInterpreter reader = new TableMetaDocInterpreter();
          RdbmsQueryValidator validator = new RdbmsQueryValidator(reader);
          query.acceptVisitor(validator); //throws an IllegalArgumentException if there's something wrong
       }

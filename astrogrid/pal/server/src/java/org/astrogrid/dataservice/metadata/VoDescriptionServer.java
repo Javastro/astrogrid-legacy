@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.2 2005/03/08 18:05:57 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.3 2005/03/10 13:49:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,8 +15,6 @@ import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.metadata.queryable.QueryableResourceReader;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
-import org.astrogrid.dataservice.queriers.sql.RdbmsResourceGenerator;
-import org.astrogrid.dataservice.queriers.sql.RdbmsResourceInterpreter;
 import org.astrogrid.dataservice.queriers.test.SampleStarsPlugin;
 import org.astrogrid.dataservice.service.cea.CeaResources;
 import org.astrogrid.dataservice.service.cone.ConeResources;
@@ -51,7 +49,8 @@ public class VoDescriptionServer {
                                "xmlns:cea='http://www.ivoa.net/xml/CEAService/v0.1' "+
                                "xmlns:ceapd='http://www.astrogrid.org/schema/AGParameterDefinition/v1' "+
                                "xmlns:ceab='http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1' "+
-                               "xmlns:vr='http://www.ivoa.net/xml/VOResource/v0.10' "+
+                               "xmlns:vor='http://www.ivoa.net/xml/VOResource/v0.10' "+
+                               "xmlns:tdb ='urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3' "+
                                "xmlns='http://www.ivoa.net/xml/VOResource/v0.10' "+  //default namespace
                     ">";
    public final static String VODESCRIPTION_ELEMENT_END ="</VODescription>";
@@ -63,10 +62,8 @@ public class VoDescriptionServer {
    public synchronized static Document getVoDescription() throws IOException {
       if (cache == null) {
          try {
-            cache = DomHelper.newDocument(makeVoDescription().toString());
+            cache = DomHelper.newDocument(makeVoDescription());
             
-            //check it's OK
-            validate(cache);
          }
          catch (ParserConfigurationException e) {
             throw new RuntimeException("Server not setup properly: "+e,e);
@@ -80,9 +77,21 @@ public class VoDescriptionServer {
    
    /** Checks that the given document is a valid vodescription, throwing an
     * exception if not */
-   public static void validate(Document vod) throws MetadataException {
-      Element root = vod.getDocumentElement();
-
+   public static void validateDescription(String vod) throws MetadataException {
+      Element root = null;
+      try {
+         root = DomHelper.newDocument(vod).getDocumentElement();
+      }
+      catch (SAXException e) {
+         throw new MetadataException("Invalid Metadata Resource document "+vod,e);
+      }
+      catch (ParserConfigurationException e) {
+         throw new RuntimeException(e);
+      }
+      catch (IOException e) {
+         throw new RuntimeException(e);
+      }
+      
       NodeList children = root.getChildNodes();
       
       for (int i = 0; i < children.getLength(); i++) {
@@ -199,9 +208,9 @@ public class VoDescriptionServer {
    }
    /**
     * Clears the cache - useful to call before doing a set of operations, forces
-    * metadata to be refreshed from disk
+    * metadata to be refreshed from disk.  Not threadsafe...
     */
-   public synchronized static void clearCache() {
+   public static void clearCache() {
       cache = null;
    }
    
@@ -238,7 +247,11 @@ public class VoDescriptionServer {
             //make plugin
             VoResourcePlugin plugin = createVoResourcePlugin(plugins[p].toString());
             //get resources from plugin
-            vod.append(plugin);
+            String resources = plugin.getVoResource();
+            
+            validateDescription(VODESCRIPTION_ELEMENT+resources+VODESCRIPTION_ELEMENT_END);
+            
+            vod.append(resources);
             
             if (plugin instanceof CeaResources) { ceaDone = true; }
          }
@@ -292,19 +305,6 @@ public class VoDescriptionServer {
       service.update(getVoDescription());
    }
 
-   /**
-    * Special case for common stuff - returns 'Queryable' implementation */
-   public static QueryableResourceReader getQueryable() throws IOException {
-      if (SimpleConfig.getProperty(QUERYABLE_PLUGIN, null) != null) {
-         return createQueryablePlugin(SimpleConfig.getProperty(QUERYABLE_PLUGIN));
-      }
-      //if none given, see if we can use the standard RDBMS implementation
-      if (getResource(RdbmsResourceGenerator.XSI_TYPE) != null) {
-         return new RdbmsResourceInterpreter();
-      }
-      throw new UnsupportedOperationException("No 'Queryable' definition found on this service; "+QUERYABLE_PLUGIN+" not set in config and no RDBMS Resource found");
-   }
-   
    /**
     * for quick tests etc
     */

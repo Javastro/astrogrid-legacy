@@ -1,5 +1,5 @@
 /*
- * $Id: SearchField.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: SearchField.java,v 1.2 2005/03/10 13:49:52 mch Exp $
  */
 package org.astrogrid.dataservice.metadata.queryable;
 
@@ -8,6 +8,10 @@ package org.astrogrid.dataservice.metadata.queryable;
  * its units, ucds, dimensions, related
  * error column, etc
  */
+import java.util.Hashtable;
+import java.util.Vector;
+import org.astrogrid.units.Units;
+
 public class SearchField {
    
    private String id;
@@ -17,176 +21,78 @@ public class SearchField {
    
    private String datatype;
    private Class javaType;
-   private String ucd;
-   private String ucdPlus;
    private String errorField;
-   private String units;
-   private String dimensions;
-   private String scale;
+   private Units units;
+
+   //look up of UCDs of different versions (ie 1, 1+)
+   private Hashtable ucds = new Hashtable();
+
+   //links to more info about the field
+   private Vector links = new Vector();
    
    public void setDescription(String description)
    {
       this.description = description;
    }
    
-   public String getDescription()
-   {
-      return description;
-   }
+   public String getDescription()      {        return description;   }
    
-   public void setGroup(String group)
-   {
-      this.groupName = group;
-   }
+   public void setGroup(String group)  {        this.groupName = group;   }
    
-   public String getGroup()
-   {
-      return groupName;
-   }
+   public String getGroup()            {        return groupName;   }
    
-   /**
-    * Sets JavaType
-    *
-    * @param    JavaType            a  Class
-    */
-   public void setJavaType(Class javaType) {
-      this.javaType = javaType;
-   }
+   public void setJavaType(Class javaType) {    this.javaType = javaType;   }
    
-   /**
-    * Returns JavaType
-    *
-    * @return    a  Class
-    */
-   public Class getJavaType() {
-      return javaType;
-   }
+   public Class getJavaType()          {        return javaType;   }
    
-   
-   /**
-    * Sets Scale
-    */
-   public void setScale(String scale) {
-      this.scale = scale;
-   }
-   
-   /**
-    * Returns Scale
-    */
-   public String getScale() {
-      return scale;
-   }
-   
-   /**
-    * Sets Dimensions
-    */
-   public void setDimensions(String dimensions) {
-      this.dimensions = dimensions;
-   }
-   
-   /**
-    * Returns Dimensions
-    */
-   public String getDimensions() {
-      return dimensions;
-   }
-   
-   /**
-    * Sets Units
-    */
    public void setUnits(String units) {
+      this.units = new Units(units);
+   }
+
+   public void setUnits(Units units) {
       this.units = units;
    }
    
-   /**
-    * Returns Units
-    */
-   public String getUnits() {
+   public Units getUnits() {
       return units;
    }
    
-   /**
-    * Sets ErrorColId
-    */
    public void setErrorField(String errorColId) {
       this.errorField = errorColId;
    }
    
-   /**
-    * Returns ErrorColId
-    */
    public String getErrorField() {
       return errorField;
    }
    
    /**
-    * Sets UcdPlus
+    * Sets Ucd with the given version
     */
-   public void setUcdPlus(String ucdPlus) {
-      this.ucdPlus = ucdPlus;
+   public void setUcd(String ucd, String version) {
+      ucds.put(version, ucd);
    }
    
    /**
-    * Returns UcdPlus
+    * Returns Ucd of the given version
     */
-   public String getUcdPlus() {
-      return ucdPlus;
+   public String getUcd(String version) {
+      return (String) ucds.get(version);
    }
    
-   /**
-    * Sets Ucd
-    */
-   public void setUcd(String ucd) {
-      this.ucd = ucd;
-   }
+   public void setDatatype(String datatype) {      this.datatype = datatype;   }
    
-   /**
-    * Returns Ucd
-    */
-   public String getUcd() {
-      return ucd;
-   }
+   public String getDatatype() {      return datatype;   }
    
-   /**
-    * Sets Datatype
-    */
-   public void setDatatype(String datatype) {
-      this.datatype = datatype;
-   }
+   public void setId(String id) {      this.id = id;   }
    
-   /**
-    * Returns Datatype
-    */
-   public String getDatatype() {
-      return datatype;
-   }
+   public String getId() {      return id;   }
    
-   /**
-    * Sets Id
-    */
-   public void setId(String id) {
-      this.id = id;
-   }
+   public void setName(String name) {      this.name = name;   }
    
-   /**
-    * Returns Id
-    */
-   public String getId() {
-      return id;
-   }
+   public String getName() {      return name;   }
    
-   /**
-    * Sets Name
-    */
-   public void setName(String name) {
-      this.name = name;
-   }
-   
-   /**
-    * Returns Name
-    */
-   public String getName() {
-      return name;
+   public String[] getLinks() {
+      return (String[]) links.toArray(new String[] {} );
    }
    
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: StdSqlWriter.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: StdSqlWriter.java,v 1.2 2005/03/10 13:49:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,7 +14,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.ConfigException;
-import org.astrogrid.dataservice.metadata.VoDescriptionServer;
+import org.astrogrid.dataservice.metadata.queryable.ConeConfigQueryableResource;
 import org.astrogrid.dataservice.metadata.queryable.QueryableResourceReader;
 import org.astrogrid.dataservice.metadata.queryable.SearchField;
 import org.astrogrid.dataservice.metadata.queryable.SearchGroup;
@@ -26,6 +26,7 @@ import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.query.sql.SqlParser;
 import org.astrogrid.sky.Angle;
+import org.astrogrid.units.Units;
 import org.xml.sax.SAXException;
 
 
@@ -235,7 +236,7 @@ public class StdSqlWriter implements QueryVisitor
          throw new UnsupportedOperationException("CIRCLE arguments must be LiteralAngles ("+cce+")");
       }
 
-      QueryableResourceReader queryable = VoDescriptionServer.getQueryable();
+      ConeConfigQueryableResource queryable = new ConeConfigQueryableResource();
 
       //go through spatial groups checking against scope looking to see if any of them have any spatial fields
       SearchGroup[] tables = queryable.getSpatialGroups();
@@ -329,7 +330,7 @@ public class StdSqlWriter implements QueryVisitor
     * Returns the right SQL to translate a conesearch column to radians
     */
    public String makeColumnRadiansId(SearchField col) {
-      String colUnits = col.getUnits();
+      Units colUnits = col.getUnits();
        String sqlColId = col.getGroup()+"."+col.getName();
       
       if (colUnits.equals("rad")) {
@@ -348,7 +349,7 @@ public class StdSqlWriter implements QueryVisitor
    
    /** Returns the given angle in the column's units.   Useful for making SQL a bit
     * simpler - convert the angles to the column units rather than vice versa with functions */
-   public String getAngleInColUnits(Angle givenAngle, String colUnits) {
+   public String getAngleInColUnits(Angle givenAngle, Units colUnits) {
       if (colUnits.equals("rad")) {
          return ""+givenAngle.asRadians();
       }
@@ -414,8 +415,11 @@ public class StdSqlWriter implements QueryVisitor
 
 /*
  $Log: StdSqlWriter.java,v $
- Revision 1.1  2005/02/17 18:37:35  mch
- *** empty log message ***
+ Revision 1.2  2005/03/10 13:49:52  mch
+ Updating metadata
+
+ Revision 1.1.1.1  2005/02/17 18:37:35  mch
+ Initial checkin
 
  Revision 1.1  2005/02/17 18:17:46  mch
  Moved SqlWriters back into server as they need metadata information

@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.3 2005/03/10 13:49:53 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,7 +25,7 @@ import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierManager;
 import org.astrogrid.dataservice.queriers.TableResults;
 import org.astrogrid.dataservice.queriers.sql.JdbcConnections;
-import org.astrogrid.dataservice.queriers.sql.RdbmsResourceGenerator;
+import org.astrogrid.dataservice.queriers.sql.RdbmsTableMetaDocGenerator;
 import org.astrogrid.dataservice.queriers.test.PrecannedResults;
 import org.astrogrid.dataservice.queriers.test.SampleStarsPlugin;
 import org.astrogrid.io.NullOutputStream;
@@ -91,10 +91,10 @@ public class SampleStarsPluginTest extends TestCase {
    /** Tests the generated metadata */
    public void testAutoMetadata() throws Exception {
       
-      RdbmsResourceGenerator generator = new RdbmsResourceGenerator();
+      RdbmsTableMetaDocGenerator generator = new RdbmsTableMetaDocGenerator();
       
       //generate metadata
-      String metadata = generator.getVoResources();
+      String metadata = generator.getMetaDoc();
       
       //debug
       System.out.println("AutoMetadata:");

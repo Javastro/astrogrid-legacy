@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableWriter.java,v 1.2 2005/03/01 15:58:33 mch Exp $
+ * $Id: VoTableWriter.java,v 1.3 2005/03/10 13:49:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -113,7 +113,7 @@ public class VoTableWriter implements TableWriter {
       
          printOut.print("<FIELD name='"+cols[i].getName()+"' ");
          if (cols[i].getId() != null) printOut.print("ID='"+cols[i].getId()+"' ");
-         if (cols[i].getUcd() != null) printOut.print(" ucd='"+cols[i].getUcd()+"' ");
+         if (cols[i].getUcd("1") != null) printOut.print(" ucd='"+cols[i].getUcd("1")+"' ");
          
          //type
          if (cols[i].getDatatype() != null) {
@@ -216,6 +216,9 @@ public class VoTableWriter implements TableWriter {
 
 /*
  $Log: VoTableWriter.java,v $
+ Revision 1.3  2005/03/10 13:49:52  mch
+ Updating metadata
+
  Revision 1.2  2005/03/01 15:58:33  mch
  Changed to use starlinks tamfits library
 

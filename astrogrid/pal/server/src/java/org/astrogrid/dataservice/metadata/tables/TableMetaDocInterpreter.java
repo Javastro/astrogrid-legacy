@@ -1,26 +1,26 @@
 /*
- * $Id: RdbmsResourceInterpreter.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.1 2005/03/10 13:49:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.dataservice.queriers.sql;
+package org.astrogrid.dataservice.metadata.tables;
 
 import java.io.IOException;
-import org.astrogrid.xml.DomHelper;
+import java.net.URL;
+import javax.xml.parsers.ParserConfigurationException;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.metadata.MetadataException;
-import org.astrogrid.dataservice.metadata.VoDescriptionServer;
-import org.astrogrid.dataservice.metadata.VoTypes;
-import org.astrogrid.dataservice.metadata.queryable.ConeConfigQueryableResource;
-import org.astrogrid.dataservice.metadata.queryable.QueryableResourceReader;
-import org.astrogrid.dataservice.metadata.queryable.SearchField;
-import org.astrogrid.dataservice.metadata.queryable.SearchGroup;
 import org.astrogrid.dataservice.metadata.tables.ColumnInfo;
 import org.astrogrid.dataservice.metadata.tables.TableInfo;
+import org.astrogrid.xml.DomHelper;
+import org.astrogrid.xml.XmlTypes;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
- * Interprets the RdbmsResource document.  Generally speaking we want to
+ * Provides a set of convenience routines for accessing the TableMetaDoc that
+ * defines tabular datasets.  Generally speaking we want to
  * return details from the document instead of the database itself for two reaons:
  * 1) The database may not be locally available (if it's proxied) or it might not
  * really exist - the service may be simulating one
@@ -28,32 +28,67 @@ import org.w3c.dom.Element;
  * and whihc are not, and the ones to be publihsed are in the resource document
  * 4) There are many extra bits of information that we may need to know (eg units)
  * that are not available from the db's natural metadata
- * @todo - at the moment just use the old conesearch config stuff, should look
- * at database description instead, perhaps some marker as to which cols are right
-
+ 
  */
 
-public class RdbmsResourceInterpreter extends ConeConfigQueryableResource implements QueryableResourceReader
+public class TableMetaDocInterpreter
 {
    
-   Element rdbmsRes;
+   Element metadoc;
+// Element[] catalogs; //root list of catalogs
    
-   public RdbmsResourceInterpreter() throws IOException {
-      rdbmsRes = VoDescriptionServer.getResource(RdbmsResourceGenerator.XSI_TYPE);
-      if (rdbmsRes == null) {
-         throw new MetadataException("No "+RdbmsResourceGenerator.XSI_TYPE+" on server");
-      }
+   public final static String TABLE_METADOC_KEY = "datacenter.metadoc.url";
+   
+   /** Construct to interpret the table metadoc given in the config file */
+   public TableMetaDocInterpreter() throws IOException {
+      this(SimpleConfig.getSingleton().getString(TABLE_METADOC_KEY));
    }
 
-   /** Returns the RDBMS element describing the table with the given ID/name.
+   
+   public TableMetaDocInterpreter(String url) throws IOException {
+      try {
+         metadoc = DomHelper.newDocument(new URL(url)).getDocumentElement();
+      }
+      catch (ParserConfigurationException e) {
+         throw new RuntimeException(e);
+      }
+      catch (SAXException e) {
+         throw new MetadataException("Server's TableMetaDoc at "+url+" is invalid XML: "+e);
+      }
+//    catalogs = DomHelper.getChildrenByTagName(metadoc, "Catalog");
+   }
+
+   /** Returns the element describing the catalog (group of tables, not necessarily
+    * a sky catalog) with the given ID/name.
     * Looks through all the elements so that it can check case insensitively.
     */
-   public Element getTableElement(String table) {
+   public Element getCatalogElement(String catalogName) {
+      //assertions
+      if (catalogName == null) { throw new IllegalArgumentException("No table specified"); }
+      
+      Element[] cats = DomHelper.getChildrenByTagName(metadoc, "Catalog");
+      for (int i = 0; i < cats.length; i++) {
+         String catId = cats[i].getAttribute("ID");
+         if ((catId == null) || (catId.length()==0)) { //no ID, use name
+            catId = DomHelper.getValueOf(cats[i], "Name");
+         }
+         if (catId.trim().toLowerCase().equals(catalogName.toLowerCase())) {
+            return cats[i];
+         }
+      }
+      return null;
+   }
+
+      
+   /** Returns the element describing the table with the given ID/name.
+    * Looks through all the elements so that it can check case insensitively.
+    */
+   public Element getTableElement(Element catalog, String table) {
 
       //assertions
       if (table == null) { throw new IllegalArgumentException("No table specified"); }
       
-      Element[] tables = DomHelper.getChildrenByTagName(rdbmsRes, "Table");
+      Element[] tables = DomHelper.getChildrenByTagName(catalog, "Table");
       for (int i = 0; i < tables.length; i++) {
          String tableId = tables[i].getAttribute("ID");
          if ((tableId == null) || (tableId.length()==0)) { //no ID, use name
@@ -67,17 +102,17 @@ public class RdbmsResourceInterpreter extends ConeConfigQueryableResource implem
    }
 
    /** Return table info on the column with the given ID/name */
-   public TableInfo getTable(String datasetId, String table) {
-      return makeTableInfo(getTableElement(table));
+   public TableInfo getTable(String catalog, String table) {
+      return makeTableInfo(getTableElement(getCatalogElement(catalog), table));
    }
 
    /** Return column info with the given name/id in the given table name/id */
-   public Element getColumnElement(String table, String column)  {
+   public Element getColumnElement(String catalog, String table, String column)  {
       
       //assertions
       if (column == null) { throw new IllegalArgumentException("No column specified"); }
 
-      Element tableRes = getTableElement(table);
+      Element tableRes = getTableElement(getCatalogElement(catalog), table);
 
       if (tableRes == null) {
          //no such table
@@ -102,38 +137,46 @@ public class RdbmsResourceInterpreter extends ConeConfigQueryableResource implem
    
    /** Return column info with the given name/id in the given table name/id */
    public ColumnInfo getColumn(String datasetId, String table, String column) throws MetadataException {
-      return makeColumnInfo(table, getColumnElement(table, column));
+      return makeColumnInfo(table, getColumnElement(datasetId, table, column));
    }
 
    /** Used by SQL results where only the column name is known. Returns the element
     * corresponding to the only matching column, if there are several or none
     * throws an exception*/
    public ColumnInfo guessColumn(String[] scope, String column) throws IOException {
-      Element[] tables = DomHelper.getChildrenByTagName(rdbmsRes, "Table");
+
       Element foundCol = null;
       String foundTable = null;
-      
-      //look through scope; if scope not given, use all tables
-      if (scope==null) {
-         scope = new String[tables.length];
-         for (int i = 0; i < scope.length; i++) {
-            scope[i] = DomHelper.getValueOf(DomHelper.getSingleChildByTagName(tables[i], "Name"));
-         }
-      }
-      
-      for (int t = 0; t < scope.length; t++) {
-         String tableName = scope[t];
 
-         Element[] cols = DomHelper.getChildrenByTagName(getTableElement(tableName), "Column");
-         for (int c = 0; c < cols.length; c++) {
-            String colName = DomHelper.getValueOf(DomHelper.getSingleChildByTagName(cols[c], "Name"));
-            if (colName.trim().toLowerCase().equals(column.toLowerCase())) {
-               if (foundCol == null) {
-                  foundCol = cols[c];
-                  foundTable = tableName;
-               }
-               else {
-                  throw new MetadataException("Column "+column+" found more than once");
+      //loop through all the catalogs
+      String[] cats = getCatalogs();
+      for (int d = 0; d < cats.length; d++) {
+      
+         Element catNode = getCatalogElement(cats[d]);
+         
+         //if scope is not given, use all tables
+         if (scope==null) {
+            Element[] tables = DomHelper.getChildrenByTagName(catNode, "Table");
+            scope = new String[tables.length];
+            for (int i = 0; i < scope.length; i++) {
+               scope[i] = DomHelper.getValueOf(DomHelper.getSingleChildByTagName(tables[i], "Name"));
+            }
+         }
+         
+         for (int t = 0; t < scope.length; t++) {
+            String tableName = scope[t];
+   
+            Element[] cols = DomHelper.getChildrenByTagName(getTableElement(catNode, tableName), "Column");
+            for (int c = 0; c < cols.length; c++) {
+               String colName = DomHelper.getValueOf(DomHelper.getSingleChildByTagName(cols[c], "Name"));
+               if (colName.trim().toLowerCase().equals(column.toLowerCase())) {
+                  if (foundCol == null) {
+                     foundCol = cols[c];
+                     foundTable = tableName;
+                  }
+                  else {
+                     throw new MetadataException("Column "+column+" found more than once");
+                  }
                }
             }
          }
@@ -146,18 +189,30 @@ public class RdbmsResourceInterpreter extends ConeConfigQueryableResource implem
       }
    }
 
-   public TableInfo[] getTables(String datasetId)  {
-      Element[] elements = DomHelper.getChildrenByTagName(rdbmsRes, "Table");
+   /** Returns the list of names of all the catalogs in the metadoc */
+   public String[] getCatalogs()  {
+      Element[] elements = DomHelper.getChildrenByTagName(metadoc, "Catalog");
+      String[] catNames = new String[elements.length];
+      for (int i = 0; i < elements.length; i++)
+      {
+         catNames[i] = DomHelper.getValueOf(elements[i], "Name");
+      }
+      return catNames;
+   }
+
+   public TableInfo[] getTables(String catalog)  {
+      Element[] elements = DomHelper.getChildrenByTagName(getCatalogElement(catalog), "Table");
       TableInfo[] infos = new TableInfo[elements.length];
       for (int i = 0; i < elements.length; i++)
       {
          infos[i] = makeTableInfo(elements[i]);
+         infos[i].setDataset(catalog);
       }
       return infos;
    }
    
-   public ColumnInfo[] getColumns(String datasetId, String table) throws MetadataException {
-      Element tableElement = getTableElement(table);
+   public ColumnInfo[] getColumns(String catalog, String table) throws MetadataException {
+      Element tableElement = getTableElement(getCatalogElement(catalog), table);
       Element[] elements = DomHelper.getChildrenByTagName(tableElement, "Column");
       ColumnInfo[] infos = new ColumnInfo[elements.length];
       for (int i = 0; i < elements.length; i++)
@@ -198,17 +253,20 @@ public class RdbmsResourceInterpreter extends ConeConfigQueryableResource implem
       info.setId(id);
       info.setDescription(nullIfEmpty(DomHelper.getValueOf(element, "Description")));
       info.setUnits(nullIfEmpty(DomHelper.getValueOf(element, "Units")));
-      info.setUcd(nullIfEmpty(DomHelper.getValueOf(element, "UCD")));
-      info.setUcdPlus(nullIfEmpty(DomHelper.getValueOf(element, "UcdPlus")));
       info.setErrorField(nullIfEmpty(DomHelper.getValueOf(element, "ErrorColumn")));
+
+      Element[] ucdNodes = DomHelper.getChildrenByTagName(element, "UCD");
+      for (int u = 0; u < ucdNodes.length; u++) {
+         info.setUcd(DomHelper.getValueOf(ucdNodes[u]), ucdNodes[u].getAttribute("version"));
+      }
       
-      if (DomHelper.getValueOf(element, "DataType") == null) {
+      if (DomHelper.getValueOf(element, "Datatype") == null) {
          throw new MetadataException("Column "+info.getName()+" has no DataType element in RdbmsResourec");
       }
       
-      info.setDatatype(nullIfEmpty(DomHelper.getValueOf(element, "DataType")));
+      info.setDatatype(nullIfEmpty(DomHelper.getValueOf(element, "Datatype")));
       if (info.getDatatype() != null) {
-         info.setJavaType(VoTypes.getJavaType(info.getDatatype()));
+         info.setJavaType(XmlTypes.getJavaType(info.getDatatype()));
       }
       return info;
    }
@@ -223,32 +281,8 @@ public class RdbmsResourceInterpreter extends ConeConfigQueryableResource implem
       return s;
    }
 
-   /** Returns field information about the field (ie column) with the given ID within the parent group (ie table) */
-   public SearchField getField(SearchGroup table, String colId) throws IOException  {
-      return getColumn(table.getGroup(), table.getId(), colId);
-   }
-   
-   /** Returns group information about the group (ie table) with the given ID within the parent
-    * group (ie dataset) */
-   public SearchGroup getGroup(SearchGroup table, String colId) throws IOException  {
-      return getTable(table.getId(), colId);
-   }
-   
-   /** Returns the list of groups (ie tables) in the given parent group (ie dataset) */
-   public SearchGroup[] getGroups(SearchGroup dataset) throws IOException   {
-      return getTables(dataset.getName());
-   }
-   
-   /** Returns the list of 'root' groups - ie tables from a rdbms resource document*/
-   public SearchGroup[] getRootGroups() throws IOException  {
-      return getTables(null);
-   }
-   
-   /** Returns the list of fields in the given parent group */
-   public SearchField[] getFields(SearchGroup parent) throws IOException   {
-      return getColumns(parent.getGroup(), parent.getId());
-   }
-   
+   /** Returns a mini 'catalog' that lists the tables and fields that define
+    * sky coordinates, for things like cone searches */
    
 
 }

@@ -6,7 +6,7 @@
        org.astrogrid.ucd.UcdDictionary,
        org.astrogrid.units.UnitDictionary,
        org.astrogrid.util.DomHelper,
-       org.astrogrid.dataservice.queriers.sql.RdbmsResourceGenerator,
+       org.astrogrid.dataservice.queriers.sql.RdbmsTableMetaDocGenerator,
        org.astrogrid.dataservice.metadata.*,
        org.astrogrid.dataservice.metadata.html.*,
        org.astrogrid.dataservice.service.*"
@@ -35,7 +35,7 @@
    //Document voDescription = VoDescriptionServer.getVoDescription();
 %>
 
-<%= new RdbmsHtmlRenderer().renderRdbmsResource() %>
+<%= new TableMetaDocRenderer().renderMetaDoc() %>
 
 <h1>Raw Metadata</h1>
 

@@ -9,8 +9,8 @@
    contentType="text/xml"
 %><%
    try {
-      RdbmsResourceGenerator  generator = new RdbmsResourceGenerator();
-      generator.writeVoResources(out);
+      RdbmsTableMetaDocGenerator  generator = new RdbmsTableMetaDocGenerator();
+      generator.writeTableMetaDoc(out);
    }
    catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th+" getting rdbms metadata",th);
