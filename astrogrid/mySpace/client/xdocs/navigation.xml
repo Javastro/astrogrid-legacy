@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AstroGrid">
+
+  <title>AstroGrid Project</title>
+
+  <body>
+     <menu name="Download">
+       <item name="Snapshot" href="http://www.astrogrid.org/maven/org.astrogrid/jars/astrogrid-store-client-SNAPSHOT.jar"/>
+	   <item name="Previous" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-store-client*.jar"/>
+    </menu>
+    <links>
+       <item name="AstroGrid"       href="http://www.astrogrid.org"/>
+       <item name="Projects"        href="../../../index.html"/>
+       <item name="MySpace"  href="../../index.html"/>
+    </links>
+  </body>
+</project>

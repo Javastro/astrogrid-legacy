@@ -9,10 +9,10 @@
 		<section name="Introduction">
 			<p> This subproject creates a single jar file which provides a delegate
 			    to access Store-spaces such as MySpace.  All access should be through the
-			    VoSpaceClient class.
+			    VoSpaceClient class (for registered mySpaces using IVORNS) or StoreDelegateFactory (for access via AGSLs).
 			    </p> 
 			 <p>
-			     For more detailed information, see the javadocs for the <a href="apidocs/index.html">org.astrogrid.mySpace.store</a> package.
+			     For more detailed information, see the javadocs for the <a href="apidocs/org/astrogrid/store/package-summary.html">org.astrogrid.mySpace.store</a> package.
 			 </p>
 		</section>
 	</body>
