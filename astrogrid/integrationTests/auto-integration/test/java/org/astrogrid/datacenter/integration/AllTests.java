@@ -1,4 +1,4 @@
-/* $Id: AllTests.java,v 1.1 2004/04/16 16:53:28 mch Exp $
+/* $Id: AllTests.java,v 1.2 2004/04/21 13:41:59 nw Exp $
  * Created on Apr 15, 2004 by jdt@roe.ac.uk
  * The auto-integration project
  * Copyright (c) Astrigrid 2004.  All rights reserved.
@@ -19,7 +19,7 @@ public class AllTests {
         junit.textui.TestRunner.run(AllTests.class);
     }
     public static Test suite() {
-        TestSuite suite = new TestSuite("Store");
+        TestSuite suite = new TestSuite("Datacenter");
         //$JUnit-BEGIN$
         suite.addTest(ConeTest.suite());
         suite.addTest(CeaTest.suite());
@@ -32,6 +32,9 @@ public class AllTests {
 }
 /*
  *  $Log: AllTests.java,v $
+ *  Revision 1.2  2004/04/21 13:41:59  nw
+ *  minor tweaks
+ *
  *  Revision 1.1  2004/04/16 16:53:28  mch
  *  AllTests.java
  *

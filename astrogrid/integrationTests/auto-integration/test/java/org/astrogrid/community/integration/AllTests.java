@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.1 2004/04/21 10:47:16 nw Exp $
+/*$Id: AllTests.java,v 1.2 2004/04/21 13:41:59 nw Exp $
  * Created on 21-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ public class AllTests {
         junit.textui.TestRunner.run(AllTests.class);
     }
     public static Test suite() {
-        TestSuite suite = new TestSuite("Test for org.astrogrid.community.integration");
+        TestSuite suite = new TestSuite("Community");
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(CommunityAccountResolverTest.class));
         //$JUnit-END$
@@ -33,6 +33,9 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.2  2004/04/21 13:41:59  nw
+minor tweaks
+
 Revision 1.1  2004/04/21 10:47:16  nw
 added test suite
  
