@@ -34,7 +34,7 @@ echo "Going to deploy docs for this release $TAG to $DOCLOCATION - hit ctrl-c if
 
 # Fairly unvariable variables
 BUILDHOME=$CHECKOUTHOME/astrogrid
-LOGFILE=releasedocs.log
+LOGFILE=/tmp/releasedocs.log
 DATE=`date`
 ADMIN_EMAIL="jdt@roe.ac.uk clq2@star.le.ac.uk"
 
