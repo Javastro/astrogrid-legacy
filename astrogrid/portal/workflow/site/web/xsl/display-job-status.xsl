@@ -2,9 +2,6 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
     <xsl:param name="image_path">/astrogrid-portal/mount/workflow/</xsl:param>  <!-- path to images -->
-    <xsl:param name="activity_key" />
-    <xsl:param name="display_parameter_values" />
-    <xsl:param name="display_tool_values" />
     
     <xsl:template match="workflow">
     <ag-div>        
@@ -58,6 +55,7 @@
             </tr>
         </table>
     </ag-div>
+    <script type="text/javascript" src="/astrogrid-portal/mount/workflow/wz_tooltip.js"/>
     </xsl:template>
 
     <xsl:template match="*"> 
@@ -110,11 +108,16 @@
                             <xsl:attribute name="alt">step</xsl:attribute>
                         </xsl:element>                       
                         <td colspan="30" valign="middle" style="color: blue;">
-                            <font size="-1">Name: <b><xsl:value-of select="@step-name"/></b> 
-                                            Staus: <b><xsl:value-of select="@step-status"/></b> 
-                                            Start time: <b><xsl:value-of select="@step-start-time"/></b>
-                                            Join: <b><xsl:value-of select="@step-join-condition"/></b>
-                            </font>
+                            <font size="-1">
+                                Name: <b><xsl:value-of select="@step-name"/> </b>Staus: <b><xsl:value-of select="@step-status"/> </b>
+                                <xsl:element name="a">
+                                    <xsl:attribute name="style">padding-left: 10;</xsl:attribute>
+                                    <xsl:attribute name="href">javascript:void(0);</xsl:attribute>
+                                    <xsl:attribute name="onMouseOver">this.T_TITLE='Step: <xsl:value-of select="@step-name" /> &lt;br/&gt; Status: <xsl:value-of select="@step-status" />'; this.T_WIDTH=130; this.T_DELAY=500; return escape('Desc: <xsl:value-of select="@step-description"/> &lt;br/&gt; Start: <xsl:value-of select="@step-start-time"/> &lt;br/&gt; Finish: <xsl:value-of select="@step-finish-time"/> &lt;br/&gt; Join: <xsl:value-of select="@step-join-condition"/> &lt;br/&gt; Message: <xsl:value-of select="@step-message"/> ');</xsl:attribute>
+                                </xsl:element>
+                                <small><b>(more)</b></small>
+                                </font>
+                            <xsl:element name="/a"></xsl:element>                                                       
                         </td>
                     </xsl:when>                                                                            
                 </xsl:choose>
@@ -196,6 +199,7 @@
         </xsl:if>
     </xsl:template>
 
+
 <!-- 
     <xsl:include href="display-tool.xsl"/>
     <xsl:include href="display-parameters.xsl"/>
@@ -210,6 +214,6 @@
     <xsl:template match="text()" priority="-1">
         <xsl:value-of select="."/>
     </xsl:template>
-     
+    
     
 </xsl:stylesheet>
