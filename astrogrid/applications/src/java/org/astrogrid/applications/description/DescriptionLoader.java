@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionLoader.java,v 1.11 2004/04/01 09:53:02 pah Exp $
+ * $Id: DescriptionLoader.java,v 1.12 2004/04/02 17:45:42 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -39,11 +39,9 @@ import org.astrogrid.applications.manager.AbstractApplicationController;
 public class DescriptionLoader {
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(DescriptionLoader.class);
-   private AbstractApplicationController appController;
 
    private Digester digester;
-   public DescriptionLoader(AbstractApplicationController ac) throws ApplicationDescriptionNotLoadedException {
-      appController = ac;
+   public DescriptionLoader() throws ApplicationDescriptionNotLoadedException {
       try {
          createDigester();
       }
@@ -51,7 +49,7 @@ public class DescriptionLoader {
         throw new ApplicationDescriptionNotLoadedException("cannot create digester", e);
       }
    }
-   public void loadDescription(URL configFile) throws ApplicationDescriptionNotLoadedException {
+   public ApplicationDescriptions loadDescription(URL configFile) throws ApplicationDescriptionNotLoadedException {
       logger.info(
          "loading application descriptions from "
             + configFile.toString());
@@ -69,7 +67,7 @@ public class DescriptionLoader {
       catch (Exception e) {
          throw new ApplicationDescriptionNotLoadedException("failed to load descriptions from "+configFile.toString(),e);
       }
-      appController.setApplicationDescriptions(descriptions);
+      return descriptions;
       
    }
    /**

@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationController.java,v 1.18 2004/03/30 22:45:09 pah Exp $
+ * $Id: AbstractApplicationController.java,v 1.19 2004/04/02 17:45:42 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -90,13 +90,13 @@ public abstract class AbstractApplicationController
       URL applicationConfigFile;
       try {
          // load the application descriptions
-         DescriptionLoader dl = new DescriptionLoader(this);
+         DescriptionLoader dl = new DescriptionLoader();
          applicationConfigFile = config.getApplicationConfigFile();
-         dl.loadDescription(applicationConfigFile);
+         applicationDescriptions = dl.loadDescription(applicationConfigFile);
          status.addMessage("loaded application descriptions");
          //now the simple descriptions (really just not parsing the input XML as much - this is a bit of a cheat, perhaps there should be a serializer for the ApplicationDescription objects.
-         SimpleDescriptionLoader sdl = new SimpleDescriptionLoader(this);
-         sdl.loadDescription(applicationConfigFile);
+         SimpleDescriptionLoader sdl = new SimpleDescriptionLoader();
+         sdl.loadDescription(this,applicationConfigFile);
          status.addMessage("loaded simple descriptions");
 
       }

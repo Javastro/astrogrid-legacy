@@ -1,5 +1,5 @@
 /*
- * $Id: AllTests.java,v 1.3 2004/03/23 19:46:04 pah Exp $
+ * $Id: AllTests.java,v 1.4 2004/04/02 17:45:42 pah Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -32,7 +32,6 @@ public class AllTests {
       //$JUnit-BEGIN$
       suite.addTest(new TestSuite(WFOApplicationConfigLoadTest.class));
       suite.addTest(new TestSuite(DescriptionLoaderTest.class));
-      suite.addTest(new TestSuite(SimpleDescriptionLoaderTest.class));
       //$JUnit-END$
       return suite;
    }

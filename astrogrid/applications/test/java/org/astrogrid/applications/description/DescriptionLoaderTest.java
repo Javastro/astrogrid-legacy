@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionLoaderTest.java,v 1.13 2004/04/01 13:54:54 pah Exp $
+ * $Id: DescriptionLoaderTest.java,v 1.14 2004/04/02 17:45:42 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -71,16 +71,16 @@ public class DescriptionLoaderTest extends DescriptionBaseTestCase {
    }
 
    final public void testDescriptionLoader() throws ApplicationDescriptionNotLoadedException {
-      dl = new DescriptionLoader(ac);
+      dl = new DescriptionLoader();
       assertNotNull("cannot create the DescriptionLoader", dl);
    }
 
    final public void testLoadDescription() throws ApplicationDescriptionNotLoadedException {
-      dl.loadDescription(inputFile);
+       ApplicationDescriptions desc = dl.loadDescription(inputFile);
 
       try {
          ApplicationDescription ad =
-            ac.getApplicationDescriptions().getDescription(TESTAPPNAME);
+            desc.getDescription(TESTAPPNAME);
             assertEquals("instance class",ad.getInstanceClass(),null);
             
             assertTrue("execution path", ad.getExecutionPath().endsWith( "testapp.sh")); //this is dependent on the actual location

@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleDescriptionLoader.java,v 1.5 2004/04/01 09:53:02 pah Exp $
+ * $Id: SimpleDescriptionLoader.java,v 1.6 2004/04/02 17:45:42 pah Exp $
  * 
  * Created on 04-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -58,13 +58,10 @@ public class SimpleDescriptionLoader {
        }
 
    }
-   private AbstractApplicationController appController;
-
    private Digester digester;
    
-   public SimpleDescriptionLoader(AbstractApplicationController ac)
+   public SimpleDescriptionLoader()
    {
-      appController=ac;
       try {
          createDigester();
       }
@@ -88,7 +85,7 @@ public class SimpleDescriptionLoader {
 
    }
    
-   public boolean loadDescription(URL configFile) {
+   public boolean loadDescription(AbstractApplicationController appController, URL configFile) {
       boolean success = false;
       try {
          digester.clear();
