@@ -19,11 +19,18 @@
             </tr>
             <tr>
               <td>
-                <textarea name="script_text" cols="45" rows="4">...</textarea>
-                <input type="submit" name="action" value="insert-script-code" />
+                Description: <input type="text" size="60" name="script_description"/>
+                <input type="submit" name="action" value="insert-script-description" />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <textarea name="script_body" cols="45" rows="4">...</textarea>
+                <input type="submit" name="action" value="insert-script-body" />
               </td>
             </tr>
           </table>
+          <input type="hidden" name="activity_key"/>
         </form>
       </div>                                                                                                  
     </xsl:template>
