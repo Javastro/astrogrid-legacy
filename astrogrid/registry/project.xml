@@ -57,11 +57,6 @@
     </dependency>
 
     <dependency>
-      <id>clover</id>
-      <version>1.2</version>
-    </dependency>
-
-    <dependency>
       <id>axis</id>
       <version>1_1RC2</version>
     </dependency>
@@ -100,7 +95,7 @@
 
     <dependency>
       <id>commons-discovery</id>
-      <version>SNAPSHOT</version>
+      <version>0.1</version>
     </dependency>
 
     <dependency>
@@ -157,36 +152,11 @@
   <build>
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-    
-    <unitTest>
-      <resources>
-        <resource>
-          <directory>${basedir}/test/java</directory>
 
-          <includes>
-            <include>org/astrogrid/registry/messaging/**/*Test.java</include>
-          </includes>
-
-          <excludes>
-            <exclude>org/astrogrid/registry/xquery/*.java</exclude>
-          </excludes>
-        </resource>
-
-        <resource>
-          <directory>${basedir}/src/java</directory>
-
-          <includes>
-            <include>**/*.java</include>
-          </includes>
-        </resource>
-      </resources>
-    </unitTest>
+    <unitTest/>
   </build>
   
   <reports>
-    <report>
-      maven-clover-plugin
-    </report>
     <report>
       maven-changelog-plugin
     </report>
@@ -195,6 +165,9 @@
     </report>
     <report>
       maven-checkstyle-plugin
+    </report>
+    <report>
+      maven-clover-plugin
     </report>
     <report>
       maven-developer-activity-plugin
@@ -225,6 +198,9 @@
     </report>
     <report>
       maven-tasklist-plugin
+    </report>
+    <report>
+      maven-simian-plugin
     </report>
   </reports>
 </project>
