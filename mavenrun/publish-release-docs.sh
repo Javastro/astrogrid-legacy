@@ -55,7 +55,7 @@ cvs-checkout-clean.sh astrogrid/maven.xml $TAG  >> $LOGFILE
 
 cd $BUILDHOME
 
-if maven $MY_MAVEN_OPTS -Dastrogrid.docs.root=$DOCLOCATION astrogrid-deploy-site >> $LOGFILE 
+if maven $MY_MAVEN_OPTS -Dastrogrid.docs.root=$DOCLOCATION astrogrid-deploy-site >> $LOGFILE 2>&1
 then
    echo "OK" >> $LOGFILE
 else
