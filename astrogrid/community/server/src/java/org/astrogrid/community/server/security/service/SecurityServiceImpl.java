@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/security/service/Attic/SecurityServiceImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/04/04 15:51:47 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/15 02:33:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceImpl.java,v $
+ *   Revision 1.10  2004/04/15 02:33:49  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.9  2004/04/04 15:51:47  dave
  *   Merged development branch, dave-dev-200404011434, into HEAD
  *
@@ -199,9 +202,9 @@ public class SecurityServiceImpl
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("SecurityServiceImpl.createToken()") ;
-		//
-		// Create a new UID.
-		UID uid = new UID() ;
+        //
+        // Create a new UID.
+        UID uid = new UID() ;
         //
         // Create an Ivorn for the token.
         Ivorn ivorn = CommunityAccountIvornFactory.createLocal(

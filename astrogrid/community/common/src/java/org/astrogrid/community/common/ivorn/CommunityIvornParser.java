@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/ivorn/CommunityIvornParser.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/04/15 02:27:46 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/15 02:33:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityIvornParser.java,v $
+ *   Revision 1.8  2004/04/15 02:33:49  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.7  2004/04/15 02:27:46  dave
  *   Merged development branch, dave-dev-200404071355, into HEAD
  *
@@ -685,31 +688,31 @@ public class CommunityIvornParser
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("CommunityIvornParser.getLocalIdent()") ;
-		try {
-	        //
-	        // Get the local identifier from our configuration.
-	        String local = (String) config.getProperty(LOCAL_COMMUNITY_PROPERTY) ;
-	        if (DEBUG_FLAG) System.out.println("  Local : " + local) ;
-	        //
-	        // If we found the local ident.
-	        if (null != local)
-	            {
-	            return local ;
-	            }
-	        //
-	        // If we didn't find the local ident.
-	        else {
-	            throw new CommunityServiceException(
-	                "Local Community identifier not configured"
-	                ) ;
-	            }
+        try {
+            //
+            // Get the local identifier from our configuration.
+            String local = (String) config.getProperty(LOCAL_COMMUNITY_PROPERTY) ;
+            if (DEBUG_FLAG) System.out.println("  Local : " + local) ;
+            //
+            // If we found the local ident.
+            if (null != local)
+                {
+                return local ;
+                }
+            //
+            // If we didn't find the local ident.
+            else {
+                throw new CommunityServiceException(
+                    "Local Community identifier not configured"
+                    ) ;
+                }
             }
-		catch (PropertyNotFoundException ouch)
-			{
+        catch (PropertyNotFoundException ouch)
+            {
             throw new CommunityServiceException(
                 "Local Community identifier not configured"
                 ) ;
-			}
+            }
         }
 
     /**

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/ant/Attic/CommunityAccountSpaceResolverTask.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 04:44:01 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/15 02:33:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountSpaceResolverTask.java,v $
+ *   Revision 1.3  2004/04/15 02:33:49  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/03/30 04:44:01  dave
  *   Merged development branch, dave-dev-200403300258, into HEAD
  *
@@ -142,50 +145,50 @@ public class CommunityAccountSpaceResolverTask
         //
         // Try login to the account.
         try {
-			//
-			// Create our resolver.
+            //
+            // Create our resolver.
             CommunityAccountSpaceResolver resolver ;
-			//
-			// Use our registry endpoint, if we have one.
-			if (null != this.getRegistry())
-				{
-	            resolver = new CommunityAccountSpaceResolver(
-	            	new URL(
-	            		this.getRegistry()
-	            		)
-	            	) ;
-				}
-			//
-			// Otherwise, just create a default resolver.
-			else {
-	            resolver = new CommunityAccountSpaceResolver() ;
-				}
+            //
+            // Use our registry endpoint, if we have one.
+            if (null != this.getRegistry())
+                {
+                resolver = new CommunityAccountSpaceResolver(
+                    new URL(
+                        this.getRegistry()
+                        )
+                    ) ;
+                }
+            //
+            // Otherwise, just create a default resolver.
+            else {
+                resolver = new CommunityAccountSpaceResolver() ;
+                }
             //
             // Ask our resolver to get the Account home.
             Ivorn ivorn = resolver.resolve(
-				new Ivorn(
-					this.account
-					)
+                new Ivorn(
+                    this.account
+                    )
                 ) ;
-	        if (DEBUG_FLAG) System.out.println("----");
-	        if (DEBUG_FLAG) System.out.println("Home : " + ivorn);
-	        if (DEBUG_FLAG) System.out.println("----");
-	        //
-	        // If we have a project
-	        if (null != this.getProject())
-	            {
-				//
-				// If we have a property name.
-				if (null != this.property)
-					{
-		            //
-		            // Set our project property.
-		            this.getProject().setProperty(
-		                this.property,
-		                ivorn.toString()
-		                ) ;
-					}
-	            }
+            if (DEBUG_FLAG) System.out.println("----");
+            if (DEBUG_FLAG) System.out.println("Home : " + ivorn);
+            if (DEBUG_FLAG) System.out.println("----");
+            //
+            // If we have a project
+            if (null != this.getProject())
+                {
+                //
+                // If we have a property name.
+                if (null != this.property)
+                    {
+                    //
+                    // Set our project property.
+                    this.getProject().setProperty(
+                        this.property,
+                        ivorn.toString()
+                        ) ;
+                    }
+                }
             }
         catch (Exception ouch)
             {

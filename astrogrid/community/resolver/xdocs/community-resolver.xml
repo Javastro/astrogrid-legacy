@@ -6,10 +6,10 @@
     <body>
         <section name="Community resolver">
             <p>
-				All of the Community service resolvers use AstroGrid IVO identifiers to resolve Community services.
-				<br/>
-				The resolvers use the authority ID of an IVO identifier to resolve the Community service.
-				The authority ID is the first part of an IVO identifier, upto the first '/' character of the path.
+                All of the Community service resolvers use AstroGrid IVO identifiers to resolve Community services.
+                <br/>
+                The resolvers use the authority ID of an IVO identifier to resolve the Community service.
+                The authority ID is the first part of an IVO identifier, upto the first '/' character of the path.
                 <ul>
                     <li><b>ivo://org.astrogrid.test.community</b></li>
                     <li><b>ivo://org.astrogrid.test.community</b>/account</li>
@@ -19,10 +19,10 @@
             </p>
             <subsection name="Endpoint resolver">
                 <p>
-					The core resolver is the CommunityEndpointResolver.
-					<br/>
-					This takes a Community identifier, and a Java interface class for the service type,
-					and calls the AstroGrid Registry to resolve this into a service endpoint.
+                    The core resolver is the CommunityEndpointResolver.
+                    <br/>
+                    This takes a Community identifier, and a Java interface class for the service type,
+                    and calls the AstroGrid Registry to resolve this into a service endpoint.
                 </p>
             </subsection>
         </section>

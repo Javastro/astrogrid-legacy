@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/service/SecurityServiceMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/04/04 15:51:47 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/15 02:33:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceMock.java,v $
+ *   Revision 1.9  2004/04/15 02:33:49  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.8  2004/04/04 15:51:47  dave
  *   Merged development branch, dave-dev-200404011434, into HEAD
  *
@@ -187,9 +190,9 @@ public class SecurityServiceMock
     protected SecurityToken createToken(CommunityIvornParser account)
         throws CommunityIdentifierException
         {
-		//
-		// Create a new UID.
-		UID uid = new UID() ;
+        //
+        // Create a new UID.
+        UID uid = new UID() ;
         //
         // Create an Ivorn for the token.
         Ivorn ivorn = CommunityAccountIvornFactory.createMock(

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/ant/Attic/CommunityPasswordResolverTask.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 04:44:01 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/15 02:33:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityPasswordResolverTask.java,v $
+ *   Revision 1.3  2004/04/15 02:33:49  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/03/30 04:44:01  dave
  *   Merged development branch, dave-dev-200403300258, into HEAD
  *
@@ -139,24 +142,24 @@ public class CommunityPasswordResolverTask
         //
         // Try login to the account.
         try {
-			//
-			// Create our resolver.
+            //
+            // Create our resolver.
             CommunityPasswordResolver resolver ;
-			//
-			// Use our registry endpoint, if we have one.
-			if (null != this.getRegistry())
-				{
-	            resolver = new CommunityPasswordResolver(
-	            	new URL(
-	            		this.getRegistry()
-	            		)
-	            	) ;
-				}
-			//
-			// Otherwise, just create a default resolver.
-			else {
-	            resolver = new CommunityPasswordResolver() ;
-				}
+            //
+            // Use our registry endpoint, if we have one.
+            if (null != this.getRegistry())
+                {
+                resolver = new CommunityPasswordResolver(
+                    new URL(
+                        this.getRegistry()
+                        )
+                    ) ;
+                }
+            //
+            // Otherwise, just create a default resolver.
+            else {
+                resolver = new CommunityPasswordResolver() ;
+                }
             //
             // Ask our resolver to check the password
             this.setToken(

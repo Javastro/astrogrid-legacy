@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/ant/Attic/CommunityResolverTask.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/04/01 07:09:39 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/15 02:33:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityResolverTask.java,v $
+ *   Revision 1.5  2004/04/15 02:33:49  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.4  2004/04/01 07:09:39  dave
  *   Merged development branch, dave-dev-200403300547, into HEAD
  *
@@ -149,29 +152,29 @@ public class CommunityResolverTask
      */
     protected static Config config = SimpleConfig.getSingleton() ;
 
-	/**
-	 * Our registry endpoint.
-	 *
-	 */
-	private String registry ;
+    /**
+     * Our registry endpoint.
+     *
+     */
+    private String registry ;
 
-	/**
-	 * Access to our registry endpoint.
-	 *
-	 */
-	public void setRegistry(String value)
-		{
-		this.registry = value ;
-		}
+    /**
+     * Access to our registry endpoint.
+     *
+     */
+    public void setRegistry(String value)
+        {
+        this.registry = value ;
+        }
 
-	/**
-	 * Access to our registry endpoint.
-	 *
-	 */
-	public String getRegistry()
-		{
-		return this.registry ;
-		}
+    /**
+     * Access to our registry endpoint.
+     *
+     */
+    public String getRegistry()
+        {
+        return this.registry ;
+        }
 
     /**
      * Our properties location.
@@ -210,47 +213,47 @@ public class CommunityResolverTask
         // If our properties are set.
         if (null != this.properties)
             {
-	        //
-	        // Try parse our properties.
-	        try {
-	            if (DEBUG_FLAG) System.out.println("  Properties  : " + this.properties);
-	            //
-	            // Load our properties file.
-	            Properties map = new Properties() ;
-	            map.load(
-	                new FileInputStream(
-	                    this.properties
-	                    )
-	                ) ;
-	            //
-	            // Add the properties to our config.
-	            Enumeration enum = map.keys() ;
-	            while (enum.hasMoreElements())
-	                {
-	                if (DEBUG_FLAG) System.out.println("----");
-	                //
-	                // Get the property name and value.
-	                String name = (String)enum.nextElement() ;
-	                if (DEBUG_FLAG) System.out.println("  Name  : " + name);
-	                String value = map.getProperty(name) ;
-	                if (DEBUG_FLAG) System.out.println("  Value : " + value);
-	                //
-	                // Process the property.
-	                if (null != this.getProject())
-	                    {
-	                    value = this.getProject().replaceProperties(value) ;
-	                    }
-	                if (DEBUG_FLAG) System.out.println("  Value : " + value);
-	                //
-	                // Add the property to our config.
-	                config.setProperty(name, value) ;
-	                if (DEBUG_FLAG) System.out.println("----");
-	                }
+            //
+            // Try parse our properties.
+            try {
+                if (DEBUG_FLAG) System.out.println("  Properties  : " + this.properties);
+                //
+                // Load our properties file.
+                Properties map = new Properties() ;
+                map.load(
+                    new FileInputStream(
+                        this.properties
+                        )
+                    ) ;
+                //
+                // Add the properties to our config.
+                Enumeration enum = map.keys() ;
+                while (enum.hasMoreElements())
+                    {
+                    if (DEBUG_FLAG) System.out.println("----");
+                    //
+                    // Get the property name and value.
+                    String name = (String)enum.nextElement() ;
+                    if (DEBUG_FLAG) System.out.println("  Name  : " + name);
+                    String value = map.getProperty(name) ;
+                    if (DEBUG_FLAG) System.out.println("  Value : " + value);
+                    //
+                    // Process the property.
+                    if (null != this.getProject())
+                        {
+                        value = this.getProject().replaceProperties(value) ;
+                        }
+                    if (DEBUG_FLAG) System.out.println("  Value : " + value);
+                    //
+                    // Add the property to our config.
+                    config.setProperty(name, value) ;
+                    if (DEBUG_FLAG) System.out.println("----");
+                    }
                 }
-	        catch (Exception ouch)
-	            {
-	            throw new BuildException(ouch) ;
-	            }
+            catch (Exception ouch)
+                {
+                throw new BuildException(ouch) ;
+                }
             }
         }
 
@@ -267,7 +270,7 @@ public class CommunityResolverTask
         if (DEBUG_FLAG) System.out.println("  Properties : " + this.properties);
         //
         // Try loading our config properties.
-		this.configure() ;
+        this.configure() ;
         }
     }
 

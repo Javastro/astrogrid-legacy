@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/AccountManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/04/15 02:27:46 $</cvs:date>
- * <cvs:version>$Revision: 1.12 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/15 02:33:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.13 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.13  2004/04/15 02:33:49  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.12  2004/04/15 02:27:46  dave
  *   Merged development branch, dave-dev-200404071355, into HEAD
  *
@@ -238,20 +241,20 @@ account.setIdent(string) ;
 // Something about invalid primary key.
 //                        database.create(guestmember);
 
-				//
-				// Try creating the home space for the Account.
-				try {
-					this.allocateSpace(account) ;
-					}
-				catch (Exception ouch)
-					{
-				    //
-				    // Log the exception.
-				    logException(
-				        ouch,
-				        "AccountManagerImpl.addAccount.allocateSpace()"
-				        ) ;
-					}
+                //
+                // Try creating the home space for the Account.
+                try {
+                    this.allocateSpace(account) ;
+                    }
+                catch (Exception ouch)
+                    {
+                    //
+                    // Log the exception.
+                    logException(
+                        ouch,
+                        "AccountManagerImpl.addAccount.allocateSpace()"
+                        ) ;
+                    }
                 //
                 // Commit the transaction.
                 database.commit() ;
@@ -297,9 +300,9 @@ account.setIdent(string) ;
                 {
                 closeConnection(database) ;
                 }
-			//
-			// Return the new Account details.
-			return account ;
+            //
+            // Return the new Account details.
+            return account ;
             }
         //
         // If the ident is not local.
@@ -423,8 +426,8 @@ String string = ident.getAccountIdent() ;
                 {
                 closeConnection(database) ;
                 }
-			//
-			// Return the Account details.
+            //
+            // Return the Account details.
             return account ;
             }
         //
@@ -540,8 +543,8 @@ String string = ident.getAccountIdent() ;
                 {
                 closeConnection(database) ;
                 }
-			//
-			// Return the Account details.
+            //
+            // Return the Account details.
             return account ;
             }
         //
@@ -758,9 +761,9 @@ String string = ident.getAccountIdent() ;
                 {
                 closeConnection(database) ;
                 }
-			//
-			// Return the original Account details.
-	        return account ;
+            //
+            // Return the original Account details.
+            return account ;
             }
         //
         // If the ident is not local.
@@ -846,20 +849,20 @@ String string = ident.getAccountIdent() ;
         return array ;
         }
 
-	/**
-	 * Allocate VoSpace space for an Account.
-	 * @param account The AccountData to update.
+    /**
+     * Allocate VoSpace space for an Account.
+     * @param account The AccountData to update.
      * @throws CommunityIdentifierException If the identifier is not valid.
      * @throws CommunityServiceException If the service is unable to allocate the space.
-	 *
-	 */
-	protected void allocateSpace(AccountData account)
+     *
+     */
+    protected void allocateSpace(AccountData account)
         throws CommunityServiceException, CommunityIdentifierException
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AccountManagerImpl.allocateSpace()") ;
-		if (DEBUG_FLAG) System.out.println("  Account : " + ((null != account) ? account.getIdent() : null)) ;
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("AccountManagerImpl.allocateSpace()") ;
+        if (DEBUG_FLAG) System.out.println("  Account : " + ((null != account) ? account.getIdent() : null)) ;
         //
         // Check for null account.
         if (null == account)
@@ -876,74 +879,74 @@ String string = ident.getAccountIdent() ;
                 "Null account identifier"
                 ) ;
             }
-		//
-		// If the Account home space is not set.
-		if (null == account.getHomeSpace())
-			{
-			//
-			// If we have a default home space.
-			Ivorn service = this.getDefaultVoSpace() ;
-			if (null != service)
-				{
-				//
-				// Try calling the VoSpace client to create the space.
-				try {
-					//
-					// Create a new VoSpaceClient.
-					VoSpaceClient resolver = new VoSpaceClient(null) ;
-					//
-					// Allocate the new home space.
-					Ivorn ivorn = resolver.createUser(
-						service,
-						account.getIdent()
-						) ;
-					//
-					// Update the Account data
-					account.setHomeSpace(
-						ivorn.toString()
-						) ;
-					}
-				catch (Throwable ouch)
-					{
-		            throw new CommunityServiceException(
-		                "Unable to create VoSpace",
-						ouch
-		                ) ;
-					}
-				}
-			}
-		}
+        //
+        // If the Account home space is not set.
+        if (null == account.getHomeSpace())
+            {
+            //
+            // If we have a default home space.
+            Ivorn service = this.getDefaultVoSpace() ;
+            if (null != service)
+                {
+                //
+                // Try calling the VoSpace client to create the space.
+                try {
+                    //
+                    // Create a new VoSpaceClient.
+                    VoSpaceClient resolver = new VoSpaceClient(null) ;
+                    //
+                    // Allocate the new home space.
+                    Ivorn ivorn = resolver.createUser(
+                        service,
+                        account.getIdent()
+                        ) ;
+                    //
+                    // Update the Account data
+                    account.setHomeSpace(
+                        ivorn.toString()
+                        ) ;
+                    }
+                catch (Throwable ouch)
+                    {
+                    throw new CommunityServiceException(
+                        "Unable to create VoSpace",
+                        ouch
+                        ) ;
+                    }
+                }
+            }
+        }
 
-	/**
-	 * The config property key for our default VoSpace ivorn.
-	 *
-	 */
-	private static final String DEFAULT_VOSPACE_PROPERTY = "org.astrogrid.community.default.vospace" ;
+    /**
+     * The config property key for our default VoSpace ivorn.
+     *
+     */
+    private static final String DEFAULT_VOSPACE_PROPERTY = "org.astrogrid.community.default.vospace" ;
 
     /**
      * Get the default VoSpace ivorn.
      * @return An Ivorn for the default VoSpace service.
-	 * @throws CommunityServiceException If unable to get the VoSpace ivorn.
-	 *
+     * @throws CommunityServiceException If unable to get the VoSpace ivorn.
+     *
      */
     public Ivorn getDefaultVoSpace()
-		throws CommunityServiceException
+        throws CommunityServiceException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("AccountManagerImpl.getDefaultVoSpace()") ;
-		//
-		// Get the default identifier from our config.
-		String string = null ;
-		try {
-	        string = (String) config.getProperty(DEFAULT_VOSPACE_PROPERTY) ;
+        //
+        // Get the default identifier from our config.
+        String string = null ;
+        try {
+            string = (String) config.getProperty(DEFAULT_VOSPACE_PROPERTY) ;
             }
-		catch (PropertyNotFoundException ouch)
-			{
+        catch (PropertyNotFoundException ouch)
+            {
             throw new CommunityServiceException(
                 "Default VoSpace not configured"
                 ) ;
-			}
+            }
         //
         // If we found the default identifier.
         if (null != string)
@@ -951,15 +954,15 @@ String string = ident.getAccountIdent() ;
             //
             // Try making it into an Ivorn.
             try {
-            	return new Ivorn(string) ;
-				}
-			catch (Exception ouch)
-				{
-	            throw new CommunityServiceException(
-	                "Unable to convert default VoSpace into Ivorn",
-					ouch
-	                ) ;
-				}
+                return new Ivorn(string) ;
+                }
+            catch (Exception ouch)
+                {
+                throw new CommunityServiceException(
+                    "Unable to convert default VoSpace into Ivorn",
+                    ouch
+                    ) ;
+                }
             }
         //
         // If we didn't find the local ident.

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/java/org/astrogrid/community/install/ant/CommunityRegistryTask.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/04/01 07:09:39 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/15 02:33:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityRegistryTask.java,v $
+ *   Revision 1.3  2004/04/15 02:33:49  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/04/01 07:09:39  dave
  *   Merged development branch, dave-dev-200403300547, into HEAD
  *
@@ -138,20 +141,20 @@ public class CommunityRegistryTask
         //
         // Try registering our services.
         try {
-			//
-			// Create our RegistryAdminService client.
-			RegistryAdminService registry = new RegistryAdminService(
-				new URL(
-					this.registry
-					)
-				) ;
-			//
-			// Send the document to the service.
-			registry.updateFromFile(
-				new File(
-					this.data
-					)
-				) ;
+            //
+            // Create our RegistryAdminService client.
+            RegistryAdminService registry = new RegistryAdminService(
+                new URL(
+                    this.registry
+                    )
+                ) ;
+            //
+            // Send the document to the service.
+            registry.updateFromFile(
+                new File(
+                    this.data
+                    )
+                ) ;
             }
         catch (Exception ouch)
             {

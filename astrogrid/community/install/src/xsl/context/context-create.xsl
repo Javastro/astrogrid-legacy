@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/xsl/context/context-create.xsl,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/04/15 02:27:46 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/15 02:33:49 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: context-create.xsl,v $
+    |   Revision 1.3  2004/04/15 02:33:49  dave
+    |   Changed tabs to spaces
+    |
     |   Revision 1.2  2004/04/15 02:27:46  dave
     |   Merged development branch, dave-dev-200404071355, into HEAD
     |
@@ -30,12 +33,12 @@
         +-->
     <xsl:template match="Context">
         <xsl:element name="Context">
-	        <xsl:attribute name="path">
-	            <xsl:value-of select="$context.path"/>
-	        </xsl:attribute>
-	        <xsl:attribute name="docBase">
-	            <xsl:value-of select="$context.base"/>
-	        </xsl:attribute>
+            <xsl:attribute name="path">
+                <xsl:value-of select="$context.path"/>
+            </xsl:attribute>
+            <xsl:attribute name="docBase">
+                <xsl:value-of select="$context.base"/>
+            </xsl:attribute>
         </xsl:element>
     </xsl:template>
 

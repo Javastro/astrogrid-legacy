@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/ant/Attic/CommunityAccountResolverTask.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 04:44:01 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/15 02:33:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountResolverTask.java,v $
+ *   Revision 1.3  2004/04/15 02:33:49  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/03/30 04:44:01  dave
  *   Merged development branch, dave-dev-200403300258, into HEAD
  *
@@ -124,37 +127,37 @@ public class CommunityAccountResolverTask
         //
         // Try login to the account.
         try {
-			//
-			// Create our resolver.
+            //
+            // Create our resolver.
             CommunityAccountResolver resolver ;
-			//
-			// Use our registry endpoint, if we have one.
-			if (null != this.getRegistry())
-				{
-	            resolver = new CommunityAccountResolver(
-	            	new URL(
-	            		this.getRegistry()
-	            		)
-	            	) ;
-				}
-			//
-			// Otherwise, just create a default resolver.
-			else {
-	            resolver = new CommunityAccountResolver() ;
-				}
+            //
+            // Use our registry endpoint, if we have one.
+            if (null != this.getRegistry())
+                {
+                resolver = new CommunityAccountResolver(
+                    new URL(
+                        this.getRegistry()
+                        )
+                    ) ;
+                }
+            //
+            // Otherwise, just create a default resolver.
+            else {
+                resolver = new CommunityAccountResolver() ;
+                }
             //
             // Ask our resolver to get the Account details.
             AccountData account = resolver.resolve(
-				new Ivorn(
-					this.account
-					)
+                new Ivorn(
+                    this.account
+                    )
                 ) ;
-	        if (DEBUG_FLAG) System.out.println("----");
-	        if (DEBUG_FLAG) System.out.println("Account - " + account.getIdent());
-	        if (DEBUG_FLAG) System.out.println("  Display name : " + account.getDisplayName());
-	        if (DEBUG_FLAG) System.out.println("  Description  : " + account.getDescription());
-	        if (DEBUG_FLAG) System.out.println("  Home space   : " + account.getHomeSpace());
-	        if (DEBUG_FLAG) System.out.println("----");
+            if (DEBUG_FLAG) System.out.println("----");
+            if (DEBUG_FLAG) System.out.println("Account - " + account.getIdent());
+            if (DEBUG_FLAG) System.out.println("  Display name : " + account.getDisplayName());
+            if (DEBUG_FLAG) System.out.println("  Description  : " + account.getDescription());
+            if (DEBUG_FLAG) System.out.println("  Home space   : " + account.getHomeSpace());
+            if (DEBUG_FLAG) System.out.println("----");
             }
         catch (Exception ouch)
             {
