@@ -264,10 +264,18 @@ you are building a query to be inserted into a workflow for example
    //build up list of output columns
    Vector outColRefs = new Vector();
    for (int i = 0; i < resultCols.length; i++) {
-      if ((conditionColumns[i] != null) && (conditionColumns[i].length() >0)) {
-         String colRef = conditionColumns[i];
-         String tableName = colRef.substring(0, colRef.indexOf("."));
-         String colName = colRef.substring(colRef.indexOf(".")+1);
+      String colRef = conditionColumns[i];
+      if ((colRef != null) && (colRef.length() >0)) {
+         String tableName = "";
+         String colName = "";
+         if (colRef.indexOf(".")==-1) {
+            colName = colRef;
+         }
+         else {
+            //split table/column
+            tableName = colRef.substring(0, colRef.indexOf("."));
+            colName = colRef.substring(colRef.indexOf(".")+1);
+         }
          outColRefs.add(new ColumnReference(tableName, colName));
       }
    }
