@@ -461,6 +461,9 @@ public class RegistryFileHelper {
       if(regEntry != null) {
          NodeList nl = regEntry.getElementsByTagNameNS("vg","ManagedAuthority" );
          //Okay for some reason vg seems to pick up the ManagedAuthority.
+         if(nl.getLength() == 0) {
+            nl = regEntry.getElementsByTagName("ManagedAuthority" );
+         }         
          //Lets try to find it by the url namespace.
          if(nl.getLength() == 0) {
             nl = regEntry.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority" );
@@ -512,6 +515,9 @@ public class RegistryFileHelper {
          //NodeList nl =  regEntry.getElementsByTagNameNS("*","ManagedAuthority" );
          NodeList nl = regEntry.getElementsByTagNameNS("vg","ManagedAuthority" );
          //Okay for some reason vg seems to pick up the ManagedAuthority.
+         if(nl.getLength() == 0) {
+            nl = regEntry.getElementsByTagName("ManagedAuthority" );
+         }         
          //Lets try to find it by the url namespace.
          if(nl.getLength() == 0) {
             nl = regEntry.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority" );

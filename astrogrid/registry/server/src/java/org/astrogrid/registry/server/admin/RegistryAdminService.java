@@ -110,11 +110,16 @@ public class RegistryAdminService implements
     String resKey = null;
     boolean addManageError = false;
     System.out.println("here is the nl length = " + nl.getLength() + " and manauths size = " + manageAuths.size() + " and otherAuths size = " + otherAuths.size());
-    for(int i = 0;i < nl.getLength();i++) {
-      ident = getAuthorityID((Element)nl.item(i));
-      resKey = getResourceKey((Element)nl.item(i));
-      Element currentResource = (Element)nl.item(i);
-      System.out.println("serverside update ident = " + ident + " reskey = " + resKey);
+    //for(int i = 0;i < nl.getLength();i++) {
+    while(nl.getLength() > 0) {
+      //ident = getAuthorityID((Element)nl.item(i));
+      //resKey = getResourceKey((Element)nl.item(i));
+      //Element currentResource = (Element)nl.item(i);
+      ident = getAuthorityID((Element)nl.item(0));
+      resKey = getResourceKey((Element)nl.item(0));
+      Element currentResource = (Element)nl.item(0);
+      
+      System.out.println("serverside update ident = " + ident + " reskey = " + resKey + " the nl getlenth here = " + nl.getLength());
       if(manageAuths.containsKey(ident)) {         
          xql = formUpdateXQLQuery(currentResource,ident,resKey);
          df = xsDoc.createDocumentFragment();
@@ -122,10 +127,10 @@ public class RegistryAdminService implements
          root.appendChild(currentResource);
          df.appendChild(root);
          resultDoc = XQueryExecution.runQuery(xql,df);
-         System.out.println("the resultDoc to find an id = " + DomHelper.DocumentToString(resultDoc));         
+         System.out.println("the resultDoc to find an id = " + DomHelper.DocumentToString(resultDoc) + " and nlgetlength = " + nl.getLength());         
       }else {
          addManageError = true;
-         System.out.println("checking if this is an AuthorityType it has attributes correct = " + currentResource.hasAttributes());
+         //System.out.println("checking if this is an AuthorityType it has attributes correct = " + currentResource.hasAttributes());
          if(currentResource.hasAttributes()) {
             NamedNodeMap nnm = currentResource.getAttributes();
             for(int j = 0;j < nnm.getLength();j++) {
@@ -160,7 +165,7 @@ public class RegistryAdminService implements
                         //loadedRegistry.insertBefore(newManage,manageNode);
                         //addManageNode.appendChild(loadedRegistry.createTextNode(ident));
                         //loadedRegistry.insertBefore(addManageNode,manageNode);
-                        System.out.println("forming xql query and loadedRegistry = " + DomHelper.DocumentToString(loadedRegistry));
+                        //System.out.println("forming xql query and loadedRegistry = " + DomHelper.DocumentToString(loadedRegistry));
                         xql = formUpdateXQLQuery(currentResource,ident,resKey);
                         df = xsDoc.createDocumentFragment();
                         root = xsDoc.getDocumentElement().cloneNode(false);
@@ -174,7 +179,7 @@ public class RegistryAdminService implements
                         resKey = getResourceKey(loadedRegistry.getDocumentElement());                        
                         xql = formUpdateXQLQuery(loadedRegistry.getDocumentElement(),ident,resKey);
                         resultDoc = XQueryExecution.runQuery(xql,loadedRegistry);
-                        System.out.println("the resultDoc to find an id = " + DomHelper.DocumentToString(resultDoc));
+                        //System.out.println("the resultDoc to find an id = " + DomHelper.DocumentToString(resultDoc));
                         manageAuths = RegistryFileHelper.doManageAuthorities();
                      }//if                           
                   }//if      
