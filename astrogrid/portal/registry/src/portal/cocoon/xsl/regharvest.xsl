@@ -49,7 +49,7 @@
 			Update/Harvest from a URL:
 			<input type="text" name="metadata_url" />
 			<br />
-			<input type="submit" name="Harvest" />			
+			<input type="submit" name="Harvest" value="Harvest" />			
 		</form>
 		<br />
 		<form method="post" action="registryharvest.html" name="UploadMetaData" enctype="multipart/form-data">
@@ -57,7 +57,7 @@
 			Update/Harvest from a local file:
 			<input type="file" name="metadata_file" />
 			<br />
-			<input type="submit" name="Harvest" />
+			<input type="submit" name="Harvest" value="Harvest" />
 			<br />
 			<i>The above approach is limited possible errors because of time situations.</i>
 		</form>
@@ -70,7 +70,7 @@
 			<input type="text" name="selectitemop0" value="EQ"/>
 			<input type="text" name="selectitemvalue0" value="RegistryType"/>
 			<br />
-			<input type="submit" name="Query" />
+			<input type="submit" name="Query" value="Query" />
 		</form>
 		<br /><br />		
 		<a href="registrystatus.html">Link to Registry Status</a>

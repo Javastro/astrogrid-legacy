@@ -24,10 +24,12 @@ import org.astrogrid.registry.client.admin.RegistryAdminService;
 import org.astrogrid.registry.client.harvest.RegistryHarvestService;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import org.astrogrid.util.DomHelper;
 //import org.apache.cocoon.components.request.multipart.FilePart;
 //import org.apache.cocoon.components.request.multipart.FilePartFile;
 import org.apache.cocoon.servlet.multipart.*;
 import java.io.File;
+//import org.apache.cocoon.servlet.multipart.Part;
 
 
 
@@ -124,7 +126,9 @@ public class RegistryHarvestAction extends AbstractAction
   //                FilePart filePart = (FilePart) request.get("metadata_file");
                      Part part = (Part) request.get("metadata_file");
                      if (part != null) {
+                        ras = RegistryDelegateFactory.createAdmin();
                         harvestDoc = registryBuilder.parse(part.getInputStream());
+                        //System.out.println("the filename = " + part.getFileName() + " the size = " + part.getSize() + " and harvestDoc = " + DomHelper.DocumentToString(harvestDoc));
                         resultDoc = ras.update(harvestDoc);
                         //ras.validateDocument(harvestDoc);
                         // do something with it
