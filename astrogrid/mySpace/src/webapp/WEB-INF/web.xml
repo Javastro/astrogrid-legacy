@@ -65,11 +65,11 @@
     <res-auth>Container</res-auth>
   </resource-ref>
 
-<!--  <env-entry>
-    	<description>URL giving location of the properties file to use for configuration</description>
-  	<env-entry-name>org.astrogrid.config.url</env-entry-name>
+  <env-entry>
+    <description>Does this make a blind bit of difference</description>
+  	<env-entry-name>mmcConfigFileURL</env-entry-name>
   	<env-entry-type>java.lang.String</env-entry-type>
-  </env-entry>-->
+  </env-entry>
   <!--
   <resource-ref>
   	<res-ref-name>org.astrogrid.config.url</res-ref-name>
