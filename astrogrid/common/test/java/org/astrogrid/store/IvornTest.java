@@ -1,5 +1,5 @@
 /*
- * $Id: IvornTest.java,v 1.2 2004/03/12 15:11:33 dave Exp $
+ * $Id: IvornTest.java,v 1.3 2004/06/17 17:34:08 jdt Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -8,8 +8,6 @@
  */
 
 package org.astrogrid.store;
-import org.astrogrid.store.*;
-
 import java.net.URISyntaxException;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -110,6 +108,9 @@ public class IvornTest extends TestCase
 
 /*
 $Log: IvornTest.java,v $
+Revision 1.3  2004/06/17 17:34:08  jdt
+Miscellaneous coding standards issues.
+
 Revision 1.2  2004/03/12 15:11:33  dave
 Removed extra import in IvornTest.
 Fixed redundant '#' in Ivorn with no fragment.

@@ -17,7 +17,6 @@ import java.io.IOException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
 
 public class WorkspaceTest extends TestCase
@@ -287,6 +286,9 @@ public class WorkspaceTest extends TestCase
 
 /*
 $Log: WorkspaceTest.java,v $
+Revision 1.7  2004/06/17 17:34:08  jdt
+Miscellaneous coding standards issues.
+
 Revision 1.6  2004/03/12 16:48:10  mch
 Fixes to close workspaces
 

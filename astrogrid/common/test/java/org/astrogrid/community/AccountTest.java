@@ -1,4 +1,4 @@
-/* $Id: AccountTest.java,v 1.5 2004/02/19 23:26:10 mch Exp $
+/* $Id: AccountTest.java,v 1.6 2004/06/17 17:34:08 jdt Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,11 +9,10 @@
 package org.astrogrid.community;
 
 
-import java.io.IOException;
-import java.net.URL;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.astrogrid.community.common.util.CommunityMessage;
 
 /**
@@ -110,6 +109,9 @@ public class AccountTest extends TestCase
 
 /*
 $Log: AccountTest.java,v $
+Revision 1.6  2004/06/17 17:34:08  jdt
+Miscellaneous coding standards issues.
+
 Revision 1.5  2004/02/19 23:26:10  mch
 Fixed meToo bug
 

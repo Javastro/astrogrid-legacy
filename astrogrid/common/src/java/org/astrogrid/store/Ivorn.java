@@ -1,5 +1,5 @@
 /*
- * $Id: Ivorn.java,v 1.5 2004/04/01 15:14:45 mch Exp $
+ * $Id: Ivorn.java,v 1.6 2004/06/17 17:34:08 jdt Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -11,7 +11,6 @@ package org.astrogrid.store;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import org.astrogrid.community.User;
 
 /**
  * International Virtual Observatory Resource Name.  A URI used to name specific IVO resources.
@@ -112,6 +111,9 @@ public class Ivorn
 
 /*
 $Log: Ivorn.java,v $
+Revision 1.6  2004/06/17 17:34:08  jdt
+Miscellaneous coding standards issues.
+
 Revision 1.5  2004/04/01 15:14:45  mch
 Removed User/Agsl constructor as it makes a dependency on Agsl
 

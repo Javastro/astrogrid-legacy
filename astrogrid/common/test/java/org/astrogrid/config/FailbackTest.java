@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackTest.java,v 1.5 2004/03/31 11:00:07 mch Exp $
+ * $Id: FailbackTest.java,v 1.6 2004/06/17 17:34:08 jdt Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -208,14 +208,14 @@ public class FailbackTest extends TestCase
       
       //check bad brackets throws exception
       try {
-         config.resolveFilename("${badlyformed/thing");
+         Config.resolveFilename("${badlyformed/thing");
          fail("Did not throw exception for bad int");
       }
       catch (IllegalArgumentException ce) { } //ignore
    
       //check substitution works
       System.setProperty("FailbackTest.path", "org/astrogrid/config/");
-      URL url = config.resolveFilename("${FailbackTest.path}test.properties");
+      URL url = Config.resolveFilename("${FailbackTest.path}test.properties");
       if (url.toString().indexOf("org/astrogrid/config")==-1) {
          fail("Substitution didn't work");
       }
@@ -245,6 +245,9 @@ public class FailbackTest extends TestCase
 
 /*
  $Log: FailbackTest.java,v $
+ Revision 1.6  2004/06/17 17:34:08  jdt
+ Miscellaneous coding standards issues.
+
  Revision 1.5  2004/03/31 11:00:07  mch
  Added keySet()
 
