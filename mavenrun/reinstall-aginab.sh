@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: reinstall-aginab.sh,v 1.4 2004/11/29 18:00:35 jdt Exp $ 
+# $Id: reinstall-aginab.sh,v 1.5 2004/12/01 09:59:35 jdt Exp $ 
 ######################################################
 # Script to reinstall AGINAB, assumes TOMCAT is running
 ######################################################
@@ -19,8 +19,13 @@ else
    echo "*** FAILURE ***" 
 fi
 
+#Shutting down Tomcat helps, especially on windows
+$CATALINA_HOME/bin/shutdown.sh
+sleep 10
 echo "Cleaning out Tomcat..."
 maven $MY_MAVEN_OPTS CLEANTOMCAT
+$CATALINA_HOME/bin/startup.sh
+sleep 10
 
 #While we have memory problems restrict ourselves to reinstalling all bar the portal
 echo "Deploying all AGINAB components *except portal*"

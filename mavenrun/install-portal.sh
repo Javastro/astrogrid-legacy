@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: install-portal.sh,v 1.3 2004/11/28 21:36:57 jdt Exp $ 
+# $Id: install-portal.sh,v 1.4 2004/12/01 09:59:35 jdt Exp $ 
 ######################################################
 # Script to install the portal only,
 # Temporary measure while we're having memory problems
@@ -15,11 +15,8 @@ echo "Installing Portal from $BUILDHOME"
 OLDDIR=$PWD
 cd $BUILDHOME 
 
-echo "Cleaning out Tomcat..."
-maven $MY_OPTS CLEANTOMCAT
-
 echo "Deploying the portal"
-if maven $MY_OPTS init portal-deploy 
+if maven $MY_MAVEN_OPTS init portal-deploy 
 then
    echo "*** SUCCESS ***" 
 else

@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: cvs-checkout.sh,v 1.9 2004/11/29 00:17:48 jdt Exp $ 
+# $Id: cvs-checkout.sh,v 1.10 2004/12/01 09:59:35 jdt Exp $ 
 ##############################################################
 # Script to checkout a module, and maven-base
 # First argument is module name
@@ -28,6 +28,13 @@ echo "Checking out $MODULE into $CHECKOUTHOME from $TAG"
 
 #update from cvs 
 OLDDIR=$PWD
+if [ -d $CHECKOUTHOME ]; then
+   echo
+else
+   echo "Creating $CHECKOUTHOME"
+   mkdir $CHECKOUTHOME
+fi
+
 cd $CHECKOUTHOME
 rm -r $MAVENBASE
 cvs checkout -r $TAG -P $MAVENBASE
