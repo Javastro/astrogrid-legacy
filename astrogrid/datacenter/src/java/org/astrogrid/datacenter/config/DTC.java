@@ -3,9 +3,9 @@
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
  */
 package org.astrogrid.datacenter.config;
@@ -22,43 +22,50 @@ import org.astrogrid.Configurator;
  *static-nature. Access to the configuration system is now though the {@link Configuration} and {@link Configurable} classes.
  * @author  Jeff Lusted
  * @author Noel Winstanley nw@jb.man.ac.uk
- * @version 2.0 
- * @see     
- * @see     
+ * @version 2.0
+ * @see
+ * @see
  * @since   AstroGrid 1.2
  */
-class DTC extends org.astrogrid.Configurator {
-    
+class DTC// extends org.astrogrid.Configurator
+{
+
     private static DTC
         singletonDTC = new DTC() ;
-        
-        
+
+
     private DTC(){
         super();
     }
-    
-    
+
+
     public static DTC getInstance() {
         return singletonDTC ;
     }
-    
-    
+
+
     /**
-      *  
+      *
       * Static getter for properties from the component's configuration.
       * <p>
-      * 
+      *
       * @param key - the property key within category
       * @param category - the category within the configuration
       * @return the String value of the property, or the empty string if null
-      * 
+      *
       * @see org.jconfig.jConfig
-      **/       
+      **
     public static String getProperty( String key, String category ) {
         return Configurator.getProperty( ConfigurationKeys.SUBSYSTEM_ACRONYM, key, category ) ;
     }
-        
+     */
+
+    /** Temporary fix for problems with configurator - use SimpleConfig */
+    public static String getProperty( String key, String category ) {
+        return SimpleConfig.getProperty( key, category ) ;
+    }
+
     protected String getConfigFileName() { return ConfigurationKeys.CONFIG_FILENAME ; }
-    protected String getSubsystemAcronym() { return ConfigurationKeys.SUBSYSTEM_ACRONYM ; }         
-        					   			    
+    protected String getSubsystemAcronym() { return ConfigurationKeys.SUBSYSTEM_ACRONYM ; }
+
 } // end of class DTC
