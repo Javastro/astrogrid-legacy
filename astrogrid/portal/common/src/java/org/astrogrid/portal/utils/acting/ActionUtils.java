@@ -7,6 +7,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.environment.Request;
+import org.apache.cocoon.environment.Session;
 import org.astrogrid.common.creator.CreatorException;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -26,12 +27,31 @@ public interface ActionUtils {
    * @return value of request parameter
    */
   public String getRequestParameter(String sitemapParam, String defaultValue, Parameters params, Request request);
+
   /**
    * @see ActionUtils#getRequestParameter(String, String, Parameters, Request)
    */
   public String getRequestParameter(String sitemapParam, Parameters params, Request request);
-  public String getAnyParameter(String sitemapParam, Parameters params, Request request);
-  public String getAnyParameter(String sitemapParam, String defaultValue, Parameters params, Request request);
+  
+  /**
+   * Get a session attribute given a attribute passed into the action via the sitemap.
+   * 
+   * @param sitemapParam sitemap given attribute whose value is the session attribute name
+   * @param defaultValue default value of session attribute name
+   * @param params sitemap parameters
+   * @param session session context object
+   * 
+   * @return value of session attribute
+   */
+  public String getSessionAttribute(String sitemapParam, String defaultValue, Parameters params, Session session);
+
+  /**
+   * @see ActionUtils#getSessionAttribute(String, String, Parameters, Session)
+   */
+  public String getSessionAttribute(String sitemapParam, Parameters params, Session session);
+  
+  public String getAnyParameter(String sitemapParam, Parameters params, Request request, Session session);
+  public String getAnyParameter(String sitemapParam, String defaultValue, Parameters params, Request request, Session session);
   /**  
    * @see ActionUtils#getNewObject(String, String, Parameters, Object[])
    */
