@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.11 2004/02/27 14:23:12 mch Exp $
+ * $Id: Config.java,v 1.12 2004/03/01 13:08:01 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -108,12 +108,11 @@ public abstract class Config {
     */
    public URL getUrl(String key) {
       
-      String value = getProperty(key).toString();
       try {
-         return new URL(value);
+         return new URL(getProperty(key).toString());
       }
       catch (MalformedURLException mue) {
-         throw new ConfigException("Key '"+key+"' returns invalid URL '"+value+"'", mue);
+         throw new ConfigException("Key '"+key+"' returns invalid URL '"+getProperty(key)+"'", mue);
       }
    }
    
@@ -123,12 +122,8 @@ public abstract class Config {
     */
    public URL getUrl(String key, URL defaultValue) {
       
-      String value = getProperty(key).toString();
       try {
-         return new URL(value);
-      }
-      catch (MalformedURLException mue) {
-         throw new ConfigException("Key '"+key+"' returns invalid URL '"+value+"'", mue);
+         return getUrl(key);
       }
       catch (PropertyNotFoundException nfe) {
          return defaultValue;
@@ -141,12 +136,11 @@ public abstract class Config {
     */
    public int getInt(String key) {
       
-      String value = getProperty(key).toString().trim();
       try {
-         return Integer.parseInt(value);
+         return Integer.parseInt(getProperty(key).toString().trim());
       }
       catch (NumberFormatException nfe) {
-         throw new ConfigException("Key '"+key+"' returns invalid integer '"+value+"'", nfe);
+         throw new ConfigException("Key '"+key+"' returns invalid integer '"+getProperty(key)+"'", nfe);
       }
    }
    
@@ -156,17 +150,12 @@ public abstract class Config {
     */
    public int getInt(String key, int defaultValue) {
       
-      String value = getProperty(key).toString();
       try {
-         return Integer.parseInt(value);
-      }
-      catch (NumberFormatException nfe) {
-         throw new ConfigException("Key '"+key+"' returns invalid integer '"+value+"'", nfe);
+         return getInt(key);
       }
       catch (PropertyNotFoundException nfe) {
          return defaultValue;
       }
-         
    }
    
    
