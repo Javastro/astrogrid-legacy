@@ -19,9 +19,9 @@
   </goal>    
       
   <goal name="astrogrid-deploy-site"
-      prereqs="astrogrid-build-site,site:fsdeploy" />
+      prereqs="astrogrid-build-site,site:deploy" />
   <goal name="astrogrid-install-site"
-      prereqs="astrogrid-build-site,site:fsdeploy" />
+      prereqs="astrogrid-build-site,site:deploy" />
 
   <!-- snapshot goals -->
   <goal name="astrogrid-build-snapshot" 
