@@ -1,15 +1,13 @@
-<?xml version="1.0"?>
-
 
 <!--+
     |
     | Sub sitemap for Astrogrid services.
     |
-    ! Version 1.0
+    ! Version 1.1
     !
     ! Authors: Brian McIlwrath (bkm@star.rl.ac.uk)
     !          Dave Morris     (dave@cam.as.ac.uk)
-    ! Date: 30th June 2003
+    ! Date: 14th August 2003
     +-->
 
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
@@ -26,6 +24,8 @@
       <map:actions>
          <map:action name="astrogrid-explorer"
             src="org.astrogrid.portal.cocoon.explorer.ExplorerAction"/>
+         <map:action name="astrogrid-query"
+            src="org.astrogrid.portal.cocoon.query.QueryAction"/>
       </map:actions>
    </map:components>
 
@@ -33,28 +33,28 @@
 
    <!-- Views for MySpace Explorer -->
    <map:views>
-		<!-- Original XML displayed as XML -->
-		<map:view name="000" from-label="000">
-			<map:serialize type="xml"/>
-		</map:view>
-		<!-- Original XML, displayed as XML/HTML -->
-		<map:view name="001" from-label="001">
-			<!-- Convert into XML/HTML -->
-			<map:transform src="common/xsl/xml-html.xsl"/>
-			<map:serialize type="html"/>
-		</map:view>
-		<!-- XML processed into a page, displayed as XML/HTML -->
-		<map:view name="002" from-label="002">
-			<!-- Convert into XML/HTML -->
-			<map:transform src="common/xsl/xml-html.xsl"/>
-			<map:serialize type="html"/>
-		</map:view>
-		<!-- Page wrapped in our template, displayed as XML/HTML -->
-		<map:view name="003" from-label="003">
-			<!-- Convert into XML/HTML -->
-			<map:transform src="common/xsl/xml-html.xsl"/>
-			<map:serialize type="html"/>
-		</map:view>
+      <!-- Original XML displayed as XML -->
+      <map:view name="000" from-label="000">
+         <map:serialize type="xml"/>
+      </map:view>
+      <!-- Original XML, displayed as XML/HTML -->
+      <map:view name="001" from-label="001">
+         <!-- Convert into XML/HTML -->
+         <map:transform src="common/xsl/xml-html.xsl"/>
+         <map:serialize type="html"/>
+      </map:view>
+      <!-- XML processed into a page, displayed as XML/HTML -->
+      <map:view name="002" from-label="002">
+         <!-- Convert into XML/HTML -->
+         <map:transform src="common/xsl/xml-html.xsl"/>
+         <map:serialize type="html"/>
+      </map:view>
+      <!-- Page wrapped in our template, displayed as XML/HTML -->
+      <map:view name="003" from-label="003">
+         <!-- Convert into XML/HTML -->
+         <map:transform src="common/xsl/xml-html.xsl"/>
+         <map:serialize type="html"/>
+      </map:view>
    </map:views>
 
 <!-- ========================== Resources ================================= -->
@@ -130,10 +130,38 @@
                <map:serialize type="html"/>
             </map:match>
 
+            <!-- DataQuery page -->
             <map:match pattern="agdataquery.html">
-<!-- <map:read type="jsp" mime-type="text/html" src="jsp/DataQuery.jsp"/> -->
-               <map:generate type="serverpages" src="xsp/dataquery.xsp"/>
-               <map:transform src="xsl/redirect.xsl"/>
+               <!-- Call our query action -->
+               <map:act type="astrogrid-query">
+                  <!-- Set the session attribute to check for the user name -->
+                  <map:parameter name="user-param"  value="user"/>
+                  <!-- Generate our page XML -->
+                  <map:generate src="query/xsp/query.xsp" type="serverpages" label="000, 001"/>
+                  <!-- Convert the data into a page -->
+                  <map:transform src="query/xsl/query.xsl" label="002">
+                     <!-- Add the action params -->
+                     <map:parameter name="QueryString" value="{QueryString}"/>
+                     <map:parameter name="Script" value="{Script}"/>
+                     <map:parameter name="QueryStringSent" value="{QueryStringSent}"/>
+                     <map:parameter name="ErrorMessage" value="{ErrorMessage}"/>
+                     <map:parameter name="LastWebCall" value="{LastWebServiceXML}"/>
+                  </map:transform>
+               </map:act>
+               <!-- Wrap the page in our HTML template -->
+               <map:transform src="common/xsl/astrogrid.xsl" label="003">
+                  <!-- Add the rest of the page names -->
+                  <map:parameter name="current-page"  value="agdataquery.html"/>
+                  <map:parameter name="query-page"    value="agdataquery.html"/>
+                  <map:parameter name="myspace-page"  value="agmyspace.html"/>
+                  <map:parameter name="home-page"     value="agindex.html"/>
+                  <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
+                  <map:parameter name="registry-page" value="agregistry.html"/>
+                  <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+                  <map:parameter name="tools-page"    value="agtools.html"/>
+                  <map:parameter name="logout-page"   value="aglogout.html"/>
+               </map:transform>
+               <!-- Serialize as HTML -->
                <map:serialize type="html"/>
             </map:match>
 
@@ -144,20 +172,25 @@
                   <!-- Set the session attribute to check for the user name -->
                   <map:parameter name="user-param"  value="user"/>
                   <!-- Generate our page XML -->
-                  <map:generate src="explorer/xsp/explorer.xsp" type="serverpages" label="000, 001"/>
+                  <map:generate src="explorer/xsp/explorer.xsp"
+                     type="serverpages" label="000, 001"/>
                   <!-- Convert the data into a page -->
                   <map:transform src="explorer/xsl/explorer.xsl" label="002">
                      <!-- Add the action params -->
                      <map:parameter name="action"  value="{action}"/>
                      <map:parameter name="confirm" value="{confirm}"/>
                      <!-- Add the explorer page names -->
-                     <map:parameter name="explorer-page" value="agmyspace.html"/>
-                     <map:parameter name="votable-page"  value="agvotable.html"/>
+                     <map:parameter name="explorer-page"
+                        value="agmyspace.html"/>
+                     <map:parameter name="votable-page"
+                        value="agvotable.html"/>
                   </map:transform>
                </map:act>
                <!-- Wrap the page in our HTML template -->
                <map:transform src="common/xsl/astrogrid.xsl" label="003">
-               <!-- Add the explorer page names -->
+                  <!-- Add the current page name -->
+                  <map:parameter name="current-page" value="agmyspace.html"/>
+                  <!-- Add the explorer page names -->
                   <map:parameter name="explorer-page" value="agmyspace.html"/>
                   <map:parameter name="votable-page"  value="agvotable.html"/>
                   <!-- Add the rest of the page names -->
