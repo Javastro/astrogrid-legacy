@@ -30,7 +30,7 @@
 
    ConeSearcher delegate = DatacenterDelegateFactory.makeConeSearcher(serviceURL.toString());
 
-   InputStream results = delegate.imageSearch(Double.parseDouble(ra), Double.parseDouble(dec), Double.parseDouble(sr));
+   InputStream results = delegate.coneSearch(Double.parseDouble(ra), Double.parseDouble(dec), Double.parseDouble(size));
 
    Piper.bufferedPipe(new InputStreamReader(results), (Writer) out);
 

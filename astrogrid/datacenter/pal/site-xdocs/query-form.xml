@@ -9,7 +9,7 @@
 <body>
   <section name="Submit an ADQL/sql Query">
     <p>
-      <form action="processAdqlSqlForm.jsp" method="POST">
+      <form action="askAdqlSql.jsp" method="POST">
        <p>
          ADQL/sql <input type="text" name="AdqlSql"/><br />
        </p>
@@ -24,7 +24,7 @@
       (<a href="http://skyservice.pha.jhu.edu/devel/AdqlTranslator/Convertor.aspx">Translate from SQL</a>)
       (<a href="adql">Sample queries</a>)
       <br />
-      <form action="processAdqlXmlForm.jsp" method="POST">
+      <form action="askAdqlXml.jsp" method="POST">
         <textarea name="AdqlXml" rows="20" cols="100%"></textarea>
         <p/>
         <input type="submit" value="Run ADQL" />
@@ -34,7 +34,7 @@
 
   <section name="Submit a Region Query">
     <p>
-      <form action="coneSearch.jsp" method="POST">
+      <form action="searchCone.jsp" method="POST">
        <p>
          Right Ascension in decimal degrees, J2000 <input type="text" name="RA"/><br />
          Decliniation in decimal degress, J2000 <input type="text" name="DEC" /><br />
