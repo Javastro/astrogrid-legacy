@@ -10,7 +10,7 @@ import org.apache.cocoon.environment.ObjectModelHelper;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+import org.astrogrid.community.delegate.policy.AdministrationDelegate;
 /**
  *
  * Class Name: DataQueryServlet
@@ -53,7 +53,7 @@ public class CredentialAction extends AbstractAction
    
    private static final String PARAM_COMMUNITY_LIST = "communitylist";
    
-   private static final String PARAM_COMMUNITY_NAME = "community";   
+   private static final String PARAM_COMMUNITY_URL = "communityurl";   
 
    private static final String PARAM_GROUP_LIST = "grouplist";   
    
@@ -61,6 +61,7 @@ public class CredentialAction extends AbstractAction
    
    private static final String ACTION_SET_GROUP = "setgroup";
 
+   
       
    /**
     * Our action method.
@@ -86,11 +87,13 @@ public class CredentialAction extends AbstractAction
          System.out.println("the action is = " + action);      
       }
       
+      //AdministrationDelegate adminDelegate = new AdministrationDelegate();
       ArrayList communityList = (ArrayList)session.getAttribute(PARAM_COMMUNITY_LIST);
       
       if(communityList == null || communityList.size() <= 0) {
          //call delegate to get the communities trusted by this local community.
          //fill with dummy data for the moment.
+         //communityList = adminDelegate.getCommunityList();
          communityList.add("MSSL");
          communityList.add("Cambridge");
          communityList.add("Leicester");
@@ -106,6 +109,7 @@ public class CredentialAction extends AbstractAction
       if(groupList == null || groupList.size() <= 0) {
          //call delegate to get the groups for the local community.
          //fill with dummy data for the moment.
+         //adminDelegate.getAccountGroupList(user);
          groupList.add("Solar_Flares@mssl");
          groupList.add("BigBang@mssl");
       }
@@ -116,7 +120,9 @@ public class CredentialAction extends AbstractAction
       }
       
       if(action.equals(ACTION_GET_COMMUNITY_GROUPS)) {
-         String communityName = (String)request.getParameter(PARAM_COMMUNITY_NAME);
+         String communityURL = (String)request.getParameter(PARAM_COMMUNITY_URL);
+         //ArrayList temp = adminDelegate.getAccountGroupList(user,communityURL);
+         //groupList.addAll(temp);
          //call the delegate to do a groupList.addAll(ViewGroup(user,communityName));
       }
 

@@ -33,6 +33,7 @@
 	     	src="org.astrogrid.portal.cocoon.query.QueryAction"/>
          <map:action name="astrogrid-admin" 
          	src="org.astrogrid.portal.cocoon.community.AdministrationAction"/>            
+	    <map:action name="astrogrid-credentials" src="org.astrogrid.portal.cocoon.community.CredentialAction"/>              	
       </map:actions>
    </map:components>
 
@@ -185,6 +186,38 @@
                <!-- Serialize as HTML -->
                <map:serialize type="html"/>
             </map:match>
+            
+         <!-- Credentials page -->
+         <map:match pattern="agcredentials.html">
+            <!-- Call our query action -->
+            <map:act type="astrogrid-credentials">
+               <!-- Set the session attribute to check for the user name -->
+               <map:parameter name="user-param"  value="user"/>
+               <!-- Generate our page XML -->
+               <map:generate src="community/xsp/credentials.xsp" type="serverpages" label="000, 001"/>
+               <!-- Convert the data into a page -->
+               <map:transform src="community/xsl/credentials.xsl" label="002">
+                  <map:parameter name="credential" value="{credential}"/>
+               </map:transform>
+            </map:act>
+            <!-- Wrap the page in our HTML template -->
+            <map:transform src="common/xsl/astrogrid.xsl" label="003">
+               <!-- Add the rest of the page names -->
+               <map:parameter name="current-page"  value="agcredentials.html"/>
+               <map:parameter name="query-page"    value="agdataquery.html"/>
+               <map:parameter name="myspace-page"  value="agmyspace.html"/>
+               <map:parameter name="home-page"     value="agindex.html"/>
+               <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
+               <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+               <map:parameter name="tools-page"    value="agtools.html"/>
+               <map:parameter name="admin-page"    value="agadministration.html"/>
+               <map:parameter name="logout-page"   value="aglogout.html"/>
+            </map:transform>
+            <!-- Serialize as HTML -->
+            <map:serialize type="html"/>
+         </map:match>
+            
             
          <!-- Administratin page -->
          <map:match pattern="agadministration.html">
