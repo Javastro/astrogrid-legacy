@@ -33,7 +33,7 @@ public class JES extends org.astrogrid.Configurator {
         CONFIG_FILENAME = "ASTROGRID_jesconfig.xml" ;
         
     /** Configuration file for this component. */
-    private static final String JNDI_NAME = "java:comp/env/jesConfigFileURL";        
+    private static final String JNDI_NAME = "java:comp/env/org.astrogrid.jes.config.url";        
     
     public static final String 
     /** Jes category within the component's configuration */  
@@ -157,6 +157,21 @@ public class JES extends org.astrogrid.Configurator {
     public static String getProperty( String key, String category ) {
         return Configurator.getProperty( SUBSYSTEM_ACRONYM, key, category ) ;
     }
+    
+  /**
+    *  
+    * Static setter for properties from the component's configuration.
+    * <p>
+    * 
+    * @param key - the property key within category
+    * @param category - the category within the configuration
+    * @param value - the value you wish to set
+    * 
+    * @see org.jconfig.jConfig
+    **/       
+  public static void setProperty( final String key, final String category, final String value ) {
+       Configurator.setProperty( SUBSYSTEM_ACRONYM, key, category, value ) ;
+  }
  
     public String getConfigFileName() { return CONFIG_FILENAME ; }    
     protected String getSubsystemAcronym() { return SUBSYSTEM_ACRONYM ; }
