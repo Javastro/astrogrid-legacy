@@ -1,4 +1,4 @@
-/*$Id: ShortCircuitDispatcher.java,v 1.2 2004/03/07 21:04:39 nw Exp $
+/*$Id: ShortCircuitDispatcher.java,v 1.3 2004/07/30 15:42:34 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -49,8 +49,8 @@ public class ShortCircuitDispatcher extends MockDispatcher {
         callCount++;
         // we've got a monitor, lets talk / barf through that.
         MessageType info = new MessageType();
-        String xpath = job.getXPathFor(js) ;
-        JobIdentifierType id = JesUtil.createJobId(job.getJobExecutionRecord().getJobId(),xpath);
+        String stepId = js.getId();
+        JobIdentifierType id = JesUtil.createJobId(job.getJobExecutionRecord().getJobId(),stepId);
 
         info.setSource("application");
         info.setTimestamp(Calendar.getInstance());            
@@ -88,6 +88,13 @@ public class ShortCircuitDispatcher extends MockDispatcher {
 
 /* 
 $Log: ShortCircuitDispatcher.java,v $
+Revision 1.3  2004/07/30 15:42:34  nw
+merged in branch nww-itn06-bz#441 (groovy scripting)
+
+Revision 1.2.46.1  2004/07/30 15:10:04  nw
+removed policy-based implementation,
+adjusted tests, etc to use groovy implementation
+
 Revision 1.2  2004/03/07 21:04:39  nw
 merged in nww-itn05-pico - adds picocontainer
 

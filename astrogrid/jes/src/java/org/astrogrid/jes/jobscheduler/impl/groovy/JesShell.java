@@ -1,0 +1,163 @@
+/*$Id: JesShell.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+ * Created on 29-Jul-2004
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+**/
+package org.astrogrid.jes.jobscheduler.impl.groovy;
+
+import org.apache.log4j.Logger;
+import org.codehaus.groovy.control.CompilationFailedException;
+
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
+import groovy.lang.Script;
+
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Iterator;
+
+/** class that encapuslates the execution and evaluation of grouvy code.
+ * @author Noel Winstanley nw@jb.man.ac.uk 29-Jul-2004
+ * @todo add in ag scripting object here..
+ *
+ */
+public class JesShell {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Logger logger = Logger.getLogger(JesShell.class);
+
+    /** Construct a new JesShell
+     * 
+     */
+    public JesShell() {
+        super();
+    }
+
+    protected final GroovyShell shell = new GroovyShell();
+    protected JesInterface jes;
+    
+    public boolean evaluateTrigger(Rule r,ActivityStatusStore map) throws CompilationFailedException, IOException {
+        Binding triggerBinding = createTriggerBinding(map);
+        Script sc = r.getCompiledTrigger();
+        if (sc == null) { // not there, compile it up..        
+            sc =  shell.parse(r.getTrigger());
+            r.setCompiledTrigger(sc);
+        }
+        sc.setBinding(triggerBinding);
+        Boolean result = (Boolean)sc.run();
+        return result.booleanValue();
+    }
+    
+    public void executeBody(Rule r,ActivityStatusStore map, RuleStore store) throws CompilationFailedException, IOException {
+        logger.info("firing " + r.getName());
+        Binding bodyBinding = createBodyBinding(map,store);
+        Vars vars = map.getEnv(r.getEnvId()); 
+        bodyBinding.setProperty("vars",vars);        
+        logger.debug(r);    
+        Script sc = shell.parse(r.getBody());       
+        sc.setBinding(bodyBinding);
+        sc.run();
+
+    }
+    
+    public void executeScript(String script,String id, ActivityStatusStore map,RuleStore rules, PrintStream errStream, PrintStream outStream) throws CompilationFailedException, IOException {
+        logger.info("Running script for id " + id);
+        logger.debug(script);
+        Binding scriptBinding = createScriptBinding(map,rules);
+        Vars vars= map.getEnv(id);
+        vars.addToBinding(scriptBinding);
+
+        Script sc = shell.parse(script);
+        sc.setBinding(scriptBinding);
+        PrintStream originalErr = System.err;
+        PrintStream originalOut = System.out;
+        try {
+            System.setErr(errStream);
+            System.setOut(outStream);
+            sc.run();
+        } finally {
+            System.setErr(originalErr);
+            System.setOut(originalOut);
+        }
+        vars.readFromBinding(scriptBinding);
+    }
+    
+
+
+    public String evaluateGString(String gString, String state) {
+        return null;
+    }
+
+//  binding creation functions - so that scripts can access the status store.
+    private Binding createTriggerBinding(ActivityStatusStore map) {
+        Binding b = new Binding();
+        b.setVariable("states",map);
+        for (Iterator i = Status.allStatus.iterator(); i.hasNext(); ) {
+            Status stat = (Status)i.next();
+            b.setVariable(stat.getName(),stat);
+        }
+        return b;
+    }
+
+    private  Binding createBodyBinding(ActivityStatusStore map,RuleStore rules){
+        Binding b = createTriggerBinding(map);
+        b.setVariable("rules",rules);
+        b.setVariable("jes",jes);
+        b.setVariable("log",jes.getLog());
+        b.setVariable("shell",this);
+        return b;
+    }
+    
+    /** create environment for user scripts to run in - don't provide access to system objects.
+     * @param state
+     * @param map
+     * @return
+     */
+    private Binding createScriptBinding(ActivityStatusStore map, RuleStore rules) {
+        Binding b = new Binding();
+        b.setVariable("log",jes.getLog());
+        b.setVariable("jes",jes);
+        //@todo add in ag later b.setVariable("astrogrid",ag);
+        for (Iterator i = Status.allStatus.iterator(); i.hasNext(); ) {
+            Status stat = (Status)i.next();
+            b.setVariable(stat.getName(),stat);
+        }
+        // ah, what the hell, who knows - it might be useful.
+        b.setVariable("__states",map);
+        b.setVariable("__rules",rules);
+        b.setVariable("__shell",this);
+        
+        
+        return b;
+    }    
+    
+    /**
+     * @param jesInterface
+     */
+    public void setJesInterface(JesInterface jesInterface) {
+        this.jes = jesInterface;
+    }
+    
+    
+}
+
+
+/* 
+$Log: JesShell.java,v $
+Revision 1.2  2004/07/30 15:42:34  nw
+merged in branch nww-itn06-bz#441 (groovy scripting)
+
+Revision 1.1.2.2  2004/07/30 15:10:04  nw
+removed policy-based implementation,
+adjusted tests, etc to use groovy implementation
+
+Revision 1.1.2.1  2004/07/30 14:00:10  nw
+first working draft
+ 
+*/

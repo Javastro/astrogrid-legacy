@@ -1,4 +1,4 @@
-/*$Id: InitServlet.java,v 1.2 2004/07/09 09:30:28 nw Exp $
+/*$Id: InitServlet.java,v 1.3 2004/07/30 15:42:34 nw Exp $
  * Created on 14-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,24 +10,20 @@
 **/
 package org.astrogrid.jes.servlet;
 
-import org.astrogrid.jes.jobscheduler.impl.scripting.JarPathsFromConfig;
-import org.astrogrid.jes.jobscheduler.impl.scripting.WorkflowInterpreterFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 /** servlet that passes in configuration information from the servlet context.
+ * @todo not needed any more.. 
  * @author Noel Winstanley nw@jb.man.ac.uk 14-May-2004
  *
  */
@@ -50,31 +46,7 @@ public class InitServlet extends GenericServlet {
      * @see javax.servlet.Servlet#init(javax.servlet.ServletConfig)
      */
     public void init(ServletConfig conf) throws ServletException {
-        // find base dir...
-        log.info("initializing properties required by jes jes");
-        ServletContext cxt = conf.getServletContext();
-        File root = new File(cxt.getRealPath("/"));
-          File lib = new File(new File(root,"WEB-INF"),"lib");
-          File[] jesJarArr = lib.listFiles(new FileFilter(){
-              public boolean accept(File pathname) {
-                  return pathname.getName().indexOf(WorkflowInterpreterFactory.JarPaths.JES_JAR) != -1;
-              }
-          });
-          File[] libJarArr = lib.listFiles(new FileFilter(){
-              public boolean accept(File pathname) {
-                  return pathname.getName().indexOf(WorkflowInterpreterFactory.JarPaths.LIBRARY_JAR) != -1;
-              }
-          });                          
-          if (jesJarArr.length > 0) {
-              System.setProperty(JarPathsFromConfig.JES_JAR_KEY, jesJarArr[0].getAbsolutePath());
-          } else {
-              System.setProperty(JarPathsFromConfig.JES_JAR_KEY,(new File(new File(root,"WEB-INF"),"classes")).getAbsolutePath());
-          }
-          if (libJarArr.length > 0) {
-              System.setProperty(JarPathsFromConfig.LIB_JAR_KEY, libJarArr[0].getAbsolutePath());
-          }
-          log.info("Jes Jar set to " + System.getProperty(JarPathsFromConfig.JES_JAR_KEY));
-          log.info("Library jar set to " + System.getProperty(JarPathsFromConfig.LIB_JAR_KEY));   
+
 
     }
 
@@ -83,6 +55,17 @@ public class InitServlet extends GenericServlet {
 
 /* 
 $Log: InitServlet.java,v $
+Revision 1.3  2004/07/30 15:42:34  nw
+merged in branch nww-itn06-bz#441 (groovy scripting)
+
+Revision 1.2.20.2  2004/07/30 14:00:10  nw
+first working draft
+
+Revision 1.2.20.1  2004/07/28 16:24:23  nw
+finished groovy beans.
+moved useful tests from old python package.
+removed python implemntation
+
 Revision 1.2  2004/07/09 09:30:28  nw
 merged in scripting workflow interpreter from branch
 nww-x-workflow-extensions

@@ -1,4 +1,4 @@
-/*$Id: AbstractJobSchedulerImpl.java,v 1.3 2004/07/09 15:49:08 nw Exp $
+/*$Id: AbstractJobSchedulerImpl.java,v 1.4 2004/07/30 15:42:34 nw Exp $
  * Created on 10-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -318,11 +318,22 @@ public abstract class AbstractJobSchedulerImpl implements JobScheduler {
         return resultsMessage;
     }
     
+    /** do nothing-implementaiton - may be overridden.*/
+    public void notifyJobFinished(Workflow job) {   
+    }
+    
 }
 
 
 /* 
 $Log: AbstractJobSchedulerImpl.java,v $
+Revision 1.4  2004/07/30 15:42:34  nw
+merged in branch nww-itn06-bz#441 (groovy scripting)
+
+Revision 1.3.20.1  2004/07/30 15:10:04  nw
+removed policy-based implementation,
+adjusted tests, etc to use groovy implementation
+
 Revision 1.3  2004/07/09 15:49:08  nw
 fixed NPE in processing results.
 should fix regression on SimpleJavaWorkflowEndToEndTest

@@ -1,4 +1,4 @@
-/*$Id: BasicJesComponentManager.java,v 1.2 2004/07/09 09:30:28 nw Exp $
+/*$Id: BasicJesComponentManager.java,v 1.3 2004/07/30 15:42:34 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.jes.component;
 import org.astrogrid.component.ComponentManagerException;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.component.descriptor.SimpleComponentDescriptor;
+import org.astrogrid.jes.component.production.GroovyComponentManager;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
 import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
@@ -20,17 +21,10 @@ import org.astrogrid.jes.impl.workflow.InMemoryJobFactoryImpl;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.Locator;
-import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher;
 import org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerIdDispatcher;
-import org.astrogrid.jes.jobscheduler.impl.SchedulerImpl;
 import org.astrogrid.jes.jobscheduler.impl.SchedulerTaskQueueDecorator;
-import org.astrogrid.jes.jobscheduler.impl.scripting.DefaultTransformers;
-import org.astrogrid.jes.jobscheduler.impl.scripting.DevelopmentJarPaths;
-import org.astrogrid.jes.jobscheduler.impl.scripting.ScriptedSchedulerImpl;
-import org.astrogrid.jes.jobscheduler.impl.scripting.WorkflowInterpreterFactory;
 import org.astrogrid.jes.jobscheduler.locator.XMLFileLocator;
-import org.astrogrid.jes.jobscheduler.policy.JoinPolicy;
 import org.astrogrid.jes.resultlistener.JesResultsListener;
 import org.astrogrid.jes.service.v1.cearesults.ResultsListener;
 
@@ -62,14 +56,8 @@ public class BasicJesComponentManager extends EmptyJesComponentManager {
             new ComponentParameter(SCHEDULER_ENGINE)
         }
         );
-        /*  - alternative - use the scripted scheduler for the basic.
-        pico.registerComponentImplementation(SCHEDULER_ENGINE,ScriptedSchedulerImpl.class);        
-        pico.registerComponentImplementation(ScriptedSchedulerImpl.Transformers.class,DefaultTransformers.class);
-        pico.registerComponentImplementation(WorkflowInterpreterFactory.class,WorkflowInterpreterFactory.class);
-        pico.registerComponentImplementation(WorkflowInterpreterFactory.JarPaths.class,DevelopmentJarPaths.class);
-        */
-        pico.registerComponentImplementation(SCHEDULER_ENGINE,SchedulerImpl.class);        
-        pico.registerComponentImplementation(Policy.class,JoinPolicy.class);
+
+         GroovyComponentManager.registerGroovyEngine(pico);
         pico.registerComponentImplementation(Dispatcher.class,ApplicationControllerIdDispatcher.class);
         pico.registerComponentInstance(ApplicationControllerDispatcher.Endpoints.class, 
             new ApplicationControllerDispatcher.Endpoints() {
@@ -116,6 +104,24 @@ public class BasicJesComponentManager extends EmptyJesComponentManager {
 
 /* 
 $Log: BasicJesComponentManager.java,v $
+Revision 1.3  2004/07/30 15:42:34  nw
+merged in branch nww-itn06-bz#441 (groovy scripting)
+
+Revision 1.2.20.3  2004/07/30 15:10:04  nw
+removed policy-based implementation,
+adjusted tests, etc to use groovy implementation
+
+Revision 1.2.20.2  2004/07/28 16:24:23  nw
+finished groovy beans.
+moved useful tests from old python package.
+removed python implemntation
+
+Revision 1.2.20.1  2004/07/27 23:37:59  nw
+refactoed framework.
+experimented with betwixt - can't get it to work.
+got XStream working in 5 mins.
+about to remove betwixt code.
+
 Revision 1.2  2004/07/09 09:30:28  nw
 merged in scripting workflow interpreter from branch
 nww-x-workflow-extensions

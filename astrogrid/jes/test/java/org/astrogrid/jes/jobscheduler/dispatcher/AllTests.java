@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.3 2004/03/03 01:13:42 nw Exp $
+/*$Id: AllTests.java,v 1.4 2004/07/30 15:42:34 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,13 +22,20 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("Test for org.astrogrid.jes.jobscheduler.dispatcher");
         //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(ApplicationControllerDispatcherTest.class));
+        suite.addTest(new TestSuite(ApplicationControllerIdDispatcherTest.class));
         //$JUnit-END$
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.4  2004/07/30 15:42:34  nw
+merged in branch nww-itn06-bz#441 (groovy scripting)
+
+Revision 1.3.50.1  2004/07/30 15:10:04  nw
+removed policy-based implementation,
+adjusted tests, etc to use groovy implementation
+
 Revision 1.3  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
 

@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcher.java,v 1.15 2004/07/09 09:30:28 nw Exp $
+/*$Id: ApplicationControllerDispatcher.java,v 1.16 2004/07/30 15:42:34 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,7 +38,7 @@ import junit.framework.TestSuite;
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Feb-2004
  *
  */
-public class ApplicationControllerDispatcher implements Dispatcher, ComponentDescriptor {
+public abstract class ApplicationControllerDispatcher implements Dispatcher, ComponentDescriptor {
    private static final Log logger =
       LogFactory.getLog(ApplicationControllerDispatcher.class);
    /** Configuration component for Application Controller Dispatcher
@@ -163,6 +163,13 @@ public class ApplicationControllerDispatcher implements Dispatcher, ComponentDes
 
 /* 
 $Log: ApplicationControllerDispatcher.java,v $
+Revision 1.16  2004/07/30 15:42:34  nw
+merged in branch nww-itn06-bz#441 (groovy scripting)
+
+Revision 1.15.20.1  2004/07/30 15:10:04  nw
+removed policy-based implementation,
+adjusted tests, etc to use groovy implementation
+
 Revision 1.15  2004/07/09 09:30:28  nw
 merged in scripting workflow interpreter from branch
 nww-x-workflow-extensions

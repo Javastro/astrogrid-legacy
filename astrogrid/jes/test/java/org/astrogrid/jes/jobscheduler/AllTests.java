@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.6 2004/07/09 09:32:12 nw Exp $
+/*$Id: AllTests.java,v 1.7 2004/07/30 15:42:34 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,13 +26,24 @@ public class AllTests {
         suite.addTest(org.astrogrid.jes.jobscheduler.locator.AllTests.suite());
         suite.addTest(org.astrogrid.jes.jobscheduler.dispatcher.AllTests.suite());
         suite.addTest(org.astrogrid.jes.jobscheduler.impl.AllTests.suite());
-        suite.addTest(org.astrogrid.jes.jobscheduler.impl.scripting.AllTests.suite());
-        suite.addTest(org.astrogrid.jes.jobscheduler.policy.AllTests.suite());
+        suite.addTest(org.astrogrid.jes.jobscheduler.impl.groovy.AllTests.suite());
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.7  2004/07/30 15:42:34  nw
+merged in branch nww-itn06-bz#441 (groovy scripting)
+
+Revision 1.6.20.2  2004/07/30 15:10:04  nw
+removed policy-based implementation,
+adjusted tests, etc to use groovy implementation
+
+Revision 1.6.20.1  2004/07/28 16:24:23  nw
+finished groovy beans.
+moved useful tests from old python package.
+removed python implemntation
+
 Revision 1.6  2004/07/09 09:32:12  nw
 merged in scripting workflow interpreter from branch
 nww-x-workflow-extensions

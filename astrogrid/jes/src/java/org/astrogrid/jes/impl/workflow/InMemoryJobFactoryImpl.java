@@ -1,4 +1,4 @@
-/*$Id: InMemoryJobFactoryImpl.java,v 1.8 2004/07/09 09:30:28 nw Exp $
+/*$Id: InMemoryJobFactoryImpl.java,v 1.9 2004/07/30 15:42:34 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -91,12 +91,11 @@ public class InMemoryJobFactoryImpl extends AbstractJobFactoryImpl implements Co
      * @see org.astrogrid.jes.job.JobFactory#updateJob(org.astrogrid.jes.job.Job)
      */
     public void updateJob(Workflow job) throws JobException {
-        // a no-op - we're not cloning or anything, so its already happened!!
         Object hashKey = id(job);
         if (m.get(hashKey) == null) {
             throw new NotFoundException("no job for" + hashKey);
         }
-        log.info("Using in-memory store - updateJob is a no-op");
+        m.put(id(job),job);
     }
 
 
@@ -130,6 +129,12 @@ public class InMemoryJobFactoryImpl extends AbstractJobFactoryImpl implements Co
 
 /* 
 $Log: InMemoryJobFactoryImpl.java,v $
+Revision 1.9  2004/07/30 15:42:34  nw
+merged in branch nww-itn06-bz#441 (groovy scripting)
+
+Revision 1.8.20.1  2004/07/30 14:00:10  nw
+first working draft
+
 Revision 1.8  2004/07/09 09:30:28  nw
 merged in scripting workflow interpreter from branch
 nww-x-workflow-extensions

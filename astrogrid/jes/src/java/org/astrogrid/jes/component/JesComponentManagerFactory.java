@@ -1,4 +1,4 @@
-/*$Id: JesComponentManagerFactory.java,v 1.2 2004/07/09 09:30:28 nw Exp $
+/*$Id: JesComponentManagerFactory.java,v 1.3 2004/07/30 15:42:34 nw Exp $
  * Created on 16-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.jes.component;
 
 import org.astrogrid.component.ComponentManagerException;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.jes.component.production.PolicyDrivenComponentManager;
+import org.astrogrid.jes.component.production.GroovyComponentManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,7 +50,7 @@ public class JesComponentManagerFactory {
              logger.info("Creating component manager");
              String componentManagerClass = null;
              try {
-                 componentManagerClass = SimpleConfig.getSingleton().getString(COMPONENT_MANAGER_IMPL,PolicyDrivenComponentManager.class.getName());
+                 componentManagerClass = SimpleConfig.getSingleton().getString(COMPONENT_MANAGER_IMPL,GroovyComponentManager.class.getName());
                  logger.info("Will instantiate component manager class '" + componentManagerClass + "'");
                  theInstance = (JesComponentManager)Class.forName(componentManagerClass).newInstance();
                  logger.info("Instantiated. Now Starting");

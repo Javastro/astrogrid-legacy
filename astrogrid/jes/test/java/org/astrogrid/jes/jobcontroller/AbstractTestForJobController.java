@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForJobController.java,v 1.8 2004/07/09 09:32:12 nw Exp $
+/*$Id: AbstractTestForJobController.java,v 1.9 2004/07/30 15:42:34 nw Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,6 @@ import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
 import org.astrogrid.jes.impl.workflow.InMemoryJobFactoryImpl;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.impl.MockSchedulerImpl;
-import org.astrogrid.jes.testutils.io.FileResourceLoader;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
@@ -102,6 +101,12 @@ public abstract class AbstractTestForJobController extends AbstractTestWorkflowI
 
 /* 
 $Log: AbstractTestForJobController.java,v $
+Revision 1.9  2004/07/30 15:42:34  nw
+merged in branch nww-itn06-bz#441 (groovy scripting)
+
+Revision 1.8.20.1  2004/07/30 14:00:10  nw
+first working draft
+
 Revision 1.8  2004/07/09 09:32:12  nw
 merged in scripting workflow interpreter from branch
 nww-x-workflow-extensions

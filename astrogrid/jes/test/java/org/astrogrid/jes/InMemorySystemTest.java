@@ -1,4 +1,4 @@
-/*$Id: InMemorySystemTest.java,v 1.18 2004/07/09 09:32:12 nw Exp $
+/*$Id: InMemorySystemTest.java,v 1.19 2004/07/30 15:42:34 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,8 +18,12 @@ import org.astrogrid.jes.component.JesComponentManagerFactory;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
-import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.jes.jobscheduler.dispatcher.ShortCircuitDispatcher;
+import org.astrogrid.jes.jobscheduler.impl.groovy.GroovyInterpreterFactory;
+import org.astrogrid.jes.jobscheduler.impl.groovy.GroovySchedulerImpl;
+import org.astrogrid.jes.jobscheduler.impl.groovy.GroovyTransformers;
+import org.astrogrid.jes.jobscheduler.impl.groovy.XStreamPickler;
+import org.astrogrid.jes.jobscheduler.impl.groovy.GroovySchedulerImpl.Transformers;
 import org.astrogrid.jes.testutils.io.FileResourceLoader;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.WorkflowString;
@@ -102,7 +106,7 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
         JesComponentManagerFactory._setInstance(cm);
     }
         
-    protected static int WAIT_SECONDS = 5;
+    protected static int WAIT_SECONDS = 20;
     
     protected JobController getController() throws Exception{
         return JesComponentManagerFactory.getInstance().getController();
@@ -162,18 +166,19 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
   }
     /** extended job scheduler that will notify us when tasks are complete. 
      *does this by entering barrier when done - which releases other (presumbably blocked) thread.*/
-    public static class ObservableJobScheduler extends org.astrogrid.jes.jobscheduler.impl.SchedulerImpl {
+    public static class ObservableJobScheduler extends GroovySchedulerImpl{
 
         /** Construct a new ObservableJobScheduler
-         * @param facade
+         * @param factory
+         * @param transformers
          * @param dispatcher
-         * @param policy
+         * @param interpFactory
          */
-        public ObservableJobScheduler(JobFactory factory, Dispatcher dispatcher, Policy policy,CyclicBarrier barrier){
-            super(factory, dispatcher, policy);
+        public ObservableJobScheduler(JobFactory factory, Transformers transformers, Dispatcher dispatcher, GroovyInterpreterFactory interpFactory,CyclicBarrier barrier) {
+            super(factory, transformers, dispatcher, interpFactory);
             this.barrier = barrier;
-
         }
+
         protected CyclicBarrier barrier;
         /**
          * @see org.astrogrid.jes.jobscheduler.JobScheduler#notifyJobFinished(org.astrogrid.jes.job.Job)
@@ -193,6 +198,13 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemorySystemTest.java,v $
+Revision 1.19  2004/07/30 15:42:34  nw
+merged in branch nww-itn06-bz#441 (groovy scripting)
+
+Revision 1.18.20.1  2004/07/30 15:10:04  nw
+removed policy-based implementation,
+adjusted tests, etc to use groovy implementation
+
 Revision 1.18  2004/07/09 09:32:12  nw
 merged in scripting workflow interpreter from branch
 nww-x-workflow-extensions

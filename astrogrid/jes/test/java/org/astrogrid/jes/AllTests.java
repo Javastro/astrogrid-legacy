@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.10 2004/04/08 14:47:12 nw Exp $
+/*$Id: AllTests.java,v 1.11 2004/07/30 15:42:34 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,11 +34,21 @@ public class AllTests {
         suite.addTest(org.astrogrid.jes.jobmonitor.AllTests.suite());
         suite.addTest(org.astrogrid.jes.jobscheduler.AllTests.suite());
         suite.addTest(org.astrogrid.jes.component.AllTests.suite());
+        suite.addTest(org.astrogrid.jes.jobscheduler.impl.groovy.AllTests.suite());
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.11  2004/07/30 15:42:34  nw
+merged in branch nww-itn06-bz#441 (groovy scripting)
+
+Revision 1.10.46.1  2004/07/27 23:37:59  nw
+refactoed framework.
+experimented with betwixt - can't get it to work.
+got XStream working in 5 mins.
+about to remove betwixt code.
+
 Revision 1.10  2004/04/08 14:47:12  nw
 added delete and abort job functionality
 

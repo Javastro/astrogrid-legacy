@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.66 2004/07/14 18:06:16 clq2 Exp $ -->
+<!-- $Id: project.xml,v 1.67 2004/07/30 15:42:34 nw Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
@@ -24,9 +24,9 @@
     <repository>
         <connection>scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/${astrogrid.name}</connection>
         <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/${astrogrid.name}</developerConnection>
-		<url>http://www.astrogrid.org/viewcvs/astrogrid/${astrogrid.name}/</url>
+                <url>http://www.astrogrid.org/viewcvs/astrogrid/${astrogrid.name}/</url>
     </repository>
-	 
+
         <packageGroups>
                 <packageGroup>
                         <title>Web Service Delegate - Public Interface</title>
@@ -70,6 +70,7 @@
                         <include>**/*.properties</include>
                         <include>**/*.sql</include>
                         <include>**/*.ddl</include>
+			<include>**/*.betwixt</include>
                     </includes>
                 </resource>
             </resources>
@@ -82,6 +83,7 @@
                                         <include>**/*.xsl</include>
                                         <include>**/*.properties</include>
                                         <include>*.py</include>
+					<include>**/*.betwixt</include>
                                 </includes>
                         </resource>
                 </resources>
@@ -181,23 +183,32 @@
                 </properties>
             </dependency>
             -->
-            <dependency>
-                <id>jython</id>
-                <!--<version>2.1</version>-->
-                <version>SNAPSHOT</version>
+              <!-- the groovy scripting interpreter -->
+              <dependency>
+                <groupId>groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>1.0-beta-6</version>
                 <properties>
                         <war.bundle>true</war.bundle>
                 </properties>
-            </dependency>
-                <dependency>
-                        <groupId>jython</groupId>
-                        <artifactId>jython-lib</artifactId>
-                        <version>2.1.nww</version>
-                        <properties>
-                                <war.bundle>true</war.bundle>
-                        </properties>
-                </dependency>
-
+              </dependency>
+              <dependency>
+                <groupId>asm</groupId>
+                <artifactId>asm</artifactId>
+                <version>1.4.1</version>
+                <properties>
+                        <war.bundle>true</war.bundle>
+                </properties>
+              </dependency>
+              <!-- bsf ..
+                  <dependency>
+      <groupId>bsf</groupId>
+      <artifactId>bsf</artifactId>
+      <version>2.3.0-rc1</version>
+      <url>http://jakarta.apache.org/bsf/</url>
+    </dependency>
+                -->
+            <!-- other deps -->
             <dependency>
               <id>xml-apis</id>
               <version>1.0.b2</version>
@@ -205,7 +216,14 @@
                       <war.bundle>true</war.bundle>
              </properties>
             </dependency>
-        <!-- digester stuff -->
+	<dependency>
+		<id>xstream</id>
+		<version>1.0.1</version>
+		<properties>
+			<war.bundle>true</war.bundle>
+		</properties>
+	</dependency>
+        
     <dependency>
         <id>commons-digester</id>
         <version>1.5</version>
@@ -213,6 +231,7 @@
                 <war.bundle>true</war.bundle>
         </properties>
     </dependency>
+
     <dependency>
         <id>commons-beanutils</id>
         <version>1.6</version>
