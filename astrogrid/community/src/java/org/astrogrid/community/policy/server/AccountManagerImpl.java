@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/AccountManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/09 10:57:47 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:author>$Author: KevinBenson $</cvs:author>
+ * <cvs:date>$Date: 2003/09/09 16:48:48 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.4  2003/09/09 16:48:48  KevinBenson
+ *   added setpassword in their on the update
+ *
  *   Revision 1.3  2003/09/09 10:57:47  dave
  *   Added corresponding SINGLE Group to addAccount and delAccount.
  *
@@ -364,6 +367,7 @@ public class AccountManagerImpl
 					//
 					// Update the account data.
 					data.setDescription(account.getDescription()) ;
+               data.setPassword(account.getPassword());
 					}
 				//
 				// If we couldn't find the object.
