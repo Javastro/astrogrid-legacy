@@ -103,6 +103,7 @@ public class JesAction extends AbstractAction {
 	public static final String CONFIRM_PARAM_TAG = "confirm";
     
     public static final String HTTP_JOBLIST_TAG = "job-list-tag" ,
+							   JOBURN_PARAMETER = "jobURN" ,
                                COMMUNITY_ACCOUNT_TAG = "user" ,
                                COMMUNITY_NAME_TAG = "community_name" ,
                                CREDENTIAL_TAG = "credential" ,
@@ -111,7 +112,8 @@ public class JesAction extends AbstractAction {
     
     public static final String ERROR_MESSAGE_PARAMETER = "ErrorMessage";
     
-    public static final String ACTION_READ_JOB_LIST = "read-job-list";
+    public static final String ACTION_READ_JOB_LIST = "read-job-list",
+	                           ACTION_READ_JOB = "read-job";
         
     public static final String AUTHORIZATION_RESOURCE_JOB = "job" ,
                                AUTHORIZATION_ACTION_EDIT = "edit";
@@ -235,6 +237,9 @@ public class JesAction extends AbstractAction {
                 if( action.equals( ACTION_READ_JOB_LIST ) ) {
                     this.readJobList(); 
                 }
+				else if( action.equals( ACTION_READ_JOB ) ) {
+					this.readJob(); 
+				}                
                 else {
                     debug( "unsupported action"); 
                 }
@@ -384,6 +389,43 @@ public class JesAction extends AbstractAction {
             }
                     
         } // end of readJobList()   
+        
+
+		private void readJob() {
+			if( TRACE_ENABLED ) trace( "JesActionImpl.readJob() entry" );
+              
+			try {
+				
+				String jobURN = request.getParameter( JOBURN_PARAMETER ) ;
+				
+				if( jobURN == null ) {
+					debug("jobURN is null") ;
+					throw new ConsistencyException() ; 
+				}
+				else{		
+					JobExecutionService jes = workflowManager.getJobExecutionService();							
+					workflow = jes.readJob( jobURN ) ;
+				}                 
+				
+				if (workflow != null ){
+					// Save the workflow in the session object...
+					debug( "about to set workflow session attribute..." ) ;
+					session.setAttribute( HTTP_WORKFLOW_TAG, workflow ) ;
+				}											
+				
+			}
+			catch( WorkflowInterfaceException wix ) {
+				this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wix.toString() ) ;
+			}
+			catch( Exception ex ) {                
+				this.request.setAttribute(  ERROR_MESSAGE_PARAMETER, "permission denied" );                
+			}
+			finally {
+				if( TRACE_ENABLED )
+					trace( "JesActionImpl.readJob() exit" );
+			}
+                    
+		} // end of readJob()
            
   
         private void checkPermissions ( String someResource, String anAction ) 
