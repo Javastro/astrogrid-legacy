@@ -10,7 +10,7 @@ PROJECT_HOME=$BUILD_HOME/astrogrid/$PROJECT_NAME
 DOC_HOME=/var/www/www/maven/docs
 ASTROGRID_VERSION=SNAPSHOT
 LOG_FILE=$BUILD_HOME/maven-build-$PROJECT_NAME.log
-ADMIN_EMAIL=clq2@star.le.ac.uk,jdt@roe.ac.uk
+ADMIN_EMAIL=jdt@roe.ac.uk
 
 echo
 echo "[ag-build] building $PROJECT_NAME $ASTROGRID_VERSION"
