@@ -1,4 +1,4 @@
-/*$Id: AdqlTest.java,v 1.1 2004/04/26 09:05:10 mch Exp $
+/*$Id: AdqlTest.java,v 1.2 2004/04/26 12:16:25 nw Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,7 +62,7 @@ public class AdqlTest extends TestCase implements StdKeys {
      */
     public static Test suite() {
         // Reflection is used here to add all the testXXX() methods to the suite.
-        return new TestSuite(ConeTest.class);
+        return new TestSuite(AdqlTest.class);
     }
    
     /**/
@@ -75,6 +75,9 @@ public class AdqlTest extends TestCase implements StdKeys {
 
 /*
 $Log: AdqlTest.java,v $
+Revision 1.2  2004/04/26 12:16:25  nw
+fixed static suite() method
+
 Revision 1.1  2004/04/26 09:05:10  mch
 Added adql test
 
