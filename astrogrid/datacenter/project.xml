@@ -22,7 +22,7 @@
   <shortDescription>AstroGrid DataCenter Components</shortDescription>
 
   <siteDirectory>/var/www/www/maven/build/datacenter</siteDirectory>
-  
+
   <repository>
     <connection>
       scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/datacenter
@@ -31,7 +31,7 @@
       scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/datacenter
     </developerConnection>
   </repository>
-  
+
   <developers>
     <developer>
       <name>Jeff Lusted</name>
@@ -57,77 +57,18 @@
     	<email>nw@jb.man.ac.uk</email>
     </developer>
   </developers>
-  
-  <dependencies>
+
+  <dependencies> <!-- hope to be able to remove some of these soon. -->
+    <!-- astrogrid -specific deps -->
     <dependency>
       <id>astrogrid-common</id>
       <version>SNAPSHOT</version>
     </dependency>
 
     <dependency>
-      <id>axis</id>
-      <version>1.1</version>
-    </dependency>
-
-    <dependency>
       <id>breezetk</id>
       <version>UNKNOWN</version>
       <jar>breezetk.jar</jar>
-    </dependency>
-
-    <dependency>
-      <id>castor</id>
-      <version>0.9.5</version>
-    </dependency>
-
-    <dependency>
-      <id>commons-logging</id>
-      <version>1.0.3</version>
-    </dependency>
-
-    <dependency>
-      <id>commons-discovery</id>
-      <version>SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <id>jax-qname</id>
-      <version>UNKNOWN</version>
-      <jar>jax-qname.jar</jar>
-    </dependency>
-
-    <dependency>
-      <id>jaxrpc-api</id>
-      <version>1.0.3</version>
-    </dependency>
-
-    <dependency>
-      <id>jconn</id>
-      <version>UNKNOWN</version>
-      <jar>jconn2.jar</jar>
-    </dependency>
-    
-	<!-- NW: not needed any more
-    <dependency>
-      <id>jconfig</id>
-      <version>2.1</version>
-    </dependency>
--->
-
-    <dependency>
-      <id>junit</id>
-      <version>3.8</version>
-    </dependency>
-
-    <dependency>
-      <id>log4j</id>
-      <version>1.2.4</version>
-    </dependency>
-
-    <dependency>
-      <id>mysql</id>
-      <version>3.0.8</version>
-      <jar>mysql-connector-java-3.0.8-stable-bin.jar</jar>
     </dependency>
 
     <dependency>
@@ -141,12 +82,84 @@
       <version>UNKNOWN</version>
       <jar>VOTableUtil.jar</jar>
     </dependency>
+
+    <!-- more standard deps -->
+    <dependency>
+      <id>axis</id>
+      <version>1.1</version>
+    </dependency>
+
+    <dependency>
+      <id>wsdl4j</id>
+      <version>1.0</version>
+    </dependency>
+
+    <dependency>
+      <id>castor</id>
+      <version>0.9.5</version>
+      <jar>castor-0.9.5-xml.jar</jar>
+    </dependency>
+
+    <dependency><!-- portions of this are required by castor -->
+	<id>xerces</id>
+	<version>2.4.0</version>
+    </dependency>
+
+    <dependency>
+      <id>commons-logging</id>
+      <version>1.0.3</version>
+    </dependency>
+
+    <dependency>
+      <id>commons-discovery</id>
+      <version>SNAPSHOT</version>
+    </dependency>
+
+   <dependency> <!-- its only one file, maybe this occurs elsewhere -->
+      <id>jax-qname</id>
+      <version>UNKNOWN</version>
+      <jar>jax-qname.jar</jar>
+    </dependency>
+
+    <dependency>
+      <id>jaxrpc-api</id>
+      <version>1.0.3</version>
+    </dependency>
+
+    <dependency>
+      <id>xml-apis</id>
+      <version>1.0.b2</version>
+    </dependency>
+
+    <dependency>
+      <id>junit</id>
+      <version>3.8</version>
+    </dependency>
+
+    <dependency>
+      <id>log4j</id>
+      <version>1.2.4</version>
+    </dependency>
+
+    <!-- database drivers -->
+    <dependency>
+    	<id>mm-mysql</id>
+	<version>2.0.7</version>
+    </dependency>
+
+    <dependency><!-- for sybase -->
+      <id>jconn</id>
+      <version>UNKNOWN</version>
+      <jar>jconn2.jar</jar>
+    </dependency>
+	<!-- add entry for ms sql server -->
+
   </dependencies>
-  
+
   <build>
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-    
+
     <unitTest>
       <includes>
         <include>**/*Test.java</include>
@@ -157,12 +170,38 @@
           <directory>${basedir}/test/java</directory>
           <includes>
             <include>**/*.xml</include>
+	    <include>**/*.properties</include>
           </includes>
         </resource>
       </resources>
     </unitTest>
+
+    <resources>
+    	<resource><!-- config files -->
+		<directory>${basedir}/src/java</directory>
+		<includes>
+			<include>**/*.xml</include>
+			<include>**/*.properties</include>
+		</includes>
+	</resource>
+	<resource> <!-- schemas  - may be needed for validation -->
+		<directory>${basedir}</directory>
+		<includes>
+			<include>schema/*.xsd</include>
+			<include>schema/*.dtd</include>
+		</includes>
+	</resource>
+	<resource> <!-- webservice related files -->
+		<directory>${basedir}</directory>
+		<includes>
+			<include>wsdl/*.wsdl</include>
+			<include>wsdd/*.wsdd</include>
+		</includes>
+	</resource>
+    </resources>
+
   </build>
-  
+
   <reports>
     <report>
       maven-changelog-plugin
