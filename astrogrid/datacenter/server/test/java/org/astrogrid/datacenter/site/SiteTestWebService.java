@@ -1,4 +1,4 @@
-/*$Id: SiteTestWebService.java,v 1.5 2004/03/13 16:26:56 mch Exp $
+/*$Id: SiteTestWebService.java,v 1.6 2004/03/14 00:56:43 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,11 +18,10 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
-import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.ConeQuery;
 
 /**
  * For testing astrogrid datacenter web services and their delegates
@@ -55,12 +54,7 @@ public class SiteTestWebService extends TestCase {
    {
       QuerySearcher querier = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS, endPoint, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
 
-      InputStream is = SiteTestWebService.class.getResourceAsStream("test-query.adql");
-
-        Select select = Select.unmarshalSelect(new InputStreamReader(is));
-        assertNotNull(select);
-
-      InputStream results = querier.askQuery(new AdqlQuery(ADQLUtils.toQueryBody(select)), QuerySearcher.VOTABLE);
+      InputStream results = querier.askQuery(new ConeQuery(30, 30, 6), QuerySearcher.VOTABLE);
       
       assertNotNull(results);
    }
@@ -89,6 +83,9 @@ public class SiteTestWebService extends TestCase {
 
 /*
 $Log: SiteTestWebService.java,v $
+Revision 1.6  2004/03/14 00:56:43  mch
+Changed test to cone search
+
 Revision 1.5  2004/03/13 16:26:56  mch
 Changed makeFullSearcher to makeQuerySearcher
 
