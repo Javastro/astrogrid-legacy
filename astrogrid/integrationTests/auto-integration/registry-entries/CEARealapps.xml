@@ -2,7 +2,7 @@
 <VODescription xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns="http://www.ivoa.net/xml/VOResource/v0.9">
     <cea:CeaApplication xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <Identifier>
-            <AuthorityID>org.astrogrid.localhost</AuthorityID>
+            <AuthorityID>@REGAUTHORITY@</AuthorityID>
             <ResourceKey>SExtractor</ResourceKey>
         </Identifier>
         <Title>TemplateEntry</Title>
@@ -89,7 +89,7 @@
     </cea:CeaApplication>
     <cea:CeaApplication xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <Identifier>
-            <AuthorityID>org.astrogrid.localhost</AuthorityID>
+            <AuthorityID>@REGAUTHORITY@</AuthorityID>
             <ResourceKey>HyperZ</ResourceKey>
         </Identifier>
         <Title>TemplateEntry</Title>
@@ -156,7 +156,7 @@
     </cea:CeaApplication>
     <cea:CeaApplication xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <Identifier>
-            <AuthorityID>org.astrogrid.localhost</AuthorityID>
+            <AuthorityID>@REGAUTHORITY@</AuthorityID>
             <ResourceKey>CrossMatcher</ResourceKey>
         </Identifier>
         <Title>TemplateEntry</Title>
@@ -251,7 +251,7 @@
     </cea:CeaApplication>
     <cea:CeaService xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <Identifier>
-            <AuthorityID>org.astrogrid.localhost</AuthorityID>
+            <AuthorityID>@REGAUTHORITY@</AuthorityID>
             <ResourceKey>JBOApps</ResourceKey>
         </Identifier>
         <Title>TemplateEntry</Title>
@@ -292,15 +292,15 @@
         </Interface>
         <cea:ManagedApplications>
             <cea:ApplicationReference>
-                <AuthorityID>org.astrogrid.localhost</AuthorityID>
+                <AuthorityID>@REGAUTHORITY@</AuthorityID>
                 <ResourceKey>SExtractor</ResourceKey>
             </cea:ApplicationReference>
             <cea:ApplicationReference>
-                <AuthorityID>org.astrogrid.localhost</AuthorityID>
+                <AuthorityID>@REGAUTHORITY@</AuthorityID>
                 <ResourceKey>HyperZ</ResourceKey>
             </cea:ApplicationReference>
             <cea:ApplicationReference>
-                <AuthorityID>org.astrogrid.localhost</AuthorityID>
+                <AuthorityID>@REGAUTHORITY@</AuthorityID>
                 <ResourceKey>CrossMatcher</ResourceKey>
             </cea:ApplicationReference>
         </cea:ManagedApplications>

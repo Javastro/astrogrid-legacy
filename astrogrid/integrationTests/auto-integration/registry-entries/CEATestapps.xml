@@ -2,7 +2,7 @@
 <VODescription xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns="http://www.ivoa.net/xml/VOResource/v0.9">
     <cea:CeaApplication status="active"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <Identifier>
-            <AuthorityID>org.astrogrid.localhost</AuthorityID>
+            <AuthorityID>@REGAUTHORITY@</AuthorityID>
             <ResourceKey>testapp</ResourceKey>
         </Identifier>
         <Title>TemplateEntry</Title>
@@ -137,7 +137,7 @@
     </cea:CeaApplication>
     <cea:CeaApplication status="active"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <Identifier>
-            <AuthorityID>org.astrogrid.localhost</AuthorityID>
+            <AuthorityID>@REGAUTHORITY@</AuthorityID>
             <ResourceKey>testap2</ResourceKey>
         </Identifier>
         <Title>TemplateEntry</Title>
@@ -272,7 +272,7 @@
     </cea:CeaApplication>
     <cea:CeaApplication status="active"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <Identifier>
-            <AuthorityID>org.astrogrid.localhost</AuthorityID>
+            <AuthorityID>@REGAUTHORITY@</AuthorityID>
             <ResourceKey>testap3</ResourceKey>
         </Identifier>
         <Title>TemplateEntry</Title>
@@ -333,7 +333,7 @@
     </cea:CeaApplication>
     <cea:CeaService status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <Identifier>
-            <AuthorityID>org.astrogrid.localhost</AuthorityID>
+            <AuthorityID>@REGAUTHORITY@</AuthorityID>
             <ResourceKey>TestCEC</ResourceKey>
         </Identifier>
         <Title>TestCEC</Title>
@@ -370,7 +370,7 @@
         </Capability>
         <Interface>
             <Invocation>WebService</Invocation>
-            <AccessURL use="base">http://localhost:8080/astrogrid-applications-SNAPSHOT/services/CommonExecutionConnectorService</AccessURL>
+            <AccessURL use="base">@TOMCATROOT@/astrogrid-applications-SNAPSHOT/services/CommonExecutionConnectorService</AccessURL>
         </Interface>
         <cea:ManagedApplications>
             <cea:ApplicationReference>
