@@ -91,7 +91,8 @@ public class JobScheduler {
 		}
 		catch ( Exception ex ) {
 			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST ) ; 
+				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST
+                                              , this.getComponentName() ) ; 
 			logger.error( message.toString(), ex ) ;
 			throw new JobSchedulerException( message, ex );
 		} 
@@ -142,7 +143,8 @@ public class JobScheduler {
         catch( AstroGridException jex ) {
         	
 	        AstroGridMessage  
-		       generalMessage = new AstroGridMessage( ASTROGRIDERROR_ULTIMATE_SCHEDULEFAILURE ) ;
+		       generalMessage = new AstroGridMessage( ASTROGRIDERROR_ULTIMATE_SCHEDULEFAILURE
+                                                    , this.getComponentName() ) ;
 	        logger.error( generalMessage.toString() ) ;
 	        
         }
@@ -187,7 +189,8 @@ public class JobScheduler {
         }
         catch ( Exception ex ) {
             AstroGridMessage
-                message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_FORMAT_RUN_REQUEST ) ; 
+                message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_FORMAT_RUN_REQUEST
+                                              , this.getComponentName() ) ; 
             logger.error( message.toString(), ex ) ;
             throw new JesException( message ) ;
         } 
@@ -331,7 +334,8 @@ public class JobScheduler {
         }
         catch ( Exception ex ) {
             AstroGridMessage
-                message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_CONTACT_DATACENTER ) ; 
+                message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_CONTACT_DATACENTER
+                                              , this.getComponentName() ) ; 
             logger.error( message.toString(), ex ) ;
             throw new JesException( message ) ;
         } 
@@ -403,7 +407,7 @@ public class JobScheduler {
         }
         catch ( Exception ex ) {
             AstroGridMessage
-                message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_FORMAT_RUN_REQUEST 
+                message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_FORMAT_RUN_REQUEST
                                               , this.getComponentName() ) ; 
             logger.error( message.toString(), ex ) ;
             throw new JesException( message ) ;
@@ -452,7 +456,8 @@ public class JobScheduler {
 		}
 		catch ( Exception ex ) {
 			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_CONTACT_REGISTRY ) ; 
+				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_CONTACT_REGISTRY
+                                              , this.getComponentName() ) ; 
 			logger.error( message.toString(), ex ) ;
             throw new JesException(message) ;
 		} 
@@ -520,14 +525,23 @@ public class JobScheduler {
                  joinCondition = jobStep.getJoinCondition() ;
                  guardStep = (JobStep)guardSteps.get( new Integer( jobStep.getSequenceNumber().intValue() - 1 ) ) ;
                     
-                 // If there is no guard step, assume this step should execute...
+                 // If there is no guard step (the first step in a job?), 
+                 // assume this step should execute...
                  if( guardStep == null ) {
                      this.maintainCandidateList( candidates, jobStep ) ; 
                      break ;   
                  }  
                       
-                 // If join condition is "any", the step should execute... 
-                 if( joinCondition.equals( JobStep.JOINCONDITION_ANY ) ) {
+                 // If a guardstep has finished (either OK or in error)
+                 // and the join condition is "any", the step should execute... 
+                 if( 
+                     ( guardStep.getStatus().equals( JobStep.STATUS_COMPLETED )
+                       ||
+                       guardStep.getStatus().equals( JobStep.STATUS_IN_ERROR ) )
+                     && 
+                     joinCondition.equals( JobStep.JOINCONDITION_ANY ) 
+                   ) {
+                         
                      this.maintainCandidateList( candidates, jobStep ) ;
                      break ;   
                  }
