@@ -1,6 +1,7 @@
 package org.astrogrid.datacenter.config;
 
 import java.io.IOException;
+import java.net.URL;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -16,8 +17,14 @@ public class ConfigurationTest extends TestCase
    private static final String testPropertyFile = "test.properties";
    private static final String nonExistantFile = "testNotHere.properties";
 
-   public void testConfiguration() throws IOException
+   public void testLoad() throws IOException
    {
+      //load from URL
+      URL testUrl = getClass().getResource(testPropertyFile);
+      Configuration.load(testUrl);
+      //load from stream
+      Configuration.load(getClass().getResourceAsStream(testPropertyFile));
+      //load from file - should fail
       //make sure we get an exception if we try loading a non-existant file
       try
       {
@@ -29,6 +36,18 @@ public class ConfigurationTest extends TestCase
       }
       catch (IOException ioe) {} //fine do nothing
 
+      //look at locations - should include url above
+      String loadedFrom = Configuration.getLocations();
+
+      if (loadedFrom.indexOf(testUrl.toString()) == -1)
+      {
+         fail("Url of loaded file "+testUrl+" not in locations loaded from");
+      }
+
+   }
+
+   public void testConfiguration() throws IOException
+   {
       //if this throws a NulPointerException the test properties file is probably missing
       Configuration.load(getClass().getResource(testPropertyFile));
 
