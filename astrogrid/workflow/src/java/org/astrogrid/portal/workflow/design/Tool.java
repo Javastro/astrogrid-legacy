@@ -28,7 +28,10 @@ package org.astrogrid.portal.workflow.design;
 public interface Tool {
     
     public String toXMLString() ;
+    public String toJESXMLString() ;
+    public String getName() ;
+    public String getDescription() ;
     
-    public String getToolName() ; 
+    public String getToolType() ; 
 
 }

@@ -41,7 +41,8 @@ public class WorkflowDD {
         STEP_JOINCONDITION_ATTR = "stepJoinCondition";
         
     public static final String
-        TOOL_ELEMENT = "tool",
+        QUERY_ELEMENT = "query",
+        NULL_TOOL_ELEMENT = "nulltool",
         RESOURCES_ELEMENT = "resources";
         
     public static final String       
@@ -68,14 +69,13 @@ public class WorkflowDD {
     public static final String
         STEP_TEMPLATE =
         "<step name=\"{0}\" " +        "      joinCondition=\"{1}\" " +        "      stepNumber=\"{2}\" " +        "      sequenceNumber=\"{3}\">" +
-        "   {4}" +                          // tool
+        "   {4}" +                          // some tool (e.g. query)
         "   {5}" +                          // resources
         "</step>" ;
         
     public static final String
-        TOOL_TEMPLATE =
-        "<tool>" +
-        "</tool>" ;   
+        QUERY_TEMPLATE =
+        "<query>" +        "</query>" ;  
         
     public static final String
         RESOURCES_TEMPLATE =

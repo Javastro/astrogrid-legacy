@@ -1,5 +1,5 @@
 /*
- * @(#)NullTool.java   1.0
+ * @(#)QueryTool.java   1.0
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -12,6 +12,7 @@
 package org.astrogrid.portal.workflow.design;
 
 import org.apache.log4j.Logger ;
+import org.w3c.dom.* ;
 /**
  * The <code>NullTool</code> class represents... 
  * <p>
@@ -26,7 +27,7 @@ import org.apache.log4j.Logger ;
  * @see     
  * @since   AstroGrid 1.3
  */
-public final class NullTool implements Tool {
+public final class QueryTool implements Tool {
     
     /** Compile-time switch used to turn tracing on/off. 
       * Set this to false to eliminate all trace statements within the byte code.*/         
@@ -34,22 +35,33 @@ public final class NullTool implements Tool {
         TRACE_ENABLED = true ;
         
     private static Logger 
-        logger = Logger.getLogger( NullTool.class ) ; 
+        logger = Logger.getLogger( QueryTool.class ) ; 
     
-    public static final String 
-        xmlString = "<tool><nulltool/></tool>";
+    private String
+        name = null ,
+        description = null ;
+        
+    private String
+        xmlQuery = null ;
+        
+    public QueryTool() {
+        if( TRACE_ENABLED ) trace( "QueryTool() entry/exit") ;  
+    }
+    
+    public QueryTool( Element element ) {
+        if( TRACE_ENABLED ) trace( "QueryTool(Element) entry/exit") ;   
+    }
         
         
-    public String getToolType() { return "NullTool" ; }
+    public String getToolType() { return "Query" ; }
         
 
 
-	public String toXMLString() { return xmlString ; }
+	public String toXMLString() { return xmlQuery ; }   
+    public String toJESXMLString() { return xmlQuery ; }
     
-    public String toJESXMLString() { return xmlString ; }
-    
-    public String getName() { return "NullTool_instance" ; }
-    public String getDescription() { return "This is an instance of a NullTool" ; }
+    public String getName() { return "" ; }
+    public String getDescription() { return "" ; }
     
     private static void trace( String traceString ) {
         System.out.println( traceString ) ;
@@ -61,4 +73,4 @@ public final class NullTool implements Tool {
         // logger.debug( logString ) ;
     }  
 
-} // end of class NullTool
+} // end of class QueryTool

@@ -65,7 +65,6 @@ public class Step extends Activity {
  
     public Step( Element element ) {
         super() ;
-        joinCondition = JoinCondition.ANY ; 
         if( TRACE_ENABLED ) trace( "Step(Element) entry") ; 
         
         try {
@@ -103,9 +102,12 @@ public class Step extends Activity {
                     
                     element = (Element) nodeList.item(i) ;
                 
-                    if ( element.getTagName().equals( WorkflowDD.TOOL_ELEMENT ) ) {
+                    if ( element.getTagName().equals( WorkflowDD.NULL_TOOL_ELEMENT ) ) {
                         this.tool = new NullTool() ;   
-                    }   
+                    }  
+                    else if( element.getTagName().equals( WorkflowDD.QUERY_ELEMENT ) ) {
+                        this.tool = new QueryTool( element ) ;   
+                    }  
                     else if( element.getTagName().equals( WorkflowDD.RESOURCES_ELEMENT ) ) {
                         this.resources = new Resources( element ) ;                
                     }
@@ -122,11 +124,6 @@ public class Step extends Activity {
         
     }   
     
-
-    
-    
-    
-
 	public void setName(String name) {
 		this.name = name;
 	}

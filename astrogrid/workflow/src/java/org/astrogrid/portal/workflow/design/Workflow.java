@@ -26,6 +26,7 @@ import org.astrogrid.AstroGridException ;
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 import org.astrogrid.portal.workflow.*;
 import org.astrogrid.portal.workflow.design.activity.*;
+import org.astrogrid.portal.workflow.design.myspace.*;
 import org.w3c.dom.Document ;
 
 /**
@@ -197,24 +198,14 @@ public class Workflow extends Activity {
          
      try {
         
-         //JBL serialize the Workflow to a suiteable XML file to be picked
-         // up by MySpace. This is where we make use of the toXML() method
-         // to pull the whole tree together...
-            
-         MySpaceManagerDelegate
-             mySpace = new MySpaceManagerDelegate( Workflow.locateMySpace( workflow.getUserid()
-                                                                         , workflow.getCommunity() ) ) ;
-              
-         //JBL format the MySpace request here
-         
-            
-         String
-             responseXML = mySpace.upLoad( "" ) ;
-                
-         //JBL decode the response here...
+        MySpaceHelper
+            myspace = new MySpaceHelper() ;
         
+        myspace.saveWorkflow( workflow ) ;
+               
      }
      catch( Exception ex ) {
+         debug( "Exception" ) ;
      }
      finally {
          if( TRACE_ENABLED ) trace( "Workflow.saveWorkflow() exit") ; 
