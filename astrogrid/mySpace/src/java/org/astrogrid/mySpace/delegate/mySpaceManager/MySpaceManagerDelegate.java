@@ -33,8 +33,6 @@ public class MySpaceManagerDelegate {
  */
 
     public MySpaceManagerDelegate() {
-        this.mssUrl = mssUrl;
-        this.queryMssUrl = queryMssUrl;
     }
 
 /**
