@@ -4,7 +4,7 @@ import org.apache.axis.enum.Style;
 import org.apache.axis.enum.Use;
 
 
-public class DocWebServiceDelegate extends WebServiceDelegate {
+public abstract class DocWebServiceDelegate extends WebServiceDelegate {
 	
 	public DocWebServiceDelegate() {
 		super();

@@ -63,14 +63,14 @@ public abstract class WebServiceDelegate {
 	}
 
 	protected Object invoke(Object []param) throws Exception {
-		if(isValid()) {
+		if(this.isValid()) {
 			return this.call.invoke(param);
 		}else {
 			throw new Exception("Your call to the webservice is not valid");
 		}
 	}
 	
-	private boolean isValid() {
+	protected boolean isValid() {
 		if(this.call.getOperationName() == null || this.call.getTargetEndpointAddress() == null ||
 		   this.call.getTargetEndpointAddress().length() == 0) {
 		     return false;
