@@ -12,7 +12,7 @@
 
   <!-- The version of the project under development, e.g.
        1.1, 1.2, 2.0-dev -->
-  <currentVersion>HEAD</currentVersion>
+  <currentVersion>${astrogrid.iteration}</currentVersion>
 
 
   <description>

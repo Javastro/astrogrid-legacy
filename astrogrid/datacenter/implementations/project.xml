@@ -8,7 +8,7 @@
   <id>astrogrid-datacenter-implementations</id>
   <name>AstroGrid DataCenter Server Implementations</name>
 
-  <currentVersion>HEAD</currentVersion>
+  <currentVersion>${astrogrid.iteration}</currentVersion>
 
 	<description><![CDATA[
 	Astrogrid datacenter server back-ends

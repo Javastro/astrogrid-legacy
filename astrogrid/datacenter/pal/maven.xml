@@ -73,7 +73,7 @@
     <echo message="pal: grab-server"/>
    <mkdir dir="${webapp.root}/server" />
    <copy todir="${webapp.root}/server">
-      <fileset dir="${server.dir}/target/astrogrid-datacenter-server-HEAD/bin/astrogrid-datacenter-server-HEAD/docs" />
+      <fileset dir="${server.dir}/target/astrogrid-datacenter-server-${pom.currentVersion}/bin/astrogrid-datacenter-server-${pom.currentVersion}/docs" />
    </copy>
    <mkdir dir="${webapp.root}/server-dist"/>
    <copy todir="${webapp.root}/server-dist">
