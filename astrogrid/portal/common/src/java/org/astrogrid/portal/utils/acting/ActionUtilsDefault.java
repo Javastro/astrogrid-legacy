@@ -110,7 +110,7 @@ public class ActionUtilsDefault implements ActionUtils {
     if(request != null) {
       result = getRequestParameter(sitemapParam, params, request);
       if(result != null && result.length() > 0) {
-        logger.debug("[getAnyParameter] REQUEST: [" + sitemapParam + "," + result + "]");
+        logger.error("[getAnyParameter] REQUEST: [" + sitemapParam + "," + result + "]");
         return result;
       }
     }
@@ -119,14 +119,14 @@ public class ActionUtilsDefault implements ActionUtils {
     if(session != null) {
       result = getSessionAttribute(sitemapParam, params, session);
       if(result != null && result.length() > 0) {
-        logger.debug("[getAnyParameter] SESSION: [" + sitemapParam + "," + result + "]");
+        logger.error("[getAnyParameter] SESSION: [" + sitemapParam + "," + result + "]");
         return result;
       }
     }
     
     // Get either sitemap parameter or the default value.
     result = params.getParameter(sitemapParam, defaultValue);
-    
+    logger.error("[getAnyParameter] SITEMAP: [" + sitemapParam + "," + result + "]");
     return result;
   }
 
