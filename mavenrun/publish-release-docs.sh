@@ -35,8 +35,6 @@ rm $LOGFILE
 echo "Release $TAG Docs Log $DATE" >> $LOGFILE
 echo "=============================" >> $LOGFILE
 
-# Checkout a rather precise set of files since we don't want to get the whole damn tree:
-
 if [ -d $CHECKOUTHOME ]; then
    echo
 else
@@ -46,12 +44,8 @@ fi
 
 cd $CHECKOUTHOME
 
-cvs-checkout-clean.sh astrogrid/maven-base $TAG  >> $LOGFILE 2>&1
-cvs-checkout-clean.sh astrogrid/xdocs $TAG  >> $LOGFILE 2>&1
-cvs-checkout-clean.sh astrogrid/project.xml $TAG  >> $LOGFILE 2>&1
-cvs-checkout-clean.sh astrogrid/project.properties $TAG  >> $LOGFILE 2>&1
-cvs-checkout-clean.sh astrogrid/maven.xml $TAG  >> $LOGFILE 2>&1
-
+#Need to get the whole damn tree for changelog to function correctly
+cvs-checkout-clean.sh astrogrid $TAG  >> $LOGFILE 2>&1
 
 cd $BUILDHOME
 
