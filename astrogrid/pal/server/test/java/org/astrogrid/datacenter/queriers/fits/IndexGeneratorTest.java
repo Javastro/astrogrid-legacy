@@ -1,4 +1,4 @@
-/*$Id: IndexGeneratorTest.java,v 1.7 2005/03/11 16:19:58 KevinBenson Exp $
+/*$Id: IndexGeneratorTest.java,v 1.8 2005/03/13 11:43:44 KevinBenson Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -17,6 +17,8 @@ import java.net.URL;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.fits.FitsTestSupport;
 import org.astrogrid.fitsserver.setup.IndexGenerator;
 import org.astrogrid.util.DomHelper;
@@ -33,6 +35,7 @@ public class IndexGeneratorTest extends TestCase
    {
       URL []genURLS = FitsTestSupport.getTestFits();
       System.out.println("length of urls = " + genURLS.length);
+      SimpleConfig.setProperty("indexgen.path","." + File.separator + "target");      
       IndexGenerator generator = new IndexGenerator();
       generator.raAxis = 1;
       generator.decAxis = 2;
@@ -96,6 +99,9 @@ public class IndexGeneratorTest extends TestCase
 
 /*
  $Log: IndexGeneratorTest.java,v $
+ Revision 1.8  2005/03/13 11:43:44  KevinBenson
+ small change for the indextenerator to create directories under target
+
  Revision 1.7  2005/03/11 16:19:58  KevinBenson
  new indexgenerator worked around.
 

@@ -248,6 +248,7 @@ public class IndexGenerator
       String line = null;
       while( (line = in.readLine()) != null) {
             generateIndex(new URL(line));
+            seqNum++;
       }
       return fileIndexDir;
    }
@@ -261,10 +262,12 @@ public class IndexGenerator
       System.out.println("entered generateIndex(urls[])");
       for(int i = 0; i < urls.length;i++) {
             generateIndex(urls[i]);
+            seqNum++;
       }//for
       return fileIndexDir;
    }
    
+   long seqNum = 0;
 
    /**
     * Generates an index XML file for the FITS files at the given URLs, writing it out to the target stream
@@ -285,11 +288,11 @@ public class IndexGenerator
        File xmlFile = null;
        FileWriter fw = null;
        PrintWriter pw = null;
-       long seqNum = System.currentTimeMillis();
+       //long seqNum = System.currentTimeMillis();
        String xmlSnippet = null;
           try {
              xmlSnippet = makeIndexSnippet(url);
-             String fileName = dirPath + String.valueOf((seqNum)) + ".xml";
+             String fileName = dirPath + "_" + String.valueOf((seqNum)) + ".xml";
              xmlFile = new File(fileIndexDir,fileName);
              fw = new FileWriter(xmlFile);
              pw = new PrintWriter(fw);
@@ -451,6 +454,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.4  2005/03/13 11:43:44  KevinBenson
+small change for the indextenerator to create directories under target
+
 Revision 1.3  2005/03/11 16:19:58  KevinBenson
 new indexgenerator worked around.
 
