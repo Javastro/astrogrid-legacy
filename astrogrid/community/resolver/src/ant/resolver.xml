@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/ant/resolver.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/04/16 14:11:20 $</cvs:date>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/16 14:52:54 $</cvs:date>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     |   $Log: resolver.xml,v $
+    |   Revision 1.7  2004/04/16 14:52:54  dave
+    |   Updated Ant task class
+    |
     |   Revision 1.6  2004/04/16 14:11:20  dave
     |   Added create account tool.
     |
@@ -117,6 +120,9 @@
         <classpath refid="resolver.classpath"/>
     </taskdef>
     <taskdef name="account.home.task" classname="org.astrogrid.community.resolver.ant.CommunityAccountSpaceResolverTask">
+        <classpath refid="resolver.classpath"/>
+    </taskdef>
+    <taskdef name="account.create.task" classname="org.astrogrid.community.resolver.ant.CommunityAccountCreatorTask">
         <classpath refid="resolver.classpath"/>
     </taskdef>
 
@@ -259,7 +265,7 @@
     <target name="account.create" depends="">
         <echo message=""/>
         <echo message="Account test ...."/>
-        <account.task
+        <account.create.task
             registry="${org.astrogrid.registry.url}"
             account="${org.astrogrid.community.ident}/grebo"
             />
