@@ -1,11 +1,28 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<document>
-<properties>
-	<author email="nw@jb.man.ac.uk">Noel Winstanley</author>
-	<title>PAL - Self Test</title>
-</properties>
+<%@ page import="java.io.*,
+         org.astrogrid.config.SimpleConfig,
+         org.astrogrid.datacenter.service.DataServer,
+         org.astrogrid.datacenter.sqlparser.*"
+   isThreadSafe="false"
+   session="false"
+%>
+
+<html>
+<head>
+<title>Publisher's Astrogrid Library for <%=DataServer.getDatacenterName() %> </title>
+<style type="text/css" media="all">
+          @import url("./style/maven-base.css");
+          @import url("./style/maven-theme.css");
+</style>
+</title>
+</head>
+
 <body>
-<section name="Test and Debug Axis"><p>
+<%@ include file="header.xml" %>
+<%@ include file="navigation.xml" %>
+
+<div id='bodyColumn'>
+
+<h1>Test and Debug Axis</h1>
 PAL uses Apache Axis as its underlying SOAP transport mechanism.
 
 <ul>
@@ -21,8 +38,8 @@ If the "happyaxis" validation page displays an exception instead of a
 status page, the likely cause is that you have multiple XML parsers in
 your classpath. Clean up your classpath by eliminating extraneous parsers.
 </p>
-</section>
-<section name="Test and Debug PAL">
+
+<h1>Test and Debug PAL</h1>
 <p>
 <ul>
 
@@ -31,6 +48,7 @@ self-tests</li>
 <li>Take a <a href="fingerprint.jsp">fingerprint</a> of the datacenter installation</li>
 </ul>
 </p>
-</section>
+
 </body>
-</document>
+</html>
+
