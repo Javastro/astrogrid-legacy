@@ -1,5 +1,5 @@
 /*
- * $Id: NvoConeSearchDelegate.java,v 1.5 2003/11/26 16:31:46 nw Exp $
+ * $Id: NvoConeSearchDelegate.java,v 1.6 2004/03/12 20:00:11 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -9,9 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import org.astrogrid.datacenter.delegate.ConeSearcher;
 import org.astrogrid.datacenter.delegate.DatacenterException;
+import org.astrogrid.datacenter.query.QueryState;
 
 /**
  * The National Virtual Observatory, an American effort, defined a simple
@@ -32,6 +32,10 @@ public class NvoConeSearchDelegate implements ConeSearcher
    public NvoConeSearchDelegate(String baseUrl)
    {
       this.serverUrl = baseUrl;
+   }
+   
+   public void setTimeout(int newTimeout) {
+      //@todo don't know how to implement that here
    }
    
    /**
@@ -74,11 +78,21 @@ public class NvoConeSearchDelegate implements ConeSearcher
    }
    
    
+   public String getMetadata() {
+      return "Not done yet";
+   }
+   
+   public String getStatus(String id) {
+      return ""+QueryState.UNKNOWN;
+   }
    
 }
 
 /*
 $Log: NvoConeSearchDelegate.java,v $
+Revision 1.6  2004/03/12 20:00:11  mch
+It05 Refactor (Client)
+
 Revision 1.5  2003/11/26 16:31:46  nw
 altered transport to accept any query format.
 moved back to axis from castor

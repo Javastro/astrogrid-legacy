@@ -1,4 +1,4 @@
-/*$Id: DatacenterCommander.java,v 1.3 2004/03/07 21:13:52 mch Exp $
+/*$Id: DatacenterCommander.java,v 1.4 2004/03/12 20:00:11 mch Exp $
  * Created on 24-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,19 +14,22 @@ import java.io.*;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
-import org.astrogrid.datacenter.delegate.DatacenterResults;
-import org.astrogrid.datacenter.delegate.FullSearcher;
-import org.astrogrid.datacenter.sql.SQLUtils;
+import org.astrogrid.datacenter.delegate.QuerySearcher;
+import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.RawSqlQuery;
 import org.astrogrid.io.Piper;
 import org.astrogrid.util.DomHelper;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 /** Simple tool to fire a query at a server, and print out the response.
  * Currently accepts queries in ADQL and SQL
@@ -112,14 +115,14 @@ public class DatacenterCommander {
          return;
       }
       System.out.println("Connecting to server...");
-      FullSearcher del = DatacenterDelegateFactory.makeFullSearcher(endpoint.toString());
+      QuerySearcher del = DatacenterDelegateFactory.makeFullSearcher(endpoint.toString());
       System.out.println("Reading query...");
       Select select = Select.unmarshalSelect(new InputStreamReader ( new FileInputStream(queryFile)));
       Element queryBody = ADQLUtils.toQueryBody(select);
       System.out.println("Asking query...");
-      DatacenterResults results = del.doQuery(FullSearcher.VOTABLE,queryBody);
+      InputStream results = del.askQuery(new AdqlQuery(queryBody), QuerySearcher.VOTABLE);
       System.out.println("Results:");
-      DomHelper.PrettyElementToStream(results.getVotable(), System.out);
+      Piper.bufferedPipe(results, System.out);
    }
    
    
@@ -134,16 +137,37 @@ public class DatacenterCommander {
       Piper.bufferedPipe(in, out);
    }
    
+   /**
+    * convert a sql string object to an Element that can be used as the query body in a
+     * {@link org.astrogrid.datacenter.delegate.FullSearcher}
+    * @param sql
+    * @return
+    */
+   public static Element sqlToQueryBody(String sql) throws IOException {
+      try {
+         Document doc = DomHelper.newDocument();
+         Element root = doc.createElementNS("urn:sql","sql:sql");
+         doc.appendChild(root);
+         Text text = doc.createTextNode(sql);
+         root.appendChild(text);
+         return root;
+      } catch (ParserConfigurationException pe) {
+         throw new IOException("Parser Configuration failed:" + pe.getMessage());
+      }
+   }
+            
+
+   
    public static void doSql(String endpoint, String sql) throws ServiceException, MarshalException, ValidationException, IOException, ADQLException{
       
       System.out.println("Connecting to server...");
-      FullSearcher del = DatacenterDelegateFactory.makeFullSearcher(endpoint.toString());
+      QuerySearcher del = DatacenterDelegateFactory.makeFullSearcher(endpoint.toString());
       System.out.println("Reading query...");
-      Element queryBody = SQLUtils.toQueryBody(sql);
+      Element queryBody = sqlToQueryBody(sql);
       System.out.println("Asking query...");
-      DatacenterResults results = del.doQuery(FullSearcher.VOTABLE,queryBody);
+      InputStream results = del.askQuery(new RawSqlQuery(sql), QuerySearcher.VOTABLE);
       System.out.println("Results:");
-      DomHelper.PrettyElementToStream(results.getVotable(), System.out);
+      Piper.bufferedPipe(results, System.out);
    }
    
 }
@@ -151,6 +175,9 @@ public class DatacenterCommander {
 
 /*
  $Log: DatacenterCommander.java,v $
+ Revision 1.4  2004/03/12 20:00:11  mch
+ It05 Refactor (Client)
+
  Revision 1.3  2004/03/07 21:13:52  mch
  Changed apache XMLUtils to implementation-independent DomHelper
 

@@ -18,7 +18,7 @@ import java.io.InputStream;
  * @author M Hill
  */
 
-public interface ConeSearcher
+public interface ConeSearcher extends DatacenterClient
 {
 
    /**
@@ -34,6 +34,9 @@ public interface ConeSearcher
 
 /*
 $Log: ConeSearcher.java,v $
+Revision 1.6  2004/03/12 20:00:11  mch
+It05 Refactor (Client)
+
 Revision 1.5  2003/11/26 16:31:46  nw
 altered transport to accept any query format.
 moved back to axis from castor

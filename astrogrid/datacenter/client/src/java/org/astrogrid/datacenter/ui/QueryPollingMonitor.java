@@ -1,5 +1,5 @@
 /*
- * $Id: QueryPollingMonitor.java,v 1.2 2004/03/07 00:33:50 mch Exp $
+ * $Id: QueryPollingMonitor.java,v 1.3 2004/03/12 20:00:11 mch Exp $
  */
 
 package org.astrogrid.datacenter.ui;
@@ -8,12 +8,15 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.datacenter.delegate.DatacenterQuery;
+import org.astrogrid.datacenter.delegate.DatacenterClient;
+import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
+import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.ui.EscEnterListener;
@@ -33,11 +36,13 @@ import org.astrogrid.ui.EscEnterListener;
 
 public class QueryPollingMonitor extends JFrame implements Runnable
 {
-   DatacenterQuery query = null;
+   String id = null;
 
    Log log = LogFactory.getLog(QueryPollingMonitor.class);
       
    JLabel statusLabel = null;
+   
+   DatacenterClient delegate;
    
    /**
     * Creates a polling monitor given an IVORN for the query, of the form:
@@ -51,34 +56,23 @@ public class QueryPollingMonitor extends JFrame implements Runnable
    /**
     * Creates a polling monitor given an endpoint for the datacneter
     */
-   public QueryPollingMonitor(URL datacenterEndpoint, String queryId)
+   public QueryPollingMonitor(URL datacenterEndpoint, String queryId) throws DatacenterException, MalformedURLException
    {
       super("QueryPollingMonitor");
-
+      this.id = queryId;
+      
+      delegate = DatacenterDelegateFactory.makeConeSearcher(datacenterEndpoint.toString());
+      
       initComponents();
 
 //    new Thread(this).start();
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * Creates a polling monitor given an endpoint for the datacneter
-    */
-   public QueryPollingMonitor(DatacenterQuery queryToMonitor)
-   {
-      super("QueryPollingMonitor");
-      
-      this.query = queryToMonitor;
-      
-      initComponents();
-      
-      new Thread(this).start();
-   }
-   
 
    private void initComponents() {
       getContentPane().setLayout(new BorderLayout());
-      getContentPane().add(new JLabel(query.getId()+":", JLabel.LEFT), BorderLayout.NORTH);
+      getContentPane().add(new JLabel(id+":", JLabel.LEFT), BorderLayout.NORTH);
       
       statusLabel = new JLabel("Unknown", JLabel.CENTER);
       
@@ -121,13 +115,13 @@ public class QueryPollingMonitor extends JFrame implements Runnable
    
    /** Polling activity */
    public void run() {
-      QueryState status = QueryState.UNKNOWN;
+      String status = ""+QueryState.UNKNOWN;
       
-      while (status != QueryState.FINISHED) {
+      while (!status.equals(QueryState.FINISHED)) {
          try {
-            status = query.getStatus();
+            status = delegate.getStatus(id);
             
-            statusLabel.setText(status.getText());
+            statusLabel.setText(status);
             
             Thread.currentThread().sleep(1000);
          }

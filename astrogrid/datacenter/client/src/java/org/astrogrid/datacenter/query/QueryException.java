@@ -10,17 +10,16 @@
  */
 package org.astrogrid.datacenter.query;
 
-import org.astrogrid.AstroGridException;
-import org.astrogrid.i18n.AstroGridMessage;
+/** Created when an error handling a Query has occured - eg parsing ADQL.  */
 
-public class QueryException extends AstroGridException {
+public class QueryException extends RuntimeException {
 
-    public QueryException( AstroGridMessage message ) {
+    public QueryException( String message ) {
       super( message ) ;
     }
 
-    public QueryException(  AstroGridMessage message, Exception exception ) {
-      super( message, exception ) ;
+    public QueryException(  String message, Throwable cause ) {
+      super( message, cause ) ;
     }
 
 }

@@ -1,4 +1,4 @@
-/* $Id: DatacenterProdder.java,v 1.2 2004/03/07 21:13:52 mch Exp $
+/* $Id: DatacenterProdder.java,v 1.3 2004/03/12 20:00:11 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -14,7 +14,6 @@ import java.io.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
-import java.util.Date;
 import java.util.Properties;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -23,14 +22,12 @@ import javax.swing.JPanel;
 import javax.swing.ProgressMonitor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.applications.delegate.ApplicationController;
-import org.astrogrid.applications.delegate.beans.ParameterValues;
 import org.astrogrid.community.Account;
 import org.astrogrid.community.User;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
-import org.astrogrid.datacenter.delegate.DatacenterQuery;
-import org.astrogrid.datacenter.delegate.DatacenterResults;
-import org.astrogrid.datacenter.delegate.FullSearcher;
+import org.astrogrid.datacenter.delegate.QuerySearcher;
+import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.io.Piper;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
@@ -62,8 +59,6 @@ public class DatacenterProdder extends JFrame
    JButton cancelButton;
    JButton kickOffSearchButton;
    JButton blockSearchButton;
-   JButton toolButton;
-   JButton jobButton;
    VoFileSelector queryLocator;
    VoFileSelector resultsLocator;
    DatacenterSelector datacenterLocator;
@@ -107,13 +102,9 @@ public class DatacenterProdder extends JFrame
       JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
       blockSearchButton = new JButton("Query (Block)", IconFactory.getIcon("Query"));
       kickOffSearchButton = new JButton("Query (KickOff)", IconFactory.getIcon("Query"));
-      toolButton = new JButton("Query (Tool)", IconFactory.getIcon("Query"));
-      jobButton = new JButton("Query (Job)", IconFactory.getIcon("Query"));
       cancelButton = new JButton("Exit", IconFactory.getIcon("Exit"));
       buttonPanel.add(kickOffSearchButton);
       buttonPanel.add(blockSearchButton);
-      buttonPanel.add(toolButton);
-      buttonPanel.add(jobButton);
       buttonPanel.add(cancelButton);
       
       kickOffSearchButton.addActionListener(
@@ -132,21 +123,6 @@ public class DatacenterProdder extends JFrame
          }
       );
 
-      toolButton.addActionListener(
-         new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-               runTool();
-            }
-         }
-      );
-      
-      jobButton.addActionListener(
-         new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-               runTool();
-            }
-         }
-      );
       cancelButton.addActionListener(
          new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -278,7 +254,7 @@ public class DatacenterProdder extends JFrame
 
          //connect up to the datacenter
          log.info("Connecting to datacenter at "+datacenterLocator.getDelegateEndPoint());
-         FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher(datacenterLocator.getDelegateEndPoint());
+         QuerySearcher querier = DatacenterDelegateFactory.makeFullSearcher(datacenterLocator.getDelegateEndPoint());
 
          progBox.setProgress(1);
          progBox.setNote("Connecting to query document");
@@ -301,26 +277,19 @@ public class DatacenterProdder extends JFrame
          progBox.setNote("Creating querier on server");
          log.info("Creating querier on server");
 
-         //if it's a file we'll need to load it and send it
-         DatacenterQuery dcQuery = querier.makeQuery(queryDoc);
-
-         JFrame frame = new QueryPollingMonitor(dcQuery);
-         frame.show();
-         
          //set the results destination
          String resultsLoc = resultsLocator.getFileLoc();
          assert resultsLoc != null : "Need to specify results!";
          
          log.info("...with results destination: "+resultsLoc);
-         dcQuery.setResultsDestination(resultsLoc);
 
          progBox.setProgress(4);
          progBox.setNote("Starting query");
+         String id = querier.submitQuery(new AdqlQuery(queryDoc), new Agsl(resultsLoc), "VOTABLE");
 
-         //and GO!
-         log.info("Starting query");
-         dcQuery.start();
-        
+         JFrame frame = new QueryPollingMonitor(new URL(datacenterLocator.getDelegateEndPoint()), id);
+         frame.show();
+         
          log.info("...query started.");
       }
       catch (Exception e)
@@ -348,7 +317,7 @@ public class DatacenterProdder extends JFrame
 
          //connect up to the datacenter
          log.info("Connecting to datacenter at "+datacenterLocator.getDelegateEndPoint());
-         FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher(datacenterLocator.getDelegateEndPoint());
+         QuerySearcher querier = DatacenterDelegateFactory.makeFullSearcher(datacenterLocator.getDelegateEndPoint());
 
          progBox.setProgress(1);
          progBox.setNote("Connecting to query document");
@@ -372,10 +341,8 @@ public class DatacenterProdder extends JFrame
 
          //and GO!
          log.info("Running Query...");
-         DatacenterResults results = querier.doQuery(querier.VOTABLE, queryDoc);
+         InputStream results = querier.askQuery(new AdqlQuery(queryDoc), querier.VOTABLE);
          log.info("...Query complete");
-
-         String xml = DomHelper.ElementToString( (Element) results.getVotable().getElementsByTagName("VOTABLE").item(0) );;
 
          if (resultsLocator.getFileLoc() != null) {
 
@@ -390,22 +357,27 @@ public class DatacenterProdder extends JFrame
                Agsl resultsRL = new Agsl(resultsLocator.getFileLoc());
 
                StoreClient vos = StoreDelegateFactory.createDelegate(user.toUser(), resultsRL);
-               vos.putString(xml, resultsRL.getPath(), false);
+               OutputStream out = vos.putStream(resultsRL.getPath());
+               log.info("...piping...");
+               Piper.bufferedPipe(results, out);
+               
                log.info("...results gone");
             }
          }
-            
-         progBox.setProgress(5);
-         progBox.setNote("Displaying Results");
+         else
+         {
+            progBox.setProgress(5);
+            progBox.setNote("Displaying Results");
 
-         //Pick out results. Rather painfully the Votable implementation
-         //borrowed from some IVO folks only works with a particular
-         //representation of votable, so we write it to disk first then
-         //load it again... We do it to memory given it must have arrived
-         //that way :-)
-         JVotBox box = new JVotBox(this);
-         box.getVotController().loadVot(new BufferedInputStream(new StringBufferInputStream(xml)));
-         box.show();
+            //Pick out results. Rather painfully the Votable implementation
+            //borrowed from some IVO folks only works with a particular
+            //representation of votable, so we write it to disk first then
+            //load it again... We do it to memory given it must have arrived
+            //that way :-)
+            JVotBox box = new JVotBox(this);
+            box.getVotController().loadVot(results); //oh well try it
+            box.show();
+         }
          
          progBox.setProgress(progBox.getMaximum()+1);   //close
       }
@@ -419,111 +391,6 @@ public class DatacenterProdder extends JFrame
 
    }
    
-   /**
-    * Runs the query as an ApplicationController (tool) delegate
-    */
-   public void runTool()   {
-      
-      storeEntries();
-      
-      log.info("Querying as ApplicationController tool");
-      ProgressMonitor progBox = new ProgressMonitor(this, "Submitting Query","Connecting to datacenter",0,2);
-
-      try  {
-         
-         progBox.setMillisToDecideToPopup(0);
-         progBox.setMillisToPopup(0);
-
-         //connect up to the datacenter
-         log.info("Connecting to datacenter at "+datacenterLocator.getDelegateEndPoint());
-         ApplicationController tool = (ApplicationController) DatacenterDelegateFactory.makeFullSearcher(datacenterLocator.getDelegateEndPoint());
-
-         //set up the parameters
-         progBox.setProgress(1);
-         progBox.setNote("Setting up parameters");
-         log.info("Setting up parameters");
-         ParameterValues parameters =  new ParameterValues();
-         parameters.setParameterSpec(
-            "<tool><input>"+
-              "<parameter name='QueryMySpaceReference' type='MySpaceRef'>"+queryLocator.getFileLoc()+"</parameter>"+
-              "<parameter name='ResultsMySpaceReference' type='MySpaceRef'>"+resultsLocator.getFileLoc()+"</parameter>"+
-            "</input></tool>");
-         
-         String localId = "MadeUpLocalId:"+new Date().getSeconds();
-
-         //initialise
-         log.info("Initialising...");
-         String runId = tool.initializeApplication("Datacenter", localId, null, null, parameters);
-
-         //and GO!
-         progBox.setProgress(4);
-         progBox.setNote("Starting query");
-         log.info("Starting query");
-         tool.executeApplication(runId);
-        
-      }
-      catch (Exception e)
-      {
-         log.error("Failed to run Query",e);
-      }
-      finally {
-         progBox.setProgress(progBox.getMaximum()+1);   //close
-      }
-      
-   }
-   
-   /**
-    * Runs the query as a JobStep
-    */
-   public void runJob()   {
-      
-      storeEntries();
-      
-      log.info("Querying as ApplicationController tool");
-      ProgressMonitor progBox = new ProgressMonitor(this, "Submitting Query","Connecting to datacenter",0,2);
-
-      try  {
-         
-         progBox.setMillisToDecideToPopup(0);
-         progBox.setMillisToPopup(0);
-
-         //connect up to the datacenter
-         log.info("Connecting to datacenter at "+datacenterLocator.getDelegateEndPoint());
-         ApplicationController tool = (ApplicationController) DatacenterDelegateFactory.makeFullSearcher(datacenterLocator.getDelegateEndPoint());
-
-         //set up the parameters
-         progBox.setProgress(1);
-         progBox.setNote("Setting up parameters");
-         log.info("Setting up parameters");
-         ParameterValues parameters =  new ParameterValues();
-         parameters.setParameterSpec(
-            "<tool><input>"+
-              "<parameter name='QueryMySpaceReference' type='MySpaceRef'>"+queryLocator.getFileLoc()+"</parameter>"+
-              "<parameter name='ResultsMySpaceReference' type='MySpaceRef'>"+resultsLocator.getFileLoc()+"</parameter>"+
-            "</input></tool>");
-         
-         String localId = "MadeUpLocalId_"+new Date().getSeconds();
-
-         //initialise
-         log.info("Initialising");
-         String runId = tool.initializeApplication("Datacenter", localId, null, null, parameters);
-
-         //and GO!
-         progBox.setProgress(4);
-         progBox.setNote("Starting query");
-         log.info("Starting query");
-         tool.executeApplication(runId);
-        
-      }
-      catch (Exception e)
-      {
-         log.error("Failed to run Query",e);
-      }
-      finally {
-         progBox.setProgress(progBox.getMaximum()+1);   //close
-      }
-      
-   }
    
    /**
     * Runs the box
@@ -549,6 +416,9 @@ public class DatacenterProdder extends JFrame
 
 /*
  $Log: DatacenterProdder.java,v $
+ Revision 1.3  2004/03/12 20:00:11  mch
+ It05 Refactor (Client)
+
  Revision 1.2  2004/03/07 21:13:52  mch
  Changed apache XMLUtils to implementation-independent DomHelper
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegateFactory.java,v 1.15 2004/02/23 18:08:47 mch Exp $
+ * $Id: DatacenterDelegateFactory.java,v 1.16 2004/03/12 20:00:11 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -11,9 +11,8 @@ import java.net.URL;
 import javax.xml.rpc.ServiceException;
 import org.astrogrid.community.Account;
 import org.astrogrid.community.User;
-import org.astrogrid.datacenter.delegate.agws.WebDelegate;
+import org.astrogrid.datacenter.delegate.agws.WebDelegate_v041;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
-import org.astrogrid.datacenter.delegate.nvocone.AdqlNvoConeDelegate;
 import org.astrogrid.datacenter.delegate.nvocone.NvoConeSearchDelegate;
 /**
  * Constructs the right delegate for the given service
@@ -75,7 +74,7 @@ public class DatacenterDelegateFactory {
       }
       if (serviceType.equals(ASTROGRID_WEB_SERVICE)) {
          try {
-            return new WebDelegate(Account.ANONYMOUS, new URL(givenEndPoint));
+            return new WebDelegate_v041(new URL(givenEndPoint));
          } catch (ServiceException e) {
             throw new DatacenterException("Could not connect to " + givenEndPoint, e);
          }
@@ -88,7 +87,7 @@ public class DatacenterDelegateFactory {
     * best attempt to work out type but it's not safe
     * @deprecated use method that accepts user
     */
-   public static FullSearcher makeFullSearcher(String givenEndPoint)
+   public static QuerySearcher makeFullSearcher(String givenEndPoint)
       throws ServiceException, MalformedURLException, IOException {
       //there are three server types -> three delegate implementations - dummies,
       // nvo cone-search servers, and astrogrid datacenter servers (agds).
@@ -120,17 +119,14 @@ public class DatacenterDelegateFactory {
     * is null, creates a dummy delegate that can be used to test against, which
     * does not need access to any datacenter servers.
     */
-   public static FullSearcher makeFullSearcher(Account user, String givenEndPoint, String serviceType)
+   public static QuerySearcher makeFullSearcher(Account user, String givenEndPoint, String serviceType)
       throws ServiceException, MalformedURLException, IOException {
       if (serviceType.equals(DUMMY_SERVICE)) {
          //easy one, return a dummy
          return new DummyDelegate();
       }
-      if (serviceType.equals(NVO_CONE_SERVICE)) {
-         return new AdqlNvoConeDelegate(givenEndPoint);
-      }
       if (serviceType.equals(ASTROGRID_WEB_SERVICE)) {
-         return new WebDelegate(user, new URL(givenEndPoint));
+         return new WebDelegate_v041(new URL(givenEndPoint));
       }
       if (serviceType.equals(ASTROGRID_DIRECT)) {
          //lets see if we can find DirectDelegate on the class path - if so then we
@@ -139,7 +135,7 @@ public class DatacenterDelegateFactory {
          try {
             Class delegate = Class.forName("org.astrogrid.datacenter.delegate.agdirect.DirectDelegate");
             Constructor constr = delegate.getConstructor(new Class[] { Account.class });
-            return (FullSearcher) constr.newInstance(new Object[] { user });
+            return (QuerySearcher) constr.newInstance(new Object[] { user });
          } catch (Exception e) {
             //other exceptions raised by constructor of the direct delegate
             throw new RuntimeException(e);
@@ -152,6 +148,9 @@ public class DatacenterDelegateFactory {
 }
 /*
  $Log: DatacenterDelegateFactory.java,v $
+ Revision 1.16  2004/03/12 20:00:11  mch
+ It05 Refactor (Client)
+
  Revision 1.15  2004/02/23 18:08:47  mch
  Added methods to take community.User class
 
