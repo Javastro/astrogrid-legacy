@@ -1,4 +1,4 @@
-/*$Id: ApplicationsInstallationTest.java,v 1.2 2004/04/15 23:11:20 nw Exp $
+/*$Id: ApplicationsInstallationTest.java,v 1.3 2004/04/19 09:35:24 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -59,6 +59,11 @@ public class ApplicationsInstallationTest extends AbstractTestForIntegration {
     protected Service serv;
     protected CommonExecutionConnectorClient delegate;
     
+    public void testApplicationsRegistered() throws Exception {        
+        ApplicationRegistry reg = ag.getWorkflowManager().getToolRegistry();
+        assertNotNull(reg.getDescriptionFor(TESTAPP));
+    }
+    
     public void testListApplications() throws Exception {
         ApplicationList results = delegate.listApplications();        
         assertNotNull("list of applications is null",results);
@@ -86,7 +91,7 @@ public class ApplicationsInstallationTest extends AbstractTestForIntegration {
     
     public void testExecute() throws Exception {
         ApplicationRegistry reg = ag.getWorkflowManager().getToolRegistry();
-        ApplicationDescription descr = reg.getDescriptionFor("org.astrogrid.localhost/testapp");
+        ApplicationDescription descr = reg.getDescriptionFor(TESTAPP);
         assertNotNull("could not get application description for testapp",descr);
         Tool tool = descr.createToolFromDefaultInterface();
         assertNotNull("tool is null",tool);
@@ -104,6 +109,10 @@ public class ApplicationsInstallationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: ApplicationsInstallationTest.java,v $
+Revision 1.3  2004/04/19 09:35:24  nw
+added constants for ivorns of services.
+added test query
+
 Revision 1.2  2004/04/15 23:11:20  nw
 tweaks
 

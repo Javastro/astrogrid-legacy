@@ -1,4 +1,4 @@
-/*$Id: MySpaceIntegrationTest.java,v 1.4 2004/04/15 23:11:20 nw Exp $
+/*$Id: MySpaceIntegrationTest.java,v 1.5 2004/04/19 09:35:24 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,7 +42,7 @@ public class MySpaceIntegrationTest extends AbstractTestForIntegration {
 
         VoSpaceClient client = new VoSpaceClient(user);
                 
-        Ivorn location = new Ivorn("org.astrogrid.localhost/myspace","/" + user.getUserId() + "/tests/MySpaceIntegrationTest");
+        Ivorn location = new Ivorn(MYSPACE,"/" + user.getUserId() + "/tests/MySpaceIntegrationTest");
         store.saveWorkflow(user,location,wf);
         
         // get it back again.
@@ -57,6 +57,10 @@ public class MySpaceIntegrationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: MySpaceIntegrationTest.java,v $
+Revision 1.5  2004/04/19 09:35:24  nw
+added constants for ivorns of services.
+added test query
+
 Revision 1.4  2004/04/15 23:11:20  nw
 tweaks
 

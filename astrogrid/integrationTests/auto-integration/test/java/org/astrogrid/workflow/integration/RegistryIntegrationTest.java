@@ -1,4 +1,4 @@
-/*$Id: RegistryIntegrationTest.java,v 1.3 2004/04/15 23:11:20 nw Exp $
+/*$Id: RegistryIntegrationTest.java,v 1.4 2004/04/19 09:35:24 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,9 +52,9 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
             ApplicationDescription descr = reg.getDescriptionFor(name);
             assertNotNull("description is null",descr);
             assertEquals("name is not as expected",name,descr.getName());
-            // now see if we can resolve each name to an endpoint.           
         }
     }
+        
     
     /** this is the functionality required by jes */
     public void testResolveApplications() throws Exception {
@@ -81,6 +81,10 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: RegistryIntegrationTest.java,v $
+Revision 1.4  2004/04/19 09:35:24  nw
+added constants for ivorns of services.
+added test query
+
 Revision 1.3  2004/04/15 23:11:20  nw
 tweaks
 

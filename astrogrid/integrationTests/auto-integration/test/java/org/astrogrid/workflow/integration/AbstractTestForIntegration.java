@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.3 2004/04/15 23:11:20 nw Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.4 2004/04/19 09:35:24 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,8 +38,8 @@ public class AbstractTestForIntegration extends TestCase {
         super.setUp();
         ag = Astrogrid.getInstance();
         // credentials object
-        acc = ag.getObjectHelper().createAccount("frog","org.astrogrid.localhost"); // will want to change this to a standard user later.
-        group = ag.getObjectHelper().createGroup("devel","org.astrogrid.localhost");
+        acc = ag.getObjectHelper().createAccount("frog",COMMUNITY); // will want to change this to a standard user later.
+        group = ag.getObjectHelper().createGroup("devel",COMMUNITY);
         creds = ag.getObjectHelper().createCredendtials(acc,group);
 
         //equivalent user object
@@ -58,12 +58,21 @@ public class AbstractTestForIntegration extends TestCase {
     protected User user;
     protected Workflow wf;
     
+    public static final String COMMUNITY = "org.astrogrid.localhost";
+    public static final String MYSPACE = COMMUNITY + "/myspace";
+    public static final String TESTDSA = COMMUNITY + "/testdsa";
+    public static final String TESTAPP = COMMUNITY + "/testapp";
+    
     
 }
 
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
+Revision 1.4  2004/04/19 09:35:24  nw
+added constants for ivorns of services.
+added test query
+
 Revision 1.3  2004/04/15 23:11:20  nw
 tweaks
 

@@ -1,4 +1,4 @@
-/*$Id: WorkflowEndToEndTest.java,v 1.5 2004/04/15 23:11:20 nw Exp $
+/*$Id: WorkflowEndToEndTest.java,v 1.6 2004/04/19 09:35:24 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,8 @@
 package org.astrogrid.workflow.integration;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.io.Piper;
 import org.astrogrid.jes.delegate.JobSummary;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
@@ -25,6 +27,9 @@ import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.util.Date;
 
 /** end-to-end test of workfow - usecase of creating and submitting a workflow.
@@ -95,35 +100,43 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
            assertTrue("workflow is not valid",wf.isValid());
     }
 
-    /** the name / registry key of the dataset provided by the local datacenter 
-     */
-    public final static String DATASET_NAME = "org.astrogrid.localhost/testdsa";
-    /** the name / registry key of an application that will consume / process the VOTABLE result of a datacenter query*/
-    public final static String VOTABLE_CONSUMER_NAME ="org.astrogrid.localhost/testapp";
-    /** build a multi-step workflow 
-     * @todo add correct parameters to tools - a query in particular*/
-    private void buildComplexWorkflowDocument() throws WorkflowInterfaceException, ToolValidationException {
+    /** build a multi-step workflow r*/
+    private void buildComplexWorkflowDocument() throws Exception {
         wf.setName("Complex Workflow");
         // build step that queries datacenter
-        ApplicationDescription datacenterDescription = reg.getDescriptionFor(DATASET_NAME);
-        assertNotNull("Could not find description for datacenter " + DATASET_NAME,datacenterDescription);
+        ApplicationDescription datacenterDescription = reg.getDescriptionFor(TESTDSA);
+        assertNotNull("Could not find description for datacenter " + TESTDSA,datacenterDescription);
         Tool datacenterTool = datacenterDescription.createToolFromDefaultInterface();
-        // set up parameters here -- need an input query and an output myspace location at least.
+
+        ParameterValue query= (ParameterValue)datacenterTool.findXPathValue("input/parameter[name='Query']");
+        assertNotNull(query);
+        InputStream is = this.getClass().getResourceAsStream("DataCenterIntegrationTest-sample-query.xml");
+        assertNotNull(is);
+        StringWriter out = new StringWriter();
+        Piper.pipe(new InputStreamReader(is),out); 
+        query.setValue(out.toString());
+                       
+        ParameterValue target = (ParameterValue)datacenterTool.findXPathValue("output/parameter[name='Target']");
+        assertNotNull(target);
+        Ivorn targetIvorn = new Ivorn(MYSPACE,"/" + user.getUserId() + "/test/WorkflowEndToEnd-complexDocument.votable.xml");
+        target.setValue(targetIvorn.toString());
+        
+        
         datacenterDescription.validate(datacenterTool);
         Step s = new Step();
         s.setDescription("Datacenter query");
-        s.setName(DATASET_NAME);
+        s.setName(TESTDSA);
         s.setTool(datacenterTool);
         wf.getSequence().addActivity(s);
         // build step that consumes result of the query.
-        ApplicationDescription consumerToolDescription = reg.getDescriptionFor(VOTABLE_CONSUMER_NAME);
-        assertNotNull("Could not find descriptioni for votable consumer " + VOTABLE_CONSUMER_NAME,consumerToolDescription);
+        ApplicationDescription consumerToolDescription = reg.getDescriptionFor(TESTAPP);
+        assertNotNull("Could not find descriptioni for votable consumer " + TESTAPP,consumerToolDescription);
         Tool consumerTool = consumerToolDescription.createToolFromDefaultInterface();
         // set parameters here.
        consumerToolDescription.validate(consumerTool);
         s = new Step();
         s.setDescription("step that consumes result of datacenter query");
-        s.setName(VOTABLE_CONSUMER_NAME);
+        s.setName(TESTAPP);
         s.setTool(consumerTool);
         wf.getSequence().addActivity(s);
         
@@ -156,7 +169,7 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
             assertEquals("workflow does not have expected name",w1.getName(),wf.getName());
         // dump it to myspace store - then we can look at it later.
        w1.setName(workflowName + "-" + System.currentTimeMillis());
-       Ivorn ivorn = new Ivorn("org.astrogrid.localhost/myspace","/" + user.getUserId() +"/saved-workflows/" + w1.getName() + ".workflow.xml"); 
+       Ivorn ivorn = new Ivorn(MYSPACE,"/" + user.getUserId() +"/saved-workflows/" + w1.getName() + ".workflow.xml"); 
        store.saveWorkflow(user,ivorn,w1);       
         return w1;
     }    
@@ -167,6 +180,10 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
 
 /* 
 $Log: WorkflowEndToEndTest.java,v $
+Revision 1.6  2004/04/19 09:35:24  nw
+added constants for ivorns of services.
+added test query
+
 Revision 1.5  2004/04/15 23:11:20  nw
 tweaks
 

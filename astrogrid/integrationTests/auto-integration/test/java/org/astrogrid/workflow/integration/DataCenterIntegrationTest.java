@@ -1,4 +1,4 @@
-/*$Id: DataCenterIntegrationTest.java,v 1.5 2004/04/15 23:11:20 nw Exp $
+/*$Id: DataCenterIntegrationTest.java,v 1.6 2004/04/19 09:35:24 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.workflow.integration;
 
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.io.Piper;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
@@ -20,6 +21,9 @@ import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.util.Iterator;
 
 /** Test  CEA functionality of datacenter.
@@ -51,28 +55,35 @@ public class DataCenterIntegrationTest extends ApplicationsInstallationTest {
         return null;        
     }
 
+    public void testApplicationsRegistered() throws Exception {        
+        ApplicationRegistry reg = ag.getWorkflowManager().getToolRegistry();
+        assertNotNull(reg.getDescriptionFor(TESTDSA));
+    }
+
     /**Override this, as querying a data center requires different params.
      * @see org.astrogrid.workflow.integration.ApplicationsIntegrationTest#testExecute()
      */
 
     public void testExecute() throws Exception {
         ApplicationRegistry reg = ag.getWorkflowManager().getToolRegistry();
-        ApplicationDescription descr = reg.getDescriptionFor("org.astrogrid.localhost/testdsa");
+        ApplicationDescription descr = reg.getDescriptionFor(TESTDSA);
         assertNotNull("could not get application description for testdsa",descr);
         Tool tool = descr.createToolFromDefaultInterface();
         assertNotNull("tool is null",tool);
-        /* todo - fill in parameters*/
         ParameterValue query= (ParameterValue)tool.findXPathValue("input/parameter[name='Query']");
         assertNotNull(query);
-        /* @todo add in a query document here */
-
-        descr.validate(tool); 
+        InputStream is = this.getClass().getResourceAsStream("DataCenterIntegrationTest-sample-query.xml");
+        assertNotNull(is);
+        StringWriter out = new StringWriter();
+        Piper.pipe(new InputStreamReader(is),out); 
+        query.setValue(out.toString());       
         
         ParameterValue target = (ParameterValue)tool.findXPathValue("output/parameter[name='Target']");
         assertNotNull(target);
-        Ivorn targetIvorn = new Ivorn("org.astrogrid.localhost/myspace","/" + user.getUserId() + "/test/DatacenterIntegrationTest.votable.xml");
+        Ivorn targetIvorn = new Ivorn(MYSPACE,"/" + user.getUserId() + "/test/DatacenterIntegrationTest.votable.xml");
         target.setValue(targetIvorn.toString());
-        
+        descr.validate(tool); 
+                
         JobIdentifierType id = new JobIdentifierType(); // not too bothered about this.
         id.setValue(this.getClass().getName());
        String returnEndpoint ="http://localhost:8080/astrogrid-jes-SNAPSHOT/services/JobMonitorService";      
@@ -86,6 +97,10 @@ public class DataCenterIntegrationTest extends ApplicationsInstallationTest {
 
 /* 
 $Log: DataCenterIntegrationTest.java,v $
+Revision 1.6  2004/04/19 09:35:24  nw
+added constants for ivorns of services.
+added test query
+
 Revision 1.5  2004/04/15 23:11:20  nw
 tweaks
 
