@@ -43,6 +43,7 @@ import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.SourceResolver;
 import org.apache.cocoon.environment.ObjectModelHelper;
 
+
 /**
  * A Cocoon action to handle our workflow design commands.
  *
@@ -95,7 +96,7 @@ public class DesignAction extends AbstractAction {
     public static final String
         HTTP_WORKFLOW_TAG = "workflow-tag",
         HTTP_TOOL_TAG = "tool-tag",
-        COMMUNITY_ACCOUNT_TAG = "community_account",
+        COMMUNITY_ACCOUNT_TAG = "user",
         COMMUNITY_NAME_TAG = "community_name",
         CREDENTIAL_TAG = "credential",
         COMMUNITY_TOKEN_TAG = "token";
@@ -359,12 +360,16 @@ public class DesignAction extends AbstractAction {
         
                 // JL Note: Iteration 3 way of doing things...
                 // PJN note: alterred slightly, also not sure if LoginAction intends to put security token into session?
-              
-                this.userid = (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG );               
-                this.community = (String)session.getAttribute( COMMUNITY_NAME_TAG );              
+
+          
+                this.userid = (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG );  
+                trace( "userid: " + userid ) ;             
+                this.community = (String)session.getAttribute( COMMUNITY_NAME_TAG );
+				trace( "community: " + community ) ;              
 				this.group = (String)session.getAttribute( CREDENTIAL_TAG );
-				SecurityToken secToken = (SecurityToken)session.getAttribute( COMMUNITY_TOKEN_TAG );				
-				this.token = secToken.getToken();
+				trace( "group: " + group ) ;
+				// SecurityToken secToken = (SecurityToken)session.getAttribute( COMMUNITY_TOKEN_TAG );
+				// this.token = secToken.getToken();
 
                 
 //                useridCommunity = (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG ) ;                
@@ -475,6 +480,8 @@ public class DesignAction extends AbstractAction {
                 }
                 else {
                     Workflow.saveWorkflow( communitySnippet(), workflow ) ;
+					session.setAttribute( HTTP_WORKFLOW_TAG, null) ;
+					workflow = null ;
                 }            
             }
             finally {
@@ -935,9 +942,9 @@ public class DesignAction extends AbstractAction {
 				
          workflow.insertParameterValue(tool,
                                         parameterName,
+                                        null,
                                         parameterValue,
-                                        "input",
-                                        0) ;
+                                        "input") ;
 				
 			}
 			finally {
@@ -991,9 +998,9 @@ public class DesignAction extends AbstractAction {
 				
 			 workflow.insertParameterValue( tool,
 			                                 parameterName,
+			                                 null,
 			                                 parameterValue,
-			                                 "output",
-			                                 0) ;
+			                                 "output") ;
 				
 		}
 		finally {
