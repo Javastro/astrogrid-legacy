@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseResults.java,v 1.7 2004/03/17 12:20:55 kea Exp $
+ * $Id: WarehouseResults.java,v 1.8 2004/03/17 12:25:51 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,6 +8,7 @@ package org.astrogrid.datacenter.queriers.ogsadai;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.io.File;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
 import org.astrogrid.util.DomHelper;
@@ -48,8 +49,6 @@ public class WarehouseResults extends QueryResults
   {
      throw new UnsupportedOperationException("Not yet implemented - here RSN");
   }
-      DomHelper.DocumentToWriter(results, out);
-  }
   
   /**
    * Return results as CSV to given outputstream.
@@ -63,6 +62,9 @@ public class WarehouseResults extends QueryResults
 
 /*
  $Log: WarehouseResults.java,v $
+ Revision 1.8  2004/03/17 12:25:51  kea
+ Oops, fixing slips.
+
  Revision 1.7  2004/03/17 12:20:55  kea
  Removing XSLT rowset->VOTable conversions, now done in OGSA-DAI.
  Interim checkin, end-to-end not working yet.
