@@ -45,6 +45,13 @@
   	-->
   </preGoal>
 
+<!-- add the extra paths for site generate too -->  
+  <preGoal name="site:generate" >
+     <path id="generated.src.path" location="${generated.src}"/>
+    <maven:addPath id="maven.compile.src.set" refid="generated.src.path"/>  <!-- declares new src tree to maven -->
+    <maven:addPath id="maven.dependency.classpath" refid="axis.classpath"/>
+  </preGoal>
+
 
 <!-- hook to get my own stuff run before xdocs binds the site together-->
   <preGoal name="xdoc">
