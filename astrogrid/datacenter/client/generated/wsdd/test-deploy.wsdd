@@ -9,6 +9,7 @@
 <deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
 <!-- Services from AxisDataServerService WSDL service -->
 <service name="AxisDataServer" provider="java:RPC" style="wrapped" use="literal">
+<wsdlFile xmlns="">/wsdl/AxisDataServer.wsdl</wsdlFile>
 <parameter name="wsdlTargetNamespace" value="http://www.astrogrid.org/datacenter/It04/dataserver/v1"/>
 <parameter name="wsdlServiceElement" value="AxisDataServerService"/>
 <parameter name="wsdlServicePort" value="AxisDataServer"/>
@@ -39,6 +40,5 @@
 <typeMapping xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types" qname="ns:makeQueryResponse" type="java:org.astrogrid.datacenter.axisdataserver.types._makeQueryResponse" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle=""/>
 <typeMapping xmlns:ns="http://astrogrid.org" qname="ns:AstroGridException" type="java:org.astrogrid.AstroGridException" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle=""/>
 <typeMapping xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types" qname="ns:getStatus" type="java:org.astrogrid.datacenter.axisdataserver.types._getStatus" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle=""/>
-<parameter xmlns="" value="/wsdl/AxisDataServer.wsdl" name="wsdlFile"/>
 </service>
 </deployment>

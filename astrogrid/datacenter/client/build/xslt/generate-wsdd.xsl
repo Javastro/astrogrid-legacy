@@ -24,9 +24,9 @@
     </xsl:when>
 	<xsl:when test="name() = 'service' ">
 	  <xsl:copy>
-	    <xsl:apply-templates select="@* | node()" />
-
-	  <parameter name="wsdlFile" value="/wsdl/AxisDataServer.wsdl"/>
+	    <xsl:copy-of select="@*" />
+		<wsdlFile>/wsdl/AxisDataServer.wsdl</wsdlFile>
+		<xsl:apply-templates select="@* | node()" />
 	  </xsl:copy>
 	</xsl:when>
     <xsl:otherwise>
