@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/30 17:10:43 $</cvs:author>
-    | <cvs:version>$Revision: 1.29 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/30 17:36:30 $</cvs:author>
+    | <cvs:version>$Revision: 1.30 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.30  2003/06/30 17:36:30  dave
+    | Added missing classes from data query release
+    |
     | Revision 1.29  2003/06/30 17:10:43  dave
     | Fixed query release build
     |
@@ -2179,9 +2182,9 @@
 	</target>
 
 	<!-- Build our new Cocoon web-app for release as a WAR file  -->
-	<target name="cocoon.release/cocoon" depends="init, cocoon.init">
+	<target name="cocoon.release" depends="init, cocoon.init">
 		<!-- Delete the export directories -->
-		<delete dir="build/release" failonerror="false"/>
+		<delete dir="build/release/cocoon" failonerror="false"/>
 		<!-- Create the export directories -->
 		<mkdir dir="build/release"/>
 		<mkdir dir="build/release/cocoon"/>
@@ -2191,7 +2194,7 @@
 		<!-- Create the astrogrid directory -->
 		<mkdir dir="build/release/cocoon/webapp/astrogrid"/>
 		<!-- Copy our explorer files across (excluding the sitemap) -->
-		<copy verbose="true" toDir="build/release/cocoon/webapp/astrogrid">
+		<copy verbose="false" toDir="build/release/cocoon/webapp/astrogrid">
 			<fileset dir="src/cocoon">
 				<exclude name="**/CVS/**"/>
 				<exclude name="build.properties"/>
@@ -2203,31 +2206,76 @@
 			</fileset>
 		</copy>
 		<!-- Copy our portal jar -->
-		<copy verbose="true" toDir="build/release/cocoon/webapp/WEB-INF/lib">
+		<copy verbose="false" toDir="build/release/cocoon/webapp/WEB-INF/lib">
 			<fileset dir="${portal.build}/lib">
 				<include name="**/*.jar"/>
 			</fileset>
 		</copy>
 		<!-- Copy the Axis client jars -->
-		<copy verbose="true" toDir="build/release/cocoon/webapp/WEB-INF/lib">
+		<copy verbose="false" toDir="build/release/cocoon/webapp/WEB-INF/lib">
 			<fileset dir="${axis.webapp}/WEB-INF/lib">
 				<include name="**/*.jar"/>
 			</fileset>
 		</copy>
 		<!-- Copy the RAL files across (including the astrogrid sitemap) -->
-		<copy verbose="true" toDir="build/release/cocoon/webapp/astrogrid">
+		<copy verbose="false" toDir="build/release/cocoon/webapp/astrogrid">
 			<fileset dir="src/ral">
 				<exclude name="**/CVS/**"/>
 				<exclude name="cocoon.xmap"/>
 			</fileset>
 		</copy>
 		<!-- Replace the main cocoon sitemap -->
-		<copy verbose="true" file="src/ral/cocoon.xmap" toFile="build/release/cocoon/webapp/sitemap.xmap"/>
+		<copy verbose="false" file="src/ral/cocoon.xmap" toFile="build/release/cocoon/webapp/sitemap.xmap"/>
 		<!-- Wrap everything up as a WAR fil -->
 		<jar destfile="build/release/cocoon/cocoon.war"
 		     manifest="build/release/cocoon/webapp/META-INF/MANIFEST.MF"
 		     >
 			<fileset dir="build/release/cocoon/webapp">
+			</fileset>
+		</jar>
+	</target>
+
+	<!-- Build the DataQuery servlets for release as a WAR file  -->
+	<target name="query.release" depends="init, cocoon.init">
+		<!-- Delete the export directories -->
+		<delete dir="build/release/DataQuery" failonerror="false"/>
+		<!-- Create the export directories -->
+		<mkdir dir="build/release"/>
+		<mkdir dir="build/release/DataQuery"/>
+		<mkdir dir="build/release/DataQuery/webapp"/>
+		<mkdir dir="build/release/DataQuery/webapp/WEB-INF"/>
+		<mkdir dir="build/release/DataQuery/webapp/WEB-INF/lib"/>
+		<mkdir dir="build/release/DataQuery/webapp/WEB-INF/classes"/>
+		<mkdir dir="build/release/DataQuery/webapp/WEB-INF/servlets"/>
+		<!-- Copy our site files across -->
+		<copy verbose="false" toDir="build/release/DataQuery/webapp/servlets">
+			<fileset dir="src/site/DataQuery">
+				<exclude name="**/CVS/**"/>
+			</fileset>
+		</copy>
+		<!-- Compile our java classes -->
+		<antcall target="portal.javac"/>
+		<!-- Copy our java files across -->
+		<copy verbose="false" toDir="build/release/DataQuery/webapp/WEB-INF/classes">
+			<fileset dir="build/portal/classes">
+				<include name="**/portal/query/**"/>
+				<include name="**/generated/jobcontroller/**"/>
+				<include name="**/generated/registry/**"/>
+			</fileset>
+		</copy>
+
+		<!-- Copy the Axis client jars -->
+		<copy verbose="false" toDir="build/release/DataQuery/webapp/WEB-INF/lib">
+			<fileset dir="${axis.webapp}/WEB-INF/lib">
+				<include name="**/*.jar"/>
+			</fileset>
+		</copy>
+
+		<!-- Copy the web.xml file -->
+		<copy verbose="false" file="src/site/WEB-INF/web.xml" toFile="build/release/DataQuery/webapp/WEB-INF/web.xml"/>
+		<!-- Wrap everything up as a WAR fil -->
+		<jar destfile="build/release/DataQuery/DataQuery.war">
+			<fileset dir="build/release/DataQuery/webapp">
 			</fileset>
 		</jar>
 	</target>
@@ -2249,54 +2297,10 @@
 
 	<!-- Release our project -->
 	<target name="project.RELEASE" depends="">
+		<antcall target="query.release"/>
 		<antcall target="cocoon.release"/>
 		<antcall target="project.webapp.install"/>
 	</target>
-
-
-	<!-- Build the DataQuery servlets for release as a WAR file  -->
-	<target name="query.release" depends="init, cocoon.init">
-		<!-- Delete the export directories -->
-		<delete dir="build/release/DataQuery" failonerror="false"/>
-		<!-- Create the export directories -->
-		<mkdir dir="build/release"/>
-		<mkdir dir="build/release/DataQuery"/>
-		<mkdir dir="build/release/DataQuery/webapp"/>
-		<mkdir dir="build/release/DataQuery/webapp/WEB-INF"/>
-		<mkdir dir="build/release/DataQuery/webapp/WEB-INF/lib"/>
-		<mkdir dir="build/release/DataQuery/webapp/WEB-INF/classes"/>
-		<mkdir dir="build/release/DataQuery/webapp/WEB-INF/servlets"/>
-		<!-- Copy our site files across -->
-		<copy verbose="true" toDir="build/release/DataQuery/webapp/servlets">
-			<fileset dir="src/site/DataQuery">
-				<exclude name="**/CVS/**"/>
-			</fileset>
-		</copy>
-		<!-- Compile our java classes -->
-		<antcall target="portal.javac"/>
-		<!-- Copy our java files across -->
-		<copy verbose="true" toDir="build/release/DataQuery/webapp/WEB-INF/classes">
-			<fileset dir="build/portal/classes">
-				<include name="**/portal/query/**"/>
-			</fileset>
-		</copy>
-
-		<!-- Copy the Axis client jars -->
-		<copy verbose="true" toDir="build/release/DataQuery/webapp/WEB-INF/lib">
-			<fileset dir="${axis.webapp}/WEB-INF/lib">
-				<include name="**/*.jar"/>
-			</fileset>
-		</copy>
-
-		<!-- Copy the web.xml file -->
-		<copy verbose="true" file="src/site/WEB-INF/web.xml" toFile="build/release/DataQuery/webapp/WEB-INF/web.xml"/>
-		<!-- Wrap everything up as a WAR fil -->
-		<jar destfile="build/release/DataQuery/DataQuery.war">
-			<fileset dir="build/release/DataQuery/webapp">
-			</fileset>
-		</jar>
-	</target>
-
 
 
 </project>
