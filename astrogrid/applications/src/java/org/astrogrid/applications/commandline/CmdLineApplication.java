@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplication.java,v 1.12 2004/01/20 12:03:49 pah Exp $
+ * $Id: CmdLineApplication.java,v 1.13 2004/01/23 19:20:22 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -267,8 +267,7 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
     * @see org.astrogrid.applications.Application#completionStatus()
     */
    public int completionStatus() {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("CmdLineApplication.completionStatus() not implemented");
+      return exitStatus;
    }
 
    /* (non-Javadoc)

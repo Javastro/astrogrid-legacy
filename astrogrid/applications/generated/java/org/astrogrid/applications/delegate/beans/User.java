@@ -3,6 +3,7 @@
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis WSDL2Java emitter.
+ * @TODO need to get rid of these special beans?????
  */
 
 package org.astrogrid.applications.delegate.beans;

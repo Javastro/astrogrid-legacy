@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZVOTableReader.java,v 1.2 2004/01/22 12:41:36 pah Exp $
+ * $Id: HyperZVOTableReader.java,v 1.3 2004/01/23 19:20:22 pah Exp $
  * 
  * Created on 18-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -59,7 +59,7 @@ public class HyperZVOTableReader {
       SavotVOTable vot = readInternal(source, target);
       inFileparam.setRealFile(outfile);
       //REFACTORME  - this manipulation requires too much knowledge of the internal workings....
-      inFileparam.setRawValue(outfile.getAbsolutePath());
+//      inFileparam.setRawValue(outfile.getAbsolutePath());
       inFileparam.getArgValue().remove(1);
       inFileparam.getArgValue().add(outfile.getAbsolutePath());
       return vot;

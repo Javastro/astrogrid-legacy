@@ -1,5 +1,5 @@
 /*
- * $Id: Dft.java,v 1.1 2004/01/20 12:03:49 pah Exp $
+ * $Id: Dft.java,v 1.2 2004/01/23 19:20:22 pah Exp $
  * 
  * Created on 20-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -49,7 +49,8 @@ public class Dft extends CmdLineApplication {
     */
    protected void preRunHook() {
       argvals.add("output=VOTable");
-      
+      argvals.add("maxMatches=1");
+     
    }
 
 }

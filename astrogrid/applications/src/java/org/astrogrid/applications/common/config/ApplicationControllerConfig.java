@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerConfig.java,v 1.9 2004/01/14 10:33:20 pah Exp $
+ * $Id: ApplicationControllerConfig.java,v 1.10 2004/01/23 19:20:22 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -113,7 +113,10 @@ public class ApplicationControllerConfig {
    }
    
    
-   
+   public String getSMTPServerName()
+   {
+      return config.getProperty(ApplicationsConstants.SMTPServerKey);
+   }
    public String toHTMLReport()
    {
       StringBuffer rep = new StringBuffer(128);
@@ -142,6 +145,11 @@ public class ApplicationControllerConfig {
       rep.append("<li>");
       rep.append("myspace manager endpoint: ");
       rep.append(config.getProperty(ApplicationsConstants.MySpaceManagerKey));
+      rep.append("</li>");
+      
+      rep.append("<li>");
+      rep.append("SMTP Host name: ");
+      rep.append(config.getProperty(ApplicationsConstants.SMTPServerKey));
       rep.append("</li>");
       
       rep.append("</ul>");

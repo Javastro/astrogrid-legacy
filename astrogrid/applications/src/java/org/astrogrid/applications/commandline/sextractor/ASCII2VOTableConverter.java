@@ -1,5 +1,5 @@
 /*
- * $Id: ASCII2VOTableConverter.java,v 1.3 2004/01/22 12:41:36 pah Exp $
+ * $Id: ASCII2VOTableConverter.java,v 1.4 2004/01/23 19:20:22 pah Exp $
  * 
  * Created on 17-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -48,8 +48,13 @@ public class ASCII2VOTableConverter {
    private OutputParams outputParams;
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(ASCII2VOTableConverter.class);
+  
    /**
-    * 
+    * @param outFile
+    * @param paramsFile
+    * @param env
+    * @param band
+    * @throws IOException
     */
    public ASCII2VOTableConverter(Parameter outFile, Parameter paramsFile, CmdLineApplicationEnvironment env, String band) throws IOException {
       this.outFileparam = (FileReferenceParameter)outFile;
@@ -57,23 +62,21 @@ public class ASCII2VOTableConverter {
       this.env = env;
       
       tmpfile = env.getTempFile();
-      outputParams = new OutputParams(paramsFileparam.getRealFile(), band);
-      
+      outputParams = new OutputParams(paramsFileparam.getRealFile(), band);   
+       
       
    }
    
    public void writeVOTable()
    {
       FileReader in = null;
-      File outputfile = new File(env.getExecutionDirectory(), outFileparam.getRealFile().getPath());
       tmpfile.delete();
-      boolean renamesuccess = outputfile.renameTo(tmpfile);
+      boolean renamesuccess = outFileparam.getRealFile().renameTo(tmpfile);
 
          try {
             in = new FileReader(tmpfile);
-            FileOutputStream out = new FileOutputStream(outputfile);
+            FileOutputStream out = new FileOutputStream(outFileparam.getRealFile());
             internalWriteVOTable(in, out);
-            //reset the output file parameter so that it now refers to the newly generated VOTable
          }
          catch (FileNotFoundException e1) {
             logger.error("sextractor output file not found",e1);

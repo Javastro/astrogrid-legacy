@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationController.java,v 1.14 2004/01/09 00:25:08 pah Exp $
+ * $Id: ApplicationController.java,v 1.15 2004/01/23 19:20:22 pah Exp $
  *
  * Created on 03 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -22,6 +22,9 @@ import org.astrogrid.community.User;
  * @since Iteration 4
  * @version $Name:  $
  * @TODO This interface is not that good at signallying error conditions - could do with improvement.
+ * @TODO Need to be able to stop a running job
+ * @TODO Needs to have resource management concept - possiblility of application queues to restrict the number of concurrently running applications
+ * @TODO Security policy
  * 
  */
 public interface ApplicationController {
@@ -83,4 +86,5 @@ public interface ApplicationController {
     * @clientRole informs
     * @label Application Execution Completion*/
    /*# org.astrogrid.jes.jobmonitor.JobMonitor lnkJobMonitor; */
+   
 }

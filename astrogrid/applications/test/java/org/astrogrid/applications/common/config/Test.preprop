@@ -7,4 +7,6 @@ DB_PASSWORD=
 DB_USER=sa
 MySpaceManager=http://Dummy.address/
 #ApplicationConfigFile=/data/work/astrogrid/src/applications/config/applicationDefinitions.xml
+SMTPServer=localhost
+
 

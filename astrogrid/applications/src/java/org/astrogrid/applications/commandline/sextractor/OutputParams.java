@@ -1,5 +1,5 @@
 /*
- * $Id: OutputParams.java,v 1.3 2004/01/22 12:41:36 pah Exp $
+ * $Id: OutputParams.java,v 1.4 2004/01/23 19:20:22 pah Exp $
  * 
  * Created on 17-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -66,6 +66,10 @@ public class OutputParams {
       retval.setUcd(fname);
       retval.setDataType("float");
       //TODO - UCD handling needs to be done properly this is a quick fix
+      if (fname.equals("NUMBER")) {
+         
+         
+      }
       if(fname.equals("X_WORLD"))
       {
          retval.setName("RA");

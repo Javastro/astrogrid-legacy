@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<!--$Id: applicationDefinitions.xml,v 1.6 2004/01/20 12:03:49 pah Exp $-->
+<!--$Id: applicationDefinitions.xml,v 1.7 2004/01/23 19:20:22 pah Exp $-->
 <!--This is the configuration file for the Iteration4 application controller-->
 <ApplicationController xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/AGParameterDefinition
 http://www.astrogrid.org/schema/AGParameterDefinition/AGParameterDefinition.xsd">
@@ -25,7 +25,7 @@ http://www.astrogrid.org/schema/AGParameterDefinition/AGParameterDefinition.xsd"
 				<UI_Name>Parameter File</UI_Name>
 				<UI_Description>A File containing the list of catalogue paramters that should be computed</UI_Description>
 			</Parameter>
-			<Parameter name="CATALOG_NAME" type="agpd:FileReference">
+			<Parameter name="CATALOG_NAME" type="agpd:MySpace_FileReference">
 				<UI_Name>Derived output catalogue</UI_Name>
 				<UI_Description>The catalogue of images derived from the input images</UI_Description>
 			</Parameter>
@@ -52,11 +52,11 @@ http://www.astrogrid.org/schema/AGParameterDefinition/AGParameterDefinition.xsd"
 				<UI_Name>Configuration File</UI_Name>
 				<UI_Description>A HyperZ configuration file</UI_Description>
 			</Parameter>
-			<Parameter name="input_catalog" type="agpd:FileReference" commandSwitch="CATALOG_FILE">
+			<Parameter name="input_catalog" type="agpd:MySpace_FileReference" commandSwitch="CATALOG_FILE">
 				<UI_Name>Magnitude Catalogue</UI_Name>
 				<UI_Description>The input catalogue of measured magnitude</UI_Description>
 			</Parameter>
-			<Parameter name="output_catalog" type="agpd:FileReference" commandSwitch="OUTPUT_CATALOG">
+			<Parameter name="output_catalog" type="agpd:MySpace_FileReference" commandSwitch="OUTPUT_CATALOG">
 				<UCD/>
 				<UI_Name>Redshift Catalogue</UI_Name>
 				<UI_Description>The catalogue of estimated redshifts</UI_Description>
