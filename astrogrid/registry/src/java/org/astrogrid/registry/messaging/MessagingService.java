@@ -40,9 +40,10 @@ public class MessagingService implements ServiceLifecycle {
    * @see javax.xml.rpc.server.ServiceLifecycle#init(java.lang.Object)
    */
   public void init(Object context) throws ServiceException {
+    assert context instanceof ServletEndpointContext;
+    
     logger.debug("[init] >>>");
     
-    assert(context instanceof ServletEndpointContext);
     servletEndpointContext = (ServletEndpointContext) context;
     ServletContext servletContext = servletEndpointContext.getServletContext();
 
@@ -71,8 +72,8 @@ public class MessagingService implements ServiceLifecycle {
   }
 
   public Element[] process(Element[] xml) throws ServiceException {
-    assert(xml != null);
-    assert(xml.length == 1);
+    assert xml != null;
+    assert xml.length == 1;
 
     logger.debug("[process] >>>");
     
@@ -98,7 +99,7 @@ public class MessagingService implements ServiceLifecycle {
   }
 
   private Element process(Element element) throws ServiceException {
-    assert(element != null);
+    assert element != null;
   
     Element result = null;
     
