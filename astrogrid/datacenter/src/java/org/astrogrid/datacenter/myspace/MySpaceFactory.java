@@ -9,11 +9,22 @@
  *
  */
 package org.astrogrid.datacenter.myspace;
-
-public interface MySpaceFactory {
+import org.astrogrid.datacenter.config.Configurable;
+/** interface all myspace factories should implement */
+public interface MySpaceFactory extends Configurable {
 	
+	/** allocate some space for the results of a job
+	 * 
+	 * @param jobURN unique identifier for this job ?
+	 * @return new allocation object
+	 * @throws AllocationException
+	 */
     public Allocation allocateCacheSpace(String jobURN) throws AllocationException ;
-    
+    /** close / free up some allocated space
+     * 
+     * @param allocation
+     * @throws AllocationException
+     */
     public void close( Allocation allocation ) throws AllocationException ;
     
     

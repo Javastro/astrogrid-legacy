@@ -25,8 +25,8 @@ import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
 import org.apache.axis.encoding.XMLType;
 import org.apache.log4j.Logger;
-import org.astrogrid.Configurator ;
-import org.astrogrid.datacenter.DTC;
+import org.astrogrid.datacenter.Util;
+import org.astrogrid.datacenter.config.ConfigurationKeys;
 import org.astrogrid.datacenter.job.Job;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Document;
@@ -39,7 +39,11 @@ import org.xml.sax.SAXException;
 
 /**
  * The <code>Allocation</code> class represents 
+ * what?
  * <p>
+ *  its a monster class, and in a fron-line package
+ *  FUTURE - consider replacing with an interface and an abstract 'impl' class. Allocations are created by an abstract MySpace factory anyhow,
+ * so their internals should be implementation-dependent.
  *
  * @author  Jeff Lusted
  * @version 1.0 27-May-2003
@@ -54,60 +58,23 @@ public class Allocation {
 		logger = Logger.getLogger( Allocation.class ) ;
         
     public final static String
-        SUBCOMPONENT_NAME = Configurator.getClassName( Allocation.class ) ;   
+        SUBCOMPONENT_NAME = Util.getComponentName( Allocation.class ) ;   
 		
 	private static String
-		ASTROGRIDERROR_COULD_NOT_CREATE_MYSPACEFACTORY_IMPL = "AGDTCE00090",
 	    ASTROGRIDERROR_MYSPACEMANAGER_RETURNED_AN_ERROR = "AGDTCE00300",
 	    ASTROGRIDERROR_AXIS_FAULT_WHEN_INVOKING_MYSPACEMANAGER = "AGDTCE00310",
 	    ASTROGRIDERROR_FAILED_TO_PARSE_MYSPACEMANAGER_RESPONSE = "AGDTCE00320" ;
 	    
 	private static String
 	    MYSPACE_SUCCESS = "success" ;
-	
-	public static MySpaceFactory
-	    factory ;
-	    
+		    
 	private String
 	    filePath = null ;
 	    
 	private OutputStream
 	    outputStream = null ;
 	
-	public static MySpaceFactory getFactory() throws AllocationException { 
-		if( TRACE_ENABLED ) logger.debug( "getFactory(): entry") ;   	
-    	
-		String
-			implementationFactoryName = DTC.getProperty( DTC.MYSPACE_FACTORY
-                                                       , DTC.MYSPACE_CATEGORY ) ;
-    	
-		try{
-			// Note the double lock strategy				
-			if( factory == null ){
-				synchronized ( Allocation.class ) {
-					if( factory == null ){
-						Object
-						   obj = Class.forName( implementationFactoryName ).newInstance() ;			    			
-						factory = (MySpaceFactory)obj ;
-					}
-				} // end synchronized
-			}
-		}
-		catch( Exception ex ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_MYSPACEFACTORY_IMPL
-                                              , SUBCOMPONENT_NAME
-                                              , implementationFactoryName ) ;
-			logger.error( message.toString(), ex ) ;
-			throw new AllocationException( message, ex );
-		}
-		finally{
-			if( TRACE_ENABLED ) logger.debug( "getFactory(): exit") ; 	
-		}    
-					
-		return factory; 
 	
-	} // end of getFactory()
 		
 	
     public Allocation() {}
@@ -152,8 +119,8 @@ public class Allocation {
 		try {
 			
 			String
-			   requestTemplate = DTC.getProperty( DTC.MYSPACE_REQUEST_TEMPLATE
-                                                , DTC.MYSPACE_CATEGORY ) ;
+			   requestTemplate = job.getConfiguration().getProperty( ConfigurationKeys.MYSPACE_REQUEST_TEMPLATE
+                                                , ConfigurationKeys.MYSPACE_CATEGORY ) ;
 			Object []
 			   inserts = new Object[4] ;
 			inserts[0] = job.getUserId() ;
@@ -167,8 +134,8 @@ public class Allocation {
 			Call 
 			   call = (Call) new Service().createCall() ;
 			   			  
-			call.setTargetEndpointAddress( new URL( DTC.getProperty( DTC.MYSPACE_URL
-                                                                   , DTC.MYSPACE_CATEGORY ) ) ) ;
+			call.setTargetEndpointAddress( new URL( job.getConfiguration().getProperty( ConfigurationKeys.MYSPACE_URL
+                                                                   , ConfigurationKeys.MYSPACE_CATEGORY ) ) ) ;
 			call.setOperationName( "upLoad" ) ;  // Set method to invoke		
 			call.addParameter("jobDetails", XMLType.XSD_STRING,ParameterMode.IN);
 			call.setReturnType(XMLType.XSD_STRING);

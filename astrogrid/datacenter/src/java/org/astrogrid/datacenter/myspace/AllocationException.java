@@ -12,7 +12,8 @@ package org.astrogrid.datacenter.myspace;
 
 import org.astrogrid.datacenter.DatacenterException;
 import org.astrogrid.i18n.AstroGridMessage;
-
+/** exception type for the myspace component 
+ *  */
 public class AllocationException extends DatacenterException{
 	
 

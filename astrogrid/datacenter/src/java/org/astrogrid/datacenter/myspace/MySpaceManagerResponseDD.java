@@ -12,7 +12,9 @@
 package org.astrogrid.datacenter.myspace;
 
 /**
- * The <code>MySpaceManagerResponseDD</code> class represents 
+ * The <code>MySpaceManagerResponseDD</code> class is the data descriptor for the MySpace response XML
+ * defines constants for the attribute and element names of this xml document format.
+ * * could have a link to the schema here
  *
  * @author  Jeff Lusted
  * @version 1.0 09-Jun-2003
