@@ -2,8 +2,8 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/web/xsp/login-pass.xsp,v $</cvs:source>
     | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2004/12/13 11:50:59 $</cvs:date>
-    | <cvs:version>$Revision: 1.11 $</cvs:version>
+    | <cvs:date>$Date: 2005/03/11 17:58:22 $</cvs:date>
+    | <cvs:version>$Revision: 1.12 $</cvs:version>
     |
     +-->
 <xsp:page language="java"
@@ -163,20 +163,88 @@ function toggle(yo, was){
 <tr>
 <td width="280px" valign="top">
 
+
+<div class="boxedLayout">
+  <h1>Webstart Applications</h1>
+    <table border="0" cellpadding="3">
+      <tr>
+        <td valign="top"
+            title="Launch application">
+          <a href="http://software.astrogrid.org/jnlp/aladin-avo/aladin-avo.jnlp"
+             class="strongLink">Aladin</a> 
+        </td>
+        <td>
+           The <a onclick="javascript:window.open(' http://aladin.u-strasbg.fr/aladin.gml');" class="strongLink">Aladin Interactive Sky Atlas</a> application,
+            developed by <a onclick="javascript:window.open('http://cdsweb.u-strasbg.fr/');" class="strongLink">CDS</a> application,
+            bundled with a plugin to read and write files in VOSpace.        
+        </td>
+    </tr>
+    <tr>
+      <td valign="top"
+          title="Launch application">
+        <a href="http://software.astrogrid.org/jnlp/topcat/topcat.jnlp" 
+           class="strongLink">Topcat</a>
+      </td>
+      <td>
+        <a onclick="javascript:window.open('http://www.star.bris.ac.uk/~mbt/topcat/');" class="strongLink">Topcat</a> - the Tool for OPerations on Catalogues And Tables, developed by 
+        <a onclick="javascript:window.open('http://www.starlink.ac.uk');" class="strongLink">Starlink UK</a>, 
+        bundled with a plugin to read and write files in VOSpace.
+      </td>
+    </tr>
+    <tr>
+      <td valign="top"
+          title="Launch application">
+        <a href="http://software.astrogrid.org/jnlp/treeview/mstv.jnlp" 
+           class="strongLink">Treeview</a>
+      </td>
+      <td>
+        <a onclick="javascript:window.open('http://www.star.bris.ac.uk/~mbt/treeview/');" class="strongLink">Treeview</a>, 
+        developed by <a onclick="javascript:window.open('http://www.starlink.ac.uk');" class="strongLink">Starlink UK</a>, 
+        bundled with a plugin to read and write files to VOSpace.
+      </td>
+    </tr>
+    <tr>
+      <td valign="top"
+          title="Launch application">
+        <a href="http://software.astrogrid.org/jnlp/astrogrid-desktop/astrogrid-desktop.jnlp" 
+           class="strongLink">Workbench</a>
+      </td>
+      <td>
+        Integrates astrogrid into the desktop: 
+        allows astrogrid services to be easily called from user applications and scripts; 
+        <div style="cursor: help" 
+              title="will include Redshift maker, Solar movie maker..">
+          create parameterized workflows.
+        </div>        
+      </td>
+    </tr>    
+  </table>
+</div>
+
+</td>
+<td width="40px">  </td></tr>
+<tr>
+<td width="280px" valign="top">
+
+
+
 <!-- NOTE:  The boxedLayout div for the Example Tasks section below is in the iframe
  content because having it outside the iframe was inserting lots of blank space. -->
 <!--
 <div class="boxedLayout">
   <h1>Example Tasks</h1>
 -->
+<!-- Note: Example tasks removed and now included as parameterized workflows from within Dashboard 
   <iframe style="border: solid 0px white; background-color: transparent"
   marginWidth="0px" scrolling="no" hspace="0px" vspace="0px" frameborder="no"
   allowtransparency="true" 
   src="/astrogrid-portal/bare/mount/scenarios/tinyScenarii.scn"
   marginHeight="0px" border="0px" height="120" width="100%" name="scenariiFrame">ag</iframe>
+-->  
 <!--
 </div>
 -->
+
 
 </td>
 <td width="40px">  </td></tr>
@@ -409,6 +477,18 @@ Locate Spectral data
 <!--+
     | <cvs:log>
     |   $Log: login-pass.xsp,v $
+    |   Revision 1.12  2005/03/11 17:58:22  clq2
+    |   portalWEBSTART_pjn_838
+    |
+    |   Revision 1.11.32.3  2005/03/10 15:27:59  pjn3
+    |   Corrected link
+    |
+    |   Revision 1.11.32.2  2005/03/10 15:13:35  pjn3
+    |   Added webstart applications
+    |
+    |   Revision 1.11.32.1  2005/03/09 15:01:05  pjn3
+    |   webstart links added
+    |
     |   Revision 1.11  2004/12/13 11:50:59  clq2
     |   another minor change
     |

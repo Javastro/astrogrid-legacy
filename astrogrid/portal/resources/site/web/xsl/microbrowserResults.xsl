@@ -51,9 +51,7 @@
         display:none;
     }
     div.options{
-        border-top-width:1px;
-        margin-top:1px;
-        padding:2px;
+        margin-top:2px;
     }    
 
     span.HEADING{color:blue; align:center;}
