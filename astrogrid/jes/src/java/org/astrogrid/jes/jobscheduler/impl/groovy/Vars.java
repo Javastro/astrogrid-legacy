@@ -1,4 +1,4 @@
-/*$Id: Vars.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: Vars.java,v 1.3 2004/08/03 14:27:38 nw Exp $
  * Created on 28-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,11 +12,16 @@ package org.astrogrid.jes.jobscheduler.impl.groovy;
 
 import groovy.lang.Binding;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /** represents set of variable bindings in scope.
+ * allows additional scopes to be added and removed.
+ * scopes introduce new bindings.
+ * asignements to existing bindings in parent scopes update, rather than shadow.
  * @author Noel Winstanley nw@jb.man.ac.uk 28-Jul-2004
  *
  */
@@ -27,20 +32,49 @@ public class Vars{
      */
     public Vars() {
         super();
+        l = new ArrayList();
+        l.add(new HashMap());
     }
 
-    protected Map e = new HashMap();
+    protected List l;
+
+    
     
     public Object get(String name) {
+        Map e = findMapWithKey(name);
+        if (e == null) {
+            return null;
+        }
         return e.get(name);
     }
-    /*
-    public void set(String name,String value) {
-        e.put(name,value);
-    }*/
-    
+
     public void set(String name,Object value) {
+        Map e = findMapWithKey(name);
+        if (e == null) {
+            e = getInnermost();
+        }
         e.put(name,value);
+    }
+    
+    private Map getInnermost() {
+        return (Map)l.get(l.size()  -1);
+    }
+    private Map findMapWithKey(String name) {
+        for (int i = l.size() - 1; i >= 0; i--) {
+            Map m = (Map)l.get(i);
+            if (m.containsKey(name)) {
+                return m;
+            }
+        }
+        return null;
+    }
+    
+    
+    public void unset(String name) {
+        Map e = findMapWithKey(name);
+        if (e !=null) {
+            e.remove(name);
+        }
     }
     /** take a copy of the vars.
      * note -this is a shallow(ish) copy. values of bindings are not copied, but
@@ -53,20 +87,34 @@ public class Vars{
      */
     public Vars cloneVars() {
         Vars copy = new Vars();
-        copy.e = new HashMap(this.e);
+        copy.l.clear();
+        for (Iterator i = l.iterator(); i.hasNext(); ) {
+            Map e = (Map)i.next();
+            copy.l.add(new HashMap(e));
+        }
         return copy;
     }
     
+public void newScope() {
+    l.add(new HashMap());
+}
 
+public void removeScope()     {
+    l.remove(l.size() - 1);
+}
+    
 
     /** Add the variables defined in this collection to a binding, plus the 'vars' object itself.
      * @param bodyBinding
      */
     public void addToBinding(Binding bodyBinding) {
         bodyBinding.setVariable("vars",this);
-        for (Iterator i = e.entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry var = (Map.Entry)i.next();
-            bodyBinding.setVariable(var.getKey().toString(),var.getValue());
+        for (Iterator j = l.iterator(); j.hasNext(); ) {
+            Map e = (Map)j.next();
+            for (Iterator i = e.entrySet().iterator(); i.hasNext(); ) {
+                Map.Entry var = (Map.Entry)i.next();
+                bodyBinding.setVariable(var.getKey().toString(),var.getValue());
+            }
         }
     }
 
@@ -76,19 +124,23 @@ public class Vars{
      * @param bodyBinding
      */
     public void readFromBinding(Binding bodyBinding) {
-        for (Iterator i = e.entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry var = (Map.Entry)i.next();
-            Object newValue = bodyBinding.getVariable(var.getKey().toString());
-            if (newValue == null) {
+        for (Iterator j = l.iterator(); j.hasNext(); ) {
+            Map e = (Map)j.next();
+            for (Iterator i = e.entrySet().iterator(); i.hasNext(); ) {
+                Map.Entry var = (Map.Entry)i.next();
+                Object newValue = bodyBinding.getVariable(var.getKey().toString());
+                if (newValue == null) {
                 // dunno if its been explicitly set to null, or whether its a new binding added by the script. arse.
                 // safest thing is to ignore this.
                 //var.setValue(null);
-            } else {
-                var.setValue(newValue);
+                } else {
+                    var.setValue(newValue);
+                }
             }
         }
     }
     
+
     /**
      * Override hashCode.
      *
@@ -96,14 +148,14 @@ public class Vars{
      */
     public int hashCode() {
         int hashCode = 1;
-        hashCode = 31 * hashCode + (e == null ? 0 : e.hashCode());
+        hashCode = 31 * hashCode + (l == null ? 0 : l.hashCode());
         return hashCode;
     }
     public String toString() {
         StringBuffer buffer = new StringBuffer();
         buffer.append("[Vars:");
-        buffer.append(" e: ");
-        buffer.append(e);
+        buffer.append(" l: ");
+        buffer.append(l);
         buffer.append("]");
         return buffer.toString();
     }
@@ -123,14 +175,17 @@ public class Vars{
             return false;
         }
         Vars castedObj = (Vars) o;
-        return ((this.e == null ? castedObj.e == null : this.e
-            .equals(castedObj.e)));
+        return ((this.l == null ? castedObj.l == null : this.l
+            .equals(castedObj.l)));
     }
 }
 
 
 /* 
 $Log: Vars.java,v $
+Revision 1.3  2004/08/03 14:27:38  nw
+added set/unset/scope features.
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

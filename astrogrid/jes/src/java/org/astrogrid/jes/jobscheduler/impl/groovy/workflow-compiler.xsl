@@ -82,7 +82,22 @@ as it allows you to travese and select on all the different xpath axis...
 			</xsl:when>
 			<xsl:when test="@xsi:type = 'if'">
 				<xsl:call-template name="if" />
-			</xsl:when>							
+			</xsl:when>	
+			<xsl:when test="@xsi:type = 'set'">
+				<xsl:call-template name="set" />
+			</xsl:when>	
+			<xsl:when test="@xsi:type = 'unset'">
+				<xsl:call-template name="unset" />
+			</xsl:when>	
+			<xsl:when test="@xsi:type = 'scope'">
+				<xsl:call-template name="scope" />
+			</xsl:when>									
+			<xsl:when test="@xsi:type = 'try'">
+				<xsl:call-template name="try" />
+			</xsl:when>	
+			<xsl:when test="@xsi:type = 'catch'">
+				<xsl:call-template name="catch" />
+			</xsl:when>								
 			<xsl:otherwise>
 				<xsl:message>unrecognized type of Activity:- '<xsl:value-of select="@xsi:type"/>'</xsl:message>
 			</xsl:otherwise>														
@@ -132,7 +147,7 @@ jes.setWorkflowStatus(FINISHED);
 </xsl:template>
 
 <!-- error handling - create rules that ensure errors get propagated upwards. -->
-<xsl:template mode="errors" match="wf:flow|wf:sequence|wf:script|wf:step|wf:while|wf:for|wf:if|wf:then|wf:else|wf:parfor|wf:Activity">
+<xsl:template mode="errors" match="wf:set|wf:scope|wf:unset|wf:catch|wf:try|wf:flow|wf:sequence|wf:script|wf:step|wf:while|wf:for|wf:if|wf:then|wf:else|wf:parfor|wf:Activity">
   <rule>
 	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == ERROR</trigger>
 	<name>error-handler</name>
@@ -143,7 +158,56 @@ states.setStatus('<xsl:value-of select="generate-id(..)"/>',ERROR);
   </rule>
 </xsl:template>
 
+<!-- rules for variables -->
+<xsl:template match="wf:set" name="set">
+	<rule>
+		<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
+		<name>set-variable</name>
+		<envId><xsl:value-of select="generate-id()"/></envId>
+		<body>
+			if (jes.executeSet('<xsl:value-of select="generate-id()"/>',shell,states,rules)) {
+				states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
+			} else {
+				states.setStatus('<xsl:value-of select="generate-id()"/>',ERROR);
+			}
+		</body>
+		</rule>
+</xsl:template>
+	
+<xsl:template match="wf:unset" name="unset">
+	<rule>
+		<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
+		<name>unset-variable</name>
+		<body>
+			states.getEnv('<xsl:value-of select="generate-id()"/>').unset('<xsl:value-of select="@var"/>');
+			states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
+		</body>
+	</rule>
+</xsl:template>
 
+<xsl:template match="wf:scope" name="scope">
+	<rule>
+		<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
+		<name>introduce-scope</name>
+		<body>
+			e = states.getEnv('<xsl:value-of select="generate-id()"/>');
+			e.newScope();
+			states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED);
+			states.setStatus('<xsl:value-of select="generate-id(./*)"/>',START);
+			states.setEnv('<xsl:value-of select="generate-id(./*)"/>',e);
+		</body>
+	</rule>
+	<rule>
+		<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; states.getStatus('<xsl:value-of select="generate-id(./*)"/>') == FINISHED</trigger>
+		<name>remove-scope</name>
+		<body>
+			states.getEnv('<xsl:value-of select="generate-id()"/>').removeScope();
+			states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
+		</body>
+	</rule>			
+</xsl:template>
+
+<!-- atomic activities -->
 <xsl:template match="wf:script" name="script">
 <!-- set the statis to started, execute the script body, set status to finished
 trigger is standard, env taken from associated state 
@@ -213,8 +277,8 @@ states.setStatus('<xsl:value-of select="generate-id()"/>', FINISHED) ;
 <!-- rules for a flow 
 - start fires off all children at once, passing a clone of the environment to each
 - finish waits for all children to complete, then merges any environment alterations.
-- TODO - need to add in error-handling, join conditions here.
-tested
+- TODO - need to add in error-handling,
+- ALTERATION - no manipulation of environment. all share same. can use &lt;scope&gt; tag explicitly if needed.
 -->
 <xsl:comment>flow</xsl:comment>
 <rule>
@@ -223,7 +287,8 @@ tested
 	 <body>
 	<xsl:for-each select="./*">
 states.setStatus('<xsl:value-of select="generate-id()"/>',START);
-states.setEnv('<xsl:value-of select="generate-id()"/>',states.getEnv('<xsl:value-of select="generate-id(..)"/>').cloneVars());
+states.setEnv('<xsl:value-of select="generate-id()"/>',states.getEnv('<xsl:value-of select="generate-id(..)"/>'));
+<!--.cloneVars());-->
 	</xsl:for-each>
 states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED);
 	</body>
@@ -236,12 +301,14 @@ states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED);
 		    </xsl:for-each>
 	</trigger>
 	<body>
+	<!-- not needed now
 	envList = [
 	<xsl:for-each select="./*">
 	  <xsl:if test="position() != 1">,</xsl:if> '<xsl:value-of select="generate-id()"/>'
 	</xsl:for-each>
 	];
 states.setEnv('<xsl:value-of select="generate-id()"/>',states.mergeVars(envList));
+-->
 states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED) ;
 	</body>
 </rule>

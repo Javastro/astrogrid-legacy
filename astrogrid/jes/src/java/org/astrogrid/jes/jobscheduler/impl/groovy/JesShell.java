@@ -1,4 +1,4 @@
-/*$Id: JesShell.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: JesShell.java,v 1.3 2004/08/03 14:27:38 nw Exp $
  * Created on 29-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,13 @@
 **/
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
+import org.astrogrid.workflow.beans.v1.Set;
+
 import org.apache.log4j.Logger;
 import org.codehaus.groovy.control.CompilationFailedException;
 
 import groovy.lang.Binding;
+import groovy.lang.GString;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 
@@ -90,8 +93,27 @@ public class JesShell {
     
 
 
-    public String evaluateGString(String gString, String state) {
-        return null;
+    public boolean executeSet(Set set,String state,ActivityStatusStore map, RuleStore rules) throws CompilationFailedException, IOException {
+        Vars vars = map.getEnv(state);
+        if (set.getValue() != null) {
+            logger.debug("evaluating " + set.getValue());
+            Binding scriptBinding = createScriptBinding(map,rules);
+            vars.addToBinding(scriptBinding);
+            // wrap it in a here-document
+            // want to return a string if it has more thatn just a single embedded ${..}, or is just a simple string.
+            // otherwise want to return the object.
+            String expr = "x = <<<GSTRING\n" + set.getValue() + "\n" + "GSTRING\n " +
+                "(x instanceof GString && x.getValueCount() == 1 && x.getStrings().find{it.size() > 0} == null) ? x.getValue(0) : x"; 
+            Script sc = shell.parse(expr);
+            sc.setBinding(scriptBinding);
+            Object result = sc.run();
+            vars.set(set.getVar(),result);
+            return true;
+        } else {
+            // just a declaration, with no initialization.
+            vars.set(set.getVar(),null);
+            return true;
+        }
     }
 
 //  binding creation functions - so that scripts can access the status store.
@@ -150,6 +172,9 @@ public class JesShell {
 
 /* 
 $Log: JesShell.java,v $
+Revision 1.3  2004/08/03 14:27:38  nw
+added set/unset/scope features.
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

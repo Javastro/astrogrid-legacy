@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: AllTests.java,v 1.3 2004/08/03 14:27:38 nw Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,16 +33,16 @@ public class AllTests {
         suite.addTestSuite(GroovySubmitNewJobSuccessTest.class);
         suite.addTestSuite(GroovyInterpreterFactoryTest.class);
         suite.addTestSuite(RuleTest.class);
-        suite.addTestSuite(StepErrorFeatureTest.class);
         suite.addTestSuite(SequenceFeatureTest.class);
         suite.addTestSuite(FlowErrorFeatureTest.class);
-        suite.addTestSuite(FlowEmptyFeatureTest.class);
-        suite.addTestSuite(FlowSingletonFeatureTest.class);
         suite.addTestSuite(ActivityStatusTest.class);
         suite.addTestSuite(GroovySubmitNewJobNotifierFailsTest.class);
         suite.addTestSuite(XStreamPicklerTest.class);
-        suite.addTestSuite(AnnotatorTest.class);
+        suite.addTestSuite(StepErrorFeatureTest.class);
+        suite.addTestSuite(FlowSingletonFeatureTest.class);
         suite.addTestSuite(ScriptErrorFeatureTest.class);
+        suite.addTestSuite(AnnotatorTest.class);
+        suite.addTestSuite(FlowEmptyFeatureTest.class);
         suite.addTestSuite(JesInterfaceTest.class);
         suite.addTestSuite(GroovyTransformersTest.class);
         suite.addTestSuite(EmptyWorkflowFeatureTest.class);
@@ -50,12 +50,18 @@ public class AllTests {
         suite.addTestSuite(VarsTest.class);
         suite.addTestSuite(CompilerTest.class);
         suite.addTestSuite(GroovyAssumptionsTest.class);
+        suite.addTestSuite(SetFeatureTest.class);
+        suite.addTestSuite(UnsetFeatureTest.class);
+        suite.addTestSuite(ScopeFeatureTest.class);
         //$JUnit-END$
         return suite;
     }
 }
 /* 
  $Log: AllTests.java,v $
+ Revision 1.3  2004/08/03 14:27:38  nw
+ added set/unset/scope features.
+
  Revision 1.2  2004/07/30 15:42:34  nw
  merged in branch nww-itn06-bz#441 (groovy scripting)
 

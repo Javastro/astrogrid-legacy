@@ -1,4 +1,4 @@
-/*$Id: ActivityStatusStore.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: ActivityStatusStore.java,v 1.3 2004/08/03 14:27:38 nw Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -60,7 +60,12 @@ public class ActivityStatusStore {
         getActivityStatus(key).setEnv(env);
     }
 
-    /** merge environments into  new binding */
+    /** merge environments into  new binding 
+     * @todo work out how to do this now -- tricky.
+     * maybe need linked list of envs - so can utilize sharing - so no need to explicitly merge.
+     * ... - or should they be in independent environments anyhow?? if we care about this, use the scope tag..
+     * */
+    /* temporarily commented out for now - necessary for the parFor only.
     public  Vars mergeVars(List keyList) {
         Vars result = new Vars();
         for (Iterator i = keyList.iterator(); i.hasNext(); ) {
@@ -69,7 +74,7 @@ public class ActivityStatusStore {
         }
         return result;
     }
-
+*/
     /**
      * Returns <code>true</code> if this <code>ActivityStatusStore</code> is the same as the o argument.
      *
@@ -113,6 +118,9 @@ public class ActivityStatusStore {
 
 /* 
 $Log: ActivityStatusStore.java,v $
+Revision 1.3  2004/08/03 14:27:38  nw
+added set/unset/scope features.
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

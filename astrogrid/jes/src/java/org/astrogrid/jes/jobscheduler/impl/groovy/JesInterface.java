@@ -1,4 +1,4 @@
-/*$Id: JesInterface.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: JesInterface.java,v 1.3 2004/08/03 14:27:38 nw Exp $
  * Created on 12-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.impl.AbstractJobSchedulerImpl;
 import org.astrogrid.workflow.beans.v1.Script;
+import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
@@ -92,6 +93,8 @@ public class  JesInterface {
            }                             
     }
     
+
+    
     /** @todo do what we've got to do here..*/
     public void completeStep(String id) {
     }
@@ -119,6 +122,17 @@ public class  JesInterface {
         message.setTimestamp(new Date());
         return message;
     }
+    public boolean executeSet(String id,JesShell shell,ActivityStatusStore map,RuleStore rules) throws JesException {
+        Set set = (Set)getId(id);
+        try {
+            return shell.executeSet(set,id,map,rules);
+        } catch (Throwable t) {
+            getLog().info("set failed",t);
+            MessageType message = buildExceptionMessage(t,"set " + set.getVar() + " := " + set.getValue());
+            this.getWorkflow().getJobExecutionRecord().addMessage(message);
+            return false;
+        }
+    }    
     public boolean dispatchScript(String id,JesShell shell,ActivityStatusStore map,RuleStore rules) throws JesException {
         Script script = (Script)getId(id);        
         StepExecutionRecord er = AbstractJobSchedulerImpl.newStepExecutionRecord();
@@ -178,6 +192,9 @@ public class  JesInterface {
 
 /* 
 $Log: JesInterface.java,v $
+Revision 1.3  2004/08/03 14:27:38  nw
+added set/unset/scope features.
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

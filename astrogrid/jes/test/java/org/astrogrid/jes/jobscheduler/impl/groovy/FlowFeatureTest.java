@@ -1,4 +1,4 @@
-/*$Id: FlowFeatureTest.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: FlowFeatureTest.java,v 1.3 2004/08/03 14:27:38 nw Exp $
  * Created on 29-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import org.astrogrid.workflow.beans.v1.Flow;
 import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
-/** test behaviour of flow - in particular scopes and merging rules.
+/** test behaviour of flow - 
  * @author Noel Winstanley nw@jb.man.ac.uk 29-Jul-2004
  *
  */
@@ -55,11 +55,12 @@ public class FlowFeatureTest extends AbstractTestForFeature {
     protected void verifyWorkflow(Workflow result) {
         assertWorkflowCompleted(result);
         Script branch1 = (Script)((Flow)result.getSequence().getActivity(1)).getActivity(0);
-        assertScriptCompletedWithMessage(branch1,"2");
+        //assertScriptCompletedWithMessage(branch1,"2"); - or it might be 11
         Script branch2 = (Script)((Flow)result.getSequence().getActivity(1)).getActivity(1);
-        assertScriptCompletedWithMessage(branch2,"11"); // note, not 12.
+        // assertScriptCompletedWithMessage(branch2,"11");  - or is migh be 12
         Script finalS = (Script)result.getSequence().getActivity(2);
-        assertScriptCompletedWithMessage(finalS,"11");       
+        // both steps have executed by this point - so we can assert the value we exptect to see.
+        assertScriptCompletedWithMessage(finalS,"12");       
         
         
     }
@@ -69,6 +70,9 @@ public class FlowFeatureTest extends AbstractTestForFeature {
 
 /* 
 $Log: FlowFeatureTest.java,v $
+Revision 1.3  2004/08/03 14:27:38  nw
+added set/unset/scope features.
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

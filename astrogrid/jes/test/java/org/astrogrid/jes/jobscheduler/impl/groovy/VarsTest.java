@@ -1,4 +1,4 @@
-/*$Id: VarsTest.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: VarsTest.java,v 1.3 2004/08/03 14:27:38 nw Exp $
  * Created on 28-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,12 +45,40 @@ public class VarsTest extends TestCase {
     }
 
 
+        public void testUnset() {
+            assertNotNull(vars.get("foo"));
+            vars.unset("foo");
+            assertNull(vars.get("foo"));
+        }
+    
     public void testCloneVars() {
        Vars vars1 = vars.cloneVars();
        assertNotSame(vars,vars1);
        assertEquals(vars,vars1);
     }
+    
+    public void testScopes() {
+        vars.newScope();
+        vars.set("wibble",new Integer(1));
+        assertNotNull(vars.get("wibble"));
+        vars.removeScope();
+        assertNull(vars.get("wibble"));
+    }
+    
+    public void testScopeShadowing() {
+        vars.set("x",new Integer(1));
+        vars.newScope();
+        assertNotNull(vars.get("x"));
+        assertEquals(new Integer(1),vars.get("x"));
+        vars.set("x",new Integer(2));
+        // design choice here - does the assignment shadow, or update original
+        // think least astonishing is to update original.
+        vars.removeScope();
+        assertEquals(new Integer(2),vars.get("x"));
+    }
 
+    
+    
 
     public void testRoundTripToBinding() throws CompilationFailedException, IOException {
         Binding b = new Binding();
@@ -64,7 +92,6 @@ public class VarsTest extends TestCase {
         assertEquals("barney",result);
        vars.readFromBinding(b);
         // check values read back.
-       assertEquals(3,vars.e.size());
        assertNotNull(vars.get("foo"));
        assertNotNull(vars.get("pling"));
        assertNotNull(vars.get("bar"));
@@ -86,6 +113,9 @@ public class VarsTest extends TestCase {
 
 /* 
 $Log: VarsTest.java,v $
+Revision 1.3  2004/08/03 14:27:38  nw
+added set/unset/scope features.
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 
