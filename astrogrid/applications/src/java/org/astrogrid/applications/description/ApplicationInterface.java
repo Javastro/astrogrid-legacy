@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationInterface.java,v 1.1 2003/11/26 22:07:24 pah Exp $
+ * $Id: ApplicationInterface.java,v 1.2 2003/11/27 12:40:48 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -20,12 +20,14 @@ public class ApplicationInterface {
    private String name;
 
    /**
+    * list of references to the {@link ParameterDescription} objects that make up the inputs for this interface.
     *@link aggregation
     *      @associates org.astrogrid.applications.description.ParameterDescription
     */
    private List inputs;
 
    /**
+    * list of references to the {@link ParameterDescription} objects that make up the outputs for this interface.
     *@link aggregation
     *      @associates org.astrogrid.applications.description.ParameterDescription
     */

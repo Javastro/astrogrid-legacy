@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationController.java,v 1.6 2003/11/26 22:07:24 pah Exp $
+ * $Id: ApplicationController.java,v 1.7 2003/11/27 12:40:48 pah Exp $
  *
  * Created on 03 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -37,7 +37,7 @@ public interface ApplicationController {
 
    /**
     * Initialize the application environment and set up the parameters.
-    * @param applicationID the application identifier as returned by a call to @link #listApplications .
+    * @param applicationID the application identifier as returned by a call to {@link #listApplications} .
     * @param jobstepID the jobstep that is requesting the execution.
     * @param jobMonitorURL the jobmonitor service to call to notify of execution completion.
     * @param parameters the description of the job parameters.
@@ -46,14 +46,14 @@ public interface ApplicationController {
    int initializeApplication(String applicationID, String jobstepID, String jobMonitorURL, org.astrogrid.applications.ParameterValues parameters);
 
    /**
-    * Executes a particular application asynchronously that has previously been intialized by @link #initializeApplication
-    * @param executionId The executionId returned by @link #initializeApplication .
+    * Executes a particular application asynchronously that has previously been intialized by {@link #initializeApplication}
+    * @param executionId The executionId returned by {@link #initializeApplication} .
     */
    void executeApplication(int executionId);
 
    /**
     * Query the status of a particular application execution.
-    * @param executionId The executionId returned by @link #initializeApplication .
+    * @param executionId The executionId returned by {@link #initializeApplication} .
     * @return
     */
    String queryApplicationExecutionStatus(int executionId);

@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerConfig.java,v 1.1 2003/11/26 22:07:24 pah Exp $
+ * $Id: ApplicationControllerConfig.java,v 1.2 2003/11/27 12:40:48 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -18,7 +18,7 @@ import java.io.File;
 import org.astrogrid.applications.common.ApplicationsConstants;
 
 /**
- * Important application controller configuration constants. This is a singleton, with the actual configuration that is loaded being controlled by the @link ConfigLoader class.
+ * Important application controller configuration constants. This is a singleton, with the actual configuration that is loaded being controlled by the {@link ConfigLoader} class.
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4

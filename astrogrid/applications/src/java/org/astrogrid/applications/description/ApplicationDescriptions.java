@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationDescriptions.java,v 1.1 2003/11/26 22:07:24 pah Exp $
+ * $Id: ApplicationDescriptions.java,v 1.2 2003/11/27 12:40:48 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -20,7 +20,7 @@ import java.util.Map;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 
 /**
- * A simple holder for the @link ApplicationDescription objects.
+ * A simple holder for the {@link ApplicationDescription} objects.
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4

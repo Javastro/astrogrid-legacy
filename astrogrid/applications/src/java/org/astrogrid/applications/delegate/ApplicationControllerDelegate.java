@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerDelegate.java,v 1.1 2003/11/25 12:25:26 pah Exp $
+ * $Id: ApplicationControllerDelegate.java,v 1.2 2003/11/27 12:40:48 pah Exp $
  * 
  * Created on 25-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -34,6 +34,15 @@ public class ApplicationControllerDelegate implements ApplicationController {
 
    private ApplicationControllerServiceSoapBindingStub binding = null;
    
+   
+   /**
+    * Standard Constructor.
+    * @param address The address of the Application Controller Service that you want to use.
+    */
+   public ApplicationControllerDelegate(String address)
+   {
+      initialize(address);
+   }
    /**
     * Initialize the binding to the application controller web service.
     * @param address The address of the service to bind to - if null then the standard localhost version will be bound

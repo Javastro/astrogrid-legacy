@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerDummyDelegate.java,v 1.1 2003/11/25 12:25:26 pah Exp $
+ * $Id: ApplicationControllerDummyDelegate.java,v 1.2 2003/11/27 12:40:48 pah Exp $
  * 
  * Created on 25-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -27,6 +27,14 @@ import org.astrogrid.applications.delegate.beans.ParameterValues;
 public class ApplicationControllerDummyDelegate
    implements ApplicationController {
       static private String[] applicationList = {"sextractor"};
+      
+     /**
+      * Standard Constructor.
+    * @param address This is not used in the dummy, but is here to mimic the call to the real delegate.
+    */
+   public ApplicationControllerDummyDelegate(String address)
+     {
+     }
 
    /* (non-Javadoc)
     * @see org.astrogrid.applications.delegate.ApplicationController#listApplications()
