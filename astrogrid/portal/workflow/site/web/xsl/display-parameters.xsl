@@ -18,29 +18,38 @@
                     </div>
                 </td>
             </tr>
-            <tr>
+          <xsl:choose>
+            <xsl:when test="./tool/@tool-name != 'null'">            
+              <tr>
                 <td align="center" colspan="5"> Input:</td>
-            </tr>
-            <tr>
+              </tr>
+              <tr>
                 <td>Name:</td><td>Type:</td><td>Value:</td><td></td><td></td>
-            </tr>                               
-            <xsl:for-each select="./tool/inputParam">
-              <xsl:call-template name="parameter">
-                <xsl:with-param name="direction">input</xsl:with-param>
-              </xsl:call-template>
-            </xsl:for-each>
-            <tr>
+              </tr>                               
+              <xsl:for-each select="./tool/inputParam">
+                <xsl:call-template name="parameter">
+                  <xsl:with-param name="direction">input</xsl:with-param>
+                </xsl:call-template>
+              </xsl:for-each>
+              <tr>
                 <td align="center" colspan="5"> Output:</td>
-            </tr>
-            <tr>
+              </tr>
+              <tr>
                 <td>Name:</td><td>Type:</td><td>Value:</td><td></td><td></td>
-            </tr>                               
-            <xsl:for-each select="./tool/outputParam">
-              <xsl:call-template name="parameter">
-                <xsl:with-param name="direction">output</xsl:with-param>
-              </xsl:call-template>
-            </xsl:for-each>            
-        </table>
+              </tr>                               
+              <xsl:for-each select="./tool/outputParam">
+                <xsl:call-template name="parameter">
+                  <xsl:with-param name="direction">output</xsl:with-param>
+                </xsl:call-template>
+              </xsl:for-each>
+            </xsl:when>
+          <xsl:otherwise>
+            <tr>
+                <td colspan="5">There is currently no tool associated with this step</td>
+            </tr>    
+          </xsl:otherwise>
+        </xsl:choose>                        
+      </table>
     </xsl:template>
 
 
