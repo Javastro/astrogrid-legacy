@@ -1,5 +1,5 @@
 /*
- * $Id $
+ * $Id: Querier.java,v 1.21 2004/02/24 11:03:03 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -102,7 +102,8 @@ public abstract class Querier implements Runnable {
        if ((query == null) || (query.getUser() == null)) {
            this.user = Account.ANONYMOUS;
        } else {
-           this.user = query.getUser();
+           this.user = Account.ANONYMOUS;
+            //this.user = query.getUser();
        }
        
        //default results destination
@@ -419,7 +420,15 @@ public abstract class Querier implements Runnable {
     */
    private void fireStatusChanged(QueryStatus newStatus) {
       for (int i=0;i<serviceListeners.size();i++) {
-         ((QuerierListener) serviceListeners.get(i)).queryStatusChanged(this);
+         try {
+            ((QuerierListener) serviceListeners.get(i)).queryStatusChanged(this);
+         }
+         catch (RuntimeException e) {
+            //if there is a problem informing a listener, log it as an error but
+            //get on with the query
+            log.error("Listener ("+serviceListeners.get(i)+") failed to handle status change to "+newStatus, e);
+            
+         }
       }
    }
    
@@ -428,6 +437,9 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.21  2004/02/24 11:03:03  mch
+ Temp fix to ignore Query.Unit
+
  Revision 1.20  2004/02/17 03:38:05  mch
  Various fixes for demo
 
