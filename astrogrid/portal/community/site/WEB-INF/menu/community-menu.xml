@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+  <agp:menu-def
+      name="community-menu"
+      xmlns:agp="http://www.astrogrid.org/portal">
+    <agp:menu
+        contents="Community"
+        contents-hover="Community"
+        uri=""
+        target="_self"
+        status-text="Login...">
+      <agp:item
+          contents="Administration"
+          contents-hover="Administration"
+          uri="/astrogrid-portal/main/mount/community/administration.html"
+          target="_self"
+          status-text="Administre community features"/>
+      <agp:item
+          contents="Manage Credentials"
+          contents-hover="Credentials"
+          uri="/astrogrid-portal/main/mount/community/credentials.html"
+          target="_self"
+          status-text="Manage credentials"/>
+    </agp:menu>
+  </agp:menu-def>
+  <!-- junkYard 
+
+      <agp:item
+          contents="Register"
+          contents-hover="Register"
+          uri="/astrogrid-portal/main/mount/login/register"
+          target="_self"
+          status-text="Register for an AstroGrid account"/>
+          icon="/astrogrid-portal/icons/User.png"
+        icon="/astrogrid-portal/icons/User.png"
+          icon="/astrogrid-portal/icons/DeleteUser.png"
+          icon="/astrogrid-portal/icons/EnvelopeIn.png"
+  -->
