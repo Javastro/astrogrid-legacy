@@ -176,7 +176,6 @@ public class Step extends Activity {
         if( TRACE_ENABLED ) trace( "Step.toXMLString() entry") ;  
           
         String 
-           xmlTemplate = WorkflowDD.STEP_TEMPLATE,
            response = null ;
                                      
         try {
@@ -190,7 +189,7 @@ public class Step extends Activity {
             inserts[4] = this.getTool().toXMLString() ;
             inserts[5] = ( (this.resources == null)  ?  " "  :  this.resources.toXMLString() ) ;
             
-            response = MessageFormat.format( response, inserts ) ;
+            response = MessageFormat.format( WorkflowDD.STEP_TEMPLATE, inserts ) ;
 
         }
         finally {
@@ -201,6 +200,34 @@ public class Step extends Activity {
         
     } // end toXMLString()
     
+
+    public String toJESXMLString() {
+        if( TRACE_ENABLED ) trace( "Step.toJESXMLString() entry") ;  
+          
+        String 
+           response = null ;
+                                     
+        try {
+            
+            Object []
+               inserts = new Object[5] ;
+            inserts[0] = this.getName() ;
+            inserts[1] = this.getJoinCondition() ;
+            inserts[2] = new Integer( this.getStepNumber() ) ;
+            inserts[3] = new Integer( this.getSequenceNumber() ) ;
+            inserts[4] = this.getTool().toJESXMLString() ;
+//JBL NOTE  inserts[5] = ( (this.resources == null)  ?  " "  :  this.resources.toXMLString() ) ;
+            
+            response = MessageFormat.format( WorkflowDD.JOBSTEP_TEMPLATE, inserts ) ;
+
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Step.toJESXMLString() exit") ;    
+        }       
+        
+        return response ;        
+        
+    } // end toJESXMLString()
 
 	public void setDescription(String description) {
 		this.description = description;

@@ -60,7 +60,6 @@ public class Sequence extends ActivityContainer {
         if( TRACE_ENABLED ) trace( "Sequence.toXMLString() entry") ;   
               
         String 
-            xmlTemplate = WorkflowDD.SEQUENCE_TEMPLATE,
             response = null ;
                                      
         try {
@@ -69,7 +68,7 @@ public class Sequence extends ActivityContainer {
                inserts = new Object[1] ;
             inserts[0] = super.toXMLString() ;
             
-            response = MessageFormat.format( response, inserts ) ;
+            response = MessageFormat.format( WorkflowDD.SEQUENCE_TEMPLATE, inserts ) ;
 
         }
         finally {

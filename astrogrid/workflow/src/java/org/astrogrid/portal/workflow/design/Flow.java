@@ -58,7 +58,6 @@ public class Flow extends ActivityContainer {
         if( TRACE_ENABLED ) trace( "Flow.toXMLString() entry") ;   
               
         String 
-            xmlTemplate = WorkflowDD.FLOW_TEMPLATE,
             response = null ;
                                      
         try {
@@ -67,7 +66,7 @@ public class Flow extends ActivityContainer {
                inserts = new Object[1] ;
             inserts[0] = super.toXMLString() ;
             
-            response = MessageFormat.format( response, inserts ) ;
+            response = MessageFormat.format( WorkflowDD.FLOW_TEMPLATE, inserts ) ;
 
         }
         finally {

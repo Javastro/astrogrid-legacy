@@ -78,7 +78,7 @@ public class WorkflowDD {
         
     public static final String
         QUERY_TEMPLATE =
-        "<select>" +        "</select>" ;  
+        "<query>" +        "</query>" ;  
         
     public static final String
         RESOURCES_TEMPLATE =
@@ -92,11 +92,25 @@ public class WorkflowDD {
     public static final String
         JOB_TEMPLATE =
         "<?xml version='1.0' encoding='UTF-8'?>" +
-        "<job name=\"{0}\" {1}>" +
-        "   <userid>{2}</userid>" +
-        "   <community>{3}</community>" +
-        "   <description>{4}</description>" +      
-        "       {5}" +                      
+        "<job name=\"{0}\" >" +
+        "   <userid>{1}</userid>" +
+        "   <community>{2}</community>" +
+        "   <description>{3}</description>" +      
+        "       {4}" +       // variable number of job steps               
         "</job>" ;        
+        
+    public static final String
+        JOBSTEP_TEMPLATE =
+        "<jobstep name=\"{0}\" " +
+        "      joinCondition=\"{1}\" " +
+        "      stepNumber=\"{2}\" " +
+        "      sequenceNumber=\"{3}\">" +
+        "   <query>{4}</query>" + 
+        "</jobstep>" ;
+        
+    public static final String
+        JOBQUERY_TEMPLATE =
+        "<query>" +
+        "</query>" ;          
 
 } // end of class WorkflowDD

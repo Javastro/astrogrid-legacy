@@ -628,12 +628,11 @@ public class Workflow extends Activity {
             Object []
                inserts = new Object[5] ;
             inserts[0] = this.name ;
-            inserts[1] = (this.templateName == null)  ?  "" :  ("templateName=\"" + this.templateName + "\"") ;
-            inserts[2] = this.userid ;
-            inserts[3] = this.community ;
-            inserts[4] = this.description ;
+            inserts[1] = this.userid ;
+            inserts[2] = this.community ;
+            inserts[3] = this.description ;
 
-            inserts[5] = getChild().toXMLString() ;
+            inserts[4] = getChild().toXMLString() ;
             
             response = MessageFormat.format( response, inserts ) ;
 

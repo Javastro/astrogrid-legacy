@@ -200,6 +200,30 @@ public abstract class ActivityContainer extends Activity {
     } // end of toXMLString()
     
     
+    public String toJESXMLString() {
+        if( TRACE_ENABLED ) trace( "toJESXMLString() entry") ;   
+              
+        StringBuffer 
+            childrenBuffer = new StringBuffer( 256 ) ;
+        ListIterator
+            iterator = this.children.listIterator() ;
+                                              
+        try {
+            
+            while ( iterator.hasNext() ) {   
+                childrenBuffer.append( ((Activity) iterator.next()).toJESXMLString() ) ;
+            }
+            
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "toJESXMLString() exit") ;    
+        }       
+        
+        return childrenBuffer.toString() ;
+          
+    } // end of toJESXMLString()
+    
+    
     private static void trace( String traceString ) {
         System.out.println( traceString ) ;
         // logger.debug( traceString ) ;

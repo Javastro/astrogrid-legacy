@@ -17,6 +17,7 @@ import org.apache.axis.utils.XMLUtils ;
 // import org.astrogrid.portal.workflow.design.myspace.*;
 import java.util.ListIterator ;
 import java.util.Iterator ;
+import java.text.MessageFormat;
 import org.xml.sax.* ;
 import java.io.StringReader ;
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
@@ -198,8 +199,53 @@ public final class Query implements Tool {
         
     public String getToolType() { return "Query" ; }
         
-	public String toXMLString() { return XMLUtils.ElementToString( queryElement ) ; }   
-    public String toJESXMLString() { return XMLUtils.ElementToString( queryElement ) ; }
+	public String toXMLString() { 
+        if( TRACE_ENABLED ) trace( "Query.toXMLString() entry") ;  
+          
+        String 
+           response = null ;
+                                     
+        try {
+            
+            Object []
+               inserts = new Object[1] ;
+            inserts[0] = XMLUtils.ElementToString( queryElement ) ;
+
+            response = MessageFormat.format( WorkflowDD.STEP_TEMPLATE, inserts ) ;
+
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Query.toXMLString() exit") ;    
+        }       
+        
+        return response ;        
+         
+    } // end of toXMLString()
+
+
+    public String toJESXMLString() { 
+        if( TRACE_ENABLED ) trace( "Query.toJESXMLString() entry") ;  
+          
+        String 
+           response = null ;
+                                     
+        try {
+            
+            Object []
+               inserts = new Object[1] ;
+            inserts[0] = XMLUtils.ElementToString( queryElement ) ;
+
+            response = MessageFormat.format( WorkflowDD.JOBSTEP_TEMPLATE, inserts ) ;
+
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Query.toJESXMLString() exit") ;    
+        }       
+        
+        return response ;        
+         
+    } // end of toJESXMLString()
+        
     
     public String getName() { return name ; }
     public String getDescription() { return description ; }

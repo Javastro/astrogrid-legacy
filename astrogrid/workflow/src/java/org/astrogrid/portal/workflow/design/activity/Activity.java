@@ -197,7 +197,7 @@ public abstract class Activity {
     
     
     public abstract String toXMLString() ;
-    
+    public abstract String toJESXMLString() ;  
     
     private static void trace( String traceString ) {
         System.out.println( traceString ) ;
