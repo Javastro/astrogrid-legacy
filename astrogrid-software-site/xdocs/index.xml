@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<document>
+    <properties>
+        <title>Overview of Astrogrid</title>
+        <author email="jdt@roe.ac.uk">John Taylor</author>
+    </properties>
+    <body>
+        <section name="Overview of AstroGrid">
+            <p> The AstroGrid project (<a href="http://www.astrogrid.org/">http://www.astrogrid.org/</a>) aims to 
+                produce a working datagrid for key selected databases, with associated datamining facilities, by late 
+                2004. It is part of the world-wide drive towards the concept of a Virtual Observatory (VO), and can be 
+                seen as the UK contribution to this vision. However in various ways it is both wider and more focussed 
+                than other initiatives. It is wider in that it covers astronomy, solar physics, and space plasma (solar 
+                terrestrial) physics, and covers all wavelengths from radio to X-ray. The project is also part of a 
+                coherent UK e-science programme, with links to projects in particle physics, bio-informatics, and basic 
+                grid technology development. </p>
+            <p> AstroGrid is however focused in that it aims to develop something recognisably like a working VO on a 
+                short timescale, so that science can start getting done and technological lessons can be learned. This 
+                requires concentrating on selected datasets. Our priority is to develop a virtual observatory 
+                capability to support efficient and effective exploitation of key astronomical data sets of importance 
+                to the UK community: for example data from WFCAM, VISTA, XMM-SSC, e-MERLIN, SOHO and Cluster. It seems 
+                clear that good data curation, archive management, and datamining services all need to be closely 
+                linked together. AstroGrid is therefore a partnership formed by UK archive centres and astronomical 
+                computer scientists. </p>
+        </section>
+        <section name="Further Information">
+            <p> The links on the left of the page offer comprehensive information on AstroGrid, including how to obtain 
+                and use the software, tutorials, background information on the science cases driving the software 
+                development, and <a href="faq.html">frequently-asked questions</a>. </p>
+        </section>
+    </body>
+</document>

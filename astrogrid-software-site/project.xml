@@ -1,0 +1,25 @@
+<project>
+    <extend>${basedir}/../maven-base/project.xml</extend>
+    <artifactId>astrogrid-software-site</artifactId>
+    <name>AstroGrid</name>
+    <shortDescription>AstroGrid Software Site</shortDescription>
+    <logo>
+    /images/veil_noao_strip.jpg
+    </logo>
+    <siteAddress>www.astrogrid.org</siteAddress>
+    <siteDirectory>/var/www/software</siteDirectory>
+    <repository>
+        <connection> scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid 
+            </connection>
+        <developerConnection> 
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid 
+            </developerConnection>
+        <url> http://www.astrogrid.org/viewcvs/astrogrid/ </url>
+    </repository>
+    <build/>
+    <properties/>
+    <reports>
+        <report>maven-license-plugin</report>
+        <!--report>maven-linkcheck-plugin </report-->
+    </reports>
+</project>
