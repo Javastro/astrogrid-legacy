@@ -1,0 +1,69 @@
+Castor XML Source Generator
+---------------------------
+website: http://www.castor.org
+Version: 0.9.5.3 Release Candidate 1
+Libraries: http://project.exolab.org/cgi-bin/viewcvs.cgi/castor/lib/
+
+
+
+I.-    Usage
+I.i.-   Command-line
+I.ii.-  Script file
+I.iii.- Java APIs
+II.-   Supported types
+II.i.-  Unsupported Complex Type Definition in Schema Component
+
+
+I.- Usage
+Castor XML Source generator can be used in three differents ways
+
+	- Using a command-line tool by calling:
+    	java org.exolab.castor.builder.SourceGenerator - options
+
+	- Using the script files:
+    	Sourcegenerator.bat or SourceGenerator.sh
+
+	- Using the java APIs:
+    	http://www.castor.org/api/index.html
+
+I.i.- Command-line
+ 	  Command line command can be invoked with:
+          java org.exolab.castor.builder.SourceGenerator  -options
+
+      Details about command line options at http://www.castor.org/SourceGeneratorUser.pdf
+      page 7.
+
+I.ii.- Script file
+         A script file also can be called to use Source Generator.
+         That's SourceGenerator.bat or SourceGenerator.sh depending of OS.
+
+I.iii.- Java APIs
+	    Java APIs is compose of next packages:
+	     org.exolab.castor.builder
+    	 org.exolab.castor.builder.types
+         org.exolab.castor.builder.util
+         org.exolab.castor.mapping
+	     org.exolab.castor.types
+    	 org.exolab.castor.xml
+        
+        Also some external libraies are requiered:
+         org.exolab.javasource : contains full description of java object
+         Xerces-Java parcer 1.4.0 from Apache XML parcer
+         Jakarta regular expression
+
+
+II.- Supported types
+	
+		The supported types are specify at org.exolab.castor.types
+	    Source Generator support 33 of 43 XML Schemas datatypes, some of them  with
+	    restriction.
+	    For more information about the datatypes supported
+	    look at http://www.castor.org/SourceGeneratorUser.pdf Page 15.
+
+II.i.-  Unsupported Complex Type Definition in Schema Component
+		{final}
+		{attribute wildcard}
+		{prohibited substitutions}
+
+	    Details about supported types on Schemas Components at
+	    http://www.castor.org/SourceGeneratorUser.pdf pag 29
