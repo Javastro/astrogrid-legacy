@@ -1,4 +1,4 @@
-/*$Id: AxisDataService05QueryTest.java,v 1.8 2004/09/08 16:33:06 mch Exp $
+/*$Id: AxisDataService05QueryTest.java,v 1.9 2004/09/08 17:51:49 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,7 +67,7 @@ public class AxisDataService05QueryTest extends ServerTestCase {
     
     public void testAbort() throws Exception {
        
-       String qid = server.submitAdqlQuery(query1.toAdqlString(), "mailto:mch@roe.ac.uk", "VOTABLE");
+       String qid = server.submitAdqlQuery(query1.toAdqlString(), "astrogrid:store:myspace:http://wibble/wobble#some/path", "VOTABLE");
        assertNotNull(qid);
        server.abortQuery(qid);
 
@@ -100,6 +100,9 @@ public class AxisDataService05QueryTest extends ServerTestCase {
 
 /*
 $Log: AxisDataService05QueryTest.java,v $
+Revision 1.9  2004/09/08 17:51:49  mch
+Fixes to log and metadata views
+
 Revision 1.8  2004/09/08 16:33:06  mch
 Added SampleStars init
 

@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.8 2004/09/08 14:56:35 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.9 2004/09/08 17:51:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -183,96 +183,6 @@ public class VoDescriptionServer {
       service.update(getVoDescription());
       return new String[] { SimpleConfig.getSingleton().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY) };
    }
-   
-   
-   /** Returns the element representing the given table name in the served
-    * metadata *
-   public static Element getTableElement(String tableName) throws IOException {
-      return getTableElement(tableName, getMetadata().getDocumentElement());
-   }
-   
-   /** Returns the element for the given table/column in the served metadata
-   public static Element getColumnElement(String tableName, String columnName) throws IOException {
-      return getColumnElement(tableName, columnName, getMetadata().getDocumentElement());
-   }
-   
-   /** Returns a list of the tables of the served metadata
-   public static String[] getTables() throws IOException {
-      return getTables(getMetadata().getDocumentElement());
-   }
-   
-   /** Returns a list of the columns for the given table of the served metadata
-   public static String[] getColumns(String tableName) throws IOException {
-      return getColumns(tableName, getMetadata().getDocumentElement());
-   }
-   
-   /** Returns a list of the tables of the served metadata
-   public static String[] getTables(Element metatables) throws IOException {
-      NodeList tableNodes = metatables.getElementsByTagName("Table");
-      String[] tables = new String[tableNodes.getLength()];
-      for (int t=0;t<tableNodes.getLength();t++) {
-         tables[t] = ((Element) tableNodes.item(t)).getAttribute("name");
-      }
-      return tables;
-   }
-   
-   /** Returns a list of the columns for the given table of the served metadata
-   public static String[] getColumns(String tableName, Element metatables) throws IOException {
-      
-      NodeList colNodes = getTableElement(tableName, metatables).getElementsByTagName("Column");
-      
-      String[] columns = new String[colNodes.getLength()];
-      for (int t=0;t<columns.length;t++) {
-         columns[t] = ((Element) colNodes.item(t)).getAttribute("name");
-      }
-      return columns;
-   }
-   
-   /** Returns the element representing the given table name in the given
-    * metadata
-   public static Element getTableElement(String tableName, Element metatables) throws IOException {
-      NodeList tables = metatables.getElementsByTagName("Table");
-      
-      for (int t=0;t<tables.getLength();t++) {
-         if (((Element) tables.item(t)).getAttribute("name").equals(tableName)) {
-            return (Element) tables.item(t);
-         }
-      }
-      
-      throw new IllegalArgumentException("No such table '"+tableName+"' in metadata");
-   }
-   
-   /** Returns the element for the given table/column in the served metadata
-   public static Element getColumnElement(String tableName, String columnName, Element metatables) throws IOException {
-      NodeList tables = metatables.getElementsByTagName("Table");
-      
-      Element tableElement = null;
-      for (int t=0;t<tables.getLength();t++) {
-         if (((Element) tables.item(t)).getAttribute("name").equals(tableName)) {
-            tableElement = (Element) tables.item(t);
-         }
-      }
-      
-      if (tableElement == null) {
-         throw new IllegalArgumentException("No such table '"+tableName+"' in metadata");
-      }
-      
-      NodeList columns = tableElement.getElementsByTagName("Column");
-      
-      Element colElement = null;
-      for (int c=0;c<columns.getLength();c++) {
-         if (((Element) columns.item(c)).getAttribute("name").equals(columnName)) {
-            colElement = (Element) columns.item(c);
-         }
-      }
-      
-      if (colElement == null) {
-         throw new IllegalArgumentException("No such column '"+columnName+"' in metadata for table '"+tableName+"'");
-      }
-      
-      return colElement;
-   }
-    /**/
    
 }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsMetaServer.java,v 1.3 2004/09/08 16:28:00 mch Exp $
+ * $Id: SampleStarsMetaServer.java,v 1.4 2004/09/08 17:51:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,6 +12,7 @@ import org.astrogrid.config.Config;
 import org.astrogrid.config.ConfigException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.metadata.FileResourcePlugin;
+import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 
 /**
@@ -41,7 +42,23 @@ public class SampleStarsMetaServer extends FileResourcePlugin
       return url;
    }
    
-   
+   /**
+    * Initialises config so that authority ID, etc are set
+    */
+   public static void initConfig() {
+      SimpleConfig.setProperty(VoDescriptionServer.PLUGIN_KEY, SampleStarsMetaServer.class.getName());
+      SimpleConfig.setProperty("datacenter.name", "SampleStars AstroGrid Datacenter");
+      SimpleConfig.setProperty("datacenter.shortname", "PAL-Sample");
+      SimpleConfig.setProperty("datacenter.publisher", "AstroGrid");
+      SimpleConfig.setProperty("datacenter.description", "An unconfigured datacenter; it contains two tables of sample stars and galaxies for testing and demonstration purposes.");
+      SimpleConfig.setProperty("datacenter.contact.name", "Martin Hill");
+      SimpleConfig.setProperty("datacenter.contact.name", "mch@roe.ac.uk");
+
+      SimpleConfig.setProperty("datacenter.authority.metadata.plugin", "org.astrogrid.datacenter.metadata.AuthorityConfigPlugin");
+      SimpleConfig.setProperty("datacenter.authorityId", "astrogrid.org");
+      SimpleConfig.setProperty("datacenter.resourceKey", "pal-sample");
+
+   }
    
 }
 

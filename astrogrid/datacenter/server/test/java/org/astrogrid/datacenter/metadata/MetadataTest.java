@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.2 2004/09/08 15:03:02 mch Exp $
+/*$Id: MetadataTest.java,v 1.3 2004/09/08 17:51:49 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,11 +25,12 @@ import org.w3c.dom.Element;
  *
  */
 public class MetadataTest extends TestCase {
-   
+  
    public void assertHasAuthorityResource(Document candidate) {
       
       //check for authority id
       Element id = (Element) candidate.getElementsByTagName("Identifier").item(0);
+      assertNotNull("No Identifier tag", id);
       String authorityId = DomHelper.getValue(id, "AuthorityID");
    }
    
@@ -68,10 +69,10 @@ public class MetadataTest extends TestCase {
       SimpleConfig.setProperty("datacenter.metadata.plugin", JdbcPlugin.class.getName());
       
       Element auth = VoDescriptionServer.getAuthorityResource();
-      assertNotNull(auth);
+      assertNotNull("No AuthorityType in VOdescription", auth);
 
       Element rdbms = VoDescriptionServer.getResource("RdbmsMetadata");
-      assertNotNull(auth);
+      assertNotNull("No RdbmsMetadata in VODescription", rdbms);
    }
    
    public void testMetatdataFileServer() throws Throwable{
@@ -108,6 +109,9 @@ public class MetadataTest extends TestCase {
 
 /*
  $Log: MetadataTest.java,v $
+ Revision 1.3  2004/09/08 17:51:49  mch
+ Fixes to log and metadata views
+
  Revision 1.2  2004/09/08 15:03:02  mch
  Added tests
 

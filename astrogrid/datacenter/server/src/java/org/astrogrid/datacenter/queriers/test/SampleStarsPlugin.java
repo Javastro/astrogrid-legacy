@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.2 2004/09/06 20:23:00 mch Exp $
+ * $Id: SampleStarsPlugin.java,v 1.3 2004/09/08 17:51:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -59,7 +59,7 @@ public class SampleStarsPlugin extends JdbcPlugin
       SimpleConfig.setProperty(JdbcConnections.JDBC_USER_KEY, "sa");
       SimpleConfig.setProperty(JdbcConnections.JDBC_PASSWORD_KEY, "");
       
-      SimpleConfig.setProperty(VoDescriptionServer.PLUGIN_KEY, SampleStarsMetaServer.class.getName());
+      SampleStarsMetaServer.initConfig();
     }
    
 
@@ -200,6 +200,9 @@ public class SampleStarsPlugin extends JdbcPlugin
 }
    /*
    $Log: SampleStarsPlugin.java,v $
+   Revision 1.3  2004/09/08 17:51:49  mch
+   Fixes to log and metadata views
+
    Revision 1.2  2004/09/06 20:23:00  mch
    Replaced metadata generators/servers with plugin mechanism. Added Authority plugin
 

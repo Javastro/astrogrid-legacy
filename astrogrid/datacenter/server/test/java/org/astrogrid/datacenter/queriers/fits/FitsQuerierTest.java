@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.21 2004/09/01 12:10:58 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.22 2004/09/08 17:51:49 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -39,8 +39,9 @@ public class FitsQuerierTest extends TestCase
       File indexFile = new File("fitsIndex.xml");
       FileOutputStream out = new FileOutputStream(indexFile);
       out.write(index.getBytes());
-
-      SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY, FitsQuerierPlugin.class.getName());
+      out.close();
+      
+      SimpleConfig.setProperty(FitsQuerierPlugin.FITS_INDEX_FILENAME, "fitsIndex.xml");
    }
 
    public void testPluginClass() throws IOException {
@@ -83,6 +84,9 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.22  2004/09/08 17:51:49  mch
+ Fixes to log and metadata views
+
  Revision 1.21  2004/09/01 12:10:58  mch
  added results.toHtml
 

@@ -44,8 +44,8 @@
       if (identity == null) {
          out.write("ERROR: 'Identifier' is missing in Authority Resource");
       } else {
-         out.println("Authority ID: "+DomHelper.getValue(identity, "AuthorityID"));
-         out.println("Resource Key: "+DomHelper.getValue(identity, "ResourceKey"));
+         out.println("<p>Authority ID: <b>"+DomHelper.getValue(identity, "AuthorityID")+"</b>");
+         out.println("<p>Resource Key: <b>"+DomHelper.getValue(identity, "ResourceKey")+"</b>");
       }
    }
    
