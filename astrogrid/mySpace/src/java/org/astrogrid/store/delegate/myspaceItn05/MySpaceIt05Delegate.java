@@ -35,6 +35,12 @@ import org.astrogrid.store.delegate.StoreFile;
 
 public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 {
+    /**
+     * Commons logger
+     */
+    private static final org.apache.commons.logging.Log log =
+        org.apache.commons.logging.LogFactory.getLog(MySpaceIt05Delegate.class);
+    
 //   private StoreClient itn05Delegate = null; // Itn. 05 delegate.
    private Manager     innerDelegate = null; // Inner delegate.
    private Msrl managerMsrl = null; // Location of the Manager.
@@ -80,7 +86,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
       if (endPoint.startsWith(Msrl.SCHEME)) {
          endPoint = endPoint.substring(Msrl.SCHEME.length()+1);
       }
-      System.out.println("the endpoint in myspaceitn05delegate = " + endPoint);
+      log.debug("the endpoint in myspaceitn05delegate = " + endPoint);
       try
       {  ManagerService service = new ManagerServiceLocator();
          innerDelegate = service.getAstrogridMyspace(
@@ -169,11 +175,11 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
       {  for(int loop=0; loop<numMessages; loop++)
          {  StatusMessage message =
              (StatusMessage)statusList.get(loop);
-            System.out.println(message.toString() );
+            log.debug(message.toString() );
          }
       }
       else
-      {  System.out.println("No messages returned.");
+      {  log.debug("No messages returned.");
       }
    }
 
