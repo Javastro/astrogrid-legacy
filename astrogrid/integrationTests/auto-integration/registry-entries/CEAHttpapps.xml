@@ -429,62 +429,7 @@
 			<ceab:URL>@TOMCATROOT@/astrogrid-cea-http-@VERSION@/testapps/helloWorld.jsp</ceab:URL>
 		</cea:CeaHttpAdapterSetup>
     </vr:Resource>
-	<!--The point of the next entry is make sure that a single duff entry doesn't screw up the entire application server-->
-    <vr:Resource status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
-        <vr:Identifier>
-            <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
-            <vr:ResourceKey>AnotherInvalidHttpApp</vr:ResourceKey>
-        </vr:Identifier>
-        <vr:Title>An http app whose ApplicationType doesn't even satisfy the schema</vr:Title>
-        <vr:ShortName>AnotherInvalidHttpApp</vr:ShortName>
-        <vr:Summary>
-            <vr:Description>This is part of the astrogrid CEA.</vr:Description>
-            <vr:ReferenceURL>http://www.astrogrid.org/maven/docs/@VERSION@/applications/</vr:ReferenceURL>
-        </vr:Summary>
-        <vr:Type>Other</vr:Type>
-        <vr:Curation>
-            <vr:Publisher>
-                <vr:Title>Astrogrid</vr:Title>
-                <vr:Description>blah blab</vr:Description>
-                <vr:ReferenceURL>http://www.astrogrid.org/</vr:ReferenceURL>
-            </vr:Publisher>
-            <vr:Contact>
-                <vr:Name>John Taylor</vr:Name>
-                <vr:Email>jdt@roe.ac.uk</vr:Email>
-            </vr:Contact>
-            <vr:Date role="representative">2004-03-26</vr:Date>
-            <vr:Creator>
-                <vr:Name>Astrogrid</vr:Name>
-                <vr:Logo>??</vr:Logo>
-            </vr:Creator>
-            <vr:Version>Iteration 6</vr:Version>
-        </vr:Curation>
-        <vr:Subject>???</vr:Subject>
-        <cea:ApplicationDefinition>
-			<cea:ApplicationKind>stupidapplication</cea:ApplicationKind>
-            <cea:Parameters>
-                <cea:ParameterDefinition name="message" type="text">
-                    <ns1:UI_Name
-                        xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Greeting</ns1:UI_Name>
-                    <ns2:UI_Description
-                        xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1">This is the message returned from the app</ns2:UI_Description>
-                    <ns4:Units xmlns:ns4="http://www.astrogrid.org/schema/AGParameterDefinition/v1">String</ns4:Units>
-                </cea:ParameterDefinition>
-            </cea:Parameters>
-            <cea:Interfaces>
-                <ns29:Interface name="I1" xmlns:ns29="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
-                    <ns29:input/>
-                    <ns29:output>
-                        <ns29:pref ref="message"/>
-                    </ns29:output>
-                </ns29:Interface>
-            </cea:Interfaces>
-        </cea:ApplicationDefinition>
-		<cea:CeaHttpAdapterSetup>
-			<ceab:URL>@TOMCATROOT@/astrogrid-cea-http-@VERSION@/testapps/helloWorld.jsp</ceab:URL>>
-		</cea:CeaHttpAdapterSetup>
-    </vr:Resource>	
-	<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaServiceType" status="active">
+		<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaServiceType" status="active">
         <vr:Identifier>
             <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
             <vr:ResourceKey>TestHttpCEC</vr:ResourceKey>
@@ -542,6 +487,10 @@
                 <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
                 <vr:ResourceKey>INTWideFieldSurveySIAP</vr:ResourceKey>
             </cea:ApplicationReference>	            
+            <cea:ApplicationReference>
+                <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+                <vr:ResourceKey>InvalidHttpApp</vr:ResourceKey>
+            </cea:ApplicationReference>	     
          </cea:ManagedApplications>
     </vr:Resource>
 </vr:VODescription>
