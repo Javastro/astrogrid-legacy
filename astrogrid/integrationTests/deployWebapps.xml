@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: deployWebapps.xml,v 1.4 2004/01/12 15:05:24 jdt Exp $ --><!--
+<!-- $Id: deployWebapps.xml,v 1.5 2004/01/14 21:23:48 jdt Exp $ --><!--
 	Example Deploy Script for Astrogrid War files
 	This script uses the Tomcat Manager to deploy war files built nightly by Maven
 
@@ -9,7 +9,8 @@
 	To run it from maven, you will need to pop the catalina-ant.jar into maven's lib directory AND
 	modify forehead.conf to pick it up.
 	You'll need to set the urls, Tomcat Manager usernames and passwords below in the tomcatServers.xml file.
-	--><project basedir="." default="RedeployTheLot" name="DeployWars">
+	-->
+<project basedir="." default="DeployTheLot" name="DeployWars">
   
 
 

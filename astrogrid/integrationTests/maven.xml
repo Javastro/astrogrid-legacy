@@ -3,8 +3,7 @@
 <project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:ant="jelly:ant" >
 	<preGoal name="test:test">
 		<echo message="Deploying webapps..."/>
-		<!-- ant antfile="deployWebapps.xml"-->
-		<echo message="Temporarily disabled redeployment of webapps pending new locations from Keith.."/>
+		<ant antfile="deployWebapps.xml">
 	</preGoal>
 
 </project>
