@@ -12,6 +12,7 @@ import org.astrogrid.community.policy.server.PolicyManagerService ;
 import org.astrogrid.community.policy.server.PolicyManagerServiceLocator ;
 import org.astrogrid.community.common.CommunityConfig;
 import java.net.URL;
+import java.util.regex.*;
 
 import java.util.ArrayList;
 /**
@@ -47,22 +48,29 @@ public class AdministrationDelegate {
       }      
    }
    
+   private static final String REGEX_SECUREPORT = ":\\d+";
    private String getSecureURL() {
-     
+      String communitySecurity = CommunityConfig.getProperty("community.security","on");
+      if(communitySecurity == null || !communitySecurity.equals("on")) {
+         return CommunityConfig.getManagerUrl();
+      }
       String policyURL = CommunityConfig.getProperty("policy.manager.secure.url");
       if(policyURL != null && policyURL.trim().length() > 0) {
          return policyURL;
       }
+      
       policyURL = CommunityConfig.getManagerUrl();
+      
       System.out.println("manager url = " + policyURL);
-      policyURL = policyURL.replaceAll("http","https");
-      int index = policyURL.indexOf(":");
+
       
       String securePort = CommunityConfig.getProperty("community.secure.port");
-      System.out.println("the secure port = " + securePort + " and index = " + index);      
+      System.out.println("the secure port = " + securePort);      
       if(securePort != null && securePort.length() > 0) {
-         System.out.println("try the regex");
-         policyURL.replaceAll("\\d",(":" + securePort));
+         policyURL = policyURL.replaceAll("http","https");         
+         Pattern p = Pattern.compile(REGEX_SECUREPORT);
+         Matcher m = p.matcher(policyURL); // get a matcher object
+         policyURL = m.replaceAll((":" + securePort));         
       }else {
          return null;
       }
