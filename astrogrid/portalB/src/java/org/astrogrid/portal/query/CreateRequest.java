@@ -63,6 +63,7 @@ public class CreateRequest {
 		String dsNameTemp = null;
 		String opTemp = null;
 		int iTemp = 0;
+		boolean newOpFound = false;
 
 		Element userElem,commElem,jobStepElem,serviceElem,queryElem;
 		Element fromElem,returnElem,criteriaElem,fieldElem,catalogElem;
@@ -124,12 +125,30 @@ public class CreateRequest {
 						doCriteria(doc,opElement,ci);					
 					}else {
 						operationElem.appendChild( (opElement = doc.createElement(OPERATION_ELEMENT)) );
+						if(k != (dsInfo.getCriteriaInformation().size() - 1 )) {
+							CriteriaInformation ciTemp2 = (CriteriaInformation)dsInfo.getCriteriaInformation().get(k+1);
+							if(ciTemp2.getJoinType() != null && ciTemp2.getJoinType().length() > 0) {
+								if(!ciTemp2.getJoinType().equals(opTemp)) {
+									opElement.setAttribute(NAME_ATTR,ciTemp2.getJoinType());
+									opElement.appendChild( (opElem = doc.createElement(OPERATION_ELEMENT)) );
+									doCriteria(doc,opElem,ci);
+									opElement.appendChild( (opElem = doc.createElement(OPERATION_ELEMENT)) );
+									doCriteria(doc,opElem,ciTemp2);
+									k++;
+								}else {
+									doCriteria(doc,opElement,ci);
+								}	
+							}
+						}else {
+							doCriteria(doc,opElement,ci);	
+						}
+						/*
 						if(k > 1 && ci.getJoinType() != null && ci.getJoinType().length() > 0) {
 							if(!ci.getJoinType().equals(opTemp)) {
 								opElement.setAttribute(NAME_ATTR,ci.getJoinType());
 								operationElem.appendChild( (opElem = doc.createElement(OPERATION_ELEMENT)) );
 								doCriteria(doc,opElem,ci);
-								opTemp = ci.getJoinType();							
+								//opTemp = ci.getJoinType();							
 							}else {
 								doCriteria(doc,opElement,ci);							
 							}//else						
@@ -138,7 +157,7 @@ public class CreateRequest {
 								doCriteria(doc,opElement,ci);	
 							}	
 						}
-																	
+						*/											
 					}//else
 				}//else
 			}

@@ -242,9 +242,12 @@ public class DataQueryServlet extends HttpServlet {
 				//make sure the DataSet is in the Selection.
 				if( (dsInfo = qb.getDataSetInformation(request.getParameter("DataSetNameCriteria"))) != null) {
 					//see if their is a LinkTo which is for inserting criteria inside other parenthesis.
-					if(validParameter(request.getParameter("LinkTo")) ) {
-						iTemp = new Integer(request.getParameter("LinkTo")).intValue();
-					}
+					
+					//uncomment the next 3 lines when the linkage is good.
+					//if(validParameter(request.getParameter("LinkTo")) ) {
+					//	iTemp = new Integer(request.getParameter("LinkTo")).intValue();
+					//}
+					
 					//if he wants it linked then we need to get that 
 					//Criteria he wants to link to.  And add this new Criteria 
 					//inside it.
