@@ -9,12 +9,13 @@ import org.astrogrid.ui.script.*;
 class Reg {
 // setup commandline options
 Options o = new Options()
+OptionGroup og = new OptionGroup()
 Reg() {
 o.addOption("r","resolve",true,"Resolve identifier to endpoint")
-o.addOption("l","list",false,"List identifiers of records in registry")
+o.addOption("l","list",false,"List identifiers of records in registry (default)")
 o.addOption("i","identfier",true,"Ask registry about an identifier")
 o.addOption("x","registry",false,"Ask about the registry itself")
-o.addOption("q","query",true,"Run a quey against the registry")
+o.addOption("q","query",true,"Run a quey against the registry (specify file, or - for stdin)")
 
 
   .addOption("u","user",true,"username (optional)")
@@ -23,7 +24,6 @@ o.addOption("q","query",true,"Run a quey against the registry")
 
 // lots more that could be added here, but dunno what it all means really.
 
-og = new OptionGroup()
 ['r','l','i','x',"q"].each{og.addOption(o.getOption it)}
 o.addOptionGroup og
 }
@@ -52,7 +52,7 @@ if (line.hasOption "r") {
         println(r.getEndPointByIdentifier idname)
 }
 
-else if (line.hasOption "l") {
+else if (line.hasOption("l") || og.selected == null ) {
         doc = r.listIdentifiers()
         XMLUtils.PrettyDocumentToStream(doc,System.out)
 }
