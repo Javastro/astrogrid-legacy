@@ -1,21 +1,18 @@
+Deploying the Astrogrid test Portal                              BKM 20030326
 
-There are three files to add to Jetpeed as follows:
+1) Install apache tomcat (current version is 4.1.18)
 
-   $JPORTAL/webapp/WEB-INF/templates/jsp/portlets/html/AstrogridRegistry.jsp
-   $JPORTAL/src/java/org/astrogrid/registry/actions/portlets/AstroGridRegistryAction.java
-   $JPORTAL/webapp/WEB-INF/conf/Astrogrid.xreg
+2) Copy Astrogrid.war into $CATALINA_HOME/webapps
 
-Where $JPORTAL is the Jportal Home directory.
+3) Start tomcat
 
-You will also need the following class libraries:
+4) Point browser at http:/<machine name>:8080/Astrogrid
 
-   uk.ac.starlink.jscp  contained in 'jadamclasses.jar'
-   org.apache.axis  contained in 'axis.jar'
-   javax.xml contained in 'jaxrpc.jar'
+The Astrogrid test portlet is on the home (anon user) page. This page cannot
+be edited to add or remove portlets. If you wish to do this login as one
+of turbine/turbine or astrogrid/astrogrid or create your OWN username. To
+do this attempt to login with an unknown username and the option to "create
+an account" will appear.
 
-These jar files should be put in $CATALINA_HOME/webapps/jportal/WEB-INF/lib where $CATALINA_HOME is the
-Tomcat home directory.
-
-From $JPORTAL type 'ant deploy or ant hotdeploy' to compile the java files a put them
-into the production system.
-
+All other source files in this directory are presented for reference only.
+An ant build file to use them sensible will appear soon!
