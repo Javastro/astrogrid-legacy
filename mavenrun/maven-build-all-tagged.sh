@@ -31,7 +31,8 @@ $SCRIPTHOME/maven-build-tagged-new.sh mySpace $TAG_TO_BUILD >> $BUILD_DIR/$LOG_F
 $SCRIPTHOME/maven-build-tagged-new.sh security $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-tagged-new.sh applications $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-tagged-new.sh jes $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
-$SCRIPTHOME/maven-build-tagged-new.sh warehouse $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
+#commented out for it's in datacenter now
+#$SCRIPTHOME/maven-build-tagged-new.sh warehouse $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-tagged-new.sh datacenter $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-tagged-new.sh workflow $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-tagged-new.sh ui $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
