@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!-- extension maven script -->
-<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:util="jelly:util" xmlns:deploy="deploy" default="jar:jar">
 
 
 <property name="tomcat.host" value="localhost"/>
@@ -40,14 +40,23 @@
         <echo>*** Deploying all webapps...</echo>
         <attainGoal name="common-libs-deploy" />
         <attainGoal name="configuration-deploy" />
+        <sleep seconds="2" />
         <attainGoal name="myspace-store-deploy" />
+        <sleep seconds="2" />
         <attainGoal name="jes-deploy" />
+        <sleep seconds="2" />
         <attainGoal name="apps-deploy" />
+        <sleep seconds="2" />
         <attainGoal name="reg-deploy" />
+        <sleep seconds="4" />
         <attainGoal name="myspace-deploy" />
+        <sleep seconds="2" />
         <attainGoal name="pal-deploy" />
+        <sleep seconds="2" />
         <attainGoal name="portal-deploy" />
+        <sleep seconds="4" />
         <attainGoal name="community-deploy"/>
+        <sleep seconds="2" />
         <attainGoal name="setup" />
 </goal>
 
@@ -104,10 +113,10 @@
 <goal name="setup" description="configure webapps and working dir">
         <echo>*** Configuring...</echo>
         <attainGoal name="setup-working-dir" />
-        <attainGoal name="setup-applications" />
-        <attainGoal name="setup-myspace" />
         <attainGoal name="setup-community" />
         <attainGoal name="setup-registry" />
+        <attainGoal name="setup-applications" />
+        <attainGoal name="setup-myspace" />
 </goal>
 
 <goal name="setup-working-dir" description="create working dir, copy across templates">
@@ -160,8 +169,27 @@
         <attainGoal name="community-register"/>
 </goal>
 
-<goal name="setup-registry" description="registry setup">
+<goal name="setup-registry" description="populate the registry">
         <echo>Configuring Registry</echo>
+        <!-- expand tokens -->
+        <copy todir="${temporary.dir}/registry-entries" filtering="true">
+                <fileset dir="registry-entries">
+                        <include name="**/*.xml" />
+                </fileset>
+        </copy>
+        <!-- now upload each one -->
+        <pathconvert property="entries" pathsep=" ">
+                <path>
+                        <fileset dir="${temporary.dir}/registry-entries"/>
+                </path>
+        </pathconvert>
+            <util:tokenize var="entryList" delim=" ">${entries}</util:tokenize>
+        <j:forEach var="entry" items="${entryList}">
+            <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
+            <ant target="register" antfile="register.xml" >
+        `       <property name="registry.entry" value="${entry}"/>
+            </ant>
+        </j:forEach>
 </goal>
 <!--+
     | Configure Community.
@@ -286,7 +314,7 @@
         antfile="register.xml"
         >
         <property name="registry.entry" value="tmp/community/config/service/policy.manager.xml"/>
-	</ant>
+        </ant>
 </goal>
 
 <!-- pregoals ///////////////////////////////////////////////////////////////////////////////////////////////// -->
