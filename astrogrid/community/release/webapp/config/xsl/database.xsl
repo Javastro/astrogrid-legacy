@@ -1,12 +1,15 @@
 <?xml version="1.0"?>
 <!--+
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/release/webapp/config/Attic/database.xsl,v $</cvs:source>
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/release/webapp/config/xsl/Attic/database.xsl,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/12/16 16:44:29 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/17 15:16:00 $</cvs:date>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
     | <cvs:log>
     |   $Log: database.xsl,v $
-    |   Revision 1.3  2003/12/16 16:44:29  dave
+    |   Revision 1.1  2003/12/17 15:16:00  dave
+    |   Fixed missing properties in config files
+    |
+    |   Revision 1.1  2003/12/16 16:44:30  dave
     |   Added deployment test data
     |
     | </cvs:log>
@@ -27,7 +30,7 @@
     <xsl:template match="/database[@name='policy']/driver">
         <xsl:copy>
         <xsl:attribute name="class-name">
-            <xsl:value-of select="org.hsqldb.jdbcDriver"/>
+            <xsl:text>org.hsqldb.jdbcDriver</xsl:text>
         </xsl:attribute>
         <xsl:attribute name="url">
             <xsl:value-of select="$url"/>
@@ -50,8 +53,8 @@
         </xsl:element>
         <!--+
             | TODO - This needs to be updated by the build config
-            +-->
         <mapping href="astrogrid-community-mapping.xml"/>
+            +-->
         </xsl:copy>
     </xsl:template>
 

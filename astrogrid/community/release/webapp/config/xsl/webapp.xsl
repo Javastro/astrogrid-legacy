@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <!--+
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/release/webapp/config/Attic/webapp.xsl,v $</cvs:source>
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/release/webapp/config/xsl/Attic/webapp.xsl,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/12/16 16:44:29 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/17 15:16:00 $</cvs:date>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
     | <cvs:log>
     |   $Log: webapp.xsl,v $
-    |   Revision 1.3  2003/12/16 16:44:29  dave
-    |   Added deployment test data
+    |   Revision 1.1  2003/12/17 15:16:00  dave
+    |   Fixed missing properties in config files
     |
     |   Revision 1.4  2003/12/16 12:46:00  dave
     |   Fixed the web.xml dtd

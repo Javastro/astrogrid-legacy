@@ -2,11 +2,17 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/release/webapp/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/12/16 16:44:29 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/17 15:16:00 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
-    |   Revision 1.3  2003/12/16 16:44:29  dave
+    |   Revision 1.4  2003/12/17 15:16:00  dave
+    |   Fixed missing properties in config files
+    |
+    |   Revision 1.4  2003/12/17 10:26:45  dave
+    |   Tidied up the webapp deployment script
+    |
+    |   Revision 1.2  2003/12/16 16:44:30  dave
     |   Added deployment test data
     |
     |   Revision 1.1  2003/12/16 15:08:07  dave
@@ -20,11 +26,16 @@
     |
     | </cvs:log>
     |
+    | Webapp deployment script.
+	| Adds all of the components in the right places and sets up the configuration files.
+    |
+    |
     +-->
 <project default="init" basedir="." name="Community">
 
     <!--+
         | Configuration properties.
+        | TODO - Default to env.CATALINA_HOME ?
         +-->
     <!--+
     <property name="tomcat.home"    value="/usr/java/servers/tomcat/jakarta-tomcat-4.1.24-LE-jdk14"/>
@@ -34,52 +45,51 @@
     <property name="community.name" value="test.astrogrid.org"/>
 
     <!--+
-        | The project name, used for our jar file names.
+        | Config files location.
+        | The default is to put the config files in '/etc/astrogrid'.
+        | However, most systems require root permissions to create the directories in '/etc'.
+        | Change this property if you want to relocate the config files.
         +-->
-    <property name="project.name" value="astrogrid-community"/>
+    <property name="config.home" value="/etc/astrogrid/community"/>
 
     <!--+
-        | The project build version.
-        | ${astrogrid.version}.${astrogrid.iteration}.${astrogrid.week}
-        | Note :- This should be set from within Maven.
+        | Database files location.
+        | The default is to put the config files in '/var/astrogrid'.
+        | However, most systems require root permissions to create the directories in '/etc'.
+        | Change this property if you want to relocate the database files.
         +-->
+    <property name="data.home" value="/var/astrogrid/community"/>
+
+    <!--+
+        | The project properties.
+        | These should have been set by the release build.
+        +-->
+    <property name="project.name" value="astrogrid-community"/>
     <property name="project.version" value="1.4.1"/>
 
     <!--+
-        | The project build directory.
+        | The 'build' directory.
+        | This is the location where the install kit is located.
         +-->
     <property name="project.home"    value="${basedir}"/>
 
     <!--+
-        | Config properties.
-        +-->
-    <property name="config.base"        value="/etc/astrogrid"/>
-    <property name="config.home"        value="/etc/astrogrid/community"/>
-    <property name="client.config.home" value="/etc/astrogrid/community/client"/>
-    <property name="server.config.home" value="/etc/astrogrid/community/server"/>
-
-    <!--+
         | Hsqldb properties.
+        | These configure the Hsqldb database.
         +-->
-    <property name="hsqldb.version"  value="1.7.1"/>
-    <property name="hsqldb.name"     value="policy"/>
-    <property name="hsqldb.location" value="/var/astrogrid/community"/>
-    <property name="hsqldb.url"      value="jdbc:hsqldb:${hsqldb.location}"/>
     <property name="hsqldb.user"     value="sa"/>
     <property name="hsqldb.pass"     value=""/>
+    <property name="hsqldb.version"  value="1.7.1"/>
+    <property name="hsqldb.name"     value="policy"/>
+    <property name="hsqldb.location" value="${data.home}"/>
+    <property name="hsqldb.url"      value="jdbc:hsqldb:${hsqldb.location}/${hsqldb.name}"/>
 
     <!--+
-        | The Hsqldb library classpath.
-        +-->
-    <path id="hsqldb.classpath">
-        <pathelement location="${project.home}/config/jars/hsqldb-${hsqldb.version}.jar"/>
-    </path>
-
-    <!--+
-        | The config library classpath.
+        | The config tools classpath.
+        | These are the jar files used by the deoplyment tools.
         +-->
     <path id="config.classpath">
-        <fileset dir="${project.home}/config/jars/">
+        <fileset dir="${project.home}/config/jar/">
             <include name="*.jar"/>
         </fileset>
     </path>
@@ -96,10 +106,10 @@
 
     <!--+
         | Tomcat manager properties.
-        +-->
     <property name="tomcat.manager.url"      value="${tomcat.url}/manager"/>
     <property name="tomcat.manager.username" value="astrogrid"/>
     <property name="tomcat.manager.password" value="please"/>
+        +-->
 
     <!--+
         | Bootstrap classpath for Tomcat
@@ -190,6 +200,32 @@
         </waitfor>
     </target>
 
+    <!-- ================ Config tasks ================ -->
+    <!--+
+        | Transform our config file, setting a named property.
+        | This is a sub-task, used to set the configuration properties.
+        +-->
+    <target name="config.xslt" depends="">
+        <echo message=""/>
+        <echo message="Updating community config ...."/>
+        <echo message="  Config file    : ${config.file}"/>
+        <echo message="  Property name  : ${property.name}"/>
+        <echo message="  Property value : ${property.value}"/>
+        <!-- Transform our config file, filling in the specified value -->
+        <xslt style="${project.home}/config/xsl/config.xsl"
+              in="${config.file}"
+              out="${config.file}.new">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <!-- Set the XSL params -->
+            <param name="category"         expression="org.astrogrid.community"/>
+            <param name="property.name"    expression="${property.name}"/>
+            <param name="property.value"   expression="${property.value}"/>
+        </xslt>
+        <!-- Replace our existing config.xml with the new one -->
+        <move file="${config.file}.new" tofile="${config.file}" overwrite="true" failonerror="false"/>
+    </target>
+
     <!-- ================ Webapp tasks ================ -->
     <!--+
         | Webapp properties.
@@ -210,16 +246,21 @@
 
     <!--+
         | Deploy our config files.
+        | At the moment, this will overwrite any existing config files.
+        | TODO, move existing config files to backups ??
         +-->
     <target name="deploy.config" depends="">
-        <mkdir dir="${server.config.home}"/>
-        <copy verbose="true" file="${project.home}/config/${project.name}-config-${project.version}.xml"   toFile="${server.config.home}/${project.name}-config.xml"/>
-        <copy verbose="true" file="${project.home}/config/${project.name}-database-${project.version}.xml" toFile="${server.config.home}/${project.name}-database.xml"/>
-        <copy verbose="true" file="${project.home}/config/${project.name}-mapping-${project.version}.xml"  toFile="${server.config.home}/${project.name}-mapping.xml"/>
+        <mkdir dir="${config.home}"/>
+        <copy verbose="true" file="${project.home}/config/${project.name}-config-${project.version}.xml"   toFile="${config.home}/${project.name}-config.xml"/>
+        <copy verbose="true" file="${project.home}/config/${project.name}-database-${project.version}.xml" toFile="${config.home}/${project.name}-database.xml"/>
+        <copy verbose="true" file="${project.home}/config/${project.name}-mapping-${project.version}.xml"  toFile="${config.home}/${project.name}-mapping.xml"/>
     </target>
 
     <!--+
         | Edit the webapp JNDI property.
+        | This needs to be run after Tomcat has unpacked the webapp war file.
+        | It would be nice to use a 'global' JNDI property for all the webapps,
+        | but it looks like this does not work in Tomcat 4.1.24.
         +-->
     <target name="config.jndi" depends="">
         <!-- Copy the existing web.xml to a backup file -->
@@ -227,41 +268,17 @@
         <!-- Patch the web.xml to fix the DTD -->
         <replace file="${webapp.home}/WEB-INF/web.xml" token="web-app_2.2.dtd" value="web-app_2_2.dtd"/>
         <!-- Transform the target web.xml, adding our JNDI property -->
-        <xslt style="${project.home}/config/webapp.xsl"
+        <xslt style="${project.home}/config/xsl/webapp.xsl"
               in="${webapp.home}/WEB-INF/web.xml"
               out="${webapp.home}/WEB-INF/web.xml.new">
             <outputproperty name="method" value="xml"/>
             <outputproperty name="indent" value="yes"/>
             <!-- Set the XSL params -->
             <param name="property.name"  expression="org.astrogrid.community.config"/>
-            <param name="property.value" expression="${server.config.home}/${project.name}-config.xml"/>
+            <param name="property.value" expression="${config.home}/${project.name}-config.xml"/>
         </xslt>
         <!-- Replace the existing web.xml with the new one -->
         <move file="${webapp.home}/WEB-INF/web.xml.new" tofile="${webapp.home}/WEB-INF/web.xml" overwrite="true" failonerror="false"/>
-    </target>
-
-    <!--+
-        | Transform our config file, setting a named property.
-        +-->
-    <target name="config.xslt" depends="">
-        <echo message=""/>
-        <echo message="Updating community config ...."/>
-        <echo message="  Config file    : ${config.file}"/>
-        <echo message="  Property name  : ${property.name}"/>
-        <echo message="  Property value : ${property.value}"/>
-        <!-- Transform our config file, filling in the specified value -->
-        <xslt style="${project.home}/config/config.xsl"
-              in="${config.file}"
-              out="${config.file}.new">
-            <outputproperty name="method" value="xml"/>
-            <outputproperty name="indent" value="yes"/>
-            <!-- Set the XSL params -->
-            <param name="category"         expression="org.astrogrid.community"/>
-            <param name="property.name"    expression="${property.name}"/>
-            <param name="property.value"   expression="${property.value}"/>
-        </xslt>
-        <!-- Replace our existing config.xml with the new one -->
-        <move file="${config.file}.new" tofile="${config.file}" overwrite="true" failonerror="false"/>
     </target>
 
     <!--+
@@ -273,28 +290,33 @@
         <echo message="  Database pass : ${hsqldb.pass}"/>
         <!-- Create our database data directory -->
         <mkdir dir="${hsqldb.location}"/>
-        <!-- Transform our config files, filling in the correct values -->
+        <!-- Update our config file, filling in the correct values -->
         <antcall target="config.xslt">
-            <param name="config.file"    value="${server.config.home}/${project.name}-config.xml"/>
+            <param name="config.file"    value="${config.home}/${project.name}-config.xml"/>
+            <param name="property.name"  value="community.name"/>
+            <param name="property.value" value="${community.name}"/>
+        </antcall>
+        <antcall target="config.xslt">
+            <param name="config.file"    value="${config.home}/${project.name}-config.xml"/>
             <param name="property.name"  value="database.name"/>
             <param name="property.value" value="${hsqldb.name}"/>
         </antcall>
         <antcall target="config.xslt">
-            <param name="config.file"    value="${server.config.home}/${project.name}-config.xml"/>
+            <param name="config.file"    value="${config.home}/${project.name}-config.xml"/>
             <param name="property.name"  value="database.config"/>
-            <param name="property.value" value="${server.config.home}/${project.name}-database.xml"/>
+            <param name="property.value" value="${config.home}/${project.name}-database.xml"/>
         </antcall>
         <antcall target="config.xslt">
-            <param name="config.file"    value="${server.config.home}/${project.name}-config.xml"/>
+            <param name="config.file"    value="${config.home}/${project.name}-config.xml"/>
             <param name="property.name"  value="database.mapping"/>
-            <param name="property.value" value="${server.config.home}/${project.name}-mapping.xml"/>
+            <param name="property.value" value="${config.home}/${project.name}-mapping.xml"/>
         </antcall>
         <!-- Copy the existing config to a backup file -->
-        <copy file="${server.config.home}/${project.name}-database.xml" tofile="${server.config.home}/${project.name}-database.xml.old" overwrite="true" failonerror="false"/>
+        <copy file="${config.home}/${project.name}-database.xml" tofile="${config.home}/${project.name}-database.xml.old" overwrite="true" failonerror="false"/>
         <!-- Transform the database config -->
-        <xslt style="${project.home}/config/database.xsl"
-              in="${server.config.home}/${project.name}-database.xml"
-              out="${server.config.home}/${project.name}-database.xml.new">
+        <xslt style="${project.home}/config/xsl/database.xsl"
+              in="${config.home}/${project.name}-database.xml"
+              out="${config.home}/${project.name}-database.xml.new">
             <outputproperty name="method" value="xml"/>
             <outputproperty name="indent" value="yes"/>
             <!-- Set the XSL params -->
@@ -303,7 +325,7 @@
             <param name="pass" expression="${hsqldb.pass}"/>
         </xslt>
         <!-- Replace the existing config with the new one -->
-        <move file="${server.config.home}/${project.name}-database.xml.new" tofile="${server.config.home}/${project.name}-database.xml" overwrite="true" failonerror="false"/>
+        <move file="${config.home}/${project.name}-database.xml.new" tofile="${config.home}/${project.name}-database.xml" overwrite="true" failonerror="false"/>
     </target>
 
     <!--+
@@ -314,12 +336,12 @@
         <echo message="Creating Hqsldb tables ...."/>
         <sql driver="org.hsqldb.jdbcDriver"
              url="${hsqldb.url}"
-             classpathref="hsqldb.classpath"
+             classpathref="config.classpath"
              userid="${hsqldb.user}"
              password="${hsqldb.pass}"
              print="true"
             >
-            <transaction src="${project.home}/config/create.sql"/>
+            <transaction src="${project.home}/config/sql/create.sql"/>
         </sql>
     </target>
 
@@ -329,7 +351,7 @@
     <target name="database.select" depends="">
         <sql driver="org.hsqldb.jdbcDriver"
              url="${hsqldb.url}"
-             classpathref="hsqldb.classpath"
+             classpathref="config.classpath"
              userid="${hsqldb.user}"
              password="${hsqldb.pass}"
              print="true"
@@ -351,7 +373,7 @@
     <target name="database.delete" depends="">
         <sql driver="org.hsqldb.jdbcDriver"
              url="${hsqldb.url}"
-             classpathref="hsqldb.classpath"
+             classpathref="config.classpath"
              userid="${hsqldb.user}"
              password="${hsqldb.pass}"
              print="true"
@@ -368,9 +390,10 @@
     </target>
 
     <!--+
-        | Run our policy loader task.
+        | Run our database loader.
+        | This will initialise the database contents based on your community name.
         +-->
-    <target name="policy.loader" depends="">
+    <target name="load.database" depends="">
         <echo message=""/>
         <echo message="Loading policy data ...."/>
         <echo message="  Community name : ${community.name}"/>
@@ -380,12 +403,38 @@
         </taskdef>
         <!-- Process our data files -->
         <policy.loader>
-            <fileset dir="${project.home}/config">
+            <fileset dir="${project.home}/config/xml">
                 <include name="${community.name}.xml"/>
             </fileset>
         </policy.loader>
     </target>
 
+    <!-- ================ Main deployment tasks ================ -->
+    <!--+
+        | Depoly our webapp.
+        | This just copies our war file into the Tomcat webapps directory.
+        +-->
+    <target name="webapp" depends="">
+		<!-- Deploy our webapp -->
+        <antcall target="deploy.webapp"/>
+    </target>
+
+    <!--+
+        | Deploy our config.
+        | These need to be run after Tomcat has unpacked our war file.
+        +-->
+    <target name="config" depends="">
+		<!-- Deploy our config files -->
+        <antcall target="deploy.config"/>
+		<!-- Set the webapp JNDI property -->
+        <antcall target="config.jndi"/>
+		<!-- Configure the database params -->
+        <antcall target="config.database"/>
+		<!-- Create the database tables -->
+        <antcall target="init.database"/>
+		<!-- Load the database tables -->
+        <antcall target="load.database"/>
+    </target>
 
 </project>
 

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/config/Attic/astrogrid-community-config.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/11/16 18:24:34 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/17 15:16:01 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: astrogrid-community-config.xml,v $
+    |   Revision 1.3  2003/12/17 15:16:01  dave
+    |   Fixed missing properties in config files
+    |
     |   Revision 1.2  2003/11/16 18:24:34  dave
     |   Merged dev branch back into HEAD
     |
@@ -46,8 +49,7 @@
     <!--+
         | Configuration properties for the community service.
         | These values are for illustration only.
-        | The actual values are filled in by the Ant build script.
-        |
+        | The actual values are filled in by the Ant deployment script.
         +-->
     <category name="org.astrogrid.community">
         <!--+
@@ -64,7 +66,7 @@
 
         <!--+
             | The local community services.
-            | These will default to the standard Axis services URL using the community host name.
+            | These will default to the standard services URL using the community host name.
             +-->
         <property name="policy.manager.url" value=""/>
         <property name="policy.service.url" value=""/>
@@ -72,7 +74,7 @@
 
         <!--+
             | Configuration for the server database.
-            | No defaults, filled in by the Ant build script.
+            | Filled in by the Ant build script.
             +-->
         <property name="database.name"    value=""/>
         <property name="database.config"  value=""/>

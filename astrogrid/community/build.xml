@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/12/17 10:26:45 $</cvs:date>
-    | <cvs:version>$Revision: 1.52 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/17 15:16:00 $</cvs:date>
+    | <cvs:version>$Revision: 1.53 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.53  2003/12/17 15:16:00  dave
+    |   Fixed missing properties in config files
+    |
     |   Revision 1.52  2003/12/17 10:26:45  dave
     |   Tidied up the webapp deployment script
     |
@@ -3224,7 +3227,7 @@ To repeat
 			+-->
         <!-- The config file xsl -->
         <copy verbose="false" overwrite="true"
-            file="src/xsl/build/config/xsl/config.xsl"
+            file="src/xsl/build/config/config.xsl"
             toFile="release/webapp/config/xsl/config.xsl"/>
         <!-- The webapp jndi xsl -->
         <copy verbose="false" overwrite="true"
@@ -3241,16 +3244,24 @@ To repeat
 		<!--+
 			| Add the jars required by the install script.
 			| These can be deleted once the install is done.
+			| TODO We have installed the webapp, might be easier to just use the jars in there !
 			+-->
-        <copy verbose="false" overwrite="true"
+        <copy verbose="false"
             file="${jar.cache.local}/hsqldb/jars/hsqldb-${hsqldb.version}.jar"
             toDir="release/webapp/config/jar"/>
-        <copy verbose="false" overwrite="true"
-            file="${axis.webapp}/WEB-INF/lib/axis.jar"
-            toDir="release/webapp/config/jar"/>
+        <copy verbose="false" toDir="release/webapp/config/jar">
+			<fileset dir="${axis.webapp}/WEB-INF/lib">
+		        <include name="axis.jar"/>
+		        <include name="saaj.jar"/>
+		        <include name="wsdl4j.jar"/>
+		        <include name="jaxrpc.jar"/>
+		        <include name="commons-logging.jar"/>
+		        <include name="commons-discovery.jar"/>
+			</fileset>
+		</copy>
         <copy verbose="false" overwrite="true"
             file="${policy.base}/jar/${policy.server.jar}"
-            toDir="release/webapp/config/jars/"/>
+            toDir="release/webapp/config/jar/"/>
         <copy verbose="false" overwrite="true"
             file="${policy.base}/jar/${policy.client.jar}"
             toDir="release/webapp/config/jar"/>
