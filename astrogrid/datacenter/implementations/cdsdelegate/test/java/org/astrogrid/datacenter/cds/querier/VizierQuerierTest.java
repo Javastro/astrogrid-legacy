@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierTest.java,v 1.4 2004/08/17 20:19:36 mch Exp $
+/*$Id: VizierQuerierTest.java,v 1.5 2004/08/27 14:53:20 KevinBenson Exp $
  * Created on 01-Dec-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.astrogrid.datacenter.queriers.spi.TranslatorMap;
-import org.astrogrid.datacenter.TargetIndicator;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.cds.querier.VizierQuerierPlugin;
@@ -201,6 +201,9 @@ public class VizierQuerierTest extends ServerTestCase {
 
 /*
 $Log: VizierQuerierTest.java,v $
+Revision 1.5  2004/08/27 14:53:20  KevinBenson
+bug in compile not referencing the new location of TargetIndicator
+
 Revision 1.4  2004/08/17 20:19:36  mch
 Moved TargetIndicator to client
 
