@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/service/CommunityServiceImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 01:40:04 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/15 15:30:01 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityServiceImpl.java,v $
+ *   Revision 1.5  2004/04/15 15:30:01  dave
+ *   Added exception logging
+ *
  *   Revision 1.4  2004/03/30 01:40:04  dave
  *   Merged development branch, dave-dev-200403242058, into HEAD
  *
@@ -309,7 +312,7 @@ public class CommunityServiceImpl
      * Use this to log exceptions that you don;t expect to happen, and cause a failure.
      *
      */
-    public void logException(Exception ouch, String location)
+    public void logException(Throwable ouch, String location)
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("  ----") ;
@@ -326,7 +329,7 @@ public class CommunityServiceImpl
      * This is for dubug only, and should not output anything on a release system.
      *
      */
-    public void logExpectedException(Exception ouch, String location)
+    public void logExpectedException(Throwable ouch, String location)
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("  ----") ;
