@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.8 2004/02/24 16:03:48 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.9 2004/03/08 00:31:28 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -14,14 +14,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
+import org.astrogrid.store.Agsl;
 import org.astrogrid.test.OptionalTestCase;
 
 /** Test the Fits processing classes
@@ -85,7 +84,7 @@ public class FitsQuerierTest extends OptionalTestCase
    {
       SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, FitsQuerier.class.getName());
       
-      Querier querier = QuerierManager.createQuerier(null);
+      Querier querier = QuerierManager.createQuerier((String) null);
       
       assertTrue(querier instanceof FitsQuerier);
    }
@@ -111,6 +110,9 @@ public class FitsQuerierTest extends OptionalTestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.9  2004/03/08 00:31:28  mch
+ Split out webservice implementations for versioning
+
  Revision 1.8  2004/02/24 16:03:48  mch
  Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
 

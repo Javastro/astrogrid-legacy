@@ -1,37 +1,28 @@
 /*
- * $Id: SqlResults.java,v 1.5 2004/01/15 14:49:47 nw Exp $
+ * $Id: SqlResults.java,v 1.6 2004/03/08 00:31:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.sql;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
-
 import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.astrogrid.datacenter.queriers.QueryResults;
+import org.astrogrid.util.DomHelper;
 import org.astrogrid.util.Workspace;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
  * Implementation of <tt>QueryResults</tt> as a wrapper around a <tt>ResultSet</tt>
- * 
+ *
  * <p>Can be used (I believe) for any
  * SQL/JDBC query results.
  *
@@ -70,14 +61,14 @@ public class SqlResults implements QueryResults
             OutputStream out = new FileOutputStream(workfile) ;
             toVotable(out);
             out.close();
-            return XMLUtils.newDocument(new FileInputStream(workfile));
+            return DomHelper.newDocument(new FileInputStream(workfile));
          }
          else
          {
             ByteArrayOutputStream ba = new ByteArrayOutputStream();
             toVotable(ba);
             ba.close();
-            return XMLUtils.newDocument(new ByteArrayInputStream(ba.toByteArray()));
+            return DomHelper.newDocument(new ByteArrayInputStream(ba.toByteArray()));
          }
       }
       catch (ParserConfigurationException e)
@@ -200,6 +191,9 @@ public class SqlResults implements QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.6  2004/03/08 00:31:28  mch
+ Split out webservice implementations for versioning
+
  Revision 1.5  2004/01/15 14:49:47  nw
  improved documentation
 

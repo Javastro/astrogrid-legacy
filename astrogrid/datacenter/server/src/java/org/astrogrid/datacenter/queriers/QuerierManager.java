@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.17 2004/03/07 00:33:50 mch Exp $
+/*$Id: QuerierManager.java,v 1.18 2004/03/08 00:31:28 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.query.QueryState;
+import org.astrogrid.store.Agsl;
 
 /** Manages the construction and initialization of Queriers, and maintains a collection of current Queriers
  *
@@ -127,7 +128,13 @@ public class QuerierManager {
       return QuerierManager.createQuerier(q, generateQueryId());
    }
    
- 
+    /**
+    * Creates a querier from an AGSL
+    */
+   public static Querier createQuerier(String internalQuery) throws DatabaseAccessException {
+      throw new UnsupportedOperationException();
+   }
+   
    
    /**
     * A factory method that Returns a Querier implementation based on the
@@ -275,6 +282,9 @@ public class QuerierManager {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.18  2004/03/08 00:31:28  mch
+ Split out webservice implementations for versioning
+
  Revision 1.17  2004/03/07 00:33:50  mch
  Started to separate It4.1 interface from general server services
 

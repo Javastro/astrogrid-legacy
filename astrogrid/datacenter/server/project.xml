@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project>
 
-<extend>${basedir}/../build/project-base.xml</extend>
-  <!-- the version of maven's project object model -->
-  <pomVersion>3</pomVersion>
+   <extend>${basedir}/../build/project-base.xml</extend>
+   <!-- the version of maven's project object model -->
+   <pomVersion>3</pomVersion>
 
-  <!-- a unique name for this project -->
-  <id>astrogrid-datacenter-server</id>
-  <name>AstroGrid DataCenter Server</name>
-  <currentVersion>HEAD</currentVersion>
+   <!-- a unique name for this project -->
+   <id>astrogrid-datacenter-server</id>
+   <name>AstroGrid DataCenter Server</name>
+   <currentVersion>HEAD</currentVersion>
 
    <description><![CDATA[
     This project contains the datacenter server framework.
@@ -30,34 +30,34 @@
       ]]>
    </description>
 
-  <!-- must be on a single line -->
-  <shortDescription>Datacenter server framework</shortDescription>
+   <!-- must be on a single line -->
+   <shortDescription>Datacenter server framework</shortDescription>
 
-  <siteDirectory>/var/www/www/maven/build/datacenter/server</siteDirectory>
+   <siteDirectory>/var/www/www/maven/build/datacenter/server</siteDirectory>
 
-  <repository>
-    <connection>
-      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/datacenter/server
-    </connection>
-    <developerConnection>
-      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/datacenter/server
-    </developerConnection>
-  </repository>
+   <repository>
+      <connection>
+         scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/datacenter/server
+      </connection>
+      <developerConnection>
+         scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/datacenter/server
+      </developerConnection>
+   </repository>
 
-	<packageGroups>
-		<packageGroup>
-			<title>Service Implementation</title>
-			<packages>org.astrogrid.datacenter.service*</packages>
-		</packageGroup>
-		<packageGroup>
-			<title>Back-End Plugin SPI</title>
-			<packages>org.astrogrid.datacenter.queriers:org.astrogrid.datacenter.queriers.spi</packages>
-		</packageGroup>
-		<packageGroup>
-			<title>Plugin Implementations</title>
-			<packages>org.astrogrid.datacenter.queriers.*</packages>
-		</packageGroup>
-	</packageGroups>
+   <packageGroups>
+      <packageGroup>
+         <title>Service Implementation</title>
+         <packages>org.astrogrid.datacenter.service*</packages>
+      </packageGroup>
+      <packageGroup>
+         <title>Back-End Plugin SPI</title>
+         <packages>org.astrogrid.datacenter.queriers:org.astrogrid.datacenter.queriers.spi</packages>
+      </packageGroup>
+      <packageGroup>
+         <title>Plugin Implementations</title>
+         <packages>org.astrogrid.datacenter.queriers.*</packages>
+      </packageGroup>
+   </packageGroups>
 
 
   <!-- jar files the project is dependent on -->
@@ -80,12 +80,12 @@
     </properties>
     </dependency>
     <dependency>
-    	<groupId>org.astrogrid</groupId>
-		<artifactId>astrogrid-jes-delegate</artifactId>
-		<version>SNAPSHOT</version>
-		<properties>
-			<war.bundle>true</war.bundle>
-		</properties>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-jes-delegate</artifactId>
+      <version>SNAPSHOT</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
     <!-- required for the ApplicationController interface -->
     <dependency>

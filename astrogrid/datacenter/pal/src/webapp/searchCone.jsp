@@ -4,7 +4,6 @@
        org.apache.axis.utils.XMLUtils,
        org.astrogrid.datacenter.delegate.*,
        org.astrogrid.io.*,
-       org.astrogrid.community.User,
        org.astrogrid.datacenter.adql.generated.*"
    isThreadSafe="false"
    session="false"

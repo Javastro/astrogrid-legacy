@@ -1,22 +1,16 @@
 /*
- * $Id: FitsResults.java,v 1.2 2004/01/13 00:33:14 nw Exp $
+ * $Id: FitsResults.java,v 1.3 2004/03/08 00:31:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.fits;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 
 import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.queriers.QueryResults;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -48,7 +42,7 @@ public class FitsResults implements QueryResults {
          ByteArrayOutputStream ba = new ByteArrayOutputStream();
          toVotable(ba);
          ba.close();
-         return XMLUtils.newDocument(new ByteArrayInputStream(ba.toByteArray()));
+         return DomHelper.newDocument(new ByteArrayInputStream(ba.toByteArray()));
       }
       catch (ParserConfigurationException e) {
          RuntimeException ioe = new RuntimeException("Error in program configuration: "+e.toString());
@@ -111,6 +105,9 @@ public class FitsResults implements QueryResults {
 
 /*
  $Log: FitsResults.java,v $
+ Revision 1.3  2004/03/08 00:31:28  mch
+ Split out webservice implementations for versioning
+
  Revision 1.2  2004/01/13 00:33:14  nw
  Merged in branch providing
  * sql pass-through

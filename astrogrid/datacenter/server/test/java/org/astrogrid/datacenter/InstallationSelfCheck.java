@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.12 2004/03/07 00:33:50 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.13 2004/03/08 00:31:28 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,11 +17,10 @@ import junit.framework.TestCase;
 import org.astrogrid.community.User;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
+import org.astrogrid.datacenter.metadata.MetadataServer;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
-import org.astrogrid.datacenter.service.AxisDataServer;
-import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.StoreClient;
@@ -52,7 +51,7 @@ public class InstallationSelfCheck extends TestCase {
    
    public void testInstantiateServer() throws IOException {
       // needs to come first.
-      AxisDataServer serv = new AxisDataServer(); // loads properties in.
+//no longer needed - properties load automatically      AxisDataServer serv = new AxisDataServer_v0_4_1(); // loads properties in.
       
    }
    
@@ -125,7 +124,7 @@ public class InstallationSelfCheck extends TestCase {
     * Checks metadata is OK
     */
    public void testMetadata() throws IOException {
-      new DataServer().getVODescription();
+      MetadataServer.getVODescription();
    }
    
 }
@@ -133,6 +132,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.13  2004/03/08 00:31:28  mch
+ Split out webservice implementations for versioning
+
  Revision 1.12  2004/03/07 00:33:50  mch
  Started to separate It4.1 interface from general server services
 

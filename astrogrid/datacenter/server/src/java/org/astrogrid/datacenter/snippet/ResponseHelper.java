@@ -1,5 +1,5 @@
 /*
- * $Id: ResponseHelper.java,v 1.6 2004/03/07 00:33:50 mch Exp $
+ * $Id: ResponseHelper.java,v 1.7 2004/03/08 00:31:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,12 +7,11 @@
 package org.astrogrid.datacenter.snippet;
 
 import java.net.URL;
-
-import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.query.QueryState;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -97,7 +96,7 @@ public class ResponseHelper
    {
        log.debug("makeStatusResponse");
       if (querier.getState() == QueryState.ERROR)
-      { 
+      {
           log.info("querier in error");
          throw querier.getError();
       }
@@ -142,7 +141,7 @@ public class ResponseHelper
           QueryIdHelper.makeTagWithQueryIdAttr(DATACENTER_RESULTS_TAG, querier.getQueryId())+"\n"
          +"   <TIME>"+querier.getQueryTimeTaken()+"</TIME>\n"
          +"   <"+DocMessageHelper.RESULTS_TAG+" type='votable'>\n"
-         +XMLUtils.ElementToString(results)
+         +DomHelper.ElementToString(results)
          +"   </"+DocMessageHelper.RESULTS_TAG+">\n"
          +"</"+DATACENTER_RESULTS_TAG+">\n";
 

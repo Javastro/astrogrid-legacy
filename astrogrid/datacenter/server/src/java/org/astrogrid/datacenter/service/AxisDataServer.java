@@ -1,79 +1,120 @@
 /*
- * $Id: AxisDataServer.java,v 1.30 2004/03/07 00:33:50 mch Exp $
+ * $Id: AxisDataServer.java,v 1.31 2004/03/08 00:31:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.rmi.RemoteException;
-import org.apache.axis.types.URI;
+import java.io.*;
+
+import org.apache.axis.AxisFault;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.axisdataserver.types.Language;
-import org.astrogrid.datacenter.axisdataserver.types.Query;
-import org.astrogrid.datacenter.delegate.DatacenterException;
-import org.astrogrid.datacenter.delegate.FullSearcher;
-import org.astrogrid.datacenter.queriers.DatabaseAccessException;
+import org.astrogrid.datacenter.metadata.MetadataServer;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
+import org.astrogrid.datacenter.queriers.QuerierStatus;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
-import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.datacenter.snippet.ResponseHelper;
+import org.astrogrid.io.Piper;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 /**
- * The implementation of the Datacenter web service for It4.1.
+ * A class for serving data through an Axis webservice implementation.  It is
+ * abstract as subclasses should inherit from it and implement the appropriate
+ * interfaces/use appropriate bindings to the particular version of the interface
  * <p>
- * When Axis receives a SOAP message from the client it is routed to this class for processing.
- * It is a singleton; state comes from the Queriers.
+ * (When Axis receives a SOAP message from the client it is routed to this class for processing.
+ * It can be a singleton; state comes from the Queriers).
 
  * @author M Hill
  * @author Noel Winstanly
  *
  */
 
-public class AxisDataServer extends SoapDataServer implements org.astrogrid.datacenter.axisdataserver.AxisDataServer  {
+public abstract class AxisDataServer  {
    
-   //overrides parent
-   protected static Log log = LogFactory.getLog(AxisDataServer.class);
+   protected Log log = LogFactory.getLog(AxisDataServer.class);
+
+   protected DataServer server = new DataServer();
+   
+   /** Constant for makeFault - input from client has caused problem */
+   protected final static boolean CLIENTFAULT = true;
+   /** Constant for makeFault - problem with server (or unknown) */
+   protected final static boolean SERVERFAULT = false;
    
    /**
-    * Returns the metadata file
-    * NWW - at present pass in a dummy parameter - haven't worked out how to say 'no parameters please' yet.
-    * @soap
+    * Axis provides an AxisFault for reporting errors through SOAP.  This method
+    * creates a fault from a message and a cause, and includes in the detail
+    * the cause's (relevent) stack trace
+    * @blameClient - true if the error is known to be caused by an input parameter - such as an
+    * invalid query ID.
     */
-   public String getMetadata(Object ignored) {
-      return getMetadataString();
+   protected AxisFault makeFault(boolean blameClient, String message, Throwable cause)  {
+      
+      log.error("AxisFault being generated: Throwing "+cause+" to client, message="+message, cause);
+
+      AxisFault fault = new AxisFault(message);
+
+      if (blameClient) {
+         fault.setFaultCode("Client");
+      } else {
+         fault.setFaultCode("Server");
+      }
+   
+      fault.clearFaultDetails();
+      if (cause != null) {
+         StringWriter writer = new StringWriter();
+         cause.printStackTrace(new PrintWriter(writer));
+         fault.addFaultDetailString(writer.toString());
+      }
+         
+      return fault;
+   }
+   
+   /**
+    * Convenience method to generate server error
+    */
+   protected AxisFault makeFault(String message) {
+      return makeFault(SERVERFAULT, message, null);
+   }
+   
+   /**
+    * Useful mechanism for testing that clients can receive and process faults.
+    * The useful bit of stack trace will be limited to this method but ho hum
+    */
+   public void throwFault() throws AxisFault {
+      throw makeFault(CLIENTFAULT, "Client asked for this", new IOException("Client deliberately threw test fault "));
+   }
+   
+   /**
+    * Returns the metadata file as a string
+    */
+   public String getMetadata() throws AxisFault {
+      try  {
+         StringWriter sw = new StringWriter();
+         InputStream in = MetadataServer.getMetadataUrl().openStream();
+         if (in == null) throw new FileNotFoundException("Metadata file at "+MetadataServer.getMetadataUrl()+" missing");
+         Piper.pipe(new InputStreamReader(in), sw);
+         return sw.toString();
+      }
+      catch (Throwable e)  {
+         throw makeFault(SERVERFAULT, "Could not access metadata", e);
+     }
    }
 
    /**
-    * Carries out a full synchronous (ie blocking) adql query.  Note that queries
+    * Carries out a full synchronous (ie blocking) adql query, returning the
+    * results as a VOTable string.  Note that queries
     * that take a long time might therefore cause a timeout at the client as
     * it waits for its response.
-    * <p>
-    * @soap
     */
-   public String doQuery(String resultsFormat,  Query q)  {
+   public String askQuery(Account user, String q)  throws AxisFault {
       
-      if (resultsFormat == null || resultsFormat.length() == 0)  {
-         log.error("Empty parameter for results format");
-         throw makeSoapFault("Empty parameter for results format");
-      }
-      if (!resultsFormat.toLowerCase().equals(FullSearcher.VOTABLE.toLowerCase()))  {
-         log.error("Can only produce votable results");
-         throw makeSoapFault("Can only produce votable results");
-      }
-
-      //for iteration 4.1, there is no security checking
       Querier querier = null;
       try {
          querier =  QuerierManager.createQuerier(q);
@@ -88,7 +129,7 @@ public class AxisDataServer extends SoapDataServer implements org.astrogrid.data
          return XMLUtils.ElementToString(result);
       }
       catch (Exception e) {
-         throw makeSoapFault("Failed to convert results to VOTable", e);
+         throw makeFault(SERVERFAULT, "Query failed to complete", e);
       }
       finally  {
          try {
@@ -99,162 +140,52 @@ public class AxisDataServer extends SoapDataServer implements org.astrogrid.data
       }
    }
    
-   
-   /**
-    * Creates an asynchronous query, returns the query id
-    * Does not start the query running - may want to register listeners with
-    * it first
-    * <p>
-    * @soap
-    */
-   public String  makeQuery(Query q) throws IOException {
-      
-      Querier querier = QuerierManager.createQuerier(q);
-      return querier.getQueryId();
-   }
-   
-   /**
-    * Creates an asynchronous query with the given id, returning that id
-    * Does not start the query running - may want to register listeners with
-    * it first
-    * <p>
-    * @soap
-    */
-   public String makeQueryWithId(Query q, String assignedId) throws QueryException, IOException, SAXException {
-      
-      log.debug("MakeQueryWithId ["+assignedId+"]");
-                   
-      if (assignedId == null || assignedId.length() == 0)  {
-         throw new IllegalArgumentException("Empty assigned id");
-      }
-      
-      Querier querier = QuerierManager.createQuerier(q, assignedId);
-      return querier.getQueryId();
-   }
-   
-   /**
-    * Sets where the results are to be sent
-    * @soap
-    */
-   public void setResultsDestination(String queryId, URI resultsDestination)  {
-      if (resultsDestination == null )  {
-         throw new IllegalArgumentException("Empty results destination");
-      }
-      Querier querier = server.getQuerier(queryId);
-      if (querier == null) {
-         throw new IllegalArgumentException("Unknown qid: " + queryId);
-      }
-      try {
-         querier.setResultsDestination(resultsDestination.toString());
-      } catch (MalformedURLException mue) {
-         throw new IllegalArgumentException("Results destination invalid: "+resultsDestination);
-      }
-   }
-   
-   
-   /**
-    * Checks the query specified by the given id
-    * If the query has finished, returns the URL of where the results are
-    * <p>
-    * @soap
-    */
-   public String getResultsAndClose(String queryId) {
-      Querier querier =server.getQuerier(queryId);
-      if (querier == null) {
-         throw new IllegalArgumentException("Unknown qid:" + queryId);
-      }
-      //has querier finished?
-      if (!querier.getState().isBefore(QueryState.FINISHED)) {
-         String results = querier.getResultsLoc();
-         try {
-            QuerierManager.closeQuerier(querier);
-         } catch (IOException e){
-            log.warn("Exception closing querier");
-         }
-         return results;
-      }
-      else {
-         return null;
-      }
-      
-   }
-   
    /**
     * Aborts the query specified by the given id.  Returns
-    * nothing - if there are any problems doing this it's a server-end problem.
-    * <p>
-    * @soap
+    * nothing - if the server can't stop it it's a server-end problem.
     */
-   public void abortQuery(String queryId) {
-      abortQuery(Account.ANONYMOUS, queryId);
-   }
-   
-   /**
-    * Starts an existing query running
-    * @soap
-    */
-   public void startQuery(String id) {
-      Querier querier = server.getQuerier(id);
-      Thread queryThread = new Thread(querier);
-      queryThread.start();
+   public void abortQuery(Account user, String queryId) throws AxisFault {
+      try {
+         server.abortQuery(user, queryId);
+      }
+      catch (Exception e) {
+         throw makeFault(SERVERFAULT, "Error aborting Query", e);
+      }
    }
    
    /**
     * Returns the state of the query with the given id
-    * <p>
-    * @soap
     */
-   public String getStatus(String queryId) {
-      return getQueryStatus(Account.ANONYMOUS, queryId).getState().toString();
-   }
-   
-   /**
-    * Register the given URL as a service to be notified when the status changes
-    * <p>
-    * @soap
-    */
-   public void registerWebListener(String queryId , URI uri) throws RemoteException {
-      throw new UnsupportedOperationException();
-   }
-   
-   /**
-    * Register the given URL as a service to be notified when the status changes
-    * <p>
-    * @soap
-    */
-   public void registerJobMonitor(String queryId, URI uri) throws RemoteException  {
-      // check we can create an URL first..
-      log.debug("Querier ["+queryId+"] registering JobMonitor at "+uri);
-      try  {
-         URL u = new URL(uri.toString());
-         Querier querier = server.getQuerier(queryId);
-         if (querier == null) {
-            throw new IllegalArgumentException("Unknown qid" + queryId);
-         }
-         
-         querier.registerListener(new JobNotifyServiceListener(u));
-      }
-      catch (MalformedURLException e)  {
-         throw new RemoteException("Malformed URL",e);
-      }
-   }
-   
-   /* (non-Javadoc)
-    * @see org.astrogrid.datacenter.axisdataserver.AxisDataServer#getLanguageInfo(java.lang.Object)
-    */
-   public Language[] getLanguageInfo(Object arg0) throws RemoteException {
-      
+   public QuerierStatus getQueryStatus(Account user, String queryId) throws AxisFault {
       try {
-         return PluginQuerier.instantiateQuerierSPI().getTranslatorMap().list();
-      } catch (DatabaseAccessException e) {
-         throw new RemoteException("Could not instantiate querier SPI",e);
+         return server.getQueryStatus(user, queryId);
+      }
+      catch (Exception e) {
+         throw makeFault(SERVERFAULT, "Error aborting Query", e);
       }
    }
+   
+   /**
+    * Returns the state of the server
+    */
+   public ServiceStatus getServerStatus(String queryId) throws AxisFault {
+      try {
+         return server.getServerStatus();
+      }
+      catch (Exception e) {
+         throw makeFault(SERVERFAULT, "Error aborting Query", e);
+      }
+   }
+   
+   
    
 }
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.31  2004/03/08 00:31:28  mch
+Split out webservice implementations for versioning
+
 Revision 1.30  2004/03/07 00:33:50  mch
 Started to separate It4.1 interface from general server services
 

@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   $Id: SADQL-v1.1.xsd,v 1.1 2004/03/08 00:31:28 mch Exp $
+
+   Definition Schema for an Astronomical Data Query Language.
+   
+   This is intended to be a query-only language.
+   
+   It is based on SQL, but probably does not implement (yet) all the required SQL query stuff.
+   
+   Aliases work a little differently - here you define aliases to value sets (ie columns or XPaths)
+   rather than to tables.  This could probably be done more sensibly using XPointer and IDs, but I want
+   to think about this first.  The idea is that the Return, OrderBy and Where elements should work entirely
+   off the Aliases, so that we can reuse these elements, and the 'From' element is specific only to one
+   database.  At some point we should then be able to swap this element out instead.
+
+   So the base element structure is like this:
+   
+   From (defines aliases)
+   Return (defines results)
+      - Form (schema that defines the result form - eg VOTable)
+      - Set (list of columns/paths that will be returned in the results)
+      - OrderedBy (list of keys defining order of results)
+      - GroupedBy (list of keys defining how the results will be grouped)
+   Where (defines search criteria - ie expressions based on aliases)
+
+   Technical Notes:
+   
+   To get polymorphic relationships for the expressions, I use substitutionGroup.  I'm not entirely happy with
+   this - I'd much rather get polymorphism through type - but it seems to work OK.
+   
+   I also can't work out whether it's possible (or desirable) to substitute a string value instead of a tag.
+   At the moment, for example, you have to write:
+   
+   <SIN><RealNumber>0.123</RealNumber></SIN>
+   
+   instead of:
+   
+   <SIN>0.123</SIN>
+   
+   Because you may want to include more complex expressions in there, such as:
+   
+   <SIN><ABS><Alias>RA</Alias></ABS></SIN>
+   
+   Also I can't see a way of sensibly Typing the expressions (ie Numerical vs String), because a ValueSet (Column/XPath) might be a
+   string or a number.  Probably the way to do this is to have a numericAlias and stringAlias...
+ 
+
+   Martin Hill, mch@roe.ac.uk
+-->
+<xs:schema targetNamespace="http://astrogrid.org/sadql/v1.1" xmlns="http://astrogrid.org/sadql/v1.1" xmlns:xs="http://www.w3.org/2001/XMLSchema" >
+   <!-- xs:import namespace='urn:nvo-region' schemaLocation="file://astrogrid/region.xsd"/>  -->
+   <!-- Astronomical Data Query -->
+   <xs:element name="ADQ">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="From" minOccurs="0">
+               <xs:complexType>
+                  <xs:choice maxOccurs="unbounded">
+                     <xs:element name="Column">
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="Alias" type="xs:string"/>
+                              <xs:element name="Table" type="xs:string"/>
+                              <xs:element name="Column" type="xs:string"/>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="Path">
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="Alias" type="xs:string"/>
+                              <xs:element name="XPath" type="xs:string"/>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                  </xs:choice>
+                  <!-- By making the choice max unbounded we can put Column/Table in any order any number of times -->
+               </xs:complexType>
+            </xs:element>
+            <xs:element name="Return">
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element name="First" minOccurs="0" maxOccurs="1" type="xs:int"/>
+                     <xs:element name="Set">
+                        <xs:complexType>
+                           <xs:choice>
+                              <xs:element name="All" nillable="true"/>
+                              <xs:element ref="Expression" maxOccurs="unbounded"/>
+                           </xs:choice>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="OrderedBy" minOccurs="0">
+                        <xs:complexType>
+                           <xs:choice>
+                              <xs:element name="Key" maxOccurs="unbounded">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element ref="Expression"/>
+                                    </xs:sequence>
+                                    <xs:attribute name="direction">
+                                       <xs:simpleType>
+                                          <xs:restriction base="xs:string">
+                                             <xs:enumeration value="descending"/>
+                                             <xs:enumeration value="ascending"/>
+                                          </xs:restriction>
+                                       </xs:simpleType>
+                                    </xs:attribute>
+                                    <!-- attribute specifying whether to sort this key in ascending or descending order -->
+                                 </xs:complexType>
+                              </xs:element>
+                           </xs:choice>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="GroupedBy" minOccurs="0">
+                        <xs:complexType>
+                           <xs:choice>
+                              <xs:element name="Key" maxOccurs="unbounded">
+                                 <xs:complexType>
+                                    <xs:sequence>
+                                       <xs:element ref="Expression"/>
+                                    </xs:sequence>
+                                 </xs:complexType>
+                              </xs:element>
+                           </xs:choice>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:element name="Into" minOccurs="0">
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="Store" type="xs:string" minOccurs="0"/>
+                              <xs:element name="Form">
+                                 <xs:complexType>
+                                    <xs:choice>
+                                       <xs:element name="Schema" type="xs:string"/>
+                                       <xs:element name="Table" type="xs:string"/>
+                                       <!-- The schema we want the results document to match -->
+                                       <!-- this should be a url but XML Buddy doesn't seem to like that -->
+                                       <!-- Name of table to be loaded into -->
+                                    </xs:choice>
+                                 </xs:complexType>
+                              </xs:element>
+                              <!-- target server where the results are to be put -->
+                              <!-- this should be a url but XML Buddy doesn't seem to like that -->
+                              <!-- define the form of the data - eg into a table or an xml doc -->
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                     <!-- First - defines how many results to return (same as SQL TOP) -->
+                     <!-- what will be in the set of results -->
+                     <!-- Order - sorted order of results.  a list of keys (each one an expression) -->
+                     <!-- rather naughtily assumes order of columns given in tag = order position/key priority -->
+                     <!-- Grouped By  -->
+                     <!-- rather naughtily assumes order of columns given in tag = order grouping -->
+                     <!-- Defines what happens to the results -->
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+            <xs:element name="Where" minOccurs="0">
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element ref="BooleanExpression"/>
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+            <xs:element name="Having" minOccurs="0">
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element ref="BooleanExpression"/>
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+            <!-- From - defines aliases to columns/xpaths/other sets of values -->
+            <!-- perhaps we should use ID instead? -->
+            <!-- Select - list the sets to be given in the results -->
+            <!-- Where - selection/matching criteria -->
+            <!-- Having - group selection/matching criteria -->
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <!-- The basic boolean unit of search criteria -->
+   <!-- defines an expression that will result in a boolean yes/no match -->
+   <xs:element name="BooleanExpression" abstract="true"/>
+   <!-- Boolean NOT on the enclosed expression -->
+   <xs:element name="NOT" substitutionGroup="BooleanExpression">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element ref="BooleanExpression"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <!-- Defines the basic Union operation (ie all boolean expressions are ORed -->
+   <xs:element name="Union" substitutionGroup="BooleanExpression">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element ref="BooleanExpression" minOccurs="2" maxOccurs="unbounded"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <!-- Defines the basic Intersection operation (ie all boolean expressions are ORed -->
+   <xs:element name="Intersection" substitutionGroup="BooleanExpression">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element ref="BooleanExpression" minOccurs="2" maxOccurs="unbounded"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <!-- Defines a comparison -->
+   <!-- compares two scalar expressions, returning a boolean -->
+   <xs:element name="Compare" substitutionGroup="BooleanExpression">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element ref="Expression"/>
+            <xs:element ref="CompareOperator"/>
+            <xs:element ref="Expression"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <!-- Defines the Compare Operators - ie less than, equals, etc -->
+   <xs:element name="CompareOperator" abstract="true" nillable="true"/>
+   <xs:element name="EQUALS" substitutionGroup="CompareOperator" nillable="true"/>
+   <xs:element name="GREATERTHAN" substitutionGroup="CompareOperator" nillable="true"/>
+   <xs:element name="LESSTHAN" substitutionGroup="CompareOperator" nillable="true"/>
+   <xs:element name="GREATERTHANOREQUALS" substitutionGroup="CompareOperator" nillable="true"/>
+   <xs:element name="LESSTHANOREQUALS" substitutionGroup="CompareOperator" nillable="true"/>
+   <xs:element name="LIKE" substitutionGroup="CompareOperator" nillable="true"/>
+   <!-- Defines special area search types -->
+   <xs:element name="Region" substitutionGroup="BooleanExpression">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="Coords" type="xs:string"/>
+            <xs:element name="RA" type="xs:float"/>
+            <xs:element name="DEC" type="xs:float"/>
+            <xs:element name="d" type="xs:float"/>
+            <!-- coordinate system - eg J2000 -->
+            <!-- <xs:element minOccurs="0" maxOccurs="1" name="Circle" type="urn:nvo-region:regionType" /> -->
+            <!-- Vague radius/square side length -->
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <!-- Define cross match search -->
+   <xs:element name="XMatch" substitutionGroup="BooleanExpression">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="Source" type="Position" minOccurs="2" maxOccurs="unbounded"/>
+            <xs:element name="NotMatch" type="Position" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="Sigma" type="xs:float"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <!-- Used for specifying a Position using aliases -->
+   <xs:complexType name="Position">
+      <xs:sequence>
+         <xs:element name="AliasRA" type="xs:string"/>
+         <xs:element name="AliasDec" type="xs:string"/>
+      </xs:sequence>
+   </xs:complexType>
+   <!-- A General Expression -->
+   <xs:element name="Expression" abstract="true"/>
+   <!-- we *can* just give a string as a value, but we might want to be more specific -->
+   <xs:element name="Integer" type="xs:int" substitutionGroup="Expression"/>
+   <xs:element name="RealNumber" type="xs:double" substitutionGroup="Expression"/>
+   <!-- Useful type for a lot of functions that wrap a single Expression -->
+   <xs:complexType name="FunctionOfExpression">
+      <xs:sequence>
+         <xs:element ref="Expression"/>
+      </xs:sequence>
+   </xs:complexType>
+   <!-- 'Unary' - swap negative/positive values -->
+   <xs:element name="NegativeOf" type="FunctionOfExpression" substitutionGroup="Expression" nillable="false"/>
+   <!-- Defines mathematical functions -->
+   <xs:element name="SIN" type="FunctionOfExpression" substitutionGroup="Expression" nillable="false"/>
+   <xs:element name="COS" type="FunctionOfExpression" substitutionGroup="Expression" nillable="false"/>
+   <xs:element name="TAN" type="FunctionOfExpression" substitutionGroup="Expression" nillable="false"/>
+   <xs:element name="COT" type="FunctionOfExpression" substitutionGroup="Expression" nillable="false"/>
+   <xs:element name="ASIN" type="FunctionOfExpression" substitutionGroup="Expression" nillable="false"/>
+   <xs:element name="ACOS" type="FunctionOfExpression" substitutionGroup="Expression" nillable="false"/>
+   <xs:element name="ATAN" type="FunctionOfExpression" substitutionGroup="Expression" nillable="false"/>
+   <xs:element name="ABS" type="FunctionOfExpression" substitutionGroup="Expression" nillable="false"/>
+   <xs:element name="EXP" type="FunctionOfExpression" substitutionGroup="Expression" nillable="false"/>
+   <xs:element name="SQRT" type="FunctionOfExpression" substitutionGroup="Expression" nillable="false"/>
+   <xs:element name="CEILING" type="FunctionOfExpression" substitutionGroup="Expression" nillable="false"/>
+   <xs:element name="FLOOR" type="FunctionOfExpression" substitutionGroup="Expression" nillable="false"/>
+   <xs:element name="DEGREES" type="FunctionOfExpression" substitutionGroup="Expression" nillable="false"/>
+   <xs:element name="RADIANS" type="FunctionOfExpression" substitutionGroup="Expression" nillable="false"/>
+   <xs:element name="SQUARE" type="FunctionOfExpression" substitutionGroup="Expression" nillable="false"/>
+   <xs:element name="PI" substitutionGroup="Expression" nillable="true"/>
+   <xs:element name="POWER" substitutionGroup="Expression" nillable="false">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="Mantissa" type="FunctionOfExpression"/>
+            <xs:element name="Exponent" type="FunctionOfExpression"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="LOG" substitutionGroup="Expression" nillable="false">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="Base" type="FunctionOfExpression"/>
+            <xs:element name="Argument" type="FunctionOfExpression"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <!-- Complex Expression - ie adding things up etc -->
+   <xs:element name="Math" substitutionGroup="Expression">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element ref="Expression"/>
+            <xs:element ref="MathOperator"/>
+            <xs:element ref="Expression"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <!-- Operator - ie add, subtract, etc -->
+   <xs:element name="MathOperator" abstract="true" nillable="true"/>
+   <xs:element name="ADDTO" substitutionGroup="MathOperator" nillable="true"/>
+   <xs:element name="SUBTRACT" substitutionGroup="MathOperator" nillable="true"/>
+   <xs:element name="MULTIPLYBY" substitutionGroup="MathOperator" nillable="true"/>
+   <xs:element name="DIVIDEBY" substitutionGroup="MathOperator" nillable="true"/>
+   <!-- Defines column range functions -->
+   <xs:element name="SUM" type="ValueSets" substitutionGroup="Expression"/>
+   <xs:element name="AVG" type="ValueSets" substitutionGroup="Expression"/>
+   <xs:element name="MIN" type="ValueSets" substitutionGroup="Expression"/>
+   <xs:element name="MAX" type="ValueSets" substitutionGroup="Expression"/>
+   <xs:element name="COUNT" type="ValueSets" substitutionGroup="Expression"/>
+   <!-- Defines a range or enumeration of columns -->
+   <xs:complexType name="ValueSets">
+      <xs:choice>
+         <xs:element name="Range" type="xs:string"/>
+         <xs:element ref="Alias" maxOccurs="unbounded"/>
+      </xs:choice>
+   </xs:complexType>
+   <!-- A String Expression returns a string -->
+   <!-- funny that -->
+   <xs:element name="String" type="xs:string" substitutionGroup="Expression"/>
+   <!-- Useful type for functions that wrap a Expression -->
+   <xs:complexType name="FunctionOfString">
+      <xs:sequence>
+         <xs:element ref="Expression"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:element name="Truncate" type="FunctionOfString" substitutionGroup="Expression" nillable="false"/>
+   <xs:element name="Concatenate" substitutionGroup="Expression" nillable="false">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="Base" type="FunctionOfExpression"/>
+            <xs:element name="Append" type="FunctionOfExpression"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <!-- Defines an alias - refers to FROM-defined column/path -->
+   <xs:element name="Alias" type="xs:string" substitutionGroup="Expression"/>
+</xs:schema>

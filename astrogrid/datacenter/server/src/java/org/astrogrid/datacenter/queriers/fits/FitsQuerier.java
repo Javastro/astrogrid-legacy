@@ -1,26 +1,20 @@
 /*
- * $Id: FitsQuerier.java,v 1.13 2004/01/14 17:57:32 nw Exp $
+ * $Id: FitsQuerier.java,v 1.14 2004/03/08 00:31:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.fits;
 
+import java.io.*;
+
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.Hashtable;
-
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLException;
-import org.astrogrid.datacenter.adql.ADQLUtils; 
+import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Circle;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
@@ -28,6 +22,7 @@ import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.snippet.DocHelper;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -164,7 +159,7 @@ public class FitsQuerier extends Querier
    {
       try
       {
-         index = XMLUtils.newDocument(indexStream);
+         index = DomHelper.newDocument(indexStream);
       }
       catch (org.xml.sax.SAXException e) {  throw new IOException(e.toString()); }
       catch (javax.xml.parsers.ParserConfigurationException e) {  throw new IOException(e.toString()); }
@@ -232,6 +227,9 @@ public class FitsQuerier extends Querier
 
 /*
  $Log: FitsQuerier.java,v $
+ Revision 1.14  2004/03/08 00:31:28  mch
+ Split out webservice implementations for versioning
+
  Revision 1.13  2004/01/14 17:57:32  nw
  improved documentation
 

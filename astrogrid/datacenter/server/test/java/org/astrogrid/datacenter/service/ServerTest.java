@@ -14,24 +14,23 @@ package org.astrogrid.datacenter.service;
 
 import java.io.IOException;
 import java.net.URL;
-
 import javax.xml.parsers.ParserConfigurationException;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.axisdataserver.AxisDataServer;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.delegate.FullSearcher;
+import org.astrogrid.datacenter.metadata.MetadataServer;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.sitedebug.DummyQuerierSPI;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
 import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.datacenter.sitedebug.DummyQuerierSPI;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -52,15 +51,15 @@ public class ServerTest extends ServerTestCase
       //make sure database querier to be used is the dummy one - only available
       //in the test suite
       SimpleConfig.setProperty(PluginQuerier.QUERIER_SPI_KEY, DummyQuerierSPI.class.getName());
-       SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, PluginQuerier.class.getName());
+      SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, PluginQuerier.class.getName());
 
-      //create the server
-      AxisDataServer server = new AxisDataServer();
+      //create the It4.1 server
+      AxisDataServer server = new AxisDataServer_v0_4_1();
       assertNotNull(server);
 
       //load test query file
       URL url = getClass().getResource("adqlQuery3.xml");
-      Document fileDoc = XMLUtils.newDocument(url.openConnection().getInputStream());
+      Document fileDoc = DomHelper.newDocument(url.openConnection().getInputStream());
       assertNotNull(fileDoc);
 
       Select adql = ADQLUtils.unmarshalSelect(fileDoc);
@@ -78,11 +77,16 @@ public class ServerTest extends ServerTestCase
 
    /**
     * Tests the data server as if this was an axis server
-    *
-   public void testDataServer()
-   {
-   }
     */
+   public void testGetMetadata() throws IOException
+   {
+      DataServer server = new DataServer();
+
+      SimpleConfig.setProperty(MetadataServer.METADATA_FILE_LOC_KEY, "org/astrogrid/datacenter/service/metadata.xml");
+      
+      assertNotNull(MetadataServer.getMetadataUrl().openStream());
+   }
+    
 
     /**
      * Assembles and returns a test suite made up of all the testXxxx() methods
@@ -106,6 +110,9 @@ public class ServerTest extends ServerTestCase
 
 /*
 $Log: ServerTest.java,v $
+Revision 1.10  2004/03/08 00:31:28  mch
+Split out webservice implementations for versioning
+
 Revision 1.9  2004/02/24 16:03:48  mch
 Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
 

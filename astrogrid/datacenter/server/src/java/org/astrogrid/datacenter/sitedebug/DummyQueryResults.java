@@ -1,19 +1,17 @@
 /*
- * $Id: DummyQueryResults.java,v 1.1 2004/02/16 23:37:34 mch Exp $
+ * $Id: DummyQueryResults.java,v 1.2 2004/03/08 00:31:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.sitedebug;
-import org.astrogrid.datacenter.queriers.*;
-
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-
-import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.queriers.QueryResults;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -61,7 +59,7 @@ public class DummyQueryResults implements QueryResults
    {
       try
       {
-         return XMLUtils.newDocument(getInputStream());
+         return DomHelper.newDocument(getInputStream());
       }
       catch (javax.xml.parsers.ParserConfigurationException pce)
       {

@@ -7,14 +7,10 @@ package org.astrogrid.datacenter.service;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
@@ -23,8 +19,9 @@ import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DelegateQueryListener;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
-import org.astrogrid.datacenter.sitedebug.DummyQuerierSPI;
 import org.astrogrid.datacenter.query.QueryState;
+import org.astrogrid.datacenter.sitedebug.DummyQuerierSPI;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -57,7 +54,7 @@ public class ListenerTest extends ServerTestCase implements DelegateQueryListene
       
       URL url = getClass().getResource(TEST_QUERY_DOCUMENT);
       assertNotNull(url);
-      Element adqlQuery = XMLUtils.newDocument(url.openConnection().getInputStream()).getDocumentElement();
+      Element adqlQuery = DomHelper.newDocument(url.openConnection().getInputStream()).getDocumentElement();
 
       Select adql = ADQLUtils.unmarshalSelect(adqlQuery);
       assertNotNull(adql);
@@ -74,7 +71,7 @@ public class ListenerTest extends ServerTestCase implements DelegateQueryListene
       DummyDelegate delegate = (DummyDelegate) DatacenterDelegateFactory.makeFullSearcher(null);
       
       URL url = getClass().getResource(TEST_QUERY_DOCUMENT);
-      Element adqlQuery = XMLUtils.newDocument(url.openConnection().getInputStream()).getDocumentElement();
+      Element adqlQuery = DomHelper.newDocument(url.openConnection().getInputStream()).getDocumentElement();
 
       Select adql = ADQLUtils.unmarshalSelect(adqlQuery);
       
@@ -121,6 +118,9 @@ public class ListenerTest extends ServerTestCase implements DelegateQueryListene
 
 /*
 $Log: ListenerTest.java,v $
+Revision 1.11  2004/03/08 00:31:28  mch
+Split out webservice implementations for versioning
+
 Revision 1.10  2004/03/07 00:33:50  mch
 Started to separate It4.1 interface from general server services
 

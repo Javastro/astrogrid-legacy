@@ -10,14 +10,13 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
-
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.query.QueryState;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Element;
 
 /** Back-end Plugin Adapter - loads & wraps a {@link QuerierSPI} so that it appears as a {@link org.astrogrid.datacenter.queriers.Querier}
@@ -82,7 +81,7 @@ public class PluginQuerier extends Querier {
             namespaceURI = queryBody.getAttribute("xmlns");
         }
         if (namespaceURI == null) {
-            XMLUtils.PrettyElementToStream(queryBody,System.out);
+            DomHelper.PrettyElementToStream(queryBody,System.out);
             throw new DatabaseAccessException("Query body has no namespace - cannot determine language");
         }
         Translator trans = spi.getTranslatorMap().lookup(namespaceURI);
@@ -191,6 +190,9 @@ public class PluginQuerier extends Querier {
 }
 /*
  $Log: PluginQuerier.java,v $
+ Revision 1.8  2004/03/08 00:31:28  mch
+ Split out webservice implementations for versioning
+
  Revision 1.7  2004/03/07 00:33:50  mch
  Started to separate It4.1 interface from general server services
 

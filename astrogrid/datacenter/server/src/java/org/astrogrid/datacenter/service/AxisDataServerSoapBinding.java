@@ -1,4 +1,4 @@
-/*$Id: AxisDataServerSoapBinding.java,v 1.4 2004/01/15 14:49:47 nw Exp $
+/*$Id: AxisDataServerSoapBinding.java,v 1.5 2004/03/08 00:31:28 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,7 @@ public class AxisDataServerSoapBinding
      *
      */
     public AxisDataServerSoapBinding() throws IOException {
-        super(new AxisDataServer());
+        super(new AxisDataServer_v0_4_1());
     }
 
     /**
@@ -42,6 +42,9 @@ public class AxisDataServerSoapBinding
 
 /*
 $Log: AxisDataServerSoapBinding.java,v $
+Revision 1.5  2004/03/08 00:31:28  mch
+Split out webservice implementations for versioning
+
 Revision 1.4  2004/01/15 14:49:47  nw
 improved documentation
 

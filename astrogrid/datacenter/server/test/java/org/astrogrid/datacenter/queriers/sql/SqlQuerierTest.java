@@ -1,4 +1,4 @@
-/*$Id: SqlQuerierTest.java,v 1.11 2004/02/24 16:03:48 mch Exp $
+/*$Id: SqlQuerierTest.java,v 1.12 2004/03/08 00:31:28 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,31 +10,23 @@
 **/
 package org.astrogrid.datacenter.queriers.sql;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
-import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
 import org.astrogrid.datacenter.sql.SQLUtils;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 /** test out the vanilla sql querier over an in-memory hsqldb database
  * @author Noel Winstanley nw@jb.man.ac.uk 04-Sep-2003
@@ -136,7 +128,7 @@ public class SqlQuerierTest extends ServerTestCase {
         querier.close();
         assertIsVotable(voElement);
         // could add extra checking to compare with expected results here..
-        XMLUtils.PrettyDocumentToStream(voElement,System.out);
+        DomHelper.PrettyDocumentToStream(voElement,System.out);
    }
 
        
@@ -147,6 +139,9 @@ public class SqlQuerierTest extends ServerTestCase {
 
 /*
 $Log: SqlQuerierTest.java,v $
+Revision 1.12  2004/03/08 00:31:28  mch
+Split out webservice implementations for versioning
+
 Revision 1.11  2004/02/24 16:03:48  mch
 Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
 

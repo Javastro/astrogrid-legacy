@@ -1,4 +1,4 @@
-/*$Id: ServerTestCase.java,v 1.4 2004/03/07 00:33:50 mch Exp $
+/*$Id: ServerTestCase.java,v 1.5 2004/03/08 00:31:28 mch Exp $
  * Created on 20-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,20 +10,13 @@
 **/
 package org.astrogrid.datacenter;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.net.URL;
+import java.io.*;
 
+import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
+import org.astrogrid.util.DomHelper;
 import org.custommonkey.xmlunit.Validator;
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -84,7 +77,7 @@ public class ServerTestCase extends XMLTestCase {
     }
     /** assert is a votable document */
     public void assertIsVotable(InputStream is) throws SAXException, IOException, TransformerException, ParserConfigurationException{
-        Document d = XMLUtils.newDocument(is);
+        Document d = DomHelper.newDocument(is);
         assertIsVotable(d);
     }
 
@@ -96,7 +89,7 @@ public class ServerTestCase extends XMLTestCase {
     
     public void assertIsVotable(Element e) throws SAXException, ParserConfigurationException {
         assertEquals(VOTABLE_DOCTYPE,e.getLocalName());
-        assertXMLValid(XMLUtils.ElementToString(e),VOTABLE_SYSTEM_ID,VOTABLE_DOCTYPE);
+        assertXMLValid(DomHelper.ElementToString(e),VOTABLE_SYSTEM_ID,VOTABLE_DOCTYPE);
     }
 
     /**
@@ -135,7 +128,7 @@ public class ServerTestCase extends XMLTestCase {
         assertNotNull(xml);
         InputStream is = new ByteArrayInputStream(xml.getBytes());
         assertNotNull(is);
-        Document doc =  XMLUtils.newDocument(is);
+        Document doc =  DomHelper.newDocument(is);
         assertNotNull(doc);
         return doc;
     }
@@ -154,7 +147,7 @@ public class ServerTestCase extends XMLTestCase {
     }
     
     public void assertIsVotableResultsResponse(String s) throws Exception{
-        //XMLUtils.PrettyDocumentToStream(d,System.out);
+        //DomHelper.PrettyDocumentToStream(d,System.out);
         Document d = XMLUnit.buildControlDocument(s);
         assertIsVotableResultsResponse(d);
     }
@@ -216,6 +209,9 @@ public class ServerTestCase extends XMLTestCase {
 
 /*
 $Log: ServerTestCase.java,v $
+Revision 1.5  2004/03/08 00:31:28  mch
+Split out webservice implementations for versioning
+
 Revision 1.4  2004/03/07 00:33:50  mch
 Started to separate It4.1 interface from general server services
 

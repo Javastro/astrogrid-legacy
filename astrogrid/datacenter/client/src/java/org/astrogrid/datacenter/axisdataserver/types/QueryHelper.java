@@ -1,29 +1,29 @@
-/*$Id: QueryHelper.java,v 1.2 2004/01/13 00:32:47 nw Exp $
+/*$Id: QueryHelper.java,v 1.3 2004/03/08 00:31:28 mch Exp $
  * Created on 18-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.axisdataserver.types;
 
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.util.DomHelper;
 import org.exolab.castor.xml.Marshaller;
 import org.w3c.dom.Document;
 
-/** helper class for building query objects 
+/** helper class for building query objects
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Nov-2003
  *
  */
 public class QueryHelper {
 
     /**
-     * 
+     *
      */
     private QueryHelper() {
     }
@@ -32,8 +32,8 @@ public class QueryHelper {
     public static Query buildMinimalQuery() throws Exception {
         Query q = new Query();
         Select select = ADQLUtils.buildMinimalQuery();
-        Document doc = XMLUtils.newDocument();
-        Marshaller.marshal(select,doc);        
+        Document doc = DomHelper.newDocument();
+        Marshaller.marshal(select,doc);
         q.setQueryBody(doc.getDocumentElement());
            
         return q;
@@ -42,8 +42,11 @@ public class QueryHelper {
 }
 
 
-/* 
+/*
 $Log: QueryHelper.java,v $
+Revision 1.3  2004/03/08 00:31:28  mch
+Split out webservice implementations for versioning
+
 Revision 1.2  2004/01/13 00:32:47  nw
 Merged in branch providing
 * sql pass-through

@@ -5,7 +5,6 @@
        org.astrogrid.datacenter.delegate.*,
        org.astrogrid.datacenter.sql.SQLUtils,
        org.astrogrid.io.*,
-       org.astrogrid.community.User,
        org.astrogrid.datacenter.adql.generated.*"
    isThreadSafe="false"
    session="false"

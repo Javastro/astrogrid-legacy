@@ -1,22 +1,22 @@
-/*$Id: BaseQuerierSPI.java,v 1.4 2004/01/15 12:04:04 nw Exp $
+/*$Id: BaseQuerierSPI.java,v 1.5 2004/03/08 00:31:28 mch Exp $
  * Created on 26-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.queriers.spi;
 
-import org.apache.axis.components.logger.LogFactory;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.util.Workspace;
 
 /** Plugin authors should start by extending this abstract  implementation of a {@link QuerierSPI}
  * <p>
-* 
+*
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Nov-2003
  *
  */
@@ -45,8 +45,11 @@ public abstract class BaseQuerierSPI implements QuerierSPI {
 }
 
 
-/* 
+/*
 $Log: BaseQuerierSPI.java,v $
+Revision 1.5  2004/03/08 00:31:28  mch
+Split out webservice implementations for versioning
+
 Revision 1.4  2004/01/15 12:04:04  nw
 improved documentation
 

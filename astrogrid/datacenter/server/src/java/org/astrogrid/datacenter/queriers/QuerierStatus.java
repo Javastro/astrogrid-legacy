@@ -1,12 +1,14 @@
 /*
- * $Id: QuerierStatus.java,v 1.1 2004/03/07 00:33:50 mch Exp $
+ * $Id: QuerierStatus.java,v 1.2 2004/03/08 00:31:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
 
+import java.util.Date;
 import org.astrogrid.datacenter.query.QueryState;
+import org.astrogrid.store.Agsl;
 
 /**
  * Represents current querier status.
@@ -17,13 +19,20 @@ import org.astrogrid.datacenter.query.QueryState;
 
 public class QuerierStatus
 {
+   /** Timestamp for this status - ie when it was generated */
+   Date atTime;
+   
    String id;
    QueryState state = QueryState.UNKNOWN;
-   String detail = null;
    
-   public QuerierStatus(String forQueryId, QueryState givenState) {
-      this.id = forQueryId;
-      this.state = givenState;
+   /** Detail for things like error messages */
+   String detail = null;
+
+   
+   public QuerierStatus(Querier forQuerier) {
+      this.id = forQuerier.getQueryId();
+      this.state = forQuerier.getState();
+      atTime = new Date();
    }
 
    public String toString() {
@@ -33,11 +42,19 @@ public class QuerierStatus
    public QueryState getState() {
       return state;
    }
+ 
+   public Agsl getResults() {
+      //if the querier has finished, we should know where to find the results
+      return null;
+   }
    
 }
 
 /*
 $Log: QuerierStatus.java,v $
+Revision 1.2  2004/03/08 00:31:28  mch
+Split out webservice implementations for versioning
+
 Revision 1.1  2004/03/07 00:33:50  mch
 Started to separate It4.1 interface from general server services
 

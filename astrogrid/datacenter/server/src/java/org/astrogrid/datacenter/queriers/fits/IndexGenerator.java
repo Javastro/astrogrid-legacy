@@ -13,20 +13,15 @@ package org.astrogrid.datacenter.queriers.fits;
  * @author M Hill
  */
 
+import org.astrogrid.datacenter.fits.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
-
-import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.fits.FitsHdu;
-import org.astrogrid.datacenter.fits.FitsHeader;
-import org.astrogrid.datacenter.fits.FitsKeyword;
-import org.astrogrid.datacenter.fits.FitsReader;
-import org.astrogrid.datacenter.fits.FitsStreamReader;
-import org.astrogrid.datacenter.fits.FitsWCS;
 import org.astrogrid.log.Log;
+import org.astrogrid.util.DomHelper;
 
 public class IndexGenerator
 {
@@ -57,7 +52,7 @@ public class IndexGenerator
     */
    public static String generateIndex(URL fitsUrl) throws IOException
    {
-		Log.trace("Examining file "+fitsUrl+"...");
+      Log.trace("Examining file "+fitsUrl+"...");
       return generateIndex(new FitsStreamReader(fitsUrl), fitsUrl.toString());
    }
    
@@ -165,7 +160,7 @@ public class IndexGenerator
    {
      try
      {
-        XMLUtils.newDocument(new ByteArrayInputStream(snippet.getBytes()));
+        DomHelper.newDocument(new ByteArrayInputStream(snippet.getBytes()));
      }
      catch (org.xml.sax.SAXException e) { throw new IOException(e.toString()); }
      catch (javax.xml.parsers.ParserConfigurationException e) { throw new IOException(e.toString()); }
@@ -189,7 +184,7 @@ public class IndexGenerator
          new URL[] {
                new URL("http://www.roe.ac.uk/~mch/r169411.fit"),
                new URL("http://www.roe.ac.uk/~mch/r169097.fit"),
-					new URL("http://www.roe.ac.uk/~mch/r169101.fit")
+               new URL("http://www.roe.ac.uk/~mch/r169101.fit")
          }
       ));
     }
@@ -199,6 +194,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.5  2004/03/08 00:31:28  mch
+Split out webservice implementations for versioning
+
 Revision 1.4  2004/01/13 00:33:14  nw
 Merged in branch providing
 * sql pass-through

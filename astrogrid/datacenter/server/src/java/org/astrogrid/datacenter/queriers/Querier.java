@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.28 2004/03/07 00:33:50 mch Exp $
+ * $Id: Querier.java,v 1.29 2004/03/08 00:31:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -414,7 +414,7 @@ public abstract class Querier implements Runnable {
     * Returns the status - contains more info than the state
     */
    public QuerierStatus getStatus() {
-      return new QuerierStatus(id, state);
+      return new QuerierStatus(this);
    }
    
    
@@ -457,6 +457,9 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.29  2004/03/08 00:31:28  mch
+ Split out webservice implementations for versioning
+
  Revision 1.28  2004/03/07 00:33:50  mch
  Started to separate It4.1 interface from general server services
 

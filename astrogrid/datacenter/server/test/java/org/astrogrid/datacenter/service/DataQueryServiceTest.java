@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.19 2004/03/07 00:33:50 mch Exp $
+/*$Id: DataQueryServiceTest.java,v 1.20 2004/03/08 00:31:28 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,20 +15,19 @@ import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.sql.DataSource;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.axisdataserver.AxisDataServer;
 import org.astrogrid.datacenter.axisdataserver.types.Language;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
+import org.astrogrid.datacenter.metadata.MetadataServer;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.queriers.QuerierManager;
@@ -61,18 +60,17 @@ public class DataQueryServiceTest extends ServerTestCase {
         //wsTest.setUp(); //sets up workspace
         HsqlTestCase.initializeConfiguration();
         SimpleConfig.setProperty(QuerierManager.DEFAULT_MYSPACE, MySpaceDummyDelegate.DUMMY);
-        SimpleConfig.setProperty(DataServer.METADATA_FILE_LOC_KEY,"/org/astrogrid/datacenter/test-metadata.xml");
+        SimpleConfig.setProperty(MetadataServer.METADATA_FILE_LOC_KEY,"/org/astrogrid/datacenter/test-metadata.xml");
         DataSource ds = new HsqlTestCase.HsqlDataSource();
-        //File tmpDir = WorkspaceTest.setUpWorkspace(); // dunno if we need to hang onto this for any reason..
         conn = ds.getConnection();
           String script = getResourceAsString("/org/astrogrid/datacenter/queriers/sql/create-test-db.sql");
         HsqlTestCase.runSQLScript(script,conn);
-        server = new AxisDataServer();
+        server = new AxisDataServer_v0_4_1();
         InputStream adqlIn = this.getClass().getResourceAsStream("/org/astrogrid/datacenter/queriers/sql/sql-querier-test-3.xml");
         assertNotNull(adqlIn);
         Select s =Select.unmarshalSelect(new InputStreamReader(adqlIn));
         query = new Query();
-         query.setQueryBody(ADQLUtils.marshallSelect(s).getDocumentElement());
+        query.setQueryBody(ADQLUtils.marshallSelect(s).getDocumentElement());
     }
 
     protected Connection conn;
@@ -193,6 +191,9 @@ public class DataQueryServiceTest extends ServerTestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.20  2004/03/08 00:31:28  mch
+Split out webservice implementations for versioning
+
 Revision 1.19  2004/03/07 00:33:50  mch
 Started to separate It4.1 interface from general server services
 
