@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerierPlugin.java,v 1.6 2004/09/07 00:54:20 mch Exp $
+ * $Id: FitsQuerierPlugin.java,v 1.7 2004/09/08 17:44:18 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,27 +9,26 @@ package org.astrogrid.datacenter.queriers.fits;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Hashtable;
 import javax.xml.parsers.ParserConfigurationException;
+import org.astrogrid.config.ConfigException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
-//import org.astrogrid.datacenter.queriers.QuerierPluginException;
 import org.astrogrid.datacenter.queriers.query.ConeQueryMaker;
-import org.astrogrid.datacenter.queriers.status.QuerierAborted;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.service.v041.DocHelper;
 import org.astrogrid.util.DomHelper;
+import org.astrogrid.xmldb.eXist.server.QueryDBService;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import org.astrogrid.xmldb.eXist.server.QueryDBService;
 
 /**
  *
@@ -184,22 +183,41 @@ public class FitsQuerierPlugin extends QuerierPlugin
     */
    protected synchronized void loadIndex() throws IOException {
       if (indexLoaded) return;
-      
-      URL url = SimpleConfig.getSingleton().getUrl(FITS_INDEX_URL, null);
-      String strURL = url.toExternalForm();
-      SimpleConfig.getSingleton().setProperty("exist.db.url",strURL.substring(0,strURL.indexOf("/servlet")));
-      if (url != null) {
-         try {
-            index = DomHelper.newDocument(url.openStream());
-         }
-         catch (ParserConfigurationException e) {
-            throw new RuntimeException("Server configuration error",e);
-         }
-         catch (SAXException e) {
-            //throw new QuerierPluginException("FitsQuerierPlugin index not valid xml",e);
-            throw new IOException("FitsQuerierPlugin");
 
+      //find the index
+      URL url = SimpleConfig.getSingleton().getUrl(FITS_INDEX_URL, null);
+      if (url == null) {
+         String filename = SimpleConfig.getSingleton().getString(FITS_INDEX_FILENAME, null);
+         if (filename != null) {
+            File f = new File(filename);
+            if (!f.exists()) {
+               throw new ConfigException("Fits index "+filename+" given by "+FITS_INDEX_FILENAME+" in config ("+SimpleConfig.loadedFrom()+") does not exist");
+            }
+            url = f.toURL();
          }
+         if (url == null) {
+            throw new ConfigException("Fits index not specified with "+FITS_INDEX_URL+" or "+FITS_INDEX_FILENAME+" in config ("+SimpleConfig.loadedFrom()+")");
+         }
+      }
+      else {
+         String strURL = url.toExternalForm();
+
+         //not quite sure what this does - and it won't work if the index has been made from a file (eg during unit tests)
+         SimpleConfig.getSingleton().setProperty("exist.db.url",strURL.substring(0,strURL.indexOf("/servlet")));
+      }
+      
+      
+      //load & parse index
+      try {
+         index = DomHelper.newDocument(url.openStream());
+      }
+      catch (ParserConfigurationException e) {
+         throw new RuntimeException("Server configuration error",e);
+      }
+      catch (SAXException e) {
+         //throw new QuerierPluginException("FitsQuerierPlugin index not valid xml",e);
+         throw new IOException("FitsQuerierPlugin");
+
       }
    }
    
@@ -209,6 +227,9 @@ public class FitsQuerierPlugin extends QuerierPlugin
 
 /*
  $Log: FitsQuerierPlugin.java,v $
+ Revision 1.7  2004/09/08 17:44:18  mch
+ Fix for URL not being a servlet
+
  Revision 1.6  2004/09/07 00:54:20  mch
  Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
 
