@@ -1,6 +1,75 @@
 <html>
 <body>
-The delegates exist to make calling the web service as trivial as creating a Delegate class
+The delegates exist to make calling Astrogrid services as trivial as creating a Delegate instance, 
 and then calling a method on it.
+
+<h3>Quick Start to Using Datacenter Delegates</h3>
+
+You will need one delegate instance per service you are connecting to.  You can then use that 
+one delegate to make as many calls to that service as you like.
+<p>
+<h4>Creating a delegate</h4>
+Don't use a delegate constructor to create a delegate, use the call:
+<p>
+<code><pre>
+  DatacenterDelegate delegate = DatacenterDelegate.makeDelegate(String endpoint);
+</pre></code>
+<p>
+This will construct the right Delegate subclass, depending on the server being connected to.  
+This server type is defined on the client side (ie you, the Delegate user) by the protocol
+given in the <b>endpoint</b> parameter which should be 'url'-like:
+<blockquote>
+  <p> <b>http://...</b> connects to a web-service datacenter (ie Apache/Tomcat/Axis 
+    server). </p>
+  <p> <b>socket://...</b> connects to a socket based datacenter (ie 'pure' TCP/IP 
+    dual stream). </p>
+  <p> <b>grid://...</b> connects to a grid-service datacenter 
+    (eg Globus, not implemented yet) </p>
+</blockquote>
+<p>
+Note that some datacenters might provide more than one connection type, but this is (presumably?) 
+information you can find in the registry.
+<p>
+<h4>Doing a Query</h4>
+Call <code>delegate.adqlQuery(Element query)</code> to carry out a blocking query 
+on the service. Actually this will take any query; make sure the type is specified 
+in the surrounding <code>Query</code> tag, eg <code>&lt;Query type='adql'&gt;</code>
+ or <code>&lt;Query type='astrogrid'&gt;</code>
+
+<h4>Doing other things</h4>
+Refer to the DatacenterDelegate methods.
+
+<h3>What you will need</h3>
+<p>
+You will need the following datacenter packages:
+<blockquote>
+<pre><code>org.astrogrid.datacenter.delegate
+org.astrogrid.datacenter.common
+org.astrogrid.datacenter.io</code></pre>
+</blockquote>
+and the following 3rd party ones:
+<p>
+<li>RMI/RPC implementation, eg <code>jaxrpc.jar</code> 
+<li>Axis library (for XMLUtils), ie <code>axis.jar</code>
+<li>XML implementation, eg ...
+<li>SAX implementation, eg...
+<li>...more...
+
+<p>
+<h3>How they work</h3>
+
+<h4>Web Delegates</h4>
+
+I don't know, ask Noel or Peter about WSDL-generated stubs etc.
+
+<h4>Socket Delegates</h4>
+You don't really want to know do you?  Oh alright I'll put stuff in here sometime.
+
+<h4>Grid Delegates</h4>
+Nobody knows, not been implemented yet.
+
+
+
+
 </body>
 </html>
