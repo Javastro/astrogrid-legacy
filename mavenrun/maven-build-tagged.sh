@@ -1,5 +1,5 @@
-# builds a maven branch for a particular project
 OLDDIR=$PWD
+# builds a maven branch for a particular project
 
 PROJECT_NAME=$1
 TAGNAME=$2

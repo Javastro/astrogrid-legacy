@@ -1,7 +1,6 @@
+OLDDIR=$PWD
 # builds a maven branch for a particular project
 # just like maven-build-tagged, but uses new astrogrid goals.
-OLDDIR=$PWD
-
 PROJECT_NAME=$1
 TAGNAME=$2
 
