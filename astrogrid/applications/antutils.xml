@@ -188,6 +188,7 @@
                 DELETE FROM permissions ;
             ]]>
         </sql>
+        
     </target>
     
     <target name="testsetup">

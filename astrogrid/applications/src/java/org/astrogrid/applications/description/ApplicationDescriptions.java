@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationDescriptions.java,v 1.3 2003/11/29 00:50:14 pah Exp $
+ * $Id: ApplicationDescriptions.java,v 1.4 2003/12/09 23:01:15 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -16,6 +16,7 @@ package org.astrogrid.applications.description;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 
@@ -55,5 +56,10 @@ public class ApplicationDescriptions {
       }
       return (ApplicationDescription)o;
       
+   }
+   public String[] getApplicationNames()
+   {
+      Set nameset = applications.keySet();
+      return (String[])nameset.toArray(new String[0]);
    }
 }

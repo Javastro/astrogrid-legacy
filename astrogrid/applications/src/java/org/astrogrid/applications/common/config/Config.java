@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.1 2003/11/26 22:07:24 pah Exp $
+ * $Id: Config.java,v 1.2 2003/12/09 23:01:15 pah Exp $
  *
  * Created on 13 September 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -10,6 +10,8 @@
  */
 
 package org.astrogrid.applications.common.config;
+
+import javax.sql.DataSource;
 
 /**
  * Defines the fundamental operations that a configuration can perform.
@@ -25,4 +27,11 @@ public interface Config {
     * @return The value of the property found.
     */
    public String getProperty(String key); 
+   
+   /**
+    * Returns a datasource.
+    * @param key
+    * @return
+    */
+   public DataSource getDataSource(String key);
 }

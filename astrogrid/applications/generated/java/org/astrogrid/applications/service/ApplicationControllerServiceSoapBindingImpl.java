@@ -19,12 +19,21 @@ import org.astrogrid.community.User;
 public class ApplicationControllerServiceSoapBindingImpl
    implements org.astrogrid.applications.service.ApplicationController {
 
-   CommandLineApplicationController applicationController;
+   static CommandLineApplicationController applicationController = null;
 
    public ApplicationControllerServiceSoapBindingImpl() {
       // do we do anything special to check that  only one application controller is created?
-      applicationController = new CommandLineApplicationController();
+      setupAppController();
    }
+
+   private synchronized void setupAppController() {
+      
+      
+      if (applicationController == null) {
+         applicationController = new CommandLineApplicationController();
+      }
+   }
+   
    public java.lang.String[] listApplications()
       throws java.rmi.RemoteException {
       return applicationController.listApplications();

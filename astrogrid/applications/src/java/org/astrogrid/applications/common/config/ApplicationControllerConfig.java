@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerConfig.java,v 1.6 2003/12/07 01:09:48 pah Exp $
+ * $Id: ApplicationControllerConfig.java,v 1.7 2003/12/09 23:01:15 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -9,17 +9,13 @@
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file.  
  *
- */ 
+ */
 
 package org.astrogrid.applications.common.config;
 
 import java.io.File;
 
 import javax.sql.DataSource;
-
-
-
-
 
 import org.astrogrid.applications.common.ApplicationsConstants;
 
@@ -31,78 +27,77 @@ import org.astrogrid.applications.common.ApplicationsConstants;
  */
 public class ApplicationControllerConfig {
 
- private static ApplicationControllerConfig instance = null;
- private Config config;
- static private org.apache.commons.logging.Log logger =
-   org.apache.commons.logging.LogFactory.getLog(
-      ApplicationControllerConfig.class);
-      
- private javax.sql.DataSource dataSource = null;
- 
- private ApplicationControllerConfig()
- {
-    config = ConfigLoader.LoadConfig(ApplicationsConstants.CONFIGFILEKEY);
-    //TODO get the real datasource from JNDI...
- }
- 
- /**
-  * constructor to allow unit testing. Note that this is package private
- * @param ds
- */
-ApplicationControllerConfig(DataSource ds)
- {
-    config = ConfigLoader.LoadConfig(ApplicationsConstants.CONFIGFILEKEY);
+   private static ApplicationControllerConfig instance = null;
+   private Config config;
+   static private org.apache.commons.logging.Log logger =
+      org.apache.commons.logging.LogFactory.getLog(
+         ApplicationControllerConfig.class);
 
-    instance = this;
-    dataSource = ds;
- }
- 
- public static ApplicationControllerConfig getInstance()
- {
-    // note the double check......
-    if (instance == null)
-    {
-       synchronized (ApplicationControllerConfig.class){
-          if (instance == null)
-          {
-          
-          instance = new ApplicationControllerConfig();
-          }
-       }
-       
-    }
-    return instance;
- }
- 
- public File getApplicationConfigFile()
- {
-    
-    File file = new File(config.getProperty(ApplicationsConstants.ApplicationConfigKey));
-    //TODO should test for the existance of the file here.
-    return file;
- }
- 
- public File getWorkingDirectory(){
-    File dir = new File(config.getProperty(ApplicationsConstants.WorkingDirectory));
-    return dir;
- }
- 
- public String getDatasourceName(){
-    return config.getProperty(ApplicationsConstants.DataSourceName);
- }
- 
-/**
- * @return
- */
-public javax.sql.DataSource getDataSource() {
-   return dataSource;
-}
-  public String getDBuser()
-  {
-     return config.getProperty(ApplicationsConstants.DATABASE_USER_KEY);
-  }
-  public String getDBpwd()
-  {
-     return config.getProperty(ApplicationsConstants.DATABASE_PASSWORD_KEY);
-  }
+   private javax.sql.DataSource dataSource = null;
+
+   private ApplicationControllerConfig() {
+      logger.info("creating new configuration");
+      
+      config = ConfigLoader.LoadConfig(ApplicationsConstants.CONFIGFILEKEY);
+      //get the real datasource from config
+      dataSource = config.getDataSource(ApplicationsConstants.DataSourceName);
+      logger.info("configuration created");
+   }
+
+   /**
+    * constructor to allow unit testing. Note that this is package private
+   * @param ds
+   */
+   ApplicationControllerConfig(DataSource ds) {
+      config = ConfigLoader.LoadConfig(ApplicationsConstants.CONFIGFILEKEY);
+
+      instance = this;
+      dataSource = ds;
+   }
+
+   public static ApplicationControllerConfig getInstance() {
+      // note the double check......
+      if (instance == null) {
+         synchronized (ApplicationControllerConfig.class) {
+            if (instance == null) {
+
+               instance = new ApplicationControllerConfig();
+            }
+         }
+
+      }
+      return instance;
+   }
+
+   public File getApplicationConfigFile() {
+
+      File file =
+         new File(
+            config.getProperty(ApplicationsConstants.ApplicationConfigKey));
+      //TODO should test for the existance of the file here.
+      return file;
+   }
+
+   public File getWorkingDirectory() {
+      File dir =
+         new File(config.getProperty(ApplicationsConstants.WorkingDirectory));
+      return dir;
+   }
+
+   public String getDatasourceName() {
+      return config.getProperty(ApplicationsConstants.DataSourceName);
+   }
+
+   /**
+    * @return
+    */
+   public javax.sql.DataSource getDataSource() {
+      return dataSource;
+   }
+   public String getDBuser() {
+      return config.getProperty(ApplicationsConstants.DATABASE_USER_KEY);
+   }
+   public String getDBpwd() {
+      return config.getProperty(ApplicationsConstants.DATABASE_PASSWORD_KEY);
+   }
 }

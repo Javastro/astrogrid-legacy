@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationsConstants.java,v 1.3 2003/12/01 22:24:59 pah Exp $
+ * $Id: ApplicationsConstants.java,v 1.4 2003/12/09 23:01:15 pah Exp $
  * 
  * Created on 17-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -35,10 +35,10 @@ public final class ApplicationsConstants {
  */
 public final static String CONFIGFILEKEY = "AstrogridApplicationsConfigURL";
 
-/**
+/** 
  * the JNDI key for the datasource that represents the applicationController datasource
  */
-public final static String DataSourceName = "AstrogridApplicationControllerDatasource";
+public final static String DataSourceName = "jdbc/AstrogridACDatasource";
 
 // the keys below are found in the configuration file.
 

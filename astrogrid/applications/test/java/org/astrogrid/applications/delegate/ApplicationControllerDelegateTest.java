@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerDelegateTest.java,v 1.1 2003/12/08 23:01:53 pah Exp $
+ * $Id: ApplicationControllerDelegateTest.java,v 1.2 2003/12/09 23:01:15 pah Exp $
  * 
  * Created on 08-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,6 +14,9 @@
 package org.astrogrid.applications.delegate;
 
 import java.rmi.RemoteException;
+
+import org.astrogrid.applications.delegate.beans.SimpleApplicationDescription;
+import org.astrogrid.applications.description.TestAppConst;
 
 import junit.framework.TestCase;
 
@@ -43,7 +46,7 @@ public class ApplicationControllerDelegateTest extends TestCase {
     */
    protected void setUp() throws Exception {
       super.setUp();
-      delegate = new ApplicationControllerDelegate(null);
+      delegate = new ApplicationControllerDelegate("http://localhost:8080/astrogrid-applications/services/ApplicationControllerService");
       assertNotNull(delegate);
    }
 
@@ -51,6 +54,8 @@ public class ApplicationControllerDelegateTest extends TestCase {
    final public void testListApplications() {
       try {
          String[] apps = delegate.listApplications();
+         assertNotNull("application name list",apps);
+         assertEquals("number of test applications", 2, apps.length);
       }
       catch (RemoteException e) {
          fail("unknown exception");
@@ -59,7 +64,16 @@ public class ApplicationControllerDelegateTest extends TestCase {
    }
 
    final public void testGetApplicationDescription() {
-      //TODO Implement getApplicationDescription().
+      
+      try {
+         SimpleApplicationDescription desc = delegate.getApplicationDescription(TestAppConst.TESTAPP_NAME);
+         assertNotNull("Application description",desc);
+      }
+      catch (RemoteException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+      
    }
 
    final public void testInitializeApplication() {

@@ -29,10 +29,14 @@
         <pathelement location="${axis.webapp.srcdir}/WEB-INF/lib/commons-discovery.jar"/>
     </path>
     
-   <property name="maven.war.src" value="${axis.webapp.srcdir}"/> 
+<property name="maven.war.src" value="${axis.webapp.srcdir}"/> 
 
-<preGoal name="war">
-  <echo message="${maven.war.src}"/>
+<preGoal name="war:webapp">
+  <echo message="maven src ${maven.war.src}"/> 
+  <!-- make sure that the cvs maven stuff is put into the webapp -->
+<copy todir="${axis.webapp.srcdir}">
+        <fileset dir="${basedir}/src/webapp"></fileset>
+        </copy>
 </preGoal>
 
 <!-- hooks into existing goals -->
@@ -190,6 +194,7 @@
 		<echo message="tomcat.manager.username     : ${tomcat.manager.username}"/>
 		<echo message="tomcat.manager.password     : ${tomcat.manager.password}"/>
 		<echo message="maven.war.src               : ${maven.war.src}"/>
+		<echo message="maven.build.dir               : ${maven.build.dir}"/>
         <property name="project.class.path.string" refid="maven.dependency.classpath"/>
         <echo>maven.dependency.classpath=${project.class.path.string}</echo>
 

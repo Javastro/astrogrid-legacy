@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationController.java,v 1.9 2003/12/09 09:11:51 pah Exp $
+ * $Id: AbstractApplicationController.java,v 1.10 2003/12/09 23:01:15 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -26,7 +26,9 @@ abstract public class AbstractApplicationController implements ApplicationContro
     * The place where the application controller stores local execution status. 
     */
    protected DataSource db;
-
+   static private org.apache.commons.logging.Log logger =
+      org.apache.commons.logging.LogFactory.getLog(
+         AbstractApplicationController.class);
    /**
     * The store for the descriptions of the applications that this application controller manages.
     */
@@ -35,6 +37,7 @@ abstract public class AbstractApplicationController implements ApplicationContro
    
    AbstractApplicationController()
    {
+      logger.info("initializing application controller");
       simpleDescriptions = new HashMap();
       // get the datasource
       ApplicationControllerConfig config = ApplicationControllerConfig.getInstance();
@@ -42,7 +45,15 @@ abstract public class AbstractApplicationController implements ApplicationContro
       
       // load the application descriptions
       DescriptionLoader dl = new DescriptionLoader(this);
-      dl.loadDescription(config.getApplicationConfigFile());
+      logger.info("loading application descriptions from "+config.getApplicationConfigFile().getAbsoluteFile());
+      if(dl.loadDescription(config.getApplicationConfigFile()))
+      {
+         logger.info("application descriptions loaded successfully");
+      }
+      else
+      {
+         logger.error("application descriptions were not loaded properly");
+      }
       
      
    }
@@ -66,8 +77,8 @@ abstract public class AbstractApplicationController implements ApplicationContro
    }
 
    public String[] listApplications() {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("CommandLineApplicationController.listApplications() not implemented");
+       return applicationDescriptions.getApplicationNames();
+      
    }
 
    public String returnRegistryEntry() {

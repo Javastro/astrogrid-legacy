@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionLoaderTest.java,v 1.7 2003/12/05 22:52:16 pah Exp $
+ * $Id: DescriptionLoaderTest.java,v 1.8 2003/12/09 23:01:15 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -124,7 +124,7 @@ public class DescriptionLoaderTest extends DescriptionBaseTestCase {
          assertNotNull("the inferface object is null", intf);
 
          String[] pds = intf.getArrayofInputs();
-         assertEquals("wrong number of input parametes", 2,pds.length);
+         assertEquals("interfaace -wrong number of input parametes", 5,pds.length);
          assertEquals("input parameter name", "P2", pds[0]);
          try {
             ParameterDescription inp1 = intf.getInputParameter("P2");

@@ -1,5 +1,5 @@
 /*
- * $Id: TestConfig.java,v 1.1 2003/11/26 22:07:24 pah Exp $
+ * $Id: TestConfig.java,v 1.2 2003/12/09 23:01:15 pah Exp $
  *
  * Created on 13 September 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -12,6 +12,8 @@
 package org.astrogrid.applications.common.config;
 
 import java.util.ResourceBundle;
+
+import javax.sql.DataSource;
 
 public class TestConfig implements Config {
    private ResourceBundle bundle;
@@ -41,4 +43,12 @@ public class TestConfig implements Config {
      return bundle.getString(key);
    }
    
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.common.config.Config#getDataSource(java.lang.String)
+    */
+   public DataSource getDataSource(String key) {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("TestConfig.getDataSource() not implemented");
+   }
+
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: SyspropConfig.java,v 1.1 2003/11/26 22:07:24 pah Exp $
+ * $Id: SyspropConfig.java,v 1.2 2003/12/09 23:01:15 pah Exp $
  * 
  * Created on 09-Sep-2003 by pah
  *
@@ -12,6 +12,8 @@
  */ 
 
 package org.astrogrid.applications.common.config;
+
+import javax.sql.DataSource;
 
 /**
  * @author pah
@@ -35,6 +37,14 @@ public class SyspropConfig implements Config {
    }
    public String getProperty(String propertyKey) {
       return System.getProperty(propertyKey); // compatible with Dave's setup for now....
+   }
+
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.common.config.Config#getDataSource(java.lang.String)
+    */
+   public DataSource getDataSource(String key) {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("SyspropConfig.getDataSource() not implemented");
    }
 
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: JNDIConfig.java,v 1.1 2003/11/26 22:07:24 pah Exp $
+ * $Id: JNDIConfig.java,v 1.2 2003/12/09 23:01:15 pah Exp $
  * 
  * Created on 15-Sep-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -15,14 +15,18 @@ package org.astrogrid.applications.common.config;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
+import javax.sql.DataSource;
 
 /**
  * This type of config loads a property file using a JNDI key as an indirect reference
@@ -52,7 +56,6 @@ public class JNDIConfig implements Config {
     *
     */
 
-
    /* (non-Javadoc)
     * @see org.astrogrid.community.common.Config#getProperty(java.lang.String)
     */
@@ -61,53 +64,122 @@ public class JNDIConfig implements Config {
    }
 
    public JNDIConfig(String jndiName) {
-      String path;
+      props = new Properties();
       propertiesLoaded = loadProperties(jndiName);
    }
 
    private boolean loadProperties(String jndiName) {
-      URL configUrl=null;
+      URL configUrl = null;
       boolean retval = false;
       try {
-          Object o = null;
-          Context initCtx = new InitialContext();
-          o = initCtx.lookup(jndiName);
-          if (o == null || o instanceof Context) {
-              Context javaContext = (Context)initCtx.lookup("java:comp/env");
-              o = javaContext.lookup(jndiName);
-          }
-          
-          if (o instanceof URL) {                            
-                configUrl = (URL) o;             
-          } else if (o instanceof String) {
-              configUrl = new URL((String)o);
-          } else {
-              logger.debug("Found resource in JNDI, but of incorrect type :" + o.getClass().getName());
+         logger.info("looking for properties with JNDI name " + jndiName);
+         Object o = null;
+         Context initCtx = new InitialContext();
+//         printJNDIenv(initCtx, "init environment");
+         Context javaContext = (Context)initCtx.lookup("java:comp/env");
+         logger.info("got the java context ok");
+//         printJNDIenv(javaContext, "java environment");
+
+         o = javaContext.lookup(jndiName);
+         
+
+         if (o instanceof URL) {
+            configUrl = (URL)o;
             
-          }
-          
-          //load the resources
-          if (configUrl != null) {
-            props.load(configUrl.openStream());
+         }
+         else
+            if (o instanceof String) {
+               logger.info("got string "+ (String)o);
+               configUrl = new URL((String)o);
+            }
+            else {
+               logger.debug(
+                  "Found resource in JNDI, but of incorrect type :"
+                     + o.getClass().getName());
+
+            }
+
+         //load the resources
+         if (configUrl != null) {
+            logger.info("found resource pointer at " + configUrl.toString());
+            InputStream str = configUrl.openStream();
+            logger.info(str.toString());
+            if(str==null)
+            {
+               logger.error("cannot open stream to "+ configUrl.toString());
+            }
+            props.load(str);
             retval = true; // have been successfull
          }
-          
+
       }
       catch (NamingException e) {
+         logger.error("problem finding the name", e);
+ 
+      }
+      catch (MalformedURLException e) {
          // TODO Auto-generated catch block
          e.printStackTrace();
-      } catch (MalformedURLException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      } catch (IOException e) {
+      }
+      catch (IOException e) {
          // TODO Auto-generated catch block
          e.printStackTrace();
       }
       return retval;
    }
 
+   private void printJNDIenv(Context javaContext, String ctx) throws NamingException {
+      Hashtable env = javaContext.getEnvironment();
+      logger.info(ctx);
+      Set keys = env.keySet();
+      for (Iterator iter = keys.iterator(); iter.hasNext();) {
+         Object element = iter.next();
+         logger.info(element.toString());
+         
+      }
+      logger.info(ctx + " end");
+   }
+
+   private DataSource loadDataSource(String jndiName) {
+      DataSource configUrl = null;
+      boolean retval = false;
+      try {
+         Object o = null;
+         Context initCtx = new InitialContext();
+         logger.info("looking for Datasource JNDI name " + jndiName);
+         if (o == null || o instanceof Context) {
+            Context javaContext = (Context)initCtx.lookup("java:comp/env");
+            o = javaContext.lookup(jndiName);
+         }
+
+         if (o instanceof DataSource) {
+            configUrl = (DataSource)o;
+            logger.info("created datasource "+ configUrl.toString());
+         }
+         else {
+            logger.debug(
+               "Found resource in JNDI, but of incorrect type :"
+                  + o.getClass().getName());
+
+         }
+
+      }
+      catch (NamingException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+      return configUrl;
+   }
+
    /**
     * @return
     */
- 
+
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.common.config.Config#getDataSource(java.lang.String)
+    */
+   public DataSource getDataSource(String key) {
+      return loadDataSource(key);
+   }
+
 }
