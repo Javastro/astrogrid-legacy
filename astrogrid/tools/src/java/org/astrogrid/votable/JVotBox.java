@@ -63,12 +63,20 @@ public class JVotBox extends JFrame
       getContentPane().add(toolbar, BorderLayout.NORTH);
 
       JButton saveButton = new JButton(IconFactory.getIcon("SaveAs"));
+      if (saveButton.getIcon() == null)
+      {
+         saveButton.setText("Save As");
+      }
       saveButton.setToolTipText("Save VOTable to file");
       saveButton.setActionCommand(JVotController.SAVEAS_CMD);
       saveButton.addActionListener(votController);
       toolbar.add(saveButton);
 
       JButton loadButton = new JButton(IconFactory.getIcon("Open"));
+      if (loadButton.getIcon() == null)
+      {
+         loadButton.setText("Open");
+      }
       loadButton.setToolTipText("Load new VOTable from file");
       loadButton.setActionCommand(JVotController.LOAD_CMD);
       loadButton.addActionListener(votController);
