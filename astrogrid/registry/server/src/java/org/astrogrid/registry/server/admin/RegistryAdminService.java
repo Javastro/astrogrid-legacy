@@ -132,7 +132,16 @@ public class RegistryAdminService implements
                Node attrNode = nnm.item(j);
                String nodeVal = attrNode.getNodeValue();
                System.out.println("Checking NodeVal for an authorityType: current NodeVal = " + nodeVal);
-               if(nodeVal != null && nodeVal.indexOf("AuthorityType") != -1) {
+               if(nodeVal != null && nodeVal.indexOf("RegistryType") != -1) {
+                  System.out.println("This is an RegistryType");
+                  xql = formUpdateXQLQuery(currentResource,ident,resKey);
+                  df = xsDoc.createDocumentFragment();
+                  root = xsDoc.getDocumentElement().cloneNode(false);
+                  root.appendChild(currentResource);
+                  df.appendChild(root);
+                  System.out.println("running query with new registry entry = " + xql);
+                  resultDoc = XQueryExecution.runQuery(xql,df);                  
+               }else if(nodeVal != null && nodeVal.indexOf("AuthorityType") != -1) {
                   if(!otherAuths.containsKey((String)ident)) {
                      System.out.println("This is an AuthorityType and not managed by other authorities");
                      addManageError = false;
