@@ -12,8 +12,11 @@
 
 <property name="tomcat.url" value="http://${tomcat.host}:${tomcat.port}"/>
 <property name="tomcat.manager.url" value="${tomcat.url}/manager"/>
+
+<property name="working.dir"     value="${basedir}/build/"/>
+
  <!-- Axis properties-->
-<property name="axis.base"     value="${basedir}/build/axis"/>
+<property name="axis.base"     value="${working.dir}/axis"/>
 <property name="axis.webapp.srcdir"  value="${axis.base}/${appint.webapp.name}"/>
 <property name="axis.url"     value="${tomcat.url}/${appint.webapp.name}"/>
 <property name="axis.timeout" value="60"/>
@@ -100,29 +103,8 @@
 		       <include name="Test.properties" />
 		    </fileset>
 		</copy>
-	
-	<!--quick hack to add the services deployment would be better to run -->
-	 <path id="fullapppath">
-	        <fileset dir="${maven.war.webapp.dir}/WEB-INF/lib/" includes="*.jar"/>
-	        <dirset dir="${maven.war.webapp.dir}/WEB-INF/classes/"/>
-	    
-	 </path>
-	 <java classname="org.apache.axis.utils.Admin"
-            dir="${maven.war.webapp.dir}/WEB-INF"
-            classpathref="fullapppath" fork="yes" failonerror="true">
-        <arg value="server"/>
-        <arg value="${generated.dir}/wsdd/ApplicationControllerService/deploy.wsdd"/>
-	</java>
-		
-	<!-- hack from mailing list to fix Maven XLST bug -->
-	${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
-	<!-- <xslt in="${generated.dir}/wsdd/ApplicationControllerService/deploy.wsdd"
-	      out="${maven.war.webapp.dir}/WEB-INF/server-config.wsdd"
-	      extension=".wsdd"
-	      style="${basedir}/src/xslt/server-config.xsl"
-	/> -->
-		
-		<!-- TODO - need to add links to the actual applications -->
+	<attainGoal name="configure-webapp" />
+ 		<!-- TODO - need to add links to the actual applications -->
 	</postGoal>
 
 <!-- hooks into existing goals -->
@@ -144,8 +126,8 @@
 
 <!-- set up the test environment -->
 <preGoal name="test:test">
-   <mkdir dir="${basedir}/build/workdir"/>
-   <mkdir dir="${basedir}/build/db"/>
+   <mkdir dir="${working.dir}/workdir"/>
+   <mkdir dir="${working.dir}/db"/>
 </preGoal>
 
 <preGoal name="test:test-resources">
@@ -156,7 +138,7 @@
 
 <echo file="${basedir}/test/java/Test.properties" append="true">
 DBCreationScript=${basedir}/src/sql/createcontroldb.sql
-WorkingDirectory=${basedir}/build/workdir
+WorkingDirectory=${working.dir}/workdir
 ApplicationConfigFile=file://${basedir}/test/config/TestApplicationConfig.xml
 RegistryTemplate=file://${basedir}/config/RegistryTemplate.xml
 </echo>
@@ -289,7 +271,7 @@ RegistryTemplate=file://${basedir}/config/RegistryTemplate.xml
     </goal>
 
 <!-- tasks for deployment / distribution -->
-    <goal name="axis.unpack" description="download the full axis distribution and ">
+    <goal name="axis.unpack" description="download the full axis distribution and unpack it. ">
         <delete dir="${axis.base}"/>        
         <mkdir dir="${axis.base}"/>
         <!-- there must be a way to reference this directly surely? does it use the JSTL expression language? what is the key?-->
@@ -315,6 +297,44 @@ RegistryTemplate=file://${basedir}/config/RegistryTemplate.xml
         -->
         
     </goal>
+<goal name="grab-schema" description="grab schema, wsdl from workflow-objects">
+        <echo> grabbing schema, wsdd and wsdl from workflow-object.jar</echo>
+        <mkdir dir="${working.dir}" />
+        <deploy:copy-deps todir="${working.dir}" />
+        <unjar dest="${working.dir}" overwrite="true">
+                <fileset dir="${working.dir}">
+                        <include name="*workflow-objects*.jar" />
+                </fileset>
+                <patternset>
+                        <include name="wsdd/**" />
+                        <include name="schema/**" />
+                        <include name="wsdl/**" />
+                </patternset>
+        </unjar>
+        <!-- clean up rest of stuff -->
+        <delete>
+                <fileset dir="${working.dir}">
+                        <include name="*.jar" />
+                </fileset>
+        </delete>
+</goal>
+ 
+ 
+ <goal name="configure-webapp" prereqs="axis.unpack,grab-schema" description="assemble individual wsdd into server-config.wsdd">
+ 	<!-- -->
+	 <path id="fullapppath">
+	        <fileset dir="${maven.war.webapp.dir}/WEB-INF/lib/" includes="*.jar"/>
+	        <dirset dir="${maven.war.webapp.dir}/WEB-INF/classes/"/>
+	    
+	 </path>
+	 <java classname="org.apache.axis.utils.Admin"
+            dir="${maven.war.webapp.dir}/WEB-INF"
+            classpathref="fullapppath" fork="yes" failonerror="true">
+        <arg value="server"/>
+        <arg value="${generated.dir}/wsdd/ApplicationControllerService/deploy.wsdd"/>
+	</java>
+
+</goal>
     
     <goal name="webapp.install" prereqs="tomcat-declare-tasks">
          <echo message="installing applications integration webapp (with axis)"/>
