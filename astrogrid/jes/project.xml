@@ -23,10 +23,10 @@
   
   <repository>
     <connection>
-      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/registry
+      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/jes
     </connection>
     <developerConnection>
-      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/registry
+      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/jes
     </developerConnection>
   </repository>
   
