@@ -1,5 +1,5 @@
 /*
-   $Id: DomHelper.java,v 1.3 2004/06/14 16:41:03 KevinBenson Exp $
+   $Id: DomHelper.java,v 1.4 2004/07/22 11:21:39 KevinBenson Exp $
 
    (c) Copyright...
 */
@@ -16,7 +16,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
 
 /**
  * An implementation-neutral class for loading Xml documents from files into
@@ -134,5 +137,81 @@ public class DomHelper
    public static void PrettyDocumentToStream(Document body, OutputStream out) {
       XMLUtils.PrettyDocumentToStream(body, out);
    }
+   
+
+   public static String getNodeTextValue(Node nd,String tagName) throws IOException {
+      NodeList nl = getNodeListTags(nd,tagName);
+      if(nl.getLength() > 0 && nl.item(0).getFirstChild() != null) {
+         return nl.item(0).getFirstChild().getNodeValue();   
+      }
+      return null;
+   }
+
+
+   public static String getNodeTextValue(Node nd,String tagName, String namespacePrefix)  throws IOException {
+      NodeList nl = getNodeListTags(nd,tagName,namespacePrefix);
+      if(nl.getLength() > 0 && nl.item(0).getFirstChild() != null) {
+         return nl.item(0).getFirstChild().getNodeValue();   
+      }
+      return null;
+   }
+
+   /**
+    * Finds a NodeList based on a tagname.
+    * @param doc
+    * @param tagName
+    * @param prefix
+    * @return
+    */
+   public static NodeList getNodeListTags(Node nd,String tagName) throws IOException
+   {
+      return getNodeListTags(nd,tagName,null);
+   }
+
+   /**
+    * Finds a NodeList based on a tagname and/or it's prefix/namespace
+    * @param doc
+    * @param tagName
+    * @param prefix
+    * @return
+    */
+   public static NodeList getNodeListTags(Node nd,String tagName, String namespacePref) throws IOException
+   {
+      if(nd instanceof Document) {
+         return getNodeListTags((Document)nd,tagName,namespacePref);
+      }else if(nd instanceof Element) {
+         return getNodeListTags((Element)nd,tagName,namespacePref);
+      }else {
+         throw new IOException("The Node is not an instance of Document or Element");
+      }
+   }
+   
+   private static NodeList getNodeListTags(Document doc, String tagName, String namespacePref) {
+      NodeList nl = doc.getElementsByTagName(tagName);
+      
+      if(nl.getLength() == 0 && namespacePref != null) {
+         nl = doc.getElementsByTagNameNS(namespacePref,tagName );
+      }
+      if(nl.getLength() == 0 && namespacePref != null) {
+         nl = doc.getElementsByTagName(namespacePref + ":" + tagName );
+      }
+      return nl;      
+   }
+   
+   private static NodeList getNodeListTags(Element elem, String tagName, String namespacePref) {
+      NodeList nl = elem.getElementsByTagName(tagName);
+      
+      if(nl.getLength() == 0 && namespacePref != null) {
+         nl = elem.getElementsByTagNameNS(namespacePref,tagName );
+      }
+      if(nl.getLength() == 0 && namespacePref != null) {
+         nl = elem.getElementsByTagName(namespacePref + ":" + tagName );
+      }
+      return nl;      
+   }
+
+   
+   
+   
 }
 
