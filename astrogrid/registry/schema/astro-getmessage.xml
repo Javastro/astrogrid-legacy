@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<queue:get-queue-message
+  xmlns:queue="http://www.astrogrid.org/registry"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.astrogrid.org/registry astromessage-schema.xsd"
+  queue-name="queue1"/>
+

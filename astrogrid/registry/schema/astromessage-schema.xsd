@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<xs:schema
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="http://www.astrogrid.org/registry"
+  xmlns="http://www.astrogrid.org/registry"
+  elementFormDefault="qualified">
+  
+  <xs:element name="queue-message" type="queueMessageType"/>
+  
+  <xs:element name="queue-messages">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="queue-message" type="queueMessageType" minOccurs="1" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="queueMessageType">
+    <xs:sequence>
+      <xs:element name="sourceAddress" type="xs:anyURI"/>
+      <xs:element name="replyAddress" type="xs:anyURI" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="queue-name" type="xs:string" use="required"></xs:attribute>
+  </xs:complexType>
+  
+  <xs:element name="get-queue-message" type="getQueueMessageType"/>
+
+  <xs:complexType name="getQueueMessageType">
+    <xs:attribute name="queue-name" type="xs:string" use="required"></xs:attribute>
+  </xs:complexType>
+
+</xs:schema>
