@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplication.java,v 1.9 2004/09/16 09:50:10 pah Exp $
+ * $Id: CommandLineApplication.java,v 1.10 2004/09/17 01:22:32 nw Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -57,7 +57,7 @@ public class CommandLineApplication extends AbstractApplication implements Runna
      */
     private static final Log logger = LogFactory.getLog(CommandLineApplication.class);
 
-   private Thread exeThread;
+
    private StreamPiper outPiper;
    private StreamPiper errPiper;
    
@@ -79,11 +79,24 @@ public class CommandLineApplication extends AbstractApplication implements Runna
       this.applicationEnvironment = env;
    }
 
-   public boolean execute() throws CeaException {
-        logger.info("creating new thread to execute.. " + this.toString());
         
-        exeThread = new Thread(CommandLineApplication.this);
-        exeThread.start();
+  
+   
+    public Runnable createExecutionTask() throws CeaException {
+        logger.info("executing.. " + this.toString());
+        setupParameters();
+        super.reportMessage("Calling preRunHook");
+        preRunHook();
+        super.reportMessage("PreRunHook - completed");
+        startApplication(); // should be in-thread. paul's fixed tis on another branch - need to merge.
+        return this;
+        
+    }
+    /** deprectated - implemented as a wrapper arond {@link #createExecutionTask}*/
+   public boolean execute() throws CeaException {
+
+      Thread appWaitThread = new Thread(createExecutionTask());
+      appWaitThread.start();
         return true;
     }
 

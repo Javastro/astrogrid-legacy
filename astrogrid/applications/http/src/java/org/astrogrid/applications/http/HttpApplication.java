@@ -1,4 +1,4 @@
-/* $Id: HttpApplication.java,v 1.5 2004/09/01 15:42:26 jdt Exp $
+/* $Id: HttpApplication.java,v 1.6 2004/09/17 01:23:01 nw Exp $
  * Created on Jul 24, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -111,16 +111,55 @@ public class HttpApplication extends AbstractApplication  {
             return returnWebHttpCall;
     }
 
-    /**
-     * @see org.astrogrid.applications.Application#execute(org.astrogrid.applications.ApplicationExitMonitor)
+    public Runnable createExecutionTask() throws CeaException {
+        createAdapters();
+        log.debug("createExecutionTask() - creating worker thread");
+        Runnable task = new Exec();
+        setStatus(Status.INITIALIZED);
+        return task;
+    }
+
+public boolean execute() throws CeaException {
+    if (log.isTraceEnabled()) {
+        log.trace("execute() - start");
+    }
+    log.debug("execute() - starting thread");
+    (new Thread(createExecutionTask())).start();
+    if (log.isTraceEnabled()) {
+            log.trace("execute() - end - return value = " + true);
+    }        
+    return true;
+    }    
+
+    private class Exec implements Runnable {
+    
+       /**
+     * Where the action happens
      */
-    public boolean execute() throws CeaException {
+    public void run() {
         if (log.isTraceEnabled()) {
-            log.trace("execute() - start");
+            log.trace("run() - start");
         }
 
-        createAdapters();
-        log.debug("Processing arguments");
+            //Prepare calling document, and extract what we need for the http call
+            final HttpApplicationDescription description = (HttpApplicationDescription) getApplicationDescription();
+            final CeaHttpApplicationType app = description.getApplication();
+            final WebHttpCall httpCall = createCallingDocument(getTool(),app);
+            final String url = httpCall.getURL().getContent();
+            final HttpMethodType requestedMethod = httpCall.getURL().getMethod();        
+            HttpServiceClient.HttpServiceType method;
+            if (HttpMethodType.GET.equals(requestedMethod)) {
+                method = HttpServiceClient.HttpServiceType.GET;
+                log.debug("run() - Using http-get");
+            } else if (HttpMethodType.POST.equals(requestedMethod)) {
+                method = HttpServiceClient.HttpServiceType.POST;
+                log.debug("run() - using http-post");
+            } else {  //@TODO refactor exceptions
+                reportError("Unknown http method requested"); //this really shouldn't happen, given the constraints in the schema
+                return;
+            }            
+        log.debug("Processing arguments");        
+        try{
         for (Iterator i = inputParameterAdapters(); i.hasNext();) {
             ParameterAdapter a = (ParameterAdapter) i.next();
             final String name = a.getWrappedParameter().getName();
@@ -131,23 +170,6 @@ public class HttpApplication extends AbstractApplication  {
             a.getWrappedParameter().setValue((String) value);
             log.debug(name + "=" + value);
         }
-        
-        //Prepare calling document, and extract what we need for the http call
-        final HttpApplicationDescription description = (HttpApplicationDescription) getApplicationDescription();
-        final CeaHttpApplicationType app = description.getApplication();
-        final WebHttpCall httpCall = createCallingDocument(getTool(),app);
-        final String url = httpCall.getURL().getContent();
-        final HttpMethodType requestedMethod = httpCall.getURL().getMethod();        
-        HttpServiceClient.HttpServiceType method;
-        if (HttpMethodType.GET.equals(requestedMethod)) {
-            method = HttpServiceClient.HttpServiceType.GET;
-            log.debug("execute() - Using http-get");
-        } else if (HttpMethodType.POST.equals(requestedMethod)) {
-            method = HttpServiceClient.HttpServiceType.POST;
-            log.debug("execute() - using http-post");
-        } else {  //@TODO refactor exceptions
-            throw new CeaException("Unknown http method requested"); //this really shouldn't happen, given the constraints in the schema
-        }
         final Enumeration enum = httpCall.enumerateSimpleParameter();
         Map inputArguments = new HashMap();
         while (enum.hasMoreElements()) {
@@ -157,39 +179,8 @@ public class HttpApplication extends AbstractApplication  {
             assert parameter.getValue()!=null;
             inputArguments.put(parameter.getName(), parameter.getValue());
         }
-
-        log.debug("execute() - creating worker thread");
-        Thread task = new Exec(url, method, inputArguments);
-        setStatus(Status.INITIALIZED);
-        log.debug("execute() - starting thread");
-        task.start();
-
-        if (log.isTraceEnabled()) {
-            log.trace("execute() - end - return value = " + true);
-        }
-        return true;
-    }
-
-    private class Exec extends Thread {
-    
-    private String url;
-    private HttpServiceType method;
-    private Map inputArguments;
-    public Exec(String url, HttpServiceClient.HttpServiceType method, Map inputArguments) {
-        this.url = url;
-        this.method = method;
-        this.inputArguments = inputArguments;
-    }
-    /**
-     * Where the action happens
-     */
-    public void run() {
-        if (log.isTraceEnabled()) {
-            log.trace("run() - start");
-        }
-        
+                
         setStatus(Status.RUNNING);
-        try {
             HttpServiceClient client = new HttpServiceClient(url, method);
             final String resultText = client.call(inputArguments);
             log.debug("run() - unprocessed result:  : resultText = " + resultText);
@@ -249,6 +240,12 @@ public class HttpApplication extends AbstractApplication  {
 
 /*
  * $Log: HttpApplication.java,v $
+ * Revision 1.6  2004/09/17 01:23:01  nw
+ * altered to make use of threadpooling
+ *
+ * Revision 1.5.18.1  2004/09/14 15:16:47  nw
+ * adjusted to new threading model.
+ *
  * Revision 1.5  2004/09/01 15:42:26  jdt
  * Merged in Case 3
  *
