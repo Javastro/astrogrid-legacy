@@ -1,5 +1,5 @@
 /*
- * $Id: Agsl.java,v 1.13 2004/03/25 12:27:19 mch Exp $
+ * $Id: Agsl.java,v 1.14 2004/04/01 14:49:23 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -149,7 +149,7 @@ public class Agsl
       }
    }
    
-   /** Returns the path to the file on the server */
+   /** Returns the path (including filename) to the file on the server */
    public String getPath() {
       if (url != null) {
          return url.getRef();
@@ -239,6 +239,9 @@ public class Agsl
 
 /*
 $Log: Agsl.java,v $
+Revision 1.14  2004/04/01 14:49:23  mch
+change to javadoc
+
 Revision 1.13  2004/03/25 12:27:19  mch
 Tidied doc
 
