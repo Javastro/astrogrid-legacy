@@ -37,6 +37,11 @@ public class NonceTokenCheck implements LoginModule {
    */
   AccountName account;
 
+  /**
+   * The nonce token after authentication.
+   */
+  NonceToken token;
+
 
   /**
    * States the subject of the authentication and sets
@@ -119,11 +124,12 @@ public class NonceTokenCheck implements LoginModule {
                                e3);
     }
 
-    // Store the new token in the Subject; it replaces the old token.
+    // Store the new token and the account name until the commit phase.
+    // Throw away the old token.
     assert(newToken != null);
-    Set credentials = this.subject.getPrivateCredentials();
-    credentials.remove(oldToken);
-    credentials.add(newToken);
+    this.subject.getPrivateCredentials().remove(oldToken);
+    this.token = newToken;
+    this.account = new AccountName(newToken.getAccount());
     return true;
   }
 
@@ -134,7 +140,11 @@ public class NonceTokenCheck implements LoginModule {
    * in the Subject.
    */
   public boolean commit () throws LoginException {
+	System.out.println("Entering NonceTokenCheck.commit()");
+	System.out.println("Committing Principal " + this.account.getName());
     this.subject.getPrincipals().add(this.account);
+    System.out.println("Committing private credential " + this.token.toString());
+    this.subject.getPrivateCredentials().add(this.token);
     return true;
   }
 
