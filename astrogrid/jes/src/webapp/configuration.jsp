@@ -50,9 +50,9 @@ boolean guessPressed = request.getParameterValues(guessBtn)!=null;
       String baseURL = new URL ("http", request.getServerName(),
                                         request.getServerPort(), 
                                         request.getContextPath()).toString();
-      defaultsBean.setControllerUrl(baseURL+"/JobControllerService");
-      defaultsBean.setMonitorUrl(baseURL+"/JobMonitorService");
-      defaultsBean.setSchedulerUrl(baseURL+"/JobSchedulerService");
+      defaultsBean.setControllerUrl(baseURL+"/services/JobControllerService");
+      defaultsBean.setMonitorUrl(baseURL+"/services/JobMonitorService");
+      defaultsBean.setSchedulerUrl(baseURL+"/services/JobSchedulerService");
       message="Based on the location of the webapp, these are the best guesses for the URLs.  Press change to apply them, followed by export if you wish to save them to the config file.  The exported file will need to be moved into the correct location and the webapp restarted.";
    } 
      
