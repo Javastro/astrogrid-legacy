@@ -1,5 +1,5 @@
 /*
- * $Id: IOUtil.java,v 1.2 2004/04/16 16:47:23 pah Exp $
+ * $Id: IOUtil.java,v 1.3 2004/04/28 16:10:11 pah Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -36,7 +36,6 @@ public class IOUtil {
     */
    public IOUtil() {
       super();
-      // TODO Auto-generated constructor stub
    }
    
    /**

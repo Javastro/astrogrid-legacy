@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractDelegateTestCase.java,v 1.5 2004/04/25 20:41:00 pah Exp $
+ * $Id: AbstractDelegateTestCase.java,v 1.6 2004/04/28 16:10:11 pah Exp $
  * 
  * Created on 22-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,13 +13,19 @@
 
 package org.astrogrid.applications.delegate;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+
 import org.astrogrid.applications.beans.v1.ApplicationList;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.TestAppConst;
 import org.astrogrid.applications.manager.WorkFlowUsingTestCase;
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.VoSpaceClient;
+import org.astrogrid.workflow.beans.v1.Tool;
 
 /**
  * @author Paul Harrison (pah@jb.man.ac.uk) 22-Mar-2004
@@ -44,6 +50,16 @@ public abstract class AbstractDelegateTestCase extends WorkFlowUsingTestCase {
       // TODO Auto-generated constructor stub
    }
 
+   private Tool runtool;
+
+   private String INFILENAME;
+
+   private File infile;
+
+   private String OUTFILENAME;
+
+   private File outfile;
+
    private Ivorn outIvorn;
 
    private Ivorn targetIvorn;
@@ -58,8 +74,6 @@ public abstract class AbstractDelegateTestCase extends WorkFlowUsingTestCase {
 
    protected Credentials credentials; //TODO must try to use credentials in the tests
 
-
-   protected String applicationid;
 
    protected String monitorURL;
 
@@ -78,18 +92,24 @@ public abstract class AbstractDelegateTestCase extends WorkFlowUsingTestCase {
       assertNotNull(delegate);
 
       monitorURL = null; // that will stop any monitor call
-      applicationid = TestAppConst.TESTAPP_NAME;
-      VoSpaceClient client = new VoSpaceClient(user);
-      assertNotNull(client); 
-      targetIvorn = createIVORN("testInFile");
-      assertNotNull(targetIvorn);      
-      outIvorn = createIVORN("outfile"); 
-      assertNotNull(outIvorn);
+      runtool = tool2;
+      outfile = File.createTempFile("scworkout", ".tmp");
+      assertNotNull(outfile);
+      OUTFILENAME = outfile.getAbsolutePath();
+      System.out.println("output file is "+OUTFILENAME);
+      infile =File.createTempFile("scworkin", ".tmp");
+      assertNotNull(infile);
+      INFILENAME = infile.getAbsolutePath();
+      PrintWriter pw = new PrintWriter(new FileOutputStream(infile));
+      assertNotNull(pw);
+      pw.println(TESTCONTENTS);
+      pw.close();
       
-      
-      byte[] cont = TESTCONTENTS.getBytes();
-      client.putBytes(cont, 0, cont.length, outIvorn, false);
-      
+      ParameterValue pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P9']");
+      pval.setValue(INFILENAME);
+      pval = (ParameterValue)tool.findXPathValue("output/parameter[name='P3']");
+      pval.setValue(OUTFILENAME);
+
         
 
    }
@@ -102,7 +122,7 @@ public abstract class AbstractDelegateTestCase extends WorkFlowUsingTestCase {
    }
 
    public final void testExecuteApplication() throws CEADelegateException {
-      executionid = delegate.execute(tool, jobstepID, monitorURL);
+      executionid = delegate.execute(runtool, jobstepID, monitorURL);
       assertTrue("executionid invalid", executionid.equals("-1"));
    }
 
@@ -114,12 +134,6 @@ public abstract class AbstractDelegateTestCase extends WorkFlowUsingTestCase {
       String regent = delegate.returnRegistryEntry();
    }
    
-   public final void testExecutionMySpaceUsingApplication() throws CEADelegateException
-   {
-      executionid = delegate.execute(tool, jobstepID, monitorURL);
-      assertTrue("executionid invalid", executionid.equals("-1"));
-      
-   }
-   
+  
 
 }

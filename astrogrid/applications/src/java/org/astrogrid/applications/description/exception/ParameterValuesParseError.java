@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterValuesParseError.java,v 1.1 2004/04/01 09:53:02 pah Exp $
+ * $Id: ParameterValuesParseError.java,v 1.2 2004/04/28 16:10:11 pah Exp $
  * 
  * Created on 01-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -28,7 +28,6 @@ public class ParameterValuesParseError extends CeaException {
     */
    public ParameterValuesParseError(String message) {
       super(message);
-      // TODO Auto-generated constructor stub
    }
 
    /**
@@ -37,7 +36,6 @@ public class ParameterValuesParseError extends CeaException {
     */
    public ParameterValuesParseError(String message, Throwable cause) {
       super(message, cause);
-      // TODO Auto-generated constructor stub
    }
 
 }

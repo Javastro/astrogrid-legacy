@@ -1,5 +1,5 @@
 /*
- * $Id: Dft.java,v 1.3 2004/01/25 12:26:52 pah Exp $
+ * $Id: Dft.java,v 1.4 2004/04/28 16:10:11 pah Exp $
  * 
  * Created on 20-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -36,7 +36,6 @@ public class Dft extends CmdLineApplication {
     */
    public Dft() {
       super();
-      // TODO Auto-generated constructor stub
    }
 
    /**
@@ -45,7 +44,6 @@ public class Dft extends CmdLineApplication {
     */
    public Dft(AbstractApplicationController controller, User user) {
       super(controller, user);
-      // TODO Auto-generated constructor stub
    }
 
    /* (non-Javadoc)

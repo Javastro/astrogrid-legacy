@@ -1,5 +1,5 @@
 /*
- * $Id: FileReferenceParameter.java,v 1.8 2004/04/20 09:03:22 pah Exp $
+ * $Id: FileReferenceParameter.java,v 1.9 2004/04/28 16:10:11 pah Exp $
  * 
  * Created on 15-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -33,7 +33,6 @@ public class FileReferenceParameter extends Parameter {
       AbstractApplication application,
       ParameterDescription parameterDescription) {
       super(application, parameterDescription);
-      // TODO Auto-generated constructor stub
    }
 
    /**

@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterMySpaceReferenceNotFound.java,v 1.2 2004/03/23 12:51:26 pah Exp $
+ * $Id: ParameterMySpaceReferenceNotFound.java,v 1.3 2004/04/28 16:10:11 pah Exp $
  * 
  * Created on 19-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -16,6 +16,7 @@ package org.astrogrid.applications.description;
 import org.astrogrid.applications.CeaException;
 
 /**
+ * A MySpace reference cannot be found.
  * @author Paul Harrison (pah@jb.man.ac.uk) 19-Mar-2004
  * @version $Name:  $
  * @since iteration5
@@ -27,7 +28,6 @@ public class ParameterMySpaceReferenceNotFound extends CeaException {
     */
    public ParameterMySpaceReferenceNotFound(String message) {
       super(message);
-      // TODO Auto-generated constructor stub
    }
 
    /**
@@ -36,7 +36,6 @@ public class ParameterMySpaceReferenceNotFound extends CeaException {
     */
    public ParameterMySpaceReferenceNotFound(String message, Throwable cause) {
       super(message, cause);
-      // TODO Auto-generated constructor stub
    }
 
 }

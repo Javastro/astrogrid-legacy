@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplication.java,v 1.22 2004/04/26 15:06:30 pah Exp $
+ * $Id: CmdLineApplication.java,v 1.23 2004/04/28 16:10:10 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -80,7 +80,6 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
     */
    public CmdLineApplication(AbstractApplicationController controller, User user) {
       super(controller, user);
-      // TODO Auto-generated constructor stub
    }
 
    public boolean execute(ApplicationExitMonitor mon) throws CeaException {

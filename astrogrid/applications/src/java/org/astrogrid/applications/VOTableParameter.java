@@ -1,5 +1,5 @@
 /*
- * $Id: VOTableParameter.java,v 1.5 2004/03/23 12:51:25 pah Exp $
+ * $Id: VOTableParameter.java,v 1.6 2004/04/28 16:10:11 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -25,7 +25,6 @@ public class VOTableParameter extends Parameter {
     */
    public VOTableParameter(AbstractApplication application, ParameterDescription parameterDescription) {
       super(application, parameterDescription);
-      // TODO Auto-generated constructor stub
    }
 
 }

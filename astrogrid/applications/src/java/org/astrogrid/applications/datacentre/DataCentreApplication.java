@@ -1,5 +1,5 @@
 /*
- * $Id: DataCentreApplication.java,v 1.4 2004/04/19 17:34:08 pah Exp $
+ * $Id: DataCentreApplication.java,v 1.5 2004/04/28 16:10:11 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -27,7 +27,6 @@ public class DataCentreApplication extends AbstractApplication {
     */
    public DataCentreApplication(AbstractApplicationController controller, User user) {
       super(controller, user);
-      // TODO Auto-generated constructor stub
    }
 
    

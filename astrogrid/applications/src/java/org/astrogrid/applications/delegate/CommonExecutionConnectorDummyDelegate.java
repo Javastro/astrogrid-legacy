@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorDummyDelegate.java,v 1.3 2004/03/30 22:45:09 pah Exp $
+ * $Id: CommonExecutionConnectorDummyDelegate.java,v 1.4 2004/04/28 16:10:11 pah Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -32,7 +32,6 @@ public class CommonExecutionConnectorDummyDelegate extends CommonExecutionConnec
     */
    public CommonExecutionConnectorDummyDelegate() {
       super();
-      // TODO Auto-generated constructor stub
    }
 
    /* (non-Javadoc)

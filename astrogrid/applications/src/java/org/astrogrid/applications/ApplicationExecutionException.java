@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationExecutionException.java,v 1.3 2004/04/20 09:03:22 pah Exp $
+ * $Id: ApplicationExecutionException.java,v 1.4 2004/04/28 16:10:11 pah Exp $
  * 
  * Created on 06-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -27,7 +27,6 @@ public class ApplicationExecutionException extends CeaException {
     */
    public ApplicationExecutionException(String message) {
       super(message);
-      // TODO Auto-generated constructor stub
    }
 
  
@@ -37,7 +36,6 @@ public class ApplicationExecutionException extends CeaException {
     */
    public ApplicationExecutionException(String message, Throwable cause) {
       super(message, cause);
-      // TODO Auto-generated constructor stub
    }
 
 }
