@@ -14,6 +14,7 @@
 		<echo message="Copying xml templates and properties across from ${maven.conf.dir} to ${classes.dir} directory"/>
 		<copy todir="${classes.dir}" overwrite="yes">
 			<fileset dir="${maven.conf.dir}">
+			  <exclude name="ASTROGRID_myspacemanagerconfig.xml" /> <!-- do not overwrite anything that might be there...-->
 			</fileset>
 		</copy>
 		<echo message="Copying generated site ${maven.docs.dest} across to webapp ${maven.war.webapp.dir}/maven"/>
@@ -25,6 +26,9 @@
 			<fileset dir="${basedir}">
 				<include name="INSTALL"/>
 			</fileset>
+			<fileset dir="${maven.conf.dir}">
+			  <include name="ASTROGRID_myspacemanagerconfig.xml" /> <!-- do not overwrite anything that might be there...-->
+			</fileset>
 		</copy>
 		<!--Temporary measure - we need to find a better way to set up the database, and a better place to store the config files-->
 		<echo message="copying across database setup files - see xdocs/createregistry_v02.lis to see what they're for"/>
@@ -35,4 +39,16 @@
 			</fileset>
 		</copy>
 	</postGoal>
+	<goal name="webapp.patch" prereqs="java:compile">
+        <copy todir="${maven.war.webapp.dir}/WEB-INF/classes">
+          <fileset dir="${maven.build.dir}/classes"/>
+        </copy>
+        <copy todir="${maven.war.webapp.dir}/">
+          <fileset dir="src/webapp">
+          <exclude name="WEB-INF/**"/>
+          </fileset>
+        </copy>
+        
+    </goal>
+	
 </project>
