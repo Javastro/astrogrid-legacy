@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.22 2004/09/07 02:28:29 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.23 2004/09/07 13:22:26 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.ConfigException;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.query.QueryException;
@@ -251,9 +252,10 @@ public class StdSqlMaker  extends SqlMaker {
          }
          else {
             //not given in configuration file - look in subdirectory of class as resource
-//            if (namespaceURI.equals("http://tempuri.org/adql")) { //assume v0.5
-//  obsolete             xsltDoc = "adql05-2-sql.xsl";
-//            }
+            if (namespaceURI.equals("http://tempuri.org/adql")) { //assume v0.5
+               //xsltDoc = "adql05-2-sql.xsl";
+               throw new DatacenterException("ADQL 0.5 is no longer supported.  Please submit ADQL 0.7.4 documents");
+            }
             if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.7.4")) {
                xsltDoc = "adql074-2-sql.xsl";
             }
@@ -387,6 +389,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.23  2004/09/07 13:22:26  mch
+Throws better error if ADQL 0.5 is submitted
+
 Revision 1.22  2004/09/07 02:28:29  mch
 Removed ADQL 0.5 tests
 
