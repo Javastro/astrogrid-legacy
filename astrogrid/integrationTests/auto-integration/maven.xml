@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.124 2004/10/22 05:57:03 pah Exp $ -->
+<!-- $Id: maven.xml,v 1.125 2004/10/26 16:42:44 pah Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -388,19 +388,23 @@
         <!-- expand tokens -->
         <copy todir="${temporary.dir}/registry-entries" filtering="true">
                 <fileset dir="registry-entries">
-                        <include name="**/*.xml" />
+                        <include name="**/*.xml" />						
                 </fileset>
         </copy>
         <!-- now upload each one -->
         <pathconvert property="entriesr" pathsep=" ">
                 <path>
-                        <fileset dir="${temporary.dir}/registry-entries"/>
+                        <fileset dir="${temporary.dir}/registry-entries">
+							<exclude name="**/ARegistry.xml" />
+						</fileset>
                 </path>
         </pathconvert>
             <util:tokenize var="entryListr" delim=" ">${entriesr}</util:tokenize>
 
             <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
+			        <j:if test="${not(registry.dontuploadregistrytypeentry == true)}">			
                         <ag:register file="${temporary.dir}/registry-entries/ARegistry.xml" />
+					</j:if>
                         <ag:register file="${temporary.dir}/registry-entries/AstrogridStandardAuthority.xml" />
                         <ag:register file="${temporary.dir}/registry-entries/AuthorityTest.xml" />
 						
