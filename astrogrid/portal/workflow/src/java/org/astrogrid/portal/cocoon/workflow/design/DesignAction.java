@@ -655,17 +655,17 @@ this.readToolList(); // temp PJN
                 
             try {
 
-               if( ivornName == null ) {
-                  ; // some logging here
-                  throw new ConsistencyException() ;
-               }
-               
-               ivorn = (new CommunityIvornParser(ivornName)).getIvorn();
-
-			   if( workflow == null ) {
-                  WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
-                  workflow = wfStore.readWorkflow( user, ivorn ) ;
-			   }
+//               if( ivornName == null ) {
+//                  ; // some logging here
+//                  throw new ConsistencyException() ;
+//               }
+//               
+//               ivorn = (new CommunityIvornParser(ivornName)).getIvorn();
+//
+//			   if( workflow == null ) {
+//                  WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
+//                  workflow = wfStore.readWorkflow( user, ivorn ) ;
+//			   }
 
                if( workflow == null ) {
                   ; // some logging here
@@ -677,9 +677,9 @@ this.readToolList(); // temp PJN
                }
                           
             }
-            catch( CommunityIdentifierException cix ) {
-                cix.printStackTrace();
-            }
+//            catch( CommunityIdentifierException cix ) {
+//                cix.printStackTrace();
+//            }
             catch( WorkflowInterfaceException wix ) {
                 wix.printStackTrace(); // JBL note
             }            
@@ -1396,9 +1396,6 @@ this.readToolList(); // temp PJN
               else {
                   activity = (AbstractActivity)workflow.findXPathValue( activityTargetKey );
                   activityContainer = locateActivityContainer( workflow, activityTargetKey + "/.." );
-                  // Note. If activityContainer is null we have targetted the top of the tree,
-                  // which should not be removable. Under these circumstances we ignore the remove
-                  // request.
                   if( activityContainer != null ) {
                       activityContainer.removeActivity( activity ) ;
                   }
