@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsMetaServer.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: SampleStarsMetaServer.java,v 1.2 2004/10/05 20:26:43 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,7 +25,7 @@ import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 
 public class SampleStarsMetaServer extends FileResourcePlugin
 {
-   /** Returns a URL to the metadata file */
+   /** Returns a URL to the metadata file
    public URL getMetadataUrl() throws IOException {
 
       String pluginClass = SimpleConfig.getSingleton().getString(QuerierPluginFactory.PLUGIN_KEY);

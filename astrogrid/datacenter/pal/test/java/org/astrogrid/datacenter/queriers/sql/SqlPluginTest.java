@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.2 2004/10/01 18:04:59 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.3 2004/10/05 20:26:43 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,7 +44,7 @@ public class SqlPluginTest extends ServerTestCase {
    public SqlPluginTest(String arg0) {
       super(arg0);
    }
-
+   
    QuerierManager manager = QuerierManager.getManager("SqlQuerierTest");
    
    /**
@@ -52,12 +52,12 @@ public class SqlPluginTest extends ServerTestCase {
     */
    protected void setUp() throws Exception {
       super.setUp();
-
+      
       //set max returns to something reasonably small as some of the results processing is a bit CPU intensive
       SimpleConfig.getSingleton().setProperty(SqlResults.MAX_RETURN_ROWS_KEY, "300");
-    
+      
    }
-
+   
    public void testCone1() throws Exception {      askCone(30,30,6);  }
    
    //negative dec
@@ -65,21 +65,21 @@ public class SqlPluginTest extends ServerTestCase {
    
    //across zero ra
    public void testCone3() throws Exception {      askCone(1,-30,6);  }
-
+   
    //around pole, across ra
    public void testCone4() throws Exception {      askCone(1,-87,6);  }
-
+   
    /** Tests that we get back a known set of results from a search on the 'pleidies' dummies
-      These are stars grouped < 0.3 degree across on ra=56.75, dec=23.867
+    These are stars grouped < 0.3 degree across on ra=56.75, dec=23.867
     */
    public void testPleidiesCone() throws Exception {
-
+      
       Document results = askCone(56.75, 23.867, 0.3);
       DomHelper.DocumentToStream(results, System.out);
    }
    
    public Document askCone(double ra, double dec, double r) throws Exception {
-
+      
       //make sure the configuration is correct for the plugin
       SampleStarsPlugin.initConfig();
       
@@ -93,8 +93,8 @@ public class SqlPluginTest extends ServerTestCase {
       log.info("Number of results = "+numResults);
       return results;
    }
-
-
+   
+   
    public void testAdql1() throws Exception {
       
       askAdqlFromFile("dummydb-adql-simple.xml");
@@ -104,7 +104,7 @@ public class SqlPluginTest extends ServerTestCase {
       
       askAdqlFromFile("dummydb-adql-circle.xml");
    }
-
+   
    public void testPleidies() throws Exception {
       askAdqlFromFile("dummydb-adql-pleidies.xml");
    }
@@ -117,10 +117,10 @@ public class SqlPluginTest extends ServerTestCase {
       assertNotNull(queryFile);
       InputStream is = this.getClass().getResourceAsStream(queryFile);
       assertNotNull("Could not open query file :" + queryFile,is);
-
+      
       StringWriter sw = new StringWriter();
       Querier q = Querier.makeQuerier(Account.ANONYMOUS, new AdqlQuery(is), new TargetIndicator(sw), ReturnTable.VOTABLE);
-
+      
       manager.askQuerier(q);
       
       log.info("Checking results...");
@@ -145,60 +145,65 @@ public class SqlPluginTest extends ServerTestCase {
       
       askRawSql();
    }
-
+   
    private void askRawSql() throws Exception {
       StringWriter sw = new StringWriter();
       Querier q = Querier.makeQuerier(Account.ANONYMOUS, new RawSqlQuery("select * from SampleStars"), new TargetIndicator(sw), ReturnTable.VOTABLE);
-
+      
       manager.askQuerier(q);
-   
+      
       Document results = DomHelper.newDocument(sw.toString());
       assertIsVotable(results);
    }
    
-    /** Test Results  - could add tests to status updates here... */
-    public void testResults() throws Exception  {
-
-    }
-   
-    public void testResourceMaker() throws Exception {
-       setUp();
-       
-       JdbcPlugin plugin = new JdbcPlugin(null);
-
-       //generate metadata
-       String metadata = plugin.getVoResource();
-       
-       Document metaDoc = DomHelper.newDocument("<VODescription xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>\n"+metadata+"\n</VODescription>");
+   /** Test Results  - could add tests to status updates here... */
+   public void testResults() throws Exception  {
       
-       //debug
-       DomHelper.DocumentToStream(metaDoc, System.out);
-       
-       //check results
-       long numTables = metaDoc.getElementsByTagName("Table").getLength();
-       assertEquals("Should be two tables in metadata", numTables, 2);
-       
-    }
+   }
    
-    public void testDescriptionMaker() throws Exception {
-       setUp();
-
-       SimpleConfig.setProperty("datacenter.metadata.plugin", JdbcPlugin.class.getName());
-       
-       //generate metadata
-       Document metaDoc = VoDescriptionServer.getVoDescription();
-       
-       //debug
-       DomHelper.DocumentToStream(metaDoc, System.out);
-       
-       //check results
-       long numTables = metaDoc.getElementsByTagName("Table").getLength();
-       assertEquals("Should be two tables in metadata", numTables, 2);
-       
-    }
-
-    /** Test harness - runs tests
-   */
+   public void testResourceMaker() throws Exception {
+      setUp();
+      
+      RdbmsResourcePlugin plugin = new RdbmsResourcePlugin();
+      
+      //generate metadata
+      String[] resources = plugin.getVoResources();
+      
+      StringBuffer desc = new StringBuffer("<VODescription xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>\n");
+      for (int i = 0; i < resources.length; i++) {
+         desc.append(resources[i]);
+      }
+      desc.append("\n</VODescription>");
+      Document metaDoc = DomHelper.newDocument(desc.toString());
+      
+      //debug
+      DomHelper.DocumentToStream(metaDoc, System.out);
+      
+      //check results
+      long numTables = metaDoc.getElementsByTagName("Table").getLength();
+      assertEquals("Should be two tables in metadata", numTables, 2);
+      
+   }
+   
+   public void testDescriptionMaker() throws Exception {
+      setUp();
+      
+      SimpleConfig.setProperty("datacenter.metadata.plugin", JdbcPlugin.class.getName());
+      
+      //generate metadata
+      Document metaDoc = VoDescriptionServer.getVoDescription();
+      
+      //debug
+      DomHelper.DocumentToStream(metaDoc, System.out);
+      
+      //check results
+      long numTables = metaDoc.getElementsByTagName("Table").getLength();
+      assertEquals("Should be two tables in metadata", numTables, 2);
+      
+   }
+   
+   /** Test harness - runs tests
+    */
    public static void main(String[] args) {
       junit.textui.TestRunner.run(SqlPluginTest.class);
    }
@@ -215,6 +220,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.3  2004/10/05 20:26:43  mch
+ Prepared for better resource metadata generators
+
  Revision 1.2  2004/10/01 18:04:59  mch
  Some factoring out of status stuff, added monitor page
 

@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.2 2004/10/05 20:26:43 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -131,13 +131,16 @@ public class VoDescriptionServer {
       String pluginClassName = SimpleConfig.getSingleton().getString("datacenter.authority.metadata.plugin",null);
       if (pluginClassName != null) {
          VoResourcePlugin authorityPlugin = createPlugin(pluginClassName);
-         vod.append(authorityPlugin.getVoResource());
+         vod.append(authorityPlugin.getVoResources());
       }
       
       //lookup secondary/main plugin - default to FileResourcePlugin
       pluginClassName = SimpleConfig.getSingleton().getString("datacenter.metadata.plugin", FileResourcePlugin.class.getName());
       VoResourcePlugin plugin = createPlugin(pluginClassName);
-      vod.append(plugin.getVoResource());
+      String[] voResources = plugin.getVoResources();
+      for (int i = 0; i < voResources.length; i++) {
+         vod.append(voResources[i]);
+      }
 
       //this gives metadata about the CEA access to the datacenter
       try {

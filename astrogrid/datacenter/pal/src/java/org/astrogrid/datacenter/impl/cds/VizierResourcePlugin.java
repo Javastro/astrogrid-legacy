@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierPlugin.java,v 1.2 2004/10/05 20:26:43 mch Exp $
+/*$Id: VizierResourcePlugin.java,v 1.1 2004/10/05 20:26:43 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,71 +23,24 @@ import org.astrogrid.datacenter.queriers.VotableResults;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-/** Datacenter querier SPI that performs queries against CDS Vizier webservice.
- * @see AdqlVizierTranslator
- * @author Noel Winstanley nw@jb.man.ac.uk 13-Nov-2003
+/** returns resources for Vizier service
  */
-public class VizierQuerierPlugin extends QuerierPlugin  {
+public class VizierResourcePlugin implements VoResourcePlugin {
 
-  /** Key specifying which Vizier catalogue to query. */
-   public static final String CATALOGUE_NAME =
-     "datacenter.vizier.querier.catalogueName";
-
-  /** Flag indicating whether the query is to return metadata only, or
-      perform a real query. */
-   //public static final String METADATA = "datacenter.querier.metadata";
-
-
-
-   /** @todo check configuration for endpoint setting before settling with default */
-   public VizierQuerierPlugin(Querier querier) throws ServiceException {
-      super(querier);
-   }
-   
-   /* (non-Javadoc)
-    * @see org.astrogrid.datacenter.queriers.spi.QuerierSPI#doQuery(java.lang.Object, java.lang.Class)
-    */
-   public void askQuery() throws IOException {
-
-      try {
-         VizierDelegate delegate = new VizierDelegate();
-
-         VizierQueryMaker translator = new VizierQueryMaker();
-         VizierQuery query = translator.getVizierQuery(querier.getQuery());
-   
-         Document votableDoc = query.askQuery(delegate);
-         
-         VotableResults results = new VotableResults(querier, votableDoc);
-         
-         results.send(querier.getReturnSpec(), Account.ANONYMOUS);
-
-      }
-      catch (ServiceException e) {
-         throw new IOException("Could not connect to Vizier: "+e);
-      }
-      catch (SAXException e) {
-         throw new DatacenterException("XML Error in Vizier results: "+e,e);
-      }
-      catch (ParserConfigurationException e) {
-         throw new DatacenterException("Server not configured properly: "+e,e);
-      }
-      
-   }
-   
    
    /**
     * Returns the VOResource element of the metadata.  Returns a string (rather than
     * DOM element)
     * so that we can combine them easily; some DOMs do not mix well.
     */
-   public String getVoResource() throws IOException {
+   public String[] getVoResources() throws IOException {
       try {
          VizierDelegate delegate = new VizierDelegate();
          String votableHeader = delegate.getAllMetadata();
          //do something to it to make it a Resource
          //@todo
          //return it
-         return votableHeader;
+         return new String[] { votableHeader };
       }
       catch (ServiceException e) {
          throw new IOException("Could not connect to Vizier:"+e);
@@ -100,8 +53,8 @@ public class VizierQuerierPlugin extends QuerierPlugin  {
 
 
 /*
- $Log: VizierQuerierPlugin.java,v $
- Revision 1.2  2004/10/05 20:26:43  mch
+ $Log: VizierResourcePlugin.java,v $
+ Revision 1.1  2004/10/05 20:26:43  mch
  Prepared for better resource metadata generators
 
  Revision 1.1  2004/10/05 19:19:18  mch

@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.2 2004/10/01 18:04:58 mch Exp $
+ * $Id: SqlResults.java,v 1.3 2004/10/05 20:26:43 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -111,7 +111,7 @@ public class SqlResults extends QueryResults
 //             }
             printOut.println("<FIELD ID='"+tablename+metadata.getColumnName(i)+"' "
                                 +" name='"+metadata.getColumnLabel(i)+"' "
-                                +JdbcPlugin.getVotableTypeAttr(sqlResults.getMetaData().getColumnType(i))
+                                +RdbmsResourcePlugin.getVotableTypeAttr(sqlResults.getMetaData().getColumnType(i))
                                 +" ucd='"+getUcdFor(metadata.getColumnName(i))+"' "
                                 +"/>");
          }
@@ -311,6 +311,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.3  2004/10/05 20:26:43  mch
+ Prepared for better resource metadata generators
+
  Revision 1.2  2004/10/01 18:04:58  mch
  Some factoring out of status stuff, added monitor page
 

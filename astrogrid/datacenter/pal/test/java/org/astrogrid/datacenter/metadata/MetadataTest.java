@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.1 2004/09/28 15:11:33 mch Exp $
+/*$Id: MetadataTest.java,v 1.2 2004/10/05 20:26:43 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import junit.framework.TestCase;
 import org.astrogrid.applications.component.CEAComponentManagerFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.sql.JdbcPlugin;
+import org.astrogrid.datacenter.queriers.sql.RdbmsResourcePlugin;
 import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
@@ -79,9 +80,14 @@ public class MetadataTest extends TestCase {
    public void testSampleGenerator() throws Throwable{
       SampleStarsPlugin.initConfig();
       
-      VoResourcePlugin plugin = new SampleStarsPlugin(null);
-      String resource = VoDescriptionServer.VODESCRIPTION_ELEMENT+"\n"+plugin.getVoResource()+"</VODescription>";
-      Document resourceDoc = DomHelper.newDocument(resource);
+      VoResourcePlugin plugin = new RdbmsResourcePlugin();
+      String[] resources = plugin.getVoResources();
+      StringBuffer resource = new StringBuffer(VoDescriptionServer.VODESCRIPTION_ELEMENT+"\n");
+      for (int i = 0; i < resources.length; i++) {
+         resource.append(resources[i]);
+      }
+      resource.append("\n</VODescription>");
+      Document resourceDoc = DomHelper.newDocument(resource.toString());
       assertHasRdbmsResource(resourceDoc);
    }
 
@@ -112,7 +118,7 @@ public class MetadataTest extends TestCase {
       SimpleConfig.setProperty(FileResourcePlugin.METADATA_FILE_LOC_KEY, "org/astrogrid/datacenter/metadata/metadata.xml");
       SimpleConfig.setProperty(FileResourcePlugin.METADATA_URL_LOC_KEY, null);
       FileResourcePlugin plugin = (FileResourcePlugin) VoDescriptionServer.createPlugin(FileResourcePlugin.class.getName());
-      assertNotNull(plugin.getVoResource());
+      assertNotNull(plugin.getVoResources());
    }
    
    public static void main(String[] args) {
@@ -125,6 +131,9 @@ public class MetadataTest extends TestCase {
 
 /*
  $Log: MetadataTest.java,v $
+ Revision 1.2  2004/10/05 20:26:43  mch
+ Prepared for better resource metadata generators
+
  Revision 1.1  2004/09/28 15:11:33  mch
  Moved server test directory to pal
 

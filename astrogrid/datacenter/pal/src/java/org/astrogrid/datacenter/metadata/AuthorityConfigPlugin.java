@@ -1,5 +1,5 @@
 /*
- * $Id: AuthorityConfigPlugin.java,v 1.2 2004/10/01 18:04:58 mch Exp $
+ * $Id: AuthorityConfigPlugin.java,v 1.3 2004/10/05 20:26:43 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -28,7 +28,7 @@ public class AuthorityConfigPlugin implements VoResourcePlugin {
     * Returns an authority resource element, based on values in the configuration
     * file
     */
-   public String getVoResource() throws IOException {
+   public String[] getVoResources() throws IOException {
       StringWriter sw = new StringWriter();
       
       XmlPrinter resourceSnippet = new XmlPrinter(sw, false);
@@ -67,7 +67,7 @@ public class AuthorityConfigPlugin implements VoResourcePlugin {
       resourceSnippet.close();
       sw.close();
       String s = sw.toString(); //so we can pause here with a breakpoint and see what it is
-      return s;
+      return new String[] { s };
    }
    
    

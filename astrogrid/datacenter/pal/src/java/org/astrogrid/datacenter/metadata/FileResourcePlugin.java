@@ -1,5 +1,5 @@
 /*
- * $Id: FileResourcePlugin.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: FileResourcePlugin.java,v 1.2 2004/10/05 20:26:43 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -73,7 +73,7 @@ public class FileResourcePlugin implements VoResourcePlugin
    /**
     * Returns the resource elements in the metadata file
     */
-   public String getVoResource() throws IOException
+   public String[] getVoResources() throws IOException
    {
       URL url = getMetadataUrl();
       InputStream is = url.openStream();
@@ -90,7 +90,7 @@ public class FileResourcePlugin implements VoResourcePlugin
          
          //if the root element is a resource, return that
          if (diskDoc.getDocumentElement().getNodeName().equals("Resource")) {
-            return DomHelper.ElementToString(diskDoc.getDocumentElement());
+            return new String[] { DomHelper.ElementToString(diskDoc.getDocumentElement()) };
          }
 
          //if the root element is a vodescription, return all resource elements
@@ -99,11 +99,11 @@ public class FileResourcePlugin implements VoResourcePlugin
             if (voResources.getLength()==0) {
                throw new MetadataException("No <Resource> elements in metadata file "+url);
             }
-            StringBuffer s = new StringBuffer();
+            String[] returns = new String[voResources.getLength()];
             for (int i = 0; i < voResources.getLength(); i++) {
-               s.append(DomHelper.ElementToString((Element) voResources.item(i))+"\n");
+               returns[i] = DomHelper.ElementToString((Element) voResources.item(i));
             }
-            return s.toString();
+            return returns;
          }
    
          throw new MetadataException("Metadata file "+url+" does not have <Resource> or <VODescription> as root element");
