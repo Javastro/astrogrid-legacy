@@ -73,7 +73,7 @@ server.config.1.url=http://localhost:9080/tf
 server.config.2.url=http://localhost:9080/tf
 server.config.3.url=http://localhost:9080/tf
 [workspace]
-Developer.Applications={{0,2,-1,0,0,0,0,1,0,1,0,58,75,25,-1,-1,-1,-1}${0,1,-1,0,0,0,0,1,0,1,0,58,75,25,-1,-1,-1,-1}${0,3,-1,0,0,0,0,1,0,1,1,50,50,25,-1,-1,-1,-1}${0,3,-1,0,0,0,0,1,0,1,1,50,50,25,-1,-1,-1,-1}${0,-1,-1,0,0,0,0,0,0,1,0,5,5,5,-1,-1,-1,-1}${0,4,-1,0,0,0,0,1,0,1,0,50,50,25,-1,-1,-1,-1}${0,0,-1,0,0,0,0,0,0,1,0,75,5,5,-1,-1,-1,-1}${0,7,-1,0,0,0,0,0,0,1,0,50,50,75,-1,-1,-1,-1}}
+Developer.Applications={{0,2,-1,0,0,0,0,1,0,1,1,58,75,25,-1,-1,-1,-1}${0,1,-1,0,0,0,0,0,0,1,0,58,75,25,-1,-1,-1,-1}${0,3,-1,0,0,0,0,0,0,1,0,50,50,25,-1,-1,-1,-1}${0,3,-1,0,0,0,0,0,0,1,0,50,50,25,-1,-1,-1,-1}${0,-1,-1,0,0,0,0,0,0,1,0,5,5,5,-1,-1,-1,-1}${0,4,-1,0,0,0,0,0,0,1,0,50,50,25,-1,-1,-1,-1}${0,0,-1,0,0,0,0,0,0,1,0,75,5,5,-1,-1,-1,-1}${0,7,-1,0,0,0,0,0,0,1,0,50,50,75,-1,-1,-1,-1}}
 Developer.CodingWorkspace={{0,2,-1,0,0,0,0,0,0,1,0,50,75,25,-1,-1,-1,-1}${0,1,-1,0,0,0,0,1,0,1,0,50,75,25,-1,-1,-1,-1}${0,3,-1,0,0,0,0,1,0,1,0,66,50,25,-1,-1,-1,-1}${0,3,-1,0,0,0,0,1,0,1,0,66,50,25,-1,-1,-1,-1}${0,-1,-1,0,0,0,0,0,0,1,0,5,5,5,-1,-1,-1,-1}${0,5,-1,0,0,0,0,0,0,1,0,50,50,25,-1,-1,-1,-1}${0,4,-1,0,0,0,0,1,0,1,1,66,50,25,-1,-1,-1,-1}${0,7,-1,0,0,0,0,0,0,1,0,50,50,75,-1,-1,-1,-1}}
 Developer.DebugWorkspace={{0,2,-1,0,0,0,0,0,0,1,0,50,75,25,-1,-1,-1,-1}${0,1,-1,0,0,0,0,1,0,1,1,50,75,25,-1,-1,-1,-1}${0,3,-1,0,0,0,0,0,0,1,0,50,50,25,-1,-1,-1,-1}${0,3,-1,0,0,0,0,0,0,1,0,50,50,25,-1,-1,-1,-1}${0,-1,-1,0,0,0,0,0,0,1,0,5,5,5,-1,-1,-1,-1}${0,4,-1,0,0,0,0,0,0,1,0,50,50,25,-1,-1,-1,-1}${0,0,-1,0,0,0,0,1,0,1,0,75,5,5,-1,-1,-1,-1}${0,7,-1,0,0,0,0,0,0,1,0,50,50,75,-1,-1,-1,-1}}
 Developer.DesignWorkspace={{0,2,-1,0,0,0,0,1,0,1,0,50,75,22,-1,-1,-1,-1}${0,1,-1,0,0,0,0,0,0,1,0,50,75,22,-1,-1,-1,-1}${0,3,-1,0,0,0,0,1,0,1,0,50,50,22,-1,-1,-1,-1}${0,3,-1,0,0,0,0,1,0,1,0,50,50,22,-1,-1,-1,-1}${0,-1,-1,0,0,0,0,0,0,1,0,5,5,5,-1,-1,-1,-1}${0,4,-1,0,0,0,0,1,0,1,1,50,50,22,-1,-1,-1,-1}${0,0,-1,0,0,0,0,0,0,1,0,75,5,5,-1,-1,-1,-1}${0,7,-1,0,0,0,0,0,0,1,0,50,50,75,-1,-1,-1,-1}}
@@ -84,7 +84,31 @@ Developer=Applications
 cross-bootclasspath=/usr/java/j2sdk1.4.2/jre/lib/rt.jar
 [editor]
 recent.file.0=/data/work/astrogrid/src/applications/src/java/org/astrogrid/applications/FileParameter.java
-recent.file.1=/data/work/astrogrid/src/applications/src/java/org/astrogrid/applications/ADQLParameter.java
-recent.file.2=/data/work/astrogrid/src/applications/src/java/org/astrogrid/applications/ParameterValue.java
+recent.file.1=/data/work/astrogrid/src/applications/src/java/org/astrogrid/applications/Application.java
+recent.file.2=/data/work/astrogrid/src/applications/src/java/org/astrogrid/applications/manager/ApplicationController.java
+recent.file.3=/data/work/astrogrid/src/applications/src/java/org/astrogrid/applications/manager/ApplicationManager.java
+recent.file.4=/data/work/astrogrid/src/applications/src/java/org/astrogrid/applications/ADQLParameter.java
+recent.file.5=/data/work/astrogrid/src/applications/src/java/org/astrogrid/applications/ParameterValue.java
 [newDiagramExpert]
 includeInCurrentDiagram=false
+[genHTML]
+folder=/usr/local/pkgs/Together6.1/out/webpublish/Applications
+generateFor=all_packages
+includeDiagrams=true
+launchBrowser=true
+navigationTree=true
+[tool]
+p.command=/usr/java/j2sdk1.4.2/bin/javac
+p.filter=javac
+p.language=java
+p.name=Compiler for Java
+p.openMessage=true
+p.parameters=-classpath $CLASSPATH_PROJECT$ -d $DESTINATION$ $FILELIST$
+p.update=VK_J+CTRL_MASK
+[builder]
+userCompilingTool=tool.p
+userCompilingTool_enabled=true
+[parser]
+java.java14syntax=true
+[jdkit]
+homedir=/usr/java/j2sdk1.4.2

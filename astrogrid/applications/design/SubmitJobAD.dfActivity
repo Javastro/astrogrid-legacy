@@ -1,0 +1,550 @@
+package id33iaudfm3as5tdfm7e0o7;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node9:oiref><oihard>
+@__modelType reference 
+*/
+class reference10 {
+}/**
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node13:oiref><oihard>
+@__modelType reference 
+*/
+class reference14 {
+}/**
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node24:oiref><oihard>
+@__modelType reference 
+*/
+class reference25 {
+}/**
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node28:oiref><oihard>
+@__modelType reference 
+*/
+class reference29 {
+}/**
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node30:oiref><oihard>
+@__modelType reference 
+*/
+class reference31 {
+}/**
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node43:oiref><oihard>
+@__modelType reference 
+*/
+class reference44 {
+}/**
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node45:oiref><oihard>
+@__modelType reference 
+*/
+class reference46 {
+}/**
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49:oiref><oihard>
+@__modelType reference 
+*/
+class reference50 {
+}/**
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51:oiref><oihard>
+@__modelType reference 
+*/
+class reference52 {
+}}/**
+
+@__tags
+@shapeType ActivityDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node43.link:oiref>=190,297,190,320:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node:oiref>=170,40,12,12,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node43:oiref>=110,270,145,27,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node45:oiref>=160,320,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node55.link66:oiref>=200,430,310,400,409,347:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node55.link66:oiref>=265,425,48,24,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node57.link:oiref>=180,610,180,670:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node57:oiref>=150,590,60,20,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node24.link32:oiref>=310,200,48,24,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node68.link:oiref>=670,417,670,450:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node.link:oiref>=:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node45.link56:oiref>=190,350,58,24,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node26:oiref>=170,780,15,15,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node55:oiref>=160,430,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node30:oiref>=370,320,142,27,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node33.link:oiref>=:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node57.link:oiref>=180,630,29,24,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node.link:oiref>=670,157,670,180:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node69:oiref>=640,180,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node.node63.link:oiref>=440,407,440,460:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node55.link:oiref>=220,440,550,440,550,140,620,140:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node47.link:oiref>=173,697,173,730:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node55.link:oiref>=310,420,59,24,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node74.link:oiref>=640,460,560,460,560,590,330,590,261,545:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node:oiref>=350,10,190,740,0:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node33:oiref>=110,730,127,27,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node67:oiref>=610,250,127,27,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node9:oiref>=70,160,218,27,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node74.link:oiref>=420,570,48,24,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node.node63:oiref>=385,380,153,27,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node69.link71:oiref>=660,200,476,320:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node69.link71:oiref>=580,200,48,24,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node74:oiref>=640,450,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node72.link:oiref>=665,527,665,620:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node28.link:oiref>=340,150,288,170:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node11.link19:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node74.link77:oiref>=670,470,670,500:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node58.link:oiref>=170,557,170,590:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node74.link77:oiref>=670,470,58,24,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node.node53.link:oiref>=359,540,261,538:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node45.link56:oiref>=190,340,190,380:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node70:oiref>=640,320,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node72:oiref>=588,500,170,27,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node13.link:oiref>=178,127,178,160:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node28:oiref>=340,130,190,30,0:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node69.link:oiref>=670,200,670,250:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node:oiref>=620,130,100,27,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node24.link32:oiref>=220,220,440,220,440,320:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node58:oiref>=110,530,151,27,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node47:oiref>=100,670,147,27,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node24:oiref>=160,210,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node70.link:oiref>=640,330,512,330:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51:oiref>=570,10,190,730,0:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node45.link:oiref>=270,310,48,24,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node24.link:oiref>=190,240,58,24,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node13:oiref>=70,100,217,27,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node11.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node47.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node75.link:oiref>=590,630,330,630,215,557:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node67.link:oiref>=670,277,670,320:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node54:oiref>=110,380,154,27,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node70.link:oiref>=560,310,48,24,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node33.link:oiref>=178,757,178,780:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node.link:oiref>=176,52,176,100:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node68:oiref>=580,390,175,27,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node45.link:oiref>=220,330,370,330:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node24.link:oiref>=190,230,190,270:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node75:oiref>=590,620,151,27,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node.node62.link:oiref>=450,480,450,530:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node54.link:oiref>=180,407,180,430:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node.node53:oiref>=359,530,179,27,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node70.link76:oiref>=670,340,670,390:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node70.link76:oiref>=670,350,58,24,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node30.link:oiref>=448,347,448,380:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node.node62.link65:oiref>=430,480,185,530:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node9.link:oiref>=190,187,190,210:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node.node62:oiref>=410,460,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49:oiref>=40,10,270,800,0:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node.node62.link65:oiref>=317,515,24,24,1:oigroup>
+<oigroup:<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node57.link59:oiref>=210,600,280,610,280,740,237,740:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node57.link59:oiref>=280,670,24,24,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node.node62.link:oiref>=460,496,29,24,1:oigroup>
+
+
+
+
+*/
+class __positions {
+}/**
+@shapeType Activity
+@__modelType node
+@name locate JobControl datasource 
+*/
+class node9 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node24:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Retrieve Submission Request 
+*/
+class node13 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node9:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Success? 
+*/
+class node24 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node30:oiref><oihard>
+@event failure 
+*/
+class link32 {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node43:oiref><oihard>
+@event success 
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text DataSource can be static
+*/
+class node28 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node9:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Admit Fatal Error 
+*/
+class node30 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node.node63:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Open Connection 
+*/
+class node43 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node45:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Decision1 
+*/
+class node45 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node30:oiref><oihard>
+@event failure 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node54:oiref><oihard>
+@event success 
+*/
+class link56 {
+}}/**
+@shapeType SwimLane
+@__modelType node
+@name Housekeep
+@backgroundColor 200,200,200 
+*/
+class node49 {
+/**
+@shapeType StartState
+@__modelType node
+@name SubmissionStartState
+@backgroundColor 0,0,0 
+*/
+class node {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node13:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Txn Bracket - Start 
+*/
+class node54 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node55:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Decision2 
+*/
+class node55 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node:oiref><oihard>
+@event succeed 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node30:oiref><oihard>
+@event failure 
+*/
+class link66 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Close Connection 
+*/
+class node47 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node33:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Decision3 
+*/
+class node57 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node47:oiref><oihard>
+@event yes 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node33:oiref><oihard>
+@event no 
+*/
+class link59 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Connection Open? 
+*/
+class node58 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node57:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Return Results 
+*/
+class node33 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node26:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType EndState
+@__modelType node
+@name EndState1
+@backgroundColor 0,0,0 
+*/
+class node26 {
+}}/**
+@shapeType SwimLane
+@__modelType node
+@name Errors
+@backgroundColor 200,200,200 
+*/
+class node {
+/**
+@shapeType Activity
+@__modelType node
+@name Txn Bracket - Rollback 
+*/
+class node53 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node58:oiref><oihard>
+*/
+class link {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Decision4 
+*/
+class node62 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node.node53:oiref><oihard>
+@event yes
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node58:oiref><oihard>
+@event no 
+*/
+class link65 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Txn Bracket Open? 
+*/
+class node63 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node.node62:oiref><oihard> 
+*/
+class link {
+}}}/**
+@shapeType SwimLane
+@__modelType node
+@name Business
+@backgroundColor 200,200,200 
+*/
+class node51 {
+/**
+@shapeType Activity
+@__modelType node
+@name Create Job 
+*/
+class node {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node69:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Create JobStep 
+*/
+class node67 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node70:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Txn Bracket - Commit 
+*/
+class node68 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node74:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Decision5 
+*/
+class node69 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node67:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node30:oiref><oihard>
+@event failure 
+*/
+class link71 {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Decision6 
+*/
+class node70 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node30:oiref><oihard>
+@event failure 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node68:oiref><oihard>
+@event success 
+*/
+class link76 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Wakeup JobScheduler 
+*/
+class node72 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node75:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Decision7 
+*/
+class node74 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node58:oiref><oihard> 
+@event failure
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node51.node72:oiref><oihard>
+@event success 
+*/
+class link77 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Log Job Submitted 
+*/
+class node75 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id33iaudfm3as5tdfm7e0o7.node49.node58:oiref><oihard>*/
+class link {
+}}}

@@ -1,0 +1,344 @@
+package id2cgv5df3jvcx8df3mp48r;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20:oiref><oihard>
+@__modelType reference 
+*/
+class reference21 {
+}/**
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node29:oiref><oihard>
+@__modelType reference 
+*/
+class reference30 {
+}/**
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node31:oiref><oihard>
+@__modelType reference 
+*/
+class reference32 {
+}/**
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node36:oiref><oihard>
+@__modelType reference 
+*/
+class reference37 {
+}/**
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node38:oiref><oihard>
+@__modelType reference 
+*/
+class reference39 {
+}/**
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node19:oiref><oihard>
+@__modelType reference 
+*/
+class reference20 {
+}/**
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node34:oiref><oihard>
+@__modelType reference 
+*/
+class reference35 {
+}/**
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}}/**
+
+@__tags
+@shapeType SequenceDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node36.link42:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node.link:oiref>=82,180,197,180:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node.link:oiref>=92,157,105,23,0,0.0,1.0:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node19.link22:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node29.node:oiref>=882,817,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node38.node:oiref>=628,446,14,50,1:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node19.link:oiref>=343,307,78,23,0,0.0,1.0:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node31:oiref>=720,30,101,887,1:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node31.node:oiref>=763,746,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link40:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node.link35:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node36.link:oiref>=472,446,590,446:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node19.node:oiref>=319,260,14,130,0:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node29:oiref>=844,30,90,887,1:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link:oiref>=211,260,319,260:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node34:oiref>=30,-20,129,40,0:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link21:oiref>=:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node36.link:oiref>=482,423,78,23,0,0.0,1.0:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node36.node49:oiref>=458,441,14,65,1:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node36:oiref>=420,295,90,622,1:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link:oiref>=221,237,90,23,0,0.0,1.0:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node:oiref>=30,30,90,887,1:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link50:oiref>=211,746,763,746:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20:oiref>=151,30,107,887,1:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node36.node:oiref>=458,330,14,50,1:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node38:oiref>=590,411,90,506,1:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link50:oiref>=221,723,80,23,0,0.0,1.0:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.node:oiref>=197,180,14,647,0:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link52:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link48:oiref>=211,441,458,441:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link53:oiref>=211,817,882,817:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node19:oiref>=281,30,90,887,1:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link54:oiref>=:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link48:oiref>=221,418,172,23,0,0.0,1.0:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node19.link:oiref>=333,330,420,330:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link53:oiref>=221,794,107,23,0,0.0,1.0:oigroup>
+
+
+ 
+*/
+class __positions {
+}/**
+@shapeType Object
+@__modelType node
+@name JobController*/
+class node20 {
+/**
+@shapeType Activation
+@__modelType node
+@name Activation1
+@activationMessage <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node.link:oiref> 
+*/
+class node {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node19:oiref><oihard>
+@sendingInstant 260
+@processingDuration 130
+@sequenceNumber 1.1
+@diagram_uniqe_name <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.diagram:oiref>
+@label create Job
+@minProcessingDuration 59*/
+class link {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node36:oiref><oihard> 
+*/
+class link40 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node36:oiref><oihard>
+@sendingInstant 441
+@processingDuration 65
+@sequenceNumber 1.2
+@diagram_uniqe_name <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.diagram:oiref>
+@label createStep
+@iteration for each
+*/
+class link48 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node31:oiref><oihard>
+@sendingInstant 746
+@processingDuration 20
+@sequenceNumber 1.3
+@diagram_uniqe_name <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.diagram:oiref>
+@controlFlowType asynchronous
+@label wake up
+*/
+class link50 {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node31:oiref><oihard> 
+*/
+class link52 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node29:oiref><oihard>
+@sendingInstant 817
+@processingDuration 20 
+@sequenceNumber 1.4
+@diagram_uniqe_name <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.diagram:oiref>
+@controlFlowType asynchronous
+@label log message
+*/
+class link53 {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node29:oiref><oihard> 
+*/
+class link54 {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node19:oiref><oihard> 
+*/
+class link21 {
+}}/**
+@shapeType Object
+@__modelType node
+@name AstroML 
+@stereotype actor
+*/
+class node29 {
+/**
+@shapeType Activation
+@__modelType node
+@name Activation6
+@activationMessage <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link53:oiref> 
+*/
+class node {
+}}/**
+@shapeType Object
+@__modelType node
+@name JobScheduler
+@stereotype actor
+*/
+class node31 {
+/**
+@shapeType Activation
+@__modelType node
+@name Activation4
+@activationMessage <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link50:oiref> 
+*/
+class node {
+}}/**
+@shapeType Object
+@__modelType node
+@name Workflow 
+@stereotype actor
+*/
+class node {
+/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20:oiref><oihard>
+@sendingInstant 180
+@processingDuration 647
+@sequenceNumber 1
+@diagram_uniqe_name <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.diagram:oiref>
+@minProcessingDuration 591
+@showReturnArrow
+@operation <oiref:java#Member##submit#(#java.lang.String#)#:oiref>
+@operationNameAsText 'submit():void'*/
+class link {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20:oiref><oihard> 
+*/
+class link35 {
+}}/**
+@shapeType Object
+@__modelType node
+@name Job
+@persistence persistent 
+@created true
+@stereotype entity*/
+class node36 {
+/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node38:oiref><oihard>
+@sendingInstant 446
+@processingDuration 50
+@sequenceNumber 1.2.1
+@diagram_uniqe_name <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.diagram:oiref>
+@creationMessage true
+@label create
+@controlFlowType call*/
+class link {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node38:oiref><oihard> 
+*/
+class link42 {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation5
+@activationMessage <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link48:oiref> 
+*/
+class node49 {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation7
+@activationMessage <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node19.link:oiref> 
+*/
+class node {
+}/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:java#Class#Job:oiref><oihard> 
+*/
+class link15 {
+}}/**
+@shapeType Object
+@__modelType node
+@name JobStep
+@created true
+@persistence persistent
+@stereotype entity*/
+class node38 {
+/**
+@shapeType Activation
+@__modelType node
+@name Activation3
+@activationMessage <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node36.link:oiref> 
+*/
+class node {
+}/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:java#Class#JobStep:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Object
+@__modelType node
+@name JobFactory*/
+class node19 {
+/**
+@shapeType Activation
+@__modelType node
+@name Activation2
+@activationMessage <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link:oiref> 
+@diagram_uniqe_name <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.diagram:oiref>
+*/
+class node {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node36:oiref><oihard>
+@sendingInstant 330
+@processingDuration 50
+@sequenceNumber 1.1.1
+@diagram_uniqe_name <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.diagram:oiref>
+@label create
+@creationMessage true
+*/
+class link {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node36:oiref><oihard> 
+*/
+class link22 {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text Submit Job SD 
+*/
+class node34 {
+}
