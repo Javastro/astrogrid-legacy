@@ -1,15 +1,16 @@
-/*$Id: AxisDataServerSoapBinding.java,v 1.1 2003/11/27 17:28:09 nw Exp $
+/*$Id: AxisDataServerSoapBinding.java,v 1.2 2003/12/16 11:10:12 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.service;
 
+import java.io.IOException;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingSkeleton;
 
 /** Soap binding stub that wraps our implementation class
@@ -20,9 +21,9 @@ public class AxisDataServerSoapBinding
     extends AxisDataServerSoapBindingSkeleton {
 
     /**
-     * 
+     *
      */
-    public AxisDataServerSoapBinding() {
+    public AxisDataServerSoapBinding() throws IOException {
         super(new AxisDataServer());
     }
 
@@ -37,8 +38,11 @@ public class AxisDataServerSoapBinding
 }
 
 
-/* 
+/*
 $Log: AxisDataServerSoapBinding.java,v $
+Revision 1.2  2003/12/16 11:10:12  mch
+Added IOException throws to constructor
+
 Revision 1.1  2003/11/27 17:28:09  nw
 finished plugin-refactoring
  
