@@ -1,5 +1,5 @@
 /*
- * $Id: SocketXmlInputStream.java,v 1.3 2003/09/15 16:19:12 mch Exp $
+ * $Id: SocketXmlInputStream.java,v 1.4 2003/09/16 13:23:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -39,7 +39,7 @@ public class SocketXmlInputStream extends FilterInputStream implements AsciiCode
     * Reads a document from the input stream - that is, it reads up to the EOF
     * marker then parses it to a DOM
     */
-   public Document readDoc() throws IOException, SAXException, ParserConfigurationException
+   public Document readDoc() throws IOException, SAXException
    {
       //read until we get to an EOF marker
       boolean eof = false;
@@ -55,9 +55,23 @@ public class SocketXmlInputStream extends FilterInputStream implements AsciiCode
 
       }
 
-      Document doc = XMLUtils.newDocument(new StringBufferInputStream(inBuffer.toString()));
-      Log.trace("SocketXmlInputStream: incoming document root tag="+doc.getDocumentElement().getNodeName());
-      return doc;
+      try
+      {
+         Document doc = XMLUtils.newDocument(new StringBufferInputStream(inBuffer.toString()));
+         Log.trace("SocketXmlInputStream: incoming document root tag="+doc.getDocumentElement().getNodeName());
+         return doc;
+      }
+      catch (ParserConfigurationException pce)
+      {
+         //this is a setup problem, and it's a pain to catch everywhere, so
+         //rethrow as a RuntimeException
+         throw new RuntimeException("Application/classpath not setup properly: "+pce);
+      }
+      catch (SAXException se)
+      {
+         //rethrow with more information
+         throw new SAXException("String recieved: "+inBuffer.toString(), se);
+      }
    }
 
 }
