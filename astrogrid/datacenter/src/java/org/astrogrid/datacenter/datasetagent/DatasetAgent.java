@@ -1,5 +1,5 @@
 /*
- * $Id: DatasetAgent.java,v 1.15 2003/08/25 17:16:54 mch Exp $
+ * $Id: DatasetAgent.java,v 1.16 2003/08/25 20:53:08 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 import org.astrogrid.datacenter.config.ConfigurationDefaultImpl;
 import org.astrogrid.datacenter.config.ConfigurationKeys;
 import org.astrogrid.datacenter.job.Job;
-import org.astrogrid.datacenter.myspace.Allocation;
+//import org.astrogrid.datacenter.myspace.Allocation; no longer used
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.votable.VOTable;
 import org.astrogrid.i18n.AstroGridMessage;
@@ -168,7 +168,7 @@ public class DatasetAgent {
 
       String response = null ;
       Job job = null ;
-      Allocation allocation = null ;
+//      Allocation allocation = null ;
 
       try
       {
@@ -185,14 +185,14 @@ public class DatasetAgent {
          job.getJobStep().getQuery().execute() ;
 
          // Acquire some temporary file space...
-         allocation = fac.getMySpaceFactory().allocateCacheSpace( job.getId() ) ;
+//         allocation = fac.getMySpaceFactory().allocateCacheSpace( job.getId() ) ;
 
          // Produce VOTable and write it to a temporary file...
          VOTable
-            votable = job.getJobStep().getQuery().toVOTable( allocation ,fac) ;
+            votable = job.getJobStep().getQuery().toVOTable(fac) ;
 
          // Inform MySpace that file is ready for pickup...
-         allocation.informMySpace( job ) ;
+ //        allocation.informMySpace( job ) ;
 
          job.setStatus( Job.STATUS_COMPLETED ) ;
          fac.getJobFactory().update( job );
@@ -222,7 +222,7 @@ public class DatasetAgent {
       finally {
          // Inform JobMonitor within JES of jobstep completion...
          job.informJobMonitor() ;
-         resourceCleanup( job.getJobStep().getQuery(), allocation ) ;
+         job.getJobStep().getQuery().close();
          if( TRACE_ENABLED ) logger.debug( "runQuery() exit") ;
       }
 
@@ -266,13 +266,13 @@ public class DatasetAgent {
       return builder.parse( jobSource );
    }
 
-
+   /*
     private void resourceCleanup( Query query, Allocation allocation ) {
       if( TRACE_ENABLED ) logger.debug( "resourceCleanup() entry") ;
       if( query != null ) query.close() ;
       if( allocation != null ) allocation.close() ;
       if( TRACE_ENABLED ) logger.debug( "resourceCleanup() exit") ;
     }
-
+    */
 
 } // end of class DatasetAgent

@@ -1,11 +1,11 @@
-/*$Id: DynamicFactoryManager.java,v 1.2 2003/08/21 12:26:26 nw Exp $
+/*$Id: DynamicFactoryManager.java,v 1.3 2003/08/25 20:52:40 mch Exp $
  * Created on 19-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
  */
 package org.astrogrid.datacenter.datasetagent;
@@ -17,8 +17,6 @@ import org.astrogrid.datacenter.config.ConfigurationKeys;
 import org.astrogrid.datacenter.config.FactoryManager;
 import org.astrogrid.datacenter.job.JobException;
 import org.astrogrid.datacenter.job.JobFactory;
-import org.astrogrid.datacenter.myspace.AllocationException;
-import org.astrogrid.datacenter.myspace.MySpaceFactory;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryFactory;
 import org.astrogrid.datacenter.votable.VOTableException;
@@ -52,12 +50,12 @@ public class DynamicFactoryManager extends FactoryManager {
         "AGDTCE00120";
 
     private static final String SUBCOMPONENT_NAME = Util.getComponentName(DynamicFactoryManager.class);
-    
+
     public DynamicFactoryManager(Configuration conf) {
         super(conf);
     }
 
-   
+
 /**
  *  Extended method that, if query factory for this catalog is not already loaded, will check the configuration for an appropriate mapping between catalog and
  * query factory, and load a factory if specified. Otherwise will return the default query factory
@@ -89,16 +87,16 @@ public class DynamicFactoryManager extends FactoryManager {
             throw new QueryException(message, ex);
         }
     }
-    /** overridden implementation - checks  the configuration file, to see if there is 
+    /** overridden implementation - checks  the configuration file, to see if there is
      * an entry for this catalog in it, and the internal cache.
      */
     public boolean isQueryFactoryAvailable(String catalogName) {
         String className = conf.getProperty(catalogName + ConfigurationKeys.CATALOG_DEFAULT_QUERYFACTORY
                                         , ConfigurationKeys.CATALOG_CATEGORY) ;
-        return className != null || super.isQueryFactoryAvailable(catalogName);            
+        return className != null || super.isQueryFactoryAvailable(catalogName);
     }
-    
-    /** implementation method to load the default query factory into the factory manager, 
+
+    /** implementation method to load the default query factory into the factory manager,
      * based on settings in the configuration.
      * @throws QueryException if an error occurs while loading
      * @see #verify
@@ -119,7 +117,7 @@ public class DynamicFactoryManager extends FactoryManager {
                     implementationFactoryName);
             throw new QueryException(message, ex);
         }
-        
+
     }
 /**
  * implementation method to load the job factory into the facotry manager,
@@ -143,27 +141,8 @@ public class DynamicFactoryManager extends FactoryManager {
         }
     }
 
-    /** implemetation method to load a my space factory into the manager, based on properties in the configuration
-     * 
-     * @throws AllocationException if the myspacemanager cannot be loaded.
-     * @see #verify
-     */
-    protected void loadMySpaceFactory() throws AllocationException {
-
-        String implementationFactoryName =   conf.getProperty(  ConfigurationKeys.MYSPACE_FACTORY,  ConfigurationKeys.MYSPACE_CATEGORY);
-
-        try {
-            Object obj = Class.forName(implementationFactoryName).newInstance();
-            this.setMySpaceFactory((MySpaceFactory) obj);
-        } catch (Exception ex) {
-            AstroGridMessage message =  new AstroGridMessage(ASTROGRIDERROR_COULD_NOT_CREATE_MYSPACEFACTORY_IMPL,
-                                SUBCOMPONENT_NAME,  implementationFactoryName);
-            throw new AllocationException(message, ex);
-        }
-    }
-
     /** implmenetation method to load a votable factory into the manager, based on properties in the cnfiguration
-     * 
+     *
      * @throws VOTableException if the otable manager cannot be loaded
      * @see #verify
      */
@@ -180,12 +159,12 @@ public class DynamicFactoryManager extends FactoryManager {
         }
     }
 
-    /**Loads all factory classes specified in the configuration file, and then checks all is well with the manager. 
+    /**Loads all factory classes specified in the configuration file, and then checks all is well with the manager.
      * @see org.astrogrid.datacenter.FactoryManager#verify()
      */
     public void verify() throws DatacenterException {
         loadJobFactory();
-        loadMySpaceFactory();
+        //loadMySpaceFactory(); no longer used
         loadVOTableFactory();
         loadDefaultQueryFactory();
         super.verify();
@@ -194,6 +173,9 @@ public class DynamicFactoryManager extends FactoryManager {
 }
 /*
 $Log: DynamicFactoryManager.java,v $
+Revision 1.3  2003/08/25 20:52:40  mch
+Removed dummy MySpace-related classes
+
 Revision 1.2  2003/08/21 12:26:26  nw
 fixed a but raised by testing - behaviour of isQueryFactoryAvailable
 should depend on config object, rather than internal cache
