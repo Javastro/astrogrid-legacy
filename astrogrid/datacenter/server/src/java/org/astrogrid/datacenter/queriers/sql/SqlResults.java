@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.6 2004/03/08 00:31:28 mch Exp $
+ * $Id: SqlResults.java,v 1.7 2004/03/09 18:50:06 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -54,7 +54,7 @@ public class SqlResults implements QueryResults
       {
          //don't know how big the result set is so use the workspace - unless
          //it's null, in which case work from memory
-         if (workspace != null)
+         if ((workspace != null) && (!workspace.isClosed()))
          {
             File workfile = workspace.makeWorkFile("votableResults.vot.xml"); //should go into workspace...
             
@@ -191,6 +191,9 @@ public class SqlResults implements QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.7  2004/03/09 18:50:06  mch
+ Fixed workspace used when closed
+
  Revision 1.6  2004/03/08 00:31:28  mch
  Split out webservice implementations for versioning
 
