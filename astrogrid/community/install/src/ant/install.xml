@@ -2,10 +2,16 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/ant/install.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/14 13:50:07 $</cvs:date>
-    | <cvs:version>$Revision: 1.13 $</cvs:version>
+    | <cvs:date>$Date: 2004/07/16 14:58:34 $</cvs:date>
+    | <cvs:version>$Revision: 1.14 $</cvs:version>
     | <cvs:log>
     |   $Log: install.xml,v $
+    |   Revision 1.14  2004/07/16 14:58:34  dave
+    |   Merged development branch, dave-dev-200407161516, into HEAD
+    |
+    |   Revision 1.13.6.1  2004/07/16 14:54:29  dave
+    |   Added betatest data and custom load task
+    |
     |   Revision 1.13  2004/07/14 13:50:07  dave
     |   Merged development branch, dave-dev-200406301228, into HEAD
     |
@@ -355,6 +361,30 @@
             securityManager="${service.url}/SecurityManager"
             />
     </target>
+
+    <!--+
+        | Load our database from a custom data file.
+        +-->
+    <target name="database.custom.load" depends="">
+        <echo message=""/>
+        <echo message="Loading database ...."/>
+        <echo message="Source : ${org.astrogrid.community.custom.data}"/>
+        <!--+
+            | Initialise our Ant task.
+            +-->
+        <taskdef name="database.load.task" classname="org.astrogrid.community.install.ant.CommunityLoaderTask">
+            <classpath refid="install.classpath"/>
+        </taskdef>
+        <!--+
+            | Call our WebService.
+            +-->
+        <database.load.task
+            data="file:///${org.astrogrid.community.custom.data}"
+            policyManager="${service.url}/PolicyManager"
+            securityManager="${service.url}/SecurityManager"
+            />
+    </target>
+
 
     <!--+
         | Install our database.

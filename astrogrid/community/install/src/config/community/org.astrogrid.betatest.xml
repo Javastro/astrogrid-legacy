@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/config/community/org.astrogrid.betatest.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/07/16 14:58:34 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: org.astrogrid.betatest.xml,v $
+    |   Revision 1.2  2004/07/16 14:58:34  dave
+    |   Merged development branch, dave-dev-200407161516, into HEAD
+    |
+    |   Revision 1.1.2.1  2004/07/16 14:54:29  dave
+    |   Added betatest data and custom load task
+    |
+    | </cvs:log>
+    |
+    +-->
+<community ident="ivo://org.astrogrid.betatest">
+    <!--+
+        | The community Accounts.
+        +-->
+    <accounts>
+        <!--+
+            | Test Accounts.
+            +-->
+        <account ident="ivo://org.astrogrid.betatest/frog">
+            <display>Green Frog</display>
+            <description>Astrogrid tester</description>
+            <email>frog@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.betatest/toad">
+            <display>Brown Toad</display>
+            <description>Astrogrid tester</description>
+            <email>toad@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.betatest/newt">
+            <display>Grey newt</display>
+            <description>Astrogrid tester</description>
+            <email>newt@mail.astrogrid.org</email>
+        </account>
+        <!--+
+            | Anonymous Account.
+            +-->
+        <account ident="ivo://org.astrogrid.betatest/anonymous">
+            <display>Anonymous</display>
+            <description>Astrogrid anonymous</description>
+            <email>anonymous@mail.astrogrid.org</email>
+        </account>
+        <!--+
+            | Demo Accounts.
+            +-->
+        <account ident="ivo://org.astrogrid.betatest/keith">
+            <display>Keith Noddle</display>
+            <description>Astrogrid demonstrator</description>
+            <email>keith@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.betatest/andy">
+            <display>Andy Lawrence</display>
+            <description>Astrogrid demonstrator</description>
+            <email>andy@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.betatest/tony">
+            <display>Tony Linde</display>
+            <description>Astrogrid demonstrator</description>
+            <email>tony@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.betatest/nic">
+            <display>Nic Walton</display>
+            <description>Astrogrid demonstrator</description>
+            <email>nic@mail.astrogrid.org</email>
+        </account>
+
+    </accounts>
+    <!--+
+        | The community Groups.
+        +-->
+    <groups>
+        <group ident="ivo://org.astrogrid.betatest/public">
+            <description>Public group</description>
+        </group>
+        <group ident="ivo://org.astrogrid.betatest/users">
+            <description>General users group</description>
+        </group>
+        <group ident="ivo://org.astrogrid.betatest/java">
+            <description>Java developers group</description>
+        </group>
+        <group ident="ivo://org.astrogrid.betatest/astro">
+            <description>Astronomers group</description>
+        </group>
+    </groups>
+
+    <!--+
+        | The community passwords.
+        +-->
+    <passwords>
+        <!--+
+            | Test Accounts.
+            +-->
+        <password account="ivo://org.astrogrid.betatest/frog"  password="qwerty"/>
+        <password account="ivo://org.astrogrid.betatest/toad"  password="qwerty"/>
+        <password account="ivo://org.astrogrid.betatest/newt"  password="qwerty"/>
+        <!--+
+            | Anonymous Account.
+            +-->
+        <password account="ivo://org.astrogrid.betatest/anonymous"  password="qwerty"/>
+        <!--+
+            | Demo Accounts.
+            +-->
+        <password account="ivo://org.astrogrid.betatest/keith"  password="qwerty"/>
+        <password account="ivo://org.astrogrid.betatest/andy"   password="qwerty"/>
+        <password account="ivo://org.astrogrid.betatest/tony"   password="qwerty"/>
+        <password account="ivo://org.astrogrid.betatest/nic"    password="qwerty"/>
+    </passwords>
+
+</community>
