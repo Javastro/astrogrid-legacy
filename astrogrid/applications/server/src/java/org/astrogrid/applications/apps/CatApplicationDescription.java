@@ -1,4 +1,4 @@
-/*$Id: CatApplicationDescription.java,v 1.5 2004/09/17 01:21:12 nw Exp $
+/*$Id: CatApplicationDescription.java,v 1.6 2004/09/17 10:59:53 nw Exp $
  * Created on 16-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -191,17 +191,35 @@ public class CatApplicationDescription extends AbstractApplicationDescription
                 os  = externalVal.write();
             }
             try {
+                InputStream is = null;
                 for (Iterator i = ((List)o).iterator(); i.hasNext(); ) {
-                    InputStream is = (InputStream)i.next();                
-                    Piper.pipe(is,os); // hope this doesn't close the os.
+                    try {
+                        is = (InputStream)i.next();                
+                        Piper.pipe(is,os); // hope this doesn't close the os.
+                    } finally {
+                        if (is != null) {
+                            try {
+                                is.close();
+                            } catch (IOException e) {
+                                logger.warn("failed to close input stream",e);
+                            }
+                    }
                 }
-                os.close();
-                if (externalVal == null) {
-                    val.setValue(os.toString()); // uses byteArrayOutputStream's overloaded toString().
                 }
             } catch (IOException e) {
                 throw new CeaException("Faled to write back",e);
+            } finally {
+                if (os != null) {
+                    try {
+                        os.close();
+                    } catch (IOException e) {
+                        logger.warn("failed to close output stream",e);
+                }
             }
+            }
+                if (externalVal == null) {
+                    val.setValue(os.toString()); // uses byteArrayOutputStream's overloaded toString().
+                }                
         }
         public StreamParameterAdapter(ParameterValue val, ParameterDescription description, ExternalValue externalVal) {
             super(val, description, externalVal);
@@ -215,6 +233,9 @@ public class CatApplicationDescription extends AbstractApplicationDescription
 
 /* 
 $Log: CatApplicationDescription.java,v $
+Revision 1.6  2004/09/17 10:59:53  nw
+made sure streams are closed
+
 Revision 1.5  2004/09/17 01:21:12  nw
 altered to work with new threadpool
 
