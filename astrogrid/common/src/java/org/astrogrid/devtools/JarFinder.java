@@ -89,12 +89,12 @@ public class JarFinder
    
    
    /**
-    *
+    * For running from the command line
     */
    public static void main(String[] args) throws IOException
    {
-//      String classname = args[0];
-      String classname = "DocumentRange";
+      String classname = args[0];
+//      String classname = "DocumentRange";
       String jar = findInClasspath(classname);
       System.out.println(jar);
       //findInDirectory(classname);
@@ -103,6 +103,9 @@ public class JarFinder
 
 /*
 $Log: JarFinder.java,v $
+Revision 1.3  2003/12/02 19:52:53  mch
+For running from the command line
+
 Revision 1.2  2003/09/24 18:33:13  mch
 Wrong previous checkin message: this is for finding which jar a class is in
 
