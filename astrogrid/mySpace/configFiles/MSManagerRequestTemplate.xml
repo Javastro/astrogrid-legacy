@@ -13,5 +13,6 @@
         <newDataHolderName>{9}</newDataHolderName>\
         <serverFileName>{10}</serverFileName> \
         <fileSize>{11}</fileSize> \
+        <extentionPeriod>{12}</extentionPeriod>
     </elements> \
 </request> \
