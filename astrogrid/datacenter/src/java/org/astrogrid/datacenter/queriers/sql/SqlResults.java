@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.3 2003/09/08 16:34:31 mch Exp $
+ * $Id: SqlResults.java,v 1.4 2003/09/08 16:44:53 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -60,14 +60,25 @@ public class SqlResults implements QueryResults
    {
       try
       {
-         //don't know how big the result set is so use the workspace
-         File workfile = workspace.makeWorkFile("votableResults.vot.xml"); //should go into workspace...
+         //don't know how big the result set is so use the workspace - unless
+         //it's null, in which case work from memory
+         if (workspace == null)
+         {
+            File workfile = workspace.makeWorkFile("votableResults.vot.xml"); //should go into workspace...
    
-         PrintStream out = null ;
-
-         out = new PrintStream( new FileOutputStream(workfile) );
-         converter.serialize( results, out );
-         return XMLUtils.newDocument(new FileInputStream(workfile));
+            PrintStream out = new PrintStream( new FileOutputStream(workfile) );
+            converter.serialize( results, out );
+            out.close();
+            return XMLUtils.newDocument(new FileInputStream(workfile));
+         }
+         else
+         {
+            ByteArrayOutputStream ba = new ByteArrayOutputStream();
+            PrintStream ps = new PrintStream(ba);
+            converter.serialize(results,ps);
+            ps.close();
+            return XMLUtils.newDocument(new ByteArrayInputStream(ba.toByteArray()));
+         }
       }
       catch (SAXException e)
       {
