@@ -1,3 +1,5 @@
 .project
 target
 *.log
+.classpath
+server-config.wsdd
