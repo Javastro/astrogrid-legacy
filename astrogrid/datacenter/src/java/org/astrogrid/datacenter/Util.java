@@ -1,5 +1,5 @@
 /*
- * $Id: Util.java,v 1.2 2003/08/22 11:48:34 nw Exp $
+ * $Id: Util.java,v 1.3 2003/08/28 15:30:32 nw Exp $
  * Created on 19-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ public class Util {
      * Copied from Configurator class in astrogrid library. Placing it here prevents all class from having to import Configurator, which I
      * want to hide access to - static methods make isolation difficult
      * FUTURE rip this out.
-	 * @param class object
+	 * @param class1 object
 	 * @return returns unqualified class name (i.e. all package names stripped off)
 	 */
 	public static String getComponentName(Class class1) {
@@ -34,6 +34,9 @@ public class Util {
 }
 /*
  * $Log: Util.java,v $
+ * Revision 1.3  2003/08/28 15:30:32  nw
+ * minor fixes to javadoc
+ *
  * Revision 1.2  2003/08/22 11:48:34  nw
  * improved docs
  *

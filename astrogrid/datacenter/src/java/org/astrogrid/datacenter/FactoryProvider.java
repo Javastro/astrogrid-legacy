@@ -1,5 +1,5 @@
 /*
- * $Id: FactoryProvider.java,v 1.4 2003/08/25 21:46:38 mch Exp $
+ * $Id: FactoryProvider.java,v 1.5 2003/08/28 15:30:32 nw Exp $
  * Created on 20-Aug-2003
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -19,7 +19,7 @@ import org.astrogrid.datacenter.query.QueryFactory;
  * describes a container that maintains and configures the various factories used within the data access component.
  * <p>this interface just provides access to the factories - no details of updating / creating factories is specified
  * @author noel
- * @see org.astrogrid.datacenter.config.FactoryProvider
+ * @see org.astrogrid.datacenter.config.FactoryManager
  */
 public interface FactoryProvider {
     /**
@@ -37,7 +37,7 @@ public interface FactoryProvider {
      * @param catalogName name of the catalog to retrieve query factory for.
      * @return the query factory associated with this catalog, or the default query factory if a catalog specific one is not specified.
      * @throws QueryException if an appropriate query factory cannot be retrieved.
-     * @see #isQueryFactory
+     * @see #isQueryFactoryAvailable
      */
     public abstract QueryFactory getQueryFactory(String catalogName)
         throws QueryException;
@@ -56,6 +56,9 @@ public interface FactoryProvider {
 }
 /*
 $Log: FactoryProvider.java,v $
+Revision 1.5  2003/08/28 15:30:32  nw
+minor fixes to javadoc
+
 Revision 1.4  2003/08/25 21:46:38  mch
 Removed VOTable-middleman classes (to replace with more general ResultSet)
 
