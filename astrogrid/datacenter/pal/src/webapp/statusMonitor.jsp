@@ -20,14 +20,15 @@
 </style>
 </head>
 <body>
-<%@ include file="header.xml" %>
 <div id='bodyColumn'>
 
 <h1>Services Status Monitor  at <%= new Date() %></h1>
 
-<%= monitor.writeHtmlTables(new PrintWriter(out)) %>
+<% monitor.writeHtmlTables(new PrintWriter(out)); %>
 
-<%= ServletHelper.makeRefreshSnippet(10,
+<hr>
+
+<%= ServletHelper.makeRefreshSnippet(30,
          new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/statusMonitor.jsp").toString()
       ) %>
 </div>
