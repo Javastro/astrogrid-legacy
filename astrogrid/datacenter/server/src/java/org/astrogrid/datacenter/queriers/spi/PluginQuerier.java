@@ -117,6 +117,15 @@ public class PluginQuerier extends QuerierPlugin {
         } catch (Throwable t) {
             throw new DatabaseAccessException("Query phase failed:" + t.getMessage(),t);
         }
+
+        if (spi != null) {
+            try {
+              spi.close();
+            } catch (Exception e) { // gah! pity the types are wrong here
+               log.info("Plugin threw exception on close",e);
+               throw new IOException(e.getMessage());
+            }
+        }
     }
 
    /** method that handles the business of instantiating the querier object */
@@ -175,21 +184,12 @@ public class PluginQuerier extends QuerierPlugin {
    }
       
        
-/** calls close method on querierSPI  */
-   public void close() throws IOException {
-         if (spi != null) {
-            try {
-            spi.close();
-            } catch (Exception e) { // gah! pity the types are wrong here
-               log.info("Plugin threw exception on close",e);
-               throw new IOException(e.getMessage());
-            }
-         }
-   }
-
 }
 /*
  $Log: PluginQuerier.java,v $
+ Revision 1.12  2004/04/01 17:16:09  mch
+ Moved close to the ask() method
+
  Revision 1.11  2004/03/15 19:16:12  mch
  Lots of fixes to status updates
 
