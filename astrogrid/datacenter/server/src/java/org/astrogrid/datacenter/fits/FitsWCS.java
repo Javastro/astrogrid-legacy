@@ -1,4 +1,4 @@
-/* @(#)FitsWCS.java     $Revision: 1.2 $    $Date: 2003/11/28 16:10:30 $
+/* @(#)FitsWCS.java     $Revision: 1.3 $    $Date: 2003/11/28 18:20:32 $
  *
  * Copyright (C) 2003 European Southern Observatory
  * License:  GNU General Public License version 2 or later
@@ -11,7 +11,7 @@ package org.astrogrid.datacenter.fits;
  * NB THIS IS BLATENTLY STOLEN FROM Pierre Grosbol TO TEST WITH, THIS NEEDS
  * TO BE SORTED BEFORE RELEASE!
  *
- *  @version $Revision: 1.2 $ $Date: 2003/11/28 16:10:30 $
+ *  @version $Revision: 1.3 $ $Date: 2003/11/28 18:20:32 $
  *  @author  P.Grosbol, DMD/ESO, <pgrosbol@eso.org>
  */
 public class FitsWCS {
@@ -71,19 +71,19 @@ public class FitsWCS {
    private void setHeader(FitsHeader header, char ver) {
       
       FitsKeyword kw = header.get("NAXIS");
-      nax = (kw == null) ? 0 : kw.getInt();
+      nax = (kw == null) ? 0 : kw.toInt();
       init(nax);
       
       String sver = String.valueOf(ver).toUpperCase().trim();
       for (int j=1; j<=nax; j++) {
          kw = header.get("CRPIX"+j+sver);
-         crpix[j-1] = (kw == null) ? 0.0 : kw.getReal();
+         crpix[j-1] = (kw == null) ? 0.0 : kw.toReal();
          
          kw = header.get("CRVAL"+j+sver);
-         crval[j-1] = (kw == null) ? 0.0 : kw.getReal();
+         crval[j-1] = (kw == null) ? 0.0 : kw.toReal();
          
          kw = header.get("CDELT"+j+sver);
-         cdelt[j-1] = (kw == null) ? 1.0 : kw.getReal();
+         cdelt[j-1] = (kw == null) ? 1.0 : kw.toReal();
          cdMatrix[j-1][j-1] = cdelt[j-1];
          
          kw = header.get("CTYPE"+j+sver);
@@ -104,7 +104,7 @@ public class FitsWCS {
          for (int i=1; i<=nax; i++) {
             kw = header.get("CD"+j+"_"+j+sver);
             if (kw != null) {
-               cdMatrix[j-1][i-1] = kw.getReal();
+               cdMatrix[j-1][i-1] = kw.toReal();
                hasCdMatrix = true;
             }
          }
@@ -112,7 +112,7 @@ public class FitsWCS {
          for (int i=1; i<=nax; i++) {
             kw = header.get("PC"+j+"_"+i+sver);
             if (kw != null) {
-               pcMatrix[j-1][i-1] = kw.getReal();
+               pcMatrix[j-1][i-1] = kw.toReal();
                hasPcMatrix = true;
             }
          }
@@ -120,9 +120,9 @@ public class FitsWCS {
       
       for (int j=1; j<MPS; j++) {
          kw = header.get("AMDX"+j);
-         amdx[j-1] = (kw == null) ? 0.0 : kw.getReal();
+         amdx[j-1] = (kw == null) ? 0.0 : kw.toReal();
          kw = header.get("AMDY"+j);
-         amdy[j-1] = (kw == null) ? 0.0 : kw.getReal();
+         amdy[j-1] = (kw == null) ? 0.0 : kw.toReal();
       }
    }
    

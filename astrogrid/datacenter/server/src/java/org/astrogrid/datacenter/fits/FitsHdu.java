@@ -1,5 +1,5 @@
 /*
- * $Id: FitsHdu.java,v 1.1 2003/11/25 11:04:11 mch Exp $
+ * $Id: FitsHdu.java,v 1.2 2003/11/28 18:20:32 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,6 +22,11 @@ public class FitsHdu
 
    public FitsHdu() {}
    
+   public FitsHdu(FitsHeader aHeader)
+   {
+      this.header = aHeader;
+   }
+
    public FitsHdu(FitsHeader aHeader, FitsData aDataBlock)
    {
       this.header = aHeader;
@@ -39,6 +44,9 @@ public class FitsHdu
 
 /*
 $Log: FitsHdu.java,v $
+Revision 1.2  2003/11/28 18:20:32  mch
+Debugged fits readers
+
 Revision 1.1  2003/11/25 11:04:11  mch
 New FITS io package
 
