@@ -19,7 +19,7 @@
 
 <body>
 <%@ include file='../header.xml' %>
-<%@ include file='../navigation.xml' %>
+<%--don't include this as the links aren't right include file='../navigation.xml' --%>
 
 <div id='bodyColumn'>
 <h1>Metadata Administrator Menu for <%=DataServer.getDatacenterName() %></h1>
