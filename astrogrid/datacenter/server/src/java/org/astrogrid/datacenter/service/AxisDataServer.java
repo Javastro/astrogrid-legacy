@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.8 2003/11/25 00:31:07 nw Exp $
+ * $Id: AxisDataServer.java,v 1.9 2003/11/25 12:02:15 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,11 +14,9 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
 import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
@@ -26,10 +24,12 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.axisdataserver.types.QueryId;
+import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.queriers.QueryResults;
+import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.snippet.ResponseHelper;
@@ -57,68 +57,65 @@ import org.xml.sax.SAXException;
  *
  */
 
-public class AxisDataServer extends ServiceServer implements org.astrogrid.datacenter.axisdataserver.AxisDataServer {
-    
-    public static Log log = LogFactory.getLog(AxisDataServer.class);
-    
+public class AxisDataServer extends ServiceServer implements org.astrogrid.datacenter.axisdataserver.AxisDataServer  {
+   
+   public static Log log = LogFactory.getLog(AxisDataServer.class);
+   
    /**
-    * Initialises the configuration.  The configuration is loaded from the
-    * classpath, rather than file, because we don't know our home directory
-    * - depends on how the tomcat server is run
-    * uch easier to place a config file in the WEB-INF/classes directory of
-    * the axis web app.
-    * @todo this is a quick hack to get config from JNDI, as code in SImpleConfig doesn't want to work.
+    * Initialises the configuration.
+    * @todo NW this is a quick hack to get config from JNDI, as code in SImpleConfig doesn't want to work.
     * later find out why the library code isn't doing the job.
     */
-   public AxisDataServer() throws IOException
-   {  
-       try{
-       String s = (String)new InitialContext().lookup("java:comp/env/org.astrogrid.config.url");
-       System.out.println("Context value " + s);
-      SimpleConfig.load(s);
-   } catch (NamingException e) {
-       log.warn("JNDI lookup failed");
-       SimpleConfig.autoLoad();
+   public AxisDataServer() throws IOException {
+      try {
+         String s = (String)new InitialContext().lookup("java:comp/env/org.astrogrid.config.url");
+         System.out.println("Context value " + s);
+         SimpleConfig.load(s);
+      } catch (NamingException e) {
+         log.warn("JNDI lookup failed");
+         SimpleConfig.autoLoad();
+      }
    }
-   }
-
+   
    /**
     * Returns the metadata file
     * NWW - at present pass in a dummy parameter - haven't worked out how to say 'no parameters please' yet.
     * @soap
     * @todo - improve type of this method. - return an object model? or element?
     */
-   public String getMetadata(Object ignored)
-   {
-       BufferedReader is = null;
-       PrintWriter os = null;
-       try {
-        is = new BufferedReader( new InputStreamReader (super.getMetadataStream()));
-        StringWriter sw = new StringWriter();
-        os = new PrintWriter(sw);
-        String line = null;
-        while ( (line = is.readLine()) != null) {
+   public String getMetadata(Object ignored) {
+      BufferedReader is = null;
+      PrintWriter os = null;
+      try  {
+         is = new BufferedReader( new InputStreamReader (super.getMetadataStream()));
+         StringWriter sw = new StringWriter();
+         os = new PrintWriter(sw);
+         String line = null;
+         while ( (line = is.readLine()) != null)  {
             os.println(line);
          }
-      return sw.toString();
-       } catch (IOException e) {
-           throw new RuntimeException("Could not access metadata",e);
-       } finally {
-           try {
-               if (is != null) {
-                   is.close();
-               }
-               if (os != null) {
-                   os.close();
-               }
-           } catch (IOException notBothered) {
-           }
-       }
+         return sw.toString();
+      }
+      catch (IOException e)  {
+         throw new RuntimeException("Could not access metadata",e);
+      }
+      finally  {
+         try  {
+            if (is != null)  {
+               is.close();
+            }
+            if (os != null)  {
+               os.close();
+            }
+         }
+         catch (IOException notBothered)  {
+         }
+      }
    }
-
-
+   
+   
    /**
-    * Carries out a full synchronous (ie blocking) query.  Note that queries
+    * Carries out a full synchronous (ie blocking) adql query.  Note that queries
     * that take a long time might therefore cause a timeout at the client as
     * it waits for its response.
     * Returns a document
@@ -126,38 +123,76 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * <p>
     * @soap
     */
-   public String doQuery(String resultsFormat,  Query q) throws IOException
-   {
-       if (resultsFormat == null || resultsFormat.length() == 0) {
-           throw new IllegalArgumentException("Empty parameter for results format");
-       }
-      if (!resultsFormat.toLowerCase().equals("votable")) {
-            log.error("Can only produce votable results");
-            throw new IllegalArgumentException("Can only produce votable results");
+   public String doQuery(String resultsFormat,  Query q) throws IOException {
+      
+      if (resultsFormat == null || resultsFormat.length() == 0)  {
+         throw new IllegalArgumentException("Empty parameter for results format");
       }
-
-        DatabaseQuerier querier = null;
-      try
-      {
-          querier = DatabaseQuerierManager.createQuerier(q);
-          QueryResults results = querier.doQuery();
-          querier.setStatus(QueryStatus.RUNNING_RESULTS);          
+      if (!resultsFormat.toLowerCase().equals(AdqlQuerier.VOTABLE))  {
+         log.error("Can only produce votable results");
+         throw new IllegalArgumentException("Can only produce votable results");
+      }
+      
+      DatabaseQuerier querier = null;
+      try {
+         querier = DatabaseQuerierManager.createQuerier(q);
+         QueryResults results = querier.doQuery();
+         querier.setStatus(QueryStatus.RUNNING_RESULTS);
          Element result = ResponseHelper.makeResultsResponse(
-                querier,
-                results.toVotable().getDocumentElement()
-            ).getDocumentElement();         
-         return XMLUtils.ElementToString(result);        
+            querier,
+            results.toVotable().getDocumentElement()
+         ).getDocumentElement();
+         return XMLUtils.ElementToString(result);
       }
-      catch (SAXException e)
-      {
+      catch (SAXException e) {
          throw new DatacenterException("Failed to convert results to VOTable", e);
-      } finally {
-          if (querier != null) {
-              querier.close();
-          }
+      }
+      finally  {
+         if (querier != null)  {
+            querier.close();
+         }
       }
    }
-
+   
+   /**
+    * Carries out a full synchronous (ie blocking) passthrough sql query.  Note that queries
+    * that take a long time might therefore cause a timeout at the client as
+    * it waits for its response.
+    * Returns a document
+    * including the results
+    * <p>
+    * @soap
+    */
+   public String doSqlQuery(String resultsFormat,  String sql) throws IOException {
+      
+      if (resultsFormat == null || resultsFormat.length() == 0)  {
+         throw new IllegalArgumentException("Empty parameter for results format");
+      }
+      if (!resultsFormat.toLowerCase().equals(AdqlQuerier.VOTABLE))  {
+         log.error("Can only produce votable results");
+         throw new IllegalArgumentException("Can only produce votable results");
+      }
+      
+      SqlQuerier querier = null;
+      try {
+         querier = (SqlQuerier) DatabaseQuerierManager.createSqlQuerier(sql);
+         QueryResults results = querier.queryDatabase(sql);
+         querier.setStatus(QueryStatus.RUNNING_RESULTS);
+         Element result = ResponseHelper.makeResultsResponse(
+            querier,
+            results.toVotable().getDocumentElement()
+         ).getDocumentElement();
+         return XMLUtils.ElementToString(result);
+      }
+      catch (SAXException e) {
+         throw new DatacenterException("Failed to convert results to VOTable", e);
+      }
+      finally  {
+         if (querier != null)  {
+            querier.close();
+         }
+      }
+   }
    /**
     * Creates an asynchronous query, returns the query id
     * Does not start the query running - may want to register listeners with
@@ -165,17 +200,16 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * <p>
     * @soap
     */
-   public QueryId  makeQuery(Query q) throws IOException
-   {
-
+   public QueryId  makeQuery(Query q) throws IOException {
+      
       DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(q);
-
+      
       //construct reply with id in it...
       QueryId result = new QueryId();
       result.setId( querier.getHandle() );
       return result;
    }
-
+   
    /**
     * Creates an asynchronous query with the given id, returning that id
     * Does not start the query running - may want to register listeners with
@@ -184,129 +218,121 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * NWW - changed name (was makeQuery). Method overloading is tricky for soap.
     * @soap
     */
-   public QueryId makeQueryWithId(Query q, String assignedId) throws QueryException, IOException, SAXException
-   {
+   public QueryId makeQueryWithId(Query q, String assignedId) throws QueryException, IOException, SAXException {
       
-       if (assignedId == null || assignedId.length() == 0) {
-           throw new IllegalArgumentException("Empty assigned id");
-       }
+      if (assignedId == null || assignedId.length() == 0)  {
+         throw new IllegalArgumentException("Empty assigned id");
+      }
       DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(q, assignedId);
-
+      
       //construct reply with id in it...
-      QueryId result = new QueryId();      
+      QueryId result = new QueryId();
       result.setId(querier.getHandle());
       return result;
    }
-
+   
    /**
     * Sets where the results are to be sent
     * @soap
     */
-   public void setResultsDestination(QueryId queryId, URI resultsDestination)
-   {
-       if (resultsDestination == null ) {
-           throw new IllegalArgumentException("Empty results destination");
-       }
+   public void setResultsDestination(QueryId queryId, URI resultsDestination) {
+      if (resultsDestination == null )  {
+         throw new IllegalArgumentException("Empty results destination");
+      }
       DatabaseQuerier querier = getQuerier(queryId);
       
       querier.setResultsDestination(resultsDestination.toString());
    }
-
+   
    /**
     * Starts an existing query running
     * @soap
     * @todo - use a thread pool system here - threads are resource-hungry.
     */
-   public void startQuery(QueryId id)
-   {
+   public void startQuery(QueryId id) {
       DatabaseQuerier querier = getQuerier(id);
-
+      
       Thread queryThread = new Thread(querier);
       queryThread.start();
    }
-
+   
    /**
     * Checks the query specified by the given id
     * If the query has finished, returns the URL of where the results are
     * <p>
     * @soap
     */
-   public String getResultsAndClose(QueryId queryId)
-   {
+   public String getResultsAndClose(QueryId queryId) {
       DatabaseQuerier querier =getQuerier(queryId);
-
+      
       //has querier finished?
-      if (!querier.getStatus().isBefore(QueryStatus.FINISHED))
-      {
+      if (!querier.getStatus().isBefore(QueryStatus.FINISHED)) {
          return querier.getResultsLoc().toString();
       }
-      else
-      {
+      else {
          return null;
       }
-
+      
    }
-
+   
    /**
     * Aborts the query specified by the given id.  Returns
     * nothing - if there are any problems doing this it's a server-end problem.
     * <p>
     * @soap
     */
-   public void abortQuery(QueryId queryId)
-   {
+   public void abortQuery(QueryId queryId) {
       DatabaseQuerier querier = getQuerier(queryId);
-      if (querier != null) {
-        querier.abort();
+      if (querier != null)  {
+         querier.abort();
       }
    }
-
+   
    /**
     * Returns the status of the service with the given id
     * <p>
     * @soap
     */
-   public String getStatus(QueryId queryId)
-   {
+   public String getStatus(QueryId queryId) {
       return getQuerier(queryId).getStatus().toString();
    }
-
+   
    /**
     * Register the given URL as a service to be notified when the status changes
     * <p>
     * @soap
     */
-   public void registerWebListener(QueryId queryId , URI uri) throws RemoteException
-   {
-
-       try {
-       URL u = new URL(uri.toString());
-      DatabaseQuerier querier = getQuerier(queryId);
-
-      querier.registerListener(new WebNotifyServiceListener(u));
-       } catch (MalformedURLException e) {
-           throw new RemoteException("Malformed URL",e);
-       }
+   public void registerWebListener(QueryId queryId , URI uri) throws RemoteException {
+      
+      try  {
+         URL u = new URL(uri.toString());
+         DatabaseQuerier querier = getQuerier(queryId);
+         
+         querier.registerListener(new WebNotifyServiceListener(u));
+      }
+      catch (MalformedURLException e)  {
+         throw new RemoteException("Malformed URL",e);
+      }
    }
-
+   
    /**
     * Register the given URL as a service to be notified when the status changes
     * <p>
     * @soap
     */
-   public void registerJobMonitor(QueryId queryId, URI uri) throws RemoteException 
-   {
-       // check we can create an URL first..
-       try {
-       URL u = new URL(uri.toString());
-      DatabaseQuerier querier = getQuerier(queryId);
-
-      querier.registerListener(new WebNotifyServiceListener(u));
-       } catch (MalformedURLException e) {
-           throw new RemoteException("Malformed URL",e);
-       }
+   public void registerJobMonitor(QueryId queryId, URI uri) throws RemoteException  {
+      // check we can create an URL first..
+      try  {
+         URL u = new URL(uri.toString());
+         DatabaseQuerier querier = getQuerier(queryId);
+         
+         querier.registerListener(new WebNotifyServiceListener(u));
+      }
+      catch (MalformedURLException e)  {
+         throw new RemoteException("Malformed URL",e);
+      }
    }
-
+   
 }
 
 

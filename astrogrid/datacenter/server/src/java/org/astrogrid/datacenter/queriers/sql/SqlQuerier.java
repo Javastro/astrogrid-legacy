@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.3 2003/11/24 21:04:54 nw Exp $
+ * $Id: SqlQuerier.java,v 1.4 2003/11/25 12:02:40 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,14 +17,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 import java.util.StringTokenizer;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
@@ -274,14 +273,30 @@ protected Connection createConnection() throws DatabaseAccessException {
     * the SQL ResultSet.
     */
    public QueryResults queryDatabase(Query query) throws DatabaseAccessException {
-      String sql = null;        
+      
+      try {
+         QueryTranslator trans = createQueryTranslator();
+         String sql = trans.translate(query.getSelect());
+         return queryDatabase(sql);
+      }
+      catch (ADQLException ae)
+      {
+         throw new DatabaseAccessException(ae, "Error translating adql ");
+      }
+
+   }
+   
+   /**
+    * Synchronous call to the database, submitting the given sql query straight
+    * to the databaes and returning the results as an SqlResults wrapper
+    * around the SQL REsultSet
+    */
+   public QueryResults queryDatabase(String sql) throws DatabaseAccessException {
       try
       {
-          log.debug("Queying the database");
+         log.debug("Queying the database");
          jdbcConnection = createConnection();
          Statement statement = jdbcConnection.createStatement();
-         QueryTranslator trans = createQueryTranslator();
-         sql = trans.translate(query.getSelect());
          log.debug("Query to perform: " + sql);
          statement.execute(sql);
          ResultSet results = statement.getResultSet();
@@ -289,13 +304,11 @@ protected Connection createConnection() throws DatabaseAccessException {
          return new SqlResults(results, workspace);
       } catch (SQLException e) {
          throw new DatabaseAccessException(e, "Could not query database using '" + sql + "'");
-      } catch (Exception e) {
-          e.printStackTrace();
-         throw new DatabaseAccessException(e,"an error occurred");       
       }
 
    }
-   /* (non-Javadoc)
+   
+   /**
     * @see org.astrogrid.datacenter.queriers.DatabaseQuerier#close()
     */
    public void close() throws IOException, DatabaseAccessException {
