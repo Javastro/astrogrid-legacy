@@ -1,4 +1,4 @@
-/*$Id: JesSelfTest.java,v 1.2 2004/04/23 00:27:56 nw Exp $
+/*$Id: JesSelfTest.java,v 1.3 2004/08/27 13:25:40 nw Exp $
  * Created on 21-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,9 @@
  *
 **/
 package org.astrogrid.workflow.integration;
+
+import org.astrogrid.config.Config;
+import org.astrogrid.config.SimpleConfig;
 
 import net.sourceforge.jwebunit.WebTestCase;
 
@@ -23,12 +26,16 @@ public class JesSelfTest extends WebTestCase {
     public JesSelfTest() {
         super();
     }
+    
+    public final static String JES_BASE_URL = "org.astrogrid.jes.baseurl";
+    
     /**
      * @see junit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        getTestContext().setBaseUrl("http://localhost:8080/astrogrid-jes-SNAPSHOT/");
+        String url = SimpleConfig.getProperty(JES_BASE_URL);
+        getTestContext().setBaseUrl(url);
     }
     
     public void testJesWar() throws Exception {
@@ -48,6 +55,9 @@ public class JesSelfTest extends WebTestCase {
 
 /* 
 $Log: JesSelfTest.java,v $
+Revision 1.3  2004/08/27 13:25:40  nw
+removed hardcoded endpoint.
+
 Revision 1.2  2004/04/23 00:27:56  nw
 reorganized end-to-end tests. added test to verify flows are executed in parallel
 

@@ -1,4 +1,4 @@
-/*$Id: RegistryIntegrationTest.java,v 1.9 2004/08/17 09:22:31 nw Exp $
+/*$Id: RegistryIntegrationTest.java,v 1.10 2004/08/27 13:25:40 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.workflow.integration;
 
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.integration.*;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
@@ -62,8 +63,11 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
     /** this is the functionality required by jes - we get list of application names, then call a backdoor into the jes webapp to exercise te resolver code. */
     public void testResolveApplications() throws Exception {
         String[] appNames = reg.listApplications();
+
+        String url = SimpleConfig.getProperty(JesSelfTest.JES_BASE_URL);                   
         for (int i = 0; i < appNames.length; i++) {
-            URL requestURL = new URL("http://localhost:8080/astrogrid-jes-SNAPSHOT/backdoor?action=locate&name=" + appNames[i]);
+ 
+            URL requestURL = new URL(url + "/backdoor?action=locate&name=" + appNames[i]);
             InputStream is = null;
             try {
                 is = requestURL.openStream();
@@ -91,6 +95,9 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: RegistryIntegrationTest.java,v $
+Revision 1.10  2004/08/27 13:25:40  nw
+removed hardcoded endpoint.
+
 Revision 1.9  2004/08/17 09:22:31  nw
 better reporting of failures.
 
