@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.4 2004/03/09 21:07:10 mch Exp $
+ * $Id: DataServer.java,v 1.5 2004/03/09 21:48:53 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,6 +8,8 @@ package org.astrogrid.datacenter.service;
 import org.astrogrid.datacenter.adql.generated.*;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URI;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -100,7 +102,7 @@ public class DataServer
    }
    
    /**
-    * Runs a blocking ADQL query
+    * Runs a blocking ADQL/XML/OM query
     */
    public QueryResults askAdql(Account user, Select adql) throws IOException, ADQLException {
       
@@ -113,6 +115,14 @@ public class DataServer
       return results;
    }
    
+   /**
+    * Runs a blocking ADQL/SQL query
+    */
+   public QueryResults askAdqlSql(Account user, String adqlSql) throws IOException, ADQLException {
+
+      throw new UnsupportedOperationException();
+   }
+
    /**
     * Submites an asynchronous ADQL query
     */
@@ -199,7 +209,27 @@ public class DataServer
       return q;
    }
    
-   
+   /**
+    * Returns an error in html form.  Not strictly a data server
+    * activity, but useful for JSPs to use.
+    */
+   public static String exceptionAsHtml(String title, Exception e) {
+
+      StringWriter sw = new StringWriter();
+      e.printStackTrace(new PrintWriter(sw));
+            
+      return
+         "<html>\n"+
+         "<head><title>"+title+"</title></head>\n"+
+         "<body>\n"+
+         "<h1>ERROR REPORT</h1>\n"+
+         "<b>"+title+"</b>\n"+
+         "<p><b>"+e.getMessage()+"</b>\n"+
+         "<pre>"+sw.toString()+"</pre>"+
+         "</body>\n"+
+         "</html>\n";
+   }
+
 }
 
 
