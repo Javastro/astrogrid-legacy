@@ -176,7 +176,8 @@ tomcat.password=secret<br />
       </properties>
     </dependency>
 
-   <dependency><!-- sun's activation jar. we need to include it, as tomcat 5 lacks it -->
+   <!-- sun's activation jar. we need to include it, as tomcat 5 lacks it -->
+   <dependency>
       <id>activation</id>
       <version>1.0.2</version>
       <properties>

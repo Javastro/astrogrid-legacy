@@ -15,6 +15,5 @@ public interface AxisDataServer_v05_Port extends java.rmi.Remote {
     public java.lang.String submitAdqlQuery(java.lang.String query, java.lang.String resultsTarget, java.lang.String requestedFormat) throws java.rmi.RemoteException;
     public void abortQuery(java.lang.String queryId) throws java.rmi.RemoteException;
     public org.astrogrid.datacenter.axisdataserver.v05.QueryStatusSoapyBean getQueryStatus(java.lang.String queryId) throws java.rmi.RemoteException;
-    public java.lang.String submitQuery(java.lang.Object query, java.lang.Object resultsTarget, java.lang.String requestedFormat) throws java.rmi.RemoteException;
     public void throwFault() throws java.rmi.RemoteException;
 }

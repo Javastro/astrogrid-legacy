@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer_v0_5.java,v 1.1 2004/03/17 00:27:21 mch Exp $
+ * $Id: AxisDataServer_v0_5.java,v 1.2 2004/03/17 01:47:26 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,9 +11,12 @@ import java.net.MalformedURLException;
 import org.apache.axis.AxisFault;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.axisdataserver.v05.AxisDataServer_v05_Port;
+import org.astrogrid.datacenter.axisdataserver.v05.QueryStatusSoapyBean;
 import org.astrogrid.datacenter.queriers.TargetIndicator;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.query.RawSqlQuery;
 import org.astrogrid.datacenter.service.AxisDataServer;
 import org.astrogrid.datacenter.service.DataServer;
@@ -29,7 +32,7 @@ import org.astrogrid.store.Agsl;
  *
  */
 
-public class AxisDataServer_v0_5 extends AxisDataServer   {
+public class AxisDataServer_v0_5 extends AxisDataServer implements AxisDataServer_v05_Port  {
    
    /**
     * Returns the metadata file
@@ -71,6 +74,20 @@ public class AxisDataServer_v0_5 extends AxisDataServer   {
          throw makeFault(SERVERFAULT, "Error asking Query("+sql+", "+requestedFormat+")", e);
       }
    }
+
+   /**
+    * Ask raw sql for blocking operation - returns the results
+    */
+   public String askCone(double ra, double dec, double radius, String requestedFormat) throws AxisFault {
+      try {
+         StringWriter sw = new StringWriter();
+         server.askQuery(getUser(), new ConeQuery(ra, dec, radius), new TargetIndicator(sw), requestedFormat);
+         return sw.toString();
+      }
+      catch (Throwable e) {
+         throw makeFault(SERVERFAULT, "Error asking Query("+ra+", "+dec+", "+radius+", "+requestedFormat+")", e);
+      }
+   }
    
    /**
     * Submit query for asynchronous operation - returns id of query
@@ -99,8 +116,13 @@ public class AxisDataServer_v0_5 extends AxisDataServer   {
    /**
     * Returns the state of the query with the given id
     */
-   public QuerierStatus getQueryStatus(String queryId) throws AxisFault {
-      return super.getQueryStatus(getUser(), queryId);
+   public QueryStatusSoapyBean getQueryStatus(String queryId) throws AxisFault {
+      QueryStatusSoapyBean soapyStatus = new QueryStatusSoapyBean();
+      soapyStatus.setQueryID(queryId);
+      QuerierStatus status = super.getQueryStatus(getUser(), queryId);
+      soapyStatus.setState(status.getState().toString());
+      soapyStatus.setNote(status.getNote());
+      return soapyStatus;
    }
    
    /**
@@ -113,6 +135,9 @@ public class AxisDataServer_v0_5 extends AxisDataServer   {
 
 /*
 $Log: AxisDataServer_v0_5.java,v $
+Revision 1.2  2004/03/17 01:47:26  mch
+Added v05 Axis web interface
+
 Revision 1.1  2004/03/17 00:27:21  mch
 Added v05 AxisDataServer
 

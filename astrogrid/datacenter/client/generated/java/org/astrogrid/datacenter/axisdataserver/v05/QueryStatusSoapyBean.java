@@ -10,9 +10,7 @@ package org.astrogrid.datacenter.axisdataserver.v05;
 public class QueryStatusSoapyBean  implements java.io.Serializable {
     private java.lang.String queryID;
     private java.lang.String state;
-    private java.lang.String individual;
-    private java.lang.String ivorn;
-    private java.lang.String token;
+    private java.lang.String note;
 
     public QueryStatusSoapyBean() {
     }
@@ -33,28 +31,12 @@ public class QueryStatusSoapyBean  implements java.io.Serializable {
         this.state = state;
     }
 
-    public java.lang.String getIndividual() {
-        return individual;
+    public java.lang.String getNote() {
+        return note;
     }
 
-    public void setIndividual(java.lang.String individual) {
-        this.individual = individual;
-    }
-
-    public java.lang.String getIvorn() {
-        return ivorn;
-    }
-
-    public void setIvorn(java.lang.String ivorn) {
-        this.ivorn = ivorn;
-    }
-
-    public java.lang.String getToken() {
-        return token;
-    }
-
-    public void setToken(java.lang.String token) {
-        this.token = token;
+    public void setNote(java.lang.String note) {
+        this.note = note;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -75,15 +57,9 @@ public class QueryStatusSoapyBean  implements java.io.Serializable {
             ((this.state==null && other.getState()==null) || 
              (this.state!=null &&
               this.state.equals(other.getState()))) &&
-            ((this.individual==null && other.getIndividual()==null) || 
-             (this.individual!=null &&
-              this.individual.equals(other.getIndividual()))) &&
-            ((this.ivorn==null && other.getIvorn()==null) || 
-             (this.ivorn!=null &&
-              this.ivorn.equals(other.getIvorn()))) &&
-            ((this.token==null && other.getToken()==null) || 
-             (this.token!=null &&
-              this.token.equals(other.getToken())));
+            ((this.note==null && other.getNote()==null) || 
+             (this.note!=null &&
+              this.note.equals(other.getNote())));
         __equalsCalc = null;
         return _equals;
     }
@@ -101,14 +77,8 @@ public class QueryStatusSoapyBean  implements java.io.Serializable {
         if (getState() != null) {
             _hashCode += getState().hashCode();
         }
-        if (getIndividual() != null) {
-            _hashCode += getIndividual().hashCode();
-        }
-        if (getIvorn() != null) {
-            _hashCode += getIvorn().hashCode();
-        }
-        if (getToken() != null) {
-            _hashCode += getToken().hashCode();
+        if (getNote() != null) {
+            _hashCode += getNote().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -131,18 +101,8 @@ public class QueryStatusSoapyBean  implements java.io.Serializable {
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("individual");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "individual"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("ivorn");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "ivorn"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("token");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "token"));
+        elemField.setFieldName("note");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "Note"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         typeDesc.addFieldDesc(elemField);
     }

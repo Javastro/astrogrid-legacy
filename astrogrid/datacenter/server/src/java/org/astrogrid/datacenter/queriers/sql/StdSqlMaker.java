@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.3 2004/03/14 16:55:48 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.4 2004/03/17 01:47:26 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -142,6 +142,10 @@ public class StdSqlMaker  extends SqlMaker {
       if (namespaceURI.equals("http://adql.ivoa.net/v0.73")) {
          xsltDoc = "adql073-2-sql.xsl";
       }
+//      if (namespaceURI.equals("http://adql.ivoa.net/v0.8")) {
+//         xsltDoc = "adql073-2-sql.xsl";
+//      }
+
       if (namespaceURI.equals("http://astrogrid.org/sadql/v1.1")) {
          xsltDoc = "sadql1.1-2-sql.xsl";
       }
@@ -198,6 +202,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.4  2004/03/17 01:47:26  mch
+Added v05 Axis web interface
+
 Revision 1.3  2004/03/14 16:55:48  mch
 Added XSLT ADQL->SQL support
 

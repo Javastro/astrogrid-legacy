@@ -15,9 +15,7 @@
             <sequence>
                <element name="QueryID" nillable="true" type="xsd:string"/>
                <element name="State" nillable="true" type="xsd:string"/>
-               <element name="individual" nillable="true" type="xsd:string"/>
-               <element name="ivorn" nillable="true" type="xsd:string"/>
-               <element name="token" nillable="true" type="xsd:string"/>
+               <element name="Note" nillable="true" type="xsd:string"/>
             </sequence>
          </complexType>
       </schema>
@@ -74,15 +72,6 @@
   <wsdl:message name="abortQueryResponse">
   </wsdl:message>
 
-  <wsdl:message name="submitQueryRequest">
-    <wsdl:part name="query" type="xsd:anyType"/>
-    <wsdl:part name="resultsTarget" type="xsd:anyType"/>
-    <wsdl:part name="requestedFormat" type="xsd:string"/>
-  </wsdl:message>
-  <wsdl:message name="submitQueryResponse">
-    <wsdl:part name="submitQueryReturn" type="xsd:string"/>
-  </wsdl:message>
-
   <wsdl:message name="askAdqlQueryRequest">
     <wsdl:part name="query" type="xsd:string"/>
     <wsdl:part name="requestedFormat" type="xsd:string"/>
@@ -125,11 +114,6 @@
     <wsdl:operation name="getQueryStatus" parameterOrder="queryId">
       <wsdl:input message="dsa:getQueryStatusRequest" name="getQueryStatusRequest"/>
       <wsdl:output message="dsa:getQueryStatusResponse" name="getQueryStatusResponse"/>
-    </wsdl:operation>
-
-    <wsdl:operation name="submitQuery" parameterOrder="query resultsTarget requestedFormat">
-      <wsdl:input message="dsa:submitQueryRequest" name="submitQueryRequest"/>
-      <wsdl:output message="dsa:submitQueryResponse" name="submitQueryResponse"/>
     </wsdl:operation>
 
     <wsdl:operation name="throwFault">
@@ -208,16 +192,6 @@
         <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://v05.service.datacenter.astrogrid.org" use="encoded"/>
       </wsdl:input>
       <wsdl:output name="getQueryStatusResponse">
-        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/SimpleAxisDataServer.jws" use="encoded"/>
-      </wsdl:output>
-    </wsdl:operation>
-
-    <wsdl:operation name="submitQuery">
-      <wsdlsoap:operation soapAction=""/>
-      <wsdl:input name="submitQueryRequest">
-        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://service.datacenter.astrogrid.org" use="encoded"/>
-      </wsdl:input>
-      <wsdl:output name="submitQueryResponse">
         <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/SimpleAxisDataServer.jws" use="encoded"/>
       </wsdl:output>
     </wsdl:operation>
