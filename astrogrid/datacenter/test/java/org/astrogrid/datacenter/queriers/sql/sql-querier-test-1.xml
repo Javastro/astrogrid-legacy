@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<Select>
+	<SelectionAll />
+	<TableClause>
+		<FromClause>
+			<TableReference>
+				<Table>
+					<Name>People</Name>
+					<AliasName>p</AliasName>
+				</Table>
+			</TableReference>
+		</FromClause>
+	</TableClause>
+</Select>

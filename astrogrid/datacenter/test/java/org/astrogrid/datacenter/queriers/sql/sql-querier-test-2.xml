@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<Select>
+	<SelectionList>
+	  <ColumnExpr>
+		<SingleColumnReference>
+			<TableName>p</TableName>
+			<Name>firstName</Name>
+		</SingleColumnReference>
+		</ColumnExpr>
+	</SelectionList>
+	<TableClause>
+		<FromClause>
+			<TableReference>
+				<Table>
+					<Name>People</Name>
+					<AliasName>p</AliasName>
+				</Table>
+			</TableReference>
+		</FromClause>
+	</TableClause>
+</Select>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE>
+	<DESCRIPTION>VOTable</DESCRIPTION>
+	<RESOURCE>
+		<TABLE>
+			<FIELD ID="ID" datatype="int" arraysize="1x1" />
+			<FIELD ID="FIRSTNAME" datatype="char" arraysize="1x1" />
+			<FIELD ID="LASTNAME" datatype="char" arraysize="1x1" />
+			<DATA>
+				<TABLEDATA><TR>
+	<TD>2</TD>
+	<TD>mavis</TD>
+	<TD>goggs</TD>
+</TR>
+<TR>
+	<TD>3</TD>
+	<TD>tiny</TD>
+	<TD>rugrat</TD>
+</TR>
+</TABLEDATA>
+			</DATA>
+		</TABLE>
+	</RESOURCE>
+</VOTABLE>
