@@ -72,6 +72,9 @@ public class HomeClient
 
 /*
  $Log: HomeClient.java,v $
+ Revision 1.1  2003/11/18 11:59:22  nw
+ mavenized mch
+
  Revision 1.1  2003/11/14 00:38:29  mch
  Code restructure
 

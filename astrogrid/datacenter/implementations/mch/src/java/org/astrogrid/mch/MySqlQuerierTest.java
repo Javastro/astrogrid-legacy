@@ -1,5 +1,5 @@
 /*
- * $Id: MySqlQuerierTest.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+ * $Id: MySqlQuerierTest.java,v 1.1 2003/11/18 11:59:22 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
