@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: navigation.xml,v 1.10 2004/07/27 11:10:58 jdt Exp $ -->
+<!-- $Id: navigation.xml,v 1.11 2004/08/13 11:59:14 jdt Exp $ -->
 <project>
 
   <title>AstroGrid Project</title>
@@ -9,6 +9,9 @@
        <item name="AstroGrid" href="http://www.astrogrid.org"/>
        <item name="AstroGrid Wiki" href="http://wiki.astrogrid.org/"/>
     </links>
+	<menu name="About">
+		<item name="Changing this documentation" href="about.html"/>
+	</menu>
     <menu name="Release Documentation">
       <item name="Itn06 SNAPSHOT"     href="http://www.astrogrid.org/maven/docs/SNAPSHOT/"/>  
 	  <item name="Itn06 case3"     href="http://www.astrogrid.org/maven/docs/Itn06_case3-SNAPSHOT/"/>  

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: maven.xml,v 1.2 2004/07/19 11:38:21 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.3 2004/08/13 11:59:14 jdt Exp $ -->
 <!-- extension maven script -->
 <project>
 	<!-- astrogrid goals for nightly build -->
@@ -28,4 +28,12 @@
 	<goal name="astrogrid-install-artifact">
 		<echo message="nothing to do"/>
 	</goal>
+     <!--
+	  This pregoal takes any simple html docs in the xdocs folder and turns them into xdoc xml,
+	  before they are turned back into maven-style html docs.  Why?  html is easier to write in
+	  a WYSIWIG editor than xdoc xml
+     -->
+	<preGoal name="xdoc:jelly-transform">
+	    <attainGoal name="html2xdoc"/>
+	</preGoal>
 </project>
