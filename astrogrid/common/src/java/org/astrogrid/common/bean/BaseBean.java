@@ -1,4 +1,4 @@
-/*$Id: BaseBean.java,v 1.1 2004/02/10 17:30:57 nw Exp $
+/*$Id: BaseBean.java,v 1.2 2004/03/01 01:26:12 nw Exp $
  * Created on 10-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,10 @@
 **/
 package org.astrogrid.common.bean;
 
+import org.apache.commons.jxpath.ClassFunctions;
+import org.apache.commons.jxpath.ExpressionContext;
 import org.apache.commons.jxpath.JXPathContext;
+import org.apache.commons.jxpath.Pointer;
 
 import java.util.Iterator;
 
@@ -28,15 +31,14 @@ public abstract class BaseBean {
     }
     
     private transient JXPathContext cxt;
-    /** access the jxpath context object for this object (lazily initialized)*/
-    public final JXPathContext getJXPathContext() {
+    /** access the jxpath context object for this object (lazily initialized)
+     * @modified NWW - renamed, to avoid using 'get*' naming convention - otherwise
+     * is accessed when traversing the tree, which leads to recursion and out of memory errors.*/
+    public final synchronized JXPathContext accessJXPathContext() {
         if (cxt == null) {
-            synchronized(this) {
-                if (cxt == null) {
                     this.cxt = JXPathContext.newContext(this);
-                    this.cxt.setLenient(true);
-                }
-            }
+                    this.cxt.setLenient(true);              
+                    this.cxt.setFunctions(new ClassFunctions(BaseBean.Functions.class,"functions"));              
         }
         return cxt;
     } 
@@ -47,7 +49,7 @@ public abstract class BaseBean {
      * @return object found, or null
      */
     public final Object findXPathValue(String xpath) {
-        return this.getJXPathContext().getValue(xpath);
+        return this.accessJXPathContext().getValue(xpath);
     }
     /** execute an expath query, using this object as the root of an object graph
      * 
@@ -55,15 +57,49 @@ public abstract class BaseBean {
      * @return iterator containing series of objects that match this query
      */
     public final Iterator findXPathIterator(String xpath) {
-        return this.getJXPathContext().iterate(xpath);
+        return this.accessJXPathContext().iterate(xpath);
     }
     
+    /** return the xpath for a particular object.
+     * 
+     * @param target object to return xpath for. must be in object tree (or a similar object equivalent under equals())
+     * @return xpath for that object, or null
+     */
+    public final String getXPathFor(Object target) {
+        // add variable we're looking for.
+        JXPathContext cxt = this.accessJXPathContext();
+        cxt.getVariables().declareVariable("target",target);
+        Pointer p  = cxt.getPointer("//*[functions:matchTarget()]");
+        // tidyup  
+        cxt.getVariables().undeclareVariable("target");
+        // sanity check..
+        return p != null && p.getNode() != null ? p.asPath() : null;        
+    }
+
+    /** class of functions added to jxpath context */
+    public static class Functions {
+        /** returns true if context node is equal to variable target.
+         * i.e. $target.equals(.)
+         * @param ctxt
+         * @return
+         */ 
+        public static boolean matchTarget(ExpressionContext ctxt) {
+            Object candidate = ctxt.getContextNodePointer().getValue();
+            Object target = ctxt.getJXPathContext().getVariables().getVariable("target");
+            return target.equals(candidate);
+        }
+    }    
+
     
 }
 
 
 /* 
 $Log: BaseBean.java,v $
+Revision 1.2  2004/03/01 01:26:12  nw
+added method to find xpath for a given object in the tree
+- can be used to implement activity keys
+
 Revision 1.1  2004/02/10 17:30:57  nw
 added base class for castor-generated object models that provides xpath querying
  
