@@ -7,8 +7,7 @@ var oldField = "";
 var oldFieldClassName = "";
 
 function showBranch(branch){
-  var objBranch = 
-     document.getElementById(branch).style;
+  var objBranch = document.getElementById(branch).style;
   if(objBranch.display=="block")
      objBranch.display="none";
   else
@@ -17,7 +16,7 @@ function showBranch(branch){
 }
 
 function swapFolder(img){
-  objImg = document.getElementById(img);
+  var objImg = document.getElementById(img);
   if(objImg.src.indexOf('Open.png')>-1)
      objImg.src = openImg.src;
   else
@@ -25,9 +24,9 @@ function swapFolder(img){
 }
 
 function setOldMySpaceName(oldMySpaceName){
-  myspace_old_name = document.getElementById('myspace-src');
+  var myspace_old_name = document.getElementById('myspace-src');
   myspace_old_name.value = oldMySpaceName;
-  myspace_clipboard = document.getElementById('myspace-clipboard');
+  var myspace_clipboard = document.getElementById('myspace-clipboard');
   myspace_clipboard.value = oldMySpaceName;
   
   setHighlight('', '');
@@ -35,28 +34,28 @@ function setOldMySpaceName(oldMySpaceName){
 
 function setOldMySpaceNameUrl(oldMySpaceName, oldMySpaceUrl){
   setOldMySpaceName(oldMySpaceName);
-  myspace_clipboard_url = document.getElementById('myspace-clipboard-url');
+  var myspace_clipboard_url = document.getElementById('myspace-clipboard-url');
   myspace_clipboard_url.value = oldMySpaceUrl;
 }
 
 function setNewMySpaceName(newMySpaceName){
-  myspace_new_name = document.getElementById('myspace-dest');
+  var myspace_new_name = document.getElementById('myspace-dest');
   myspace_new_name.value = newMySpaceName;
 }
 
 function setIVORNAgsl(newIvorn, newAgsl){
-  myspace_ivorn = document.getElementById('myspace-ivorn');
+  var myspace_ivorn = document.getElementById('myspace-ivorn');
   myspace_ivorn.value = newIvorn;
 
-  myspace_agsl = document.getElementById('myspace-agsl');
+  var myspace_agsl = document.getElementById('myspace-agsl');
   myspace_agsl.value = newAgsl;
 }
 
 function createIVORN() {
-  result = '';
+  var result = '';
   
-	myspace_ivorn = document.getElementById('myspace-ivorn');
-	myspace_item = document.getElementById('myspace-item');
+  var myspace_ivorn = document.getElementById('myspace-ivorn');
+  var myspace_item = document.getElementById('myspace-item');
 
   // Do we have an IVORN set?
 	if(myspace_ivorn && myspace_ivorn.value && myspace_ivorn.value.length > 0) {
@@ -65,7 +64,7 @@ function createIVORN() {
 	// Do we have an item name set?
 	else if(myspace_item && myspace_item.value && myspace_item.value.length > 0) {
 	  myspace_endpoint = document.getElementById('myspace-endpoint');
-  	myspace_agsl = document.getElementById('myspace-agsl');
+  	  myspace_agsl = document.getElementById('myspace-agsl');
 	  result = myspace_endpoint.value + '#' + myspace_agsl.value;
 	  if(myspace_agsl.value.charAt(myspace_agsl.value.length -1) != "/") {
 	    result = result + "/";
@@ -79,15 +78,15 @@ function createIVORN() {
 }
 
 function createAGSL() {
-  result = '';
+  var result = '';
   
-	myspace_agsl = document.getElementById('myspace-agsl');
-	myspace_item = document.getElementById('myspace-item');
+  var myspace_agsl = document.getElementById('myspace-agsl');
+  var myspace_item = document.getElementById('myspace-item');
 
   // Do we have an AGSL set?
 	// Do we have an item name set?
 	if(myspace_item && myspace_item.value && myspace_item.value.length > 0) {
-  	myspace_agsl = document.getElementById('myspace-agsl');
+  	  myspace_agsl = document.getElementById('myspace-agsl');
 	  result = myspace_agsl.value;
 	  if(myspace_agsl.value.charAt(myspace_agsl.value.length -1) != "/") {
 	    result = result + "/";
@@ -104,23 +103,20 @@ function createAGSL() {
 }
 
 function setParentIVORNAgsl(parent_ivorn, parent_agsl){
-  parentDoc = window.opener.document;
+  var parentDoc = window.opener.document;
   
-  parent_ivorn = parentDoc.getElementById(parent_ivorn);
-  parent_agsl = parentDoc.getElementById(parent_agsl);
+  var parent_ivorn = parentDoc.getElementById(parent_ivorn);
+  var parent_agsl = parentDoc.getElementById(parent_agsl);
   
   if(parent_ivorn) {
-    myspace_ivorn = document.getElementById('myspace-ivorn');
+    var myspace_ivorn = document.getElementById('myspace-ivorn');
     parent_ivorn.value = myspace_ivorn.value;
   }
 
   if(parent_agsl) {
-    myspace_agsl = document.getElementById('myspace-agsl');
-    myspace_item = document.getElementById('myspace-item');
-    parent_agsl.value =
-        newAgsl(
-                myspace_agsl.value,
-                myspace_item.value);
+    var myspace_agsl = document.getElementById('myspace-agsl');
+    var myspace_item = document.getElementById('myspace-item');
+    parent_agsl.value = newAgsl( myspace_agsl.value, myspace_item.value);
   }
   
 //  alert('parent ivorn: ' + myspace_ivorn.value);
@@ -132,8 +128,8 @@ function setParentIVORNAgsl(parent_ivorn, parent_agsl){
 
 function setParentHiddenField(field_name, field_value) {
   if(field_name) {
-    parentDoc = window.opener.document;
-    parent_field = parentDoc.getElementById(field_name);    
+    var parentDoc = window.opener.document;
+    var parent_field = parentDoc.getElementById(field_name);    
     if(field_value && field_value.length > 0) {
       parent_field.value = field_value;
     }
@@ -142,9 +138,9 @@ function setParentHiddenField(field_name, field_value) {
 
 function submitParentForm(form_name, action) {
 //  alert(form_name);
-  parentDoc = window.opener.document;
+  var parentDoc = window.opener.document;
 //  alert(parentDoc);
-  parent_form = parentDoc.getElementById(form_name); 
+  var parent_form = parentDoc.getElementById(form_name); 
 //  alert(parent_form);
   if(parent_form) {
     if(action && action.length > 0) {
@@ -158,11 +154,10 @@ function submitParentForm(form_name, action) {
 }
 
 function setNewIvorn() {
- 	myspace_ivorn = document.getElementById('myspace-ivorn');
-
- 	myspace_baseIvorn = document.getElementById('myspace-endpoint');
- 	myspace_agsl = document.getElementById('myspace-agsl');
-	myspace_item = document.getElementById('myspace-item');
+ 	var myspace_ivorn = document.getElementById('myspace-ivorn');
+ 	var myspace_baseIvorn = document.getElementById('myspace-endpoint');
+ 	var myspace_agsl = document.getElementById('myspace-agsl');
+	var myspace_item = document.getElementById('myspace-item');
   
   myspace_ivorn.value =
       newIvorn(
@@ -256,18 +251,18 @@ function newAgsl(path, file) {
   
 //  alert('new agsl: ' + result);
   
-  myspace_agsl = document.getElementById('myspace-agsl');
+  var myspace_agsl = document.getElementById('myspace-agsl');
   myspace_agsl.value = path;
 
-  myspace_item = document.getElementById('myspace-item');
+  var myspace_item = document.getElementById('myspace-item');
   myspace_item.value = file;
 
   return result;
 }
 
 function setAgslParts(path, file) {
-	myspace_agsl = document.getElementById('myspace-agsl');
-	myspace_item = document.getElementById('myspace-item');
+	var myspace_agsl = document.getElementById('myspace-agsl');
+	var myspace_item = document.getElementById('myspace-item');
 
   myspace_agsl.value = path;
   myspace_item.value = file;
@@ -275,12 +270,12 @@ function setAgslParts(path, file) {
 
 function setHighlight(fieldId, newClass) {
 //  alert("setHighlight");
-  oldFieldEl = document.getElementById(oldField);
+  var oldFieldEl = document.getElementById(oldField);
   if(oldFieldEl) {
     oldFieldEl.className = oldFieldClassName;
   }
   
-  fieldEl = document.getElementById(fieldId);
+  var fieldEl = document.getElementById(fieldId);
   if(fieldEl) {
     oldField = fieldId;
     oldFieldClassName = fieldEl.className;
@@ -289,18 +284,20 @@ function setHighlight(fieldId, newClass) {
 }
 
 function callParentFunction(parent_func) {
-  parent = window.opener;
+  var parent = window.opener;
   
   if(parent && parent_func && parent_func.length > 0) {
-    parent_func_expr = "parent." + parent_func;
+    var parent_func_expr = "parent." + parent_func;
     eval(parent_func_expr);
   } 
 }
 
 
 function processMicroBrowserOK( ivorn, agsl, fieldName, fieldValue, formName, formAction, parentFunction ) {
- 
-  result=setNewIvorn();	
+
+  var result = setNewIvorn();	
+  
+  // alert( "Jeff debugging. Please ignore. ...\n ivorn = [" + ivorn +"]\n agsl = [" + agsl + "]\n fieldName = [" + fieldName + "]\n fieldValue = [" + fieldValue + "]\n formName = [" + formName + "]\n formAction = [" + formAction + "]\n parentFunction = [" + parentFunction + "]\n result = [" + result + "]" ) ;
  
   if( result != '' ) {
      setParentIVORNAgsl(ivorn, agsl );
