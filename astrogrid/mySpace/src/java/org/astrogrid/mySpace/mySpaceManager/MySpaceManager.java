@@ -65,7 +65,7 @@ public class MySpaceManager {
 	private static boolean DEBUG = true;
 	private static MySpaceStatus status = new MySpaceStatus();
 	private MySpaceUtils util = new MySpaceUtils();
-	private MySpaceActions myspace = new MySpaceActions();
+	//private MySpaceActions myspace = new MySpaceActions();
 	private HashMap request = new HashMap();
 	private String response = " ";
 	private String userID = " ";
@@ -82,14 +82,12 @@ public class MySpaceManager {
 	private String serverFileName = " "; //file location in user's machine
 	private String newDataHolderName = " ";
 	private int fileSize = 1;
-	//private static final String SUCCESS = "SUCCESS";
-	//private static final String FAULT = "FAULT";
-	private static Properties conProperties = new Properties();
-	private static final String REGPATH = "REGISTRYCONF";
-	private static final String TEMPPATHTO ="TEMPPATHTO"; // should be in ServerManager
+	//private static Properties conProperties = new Properties();
+	//private static final String REGPATH = "REGISTRYCONF";
+	//private static final String TEMPPATHTO ="TEMPPATHTO"; // should be in ServerManager
 	//private static String regPathTemp = AxisProperties.getProperty("catalina.home")+"/conf/astrogrid/mySpace/" +"statuscodes.lis";
-	private static String regPathTemp = "statuscodes.lis"; //delete this file since already loaded from jConfig
-	private static String serverManagerLoc = "SERVERMANAGER";
+	//private static String regPathTemp = "statuscodes.lis"; //delete this file since already loaded from jConfig
+	//private static String serverManagerLoc = "SERVERMANAGER";
 	private String errCode="";
 	private Vector v = new Vector();
 	private String registryName = " ";
@@ -124,10 +122,14 @@ public String upLoad(String jobDetails){
 	DataItemRecord dataitem = null;
 	Call call = null;
 	//loadProperties();//delete!
-	String path=conProperties.getProperty(TEMPPATHTO); //should be in ServerManager
+	//String path=conProperties.getProperty(TEMPPATHTO); //should be in ServerManager
 	//registryName = conProperties.getProperty(REGPATH);//MMC.getProperty();
-	if( DEBUG )  logger.debug("MySpaceManager.upLoad, getting file path for data holder to store on server." +path);
+	//if( DEBUG )  logger.debug("MySpaceManager.upLoad, getting file path for data holder to store on server." +path);
+	
+	
 		try{
+			response = getValues(jobDetails);
+			/*
 			//load jConfig file.
 			MMC.getInstance().checkPropertiesLoaded();
 			registryName = MMC.getProperty(MMC.REGISTRYCONF, MMC.CATLOG);
@@ -171,6 +173,7 @@ public String upLoad(String jobDetails){
 					logger.debug("NameSetOfRequest: "+o[i] +request.get(o[i]).toString());
 					}
 			}
+			
 			if ( DEBUG )logger.debug("FILE lOCATION: "+request.get("serverFileName"));
 			serverFileName = request.get("serverFileName").toString();
 			if ( (request.containsKey("newDataHolderName")) && (request.get("newDataHolderName").toString().trim().length()>0)){
@@ -183,18 +186,19 @@ public String upLoad(String jobDetails){
 	
 			if ( DEBUG ) logger.debug("userid:" +userID+"comID:"+communityID +"jobID:"+jobID+"newdataholdername:"+newDataHolderName+"filesize:"+fileSize+" serverFileName == "+serverFileName);
 
+*/
 			if ( DEBUG ) logger.debug("About to invoke myspaceaction.importdataholder");  
 			msA.setRegistryName(registryName);
 			RegistryManager reg = new RegistryManager(registryName);
 			String mySpaceFileName = "f" + reg.getNextDataItemID();
-			logger.debug("mySpacefilenae:"+mySpaceFileName);
+			
 			reg.rewriteRegistryFile();
 			dataitem = msA.importDataHolder(
 			    userID, communityID, jobID, newDataHolderName,
 			    mySpaceFileName, fileSize );
 			if ( DEBUG ) logger.debug("userid:"+userID+"comID"+communityID+"jobid"+jobID+"newDataHN"+newDataHolderName+"filenm:"+mySpaceFileName
 			                       +"fileSize"+fileSize);
-			if(DEBUG) logger.debug("UploaderroCode is:" +errCode);
+			if( DEBUG ) logger.debug("UploaderroCode is:" +errCode);
 			if ( errCode!="" )    
 			  errCode = errCode +"," +checkStatus("UPLOADStatusCode");
 			else 
@@ -264,10 +268,9 @@ public String upLoad(String jobDetails){
 		}catch(Exception e){
 			logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
 			status.addCode(MySpaceStatusCode.AGMMCE00049,MySpaceStatusCode.ERROR);
-			MySpaceMessage message =  new MySpaceMessage("MS_E_UPLOAD");
 			if(errCode=="")
 			  //response = util.buildMySpaceManagerResponse(null,MMC.FAULT,MySpaceStatusCode.MS_E_UPLOAD,"");
-			response = util.buildMySpaceManagerResponse(null,MMC.FAULT,"MS_E_UPLOAD","");
+			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,"MS_E_UPLOAD","");
 			else
 			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode,""); 		  
 			return response;
@@ -283,10 +286,14 @@ public String upLoad(String jobDetails){
    public String lookupDataHolderDetails(String jobDetails){
 	if ( DEBUG )  logger.debug("MySpaceManager.lookupDataHolderDetails");
 	DataItemRecord dataitem = null;
-	loadProperties();
-	registryName = conProperties.getProperty(REGPATH);	
+	//loadProperties();
+	//registryName = conProperties.getProperty(REGPATH);	
 	
 		try{
+			response = getValues(jobDetails);
+			/*
+			MMC.getInstance().checkPropertiesLoaded();
+			registryName = MMC.getProperty(MMC.REGISTRYCONF, MMC.CATLOG);
 			request = util.getRequestAttributes(jobDetails);
 			try{
 				if(request.get("userID")!=null) userID = request.get("userID").toString();
@@ -327,6 +334,31 @@ public String upLoad(String jobDetails){
 				response = "NULL_POINTER_GETTING_REQUEST";
 				return response;
 			}
+			*/
+			msA.setRegistryName(registryName);
+			Vector dataItemRecords = msA.lookupDataHoldersDetails(
+			  userID, communityID, jobID, serverFileName);
+
+			if ( errCode!="" )
+			  errCode = errCode +"," +checkStatus("LOOKUPDATAHOLDERDETAILS STATUS LOOKUPDATAHOLDERsDETAILS");
+			else 
+			  errCode = checkStatus("LOOKUPDATAHOLDERDETAILS STATUS LOOKUPDATAHOLDERsDETAILS");
+			if (dataItemRecords != null)
+			{  DataItemRecord dataItem = (DataItemRecord)dataItemRecords.elementAt(0);
+				dataItemID = dataItem.getDataItemID();
+			   logger.debug("LOOKUPDATAHOLDERDETAILS TRING TO GET DATAITEMID: " +dataItemID);
+			}else{
+				logger.debug("LOOKUPDATAHOLDERDETAILS DATAITEMRCORDS = NULL!");
+			}
+  
+			//create a instance of DataItemRecord
+			dataitem = msA.lookupDataHolderDetails(
+			userID,communityID, jobID, dataItemID);	
+			if ( errCode!="" )
+			  errCode = errCode +"," +checkStatus("LOOKUPDATAHOLDERDETAILS STATUS AFTERCALLING MSA.LOOKUPDATAHOLDERDETAILS ");
+			else
+			  errCode = checkStatus("LOOKUPDATAHOLDERDETAILS STATUS AFTERCALLING MSA.LOOKUPDATAHOLDERDETAILS ");
+
 							
 		//   Get other stuff which can usefully be returned.
 		//   (Note that the current date needs to be returned to facilitate
@@ -386,9 +418,12 @@ public String upLoad(String jobDetails){
 	if ( DEBUG )  logger.debug("MySpaceManager.lookupDataHolderSDetails ");
 	DataItemRecord dataitem = null;
 	Vector itemRecVector = new Vector();
-	loadProperties();
-	registryName = conProperties.getProperty(REGPATH);	
+	//loadProperties();
+	//registryName = conProperties.getProperty(REGPATH);	
 		try{
+			response = getValues(jobDetails);
+			/*
+			MMC.getInstance().checkPropertiesLoaded();
 			request = util.getRequestAttributes(jobDetails);
 			try{
 				if(request.get("userID")!=null) userID = request.get("userID").toString();
@@ -404,9 +439,9 @@ public String upLoad(String jobDetails){
 				response = "NULL_POINTER_GETTING_REQUEST";
 				return response;
 			}
-			
+			*/
 			//registry is returning a null pointer so comment out for now awaiting for new code for MySpaceActions to be completed.
-			logger.debug("REGISTRYNAME IN LOOKUPDATAHOLDERSDETAILS: "+registryName);
+			//logger.debug("REGISTRYNAME IN LOOKUPDATAHOLDERSDETAILS: "+registryName);
 			msA.setRegistryName(registryName);
 			itemRecVector = msA.lookupDataHoldersDetails( userID, 
 			communityID, jobID, query);		
@@ -499,10 +534,13 @@ public String upLoad(String jobDetails){
    {
 	if ( DEBUG )  logger.debug("MySpaceManager.copyDataHolder");
 	DataItemRecord dataitem = null;
-	loadProperties();
-	registryName = conProperties.getProperty(REGPATH);	
+	//loadProperties();
+	//registryName = conProperties.getProperty(REGPATH);	
 	
 		try{
+			response = getValues(jobDetails);
+			/*
+			MMC.getInstance().checkPropertiesLoaded();
 			request = util.getRequestAttributes(jobDetails);
 			try{
 				if(request.get("userID")!=null) userID = request.get("userID").toString();
@@ -542,7 +580,29 @@ public String upLoad(String jobDetails){
 				response = "NULL_POINTER_GETTING_REQUEST";
 				return response;
 			}
-			
+			*/
+			msA.setRegistryName(registryName);
+			Vector dataItemRecords = msA.lookupDataHoldersDetails(
+			  userID, communityID, jobID, serverFileName);
+			if ( errCode!="" )
+			  errCode = errCode +"," +checkStatus("COPYDATAHOLDERS STATUS ");
+			else
+			  errCode = checkStatus("COPYDATAHOLDERS STATUS ");
+			if (dataItemRecords != null)
+			{  DataItemRecord dataItem = (DataItemRecord)dataItemRecords.elementAt(0);
+			   oldDataItemID = dataItem.getDataItemID();
+			   logger.debug("TRING TO GET OLDDATAITEMID: " +oldDataItemID);
+			}else{
+				logger.debug("DATAITEMRCORDS = NULL!");
+			}
+				  
+			//create a instance of DataItemRecord
+			dataitem = msA.copyDataHolder(
+				userID, communityID, jobID, oldDataItemID, newDataItemName);
+			if ( errCode!="" )	
+			  errCode = errCode +"," +checkStatus("COPYDATAHOLDERS STATUS AFTERCALLING MSA.COPYDATAHOLDER ");
+			else
+			  errCode = checkStatus("COPYDATAHOLDERS STATUS AFTERCALLING MSA.COPYDATAHOLDER ");
 		
 		//   Get other stuff which can usefully be returned.
 		//   (Note that the current date needs to be returned to facilitate
@@ -610,9 +670,12 @@ public String upLoad(String jobDetails){
 	if ( DEBUG )  logger.debug("MySpaceManager.moveDataHolder");
 	DataItemRecord dataitem = null;
 	//loadProperties();
-	registryName = conProperties.getProperty(REGPATH);	
+	//registryName = conProperties.getProperty(REGPATH);	
 	
 		try{
+			response = getValues(jobDetails);
+			/*
+			MMC.getInstance().checkPropertiesLoaded();
 			request = util.getRequestAttributes(jobDetails);
 			try{
 				if(request.get("userID")!=null) userID = request.get("userID").toString();
@@ -653,6 +716,29 @@ public String upLoad(String jobDetails){
 				response = "NULL_POINTER_GETTING_REQUEST";
 				return response;
 			}
+			*/
+			msA.setRegistryName(registryName);
+			Vector dataItemRecords = msA.lookupDataHoldersDetails(
+			  userID, communityID, jobID, serverFileName);
+			if ( errCode!="" )
+			  errCode = errCode +"," +checkStatus("moveDATAHOLDERS STATUS ");
+			else
+			  errCode = checkStatus("moveDATAHOLDERS STATUS ");
+			if (dataItemRecords != null){
+				DataItemRecord dataItem = (DataItemRecord)dataItemRecords.elementAt(0);
+				oldDataItemID = dataItem.getDataItemID();
+				logger.debug("TRING TO GET OLDDATAITEMID: " +oldDataItemID);
+			}else{
+				logger.debug("DATAITEMRCORDS = NULL!");
+			}
+				  
+			//create a instance of DataItemRecord
+			dataitem = msA.moveDataHolder(
+				userID, communityID, jobID, oldDataItemID, newDataItemName);
+			if ( errCode!="" )	
+			  errCode = errCode +"," +checkStatus("moveDATAHOLDERS STATUS AFTERCALLING MSA.moveDATAHOLDER ");
+			else
+			  errCode = checkStatus("moveDATAHOLDERS STATUS AFTERCALLING MSA.moveDATAHOLDER ");
 	
 			boolean successStatus = status.getSuccessStatus();
 			boolean warningStatus = status.getWarningStatus();
@@ -699,10 +785,13 @@ public String upLoad(String jobDetails){
 	if ( DEBUG )  logger.debug("MySpaceManager.exportDataHolder");
 	DataItemRecord dataitem = null;
 	String dataHolderURI = "";
-	loadProperties();
-	registryName = conProperties.getProperty(REGPATH);	
+	//loadProperties();
+	//registryName = conProperties.getProperty(REGPATH);	
 	
 		try{
+			response = getValues(jobDetails);
+			/*
+			MMC.getInstance().checkPropertiesLoaded();
 			request = util.getRequestAttributes(jobDetails);
 			try{
 				if(request.get("userID")!=null) userID = request.get("userID").toString();
@@ -744,7 +833,31 @@ public String upLoad(String jobDetails){
 				response = "NULL_POINTER_GETTING_REQUEST";
 				return response;
 			}
-	
+			*/
+			msA.setRegistryName(registryName);
+			Vector dataItemRecords = msA.lookupDataHoldersDetails(
+			  userID, communityID, jobID, serverFileName);
+				
+			if ( errCode!="" )
+			  errCode = errCode +"," +checkStatus("EXPORTDATAHOLDER STATUS LOOKUPDATAHOLDERsDETAILS");
+			else
+			  errCode = checkStatus("EXPORTDATAHOLDER STATUS LOOKUPDATAHOLDERsDETAILS");
+			if (dataItemRecords != null)
+			{  DataItemRecord dataItem = (DataItemRecord)dataItemRecords.elementAt(0);
+				dataItemID = dataItem.getDataItemID();
+			   logger.debug("EXPORTDATAHOLDER TRING TO GET DATAITEMID: " +dataItemID);
+			}else{
+				logger.debug("EXPORTDATAHOLDER DATAITEMRCORDS = NULL!");
+			}
+				  
+			//create a instance of DataItemRecord
+			dataHolderURI = msA.exportDataHolder(
+			userID,communityID, jobID, dataItemID);	
+			if ( errCode!="" )
+			  errCode = errCode +"," +checkStatus("EXPORTDATAHOLDER STATUS AFTERCALLING MSA.LOOKUPDATAHOLDERSDETAILS ");
+			else
+			  errCode = checkStatus("EXPORTDATAHOLDER STATUS AFTERCALLING MSA.LOOKUPDATAHOLDERSDETAILS ");
+			if ( DEBUG ) logger.debug("EXPORT: DATAHOLDERURI = "+dataHolderURI);	
 			boolean successStatus = status.getSuccessStatus();
 			boolean warningStatus = status.getWarningStatus();
 	
@@ -788,10 +901,12 @@ public String upLoad(String jobDetails){
    public String createContainer(String jobDetails){
 	if ( DEBUG )  logger.debug("MySpaceManager.createContainer");
 	DataItemRecord dataitem = null;
-	loadProperties();
-	registryName = conProperties.getProperty(REGPATH);	
+	//loadProperties();
+	//registryName = conProperties.getProperty(REGPATH);	
 	
 		try{
+			response = getValues(jobDetails);
+			/*
 			request = util.getRequestAttributes(jobDetails);
 			try{
 				if(request.get("userID")!=null) userID = request.get("userID").toString();
@@ -815,7 +930,14 @@ public String upLoad(String jobDetails){
 				response = "NULL_POINTER_GETTING_REQUEST";
 				return response;
 			}
-			
+*/
+			msA.setRegistryName(registryName);
+			dataitem = msA.createContainer(
+			userID, communityID, jobID, newContainerName);		
+			if ( errCode!="" )
+			  errCode = errCode +"," +checkStatus("CREATECONTAINER STATUS ");	
+			else
+			  errCode = checkStatus("CREATECONTAINER STATUS ");				
 	
 			boolean successStatus = status.getSuccessStatus();
 			boolean warningStatus = status.getWarningStatus();
@@ -867,10 +989,13 @@ public String upLoad(String jobDetails){
 	if ( DEBUG )  logger.debug("MySpaceManager.deleteDataHolder");
 	boolean isDeleted = false;
 	DataItemRecord dataitem = null;
-	loadProperties();
-	registryName = conProperties.getProperty(REGPATH);	
+	//loadProperties();
+	//registryName = conProperties.getProperty(REGPATH);	
 	
 		try{
+			response = getValues(jobDetails);
+			/*
+			MMC.getInstance().checkPropertiesLoaded();
 			request = util.getRequestAttributes(jobDetails);
 			try{
 				if(request.get("userID")!=null) userID = request.get("userID").toString();
@@ -905,7 +1030,23 @@ public String upLoad(String jobDetails){
 				///response = MySpaceStatusCode.NULL_POINTER_GETTING_REQUEST;
 				response = "NULL_POINTER_GETTING_REQUEST";
 				return response;
-			}
+			}*/
+			msA.setRegistryName(registryName);
+			Vector dataItemRecords = msA.lookupDataHoldersDetails(
+			  userID, communityID, jobID, serverFileName);
+			if (dataItemRecords != null)
+			{  DataItemRecord dataItem = (DataItemRecord)dataItemRecords.elementAt(0);
+			   dataItemID = dataItem.getDataItemID();
+			   logger.debug("TRING TO GET dATAITEMID: " +dataItemID);
+			}else{
+				logger.debug("DATAITEMRCORDS = NULL!");
+			}				
+			isDeleted = msA.deleteDataHolder( userID, communityID,
+			jobID, dataItemID);	
+			if ( errCode!="" )	
+			  errCode = errCode +"," +checkStatus("DELETEDATAHOLDERS STATUS ");
+			else
+			  errCode = checkStatus("DELETEDATAHOLDERS STATUS ");			
 			
 
 			//registry is returning a null pointer so comment out for now awaiting for new code for MySpaceActions to be completed.
@@ -951,8 +1092,7 @@ public String upLoad(String jobDetails){
 			logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
 			status.addCode(MySpaceStatusCode.AGMSCE00046,MySpaceStatusCode.ERROR);
 			MySpaceMessage message =  new MySpaceMessage("ERR_DELETE_DATA_HOLDER");
-			if (errCode=="")
-			  ///response = util.buildMySpaceManagerResponse(null,MMC.FAULT,MySpaceStatusCode.ERR_DELETE_DATA_HOLDER,"");    
+			if (errCode=="")    
 			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,"ERR_DELETE_DATA_HOLDER","");
 			else
 			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode,"");	
@@ -987,7 +1127,7 @@ private Call createServerManagerCall(){
 	}	
 	return call;
 }
-
+/*
     private void loadProperties(){
 		//try {
 			InputStream istream = MySpaceMessage.class.getClassLoader().getResourceAsStream( regPathTemp ) ;
@@ -998,7 +1138,7 @@ private Call createServerManagerCall(){
 	//		if (DEBUG)  logger.error("MYSPACEUTILS IO EXCEPTION :" +ex.getMessage());
 	//		}
     }
-    
+ */   
     private String checkStatus(String message){
 		MySpaceStatus stat1 = new MySpaceStatus();
 		boolean successStat = stat1.getSuccessStatus();
@@ -1017,7 +1157,7 @@ private Call createServerManagerCall(){
 			MySpaceStatusCode code = (MySpaceStatusCode)err.elementAt(i);
 			if ( codeS==""){
 				codeS = code.getCode();
-				logger.debug("dddddddddddddddd" +codeS +"dddddd");
+				logger.debug("codeS:" +codeS +":codeS");
 			}else{
 				codeS = codeS +"," +code.getCode();
 				}
@@ -1041,6 +1181,65 @@ private Call createServerManagerCall(){
 			}	
     	
 		return response;
+    }
+    
+    private String getValues(String jobDetails) throws Exception{
+		//load jConfig file.
+		MMC.getInstance().checkPropertiesLoaded();
+		registryName = MMC.getProperty(MMC.REGISTRYCONF, MMC.CATLOG);
+		if ( DEBUG )logger.debug("registryName = "+registryName);
+		request = util.getRequestAttributes(jobDetails);
+		try{
+			if(request.get("userID")!=null) userID = request.get("userID").toString();
+			if(request.get("communityID")!=null) communityID = request.get("communityID").toString();
+			if(request.get("jobID")!=null) jobID = request.get("jobID").toString();	
+			if(request.get("query")!=null) query = request.get("query").toString();		
+			if(request.get("newDataItemName")!=null) newDataItemName = request.get("newDataItemName").toString();
+			if(request.get("newContainerName")!=null) newContainerName = request.get("newContainerName").toString();	
+
+			try{
+				if(request.get("fileSize")!=null) fileSize = Integer.parseInt(request.get("fileSize").toString());
+			}catch(NumberFormatException nfe){
+				AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00034", this.getComponentName()) ;
+				status.addCode(MySpaceStatusCode.AGMSCE00034,MySpaceStatusCode.ERROR);
+				response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
+				if ( DEBUG )  logger.debug("generalMessage.toString: "+generalMessage.toString());
+				if ( DEBUG )  logger.debug("response in upload = "+response);
+				return response;
+			}
+
+		}catch(NullPointerException npe){
+			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00036", this.getComponentName()) ;
+			status.addCode(MySpaceStatusCode.AGMSCE00036,MySpaceStatusCode.ERROR);
+			response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
+			return response;
+		} 
+		   	
+		if ( DEBUG ){
+			logger.debug("serverFileName Existans is "+request.containsKey("serverFileName") +"SIZE of request keys: "+request.size());
+			Object o[] = request.keySet().toArray();
+			for(int i=0;i<o.length;i++){
+				logger.debug("NameSetOfRequest: "+o[i] +request.get(o[i]).toString());
+				}
+		}
+
+		if ( DEBUG )logger.debug("FILE lOCATION: "+request.get("serverFileName"));
+		serverFileName = request.get("serverFileName").toString();
+		if ( (request.containsKey("newDataHolderName")) && (request.get("newDataHolderName").toString().trim().length()>0)){
+			if ( DEBUG ) logger.debug("newdatraholdernema:"+newDataHolderName+"done");
+			newDataHolderName = request.get("newDataHolderName").toString();
+		}else{
+			newDataHolderName = "/" +userID +"/serv1" +serverFileName.substring(serverFileName.lastIndexOf("/"),serverFileName.length());
+			if ( DEBUG ) logger.debug("newdataholdername:"+newDataHolderName+"done2");
+		}
+		if ( DEBUG ) logger.debug(" userid:" +userID+" comID:"+communityID +
+                                  " jobID:"+jobID+" newdataholdername:"+newDataHolderName+
+                                  " filesize:"+fileSize+
+                                  " serverFileName == "+serverFileName+
+                                  " query = "+query+
+                                  " newDataItemName"+newDataItemName+
+                                  " newContainerName"+newContainerName);
+    	return response;
     }
     
 	protected String getComponentName() { return Configurator.getClassName( MySpaceManager.class) ; }    
