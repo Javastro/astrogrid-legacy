@@ -14,7 +14,8 @@ public class WSDLBasicInformation {
     private static final Log logger = LogFactory
             .getLog(WSDLBasicInformation.class);
    
-   private Hashtable  endPoint = null;
+   private Hashtable endPoint = null;
+   private Hashtable soapAction = null;
    private String targetNameSpace = null;
    private String schemaTargetNameSpace = null;
    public WSDLBasicInformation(Hashtable endPoint, String targetNameSpace) {
@@ -24,6 +25,7 @@ public class WSDLBasicInformation {
    
    public WSDLBasicInformation() {
       this.endPoint = new Hashtable();
+      this.soapAction = new Hashtable();
       this.targetNameSpace = null;
    }
    
@@ -54,6 +56,14 @@ public class WSDLBasicInformation {
    
    public void addEndPoint(String key, String endPoint) {
       this.endPoint.put(key,endPoint);
+   }
+   
+   public void addSoapActionURI(String key, String value){
+       this.soapAction.put(key,value);
+   }
+   
+   public String getSoapActionURI(String key) {
+       return (String)soapAction.get(key);
    }
    
    public String toString() {

@@ -8,6 +8,7 @@ import javax.wsdl.xml.WSDLReader;
 import javax.wsdl.*;
 import javax.wsdl.extensions.ExtensibilityElement;
 import javax.wsdl.extensions.soap.SOAPAddress;
+import javax.wsdl.extensions.soap.SOAPOperation;
 import javax.wsdl.extensions.soap.SOAPBody;
 import java.util.Set;
 import java.util.Iterator;
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.List;
 import javax.wsdl.factory.WSDLFactory;
 import org.astrogrid.registry.RegistryException;
+import java.util.Hashtable;
 
 
 /** @todo javadoc */
@@ -64,6 +66,22 @@ public class WSDLInformation {
       }
       return null;
    }
+    
+   private static void getSoapActionsFromBinding(Binding bind, String portName,WSDLBasicInformation wsdlBasic) {
+       //Binding bind = def.getBinding(new javax.xml.namespace.QName(name));
+       List opList = bind.getBindingOperations();
+       for(int j = 0; j < opList.size();j++) {
+           BindingOperation bo = (BindingOperation)opList.get(j);
+           List lst = bo.getExtensibilityElements();
+           for(int i = 0; i < lst.size();i++) {
+               ExtensibilityElement extElement = (ExtensibilityElement)lst.get(i);                        
+               if(extElement instanceof SOAPOperation) {
+                   SOAPOperation soapOperation = (SOAPOperation)extElement;
+                   wsdlBasic.addSoapActionURI(portName+"_"+bo.getName(),soapOperation.getSoapActionURI());
+               }//if   
+           }//for
+       }//for               
+   }
    
    public static WSDLBasicInformation getBasicInformationFromURL(String url) throws RegistryException {
          WSDLBasicInformation wsdlBasic = null;
@@ -104,9 +122,10 @@ public class WSDLInformation {
                         logger
                                 .info("getBasicInformationFromURL(String) - the locationuri = "
                                         + soapAddress.getLocationURI());           
-                        wsdlBasic.addEndPoint(port.getName(),soapAddress.getLocationURI());   
+                        wsdlBasic.addEndPoint(port.getName(),soapAddress.getLocationURI());
                      }//if   
-                  }//for                        
+                  }//for
+                  getSoapActionsFromBinding(port.getBinding(),portName,wsdlBasic);                  
                }//while                     
             }//while
             logger
