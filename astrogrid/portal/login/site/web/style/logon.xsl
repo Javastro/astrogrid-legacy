@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--+
-    |  $Id: logon.xsl,v 1.4 2004/03/30 13:46:05 jdt Exp $
+    |  $Id: logon.xsl,v 1.5 2004/04/20 12:40:32 pfo Exp $
     |  Transforms pages which simply display a message
     |
     +-->
@@ -34,18 +34,20 @@
       <xsl:attribute name = "action"><xsl:value-of select="@action"/></xsl:attribute>
     
       <input type="hidden" name="visited"/>
-      <table width="100%" border="1">
+      <center>
+      <table width="50%" border="0">
         <caption  style="text-align: left">
           <xsl:value-of select="@message"/>
         </caption>
         <xsl:apply-templates/>
       </table>
+      </center>
     </xsl:element> 
   </xsl:template>
   <xsl:template match="login-form/login-input">
     <tr>
-      <td width="30%"><xsl:value-of select="@caption"/></td>
-      <td width="70%">
+      <td><xsl:value-of select="@caption"/></td>
+      <td>
         <xsl:element name="input">
           <xsl:attribute name = "type"><xsl:value-of select="@type"/></xsl:attribute>
           <xsl:attribute name = "size"><xsl:value-of select="@size"/></xsl:attribute>
@@ -68,6 +70,9 @@
 		
 <!--+
     | $Log: logon.xsl,v $
+    | Revision 1.5  2004/04/20 12:40:32  pfo
+    | PFO eliminated the border lines in the table and shrank the table width
+    |
     | Revision 1.4  2004/03/30 13:46:05  jdt
     | Merge from PLGN_JDT_bz#275
     |
