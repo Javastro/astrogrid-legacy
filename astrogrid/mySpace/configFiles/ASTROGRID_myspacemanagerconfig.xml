@@ -41,15 +41,15 @@
     <!-- URL MYSPACE MANAGER
         This is the URL for the MySpace Manager facility for the installed 
         instance of MySpaceManager -->
-    <property name="MYSPACEMANAGERURL" value="http://astrogrid1.jb.man.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager" /> 
+    <property name="MYSPACEMANAGERURL" value="http://localhost:8080/astrogrid-mySpace/services/MySpaceManager" /> 
     
     <!-- URL MYSPACE MANAGER including remote MySpace Systems -->
-    <property name="MYSPACEMANAGERURLs" value="http://astrogrid1.jb.man.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager," /> 
+    <property name="MYSPACEMANAGERURLs" value="http://localhost:8080/astrogrid-mySpace/services/MySpaceManager,http://hydra.star.le.ac.uk:8080/axis/services/MySpaceManager,http://bbc.co.uk/news," /> 
     
      <!-- URL SERVERMANAGER
         This is the URL for the MySpace Server facility for the installed 
         instance of MySpaceServer -->
-    <property name="MYSPACESERVERURL" value="http://astrogrid1.jb.man.ac.uk:8080/mySpace-SNAPSHOT/services/ServerManager" /> 
+    <property name="MYSPACESERVERURL" value="http://localhost:8080/astrogrid-mySpace/services/ServerManager" /> 
 
    <!-- MySpace Request Template -->
     <property name="TEMPLATE.REQUEST" value="MSManagerRequestTemplate.xml" />  
