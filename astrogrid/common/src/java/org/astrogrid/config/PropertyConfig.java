@@ -1,5 +1,5 @@
 /*
- * $Id: PropertyConfig.java,v 1.4 2003/11/13 21:29:57 mch Exp $
+ * $Id: PropertyConfig.java,v 1.5 2003/12/16 13:13:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,6 +9,7 @@ package org.astrogrid.config;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.Properties;
 
 /**
@@ -38,7 +39,7 @@ public class PropertyConfig extends Config
    /** Returns the System Environment variable used to find the url of the configuration file */
    protected String getSysEnvKey()       { return "AG_CONFIG"; }
    
-
+   
    /**
     * Loads the properties at the given inputstream.  Called by the various
     * superclasses loads
@@ -85,6 +86,13 @@ public class PropertyConfig extends Config
       return properties.getProperty(key, defaultValue);
    }
 
+   /**
+    * Returns an enumeration of all the property <i>keys</i>
+    */
+   public Enumeration keys()
+   {
+      return properties.keys();
+   }
 
    /**
     * Keys in the current JDK Property implementation must not contain whitespace,

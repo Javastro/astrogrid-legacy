@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleConfig.java,v 1.4 2003/12/16 11:29:16 mch Exp $
+ * $Id: SimpleConfig.java,v 1.5 2003/12/16 13:13:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,6 +9,7 @@ package org.astrogrid.config;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Enumeration;
 
 /**
  * A static singleton so that all packages have access to the *same*
@@ -33,7 +34,7 @@ import java.net.URL;
 public abstract class SimpleConfig
 {
    /** Singleton Instance used to provide load methods */
-   private static final PropertyConfig instance = new PropertyConfig();
+   private static final PropertyConfig instance = ConfigFactory.getPropertyConfig(SimpleConfig.class);
    
    /**
     * Autoload looks for the properties file in jndi, then the environment variables,
@@ -100,6 +101,13 @@ public abstract class SimpleConfig
       return instance.getProperty(key, defaultValue);
    }
 
+   /**
+    * Returns an enumeration of the property <i>keys</i>
+    */
+   public Enumeration keys()
+   {
+      return instance.keys();
+   }
 
 }
 

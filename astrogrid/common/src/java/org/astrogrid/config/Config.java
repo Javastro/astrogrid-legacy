@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.6 2003/12/16 11:29:16 mch Exp $
+ * $Id: Config.java,v 1.7 2003/12/16 13:13:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -66,6 +66,7 @@ public abstract class Config {
       catch (NamingException e) {
          //ignore - just means it wasn't found
          log.debug(e);
+         addLocation("(No JNDI key "+jndiKey+")");
          return false;
       }
       catch (IOException ioe) {
@@ -113,11 +114,34 @@ public abstract class Config {
     * @return true if load succeeded
     */
    public boolean loadFile(String filepath) throws IOException {
-      addLocation(filepath);
+
+      try {
+         loadStream(new FileInputStream(filepath));
+         
+         addLocation(filepath);
+         
+         return true;
+      } catch (IOException ioe) {
+         addLocation("(Failed "+filepath+")");
+         throw ioe;
+      }
+   }
+   
+   
+   /**
+    * Loads the properties from the given url
+    */
+   public void loadUrl(URL url) throws IOException {
+      try {
+         loadStream(url.openStream());
+
+         addLocation(url.toString());
       
-      loadStream(new FileInputStream(filepath));
-      
-      return true;
+      } catch (IOException ioe) {
+         addLocation("(Failed "+url+")");
+         throw ioe;
+      }
+
    }
    
    /**
@@ -143,29 +167,21 @@ public abstract class Config {
          }
       }
    }
-   
-   /**
-    * Loads the properties from the given url
-    */
-   public void loadUrl(URL url) throws IOException {
-      addLocation(url.toString());
-      
-      loadStream(url.openStream());
-   }
-   
+
    /**
     * Loads the properties at the given inputstream.
     */
    protected abstract void loadStream(InputStream in) throws IOException;
    
-   /** Returns the jndi key used to find the url of the configuration file */
+   /** Subclasses should implement this to return the jndi key used to find the url of the configuration file */
    protected abstract String getJndiKey();
    
-   /** Returns the System Environment variable used to find the url of the configuration file */
+   /** Subclasses should implement this to return the System Environment variable used to find the url of the configuration file */
    protected abstract String getSysEnvKey();
    
-   /** Returns the default configuration filename  */
+   /** Subclasses should implement this Returns the default configuration filename  */
    protected abstract String getDefaultFilename();
+
    /**
     * Returns the location of the configuration file - useful when reporting
     * errors that things can't be found or are incorrect, so the user really
@@ -191,6 +207,8 @@ public abstract class Config {
          locations = locations+", "+newLocation;
       }
    }
+   
+   
    
 }
 
