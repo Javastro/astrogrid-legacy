@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/13 02:18:52 $</cvs:date>
-    | <cvs:version>$Revision: 1.29 $</cvs:version>
+    | <cvs:author>$Author: pah $</cvs:author>
+    | <cvs:date>$Date: 2003/09/15 06:42:41 $</cvs:date>
+    | <cvs:version>$Revision: 1.30 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.30  2003/09/15 06:42:41  pah
+    |   added in test config for authentication
+    |
     |   Revision 1.29  2003/09/13 02:18:52  dave
     |   Extended the jConfig configuration code.
     |
@@ -2765,7 +2768,6 @@ Start of Authentication "auth" tasks
 		<antcall target="castor.docs.install"/>
 		<antcall target="xerces.docs.install"/>
 		<antcall target="hsqldb.docs.install"/>
-		<antcall target="jconfig.docs.install"/>
 		<echo message=""/>
 		<echo message="Ok, project WebApps installed."/>
 	</target>
@@ -2901,8 +2903,13 @@ Start of Authentication "auth" tasks
 	
 	
 	<target name="authentication.testSetup" description="moves various config files from the main tree into the test tree prior to testing">
-	    <copy file="${basedir}/src/sql/hsqldb/create.sql" todir="${testdir}/java/org/astrogrid/community/common/util/db/"></copy>
-	    <copy file="${basedir}/src/castor/database.xml" todir="${testdir}/java/org/astrogrid/community/common/util/db/"></copy>
+	    <copy file="${basedir}/src/sql/hsqldb/create.sql" todir="${testdir}/java/org/astrogrid/community/common/db/"></copy>
+	    <echo file="${testdir}/java/org/astrogrid/community/common/Test.properties" append="false">
+org.astrogrid.policy.server.mapping=file://${basedir}/src/castor/hsqldb/mapping.xml
+org.astrogrid.policy.server.database.config=file://${testdir}/config/databaseinmemory.xml
+org.astrogrid.policy.server.database.name=${hsqldb.database}
+			</echo>
+
 	</target>
 	
 	<!--+
