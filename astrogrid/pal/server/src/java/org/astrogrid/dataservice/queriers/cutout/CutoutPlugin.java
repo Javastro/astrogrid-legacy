@@ -1,5 +1,5 @@
 /*
- * $Id: CutoutPlugin.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: CutoutPlugin.java,v 1.2 2005/03/10 15:13:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -57,44 +57,8 @@ public class CutoutPlugin extends DefaultPlugin {
 
 /*
  $Log: CutoutPlugin.java,v $
- Revision 1.1  2005/02/17 18:37:35  mch
- *** empty log message ***
-
- Revision 1.1.1.1  2005/02/16 17:11:24  mch
- Initial checkin
-
- Revision 1.6.2.2  2004/11/24 20:59:37  mch
- doc fixes and added slinger browser
-
- Revision 1.6.2.1  2004/11/22 00:57:16  mch
- New interfaces for SIAP etc and new slinger package
-
- Revision 1.6  2004/11/12 13:49:12  mch
- Fix where keyword maker might not have had keywords made
-
- Revision 1.5  2004/11/03 00:17:56  mch
- PAL_MCH Candidate 2 merge
-
- Revision 1.4.6.1  2004/10/27 00:43:39  mch
- Started adding getCount, some resource fixes, some jsps
-
- Revision 1.4  2004/10/18 13:11:30  mch
- Lumpy Merge
-
- Revision 1.3.2.1  2004/10/15 19:59:05  mch
- Lots of changes during trip to CDS to improve int test pass rate
-
- Revision 1.3  2004/10/06 21:12:17  mch
- Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
-
- Revision 1.2  2004/10/01 18:04:58  mch
- Some factoring out of status stuff, added monitor page
-
- Revision 1.1  2004/09/28 15:02:13  mch
- Merged PAL and server packages
-
- Revision 1.1  2004/08/05 13:38:40  mch
- Added example plugin skeleton
+ Revision 1.2  2005/03/10 15:13:48  mch
+ Seperating out fits, table and xdb servers
 
 
  */

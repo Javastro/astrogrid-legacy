@@ -1,4 +1,4 @@
-/*$Id: SiapResources.java,v 1.1 2005/03/08 18:05:57 mch Exp $
+/*$Id: SiapResources.java,v 1.2 2005/03/10 15:13:49 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,7 +29,7 @@ public class SiapResources extends VoResourceSupport implements VoResourcePlugin
 
       String siap =
          makeVoResourceElement("ServiceType")+
-         makeConfigCore("/siap")+
+         makeCore("/siap")+
       
            //"<Subject>Stars</Subject>"+ //etc
            //"<ContentLevel>Research</ContentLevel>"+ //etc
@@ -65,6 +65,9 @@ public class SiapResources extends VoResourceSupport implements VoResourcePlugin
 
 /*
  $Log: SiapResources.java,v $
+ Revision 1.2  2005/03/10 15:13:49  mch
+ Seperating out fits, table and xdb servers
+
  Revision 1.1  2005/03/08 18:05:57  mch
  updating resources to v0.10
 

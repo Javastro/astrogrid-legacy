@@ -1,11 +1,12 @@
 /*
- * $Id: TableWriter.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: TableWriter.java,v 1.2 2005/03/10 15:13:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.dataservice.out.tables;
-import org.astrogrid.dataservice.metadata.tables.*;
+
+import org.astrogrid.tableserver.metadata.*;
 
 import java.io.IOException;
 
@@ -43,8 +44,11 @@ public interface TableWriter {
 
 /*
  $Log: TableWriter.java,v $
- Revision 1.1  2005/02/17 18:37:34  mch
- *** empty log message ***
+ Revision 1.2  2005/03/10 15:13:48  mch
+ Seperating out fits, table and xdb servers
+
+ Revision 1.1.1.1  2005/02/17 18:37:34  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:24  mch
  Initial checkin

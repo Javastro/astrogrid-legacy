@@ -1,5 +1,5 @@
 /*
- * $Id: UrlResourcePlugin.java,v 1.3 2005/03/10 13:49:52 mch Exp $
+ * $Id: UrlResourcePlugin.java,v 1.4 2005/03/10 15:13:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -29,7 +29,6 @@ import org.xml.sax.SAXException;
 
 public class UrlResourcePlugin extends ProxyResourceSupport implements VoResourcePlugin {
 
-   protected static Log log = LogFactory.getLog(VoDescriptionServer.class);
    
    /** Configuration key to where the metadata file is located */
    public static final String METADATA_URL_LOC_KEY = "datacenter.resource.url";

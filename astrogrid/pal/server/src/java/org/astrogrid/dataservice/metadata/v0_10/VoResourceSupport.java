@@ -1,5 +1,5 @@
 /*
- * $Id: VoResourceSupport.java,v 1.2 2005/03/10 13:48:01 mch Exp $
+ * $Id: VoResourceSupport.java,v 1.3 2005/03/10 15:13:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,8 +18,11 @@ import java.util.TimeZone;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.io.Piper;
+import org.astrogrid.xml.DomHelper;
+import org.xml.sax.SAXException;
 
 /**
  * Helper methods for constructing basic VoResource documents
@@ -39,11 +42,15 @@ public class VoResourceSupport {
     * the date must be GMT */
    public final static SimpleDateFormat REGISTRY_DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
+   public static final String VORESOURCE_ELEMENT = "Resource";
+   
+   /** Constructs a miniumum set of core elements for a VOresource from the given
+    * strings */
    public String makeCore(String title, String id, String publisher, String contactName, String contactEmail, String description, String refUrl, String type) {
    
       String core =
          "<title>"+title+"</title>"+
-         "<identifier>"+id+"<identifier>"+
+         "<identifier>"+id+"</identifier>"+
          "<curation>"+
            "<publisher>"+publisher+"</publisher>"+
            "<contact>"+
@@ -60,23 +67,39 @@ public class VoResourceSupport {
       return core;
    }
 
-   public String makeVoResourceElement(String xsiType) {
-      return "<vor:Resource status='active' updated='"+toRegistryForm(new Date())+"' xsi:type='"+xsiType+"'>";
+   /** Constructs  a VoResource opening tag with the given resource type */
+   public String makeVoResourceElement(String vorType) {
+      return "<vor:Resource status='active' updated='"+toRegistryForm(new Date())+"' xsi:type='"+vorType+"'>";
    }
-   
 
-   /** Constructs core VOResource elements from settings in the configuration file */
-   public String makeConfigCore(String idEnd) throws IOException {
-      
+   /** Constructs core VOResource elements with given string appended to the
+    * identifier.  Looks at config file to see if a pre-prepared voresource core
+    * file exists and uses that (incl validation) if so, and if not uses settings
+    * in the configuration file to create it.
+    */
+   public String makeCore(String idEnd) throws IOException {
       String coreFile = SimpleConfig.getSingleton().getString("dataserver.metadata.core", null);
       if ( coreFile != null) {
          //use an on-disk resource file
          StringWriter sw = new StringWriter();
          FileReader reader = new FileReader(coreFile);
          Piper.pipe(reader, sw);
+         try {
+            DomHelper.newDocument(sw.toString());//validate
+         }
+         catch (SAXException e) {
+            throw new MetadataException(e+" parsing Core Resource/Metadata document at "+coreFile,e);
+         }
          return sw.toString();
       }
       else {
+         return makeConfigCore(idEnd);
+      }
+   }
+
+   /** Constructs core VOResource elements from settings in the configuration file */
+   private String makeConfigCore(String idEnd) throws IOException {
+      
          return makeCore(
             DataServer.getDatacenterName(),
             makeId(idEnd),
@@ -88,7 +111,6 @@ public class VoResourceSupport {
             SimpleConfig.getSingleton().getString("datacenter.url", ""),
             "Other"
          );
-      }
    }
    
    /** Constructs an IVORN ID from an authority key and a resource key and the given extension */

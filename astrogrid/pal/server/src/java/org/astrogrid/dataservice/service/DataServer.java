@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: DataServer.java,v 1.2 2005/03/10 15:13:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,7 +18,7 @@ import org.astrogrid.dataservice.queriers.QuerierPluginException;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.dataservice.queriers.status.QuerierError;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
-import org.astrogrid.dataservice.queriers.test.SampleStarsPlugin;
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.dataservice.DatacenterException;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.condition.Condition;

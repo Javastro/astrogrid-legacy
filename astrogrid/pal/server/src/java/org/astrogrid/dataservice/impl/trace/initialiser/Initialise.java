@@ -1,4 +1,4 @@
-/*$Id: Initialise.java,v 1.3 2005/03/10 13:59:00 KevinBenson Exp $
+/*$Id: Initialise.java,v 1.4 2005/03/10 15:13:48 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import nom.tam.fits.FitsException;
-import org.astrogrid.dataservice.queriers.fits.IndexGenerator;
+import org.astrogrid.fitsserver.setup.IndexGenerator;
 
 
 /** Quickfire class that runs the IndexGenerator on the urls in the pakcage
@@ -37,6 +37,9 @@ public class Initialise {
 
 /*
 $Log: Initialise.java,v $
+Revision 1.4  2005/03/10 15:13:48  mch
+Seperating out fits, table and xdb servers
+
 Revision 1.3  2005/03/10 13:59:00  KevinBenson
 corrections to fits and testing to fits
 

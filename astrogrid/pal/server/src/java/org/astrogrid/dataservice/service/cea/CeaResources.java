@@ -1,5 +1,5 @@
 /*
- * $Id: CeaResources.java,v 1.2 2005/03/10 13:49:52 mch Exp $
+ * $Id: CeaResources.java,v 1.3 2005/03/10 15:13:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -32,7 +32,7 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
 
       String ceaService =
          makeVoResourceElement("cea:CeaServiceType")+
-         makeConfigCore("/ceaService")+
+         makeCore("/ceaService")+
          "<interface xsi:type='vs:WebService'>"+
             "<accessURL use='full'>"+
                SimpleConfig.getSingleton().getString("datacenter.url")+"services/CommonExecutionConnectorService"+
@@ -49,7 +49,7 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
 
       String ceaApplication =
          makeVoResourceElement("cea:CeaServiceType")+
-         makeConfigCore("/ceaService")+
+         makeCore("/ceaService")+
          "<cea:ApplicationDefinition>"+
             "<cea:Parameters>"+
                "<cea:ParameterDefinition name='Query' type='ADQL'>"+

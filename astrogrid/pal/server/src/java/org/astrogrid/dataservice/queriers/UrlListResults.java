@@ -1,5 +1,5 @@
 /*
- * $Id: UrlListResults.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: UrlListResults.java,v 1.2 2005/03/10 15:13:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.URLEncoder;
-import org.astrogrid.dataservice.metadata.tables.ColumnInfo;
+import org.astrogrid.tableserver.metadata.ColumnInfo;
 import org.astrogrid.dataservice.out.tables.TableWriter;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.TableResults;
@@ -207,8 +207,11 @@ public class UrlListResults extends TableResults {
 
 /*
  $Log: UrlListResults.java,v $
- Revision 1.1  2005/02/17 18:37:35  mch
- *** empty log message ***
+ Revision 1.2  2005/03/10 15:13:48  mch
+ Seperating out fits, table and xdb servers
+
+ Revision 1.1.1.1  2005/02/17 18:37:35  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:24  mch
  Initial checkin

@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlTableWriter.java,v 1.2 2005/03/10 13:49:52 mch Exp $
+ * $Id: HtmlTableWriter.java,v 1.3 2005/03/10 15:13:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.dataservice.metadata.tables.ColumnInfo;
+import org.astrogrid.tableserver.metadata.ColumnInfo;
 import org.astrogrid.slinger.mime.MimeTypes;
 
 /**
@@ -154,6 +154,9 @@ public class HtmlTableWriter extends AsciiTableSupport {
 
 /*
  $Log: HtmlTableWriter.java,v $
+ Revision 1.3  2005/03/10 15:13:48  mch
+ Seperating out fits, table and xdb servers
+
  Revision 1.2  2005/03/10 13:49:52  mch
  Updating metadata
 

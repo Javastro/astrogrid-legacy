@@ -1,11 +1,12 @@
 /*
- * $Id: StilStarTableWriter.java,v 1.2 2005/03/10 13:49:52 mch Exp $
+ * $Id: StilStarTableWriter.java,v 1.3 2005/03/10 15:13:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.dataservice.out.tables;
-import org.astrogrid.dataservice.metadata.tables.*;
+
+import org.astrogrid.tableserver.metadata.*;
 
 import java.io.IOException;
 import java.util.Vector;
@@ -183,6 +184,9 @@ public class StilStarTableWriter extends AbstractStarTable implements TableWrite
 
 /*
  $Log: StilStarTableWriter.java,v $
+ Revision 1.3  2005/03/10 15:13:48  mch
+ Seperating out fits, table and xdb servers
+
  Revision 1.2  2005/03/10 13:49:52  mch
  Updating metadata
 

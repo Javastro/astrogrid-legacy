@@ -1,18 +1,19 @@
 /*
- * $Id: VoTableFitsWriter.java,v 1.2 2005/03/10 13:49:52 mch Exp $
+ * $Id: VoTableFitsWriter.java,v 1.3 2005/03/10 15:13:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.dataservice.out.tables;
-import org.astrogrid.dataservice.metadata.tables.*;
+
+import org.astrogrid.tableserver.metadata.*;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import org.apache.commons.logging.Log;
-import org.astrogrid.dataservice.queriers.sql.RdbmsTableMetaDocGenerator;
+import org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator;
 import org.astrogrid.slinger.mime.MimeTypes;
 
 /**
@@ -59,6 +60,9 @@ public class VoTableFitsWriter extends VoTableWriter {
 
 /*
  $Log: VoTableFitsWriter.java,v $
+ Revision 1.3  2005/03/10 15:13:48  mch
+ Seperating out fits, table and xdb servers
+
  Revision 1.2  2005/03/10 13:49:52  mch
  Updating metadata
 

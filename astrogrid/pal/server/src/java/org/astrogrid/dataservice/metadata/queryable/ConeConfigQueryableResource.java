@@ -1,5 +1,5 @@
 /*
- * $Id: ConeConfigQueryableResource.java,v 1.2 2005/03/10 13:49:52 mch Exp $
+ * $Id: ConeConfigQueryableResource.java,v 1.3 2005/03/10 15:13:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,8 +7,8 @@
 package org.astrogrid.dataservice.metadata.queryable;
 import java.io.IOException;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.dataservice.metadata.tables.TableInfo;
-import org.astrogrid.dataservice.metadata.tables.TableMetaDocInterpreter;
+import org.astrogrid.tableserver.metadata.TableInfo;
+import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 
 /**
  * An implementation of QueryableResourceReader that looks in the config file

@@ -1,5 +1,5 @@
 /*
- * $Id: ProxyResourceSupport.java,v 1.2 2005/03/10 13:48:01 mch Exp $
+ * $Id: ProxyResourceSupport.java,v 1.3 2005/03/10 15:13:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -40,13 +40,9 @@ public class ProxyResourceSupport extends VoResourceSupport {
          Document doc = DomHelper.newDocument(in);
          return makeLocal(doc);
       }
-      catch (ParserConfigurationException e) {
-         log.error("XML Parser not configured properly",e);
-         throw new RuntimeException("Server not configured properly",e);
-      }
       catch (SAXException e) {
          log.error("Invalid metadata",e);
-         throw new RuntimeException("Server not configured properly - invalid metadata: "+e,e);
+         throw new MetadataException("Server not configured properly - invalid metadata: "+e,e);
       }
       finally  {
          try  {
@@ -103,10 +99,14 @@ public class ProxyResourceSupport extends VoResourceSupport {
       remoteResource.setAttribute("updated", toRegistryForm(new Date()));
 
       try {
-         Element localCore = DomHelper.newDocument(makeConfigCore("")).getDocumentElement();
+         //make local core and parse
+         Element localCore = DomHelper.newDocument("<"+VORESOURCE_ELEMENT+">"+makeCore("")+"</"+VORESOURCE_ELEMENT+">").getDocumentElement();
          
          //set id to local 'core' id + last /-seperated token of the remote id
          Element remoteIdNode = DomHelper.getSingleChildByTagName(remoteResource, "identifier");
+         if (remoteIdNode == null) {
+            throw new MetadataException("No <identifier> element");
+         }
          String localStem = DomHelper.getValueOf(localCore, "identifier");
          String remoteId = DomHelper.getValueOf(remoteIdNode);
          String newId = localStem;
@@ -124,11 +124,8 @@ public class ProxyResourceSupport extends VoResourceSupport {
          
          
       }
-      catch (ParserConfigurationException e) {
-         throw new RuntimeException("Server not configured properly", e);
-      }
       catch (SAXException e) {
-         throw new MetadataException(e+" in Core Generated VoResource: "+makeConfigCore(""));
+         throw new MetadataException(e+" in Core Generated VoResource: "+makeCore(""),e);
       }
    }
    

@@ -1,11 +1,11 @@
 /*
- * $Id: QueryableResourceReader.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: QueryableResourceReader.java,v 1.2 2005/03/10 15:13:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.dataservice.metadata.queryable;
-import org.astrogrid.dataservice.metadata.tables.*;
+
 
 import java.io.IOException;
 

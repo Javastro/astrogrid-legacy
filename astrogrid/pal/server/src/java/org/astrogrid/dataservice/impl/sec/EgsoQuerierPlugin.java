@@ -1,4 +1,4 @@
-/*$Id: EgsoQuerierPlugin.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+/*$Id: EgsoQuerierPlugin.java,v 1.2 2005/03/10 15:13:48 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import org.astrogrid.dataservice.queriers.DefaultPlugin;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierPluginException;
 import org.astrogrid.dataservice.queriers.VotableDomResults;
-import org.astrogrid.dataservice.queriers.sql.StdSqlMaker;
+import org.astrogrid.tableserver.jdbc.StdSqlMaker;
 import org.astrogrid.dataservice.queriers.status.QuerierQuerying;
 import org.astrogrid.query.Query;
 import org.xml.sax.SAXException;
@@ -116,8 +116,11 @@ public class EgsoQuerierPlugin extends DefaultPlugin {
 
 /*
  $Log: EgsoQuerierPlugin.java,v $
- Revision 1.1  2005/02/17 18:37:34  mch
- *** empty log message ***
+ Revision 1.2  2005/03/10 15:13:48  mch
+ Seperating out fits, table and xdb servers
+
+ Revision 1.1.1.1  2005/02/17 18:37:34  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:24  mch
  Initial checkin

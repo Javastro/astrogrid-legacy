@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.3 2005/03/10 13:49:52 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.4 2005/03/10 15:13:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,14 +8,13 @@ package org.astrogrid.dataservice.metadata;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.URL;
-import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.metadata.queryable.QueryableResourceReader;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
-import org.astrogrid.dataservice.queriers.test.SampleStarsPlugin;
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.dataservice.service.cea.CeaResources;
 import org.astrogrid.dataservice.service.cone.ConeResources;
 import org.astrogrid.registry.RegistryException;
@@ -45,15 +44,15 @@ public class VoDescriptionServer {
    public final static String RESOURCE_PLUGIN_KEY = "datacenter.resource.plugin";
    
    public final static String VODESCRIPTION_ELEMENT =
-               "<VODescription  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' "+
-                               "xmlns:cea='http://www.ivoa.net/xml/CEAService/v0.1' "+
-                               "xmlns:ceapd='http://www.astrogrid.org/schema/AGParameterDefinition/v1' "+
-                               "xmlns:ceab='http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1' "+
-                               "xmlns:vor='http://www.ivoa.net/xml/VOResource/v0.10' "+
-                               "xmlns:tdb ='urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3' "+
-                               "xmlns='http://www.ivoa.net/xml/VOResource/v0.10' "+  //default namespace
+               "<VOResources  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' "+
+                              "xmlns:cea='http://www.ivoa.net/xml/CEAService/v0.1' "+
+                              "xmlns:ceapd='http://www.astrogrid.org/schema/AGParameterDefinition/v1' "+
+                              "xmlns:ceab='http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1' "+
+                              "xmlns:vor='http://www.ivoa.net/xml/VOResource/v0.10' "+
+                              "xmlns:tdb ='urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3' "+
+                              "xmlns='http://www.ivoa.net/xml/VOResource/v0.10' "+  //default namespace
                     ">";
-   public final static String VODESCRIPTION_ELEMENT_END ="</VODescription>";
+   public final static String VODESCRIPTION_ELEMENT_END ="</VOResources>";
 
 
    /**
@@ -64,9 +63,6 @@ public class VoDescriptionServer {
          try {
             cache = DomHelper.newDocument(makeVoDescription());
             
-         }
-         catch (ParserConfigurationException e) {
-            throw new RuntimeException("Server not setup properly: "+e,e);
          }
          catch (SAXException e) {
             throw new MetadataException("XML error with Metadata: "+e,e);
@@ -85,9 +81,6 @@ public class VoDescriptionServer {
       catch (SAXException e) {
          throw new MetadataException("Invalid Metadata Resource document "+vod,e);
       }
-      catch (ParserConfigurationException e) {
-         throw new RuntimeException(e);
-      }
       catch (IOException e) {
          throw new RuntimeException(e);
       }
@@ -98,21 +91,20 @@ public class VoDescriptionServer {
          if (children.item(i) instanceof Element) {
             Element resource = (Element) children.item(i);
             
-            if (!resource.getNodeName().equals("Resource")) {
+            if (!resource.getLocalName().equals("Resource")) {
                throw new MetadataException("VODescription Child "+i+" ("+resource.getNodeName()+") is not a Resource element");
             }
             
-            Element id = DomHelper.getSingleChildByTagName(resource, "Identifier");
-            if (id == null) {
+            Element idNode = DomHelper.getSingleChildByTagName(resource, "identifier");
+            if (idNode == null) {
                //no identifier - could add one but we don't know what resource key to give it
-               throw new MetadataException("Resource "+i+" (xsi:type="+resource.getAttribute("xsi:type")+") has no Identifier");
+               throw new MetadataException("Resource "+i+" (xsi:type="+resource.getAttribute("xsi:type")+") has no <identifier>");
             }
             
-            DomHelper.setElementValue(DomHelper.ensuredGetSingleChild(id, "AuthorityID"), SimpleConfig.getSingleton().getString(VoResourceSupport.AUTHID_KEY));
-            Element resKey = DomHelper.getSingleChildByTagName(id, "ResourceKey");
-            if ((resKey == null) || (DomHelper.getValueOf(resKey).trim().length()==0)) {
-               //no resource key
-               throw new MetadataException("Identifier in Resource "+i+" (xsi:type="+resource.getAttribute("xsi:type")+") has no ResourceKey");
+            String configAuth = SimpleConfig.getSingleton().getString(VoResourceSupport.AUTHID_KEY);
+            String id = DomHelper.getValueOf(idNode);
+            if (!id.startsWith(configAuth)) {
+               throw new MetadataException("<identifier> '"+id+"' does not start with configured authority "+configAuth);
             }
          }
       }
