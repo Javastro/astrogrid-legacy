@@ -127,9 +127,11 @@
 
 <goal name="setup" description="configure webapps and working dir">
         <echo>*** Configuring...</echo>
+        <attainGoal name="community-toolkit"/>
         <attainGoal name="setup-working-dir" />
         <attainGoal name="setup-registry" />
-        <attainGoal name="setup-community" />
+        <attainGoal name="community-database"/>
+        <attainGoal name="community-register"/>
         <attainGoal name="setup-applications" />
         <attainGoal name="setup-myspace" />
 </goal>
@@ -179,15 +181,10 @@
 </goal>
 
 <goal name="setup-community" description="Community setup">
-        <echo message=""/>
-        <echo message="Setup Community ...."/>
-        <attainGoal name="community-register"/>
-        <attainGoal name="community-install"/>
 </goal>
 
 <goal name="setup-registry" description="populate the registry">
-        <echo message=""/>
-        <echo message="Setup Registry ...."/>
+        <echo>Configuring Registry</echo>
         <!-- expand tokens -->
         <copy todir="${temporary.dir}/registry-entries" filtering="true">
                 <fileset dir="registry-entries">
@@ -210,12 +207,13 @@
           </j:catch>
         </j:forEach>
 </goal>
+
 <!--+
-    | Configure Community.
+    | Unpack our Community install toolkit.
     +-->
-<goal name="community-install">
+<goal name="community-toolkit">
         <echo message=""/>
-        <echo message="Installing community database ...."/>
+        <echo message="Installing community toolkit ...."/>
         <!--+
             | Unpack our toolkit.
             +-->
@@ -228,6 +226,14 @@
             <entry key="org.astrogrid.community.ident"
                 value="org.astrogrid.localhost"/>
         </propertyfile>
+</goal>
+
+<!--+
+    | Initialise our Community database.
+    +-->
+<goal name="community-database">
+        <echo message=""/>
+        <echo message="Installing community database ...."/>
         <!--+
             | Wait for our service to respond.
             +-->
