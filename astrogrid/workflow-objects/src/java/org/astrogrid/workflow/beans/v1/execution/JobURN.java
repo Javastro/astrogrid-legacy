@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: JobURN.java,v 1.1 2004/03/03 01:16:54 nw Exp $
+ * $Id: JobURN.java,v 1.2 2004/03/03 19:05:19 pah Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.execution;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class JobURN.
  * 
- * @version $Revision: 1.1 $ $Date: 2004/03/03 01:16:54 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/03 19:05:19 $
  */
 public class JobURN extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: StepDescriptor.java,v 1.5 2004/03/03 01:16:54 nw Exp $
+ * $Id: StepDescriptor.java,v 1.6 2004/03/03 19:05:19 pah Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -19,9 +19,9 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class StepDescriptor.
  * 
- * @version $Revision: 1.5 $ $Date: 2004/03/03 01:16:54 $
+ * @version $Revision: 1.6 $ $Date: 2004/03/03 19:05:19 $
  */
-public class StepDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
+public class StepDescriptor extends org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor {
 
 
       //--------------------------/
@@ -55,6 +55,7 @@ public class StepDescriptor extends org.exolab.castor.xml.util.XMLClassDescripto
 
     public StepDescriptor() {
         super();
+        setExtendsWithoutFlatten(new org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor());
         nsURI = "http://www.astrogrid.org/schema/AGWorkflow/v1";
         xmlName = "step";
         
@@ -349,7 +350,7 @@ public class StepDescriptor extends org.exolab.castor.xml.util.XMLClassDescripto
      */
     public org.exolab.castor.mapping.ClassDescriptor getExtends()
     {
-        return null;
+        return super.getExtends();
     } //-- org.exolab.castor.mapping.ClassDescriptor getExtends() 
 
     /**
@@ -357,6 +358,8 @@ public class StepDescriptor extends org.exolab.castor.xml.util.XMLClassDescripto
      */
     public org.exolab.castor.mapping.FieldDescriptor getIdentity()
     {
+        if (identity == null)
+            return super.getIdentity();
         return identity;
     } //-- org.exolab.castor.mapping.FieldDescriptor getIdentity() 
 

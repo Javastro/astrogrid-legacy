@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Step.java,v 1.5 2004/03/03 01:16:54 nw Exp $
+ * $Id: Step.java,v 1.6 2004/03/03 19:05:19 pah Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -26,11 +26,11 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * Class Step.
+ * an acitity to be performed
  * 
- * @version $Revision: 1.5 $ $Date: 2004/03/03 01:16:54 $
+ * @version $Revision: 1.6 $ $Date: 2004/03/03 19:05:19 $
  */
-public class Step extends org.astrogrid.common.bean.BaseBean 
+public class Step extends org.astrogrid.workflow.beans.v1.AbstractActivity 
 implements java.io.Serializable
 {
 
@@ -70,7 +70,7 @@ implements java.io.Serializable
     private boolean _has_sequenceNumber;
 
     /**
-     * Field _tool
+     * the CEA definition of the tool to be run 
      */
     private org.astrogrid.workflow.beans.v1.Tool _tool;
 
@@ -243,7 +243,9 @@ implements java.io.Serializable
     } //-- int getStepNumber() 
 
     /**
-     * Returns the value of field 'tool'.
+     * Returns the value of field 'tool'. The field 'tool' has the
+     * following description: the CEA definition of the tool to be
+     * run 
      * 
      * @return the value of field 'tool'.
      */
@@ -400,7 +402,9 @@ implements java.io.Serializable
     } //-- void setStepNumber(int) 
 
     /**
-     * Sets the value of field 'tool'.
+     * Sets the value of field 'tool'. The field 'tool' has the
+     * following description: the CEA definition of the tool to be
+     * run 
      * 
      * @param tool the value of field 'tool'.
      */

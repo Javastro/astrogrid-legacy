@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Input.java,v 1.5 2004/03/03 01:16:54 nw Exp $
+ * $Id: Input.java,v 1.6 2004/03/03 19:05:19 pah Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -25,9 +25,9 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * Class Input.
+ * the list of input parameters
  * 
- * @version $Revision: 1.5 $ $Date: 2004/03/03 01:16:54 $
+ * @version $Revision: 1.6 $ $Date: 2004/03/03 19:05:19 $
  */
 public class Input extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -39,7 +39,7 @@ implements java.io.Serializable
     //--------------------------/
 
     /**
-     * Field _parameterList
+     * a parameter that should be based to an CEA tool
      */
     private java.util.ArrayList _parameterList;
 

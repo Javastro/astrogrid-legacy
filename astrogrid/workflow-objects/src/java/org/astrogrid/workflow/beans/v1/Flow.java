@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Flow.java,v 1.5 2004/03/03 01:16:54 nw Exp $
+ * $Id: Flow.java,v 1.6 2004/03/03 19:05:19 pah Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
@@ -22,11 +24,11 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * Class Flow.
+ * a parallel group of activities
  * 
- * @version $Revision: 1.5 $ $Date: 2004/03/03 01:16:54 $
+ * @version $Revision: 1.6 $ $Date: 2004/03/03 19:05:19 $
  */
-public class Flow extends org.astrogrid.common.bean.BaseBean 
+public class Flow extends org.astrogrid.workflow.beans.v1.AbstractActivity 
 implements java.io.Serializable
 {
 
@@ -36,9 +38,9 @@ implements java.io.Serializable
     //--------------------------/
 
     /**
-     * Field _activitySequence
+     * The head of the substitution group
      */
-    private org.astrogrid.workflow.beans.v1.ActivitySequence _activitySequence;
+    private java.util.ArrayList _activityList;
 
 
       //----------------/
@@ -47,6 +49,7 @@ implements java.io.Serializable
 
     public Flow() {
         super();
+        _activityList = new ArrayList();
     } //-- org.astrogrid.workflow.beans.v1.Flow()
 
 
@@ -55,14 +58,80 @@ implements java.io.Serializable
     //-----------/
 
     /**
-     * Returns the value of field 'activitySequence'.
+     * Method addActivity
      * 
-     * @return the value of field 'activitySequence'.
+     * @param vActivity
      */
-    public org.astrogrid.workflow.beans.v1.ActivitySequence getActivitySequence()
+    public void addActivity(org.astrogrid.workflow.beans.v1.AbstractActivity vActivity)
+        throws java.lang.IndexOutOfBoundsException
     {
-        return this._activitySequence;
-    } //-- org.astrogrid.workflow.beans.v1.ActivitySequence getActivitySequence() 
+        _activityList.add(vActivity);
+    } //-- void addActivity(org.astrogrid.workflow.beans.v1.AbstractActivity) 
+
+    /**
+     * Method addActivity
+     * 
+     * @param index
+     * @param vActivity
+     */
+    public void addActivity(int index, org.astrogrid.workflow.beans.v1.AbstractActivity vActivity)
+        throws java.lang.IndexOutOfBoundsException
+    {
+        _activityList.add(index, vActivity);
+    } //-- void addActivity(int, org.astrogrid.workflow.beans.v1.AbstractActivity) 
+
+    /**
+     * Method clearActivity
+     */
+    public void clearActivity()
+    {
+        _activityList.clear();
+    } //-- void clearActivity() 
+
+    /**
+     * Method enumerateActivity
+     */
+    public java.util.Enumeration enumerateActivity()
+    {
+        return new org.exolab.castor.util.IteratorEnumeration(_activityList.iterator());
+    } //-- java.util.Enumeration enumerateActivity() 
+
+    /**
+     * Method getActivity
+     * 
+     * @param index
+     */
+    public org.astrogrid.workflow.beans.v1.AbstractActivity getActivity(int index)
+        throws java.lang.IndexOutOfBoundsException
+    {
+        //-- check bounds for index
+        if ((index < 0) || (index > _activityList.size())) {
+            throw new IndexOutOfBoundsException();
+        }
+        
+        return (org.astrogrid.workflow.beans.v1.AbstractActivity) _activityList.get(index);
+    } //-- org.astrogrid.workflow.beans.v1.AbstractActivity getActivity(int) 
+
+    /**
+     * Method getActivity
+     */
+    public org.astrogrid.workflow.beans.v1.AbstractActivity[] getActivity()
+    {
+        int size = _activityList.size();
+        org.astrogrid.workflow.beans.v1.AbstractActivity[] mArray = new org.astrogrid.workflow.beans.v1.AbstractActivity[size];
+        for (int index = 0; index < size; index++) {
+            mArray[index] = (org.astrogrid.workflow.beans.v1.AbstractActivity) _activityList.get(index);
+        }
+        return mArray;
+    } //-- org.astrogrid.workflow.beans.v1.AbstractActivity[] getActivity() 
+
+    /**
+     * Method getActivityCount
+     */
+    public int getActivityCount()
+    {
+        return _activityList.size();
+    } //-- int getActivityCount() 
 
     /**
      * Method isValid
@@ -103,14 +172,45 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Sets the value of field 'activitySequence'.
+     * Method removeActivity
      * 
-     * @param activitySequence the value of field 'activitySequence'
+     * @param vActivity
      */
-    public void setActivitySequence(org.astrogrid.workflow.beans.v1.ActivitySequence activitySequence)
+    public boolean removeActivity(org.astrogrid.workflow.beans.v1.AbstractActivity vActivity)
     {
-        this._activitySequence = activitySequence;
-    } //-- void setActivitySequence(org.astrogrid.workflow.beans.v1.ActivitySequence) 
+        boolean removed = _activityList.remove(vActivity);
+        return removed;
+    } //-- boolean removeActivity(org.astrogrid.workflow.beans.v1.AbstractActivity) 
+
+    /**
+     * Method setActivity
+     * 
+     * @param index
+     * @param vActivity
+     */
+    public void setActivity(int index, org.astrogrid.workflow.beans.v1.AbstractActivity vActivity)
+        throws java.lang.IndexOutOfBoundsException
+    {
+        //-- check bounds for index
+        if ((index < 0) || (index > _activityList.size())) {
+            throw new IndexOutOfBoundsException();
+        }
+        _activityList.set(index, vActivity);
+    } //-- void setActivity(int, org.astrogrid.workflow.beans.v1.AbstractActivity) 
+
+    /**
+     * Method setActivity
+     * 
+     * @param activityArray
+     */
+    public void setActivity(org.astrogrid.workflow.beans.v1.AbstractActivity[] activityArray)
+    {
+        //-- copy array
+        _activityList.clear();
+        for (int i = 0; i < activityArray.length; i++) {
+            _activityList.add(activityArray[i]);
+        }
+    } //-- void setActivity(org.astrogrid.workflow.beans.v1.AbstractActivity) 
 
     /**
      * Method unmarshalFlow

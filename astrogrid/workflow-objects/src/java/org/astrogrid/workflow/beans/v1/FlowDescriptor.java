@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: FlowDescriptor.java,v 1.5 2004/03/03 01:16:54 nw Exp $
+ * $Id: FlowDescriptor.java,v 1.6 2004/03/03 19:05:19 pah Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -19,9 +19,9 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class FlowDescriptor.
  * 
- * @version $Revision: 1.5 $ $Date: 2004/03/03 01:16:54 $
+ * @version $Revision: 1.6 $ $Date: 2004/03/03 19:05:19 $
  */
-public class FlowDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
+public class FlowDescriptor extends org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor {
 
 
       //--------------------------/
@@ -55,6 +55,7 @@ public class FlowDescriptor extends org.exolab.castor.xml.util.XMLClassDescripto
 
     public FlowDescriptor() {
         super();
+        setExtendsWithoutFlatten(new org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor());
         nsURI = "http://www.astrogrid.org/schema/AGWorkflow/v1";
         xmlName = "flow";
         
@@ -67,38 +68,37 @@ public class FlowDescriptor extends org.exolab.castor.xml.util.XMLClassDescripto
         
         //-- initialize element descriptors
         
-        //-- _activitySequence
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.workflow.beans.v1.ActivitySequence.class, "_activitySequence", "-error-if-this-is-used-", org.exolab.castor.xml.NodeType.Element);
+        //-- _activityList
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.workflow.beans.v1.AbstractActivity.class, "_activityList", "Activity", org.exolab.castor.xml.NodeType.Element);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
             {
                 Flow target = (Flow) object;
-                return target.getActivitySequence();
+                return target.getActivity();
             }
             public void setValue( java.lang.Object object, java.lang.Object value) 
                 throws IllegalStateException, IllegalArgumentException
             {
                 try {
                     Flow target = (Flow) object;
-                    target.setActivitySequence( (org.astrogrid.workflow.beans.v1.ActivitySequence) value);
+                    target.addActivity( (org.astrogrid.workflow.beans.v1.AbstractActivity) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
                 }
             }
             public java.lang.Object newInstance( java.lang.Object parent ) {
-                return new org.astrogrid.workflow.beans.v1.ActivitySequence();
+                return new org.astrogrid.workflow.beans.v1.AbstractActivity();
             }
         } );
         desc.setHandler(handler);
-        desc.setContainer(true);
-        desc.setClassDescriptor(new org.astrogrid.workflow.beans.v1.ActivitySequenceDescriptor());
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/AGWorkflow/v1");
         desc.setRequired(true);
-        desc.setMultivalued(false);
+        desc.setMultivalued(true);
         addFieldDescriptor(desc);
         
-        //-- validation code for: _activitySequence
+        //-- validation code for: _activityList
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
         fieldValidator.setMinOccurs(1);
         { //-- local scope
@@ -124,7 +124,7 @@ public class FlowDescriptor extends org.exolab.castor.xml.util.XMLClassDescripto
      */
     public org.exolab.castor.mapping.ClassDescriptor getExtends()
     {
-        return null;
+        return super.getExtends();
     } //-- org.exolab.castor.mapping.ClassDescriptor getExtends() 
 
     /**
@@ -132,6 +132,8 @@ public class FlowDescriptor extends org.exolab.castor.xml.util.XMLClassDescripto
      */
     public org.exolab.castor.mapping.FieldDescriptor getIdentity()
     {
+        if (identity == null)
+            return super.getIdentity();
         return identity;
     } //-- org.exolab.castor.mapping.FieldDescriptor getIdentity() 
 

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Group.java,v 1.2 2004/03/03 01:16:54 nw Exp $
+ * $Id: Group.java,v 1.3 2004/03/03 19:05:19 pah Exp $
  */
 
 package org.astrogrid.community.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * A security group used in authorization.
  * 
- * @version $Revision: 1.2 $ $Date: 2004/03/03 01:16:54 $
+ * @version $Revision: 1.3 $ $Date: 2004/03/03 19:05:19 $
  */
 public class Group extends org.astrogrid.community.beans.v1.BaseIdentifier 
 implements java.io.Serializable

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParameterTypes.java,v 1.5 2004/03/03 01:16:54 nw Exp $
+ * $Id: ParameterTypes.java,v 1.6 2004/03/03 19:05:19 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters.types;
@@ -18,9 +18,11 @@ import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 
 /**
- * The list of possible parameter types
+ * The list of possible parameter typesThe enumeration values
+ * should have the namespace appended? I have removed them to make
+ * castor generate nicer objects
  * 
- * @version $Revision: 1.5 $ $Date: 2004/03/03 01:16:54 $
+ * @version $Revision: 1.6 $ $Date: 2004/03/03 19:05:19 $
  */
 public class ParameterTypes implements java.io.Serializable {
 
@@ -30,124 +32,124 @@ public class ParameterTypes implements java.io.Serializable {
     //--------------------------/
 
     /**
-     * The xs:integer type
+     * The integer type
      */
-    public static final int VALUE_0_TYPE = 0;
+    public static final int INTEGER_TYPE = 0;
 
     /**
-     * The instance of the xs:integer type
+     * The instance of the integer type
      */
-    public static final ParameterTypes VALUE_0 = new ParameterTypes(VALUE_0_TYPE, "xs:integer");
+    public static final ParameterTypes INTEGER = new ParameterTypes(INTEGER_TYPE, "integer");
 
     /**
-     * The xs:real type
+     * The real type
      */
-    public static final int VALUE_1_TYPE = 1;
+    public static final int REAL_TYPE = 1;
 
     /**
-     * The instance of the xs:real type
+     * The instance of the real type
      */
-    public static final ParameterTypes VALUE_1 = new ParameterTypes(VALUE_1_TYPE, "xs:real");
+    public static final ParameterTypes REAL = new ParameterTypes(REAL_TYPE, "real");
 
     /**
-     * The agpd:MySpace_FileReference type
+     * The double type
      */
-    public static final int VALUE_2_TYPE = 2;
+    public static final int DOUBLE_TYPE = 2;
 
     /**
-     * The instance of the agpd:MySpace_FileReference type
+     * The instance of the double type
      */
-    public static final ParameterTypes VALUE_2 = new ParameterTypes(VALUE_2_TYPE, "agpd:MySpace_FileReference");
+    public static final ParameterTypes DOUBLE = new ParameterTypes(DOUBLE_TYPE, "double");
 
     /**
-     * The agpd:FileReference type
+     * The string type
      */
-    public static final int VALUE_3_TYPE = 3;
+    public static final int STRING_TYPE = 3;
 
     /**
-     * The instance of the agpd:FileReference type
+     * The instance of the string type
      */
-    public static final ParameterTypes VALUE_3 = new ParameterTypes(VALUE_3_TYPE, "agpd:FileReference");
+    public static final ParameterTypes STRING = new ParameterTypes(STRING_TYPE, "string");
 
     /**
-     * The agpd:MySpace_VOTableReference type
+     * The boolean type
      */
-    public static final int VALUE_4_TYPE = 4;
+    public static final int BOOLEAN_TYPE = 4;
 
     /**
-     * The instance of the agpd:MySpace_VOTableReference type
+     * The instance of the boolean type
      */
-    public static final ParameterTypes VALUE_4 = new ParameterTypes(VALUE_4_TYPE, "agpd:MySpace_VOTableReference");
+    public static final ParameterTypes BOOLEAN = new ParameterTypes(BOOLEAN_TYPE, "boolean");
 
     /**
-     * The xs:double type
+     * The anyURI type
      */
-    public static final int VALUE_5_TYPE = 5;
+    public static final int ANYURI_TYPE = 5;
 
     /**
-     * The instance of the xs:double type
+     * The instance of the anyURI type
      */
-    public static final ParameterTypes VALUE_5 = new ParameterTypes(VALUE_5_TYPE, "xs:double");
+    public static final ParameterTypes ANYURI = new ParameterTypes(ANYURI_TYPE, "anyURI");
 
     /**
-     * The xs:string type
+     * The FileReference type
      */
-    public static final int VALUE_6_TYPE = 6;
+    public static final int FILEREFERENCE_TYPE = 6;
 
     /**
-     * The instance of the xs:string type
+     * The instance of the FileReference type
      */
-    public static final ParameterTypes VALUE_6 = new ParameterTypes(VALUE_6_TYPE, "xs:string");
+    public static final ParameterTypes FILEREFERENCE = new ParameterTypes(FILEREFERENCE_TYPE, "FileReference");
 
     /**
-     * The agpd:RA type
+     * The MySpace_FileReference type
      */
-    public static final int VALUE_7_TYPE = 7;
+    public static final int MYSPACE_FILEREFERENCE_TYPE = 7;
 
     /**
-     * The instance of the agpd:RA type
+     * The instance of the MySpace_FileReference type
      */
-    public static final ParameterTypes VALUE_7 = new ParameterTypes(VALUE_7_TYPE, "agpd:RA");
+    public static final ParameterTypes MYSPACE_FILEREFERENCE = new ParameterTypes(MYSPACE_FILEREFERENCE_TYPE, "MySpace_FileReference");
 
     /**
-     * The agpd:Dec type
+     * The MySpace_VOTableReference type
      */
-    public static final int VALUE_8_TYPE = 8;
+    public static final int MYSPACE_VOTABLEREFERENCE_TYPE = 8;
 
     /**
-     * The instance of the agpd:Dec type
+     * The instance of the MySpace_VOTableReference type
      */
-    public static final ParameterTypes VALUE_8 = new ParameterTypes(VALUE_8_TYPE, "agpd:Dec");
+    public static final ParameterTypes MYSPACE_VOTABLEREFERENCE = new ParameterTypes(MYSPACE_VOTABLEREFERENCE_TYPE, "MySpace_VOTableReference");
 
     /**
-     * The agpd:ADQL type
+     * The RA type
      */
-    public static final int VALUE_9_TYPE = 9;
+    public static final int RA_TYPE = 9;
 
     /**
-     * The instance of the agpd:ADQL type
+     * The instance of the RA type
      */
-    public static final ParameterTypes VALUE_9 = new ParameterTypes(VALUE_9_TYPE, "agpd:ADQL");
+    public static final ParameterTypes RA = new ParameterTypes(RA_TYPE, "RA");
 
     /**
-     * The xs:boolean type
+     * The Dec type
      */
-    public static final int VALUE_10_TYPE = 10;
+    public static final int DEC_TYPE = 10;
 
     /**
-     * The instance of the xs:boolean type
+     * The instance of the Dec type
      */
-    public static final ParameterTypes VALUE_10 = new ParameterTypes(VALUE_10_TYPE, "xs:boolean");
+    public static final ParameterTypes DEC = new ParameterTypes(DEC_TYPE, "Dec");
 
     /**
-     * The xs:anyURI type
+     * The ADQL type
      */
-    public static final int VALUE_11_TYPE = 11;
+    public static final int ADQL_TYPE = 11;
 
     /**
-     * The instance of the xs:anyURI type
+     * The instance of the ADQL type
      */
-    public static final ParameterTypes VALUE_11 = new ParameterTypes(VALUE_11_TYPE, "xs:anyURI");
+    public static final ParameterTypes ADQL = new ParameterTypes(ADQL_TYPE, "ADQL");
 
     /**
      * Field _memberTable
@@ -203,18 +205,18 @@ public class ParameterTypes implements java.io.Serializable {
     private static java.util.Hashtable init()
     {
         Hashtable members = new Hashtable();
-        members.put("xs:integer", VALUE_0);
-        members.put("xs:real", VALUE_1);
-        members.put("agpd:MySpace_FileReference", VALUE_2);
-        members.put("agpd:FileReference", VALUE_3);
-        members.put("agpd:MySpace_VOTableReference", VALUE_4);
-        members.put("xs:double", VALUE_5);
-        members.put("xs:string", VALUE_6);
-        members.put("agpd:RA", VALUE_7);
-        members.put("agpd:Dec", VALUE_8);
-        members.put("agpd:ADQL", VALUE_9);
-        members.put("xs:boolean", VALUE_10);
-        members.put("xs:anyURI", VALUE_11);
+        members.put("integer", INTEGER);
+        members.put("real", REAL);
+        members.put("double", DOUBLE);
+        members.put("string", STRING);
+        members.put("boolean", BOOLEAN);
+        members.put("anyURI", ANYURI);
+        members.put("FileReference", FILEREFERENCE);
+        members.put("MySpace_FileReference", MYSPACE_FILEREFERENCE);
+        members.put("MySpace_VOTableReference", MYSPACE_VOTABLEREFERENCE);
+        members.put("RA", RA);
+        members.put("Dec", DEC);
+        members.put("ADQL", ADQL);
         return members;
     } //-- java.util.Hashtable init() 
 

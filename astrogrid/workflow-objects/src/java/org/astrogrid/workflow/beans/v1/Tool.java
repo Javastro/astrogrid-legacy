@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Tool.java,v 1.5 2004/03/03 01:16:54 nw Exp $
+ * $Id: Tool.java,v 1.6 2004/03/03 19:05:19 pah Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -22,9 +22,9 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * Class Tool.
+ * the CEA definition of the tool to be run 
  * 
- * @version $Revision: 1.5 $ $Date: 2004/03/03 01:16:54 $
+ * @version $Revision: 1.6 $ $Date: 2004/03/03 19:05:19 $
  */
 public class Tool extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -46,12 +46,12 @@ implements java.io.Serializable
     private java.lang.String _interface;
 
     /**
-     * Field _input
+     * the list of input parameters
      */
     private org.astrogrid.workflow.beans.v1.Input _input;
 
     /**
-     * Field _output
+     * the list of output paramters
      */
     private org.astrogrid.workflow.beans.v1.Output _output;
 
@@ -70,7 +70,8 @@ implements java.io.Serializable
     //-----------/
 
     /**
-     * Returns the value of field 'input'.
+     * Returns the value of field 'input'. The field 'input' has
+     * the following description: the list of input parameters
      * 
      * @return the value of field 'input'.
      */
@@ -100,7 +101,8 @@ implements java.io.Serializable
     } //-- java.lang.String getName() 
 
     /**
-     * Returns the value of field 'output'.
+     * Returns the value of field 'output'. The field 'output' has
+     * the following description: the list of output paramters
      * 
      * @return the value of field 'output'.
      */
@@ -148,7 +150,8 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Sets the value of field 'input'.
+     * Sets the value of field 'input'. The field 'input' has the
+     * following description: the list of input parameters
      * 
      * @param input the value of field 'input'.
      */
@@ -179,7 +182,8 @@ implements java.io.Serializable
     } //-- void setName(java.lang.String) 
 
     /**
-     * Sets the value of field 'output'.
+     * Sets the value of field 'output'. The field 'output' has the
+     * following description: the list of output paramters
      * 
      * @param output the value of field 'output'.
      */

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParameterValue.java,v 1.5 2004/03/03 01:16:54 nw Exp $
+ * $Id: ParameterValue.java,v 1.6 2004/03/03 19:05:19 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -26,7 +26,7 @@ import org.xml.sax.ContentHandler;
  * Defines what a parameterValue can contain - for the instance
  * document
  * 
- * @version $Revision: 1.5 $ $Date: 2004/03/03 01:16:54 $
+ * @version $Revision: 1.6 $ $Date: 2004/03/03 19:05:19 $
  */
 public class ParameterValue extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -52,11 +52,6 @@ implements java.io.Serializable
      */
     private java.lang.String _content = "";
 
-    /**
-     * Field _anyObject
-     */
-    private java.lang.Object _anyObject;
-
 
       //----------------/
      //- Constructors -/
@@ -71,16 +66,6 @@ implements java.io.Serializable
       //-----------/
      //- Methods -/
     //-----------/
-
-    /**
-     * Returns the value of field 'anyObject'.
-     * 
-     * @return the value of field 'anyObject'.
-     */
-    public java.lang.Object getAnyObject()
-    {
-        return this._anyObject;
-    } //-- java.lang.Object getAnyObject() 
 
     /**
      * Returns the value of field 'content'. The field 'content'
@@ -150,16 +135,6 @@ implements java.io.Serializable
         
         Marshaller.marshal(this, handler);
     } //-- void marshal(org.xml.sax.ContentHandler) 
-
-    /**
-     * Sets the value of field 'anyObject'.
-     * 
-     * @param anyObject the value of field 'anyObject'.
-     */
-    public void setAnyObject(java.lang.Object anyObject)
-    {
-        this._anyObject = anyObject;
-    } //-- void setAnyObject(java.lang.Object) 
 
     /**
      * Sets the value of field 'content'. The field 'content' has

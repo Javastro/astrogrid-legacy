@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: WorkflowDescriptor.java,v 1.5 2004/03/03 01:16:54 nw Exp $
+ * $Id: WorkflowDescriptor.java,v 1.6 2004/03/03 19:05:19 pah Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class WorkflowDescriptor.
  * 
- * @version $Revision: 1.5 $ $Date: 2004/03/03 01:16:54 $
+ * @version $Revision: 1.6 $ $Date: 2004/03/03 19:05:19 $
  */
 public class WorkflowDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -105,28 +105,28 @@ public class WorkflowDescriptor extends org.exolab.castor.xml.util.XMLClassDescr
         desc.setValidator(fieldValidator);
         //-- initialize element descriptors
         
-        //-- _sequence
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.workflow.beans.v1.Sequence.class, "_sequence", "sequence", org.exolab.castor.xml.NodeType.Element);
+        //-- _activities
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.workflow.beans.v1.Activities.class, "_activities", "Activities", org.exolab.castor.xml.NodeType.Element);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
             {
                 Workflow target = (Workflow) object;
-                return target.getSequence();
+                return target.getActivities();
             }
             public void setValue( java.lang.Object object, java.lang.Object value) 
                 throws IllegalStateException, IllegalArgumentException
             {
                 try {
                     Workflow target = (Workflow) object;
-                    target.setSequence( (org.astrogrid.workflow.beans.v1.Sequence) value);
+                    target.setActivities( (org.astrogrid.workflow.beans.v1.Activities) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
                 }
             }
             public java.lang.Object newInstance( java.lang.Object parent ) {
-                return new org.astrogrid.workflow.beans.v1.Sequence();
+                return new org.astrogrid.workflow.beans.v1.Activities();
             }
         } );
         desc.setHandler(handler);
@@ -135,7 +135,7 @@ public class WorkflowDescriptor extends org.exolab.castor.xml.util.XMLClassDescr
         desc.setMultivalued(false);
         addFieldDescriptor(desc);
         
-        //-- validation code for: _sequence
+        //-- validation code for: _activities
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
         fieldValidator.setMinOccurs(1);
         { //-- local scope
