@@ -12,10 +12,7 @@
   (<a href="http://skyservice.pha.jhu.edu/devel/AdqlTranslator/Convertor.aspx">Translate from SQL</a>)
   (<a href="adql">Sample queries</a>)<br />
 <form action="process-form.jsp" method="POST">
-<textarea name="query" rows="20" cols="100%"><![CDATA[
-<Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://tempuri.org/adql">
-<!-- enter query here -->
-</Select>]]></textarea>
+<textarea name="query" rows="20" cols="100%"></textarea>
   <p/>
   <input type="submit" value="Run Query" />
 </form>
