@@ -1,4 +1,4 @@
-/*$Id: RegistryToolLocator.java,v 1.4 2004/03/15 01:30:45 nw Exp $
+/*$Id: RegistryToolLocator.java,v 1.5 2004/04/08 14:43:26 nw Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,9 @@ import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.workflow.beans.v1.Step;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.net.URL;
 
 import junit.framework.Test;
@@ -27,7 +30,7 @@ import junit.framework.Test;
  *
  */
 public class RegistryToolLocator implements Locator, ComponentDescriptor {
-    
+    private static final Log logger = LogFactory.getLog(RegistryToolLocator.class);
     /** interface to configure registry with */
     public interface RegistryEndpoint {
         URL getURL();
@@ -46,8 +49,13 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
      */
     public String locateTool(Step js) throws JesException {
         try {
-            return delegate.getEndPointByIdentifier(js.getTool().getName());
+
+            logger.debug("retreiving tool location for " + js.getTool().getName());
+            String endpoint = delegate.getEndPointByIdentifier(js.getTool().getName());
+            logger.debug("registry resolved to " + endpoint);
+            return endpoint;
         } catch (RegistryException e) {
+            logger.error("Registry exception when resolving " + js.getTool().getName(),e);
             throw new JesException("Failed to locate tool due to error",e);
         }
     }
@@ -55,6 +63,7 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
      * @see org.astrogrid.jes.jobscheduler.Locator#getToolInterface(org.astrogrid.workflow.beans.v1.Step)
      */
     public String getToolInterface(Step js) throws JesException {
+        logger.error("Deprecated method, not used");
         return null;
     }
     /**
@@ -80,6 +89,9 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: RegistryToolLocator.java,v $
+Revision 1.5  2004/04/08 14:43:26  nw
+added delete and abort job functionality
+
 Revision 1.4  2004/03/15 01:30:45  nw
 factored component descriptor out into separate package
 

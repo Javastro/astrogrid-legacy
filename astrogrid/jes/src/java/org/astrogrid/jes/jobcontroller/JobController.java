@@ -87,7 +87,7 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
  * @throws JesFault
  */    
     public JobURN submitJob( SubmitJobRequest req ) throws JesFault {
-        logger.debug("in submit job");
+        logger.debug("Submit Job");
 		JobFactory factory = null ;
         Workflow job= null;
 			
@@ -97,7 +97,9 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
 	        job = factory.createJob( req) ;
             nudger.scheduleNewJob(JesUtil.castor2axis(job.getJobExecutionRecord().getJobId()));                    		
 			factory.end ( true ) ;   // Commit and cleanup                    		
-            return new JobURN(job.getJobExecutionRecord().getJobId().getContent());
+            JobURN result = new JobURN(job.getJobExecutionRecord().getJobId().getContent());
+            logger.debug("Submit Job: new URN = " + result.toString());
+            return result;
         }
         catch(Exception jex ) {
         	logger.error(jex);
@@ -113,6 +115,30 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
          	
     } // end of submitJob()
     
+
+    /**
+     * @see org.astrogrid.jes.delegate.v1.jobcontroller.JobController#cancelJob(org.astrogrid.jes.types.v1.JobURN)
+     */
+    public void cancelJob(JobURN arg0)   {
+        logger.debug("Cancel Job:" + arg0.toString());
+        try {
+            nudger.abortJob(arg0);
+        } catch (Exception jex) {
+            logger.warn("cancelJob:",jex);
+        }
+    }
+
+    /**
+     * @see org.astrogrid.jes.delegate.v1.jobcontroller.JobController#deleteJob(org.astrogrid.jes.types.v1.JobURN)
+     */
+    public void deleteJob(JobURN arg0){
+        logger.debug("Delete Job: " + arg0.toString());
+        try {
+            nudger.deleteJob(arg0);
+        } catch (Exception jex) {
+            logger.warn("deleteJob:",jex);
+        }
+    }
 
 
     /**
@@ -136,22 +162,6 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
         return null;
     }
 
-
-    /**
-     * @see org.astrogrid.jes.delegate.v1.jobcontroller.JobController#cancelJob(org.astrogrid.jes.types.v1.JobURN)
-     * @todo implement - pass on to jobmonitor
-     */
-    public void cancelJob(JobURN arg0)  {
-        logger.warn("call to cancelJob - unimplemented");
-    }
-
-    /**
-     * @see org.astrogrid.jes.delegate.v1.jobcontroller.JobController#deleteJob(org.astrogrid.jes.types.v1.JobURN)
-     * @todo implement - pass on to jobmonitor.
-     */
-    public void deleteJob(JobURN arg0){
-        logger.warn("call to deleteJob - unimplemented");
-    }
 
     /**
      * @see org.astrogrid.jes.delegate.v1.jobcontroller.JobController#readJobList(org.astrogrid.community.beans.v1.axis._Account)
@@ -195,12 +205,12 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
         JobFactory fac = facade.getJobFactory();
         Workflow w = fac.findJob(Axis2Castor.convert(arg0));
         if ( w == null) {
+            logger.error("Factory  returned null workflow");
             throw new JesFault("factory returned null workflow");
         }
         StringWriter sw = new StringWriter();
         w.marshal(sw); 
         sw.close(); 
-        System.out.println(sw.toString());
         return new WorkflowString(sw.toString());
         } catch (Exception e) {
             throw createFault("Failed to read job",e);

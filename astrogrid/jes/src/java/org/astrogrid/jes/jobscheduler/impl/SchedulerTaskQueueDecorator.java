@@ -1,4 +1,4 @@
-/*$Id: SchedulerTaskQueueDecorator.java,v 1.3 2004/03/15 23:45:07 nw Exp $
+/*$Id: SchedulerTaskQueueDecorator.java,v 1.4 2004/04/08 14:43:26 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,7 +35,6 @@ import junit.framework.Test;
  * due to   communication with external web services, so serial processing of tasks is not a problem - each task is quick to process and short-lived.
  * There could be further gains due to removal of overhead in calling synchronized methods and aquiring locks in the job store. 
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Feb-2004
- * @todo extend to handle delete and cancel requests.
  *
  */
 public class SchedulerTaskQueueDecorator implements JobScheduler , ComponentDescriptor{
@@ -56,13 +55,27 @@ public class SchedulerTaskQueueDecorator implements JobScheduler , ComponentDesc
      * @see org.astrogrid.jes.comm.SchedulerNotifier#notify(org.astrogrid.jes.job.Job)
      */
     public void scheduleNewJob(JobURN urn) throws Exception {        
-        executor.execute(factory.createTask(urn));
+        executor.execute(factory.createSubmitJobTask(urn));
     }
     /**adds a task to te queue that will call 'resumeJob' with the current parameters on the wrapped job scheduler
      * @see org.astrogrid.jes.comm.SchedulerNotifier#notify(org.astrogrid.jes.types.v1.JobInfo)
      */
     public void resumeJob(JobIdentifierType ji,MessageType i) throws Exception {
-        executor.execute(factory.createTask(ji,i));
+        executor.execute(factory.createResumeTask(ji,i));
+    }    
+    
+    /**
+     * @see org.astrogrid.jes.jobscheduler.JobScheduler#abortJob(org.astrogrid.jes.types.v1.JobURN)
+     */
+    public void abortJob(JobURN jobURN) throws Exception {
+        executor.execute(factory.createAbortJobTask(jobURN));
+       
+    }
+    /**
+     * @see org.astrogrid.jes.jobscheduler.JobScheduler#deleteJob(org.astrogrid.jes.types.v1.JobURN)
+     */
+    public void deleteJob(JobURN jobURN) throws Exception {
+        executor.execute(factory.createDeleteJobTask(jobURN));
     }    
     
     /** general method to add another runnable to the queue. useful for testing - i.e. can insert a 'end of test' runnable 
@@ -86,25 +99,47 @@ public class SchedulerTaskQueueDecorator implements JobScheduler , ComponentDesc
         
         private static final Log logger = LogFactory.getLog("TaskQueue");
         /** create a task to schedule new job */
-        public Runnable createTask(final JobURN urn) {
+        public Runnable createSubmitJobTask(final JobURN urn) {
             return new Runnable() {
                 public void run() {
                     try {
                     js.scheduleNewJob(urn);
                     } catch (Exception e) {
-                        logger.warn("schedule new job",e);
+                        logger.error("schedule new job",e);
                     }
                 }                
             };
         } 
         /** create a task to resume a new job */
-        public Runnable createTask(final JobIdentifierType ji, final MessageType msg) {
+        public Runnable createResumeTask(final JobIdentifierType ji, final MessageType msg) {
             return new Runnable() {
                 public void run() {
                     try {
                     js.resumeJob(ji,msg);
                     } catch (Exception e) {
-                        logger.warn("resume job",e);
+                        logger.error("resume job",e);
+                    }
+                }
+            };
+        }
+        public Runnable createAbortJobTask(final JobURN urn) {
+            return new Runnable() {
+                public void run() {
+                    try {
+                        js.abortJob(urn);
+                    } catch (Exception e) {
+                        logger.error("abort job",e);
+                    }
+                }
+            };
+        }
+        public Runnable createDeleteJobTask(final JobURN urn) {
+            return new Runnable() {
+                public void run() {
+                    try {
+                        js.deleteJob(urn);
+                    } catch (Exception e) {
+                        logger.error("delete job",e);
                     }
                 }
             };
@@ -130,12 +165,16 @@ public class SchedulerTaskQueueDecorator implements JobScheduler , ComponentDesc
         return null;
     }
 
+
     }
 
 
 
 /* 
 $Log: SchedulerTaskQueueDecorator.java,v $
+Revision 1.4  2004/04/08 14:43:26  nw
+added delete and abort job functionality
+
 Revision 1.3  2004/03/15 23:45:07  nw
 improved javadoc
 

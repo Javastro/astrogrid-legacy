@@ -1,4 +1,4 @@
-/*$Id: JobScheduler.java,v 1.52 2004/03/15 23:45:07 nw Exp $
+/*$Id: JobScheduler.java,v 1.53 2004/04/08 14:43:26 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,4 +37,15 @@ public interface JobScheduler {
      * @throws Exception
      */
     public abstract void resumeJob(JobIdentifierType id, org.astrogrid.jes.types.v1.cea.axis.MessageType info) throws Exception;
+    
+    /** abort execution of a job
+     * <p>
+     * Leaves record of job in the store */
+    public abstract void abortJob(JobURN jobURN) throws Exception;
+    
+    /** delete all record of a job
+     * <p>
+     * aborts if still running, then deletes the job record from the store */
+    public abstract void deleteJob(JobURN jobURN) throws Exception;
+    
 }

@@ -1,4 +1,4 @@
-/*$Id: HTMLDriver.java,v 1.2 2004/04/07 23:06:05 nw Exp $
+/*$Id: HTMLDriver.java,v 1.3 2004/04/08 14:43:26 nw Exp $
  * Created on 05-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,6 +43,8 @@ import javax.xml.transform.stream.StreamSource;
 public class HTMLDriver extends HttpServlet {
     public final static String INSPECT = "inspect";
     public final static String SUBMIT = "submit";
+    public final static String DELETE = "delete";
+    public final static String ABORT = "abort";
     public final static String LIST = "list";
     public final static String WORKFLOW = "workflow";
     
@@ -66,6 +68,10 @@ public class HTMLDriver extends HttpServlet {
         try {
         if (INSPECT.equalsIgnoreCase(action)) {
             doInspect(req,resp);
+        } else if (DELETE.equalsIgnoreCase(action)) {
+            deleteJob(req,resp);
+        } else if (ABORT.equalsIgnoreCase(action)){
+            abortJob(req,resp);
         } else {
             doList(req,resp);
         }
@@ -73,7 +79,38 @@ public class HTMLDriver extends HttpServlet {
             throw new ServletException(e);
         }
     }
-    private static final String ENDPOINT = "";
+    /**
+     * @param req
+     * @param resp
+     */
+    private void abortJob(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        JobController man = JesDelegateFactory.createJobController(computeEndpoint(req).toString());
+        JobURN urn = new JobURN();
+        urn.setContent(req.getParameter(URN).trim());
+        PrintWriter out = resp.getWriter();
+          out.println("<html><body>");
+          out.println("<h1>Aborting Job " + urn.getContent() + "</h1>");
+          man.cancelJob(urn);
+          out.println("<h1>Done</h1>");
+          out.println("</body></table>");  
+    }
+
+    /**
+     * @param req
+     * @param resp
+     */
+    private void deleteJob(HttpServletRequest req, HttpServletResponse resp) throws Exception  {
+        JobController man = JesDelegateFactory.createJobController(computeEndpoint(req).toString());
+        JobURN urn = new JobURN();
+        urn.setContent(req.getParameter(URN).trim());
+        PrintWriter out = resp.getWriter();
+          out.println("<html><body>");
+          out.println("<h1>Deleting Job" + urn.getContent() + "</h1>");
+          man.deleteJob(urn);
+          out.println("<h1>Done</h1>");
+          out.println("</body></table>");  
+    }
+
     /**
      * @param req
      * @param resp
@@ -92,8 +129,10 @@ public class HTMLDriver extends HttpServlet {
             out.println("<tr>");
             out.println("<td>" + summary[i].getName() + "</td>");
             String urn = summary[i].getJobURN().getContent();
-            out.println("<td><a href='html-driver?action=inspect&urn=" + URLEncoder.encode(urn) + "'>"
+            out.println("<td><a href='html-driver?action=" + INSPECT + "&urn=" + URLEncoder.encode(urn) + "'>"
                 + urn + "</a></td>");
+            out.println("<td><a href='html-driver?action=" + DELETE + "&urn=" + URLEncoder.encode(urn)+ "'>delete</a></td>");
+            out.println("<td><a href='html-driver?action=" + ABORT + "&urn=" + URLEncoder.encode(urn) + "'>abort</a></td>");
             out.println("</tr>");
         }
         out.println("</table>");
@@ -140,11 +179,13 @@ public class HTMLDriver extends HttpServlet {
 
         JobController man = JesDelegateFactory.createJobController(computeEndpoint(req).toString());
         Workflow wf = Workflow.unmarshalWorkflow(new StringReader(req.getParameter(WORKFLOW)));
-        JobURN urn = man.submitWorkflow(wf);
 
         PrintWriter out = resp.getWriter();
         out.println("<html><body>");
-        out.println("<h1>Submitted Job " + urn.getContent() + "</h1>");
+        out.println("<h1>Submitting Job</h1>");
+
+        JobURN urn = man.submitWorkflow(wf);
+        out.println("<h1>Done: <a href='html-driver?action=" + INSPECT + "&urn=" + URLEncoder.encode(urn.getContent())+ "'>" + urn.getContent() + "</a></h1>");
         out.println("</body></table>");                
         } catch (Exception e) {
             throw new ServletException(e);
@@ -158,6 +199,9 @@ public class HTMLDriver extends HttpServlet {
 
 /* 
 $Log: HTMLDriver.java,v $
+Revision 1.3  2004/04/08 14:43:26  nw
+added delete and abort job functionality
+
 Revision 1.2  2004/04/07 23:06:05  nw
 got html-front-end working
 

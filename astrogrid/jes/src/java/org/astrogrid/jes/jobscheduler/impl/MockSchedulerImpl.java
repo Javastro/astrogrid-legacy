@@ -1,4 +1,4 @@
-/*$Id: MockSchedulerImpl.java,v 1.3 2004/03/15 23:45:07 nw Exp $
+/*$Id: MockSchedulerImpl.java,v 1.4 2004/04/08 14:43:26 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -75,11 +75,38 @@ public class MockSchedulerImpl implements JobScheduler , ComponentDescriptor{
     public Test getInstallationTest() {
         return null;
     }
+    /**
+     * @see org.astrogrid.jes.jobscheduler.JobScheduler#abortJob(org.astrogrid.jes.types.v1.JobURN)
+     */
+    public void abortJob(JobURN jobURN) throws Exception {
+        callCount++;
+        if (! willSucceed) {
+            throw new Exception("you wanted me to fail");
+        }
+    }
+    /**
+     * @see org.astrogrid.jes.jobscheduler.JobScheduler#deleteJob(org.astrogrid.jes.types.v1.JobURN)
+     */
+    public void deleteJob(JobURN jobURN) throws Exception {
+        callCount++;
+        if (! willSucceed) {
+            throw new Exception("you wanted me to fail");
+        }
+    }
+    /**
+     * 
+     */
+    public void resetCallCount() {
+        callCount = 0;
+    }
 }
 
 
 /* 
 $Log: MockSchedulerImpl.java,v $
+Revision 1.4  2004/04/08 14:43:26  nw
+added delete and abort job functionality
+
 Revision 1.3  2004/03/15 23:45:07  nw
 improved javadoc
 

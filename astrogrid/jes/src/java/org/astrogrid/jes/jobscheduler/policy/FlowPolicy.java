@@ -1,4 +1,4 @@
-/*$Id: FlowPolicy.java,v 1.1 2004/03/18 10:55:55 nw Exp $
+/*$Id: FlowPolicy.java,v 1.2 2004/04/08 14:43:26 nw Exp $
  * Created on 18-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,12 +33,14 @@ public class FlowPolicy extends AbstractPolicy {
      * @see org.astrogrid.jes.jobscheduler.Policy#currentJobStatus(org.astrogrid.workflow.beans.v1.Workflow)
      */
     public ExecutionPhase currentJobStatus(Workflow job) {
+        logger.error("Flow Policy: unimplemented");
         return null;
     }
     /**
      * @see org.astrogrid.jes.jobscheduler.Policy#nextExecutableStep(org.astrogrid.workflow.beans.v1.Workflow)
      */
     public Step nextExecutableStep(Workflow job) {
+        logger.error("Flow Policy: unimplemented");
         return null;
     }
 }
@@ -46,6 +48,9 @@ public class FlowPolicy extends AbstractPolicy {
 
 /* 
 $Log: FlowPolicy.java,v $
+Revision 1.2  2004/04/08 14:43:26  nw
+added delete and abort job functionality
+
 Revision 1.1  2004/03/18 10:55:55  nw
 code stub - needs to be implemented
  

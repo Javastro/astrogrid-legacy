@@ -1,4 +1,4 @@
-/*$Id: ConstantToolLocator.java,v 1.5 2004/03/15 23:45:07 nw Exp $
+/*$Id: ConstantToolLocator.java,v 1.6 2004/04/08 14:43:26 nw Exp $
  * Created on 27-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,9 @@ import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.workflow.beans.v1.Step;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.net.URL;
 
 import junit.framework.Test;
@@ -24,6 +27,7 @@ import junit.framework.Test;
  *
  */
 public class ConstantToolLocator implements Locator , ComponentDescriptor{
+    private static final Log logger = LogFactory.getLog(ConstantToolLocator.class);
     /** Construct a new ConstantToolLocator
      * 
      */
@@ -38,6 +42,7 @@ public class ConstantToolLocator implements Locator , ComponentDescriptor{
      * @see org.astrogrid.jes.jobscheduler.Locator#locateTool(org.astrogrid.jes.job.JobStep)
      */
     public String locateTool(Step js) throws JesException {
+        logger.debug("constant tool locator: for " + js.getTool().getName() + " returning " + endpoint.toString());
         return endpoint.toString();
         
     }
@@ -72,6 +77,9 @@ public class ConstantToolLocator implements Locator , ComponentDescriptor{
 
 /* 
 $Log: ConstantToolLocator.java,v $
+Revision 1.6  2004/04/08 14:43:26  nw
+added delete and abort job functionality
+
 Revision 1.5  2004/03/15 23:45:07  nw
 improved javadoc
 

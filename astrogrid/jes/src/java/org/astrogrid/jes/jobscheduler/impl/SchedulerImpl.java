@@ -75,6 +75,7 @@ public class SchedulerImpl implements org.astrogrid.jes.jobscheduler.JobSchedule
      * @see org.astrogrid.jes.jobscheduler.JobScheduler#scheduleNewJob(org.astrogrid.jes.types.v1.JobURN)
      */
     public void scheduleNewJob( JobURN jobURN ) {
+        logger.debug("Scheduling new Job: " + jobURN.toString());
         try {
 	        JobFactory factory = facade.getJobFactory() ;
 	        factory.begin() ;
@@ -101,6 +102,55 @@ public class SchedulerImpl implements org.astrogrid.jes.jobscheduler.JobSchedule
          	 
     } // end of scheduleJob()
 
+    /**
+     * @see org.astrogrid.jes.jobscheduler.JobScheduler#abortJob(org.astrogrid.jes.types.v1.JobURN)
+     */
+    public void abortJob(JobURN jobURN)  {
+        logger.debug("Aborting job: " + jobURN.toString());
+        try {
+            JobFactory factory = facade.getJobFactory();
+            Workflow job = factory.findJob(Axis2Castor.convert(jobURN));
+            //check current phase
+            ExecutionPhase currentPhase = job.getJobExecutionRecord().getStatus();
+            if (currentPhase.getType() < ExecutionPhase.COMPLETED_TYPE) { // i.e. still running, or not running yet..
+                logger.debug("marking job as in error");
+                job.getJobExecutionRecord().setStatus(ExecutionPhase.ERROR);
+                MessageType msg = new MessageType();
+                msg.setContent("Aborted by user");
+                msg.setSource("JES");
+                msg.setTimestamp(new Date());
+                msg.setPhase(currentPhase);
+                msg.setLevel(LogLevel.INFO);
+                job.getJobExecutionRecord().addMessage(msg);
+                factory.updateJob(job);
+            } else {
+                logger.debug("job has already finished");
+            }
+        } catch (NotFoundException e) {
+            logger.warn("Attempted to abort job that doesn't exist:" + jobURN.getValue());
+        } catch (JesException e) {
+           logger.error("AbortJob",e);
+        }
+        
+    }
+
+
+    /**
+     * @see org.astrogrid.jes.jobscheduler.JobScheduler#deleteJob(org.astrogrid.jes.types.v1.JobURN)
+     */
+    public void deleteJob(JobURN jobURN) {
+        logger.debug("Deleting job" + jobURN.toString());
+        try {
+            JobFactory factory = facade.getJobFactory();
+            Workflow job = factory.findJob(Axis2Castor.convert(jobURN));
+            factory.deleteJob(job);
+        } catch (NotFoundException e) {
+            logger.warn("Attempted to delete job that doesn't exist: " + jobURN.getValue());
+        } catch (JesException e) {
+            logger.error("DeleteJob",e);
+        }
+    }
+
 
     /** resume executioin of a job
      * <p>
@@ -108,6 +158,7 @@ public class SchedulerImpl implements org.astrogrid.jes.jobscheduler.JobSchedule
      * @see org.astrogrid.jes.jobscheduler.JobScheduler#resumeJob(org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType, org.astrogrid.jes.types.v1.cea.axis.MessageType)
      */
     public void resumeJob(JobIdentifierType id,org.astrogrid.jes.types.v1.cea.axis.MessageType info) {
+        logger.debug("Resuming executioin of " + id.toString());
         Workflow job = null;  
         JobFactory factory = null;  
         try {
@@ -258,6 +309,9 @@ public class SchedulerImpl implements org.astrogrid.jes.jobscheduler.JobSchedule
     public Test getInstallationTest() {
         return null;
     }
+
+
+
 
 
 

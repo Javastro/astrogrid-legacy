@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcher.java,v 1.9 2004/03/24 08:05:08 pah Exp $
+/*$Id: ApplicationControllerDispatcher.java,v 1.10 2004/04/08 14:43:26 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,7 +71,7 @@ public class ApplicationControllerDispatcher implements Dispatcher, ComponentDes
    public void dispatchStep(Workflow job, Step js) throws JesException {
       boolean succeeded = false;
 
-      String toolLocation = locator.locateTool(js);
+      String toolLocation = locator.locateTool(js);    
       CommonExecutionConnectorClient appController =
          DelegateFactory.createDelegate(toolLocation);
 
@@ -147,6 +147,9 @@ public class ApplicationControllerDispatcher implements Dispatcher, ComponentDes
 
 /* 
 $Log: ApplicationControllerDispatcher.java,v $
+Revision 1.10  2004/04/08 14:43:26  nw
+added delete and abort job functionality
+
 Revision 1.9  2004/03/24 08:05:08  pah
 call the new CommonExecutionConnector Delegate
 
