@@ -129,14 +129,12 @@ public class MySpaceManager {
 	
 				if ( DEBUG ) logger.debug("About to invoke myspaceaction.importdataholder");  
 				msA.setRegistryName(registryName);
-				RegistryManager reg = new RegistryManager(registryName);
-				String mySpaceFileName = "f" + reg.getNextDataItemID();
-	
+
 				//this need to be considered when to invoke import when to invoke upload.
-				reg.rewriteRegistryFile();
+
 				dataitem = msA.upLoadDataHolder(
 					userID, communityID, credential, newDataHolderName,
-				fileContent, contentsType );
+					fileContent, contentsType );
 	
 				if( DEBUG ) logger.debug("UploaderroCode is:" +errCode);
 				if ( errCode!="" )    
@@ -144,25 +142,6 @@ public class MySpaceManager {
 				else 
 				  errCode = checkStatus("UPLOAStatusCode");
 	
-				String contentPath = serverFileName;
-				call = createServerManagerCall();
-				//call.setOperationName( "saveDataHolder" );			
-				call.setOperationName("upLoadString");
-				call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
-				call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
-				call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
-				String serverResponse = (String)call.invoke( new Object[] {contentPath,mySpaceFileName} );
-				if ( DEBUG )  logger.debug("GOT SERVERRESPONSE: "+serverResponse);
-				
-				//use serverResponse to build returnStatus and details for datacentre/portal
-				if(serverResponse.startsWith(MMC.SUCCESS)){
-					returnStatus = MMC.SUCCESS;
-				}else if(serverResponse.startsWith(MMC.FAULT)){
-					int len = serverResponse.length()-1;
-					details = serverResponse.trim().substring(5,len);
-					response = util.buildMySpaceManagerResponse(null,MMC.FAULT,details,"");
-					return response;
-				}
 		
 				boolean successStatus = status.getSuccessStatus();
 				boolean warningStatus = status.getWarningStatus();
@@ -217,45 +196,13 @@ public class MySpaceManager {
 	
 				if ( DEBUG ) logger.debug("About to invoke myspaceaction.importdataholder");  
 				msA.setRegistryName(registryName);
-				RegistryManager reg = new RegistryManager(registryName);
-				String mySpaceFileName = "f" + reg.getNextDataItemID();
 	
 				//this need to be considered when to invoke import when to invoke upload.
-				reg.rewriteRegistryFile();
+
 				dataitem = msA.importDataHolder(
 					userID, communityID, credential, importURI,
-				newDataHolderName, contentsType );
+					newDataHolderName, contentsType );
 	
-				if ( DEBUG ) logger.debug("userid:"+userID+"comID"+communityID+"jobid"+jobID+"newDataHN"+newDataHolderName+"filenm:"+mySpaceFileName
-									   +"fileSize"+fileSize);
-				if( DEBUG ) logger.debug("UploaderroCode is:" +errCode);
-				if ( errCode!="" )    
-				  errCode = errCode +"," +checkStatus("UPLOADStatusCode");
-				else 
-				  errCode = checkStatus("UPLOAStatusCode");
-	
-				call = createServerManagerCall();
-				call.setOperationName( "importDataHolder" );			
-				call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
-				call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
-				call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
-				String serverResponse = (String)call.invoke( new Object[] {importURI,mySpaceFileName} );
-				
-				if ( DEBUG ) { 
-					logger.debug("GOT SERVERRESPONSE: "+serverResponse); 
-					logger.debug("importURI = "+importURI+" mySpaceFileName: "+mySpaceFileName);
-					} 
-				
-				//use serverResponse to build returnStatus and details for datacentre/portal
-				if(serverResponse.startsWith(MMC.SUCCESS)){
-					returnStatus = MMC.SUCCESS;
-				}else if(serverResponse.startsWith(MMC.FAULT)){
-					int len = serverResponse.length()-1;
-					details = serverResponse.trim().substring(5,len);
-					response = util.buildMySpaceManagerResponse(null,MMC.FAULT,details,"");
-					return response;
-				}
-		
 				boolean successStatus = status.getSuccessStatus();
 				boolean warningStatus = status.getWarningStatus();
 		
@@ -895,7 +842,6 @@ public class MySpaceManager {
 
 		if ( DEBUG )logger.debug("registryName = "+registryName);
 		request = util.getRequestAttributes(jobDetails);
-		logger.debug("UUUUUUUUUUUUUUUUUUU" +request.containsKey("fileConcent"));
 		try{
 			if(request.get("userID")!=null) userID = request.get("userID").toString();
 			if(request.get("communityID")!=null) communityID = request.get("communityID").toString();
@@ -904,9 +850,7 @@ public class MySpaceManager {
 			if(request.get("newDataItemName")!=null) newDataItemName = request.get("newDataItemName").toString();
 			if(request.get("newContainerName")!=null) newContainerName = request.get("newContainerName").toString();	
 			if(request.get("serverFileName")!=null) serverFileName = request.get("serverFileName").toString();
-			if(request.get("fileContent")!=null) {fileContent = request.get("fileContent").toString();
-			logger.debug("%%%%%%%%%%%%%%%%%%%%%%%%: fileContent:"+fileContent);} else{logger.debug("&&&&&&&&&&&&");
-			}
+			if(request.get("fileContent")!=null) fileContent = request.get("fileContent").toString();
 			if(request.get("category")!=null) category = request.get("category").toString();
 			if(request.get("credential")!=null) credential = request.get("credential").toString();
 			if(request.get("downloadPath")!=null) downloadPath = request.get("downloadPath").toString();
@@ -944,9 +888,9 @@ public class MySpaceManager {
         		
 		if ( request.containsKey("newDataHolderName")){
 			if (request.get("newDataHolderName").toString().trim().length()>0){
-				logger.debug("MySpaceManager.getValue newDataHolderName:"+newDataHolderName);			
-				newDataHolderName = request.get("newDataHolderName").toString();
+				logger.debug("MySpaceManager.getValue newDataHolderName:"+newDataHolderName);
 				if ( DEBUG ) logger.debug("newdatraholdernema:"+newDataHolderName+"done");
+				newDataHolderName = request.get("newDataHolderName").toString();
 				
 			}else{
 				logger.debug("MySpaceManager.getValue serverFileName length:"+serverFileName.length()+", name: "+serverFileName.toString());
@@ -1064,10 +1008,8 @@ public class MySpaceManager {
 		}  
 		boolean isUserCreated = false;
 			try{			
-				setUp();	
-				if(DEBUG) logger.debug("about to call msA..");	
+				setUp();		
 				isUserCreated = msA.createUser(userid, communityid, credential, servers);
-				if(DEBUG) logger.debug("finished calling msA...");
 			}catch(Exception e){
 				logger.error("ERROR CREATEUSER MYSPACEMANAGER" +e.toString());
 				status.addCode(MySpaceStatusCode.AGMMCE00216,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
