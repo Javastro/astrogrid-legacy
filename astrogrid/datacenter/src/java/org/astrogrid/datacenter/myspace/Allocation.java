@@ -56,7 +56,7 @@ public class Allocation {
 	    
 	private static String
 		MYSPACEFACTORY_KEY = "MYSPACE.FACTORY_KEY",
-	    MYSPACE_URL = "MYSPACE.URL",
+	    MYSPACE_URL = "MYSPACE.MANAGER.URL",
 	    MYSPACE_MANAGER_REQUEST_TEMPLATE = "MYSPACE.MANAGER.REQUEST_TEMPLATE" ;
 	
 	public static MySpaceFactory
