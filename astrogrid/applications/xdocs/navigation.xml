@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AstroGrid">
+
+  <title>AstroGrid Project</title>
+
+  <body>
+    <menu name="Background Information">
+    	<item name="Workgroup" href="http://wiki.astrogrid.org/bin/view/Astrogrid/Itn04ApplicationIntegration" />
+    </menu>
+    <links>
+       <item name="AstroGrid"  href="http://www.astrogrid.org"/>
+       <item name="Projects"   href="http://www.astrogrid.org/maven/build/index.html"/>
+       <item name="Applications Integration" href="http://www.astrogrid.org/maven/build/applications/index.html"/>
+    </links>
+  </body>
+</project>

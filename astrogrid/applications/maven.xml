@@ -1,0 +1,81 @@
+<?xml version="1.0" ?>
+<!-- extension maven script -->
+<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+<!-- hooks into existing goals -->
+  <preGoal name="java:compile"><!-- generate classes from schema and wsdl first -->
+     <mkdir dir="${basedir}/generated/java" />
+     <path id="generated.src" location="${basedir}/generated/java"/>
+     <path id="integration.src" locaton="${basedir}/test/int/java" />
+    <maven:addPath id="maven.compile.src.set" refid="generated.src"/>  <!-- declares new src tree to maven -->
+    <maven:addPath id="maven.compile.src.set" refid="integration.src" />
+	<attainGoal name="maybe-regenerate-wsdl" />
+  	<attainGoal name="maybe-regenerate-adql" />
+  </preGoal>
+
+
+<!-- hook to get my own stuff run before xdocs binds the site together-->
+  <preGoal name="xdoc">
+ <!-- 	
+        <attainGoal name="ant" />
+  	<attainGoal  name="pal-zip" />
+	<copy file="${maven.build.dir}/pal.zip" tofile="${maven.build.dir}/docs/pal.zip" />
+	 --> 
+  </preGoal>
+
+<!-- new goals -->
+
+<!-- stand - alone goals - not addons to main build -->
+     <goal name="showconfig" description="A goal to show important configuration settings">
+ 		<echo message="tomcat.home    : ${tomcat.home}"/>
+		<echo message="tomcat.manager.username     : ${tomcat.manager.username}"/>
+		<echo message="tomcat.manager.password     : ${tomcat.manager.password}"/>
+ 		<echo message=""/>
+    </goal>
+
+<!-- tasks for deployment / distribution -->
+
+<!-- boilerplate below here -->
+ <!-- <goal name="dataserver-deploy" description="fire wsdd at axis to deploy dataserver"
+  	prereqs="axis-declare-tasks">
+  	<axis-admin xmlfile="wsdd/AxisDataServer-deploy.wsdd" />
+  </goal>
+
+  <goal name="dataserver-undeploy" description="fire wsdd at axis to undeploy dataserver"
+   	prereqs="axis-declare-tasks">
+  	<axis-admin xmlfile="wsdd/AxisDataServer-undeploy.wsdd" />
+  </goal>
+-->
+  <goal name="axis-declare-tasks">
+      <taskdef resource="axis-tasks.properties"  classpathref="maven.dependency.classpath" />
+  </goal>
+
+<!-- tomcat tools -->
+<goal name="tomcat-declare-tasks">
+  <!-- work-around until these get added to ibiblio..
+  although seems to store in the wrong place at present. -->
+  <!--
+  <property name="local.catalina-ant.dir" location="${maven.repo.local}/catalina-ant/jars" />
+  <mkdir dir="${local.catalina-ant.dir}" />
+  <get src="http://www.codeczar.com/products/tomcat/distributions/catalina-ant-4.1.24.jar"
+     dest="${local.catalina-ant.dir}/catalina-ant-4.1.24.jar"
+      usetimestamp="true" ignoreerrors="true"
+     />
+     <path id="catalina-ant.path">
+     	<fileset dir="${local.catalina-ant.dir}" includes="*.jar" />
+     </path>
+     -->
+   <!-- Configure the custom Ant tasks for the Manager application -->
+  <taskdef name="tomcat-deploy"    classname="org.apache.catalina.ant.DeployTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-install"   classname="org.apache.catalina.ant.InstallTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-list"      classname="org.apache.catalina.ant.ListTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-reload"    classname="org.apache.catalina.ant.ReloadTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-remove"    classname="org.apache.catalina.ant.RemoveTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-resources" classname="org.apache.catalina.ant.ResourcesTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-roles"     classname="org.apache.catalina.ant.RolesTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-start"     classname="org.apache.catalina.ant.StartTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-stop"      classname="org.apache.catalina.ant.StopTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-undeploy"  classname="org.apache.catalina.ant.UndeployTask" classpathref="maven.dependency.classpath"/>
+</goal>
+
+
+</project>
