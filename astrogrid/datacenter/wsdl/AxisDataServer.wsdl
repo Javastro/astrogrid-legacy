@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions targetNamespace="http://localhost:8080/axis/services/AxisDataServer" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://localhost:8080/axis/services/AxisDataServer" xmlns:intf="http://localhost:8080/axis/services/AxisDataServer" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns3="http://query.datacenter.astrogrid.org" xmlns:tns4="http://astrogrid.org" xmlns:tns6="http://sax.xml.org" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<wsdl:definitions targetNamespace="http://localhost:8080/axis/services/AxisDataServer" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://localhost:8080/axis/services/AxisDataServer" xmlns:intf="http://localhost:8080/axis/services/AxisDataServer" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns3="http://query.datacenter.astrogrid.org" xmlns:tns4="http://astrogrid.org" xmlns:tns6="http://sax.xml.org" xmlns:tns8="http://delegate.datacenter.astrogrid.org" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
  <wsdl:types>
   <schema targetNamespace="http://astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
@@ -28,6 +28,14 @@
     </sequence>
    </complexType>
   </schema>
+  <schema targetNamespace="http://delegate.datacenter.astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="WebNotifyServiceListener">
+    <sequence>
+     <element name="clientListener" nillable="true" type="xsd:anyType"/>
+    </sequence>
+   </complexType>
+  </schema>
  </wsdl:types>
 
    <wsdl:message name="doQueryRequest">
@@ -38,7 +46,7 @@
 
    <wsdl:message name="getMetadataResponse">
 
-      <wsdl:part name="getMetadataReturn" type="xsd:anyType"/>
+      <wsdl:part name="getMetadataReturn" type="apachesoap:Element"/>
 
    </wsdl:message>
 
@@ -80,9 +88,9 @@
 
    <wsdl:message name="registerWebListenerRequest">
 
-      <wsdl:part name="queryId" type="xsd:string"/>
+      <wsdl:part name="soapBody" type="apachesoap:Element"/>
 
-      <wsdl:part name="listener" type="xsd:anyType"/>
+      <wsdl:part name="listener" type="tns8:WebNotifyServiceListener"/>
 
    </wsdl:message>
 
@@ -120,7 +128,7 @@
 
    <wsdl:message name="getStatusRequest">
 
-      <wsdl:part name="id" type="xsd:string"/>
+      <wsdl:part name="soapBody" type="xsd:anyType"/>
 
    </wsdl:message>
 
@@ -164,7 +172,7 @@
 
    <wsdl:portType name="AxisDataServer">
 
-      <wsdl:operation name="getStatus" parameterOrder="id">
+      <wsdl:operation name="getStatus" parameterOrder="soapBody">
 
          <wsdl:input message="impl:getStatusRequest" name="getStatusRequest"/>
 
@@ -248,7 +256,7 @@
 
       </wsdl:operation>
 
-      <wsdl:operation name="registerWebListener" parameterOrder="queryId listener">
+      <wsdl:operation name="registerWebListener" parameterOrder="soapBody listener">
 
          <wsdl:input message="impl:registerWebListenerRequest" name="registerWebListenerRequest"/>
 
