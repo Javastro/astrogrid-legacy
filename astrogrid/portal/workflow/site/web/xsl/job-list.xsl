@@ -60,7 +60,17 @@
                   <td nowrap="true"><xsl:value-of select="@name"/></td>
                   <td><xsl:value-of select="@description"/></td>
                   <td nowrap="true"><xsl:value-of select="@time"/></td>
-                  <td nowrap="true"><xsl:value-of select="@status"/></td>
+                  <xsl:choose>
+                        <xsl:when test="@status = 'ERROR'">  <!--  ERROR -->
+                           <td style="color: red;" nowrap="true"><xsl:value-of select="@status"/></td>
+                        </xsl:when>
+                        <xsl:when test="@status = 'RUNNING'">  <!--  RUNNING -->
+                           <td style="color: green;" nowrap="true"><xsl:value-of select="@status"/></td>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <td nowrap="true"><xsl:value-of select="@status"/></td>
+                        </xsl:otherwise>
+                  </xsl:choose>                  
                   <td nowrap="true">
                      <xsl:choose> 
                         <xsl:when test="@status = 'n/a'">  <!--  EMPLTY LIST -->
