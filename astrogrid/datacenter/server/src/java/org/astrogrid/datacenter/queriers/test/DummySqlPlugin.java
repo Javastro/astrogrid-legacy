@@ -1,5 +1,5 @@
 /*
- * $Id: DummySqlPlugin.java,v 1.4 2004/07/06 18:48:34 mch Exp $
+ * $Id: DummySqlPlugin.java,v 1.5 2004/07/07 19:33:59 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -51,9 +51,10 @@ public class DummySqlPlugin extends JdbcPlugin
       
       //set up properties so we connect to the db
       SimpleConfig.setProperty(JdbcConnections.JDBC_DRIVERS_KEY, "org.hsqldb.jdbcDriver");
-      SimpleConfig.setProperty(JdbcConnections.JDBC_URL_KEY, "jdbc:hsqldb:."); //in memory db
-      SimpleConfig.setProperty(JdbcConnections.JDBC_USER_KEY, "sa"); //in memory db
-      SimpleConfig.setProperty(JdbcConnections.JDBC_PASSWORD_KEY, ""); //in memory db
+//      SimpleConfig.setProperty(JdbcConnections.JDBC_URL_KEY, "jdbc:hsqldb:."); //in memory db - doesn't seem to persist between calls...
+      SimpleConfig.setProperty(JdbcConnections.JDBC_URL_KEY, "jdbc:hsqldb:dummydb"); //db on disk
+      SimpleConfig.setProperty(JdbcConnections.JDBC_USER_KEY, "sa");
+      SimpleConfig.setProperty(JdbcConnections.JDBC_PASSWORD_KEY, "");
       
    }
    
@@ -85,9 +86,9 @@ public class DummySqlPlugin extends JdbcPlugin
          //ignore - may not exist
       }
       
-      
       log.info("Populating Database");
 
+   
       //populate stars
       try {
          //create table
@@ -101,13 +102,8 @@ public class DummySqlPlugin extends JdbcPlugin
                "INSERT INTO SampleStars VALUES ("+i+", "+(30+i*2)+", "+(30-i*2)+", "+i+")"
             );
          }
-      }
-      catch (SQLException se) {
-         log.error("Populating demo stars",se);
-      }
       
-      //populate stars
-      try {
+         //populate galaxies
          //create table
          connection.createStatement().execute(
             "CREATE TABLE SampleGalaxies (Id INTEGER IDENTITY,  Ra DOUBLE,  Dec DOUBLE,  Shape VARCHAR(20)) "
@@ -121,14 +117,18 @@ public class DummySqlPlugin extends JdbcPlugin
                "INSERT INTO SampleGalaxies VALUES ("+i+", "+(200+i*2)+", "+(200-i*2)+", '"+shapes[i % 2]+"')"
             );
          }
+         
+         connection.commit();
+         connection.close();
       }
       catch (SQLException se) {
-         log.error("Populating demo galaxies",se);
+         log.error("Populating demo db",se);
       }
 
       populated = true;
       
       //check metadata
+      /*
       try {
          JdbcPlugin plugin = new DummySqlPlugin(null);
          Document metadata = plugin.getMetadata();
@@ -136,7 +136,7 @@ public class DummySqlPlugin extends JdbcPlugin
       } catch (IOException ioe) {
          throw new RuntimeException(ioe);
       }
-      
+       */
    }
 
    /* Sample SQL statemetns to help with above:
@@ -161,6 +161,9 @@ public class DummySqlPlugin extends JdbcPlugin
 }
    /*
    $Log: DummySqlPlugin.java,v $
+   Revision 1.5  2004/07/07 19:33:59  mch
+   Fixes to get Dummy db working and xslt sheets working both for unit tests and deployed
+
    Revision 1.4  2004/07/06 18:48:34  mch
    Series of unit test fixes
 

@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.6 2004/04/01 17:21:04 mch Exp $
+/*$Id: AllTests.java,v 1.7 2004/07/07 19:33:59 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,8 @@ package org.astrogrid.datacenter.queriers;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.astrogrid.datacenter.queriers.sql.SqlPluginTest;
+import org.astrogrid.datacenter.queriers.sql.SqlQueryTranslatorTest;
 import org.astrogrid.datacenter.queriers.sql.postgres.PostgresQueryTranslatorTest;
 
 /**
@@ -27,6 +29,8 @@ public class AllTests {
         //$JUnit-BEGIN$
         suite.addTest(DummyPluginsTest.suite());
         suite.addTest(QuerierTest.suite());
+        suite.addTest(new TestSuite(SqlQueryTranslatorTest.class));
+        suite.addTest(SqlPluginTest.suite());
         suite.addTest(new TestSuite(QuerierManagerTest.class));
         suite.addTest(new TestSuite(PostgresQueryTranslatorTest.class));
         //$JUnit-END$
@@ -46,6 +50,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.7  2004/07/07 19:33:59  mch
+Fixes to get Dummy db working and xslt sheets working both for unit tests and deployed
+
 Revision 1.6  2004/04/01 17:21:04  mch
 Added Postrgres tests
 

@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.8 2004/07/06 18:48:34 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.9 2004/07/07 19:33:59 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,10 @@
 **/
 package org.astrogrid.datacenter.queriers.sql;
 
-import java.io.FileNotFoundException;
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
-import java.net.URL;
 import java.util.StringTokenizer;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -24,7 +24,6 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.astrogrid.datacenter.queriers.sql.deprecated.SqlQuerierSPI;
@@ -159,6 +158,9 @@ public class StdSqlMaker  extends SqlMaker {
       else if (namespaceURI.equals("http://adql.ivoa.net/v0.73")) {
          xsltDoc = "adql073-2-sql.xsl";
       }
+      else if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.7.4")) {
+         xsltDoc = "adql073-2-sql.xsl";
+      }
       else if (namespaceURI.equals("http://adql.ivoa.net/v0.8")) {
          xsltDoc = "adql08-2-sql.xsl";
       }
@@ -174,16 +176,25 @@ public class StdSqlMaker  extends SqlMaker {
          throw new RuntimeException("No XSLT sheet given for ADQL; set configuration key '" + key+"'");
       }
 
-      URL xsltUrl = null;
       Transformer transformer = null;
       try {
          //find specified sheet on classpath/working directory
-         xsltUrl = Config.resolveFilename(xsltDoc);
+         InputStream xsltIn = new BufferedInputStream(StdSqlMaker.class.getResourceAsStream("./xslt/"+xsltDoc));
       
-         log.debug("Transforming ADQL ["+namespaceURI+"] using Xslt doc at '"+xsltUrl+"'");
+         if (xsltIn == null) {
+            throw new QueryException("Could not find/create ADQL->SQL transformer doc "+xsltDoc);
+         }
+         
+         log.debug("Transforming ADQL ["+namespaceURI+"] using Xslt doc at './xslt/"+xsltDoc+"'");
          TransformerFactory tFactory = TransformerFactory.newInstance();
-         transformer = tFactory.newTransformer(new StreamSource(xsltUrl.openStream()));
-         tFactory.setAttribute("UseNamespaces", Boolean.FALSE);
+         transformer = tFactory.newTransformer(new StreamSource(xsltIn));
+         try {
+            tFactory.setAttribute("UseNamespaces", Boolean.FALSE);
+         }
+         catch (IllegalArgumentException iae) {
+            //ignore - if UseNamepsaces is unsupported, it will chuck an exception, and
+            //we don't want to use namespaces anyway so taht's fine
+         }
          
          StringWriter sw = new StringWriter();
          transformer.transform(new DOMSource(queryBody), new StreamResult(sw));
@@ -201,18 +212,15 @@ public class StdSqlMaker  extends SqlMaker {
          //botch botch botch - something funny with ADQL 0.7.3 schema to do with comparisons
          sql = sql.replaceAll("&gt;", ">").replaceAll("&lt;", "<");
          
-         log.debug("Used "+xsltDoc+"(="+xsltUrl+" from "+key+") to translate ADQL ("+namespaceURI+") to '"+sql+"'");
+         log.debug("Used '"+xsltDoc+"' to translate ADQL ("+namespaceURI+") to '"+sql+"'");
          
          return sql;
       }
-      catch (IOException ioe) {
-         throw new QueryException("Could not find/create ADQL->SQL tansformer from "+xsltDoc+"(="+xsltUrl+", from key "+key+")",ioe);
-      }
       catch (TransformerConfigurationException tce) {
-         throw new QueryException("Server not setup correctly",tce);
+         throw new QueryException("Server not setup correctly, could not find/use xslt sheet "+xsltDoc,tce);
       }
       catch (TransformerException te) {
-         throw new QueryException("Error translating ADQL->SQL using "+xsltDoc+"(="+xsltUrl+", from key "+key+")",te);
+         throw new QueryException("Error translating ADQL->SQL using "+xsltDoc,te);
       }
 
    }
@@ -270,6 +278,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.9  2004/07/07 19:33:59  mch
+Fixes to get Dummy db working and xslt sheets working both for unit tests and deployed
+
 Revision 1.8  2004/07/06 18:48:34  mch
 Series of unit test fixes
 

@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.5 2004/07/06 18:48:34 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.6 2004/07/07 19:33:59 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -53,12 +53,15 @@ public class SqlPluginTest extends ServerTestCase {
    protected void setUp() throws Exception {
       super.setUp();
 
-      DummySqlPlugin.populateDb();
-      DummySqlPlugin.initConfig();
-      
+      DummySqlPlugin.initConfig(); //this is set up in the default config for normal runtime
+    
    }
    
    public void testCone() throws Exception {
+
+      //make sure the configuration is correct for the plugin
+      //DummySqlPlugin.initConfig();
+      
       StringWriter sw = new StringWriter();
       Querier q = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
       manager.askQuerier(q);
@@ -67,17 +70,17 @@ public class SqlPluginTest extends ServerTestCase {
    }
    
    public void testAdql1() throws Exception {
-      askAdqlFromFile("sql-querier-test-2.xml");
+      
+      DummySqlPlugin.initConfig(); //make sure the configuration is correct for the plugin
+      
+      askAdqlFromFile("sample-adql0.7.3-1.xml");
    }
    
    public void testAdql2() throws Exception {
-      askAdqlFromFile("sql-querier-test-3.xml");
+      DummySqlPlugin.initConfig(); //make sure the configuration is correct for the plugin
+      askAdqlFromFile("dummy-pleidies-adql-v0.7.3.xml");
    }
 
-   public void testAdql3() throws Exception {
-      askAdqlFromFile("sql-querier-test-3.xml");
-   }
-   
    /** Read ADQL input document, run query on dummy SQL plugin, and return VOTable document
     *
     * @param queryFile resource file of query
@@ -86,11 +89,9 @@ public class SqlPluginTest extends ServerTestCase {
       assertNotNull(queryFile);
       InputStream is = this.getClass().getResourceAsStream(queryFile);
       assertNotNull("Could not open query file :" + queryFile,is);
-      Select select = Select.unmarshalSelect(new InputStreamReader(is));
-      assertNotNull(select);
 
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new AdqlQuery(select), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
+      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new AdqlQuery(is), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
 
       manager.askQuerier(q);
       
@@ -100,9 +101,12 @@ public class SqlPluginTest extends ServerTestCase {
    
    
    public void testSQLPassthru() throws Exception {
+
+      DummySqlPlugin.initConfig(); //make sure the configuration is correct for the plugin
+      
       //should fail - default should be off
       try {
-         doSql();
+         askRawSql();
          
          fail("Should have failed not allowing passthrough");
       }
@@ -110,10 +114,10 @@ public class SqlPluginTest extends ServerTestCase {
       
       SimpleConfig.setProperty(DataServer.SQL_PASSTHROUGH_ENABLED,"true");
       
-      doSql();
+      askRawSql();
    }
 
-   private void doSql() throws Exception {
+   private void askRawSql() throws Exception {
       StringWriter sw = new StringWriter();
       Querier q = Querier.makeQuerier(Account.ANONYMOUS, new RawSqlQuery("select * from SampleStars"), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
 
@@ -159,6 +163,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.6  2004/07/07 19:33:59  mch
+ Fixes to get Dummy db working and xslt sheets working both for unit tests and deployed
+
  Revision 1.5  2004/07/06 18:48:34  mch
  Series of unit test fixes
 

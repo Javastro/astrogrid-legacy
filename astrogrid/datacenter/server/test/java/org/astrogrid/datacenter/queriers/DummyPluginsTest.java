@@ -1,5 +1,5 @@
 /*
- * $Id: DummyPluginsTest.java,v 1.4 2004/07/06 18:48:34 mch Exp $
+ * $Id: DummyPluginsTest.java,v 1.5 2004/07/07 19:33:59 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,12 +14,15 @@ import java.sql.Statement;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.queriers.sql.JdbcConnections;
 import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.queriers.test.PrecannedResults;
+import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * Tests the dummy querier and resultset.
@@ -28,6 +31,7 @@ import org.xml.sax.SAXException;
  */
 
 public class DummyPluginsTest extends TestCase {
+
    /** Tests the precanned results.  Plugin test is done through QuerierTest */
    public void testFixedResults() throws IOException, SAXException, SQLException {
       
@@ -35,7 +39,8 @@ public class DummyPluginsTest extends TestCase {
       QueryResults results = new PrecannedResults("test");
       results.toVotable(new StringWriter(), null);
    }
-   
+
+   /** Test that we can connect to the dummy database */
    public void testDummyCatalog() throws IOException, SQLException {
       
       //test the dummy sql ones
@@ -56,6 +61,21 @@ public class DummyPluginsTest extends TestCase {
       assertTrue(numResults==20); //should find this number
       
    }
+
+   /** Test that we can reach the dummy catalogue through the dummy plugin */
+   public void testDummyPlugin() throws IOException, SQLException, SAXException, ParserConfigurationException {
+      
+      //make sure the configuration is correct for the plugin
+      DummySqlPlugin.initConfig();
+      
+      QuerierManager manager = new QuerierManager("DummyTest");
+
+      StringWriter sw = new StringWriter();
+      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
+      manager.askQuerier(q);
+      Document results = DomHelper.newDocument(sw.toString());
+   }
+      
    
    /** Tests the generated metadata */
    public void testAutoMetadata() throws Exception {

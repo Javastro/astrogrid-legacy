@@ -4,6 +4,6 @@
       <All />
    </SelectionList>
    <From>
-      <Table Name="Tab" Alias="t" />
+      <Table Name="SampleStars" Alias="s" />
    </From>
 </Select>

@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.10 2004/07/06 18:48:34 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.11 2004/07/07 19:33:59 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -24,8 +24,9 @@ import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.queriers.status.QuerierError;
 import org.astrogrid.datacenter.queriers.status.QuerierQueried;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
-import org.astrogrid.io.xml.XmlTagPrinter;
+import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.io.xml.XmlPrinter;
+import org.astrogrid.io.xml.XmlTagPrinter;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -71,6 +72,10 @@ public class JdbcPlugin extends QuerierPlugin  {
                   
          sql = sqlMaker.getSql(querier.getQuery());
          
+         if ((sql == null) || (sql.length() == 0)) {
+            throw new QueryException("SqlMaker returned empty SQL string for query "+querier.getQuery());
+         }
+         
          querier.getStatus().addDetail("SQL: "+sql);
       
          //connect to database
@@ -88,6 +93,11 @@ public class JdbcPlugin extends QuerierPlugin  {
          querier.setStatus(new QuerierQueried(querier));
          
          if (!aborted) {
+            
+            if (results == null) {
+               throw new QueryException("SQL '"+sql+"' returned null results");
+            }
+            
             //sort out results
             processResults(new SqlResults(results));
          }
@@ -197,29 +207,48 @@ public class JdbcPlugin extends QuerierPlugin  {
          StringWriter sw = new StringWriter();
          XmlPrinter xw = new XmlPrinter(sw);
 
-         XmlTagPrinter metaTag = xw.newTag("TabularMetadata");
+         XmlTagPrinter metaTag = xw.newTag("AstroGridMetaTables");
 
+         /** Get general info */
+         String name = metadata.getDatabaseProductName();
+         String version = metadata.getDatabaseProductVersion();
+         String driver = metadata.getDriverName()+" v"+metadata.getDriverVersion();
+//         String jdbc = metadata.getJDBCMajorVersion()+"."+metadata.getJDBCMinorVersion();
+
+         String funcs = metadata.getNumericFunctions();
+         String cat = connection.getCatalog();
+
+         /*
+         ResultSet schemas = metadata.getSchemas();
+
+         XmlTagPrinter schemaTag = metaTag.newTag("Schemas");
+         while (schemas.next()) {
+            schemaTag.writeTag("Schema",schemas.getString("TABLE_SCHEM"));
+            schemaTag.writeTag("Catalog",schemas.getString("TABLE_CAT"));
+         }
+          */
+         
          //get all tables
-         ResultSet tables = metadata.getTables(null, null, "*", null);
+         ResultSet tables = metadata.getTables(null, null, "%", null);
 
          while (tables.next()) {
             XmlTagPrinter tableTag = metaTag.newTag("Table", "name='"+tables.getString("TABLE_NAME")+"'");
             tableTag.writeTag("Description", tables.getString("REMARKS"));
             tableTag.writeComment("schema='"+tables.getString("TABLE_SCHEM")+"'");
-            tableTag.writeComment("cat='"+tables.getString("TABLE_CAT")+"' -->\n");
-            tableTag.writeComment("type='"+tables.getString("TABLE_TYPE")+"' -->\n");
-            tableTag.writeComment("type cat='"+tables.getString("TYPE_CAT")+"' -->\n");
-            tableTag.writeComment("type schema='"+tables.getString("TYPE_SCHEM")+"' -->\n");
-            tableTag.writeComment("type name='"+tables.getString("TYPE_NAME")+"' -->\n");
-            tableTag.writeComment("self ref='"+tables.getString("SELF_REFERENCING_COL_NAME")+"' -->\n");
-            tableTag.writeComment("ref gen='"+tables.getString("REF_GENERATION")+"' -->\n");
+            tableTag.writeComment("cat='"+tables.getString("TABLE_CAT")+"'");
+            tableTag.writeComment("type='"+tables.getString("TABLE_TYPE")+"'");
+            tableTag.writeComment("typecat='"+tables.getString("TYPE_CAT")+"'");
+            tableTag.writeComment("typeschema='"+tables.getString("TYPE_SCHEM")+"'");
+            tableTag.writeComment("typename='"+tables.getString("TYPE_NAME")+"'");
+            tableTag.writeComment("selfref='"+tables.getString("SELF_REFERENCING_COL_NAME")+"'");
+            tableTag.writeComment("refgen='"+tables.getString("REF_GENERATION")+"'");
             
-            ResultSet columns = metadata.getColumns("*", "*", tables.getString("TABLE_NAME"), "*");
+            ResultSet columns = metadata.getColumns(null, null, tables.getString("TABLE_NAME"), "%");
             
             while (columns.next()) {
                XmlTagPrinter colTag = tableTag.newTag("Column", "name='"+columns.getString("COLUMN_NAME")+"'");
                colTag.writeComment("schema='"+tables.getString("TABLE_SCHEM")+"'");
-               colTag.writeComment("cat='"+tables.getString("TABLE_CAT")+"' -->\n");
+               colTag.writeComment("cat='"+tables.getString("TABLE_CAT")+"'");
                colTag.writeComment("table='"+tables.getString("TABLE_NAME")+"'");
                colTag.writeTag("DataType", columns.getString("DATA_TYPE"));
                colTag.writeTag("Description", columns.getString("REMARKS"));
