@@ -220,29 +220,7 @@
         </developer>
     </developers>
   
-  <dependencies>
-    <!-- Common -->
-    <dependency>
-      <groupId>org.astrogrid</groupId>
-      <artifactId>astrogrid-common</artifactId>
-      <version>${pom.currentVersion}</version>
-    </dependency>
 
-    <!--
-      Testing Utilities.
-      -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.8</version>
-    </dependency>
-  </dependencies>
   
   <build>
     <sourceDirectory/>

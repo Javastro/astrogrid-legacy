@@ -1,82 +1,39 @@
 <?xml version="1.0" ?>
-<project
-    xmlns:j="jelly:core"
-    xmlns:maven="jelly:maven"
-    xmlns:ant="jelly:ant"
-    xmlns:deploy="deploy"
-    xmlns:util="jelly:util"
-    xmlns:doc="doc">
-    
-  <goal name="astrogrid-deploy-snapshot">
-    <maven:reactor
-        basedir="${basedir}"
-        postProcessing="false"
-        includes="*/project.xml"
-        excludes="subproject-template/project.xml,maven-base/project.xml"
-        goals="jar:deploy-snapshot,war:deploy-snapshot"
-        banner="Deploy Portal Component JARs and WARs"
-        ignoreFailures="true"/>
-     <!--relies on subprojects copyin their stuff into target/astrogrid-portal-->
-     <attainGoal name="war:deploy-snapshot"/> 
-  </goal>
-  <goal name="astrogrid-deploy-artifact">
-    <maven:reactor
-        basedir="${basedir}"
-        postProcessing="false"
-        includes="*/project.xml"
-        excludes="subproject-template/project.xml,maven-base/project.xml"
-        goals="jar:deploy,war:deploy"
-        banner="Deploy Portal Component JARs and WARs"
-        ignoreFailures="true"/>
-     <!--relies on subprojects copyin their stuff into target/astrogrid-portal-->
-     <attainGoal name="war:deploy"/> 
-  </goal>
-
-  <goal name="astrogrid-install-snapshot">
-    <maven:reactor
-        basedir="${basedir}"
-        postProcessing="false"
-        includes="*/project.xml"
-        excludes="subproject-template/project.xml,maven-base/project.xml"
-        goals="jar:install-snapshot,war:install-snapshot"
-        banner="Install Portal Component JARs and WARs"
-        ignoreFailures="true"/>
-     <!--relies on subprojects copyin their stuff into target/astrogrid-portal-->
-     <attainGoal name="war:install-snapshot"/> 
-  </goal>
-  
-  <goal name="astrogrid-install-artifact">
-    <maven:reactor
-        basedir="${basedir}"
-        postProcessing="false"
-        includes="*/project.xml"
-        excludes="subproject-template/project.xml,maven-base/project.xml"
-        goals="jar:install,war:install"
-        banner="Install Portal Component JARs and WARs"
-        ignoreFailures="false"/>
-     <!--relies on subprojects copyin their stuff into target/astrogrid-portal-->
-     <attainGoal name="war:install"/> 
-  </goal>
-  
-  <goal name="astrogrid-build-snapshot">
-    <maven:reactor
-        basedir="${basedir}"
-        postProcessing="false"
-        includes="*/project.xml"
-        excludes="subproject-template/project.xml,maven-base/project.xml"
-        goals="jar:jar,war:war"
-        banner="Install Portal Component JARs and WARs"
-        ignoreFailures="true"/>
-        <!--relies on subprojects copyin their stuff into target/astrogrid-portal-->
-        <attainGoal name="war:war"/> 
-  </goal>
-
-  <!--See project.properties for excludes list-->
-  <goal name="astrogrid-build-site">
-    <attainGoal name="multiproject:site"/>
-  </goal>
-
-  <goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
-    <attainGoal name="site:fsdeploy"/>
-  </goal>
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:ant="jelly:ant" 
+    xmlns:deploy="deploy" xmlns:util="jelly:util" xmlns:doc="doc">
+    <!--+ 
+		| Custom astrogrid goals for nightly build 
+		| Override those in maven-base
+		+-->
+    <!--See project.properties for excludes list-->
+    <goal name="astrogrid-clean" prereqs="multiproject:clean, clean"/>
+    <goal name="astrogrid-deploy-site" 
+        prereqs="astrogrid-build-site,site:fsdeploy" />
+    <goal name="astrogrid-build-site" prereqs="multiproject:site"/>
+    <goal name="astrogrid-deploy-snapshot" 
+        prereqs="multiproject:deploy-snapshot">
+        <!--relies on subprojects copying their stuff into target/astrogrid-portal-->
+        <attainGoal name="war:deploy-snapshot"/>
+    </goal>
+    <goal name="astrogrid-build-snapshot" prereqs="multiproject:artifact">
+        <!--relies on subprojects copying their stuff into target/astrogrid-portal-->
+        <attainGoal name="war:war"/>
+    </goal>
+    <goal name="astrogrid-install-snapshot" 
+        prereqs="multiproject:install-snapshot">
+        <!--relies on subprojects copying their stuff into target/astrogrid-portal-->
+        <attainGoal name="war:install-snapshot"/>
+    </goal>
+    <goal name="astrogrid-deploy-artifact" prereqs="multiproject:deploy">
+        <!--relies on subprojects copying their stuff into target/astrogrid-portal-->
+        <attainGoal name="war:deploy"/>
+    </goal>
+    <goal name="astrogrid-build-artifact" prereqs="multiproject:artifact">
+        <!--relies on subprojects copying their stuff into target/astrogrid-portal-->
+        <attainGoal name="war:war"/>
+    </goal>
+    <goal name="astrogrid-install-artifact" prereqs="multiproject:install">
+        <!--relies on subprojects copying their stuff into target/astrogrid-portal-->
+        <attainGoal name="war:install"/>
+    </goal>
 </project>
