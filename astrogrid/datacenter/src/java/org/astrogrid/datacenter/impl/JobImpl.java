@@ -10,10 +10,17 @@ import org.astrogrid.datacenter.Job ;
 import org.astrogrid.datacenter.JobStep ;
 import org.astrogrid.datacenter.JobDocDescriptor ;
 import org.astrogrid.datacenter.JobException ;
+import org.astrogrid.datacenter.DatasetAgent ;
+import org.astrogrid.datacenter.i18n.*;
 import org.apache.log4j.Logger;
 import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
-
+import java.util.Date ;
+import java.sql.Connection ;
+import java.sql.PreparedStatement ;
+import java.sql.ResultSet ;
+import java.sql.SQLException ;
+import java.text.MessageFormat ;
 
 public class JobImpl extends Job {
 
@@ -24,31 +31,50 @@ public class JobImpl extends Job {
 		logger = Logger.getLogger( JobImpl.class ) ;
 		
 	private static String
+	    ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION            = "AGDTCE00160" ,  
 	    ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT = "AGDTCE00180" ;
+	  
+	private JobFactoryImpl
+	   factoryImpl = null ;
+	   
+	private Connection
+		connection = null ;
+	private PreparedStatement 
+		preparedStatement = null ;  
+	private ResultSet 
+		resultSet = null ;	   
 			
 	private boolean
 	   dirty = false ;
 	
 	private String
-	   status = null,
-	   jobURN = null,
-	   name = null,
-	   community = null,
-	   userId = null,
-	   jobMonitorURL = null ;
+	   status = "",
+	   jobURN = "",
+	   name = "",
+	   community = "",
+	   userId = "",
+	   jobMonitorURL = "",
+	   comment = "";
+	   
+	private Date
+	   date ;
 	   
 	private JobStep
 	   jobStep ;
-	   
+
+	  
+	public JobImpl() {}
+	 
 	   
 	public JobImpl( Element jobElement ) throws JobException {
 		if( TRACE_ENABLED ) logger.debug( "JobImpl(): entry") ;  
 		 	   
 		try {
 
-			name = jobElement.getAttribute( JobDocDescriptor.JOB_NAME_ATTR ) ;
-			jobURN = jobElement.getAttribute( JobDocDescriptor.JOB_URN_ATTR ) ;
-			jobMonitorURL = jobElement.getAttribute( JobDocDescriptor.JOB_MONITOR_URL_ATTR ) ;
+			date = new Date() ;
+			name = jobElement.getAttribute( JobDocDescriptor.JOB_NAME_ATTR ).trim() ;
+			jobURN = jobElement.getAttribute( JobDocDescriptor.JOB_URN_ATTR ).trim() ;
+			jobMonitorURL = jobElement.getAttribute( JobDocDescriptor.JOB_MONITOR_URL_ATTR ).trim() ;
 			
 			NodeList
 			   nodeList = jobElement.getChildNodes() ;
@@ -58,23 +84,30 @@ public class JobImpl extends Job {
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
 				element = (Element) nodeList.item(i) ;
 				if( element.getTagName().equals( JobDocDescriptor.USERID_ELEMENT ) ) {
-					userId = element.getNodeValue() ;
+					userId = element.getNodeValue().trim() ;
 				}
 				else if( element.getTagName().equals( JobDocDescriptor.COMMUNITY_ELEMENT ) ) {
-					community = element.getNodeValue() ;
+					community = element.getNodeValue().trim() ;
 				}
 				else if( element.getTagName().equals( JobDocDescriptor.JOBSTEP_ELEMENT ) ) {
 				    jobStep = new JobStep( element ) ;   
 				}
 				
-			} // end for		
+			} // end for
+			
+			this.setStatus( Job.STATUS_INITIALIZED ) ;		
 			
 		}
-		catch( Exception ex ) {
+		catch( Exception ex ) {		
 			Message
 				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+			this.setComment( message.toString() ) ;
+			this.setStatus( Job.STATUS_IN_ERROR ) ;	
 			logger.error( message.toString(), ex ) ;
-			throw new JobException( message, ex );    		
+			// We must have at least the semblance of a primary key for the Job entity...    
+			if( (this.jobURN == null) || (this.jobURN.equals("")) ) {
+				throw new JobException( message ) ;		
+			}
 		}
 		finally {
 			if( TRACE_ENABLED ) logger.debug( "JobImpl(): exit") ;   	
@@ -90,6 +123,53 @@ public class JobImpl extends Job {
 		// TODO Auto-generated method stub
 
 	}
+
+	public Connection getConnection() throws JobException {
+		if( TRACE_ENABLED ) logger.debug( "getConnection(): entry") ; 
+		
+		try{
+			if( connection == null ) {
+				connection = JobFactoryImpl.getDataSource().getConnection() ;
+			}
+		}
+		catch( SQLException e) {
+			Message
+				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION ) ;
+			logger.error( message.toString(), e ) ;
+			throw new JobException( message, e );
+		}
+		finally{
+			if( TRACE_ENABLED ) logger.debug( "getConnection(): exit") ; 		
+		}
+		    
+		return connection ;  
+
+	} // end of getConnection()
+
+
+	public PreparedStatement getPreparedStatement() throws JobException, SQLException {
+		if( TRACE_ENABLED ) logger.debug( "getPreparedStatement(): entry") ; 
+		
+		try { 			   
+		
+			if( preparedStatement == null ) {			
+			   Object[]
+				  inserts = new Object[1] ;
+			   inserts[0] = DatasetAgent.getProperty( JobFactoryImpl.JOB_TABLENAME ) ;
+			   String
+				  updateString = MessageFormat.format( JobFactoryImpl.UPDATE_TEMPLATE, inserts ) ; 
+			   preparedStatement = getConnection().prepareStatement( updateString ) ;		
+			}
+		    
+		}
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "getPreparedStatement(): exit") ; 	
+		}
+		
+		return preparedStatement ;
+		
+	}// end of getPreparedStatement()
+
 
 	/* (non-Javadoc)
 	 * @see org.astrogrid.datacenter.Job#getStatus()
@@ -113,12 +193,14 @@ public class JobImpl extends Job {
 	public String getId() {	return jobURN ;	}
 	public void setId( String jobURN ) { this.jobURN = jobURN ;}
 	
-	public boolean isDirty() {
-		return this.dirty ;
-	}
+	public void setDirty( boolean dirty ) { this.dirty = dirty ; }
+	public boolean isDirty() {return this.dirty ; }
 
 	public void setName( String name ) { this.name = name; }
 	public String getName() { return this.name; }
+	
+	public Date getDate() { return this.date ; }
+	public void setDate( Date date ) { this.date = date ; }
 
 	public void setCommunity( String community ) { this.community = community; }
 	public String getCommunity() { return community; }
@@ -131,5 +213,13 @@ public class JobImpl extends Job {
 
 	public void setJobStep( JobStep jobStep ) { this.jobStep = jobStep; }
 	public JobStep getJobStep() { return jobStep; }
+	
+	public String getComment() { return comment ; }
+	public void setComment( String comment ) { this.comment = comment ; }
+	
+	public Object getImplementation() { return this ; }
+
+	public void setFactoryImpl(JobFactoryImpl factoryImpl) { this.factoryImpl = factoryImpl ; }
+	public JobFactoryImpl getFactoryImpl() { return factoryImpl ; }
 
 } // end of class JobImpl

@@ -171,9 +171,11 @@ public class DatasetAgent {
     		// Parse the request and create the necessary Job structures, including Query...
          	Document
     		   queryDoc = parseRequest( jobXML ) ;
-            job = Job.getFactory().createJob( queryDoc ) ;
+            job = Job.getFactory().create( queryDoc ) ;
             
             // Execute the Query...
+            job.setStatus( Job.STATUS_RUNNING ) ;
+            Job.getFactory().update( job );
 			job.getJobStep().getQuery().execute() ;
 			   	
 			// Acquire some temporary file space...		   
@@ -189,6 +191,9 @@ public class DatasetAgent {
 			// Inform JobMonitor (within JES) of successful jobstep completion...
 			job.informJobMonitor( true ) ;
 			
+			job.setStatus( Job.STATUS_COMPLETED ) ;
+			Job.getFactory().update( job );		
+				 
 			// temporary, for testing
 			response = votable.toString() ;	
     	}
@@ -198,6 +203,9 @@ public class DatasetAgent {
 				generalMessage = new Message( ASTROGRIDERROR_ULTIMATE_QUERYFAILURE ) ;
 			logger.error( detailMessage.toString(), dex ) ;
 			logger.error( generalMessage.toString() ) ;
+			
+			job.setStatus( Job.STATUS_IN_ERROR ) ;		
+			try{ Job.getFactory().update( job ); } catch( Exception ex ) {;}     
  
 			// Inform JobMonitor within JES of unsuccessful jobstep completion...
 			job.informJobMonitor( false ) ;	

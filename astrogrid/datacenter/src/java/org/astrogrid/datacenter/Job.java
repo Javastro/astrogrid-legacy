@@ -2,7 +2,7 @@ package org.astrogrid.datacenter;
 
 import org.apache.log4j.Logger;
 import org.astrogrid.datacenter.i18n.*;
-
+import java.util.Date ;
 
 public abstract class Job {
 	
@@ -12,14 +12,20 @@ public abstract class Job {
 	private static Logger 
 		logger = Logger.getLogger( Job.class ) ;
 		
-	private static String
+	private static final String
 		ASTROGRIDERROR_COULD_NOT_CREATE_JOBFACTORY_IMPL = "AGDTCE00140" ;
         
-	private static String
+	private static final String
 		JOBFACTORY_KEY = "JOB.FACTORY" ; 
 	
 	private static JobFactory 
 	   factory ;
+	   
+	public static  final String
+	    STATUS_INITIALIZED = "INITIALIZED",  // Newly created but not yet running
+	    STATUS_RUNNING = "RUNNING",          // Currently executing
+	    STATUS_COMPLETED = "COMPLETED",      // Completed OK
+	    STATUS_IN_ERROR = "ERROR" ;          // Something bad happened
 
 
     public static JobFactory getFactory() throws JobException  { 
@@ -65,6 +71,9 @@ public abstract class Job {
     public abstract String getName() ;
     public abstract void setName( String name ) ;
     
+	public abstract Date getDate() ;
+	public abstract void setDate( Date date ) ;
+    
     public abstract String getUserId() ;
     public abstract void setUserId( String name ) ;
     
@@ -76,5 +85,10 @@ public abstract class Job {
     
     public abstract JobStep getJobStep() ;
     public abstract void setJobStep( JobStep jobStep ) ;
+    
+	public abstract String getComment() ;
+	public abstract void setComment( String comment ) ;
+	
+	public abstract Object getImplementation() ;
  
 } // end of class Job
