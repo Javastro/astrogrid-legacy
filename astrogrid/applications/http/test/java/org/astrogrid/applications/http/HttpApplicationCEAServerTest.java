@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationCEAServerTest.java,v 1.6 2004/09/07 08:13:20 pah Exp $
+/*$Id: HttpApplicationCEAServerTest.java,v 1.7 2004/09/10 11:04:22 jdt Exp $
  * Created on 30-July-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,18 +10,12 @@
 **/
 package org.astrogrid.applications.http;
 
-import java.net.URL;
-
 import junit.framework.TestCase;
 
 import org.astrogrid.applications.component.CEAComponentManager;
 import org.astrogrid.applications.component.EmptyCEAComponentManager;
-import org.astrogrid.applications.component.JavaClassCEAComponentManager;
 import org.astrogrid.applications.http.registry.RegistryQuerier;
 import org.astrogrid.applications.http.test.TestRegistryQuerier;
-
-import org.astrogrid.applications.manager.MetadataService;
-import org.astrogrid.config.SimpleConfig;
 
 /** test of a cea server configured with the javaclass backend.
  * @author jdt/Noel Winstanley nw@jb.man.ac.uk 21-Jun-2004
@@ -72,6 +66,9 @@ public class HttpApplicationCEAServerTest extends TestCase {
 
 /* 
 $Log: HttpApplicationCEAServerTest.java,v $
+Revision 1.7  2004/09/10 11:04:22  jdt
+Organised imports.
+
 Revision 1.6  2004/09/07 08:13:20  pah
 remove incorrect import
 
