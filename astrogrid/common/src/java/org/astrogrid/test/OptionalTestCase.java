@@ -1,4 +1,4 @@
-/*$Id: OptionalTestCase.java,v 1.1 2004/01/23 10:54:52 nw Exp $
+/*$Id: OptionalTestCase.java,v 1.2 2004/01/23 11:01:03 nw Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import junit.framework.TestResult;
  * <p>
  * Works from settings in System.properties (which can be set on the command-line using the <tt>-D<i>key</i>=<i>value</i></tt>)
  * <p>
- * Setting the system property <tt>optional.test.skip.*</tt> to <tt>true</tt> will cause the execution of all optional test cases to be skipped<br>
+ * Setting the system property <tt>optional.test.skip.ALL</tt> to <tt>true</tt> will cause the execution of all optional test cases to be skipped<br>
  * An individual test case named <tt>org.foo.wibbleTest</tt> can be disabled by setting the system property
  * <tt>optional.test.skip.org.foo.wibbleTest</tt> to <tt>true</tt>
  * 
@@ -82,7 +82,7 @@ public class OptionalTestCase extends TestCase {
    }
 
    /** key used in System.properties. If true, by default disable optional test cases */ 
-   public  final static String DISABLED_BY_DEFAULT="optional.test.skip.*";
+   public  final static String DISABLED_BY_DEFAULT="optional.test.skip.ALL";
    
    /** reset enablements back to original settings - all optional tests enabled */
    public final static void reset() {
@@ -102,6 +102,9 @@ public class OptionalTestCase extends TestCase {
 
 /* 
 $Log: OptionalTestCase.java,v $
+Revision 1.2  2004/01/23 11:01:03  nw
+minor change
+
 Revision 1.1  2004/01/23 10:54:52  nw
 added base test case that allows tests to be skipped
 according to settings in system.properties
