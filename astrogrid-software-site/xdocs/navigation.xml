@@ -19,8 +19,9 @@
 		</menu>
         <menu name="Download">
             <item name="Releases" href="/downloaddocs/releases.html" collapse="true"> 
-            <item name="Itn07 Snapshot" href="http://www.astrogrid.org/maven/docs/SNAPSHOT/"/>
-            <item name="Itn07 Head" href="http://www.astrogrid.org/maven/docs/HEAD/"/>
+            <!--item name="Itn07 Snapshot" href="http://www.astrogrid.org/maven/docs/SNAPSHOT/"/-->
+            <item name="Itn08 Head" href="http://www.astrogrid.org/maven/docs/HEAD/"/>
+            <item name="Itn07 Release" href="http://www.astrogrid.org/maven/docs/0.7.0/"/>
             <item name="Itn06 Release" href="http://www.astrogrid.org/maven/docs/0.6.0/"/>
             <item name="Itn05 Release" href="http://www.astrogrid.org/maven/docs/Itn05_release/"/>
             <item name="Itn04_1" href="http://www.astrogrid.org/maven/docs/Itn04_1_release/"/>

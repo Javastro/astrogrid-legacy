@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: releases.xml,v 1.3 2004/12/03 11:50:47 jdt Exp $ -->
+<!-- $Id: releases.xml,v 1.4 2004/12/18 18:04:15 jdt Exp $ -->
 <document>
 	<properties>
 		<title>Astrogrid Releases and Test Installations</title>
@@ -28,7 +28,7 @@
                     The Snapshot code is installed on <a href="http://cadairidris.star.le.ac.uk:8080/astrogrid-portal">Cadairidris:8080</a>.
                 </P>
 			</subsection>-->
-			<subsection name="Itn07 Head">
+			<subsection name="Itn08 Head">
                 <P> Head code has been tested and accepted by the integration team.  
                     It is guaranteed to build, and in
                     general its integration test pass rate will increase monotonically with time.</P>
@@ -38,12 +38,19 @@
                     href="http://www.astrogrid.org/maven/docs/HEAD/changes-report.html">changes</a> 
                     report.</P>    
 			</subsection>            
-			<subsection name="Itn07 TechPreview">
+			<!--subsection name="Itn07 TechPreview">
                 <P> From time to time Itn07 Head code will be deployed for beta testers on our <a 
                     href="http://www.astrogrid.org/TechPreview">/TechPreview</a> machine.</P>
-			</subsection>
+			</subsection-->
+            <subsection name="Itn07 Release">
+				<P> The latest stable release is Iteration 07 (0.7.0). </P>
+                <P> This release is tagged in CVS as r0_7_0</P>
+                 <P> For a summary of the latest features and fixes in Iteration 7 see the <a 
+                    href="http://www.astrogrid.org/maven/docs/0.7.0/changes-report.html">changes</a> 
+                    report.</P>    
+			</subsection> 
 			<subsection name="Itn06 Release">
-				<P> The latest stable release is Iteration 06 (0.6.0). </P>
+                <P> This release is tagged in CVS as r0_6_0</P>
 				<P> An installation of this release is on <a href="http://www.astrogrid.org/TechPreview">/Release</a>.</P>
                  <P> For a summary of the latest features and fixes in Iteration 6 see the <a 
                     href="http://www.astrogrid.org/maven/docs/0.6.0/changes-report.html">changes</a> 
