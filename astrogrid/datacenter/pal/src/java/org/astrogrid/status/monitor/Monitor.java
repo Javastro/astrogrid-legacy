@@ -1,5 +1,5 @@
 /*
- * $Id: Monitor.java,v 1.2 2004/10/05 09:44:50 mch Exp $
+ * $Id: Monitor.java,v 1.3 2004/10/05 19:21:41 mch Exp $
  */
 
 package org.astrogrid.status.monitor;
@@ -34,9 +34,10 @@ public class Monitor  {
       datacenters.add("http://astrogrid.roe.ac.uk:8080/pal-usnob");
       datacenters.add("http://astrogrid.roe.ac.uk:8080/pal-twomass");
       datacenters.add("http://zhumulangma.star.le.ac.uk:8080/astrogrid-pal-SNAPSHOT");
+      datacenters.add("http://msslxy.mssl.ucl.ac.uk:8080/astrogrid-pal-fits-SNAPSHOT");
          
       ceaServices = new Vector();
-      ceaServices.add("//http://grendel12.roe.ac.uk:8080/pal-6df");
+      ceaServices.add("http://grendel12.roe.ac.uk:8080/pal-6df");
       ceaServices.add("http://grendel12.roe.ac.uk:8080/pal-sec");
       ceaServices.add("http://grendel12.roe.ac.uk:8080/pal-vizier");
       ceaServices.add("http://astrogrid.roe.ac.uk:8080/pal-ssa");
