@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/explorer/Attic/AstPortalView.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/22 04:03:41 $</cvs:author>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/22 22:29:48 $</cvs:author>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  * $Log: AstPortalView.java,v $
+ * Revision 1.6  2003/06/22 22:29:48  dave
+ * Added message, actions and page for move
+ *
  * Revision 1.5  2003/06/22 04:03:41  dave
  * Added actions and parsers for MySpace messages
  *
@@ -61,6 +64,9 @@ import org.astrogrid.portal.services.myspace.client.actions.details.DetailsRespo
 
 import org.astrogrid.portal.services.myspace.client.actions.copy.CopyRequestBuilder ;
 import org.astrogrid.portal.services.myspace.client.actions.copy.CopyResponseParser ;
+
+import org.astrogrid.portal.services.myspace.client.actions.move.MoveRequestBuilder ;
+import org.astrogrid.portal.services.myspace.client.actions.move.MoveResponseParser ;
 
 import org.astrogrid.portal.services.myspace.client.actions.delete.DeleteRequestBuilder ;
 import org.astrogrid.portal.services.myspace.client.actions.delete.DeleteResponseParser ;
@@ -427,6 +433,77 @@ public class AstPortalView
 			//
 			// Create a parser.
 			CopyResponseParser parser = new CopyResponseParser() ;
+			//
+			// Parse the response.
+			parser.parse(response) ;
+			//
+			// Get the result status.
+			status = parser.getStatus() ;
+			//
+			// Get the result data.
+			data = parser.getData() ;
+			}
+		catch (RemoteException ouch)
+			{
+			//
+			// FIXME ....
+			if (DEBUG_FLAG) System.out.println("Exception calling WebService") ;
+			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+			}
+		catch (IOException ouch)
+			{
+			//
+			// FIXME ....
+			if (DEBUG_FLAG) System.out.println("IOException in response parser") ;
+			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+			}
+		catch (SAXException ouch)
+			{
+			//
+			// FIXME ....
+			if (DEBUG_FLAG) System.out.println("SAXException in response parser") ;
+			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+			}
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		//
+		// Return our status node.
+		return status ;
+		}
+
+	/**
+	 * Move our selected data item.
+	 *
+	 */
+	public StatusNode moveItem()
+		{
+		DataNode   data   = null ;
+		StatusNode status = null ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("AstPortalView.moveItem()") ;
+		try {
+			//
+			// Create our service request
+			MoveRequestBuilder request = new MoveRequestBuilder(this.getItem(), (this.getDestPath() + "/" + this.getDestName())) ;
+			if (DEBUG_FLAG)
+				{
+				System.out.println("----") ;
+				System.out.println(request) ;
+				System.out.println("----") ;
+				}
+			//
+			// Call our service method.
+			String response = myspace.moveDataHolder(request.toString()) ;
+			if (DEBUG_FLAG)
+				{
+				System.out.println("----") ;
+				System.out.println(response) ;
+				System.out.println("----") ;
+				}
+			//
+			// Create a parser.
+			MoveResponseParser parser = new MoveResponseParser() ;
 			//
 			// Parse the response.
 			parser.parse(response) ;

@@ -1,23 +1,20 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <!--+
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/site/explorer/Attic/copy.jsp,v $</cvs:source>
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/site/explorer/Attic/move.jsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
     | <cvs:author>$Date: 2003/06/22 22:29:48 $</cvs:author>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
     | <cvs:log>
-    | $Log: copy.jsp,v $
-    | Revision 1.2  2003/06/22 22:29:48  dave
+    | $Log: move.jsp,v $
+    | Revision 1.1  2003/06/22 22:29:48  dave
     | Added message, actions and page for move
-    |
-    | Revision 1.1  2003/06/22 04:03:41  dave
-    | Added actions and parsers for MySpace messages
     |
     | </cvs:log>
     |
     | FIXME :
     | If you select a path that does not esist, it will corrupt the MySpace server.
-    | If you try to copy from and to the same location, it will corrupt the MySpace server.
-    | If you try to copy to an existing item name, it will corrupt the MySpace server.
+    | If you try to move from and to the same location, it will corrupt the MySpace server.
+    | If you try to move to an existing item name, it will corrupt the MySpace server.
     | If you select a destination level less than two, it will corrupt the MySpace server.
     | Need to URL encode the item paths, otherwise it breaks the page links.
     |
@@ -132,8 +129,8 @@ if ("item".equals(action))
 	}
 
 //
-// If the action is 'copy'.
-if ("copy".equals(action))
+// If the action is 'move'.
+if ("move".equals(action))
 	{
 	//
 	// Get the name from our request params.
@@ -146,8 +143,8 @@ if ("copy".equals(action))
 		// Set the destination name.
 		view.setDestName(name) ;
 		//
-		// Perform the copy.
-		StatusNode status = view.copyItem() ;
+		// Perform the move.
+		StatusNode status = view.moveItem() ;
 		//
 		// If the operation worked.
 		if ("SUCCESS".equals(status.getStatus()))
@@ -225,10 +222,6 @@ if ("copy".equals(action))
 								<td><%= view.getIdent() %></td>
 							</tr>
 							<tr>
-								<td>Ident</td>
-								<td><%= view.getIdent() %></td>
-							</tr>
-							<tr>
 								<td>Path</td>
 								<td><%= view.getPath() %></td>
 							</tr>
@@ -248,10 +241,10 @@ if ("copy".equals(action))
 								<form method="get">
 									<td>Name</td>
 									<td>
-										<input name="action" type="hidden" value="copy"/>
+										<input name="action" type="hidden" value="move"/>
 										<input name="view"   type="hidden" value="<%= view.getIdent() %>"/>
 										<input name="name"   type="text"   value="<%= view.getDestName() %>"/>
-										<input name="submit" type="submit" value="Copy"/>
+										<input name="submit" type="submit" value="Move"/>
 									</td>
 								</form>
 							</tr>

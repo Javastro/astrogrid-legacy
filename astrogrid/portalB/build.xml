@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/22 19:22:25 $</cvs:author>
-    | <cvs:version>$Revision: 1.10 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/22 22:29:48 $</cvs:author>
+    | <cvs:version>$Revision: 1.11 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.11  2003/06/22 22:29:48  dave
+    | Added message, actions and page for move
+    |
     | Revision 1.10  2003/06/22 19:22:25  dave
     | Included the generated stubs in the build
     |
@@ -1365,6 +1368,41 @@
 			<batchtest todir="build/myspace/live/client/junit">
 				<fileset dir="build/myspace/live/client/classes">
 					<include name="**/myspace/client/actions/copy/junit/JUnitTestCase.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<!--+
+	    | Move an item in the registry.
+	    | This test may break the MySpace service if the source item is not already in the registry.
+	    | This test may break the MySpace service if the source and destination are the same.
+	    | This test may break the MySpace service if the destination path is not in the registry.
+	    +-->
+	<target name="MYSPACE.client.junit.move" depends="MYSPACE.client.javac">
+		<!-- Wait for the Axis service -->
+		<antcall target="MYSPACE.wait"/>
+		<!-- Create the reports directory -->
+		<mkdir dir="build/myspace/live/client/junit"/>
+		<!-- Run the JUnit tests -->
+		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
+			<!-- Use our local classes -->
+			<classpath>
+				<!-- Our MySpace client classes -->
+				<pathelement path="build/myspace/live/client/classes"/>
+				<!-- The Axis libraries -->
+				<path refid="axis.classpath"/>
+				<!-- The JUnit libraries -->
+				<path refid="junit.classpath"/>
+				<!-- Plus the Ant libraries (required since JDK 1.4.2) -->
+				<path refid="ant.classpath"/>
+			</classpath>
+			<!-- Generate an XML log file -->
+			<formatter type="xml"/>
+			<!-- Run our JUnit tests -->
+			<batchtest todir="build/myspace/live/client/junit">
+				<fileset dir="build/myspace/live/client/classes">
+					<include name="**/myspace/client/actions/move/junit/JUnitTestCase.class" />
 				</fileset>
 			</batchtest>
 		</junit>

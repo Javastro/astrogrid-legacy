@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/site/explorer/Attic/tree.jsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/22 04:03:41 $</cvs:author>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/22 22:29:48 $</cvs:author>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     | $Log: tree.jsp,v $
+    | Revision 1.2  2003/06/22 22:29:48  dave
+    | Added message, actions and page for move
+    |
     | Revision 1.1  2003/06/22 04:03:41  dave
     | Added actions and parsers for MySpace messages
     |
@@ -189,15 +192,8 @@ if ("delete".equals(action))
 								<td><%= view.getIdent() %></td>
 							</tr>
 							<tr>
-								<form method="get">
-									<td>Path</td>
-									<td>
-										<input name="action" type="hidden" value="path"/>
-										<input name="view"   type="hidden" value="<%= view.getIdent() %>"/>
-										<input name="path"   type="text"   value="<%= view.getPath() %>"/>
-										<input name="submit" type="submit" value="Update"/>
-									</td>
-								</form>
+								<td>Path</td>
+								<td><%= view.getPath() %></td>
 							</tr>
 						</table>
 						<br>
@@ -217,6 +213,7 @@ if ("delete".equals(action))
 								<td>Type</td>
 								<td>View</td>
 								<td>Copy</td>
+								<td>Move</td>
 								<td>Delete</td>
 							</tr>
 							<%
@@ -318,6 +315,7 @@ if ("delete".equals(action))
 														writer.write("</a>") ;
 														}
 												writer.write("</td>") ;
+
 												writer.write("<td>") ;
 													//
 													// If this node is an item, add an 'copy' link to select it.
@@ -353,27 +351,71 @@ if ("delete".equals(action))
 												writer.write("</td>") ;
 
 												writer.write("<td>") ;
-													writer.write("<a") ;
-													writer.write(" ") ;
-													writer.write("href=") ;
-													writer.write("\"") ;
-													writer.write("tree.jsp") ;
-													writer.write("?") ;
-													writer.write("view") ;
-													writer.write("=") ;
-													writer.write(view.getIdent()) ;
-													writer.write("&") ;
-													writer.write("path") ;
-													writer.write("=") ;
-													writer.write(node.getPath()) ;
-													writer.write("&") ;
-													writer.write("action") ;
-													writer.write("=") ;
-													writer.write("delete") ;
-													writer.write("\"") ;
-													writer.write(">") ;
-														writer.write("[D]") ;
-													writer.write("</a>") ;
+													//
+													// If this node is an item, add an 'move' link to select it.
+													if ("2".equals(node.getType()))
+														{
+														writer.write("<a") ;
+														writer.write(" ") ;
+														writer.write("href=") ;
+														writer.write("\"") ;
+														writer.write("move.jsp") ;
+														writer.write("?") ;
+														writer.write("view") ;
+														writer.write("=") ;
+														writer.write(view.getIdent()) ;
+														writer.write("&") ;
+														writer.write("path") ;
+														writer.write("=") ;
+														writer.write(node.getPath()) ;
+														writer.write("&") ;
+														writer.write("action") ;
+														writer.write("=") ;
+														writer.write("item") ;
+														writer.write("\"") ;
+														writer.write(">") ;
+															writer.write("[M]") ;
+														writer.write("</a>") ;
+														}
+													//
+													// If this isn't an item, then skip it.
+													else {
+														writer.write("-") ;
+														}
+												writer.write("</td>") ;
+
+												writer.write("<td>") ;
+													//
+													// If this node below the top two levels.
+													if (level > 2)
+														{
+														writer.write("<a") ;
+														writer.write(" ") ;
+														writer.write("href=") ;
+														writer.write("\"") ;
+														writer.write("tree.jsp") ;
+														writer.write("?") ;
+														writer.write("view") ;
+														writer.write("=") ;
+														writer.write(view.getIdent()) ;
+														writer.write("&") ;
+														writer.write("path") ;
+														writer.write("=") ;
+														writer.write(node.getPath()) ;
+														writer.write("&") ;
+														writer.write("action") ;
+														writer.write("=") ;
+														writer.write("delete") ;
+														writer.write("\"") ;
+														writer.write(">") ;
+															writer.write("[D]") ;
+														writer.write("</a>") ;
+														}
+													//
+													// If this one of the top levels, we can't delete it.
+													else {
+														writer.write("-") ;
+														}
 												writer.write("</td>") ;
 
 											writer.write("</tr>") ;
