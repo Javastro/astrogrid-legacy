@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerier.java,v 1.7 2003/12/01 20:57:39 mch Exp $
+ * $Id: FitsQuerier.java,v 1.8 2003/12/02 17:58:05 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,7 +12,7 @@ import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.net.URL;
-import java.util.Vector;
+import java.util.Hashtable;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
@@ -77,7 +77,7 @@ public class FitsQuerier extends Querier
       Ellipse2D cone = new Ellipse2D.Double(ra-sr, dec-sr, sr*2,sr*2);
       Area matchingArea = new Area(cone);
       
-      Vector intersectingFits = new Vector();
+      Hashtable intersectingFits = new Hashtable();
       
       //first locate all the coverage nodes in the index
       NodeList coverages = index.getElementsByTagName("Coverage");
@@ -93,12 +93,16 @@ public class FitsQuerier extends Querier
             //find parent tag describing whole file
             Element parent = (Element) coverages.item(i).getParentNode();
             
-            intersectingFits.add(DocHelper.getTagValue(parent, "Filename"));
+            String filename = DocHelper.getTagValue(parent, "Filename");
+            //add if not already there - ie ignore duplicates, which might
+            //happen if a FITS has several images
+            if (intersectingFits.get(filename) != null)
+            intersectingFits.put(filename, filename);
          }
          
       }
       
-      return (String[]) intersectingFits.toArray(new String[] {});
+      return (String[]) intersectingFits.values().toArray(new String[] {});
    }
    
    /**
@@ -228,6 +232,9 @@ public class FitsQuerier extends Querier
 
 /*
  $Log: FitsQuerier.java,v $
+ Revision 1.8  2003/12/02 17:58:05  mch
+ Removed duplicate filenames
+
  Revision 1.7  2003/12/01 20:57:39  mch
  Abstracting coarse-grained plugin
 
