@@ -3,10 +3,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/project.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/12/20 11:57:41 $</cvs:date>
-    | <cvs:version>$Revision: 1.20 $</cvs:version>
+    | <cvs:date>$Date: 2005/02/15 10:24:24 $</cvs:date>
+    | <cvs:version>$Revision: 1.21 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.21  2005/02/15 10:24:24  jdt
+    |   Merged  community_pah_910
+    |
     |   Revision 1.20  2004/12/20 11:57:41  jdt
     |   whoopsie...don't allow dashes to creep into comments!
     |
@@ -60,7 +63,7 @@
     <!--+
         | The full name of the project.
         +-->
-    <name>Install toolkit</name>
+    <name>Community Install toolkit</name>
 
     <!--+
         | A short description of the project.

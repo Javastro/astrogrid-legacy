@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/security/manager/SecurityManagerSoapDelegate.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2005/02/15 10:24:24 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityManagerSoapDelegate.java,v $
+ *   Revision 1.6  2005/02/15 10:24:24  jdt
+ *   Merged  community_pah_910
+ *
+ *   Revision 1.5.44.1  2005/02/07 16:03:37  pah
+ *   updated log messages to make it explicit in the logs when login-logout occurs.
+ *
  *   Revision 1.5  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -78,7 +84,7 @@ public class SecurityManagerSoapDelegate
     public SecurityManagerSoapDelegate(URL endpoint)
         {
         super() ;
-        log.debug("") ;
+        
         log.debug("----\"----") ;
         log.debug("SecurityManagerSoapDelegate()") ;
         log.debug("  URL : " + endpoint) ;
@@ -113,7 +119,7 @@ public class SecurityManagerSoapDelegate
      */
     public void setEndpoint(URL endpoint)
         {
-        log.debug("") ;
+        
         log.debug("----\"----") ;
         log.debug("SecurityManagerSoapDelegate.setEndpoint()") ;
         log.debug("  URL : " + endpoint) ;
