@@ -1,5 +1,5 @@
 /*
- * $Id: Ivorn.java,v 1.7 2004/07/06 19:20:28 mch Exp $
+ * $Id: Ivorn.java,v 1.8 2004/07/06 19:24:25 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -45,12 +45,12 @@ public class Ivorn
    private String fragment;
    
    /** Construct from given string */
-   public Ivorn(String Ivorn) throws URISyntaxException
+   public Ivorn(String ivorn) throws URISyntaxException
    {
-      assert Ivorn.startsWith(SCHEME+":") : "Scheme should be "+SCHEME+":";
+      assert ivorn.startsWith(SCHEME+":") : "Scheme should be "+SCHEME+":";
 
       //separate authority, key & fragment
-      URI uri = new URI(Ivorn); //make use of URI parsing
+      URI uri = new URI(ivorn); //make use of URI parsing
       
       authority = uri.getAuthority();
       key = uri.getPath();
@@ -59,7 +59,7 @@ public class Ivorn
    
    public Ivorn(String anAuthority, String aKey, String aFragment)
    {
-      this.key = aKey;
+      this.key = "/"+aKey;
       this.authority = anAuthority;
       this.fragment = aFragment;
    }
@@ -100,6 +100,9 @@ public class Ivorn
 
 /*
 $Log: Ivorn.java,v $
+Revision 1.8  2004/07/06 19:24:25  mch
+Minor fix :-)
+
 Revision 1.7  2004/07/06 19:20:28  mch
 Doc updates and split between authority & key
 

@@ -1,5 +1,5 @@
 /*
- * $Id: IvornTest.java,v 1.4 2004/07/06 19:19:53 mch Exp $
+ * $Id: IvornTest.java,v 1.5 2004/07/06 19:24:36 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -38,9 +38,10 @@ public class IvornTest extends TestCase
       catch (URISyntaxException use) {
          fail("Couldn't cope with valid irn "+validirn);
       }
-      
+
+      //check that the three part constructor produces the same result.
       Ivorn irn = new Ivorn("test.astrogrid.org", "avodemo", "serv1/query/mch-6dF-query.xml");
-      assert irn.toString().equals(validirn);
+      assertEquals(validirn, irn.toString());
 
    }
 
@@ -65,6 +66,9 @@ public class IvornTest extends TestCase
 
 /*
 $Log: IvornTest.java,v $
+Revision 1.5  2004/07/06 19:24:36  mch
+Minor fix :-)
+
 Revision 1.4  2004/07/06 19:19:53  mch
 Switched assertEquals around so 'expected' works ok for failures
 
