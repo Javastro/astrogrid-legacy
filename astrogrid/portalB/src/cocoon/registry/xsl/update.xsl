@@ -153,6 +153,19 @@
          <xsl:apply-templates/>
    </xsl:template>
 
+   <xsl:template match="edit/service/identity/shortName">
+         <tr><td><xsl:value-of select="name()"/>: </td>
+         <td>
+            <input type="hidden">
+               <xsl:attribute name="name">key_<xsl:value-of select="generate-id(.)"/>children_<xsl:value-of select="count(*)"$
+               <xsl:attribute name="value"><xsl:value-of select="current()"/></xsl:attribute>
+            </input>
+            <xsl:value-of select="current()"/>
+         </td>
+         </tr>
+   </xsl:template>
+
+
    <xsl:template match="//*/identity">
          <tr><td><strong><u>Identity</u></strong></td>
          <td><input type="hidden">
