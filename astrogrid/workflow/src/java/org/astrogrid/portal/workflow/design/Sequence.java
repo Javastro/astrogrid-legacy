@@ -16,8 +16,6 @@ import org.apache.log4j.Logger ;
 import org.astrogrid.i18n.*;
 import org.astrogrid.portal.workflow.*;
 import org.astrogrid.portal.workflow.design.activity.*;
-import org.astrogrid.workflow.*;
-import org.astrogrid.workflow.design.activity.*;
 
 /**
  * The <code>Sequence</code> class represents... 
@@ -46,12 +44,12 @@ public class Sequence extends ActivityContainer {
     
     public Sequence() {
         super() ;
-        if( TRACE_ENABLED ) logger.debug( "Sequence() entry/exit") ; 
+        if( TRACE_ENABLED ) trace( "Sequence() entry/exit") ; 
     }
     
     
     public String toXMLString() {
-        if( TRACE_ENABLED ) logger.debug( "toXMLString() entry") ;   
+        if( TRACE_ENABLED ) trace( "toXMLString() entry") ;   
               
         String 
            response = WKF.getProperty( WKF.SEQUENCE_CATEGORY
@@ -73,12 +71,21 @@ public class Sequence extends ActivityContainer {
             logger.error( message.toString(), ex ) ;
         } 
         finally {
-            if( TRACE_ENABLED ) logger.debug( "toXMLString() exit") ;    
+            if( TRACE_ENABLED ) trace( "toXMLString() exit") ;    
         }       
         
         return response ;   
                
     } // end of toXMLString()
 
+    private static void trace( String traceString ) {
+        System.out.println( traceString ) ;
+        // logger.debug( traceString ) ;
+    }
+    
+    private static void debug( String logString ){
+        System.out.println( logString ) ;
+        // logger.debug( logString ) ;
+    } 
     
 } // end of class Sequence

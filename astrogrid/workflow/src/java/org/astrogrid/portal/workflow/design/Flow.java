@@ -15,8 +15,6 @@ import org.apache.log4j.Logger ;
 import org.astrogrid.i18n.*;
 import org.astrogrid.portal.workflow.*;
 import org.astrogrid.portal.workflow.design.activity.*;
-import org.astrogrid.workflow.*;
-import org.astrogrid.workflow.design.activity.*;
 
 /**
  * The <code>Flow</code> class represents... 
@@ -44,11 +42,12 @@ public class Flow extends ActivityContainer {
     
     public Flow() {
         super() ;
+        if( TRACE_ENABLED ) trace( "Flow() entry/exit") ; 
     }
     
     
     public String toXMLString() {
-        if( TRACE_ENABLED ) logger.debug( "toXMLString() entry") ;   
+        if( TRACE_ENABLED ) trace( "toXMLString() entry") ;   
               
         String 
            response = WKF.getProperty( WKF.FLOW_CATEGORY
@@ -70,11 +69,21 @@ public class Flow extends ActivityContainer {
             logger.error( message.toString(), ex ) ;
         } 
         finally {
-            if( TRACE_ENABLED ) logger.debug( "toXMLString() exit") ;    
+            if( TRACE_ENABLED ) trace( "toXMLString() exit") ;    
         }       
         
         return response ;   
          
+    }
+    
+    private static void trace( String traceString ) {
+        System.out.println( traceString ) ;
+        // logger.debug( traceString ) ;
+    }
+    
+    private static void debug( String logString ){
+        System.out.println( logString ) ;
+        // logger.debug( logString ) ;
     }
 
 } // end of class Flow
