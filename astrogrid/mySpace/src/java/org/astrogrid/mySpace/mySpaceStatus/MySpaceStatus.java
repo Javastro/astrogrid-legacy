@@ -206,4 +206,19 @@ public class MySpaceStatus
 
       codes = new Vector();
    }
+
+/**
+ * Translate a MySpaceStatus code into its corresponding string
+ * representation.  If an invalid code is given a null string is
+ * returned.
+ */
+
+   public String translateCode(int code)
+   {  MySpaceStatusCode dummyCode = new MySpaceStatusCode(code, 
+        MySpaceStatusCode.INFO);
+
+      String translatedCode = dummyCode.getCode();
+
+      return translatedCode;
+   }
 }
