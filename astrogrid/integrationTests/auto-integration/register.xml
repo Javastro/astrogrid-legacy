@@ -2,7 +2,7 @@
 <!--+
     |
     +-->
-<project default="init" basedir="." name="registry-upload">
+<project default="register" basedir="." name="registry-upload">
 
     <!--+
         | Default Registry endpoints.
