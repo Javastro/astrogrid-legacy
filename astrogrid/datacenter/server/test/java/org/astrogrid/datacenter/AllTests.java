@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+/*$Id: AllTests.java,v 1.2 2003/11/17 12:16:33 nw Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,7 +36,6 @@ public class AllTests {
         // and add other suites too.
         suite.addTest(org.astrogrid.datacenter.queriers.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.service.AllTests.suite());
-        suite.addTest(org.astrogrid.datacenter.ClientTests.suite());
         suite.addTest(org.astrogrid.datacenter.queriers.sql.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.DatacenterTest.suite());
         return suite;
@@ -46,6 +45,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.2  2003/11/17 12:16:33  nw
+first stab at mavenizing the subprojects.
+
 Revision 1.1  2003/11/14 00:38:29  mch
 Code restructure
 

@@ -1,5 +1,5 @@
 /*
- * $Id: JobNotifyServiceListener.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+ * $Id: JobNotifyServiceListener.java,v 1.2 2003/11/17 12:16:33 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -63,7 +63,7 @@ public class JobNotifyServiceListener extends WebNotifyServiceListener
 //                               new Object[] { newStatus.getText(), queryId }
 //                               )
 //       } ;
-         Document statusDoc = DocHelper.wrap(StatusHelper.makeJobNotificationTag(querier));
+         Document statusDoc = DocHelper.wrap(ServiceStatusHelper.makeJobNotificationTag(querier));
 
          Object[] parms = new Object[]
          {
@@ -94,6 +94,9 @@ public class JobNotifyServiceListener extends WebNotifyServiceListener
 
 /*
 $Log: JobNotifyServiceListener.java,v $
+Revision 1.2  2003/11/17 12:16:33  nw
+first stab at mavenizing the subprojects.
+
 Revision 1.1  2003/11/14 00:38:29  mch
 Code restructure
 

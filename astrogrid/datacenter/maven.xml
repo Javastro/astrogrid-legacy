@@ -3,11 +3,13 @@
 <project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
 
 <!-- hook to get my own stuff run before xdocs binds the site together-->
+<!--
   <preGoal name="xdoc">
   	<attainGoal name="ant" />
   	<attainGoal  name="pal-zip" />
 	<copy file="${maven.build.dir}/pal.zip" tofile="${maven.build.dir}/docs/pal.zip" />
   </preGoal>
+  -->
 
 <!--
 new goals

@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceServer.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+ * $Id: ServiceServer.java,v 1.2 2003/11/17 12:16:33 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,11 +17,12 @@ import org.astrogrid.datacenter.common.ResponseHelper;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
-import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import sun.security.krb5.internal.crypto.e;
+
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 
 /**
  * This abstract class provides the framework for managing the datacenter.  It
@@ -34,6 +35,7 @@ import sun.security.krb5.internal.crypto.e;
 
 public abstract class ServiceServer
 {
+    private static Log log = LogFactory.getLog(ServiceServer.class);
    /** Configuration key to where the metadata file is located */
    public static final String METADATA_FILE_LOC_KEY = "MetadataFile";
 
@@ -97,17 +99,17 @@ public abstract class ServiceServer
       }
       catch (ParserConfigurationException e)
       {
-         Log.logError("XML Parser not configured properly",e);
+         log.error("XML Parser not configured properly",e);
          throw new RuntimeException("Server not configured properly",e);
       }
       catch (SAXException e)
       {
-         Log.logError("Invalid metadata",e);
+         log.error("Invalid metadata",e);
          throw new RuntimeException("Server not configured properly - invalid metadata in '"+trying+"'",e);
       }
       catch (IOException e)
       {
-         Log.logError("Metadata file error",e);
+         log.error("Metadata file error",e);
          throw new RuntimeException("Server not configured properly - metadata i/o error for '"+trying+"'",e);
       }
    }
@@ -143,7 +145,7 @@ public abstract class ServiceServer
     */
    public Element getQuerierStatus(String queryId) throws Throwable
    {
-      return ResponseHelper.makeStatusResponse(getQuerier(queryId)).getDocumentElement();
+      return ServiceResponseHelper.makeStatusResponse(getQuerier(queryId)).getDocumentElement();
    }
 
    /**

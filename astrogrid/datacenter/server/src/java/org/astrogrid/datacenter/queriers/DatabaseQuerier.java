@@ -217,8 +217,11 @@ public abstract class DatabaseQuerier implements Runnable
          setErrorStatus(e);
       }
    }
-
-
+/** TEMPORARY CONSTANT, until myspace gets their act together.
+ * then can replace with MySpaceDummyDelegate.DUMMY
+ * @todo update this constant with correct reference.
+ */
+   public static final String TEMPORARY_DUMMY = "DUMMY";
    /**
     * Tests the destination exists and a file can be created on it.  This ensures
     * not just that MySpace works but rather that the particular myspace url given
@@ -236,7 +239,7 @@ public abstract class DatabaseQuerier implements Runnable
 
       MySpaceManagerDelegate myspace = null;
       
-      if (resultsDestination.equals(MySpaceDummyDelegate.DUMMY)) {
+      if (resultsDestination.equals(TEMPORARY_DUMMY)) {
          myspace = new MySpaceDummyDelegate(resultsDestination);
       } else {
          myspace = new MySpaceManagerDelegate(resultsDestination);
@@ -260,7 +263,7 @@ public abstract class DatabaseQuerier implements Runnable
 
       MySpaceManagerDelegate myspace = null;
       
-      if (resultsDestination.equals(MySpaceDummyDelegate.DUMMY)) {
+      if (resultsDestination.equals(TEMPORARY_DUMMY)) {
          myspace = new MySpaceDummyDelegate(resultsDestination);
       } else {
          myspace = new MySpaceManagerDelegate(resultsDestination);
@@ -480,6 +483,9 @@ public abstract class DatabaseQuerier implements Runnable
 }
 /*
 $Log: DatabaseQuerier.java,v $
+Revision 1.2  2003/11/17 12:16:33  nw
+first stab at mavenizing the subprojects.
+
 Revision 1.1  2003/11/14 00:38:29  mch
 Code restructure
 

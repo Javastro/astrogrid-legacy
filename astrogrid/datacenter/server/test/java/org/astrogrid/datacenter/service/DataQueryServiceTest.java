@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+/*$Id: DataQueryServiceTest.java,v 1.2 2003/11/17 12:16:33 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,7 +52,7 @@ public class DataQueryServiceTest extends TestCase {
     protected void setUp() throws Exception {
         //wsTest.setUp(); //sets up workspace
         HsqlTestCase.initializeConfiguration();
-        SimpleConfig.setProperty(DatabaseQuerierManager.RESULTS_TARGET_KEY,MySpaceDummyDelegate.DUMMY);
+        SimpleConfig.setProperty(DatabaseQuerierManager.RESULTS_TARGET_KEY,DatabaseQuerier.TEMPORARY_DUMMY);
         DataSource ds = new HsqlTestCase.HsqlDataSource();
         //File tmpDir = WorkspaceTest.setUpWorkspace(); // dunno if we need to hang onto this for any reason..
         conn = ds.getConnection();
@@ -154,6 +154,9 @@ public class DataQueryServiceTest extends TestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.2  2003/11/17 12:16:33  nw
+first stab at mavenizing the subprojects.
+
 Revision 1.1  2003/11/14 00:38:29  mch
 Code restructure
 

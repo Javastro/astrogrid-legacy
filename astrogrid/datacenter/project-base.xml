@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+
+  <pomVersion>3</pomVersion>
+  <groupId>astrogrid-datacenter</groupId>
+
+  <currentVersion>HEAD</currentVersion>
+  
+  <organization>
+    <name>AstroGrid</name>
+    <url>http://www.astrogrid.org</url>
+    <logo>http://www.astrogrid.org/images/AGlogo</logo>
+  </organization>
+
+  <inceptionYear>2002</inceptionYear>
+  <package>org.astrogrid</package>
+  <logo>http://www.astrogrid.org/images/AGlogo</logo>
+
+  <shortDescription>AstroGrid DataCenter Components</shortDescription>
+
+  <siteDirectory>/var/www/www/maven/build/datacenter</siteDirectory>
+
+  <repository>
+    <connection>
+      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/datacenter
+    </connection>
+    <developerConnection>
+      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/datacenter
+    </developerConnection>
+  </repository>
+
+  <developers>
+
+    <developer>
+    	<name>Martin Hill</name>
+    	<id>mch</id>
+    	<email>mch@roe.ac.uk</email>
+	<organization>ROE</organization>
+    </developer>
+
+    <developer>
+    	<name>Peter Shillan</name>
+    	<id>gps</id>
+    	<email>gps@roe.ac.uk</email>
+	<organization>ROE</organization>
+    </developer>
+
+    <developer>
+    	<name>Noel Winstanley</name>
+    	<id>nw</id>
+    	<email>nw@jb.man.ac.uk</email>
+	<organization>JBO</organization>
+    </developer>
+  </developers>
+
+  <dependencies>
+    <!-- astrogrid -specific deps -->
+    <dependency>
+      <id>astrogrid-common</id>
+      <version>SNAPSHOT</version>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+
+
+    <!-- more standard deps -->
+      <!-- axis, and the jars it relies upon -->
+    <dependency>
+      <id>axis</id>
+      <version>1.1</version>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+
+    <dependency>
+      <id>wsdl4j</id>
+      <version>1.0</version>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+
+	<dependency>
+		<id>saaj</id>
+		<version>1.0</version>
+		<jar>saaj.jar</jar>
+		    <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+	</dependency>
+
+    <dependency>
+      <id>commons-logging</id>
+      <version>1.0.3</version>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+
+    <dependency>
+      <id>commons-discovery</id>
+      <version>20030211.213356</version>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+
+    <dependency>
+      <id>jaxrpc-api</id>
+      <version>1.0.3</version>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+
+    <dependency>
+      <id>xml-apis</id>
+      <version>1.0.b2</version>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+
+    <!-- castor, and what it needs -->
+    <dependency>
+      <id>castor</id>
+      <version>0.9.5</version>
+      <jar>castor-0.9.5-xml.jar</jar>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+
+    <dependency>
+	<id>xerces</id>
+	<version>2.4.0</version>
+	    <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+
+    <dependency>
+      <id>junit</id>
+      <version>3.8</version>
+    </dependency>
+    </dependencies>
+
+  <build>
+    <sourceDirectory>${basedir}/src/java</sourceDirectory>
+    <unitTestSourceDirectory>${basedir}/test/java</unitTestSourceDirectory>
+
+    <unitTest>
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>
+
+      <resources>
+        <resource>
+          <directory>${basedir}/test/java</directory>
+          <includes>
+            <include>**/*.xml</include>
+	    <include>**/*.properties</include>
+	    <include>**/*.sql</include>
+          </includes>
+        </resource>
+      </resources>
+    </unitTest>
+
+    <resources>
+    	<resource><!-- config files -->
+		<directory>${basedir}/src/java</directory>
+		<includes>
+			<include>**/*.xml</include>
+			<include>**/*.xsl</include>
+			<include>**/*.properties</include>
+		</includes>
+	</resource>
+	<resource> <!-- schemas  - may be needed for validation -->
+		<directory>${basedir}/src</directory>
+		<includes>
+			<include>xsd/**</include>
+			<include>xslt/**</include>
+			<include>wsdl/**</include>
+			<include>wsdd/**</include>
+		</includes>
+	</resource>
+    </resources>
+
+  </build>
+
+  <reports>
+    <report>
+      maven-changelog-plugin
+    </report>
+    <report>
+      maven-changes-plugin
+    </report>
+    <report>
+      maven-checkstyle-plugin
+    </report>
+<!-- temp fucks up
+    <report>
+      maven-clover-plugin
+    </report>
+-->    
+    <report>
+      maven-developer-activity-plugin
+    </report>
+    <report>
+      maven-file-activity-plugin
+    </report>
+    <report>
+      maven-javadoc-plugin
+    </report>
+    <report>
+      maven-jdepend-plugin
+    </report>
+    <report>
+      maven-junit-report-plugin
+    </report>
+    <report>
+      maven-jxr-plugin
+    </report>
+    <report>
+      maven-license-plugin
+    </report>
+    <report>
+      maven-linkcheck-plugin
+    </report>
+    <report>
+      maven-pmd-plugin
+    </report>
+    <report>
+      maven-tasklist-plugin
+    </report>
+    <report>
+      maven-simian-plugin
+    </report>
+  </reports>
+</project>

@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+ * $Id: AxisDataServer.java,v 1.2 2003/11/17 12:16:33 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -86,7 +86,7 @@ public class AxisDataServer extends ServiceServer //MCH see above implements org
 
       try
       {
-         Element result = ResponseHelper.makeResultsResponse(
+         Element result = ServiceResponseHelper.makeResultsResponse(
             querier,
             results.toVotable().getDocumentElement()
          ).getDocumentElement();

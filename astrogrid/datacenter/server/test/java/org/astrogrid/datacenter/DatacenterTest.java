@@ -1,4 +1,4 @@
-/*$Id: DatacenterTest.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+/*$Id: DatacenterTest.java,v 1.2 2003/11/17 12:16:33 nw Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,9 @@
 package org.astrogrid.datacenter;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -66,10 +69,17 @@ public class DatacenterTest extends AbstractTestInstallation {
         DataSource ds = new HsqlTestCase.HsqlDataSource();
         conn = ds.getConnection();
         HsqlTestCase.runSQLScript(script,conn);
+        // Extract the wsdd file.
+        String wsdd = HsqlTestCase.getResourceAsString("/wsdd/deploy.wsdd");
+        assertNotNull(wsdd);
+        PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream("AxisDataServer-deploy.wsdd")));
+        pw.print(wsdd);
+        pw.close();
      // deploy our 'server' locally
+     
         String[] args = {"-l",
                          "local:///AdminService",
-                         "wsdd/AxisDataServer-deploy.wsdd"};
+                         "AxisDataServer-deploy.wsdd"};
         AdminClient.main(args);
      // configure parameters to testing superclass.
         System.setProperty(SERVICE_URL_KEY,"local:///AxisDataServer");
@@ -98,6 +108,9 @@ public class DatacenterTest extends AbstractTestInstallation {
 
 /*
 $Log: DatacenterTest.java,v $
+Revision 1.2  2003/11/17 12:16:33  nw
+first stab at mavenizing the subprojects.
+
 Revision 1.1  2003/11/14 00:38:29  mch
 Code restructure
 

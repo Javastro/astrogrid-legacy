@@ -1,25 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="maven-project.xsd">
-
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+<extend>${basedir}/project-base.xml</extend>
+  <!-- the version of maven's project object model -->
   <pomVersion>3</pomVersion>
+  
+  <!-- a unique name for this project -->
   <id>astrogrid-datacenter</id>
   <name>AstroGrid DataCenter</name>
 
   <currentVersion>HEAD</currentVersion>
-  
-  <organization>
-    <name>AstroGrid</name>
-    <url>http://www.astrogrid.org</url>
-    <logo>http://www.astrogrid.org/images/AGlogo</logo>
-  </organization>
 
-  <inceptionYear>2002</inceptionYear>
-  <package>org.astrogrid</package>
-  <logo>http://www.astrogrid.org/images/AGlogo</logo>
+	<description><![CDATA[
+	Astrogrid datacenter: client delegates, server engine, server implementations, PAL
+	]]>
+	</description>
 
-  <shortDescription>AstroGrid DataCenter Components</shortDescription>
+  <shortDescription>Astrogrid Datacenter</shortDescription>
 
   <siteDirectory>/var/www/www/maven/build/datacenter</siteDirectory>
 
@@ -32,282 +28,10 @@
     </developerConnection>
   </repository>
 
-  <developers>
-    <developer>
-      <name>Jeff Lusted</name>
-      <id>jl99</id>
-      <email>jl99@star.le.ac.uk</email>
-    </developer>
 
-    <developer>
-    	<name>Martin Hill</name>
-    	<id>mch</id>
-    	<email>mch@roe.ac.uk</email>
-    </developer>
 
-    <developer>
-    	<name>Peter Shillan</name>
-    	<id>gps</id>
-    	<email>gps@roe.ac.uk</email>
-    </developer>
 
-    <developer>
-    	<name>Noel Winstanley</name>
-    	<id>nw</id>
-    	<email>nw@jb.man.ac.uk</email>
-    </developer>
-  </developers>
 
-  <dependencies>
-    <!-- astrogrid -specific deps -->
-    <dependency>
-      <id>astrogrid-common</id>
-      <version>SNAPSHOT</version>
-    </dependency>
-    <dependency>
-    	<id>astrogrid-mySpace</id>
-	<version>SNAPSHOT</version>
-    </dependency>
-    
-    <dependency>
-    	<groupId>astrogrid-datacenter</groupId>
-    	<artifactId>astrogrid-datacenter-common</artifactId>
-	<version>SNAPSHOT</version>
-    </dependency>
 
-    <dependency>
-      <id>breezetk</id>
-      <version>UNKNOWN</version>
-      <jar>breezetk.jar</jar>
-    </dependency>
-
-    <dependency>
-      <id>objectwiz-votable</id>
-      <version>UNKNOWN</version>
-      <jar>objectwiz-votable.jar</jar>
-    </dependency>
-
-    <dependency>
-      <id>VOTableUtil</id>
-      <version>UNKNOWN</version>
-      <jar>VOTableUtil.jar</jar>
-    </dependency>
-
-    <!-- more standard deps -->
-      <!-- axis, and the jars it relies upon -->
-    <dependency>
-      <id>axis</id>
-      <version>1.1</version>
-    </dependency>
-
-    <dependency>
-      <id>wsdl4j</id>
-      <version>1.0</version>
-    </dependency>
-
-	<dependency>
-		<id>saaj</id>
-		<version>1.0</version>
-		<jar>saaj.jar</jar>
-	</dependency>
-
-    <dependency>
-      <id>commons-logging</id>
-      <version>1.0.3</version>
-    </dependency>
-
-    <dependency>
-      <id>commons-discovery</id>
-      <version>20030211.213356</version>
-      <!--<version>SNAPSHOT</version>-->
-    </dependency>
-
-    <dependency>
-      <id>jaxrpc-api</id>
-      <version>1.0.3</version>
-    </dependency>
-
-    <dependency>
-      <id>xml-apis</id>
-      <version>1.0.b2</version>
-    </dependency>
-
-    <dependency>
-    	<id>xalan</id>
-	<version>2.5.1</version>
-    </dependency>
-    <!-- castor, and what it needs -->
-    <dependency>
-      <id>castor</id>
-      <version>0.9.5</version>
-      <jar>castor-0.9.5-xml.jar</jar>
-    </dependency>
-
-    <dependency>
-	<id>xerces</id>
-	<version>2.4.0</version>
-    </dependency>
-
-	<!-- logging and testing -->
-    <dependency>
-      <id>junit</id>
-      <version>3.8</version>
-    </dependency>
-
-    <dependency>
-      <id>log4j</id>
-      <version>1.2.4</version>
-    </dependency>
-
-	<!-- used as part of build - no need to deploy with final app.-->
-
-	<dependency>
-		<groupId>axis</groupId>
-		<artifactId>axis-ant</artifactId>
-		<version>1.1</version>
-	</dependency>
-
-	<dependency>
-		<id>catalina-ant</id>
-		<version>4.1.24</version>
-	</dependency>
-
-    <!-- database drivers -->
-    <dependency>
-    	<id>mm-mysql</id>
-	<version>2.0.7</version>
-    </dependency>
-
-    <dependency><!-- for sybase -->
-      <id>jconn</id>
-      <version>UNKNOWN</version>
-      <jar>jconn2.jar</jar>
-    </dependency>
-    <dependency><!-- hsqldb - for testing -->
-    	<id>hsqldb</id>
-    	<version>1.7.1</version>
-    </dependency>
-	<!-- add entry for ms sql server -->
-
-	<!-- cocoon stuff -->
-    <dependency>
-      <id>avalon-framework</id>
-      <version>20020627</version>
-    </dependency>
-
-    <dependency>
-      <id>cocoon</id>
-      <version>2.0.4</version>
-    </dependency>
-
-    <dependency>
-      <id>jdom</id>
-      <version>1.0b8</version>
-    </dependency>
-
-    <dependency>
-      <id>logkit</id>
-      <version>20020529</version>
-    </dependency>
-
-    <dependency>
-      <id>mmmockobjects</id>
-      <version>1.11.0</version>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <sourceDirectory>src/java</sourceDirectory>
-    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-
-    <unitTest>
-      <includes>
-        <include>**/*Test.java</include>
-      </includes>
-
-      <resources>
-        <resource>
-          <directory>${basedir}/test/java</directory>
-          <includes>
-            <include>**/*.xml</include>
-	    <include>**/*.properties</include>
-	    <include>**/*.sql</include>
-          </includes>
-        </resource>
-      </resources>
-    </unitTest>
-
-    <resources>
-    	<resource><!-- config files -->
-		<directory>${basedir}/src/java</directory>
-		<includes>
-			<include>**/*.xml</include>
-			<include>**/*.properties</include>
-		</includes>
-	</resource>
-	<resource> <!-- schemas  - may be needed for validation -->
-		<directory>${basedir}</directory>
-		<includes>
-			<include>schema/*.xsd</include>
-			<include>schema/*.dtd</include>
-		</includes>
-	</resource>
-	<resource> <!-- webservice related files -->
-		<directory>${basedir}</directory>
-		<includes>
-			<include>wsdl/*.wsdl</include>
-			<include>wsdd/*.wsdd</include>
-		</includes>
-	</resource>
-    </resources>
-
-  </build>
-
-  <reports>
-    <report>
-      maven-changelog-plugin
-    </report>
-    <report>
-      maven-changes-plugin
-    </report>
-    <report>
-      maven-checkstyle-plugin
-    </report>
-    <report>
-      maven-clover-plugin
-    </report>
-    <report>
-      maven-developer-activity-plugin
-    </report>
-    <report>
-      maven-file-activity-plugin
-    </report>
-    <report>
-      maven-javadoc-plugin
-    </report>
-    <report>
-      maven-jdepend-plugin
-    </report>
-    <report>
-      maven-junit-report-plugin
-    </report>
-    <report>
-      maven-jxr-plugin
-    </report>
-    <report>
-      maven-license-plugin
-    </report>
-    <report>
-      maven-linkcheck-plugin
-    </report>
-    <report>
-      maven-pmd-plugin
-    </report>
-    <report>
-      maven-tasklist-plugin
-    </report>
-    <report>
-      maven-simian-plugin
-    </report>
-  </reports>
 </project>
+
