@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: deployWebapps.xml,v 1.10 2004/02/12 18:16:41 jdt Exp $ --><!--
+<!-- $Id: deployWebapps.xml,v 1.11 2004/02/13 11:46:59 jdt Exp $ --><!--
 	Example Deploy Script for Astrogrid War files
 	This script uses the Tomcat Manager to deploy war files built nightly by Maven
 
@@ -108,7 +108,7 @@
 		<remove password="${portal.host.password}" path="${portal.path}" url="${portal.host.url}" username="${portal.host.user}"/>
 	</target>
 	
-    <target depends="Undeployportal, Deployportal" name="Redeployportal"/>
+    <target depends="Deployportal" name="Redeployportal"/>
 
 <!--==================================================================================-->
 
