@@ -1,4 +1,4 @@
-/*$Id: AbstractTestInstallation.java,v 1.4 2003/09/25 01:20:37 nw Exp $
+/*$Id: AbstractTestInstallation.java,v 1.5 2003/09/25 03:18:35 nw Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -85,7 +85,7 @@ public abstract class AbstractTestInstallation extends TestCase {
         try {
             Element result = del.getVoRegistryMetadata();
             assertNotNull(result);
-            assertEquals("Registry Metadata not in expected format","DataCenterMetadata",result.getLocalName());
+            assertEquals("Registry Metadata not in expected format","DatacenterMetadata",result.getLocalName());
             System.out.println("Registry Metadata:");
             System.out.println(XMLUtils.ElementToString(result));
         } catch (IOException e) {
@@ -184,29 +184,29 @@ public abstract class AbstractTestInstallation extends TestCase {
         assertNotNull("status is null",stat);
         assertEquals("status code is not as expected",QueryStatus.CONSTRUCTED,stat);
                       
-        URL notifyURL = new URL("local:///SomethingService");
+        URL notifyURL = new URL("http://www.nobody.there.com");
         DatacenterStatusListener list = new WebNotifyServiceListener(notifyURL);
         assertNotNull("listener is null",list);
         del.registerListener(queryId,list);
-            
+                 
         Element startResp = del.startQuery(queryId);
         assertNotNull("start query response is null",startResp);
         assertEquals("start query response not in expected format","QueryStarted",startResp.getLocalName());
-        try {
+        try { // bit ad-hoc really- depend on latency?
             Thread.sleep(5000);
         } catch (InterruptedException e) {
             fail("Been interrupted");
         }
         stat = del.getStatus(queryId);
         assertNotNull("status is null",stat);
-        assertEquals("status code not as expected",QueryStatus.QUERY_COMPLETE,stat);
+        assertEquals("status code not as expected",QueryStatus.FINISHED,stat);
         
         Element result = del.getResultsAndClose(queryId);        
         assertNotNull("result of query is null",result);        
         System.out.println("Results for Non-blocking query");
         System.out.println(XMLUtils.ElementToString(result));
-        // doesn't seem to return the document anymore. argh.
-        assertEquals("Result of query not in expected format","Status",result.getLocalName());        
+        // doesn't seem to return the document anymore - instead returns pointer to them.
+        assertEquals("Result of query not in expected format","DatacenterResults",result.getLocalName());        
   
     }
     
@@ -268,6 +268,9 @@ public abstract class AbstractTestInstallation extends TestCase {
 
 /* 
 $Log: AbstractTestInstallation.java,v $
+Revision 1.5  2003/09/25 03:18:35  nw
+finished the integration / installation test.
+
 Revision 1.4  2003/09/25 01:20:37  nw
 got non-blocking test working, down to last status code returned. need to check this.
 
