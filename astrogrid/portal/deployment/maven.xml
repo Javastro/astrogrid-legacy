@@ -15,7 +15,6 @@
     <echo>The Input Task in Ant 1.5.3 hangs when a property has already been set...overriding with that from Ant 1.6</echo>
     <taskdef name="input" classname="org.apache.tools.ant1point6.taskdefs.Input" classpathref="maven.dependency.classpath"/>
     <taskdef name="tomcat-deploy"    classname="org.apache.catalina.ant.DeployTask" classpathref="maven.dependency.classpath"/>
-    <!--taskdef name="get" classname="org.apache.tools.ant1point6.taskdefs.Get" classpathref="maven.dependency.classpath"/-->
     <property name="input.test" value="foo"/>
     <input addProperty="input.test">If this has worked, execution should continue at this point</input>
 </goal>
