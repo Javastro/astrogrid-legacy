@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.23 2004/03/02 01:37:50 mch Exp $
+ * $Id: WebDelegate.java,v 1.24 2004/03/06 19:00:56 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -182,6 +182,11 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
       catch (Exception e) {
          throw new DatacenterException(e.getMessage(), e);
       }
+   }
+
+   public DatacenterResults doAdqlSql(String resultsFormat, String adqlSql) throws DatacenterException
+   {
+      throw new UnsupportedOperationException();
    }
    
    /**
@@ -422,6 +427,9 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
 
 /*
  $Log: WebDelegate.java,v $
+ Revision 1.24  2004/03/06 19:00:56  mch
+ Added doAdqlSql
+
  Revision 1.23  2004/03/02 01:37:50  mch
  Updates from changes to StoreClient and AGSLs
 
@@ -449,6 +457,9 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
  Revision 1.16  2004/01/08 15:48:17  mch
  Allow myspace references to be given
 $Log: WebDelegate.java,v $
+Revision 1.24  2004/03/06 19:00:56  mch
+Added doAdqlSql
+
 Revision 1.23  2004/03/02 01:37:50  mch
 Updates from changes to StoreClient and AGSLs
 

@@ -1,5 +1,5 @@
 /*
- * $Id: FullSearcher.java,v 1.3 2004/01/14 13:12:47 nw Exp $
+ * $Id: FullSearcher.java,v 1.4 2004/03/06 19:00:56 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -42,7 +42,10 @@ public interface FullSearcher
     */
    public int countQuery(Element queryBody) throws IOException;
 
-
+   /**
+    * Does a simple blocking ADQL/SQL query */
+   public DatacenterResults doAdqlSql(String resultsFormat, String adqlSql) throws IOException;
+   
    /**
     * Constructs the query at the
     * server end, but does not start it yet as other Things May Need To Be Done
@@ -50,7 +53,7 @@ public interface FullSearcher
     *
     * @param queryBody query language statement
         * @see org.astrogrid.datacenter.adql.ADQLUtils#toQueryBody
-    * @see org.astrogrid.datacentrer.sql.SQLUtils#toQueryBody 
+    * @see org.astrogrid.datacentrer.sql.SQLUtils#toQueryBody
     */
    public DatacenterQuery makeQuery(Element queryBody) throws IOException;
 
@@ -78,6 +81,9 @@ public interface FullSearcher
 
 /*
 $Log: FullSearcher.java,v $
+Revision 1.4  2004/03/06 19:00:56  mch
+Added doAdqlSql
+
 Revision 1.3  2004/01/14 13:12:47  nw
 improved documentation
 
