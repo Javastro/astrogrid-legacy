@@ -9,7 +9,7 @@
 <body>
   <section name="Submit an ADQL Query">
     <p>
-      <form action="submitAdqlSql.jsp" method="POST">
+      <form action="submitAdqlUrl.jsp" method="POST">
        <p>
          Get ADQL from <input type="text" name="AdqlUrl"/>
          <a href="http://wiki.astrogrid.org/bin/view/Support/HelpIdentifyingFiles">(Help)</a> <br />

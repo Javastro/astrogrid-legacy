@@ -25,6 +25,8 @@
           </select>
           Send them to
           <input type="text" name="Target"/>
+          <a href="http://wiki.astrogrid.org/bin/view/Support/HelpIdentifyingFiles">(Help)</a>
+          
           <input type="submit" value="Submit ADQL" />
        </p>
 
