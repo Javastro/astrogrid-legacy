@@ -8,9 +8,18 @@
 package org.astrogrid.datacenter.axisdataserver.types;
 
 public class _query  implements java.io.Serializable {
+    private org.astrogrid.datacenter.axisdataserver.types._community community;
     private org.w3c.dom.Element queryBody;
 
     public _query() {
+    }
+
+    public org.astrogrid.datacenter.axisdataserver.types._community getCommunity() {
+        return community;
+    }
+
+    public void setCommunity(org.astrogrid.datacenter.axisdataserver.types._community community) {
+        this.community = community;
     }
 
     public org.w3c.dom.Element getQueryBody() {
@@ -33,6 +42,9 @@ public class _query  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
+            ((this.community==null && other.getCommunity()==null) || 
+             (this.community!=null &&
+              this.community.equals(other.getCommunity()))) &&
             ((this.queryBody==null && other.getQueryBody()==null) || 
              (this.queryBody!=null &&
               this.queryBody.equals(other.getQueryBody())));
@@ -47,6 +59,9 @@ public class _query  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
+        if (getCommunity() != null) {
+            _hashCode += getCommunity().hashCode();
+        }
         if (getQueryBody() != null) {
             _hashCode += getQueryBody().hashCode();
         }
@@ -61,6 +76,11 @@ public class _query  implements java.io.Serializable {
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", ">query"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("community");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "community"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", ">community"));
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("queryBody");
         elemField.setXmlName(new javax.xml.namespace.QName("", "query-body"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Element"));

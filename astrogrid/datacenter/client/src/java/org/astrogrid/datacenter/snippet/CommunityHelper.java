@@ -1,5 +1,5 @@
 /*
- * $Id: CommunityHelper.java,v 1.3 2003/11/26 17:27:10 mch Exp $
+ * $Id: CommunityHelper.java,v 1.4 2003/11/27 00:49:52 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -15,6 +15,8 @@ import org.w3c.dom.NodeList;
  * Class to help extract community information from a dom
  *
  * @author M Hill
+ * @deprecated nww - moving over to soapy-bean approach, as part of the query element.
+ * @todo update schema when community have settled on it.
  */
 
 public class CommunityHelper
@@ -97,6 +99,9 @@ public class CommunityHelper
 
 /*
 $Log: CommunityHelper.java,v $
+Revision 1.4  2003/11/27 00:49:52  nw
+added community bean to query
+
 Revision 1.3  2003/11/26 17:27:10  mch
 Added Certification extraction
 

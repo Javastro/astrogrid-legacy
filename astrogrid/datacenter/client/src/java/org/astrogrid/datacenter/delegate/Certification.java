@@ -5,24 +5,36 @@
 
 package org.astrogrid.datacenter.delegate;
 
+import org.astrogrid.datacenter.axisdataserver.types._community;
+
 
 /**
  * Tenporary class so that DatacenterDelegate has something to work with...
  * Expect to replace with something from community
  * @author M Hill
+ * @modified nww -  extends a axis-generated _community soapy bean.
  */
 
-public class Certification
-{
+public class Certification  extends _community {
    public final static Certification ANONYMOUS = new Certification("Anon", "None");
    
    String userId = null;
    String communityId = null;
 
+    /** copy constructor */
+    public Certification(_community comm) {
+        String account = comm.getAccount();
+        this.setAccount(account);
+        if (account != null) this.userId =  account.substring(0,account.indexOf("@"));
+        if (account != null) this.communityId = account.substring(account.indexOf("@")+1,account.length());        
+    }
+
+
    public Certification(String givenUserId, String givenCommunityId)
    {
       this.userId = givenUserId;
       this.communityId = givenCommunityId;
+      this.setAccount(userId + "@" + communityId);
    }
    
    public String getUserId() { return userId; }
@@ -38,6 +50,9 @@ public class Certification
 
 /*
 $Log: Certification.java,v $
+Revision 1.3  2003/11/27 00:49:52  nw
+added community bean to query
+
 Revision 1.2  2003/11/25 15:04:21  mch
 Extended to be more useful
 

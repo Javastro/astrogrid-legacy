@@ -1,4 +1,4 @@
-/*$Id: QueryHelper.java,v 1.3 2003/11/26 16:31:46 nw Exp $
+/*$Id: QueryHelper.java,v 1.4 2003/11/27 00:49:52 nw Exp $
  * Created on 18-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,13 +29,14 @@ public class QueryHelper {
     private QueryHelper() {
     }
     
-    /** construct the simplet valid query object */
+    /** construct the simplest valid query object */
     public static _query buildMinimalQuery() throws Exception {
         _query q = new _query();
         Select select = ADQLUtils.buildMinimalQuery();
         Document doc = XMLUtils.newDocument();
-        Marshaller.marshal(select,doc);
-        q.setQueryBody(doc.getDocumentElement());    
+        Marshaller.marshal(select,doc);        
+        q.setQueryBody(doc.getDocumentElement());
+           
         return q;
     }
 
@@ -44,6 +45,9 @@ public class QueryHelper {
 
 /* 
 $Log: QueryHelper.java,v $
+Revision 1.4  2003/11/27 00:49:52  nw
+added community bean to query
+
 Revision 1.3  2003/11/26 16:31:46  nw
 altered transport to accept any query format.
 moved back to axis from castor

@@ -50,11 +50,20 @@
 	    	<!--
 	    	<xsd:any processContents="lax" namespace="##other"/> - more correct, but gives an ugly type.
 		-->
+		<xsd:element ref="ns:community" />
 		<xsd:element name="query-body" type="apachesoap:Element" />
 	    </xsd:sequence>
 	  </xsd:complexType>
 	</xsd:element>
 
+	<!-- first stab at the community snippet. -->
+	<xsd:element name="community">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="account" type="xsd:string" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
 
 	<xsd:element name="QueryId">
 		<xsd:complexType>
