@@ -220,7 +220,7 @@
     <!--+
         | Initialise the webapp files.
         +-->
-    <preGoal name="war:webapp">
+    <preGoal name="war:init">
         <ant:echo message=""/>
         <ant:echo message="Artifact : ${pom.artifactId}"/>
         <ant:echo message="Pre-processing for webapp task"/>
