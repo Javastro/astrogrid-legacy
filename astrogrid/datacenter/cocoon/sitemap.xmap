@@ -414,12 +414,16 @@
 OR/                    
                 <map:parameter
                     name="datacenter-end-point"
-                    value="dummy.astrogrid.datacenter.delegate.DummyDelegate"/>
+                    value="uri-param"/>
 -->
                     
                 <map:parameter
                     name="adql-query"
                     value="query"/>
+
+                <map:parameter
+                    name="datacenter-end-point"
+                    value="URI"/>
 
                 <map:call resource="adql-results"/>
 <!--
