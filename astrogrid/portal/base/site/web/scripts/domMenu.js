@@ -112,9 +112,9 @@ domMenu_settings.setItem('global', new domMenu_Hash(
     'openMouseoverSubMenuDelay', 100,
     'openClickSubMenuDelay', -1,
 
-    'closeMouseoutMenuDelay', 3000,
+    'closeMouseoutMenuDelay', 10,
     'closeClickMenuDelay', -1,
-    'closeMouseoutSubMenuDelay', 1000,
+    'closeMouseoutSubMenuDelay', 10,
     'closeClickSubMenuDelay', -1,
     'baseZIndex', 100));
 
