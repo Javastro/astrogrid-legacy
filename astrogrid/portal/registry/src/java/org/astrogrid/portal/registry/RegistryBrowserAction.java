@@ -272,7 +272,15 @@ public class RegistryBrowserAction extends AbstractAction
 																				 uniqueID.lastIndexOf(SEPARATOR)
 																			 );
 					printDebug( method, "uniqueID - res = " + resourceKey);
+/*
+ * the next line was returned to its "initial" state by PFO to make sure of
+ * consistency in registry functions, yet knowing that we need to find
+ * another solution!
+ */
+ /*
 							table = uniqueID.substring( uniqueID.lastIndexOf(SEPARATORHACK)+1
+							*/
+							table = uniqueID.substring( uniqueID.lastIndexOf(SEPARATOR)+1
 																						).trim();
 					printDebug( method, "uniqueID -table = " + table);	
 
