@@ -1,5 +1,5 @@
 /*
- * $Id: MySqlQuerier.java,v 1.5 2003/09/02 14:47:26 nw Exp $
+ * $Id: MySqlQuerier.java,v 1.6 2003/09/03 13:47:30 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -52,8 +52,8 @@ public class MySqlQuerier extends DatabaseQuerier
          //org.gjt.mm.mysql.Driver.class.newInstance();
 
          //or... which is not checked at compiletime but can be configured at runtime
-         Class.forName("org.gjt.mm.mysql.Driver").newInstance();
-
+         //Class.forName("org.gjt.mm.mysql.Driver").newInstance();
+         Class.forName("com.mysql.jdbc.Driver").newInstance();
          jdbcConnection = DriverManager.getConnection(url);
       }
       catch (IllegalAccessException e)

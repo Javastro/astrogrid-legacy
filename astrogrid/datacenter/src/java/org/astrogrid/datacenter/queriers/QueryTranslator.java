@@ -1,4 +1,4 @@
-/*$Id: QueryTranslator.java,v 1.1 2003/09/02 14:46:13 nw Exp $
+/*$Id: QueryTranslator.java,v 1.2 2003/09/03 13:47:30 nw Exp $
  * Created on 02-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,8 @@ import java.util.*;
  * Extend this class to implement DynamicVisitor to provide a concrete translator.
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Sep-2003
  * @todo  optimize translation frame creation.
- * @see org.astrogrid.datacenter.queriers.mysql.MySqlQueryTranslator
+ * @see org.astrogrid.datacenter.queriers.sql.SqlQueryTranslator for example application
+ * @see TranslationFrame for description of implemenation decisions.
  */
 public abstract  class QueryTranslator implements DynamicVisitor {
     /** stack of translation frames
@@ -92,6 +93,11 @@ public abstract  class QueryTranslator implements DynamicVisitor {
 
 /* 
 $Log: QueryTranslator.java,v $
+Revision 1.2  2003/09/03 13:47:30  nw
+improved documentaiton.
+split existing MySQLQueryTranslator into a vanilla-SQL
+version, and MySQL specific part.
+
 Revision 1.1  2003/09/02 14:46:13  nw
 base class of a sql translation
  
