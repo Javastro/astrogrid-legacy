@@ -763,26 +763,26 @@ System.out.println("MySpaceIt05Delegate.copy");
 System.out.println("  Source path : '" + sourcePath + "'");
 System.out.println("  Target agsl : '" + target.toString() + "'");
 
-		URL url = getUrl(sourcePath) ;
+      URL url = getUrl(sourcePath) ;
 // BANG !!
 System.out.println("  Source URL  : '" + url.toString() + "'");
 
 System.out.println("");
 System.out.println("Creating target delegate ....");
-		StoreClient targetStore = 
-			StoreDelegateFactory.createDelegate(
-				operator,
-				target
-				);
+      StoreClient targetStore =
+         StoreDelegateFactory.createDelegate(
+            operator,
+            target
+            );
 System.out.println("Done");
 
 System.out.println("");
 System.out.println("Calling target delegate ....");
-		targetStore.putUrl(
-			url,
-			target.getPath(),
-			false
-			);
+      targetStore.putUrl(
+         url,
+         target.getPath(),
+         false
+         );
 System.out.println("Done");
 
    }
@@ -1195,6 +1195,10 @@ System.out.println("Done");
          cursor=0;
       }
 
+      /** For human readable debugging */
+      public String toString() {
+         return "MySpaceOutputStream ["+managerMsrl+"#"+targetPath+"]";
+      }
 
       public void close() throws IOException
       {  flush();
@@ -1418,6 +1422,9 @@ System.out.println("Done");
 
 /*
 $Log: MySpaceIt05Delegate.java,v $
+Revision 1.10  2004/11/05 17:39:59  mch
+Added outputstream.toString with useful info
+
 Revision 1.9  2004/09/02 10:25:41  dave
 Updated FileStore and MySpace to handle mime type and file size.
 Updated Community deployment script.
