@@ -181,8 +181,14 @@ public class RegistryAdminService implements
                         resultDoc = XQueryExecution.runQuery(xql,loadedRegistry);
                         //System.out.println("the resultDoc to find an id = " + DomHelper.DocumentToString(resultDoc));
                         manageAuths = RegistryFileHelper.doManageAuthorities();
-                     }//if                           
-                  }//if      
+                     }else {
+                        System.out.println("IN THE AUTO-INTEGRATION YOU SHOULD NOT GET HERE, BUT REMOVING CHILD FOR INFINITE LOOP");
+                        xsDoc.removeChild(currentResource);
+                     }                           
+                  }else {
+                     System.out.println("IN THE AUTO-INTEGRATION YOU SHOULD NOT GET HERE, BUT REMOVING CHILD FOR INFINITE LOOP");
+                     xsDoc.removeChild(currentResource);   
+                  }      
                }//if   
             }//for   
          }//if
