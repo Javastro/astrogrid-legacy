@@ -7,6 +7,9 @@ import org.gridforum.ogsi.GridService;
 /**
  * Tests {@link GridServiceDelegate}.
  * Live tests are performed against a grid service.
+ *
+ * THE TESTED CLASS HAS BEEN DEPRECATED AND IS NO LONGER USED.
+ * @deprecated
  */
 public class GridServiceDelegateTest extends TestCase {
 

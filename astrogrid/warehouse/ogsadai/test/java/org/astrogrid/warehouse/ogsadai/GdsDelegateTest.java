@@ -6,6 +6,9 @@ import org.gridforum.ogsi.ExtensibilityType;
 /**
  * Exercise connect, findFactoryUrlFromRegistry, and performSelect methods.
  * Live tests are performed against a grid service.
+ *
+ * THE TESTED CLASS HAS BEEN DEPRECATED AND IS NO LONGER USED.
+ * @deprecated
  */
 public class GdsDelegateTest extends TestCase {
 
@@ -23,8 +26,8 @@ public class GdsDelegateTest extends TestCase {
   private String testRegistryUrl2
     = "http://hydra.star.le.ac.uk:8082/gdw/services/ogsadai/DAIServiceGroupRegistry";	
 
-  private String query1 = "SELECT * FROM first WHERE DECL &gt; 59.9";
-  private String query2 = "SELECT * FROM first WHERE RA &lt; 0.5";
+  private String query1 = "SELECT * FROM first WHERE DECL &gt; 59.9 LIMIT 100";
+  private String query2 = "SELECT * FROM first WHERE RA &lt; 0.5 LIMIT 100";
 
   private int timeoutValue = 15;		
 
