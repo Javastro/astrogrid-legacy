@@ -1,5 +1,5 @@
 /*
- * $Id: AuthenticationDelegate.java,v 1.2 2003/09/10 20:48:17 pah Exp $
+ * $Id: AuthenticationDelegate.java,v 1.3 2003/09/29 15:43:42 dave Exp $
  * 
  * Created on 10-Sep-2003 by pah
  *
@@ -53,9 +53,19 @@ public class AuthenticationDelegate implements TokenAuthenticator {
     */
    public SecurityToken authenticateLogin(String account, String password)
       throws RemoteException {
+/*
+ * Temp fix to allow other teams to use the portal.
+ * Need to mofiy the code to enable portal to use a remote community service.
+ *
          SecurityToken token =
          binding.authenticateLogin(account, password);
         return token;
+ *
+ */
+   SecurityToken token = new SecurityToken() ;
+   token.setAccount(account) ;
+   token.setUsed(Boolean.FALSE) ;
+   return token ;
    }
 
    /* (non-Javadoc)
@@ -63,8 +73,15 @@ public class AuthenticationDelegate implements TokenAuthenticator {
     */
    public SecurityToken authenticateToken(SecurityToken token)
       throws RemoteException {
+/*
+ * Temp fix to allow other teams to use the portal.
+ * Need to mofiy the code to enable portal to use a remote community service.
+ *
          SecurityToken rettoken = binding.authenticateToken(token);
          return rettoken;
+ *
+ */
+   return token ;
    }
 
    /* (non-Javadoc)
@@ -73,10 +90,17 @@ public class AuthenticationDelegate implements TokenAuthenticator {
    public SecurityToken createToken(
       String account,
       SecurityToken token,
-      String target)
+      String target) {
+/*
+ * Temp fix to allow other teams to use the portal.
+ * Need to mofiy the code to enable portal to use a remote community service.
+ *
       throws RemoteException {
         SecurityToken rettoken = binding.createToken(account, token, target);
         return rettoken;
+ *
+ */
+   return token ;
    }
 
 }

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/xml/policy/data/Attic/ast.cam.ac.uk.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/24 16:30:43 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/29 15:43:42 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: ast.cam.ac.uk.xml,v $
+    |   Revision 1.3  2003/09/29 15:43:42  dave
+    |   Temp fix, disabled authentication in the delegate
+    |
     |   Revision 1.2  2003/09/24 16:30:43  dave
     |   Updated the policy data files
     |
@@ -90,8 +93,8 @@
 
 		<community ident="star.rl.ac.uk">
 			<description>Dev system at Rutherford</description>
-			<service></service>
-			<manager></manager>
+			<service>http://stargrid1.bnsc.rl.ac.uk:8080/axis/services/PolicyService</service>
+			<manager>http://stargrid1.bnsc.rl.ac.uk:8080/axis/services/PolicyManager</manager>
 		</community>
 
 	</communities>
