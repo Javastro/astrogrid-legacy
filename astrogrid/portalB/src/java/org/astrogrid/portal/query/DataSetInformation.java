@@ -82,16 +82,16 @@ public class DataSetInformation {
   		return this.dataSetColumns;
   	}
 
-	public CriteriaInformation addCriteriaInformation(String columnName,String filterType,String value) {
-		return addCriteriaInformation(columnName,null,filterType,value);
+	public CriteriaInformation addCriteriaInformation(String columnName,String filterType,String value,String joinType,String functionValues) {
+		return addCriteriaInformation(columnName,null,filterType,value,joinType,null);
 	}
 
-	public CriteriaInformation addCriteriaInformation(String columnName,String type,String filterType,String value) {
-		return addCriteriaInformation(new DataSetColumn(columnName,type),filterType,value);
+	public CriteriaInformation addCriteriaInformation(String columnName,String type,String filterType,String value,String joinType,String functionValues) {
+		return addCriteriaInformation(new DataSetColumn(columnName,type),filterType,value,joinType,functionValues);
 	}
 
-	public CriteriaInformation addCriteriaInformation(DataSetColumn dsColumn,String filterType,String value) {
-		CriteriaInformation ci = new CriteriaInformation(dsColumn,filterType,value);
+	public CriteriaInformation addCriteriaInformation(DataSetColumn dsColumn,String filterType,String value,String joinType,String functionValues) {
+		CriteriaInformation ci = new CriteriaInformation(dsColumn,filterType,value,joinType,functionValues);
 		criteriaInfo.add(ci);
 		return ci;
 	}
@@ -123,54 +123,5 @@ public class DataSetInformation {
 		}
 		return false;
 	}
-
-}
-
-class CriteriaInformation {
-
-	private DataSetColumn dsColumn = null;
-	private String filterType = null;
-	private String value = null;
-
-
-	public CriteriaInformation(DataSetColumn dsColumn,String filterType,String value) {
-		this.dsColumn = dsColumn;
-		this.filterType = filterType;
-		this.value = value;
-	}
-
-	public void setDataSetColumn(DataSetColumn dsColumn) {
-		this.dsColumn = dsColumn;
-	}
-
-	public DataSetColumn getDataSetColumn() {
-		return this.dsColumn;
-	}
-
-	public void setFilterType(String filterType) {
-		this.filterType = filterType;
-	}
-
-	public String getFilterType() {
-		return this.filterType;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	public String getValue() {
-		return this.value;
-	}
-
-	public boolean equals(Object ciObj) {
-		CriteriaInformation ci = (CriteriaInformation)ciObj;
-		if( (this.value != null && this.value.equals(ci.getValue())) && (this.filterType != null && this.filterType.equals(ci.getFilterType())) &&
-		     this.dsColumn != null && this.dsColumn.equals(ci.getDataSetColumn())) {
-			return true;
-		}
-		return false;
-	}
-
 
 }

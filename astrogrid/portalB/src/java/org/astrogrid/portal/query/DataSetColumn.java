@@ -4,10 +4,15 @@ public class DataSetColumn {
 	private String name = null;
 	private String type = null;
 
+	public final String OTHER_TYPE = "other";
+	public final String COLUMN_TYPE = "column";
+	public final String UCD_TYPE = "ucd";
+	public final String FUNCTION_TYPE = "function";
 
 	public DataSetColumn(String name,String type) {
 		this.name = name;
 		this.type = type;
+		if(this.type == null){this.type="";}
 	}
 
 	public void setName(String name) {

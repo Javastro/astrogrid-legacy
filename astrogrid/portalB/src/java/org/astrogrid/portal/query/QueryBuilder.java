@@ -31,6 +31,10 @@ public class QueryBuilder {
 		return null;
 	}
 
+	public ArrayList getDataSetInformation() {
+		return this.dsInformation;
+	}
+
 	public DataSetInformation addDataSetInformation(String name) {
 		return addDataSetInformation(null,null,name);
 	}
@@ -91,9 +95,9 @@ public class QueryBuilder {
 			for(int j=0;j < dsInfo.getCriteriaInformation().size();j++) {
 				ci = (CriteriaInformation)dsInfo.getCriteriaInformation().get(j);
 				if(whereClause != null && whereClause.length() > 0) {
-					whereClause += " AND (" + dsInfo.getName() + "." + ci.getDataSetColumn().getName() + " " + ci.getFilterType() + " " + ci.getValue() + ") ";
+					whereClause += ci.getJoinType() + " {" + j + "}(" + dsInfo.getName() + "." + ci.getDataSetColumn().getName() + " " + ci.getFilterType() + " " + ci.getValue() + checkOtherCriteria(dsInfo.getName(),ci) + ") ";
 				}else {
-					whereClause = " (" + dsInfo.getName() + "." + ci.getDataSetColumn().getName() + " " + ci.getFilterType() + " " + ci.getValue() + ") ";
+					whereClause = " {" + j + "}(" + dsInfo.getName() + "." + ci.getDataSetColumn().getName() + " " + ci.getFilterType() + " " + ci.getValue() +  checkOtherCriteria(dsInfo.getName(),ci) + ") ";
 				}//else
 			}//for
 		}//for
@@ -103,7 +107,16 @@ public class QueryBuilder {
 				 queryString += " WHERE " + whereClause;
 			}
 		}
-		return queryString + "\n <br />";
+		return queryString + "\n";
 	}//formulateQuery
+
+	private String  checkOtherCriteria(String dataSetName, CriteriaInformation ci) {
+		if(ci.getLinkedCriteria() != null) {
+			CriteriaInformation ciLinked = ci.getLinkedCriteria();
+			return (ciLinked.getJoinType() + " (" + dataSetName + "." + ciLinked.getDataSetColumn().getName() + " " + ciLinked.getFilterType() + " " + ciLinked.getValue() + checkOtherCriteria(dataSetName,ciLinked) + ") ");
+		}
+		return "";
+
+	}
 
 }
