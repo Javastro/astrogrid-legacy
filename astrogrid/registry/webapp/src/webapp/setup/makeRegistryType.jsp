@@ -35,4 +35,3 @@
     </Interface>
   </vr:Resource>
 </VODescription>
-

@@ -5,7 +5,6 @@
       <ul>
          <li><a href="index.jsp" >Home</a>
          <li><a href="admin/index.jsp" >Admin</a>
-         <li><a href="registry_index.html" >Old Index</a>
       </ul>
    </div>
    <div id='menuQuery'>
@@ -13,17 +12,15 @@
       <ul>
          <li><a href="ivornLookupForm.jsp" >IVORN Lookup</a>
          <li><a href="browse.jsp" >Browse</a>
-         <li><a href="adqlquery.html" >Query</a>
+         <li><a href="adqlquery.jsp" >Query</a>
       </ul>
    </div>
    <div id='menuRegister'>
       <h5>Register</h5>
       <ul>
-         <li><a href="admin/editEntry.jsp">Enter Resource Document</a>
-         <li><a href="admin/enterUrlForm.jsp">Register using URL</a>
+         <li><a href="admin/editEntry.jsp">Enter Resource</a>
       </ul>
    </div>
-
 </div>
 </div>
 

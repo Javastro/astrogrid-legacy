@@ -34,9 +34,25 @@ Enter the VOResource in the text area below and press the [Submit] button to add
 already exists, it will be updated.
 </p>
 
-<form action="putResource.jsp" method="post">
+Upload from a local file:
+<form enctype="multipart/form-data" method="post" action="addResourceEntry.jsp">
+<input type="file" name="docfile" />
+<input type="hidden" name="addFromFile" value="true" />
+<input type="submit" name="uploadFromFile" value="upload" />
+</form>
+<br />
+Upload from a url:
+<form method="post" action="addResourceEntry.jsp">
+<input type="text" name="docurl" />
+<input type="hidden" name="addFromURL" value="true" />
+<input type="submit" name="uploadFromURL" value="upload" />
+</form>
+
+Upload from text:<br />
+<form action="addResourceEntry.jsp" method="post">
+<input type="hidden" name="addFromText" value="true" />
 <p>
-<textarea name="Resource" rows="30" cols="90"><%= resource %></textarea>
+<textarea name="Resource" rows="30" cols="90"></textarea>
 </p>
 <p>
 <input type="submit" name="button" value="Submit"/>

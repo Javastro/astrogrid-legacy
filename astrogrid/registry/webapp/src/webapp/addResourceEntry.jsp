@@ -71,7 +71,5 @@
 %>
 </pre>
 
-<a href="index.jsp">Index</a>
-
 </body>
 </html>

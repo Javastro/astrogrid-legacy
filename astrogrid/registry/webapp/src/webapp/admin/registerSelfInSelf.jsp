@@ -10,42 +10,73 @@
     session="false" %>
 
 <html>
-<head><title>Add Resource Entry</title>
+<head>
+<title>Adding External Registries</title>
+<style type="text/css" media="all">
+          @import url("../style/astrogrid.css");
+</style>
 </head>
 
 <body>
+<%@ include file="../header.xml" %>
+<%@ include file="navigation.xml" %>
 
-<%
-  String resource = request.getParameter("Resource");
-  String postregsubmit = request.getParameter("postregsubmit");
-  String getregsubmit= request.getParameter("getregsubmit");
-  String getregs = request.getParameter("getregs");
-  String fullRegistryAddURL = "http://hydra.star.le.ac.uk:8080/astrogrid-registry/addResourceEntry.jsp";
-  //String regBas = request.getRequestURL().toString();
-  String regBas = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-%>
+<div id='bodyColumn'>
 
-<h1>Adding Entry</h1>
+<h1>Self-registration of a registry</h1>
 
-<p>Service returns:
 
-<pre>
-<%
-   Document result = null;
-   RegistryAdminService server = new RegistryAdminService();
-   if(resource != null && resource.trim().length() > 0) {
-      result = server.updateResource(DomHelper.newDocument(resource));
-      out.write("<p>Attempt at updating Registry, if any errors occurred it will be printed below<br /></p>");
-      if (result != null) {
-        DomHelper.DocumentToWriter(result, out);
-      }
-   } else {
-      out.write("Error: no VOResource was entered.");
-   }
-%>
-</pre>
 
-<a href="index.html">Return to set-up index</a>
+
+<p>
+When a new registry is created, the first registration made in it must describe the registry itself. This form
+makes that self-registration.
+</p>
+
+
+
+<p>
+You must construct a VOResource of type registryType to describe your new registry. Use a text editor, or,
+for preference, a specialist XML editor such Oxygen or XMLSpy. If possible, validate your XML document.
+You may load your Registry type via url, local file, or text.
+You can download a <a href="RegistryTypeWebServicev0_9.xml">template for a registryType document</a>.
+</p>
+
+
+<p>Enter the VODescription in the text area below. Include declarations of the
+namespaces you use (the template linked above has the namespaces
+already filled in). Once submitted and you are still in the process of setting up a Registry 
+come back to the admin screens to finish the setup process.
+</p>
+
+
+
+Upload from a local file:
+<form enctype="multipart/form-data" method="post" action="../addResourceEntry.jsp">
+<input type="file" name="docfile" />
+<input type="hidden" name="addFromFile" value="true" />
+<input type="submit" name="uploadFromFile" value="upload" />
+</form>
+<br />
+Upload from a url:
+<form method="post" action="../addResourceEntry.jsp">
+<input type="text" name="docurl" />
+<input type="hidden" name="addFromURL" value="true" />
+<input type="submit" name="uploadFromURL" value="upload" />
+</form>
+
+Upload from text:<br />
+<form action="../addResourceEntry.jsp" method="post">
+<input type="hidden" name="addFromText" value="true" />
+<p>
+<textarea name="Resource" rows="30" cols="90">
+<%= resource %>
+</textarea>
+</p>
+<p>
+<input type="submit" name="button" value="Submit"/>
+</p>
+</form>
 
 </body>
 </html>

@@ -20,7 +20,6 @@
       <h5>Register</h5>
       <ul>
          <li><a href="../admin/editEntry.jsp">Enter/Edit Document</a>
-         <li><a href="../admin/enterUrlForm.jsp">Register using URL</a>
       </ul>
    </div>
 
