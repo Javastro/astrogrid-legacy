@@ -9,7 +9,7 @@ JES - Job Entry System
 1.1 Externals.
 --------------
 
-These are the environments under which the datacenter was developed:
+These are the environments under which JES was developed:
 . RedHat Linux 7.3 
 . Java sdk j2sdk1.4.1_02
 . Tomcat 4.1.24
