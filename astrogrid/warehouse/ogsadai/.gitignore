@@ -1,3 +1,5 @@
 maven.log
 target
 *.properties
+.project
+astrogrid-ogsadai-app-pom-snapshot-version
