@@ -145,27 +145,8 @@ public class Workflow extends Activity {
     private static final String
         ASTROGRIDERROR_SOMEMESSAGE = "AGWKFE00050" ; // none so far 
         
-    private static MySpaceManagerDelegate
+    private MySpaceManagerDelegate
         mySpace ;
-        
-    static {
-        
-        try { 
-            debug( "Workflow static initializer: entry") ;
-            // Loads the workflow config file and messages...
-            WKF.getInstance().checkPropertiesLoaded() ;
-            debug( "Workflow static initializer: loading of properties suceeded") ;
-        }
-        catch ( AstroGridException agex ) {
-            debug( "Workflow static initializer: loading of properties failed...") ;
-            debug( agex.toString() ) ;
-        }
-        finally {
-            debug( "Workflow static initializer: exit") ;
-        }
-        
-    }
-    
     
     public static Workflow createWorkflow(  String userid, String community, String name, String description  ) {
         if( TRACE_ENABLED ) trace( "Workflow.createWorkflow() entry") ;   
@@ -221,7 +202,6 @@ public class Workflow extends Activity {
 //			 workflow = new Workflow( XMLUtils.newDocument(source) ) ;             
              debug("success") ;  
               
- //JBL?            workflow = new Workflow( XMLUtils.newDocument( retrieveTemplate(templateName) ) ) ;
              workflow.setUserid( userid) ;
              workflow.setCommunity( community ) ;
              workflow.setName( name ) ;
@@ -358,7 +338,7 @@ public class Workflow extends Activity {
       * <p> 
       * Default constructor.
       * <p>
-      * Gives a workflow with an empty sequence.
+      * 
       * 
       **/           
     private Workflow() {
@@ -372,19 +352,19 @@ public class Workflow extends Activity {
     
     /**
       * <p> 
-      * Constructor using XML.
+      * Constructor using Document.
       * <p>
-      * Gives a workflow as described by the XML
       * 
       * 
-      * @param workflowXML - An XML description. Could be from MySpace
+      * 
+      * @param document - Origination could be from MySpace
       * or from a template loaded from a config file.
       * 
       * @see 
       **/        
     private Workflow( Document document ) {
-        super(null) ; // null because no parent 
-        if( TRACE_ENABLED ) trace( "Workflow(String) entry") ;
+        super(null) ;   // null because no parent 
+        if( TRACE_ENABLED ) trace( "Workflow(Document) entry") ;
         
         try{
 		        	
@@ -429,10 +409,10 @@ public class Workflow extends Activity {
             
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow(String) exit") ;
+            if( TRACE_ENABLED ) trace( "Workflow(Document) exit") ;
         }
         
-    }
+    } // end of Workflow(Document)
     
     
     /**

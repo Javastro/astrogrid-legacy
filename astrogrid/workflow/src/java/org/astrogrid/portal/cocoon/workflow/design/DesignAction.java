@@ -20,6 +20,7 @@ import org.astrogrid.i18n.*;
 import org.astrogrid.AstroGridException ;
 
 // import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
+import org.astrogrid.portal.workflow.*;
 import org.astrogrid.portal.workflow.design.*;
 import org.astrogrid.portal.workflow.design.activity.*;
 
@@ -119,20 +120,40 @@ public class DesignAction extends AbstractAction {
                    , SourceResolver resolver
                    , Map objectModel
                    , String source
-                   , Parameters params ) {
-                   
-        if( TRACE_ENABLED ) trace( "act() entry" ) ;  
+                   , Parameters params ) {                  
+        if( TRACE_ENABLED ) trace( "DesignAction.act() entry" ) ;  
         
         DesignActionImpl
+            myAction = null ;
+        Map
+            retMap = null ;
+        
+        try { 
+            debug( "About to check properties loaded") ;
+            // Load the workflow config file and messages...
+            WKF.getInstance().checkPropertiesLoaded() ;
+            debug( "Properties loaded OK") ;
+            
             myAction = new DesignActionImpl( redirector
                                            , resolver
                                            , objectModel
                                            , source
                                            , params ) ;
                                            
-        return myAction.act() ; 
+            retMap = myAction.act() ;    
+                                          
+        }
+        catch ( AstroGridException agex ) {
+            debug( agex.toString() ) ;
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "DesignAction.act() exit" ) ;  
+        }
+                                        
+        return retMap ; 
  
     } // end of act() 
+
 
     private class DesignActionImpl {
         
