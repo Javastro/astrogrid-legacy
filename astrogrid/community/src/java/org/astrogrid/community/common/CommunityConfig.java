@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/common/Attic/CommunityConfig.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/10/09 01:38:30 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2003/12/15 18:08:16 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityConfig.java,v $
+ *   Revision 1.8  2003/12/15 18:08:16  dave
+ *   Extending build to produce war file.
+ *
  *   Revision 1.7  2003/10/09 01:38:30  dave
  *   Added JUnite tests for policy delegates
  *
@@ -51,6 +54,12 @@ public class CommunityConfig
 	 *
 	 */
 	private static final boolean DEBUG_FLAG = true ;
+
+	/**
+	 * The default servlet name to use for the endpoint address.
+	 *
+	 */
+	public static final String SERVLET_NAME = "astrogrid-community";
 
 	/**
 	 * The configuration name to use within jConfig.
@@ -443,7 +452,7 @@ public class CommunityConfig
 			{
 			if (DEBUG_FLAG) System.out.println("getManagerUrl()") ;
 			if (DEBUG_FLAG) System.out.println("  Trying localhost ....") ;
-			manager = "http://" + getHostName() + ":8080/axis/services/PolicyManager" ;
+			manager = "http://" + getHostName() + ":8080/" + SERVLET_NAME + "/services/PolicyManager" ;
 			if (DEBUG_FLAG) System.out.println("  Localhost result : " + manager) ;
 			}
 		if (DEBUG_FLAG) System.out.println("  Manager URL : " + manager) ;
@@ -479,7 +488,7 @@ public class CommunityConfig
 			{
 			if (DEBUG_FLAG) System.out.println("getServiceUrl()") ;
 			if (DEBUG_FLAG) System.out.println("  Trying localhost ....") ;
-			service = "http://" + getHostName() + ":8080/axis/services/PolicyService" ;
+			service = "http://" + getHostName() + ":8080/" + SERVLET_NAME + "/services/PolicyService" ;
 			if (DEBUG_FLAG) System.out.println("  Localhost result : " + service) ;
 			}
 		if (DEBUG_FLAG) System.out.println("  Service URL : " + service) ;
@@ -516,7 +525,7 @@ public class CommunityConfig
 			{
 			if (DEBUG_FLAG) System.out.println("getAuthenticationServiceUrl()") ;
 			if (DEBUG_FLAG) System.out.println("  Trying localhost ....") ;
-			authenticator = "http://" + getHostName() + ":8080/axis/services/AuthenticationService" ;
+			authenticator = "http://" + getHostName() + ":8080/" + SERVLET_NAME + "/services/AuthenticationService" ;
 			if (DEBUG_FLAG) System.out.println("  Localhost result : " + authenticator) ;
 			}
 		if (DEBUG_FLAG) System.out.println("  Authenticator URL : " + authenticator) ;

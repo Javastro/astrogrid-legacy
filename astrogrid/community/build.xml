@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/11/16 18:24:34 $</cvs:date>
-    | <cvs:version>$Revision: 1.47 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/15 18:08:16 $</cvs:date>
+    | <cvs:version>$Revision: 1.48 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.48  2003/12/15 18:08:16  dave
+    |   Extending build to produce war file.
+    |
     |   Revision 1.47  2003/11/16 18:24:34  dave
     |   Merged dev branch back into HEAD
     |
@@ -203,6 +206,11 @@
         | The project build directory.
         +-->
     <property name="project.home"    value="${basedir}"/>
+
+    <!--+
+        | The project name, used for our jar file names.
+        +-->
+    <property name="project.name" value="astrogrid-community"/>
 
     <!--+
         | The project build version.
@@ -989,7 +997,7 @@
     <property name="axis.host"    value="localhost"/>
     <property name="axis.port"    value="8080"/>
     <property name="axis.server"  value="${axis.host}:${axis.port}"/>
-    <property name="axis.servlet" value="axis"/>
+    <property name="axis.servlet" value="${project.name}"/>
     <property name="axis.url"     value="http://${axis.server}/${axis.servlet}"/>
     <property name="axis.timeout" value="60"/>
 
@@ -1248,8 +1256,8 @@
     <property name="policy.server.base"  value="${policy.base}/server"/>
     <property name="policy.client.base"  value="${policy.base}/client"/>
 
-    <property name="policy.server.jar"  value="astrogrid-community-policy-server-${project.version}.jar"/>
-    <property name="policy.client.jar"  value="astrogrid-community-policy-client-${project.version}.jar"/>
+    <property name="policy.server.jar"  value="${project.name}-policy-server-${project.version}.jar"/>
+    <property name="policy.client.jar"  value="${project.name}-policy-client-${project.version}.jar"/>
 
     <!--+
         | The Policy server classpath.
@@ -2197,7 +2205,7 @@
         | Configuration properties.
         +-->
     <property name="config.base" value="${basedir}/build/config"></property>
-    <property name="config.file" value="${config.base}/astrogrid-community-config.xml"></property>
+    <property name="config.file" value="${config.base}/${project.name}-config.xml"></property>
 
     <!--+
         | Delete our configuration files.
@@ -3141,10 +3149,59 @@ To repeat
         | This does not need the Axis service running.
         +-->
     <target name="auth.server.deploy.static" depends="">
-        <antcall target="deploy.wsdd">
+        <antcall target="axis.deploy.service.static">
             <param name="service.wsdd.path" value="${basedir}/wsdd/AuthenticationService/deploy.wsdd"/>
         </antcall>
     </target>
+
+    <!--+
+        | Put together a release webapp.
+        +-->
+    <target name="project.webapp">
+
+        <!-- Build our jar files -->
+        <antcall target="policy.BUILD"/>
+        <antcall target="authentication.BUILD"/>
+        <!-- Install the 3rd party jars -->
+        <antcall target="axis.external.install"/>
+        <!-- Copy our community jars -->
+        <copy verbose="true" todir="${axis.webapp}/WEB-INF/lib">
+            <fileset dir="${policy.base}/jar">
+                <include name="${policy.client.jar}"/>
+                <include name="${policy.server.jar}"/>
+            </fileset>
+            <fileset dir="${authentication.build}/jar">
+                <include name="${authentication.client.jar}"/>
+                <include name="${authentication.server.jar}"/>
+            </fileset>
+        </copy>
+        <!-- Install our services -->
+        <antcall target="auth.server.deploy.static"/>
+        <antcall target="policy.server.deploy.static"/>
+        <!-- Create our release directories -->
+        <mkdir dir="release/webapp"/>
+        <mkdir dir="release/webapp/war"/>
+        <mkdir dir="release/webapp/config"/>
+        <!-- Jar the whole lot as a war file -->
+        <jar destfile="release/webapp/war/${project.name}-${project.version}.war" basedir="${axis.webapp}"/>
+
+        <!-- Copy our database mapping files -->
+        <copy verbose="false" overwrite="true"
+            file="src/castor/hsqldb/astrogrid-community-database.xml"
+            toFile="release/webapp/config/${project.name}-database-${project.version}.xml"/>
+        <copy verbose="false" overwrite="true"
+            file="src/castor/hsqldb/astrogrid-community-mapping.xml"
+            toFile="release/webapp/config/${project.name}-mapping-${project.version}.xml"/>
+        <!-- Copy our server config file -->
+        <copy verbose="false" overwrite="true"
+            file="src/config/astrogrid-community-config.xml"
+            toFile="release/webapp/config/${project.name}-config-${project.version}.xml"/>
+
+
+    </target>
+
+
+
 
 </project>
 
