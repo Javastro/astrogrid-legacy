@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.13 2003/11/05 18:54:43 mch Exp $
+/*$Id: AllTests.java,v 1.14 2003/11/13 12:49:17 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,7 +34,6 @@ public class AllTests {
         //suite.addTest(QueryTestSuite.suite());
         //$JUnit-END$ 
         // and add other suites too.
-        suite.addTest(org.astrogrid.config.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.query.QueryParsingTest.suite());
         suite.addTest(org.astrogrid.datacenter.queriers.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.service.AllTests.suite());
@@ -50,6 +49,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.14  2003/11/13 12:49:17  mch
+Removed config test (now in common)
+
 Revision 1.13  2003/11/05 18:54:43  mch
 Build fixes for change to SOAPy Beans and new delegates
 
