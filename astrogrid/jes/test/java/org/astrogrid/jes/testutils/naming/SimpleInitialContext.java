@@ -1,4 +1,4 @@
-/* $Id: SimpleInitialContext.java,v 1.3 2003/11/11 23:48:27 anoncvs Exp $
+/* $Id: SimpleInitialContext.java,v 1.4 2003/11/12 18:13:14 jdt Exp $
  * Created on 30-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -56,11 +56,14 @@ public final class SimpleInitialContext implements Context {
 
   /**
    * Unbinds an object from the naming service
+   * @throws NameNotFoundException name not found
    * @param name name to unbind
    */
   public void unbind(final String name) throws NameNotFoundException  {
     Object obj = map.remove(name);
-    if (obj==null) throw new NameNotFoundException();
+    if (obj==null) {
+      throw new NameNotFoundException();
+      } 
   }
 
   /**
@@ -290,6 +293,9 @@ public final class SimpleInitialContext implements Context {
 
 /*
 *$Log: SimpleInitialContext.java,v $
+*Revision 1.4  2003/11/12 18:13:14  jdt
+*Minor bits and pieces to satisfy the coding conventions.
+*
 *Revision 1.3  2003/11/11 23:48:27  anoncvs
 *Implemented the unbind method and added some tests
 *
