@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationControllerTest.java,v 1.13 2004/01/04 14:51:22 pah Exp $
+ * $Id: CommandLineApplicationControllerTest.java,v 1.14 2004/01/10 00:38:17 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -66,7 +66,7 @@ public class CommandLineApplicationControllerTest extends BaseApplicationTestCas
       super.setUp();
       controller = new CommandLineApplicationController();
       //completely bogus community snippet....
-      monitorURL="JESMonitorDummy";
+      monitorURL=null; //application controller will not attempt to call if it is null
       applicationid = TestAppConst.TESTAPP_NAME;
       parameters = new ParameterValues();
    }

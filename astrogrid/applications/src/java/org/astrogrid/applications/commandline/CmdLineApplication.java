@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplication.java,v 1.7 2004/01/09 00:25:08 pah Exp $
+ * $Id: CmdLineApplication.java,v 1.8 2004/01/10 00:37:40 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -111,7 +111,10 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
       outPiper.terminate();
       process = null;
  
- //inform the job monitor that we have finished     
+ //inform the job monitor that we have finished - only if there is an endpoint specified...     
+    if(jobMonitorURL != null && jobMonitorURL.length() > 0)
+    {
+    
       JobMonitorDelegate 
       delegate = JobMonitorDelegate.buildDelegate( jobMonitorURL );
       
@@ -126,7 +129,7 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
          // TODO Auto-generated catch block
          e.printStackTrace();
       }
-
+    }
 
    }
 
