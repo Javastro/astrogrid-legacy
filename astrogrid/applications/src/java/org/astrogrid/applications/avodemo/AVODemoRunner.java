@@ -1,5 +1,5 @@
 /*
- * $Id: AVODemoRunner.java,v 1.4 2004/01/26 17:45:01 pah Exp $
+ * $Id: AVODemoRunner.java,v 1.5 2004/02/09 22:43:28 pah Exp $
  * 
  * Created on 23-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -24,22 +24,23 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.astrogrid.applications.Parameter;
 import org.astrogrid.applications.Status;
-import org.astrogrid.applications.commandline.CmdLineApplication;
 import org.astrogrid.applications.common.config.ApplicationControllerConfig;
 import org.astrogrid.applications.delegate.ApplicationController;
-import org.astrogrid.applications.delegate.ApplicationControllerDelegate;
 import org.astrogrid.applications.delegate.DelegateFactory;
 import org.astrogrid.applications.delegate.beans.ParameterValues;
 import org.astrogrid.applications.delegate.beans.User;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
+import org.astrogrid.portal.workflow.design.Cardinality;
+import org.astrogrid.portal.workflow.design.Step;
+import org.astrogrid.portal.workflow.design.Tool;
 
 /**
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4.1
+ * @bugzilla 
  */
 public class AVODemoRunner implements Runnable {
 
@@ -91,7 +92,7 @@ public class AVODemoRunner implements Runnable {
         MySpaceClient myspacedel = null;
          try {
             myspacedel =
-               MySpaceDelegateFactory.createDelegate(AVODemoConstants.mySpaceEndPoint);
+               ApplicationControllerConfig.getInstance().getMySpaceManager();
          }
          catch (IOException e1) {
             // TODO Auto-generated catch block
@@ -184,6 +185,39 @@ public class AVODemoRunner implements Runnable {
       return exid;
    }
 
+   private String createHyperZStep() {
+      ParameterValues parameters = null;
+      String monitorURL = null;
+      String applicationid = "HyperZ";
+      parameters = new ParameterValues();
+      String exid = null;
+      parameters.setMethodName("simple");
+      //      parameters.setParameterSpec("<tool><input><parameter name='config_file'>/home/applications/demo/hyperz/zphot.param</parameter><parameter name='input_catalog'>/home/applications/demo/hyperz/bviz-mag-sample.cat</parameter></input><output><parameter name='output_catalog'>out1file</parameter></output></tool>");
+      parameters.setParameterSpec(
+         "<tool><input><parameter name='config_file'>/home/applications/demo/hyperz/zphot.param</parameter>"
+            + "<parameter name='input_catalog'>"
+            + myspaceBaseRef
+            + "merged</parameter></input>"
+            + "<output><parameter name='output_catalog'>"
+            + myspaceBaseRef
+            + "hyperzout</parameter></output></tool>");
+      try {
+         exid =
+            controller.initializeApplication(
+               applicationid,
+               jobstepid,
+               monitorURL,
+               user,
+               parameters);
+         controller.executeApplication(exid);
+      }
+      catch (RemoteException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+      return exid;
+   }
+
    private String runDft() {
       ParameterValues parameters = null;
       String monitorURL = null;
@@ -224,6 +258,44 @@ public class AVODemoRunner implements Runnable {
       return exid;
    }
 
+   private void createDftStep(Step step) {
+      String applicationid = "CrossMatcher";
+      String exid = null;
+      
+      org.astrogrid.portal.workflow.design.Tool tool = new Tool(applicationid);
+      Cardinality cardinality = new Cardinality(1,1);
+      org.astrogrid.portal.workflow.design.Parameter param = tool.newInputParameter("targets");
+      param.setCardinality(cardinality);
+      param.setType("agpd:MySpace_FileReference");
+      param.setValue(myspaceBaseRef
+      + "sexout_z");
+      
+      cardinality = new Cardinality(1,3);
+      
+      param = tool.newInputParameter("matches");
+      param.setCardinality(cardinality);
+      param.setType("agpd:MySpace_FileReference");
+      param.setValue( myspaceBaseRef + "sexout_b");
+      
+      param = tool.newInputParameter("matches");
+      param.setCardinality(cardinality);
+      param.setType("agpd:MySpace_FileReference");
+      param.setValue( myspaceBaseRef + "sexout_v");
+      
+      param = tool.newInputParameter("matches");
+      param.setCardinality(cardinality);
+      param.setType("agpd:MySpace_FileReference");
+      param.setValue( myspaceBaseRef + "sexout_i");
+      
+      
+      param = tool.newOutputParameter("merged_output");
+      param.setCardinality(new Cardinality(1,1));
+      param.setType("agpd:MySpace_FileReference");
+      param.setValue(myspaceBaseRef
+      + "merged");
+      step.setTool(tool);
+    }
+
    private String runSExtractor(String band) {
       ParameterValues parameters = null;
       String monitorURL = null;
@@ -232,6 +304,54 @@ public class AVODemoRunner implements Runnable {
       String exid = null;
       parameters.setMethodName("Simple");
 
+      String paramstr =
+         "<tool><input><parameter name='DetectionImage'>/home/applications/data/GOODS/h_"
+            + hemi
+            + "z_"
+            + sector
+            + "_v1.0_drz_img.fits</parameter>"
+            + "<parameter name='PhotoImage'>/home/applications/data/GOODS/h_"
+            + hemi
+            + band
+            + "_"
+            + sector
+            + "_v1.0_drz_img.fits</parameter>"
+            + "<parameter name='config_file'>/home/applications/demo/h_goods_"
+            + hemi
+            + band
+            + "_r1.0z_phot_sex.txt</parameter>"
+            + "<parameter name='PARAMETERS_NAME'>/home/applications/demo/std.param</parameter></input>"
+            + "<output><parameter name='CATALOG_NAME'>"
+            + myspaceBaseRef
+            + "sexout_"
+            + band
+            + "</parameter></output></tool>";
+      parameters.setParameterSpec(paramstr);
+      try {
+         exid =
+            controller.initializeApplication(
+               applicationid,
+               jobstepid,
+               monitorURL,
+               user,
+               parameters);
+         controller.executeApplication(exid);
+      }
+      catch (RemoteException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+      return exid;
+   }
+
+   private String createSExtractorStep(String band) {
+      ParameterValues parameters = null;
+      String monitorURL = null;
+      String applicationid = "SExtractor";
+      parameters = new ParameterValues();
+      String exid = null;
+      parameters.setMethodName("Simple");
+   
       String paramstr =
          "<tool><input><parameter name='DetectionImage'>/home/applications/data/GOODS/h_"
             + hemi

@@ -10,5 +10,10 @@
 <p>
 </p>
 </section>
+<section name="Previous releases">
+	<subsection name="AVODemoJan2004">
+		<p>This is a special release to support the AVO Demo that occurred in January 2004. It is effectively the Iteration 4 release with a special jsp page to run the demo.</p>
+	</subsection>
+</section>
 </body>
 </document>

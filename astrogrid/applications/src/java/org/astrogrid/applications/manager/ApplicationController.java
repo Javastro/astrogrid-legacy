@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationController.java,v 1.16 2004/02/02 16:49:44 pah Exp $
+ * $Id: ApplicationController.java,v 1.17 2004/02/09 22:43:28 pah Exp $
  *
  * Created on 03 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -27,6 +27,7 @@ import org.astrogrid.community.User;
  * @TODO Needs to have resource management concept - possiblility of application queues to restrict the number of concurrently running applications
  * @TODO Security policy.
  * @TODO Rationalize the use of the community snippet bean.
+ * @TODO add method to sychronously call the applications.
  * 
  */
 public interface ApplicationController {

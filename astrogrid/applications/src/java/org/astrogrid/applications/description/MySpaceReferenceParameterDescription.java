@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceReferenceParameterDescription.java,v 1.4 2004/01/15 13:51:26 pah Exp $
+ * $Id: MySpaceReferenceParameterDescription.java,v 1.5 2004/02/09 22:43:28 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -70,7 +70,7 @@ public class MySpaceReferenceParameterDescription extends ParameterDescription {
          catch (Exception e1) {
             logger.error("myspace error", e1);
          }
-
+           logger.info("trying to get myspace value from " + urlstring);
             URL url = new URL(urlstring);
             BufferedInputStream in = new BufferedInputStream(url.openStream());
             BufferedOutputStream out =

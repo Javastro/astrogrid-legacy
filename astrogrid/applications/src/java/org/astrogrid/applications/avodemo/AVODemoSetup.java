@@ -1,5 +1,5 @@
 /*
- * $Id: AVODemoSetup.java,v 1.1 2004/01/23 19:20:22 pah Exp $
+ * $Id: AVODemoSetup.java,v 1.2 2004/02/09 22:43:28 pah Exp $
  * 
  * Created on 23-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -16,6 +16,7 @@ package org.astrogrid.applications.avodemo;
 import java.io.IOException;
 import java.util.Vector;
 
+import org.astrogrid.applications.common.config.ApplicationControllerConfig;
 import org.astrogrid.community.User;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
@@ -36,7 +37,7 @@ public class AVODemoSetup {
       try {
          Vector servers = new Vector();
          servers.add("serv1");
-         myspacedelegate = MySpaceDelegateFactory.createDelegate(AVODemoConstants.mySpaceEndPoint);
+         myspacedelegate = ApplicationControllerConfig.getInstance().getMySpaceManager();
          User user = new User(AVODemoConstants.ACCOUNT, AVODemoConstants.GROUP, AVODemoConstants.TOKEN);
          myspacedelegate.createUser(user.getUserId(), user.getCommunity(), user.getToken(), servers);
          
