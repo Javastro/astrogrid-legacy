@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.5 2004/03/15 17:11:14 mch Exp $
+ * $Id: WarehouseQuerier.java,v 1.6 2004/03/17 12:20:54 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -43,13 +43,6 @@ import org.xml.sax.SAXException;
  * or via process input and output streams otherwise.
  * I suspect this will have poor speed and scalability implications.
  *
- * @TOFIX The conversion from XML RowSet to VOTable perhaps involves
- * too many different intermediate IO/stream classes;  can it be made
- * simpler?
- *
- * @TOFIX Loading results as a DOM (using default OGSA-DAI data return
- * mechanism) is a Bad Idea.  Hope to get GridFTP transfers working soon.
- *
  * @author K Andrews
  * @version 1.0
  * @see GdsQueryDelegate
@@ -79,12 +72,8 @@ public class WarehouseQuerier extends QuerierPlugin {
    * GdsQueryDelegate running in a separate JVM).
    *
    * Converts input ADQL query into the SQL expected by the
-   * GdsQueryDelegate, and converts GdsQueryDelegate's XML RowSet
+   * GdsQueryDelegate. and converts GdsQueryDelegate's XML RowSet
    * results into the VOTable expected by the datacenter.
-   *
-   * @TOFIX The conversion from XML RowSet to VOTable perhaps involves
-   * too many different intermediate IO/stream classes;  can it be made
-   * simpler?
    *
    * @TOFIX  We really need customised ADQL->SQL translation customised
    * for our DBMS / table indices.
@@ -101,7 +90,7 @@ public class WarehouseQuerier extends QuerierPlugin {
     log.info("SQL query is " + sql);
     log.debug("Successfully created SQL query from input ADQL");
 
-    //Set up outputs
+    // Get temp file to pass to Query delegate 
      try {
        workspace = new Workspace("Warehouse_"+querier.getId());
      }
@@ -109,28 +98,26 @@ public class WarehouseQuerier extends QuerierPlugin {
         log.error(th);
      }
      
-    OutputStream output = null;
     File tempFile = null;
+    //Set up outputs
     if (this.workspace != null) {
       try {
         tempFile = workspace.makeWorkFile(TEMP_RESULTS_FILENAME);
-        output = new FileOutputStream(tempFile);
       }
       catch (Exception e) { //IOException or FileNotFoundException
         // Couldn't create temporary workspace file, use stdout instead
-        log.warn("Couldn't open temporary workspace file, "+
-            "using stdin/stdout instead.");
-        tempFile = null;
-        output = System.out;
+        String errMess = "Couldn't open temporary workspace file: "
+            + e.getMessage();
+        log.error(errMess);
+        throw new DatabaseAccessException(errMess);
       }
     }
     else {
-      log.info("WarehouseQuerier workspace is null, using stdin/stdout");
-      tempFile = null;
-      output = System.out;
+      log.error("WarehouseQuerier workspace is null");
+      throw new IOException("WarehouseQuerier workspace is null");
     }
-    Document results = doShelledOutQuery(sql, tempFile);
-    processResults(new WarehouseResults(results));
+    doShelledOutQuery(sql, tempFile);
+    processResults(new WarehouseResults(tempFile));
     workspace.close();
   }
 
@@ -140,7 +127,6 @@ public class WarehouseQuerier extends QuerierPlugin {
       // TODO
    }
    
-
  /**
    * Shells out to the command line to delegate the query operation to
    * a GdsQueryDelegate running in a separate JVM.
@@ -155,6 +141,17 @@ public class WarehouseQuerier extends QuerierPlugin {
    */
   protected Document doShelledOutQuery(String sql, File tempFile)
       throws DatabaseAccessException {
+
+    if (sql == null) {
+      String errMess = "Empty sql query string supplied to WarehouseQuerier";
+      log.error(errMess);
+      throw new DatabaseAccessException(errMess);
+    }
+    if (tempFile == null) {
+      String errMess = "Null results destination supplied to WarehouseQuerier";
+      log.error(errMess);
+      throw new DatabaseAccessException(errMess);
+    }
 
     log.debug("Commencing doShelledOutQuery");
 
@@ -171,21 +168,12 @@ public class WarehouseQuerier extends QuerierPlugin {
     cmdArgs[2] = getExecutableJar();
     cmdArgs[3] = sql;
     cmdArgs[4] = getOgsaDaiRegistryString();
-    if (tempFile != null) {
-      cmdArgs[5] = tempFile.getAbsolutePath();
-      log.debug("Command is: " + cmdArgs[0] + " " + cmdArgs[1] +
-            " " + cmdArgs[2] + " " + cmdArgs[3] + " " + cmdArgs[4]);
-      // TOFIX REMOVE
-      System.out.println("Command is: " + cmdArgs[0] + " " + cmdArgs[1] +
-            " " + cmdArgs[2] + " " + cmdArgs[3] + " " + cmdArgs[4]);
-    }
-    else {
-      log.debug("Command is: " + cmdArgs[0] + " " + cmdArgs[1] +
-            " " + cmdArgs[2] + " " + cmdArgs[3]);
-      // TOFIX REMOVE
-      System.out.println("Command is: " + cmdArgs[0] + " " + cmdArgs[1] +
-            " " + cmdArgs[2] + " " + cmdArgs[3]);
-    }
+    cmdArgs[5] = "file://" + tempFile.getAbsolutePath();
+    log.debug("Command is: " + cmdArgs[0] + " " + cmdArgs[1] +
+          " " + cmdArgs[2] + " " + cmdArgs[3] + " " + cmdArgs[4]);
+    // TOFIX REMOVE
+    System.out.println("Command is: " + cmdArgs[0] + " " + cmdArgs[1] +
+          " " + cmdArgs[2] + " " + cmdArgs[3] + " " + cmdArgs[4]);
 
     // Use utility helper to perform call
     log.info("Commencing shelled-out query");
@@ -199,88 +187,6 @@ public class WarehouseQuerier extends QuerierPlugin {
     }
     // Finished external call successfully
     log.info("Shelled-out query succeeded");
-
-    // Get XML rowset results
-    TransformerFactory tFactory;
-    Transformer transformer;
-    try {
-      tFactory = TransformerFactory.newInstance();
-      transformer = tFactory.newTransformer(
-           new StreamSource(SimpleConfig.getProperty(
-              "WAREHOUSE_XslTransform", DEFAULT_XSL_TRANSFORM)));
-    }
-    catch (Exception e){
-      String errorMessage =
-        "Couldn't create XML->VOTable XSLT transformer: " + e.getMessage();
-      log.error(errorMessage);
-      throw new DatabaseAccessException(errorMessage);
-    }
-
-    ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-    if (tempFile == null) {
-      // Had no temp file : expect results in stdout stream
-      // Need to extract the actual results
-      String stdoutString = result.getStdout();
-      int start = stdoutString.indexOf(WAREHOUSE_RESULT_START);
-      int end = stdoutString.indexOf(WAREHOUSE_RESULT_END);
-      int realstart = stdoutString.indexOf('<',start);
-
-      // Check we can find the results in the output stream
-      if ((start == -1) || (end == -1) || (realstart == -1)) {
-        String errorMessage =
-          "Couldn't read results from shelled out query's output stream";
-        log.error(errorMessage);
-        throw new DatabaseAccessException(errorMessage);
-      }
-      String realResult = stdoutString.substring(realstart, end);
-      // Do actual transformation of XML Rowset -> VOTable
-      try {
-        transformer.transform(new StreamSource(new StringReader(realResult)),
-           new StreamResult(byteStream));
-      }
-      catch (Exception e){ // SAXException, IOException
-        String errorMessage =
-            "Couldn't transform XML to VOTable using XSLT transformer: " +
-            e.getMessage();
-        log.error(errorMessage);
-        throw new DatabaseAccessException(errorMessage);
-      }
-    }
-    else {
-      // Have a temp file : this is where the XML RowSet results are.
-      // Do actual transformation of XML Rowset -> VOTable
-      try {
-        transformer.transform(new StreamSource(new FileReader(tempFile)),
-           new StreamResult(byteStream));
-      }
-      catch (FileNotFoundException e) {
-        throw new DatabaseAccessException(
-            "Couldn't open results file " + tempFile.getAbsolutePath());
-      }
-      catch (Exception e){ // SAXException, IOException
-        throw new DatabaseAccessException(
-            "Couldn't transform XML to VOTable using XSLT transformer: " +
-            e.getMessage());
-      }
-    }
-    log.info("Converted XML RowSet to VOTable successfully");
-    //System.out.println(byteStream.toString());
-    //log.debug(byteStream.toString()); //COULD BE VERY VERBOSE!!
-
-    // Now parse VOTable XML data stream into Document
-    try {
-      Document resultsDoc = DomLoader.readDocument(byteStream.toString());
-
-      log.info("Parsed converted VOTable successfully");
-      return resultsDoc;
-    }
-    catch (Exception e) { //ParserConfigurationException, SAXException,
-                          //IOException
-      String errorMessage =
-          "Couldn't parse results VOTable from XSLT conversion";
-      log.error(errorMessage + ": " + e.getMessage());
-      throw new DatabaseAccessException(errorMessage);
-    }
   }
 
   /**
@@ -442,18 +348,17 @@ public class WarehouseQuerier extends QuerierPlugin {
   // per-installation basis in the WarehouseServiceImpl.properties
   private final String DEFAULT_WAREHOUSE_JVM =
         "/usr/bin/java";
-  private final String DEFAULT_XSL_TRANSFORM =
-        "http://astrogrid.ast.cam.ac.uk/xslt/ag-warehouse-first.xsl";
 
-  // Other utility strings
-  private final String TEMP_RESULTS_FILENAME = "ws_output.xml";
-  private final String WAREHOUSE_RESULT_START = "WAREHOUSE_RESULT_START";
-  private final String WAREHOUSE_RESULT_END = "WAREHOUSE_RESULT_END";
+  private final String TEMP_RESULTS_FILENAME = "warehouseResults.xml";
 //================================================================
 
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.6  2004/03/17 12:20:54  kea
+Removing XSLT rowset->VOTable conversions, now done in OGSA-DAI.
+Interim checkin, end-to-end not working yet.
+
 Revision 1.5  2004/03/15 17:11:14  mch
 'botch' fix for duplicate Workspace id
 

@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseResults.java,v 1.6 2004/03/14 02:17:07 mch Exp $
+ * $Id: WarehouseResults.java,v 1.7 2004/03/17 12:20:55 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -27,12 +27,12 @@ import org.w3c.dom.Document;
 
 public class WarehouseResults extends QueryResults
 {
-  protected Document results = null;
+  protected File results = null;
    
   /**
    * Construct this wrapper around the given VOTable Document.
    */
-  public WarehouseResults(Document results) {
+  public WarehouseResults(File results) {
     this.results = results;
   }
    
@@ -46,6 +46,8 @@ public class WarehouseResults extends QueryResults
    */
   public void toVotable(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
   {
+     throw new UnsupportedOperationException("Not yet implemented - here RSN");
+  }
       DomHelper.DocumentToWriter(results, out);
   }
   
@@ -61,6 +63,10 @@ public class WarehouseResults extends QueryResults
 
 /*
  $Log: WarehouseResults.java,v $
+ Revision 1.7  2004/03/17 12:20:55  kea
+ Removing XSLT rowset->VOTable conversions, now done in OGSA-DAI.
+ Interim checkin, end-to-end not working yet.
+
  Revision 1.6  2004/03/14 02:17:07  mch
  Added CVS format and emailer
 
