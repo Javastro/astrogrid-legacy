@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleSiapWorkflowTest.java,v 1.2 2004/10/18 14:51:45 pah Exp $
+ * $Id: SimpleSiapWorkflowTest.java,v 1.3 2004/10/22 05:57:44 pah Exp $
  * 
  * Created on 13-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -82,7 +82,7 @@ public class SimpleSiapWorkflowTest extends AbstractTestForWorkflow {
       ParameterValue outvot = (ParameterValue)siapTool.findXPathValue("output/parameter[name='IMAGES']");
       assertNotNull(outvot);
       outvot.setValue(outputIvorn.toString());
-      outvot.setIndirect(true);
+      outvot.setIndirect(false);
       Step step = new Step();
       step.setDescription("siap call to CASU");
       step.setName("siap");

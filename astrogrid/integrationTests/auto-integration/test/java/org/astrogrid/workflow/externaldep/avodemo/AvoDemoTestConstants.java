@@ -1,5 +1,5 @@
 /*
- * $Id: AvoDemoTestConstants.java,v 1.2 2004/10/13 12:01:51 pah Exp $
+ * $Id: AvoDemoTestConstants.java,v 1.3 2004/10/22 05:57:44 pah Exp $
  * 
  * Created on 13-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -28,4 +28,5 @@ public final class AvoDemoTestConstants {
 
     public final static String CASU_SIAP = "INTWideFieldSurveySIAP";
     
+    public final static String SEXTRACTOR="SExtractor";
 }
