@@ -10,9 +10,14 @@ import org.astrogrid.mySpace.mySpaceUtil.MySpaceUtils;
 //java
 import java.io.PrintWriter;
 import java.io.File;
+import java.io.InputStream;
 import java.io.FileOutputStream;
-import java.lang.Exception;
-import java.lang.SecurityException;
+import java.io.FileInputStream;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.util.Properties;
+
+import org.apache.axis.AxisProperties;
 
 //log4j
 import org.apache.log4j.Logger;
@@ -31,6 +36,9 @@ public class ServerManager {
     private String response = ""; //this would be a xml response contains info match portal/datacentre xml schema.
     private static final String SUCCESS = "SUCCESS";
     private static final String FAULT = "FAULT";
+	private static String catalinaHome = AxisProperties.getProperty("catalina.home");
+	private static String mySpaceProperties = catalinaHome+"/conf/astrogrid/mySpace/" +"statuscodes.lis";
+	private static Properties conProperties = new Properties();
     
     public String processRequest(){
 
@@ -107,17 +115,41 @@ public class ServerManager {
     	}
     }
 
-    public String saveDataHolder(String content, String dataHolderPath) {
+/**
+ * 
+ * @param contentPath: path of the file need to get from
+ * @param dataHolderPath: the file path ServerManager will save the file to.
+ * @return
+ */
+    public String saveDataHolder(String contentPath, String dataHolderPath) {
 		PrintWriter printWriter = null;
 		try{
-			if (DEBUG)  logger.debug("Inside ServerManager.saveDataHolder...");			
-			DataHolder dataholder = new DataHolder(dataHolderPath);
-			//open file to write into
-			printWriter = new PrintWriter(new FileOutputStream(dataholder));    	    
+			
+			if (DEBUG)  logger.debug("Inside ServerManager.saveDataHolder...");
+			long fileSize = (new File(contentPath)).length();
+			if (DEBUG)  logger.debug("saveDataHolder.saveDataHolder.fileSize: "+fileSize);
+			
+			MySpaceUtils msutil = new MySpaceUtils();
+			conProperties = msutil.loadProperties(mySpaceProperties);
+			if(DEBUG) logger.debug("COPY_COMMAND: " +conProperties.getProperty( "COPY_COMMAND" ) +"SIZELIMIT: " +conProperties.getProperty( "SIZELIMIT" ));
+			String command = conProperties.getProperty( "COPY_COMMAND" )+" "+contentPath+" "+dataHolderPath;
+			long sizeLimit = Long.parseLong(conProperties.getProperty( "SIZELIMIT" ));
+			if (fileSize>=sizeLimit){
+				if (DEBUG)  logger.debug("command = "+command);
+			    try{
+			    	Runtime.getRuntime().exec(command);
+			    	}catch(java.lang.Exception e){
+			    		if (DEBUG)  logger.error("savedataholder error: "+e);
+			    }
+			}else{
+				String content = MySpaceUtils.readFromFile(new File(contentPath));
+				//open file to write into
+			printWriter = new PrintWriter(new FileOutputStream(new File(dataHolderPath)));    	    
     	    
 			//write to file
 			printWriter.println(content);
-		    if (DEBUG)  logger.debug("ServerManager.saveDataHolder.content = "+content +", path = " +dataHolderPath +", FilePath =" +dataholder.getAbsolutePath());
+			}
+
 		    response = SUCCESS +" File Saved.";
 			return response;		    
 				    
