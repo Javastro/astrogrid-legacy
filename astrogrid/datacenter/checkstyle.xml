@@ -36,26 +36,16 @@
             <property name="ignoreLines" value="1,2,3,4,5,6"/>
         </module>
 	-->
-        <!--
         <property name="tabWidth" value="4"/>
-        -->
-        <!--
-        <module name="LeftCurly">
-          <property name="option" value="nl"/>
-        </module>
-        -->
-        <module name="RightCurly">
-          <property name="option" value="alone"/>
-        </module>
+
+
         <module name="LineLength">
           <property name="max" value="132"/>
         </module>
         <module name="MethodLength">
           <property name="max" value="175"/>
         </module>
-        <!-- No Paren pad check
-        <module name="ParenPad"/>
-        -->
+
         <module name="ConstantName">
           <property name="format" value="log|^[a-zA-Z][a-zA-Z0-9_]*$"/>
         </module>
@@ -131,7 +121,9 @@
         <module name="DoubleCheckedLocking"/>    <!-- MY FAVOURITE -->
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
-        <module name="HiddenField"/>
+        <module name="HiddenField">
+        	<property name="tokens" value="VARIABLE_DEF" />
+        </module>
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
         <module name="MagicNumber"/>
@@ -153,10 +145,12 @@
         <!-- See http://checkstyle.sf.net/config_misc.html -->
         <module name="ArrayTypeStyle"/>
         <module name="FinalParameters"/>
+        <!-- barfs on all template code
         <module name="GenericIllegalRegexp">
             <property name="format" value="\s+$"/>
             <property name="message" value="Line has trailing spaces."/>
         </module>
+        -->
         <module name="TodoComment"/>
         <module name="UpperEll"/>
 
