@@ -6,13 +6,23 @@ package org.astrogrid.mySpace.mySpaceServer;
 import org.astrogrid.mySpace.mySpaceRegistry.DataItemRecord;
 import org.astrogrid.mySpace.mySpaceRegistry.MySpaceManager;
 import org.astrogrid.mySpace.mySpaceRegistry.UserAccount;
+import org.astrogrid.mySpace.mySpaceStatus.*;
+
 //java
 import java.util.Vector;
 import java.io.PrintWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.Exception;
+import java.io.IOException;
+import java.lang.SecurityException;
+
+//axis
+import org.apache.axis.AxisFault;
+
+//log4j
 import org.apache.log4j.Logger;
+import javax.xml.namespace.QName;
 
 /**
  * @WebService
@@ -23,7 +33,9 @@ import org.apache.log4j.Logger;
 public class ServerManager {
 	
     private static Logger logger = Logger.getLogger(ServerManager.class);
-
+    private static boolean DEBUG = true;
+    private String response = ""; //this would be a xml response contains info match portal/datacentre xml schema.
+    
     public String processRequest(){
 
     	return "";
@@ -31,46 +43,85 @@ public class ServerManager {
 
     /** userAcc = String usrID + String communityID
      * */
-    public boolean deleteDataHolder(String dataHolderPath) {
+    public String deleteDataHolder(String dataHolderPath){ //throws Exception{
+    	if (DEBUG){
+    		logger.debug("MySpace ServerManager.deleteDataHolder...");
+    	}
+    	
+    	try{
+    		
+    		File file = new File(dataHolderPath);   		
+    		if  (file == null || !file.exists()){
+				if (DEBUG)  logger.debug("File not exist! can't delete.");
+				MySpaceMessage msMessage = new MySpaceMessage("NULL_FILE_DELETE","w");
+				response = msMessage.getMessage("NULL_FILE_DELETE");
+				return response;
+    		}
+    		//return "File deletion complete";
+    		try{
+    			boolean isDeleted = file.delete();
+				if (DEBUG) logger.debug("ServerManager deleteDataHolder "+dataHolderPath);
+				if (isDeleted)  response = "File Deleted.";
+				else response = "File Not Deleted";
+    		}catch(SecurityException se){
+    			//to catch the exception and return proper error message
+    		}
+
+    	}/*
+    	catch(AxisFault axf){
+    		QName qname = axf.getFaultCode();
+    		String faultName = qname.toString();
+    		//String faultValue = qname.valueOf(faultName);
+    		//response = axf.getFaultDetails();
+    		if (DEBUG) logger.error("DELETE_DATA_HOLDER AxisFault: " +faultName);
+    		response = faultName;
+    		return response;
+    	}*/
+    	catch(Exception e){
+    		//to catch the exception and return proper error message
+			//MySpaceMessage message = new MySpaceMessage(e.getMessage(),"e");
+			//message should get the message from a propertie			
+    		//if (DEBUG)  logger.error(message.toString());
+    	    //response = message.toString();
+    	}
+    	return response;
 
 
-      return true;
+      
 }
 
-    public boolean exportDataHolder(String dataHolderPath, String destinationDataHolderPath) {
+    public String exportDataHolder(String dataHolderPath, String destinationDataHolderPath) {
 
-        return true;
+        return "";
     }
 
-    public boolean copyDataHolder(String dataHolderPath, String destinationDataHolderPath) {
+    public String copyDataHolder(String dataHolderPath, String destinationDataHolderPath) {
 
-        return true;
+        return "";
     }
 
-    public boolean moveDataHolder(String dataHolderPath, String destinationDataHolderPath) {
+    public String moveDataHolder(String dataHolderPath, String destinationDataHolderPath) {
 
-        return true;
+        return "";
     }
 
-    public boolean saveDataHolder(String content, String dataHolderPath) 
-	        throws Exception{
+    public String saveDataHolder(String content, String dataHolderPath) {
 		PrintWriter printWriter = null;
 		try{
-
-			//logger.debug("YYY cotent = TEST saveDataHolder........");			
-			
+			if (DEBUG)  logger.debug("Inside ServerManager.saveDataHolder...");			
 			File dataholder = new File(dataHolderPath);
 			//open file to write into
 			printWriter = new PrintWriter(new FileOutputStream(dataholder));    	    
     	    
 			//write to file
 			printWriter.println(content);
-		    logger.debug("YYY content = "+content +"YYY path = " +dataHolderPath +" FilePath =" +dataholder.getAbsolutePath());
-			return true;		    
+		    if (DEBUG)  logger.debug("ServerManager.saveDataHolder.content = "+content +", path = " +dataHolderPath +", FilePath =" +dataholder.getAbsolutePath());
+		    response = "File Saved.";
+			return response;		    
 				    
 		}catch (Exception e) {//catch unexpected Exception
-			//throw e;
-			logger.error("YYY FAULT!!! "+e);
+			logger.error("FAULT ServerManagetr.saveDataHolder!!! "+e);
+			return e.toString(); //temp code for now, should catch the exception and return proper error message
 		}finally{
 			//close file
 			try{
@@ -78,12 +129,9 @@ public class ServerManager {
 					printWriter.close();
 				}
 			}catch(Exception e){
-				throw e;
+				//should catch the exception and return proper error message			
 			}
-			return false;
 		}
-
-        //return true;
     }
 
     //need to be decided not implement in Iteration 2
