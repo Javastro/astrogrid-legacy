@@ -1,4 +1,4 @@
-/*$Id: MockServer.java,v 1.4 2003/11/26 16:31:46 nw Exp $
+/*$Id: MockServer.java,v 1.5 2003/12/09 11:18:39 nw Exp $
  * Created on 16-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,10 +13,15 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.rmi.RemoteException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 import junit.framework.Assert;
 
+import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.axisdataserver.types._language;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -46,9 +51,7 @@ public class MockServer implements InvocationHandler {
         Class[] formalParams = method.getParameterTypes();
         Assert.assertEquals(formalParams.length,args.length);
         for (int i = 0; i < args.length; i++) {
-            //Assert.assertNotNull(args[i]);
-            //Assert.assertTrue(formalParams[i].isAssignableFrom(args[i].getClass()));
-            // can't use assertions - need to throw a remote exception instead.
+
             if (args[i] == null) {
                 throw new RemoteException("param " + formalParams[i].getName() + " is null");
             }   
@@ -58,21 +61,16 @@ public class MockServer implements InvocationHandler {
                     + ", " + formalParams[i].getName() 
                     + " " + formalParams[i].getClass().getName());
             }  
-            /* check xmlns attribs get through - they do
-           if (args[i].getClass().equals(_query.class)) {
-               System.out.println("Found _query");
-               _query q = (_query)args[i];
-               Element e = q.getQueryBody();
-              // XMLUtils.PrettyElementToStream(e,System.out);
-              System.out.println(e.getNamespaceURI());
-              System.out.println(e.getFirstChild().getNamespaceURI());
-               
-           }                               
-           */
+
         }
         Class retType = method.getReturnType();
         if (retType.equals(Void.TYPE)) {
             return null;
+        } else if (retType.isArray() && retType.getComponentType().equals(_language.class)) {
+           _language lang = new _language();
+           lang.setNamespace(new URI("urn:none"));
+           lang.setImplementingClass(Void.TYPE.getName());
+           return new _language[]{lang}; // strange that this fails at the moment.
         }else  if (! retType.isInterface()) {
             return retType.newInstance();
         } else if ( retType.equals(Element.class)) {
@@ -91,6 +89,9 @@ public class MockServer implements InvocationHandler {
 
 /* 
 $Log: MockServer.java,v $
+Revision 1.5  2003/12/09 11:18:39  nw
+fixed failing test
+
 Revision 1.4  2003/11/26 16:31:46  nw
 altered transport to accept any query format.
 moved back to axis from castor
