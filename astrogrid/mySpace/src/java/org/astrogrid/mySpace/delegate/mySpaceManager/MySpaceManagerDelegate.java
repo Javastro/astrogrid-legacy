@@ -28,9 +28,13 @@ public class MySpaceManagerDelegate {
 	public Vector listDataHoldings(String userid, String communityid, String criteria)throws Exception {
 		Vector vector = new Vector();
 		try{		
-		    String response = listDataHoldingsGen(userid, communityid, criteria);
-		    MySpaceHelper helper = new MySpaceHelper();
-	        vector = helper.getList(response);
+			Vector returnResponseOBJs = listDataHoldingsGen(userid, communityid, criteria);
+			MySpaceHelper helper = new MySpaceHelper();
+			for (int i=0;i<returnResponseOBJs.size();i++){
+				String response = (String)returnResponseOBJs.elementAt(i);
+				vector.addAll(vector.size(),helper.getList(response));
+			}
+		   
 		}catch(java.rmi.RemoteException re) {
 			re.printStackTrace();
 		}
@@ -43,12 +47,13 @@ public class MySpaceManagerDelegate {
 	 * @param userid
 	 * @param communityid
 	 * @param criteria
-	 * @return
+	 * @return Vector of response objects
 	 * @throws Exception
 	 */
 	
-	public String listDataHoldingsGen(String userid, String communityid, String criteria)throws Exception {
+	public Vector listDataHoldingsGen(String userid, String communityid, String criteria)throws Exception {
 		String response = " ";
+		Vector vector = new Vector();
 		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
 		try {
 			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
@@ -63,11 +68,12 @@ public class MySpaceManagerDelegate {
 			String jobDetails = helper.buildListDataHoldings(userid, communityid, criteria);
 			response = binding.lookupDataHoldersDetails(jobDetails);
 			//should invoke one of the helper functions to build the returned response to include searchs to all cache servers as well as community server
+			//to add all the response String objects into the vector..
 			
 		}catch(java.rmi.RemoteException re) {
 					re.printStackTrace();
 		}
-		return response;
+		return vector;
 	}		
 	
 	/**
