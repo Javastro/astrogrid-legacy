@@ -20,7 +20,7 @@ P2=$1
 shift
 
 # get the rest of the paramters with switch types
-until [ -z "$1" ]  # Until all parameters used up...
+until [  ${#*} -eq 0 ]  # Until all parameters used up...
 do
    echo "parameter found " $1
     case $1 in
@@ -55,6 +55,7 @@ fi
 sleep $P1
 
 # show the parsed values
+if [[ -n $P2 ]] ; then
 echo $P2
 echo "parsed parameters.....for $0." >> $P2
 
@@ -65,4 +66,11 @@ eval "echo P$i = \$P$i" >> $P2
 
 done
 
+else
+
+ echo "P2 not specified" 1>&2
+exit 1
+fi
+if [[ -n $P3 ]]; then
 cat $P9 >> $P3
+fi
