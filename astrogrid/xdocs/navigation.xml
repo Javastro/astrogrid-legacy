@@ -16,7 +16,7 @@
           <item name="About this documentation" 
                 href="about.html"/>
         </menu>
-        <menu name="Downloads">
+        <menu name="Quick Downloads">
 			<!--+
 				| The following links use pattern matching, 
 				| and rely on deploying to Apache 2.x 
