@@ -1,4 +1,4 @@
-/* $Id: AllTests.java,v 1.8 2004/11/11 17:54:18 clq2 Exp $
+/* $Id: AllTests.java,v 1.9 2004/11/17 16:22:34 clq2 Exp $
  * Created on Apr 15, 2004 by jdt@roe.ac.uk
  * The auto-integration project
  * Copyright (c) Astrigrid 2004.  All rights reserved.
@@ -25,6 +25,8 @@ public class AllTests {
         suite.addTest(VoSpaceTest.suite());
         suite.addTest(new TestSuite(SimpleMySpaceTest.class));
         suite.addTest(org.astrogrid.store.adapter.aladin.integration.AllTests.suite());
+
+        suite.addTest(org.astrogrid.store.tree.integration.AllTests.suite());        
         
         //$JUnit-END$
         return suite;
@@ -32,6 +34,12 @@ public class AllTests {
 }
 /*
  *  $Log: AllTests.java,v $
+ *  Revision 1.9  2004/11/17 16:22:34  clq2
+ *  nww-itn07-704a
+ *
+ *  Revision 1.8.4.1  2004/11/16 17:25:40  nw
+ *  added tests for new treeclient interface to myspace.
+ *
  *  Revision 1.8  2004/11/11 17:54:18  clq2
  *  nww-660
  *

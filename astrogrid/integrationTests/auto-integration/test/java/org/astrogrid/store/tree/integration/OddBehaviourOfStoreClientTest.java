@@ -1,4 +1,4 @@
-/*$Id: OddBehaviourOfStoreClientTest.java,v 1.2 2004/11/11 17:54:18 clq2 Exp $
+/*$Id: OddBehaviourOfStoreClientTest.java,v 1.2 2004/11/17 16:22:34 clq2 Exp $
  * Created on 10-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.store.adapter.aladin.integration;
+package org.astrogrid.store.tree.integration;
 
 import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory;
 import org.astrogrid.store.Ivorn;
@@ -21,7 +21,7 @@ import java.io.FileNotFoundException;
 import junit.framework.TestCase;
 
 /** this class contains tests to work out the behaviour of StoreClient and StoreFile.
- * things learned are rolled into the implementation of AladinAdapter - so any failures in this class later
+ * things learned are rolled into the implementation of iteration 6 TreeClient - so any failures in this class later
  * indicate a change in behaviour of the myspace stuff 
  * @author Noel Winstanley nw@jb.man.ac.uk 10-Nov-2004
  *
@@ -199,6 +199,12 @@ public class OddBehaviourOfStoreClientTest extends TestCase {
 
 /* 
 $Log: OddBehaviourOfStoreClientTest.java,v $
+Revision 1.2  2004/11/17 16:22:34  clq2
+nww-itn07-704a
+
+Revision 1.1.2.1  2004/11/16 17:24:42  nw
+added tests for new treeclient interface to myspace.
+
 Revision 1.2  2004/11/11 17:54:18  clq2
 nww-660
 

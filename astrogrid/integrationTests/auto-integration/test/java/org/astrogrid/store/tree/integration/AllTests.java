@@ -1,5 +1,5 @@
-/*$Id: AllTests.java,v 1.3 2004/11/17 16:22:34 clq2 Exp $
- * Created on 11-Nov-2004
+/*$Id: AllTests.java,v 1.2 2004/11/17 16:22:34 clq2 Exp $
+ * Created on 16-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -8,13 +8,13 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.store.adapter.aladin.integration;
+package org.astrogrid.store.tree.integration;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 11-Nov-2004
+ * @author Noel Winstanley nw@jb.man.ac.uk 16-Nov-2004
  *
  */
 public class AllTests {
@@ -25,9 +25,11 @@ public class AllTests {
 
     public static Test suite() {
         TestSuite suite = new TestSuite(
-                "StoreClient and Aladin Integration");
+                "Test for org.astrogrid.store.tree.integration");
         //$JUnit-BEGIN$
-        suite.addTestSuite(IterationSixAladinAdapterTest.class);
+        suite.addTestSuite(IterationSixTreeClientTest.class);
+        suite.addTestSuite(OddBehaviourOfStoreClientTest.class);
+        //$JUnit-END$
         return suite;
     }
 }
@@ -35,16 +37,10 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
-Revision 1.3  2004/11/17 16:22:34  clq2
+Revision 1.2  2004/11/17 16:22:34  clq2
 nww-itn07-704a
 
-Revision 1.2.4.1  2004/11/16 17:24:42  nw
+Revision 1.1.2.1  2004/11/16 17:24:42  nw
 added tests for new treeclient interface to myspace.
-
-Revision 1.2  2004/11/11 17:54:18  clq2
-nww-660
-
-Revision 1.1.2.1  2004/11/11 13:10:05  nw
-tests for aladin adapter
  
 */
