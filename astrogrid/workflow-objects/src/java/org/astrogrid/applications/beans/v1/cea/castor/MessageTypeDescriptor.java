@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: MessageTypeDescriptor.java,v 1.16 2004/03/30 22:42:55 pah Exp $
+ * $Id: MessageTypeDescriptor.java,v 1.17 2004/04/05 15:18:00 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1.cea.castor;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class MessageTypeDescriptor.
  * 
- * @version $Revision: 1.16 $ $Date: 2004/03/30 22:42:55 $
+ * @version $Revision: 1.17 $ $Date: 2004/04/05 15:18:00 $
  */
 public class MessageTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: CommandLineApplication.java,v 1.18 2004/03/30 22:42:55 pah Exp $
+ * $Id: CommandLineApplication.java,v 1.19 2004/04/05 15:17:59 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Description of a command line application
  * 
- * @version $Revision: 1.18 $ $Date: 2004/03/30 22:42:55 $
+ * @version $Revision: 1.19 $ $Date: 2004/04/05 15:17:59 $
  */
 public class CommandLineApplication extends org.astrogrid.applications.beans.v1.ApplicationBase 
 implements java.io.Serializable

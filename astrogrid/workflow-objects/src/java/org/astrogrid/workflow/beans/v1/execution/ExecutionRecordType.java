@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ExecutionRecordType.java,v 1.12 2004/03/30 22:42:55 pah Exp $
+ * $Id: ExecutionRecordType.java,v 1.13 2004/04/05 15:18:00 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.execution;
@@ -29,7 +29,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class ExecutionRecordType.
  * 
- * @version $Revision: 1.12 $ $Date: 2004/03/30 22:42:55 $
+ * @version $Revision: 1.13 $ $Date: 2004/04/05 15:18:00 $
  */
 public class ExecutionRecordType extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
