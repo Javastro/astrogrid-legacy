@@ -66,13 +66,19 @@
             <xsl:call-template name="delete_workflow" />             
          </xsl:if>
          <xsl:if test="$action = 'delete-workflow'">
-            <xsl:call-template name="list_workflow"/>             
+            <xsl:call-template name="list_workflow"/>
+            <xsl:call-template name="list_query" />
+            <xsl:call-template name="list_tools" />                         
          </xsl:if>
          <xsl:if test="$action = 'submit-workflow'">
-            <xsl:call-template name="list_workflow"/>             
+            <xsl:call-template name="list_workflow"/>
+            <xsl:call-template name="list_query" />
+            <xsl:call-template name="list_tools" />                         
          </xsl:if>
          <xsl:if test="$action = 'copy-workflow'">
-            <xsl:call-template name="list_workflow"/>             
+            <xsl:call-template name="list_workflow"/>
+            <xsl:call-template name="list_query" />
+            <xsl:call-template name="list_tools" />            
          </xsl:if>                  
          <xsl:if test="$action = 'save-workflow'">
             <xsl:call-template name="list_workflow"/>
