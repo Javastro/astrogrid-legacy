@@ -1210,7 +1210,8 @@ public class Workflow extends Activity {
                 index = 0 ;
             Parameter
                 p ;
-     
+   
+            
         try {
             
             if( direction.equals( "input") ){
@@ -1222,7 +1223,7 @@ public class Workflow extends Activity {
             
             while( iterator.hasNext() ) {
                 p = (Parameter)iterator.next() ;
-                if( p.getName().equals( paramValue ) ) {
+                if( p.getName().equals( paramName ) ) {
                     if( index == arrayPosition ) {
                         p.setValue( paramValue ) ;
                     }
