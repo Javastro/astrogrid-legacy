@@ -16,7 +16,7 @@
     <xsl:template name="tool-details">
     <p />
         <div style="visibility: hidden" id="step_tool_details">
-            <form name="properties_form">
+            <form name="properties_form" id="properties_form">
                 <table width="50%"  border="2" cellspacing="0" cellpadding="0">
                     <tr>
                         <td width="50%" height="100%" valign="top">
@@ -67,7 +67,9 @@
                                         <td></td>
                                         <td>
                                             <div id="tool_select_dropdown">                                                
-                                                <select name="tool_list" size="1" id="select_list" onClick="if(document.properties_form.select_list.value=='browse') javascript:void(window.open('/astrogrid-portal/mount/registry/registrybrowser.html?mainelement=Tool&amp;authId=authorityId&amp;resourceKey=tool_name', 'RegistryMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200'));  document.properties_form.tool_name.value = document.properties_form.select_list.value;">
+                                                <select name="tool_list" size="1" id="select_list" onClick="if(document.properties_form.select_list.value=='browse') javascript:void(window.open('/astrogrid-portal/mount/registry/registrybrowser.html?mainelement=Tool&amp;authId=tool_name', 'RegistryMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200')); 
+                                                                                                            else if (document.properties_form.select_list.value=='none') alert('Please select....');
+                                                                                                            else document.properties_form.tool_name.value = document.properties_form.select_list.value;">
 	                                                <option value="none" selected="true">-- Select tool --</option>
 	                                                <option value="browse">-- Browse registry --</option>
                                                     <xsl:for-each select="toolsAvailable">
@@ -89,7 +91,6 @@
                         </tr>
                     </table>
                     <input type="hidden" name="display_tool_values"><xsl:attribute name="value">true</xsl:attribute></input>
-                    <input type="hidden" name="action" id="authorityId"/>
                     <input type="hidden" name="action" id="workflow_action"/>                    
                 </form>                
             </div> 
