@@ -5,11 +5,12 @@ import org.astrogrid.community.policy.data.ResourceData;
 import org.astrogrid.community.policy.data.CommunityData;
 import org.astrogrid.community.policy.data.AccountData;
 import org.astrogrid.community.policy.data.PolicyPermission;
+import org.astrogrid.community.policy.data.GroupMemberData;
 
 import org.astrogrid.community.policy.server.PolicyManager ;
 import org.astrogrid.community.policy.server.PolicyManagerService ;
 import org.astrogrid.community.policy.server.PolicyManagerServiceLocator ;
-
+import org.astrogrid.community.common.CommunityConfig;
 import java.net.URL;
 
 import java.util.ArrayList;
@@ -39,12 +40,13 @@ public class AdministrationDelegate {
     */
    public AdministrationDelegate() {
       try {
-         service = getService();
+         service = getService(CommunityConfig.getManagerUrl());
       }catch(Exception e) {
          e.printStackTrace();
          service = null;
       }      
    }
+   
    
    /**
     * Creates a new permission in the database tying a resource to a group for a specefic action.
@@ -135,7 +137,7 @@ public class AdministrationDelegate {
     * @throws Exception
     */
    public ArrayList getAccountList() throws Exception {
-      return getAccountList(service.getLocalAccounts());
+      return createArrayList(service.getLocalAccounts());
    }
    
    /**
@@ -144,7 +146,7 @@ public class AdministrationDelegate {
     * @return
     */
    public ArrayList getAccountList(String community) throws Exception {
-      return getAccountList(service.getRemoteAccounts(community));
+      return createArrayList(service.getRemoteAccounts(community));
    }
    
    /**
@@ -152,7 +154,7 @@ public class AdministrationDelegate {
     * @param list
     * @return
     */
-   private ArrayList getAccountList(Object []list) {
+   private ArrayList createArrayList(Object []list) {
       ArrayList al = null;
       if(list != null && list.length > 0) {
          al = new ArrayList(list.length);
@@ -161,6 +163,24 @@ public class AdministrationDelegate {
          }
       }
       return al;         
+   }
+   
+   public ArrayList getAccountGroups(String account, String community) throws Exception {
+      return createArrayList(service.getRemoteAccountGroups(account,community));
+   } 
+   
+   public boolean isAdminAccount(String account,String community) throws Exception {
+      ArrayList al = getAccountGroups(account,community);
+      String adminGroup = "Admin@" + community;
+      if(al != null && al.size() > 0) {
+         for(int i = 0;i < al.size();i++) {
+            GroupMemberData data = (GroupMemberData)al.get(i);
+            if(adminGroup.equals(data.getGroup())) {
+               return true;            
+            }//if
+         }//for
+      }//if
+      return false;
    }
    
    /**
@@ -211,15 +231,7 @@ public class AdministrationDelegate {
     * @throws Exception
     */
    public ArrayList getResourceList() throws Exception {
-      Object []list = service.getResourceList();
-      ArrayList al = null;
-      if(list != null && list.length > 0) {
-         al = new ArrayList(list.length);
-         for(int i = 0;i < list.length;i++) {
-            al.add(list[i]);
-         }
-      }
-      return al;   
+      return createArrayList(service.getResourceList());
    }
    
    /**
@@ -239,7 +251,7 @@ public class AdministrationDelegate {
     * @deprecated
     */
    public ArrayList getGroupList() throws Exception  {
-      return getGroupList(service.getLocalGroups());
+      return createArrayList(service.getLocalGroups());
    }
    
    /**
@@ -248,22 +260,9 @@ public class AdministrationDelegate {
     * @return
     */
    public ArrayList getGroupList(String community) throws Exception {
-      return getGroupList(service.getRemoteGroups(community));  
+      return createArrayList(service.getRemoteGroups(community));  
    }
-   
-   /**
-    * Converts an object array into an araylist.
-    * @param list
-    * @return
-    */
-   private ArrayList getGroupList(Object []list) {
-      ArrayList al = new ArrayList(list.length);
-      for(int i = 0;i < list.length;i++) {
-         al.add(list[i]);
-      }
-      return al;      
-   }
-   
+      
    /**
     * Delete a group.
     * @param ident
@@ -350,23 +349,19 @@ public class AdministrationDelegate {
     * @throws Exception
     */
    public ArrayList getCommunityList()  throws Exception {
-      Object []list = service.getCommunityList();
-      if(list == null) {
-         throw new Exception("isn't finding my data");
-      }
-      ArrayList al = new ArrayList(list.length);
-      for(int i = 0;i < list.length;i++) {
-         al.add(list[i]);
-      }
-      return al;
-   }   
+      return createArrayList(service.getCommunityList());
+   }
+   
+   public ArrayList getGroupMembers(String group) throws Exception {
+      return createArrayList(service.getGroupMembers(group));   
+   }
 
    /**
     * Return our service object which is our link to the webservice.
     * @return
     * @throws Exception
     */
-   private PolicyManager getService()
+   private PolicyManager getService(String targetEndPoint)
       throws Exception
       {
       if (DEBUG_FLAG) System.out.println("") ;
@@ -381,7 +376,7 @@ public class AdministrationDelegate {
       
       //
       // Create our service.
-      service = locator.getPolicyManager();
+      service = locator.getPolicyManager(new URL(targetEndPoint));
 
       if (DEBUG_FLAG) System.out.println("----\"----") ;
       if (DEBUG_FLAG) System.out.println("") ;

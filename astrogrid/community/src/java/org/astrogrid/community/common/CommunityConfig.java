@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/common/Attic/CommunityConfig.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/13 02:18:52 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:author>$Author: KevinBenson $</cvs:author>
+ * <cvs:date>$Date: 2003/09/14 21:19:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityConfig.java,v $
+ *   Revision 1.4  2003/09/14 21:19:08  KevinBenson
+ *   Added a PolicyServiceDelegate and some Configuration stuff added.
+ *
  *   Revision 1.3  2003/09/13 02:18:52  dave
  *   Extended the jConfig configuration code.
  *
@@ -278,15 +281,18 @@ public class CommunityConfig
 			{
 			community = getProperty(COMMUNITY_PROPERTY_NAME) ;
 			}
-		//
-		// Try our local host address.
-		try {
-			community = InetAddress.getLocalHost().getHostName() ;
-			}
-		catch (Exception ouch)
-			{
-			community = "localhost" ;
-			}
+         
+      if(community == null || community.length() <= 0) {
+   		//
+   		// Try our local host address.
+   		try {
+   			community = InetAddress.getLocalHost().getHostName() ;
+   			}
+   		catch (Exception ouch)
+   			{
+   			community = "localhost" ;
+   			}
+      }
 		return community ;
 		}
 
@@ -355,4 +361,58 @@ public class CommunityConfig
 			}
 		return service ;
 		}
+
+      /**
+       * Our Administrator for a portal or the community
+       *
+       */
+      private static String admin = null ;
+
+      /**
+       * The name of the property for admin name
+       *
+       */
+      public static final String ASTROGRID_ADMIN_PROPERTY_NAME = "astrogrid.admin";
+
+      /**
+       * Static method to get our local service URL.
+       *
+       */
+      public static String getAdministrator()
+         {
+         //
+         // Try reading our config property.
+         if (null == admin)
+            {
+            admin = getProperty(ASTROGRID_ADMIN_PROPERTY_NAME) ;
+            }
+            return admin;
+      }
+      
+      /**
+       * Our Administrator for a portal or the community
+       *
+       */
+      private static String adminEmail = null ;
+
+      /**
+       * The name of the property for admin name
+       *
+       */
+      public static final String ASTROGRID_ADMIN_EMAIL_PROPERTY_NAME = "astrogrid.adminEmail";
+
+      /**
+       * Static method to get our local service URL.
+       *
+       */
+      public static String getAdministratorEmail()
+         {
+         //
+         // Try reading our config property.
+         if (null == adminEmail)
+            {
+            adminEmail = getProperty(ASTROGRID_ADMIN_EMAIL_PROPERTY_NAME) ;
+            }
+            return adminEmail;
+      }
 	}
