@@ -15,6 +15,8 @@
 	<xs:import namespace="http://www.ivoa.net/xml/VOResource/v0.9" schemaLocation="./externalSchema/VOResource-v0.9.xsd"/>
 	<xs:import namespace="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" schemaLocation="AGApplicationBase.xsd"/>
 	<xs:import namespace="http://www.ivoa.net/xml/VOTable/v1.0" schemaLocation="./externalSchema/VOTable.xsd"/>
+	<xs:import namespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" schemaLocation="AGParameterDefinition.xsd"/>
+	
 	<xs:element name="CeaApplication" type="cea:CeaApplicationType" substitutionGroup="vr:Resource"/>
 	<!-- This schema would benefit from some constraints being added to do better validation on the cross references within it -->
 	<xs:complexType name="CeaApplicationType">
