@@ -1,4 +1,4 @@
-/*$Id: AbstractRequest.java,v 1.1 2003/10/12 21:39:34 nw Exp $
+/*$Id: AbstractRequest.java,v 1.2 2003/11/11 14:43:33 nw Exp $
  * Created on 30-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,8 +14,6 @@ package org.astrogrid.datacenter.http2soap.request;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.astrogrid.datacenter.http2soap.Parameter;
-import org.astrogrid.datacenter.http2soap.RequestMapper;
 
 /** Abstract  base class for request implementations
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Sep-2003
@@ -51,6 +49,10 @@ public abstract class AbstractRequest implements RequestMapper {
 
 /* 
 $Log: AbstractRequest.java,v $
+Revision 1.2  2003/11/11 14:43:33  nw
+added unit tests.
+basic working version
+
 Revision 1.1  2003/10/12 21:39:34  nw
 first import
  

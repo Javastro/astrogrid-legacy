@@ -1,4 +1,4 @@
-/*$Id: ServiceStoreBuilder.java,v 1.1 2003/10/12 21:39:34 nw Exp $
+/*$Id: ServiceStoreBuilder.java,v 1.2 2003/11/11 14:43:33 nw Exp $
  * Created on 30-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,10 @@ import org.apache.commons.digester.AbstractObjectCreationFactory;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.NodeCreateRule;
 import org.apache.commons.digester.SetPropertyRule;
+import org.astrogrid.datacenter.http2soap.builder.ResultBuilderType;
+import org.astrogrid.datacenter.http2soap.request.Parameter;
+import org.astrogrid.datacenter.http2soap.request.RequestMapperType;
+import org.astrogrid.datacenter.http2soap.response.ResponseConvertorType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -192,6 +196,10 @@ public class ServiceStoreBuilder {
 
 /* 
 $Log: ServiceStoreBuilder.java,v $
+Revision 1.2  2003/11/11 14:43:33  nw
+added unit tests.
+basic working version
+
 Revision 1.1  2003/10/12 21:39:34  nw
 first import
  

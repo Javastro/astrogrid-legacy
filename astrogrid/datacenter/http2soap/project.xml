@@ -9,10 +9,11 @@
 
   <!-- a short but descriptive name for the project -->
   <name>HTTP - SOAP Adapter</name>
+    <groupId>astrogrid-datacenter</groupId>
 
   <!-- The version of the project under development, e.g.
        1.1, 1.2, 2.0-dev -->
-  <currentVersion>1.0</currentVersion>
+  <currentVersion>HEAD</currentVersion>
 
   <!-- details about the organization that 'owns' the project -->
   <organization>
@@ -26,7 +27,7 @@
   <package>org.astrogrid.datacenter.http2soap</package>
   <logo>http://www.astrogrid.org/images/AGlogo</logo>
   <description>
-	Adpater SOAP service that wraps a legacy web application
+	Adapater SOAP service that wraps a legacy web application
 	converts between SOAP messages and HTTP-POST / HTTP-GET to
 	CGI scripts.
   </description>
@@ -65,7 +66,12 @@
   <dependencies>
     <dependency>
     	<id>bsf</id>
-	<version>2.3.0</version>
+	<version>2.2</version>
+    </dependency>
+    <dependency>
+    	<groupId>rhino</groupId>
+    	<artifactId>js</artifactId>
+    	<version>1.5R4.1</version>
     </dependency>
     <dependency>
     	<id>junit</id>

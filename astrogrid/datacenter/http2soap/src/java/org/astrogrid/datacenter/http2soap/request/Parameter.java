@@ -1,4 +1,4 @@
-/*$Id: Parameter.java,v 1.1 2003/10/12 21:39:34 nw Exp $
+/*$Id: Parameter.java,v 1.1 2003/11/11 14:43:33 nw Exp $
  * Created on 30-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.datacenter.http2soap;
+package org.astrogrid.datacenter.http2soap.request;
 
 /** representation of one parameter to the legacy web service.
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Sep-2003
@@ -109,6 +109,10 @@ public class Parameter {
 
 /* 
 $Log: Parameter.java,v $
+Revision 1.1  2003/11/11 14:43:33  nw
+added unit tests.
+basic working version
+
 Revision 1.1  2003/10/12 21:39:34  nw
 first import
  

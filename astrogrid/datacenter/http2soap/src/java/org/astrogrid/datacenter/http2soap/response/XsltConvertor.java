@@ -1,4 +1,4 @@
-/*$Id: XsltConvertor.java,v 1.1 2003/10/12 21:39:34 nw Exp $
+/*$Id: XsltConvertor.java,v 1.2 2003/11/11 14:43:33 nw Exp $
  * Created on 30-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.datacenter.http2soap.response;
 
+import java.io.InputStream;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
@@ -24,8 +25,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.astrogrid.datacenter.http2soap.ResponseConvertor;
-import org.astrogrid.datacenter.http2soap.ResponseConvertorException;
 import org.w3c.dom.Document;
 
 /** convertor that applies an xslt transformation to the response from legacy service
@@ -53,11 +52,19 @@ public class XsltConvertor implements ResponseConvertor {
         }
     }
 
-    private Source getStylesheetSource() {
+    protected Source getStylesheetSource() {
         if (xslt != null) {
             return new DOMSource(xslt);
-        } else 
-        return new StreamSource(this.getClass().getResourceAsStream(xsltResource));
+        } else  {
+            if (xsltResource == null) {
+                throw new IllegalStateException("Either xslt or xsltResource attributes must be set");
+            }
+            InputStream is = this.getClass().getResourceAsStream(xsltResource);
+            if (is == null) {
+                throw new IllegalArgumentException("Could not find xsl resource " + xsltResource);
+            }
+            return new StreamSource(is);
+       }
     } 
 
     protected String xsltResource;
@@ -79,6 +86,10 @@ public class XsltConvertor implements ResponseConvertor {
 
 /* 
 $Log: XsltConvertor.java,v $
+Revision 1.2  2003/11/11 14:43:33  nw
+added unit tests.
+basic working version
+
 Revision 1.1  2003/10/12 21:39:34  nw
 first import
  

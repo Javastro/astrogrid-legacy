@@ -1,4 +1,4 @@
-/*$Id: LegacyWebMethod.java,v 1.1 2003/10/12 21:39:34 nw Exp $
+/*$Id: LegacyWebMethod.java,v 1.2 2003/11/11 14:43:33 nw Exp $
  * Created on 30-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.astrogrid.datacenter.http2soap.builder.ResultBuilder;
+import org.astrogrid.datacenter.http2soap.builder.ResultBuilderThread;
 import org.astrogrid.datacenter.http2soap.builder.StringBuilder;
+import org.astrogrid.datacenter.http2soap.request.RequestMapper;
+import org.astrogrid.datacenter.http2soap.response.ResponseConvertor;
+import org.astrogrid.datacenter.http2soap.response.ResponseConvertorException;
+import org.astrogrid.datacenter.http2soap.response.ResponseConvertorThread;
 
 
 /** Container object that represents a single legacy web service method 
@@ -57,22 +63,35 @@ public class LegacyWebMethod {
      * <p>
      *  do the request, convert response, use to build return result */
     public Object doCall(Object[] args) throws LegacyServiceException, IOException {
+        // works by creating a pipeline of independent threads
+        // current thread becomes a watchdog - checks for errors at each stage of the pipeline,
+        // while waiting until result is computed.
         ReadableByteChannel responseChan = this.requester.doRequest(args);
-        ResponseConvertorThread[] threads = new ResponseConvertorThread[convertors.size()];
+        Checkable[] threads = new Checkable[convertors.size() + 1];
         for (int i = 0; i < convertors.size() ; i++) {
             Pipe p = Pipe.open();
-            threads[i] = new ResponseConvertorThread(responseChan,p.sink(), (ResponseConvertor)convertors.get(i));          
-            threads[i].start();
+            ResponseConvertorThread rct =  new ResponseConvertorThread(responseChan,p.sink(), (ResponseConvertor)convertors.get(i));          
+            threads[i] = rct;
+            rct.start();
             responseChan = p.source();
         }                  
-        Object result = builder.build(responseChan);
+        ResultBuilderThread bThread = new ResultBuilderThread(builder,responseChan);
+        bThread.start();
+        threads[threads.length - 1] = bThread;
         // now loop checking for errors.
-        for (int i = 0; i < threads.length; i++) {
-          if (threads[i].hasError()) { 
-              throw new ResponseConvertorException("Convertor failed with",threads[i].getError());
-          }
+        while (!bThread.isDone()) {
+            for (int i = 0; i < threads.length; i++) {
+                if (threads[i].hasError()) { 
+                  throw new ResponseConvertorException("Convertor failed with",threads[i].getError());
+                }
+            }
+            try {
+                Thread.sleep(100); // sleep for a tenth of a seconf.
+            } catch (InterruptedException e) {
+                // don't care
+            }
         }
-       return result;       
+       return bThread.getResult();       
     }
 
     /**
@@ -115,6 +134,10 @@ public class LegacyWebMethod {
 
 /* 
 $Log: LegacyWebMethod.java,v $
+Revision 1.2  2003/11/11 14:43:33  nw
+added unit tests.
+basic working version
+
 Revision 1.1  2003/10/12 21:39:34  nw
 first import
  

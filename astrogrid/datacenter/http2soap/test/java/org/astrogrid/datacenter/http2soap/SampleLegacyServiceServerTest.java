@@ -1,4 +1,4 @@
-/*$Id: SampleLegacyServiceServerTest.java,v 1.1 2003/10/12 21:40:37 nw Exp $
+/*$Id: SampleLegacyServiceServerTest.java,v 1.2 2003/11/11 14:43:33 nw Exp $
  * Created on 01-Oct-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,9 +12,9 @@ package org.astrogrid.datacenter.http2soap;
 
 import java.io.InputStream;
 
-import org.w3c.dom.Element;
-
 import junit.framework.TestCase;
+
+import org.w3c.dom.Element;
 
 /** test the sample legacy service - from the server side.
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Oct-2003
@@ -52,16 +52,29 @@ public class SampleLegacyServiceServerTest extends TestCase {
     
     public void testGetVersion() throws Exception{
         assertNotNull(serv);
-        String result = serv.getVersion();
+        Float result = serv.getVersion();
         assertNotNull(result);
-        System.out.println(result);
+        assertEquals(1.1,result.floatValue(),0.01);
     }
+   
+    public void testSlashdotRDF() throws Exception {
+        // fails - need special treatment for flags.
+        assertNotNull(serv);
+        Element result = serv.slashdotRdf();
+        assertNotNull(result);
+        assertEquals("RDF",result.getLocalName());
+    }
+
 
 }
 
 
 /* 
 $Log: SampleLegacyServiceServerTest.java,v $
+Revision 1.2  2003/11/11 14:43:33  nw
+added unit tests.
+basic working version
+
 Revision 1.1  2003/10/12 21:40:37  nw
 first import
  

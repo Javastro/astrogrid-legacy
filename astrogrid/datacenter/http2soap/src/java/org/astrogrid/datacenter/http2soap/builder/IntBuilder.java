@@ -1,4 +1,4 @@
-/*$Id: IntBuilder.java,v 1.1 2003/10/12 21:39:34 nw Exp $
+/*$Id: IntBuilder.java,v 1.2 2003/11/11 14:43:33 nw Exp $
  * Created on 30-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,28 +11,22 @@
 package org.astrogrid.datacenter.http2soap.builder;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.nio.channels.ReadableByteChannel;
 
-import org.astrogrid.datacenter.http2soap.ResultBuilder;
 
 /** Build an Integer from the result stream
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Sep-2003
  *
  */
-public class IntBuilder extends AbstractResultBuilder implements ResultBuilder {
+public class IntBuilder extends StringBuilder implements ResultBuilder {
 
     /* (non-Javadoc)
      * @see org.astrogrid.datacenter.legacy.ResultBuilder#build(java.io.InputStream)
      * could implement better later.
      */
     public Object build(ReadableByteChannel cin) throws IOException {
-        ByteBuffer bb = createBuffer();
-        cin.close();
-        bb.flip();
-        IntBuffer cb = bb.asIntBuffer();
-        return new Integer(cb.get());
+        String res = (String) super.build(cin);
+        return new Integer(res);
 
     }
 
@@ -41,6 +35,10 @@ public class IntBuilder extends AbstractResultBuilder implements ResultBuilder {
 
 /* 
 $Log: IntBuilder.java,v $
+Revision 1.2  2003/11/11 14:43:33  nw
+added unit tests.
+basic working version
+
 Revision 1.1  2003/10/12 21:39:34  nw
 first import
  

@@ -1,4 +1,4 @@
-/*$Id: AbstractResultBuilder.java,v 1.1 2003/10/12 21:39:34 nw Exp $
+/*$Id: AbstractResultBuilder.java,v 1.2 2003/11/11 14:43:33 nw Exp $
  * Created on 06-Oct-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,6 @@ package org.astrogrid.datacenter.http2soap.builder;
 
 import java.nio.ByteBuffer;
 
-import org.astrogrid.datacenter.http2soap.ResultBuilder;
 
 /** abstract result builder - provides buffer-size methods.
  * @author Noel Winstanley nw@jb.man.ac.uk 06-Oct-2003
@@ -24,7 +23,9 @@ public abstract class AbstractResultBuilder implements ResultBuilder {
         this.bufferSize = size;
     }
     protected ByteBuffer createBuffer() {
-        return ByteBuffer.allocate(bufferSize);
+        ByteBuffer bb = ByteBuffer.allocate(bufferSize);
+        bb.clear();
+        return bb;
     }
     protected int bufferSize = DEFAULT_BUFFER_SIZE;
     public static final int DEFAULT_BUFFER_SIZE = 1000;
@@ -34,6 +35,10 @@ public abstract class AbstractResultBuilder implements ResultBuilder {
 
 /* 
 $Log: AbstractResultBuilder.java,v $
+Revision 1.2  2003/11/11 14:43:33  nw
+added unit tests.
+basic working version
+
 Revision 1.1  2003/10/12 21:39:34  nw
 first import
  

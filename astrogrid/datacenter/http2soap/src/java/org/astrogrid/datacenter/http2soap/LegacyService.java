@@ -1,4 +1,4 @@
-/*$Id: LegacyService.java,v 1.1 2003/10/12 21:39:34 nw Exp $
+/*$Id: LegacyService.java,v 1.2 2003/11/11 14:43:33 nw Exp $
  * Created on 30-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,6 +55,9 @@ public class LegacyService implements InvocationHandler {
         try {
         // find the service with the same name as the method called.
         LegacyWebMethod webMethod = store.lookupService(method.getName());
+        if (webMethod == null) {
+            throw new IllegalArgumentException("attempt to call method " + method.getName() + " failed - corresponding web method could not be found");
+        }
         return webMethod.doCall(args);
         } catch (IOException e) { 
             throw new LegacyServiceException("Error occurred communicating to legacy web service",e);
@@ -78,6 +81,10 @@ public class LegacyService implements InvocationHandler {
 
 /* 
 $Log: LegacyService.java,v $
+Revision 1.2  2003/11/11 14:43:33  nw
+added unit tests.
+basic working version
+
 Revision 1.1  2003/10/12 21:39:34  nw
 first import
  

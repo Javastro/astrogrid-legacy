@@ -1,4 +1,4 @@
-/*$Id: BooleanBuilder.java,v 1.1 2003/10/12 21:39:34 nw Exp $
+/*$Id: BooleanBuilder.java,v 1.2 2003/11/11 14:43:33 nw Exp $
  * Created on 02-Oct-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.datacenter.http2soap.builder;
 import java.io.IOException;
 import java.nio.channels.ReadableByteChannel;
 
-import org.astrogrid.datacenter.http2soap.ResultBuilder;
 
 /** Builder that returns a boolean value.
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Oct-2003
@@ -31,6 +30,10 @@ public class BooleanBuilder extends StringBuilder implements ResultBuilder {
 
 /* 
 $Log: BooleanBuilder.java,v $
+Revision 1.2  2003/11/11 14:43:33  nw
+added unit tests.
+basic working version
+
 Revision 1.1  2003/10/12 21:39:34  nw
 first import
  

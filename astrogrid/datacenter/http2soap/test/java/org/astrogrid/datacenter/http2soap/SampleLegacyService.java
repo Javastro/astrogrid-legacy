@@ -1,4 +1,4 @@
-/*$Id: SampleLegacyService.java,v 1.1 2003/10/12 21:40:37 nw Exp $
+/*$Id: SampleLegacyService.java,v 1.2 2003/11/11 14:43:33 nw Exp $
  * Created on 30-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,16 +17,18 @@ import org.w3c.dom.Element;
  *
  */
 public interface SampleLegacyService {
-    public String searchGoogle(String q) throws LegacyServiceException;
     public Element slashdotRdf() throws LegacyServiceException ;
-    public Element versionWsdl() throws LegacyServiceException ;
-    public String getVersion() throws LegacyServiceException ;
+    public  Float getVersion() throws LegacyServiceException ;
 
 }
 
 
 /* 
 $Log: SampleLegacyService.java,v $
+Revision 1.2  2003/11/11 14:43:33  nw
+added unit tests.
+basic working version
+
 Revision 1.1  2003/10/12 21:40:37  nw
 first import
  

@@ -1,4 +1,4 @@
-/*$Id: ElementBuilder.java,v 1.1 2003/10/12 21:39:34 nw Exp $
+/*$Id: ElementBuilder.java,v 1.2 2003/11/11 14:43:33 nw Exp $
  * Created on 30-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,8 +17,6 @@ import java.nio.channels.ReadableByteChannel;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.http2soap.ResultBuilder;
-import org.astrogrid.datacenter.http2soap.ResultBuilderException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -48,6 +46,10 @@ public class ElementBuilder extends AbstractResultBuilder implements ResultBuild
 
 /* 
 $Log: ElementBuilder.java,v $
+Revision 1.2  2003/11/11 14:43:33  nw
+added unit tests.
+basic working version
+
 Revision 1.1  2003/10/12 21:39:34  nw
 first import
  

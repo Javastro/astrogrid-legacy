@@ -1,4 +1,4 @@
-/*$Id: ResultBuilderType.java,v 1.1 2003/10/12 21:39:34 nw Exp $
+/*$Id: ResultBuilderType.java,v 1.1 2003/11/11 14:43:33 nw Exp $
  * Created on 02-Oct-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,15 +8,8 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.datacenter.http2soap;
+package org.astrogrid.datacenter.http2soap.builder;
 
-import org.astrogrid.datacenter.http2soap.builder.BooleanBuilder;
-import org.astrogrid.datacenter.http2soap.builder.BytesBuilder;
-import org.astrogrid.datacenter.http2soap.builder.ElementBuilder;
-import org.astrogrid.datacenter.http2soap.builder.FloatBuilder;
-import org.astrogrid.datacenter.http2soap.builder.IntBuilder;
-import org.astrogrid.datacenter.http2soap.builder.StringBuilder;
-import org.astrogrid.datacenter.http2soap.builder.VoidBuilder;
 
 /** Enumeration of available result builders
  * 
@@ -71,6 +64,10 @@ public class ResultBuilderType {
 
 /* 
 $Log: ResultBuilderType.java,v $
+Revision 1.1  2003/11/11 14:43:33  nw
+added unit tests.
+basic working version
+
 Revision 1.1  2003/10/12 21:39:34  nw
 first import
  

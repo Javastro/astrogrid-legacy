@@ -1,4 +1,4 @@
-/*$Id: RequestMapperException.java,v 1.1 2003/10/12 21:39:34 nw Exp $
+/*$Id: RequestMapperException.java,v 1.1 2003/11/11 14:43:33 nw Exp $
  * Created on 30-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,9 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.datacenter.http2soap;
+package org.astrogrid.datacenter.http2soap.request;
+
+import org.astrogrid.datacenter.http2soap.LegacyServiceException;
 
 /** Exception subclass that indicates a failure in doing the request.
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Sep-2003
@@ -50,6 +52,10 @@ public class RequestMapperException extends LegacyServiceException {
 
 /* 
 $Log: RequestMapperException.java,v $
+Revision 1.1  2003/11/11 14:43:33  nw
+added unit tests.
+basic working version
+
 Revision 1.1  2003/10/12 21:39:34  nw
 first import
  

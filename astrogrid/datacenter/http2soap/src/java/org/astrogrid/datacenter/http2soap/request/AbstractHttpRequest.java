@@ -1,4 +1,4 @@
-/*$Id: AbstractHttpRequest.java,v 1.1 2003/10/12 21:39:34 nw Exp $
+/*$Id: AbstractHttpRequest.java,v 1.2 2003/11/11 14:43:33 nw Exp $
  * Created on 01-Oct-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,12 @@
 **/
 package org.astrogrid.datacenter.http2soap.request;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.channels.*;
-import java.nio.channels.ReadableByteChannel;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.List;
 
 import org.apache.commons.httpclient.HostConfiguration;
@@ -22,9 +23,6 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.StatusLine;
-import org.astrogrid.datacenter.http2soap.Parameter;
-import org.astrogrid.datacenter.http2soap.ParameterType;
-import org.astrogrid.datacenter.http2soap.RequestMapperException;
 
 /** Abstract class that handles much of the work of performing a HTTP request.
  * 
@@ -44,28 +42,32 @@ public abstract class AbstractHttpRequest extends AbstractRequest {
             HostConfiguration conf = new HostConfiguration();
             URL u = new URL(this.getEndpoint());
             conf.setHost(u.getHost(),u.getPort(),u.getProtocol());
-            client.setHostConfiguration(conf);
+            client.setHostConfiguration(conf);            
             return client;
         }
         
         /** 
          * Create a httpMethod object that will perform the actual call.
          * <p>
-         * up to subclasses to implement this - differs according to protocol. */
-        protected abstract HttpMethod createMethod() throws RequestMapperException;
+         * 
+         * up to subclasses to implement this - differs according to protocol. 
+         * @param params - parameters for the method call*/
+        
+        protected abstract HttpMethod createMethod(NameValuePair[] params) throws RequestMapperException;
+
 
     public ReadableByteChannel doRequest(Object[] args)
         throws RequestMapperException, IOException {
             HttpClient client = createClient();
-            HttpMethod method = createMethod();
             NameValuePair[] params = buildParams(args);
-            method.setQueryString(params); // must verify this works for http-post too.
+            HttpMethod method = createMethod(params);
             client.executeMethod(method);
             StatusLine stat = method.getStatusLine();
             if (stat.getStatusCode() >= 400) { // think 400 is the start of the  error codes.
                 throw new RequestMapperException("Legacy HTTP service failed with code " + stat.getStatusCode() + " : " + stat.getReasonPhrase());
             }           
-            return Channels.newChannel(method.getResponseBodyAsStream());
+            return Channels.newChannel(method.getResponseBodyAsStream()); // problem with post?
+           //return Channels.newChannel(new ByteArrayInputStream(method.getResponseBody()));
     }
 
     /** Convert method call parameters to the representation required by http-client
@@ -111,6 +113,10 @@ public abstract class AbstractHttpRequest extends AbstractRequest {
 
 /* 
 $Log: AbstractHttpRequest.java,v $
+Revision 1.2  2003/11/11 14:43:33  nw
+added unit tests.
+basic working version
+
 Revision 1.1  2003/10/12 21:39:34  nw
 first import
  
