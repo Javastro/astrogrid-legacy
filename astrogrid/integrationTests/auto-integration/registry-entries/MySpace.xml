@@ -62,11 +62,10 @@
         <Name>Clive Davenhall</Name>
       </Contributor>       
     </Curation>
-	
     <Subject>Users VOSpace</Subject>
     <Interface>
       <Invocation>WebService</Invocation>
-      <AccessURL use="base">@TOMCATROOT@/astrogrid-mySpace-@VERSION@/services/Manager?wsdl</AccessURL>
+      <AccessURL use="base">@TOMCATROOT@/astrogrid-mySpace-@VERSION@/services/Manager</AccessURL>
     </Interface>
   </vr:Resource>
 </VODescription>
