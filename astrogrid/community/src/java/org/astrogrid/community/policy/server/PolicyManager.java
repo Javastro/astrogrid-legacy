@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 00:08:45 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/10 02:56:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManager.java,v $
+ *   Revision 1.10  2003/09/10 02:56:03  dave
+ *   Added PermissionManager and tests
+ *
  *   Revision 1.9  2003/09/10 00:08:45  dave
  *   Added getGroupMembers, ResourceIdent and JUnit tests for ResourceManager
  *
@@ -52,7 +55,7 @@ import org.astrogrid.community.policy.data.GroupMemberData ;
  *
  */
 public interface PolicyManager
-	extends java.rmi.Remote, AccountManager, GroupManager, CommunityManager, ResourceManager
+	extends java.rmi.Remote, AccountManager, GroupManager, CommunityManager, ResourceManager, PermissionManager
 	{
 
 	/**

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/GroupManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 00:08:45 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/10 02:56:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerImpl.java,v $
+ *   Revision 1.9  2003/09/10 02:56:03  dave
+ *   Added PermissionManager and tests
+ *
  *   Revision 1.8  2003/09/10 00:08:45  dave
  *   Added getGroupMembers, ResourceIdent and JUnit tests for ResourceManager
  *
@@ -371,7 +374,9 @@ public class GroupManagerImpl
 					//
 					// Update the group data.
 					data.setDescription(group.getDescription()) ;
-               data.setType(group.getType()) ;
+//
+// Should not be able to modify the type.
+//               data.setType(group.getType()) ;
 					}
 				//
 				// If we couldn't find the object.

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 00:08:45 $</cvs:date>
- * <cvs:version>$Revision: 1.11 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/10 02:56:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.12 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.12  2003/09/10 02:56:03  dave
+ *   Added PermissionManager and tests
+ *
  *   Revision 1.11  2003/09/10 00:08:45  dave
  *   Added getGroupMembers, ResourceIdent and JUnit tests for ResourceManager
  *
@@ -71,6 +74,7 @@ import org.astrogrid.community.policy.data.CommunityData ;
 import org.astrogrid.community.policy.data.CommunityIdent ;
 import org.astrogrid.community.policy.data.CommunityConfig ;
 import org.astrogrid.community.policy.data.GroupMemberData ;
+import org.astrogrid.community.policy.data.PolicyPermission ;
 
 public class PolicyManagerImpl
 	implements PolicyManager
@@ -113,12 +117,18 @@ public class PolicyManagerImpl
 	 *
 	 */
 	private CommunityManagerImpl communityManager ;
-   
-   /**
-    * Our ResourceManager
-    *
-    */
-   private ResourceManagerImpl resourceManager;
+
+	/**
+	 * Our ResourceManager
+	 *
+	 */
+	private ResourceManagerImpl resourceManager;
+
+	/**
+	 * Our PermissionManager
+	 *
+	 */
+	private PermissionManagerImpl permissionManager;
 
 	/**
 	 * Initialise our service.
@@ -144,10 +154,14 @@ public class PolicyManagerImpl
 		// Initialise our CommunityManager.
 		communityManager = new CommunityManagerImpl() ;
 		communityManager.init(databaseManager) ;
-      
-      resourceManager = new ResourceManagerImpl();
-      resourceManager.init(databaseManager);
-      
+		//
+		// Initialise our ResourceManager.
+		resourceManager = new ResourceManagerImpl();
+		resourceManager.init(databaseManager);
+		//
+		// Initialise our PermissionManager.
+		permissionManager = new PermissionManagerImpl();
+		permissionManager.init(databaseManager);
 		}
 
 	/**
@@ -587,6 +601,54 @@ public class PolicyManagerImpl
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		return array;
 		}
+
+	/**
+	 * Create a new PolicyPermission.
+	 *
+	 */
+	public PolicyPermission addPermission(String resource, String group, String action)
+		throws RemoteException
+		{
+		return permissionManager.addPermission(resource, group, action) ;
+		}
+
+	/**
+	 * Request a PolicyPermission.
+	 *
+	 */
+	public PolicyPermission getPermission(String resource, String group, String action)
+		throws RemoteException
+		{
+		return permissionManager.getPermission(resource, group, action) ;
+		}
+
+	/**
+	 * Update a PolicyPermission.
+	 *
+	 */
+	public PolicyPermission setPermission(PolicyPermission permission)
+		throws RemoteException
+		{
+		return permissionManager.setPermission(permission) ;
+		}
+
+	/**
+	 * Delete a PolicyPermission.
+	 *
+	 */
+	public boolean delPermission(String resource, String group, String action)
+		throws RemoteException
+		{
+		return permissionManager.delPermission(resource, group, action) ;
+		}
+
+	/**
+	 * Request a list of PolicyPermissions for a resource.
+	 *
+	public Object[] getPermissionList(String resource)
+		throws RemoteException;
+	 */
+
 
 	}
 

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/10 00:08:45 $</cvs:date>
-    | <cvs:version>$Revision: 1.22 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/10 02:56:03 $</cvs:date>
+    | <cvs:version>$Revision: 1.23 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.23  2003/09/10 02:56:03  dave
+    |   Added PermissionManager and tests
+    |
     |   Revision 1.22  2003/09/10 00:08:45  dave
     |   Added getGroupMembers, ResourceIdent and JUnit tests for ResourceManager
     |
@@ -1392,6 +1395,11 @@
 				<!-- Include our CommunityManager interface and implementation -->
 				<include name="org/astrogrid/community/policy/server/CommunityManager.java"/>
 				<include name="org/astrogrid/community/policy/server/CommunityManagerImpl.java"/>
+
+				<!-- Include our PermissionManager interface and implementation -->
+				<include name="org/astrogrid/community/policy/server/PermissionManager.java"/>
+				<include name="org/astrogrid/community/policy/server/PermissionManagerImpl.java"/>
+
 				<!-- Include our Configuration implementation -->
 				<include name="org/astrogrid/community/policy/server/CommunityConfigImpl.java"/>
 
@@ -1402,7 +1410,7 @@
 
 				<!--+
 					| PATCH : Include the auth data objects
-					| Required because the Castor mapping referes to  org.astrogrid.community.authentication.data.SecurityToken.
+					| Required because the Castor mapping refers to org.astrogrid.community.authentication.data.SecurityToken.
 					| May cause problems if we want to deploy these in separate jars :-(
 					+-->
 				<include name="org/astrogrid/community/auth/data/*.java"/>
@@ -1455,6 +1463,8 @@
 				<include name="org/astrogrid/community/policy/server/GroupManager.java"/>
 				<!-- Include our CommunityManager interface -->
 				<include name="org/astrogrid/community/policy/server/CommunityManager.java"/>
+				<!-- Include our PermissionManager interface -->
+				<include name="org/astrogrid/community/policy/server/PermissionManager.java"/>
 
 				<!-- Include our data objects -->
 				<include name="org/astrogrid/community/policy/data/*.java"/>
@@ -1482,7 +1492,7 @@
 			<include name="org/astrogrid/community/policy/server/**"/>
 			<!--+
 				| PATCH : Include the auth data objects
-				| Required because the Castor mapping referes to  org.astrogrid.community.authentication.data.SecurityToken.
+				| Required because the Castor mapping refers to org.astrogrid.community.authentication.data.SecurityToken.
 				| May cause problems if we want to deploy these in separate jars :-(
 				+-->
 			<include name="org/astrogrid/community/auth/data/**"/>
@@ -1538,7 +1548,7 @@
 				<include name="org/astrogrid/community/policy/server/**"/>
 				<!--+
 					| PATCH : Include the auth data objects
-					| Required because the Castor mapping referes to  org.astrogrid.community.authentication.data.SecurityToken.
+					| Required because the Castor mapping refers to org.astrogrid.community.authentication.data.SecurityToken.
 					| May cause problems if we want to deploy these in separate jars :-(
 					+-->
 				<include name="org/astrogrid/community/auth/data/**"/>
@@ -1827,6 +1837,7 @@
 					<include name="org/astrogrid/community/policy/server/junit/**/JUnitAccount*.class"/>
 					<include name="org/astrogrid/community/policy/server/junit/**/JUnitResource*.class"/>
 					<include name="org/astrogrid/community/policy/server/junit/**/JUnitCommunity*.class"/>
+					<include name="org/astrogrid/community/policy/server/junit/**/JUnitPermission*.class"/>
 					<include name="org/astrogrid/community/policy/server/junit/**/JUnitGroupMember*.class"/>
 				</fileset>
 			</batchtest>
@@ -1854,6 +1865,7 @@
 					<include name="org/astrogrid/community/policy/client/junit/**/JUnitAccount*.class"/>
 					<include name="org/astrogrid/community/policy/client/junit/**/JUnitResource*.class"/>
 					<include name="org/astrogrid/community/policy/client/junit/**/JUnitCommunity*.class"/>
+					<include name="org/astrogrid/community/policy/client/junit/**/JUnitPermission*.class"/>
 					<include name="org/astrogrid/community/policy/client/junit/**/JUnitGroupMember*.class"/>
 				</fileset>
 			</batchtest>

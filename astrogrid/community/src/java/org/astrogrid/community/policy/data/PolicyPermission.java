@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/PolicyPermission.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/06 20:10:07 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/10 02:56:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyPermission.java,v $
+ *   Revision 1.3  2003/09/10 02:56:03  dave
+ *   Added PermissionManager and tests
+ *
  *   Revision 1.2  2003/09/06 20:10:07  dave
  *   Split PolicyManager into separate components.
  *
@@ -23,19 +26,19 @@ public class PolicyPermission
 	 * Status code for permission granted.
 	 *
 	 */
-	public static final int STATUS_PERMISSION_GRANTED = 0xFF ;
+	public static final int PERMISSION_GRANTED = 0xFF ;
 
 	/**
 	 * Status code for no permission.
 	 *
 	 */
-	public static final int STATUS_PERMISSION_UNKNOWN = 0x00 ;
+	public static final int PERMISSION_UNKNOWN = 0x00 ;
 
 	/**
 	 * Status code for permission revoked.
 	 *
 	 */
-	public static final int STATUS_PERMISSION_REVOKED = 0x01 ;
+	public static final int PERMISSION_REVOKED = 0x01 ;
 
 	/**
 	 * The default reason, no permission set.
@@ -54,15 +57,15 @@ public class PolicyPermission
 	/**
 	 * Public constructor.
 	 *
+	 */
 	public PolicyPermission(String resource, String group, String action)
 		{
 		this.group    = group    ;
 		this.action   = action   ;
 		this.resource = resource ;
-		this.valid    = false    ;
+		this.status   = PERMISSION_UNKNOWN ;
 		this.reason   = DEFAULT_REASON ;
 		}
-	 */
 
 	/**
 	 * Our Group ident.
@@ -158,6 +161,15 @@ public class PolicyPermission
 	public void setStatus(int value)
 		{
 		this.status = value ;
+		}
+
+	/**
+	 * Easy check if the status is granteed.
+	 *
+	 */
+	public boolean isValid()
+		{
+		return (PERMISSION_GRANTED == this.status) ;
 		}
 
 	/**

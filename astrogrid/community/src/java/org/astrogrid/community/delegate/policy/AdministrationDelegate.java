@@ -42,7 +42,7 @@ public class AdministrationDelegate {
    
    
    public boolean addGroupMember(String account,String group) throws Exception {
-      return service.addGroupMember(account,group);  
+      return (null != service.addGroupMember(account,group)) ;  
    }
    
    public boolean delGroupMember(String account,String group) throws Exception {
