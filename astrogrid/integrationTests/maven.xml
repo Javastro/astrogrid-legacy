@@ -28,7 +28,7 @@
 	<goal name="astrogrid-install-artifact">
 		<echo message="nothing to do"/>
 	</goal>
-	<preGoal name="site">
+	<preGoal name="java:compile">
 		<mkdir dir="target/classes"/>
 		<!--fix annoying jdepend bug-->
 	</preGoal>
