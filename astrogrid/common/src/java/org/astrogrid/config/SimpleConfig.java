@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleConfig.java,v 1.8 2004/02/27 14:23:12 mch Exp $
+ * $Id: SimpleConfig.java,v 1.9 2004/03/13 21:23:24 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -92,7 +92,7 @@ public abstract class SimpleConfig
     */
    public static String getProperty(String key)
    {
-      return instance.getProperty(key).toString();
+      return instance.getString(key);
    }
 
    /**
@@ -101,9 +101,9 @@ public abstract class SimpleConfig
     * this has not been initialised)
     * @deprecated use getSingleton().getProperty()
     */
-   public static String getProperty(String key, Object defaultValue)
+   public static String getProperty(String key, String defaultValue)
    {
-      return instance.getProperty(key, defaultValue).toString();
+      return instance.getString(key, defaultValue);
    }
 
 }
