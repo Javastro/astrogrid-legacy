@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.22 2003/09/24 21:03:46 nw Exp $
+ * $Id: AxisDataServer.java,v 1.23 2003/09/26 11:01:31 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,7 +19,7 @@ import org.astrogrid.datacenter.queriers.QueryStatusForwarder;
 import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-
+           
 /**
  * This class is the public web interface, called by Axis
  * when Axis receives the SOAP message from the client. It is a singleton
@@ -91,10 +91,12 @@ public class AxisDataServer extends ServiceServer
 
       querier.setStatus(QueryStatus.RUNNING_RESULTS);
 
-      return ResponseHelper.makeResultsResponse(
+      Element result = ResponseHelper.makeResultsResponse(
          querier,
          results.toVotable().getDocumentElement()
       ).getDocumentElement();
+      querier.close();
+      return result;
    }
 
    /**
@@ -157,10 +159,12 @@ public class AxisDataServer extends ServiceServer
       }
       else
       {
-         return ResponseHelper.makeResultsResponse(
+         Element result = ResponseHelper.makeResultsResponse(
             querier,
             querier.getResultsLoc()
          ).getDocumentElement();
+         querier.close();
+         return result;
 
       }
    }
