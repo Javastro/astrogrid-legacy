@@ -38,6 +38,12 @@ import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import org.w3c.dom.Document;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.text.ParseException;
+import java.util.Locale;
+
 
 public class IndexGenerator
 {
@@ -131,40 +137,46 @@ public class IndexGenerator
       StringBuffer coverageSnippet = new StringBuffer();
       String key = null;
       String val = null;
+      
+      if(header == null) 
+        return "";
 
       if (header.getNumAxis() >= 2) {      
          //return "";
       
-      //work out coverage.  This is not a straightforward rectangle, as the
-      //image may be rotated and possibly even skewed.  So just give it as a
-      //polygon with 4 points.
-      FitsWCS wcsCalculator = new FitsWCS(header);
-      double maxPixelX = header.get("NAXIS1").toInt();
-      double maxPixelY = header.get("NAXIS2").toInt();
-
-      double[] point1 = wcsCalculator.toWCS( new double[] {0,0});
-      double[] point2 = wcsCalculator.toWCS( new double[] {0,maxPixelY});
-      double[] point3 = wcsCalculator.toWCS( new double[] {maxPixelX,maxPixelY});
-      double[] point4 = wcsCalculator.toWCS( new double[] {maxPixelX,0});
-      
-      //NB origin pixels might not be the min RA & DEC - the picture might be 'upside down'
-      coverageSnippet.append( "      <Point><RA>"+point1[0]+"</RA><Dec>"+point1[1]+"</Dec></Point>\n"+
-                              "      <Point><RA>"+point2[0]+"</RA><Dec>"+point2[1]+"</Dec></Point>\n"+
-                              "      <Point><RA>"+point3[0]+"</RA><Dec>"+point3[1]+"</Dec></Point>\n"+
-                              "      <Point><RA>"+point4[0]+"</RA><Dec>"+point4[1]+"</Dec></Point>\n");
+         //work out coverage.  This is not a straightforward rectangle, as the
+         //image may be rotated and possibly even skewed.  So just give it as a
+         //polygon with 4 points.
+         FitsWCS wcsCalculator = new FitsWCS(header);
+         double maxPixelX = header.get("NAXIS1").toInt();
+         double maxPixelY = header.get("NAXIS2").toInt();
+   
+         double[] point1 = wcsCalculator.toWCS( new double[] {0,0});
+         double[] point2 = wcsCalculator.toWCS( new double[] {0,maxPixelY});
+         double[] point3 = wcsCalculator.toWCS( new double[] {maxPixelX,maxPixelY});
+         double[] point4 = wcsCalculator.toWCS( new double[] {maxPixelX,0});
+         
+         //NB origin pixels might not be the min RA & DEC - the picture might be 'upside down'
+         coverageSnippet.append( "      <Point><RA>"+point1[0]+"</RA><Dec>"+point1[1]+"</Dec></Point>\n"+
+                                 "      <Point><RA>"+point2[0]+"</RA><Dec>"+point2[1]+"</Dec></Point>\n"+
+                                 "      <Point><RA>"+point3[0]+"</RA><Dec>"+point3[1]+"</Dec></Point>\n"+
+                                 "      <Point><RA>"+point4[0]+"</RA><Dec>"+point4[1]+"</Dec></Point>\n");
       }//if
                                 
       //run trhough all keywords adding them
       Enumeration enum = header.getKeywords();
-      System.out.println("the header length = " + header.getList().length);
       while (enum.hasMoreElements())
       {
          FitsKeyword keyword = (FitsKeyword) enum.nextElement();
          val = keyword.getValue();
-//         if(keyword.isDate()) {
-//            val = String.valueOf(keyword.toDate());
-//         }
-         
+         try {
+           if(keyword.isDate()) {
+             val = keyword.toUTCStringDate();
+           }
+         }catch(ParseException pe) {
+            //it is not a date or cannot be parsed into a date that is okay.
+            //pe.printStackTrace();
+         }
          //could probably do with tidying this up a bit, for example so that multiline comments become one tag
          keywordSnippet.append("      <"+keyword.getKey()+">"+val+"</"+keyword.getKey()+">\n");
       }
@@ -207,6 +219,7 @@ public class IndexGenerator
 //                             }));
        Log.traceOn();
       Log.logToConsole();
+      Locale.setDefault(Locale.UK);      
       Document indexDoc = null;
       if(args == null || args.length < 2) {
          System.out.println("java IndexGenerator -f <filename of urls (one url per line)> or");   
@@ -327,8 +340,20 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
-Revision 1.12  2004/08/04 07:50:37  KevinBenson
-small change on the FitsResult to put in the url.  IndexGenerator was missing a check for a null
+Revision 1.13  2004/08/05 15:14:22  KevinBenson
+small bug fix in the FitsREsults.  And now uses dates was teh result of the mber of kevin-dev-03-08-04
+
+Revision 1.11.2.1  2004/08/05 15:10:35  KevinBenson
+Changes to look for dates and make dates into UTC dates.
+
+Revision 1.11  2004/07/29 11:17:44  KevinBenson
+small change to check that the header is null return an empty string
+
+Revision 1.10  2004/07/29 11:15:22  KevinBenson
+*** empty log message ***
+
+Revision 1.9  2004/07/29 11:05:45  KevinBenson
+small change to make sure the header is not null
 
 Revision 1.8  2004/07/26 13:53:44  KevinBenson
 Changes to Fits to do an xquery on an xml file dealing with fits data.

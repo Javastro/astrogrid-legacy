@@ -1,5 +1,5 @@
 /*
- * $Id: FitsResults.java,v 1.9 2004/08/04 07:50:37 KevinBenson Exp $
+ * $Id: FitsResults.java,v 1.10 2004/08/05 15:14:22 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -77,7 +77,7 @@ public class FitsResults extends QueryResults {
          printOut.println("<FITS>");
          printOut.println("   <STREAM>"+filenames[i]+"</STREAM>");
          
-         printOut.println("</FITSA>");
+         printOut.println("</FITS>");
       }
       
       statusToUpdate.setNote("");
@@ -112,6 +112,9 @@ public class FitsResults extends QueryResults {
 
 /*
  $Log: FitsResults.java,v $
+ Revision 1.10  2004/08/05 15:14:22  KevinBenson
+ small bug fix in the FitsREsults.  And now uses dates was teh result of the mber of kevin-dev-03-08-04
+
  Revision 1.9  2004/08/04 07:50:37  KevinBenson
  small change on the FitsResult to put in the url.  IndexGenerator was missing a check for a null
 

@@ -5,6 +5,11 @@
 
 package org.astrogrid.datacenter.fits;
 
+import java.text.ParseException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 /**
  * Represents a keyword/value pair in the header data unit (hdu) of a fits
@@ -109,10 +114,37 @@ public class FitsKeyword
    {
       return Double.parseDouble(getValue());
    }
+   
+   DateFormat df = DateFormat.getDateTimeInstance();
+
+   public boolean isDate() throws ParseException {
+     if(getValue() == null || getValue().trim().length() <= 0)
+        return false;
+     Date dt = df.parse(getValue());
+     if(dt != null) return true;
+     return false;
+   }
+
+   public Date toDate() throws ParseException {
+     return df.parse(getValue());
+   }
+
+   public  String toUTCStringDate() throws ParseException {
+     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+     return sdf.format(toDate());
+   }
+   
+   
 }
 
 /*
 $Log: FitsKeyword.java,v $
+Revision 1.3  2004/08/05 15:14:22  KevinBenson
+small bug fix in the FitsREsults.  And now uses dates was teh result of the mber of kevin-dev-03-08-04
+
+Revision 1.2.76.1  2004/08/05 15:10:35  KevinBenson
+Changes to look for dates and make dates into UTC dates.
+
 Revision 1.2  2003/11/28 18:20:32  mch
 Debugged fits readers
 
