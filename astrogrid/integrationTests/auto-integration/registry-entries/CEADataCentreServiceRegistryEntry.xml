@@ -3,7 +3,7 @@
 >
         <CeaService>
                 <vr:Identifier>
-                        <vr:AuthorityID>org.astrogrid.localhost</vr:AuthorityID>
+                        <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
                         <vr:ResourceKey>testdsaservice</vr:ResourceKey>
                 </vr:Identifier>
                 <vr:Title>TemplateEntry</vr:Title>

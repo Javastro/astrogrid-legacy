@@ -21,7 +21,7 @@
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
  <vr:Resource xsi:type="ServiceType">
     <Identifier>
-      <AuthorityID>org.astrogrid.localhost</AuthorityID>
+      <AuthorityID>@REGAUTHORITY@</AuthorityID>
       <ResourceKey>myspace</ResourceKey>
     </Identifier>
     <Title>Myspace Manager Service Entry</Title>
@@ -56,7 +56,7 @@
     <Subject>Users VOSpace</Subject>
     <Interface>
       <Invocation>WebService</Invocation>
-      <AccessURL use="base">http://localhost:8080/astrogrid-mySpace-SNAPSHOT/services/Manager?wsdl</AccessURL>
+      <AccessURL use="base">@TOMCATROOT@/astrogrid-mySpace-SNAPSHOT/services/Manager?wsdl</AccessURL>
     </Interface>
   </vr:Resource>
 </VODescription>
