@@ -1,4 +1,4 @@
-/*$Id: HttpProviderServerInfo.java,v 1.2 2004/09/02 11:18:09 jdt Exp $
+/*$Id: HttpProviderServerInfo.java,v 1.3 2004/09/14 16:35:56 jdt Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import org.astrogrid.integration.AbstractTestForIntegration;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 30-Jun-2004
+ * @author jdt
  *
  */
 public class HttpProviderServerInfo implements ServerInfo {
@@ -62,6 +62,9 @@ public class HttpProviderServerInfo implements ServerInfo {
 
 /* 
 $Log: HttpProviderServerInfo.java,v $
+Revision 1.3  2004/09/14 16:35:56  jdt
+Take responsibity for my sins.
+
 Revision 1.2  2004/09/02 11:18:09  jdt
 Merges from case 3 branch for SIAP.
 

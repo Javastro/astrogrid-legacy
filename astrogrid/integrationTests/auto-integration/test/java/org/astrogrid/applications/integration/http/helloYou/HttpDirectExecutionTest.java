@@ -1,5 +1,5 @@
 /*
- * $Id: HttpDirectExecutionTest.java,v 1.1 2004/09/13 18:14:53 jdt Exp $
+ * $Id: HttpDirectExecutionTest.java,v 1.2 2004/09/14 16:35:56 jdt Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -24,7 +24,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
 import java.io.File;
 
 /** test simplest possible execution of a command-line app - direct, no external references involved.
- * @author Paul Harrison (pah@jb.man.ac.uk) 11-May-2004
+ * @author jdt
  * @version $Name:  $
  * @since iteration5
  */

@@ -1,5 +1,5 @@
 /*
- * $Id: HttpFileIndirectExecutionTest.java,v 1.2 2004/09/02 11:18:09 jdt Exp $
+ * $Id: HttpFileIndirectExecutionTest.java,v 1.3 2004/09/14 16:35:56 jdt Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -28,7 +28,7 @@ import java.io.StringWriter;
 import java.net.URI;
 
 /** test simplest possible execution of a command-line app - direct, no external references involved.
- * @author Paul Harrison (pah@jb.man.ac.uk) 11-May-2004
+ * @author jdt
  * @version $Name:  $
  * @since iteration5
  */
