@@ -1,5 +1,5 @@
 /*
- * $Id: GdsQueryDelegate.java,v 1.13 2004/03/16 14:03:36 kea Exp $
+ * $Id: GdsQueryDelegate.java,v 1.14 2004/03/24 12:35:18 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -27,6 +27,8 @@ import java.io.FileOutputStream;
 import java.io.StringReader;
 import org.globus.ogsa.utils.AnyHelper;
 import org.globus.ogsa.GridServiceException;
+import org.gridforum.ogsi.ExtendedDateTimeType;
+import org.gridforum.ogsi.TerminationTimeType;
 import org.gridforum.ogsi.ExtensibilityType;
 import org.apache.axis.AxisFault;
 
@@ -49,7 +51,9 @@ import org.ietf.jgss.GSSCredential;
 import org.globus.ogsa.utils.QueryHelper;
 import org.globus.util.GlobusURL;
 
-
+import java.util.Calendar;
+import java.util.TimeZone;
+                                                                                
 /**
  *
  * @author K Andrews
@@ -97,6 +101,17 @@ public class GdsQueryDelegate
 
     // TOFIX CHECK FOR NULL PARAMETERS HERE 
 
+    // Parse the delivery URL.  GlobusURL is used insted of java.net.URL
+    // in order to include gsiftp URLs.
+    GlobusURL url = new GlobusURL(outputUrl);
+
+    // Do we need a secure service?
+    boolean needSecure = false;
+    if (url.getProtocol().equalsIgnoreCase("gsiftp") ||
+          url.getProtocol().equalsIgnoreCase("gridftp")) {
+      needSecure = true;  
+    }
+
     // Do a synchronous query using the GDS.
     try {
 
@@ -105,9 +120,7 @@ public class GdsQueryDelegate
             ServiceFetcher.getRegistry(registryUrlString);
 
       // Get the factory from the registry
-      GridServiceMetaData gsmd[] = 
-          registry.listServices(OGSADAIConstants.GDSF_PORT_TYPE);
-      String factoryHandle = gsmd[0].getHandle();
+      String factoryHandle = getFactoryHandle(registry, needSecure);
 
       // Locate the Factory
       GridDataServiceFactory factory = 
@@ -117,7 +130,10 @@ public class GdsQueryDelegate
       // Create a GridDataService
       GridDataService gds = factory.createGridDataService();
       logger.info("Created GDS");
-                                                                                
+
+      // Set initial termination time min 2Hrs, max 3Hrs after now
+      refreshTermination(gds, 2);
+
       // Construct an Activity request
       // Set the query
       SQLQuery query = new SQLQuery(sql);
@@ -138,9 +154,6 @@ public class GdsQueryDelegate
       
       // Now set the delivery URL
       // This could be a file:// or a gsiftp:// url.
-      // Parse the source URL.  GlobusURL is used insted of java.net.URL
-      // in order to include gsiftp URLs.
-      GlobusURL url = new GlobusURL(outputUrl);
   
       ActivityOutput transformOutput = xslTransform.getOutput();
 
@@ -165,28 +178,32 @@ public class GdsQueryDelegate
       else {
         String errMess =
            "Unknown or unsupported protocol for results delivery: " +
-                           url.getProtocol();
+            url.getProtocol() +
+           "Expected 'file://'' or 'gsiftp://' or 'gridftp://'";
         logger.error(errMess);
         throw new Exception(errMess);
       }
 
-      // Set up the authorization 
-      MessageLevelSecurityProperty security = 
-            new MessageLevelSecurityProperty();
-      CredentialHolder credentialHolder = null;
-      // KLUDGE- hardwired locations
-      try {
-        credentialHolder = new CredentialHolder(
-            "/etc/grid-security/hostcert.pem",
-            "/etc/grid-security/hostkey.pem");
+      if (url.getProtocol().equalsIgnoreCase("gsiftp") ||
+          url.getProtocol().equalsIgnoreCase("gridftp")) {
+        // Set up the authorization if using GridFTP 
+        MessageLevelSecurityProperty security = 
+              new MessageLevelSecurityProperty();
+        CredentialHolder credentialHolder = null;
+        // KLUDGE- hardwired locations
+        try {
+          credentialHolder = new CredentialHolder(
+              "/etc/grid-security/hostcert.pem",
+              "/etc/grid-security/hostkey.pem");
+        }
+        catch (Exception e) {
+          throw new Exception("No identity credentials could be obtained "
+                + e.getMessage()
+                +").");
+        }
+        security.setCredential(credentialHolder.getCredential());
+        gds.configure(security);
       }
-      catch (Exception e) {
-        throw new Exception("No identity credentials could be obtained "
-              + e.getMessage()
-              +").");
-      }
-      security.setCredential(credentialHolder.getCredential());
-      gds.configure(security);
 
       // Perform the request
       logger.info("Performing request.");
@@ -195,19 +212,41 @@ public class GdsQueryDelegate
         response = gds.perform(request);
       }
       catch (Exception e) {
+        //TOFIX MSG
         logger.error("Perform crashed: " + e.getMessage());
       }
-      logger.info("Got here\n");
-      //logger.info("Response is " + response.getAsString());
 
-      int i;
-      for (i = 0;  i< 5; i++) {
-      ExtensibilityType result2 = gds.findServiceData(
-          QueryHelper.getNamesQuery(OGSADAIConstants.GDS_SDE_REQUEST_STATUS));
-      logger.info("Status is " + AnyHelper.getAsString(result2));
+      // Poll for completion (horrible hack, should use notifications
+      // really, but they'll be superseded in the new Grid specs :-(
+      int multFac = 1;
+      logger.debug("Waiting for results delivery to finish...");
+      while (true) {
+        ExtensibilityType result2 = gds.findServiceData(
+           QueryHelper.getNamesQuery(OGSADAIConstants.GDS_SDE_REQUEST_STATUS));
+        String status = AnyHelper.getAsString(result2);
+        if (status.indexOf(OGSADAI_STATUS_COMPLETE) != -1) {  //Completed
+          break;  // Out of while loop
+        }
+        else if (status.indexOf(OGSADAI_STATUS_INCOMPLETE) == -1) {  
+          // Unknown status
+          String errMess = "blah";
+          logger.error(errMess);
+          throw new Exception(errMess);
+        }
+        else {
+          //Min termination 2 hours from now
+          refreshTermination(gds,2);  
+
+          //Wait for a while
+          Thread.currentThread().sleep(1000*multFac);
+
+          if (multFac < 300) { //Arbitrary max wait of 5 minutes 
+            multFac = multFac + 1;  //Wait longer next time
+          }
+        }
       }
-
-      //Response response = gds.perform(request);
+      //Got here, so request has completed successfully and can return
+      logger.debug("Results delivery has finished.");
 
     }
     catch (AxisFault e) {
@@ -220,61 +259,75 @@ public class GdsQueryDelegate
       logger.error(errorMessage);
       throw new Exception(errorMessage);
     }
+  }
 
+  protected void refreshTermination( GridDataService gds, 
+        int offsetHours) throws Exception 
+  {
+    // Set initial termination time min 2Hrs, max 3Hrs after now
+    Calendar term = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+    term.add(Calendar.HOUR, offsetHours);
+    gds.requestTerminationAfter(new ExtendedDateTimeType(term));
+    term.add(Calendar.HOUR, 1);
+    gds.requestTerminationBefore(new ExtendedDateTimeType(term));
+  }
 
+  protected String getFactoryHandle(
+      ServiceGroupRegistry registry, boolean needSecure) throws Exception
+  {
+    // Get the factory from the registry
+    // If we want to use GridFTP delivery, look for a secure factory.
+    // Otherwise, look for an ordinary factory
+    //
+    GridServiceMetaData gsmd[] = 
+        registry.listServices(OGSADAIConstants.GDSF_PORT_TYPE);
+    String factoryHandle = null;
 
-
-/*
-      ActivityOutput activityOutput = query.getOutput();
-      if (activityOutput.hasData() == false) 
-      {
-        String errorMessage = "Unexpected error: Query generated no data!";
-        logger.error(errorMessage);
-        throw new Exception(errorMessage);
+    if (needSecure) {
+      for (int i = 0; i < gsmd.length; i++) {
+        String handle = gsmd[i].getHandle();
+        if (handle.toUpperCase().indexOf("SECURE") != -1) { //Secure found
+          factoryHandle = handle;
+          break;
+        }
       }
-      xmlString = activityOutput.getData();
-      logger.info("Got results from query");                                                                                
-      // Print start tag to stdout just in case we're shipping results 
-      // via stdout (this might happen if the invoking WarehouseQuerier 
-      // couldn't create a temporary file for results in its workspace).  
-      // Putting custom start and end tags into the output stream makes
-      // it possible for the WarehouseQuerier to extract the actual data 
-      // from any other messages being spat to stdout.
-      System.out.println(WAREHOUSE_RESULT_START); //DON'T REMOVE THIS LINE!!
-
-      // Print byte stream to output stream (might be stdout).
-      // We do this as well as returning a document to handle cases where 
-      // this class is invoked from the command line and can't pass a 
-      // Document object back to its caller (eg WarehouseQuerier).
-      output.write(xmlString.getBytes());
-
-      // Print this to stdout just in case we're shipping results via stdout
-      System.out.println(WAREHOUSE_RESULT_END); // DON'T REMOVE THIS LINE!!
+      if (factoryHandle == null) {
+        String errMess = 
+          "Couldn't find secure Grid Data Service Factory to use; " +
+          "please choose a different results delivery method";
+        logger.error(errMess);
+        throw new Exception(errMess);
+      }
     }
-    catch (AxisFault e) {
-      String errorMessage = "Problem with Axis: " + e.getMessage();
-      logger.error(errorMessage);
-      throw new Exception(errorMessage);
+    else {
+      for (int i = 0; i < gsmd.length; i++) {
+        String handle = gsmd[i].getHandle();
+        String secureHandle = null;
+        if (handle.toUpperCase().indexOf("SECURE") != -1) { //Secure found
+          secureHandle = handle;
+        }
+        else {
+          factoryHandle = handle;
+          break;
+        }
+        if (factoryHandle == null) {
+          if (secureHandle == null) {
+            String errMess = 
+              "Couldn't find any Grid Data Service Factory to use; " +
+              "please check you are using the correct DAI registry";
+            logger.error(errMess);
+            throw new Exception(errMess);
+          }
+          else {
+            // Use secure handle if no insecure available
+            logger.warn(
+              "Couldn't find standard Grid Data Service Factory to use; " +
+              "using Secure GDSF instead.");
+          }
+        }
+      }
     }
-    catch (Exception e) {
-      String errorMessage = "Unspecified exception: " + e.getMessage();
-      logger.error(errorMessage);
-      throw new Exception(errorMessage);
-    }
-    // Parse XML and return proper Document (as well as printing XML
-    // to supplied output stream above).
-    DOMParser parser = new DOMParser();
-    try {
-      parser.parse(new InputSource(new StringReader(xmlString)));
-    }
-    catch (Exception e) {//SAXException, IOException
-      String errorMessage = 
-          "Couldn't parse results XML Rowset: " + e.getMessage();
-      logger.error(errorMessage);
-      throw new Exception(errorMessage);
-    }  
-    return parser.getDocument();
-*/
+    return factoryHandle;
   }
 
   /**
@@ -349,11 +402,20 @@ public class GdsQueryDelegate
   private final String TEMP_RESULTS_FILENAME = "ws_output.xml";
   private final String WAREHOUSE_RESULT_START = "WAREHOUSE_RESULT_START";
   private final String WAREHOUSE_RESULT_END = "WAREHOUSE_RESULT_END";
+
+  private final String OGSADAI_STATUS_INCOMPLETE = 
+      "Request is being processed asynchronously";
+  private final String OGSADAI_STATUS_COMPLETE = 
+      "Available for processing";
 //================================================================
 
 }
 /*
 $Log: GdsQueryDelegate.java,v $
+Revision 1.14  2004/03/24 12:35:18  kea
+Proper lifetime management; selective use of secure services (only for
+GridFTP delivery, not for file delivery).
+
 Revision 1.13  2004/03/16 14:03:36  kea
 Temporary hack to unit tests to avoid build break - to fix later.
 
