@@ -197,7 +197,7 @@ public class Message {
 			// with the message to produce the format 
 			// <message number>:<message text>
 			messageString = key + mssgs.getString( key ) ;   
-			MessageFormat.format( messageString, inserts ) ;
+			retValue = MessageFormat.format( messageString, inserts ) ;
 		}
 		catch( NullPointerException npex ) { 
 			retValue = ASTROGRIDERROR_MESSAGEKEY_NULL ;
