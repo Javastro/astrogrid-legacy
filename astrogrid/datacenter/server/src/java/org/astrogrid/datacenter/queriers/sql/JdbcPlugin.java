@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.7 2004/03/18 00:31:33 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.8 2004/07/01 22:37:47 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,12 +7,14 @@
 package org.astrogrid.datacenter.queriers.sql;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.xml.parsers.ParserConfigurationException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
@@ -22,9 +24,10 @@ import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.queriers.status.QuerierError;
 import org.astrogrid.datacenter.queriers.status.QuerierQueried;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
+import org.astrogrid.io.xml.XmlTagWriter;
+import org.astrogrid.io.xml.XmlWriter;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
-import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 
 /**
@@ -149,21 +152,90 @@ public class JdbcPlugin extends QuerierPlugin  {
          
          DatabaseMetaData metadata = connection.getMetaData();
          
-         ResultSet columns = metadata.getColumns("*", "*", "*", "*");
-         
-         //bleurgh, writing by hand
-         StringBuffer s = new StringBuffer("<PluginMetadata>\n");
-         while (columns.next()) {
-            s.append("  <Column>\n"+
-                          "<Catalogue>"+columns.getString("TABLE_CAT")+"</Catalogue>\n"+
-                          "<Table>"+columns.getString("TABLE_NAME")+"</Table>\n"+
-                          "<Name>"+columns.getString("COLUMN_NAME")+"</Name>\n"+
-                          "<Type>"+columns.getString("DATA_TYPE")+"<Type>\n"+
-                        "</Column>\n"+
-                     "</PluginMetadata>\n");
+         /** bleurgh, writing by hand
+         StringBuffer s = new StringBuffer("<TabularMetadata>\n");
+
+         //get all tables
+         ResultSet tables = metadata.getTables(null, null, "*", null);
+
+         while (tables.next()) {
+            s.append("  <Table name='"+tables.getString("TABLE_NAME")+"'>\n");
+            s.append("    <!-- schema='"+tables.getString("TABLE_SCHEM")+"' -->\n");
+            s.append("    <!-- cat='"+tables.getString("TABLE_CAT")+"' -->\n");
+            s.append("    <!-- type='"+tables.getString("TABLE_TYPE")+"' -->\n");
+            s.append("    <Description>"+tables.getString("REMARKS")+"</Description>\n");
+            s.append("    <!-- type cat='"+tables.getString("TYPE_CAT")+"' -->\n");
+            s.append("    <!-- type schema='"+tables.getString("TYPE_SCHEM")+"' -->\n");
+            s.append("    <!-- type name='"+tables.getString("TYPE_NAME")+"' -->\n");
+            s.append("    <!-- self ref='"+tables.getString("SELF_REFERENCING_COL_NAME")+"' -->\n");
+            s.append("    <!-- ref gen='"+tables.getString("REF_GENERATION")+"' -->\n");
+            
+            ResultSet columns = metadata.getColumns("*", "*", "*", "*");
+            
+            while (columns.next()) {
+               s.append("  <Column name='"+columns.getString("COLUMN_NAME")+"'>\n"+
+                          "<!-- Catalogue="+columns.getString("TABLE_CAT")+" -->\n"+
+                          "<!-- Scheme="+columns.getString("TABLE_SCHEM")+" -->\n"+
+                          "<!-- Table="+columns.getString("TABLE_NAME")+" -->\n"+
+                          "<DataType>"+columns.getString("DATA_TYPE")+"<DataType>\n"+
+                          "<Description>"+columns.getString("REMARKS")+"<Description>\n"+
+                          "<Units>   </Units>\n"+
+                          "<UCD>       </UCD>\n"+
+                          "<UcdPlus>   </UcdPlus>\n"+
+                          "<ErrorColumn>   </ErrorColumn>\n"+
+                        "  </Column>\n"
+                       );
+            }
+            
+            s.append("  </Table>");
          }
          
-         return DomHelper.newDocument(s.toString());
+         s.append("</TabularMetadata>\n");
+          /**/
+         
+         /** Alternative XmlWriter form */
+         StringWriter sw = new StringWriter();
+         XmlWriter xw = new XmlWriter(sw);
+
+         XmlTagWriter metaTag = xw.newTag("TabularMetadata");
+
+         //get all tables
+         ResultSet tables = metadata.getTables(null, null, "*", null);
+
+         while (tables.next()) {
+            XmlTagWriter tableTag = metaTag.newTag("Table", "name='"+tables.getString("TABLE_NAME")+"'");
+            tableTag.writeTag("Description", tables.getString("REMARKS"));
+            tableTag.writeComment("schema='"+tables.getString("TABLE_SCHEM")+"'");
+            tableTag.writeComment("cat='"+tables.getString("TABLE_CAT")+"' -->\n");
+            tableTag.writeComment("type='"+tables.getString("TABLE_TYPE")+"' -->\n");
+            tableTag.writeComment("type cat='"+tables.getString("TYPE_CAT")+"' -->\n");
+            tableTag.writeComment("type schema='"+tables.getString("TYPE_SCHEM")+"' -->\n");
+            tableTag.writeComment("type name='"+tables.getString("TYPE_NAME")+"' -->\n");
+            tableTag.writeComment("self ref='"+tables.getString("SELF_REFERENCING_COL_NAME")+"' -->\n");
+            tableTag.writeComment("ref gen='"+tables.getString("REF_GENERATION")+"' -->\n");
+            
+            ResultSet columns = metadata.getColumns("*", "*", tables.getString("TABLE_NAME"), "*");
+            
+            while (columns.next()) {
+               XmlTagWriter colTag = tableTag.newTag("Column", "name='"+columns.getString("COLUMN_NAME")+"'");
+               colTag.writeComment("schema='"+tables.getString("TABLE_SCHEM")+"'");
+               colTag.writeComment("cat='"+tables.getString("TABLE_CAT")+"' -->\n");
+               colTag.writeComment("table='"+tables.getString("TABLE_NAME")+"'");
+               colTag.writeTag("DataType", columns.getString("DATA_TYPE"));
+               colTag.writeTag("Description", columns.getString("REMARKS"));
+               colTag.writeTag("Units", " ");
+               colTag.writeTag("UCD", " ");
+               colTag.writeTag("UcdPlus", " ");
+               colTag.writeTag("ErrorColumn", " ");
+               colTag.close();
+            }
+            
+            tableTag.close();
+         }
+         
+         metaTag.close();
+         
+         return DomHelper.newDocument(sw.toString());
          
       }
       catch (SQLException e) {
