@@ -1,5 +1,5 @@
 /*
- * $Id: Query2Adql074.java,v 1.8 2004/09/06 20:31:55 mch Exp $
+ * $Id: Query2Adql074.java,v 1.9 2004/09/06 20:42:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -39,9 +39,9 @@ public class Query2Adql074  {
       xw.writeComment(comment);
       
       
-      XmlTagPrinter selectTag = xw.newTag("Select", "xmlns='http://www.ivoa.net/xml/ADQL/v0.7.4' "+
-                                                      "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' "+
-                                                      "xmlns:xsd='http://www.w3.org/2001/XMLSchema'");
+      XmlTagPrinter selectTag = xw.newTag("Select", new String[] { "xmlns='http://www.ivoa.net/xml/ADQL/v0.7.4' ",
+                                                      "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' ",
+                                                      "xmlns:xsd='http://www.w3.org/2001/XMLSchema'"});
 
       //--- SELECT ---
 
@@ -49,7 +49,7 @@ public class Query2Adql074  {
       
       if ( !(query.getResultsDef() instanceof ReturnTable) ||
              ( ((ReturnTable) query.getResultsDef()).getColDefs()==null)  ) {
-         selectListTag.writeTag("Item", "xsi:type='allSelectionItemType'","");
+         selectListTag.writeTag("Item", new String[] { "xsi:type='allSelectionItemType'" },"");
       }
       else {
          NumericExpression[] colDefs = ((ReturnTable) query.getResultsDef()).getColDefs();
@@ -57,7 +57,11 @@ public class Query2Adql074  {
          for (int i = 0; i < colDefs.length; i++) {
             if (colDefs[i] instanceof ColumnReference) {
                ColumnReference colRef = (ColumnReference) colDefs[i];
-               selectListTag.writeTag("Item", "xsi:type='columnReferenceType' Table='"+colRef.getTableName()+"' Name='"+colRef.getColName()+"'", "");
+               selectListTag.writeTag("Item",
+                                      new String[] { "xsi:type='columnReferenceType'",
+                                                     "Table='"+colRef.getTableName()+"'",
+                                                     "Name='"+colRef.getColName()+"'" },
+                                     "");
             }
             else {
                throw new UnsupportedOperationException("Thicky Writer: Can't handle '"+colDefs[i]+"' for returned table column. Specify only column references for now");
@@ -71,7 +75,7 @@ public class Query2Adql074  {
       XmlTagPrinter fromTag = selectTag.newTag("From");
 
       for (int i = 0; i < query.getScope().length; i++) {
-         fromTag.writeTag("Table", "xsi:type='tableType' Name='"+query.getScope()[i]+"' Alias='"+query.getScope()[i]+"'", "");
+         fromTag.writeTag("Table", new String[] { "xsi:type='tableType'","Name='"+query.getScope()[i]+"'","Alias='"+query.getScope()[i]+"'"}, "");
       }
 
       //-- WHERE --
@@ -91,12 +95,12 @@ public class Query2Adql074  {
    private static void writeCondition(XmlTagPrinter tag, Condition expression) throws IOException {
       if (expression instanceof LogicalExpression) {
          if (((LogicalExpression) expression).getOperator().equals("AND")) {
-            XmlTagPrinter intersectionTag = tag.newTag("Condition", "xsi:type='intersectionSearchType'");
+            XmlTagPrinter intersectionTag = tag.newTag("Condition", new String[] { "xsi:type='intersectionSearchType'"});
             writeCondition(intersectionTag, ((LogicalExpression) expression).getLHS());
             writeCondition(intersectionTag, ((LogicalExpression) expression).getRHS());
             return;
          } else if (((LogicalExpression) expression).getOperator().equals("OR")) {
-            XmlTagPrinter intersectionTag = tag.newTag("Condition", "xsi:type='unionSearchType'");
+            XmlTagPrinter intersectionTag = tag.newTag("Condition", new String[] { "xsi:type='unionSearchType'"});
             writeCondition(intersectionTag, ((LogicalExpression) expression).getLHS());
             writeCondition(intersectionTag, ((LogicalExpression) expression).getRHS());
             return;
@@ -111,7 +115,7 @@ public class Query2Adql074  {
          if (operator.startsWith(">")) { operator = "&gt;"+operator.substring(1); }
          if (operator.startsWith("<")) { operator = "&lt;"+operator.substring(1); }
          
-         XmlTagPrinter comparisonTag = tag.newTag("Condition", "xsi:type='comparisonPredType' Comparison='"+operator+"'");
+         XmlTagPrinter comparisonTag = tag.newTag("Condition", new String[] { "xsi:type='comparisonPredType'","Comparison='"+operator+"'"});
          writeNumeric(comparisonTag, "Arg", ((NumericComparison) expression).getLHS());
          writeNumeric(comparisonTag, "Arg", ((NumericComparison) expression).getRHS());
       }
@@ -131,7 +135,7 @@ public class Query2Adql074  {
 
    private static void writeNumeric(XmlTagPrinter parentTag, String elementName, NumericExpression expression) throws IOException {
       if (expression instanceof LiteralNumber) {
-         XmlTagPrinter argTag=parentTag.newTag(elementName, "xsi:type='atomType'");
+         XmlTagPrinter argTag=parentTag.newTag(elementName, new String[] { "xsi:type='atomType'"});
          
          int type = ((LiteralNumber) expression).getType();
          String xsiType = "";
@@ -142,7 +146,7 @@ public class Query2Adql074  {
                throw new IllegalStateException("Unknown type "+type+" of Constant "+expression);
          }
          
-         argTag.writeTag("Literal", "xsi:type='"+xsiType+"' Value='"+((LiteralNumber) expression).getValue()+"'", "");
+         argTag.writeTag("Literal", new String[] { "xsi:type='"+xsiType+"'","Value='"+((LiteralNumber) expression).getValue()+"'"}, "");
       }
       else if (expression instanceof ColumnReference) {
    
@@ -150,7 +154,7 @@ public class Query2Adql074  {
       }
       else if (expression instanceof MathExpression) {
          
-         XmlTagPrinter argTag = parentTag.newTag(elementName, "xsi:type='closedExprType'").newTag("Arg", "xsi:type='binaryExprType' Oper='"+((MathExpression) expression).getOperator().toString()+"'");
+         XmlTagPrinter argTag = parentTag.newTag(elementName, new String[] { "xsi:type='closedExprType'" }).newTag("Arg", new String[] { "xsi:type='binaryExprType'","Oper='"+((MathExpression) expression).getOperator().toString()+"'"});
          writeNumeric(argTag, "Arg", ((MathExpression) expression).getLHS());
          writeNumeric(argTag, "Arg", ((MathExpression) expression).getRHS());
       }
@@ -165,10 +169,10 @@ public class Query2Adql074  {
 
    /** Writes out the adql for a circle/cone search */
    public static void writeCircle(XmlTagPrinter parentTag, String elementName, Function circleFunc) throws IOException  {
-      XmlTagPrinter tTag = parentTag.newTag(elementName, "xsi:type='regionSearchType'");
-      XmlTagPrinter regionTag = tTag.newTag("Region", "xmlns:q1='urn:nvo-region' xsi:type='q1:circleType' coord_system_id=''");
+      XmlTagPrinter tTag = parentTag.newTag(elementName, new String[] { "xsi:type='regionSearchType'" });
+      XmlTagPrinter regionTag = tTag.newTag("Region", new String[] { "xmlns:q1='urn:nvo-region'","xsi:type='q1:circleType'","coord_system_id=''"});
 
-      XmlTagPrinter vectorTag = regionTag.newTag("q1:Center", "ID='' coord_system_id=''").newTag("Pos2Vector", "xmlns='urn:nvo-coords'");
+      XmlTagPrinter vectorTag = regionTag.newTag("q1:Center", new String[] { "ID=''","coord_system_id=''"}).newTag("Pos2Vector", new String[] { "xmlns='urn:nvo-coords'"});
 
       //ho hum, shite XML
       vectorTag.writeTag("Name", "Ra Dec");
@@ -201,7 +205,7 @@ public class Query2Adql074  {
          throw new UnsupportedOperationException("Thicky writer: don't know what type of function '"+function.getName()+"' is");
       }
       
-      XmlTagPrinter funcTag = parentTag.newTag(elementName, type+" Name='"+function.getName()+"'");
+      XmlTagPrinter funcTag = parentTag.newTag(elementName, new String[] { type, "Name='"+function.getName()+"'"});
       
       for (int i = 0; i < function.getArgs().length; i++) {
          if (function.getArg(i) instanceof ColumnReference) {
@@ -220,9 +224,10 @@ public class Query2Adql074  {
     * the given elementName */
    public static void writeColRef(XmlTagPrinter parent, String elementName, ColumnReference colRef) throws IOException {
       parent.writeTag(elementName,
-                      "xsi:type='columnReferenceType' "+
-                        "Table='"+colRef.getTableName()+"' "+
-                        "Name='"+colRef.getColName()+"'",
+                      new String[] {
+                      "xsi:type='columnReferenceType' ",
+                        "Table='"+colRef.getTableName()+"' ",
+                        "Name='"+colRef.getColName()+"'"},
                       "");
    
    }
@@ -230,6 +235,9 @@ public class Query2Adql074  {
 
 /*
  $Log: Query2Adql074.java,v $
+ Revision 1.9  2004/09/06 20:42:34  mch
+ Changed XmlPrinter attrs argument to array of attrs to avoid programmer errors mistaking attr for value...
+
  Revision 1.8  2004/09/06 20:31:55  mch
  Fix to select *
 
@@ -256,6 +264,7 @@ public class Query2Adql074  {
 
 
  */
+
 
 
 

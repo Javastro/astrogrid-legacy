@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.26 2004/09/06 20:23:00 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.27 2004/09/06 20:42:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -217,7 +217,7 @@ public class JdbcPlugin extends QuerierPlugin implements VoResourcePlugin  {
          /** Alternative XmlWriter form */
          XmlPrinter xw = new XmlPrinter(sw, false);
 
-         XmlTagPrinter metaTag = xw.newTag("Resource", "xsi:type='RdbmsMetadata'");
+         XmlTagPrinter metaTag = xw.newTag("Resource", new String[] { "xsi:type='RdbmsMetadata'" });
 
          /** Get general info */
          String name = metadata.getDatabaseProductName();
@@ -262,7 +262,7 @@ public class JdbcPlugin extends QuerierPlugin implements VoResourcePlugin  {
             //ignore all tables beginning with 'sys' as these are standard system tables
             //and we don't want to make these public.  I believe
             if (!getColumnValue(tables, "TABLE_NAME").startsWith("sys")) {
-               XmlTagPrinter tableTag = metaTag.newTag("Table", "name='"+getColumnValue(tables, "TABLE_NAME")+"'");
+               XmlTagPrinter tableTag = metaTag.newTag("Table", new String[] { "name='"+getColumnValue(tables, "TABLE_NAME")+"'"} );
                tableTag.writeTag("Description", getColumnValue(tables, "REMARKS")+" "); //add space so we don't get an empty tag <Description/> which is a pain to fill in
                tableTag.writeComment("schema='"+getColumnValue(tables, "TABLE_SCHEM")+"'");
 //               tableTag.writeComment("cat='"+getColumnValue(tables, "TABLE_CAT")+"'");
@@ -279,7 +279,9 @@ public class JdbcPlugin extends QuerierPlugin implements VoResourcePlugin  {
                   int sqlType = Integer.parseInt(getColumnValue(columns, "DATA_TYPE"));
                   XmlTagPrinter colTag = tableTag.newTag(
                      "Column",
-                     "name='"+getColumnValue(columns, "COLUMN_NAME")+"' "+getVotableTypeAttr(sqlType)+" indexed='false'"
+                     new String[] { "name='"+getColumnValue(columns, "COLUMN_NAME")+"'",
+                                    getVotableTypeAttr(sqlType),
+                                    "indexed='false'" }
                   );
 //                  colTag.writeComment("schema='"+getColumnValue(columns, "TABLE_SCHEM")+"'");
 //                  colTag.writeComment("cat='"+getColumnValue(columns, "TABLE_CAT")+"'");

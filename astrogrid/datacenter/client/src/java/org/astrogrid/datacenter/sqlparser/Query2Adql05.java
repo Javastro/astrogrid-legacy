@@ -1,5 +1,5 @@
 /*
- * $Id: Query2Adql05.java,v 1.3 2004/09/01 11:21:12 mch Exp $
+ * $Id: Query2Adql05.java,v 1.4 2004/09/06 20:42:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -30,7 +30,7 @@ public class Query2Adql05  {
       xw.writeComment(comment);
 
       //--- SELECT ---
-      XmlTagPrinter selectTag = xw.newTag("Select", "xmlns='http://tempuri.org/adql' xmlns:xsi='http://tempuri.org/adql'");
+      XmlTagPrinter selectTag = xw.newTag("Select", new String[] { "xmlns='http://tempuri.org/adql'","xmlns:xsi='http://tempuri.org/adql'"});
 
       if ( !(query.getResultsDef() instanceof ReturnTable) ||
              ( ((ReturnTable) query.getResultsDef()).getColDefs()==null)  ) {
@@ -114,12 +114,12 @@ public class Query2Adql05  {
    public static void writeCondition(XmlTagPrinter tag, String subTag, Condition condition) throws IOException {
       if (condition instanceof LogicalExpression) {
          if (((LogicalExpression) condition).getOperator().equals("AND")) {
-            XmlTagPrinter intersectionTag = tag.newTag(subTag, "xsi:type='IntersectionSearch'");
+            XmlTagPrinter intersectionTag = tag.newTag(subTag, new String[] { "xsi:type='IntersectionSearch'" });
             writeCondition(intersectionTag, "FirstCondition", ((LogicalExpression) condition).getLHS());
             writeCondition(intersectionTag, "SecondCondition", ((LogicalExpression) condition).getRHS());
             return;
          } else if (((LogicalExpression) condition).getOperator().equals("OR")) {
-            XmlTagPrinter intersectionTag = tag.newTag(subTag, "xsi:type='UnionSearch'");
+            XmlTagPrinter intersectionTag = tag.newTag(subTag, new String[] { "xsi:type='UnionSearch'"});
             writeCondition(intersectionTag, "FirstCondition", ((LogicalExpression) condition).getLHS());
             writeCondition(intersectionTag, "SecondCondition", ((LogicalExpression) condition).getRHS());
             return;
@@ -131,7 +131,7 @@ public class Query2Adql05  {
       else if (condition instanceof NumericComparison) {
          String operator = ((NumericComparison) condition).getOperator().toString();
 
-         XmlTagPrinter comparisonTag = tag.newTag(subTag, "xsi:type='PredicateSearch'").newTag("ComparisonPred");
+         XmlTagPrinter comparisonTag = tag.newTag(subTag, new String[] { "xsi:type='PredicateSearch'"}).newTag("ComparisonPred");
          writeNumeric(comparisonTag, "FirstExpr", ((NumericComparison) condition).getLHS());
          comparisonTag.writeTag("Compare", operator);
          writeNumeric(comparisonTag, "SecondExpr", ((NumericComparison) condition).getRHS());
@@ -139,7 +139,7 @@ public class Query2Adql05  {
       else if (condition instanceof Function) {
          Function func = ((Function) condition);
          if (func.getName().toUpperCase().equals("CIRCLE")) {
-            XmlTagPrinter circleTag = tag.newTag(subTag, "xsi:type='Circle'>");
+            XmlTagPrinter circleTag = tag.newTag(subTag, new String[] { "xsi:type='Circle'>"});
 
             try {
                if (!((LiteralString) func.getArg(0)).getValue().trim().toUpperCase().equals("J2000")) {
@@ -169,7 +169,7 @@ public class Query2Adql05  {
    public static void writeNumeric(XmlTagPrinter tag, String subTag, NumericExpression expression) throws IOException {
       
       if (expression instanceof LiteralNumber) {
-         XmlTagPrinter litTag=tag.newTag(subTag, "xsi:type='AtomExpr'").newTag("Value").newTag("NumberLiteral");
+         XmlTagPrinter litTag=tag.newTag(subTag, new String[] { "xsi:type='AtomExpr'"}).newTag("Value").newTag("NumberLiteral");
          
          int type = ((LiteralNumber) expression).getType();
          String element = "";
@@ -184,13 +184,13 @@ public class Query2Adql05  {
       }
       else if (expression instanceof ColumnReference) {
          
-         XmlTagPrinter colTag = tag.newTag(subTag, "xsi:type='ColumnExpr'").newTag("SingleColumnReference");
+         XmlTagPrinter colTag = tag.newTag(subTag, new String[] { "xsi:type='ColumnExpr'"}).newTag("SingleColumnReference");
          
          colTag.writeTag("TableName",  ((ColumnReference) expression).getTableName());
          colTag.writeTag("Name",       ((ColumnReference) expression).getColName());
       }
       else if (expression instanceof Function) {
-         XmlTagPrinter funcTag=tag.newTag(subTag, "xsi:type='FuncionExpr'").newTag("ExpressionFunction");
+         XmlTagPrinter funcTag=tag.newTag(subTag, new String[] { "xsi:type='FuncionExpr'" }).newTag("ExpressionFunction");
  
          funcTag.writeTag("FunctionReference", ((Function) expression).getName());
 
@@ -214,7 +214,7 @@ public class Query2Adql05  {
    /** Write out an element of type 'ColumnExpr' for a single column, with the given tagname as a child
     * of the given parentTag */
    public static void writeColumnReference(XmlTagPrinter parentTag, String elementName, ColumnReference colRef) throws IOException {
-      XmlTagPrinter scr = parentTag.newTag(elementName, "xsi:type='ColumnExpr'");
+      XmlTagPrinter scr = parentTag.newTag(elementName, new String[] { "xsi:type='ColumnExpr'"});
       XmlTagPrinter col = scr.newTag("ColumnExpr");
       XmlTagPrinter singleCol = col.newTag("SingleColumnReference");
       singleCol.writeTag("TableName", colRef.getTableName());
@@ -225,6 +225,9 @@ public class Query2Adql05  {
 
 /*
  $Log: Query2Adql05.java,v $
+ Revision 1.4  2004/09/06 20:42:34  mch
+ Changed XmlPrinter attrs argument to array of attrs to avoid programmer errors mistaking attr for value...
+
  Revision 1.3  2004/09/01 11:21:12  mch
  Make initial processing instruction for XmlPrinter optional
 

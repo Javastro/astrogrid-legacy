@@ -1,5 +1,5 @@
 /*
- * $Id: AuthorityConfigPlugin.java,v 1.1 2004/09/06 20:23:00 mch Exp $
+ * $Id: AuthorityConfigPlugin.java,v 1.2 2004/09/06 20:42:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -30,7 +30,7 @@ public class AuthorityConfigPlugin implements VoResourcePlugin {
       StringWriter sw = new StringWriter();
       
       XmlPrinter resourceSnippet = new XmlPrinter(sw, false);
-      XmlTagPrinter authResource = resourceSnippet.newTag("Resource", "xsi:type='AuthorityType'");
+      XmlTagPrinter authResource = resourceSnippet.newTag("Resource", new String[] {"xsi:type='AuthorityType'"});
       XmlTagPrinter identifier = authResource.newTag("Identifier");
       identifier.writeTag("AuthorityID", SimpleConfig.getSingleton().getString("datacenter.authorityId"));
       identifier.writeTag("ResourceKey", SimpleConfig.getSingleton().getString("datacenter.resourceKey"));

@@ -1,5 +1,5 @@
 /*
-   $Id: XmlPrinter.java,v 1.3 2004/09/01 11:19:06 mch Exp $
+   $Id: XmlPrinter.java,v 1.4 2004/09/06 20:42:34 mch Exp $
 
   Date        Author      Changes
    8 Oct 2002  M Hill      Created
@@ -135,17 +135,17 @@ public class XmlPrinter extends XmlTagPrinter
       {
          XmlPrinter xOut = new XmlPrinter(new OutputStreamWriter(System.out), true);
          
-         XmlTagPrinter ftag = xOut.newTag("FRUIT","");
+         XmlTagPrinter ftag = xOut.newTag("FRUIT");
 
          ftag.writeTag("DESCRIPTION","Sort of fruity things");
          
-         XmlTagPrinter atag = ftag.newTag("APPLE","");
+         XmlTagPrinter atag = ftag.newTag("APPLE");
          atag.writeTag("SKIN","Rosy");
          atag.writeTag("FLESH","White & Powdery");
          atag.writeTag("STALK","Yes unless it's fallen off");
          atag.close();
          
-         XmlTagPrinter otag = ftag.newTag("ORANGE","");
+         XmlTagPrinter otag = ftag.newTag("ORANGE");
          otag.writeTag("SKIN","Orange");
          otag.writeTag("FLESH","Really Orange. Or Red.");
          otag.writeTag("STALK","Would be orange but I've eaten it");

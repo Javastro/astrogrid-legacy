@@ -1,5 +1,5 @@
 /*
- $Id: XmlPrinterTest.java,v 1.6 2004/09/01 12:06:54 mch Exp $
+ $Id: XmlPrinterTest.java,v 1.7 2004/09/06 20:42:34 mch Exp $
 
  (c) Copyright...
  */
@@ -42,7 +42,7 @@ public class XmlPrinterTest extends TestCase {
       atag.writeTag("STALK","Yes unless it's fallen off");
       atag.close();
       
-      XmlTagPrinter otag = ftag.newTag("ORANGE","");
+      XmlTagPrinter otag = ftag.newTag("ORANGE");
       otag.writeTag("SKIN","Orange");
       otag.writeTag("FLESH","Really Orange. Or Red.");
       otag.writeTag("STALK","Would be orange but I've eaten it");
@@ -116,6 +116,9 @@ public class XmlPrinterTest extends TestCase {
 
 /*
  $Log: XmlPrinterTest.java,v $
+ Revision 1.7  2004/09/06 20:42:34  mch
+ Changed XmlPrinter attrs argument to array of attrs to avoid programmer errors mistaking attr for value...
+
  Revision 1.6  2004/09/01 12:06:54  mch
  Optional initial processing instruction
 
