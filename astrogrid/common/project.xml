@@ -1,116 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="maven-project.xsd">
-
-<!--
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by John Taylor (ROE) -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
+	<!--
   Temporary Test
 -->
-  <pomVersion>3</pomVersion>
-  <id>astrogrid-common</id>
-  <name>AstroGrid Common</name>
-
-  <currentVersion>HEAD</currentVersion>
-  
-  <organization>
-    <name>AstroGrid</name>
-    <url>http://www.astrogrid.org</url>
-    <logo>http://www.astrogrid.org/images/AGlogo</logo>
-  </organization>
-  
-  <inceptionYear>2002</inceptionYear>
-  <package>org.astrogrid</package>
-  <logo>http://www.astrogrid.org/images/AGlogo</logo>
-  
-  <shortDescription>AstroGrid Common Components</shortDescription>
-
-  <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
-  <siteDirectory>/var/www/www/maven/build/common</siteDirectory>
-  
-  <repository>
-    <connection>
+	<pomVersion>3</pomVersion>
+	<id>astrogrid-common</id>
+	<name>AstroGrid Common</name>
+	<currentVersion>HEAD</currentVersion>
+	<organization>
+		<name>AstroGrid</name>
+		<url>http://www.astrogrid.org</url>
+		<logo>http://www.astrogrid.org/images/AGlogo</logo>
+	</organization>
+	<inceptionYear>2002</inceptionYear>
+	<package>org.astrogrid</package>
+	<logo>http://www.astrogrid.org/images/AGlogo</logo>
+	<shortDescription>AstroGrid Common Components</shortDescription>
+	<issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
+	<siteDirectory>/var/www/www/maven/build/common</siteDirectory>
+	<repository>
+		<connection>
       scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/common
     </connection>
-    <developerConnection>
+		<developerConnection>
       scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/common
     </developerConnection>
-    <url>
+		<url>
     	http://www.astrogrid.org/viewcvs/astrogrid/common/
     </url>
-  </repository>
-  
-  <developers>
-    <developer>
-      <name>Jeff Lusted</name>
-      <id>jl99</id>
-      <email>jl99@star.le.ac.uk</email>
-    </developer>
-    <developer>
-      <name>Peter Shillan</name>
-      <id>gps</id>
-      <email>gps@roe.ac.uk</email>
-    </developer>
-    <developer>
-      <name>John D Taylor</name>
-      <id>jdt</id>
-      <email>jdt@roe.ac.uk</email>
-      <roles>
-	      <role>Unit Tester</role>
-	  </roles>
-    </developer> 
-    <developer>
-    <name>Phil Nicholson</name>
-    <id>pjn3</id>
-    <email>pjn3@star.le.ac.uk</email>
-    </developer> 
-    <developer>
-    <name>Paul Harrison</name>
-    <id>pah</id>
-    <email>pah@jb.man.ac.uk</email>
-    </developer> 
-
-    <developer>
-    	<name>Martin Hill</name>
-    	<id>mch</id>
-    	<email>mch@roe.ac.uk</email>
-	<organization>ROE</organization>
-    </developer>
-
-    <developer>
-    	<name>Noel Winstanley</name>
-    	<id>nw</id>
-    	<email>nw@jb.man.ac.uk</email>
-	<organization>JBO</organization>
-    </developer>
-  </developers>
-  
-  <dependencies>
-    <dependency>
-      <id>axis</id>
-      <version>1.1</version>
-    </dependency>
-
-    <dependency>
-      <id>commons-logging</id>
-      <version>1.0.3</version>
-    </dependency>
-
-    <dependency>
-      <id>jconfig</id>
-      <version>2.1</version>
-    </dependency>
-
-    <dependency>
-      <id>junit</id>
-      <version>3.8</version>
-    </dependency>
-
-    <dependency>
-      <id>log4j</id>
-      <version>1.2.8</version>
-    </dependency>
-
-<!--
+	</repository>
+	<developers>
+		<developer>
+			<name>Jeff Lusted</name>
+			<id>jl99</id>
+			<email>jl99@star.le.ac.uk</email>
+		</developer>
+		<developer>
+			<name>Peter Shillan</name>
+			<id>gps</id>
+			<email>gps@roe.ac.uk</email>
+			<organization>ROE</organization>
+		</developer>
+		<developer>
+			<name>John D Taylor</name>
+			<id>jdt</id>
+			<email>jdt@roe.ac.uk</email>
+			<organization>ROE</organization>
+		</developer>
+		<developer>
+			<name>Phil Nicholson</name>
+			<id>pjn3</id>
+			<email>pjn3@star.le.ac.uk</email>
+		</developer>
+		<developer>
+			<name>Paul Harrison</name>
+			<id>pah</id>
+			<email>pah@jb.man.ac.uk</email>
+			<organization>JBO</organization>
+		</developer>
+		<developer>
+			<name>Martin Hill</name>
+			<id>mch</id>
+			<email>mch@roe.ac.uk</email>
+			<organization>ROE</organization>
+		</developer>
+		<developer>
+			<name>Noel Winstanley</name>
+			<id>nw</id>
+			<email>nw@jb.man.ac.uk</email>
+			<organization>JBO</organization>
+		</developer>
+	</developers>
+	<dependencies>
+		<dependency>
+			<id>axis</id>
+			<version>1.1</version>
+		</dependency>
+		<dependency>
+			<id>commons-logging</id>
+			<version>1.0.3</version>
+		</dependency>
+		<dependency>
+			<id>jconfig</id>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<id>junit</id>
+			<version>3.8</version>
+		</dependency>
+		<dependency>
+			<id>log4j</id>
+			<version>1.2.8</version>
+		</dependency>
+		<!--
     <dependency>
       <id>activation</id>
       <version>1.0.2</version>
@@ -237,76 +220,73 @@
       <version>0.845</version>
     </dependency>
 -->
-  </dependencies>
-  
-  <build>
-    <sourceDirectory>src/java</sourceDirectory>
-    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-
-    <unitTest>
-      <includes>
-        <include>**/*Test.java</include>
-      </includes>      
-      <resources>
-        <resource>
-          <directory>${basedir}/test/java</directory>
-          <includes>
-            <include>**/*.xml</include>
-            <include>**/*.xmltemplate</include>
-            <include>**/*.properties</include>
-            <include>**/*.sql</include>
-            <include>**/*.ddl</include>
-          </includes>
-        </resource>
-      </resources>  
-    </unitTest>
-  </build>
-  
-  <reports>
-    <report>
+	</dependencies>
+	<build>
+		<sourceDirectory>src/java</sourceDirectory>
+		<unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+		<unitTest>
+			<includes>
+				<include>**/*Test.java</include>
+			</includes>
+			<resources>
+				<resource>
+					<directory>${basedir}/test/java</directory>
+					<includes>
+						<include>**/*.xml</include>
+						<include>**/*.xmltemplate</include>
+						<include>**/*.properties</include>
+						<include>**/*.sql</include>
+						<include>**/*.ddl</include>
+					</includes>
+				</resource>
+			</resources>
+		</unitTest>
+	</build>
+	<reports>
+		<report>
       maven-changelog-plugin
     </report>
-    <report>
+		<report>
       maven-changes-plugin
     </report>
-    <report>
+		<report>
       maven-checkstyle-plugin
     </report>
-    <report>
+		<report>
       maven-clover-plugin
     </report>
-    <report>
+		<report>
       maven-developer-activity-plugin
     </report>
-    <report>
+		<report>
       maven-file-activity-plugin
     </report>
-    <report>
+		<report>
       maven-javadoc-plugin
     </report>
-    <report>
+		<report>
       maven-jdepend-plugin
     </report>
-    <report>
+		<report>
       maven-junit-report-plugin
     </report>
-    <report>
+		<report>
       maven-jxr-plugin
     </report>
-    <report>
+		<report>
       maven-license-plugin
     </report>
-    <report>
+		<report>
       maven-linkcheck-plugin
     </report>
-    <report>
+		<report>
       maven-pmd-plugin
     </report>
-    <report>
+		<report>
       maven-tasklist-plugin
     </report>
-    <report>
+		<report>
       maven-simian-plugin
     </report>
-  </reports>
+	</reports>
 </project>
