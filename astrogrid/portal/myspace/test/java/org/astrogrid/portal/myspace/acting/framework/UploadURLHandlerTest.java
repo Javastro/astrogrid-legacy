@@ -1,5 +1,7 @@
 package org.astrogrid.portal.myspace.acting.framework;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Map;
 
 /**

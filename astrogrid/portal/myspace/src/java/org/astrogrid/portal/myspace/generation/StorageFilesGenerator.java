@@ -35,7 +35,6 @@ import org.xml.sax.SAXException;
  */
 public class StorageFilesGenerator extends AbstractGenerator {
   private static final String FILTER = "*";
-  private static final String SEPARATOR = "/";
   private static final String MYSPACE_TREE = "myspace-tree";
   private static final String MYSPACE_ITEM = "myspace-item";
   private static final String MYSPACE_ENDPOINT_ATTR = "endpoint";
@@ -131,7 +130,7 @@ public class StorageFilesGenerator extends AbstractGenerator {
       return null;
     }
     
-    StoreFile root = storeClient.getFiles(getUserFilter(userId));
+    StoreFile root = storeClient.getFiles(StorageFilesGenerator.FILTER);
     if(root == null) {
       return null;
     }
@@ -147,10 +146,6 @@ public class StorageFilesGenerator extends AbstractGenerator {
     }
 
     return userFiles;
-  }
-  
-  private String getUserFilter(String userId) {
-    return StorageFilesGenerator.SEPARATOR + userId + StorageFilesGenerator.SEPARATOR + StorageFilesGenerator.FILTER;
   }
 
   /**
@@ -239,12 +234,6 @@ public class StorageFilesGenerator extends AbstractGenerator {
 	      itemElement.setAttribute("ivorn", ivorn.toString());
 
 	      itemElement.setAttribute("folder-path", getFolderPath(filePath, fileName));
-	      
-	      itemElement.setAttribute("created", storeFile.getCreated().toString());
-	      itemElement.setAttribute("mime-type", storeFile.getMimeType());
-	      itemElement.setAttribute("modified", storeFile.getModified().toString());
-	      itemElement.setAttribute("owner", storeFile.getOwner());
-	      itemElement.setAttribute("size", Long.toString(storeFile.getSize()));
       }
 	    catch(IOException e) {
 	      throw new ProcessingException("could not resolve AstroGrid URL for [" + fileName + "]", e);
