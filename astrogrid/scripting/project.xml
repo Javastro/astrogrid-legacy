@@ -113,7 +113,7 @@
         </dependency>
         <!-- registry -->
         <dependency>
-            <artifactId>astrogrid-registry-client</artifactId>
+            <artifactId>astrogrid-registry-client-lite</artifactId>
             <groupId>org.astrogrid</groupId>
             <version>SNAPSHOT</version>
         </dependency>
