@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.9 2004/01/15 17:39:26 nw Exp $
+/*$Id: AllTests.java,v 1.10 2004/01/15 18:06:05 nw Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,9 @@ package org.astrogrid.datacenter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import org.astrogrid.datacenter.delegate.DirectDelegateTest;
+import org.astrogrid.datacenter.snippet.ResponseHelperTest;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -41,6 +44,8 @@ public class AllTests {
         suite.addTest(org.astrogrid.datacenter.queriers.spi.AllTests.suite());
          suite.addTest(org.astrogrid.datacenter.fits.FitsTest.suite());
          suite.addTest(org.astrogrid.datacenter.queriers.fits.FitsQuerierTest.suite());
+         suite.addTest(DirectDelegateTest.suite());
+         suite.addTest(ResponseHelperTest.suite());
         return suite;
     }
 }
@@ -48,6 +53,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.10  2004/01/15 18:06:05  nw
+added other tests lurking around
+
 Revision 1.9  2004/01/15 17:39:26  nw
 removed dodgy cruft.
 
