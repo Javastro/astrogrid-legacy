@@ -1,4 +1,4 @@
-/*$Id: JesInstallationTest.java,v 1.2 2004/04/21 13:43:43 nw Exp $
+/*$Id: JesInstallationTest.java,v 1.3 2004/04/22 08:58:38 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -65,7 +65,6 @@ public class JesInstallationTest extends AbstractTestForIntegration {
        Thread.sleep(2000); // wait for the request to be processed
        try {
             Workflow wf = delegate.readJob(urn);
-            assertNull(wf);
             fail("Expected to barf, when reading a deleted job");
        } catch (WorkflowInterfaceException e) {
                 // ok
@@ -78,6 +77,9 @@ public class JesInstallationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: JesInstallationTest.java,v $
+Revision 1.3  2004/04/22 08:58:38  nw
+improved
+
 Revision 1.2  2004/04/21 13:43:43  nw
 tidied imports
 

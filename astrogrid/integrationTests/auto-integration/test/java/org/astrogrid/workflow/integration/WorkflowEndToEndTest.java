@@ -1,4 +1,4 @@
-/*$Id: WorkflowEndToEndTest.java,v 1.8 2004/04/21 13:43:43 nw Exp $
+/*$Id: WorkflowEndToEndTest.java,v 1.9 2004/04/22 08:58:38 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -111,7 +111,7 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
 
         ParameterValue query= (ParameterValue)datacenterTool.findXPathValue("input/parameter[name='Query']");
         assertNotNull(query);
-        InputStream is = this.getClass().getResourceAsStream("DataCenterIntegrationTest-sample-query.xml");
+        InputStream is = this.getClass().getResourceAsStream("WorkflowEndToEndTest-query.xml");
         assertNotNull(is);
         StringWriter out = new StringWriter();
         Piper.pipe(new InputStreamReader(is),out); 
@@ -181,6 +181,9 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
 
 /* 
 $Log: WorkflowEndToEndTest.java,v $
+Revision 1.9  2004/04/22 08:58:38  nw
+improved
+
 Revision 1.8  2004/04/21 13:43:43  nw
 tidied imports
 

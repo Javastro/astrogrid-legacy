@@ -1,0 +1,13 @@
+<Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://tempuri.org/adql">
+	<SelectionAll />
+	<TableClause>
+		<FromClause>
+			<TableReference>
+				<Table>
+					<Name>SampleStars</Name>
+					<AliasName>s</AliasName>
+				</Table>
+			</TableReference>
+		</FromClause>
+	</TableClause>
+</Select>
