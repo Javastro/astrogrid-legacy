@@ -61,8 +61,8 @@ echo "Executing astrogrid-deploy-snapshot" >> $LOG_FILE 2>&1
 
 #Use old style download counter
 MY_OPTS=-Dmaven.download.meter=bootstrap
-
-if maven $MY_OPTS -Dmaven.test.skip=false -Dmaven.site.central.directory=$DOC_HOME astrogrid-deploy-snapshot >> $LOG_FILE 2>&1
+#Skip the tests for the jar run, since they'll get run during site anyway
+if maven $MY_OPTS -Dmaven.test.skip=true -Dmaven.site.central.directory=$DOC_HOME astrogrid-deploy-snapshot >> $LOG_FILE 2>&1
 then
    echo "*** SUCCESS ***" >> $LOG_FILE
 else

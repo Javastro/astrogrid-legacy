@@ -67,9 +67,9 @@ echo "Executing astrogrid-deploy-artifact" >> $LOG_FILE 2>&1
 #Use old style download counter
 MY_OPTS=-Dmaven.download.meter=bootstrap
 
-#Note that unit tests are (not) skipped at this stage, since they have already
-#been run for the site docs
-if maven $MY_OPTS -Dmaven.test.skip=false  -Dmaven.site.central.directory=$DOC_HOME astrogrid-deploy-artifact >> $LOG_FILE 2>&1
+#Note that unit tests are  skipped at this stage, since they will
+#be run for the site docs
+if maven $MY_OPTS -Dmaven.test.skip=true  -Dmaven.site.central.directory=$DOC_HOME astrogrid-deploy-artifact >> $LOG_FILE 2>&1
 then
    echo "*** SUCCESS ***" >> $LOG_FILE
 else
