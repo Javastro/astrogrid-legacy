@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDelegate.java,v 1.7 2003/09/15 22:56:02 mch Exp $
+ * $Id: DummyDelegate.java,v 1.8 2003/09/16 12:53:40 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -111,19 +111,12 @@ public class DummyDelegate extends DatacenterDelegate
    {
       setStatus(QueryStatus.CONSTRUCTED);
 
-      try
-      {
          String response =
             "<"+ResponseHelper.QUERY_CREATED_RESP_TAG+">"+
             QueryIdHelper.makeQueryIdTag(QUERY_ID)+
             "</"+ResponseHelper.QUERY_CREATED_RESP_TAG+">";
 
          return DocHelper.wrap(response).getDocumentElement();
-      }
-      catch (SAXException e)
-      {
-         throw new RuntimeException("Failed to create valid dummy id tag");
-      }
    }
 
    /**
@@ -133,19 +126,12 @@ public class DummyDelegate extends DatacenterDelegate
    {
       setStatus(QueryStatus.RUNNING_QUERY);
 
-      try
-      {
-         String response =
+      String response =
             "<"+ResponseHelper.QUERY_STARTED_RESP_TAG+">"+
             QueryIdHelper.makeQueryIdTag(QUERY_ID)+
             "</"+ResponseHelper.QUERY_STARTED_RESP_TAG+">";
 
-         return DocHelper.wrap(response).getDocumentElement();
-      }
-      catch (SAXException e)
-      {
-         throw new RuntimeException("Failed to create valid dummy id tag");
-      }
+      return DocHelper.wrap(response).getDocumentElement();
    }
 
    /**
@@ -257,6 +243,9 @@ public class DummyDelegate extends DatacenterDelegate
 
 /*
 $Log: DummyDelegate.java,v $
+Revision 1.8  2003/09/16 12:53:40  mch
+DocHelper.wrap now throws IllegalArgumentException (runtime error) rather than SAXException, as XML is all softwired
+
 Revision 1.7  2003/09/15 22:56:02  mch
 Test fixes
 

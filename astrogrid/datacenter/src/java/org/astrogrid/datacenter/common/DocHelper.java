@@ -1,5 +1,5 @@
 /*
- * $Id: DocHelper.java,v 1.4 2003/09/15 17:21:49 mch Exp $
+ * $Id: DocHelper.java,v 1.5 2003/09/16 12:51:11 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -27,7 +27,7 @@ public class DocHelper
     * The XML strings created by the helpers will eventually need to be wrapped
     * in a DOM document
     */
-   public static Document wrap(String xmlSnippet) throws SAXException
+   public static Document wrap(String xmlSnippet)
    {
       try
       {
@@ -43,6 +43,12 @@ public class DocHelper
       {
          //really should not happen - setup problem
          throw new RuntimeException(e);
+      }
+      catch (SAXException e)
+      {
+         //ok this MIGHT happen, but is a program error rather than a configuration
+         //problem, as all code snippets are softwired
+         throw new IllegalArgumentException("Invalid xml='"+xmlSnippet+"': "+e);
       }
    }
 }

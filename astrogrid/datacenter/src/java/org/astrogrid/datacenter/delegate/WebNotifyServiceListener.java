@@ -1,5 +1,5 @@
 /*
- * $Id: WebNotifyServiceListener.java,v 1.2 2003/09/15 22:05:34 mch Exp $
+ * $Id: WebNotifyServiceListener.java,v 1.3 2003/09/16 12:53:58 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -73,11 +73,6 @@ public class WebNotifyServiceListener implements DatacenterStatusListener
       {
          Log.logError("Could not connect to client "+clientListener+" to send status update", e);
       }
-      catch (SAXException e)
-      {
-         //really should NOT happen!
-         throw new RuntimeException("Failed to create standard status document", e);
-      }
 
       Log.trace("exit WebNotifyServiceListener.serviceStatusChanged("+newStatus+")") ;
 
@@ -87,6 +82,9 @@ public class WebNotifyServiceListener implements DatacenterStatusListener
 
 /*
 $Log: WebNotifyServiceListener.java,v $
+Revision 1.3  2003/09/16 12:53:58  mch
+DocHelper.wrap now throws IllegalArgumentException (runtime error) rather than SAXException, as XML is all softwired
+
 Revision 1.2  2003/09/15 22:05:34  mch
 Renamed service id to query id throughout to make identifying state clearer
 
