@@ -1,25 +1,23 @@
 /*
- * $Id: SqlResults.java,v 1.19 2004/03/15 19:16:12 mch Exp $
+ * $Id: SqlResults.java,v 1.20 2004/03/15 20:38:54 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.sql;
 
-import java.io.*;
-
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
-import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
-import org.astrogrid.util.DomHelper;
-import org.astrogrid.util.Workspace;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /**
  * Implementation of <tt>QueryResults</tt> as a wrapper around a <tt>ResultSet</tt>
@@ -34,6 +32,12 @@ public class SqlResults extends QueryResults
 {
    protected ResultSet sqlResults;
    protected static final Log log = org.apache.commons.logging.LogFactory.getLog(SqlResults.class);
+   
+   /** Key used to find maximum number of rows allowed - defaults to 200, -1 = any */
+   public final static String MAX_RETURN_ROWS_KEY = "datacenter.sql.maxreturn";
+
+   public final static int DEFAULT_MAX_RETURN_ROWS = 200;
+   
    /**
     * Construct this wrapper around the given JDBC/SQL ResultSet.  We don't
     * know how big this result set will be, so it's likely we'll need a workspace
@@ -66,6 +70,9 @@ public class SqlResults extends QueryResults
    public void toVotable(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
    {
       assert (out != null);
+      
+      long maxAllowed = SimpleConfig.getSingleton().getInt(MAX_RETURN_ROWS_KEY, DEFAULT_MAX_RETURN_ROWS);
+      
       try
       {
          PrintWriter printOut = new PrintWriter(new BufferedWriter(out));
@@ -108,7 +115,7 @@ public class SqlResults extends QueryResults
 //         sqlResults.beforeFirst();
          int row = 0;
          int maxRow = getCount();
-         while (sqlResults.next())
+         while (sqlResults.next() && ((maxAllowed==-1) || (row<maxAllowed)))
          {
             row++;
             statusToUpdate.setNote("Processing Row "+row+" of "+maxRow);
@@ -145,6 +152,8 @@ public class SqlResults extends QueryResults
     */
    public void toCSV(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
    {
+      long maxAllowed = SimpleConfig.getSingleton().getInt(MAX_RETURN_ROWS_KEY, DEFAULT_MAX_RETURN_ROWS);
+      
       try
       {
          PrintWriter printOut = new PrintWriter(new BufferedWriter(out));
@@ -162,7 +171,7 @@ public class SqlResults extends QueryResults
 
          int row = 0;
          int maxRow = getCount();
-         while (sqlResults.next())
+         while ((sqlResults.next() && ((maxAllowed==-1) || (row<maxAllowed))))
          {
             row++;
             statusToUpdate.setNote("Processing Row "+row+" of "+maxRow);
@@ -221,6 +230,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.20  2004/03/15 20:38:54  mch
+ Added max row limit
+
  Revision 1.19  2004/03/15 19:16:12  mch
  Lots of fixes to status updates
 
