@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryUploaderTest.java,v 1.3 2004/03/31 16:26:19 pah Exp $
+ * $Id: RegistryUploaderTest.java,v 1.4 2004/04/01 13:54:54 pah Exp $
  * 
  * Created on 24-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -66,13 +66,14 @@ public class RegistryUploaderTest extends RegEntryBaseTestCase {
       
       // try to get the entries back...
       String selectQuery = "<query><selectionSequence>" +
-           "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
-           "<selection item='@*:type' itemOp='EQ' value='CeaApplicationType'/>"
-     +
-           "<selectionOp op='OR'/>" +
-           "<selection item='@*:type' itemOp='EQ' value='CeaServiceType'/>"  +
-           "</selectionSequence></query>";
-           
+      "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
+      "<selectionOp op='$and$'/>" +
+      "<selection item='@*:type' itemOp='EQ' value='CeaApplicationType'/>"  +
+      "<selectionOp op='OR'/>" +
+      "<selection item='@*:type' itemOp='EQ' value='CeaServiceType'/>"  +
+      "</selectionSequence></query>";
+
+          
            RegistryQueryLocator rqloc = new RegistryFromConfig(config);
            RegistryService rquery = rqloc.getClient();
            VODescription result = rquery.submitQueryString(selectQuery);

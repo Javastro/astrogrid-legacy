@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionLoaderTest.java,v 1.12 2004/03/25 11:28:28 pah Exp $
+ * $Id: DescriptionLoaderTest.java,v 1.13 2004/04/01 13:54:54 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -70,7 +70,7 @@ public class DescriptionLoaderTest extends DescriptionBaseTestCase {
       junit.textui.TestRunner.run(DescriptionLoaderTest.class);
    }
 
-   final public void testDescriptionLoader() {
+   final public void testDescriptionLoader() throws ApplicationDescriptionNotLoadedException {
       dl = new DescriptionLoader(ac);
       assertNotNull("cannot create the DescriptionLoader", dl);
    }
