@@ -1,4 +1,4 @@
-/*$Id: QueryHelper.java,v 1.1 2003/11/18 14:24:16 nw Exp $
+/*$Id: QueryHelper.java,v 1.2 2003/11/21 17:30:19 nw Exp $
  * Created on 18-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.datacenter.common;
 
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
+import org.astrogrid.datacenter.axisdataserver.types.types.QueryType;
 
 /** helper class for building query objects 
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Nov-2003
@@ -29,6 +30,7 @@ public class QueryHelper {
     public static Query buildMinimalQuery() {
         Query q = new Query();
         q.setSelect(ADQLUtils.buildMinimalQuery());
+        //q.setType(QueryType.VALUE_0);
         return q;
     }
 
@@ -37,6 +39,9 @@ public class QueryHelper {
 
 /* 
 $Log: QueryHelper.java,v $
+Revision 1.2  2003/11/21 17:30:19  nw
+improved WSDL binding - passes more strongly-typed data
+
 Revision 1.1  2003/11/18 14:24:16  nw
 helper class for testing. may be able to remove later.
  

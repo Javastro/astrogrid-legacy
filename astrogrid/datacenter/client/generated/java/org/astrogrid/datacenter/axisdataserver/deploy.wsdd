@@ -86,6 +86,14 @@
         encodingStyle=""
       />
       <typeMapping
+        xmlns:ns="http://tempuri.org/adql"
+        qname="ns:FunctionExpr"
+        type="java:org.astrogrid.datacenter.adql.generated.FunctionExpr"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
         xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
         qname="ns:>registerJobMonitor"
         type="java:org.astrogrid.datacenter.axisdataserver.types.RegisterJobMonitor"
@@ -97,14 +105,6 @@
         xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
         qname="ns:>getResultsAndCloseResponse"
         type="java:org.astrogrid.datacenter.axisdataserver.types.GetResultsAndCloseResponse"
-        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
-        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle=""
-      />
-      <typeMapping
-        xmlns:ns="http://tempuri.org/adql"
-        qname="ns:FunctionExpr"
-        type="java:org.astrogrid.datacenter.adql.generated.FunctionExpr"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle=""
@@ -201,6 +201,14 @@
         xmlns:ns="http://tempuri.org/adql"
         qname="ns:SelectionAll"
         type="java:org.astrogrid.datacenter.adql.generated.SelectionAll"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
+        qname="ns:>QueryId"
+        type="java:org.astrogrid.datacenter.axisdataserver.types.QueryId"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle=""
@@ -391,16 +399,16 @@
       />
       <typeMapping
         xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
-        qname="ns:>doQueryResponse"
-        type="java:org.astrogrid.datacenter.axisdataserver.types.DoQueryResponse"
+        qname="ns:>makeQueryWithId"
+        type="java:org.astrogrid.datacenter.axisdataserver.types.MakeQueryWithId"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle=""
       />
       <typeMapping
         xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
-        qname="ns:>makeQueryWithId"
-        type="java:org.astrogrid.datacenter.axisdataserver.types.MakeQueryWithId"
+        qname="ns:>doQueryResponse"
+        type="java:org.astrogrid.datacenter.axisdataserver.types.DoQueryResponse"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle=""
@@ -566,17 +574,17 @@
         encodingStyle=""
       />
       <typeMapping
-        xmlns:ns="http://tempuri.org/adql"
-        qname="ns:IntNum"
-        type="java:org.astrogrid.datacenter.adql.generated.IntNum"
-        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
-        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
+        qname="ns:query-type"
+        type="java:org.astrogrid.datacenter.axisdataserver.types.QueryType"
+        serializer="org.apache.axis.encoding.ser.EnumSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory"
         encodingStyle=""
       />
       <typeMapping
-        xmlns:ns="http://net.java"
-        qname="ns:MalformedURLException"
-        type="java:java.net.MalformedURLException"
+        xmlns:ns="http://tempuri.org/adql"
+        qname="ns:IntNum"
+        type="java:org.astrogrid.datacenter.adql.generated.IntNum"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle=""

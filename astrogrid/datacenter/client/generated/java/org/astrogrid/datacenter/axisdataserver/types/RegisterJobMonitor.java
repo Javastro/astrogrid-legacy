@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: RegisterJobMonitor.java,v 1.3 2003/11/19 18:44:51 nw Exp $
+ * $Id: RegisterJobMonitor.java,v 1.4 2003/11/21 17:30:19 nw Exp $
  */
 
 package org.astrogrid.datacenter.axisdataserver.types;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class RegisterJobMonitor.
  * 
- * @version $Revision: 1.3 $ $Date: 2003/11/19 18:44:51 $
+ * @version $Revision: 1.4 $ $Date: 2003/11/21 17:30:19 $
  */
 public class RegisterJobMonitor implements java.io.Serializable {
 
@@ -36,7 +36,7 @@ public class RegisterJobMonitor implements java.io.Serializable {
     /**
      * Field _queryId
      */
-    private java.lang.String _queryId;
+    private org.astrogrid.datacenter.axisdataserver.types.QueryId _queryId;
 
     /**
      * Field _url
@@ -62,10 +62,10 @@ public class RegisterJobMonitor implements java.io.Serializable {
      * 
      * @return the value of field 'queryId'.
      */
-    public java.lang.String getQueryId()
+    public org.astrogrid.datacenter.axisdataserver.types.QueryId getQueryId()
     {
         return this._queryId;
-    } //-- java.lang.String getQueryId() 
+    } //-- org.astrogrid.datacenter.axisdataserver.types.QueryId getQueryId() 
 
     /**
      * Returns the value of field 'url'.
@@ -120,10 +120,10 @@ public class RegisterJobMonitor implements java.io.Serializable {
      * 
      * @param queryId the value of field 'queryId'.
      */
-    public void setQueryId(java.lang.String queryId)
+    public void setQueryId(org.astrogrid.datacenter.axisdataserver.types.QueryId queryId)
     {
         this._queryId = queryId;
-    } //-- void setQueryId(java.lang.String) 
+    } //-- void setQueryId(org.astrogrid.datacenter.axisdataserver.types.QueryId) 
 
     /**
      * Sets the value of field 'url'.

@@ -84,7 +84,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
 
         // Test operation
         try {
-            java.lang.String value = null;
+            org.astrogrid.datacenter.axisdataserver.types.QueryId value = null;
             value = binding.makeQuery(org.astrogrid.datacenter.common.QueryHelper.buildMinimalQuery());
         }
         catch (java.io.IOException e1) {
@@ -117,7 +117,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
 
         // Test operation
         try {
-            java.lang.String value = null;
+            org.astrogrid.datacenter.axisdataserver.types.QueryId value = null;
             value = binding.makeQueryWithId(org.astrogrid.datacenter.common.QueryHelper.buildMinimalQuery(), new java.lang.String());
         }
         catch (java.io.IOException e1) {
@@ -149,7 +149,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         binding.setTimeout(60000);
 
         // Test operation
-        binding.setResultsDestination(new java.lang.String());
+        binding.setResultsDestination(new org.astrogrid.datacenter.axisdataserver.types.QueryId(), new org.apache.axis.types.URI("urn:testing"));
         // TBD - validate results
     }
 
@@ -170,7 +170,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         binding.setTimeout(60000);
 
         // Test operation
-        binding.startQuery(new java.lang.String());
+        binding.startQuery(new org.astrogrid.datacenter.axisdataserver.types.QueryId());
         // TBD - validate results
     }
 
@@ -191,14 +191,9 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         binding.setTimeout(60000);
 
         // Test operation
-        try {
-            java.lang.String value = null;
-            value = binding.getResultsAndClose(new java.lang.String());
-        }
-        catch (org.xml.sax.SAXException e1) {
-            throw new junit.framework.AssertionFailedError("SAXException Exception caught: " + e1);
-        }
-            // TBD - validate results
+        java.lang.String value = null;
+        value = binding.getResultsAndClose(new org.astrogrid.datacenter.axisdataserver.types.QueryId());
+        // TBD - validate results
     }
 
     public void test8AxisDataServerAbortQuery() throws Exception {
@@ -218,7 +213,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         binding.setTimeout(60000);
 
         // Test operation
-        binding.abortQuery(new java.lang.String());
+        binding.abortQuery(new org.astrogrid.datacenter.axisdataserver.types.QueryId());
         // TBD - validate results
     }
 
@@ -240,7 +235,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
 
         // Test operation
         java.lang.String value = null;
-        value = binding.getStatus(new java.lang.String());
+        value = binding.getStatus(new org.astrogrid.datacenter.axisdataserver.types.QueryId());
         // TBD - validate results
     }
 
@@ -261,13 +256,8 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         binding.setTimeout(60000);
 
         // Test operation
-        try {
-            binding.registerWebListener(new java.lang.String(), new java.lang.String());
-        }
-        catch (java.net.MalformedURLException e1) {
-            throw new junit.framework.AssertionFailedError("MalformedURLException Exception caught: " + e1);
-        }
-            // TBD - validate results
+        binding.registerWebListener(new org.astrogrid.datacenter.axisdataserver.types.QueryId(), new org.apache.axis.types.URI("urn:testing"));
+        // TBD - validate results
     }
 
     public void test11AxisDataServerRegisterJobMonitor() throws Exception {
@@ -287,13 +277,8 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         binding.setTimeout(60000);
 
         // Test operation
-        try {
-            binding.registerJobMonitor(new java.lang.String(), new java.lang.String());
-        }
-        catch (java.net.MalformedURLException e1) {
-            throw new junit.framework.AssertionFailedError("MalformedURLException Exception caught: " + e1);
-        }
-            // TBD - validate results
+        binding.registerJobMonitor(new org.astrogrid.datacenter.axisdataserver.types.QueryId(), new org.apache.axis.types.URI("urn:testing"));
+        // TBD - validate results
     }
 
 }

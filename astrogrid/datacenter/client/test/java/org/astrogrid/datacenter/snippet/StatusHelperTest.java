@@ -38,16 +38,16 @@ public class StatusHelperTest extends TestCase {
 
    }
    
-   /*@NWW
-   can't run this at the mo as we need to create a proper querier
-   
+   /** @todo  can't run this at the mo as we need to create a proper querier
+   */
    public void testMakeJobNotificationTag() throws Exception {
-
+    /*
       String result  = StatusHelper.makeJobNotificationTag(DatabaseQuerier.createQuerier(null));
         Document doc = DocHelper.wrap(result);
         assertNotNull(doc);
+        */
    }
-    /**/
+    
    
     /** Tests that service status un/marshalling works */
    public void testGetServiceStatus() throws Exception {

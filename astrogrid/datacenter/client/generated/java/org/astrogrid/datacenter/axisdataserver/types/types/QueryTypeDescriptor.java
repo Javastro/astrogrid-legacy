@@ -2,10 +2,10 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: SelectionAllDescriptor.java,v 1.6 2003/11/21 17:30:19 nw Exp $
+ * $Id: QueryTypeDescriptor.java,v 1.1 2003/11/21 17:30:19 nw Exp $
  */
 
-package org.astrogrid.datacenter.adql.generated;
+package org.astrogrid.datacenter.axisdataserver.types.types;
 
   //---------------------------------/
  //- Imported classes and packages -/
@@ -17,11 +17,11 @@ import org.exolab.castor.xml.XMLFieldDescriptor;
 import org.exolab.castor.xml.validators.*;
 
 /**
- * Class SelectionAllDescriptor.
+ * Class QueryTypeDescriptor.
  * 
- * @version $Revision: 1.6 $ $Date: 2003/11/21 17:30:19 $
+ * @version $Revision: 1.1 $ $Date: 2003/11/21 17:30:19 $
  */
-public class SelectionAllDescriptor extends org.astrogrid.datacenter.adql.generated.SelectionDescriptor {
+public class QueryTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
 
       //--------------------------/
@@ -53,12 +53,11 @@ public class SelectionAllDescriptor extends org.astrogrid.datacenter.adql.genera
      //- Constructors -/
     //----------------/
 
-    public SelectionAllDescriptor() {
+    public QueryTypeDescriptor() {
         super();
-        setExtendsWithoutFlatten(new org.astrogrid.datacenter.adql.generated.SelectionDescriptor());
-        nsURI = "http://tempuri.org/adql";
-        xmlName = "SelectionAll";
-    } //-- org.astrogrid.datacenter.adql.generated.SelectionAllDescriptor()
+        nsURI = "http://www.astrogrid.org/datacenter/It04/dataserver/v1/types";
+        xmlName = "query-type";
+    } //-- org.astrogrid.datacenter.axisdataserver.types.types.QueryTypeDescriptor()
 
 
       //-----------/
@@ -78,7 +77,7 @@ public class SelectionAllDescriptor extends org.astrogrid.datacenter.adql.genera
      */
     public org.exolab.castor.mapping.ClassDescriptor getExtends()
     {
-        return super.getExtends();
+        return null;
     } //-- org.exolab.castor.mapping.ClassDescriptor getExtends() 
 
     /**
@@ -86,8 +85,6 @@ public class SelectionAllDescriptor extends org.astrogrid.datacenter.adql.genera
      */
     public org.exolab.castor.mapping.FieldDescriptor getIdentity()
     {
-        if (identity == null)
-            return super.getIdentity();
         return identity;
     } //-- org.exolab.castor.mapping.FieldDescriptor getIdentity() 
 
@@ -96,7 +93,7 @@ public class SelectionAllDescriptor extends org.astrogrid.datacenter.adql.genera
      */
     public java.lang.Class getJavaClass()
     {
-        return org.astrogrid.datacenter.adql.generated.SelectionAll.class;
+        return org.astrogrid.datacenter.axisdataserver.types.types.QueryType.class;
     } //-- java.lang.Class getJavaClass() 
 
     /**

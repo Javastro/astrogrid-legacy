@@ -1,4 +1,4 @@
-/*$Id: MarshallingTest.java,v 1.2 2003/11/17 12:12:28 nw Exp $
+/*$Id: MarshallingTest.java,v 1.3 2003/11/21 17:30:19 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import java.io.StringWriter;
 import junit.framework.TestCase;
 
 import org.astrogrid.datacenter.adql.generated.Select;
+import org.custommonkey.xmlunit.XMLTestCase;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 /** unit test to exercise the marshalling / unmarshalling / validation framework of the generated castor classes
@@ -29,7 +30,7 @@ import org.exolab.castor.xml.Unmarshaller;
  * @author Noel Winstanley nw@jb.man.ac.uk 28-Aug-2003
  *
  */
-public class MarshallingTest extends TestCase {
+public class MarshallingTest extends XMLTestCase {
 
     /**
      * Constructor for MarshallingTest
@@ -83,11 +84,9 @@ public class MarshallingTest extends TestCase {
         Select s1 = Select.unmarshalSelect(in);
         assertNotNull(s1);
         assertTrue(s1.isValid());
-        // can't compare s1 , s2 for equality..
-        // but can compare xml strings.
         String xml1 = ADQLUtils.queryToString(s1);
         assertNotNull(xml1);
-        assertEquals(xml,xml1);
+        assertXMLEqual(xml,xml1);
     }
     
     public void testRoundTrip2() throws Exception {
@@ -114,6 +113,9 @@ public class MarshallingTest extends TestCase {
 
 /* 
 $Log: MarshallingTest.java,v $
+Revision 1.3  2003/11/21 17:30:19  nw
+improved WSDL binding - passes more strongly-typed data
+
 Revision 1.2  2003/11/17 12:12:28  nw
 first stab at mavenizing the subprojects.
 

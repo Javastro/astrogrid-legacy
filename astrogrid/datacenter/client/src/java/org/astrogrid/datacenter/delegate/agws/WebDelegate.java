@@ -1,11 +1,12 @@
 /*
- * $Id: WebDelegate.java,v 1.5 2003/11/18 14:25:23 nw Exp $
+ * $Id: WebDelegate.java,v 1.6 2003/11/21 17:30:19 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate.agws;
 
+import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.delegate.*;
 
@@ -28,6 +29,8 @@ import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerServiceLocator;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
+import org.astrogrid.datacenter.axisdataserver.types.QueryId;
+import org.astrogrid.datacenter.axisdataserver.types.types.QueryType;
 import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Document;
 import org.astrogrid.datacenter.query.QueryStatus;
@@ -91,9 +94,9 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher
     */
    private class WebQueryDelegate implements DatacenterQuery
    {
-      String queryId = null;
+      QueryId queryId = null;
       
-      public WebQueryDelegate(String id)
+      public WebQueryDelegate(QueryId id)
       {
          this.queryId = id;
       }
@@ -103,12 +106,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher
       */
       public DatacenterResults getResultsAndClose() throws IOException
       {
-         try
-         {
             return new DatacenterResults(new String[] {binding.getResultsAndClose(queryId)});
-         }
-         catch (SAXException e) {}  //temporary - remove when binding is updated to not throw this exception
-         return null;
       }
       
       /**
@@ -119,11 +117,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher
       */
       public void setResultsDestination(URL resultsDestination) throws RemoteException
       {
-         //binding.setResultsDestination(queryId, resultsDestination);
-         
-         //replace this with the above one when the binding is updated
-         binding.setResultsDestination(resultsDestination.toString());
-         
+         binding.setResultsDestination(queryId,buildURI(resultsDestination));       
       }
       
       /**
@@ -149,7 +143,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher
       */
       public String getId()
       {
-         return queryId;
+         return queryId.getId();
       }
       
       /**
@@ -171,20 +165,30 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher
       
       public void registerJobMonitor(URL url) throws RemoteException
       {
-         
-         try
-         {
-            binding.registerJobMonitor(queryId, url.toString());
-         }
-         catch (RemoteException e) {}
-         catch (MalformedURLException e) {}
+
+            binding.registerJobMonitor(queryId, buildURI(url));
       }
 
-      public void registerWebListener(URL url) throws RemoteException, MalformedURLException
+      public void registerWebListener(URL url) throws RemoteException
       {
-         binding.registerWebListener(queryId, url.toString());
+         binding.registerWebListener(queryId, buildURI(url));
       }
       
+   }
+   
+   /** helper method to build a URI from a URL. 
+    * @todo could replace URL with URI altogether - a better class in some ways, as URL will barf at protocols it doesn't know. (myspace://)
+    * @param url
+    * @return valid apache uri
+    */
+   private URI buildURI(URL url) {
+       try {
+        URI uri = new URI(url.toString());
+        return uri;
+       } catch (URI.MalformedURIException e) {
+           // very unlikely to happen - just come from a URL, which is stricter..
+           throw new IllegalArgumentException("Malformed URI: " + e.getMessage());
+       }
    }
    
    /* Returns the metadata
@@ -205,6 +209,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher
     * Returns the number of items that match the given query.  This is useful for
     * doing checks on how big the result set is likely to be before it has to be
     * transferred about the net.
+    * @todo implement this.
     */
    public int countQuery(Select adql) throws DatacenterException
    {
@@ -226,6 +231,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher
       {
           Query q = new Query();
           q.setSelect(adql);
+          //q.setType(QueryType.VALUE_0);
          return new WebQueryDelegate(binding.makeQueryWithId(q, givenId));
       }
       catch (QueryException e) { throw new DatacenterException("Illegal Query", e); }
@@ -245,6 +251,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher
       {
           Query q = new Query();
           q.setSelect(adql);
+         // q.setType(QueryType.VALUE_0);
       return new WebQueryDelegate(binding.makeQuery(q));
       }
       catch (QueryException e) { throw new DatacenterException("Illegal Query", e); }
@@ -265,6 +272,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher
          //run query on server
          Query q = new Query();
          q.setSelect(adql);
+         //q.setType(QueryType.VALUE_0);
          String result = binding.doQuery(resultsFormat, q);
          InputStream is = new ByteArrayInputStream(result.getBytes());
          Document rDoc = XMLUtils.newDocument(is);
@@ -362,6 +370,9 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.6  2003/11/21 17:30:19  nw
+improved WSDL binding - passes more strongly-typed data
+
 Revision 1.5  2003/11/18 14:25:23  nw
 altered types to fit with new wsdl
 

@@ -53,16 +53,6 @@
 			</sequence>
 		</complexType>
 	</xsd:schema>
-	<xsd:schema targetNamespace="http://net.java" xmlns="http://www.w3.org/2001/XMLSchema">
-		<import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
-		<complexType name="MalformedURLException">
-			<complexContent>
-			<extension base="io:IOException">
-				<sequence />
-			</extension>
-			</complexContent>
-		</complexType>
-	</xsd:schema>
     </wsdl:types>
     <!-- messages -->
     <wsdl:message name="getMetadata">
@@ -143,11 +133,6 @@
     <wsdl:message name="IOException">
     	<wsdl:part name="fault" type="io:IOException" />
     </wsdl:message>
-    <wsdl:message name="MalformedURLException">
-    	<wsdl:part name="fault" type="net:MalformedURLException" />
-    </wsdl:message>
-
-
 
     <!-- the port type -->
     <wsdl:portType name="AxisDataServer">
@@ -193,7 +178,6 @@
         <wsdl:operation name="getResultsAndClose">
             <wsdl:input message="getResultsAndClose" name="getResultsAndClose"/>
             <wsdl:output message="getResultsAndCloseResponse" name="getResultsAndCloseResponse"/>
-			<wsdl:fault message="SAXException" name="SAXException"/>
         </wsdl:operation>
         <wsdl:operation name="abortQuery">
             <wsdl:input message="abortQuery" name="abortQuery" />
@@ -206,13 +190,11 @@
         <wsdl:operation name="registerWebListener">
             <wsdl:input message="registerWebListener" name="registerWebListener" />
             <wsdl:output message="registerWebListenerResponse" name="registerWebListenerResponse" />
-	       <wsdl:fault message="MalformedURLException" name="MalformedURLException" />
         </wsdl:operation>
 
         <wsdl:operation name="registerJobMonitor">
             <wsdl:input message="registerJobMonitor" name="registerJobMonitor" />
             <wsdl:output message="registerJobMonitorResponse" name="registerJobMonitorResponse" />
-	    <wsdl:fault message="MalformedURLException" name="MalformedURLException" />
         </wsdl:operation>
 
     </wsdl:portType>
@@ -309,9 +291,6 @@
             <wsdl:output name="getResultsAndCloseResponse">
                 <wsdlsoap:body namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
             </wsdl:output>
-         <wsdl:fault name="SAXException">
-            <wsdlsoap:fault namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
-         </wsdl:fault>
         </wsdl:operation>
 
         <wsdl:operation name="abortQuery">
@@ -339,9 +318,6 @@
             <wsdl:output name="registerWebListenerResponse">
                 <wsdlsoap:body namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
             </wsdl:output>
-         <wsdl:fault name="MalformedURLException">
-            <wsdlsoap:fault namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
-         </wsdl:fault>
         </wsdl:operation>
 
         <wsdl:operation name="registerJobMonitor">
@@ -351,9 +327,6 @@
             <wsdl:output name="registerJobMonitorResponse">
                 <wsdlsoap:body namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
             </wsdl:output>
-         <wsdl:fault name="MalformedURLException">
-            <wsdlsoap:fault namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1" use="literal"/>
-         </wsdl:fault>
         </wsdl:operation>
 
     </wsdl:binding>

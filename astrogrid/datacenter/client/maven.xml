@@ -181,6 +181,9 @@ Requires:
 		<replacefilter
 			token="org.astrogrid.datacenter.adql.generated.AllOrDistinct"
 			value="org.astrogrid.datacenter.adql.generated.types.AllOrDistinct" />
+		<replacefilter
+			token="org.astrogrid.datacenter.axisdataserver.types.QueryType"
+			value="org.astrogrid.datacenter.axisdataserver.types.types.QueryType" />
 	</replace>
 	<!-- transform once more to create test version here.. -->
 	<xslt style="${basedir}/build/xslt/generate-test-wsdd.xsl" in="${generated.wsdd}/deploy.wsdd" out="${generated.wsdd}/test-deploy.wsdd" />
@@ -210,6 +213,9 @@ Requires:
 		<replacefilter
 			token="org.astrogrid.datacenter.adql.generated.AllOrDistinct.class"
 			value="org.astrogrid.datacenter.adql.generated.types.AllOrDistinct.class" />
+		<replacefilter
+			token="org.astrogrid.datacenter.axisdataserver.types.QueryType.class"
+			value="org.astrogrid.datacenter.axisdataserver.types.types.QueryType.class" />			
 			<!-- add declarations of castor serializers -->
 		<replacefilter
 			token="javax.xml.namespace.QName qName;"

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: RegisterWebListenerDescriptor.java,v 1.3 2003/11/19 18:44:51 nw Exp $
+ * $Id: RegisterWebListenerDescriptor.java,v 1.4 2003/11/21 17:30:19 nw Exp $
  */
 
 package org.astrogrid.datacenter.axisdataserver.types;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class RegisterWebListenerDescriptor.
  * 
- * @version $Revision: 1.3 $ $Date: 2003/11/19 18:44:51 $
+ * @version $Revision: 1.4 $ $Date: 2003/11/21 17:30:19 $
  */
 public class RegisterWebListenerDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -68,8 +68,7 @@ public class RegisterWebListenerDescriptor extends org.exolab.castor.xml.util.XM
         //-- initialize element descriptors
         
         //-- _queryId
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_queryId", "queryId", org.exolab.castor.xml.NodeType.Element);
-        desc.setImmutable(true);
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.datacenter.axisdataserver.types.QueryId.class, "_queryId", "QueryId", org.exolab.castor.xml.NodeType.Element);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
@@ -82,14 +81,14 @@ public class RegisterWebListenerDescriptor extends org.exolab.castor.xml.util.XM
             {
                 try {
                     RegisterWebListener target = (RegisterWebListener) object;
-                    target.setQueryId( (java.lang.String) value);
+                    target.setQueryId( (org.astrogrid.datacenter.axisdataserver.types.QueryId) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
                 }
             }
             public java.lang.Object newInstance( java.lang.Object parent ) {
-                return null;
+                return new org.astrogrid.datacenter.axisdataserver.types.QueryId();
             }
         } );
         desc.setHandler(handler);
@@ -101,14 +100,10 @@ public class RegisterWebListenerDescriptor extends org.exolab.castor.xml.util.XM
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
         fieldValidator.setMinOccurs(1);
         { //-- local scope
-            StringValidator typeValidator = new StringValidator();
-            typeValidator.setWhiteSpace("preserve");
-            fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);
         //-- _url
         desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_url", "url", org.exolab.castor.xml.NodeType.Element);
-        desc.setImmutable(true);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
@@ -128,7 +123,7 @@ public class RegisterWebListenerDescriptor extends org.exolab.castor.xml.util.XM
                 }
             }
             public java.lang.Object newInstance( java.lang.Object parent ) {
-                return null;
+                return new java.lang.String();
             }
         } );
         desc.setHandler(handler);
@@ -140,9 +135,6 @@ public class RegisterWebListenerDescriptor extends org.exolab.castor.xml.util.XM
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
         fieldValidator.setMinOccurs(1);
         { //-- local scope
-            StringValidator typeValidator = new StringValidator();
-            typeValidator.setWhiteSpace("preserve");
-            fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);
     } //-- org.astrogrid.datacenter.axisdataserver.types.RegisterWebListenerDescriptor()

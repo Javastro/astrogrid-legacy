@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: GetResultsAndClose.java,v 1.4 2003/11/21 17:30:19 nw Exp $
+ * $Id: QueryId.java,v 1.1 2003/11/21 17:30:19 nw Exp $
  */
 
 package org.astrogrid.datacenter.axisdataserver.types;
@@ -22,11 +22,11 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * Class GetResultsAndClose.
+ * Class QueryId.
  * 
- * @version $Revision: 1.4 $ $Date: 2003/11/21 17:30:19 $
+ * @version $Revision: 1.1 $ $Date: 2003/11/21 17:30:19 $
  */
-public class GetResultsAndClose implements java.io.Serializable {
+public class QueryId implements java.io.Serializable {
 
 
       //--------------------------/
@@ -34,18 +34,18 @@ public class GetResultsAndClose implements java.io.Serializable {
     //--------------------------/
 
     /**
-     * Field _queryId
+     * Field _id
      */
-    private org.astrogrid.datacenter.axisdataserver.types.QueryId _queryId;
+    private java.lang.String _id;
 
 
       //----------------/
      //- Constructors -/
     //----------------/
 
-    public GetResultsAndClose() {
+    public QueryId() {
         super();
-    } //-- org.astrogrid.datacenter.axisdataserver.types.GetResultsAndClose()
+    } //-- org.astrogrid.datacenter.axisdataserver.types.QueryId()
 
 
       //-----------/
@@ -53,14 +53,14 @@ public class GetResultsAndClose implements java.io.Serializable {
     //-----------/
 
     /**
-     * Returns the value of field 'queryId'.
+     * Returns the value of field 'id'.
      * 
-     * @return the value of field 'queryId'.
+     * @return the value of field 'id'.
      */
-    public org.astrogrid.datacenter.axisdataserver.types.QueryId getQueryId()
+    public java.lang.String getId()
     {
-        return this._queryId;
-    } //-- org.astrogrid.datacenter.axisdataserver.types.QueryId getQueryId() 
+        return this._id;
+    } //-- java.lang.String getId() 
 
     /**
      * Method isValid
@@ -101,25 +101,25 @@ public class GetResultsAndClose implements java.io.Serializable {
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Sets the value of field 'queryId'.
+     * Sets the value of field 'id'.
      * 
-     * @param queryId the value of field 'queryId'.
+     * @param id the value of field 'id'.
      */
-    public void setQueryId(org.astrogrid.datacenter.axisdataserver.types.QueryId queryId)
+    public void setId(java.lang.String id)
     {
-        this._queryId = queryId;
-    } //-- void setQueryId(org.astrogrid.datacenter.axisdataserver.types.QueryId) 
+        this._id = id;
+    } //-- void setId(java.lang.String) 
 
     /**
-     * Method unmarshalGetResultsAndClose
+     * Method unmarshalQueryId
      * 
      * @param reader
      */
-    public static org.astrogrid.datacenter.axisdataserver.types.GetResultsAndClose unmarshalGetResultsAndClose(java.io.Reader reader)
+    public static org.astrogrid.datacenter.axisdataserver.types.QueryId unmarshalQueryId(java.io.Reader reader)
         throws org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException
     {
-        return (org.astrogrid.datacenter.axisdataserver.types.GetResultsAndClose) Unmarshaller.unmarshal(org.astrogrid.datacenter.axisdataserver.types.GetResultsAndClose.class, reader);
-    } //-- org.astrogrid.datacenter.axisdataserver.types.GetResultsAndClose unmarshalGetResultsAndClose(java.io.Reader) 
+        return (org.astrogrid.datacenter.axisdataserver.types.QueryId) Unmarshaller.unmarshal(org.astrogrid.datacenter.axisdataserver.types.QueryId.class, reader);
+    } //-- org.astrogrid.datacenter.axisdataserver.types.QueryId unmarshalQueryId(java.io.Reader) 
 
     /**
      * Method validate

@@ -1,4 +1,4 @@
-/*$Id: ExamplesTest.java,v 1.1 2003/11/14 00:36:40 mch Exp $
+/*$Id: ExamplesTest.java,v 1.2 2003/11/21 17:30:19 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,11 +18,12 @@ import java.io.StringReader;
 import junit.framework.TestCase;
 
 import org.astrogrid.datacenter.adql.generated.Select;
+import org.custommonkey.xmlunit.XMLTestCase;
 /** Run through a set of sample files, loading and outputting each in turn.
  * @author Noel Winstanley nw@jb.man.ac.uk 28-Aug-2003
  *
  */
-public class ExamplesTest extends TestCase {
+public class ExamplesTest extends XMLTestCase {
 
     /**
      * Constructor for ExamplesTest.
@@ -67,21 +68,16 @@ public class ExamplesTest extends TestCase {
         Select query = Select.unmarshalSelect(reader);
         assertNotNull(query);
         assertTrue(query.isValid());
-        // now write it out to a temporary buffer, read back in again., write out again.
-        // verify two outputted xml buffers are equal.
-        // sadly can't easily compare with original XML document
-        String xml = ADQLUtils.queryToString(query);
+        String xml = ADQLUtils.queryToString(query);                
         assertNotNull(xml);
         
         Reader in = new StringReader(xml);
         Select query1 = Select.unmarshalSelect(in);
         assertNotNull(query1);
         assertTrue(query1.isValid());
-        // can't compare s1 , s2 for equality..
-        // but can compare xml strings.
         String xml1 = ADQLUtils.queryToString(query1);
         assertNotNull(xml1);
-        assertEquals(xml,xml1);
+        assertXMLEqual(xml,xml1);
     }
 
 }
@@ -89,6 +85,9 @@ public class ExamplesTest extends TestCase {
 
 /* 
 $Log: ExamplesTest.java,v $
+Revision 1.2  2003/11/21 17:30:19  nw
+improved WSDL binding - passes more strongly-typed data
+
 Revision 1.1  2003/11/14 00:36:40  mch
 Code restructure
 

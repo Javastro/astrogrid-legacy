@@ -24,14 +24,28 @@
                     </xsd:sequence>
                     </xsd:complexType>
             </xsd:element>
-	<!-- think to hang other attributes off later.. -->
+	<!-- thing to hang other attributes off later.. -->
 	<xsd:element name="query">
 	  <xsd:complexType>
 	    <xsd:sequence>
-	    	<xsd:element ref="adql:Select" />
+	    	<!-- causes transport to fail - leave for now
+	    	<xsd:element name="type" type="ns:query-type" /> -->
+	    	<xsd:element ref="adql:Select" /> <!-- acessor - will need to provide option here when have more query types. -->
 	    </xsd:sequence>
 	  </xsd:complexType>
-
+	</xsd:element>
+	
+	<!-- enumeration of possible query types - will extend later-->
+	<xsd:simpleType name="query-type">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="adql-it04" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:element name="QueryId">
+		<xsd:complexType>
+			<xsd:attribute name="id" type="xsd:string" />
+		</xsd:complexType>
 	</xsd:element>
 
             <xsd:element name="doQuery">
@@ -74,21 +88,25 @@
             <xsd:element name="makeQueryResponse">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element name="getQueryReturn" type="xsd:string"/>
+                    	<xsd:element ref="ns:QueryId" />
+                        <!-- <xsd:element name="getQueryReturn" type="xsd:string"/>-->
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
             <xsd:element name="setResultsDestination">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element name="myspaceUrl" type="xsd:string"/><!-- should be a url -->
+                    	<!-- <xsd:element name="queryId" type="xsd:string" />-->
+                    	<xsd:element ref="ns:QueryId" />
+                        <xsd:element name="myspaceUrl" type="xsd:anyURI"/><!-- should be a url -->
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
             <xsd:element name="getResultsAndClose">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element name="queryId" type="xsd:string"/>
+                        <!-- <xsd:element name="queryId" type="xsd:string"/> -->
+                        <xsd:element ref="ns:QueryId" />
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
@@ -102,21 +120,24 @@
             <xsd:element name="startQuery">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element name="id" type="xsd:string"/>
+                   <!--     <xsd:element name="queryId" type="xsd:string"/>-->
+                   <xsd:element ref="ns:QueryId" />
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
             <xsd:element name="abortQuery">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element name="queryId" type="xsd:string" />
+                 <!--       <xsd:element name="queryId" type="xsd:string" /> -->
+                 <xsd:element ref="ns:QueryId" />
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
             <xsd:element name="getStatus">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element name="queryId" type="xsd:string" />
+                 <!--       <xsd:element name="queryId" type="xsd:string" /> -->
+                 <xsd:element ref="ns:QueryId" />
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
@@ -130,16 +151,18 @@
             <xsd:element name="registerWebListener">
                    <xsd:complexType>
                        <xsd:sequence>
-                           <xsd:element name="queryId" type="xsd:string"/>
-                           <xsd:element name="url" type="xsd:string" /> <!-- should be url -->
+                    <!--       <xsd:element name="queryId" type="xsd:string"/> -->
+                    <xsd:element ref="ns:QueryId" />
+                           <xsd:element name="url" type="xsd:anyURI" /> <!-- should be url -->
                        </xsd:sequence>
                    </xsd:complexType>
             </xsd:element>
             <xsd:element name="registerJobMonitor">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element name="queryId" type="xsd:string" />
-                        <xsd:element name="url" type="xsd:string" />
+                        <!-- <xsd:element name="queryId" type="xsd:string" /> -->
+                        <xsd:element ref="ns:QueryId" />
+                        <xsd:element name="url" type="xsd:anyURI" />
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: MakeQueryResponse.java,v 1.3 2003/11/19 18:44:51 nw Exp $
+ * $Id: MakeQueryResponse.java,v 1.4 2003/11/21 17:30:19 nw Exp $
  */
 
 package org.astrogrid.datacenter.axisdataserver.types;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class MakeQueryResponse.
  * 
- * @version $Revision: 1.3 $ $Date: 2003/11/19 18:44:51 $
+ * @version $Revision: 1.4 $ $Date: 2003/11/21 17:30:19 $
  */
 public class MakeQueryResponse implements java.io.Serializable {
 
@@ -34,9 +34,9 @@ public class MakeQueryResponse implements java.io.Serializable {
     //--------------------------/
 
     /**
-     * Field _getQueryReturn
+     * Field _queryId
      */
-    private java.lang.String _getQueryReturn;
+    private org.astrogrid.datacenter.axisdataserver.types.QueryId _queryId;
 
 
       //----------------/
@@ -53,14 +53,14 @@ public class MakeQueryResponse implements java.io.Serializable {
     //-----------/
 
     /**
-     * Returns the value of field 'getQueryReturn'.
+     * Returns the value of field 'queryId'.
      * 
-     * @return the value of field 'getQueryReturn'.
+     * @return the value of field 'queryId'.
      */
-    public java.lang.String getGetQueryReturn()
+    public org.astrogrid.datacenter.axisdataserver.types.QueryId getQueryId()
     {
-        return this._getQueryReturn;
-    } //-- java.lang.String getGetQueryReturn() 
+        return this._queryId;
+    } //-- org.astrogrid.datacenter.axisdataserver.types.QueryId getQueryId() 
 
     /**
      * Method isValid
@@ -101,14 +101,14 @@ public class MakeQueryResponse implements java.io.Serializable {
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Sets the value of field 'getQueryReturn'.
+     * Sets the value of field 'queryId'.
      * 
-     * @param getQueryReturn the value of field 'getQueryReturn'.
+     * @param queryId the value of field 'queryId'.
      */
-    public void setGetQueryReturn(java.lang.String getQueryReturn)
+    public void setQueryId(org.astrogrid.datacenter.axisdataserver.types.QueryId queryId)
     {
-        this._getQueryReturn = getQueryReturn;
-    } //-- void setGetQueryReturn(java.lang.String) 
+        this._queryId = queryId;
+    } //-- void setQueryId(org.astrogrid.datacenter.axisdataserver.types.QueryId) 
 
     /**
      * Method unmarshalMakeQueryResponse

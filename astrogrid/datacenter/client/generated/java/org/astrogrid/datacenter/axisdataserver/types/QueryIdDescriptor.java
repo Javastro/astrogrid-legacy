@@ -2,10 +2,10 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ArrayOfOrderDescriptor.java,v 1.6 2003/11/21 17:30:19 nw Exp $
+ * $Id: QueryIdDescriptor.java,v 1.1 2003/11/21 17:30:19 nw Exp $
  */
 
-package org.astrogrid.datacenter.adql.generated;
+package org.astrogrid.datacenter.axisdataserver.types;
 
   //---------------------------------/
  //- Imported classes and packages -/
@@ -17,11 +17,11 @@ import org.exolab.castor.xml.XMLFieldDescriptor;
 import org.exolab.castor.xml.validators.*;
 
 /**
- * Class ArrayOfOrderDescriptor.
+ * Class QueryIdDescriptor.
  * 
- * @version $Revision: 1.6 $ $Date: 2003/11/21 17:30:19 $
+ * @version $Revision: 1.1 $ $Date: 2003/11/21 17:30:19 $
  */
-public class ArrayOfOrderDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
+public class QueryIdDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
 
       //--------------------------/
@@ -53,56 +53,54 @@ public class ArrayOfOrderDescriptor extends org.exolab.castor.xml.util.XMLClassD
      //- Constructors -/
     //----------------/
 
-    public ArrayOfOrderDescriptor() {
+    public QueryIdDescriptor() {
         super();
-        nsURI = "http://tempuri.org/adql";
-        xmlName = "ArrayOfOrder";
-        
-        //-- set grouping compositor
-        setCompositorAsSequence();
+        nsURI = "http://www.astrogrid.org/datacenter/It04/dataserver/v1/types";
+        xmlName = "QueryId";
         org.exolab.castor.xml.util.XMLFieldDescriptorImpl  desc           = null;
         org.exolab.castor.xml.XMLFieldHandler              handler        = null;
         org.exolab.castor.xml.FieldValidator               fieldValidator = null;
         //-- initialize attribute descriptors
         
-        //-- initialize element descriptors
-        
-        //-- _orderList
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.datacenter.adql.generated.Order.class, "_orderList", "Order", org.exolab.castor.xml.NodeType.Element);
+        //-- _id
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_id", "id", org.exolab.castor.xml.NodeType.Attribute);
+        desc.setImmutable(true);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
             {
-                ArrayOfOrder target = (ArrayOfOrder) object;
-                return target.getOrder();
+                QueryId target = (QueryId) object;
+                return target.getId();
             }
             public void setValue( java.lang.Object object, java.lang.Object value) 
                 throws IllegalStateException, IllegalArgumentException
             {
                 try {
-                    ArrayOfOrder target = (ArrayOfOrder) object;
-                    target.addOrder( (org.astrogrid.datacenter.adql.generated.Order) value);
+                    QueryId target = (QueryId) object;
+                    target.setId( (java.lang.String) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
                 }
             }
             public java.lang.Object newInstance( java.lang.Object parent ) {
-                return new org.astrogrid.datacenter.adql.generated.Order();
+                return null;
             }
         } );
         desc.setHandler(handler);
-        desc.setNameSpaceURI("http://tempuri.org/adql");
-        desc.setMultivalued(true);
         addFieldDescriptor(desc);
         
-        //-- validation code for: _orderList
+        //-- validation code for: _id
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        fieldValidator.setMinOccurs(0);
         { //-- local scope
+            StringValidator typeValidator = new StringValidator();
+            typeValidator.setWhiteSpace("preserve");
+            fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);
-    } //-- org.astrogrid.datacenter.adql.generated.ArrayOfOrderDescriptor()
+        //-- initialize element descriptors
+        
+    } //-- org.astrogrid.datacenter.axisdataserver.types.QueryIdDescriptor()
 
 
       //-----------/
@@ -138,7 +136,7 @@ public class ArrayOfOrderDescriptor extends org.exolab.castor.xml.util.XMLClassD
      */
     public java.lang.Class getJavaClass()
     {
-        return org.astrogrid.datacenter.adql.generated.ArrayOfOrder.class;
+        return org.astrogrid.datacenter.axisdataserver.types.QueryId.class;
     } //-- java.lang.Class getJavaClass() 
 
     /**

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: GetResultsAndCloseResponse.java,v 1.3 2003/11/19 18:44:51 nw Exp $
+ * $Id: GetResultsAndCloseResponse.java,v 1.4 2003/11/21 17:30:19 nw Exp $
  */
 
 package org.astrogrid.datacenter.axisdataserver.types;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class GetResultsAndCloseResponse.
  * 
- * @version $Revision: 1.3 $ $Date: 2003/11/19 18:44:51 $
+ * @version $Revision: 1.4 $ $Date: 2003/11/21 17:30:19 $
  */
 public class GetResultsAndCloseResponse implements java.io.Serializable {
 
