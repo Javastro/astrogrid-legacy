@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.26 2004/08/25 00:40:38 mch Exp $
+ * $Id: Config.java,v 1.27 2004/10/05 19:42:04 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -48,9 +48,16 @@ public abstract class Config {
     * is not found, throws a PropertyNotFoundException */
    public abstract Object getProperty(String key) throws PropertyNotFoundException;
 
+   /** Returns the list of properties identified by the given key.  If the property
+    * is not found, throws a PropertyNotFoundException */
+   public abstract Object[] getProperties(String key) throws PropertyNotFoundException;
+
    /** Set property.  Stores in cache so it overrides all other properties
     * with the same key.   */
    public abstract void setProperty(String key, Object value);
+   
+   /** Returns all the objects identified by the given key */
+   //public abstract Object[] getProperties(String key) ;
    
    /** Loads the properties from the file at the given URL  */
    public abstract void loadFromUrl(URL url) throws IOException;
