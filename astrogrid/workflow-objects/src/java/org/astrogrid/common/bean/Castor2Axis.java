@@ -1,5 +1,5 @@
 /*
- * $Id: Castor2Axis.java,v 1.3 2004/03/26 00:45:57 pah Exp $
+ * $Id: Castor2Axis.java,v 1.4 2004/03/26 12:07:34 pah Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -26,7 +26,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.message.MessageElement;
 import org.apache.axis.types.Id;
 import org.apache.axis.utils.XMLUtils;
-import org.apache.log4j.lf5.LogLevel;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Document;
