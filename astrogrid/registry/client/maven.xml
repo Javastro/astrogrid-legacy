@@ -30,6 +30,7 @@
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
     </goal>
+    
 
     <!--+
         | Import our plugin goals from our parent project.
@@ -102,18 +103,6 @@
         <ant:echo message="Build directory : ${maven.build.dir}"/>
         <ant:echo message="Building project site ...."/>
         <attainGoal name="site:generate"/>
-    </goal>
-
-    <!--+
-        | Build and install our snapshot target jar.
-        | (required as a target goal for the reactor)
-        +-->
-    <goal name="install-snapshot">
-        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
-        <ant:echo message="Build version   : ${pom.currentVersion}"/>
-        <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <ant:echo message="Building snapshot artifact ...."/>
-        <attainGoal name="jar:install-snapshot"/>
     </goal>
 
     <!--+

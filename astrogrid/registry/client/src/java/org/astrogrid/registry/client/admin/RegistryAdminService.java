@@ -22,6 +22,10 @@ import javax.xml.rpc.ServiceException;
 import org.xml.sax.SAXException;
 import java.rmi.RemoteException;
 
+import org.exolab.castor.xml.*;
+import org.astrogrid.registry.beans.resource.*;
+
+
 import org.astrogrid.config.Config;
 
 
@@ -37,13 +41,14 @@ import org.astrogrid.config.Config;
  *
  * 
  */
-public class RegistryAdminService implements
-                          org.astrogrid.registry.common.RegistryAdminInterface { 
+public class RegistryAdminService { 
 
 
    private static final String NAMESPACE_URI =  "http://admin.server.registry.astrogrid.org";
    
-   private static final String DUMMY_MODE_PROPERTY = "org.astrogrid.registry.dummy.mode.on";   
+   private static final String DUMMY_MODE_PROPERTY = "org.astrogrid.registry.dummy.mode.on";
+   
+   private boolean validated = false;   
 
     /**
     * target end point  is the location of the webservice. 
@@ -101,6 +106,28 @@ public class RegistryAdminService implements
          return _call;   
       }       
     }
+    
+  
+  
+   public Document update(VODescription vo) throws ValidationException {
+      vo.validate();
+      Document resultDoc = null;
+      try {
+         DocumentBuilder registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         Document doc = registryBuilder.newDocument();
+         Marshaller.marshal(vo,doc);
+         validated = true;
+         resultDoc = update(doc);
+      }catch(MarshalException me) {
+         resultDoc = null;
+         me.printStackTrace();   
+      }catch(ParserConfigurationException pce) {
+         resultDoc = null;
+         pce.printStackTrace();   
+      }finally {
+         return resultDoc;   
+      }
+   }
 
    /**
     * Takes an XML Document to send to the update server side web service call.  Establishes
@@ -111,11 +138,19 @@ public class RegistryAdminService implements
     * @author Kevin Benson
     * 
     */   
-   public Document update(Document query) {
+   public Document update(Document query) throws ValidationException {
 
       DocumentBuilder registryBuilder = null;
       Document doc = null;
       Document resultDoc = null;
+      if(!validated) {
+         try {
+            VODescription vo = (VODescription)Unmarshaller.unmarshal(VODescription.class,query);
+            vo.validate();
+         }catch(MarshalException me) {
+            me.printStackTrace();   
+         }
+      }
       try {
          registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
          doc = registryBuilder.newDocument();

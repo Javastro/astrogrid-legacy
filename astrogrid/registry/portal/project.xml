@@ -83,6 +83,14 @@
             <url>http://www.astrogrid.org/</url>
         </dependency>
         
+        <dependency>
+            <artifactId>castor</artifactId>
+            <groupId>castor</groupId>
+            <version>0.9.5</version>
+            <jar>castor-0.9.5-xml.jar</jar>
+        </dependency>
+        
+        
         
         <!--+
             | The Registry components.

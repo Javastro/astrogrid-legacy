@@ -21,8 +21,8 @@ import java.util.Date;
 import java.text.ParseException;
 import org.astrogrid.registry.common.versionNS.IRegistryInfo;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
-import org.astrogrid.registry.common.RegistryAdminInterface;
-import org.astrogrid.registry.common.RegistryHarvestInterface;
+import org.astrogrid.registry.client.admin.RegistryAdminService;
+import org.astrogrid.registry.client.harvest.RegistryHarvestService;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.apache.axis.utils.XMLUtils;
@@ -90,7 +90,7 @@ public class RegistryHarvestAction extends AbstractAction
       Document harvestDoc = null;
       String harvestResult = "";
       Document resultDoc = null;
-      RegistryAdminInterface ras = null;
+      RegistryAdminService ras = null;
       try {
          //get where you putting the harvest results to.
             
@@ -153,7 +153,7 @@ public class RegistryHarvestAction extends AbstractAction
                   InputSource inputSource = new InputSource(reader2);
                   harvestDoc = registryBuilder.parse(inputSource);
                   if(errorMessage == null) {
-                     RegistryHarvestInterface rhs = RegistryDelegateFactory.createHarvest();
+                     RegistryHarvestService rhs = RegistryDelegateFactory.createHarvest();
                      if(dat == null) {
                         rhs.harvestResource(harvestDoc);
                      }else {

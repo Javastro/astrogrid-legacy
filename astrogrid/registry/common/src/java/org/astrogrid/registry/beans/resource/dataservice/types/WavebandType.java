@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: WavebandType.java,v 1.2 2004/03/03 16:22:09 KevinBenson Exp $
+ * $Id: WavebandType.java,v 1.3 2004/03/05 09:52:02 KevinBenson Exp $
  */
 
 package org.astrogrid.registry.beans.resource.dataservice.types;
@@ -20,7 +20,7 @@ import org.exolab.castor.xml.Unmarshaller;
 /**
  * Class WavebandType.
  * 
- * @version $Revision: 1.2 $ $Date: 2004/03/03 16:22:09 $
+ * @version $Revision: 1.3 $ $Date: 2004/03/05 09:52:02 $
  */
 public class WavebandType implements java.io.Serializable {
 

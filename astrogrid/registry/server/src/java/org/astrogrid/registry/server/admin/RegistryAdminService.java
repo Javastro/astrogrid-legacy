@@ -9,6 +9,10 @@ import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.registry.server.RegistryFileHelper;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.exolab.castor.xml.*;
+import org.astrogrid.registry.beans.resource.*;
+
+
 
 /**
  * Class Name: RegistryAdminService
@@ -37,13 +41,26 @@ public class RegistryAdminService implements
     * @author Kevin Benson
     * 
     */   
-  public Document update(Document query) {
+  public Document update(Document query) throws ValidationException {
     Document doc = null;
+    Document newDoc = null;
+    try {
+       VODescription vo = (VODescription)Unmarshaller.unmarshal(VODescription.class,query);
+       DocumentBuilder registryBuilder = null;
+       registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+       newDoc = registryBuilder.newDocument();
+       Marshaller.marshal(vo,newDoc);
+    }catch(MarshalException me) {
+       me.printStackTrace();
+    }catch(ParserConfigurationException pce) {
+       pce.printStackTrace();
+    }
+    
     //Load the registry first.
-    RegistryFileHelper.translateRegistry(query);
+    //RegistryFileHelper.translateRegistry(query);
     //call updateDocument method to go through the document objects
     //and look for the primary key (resourcekey,AuthorityID) and do an update
-    doc = RegistryFileHelper.updateDocument(query.getDocumentElement(),false, true);
+    doc = RegistryFileHelper.updateDocument(newDoc.getDocumentElement(),false, true);
     return doc;
   }
 
@@ -61,19 +78,34 @@ public class RegistryAdminService implements
    * @author Kevin Benson
    * 
    */   
-   public Document add(Document query) {
+   public Document add(Document query) throws ValidationException {
       Document doc = null;
+      Document newDoc = null;
+      try {
+         VODescription vo = (VODescription)Unmarshaller.unmarshal(VODescription.class,query);
+         DocumentBuilder registryBuilder = null;         
+         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         newDoc = registryBuilder.newDocument();
+         Marshaller.marshal(vo,newDoc);         
+      }catch(MarshalException me) {
+         me.printStackTrace();
+      }catch(ParserConfigurationException pce) {
+         pce.printStackTrace();
+      }
       //Load the registry first.
-      RegistryFileHelper.translateRegistry(query);
+      //RegistryFileHelper.translateRegistry(query);
       //call updateDocument method to go through the document objects
       //and look for the primary key (resourcekey,AuthorityID) and determine
       //an update or an add.
-      doc = RegistryFileHelper.addDocument(query.getDocumentElement(), true);
+      doc = RegistryFileHelper.addDocument(newDoc.getDocumentElement(), true);
+      //query to see if this is an authority type.
+      /*      
       NodeList nl = query.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","Authority");
       if(nl.getLength() > 0) {
         System.out.println("calling updateRegistryEntry");
         RegistryFileHelper.updateRegistryEntry(query);
       }
+      */
       return doc;
    }  
    

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: VALUES.java,v 1.2 2004/03/03 16:22:08 KevinBenson Exp $
+ * $Id: VALUES.java,v 1.3 2004/03/05 09:52:02 KevinBenson Exp $
  */
 
 package org.astrogrid.registry.beans.resource.votable;
@@ -28,7 +28,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class VALUES.
  * 
- * @version $Revision: 1.2 $ $Date: 2004/03/03 16:22:08 $
+ * @version $Revision: 1.3 $ $Date: 2004/03/05 09:52:02 $
  */
 public class VALUES extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

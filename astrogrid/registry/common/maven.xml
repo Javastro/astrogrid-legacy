@@ -119,12 +119,16 @@
         <ant:echo message="Generating clover report ...."/>
         <attainGoal name="maven-clover-plugin:report"/>
     </goal>
-    
+
+
 	<preGoal name="java:compile">
-	<!-- generate classes from schema  -->
+
+	     <mkdir dir="${basedir}/target/classes" />  
 		<attainGoal name="run-castor" />
 
 	</preGoal>    
+
+	
     
 	<goal name="run-castor" description="generate classes from schema using castor" prereqs="castor-cleanout,castor-generate"/>
 	
@@ -135,9 +139,7 @@
 	        </fileset>
 		</delete>
 	</goal>
-    
-    
-    
+	    
 	<goal name="castor-generate">
     	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
         	<classpath>

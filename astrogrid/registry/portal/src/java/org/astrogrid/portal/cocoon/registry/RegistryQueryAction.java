@@ -220,7 +220,7 @@ public class RegistryQueryAction extends AbstractAction
                //Now lets query.
                String url = null;               
                RegistryService rs = RegistryDelegateFactory.createQuery();
-               Document doc = rs.submitQueryString(query);
+               Document doc = rs.submitQueryStringDOM(query);
                errorMessage = getResultMessage(doc);
                if(errorMessage == null) {
                   //create the results and put it in the request.
