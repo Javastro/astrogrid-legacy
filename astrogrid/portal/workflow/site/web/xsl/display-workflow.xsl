@@ -182,13 +182,13 @@
                             <xsl:attribute name="height">25</xsl:attribute>
                         </xsl:element>
                     </xsl:when>
-                    <xsl:when test="count(following-sibling::*) = 0"> <!-- if there are no following siblings then display bottom arrow image -->                    
+                    <xsl:otherwise> <!-- if there are no following siblings then display bottom arrow image -->                    
                         <xsl:element name="img">
                             <xsl:attribute name="src"><xsl:value-of select="$image_path"/>arrow_bottom.gif</xsl:attribute>
                             <xsl:attribute name="width">70</xsl:attribute>
                             <xsl:attribute name="height">25</xsl:attribute>
                         </xsl:element>
-                    </xsl:when>
+                    </xsl:otherwise>
                 </xsl:choose>            
             </td>
         </xsl:if>
