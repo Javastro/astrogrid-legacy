@@ -6,8 +6,8 @@
   <body>
     <links>
        <item name="AstroGrid" href="http://www.astrogrid.org"/>
-       <item name="Projects"  href="index.html"/>
-       <item name="Common"    href="common/index.html"/>
+       <item name="Projects"  href="../index.html"/>
+       <item name="Common"    href="index.html"/>
     </links>
   </body>
 </project>
