@@ -301,13 +301,18 @@ public class AdministrationAction extends AbstractAction
          }
       }
       else if(ACTION_REMOVE_GROUP.equals(processAction)) {
+         
          if(ident != null && ident.length() > 0) {
-            try {
-               adminDelegate.delGroup(ident);
-               message = "Group was deleted";
-            }catch(Exception e) {
-               errorMessage = e.toString();
-               e.printStackTrace();
+            if(ident.indexOf("Admin") != -1 || ident.indexOf("Guest") != -1) {
+               errorMessage = "You cannot delete Admin or Guest group";
+            }else {
+               try {
+                  adminDelegate.delGroup(ident);
+                  message = "Group was deleted";
+               }catch(Exception e) {
+                  errorMessage = e.toString();
+                  e.printStackTrace();
+               }
             }
          }else {
             errorMessage = "No group found to remove";
