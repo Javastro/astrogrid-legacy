@@ -261,7 +261,7 @@ public abstract class Querier implements Runnable {
                                  "VOTable",
                                  "Overwrite");
          
-         resultsLoc = myspace.getDataHolding(cert.getUserId(), cert.getCommunityId(), cert.getCredentials(),  myspaceFilename);
+         resultsLoc = myspace.getDataHoldingUrl(cert.getUserId(), cert.getCommunityId(), cert.getCredentials(),  myspaceFilename);
       }
       catch (SAXException se) {
          log.error("Could not create VOTable",se);
@@ -429,6 +429,9 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.12  2004/01/12 15:08:14  mch
+ Fix to record url of results not content of results...
+
  Revision 1.11  2003/12/15 17:47:55  mch
  Introduced proper MySpace Factory
 
