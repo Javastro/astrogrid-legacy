@@ -71,11 +71,6 @@
          <version>${astrogrid.pal.version}</version>
       </dependency>
 
-      <dependency>
-         <artifactId>astrogrid-pal-fits</artifactId>
-         <groupId>org.astrogrid</groupId>
-         <version>${astrogrid.pal.version}</version>
-      </dependency>
 
     <!-- exist db for fits plugin? -->
     <dependency>
