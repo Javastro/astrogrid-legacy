@@ -15,6 +15,7 @@ import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
  * </p>
  * <ul>
  *   <li>add an entry to the registry,</li>
+ *   <li>update an entry in the registry,</li>
  *   <li>delete an entry from the registry,</li>
  *   <li>lookup a single entry in the registry,</li>
  *   <li>lookup a set of named entries in the registry.</li>
@@ -584,6 +585,49 @@ public class RegistryManager
          }
 
 //         System.out.println("Status from addDataItemRecord: "
+//           + status + "  key = " + key);
+
+      }
+      catch (Exception all)
+      {  MySpaceStatus exStatus = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
+      }
+
+      return status;
+   }
+// -------------------------------------------------------------------
+
+/**
+ * Update a <code>DataItemRecord</code> in the registry.  The given
+ * new <code>DataItemRecord</code> is used to replace an existing
+ * <code>DataItemRecord</code> in the registry with the same key.
+ */
+
+   public boolean updateDataItemRecord(DataItemRecord dataItemRecord)
+   {  boolean status = false;
+
+      try
+      {
+//
+//      Generate the key from dataItemRecord's dataItemID.
+
+         String key = "" + dataItemRecord.getDataItemID();
+
+//
+//      Check that a DataItemRecord with this key already exists.  If
+//      so then delete it and insert the new DataItemRecord.
+
+         if (dataItemRecordHashMap.containsKey(key))
+         {  dataItemRecordHashMap.remove(key);
+            dataItemRecordHashMap.put(key, dataItemRecord);
+            status = true;
+         }
+         else
+         {  status = false;
+         }
+
+//         System.out.println("Status from updateDataItemRecord: "
 //           + status + "  key = " + key);
 
       }

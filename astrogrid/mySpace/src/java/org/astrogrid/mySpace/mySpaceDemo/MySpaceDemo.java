@@ -1,5 +1,3 @@
-package org.astrogrid.mySpace.mySpaceDemo;
-
 import javax.swing.*;          //This is the final package name.
 //import com.sun.java.swing.*; //Used by JDK 1.2 Beta 4 and all
                                //Swing releases before Swing 1.1 Beta 3.
@@ -86,6 +84,59 @@ public class MySpaceDemo
                {  itemRec = (DataItemRecord)itemRecVector.elementAt(loop);
                   System.out.println("[" + itemRec.getDataItemID()
                     + "]: " + itemRec.toString() );
+               }
+
+               System.out.println("");
+               if (!status.getSuccessStatus())
+               {  System.out.println("Operation failed.");
+               }
+               status.outputCodes();
+               status.reset();
+               System.out.println("");
+            }
+         }
+      );
+      fileMenu.add(menuItem);
+
+      menuItem = new JMenuItem("List expired dataHolders");
+      menuItem.addActionListener(new ActionListener()
+         {  public void actionPerformed(ActionEvent e)
+            {  BufferedReader console = new BufferedReader(
+                 new InputStreamReader(System.in));
+
+               System.out.println("Enter query (eg. '*'):");
+               String query = null;
+               try
+               {  query = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  query ="*";
+               }
+
+               Vector expiredRecVector = new Vector();
+               expiredRecVector = myspace.listExpiredDataHolders(
+                 "acd", "roe", "job27", query);
+
+               System.out.println("Registry entries satisfying query: "
+                 + query + "\n");
+
+               int numFound;
+               if (expiredRecVector != null)
+               {  numFound = expiredRecVector.size();
+               }
+               else
+               {   numFound = 0;
+                   System.out.println("  No entries have expired.");
+               }
+
+               DataItemRecord itemRec = new DataItemRecord();
+
+               for (int loop=0; loop<numFound; loop++)
+               {  itemRec = (DataItemRecord)expiredRecVector.elementAt(loop);
+                  System.out.println("[" + itemRec.getDataItemID()
+                    + "]: " + itemRec.getDataItemName()
+                    + " expired on: " + itemRec.getExpiryDate() + ".");
                }
 
                System.out.println("");
@@ -520,6 +571,107 @@ public class MySpaceDemo
          }
       );
       fileMenu.add(menuItem);
+
+      menuItem = new JMenuItem("Change owner of DataHolder");
+      menuItem.addActionListener(new ActionListener()
+         {  public void actionPerformed(ActionEvent e)
+            {  BufferedReader console = new BufferedReader(
+                 new InputStreamReader(System.in));
+
+               System.out.println("Enter ID of DataHolder to be changed:");
+               int itemID = 0;
+               try
+               {  String buffer = console.readLine();
+                  Integer itemBuffer = new Integer(buffer);
+                  itemID = itemBuffer.intValue();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  itemID = 0;
+               }
+
+               String newOwner;
+               System.out.println("Enter ID of new owner:");
+               try
+               {  newOwner = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  newOwner = "";
+               }
+
+               DataItemRecord itemRec = new DataItemRecord();
+
+               itemRec = myspace.changeOwnerDataHolder("acd", "roe", "job27",
+                 itemID, newOwner);
+
+               System.out.println(itemRec.getDataItemName() +
+                 " is now owned by " + itemRec.getOwnerID() + ".");
+
+               System.out.println("");
+               if (!status.getSuccessStatus())
+               {  System.out.println("Operation failed.");
+               }
+               status.outputCodes();
+               status.reset();
+               System.out.println("");
+            }
+         }
+      );
+      fileMenu.add(menuItem);
+
+      menuItem = new JMenuItem("Advance expiry date of DataHolder");
+      menuItem.addActionListener(new ActionListener()
+         {  public void actionPerformed(ActionEvent e)
+            {  BufferedReader console = new BufferedReader(
+                 new InputStreamReader(System.in));
+
+               System.out.println("Enter ID of DataHolder to be changed:");
+               int itemID = 0;
+               try
+               {  String buffer = console.readLine();
+                  Integer itemBuffer = new Integer(buffer);
+                  itemID = itemBuffer.intValue();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  itemID = 0;
+               }
+
+               int advance;
+               System.out.println("Enter no. of days to advance expiry date:");
+               try
+               {  String buffer = console.readLine();
+                  Integer itemBuffer = new Integer(buffer);
+                  advance = itemBuffer.intValue();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  advance = 0;
+               }
+
+               DataItemRecord itemRec = new DataItemRecord();
+
+               itemRec = myspace.advanceExpiryDataHolder("acd", "roe",
+                 "job27", itemID, advance);
+
+               System.out.println(itemRec.getDataItemName() +
+                 " now expires on " + itemRec.getExpiryDate() + ".");
+
+               System.out.println("");
+               if (!status.getSuccessStatus())
+               {  System.out.println("Operation failed.");
+               }
+               status.outputCodes();
+               status.reset();
+               System.out.println("");
+            }
+         }
+      );
+      fileMenu.add(menuItem);
+
+
+
 
       menuItem = new JMenuItem("Quit");
       menuItem.addActionListener(new ActionListener()

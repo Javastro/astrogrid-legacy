@@ -72,14 +72,15 @@ public class TestRegistryManager extends TestCase
 
 /**
  * Test the <code>addDataItemRecord</code>,
- * <code>lookupDataItemRecord</code>, <code>lookupDataItemRecords</code>
- * and <code>deleteDataItemRecord</code> methods.
+ * <code>lookupDataItemRecord</code>, <code>lookupDataItemRecords</code>,
+ * <code>updateDataItemRecord</code> and 
+ * <code>deleteDataItemRecord</code> methods.
  *
  * <p>
  * A <code>DataItemRecord</code> is added to the registry, the
  * <code>lookupDataItemRecord</code> and
  * <code>lookupDataItemRecords</code> methods are invoked to lookup
- * detals of this record and finally the <code>DataItemRecord</code> is
+ * details of this record and finally the <code>DataItemRecord</code> is
  * deleted.  For the add and delete methods the returned boolean status
  * code is checked and the lookup methods the returned values are checked.
  *
@@ -131,6 +132,18 @@ public class TestRegistryManager extends TestCase
       Assert.assertEquals(vec2.size(), 0);
 
       System.out.println("Tested lookupDataItemRecords...");
+
+//
+//   Update the DataItemRecord.
+
+      DataItemRecord itemRec3 = new DataItemRecord("fred", 99999,
+        "fred.VOT", "acd", creation, creation, 0, 0, "different");
+      Assert.assertTrue(reg.updateDataItemRecord(itemRec3) );
+
+      DataItemRecord itemRec4 = reg.lookupDataItemRecord(99999);
+      Assert.assertEquals(itemRec4.getPermissionsMask(), "different");
+
+      System.out.println("Tested updateDataItemRecord...");
 
 //
 //   Delete the DataItemRecord from the registry.

@@ -85,6 +85,62 @@ public class MySpaceActions
 // -----------------------------------------------------------------
 
 /**
+  * Generate a list of expired DataHolders.  The method is given a
+  * query string (which may optionally include a wild card).  All the
+  * dataholders which match this query are selected, their expiry dates
+  * checked and a list of all those (if any) which have expired is
+  * returned.
+  */
+
+   public Vector listExpiredDataHolders(String userID, 
+     String communityID, String jobID, String query)
+   {  Vector expiredDataItemVector = new Vector();
+
+      try
+      {  RegistryManager reg = new RegistryManager(registryName);
+
+//
+//      Lookup all the dataItems which match the query and proceed if
+//      any were found.
+
+         Vector dataItemVector = this.internalLookupDataHoldersDetails(
+           userID,  communityID, jobID, query, reg);
+         if (dataItemVector.size() > 0)
+         {
+
+//
+//         Obtain the current date.
+
+            Date currentDate = new Date();
+
+//         Examine each of the returned dataItems, checking for
+//         expired ones.
+
+            DataItemRecord currentDataItem = new DataItemRecord();
+
+            for (int loop=0; loop<dataItemVector.size(); loop++)
+            {  currentDataItem =
+                 (DataItemRecord)dataItemVector.elementAt(loop);
+               Date expiryDate = currentDataItem.getExpiryDate();
+
+               if (currentDate.after(expiryDate) )
+               {  expiredDataItemVector.add(currentDataItem);
+               }
+            }
+         }
+      }
+      catch (Exception all)
+      {  MySpaceStatus status  = new MySpaceStatus(
+           MySpaceStatusCode.AGMMCE00100, MySpaceStatusCode.ERROR,
+           MySpaceStatusCode.LOG, this.getClassName() );
+      }
+
+      return expiredDataItemVector;
+   }
+
+// -----------------------------------------------------------------
+
+/**
   * Copy a DataHolder from one location on a MySpace server to another
   * location on the same server.
   */
@@ -863,8 +919,244 @@ public class MySpaceActions
       return returnStatus;
    }
 
+// -----------------------------------------------------------------
+
+/**
+  * Change the owner of a DataHolder.
+  */
+
+   public DataItemRecord changeOwnerDataHolder(String userID,
+     String communityID, String jobID, int dataItemID, String newOwnerID)
+   {  DataItemRecord returnedDataItem = new DataItemRecord();
+      returnedDataItem = null;
+
+      MySpaceStatus status = new MySpaceStatus();
+
+      try
+      {
+//
+//      Attempt to open the registry and proceed if ok.
+
+         RegistryManager reg = new RegistryManager(registryName);
+         if (status.getSuccessStatus())
+         {
+
+//
+//         Assemble the UserAccount from the UserID and CommunityID.
+
+            UserAccount userAcc = new UserAccount(userID, communityID);
+
+//
+//         Check the user's authentication and proceed if ok.
+
+            if (userAcc.checkAuthentication() )
+            {
+
+//
+//            Attempt to lookup the details of the DataHolder and proceed
+//            if ok.
+
+               DataItemRecord dataItem = 
+                 this.internalLookupDataHolderDetails(userID, communityID,
+                   jobID, dataItemID, reg);
+               if (status.getSuccessStatus())
+               {
+
+//
+//               Check that the user is allowed to access the DataHolder.
+
+                  String permissions;
+                  permissions = dataItem.getPermissionsMask();
+                  String ownerID;
+                  ownerID = dataItem.getOwnerID();
+
+                  if (userAcc.checkAuthorisation(UserAccount.WRITE,
+                    ownerID, permissions))
+                  {
+
+//
+//                  Create a DataItemRecord for the replacement
+//                  DataHolder, setting the new owner.
+
+                     String dataItemName = dataItem.getDataItemName();
+                     String dataItemFile = dataItem.getDataItemFile();
+                     Date creationDate = dataItem.getCreationDate();
+                     Date expiryDate = dataItem.getExpiryDate();
+                     int size = dataItem.getSize();
+                     int type = dataItem.getType();
+                     String permissionsMask = dataItem.getPermissionsMask();
+
+                     DataItemRecord newDataItem = new
+                        DataItemRecord(dataItemName, dataItemID,
+                          dataItemFile, newOwnerID, creationDate,
+                          expiryDate, size, type, permissionsMask);
+
+//
+//                  Update the entry with this new DataItemRecord.
+
+                     if (reg.updateDataItemRecord(newDataItem) )
+                     {  returnedDataItem  = newDataItem;
+                     }
+                     else
+                     {  status.addCode(MySpaceStatusCode.AGMMCE00203,
+                          MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+                          this.getClassName() );
+                     }
+                  }
+                  else
+                  {  status.addCode(MySpaceStatusCode.AGMMCE00207,
+                       MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+                       this.getClassName() );
+                  }
+               }
+               else
+               {  status.addCode(MySpaceStatusCode.AGMMCE00201,
+                    MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+                    this.getClassName() );
+               }
+            }
+         }
+
+//
+//      Re-write the registry file.
+
+         reg.rewriteRegistryFile();
+      }
+      catch (Exception all)
+      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+           MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+           this.getClassName() );
+      }
+
+      return returnedDataItem;
+   }
 
 // -----------------------------------------------------------------
+
+/**
+  * Advance the expiry date of a DataHolder.
+  *
+  * @param advance The number of days by which the expiry date is to
+  * be advanced into the future.  A negative value will bring the
+  * expiry date closer to the present.
+  */
+
+   public DataItemRecord advanceExpiryDataHolder(String userID,
+     String communityID, String jobID, int dataItemID, int advance)
+   {  DataItemRecord returnedDataItem = new DataItemRecord();
+      returnedDataItem = null;
+
+      MySpaceStatus status = new MySpaceStatus();
+
+      try
+      {
+//
+//      Attempt to open the registry and proceed if ok.
+
+         RegistryManager reg = new RegistryManager(registryName);
+         if (status.getSuccessStatus())
+         {
+
+//
+//         Assemble the UserAccount from the UserID and CommunityID.
+
+            UserAccount userAcc = new UserAccount(userID, communityID);
+
+//
+//         Check the user's authentication and proceed if ok.
+
+            if (userAcc.checkAuthentication() )
+            {
+
+//
+//            Attempt to lookup the details of the DataHolder and proceed
+//            if ok.
+
+               DataItemRecord dataItem = 
+                 this.internalLookupDataHolderDetails(userID, communityID,
+                   jobID, dataItemID, reg);
+               if (status.getSuccessStatus())
+               {
+
+//
+//               Check that the user is allowed to access the DataHolder.
+
+                  String permissions;
+                  permissions = dataItem.getPermissionsMask();
+                  String ownerID;
+                  ownerID = dataItem.getOwnerID();
+
+                  if (userAcc.checkAuthorisation(UserAccount.WRITE,
+                    ownerID, permissions))
+                  {
+
+//
+//                  Create a DataItemRecord for the replacement
+//                  DataHolder, calculating the new expiry date.
+
+                     String dataItemName = dataItem.getDataItemName();
+                     String dataItemFile = dataItem.getDataItemFile();
+                     Date creationDate = dataItem.getCreationDate();
+                     int size = dataItem.getSize();
+                     int type = dataItem.getType();
+                     String permissionsMask = dataItem.getPermissionsMask();
+
+                     Date currentExpiryDate = dataItem.getExpiryDate();
+
+                     Calendar cal = Calendar.getInstance();
+                     cal.setTime(currentExpiryDate);
+                     cal.add(Calendar.DATE, advance);
+                     Date newExpiryDate = cal.getTime();
+
+                     DataItemRecord newDataItem = new
+                        DataItemRecord(dataItemName, dataItemID,
+                          dataItemFile, ownerID, creationDate,
+                          newExpiryDate, size, type, permissionsMask);
+
+//
+//                  Update the entry with this new DataItemRecord.
+
+                     if (reg.updateDataItemRecord(newDataItem) )
+                     {  returnedDataItem  = newDataItem;
+                     }
+                     else
+                     {  status.addCode(MySpaceStatusCode.AGMMCE00203,
+                          MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+                          this.getClassName() );
+                     }
+                  }
+                  else
+                  {  status.addCode(MySpaceStatusCode.AGMMCE00207,
+                       MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+                       this.getClassName() );
+                  }
+               }
+               else
+               {  status.addCode(MySpaceStatusCode.AGMMCE00201,
+                    MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG,
+                    this.getClassName() );
+               }
+            }
+         }
+
+//
+//      Re-write the registry file.
+
+         reg.rewriteRegistryFile();
+      }
+      catch (Exception all)
+      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+           MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+           this.getClassName() );
+      }
+
+      return returnedDataItem;
+   }
+
+
+
+
+// =================================================================
 
 //
 // The following methods are not `action methods', that is they

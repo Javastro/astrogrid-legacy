@@ -47,6 +47,9 @@ public class TestMySpaceActions extends TestCase
  *   <code>moveDataHolder</code>,
  *   <code>lookupDataHolderDetails</code>,
  *   <code>lookupDataHoldersDetails</code>,
+ *   <code>changeOwnerDataHolder</code>,
+ *   <code>advanceExpiryDataHolder</code>,
+ *   <code>listExpiredDataHolders</code>,
  *   <code>exportDataHolder</code> and
  *   <code>deleteDataHolder</code>.
  */
@@ -174,12 +177,94 @@ public class TestMySpaceActions extends TestCase
       System.out.println("Tested lookupDataHoldersDetails...");
 
 //
+//   Test the <code>changeOwnerDataHolder</code> method.
+
+      dataItemId = dataItem.getDataItemID();
+      dataItem = myspace.changeOwnerDataHolder("clq", "leicester",
+         "j1234", dataItemId, "acd");
+
+      Assert.assertTrue(dataItem != null);
+      if (dataItem != null)
+      {  Assert.assertEquals(dataItem.getOwnerID(), "acd");
+      }
+
+      System.out.println("Tested changeOwnerDataHolder...");
+
+//
+//   Test the <code>advanceExpiryDataHolder</code> method.
+//   The expiry date is advanced by 17 days.
+
+      int advance = 17;
+
+      dataItemId = dataItem.getDataItemID();
+
+      Date currentExpiryDate = dataItem.getExpiryDate();
+
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(currentExpiryDate);
+      cal.add(Calendar.DATE, advance);
+      Date newExpiryDate = cal.getTime();
+
+      DataItemRecord dataItem4 =
+         myspace.advanceExpiryDataHolder("clq", "leicester", "j1234", 
+         dataItemId, advance);
+
+      Assert.assertTrue(dataItem4 != null);
+      if (dataItem != null)
+      {  Assert.assertEquals(dataItem4.getExpiryDate(), newExpiryDate);
+      }
+
+      System.out.println("Tested advanceExpiryDataHolder...");
+
+//
+//   Test the <code>listExpiredDataHolders</code> method.
+//   Decrement the expiry date of a dataHolder into the past, then
+//   search for expired dataHolders.
+
+      Vector dataItems = myspace.lookupDataHoldersDetails("clq",
+        "leicester", "j1234", "/clq/serv1/test/vot3");
+      dataItem = (DataItemRecord)dataItems.elementAt(0);
+      dataItemId = dataItem.getDataItemID();
+
+      advance = -300;
+
+      currentExpiryDate = dataItem.getExpiryDate();
+
+      cal = Calendar.getInstance();
+      cal.setTime(currentExpiryDate);
+      cal.add(Calendar.DATE, advance);
+      newExpiryDate = cal.getTime();
+
+      dataItem4 =
+         myspace.advanceExpiryDataHolder("clq", "leicester", "j1234", 
+         dataItemId, advance);
+
+      Vector exiredItems = myspace.listExpiredDataHolders("clq",
+        "leicester", "j1234", "/clq/serv1/test/*");
+
+      Assert.assertTrue(exiredItems.size() == 1);
+      if (exiredItems.size() > 0)
+      {  dataItem = (DataItemRecord)exiredItems.elementAt(0);
+
+         System.out.println("expired: " + dataItem.getDataItemName());
+
+         Assert.assertEquals(dataItem.getDataItemName(),
+           "/clq/serv1/test/vot3");
+         Assert.assertEquals(dataItem.getType(), DataItemRecord.VOT);
+         Assert.assertEquals(dataItem.getExpiryDate(), newExpiryDate);
+      }
+
+      System.out.println("Tested listExpiredDataHolders...");
+
+//
 //   Test the <code>exportDataHolder</code> method.
 
       String exportURI = myspace.exportDataHolder("clq", "leicester",
         "j1234", dataItemId3);
 
       Assert.assertEquals(exportURI, "http://www.blue.nowhere.org/s1/file");
+
+      System.out.println("Tested exportDataHolder...");
 
 //
 //   Test the <code>deleteDataHolder</code> method.
@@ -193,7 +278,7 @@ public class TestMySpaceActions extends TestCase
       Assert.assertTrue(myspace.deleteDataHolder("clq", "leicester",
         "j1234", dataItemId1) );
 
-      System.out.println("Tested exportDataHolder...");
+      System.out.println("Tested deleteDataHolder...");
 
 //
 //   Finally check that no errors or warnings have been issued.
