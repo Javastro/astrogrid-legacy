@@ -1,4 +1,4 @@
-/* $Id: DummyRequest.java,v 1.3 2004/04/07 13:22:28 jl99 Exp $
+/* $Id: DummyRequest.java,v 1.1 2004/04/16 08:16:00 jl99 Exp $
  * Created on Mar 22, 2004 by jdt
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -432,6 +432,9 @@ public final class DummyRequest implements Request {
 
 /*
  *  $Log: DummyRequest.java,v $
+ *  Revision 1.1  2004/04/16 08:16:00  jl99
+ *  Relocation of DummyRequest
+ *
  *  Revision 1.3  2004/04/07 13:22:28  jl99
  *  Unit tests extended into parameter metadata
  *
