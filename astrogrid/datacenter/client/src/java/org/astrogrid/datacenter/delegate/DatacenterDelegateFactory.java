@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegateFactory.java,v 1.8 2003/12/03 19:37:03 mch Exp $
+ * $Id: DatacenterDelegateFactory.java,v 1.9 2003/12/15 14:29:19 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -77,6 +77,14 @@ public class DatacenterDelegateFactory {
          return new NvoConeSearchDelegate(givenEndPoint);
       }
       
+		if (serviceType.equals(ASTROGRID_WEB_SERVICE)) {
+				try {
+					return new WebDelegate(Certification.ANONYMOUS, new URL(givenEndPoint));
+				} catch (ServiceException e) {
+					throw new DatacenterException("Could not connect to "+givenEndPoint, e);
+				}
+			}
+			 
       throw new IllegalArgumentException("Service Type '"+serviceType+"' unknown");
    }
    
@@ -181,6 +189,9 @@ public class DatacenterDelegateFactory {
 
 /*
  $Log: DatacenterDelegateFactory.java,v $
+ Revision 1.9  2003/12/15 14:29:19  mch
+ Added WebDelegate to ConeSearch factory method
+
  Revision 1.8  2003/12/03 19:37:03  mch
  Introduced DirectDelegate, fixed DummyQuerier
 
