@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.9 2003/12/10 12:27:56 kea Exp $
+ * $Id: WarehouseQuerier.java,v 1.10 2003/12/11 13:14:48 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -207,10 +207,10 @@ public class WarehouseQuerier extends Querier
     // Configure parameters for external call
     String[] cmdArgs;
     if (tempFile == null) {
-      cmdArgs = new String[4];
+      cmdArgs = new String[5];
     }
     else {
-      cmdArgs = new String[5];
+      cmdArgs = new String[6];
     }
     //cmdArgs[0] = serviceProperties.getProperty(
      //             "WarehouseJvm", DEFAULT_WAREHOUSE_JVM);
@@ -218,8 +218,9 @@ public class WarehouseQuerier extends Querier
     cmdArgs[1] = "-jar";
     cmdArgs[2] = getExecutableJar();
     cmdArgs[3] = sql;
+    cmdArgs[4] = getOgsaDaiRegistryString();
     if (tempFile != null) {
-      cmdArgs[4] = tempFile.getAbsolutePath();
+      cmdArgs[5] = tempFile.getAbsolutePath();
       log.debug("Command is: " + cmdArgs[0] + " " + cmdArgs[1] + 
             " " + cmdArgs[2] + " " + cmdArgs[3] + " " + cmdArgs[4]);
       // TOFIX REMOVE
@@ -328,6 +329,33 @@ public class WarehouseQuerier extends Querier
       log.error(errorMessage + ": " + e.getMessage());
       throw new DatabaseAccessException(errorMessage);
     }
+  }
+
+  /* 
+   * Assembles the URL of the OGSA-DAI registry to be used by the 
+   * GdsQueryDelegate.
+   * 
+   * @return  String holding full URL of the OGSA-DAI registry
+   * @throws DatabaseAccessException
+   */
+  protected String getOgsaDaiRegistryString() throws DatabaseAccessException {
+    String host = serviceProperties.getProperty("OgsaDaiHostString");
+    if (host == null) {
+      String errorMessage = 
+        "Fatal error: Property 'OgsaDaiHostString' not found in file " +
+        "'WarehouseQuerier.properties'";
+      log.error(errorMessage);
+      throw new DatabaseAccessException(errorMessage);
+    }
+    String registry = serviceProperties.getProperty("OgsaDaiRegistryString");
+    if (registry == null) {
+      String errorMessage = 
+        "Fatal error: Property 'OgsaDaiHostString' not found in file " +
+        "'WarehouseQuerier.properties'";
+      log.error(errorMessage);
+      throw new DatabaseAccessException(errorMessage);
+    }
+    return host + registry;
   }
 
   /* 
@@ -446,6 +474,10 @@ public class WarehouseQuerier extends Querier
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.10  2003/12/11 13:14:48  kea
+Moved OGSA-DAI host and registry location into WarehouseQuerier properties
+file so they can be edited more easily in a tomcat inst.
+
 Revision 1.9  2003/12/10 12:27:56  kea
 Finding JVM to shell out to from JAVA_HOME.
 
