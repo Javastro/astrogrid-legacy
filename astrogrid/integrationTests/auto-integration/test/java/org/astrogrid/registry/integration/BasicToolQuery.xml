@@ -2,7 +2,9 @@
 	<selectionSequence>
 		<selection item="searchElements" itemOp="EQ" value="Resource"/>
 		<selectionOp op="$and$"/>
-		<selection item="vr:Identifier/vr:AuthorityID" itemOp="EQ"
+		<selection item="vr:Identifier/vr:AuthorityId" itemOp="EQ"
                    value="org.astrogrid.localhost"/>
+		<selectionOp op="AND"/>
+		<selection item="@xsi:type" itemOp="EQ" value="CeaApplicationType"/>
 	</selectionSequence>
 </query>

@@ -1,0 +1,14 @@
+<query>
+	<selectionSequence>
+		<selection item="searchElements" itemOp="EQ" value="Resource"/>
+		<selectionOp op="$and$"/>
+		<selection item="vr:Identifier/vr:AuthorityId" itemOp="EQ"
+                   value="org.astrogrid.localhost"/>
+		<selectionOp op="AND"/>
+		<selection item="vr:Identifier/vr:ResourceKey" itemOp="EQ"
+                   value="noaa_trace"/>
+		<selectionOp op="AND"/>
+		<selection item="vs:Table/vs:Column/vr:Name" itemOp="EQ"
+                   value="time_start"/>
+	</selectionSequence>
+</query>

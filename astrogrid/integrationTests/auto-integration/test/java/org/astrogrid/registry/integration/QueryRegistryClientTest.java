@@ -1,4 +1,4 @@
-/*$Id: QueryRegistryClientTest.java,v 1.7 2004/08/25 11:40:50 KevinBenson Exp $
+/*$Id: QueryRegistryClientTest.java,v 1.8 2004/08/27 13:23:08 rtp Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,6 +27,7 @@ import java.net.URL;
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Apr-2004
  * @author Paul Harrison pah@jb.man.ac.uk 07-May-2004
+ * @author Roy Platon rtp@rl.ac.uk 16-Aug-2004
  *
  */
 public class QueryRegistryClientTest extends RegistryBaseTest {
@@ -47,34 +48,76 @@ public class QueryRegistryClientTest extends RegistryBaseTest {
        DomHelper.DocumentToStream(result,System.out);
     }
     
-    public void testSubmitQuery() throws Exception {
+    public void testLocalHostResources() throws Exception {
        Document queryDoc = askQueryFromFile("GetLocalHostResources.xml");
        Document  result = rs.submitQuery(queryDoc);
        assertNotNull(result);
        DomHelper.DocumentToStream(result,System.out);       
     }
     
-   public void testSubmitQuery2() throws Exception {
+   public void testContainsResources() throws Exception {
       Document queryDoc = askQueryFromFile("GetContainsResources.xml");
       Document  result = rs.submitQuery(queryDoc);
       assertNotNull(result);
       DomHelper.DocumentToStream(result,System.out);       
    }
+
+/*
+ *  Some Typical Queries
+ */   
+   public void testBasicCatalogueQuery() throws Exception {
+      Document queryDoc = askQueryFromFile("BasicCatalogueQuery.xml");
+      Document  result = rs.submitQuery(queryDoc);
+      assertNotNull(result);
+      DomHelper.DocumentToStream(result,System.out);       
+   }
    
-   public void testGetResourceByIdentifier() throws Exception {
-      Document result = rs.getResourceByIdentifier("org.astrogrid.localhost/noaa_trace");
+   public void testBasicToolQuery() throws Exception {
+      Document queryDoc = askQueryFromFile("BasicToolQuery.xml");
+      Document  result = rs.submitQuery(queryDoc);
+      assertNotNull(result);
+      DomHelper.DocumentToStream(result,System.out);       
+   }
+   
+   public void testColumnQuery() throws Exception {
+      Document queryDoc = askQueryFromFile("ColumnQuery.xml");
+      Document  result = rs.submitQuery(queryDoc);
+      assertNotNull(result);
+      DomHelper.DocumentToStream(result,System.out);       
+   }
+   
+   public void testTabularSkyServiceQuery() throws Exception {
+      Document queryDoc = askQueryFromFile("TabularSkyServiceQuery.xml");
+      Document  result = rs.submitQuery(queryDoc);
+      assertNotNull(result);
+      DomHelper.DocumentToStream(result,System.out);       
+   }
+   
+   public void testUCDQuery() throws Exception {
+      Document queryDoc = askQueryFromFile("UCDQuery.xml");
+      Document  result = rs.submitQuery(queryDoc);
+      assertNotNull(result);
+      DomHelper.DocumentToStream(result,System.out);       
+   }
+   
+   public void testResourceByIdentifier() throws Exception {
+      Document result =
+         rs.getResourceByIdentifier("org.astrogrid.localhost/noaa_trace");
       assertNotNull(result);
       DomHelper.DocumentToStream(result,System.out);      
    }
    
-   public void testGetEndpointByIdentifier() throws Exception {
-      //String result = qr.getEndPointByIdentifier("org.astrogrid.localhost/org.astrogrid.community.common.security.service.SecurityService");
+   public void testEndpointByIdentifier() throws Exception {
+      //String result =
+      //  qr.getEndPointByIdentifier( "org.astrogrid.localhost/" +
+      //  "org.astrogrid.community.common.security.service.SecurityService");
       //assertNotNull(result);
       //System.out.println("the endpoint = " + result);
    }
 
-   public void testGetEndpointByIdentifier2() throws Exception {
-      String result = rs.getEndPointByIdentifier("org.astrogrid.localhost/sia");
+   public void testEndpointByIdentifier2() throws Exception {
+      String result =
+         rs.getEndPointByIdentifier("org.astrogrid.localhost/sia");
       assertNotNull(result);
       System.out.println("the endpoint2 = " + result);
    }
