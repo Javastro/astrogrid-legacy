@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQueryMaker.java,v 1.4 2004/10/12 22:46:42 mch Exp $
+ * $Id: SqlQueryMaker.java,v 1.5 2004/10/12 23:09:53 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -28,6 +28,7 @@ public class SqlQueryMaker  {
    
    /** Static method for convenience */
    public static Query makeQuery(String sql) {
+      assert (sql != null);
       return SqlParser.makeQuery(sql);
    }
    
@@ -37,6 +38,9 @@ public class SqlQueryMaker  {
 
 /*
  $Log: SqlQueryMaker.java,v $
+ Revision 1.5  2004/10/12 23:09:53  mch
+ Lots of changes to querying to get proxy querying to SSA, and registry stuff
+
  Revision 1.4  2004/10/12 22:46:42  mch
  Introduced typed function arguments
 

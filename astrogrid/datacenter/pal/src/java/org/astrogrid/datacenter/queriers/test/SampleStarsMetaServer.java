@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsMetaServer.java,v 1.3 2004/10/08 17:14:22 mch Exp $
+ * $Id: SampleStarsMetaServer.java,v 1.4 2004/10/12 23:09:53 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -28,7 +28,7 @@ import org.astrogrid.datacenter.queriers.sql.TabularSkyServicePlugin;
 public class SampleStarsMetaServer extends FileResourcePlugin
 {
    /** Returns a URL to the metadata file */
-   public URL getMetadataUrl() throws IOException {
+   public URL[] getResourceUrls() throws IOException {
 
       //check that this isn't still serving metadata for a non SampleStars query plugin
       String pluginClass = SimpleConfig.getSingleton().getString(QuerierPluginFactory.QUERIER_PLUGIN_KEY);
@@ -42,7 +42,7 @@ public class SampleStarsMetaServer extends FileResourcePlugin
          //this works OK for deployment, but not unit tests...
          url = Config.resolveFilename("samplestars.metadata.xml");
       }
-      return url;
+      return new URL[] { url };
    }
    
    /**

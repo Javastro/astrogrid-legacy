@@ -1,5 +1,5 @@
 /*
- * $Id: Sql2Adql074Test.java,v 1.5 2004/10/06 21:12:17 mch Exp $
+ * $Id: Sql2Adql074Test.java,v 1.6 2004/10/12 23:09:53 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,8 +11,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.queriers.sql.StdSqlMaker;
 import org.astrogrid.datacenter.query.Query2Adql074;
 import org.astrogrid.datacenter.query.SqlQueryMaker;
+import org.astrogrid.datacenter.sky.Angle;
 import org.astrogrid.util.DomHelper;
 import org.xml.sax.SAXException;
 
@@ -60,7 +63,13 @@ public class Sql2Adql074Test extends TestCase   {
    }
    
    public void testCircle() throws IOException, ParserConfigurationException {
-      String s = "SELECT * FROM table WHERE CIRCLE(J2000, 25, 35, 6)";
+      String s = "SELECT * FROM table WHERE CIRCLE('J2000', 25, 35, 6)";
+      assertValidXml(translate(s));
+   }
+
+   public void testConvertedCircle() throws IOException, ParserConfigurationException {
+      SimpleConfig.setProperty(StdSqlMaker.DB_TRIGFUNCS_IN_RADIANS, "true");
+      String s = "SELECT * FROM table WHERE "+new StdSqlMaker().makeSqlCircleCondition(new Angle(25.0), new Angle(35), new Angle(6));
       assertValidXml(translate(s));
    }
 
@@ -80,7 +89,7 @@ public class Sql2Adql074Test extends TestCase   {
    }
    public void testNvo3() throws IOException, ParserConfigurationException {
       assertValidXml(translate(
-         "Select t.*, b.* From Tab as t, Bob as b Where t.g <> b.g and Circle(J2000,12.5,23.0,5.0)"
+         "Select t.*, b.* From Tab as t, Bob as b Where t.g <> b.g and Circle('J2000',12.5,23.0,5.0)"
       ));
    }
    public void testNvo4() throws IOException, ParserConfigurationException {
@@ -100,11 +109,14 @@ public class Sql2Adql074Test extends TestCase   {
       ));
    }
     /**/
+   
    public void testNvo7() throws IOException, ParserConfigurationException {
       assertValidXml(translate(
-         "Select a.* from Tab as a where Circle(Cartesian, 1.2, 2.4,3.6,0.2)"
+//         "Select a.* from Tab as a where Circle('Cartesian', 1.2, 2.4,3.6,0.2)"
+         "Select a.* from Tab as a where Circle('J2000', 1,2,3)"
       ));
    }
+   
    /* Not yet implemented
    public void testNvo8() throws IOException, ParserConfigurationException {
       assertValidXml(translate(
@@ -161,6 +173,9 @@ public class Sql2Adql074Test extends TestCase   {
 
 /*
  $Log: Sql2Adql074Test.java,v $
+ Revision 1.6  2004/10/12 23:09:53  mch
+ Lots of changes to querying to get proxy querying to SSA, and registry stuff
+
  Revision 1.5  2004/10/06 21:12:17  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.10 2004/10/12 12:33:22 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.11 2004/10/12 23:09:53 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -80,7 +80,7 @@ public class InstallationSelfCheck extends TestCase {
       assertNotNull("Plugin class must provide constructor(String,Query)",constr);
    }
 
-   /** Submits a query to get all of the database using ADQL */
+   /** Ask a query to get all of the database using ADQL. Should fail on all but the sample dbs... */
    public void testBigAdqlSearch() throws Throwable
    {
       DataServer server = new DataServer();
@@ -90,7 +90,7 @@ public class InstallationSelfCheck extends TestCase {
                      "  <From> <Table xsi:type='tableType' Name='SampleStars' Alias='s' />  </From>"+
                      "</Select>";
 
-      server.submitQuery(Account.ANONYMOUS, AdqlQueryMaker.makeQuery(adql, TargetIndicator.makeIndicator(new NullWriter()), ReturnTable.CSV));
+      server.askQuery(Account.ANONYMOUS, AdqlQueryMaker.makeQuery(adql, TargetIndicator.makeIndicator(new NullWriter()), ReturnTable.CSV));
    }
 
    /** Checks the querier/plugin operates - runs a cone query that will exercise it - so
@@ -184,6 +184,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.11  2004/10/12 23:09:53  mch
+ Lots of changes to querying to get proxy querying to SSA, and registry stuff
+
  Revision 1.10  2004/10/12 12:33:22  mch
  Removed soak test as it's inappropriate to run on real services
 

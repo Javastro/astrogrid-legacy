@@ -52,6 +52,18 @@
   </servlet>
 
   <servlet>
+    <servlet-name>SubmitQuery</servlet-name>
+    <description>Servlet for submitting (asynchronous) queries via POST or GET</description>
+    <servlet-class>org.astrogrid.datacenter.servlet.SubmitQuery</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>AskQuery</servlet-name>
+    <description>Servlet for asking (synchronous) queries via POST or GET</description>
+    <servlet-class>org.astrogrid.datacenter.servlet.AskQuery</servlet-class>
+  </servlet>
+
+  <servlet>
     <servlet-name>AttemptAbort</servlet-name>
     <description>Servlet for attempting to abort a query</description>
     <servlet-class>org.astrogrid.datacenter.servlet.AttemptAbort</servlet-class>
@@ -82,6 +94,12 @@
     <servlet-class>org.astrogrid.datacenter.servlet.GetMetadata</servlet-class>
   </servlet>
 
+  <servlet>
+    <servlet-name>Register</servlet-name>
+    <description>(re)Registers the service (sends the metadata to the configured Registries)</description>
+    <servlet-class>org.astrogrid.datacenter.servlet.Register</servlet-class>
+  </servlet>
+
   <!-- CEA -->
   <servlet>
       <servlet-name>cec-http</servlet-name>
@@ -96,6 +114,16 @@
   </servlet>
 
   <!-- Query Managing tasks -->
+  <servlet-mapping>
+    <servlet-name>SubmitQuery</servlet-name>
+    <url-pattern>/SubmitQuery</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>AskQuery</servlet-name>
+    <url-pattern>/AskQuery</url-pattern>
+  </servlet-mapping>
+
   <servlet-mapping>
     <servlet-name>SubmitCone</servlet-name>
     <url-pattern>/SubmitCone</url-pattern>
@@ -147,6 +175,11 @@
     <url-pattern>/admin/GetLog</url-pattern>
   </servlet-mapping>
   
+  <servlet-mapping>
+    <servlet-name>Register</servlet-name>
+    <url-pattern>/admin/Register</url-pattern>
+  </servlet-mapping>
+
   <servlet-mapping>
     <servlet-name>GetMetadata</servlet-name>
     <url-pattern>/GetMetadata</url-pattern>

@@ -27,7 +27,7 @@
       <ul>
          <li><a href="serverStatus.jsp">Status</a>
          <li><a href="viewMetadata.jsp">Metadata</a>
-         <li><a href="admin/GetLog">Log</a>
+         <li><a href="admin/">Admin</a>
          <li><a href="fingerprint.jsp">Fingerprint</a>
       </ul>
    </div>

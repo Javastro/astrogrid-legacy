@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.3 2004/10/08 15:16:04 mch Exp $
+ * $Id: ServletHelper.java,v 1.4 2004/10/12 23:09:53 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,10 +9,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import javax.servlet.GenericServlet;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.datacenter.returns.ReturnTable;
@@ -30,11 +30,33 @@ public class ServletHelper
    
    protected static Log log = LogFactory.getLog(ServletHelper.class);
 
+   private static String urlStem = null;
    
-   /** Works out url stem - eg http://grendel12.roe.ac.uk/pal-6df - from the
-    * servlet context */
+   /** Provides static access to the url stem (eg http://grendel12.roe.ac.uk/pal-6df) which
+    * will have to have been set from a servlet call to setUrlStem beforehand. May be a
+    * static way of doing this? Returns stem without final slash */
    public static String getUrlStem() {
-      return null;
+      if (urlStem != null) {
+         return urlStem;
+      }
+      //might be set in config for authority stuff
+      String configStem = SimpleConfig.getSingleton().getString("datacenter.url", null);
+      if (configStem.endsWith("/")) {
+         configStem = configStem.substring(0,configStem.length()-1);
+      }
+      return configStem;
+   }
+
+   public static void setUrlStem(HttpServletRequest request) {
+      urlStem = request.getServerName() +":" + request.getServerPort()+"/"+request.getContextPath();
+      if (urlStem.endsWith("/")) {
+         urlStem = urlStem.substring(0,urlStem.length()-1);
+      }
+   }
+   /**
+    * Gets the user details from the request */
+   public static Account getUser(HttpServletRequest request)  {
+      return Account.ANONYMOUS;
    }
 
    /**
@@ -42,6 +64,19 @@ public class ServletHelper
     * the parameters in the given request.  The parameter names should match
     * those assigned in resultsForm.xml */
    public static ReturnSpec makeReturnSpec(HttpServletRequest request)  {
+
+      ReturnTable returns = new ReturnTable(null);
+
+      fillReturnSpec(returns, request);
+      
+      return returns;
+   }
+
+   /**
+    * Convenience routine for JSPs; decides where target should be from
+    * the parameters in the given request.  The parameter names should match
+    * those assigned in resultsForm.xml */
+   public static void fillReturnSpec(ReturnTable tableSpec, HttpServletRequest request)  {
 
       TargetIndicator target = null;
 
@@ -65,29 +100,26 @@ public class ServletHelper
          }
       }
       
-      ReturnTable returns = new ReturnTable(target);
-      
       String format = request.getParameter("Format");
       if ( (format != null) && (format.trim().length()>0)) {
-         returns.setFormat(format);
+         tableSpec.setFormat(format);
       }
       
       String compression = request.getParameter("Compression");
       if ( (compression != null) && (compression.trim().length()>0)) {
-         returns.setCompression(compression);
+         tableSpec.setCompression(compression);
       }
 
       String limit = request.getParameter("Limit");
       if ( (limit != null) && (limit.trim().length()>0)) {
-         returns.setLimit(Integer.parseInt(limit));
+         tableSpec.setLimit(Integer.parseInt(limit));
       }
 
-      return returns;
-      
    }
-
    
 
+   
+   
    /** Convenience routine for returning the correct 'HTML' snippet that
     * refreshes the page given by the URL - which should point to the same page
     * that contains the snippet */

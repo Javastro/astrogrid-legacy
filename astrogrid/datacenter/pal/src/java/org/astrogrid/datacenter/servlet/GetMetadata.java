@@ -1,5 +1,5 @@
 /*
- * $Id: GetMetadata.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: GetMetadata.java,v 1.2 2004/10/12 23:09:53 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -32,7 +32,10 @@ public class GetMetadata extends StdServlet {
             response.getWriter().write(CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry());
          }
          else  {
+            //we still need to wrap it in a VoDescription so that it's a valid document
+            response.getWriter().write(VoDescriptionServer.VODESCRIPTION_ELEMENT);
             response.getWriter().write(DomHelper.ElementToString(VoDescriptionServer.getResource(resourceType)));
+            response.getWriter().write(VoDescriptionServer.VODESCRIPTION_ELEMENT_END);
          }
       }
       catch (Throwable th) {

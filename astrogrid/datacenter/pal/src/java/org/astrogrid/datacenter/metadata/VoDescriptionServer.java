@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.3 2004/10/08 17:14:22 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.4 2004/10/12 23:09:53 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,6 +7,7 @@
 package org.astrogrid.datacenter.metadata;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,7 +47,9 @@ public class VoDescriptionServer {
                                "xmlns:vr='http://www.ivoa.net/xml/VOResource/v0.9' "+
                                "xmlns='http://www.ivoa.net/xml/VOResource/v0.9' "+  //default namespace
                     ">";
-   /**
+   public final static String VODESCRIPTION_ELEMENT_END ="</VODescription>";
+
+      /**
     * Returns the whole metadata file as a DOM document
     */
    public synchronized static Document getVoDescription() throws IOException {
@@ -169,7 +172,7 @@ public class VoDescriptionServer {
       }
 
       //finish vod element
-      vod.append("</VODescription>");
+      vod.append(VODESCRIPTION_ELEMENT_END);
 
       return vod.toString();
    }
@@ -206,6 +209,16 @@ public class VoDescriptionServer {
       service.update(getVoDescription());
       return new String[] { SimpleConfig.getSingleton().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY) };
    }
+
+   /**
+    * Sends the voDescription to the given registry URL, returning list of Registries that
+    * it was sent to
+    */
+   public static void pushToRegistry(URL targetRegistry) throws IOException, RegistryException {
+      RegistryAdminService service = RegistryDelegateFactory.createAdmin(targetRegistry);
+      service.update(getVoDescription());
+   }
+   
    
 }
 

@@ -1,4 +1,4 @@
-/*$Id: DatacenterCommander.java,v 1.10 2004/10/08 15:17:54 mch Exp $
+/*$Id: DatacenterCommander.java,v 1.11 2004/10/12 23:09:53 mch Exp $
  * Created on 24-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -143,9 +143,7 @@ public class DatacenterCommander {
       System.out.println("Connecting to server...");
       QuerySearcher del = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS, endpoint.toString(), DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       System.out.println("Asking query...");
-      SqlQueryMaker sqlMaker = new SqlQueryMaker();
-      sqlMaker.parseStatement(sql);
-      Query query = sqlMaker.getQuery();
+      Query query = SqlQueryMaker.makeQuery(sql);
       query.setResultsDef(new ReturnTable(null, QuerySearcher.VOTABLE));
       InputStream results = del.askQuery(query);
       System.out.println("Results:");
@@ -157,6 +155,9 @@ public class DatacenterCommander {
 
 /*
  $Log: DatacenterCommander.java,v $
+ Revision 1.11  2004/10/12 23:09:53  mch
+ Lots of changes to querying to get proxy querying to SSA, and registry stuff
+
  Revision 1.10  2004/10/08 15:17:54  mch
  Some updates to try and reach SSA/etc at ROE
 

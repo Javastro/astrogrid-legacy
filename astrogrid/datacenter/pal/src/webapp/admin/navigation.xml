@@ -14,7 +14,7 @@
          <li><a href="../GetMetadata">XML</a>
          <li><a href="../viewMetadata.jsp">View</a>
          <li><a href="editMetadata.jsp">Edit</a>
-         <li><a href="pushMetadata.jsp">Register</a>
+         <li><a href="register.jsp">Register</a>
       </ul>
    </div>
 

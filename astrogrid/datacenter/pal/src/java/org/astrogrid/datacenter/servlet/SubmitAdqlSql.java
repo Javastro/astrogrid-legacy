@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitAdqlSql.java,v 1.2 2004/10/06 21:12:17 mch Exp $
+ * $Id: SubmitAdqlSql.java,v 1.3 2004/10/12 23:09:53 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -39,6 +39,11 @@ public class SubmitAdqlSql extends StdServlet {
 
       try {
 
+         if ((adqlSql == null) || (adqlSql.trim().length() == 0)) {
+            throw new IllegalArgumentException("AdqlSql parameter is empty");
+         }
+         
+      
          //if a target is not given, we do an asynchronous (ask) Query to the response
          //stream.
          if (tableDef.getTarget() == null) {

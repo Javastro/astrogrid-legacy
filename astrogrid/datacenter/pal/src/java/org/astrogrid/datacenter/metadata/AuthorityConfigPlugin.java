@@ -1,5 +1,5 @@
 /*
- * $Id: AuthorityConfigPlugin.java,v 1.3 2004/10/05 20:26:43 mch Exp $
+ * $Id: AuthorityConfigPlugin.java,v 1.4 2004/10/12 23:09:53 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -62,7 +62,7 @@ public class AuthorityConfigPlugin implements VoResourcePlugin {
 
       XmlTagPrinter iface = authResource.newTag("Interface");
       iface.writeTag("Invocation", "WebService");
-      iface.writeTag("AccessURL", new String[] { "use='full'" }, AxisDataServer.getUrlStem()+"/services/AxisDataServer");
+      iface.writeTag("AccessURL", new String[] { "use='full'" }, AxisDataServer.getUrlStem()+"/services/AxisDataService05");
       
       resourceSnippet.close();
       sw.close();
