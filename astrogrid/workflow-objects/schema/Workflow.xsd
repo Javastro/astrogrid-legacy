@@ -1,26 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<xsd:schema targetNamespace="http://www.astrogrid.org/schema/AGWorkflow/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:agcred="http://www.astrogrid.org/schema/Credentials/v1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:agwf="http://www.astrogrid.org/schema/AGWorkflow/v1" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xsd:schema targetNamespace="http://www.astrogrid.org/schema/AGWorkflow/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:agcred="http://www.astrogrid.org/schema/Credentials/v1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:agwf="http://www.astrogrid.org/schema/AGWorkflow/v1" xmlns:er="http://www.astrogrid.org/schema/ExecutionRecord/v1" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xsd:import namespace="http://www.astrogrid.org/schema/Credentials/v1" schemaLocation="Credentials.xsd"/>
 	<xsd:import namespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" schemaLocation="AGParameterDefinition.xsd"/>
+	<xsd:import namespace="http://www.astrogrid.org/schema/ExecutionRecord/v1" schemaLocation="ExecutionRecord.xsd" />
 	<xsd:element name="workflow">
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element ref="agwf:sequence"/>
 				<xsd:element name="description" type="xsd:string" minOccurs="0"/>
-				<xsd:element name="comment" type="xsd:string" minOccurs="0"/>
 				<xsd:element name="Credentials" type="agcred:Credentials"/>
-				<!-- NWW - changed description to a simple stirng - before had no content. -->
+				<xsd:element ref="er:job-execution-record" minOccurs="0" />
 			</xsd:sequence>
 			<xsd:attribute name="name" type="xsd:string" use="required"/>
-			<xsd:attribute name="startDate" type="xsd:dateTime" use="optional"/>
-			<xsd:attribute name="completeDate" type="xsd:dateTime" use="optional"/>
-			<xsd:attribute name="jobURN" type="xsd:anyURI" use="optional"/>
-			<xsd:attribute name="status" type="agwf:status" use="optional" default="INITIALIZED"/>
-			<!-- NWW - no point restricting it if there's no restriction ! - and fouls up castor generation too -->
-			<!-- follwoing attributes are filled in / used within the job execution system -->
 		</xsd:complexType>
 	</xsd:element>
+	
 	<xsd:element name="sequence">
 		<xsd:complexType>
 			<xsd:sequence>
@@ -35,14 +30,13 @@
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
+	
 	<xsd:element name="step">
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element ref="agwf:tool"/>
 				<xsd:element name="description" type="xsd:string" minOccurs="0"/>
-				<xsd:element name="comment" type="xsd:string" minOccurs="0"/>
-				<!-- changed type to someting more descriptive -->
-				<!-- NWW - place for jes to add responses -->
+				<xsd:element ref="er:step-execution-record" minOccurs="0" maxOccurs="unbounded" />
 			</xsd:sequence>
 			<xsd:attribute name="name" type="xsd:string" use="required"/>
 			<xsd:attribute name="joinCondition" use="optional" default="any">
@@ -54,17 +48,12 @@
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:attribute>
-			<xsd:attribute name="startDate" type="xsd:dateTime" use="optional"/>
-			<xsd:attribute name="completeDate" type="xsd:dateTime" use="optional"/>
-			<xsd:attribute name="status" type="agwf:status" use="optional" default="INITIALIZED"/>
-			<xsd:attribute name="stepNumber" type="xsd:short" use="required"/>
-			<xsd:attribute name="sequenceNumber" type="xsd:short" use="required"/>
-			<!-- NWW - more compact form -->
-			<!-- NWW - following attributes are filled in / used within the job execution system -->
-			<!-- nww - why are two numberings required? and couldn't it be done with position? -->
-			<!-- NWW changed from xsd:unsignedShort. there's no unsigned types in java, and castor can't handle this type -->
+			<xsd:attribute name="stepNumber" type="xsd:int" use="optional"/>
+			<xsd:attribute name="sequenceNumber" type="xsd:int" use="optional"/>
 		</xsd:complexType>
 	</xsd:element>
+
+
 	<xsd:element name="tool">
 		<xsd:complexType>
 			<xsd:sequence>
@@ -103,12 +92,5 @@
 			<xsd:group ref="agwf:activityChoice" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:group>
-	<xsd:simpleType name="status">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="INITIALIZED"/>
-			<xsd:enumeration value="RUNNING"/>
-			<xsd:enumeration value="COMPLETED"/>
-			<xsd:enumeration value="ERROR"/>
-		</xsd:restriction>
-	</xsd:simpleType>
+
 </xsd:schema>
