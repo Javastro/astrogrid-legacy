@@ -14,6 +14,7 @@ import org.apache.cocoon.environment.SourceResolver;
 import org.apache.cocoon.transformation.AbstractDOMTransformer;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.xml.DocumentContainer;
+import org.apache.log4j.Category;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -23,6 +24,8 @@ import org.xml.sax.SAXException;
  * Add the non-specified menus to the main menu.
  */
 public class MenuTransformer extends AbstractDOMTransformer {
+  private Category logger = Category.getInstance(getClass().getName());
+  
   private String menuDirectory = null;
 
   /* (non-Javadoc)
@@ -33,6 +36,8 @@ public class MenuTransformer extends AbstractDOMTransformer {
     super.setup(resolver, objectModel, src, params);
     
     menuDirectory = params.getParameter("menu-directory", "");
+    
+    logger.debug("[setup] menu directory: " + menuDirectory);
   }
 
   /* (non-Javadoc)
