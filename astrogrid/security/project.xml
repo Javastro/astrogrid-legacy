@@ -31,7 +31,22 @@
     </developerConnection>
   </repository>
 
-  <dependencies> 
+  <dependencies>
+    <!-- TODO: replace the id elements in the old dependencies. -->
+  
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <type>jar</type>
+      <artifactId>astrogrid-community-client</artifactId>
+      <version>SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <type>jar</type>
+      <artifactId>astrogrid-community-common</artifactId>
+      <version>SNAPSHOT</version>
+    </dependency>
   
     <dependency>
       <id>axis</id>

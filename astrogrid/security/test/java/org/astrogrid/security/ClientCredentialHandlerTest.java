@@ -27,13 +27,17 @@ public class ClientCredentialHandlerTest extends TestCase {
 
   /**
    * Tests the report of the set of headers handled.
-   * Requires that at least one type of header be handled.
+   * Requires that wsse:Security be handled.
    */
   public void testGetHeaders () throws Exception {
     ClientCredentialHandler h = new ClientCredentialHandler();
     QName[] headerNames = h.getHeaders();
     assertNotNull(headerNames);
     assertTrue(headerNames.length > 0);
+    for (int i = 0; i < headerNames.length; i++) {
+      if (headerNames[i].equals(WsseHeaderElement.getName())) return;
+    }
+    fail("The handler does not handle the WSSE header.");
   }
 
 

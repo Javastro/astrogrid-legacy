@@ -9,39 +9,30 @@ import junit.framework.TestCase;
  */
 public class PasswordEncodingTest extends TestCase {
 
-  public void testRoundTripPasswordOnly () throws Exception {
+  public void testRoundTripWithMatch () throws Exception {
     String clearTextPassword = "secret";
-    String nonce = null;
-    String timestamp = null;
-    String encodedPassword = PasswordEncoding.encode(clearTextPassword,
-                                                     nonce,
-                                                     timestamp);
-    boolean matched = PasswordEncoding.match(encodedPassword,
-                                             clearTextPassword,
-                                             nonce,
-                                             timestamp);
+    PasswordEncoding pe1 = new PasswordEncoding(clearTextPassword);
+    String nonce = pe1.getNonce();
+    String timestamp = pe1.getTimestamp();
+    String encodedPassword = pe1.getEncodedPassword();
+    System.out.println("Nonce:     " + nonce);
+    System.out.println("Timestamp: " + timestamp);
+    System.out.println("Password:  " + clearTextPassword);
+    System.out.println("Hash:      " + encodedPassword);
+
+    PasswordEncoding pe2 = new PasswordEncoding(encodedPassword,
+                                                nonce,
+                                                timestamp);
+    assertTrue(pe2.nonce.length == pe1.nonce.length);
+    System.out.println(new String(pe2.nonce));
+    System.out.println(new String(pe1.nonce));
+    for (int i = 0; i < pe2.nonce.length; i++) {
+      assertEquals(pe2.nonce[i], pe1.nonce[i]);
+    }
+    boolean matched = pe2.match(clearTextPassword);
+    System.out.println("Matched:   " + matched);
+
     this.assertTrue(matched);
-  }
-
-
-  public void testRoundTripPasswordNonceTimestamp () throws Exception {
-    String clearTextPassword = "secret";
-    String nonce = "wibble";
-    String timestamp = "2004-03-03T17:18.00.000";
-    String encodedPassword = PasswordEncoding.encode(clearTextPassword,
-                                                     nonce,
-                                                     timestamp);
-    boolean matched = PasswordEncoding.match(encodedPassword,
-                                             clearTextPassword,
-                                             nonce,
-                                             timestamp);
-    this.assertTrue(matched);
-
-    matched = PasswordEncoding.match(encodedPassword,
-                                     clearTextPassword,
-                                     null,
-                                     null);
-    this.assertFalse(matched);
   }
 
 

@@ -6,6 +6,10 @@ import javax.xml.namespace.QName;
 import javax.xml.rpc.handler.HandlerRegistry;
 import javax.xml.rpc.handler.HandlerInfo;
 import javax.xml.rpc.Service;
+import org.astrogrid.community.common.security.data.SecurityToken;
+import org.astrogrid.community.client.security.service.SecurityServiceDelegate;
+// @TODO: lose this when the delegate factory is available.
+import org.astrogrid.community.client.security.service.SecurityServiceMockDelegate;
 
 /**
  * Access to the security tokens pertaining to the client side of
@@ -38,6 +42,14 @@ import javax.xml.rpc.Service;
  * the SecurityGuard (i.e. the parent class). After the guard is set,
  * each outgoing message is augmented with credentials matching the
  * current settings in the Guard.
+ *
+ * The convenience method {@link signOn} implements single sign-on to
+ * a network using an initial user-name and password. This method signs
+ * on to some portal that supplies the credentials for subsequent access
+ * to services; these credentials are then stored in the properties of
+ * the security guard. Currently, the credentials are a single-use
+ * password from the AstroGrid community service and this value overwrites
+ * the Username and Password properties.
  *
  * @see {@link ClientCredentialHandler}
  * @see {@link SecurityGuard}
@@ -74,6 +86,25 @@ public class ClientSecurityGuard extends SecurityGuard {
     System.out.println("Setting the credential handler for " + port);
     List chain = reg.getHandlerChain(port);
     chain.add(info);
+  }
+
+
+  /**
+   * Signs on to a network, retrieving credentials for subsequent use
+   * of that network. Signs on with the current values of the Username
+   * and Password properties; updates the Username and Password properties.
+   *
+   * @throws Exception if the sign-on fails
+   */
+  public void signOn () throws Exception {
+
+    // @TODO: use the delegate factory when it becomes available.
+    // Get the inital token (i.e. one-use password from the community
+    // service.
+    SecurityServiceDelegate ssd = new SecurityServiceMockDelegate();
+    SecurityToken st = ssd.checkPassword(this.username, this.password);
+    this.username = st.getAccount();
+    this.password = st.toString();
   }
 
 }

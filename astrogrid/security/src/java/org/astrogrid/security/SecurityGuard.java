@@ -1,7 +1,5 @@
 package org.astrogrid.security;
 
-import java.util.Date;
-
 /**
  * Access to the security credentials pertaining web-service operations.
  *
@@ -26,19 +24,12 @@ public class SecurityGuard {
   /**
    * The username to go into the messages.
    */
-  private String username;
+  protected String username;
 
   /**
    * The clear-text password to go into the messages.
    */
-  private String password;
-
-  /**
-   * The time at which the security credentials were processed.
-   * This timestamp gets copied into the SOAP header as a protection
-   * against replay attacks.
-   */
-  private Date created;
+  protected String password;
 
   /**
    * Flag indicating whether the passwsord should be hashed.
