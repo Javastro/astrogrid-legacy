@@ -4,7 +4,7 @@
 	<property name="jes.war" value="${maven.local.repo}/${astrogrid.groupId}/wars/${jes.war.name}"/>
 	<property name="local.jes.war" value="${basedir}/jes.war"/>
 
-		
+<property file="jes-installer.properties"/>		
 	
 	<!--Public Targets-->
 
@@ -96,7 +96,7 @@
         <get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${jes.war.name}" dest="${jes.war}" verbose="true" usetimestamp="true"/>
     </target>
 	
-    <target name="deploy" depends="createTmpDir,checkTomcat,download,update-war,set-context-path">
+    <target name="deploy" depends="createTmpDir,checkTomcat,download,update-war,set-context-path,define-custom-tasks">
         <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}" 
             path="${input.jes.contextpath}" war="${local.jes.war}" />
     </target>
@@ -107,19 +107,23 @@
 		<property name="jes.service.url" value="${input.tomcat.url}${input.jes.contextpath}/services/jes"/>
 	</target>
 	
-    <target name="undeploy" depends="checkTomcat,set-context-path">
+    <target name="undeploy" depends="checkTomcat,set-context-path,define-custom-tasks">
         <tomcat-remove url="${tomcat.manager.url}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}" 
             path="${input.jes.contextpath}"  />
     </target>   
 
     <target name="update-war" depends="download, input-jes-settings, set-context-path, get-working-dir, checkRegistry">
+    	<property name="jes.monitor.endpoint.url" value="${input.tomcat.url}${input.jes.contextpath}/services/JobMonitorService"/>
+    	<property name="jes.results.endpoint.url" value="${input.tomcat.url}${input.jes.contextpath}/services/ResultListener"/>
         <filterset id="myfilter">
             <filter token="JES_WEBAPP" value="${input.jes.contextpath}"/>
         	<filter token="REG_UPDATE" value="${astrogrid.registry.update.endpoint}"/>
         	<filter token="REG_QUERY" value="${astrogrid.registry.query.endpoint}"/>        	
         	<filter token="JES_WORKING" value="${input.jes.working.dir}"/>        	
-        	<filter token="TOMCATROOT" value="${input.tomcat.url}"/>
+        	<filter token="JES_MONITOR_ENDPOINT" value="${jes.monitor.endpoint.url}"/>
+        	<filter token="JES_RESULTS_ENDPOINT" value="${jes.results.endpoint.url}"/>
         </filterset>
+    	
     	<echo>This jes is being installed with the following settings:</echo>
     	<echo>Webapp: ${input.jes.contextpath}</echo>
     	<echo>Reg update service URL: ${astrogrid.registry.update.endpoint}</echo>
@@ -172,16 +176,11 @@
     </target>
  
 
-	
-	<!-- Configure the custom Ant tasks for the Manager application -->
-    <taskdef name="tomcat-deploy" classname="org.apache.catalina.ant.DeployTask" />
-    <taskdef name="tomcat-install" classname="org.apache.catalina.ant.InstallTask" />
-    <taskdef name="tomcat-list" classname="org.apache.catalina.ant.ListTask" />
-    <taskdef name="tomcat-reload" classname="org.apache.catalina.ant.ReloadTask" />
-    <taskdef name="tomcat-remove" classname="org.apache.catalina.ant.RemoveTask" />
-    <taskdef name="tomcat-resources" classname="org.apache.catalina.ant.ResourcesTask" />
-    <taskdef name="tomcat-roles" classname="org.apache.catalina.ant.RolesTask" />
-    <taskdef name="tomcat-start" classname="org.apache.catalina.ant.StartTask" />
-    <taskdef name="tomcat-stop" classname="org.apache.catalina.ant.StopTask" />
-    <taskdef name="tomcat-undeploy" classname="org.apache.catalina.ant.UndeployTask" />
+    <!-- Configure the custom Ant tasks for the Manager application -->
+	<!-- The reason for making these optional is that they might be already
+	     set by an enclosing Maven? script-->
+	<target name="define-custom-tasks" unless="tasks.already.set">
+    	<taskdef name="tomcat-deploy" classname="org.apache.catalina.ant.DeployTask" />	
+	    <taskdef name="tomcat-remove" classname="org.apache.catalina.ant.RemoveTask" />
+	</target>
 </project>

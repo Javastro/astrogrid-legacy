@@ -26,6 +26,13 @@
             <version>5.0.18</version>
             <properties/>
         </dependency>
+        <!--required to use the Ant 1.6 input task instead of the Ant 1.5.3
+			one...this requirement will probably go away come Maven 1.1-->
+        <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant1.6tasks</artifactId>
+            <version>1.6</version>
+        </dependency>
         <!--stuff needed by the Registry Ant task
         <dependency>
             <groupId>org.astrogrid</groupId>

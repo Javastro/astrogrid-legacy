@@ -22,9 +22,20 @@ prompting you for configuration options.  If you have previously installed JES, 
 to remove this instance or reinstall it.  During installation you will be prompted for a location JES can use as its working 
 directory - this must be writable by Tomcat (and JES given permission under any security manager you may be running).
 <br>
+<h2>Listeners, proxies and URLS - important</h2>
+When you enter the URL of your local Tomcat ensure that you use the full external URL of the machine, ie not 127.0.0.1.
+This is important as it is used to construct the URLs of the JES listeners that are set in the webapp's JNDI properties.
+<BR/>
+Note - you can override the values of these listeners by setting the properties<br/>
+jes.monitor.endpoint.url and <br/>
+jes.results.endpoint.url<br/>
+in your properties input file.  These will take precedence over any urls calculated by
+the installer.  This is particularly useful if you are using a proxying service.
+
+
 
 <h2>License</h2>
 This software is released under the Academic Free License.
 
 Installation and use of the software implies acceptance of our License,
-full details may be found <a href="http://www.astrogrid.org/maven/docs/HEAD/filestore/license.html">here</a>.
+full details may be found <a href="http://www.astrogrid.org/maven/docs/HEAD/jes/license.html">here</a>.

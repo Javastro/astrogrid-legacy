@@ -12,9 +12,9 @@
     <Environment name="jes.locator" value="registry" description="select application-resolving implementation to use" type="java.lang.String" override="false" 
         />
     <!-- could do with computing defaults for these within webapp / web.xml -->
-    <Environment name="jes.monitor.endpoint.url" value="@TOMCATROOT@@JES_WEBAPP@/services/JobMonitorService" 
+    <Environment name="jes.monitor.endpoint.url" value="@JES_MONITOR_ENDPOINT@" 
         description="endpoint for associated jobmonitor web service" type="java.lang.String" override="false" />
-    <Environment name="jes.results.endpoint.url" value="@TOMCATROOT@@JES_WEBAPP@/services/ResultListener" 
+    <Environment name="jes.results.endpoint.url" value="@JES_RESULTS_ENDPOINT@" 
         description="endpoint for associated resultslistener web service" type="java.lang.String" override="false" />
     <Environment name="org.astrogrid.registry.result.version" override="false" type="java.lang.String" value="0.9"/>
 </Context>
