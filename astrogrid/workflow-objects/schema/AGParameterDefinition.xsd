@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: AGParameterDefinition.xsd,v 1.6 2004/03/09 14:33:20 pah Exp $ -->
-<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Paul Harrison (Jodrell Bank Observatory) -->
-<xs:schema targetNamespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<!-- $Id: AGParameterDefinition.xsd,v 1.7 2004/03/13 00:37:42 pah Exp $ -->
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
+<xs:schema targetNamespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:annotation>
 		<xs:documentation>this file captures some of the ideas used in the WSDL-like parameter definition files, but as yet is not used for validation</xs:documentation>
 	</xs:annotation>
@@ -136,10 +136,13 @@
 		</xs:sequence>
 	</xs:complexType>
 	<!--The parameter value probably  needs to be more strongly typed than it is at the moment.....-->
-	<xs:complexType name="parameterValue" mixed="true">
+	<xs:complexType name="parameterValue" mixed="false">
 		<xs:annotation>
 			<xs:documentation>Defines what a parameterValue can contain - for the instance document</xs:documentation>
 		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="value" type="xs:string"/>
+		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required"/>
 		<xs:attribute name="type" type="agpd:parameterTypes" use="optional"/>
 	</xs:complexType>
