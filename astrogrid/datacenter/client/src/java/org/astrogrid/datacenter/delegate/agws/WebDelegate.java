@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.7 2003/11/25 11:54:41 mch Exp $
+ * $Id: WebDelegate.java,v 1.8 2003/11/25 15:47:17 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -56,37 +56,6 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
    /** User certification */
    private Certification certification = null;
    
-
-   /** Don't use this directly - use the factory method
-    * DatacenterDelegate.makeDelegate() in case we need to create new sorts
-    * of datacenter delegates in the future...
-    */
-   public WebDelegate(URL givenEndPoint) throws ServiceException
-   {
-      binding =(AxisDataServerSoapBindingStub) new AxisDataServerServiceLocator().getAxisDataServer( givenEndPoint );
-   }
-
-   
-   /**
-    * Set the certification to be used by this delegate.  Should only really
-    * be a one-off setting, or else the certification should be a parameter
-    * of the method call
-    * @todo sort out whether this delegate is expected to be stateless
-    */
-   public void setCertification(Certification newCert)
-   {
-      this.certification = newCert;
-   }
-
-   /**
-    * Sets the timeout for calling the service - ie how long after the initial call
-    * is made before a timeout exception is thrown
-    */
-   public void setTimeout(int givenTimeout)
-   {
-      binding.setTimeout(givenTimeout);
-   }
-
 
     /**
     * Implementation of a query instance, represening the query at the
@@ -203,8 +172,30 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
            throw new RemoteException("Could not parse document",e);
        }
 
+   } //end WebQueryDelegate
+
+   
+   /** Don't use this directly - use the factory method
+    * DatacenterDelegate.makeDelegate() in case we need to create new sorts
+    * of datacenter delegates in the future...
+    */
+   public WebDelegate(Certification user, URL givenEndPoint) throws ServiceException
+   {
+      binding =(AxisDataServerSoapBindingStub) new AxisDataServerServiceLocator().getAxisDataServer( givenEndPoint );
+      this.certification = user;
    }
 
+   /**
+    * Sets the timeout for calling the service - ie how long after the initial call
+    * is made before a timeout exception is thrown
+    */
+   public void setTimeout(int givenTimeout)
+   {
+      binding.setTimeout(givenTimeout);
+   }
+
+
+   
    /**
     * Returns the number of items that match the given query.  This is useful for
     * doing checks on how big the result set is likely to be before it has to be
@@ -393,6 +384,9 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.8  2003/11/25 15:47:17  mch
+Added certification
+
 Revision 1.7  2003/11/25 11:54:41  mch
 Added framework for SQL-passthrough queries
 
