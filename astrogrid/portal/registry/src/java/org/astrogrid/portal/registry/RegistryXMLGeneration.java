@@ -100,8 +100,8 @@ public class RegistryXMLGeneration extends AbstractGenerator {
     throws IOException, SAXException, ProcessingException {
    
       if(registryDocument != null && oaiView) {
-         registryDocument = 
-               RegistryService.buildOAIDocument(registryDocument,"registrydataview.html", null,reqMap);
+//         registryDocument = 
+//               RegistryService.buildOAIDocument(registryDocument,"registrydataview.html", null,reqMap);
       }
    
       if(registryDocument == null) {
