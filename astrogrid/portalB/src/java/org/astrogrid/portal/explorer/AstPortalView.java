@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/explorer/Attic/AstPortalView.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/12 18:19:38 $</cvs:author>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/17 15:17:34 $</cvs:author>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  * $Log: AstPortalView.java,v $
+ * Revision 1.2  2003/06/17 15:17:34  dave
+ * Added links to live MySpace, including initial XML parser for lookup results
+ *
  * Revision 1.1  2003/06/12 18:19:38  dave
  * Initial import into cvs ...
  *
@@ -21,6 +24,10 @@ import org.astrogrid.portal.base.AstPortalIdent ;
 
 import org.astrogrid.portal.session.AstPortalSession ;
 
+import java.io.Reader ;
+import java.io.StringReader ;
+import java.io.IOException ;
+
 import java.util.Map ;
 import java.util.Iterator ;
 import java.util.Hashtable ;
@@ -28,12 +35,28 @@ import java.util.Hashtable ;
 import java.rmi.RemoteException ;
 import javax.xml.rpc.ServiceException ;
 
+import org.xml.sax.SAXException ;
+import org.xml.sax.SAXParseException ;
+
+import org.astrogrid.portal.util.xml.sax.SAXElementHandler  ;
+import org.astrogrid.portal.util.xml.sax.SAXDocumentHandler ;
+import org.astrogrid.portal.util.xml.sax.SAXAttributeHandler ;
+import org.astrogrid.portal.util.xml.sax.SAXCharacterHandler ;
+
 //
-// Import the generated client stubs.
-import org.astrogrid.portal.mock.myspace.client.MySpaceItem ;
-import org.astrogrid.portal.mock.myspace.client.MySpaceService ;
-import org.astrogrid.portal.mock.myspace.client.MySpaceServiceService ;
-import org.astrogrid.portal.mock.myspace.client.MySpaceServiceServiceLocator ;
+// Import the generated mock client stubs.
+//import org.astrogrid.portal.mock.myspace.client.MySpaceItem ;
+//import org.astrogrid.portal.mock.myspace.client.MySpaceService ;
+//import org.astrogrid.portal.mock.myspace.client.MySpaceServiceService ;
+//import org.astrogrid.portal.mock.myspace.client.MySpaceServiceServiceLocator ;
+//
+// Import the WSDL generated client stubs.
+// ----"----
+import org.astrogrid.portal.services.myspace.client.MySpaceManager ;
+import org.astrogrid.portal.services.myspace.client.MySpaceManagerService ;
+import org.astrogrid.portal.services.myspace.client.MySpaceManagerServiceLocator ;
+// ----"----
+//
 
 /**
  * A class to encapsulate an explorer view in the protal.
@@ -42,6 +65,12 @@ import org.astrogrid.portal.mock.myspace.client.MySpaceServiceServiceLocator ;
 public class AstPortalView
 	extends AstPortalBase
 	{
+
+	/**
+	 * Switch for our debug statements.
+	 *
+	 */
+	public static boolean DEBUG_FLAG = true ;
 
 	/**
 	 * Reference to our session.
@@ -90,20 +119,19 @@ public class AstPortalView
 		this.path = path ;
 		}
 
-
 	/**
 	 * Connection to our MySpace service locator.
 	 * The interface and stub classes comes from the Axis WSDL2Java toolkit.
 	 *
 	 */
-	protected MySpaceServiceService locator = new MySpaceServiceServiceLocator() ;
+	protected MySpaceManagerService locator = new MySpaceManagerServiceLocator() ;
 
 	/**
 	 * Connection to our MySpace service.
 	 * The interface and stub classes comes from the Axis WSDL2Java toolkit.
 	 *
 	 */
-	protected MySpaceService myspace ;
+	protected MySpaceManager myspace ;
 
 	/**
 	 * Initialise our MySpace service.
@@ -111,11 +139,14 @@ public class AstPortalView
 	 */
 	public boolean initMySpaceService()
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("AstPortalView.initMySpaceService()") ;
 		boolean result = false ;
 		if (null == myspace)
 			{
 			try {
-				myspace = locator.getmyspace() ;
+				myspace = locator.getMySpaceManager() ;
 				result = true ;
 				}
 			catch (ServiceException ouch)
@@ -123,15 +154,19 @@ public class AstPortalView
 //
 // FIXME ....
 //
+				if (DEBUG_FLAG) System.out.println("Exception while initialising MySpaceManager") ;
+				if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+
 				}
 			}
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("") ;
 		return result ;
 		}
 
 	/**
 	 * Ping our MySpace service.
-	 * 
-	 */
+	 * Deprecated .. ping method not available on the live MySpaceService
 	public boolean pingMySpaceService()
 		{
 		boolean result = false ;
@@ -149,6 +184,413 @@ public class AstPortalView
 				}
 			}
 		return result ;
+		}
+	 */
+
+	/**
+	 * Call the lookupDataHoldersDetails on our MySpaceManager.
+	 *
+	 */
+	public String lookupDataHoldersDetails()
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("AstPortalView.lookupDataHoldersDetails()") ;
+		//
+		// Create our request, using our path.
+		String request =
+			"<request>" +
+				"<userID>frog</userID>" +
+				"<communityID>frogs</communityID>" +
+				"<jobID>0000</jobID>" +
+				"<mySpaceAction>lookup</mySpaceAction>" +
+				"<query>" + 
+				this.getPath() +
+				"</query>" +
+			"</request>"
+			;
+		//
+		// Call our MySpaceManager service.
+		String response = null ;
+		try {
+			response = myspace.lookupDataHoldersDetails(request) ;
+			}
+		catch (RemoteException ouch)
+			{
+//
+// FIXME ....
+//
+			if (DEBUG_FLAG) System.out.println("Exception calling lookupDataHoldersDetails()") ;
+			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+			}
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		return response ;
+		}
+
+	/**
+	 * Process the lookup response.
+	 *
+	 */
+	public void processDataHoldersDetails(String response)
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("AstPortalView.processDataHoldersDetails()") ;
+
+		//
+		// Create our DocumentHandler.
+		SAXDocumentHandler parser = new SAXDocumentHandler() ;
+		//
+		// <results> element handler.
+		parser.addElementHandler(
+			new SAXElementHandler("results")
+				{
+				//
+				// Start of results element.
+				protected void startElement()
+					throws SAXException
+					{
+					if (DEBUG_FLAG) System.out.println("Start of results") ;
+					}
+				//
+				// Close of results element.
+				protected void closeElement()
+					throws SAXException
+					{
+					if (DEBUG_FLAG) System.out.println("Close of results") ;
+					}
+				//
+				// Initialise results handler.
+				public void init()
+					{
+					//
+					// Add a <status> handler.
+					addElementHandler(
+						new SAXElementHandler("status")
+							{
+							//
+							// Initialise <status> handler.
+							public void init()
+								{
+								//
+								// Add a <status> handler.
+								addElementHandler(
+									new SAXElementHandler("status")
+										{
+										public void init()
+											{
+											//
+											// Handle text content of <status>
+											setCharacterHandler(
+												new SAXCharacterHandler()
+													{
+													public void parseText(String text)
+														throws SAXException
+														{
+														if (DEBUG_FLAG) System.out.println("Status : " + text) ;
+														}
+													}
+												);
+											}
+										}
+									) ;
+								//
+								// Add a <details> handler.
+								addElementHandler(
+									new SAXElementHandler("details")
+										{
+										}
+									) ;
+								//
+								// Add a <currentDate> handler.
+								addElementHandler(
+									new SAXElementHandler("currentDate")
+										{
+										public void init()
+											{
+											setCharacterHandler(
+												new SAXCharacterHandler()
+													{
+													public void parseText(String text)
+														throws SAXException
+														{
+														if (DEBUG_FLAG) System.out.println("Date : " + text) ;
+														}
+													}
+												);
+											}
+										}
+									) ;
+								}
+							}
+						) ;
+					//
+					// Add a <dataItemRecords> handler.
+					addElementHandler(
+						new SAXElementHandler("dataItemRecords")
+							{
+							public void init()
+								{
+								//
+								// Add a <dataItemRecord> handler.
+								addElementHandler(
+									new SAXElementHandler("dataItemRecord")
+										{
+										//
+										// Start of DataItem record.
+										protected void startElement()
+											throws SAXException
+											{
+											if (DEBUG_FLAG) System.out.println("----") ;
+											if (DEBUG_FLAG) System.out.println("Start of DataItem record") ;
+											}
+										//
+										// Close of DataItem record.
+										protected void closeElement()
+											throws SAXException
+											{
+											if (DEBUG_FLAG) System.out.println("Close of DataItem record") ;
+											if (DEBUG_FLAG) System.out.println("----") ;
+											}
+										public void init()
+											{
+
+
+											//
+											// Add a <dataItemName> handler.
+											addElementHandler(
+												new SAXElementHandler("dataItemName")
+													{
+													public void init()
+														{
+														setCharacterHandler(
+															new SAXCharacterHandler()
+																{
+																public void parseText(String text)
+																	throws SAXException
+																	{
+																	if (DEBUG_FLAG) System.out.println("Name : " + text) ;
+																	}
+																}
+															);
+														}
+													}
+												) ;
+
+											//
+											// Add a <dataItemID> handler.
+											addElementHandler(
+												new SAXElementHandler("dataItemID")
+													{
+													public void init()
+														{
+														setCharacterHandler(
+															new SAXCharacterHandler()
+																{
+																public void parseText(String text)
+																	throws SAXException
+																	{
+																	if (DEBUG_FLAG) System.out.println("Ident : " + text) ;
+																	}
+																}
+															);
+														}
+													}
+												) ;
+
+											//
+											// Add a <ownerID> handler.
+											addElementHandler(
+												new SAXElementHandler("ownerID")
+													{
+													public void init()
+														{
+														setCharacterHandler(
+															new SAXCharacterHandler()
+																{
+																public void parseText(String text)
+																	throws SAXException
+																	{
+																	if (DEBUG_FLAG) System.out.println("Owner : " + text) ;
+																	}
+																}
+															);
+														}
+													}
+												) ;
+
+											//
+											// Add a <creationDate> handler.
+											addElementHandler(
+												new SAXElementHandler("creationDate")
+													{
+													public void init()
+														{
+														setCharacterHandler(
+															new SAXCharacterHandler()
+																{
+																public void parseText(String text)
+																	throws SAXException
+																	{
+																	if (DEBUG_FLAG) System.out.println("Created : " + text) ;
+																	}
+																}
+															);
+														}
+													}
+												) ;
+
+											//
+											// Add a <expiryDate> handler.
+											addElementHandler(
+												new SAXElementHandler("expiryDate")
+													{
+													public void init()
+														{
+														setCharacterHandler(
+															new SAXCharacterHandler()
+																{
+																public void parseText(String text)
+																	throws SAXException
+																	{
+																	if (DEBUG_FLAG) System.out.println("Expires : " + text) ;
+																	}
+																}
+															);
+														}
+													}
+												) ;
+
+											//
+											// Add a <size> handler.
+											addElementHandler(
+												new SAXElementHandler("size")
+													{
+													public void init()
+														{
+														setCharacterHandler(
+															new SAXCharacterHandler()
+																{
+																public void parseText(String text)
+																	throws SAXException
+																	{
+																	if (DEBUG_FLAG) System.out.println("Size : " + text) ;
+																	}
+																}
+															);
+														}
+													}
+												) ;
+
+											//
+											// Add a <type> handler.
+											addElementHandler(
+												new SAXElementHandler("type")
+													{
+													public void init()
+														{
+														setCharacterHandler(
+															new SAXCharacterHandler()
+																{
+																public void parseText(String text)
+																	throws SAXException
+																	{
+																	if (DEBUG_FLAG) System.out.println("Type : " + text) ;
+																	}
+																}
+															);
+														}
+													}
+												) ;
+
+											//
+											// Add a <permissionsMask> handler.
+											addElementHandler(
+												new SAXElementHandler("permissionsMask")
+													{
+													public void init()
+														{
+														setCharacterHandler(
+															new SAXCharacterHandler()
+																{
+																public void parseText(String text)
+																	throws SAXException
+																	{
+																	if (DEBUG_FLAG) System.out.println("Perm : " + text) ;
+																	}
+																}
+															);
+														}
+													}
+												) ;
+
+											//
+											// Add a <dataHolderURI> handler.
+											addElementHandler(
+												new SAXElementHandler("dataHolderURI")
+													{
+													public void init()
+														{
+														setCharacterHandler(
+															new SAXCharacterHandler()
+																{
+																public void parseText(String text)
+																	throws SAXException
+																	{
+																	if (DEBUG_FLAG) System.out.println("URI  : " + text) ;
+																	}
+																}
+															);
+														}
+													}
+												) ;
+											}
+										}
+									) ;
+								}
+							}
+						) ;
+					}
+				}
+			) ;
+
+		//
+		// Try parsing the response.
+		try {
+			//
+			// Remove the bad header from the response.
+			String header = "<?xml version=1.0 encoding=UTF-8?>" ;
+			response = response.substring(header.length()) ;
+			//
+			// Convert it into an InputStream.
+			Reader reader = new StringReader(response) ;
+			//
+			// Parse the response.
+			parser.parse(reader) ;
+			}
+		//
+		// Catch any IO exceptions.
+		catch (IOException ouch)
+			{
+//
+// FIXME ....
+//
+			if (DEBUG_FLAG) System.out.println("IOException while parsing lookupDataHoldersDetails") ;
+			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+			}
+		//
+		// Catch any SAX exceptions.
+		catch (SAXException ouch)
+			{
+//
+// FIXME ....
+//
+			if (DEBUG_FLAG) System.out.println("SAXException while parsing lookupDataHoldersDetails") ;
+			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+			}
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("") ;
 		}
 
 	}

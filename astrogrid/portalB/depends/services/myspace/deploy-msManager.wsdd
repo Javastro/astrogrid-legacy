@@ -1,0 +1,6 @@
+<deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+ <service name="MySpaceManager"  provider="java:RPC">
+   <parameter name="className" value="org.astrogrid.mySpace.mySpaceManager.MySpaceManager"/>
+   <parameter name="allowedMethods" value="upLoad lookupDataHolderDetails lookupDataHoldersDetails copyDataHolder moveDataHolder exportDataHolder createContainer deleteDataHolder"/>
+ </service>
+</deployment>

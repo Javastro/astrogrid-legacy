@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/12 18:19:38 $</cvs:author>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/17 15:17:34 $</cvs:author>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.2  2003/06/17 15:17:34  dave
+    | Added links to live MySpace, including initial XML parser for lookup results
+    |
     | Revision 1.1  2003/06/12 18:19:38  dave
     | Initial import into cvs ...
     |
@@ -26,6 +29,7 @@
 	    +-->
 	<property name="site.src"     value="${basedir}/src/site"/>
 	<property name="site.build"   value="${basedir}/build/site"/>
+	<property name="site.webapp"  value="${basedir}/build/site/webapp"/>
 
 	<!--+
 	    | User preferences.
@@ -63,6 +67,11 @@
 	<property name="axis.port"   value="8080"/>
 	<property name="axis.server" value="${axis.host}:${axis.port}"/>
 	<property name="axis.url"    value="http://${axis.server}/${axis.servlet}"/>
+
+	<!-- MySpace properties -->
+	<property name="myspace.hydra"  value="http://143.210.36.120:8080"/>
+	<property name="myspace.local"  value="http://localhost:8080"/>
+	<property name="myspace.server" value="${myspace.hydra}"/>
 
 	<!-- JAF properties -->
 	<property name="jaf.src"   value="depends/jaf/jaf-1.0.2.zip"/>
@@ -211,9 +220,14 @@
 		<delete dir="${junit.build}" failonerror="false"/>
 	</target>
 
-	<!-- Unpack the JUnit files --> 
+	<!-- Unpack the JUnit binary --> 
 	<target name="junit.unzip" depends="">
 		<unzip src="${junit.src}" dest="${junit.build}"/>
+	</target>
+
+	<!-- Install the JUnit library --> 
+	<target name="junit.REBUILD" depends="">
+		<antcall target="junit.unzip"/>
 	</target>
 
 	<!-- ================ JAF tasks ================ -->
@@ -360,12 +374,38 @@
 	<!-- ================ Site tasks ================ -->
 	<!-- Deploy our project site -->
 	<target name="site.deploy" depends="">
+		<!-- Create our WebApp directories -->
+		<mkdir dir="${site.webapp}"/>
+		<mkdir dir="${site.webapp}/WEB-INF"/>
+		<mkdir dir="${site.webapp}/WEB-INF/lib"/>
 		<!-- Copy our site files -->
-		<copy toDir="${site.build}">
-			<fileset dir="${site.src}"/>
+		<copy verbose="true" toDir="${site.webapp}">
+			<fileset dir="${site.src}">
+				<exclude name="**/CVS/**"/>
+			</fileset>
 		</copy>
-		<!-- FIXME : Copy our project jar -->
-		<!-- FIXME : Copy the Axis jars -->
+		<!-- Copy our portal jar -->
+		<copy verbose="true" toDir="${site.webapp}/WEB-INF/lib">
+			<fileset dir="${portal.build}/lib">
+				<include name="**/*.jar"/>
+			</fileset>
+		</copy>
+		<!--+
+		    | Copy the Axis client jars.
+		    | FIXME : We probably don't need ALL of these,
+		    | need to check which ones we really do need to run the client stubs.
+		    +-->
+		<copy verbose="true" toDir="${site.webapp}/WEB-INF/lib">
+			<fileset dir="${axis.home}/lib">
+				<include name="axis.jar"/>
+				<include name="axis-ant.jar"/>
+				<include name="commons-discovery.jar"/>
+				<include name="commons-logging.jar"/>
+				<include name="jaxrpc.jar"/>
+				<include name="saaj.jar"/>
+				<include name="wsdl4j.jar"/>
+			</fileset>
+		</copy>
 	</target>
 
 	<!-- Delete our project site -->
@@ -373,8 +413,12 @@
 		<delete dir="${site.build}" failonerror="false"/>
 	</target>
 
-	<!-- FIXME : Install our site WebApp -->
-	<target name="site.install" depends="">
+	<!-- Install our site WebApp -->
+	<target name="site.install" depends="tomcat.tasks">
+		<!-- Wait for the Tomcat manager -->
+		<antcall target="tomcat.manager.wait"/>
+		<!-- Install our web-app -->
+		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/astrogrid" war="file://${site.webapp}"/>
 	</target>
 
 	<!-- Wait for our site to respond -->
@@ -399,7 +443,7 @@
 	<!-- ================ MySpace WebService tasks ================ -->
 	<!-- Delete the server code for our mock MySpace service -->
 	<target name="myspace.service.delete" depends="">
-		<delete failonerror="false" dir="build/myspace/service"/>
+		<delete failonerror="false" dir="build/myspace/mock/service"/>
 	</target>
 
 	<!--+
@@ -409,17 +453,17 @@
 	    +-->
 	<target name="myspace.service.javac" depends="" description="Compile our mock MySpace service">
 		<!-- Create our build directories -->
-		<mkdir dir="build/myspace/service/java"/>
-		<mkdir dir="build/myspace/service/classes"/>
+		<mkdir dir="build/myspace/mock/service/java"/>
+		<mkdir dir="build/myspace/mock/service/classes"/>
 		<!-- Copy the server side source code -->
-		<copy verbose="false" todir="build/myspace/service/java">
+		<copy verbose="false" todir="build/myspace/mock/service/java">
 			<fileset dir="src/java">
-				<include name="**/myspace/service/**/*.java"/>
+				<include name="**/mock/myspace/service/**/*.java"/>
 			</fileset>
 		</copy>
 		<!-- Compile the server side components -->
-		<javac srcdir="build/myspace/service/java"
-		       destdir="build/myspace/service/classes"
+		<javac srcdir="build/myspace/mock/service/java"
+		       destdir="build/myspace/mock/service/classes"
 		       debug="on"
 		       deprecation="on"
 		       optimize="on"
@@ -434,13 +478,13 @@
 	    +-->
 	<target name="myspace.service.junit" depends="" description="Run our MySpace JUnit tests">
 		<!-- Create the reports directory -->
-		<mkdir dir="build/myspace/service/junit"/>
+		<mkdir dir="build/myspace/mock/service/junit"/>
 		<!-- Run the JUnit tests -->
 		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
 			<!-- Use our local classes -->
 			<classpath>
 				<!-- Our mock MySpace service classes -->
-				<pathelement path="build/myspace/service/classes"/>
+				<pathelement path="build/myspace/mock/service/classes"/>
 				<!-- The Axis libraries -->
 				<path refid="axis.classpath"/>
 				<!-- The JUnit libraries -->
@@ -451,8 +495,8 @@
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
 			<!-- Run our JUnit tests -->
-			<batchtest todir="build/myspace/service/junit">
-				<fileset dir="build/myspace/service/classes">
+			<batchtest todir="build/myspace/mock/service/junit">
+				<fileset dir="build/myspace/mock/service/classes">
 					<include name="**/junit/**/JUnit*.class" />
 				</fileset>
 			</batchtest>
@@ -466,16 +510,16 @@
 	    +-->
 	<target name="myspace.service.install" depends="axis.tasks">
 		<!-- Create our wsdd directory -->
-		<mkdir dir="build/myspace/service/wsdd"/>
+		<mkdir dir="build/myspace/mock/service/wsdd"/>
 		<!-- Copy our deployment descriptors -->
-		<copy verbose="false" todir="build/myspace/service/wsdd">
+		<copy verbose="false" todir="build/myspace/mock/service/wsdd">
 			<fileset dir="src/java/org/astrogrid/portal/mock/myspace/service">
 				<include name="*.wsdd" />
 			</fileset>
 		</copy>
 		<!-- Copy our classes into the Axis WEB-INF/classes directory -->
 		<copy verbose="false" todir="${axis.webapp}/WEB-INF/classes">
-			<fileset dir="build/myspace/service/classes">
+			<fileset dir="build/myspace/mock/service/classes">
 				<include name="**/*.class"/>
 			</fileset>
 		</copy>
@@ -487,7 +531,7 @@
 			hostname="${axis.host}"
 			servletpath="/${axis.servlet}/services/AdminService"
 			debug="true"
-			xmlfile="build/myspace/service/wsdd/deploy.wsdd"
+			xmlfile="build/myspace/mock/service/wsdd/deploy.wsdd"
 			/>
 	</target>
 
@@ -528,7 +572,7 @@
 
 	<!-- Delete the client code for our mock MySpace service -->
 	<target name="myspace.client.delete" depends="">
-		<delete failonerror="false" dir="build/myspace/client"/>
+		<delete failonerror="false" dir="build/myspace/mock/client"/>
 	</target>
 
 	<!--+
@@ -543,13 +587,13 @@
 		<echo message="Creating client stubs from WSDL ...."/>
 		<echo message="URL : ${axis.url}/services/myspace"/>
 		<!-- Create our client directory -->
-		<mkdir dir="build/myspace/client/java"/>
+		<mkdir dir="build/myspace/mock/client/java"/>
 		<!-- Wait for the Axis service -->
 		<antcall target="axis.wait"/>
 		<!-- Generate our client stubs -->
 		<axis.wsdl2java
 			verbose="true"
-			output="build/myspace/client/java"
+			output="build/myspace/mock/client/java"
 			url="${axis.url}/services/myspace?wsdl"
 			>
 			<mapping namespace="${axis.url}/services/myspace" package="org.astrogrid.portal.mock.myspace.client"/>
@@ -564,16 +608,16 @@
 	    +-->
 	<target name="myspace.client.javac" depends="">
 		<!-- Create our classes directory -->
-		<mkdir dir="build/myspace/client/classes"/>
+		<mkdir dir="build/myspace/mock/client/classes"/>
 		<!-- Copy our client java code -->
-		<copy verbose="false" todir="build/myspace/client/java">
+		<copy verbose="false" todir="build/myspace/mock/client/java">
 			<fileset dir="src/java">
 				<include name="**/mock/myspace/client/**/*.*"/>
 			</fileset>
 		</copy>
 		<!-- Compile our client code -->
-		<javac srcdir="build/myspace/client/java"
-		       destdir="build/myspace/client/classes"
+		<javac srcdir="build/myspace/mock/client/java"
+		       destdir="build/myspace/mock/client/classes"
 		       debug="on"
 		       deprecation="on"
 		       optimize="on"
@@ -593,13 +637,13 @@
 		<!-- Wait for the Axis service -->
 		<antcall target="axis.wait"/>
 		<!-- Create the reports directory -->
-		<mkdir dir="build/myspace/client/junit"/>
+		<mkdir dir="build/myspace/mock/client/junit"/>
 		<!-- Run the JUnit tests -->
 		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
 			<!-- Use our local classes -->
 			<classpath>
 				<!-- Our MySpace client classes -->
-				<pathelement path="build/myspace/client/classes"/>
+				<pathelement path="build/myspace/mock/client/classes"/>
 				<!-- The Axis libraries -->
 				<path refid="axis.classpath"/>
 				<!-- The JUnit libraries -->
@@ -610,8 +654,8 @@
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
 			<!-- Run our JUnit tests -->
-			<batchtest todir="build/myspace/client/junit">
-				<fileset dir="build/myspace/client/classes">
+			<batchtest todir="build/myspace/mock/client/junit">
+				<fileset dir="build/myspace/mock/client/classes">
 					<include name="**/junit/**/JUnit*.class" />
 				</fileset>
 			</batchtest>
@@ -650,8 +694,12 @@
 		<!-- Copy our java source code -->
 		<copy toDir="${portal.build}/java">
 			<fileset dir="src/java">
+				<!-- Exclude any live service classes -->
+				<exclude name="**/services/**"/>
 				<!-- Exclude any mock service classes -->
 				<exclude name="**/mock/**"/>
+				<!-- Exclude the generated classes -->
+				<exclude name="**/generated/**"/>
 			</fileset>
 		</copy>
 		<!-- Create our java classes directory -->
@@ -664,8 +712,12 @@
 		       optimize="on"
 		       >
 			<classpath>
-				<!-- Our MySpace client classes -->
-				<pathelement path="build/myspace/client/classes"/>
+				<!-- Our mock MySpace client classes -->
+				<!--
+				<pathelement path="build/myspace/mock/client/classes"/>
+				-->
+				<!-- Our live MySpace client classes -->
+				<pathelement path="build/myspace/live/client/classes"/>
 				<!-- The Axis libraries -->
 				<path refid="axis.classpath"/>
 			</classpath>
@@ -692,13 +744,26 @@
 	<target name="portal.junit" depends="init, portal.javac" description="Run our JUnit tests">
 		<!-- Create the reports directory -->
 		<mkdir dir="${portal.build}/junit"/>
+
+		<!-- Copy the test data for the xml parser -->
+		<copy toDir="build/portal/classes">
+			<fileset dir="src/java">
+				<!-- Include the XML data only -->
+				<include name="**/xml/sax/junit/*.xml"/>
+			</fileset>
+		</copy>
+
 		<!-- Run the JUnit tests -->
 		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
 			<classpath>
 				<!-- Our Portal classes -->
 				<pathelement path="build/portal/classes"/>
-				<!-- Our MySpace client classes -->
-				<pathelement path="build/myspace/client/classes"/>
+				<!-- Our mock MySpace client classes -->
+				<!--
+				<pathelement path="build/myspace/mock/client/classes"/>
+				-->
+				<!-- Our live MySpace client classes -->
+				<pathelement path="build/myspace/live/client/classes"/>
 				<!-- The Axis libraries -->
 				<path refid="axis.classpath"/>
 				<!-- The JUnit libraries -->
@@ -711,7 +776,7 @@
 			<!-- Run our JUnit tests -->
 			<batchtest todir="${portal.build}/junit">
 				<fileset dir="${portal.build}/classes">
-					<include name="**/junit/**/JUnit*.class" />
+					<include name="**/junit/**/JUnitTestCase.class" />
 				</fileset>
 			</batchtest>
 		</junit>
@@ -724,7 +789,14 @@
 			<!-- Fails if docs are not there ...
 			<zipfileset prefix="doc" dir="build/doc"/>
 			-->
+			<!-- Include our portal classes -->
 			<zipfileset prefix="" dir="${portal.build}/classes"/>
+			<!-- Include our mock myspace client stubs -->
+			<!--
+			<zipfileset prefix="" dir="build/myspace/mock/client/classes"/>
+			-->
+			<!-- Include our mock myspace client stubs -->
+			<zipfileset prefix="" dir="build/myspace/live/client/classes"/>
 		</jar>
 	</target>
 
@@ -748,6 +820,8 @@
 		<antcall target="portal.javac"/>
 		<!-- Test our portal components -->
 		<antcall target="portal.junit"/>
+		<!-- Build our portal jar -->
+		<antcall target="portal.jar"/>
 		<!-- Deploy our portal components -->
 <!-- FIXME : Deprecated, should use site.deploy
 		<antcall target="portal.deploy"/>
@@ -854,11 +928,250 @@
 		<!-- Unpack Axis binary -->
 		<antcall target="axis.REBUILD"/>
 		<!-- Unpack the JUnit binary -->
-		<antcall target="junit.unzip"/>
+		<antcall target="junit.REBUILD"/>
 		<!-- Start Tomcat and re-build everything -->
 		<antcall target="project.RUN"/>
 	</target>
 
+	<!-- ================ MySpace tasks ================ -->
+	<!-- Compile server side classes for the MySpace service -->
+	<target name="MYSPACE.service.javac" depends="">
+
+	</target>
+
+	<!-- Unpack the local copy of the MySpace service -->
+	<target name="MYSPACE.service.unjar" depends="">
+		<!-- Unpack the jar into the Axis WEB-INF/classes directory -->
+		<unjar src="depends/services/myspace/mySpace.jar" dest="${axis.webapp}/WEB-INF/classes">
+			<patternset>
+				<include name="**/*.class"/>
+				<include name="**/*.properties"/>
+			</patternset>
+		</unjar>
+	</target>
+
+	<!-- Delete the local copy of the MySpace service -->
+	<target name="MYSPACE.service.clean" depends="">
+		<!-- Tidy up any class files -->
+		<delete verbose="true" failonerror="false">
+			<fileset dir="${axis.webapp}/WEB-INF/classes">
+				<include name="org/astrogrid/mySpace/**"/>
+			</fileset>
+		</delete>
+
+	</target>
+
+	<!-- Deploy the local copy of the MySpace service -->
+	<target name="MYSPACE.service.install" depends="axis.tasks">
+		<!-- Create our wsdd directory -->
+		<mkdir dir="build/myspace/live/service/wsdd"/>
+		<!-- Copy the deployment descriptors -->
+		<copy verbose="true" todir="build/myspace/live/service/wsdd">
+			<fileset dir="depends/services/myspace">
+				<include name="*.wsdd" />
+			</fileset>
+		</copy>
+		<!-- Wait for the Axis service -->
+		<antcall target="axis.wait"/>
+		<!-- Deploy the MySpaceManager WebService -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="/${axis.servlet}/services/AdminService"
+			debug="true"
+			xmlfile="build/myspace/live/service/wsdd/deploy-msManager.wsdd"
+			/>
+		<!-- Deploy the MySpaceServer WebService -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="/${axis.servlet}/services/AdminService"
+			debug="true"
+			xmlfile="build/myspace/live/service/wsdd/deploy-msServer.wsdd"
+			/>
+	</target>
+
+	<!-- Remove the local copy of the MySpace service -->
+	<target name="MYSPACE.service.remove" depends="axis.tasks">
+		<!-- Remove the MySpaceManager WebService -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="/${axis.servlet}/services/AdminService"
+			debug="true"
+			xmlfile="build/myspace/live/service/wsdd/undeploy-msManager.wsdd"
+			/>
+		<!-- Remove the MySpaceServer WebService -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="/${axis.servlet}/services/AdminService"
+			debug="true"
+			xmlfile="build/myspace/live/service/wsdd/undeploy-msServer.wsdd"
+			/>
+	</target>
+
+	<!--+
+	    | Install the config files for the MySpace service.
+	    | The MySpaceManager looks for its configuration file in a hard coded location.
+	    | ${catalina.home}/conf/astrogrid/mySpace/....
+	    +-->
+	<target name="MYSPACE.service.config.install" depends="">
+		<echo message=""/>
+		<echo message="Configuring MySpaceManager ...."/>
+		<!-- Create the conf and temp directories -->
+		<mkdir dir="build/myspace/live/service/conf"/>
+		<mkdir dir="build/myspace/live/service/temp"/>
+		<!-- Copy the original server config (called statuscodes.lis) from the source directory -->
+		<copy verbose="true" file="depends/services/myspace/statuscodes.lis" toFile="build/myspace/live/service/conf/statuscodes.lis"/>
+		<!-- Modify the properties to fit our build -->
+		<propertyfile file="build/myspace/live/service/conf/statuscodes.lis">
+			<entry  key="REGISTRYCONF"   type="string" value="${basedir}/build/myspace/live/service/conf"/>
+			<entry  key="TEMPPATHTO"     type="string" value="${basedir}/build/myspace/live/service/temp"/>
+			<entry  key="MYSPACEMANAGER" type="string" value="${axis.url}/services/MySpaceManager"/>
+			<entry  key="SERVERMANAGER"  type="string" value="${axis.url}/services/ServerManager"/>
+		</propertyfile>
+		<!-- Create the conf directories -->
+		<mkdir dir="${tomcat.home}/conf/astrogrid/mySpace"/>
+		<!-- Copy the modified config into the hard-coded directory -->
+		<copy verbose="true" file="build/myspace/live/service/conf/statuscodes.lis" toFile="${tomcat.home}/conf/astrogrid/mySpace/statuscodes.lis"/>
+		<!-- The MySpaceUtils class looks for its config in the same hard-coded directory -->
+		<copy verbose="true" file="depends/services/myspace/MSManagerRequestResponse.properties" toFile="${tomcat.home}/conf/astrogrid/mySpace/MSManagerRequestResponse.properties"/>
+		<!-- The MySpace classes need log4j configured  -->
+		<copy verbose="true" file="depends/services/myspace/log4j.properties" toFile="${axis.webapp}/WEB-INF/classes/log4j.properties"/>
+	</target>
+
+	<!--+
+	    | Remove the config files for the MySpace service.
+	    | The MySpaceManager looks for its configuration file in a hard coded location.
+	    | ${catalina.home}/conf/astrogrid/mySpace/statuscodes.lis
+	    | This task removes the config from the Tomcat 
+	    +-->
+	<target name="MYSPACE.service.config.clean" depends="">
+		<delete verbose="true" dir="${tomcat.home}/conf/astrogrid/mySpace" failonerror="false"/>
+	</target>
+
+	<!--+
+	    | Wait for the MySpace serer to respond.
+	    | This just check that calling happyaxis.jsp responds, not the content.
+	    | It would be nice to use something like HttpUnit to check that Axis really is happy.
+	    +-->
+	<target name="myspace.wait" depends="">
+		<echo message=""/>
+		<echo message="Waiting for Axis webapp ...."/>
+		<echo message="URL : ${myspace.server}/axis/happyaxis.jsp"/>
+		<waitfor maxwait="${tomcat.timeout}" maxwaitunit="second" checkevery="500">
+			<http url="${myspace.server}/axis/happyaxis.jsp"/>
+		</waitfor>
+	</target>
+
+	<!--+
+	    | Generate the client stubs from the MySpace service.
+	    | This uses the Axis Wsdl2Java tool to generate the client stubs.
+	    +-->
+	<target name="MYSPACE.client.wsdl2java" depends="axis.tasks">
+		<echo message=""/>
+		<echo message="Creating client stubs from WSDL ...."/>
+		<echo message="URL : ${myspace.server}/axis/services/MySpaceManager"/>
+		<!-- Create our client directory -->
+		<mkdir dir="build/myspace/live/client/java"/>
+		<!-- Wait for the Axis service -->
+		<antcall target="myspace.wait"/>
+		<!-- Generate our client stubs -->
+		<axis.wsdl2java
+			verbose="true"
+			output="build/myspace/live/client/java"
+			url="${myspace.server}/axis/services/MySpaceManager?wsdl"
+			>
+			<mapping namespace="${myspace.server}/axis/services/MySpaceManager"   package="org.astrogrid.portal.services.myspace.client"/>
+			<mapping namespace="http://service.myspace.mock.portal.astrogrid.org" package="org.astrogrid.portal.services.myspace.client"/>
+		</axis.wsdl2java>
+	</target>
+
+	<!--+
+	    | Compile the client side Java for our MySpace service
+	    | This compiles the stub classes genereated from the Axis Wsdl2Java tool
+	    | along with our client side code which uses them.
+	    +-->
+	<target name="MYSPACE.client.javac" depends="">
+		<!-- Create our classes directory -->
+		<mkdir dir="build/myspace/live/client/classes"/>
+		<!-- Copy our client java code -->
+		<copy verbose="true" todir="build/myspace/live/client/java">
+			<fileset dir="src/java">
+				<include name="**/services/myspace/client/**"/>
+			</fileset>
+		</copy>
+		<!-- Compile our client code -->
+		<javac srcdir="build/myspace/live/client/java"
+		       destdir="build/myspace/live/client/classes"
+		       debug="on"
+		       deprecation="on"
+		       optimize="on"
+		       >
+			<classpath>
+				<path refid="axis.classpath"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<!--+
+	    | Run the client side JUnit tests for our MySpace service
+	    | This runs the JUnit tests on the live, client side interface of the MySpace service.
+	    +-->
+	<target name="MYSPACE.client.junit" depends="MYSPACE.client.javac">
+		<!-- Wait for the Axis service -->
+		<antcall target="myspace.wait"/>
+		<!-- Create the reports directory -->
+		<mkdir dir="build/myspace/live/client/junit"/>
+		<!-- Run the JUnit tests -->
+		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
+			<!-- Use our local classes -->
+			<classpath>
+				<!-- Our MySpace client classes -->
+				<pathelement path="build/myspace/live/client/classes"/>
+				<!-- The Axis libraries -->
+				<path refid="axis.classpath"/>
+				<!-- The JUnit libraries -->
+				<path refid="junit.classpath"/>
+				<!-- Plus the Ant libraries (required since JDK 1.4.2) -->
+				<path refid="ant.classpath"/>
+			</classpath>
+			<!-- Generate an XML log file -->
+			<formatter type="xml"/>
+			<!-- Run our JUnit tests -->
+			<batchtest todir="build/myspace/live/client/junit">
+				<fileset dir="build/myspace/live/client/classes">
+					<include name="**/junit/**/JUnit*.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<!--+
+	    | Build and run our test MySpace service ...
+	    +-->
+	<target name="MYSPACE.SERVICE" depends="">
+		<!-- Unpack the binary dist -->
+		<antcall target="MYSPACE.service.unjar"/>
+		<!-- Patch the config -->
+		<antcall target="MYSPACE.service.config.install"/>
+		<!-- Install the WebService -->
+		<antcall target="MYSPACE.service.install"/>
+	</target>
+
+	<!--+
+	    | Build and run our test MySpace client ...
+	    +-->
+	<target name="MYSPACE.CLIENT" depends="">
+		<!-- Generate the client stubs -->
+		<antcall target="MYSPACE.client.wsdl2java"/>
+		<!-- Compile the client stubs -->
+		<antcall target="MYSPACE.client.javac"/>
+		<!-- Test the client stubs -->
+		<antcall target="MYSPACE.client.junit"/>
+
+	</target>
 
 </project>
 
