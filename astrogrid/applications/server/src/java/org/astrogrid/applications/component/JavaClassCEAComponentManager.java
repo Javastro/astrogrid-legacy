@@ -1,4 +1,4 @@
-/*$Id: JavaClassCEAComponentManager.java,v 1.3 2004/07/23 13:21:21 nw Exp $
+/*$Id: JavaClassCEAComponentManager.java,v 1.4 2004/07/26 12:07:38 nw Exp $
  * Created on 10-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.applications.component;
 
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.javaclass.JavaClassApplicationDescriptionLibrary;
 import org.astrogrid.applications.javaclass.SampleJavaClassApplications;
 import org.astrogrid.config.Config;
@@ -19,8 +18,6 @@ import org.astrogrid.config.SimpleConfig;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.picocontainer.MutablePicoContainer;
-import org.picocontainer.Parameter;
-import org.picocontainer.defaults.ComponentParameter;
 
 /** Simple component manager that defines a  standalone JavaClass CEA server
  * @author Noel Winstanley nw@jb.man.ac.uk 10-Jun-2004
@@ -86,6 +83,11 @@ public class JavaClassCEAComponentManager extends EmptyCEAComponentManager {
 
 /* 
 $Log: JavaClassCEAComponentManager.java,v $
+Revision 1.4  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.3  2004/07/23 13:21:21  nw
 Javadocs
 

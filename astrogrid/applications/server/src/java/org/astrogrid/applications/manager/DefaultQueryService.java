@@ -1,4 +1,4 @@
-/*$Id: DefaultQueryService.java,v 1.5 2004/07/23 08:42:57 nw Exp $
+/*$Id: DefaultQueryService.java,v 1.6 2004/07/26 12:07:38 nw Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,7 +35,7 @@ import javax.xml.rpc.ServiceException;
 
 import junit.framework.Test;
 
-/** Default implementation of the query service.
+/** Default implementation of the {@link org.astrogrid.applications.manager.QueryService}
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
  *
  */
@@ -78,9 +78,7 @@ public class DefaultQueryService implements QueryService, ComponentDescriptor {
         return retval;
 
      }
-     /**
-      * @see org.astrogrid.applications.manager.CommonExecutionController#getResults(java.lang.String)
-      */
+
      public ResultListType getResults(String executionId) throws CeaException {
          logger.debug("Getting results for " + executionId);
          if (executionHistory.isApplicationInCurrentSet(executionId)) {
@@ -90,9 +88,7 @@ public class DefaultQueryService implements QueryService, ComponentDescriptor {
          }
     
      }
-     /**
-      * @see org.astrogrid.applications.manager.CommonExecutionController#getSummary(java.lang.String)
-      */
+
      public ExecutionSummaryType getSummary(String executionId) throws CeaException {
          logger.debug("Getting summary for " + executionId);
          if (executionHistory.isApplicationInCurrentSet(executionId)) {
@@ -102,9 +98,7 @@ public class DefaultQueryService implements QueryService, ComponentDescriptor {
              return executionHistory.getApplicationFromArchive(executionId);
          }
      }
-    /**
-     * @see org.astrogrid.applications.manager.QueryService#registerProgressListener(java.lang.String, java.net.URI)
-     */
+
     public boolean registerProgressListener(String executionId, URI endpoint) throws CeaException {
         logger.debug("Registering progress listener for " + executionId + " at " + endpoint);
         if (! executionHistory.isApplicationInCurrentSet(executionId)) {
@@ -116,9 +110,7 @@ public class DefaultQueryService implements QueryService, ComponentDescriptor {
         app.addObserver(obs);
         return true; 
     }
-    /**
-     * @see org.astrogrid.applications.manager.QueryService#registerResultsListener(java.lang.String, java.net.URI)
-     */
+
     public boolean registerResultsListener(String executionId, URI endpoint) throws CeaException {
         logger.debug("Registering results listener for " + executionId + " at " + endpoint);
         if (! executionHistory.isApplicationInCurrentSet(executionId)) {
@@ -164,6 +156,11 @@ public class DefaultQueryService implements QueryService, ComponentDescriptor {
 
 /* 
 $Log: DefaultQueryService.java,v $
+Revision 1.6  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.5  2004/07/23 08:42:57  nw
 fixed phase reporting bug.
 

@@ -1,4 +1,4 @@
-/*$Id: AbstractApplicationTest.java,v 1.3 2004/07/22 16:34:48 nw Exp $
+/*$Id: AbstractApplicationTest.java,v 1.4 2004/07/26 12:07:38 nw Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.description.base.AbstractApplicationDescription;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.base.BaseApplicationInterface;
@@ -185,6 +184,11 @@ public class AbstractApplicationTest extends TestCase {
 
 /* 
 $Log: AbstractApplicationTest.java,v $
+Revision 1.4  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.3  2004/07/22 16:34:48  nw
 cleaned up application / parameter adapter interface.
 

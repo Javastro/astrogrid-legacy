@@ -1,4 +1,4 @@
-/*$Id: DefaultIndirectionProtocolLibrary.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: DefaultProtocolLibrary.java,v 1.1 2004/07/26 12:07:38 nw Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.applications.parameter.indirect;
+package org.astrogrid.applications.parameter.protocol;
 
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
@@ -20,12 +20,12 @@ import java.util.Map;
 
 import junit.framework.Test;
 
-/** default implementation of the protocol library
+/** Default implementation of {@link org.astrogrid.applications.parameter.protocol.ProtocolLibrary}
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
  *
  */
-public class DefaultIndirectionProtocolLibrary implements IndirectionProtocolLibrary, ComponentDescriptor {
-    /** add a protocl to the list supported by this library */
+public class DefaultProtocolLibrary implements ProtocolLibrary, ComponentDescriptor {
+    /** add a protocl to the set supported by this library */
     public void addProtocol(Protocol p) {
         map.put(p.getProtocolName().toLowerCase(),p);
         
@@ -35,37 +35,43 @@ public class DefaultIndirectionProtocolLibrary implements IndirectionProtocolLib
     /** Construct a new DefaultIndirectionProtocolLibrary
      * 
      */
-    public DefaultIndirectionProtocolLibrary() {
+    public DefaultProtocolLibrary() {
         super();
         this.map = new HashMap();
     }
     protected final Map map;
     /**
-     * @see org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary#getIndirect(org.astrogrid.applications.beans.v1.parameters.ParameterValue)
+     * @see org.astrogrid.applications.parameter.protocol.ProtocolLibrary#getExternalValue(org.astrogrid.applications.beans.v1.parameters.ParameterValue)
      */
-    public IndirectParameterValue getIndirect(ParameterValue pval)
-        throws InaccessibleIndirectParameterException, UnrecognizedIndirectParameterProtocolException{
+    public ExternalValue getExternalValue(ParameterValue pval)
+        throws InaccessibleExternalValueException, UnrecognizedProtocolException{
         URI reference;
         try {
             reference = new URI(pval.getValue());
         }
         catch (URISyntaxException e) {
-            throw new UnrecognizedIndirectParameterProtocolException(pval.getValue(),e);
+            throw new UnrecognizedProtocolException(pval.getValue(),e);
         } 
+        return getExternalValue(reference);
+    }
+    /**
+     * @see org.astrogrid.applications.parameter.protocol.ProtocolLibrary#getExternalValue(java.net.URI)
+     */
+    public ExternalValue getExternalValue(URI reference) throws InaccessibleExternalValueException, UnrecognizedProtocolException {
         Protocol p = (Protocol) map.get(reference.getScheme());
         if (p == null) {
-            throw new UnrecognizedIndirectParameterProtocolException(reference.toString());
+            throw new UnrecognizedProtocolException(reference.toString());
         }
         return p.createIndirectValue(reference);
     }
     /**
-     * @see org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary#listSupportedProtocols()
+     * @see org.astrogrid.applications.parameter.protocol.ProtocolLibrary#listSupportedProtocols()
      */
     public String[] listSupportedProtocols() {
         return (String[])map.keySet().toArray(new String[]{});
     }
     /**
-     * @see org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary#isProtocolSupported(java.lang.String)
+     * @see org.astrogrid.applications.parameter.protocol.ProtocolLibrary#isProtocolSupported(java.lang.String)
      */
     public boolean isProtocolSupported(String protocol) {
         return map.containsKey(protocol.toLowerCase());
@@ -94,11 +100,17 @@ public class DefaultIndirectionProtocolLibrary implements IndirectionProtocolLib
     public Test getInstallationTest() {
         return null;
     }
+
 }
 
 
 /* 
-$Log: DefaultIndirectionProtocolLibrary.java,v $
+$Log: DefaultProtocolLibrary.java,v $
+Revision 1.1  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

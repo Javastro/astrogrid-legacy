@@ -1,4 +1,4 @@
-/*$Id: InaccessibleIndirectParameterException.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: InaccessibleExternalValueException.java,v 1.1 2004/07/26 12:07:38 nw Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.applications.parameter.indirect;
+package org.astrogrid.applications.parameter.protocol;
 
 import org.astrogrid.applications.parameter.ParameterAdapterException;
 
@@ -16,25 +16,30 @@ import org.astrogrid.applications.parameter.ParameterAdapterException;
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
  *
  */
-public class InaccessibleIndirectParameterException extends ParameterAdapterException {
+public class InaccessibleExternalValueException extends ParameterAdapterException {
     /** Construct a new InaccessibleIndirectParameterException
      * @param message
      */
-    public InaccessibleIndirectParameterException(String message) {
+    public InaccessibleExternalValueException(String message) {
         super(message);
     }
     /** Construct a new InaccessibleIndirectParameterException
      * @param message
      * @param cause
      */
-    public InaccessibleIndirectParameterException(String message, Throwable cause) {
+    public InaccessibleExternalValueException(String message, Throwable cause) {
         super(message, cause);
     }
 }
 
 
 /* 
-$Log: InaccessibleIndirectParameterException.java,v $
+$Log: InaccessibleExternalValueException.java,v $
+Revision 1.1  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

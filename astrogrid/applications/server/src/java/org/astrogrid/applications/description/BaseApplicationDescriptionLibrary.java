@@ -1,4 +1,4 @@
-/*$Id: BaseApplicationDescriptionLibrary.java,v 1.3 2004/07/26 00:57:46 nw Exp $
+/*$Id: BaseApplicationDescriptionLibrary.java,v 1.4 2004/07/26 12:07:38 nw Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,11 @@
 **/
 package org.astrogrid.applications.description;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -100,6 +100,11 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
 
 /* 
 $Log: BaseApplicationDescriptionLibrary.java,v $
+Revision 1.4  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.3  2004/07/26 00:57:46  nw
 javadoc
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultExecutionController.java,v 1.3 2004/07/02 09:11:13 nw Exp $
+ * $Id: DefaultExecutionController.java,v 1.4 2004/07/26 12:07:38 nw Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -28,7 +28,9 @@ import java.util.Observer;
 import junit.framework.Test;
 
 /**
- * Default implementation of the execution controller.
+ * Default implementation of the {@link org.astrogrid.applications.manager.ExecutionController}
+ * <p>
+ * This component is itself an observer of all the applications it creates - by observing, it can archive applications once they have completed.
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
@@ -42,6 +44,7 @@ public class DefaultExecutionController
     * The store for the descriptions of the applications that this application controller manages.
     */
    protected final ApplicationDescriptionLibrary applicationDescriptions;
+   /** store of current and previously executing applications */
    protected final ExecutionHistory executionHistory;
     /**
      *  Construct a new DefaultExecutionController
@@ -67,9 +70,7 @@ public  boolean execute(String executionId) throws CeaException {
       return success;
 
    }
-/** 
-    * @see org.astrogrid.applications.manager.CommonExecutionController#execute(org.astrogrid.workflow.beans.v1.Tool, java.lang.String, java.lang.String)
-    */
+
 public String init(Tool tool, String jobstepID) throws CeaException {
     logger.debug("Initializing application " + jobstepID);
       int idx;
@@ -78,7 +79,7 @@ public String init(Tool tool, String jobstepID) throws CeaException {
       try {
           ApplicationDescription descr = applicationDescriptions.getDescription(toolname);
           User user = new User(); //TODO this needs to be obtained from the context
-          Application app = descr.initializeApplication(jobstepID,user,tool);
+          Application app = descr.initializeApplication(jobstepID,user,tool);         
           executionHistory.addApplicationToCurrentSet(app);          
           app.addObserver(this);
           return app.getID();

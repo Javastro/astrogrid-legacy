@@ -1,4 +1,4 @@
-/*$Id: RemoteResultsListener.java,v 1.4 2004/07/20 02:03:08 nw Exp $
+/*$Id: RemoteResultsListener.java,v 1.5 2004/07/26 12:07:38 nw Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.applications.manager.observer;
 
 import org.astrogrid.applications.Application;
-import org.astrogrid.applications.Status;
 import org.astrogrid.common.bean.Castor2Axis;
 import org.astrogrid.jes.service.v1.cearesults.ResultsListener;
 import org.astrogrid.jes.service.v1.cearesults.ResultsListenerService;
@@ -24,12 +23,10 @@ import org.apache.commons.logging.LogFactory;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.rmi.RemoteException;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.xml.rpc.ServiceException;
 
-/** Observer that relays results of application execution back to remote service.
+/** ResultsListener that relays results of application execution back to remote service.
  * @todo what happens when application ends in error? this listener never gets told that..
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Jun-2004
  *
@@ -41,6 +38,9 @@ public class RemoteResultsListener extends AbstractResultsListener {
     private static final Log logger = LogFactory.getLog(RemoteResultsListener.class);
 
     /** Construct a new RemoteResultsListener
+     * @param endpoint the url of the results listener web service to relay messages to.
+     * @throws MalformedURLException if endpoint is not valid.
+     * @throws ServiceException if the service could not be connected to
      * 
      */
     public RemoteResultsListener(URI endpoint) throws MalformedURLException, ServiceException {
@@ -52,6 +52,13 @@ public class RemoteResultsListener extends AbstractResultsListener {
     protected final ResultsListener delegate;
     protected final URI endpoint;
 
+    /**pass on the results notification to the remote web service.
+     * 
+     * passes the results values too - to save an additional call<p>
+     * logs all communication failures. 
+     * 
+     * @see org.astrogrid.applications.manager.observer.AbstractResultsListener#notifyResultsAvailable(org.astrogrid.applications.Application)
+     */
     protected void notifyResultsAvailable(Application app)  {
            try {
             delegate.putResults(new JobIdentifierType(app.getJobStepID()),Castor2Axis.convert( app.getResult()));
@@ -66,6 +73,11 @@ public class RemoteResultsListener extends AbstractResultsListener {
 
 /* 
 $Log: RemoteResultsListener.java,v $
+Revision 1.5  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.4  2004/07/20 02:03:08  nw
 added abstract listener classes
 

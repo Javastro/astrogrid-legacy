@@ -1,4 +1,4 @@
-/*$Id: IvornProtocol.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: IvornProtocol.java,v 1.1 2004/07/26 12:07:38 nw Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.applications.parameter.indirect;
+package org.astrogrid.applications.parameter.protocol;
 
 import org.astrogrid.community.User;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
@@ -35,40 +35,40 @@ public class IvornProtocol implements Protocol , ComponentDescriptor{
         super();
     }
     /**
-     * @see org.astrogrid.applications.parameter.indirect.Protocol#getProtocolName()
+     * @see org.astrogrid.applications.parameter.protocol.Protocol#getProtocolName()
      */
     public String getProtocolName() {
         return Ivorn.SCHEME;
     }
     /**
-     * @see org.astrogrid.applications.parameter.indirect.Protocol#createIndirectValue(java.net.URI)
+     * @see org.astrogrid.applications.parameter.protocol.Protocol#createIndirectValue(java.net.URI)
      * @todo find nice way to pass correct user value in here.
      */
-    public IndirectParameterValue createIndirectValue(final URI reference) throws InaccessibleIndirectParameterException {
+    public ExternalValue createIndirectValue(final URI reference) throws InaccessibleExternalValueException {
         final Ivorn ivorn;
         try {
             ivorn = new Ivorn(reference.toString());
         }
         catch (URISyntaxException e) {
-            throw new InaccessibleIndirectParameterException(reference.toString(),e);
+            throw new InaccessibleExternalValueException(reference.toString(),e);
         }      
-        return new IndirectParameterValue() {
+        return new ExternalValue() {
             
            VoSpaceClient client = new VoSpaceClient(new User());
            
-            public InputStream read() throws InaccessibleIndirectParameterException {
+            public InputStream read() throws InaccessibleExternalValueException {
                 try {
                 return client.getStream(ivorn);
                 } catch (IOException e) {
-                    throw new InaccessibleIndirectParameterException(ivorn.toString(),e);
+                    throw new InaccessibleExternalValueException(ivorn.toString(),e);
                 }
             }
 
-            public OutputStream write() throws InaccessibleIndirectParameterException {
+            public OutputStream write() throws InaccessibleExternalValueException {
                 try {
                 return client.putStream(ivorn);
                 } catch (IOException e) {
-                    throw new InaccessibleIndirectParameterException(ivorn.toString(),e);
+                    throw new InaccessibleExternalValueException(ivorn.toString(),e);
                 }                
             }
         };
@@ -96,6 +96,11 @@ public class IvornProtocol implements Protocol , ComponentDescriptor{
 
 /* 
 $Log: IvornProtocol.java,v $
+Revision 1.1  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

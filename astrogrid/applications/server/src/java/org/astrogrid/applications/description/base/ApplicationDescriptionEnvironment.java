@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescriptionEnvironment.java,v 1.3 2004/07/26 00:58:22 nw Exp $
+/*$Id: ApplicationDescriptionEnvironment.java,v 1.4 2004/07/26 12:07:38 nw Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.applications.description.base;
 
 import org.astrogrid.applications.manager.idgen.IdGen;
-import org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary;
+import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 
 import junit.framework.Test;
@@ -29,13 +29,13 @@ public class ApplicationDescriptionEnvironment implements ComponentDescriptor {
     /** Construct a new ApplicationDescriptionEnvironment
      * 
      */
-    public ApplicationDescriptionEnvironment(IdGen id,IndirectionProtocolLibrary lib) {        
+    public ApplicationDescriptionEnvironment(IdGen id,ProtocolLibrary lib) {        
         super();
         this.id =id;
         this.lib = lib;
     }
     protected final IdGen id;
-    protected final IndirectionProtocolLibrary lib;
+    protected final ProtocolLibrary lib;
    
     
     /**Access the unique id generator
@@ -50,7 +50,7 @@ public class ApplicationDescriptionEnvironment implements ComponentDescriptor {
      * @return the protocol library.
      * @see org.astrogrid.applications.param.indirect
      */
-    public IndirectionProtocolLibrary getProtocolLib() {
+    public ProtocolLibrary getProtocolLib() {
         return this.lib;
     }
 
@@ -82,6 +82,11 @@ public class ApplicationDescriptionEnvironment implements ComponentDescriptor {
 
 /* 
 $Log: ApplicationDescriptionEnvironment.java,v $
+Revision 1.4  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.3  2004/07/26 00:58:22  nw
 javadoc
 

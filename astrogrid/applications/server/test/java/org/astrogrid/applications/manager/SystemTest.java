@@ -1,4 +1,4 @@
-/*$Id: SystemTest.java,v 1.3 2004/07/22 16:35:17 nw Exp $
+/*$Id: SystemTest.java,v 1.4 2004/07/26 12:07:38 nw Exp $
  * Created on 09-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,6 @@ package org.astrogrid.applications.manager;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.MockMonitor;
-import org.astrogrid.applications.Status;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
@@ -29,8 +28,8 @@ import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
 import org.astrogrid.applications.manager.persist.InMemoryExecutionHistory;
-import org.astrogrid.applications.parameter.indirect.DefaultIndirectionProtocolLibrary;
-import org.astrogrid.applications.parameter.indirect.FileProtocol;
+import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
+import org.astrogrid.applications.parameter.protocol.FileProtocol;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -63,7 +62,7 @@ public class SystemTest extends TestCase {
         super.setUp();
         history = new InMemoryExecutionHistory();
         idgen = new InMemoryIdGen();
-        DefaultIndirectionProtocolLibrary protocolLib = new DefaultIndirectionProtocolLibrary();
+        DefaultProtocolLibrary protocolLib = new DefaultProtocolLibrary();
         protocolLib.addProtocol(new FileProtocol());
         assertTrue(protocolLib.isProtocolSupported("file"));
         ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(idgen,protocolLib);
@@ -156,6 +155,11 @@ public class SystemTest extends TestCase {
 
 /* 
 $Log: SystemTest.java,v $
+Revision 1.4  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.3  2004/07/22 16:35:17  nw
 cleaned up application / parameter adapter interface.
 

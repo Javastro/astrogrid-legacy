@@ -1,4 +1,4 @@
-/*$Id: RemoteProgressListener.java,v 1.4 2004/07/20 02:03:08 nw Exp $
+/*$Id: RemoteProgressListener.java,v 1.5 2004/07/26 12:07:38 nw Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,10 +23,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.net.URI;
-import java.util.Observable;
-import java.util.Observer;
 
-/** Observable that listens for state changes and other messages from an application and then relays them back home to a
+/** A Progress Listener  that relays  state changes and other messages from an application back home to a
  * 'jobMonitor' interface.
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Jun-2004
  *
@@ -38,6 +36,7 @@ public class RemoteProgressListener extends AbstractProgressListener {
     private static final Log logger = LogFactory.getLog(RemoteProgressListener.class);
 
     /** Construct a new RemoteProgressListener
+     * @param endpoint the url endpoint for the service to relay to.
      * 
      */
     public RemoteProgressListener(URI endpoint) {
@@ -48,9 +47,9 @@ public class RemoteProgressListener extends AbstractProgressListener {
     protected final JobMonitorDelegate delegate;
     protected final URI endpoint;
 
-    /**
-     * @param app
-     * @param type
+    /** relays a message back to the remote service.
+     * 
+     * any communication failure, logs a warning.
      */
     protected void reportMessage(Application app, MessageType message) {
         try {
@@ -62,9 +61,9 @@ public class RemoteProgressListener extends AbstractProgressListener {
         logger.error("System problem in reportMessage() " + endpoint, t);
     }
     }
-    /**
-     * @param app
-     * @param status
+    /**Relays a status change back to the remote service
+     * 
+     * any communication failure, logs  a warning
      */
     protected void reportStatusChange(Application app, Status status) {
         try {
@@ -85,6 +84,11 @@ public class RemoteProgressListener extends AbstractProgressListener {
 
 /* 
 $Log: RemoteProgressListener.java,v $
+Revision 1.5  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.4  2004/07/20 02:03:08  nw
 added abstract listener classes
 

@@ -1,4 +1,4 @@
-/*$Id: JavaClassParameterAdapter.java,v 1.4 2004/07/26 10:21:47 nw Exp $
+/*$Id: JavaClassParameterAdapter.java,v 1.5 2004/07/26 12:07:38 nw Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.parameter.DefaultParameterAdapter;
-import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
+import org.astrogrid.applications.parameter.protocol.ExternalValue;
 
 import org.apache.commons.beanutils.ConvertUtils;
 
@@ -33,7 +33,7 @@ public class JavaClassParameterAdapter extends DefaultParameterAdapter {
      * @param val
      * @param description
      */
-    public JavaClassParameterAdapter(ParameterValue val, ParameterDescription description, IndirectParameterValue ipVal) {
+    public JavaClassParameterAdapter(ParameterValue val, ParameterDescription description, ExternalValue ipVal) {
         super(val, description,ipVal);
     }
 
@@ -53,6 +53,11 @@ public class JavaClassParameterAdapter extends DefaultParameterAdapter {
 
 /* 
 $Log: JavaClassParameterAdapter.java,v $
+Revision 1.5  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.4  2004/07/26 10:21:47  nw
 javadoc
 

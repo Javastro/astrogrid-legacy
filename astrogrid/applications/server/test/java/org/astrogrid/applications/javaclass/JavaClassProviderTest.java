@@ -1,4 +1,4 @@
-/*$Id: JavaClassProviderTest.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: JavaClassProviderTest.java,v 1.3 2004/07/26 12:07:38 nw Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,8 +20,8 @@ import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
-import org.astrogrid.applications.parameter.indirect.DefaultIndirectionProtocolLibrary;
-import org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary;
+import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
+import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.community.User;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
@@ -47,7 +47,7 @@ public class JavaClassProviderTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         IdGen idgen = new InMemoryIdGen();
-        IndirectionProtocolLibrary protocolLib = new DefaultIndirectionProtocolLibrary();
+        ProtocolLibrary protocolLib = new DefaultProtocolLibrary();
         monitor = new MockMonitor();
         ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(idgen,protocolLib);
         JavaClassApplicationDescriptionLibrary.Community community = new TestCommunity();
@@ -132,6 +132,11 @@ public class JavaClassProviderTest extends TestCase {
 
 /* 
 $Log: JavaClassProviderTest.java,v $
+Revision 1.3  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

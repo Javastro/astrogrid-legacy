@@ -1,4 +1,4 @@
-/*$Id: DefaultParameterAdapter.java,v 1.4 2004/07/22 16:33:48 nw Exp $
+/*$Id: DefaultParameterAdapter.java,v 1.5 2004/07/26 12:07:38 nw Exp $
  * Created on 04-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,10 +13,9 @@ package org.astrogrid.applications.parameter;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ParameterDescription;
-import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
+import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.io.Piper;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -25,32 +24,41 @@ import java.io.Reader;
 import java.io.StringWriter;
 
 
-/** default parameter adapter implementation
+/** The default implementation of {@link org.astrogrid.applications.parameter.ParameterAdapter}
  * <p/>
- * handles both direct and indirect parameters
+ * Handles both direct and indirect parameters, returing them as an in-memory string.
+ * @see org.astrogrid.applications.parameter.protocol.ProtocolLibrary#getExternalValue(ParameterValue)
  */
 public class DefaultParameterAdapter implements ParameterAdapter {
-    public DefaultParameterAdapter(ParameterValue val,ParameterDescription description,IndirectParameterValue indirectVal) {
+    /** Construct a new DefaultParameterAdapter
+     * @param val the parameter value to adapt.
+     * @param description the description associated with this value.
+     * @param externalVal wrapper around the external location that contains the true value of the parameter (in case of direct parameters, is null) 
+     */
+    public DefaultParameterAdapter(ParameterValue val,ParameterDescription description,ExternalValue externalVal) {
         this.val = val;
         this.description = description;
-        this.indirectVal = indirectVal;
+        this.externalVal = externalVal;
     }
+    /** the parameter value */
     protected final ParameterValue val;
+    /** the parameter descritpion */
     protected final ParameterDescription description;
-    protected final IndirectParameterValue indirectVal;
+    /** indirection to the external location containing the true value of an indirect parameter */
+    protected final ExternalValue externalVal;
     /**
      * retreives the value for this paramter
      * if the parameter is direct, just return the value of the parameter value itself, 
-     * if indirect, retreive the value first
-     * @returrn always retirns the string value of this parameter
+     * if indirect, retreive the value from the {@link #externalVal}
+     * @returrn always returns the string value of this parameter
      *  */
     public Object process() throws CeaException {
-        if (indirectVal == null) {
+        if (externalVal == null) {
             return val.getValue();
         } else {
             try {
                 StringWriter sw = new StringWriter();
-                Reader r = new InputStreamReader(indirectVal.read());                
+                Reader r = new InputStreamReader(externalVal.read());                
                 Piper.pipe(r, sw);
                 r.close();
                 sw.close();
@@ -65,9 +73,9 @@ public class DefaultParameterAdapter implements ParameterAdapter {
 
     /** stores the value for this parameter back again
      * <p />
-     * if the parameter is direct, stores the result directly in the parameter.
+     * if the parameter is direct, stores the result directly in the parameter value
      * if the parameter is indirect, writes the result out to the remote resouce
-     * @param o result object (will be stringified using {@link String.toString}
+     * @param o result object (will be stringified using {@link String#toString()}
      * @see org.astrogrid.applications.parameter.ParameterAdapter#writeBack(java.lang.Object)
      */
     public void writeBack(Object o) throws CeaException {
@@ -78,10 +86,10 @@ public class DefaultParameterAdapter implements ParameterAdapter {
         } else {
             value = o.toString();
         }
-        if (indirectVal == null) {
+        if (externalVal == null) {
             val.setValue(value);
         } else {
-            PrintWriter pw = new PrintWriter(new OutputStreamWriter( indirectVal.write() ));
+            PrintWriter pw = new PrintWriter(new OutputStreamWriter( externalVal.write() ));
             pw.println(value);
             pw.close();
         }
@@ -94,6 +102,11 @@ public class DefaultParameterAdapter implements ParameterAdapter {
 
 /* 
 $Log: DefaultParameterAdapter.java,v $
+Revision 1.5  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.4  2004/07/22 16:33:48  nw
 reads in values fully now.
 

@@ -1,4 +1,4 @@
-/*$Id: UnrecognizedIndirectParameterProtocolException.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: UnrecognizedProtocolException.java,v 1.1 2004/07/26 12:07:38 nw Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,33 +8,38 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.applications.parameter.indirect;
+package org.astrogrid.applications.parameter.protocol;
 
 import org.astrogrid.applications.parameter.ParameterAdapterException;
 
-/**
+/** Exception thrown when an indirect parameter is encountered whose resource is not a known protocol.
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
  *
  */
-public class UnrecognizedIndirectParameterProtocolException extends ParameterAdapterException {
+public class UnrecognizedProtocolException extends ParameterAdapterException {
     /** Construct a new UnrecognizedIndirectParameterProtocolException
      * @param message
      */
-    public UnrecognizedIndirectParameterProtocolException(String message) {
+    public UnrecognizedProtocolException(String message) {
         super(message);
     }
     /** Construct a new UnrecognizedIndirectParameterProtocolException
      * @param message
      * @param cause
      */
-    public UnrecognizedIndirectParameterProtocolException(String message, Throwable cause) {
+    public UnrecognizedProtocolException(String message, Throwable cause) {
         super(message, cause);
     }
 }
 
 
 /* 
-$Log: UnrecognizedIndirectParameterProtocolException.java,v $
+$Log: UnrecognizedProtocolException.java,v $
+Revision 1.1  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

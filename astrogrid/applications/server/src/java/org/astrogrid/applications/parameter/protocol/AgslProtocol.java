@@ -1,4 +1,4 @@
-/*$Id: AgslProtocol.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: AgslProtocol.java,v 1.1 2004/07/26 12:07:38 nw Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.applications.parameter.indirect;
+package org.astrogrid.applications.parameter.protocol;
 
 import org.astrogrid.community.User;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
@@ -36,23 +36,23 @@ public class AgslProtocol implements Protocol, ComponentDescriptor {
         super();
     }
     /**
-     * @see org.astrogrid.applications.parameter.indirect.Protocol#getProtocolName()
+     * @see org.astrogrid.applications.parameter.protocol.Protocol#getProtocolName()
      */
     public String getProtocolName() {
         return Agsl.SCHEME;
     }
     /**
-      * @see org.astrogrid.applications.parameter.indirect.Protocol#createIndirectValue(java.net.URI)
+      * @see org.astrogrid.applications.parameter.protocol.Protocol#createIndirectValue(java.net.URI)
       * @todo find nice way to pass correct user value in here.
       */
-     public IndirectParameterValue createIndirectValue(final URI reference) throws InaccessibleIndirectParameterException{
+     public ExternalValue createIndirectValue(final URI reference) throws InaccessibleExternalValueException{
          final Agsl agsl;
 
              try {
                 agsl = new Agsl(reference.toString());
             }
             catch (MalformedURLException e1) {
-                throw new InaccessibleIndirectParameterException(reference.toString(),e1);
+                throw new InaccessibleExternalValueException(reference.toString(),e1);
             }
 
             final StoreClient client;
@@ -61,24 +61,24 @@ public class AgslProtocol implements Protocol, ComponentDescriptor {
             }
             catch (IOException e2) {
 
-                throw new InaccessibleIndirectParameterException(reference.toString(),e2);
+                throw new InaccessibleExternalValueException(reference.toString(),e2);
             }
-         return new IndirectParameterValue() {
+         return new ExternalValue() {
             
            
-             public InputStream read() throws InaccessibleIndirectParameterException {
+             public InputStream read() throws InaccessibleExternalValueException {
                  try {
                  return client.getStream(agsl.toString());
                  } catch (IOException e) {
-                     throw new InaccessibleIndirectParameterException(agsl.toString(),e);
+                     throw new InaccessibleExternalValueException(agsl.toString(),e);
                  }
              }
 
-             public OutputStream write() throws InaccessibleIndirectParameterException {
+             public OutputStream write() throws InaccessibleExternalValueException {
                  try {
                  return client.putStream(agsl.toString(),true); //???
                  } catch (IOException e) {
-                     throw new InaccessibleIndirectParameterException(agsl.toString(),e);
+                     throw new InaccessibleExternalValueException(agsl.toString(),e);
                  }                
              }
          };
@@ -106,6 +106,11 @@ public class AgslProtocol implements Protocol, ComponentDescriptor {
 
 /* 
 $Log: AgslProtocol.java,v $
+Revision 1.1  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

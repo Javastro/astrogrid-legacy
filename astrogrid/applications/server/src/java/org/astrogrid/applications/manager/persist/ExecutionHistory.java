@@ -1,4 +1,4 @@
-/*$Id: ExecutionHistory.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: ExecutionHistory.java,v 1.3 2004/07/26 12:07:38 nw Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,32 +13,51 @@ package org.astrogrid.applications.manager.persist;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
 
-/** Interface to a persistence component that records execution histories for
- * each application.
- * maintains 'map' of currently executing apps, and summary history for past executions
+/** Interface to a  component that records execution histories for
+ * each application.<p>
+ * maintains 'map' of executing apps (the current set) , and summary history for past executions (the archive)
  * @author Noel Winstanley nw@jb.man.ac.uk 25-May-2004
  */
 public interface ExecutionHistory {
-    /** returns true if the execID passed in refers to a 'current' application invokation */
+    /** check if an application is currently pending or executing (as compared to completed and archived). 
+     * @param execID the cea-assigned id of the application to look for
+     * @return true if the application is in the current set. */
     boolean isApplicationInCurrentSet(String execID);
     
-    /** returns the application object for this execID
-     * pre: isExecIDCurrent
-     * @param execID
-     * @return
+    /** access an application in the current set.
+     * <p>
+     * precondition : {@link #isApplicationInCurrentSet(String)}
+     * @param execID  the cea-assigned id of the application to retreive.
+     * @return the associated applicaiton
+     * @throws ExecutionIDNotFoundException if the id does not refer to an application in the current set
+     * @throws PersistenceException if a storage fault occurs.
      */
     Application getApplicationFromCurrentSet(String execID) throws ExecutionIDNotFoundException, PersistenceException;
-    /** add an application to the set of currently executing apps */
+    /** add an application to the set of currently executing apps 
+     * @param app the application to add to the current set
+     * @throws PersistenceException if a storage fault occurs.*/
     void addApplicationToCurrentSet(Application app) throws PersistenceException;
-    /** archive an applicatioin - remove it from the set of currently executing apps, and store a summary of it in the archive */
+    /** archive an applicatioin - remove it from the set of currently executing apps, and store a summary of it in the archive 
+     * @param execID cea-assigned id of the application to archive.
+     * @throws ExecutionIDNotFoundException if the id does not refer to an applicatioin in the current set
+     * @throws PersistenceException if a storage fault occurs.*/
     void moveApplicationFromCurrentSetToArchive(String execID) throws ExecutionIDNotFoundException, PersistenceException;
-    /** retreive a summary of an application execution from the archive */
+    /** retreive a summary of an application execution from the archive 
+     * @param execID the cea-assigned id of the application execution to retreive.
+     * @return the summary of this execution
+     * @throws ExecutionIDNotFoundException if the id foes not refer to an archived application
+     * @throws PersistenceException if a storage fault occurs*/
     ExecutionSummaryType getApplicationFromArchive(String execID) throws ExecutionIDNotFoundException, PersistenceException;
 }
 
 
 /* 
 $Log: ExecutionHistory.java,v $
+Revision 1.3  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

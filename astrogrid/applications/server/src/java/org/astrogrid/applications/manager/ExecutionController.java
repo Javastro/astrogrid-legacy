@@ -1,5 +1,5 @@
 /*
- * $Id: ExecutionController.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: ExecutionController.java,v 1.3 2004/07/26 12:07:38 nw Exp $
  * 
  * Created on 22-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -41,7 +41,7 @@ public interface ExecutionController {
     */
    public boolean execute(String executionId) throws CeaException;
 
-   /** abort execution of an application
+   /** abort execution of an application (not supported by all applications)
     * 
     * @param executionId the servier-assigned id of an application
     * @return true if the application could be aborted

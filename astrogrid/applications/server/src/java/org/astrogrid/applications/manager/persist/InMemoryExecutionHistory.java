@@ -1,4 +1,4 @@
-/*$Id: InMemoryExecutionHistory.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: InMemoryExecutionHistory.java,v 1.3 2004/07/26 12:07:38 nw Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,9 +19,11 @@ import java.util.Map;
 
 import junit.framework.Test;
 
-/** Simplest possible implementation of an execution history component - keeps everything in memory, persists nothing
+/** In-memory implementation of an execution history component - keeps everything in memory, persists nothing
  * <p />
  * So not such a good one to use in a deployment environment. handy for testing however.
+ * <p />
+ * Implemented using two maps- one for current set, one for archive.
  * @author Noel Winstanley nw@jb.man.ac.uk 26-May-2004
  *
  */
@@ -145,6 +147,11 @@ public class InMemoryExecutionHistory implements ExecutionHistory , ComponentDes
 
 /* 
 $Log: InMemoryExecutionHistory.java,v $
+Revision 1.3  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

@@ -1,4 +1,4 @@
-/*$Id: AbstractResultsListener.java,v 1.1 2004/07/20 02:03:08 nw Exp $
+/*$Id: AbstractResultsListener.java,v 1.2 2004/07/26 12:07:38 nw Exp $
  * Created on 19-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import java.util.Observable;
 import java.util.Observer;
 
-/** Abstract base class for things that want to be notified of te results of an application execution
+/** Abstract base class for things that want to be notified of the results of an application execution
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Jul-2004
  *
  */
@@ -40,8 +40,7 @@ public abstract class AbstractResultsListener implements Observer {
      */
     public void update(Observable o, Object arg) {
         // we only care about results..
-        if (! (arg instanceof Status)) {
-            logger.debug("saw a " + arg.getClass().getName() + " - ignoring");
+        if (! (arg instanceof Status)) {           
             return;
         }
         Status stat = (Status) arg;
@@ -52,8 +51,10 @@ public abstract class AbstractResultsListener implements Observer {
             notifyResultsAvailable(app);   
         }
     }
-    /**
-     * @param app
+    /** Subclasses to implement this.
+     * Called when the application wishes to notify listeners that execution has completed and results are available
+     * @param app the application that emitted the notificaiton
+     * @see Application#getResult()
      */
     protected abstract void notifyResultsAvailable(Application app);   
 }
@@ -61,6 +62,11 @@ public abstract class AbstractResultsListener implements Observer {
 
 /* 
 $Log: AbstractResultsListener.java,v $
+Revision 1.2  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.1  2004/07/20 02:03:08  nw
 added abstract listener classes
  

@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplication.java,v 1.4 2004/07/26 10:21:47 nw Exp $
+/*$Id: JavaClassApplication.java,v 1.5 2004/07/26 12:07:38 nw Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,13 +14,11 @@ import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.parameter.ParameterAdapter;
-import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
-import org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary;
-import org.astrogrid.community.User;
+import org.astrogrid.applications.parameter.protocol.ExternalValue;
+import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.apache.commons.logging.Log;
@@ -49,7 +47,7 @@ public class JavaClassApplication extends AbstractApplication {
      * @param tool
      * @param description
      */
-    public JavaClassApplication(IDs ids, Tool tool, ApplicationInterface interf, IndirectionProtocolLibrary lib) {
+    public JavaClassApplication(IDs ids, Tool tool, ApplicationInterface interf, ProtocolLibrary lib) {
         super(ids, tool, interf,lib);
     }
     
@@ -112,7 +110,7 @@ public class JavaClassApplication extends AbstractApplication {
      * @see org.astrogrid.applications.AbstractApplication#instantiateAdapter(org.astrogrid.applications.beans.v1.parameters.ParameterValue, org.astrogrid.applications.description.ParameterDescription, org.astrogrid.applications.parameter.indirect.IndirectParameterValue)
      */
     protected ParameterAdapter instantiateAdapter(ParameterValue pval,
-            ParameterDescription descr, IndirectParameterValue indirectVal) {
+            ParameterDescription descr, ExternalValue indirectVal) {
         return new JavaClassParameterAdapter(pval, descr, indirectVal);
     }
 }
@@ -120,6 +118,11 @@ public class JavaClassApplication extends AbstractApplication {
 
 /* 
 $Log: JavaClassApplication.java,v $
+Revision 1.5  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.4  2004/07/26 10:21:47  nw
 javadoc
 

@@ -1,4 +1,4 @@
-/*$Id: InMemoryIdGen.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: InMemoryIdGen.java,v 1.3 2004/07/26 12:07:38 nw Exp $
  * Created on 27-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,8 @@ import org.astrogrid.component.descriptor.ComponentDescriptor;
 import junit.framework.Test;
 
 /** simplest possible memory-only id generator.
+ * <p>
+ * Not to be used in production - ids are only unique through lifetime of single JVM.
  * @author Noel Winstanley nw@jb.man.ac.uk 27-May-2004
  *
  */
@@ -26,9 +28,7 @@ public class InMemoryIdGen implements IdGen, ComponentDescriptor {
         super();
     }
     private int i = 0;
-    /**
-     * @see org.astrogrid.applications.manager.persist.IdGen#getNewID()
-     */
+
     public synchronized String getNewID() {
         return Integer.toString(++i);
     }
@@ -55,6 +55,11 @@ public class InMemoryIdGen implements IdGen, ComponentDescriptor {
 
 /* 
 $Log: InMemoryIdGen.java,v $
+Revision 1.3  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationDescription.java,v 1.3 2004/07/26 00:58:22 nw Exp $
+ * $Id: AbstractApplicationDescription.java,v 1.4 2004/07/26 12:07:38 nw Exp $
  * 
  * Created on 14-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -18,6 +18,8 @@ import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
+import org.astrogrid.community.User;
+import org.astrogrid.workflow.beans.v1.Tool;
 
 import java.util.Collection;
 import java.util.HashMap;

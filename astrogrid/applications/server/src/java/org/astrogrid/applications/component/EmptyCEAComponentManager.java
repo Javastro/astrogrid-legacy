@@ -1,4 +1,4 @@
-/*$Id: EmptyCEAComponentManager.java,v 1.4 2004/07/23 13:21:21 nw Exp $
+/*$Id: EmptyCEAComponentManager.java,v 1.5 2004/07/26 12:07:38 nw Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,14 +28,14 @@ import org.astrogrid.applications.manager.idgen.GloballyUniqueIdGen;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
 import org.astrogrid.applications.manager.persist.FileStoreExecutionHistory;
-import org.astrogrid.applications.parameter.indirect.AgslProtocol;
-import org.astrogrid.applications.parameter.indirect.DefaultIndirectionProtocolLibrary;
-import org.astrogrid.applications.parameter.indirect.FileProtocol;
-import org.astrogrid.applications.parameter.indirect.FtpProtocol;
-import org.astrogrid.applications.parameter.indirect.HttpProtocol;
-import org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary;
-import org.astrogrid.applications.parameter.indirect.IvornProtocol;
-import org.astrogrid.applications.parameter.indirect.Protocol;
+import org.astrogrid.applications.parameter.protocol.AgslProtocol;
+import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
+import org.astrogrid.applications.parameter.protocol.FileProtocol;
+import org.astrogrid.applications.parameter.protocol.FtpProtocol;
+import org.astrogrid.applications.parameter.protocol.HttpProtocol;
+import org.astrogrid.applications.parameter.protocol.IvornProtocol;
+import org.astrogrid.applications.parameter.protocol.Protocol;
+import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.component.EmptyComponentManager;
 import org.astrogrid.config.Config;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
@@ -119,11 +119,11 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
      * @see #registerAstrogridIndirectionProtocols(MutablePicoContainer)*/
     protected static final void registerProtocolLibrary(final MutablePicoContainer pico) {
         log.info("Registering default indirection protocol library");
-        pico.registerComponentImplementation(IndirectionProtocolLibrary.class,DefaultIndirectionProtocolLibrary.class);
+        pico.registerComponentImplementation(ProtocolLibrary.class,DefaultProtocolLibrary.class);
         // on startup (i.e. after everythinig has been registered, this throwaway component will add all known indirection protocols to the library).
         pico.registerComponentInstance(new Startable() {
             public void start() {
-                DefaultIndirectionProtocolLibrary lib = (DefaultIndirectionProtocolLibrary) pico.getComponentInstanceOfType(DefaultIndirectionProtocolLibrary.class);
+                DefaultProtocolLibrary lib = (DefaultProtocolLibrary) pico.getComponentInstanceOfType(DefaultProtocolLibrary.class);
                 for (Iterator i = pico.getComponentAdaptersOfType(Protocol.class).iterator(); i.hasNext(); ) {
                     ComponentAdapter ca = (ComponentAdapter)i.next();
                     Protocol p = (Protocol)ca.getComponentInstance();
@@ -268,6 +268,11 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
 
 /* 
 $Log: EmptyCEAComponentManager.java,v $
+Revision 1.5  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.4  2004/07/23 13:21:21  nw
 Javadocs
 

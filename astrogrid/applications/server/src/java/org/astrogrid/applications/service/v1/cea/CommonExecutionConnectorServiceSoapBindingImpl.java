@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.3 2004/07/09 14:48:24 nw Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.4 2004/07/26 12:07:38 nw Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -32,7 +32,10 @@ import java.rmi.RemoteException;
 /**
  * This is the main implementation of the CommonExecutionConnectorService. This is the class that should be referenced in the Axis wsdd file.
  * Its main task is to convert between axis and castor object representations, and then delegate to the appropriate component in the componentManager 
+ * <p>
+ * Catches all exceptions, propagates them as {@link org.astrogrid.applications.service.v1.cea.CeaFault} messages back to the caller.
  * @author Paul Harrison (pah@jb.man.ac.uk) 25-Mar-2004
+ * @author Noel Winstanley
  * @version $Name:  $
  * @since iteration5
  */

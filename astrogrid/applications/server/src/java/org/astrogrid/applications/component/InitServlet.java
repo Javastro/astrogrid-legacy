@@ -1,5 +1,5 @@
 /*
- * $Id: InitServlet.java,v 1.4 2004/07/23 13:21:21 nw Exp $
+ * $Id: InitServlet.java,v 1.5 2004/07/26 12:07:38 nw Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -16,7 +16,6 @@ package org.astrogrid.applications.component;
 
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
-import org.astrogrid.config.SimpleConfig;
 
 import java.io.IOException;
 import java.io.PrintWriter;

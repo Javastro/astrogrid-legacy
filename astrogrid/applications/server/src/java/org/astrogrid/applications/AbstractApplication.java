@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplication.java,v 1.4 2004/07/23 10:37:28 nw Exp $
+ * $Id: AbstractApplication.java,v 1.5 2004/07/26 12:07:38 nw Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -18,13 +18,12 @@ import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.ParameterDescription;
-import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 import org.astrogrid.applications.parameter.DefaultParameterAdapter;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.ParameterAdapterException;
-import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
-import org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary;
+import org.astrogrid.applications.parameter.protocol.ExternalValue;
+import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.community.User;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -102,7 +101,7 @@ public abstract class AbstractApplication extends Observable implements Applicat
    /** list of parameter adapters for the inputs to the application. emty at start */
    private final List inputAdapters = new ArrayList();
    /** library of indirection protocol handlers */
-   protected final IndirectionProtocolLibrary lib;
+   protected final ProtocolLibrary lib;
    /** list of parameter adapters for the outputs of the application. empty at start */
    private final List outputAdapters = new ArrayList();
    /** list type containing results of the application execution. obviously empty to start with */
@@ -121,7 +120,7 @@ public abstract class AbstractApplication extends Observable implements Applicat
     * @param applicationInterface the descrptioni interface this application conforms to.
     * @param lib library of indirection handlers - used to read remote parameters using various protocols
     */
-   public AbstractApplication(IDs ids,Tool tool, ApplicationInterface applicationInterface,IndirectionProtocolLibrary lib)
+   public AbstractApplication(IDs ids,Tool tool, ApplicationInterface applicationInterface,ProtocolLibrary lib)
    {      
       this.applicationInterface = applicationInterface;
       this.ids = ids;
@@ -138,7 +137,7 @@ public abstract class AbstractApplication extends Observable implements Applicat
      * used in {@link #createAdapters}
      * @return a {@link DefaultParameterAdapter}
      */
-    protected ParameterAdapter instantiateAdapter(ParameterValue pval, ParameterDescription descr,IndirectParameterValue indirectVal) {
+    protected ParameterAdapter instantiateAdapter(ParameterValue pval, ParameterDescription descr,ExternalValue indirectVal) {
         return new DefaultParameterAdapter(pval,descr,indirectVal);
     }
     /** sets up the list of input and output parameter adapters
@@ -153,13 +152,13 @@ public abstract class AbstractApplication extends Observable implements Applicat
         results.clearResult();
         for  (Iterator params = inputParameterValues(); params.hasNext();){
              ParameterValue param = (ParameterValue)params.next();       
-            IndirectParameterValue iVal = (param.getIndirect() ? lib.getIndirect(param) : null);
+            ExternalValue iVal = (param.getIndirect() ? lib.getExternalValue(param) : null);
              ParameterAdapter adapter = this.instantiateAdapter(param,getApplicationDescription().getParameterDescription(param.getName()),iVal);
              inputAdapters.add(adapter);
           }
         for  (Iterator params = outputParameterValues(); params.hasNext();){
             ParameterValue param = (ParameterValue)params.next();       
-           IndirectParameterValue iVal = (param.getIndirect() ? lib.getIndirect(param) : null);
+           ExternalValue iVal = (param.getIndirect() ? lib.getExternalValue(param) : null);
             ParameterAdapter adapter = this.instantiateAdapter(param,getApplicationDescription().getParameterDescription(param.getName()),iVal);
             outputAdapters.add(adapter);
             results.addResult(adapter.getWrappedParameter());

@@ -1,4 +1,4 @@
-/*$Id: DefaultMetadataService.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: DefaultMetadataService.java,v 1.3 2004/07/26 12:07:38 nw Exp $
  * Created on 21-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,18 +13,16 @@ package org.astrogrid.applications.manager;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.component.ProvidesVODescription;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
-import org.astrogrid.registry.beans.resource.VODescription;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.StringReader;
 import java.io.StringWriter;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 
-/** Standard implementation of the CEA metadata component.
+/** Standard implementation of the {@link org.astrogrid.applications.manager.MetadataService} component
  * @author Noel Winstanley nw@jb.man.ac.uk 21-May-2004
  *
  */
@@ -32,6 +30,7 @@ public class DefaultMetadataService implements MetadataService, ComponentDescrip
     private static final Log logger = LogFactory.getLog(DefaultMetadataService.class);
        
     /** Construct a new StandardCEAMetaData
+     * @param provider a component that provides a VODescription, on which this Metadata component works.
      * 
      */
     public DefaultMetadataService( ProvidesVODescription provider) {
@@ -93,6 +92,11 @@ public class DefaultMetadataService implements MetadataService, ComponentDescrip
 
 /* 
 $Log: DefaultMetadataService.java,v $
+Revision 1.3  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

@@ -1,5 +1,11 @@
 <html>
 	<body>
 		<h1>Observer implementations that like to watch applications do stuff</h1>
+		{@link org.astrogrid.applications.AbstractApplication} extends the {@link java.util.Observable} class. Through this, interested 
+		observers can register with an applicaiton, and then receive notifications of events.
+		<p>
+		The <tt>Observer</tt> / <tt>Observable</tt> framework is quite untyped - {@link java.lang.Object} values are passed around.
+		This package defines two abstract classes that may be extended to listen to particular types of events from an application in a type-safe way.
+		This package also provides a concrete extension of each abstract class that propagates the event notification on to a remote web-service listener interface.
 	</body>
 </html>

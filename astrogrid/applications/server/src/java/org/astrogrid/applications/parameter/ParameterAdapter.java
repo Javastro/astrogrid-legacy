@@ -1,4 +1,4 @@
-/*$Id: ParameterAdapter.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: ParameterAdapter.java,v 1.3 2004/07/26 12:07:38 nw Exp $
  * Created on 04-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,8 @@ package org.astrogrid.applications.parameter;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 
-/** Interface abstracting around manupulating of parameters.
+/** Abstraction around reading and writing  parameter values.
+ * @see org.astrogrid.applications.AbstractApplication#instantiateAdapter()}
  * @author Noel Winstanley nw@jb.man.ac.uk 04-Jun-2004
  *
  */
@@ -26,19 +27,25 @@ public interface ParameterAdapter {
      */
     Object process() throws CeaException;
     /**
-     * write back this parameter (used for output parameters).
+     * write out this parameter (used for output parameters).
      * @param o the value of the parameter to write (or some reference / represenation of it)
      * @throws CeaException
      */
     void writeBack(Object o) throws CeaException;
     
-    /** returns the parameter object this adapter is wrapping. */
+    /** returns the parameter object this adapter is wrapping. 
+     * @return the paramter value this adpater wraps.*/
     ParameterValue getWrappedParameter();
 }
 
 
 /* 
 $Log: ParameterAdapter.java,v $
+Revision 1.3  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

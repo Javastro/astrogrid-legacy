@@ -1,4 +1,4 @@
-/*$Id: AbstractProgressListener.java,v 1.1 2004/07/20 02:03:08 nw Exp $
+/*$Id: AbstractProgressListener.java,v 1.2 2004/07/26 12:07:38 nw Exp $
  * Created on 19-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,17 @@
 **/
 package org.astrogrid.applications.manager.observer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.util.Observable;
 import java.util.Observer;
 
-/** Abstract base class for things that want to listen to progress of an application execution.
+/** An abstract base class for things that want to listen to the progress of an application execution.
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Jul-2004
  *
  */
@@ -52,14 +52,14 @@ public abstract class AbstractProgressListener implements Observer {
     }
     /** subclasses to implement this.
      * called when the listener encounters a message from the application.
-     * @param app
-     * @param type
+     * @param app the applicaitoni emitting the mesage
+     * @param type the message the application emitted - usually  an informative message
      */
     protected abstract void reportMessage(Application app, MessageType type);    
     /** subclasses to implement this.
      * called when the listener encounters a status change to the application
-     * @param app
-     * @param status
+     * @param app the application who's state has changed.
+     * @param status the new status of the application.
      */
     protected abstract void reportStatusChange(Application app, Status status);
     
@@ -68,6 +68,11 @@ public abstract class AbstractProgressListener implements Observer {
 
 /* 
 $Log: AbstractProgressListener.java,v $
+Revision 1.2  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.1  2004/07/20 02:03:08  nw
 added abstract listener classes
  

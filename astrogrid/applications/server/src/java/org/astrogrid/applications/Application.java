@@ -1,5 +1,5 @@
 /*
- * $Id: Application.java,v 1.3 2004/07/23 10:37:28 nw Exp $
+ * $Id: Application.java,v 1.4 2004/07/26 12:07:38 nw Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -16,7 +16,6 @@ import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
 import org.astrogrid.community.User;
 
 import java.util.Observer;

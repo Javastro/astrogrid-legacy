@@ -1,4 +1,4 @@
-/*$Id: MockMonitor.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: MockMonitor.java,v 1.3 2004/07/26 12:07:38 nw Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,8 +9,6 @@
  *
 **/
 package org.astrogrid.applications;
-
-import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -61,6 +59,11 @@ public class MockMonitor implements Observer{
 
 /* 
 $Log: MockMonitor.java,v $
+Revision 1.3  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

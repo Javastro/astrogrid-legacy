@@ -1,4 +1,4 @@
-/*$Id: TestCommunity.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: TestCommunity.java,v 1.3 2004/07/26 12:07:38 nw Exp $
  * Created on 23-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.applications.javaclass;
 
-import org.astrogrid.applications.javaclass.JavaClassApplicationDescriptionLibrary.Community;
 
 
 public class TestCommunity implements JavaClassApplicationDescriptionLibrary.Community {
@@ -21,6 +20,11 @@ public class TestCommunity implements JavaClassApplicationDescriptionLibrary.Com
 
 /* 
 $Log: TestCommunity.java,v $
+Revision 1.3  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

@@ -1,4 +1,4 @@
-/*$Id: SummaryHelper.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: SummaryHelper.java,v 1.3 2004/07/26 12:07:38 nw Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
 import org.astrogrid.applications.beans.v1.cea.castor.InputListType;
 
 /**
- * Helper class for with methods for building execution summaries from applications 
+ * Helper class for  building execution summaries from applications 
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Jun-2004
  *
  */
@@ -23,6 +23,11 @@ public class SummaryHelper {
      private SummaryHelper(){
      }
       
+/** Build a summary for an application.
+ * @param execID unique identifier for the application
+ * @param app the application to summarize
+ * @return a summary object for this application
+ */
 public static ExecutionSummaryType summarize(String execID, Application app) {
      ExecutionSummaryType summary = new ExecutionSummaryType();
         summary.setApplicationName(app.getApplicationDescription().getName());
@@ -37,6 +42,11 @@ public static ExecutionSummaryType summarize(String execID, Application app) {
 
 /* 
 $Log: SummaryHelper.java,v $
+Revision 1.3  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

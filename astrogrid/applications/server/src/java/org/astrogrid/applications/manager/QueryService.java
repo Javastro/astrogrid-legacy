@@ -1,4 +1,4 @@
-/*$Id: QueryService.java,v 1.3 2004/07/09 14:48:24 nw Exp $
+/*$Id: QueryService.java,v 1.4 2004/07/26 12:07:38 nw Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 
 import java.net.URI;
 
-/** Interface to the service used to query status of applications, access results, etc.
+/** Defines a component used to query status of applications, access results, etc.
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
  *
  */
@@ -25,7 +25,7 @@ public interface QueryService {
     /** register a remote progress listener with an application
      * 
      * @param executionId the server-assigned id of a current application (which may either be running, or waiting to run)
-     * @param endpoint endpoint of a webservice implementing the {@link JobMonitor} interface. This webservice will be
+     * @param endpoint endpoint of a webservice implementing the {@link org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor} interface. This webservice will be
      * notified whenever the application changes state.
      * @throws CeaException
      * @return true if registered successfully.
@@ -34,7 +34,7 @@ public interface QueryService {
     /** register a remote result listener with an application
      * 
      * @param executionId the server-assigned id of a current application (which may either be running, or waiting to run)
-     * @param endpoint endpoint of a webservice implementing the {@link CEAResultListener} interface. This webservice will be
+     * @param endpoint endpoint of a webservice implementing the {@link CeaResultListener} interface. This webservice will be
      * notified when the exection results for the application become available.
      * @return true if registered successfully
      * @throws CeaException
@@ -42,13 +42,22 @@ public interface QueryService {
     public boolean registerResultsListener(String executionId,URI endpoint) throws CeaException;
     
     // direct query methods
-    /** query the status of a running application */
+    /** query the status of a running application 
+     * @param executionId the (cea-assigned) id of the application to query.
+     * @return a message containing information about the status of the application.
+     * @throws CeaException if owt goes wrong.*/
     public MessageType queryExecutionStatus(String executionId) throws CeaException;
 
-     /** get results from an application - list will be empty if the applicatio hasn't produced results yet */     
+     /** get results from an application - list will be empty / semi-blank if the application hasn't finished producing results yet 
+     * @param executionId the (cea-assigned) id of the application to query.
+     * @return a list of resuls.
+     * @throws CeaException*/     
      public ResultListType getResults(String executionId) throws CeaException;
     
-     /** get summary of an application execution */
+     /** get summary of an application execution 
+     * @param executionId the (cea-assigned) id of the application to query.
+     * @return an executioin summary for this application.
+     * @throws CeaException*/
      
      public ExecutionSummaryType getSummary(String executionId) throws CeaException;
     
@@ -58,6 +67,11 @@ public interface QueryService {
 
 /* 
 $Log: QueryService.java,v $
+Revision 1.4  2004/07/26 12:07:38  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+javadocs
+
 Revision 1.3  2004/07/09 14:48:24  nw
 updated to match change in type of register*Listener methods in cec wsdl
 
