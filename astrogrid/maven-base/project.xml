@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: project.xml,v 1.28 2004/11/23 18:40:50 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.29 2004/11/23 18:57:58 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="xsd/maven-project.xsd">
     <pomVersion>3</pomVersion>
     <name>Astrogrid Master Maven POM</name>
@@ -18,7 +18,7 @@
     <url>http://www.astrogrid.org/maven/docs/${pom.currentVersion}/${astrogrid.name}/index.html</url>
     <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
     <siteAddress>www.astrogrid.org</siteAddress>
-    <siteDirectory>${maven.site.central.directory}/${pom.currentVersion}/${astrogrid.name}</siteDirectory>
+    <siteDirectory>${maven.site.central.directory}/HEAD/${astrogrid.name}</siteDirectory>
 	
 	<!--set the property astrogrid.name in your component's project.properties file
 		for the cvs repos data to be correct-->
