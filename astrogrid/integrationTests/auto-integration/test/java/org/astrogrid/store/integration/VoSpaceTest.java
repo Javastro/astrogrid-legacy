@@ -1,4 +1,4 @@
-/*$Id: VoSpaceTest.java,v 1.4 2004/04/21 12:31:56 KevinBenson Exp $
+/*$Id: VoSpaceTest.java,v 1.5 2004/04/21 16:50:35 KevinBenson Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -66,11 +66,16 @@ public class VoSpaceTest extends TestCase {
       System.out.println("exiting testResolver");
    }
 
-/*
-   public void testStoreAccess() throws IOException
+
+   public void testStoreAccess() throws IOException, URISyntaxException
    {
+      System.out.println("enter testStoreAccess");
+      Ivorn resultIvorn = createTestFile("hello.txt");
+      System.out.println("the resultIvorn = " + resultIvorn.toString());
+      System.out.println("exit testStoreAccess");
+      
    }
-*/
+
    private Ivorn createTestFile(String filename) throws IOException, URISyntaxException {
       System.out.println("entering createTestFile");
       Ivorn fileIvorn = new Ivorn(MYSPACEIVO.toString()+"#"+root+filename);
@@ -84,6 +89,7 @@ public class VoSpaceTest extends TestCase {
    
    /** Tests getFile etc - if these are failing the rest of the tests might
     * not make much sense.  This is a bit of a combined one anyway... */
+   
    public void testGetFile() throws IOException, URISyntaxException
    {
       System.out.println("entering testGetFile and creating newfile.txt");
@@ -101,7 +107,6 @@ public class VoSpaceTest extends TestCase {
       client.delete(fileRn);
       System.out.println("exiting testGetFile");
    }
-
   
    public void testMove() throws IOException, URISyntaxException
    {
@@ -176,7 +181,7 @@ public class VoSpaceTest extends TestCase {
       //System.out.println("the result of createUser = " + iv.toString());
       System.out.println("exit testCreateUser()");      
    }
-   
+
    
     /**
      * Assembles and returns a test suite made up of all the testXxxx() methods
@@ -200,6 +205,9 @@ public class VoSpaceTest extends TestCase {
 
 /*
 $Log: VoSpaceTest.java,v $
+Revision 1.5  2004/04/21 16:50:35  KevinBenson
+just addeda  few more comments.  And setup the user corectly.
+
 Revision 1.4  2004/04/21 12:31:56  KevinBenson
 *** empty log message ***
 
