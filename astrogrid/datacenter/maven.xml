@@ -58,18 +58,12 @@ WSDL
  </goal>
 
   <goal name="generate-wsdl" description="generate wsdl from java class AxisDataServer" prereqs="axis-declare-tasks,compile-AxisDataServer">
-  	<axis-java2wsdl	useinheritedmethods="true"
-		methods="
-		doQuery
-		, getMetadata
-		, getVoRegistryMetadata
-		, makeQuery
-		, startQuery
-		, getResultsAndClose
-		, abortQuery
-		, getStatus
-		, registerWebListener
-		"
+	<!-- parse .wsdd file to find list of method names -->
+	<xmlproperty file="wsdd/AxisDataServer-deploy.wsdd" prefix="wsdd"/>
+	<echo>Web-Service methods declared in wsdd/AxisDataServer-deploy.wsdd:
+	     ${wsdd.deployment.service.parameter(value)}</echo>
+	<axis-java2wsdl	useinheritedmethods="true"
+		methods="${wsdd.deployment.service.parameter(value)}"
 		style="RPC"
 		porttypename="AxisDataServer"
 		output="wsdl/AxisDataServer.wsdl"
@@ -160,22 +154,19 @@ ADQL
   </goal>
 
 <!-- stand - alone goals - not addons to main build -->
-
   <goal name="test-installation" description="test the datacenter webservice installation" prereqs="datacenter-test-client-jar">
 	<!-- created jar file, now run it -->
 	<java fork="true" jar="packaging/pal/bin/test-server.jar"/>
   </goal>
 
-<goal name="dataserver-publish" description="jar up, deploy to webserver, restart webapp, redeploy webservice."
-	prereqs="jar:jar,tomcat-declare-tasks">
+<goal name="datacenter-server-publish" description="compile and deploy to webserver, restart webapp, redeploy webservice."
+	prereqs="jar:jar,tomcat-declare-tasks,datacenter-server-zip">
 	<!-- assumes vanilla tomcat & axis installation, and configured tomcat manager app. -->
-	<deploy:copy-deps todir="${axis.webapp.location}/WEB-INF/lib" />
-	<copy file="target/astrogrid-datacenter-HEAD.jar" toDir="${axis.webapp.location}/WEB-INF/lib" />
-	<!-- zap logs -->
-	<!-- wont work because of permissions
-	<delete>
-		<fileset dir="/var/log/tomcat4" includes="*.*" />
-	</delete> -->
+	<copy todir="${axis.webapp.location}/WEB-INF/lib">
+		<fileset dir="packaging/datacenter-server/WEB-INF/lib">
+			<include name="*.jar" />
+		</fileset>
+	</copy>
 	<!-- restart webapp -->
 	<tomcat-reload url="http://localhost:8080/manager"
 		username="${tomcat.manager.username}" password="${tomcat.manager.password}" path="/axis" />
@@ -198,20 +189,21 @@ ADQL
 	<jar destfile="packaging/pal/lib/axis.war" basedir="packaging/axis" />
 </goal>
 
-<goal name="datacenter-server-zip" description="create zipped datacenter server archive">
-<!-- copy dependent jars into template, zip up into main packaging directory
- :todo - add versioning number to filename? certainly add to manifest.-->
+<goal name="datacenter-server-zip" prereqs="jar:jar"
+	description="create zipped datacenter server archive">
 	<delete>
 		<fileset dir="packaging/datacenter-server/WEB-INF/lib"
 			include="*.jar" />
 	</delete>
 	<deploy:copy-deps todir="packaging/datacenter-server/WEB-INF/lib"
 		excludes="axis,wsdl4j,saaj,commons-logging,commons-discovery,jaxrpc-api,junit,log4j" />
-	<echo file="packaging/datacenter-server/VERSION">${DSTAMP}</echo>		
+	<copy file="${maven.build.dir}/astrogrid-datacenter-HEAD.jar" todir="packaging/datacenter-server/WEB-INF/lib" />
+	<echo file="packaging/datacenter-server/VERSION">${DSTAMP}</echo>
 	<zip destfile="packaging/pal/lib/datacenter-server.zip" basedir="packaging/datacenter-server"/>
 </goal>
 
-<goal name="datacenter-test-client-jar" description="create executable jar for datacenter test client">
+<goal name="datacenter-test-client-jar" prereqs="java:compile"
+	description="create executable jar for datacenter test client">
   <delete dir="tmp" />
   <mkdir dir="tmp" />
   <deploy:copy-deps todir="tmp"
@@ -228,7 +220,8 @@ ADQL
   </jar>
 </goal>
 
-<goal name="datacenter-register-client-jar" description="create executable jar for that registers datacenter service with axis">
+<goal name="datacenter-register-client-jar" prereqs="java:compile"
+	description="create executable jar for that registers datacenter service with axis">
   <delete dir="tmp" />
   <mkdir dir="tmp" />
   <deploy:copy-deps todir="tmp"
