@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.2 2004/10/01 18:04:58 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.3 2004/10/05 15:04:53 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,7 +20,6 @@ import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QuerierPluginException;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.queriers.status.QuerierError;
-import org.astrogrid.datacenter.queriers.status.QuerierQueried;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.io.xml.XmlPrinter;
@@ -90,7 +89,7 @@ public class JdbcPlugin extends QuerierPlugin implements VoResourcePlugin  {
          statement.execute(sql);
          ResultSet results = statement.getResultSet();
 
-         querier.setStatus(new QuerierQueried(querier.getStatus()));
+         querier.getStatus().addDetail("Finished Query phase at "+new java.util.Date());
          
          if (!aborted) {
             
