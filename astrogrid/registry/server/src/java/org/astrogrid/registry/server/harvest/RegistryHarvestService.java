@@ -31,6 +31,7 @@ import java.io.StringReader;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import org.apache.axis.client.Call; 
 import org.apache.axis.client.Service; 
@@ -43,6 +44,10 @@ import org.astrogrid.registry.beans.resource.*;
 import org.astrogrid.registry.beans.resource.types.InvocationType;
 import org.astrogrid.registry.beans.resource.registry.RegistryType;
 import org.astrogrid.registry.RegistryException;
+
+import org.astrogrid.registry.common.WSDLInformation;
+import org.astrogrid.registry.common.WSDLBasicInformation;
+
 
 
 
@@ -268,7 +273,7 @@ public class RegistryHarvestService implements
          Document harvestedDoc = null;
          //This next statement will go away with Castor.            
          //NodeList nl = query.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","Identifier");
-         if(query.getElementsByTagName("VODescription").getLength() > 0) {
+         if(query != null && query.getElementsByTagName("VODescription").getLength() > 0) {
             return harvestResource(query);   
          }else {
             return harvestResource(harvest(null));   
@@ -299,17 +304,55 @@ public class RegistryHarvestService implements
          }       
       }      
    
-   private void beginHarvest(Date dt, ServiceType st) {
+   private void beginHarvest(Date dt, ServiceType st) throws RegistryException {
       String accessURL = st.getInterface().getAccessURL().getContent();
       Document doc = null;
       if(InvocationType.WEBSERVICE_TYPE == st.getInterface().getInvocation().getType()) {
          //call the service
          //remeber to look at the date
+         WSDLBasicInformation wsdlBasic = WSDLInformation.getBasicInformationFromURL(accessURL);
+         if(wsdlBasic == null) {
+            Call callObj = getCall((String)wsdlBasic.getEndPoint().values().iterator().next());
+            DocumentBuilder registryBuilder = null;
+            try {
+               registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+               doc = registryBuilder.newDocument();
+               Element root = null;
+               String interfaceMethod = null;
+               if(st instanceof RegistryType) {
+                  interfaceMethod = "harvest";
+                  //TODO make check of date here and actually do a harvestFrom   
+               }else {
+                  interfaceMethod = st.getIdentifier().getResourceKey();
+                  if(interfaceMethod == null || interfaceMethod.trim().length() > 0) {
+                     interfaceMethod = "getMetaData";
+                  }
+                  doc.createElementNS(wsdlBasic.getTargetNameSpace(),interfaceMethod);
+                  doc.appendChild(root);
+                  SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
+                  sbeRequest.setName("harvestAll");               
+                  sbeRequest.setNamespaceURI(wsdlBasic.getTargetNameSpace());
+                  Vector result = (Vector) callObj.invoke (new Object[] {sbeRequest});
+                  SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
+                  RegistryFileHelper.updateDocument(sbe.getAsDocument(),true,false);
+               }
+            }catch(RemoteException re) {
+              //log error
+              re.printStackTrace();   
+            }catch(ParserConfigurationException pce) {
+               pce.printStackTrace();   
+            }catch(Exception e) {
+               e.printStackTrace();   
+            }
+         }else {
+            throw new RegistryException("Could not seem to get information from WSDL on this Web Service type");   
+         }
          
       }else if(InvocationType.WEBBROWSER_TYPE == st.getInterface().getInvocation().getType()) {
          try {
             //might need to put some oai date stuff on the end.  This is unknown.
             doc = DomLoader.readDocument(new URL(st.getInterface().getAccessURL().getContent()));
+            RegistryFileHelper.updateDocument(doc,true,false);
          }catch(ParserConfigurationException pce) {
             pce.printStackTrace();
          }catch(SAXException sax) {

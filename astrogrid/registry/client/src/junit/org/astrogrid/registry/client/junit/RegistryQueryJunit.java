@@ -38,6 +38,7 @@ public class RegistryQueryJunit extends TestCase{
    private static boolean DEBUG_FLAG = true ;
    
    RegistryService rs = null;
+   URL junitEndPoint = null;
 
    /**
     * Setup our test.
@@ -62,6 +63,7 @@ public class RegistryQueryJunit extends TestCase{
        rs = RegistryDelegateFactory.createQuery();
        rs.conf.setProperty("vm05.astrogrid.org/MyspaceManager",cacheDir+"/Myspace.xml");
        rs.conf.setProperty("org.astrogrid.registry.junit.authQuery1",junitDir+"/AuthorityQuery1.xml");
+       junitEndPoint = rs.conf.getUrl("org.astrogrid.registry.admin.junit.endpoint",null);       
        assertNotNull(rs);
        if (DEBUG_FLAG) System.out.println("----\"----") ;
        }
@@ -105,9 +107,10 @@ public class RegistryQueryJunit extends TestCase{
       assertNotNull(ws);
    }   
    
-   /*
+   
    public void testSubmitQueryContainsAuthorityQuery() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testSubmitQueryContainsAuthorityQuery");
+      if(junitEndPoint == null) return;      
       rs = RegistryDelegateFactory.createQuery(rs.conf.getUrl("org.astrogrid.registry.query.junit.endpoint"));
       if (DEBUG_FLAG) System.out.println("Endpoint = " + rs.conf.getString("org.astrogrid.registry.query.junit.endpoint"));             
       Document doc = rs.conf.getDom("org.astrogrid.registry.junit.authQuery1");  
@@ -115,7 +118,7 @@ public class RegistryQueryJunit extends TestCase{
       assertNotNull(responseDoc);
       if (DEBUG_FLAG) System.out.println("received " + XMLUtils.DocumentToString(responseDoc));         
    }
- */
+ 
    
 } 
 

@@ -74,7 +74,7 @@
 			is no seperate installation just for the client itself.  After a build a jar file is produced in the "target"
 			directory.  When ever it is bundled with another component, it is expected to have in the System properties or
 			JNDI a key value of "org.astrogrid.config.url" pointing to a config file.  An example config file is given in
-			cvs under the config directory.
+			cvs under the config directory for this client area.
 			<ul>
 				<li>clean - cleans out and removes all previous builds.</li>
 				<li>install-snapshot - Builds all the necessry jar and war files.</li>
@@ -83,11 +83,21 @@
 			</ul>
 		</p>
 	</section>
-	<section name="Interface (Delegates)">
+	<section name="How to Use for Other Components">
+		<p>
+		Once the configuration is complete and ready for another component to use.  It may use the various delegates with the delegate factory.
+		<br /><strong>The Query:</strong><br />
+		Instantiate with: org.astrogrid.registry.client.query.RegistryService rs = org.astrogrid.registry.client.RegistryDelegateFactory.createQuery()
+		<br />From there you have access to all the delegate methods mentioned below for the Query section.  It is of course advisable to
+		use import statements at the top of your code to make things easier.
+		<strong>Still need to put some examples of the query schema/string here</strong>
+		</p>	
+	</section>
+	<section name="Delegate - Helper methods to the Interface">
 		<p>
 			This section is a quick description of what delegate methods can be used for other components to take advantage of.
 			This is not necessarily the actual web service interface methods on the server side registry.
-			
+			<br />
 			<strong>First the Query:</strong>
 			<ul>
 				<li>submitQuery - 
@@ -100,7 +110,8 @@
 				</li>
 				<li>getResourceByIdentifier(String ident) - returns a VODescription java bean object of this one resource entry.</li>
 				<li>getResourceByIdentifierDOM(String ident) - returns a Document DOM object of this one resource entry.</li>
-				<li>getEndPointByIdentifier(String ident) - returns a string which is a endpoint of a Service entry.</li>
+				<li>getEndPointByIdentifier(String ident) - returns a string which is a endpoint of a Service entry by looking at the WSDL if it is a Web service.</li>
+				<li>getBasicWSDLInformation(String ident) - returns a WSDLBasicInformation object containting a targetNamespace and endpoints found in a WSDL.</li>
 				<li>loadRegistryDOM(Document) - returns a Document DOM object of just the registry resource entry.</li>
 				<li>loadRegistry(VODescription) - returns a VODescription java bean object of the registry resource entry.</li>
 			</ul>
@@ -113,12 +124,15 @@
 				<li>updateFromFile(File fi) - Not Yet imnplemented.</li>
 			</ul>
 			<strong>The harvesting:</strong>
-			<i>Will add this later.</i>
-			
+			<ul>
+				<li>harvest() - returns all data in this registry that this registry manages.</li>
+				<li>harvestFrom(date) returns all data from a particular date and the authority id must be managed by this registry.</li>
+				<li>harvestAll() - Not really supposed to be used on the client side it kicks off a harvest of all Registries and services.</li>
+				<li>harvestResource(resource doc) - updates this resource entry in the registry and if it is a Registry kicks off a harvest if it is Service and the registry manages the autority id it kicks off a harvest as well.</li>
+				<li>harvestFromResource(date & resource) - not quite implemented yet.  same as harvestResource, from a particluar date for Registry Resource entries.</li>				
+			</ul>
 		</p>
 	</section>
-	
-	
 		]]>        
     
     </description>

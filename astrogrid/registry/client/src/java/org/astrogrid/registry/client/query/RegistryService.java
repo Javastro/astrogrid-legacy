@@ -168,19 +168,40 @@ public class RegistryService  {
    }
    
    public Document submitQueryDOM(Document query) throws RegistryException {
+      DocumentBuilder registryBuilder = null;
       Document doc = null;
+      Document resultDoc = null;
+
       try {
-         if(DEBUG_FLAG) System.out.println("entered submitQueryDOM");
-         VODescription vo = submitQuery(query);
-         DocumentBuilder registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         if(DEBUG_FLAG) System.out.println("creating full soap element.");
+         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
          doc = registryBuilder.newDocument();
-         Marshaller.marshal(vo,doc);
-      }catch(ValidationException ve) {
-         throw new RegistryException(ve);   
-      }catch(MarshalException me) {
-         throw new RegistryException(me);   
+         Element root = doc.createElementNS(NAMESPACE_URI,"submitQuery");
+         doc.appendChild(root);
+         Node nd = doc.importNode(query.getDocumentElement(),true);
+         root.appendChild(nd);
+      }catch(ParserConfigurationException pce){
+         doc = null;
+         pce.printStackTrace();
+      }
+      if(DEBUG_FLAG) System.out.println("creating call object");              
+      Call call = getCall();
+      SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
+      sbeRequest.setName("submitQuery");
+      sbeRequest.setNamespaceURI(NAMESPACE_URI);
+      try {            
+         if(DEBUG_FLAG) System.out.println("invoking service call");
+         Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
+         SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
+         resultDoc = sbe.getAsDocument();
+      }catch(RemoteException re) {
+         resultDoc = null;
+         re.printStackTrace();
+      } catch (Exception e) {
+         resultDoc = null;
+         e.printStackTrace();
       }finally {
-         return doc;
+         return resultDoc;   
       }
    }
    
@@ -220,75 +241,25 @@ public class RegistryService  {
    * @return XML docuemnt object representing the result of the query.
    * @author Kevin Benson 
    */        
-   public VODescription submitQuery(Document query) throws RegistryException {
-      DocumentBuilder registryBuilder = null;
-      Document doc = null;
-      Document resultDoc = null;
-      if(DEBUG_FLAG) System.out.println("entered submitQuery");        
-      try {
-         if(DEBUG_FLAG) System.out.println("creating full soap element.");
-         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-         doc = registryBuilder.newDocument();
-         Element root = doc.createElementNS(NAMESPACE_URI,"submitQuery");
-         doc.appendChild(root);
-         Node nd = doc.importNode(query.getDocumentElement(),true);
-         root.appendChild(nd);
-      }catch(ParserConfigurationException pce){
-         doc = null;
-         pce.printStackTrace();
-      }
-      
-      if(doc == null) {
-         return null;   
-      }
-      if(DEBUG_FLAG) System.out.println("creating call object");              
-      Call call = getCall();
-      SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
-      sbeRequest.setName("submitQuery");
-      sbeRequest.setNamespaceURI(NAMESPACE_URI);
+   public VODescription submitQuery(Document query) throws RegistryException {      
       VODescription vo = null;
+      Document resultDoc = submitQueryDOM(query);
       try {            
-         if(DEBUG_FLAG) System.out.println("invoking service call");
-         Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
-         SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
-         resultDoc = sbe.getAsDocument();
          vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,resultDoc);
-      }catch(RemoteException re) {
+      }catch(ValidationException ve) {
          vo = null;
-         re.printStackTrace();
-      } catch (Exception e) {
+         ve.printStackTrace();
+      }catch(MarshalException me) {
          vo = null;
-         e.printStackTrace();
+         me.printStackTrace();   
+      }finally {
+         return vo;
       }
-      return vo;
+
+      
    }
    
    public Document loadRegistryDOM(Document query)  throws RegistryException  {
-      Document doc = null;
-      
-         VODescription vo = submitQuery(query);
-      try {
-         DocumentBuilder registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-         doc = registryBuilder.newDocument();
-         Marshaller.marshal(vo,doc);
-      }catch(MarshalException me) {
-         throw new RegistryException(me);
-      }catch(ParserConfigurationException pce) {
-         throw new RegistryException(pce);
-      }catch(ValidationException ve) {
-         throw new RegistryException(ve);   
-      }
-      return doc;
-   }
-   
-   public VODescription loadRegistry(Document query)  throws RegistryException {
-      /*
-       * Actually take these next few lines out
-       * It swhould get the value for the default authority id then
-       * lookup if it has a xml file for that autority id as the key.
-       * 
-       */
-       //TODO redo this area.
       Document doc = null;
       Document resultDoc = null;
       try {
@@ -301,25 +272,29 @@ public class RegistryService  {
       }catch(ParserConfigurationException pce){
          doc = null;
          pce.printStackTrace();
-      }
-      
-      if(doc == null) {
-         return null;   
-      }
-
+      }      
       Call call = getCall();
       SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());
       sbeRequest.setName("loadRegistry");
       sbeRequest.setNamespaceURI(NAMESPACE_URI);
-      VODescription vo = null;
       try {            
          Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
          SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
          resultDoc = sbe.getAsDocument();
-         vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,resultDoc);
       }catch(RemoteException re) {
-         vo = null;
          re.printStackTrace();
+      }catch (Exception e) {
+         e.printStackTrace();
+      }finally {
+         return resultDoc;
+      }  
+   }
+   
+   public VODescription loadRegistry(Document query)  throws RegistryException {
+      VODescription vo = null;
+      Document resultDoc = loadRegistryDOM(null);     
+      try {            
+         vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,resultDoc);
       }catch (Exception e) {
          vo = null;
          e.printStackTrace();
@@ -343,28 +318,6 @@ public class RegistryService  {
    
    public Document getResourceByIdentifierDOM(String ident)  throws RegistryException {
       Document doc = null;
-      VODescription vo = getResourceByIdentifier(ident);
-      try {
-         
-         DocumentBuilder registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-         doc = registryBuilder.newDocument();
-         Marshaller.marshal(vo,doc);
-      }catch(MarshalException me) {
-         throw new RegistryException(me);
-      }catch(ValidationException ve) {
-         throw new RegistryException(ve);
-      }catch(ParserConfigurationException pce) {
-         throw new RegistryException(pce);   
-      }
-      return doc;
-   }
-   
-   public VODescription getResourceByIdentifier(String ident)  throws RegistryException {
-      if(dummyMode) return null;
-      String returnVal = null;
-      boolean checkConfig = true;
-      Document doc = null;
-      VODescription vo = null;
       if(!useCache) {
          int iTemp = 0;
          iTemp = ident.indexOf("/");
@@ -379,23 +332,25 @@ public class RegistryService  {
          }
          selectQuery += "</selectionSequence></query>";
          doc = submitQueryStringDOM(selectQuery);
-         try {
-            vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,doc);
-         }catch(MarshalException me) {
-            throw new RegistryException(me);   
-         }catch(ValidationException ve) {
-            throw new RegistryException(ve);   
-         }         
+         return doc;
       }else {
-         try {
-            vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,conf.getDom(ident));
-         }catch(MarshalException me) {
-            throw new RegistryException(me);   
-         }catch(ValidationException ve) {
-            throw new RegistryException(ve);   
-         }
+         return conf.getDom(ident);
+      }         
+   }
+   
+   public VODescription getResourceByIdentifier(String ident)  throws RegistryException {
+      if(dummyMode) return null;
+      VODescription vo = null;
+      try {
+         Document doc = getResourceByIdentifierDOM(ident);
+         vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,doc);
+      }catch(MarshalException me) {
+       throw new RegistryException(me);   
+      }catch(ValidationException ve) {
+       throw new RegistryException(ve);   
+      }finally {         
+         return vo;
       }
-      return vo;
    }
    
    public String getEndPointByIdentifier(String ident) throws RegistryException {
