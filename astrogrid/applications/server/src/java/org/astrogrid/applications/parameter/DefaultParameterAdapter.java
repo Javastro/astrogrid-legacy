@@ -1,4 +1,4 @@
-/*$Id: DefaultParameterAdapter.java,v 1.7 2004/08/28 07:17:34 pah Exp $
+/*$Id: DefaultParameterAdapter.java,v 1.8 2004/09/17 11:39:07 nw Exp $
  * Created on 04-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,9 @@
 **/
 package org.astrogrid.applications.parameter;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ParameterDescription;
@@ -17,6 +20,7 @@ import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.io.Piper;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -31,6 +35,12 @@ import java.io.StringWriter;
  * @todo check whether it is really appropriate use Readers and Writers to access the indirect parameters
  */
 public class DefaultParameterAdapter implements ParameterAdapter {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory
+            .getLog(DefaultParameterAdapter.class);
+
     /** Construct a new DefaultParameterAdapter
      * @param val the parameter value to adapt.
      * @param description the description associated with this value.
@@ -57,16 +67,32 @@ public class DefaultParameterAdapter implements ParameterAdapter {
         if (externalVal == null) {
             return val.getValue();
         } else {
+            Reader r = null;
+            StringWriter sw = null;
             try {
-                StringWriter sw = new StringWriter();
-                Reader r = new InputStreamReader(externalVal.read());                
+                sw = new StringWriter();
+                r = new InputStreamReader(externalVal.read());                
                 Piper.pipe(r, sw);
-                r.close();
-                sw.close();
+
                 return sw.toString();                
             }
             catch (IOException e) {
                 throw new CeaException("Could not process parameter " + val.getName());
+            } finally {
+                if (r != null) {
+                    try {
+                        r.close();
+                    } catch (IOException e) {
+                        logger.warn("could not close reader",e);
+                    }
+                }
+                if (sw != null) {
+                    try {
+                        sw.close();
+                    } catch (IOException e) {
+                        logger.warn("could not close writer",e);
+                    }
+                }
             }
 
         }
@@ -90,9 +116,15 @@ public class DefaultParameterAdapter implements ParameterAdapter {
         if (externalVal == null) {
             val.setValue(value);
         } else {
-            PrintWriter pw = new PrintWriter(new OutputStreamWriter( externalVal.write() ));
-            pw.println(value);
-            pw.close();
+            PrintWriter pw = null;
+            try {
+                pw = new PrintWriter(new OutputStreamWriter( externalVal.write() ));
+                pw.println(value);
+            } finally {
+                if (pw != null) {
+                    pw.close();
+                }
+            }
         }
     }
 
@@ -103,6 +135,9 @@ public class DefaultParameterAdapter implements ParameterAdapter {
 
 /* 
 $Log: DefaultParameterAdapter.java,v $
+Revision 1.8  2004/09/17 11:39:07  nw
+made sure streams are closed
+
 Revision 1.7  2004/08/28 07:17:34  pah
 commandline parameter passing - unit tests ok
 
