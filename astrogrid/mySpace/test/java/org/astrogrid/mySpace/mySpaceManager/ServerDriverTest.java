@@ -42,14 +42,15 @@ public class ServerDriverTest extends TestCase
 //   Test the <code>upLoadString</code> method.
 
       boolean result = server.upLoadString(
-        "I wandered lonely as a cloud..", "./file1");
+        "I wandered lonely as a cloud..", "./file1", false);
       Assert.assertTrue(result);
       System.out.println("Tested upLoadString...");
 
 //
 //   Test the <code>importDataHolder</code> method.
 
-      result = server.importDataHolder("http://www.cnn.com/", "./file2");
+      result = server.importDataHolder("http://www.cnn.com/", "./file2",
+        false);
       Assert.assertTrue(result);
       System.out.println("Tested importDataHolder...");
 

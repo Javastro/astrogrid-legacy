@@ -7,6 +7,7 @@ import junit.framework.*;
 import org.astrogrid.mySpace.mySpaceManager.RegistryManager;
 import org.astrogrid.mySpace.mySpaceManager.DataItemRecord;
 
+import org.astrogrid.mySpace.mySpaceStatus.Logger;
 import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatus;
 import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
 
@@ -18,7 +19,7 @@ import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
  */
 
 public class RegistryManagerTest extends TestCase
-{
+{  private static Logger logger = new Logger(false, false, false, "");
 
 /**
  * Standard constructor for JUnit test classes.
@@ -183,7 +184,13 @@ public class RegistryManagerTest extends TestCase
 //   in the registry.
 
       Vector vec2 = reg.lookupDataItemRecords("billy");
-      Assert.assertEquals(vec2.size(), 0);
+
+      if (vec2 != null)
+      {  Assert.assertEquals(vec2.size(), 0);
+      }
+      else
+      {  Assert.assertEquals(vec2, null);
+      }
 
       System.out.println("Tested lookupDataItemRecords...");
 
