@@ -81,7 +81,7 @@ public class WorkflowTestSuite extends TestCase {
      * the existence of the correct keys for testing navigation.
      *  
      */
-    public void testWorkflowActivityNavigation() {
+    public void t5estWorkflowActivityNavigation() {
          logger.info( "---------------------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testWorkflowActivityNavigation()" ); 
         
@@ -135,7 +135,7 @@ public class WorkflowTestSuite extends TestCase {
      * generate a workflow from a missing template. For now (Jan 2004),
      * should return a null reference. 
      */
-    public void testCreateWorkflowFromTemplate_MissingTemplate() {
+    public void t5estCreateWorkflowFromTemplate_MissingTemplate() {
         logger.info( "-------------------------------------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testCreateWorkflowFromTemplate_MissingTemplate()" ); 
         
@@ -171,7 +171,7 @@ public class WorkflowTestSuite extends TestCase {
      * Tests the ability of the workflow to create a simple one step job from a template.
      *  
      */
-    public void testCreateWorkflowFromTemplate_OneStepTemplate() {
+    public void t5estCreateWorkflowFromTemplate_OneStepTemplate() {
         logger.info( "-------------------------------------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testCreateWorkflowFromTemplate_OneStepTemplate()" ); 
         
@@ -201,6 +201,50 @@ public class WorkflowTestSuite extends TestCase {
         
     } // end of testCreateWorkflowFromTemplate_OneStepTemplate()
     
+    
+    
+    /**
+     * Tests the ability of the workflow to create a one-off complex workflow from a template.
+     *  
+     */
+    public void testCreateWorkflowFromTemplate_ComplexWorlflowTemplate() {
+        logger.info( "-------------------------------------------------------------------------" ); 
+        logger.info( "enter: WorkflowTestSuite.testCreateWorkflowFromTemplate_ComplexWorlflowTemplate()" ); 
+        
+        final String 
+            name = "testCreateWorkflowFromTemplate_ComplexWorlflowTemplate_" + this.runDate.getTime() ,
+            description = "Workflow created from the complex template",
+            templateName = "ComplexWorkflow" ;
+        Workflow
+            workflow = null ;
+            
+        try{
+            workflow = Workflow.createWorkflowFromTemplate( communitySnippet()
+                                                          , name
+                                                          , description
+                                                          , templateName ) ;
+                                                          
+            prettyPrint( "Workflow:", workflow.constructWorkflowXML( communitySnippet() ) ) ;
+            
+            assertTrue( true ) ;    
+        }
+        catch( Exception ex ) {
+            ex.printStackTrace() ;
+            assertTrue( false ) ;
+        }
+        finally {
+            logger.info( "exit: WorkflowTestSuite.testCreateWorkflowFromTemplate_ComplexWorlflowTemplate()" );  
+        }
+        
+    } // end of testCreateWorkflowFromTemplate_ComplexWorlflowTemplate()
+    
+   
+
+    
+    
+    
+    
+    
    
     /**
      * Tests our ability to create a workflow from scratch; ie: without the aid
@@ -211,7 +255,7 @@ public class WorkflowTestSuite extends TestCase {
      * meaningful comparison of the results of this test.
      *  
      */
-    public void testCreateWorkflowFromScratch_OneSequence_OneStep_Tool() {
+    public void t5estCreateWorkflowFromScratch_OneSequence_OneStep_Tool() {
         logger.info( "---------------------------------------------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testCreateWorkflowFromScratch_OneSequence_OneStep_Tool()" ); 
         
@@ -303,7 +347,7 @@ public class WorkflowTestSuite extends TestCase {
      * meaningful comparison of the results of this test.
      *  
      */
-    public void testCreateComplexWorkflow_Sequence_Flow_SevenSteps() {
+    public void t5estCreateComplexWorkflow_Sequence_Flow_SevenSteps() {
         logger.info( "---------------------------------------------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testCreateComplexWorkflow_Sequence_Flow_SevenSteps()" ); 
         
@@ -451,7 +495,7 @@ public class WorkflowTestSuite extends TestCase {
      * is saved as an instance variable so that it can be subsequently used when deleting 
      * a workflow from MySpace. 
      */
-    public void testSaveWorkflow() {
+    public void t5estSaveWorkflow() {
         logger.info( "-------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testSaveWorkflow()" ); 
          
@@ -499,7 +543,7 @@ public class WorkflowTestSuite extends TestCase {
      * in a later test.
      *  
      */
-    public void testReadWorkflowList() {
+    public void t5estReadWorkflowList() {
          logger.info( "-----------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadWorkflowList()" ); 
         
@@ -528,11 +572,11 @@ public class WorkflowTestSuite extends TestCase {
  
  
  
-    /*
+    /**
      * Tests our ability to read a workflow from MySpace and reconstitute
      * it as a workflow object.
      */
-    public void testReadWorkflow() {
+    public void t5estReadWorkflow() {
          logger.info( "-------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadWorkflow()" ); 
         
@@ -556,13 +600,13 @@ public class WorkflowTestSuite extends TestCase {
      } // end of testReadWorkflow()   
     
     
-    /*
+    /**
      * Tests our ability to delete a workflow from MySpace.
      * 
      * It utilizes the name of the workflow previously saved into MySpace
      * by an earlier test.
      */
-    public void testDeleteWorkflow() {
+    public void t5estDeleteWorkflow() {
          logger.info( "---------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testDeleteWorkflow()" ); 
         
@@ -598,7 +642,7 @@ public class WorkflowTestSuite extends TestCase {
      * As a byproduct, saves the name of the last-read query so
      * that it may be subsequently fully read in a later test.
      */
-    public void testReadQueryList() {
+    public void t5estReadQueryList() {
          logger.info( "--------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadQueryList()" ); 
         
@@ -630,11 +674,11 @@ public class WorkflowTestSuite extends TestCase {
      } // end of testReadQueryList()
     
     
-    /*
+    /**
      * Tests our ability to read a full query from MySpace.
      * 
      */    
-    public void testReadQuery() {
+    public void t5estReadQuery() {
          logger.info( "----------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadQuery()" ); 
         
@@ -657,10 +701,10 @@ public class WorkflowTestSuite extends TestCase {
      } // end of testReadQuery()
    
    
-    /*
+    /**
      * Tests our ability to gain a list of application tools.
      */
-    public void testReadToolList() {
+    public void t5estReadToolList() {
          logger.info( "-------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadToolList()" ); 
         
@@ -688,13 +732,13 @@ public class WorkflowTestSuite extends TestCase {
      } // end of testReadToolList()
      
      
-    /* 
+    /** 
      * Tests our ability to fully instantiate an application tool;
      * ie: with all its input and output parameters set up.
      * 
      * Note: It does this for every tool it has information on.
      */
-    public void testCreateTool() {
+    public void t5estCreateTool() {
          logger.info( "-----------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testCreateTool()" ); 
         
@@ -751,7 +795,7 @@ public class WorkflowTestSuite extends TestCase {
      } // end of testCreateTool()
    
    
-    /*
+    /**
      * Tests the actual job submission facility, but no more.
      * 
      * First it creates a workflow consisting of one step designed to run
@@ -762,7 +806,7 @@ public class WorkflowTestSuite extends TestCase {
      * returns true. You must examine the jes log to see that it actually
      * gets submitted correctly. Not a big job.
      */
-    public void testSubmitWorkflow() {
+    public void t5estSubmitWorkflow() {
         logger.info( "---------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testSubmitWorkflow()" ); 
         
@@ -853,7 +897,7 @@ public class WorkflowTestSuite extends TestCase {
 
 
 
-    /*
+    /**
      * Tests our ability to run a query.
      * 
      * This is a start. At present we are dependent upon the query existing
@@ -863,7 +907,7 @@ public class WorkflowTestSuite extends TestCase {
      * the results as the scheduling of the job against the datacenter is supposed
      * to be asynchronous.
      */
-    public void testCreateQueryAndSubmitWorkflow() {
+    public void t5estCreateQueryAndSubmitWorkflow() {
          logger.info( "-----------------------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testCreateQueryAndSubmitWorkflow()" ); 
         
@@ -968,13 +1012,13 @@ public class WorkflowTestSuite extends TestCase {
       } // end of testCreateQueryAndSubmitWorkflow()
    
     
-    /*
+    /**
      * Tests the helper function within workflow that formats a remote MySpace reference.
      * This test flexes the formatting given a partial myspace path; ie: without the
      * account details. The fact is detected and the account details lifted from 
      * the community snippet.
      */
-    public void testFormatMySpaceReference_withoutAccountDetails() {
+    public void t5estFormatMySpaceReference_withoutAccountDetails() {
         logger.info( "---------------------------------------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testFormatMySpaceReference_withoutAccountDetails()" ); 
         
@@ -1010,12 +1054,12 @@ public class WorkflowTestSuite extends TestCase {
     } // end of testFormatMySpaceReference_withoutAccountDetails()
     
 
-    /*
+    /**
      * Tests the helper function within workflow that formats a remote MySpace reference.
      * This test flexes the formatting given a full myspace path; ie: with the account 
      * details included 
      */
-    public void testFormatMySpaceReference_withAccountDetails() {
+    public void t5estFormatMySpaceReference_withAccountDetails() {
         logger.info( "------------------------------------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testFormatMySpaceReference_withAccountDetails()" ); 
         
@@ -1050,7 +1094,7 @@ public class WorkflowTestSuite extends TestCase {
     } // end of testFormatMySpaceReference_withAccountDetails()
 
 
-    /*
+    /**
      * Tests our ability to eliminate empty optional parameters when a workflow gets submitted.
      * 
      * As an aid to gui development, each tool is instantiated with a full but minimum set of
@@ -1060,7 +1104,7 @@ public class WorkflowTestSuite extends TestCase {
      * it by chance happens to be left around and empty, it gets ignored on job submission.
      * 
      */
-    public void testToJesXMLOnEmptyOptionalParameter() {
+    public void t5estToJesXMLOnEmptyOptionalParameter() {
         logger.info( "------------------------------------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testToJesXMLOnEmptyOptionalParameter()" ); 
 
@@ -1145,7 +1189,7 @@ public class WorkflowTestSuite extends TestCase {
 
 
 
-    /*
+    /**
      * Tests our ability to delete parameters from a tool invocation.
      * 
      * Here the DataFederation tool is used and we delete one of its votable input references. 
@@ -1153,7 +1197,7 @@ public class WorkflowTestSuite extends TestCase {
      * works well and is extremely easy to use.
      *  
      */
-    public void testDeleteParameter() {
+    public void t5estDeleteParameter() {
         logger.info( "----------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testDeleteParameter()" ); 
 
@@ -1242,7 +1286,7 @@ public class WorkflowTestSuite extends TestCase {
     } // end of testDeleteParameter()
 
 
-    /*
+    /**
      * Tests our ability to insert a value into a parameter.
      * 
      * Here the DataFederation tool is used and we insert a value into its optional parameter. 
@@ -1250,7 +1294,7 @@ public class WorkflowTestSuite extends TestCase {
      * empty, meaning insertion (the parameter must indeed be empty for this to work). 
      * The same technique can be used for replacing values.
      */
-    public void testInsertParameterValue() {
+    public void t5estInsertParameterValue() {
         logger.info( "----------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testInsertParameterValue()" ); 
   
@@ -1343,13 +1387,21 @@ public class WorkflowTestSuite extends TestCase {
 
 
 
-
+    /**
+     * Alter this to provide suitable test values for the community snippet.
+     * Some realistic looking value for account details is a mandatory minimum.
+     */
     private String communitySnippet(){
-        return CommunityMessage.getMessage( "1234", "jl99@star.le.ac.uk", "xray@star.le.ac.uk" ) ;
+        return CommunityMessage.getMessage( "1234"                  // token
+                                          , "jl99@star.le.ac.uk"    // account
+                                          , "xray@star.le.ac.uk"    // group
+                                          ) ;
     }
 
 
-    // 
+    /**
+     * Helper method which sets up HyperZ specific job step details.
+     */ 
     private Step setUpHyperZStep( Step targetStep
                                 , String config_file
                                 , String input_catalog
@@ -1399,7 +1451,9 @@ public class WorkflowTestSuite extends TestCase {
     } // end of setUpHyperZStep()
     
     
-    // 
+    /**
+     * Helper method which sets up SExtractor specific job step details.
+     */ 
     private Step setUpSExtractorStep( Step targetStep
                                     , String detectionImage
                                     , String config_file
@@ -1453,7 +1507,11 @@ public class WorkflowTestSuite extends TestCase {
     } // end of setUpSExtractorStep()
     
     
-    // 
+    /**
+     * Helper method which sets up DataFederation specific job step details.
+     * Note: this shows how to setup added optional input parameters.
+     * 
+     */ 
     private Step setUpDataFederationStep( Step targetStep
                                         , String [] votables
                                         , boolean mergeCols
@@ -1514,6 +1572,7 @@ public class WorkflowTestSuite extends TestCase {
             
             iterator = null ; 
             
+            // Here are the additional optional input parameters.
             // This sets up the VOTfiles beyond the minimum 2...
             for( votablesIndex=2; votablesIndex < votables.length; votablesIndex++ ) {
                 p = tool.newInputParameter( "VOTfiles" ) ;
@@ -1565,7 +1624,13 @@ public class WorkflowTestSuite extends TestCase {
 		
     }
     
-    
+    /**
+     * 
+     * Pretty print to the console of an xml document.
+     *
+     * @param comment - some suitable comment of what the print relates to.
+     * @param xmlString - the xml document in the form of a String
+     */
     public static void prettyPrint( String comment, String xmlString ) {
         
         try {

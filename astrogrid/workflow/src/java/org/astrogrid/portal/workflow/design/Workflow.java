@@ -154,7 +154,33 @@ public class Workflow extends Activity {
         "</sequence>" +
         "</workflow>" ;           
         
-                 
+    private static final String complexWorkflowTemplate = 
+        "<?xml version=\"1.0\" encoding=\"UTF8\"?>" +
+        "<!-- Workflow Template contains a flow of five steps followed sequentially by two more steps -->" +
+        "<workflow name = \"FlowPlusSubsequentSteps\" templateName=\"complexWorkflow\">" +
+        "<description>This is a seven step job, five executed in parallel followed by two subsequent steps</description>" +
+        "<!-- Every workflow begins with a top level sequence ========================================== -->" +
+        "<sequence>" +
+        " <flow>" +
+        "  <!-- These two steps will be dispatched in this order but they will execute in parallel ===== -->" +
+        "  <step name=\"StepOne\" stepNumber=\"1\" sequenceNumber=\"1\">" +
+        "  </step>" +
+        "  <step name=\"StepTwo\" stepNumber=\"2\" sequenceNumber=\"1\">" +
+        "  </step>" +
+        "  <step name=\"StepThree\" stepNumber=\"3\" sequenceNumber=\"1\">" +
+        "  </step>" +
+        "  <step name=\"StepFour\" stepNumber=\"4\" sequenceNumber=\"1\">" +
+        "  </step>" +
+        "  <step name=\"StepFive\" stepNumber=\"5\" sequenceNumber=\"1\">" +
+        "  </step>" +        
+        " </flow>" +
+        "  <!-- These subsequent steps will be dispatched only when steps one to five have finished correctly ======= -->" +
+        "  <step name=\"StepSix\" joinCondition=\"true\" stepNumber=\"6\" sequenceNumber=\"2\">" +
+        "  </step>" +
+        "  <step name=\"StepSeven\" joinCondition=\"true\" stepNumber=\"7\" sequenceNumber=\"3\">" +
+        "  </step>" +        
+        "</sequence>" +
+        "</workflow>" ;                    
     
     /** Compile-time switch used to turn tracing on/off. 
       * Set this to false to eliminate all trace statements within the byte code.*/         
@@ -976,6 +1002,10 @@ public class Workflow extends Activity {
 //                retValue = WKF.getProperty( WKF.WORKFLOW_TEMPLATE_TWOSTEPSEQUENCE, WKF.WORKFLOW_CATEGORY ) ;
                   retValue = twoStepFlowAndMergeTemplate ;
             }
+            else if( templateName.equals( "ComplexWorkflow" )  ) {
+//                retValue = WKF.getProperty( WKF.WORKFLOW_TEMPLATE_??????, WKF.WORKFLOW_CATEGORY ) ;
+                  retValue = complexWorkflowTemplate ;
+            }            
                 
         }
         catch(Exception ex){
