@@ -1,8 +1,7 @@
 /*
  * Created on 20-May-2003
  *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * @author=Elizabeth Auden
  */
  
 package org.astrogrid.registry;
