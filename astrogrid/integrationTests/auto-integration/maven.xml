@@ -18,6 +18,7 @@
         <filter token="WORKDIR" value="${work.dir}" />
         <filter token="CONFIGPATH" value="${tomcat.url}/${config.webapp.name}" />
         <filter token="TOMCATROOT" value="${tomcat.url}" />
+        <filter token="TOMCATLOC" value="${tomcat.location}" />
 
 <!-- setup -->
 <goal name="init" prereqs="tomcat-declare-tasks">
