@@ -118,7 +118,11 @@
                </map:transform>
             </map:act>
             <!-- Wrap the page in our HTML template -->
+            <map:act type="astrogrid">
             <map:transform src="common/xsl/astrogrid.xsl" label="003">
+		              <map:parameter name="credential" value="{credential}" />
+		              <map:parameter name="current-page"  value="agdataquery.html"/>
+            
                <!-- Add the rest of the page names -->
                <map:parameter name="current-page"  value="agadministration.html"/>
                <map:parameter name="query-page"    value="agdataquery.html"/>
@@ -128,9 +132,11 @@
                <map:parameter name="registry-page" value="agregistry.html"/>
                <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
                <map:parameter name="tools-page"    value="agtools.html"/>
+               <map:parameter name="title-name"  value="Administration"/>               
                <map:parameter name="admin-page"    value="agadministration.html"/>
                <map:parameter name="logout-page"   value="aglogout.html"/>
             </map:transform>
+            </map:act>
             <!-- Serialize as HTML -->
             <map:serialize type="html"/>
          </map:match>
@@ -210,7 +216,9 @@
 		              <map:parameter name="current-page"  value="agdataquery.html"/>
 		              <map:parameter name="query-page"    value="agdataquery.html"/>
 		              <map:parameter name="myspace-page"  value="agmyspace.html"/>
+		              <map:parameter name="title-name"  value="Data Query"/>
 		              <map:parameter name="home-page"     value="agindex.html"/>
+		              <map:parameter name="admin-page"    value="agadministration.html"/>
 		              <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
 		              <map:parameter name="registry-page" value="agregistry.html"/>
 		              <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
@@ -243,6 +251,7 @@
                <map:parameter name="myspace-page"  value="agmyspace.html"/>
                <map:parameter name="home-page"     value="agindex.html"/>
                <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
+              <map:parameter name="title-name"  value="Credentials"/>               
                <map:parameter name="registry-page" value="agregistry.html"/>
                <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
                <map:parameter name="tools-page"    value="agtools.html"/>
@@ -278,32 +287,25 @@
                   </map:transform>
                </map:act>
                <!-- Wrap the page in our HTML template -->
-<<<<<<< sitemap.xmap
-               <map:transform src="common/xsl/astrogrid.xsl" label="003">
-<<<<<<< sitemap.xmap
-               <!-- Add the explorer page names -->
-                  <map:parameter name="current-page"  value="agmyspace.html"/>
-=======
-=======
                <map:act type="astrogrid">
 		           <map:transform src="common/xsl/astrogrid.xsl" label="003">
 		              <!-- Add the rest of the page names -->
 		              <map:parameter name="credential" value="{credential}" />
 		              <map:parameter name="credential-page" value="agcredentials.html" />
->>>>>>> 1.9
                   <!-- Add the current page name -->
                   <map:parameter name="current-page" value="agmyspace.html"/>
                   <!-- Add the explorer page names -->
->>>>>>> 1.7
                   <map:parameter name="explorer-page" value="agmyspace.html"/>
                   <map:parameter name="votable-page"  value="agvotable.html"/>
                   <!-- Add the rest of the page names -->
                   <map:parameter name="home-page"     value="agindex.html"/>
+                  <map:parameter name="title-name"  value="Myspace"/>
                   <map:parameter name="help-page"     value="agmyspacehelp.html"/>
                   <map:parameter name="registry-page" value="agregistry.html"/>
                   <map:parameter name="query-page"    value="agdataquery.html"/>
                   <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
                   <map:parameter name="tools-page"    value="agtools.html"/>
+	              <map:parameter name="admin-page"    value="agadministration.html"/>
                   <map:parameter name="logout-page"   value="aglogout.html"/>
                </map:transform>
                </map:act>
@@ -322,8 +324,12 @@
                     <map:parameter name="votable-page"  value="agvotable.html"/>
 					<map:parameter name="plot-page" value="agtopcat.html"/>                    
                   </map:transform>
+                      <map:act type="astrogrid">
                   <!-- Wrap the page in our HTML template -->
                   <map:transform src="common/xsl/astrogrid.xsl" label="003">
+		              <map:parameter name="credential" value="{credential}" />
+		              <map:parameter name="current-page"  value="agdataquery.html"/>
+                  
                   <!-- Add the explorer page names -->
                    <map:parameter name="current-page"  value="agmyspace.html"/>
                    <map:parameter name="explorer-page" value="agmyspace.html"/>
@@ -333,11 +339,14 @@
                    <map:parameter name="help-page"     value="agmyspacehelp.html"/>
                    <map:parameter name="registry-page" value="agregistry.html"/>
                    <map:parameter name="query-page"    value="agdataquery.html"/>
+                   <map:parameter name="title-name"  value="MySpace"/>                   
                    <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
                    <map:parameter name="tools-page"    value="agtools.html"/>
                    <map:parameter name="logout-page"   value="aglogout.html"/>
+    	              <map:parameter name="admin-page"    value="agadministration.html"/>
                    <map:parameter name="current-page" value="agmyspace.html"/>                   
                   </map:transform>
+                  </map:act>
                   <!-- Serialize as HTML -->
                   <map:serialize type="html"/>
                </map:act>

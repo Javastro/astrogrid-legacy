@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/common/xsl/Attic/astrogrid.xsl,v $</cvs:source>
     | <cvs:date>$Author: KevinBenson $</cvs:date>
-    | <cvs:author>$Date: 2003/09/05 08:21:44 $</cvs:author>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:author>$Date: 2003/09/10 06:16:51 $</cvs:author>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     | $Log: astrogrid.xsl,v $
+    | Revision 1.7  2003/09/10 06:16:51  KevinBenson
+    | *** empty log message ***
+    |
     | Revision 1.6  2003/09/05 08:21:44  KevinBenson
     | Okay did a few things here.  First the topcat plug in had a small xsp mistake causing the select boxes to have some unneeded data in it.
     | Also made a common QueryAction.java file that will just set the current session Credential in the Hashmap so it can be displayed on all pages.
@@ -68,6 +71,8 @@
 	<xsl:param name="help-page">agmyspacehelp.html</xsl:param>
 	<xsl:param name="registry-page">agregistry.html</xsl:param>
 	<xsl:param name="query-page">agdataquery.html</xsl:param>
+	<xsl:param name="admin-page">agdadministration.html</xsl:param>
+	<xsl:param name="title-name">Astrogrid</xsl:param>	
 	<xsl:param name="monitor-page">agjobmonitor.html</xsl:param>
 	<xsl:param name="tools-page">agtools.html</xsl:param>
 	<xsl:param name="logout-page">aglogout.html</xsl:param>
@@ -128,11 +133,8 @@
 							</font> 
 							<br/>
 							<font size="+3" face="arial, helvetica, sans-serif">
-								<xsl:if test="$current-page != 'agdataquery.html'" >
-									Data Query
-								</xsl:if>
-								<xsl:if test="$current-page = 'agmyspace.html'" >
-									MySpace Browser
+								<xsl:if test="$title-name != ''" >
+									<xsl:value-of select="$title-name" />
 								</xsl:if>
 							</font>
 							<br/>
@@ -173,8 +175,14 @@
 								</a>
 								<br/>
 								<br/>
-								<xsl:if test="$current-page = 'agdataquery.html'" >
+									<a class="menu">
+										<xsl:attribute name="href">
+											<xsl:value-of select="$query-page"/>
+										</xsl:attribute>
 										Data Query
+									</a>
+								
+								<xsl:if test="$current-page != 'agmyspace.html'" >
 									<br/>
 									<br/>
 									<a class="menu">
@@ -185,12 +193,6 @@
 									</a>
 								</xsl:if>
 								<xsl:if test="$current-page = 'agmyspace.html'" >
-									<a class="menu">
-										<xsl:attribute name="href">
-											<xsl:value-of select="$query-page"/>
-										</xsl:attribute>
-										Data Query
-									</a>
 									<br/>
 									<br/>
 									<!-- Add the MySpace menu links -->
@@ -216,6 +218,14 @@
 								<br/>
 								<a class="menu">
 									<xsl:attribute name="href">
+										<xsl:value-of select="$admin-page"/>
+									</xsl:attribute>
+									Admin
+								</a>								
+								<br/>
+								<br/>
+								<a class="menu">
+									<xsl:attribute name="href">
 										<xsl:value-of select="$logout-page"/>
 									</xsl:attribute>
 									Logout
@@ -229,11 +239,8 @@
 									<tbody>
 										<tr align="center" valign="middle" bgcolor="#000000">
 											<td width="0" height="0" colspan="0" rowspan="0" style="color: white; font-family: arial, helvetica, sans-serif; font-weight: bold; height: 30px; width: 200px; ">
-												<xsl:if test="$current-page = 'agdataquery.html'" >
-													Data Query
-												</xsl:if>
-												<xsl:if test="$current-page = 'agmyspace.html'" >
-													MySpace Browser
+												<xsl:if test="$title-name != ''" >
+												  	<xsl:value-of select="$title-name" />
 												</xsl:if>
 											</td>
 											<td width="0" height="0" colspan="0" rowspan="0" style="color: white; font-family: arial, helvetica, sans-serif; font-weight: bold; height: 30px; width: 200px; ">
@@ -247,12 +254,14 @@
 											<td>
 											</td>
 										</tr>
+
 										<tr align="left" valign="top">
 											<td rowspan="1" colspan="3">
 												<!-- Add the MySpace explorer content -->
 												<xsl:apply-templates select="content"/>
 											</td>
 										</tr>
+										<xsl:if test="$credential != ''">
 										<tr align="left" valign="bottom">
 											<td>
 												Current Credential: <xsl:value-of select="$credential"/>
@@ -275,6 +284,7 @@
 
 											</td>
 										</tr>
+										</xsl:if>
 									</tbody>
 								</table>
 								<br/>

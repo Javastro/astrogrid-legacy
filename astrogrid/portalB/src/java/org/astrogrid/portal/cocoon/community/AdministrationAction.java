@@ -138,12 +138,15 @@ public class AdministrationAction extends AbstractAction
       actionTable.put(ACTION_REMOVE_MEMBER,"Remove Member");
       actionTable.put(ACTION_VIEW_GROUPS,"View Groups");
       actionTable.put(ACTION_CHANGE_PASSWORD,"Change of Password");
+      actionTable.put(ACTION_INSERT_PERMISSION,"Insert Permission");
+      actionTable.put(ACTION_REMOVE_PERMISSION,"Remove Permission");
       
       
       session.setAttribute("actionlist",actionTable);
       
       if(ACTION_REMOVE_GROUP.equals(action) || ACTION_VIEW_GROUPS.equals(action) ||
-         ACTION_REMOVE_MEMBER.equals(action) || ACTION_INSERT_MEMBER.equals(action)) {
+         ACTION_REMOVE_MEMBER.equals(action) || ACTION_INSERT_MEMBER.equals(action) ||
+         ACTION_INSERT_PERMISSION.equals(action) || ACTION_REMOVE_PERMISSION.equals(action)) {
         try {
          ArrayList al = adminDelegate.getGroupList();
          session.setAttribute(PARAM_GROUP_LIST,al);
@@ -164,7 +167,8 @@ public class AdministrationAction extends AbstractAction
         }
       }
       
-      if(ACTION_REMOVE_RESOURCE.equals(action)) {
+      if(ACTION_REMOVE_RESOURCE.equals(action) ||  ACTION_INSERT_PERMISSION.equals(action)
+         || ACTION_REMOVE_PERMISSION.equals(action)) {
         try {
          ArrayList al = adminDelegate.getResourceList();
          session.setAttribute(PARAM_RESOURCE_LIST,al);
@@ -257,6 +261,32 @@ public class AdministrationAction extends AbstractAction
          if(ident != null && ident.length() > 0) {
             try {
                adminDelegate.delAccount(ident);
+            }catch(Exception e) {
+               errorMessage = e.toString();
+               e.printStackTrace();
+            }
+         }else {
+            errorMessage = "No insert empty community";
+         } 
+      } else if(ACTION_INSERT_PERMISSION.equals(processAction)) {
+         if(ident != null && ident.length() > 0) {
+            try {
+               String permGroup = request.getParameter("group");
+               String permAction = request.getParameter("policy");
+               adminDelegate.addPermission(ident,permGroup,permAction);
+            }catch(Exception e) {
+               errorMessage = e.toString();
+               e.printStackTrace();
+            }
+         }else {
+            errorMessage = "No insert empty community";
+         } 
+      } else if(ACTION_REMOVE_PERMISSION.equals(processAction)) {
+         if(ident != null && ident.length() > 0) {
+            try {
+               String permGroup = request.getParameter("group");
+               String permAction = request.getParameter("policy");
+               adminDelegate.delPermission(ident,permGroup,permAction);
             }catch(Exception e) {
                errorMessage = e.toString();
                e.printStackTrace();

@@ -183,8 +183,9 @@
 		</xsl:if>			
 		<xsl:if test="$action = 'insertpermission'">			
 			<form method="get" name="InsertPermission">
-				<strong>Group Name: </strong> 
-				<select name="group">
+				<input type="hidden" name="processaction" value="insertpermission" />			
+				<strong>Resource: </strong> 
+				<select name="ident">
 					<xsl:for-each select="//admin/options/resources/resource">
 						<xsl:element name="option">
 							<xsl:attribute name="value">
@@ -195,23 +196,15 @@
 					</xsl:for-each>
 				</select>
 				<br />
-				<strong>User: </strong>
+				<strong>Group: </strong>
 				<select name="group">
-					<xsl:for-each select="//admin/options/singlegroups/group">
-						<xsl:element name="option">
-							<xsl:attribute name="value">
-								<xsl:value-of select="@val"/>
-							</xsl:attribute>
-							<xsl:value-of select="@name"/>
-						</xsl:element>
-					</xsl:for-each>			
-					<xsl:for-each select="//admin/options/multigroups/group">
-						<xsl:element name="option">
-							<xsl:attribute name="value">
-								<xsl:value-of select="@val"/>
-							</xsl:attribute>
-							<xsl:value-of select="@name"/>
-						</xsl:element>
+					<xsl:for-each select="//admin/options/groups/group">
+							<xsl:element name="option">
+								<xsl:attribute name="value">
+									<xsl:value-of select="@val"/>
+								</xsl:attribute>
+								<xsl:value-of select="@name"/>
+							</xsl:element>
 					</xsl:for-each>
 				</select>
 				<br />
@@ -222,8 +215,9 @@
 		</xsl:if>			
 		<xsl:if test="$action = 'removepermission'">			
 			<form method="get" name="RemovePermission">
-				<strong>Group Name: </strong> 
-				<select name="group">
+				<input type="hidden" name="processaction" value="removepermission" />			
+				<strong>Resource: </strong> 
+				<select name="ident">
 					<xsl:for-each select="//admin/options/resources/resource">
 						<xsl:element name="option">
 							<xsl:attribute name="value">
@@ -234,27 +228,19 @@
 					</xsl:for-each>
 				</select>
 				<br />
-				<strong>User: </strong>
+				<strong>Group: </strong>
 				<select name="group">
-					<xsl:for-each select="//admin/options/singlegroups/group">
-						<xsl:element name="option">
-							<xsl:attribute name="value">
-								<xsl:value-of select="@val"/>
-							</xsl:attribute>
-							<xsl:value-of select="@name"/>
-						</xsl:element>
-					</xsl:for-each>
-					<xsl:for-each select="//admin/options/multigroups/group">
-						<xsl:element name="option">
-							<xsl:attribute name="value">
-								<xsl:value-of select="@val"/>
-							</xsl:attribute>
-							<xsl:value-of select="@name"/>
-						</xsl:element>
+					<xsl:for-each select="//admin/options/groups/group">
+							<xsl:element name="option">
+								<xsl:attribute name="value">
+									<xsl:value-of select="@val"/>
+								</xsl:attribute>
+								<xsl:value-of select="@name"/>
+							</xsl:element>
 					</xsl:for-each>
 				</select>
 				<br />
-				<strong>policy/action:</strong> <input type="text" name="policy" />
+				<strong>policy/action:</strong><input type="text" name="policy" />
 				<br />
 				<input type="submit" name="removepermission" value="Remove Permission" />
 			</form>
