@@ -1,5 +1,5 @@
 /*
- * $Id: Query2Adql074.java,v 1.1 2004/08/18 16:27:15 mch Exp $
+ * $Id: Query2Adql074.java,v 1.2 2004/08/24 17:27:31 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -28,7 +28,7 @@ public class Query2Adql074  {
      
       StringWriter sw = new StringWriter();
       XmlPrinter xw = new XmlPrinter(sw);
-      xw.writeComment("ADQL generated from SQL: "+query);
+      xw.writeComment("ADQL generated from: "+query);
       xw.writeComment(comment);
       
       
@@ -40,7 +40,7 @@ public class Query2Adql074  {
       
       if ( !(query.getResultsDef() instanceof TableResultsDefinition) ||
              ( ((TableResultsDefinition) query.getResultsDef()).getColDefs()==null)  ) {
-         selectListTag.writeTag("Item", "xsi:type'allSelectionItemType'");
+         selectListTag.writeTag("Item", "xsi:type='allSelectionItemType'", "");
       }
       else {
          NumericExpression[] colDefs = ((TableResultsDefinition) query.getResultsDef()).getColDefs();
@@ -48,7 +48,7 @@ public class Query2Adql074  {
          for (int i = 0; i < colDefs.length; i++) {
             if (colDefs[i] instanceof ColumnReference) {
                ColumnReference colRef = (ColumnReference) colDefs[i];
-               selectListTag.writeTag("Item", "xsi:type='columnReferenceType' Table='"+colRef.getTableName()+"' Name='"+colRef.getColName()+"'");
+               selectListTag.writeTag("Item", "xsi:type='columnReferenceType' Table='"+colRef.getTableName()+"' Name='"+colRef.getColName()+"'", "");
             }
             else {
                throw new UnsupportedOperationException("Specify only column references for results table columns (for now)");
@@ -62,7 +62,7 @@ public class Query2Adql074  {
       XmlTagPrinter fromTag = selectTag.newTag("From");
 
       for (int i = 0; i < query.getScope().length; i++) {
-         fromTag.writeTag("Table", "xsi:type='tableType' Name='"+query.getScope()[i]+"' Alias='"+query.getScope()[i]+"'");
+         fromTag.writeTag("Table", "xsi:type='tableType' Name='"+query.getScope()[i]+"' Alias='"+query.getScope()[i]+"'", "");
       }
 
       //-- WHERE --
@@ -124,13 +124,14 @@ public class Query2Adql074  {
                throw new IllegalStateException("Unknown type "+type+" of Constant "+expression);
          }
          
-         argTag.writeTag("Literal", "xsi:type='"+xsiType+"' Value='"+((LiteralNumber) expression).getValue()+"'");
+         argTag.writeTag("Literal", "xsi:type='"+xsiType+"' Value='"+((LiteralNumber) expression).getValue()+"'", "");
       }
       else if (expression instanceof ColumnReference) {
          
          tag.writeTag("Arg", "xsi:type='columnReferenceType' "+
                              "Table='"+((ColumnReference) expression).getTableName()+"' "+
-                             "Name='"+((ColumnReference) expression).getColName()+"'");
+                             "Name='"+((ColumnReference) expression).getColName()+"'",
+                      "");
       }
       else if (expression instanceof MathExpression) {
          
@@ -149,6 +150,9 @@ public class Query2Adql074  {
 
 /*
  $Log: Query2Adql074.java,v $
+ Revision 1.2  2004/08/24 17:27:31  mch
+ Fixed bugs in calls to XmlTagPrinters
+
  Revision 1.1  2004/08/18 16:27:15  mch
  Combining ADQL generators from SQL parser and query builder
 
