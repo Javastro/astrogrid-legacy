@@ -41,6 +41,17 @@ Attempting to list holdings:<BR>
 	for (int i=0; i<resultSize;++i) {
 		out.print(results.elementAt(i)+"<BR>");
 	}
+	
+	String message="http://www.google.com";
+	boolean ok3 = client.saveDataHoldingURL(userId, communityId, credential, "/jdt@roe/serv1/fred", message, "VOtable", "");
+	out.print("Result of saveDataHolding: " + ok3 + "<BR>");	
+	
+	//String query = "*";
+	results = client.listDataHoldings(userId, communityId, credential, query);
+	resultSize = results.size();
+	for (int i=0; i<resultSize;++i) {
+		out.print(results.elementAt(i)+"<BR>");
+	}
 %>
 </body>
 </html>
