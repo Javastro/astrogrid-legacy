@@ -1,22 +1,129 @@
-
-<project
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="maven-project.xsd">
-
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+<extend>${basedir}/build/project-base.xml</extend>
+  <!-- the version of maven's project object model -->
   <pomVersion>3</pomVersion>
+
+  <!-- a unique name for this project -->
   <id>astrogrid-datawarehouse</id>
   <name>AstroGrid Data Warehouse</name>
-
-  <currentVersion>HEAD</currentVersion>
   
-  <organization>
-    <name>AstroGrid</name>
-    <url>http://www.astrogrid.org</url>
-    <logo>http://www.astrogrid.org/images/AGlogo</logo>
-  </organization>
+  <currentVersion>HEAD</currentVersion>
 
-  <inceptionYear>2002</inceptionYear>
-  <package>org.astrogrid</package> <logo>http://www.astrogrid.org/images/AGlogo</logo> 
+	<description><![CDATA[
+	<p>
+	Links will follow shortly on the left for GDW subproject information:
+	<ul>
+	  <li>client delegates</li>
+	  <li>queriers</li>
+	  <li>datasets</li>
+	</ul>
+	</p>
+
+<section name="Installation"><p>
+
+The front-end web service is available for download. Please download warehouse.war. The front-end web-service works with a back-end grid (OGSI) service. The back-end components are not currently distributed by AstroGrid as they are difficult to install. 
+</p><p>
+The front-end service should be installed in Jakarta-Tomcat. In principle, it can be installed in another web container, but the supported installation, described below, is specific to Tomcat. 
+</p><p>
+The main configuration-file is included in <i>warehouse.war</i> but must be extracted and installed separately. The WAR is structurally a jar file, so jar tools can be used. On Unix or Linux, use the jar command: 
+</p><p>
+  <tt>jar xf warehouse.war WEB-INF/classes/AstroGridConfig.properties</tt>
+</p><p>
+On Windows, extract <i>AstroGridConfig.properties</i> using <i>WinZip</i>. 
+</p><p>
+Copy <i>AstroGridConfig.properties</i> to <i>$CATALINA_HOME/conf/</i> where <i>$CATALINA_HOME</i> stands for the absolute path to the Tomcat installation. 
+</p><p>
+Load <i>warehouse.war</i> using Tomcat's manager interface (see the Tomcat manual). This will create a web-application called <i>warehouse</i>. 
+</p><p>
+Now stop the warehouse web-application, using the manager interface. This prevents users from running the web-application until you have it properly configured. 
+</p><p>
+Open Tomcat's administration interface (see the Tomcat manual). In the tree display at the left of the screen, open the "Environment entities" object in the "Resources" section. From the drop-down menu, labelled "Available Actions", select "Create New Env Entry". Make an entry as follows:<ol> 
+<li>name = org.astrogrid.config.url</li>
+<li>type = java.lang.String </li>
+<li>value = $CATALINA_HOME/conf/AstroGridConfig.properties</li>
+<li>description = Path to AstroGrid central configuration<li>
+</p><p>
+but you must replace $CATALINA_HOME with the full path to the Tomcat directory when typing the entry. 
+</p><p>
+Edit the warehouse configuration if needed to suit your site. Q.v. the configuration guide (the file CONFIG in the installation kit). The default configuration is correct for operation with the GDW back-end service on <i>hydra.star.le.ac.uk</i>. 
+</p><p>
+Go back to the manager interface and start the warehouse web-application. This makes it available to users over the Internet. 
+</p><p>
+Check the installation.
+<ol>
+<li>Validate the Axis installation: all the core jars should be present, but some optional jars may be missing.</li> 
+<li>View the list of available services: <i>AxisDataServer</i> should be present.</li> 
+<li>Submit a test query using the web form; the ADQL pre-loaded the query page is suitable for the GDW database at Leicester.</li> 
+</ol>
+</p>
+</section>
+
+<section name="Release Notes"><p>
+The front-end web-service is released as an AstroGrid component; the back-end grid-service is not. There is nothing "secret" about the back-end service, but it is harder to install and configure than the front-end service. For now, AstroGrid offers a pre-installed back-end service at http://hydra.star.le.ac.uk:8082/gdw/. The released software is preconfigured to use this back-end service. Please see <a href="http://wiki.astrogrid.org/bin/view/GdwCataloguesIteration4">GdwCataloguesIteration4</a> for a list of data-sets installed in the back-end service. 
+</p><p>
+The web interface for a test query times out if the query runs longer than about two minutes. This interface is not intended for long tests. 
+</p><p>
+It is impossible to install the warehouse front-end service in the same Tomcat as a datacenter installation because the entries in AstroGridConfig.properties clash. This is due to warehouse being a specialized form of datacenter and re-using many classes from the latter component. We hope to remove this limitation in a later release. 
+</p>
+</section>
+
+<section name="Configuration"><p>
+To configure the data warehouse module of the Astrogrid software, only two configuration files need to be edited: the WarehouseQuerier.properties file and the AstroGridConfig.properties file. Please note that the default settings for both of these files will work without further configuration required. $TOMCAT is used below to indicate the Tomcat installation directory. 
+</p><p>
+<b>A. $TOMCAT/webapps/warehouse/WEB-INF/classes/org/astrogrid/warehouse/queriers/ogsadai/WarehouseQuerier.properties</b>
+</p><p>
+This file configures the data warehouse querier. Change the parameter names to specify the warehouse querier class name, the location of the OGSA-DAI registry, the XSLT stylesheet used to transform rowsets to VOTable, a specific java virtual machine for the querier (optional), and the location of the OGSA-DAI jar files. 
+</p><p>
+<ol>
+<li>DatabaseQuerierClassConfigure the type of querier. Enter the package name of the data centre querier class here: 
+<ul>
+<li>DatabaseQuerierClass = org.astrogrid.warehouse.queriers.ogsadai.WarehouseQuerier</li>
+</ul>
+</li> 
+<li>OgsaDaiHostString and OgsaDaiRegistryStringConfigure the location of the OGSA-DAI grid service registry. Enter the URL for the OGSA-DAI registry host machine followed by the local identifier of the OGSA-DAI registry: 
+<ul>
+<li>OgsaDaiHostString=http://hydra.star.le.ac.uk:8082</li>
+<li>OgsaDaiRegistryString=/gdw/services/ogsadai/DAIServiceGroupRegistry</li>
+</ul> 
+</li>
+<li>XslTransformConfigure the name and location of the XSLT stylesheet that will convert XML rowsets to VOTable. Enter the URL of the XSLT stylesheet: 
+<ul>
+<li>XslTransform=http://astrogrid.ast.cam.ac.uk/xslt/ag-warehouse-first.xsl</li>
+</ul>
+</li>
+<li>WarehouseJVM (Optional) Configure the JVM for the GdsQueryDelegate. Only set this variable if the GdsQueryDelegate requires a specific java virtual machine (other than the one specified in Tomcat's $JAVA-HOME variable). 
+<ul>
+<li>WarehouseJvm=/data/cass123a/kea/j2sdk1.4.1_01/bin/java</li>
+</ul>
+</li>
+<li>ExecutableJarPathConfigure the executable path for OGSA-DAI classes. Set this variable to the relative pathname that holds the OGSA-DAI package jar file in Tomcat(note - an absolute path can be used as well): 
+<ul>
+<li>ExecutableJarPath=../webapps/warehouse/WEB-INF/classes/ </li>
+</ul>
+</li>
+<li>ExecutableJarNameConfigure the OGSA-DAI jar filename. Enter the filename of the OGSA-DAI jar file located in the relative pathname above: 
+<ul>
+<li>ExecutableJarName=astrogrid-ogsadai-delegates.jar</li>
+</ul>
+</li> 
+</ol>
+<b>B. $TOMCAT/conf/AstroGridConfig.properties </b>
+<p>
+This is the configuration file for an Astrogrid data centre - it can be specialized to describe a data warehouse. Only one parameter needs to be changed to specify the warehouse. 
+</p><p>
+<ol>
+<li>DatabaseQuerierClassConfigure the package name of the class that will query the data warehouse: 
+<ul>
+<li>DatabaseQuerierClass= org.astrogrid.warehouse.queriers.ogsadai.WarehouseQuerier </li>
+</ul>
+</li>
+</ol>
+</p>
+</section>
+	]]>
+	</description>
+ 
   <shortDescription>AstroGrid Warehouse Components</shortDescription>
 
   <siteDirectory>/var/www/www/maven/build/warehouse</siteDirectory>
@@ -30,6 +137,9 @@
     </developerConnection>
   </repository>
 
+<<<<<<< project.xml
+<reports>
+=======
   <developers>
     <developer>
       <name>Kona Andrews</name>
@@ -214,6 +324,7 @@
   </build>
 
   <reports>
+>>>>>>> 1.26
     <report>
       maven-changelog-plugin
     </report>
