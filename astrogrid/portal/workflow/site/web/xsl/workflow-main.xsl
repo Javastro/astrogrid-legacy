@@ -23,8 +23,10 @@
                <link rel="stylesheet" type="text/css" href="main.css" />              
                <title>AstroGrid Portal</title>
             </head>
-            <body onload="verifyName(); ">          
-               <xsl:apply-templates/>
+            <body onload="verifyName(); ">
+               <div> <!-- div encloses content to be displayed in main portal pages -->          
+                  <xsl:apply-templates/>
+               </div> <!-- End div encloses content to be displayed in main portal pages -->
             </body>
          </html>
       </xsl:template>
@@ -106,16 +108,16 @@
                <td class="ag-content-tab-top">Monitor-Jobs</td>                  
             </tr>
             <tr>                
-               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="?action=new">New</a></td>
-               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="?action=submit">Submit</a></td>
-               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="?action=view">View</a></td>
-               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="?action=delete">Delete</a></td>                  
-               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="?action=templates">Templates</a></td>
+               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmonitor.html?action=new">New</a></td>
+               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmonitor.html?action=submit">Submit</a></td>
+               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmonitor.html?action=view">View</a></td>
+               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmonitor.html?action=delete">Delete</a></td>                  
+               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmonitor.html?action=templates">Templates</a></td>
                <!--
                  Spacing.
                  -->
                <td width="100%"></td>
-               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="agjobmanager-jes.html?action=read-job-list">Monitor</a></td>                  
+               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmanager-jes.html?action=read-job-list">Monitor</a></td>                  
             </tr>
          </table>
       </xsl:template>  
