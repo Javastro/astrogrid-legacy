@@ -1,5 +1,5 @@
 /*
- * $Id: JobNotifyServiceListener.java,v 1.5 2003/09/17 14:51:30 nw Exp $
+ * $Id: JobNotifyServiceListener.java,v 1.6 2003/09/24 16:40:18 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -60,7 +60,7 @@ public class JobNotifyServiceListener extends WebNotifyServiceListener
 //                               new Object[] { newStatus.getText(), queryId }
 //                               )
 //       } ;
-         Document statusDoc = DocHelper.wrap(StatusHelper.makeJobNotificationTag(querier.getHandle(), querier.getStatus().getText()));
+         Document statusDoc = DocHelper.wrap(StatusHelper.makeJobNotificationTag(querier));
 
          Object[] parms = new Object[]
          {
@@ -91,6 +91,9 @@ public class JobNotifyServiceListener extends WebNotifyServiceListener
 
 /*
 $Log: JobNotifyServiceListener.java,v $
+Revision 1.6  2003/09/24 16:40:18  mch
+Changed job notification to include querier so fuller details can be sent
+
 Revision 1.5  2003/09/17 14:51:30  nw
 tidied imports - will stop maven build whinging
 

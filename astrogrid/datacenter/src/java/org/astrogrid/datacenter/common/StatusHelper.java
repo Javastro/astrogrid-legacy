@@ -1,15 +1,16 @@
 /*
- * $Id: StatusHelper.java,v 1.9 2003/09/19 15:11:55 nw Exp $
+ * $Id: StatusHelper.java,v 1.10 2003/09/24 16:40:10 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.common;
 
+import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import java.util.Date;
 
 /**
  * A helper class for constructing and relaying the documents that are common
@@ -50,13 +51,25 @@ public class StatusHelper
 
 
    /**
-    * Returns an Iteration 02 job notification tag with status included
+    * Returns an Iteration 02 job notification tag with status included.  The
+    * It02 template was this:
+    * <pre>
+<?xml version="1.0" encoding="UTF8"?>
+<!-- Template for making SOAP requests to the JobMonitor -->
+<job name="{0}"
+     userid="{1}"
+     community="{2}"
+     jobURN="{3}"
+     time="{4}" >
+   <jobstep name="{5}" stepNumber="{6}" status="{7}"/>
+</job>
+   </pre>
     */
-   public static String makeJobNotificationTag(String queryId, String status)
+   public static String makeJobNotificationTag(DatabaseQuerier querier)
    {
       return
-            "<job name='"+queryId+"'  >"+
-               "<jobstep name='"+queryId+"' status='"+status+"'/>"+
+            "<job name='"+querier.getHandle()+"'  time="+new Date()+"' >"+
+               "<jobstep name='"+querier.getHandle()+"' status='"+querier.getStatus()+"'/>"+
             "</job>";
    }
 
@@ -78,7 +91,7 @@ public class StatusHelper
          }
      }
 
-      NodeList idNodes = domContainingStatuses.getElementsByTagName(STATUS_TAG);      
+      NodeList idNodes = domContainingStatuses.getElementsByTagName(STATUS_TAG);
       //run through nodes looking for one where the queryId attribute
       //corresponds to the given id
       for (int i=0;i<idNodes.getLength();i++)
