@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: int-test.sh,v 1.2 2004/12/01 22:18:01 jdt Exp $ 
+# $Id: int-test.sh,v 1.3 2004/12/02 11:15:30 jdt Exp $ 
 ########################################################
 # Script to install AGINAB, run the integration
 # tests and publish the results
@@ -18,16 +18,16 @@
 
 # Some reminders
 if [ -z "$CHECKOUTHOME" ]; then
-	echo "Value of CHECKOUTHOME (ie where to checkout sources) must be set"
-	exit 1
+echo "Value of CHECKOUTHOME (ie where to checkout sources) must be set"
+exit 1
 fi
 if [ -z "$DOCLOCATION" ]; then
-	echo "Value of DOCLOCATION (ie where to send docs) must be set"
-	exit 1
+echo "Value of DOCLOCATION (ie where to send docs) must be set"
+exit 1
 fi
 if [ -z "$DOCMACHINE" ]; then
-	echo "Value of DOCMACHINE (e.g. maven@www.astrogrid.org) must be set"
-	exit 1
+echo "Value of DOCMACHINE (e.g. maven@www.astrogrid.org) must be set"
+exit 1
 fi
 
 OLDDIR=$PWD
@@ -38,7 +38,7 @@ echo "Going to deploy docs to $DOCLOCATION on $DOCMACHINE - hit ctrl-c if this i
 TESTMODULE=astrogrid/integrationTests/auto-integration
 BUILDHOME=$CHECKOUTHOME/$TESTMODULE
 export BUILDHOME
-LOGFILE=intTest.log
+LOGFILE=/tmp/intTest.log
 DATE=`date`
 TIMESTAMP=`date +%Y%m%d-%T`
 ADMIN_EMAIL=${ADMIN_EMAIL:-"jdt@roe.ac.uk clq2@star.le.ac.uk"}
@@ -52,34 +52,43 @@ echo "=============================" >> $LOGFILE
 
 echo "Running Integration Tests"
 echo "Have you remembered to edit ~/build.properties with the test version numbers?"
-echo "Checking out maven-base and AGINAB from cvs"
+echo "Checking out maven-base and AGINAB from cvs" >> $LOGFILE
 if cvs-checkout.sh $TESTMODULE $1 >> $LOGFILE 2>&1
 then
+   echo "OK" >> $LOGFILE
 else
+   echo "***FAILURE***" >> $LOGFILE
     cat $LOGFILE | mail -s "run-int-test: cvs failure" $ADMIN_EMAIL
-	exit 1
+exit 1
 fi
-echo "Reinstalling AstroGrid"
+echo "Reinstalling AstroGrid" >> $LOGFILE
 if reinstall-aginab.sh >> $LOGFILE 2>&1
 then
+    echo "OK" >> $LOGFILE
 else
+    echo "***FAILURE***" >> $LOGFILE
     cat $LOGFILE | mail -s "run-int-test: reinstall aginab failure" $ADMIN_EMAIL
-	exit 1
+exit 1
 fi
-echo "Bouncing Tomcat"
+echo "Bouncing Tomcat" >> $LOGFILE
 bounce-tomcat.sh >> $LOGFILE 2>&1
-echo "Running Tests"
+echo "Running Tests" >> $LOGFILE
 if run-and-publish-tests.sh >> $LOGFILE 2>&1
 then
+   echo "OK" >> $LOGFILE
 else
+   echo "FAILURE" >> $LOGFILE
     cat $LOGFILE | mail -s "run-int-test: run-and-publish-tests.sh failure" $ADMIN_EMAIL
 fi
-echo "Installing Portal"
+bounce-tomcat.sh >> $LOGFILE 2>&1
+echo "Installing Portal" >> $LOGFILE
 if install-portal.sh >> $LOGFILE 2>&1
 then
+  echo "OK" >> $LOGFILE
 else
+  echo "***FAILURE***" >> $LOGFILE
     cat $LOGFILE | mail -s "run-int-test: install-portal.sh failure" $ADMIN_EMAIL
-	exit 1
+exit 1
 fi
 
 #backup tests and logs
@@ -98,4 +107,5 @@ rm catalina.logs.tar.gz >> $LOGFILE 2>&1
 
 cd $OLDDIR
 
-mail -s "Integration Tests have completed" $ADMIN_EMAIL
+
+echo "See http://www.astrogrid.org/maven/docs/HEAD/integrationTests" | mail -s "Integration Tests have completed" $ADMIN_EMAIL
