@@ -374,27 +374,28 @@ public class RegistryBrowserAction extends AbstractAction
      else if ( TOOL_SEARCH.equals( main ) ) {
        query += "\n<selection item='@xsi:type' itemOp='EQ'";
        query += " value='CeaApplicationType'/>";
+//		Following removed as there seems to be a confusion over id or key and the value of
+//		authid was getting included as part of the search string in the form:
+//				 vr:Identifier/vr:AuthorityID = "tool_name" whch prevented anything from being found!
+//		pjn 26/10/04
+id = null;
+key = null;       
      }
      else if ( TABLE_SEARCH.equals( main ) ) {
        query += "<selection item='vr:Type' itemOp='EQ' value='Catalog'/>";
      }
 
-     // Now lets check for other filters.
-// Following removed as there seems to be a confusion over id or key and the value of
-// authid was getting included as part of the search string in the form:
-//      vr:Identifier/vr:AuthorityID = "tool_name" whch prevented anything from being found!
-// pjn 26/10/04
- 
-//     if ( id != null ) {
-//       query += "\n<selectionOp op='AND'/>";
-//       query += "<selection item='vr:Identifier/vr:AuthorityID' itemOp='CONTAINS'";
-//       query += " value='" + id + "'/>";
-//     }
-//     if ( key != null ) {
-//       query += "\n<selectionOp op='AND'/>";
-//       query += "<selection item='vr:Identifier/vr:ResourceKey' itemOp='CONTAINS'";
-//       query += " value='" + key + "'/>";
-//     }
+     // Now lets check for other filters. 
+     if ( id != null ) {
+       query += "\n<selectionOp op='AND'/>";
+       query += "<selection item='vr:Identifier/vr:AuthorityID' itemOp='CONTAINS'";
+       query += " value='" + id + "'/>";
+     }
+     if ( key != null ) {
+       query += "\n<selectionOp op='AND'/>";
+       query += "<selection item='vr:Identifier/vr:ResourceKey' itemOp='CONTAINS'";
+       query += " value='" + key + "'/>";
+     }
 
      if ( title != null ) {
        query += "\n<selectionOp op='AND'/>";
