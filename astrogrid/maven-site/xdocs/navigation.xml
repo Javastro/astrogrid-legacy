@@ -22,7 +22,7 @@
       <item name="PortalB"          href="http://www.astrogrid.org/maven/build/portalB/index.html"/>
       <item name="Workflow"          href="http://www.astrogrid.org/maven/build/workflow/index.html"/>
     </menu>
-    <menu name="Integration & Logs">
+    <menu name="Integration and Logs">
       <item name="Integration Testing" href="http://www.astrogrid.org/maven/build/integrationTests/index.html"/>
       <item name="Maven Build Logs" collapse="true">
        <item name="Applications Integration"           href="http://www.astrogrid.org/maven/build/log/maven-build-applications.log" />
