@@ -1,57 +1,50 @@
 package org.astrogrid.registry.xquery;
 
+package gmd;
+
+import de.gmd.ipsi.xql.*;
+import de.gmd.ipsi.domutil.*;
+import org.w3c.dom.*;
 import java.io.*;
 
-import org.w3c.dom.*;
-import de.gmd.ipsi.domutil.*;
-import de.gmd.ipsi.xql.*;
-
 public class RunXQueryIpsi {
-  //timer to measure performace
-  static long startTime = System.currentTimeMillis();
 
-  final static String xmlFileName = "D:\\astrogrid\\query.xml";
-  final static String query = Transform.fileToString("D:\\astrogrid\\portalQuery.xql");
+  final static String xmlFileName = "http://msslxy.mssl.ucl.ac.uk:8080/org/astrogrid/registry/xquery/registry.xml";
+  final static String xquery = Transform.fileToString("http://msslxy.mssl.ucl.ac.uk:8080/org/astrogrid/registry/xquery/registry.xquery");
 
   public static void main(String[] args) {
+	   //Creation of a Dom document
+	   Document doc = DOMUtil.createDocument();
 
-	//Creation of a Dom document
-	Document doc = DOMUtil.createDocument();
+	   try {
+		 DOMUtil.parseXML(
+			 new FileInputStream(xmlFileName),
+			 doc,
+			 false,
+			 DOMUtil.SKIP_IGNORABLE_WHITESPACE
+			 );
+	   }
+	   catch (DOMParseException e) {
+		 e.printStackTrace();
+	   }
+	   catch (FileNotFoundException e) {
+		 e.printStackTrace();
+	   }
 
-	try {
-	  DOMUtil.parseXML(
-		  new FileInputStream(xmlFileName),
-		  doc,
-		  false,
-		  DOMUtil.SKIP_IGNORABLE_WHITESPACE
-	  );
-	}
-	catch ( DOMParseException e) {
-	  e.printStackTrace();
-	}
-	catch (FileNotFoundException e) {
-	  e.printStackTrace();
-	}
+	   Document resultDoc = DOMUtil.createDocument();
+	   Element root = resultDoc.createElement("root");
+	   resultDoc.appendChild(root);
+	   XQL.execute(xquery, doc, root);
 
-	Document resultDoc = DOMUtil.createDocument();
-	Element root = resultDoc.createElement("root");
-	resultDoc.appendChild(root);
-	XQL.execute(query, doc, root);
-
-	try{
-	  XMLWriter out = new XMLWriter(System.out);
-	  out.formatOutput(true);
-	  out.write(resultDoc);
-	  out.writeln();
-	  out.flush();
-	}
-	catch (IOException e) {
-	  e.printStackTrace();
-	}
-
-	//timer calculation
-	long stopTime = System.currentTimeMillis();
-	long runTime = stopTime - startTime;
-	System.out.println("Run time: " + runTime);
+	   try {
+		 XMLWriter out = new XMLWriter(System.out);
+		 out.formatOutput(true);
+		 out.write(resultDoc);
+		 out.writeln();
+		 out.flush();
+	   }
+	   catch (IOException e) {
+		 e.printStackTrace();
+	   }
   }
 }
