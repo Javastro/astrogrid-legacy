@@ -204,6 +204,16 @@ h6 {
 .Failure {
     font-weight:bold; color:purple;
 }
+.improvement {
+        font-weight:bold; color:green;
+}
+.regression {
+        font-weight:bold; color:red; background-color:black;
+}
+.change {
+        font-weight:bold; color:orange;
+}
+
 .Properties {
   text-align:right;
 }
@@ -489,6 +499,35 @@ h6 {
         </tr>
         </table>
 
+        <h2>Baselines</h2>
+        <table class="details" border="0" cellpadding="5" cellspacing="2" width="95%">
+        <tr valign="top">
+                <th>Baseline</th>
+                <th>Tests</th>
+                <th>Failures</th>
+                <th>Success rate</th>
+        </tr>
+        <xsl:for-each select="baseline-summary">
+        <xsl:variable name="baselineSuccessRate" select="(total-tests - total-errors) div total-tests" />
+        <tr valign="top">
+                <xsl:attribute name="class">
+                        <xsl:choose>
+                                <xsl:when test="$successRate &lt; $baselineSuccessRate">Error</xsl:when><!-- work out test here -->
+                                <xsl:otherwise>Pass</xsl:otherwise>
+                        </xsl:choose>
+                </xsl:attribute>
+                <td><a href="#{baseline-name}"><xsl:value-of select="baseline-name" /></a></td>
+                <td><xsl:value-of select="total-tests" /></td>
+                <td><xsl:value-of select="total-errors" /></td>
+                <td>
+                 <xsl:call-template name="display-percent">
+                    <xsl:with-param name="value" select="$baselineSuccessRate"/>
+                 </xsl:call-template>
+                </td>
+        </tr>
+        </xsl:for-each>
+        </table>
+<hr />
         <h2>Packages</h2>
         <table class="details" border="0" cellpadding="5" cellspacing="2" width="95%">
             <xsl:call-template name="testsuite.test.header"/>
@@ -506,9 +545,29 @@ h6 {
                         </xsl:choose>
                     </xsl:attribute>
                     <td><a href="{translate(@package,'.','/')}/package-summary.html"><xsl:value-of select="@package"/></a></td>
-                    <td><xsl:value-of select="sum($insamepackage/@tests)"/></td>
-                    <td><xsl:value-of select="sum($insamepackage/@errors)"/></td>
-                    <td><xsl:value-of select="sum($insamepackage/@failures)"/></td>
+                    <xsl:variable name="packageTests" select="sum($insamepackage/@tests)"/>
+                    <xsl:variable name="packageErrors" select="sum($insamepackage/@errors)"/>
+                    <xsl:variable name="packageFailures" select="sum($insamepackage/@failures)"/>
+                    <td><xsl:value-of select="$packageTests"/></td>
+                    <td><xsl:value-of select="$packageErrors"/></td>
+                    <td><xsl:value-of select="$packageFailures"/></td>
+                    <td>
+                    <xsl:for-each select="/testsuites/baseline-summary">
+                        <xsl:variable name="regressions" select="$insamepackage/testcase[(error|failure) and baseline[@name=current()/baseline-name]/@failure = 0]"/>
+                        <xsl:variable name="improvements" select="$insamepackage/testcase[not(error|failure) and baseline[@name=current()/baseline-name]/@failure=1]"/>
+                        <xsl:choose>
+                                <xsl:when test="$regressions and $improvements">
+                                        <span class="change"><nobr><xsl:value-of select="baseline-name"/> </nobr></span>
+                                </xsl:when>
+                                <xsl:when test="$regressions">
+                                        <span class="regression"><nobr><xsl:value-of select="baseline-name" /> </nobr></span>
+                                </xsl:when>
+                                <xsl:when test="$improvements">
+                                        <span class="improvement"><nobr><xsl:value-of select="baseline-name" /> </nobr></span>
+                                </xsl:when>
+                        </xsl:choose>
+                    </xsl:for-each>
+                    </td>
                     <td>
                     <xsl:call-template name="display-time">
                         <xsl:with-param name="value" select="sum($insamepackage/@time)"/>
@@ -516,6 +575,34 @@ h6 {
                     </td>
                 </tr>
             </xsl:for-each>
+        </table>
+<hr />
+        <h2>Baseline Details</h2>
+
+        <table class="details" border="0" cellpadding="5" cellspacing="2" width="95%">
+        <tr valign="top">
+                <th>Name</th>
+                <th>Date</th>
+                <th>Version</th>
+                <th>Location</th>
+                <th>Who</th>
+        </tr>
+        <xsl:for-each select="baseline-summary">
+        <tr valign="top">
+                <td><a name="{baseline-name}"><xsl:value-of select="baseline-name"/></a></td>
+                <td><xsl:value-of select="when" /></td>
+                <td><xsl:value-of select="project-version" /></td>
+                <td><xsl:value-of select="where" /></td>
+                <td><xsl:value-of select="who" /></td>
+        </tr>
+        <tr valign="top">
+                <td colspan="5">
+                        <xsl:call-template name="br-replace">
+                                <xsl:with-param name="word" select="baseline-description"/>
+                        </xsl:call-template>
+                </td>
+        </tr>
+        </xsl:for-each>
         </table>
         </body>
         </html>
@@ -597,10 +684,11 @@ h6 {
 <!-- class header -->
 <xsl:template name="testsuite.test.header">
     <tr valign="top">
-        <th width="80%">Name</th>
+        <th width="60%">Name</th>
         <th>Tests</th>
         <th>Errors</th>
         <th>Failures</th>
+        <th width="10%">Change</th>
         <th nowrap="nowrap">Time(s)</th>
     </tr>
 </xsl:template>
@@ -609,6 +697,7 @@ h6 {
 <xsl:template name="testcase.test.header">
     <tr valign="top">
         <th>Name</th>
+        <th>Change</th>
         <th>Status</th>
         <th width="80%">Type</th>
         <th nowrap="nowrap">Time(s)</th>
@@ -630,6 +719,24 @@ h6 {
         <td><xsl:apply-templates select="@tests"/></td>
         <td><xsl:apply-templates select="@errors"/></td>
         <td><xsl:apply-templates select="@failures"/></td>
+        <td>
+        <xsl:for-each select="baseline">
+                <xsl:variable name="regressions" select="../testcase[(error|failure) and baseline[@name=current()/@name]/@failure = 0]"/>
+                <xsl:variable name="improvements" select="../testcase[not(error|failure) and baseline[@name=current()/@name]/@failure=1]"/>
+                <xsl:choose>
+                        <xsl:when test="$regressions and $improvements">
+                                <span class="change"><nobr><xsl:value-of select="@name"/> </nobr></span>
+                        </xsl:when>
+                        <xsl:when test="$regressions">
+                                <span class="regression"><nobr><xsl:value-of select="@name" /> </nobr></span>
+                        </xsl:when>
+                        <xsl:when test="$improvements">
+                                <span class="improvement"><nobr><xsl:value-of select="@name" /> </nobr></span>
+                        </xsl:when>
+                </xsl:choose>
+
+        </xsl:for-each>
+        </td>
         <td><xsl:call-template name="display-time">
                 <xsl:with-param name="value" select="@time"/>
             </xsl:call-template>
@@ -647,6 +754,16 @@ h6 {
             </xsl:choose>
         </xsl:attribute>
         <td><xsl:value-of select="@name"/></td>
+        <td>
+          <xsl:for-each select="baseline">
+                <xsl:if test="(../error|../failure) and @failure = 0 ">
+                        <span class="regression"><nobr><xsl:value-of select="@name" /></nobr></span><br />
+                </xsl:if>
+                <xsl:if test="not(../error|../failure) and @failure = 1 ">
+                        <span class="improvement"><nobr><xsl:value-of select="@name" /></nobr></span><br />
+                </xsl:if>
+          </xsl:for-each>
+        </td>
         <xsl:choose>
             <xsl:when test="failure">
                 <td>Failure</td>
