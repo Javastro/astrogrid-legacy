@@ -240,7 +240,8 @@ public class RegistryQueryAction extends AbstractAction
                if (DEBUG_FLAG) printDebug( method, "Service = " + rs);
 //               VODescription vo = rs.submitQueryString(query);
 //               if (DEBUG_FLAG) printDebug( method, "VO Description = " + vo);
-               Document doc = rs.submitQuery( query );
+               //Document doc = rs.submitQuery( query );
+               Document doc = rs.submitQueryStringDOM( query );
                if ( DEBUG_FLAG) printDebug( method, "doc = " + doc );
                 //                     XMLUtils.DocumentToString(doc) );
                //if ( doc == null )

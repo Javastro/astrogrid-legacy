@@ -199,8 +199,8 @@ public class RegistryBrowserAction extends AbstractAction
             URL url = new URL( endpoint );               
             RegistryService rs = RegistryDelegateFactory.createQuery(url);
             printDebug( method, "Service = " + rs);
-            Document doc = rs.submitQuery( query );
-            //Document doc = rs.submitQueryStringDOM( query );
+            //Document doc = rs.submitQuery( query );
+            Document doc = rs.submitQueryStringDOM( query );
 
             //create the results and put it in the request.
             resultlist = createList( doc );
