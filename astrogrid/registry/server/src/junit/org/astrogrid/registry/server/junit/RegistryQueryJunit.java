@@ -39,7 +39,7 @@ public class RegistryQueryJunit extends TestCase{
 
 
    RegistryService rs = null;
-
+   String dbURI = null;
         
    /**
     * Setup our test.
@@ -58,6 +58,7 @@ public class RegistryQueryJunit extends TestCase{
        String junitBuildDir = System.getProperty("org.astrogrid.registry.junitcache.build.url");
        String junitDir = System.getProperty("org.astrogrid.registry.junitcache.url");
        rs = new RegistryService();
+       dbURI = rs.conf.getString("registry.exist.db.uri",null);       
        rs.conf.setProperty("org.astrogrid.registry.file",junitBuildDir+"/registry.xml");
        rs.conf.setProperty("org.astrogrid.registry.junit.authQuery1",junitDir+"/AuthorityQuery1.xml");
        rs.conf.setProperty("org.astrogrid.registry.junit.orgQuery1",junitDir+"/OrganisationQuery1.xml");
@@ -71,13 +72,15 @@ public class RegistryQueryJunit extends TestCase{
    
    public void testLoadRegistry() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testLoadRegistry");
+      if(dbURI == null) return;
       Document doc = rs.loadRegistry(null);
       if(doc != null)
          if (DEBUG_FLAG) System.out.println("loadRegistry returned = " + XMLUtils.DocumentToString(doc));
    }
    
    public void testSubmitQueryContainsVizQuery() throws Exception {
-      if (DEBUG_FLAG) System.out.println("Begin testSubmitQueryContainsVizQuery");      
+      if (DEBUG_FLAG) System.out.println("Begin testSubmitQueryContainsVizQuery");
+      if(dbURI == null) return;
       Document doc = rs.conf.getDom("org.astrogrid.registry.junit.vizQuery1");  
       Document responseDoc = rs.submitQuery(doc);
       //assertNotNull(responseDoc);
@@ -102,7 +105,8 @@ public class RegistryQueryJunit extends TestCase{
    }
   */ 
    public void testSubmitQueryContainsAuthorityQuery() throws Exception {
-      if (DEBUG_FLAG) System.out.println("Begin testSubmitQueryContainsAuthorityQuery");      
+      if (DEBUG_FLAG) System.out.println("Begin testSubmitQueryContainsAuthorityQuery");
+      if(dbURI == null) return;      
       Document doc = rs.conf.getDom("org.astrogrid.registry.junit.authQuery1");  
       Document responseDoc = rs.submitQuery(doc);
       //assertNotNull(responseDoc);

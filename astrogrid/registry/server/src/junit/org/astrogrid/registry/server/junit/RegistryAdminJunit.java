@@ -39,6 +39,7 @@ public class RegistryAdminJunit extends TestCase{
 
 
    RegistryAdminService ras = null;
+   String dbURI = null;
 
         
    /**
@@ -58,6 +59,7 @@ public class RegistryAdminJunit extends TestCase{
        String junitBuildDir = System.getProperty("org.astrogrid.registry.junitcache.build.url");
        String junitDir = System.getProperty("org.astrogrid.registry.junitcache.url");
        ras = new RegistryAdminService();
+       dbURI = ras.conf.getString("registry.exist.db.uri",null);
        ras.conf.setProperty("org.astrogrid.registry.file",junitBuildDir+"/registry.xml");
        ras.conf.setProperty("registry.junit.test/ServiceTest",junitDir+"/ServiceTest.xml");
        ras.conf.setProperty("registry.junit.test/OrganisationTest",junitDir+"/OrganisationTest.xml");
@@ -80,10 +82,20 @@ public class RegistryAdminJunit extends TestCase{
        if(doc != null)      
           if (DEBUG_FLAG) System.out.println("getStatus returned = " + XMLUtils.DocumentToString(doc));
     }
-  */    
+  */
+  
+  public void testUpdateAuthority() throws Exception {
+     if (DEBUG_FLAG) System.out.println("Begin testUpdateService");
+     if(dbURI == null) return;
+     Document doc = ras.update(ras.conf.getDom("registry.junit.test/AuthorityTest"));      
+     if(doc != null)      
+        if (DEBUG_FLAG) System.out.println("loadRegistry returned = " + XMLUtils.DocumentToString(doc));
+  }
+
    
    public void testUpdateService() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testUpdateService");
+      if(dbURI == null) return;      
       Document doc = ras.update(ras.conf.getDom("registry.junit.test/ServiceTest"));
       //TODO put assert statements here.      
       if(doc != null)      

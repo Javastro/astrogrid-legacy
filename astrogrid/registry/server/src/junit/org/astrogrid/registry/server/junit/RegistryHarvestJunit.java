@@ -39,7 +39,7 @@ public class RegistryHarvestJunit extends TestCase{
 
 
    RegistryHarvestService rhs = null;
-
+   String dbURI = null;
         
    /**
     * Setup our test.
@@ -58,6 +58,7 @@ public class RegistryHarvestJunit extends TestCase{
        String junitBuildDir = System.getProperty("org.astrogrid.registry.junitcache.build.url");
        String junitDir = System.getProperty("org.astrogrid.registry.junitcache.url");
        rhs = new RegistryHarvestService();
+       dbURI = rhs.conf.getString("registry.exist.db.uri",null);       
        rhs.conf.setProperty("org.astrogrid.registry.file",junitBuildDir+"/registry.xml");
        rhs.conf.setProperty("registry.junit.test/ServiceTest",junitDir+"/ServiceTest.xml");
        rhs.conf.setProperty("registry.junit.test/OrganisationTest",junitDir+"/OrganisationTest.xml");
@@ -71,8 +72,42 @@ public class RegistryHarvestJunit extends TestCase{
        if (DEBUG_FLAG) System.out.println("----\"----") ;
    }
    
+
+   public void testHarvest() throws Exception {
+      if (DEBUG_FLAG) System.out.println("Begin testHarvest");
+      if(dbURI == null) return;
+      try {
+      
+      //Document doc = rhs.conf.getDom("registry.junit.test/HarvestVizier");  
+      Document responseDoc = rhs.harvest(null);
+      //TODO put assert statements here.
+      if(responseDoc != null)      
+         if (DEBUG_FLAG) System.out.println("harvest returned = " + XMLUtils.DocumentToString(responseDoc));
+      }catch(Exception e) {
+         e.printStackTrace();
+      }
+   }      
+
+   public void testHarvestFrom() throws Exception {
+      if (DEBUG_FLAG) System.out.println("Begin testHarvestFrom");
+      if(dbURI == null) return;      
+      try {
+      
+      //Document doc = rhs.conf.getDom("registry.junit.test/HarvestVizier");  
+      Document responseDoc = rhs.harvestFrom(null);
+      //TODO put assert statements here.
+      if(responseDoc != null)      
+         if (DEBUG_FLAG) System.out.println("harvest returned = " + XMLUtils.DocumentToString(responseDoc));
+      }catch(Exception e) {
+         e.printStackTrace();
+      }
+   }      
+
+
+
    public void testHarvestResource() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testHarvestResource");
+      if(dbURI == null) return;      
       try {
       
       Document doc = rhs.conf.getDom("registry.junit.test/HarvestVizier");  
