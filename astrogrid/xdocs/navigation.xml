@@ -50,6 +50,7 @@
                 <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-registry-common-0.7-b*.jar"/>
                 <item name="Security" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-security-0.7-b*.jar" />
                 <item name="Slinger" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-slinger-0.7-b*.jar" />
+                <item name="UI" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-ui-0.7-b*.jar" />                
                 <item name="Workflow" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-workflow-0.7-b*.jar"/>
                 <item name="Workflow Common Objects" 
                     href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-workflow-objects-0.7-b*.jar" />
