@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/src/java/org/astrogrid/filestore/resolver/FileStoreEndpointResolver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/23 09:11:16 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/07/23 15:17:30 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: FileStoreEndpointResolver.java,v $
+ *   Revision 1.3  2004/07/23 15:17:30  dave
+ *   Merged development branch, dave-dev-200407231013, into HEAD
+ *
+ *   Revision 1.2.2.1  2004/07/23 15:04:46  dave
+ *   Added delegate resolver and tests
+ *
  *   Revision 1.2  2004/07/23 09:11:16  dave
  *   Merged development branch, dave-dev-200407221513, into HEAD
  *
@@ -30,21 +36,18 @@ import java.net.URL ;
 import java.net.MalformedURLException ;
 
 import org.astrogrid.store.Ivorn ;
+import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.RegistryDelegateFactory ;
 import org.astrogrid.registry.client.query.RegistryService ;
-
-import org.astrogrid.config.Config ;
-import org.astrogrid.config.SimpleConfig ;
 
 import org.astrogrid.filestore.common.ivorn.FileStoreIvornParser ;
 import org.astrogrid.filestore.common.ivorn.FileStoreIvornFactory ;
 
 import org.astrogrid.filestore.common.exception.FileStoreIdentifierException ;
 
-import org.astrogrid.registry.RegistryException;
 
 /**
- * This is a local wrapper for the RegistryDelegate resolve Ivorns into service endpoints.
+ * A helper class to resolve an Ivron into a service endpoint.
  *
  */
 public class FileStoreEndpointResolver
@@ -54,12 +57,6 @@ public class FileStoreEndpointResolver
      *
      */
     private static boolean DEBUG_FLAG = true ;
-
-    /**
-     * Our reference to the AstroGrid config.
-     *
-     */
-    protected static Config conf = SimpleConfig.getSingleton() ;
 
     /**
      * Public constructor, using the default Registry service.
@@ -136,7 +133,7 @@ public class FileStoreEndpointResolver
         }
 
     /**
-     * Resolve data from a FileStoreIvornParser.
+     * Resolve an Ivorn parser into a service endpoint.
      * @param parser A FileStoreIvornParser containing the Filestore identifier.
      * @return The endpoint address for the service.
      * @throws FileStoreIdentifierException If the identifier is not valid.
@@ -175,7 +172,7 @@ public class FileStoreEndpointResolver
         String endpoint = null ;
         try {
             endpoint = registry.getEndPointByIdentifier(
-                ivorn.toString()
+                ivorn
                 ) ;
             }
         catch (Throwable ouch)

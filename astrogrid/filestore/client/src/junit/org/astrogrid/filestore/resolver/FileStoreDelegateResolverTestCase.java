@@ -1,14 +1,14 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/src/junit/org/astrogrid/filestore/resolver/FileStoreEndpointResolverTestCase.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/src/junit/org/astrogrid/filestore/resolver/FileStoreDelegateResolverTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
  * <cvs:date>$Date: 2004/07/23 15:17:30 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  * <cvs:log>
- *   $Log: FileStoreEndpointResolverTestCase.java,v $
- *   Revision 1.3  2004/07/23 15:17:30  dave
+ *   $Log: FileStoreDelegateResolverTestCase.java,v $
+ *   Revision 1.2  2004/07/23 15:17:30  dave
  *   Merged development branch, dave-dev-200407231013, into HEAD
  *
- *   Revision 1.2.2.1  2004/07/23 15:04:46  dave
+ *   Revision 1.1.2.1  2004/07/23 15:04:46  dave
  *   Added delegate resolver and tests
  *
  *   Revision 1.2  2004/07/23 09:11:16  dave
@@ -33,13 +33,15 @@ import org.apache.axis.client.Call ;
 
 import org.astrogrid.store.Ivorn ;
 
+import org.astrogrid.filestore.client.FileStoreDelegate ;
+import org.astrogrid.filestore.client.FileStoreSoapDelegate ;
 import org.astrogrid.filestore.common.exception.FileStoreIdentifierException ;
 
 /**
  * A JUnit test case for the service resolver.
  *
  */
-public class FileStoreEndpointResolverTestCase
+public class FileStoreDelegateResolverTestCase
 	extends TestCase
 	{
 
@@ -78,7 +80,7 @@ public class FileStoreEndpointResolverTestCase
 		throws Exception
 		{
 		try {
-			new FileStoreEndpointResolver(
+			new FileStoreDelegateResolver(
 				null
 				) ;
 			}
@@ -98,7 +100,7 @@ public class FileStoreEndpointResolverTestCase
 		{
 		assertNotNull(
 			"Failed to create resolver",
-			new FileStoreEndpointResolver()
+			new FileStoreDelegateResolver()
 			) ;
 		}
 
@@ -110,7 +112,7 @@ public class FileStoreEndpointResolverTestCase
 		throws Exception
 		{
 		try {
-			FileStoreEndpointResolver resolver = new FileStoreEndpointResolver() ;
+			FileStoreDelegateResolver resolver = new FileStoreDelegateResolver() ;
 			resolver.resolve((Ivorn)null) ;
 			}
 		catch (FileStoreIdentifierException ouch)
@@ -128,7 +130,7 @@ public class FileStoreEndpointResolverTestCase
 		throws Exception
 		{
 		try {
-			FileStoreEndpointResolver resolver = new FileStoreEndpointResolver() ;
+			FileStoreDelegateResolver resolver = new FileStoreDelegateResolver() ;
 			resolver.resolve(
 				new Ivorn("ivo://unknown")
 				) ;
@@ -141,27 +143,27 @@ public class FileStoreEndpointResolverTestCase
 		}
 
 	/**
-	 * Check we get the right URL for a valid ivorn.
+	 * Check we get a delegate for a valid ivorn.
 	 *
 	 */
 	public void testResolveValid()
 		throws Exception
 		{
-		FileStoreEndpointResolver resolver = new FileStoreEndpointResolver() ;
-		assertEquals(
-			"Wrong endpoint",
-			new URL(
-				getTestProperty(
-					"resolver.endpoint"
-					)
-				),
+		FileStoreDelegateResolver resolver = new FileStoreDelegateResolver() ;
+		FileStoreDelegate delegate = 
 			resolver.resolve(
 				new Ivorn(
 					getTestProperty(
 						"resolver.ivorn"
 						)
 					)
-				)
+				) ;
+		assertEquals(
+			"Wrong service identifier",
+			getTestProperty(
+				"service.ivorn"
+				),
+			delegate.identifier()
 			) ;
 		}
 	}

@@ -2,10 +2,16 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/src/java/org/astrogrid/filestore/client/FileStoreSoapDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/19 23:42:07 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/07/23 15:17:30 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreSoapDelegate.java,v $
+ *   Revision 1.4  2004/07/23 15:17:30  dave
+ *   Merged development branch, dave-dev-200407231013, into HEAD
+ *
+ *   Revision 1.3.10.1  2004/07/23 15:04:46  dave
+ *   Added delegate resolver and tests
+ *
  *   Revision 1.3  2004/07/19 23:42:07  dave
  *   Merged development branch, dave-dev-200407151443, into HEAD
  *
@@ -93,8 +99,7 @@ public class FileStoreSoapDelegate
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("FileStoreSoapDelegate()") ;
-        if (DEBUG_FLAG) System.out.println("FROG") ;
-        if (DEBUG_FLAG) System.out.println("  URL : " + endpoint) ;
+        if (DEBUG_FLAG) System.out.println("  URL : '" + endpoint + "'") ;
         //
         // Check for null param.
         if (null == endpoint)

@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/23 09:11:16 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2004/07/23 15:17:30 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.5  2004/07/23 15:17:30  dave
+    |   Merged development branch, dave-dev-200407231013, into HEAD
+    |
+    |   Revision 1.4.2.1  2004/07/23 15:04:46  dave
+    |   Added delegate resolver and tests
+    |
     |   Revision 1.4  2004/07/23 09:11:16  dave
     |   Merged development branch, dave-dev-200407221513, into HEAD
     |
@@ -189,7 +195,7 @@
             <ant:echo message="  Service resource  : ${service.resource}"/>
             <ant:echo message="  Service file      : ${service.file}"/>
             <ant:echo message="  Service wsdl      : ${wsdlDir}/${service.name}.wsdl"/>
-            <ant:echo message="  Service href      : local:///${service.name}"/>
+            <ant:echo message="  Service href      : local:/${service.name}"/>
             <!--+
                 | Modify the service WSDL to include a 'local://..' url.
                 +-->
@@ -199,7 +205,7 @@
                 <outputproperty name="method" value="xml"/>
                 <outputproperty name="indent" value="yes"/>
                 <param name="service.name" expression="${service.name}"/>
-                <param name="service.href" expression="local://${service.name}"/>
+                <param name="service.href" expression="local:/${service.name}"/>
             </ant:xslt>
             <ant:move overwrite="true" file="${wsdlDir}/${service.name}.tmp" toFile="${wsdlDir}/${service.name}.wsdl"/>
             <!--+
