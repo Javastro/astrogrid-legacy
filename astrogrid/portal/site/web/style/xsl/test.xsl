@@ -12,21 +12,35 @@
       method="xml"
       version="1.0"
       indent="yes"/>
+      
+  <xsl:param name="css-url"/>
+  <xsl:param name="js-url"/>
 
   <xsl:template match="/">
     <html>
       <head>
-        <link rel="stylesheet" type="text/css" href="main.css"/>
+        <xsl:element name="link">
+          <xsl:attribute name="href">
+            <xsl:value-of select="$css-url"/>
+          </xsl:attribute>
+          <xsl:attribute name="rel">stylesheet</xsl:attribute>
+          <xsl:attribute name="type">text/css</xsl:attribute>
+        </xsl:element>
         <title>AstroGrid Portal</title>
         
-        <script type="text/javascript" src="paneltab.js"/>
+        <xsl:element name="script">
+          <xsl:attribute name="src">
+            <xsl:value-of select="$js-url"/>
+          </xsl:attribute>
+          <xsl:attribute name="type">text/javascript</xsl:attribute>
+        </xsl:element>
       </head>
       
       <body onload="ag_content_panelbar_tab_click('ag-content-panelbar-content-1');">
         <div id="ag-main">
           <div id="ag-title-bar">
             <div id="img-logo">
-              <img src="../images/aglogo.png" alt="AstroGrid"/>
+              <img src="../web/images/aglogo.png" alt="AstroGrid"/>
             </div>
             <h1 class="ag-main-header">Welcome to AstroGrid</h1>
             <p/>
@@ -42,50 +56,6 @@
             <div id="ag-content-tabs-top">
               <span class="ag-content-tab-top"><a class="ag-content-tab-link" href="">Welcome</a></span>
               <span class="ag-content-tab-top"><a class="ag-content-tab-link" href="">Help</a></span>
-            </div>
-            
-            <div id="ag-content-panelbar">
-              <div id="ag-content-panelbar-header">
-                PanelBar Header
-              </div>
-              
-              <div class="ag-content-panelbar-separator"><hr/></div>
-              
-              <div class="ag-content-panelbar-tabs">
-                <span class="ag-content-panelbar-tab" onclick="ag_content_panelbar_tab_click('ag-content-panelbar-content-1');">
-                  tab-1
-                </span>
-                <span class="ag-content-panelbar-tab" onclick="ag_content_panelbar_tab_click('ag-content-panelbar-content-2');">
-                  tab-2
-                </span>
-                <span class="ag-content-panelbar-tab" onclick="ag_content_panelbar_tab_click('ag-content-panelbar-content-3');">
-                  tab-3
-                </span>
-              </div>
-    
-              <div id="ag-content-panelbar-content">
-                <div id="ag-content-panelbar-content-1" class="ag-content-panelbar-content">
-                  PanelBar Content<br/>
-                  PanelBar Content<br/>
-                  PanelBar Content<br/>
-                  PanelBar Content<br/>
-                  PanelBar Content<br/>
-                  PanelBar Content<br/>
-                </div>
-                
-                <div id="ag-content-panelbar-content-2" class="ag-content-panelbar-content">
-                  <select>
-                    <option>One</option>
-                    <option>Two</option>
-                    <option>Three</option>
-                  </select>
-                  <input type="button" value="insert"/>
-               </div>
-                
-                <div id="ag-content-panelbar-content-3" class="ag-content-panelbar-content">
-                  PanelBar Content
-                </div>
-              </div>
             </div>
             
             <!--
@@ -119,6 +89,10 @@
   
   <xsl:template match="main-menu">
     <div id="ag-main-menu">
+      <div id="ag-main-menu-header">
+        Menu
+      </div>
+
       <xsl:apply-templates/>
     </div>
   </xsl:template>
