@@ -1,4 +1,4 @@
-/*$Id: SimpleDSAWorkflowEndToEndTest.java,v 1.1 2004/04/23 00:27:56 nw Exp $
+/*$Id: SimpleDSAWorkflowEndToEndTest.java,v 1.2 2004/05/26 14:48:46 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -61,7 +61,7 @@ public class SimpleDSAWorkflowEndToEndTest extends SimpleCommandlineWorkflowEndT
     protected void setUp() throws Exception {
         super.setUp();
         targetApplication = TESTDSA;        
-        targetIvorn = new Ivorn(MYSPACE,user.getUserId() + "/SimpleDSAWorkflowEndToEndTest-votable.xml");        
+        targetIvorn = createIVORN( "/SimpleDSAWorkflowEndToEndTest-votable.xml");        
     }
 
 
@@ -101,7 +101,8 @@ public class SimpleDSAWorkflowEndToEndTest extends SimpleCommandlineWorkflowEndT
      /** check the datacenter has put results in myspace 
       * @todo check its a votable*/
      public void testResultsInVospace() throws Exception {
-         VoSpaceClient client = new VoSpaceClient(user);         
+         VoSpaceClient client = new VoSpaceClient(user); 
+         assertNotNull("target ivorn does not exist",client.getFile(targetIvorn));      
          InputStream is = client.getStream(targetIvorn);
          assertNotNull(is);
          StringWriter os = new StringWriter();;
@@ -131,6 +132,9 @@ public class SimpleDSAWorkflowEndToEndTest extends SimpleCommandlineWorkflowEndT
 
 /* 
 $Log: SimpleDSAWorkflowEndToEndTest.java,v $
+Revision 1.2  2004/05/26 14:48:46  nw
+changed ivorn to correct format.
+
 Revision 1.1  2004/04/23 00:27:56  nw
 reorganized end-to-end tests. added test to verify flows are executed in parallel
 
