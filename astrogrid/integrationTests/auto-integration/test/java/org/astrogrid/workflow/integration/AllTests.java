@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.11 2004/04/23 00:27:56 nw Exp $
+/*$Id: AllTests.java,v 1.12 2004/04/23 16:12:49 pah Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,6 +29,7 @@ public class AllTests {
         suite.addTest(new TestSuite(MySpaceIntegrationTest.class));
         suite.addTest(new TestSuite(RegistryIntegrationTest.class));
         suite.addTest(SimpleCommandlineWorkflowEndToEndTest.suite());
+        suite.addTest(MySpaceCommandlineWorkflowEndToEndTest.suite());
         suite.addTest(SimpleDSAWorkflowEndToEndTest.suite());
         suite.addTest(FlowWorkflowTest.suite());
         //$JUnit-END$
@@ -37,6 +38,9 @@ public class AllTests {
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.12  2004/04/23 16:12:49  pah
+added the myspace testapp test
+
 Revision 1.11  2004/04/23 00:27:56  nw
 reorganized end-to-end tests. added test to verify flows are executed in parallel
 

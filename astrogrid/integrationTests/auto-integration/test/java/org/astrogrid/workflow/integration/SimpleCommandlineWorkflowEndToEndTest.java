@@ -1,4 +1,4 @@
-/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.1 2004/04/23 00:27:56 nw Exp $
+/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.2 2004/04/23 16:12:49 pah Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.workflow.integration;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.integration.AbstractTestForIntegration;
 import org.astrogrid.jes.delegate.JobSummary;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
@@ -49,7 +50,7 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
         WorkflowManager manager = ag.getWorkflowManager();
         jes = manager.getJobExecutionService();
         reg = manager.getToolRegistry();
-        targetApplication = TESTAPP;
+        targetApplication = TESTAPP2;
     }
     
     protected JobExecutionService jes;    
@@ -92,6 +93,7 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
            assertNotNull("could not get application description",descr);
            Tool tool = descr.createToolFromDefaultInterface();
            assertNotNull("tool is null",tool);
+           configureToolParameters(tool);
            descr.validate(tool); // shouold be ready to go, with no further config.
            // add a step to the workflow.
            Step step = new Step();
@@ -100,7 +102,28 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
            step.setTool(tool);
            wf.getSequence().addActivity(step);
     }
-    public static final long WAIT_TIME = 10 * 1000; 
+    
+    /**
+    * Fine tune the parameter values... 
+    */
+   protected void configureToolParameters(Tool tool) {
+      ParameterValue pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P1']");
+      pval.setValue("20");
+      pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P2']");
+      pval.setValue("30.5");
+      pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P4']");
+      pval.setValue("test string");
+      pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P9']");
+      pval.setValue("/tmp/silly");//TODO need to write something here..
+      pval = (ParameterValue)tool.findXPathValue("output/parameter[name='P3']");
+      pval.setValue("/tmp/out");
+
+
+     
+
+   }
+   
+   public static final long WAIT_TIME = 10 * 1000; 
     public void testExecutionProgress() throws Exception {
         // loop, polling progress, until seen completed.
         long startTime= System.currentTimeMillis();
@@ -146,6 +169,9 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
 
 /* 
 $Log: SimpleCommandlineWorkflowEndToEndTest.java,v $
+Revision 1.2  2004/04/23 16:12:49  pah
+added the myspace testapp test
+
 Revision 1.1  2004/04/23 00:27:56  nw
 reorganized end-to-end tests. added test to verify flows are executed in parallel
 
