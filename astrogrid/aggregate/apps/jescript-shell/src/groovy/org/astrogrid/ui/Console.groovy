@@ -67,15 +67,15 @@ class Console extends ConsoleSupport {
 
         creds.account = acc
         creds.group = group
-        creds.setSecurityToken("dummy")
+
         // now attempt to login to community.
         try {
             security = new CommunityPasswordResolver();
-	        this.token = security.checkPassword("ivo://" + acc.community +"/" +  acc.name,password)
+            creds.setSecurityToken(security.checkPassword("ivo://" + acc.community +"/" +  acc.name,password))
 	        } catch (Exception e) {
 		        e.printStackTrace();
 		        // display swing dialog.
-		        JOptionPane.showMessageDialog("Failed to login\n" + e.getMessage());
+		        JOptionPane.showMessageDialog(null,"Failed to login\n" + e.getMessage());
 		        return false;
 	        }	     
         createBasicScriptBinding(new Toolbox(),creds)
