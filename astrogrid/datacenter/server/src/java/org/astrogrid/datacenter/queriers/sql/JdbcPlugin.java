@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.28 2004/09/07 00:54:20 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.29 2004/09/27 16:40:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -262,7 +262,8 @@ public class JdbcPlugin extends QuerierPlugin implements VoResourcePlugin  {
             //ignore all tables beginning with 'sys' as these are standard system tables
             //and we don't want to make these public.  I believe
             if (!getColumnValue(tables, "TABLE_NAME").startsWith("sys")) {
-               XmlTagPrinter tableTag = metaTag.newTag("Table", new String[] { "name='"+getColumnValue(tables, "TABLE_NAME")+"'"} );
+               XmlTagPrinter tableTag = metaTag.newTag("Table");
+               tableTag.writeTag("Name", getColumnValue(tables, "TABLE_NAME") );
                tableTag.writeTag("Description", getColumnValue(tables, "REMARKS")+" "); //add space so we don't get an empty tag <Description/> which is a pain to fill in
                tableTag.writeComment("schema='"+getColumnValue(tables, "TABLE_SCHEM")+"'");
 //               tableTag.writeComment("cat='"+getColumnValue(tables, "TABLE_CAT")+"'");
@@ -279,14 +280,14 @@ public class JdbcPlugin extends QuerierPlugin implements VoResourcePlugin  {
                   int sqlType = Integer.parseInt(getColumnValue(columns, "DATA_TYPE"));
                   XmlTagPrinter colTag = tableTag.newTag(
                      "Column",
-                     new String[] { "name='"+getColumnValue(columns, "COLUMN_NAME")+"'",
-                                    getVotableTypeAttr(sqlType),
+                     new String[] { getVotableTypeAttr(sqlType),
                                     "indexed='false'" }
                   );
 //                  colTag.writeComment("schema='"+getColumnValue(columns, "TABLE_SCHEM")+"'");
 //                  colTag.writeComment("cat='"+getColumnValue(columns, "TABLE_CAT")+"'");
 //                  colTag.writeComment("table='"+getColumnValue(columns, "TABLE_NAME")+"'");
-   //               colTag.writeTag("DataType", getColumnValue(columns, "DATA_TYPE"));
+                  colTag.writeTag("Name", getColumnValue(columns, "COLUMN_NAME"));
+                  colTag.writeTag("DataType", getVotableType(sqlType));  //duplicate of attribute above, which includes width where nec, but
                   colTag.writeTag("Description", getColumnValue(columns, "REMARKS")+" "); //add space so we don't get an empty tag <Description/> which is a pain to fill in
                   colTag.writeTag("Units", " ");
                   colTag.writeTag("UCD", " ");
