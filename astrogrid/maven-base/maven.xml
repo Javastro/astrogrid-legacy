@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
 <project>
-	<goal name="deployWebapps">
-		<echo message="Deploying webapps..."/>
-		<ant antfile="deployWebapps.xml"/>
-	</goal>
-	<!-- goals for nightly build -->
+	<!-- This is just the base project for inheritance - it shouldn't be mavened-->
+	<!-- astrogrid goals for nightly build -->
 	<goal name="astrogrid-clean" prereqs="clean"/>
-	<goal name="astrogrid-deploy-site" 
-		prereqs="astrogrid-build-site,site:fsdeploy" />
-	<goal name="astrogrid-build-site" prereqs="site"/>
+	<goal name="astrogrid-deploy-site">
+		<echo message="nothing to do"/>
+	</goal>
+	<goal name="astrogrid-build-site">
+		<echo message="nothing to do"/>
+	</goal>
 	<goal name="astrogrid-deploy-snapshot">
 		<echo message="nothing to do"/>
 	</goal>
@@ -28,8 +28,4 @@
 	<goal name="astrogrid-install-artifact">
 		<echo message="nothing to do"/>
 	</goal>
-	<preGoal name="site">
-		<mkdir dir="target/classes"/>
-		<!--fix annoying jdepend bug-->
-	</preGoal>
 </project>

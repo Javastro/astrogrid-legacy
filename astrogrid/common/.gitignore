@@ -2,6 +2,6 @@ maven.log
 target
 .classpath
 .project
-junit361459003.properties
 test.log
 velocity.log
+junit*.properties
