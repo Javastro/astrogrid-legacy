@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseServiceImpl.java,v 1.9 2003/11/17 09:56:13 kea Exp $
+ * $Id: WarehouseServiceImpl.java,v 1.10 2003/11/17 13:24:13 kea Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -8,6 +8,7 @@ package org.astrogrid.warehouse.service;
 
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.FileInputStream;
 import java.rmi.RemoteException;
@@ -189,21 +190,52 @@ public class WarehouseServiceImpl
 
     // Check if we're running in Axis or not - if so, shell out to
     // a new JVM (vanilla axis and ogsa axis are incompatible, it seems).
-
     if (invokedViaAxis) {
 
+      // Get class path for the Warehouse classes (eg this class)
+      String classPath = serviceProperties.getProperty(
+                    "WAREHOUSE_CLASSPATH", DEFAULT_WAREHOUSE_CLASSPATH);
+
+      // Now assemble classpath for all the OGSA(-DAI) jars etc.
+      // These are assumed to be in a single directory specified by
+      // the property WAREHOUSE_JARDIR.
+
+      // First extract the name of the jar directory
+      String jarDir = serviceProperties.getProperty(
+                    "WAREHOUSE_JARDIR");
+      
+      if (!jarDir.equals(null)) {   // If it exists, use it.
+        File dirFile = new File(jarDir);
+        if (dirFile.isDirectory()) {
+          File contents[] = dirFile.listFiles();  // Get directory contents
+          int len = contents.length;
+          for (int i = 0; i < len; i++) {
+            //Is this a jar?  If so, add it to classpath
+            String path = contents[i].getAbsolutePath();
+            int pathlen = path.length();
+            if (path.substring(pathlen-4,pathlen).equalsIgnoreCase(".jar")) {
+              if (!classPath.equals("") && (i != len-1)) {
+                classPath = classPath + ":";  // Add separator if needed
+              }
+              classPath = classPath + contents[i].getAbsolutePath();
+            }
+          }
+        }
+      }
+
+      // Configure parameters for external call
       String[] cmdArgs = new String[6];
       cmdArgs[0] = serviceProperties.getProperty(
                     "WAREHOUSE_JVM", DEFAULT_WAREHOUSE_JVM);
       cmdArgs[1] = "-cp";
-      cmdArgs[2] = serviceProperties.getProperty(
-                    "WAREHOUSE_CLASSPATH", DEFAULT_WAREHOUSE_CLASSPATH);
+      cmdArgs[2] = classPath;
       cmdArgs[3] = serviceProperties.getProperty(
                     "WAREHOUSE_SERVICE", DEFAULT_WAREHOUSE_SERVICE); 
       cmdArgs[4] = "startQuery";
       // TOFIX SHOULD HAVE JOB ID HERE
       cmdArgs[5] = "654321";
 
+      // Use utility helper to perform call
       SystemTalker talker = new SystemTalker();
       TalkResult result = talker.talk(cmdArgs, "");
 
@@ -444,6 +476,10 @@ public class WarehouseServiceImpl
 }
 /*
 $Log: WarehouseServiceImpl.java,v $
+Revision 1.10  2003/11/17 13:24:13  kea
+Single property for shelled-out JVM class directory;  jar files in this
+directory are automatically added to the shelled-out JVM classpath.
+
 Revision 1.9  2003/11/17 09:56:13  kea
 Array bounds fix.
 
