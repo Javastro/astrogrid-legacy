@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultCommandLineParameterAdapter.java,v 1.1 2004/09/23 22:44:23 pah Exp $
+ * $Id: DefaultCommandLineParameterAdapter.java,v 1.2 2004/09/24 12:24:35 pah Exp $
  * 
  * Created on 20-Aug-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.List;
 
 import org.astrogrid.applications.CeaException;
@@ -119,6 +120,10 @@ public class DefaultCommandLineParameterAdapter implements CommandLineParameterA
         }
 
         if (!isOutputOnly) {
+            InputStreamReader ir = null;
+            PrintWriter pw = null;
+            InputStream is = null;
+            OutputStream os = null;
             try {
 
                 if (indirect == null) {
@@ -127,7 +132,7 @@ public class DefaultCommandLineParameterAdapter implements CommandLineParameterA
                     {
 
                         String value = pval.getValue();
-                        PrintWriter pw = new PrintWriter(new FileWriter(
+                        pw = new PrintWriter(new FileWriter(
                                 referenceFile));
                         pw.println(value);
                         pw.close();
@@ -151,8 +156,8 @@ public class DefaultCommandLineParameterAdapter implements CommandLineParameterA
                 }
                 else {
                     if (desc.isFileRef()) { //a indirect param/ file ref cmdline 
-                        InputStream is = indirect.read();
-                        OutputStream os = new FileOutputStream(referenceFile);
+                        is = indirect.read();
+                        os = new FileOutputStream(referenceFile);
                         Piper.bufferedPipe(is, os);
                         is.close();
                         os.close();
@@ -166,7 +171,7 @@ public class DefaultCommandLineParameterAdapter implements CommandLineParameterA
                     else // an indirect param/ direct cmdline
                     {
                         //TODO - does this deal with new lines in the way that we might want?
-                        InputStreamReader ir = new InputStreamReader(indirect
+                        ir = new InputStreamReader(indirect
                                 .read());
                         StringWriter sw = new StringWriter();
                         Piper.pipe(ir, sw);
@@ -187,6 +192,10 @@ public class DefaultCommandLineParameterAdapter implements CommandLineParameterA
             catch (IOException e) {
                 throw new ParameterAdapterException(
                         "Could not process parameter " + pval.getName(), e);
+            }
+            finally // close all open resources
+            {
+              closeIO(pw, ir, is, os);   
             }
         }
         else {
@@ -209,11 +218,15 @@ public class DefaultCommandLineParameterAdapter implements CommandLineParameterA
      * @see org.astrogrid.applications.parameter.ParameterAdapter#writeBack(java.lang.Object)
      */
     public void writeBack(Object arg0) throws CeaException {
+        StringWriter sw = null;
+        Reader r = null;
+        InputStream is = null;
+        OutputStream os = null;
         try {
             if (desc.isFileRef()) {
                 if (indirect == null) {
-                    StringWriter sw = new StringWriter();
-                    Reader r = new FileReader(referenceFile);
+                    sw = new StringWriter();
+                    r = new FileReader(referenceFile);
 
                     Piper.pipe(r, sw);
                     r.close();
@@ -227,14 +240,14 @@ public class DefaultCommandLineParameterAdapter implements CommandLineParameterA
                     }
                 }
                 else {
-                    InputStream is = new FileInputStream(referenceFile);
+                    is = new FileInputStream(referenceFile);
                     if (logger.isDebugEnabled()) {
                         logger.debug("writeBack() - indirect " + desc.getName()
                                 + "="+pval.getValue()+" from file "
                                 + referenceFile.getAbsolutePath());
                     }
 
-                    OutputStream os = indirect.write();
+                    os = indirect.write();
                     Piper.bufferedPipe(is, os);
                     is.close();
                     os.close();
@@ -251,6 +264,58 @@ public class DefaultCommandLineParameterAdapter implements CommandLineParameterA
         catch (IOException e) {
             throw new ParameterWriteBackException(
                     "Could not write back parameter" + pval.getName(), e);
+        }
+        finally // ensure that all the streams have been closed
+        {
+            closeIO(sw, r, is, os);
+            
+        }
+    }
+
+    /**
+     * Close any streams and readers/writers that might have been left open.
+     * @param sw
+     * @param r
+     * @param is
+     * @param os
+     */
+    private void closeIO(Writer sw, Reader r, InputStream is, OutputStream os) {
+        if(r != null)
+        {
+            try {
+                r.close();
+            }
+            catch (IOException e1) {
+               logger.warn("cannot close reader", e1);
+            }
+        }
+        if(sw != null)
+        {
+            try {
+                sw.close();
+            }
+            catch (IOException e1) {
+                logger.warn("could not close string writer", e1);
+            }
+        }
+        if(is != null)
+        {
+            try {
+                is.close();
+            }
+            catch (IOException e1) {
+               logger.warn("could not close input stream", e1);
+            }
+            
+        }
+        if(os != null)
+        {
+            try {
+                os.close();
+            }
+            catch (IOException e1) {
+               logger.warn("could not close output stream", e1);
+            }
         }
     }
 
