@@ -6,8 +6,7 @@ echo "Building tag $TAG_TO_BUILD"
 BUILD_DIR=/home/maven/build/release
 SCRIPTHOME=/home/maven/mavenrun
 
-DOCLOCATION=$MAVEN_PUBLIC/docs
-RELEASEDOCS=$DOCLOCATION/release
+
 
 DATE=`date`
 TIMESTAMP=`date +%Y%m%d-%T`
@@ -34,6 +33,9 @@ $SCRIPTHOME/maven-build-tagged.sh warehouse $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FIL
 $SCRIPTHOME/maven-build-tagged.sh workflow $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 
 $SCRIPTHOME/maven-build-tagged-new.sh maven-site $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
+
+DOCLOCATION=$MAVEN_PUBLIC/docs
+RELEASEDOCS=$DOCLOCATION/release
 
 echo "Moving docs to release location" >> $BUILD_DIR/$LOG_FILE 2>&1
 cp -r $MAVEN_PUBLIC/build/* $RELEASEDOCS
