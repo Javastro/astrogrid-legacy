@@ -1,5 +1,7 @@
 package org.astrogrid.security;
 
+import java.util.Date;
+
 /**
  * Access to the security credentials pertaining web-service operations.
  *
@@ -30,6 +32,20 @@ public class SecurityGuard {
    * The clear-text password to go into the messages.
    */
   private String password;
+
+  /**
+   * The time at which the security credentials were processed.
+   * This timestamp gets copied into the SOAP header as a protection
+   * against replay attacks.
+   */
+  private Date created;
+
+  /**
+   * Flag indicating whether the passwsord should be hashed.
+   * True means hash the password; false means leave the
+   * password in clear text.
+   */
+  private boolean hashPassword = false;
 
 
   /**
@@ -68,5 +84,20 @@ public class SecurityGuard {
    public String getPassword () {
      return this.password;
    }
+
+
+  /**
+   * Sets whether the password is to be hashed.
+   */
+  public void setPasswordHashing (boolean hashed) {
+    this.hashPassword = hashed;
+  }
+
+  /**
+   * Returns whether the password is to be hashed.
+   */
+  public boolean isPasswordHashing () {
+    return this.hashPassword;
+  }
 
 }
