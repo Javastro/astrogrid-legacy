@@ -55,7 +55,7 @@ maven site:fsdeploy >> $LOG_FILE 2>&1
 maven jar:deploy-snapshot >> $LOG_FILE 2>&1
 maven war:deploy-snapshot >> $LOG_FILE 2>&1
 echo "[ag-build-$PROJECT_NAME] deploy build log"
-cp $LOG_FILE /var/www/www/maven/docs/snapshot/log
+cp $LOG_FILE /var/www/www/maven/build/log
 
 echo "[ag-build-$PROJECT_NAME] back to start dir: $OLDDIR"
 cd $OLDDIR
