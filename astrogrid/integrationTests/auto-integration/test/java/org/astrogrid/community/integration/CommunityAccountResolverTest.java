@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/integrationTests/auto-integration/test/java/org/astrogrid/community/integration/CommunityAccountResolverTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/04/21 03:42:57 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/21 12:50:23 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountResolverTest.java,v $
+ *   Revision 1.2  2004/04/21 12:50:23  dave
+ *   Added check for Account ident.
+ *
  *   Revision 1.1  2004/04/21 03:42:57  dave
  *   Added initial Community test
  *
@@ -110,8 +113,18 @@ public class CommunityAccountResolverTest
             "Failed to find account",
             found) ;
         //
+        // Check that we got an Account.
+        assertNotNull(
+        	"Null account",
+        	found
+        	) ;
+        //
         // Check that the two objects represent the same Account.
-        assertNotNull("Null account", found) ;
+        assertEquals(
+        	"Different identifiers",
+        	found.getIdent(),
+			ivorn.toString()
+        	) ;
 		//
 		// Print our the account details.
         if (DEBUG_FLAG) System.out.println("") ;
