@@ -17,6 +17,7 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 import org.astrogrid.store.Agsl;
+import org.astrogrid.store.delegate.StoreFile;
 import org.astrogrid.store.delegate.myspaceItn05.MySpaceIt05Delegate;
 import org.astrogrid.store.delegate.myspaceItn05.StatusCodes;
 import org.astrogrid.store.delegate.myspaceItn05.StatusMessage;
@@ -181,7 +182,7 @@ public class SimpleMySpaceTest extends TestCase {
     /**
      * most tests will require a user
      */
-    private String defaultUser = "NeilHamilton1";
+    private String defaultUser ;
     /**
      * mosts tests will also require a community
      */
@@ -214,6 +215,8 @@ public class SimpleMySpaceTest extends TestCase {
         //      (ii) to throw exceptions if errors are returned.
         myspace.setTest(false);
         myspace.setThrow(true);
+        
+        defaultUser = "NeilHamilton"+Long.toString(System.currentTimeMillis());
         createUser(defaultUser, defaultCommunity);
     }
     /**
@@ -237,7 +240,22 @@ public class SimpleMySpaceTest extends TestCase {
     private void deleteUser(final String userID, final String communityID)
         throws IOException {
         // @TODO - change this, it's deprecated
+        log.info("Deleting User "+userID);
         User testAccount = new User(userID, communityID, "", "");
+        final StoreFile[] files = myspace.listFiles("/"+userID+"/*");
+        if (files==null) {
+            log.debug("Found no files");
+        } else {
+            log.info("Found "+files.length+" files");
+            for (int i =0;i<files.length;++i) {
+                StoreFile file = files[i];
+                //if (file.isFolder()) {
+                    log.info("found file " + files[i].getName());
+                    myspace.delete(file.getName());
+               // }
+            }
+        }
+        
         myspace.deleteUser(testAccount);
         /*
          * // MySpaceWiper wiper; try { // wiper = new MySpaceWiper(endPoint); //
@@ -275,7 +293,7 @@ public class SimpleMySpaceTest extends TestCase {
      * 
      * @throws Exception no idea
      */
-    public void testImportExportDeleteSimpleText() throws Exception {
+    public void testImportExportDeleteSimpleText() throws IOException  {
         for (int i = 0; i < 10; ++i) {
             final String name =
                 "foo_"
@@ -293,7 +311,7 @@ public class SimpleMySpaceTest extends TestCase {
      * 
      * @throws Exception no idea
      */
-    public void testImportExportDeleteXMLTextAgain() throws Exception {
+    public void testImportExportDeleteXMLTextAgain() throws IOException  {
         final String name = "bar" + Long.toString(System.currentTimeMillis());
         final String xml =
             "<?xml version=\"1.0\"?><title>Integration Tests</title>";
@@ -306,7 +324,7 @@ public class SimpleMySpaceTest extends TestCase {
      * 
      * @throws Exception no idea
      */
-    public void testImportExportDeleteXMLText() throws Exception {
+    public void testImportExportDeleteXMLText() throws IOException {
         final String name = "foo" + Long.toString(System.currentTimeMillis());
         final String xml =
             "<?xml version='1.0'?><properties><author email='jdt@roe.ac.uk'>John Taylor</author></properties>";
@@ -321,7 +339,7 @@ public class SimpleMySpaceTest extends TestCase {
      * 
      * @throws Exception nfi
      */
-    public void testImportExportDeleteMultilineText() throws Exception {
+    public void testImportExportDeleteMultilineText() throws IOException {
         final String name = "foo" + Long.toString(System.currentTimeMillis());
         final String xml =
             "<?xml version=\"1.0\"?>\n<properties>\n<title>Integration Tests</title>\n"
