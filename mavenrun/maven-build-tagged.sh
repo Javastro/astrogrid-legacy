@@ -56,6 +56,8 @@ echo "[ag-build-$PROJECT_NAME] generate jar and war"
 # maven site is run as several projects use this goal to generate documentation for inclusion in the war
 maven java:compile >> $LOG_FILE 2>&1 
 maven site >> $LOG_FILE 2>&1 
+#unfortunate - many multiproject builds hang off this goal, even though we don't want to deploy the website
+maven site:fsdeploy >> $LOG_FILE 2>&1 
 maven jar:deploy >> $LOG_FILE 2>&1
 maven war:deploy >> $LOG_FILE 2>&1
 echo "[ag-build-$PROJECT_NAME] deploy build log"
