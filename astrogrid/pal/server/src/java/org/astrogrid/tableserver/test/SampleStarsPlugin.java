@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.3 2005/03/21 18:45:55 mch Exp $
+ * $Id: SampleStarsPlugin.java,v 1.4 2005/03/23 17:33:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,7 +20,6 @@ import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.tableserver.jdbc.JdbcConnections;
 import org.astrogrid.tableserver.jdbc.JdbcPlugin;
 import org.astrogrid.tableserver.jdbc.StdSqlMaker;
-import org.astrogrid.tableserver.metadata.RdbmsMetadataResources;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.tableserver.metadata.TabularDbResources;
 import org.astrogrid.tableserver.metadata.TabularSkyServiceResources;
@@ -89,7 +88,6 @@ public class SampleStarsPlugin extends JdbcPlugin
       //configure which resources to produce
       ConfigFactory.getCommonConfig().setProperties(VoDescriptionServer.RESOURCE_PLUGIN_KEY, new Object[] {
                TabularSkyServiceResources.class.getName(),
-               RdbmsMetadataResources.class.getName(),
                TabularDbResources.class.getName(),
             });
 
@@ -265,6 +263,9 @@ public class SampleStarsPlugin extends JdbcPlugin
 }
    /*
    $Log: SampleStarsPlugin.java,v $
+   Revision 1.4  2005/03/23 17:33:21  mch
+   removed rbmsresours
+
    Revision 1.3  2005/03/21 18:45:55  mch
    Naughty big lump of changes
 
