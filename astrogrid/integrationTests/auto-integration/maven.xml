@@ -624,6 +624,25 @@
   </j:catch>
 </goal>
 
+
+<goal name="CLEANTOMCAT" description="run this to clean out tomcat directories if tomcat not running">
+	<delete includeEmptyDirs="true" defaultexcludes="false" >
+		<fileset dir="${tomcat.home}/webapps" >
+			<include name="astrogrid-*/**"/>
+			<include name="exist*/**"/>
+	   </fileset>
+		<fileset dir="${tomcat.home}/work/Catalina/localhost" >
+			<include name="*/**"/>
+	   </fileset>
+		<fileset dir="${tomcat.home}/conf/Catalina/localhost" >
+			<include name="astrogrid-*.xml"/>
+	   </fileset>
+		<fileset dir="${tomcat.home}/logs" >
+			<include name="*"/>
+	   </fileset>	   
+	</delete>
+</goal>
+
 <!-- boilerplate below here /////////////////////////////////////////////////////////////////////////////////////////////-->
 
   <goal name="axis-declare-tasks">
