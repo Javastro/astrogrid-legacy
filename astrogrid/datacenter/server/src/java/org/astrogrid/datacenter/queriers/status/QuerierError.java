@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierError.java,v 1.5 2004/03/15 19:16:12 mch Exp $
+ * $Id: QuerierError.java,v 1.6 2004/03/16 17:52:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,8 +23,11 @@ public class QuerierError extends QuerierStatus implements QuerierClosed
       this.message = givenMessage;
 
       //unwrap wrapping exceptions
-      if ((causeOfError instanceof QuerierPluginException) ||
-         (causeOfError instanceof QueryException))
+      if ((causeOfError != null) && (causeOfError.getCause() != null) && (
+            (causeOfError instanceof QuerierPluginException) ||
+            (causeOfError instanceof QueryException)
+         ))
+         
       {
          addDetail(causeOfError.toString());
          addDetail("Caused By: ");
@@ -55,6 +58,9 @@ public class QuerierError extends QuerierStatus implements QuerierClosed
 
 /*
 $Log: QuerierError.java,v $
+Revision 1.6  2004/03/16 17:52:20  mch
+Fix for nul cause of cause
+
 Revision 1.5  2004/03/15 19:16:12  mch
 Lots of fixes to status updates
 
