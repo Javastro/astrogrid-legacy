@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceIt04Delegate.java,v 1.2 2004/03/05 19:24:43 mch Exp $
+ * $Id: MySpaceIt04Delegate.java,v 1.3 2004/03/10 00:20:56 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -76,7 +76,7 @@ public class MySpaceIt04Delegate implements StoreClient
          String action = MySpaceClient.OVERWRITE;
          if (append) action = MySpaceClient.APPEND;
          
-         Log.trace("saveDataHolding("+operator.getUserId()+","+operator.getCommunity()+","+operator.getToken()+","+targetPath+","+contents+",not used,"+action);
+         Log.trace("putString:saveDataHolding("+operator.getUserId()+","+operator.getCommunity()+","+operator.getToken()+","+targetPath+","+contents+",not used,"+action);
 
          success = depIt04Delegate.saveDataHolding(operator.getUserId(),
                                      operator.getCommunity(),
@@ -205,7 +205,7 @@ public class MySpaceIt04Delegate implements StoreClient
       boolean success = false;
       
       try {
-         Log.trace("saveDataHoldingURL("+operator.getUserId()+","+operator.getCommunity()+","+operator.getToken()+","+targetPath+","+source+",not used,"+action);
+         Log.trace("putUrl:saveDataHoldingURL("+operator.getUserId()+","+operator.getCommunity()+","+operator.getToken()+","+targetPath+","+source+",not used,"+action);
 
          success = depIt04Delegate.saveDataHoldingURL(
                                      operator.getUserId(),
@@ -356,6 +356,9 @@ public class MySpaceIt04Delegate implements StoreClient
 
 /*
 $Log: MySpaceIt04Delegate.java,v $
+Revision 1.3  2004/03/10 00:20:56  mch
+Added comments to debug
+
 Revision 1.2  2004/03/05 19:24:43  mch
 Store delegates were moved
 
