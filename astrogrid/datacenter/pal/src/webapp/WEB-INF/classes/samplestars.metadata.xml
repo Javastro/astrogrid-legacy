@@ -1,0 +1,96 @@
+<RdbmsMetadata>
+   <ProductName>HSQL Database Engine</ProductName>
+   <Version>1.7.1</Version>
+   <Driver>HSQL Database Engine Driver v1.7.1</Driver>
+   <Catalog/>
+   <Functions>
+      <Function>ABS</Function>
+      <Function>ACOS</Function>
+      <Function>ASIN</Function>
+      <Function>ATAN</Function>
+      <Function>ATAN2</Function>
+      <Function>CEILING</Function>
+      <Function>COS</Function>
+      <Function>COT</Function>
+      <Function>DEGREES</Function>
+      <Function>EXP</Function>
+      <Function>FLOOR</Function>
+      <Function>LOG</Function>
+      <Function>LOG10</Function>
+      <Function>MOD</Function>
+      <Function>PI</Function>
+      <Function>POWER</Function>
+      <Function>RADIANS</Function>
+      <Function>RAND</Function>
+      <Function>ROUND</Function>
+      <Function>SIGN</Function>
+      <Function>SIN</Function>
+      <Function>SQRT</Function>
+      <Function>TAN</Function>
+      <Function>TRUNCATE</Function>
+      <Function>BITAND</Function>
+      <Function>BITOR</Function>
+      <Function>ROUNDMAGIC</Function>
+      <Function>CIRCLE</Function>
+   </Functions>
+   <Table name="SAMPLESTARS">
+      <Description>Some stars, consisting of many background, a few extra around pleidies.</Description>
+      <Column datatype="int" indexed="false" name="ID">
+         <Description>A unique ID </Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="NAME">
+         <Description>Generated Name of the object</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="double" indexed="true" name="RA">
+         <Description>Right Ascension of the object</Description>
+         <Units>deg</Units>
+         <UCD>POS_RA_MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="double" indexed="true" name="DEC">
+         <Description>Declination of the object</Description>
+         <Units>deg</Units>
+         <UCD>POS_DEC_MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column datatype="double" indexed="false" name="MAG">
+         <Description>Brightness of the object at an unspecified wavelength</Description>
+         <Units>mag</Units>
+         <UCD>PHOT_MAG</UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+   </Table>
+   <Table name="SAMPLEGALAXIES">
+      <Description>null </Description>
+      <!-- schema='' -->
+      <Column datatype="int" indexed="false" name="ID">
+         <Description>IDENTITY </Description>
+         <Units> </Units>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="double" indexed="true" name="RA">
+         <Description>Right Ascension of the object</Description>
+         <Units>deg</Units>
+         <UCD>POS_RA_MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+      </Column>
+      <Column datatype="double" indexed="true" name="DEC">
+         <Description>Declination of the object</Description>
+         <Units>deg</Units>
+         <UCD>POS_DEC_MAIN</UCD>
+         <UcdPlus> </UcdPlus>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column arraysize="*" datatype="char" indexed="false" name="SHAPE">
+         <Description>What shape of galaxy is it</Description>
+      </Column>
+   </Table>
+</RdbmsMetadata>
+
