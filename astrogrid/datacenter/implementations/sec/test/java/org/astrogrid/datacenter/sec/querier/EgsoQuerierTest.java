@@ -1,4 +1,4 @@
-/*$Id: EgsoQuerierTest.java,v 1.3 2004/08/19 17:50:22 mch Exp $
+/*$Id: EgsoQuerierTest.java,v 1.4 2004/08/27 14:32:35 KevinBenson Exp $
  * Created on 01-Dec-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.TargetIndicator;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.RawSqlQuery;
 import org.astrogrid.community.Account;
@@ -116,6 +116,9 @@ public class EgsoQuerierTest extends ServerTestCase {
 
 /*
 $Log: EgsoQuerierTest.java,v $
+Revision 1.4  2004/08/27 14:32:35  KevinBenson
+class was placed at another package level, which caused a compile bug
+
 Revision 1.3  2004/08/19 17:50:22  mch
 Fix for TargetIndicator move
 
