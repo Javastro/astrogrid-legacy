@@ -1,4 +1,4 @@
-/*$Id: CompositeWorkflowEndToEndTest.java,v 1.3 2004/07/01 11:47:39 nw Exp $
+/*$Id: CompositeWorkflowEndToEndTest.java,v 1.4 2004/07/20 02:00:57 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -102,19 +102,25 @@ public class CompositeWorkflowEndToEndTest extends AbstractTestForIntegration {
         assertNotNull("Could not find description for datacenter " + TESTDSA,datacenterDescription);
         Tool datacenterTool = datacenterDescription.createToolFromDefaultInterface();
 
+        ParameterValue format = (ParameterValue)datacenterTool.findXPathValue("input/parameter[name='Format']");
+        assertNotNull(format);
+        format.setIndirect(false);
+        format.setValue("VOTABLE");
+        
         ParameterValue query= (ParameterValue)datacenterTool.findXPathValue("input/parameter[name='Query']");
         assertNotNull(query);
         InputStream is = this.getClass().getResourceAsStream("simple-query.xml");
         assertNotNull(is);
         StringWriter out = new StringWriter();
-        Piper.pipe(new InputStreamReader(is),out); 
+        Piper.pipe(new InputStreamReader(is),out);
+        query.setIndirect(false); 
         query.setValue(out.toString());
                        
-        ParameterValue target = (ParameterValue)datacenterTool.findXPathValue("output/parameter[name='Target']");
-        assertNotNull(target);
+        ParameterValue result = (ParameterValue)datacenterTool.findXPathValue("output/parameter[name='Result']");
+        assertNotNull(result);
         Ivorn targetIvorn = new Ivorn(MYSPACE,user.getUserId() + "/WorkflowEndToEnd-complexDocument-votable.xml");
-        target.setValue(targetIvorn.toString());
-        
+        result.setValue(targetIvorn.toString());
+        result.setIndirect(true);
         
         datacenterDescription.validate(datacenterTool);
         Step s = new Step();
@@ -145,6 +151,9 @@ public class CompositeWorkflowEndToEndTest extends AbstractTestForIntegration {
 
 /* 
 $Log: CompositeWorkflowEndToEndTest.java,v $
+Revision 1.4  2004/07/20 02:00:57  nw
+tweaked parameters sent to datacenter application
+
 Revision 1.3  2004/07/01 11:47:39  nw
 cea refactor
 
