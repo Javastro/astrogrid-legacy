@@ -1,5 +1,5 @@
 /*
-   $Id: DomHelper.java,v 1.7 2004/08/12 14:55:26 mch Exp $
+   $Id: DomHelper.java,v 1.8 2004/08/16 07:10:52 KevinBenson Exp $
 
    (c) Copyright...
 */
@@ -32,42 +32,6 @@ import org.xml.sax.SAXException;
  */
 public class DomHelper
 {
-   
-   /** Convenience routine for returning the value of an element of the given
-    * name that is a child of the given parent Element.  Allows for values that are
-    * child nodes (which seems to happen when the value is on a separate line from
-    * the opening tag) and returns null if no element is found. Throws exception
-    * if there is more than one node
-    * - Just noticed this is not quite a duplicate of getNodeTextValue - I'm not
-    * sure they're quite right.
-    */
-   public static String getValue(Element parent, String element) {
-      NodeList nodes = parent.getElementsByTagName(element);
-      if ((nodes==null) || (nodes.getLength()==0)) {
-         return null;
-      }
-      if (nodes.getLength()>1) {
-         throw new IllegalArgumentException("More than one "+element+" in element "+parent.getNodeName());
-      }
-      if (nodes.item(0) instanceof Element) {
-         return getValue((Element) nodes.item(0));
-      }
-      throw new IllegalArgumentException(element+" is not an element node of "+parent.getNodeName());
-   }
-   
-   /** Convenience routine for returning the value of an element.  Allows for values that are
-    * child nodes (which seems to happen when the value is on a separate line from
-    * the opening tag) .
-    * - Just noticed this is not quite a duplicate of getNodeTextValue - I'm not
-    * sure they're quite right.
-    */
-   public static String getValue(Element element) {
-      if (element.getNodeValue() != null) {
-         return element.getNodeValue();
-      }
-      return element.getChildNodes().item(0).getNodeValue();
-   }
-   
    /**
     * Convenience class returns Document from given URL
     */
@@ -174,12 +138,12 @@ public class DomHelper
       XMLUtils.PrettyDocumentToStream(body, out);
    }
    
-   public static String getNodeAttrValue(Element elem,String tagName) throws IOException {
+   public static String getNodeAttrValue(Element elem,String tagName) {
       return getNodeAttrValue(elem, tagName, null);
    }
 
 
-   public static String getNodeAttrValue(Element elem,String tagName, String namespacePrefix)  throws IOException {
+   public static String getNodeAttrValue(Element elem,String tagName, String namespacePrefix) {
       String val = elem.getAttribute(tagName);
       if(val == null || val.trim().length() <= 0) {
          val = elem.getAttribute("xmlns:" + tagName);
@@ -194,7 +158,7 @@ public class DomHelper
    public static String getNodeTextValue(Node nd,String tagName) throws IOException {
       NodeList nl = getNodeListTags(nd,tagName);
       if(nl.getLength() > 0 && nl.item(0).getFirstChild() != null) {
-         return nl.item(0).getFirstChild().getNodeValue();
+         return nl.item(0).getFirstChild().getNodeValue();   
       }
       return null;
    }
@@ -203,7 +167,7 @@ public class DomHelper
    public static String getNodeTextValue(Node nd,String tagName, String namespacePrefix)  throws IOException {
       NodeList nl = getNodeListTags(nd,tagName,namespacePrefix);
       if(nl.getLength() > 0 && nl.item(0).getFirstChild() != null) {
-         return nl.item(0).getFirstChild().getNodeValue();
+         return nl.item(0).getFirstChild().getNodeValue();   
       }
       return null;
    }
@@ -247,7 +211,7 @@ public class DomHelper
       if(nl.getLength() == 0 && namespacePref != null) {
          nl = doc.getElementsByTagName(namespacePref + ":" + tagName );
       }
-      return nl;
+      return nl;      
    }
    
    private static NodeList getNodeListTags(Element elem, String tagName, String namespacePref) {
@@ -259,7 +223,7 @@ public class DomHelper
       if(nl.getLength() == 0 && namespacePref != null) {
          nl = elem.getElementsByTagName(namespacePref + ":" + tagName );
       }
-      return nl;
+      return nl;      
    }
 
    
