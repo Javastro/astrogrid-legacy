@@ -270,17 +270,18 @@ public class DataQueryServlet extends HttpServlet {
 		}else if(validParameter(request.getParameter("SubmitQuery"))){
 			//submited a query so send it to the JobController.
 				String tempStr = send(qb);
+				String jobIDStr = null;
 				//set a Session of the request in xml format sent.
 				session.setAttribute("LastWebServiceXML",tempStr);
-				session.setAttribute("jobid",tempStr.substring((tempStr.indexOf("<jobid>") + 8),tempStr.indexOf("</jobid>")   ));
-				System.out.println("the jobid is = " + tempStr.substring((tempStr.indexOf("<jobid>") + 8),tempStr.indexOf("</jobid>")   ));
+				if(tempStr.indexOf("<jobid>") != -1) {
+					jobIDStr = tempStr.substring((tempStr.indexOf("<jobid>") + 8),tempStr.indexOf("</jobid>"));
+				} 				
+				session.setAttribute("jobid",jobIDStr);
+				System.out.println("the jobid is = " + jobIDStr);
 				//now that it is sent blank out the QueryString and put it as part of their Sent Queries.
 				if(queryString == null){queryString = "";}
-				queryString = qb.formulateQuery() + "<br />" + queryString;
-				session.setAttribute("QueryStringSent","\nSent Query:" +
-					queryString + " With jobid = " + 
-					tempStr.substring((tempStr.indexOf("<jobid>") + 8),tempStr.indexOf("</jobid>")) );
-					
+				queryString = qb.formulateQuery() + "- JobID= " + jobIDStr + "<br />" + queryString;
+				session.setAttribute("QueryStringSent","\nSent Query:" + queryString);
 				session.setAttribute("QueryString",null);
 				qb.clear();
 				qb = null;
