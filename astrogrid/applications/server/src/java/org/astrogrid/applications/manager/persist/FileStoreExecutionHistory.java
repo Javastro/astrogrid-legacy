@@ -1,4 +1,4 @@
-/*$Id: FileStoreExecutionHistory.java,v 1.3 2004/07/26 12:07:38 nw Exp $
+/*$Id: FileStoreExecutionHistory.java,v 1.4 2004/09/17 10:17:09 nw Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -86,8 +86,15 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
         public void put(String key,ExecutionSummaryType value) throws MarshalException, ValidationException, IOException{ 
             File f = mkFile(key);
             FileWriter fw = new FileWriter(f);
-            value.marshal(fw);
-            fw.close();                   
+            try {
+                value.marshal(fw);
+            } finally {
+                try {
+                    fw.close();
+                } catch (IOException e)  {
+                    logger.debug("failed to close file" );
+                }
+            }
         }
         
         /** compute appropriate filename from key */
@@ -102,7 +109,16 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
             if (!f.exists()) {
                 return null;
             }
-            return ExecutionSummaryType.unmarshalExecutionSummaryType(new FileReader(f));
+            FileReader fr = new FileReader(f);
+            try {
+                return ExecutionSummaryType.unmarshalExecutionSummaryType(fr);
+            } finally {
+                try {
+                    fr.close();
+                } catch (IOException e){
+                    logger.debug("failed to close file" );
+                }
+            }
         }
 
     }// end inner class
@@ -158,6 +174,9 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
 
 /* 
 $Log: FileStoreExecutionHistory.java,v $
+Revision 1.4  2004/09/17 10:17:09  nw
+made sure streams are closed
+
 Revision 1.3  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package
