@@ -31,13 +31,10 @@ public class DocHelperTest extends TestCase {
     */
    public void testBadWrap()
    {
-      try
-      {
+
          DocHelper.wrap("<Buggle><Wuggle></Muggle>");
 
-         fail("Should have failed with a SAXException");
-      }
-      catch (SAXException e) {}
+         fail("Should have failed with a RuntimeException");
    }
 
    /**
