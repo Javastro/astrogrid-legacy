@@ -88,6 +88,7 @@ public class ResourcePolicyServiceDelegate extends DocWebServiceDelegate {
 	public Object invoke(Object []param) throws Exception {
 		String response = (String)super.invoke(param);
 		String val = null;
+		Boolean blnAccess = null;
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		Document document = builder.parse(response);
@@ -95,9 +96,9 @@ public class ResourcePolicyServiceDelegate extends DocWebServiceDelegate {
 		Node nd = nl.item(0);
 		System.out.println(( val = getValue(nd) ) );
 		if(isValidString(val)) {
-			
+			this.canAccess = (blnAccess = new Boolean(val)).booleanValue();
 		}
-		return response;
+		return blnAccess;
 	}
 	
 	private String getValue(Node nd) {
