@@ -4,10 +4,10 @@
 
   <title>AstroGrid CEA</title>
     <menu name="Component Projects">
-		<item name="Client" href="client/"/>
-		<item name="Server Framework" href="server/" />
-		<item name="Commandline CEC" href="commandline/" />
-		<item name="HTTP GET/POST CEC" href="http/" />
+		<item name="Client" href="multiproject/astrogrid-cea-client/"/>
+		<item name="Server Framework" href="multiproject/astrogrid-cea-server/" />
+		<item name="Commandline CEC" href="multiproject/astrogrid-cea-commandline/" />
+		<item name="HTTP GET/POST CEC" href="multiproject/astrogrid-cea-http/" />
     </menu>
     <menu name="CEA" >
         <item name="Design Document" href="design/"/>
