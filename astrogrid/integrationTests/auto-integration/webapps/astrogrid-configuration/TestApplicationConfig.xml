@@ -84,7 +84,86 @@
                 </Interfaces>
                 <ExecutionPath>@WORKDIR@/applications/testapp.sh</ExecutionPath>
         </Application>
-        <Application name="testap2">
+       <Application name="testapplocal">
+                <!-- do not test specific instance app for now -->
+                <!--This The same as the application above -but uses local file references in the parameters - could have been done by adding an interface above...-->
+                <Parameters>
+                        <CmdLineParameterDefn name="P1" type="integer" commandPosition="1">
+                                <agpd:UI_Name>Pause Time</agpd:UI_Name>
+                                <agpd:UI_Description>Text bold bit
+                                        with some other - this is the time tha tthe application will pause in seconds before continuing to give the appearance of doing something...
+                                </agpd:UI_Description>
+                                <agpd:UCD>AAD</agpd:UCD>
+                                <agpd:DefaultValue>1.0</agpd:DefaultValue>
+                                <agpd:Units>String</agpd:Units>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="P2" type="double" commandPosition="2">
+                                <agpd:UI_Name>String</agpd:UI_Name>
+                                <agpd:UI_Description>Text bold bit This can be anything
+                                </agpd:UI_Description>
+                                <agpd:UCD>String</agpd:UCD>
+                                <agpd:DefaultValue>Text</agpd:DefaultValue>
+                                <agpd:Units>String</agpd:Units>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="P3" type="FileReference" switchType="normal">
+                                <agpd:UI_Name/>
+                                <agpd:UI_Description/>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="P4" type="string" commandSwitch="Parameter4" switchType="keyword">
+                                <agpd:UI_Name/>
+                                <agpd:UI_Description/>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="P5" type="MySpace_VOTableReference">
+                                <agpd:UI_Name/>
+                                <agpd:UI_Description/>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="P6" type="RA">
+                                <agpd:UI_Name/>
+                                <agpd:UI_Description/>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="P7" type="Dec">
+                                <agpd:UI_Name/>
+                                <agpd:UI_Description/>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="P8" type="ADQL">
+                                <agpd:UI_Name/>
+                                <agpd:UI_Description/>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="P9" type="FileReference">
+                                <agpd:UI_Name/>
+                                <agpd:UI_Description>The contents of this file will be copied to the output</agpd:UI_Description>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="P10" type="boolean"/>
+                        <CmdLineParameterDefn name="P11" type="anyURI"/>
+                        <CmdLineParameterDefn name="P12" type="FileReference" switchType="normal">
+                                <agpd:UI_Name/>
+                                <agpd:UI_Description/>
+                        </CmdLineParameterDefn>
+                </Parameters>
+                <Interfaces>
+                        <Interface name="I1">
+                                <input>
+                                        <pref ref="P1" optional="false" repeatable="true"/>
+                                        <pref ref="P2" optional="false" repeatable="false"/>
+                                        <pref ref="P4" optional="false" repeatable="false"/>
+                                        <pref ref="P9" optional="true" repeatable="false"/>
+                                </input>
+                                <output>
+                                        <pref ref="P3"/>
+                                </output>
+                        </Interface>
+                        <Interface name="I2">
+                                <input>
+                                        <pref ref="P9"/>
+                                </input>
+                                <output>
+                                        <pref ref="P3"/>
+                                </output>
+                        </Interface>
+                </Interfaces>
+                <ExecutionPath>@WORKDIR@/applications/testapp.sh</ExecutionPath>
+        </Application>
+        <Application name="testap3">
                 <!--This Application does not exist - this is just here to help with testing the description reading modules-->
                 <Parameters>
                         <CmdLineParameterDefn name="p1" type="integer">
