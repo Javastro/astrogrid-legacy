@@ -2,9 +2,24 @@
 <VODescription
   xmlns="http://www.ivoa.net/xml/VOResource/v0.9"
   xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9"
+  xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2"
   xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.2"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
- <vr:Resource xsi:type="vg:RegistryType" xmlns="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.2" updated="2004-11-20T15:34:22Z" status="active">
+  xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.4"
+  xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1"
+  xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.2"
+  xmlns:sia="http://www.ivoa.net/xml/SIA/v0.6"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v0.9
+                      http://www.ivoa.net/xml/VOResource/VOResource-v0.9.xsd
+                      http://www.ivoa.net/xml/VOCommunity/v0.2
+                      http://www.ivoa.net/xml/VOCommunity/VOCommunity-v0.2.xsd
+                      http://www.ivoa.net/xml/VORegistry/v0.2
+                      http://www.ivoa.net/xml/VORegistry/VORegistry-v0.2.xsd
+                      http://www.ivoa.net/xml/ConeSearch/v0.2
+                      http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
+                      http://www.ivoa.net/xml/SIA/v0.6
+                      http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
+ <vr:Resource xsi:type="vg:RegistryType"  updated="2004-11-20T15:34:22Z" status="active">
     <Identifier>
       <AuthorityID>@REGAUTHORITY@</AuthorityID>
       <ResourceKey>org.astrogrid.registry.RegistryService</ResourceKey>
@@ -26,13 +41,12 @@
        <Email>ael@star.le.ac.uk</Email>
       </Contact>
     </Curation>
+    <vg:ManagedAuthority>@REGAUTHORITY@</vg:ManagedAuthority>
+        <vg:ManagedAuthority>org.astrogrid</vg:ManagedAuthority>
+        <vg:ManagedAuthority>roe.ac.uk</vg:ManagedAuthority>
     <Interface>
       <Invocation>WebService</Invocation>
-      <AccessURL use="full">http://hydra.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery</AccessURL>
+      <AccessURL use="full">@CENTRALREGISTRY@Query</AccessURL>
     </Interface>
-    <vg:ManagedAuthority>astrogrid.org</vg:ManagedAuthority>
-    <vg:ManagedAuthority>astrogrid.mssl</vg:ManagedAuthority>
-    <vg:ManagedAuthority>org.astrogrid</vg:ManagedAuthority>
-    <vg:ManagedAuthority>roe.ac.uk</vg:ManagedAuthority>
   </vr:Resource>
   </VODescription>

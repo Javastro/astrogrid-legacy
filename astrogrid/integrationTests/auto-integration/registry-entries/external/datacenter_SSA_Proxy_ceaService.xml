@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <VODescription xmlns="http://www.ivoa.net/xml/VOResource/v0.9" 
 	xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" 
+	xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2" 
+	xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.2" 
+	xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.4" 
 	xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1" 
-	xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<Resource updated="2004-11-20T15:34:22Z" status="active" xsi:type="cea:CeaServiceType">
+	xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.2" 
+	xmlns:sia="http://www.ivoa.net/xml/SIA/v0.6"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v0.9
+                      http://www.ivoa.net/xml/VOResource/VOResource-v0.9.xsd
+                      http://www.ivoa.net/xml/VOCommunity/v0.2
+                      http://www.ivoa.net/xml/VOCommunity/VOCommunity-v0.2.xsd
+                      http://www.ivoa.net/xml/VORegistry/v0.2
+                      http://www.ivoa.net/xml/VORegistry/VORegistry-v0.2.xsd
+                      http://www.ivoa.net/xml/ConeSearch/v0.2
+                      http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
+                      http://www.ivoa.net/xml/SIA/v0.6
+                      http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
+	<Resource  updated="2004-11-20T15:34:22Z" status="active" xsi:type="CeaServiceType">
 		<Identifier>
 			<AuthorityID>roe.ac.uk</AuthorityID>
 			<ResourceKey>datacenter/SSA-Proxy/ceaService</ResourceKey>
@@ -23,6 +37,7 @@
 			<Contact>
 				<Name>Martin Hill</Name>
 				<Email>mch@roe.ac.uk</Email>
+				<Date/>
 			</Contact>
 		</Curation>
 		<vr:Capability>

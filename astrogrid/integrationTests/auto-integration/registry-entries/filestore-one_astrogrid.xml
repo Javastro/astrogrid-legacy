@@ -19,10 +19,10 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
- <vr:Resource  updated="2004-11-20T15:34:22Z" status="active" xsi:type="ServiceType">
+ <vr:Resource xsi:type="ServiceType">
     <Identifier>
       <AuthorityID>@REGAUTHORITY@</AuthorityID>
-      <ResourceKey>filestore-two</ResourceKey>
+      <ResourceKey>astrogrid_filestore-one</ResourceKey>
     </Identifier>
     <Title>Filestore Service Entry</Title>
     <Summary>
@@ -50,9 +50,10 @@
       </Contributor>       
     </Curation>
     <Subject>Users VOSpace</Subject>
-    <Interface>
+    <Interface xsi:type="AstrogridInterface">
       <Invocation>WebService</Invocation>
-      <AccessURL use="base">@TOMCATROOT@/astrogrid-filestore-two-@VERSION@/services/FileStore?wsdl</AccessURL>
+      <AccessURL use="base">@TOMCATROOT@/astrogrid-filestore-one-@VERSION@/services/FileStore?wsdl</AccessURL>
+	  <ag:InterfaceType xmlns:ag="http://www.astrogrid.org/schema/AstrogridDataService/v0.1">FileStore</ag:InterfaceType>
     </Interface>
   </vr:Resource>
 </VODescription>

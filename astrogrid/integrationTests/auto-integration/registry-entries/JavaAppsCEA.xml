@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<VODescription 
-xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" 
-xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" 
-xmlns="http://www.ivoa.net/xml/VOResource/v0.9">
-  <Resource  updated="2004-11-20T15:34:22Z" status="active" xsi:type="cea:CeaApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<VODescription xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns="http://www.ivoa.net/xml/VOResource/v0.9">
+  <Resource  updated="2004-11-20T15:34:22Z" status="active" xsi:type="CeaApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <Identifier>
       <AuthorityID>@REGAUTHORITY@</AuthorityID>
       <ResourceKey>sendmail</ResourceKey>
@@ -35,21 +32,21 @@ xmlns="http://www.ivoa.net/xml/VOResource/v0.9">
     <Subject>???</Subject>
     <cea:ApplicationDefinition>
       <cea:Parameters>
-        <cea:ParameterDefinition name="to" type="text">
+        <cea:ParameterDefinition name="to" type="text" accept-encodings="" sub-type="">
           <ns38:UI_Name xmlns:ns38="http://www.astrogrid.org/schema/AGParameterDefinition/v1">To-Address</ns38:UI_Name>
           <ns39:UI_Description xmlns:ns39="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Email address to send message to</ns39:UI_Description>
           <ns40:UCD xmlns:ns40="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns40:UCD>
           <ns41:DefaultValue xmlns:ns41="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns41:DefaultValue>
           <ns42:Units xmlns:ns42="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns42:Units>
         </cea:ParameterDefinition>
-        <cea:ParameterDefinition name="message" type="text">
+        <cea:ParameterDefinition name="message" type="text" accept-encodings="" sub-type="">
           <ns43:UI_Name xmlns:ns43="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Your Message</ns43:UI_Name>
           <ns44:UI_Description xmlns:ns44="http://www.astrogrid.org/schema/AGParameterDefinition/v1">The message to send</ns44:UI_Description>
           <ns45:UCD xmlns:ns45="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns45:UCD>
           <ns46:DefaultValue xmlns:ns46="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns46:DefaultValue>
           <ns47:Units xmlns:ns47="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns47:Units>
         </cea:ParameterDefinition>
-        <cea:ParameterDefinition name="subject" type="text">
+        <cea:ParameterDefinition name="subject" type="text" accept-encodings="" sub-type="">
           <ns48:UI_Name xmlns:ns48="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Subject of the email</ns48:UI_Name>
           <ns49:UI_Description xmlns:ns49="http://www.astrogrid.org/schema/AGParameterDefinition/v1">text to use as the subject of this email</ns49:UI_Description>
           <ns50:UCD xmlns:ns50="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns50:UCD>
@@ -69,7 +66,7 @@ xmlns="http://www.ivoa.net/xml/VOResource/v0.9">
       </cea:Interfaces>
     </cea:ApplicationDefinition>
   </Resource>
-  <Resource  updated="2004-11-20T15:34:22Z" status="active" xsi:type="cea:CeaApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Resource  updated="2004-11-20T15:34:22Z" status="active" xsi:type="CeaApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <Identifier>
       <AuthorityID>@REGAUTHORITY@</AuthorityID>
       <ResourceKey>concat</ResourceKey>
@@ -101,14 +98,14 @@ xmlns="http://www.ivoa.net/xml/VOResource/v0.9">
     <Subject>???</Subject>
     <cea:ApplicationDefinition>
       <cea:Parameters>
-        <cea:ParameterDefinition name="result" type="binary">
+        <cea:ParameterDefinition name="result" type="binary" accept-encodings="" sub-type="">
           <ns55:UI_Name xmlns:ns55="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Result</ns55:UI_Name>
           <ns56:UI_Description xmlns:ns56="http://www.astrogrid.org/schema/AGParameterDefinition/v1">result of concatenating data together</ns56:UI_Description>
           <ns57:UCD xmlns:ns57="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns57:UCD>
           <ns58:DefaultValue xmlns:ns58="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns58:DefaultValue>
           <ns59:Units xmlns:ns59="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns59:Units>
         </cea:ParameterDefinition>
-        <cea:ParameterDefinition name="src" type="binary">
+        <cea:ParameterDefinition name="src" type="binary" accept-encodings="" sub-type="">
           <ns60:UI_Name xmlns:ns60="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Source</ns60:UI_Name>
           <ns61:UI_Description xmlns:ns61="http://www.astrogrid.org/schema/AGParameterDefinition/v1">an input to concatenate</ns61:UI_Description>
           <ns62:UCD xmlns:ns62="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns62:UCD>
