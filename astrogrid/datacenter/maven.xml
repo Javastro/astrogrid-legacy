@@ -5,47 +5,47 @@
 
 <!-- Astrogrid custom goals -->
 <!-- Only install the minimum for the autobuild for now
-	 see http://www.astrogrid.org/maven/build/SimpleMavenProject/goalsSummary.html -->
+    see http://www.astrogrid.org/maven/build/SimpleMavenProject/goalsSummary.html -->
 <goal name="astrogrid-deploy-snapshot">
-	<echo message="Master Project: astrogrid-deploy-snapshot"/>
-	<maven:reactor
-	  basedir="${basedir}"
-	  postProcessing="false"
-	  includes="*/project.xml,implementations/*/project.xml"
-	  excludes="pal/**"
-	  goals="jar:deploy-snapshot,dist"
-	  banner="Deploying snapshots"
-	  ignoreFailures="true" />
-	 <maven:maven descriptor="${basedir}/pal/project.xml"
-	 	goals="webapp-site,war:deploy-snapshot"
-		ignoreFailures="true" />
+   <echo message="Master Project: astrogrid-deploy-snapshot"/>
+   <maven:reactor
+     basedir="${basedir}"
+     postProcessing="false"
+     includes="*/project.xml,implementations/*/project.xml"
+     excludes="pal/**,implementations/http2java/**"
+     goals="jar:deploy-snapshot,dist"
+     banner="Deploying snapshots"
+     ignoreFailures="true" />
+    <maven:maven descriptor="${basedir}/pal/project.xml"
+      goals="webapp-site,war:deploy-snapshot"
+      ignoreFailures="true" />
 
 </goal>
 <goal name="astrogrid-install-snapshot">
-	<echo message="Master Project: astrogrid-install-snapshot"/>
-	<maven:reactor
-	  basedir="${basedir}"
-	  postProcessing="false"
-	  includes="*/project.xml,implementations/*/project.xml"
-	  excludes="pal/**"
-	  goals="jar:install-snapshot,dist"
-	  banner="installing snapshots"
-	  ignoreFailures="true" />
-	 <maven:maven descriptor="${basedir}/pal/project.xml"
-	 	goals="webapp-site,war:install-snapshot"
-		ignoreFailures="true" />
+   <echo message="Master Project: astrogrid-install-snapshot"/>
+   <maven:reactor
+     basedir="${basedir}"
+     postProcessing="false"
+     includes="*/project.xml,implementations/*/project.xml"
+     excludes="pal/**"
+     goals="jar:install-snapshot,dist"
+     banner="installing snapshots"
+     ignoreFailures="true" />
+    <maven:maven descriptor="${basedir}/pal/project.xml"
+      goals="webapp-site,war:install-snapshot"
+      ignoreFailures="true" />
 </goal>
 <goal name="astrogrid-build-site">
-	<echo message="Master Project: astrogrid-build-site"/>
-	<attainGoal name="multiproject:site" />
+   <echo message="Master Project: astrogrid-build-site"/>
+   <attainGoal name="multiproject:site" />
 </goal>
 <goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
-	<echo message="Master Project: astrogrid-deploy-site"/>
-	<attainGoal name="site:fsdeploy" />
+   <echo message="Master Project: astrogrid-deploy-site"/>
+   <attainGoal name="site:fsdeploy" />
 </goal>
 <goal name="astrogrid-clean">
-	<echo message="Master Project: astrogrid-clean"/>
-	<attainGoal name="multiproject:clean" />
+   <echo message="Master Project: astrogrid-clean"/>
+   <attainGoal name="multiproject:clean" />
 </goal>
 
 <!--
