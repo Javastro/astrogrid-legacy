@@ -16,9 +16,7 @@
   </organization>
 
   <inceptionYear>2002</inceptionYear>
-  <package>org.astrogrid</package>
-  <logo>http://www.astrogrid.org/images/AGlogo</logo>
-
+  <package>org.astrogrid</package> <logo>http://www.astrogrid.org/images/AGlogo</logo> 
   <shortDescription>AstroGrid Warehouse Components</shortDescription>
 
   <siteDirectory>/var/www/www/maven/build/warehouse</siteDirectory>
@@ -112,6 +110,26 @@
     <dependency>
       <id>mmmockobjects</id>
       <version>1.11.0</version>
+    </dependency>
+
+   <dependency>
+      <id>log4j</id>
+      <version>1.2.4</version>
+    </dependency>
+
+   <dependency>
+      <id>ogsa</id>
+      <version>3.0.2</version>
+    </dependency>
+
+   <dependency>
+      <id>axis-ogsa</id>
+      <version>3.0.2</version>
+    </dependency>
+
+   <dependency>
+      <id>ogsadai</id>
+      <version>3.0.2</version>
     </dependency>
     
   </dependencies>

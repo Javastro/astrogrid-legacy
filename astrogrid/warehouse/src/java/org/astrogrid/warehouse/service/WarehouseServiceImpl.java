@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseServiceImpl.java,v 1.3 2003/10/23 17:19:45 kea Exp $
+ * $Id: WarehouseServiceImpl.java,v 1.4 2003/10/24 20:11:34 kea Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -7,6 +7,7 @@
 package org.astrogrid.warehouse.service;
 
 import java.io.IOException;
+import java.io.FileWriter;
 import java.rmi.RemoteException;
 
 import org.w3c.dom.Element;
@@ -14,7 +15,6 @@ import org.w3c.dom.Element;
 
 // Java Classes from OGSA-DAI
 
-/*
 import java.net.URL;
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -39,12 +39,14 @@ import org.gridforum.ogsi.holders.LocatorTypeHolder;
 import org.gridforum.ogsi.holders.TerminationTimeTypeHolder;
 import org.w3c.dom.Document;
 
+/*
 //security classes 
 import org.globus.axis.gsi.GSIConstants;
 import org.globus.ogsa.impl.security.Constants;
 import org.globus.ogsa.impl.security.authorization.NoAuthorization;
 import org.ietf.jgss.GSSCredential;
 import org.gridforum.jgss.ExtendedGSSManager;
+*/
 
 //ogsa-dai classes
 import uk.org.ogsadai.common.XMLUtilities;
@@ -56,7 +58,6 @@ import uk.org.ogsadai.wsdl.gds.GDSPortType;
 import uk.org.ogsadai.wsdl.gds.GDSServiceGridLocator;
 import uk.org.ogsadai.wsdl.gdsf.GridDataServiceFactoryPortType;
 import uk.org.ogsadai.wsdl.gdsf.GridDataServiceFactoryServiceLocator;
-*/
 
 /**
  * At the moment, basically a clone of the WarehouseDelegate interface.
@@ -78,11 +79,14 @@ public class WarehouseServiceImpl
 
     private final String PERFORM_HEAD = 
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + 
-      "<gridDataServicePerform" +
-      "xmlns=\"http://ogsadai.org.uk/namespaces/2003/07/gds/types\"" +
-      "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+      "<gridDataServicePerform " +
+      "xmlns=\"http://ogsadai.org.uk/namespaces/2003/07/gds/types\" " +
+      "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
       "xsi:schemaLocation=\"http://ogsadai.org.uk/namespaces/2003/07/gds/types"+
-        "../../../../schema/ogsadai/xsd/activities/activities.xsd\">";
+      //" ../../../../schema/ogsadai/xsd/activities/activities.xsd\">";
+      // TOFIX HOW SHOULD WE SET THIS PATH?  VIA PROPERTIES?
+      // SHOULD WE PUT THE SCHEMA ON AN ASTROGRID URL?
+      " /data/cass123a/kea/ogsadai-src/schema/ogsadai/xsd/activities/activities.xsd\">";
 
     private final String PERFORM_QUERY_START = 
       "<sqlQueryStatement name=\"statement\"><expression>";
@@ -98,10 +102,10 @@ public class WarehouseServiceImpl
     // TOFIX - HORRIBLE HACKS FOR TRACKING QUERY STATUS ETC
 
     // NO PROPER JOB IDs YET - ONLY ONE USER OR WE BREAK HORRIBLY!!
-    private boolean queryFinished = false;
+    //private boolean queryFinished = false;
 
     // DESTINATION OF RESULTS (INSTEAD OF MYSPACE URL)
-    private String destFile = "";
+    //private String destFile = "";
     // ----------------------------------------------------------
 
 /**
@@ -144,22 +148,23 @@ public class WarehouseServiceImpl
   */
   public void setResultsDestination(String id, String myspaceUrl) 
                                     throws java.rmi.RemoteException {
-    destFile = "/tmp/" + myspaceUrl;
+    //destFile = "/tmp/" + myspaceUrl;
   }
 
  /** 
   * starts given query running
   */
   public void startQuery(String id) throws java.rmi.RemoteException {
-    return;
-/*
+
     // TOFIX - HORRIBLE HACK FOR TRACKING QUERY STATUS 
     // NO PROPER JOB IDs YET - ONLY ONE USER OR WE BREAK HORRIBLY!!
+    /*
     queryFinished = false;
-    if (destFile == null) {
+    if (destFile.equals("")) {
       throw new RemoteException(
-        "Please set a destination for your query (a filename for now).");
+        "Please set a destination for your query results (just a path-free filename for now).");
     }
+    */
 
     String registryURLString = HOST_STRING + REGISTRY_STRING;
     int timeout = 300;  // TOFIX configurable?
@@ -217,13 +222,29 @@ public class WarehouseServiceImpl
       ((Stub) griddataservice).setTimeout(timeout * 1000 );
 
       // Set up the script
+      ExtensibilityType document;
+      ExtensibilityType result;
       Document msgDoc = 
-        XMLUtilities.xmlFileToDOM(mGDSPerformDocuments[i], false);
-                  document =
-      AnyHelper.getExtensibility(msgDoc.getDocumentElement());
+          XMLUtilities.xmlStringToDOM(makeXMLPerformDoc(query));
+      document =
+         AnyHelper.getExtensibility(msgDoc.getDocumentElement());
 
-        // Run the script
+      // Run the script
       result = griddataservice.perform(document);
+
+      // Output the results
+      try {
+        FileWriter writer = new FileWriter("/tmp/WS_OGSA_OUTPUT");
+        writer.write(AnyHelper.getAsString(result));
+        writer.close();
+      }
+      catch (IOException e) {
+        throw new RemoteException(
+//         "Couldn't open destination file " + destFile,e);
+         "Couldn't open destination file /tmp/WS_OGSA_OUTPUT",e);
+      }
+
+      // Clean up
       griddataservice.destroy();
     }
     catch (AxisFault e) {
@@ -234,8 +255,7 @@ public class WarehouseServiceImpl
       throw new RemoteException(
           "Unspecified exception: + e.getMessage()", e);
     }
-    queryFinished = true;
-*/
+    //queryFinished = true;
   }
 
  /**
@@ -271,97 +291,128 @@ public class WarehouseServiceImpl
    * @return The URL of the factory
    * @throws Exception
    */
-   /*
     private static String getFactoryUrlFromRegistry( 
         String registryUrl, 
         int timeoutValue ) throws Exception
     {
-        // Ask the GDSR for information about registered GDSFs 
-        DAIServiceGroupRegistrationServiceLocator gdsrLocator = null;
-        DAIServiceGroupRegistrationPortType gdsrGpt = null;
-    
-        try {
-            gdsrLocator = new DAIServiceGroupRegistrationServiceLocator();
-            gdsrGpt = gdsrLocator.getDAIServiceGroupRegistrationPort(
-                  new URL(registryUrl));
-     
-            // Set timeout of SOAP calls
-            ((Stub) gdsrGpt).setTimeout(timeoutValue * 1000);
-        }
-        catch (Exception e) {
-            System.out.println("Could not locate registry at: " + registryUrl);
-            throw e;
-        }
-        
-        QName[] portTypes = new QName[1];
-        portTypes[0] = OGSADAIConstants.GDSF_PORT_TYPE;
-        ExtensibilityType query = 
-            DAIServiceGroupQueryHelper.getPortTypeQuery(portTypes);
-        ExtensibilityType result;
-        result = gdsrGpt.findServiceData(query);
-            
-        String factoryURLString = "";
-        boolean haveFoundFactoryUrl = false;
-        try {
-            Object[] entries = AnyHelper.getAsObject(result, EntryType.class);
-    
-            if (entries == null || entries.length == 0)
-                throw new Exception("No locators.");
-                        
-            // Chose which factory to use.  If message level security is
-            // on prefer URLs that contain the work secure.  If message
-            // level security is off prefer URLs that do not contain the
-            // work secure.
-            for( int i = 0; i<entries.length && !haveFoundFactoryUrl; ++i )
+      // Ask the GDSR for information about registered GDSFs 
+      DAIServiceGroupRegistrationServiceLocator gdsrLocator = null;
+      DAIServiceGroupRegistrationPortType gdsrGpt = null;
+  
+      try {
+          gdsrLocator = new DAIServiceGroupRegistrationServiceLocator();
+          gdsrGpt = gdsrLocator.getDAIServiceGroupRegistrationPort(
+                new URL(registryUrl));
+   
+          // Set timeout of SOAP calls
+          ((Stub) gdsrGpt).setTimeout(timeoutValue * 1000);
+      }
+      catch (Exception e) {
+        throw new RemoteException(
+          "Could not locate registry at: " + registryUrl,e);
+      }
+      
+      QName[] portTypes = new QName[1];
+      portTypes[0] = OGSADAIConstants.GDSF_PORT_TYPE;
+      ExtensibilityType query = 
+          DAIServiceGroupQueryHelper.getPortTypeQuery(portTypes);
+      ExtensibilityType result;
+      result = gdsrGpt.findServiceData(query);
+          
+      String factoryURLString = "";
+      boolean haveFoundFactoryUrl = false;
+      try {
+        Object[] entries = AnyHelper.getAsObject(result, EntryType.class);
+
+        if (entries == null || entries.length == 0)
+            throw new Exception("No locators.");
+                    
+        // Chose which factory to use.  If message level security is
+        // on prefer URLs that contain the work secure.  If message
+        // level security is off prefer URLs that do not contain the
+        // work secure.
+        for( int i = 0; i<entries.length && !haveFoundFactoryUrl; ++i )
+        {
+            EntryType someEntry = (EntryType) entries[i];
+            LocatorType locator = someEntry.getMemberServiceLocator();
+            HandleType[] handles = locator.getHandle();
+            if (handles == null || handles.length == 0)
             {
-                EntryType someEntry = (EntryType) entries[i];
-                LocatorType locator = someEntry.getMemberServiceLocator();
-                HandleType[] handles = locator.getHandle();
-                if (handles == null || handles.length == 0)
-                {
-                    throw new Exception("No handles.");
+                throw new Exception("No handles.");
+            }
+
+            factoryURLString = handles[0].getValue().toString();
+                    
+            // Check to see if finished looking for factory URLs
+            if ( factoryURLString.toUpperCase().indexOf( "SECURE") >= 0 ) {
+                // This is a factory for a secure GDS.  We will 
+                // consider this to be the best URL if message level
+                // security is set.
+                //if ( mIsMessageLevelSecurity ) //TOFIX - security flag
+                if ( false ) {
+                    haveFoundFactoryUrl = true;
                 }
-    
-                factoryURLString = handles[0].getValue().toString();
-                        
-                // Check to see if finished looking for factory URLs
-                if ( factoryURLString.toUpperCase().indexOf( "SECURE") >= 0 ) {
-                    // This is a factory for a secure GDS.  We will 
-                    // consider this to be the best URL if message level
-                    // security is set.
-                    //if ( mIsMessageLevelSecurity ) //TOFIX - security flag
-                    if ( false ) {
-                        haveFoundFactoryUrl = true;
-                    }
-                }
-                else
-                {
-                    // This is a factory for a non-secure GDS.  We will 
-                    // consider this to be the best bet if message level
-                    // security is off.
-                    //if ( !mIsMessageLevelSecurity ) //TOFIX - security flag
-                    if ( true ) {
-                        haveFoundFactoryUrl = true;
-                    }
+            }
+            else
+            {
+                // This is a factory for a non-secure GDS.  We will 
+                // consider this to be the best bet if message level
+                // security is off.
+                //if ( !mIsMessageLevelSecurity ) //TOFIX - security flag
+                if ( true ) {
+                    haveFoundFactoryUrl = true;
                 }
             }
         }
-        catch (Exception e) {
-          throw new RemoteException(
-             "No factories registered at the DAIRegistry at " + registryUrl, 
-             e);
-        }
-        if (!haveFoundFactoryUrl) {
-          throw new RemoteException(
-             "Couldn't find factory URL at the DAIRegistry at " + registryUrl); 
-        }
-        // If we got here, we found the factory 
-        return factoryURLString;
     }
-    */
+    catch (Exception e) {
+      throw new RemoteException(
+         "No factories registered at the DAIRegistry at " + registryUrl, 
+         e);
+    }
+    if (!haveFoundFactoryUrl) {
+      throw new RemoteException(
+         "Couldn't find factory URL at the DAIRegistry at " + registryUrl); 
+    }
+    // If we got here, we found the factory 
+    return factoryURLString;
+  }
+
+  /**
+   * Temporary test harness - easier than trying to test through
+   * tomcat! 
+   */
+  public static void main(String args[]) throws Exception {
+
+    WarehouseServiceImpl service = new WarehouseServiceImpl();
+    try {
+      System.out.print("Making dummy query...  ");
+      String queryID = service.makeQuery(null,"dummy");
+      System.out.println("done: query ID is "+ queryID);
+
+      System.out.print("Setting destination...  ");
+      service.setResultsDestination(queryID,"OGSA_TEST_OUTPUT");
+      System.out.println("done...  ");
+
+      System.out.print("Starting query...  ");
+      service.startQuery(queryID);
+      System.out.println("done...  ");
+    }
+    catch (RemoteException e) {
+      e.printStackTrace();
+      throw new Exception(e);
+    }
+  }
 }
 /*
 $Log: WarehouseServiceImpl.java,v $
+Revision 1.4  2003/10/24 20:11:34  kea
+More work on webservice to call OGSA-DAI.  This was actually working
+as a webservice but suddenly stopped for no apparent reason;  the
+OGSA-DAI command-line client broke at the same time.  (This webservice
+still works when invoked at the command-line, just not via tomcat.
+Beats me.)
+
 Revision 1.3  2003/10/23 17:19:45  kea
 Starting to add OGSA-DAI functionality to webservice implementation,
 to allow webservice to perform queries on OGSA-DAI database.

@@ -1,4 +1,4 @@
-/* * $Id: WebDelegate.java,v 1.3 2003/10/23 17:19:45 kea Exp $
+/* * $Id: WebDelegate.java,v 1.4 2003/10/24 20:11:34 kea Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -150,9 +150,11 @@ public class WebDelegate implements WarehouseDelegateIfc
       String queryID = delegate.makeQuery(null,"dummy");
       System.out.println("done: query ID is "+ queryID);
 
+    /*
       System.out.print("Setting destination...  ");
-      delegate.setResultsDestination(queryID,"OGSA_TEST_OUTPUT");
+      delegate.setResultsDestination(queryID,"WS_OGSA_TEST_OUTPUT");
       System.out.println("done...  ");
+      */
 
       System.out.print("Starting query...  ");
       delegate.startQuery(queryID);
@@ -166,6 +168,13 @@ public class WebDelegate implements WarehouseDelegateIfc
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.4  2003/10/24 20:11:34  kea
+More work on webservice to call OGSA-DAI.  This was actually working
+as a webservice but suddenly stopped for no apparent reason;  the
+OGSA-DAI command-line client broke at the same time.  (This webservice
+still works when invoked at the command-line, just not via tomcat.
+Beats me.)
+
 Revision 1.3  2003/10/23 17:19:45  kea
 Starting to add OGSA-DAI functionality to webservice implementation,
 to allow webservice to perform queries on OGSA-DAI database.
