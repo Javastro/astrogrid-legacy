@@ -1,4 +1,4 @@
-/*$Id: CompositeWorkflowEndToEndTest.java,v 1.6 2004/08/19 23:48:06 nw Exp $
+/*$Id: CompositeWorkflowEndToEndTest.java,v 1.7 2004/09/09 01:19:50 dave Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,10 +67,9 @@ public class CompositeWorkflowEndToEndTest extends AbstractTestForWorkflow {
     public void checkExecutionResults(Workflow w1) throws Exception {
         super.checkExecutionResults(w1);
         softAssertEquals("workflow does not have expected name",w1.getName(),wf.getName());
-        // dump it to myspace store - then we can look at it later.
-       w1.setName("CompositeWorkflowEndToEndTest" + "-" + System.currentTimeMillis());
-       Ivorn ivorn = new Ivorn(MYSPACE,user.getUserId() +"/" + w1.getName() + ".saved-workflow.xml"); 
-       store.saveWorkflow(user,ivorn,w1);
+        //
+        // Save the workflow to myspace store - then we can look at it later.
+        writeWorkflowToVOSpace(w1) ;
     softAssertEquals("Workflow not completed",ExecutionPhase.COMPLETED,w1.getJobExecutionRecord().getStatus());        
     }
     
@@ -133,6 +132,14 @@ public class CompositeWorkflowEndToEndTest extends AbstractTestForWorkflow {
 
 /* 
 $Log: CompositeWorkflowEndToEndTest.java,v $
+Revision 1.7  2004/09/09 01:19:50  dave
+Updated MIME type handling in MySpace.
+Extended test coverage for MIME types in FileStore and MySpace.
+Added VM memory data to community ServiceStatusData.
+
+Revision 1.6.18.1  2004/09/07 15:41:57  dave
+Reafctored the VoSpace save methods ....
+
 Revision 1.6  2004/08/19 23:48:06  nw
 made a child of standard baseclass
 

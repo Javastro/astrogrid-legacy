@@ -1,10 +1,24 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/server/src/java/org/astrogrid/mySpace/mySpaceManager/FileStoreDriver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/02 10:25:41 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/09 01:19:50 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreDriver.java,v $
+ *   Revision 1.5  2004/09/09 01:19:50  dave
+ *   Updated MIME type handling in MySpace.
+ *   Extended test coverage for MIME types in FileStore and MySpace.
+ *   Added VM memory data to community ServiceStatusData.
+ *
+ *   Revision 1.4.6.3  2004/09/08 20:59:40  dave
+ *   Added check for fake null in mime type ....
+ *
+ *   Revision 1.4.6.2  2004/09/08 14:06:35  dave
+ *   Added check for existing mime type.
+ *
+ *   Revision 1.4.6.1  2004/09/08 13:20:24  dave
+ *   Updated mime type handling and tests ...
+ *
  *   Revision 1.4  2004/09/02 10:25:41  dave
  *   Updated FileStore and MySpace to handle mime type and file size.
  *   Updated Community deployment script.
@@ -539,13 +553,18 @@ public class FileStoreDriver
 
 	/**
 	 * Create an initial set of properties for an item.
-	 * This includes the temp-fix guess for the mime type, based on the file name.
+	 * This includes the guess for the mime type based on the file name.
 	 * @param item The data item record.
 	 * @return An array of properties for the item.
 	 *
 	 */
 	private FileProperty[] initProperties(DataItemRecord item)
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreDriver.initProperties()") ;
+		if (DEBUG_FLAG) System.out.println("  Name : " + item.getDataItemName()) ;
+		if (DEBUG_FLAG) System.out.println("  Mime : " + item.getDataItemMime()) ;
 		//
 		// Create our file properties.
 		FileProperties properties = new FileProperties() ;
@@ -560,44 +579,111 @@ public class FileStoreDriver
 			String.valueOf(item.getDataItemID())
 			) ;
 		//
-		// Get the item file name.
-		String name = item.getDataItemName() ;
+		// Get the current mime type.
+		String mime = item.getDataItemMime() ;
 		//
-		// If we have a file name.
-		if (null != name)
+		// Check for a fake null.
+		if ("null".equals(mime))
+			{
+			if (DEBUG_FLAG) System.out.println("  Fake null in data item mime type.") ;
+			mime = null ;
+			}
+		//
+		// If the mime type has not already been set.
+		if (null == mime)
+			{
+			if (DEBUG_FLAG) System.out.println("  Null mime type in data item.") ;
+			if (DEBUG_FLAG) System.out.println("  Generating mime type from name.") ;
+			//
+			// Get the item file name.
+			String name = item.getDataItemName() ;
+			//
+			// If we have a file name.
+			if (null != name)
+				{
+				//
+				// Find the last '.' in the name.
+				int index = name.lastIndexOf('.') ;
+				//
+				// If we found a '.' in the name.
+				if (index != -1)
+					{
+					//
+					// Check for recognised types.
+					String type = name.substring(
+						index
+						).toLowerCase() ;
+					//
+					// Vanilla XML.
+					if (".xml".equals(type))
+						{
+						mime = FileProperties.MIME_TYPE_XML ;
+						}
+					//
+					// Vanilla XSL.
+					if (".xsl".equals(type))
+						{
+						mime = FileProperties.MIME_TYPE_XML ;
+						}
+					//
+					// Astrogrid VoTable.
+					if (".vot".equals(type))
+						{
+						mime = FileProperties.MIME_TYPE_VOTABLE ;
+						}
+					if (".votable".equals(type))
+						{
+						mime = FileProperties.MIME_TYPE_VOTABLE ;
+						}
+					//
+					// Astrogrid VoList.
+					if (".vol".equals(type))
+						{
+						mime = FileProperties.MIME_TYPE_VOLIST ;
+						}
+					if (".volist".equals(type))
+						{
+						mime = FileProperties.MIME_TYPE_VOLIST ;
+						}
+					//
+					// Astrogrid Job details.
+					if (".job".equals(type))
+						{
+						mime = FileProperties.MIME_TYPE_JOB ;
+						}
+					//
+					// Astrogrid workflow.
+					if (".work".equals(type))
+						{
+						mime = FileProperties.MIME_TYPE_WORKFLOW ;
+						}
+					if (".flow".equals(type))
+						{
+						mime = FileProperties.MIME_TYPE_WORKFLOW ;
+						}
+					if (".workflow".equals(type))
+						{
+						mime = FileProperties.MIME_TYPE_WORKFLOW ;
+						}
+					//
+					// Astrogrid ADQL.
+					if (".adql".equals(type))
+						{
+						mime = FileProperties.MIME_TYPE_ADQL ;
+						}
+					}
+				}
+			}
+		//
+		// If we found a mime type.
+		if (null != mime)
 			{
 			//
-			// Find the last '.' in the name.
-			int index = name.lastIndexOf('.') ;
-			//
-			// If we found a '.' in the name.
-			if (index != -1)
-				{
-				String mime = null ;
-				String type = name.substring(
-					index
-					) ;
-				//
-				// Check for recognised types.
-				if (".xml".equals(type))
-					{
-					mime = FileProperties.MIME_TYPE_XML ;
-					}
-				if (".vot".equals(type))
-					{
-					mime = FileProperties.MIME_TYPE_VOTABLE ;
-					}
-				if (".vol".equals(type))
-					{
-					mime = FileProperties.MIME_TYPE_VOLIST ;
-					}
-				//
-				// Set the mime property.
-				properties.setProperty(
-					FileProperties.MIME_TYPE_PROPERTY,
-					mime
-					) ;
-				}
+			// Set the mime property.
+			properties.setProperty(
+				FileProperties.MIME_TYPE_PROPERTY,
+				mime
+				) ;
 			}
 		//
 		// Return the new properties as an array.

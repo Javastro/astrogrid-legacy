@@ -1,11 +1,22 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/service/CommunityServiceImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/09 01:19:50 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityServiceImpl.java,v $
+ *   Revision 1.7  2004/09/09 01:19:50  dave
+ *   Updated MIME type handling in MySpace.
+ *   Extended test coverage for MIME types in FileStore and MySpace.
+ *   Added VM memory data to community ServiceStatusData.
+ *
+ *   Revision 1.6.74.2  2004/09/07 04:38:26  dave
+ *   Debug print out of server memory ...
+ *
+ *   Revision 1.6.74.1  2004/09/07 04:01:47  dave
+ *   Added memory stats ...
+ *
  *   Revision 1.6  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -23,8 +34,6 @@ import org.exolab.castor.jdo.DatabaseNotFoundException ;
 
 import org.astrogrid.community.common.service.CommunityService ;
 import org.astrogrid.community.common.service.data.ServiceStatusData ;
-
-//import org.astrogrid.community.common.config.CommunityConfig;
 
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration ;
 import org.astrogrid.community.server.database.configuration.DatabaseConfigurationFactory ;
@@ -73,9 +82,6 @@ public class CommunityServiceImpl
         if (DEBUG_FLAG) System.out.println("CommunityServiceImpl()") ;
         if (DEBUG_FLAG) System.out.println("  Class  : " + this.getClass()) ;
         //
-        // Initialise our config properties.
-//        CommunityConfig.loadConfig() ;
-        //
         // Create our database configuration factory.
         DatabaseConfigurationFactory factory = new DatabaseConfigurationFactory() ;
         //
@@ -109,9 +115,6 @@ public class CommunityServiceImpl
         if (DEBUG_FLAG) System.out.println("  Class  : " + this.getClass()) ;
         if (DEBUG_FLAG) System.out.println("  Config : " + config) ;
         //
-        // Initialise our config properties.
-//        CommunityConfig.loadConfig() ;
-        //
         // Set our database configuration.
         this.setDatabaseConfiguration(config) ;
         }
@@ -127,9 +130,6 @@ public class CommunityServiceImpl
         if (DEBUG_FLAG) System.out.println("CommunityServiceImpl()") ;
         if (DEBUG_FLAG) System.out.println("  Class  : " + this.getClass()) ;
         if (DEBUG_FLAG) System.out.println("  Parent : " + parent.getClass()) ;
-        //
-        // Initialise our config properties.
-//        CommunityConfig.loadConfig() ;
         //
         // Use our parent's database configuration 
         if (null != parent)
@@ -151,8 +151,19 @@ public class CommunityServiceImpl
         if (DEBUG_FLAG) System.out.println("CommunityServer.getServiceStatus()") ;
 
         ServiceStatusData status =  new ServiceStatusData() ;
-
-//      status.setConfigPath(CommunityConfig.getProperty("config.location")) ;
+		//
+		// Get the current runtime data ...
+		Runtime runtime = Runtime.getRuntime() ;
+		status.setFreeMemory(
+			runtime.freeMemory()
+			) ;
+		status.setTotalMemory(
+			runtime.totalMemory()
+			) ;
+		if (DEBUG_FLAG) System.out.println("  Server free  memory : " + String.valueOf(status.getFreeMemory()))  ;
+		if (DEBUG_FLAG) System.out.println("  Server total memory : " + String.valueOf(status.getTotalMemory())) ;
+		//
+		// Get the database config settings.
         if (DEBUG_FLAG) System.out.println("  Database config : " + databaseConfiguration) ;
         if (null != databaseConfiguration)
             {

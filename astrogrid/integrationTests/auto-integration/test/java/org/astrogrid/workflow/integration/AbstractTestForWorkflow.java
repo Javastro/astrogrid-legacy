@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForWorkflow.java,v 1.17 2004/09/08 13:10:13 nw Exp $
+/*$Id: AbstractTestForWorkflow.java,v 1.18 2004/09/09 01:19:50 dave Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -83,7 +83,7 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
         JobURN urn = null;
         try {
             buildWorkflow();
-            writeWorkflowToVOSpace(this.getClass().getName() + ".workflow",wf);
+            writeWorkflowToVOSpace(wf);
             assertTrue("workflow is not valid", wf.isValid());
             urn = jes.submitWorkflow(wf);
             assertNotNull("submitted workflow produced null urn", urn);
@@ -109,7 +109,7 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
         while (System.currentTimeMillis() < startTime + WAIT_TIME) {
             try {
                 Workflow w11 = jes.readJob(urn);
-                writeWorkflowToVOSpace(this.getClass().getName() + "-result.workflow",w11);
+                writeWorkflowResultToVOSpace(w11);
                 if (w11.getJobExecutionRecord() != null
                     && w11.getJobExecutionRecord().getStatus().getType() >= ExecutionPhase.COMPLETED_TYPE) {
                     completed = true;
@@ -136,16 +136,103 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
             checkExecutionResults(result);
  
     }
-    
-    /** write workflow out to vospace.
-     * @param string
-     * @param w11
+
+    /**
+     * Save a workflow to vospace, using the current test class name.
+     * @param workflow The workflow to store.
+     *
      */
-    private void writeWorkflowToVOSpace(String filename, Workflow w11) {
+    protected void writeWorkflowToVOSpace(Workflow workflow) {
+      this.writeWorkflowToVOSpace(
+        this.getClass().getName() + "-workflow",
+        workflow
+        ) ;
+    }
+
+    /**
+     * Save a workflow to vospace, path defaults to 'workflow'
+     * @param name     The filename to store it as.
+     * @param workflow The workflow to store.
+     *
+     */
+   protected void writeWorkflowToVOSpace(String name, Workflow workflow) {
+      this.writeWorkflowToVOSpace(
+        "workflow",
+        name,
+        workflow
+        ) ;
+    }
+
+    /**
+     * Save a workflow to vospace.
+     * @param path     The VoSpace path to store it at.
+     * @param name     The VoSpace name to store it as.
+     * @param workflow The workflow to store.
+     *
+     */
+    protected void writeWorkflowToVOSpace(String path, String name, Workflow workflow) {
         try {
-            ag.getWorkflowManager().getWorkflowStore().saveWorkflow(user,createIVORN("workflow/" + filename),w11);
+            ag.getWorkflowManager().getWorkflowStore().saveWorkflow(
+                user,
+                createUniqueIVORN(
+                    path,
+                    name,
+                    "work"
+                    ),
+                workflow
+                );
         } catch (WorkflowInterfaceException e) {
             System.err.println("Could not save workflow to myspace");
+            e.printStackTrace(System.err);
+        }
+    }
+
+    /**
+     * Save a workflow result to vospace, using the current test class name.
+     * @param workflow The workflow to store.
+     *
+     */
+    protected void writeWorkflowResultToVOSpace(Workflow workflow) {
+      this.writeWorkflowResultToVOSpace(
+        this.getClass().getName() + "-result",
+        workflow
+        ) ;
+    }
+
+    /**
+     * Save a workflow result to vospace, path defaults to 'workflow'
+     * @param name     The filename to store it as.
+     * @param workflow The workflow to store.
+     *
+     */
+   protected void writeWorkflowResultToVOSpace(String name, Workflow workflow) {
+      this.writeWorkflowResultToVOSpace(
+        "workflow",
+        name,
+        workflow
+        ) ;
+    }
+
+    /**
+     * Save a workflow result to vospace.
+     * @param path     The VoSpace path to store it at.
+     * @param name     The VoSpace name to store it as.
+     * @param workflow The workflow to store.
+     *
+     */
+    protected void writeWorkflowResultToVOSpace(String path, String name, Workflow workflow) {
+        try {
+            ag.getWorkflowManager().getWorkflowStore().saveWorkflow(
+                user,
+                createUniqueIVORN(
+                    path,
+                    name,
+                    "job"
+                    ),
+                workflow
+                );
+        } catch (WorkflowInterfaceException e) {
+            System.err.println("Could not save workflow results to myspace");
             e.printStackTrace(System.err);
         }
     }
@@ -270,8 +357,31 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
 
 /* 
 $Log: AbstractTestForWorkflow.java,v $
+Revision 1.18  2004/09/09 01:19:50  dave
+Updated MIME type handling in MySpace.
+Extended test coverage for MIME types in FileStore and MySpace.
+Added VM memory data to community ServiceStatusData.
+
 Revision 1.17  2004/09/08 13:10:13  nw
 made it possible to override timeout
+
+Revision 1.16.2.6  2004/09/07 17:42:22  dave
+Changed the result type to *.job.
+
+Revision 1.16.2.5  2004/09/07 16:07:17  dave
+Added save workflow results to VoSpace ...
+
+Revision 1.16.2.4  2004/09/07 15:55:42  dave
+Refactored save workflow to VoSpace ...
+
+Revision 1.16.2.3  2004/09/07 15:41:57  dave
+Reafctored the VoSpace save methods ....
+
+Revision 1.16.2.2  2004/09/07 13:27:03  dave
+Added unique ivorn factory to abstract test.
+
+Revision 1.16.2.1  2004/09/07 02:15:15  dave
+Fixed myspace path.
 
 Revision 1.16  2004/09/03 13:10:43  nw
 saves workflows before and after execution into myspace

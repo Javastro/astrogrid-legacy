@@ -1,10 +1,21 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/server/test/java/org/astrogrid/mySpace/mySpaceManager/FileStoreDriverTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/02 10:25:41 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/09 01:19:50 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreDriverTest.java,v $
+ *   Revision 1.5  2004/09/09 01:19:50  dave
+ *   Updated MIME type handling in MySpace.
+ *   Extended test coverage for MIME types in FileStore and MySpace.
+ *   Added VM memory data to community ServiceStatusData.
+ *
+ *   Revision 1.4.6.2  2004/09/08 13:58:44  dave
+ *   Fixed typo ....
+ *
+ *   Revision 1.4.6.1  2004/09/08 13:20:24  dave
+ *   Updated mime type handling and tests ...
+ *
  *   Revision 1.4  2004/09/02 10:25:41  dave
  *   Updated FileStore and MySpace to handle mime type and file size.
  *   Updated Community deployment script.
@@ -240,10 +251,10 @@ public class FileStoreDriverTest
 		}
 
 	/**
-	 * Test that a '.xml' name returns the right type.
+	 * Test that importing a string as 'test.xml' name gets the right mime type.
 	 *
 	 */
-	public void testImportNameXml()
+	public void testImportStringAsXml()
 		throws Exception
 		{
 		//
@@ -266,10 +277,10 @@ public class FileStoreDriverTest
 		}
 
 	/**
-	 * Test that a '.vot' name returns the right type.
+	 * Test that importing a string as 'test.vot' name gets the right mime type.
 	 *
 	 */
-	public void testImportNameVot()
+	public void testImportStringAsVot()
 		throws Exception
 		{
 		//
@@ -292,10 +303,36 @@ public class FileStoreDriverTest
 		}
 
 	/**
-	 * Test that a '.vol' name returns the right type.
+	 * Test that importing a string as 'test.votable' name gets the right mime type.
 	 *
 	 */
-	public void testImportNameVol()
+	public void testImportStringAsVoTable()
+		throws Exception
+		{
+		//
+		// Set the item name.
+		item.setDataItemName(
+			"test.votable"
+			) ;
+		//
+		// Import some data ....
+		driver.importString(
+			item,
+			TEST_STRING
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_VOTABLE,
+			item.getDataItemMime()
+			) ;
+		}
+
+	/**
+	 * Test that importing a string as 'test.vol' name gets the right mime type.
+	 *
+	 */
+	public void testImportStringAsVol()
 		throws Exception
 		{
 		//
@@ -318,16 +355,457 @@ public class FileStoreDriverTest
 		}
 
 	/**
-	 * Test that a '.xml' name returns the right type.
+	 * Test that importing a string as 'test.volist' name gets the right mime type.
 	 *
 	 */
-	public void testImportXmlUrl()
+	public void testImportStringAsVoList()
+		throws Exception
+		{
+		//
+		// Set the item name.
+		item.setDataItemName(
+			"test.volist"
+			) ;
+		//
+		// Import some data ....
+		driver.importString(
+			item,
+			TEST_STRING
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_VOLIST,
+			item.getDataItemMime()
+			) ;
+		}
+
+	/**
+	 * Test that importing a string as 'test.work' name gets the right mime type.
+	 *
+	 */
+	public void testImportStringAsWork()
+		throws Exception
+		{
+		//
+		// Set the item name.
+		item.setDataItemName(
+			"test.work"
+			) ;
+		//
+		// Import some data ....
+		driver.importString(
+			item,
+			TEST_STRING
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_WORKFLOW,
+			item.getDataItemMime()
+			) ;
+		}
+
+	/**
+	 * Test that importing a string as 'test.flow' name gets the right mime type.
+	 *
+	 */
+	public void testImportStringAsFlow()
+		throws Exception
+		{
+		//
+		// Set the item name.
+		item.setDataItemName(
+			"test.flow"
+			) ;
+		//
+		// Import some data ....
+		driver.importString(
+			item,
+			TEST_STRING
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_WORKFLOW,
+			item.getDataItemMime()
+			) ;
+		}
+
+	/**
+	 * Test that importing a string as 'test.workflow' name gets the right mime type.
+	 *
+	 */
+	public void testImportStringAsWorkFlow()
+		throws Exception
+		{
+		//
+		// Set the item name.
+		item.setDataItemName(
+			"test.workflow"
+			) ;
+		//
+		// Import some data ....
+		driver.importString(
+			item,
+			TEST_STRING
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_WORKFLOW,
+			item.getDataItemMime()
+			) ;
+		}
+
+	/**
+	 * Test that importing a string as 'test.job' name gets the right mime type.
+	 *
+	 */
+	public void testImportStringAsJob()
+		throws Exception
+		{
+		//
+		// Set the item name.
+		item.setDataItemName(
+			"test.job"
+			) ;
+		//
+		// Import some data ....
+		driver.importString(
+			item,
+			TEST_STRING
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_JOB,
+			item.getDataItemMime()
+			) ;
+		}
+
+	/**
+	 * Test that importing a string as 'test.adql' name gets the right mime type.
+	 *
+	 */
+	public void testImportStringAsAdql()
+		throws Exception
+		{
+		//
+		// Set the item name.
+		item.setDataItemName(
+			"test.adql"
+			) ;
+		//
+		// Import some data ....
+		driver.importString(
+			item,
+			TEST_STRING
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_ADQL,
+			item.getDataItemMime()
+			) ;
+		}
+
+	/**
+	 * Test that importing a URL as 'test.xml' name gets the right mime type.
+	 *
+	 */
+	public void testImportUrlAsXml()
 		throws Exception
 		{
 		//
 		// Set the item name.
 		item.setDataItemName(
 			"test.xml"
+			) ;
+		//
+		// Import some data ....
+		driver.importUrl(
+			item,
+			new URL(
+				"http://www.astrogrid.org/maven/"
+				)
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_XML,
+			item.getDataItemMime()
+			) ;
+		}
+
+	/**
+	 * Test that importing a URL as 'test.vot' name gets the right mime type.
+	 *
+	 */
+	public void testImportUrlAsVot()
+		throws Exception
+		{
+		//
+		// Set the item name.
+		item.setDataItemName(
+			"test.vot"
+			) ;
+		//
+		// Import some data ....
+		driver.importUrl(
+			item,
+			new URL(
+				"http://www.astrogrid.org/maven/"
+				)
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_VOTABLE,
+			item.getDataItemMime()
+			) ;
+		}
+
+	/**
+	 * Test that importing a URL as 'test.votable' name gets the right mime type.
+	 *
+	 */
+	public void testImportUrlAsVoTable()
+		throws Exception
+		{
+		//
+		// Set the item name.
+		item.setDataItemName(
+			"test.votable"
+			) ;
+		//
+		// Import some data ....
+		driver.importUrl(
+			item,
+			new URL(
+				"http://www.astrogrid.org/maven/"
+				)
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_VOTABLE,
+			item.getDataItemMime()
+			) ;
+		}
+
+	/**
+	 * Test that importing a URL as 'test.vol' name gets the right mime type.
+	 *
+	 */
+	public void testImportUrlAsVol()
+		throws Exception
+		{
+		//
+		// Set the item name.
+		item.setDataItemName(
+			"test.vol"
+			) ;
+		//
+		// Import some data ....
+		driver.importUrl(
+			item,
+			new URL(
+				"http://www.astrogrid.org/maven/"
+				)
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_VOLIST,
+			item.getDataItemMime()
+			) ;
+		}
+
+	/**
+	 * Test that importing a URL as 'test.volist' name gets the right mime type.
+	 *
+	 */
+	public void testImportUrlAsVoList()
+		throws Exception
+		{
+		//
+		// Set the item name.
+		item.setDataItemName(
+			"test.volist"
+			) ;
+		//
+		// Import some data ....
+		driver.importUrl(
+			item,
+			new URL(
+				"http://www.astrogrid.org/maven/"
+				)
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_VOLIST,
+			item.getDataItemMime()
+			) ;
+		}
+
+	/**
+	 * Test that importing a URL as 'test.work' name gets the right mime type.
+	 *
+	 */
+	public void testImportUrlAsWork()
+		throws Exception
+		{
+		//
+		// Set the item name.
+		item.setDataItemName(
+			"test.work"
+			) ;
+		//
+		// Import some data ....
+		driver.importUrl(
+			item,
+			new URL(
+				"http://www.astrogrid.org/maven/"
+				)
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_WORKFLOW,
+			item.getDataItemMime()
+			) ;
+		}
+
+	/**
+	 * Test that importing a URL as 'test.flow' name gets the right mime type.
+	 *
+	 */
+	public void testImportUrlAsFlow()
+		throws Exception
+		{
+		//
+		// Set the item name.
+		item.setDataItemName(
+			"test.flow"
+			) ;
+		//
+		// Import some data ....
+		driver.importUrl(
+			item,
+			new URL(
+				"http://www.astrogrid.org/maven/"
+				)
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_WORKFLOW,
+			item.getDataItemMime()
+			) ;
+		}
+
+	/**
+	 * Test that importing a URL as 'test.workflow' name gets the right mime type.
+	 *
+	 */
+	public void testImportUrlAsWorkFlow()
+		throws Exception
+		{
+		//
+		// Set the item name.
+		item.setDataItemName(
+			"test.workflow"
+			) ;
+		//
+		// Import some data ....
+		driver.importUrl(
+			item,
+			new URL(
+				"http://www.astrogrid.org/maven/"
+				)
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_WORKFLOW,
+			item.getDataItemMime()
+			) ;
+		}
+
+	/**
+	 * Test that importing a URL as 'test.job' name gets the right mime type.
+	 *
+	 */
+	public void testImportUrlAsJob()
+		throws Exception
+		{
+		//
+		// Set the item name.
+		item.setDataItemName(
+			"test.job"
+			) ;
+		//
+		// Import some data ....
+		driver.importUrl(
+			item,
+			new URL(
+				"http://www.astrogrid.org/maven/"
+				)
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_JOB,
+			item.getDataItemMime()
+			) ;
+		}
+
+	/**
+	 * Test that importing a URL as 'test.adql' name gets the right mime type.
+	 *
+	 */
+	public void testImportUrlAsAdql()
+		throws Exception
+		{
+		//
+		// Set the item name.
+		item.setDataItemName(
+			"test.adql"
+			) ;
+		//
+		// Import some data ....
+		driver.importUrl(
+			item,
+			new URL(
+				"http://www.astrogrid.org/maven/"
+				)
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_ADQL,
+			item.getDataItemMime()
+			) ;
+		}
+
+	/**
+	 * Test that setting the mime type works.
+	 *
+	 */
+	public void testImportUrlWithMimeXml()
+		throws Exception
+		{
+		//
+		// Set the item name.
+		item.setDataItemName(
+			"test.adql"
+			) ;
+		//
+		// Set the item type.
+		item.setDataItemMime(
+			FileProperties.MIME_TYPE_XML
 			) ;
 		//
 		// Import some data ....

@@ -1,11 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/service/CommunityServiceTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/09 01:19:50 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityServiceTest.java,v $
+ *   Revision 1.7  2004/09/09 01:19:50  dave
+ *   Updated MIME type handling in MySpace.
+ *   Extended test coverage for MIME types in FileStore and MySpace.
+ *   Added VM memory data to community ServiceStatusData.
+ *
+ *   Revision 1.6.74.1  2004/09/07 04:01:47  dave
+ *   Added memory stats ...
+ *
  *   Revision 1.6  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -24,6 +32,7 @@ import org.astrogrid.store.Ivorn ;
 
 import org.astrogrid.community.common.junit.JUnitTestBase ;
 
+import org.astrogrid.community.common.service.data.ServiceStatusData ;
 import org.astrogrid.community.common.database.manager.DatabaseManager ;
 
 import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory ;
@@ -105,7 +114,6 @@ public class CommunityServiceTest
     /**
      * Test the service status.
      * Just checks that the return is not null.
-     * @todo Check that the service returns useful info.
      *
      */
     public void testServiceStatus()
@@ -116,10 +124,30 @@ public class CommunityServiceTest
         if (DEBUG_FLAG) System.out.println("CommunityServiceTest.testServiceStatus()") ;
         if (DEBUG_FLAG) System.out.println("  Service : " + communityService.getClass()) ;
         assertNotNull(
-            "getServiceStatus returned NULL",
             communityService.getServiceStatus()
             ) ;
         }
+
+    /**
+     * Test the service memory.
+     *
+     */
+    public void testServiceMemory()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("CommunityServiceTest.testServiceMemory()") ;
+        if (DEBUG_FLAG) System.out.println("  Service : " + communityService.getClass()) ;
+		//
+		// Get the service status.
+        ServiceStatusData status = communityService.getServiceStatus() ;
+		//
+		// Log the available memory.
+        if (DEBUG_FLAG) System.out.println("  Free  memory : " + status.getFreeMemory()) ;
+        if (DEBUG_FLAG) System.out.println("  Total memory : " + status.getTotalMemory()) ;
+        }
+
 
     /**
      * Our target DatabaseManager.

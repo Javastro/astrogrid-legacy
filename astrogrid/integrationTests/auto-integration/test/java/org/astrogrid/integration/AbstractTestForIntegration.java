@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.7 2004/09/02 11:18:09 jdt Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.8 2004/09/09 01:19:50 dave Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -86,12 +86,52 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
    {
       return new Ivorn(MYSPACE,user.getUserId()+path);
    }
-   
+
+   /**
+    * Adds the current timestamp to create a unique file name.
+    * @param path The MySpace file path (without the user name).
+    * @param path The MySpace file name (without the type extension).
+    * @param path The MySpace file type (.vot, .job etc ..).
+    * @return A new MySpace Ivorn 'ivo://[myspace-service]/[user]/[path]/[name]-[timestamp].[type]'
+    * @todo This needs refactoring to use Ivorn factories.
+    *
+    */
+   protected Ivorn createUniqueIVORN(String path, String name, String type)
+   {
+   StringBuffer buffer = new StringBuffer() ;
+   buffer.append(
+     user.getUserId()
+     ) ;
+   buffer.append("/") ;
+   buffer.append(path) ;
+   buffer.append("/") ;
+   buffer.append(name) ;
+   buffer.append("-") ;
+   buffer.append(
+     String.valueOf(
+       System.currentTimeMillis()
+       )
+     ) ;
+   buffer.append(".") ;
+   buffer.append(type) ;
+   return new Ivorn(
+     MYSPACE,
+     buffer.toString()
+     );
+   }
 }
 
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
+Revision 1.8  2004/09/09 01:19:50  dave
+Updated MIME type handling in MySpace.
+Extended test coverage for MIME types in FileStore and MySpace.
+Added VM memory data to community ServiceStatusData.
+
+Revision 1.7.6.1  2004/09/07 13:27:03  dave
+Added unique ivorn factory to abstract test.
+
 Revision 1.7  2004/09/02 11:18:09  jdt
 Merges from case 3 branch for SIAP.
 

@@ -1,10 +1,24 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/file/FileProperties.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/02 10:25:41 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/09 01:19:50 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  * <cvs:log>
  *   $Log: FileProperties.java,v $
+ *   Revision 1.7  2004/09/09 01:19:50  dave
+ *   Updated MIME type handling in MySpace.
+ *   Extended test coverage for MIME types in FileStore and MySpace.
+ *   Added VM memory data to community ServiceStatusData.
+ *
+ *   Revision 1.6.6.3  2004/09/08 13:43:37  dave
+ *   Added VoList mime type.
+ *
+ *   Revision 1.6.6.2  2004/09/08 12:41:56  dave
+ *   Added adql mime type.
+ *
+ *   Revision 1.6.6.1  2004/09/08 12:39:18  dave
+ *   Added votable and volist mime types.
+ *
  *   Revision 1.6  2004/09/02 10:25:41  dave
  *   Updated FileStore and MySpace to handle mime type and file size.
  *   Updated Community deployment script.
@@ -135,25 +149,17 @@ public class FileProperties
 	 * Known MIME type values.
 	 *
 	 */
-	public static final String MIME_TYPE_TEXT = "text/raw"  ;
-	public static final String MIME_TYPE_XML  = "text/xml"  ;
-	public static final String MIME_TYPE_HTML = "text/html" ;
+	public static final String MIME_TYPE_TEXT     = "text/raw"  ;
+	public static final String MIME_TYPE_XML      = "text/xml"  ;
+	public static final String MIME_TYPE_HTML     = "t"  ;
 
-	public static final String MIME_TYPE_VOLIST  = "text/xml +VOLIST"   ;
-	public static final String MIME_TYPE_VOTABLE = "text/xml +VOTABLE"  ;
+	public static final String MIME_TYPE_VOLIST   = "text/xml +org.astrogrid.mime.volist"  ;
+	public static final String MIME_TYPE_VOTABLE  = "text/xml +org.astrogrid.mime.votable" ;
 
-	/**
-	 * The property key for IVOA type.
-	 *
-	public static final String IVOA_TYPE_PROPERTY  = "ivoa.type" ;
-	 */
+	public static final String MIME_TYPE_JOB      = "text/xml +org.astrogrid.mime.job"      ;
+	public static final String MIME_TYPE_WORKFLOW = "text/xml +org.astrogrid.mime.workflow" ;
 
-	/**
-	 * Known IVOA type values.
-	 *
-	public static final String IVOA_TYPE_VOLIST   = "ivo.volist"  ;
-	public static final String IVOA_TYPE_VOTABLE  = "ivo.votable" ;
-	 */
+	public static final String MIME_TYPE_ADQL     = "text/xml +org.astrogrid.mime.adql"     ;
 
 	/**
 	 * Public constructor.

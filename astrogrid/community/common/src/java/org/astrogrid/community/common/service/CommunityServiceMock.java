@@ -1,11 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/service/CommunityServiceMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/09 01:19:50 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityServiceMock.java,v $
+ *   Revision 1.6  2004/09/09 01:19:50  dave
+ *   Updated MIME type handling in MySpace.
+ *   Extended test coverage for MIME types in FileStore and MySpace.
+ *   Added VM memory data to community ServiceStatusData.
+ *
+ *   Revision 1.5.74.1  2004/09/07 04:01:47  dave
+ *   Added memory stats ...
+ *
  *   Revision 1.5  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -44,12 +52,6 @@ public class CommunityServiceMock
         }
 
     /**
-     * Our service status.
-     *
-     */
-    private ServiceStatusData serviceStatus = new ServiceStatusData() ;
-
-    /**
      * Service health check.
      *
      */
@@ -58,16 +60,16 @@ public class CommunityServiceMock
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("CommunityServiceMock.getServiceStatus()") ;
-        return this.serviceStatus ;
+		ServiceStatusData status = new ServiceStatusData() ;
+		//
+		// Get the current runtime data ...
+		Runtime runtime = Runtime.getRuntime() ;
+		status.setFreeMemory(
+			runtime.freeMemory()
+			) ;
+		status.setTotalMemory(
+			runtime.totalMemory()
+			) ;
+        return status ;
         }
-
-    /**
-     * Set the service status.
-     *
-     */
-    public void setServiceStatus(ServiceStatusData value)
-        {
-        this.serviceStatus = value ;
-        }
-
     }

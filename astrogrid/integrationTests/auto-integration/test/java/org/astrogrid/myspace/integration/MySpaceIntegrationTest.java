@@ -1,10 +1,30 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/integrationTests/auto-integration/test/java/org/astrogrid/myspace/integration/Attic/MySpaceIntegrationTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/02 10:25:41 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/09 01:19:50 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  * <cvs:log>
  *   $Log: MySpaceIntegrationTest.java,v $
+ *   Revision 1.6  2004/09/09 01:19:50  dave
+ *   Updated MIME type handling in MySpace.
+ *   Extended test coverage for MIME types in FileStore and MySpace.
+ *   Added VM memory data to community ServiceStatusData.
+ *
+ *   Revision 1.5.6.5  2004/09/08 20:59:40  dave
+ *   Added check for fake null in mime type ....
+ *
+ *   Revision 1.5.6.4  2004/09/08 14:29:31  dave
+ *   Fixed broken {}
+ *
+ *   Revision 1.5.6.3  2004/09/08 14:27:19  dave
+ *   Removed duplicate test ...
+ *
+ *   Revision 1.5.6.2  2004/09/08 14:20:28  dave
+ *   Fixed typo ....
+ *
+ *   Revision 1.5.6.1  2004/09/08 13:20:53  dave
+ *   Updated mime type tests ...
+ *
  *   Revision 1.5  2004/09/02 10:25:41  dave
  *   Updated FileStore and MySpace to handle mime type and file size.
  *   Updated Community deployment script.
@@ -1012,11 +1032,51 @@ public class MySpaceIntegrationTest
 //            ) ;
         }
 
+
     /**
-     * Check that an imported string has the right mime type.
+     * Check that importing a string as 'imported.xml' has the right mime type.
      *
      */
-    public void testImportStringMime()
+    public void testImportStringAsXML()
+        throws Exception
+        {
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Import some data.
+        myspace.putString(
+            TEST_STRING,
+            this.getUserPath(
+                "imported.xml"
+                ),
+            false
+            );
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported.xml"
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_XML,
+            file.getMimeType()
+            ) ;
+        }
+
+    /**
+     * Check that importing a string as 'imported.vot' has the right mime type.
+     *
+     */
+    public void testImportStringAsVot()
         throws Exception
         {
         //
@@ -1052,10 +1112,499 @@ public class MySpaceIntegrationTest
         }
 
     /**
-     * Check that an imported URL has the right mime type.
+     * Check that importing a string as 'imported.votable' has the right mime type.
      *
      */
-    public void testImportUrlMime()
+    public void testImportStringAsVoTable()
+        throws Exception
+        {
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Import some data.
+        myspace.putString(
+            TEST_STRING,
+            this.getUserPath(
+                "imported.votable"
+                ),
+            false
+            );
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported.votable"
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_VOTABLE,
+            file.getMimeType()
+            ) ;
+        }
+
+    /**
+     * Check that importing a string as 'imported.vol' has the right mime type.
+     *
+     */
+    public void testImportStringAsVol()
+        throws Exception
+        {
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Import some data.
+        myspace.putString(
+            TEST_STRING,
+            this.getUserPath(
+                "imported.vol"
+                ),
+            false
+            );
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported.vol"
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_VOLIST,
+            file.getMimeType()
+            ) ;
+        }
+
+    /**
+     * Check that importing a string as 'imported.volist' has the right mime type.
+     *
+     */
+    public void testImportStringAsVoList()
+        throws Exception
+        {
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Import some data.
+        myspace.putString(
+            TEST_STRING,
+            this.getUserPath(
+                "imported.volist"
+                ),
+            false
+            );
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported.volist"
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_VOLIST,
+            file.getMimeType()
+            ) ;
+        }
+
+    /**
+     * Check that importing a string as 'imported.work' has the right mime type.
+     *
+     */
+    public void testImportStringAsWork()
+        throws Exception
+        {
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Import some data.
+        myspace.putString(
+            TEST_STRING,
+            this.getUserPath(
+                "imported.work"
+                ),
+            false
+            );
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported.work"
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_WORKFLOW,
+            file.getMimeType()
+            ) ;
+        }
+
+    /**
+     * Check that importing a string as 'imported.flow' has the right mime type.
+     *
+     */
+    public void testImportStringAsFlow()
+        throws Exception
+        {
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Import some data.
+        myspace.putString(
+            TEST_STRING,
+            this.getUserPath(
+                "imported.flow"
+                ),
+            false
+            );
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported.flow"
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_WORKFLOW,
+            file.getMimeType()
+            ) ;
+        }
+
+    /**
+     * Check that importing a string as 'imported.workflow' has the right mime type.
+     *
+     */
+    public void testImportStringAsWorkFlow()
+        throws Exception
+        {
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Import some data.
+        myspace.putString(
+            TEST_STRING,
+            this.getUserPath(
+                "imported.workflow"
+                ),
+            false
+            );
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported.workflow"
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_WORKFLOW,
+            file.getMimeType()
+            ) ;
+        }
+
+    /**
+     * Check that importing a string as 'imported.job' has the right mime type.
+     *
+     */
+    public void testImportStringAsJob()
+        throws Exception
+        {
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Import some data.
+        myspace.putString(
+            TEST_STRING,
+            this.getUserPath(
+                "imported.job"
+                ),
+            false
+            );
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported.job"
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_JOB,
+            file.getMimeType()
+            ) ;
+        }
+
+    /**
+     * Check that importing a string as 'imported.adql' has the right mime type.
+     *
+     */
+    public void testImportStringAsAdql()
+        throws Exception
+        {
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Import some data.
+        myspace.putString(
+            TEST_STRING,
+            this.getUserPath(
+                "imported.adql"
+                ),
+            false
+            );
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported.adql"
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_ADQL,
+            file.getMimeType()
+            ) ;
+        }
+
+    /**
+     * Check that importing a URL as 'imported.xml' has the right mime type.
+     *
+     */
+    public void testImportUrlAsXml()
+        throws Exception
+        {
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Get the URL from our config.
+        URL source = new URL(
+            getTestProperty(
+                "data.http.html"
+                )
+            ) ;
+        //
+        // Import some data.
+        myspace.putUrl(
+            source,
+            this.getUserPath(
+                "imported.xml"
+                ),
+            false
+            );
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported.xml"
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_XML,
+            file.getMimeType()
+            ) ;
+        //
+        // Get the file URL from the manager.
+        URL stored = myspace.getUrl(
+            this.getUserPath(
+                "imported.xml"
+                )
+            ) ;
+        //
+        // Check the stored mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_XML,
+            stored.openConnection().getContentType()
+            ) ;
+        }
+
+    /**
+     * Check that importing a URL as 'imported.vot' has the right mime type.
+     *
+     */
+    public void testImportUrlAsVot()
+        throws Exception
+        {
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Get the URL from our config.
+        URL source = new URL(
+            getTestProperty(
+                "data.http.html"
+                )
+            ) ;
+        //
+        // Import some data.
+        myspace.putUrl(
+            source,
+            this.getUserPath(
+                "imported.vot"
+                ),
+            false
+            );
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported.vot"
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_VOTABLE,
+            file.getMimeType()
+            ) ;
+        //
+        // Get the file URL from the manager.
+        URL stored = myspace.getUrl(
+            this.getUserPath(
+                "imported.vot"
+                )
+            ) ;
+        //
+        // Check the stored mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_VOTABLE,
+            stored.openConnection().getContentType()
+            ) ;
+        }
+
+    /**
+     * Check that importing a URL as 'imported.votable' has the right mime type.
+     *
+     */
+    public void testImportUrlAsVoTable()
+        throws Exception
+        {
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Get the URL from our config.
+        URL source = new URL(
+            getTestProperty(
+                "data.http.html"
+                )
+            ) ;
+        //
+        // Import some data.
+        myspace.putUrl(
+            source,
+            this.getUserPath(
+                "imported.votable"
+                ),
+            false
+            );
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported.votable"
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_VOTABLE,
+            file.getMimeType()
+            ) ;
+        //
+        // Get the file URL from the manager.
+        URL stored = myspace.getUrl(
+            this.getUserPath(
+                "imported.votable"
+                )
+            ) ;
+        //
+        // Check the stored mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_VOTABLE,
+            stored.openConnection().getContentType()
+            ) ;
+        }
+
+    /**
+     * Check that importing a URL as 'imported.vol' has the right mime type.
+     *
+     */
+    public void testImportUrlAsVol()
         throws Exception
         {
         //
@@ -1106,6 +1655,360 @@ public class MySpaceIntegrationTest
         // Check the stored mime type.
         assertEquals(
             FileProperties.MIME_TYPE_VOLIST,
+            stored.openConnection().getContentType()
+            ) ;
+        }
+
+    /**
+     * Check that importing a URL as 'imported.volist' has the right mime type.
+     *
+     */
+    public void testImportUrlAsVoList()
+        throws Exception
+        {
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Get the URL from our config.
+        URL source = new URL(
+            getTestProperty(
+                "data.http.html"
+                )
+            ) ;
+        //
+        // Import some data.
+        myspace.putUrl(
+            source,
+            this.getUserPath(
+                "imported.volist"
+                ),
+            false
+            );
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported.volist"
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_VOLIST,
+            file.getMimeType()
+            ) ;
+        //
+        // Get the file URL from the manager.
+        URL stored = myspace.getUrl(
+            this.getUserPath(
+                "imported.volist"
+                )
+            ) ;
+        //
+        // Check the stored mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_VOLIST,
+            stored.openConnection().getContentType()
+            ) ;
+        }
+
+    /**
+     * Check that importing a URL as 'imported.work' has the right mime type.
+     *
+     */
+    public void testImportUrlAsWork()
+        throws Exception
+        {
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Get the URL from our config.
+        URL source = new URL(
+            getTestProperty(
+                "data.http.html"
+                )
+            ) ;
+        //
+        // Import some data.
+        myspace.putUrl(
+            source,
+            this.getUserPath(
+                "imported.work"
+                ),
+            false
+            );
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported.work"
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_WORKFLOW,
+            file.getMimeType()
+            ) ;
+        //
+        // Get the file URL from the manager.
+        URL stored = myspace.getUrl(
+            this.getUserPath(
+                "imported.work"
+                )
+            ) ;
+        //
+        // Check the stored mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_WORKFLOW,
+            stored.openConnection().getContentType()
+            ) ;
+        }
+
+    /**
+     * Check that importing a URL as 'imported.flow' has the right mime type.
+     *
+     */
+    public void testImportUrlAsFlow()
+        throws Exception
+        {
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Get the URL from our config.
+        URL source = new URL(
+            getTestProperty(
+                "data.http.html"
+                )
+            ) ;
+        //
+        // Import some data.
+        myspace.putUrl(
+            source,
+            this.getUserPath(
+                "imported.flow"
+                ),
+            false
+            );
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported.flow"
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_WORKFLOW,
+            file.getMimeType()
+            ) ;
+        //
+        // Get the file URL from the manager.
+        URL stored = myspace.getUrl(
+            this.getUserPath(
+                "imported.flow"
+                )
+            ) ;
+        //
+        // Check the stored mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_WORKFLOW,
+            stored.openConnection().getContentType()
+            ) ;
+        }
+
+    /**
+     * Check that importing a URL as 'imported.workflow' has the right mime type.
+     *
+     */
+    public void testImportUrlAsWorkFlow()
+        throws Exception
+        {
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Get the URL from our config.
+        URL source = new URL(
+            getTestProperty(
+                "data.http.html"
+                )
+            ) ;
+        //
+        // Import some data.
+        myspace.putUrl(
+            source,
+            this.getUserPath(
+                "imported.workflow"
+                ),
+            false
+            );
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported.workflow"
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_WORKFLOW,
+            file.getMimeType()
+            ) ;
+        //
+        // Get the file URL from the manager.
+        URL stored = myspace.getUrl(
+            this.getUserPath(
+                "imported.workflow"
+                )
+            ) ;
+        //
+        // Check the stored mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_WORKFLOW,
+            stored.openConnection().getContentType()
+            ) ;
+        }
+
+    /**
+     * Check that importing a URL as 'imported.job' has the right mime type.
+     *
+     */
+    public void testImportUrlAsJob()
+        throws Exception
+        {
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Get the URL from our config.
+        URL source = new URL(
+            getTestProperty(
+                "data.http.html"
+                )
+            ) ;
+        //
+        // Import some data.
+        myspace.putUrl(
+            source,
+            this.getUserPath(
+                "imported.job"
+                ),
+            false
+            );
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported.job"
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_JOB,
+            file.getMimeType()
+            ) ;
+        //
+        // Get the file URL from the manager.
+        URL stored = myspace.getUrl(
+            this.getUserPath(
+                "imported.job"
+                )
+            ) ;
+        //
+        // Check the stored mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_JOB,
+            stored.openConnection().getContentType()
+            ) ;
+        }
+
+    /**
+     * Check that importing a URL as 'imported.adql' has the right mime type.
+     *
+     */
+    public void testImportUrlAsAdql()
+        throws Exception
+        {
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Get the URL from our config.
+        URL source = new URL(
+            getTestProperty(
+                "data.http.html"
+                )
+            ) ;
+        //
+        // Import some data.
+        myspace.putUrl(
+            source,
+            this.getUserPath(
+                "imported.adql"
+                ),
+            false
+            );
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported.adql"
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_ADQL,
+            file.getMimeType()
+            ) ;
+        //
+        // Get the file URL from the manager.
+        URL stored = myspace.getUrl(
+            this.getUserPath(
+                "imported.adql"
+                )
+            ) ;
+        //
+        // Check the stored mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_ADQL,
             stored.openConnection().getContentType()
             ) ;
         }
