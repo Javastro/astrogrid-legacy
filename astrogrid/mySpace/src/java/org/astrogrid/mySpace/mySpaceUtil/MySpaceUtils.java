@@ -23,6 +23,7 @@ import org.apache.axis.AxisProperties;
 
 import org.astrogrid.mySpace.mySpaceStatus.MySpaceMessage;
 import org.astrogrid.mySpace.mySpaceManager.DataItemRecord;
+import org.astrogrid.mySpace.mySpaceStatus.*;
 
 /**
  * @author C L QIN
@@ -37,13 +38,20 @@ public class MySpaceUtils {
 	private static String requestTemplate = "catalinaHome"+"/conf/astrogrid/mySpace/"+"MySpaceManagerRequest.properties";
     private static Properties conProperties = new Properties();
     private static final String RESPONSE = "MYSPACEMANAGER_RESPONSE";
+	private static MySpaceStatus msstatus = new MySpaceStatus();
+	private static String response = " ";
+	private static final String SUCCESS = "SUCCESS";
+	private static final String FAULT = "FAULT";
 	
 	public static String readFromFile( File file ) {
 		FileReader fileReader = null;
 		try{
 			if (file == null || !file.exists()) {
 				//throw new IOException("File does not exist");
-				return "";
+				MySpaceMessage msMessage = new MySpaceMessage("FILE_NOT_EXIST");
+				msstatus.addCode(MySpaceStatusCode.FILE_NOT_EXIST,MySpaceStatusCode.ERROR);
+				response = FAULT+MySpaceStatusCode.FILE_NOT_EXIST;
+				return response;
 			}
 			//open file to read from
 			fileReader = new FileReader(file);
@@ -69,7 +77,9 @@ public class MySpaceUtils {
 			return strbufFileContent.toString();
 		}catch (Exception e) {
 			MySpaceMessage msMessage = new MySpaceMessage("ERROR_READING_FILE",e.toString());
-			return "";
+			msstatus.addCode(MySpaceStatusCode.ERROR_READING_FILE,MySpaceStatusCode.ERROR);
+			response = FAULT+MySpaceStatusCode.ERROR_READING_FILE;
+			return response;
 		}finally{
 			try{
 				if(fileReader != null){
@@ -130,12 +140,16 @@ public class MySpaceUtils {
 			}
 					
 			response = MessageFormat.format( template, inserts ) ;
+			return response;
 		}
 		catch ( IOException ex ) {
 			if (DEBUG)  logger.error("MYSPACEUTILS IO EXCEPTION :" +ex.getMessage());
-			
+			MySpaceMessage msMessage = new MySpaceMessage("ERR_IO_BUILD_RESPONS",ex.toString());
+			msstatus.addCode(MySpaceStatusCode.ERR_IO_BUILD_RESPONS,MySpaceStatusCode.ERROR);
+			response = FAULT+MySpaceStatusCode.ERR_IO_BUILD_RESPONS;
+			return response;
 		}
-		return response;
+		
 	}
 	
 	public HashMap getRequestAttributes( String xmlRequest ){
@@ -164,9 +178,6 @@ public class MySpaceUtils {
 									logger.debug("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
 								}
 							}
-							//logger.debug("NODENAME: "+checker.getNodeName() +"NODEVALUE: "+checker.getNodeValue() +"TEXTVALUE: "+text);
-							//request.put(checker.getNodeName(),checker.getNodeValue());
-						//printAttributes((Node)checker);
 						}
 						ascending = false;
 						level++;
@@ -185,7 +196,6 @@ public class MySpaceUtils {
 									logger.debug("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
 								}
 							}
-							//logger.debug("NODENAME: "+checker.getNodeName() +"NODEVALUE: "+checker.getNodeValue() +"TEXTVALUE: "+text);
 							ascending = false;
 							logger.debug("GOING RIGHT");
 							}
@@ -202,7 +212,6 @@ public class MySpaceUtils {
 									logger.debug("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
 								}
 							}
-							//logger.debug("NODENAME: "+checker.getNodeName() +"NODEVALUE: "+checker.getNodeValue() +"TEXTVALUE: "+text);
 							ascending = true;
 							level--;
 							logger.debug("GOING UP");
@@ -214,6 +223,11 @@ public class MySpaceUtils {
 			}
 		}catch(Exception e){
 			logger.debug("ERROR Walking DOM TREE: "+e.toString());
+			//MySpaceMessage msMessage = new MySpaceMessage("FILE_NOT_EXIST");
+			//status.addCode(MySpaceStatusCode.FILE_NOT_EXIST,MySpaceStatusCode.ERROR);
+			//response = FAULT+MySpaceStatusCode.FILE_NOT_EXIST;
+			//return response;
+			
 		}
 		return request;
 	}
