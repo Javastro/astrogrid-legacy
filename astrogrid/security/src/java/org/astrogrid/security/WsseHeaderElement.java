@@ -1,5 +1,6 @@
 package org.astrogrid.security;
 
+import java.util.Date;
 import javax.xml.soap.Name;
 import javax.xml.soap.SOAPElement;
 import javax.xml.soap.SOAPEnvelope;
@@ -8,8 +9,6 @@ import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPHeaderElement;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
-import org.exolab.castor.types.Date;
-import org.exolab.castor.types.Time;
 
 /**
  * A SOAP-header element matching the WS-Security specification of OASIS.
@@ -43,6 +42,11 @@ public class WsseHeaderElement {
    */
   private String WsseNamespace
       = "http://schemas.xmlsoap.org/ws/2002/04/secext";
+
+  /**
+   * A formatter for using ISO8601 timestamps.
+   */
+  private Iso8601DateFormat iso8601 = new Iso8601DateFormat();
 
 
   /**
@@ -88,10 +92,7 @@ public class WsseHeaderElement {
     nonce.addTextNode(nonceValue);
 
     // Add a creation timestamp.
-    java.util.Date d = new java.util.Date();
-    Date date = new Date(d);
-    Time time = new Time(d.getTime());
-    //String createdValue = date.toString() + time.toString();
+    String createdValue = iso8601.format(new Date());
     SOAPElement created = this.addChildElement(se,
                                                usernameToken,
                                                "Created",
