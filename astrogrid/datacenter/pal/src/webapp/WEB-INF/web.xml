@@ -72,7 +72,7 @@
       <env-entry-name>org.astrogrid.config.filename</env-entry-name>
       <env-entry-value>${catalina.home}/conf/datacenter.properties</env-entry-value>
       <env-entry-type>java.lang.String</env-entry-type>
-  </env-entry>
+  </env-entry -->
   <!--
   <resource-ref>
    <res-ref-name>org.astrogrid.config.url</res-ref-name>
