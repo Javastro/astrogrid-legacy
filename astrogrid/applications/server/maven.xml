@@ -4,17 +4,13 @@
 <!-- properties -->
 <property name="working.dir" location="${basedir}/target/tmp" />
 <!-- standard astrogrid goals -->
-  <goal name="astrogrid-build-site" prereqs="site" />
   <goal name="astrogrid-build-artifact" prereqs="jar,war" />
   <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot,war" />
 
   <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot,war:install-snapshot" />
     <goal name="astrogrid-install-artifact" prereqs="jar:install,war:install" />
 
-  <goal name="astrogrid-deploy-site">
-    <!--attainGoal name="site" /-->
-    <attainGoal name="site:sshdeploy" />
-  </goal>
+
   <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,war:deploy-snapshot" />
   <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,war:deploy" />
   <!-- hooks into existing goals -->
