@@ -75,6 +75,16 @@ public class QueryDBService {
       return new URL(location); 
    }
    
+   public Document getResource(String collectionName,String resource)
+       throws MalformedURLException, ParserConfigurationException,
+       IOException, UnsupportedEncodingException, SAXException         
+   {
+      
+       String resourceUniqueName = resource.replaceAll("[^\\w*]","_");
+       return DomHelper.newDocument(getQueryUrl(collectionName+"/"+resourceUniqueName));
+   }
+   
+   
    public Document runQuery(String collectionName, String xql)  
               throws MalformedURLException, ParserConfigurationException,
                      IOException, UnsupportedEncodingException, SAXException {
