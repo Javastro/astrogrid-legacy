@@ -1,0 +1,107 @@
+<?xml version="1.0" ?>
+
+<!--   Each JES is configured by setting properties within this file    -->
+
+<properties>
+
+  <!-- GENERAL CATEGORY ===================================================== -->  
+  <!-- this is a mandatory category -->  
+  <category name="GENERAL">
+    <property name="VERSION" value="1.2" />
+  </category>
+
+
+  <!-- MESSAGES CATEGORY ===========================================================
+   Following are the base name, language code and country code for 
+   the properties file that contains all messages for a JES 
+   Example. 
+   Given these values:
+   INSTALLATION.BASENAME=ASTROGRID_jesmessages
+   INSTALLATION.LANGUAGECODE=en
+   INSTALLATION.COUNTRYCODE=US
+
+   suiteable file names would be:
+   ASTROGRID_jesmessages.properties        // installation default messages
+   ASTROGRID_jesmessages_en.properties     // English language default messages
+   ASTROGRID_jesmessages_en_US.properties  // US specific English language messages
+  -->
+  <!-- this is a mandatory category -->    
+  <category name="MESSAGES">
+    <property name="INSTALLATION.BASENAME" value="ASTROGRID_jesmessages" />
+    <property name="INSTALLATION.LANGUAGECODE" value="" />
+    <property name="INSTALLATION.COUNTRYCODE" value="" />  
+    <property name="INSTALLATION.VARIANTCODE" value="" />   
+  </category>
+  
+  
+  <!-- JES CATEGORY =========================================================== -->  
+  <category name="JES">
+    <property name="ID" value="JES@Leicester" />
+  </category>
+ 
+ 
+  <!-- MONITOR CATEGORY ======================================================= -->    
+  <category name="MONITOR">
+    <property name="PARSER.VALIDATION" value="false" />  
+    <!-- Location of our JobMonitor -->
+    <property name="URL" value="http://hydra.star.le.ac.uk:8080/axis/services/JobMonitorService" />
+  </category>
+  
+  
+  <!-- CONTROLLER CATEGORY =================================================================== -->    
+  <category name="CONTROLLER">
+    <property name="PARSER.VALIDATION" value="false" />
+    <property name="TEMPLATE.RESPONSE" value="JobController.xmltemplate" />  
+    <!-- Location of our JobController -->
+    <property name="URL" value="http://hydra.star.le.ac.uk:8080/axis/services/JobControllerService" />
+  </category>  
+  
+  
+  <!-- SCHEDULER CATEGORY =================================================================== -->    
+  <category name="SCHEDULER">
+    <property name="PARSER.VALIDATION" value="false" />
+    <!-- Location of our JobScheduler -->
+    <property name="URL" value="http://hydra.star.le.ac.uk:8080/axis/services/JobSchedulerService" />
+    <!-- Schedule Job Request Template -->
+    <property name="TEMPLATE.SCHEDULE_JOB_REQUEST" value="JobSchedulerRequest.xmltemplate" />
+  </category>  
+
+   
+  <!-- JOB CATEGORY ========================================================================
+   A job factory, database and table names are required of each JES -->
+  <category name="JOB">
+    <!-- The Job Factory -->
+    <property name="FACTORY" value="org.astrogrid.jes.impl.JobFactoryImpl" />
+    <!-- The Job Data Source -->
+    <property name="DATASOURCE" value="java:comp/env/jdbc/jes-datasource" />
+    <!-- The Job table names -->
+    <property name="JOB" value="jes..job" />
+    <property name="JOBSTEP" value="jes..jobstep" />
+    <property name="QUERY" value="jes..query" />
+    <property name="CATALOG" value="jes..catalog" />
+    <property name="TABLE" value="jes..catalogtable" />
+    <property name="SERVICE" value="jes..service" />
+    <property name="JOBID" value="jes..jobid" />
+    <!-- The bookable range of Job id's -->
+    <property name="ID.BOOKABLERANGE" value="100" />
+  </category>
+  
+  
+  <!-- MESSAGELOG CATEGORY ============================================================== -->    
+  <category name="MESSAGELOG">
+    <!-- Location of our AstroGridMessageLog -->
+    <property name="URL" value="http://hydra.star.le.ac.uk:8080/axis/services/????" />
+    <!-- AstroGridMessageLog Request Template -->
+    <property name="TEMPLATE.REQUEST" value="MessageLogRequest.xmltemplate" />
+  </category>  
+
+
+  <!-- REGISTRY CATEGORY =============================================================== -->    
+  <category name="REGISTRY">
+    <!-- Location of Registry -->
+    <property name="URL" value="http://hydra.star.le.ac.uk:8080/axis/services/????" />
+    <!-- Registry Request Template -->
+    <property name="TEMPLATE.REQUEST" value="RegistryRequest.xmltemplate" />
+  </category>  
+
+</properties>
