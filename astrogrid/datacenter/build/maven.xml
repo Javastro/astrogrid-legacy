@@ -1,15 +1,26 @@
 <?xml version="1.0" ?>
 <!-- extension maven script -->
-<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+<project xmlns:j="jelly:core"  xmlns:u="jelly:util" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
 <!-- hooks to farm out everything to subprojects -->
 
 <!-- bugfix suggested by john -->
-<!-- take out for now - seems to break other things. arg
 <preGoal name="site">
 	<attainGoal name="dist:prepare-bin-filesystem" />
 </preGoal>
--->
 
+  <!-- ================= -->
+  <!-- Global Properties -->
+  <!-- ================= -->
+  
+  <!-- Determine what the top-level project root is -->
+  <j:set var="project.base.root" value="${pom.parentBasedir().getParentFile().getCanonicalFile()}/build"/>
 
+  <!-- Load the global properties -->
+  <u:properties file="${project.base.root}/global.properties"/>
+  <!-- dynamically computed properties -->
+
+<j:set var="maven.checkstyle.header.file" value="${project.base.root}/short-license.txt" />
+<j:set var="maven.checkstyle.properties" value="${project.base.root}/checkstyle.xml" />
+<j:set var="maven.license.licenseFile" value="${project.base.root}/../LICENSE.txt" />
 
 </project>
