@@ -8,7 +8,6 @@
   <!-- a unique name for this project -->
   <id>pal</id>
   <name>Publishers Astrogrid Library</name>
-  <currentVersion>${astrogrid.iteration}</currentVersion>
 
   <description><![CDATA[
    <p>
@@ -125,7 +124,8 @@ tomcat.password=secret<br />
       </dependency>
       
        <dependency>
-        <id>astrogrid-store-client</id>
+        <groupId>org.astrogrid</groupId>
+        <artifactId>astrogrid-store-client</artifactId>
         <version>${pom.currentVersion}</version>
        <properties>
       <war.bundle>true</war.bundle>
@@ -133,7 +133,7 @@ tomcat.password=secret<br />
     </dependency>
 
      <dependency>
-      <groupId>astrogrid-ogsadai</groupId>
+      <groupId>org.astrogrid</groupId>
       <type>jar</type>
       <artifactId>astrogrid-ogsadai-app</artifactId>
       <version>${pom.currentVersion}</version>

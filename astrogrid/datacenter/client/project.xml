@@ -8,7 +8,6 @@
   <id>astrogrid-datacenter-client</id>
   <name>AstroGrid DataCenter Client Delegate</name>
 
-  <currentVersion>${astrogrid.iteration}</currentVersion>
 
    <description><![CDATA[
    <section name="Astrogrid Datacenter Client">

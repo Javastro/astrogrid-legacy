@@ -8,7 +8,6 @@
    <!-- a unique name for this project -->
    <id>astrogrid-datacenter-server</id>
    <name>AstroGrid DataCenter Server</name>
-   <currentVersion>${astrogrid.iteration}</currentVersion>
 
    <description><![CDATA[
     This project contains the datacenter server framework.

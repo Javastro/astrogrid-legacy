@@ -7,7 +7,6 @@
   <!-- a unique name for this project -->
   <id>cdsdelegate</id>
   <name>AstroGrid DataCenter CDS Vizier Delegate</name>
-  <currentVersion>${astrogrid.iteration}</currentVersion>
 
   <description><![CDATA[
    Astrogrid Datacenter implementation that acts as a 'gateway' (ahem) for the CDS Vizier catalogue
