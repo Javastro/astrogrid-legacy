@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.10 2004/11/23 18:40:50 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.11 2005/02/15 11:58:28 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
 <!--    <extend>../../maven-base/project.xml</extend> -->
     <extend>${basedir}/../maven/project.xml</extend>
     <id>auto-registry-integration</id>
-    <name>Automated Integration Testing</name>
+    <name>Automated Registry Integration Testing</name>
 	
 	
 	<description>
