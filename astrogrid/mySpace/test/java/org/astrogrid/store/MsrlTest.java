@@ -1,5 +1,5 @@
 /*
- * $Id: MsrlTest.java,v 1.1 2004/03/01 22:35:54 mch Exp $
+ * $Id: MsrlTest.java,v 1.2 2004/03/10 00:23:33 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -44,7 +44,7 @@ public class MsrlTest extends TestCase
          msrl = new Msrl(validMsrl);
          assertEquals(msrl.toString(), validMsrl);
          
-         validMsrl = validMsrl +"@"+SERVER;
+         validMsrl = validMsrl +"!"+SERVER;
          msrl = new Msrl(validMsrl);
          assertEquals(msrl.toString(), validMsrl);
       }
@@ -84,6 +84,9 @@ public class MsrlTest extends TestCase
 
 /*
 $Log: MsrlTest.java,v $
+Revision 1.2  2004/03/10 00:23:33  mch
+Changed @ to !
+
 Revision 1.1  2004/03/01 22:35:54  mch
 Tests for StoreClient
 
