@@ -311,7 +311,13 @@ public class RegistryService  {
       HashMap hm = null;
       Document doc = loadRegistryDOM();      
       if(doc != null) {
-         NodeList nl = doc.getElementsByTagName("ManagedAuthority");
+         NodeList nl = doc.getElementsByTagNameNS("vg","ManagedAuthority" );
+         //Okay for some reason vg seems to pick up the ManagedAuthority.
+         //Lets try to find it by the url namespace.
+         if(nl.getLength() == 0) {
+            nl = doc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority" );
+         }
+
          hm = new HashMap();
          for(int i = 0;i < nl.getLength();i++) {
             hm.put(nl.item(i).getFirstChild().getNodeValue(),null);   
