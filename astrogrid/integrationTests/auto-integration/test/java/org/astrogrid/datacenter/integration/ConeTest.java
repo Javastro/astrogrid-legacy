@@ -1,4 +1,4 @@
-/*$Id: ConeTest.java,v 1.2 2004/04/16 15:17:14 mch Exp $
+/*$Id: ConeTest.java,v 1.3 2004/04/16 15:55:08 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,13 +12,14 @@ package org.astrogrid.datacenter.integration;
 
 import java.io.IOException;
 import java.io.InputStream;
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.ConeSearcher;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
-import org.astrogrid.integrationtest.common.ConfManager;
 
 /**
  * Test the cone-search delegate against std PAL
@@ -48,17 +49,28 @@ public class ConeTest extends TestCase {
    
    }
    
+    /**
+     * Assembles and returns a test suite made up of all the testXxxx() methods
+      * of this class.
+     */
+    public static Test suite() {
+        // Reflection is used here to add all the testXXX() methods to the suite.
+        return new TestSuite(ConeTest.class);
+    }
    
     /**/
 
    public static void main(String[] args) {
-      junit.textui.TestRunner.run(ConeTest.class);
+      junit.textui.TestRunner.run(suite());
    }
 }
 
 
 /*
 $Log: ConeTest.java,v $
+Revision 1.3  2004/04/16 15:55:08  mch
+added alltests
+
 Revision 1.2  2004/04/16 15:17:14  mch
 Copied in from integration tests
 

@@ -1,4 +1,4 @@
-/*$Id: Query2MySpaceTest.java,v 1.1 2004/04/16 15:41:03 mch Exp $
+/*$Id: Query2MySpaceTest.java,v 1.2 2004/04/16 15:55:08 mch Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,9 @@
 package org.astrogrid.datacenter.integration;
 
 import java.net.URL;
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
@@ -19,7 +21,6 @@ import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.query.QueryState;
-import org.astrogrid.integrationtest.common.ConfManager;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
@@ -81,8 +82,17 @@ public class Query2MySpaceTest extends TestCase {
    public Query2MySpaceTest(String arg0) {
       super(arg0);
    }
-   public static void main(String[] args) {
-      junit.textui.TestRunner.run(Query2MySpaceTest.class);
+    /**
+     * Assembles and returns a test suite made up of all the testXxxx() methods
+      * of this class.
+     */
+    public static Test suite() {
+        // Reflection is used here to add all the testXXX() methods to the suite.
+        return new TestSuite(Query2MySpaceTest.class);
+    }
+
+    public static void main(String[] args) {
+      junit.textui.TestRunner.run(suite());
    }
    
    
@@ -91,6 +101,9 @@ public class Query2MySpaceTest extends TestCase {
 
 /*
 $Log: Query2MySpaceTest.java,v $
+Revision 1.2  2004/04/16 15:55:08  mch
+added alltests
+
 Revision 1.1  2004/04/16 15:41:03  mch
 Added autotests
 

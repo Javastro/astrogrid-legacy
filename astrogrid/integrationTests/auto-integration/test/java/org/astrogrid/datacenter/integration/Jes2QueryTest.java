@@ -1,4 +1,4 @@
-/*$Id: Jes2QueryTest.java,v 1.1 2004/04/16 15:41:03 mch Exp $
+/*$Id: Jes2QueryTest.java,v 1.2 2004/04/16 15:55:08 mch Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,9 @@
 **/
 package org.astrogrid.datacenter.integration;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.community.User;
 import org.astrogrid.community.beans.v1.Account;
@@ -168,11 +170,24 @@ public class Jes2QueryTest extends TestCase {
        
     }
     
+        /**
+     * Assembles and returns a test suite made up of all the testXxxx() methods
+      * of this class.
+     */
+    public static Test suite() {
+        // Reflection is used here to add all the testXXX() methods to the suite.
+        return new TestSuite(Jes2QueryTest.class);
+    }
+
+    
 }
 
 
 /*
 $Log: Jes2QueryTest.java,v $
+Revision 1.2  2004/04/16 15:55:08  mch
+added alltests
+
 Revision 1.1  2004/04/16 15:41:03  mch
 Added autotests
 
