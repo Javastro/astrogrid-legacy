@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.114 2004/09/21 11:38:54 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.115 2004/09/21 18:23:09 clq2 Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -106,7 +106,7 @@
         <attainGoal name="int-test" />
 </goal>
  
-<goal name="deploy-all">
+<goal name="deploy-all" prereqs="init">
 		<echo>*** Deploying all webapps...</echo>
         <attainGoal name="common-libs-deploy" />
         <attainGoal name="configuration-deploy" />
