@@ -32,6 +32,7 @@ public class VOTableFactoryImpl implements VOTableFactory {
 		
     //
     // JBL Note: For the moment do not know where these settings should be coming from...
+    // (However, these may produce a suitable default pattern for a locale)
     //
     private static final String
 	    doubleOutputPattern = "", 

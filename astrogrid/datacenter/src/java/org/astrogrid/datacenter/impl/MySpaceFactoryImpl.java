@@ -64,7 +64,7 @@ public class MySpaceFactoryImpl implements MySpaceFactory {
             OutputStream
                 out = MySpaceFactoryImpl.createCompressedOutputStream( fileName, "uncompressed" ) ;	
                 
-            allocation = new Allocation( out ) ;	
+            allocation = new Allocation( fileName, out ) ;	
 
 		}
 		catch ( Exception ex ) {
@@ -107,6 +107,7 @@ public class MySpaceFactoryImpl implements MySpaceFactory {
     	    buffer = new StringBuffer( 64 ) ;
     	
 		buffer
+		    .append( "file://" )  // JBL Note: this is a quick fix for AstroGrid iteration 2
 		    .append( DatasetAgent.getProperty( MYSPACECACHE_DIRECTORY ) ) 
 		    .append( System.getProperty( "file.separator" ) )
 		    .append( jobID.replace( ':', '.' ) ) ;

@@ -282,7 +282,7 @@ public class DatasetAgent {
 			   votable = query.toVOTable( allocation ) ;
 			  
 			// Inform MySpace that file is ready for pickup...   
-			allocation.informMySpace() ;
+			allocation.informMySpace( job ) ;
             			
 			// Inform JobMonitor (within JES) of successful jobstep completion...
 			job.informJobMonitor( true ) ;

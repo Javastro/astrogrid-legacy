@@ -377,7 +377,7 @@ public class JobMonitor {
 			     input = new SOAPBodyElement[1];
 			     
 			  InputSource
-			     jobSource = new InputSource( new StringReader( this.formatRunRequest( job ) ) ) ; 
+			     jobSource = new InputSource( new StringReader( this.formatScheduleRequest( job ) ) ) ; 
 
 			  DocumentBuilder 
 			     builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();

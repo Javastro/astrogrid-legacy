@@ -1,8 +1,12 @@
 /*
  * @(#)JobController.java   1.0
  *
- * AstroGrid Copyright notice.
- * 
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
  */
 package org.astrogrid.jes.jobcontroller ;
 
@@ -51,7 +55,7 @@ import java.net.URL;
  *      3  Inform the JobScheduler.
  *      4. Format a reply, passing back the unique job identifier.
  * <p>	
- * The above does not cover use cases where errors occura
+ * The above does not cover use cases where errors occur.
  * <p>
  * An instance of a JobController is stateless, with some provisos:
  * 1. The JobController is driven by a properties file, held at class level.
@@ -68,7 +72,9 @@ import java.net.URL;
  * @since   AstroGrid 1.2
  */
 public class JobController {
-	
+
+	/** Compile-time switch used to turn tracing on/off. 
+	  * Set this to false to eliminate all trace statements within the byte code.*/	 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
 			
@@ -107,7 +113,25 @@ public class JobController {
 	static {
 		doConfigure();
 	}
-	
+
+
+	/**
+	  *  
+	  * Static initialization routine called during class loading.
+	  * <p>
+	  * Attempts to load the component's configuration properties
+	  * from a properties file. If it fails, a log message is
+	  * produced. If it succeeds, attempts to configure the
+	  * component's default language basis for messages.
+	  * <p>
+	  * @see configureMessages()
+	  * <p>
+	  * A candidate for refactoring...
+	  * @see org.astrogrid.datacenter.datasetagent.DatasetAgent
+	  * @see org.astrogrid.jes.JobScheduler
+	  * @see org.astrogrid.jes.JobMonitor
+	  * 
+	  **/           	
 	private static void doConfigure() {
 		if( TRACE_ENABLED ) logger.debug( "doConfigure(): entry") ;
 				
@@ -136,7 +160,20 @@ public class JobController {
 
 	} // end of doConfigure()
 	  
-	  
+
+	/**
+	  *  
+	  * Configures the component's language basis for messages.
+	  * This is the installation's default language.
+	  * <p>
+	  * @see org.astrogrid.datacenter.i18n.Message
+	  * <p>
+	  * A candidate for refactoring...
+	  * @see org.astrogrid.datacenter.datasetagent.DatasetAgent
+	  * @see org.astrogrid.jes.JobScheduler
+	  * @see org.astrogrid.jes.JobMonitor
+	  * 
+	  **/         	  
 	private static void configureMessages() {
 		if( TRACE_ENABLED ) logger.debug( "configureMessages(): entry") ;
 			
@@ -173,22 +210,27 @@ public class JobController {
 		 	  
 	} // end of configureMessages()
 	  
-	
+
+	/**
+	  *  
+	  * Static getter for properties from the component's properties' file.
+	  * <p>
+	  * 
+	  * A candidate for refactoring...
+	  * @see org.astrogrid.datacenter.datasetagent.DatasetAgent
+	  * @see org.astrogrid.jes.JobScheduler
+	  * @see org.astrogrid.jes.JobMonitor
+	  * 
+	  * @param key - the property key
+	  * @return the String value of the property, or the empty string if null
+	  * 
+	  **/   	
 	public static String getProperty( String key ) {
 		if( TRACE_ENABLED ) logger.debug( "getProperty(): entry") ;
 		
 		String
-			retValue ;
-		try {	
-			// Does this really need to be synchronized?
-			synchronized( configurationProperties ) {
-				retValue = configurationProperties.getProperty( key ) ;
-			}
-		}
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "getProperty(): exit") ;			
-		}
-		
+			retValue = configurationProperties.getProperty( key ) ;
+		if( TRACE_ENABLED ) logger.debug( "getProperty(): exit") ;			
 		return ( retValue == null ? "" : retValue.trim() ) ;
 		
 	} // end of getProperty()
@@ -236,6 +278,7 @@ public class JobController {
 		return submitDoc ;
 
 	} // end parseRequest()
+	
 	
 	
     public String submitJob( String jobXML ) {
@@ -299,14 +342,14 @@ public class JobController {
     
     
     private String formatGoodResponse( Job job ) {
-        return formatResponse( job, "" ) ;
+		Message
+			message = new Message( ASTROGRIDINFO_JOB_SUCCESSFULLY_SUBMITTED ) ; 
+        return formatResponse( job, message.toString() ) ;
     }
   
     
 	private String formatBadResponse( Job job, Message errorMessage ) {
-		Message
-			message = new Message( ASTROGRIDINFO_JOB_SUCCESSFULLY_SUBMITTED ) ; 
-		return formatResponse( job, message.toString() ) ;
+		return formatResponse( job, errorMessage.toString() ) ;
 	}   
 
 	
