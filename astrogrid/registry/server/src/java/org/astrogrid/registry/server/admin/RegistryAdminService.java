@@ -333,7 +333,8 @@ public class RegistryAdminService {
          
 
          //set a temporary identifier.
-         tempIdent = "ivo://" + ident;
+         //tempIdent = "ivo://" + ident;
+         tempIdent = ident;
          if(resKey != null && resKey.trim().length() > 0) tempIdent += "/" + resKey;
       
          log.info("serverside update ident = " + ident + " reskey = " + 
@@ -508,7 +509,8 @@ public class RegistryAdminService {
                            resKey = RegistryServerHelper.getResourceKey(loadedRegistry.
                                                    getDocumentElement());
                            log.info("the resKey form loaded registry right before update = " + resKey);
-                           tempIdent = "ivo://" + ident;
+                           //tempIdent = "ivo://" + ident;
+                           tempIdent = ident;
                            if(resKey != null) tempIdent += "/" + resKey;
                            //TODO: again this next line should not be needed.
                            //df = loadedRegistry.createDocumentFragment();
@@ -706,7 +708,8 @@ public class RegistryAdminService {
              log.error("Either your harvesting your own Registry or another Registry is submitting authority id's owned by this registry. Ident = " + ident);
              xsDoc.getDocumentElement().removeChild(currentResource);
          } else {
-             tempIdent = "ivo://" + ident;
+             //tempIdent = "ivo://" + ident;
+             tempIdent = ident;
              if(resKey != null) tempIdent += "/" + resKey;
              log.info("the ident in updateNoCheck = " + tempIdent);
              
@@ -786,7 +789,7 @@ public class RegistryAdminService {
        log.debug("start createStats");
        Date statsTimeMillis = new Date();
        DateFormat shortDT = DateFormat.getDateTimeInstance();
-       String statsXML = "<ResourceStat><Identifier>" + tempIdent +
+       String statsXML = "<ResourceStat><Identifier>ivo://" + tempIdent +
                                 "</Identifier>";
        if(addMillis) {
            statsXML += "<StatsDateMillis>" +

@@ -108,6 +108,8 @@ public class RegistryHarvestService {
       XMLDBFactory xdb = new XMLDBFactory();
       Collection coll = null;
       String authorityID = conf.getString("reg.amend.authorityid");
+      String tempIdent = null;
+      String resKey = null;
       
       //instantiate the Admin service that contains the update methods.c
       RegistryAdminService ras = new RegistryAdminService();
@@ -143,7 +145,10 @@ public class RegistryHarvestService {
                           String dateString = null;
                           try {
                               coll = xdb.openCollection("statv" + versionNumber.replace('.','_'));
-                              XMLResource xmlr = (XMLResource)xdb.getResource(coll,RegistryServerHelper.getIdentifier(elem).replaceAll("[^\\w*]","_"));
+                              tempIdent = RegistryServerHelper.getAuthorityID(elem);
+                              resKey = RegistryServerHelper.getResourceKey(elem);
+                              if(resKey != null && resKey.trim().length() > 0) tempIdent += "/" + resKey;                              
+                              XMLResource xmlr = (XMLResource)xdb.getResource(coll,tempIdent.replaceAll("[^\\w*]","_"));
                               if(xmlr != null) {
                                   Document statDoc = (Document)xmlr.getContentAsDOM();
                                   dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
