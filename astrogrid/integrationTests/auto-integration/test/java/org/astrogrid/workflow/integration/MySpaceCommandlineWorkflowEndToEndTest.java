@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.2 2004/04/23 22:40:54 pah Exp $
+ * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.3 2004/04/26 09:04:22 pah Exp $
  * 
  * Created on 23-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -51,8 +51,8 @@ public class MySpaceCommandlineWorkflowEndToEndTest
    protected void setUp() throws Exception {
       super.setUp();
       targetApplication = TESTAPP;
-      targetIvorn = new Ivorn(MYSPACE,user.getUserId() + "/MySpaceCommandlineWorkflowEndToEndTest-output");        
-      inputIvorn = new Ivorn(MYSPACE,user.getUserId() + "/MySpaceCommandlineWorkflowEndToEndTest-input"); 
+      targetIvorn = createIVORN("/MySpaceCommandlineWorkflowEndToEndTest-output");        
+      inputIvorn =  createIVORN("/MySpaceCommandlineWorkflowEndToEndTest-input"); 
       
     // write to myspace...
     VoSpaceClient voSpaceClient = new VoSpaceClient(user);
