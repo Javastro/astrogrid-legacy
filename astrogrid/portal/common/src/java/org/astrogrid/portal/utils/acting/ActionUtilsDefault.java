@@ -40,21 +40,18 @@ public class ActionUtilsDefault implements ActionUtils {
   /**
    * Get a request parameter given a parameter passed into the action via the sitemap.
    * 
-   * @param sitemapParam sitemap given parameter whose value is the request parameter name
+   * @param param request parameter name
    * @param defaultValue default value of request parameter name
    * @param params sitemap parameters
    * @param request request context object
    * 
    * @return value of request parameter
    */
-  public String getRequestParameter(String sitemapParam, String defaultValue, Parameters params, Request request) {
-    String requestParam = params.getParameter(sitemapParam, defaultValue);
-    logger.debug("[getRequestParameter] request parameter: " + requestParam);
-  
+  public String getRequestParameter(String param, String defaultValue, Parameters params, Request request) {
     // Make sure XML string exists for validation purposes.
-    String value = request.getParameter(requestParam);
+    String value = request.getParameter(param);
     if(value == null) {
-      value = "";
+      value = defaultValue;
     }
     logger.debug("[getRequestParameter] value: " + value);
 
@@ -64,28 +61,25 @@ public class ActionUtilsDefault implements ActionUtils {
   /**
    * @see ActionUtils#getRequestParameter(String, String, Parameters, Request)
    */
-  public String getRequestParameter(String sitemapParam, Parameters params, Request request) {
-    return getRequestParameter(sitemapParam, "", params, request);
+  public String getRequestParameter(String param, Parameters params, Request request) {
+    return getRequestParameter(param, "", params, request);
   }
   
   /**
    * Get a session attribute given a attribute passed into the action via the sitemap.
    * 
-   * @param sitemapParam sitemap given attribute whose value is the session attribute name
+   * @param param session attribute name
    * @param defaultValue default value of session attribute name
    * @param params sitemap parameters
    * @param session session context object
    * 
    * @return value of session attribute
    */
-  public String getSessionAttribute(String sitemapParam, String defaultValue, Parameters params, Session session) {
-    String sessionParam = params.getParameter(sitemapParam, defaultValue);
-    logger.debug("[getSessionAttribute] session attribute: " + sessionParam);
-  
+  public String getSessionAttribute(String param, String defaultValue, Parameters params, Session session) {
     // Make sure XML string exists for validation purposes.
-    String value = (String) session.getAttribute(sessionParam);
+    String value = (String) session.getAttribute(param);
     if(value == null) {
-      value = "";
+      value = defaultValue;
     }
     logger.debug("[getSessionAttribute] value: " + value);
 
@@ -95,38 +89,38 @@ public class ActionUtilsDefault implements ActionUtils {
   /**
    * @see ActionUtils#getSessionAttribute(String, String, Parameters, Session)
    */
-  public String getSessionAttribute(String sitemapParam, Parameters params, Session session) {
-    return getSessionAttribute(sitemapParam, "", params, session);
+  public String getSessionAttribute(String param, Parameters params, Session session) {
+    return getSessionAttribute(param, "", params, session);
   }
   
-  public String getAnyParameter(String sitemapParam, Parameters params, Request request, Session session) {
-    return getAnyParameter(sitemapParam, "", params, request, session);
+  public String getAnyParameter(String param, Parameters params, Request request, Session session) {
+    return getAnyParameter(param, "", params, request, session);
   }
   
-  public String getAnyParameter(String sitemapParam, String defaultValue, Parameters params, Request request, Session session) {
+  public String getAnyParameter(String param, String defaultValue, Parameters params, Request request, Session session) {
     String result = "";
     
     // Try a request parameter first (if valid request).
     if(request != null) {
-      result = getRequestParameter(sitemapParam, params, request);
+      result = getRequestParameter(param, params, request);
       if(result != null && result.length() > 0) {
-        logger.error("[getAnyParameter] REQUEST: [" + sitemapParam + "," + result + "]");
+        logger.info("[getAnyParameter] REQUEST: [" + param + "," + result + "]");
         return result;
       }
     }
     
     // Try a session attribute next (if valid session).
     if(session != null) {
-      result = getSessionAttribute(sitemapParam, params, session);
+      result = getSessionAttribute(param, params, session);
       if(result != null && result.length() > 0) {
-        logger.error("[getAnyParameter] SESSION: [" + sitemapParam + "," + result + "]");
+        logger.info("[getAnyParameter] SESSION: [" + param + "," + result + "]");
         return result;
       }
     }
     
     // Get either sitemap parameter or the default value.
-    result = params.getParameter(sitemapParam, defaultValue);
-    logger.error("[getAnyParameter] SITEMAP: [" + sitemapParam + "," + result + "]");
+    result = params.getParameter(param, defaultValue);
+    logger.info("[getAnyParameter] SITEMAP: [" + param + "," + result + "]");
     return result;
   }
 
