@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.24 2003/10/06 18:56:58 mch Exp $
+ * $Id: AxisDataServer.java,v 1.25 2003/10/13 14:12:43 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,7 +8,7 @@ package org.astrogrid.datacenter.service;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.astrogrid.datacenter.adql.QOM;
+import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.common.ResponseHelper;
 import org.astrogrid.datacenter.config.Configuration;
@@ -17,11 +17,10 @@ import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.datacenter.service.WebNotifyServiceListener;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-           
+
 /**
  * This class is the public web interface, called by Axis
  * when Axis receives the SOAP message from the client. It is a singleton
@@ -33,11 +32,14 @@ import org.xml.sax.SAXException;
  * This is what was DatasetAgent in the It02 but with the extensions to handle
  * all the service methods required (eg metadata etc)
  *
+ *NW- extended to implement generated interface - acts as an assertion that service implementation
+ *fits with WSDL description.
  * @author M Hill
  * @author Noel Winstanly
+ * 
  */
 
-public class AxisDataServer extends ServiceServer
+public class AxisDataServer extends ServiceServer implements org.astrogrid.datacenter.delegate.axisdataserver.AxisDataServer
 {
    /**
     * Initialises the configuration.  The configuration is loaded from the
@@ -48,6 +50,7 @@ public class AxisDataServer extends ServiceServer
     */
    public AxisDataServer() throws IOException
    {
+             
         java.net.URL res = this.getClass().getResource("/" + Configuration.DEFAULT_FILENAME);
         if (res != null) {
             Configuration.load(res);
@@ -57,9 +60,10 @@ public class AxisDataServer extends ServiceServer
 
    /**
     * Returns the metadata file
+    * NWW - at present pass in a dummy parameter - haven't worked out how to say 'no parameters please' yet.
     * @soap
     */
-   public Element getMetadata()
+   public Element getMetadata(Object ignored)
    {
       return super.getMetadata();
    }
@@ -73,8 +77,8 @@ public class AxisDataServer extends ServiceServer
     * including the results (or location of the results)
     * <p>
     * @soap
-    */
-   public Element doQuery(String resultsFormat,  QOM adql) throws IOException, QueryException, SAXException
+    */ 
+   public Element doQuery(String resultsFormat,  Select adql) throws IOException, QueryException, SAXException
    {
       Log.affirm(resultsFormat.toLowerCase().equals("votable"), "Can only produce votable results");
       DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(adql, null);
@@ -98,7 +102,7 @@ public class AxisDataServer extends ServiceServer
     * <p>
     * @soap
     */
-   public String makeQuery(QOM adql) throws QueryException, IOException, SAXException
+   public String makeQuery(Select adql) throws QueryException, IOException, SAXException
    {
       DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(adql, null);
 
@@ -111,9 +115,10 @@ public class AxisDataServer extends ServiceServer
     * Does not start the query running - may want to register listeners with
     * it first
     * <p>
+    * NWW - changed name (was makeQuery). Method overloading is tricky for soap.
     * @soap
     */
-   public String makeQuery(QOM adql, String assignedId) throws QueryException, IOException, SAXException
+   public String makeQueryWithId(Select adql, String assignedId) throws QueryException, IOException, SAXException
    {
       DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(adql, assignedId);
 
@@ -128,7 +133,7 @@ public class AxisDataServer extends ServiceServer
    public void setResultsDestination(String myspaceUrl)
    {
    }
-   
+
    /**
     * Starts an existing query running
     * @soap
@@ -148,8 +153,9 @@ public class AxisDataServer extends ServiceServer
     * <p>
     * @soap
     */
-   public String getResultsAndClose(String queryId) throws IOException, SAXException
+   public String getResultsAndClose(String queryId) throws SAXException
    {
+
       DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(queryId);
 
       //has querier finished?
@@ -161,6 +167,7 @@ public class AxisDataServer extends ServiceServer
       {
          return null;
       }
+
    }
 
    /**
