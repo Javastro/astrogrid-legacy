@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/data/AccountData.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountData.java,v $
+ *   Revision 1.7  2004/03/15 07:49:30  dave
+ *   Merged development branch, dave-dev-200403121536, into HEAD
+ *
+ *   Revision 1.6.2.1  2004/03/12 17:42:09  dave
+ *   Replaced tabs with spaces
+ *
  *   Revision 1.6  2004/03/12 15:22:17  dave
  *   Merged development branch, dave-dev-200403101018, into HEAD
  *
@@ -88,7 +94,7 @@ public class AccountData
 
     /**
      * Public constructor.
-	 * No syntax checking is applied to the ident.
+     * No syntax checking is applied to the ident.
      * @param ident The Account ident.
      * @TODO Add syntax checking.
      *
@@ -101,7 +107,7 @@ public class AccountData
     /**
      * The Account ident.
      * At the monet, the syntax is 'name@community', this will be refactored to 'ivo:community/name'.
-	 * No syntax checking is applied to the value.
+     * No syntax checking is applied to the value.
      * @TODO Refactor the Account ident to 'ivo:community/name'.
      * @TODO Add syntax checking.
      *
@@ -121,7 +127,7 @@ public class AccountData
     /**
      * Access to the Account ident.
      * This will fail the the ident is already set - you can't change the ident of an existing Account.
-	 * No syntax checking is applied to the value.
+     * No syntax checking is applied to the value.
      * @param value The Account ident.
      * @TODO Add syntax checking.
      *
@@ -129,9 +135,9 @@ public class AccountData
     public void setIdent(String value)
         {
         if (null == this.ident)
-        	{
-        	this.ident = value ;
-			}
+            {
+            this.ident = value ;
+            }
         }
 
     /**
@@ -192,9 +198,9 @@ public class AccountData
     /**
      * The Account home space URI.
      * This is the MySpace or VoSpace URI for the account home.
-	 * No syntax checking is applied to the value.
+     * No syntax checking is applied to the value.
      * @TODO Add syntax checking.
-	 *
+     *
      */
     private String home ;
 
@@ -210,7 +216,7 @@ public class AccountData
 
     /**
      * Access to the Account home space URI.
-	 * No syntax checking is applied to the value.
+     * No syntax checking is applied to the value.
      * @param value The new home space URI.
      * @TODO Add syntax checking.
      *
@@ -223,7 +229,7 @@ public class AccountData
     /**
      * The Account email address.
      * The contact email address for the Account owner.
-	 * No syntax checking is applied to the value.
+     * No syntax checking is applied to the value.
      * @TODO Add syntax checking.
      *
      */
@@ -241,7 +247,7 @@ public class AccountData
 
     /**
      * Access to the Account email address.
-	 * No syntax checking is applied to the value.
+     * No syntax checking is applied to the value.
      * @param value The new email address.
      * @TODO Add syntax checking.
      *

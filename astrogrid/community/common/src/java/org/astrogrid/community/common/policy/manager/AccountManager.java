@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/AccountManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManager.java,v $
+ *   Revision 1.8  2004/03/15 07:49:30  dave
+ *   Merged development branch, dave-dev-200403121536, into HEAD
+ *
+ *   Revision 1.7.2.1  2004/03/12 17:42:09  dave
+ *   Replaced tabs with spaces
+ *
  *   Revision 1.7  2004/03/12 15:22:17  dave
  *   Merged development branch, dave-dev-200403101018, into HEAD
  *
@@ -100,9 +106,9 @@ public interface AccountManager
     {
     /**
      * Create a new Account, given the Account ident.
-	 * This will return null if you try to create an Account with the same ident as an existing Account.
+     * This will return null if you try to create an Account with the same ident as an existing Account.
      * @param ident The Account ident.
-	 * @return A valid AccountData if the Account was created, null if the Account was not created.
+     * @return A valid AccountData if the Account was created, null if the Account was not created.
      * @TODO Add Exceptions.
      * @TODO Add syntax checking.
      *
@@ -112,9 +118,9 @@ public interface AccountManager
       
     /**
      * Request an Account data, given the Account ident.
-	 * This will return null if you request details for a non-existent Account.
+     * This will return null if you request details for a non-existent Account.
      * @param ident The Account ident.
-	 * @return A valid AccountData if the Account exists, null if the Account does not exist.
+     * @return A valid AccountData if the Account exists, null if the Account does not exist.
      * @TODO Add Exceptions.
      *
      */
@@ -123,9 +129,9 @@ public interface AccountManager
 
     /**
      * Update an Account data.
-	 * This will return null if you try to set the details for an non-existent Account.
+     * This will return null if you try to set the details for an non-existent Account.
      * @param account The new AccountData.
-	 * @return A valid AccountData if the update succeded, null if the update failed.
+     * @return A valid AccountData if the update succeded, null if the update failed.
      * @TODO Add Exceptions.
      *
      */
@@ -134,9 +140,9 @@ public interface AccountManager
 
     /**
      * Delete an Account, given the Account ident.
-	 * This will return null if you try to delete a non-existent Account.
+     * This will return null if you try to delete a non-existent Account.
      * @param ident The Account ident.
-	 * @return A valid AccountData for the old Account if the delete succeded, null if the delete failed.
+     * @return A valid AccountData for the old Account if the delete succeded, null if the delete failed.
      * @TODO Add Exceptions.
      *
      */
@@ -145,7 +151,7 @@ public interface AccountManager
 
     /**
      * Request a list of local Accounts.
-	 * @return An array of AccountData objects, one for each Account in the database.
+     * @return An array of AccountData objects, one for each Account in the database.
      * @TODO Add Exceptions.
      *
      */

@@ -1,11 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/policy/manager/PolicyManagerSoapDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerSoapDelegate.java,v $
+ *   Revision 1.4  2004/03/15 07:49:30  dave
+ *   Merged development branch, dave-dev-200403121536, into HEAD
+ *
+ *   Revision 1.3.12.1  2004/03/15 06:52:08  dave
+ *   Refactored PolicyManagerMockDelegate to use ivorn identifiers.
+ *   Refactored CommunityAccountResolver to just handle AccountData.
+ *   Added CommunityAccountSpaceResolver to resolve home space ivorn.
+ *
  *   Revision 1.3  2004/03/08 13:42:33  dave
  *   Updated Maven goals.
  *   Replaced tabs with Spaces.
@@ -73,7 +81,7 @@ public class PolicyManagerSoapDelegate
 
     /**
      * Public constructor, for a specific endpoint URL.
-     * @param endpoint - The service endpoint URL.
+     * @param endpoint The service endpoint URL.
      *
      */
     public PolicyManagerSoapDelegate(URL endpoint)
@@ -109,61 +117,41 @@ public class PolicyManagerSoapDelegate
 
     /**
      * Set our endpoint address.
-     *
+     * @param endpoint The service endpoint URL.
+     * @TODO Better Exception reporting.
      */
-    public void setEndpoint(URL endpoint)
+    protected void setEndpoint(URL endpoint)
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("PolicyManagerSoapDelegate.setEndpoint()") ;
         if (DEBUG_FLAG) System.out.println("  URL : " + endpoint) ;
+		//
+		// Check for null param.
+        if (null == endpoint) { throw new IllegalArgumentException("Null endpoint")   ; }
         //
         // Set our endpoint address.
         this.endpoint = endpoint ;
         //
-        // Reset our PolicyManager reference.
+        // Reset our PolicyManager.
         this.setPolicyManager(null) ;
         //
-        // If we have a valid endpoint.
-        if (null != this.getEndpoint())
-            {
-            //
-            // If we have a valid locator.
-            if (null != locator)
-                {
-                try {
-                    //
-                    // Try getting our PolicyManager service.
-                    this.setPolicyManager(
-                        locator.getPolicyManager(
-                            this.getEndpoint()
-                            )
-                        ) ;
-                    }
-                //
-                // Catch anything that went BANG.
-                catch (Exception ouch)
-                    {
-                    // TODO
-                    // Log the Exception, and throw a nicer one.
-                    // Unwrap RemoteExceptions.
-                    //
-                    }
-                }
-            //
-            // If we don't have a valid locator.
-            else {
-                //
-                // Set our manager to null and log it.
-                this.setPolicyManager(null) ;
-                }
+        // Try getting our PolicyManager.
+        try {
+            this.setPolicyManager(
+                locator.getPolicyManager(
+                    this.endpoint
+                    )
+                ) ;
             }
         //
-        // If we don't have a valid endpoint.
-        else {
+        // Catch anything that went BANG.
+        catch (Exception ouch)
+            {
+            // TODO
+            // Log the Exception, and throw a nicer one.
+            // Unwrap RemoteExceptions.
             //
-            // Set our manager to null and log it.
-            this.setPolicyManager(null) ;
             }
         }
     }

@@ -1,11 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/policy/manager/PolicyManagerMockDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerMockDelegate.java,v $
+ *   Revision 1.4  2004/03/15 07:49:30  dave
+ *   Merged development branch, dave-dev-200403121536, into HEAD
+ *
+ *   Revision 1.3.12.1  2004/03/15 06:52:08  dave
+ *   Refactored PolicyManagerMockDelegate to use ivorn identifiers.
+ *   Refactored CommunityAccountResolver to just handle AccountData.
+ *   Added CommunityAccountSpaceResolver to resolve home space ivorn.
+ *
  *   Revision 1.3  2004/03/08 13:42:33  dave
  *   Updated Maven goals.
  *   Replaced tabs with Spaces.
@@ -27,6 +35,14 @@
  */
 package org.astrogrid.community.client.policy.manager ;
 
+import java.util.Map ;
+import java.util.HashMap ;
+
+import org.astrogrid.store.Ivorn ;
+
+import org.astrogrid.community.common.ivorn.CommunityIvornParser ;
+import org.astrogrid.community.common.exception.CommunityException ;
+
 import org.astrogrid.community.common.policy.manager.PolicyManager ;
 import org.astrogrid.community.common.policy.manager.PolicyManagerMock ;
 
@@ -45,7 +61,8 @@ public class PolicyManagerMockDelegate
     private static boolean DEBUG_FLAG = true ;
 
     /**
-     * Public constructor.
+     * Public constructor, no identifier.
+     * Creates a default mock delegate, without an identifier.
      *
      */
     public PolicyManagerMockDelegate()
@@ -57,4 +74,81 @@ public class PolicyManagerMockDelegate
             new PolicyManagerMock()
             ) ;
         }
+
+    /**
+     * Public constructor.
+     * @param ivorn The identifier for the delegate.
+     *
+     */
+    public PolicyManagerMockDelegate(Ivorn ivorn)
+        {
+        super() ;
+        //
+        // Set our PolicyManager service.
+        this.setPolicyManager(
+            getManager(ivorn)
+            ) ;
+        }
+
+	/**
+	 * Our map of delegates, indexed by identifier.
+	 *
+	 */
+	private static Map map = new HashMap() ;
+
+	/**
+	 * Get a PolicyManager for an Ivorn identifier.
+	 * @param ivorn The identifier for the PolicyManager.
+	 * @return A reference to a PolicyManager, or null if not found in our map.
+	 *
+	 */
+	protected static PolicyManager getManager(Ivorn ivorn)
+		{
+		return getManager(
+			new CommunityIvornParser(ivorn)
+			) ;
+		}
+
+	/**
+	 * Get a PolicyManager for an Ivorn identifier.
+	 * @param parser The identifier for the PolicyManager.
+	 * @return A reference to a PolicyManager, or null if not found in our map.
+	 *
+	 */
+	protected static PolicyManager getManager(CommunityIvornParser parser)
+		{
+		return (PolicyManager) map.get(parser.getCommunityIdent()) ;
+		}
+
+	/**
+	 * Add a new PolicyManager for an identifier.
+	 * This will replace any existing PolicyManager for the identifier.
+	 * This enables a JUnit test to reset the PolicyManager for an identifier.
+	 * @param ivorn The identifier for the PolicyManager.
+	 * @return A reference to a new PolicyManager.
+	 *
+	 */
+	public static PolicyManager addManager(Ivorn ivorn)
+		{
+		return addManager(
+			new CommunityIvornParser(ivorn)
+			) ;
+		}
+
+	/**
+	 * Add a new PolicyManager for an identifier.
+	 * This will replace any existing PolicyManager for the identifier.
+	 * This enables a JUnit test to reset the PolicyManager for an identifier.
+	 * @param parser The identifier for the PolicyManager.
+	 *
+	 */
+	public static PolicyManager addManager(CommunityIvornParser parser)
+		{
+		PolicyManager manager = new PolicyManagerMock() ;
+		map.put(
+			parser.getCommunityIdent(),
+			manager
+			) ;
+		return manager ;
+		}
     }

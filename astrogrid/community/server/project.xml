@@ -4,10 +4,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/Attic/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.8  2004/03/15 07:49:30  dave
+    |   Merged development branch, dave-dev-200403121536, into HEAD
+    |
+    |   Revision 1.7.2.1  2004/03/12 17:30:00  dave
+    |   Fixed Castor JTA dependencies
+    |
     |   Revision 1.7  2004/03/12 15:22:17  dave
     |   Merged development branch, dave-dev-200403101018, into HEAD
     |
@@ -139,7 +145,7 @@
             <url>http://www.astrogrid.org/</url>
         </dependency>
         <!--+
-            | The Castor jars.
+            | The Castor libraries.
             +-->
         <dependency>
             <groupId>castor</groupId>
@@ -157,16 +163,17 @@
             <url>http://www.castor.org/</url>
         </dependency>
         <!--+
-            | The libraries that Castor relies on.
+            | The JTA library that Castor relies on.
+            +-->
         <dependency>
             <groupId>jta</groupId>
             <artifactId>jta</artifactId>
             <version>1.0.1</version>
             <type>jar</type>
         </dependency>
-            +-->
         <!--+
-            | The Xerces and XML API jars.
+            | The Xerces library that Castor relies on.
+            +-->
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xerces</artifactId>
@@ -174,6 +181,9 @@
             <type>jar</type>
             <url>http://xml.apache.org/</url>
         </dependency>
+        <!--+
+            | The XML library that Xerces relies on.
+            +-->
         <dependency>
             <groupId>xml-apis</groupId>
             <artifactId>xml-apis</artifactId>
@@ -181,7 +191,6 @@
             <type>jar</type>
             <url>http://xml.apache.org/</url>
         </dependency>
-            +-->
         <!--+
             | The Hsqldb jars.
             +-->

@@ -4,10 +4,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/09 17:18:47 $</cvs:date>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.9  2004/03/15 07:49:30  dave
+    |   Merged development branch, dave-dev-200403121536, into HEAD
+    |
+    |   Revision 1.8.4.1  2004/03/12 17:42:09  dave
+    |   Replaced tabs with spaces
+    |
     |   Revision 1.8  2004/03/09 17:18:47  dave
     |   Fixed the Maven deploy goals
     |
@@ -363,8 +369,8 @@
         <core:set var="targetBase" value="${maven.repo.central.directory}"/>
         <core:set var="customBase" value="${astrogrid.community.deploy.path}"/>
         <core:if test="${customBase.length() > 0}">
-	        <core:set var="targetBase" value="${customBase}"/>
-		</core:if>
+            <core:set var="targetBase" value="${customBase}"/>
+        </core:if>
         <core:set var="targetFile" value="${maven.build.dir}/${maven.final.name}.${astrogrid.artifact.type}"/>
         <core:set var="targetPath" value="${targetBase}/${pom.artifactDirectory}/${astrogrid.artifact.type}s"/>
         <ant:echo message="  File : ${targetFile}"/>
@@ -400,8 +406,8 @@
         <core:set var="targetBase" value="${maven.repo.central.directory}"/>
         <core:set var="customBase" value="${astrogrid.community.deploy.path}"/>
         <core:if test="${customBase.length() > 0}">
-	        <core:set var="targetBase" value="${customBase}"/>
-		</core:if>
+            <core:set var="targetBase" value="${customBase}"/>
+        </core:if>
         <core:set var="targetFile" value="${maven.build.dir}/${maven.final.name}.${astrogrid.artifact.type}"/>
         <core:set var="targetPath" value="${targetBase}/${pom.artifactDirectory}/${astrogrid.artifact.type}s"/>
         <ant:echo message="  File : ${targetFile}"/>
@@ -445,16 +451,16 @@
         <core:set var="targetPath" value="${maven.site.central.directory}"/>
         <core:set var="customPath" value="${astrogrid.community.deploy.site}"/>
         <core:if test="${customPath.length() > 0}">
-	        <core:set var="targetPath" value="${customPath}"/>
-		</core:if>
-		<!--+
-			| Copy our files across.
-			+-->
-		<ant:copy overwrite="true" todir="${targetPath}">
-			<fileset dir="${maven.docs.dest}">
-				<include name="**"/>
-			</fileset>
-		</ant:copy>
+            <core:set var="targetPath" value="${customPath}"/>
+        </core:if>
+        <!--+
+            | Copy our files across.
+            +-->
+        <ant:copy overwrite="true" todir="${targetPath}">
+            <fileset dir="${maven.docs.dest}">
+                <include name="**"/>
+            </fileset>
+        </ant:copy>
     </goal>
 
     <!-- ================ Custom tag library ================ -->

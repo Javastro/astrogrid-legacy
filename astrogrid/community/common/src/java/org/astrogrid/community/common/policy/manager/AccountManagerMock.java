@@ -1,11 +1,21 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/AccountManagerMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerMock.java,v $
+ *   Revision 1.5  2004/03/15 07:49:30  dave
+ *   Merged development branch, dave-dev-200403121536, into HEAD
+ *
+ *   Revision 1.4.2.2  2004/03/13 17:57:20  dave
+ *   Remove RemoteException(s) from delegate interfaces.
+ *   Protected internal API methods.
+ *
+ *   Revision 1.4.2.1  2004/03/13 16:08:08  dave
+ *   Added CommunityAccountResolver and CommunityEndpointResolver.
+ *
  *   Revision 1.4  2004/03/12 15:22:17  dave
  *   Merged development branch, dave-dev-200403101018, into HEAD
  *
@@ -75,7 +85,7 @@ public class AccountManagerMock
         }
 
     /**
-     * Our hash table of Accounts.
+     * Our hash table of values.
      *
      */
     private Map map = new HashMap() ;

@@ -1,11 +1,21 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/ResourceManagerMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceManagerMock.java,v $
+ *   Revision 1.4  2004/03/15 07:49:30  dave
+ *   Merged development branch, dave-dev-200403121536, into HEAD
+ *
+ *   Revision 1.3.12.2  2004/03/13 17:57:20  dave
+ *   Remove RemoteException(s) from delegate interfaces.
+ *   Protected internal API methods.
+ *
+ *   Revision 1.3.12.1  2004/03/13 16:08:08  dave
+ *   Added CommunityAccountResolver and CommunityEndpointResolver.
+ *
  *   Revision 1.3  2004/03/08 13:42:33  dave
  *   Updated Maven goals.
  *   Replaced tabs with Spaces.
@@ -57,11 +67,10 @@ public class ResourceManagerMock
         }
 
     /**
-     * Our hash table of Resources.
+     * Our hash table of values.
      *
      */
     private Map map = new HashMap() ;
-
 
    /**
     * Create a new Resource.

@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/exception/CommunityException.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityException.java,v $
+ *   Revision 1.3  2004/03/15 07:49:30  dave
+ *   Merged development branch, dave-dev-200403121536, into HEAD
+ *
+ *   Revision 1.2.2.1  2004/03/12 17:42:09  dave
+ *   Replaced tabs with spaces
+ *
  *   Revision 1.2  2004/03/12 15:22:17  dave
  *   Merged development branch, dave-dev-200403101018, into HEAD
  *
@@ -24,6 +30,6 @@ package org.astrogrid.community.common.exception ;
  *
  */
 public class CommunityException
-	extends Exception
-	{
-	}
+    extends Exception
+    {
+    }

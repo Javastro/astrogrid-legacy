@@ -4,10 +4,19 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
-    | <cvs:version>$Revision: 1.12 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
+    | <cvs:version>$Revision: 1.13 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.13  2004/03/15 07:49:30  dave
+    |   Merged development branch, dave-dev-200403121536, into HEAD
+    |
+    |   Revision 1.12.2.2  2004/03/12 17:42:09  dave
+    |   Replaced tabs with spaces
+    |
+    |   Revision 1.12.2.1  2004/03/12 17:30:00  dave
+    |   Fixed Castor JTA dependencies
+    |
     |   Revision 1.12  2004/03/12 15:22:17  dave
     |   Merged development branch, dave-dev-200403101018, into HEAD
     |
@@ -108,6 +117,7 @@
     xmlns:util="jelly:util"
     xmlns:log="jelly:log"
     xmlns:define="jelly:define"
+    default="astrogrid-install-snapshot"
     >
 
     <!-- ================ Astrogrid goals ================ -->
@@ -125,35 +135,7 @@
     </goal>
 
     <goal name="astrogrid-build-snapshot">
-        <attainGoal name="install-snapshot"/>
-    </goal>
-
-    <goal name="astrogrid-install-snapshot">
-        <attainGoal name="install-snapshot"/>
-    </goal>
-
-    <goal name="astrogrid-deploy-snapshot">
-        <attainGoal name="deploy-snapshot"/>
-    </goal>
-
-    <goal name="astrogrid-build-artifact">
-        <attainGoal name="install-artifact"/>
-    </goal>
-
-    <goal name="astrogrid-install-artifact">
-        <attainGoal name="install-artifact"/>
-    </goal>
-
-    <goal name="astrogrid-deploy-artifact">
-        <attainGoal name="deploy-artifact"/>
-    </goal>
-
-    <goal name="astrogrid-build-site">
-        <attainGoal name="build-site"/>
-    </goal>
-
-    <goal name="astrogrid-deploy-site">
-        <attainGoal name="deploy-site"/>
+        <attainGoal name="astrogrid-install-snapshot"/>
     </goal>
 
     <!-- ================ Reactor goals ================ -->
@@ -191,12 +173,12 @@
     <!--+
         | Build and install our components.
         +-->
-    <goal name="install-artifact">
+    <goal name="astrogrid-install-artifact">
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
             includes="common/project.xml,client/project.xml,server/project.xml,resolver/project.xml,webapp/project.xml,install/project.xml"
-            goals="install-artifact"
+            goals="astrogrid-install-artifact"
             banner="Building component artifact : "
             ignoreFailures="false"
             />
@@ -205,12 +187,12 @@
     <!--+
         | Build and install our snapshots.
         +-->
-    <goal name="install-snapshot">
+    <goal name="astrogrid-install-snapshot">
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
             includes="common/project.xml,client/project.xml,server/project.xml,resolver/project.xml,webapp/project.xml,install/project.xml"
-            goals="install-snapshot"
+            goals="astrogrid-install-snapshot"
             banner="Building snapshot artifact : "
             ignoreFailures="false"
             />
@@ -219,12 +201,12 @@
     <!--+
         | Build and deploy our components.
         +-->
-    <goal name="deploy-artifact">
+    <goal name="astrogrid-deploy-artifact">
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
             includes="common/project.xml,client/project.xml,server/project.xml,resolver/project.xml,webapp/project.xml,install/project.xml"
-            goals="deploy-artifact"
+            goals="astrogrid-deploy-artifact"
             banner="Deploying snapshot artifact : "
             ignoreFailures="false"
             />
@@ -233,12 +215,12 @@
     <!--+
         | Build and deploy our snapshots.
         +-->
-    <goal name="deploy-snapshot">
+    <goal name="astrogrid-deploy-snapshot">
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
             includes="common/project.xml,client/project.xml,server/project.xml,resolver/project.xml,webapp/project.xml,install/project.xml"
-            goals="deploy-snapshot"
+            goals="astrogrid-deploy-snapshot"
             banner="Deploying snapshot artifact : "
             ignoreFailures="false"
             />
@@ -247,7 +229,7 @@
     <!--+
         | Build our project website.
         +-->
-    <goal name="build-site">
+    <goal name="astrogrid-build-site">
         <!--+
             | Generate our project site(s).
             +-->
@@ -257,7 +239,7 @@
     <!--+
         | Build and deploy our project website.
         +-->
-    <goal name="deploy-site">
+    <goal name="astrogrid-deploy-site">
         <!--+
             | Generate our project site(s).
             +-->

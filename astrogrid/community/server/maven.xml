@@ -4,10 +4,19 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/Attic/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.8  2004/03/15 07:49:30  dave
+    |   Merged development branch, dave-dev-200403121536, into HEAD
+    |
+    |   Revision 1.7.12.2  2004/03/12 17:42:09  dave
+    |   Replaced tabs with spaces
+    |
+    |   Revision 1.7.12.1  2004/03/12 17:30:00  dave
+    |   Fixed Castor JTA dependencies
+    |
     |   Revision 1.7  2004/03/08 13:42:33  dave
     |   Updated Maven goals.
     |   Replaced tabs with Spaces.
@@ -116,6 +125,7 @@
     xmlns:log="jelly:log"
     xmlns:define="jelly:define"
     xmlns:astro="org.astrogrid.community"
+    default="astrogrid-install-snapshot"
     >
 
     <!--+
@@ -148,7 +158,7 @@
     <!--+
         | Build and install our component jar.
         +-->
-    <goal name="install-artifact">
+    <goal name="astrogrid-install-artifact">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
@@ -167,7 +177,7 @@
     <!--+
         | Build and install our snapshot jar.
         +-->
-    <goal name="install-snapshot">
+    <goal name="astrogrid-install-snapshot">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
@@ -191,14 +201,14 @@
     <!--+
         | Build and deploy our component jar.
         +-->
-    <goal name="deploy-artifact">
+    <goal name="astrogrid-deploy-artifact">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
         <!--+
             | Create our artifact jar.
             +-->
-        <attainGoal name="install-artifact"/>
+        <attainGoal name="astrogrid-install-artifact"/>
         <!--+
             | Deploy our jar.
             +-->
@@ -210,14 +220,14 @@
     <!--+
         | Build and deploy our snapshot jar.
         +-->
-    <goal name="deploy-snapshot">
+    <goal name="astrogrid-deploy-snapshot">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
         <!--+
             | Create our artifact jar.
             +-->
-        <attainGoal name="install-snapshot"/>
+        <attainGoal name="astrogrid-install-snapshot"/>
         <!--+
             | Deploy our SNAPSHOT jar.
             +-->

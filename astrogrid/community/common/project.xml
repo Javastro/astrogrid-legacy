@@ -4,10 +4,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.7  2004/03/15 07:49:30  dave
+    |   Merged development branch, dave-dev-200403121536, into HEAD
+    |
+    |   Revision 1.6.2.1  2004/03/15 07:40:56  dave
+    |   Removed redundant depends from project.xml
+    |
     |   Revision 1.6  2004/03/12 15:22:17  dave
     |   Merged development branch, dave-dev-200403101018, into HEAD
     |
@@ -119,16 +125,6 @@
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
-        <!--+
-            | The MySpace components - required for Ivorn.
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>astrogrid-mySpace</artifactId>
-            <version>${pom.currentVersion}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-        </dependency>
-            +-->
         <!--+
             | The JConfig jars.
             | Soon to be replaced by the AstroGrid common tools.

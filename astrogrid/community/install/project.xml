@@ -4,10 +4,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.7  2004/03/15 07:49:30  dave
+    |   Merged development branch, dave-dev-200403121536, into HEAD
+    |
+    |   Revision 1.6.2.1  2004/03/12 17:30:00  dave
+    |   Fixed Castor JTA dependencies
+    |
     |   Revision 1.6  2004/03/12 15:22:17  dave
     |   Merged development branch, dave-dev-200403101018, into HEAD
     |
@@ -146,7 +152,7 @@
             </properties>
         </dependency>
         <!--+
-            | The Castor jars.
+            | The Castor libraries.
             +-->
         <dependency>
             <groupId>castor</groupId>
@@ -170,7 +176,8 @@
             </properties>
         </dependency>
         <!--+
-            | The libraries that Castor relies on.
+            | The JTA library that Castor relies on.
+            +-->
         <dependency>
             <groupId>jta</groupId>
             <artifactId>jta</artifactId>
@@ -180,9 +187,9 @@
                 <lib.fileset>true</lib.fileset>
             </properties>
         </dependency>
-            +-->
         <!--+
-            | The Xerces and XML API jars.
+            | The Xerces library that Castor relies on.
+            +-->
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xerces</artifactId>
@@ -193,6 +200,9 @@
                 <lib.fileset>true</lib.fileset>
             </properties>
         </dependency>
+        <!--+
+            | The XML library that Xerces relies on.
+            +-->
         <dependency>
             <groupId>xml-apis</groupId>
             <artifactId>xml-apis</artifactId>
@@ -203,7 +213,6 @@
                 <lib.fileset>true</lib.fileset>
             </properties>
         </dependency>
-            +-->
         <!--+
             | The Hsqldb jars.
             +-->

@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/junit/org/astrogrid/community/common/policy/data/Attic/AccountDataJUnitTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountDataJUnitTest.java,v $
+ *   Revision 1.5  2004/03/15 07:49:30  dave
+ *   Merged development branch, dave-dev-200403121536, into HEAD
+ *
+ *   Revision 1.4.2.1  2004/03/12 17:42:09  dave
+ *   Replaced tabs with spaces
+ *
  *   Revision 1.4  2004/03/12 15:22:17  dave
  *   Merged development branch, dave-dev-200403101018, into HEAD
  *
@@ -98,9 +104,9 @@ public class AccountDataJUnitTest
         //
         // Check the account ident.
         assertEquals("Account ident not equal", "frog", frog.getIdent()) ;
-		//
-		// Try to change toe Account ident.
-		frog.setIdent("toad") ;
+        //
+        // Try to change toe Account ident.
+        frog.setIdent("toad") ;
         //
         // Check the account ident.
         assertEquals("Account ident not equal", "frog", frog.getIdent()) ;

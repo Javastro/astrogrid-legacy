@@ -4,10 +4,18 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.8  2004/03/15 07:49:30  dave
+    |   Merged development branch, dave-dev-200403121536, into HEAD
+    |
+    |   Revision 1.7.2.1  2004/03/15 06:52:08  dave
+    |   Refactored PolicyManagerMockDelegate to use ivorn identifiers.
+    |   Refactored CommunityAccountResolver to just handle AccountData.
+    |   Added CommunityAccountSpaceResolver to resolve home space ivorn.
+    |
     |   Revision 1.7  2004/03/12 15:22:17  dave
     |   Merged development branch, dave-dev-200403101018, into HEAD
     |
@@ -119,6 +127,16 @@
         | The external libraries required to build our component.
         +-->
     <dependencies>
+        <!--+
+            | The AstroGrid common components.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-common</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
         <!--+
             | The Community common components.
             +-->

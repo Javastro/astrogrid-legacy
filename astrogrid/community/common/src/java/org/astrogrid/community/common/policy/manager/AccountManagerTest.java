@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/AccountManagerTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerTest.java,v $
+ *   Revision 1.5  2004/03/15 07:49:30  dave
+ *   Merged development branch, dave-dev-200403121536, into HEAD
+ *
+ *   Revision 1.4.2.1  2004/03/12 17:42:09  dave
+ *   Replaced tabs with spaces
+ *
  *   Revision 1.4  2004/03/12 15:22:17  dave
  *   Merged development branch, dave-dev-200403101018, into HEAD
  *
@@ -112,8 +118,8 @@ public class AccountManagerTest
         //
         // Try creating an Account.
         assertNull("Null account",
-        	accountManager.addAccount(null)
-        	) ;
+            accountManager.addAccount(null)
+            ) ;
         }
 
     /**
@@ -129,8 +135,8 @@ public class AccountManagerTest
         //
         // Try creating an Account.
         assertNotNull("Null account",
-			accountManager.addAccount("test-account")
-        	) ;
+            accountManager.addAccount("test-account")
+            ) ;
         }
 
     /**
@@ -246,8 +252,8 @@ public class AccountManagerTest
         // Try setting an unknown account.
         assertNull("Changed unknown account",
             accountManager.setAccount(
-            	new AccountData("unknown-account")
-            	)
+                new AccountData("unknown-account")
+                )
             ) ;
         }
 
@@ -265,12 +271,12 @@ public class AccountManagerTest
         // Try creating an Account.
         AccountData account = accountManager.addAccount("test-account") ;
         assertNotNull("Null account", account) ;
-		//
-		// Change the details.
-		account.setDisplayName("Test DisplayName") ;
-		account.setDescription("Test Description") ;
-		account.setEmailAddress("Test EmailAddress") ;
-		account.setHomeSpace("Test HomeSpace") ;
+        //
+        // Change the details.
+        account.setDisplayName("Test DisplayName") ;
+        account.setDescription("Test Description") ;
+        account.setEmailAddress("Test EmailAddress") ;
+        account.setHomeSpace("Test HomeSpace") ;
         //
         // Try setting the details.
         account = accountManager.setAccount(account) ;
@@ -306,8 +312,8 @@ public class AccountManagerTest
         //
         // Try deleting a null Account.
         assertNull("Deleted null account",
-        	accountManager.delAccount(null)
-        	) ;
+            accountManager.delAccount(null)
+            ) ;
         }
 
     /**
@@ -323,8 +329,8 @@ public class AccountManagerTest
         //
         // Try deleting a null Account.
         assertNull("Deleted unknown account",
-        	accountManager.delAccount("unknown-account")
-        	) ;
+            accountManager.delAccount("unknown-account")
+            ) ;
         }
 
     /**
@@ -391,11 +397,11 @@ public class AccountManagerTest
         // Creating an Account.
         AccountData account = new AccountData("test-account") ;
         assertNotNull("Null account", account) ;
-		//
-		// Change the ident.
-		account.setIdent("wrong-ident") ;
-		//
-		// Check the ident has not changed.
+        //
+        // Change the ident.
+        account.setIdent("wrong-ident") ;
+        //
+        // Check the ident has not changed.
         assertEquals("Different ident", account.getIdent(),  "test-account") ;
         }
     }

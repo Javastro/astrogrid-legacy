@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/AccountManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/12 15:22:17 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/15 07:49:30 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.8  2004/03/15 07:49:30  dave
+ *   Merged development branch, dave-dev-200403121536, into HEAD
+ *
+ *   Revision 1.7.2.1  2004/03/12 17:42:09  dave
+ *   Replaced tabs with spaces
+ *
  *   Revision 1.7  2004/03/12 15:22:17  dave
  *   Merged development branch, dave-dev-200403101018, into HEAD
  *
@@ -224,10 +230,10 @@ public class AccountManagerImpl
      */
     public AccountData addAccount(String ident)
         {
-		//
-		// Check for null param.
-		if (null == ident) { return null ; }
-		return this.addAccount(new CommunityIdent(ident)) ;
+        //
+        // Check for null param.
+        if (null == ident) { return null ; }
+        return this.addAccount(new CommunityIdent(ident)) ;
         }
 
     /**
@@ -253,9 +259,9 @@ public class AccountManagerImpl
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("AccountManagerImpl.addAccount()") ;
         if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
-		//
-		// Check for null param.
-		if (null == ident) { return null ; }
+        //
+        // Check for null param.
+        if (null == ident) { return null ; }
         Database    database = null ;
         AccountData account  = null ;
         GroupData   group    = null ;
@@ -411,9 +417,9 @@ public class AccountManagerImpl
      */
     public AccountData getAccount(String ident)
         {
-		//
-		// Check for null param.
-		if (null == ident) { return null ; }
+        //
+        // Check for null param.
+        if (null == ident) { return null ; }
         return this.getAccount(new CommunityIdent(ident)) ;
         }
 
@@ -427,9 +433,9 @@ public class AccountManagerImpl
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("AccountManagerImpl.getAccount()") ;
         if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
-		//
-		// Check for null param.
-		if (null == ident) { return null ; }
+        //
+        // Check for null param.
+        if (null == ident) { return null ; }
         Database    database = null ;
         AccountData account  = null ;
         //
@@ -524,9 +530,9 @@ public class AccountManagerImpl
         if (DEBUG_FLAG) System.out.println("AccountManagerImpl.setAccount()") ;
         if (DEBUG_FLAG) System.out.println("  Account") ;
         if (DEBUG_FLAG) System.out.println("    ident : " + ((null != account) ? account.getIdent() : null)) ;
-		//
-		// Check for null param.
-		if (null == account) { return null ; }
+        //
+        // Check for null param.
+        if (null == account) { return null ; }
         //
         // Create a CommunityIdent from the account.
         CommunityIdent ident = new CommunityIdent(account.getIdent()) ;
@@ -627,9 +633,9 @@ public class AccountManagerImpl
      */
     public AccountData delAccount(String ident)
         {
-		//
-		// Check for null param.
-		if (null == ident) { return null ; }
+        //
+        // Check for null param.
+        if (null == ident) { return null ; }
         return this.delAccount(new CommunityIdent(ident)) ;
         }
 
@@ -643,9 +649,9 @@ public class AccountManagerImpl
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("AccountManagerImpl.delAccount()") ;
         if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
-		//
-		// Check for null param.
-		if (null == ident) { return null ; }
+        //
+        // Check for null param.
+        if (null == ident) { return null ; }
         Database    database = null ;
         AccountData account  = null ;
         //
