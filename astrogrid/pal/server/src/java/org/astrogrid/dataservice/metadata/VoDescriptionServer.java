@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.5 2005/03/10 22:39:17 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.6 2005/03/14 12:42:19 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,17 +14,19 @@ import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.metadata.queryable.QueryableResourceReader;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
-import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.dataservice.service.cea.CeaResources;
 import org.astrogrid.dataservice.service.cone.ConeResources;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
+import org.astrogrid.slinger.vospace.IVORN;
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import java.net.URISyntaxException;
 
 /**
  * Assembles the various VoResource elements provided by the plugins, and
@@ -99,8 +101,15 @@ public class VoDescriptionServer {
             }
             
             String configAuth = SimpleConfig.getSingleton().getString(VoResourceSupport.AUTHID_KEY);
-            String id = DomHelper.getValueOf(idNode);
-            if (!id.startsWith(configAuth)) {
+            IVORN id = null;
+            try {
+               id = new IVORN(DomHelper.getValueOf(idNode));
+            }
+            catch (URISyntaxException e) {
+               throw new MetadataException("<identifier> '"+id+"' is not a valid IVORN ");
+            }
+            
+            if (!id.getAuthority().startsWith(configAuth)) {
                throw new MetadataException("<identifier> '"+id+"' does not start with configured authority "+configAuth);
             }
          }
