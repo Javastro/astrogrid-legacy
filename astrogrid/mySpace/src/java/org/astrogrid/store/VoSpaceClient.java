@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceClient.java,v 1.6 2004/04/16 08:17:10 KevinBenson Exp $
+ * $Id: VoSpaceClient.java,v 1.7 2004/04/16 10:54:31 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -129,7 +129,7 @@ public class VoSpaceClient {
       client.newFolder(fileAgsl.getPath());
    }
    
-   public Ivorn createUser(Ivorn target, String user) throws IOException, URISyntaxException {
+   public Ivorn createUser(Ivorn target, Ivorn user) throws IOException, URISyntaxException {
       //Agsl vospaceTarget = VoSpaceResolver.resolveAgsl(target);
       Agsl vospaceTarget = VoSpaceResolver.registryMyspaceResolve(target);
       StoreAdminClient client = StoreDelegateFactory.createAdminDelegate(operator, vospaceTarget);
@@ -163,6 +163,9 @@ public class VoSpaceClient {
 
 /*
 $Log: VoSpaceClient.java,v $
+Revision 1.7  2004/04/16 10:54:31  KevinBenson
+*** empty log message ***
+
 Revision 1.6  2004/04/16 08:17:10  KevinBenson
 *** empty log message ***
 
