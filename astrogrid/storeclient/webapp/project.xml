@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Id: project.xml,v 1.1 2005/02/16 19:57:10 mch Exp $ -->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+    xsi:noNamespaceSchemaLocation="../../maven-base/xsd/maven-project.xsd">
+
+    <!--will eventually extend from /base when Maven RC3 installed-->
+
+    <extend>${basedir}/../../maven-base/project.xml</extend>
+
+    <currentVersion>${astrogrid.storeclient.version}</currentVersion>
+
+    <id>astrogrid-storeclient-webapp</id>
+
+    <name>Astrogrid Store Web Browser</name>
+
+    <description>Webapp to supply a web-based browser onto myspace</description>
+
+    <shortDescription>AstroGrid Store Web Browser</shortDescription>
+
+    <dependencies>
+
+        <dependency>
+            <artifactId>astrogrid-common</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.common.version}</version>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <artifactId>astrogrid-slinger-api</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.slinger.version}</version>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <artifactId>astrogrid-slinger-xml</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.slinger.version}</version>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <artifactId>astrogrid-storeclient-api</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.storeclient.version}</version>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <artifactId>astrogrid-storeclient-swingbrowser</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.storeclient.version}</version>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <artifactId>astrogrid-slinger-webnode</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.slinger.version}</version>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+       <!-- JavaMail for TargetIndicators -->
+       <dependency>
+         <id>JavaMail</id>
+         <version>UNKNOWN</version>
+         <jar>JavaMail.jar</jar>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
+       </dependency>
+
+       <!-- for VoSpaceResolver -->
+       <dependency>
+          <artifactId>astrogrid-registry-client-lite</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.registry.version}</version>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
+       </dependency>
+
+       <dependency>
+         <artifactId>astrogrid-registry-common</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.registry.version}</version>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
+       </dependency>
+    
+
+        <!-- Community resolving components.-->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-common</artifactId>
+            <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-client</artifactId>
+             <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-resolver</artifactId>
+           <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+
+         <!-- for logging -->
+        <dependency>
+            <artifactId>log4j</artifactId>
+            <groupId>log4j</groupId>
+            <version>1.2.4</version>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+            <version>1.0.3</version>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+       <!-- servlet support (for compiling against - no need for deployment war as servlet container should have it) -->
+       <dependency>
+         <id>servletapi</id>
+         <version>2.3</version>
+         <properties>
+           <war.bundle>false</war.bundle>
+         </properties>
+       </dependency>
+
+
+    </dependencies>
+
+</project>
+
+
+
+
+
+
+

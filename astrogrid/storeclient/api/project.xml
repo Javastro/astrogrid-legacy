@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Id: project.xml,v 1.1 2005/02/16 19:57:05 mch Exp $ -->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+    xsi:noNamespaceSchemaLocation="//../maven-base/xsd/maven-project.xsd">
+
+    <!--will eventually extend from /base when Maven RC3 installed-->
+
+    <extend>${basedir}/../../maven-base/project.xml</extend>
+
+    <currentVersion>${astrogrid.storeclient.version}</currentVersion>
+
+    <id>astrogrid-storeclient-api</id>
+
+    <name>Astrogrid StoreClient API Package</name>
+
+    <description> Astrogrid API to accessing files, etc on stores </description>
+
+    <shortDescription>AstroGrid Store API</shortDescription>
+
+    <dependencies>
+
+      <dependency>
+         <artifactId>astrogrid-common</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.common.version}</version>
+      </dependency>
+
+      <dependency>
+         <artifactId>astrogrid-slinger-api</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.slinger.version}</version>
+      </dependency>
+
+      <!-- for the FTP Client -->
+      <dependency>
+         <artifactId>commons-net</artifactId>
+         <groupId>commons-net</groupId>
+         <version>1.1.0</version>
+      </dependency>
+
+       <!-- For SRB -->
+       <dependency>
+         <artifactId>jargon</artifactId>
+         <groupId>gsi</groupId>
+         <version>1.4.6</version>
+       </dependency>
+
+       <!-- MySpace store clients
+       <dependency>
+         <artifactId>astrogrid-store-client</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.mySpace.version}</version>
+       </dependency>
+-->
+       <!-- for the myspace it05 clients -->
+       <dependency>
+         <id>jaxrpc-api</id>
+         <version>1.0.3</version>
+       </dependency>
+       <dependency>
+         <id>axis</id>
+         <version>1.1</version>
+       </dependency>
+
+       <!-- for logging -->
+       <dependency>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+            <version>1.0.3</version>
+       </dependency>
+
+
+    </dependencies>
+
+</project>
+
+
+
+
+
+
+
