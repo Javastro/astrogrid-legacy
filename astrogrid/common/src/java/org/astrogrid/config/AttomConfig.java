@@ -1,5 +1,5 @@
 /*
- * $Id: AttomConfig.java,v 1.2 2004/02/17 03:54:35 mch Exp $
+ * $Id: AttomConfig.java,v 1.3 2004/02/17 12:36:16 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -25,7 +25,6 @@ import javax.naming.NoInitialContextException;
 import javax.naming.ServiceUnavailableException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.AttomConfig;
 
 /**
  * All Things To All Men Configuration file.
@@ -420,6 +419,9 @@ public class AttomConfig {
 }
 /*
 $Log: AttomConfig.java,v $
+Revision 1.3  2004/02/17 12:36:16  mch
+Fixed self import
+
 Revision 1.2  2004/02/17 03:54:35  mch
 Nughtily large number of fixes for demo
 
