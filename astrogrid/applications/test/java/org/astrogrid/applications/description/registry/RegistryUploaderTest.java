@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryUploaderTest.java,v 1.1 2004/03/24 17:13:15 pah Exp $
+ * $Id: RegistryUploaderTest.java,v 1.2 2004/03/29 12:38:56 pah Exp $
  * 
  * Created on 24-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,6 +13,17 @@
 
 package org.astrogrid.applications.description.registry;
 
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
+
+import org.astrogrid.applications.description.DescriptionBaseTestCase;
+import org.astrogrid.applications.manager.externalservices.RegistryAdminFromConfig;
+import org.astrogrid.applications.manager.externalservices.RegistryAdminLocator;
+import org.astrogrid.applications.manager.externalservices.ServiceNotFoundException;
+import org.astrogrid.registry.RegistryException;
+import org.astrogrid.registry.beans.resource.VODescription;
+import org.astrogrid.registry.client.admin.RegistryAdminService;
+
 import junit.framework.TestCase;
 
 /**
@@ -20,7 +31,7 @@ import junit.framework.TestCase;
  * @version $Name:  $
  * @since iteration5
  */
-public class RegistryUploaderTest extends TestCase {
+public class RegistryUploaderTest extends RegEntryBaseTestCase {
 
    /**
     * Constructor for RegistryUploaderTest.
@@ -41,8 +52,15 @@ public class RegistryUploaderTest extends TestCase {
       super.setUp();
    }
 
-   final public void testWrite() {
-      //TODO Implement write().
+   final public void testWrite() throws MarshalException, ValidationException, ServiceNotFoundException, RegistryException {
+      VODescription regentry = builder.makeEntry();
+      assertNotNull(regentry);
+      RegistryAdminLocator reglocator = new RegistryAdminFromConfig(config);
+      assertNotNull(reglocator);
+      RegistryUploader reguploader = new RegistryUploader(regentry, reglocator);
+      assertNotNull(reguploader);
+      reguploader.write();
+      
    }
 
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryEntryBuilderTest.java,v 1.1 2004/03/24 17:13:15 pah Exp $
+ * $Id: RegistryEntryBuilderTest.java,v 1.2 2004/03/29 12:38:56 pah Exp $
  * 
  * Created on 24-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,7 +13,14 @@
 
 package org.astrogrid.applications.description.registry;
 
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.InputSource;
 
 import org.astrogrid.applications.beans.v1.ApplicationList;
@@ -26,12 +33,7 @@ import org.astrogrid.registry.beans.resource.VODescription;
  * @version $Name:  $
  * @since iteration5
  */
-public class RegistryEntryBuilderTest extends DescriptionBaseTestCase {
-
-   private CommandLineExecutionControllerConfig clconf;
-   private VODescription template;
-
-   private RegistryEntryBuilder builder;
+public class RegistryEntryBuilderTest extends RegEntryBaseTestCase {
 
    /**
     * Constructor for RegistryEntryBuilderTest.
@@ -45,37 +47,11 @@ public class RegistryEntryBuilderTest extends DescriptionBaseTestCase {
       junit.textui.TestRunner.run(RegistryEntryBuilderTest.class);
    }
 
-   /*
-    * @see BaseDBTestCase#setUp()
-    */
-   protected void setUp() throws Exception {
-      super.setUp();
-
-      InputSource saxis;
-      // get the configuration         
-      Unmarshaller um = new Unmarshaller(CommandLineExecutionControllerConfig.class);
-      assertNotNull(um);
-
-      saxis = new InputSource(inputFile.openStream());
-      assertNotNull("problem with input stream ", saxis);
-      clconf = (CommandLineExecutionControllerConfig)um.unmarshal(saxis);
-      assertNotNull("problem unmarshalling the config", clconf);
-      ApplicationList applist = RegistryEntryBuilder.makeApplist(clconf);
-      assertNotNull(applist);
-      //get the template
-
-      // create the builder....
-      Unmarshaller um2 = new Unmarshaller(VODescription.class);
-      assertNotNull(um2);
-      saxis = new InputSource(config.getRegistryTemplateURL().openStream());
-      template = (VODescription)um2.unmarshal(saxis);
-      assertNotNull(template);
-      builder = new RegistryEntryBuilder(applist, template);
-   }
-
-   final public void testMakeEntry() {
+   final public void testMakeEntry() throws MarshalException, ValidationException {
      VODescription entry = builder.makeEntry();
      assertNotNull(entry);
+     entry.marshal(new PrintWriter(System.out));
+     //TODO - should make more extensive tests....
    }
 
 }
