@@ -77,9 +77,9 @@ public class WhoAmITest extends TestCase {
     // Submit the SSO credentials and get grid credentials.
     // The security guard keeps the grid credentials; this
     // application doesn't need to handle them explicitly.
-    ClientSecurityGuard sg = new ClientSecurityGuard();
-    sg.setUsername(account);
-    sg.setPassword(new Password(password, false));
+    ClientSecurityGuard sg = ClientSecurityGuard.getInstance();
+    sg.setSsoUsername(account);
+    sg.setSsoPassword(password);
     sg.signOn();
 
     // Set up the proxy for the security-sample service.

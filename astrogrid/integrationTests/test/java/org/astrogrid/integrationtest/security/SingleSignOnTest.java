@@ -106,9 +106,9 @@ public class SingleSignOnTest extends TestCase {
   public String signOn (String username, String password) throws Exception {
 
     // Record the SSO credentials.
-    ClientSecurityGuard sg = new ClientSecurityGuard();
-    sg.setUsername(username);
-    sg.setPassword(new Password(password, false));
+    ClientSecurityGuard sg = ClientSecurityGuard.getInstance();
+    sg.setSsoUsername(username);
+    sg.setSsoPassword(password);
 
     // Use the SSO credentials to get a security token that can be
     // sent to a service.
