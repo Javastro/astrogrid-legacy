@@ -39,82 +39,9 @@
 	<attainGoal name="multiproject:site" />
 </preGoal>
 
-
-
-<!--
-new goals
--->
-
 <!--
 stand - alone goals - development helpers, not additions to main build
 -->
-  <goal name="test-installation" description="test the datacenter webservice installation" prereqs="datacenter-test-client-jar">
-	<!-- created jar file, now run it -->
-	<java fork="true" jar="packaging/pal/bin/test-server.jar">
-	<!-- for testing remote installation
-		<sysproperty key="datacenter.test.installation.base.url" value="http://aife.jb.man.ac.uk:8080/axis/services/AxisDataServer" />
-		-->
-		<sysproperty key="datacenter.test.installation.base.url" value="http://uml04.astrogrid.org:8080/axis/services/AxisDataServer" />
-	</java>
-  </goal>
-
-<goal name="datacenter-server-publish" description="compile and deploy to webserver, restart webapp, redeploy webservice."
-	prereqs="jar:jar,tomcat-declare-tasks,datacenter-server-zip">
-	<!-- assumes vanilla tomcat & axis installation, and configured tomcat manager app. -->
-	<copy todir="${axis.webapp.location}/WEB-INF/lib">
-		<fileset dir="packaging/datacenter-server/WEB-INF/lib">
-			<include name="*.jar" />
-		</fileset>
-	</copy>
-	<!-- restart webapp -->
-	<tomcat-reload url="http://localhost:8080/manager"
-		username="${tomcat.manager.username}" password="${tomcat.manager.password}" path="/axis" />
-	<!-- remove and reinstall dataservice with axis -->
-	<attainGoal name="dataserver-undeploy" />
-	<attainGoal name="dataserver-deploy"/>
-</goal>
-
-  <goal name="dataserver-deploy" description="fire wsdd at axis to deploy dataserver"
-  	prereqs="axis-declare-tasks,maybe-get-descriptors">
-  	<axis-admin xmlfile="wsdd/deploy.wsdd" />
-  </goal>
-
-  <goal name="dataserver-undeploy" description="fire wsdd at axis to undeploy dataserver"
-   	prereqs="axis-declare-tasks,maybe-get-descriptors">
-  	<axis-admin xmlfile="wsdd/undeploy.wsdd" />
-  </goal>
-  <goal name="maybe-get-descriptors" description="check need to get descriptors">
-  	<condition property="descriptors.missing" value="true">
-		<not>
-			<available file="${basedir}/wsdd/deploy.wsdd" />
-		</not>
-	</condition>
-	<j:if test="${descriptors.missing}">
-		<echo>Grabbing deployment descriptors</echo>
-		<attainGoal name="get-descriptors" />
-	</j:if>
-  </goal>
-
-<!--
-boilerplate below here
--->
-  <goal name="axis-declare-tasks">
-      <taskdef resource="axis-tasks.properties"  classpathref="maven.dependency.classpath" />
-  </goal>
-
-<goal name="tomcat-declare-tasks">
-   <!-- Configure the custom Ant tasks for the Manager application -->
-  <taskdef name="tomcat-deploy"    classname="org.apache.catalina.ant.DeployTask" classpathref="maven.dependency.classpath"/>
-  <taskdef name="tomcat-install"   classname="org.apache.catalina.ant.InstallTask" classpathref="maven.dependency.classpath"/>
-  <taskdef name="tomcat-list"      classname="org.apache.catalina.ant.ListTask" classpathref="maven.dependency.classpath"/>
-  <taskdef name="tomcat-reload"    classname="org.apache.catalina.ant.ReloadTask" classpathref="maven.dependency.classpath"/>
-  <taskdef name="tomcat-remove"    classname="org.apache.catalina.ant.RemoveTask" classpathref="maven.dependency.classpath"/>
-  <taskdef name="tomcat-resources" classname="org.apache.catalina.ant.ResourcesTask" classpathref="maven.dependency.classpath"/>
-  <taskdef name="tomcat-roles"     classname="org.apache.catalina.ant.RolesTask" classpathref="maven.dependency.classpath"/>
-  <taskdef name="tomcat-start"     classname="org.apache.catalina.ant.StartTask" classpathref="maven.dependency.classpath"/>
-  <taskdef name="tomcat-stop"      classname="org.apache.catalina.ant.StopTask" classpathref="maven.dependency.classpath"/>
-  <taskdef name="tomcat-undeploy"  classname="org.apache.catalina.ant.UndeployTask" classpathref="maven.dependency.classpath"/>
-</goal>
 
 
 </project>
