@@ -1,6 +1,5 @@
 package org.astrogrid.security;
 
-import javax.security.auth.Subject;
 import javax.xml.rpc.handler.MessageContext;
 import javax.xml.rpc.JAXRPCException;
 import javax.xml.soap.SOAPMessage;
