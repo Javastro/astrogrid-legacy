@@ -1,4 +1,4 @@
-/*$Id: RegistrySchemaMap.java,v 1.4 2005/02/15 12:43:44 clq2 Exp $
+/*$Id: RegistrySchemaMap.java,v 1.5 2005/02/15 17:35:19 clq2 Exp $
  * Created on 01-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -81,8 +81,8 @@ public class RegistrySchemaMap {
 
 /* 
 $Log: RegistrySchemaMap.java,v $
-Revision 1.4  2005/02/15 12:43:44  clq2
-REG_KMB_889/889_2
+Revision 1.5  2005/02/15 17:35:19  clq2
+elipse ignored some of the files when commiting last time
 
 Revision 1.3.6.1  2005/01/19 14:37:16  KevinBenson
 changing where the xsl is, and fix some of the xsl.

@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryDelegateFactory.java,v 1.12 2005/02/15 12:43:44 clq2 Exp $
+ * $Id: RegistryDelegateFactory.java,v 1.13 2005/02/15 17:35:19 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
