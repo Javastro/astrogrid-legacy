@@ -45,7 +45,7 @@
     <servlet>
       <servlet-name>OAIHandlerv0_9</servlet-name>
       <description>
-        This servlet processes OAI verbs. 
+        This servlet processes OAI verbs.
 
         The initialization parameter names for this servlet are the
         "servlet path" that will be received by this servlet (after the
@@ -53,9 +53,9 @@
         name of the action class that will be used to process this request.
       </description>
       <servlet-class>astrogrid.registry.oai.OAIHandler</servlet-class>
-	  <init-param>
+     <init-param>
         <param-name>registry_version</param-name>
-      	<param-value>0.9</param-value>
+         <param-value>0.9</param-value>
       </init-param>
     </servlet>
 
@@ -63,7 +63,7 @@
     <servlet>
       <servlet-name>OAIHandlerv0_10</servlet-name>
       <description>
-        This servlet processes OAI verbs. 
+        This servlet processes OAI verbs.
 
         The initialization parameter names for this servlet are the
         "servlet path" that will be received by this servlet (after the
@@ -71,13 +71,13 @@
         name of the action class that will be used to process this request.
       </description>
       <servlet-class>astrogrid.registry.oai.OAIHandler</servlet-class>
-	  <init-param>
+     <init-param>
         <param-name>registry_version</param-name>
-      	<param-value>0.10</param-value>
+         <param-value>0.10</param-value>
       </init-param>
     </servlet>
 
-	<!--
+   <!--
     <context-param>
       <param-name>properties</param-name>
       <param-value>oaicat.properties</param-value>
@@ -86,7 +86,7 @@
         datapairs used to initialize the OAI repository software.
       </description>
     </context-param>
-	-->
+   -->
 
     <context-param>
       <param-name>properties</param-name>
@@ -177,9 +177,9 @@
   </mime-mapping>
 
   <welcome-file-list id="WelcomeFileList">
+    <welcome-file>index.jsp</welcome-file>
     <welcome-file>registry_index.html</welcome-file>
     <welcome-file>index.html</welcome-file>
-    <welcome-file>index.jsp</welcome-file>
     <welcome-file>index.jws</welcome-file>
   </welcome-file-list>
 

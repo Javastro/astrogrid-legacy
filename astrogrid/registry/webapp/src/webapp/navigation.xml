@@ -1,0 +1,29 @@
+<div id='leftColumn'>
+<div id='navcolumn'>
+   <div id='menuServer'>
+      <h5>Server</h5>
+      <ul>
+         <li><a href="index.jsp" >Home</a>
+         <li><a href="admin/index.jsp" >Admin</a>
+         <li><a href="registry_index.html" >Old Index</a>
+      </ul>
+   </div>
+   <div id='menuQuery'>
+      <h5>Investigate</h5>
+      <ul>
+         <li><a href="ivornLookupForm.jsp" >IVORN Lookup</a>
+         <li><a href="browse.jsp" >Browse</a>
+         <li><a href="adqlquery.html" >Query</a>
+      </ul>
+   </div>
+   <div id='menuRegister'>
+      <h5>Register</h5>
+      <ul>
+         <li><a href="admin/entryForm.html">Enter Resource Document</a>
+         <li><a href="admin/enterUrlForm.jsp">Register using URL</a>
+      </ul>
+   </div>
+
+</div>
+</div>
+
