@@ -1,7 +1,9 @@
 package org.astrogrid.community.delegate.policy;
 
 import org.astrogrid.community.policy.data.GroupData;
+import org.astrogrid.community.policy.data.ResourceData;
 import org.astrogrid.community.policy.data.CommunityData;
+import org.astrogrid.community.policy.data.AccountData;
 
 import org.astrogrid.community.policy.server.PolicyManager ;
 import org.astrogrid.community.policy.server.PolicyManagerService ;
@@ -19,8 +21,13 @@ public class AdministrationDelegate {
     */
    private static final boolean DEBUG_FLAG = true ;
    
-   private String localUrl = "localhost";
+   private String localUrl = "http://localhost:8080/axis/services/PolicyManager";
+   
+   private String localSecureUrl = "https://localhost:8080/axis/services/PolicyManager";
+      
    private String localName = "localname";
+   
+  
    
    PolicyManager service = null;
    
@@ -32,6 +39,80 @@ public class AdministrationDelegate {
          service = null;
       }      
    }
+   
+   
+   public boolean addGroupMember(String account,String group) throws Exception {
+      return service.addGroupMember(account,group);  
+   }
+   
+   public boolean delGroupMember(String account,String group) throws Exception {
+      return service.delGroupMember(account,group);  
+   }
+
+
+   public AccountData addAccount(String name) throws Exception {
+      return service.addAccount(name);      
+   }
+
+   public boolean delAccount(String name) throws Exception {
+      return service.delAccount(name);      
+   }
+   
+   public AccountData getAccount(String name) throws Exception {
+      return service.getAccount(name);  
+   }
+   
+   
+   public ArrayList getAccountList() throws Exception {
+      Object []list = service.getAccountList();
+      ArrayList al = null;
+      if(list != null && list.length > 0) {
+         al = new ArrayList(list.length);
+         for(int i = 0;i < list.length;i++) {
+            al.add(list[i]);
+         }
+      }
+      return al;   
+   }
+   
+   public AccountData setAccount(AccountData ad) throws Exception {
+      return service.setAccount(ad);  
+   }
+   
+   
+   public ResourceData addResource(String name) throws Exception {
+      return service.addResource(name);      
+   }
+
+   public boolean delResource(String name) throws Exception {
+      return service.delResource(name);      
+   }
+   
+   public ResourceData getResource(String name) throws Exception {
+      return service.getResource(name);  
+   }
+   
+   
+   public ArrayList getResourceList() throws Exception {
+      Object []list = service.getResourceList();
+      ArrayList al = null;
+      if(list != null && list.length > 0) {
+         al = new ArrayList(list.length);
+         for(int i = 0;i < list.length;i++) {
+            al.add(list[i]);
+         }
+      }
+      return al;   
+   }
+   
+   public ResourceData setResource(ResourceData ad) throws Exception {
+      return service.setResource(ad);  
+   }
+   
+   
+   
+   
+   
    
    
    public ArrayList getAccountGroupList(String account) throws Exception {
@@ -91,8 +172,10 @@ public class AdministrationDelegate {
    }
    
    public ArrayList getCommunityList()  throws Exception {
-      
       Object []list = service.getCommunityList();
+      if(list == null) {
+         throw new Exception("isn't finding my data");
+      }
       ArrayList al = new ArrayList(list.length);
       for(int i = 0;i < list.length;i++) {
          al.add(list[i]);
