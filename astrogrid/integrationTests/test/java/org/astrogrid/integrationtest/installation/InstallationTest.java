@@ -1,4 +1,4 @@
-/* $Id: InstallationTest.java,v 1.7 2004/03/31 11:29:06 jdt Exp $
+/* $Id: InstallationTest.java,v 1.8 2004/04/13 10:30:54 jdt Exp $
  * Created on Mar 29, 2004 by jdt
  * Copyright (C) AstroGrid. All rights reserved.
  * This software is published under the terms of the AstroGrid
@@ -10,7 +10,6 @@ package org.astrogrid.integrationtest.installation;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -145,6 +144,9 @@ public final class InstallationTest  {
 
 /*
  *  $Log: InstallationTest.java,v $
+ *  Revision 1.8  2004/04/13 10:30:54  jdt
+ *  tidied imports
+ *
  *  Revision 1.7  2004/03/31 11:29:06  jdt
  *  Now uses keySet to dynamically create the list of urls to test.
  *
