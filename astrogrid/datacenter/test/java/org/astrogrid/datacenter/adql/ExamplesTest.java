@@ -1,4 +1,4 @@
-/*$Id: ExamplesTest.java,v 1.3 2003/09/17 14:53:02 nw Exp $
+/*$Id: ExamplesTest.java,v 1.4 2003/09/26 11:04:12 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,6 +55,9 @@ public class ExamplesTest extends TestCase {
     public void test5() throws Exception {
         processFile("sample5.xml");
     }
+    public void test6() throws Exception {
+        processFile("sample6.xml");
+    }
 
     /** muck about with the input file a bit */
     protected void processFile(String path) throws Exception {
@@ -86,6 +89,10 @@ public class ExamplesTest extends TestCase {
 
 /* 
 $Log: ExamplesTest.java,v $
+Revision 1.4  2003/09/26 11:04:12  nw
+added new ADQL query that exercises more of the translator / castor generated classes.
+bumps the clover score up by 10%!
+
 Revision 1.3  2003/09/17 14:53:02  nw
 tidied imports
 
