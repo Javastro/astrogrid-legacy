@@ -147,7 +147,7 @@
 		</cea:ApplicationDefinition>
 		<cea:CeaHttpAdapterSetup>
 			<!--This needs to have the end point better adapted....-->
-			<ceab:URL>http://cdsws.u-strasbg.fr/</ceab:URL>
+			<ceab:URL>http://cdsws.u-strasbg.fr/xmatch/XMatchFrontend</ceab:URL>
 		</cea:CeaHttpAdapterSetup>
 	</vr:Resource>
 	<vr:Resource  updated="2004-11-20Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaServiceType">
