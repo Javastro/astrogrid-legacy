@@ -60,8 +60,8 @@
         <xsl:param name="direction"/>
             <form name="parameter_form" action="/astrogrid-portal/main/mount/workflow/agjobmanager.html">
                 <tr>
-                    <td>name<xsl:value-of select="@param-name"/></td>
-                    <td>type<xsl:value-of select="@param-type"/></td>
+                    <td><xsl:value-of select="@param-name"/></td>
+                    <td><xsl:value-of select="@param-type"/></td>
 <!--
                     <xsl:choose>
                         <xsl:when test="@param-value = '' ">
@@ -88,9 +88,23 @@
                                 </xsl:element>
                             </td>
                             <td><input type="submit" value="submit" /></td>
-                            <td><input name="myspace-name" type="button" value="Browse...">
+                            <td>
+                                <xsl:choose>
+                                    <xsl:when test="@param-type = 'FileReference'">
+                                        <input name="myspace-name" type="button" value="Browse...">
 <!--                              <xsl:attribute name="onclick">javascript:void(window.open('/astrogrid-portal/mount/myspace/myspace-micro?ivorn=<xsl:value-of select="$ivorn=id"/>&amp;agsl=<xsl:value-of select="$agsl-id"/>', 'mySpaceMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200'))"></xsl:attribute> -->
-                            </input></td>
+                                        </input>
+                                    </xsl:when>
+                                    <xsl:when test="@param-type = 'MySpace_FileReference'">
+                                        <input name="myspace-name" type="button" value="Browse...">
+<!--                              <xsl:attribute name="onclick">javascript:void(window.open('/astrogrid-portal/mount/myspace/myspace-micro?ivorn=<xsl:value-of select="$ivorn=id"/>&amp;agsl=<xsl:value-of select="$agsl-id"/>', 'mySpaceMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200'))"></xsl:attribute> -->
+                                        </input>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="align">center</xsl:attribute>---
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </td>
 <!--                        </xsl:when>
                         <xsl:otherwise>
                             <td><xsl:value-of select="@param-value" /></td>
