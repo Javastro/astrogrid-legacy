@@ -1,3 +1,10 @@
+/*
+ *
+ * Moved to extras.js (portal/base/site/web/scripts) following changes to microbrowser
+ * Make any ammendments there
+ *
+ */
+
 
 function getSelectionId(authId, resourceKey) {
   parentDoc = window.opener.document;
