@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.14 2004/06/21 08:42:30 KevinBenson Exp $ -->
+<!-- $Id: project.xml,v 1.15 2004/06/22 16:40:13 pah Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:noNamespaceSchemaLocation="maven-project.xsd">
 	<!--    <extend>../../maven-base/project.xml</extend> -->
@@ -32,7 +32,7 @@
 			<type>war</type>
 		</dependency>
 		<dependency>
-			<artifactId>astrogrid-registry-webapp</artifactId>
+			<artifactId>astrogrid-registry</artifactId>
 			<groupId>org.astrogrid</groupId>
 			<version>SNAPSHOT</version>
 			<type>war</type>
@@ -81,7 +81,7 @@
             +-->
 		<dependency>
 			<groupId>org.astrogrid</groupId>
-			<artifactId>astrogrid-community-webapp</artifactId>
+			<artifactId>astrogrid-community</artifactId>
 			<version>SNAPSHOT</version>
 			<type>war</type>
 			<url>http://www.astrogrid.org/</url>
