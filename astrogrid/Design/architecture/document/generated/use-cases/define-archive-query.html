@@ -1,0 +1,114 @@
+<HTML>
+<STYLE>
+A:link {text-decoration: underline; color: darkmagenta;}
+A:visited {text-decoration: underline; color: darkmagenta;}
+#f0 { font-family: "Helvetica"; font-size: 10pt;  }
+#f1 { font-family: "SansSerif"; font-size: 10pt;  }
+#f2 { font-family: "SansSerif"; font-size: 8pt;  }
+#f3 { font-family: "SansSerif"; font-size: 14pt; font-style: italic; font-weight: bold; color: #FFFFFF;  }
+#f4 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold; color: #FFFFFF;  }
+#f5 { font-family: "SansSerif"; font-size: 12pt; font-style: italic;  }
+#f6 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold;  }
+#f7 { font-family: "SansSerif"; font-size: 8pt; font-weight: bold;  }
+#f8 { font-family: "SansSerif"; font-size: 10pt; font-style: italic; font-weight: bold;  }
+#f9 { font-family: "SansSerif"; font-size: 11pt; font-style: italic; font-weight: bold;  }
+#f10 { font-family: "SansSerif"; font-size: 10pt; font-style: italic;  }
+#f11 { font-family: "SansSerif"; font-size: 10pt; font-weight: bold;  }
+#f12 { font-family: "SansSerif"; font-size: 9pt; font-style: italic; font-weight: bold;  }
+#f13 { font-family: "SansSerif"; font-size: 9pt; font-weight: bold;  }
+#f14 { font-family: "SansSerif"; font-size: 9pt;  }
+#f15 { font-family: "SansSerif"; font-size: 8pt; font-style: italic;  }
+#f16 { font-family: "monospace"; font-size: 9pt;  }
+#f17 { font-family: "SansSerif"; font-size: 9pt; font-weight: bold; color: #800080;  }
+#f18 { font-family: "SansSerif"; font-size: 8pt; font-style: italic; font-weight: bold;  }
+</STYLE>
+<BODY BGCOLOR="white">
+<BASEFONT ID="f0">
+<DIV STYLE="margin-left:2pt;margin-top:5pt;"><IMG SRC="doc-images/ActivityDiagram2.png"> <FONT ID="f6">Activity Diagram</FONT> <FONT ID="f5"><U>define-archive-query</U></FONT></DIV>
+<DIV STYLE="margin-left:3pt;margin-top:4pt;"><FONT ID="f2">package:</FONT> <FONT ID="f7"><A HREF="Package.html">use-cases</A></FONT></DIV>
+<DIV STYLE="margin-top:16pt;margin-left:2pt;"><IMG SRC="doc-images/define-archive-query_ActivityDiagram.gif" USEMAP="#M1"><MAP NAME="M1"><AREA SHAPE="rect" COORDS="31,230,197,254" HREF="define-archive-query.html#R1"><AREA SHAPE="rect" COORDS="31,160,197,184" HREF="define-archive-query.html#R2"><AREA SHAPE="rect" COORDS="31,100,197,124" HREF="define-archive-query.html#R3"><AREA SHAPE="rect" COORDS="31,20,197,44" HREF="define-archive-query.html#R4"><AREA SHAPE="rect" COORDS="30,326,196,350" HREF="define-archive-query.html#R5"></MAP></DIV>
+<DIV STYLE="margin-top:16pt;margin-left:2pt;"><FONT ID="f8" STYLE="background-color:#DCDCDC;">Diagram Contents Summary</FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:8pt;"><IMG SRC="doc-images/tv-activity2.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="define-archive-query.html#R4">Navigate to query page</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity2.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="define-archive-query.html#R5">Record query</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity2.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="define-archive-query.html#R2">Select columns</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity2.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="define-archive-query.html#R1">Select rows</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity2.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="define-archive-query.html#R3">Select table to query</A></U></FONT></DIV>
+<DIV STYLE="margin-top:13pt;margin-left:2pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="98%"><TR BGCOLOR="#C0C0C0"><TD><FONT ID="f9">Activity Detail</FONT></TD></TR></TABLE></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:11pt;"><IMG SRC="doc-images/Activity2.png"> <FONT ID="f11"><A NAME="R4"></A>Activity </FONT><FONT ID="f10">Navigate to query page</FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2"><p> 
+User  is viewing a portal page that has the portal's main menu at the top of the window. User selects "query" from the "Datacenter" menu. Portal displays the page for defining a query to an archive with an ADQL interface. 
+</p> 
+<p> 
+Portal expects the query to be entered as sADQL, which is similar to SQL. To this end, the core of the query-definition page is a text box in which the sADQL is to be entered. User can just type into this box, or can use some of a bewildering set of ancillary controls, arranged around the edges of box, that add sADQLfragements to the text in the box. 
+</p></FONT></DIV>
+<DIV STYLE="margin-top:13pt;margin-left:17pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R6"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="define-archive-query.html#R3">Select table to query</A></U></FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:16pt;"><IMG SRC="doc-images/Activity2.png"> <FONT ID="f11"><A NAME="R5"></A>Activity </FONT><FONT ID="f10">Record query</FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2"><p> 
+User is viewing the portal page for entering an sADQL query and has entered the query text in the pages main textbox. User now needs to save the query (to MySpace) in order to make it available in workflows. There is no provision for using a query that is not saved to MySpace (and, by extension, there is no provision for executing a query if User is not a registered user of AstroGrid with space allocated in MySpace).
+</p>
+<p>
+User types, in the text box next to the save button, the AstroGrid Store Locator (AGSL) for the file in which the query will be saved.
+User presses the save button. Portal sends the query data to MySpace and MySpace saves the data in a file.
+</p>
+<p>
+There is no indication of the AGSL syntax, except that using an invalid syntax gives an error message "explaining" the syntax in terms of obscure jargon. The AGSL is actually about 50 characters of prefix followed by a file path in the virtual directory-tree MySpace. No end-user will ever guess the correct form of the prefix (I can't guess it myself) and most users will have difficulty in guessing a useful file-path (is it absolute or relative? Is the root the user's MySpace or the User's community's MySpace or all of MySpace anywhere? Must all the directories in the path exist or must User somehow create them?). Therefore, all attempts by all unassisted end-users to record queries must fail. Therefore, no archive queries are currently possible on AstroGrid.
+</p></FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:16pt;"><IMG SRC="doc-images/Activity2.png"> <FONT ID="f11"><A NAME="R2"></A>Activity </FONT><FONT ID="f10">Select columns</FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2"><p> 
+User is the page for setting up an sADQL query. User needs to select the columnsto be returned from the query: this is expressed as the SELECT clause in sADQL. There are two possibilities: 
+</p> 
+<ul> 
+<li>type the names of the columns directly into the box;</li> 
+<li>click on column-names displayed by Portal when the table was selected.</li> 
+</ul> 
+<p> 
+The column selection is express in the form SELECT (table alias).(column name 1) [(table alias).(column name 2)...] where the table alias matches the value set in the FROM clause of the sADQL.
+</p>
+<p>
+There is no support for displaying metadata of the columns (e.g. their descriptions, utypes or UCDs) to guide User.
+</p></FONT></DIV>
+<DIV STYLE="margin-top:13pt;margin-left:17pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R7"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="define-archive-query.html#R1">Select rows</A></U></FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:16pt;"><IMG SRC="doc-images/Activity2.png"> <FONT ID="f11"><A NAME="R1"></A>Activity </FONT><FONT ID="f10">Select rows</FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2"><p> 
+User is the page for setting up an sADQL query. User needs to select the rows of the catalogue to be returned: this is expressed as the WHERE clause in sADQL. There are two possibilities: 
+</p> 
+<ul> 
+<li>type the terms directly into the box;</li> 
+<li>click on table names and operators displayed around the box for entering the sADQL;</li> 
+</ul> 
+<p> 
+Clicking on a displayed fragment of sADQL pastes it into the sADQL textbox at the current insertion-point.
+The names of columns will only be available for clicking if User successfully searched for a table.
+</p> 
+<p> 
+sADQL WHERE clauses are identical to SQL WHERE clauses except that sADQL has extra operators that are specific to astronomy.
+</p></FONT></DIV>
+<DIV STYLE="margin-top:13pt;margin-left:17pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R8"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="define-archive-query.html#R5">Record query</A></U></FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:16pt;"><IMG SRC="doc-images/Activity2.png"> <FONT ID="f11"><A NAME="R3"></A>Activity </FONT><FONT ID="f10">Select table to query</FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2"><p> 
+User is the page for setting up an sADQL query. User needs to start off by selecting one table in one database of one archive to which to send the query: this is expressed as the FROM clause in sADQL. There are three possibilities: 
+</p> 
+<ul> 
+<li>type the name of the table directly into the box;</li> 
+<li>"load a known table";</li> 
+<li>"select a table".</li> 
+</ul> 
+<p> 
+The latter two options are the legends of controls in the form. 
+</p> 
+<p> 
+The "load a known table" control is a text box into which User types some identifier. It's unclear from what scheme these identifiers come; they don't seems to be IVORNs. If User happens to guess a correct identifier (i.e. the ID of a known table), then a list of columns in that table is displayed; otherwise, the table-name is accepted. User has then to type an alias for the table in another text box and press a "C & P" bitton which writes the table name into the main query in the form "FROM (table) AS (alias)". This feature is fairly pointless (it's query to type the sADQL directly) except for the implied check on whether the table is known to the system. 
+</p> 
+<p> 
+The "select a table" feature is a button leading to a pop-up window in which User can specify selection by metadata. This feature would be useful because it allows User to select tables by the UCDs of their columns. However, all these metadata queries return either no tables or a constant set of administrative tables inside Vizier, so the feature is useless. 
+</p> 
+<p> 
+At present, there seems to be no portal support for queries to archives with other kinds of interface. Notably, there is no provision for queries to service with the IVOA "cone search" or "SIAP" interfaces. However, the ADQL-query page does explain, in an example, how to express a cone search in ADQL. 
+</p></FONT></DIV>
+<DIV STYLE="margin-top:13pt;margin-left:17pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R9"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="define-archive-query.html#R2">Select columns</A></U></FONT></DIV>
+</BODY>
+</HTML>

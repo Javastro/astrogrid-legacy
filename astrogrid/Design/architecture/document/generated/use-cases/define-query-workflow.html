@@ -1,0 +1,75 @@
+<HTML>
+<STYLE>
+A:link {text-decoration: underline; color: darkmagenta;}
+A:visited {text-decoration: underline; color: darkmagenta;}
+#f0 { font-family: "Helvetica"; font-size: 10pt;  }
+#f1 { font-family: "SansSerif"; font-size: 10pt;  }
+#f2 { font-family: "SansSerif"; font-size: 8pt;  }
+#f3 { font-family: "SansSerif"; font-size: 14pt; font-style: italic; font-weight: bold; color: #FFFFFF;  }
+#f4 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold; color: #FFFFFF;  }
+#f5 { font-family: "SansSerif"; font-size: 12pt; font-style: italic;  }
+#f6 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold;  }
+#f7 { font-family: "SansSerif"; font-size: 8pt; font-weight: bold;  }
+#f8 { font-family: "SansSerif"; font-size: 10pt; font-style: italic; font-weight: bold;  }
+#f9 { font-family: "SansSerif"; font-size: 11pt; font-style: italic; font-weight: bold;  }
+#f10 { font-family: "SansSerif"; font-size: 10pt; font-style: italic;  }
+#f11 { font-family: "SansSerif"; font-size: 10pt; font-weight: bold;  }
+#f12 { font-family: "SansSerif"; font-size: 9pt; font-style: italic; font-weight: bold;  }
+#f13 { font-family: "SansSerif"; font-size: 9pt; font-weight: bold;  }
+#f14 { font-family: "SansSerif"; font-size: 9pt;  }
+#f15 { font-family: "SansSerif"; font-size: 8pt; font-style: italic;  }
+#f16 { font-family: "monospace"; font-size: 9pt;  }
+#f17 { font-family: "SansSerif"; font-size: 9pt; font-weight: bold; color: #800080;  }
+#f18 { font-family: "SansSerif"; font-size: 8pt; font-style: italic; font-weight: bold;  }
+</STYLE>
+<BODY BGCOLOR="white">
+<BASEFONT ID="f0">
+<DIV STYLE="margin-left:2pt;margin-top:5pt;"><IMG SRC="doc-images/ActivityDiagram2.png"> <FONT ID="f6">Activity Diagram</FONT> <FONT ID="f5"><U>define-query-workflow</U></FONT></DIV>
+<DIV STYLE="margin-left:3pt;margin-top:4pt;"><FONT ID="f2">package:</FONT> <FONT ID="f7"><A HREF="Package.html">use-cases</A></FONT></DIV>
+<DIV STYLE="margin-top:16pt;margin-left:2pt;"><IMG SRC="doc-images/define-query-workflow_ActivityDiagram.gif" USEMAP="#M1"><MAP NAME="M1"><AREA SHAPE="rect" COORDS="50,280,234,308" HREF="define-query-workflow.html#R1"><AREA SHAPE="rect" COORDS="50,200,234,228" HREF="define-query-workflow.html#R2"><AREA SHAPE="rect" COORDS="50,110,234,138" HREF="define-query-workflow.html#R3"><AREA SHAPE="rect" COORDS="50,40,234,68" HREF="define-query-workflow.html#R4"></MAP></DIV>
+<DIV STYLE="margin-top:16pt;margin-left:2pt;"><FONT ID="f8" STYLE="background-color:#DCDCDC;">Diagram Contents Summary</FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:8pt;"><IMG SRC="doc-images/tv-activity2.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="define-query-workflow.html#R2">Associate step with query</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity2.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="define-query-workflow.html#R3">Insert single step</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity2.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="define-query-workflow.html#R4">Navigate to workflow page</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity2.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="define-query-workflow.html#R1">Save workflow</A></U></FONT></DIV>
+<DIV STYLE="margin-top:13pt;margin-left:2pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="98%"><TR BGCOLOR="#C0C0C0"><TD><FONT ID="f9">Activity Detail</FONT></TD></TR></TABLE></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:11pt;"><IMG SRC="doc-images/Activity2.png"> <FONT ID="f11"><A NAME="R2"></A>Activity </FONT><FONT ID="f10">Associate step with query</FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2"><p>
+User is viewing the page for generating a workflow. User clicks on the newly-generated job-step in the picture of the workflow. Portal updates the page to include a form for setting the step's details.
+</p>
+<p>
+The details include the "tool" for the step. "Tool" seems to mean the function of the step, but this is not explained anywhere. The list of available tools, at the time of writing, include things like HyperZ and Sextractor, but there is no obvious tool for querying an archive. "sec_dsa" may be related (DSA = Data Set Access?).
+</p>
+<p>
+User select a tool from the menubox in the form and presses the "add tool to step" button. For most tools, including the ones that look most like they relate to archive queries, this produces the description "unavailable". Thus, no users will be able to complete this use case.
+</p>
+<p>
+Hypothetically, if there were a tool for an archive query, User would now select a prepared query from MySpace to add to the job-step.
+</p></FONT></DIV>
+<DIV STYLE="margin-top:13pt;margin-left:17pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R5"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="define-query-workflow.html#R1">Save workflow</A></U></FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:16pt;"><IMG SRC="doc-images/Activity2.png"> <FONT ID="f11"><A NAME="R3"></A>Activity </FONT><FONT ID="f10">Insert single step</FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2"><p>
+User is viewing the page for generating a workflow.
+User selects the insert-step-here command from the edit menu. Portal adds a step to the sequence.
+</p></FONT></DIV>
+<DIV STYLE="margin-top:13pt;margin-left:17pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R6"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="define-query-workflow.html#R2">Associate step with query</A></U></FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:16pt;"><IMG SRC="doc-images/Activity2.png"> <FONT ID="f11"><A NAME="R4"></A>Activity </FONT><FONT ID="f10">Navigate to workflow page</FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2"><p>
+User is viewing any page of the portal that shows the main menu-bar. User selects Job manager from the Workflow menu. Portal displays a page for building a new workflow.
+</p>
+<p>
+The page shows the nascent workflow in graphical form, with a "sequence" already inserted. The sequence expresses a series of job-steps to be performed sequentially and the pre-loaded one is empty of job-steps.
+</p></FONT></DIV>
+<DIV STYLE="margin-top:13pt;margin-left:17pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R7"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="define-query-workflow.html#R3">Insert single step</A></U></FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:16pt;"><IMG SRC="doc-images/Activity2.png"> <FONT ID="f11"><A NAME="R1"></A>Activity </FONT><FONT ID="f10">Save workflow</FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2"><p>
+User is viewing a completed workflow in the workflow-generation page. User selects save from the file menu. Portal displays a dialogue asking for an AstroGrid Store Locator (AGSL) at which to save the workflow in a file, in MySpace.
+</p>
+<p>
+In principle, User predicts and types in the AGSL and the system saves the file into MySpace. In practice, User is unable to predict the syntax of the AGSL, so the use case fails.
+</p></FONT></DIV>
+</BODY>
+</HTML>
