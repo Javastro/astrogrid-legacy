@@ -1,27 +1,27 @@
-/*$Id: TestInstallation.java,v 1.3 2003/12/09 12:39:59 nw Exp $
+/*$Id: TestInstallation.java,v 1.4 2004/07/16 16:10:15 mch Exp $
  * Created on 08-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.integration.axisdataserver;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import javax.xml.parsers.ParserConfigurationException;
-
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.AbstractTestInstallation;
+import org.astrogrid.io.Piper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 /** integration test for validating an installation
@@ -30,12 +30,12 @@ import org.xml.sax.SAXException;
  * Then will run predefined queries through the datacenter.
  * <p>
  * - deliberately not called *Test - as we dont want it automatically run via maven
- *  - just that junit is a nice way to present these installation tests 
+ *  - just that junit is a nice way to present these installation tests
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Sep-2003
  * @deprecated replaced by installation tests  and query form inside datacenter war. more useable than this stand-alone client.
 
  */
-public class TestInstallation extends AbstractTestInstallation { 
+public class TestInstallation extends TestCase {
 
     /**
      * Constructor for TestInstallation.
@@ -54,14 +54,30 @@ public class TestInstallation extends AbstractTestInstallation {
        // necessary to do as below, to disable dynamic classloading (which causes xml classes to not be found)
        junit.swingui.TestRunner runner = new junit.swingui.TestRunner();
        runner.setLoading(false);
-       runner.start(new String[]{TestInstallation.class.getName()});       
+       runner.start(new String[]{TestInstallation.class.getName()});
     }
     
+    protected URL serviceURL;
+    
+    public final static String SERVICE_URL_KEY = "datacenter.test.installation.base.url";
+
+    public final static String SERVICE_URL_DEFAULT = "http://localhost:8080/axis/services/AxisDataServer";
+
     protected void setUp() throws Exception{
         super.setUp();
+        serviceURL = new URL (System.getProperty(SERVICE_URL_KEY,SERVICE_URL_DEFAULT)); // trailing / is important here.
         tomcatURL = new URL(serviceURL.getProtocol(),serviceURL.getHost(),serviceURL.getPort(),"/");
     }
     protected URL tomcatURL;
+    
+    /** load stream into a string */
+    public static String streamToString(InputStream is) throws IOException {
+       assertNotNull(is);
+       StringWriter sw = new StringWriter();
+       Piper.bufferedPipe(new InputStreamReader(is), sw);
+       return sw.toString();
+    }
+
     
     public void testTomcatInstallation() {
         try {
@@ -75,7 +91,7 @@ public class TestInstallation extends AbstractTestInstallation {
             fail("Could not retrieve tomcat front page " + e.getMessage());
         }
         
-    }    
+    }
 
     /** check that tomcat is running and the axis server is running */
     public void testAxisInstallation() {
@@ -101,7 +117,7 @@ public class TestInstallation extends AbstractTestInstallation {
         assertEquals("Axis configuration checking page contains string 'error'",-1,checkPage.toLowerCase().indexOf("error"));
     } catch (IOException e) {
         e.printStackTrace();
-        fail("Could not retrieve axis configuration checking page : " + e.getMessage());        
+        fail("Could not retrieve axis configuration checking page : " + e.getMessage());
     }
     }
 
@@ -137,8 +153,11 @@ public class TestInstallation extends AbstractTestInstallation {
 }
 
 
-/* 
+/*
 $Log: TestInstallation.java,v $
+Revision 1.4  2004/07/16 16:10:15  mch
+Removed dependency on AbstractTestCase
+
 Revision 1.3  2003/12/09 12:39:59  nw
 deprecated - obsoleted by stuff in pal
 
