@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.73 2004/08/16 12:26:23 pah Exp $ -->
+<!-- $Id: maven.xml,v 1.74 2004/08/17 09:26:16 nw Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -15,13 +15,13 @@
    -->
 
 <!-- extension maven script -->
-<project xmlns:j="jelly:core" 
-   	xmlns:jsl="jelly:jsl" 
-   	xmlns:jxml="jelly:xml" 
-   	xmlns:maven="jelly:maven" 
-   	xmlns:util="jelly:util" 
-   	xmlns:deploy="deploy" 
-	xmlns:http="jelly:http"
+<project xmlns:j="jelly:core"
+        xmlns:jsl="jelly:jsl"
+        xmlns:jxml="jelly:xml"
+        xmlns:maven="jelly:maven"
+        xmlns:util="jelly:util"
+        xmlns:deploy="deploy"
+        xmlns:http="jelly:http"
     default="jar:jar">
 
 
@@ -52,10 +52,9 @@
         <filter token="TOMCATLOC" value="${tomcat.location}" />
         <filter token="REGAUTHORITY" value="${registry.authorityid}" />
         <filter token="TOMCATPORT" value="${tomcat.port}"/>
-		<filter token="VERSION" value="${version}"/>
-		<filter token="MAILHOST" value="${mailhost}" />
+                <filter token="VERSION" value="${version}"/>
+                <filter token="MAILHOST" value="${mailhost}" />
 	    <filter token="TOOLBASEDIR" value="${work.dir}"/> <!--this is the directory that is the root of CEA command line applications set it to the workdir for autointegration purposes-->
-		
 
 <!-- setup -->
 <goal name="init" prereqs="tomcat-declare-tasks">
@@ -101,7 +100,7 @@
         <attainGoal name="pal-fits-deploy" />
         <sleep seconds="2" />
         <attainGoal name="pal-sec-deploy" />
-        <sleep seconds="2" />        
+        <sleep seconds="2" />
         <attainGoal name="community-deploy"/>
         <sleep seconds="2" />
         <attainGoal name="portal-deploy" />
@@ -122,7 +121,7 @@
         <attainGoal name="filestore-undeploy" />
         <attainGoal name="pal-undeploy" />
         <attainGoal name="pal-fits-undeploy" />
-        <attainGoal name="pal-sec-undeploy" />        
+        <attainGoal name="pal-sec-undeploy" />
         <attainGoal name="community-undeploy" />
         <attainGoal name="portal-undeploy" />
 </goal>
@@ -178,7 +177,7 @@
         <echo>*** Configuring...</echo>
         <attainGoal name="community-toolkit"/>
         <attainGoal name="setup-working-dir" />
-        <attainGoal name="setup-exist" />        
+        <attainGoal name="setup-exist" />
         <attainGoal name="setup-registry" />
         <attainGoal name="community-database"/>
         <attainGoal name="community-register"/>
@@ -194,9 +193,9 @@
         <echo>Setting up working directory</echo>
         <mkdir dir="${work.dir}" />
         <copy todir="${work.dir}" overwrite="true" filtering="true">
-			<fileset dir="work">
-				<exclude name="**/filestore/data/*"/>
-			</fileset>
+                        <fileset dir="work">
+                                <exclude name="**/filestore/data/*"/>
+                        </fileset>
         </copy>
         <!-- make everything world-accessible - necessary as tomcat may be running as different user to
         whoever is executing this script
@@ -232,21 +231,21 @@
 </goal>
 
 <goal name="setup-filestore" description="filestore setup">
-	<echo>Configuring Filestore repository</echo>
+        <echo>Configuring Filestore repository</echo>
     <mkdir dir="${work.dir}/filestore/repository"/>
     <mkdir dir="${work.dir}/filestore/data"/>
-	<copy todir="${work.dir}">
-		<fileset dir="work">
-			<include name="**/filestore/data/*"/>
-		</fileset>
-	</copy>
+        <copy todir="${work.dir}">
+                <fileset dir="work">
+                        <include name="**/filestore/data/*"/>
+                </fileset>
+        </copy>
 </goal>
 
 <goal name="setup-community" description="Community setup">
 </goal>
 
 <goal name="setup-exist" description="PUT documents in eXist">
-	 <echo>Configuring eXist entries</echo>
+         <echo>Configuring eXist entries</echo>
         <copy todir="${temporary.dir}/exist-entries" filtering="true">
                 <fileset dir="exist-entries">
                         <include name="**/*.xml" />
@@ -254,33 +253,33 @@
         </copy>
         <!-- now upload each one -->
         <pathconvert property="entries" pathsep=" ">
-         	<path>
-        		<fileset dir="${temporary.dir}/exist-entries"/>
+                <path>
+                        <fileset dir="${temporary.dir}/exist-entries"/>
             </path>
         </pathconvert>
         <util:tokenize var="entryList" delim=" ">${entries}</util:tokenize>
         <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
-		<j:set var="collpath" value="${temporary.dir}/exist-entries"/>
+                <j:set var="collpath" value="${temporary.dir}/exist-entries"/>
         <j:forEach var="entry" items="${entryList}">
           <echo>${entry}</echo>
           <j:catch>
-			<util:file name="${entry}"  var="xmlentry" />
-			<jxml:parse xml="${xmlentry}" var="xmlbody" />
-            
-			<echo>${existurl}/${entry.substring(collpath.length())}</echo>
-			<j:set var="existtempurl" value="${existurl}${entry.substring(collpath.length())}"/>
-  		    <util:replace oldChar="\" newChar="/" var="existputurl">${existtempurl}</util:replace>
-  		    <echo>${existputurl}</echo>
-	        <http:put var="xmlexist" uri="${existputurl}">
-            	<header name="Content-Type" value="text/xml"/>
+                        <util:file name="${entry}"  var="xmlentry" />
+                        <jxml:parse xml="${xmlentry}" var="xmlbody" />
+
+                        <echo>${existurl}/${entry.substring(collpath.length())}</echo>
+                        <j:set var="existtempurl" value="${existurl}${entry.substring(collpath.length())}"/>
+                    <util:replace oldChar="\" newChar="/" var="existputurl">${existtempurl}</util:replace>
+                    <echo>${existputurl}</echo>
+                <http:put var="xmlexist" uri="${existputurl}">
+                <header name="Content-Type" value="text/xml"/>
                 <http:body>
-					<jxml:copyOf select="$xmlbody" />
+                                        <jxml:copyOf select="$xmlbody" />
                 </http:body>
-			</http:put>                
-          	<echo>${xmlexist.statusCode}</echo>    
+                        </http:put>
+                <echo>${xmlexist.statusCode}</echo>
           </j:catch>
         </j:forEach>
-	<echo>Finsihed setting up eXist</echo>
+        <echo>Finsihed setting up eXist</echo>
 
 </goal>
 
@@ -490,6 +489,7 @@
         <copy verbose="true" todir="${tomcat.common.lib.dir}">
                 <fileset dir="${temporary.dir}">
                         <include name="hsql*.jar" />
+                        <include name="mail*.jar" />
                         <!-- may need to add more here later -->
                 </fileset>
         </copy>
@@ -632,14 +632,14 @@
 </goal>
 
 <goal name="pal-fits-deploy" >
-		<copy file="${temporary.dir}/pal-${pom.currentVersion}.war"
-		      tofile="${temporary.dir}/pal-fits-${pom.currentVersion}.war" />
+                <copy file="${temporary.dir}/pal-${pom.currentVersion}.war"
+                      tofile="${temporary.dir}/pal-fits-${pom.currentVersion}.war" />
         <copy todir="${temporary.dir}/pal_fits" filtering="true">
                 <fileset dir="contexts/pal_fits" />
         </copy>
         <war update="true" destfile="${temporary.dir}/pal-fits-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/pal_fits"/>
-        </war>        
+        </war>
   <j:catch>
   <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-pal-fits-${pom.currentVersion}" war="file:///${temporary.dir}/pal-fits-${pom.currentVersion}.war"/>
@@ -647,14 +647,14 @@
 </goal>
 
 <goal name="pal-sec-deploy" >
-		<copy file="${temporary.dir}/pal-${pom.currentVersion}.war"
-		      tofile="${temporary.dir}/pal-sec-${pom.currentVersion}.war" />
+                <copy file="${temporary.dir}/pal-${pom.currentVersion}.war"
+                      tofile="${temporary.dir}/pal-sec-${pom.currentVersion}.war" />
         <copy todir="${temporary.dir}/pal_sec" filtering="true">
                 <fileset dir="contexts/pal_sec" />
         </copy>
         <war update="true" destfile="${temporary.dir}/pal-sec-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/pal_sec"/>
-        </war>        
+        </war>
   <j:catch>
   <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-pal-sec-${pom.currentVersion}" war="file:///${temporary.dir}/pal-sec-${pom.currentVersion}.war"/>
