@@ -37,6 +37,22 @@
         document.properties_form.tool_name.value = tool_name;
         document.properties_form.tool_documentation.value = tool_documentation;                    
     }
+    
+    
+    function populate_script_details(script_description, script_body, stepNumber)
+    {
+        if (script_description == "null")
+        {
+            script_description = "no description enetered..";
+        } 
+        if (script_body == "null")
+        {
+            script_body = "....";
+        }                              
+        document.script_form.script_description.value = script_description;
+        document.script_form.script_body.value = script_body;  
+        document.script_form.activity_key.value = stepNumber;                     
+    }    
  
  
     function populate_activity_container_insert_form(activityID,parentActivityID, index, activityType)
