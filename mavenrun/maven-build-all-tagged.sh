@@ -38,6 +38,7 @@ DOCLOCATION=$MAVEN_PUBLIC/docs
 RELEASEDOCS=$DOCLOCATION/release
 
 echo "Moving docs to release location" >> $BUILD_DIR/$LOG_FILE 2>&1
+#rm -r $RELEASEDOCS >> $BUILD_DIR/$LOG_FILE 2>&1
 cp -r $MAVEN_PUBLIC/build/* $RELEASEDOCS
 echo "Copying redirect pages over old location" >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-new.sh maven-site-releases >> $BUILD_DIR/$LOG_FILE 2>&1

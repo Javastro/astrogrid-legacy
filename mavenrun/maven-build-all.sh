@@ -32,6 +32,7 @@ $SCRIPTHOME/maven-build-new.sh maven-site >> $BUILD_DIR/$LOG_FILE 2>&1
 DOCLOCATION=$MAVEN_PUBLIC/docs
 SNAPSHOTDOCS=$DOCLOCATION/snapshot
 echo "Moving docs to snapshot location" >> $BUILD_DIR/$LOG_FILE 2>&1
+#rm -r $SNAPSHOTDOCS >> $BUILD_DIR/$LOG_FILE 2>&1
 cp -r $MAVEN_PUBLIC/build/* $SNAPSHOTDOCS >> $BUILD_DIR/$LOG_FILE 2>&1
 echo "Copying redirect pages over old location" >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-new.sh maven-site-releases >> $BUILD_DIR/$LOG_FILE 2>&1
