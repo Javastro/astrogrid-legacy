@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id-->
+<!--A Maven POM to process the unit tests-->
+<!--Usage: maven -p maven_unit_test.xml {goal} -->
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+
+  <pomVersion>3</pomVersion>
+  <id>astrogrid-jes</id>
+  <name>AstroGrid Job Management Unit Tests</name>
+
+  <currentVersion>Itn03_end</currentVersion>
+  
+  <organization>
+    <name>AstroGrid</name>
+    <url>http://www.astrogrid.org</url>
+    <logo>http://www.astrogrid.org/images/AGlogo</logo>
+  </organization>
+
+  <inceptionYear>2002</inceptionYear>
+  <package>org</package>
+  <logo>http://www.astrogrid.org/images/AGlogo</logo>
+
+  <shortDescription>AstroGrid Job Management Unit Tests</shortDescription>
+  <description> Unit tests for the JES</description>
+
+  <siteDirectory>/var/www/www/maven/build/jes</siteDirectory>
+  <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
+  
+  <repository>
+    <connection>
+      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/jes
+    </connection>
+    <developerConnection>
+      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/jes
+    </developerConnection>
+    <url>
+    	http://www.astrogrid.org/viewcvs/astrogrid/jes/
+    </url>
+  </repository>
+  
+  <developers>
+    <developer>
+      <name>Jeff Lusted</name>
+      <id>jl99</id>
+      <email>jl99@star.le.ac.uk</email>
+    </developer>
+    <developer>
+      <name>John D Taylor</name>
+      <id>jdt</id>
+      <email>jdt@roe.ac.uk</email>
+      <roles>
+	      <role>Unit Tester</role>
+	  </roles>
+    </developer> 
+    <developer>
+    <name>Phil Nicholson</name>
+    <id>pjn3</id>
+    <email>pjn3@star.le.ac.uk</email>
+    </developer> 
+    <developer>
+    <name>Paul Harrison</name>
+    <id>pah</id>
+    <email>pah@jb.man.ac.uk</email>
+    </developer>  
+  </developers>
+  
+  <dependencies>
+    <dependency>
+      <artifactId>astrogrid-common</artifactId>
+      <groupId>astrogrid-common</groupId>
+      <version>SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>axis</artifactId>
+      <groupId>axis</groupId>
+      <version>1.1</version>
+    </dependency>
+
+    <!--dependency>
+      <artifactId>jax-qname</artifactId>
+      <groupId>null</groupId>
+      <version>UNKNOWN</version>
+      <jar>jax-qname.jar</jar>
+    </dependency-->
+
+    <!--dependency>
+      <artifactId>jaxrpc-api</artifactId>
+      <groupId>null</groupId>
+      <version>1.0.3</version>
+    </dependency-->
+
+    <!--dependency>
+      <artifactId>jconn</artifactId>
+      <version>UNKNOWN</version>
+      <groupId>null</groupId>
+      <jar>jconn2.jar</jar>
+    </dependency-->
+
+    <dependency>
+      <artifactId>junit</artifactId>
+      <groupId>junit</groupId>
+      <version>3.8.1</version>
+    </dependency>
+
+<!--1.2.8 now available-->
+    <dependency>
+      <artifactId>log4j</artifactId>
+      <groupId>log4j</groupId>
+      <version>1.2.4</version>
+    </dependency>
+
+    <!--dependency>
+      <artifactId>saaj-api</artifactId>
+      <groupId>null</groupId>
+      <version>1.1.1</version>
+    </dependency-->
+
+<!--version 2.3 now available-->
+    <dependency>
+      <artifactId>servletapi</artifactId>
+      <groupId>servletapi</groupId>
+      <version>2.2</version>
+    </dependency>
+    
+    <!-- Don't know where this one comes from!-->
+    <!-- who builds this and where does it go? -->
+    <dependency>
+	   	<artifactId>policy-client</artifactId>  
+	   	<groupId>policy-client</groupId>  
+     	<version>1.0</version>
+     	
+    </dependency> 
+    
+    <dependency>
+    	<artifactId>jconfig</artifactId>
+    	<groupId>jconfig</groupId>
+    	<version>2.1</version>
+    </dependency>
+    <dependency>
+    	<artifactId>jaxrpc</artifactId>
+    	<groupId>jaxrpc</groupId>
+    	<version>UNKNOWN</version>
+    	<jar>jaxrpc.jar</jar>
+    </dependency>
+    <dependency>
+      <artifactId>saaj</artifactId>
+      <groupId>saaj</groupId>
+      <version>UNKNOWN</version>
+      <jar>saaj.jar</jar>
+    </dependency> 
+    <dependency>
+      <artifactId>wsdl4j</artifactId>
+      <groupId>wsdl4j</groupId>
+      <version>UNKNOWN</version>
+      <jar>wsdl4j.jar</jar>
+    </dependency>  
+       
+    <!--Don't know where this one comes from!-doesn't exist on repo-->
+    <dependency>
+    	<artifactId>datacenterdelegates</artifactId>
+    	<groupId>datacenterdelegates</groupId>
+    	<version>UNKNOWN</version>
+    	     	<jar>datacenterdelegates.jar</jar>
+    </dependency>
+    <!-- Don't know where this one comes from!-doesn't exist on repo -->
+    <dependency>
+    	<artifactId>authentication-client</artifactId>
+    	<groupId>authentication-client</groupId>
+    	<version>1.0_JLbugfix</version>
+    </dependency>          
+  
+    <!--This is for testing only and can be removed from the released build.
+     **WARNING** For reasons best known to themselves, the HSQLDB people have omitted to
+       package their jdbcDataSource class in this jar.  Hence I've added it explicitly to the
+       test directory.  This is going to give us all sorts of annoying headaches with versions
+       in the future, but I can't think of anything else to do right now. -->
+    <dependency><!-- hsqldb - for testing -->
+    	<id>hsqldb</id>
+    	<version>1.7.1</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <sourceDirectory>test/java</sourceDirectory>
+  </build>
+  
+
+  <reports>
+    <report>
+      maven-changelog-plugin
+    </report>
+    <report>
+      maven-changes-plugin
+    </report>
+    <report>
+      maven-checkstyle-plugin
+    </report>
+    <report>
+      maven-developer-activity-plugin
+    </report>
+    <report>
+      maven-file-activity-plugin
+    </report>
+    <report>
+      maven-javadoc-plugin
+    </report>
+    <report>
+      maven-jdepend-plugin
+    </report>
+    <report>
+      maven-jxr-plugin
+    </report>
+    <report>
+      maven-license-plugin
+    </report>
+    <report>
+      maven-linkcheck-plugin
+    </report>
+    <report>
+      maven-pmd-plugin
+    </report>
+    <report>
+      maven-tasklist-plugin
+    </report>
+    <report>
+      maven-simian-plugin
+    </report>
+  </reports>
+</project>
