@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/soap/services/test/rpc/Attic/rpc-test.xsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/05 09:05:56 $</cvs:author>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/05 09:31:15 $</cvs:author>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     | $Log: rpc-test.xsp,v $
+    | Revision 1.2  2003/06/05 09:31:15  dave
+    | Fixed url for rpc test service
+    |
     | Revision 1.1  2003/06/05 09:05:56  dave
     | Added JWS and RPC WebService tests.
     |
@@ -38,27 +41,27 @@
 		<!-- Test the JWS service ... -->
 		<test>
 			<xsp:comment>Test SOAP call to our RPC service (doNothing)</xsp:comment>
-			<soap:call url="http://localhost:8080/axis/services/rpc-test">
+			<soap:call url="http://localhost:8080/axis/services/rpc">
 				<doNothing/>
 			</soap:call>
 			<xsp:comment>Test SOAP call to our RPC service (getDateAsLong)</xsp:comment>
-			<soap:call url="http://localhost:8080/axis/services/rpc-test">
+			<soap:call url="http://localhost:8080/axis/services/rpc">
 				<getDateAsLong/>
 			</soap:call>
 			<xsp:comment>Test SOAP call to our RPC service (getDateAsDate)</xsp:comment>
-			<soap:call url="http://localhost:8080/axis/services/rpc-test">
+			<soap:call url="http://localhost:8080/axis/services/rpc">
 				<getDateAsDate/>
 			</soap:call>
 
 			<xsp:comment>Test SOAP call to our RPC service (getIntSquared)</xsp:comment>
-			<soap:call url="http://localhost:8080/axis/services/rpc-test">
+			<soap:call url="http://localhost:8080/axis/services/rpc">
 				<getIntSquared>
 					<param type="xsd:int">7</param>
 				</getIntSquared>
 			</soap:call>
 			<xsp:comment>Test SOAP call to our RPC service (getIntSquared)</xsp:comment>
 			<xsp:comment>Using different name, frog, for param tag</xsp:comment>
-			<soap:call url="http://localhost:8080/axis/services/rpc-test">
+			<soap:call url="http://localhost:8080/axis/services/rpc">
 				<getIntSquared>
 					<frog type="xsd:int">7</frog>
 				</getIntSquared>
@@ -66,7 +69,7 @@
 			<xsp:comment>Test SOAP call to our RPC service (getIntSquared)</xsp:comment>
 			<xsp:comment>Sending two params, frog and toad</xsp:comment>
 			<xsp:comment>Returns a SOAP fault 'No such operation'</xsp:comment>
-			<soap:call url="http://localhost:8080/axis/services/rpc-test">
+			<soap:call url="http://localhost:8080/axis/services/rpc">
 				<getIntSquared>
 					<frog type="xsd:int">7</frog>
 					<toad type="xsd:int">8</toad>
@@ -76,7 +79,7 @@
 		<wsdl>
 			<xsp:comment>WSDL for our RPC service</xsp:comment>
 			<ci:includexml>
-				<ci:src>http://localhost:8080/axis/services/rpc-test?wsdl</ci:src>
+				<ci:src>http://localhost:8080/axis/services/rpc?wsdl</ci:src>
 			</ci:includexml>
 		</wsdl>
 	</page>
