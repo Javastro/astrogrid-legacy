@@ -1,5 +1,5 @@
 /*
- * $Id: StreamPiper.java,v 1.3 2004/08/28 07:17:34 pah Exp $
+ * $Id: StreamPiper.java,v 1.4 2004/12/18 15:43:57 jdt Exp $
  * 
  * Created on 05-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk) adapted from original in ACE package by Martin Hill
  *
@@ -57,6 +57,19 @@ public class StreamPiper implements Runnable
    {
       terminated = true;
    }
+   
+   public void join(int millis)
+   {
+      try {
+         if(t != null)
+         {
+         t.join(millis);
+         }
+      }
+      catch (InterruptedException e) {
+         logger.warn("Stream Piper '"+name+"' interrupted", e);
+      }
+   }
 
    /**
     * method run by the thread.  This method will run 'forever' until the
@@ -82,8 +95,13 @@ public class StreamPiper implements Runnable
          if (out != null)
          {
             out.flush();
+            out.close();
          }
-         logger.debug("Stream Piper '"+name+"' terminated as source ("+in+") is finished");
+         if(terminated)
+         {
+            logger.debug("forced termination of StreamPiper "+name);
+         }
+         logger.debug("Stream Piper '"+name+"' ended as source ("+in+") is finished");
       }
       catch (IOException ioe)
       {

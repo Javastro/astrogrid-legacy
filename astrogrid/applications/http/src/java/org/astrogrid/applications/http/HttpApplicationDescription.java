@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationDescription.java,v 1.5 2004/09/01 15:42:26 jdt Exp $
+/*$Id: HttpApplicationDescription.java,v 1.6 2004/12/18 15:43:57 jdt Exp $
  * Created on Jul 24, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,17 +44,17 @@ public class HttpApplicationDescription extends AbstractApplicationDescription {
     /**
      * Constructor
      */
-    public HttpApplicationDescription(CeaHttpApplicationType application, final String communityName,
+    public HttpApplicationDescription(CeaHttpApplicationType application, 
             final ApplicationDescriptionEnvironment env) {
         super(env);
         if (log.isTraceEnabled()) {
             log.trace("HttpApplicationDescription(CeaHttpApplicationType application = " + application
-                    + ", String communityName = " + communityName + ", ApplicationDescriptionEnvironment env = " + env
+                    + ", String communityName = " + env.getAuthIDResolver().getAuthorityID() + ", ApplicationDescriptionEnvironment env = " + env
                     + ") - start");
         }
 
         this.application = application;
-        createMetadata(communityName);
+        createMetadata(env.getAuthIDResolver().getAuthorityID());
 
         if (log.isTraceEnabled()) {
             log.trace("HttpApplicationDescription(WebHttpApplication, String, ApplicationDescriptionEnvironment) - end");
@@ -187,6 +187,12 @@ public class HttpApplicationDescription extends AbstractApplicationDescription {
 
 /*
  * $Log: HttpApplicationDescription.java,v $
+ * Revision 1.6  2004/12/18 15:43:57  jdt
+ * merge from  cea_pah_561b
+ *
+ * Revision 1.5.48.1  2004/12/07 07:32:27  pah
+ * update to pass band information properly
+ *
  * Revision 1.5  2004/09/01 15:42:26  jdt
  * Merged in Case 3
  *

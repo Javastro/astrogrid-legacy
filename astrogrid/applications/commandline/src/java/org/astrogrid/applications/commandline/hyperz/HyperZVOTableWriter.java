@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZVOTableWriter.java,v 1.5 2004/09/23 22:44:23 pah Exp $
+ * $Id: HyperZVOTableWriter.java,v 1.6 2004/12/18 15:43:57 jdt Exp $
  * 
  * Created on 20-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -65,6 +65,7 @@ public class HyperZVOTableWriter extends DefaultCommandLineParameterAdapter {
      */
     public HyperZVOTableWriter(ApplicationInterface interf, ParameterValue val, CommandLineParameterDescription descr,CommandLineApplicationEnvironment env, ExternalValue ival, VOTableSource votableSource) {
         super(interf,val, descr,ival,env);
+        logger.debug("creating hyperz table writer");
         this.votableSource = votableSource;
         tmpfile = env.getTempFile();
     }
@@ -75,19 +76,15 @@ public class HyperZVOTableWriter extends DefaultCommandLineParameterAdapter {
    /**
     * @see org.astrogrid.applications.ParameterAdapter#writeBack()
     */
-   public void writeBack() throws CeaException {
+   public void writeBack(Object o) throws CeaException {
     if (logger.isDebugEnabled()) {
-        logger.debug("writeBack() - start");
+        logger.debug("hyperz writeBack() - start");
     }
-
-      //FIXME the file name will be wrong when copying into myspace
       File outputfil = new File(getReferenceFile().getPath()+".z_phot");
-      tmpfile.delete();
-      boolean renamesuccess = outputfil.renameTo(tmpfile);
       SavotVOTable votable = votableSource.getVOTable();      
-      internalAddToVOTable(votable,tmpfile);
-      internalWriteVOTable(votable,getReferenceFile());      
-
+      internalAddToVOTable(votable,outputfil); //add the copies of the original file
+      internalWriteVOTable(votable,getReferenceFile());
+      super.writeBack(o);
     if (logger.isDebugEnabled()) {
         logger.debug("writeBack() - end");
     }
@@ -113,7 +110,7 @@ public class HyperZVOTableWriter extends DefaultCommandLineParameterAdapter {
     */
    private void internalAddToVOTable(SavotVOTable voTable,File tmpfile) {
     if (logger.isDebugEnabled()) {
-        logger.debug("internalAddToVOTable(SavotVOTable, File) - start");
+        logger.debug("internalAddToVOTable(SavotVOTable, File-"+tmpfile+") - start");
     }
 
       SavotResource resource = (SavotResource)voTable.getResources().getItemAt(0);

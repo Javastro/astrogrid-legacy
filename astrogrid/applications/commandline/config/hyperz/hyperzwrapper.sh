@@ -5,6 +5,10 @@
 # parse the parameters
 
 ConfigFile=conf.zphot
+appDir=`dirname $0`
+#make the local environment the same...
+ln -s $appDir/filters
+ln -s $appDir/templates
 
 ZPHOT_FILE=$1
 shift 1
@@ -42,10 +46,12 @@ do
       
     esac 
 done
-# first delete any lines with the specified parameters, then add them
-sed -e '/^FILTERS_RES/D' -e '/^FILTERS_FILE/D' -e '/^CATALOG_FILE/D' -e '/^OUTPUT_FILE/D' -e '/^TEMPLATES_FILE/D' $ZPHOT_FILE | sed -e "1 a \FILTERS_RES $FILTERS_RES" -e "1 a \FILTERS_FILE $FILTERS_FILE" -e "1 a \CATALOG_FILE $CATALOG_FILE"  -e "1 a \OUTPUT_FILE $OUTPUT_FILE" -e "1 a \TEMPLATES_FILE $TEMPLATES_FILE">$ConfigFile
 
-HYPERZ=`dirname $0`/hyperz
+
+
+# first delete any lines with the specified parameters, then add them
+sed -e '/^FILTERS_RES/D' -e '/^FILTERS_FILE/D' -e '/^CATALOG_FILE/D' -e '/^OUTPUT_FILE/D' -e '/^TEMPLATES_FILE/D' $ZPHOT_FILE | sed -e "1 a \FILTERS_RES ${FILTERS_RES:=./filters/FILTER.RES}" -e "1 a \FILTERS_FILE $FILTERS_FILE" -e "1 a \CATALOG_FILE $CATALOG_FILE"  -e "1 a \OUTPUT_FILE $OUTPUT_FILE" -e "1 a \TEMPLATES_FILE $TEMPLATES_FILE">$ConfigFile
+HYPERZ=$appDir/hyperz
 echo $HYPERZ
 $HYPERZ << EOD
 $ConfigFile

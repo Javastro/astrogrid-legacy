@@ -2,6 +2,7 @@
 <!-- would be nice to get the doctype right so that we can have assisted editing for the type - need to have a dtd for the xdocs though!!
     <!DOCTYPE document PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     -->
+<!DOCTYPE document SYSTEM "xdoc.dtd" >
 <document>
 <properties>
 	<author email="pah@jb.man.ac.uk">Paul Harrison</author>
@@ -66,14 +67,14 @@ http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/schema/AG
 
 at the definition of the parameterTypes simple type for the full list of allowable types - but they are mostly the obvious atomic types as well as a few special types for fetching things from MySpace.
 <dt>fileRef</dt>
-<dt>commandSwitch</dt>
+<dt>commandSwitch</dt><dd>This is the text of the command switch (without any hyphen or equals characters). If this is set to the special value "---" then it means that the parameter will not be added to the command line at all - this is useful sometimes in allowing a value to be passed to the java wrapper class.</dd>
 <dt>commandPosition</dt>
 <dt>switchType</dt>
 </dl>
 
 <p>The elements that can occur within the &lt;CmdLineParameterDef/&gt; are</p>
 <dl>
-<dt>&lt;UI_Name/&gt;</dt> <dd>the name that will be used in the portal for the parameter</dd>
+<dt>&lt;UI_Name/&gt;</dt> <dd>the name that will be used for display in the portal for the parameter</dd>
 <dt>&lt;UI_Description/&gt;</dt> <dd>a description of the parameter that will be used in the portal</dd>
 <dt>&lt;UCD/&gt;</dt> <dd>the ucd for the parameter if it has one - at the moment nothing uses this.</dd>
 <dt>&lt;DefaultValue/&gt;</dt><dd> can be used to display a default value in the portal</dd>

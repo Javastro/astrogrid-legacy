@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZ.java,v 1.5 2004/09/24 15:54:08 pah Exp $
+ * $Id: HyperZ.java,v 1.6 2004/12/18 15:43:57 jdt Exp $
  * 
  * Created on 16-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -76,12 +76,14 @@ public class HyperZ extends CommandLineApplication {
     /** specialized parameter adapter factory, that will build custom parameter adapters for the input and output files - 
      * more structured than the previous technique of hacking with pre and post- hooks.     
      * @author Noel Winstanley nw@jb.man.ac.uk 07-Jun-2004
+     * @author Paul Harrison (pah@jb.man.ac.uk)
      *
      */
   
         protected ParameterAdapter instantiateAdapter( ParameterValue pval, ParameterDescription desr, ExternalValue indirectVal) {
             if (pval.getName().equals("input_catalog")) {
-                HyperZVOTableReader reader = new HyperZVOTableReader(getApplicationInterface(),pval, (CommandLineParameterDescription) desr,applicationEnvironment,indirectVal);
+                String bands = findInputParameter("BAND_ORDER").getValue(); //TODO this is a bit hacky - will not allow indirect parameter setting - but need a quick fix...
+                HyperZVOTableReader reader = new HyperZVOTableReader(getApplicationInterface(),pval, (CommandLineParameterDescription) desr,applicationEnvironment,indirectVal, bands);
                 votableSource.setSource(reader);
                 return reader;
             } else if (pval.getName().equals("output_catalog")) {

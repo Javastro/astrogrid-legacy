@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationDescriptionLibrary.java,v 1.6 2004/11/27 13:20:03 pah Exp $
+/*$Id: HttpApplicationDescriptionLibrary.java,v 1.7 2004/12/18 15:43:57 jdt Exp $
  * Created on Jul 24, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,15 +67,13 @@ public class HttpApplicationDescriptionLibrary extends BaseApplicationDescriptio
             log.trace("populate() - start");
         }
 
-        final String authorityId = env.getAuthIDResolver().getAuthorityID();
         final Collection apps = querier.getHttpApplications();
-        assert authorityId!=null;
         assert apps!=null;
 
         final Iterator it = apps.iterator();
         while (it.hasNext()) {
             final CeaHttpApplicationType app = (CeaHttpApplicationType) it.next(); 
-            super.addApplicationDescription(new HttpApplicationDescription(app, authorityId, env)); 
+            super.addApplicationDescription(new HttpApplicationDescription(app, env)); 
         }
 
         if (log.isTraceEnabled()) {
@@ -115,6 +113,12 @@ public class HttpApplicationDescriptionLibrary extends BaseApplicationDescriptio
 
 /* 
 $Log: HttpApplicationDescriptionLibrary.java,v $
+Revision 1.7  2004/12/18 15:43:57  jdt
+merge from  cea_pah_561b
+
+Revision 1.6.2.1  2004/12/07 07:32:26  pah
+update to pass band information properly
+
 Revision 1.6  2004/11/27 13:20:03  pah
 result of merge of pah_cea_bz561 branch
 

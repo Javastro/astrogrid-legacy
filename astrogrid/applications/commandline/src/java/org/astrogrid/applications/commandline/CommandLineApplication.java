@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplication.java,v 1.17 2004/11/27 13:20:02 pah Exp $
+ * $Id: CommandLineApplication.java,v 1.18 2004/12/18 15:43:57 jdt Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -29,10 +29,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FilterReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,7 +54,10 @@ import java.util.List;
  * @since iteration4
  */
 public class CommandLineApplication extends AbstractApplication implements Runnable {
-    /**
+    /** time to wait for the outstreams to finish writing in milliseconds
+    */
+   private static final int OUTSTREAM_WAITTIME = 2000;
+   /**
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(CommandLineApplication.class);
@@ -173,8 +179,6 @@ public class CommandLineApplication extends AbstractApplication implements Runna
      
      
      reportMessage("Parameters for application: " + argvals.toString());
-      // TODO check for position parameters - really need to sort the parameter list based on the parameter position information.
-      // TODO need to get good way to process repeated parameters also
    }
 
    private void startApplication() throws ApplicationExecutionException {
@@ -256,12 +260,11 @@ public class CommandLineApplication extends AbstractApplication implements Runna
  */
 private final void endApplication()  {
       reportMessage("Execution post application processes");
+      //wait for the error stream a little....
+      errPiper.join(OUTSTREAM_WAITTIME);
       errPiper.terminate();
       outPiper.terminate();
       process = null;
-      if (exitStatus != 0) {
-         reportStandardError();// send the stderr output as well
-      }
       
       setStatus(Status.WRITINGBACK);
       // call the hook to allow manipulation by subclasses
@@ -277,14 +280,14 @@ private final void endApplication()  {
          } catch (CeaException e) {                        
                 reportWarning("There was a problem writing back parameter "+adapter.getWrappedParameter().getName(),e);
                 //set non-zero exit status if not already set to force the reporting of standard error below....
-                exitStatus = exitStatus == 0? 1 : exitStatus;
+                exitStatus = exitStatus == 0? -1 : exitStatus;
          }
       }        
 
       reportMessage("The application has completed with exit status="+exitStatus);
       if (exitStatus != 0) {
-         
-          setStatus(Status.ERROR); 
+         reportStandardError(true);// send the stderr output as well
+//         setStatus(Status.ERROR); the reporting will automatically do this....TODO need to refactor how the writing to permanent store is signaled....
       } else {
           setStatus(Status.COMPLETED);//it notifies that results are ready to be consumed.
       }
@@ -293,21 +296,39 @@ private final void endApplication()  {
    /**
  * Report the standard error output to the listeners.
  */
-private void reportStandardError() {
-    try {
-        BufferedReader errReader = new BufferedReader( new FileReader(applicationEnvironment.getErrorLog()));
+private void reportStandardError(boolean doError) {
+ 
+   File logfile;
+   String streamName;
+   if(doError)
+   {
+      logfile = applicationEnvironment.getErrorLog();
+      streamName="error";
+   }
+   else
+   {
+      logfile = applicationEnvironment.getOutputLog();
+      streamName="output";
+   }
+
+   try {
+       
+      BufferedReader errReader = new BufferedReader( new FileReader(logfile));
         StringBuffer errMsg = new StringBuffer();
         String line;
         while((line = errReader.readLine()) != null)
         {
+           //FIXME - need to filter the strings
+           line = line.replace('\u001b', ' '); //get rid of escape characters...
            errMsg.append(line);
            errMsg.append('\n');
         }
         //TODO - need to think about limiting the size of the returned error messages...
-        reportWarning("The standard error from the command line application follows\n"+errMsg.toString());
+        reportError("The standard "+streamName+" from the command line application follows\n"+errMsg.toString());
+        errReader.close();
     }
     catch (IOException e) {
-       reportError("cannot write back standard error", e);
+       reportError("cannot write back standard "+streamName, e);
     }
 }
 

@@ -1,4 +1,4 @@
-/*$Id: CommandLineParameterDescription.java,v 1.5 2004/11/27 13:20:02 pah Exp $
+/*$Id: CommandLineParameterDescription.java,v 1.6 2004/12/18 15:43:57 jdt Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,15 +67,22 @@ public class CommandLineParameterDescription extends BaseParameterDescription {
           {
              sw = commandSwitch;
           }
-          if (switchType.equals(SwitchTypes.NORMAL)) {
-             cmdarg.add( "-" + sw);
-             cmdarg.add(val);
-            
-          }
-          else if (switchType.equals(SwitchTypes.KEYWORD)) {             
-             cmdarg.add(sw + "=" + val);
-          }
-       
+          
+          if (!sw.equals("---")) //TODO perhaps do this in a nicer way in the schema
+          {
+            if (switchType.equals(SwitchTypes.NORMAL)) {
+               cmdarg.add("-" + sw);
+               cmdarg.add(val);
+
+            }
+            else if (switchType.equals(SwitchTypes.KEYWORD)) {
+               cmdarg.add(sw + "=" + val);
+            }
+         }
+         else
+         {
+          // do nothing - do not put the parameter on the commandline if the switch name is ---
+         }
        }
        else
        {
@@ -170,6 +177,12 @@ public class CommandLineParameterDescription extends BaseParameterDescription {
 
 /* 
 $Log: CommandLineParameterDescription.java,v $
+Revision 1.6  2004/12/18 15:43:57  jdt
+merge from  cea_pah_561b
+
+Revision 1.5.2.1  2004/12/07 07:32:27  pah
+update to pass band information properly
+
 Revision 1.5  2004/11/27 13:20:02  pah
 result of merge of pah_cea_bz561 branch
 

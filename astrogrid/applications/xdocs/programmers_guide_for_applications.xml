@@ -1,4 +1,5 @@
 <?xml version="1.0" ?>
+<!DOCTYPE document SYSTEM "xdoc.dtd" >
 <document>
 <properties>
 	<author email="pah@jb.man.ac.uk">Paul Harrison</author>
@@ -11,7 +12,7 @@
 	<p>This guide is intended for people simply wanting to implement a new application under the CEA framework. It is intended that this will often be a case of "configuration" rather than programming, but if a particularly difficult application wrapping is being attempted, then it might be necessary to consult the <a href="programmers_guide.html">full programmers guide</a></p>
 </subsection>
 <subsection name="CommandLine">
-	see <a href="CommandLineConfiguration.html">CommandLine Configuration</a> for more details.
+	<p>see <a href="CommandLineConfiguration.html">CommandLine Configuration</a> for more details.</p>
 </subsection>
 <subsection name="HTTP"></subsection>
 <subsection name="DataCenter"><p>Although this interface is not maintained as part of this project, it does implement the CommonExecutionConnector interface, so it is worth giving an overview here.</p></subsection>

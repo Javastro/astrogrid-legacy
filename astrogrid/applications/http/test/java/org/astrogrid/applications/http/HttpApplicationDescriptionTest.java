@@ -19,7 +19,11 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.ParameterDescription;
+import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.http.test.TestRegistryQuerier;
+import org.astrogrid.applications.manager.idgen.IdGen;
+import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
+import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.registry.beans.cea.CeaHttpApplicationType;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -30,7 +34,7 @@ import org.exolab.castor.xml.ValidationException;
  * @author jdt
  */
 public class HttpApplicationDescriptionTest extends TestCase {
-    private static final String COMMUNITY_NAME = "theres-no-such-thing-as-community";
+    private static final String COMMUNITY_NAME = "org.astrogrid.test"; //this is the real name that the test environment has
     /**
      * Logger for this class
      */
@@ -114,9 +118,14 @@ public class HttpApplicationDescriptionTest extends TestCase {
         Iterator it = allApps.iterator();
         theOneThatIWant = querier.getHttpApplication("Adder-app.xml");
 
+        
         assertNotNull("Didn't find the testapp I was looking for", theOneThatIWant);
-        adderApplicationDescription = new HttpApplicationDescription(theOneThatIWant, COMMUNITY_NAME,
-                null);
+        IdGen id = new InMemoryIdGen();
+        DefaultProtocolLibrary lib = new DefaultProtocolLibrary();
+        TestAuthority resol = new TestAuthority();
+        ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(id, lib, resol);
+        adderApplicationDescription = new HttpApplicationDescription(theOneThatIWant,
+                env);
     }
 
     public final void testGetApplication() {

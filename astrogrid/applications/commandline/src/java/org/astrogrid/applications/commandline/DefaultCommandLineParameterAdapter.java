@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultCommandLineParameterAdapter.java,v 1.3 2004/11/27 13:20:02 pah Exp $
+ * $Id: DefaultCommandLineParameterAdapter.java,v 1.4 2004/12/18 15:43:57 jdt Exp $
  * 
  * Created on 20-Aug-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -143,9 +143,9 @@ public class DefaultCommandLineParameterAdapter extends AbstractParameterAdapter
                         if (logger.isDebugEnabled()) {
                             logger.debug("process() local copied - " + val.getName() + "="
                                     + val.getValue() + " direct, fileref="
-                                    + referenceFile.getAbsolutePath());
+                                    + referenceFile.getName());
                         }
-                        commandLineVal = referenceFile.getAbsolutePath();
+                        commandLineVal = referenceFile.getName();
 
                     }
                     else {
@@ -167,9 +167,9 @@ public class DefaultCommandLineParameterAdapter extends AbstractParameterAdapter
                         if (logger.isDebugEnabled()) {
                             logger.debug("process() - local copied - " + val.getName() + "="
                                     + val.getValue() + " externalVal, fileref="
-                                    + referenceFile.getAbsolutePath());
+                                    + referenceFile.getName());
                         }
-                        commandLineVal = referenceFile.getAbsolutePath();
+                        commandLineVal = referenceFile.getName();
                     }
                     else // an externalVal param/ direct cmdline
                     {
@@ -203,7 +203,7 @@ public class DefaultCommandLineParameterAdapter extends AbstractParameterAdapter
         }
         else {
             /* this is an output parameter - must write to a file*/
-            commandLineVal = referenceFile.getAbsolutePath();
+            commandLineVal = referenceFile.getName();
             if (logger.isDebugEnabled()) {
                 logger.debug("process() - local copied - " + val.getName() + "="
                         + val.getValue() + " output fileref="+commandLineVal);

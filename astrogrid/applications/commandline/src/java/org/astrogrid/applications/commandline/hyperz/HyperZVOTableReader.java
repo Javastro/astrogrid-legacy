@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZVOTableReader.java,v 1.5 2004/09/23 22:44:23 pah Exp $
+ * $Id: HyperZVOTableReader.java,v 1.6 2004/12/18 15:43:57 jdt Exp $
  * 
  * Created on 18-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -34,6 +34,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 
 /**
  * @author Paul Harrison (pah@jb.man.ac.uk)
@@ -45,48 +47,51 @@ public class HyperZVOTableReader extends DefaultCommandLineParameterAdapter impl
      * @param val
      * @param descr
      */
-    public HyperZVOTableReader(ApplicationInterface interf, ParameterValue val, CommandLineParameterDescription descr,CommandLineApplicationEnvironment env, ExternalValue ival) {
+    public HyperZVOTableReader(ApplicationInterface interf, ParameterValue val, CommandLineParameterDescription descr,CommandLineApplicationEnvironment env, ExternalValue ival, final String bands) {
         super(interf,val, descr,ival,env);
+      bandOrder = bands;
     }
    private SavotVOTable vot;
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(HyperZVOTableReader.class);
+   private final String bandOrder;
    /**
     * @see org.astrogrid.applications.ParameterAdapter#process()
     */
    public Object process() throws CeaException {
-       super.process();
+      super.process();
        // apply vot
        File source = this.referenceFile;
-       File votFile = env.getTempFile();
-       this.referenceFile = votFile;
-       vot = readInternal(source,votFile);
-       return referenceFile;   
+       File plainFile = env.getTempFile();
+       // must set the command line values
+       this.referenceFile = plainFile;
+       this.commandLineVal = plainFile.getName();
+       
+       vot = readInternal(source, plainFile);
+       logger.debug("written hyperz input file to "+ plainFile.getName());
+       return referenceFile.getName();   
    }
    
    public SavotVOTable getVOTable() {
        return vot;
    }
    /**
-    * This reads the input VOTable file and converts it to a file suitable for hyperZ input 
+    * This reads the input VOTable file and converts it to a file suitable for hyperZ input. This is simply a file with an index number in the first column, followed by all the photometry values, followed by all the photometry error values... 
     * @param source
     * @param target
+    * @TODO better error reporting by far - propagate exceptions up so that they get reported.
     */
    private SavotVOTable readInternal(File source, File target) {
 
+      
+      //FIXME - need better errors out of this method - should throw some exception.
       // the whole VOTable file is put into memory
       SavotPullParser sb = new SavotPullParser(source.getAbsolutePath(), SavotPullEngine.FULL);
-      // the array of indexes that point to where the magnitudes are
-      int idxs[] = { -1, -1, -1, -1, -1, -1, -1, -1 };
-      //where in the above array each of the bands should go
-      int bidx = 0,
-         beidx = 4,
-         vidx = 1,
-         veidx = 5,
-         iidx = 2,
-         ieidx = 6,
-         zidx = 3,
-         zeidx = 7;
+      // the array of indexes that point to where the magnitudes are - initialized to -1
+      int idxs[];
+      idxs = new int[bandOrder.length()*2];
+      Arrays.fill(idxs, -1);
+
       logger.debug(
          "Resource name : "
             + ((SavotResource)sb.getVOTable().getResources().getItemAt(0)).getName());
@@ -109,54 +114,22 @@ public class HyperZVOTableReader extends DefaultCommandLineParameterAdapter impl
          for (int i = 0; i < fieldSet.getItemCount(); i++) {
             SavotField field = (SavotField)fieldSet.getItemAt(i);
             String ucd = field.getUcd();
-            if (ucd.startsWith("PHOT_MAG_")) {
+            //FIXME this could pick up some other spurious entries e.g. phot_mag_rubbish_err... need to make stricter
+            if ( ucd.startsWith("PHOT_MAG_")) {
                char band = ucd.toUpperCase().charAt(9);
-               switch (band) {
-                  case 'B' :
-                     {
-                        if (ucd.endsWith("ERR")) {
-                           idxs[beidx] = i;
-                        }
-                        else {
-                           idxs[bidx] = i;
-                        }
-                        break;
-                     }
-                  case 'V' :
-                     {
-                        if (ucd.endsWith("ERR")) {
-                           idxs[veidx] = i;
-                        }
-                        else {
-                           idxs[vidx] = i;
-                        }
-                        break;
-                     }
-                  case 'I' :
-                     {
-                        if (ucd.endsWith("ERR")) {
-                           idxs[ieidx] = i;
-                        }
-                        else {
-                           idxs[iidx] = i;
-                        }
-                        break;
-                     }
-                  case 'Z' :
-                     {
-                        if (ucd.endsWith("ERR")) {
-                           idxs[zeidx] = i;
-                        }
-                        else {
-                           idxs[zidx] = i;
-                        }
-                        break;
-                     }
+               int validx = bandOrder.indexOf(band);
+               
+               if (validx != -1) {
+                  int erridx = validx + bandOrder.length();
 
-                  default :
-                     break;
+                  if (ucd.endsWith("ERR")) {
+                     idxs[erridx] = i;
+                  }
+                  else {
+                     idxs[validx] = i;
+                  }
                }
-            }
+             }
 
          }
 
@@ -172,19 +145,26 @@ public class HyperZVOTableReader extends DefaultCommandLineParameterAdapter impl
             // get all the data of the row
             TDSet theTDs = tr.getTDSet(i);
             StringBuffer currentLine = new StringBuffer();
-            logger.debug(
-               "Number of items in TDSet for the index "
-                  + (i + 1)
-                  + " tr (= number of <TD></TD>) : "
-                  + theTDs.getItemCount());
-
+//            logger.debug(
+//               "Number of items in TDSet for the index "
+//                  + (i + 1)
+//                  + " tr (= number of <TD></TD>) : "
+//                  + theTDs.getItemCount());
+//
             // for each data of the row, select the correct fields from the band idxs
             currentLine.append(i + 1);
 
             for (int j = 0; j < idxs.length; j++) {
                currentLine.append(" ");
-
-               currentLine.append(theTDs.getContent(idxs[j]));
+               if(idxs[j] != -1){
+                  currentLine.append(theTDs.getContent(idxs[j]));
+                  
+               }
+               else
+               {
+                  currentLine.append("*");
+                  logger.error("there appears to be no input for band "+ bandOrder.charAt(j));
+               }
             }
 
 

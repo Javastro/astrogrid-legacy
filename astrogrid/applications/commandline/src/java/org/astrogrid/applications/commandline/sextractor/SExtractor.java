@@ -1,5 +1,5 @@
 /*
- * $Id: SExtractor.java,v 1.7 2004/10/05 16:04:45 pah Exp $
+ * $Id: SExtractor.java,v 1.8 2004/12/18 15:43:57 jdt Exp $
  *
  * Created on 24 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -78,7 +78,7 @@ public class SExtractor extends CommandLineApplication {
         String band;
         DefaultCommandLineParameterAdapter catname = (DefaultCommandLineParameterAdapter)findParameterAdapter("CATALOG_NAME");
        // band=catname.getRawValue().substring(catname.getRawValue().length()-1);
-       band=catname.getWrappedParameter().getValue().substring(catname.getWrappedParameter().getValue().length()-1);       
+       band=((DefaultCommandLineParameterAdapter)findParameterAdapter("IMAGE_BAND")).getWrappedParameter().getValue(); //TODO this is a bit of a cheat will not allow indirect values....     
        ASCII2VOTableConverter conv = new ASCII2VOTableConverter(catname,(DefaultCommandLineParameterAdapter) findParameterAdapter("PARAMETERS_NAME"), applicationEnvironment, band);
       conv.writeVOTable();
    }

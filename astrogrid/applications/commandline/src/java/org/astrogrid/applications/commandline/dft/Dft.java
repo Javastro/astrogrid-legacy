@@ -1,5 +1,5 @@
 /*
- * $Id: Dft.java,v 1.7 2004/10/05 16:04:45 pah Exp $
+ * $Id: Dft.java,v 1.8 2004/12/18 15:43:57 jdt Exp $
  * 
  * Created on 20-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -52,7 +52,7 @@ public class Dft extends CommandLineApplication {
     * The concentrators for the repeated parameters...
     */
    private final Concentrator matchConcentrator = new MergingParameterAdapter.Concentrator(
-         ",");
+         " ");
 
    private final Concentrator targetConcentrator = new MergingParameterAdapter.Concentrator(
          ",");
@@ -94,7 +94,7 @@ public class Dft extends CommandLineApplication {
                (CommandLineParameterDescription)desr, indirectVal,
                applicationEnvironment, matchConcentrator);
       }
-      else if (desr.getName().equals("targets"))
+      else if (desr.getName().equals("targets")) //FIXME - I dont think that this is supposed to be a multiple
       {
          if (logger.isDebugEnabled()) {
             logger.debug("creating merging adapter for parameter targets");
