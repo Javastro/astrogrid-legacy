@@ -1,4 +1,4 @@
-/* $Id: SimpleMySpaceTest.java,v 1.4 2004/01/19 16:44:38 jdt Exp $
+/* $Id: SimpleMySpaceTest.java,v 1.5 2004/01/19 17:11:06 jdt Exp $
  * Created on 28-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,12 +18,13 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.astrogrid.integrationTests.common.ConfStrings;
+import org.astrogrid.integrationTests.common.ConfManager;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 /**
  * Not really an integration test this - just an attempt to see if we can 
  * call a few webservices remotely.
+ * @TODO tidy the damn thing up if eclipse starts working again
  * @author john taylor
  */
 public class SimpleMySpaceTest extends TestCase {
@@ -51,15 +52,7 @@ public class SimpleMySpaceTest extends TestCase {
      * Called before each test
      */
     public final void setUp() throws IOException {
-        //load properties
-        Properties props = new Properties();
-        log.debug("Attempting to load " + ConfStrings.WEBSERVICES_PROPS);
-        InputStream inputStream =
-            this.getClass().getResourceAsStream(ConfStrings.WEBSERVICES_PROPS);
-        assert inputStream != null : "No file found";
-        props.load(inputStream);
-        mySpaceEndPoint = props.getProperty(ConfStrings.MYSPACE_ENDPOINT);
-        log.debug("Web service end-point: " + mySpaceEndPoint);
+        mySpaceEndPoint = ConfManager.getInstance().getMySpaceEndPoint();
         assert(mySpaceEndPoint != null);
     }
     public void testAddDeleteUser() {

@@ -1,5 +1,5 @@
 /*
- * $Id: WorkFlowToApplication.java,v 1.4 2004/01/19 16:44:38 jdt Exp $
+ * $Id: WorkFlowToApplication.java,v 1.5 2004/01/19 17:11:06 jdt Exp $
  * 
  * Created on 07-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -18,13 +18,13 @@ import java.util.Date;
 import java.util.Vector;
 
 import junit.framework.TestCase;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 
 import org.astrogrid.applications.common.config.ApplicationControllerConfig;
 import org.astrogrid.applications.common.config.ConfigLoader;
 import org.astrogrid.community.User;
 import org.astrogrid.community.common.util.CommunityMessage;
+import org.astrogrid.integrationTests.common.ConfManager;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 import org.astrogrid.mySpace.delegate.helper.MySpaceHelper;
@@ -37,9 +37,7 @@ import org.astrogrid.portal.workflow.design.Step;
 import org.astrogrid.portal.workflow.design.Tool;
 import org.astrogrid.portal.workflow.design.Workflow;
 
-import java.io.InputStream;
-import org.astrogrid.integrationTests.common.*;
-import java.util.*;
+
 
 /**
  * @author Paul Harrison (pah@jb.man.ac.uk)
@@ -62,8 +60,6 @@ public class WorkFlowToApplication extends TestCase {
       org.apache.commons.logging.LogFactory.getLog(WorkFlowToApplication.class);
    private final Date runDate = new Date();
    
-   private static Log log = LogFactory.getLog(WorkFlowToApplication.class);
-
    /**
     * Constructor for WorkFlowToApplication.
     * @param arg0
@@ -93,20 +89,8 @@ public class WorkFlowToApplication extends TestCase {
       servers.add("serv1");
 
       try {
-         
-
          //load properties
-         Properties props = new Properties();
-         log.debug("Attempting to load " + ConfStrings.WEBSERVICES_PROPS);
-         InputStream inputStream =
-              this.getClass().getResourceAsStream(ConfStrings.WEBSERVICES_PROPS);
-         assert inputStream != null : "No file found";
-         props.load(inputStream);
-         final String mySpaceEndPoint = props.getProperty(ConfStrings.MYSPACE_ENDPOINT);
-         log.debug("Web service end-point: " + mySpaceEndPoint);
-         assert(mySpaceEndPoint != null);
-
-         mySpaceManager = MySpaceDelegateFactory.createDelegate(mySpaceEndPoint);
+         mySpaceManager = MySpaceDelegateFactory.createDelegate(ConfManager.getInstance().getMySpaceEndPoint());
          user = new User();
          String userId = user.getUserId();
          String communityId = user.getCommunity();
@@ -125,7 +109,7 @@ public class WorkFlowToApplication extends TestCase {
             infileName,
             "This is some test contents for myspace",
             TESTCONTAINER, // this should not be the container, but a "type" referece
-            mySpaceManager.OVERWRITE);
+            MySpaceClient.OVERWRITE);
             mySpaceManager.deleteDataHolding(userId, communityId, credential, outFilename);
       }
       catch (IOException e) {
