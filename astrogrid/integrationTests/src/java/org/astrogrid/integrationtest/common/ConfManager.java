@@ -1,5 +1,5 @@
 /*
- * $Id: ConfManager.java,v 1.8 2004/03/29 17:25:41 jdt Exp $
+ * $Id: ConfManager.java,v 1.9 2004/03/31 11:27:56 jdt Exp $
  * Created on 19-Jan-2004 by John Taylor jdt@roe.ac.uk .
  * Copyright (C) AstroGrid. All rights reserved.
  * This software is published under the terms of the AstroGrid
@@ -40,7 +40,7 @@ public final class ConfManager {
     /**
      * Name of key in property file for endpoint
      */
-    private static final String MYSPACE_ENDPOINT = "mySpaceEndPoint";
+    private static final String MYSPACE_ENDPOINT = "myspace.manager.endPoint";
     /**
      * name of key in properties file for merlin endpoint
      */
@@ -169,6 +169,9 @@ public final class ConfManager {
 }
 /*
  * $Log: ConfManager.java,v $
+ * Revision 1.9  2004/03/31 11:27:56  jdt
+ * changed key for myspace end point
+ *
  * Revision 1.8  2004/03/29 17:25:41  jdt
  * Added deprecation warnings.
  *
