@@ -125,6 +125,17 @@
         <url-pattern>/servlet/OAIHandlerv0_9</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+      <servlet-name>OAIHandlerv0_10</servlet-name>
+      <url-pattern>/OAIHandlerv0_10</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>OAIHandlerv0_10</servlet-name>
+        <url-pattern>/servlet/OAIHandlerv0_10</url-pattern>
+    </servlet-mapping>
+
+
 <!--
     <context-param>
       <param-name>properties</param-name>
