@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="maven-project.xsd">
+  <pomVersion>3</pomVersion>
+  
+  <id>AstroGridPortal</id>
+  <name>AstroGrid Portal</name>
+  
+  <currentVersion>HEAD</currentVersion>
+  
+  <organization>
+    <name>AstroGrid</name>
+    <url>http://www.astrogrid.org</url>
+  </organization>
+  
+  <inceptionYear>2002</inceptionYear>
+  
+  <package>org.astrogrid.portal</package>
+  
+  <description>
+    The AstroGrid Web Portal: access to AstroGrid via Cocoon.
+  </description>
+  <shortDescription>AstroGrid Web Portal</shortDescription>
+  
+  <url>http://www.astrogrid.org</url>
+  
+  <repository>
+    <connection>
+      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel/astrogrid:portal
+    </connection>
+    <developerConnection>
+      scm:cvs:ext:${maven.user}@cvs.astrogrid.org:/devel/astrogrid:portal
+    </developerConnection>
+  </repository>
+  
+  <developers>
+    <developer>
+      <name>Peter Shillan</name>
+      <id>gps</id>
+      <email>gps@roe.ac.uk</email>
+    </developer>
+
+    <developer>
+      <name>Pedro Contreras</name>
+      <id>pcontrer</id>
+      <email>p.contreras@qub.ac.uk</email>
+    </developer>
+
+    <developer>
+      <name>Phillip Nicolson</name>
+      <id>pjn3</id>
+      <email>pjn3@star.le.ac.uk</email>
+    </developer>
+
+    <developer>
+      <name>Roy Platon</name>
+      <id>rtp</id>
+      <email>R.T.Platon@rl.ac.uk</email>
+    </developer>
+  </developers>
+  
+  <dependencies>
+    <dependency>
+      <id>astrogrid-datacenter</id>
+      <version>SNAPSHOT</version>
+      <jar>astrogrid-datacenter-client-SNAPSHOT.jar</jar>
+    </dependency>
+
+    <dependency>
+      <id>avalon-framework</id>
+      <version>4.1.4</version>
+    </dependency>
+
+    <dependency>
+      <id>cocoon</id>
+      <version>2.1.2</version>
+    </dependency>
+
+    <dependency>
+      <id>commons-jxpath</id>
+      <version>1.1</version>
+    </dependency>
+
+    <dependency>
+      <id>excalibur-pool</id>
+      <version>1.2</version>
+    </dependency>
+
+    <dependency>
+      <id>excalibur-sourceresolve</id>
+      <version>20030715</version>
+    </dependency>
+
+    <dependency>
+      <id>junit</id>
+      <version>3.8.1</version>
+    </dependency>
+
+    <dependency>
+      <id>log4j</id>
+      <version>1.2.8</version>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>src/java</unitTestSourceDirectory>
+  </build>
+</project>
