@@ -1,5 +1,5 @@
 /*
- * $Id: Configuration.java,v 1.3 2003/08/28 15:53:42 mch Exp $
+ * $Id: Configuration.java,v 1.4 2003/08/28 17:25:41 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -39,8 +39,13 @@ import java.util.Properties;
 
 public abstract class Configuration
 {
+   /** Made-up constant */
    public static String defaultFilename = "AstroGridConfig.properties";
 
+   /** List of locations that the configuration file has been loaded from */
+   public static String locations = null;
+
+   /** The way this implementation works, from a Properties file */
    private static Properties properties = new Properties();
 
    /**
@@ -56,6 +61,8 @@ public abstract class Configuration
     */
    public static void load(String filepath) throws IOException
    {
+      addLocation(filepath);
+
       load(new FileInputStream(filepath));
    }
 
@@ -72,7 +79,41 @@ public abstract class Configuration
     */
    public static void load(URL url) throws IOException
    {
+      addLocation(url.toString());
+
       properties.load(url.openConnection().getInputStream());
+   }
+
+   /**
+    * Returns the location of the configuration file - useful when reporting
+    * errors that things can't be found or are incorrect, so the user really
+    * knows they're looking in the right place
+    */
+   public static String getLocations()
+   {
+      if (locations == null)
+      {
+         return "(no file loaded)";
+      }
+      else
+      {
+         return locations;
+      }
+   }
+
+   /**
+    * convenient way of adding locations to the string
+    */
+   private static void addLocation(String newLocation)
+   {
+      if (locations == null)
+      {
+         locations = newLocation;
+      }
+      else
+      {
+         locations = locations+", "+newLocation;
+      }
    }
 
    /**
