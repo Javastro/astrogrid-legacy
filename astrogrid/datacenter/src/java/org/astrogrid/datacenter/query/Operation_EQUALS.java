@@ -11,7 +11,8 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-import org.w3c.dom.* ;
+import org.w3c.dom.Element;
+import org.astrogrid.Configurator;
 
 /**
  * The <code>Operation_EQUALS</code> class represents operations within an 
@@ -36,7 +37,9 @@ public class Operation_EQUALS extends Operation_MagnitudeComparison {
 	
 	private static Logger 
 		logger = Logger.getLogger( Operation_EQUALS.class ) ;
-		
+
+    private final static String
+        SUBCOMPONENT_NAME = Configurator.getClassName( Operation_EQUALS.class ) ;                  		
 	
 	// Template for the SQL EQUALS query   
 	public static final String

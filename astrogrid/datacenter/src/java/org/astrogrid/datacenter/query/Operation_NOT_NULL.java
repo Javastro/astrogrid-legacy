@@ -10,12 +10,11 @@
  */
 package org.astrogrid.datacenter.query;
 
-import org.apache.log4j.Logger;
-// import org.astrogrid.datacenter.datasetagent.*;
-// import org.astrogrid.datacenter.i18n.*;
-import org.w3c.dom.* ;
+import java.text.MessageFormat;
 
-import java.text.MessageFormat ;
+import org.apache.log4j.Logger;
+import org.w3c.dom.Element;
+import org.astrogrid.Configurator ;
 
 
 /**
@@ -38,6 +37,9 @@ public class Operation_NOT_NULL extends Operation {
 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
+        
+    private static final String
+        SUBCOMPONENT_NAME = Configurator.getClassName( Operation_NOT_NULL.class ) ;        
 	
 	private static Logger 
 		logger = Logger.getLogger( Operation_NOT_NULL.class ) ;

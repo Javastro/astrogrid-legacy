@@ -11,9 +11,12 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.*;
-import org.astrogrid.datacenter.i18n.*;
-import org.w3c.dom.* ;
+import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
+import org.astrogrid.i18n.AstroGridMessage;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.astrogrid.Configurator;
 
 
 /**
@@ -36,6 +39,9 @@ public abstract class Operation implements Operand {
 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
+        
+    private final static String
+         SUBCOMPONENT_NAME = Configurator.getClassName( Operation.class ) ;                 
 	
 	private static Logger 
 		logger = Logger.getLogger( Operation.class ) ;
@@ -72,7 +78,10 @@ public abstract class Operation implements Operand {
         ORDER_BY_ASC = "ORDER_BY_ASC",
         ORDER_BY_AND = "ORDER_BY_AND",
         GROUP_BY = "GROUP_BY",
-        SUBQUERY = "SUBQUERY" ;
+        SUBQUERY = "SUBQUERY",
+        MIN = "MIN",
+        MAX = "MAX",
+        AVG = "AVG" ;
 	
 	private String
 		name = null ;
@@ -171,10 +180,21 @@ public abstract class Operation implements Operand {
 			}
 			else if( opName.equals( Operation.SUBQUERY ) ) {
 				newOp = new Operation_SUBQUERY( opElement, catalog ) ;
-			}																
+			}
+			else if( opName.equals( Operation.MIN ) ) {
+				newOp = new Operation_MIN( opElement, catalog ) ;
+			}
+			else if( opName.equals( Operation.MAX ) ) {
+				newOp = new Operation_MAX( opElement, catalog ) ;
+			}
+			else if( opName.equals( Operation.AVG ) ) {
+				newOp = new Operation_AVG( opElement, catalog ) ;
+			}
 			else {
-				Message
-	               message = new Message( ASTROGRIDERROR_UNSUPPORTED_SQL_OPERATION, opName ) ;
+				AstroGridMessage
+	               message = new AstroGridMessage( ASTROGRIDERROR_UNSUPPORTED_SQL_OPERATION
+                                                 , SUBCOMPONENT_NAME
+                                                 , opName ) ;
                 logger.error( message.toString() ) ;
                 throw new QueryException( message );    	
 			}
@@ -245,8 +265,9 @@ public abstract class Operation implements Operand {
 			} // end else
 		}
 		catch( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_OPERATION_FROM_ELEMENT ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_OPERATION_FROM_ELEMENT
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new QueryException( message, ex );    		
 		}

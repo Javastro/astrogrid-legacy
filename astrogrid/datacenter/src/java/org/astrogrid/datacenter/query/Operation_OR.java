@@ -10,12 +10,13 @@
  */
 package org.astrogrid.datacenter.query;
 
-import org.apache.log4j.Logger;
-import org.w3c.dom.* ;
-
+import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.List ;
-import java.text.MessageFormat ;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.w3c.dom.Element;
+import org.astrogrid.Configurator ;
 
 
 /**
@@ -38,6 +39,9 @@ public class Operation_OR extends Operation {
 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
+
+    private static final String
+        SUBCOMPONENT_NAME = Configurator.getClassName( Operation_OR.class ) ;        
 	
 	private static Logger 
 		logger = Logger.getLogger( Operation_OR.class ) ;

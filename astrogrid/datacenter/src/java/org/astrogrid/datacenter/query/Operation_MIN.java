@@ -1,5 +1,5 @@
 /*
- * @(#)Operation_NOT.java   1.0
+ * @(#)Operation_OR.java   1.0
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -11,20 +11,21 @@
 package org.astrogrid.datacenter.query;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
-
 import org.astrogrid.Configurator ;
 
 
 /**
- * The <code>Operation_NOT</code> class represents operation within an 
+ * The <code>Operation_MIN</code> class represents operation within an 
  * SQL query string.
  * <p>
  * Some example text. For example:
  * <p><blockquote><pre>
- *     
+ *     OR
  * </pre></blockquote>
  * <p>
  *
@@ -34,45 +35,46 @@ import org.astrogrid.Configurator ;
  * @see     org.astrogrid.datacenter.Query
  * @since   AstroGrid 1.2
  */
-public class Operation_LOGICAL_NOT extends Operation {
+public class Operation_MIN extends Operation {
 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
-        
+
     private static final String
-        SUBCOMPONENT_NAME = Configurator.getClassName( Operation_LOGICAL_NOT.class ) ;
+        SUBCOMPONENT_NAME = Configurator.getClassName( Operation_MIN.class ) ;        
 	
 	private static Logger 
-		logger = Logger.getLogger( Operation_LOGICAL_NOT.class ) ;
+		logger = Logger.getLogger( Operation_MIN.class ) ;
 		
-	// Template for the SQL NOT query   
+	// TemplateS for the SQL MIN
 	public static final String
-		TEMPLATE = "( NOT {0} )" ;
+		TEMPLATE = " MIN({0}) "  ;
 			
-	private Operand
-	   operandSingleton ;
-	
+	private List
+		operands ;
 	   
-	public Operation_LOGICAL_NOT( Element opElement , Catalog catalog ) throws QueryException {
+	public Operation_MIN( Element opElement , Catalog catalog ) throws QueryException {
 		super( opElement, catalog ) ;
 	}
 	
 	
 	public String toSQLString() {
-		if( TRACE_ENABLED ) logger.debug( "Operation_NOT.toSQLString(): entry") ;  
+		if( TRACE_ENABLED ) logger.debug( "Operation_MIN.toSQLString(): entry") ;  
 		 	
 		String
 		   retValue = null ; 	
 		
 		Object []
-           inserts = new Object[1] ;   
+           insert = new Object[1] ;   
         
-        try {   
-           inserts[0] = operandSingleton.toSQLString() ;
-           retValue = MessageFormat.format( this.getTemplate(), inserts ) ;
+        try {  
+
+			insert[0] = ((Operand)operands.get( 0 )).toSQLString() ;
+           	retValue = MessageFormat.format( this.getTemplate(), insert ) ;
+
         }
         finally {
-			if( TRACE_ENABLED ) logger.debug( "Operation_NOT.toSQLString(): exit") ;         	        
+			if( TRACE_ENABLED ) logger.debug( "Operation_MIN.toSQLString(): exit") ;         	        
         }
         
 		return retValue ;
@@ -81,26 +83,21 @@ public class Operation_LOGICAL_NOT extends Operation {
 
 
     public void push( Operand operand ) {
-		if( TRACE_ENABLED ) logger.debug( "Operation_NOT.push(): entry") ;  
+		if( TRACE_ENABLED ) logger.debug( "Operation_MIN.push(): entry") ;  
 		
 		try {
 			
-			if( operandSingleton == null ){
-				operandSingleton = operand ;
-			}
-			else {
-				; // a serious error  has occurred
-			}
+			if( operands == null ) operands = new ArrayList() ;
+			operands.add( operand ) ;
 			
 		} finally {
-			if( TRACE_ENABLED ) logger.debug( "Operation_NOT.push(): exit") ; 
+			if( TRACE_ENABLED ) logger.debug( "Operation_MIN.push(): exit") ; 
 		}
 
     	
     } // end of push()
-
 	
 	public String getTemplate() { return TEMPLATE ; }
 
 	
-} // end of class Operation_NOT
+} // end of class Operation_MIN

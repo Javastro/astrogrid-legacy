@@ -10,14 +10,16 @@
  */
 package org.astrogrid.datacenter.query;
 
-import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.*;
-import org.astrogrid.datacenter.i18n.*;
-import org.w3c.dom.* ;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import java.util.ArrayList ;
-import java.util.List ;
-import java.util.Iterator ;
+import org.apache.log4j.Logger;
+import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
+import org.astrogrid.i18n.AstroGridMessage;
+import org.astrogrid.Configurator;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 /**
@@ -30,8 +32,7 @@ import java.util.Iterator ;
  * </pre></blockquote>
  * <p>
  *
- * @author  Jeff Lusted
- * @author  Phil Nicolson
+ * @author  Jeff Lusted/Phil Nicolson
  * @version 1.0 27-May-2003
  * @see     org.astrogrid.datacenter.Query
  * @since   AstroGrid 1.2
@@ -44,6 +45,9 @@ public class Catalog {
 	private static Logger 
 		logger = Logger.getLogger( Catalog.class ) ;
 		
+    private final static String
+        SUBCOMPONENT_NAME = Configurator.getClassName( Catalog.class ) ;                        
+        
 	private static final String
 		ASTROGRIDERROR_COULD_NOT_CREATE_CATALOG_FROM_ELEMENT = "AGDTCE00420" ;	
 		
@@ -90,8 +94,9 @@ public class Catalog {
 	
 		}
 		catch( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_CATALOG_FROM_ELEMENT ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_CATALOG_FROM_ELEMENT
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new QueryException( message, ex );    		
 		}

@@ -11,19 +11,27 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.*;
-import org.astrogrid.datacenter.i18n.*;
-import org.astrogrid.datacenter.myspace.*;
-import org.astrogrid.datacenter.votable.*;
-import org.w3c.dom.* ;
+import org.astrogrid.Configurator ;
+import org.astrogrid.datacenter.DTC;
+import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
+import org.astrogrid.datacenter.myspace.Allocation;
+import org.astrogrid.datacenter.votable.VOTable;
+import org.astrogrid.datacenter.votable.VOTableException;
+import org.astrogrid.i18n.AstroGridMessage;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class Query {
 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
 	
-	private static Logger 
-		logger = Logger.getLogger( Query.class ) ;
+	private static final String
+		SUBCOMPONENT_NAME = Configurator.getClassName( Query.class ) ;
+	
+    private static Logger 
+	    logger = Logger.getLogger( Query.class ) ;
 		
     private static final String
 	    ASTROGRIDERROR_COULD_NOT_CREATE_QUERYFACTORY_IMPL = "AGDTCE00050" , 
@@ -114,8 +122,9 @@ public class Query {
 			
 		}
 		catch( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_QUERY_FROM_ELEMENTS ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_QUERY_FROM_ELEMENTS
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new QueryException( message, ex );    		
 		}
@@ -137,12 +146,14 @@ public class Query {
     	QueryFactory 
     		factory ;
     	String
-    		implementationFactoryName = DatasetAgent.getProperty( catalogName ) ;
+    		implementationFactoryName = DTC.getProperty( catalogName + DTC.CATALOG_DEFAULT_QUERYFACTORY 
+																	 , DTC.CATALOG_CATEGORY ) ;
     		
     	// If we couldn't find a specific factory in the properties file,
     	// Then look for a default factory...
     	if( implementationFactoryName == null )
-		    implementationFactoryName = DatasetAgent.getProperty( Query.QUERYFACTORY_KEY_SUFFIX ) ;
+		    implementationFactoryName = DTC.getProperty( DTC.CATALOG_DEFAULT_QUERYFACTORY 
+													   , DTC.CATALOG_CATEGORY ) ;
     		
 		try {
 			Object
@@ -150,8 +161,10 @@ public class Query {
 			factory = (QueryFactory)obj ;
 		}
 		catch ( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_QUERYFACTORY_IMPL, implementationFactoryName ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_QUERYFACTORY_IMPL
+                                              , SUBCOMPONENT_NAME
+                                              , implementationFactoryName ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new QueryException( message, ex );
 		}

@@ -10,10 +10,11 @@
  */
 package org.astrogrid.datacenter.query;
 
-import org.apache.log4j.Logger;
-import org.w3c.dom.* ;
+import java.text.MessageFormat;
 
-import java.text.MessageFormat ;
+import org.apache.log4j.Logger;
+import org.w3c.dom.Element;
+import org.astrogrid.Configurator ;
 
 
 /**
@@ -36,6 +37,9 @@ public class Operation_CONE extends Operation {
 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
+        
+    private final static String
+        SUBCOMPONENT_NAME = Configurator.getClassName( Operation_CONE.class ) ;                 
 	
 	private static Logger 
 		logger = Logger.getLogger( Operation_CONE.class ) ;

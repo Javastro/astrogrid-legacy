@@ -10,10 +10,11 @@
  */
 package org.astrogrid.datacenter.query;
 
-import org.apache.log4j.Logger;
-import org.w3c.dom.* ;
+import java.text.MessageFormat;
 
-import java.text.MessageFormat ;
+import org.apache.log4j.Logger;
+import org.w3c.dom.Element;
+import org.astrogrid.Configurator ;
 
 
 /**
@@ -45,6 +46,9 @@ public class Operation_BETWEEN extends Operation {
 	private static Logger 
 		logger = Logger.getLogger( Operation_BETWEEN.class ) ;
 		
+    private final static String
+        SUBCOMPONENT_NAME = Configurator.getClassName( Operation_BETWEEN.class ) ;         
+        
 	public static final String
 		TEMPLATE = "( {0} BETWEEN {1} AND {2} )" ;	
 			

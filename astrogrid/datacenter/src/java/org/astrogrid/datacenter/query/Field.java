@@ -10,12 +10,16 @@
  */
 package org.astrogrid.datacenter.query;
 
-import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.*;
-import org.astrogrid.datacenter.i18n.*;
-import org.w3c.dom.* ;
+import java.util.Iterator;
 
-import java.util.Iterator ;
+import org.apache.log4j.Logger;
+import org.astrogrid.Configurator ;
+import org.astrogrid.datacenter.DTC;
+import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
+import org.astrogrid.i18n.AstroGridMessage;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * The <code>Field</code> class represents a field within an SQL Query.
@@ -39,6 +43,9 @@ public class Field implements Operand {
 	
 	private static Logger 
 		logger = Logger.getLogger( Field.class ) ;
+        
+    private final static String
+        SUBCOMPONENT_NAME = Configurator.getClassName( Field.class ) ;
 		
 	private static final String
 	   ASTROGRIDERROR_UNKNOWN_FIELD_TYPE_ENCOUNTERED = "AGDTCE00430" ;
@@ -92,8 +99,10 @@ public class Field implements Operand {
 			}
 			// Whoops! Some non-existent type has been used...
 			else {
-				Message
-				   message = new Message( ASTROGRIDERROR_UNKNOWN_FIELD_TYPE_ENCOUNTERED, type ) ;
+				AstroGridMessage
+				   message = new AstroGridMessage( ASTROGRIDERROR_UNKNOWN_FIELD_TYPE_ENCOUNTERED
+                                                 , SUBCOMPONENT_NAME
+                                                 , type ) ;
 				logger.error( message.toString() ) ;
 				throw new QueryException( message ) ; 
 			}
@@ -153,7 +162,8 @@ public class Field implements Operand {
 						.append( "." )
 						.append( this.getName() );
 					logger.debug( "Criteria: getColumnHeading(): key: " + buffer.toString().toUpperCase() ) ;
-					columnHeading = DatasetAgent.getProperty( buffer.toString().toUpperCase() ) ;	
+					columnHeading = DTC.getProperty( buffer.toString().toUpperCase()
+                                                   , DTC.UCD_CATEGORY ) ;	
 									
 				} 
 				else {
@@ -172,7 +182,8 @@ public class Field implements Operand {
 						   .append( "." )
 						   .append( this.getName() );					
 						logger.debug("Criteria: getColumnHeading(): key: "+buffer.toString().toUpperCase() );
-						columnHeading = DatasetAgent.getProperty( buffer.toString().toUpperCase() ) ;				
+						columnHeading = DTC.getProperty( buffer.toString().toUpperCase() 
+                                                       , DTC.UCD_CATEGORY) ;				
 						if ( columnHeading.length() > 0 ) // break as soon as column heading found
 						   break; 
 						buffer.delete( 0, buffer.length() ) ;

@@ -8,14 +8,15 @@
  * with this distribution in the LICENSE.txt file.  
  *
  */
-package org.astrogrid.datacenter.query;
-
-import org.apache.log4j.Logger;
-import org.w3c.dom.* ;
-import java.util.ArrayList;
-import java.util.List ;
+package org.astrogrid.datacenter.query ;
 
 import java.text.MessageFormat ;
+import java.util.ArrayList ;
+import java.util.List ;
+
+import org.apache.log4j.Logger ;
+import org.w3c.dom.Element ;
+import org.astrogrid.Configurator ;
 
 
 /**
@@ -46,6 +47,9 @@ public class Operation_IN extends Operation {
 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
+        
+    private final static String
+         SUBCOMPONENT_NAME = Configurator.getClassName( Operation_IN.class ) ;                                                  
 	
 	private static Logger 
 		logger = Logger.getLogger( Operation_IN.class ) ;

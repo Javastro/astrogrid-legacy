@@ -10,14 +10,17 @@
  */
 package org.astrogrid.datacenter.query;
 
-import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.*;
-import org.astrogrid.datacenter.i18n.*;
-import org.w3c.dom.* ;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import java.util.ArrayList ;
-import java.util.List ;
-import java.util.Iterator ;
+import org.apache.log4j.Logger;
+import org.astrogrid.datacenter.DTC ;
+import org.astrogrid.Configurator ;
+import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
+import org.astrogrid.i18n.AstroGridMessage;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * The <code>Return</code> class represents... 
@@ -38,6 +41,9 @@ public class Return {
 
 	private static final boolean 
 		TRACE_ENABLED = true ;
+        
+    private static final String
+        SUBCOMPONENT_NAME = Configurator.getClassName( Return.class ) ;
 	
 	private static Logger 
 		logger = Logger.getLogger( Return.class ) ;
@@ -70,7 +76,7 @@ public class Return {
 		try {
 
 			NodeList
-			   nodeList = returnElement.getElementsByTagName( RunJobRequestDD.FIELD_ELEMENT ) ;		   
+			   nodeList = returnElement.getElementsByTagName( RunJobRequestDD.FIELD_ELEMENT ) ;
 			   
 			Element
 				fieldElement ;
@@ -81,7 +87,7 @@ public class Return {
 				fieldElement = (Element) nodeList.item(i) ;
 				if( fieldElement.getTagName().equals( RunJobRequestDD.FIELD_ELEMENT ) ) {
 					fields.add( new Field( fieldElement, catalog ) ) ;
-				} // end of if
+				} // end of if				
 				else  {
 					; // JBL Note: What do I do here?
 				}
@@ -90,8 +96,9 @@ public class Return {
 	
 		}
 		catch( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_RETURN_FROM_ELEMENT ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_RETURN_FROM_ELEMENT
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new QueryException( message, ex );    		
 		}
@@ -147,8 +154,9 @@ public class Return {
 		}
 		
 		catch( Exception ex) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_RETURN ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_RETURN
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;   		
 		}
 		finally {
@@ -188,7 +196,8 @@ public class Return {
 				    .append( "." )
 				    .append( UCD ) ;
 				logger.debug("Return: getColumnHeading(): key: "+buffer.toString().toUpperCase() );				
-				columnHeading = DatasetAgent.getProperty( buffer.toString().toUpperCase() ) ;					
+				columnHeading = DTC.getProperty( buffer.toString()
+											   , DTC.UCD_CATEGORY ) ;					
 			}
 			else {
 				
@@ -206,7 +215,8 @@ public class Return {
 				       .append( "." )
 				       .append( UCD );	
 				   logger.debug("Return: getColumnHeading(): key: "+buffer.toString().toLowerCase().toUpperCase() );
-				   columnHeading = DatasetAgent.getProperty( buffer.toString().toUpperCase() ) ;
+					 columnHeading = DTC.getProperty( buffer.toString()
+													, DTC.UCD_CATEGORY ) ; 
 				   if (columnHeading.length() > 0 ) // break as soon as column heading found
 				      break; 
 				   buffer.delete( 0,buffer.length() ) ;
@@ -216,8 +226,9 @@ public class Return {
 			
 		} 
 		catch (Exception ex) {
-			Message
-				message = new Message( ASTROGRIDERROR_UNABLE_TO_MAP_CATALOG_UCD_TO_COLUMN_HEADING ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_MAP_CATALOG_UCD_TO_COLUMN_HEADING
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;
 		}
 		finally {
@@ -241,8 +252,8 @@ public class Return {
 		String returnString = name ;
 		
 		if  ( ( name.indexOf( SQL_DELETE ) != -1 ) || ( name.indexOf( SQL_DELETE_LOWER) != -1 ) || 
-			( name.indexOf( SQL_INSERT ) != -1 ) || ( name.indexOf( SQL_INSERT_LOWER ) != -1 ) ||
-			( name.indexOf( SQL_UPDATE ) != -1 ) || ( name.indexOf( SQL_UPDATE_LOWER ) != -1) ) {
+			  ( name.indexOf( SQL_INSERT ) != -1 ) || ( name.indexOf( SQL_INSERT_LOWER ) != -1 ) ||
+			  ( name.indexOf( SQL_UPDATE ) != -1 ) || ( name.indexOf( SQL_UPDATE_LOWER ) != -1) ) {
 			
 			logger.debug( "Attempt to enter malicious SQL using type PASSTHROUGH in Field" ) ;
 			returnString = "" ;

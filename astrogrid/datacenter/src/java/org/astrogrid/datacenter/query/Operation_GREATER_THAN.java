@@ -11,9 +11,8 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-// import org.astrogrid.datacenter.datasetagent.*;
-// import org.astrogrid.datacenter.i18n.*;
-import org.w3c.dom.* ;
+import org.w3c.dom.Element;
+import org.astrogrid.Configurator ;
 
 /**
  * The <code>Operation_GREATER_THAN</code> class represents operations within an 
@@ -35,6 +34,9 @@ public class Operation_GREATER_THAN extends Operation_MagnitudeComparison {
 	 
 	private static final boolean 
 		TRACE_ENABLED = true ;
+        
+    private final static String
+        SUBCOMPONENT_NAME = Configurator.getClassName( Operation_GREATER_THAN.class ) ;                                          
 	
 	private static Logger 
 		logger = Logger.getLogger( Operation_GREATER_THAN.class ) ;

@@ -10,14 +10,18 @@
  */
 package org.astrogrid.datacenter.query;
 
-import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.*;
-import org.astrogrid.datacenter.i18n.*;
-import org.w3c.dom.* ;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import java.util.ArrayList ;
-import java.util.List ;
-import java.util.Iterator ;
+import org.apache.log4j.Logger;
+import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
+import org.astrogrid.datacenter.DTC;
+import org.astrogrid.Configurator;
+import org.astrogrid.i18n.AstroGridMessage;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * The <code>From</code> class represents ...
@@ -41,14 +45,13 @@ public class From {
 	
 	private static Logger 
 		logger = Logger.getLogger( From.class ) ;
+        
+    private final static String
+        SUBCOMPONENT_NAME = Configurator.getClassName( From.class ) ;         
 		
 	private static final String
 		ASTROGRIDERROR_COULD_NOT_CREATE_FROM_FROM_ELEMENT = "AGDTCE00200",
-	    ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_FROM = "AGDTCE00210" ;
-	    
-	private static final String
-	/** Property file key for the job database JNDI location */    			
-	    QUERY_FROM_SEPARATOR = "QUERY.FROM.SEPARATOR" ;	    
+	    ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_FROM = "AGDTCE00210" ;  
 	    		
 	private List
 	   catalogs = new ArrayList() ;
@@ -75,8 +78,9 @@ public class From {
 			
 		}
 		catch( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_FROM_FROM_ELEMENT ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_FROM_FROM_ELEMENT
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new QueryException( message, ex );    		
 		}
@@ -115,7 +119,8 @@ public class From {
         		if ( catalog.getNumberTables() <= 0 ) {  // no table specified assume owner and table name are same
         			buffer
         			    .append( catalog.getName() )
-        			    .append( DatasetAgent.getProperty( QUERY_FROM_SEPARATOR ) ) //Bug #15
+        			    .append( DTC.getProperty( DTC.DATABASE_TABLE_SEPARATOR
+												, DTC.DATASETAGENT_CATEGORY ) ) //Bug #15
         			    .append( catalog.getName() )
         			    .append( ", " ) ;
         		}
@@ -131,7 +136,8 @@ public class From {
 			    		
 					    buffer
 					        .append( catalog.getName() )
-				    	    .append(  DatasetAgent.getProperty( QUERY_FROM_SEPARATOR ) ) //Bug #15
+							.append( DTC.getProperty( DTC.DATABASE_TABLE_SEPARATOR
+													, DTC.DATASETAGENT_CATEGORY ) ) //Bug #15
 				            .append( table.getName() )				
 				            .append( ", " ) ;
 			           		
@@ -143,8 +149,9 @@ public class From {
 			
     	}
 		catch( Exception ex) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_FROM ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_FROM
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;   		
 		}
 		finally {

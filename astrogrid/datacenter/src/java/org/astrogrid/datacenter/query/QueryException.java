@@ -10,15 +10,16 @@
  */
 package org.astrogrid.datacenter.query;
 
-import org.astrogrid.datacenter.i18n.* ;
+import org.astrogrid.datacenter.DatacenterException;
+import org.astrogrid.i18n.AstroGridMessage;
 
 public class QueryException extends DatacenterException {
 
-    public QueryException( Message message ) {
+    public QueryException( AstroGridMessage message ) {
     	super( message ) ;
     }
 
-    public QueryException(  Message message, Exception exception ) {
+    public QueryException(  AstroGridMessage message, Exception exception ) {
 		super( message, exception ) ;
     }
     

@@ -11,9 +11,10 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.*;
-import org.astrogrid.datacenter.i18n.*;
-import org.w3c.dom.* ;
+import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
+import org.astrogrid.i18n.AstroGridMessage;
+import org.astrogrid.Configurator;
+import org.w3c.dom.Element;
 
 /**
  * The <code>Service</code> class represents ...
@@ -34,12 +35,15 @@ public class Service {
 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
+        
+    private static final String
+        SUBCOMPONENT_NAME = Configurator.getClassName( Service.class ) ;
 	
 	private static Logger 
 		logger = Logger.getLogger( Service.class ) ;
 		
 	private static final String
-		ASTROGRIDERROR_COULD_NOT_dosomething = "AGDTCE00???" ;
+		ASTROGRIDERROR_COULD_NOT_CREATE_SERVICE = "AGDTCE00450" ;
 	
 	private String 
 	   name,
@@ -53,8 +57,9 @@ public class Service {
 			setUrl(serviceElement.getAttribute( RunJobRequestDD.SERVICE_URL_ATTR )) ;			
 		}
 		catch( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_dosomething ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_SERVICE
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new QueryException( message, ex );    		
 		}

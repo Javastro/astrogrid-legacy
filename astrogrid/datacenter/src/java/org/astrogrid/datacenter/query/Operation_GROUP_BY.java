@@ -10,12 +10,13 @@
  */
 package org.astrogrid.datacenter.query;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.List ;
-import java.text.MessageFormat ;
+import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.w3c.dom.* ;
+import org.w3c.dom.Element;
+import org.astrogrid.Configurator;
 
 /**
  * The <code>Operation_GROUP_BY</code> class represents operations within an 
@@ -44,6 +45,9 @@ public class Operation_GROUP_BY extends Operation {
 	private static final boolean 
 		TRACE_ENABLED = true ;
 	
+	public final static String
+			SUBCOMPONENT_NAME = Configurator.getClassName( Operation_GROUP_BY.class ) ;
+			
 	private static Logger 
 		logger = Logger.getLogger( Operation_GROUP_BY.class ) ;		
 	

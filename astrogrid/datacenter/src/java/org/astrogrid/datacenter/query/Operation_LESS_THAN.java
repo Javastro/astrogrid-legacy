@@ -11,15 +11,16 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-import org.w3c.dom.* ;
+import org.w3c.dom.Element;
+import org.astrogrid.Configurator ;
 
 /**
  * The <code>Operation_LESS_THAN</code> class represents operations within an 
  * SQL query string.
  * <p>
- * For example:
+ * Some example text. For example:
  * <p><blockquote><pre>
- *     <    
+ *     
  * </pre></blockquote>
  * <p>
  *
@@ -34,10 +35,12 @@ public class Operation_LESS_THAN extends Operation_MagnitudeComparison {
 	private static final boolean 
 		TRACE_ENABLED = true ;
 	
+    private final static String
+         SUBCOMPONENT_NAME = Configurator.getClassName( Operation_LESS_THAN.class ) ;                        
+    
 	private static Logger 
 		logger = Logger.getLogger( Operation_LESS_THAN.class ) ;
-		
-	
+        
 	// Template for the SQL LESS_THAN query   
 	public static final String
 		TEMPLATE = "( {0} < {1} )" ;

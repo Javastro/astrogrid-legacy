@@ -11,9 +11,12 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.*;
-import org.astrogrid.datacenter.i18n.*;
-import org.w3c.dom.* ;
+import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
+import org.astrogrid.i18n.AstroGridMessage;
+import org.astrogrid.Configurator;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * The <code>Criteria</code> class represents ...
@@ -37,6 +40,9 @@ public class Criteria {
 	
 	private static Logger 
 		logger = Logger.getLogger( Criteria.class ) ;
+
+    private final static String
+        SUBCOMPONENT_NAME = Configurator.getClassName( Criteria.class ) ;
 		
 	private static final String
 		ASTROGRIDERROR_COULD_NOT_CREATE_CRITERIA_ELEMENT = "AGDTCE00220",
@@ -73,8 +79,9 @@ public class Criteria {
 			
 		}
 		catch( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_CRITERIA_ELEMENT ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_CRITERIA_ELEMENT
+                                              , SUBCOMPONENT_NAME ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new QueryException( message, ex );    		
 		}

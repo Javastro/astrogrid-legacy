@@ -11,9 +11,13 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.*;
-import org.astrogrid.datacenter.i18n.*;
-import org.w3c.dom.* ;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.astrogrid.Configurator;
+import org.astrogrid.datacenter.DTC;
+import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
+import org.astrogrid.i18n.AstroGridMessage;
 
 import java.util.Iterator ;
 
@@ -37,6 +41,9 @@ public class OrderBy {
 	private static final boolean 
 		TRACE_ENABLED = true ;
 	
+	public final static String
+			SUBCOMPONENT_NAME = Configurator.getClassName( OrderBy.class ) ;
+			
 	private static Logger 
 		logger = Logger.getLogger( OrderBy.class ) ;
 		
@@ -76,8 +83,8 @@ public class OrderBy {
 			
 		}
 		catch( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_ORDERBY_FROM_ELEMENT ) ;
+			AstroGridMessage
+				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_ORDERBY_FROM_ELEMENT ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new QueryException( message, ex );    		
 		}
@@ -103,8 +110,8 @@ public class OrderBy {
 			}
 		
 			catch( Exception ex) {
-				Message
-					message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_ORDERBY ) ;
+				AstroGridMessage
+					message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_ORDERBY ) ;
 				logger.error( message.toString(), ex ) ;   		
 			}
 			finally {
@@ -145,7 +152,8 @@ public class OrderBy {
 					    .append( "." ) 
 					    .append( UCD ) ;
 					logger.debug( "Return: getColumnHeading(): key: "+buffer.toString().toUpperCase() );				
-					columnHeading = DatasetAgent.getProperty( buffer.toString().toUpperCase() ) ;					
+					columnHeading = DTC.getProperty( buffer.toString()
+												 , DTC.UCD_CATEGORY ) ;					
 				}
 				else {
 				
@@ -163,7 +171,8 @@ public class OrderBy {
 					        .append( "." )
 					        .append( UCD ) ;	
 					    logger.debug( "Return: getColumnHeading(): key: "+buffer.toString().toLowerCase().toUpperCase() ) ;
-					    columnHeading = DatasetAgent.getProperty( buffer.toString().toUpperCase() ) ;
+						columnHeading = DTC.getProperty( buffer.toString()
+													 , DTC.UCD_CATEGORY ) ;
 						if ( columnHeading.length() > 0 ) // break as soon as column heading found
 						    break; 
 						buffer.delete( 0,buffer.length() ) ;
@@ -173,8 +182,8 @@ public class OrderBy {
 			
 			} 
 			catch (Exception ex) {
-				Message
-					message = new Message( ASTROGRIDERROR_UNABLE_TO_MAP_CATALOG_UCD_TO_COLUMN_HEADING ) ;
+				AstroGridMessage
+					message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_MAP_CATALOG_UCD_TO_COLUMN_HEADING ) ;
 				logger.error( message.toString(), ex ) ;
 			}
 			finally {
