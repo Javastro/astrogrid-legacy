@@ -95,7 +95,7 @@
                  i2 = xml.indexOf("</", i1);
                  ivorn = xml.substring( i1+1, i2 );
                }
-               i2 = xml.indexOf("Table>");
+               i2 = xml.indexOf("<Table");
                table = "none found";
                if ( i2 != -1 ) {
                   i1 = xml.indexOf("Name>", i2);
