@@ -12,11 +12,13 @@
       <item name="Registry"       href="http://www.astrogrid.org/maven/build/registry/index.html"/>
       <item name="UI"             href="http://www.astrogrid.org/maven/build/ui/index.html"/>
       <item name="Job Management" href="http://www.astrogrid.org/maven/build/jes/index.html"/>
+      <item name="mySpace"        href="http://www.astrogrid.org/maven/build/mySpace/index.html"/>
     </menu>
     <menu name="Maven Build Logs">
       <item name="Registry"       href="http://www.astrogrid.org/maven/build/log/maven-build-registry.log"/>
       <item name="UI"             href="http://www.astrogrid.org/maven/build/log/maven-build-ui.log"/>
       <item name="Job Management" href="http://www.astrogrid.org/maven/build/log/maven-build-jes.log"/>
+      <item name="mySpace"        href="http://www.astrogrid.org/maven/build/log/maven-build-mySpace.log"/>
     </menu>
   </body>
 </project>
