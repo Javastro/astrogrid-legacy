@@ -96,18 +96,13 @@ function setParentIVORNAgsl(parent_ivorn, parent_agsl){
   parent_ivorn = parentDoc.getElementById(parent_ivorn);
   parent_agsl = parentDoc.getElementById(parent_agsl);
   
-  // TODO: comment out
-//  createIVORN();
-//  createAGSL();
-  // TODO: comment out
-  
   if(parent_ivorn) {
-    myspace_ivorn = createIVORN();
+    myspace_ivorn = document.getElementById('myspace-ivorn');
     parent_ivorn.value = myspace_ivorn.value;
   }
 
   if(parent_agsl) {
-    myspace_agsl = createAGSL();
+    myspace_agsl = document.getElementById('myspace-agsl');
     parent_agsl.value = myspace_agsl.value;
   }
 }
@@ -123,4 +118,106 @@ function submitParentForm(form_name, action) {
   }
   
   window.close();
+}
+
+function setNewIvorn() {
+ 	myspace_ivorn = document.getElementById('myspace-ivorn');
+
+ 	myspace_baseIvorn = document.getElementById('myspace-endpoint');
+ 	myspace_agsl = document.getElementById('myspace-agsl');
+	myspace_item = document.getElementById('myspace-item');
+  
+  myspace_ivorn.value =
+      newIvorn(
+               myspace_baseIvorn.value,
+               myspace_agsl.value,
+               myspace_item.value);
+}
+
+function newIvorn(baseIvorn, path, file) {
+  var errorMsg = null;
+  var result = '';
+  
+  if(!baseIvorn || baseIvorn.length == 0) {
+    if(errorMsg != null) {
+      errorMsg = errorMsg + '\n'
+    }
+    
+    errorMsg = 'No base IVORN.';
+  }
+
+  if(!path && path.length == 0) {
+    if(errorMsg != null) {
+      errorMsg = errorMsg + '\n'
+    }
+    
+    errorMsg = errorMsg + 'Invalid path'
+  }
+
+  if(!file && file.length == 0) {
+    if(errorMsg != null) {
+      errorMsg = errorMsg + '\n'
+    }
+    
+    errorMsg = errorMsg + 'No MySpace name supplied';
+  }
+  
+  if(errorMsg != null) {
+    alert(errorMsg);
+    result = '';
+  }
+  else {
+    result = baseIvorn + '#' + path;
+    if(result.charAt(result.length - 1) != '/') {
+      result = result + '/';
+    }
+    result = result + file;
+  }
+  
+  alert('new IVORN: ' + result);
+
+  return result;
+}
+
+function newAgsl(path, file) {
+  var errorMsg = null;
+  var result = '';
+
+  if(!path && path.length == 0) {
+    if(errorMsg != null) {
+      errorMsg = errorMsg + '\n'
+    }
+    
+    errorMsg = errorMsg + 'Invalid path'
+  }
+
+  if(errorMsg != null) {
+    alert(errorMsg);
+    result = '';
+  }
+  else {
+    result = path;
+    if(result.charAt(result.length - 1) != '/') {
+      result = result + '/';
+    }
+    result = result + file;
+  }
+  
+  alert('new agsl: ' + result);
+  
+  myspace_agsl = document.getElementById('myspace-agsl');
+  myspace_agsl.value = path;
+
+  myspace_item = document.getElementById('myspace-item');
+  myspace_item.value = file;
+
+  return result;
+}
+
+function setAgslParts(path, file) {
+	myspace_agsl = document.getElementById('myspace-agsl');
+	myspace_item = document.getElementById('myspace-item');
+
+  myspace_agsl.value = path;
+  myspace_item.value = file;
 }

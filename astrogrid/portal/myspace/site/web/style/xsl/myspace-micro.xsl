@@ -59,6 +59,7 @@
           
           <input type="button" value="OK">
             <xsl:attribute name="onclick">
+              setNewIvorn();
               setParentIVORNAgsl('<xsl:value-of select="$ivorn"/>', '<xsl:value-of select="$agsl"/>');
               submitParentForm('<xsl:value-of select="$form_name"/>', '<xsl:value-of select="$form_action"/>');
             </xsl:attribute>
@@ -78,7 +79,9 @@
 
   <xsl:template match="myspace-item[@type='folder']">
     <span class="trigger">
-      <xsl:attribute name="onclick">showBranch('<xsl:value-of select="@safe-name"/>');</xsl:attribute>
+      <xsl:attribute name="onclick">
+        showBranch('<xsl:value-of select="@safe-name"/>');
+      </xsl:attribute>
 
       <img src="/astrogrid-portal/icons/Folder.png" alt="toggle">
         <xsl:attribute name="id">I<xsl:value-of select="@safe-name"/></xsl:attribute>
@@ -87,7 +90,10 @@
     
     &#160;
     <span style="cursor:pointer;cursor:hand;">
-      <xsl:attribute name="onclick">setIVORNAgsl('', '<xsl:value-of select="@full-name"/>');</xsl:attribute>
+      <xsl:attribute name="onclick">
+        setIVORNAgsl('', '<xsl:value-of select="@full-name"/>');
+        newAgsl('<xsl:value-of select="@folder-path"/>', '');
+      </xsl:attribute>
       <xsl:value-of select="@item-name"/><br/>
     </span>
 
@@ -103,7 +109,10 @@
 
     &#160;
     <span class="document">
-      <xsl:attribute name="onclick">setIVORNAgsl('<xsl:value-of select="@ivorn"/>', '<xsl:value-of select="@full-name"/>');</xsl:attribute>
+      <xsl:attribute name="onclick">
+        setIVORNAgsl('<xsl:value-of select="@ivorn"/>', '<xsl:value-of select="@full-name"/>');
+        newAgsl('<xsl:value-of select="@folder-path"/>', '<xsl:value-of select="@item-name"/>');
+      </xsl:attribute>
       <xsl:value-of select="@item-name"/>
     </span>
     <br/>
