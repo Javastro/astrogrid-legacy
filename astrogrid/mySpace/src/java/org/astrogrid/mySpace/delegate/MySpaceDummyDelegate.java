@@ -3,15 +3,15 @@
  *
  */
 
-package org.astrogrid.mySpace.delegate.mySpaceManager;
+package org.astrogrid.mySpace.delegate;
+import org.astrogrid.mySpace.delegate.*;
 
 import java.io.*;
 
-import java.lang.UnsupportedOperationException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Vector;
+import org.astrogrid.mySpace.delegate.MySpaceManagerDelegate;
 //import org.astrogrid.log.Log;
 
 /**
@@ -24,13 +24,11 @@ import java.util.Vector;
  */
 
 
-public class MySpaceDummyDelegate extends MySpaceManagerDelegate
+public class MySpaceDummyDelegate implements MySpaceClient
 {
    private File dir = null;
+   String endPoint = null;
 
-   public static final String OVERWRITE = "Overwrite";
-   public static final String APPEND = "Append";
-   
    public static final String DUMMY = "http://Dummy.address/"; //use this URL to ask for a dummy delegate
 
    /**
@@ -64,7 +62,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
     */
    public MySpaceDummyDelegate(String givenEndPoint) {
 
-      super(givenEndPoint);
+      this.endPoint = givenEndPoint;
 
       //replace all ":"s and "/"s with "_"s,
       String dirName = givenEndPoint.replace(':', '_');
@@ -351,6 +349,10 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
       return true;
    }
 
+   /**
+    * URLs tend to have characters in them that don't work on file systems - so
+    * change these characters to safer ones
+    */
    protected String makeSafeFilename(String fileName)
    {
       //remove colons, spaces and slashes from filename
@@ -444,65 +446,99 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
 
 
    /**
-    * Don't know what this is supposed to do
-    * @param jobDetails: use mySpace/configFiles/MSManagerRequestTemplate.xml to create an xml String by filling in userID/communityID/jobID/serverFileName
+    * Create a new user on the current MSS.
+    *
+    * @param userId User identifier.
+    * @param servers Vector of server names on which containers will be
+    *   created for the user.
+    *
+    * @return boolean; true the user was created successfully.
+    * @throws Exception
+    */
+   public boolean createUser(String userId, String communityId, String credential, Vector servers) throws Exception {
+      throw new UnsupportedOperationException();
+   }
+   
+   /**
+    * Retrieve a copy of a dataHolder on a remote MSS and save it with a
+    * specified MySpace name on the current MSS.
+    *
+    * @param userId User identifier.
+    * @param communityId Community identifier.
+    * @param remoteMssUrl URL of the remote MSS.
+    * @param remoteMySpaceName MySpace name of the dataHolder to be
+    *   retrieved from the remote MSS.
+    * @param newMySpaceName MySpace name for the copy of the dataHolder on
+    *   the current MSS.
+    *
+    * @return boolean; true if the copy succeeded.
+    * @throws Exception
+    */
+   public boolean copyRemoteDataHolding(String userId, String communityId, String credential, String remoteMssUrl, String remoteMySpaceName, String newMySpaceName) throws Exception {
+      // TODO
+      return false;
+   }
+   
+   /**
+    * Retrieve the contents of a dataHolder and supply them as the String
+    * returned by the method.
+    *
+    * @param userId User identifier.
+    * @param communityId community identifier.
+    * @param  mySpaceName MySpace name of the dataHolder whose contents are
+    *   to be retrieved.
+    *
+    * @return: A String containing the contents of the specified dataHolder.
+    */
+   public String getDataHolding(String userId, String communityId, String credential, String mySpaceName) throws Exception {
+      // TODO
+      return null;
+   }
+   
+   /**
+    * Delete a user from the current MSS.
+    *
+    * @param userId User identifier.
+    *
+    * @return boolean; true is the user was deleted successfully.
+    * @throws Exception
+    */
+   public boolean deleteUser(String userId, String communityId, String credential) throws Exception {
+      throw new UnsupportedOperationException();
+   }
+   
+   /**
+    *
+    * @param dataHolderName: file working on
+    * @param newOwnerID: userId changing to
     * @return
     * @throws Exception
     */
-
-   public String publish(String jobDetails)  {
+   public String changeOwner(String userId, String communityId, String credential, String dataHolderName, String newOwnerID) throws Exception {
       throw new UnsupportedOperationException();
    }
-
+   
    /**
-    * What is a container?
-    * @param userid
-    * @param communityid
+    *
+    * @param userId
+    * @param communityId
     * @param newContainerName
     * @return
     */
-   public String createContainer(String userid, String communityid, String credentials, String newContainerName)
-   {
-      throw new UnsupportedOperationException();
+   public String createContainer(String userId, String communityId, String credential, String newContainerName) throws Exception {
+      // TODO
+      return null;
    }
-
+   
    /**
-    * @todo
     *
-    * @param userID: userid@communityid
-    * @param servers: server names user wants to create
+    * @param jobDetails: use mySpace/configFiles/MSManagerRequestTemplate.xml to create an xml String by filling in userId/communityId/jobID/serverFileName
     * @return
     * @throws Exception
     */
-   public boolean createUser(String userID, Vector servers)  {
-      throw new UnsupportedOperationException();
+   public String publish(String userId, String communityId, String credential, String mySpaceName) throws Exception {
+      // TODO
+      return null;
    }
-
-   /**
-    * @todo
-    *
-    * @param userID: userid@communityid
-    * @param servers: server names user wants to delete
-    * @return
-    * @throws Exception
-    */
-   //need to delete the second argument and rebuild the delegate supporting classes.
-
-   public boolean deleteUser(String userID)  {
-      throw new UnsupportedOperationException();
-   }
-
-   /**
-    * @todo
-    *
-    * @param dataHolderName: file working on
-    * @param newOwnerID: userID changing to
-    * @return
-    * @throws Exception
-    */
-   public String changeOwner(String userid, String communityid, String dataHolderName,String newOwnerID)
-   {
-      throw new UnsupportedOperationException();
-   }
-
+   
 }

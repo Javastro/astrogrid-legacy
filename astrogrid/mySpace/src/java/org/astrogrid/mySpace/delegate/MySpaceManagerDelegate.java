@@ -4,7 +4,7 @@
  * @author: CLQ
  */
 
-package org.astrogrid.mySpace.delegate.mySpaceManager;
+package org.astrogrid.mySpace.delegate;
 
 import java.io.*;
 import java.net.*;
@@ -14,7 +14,7 @@ import org.astrogrid.mySpace.delegate.helper.*;
 //
 // Note: Throughout this class the acronym `MSS' denotes a MySpace System.
 
-public class MySpaceManagerDelegate {
+public class MySpaceManagerDelegate implements MySpaceClient {
 
     private String mssUrl = " ";       // MSS the delegate is operating on.
     private Vector queryMssUrl = new Vector(); // Vector of MSSs to query.
@@ -47,7 +47,7 @@ public class MySpaceManagerDelegate {
         this.mssUrl = mssUrl;
         if (DEBUG) System.out.println("initializor: mssUrl: "+mssUrl);
         (this.queryMssUrl).add(mssUrl);
-    }    
+    }
     
 /**
  * Constructor with two arguments.  The first argument is the URL of the
@@ -109,11 +109,11 @@ public class MySpaceManagerDelegate {
             }
             else {
                 this.queryMssUrl = queryMssUrl;
-            } 
+            }
         }
         else {
             this.queryMssUrl = queryMssUrl;
-        } 
+        }
     }
 
 /**
@@ -138,20 +138,20 @@ public class MySpaceManagerDelegate {
         }
         
         try{
-        	if (DEBUG) System.out.println("before call getServerURLs");
+         if (DEBUG) System.out.println("before call getServerURLs");
            allMssUrls  = binding.getServerURLs();
            
-		   if (DEBUG) System.out.println("after call getServerURLs  "+allMssUrls.size());
-		   for (int i=0;i<allMssUrls.size(); i++)
-		   {
-		   	if (DEBUG) System.out.println("after... "+allMssUrls.elementAt(i));
-		   }
+         if (DEBUG) System.out.println("after call getServerURLs  "+allMssUrls.size());
+         for (int i=0;i<allMssUrls.size(); i++)
+         {
+            if (DEBUG) System.out.println("after... "+allMssUrls.elementAt(i));
+         }
         }catch(java.rmi.RemoteException re) {
            re.printStackTrace();
         }
 
         return allMssUrls;
-    }    
+    }
 
 //
 // --------------------------------------------------------------------------
@@ -191,19 +191,19 @@ public class MySpaceManagerDelegate {
                   userId, communityId, credential, query,
                   (String)queryMssUrl.elementAt(loop) );
                 MySpaceHelper helper = new MySpaceHelper();
-				if (DEBUG) System.out.println("currentResponse from internalDataHoldings: "+currentResponse);
+            if (DEBUG) System.out.println("currentResponse from internalDataHoldings: "+currentResponse);
                 Vector currentList  = helper.getList(currentResponse, "dataItemName");
-				if (DEBUG){ 
-					if (DEBUG) System.out.println("size: "+currentList.size()); 
-					for (int j=0;j<currentList.size();j++){
-						if (DEBUG) System.out.println(" currentlist: "+currentList.elementAt(j));
-					}
-				}
+            if (DEBUG){
+               if (DEBUG) System.out.println("size: "+currentList.size());
+               for (int j=0;j<currentList.size();j++){
+                  if (DEBUG) System.out.println(" currentlist: "+currentList.elementAt(j));
+               }
+            }
                 returnList.add(currentList);
                 if (DEBUG){
-                	for (int i=0;i<returnList.size();i++){
-                		if (DEBUG) System.out.println("returnList from delegate: "+returnList.elementAt(i));
-                	}
+                  for (int i=0;i<returnList.size();i++){
+                     if (DEBUG) System.out.println("returnList from delegate: "+returnList.elementAt(i));
+                  }
                 }
             }
            
@@ -212,7 +212,7 @@ public class MySpaceManagerDelegate {
         }
 
         return returnList;
-    }        
+    }
 
 //
 // --------------------------------------------------------------------------
@@ -237,14 +237,14 @@ public class MySpaceManagerDelegate {
 
     public Vector listDataHoldingsGen(String userId, String communityId, String credential,
       String query)throws Exception {
-      	if (DEBUG) System.out.println("xxxxxxxxxxxxxxxxx");
+         if (DEBUG) System.out.println("xxxxxxxxxxxxxxxxx");
         Vector returnList = new Vector();
         this.setQueryMssUrl(this.getAllMssUrl());
         //query = "/" +userId+"@"+communityId+"/"+"*";
         try {
             for (int loop = 0; loop<queryMssUrl.size(); loop++) {
-            	
-				if (DEBUG) System.out.println("before call internalDataHoldings "+ userId +"  :"+communityId +"  query: "+query);
+               
+            if (DEBUG) System.out.println("before call internalDataHoldings "+ userId +"  :"+communityId +"  query: "+query);
                 String currentResponse = this.internalDataHoldings(
                   userId, communityId, credential, query,
                   (String)queryMssUrl.elementAt(loop) );
@@ -258,18 +258,18 @@ public class MySpaceManagerDelegate {
         }
 
         return returnList;
-    }    
+    }
     
     public String lookupDataHoldersDetails(String jobDetails){
-    	
-    	return "";    
+      
+      return "";
     }
 
 //
 // --------------------------------------------------------------------------
 
     /**
-     * 
+     *
      * @param userId
      * @param communityId
      * @param serverFileName: full file name eg: /clq/serv1/File1.xml
@@ -295,7 +295,7 @@ public class MySpaceManagerDelegate {
                     re.printStackTrace();
         }
         return (String)value;
-    }    
+    }
    
 //
 // --------------------------------------------------------------------------
@@ -326,7 +326,7 @@ public class MySpaceManagerDelegate {
         re.printStackTrace();
     }
         return (String)value;
-    }    
+    }
     
 //
 // --------------------------------------------------------------------------
@@ -334,7 +334,7 @@ public class MySpaceManagerDelegate {
 /**
  * Retrieve a copy of a dataHolder on a remote MSS and save it with a
  * specified MySpace name on the current MSS.
- * 
+ *
  * @param userId User identifier.
  * @param communityId Community identifier.
  * @param remoteMssUrl URL of the remote MSS.
@@ -426,14 +426,14 @@ public class MySpaceManagerDelegate {
 // --------------------------------------------------------------------------
 
     /**
-     * 
+     *
      * @param userId
      * @param communityId
      * @param serverFileName: ole file full name
      * @param newDataItemName: new file full name
      * @return
      * @throws Exception
-     */    
+     */
  
     public String renameDataHolding(String userId, String communityId, String credential, String serverFileName, String newDataItemName) throws Exception {
         org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
@@ -454,13 +454,13 @@ public class MySpaceManagerDelegate {
                     re.printStackTrace();
         }
         return (String)value;
-    }    
+    }
     
 //
 // --------------------------------------------------------------------------
 
     /**
-     * 
+     *
      * @param userId
      * @param communityId
      * @param serverFileName: Full file name which you want to delete
@@ -486,7 +486,7 @@ public class MySpaceManagerDelegate {
                 re.printStackTrace();
             }
         return (String)value;
-    }    
+    }
     
 //
 // --------------------------------------------------------------------------
@@ -501,7 +501,7 @@ public class MySpaceManagerDelegate {
     * @return: boolean true if file successfully stored in MySapce false otherwise.
     */
     
-    public boolean saveDataHolding(String userId, String communityId, String credential, String fileName, String fileContent, 
+    public boolean saveDataHolding(String userId, String communityId, String credential, String fileName, String fileContent,
                                    String category, String action) throws Exception {
         org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
         boolean isSaved = false;
@@ -532,7 +532,7 @@ public class MySpaceManagerDelegate {
 // --------------------------------------------------------------------------
 
     /**
-     * saveDataHoldingURL is different from saveDataHolding since it is taking a URL where MySpace will pull the file from. 
+     * saveDataHoldingURL is different from saveDataHolding since it is taking a URL where MySpace will pull the file from.
      * @param userId
      * @param communityId
      * @param fileName
@@ -543,7 +543,7 @@ public class MySpaceManagerDelegate {
      * @throws Exception
      */
     
-    public boolean saveDataHoldingURL(String userId, String communityId, String credential, String fileName, String importURL, 
+    public boolean saveDataHoldingURL(String userId, String communityId, String credential, String fileName, String importURL,
                                    String category, String action) throws Exception {
         org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
         boolean isSaved = false;
@@ -628,7 +628,7 @@ public class MySpaceManagerDelegate {
         }
          // if (DEBUG) System.out.println("  YYYYYYYYYYYY content: "+contents);
         return contents;
-    }        
+    }
 
 //
 // --------------------------------------------------------------------------
@@ -666,10 +666,10 @@ public class MySpaceManagerDelegate {
 // --------------------------------------------------------------------------
 
     /**
-     * 
+     *
      * @param userId
      * @param communityId
-     * @param serverFileName: full file name 
+     * @param serverFileName: full file name
      * @param extentionPeriod: number of days you would like to extend this item
      * @return
      * @throws Exception
@@ -691,20 +691,20 @@ public class MySpaceManagerDelegate {
             value = binding.extendLease(jobDetails);
         }catch(java.rmi.RemoteException re) {
                 re.printStackTrace();
-        }        
+        }
         return (String)value;
-    }        
+    }
 
     
     
     /**
-     * 
+     *
      * @param jobDetails: use mySpace/configFiles/MSManagerRequestTemplate.xml to create an xml String by filling in userId/communityId/jobID/serverFileName
      * @return
      * @throws Exception
      */
     
-    public String publish(String userId, String communityId, 
+    public String publish(String userId, String communityId,
       String credential, String mySpaceName) throws Exception {
         org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
         try {
@@ -729,13 +729,13 @@ public class MySpaceManagerDelegate {
                     re.printStackTrace();
         }
         return (String)value;
-    }        
+    }
     
 //
 // --------------------------------------------------------------------------
 
     /**
-     * 
+     *
      * @param userId
      * @param communityId
      * @param newContainerName
@@ -760,14 +760,14 @@ public class MySpaceManagerDelegate {
                 re.printStackTrace();
             }
         return (String)value;
-    }            
+    }
     
 //
 // --------------------------------------------------------------------------
 
 /**
  * Create a new user on the current MSS.
- * 
+ *
  * @param userId User identifier.
  * @param servers Vector of server names on which containers will be
  *   created for the user.
@@ -794,7 +794,7 @@ public class MySpaceManagerDelegate {
                 re.printStackTrace();
             }
         return isUserCreated;
-    }    
+    }
     
 //
 // --------------------------------------------------------------------------
@@ -827,13 +827,13 @@ public class MySpaceManagerDelegate {
                 re.printStackTrace();
             }
         return isUserDeleted;
-    }        
+    }
     
 //
 // --------------------------------------------------------------------------
 
     /**
-     * 
+     *
      * @param dataHolderName: file working on
      * @param newOwnerID: userId changing to
      * @return
@@ -850,14 +850,14 @@ public class MySpaceManagerDelegate {
                 jre.getLinkedCause().printStackTrace();
         }
         try{
-            //FixME to MSManager to match these set of argument!        
+            //FixME to MSManager to match these set of argument!
             value = binding.changeOwner(userId, communityId, dataHolderName, newOwnerID);
             //value = binding.changeOwner(userId,communityId, dataHolderName, newOwnerID);
         }catch(java.rmi.RemoteException re) {
         re.printStackTrace();
     }
         return (String)value;
-    }        
+    }
 
 //
 // ==========================================================================
@@ -883,12 +883,12 @@ public class MySpaceManagerDelegate {
             String jobDetails = helper.buildListDataHoldings(userId, communityId, credential, criteria);
             response = binding.lookupDataHoldersDetails(jobDetails);
             
-        }   
+        }
         catch(java.rmi.RemoteException re) {
             re.printStackTrace();
         }
         return response;
-    }        
+    }
 
 //
 // -------------------------------------------------------------------
