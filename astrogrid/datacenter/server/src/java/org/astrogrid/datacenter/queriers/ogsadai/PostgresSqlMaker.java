@@ -34,9 +34,13 @@ public class PostgresSqlMaker extends StdSqlMaker {
 	
       try {
         Element queryBody = query.toDom().getDocumentElement();
-        Node node = queryBody.getFirstChild(); 
+        String rootName = query.toDom().getDocumentElement().getNodeName();
+        if (!(rootName.equals("Select"))){
+        	return "Not valid ADQL: root element must be 'Select'.";
+        }
+        //Node node = queryBody.getFirstChild(); 
         
-		String rootName = queryBody.getNodeName(); 
+		//String rootName = queryBody.getNodeName(); 
 		Select selectQuery = (Select)Unmarshaller.unmarshal(Select.class, queryBody); 
 		
 
@@ -58,6 +62,9 @@ public class PostgresSqlMaker extends StdSqlMaker {
 
 /*
 $Log: PostgresSqlMaker.java,v $
+Revision 1.8  2004/04/15 17:05:09  eca
+Added very basic ADQL error handling; checks for root element "Select".
+
 Revision 1.7  2004/04/02 03:12:12  eca
 PostgresSqlMaker now unmarshalls the adql query as a node, using
 ADQLUtils.Unmarshall rather than org.astrogrid.datacenter.adql.generated.Select Unmarshall.
