@@ -1,4 +1,4 @@
-/*$Id: ServicesTest.java,v 1.1 2004/01/28 17:19:58 nw Exp $
+/*$Id: ServicesTest.java,v 1.2 2004/08/09 09:12:17 nw Exp $
  * Created on 28-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,19 +46,31 @@ public class ServicesTest extends TestCase {
       List l = s.getAllServices();
       System.out.println(l);
       assertNotNull(l);
-      assertTrue(l.size() > 0);
+      assertEquals(4,l.size());
       Object o = l.get(0);
       assertNotNull(o);
       assertTrue(o instanceof Service);
       Service serv = (Service)o;
       assertNotNull(serv.getType());
-      assertNotNull(serv.getEndpoint());      
+      assertNotNull(serv.getEndpoint());   
+      
+      // more detauled now.
+      
+      assertEquals(1,s.getApplications().size());
+      assertEquals(3,s.getDatacenters().size());
+   }
+   
+   public void testStandardMethods() {
+       System.out.println(s);
    }
 }
 
 
 /* 
 $Log: ServicesTest.java,v $
+Revision 1.2  2004/08/09 09:12:17  nw
+made testing a little more thorough
+
 Revision 1.1  2004/01/28 17:19:58  nw
 first check in of scripting project
  
