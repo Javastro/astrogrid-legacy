@@ -1,5 +1,5 @@
 /*
- * $Id: DummyQueryResults.java,v 1.1 2003/08/26 16:41:46 mch Exp $
+ * $Id: DummyQueryResults.java,v 1.2 2003/08/28 00:00:07 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.net.URL;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
@@ -58,9 +59,7 @@ public class DummyQueryResults implements QueryResults
    {
       try
       {
-         DocumentBuilderFactory  factory = DocumentBuilderFactory.newInstance();
-         DocumentBuilder builder = factory.newDocumentBuilder();
-         return builder.parse(new InputSource( getInputStream() ));
+         return XMLUtils.newDocument(getInputStream());
       }
       catch (org.xml.sax.SAXException se)
       {
