@@ -64,6 +64,76 @@ function myspace_upload_url() {
   }
 }
 
+var micro_browswer;
+var micro_browswer_tid;
+var myspace_action_value;
+
+var selectedEl;
+var destEl;
+
+function myspace_browse_fill(selectedId, destId, funcName, actionValue) {
+  // If selected item?
+  selectedEl = document.getElementById(selectedId)
+  if(selectedEl) {
+    destEl = document.getElementById(destId);
+    if(destEl) {
+      // Clear agsl field
+      destEl.value = '';
+      
+      // Store action value.
+      if(actionValue) {
+        myspace_action_value = actionValue;
+      }
+      
+      // Get agsl (micro)
+      if(funcName) {
+        micro_browser = window.open("/astrogrid-portal/lean/mount/myspace/myspace-micro?parent_func=" + funcName + "()&agsl=" + destId, "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200");
+      }
+      else {
+        micro_browser = window.open("/astrogrid-portal/lean/mount/myspace/myspace-micro?agsl=" + destId, "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200");
+      }
+
+      // Focus micro browser and maintain focus on it.
+      window.blur();
+      micro_browser.focus();
+      micro_browswer_tid = window.setTimeout("micro_focus()", 1);
+    }
+    else {
+      alert('Destination Does not Exist');
+    }
+  }
+  else {
+    alert('No Item Selected');
+  }
+}
+
+function micro_focus() {
+  if(micro_browser) {
+    window.blur();
+    micro_browser.focus();
+    
+    micro_browswer_tid = window.setTimeout("micro_focus()", 1);
+  }
+}
+
+function myspace_return_common() {
+  window.focus();
+  window.clearTimeout(micro_browswer_tid);
+}
+
+function myspace_generic_return() {
+  myspace_return_common();
+  
+  // If valid src and dest
+  if(selectedEl.value && selectedEl.value.length > 0 && 
+     destEl.value && destEl.value.length > 0) {
+    myspace_submit_form('myspace-explorer-form', 'myspace-action', myspace_action_value);
+  }
+  else {
+    alert('Operation Cancelled');
+  }
+}
+
 function myspace_submit_form(formId, actionId, actionValue) {
   formEl = document.getElementById(formId);
   if(formEl) {

@@ -17,6 +17,8 @@
   <xsl:param name="field_name" select="field_name"/>
   <xsl:param name="field_value" select="field_value"/>
 
+  <xsl:param name="parent_func"/>
+
   <xsl:template match="/">      
 	  <ag-div>	      
 	    <!-- Add our page content -->
@@ -68,6 +70,7 @@
               setParentIVORNAgsl('<xsl:value-of select="$ivorn"/>', '<xsl:value-of select="$agsl"/>');
               setParentHiddenField('<xsl:value-of select="$field_name"/>', '<xsl:value-of select="$field_value"/>');
               submitParentForm('<xsl:value-of select="$form_name"/>', '<xsl:value-of select="$form_action"/>');
+              callParentFunction('<xsl:value-of select="$parent_func"/>');
             </xsl:attribute>
           </input>
 

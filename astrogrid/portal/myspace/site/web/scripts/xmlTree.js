@@ -273,3 +273,12 @@ function setHighlight(fieldId, newClass) {
     fieldEl.className = newClass;
   }
 }
+
+function callParentFunction(parent_func) {
+  parent = window.opener;
+  
+  if(parent && parent_func && parent_func.length > 0) {
+    parent_func_expr = "parent." + parent_func;
+    eval(parent_func_expr);
+  } 
+}

@@ -19,8 +19,10 @@
 
       <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/xmlTree.css"/>
       <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/myspace.css"/>
-      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js"/>
+      
       <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/myspace.js"/>
+
+      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js"/>
       
       	<ag-menu name="myspace-menu"/>
 	
@@ -57,7 +59,7 @@
               <tr>
                 <td colspan="3"><hr class="agbar"/></td>
               </tr>
-<!-- un comment it for the Source box to show -->
+<!--
               <tr>
                 <td>Source:</td>
                 <td style="width:100%"></td>
@@ -68,16 +70,16 @@
                 <td style="width:100%"><input name="myspace-dest" id="myspace-dest" type="text" style="width:100%"/></td>
                 <td>&#160;</td>
               </tr>
-
+-->
               <tr>
                 <td>Upload File:</td>
                 <td style="width:100%"><input name="myspace-file" id="myspace-file" type="file" style="width:100%"/></td>
-                <td><input type="button" value="Upload" onclick="javascript:void(myspace_submit_form('myspace-explorer-form', 'myspace-action', 'myspace-upload'));"/></td>
+                <td><input type="button" value="Upload" onclick="javascript:void(myspace_browse_fill('myspace-src', 'myspace-dest', 'myspace_generic_return', 'myspace-upload'));"/></td>
               </tr>
               <tr>
                 <td>Upload URL:</td>
                 <td style="width:100%"><input name="myspace-url" id="myspace-url" type="text" style="width:100%"/></td>
-                <td><input type="button" value="Upload" onclick="javascript:void(myspace_submit_form('myspace-explorer-form', 'myspace-action', 'myspace-upload-url'));"/></td>
+                <td><input type="button" value="Upload" onclick="javascript:void(myspace_browse_fill('myspace-src', 'myspace-dest', 'myspace_generic_return', 'myspace-upload-url'));"/></td>
               </tr>
               <tr>
                 <td colspan="3"><hr class="agbar"/></td>
@@ -102,12 +104,13 @@
         <xsl:attribute name="id">I<xsl:value-of select="@safe-name"/></xsl:attribute>
       </img>
     </span>
-    
+
     <span style="cursor:pointer;cursor:hand;">
       <xsl:attribute name="onclick">setNewMySpaceName('<xsl:value-of select="@full-name"/>');</xsl:attribute>
+<!--    
       <img src="/astrogrid-portal/icons/FolderIn.png" alt="[dest]"/>
+-->
     </span>
-
     &#160;
     <span class="folder" style="cursor:pointer;cursor:hand;">
       <xsl:attribute name="onclick">setOldMySpaceName('<xsl:value-of select="@full-name"/>');</xsl:attribute>
@@ -122,11 +125,13 @@
   </xsl:template>
 
   <xsl:template match="myspace-item">
-    <img src="/astrogrid-portal/icons/Document.png" alt="doc"/>
 
     <span style="cursor:pointer;cursor:hand;">
       <xsl:attribute name="onclick">setNewMySpaceName('<xsl:value-of select="@full-name"/>');</xsl:attribute>
+      <img src="/astrogrid-portal/icons/Document.png" alt="doc"/>
+<!--
       <img src="/astrogrid-portal/icons/DocumentIn.png" alt="[dest]"/>
+-->
     </span>
 
     &#160;

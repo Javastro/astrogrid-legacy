@@ -11,7 +11,7 @@
     <agp:item
         contents="New Container"
         contents-hover="New Container"
-        uri='javascript:void(myspace_submit_form("myspace-explorer-form", "myspace-action", "myspace-new-container"));'
+        uri='javascript:void(myspace_browse_fill("myspace-src", "myspace-dest", "myspace_generic_return", "myspace-new-container"));'
         target="_self"
         status-text="Create a new container"/>
     <agp:item
@@ -23,7 +23,7 @@
     <agp:item
         contents="Rename"
         contents-hover="Rename"
-        uri='javascript:void(myspace_submit_form("myspace-explorer-form", "myspace-action", "myspace-move"));'
+        uri='javascript:void(myspace_browse_fill("myspace-src", "myspace-dest", "myspace_generic_return", "myspace-move"));'
         target="_self"
         status-text="Rename a MySpace Item"/>
     <agp:item
@@ -56,14 +56,14 @@
     <agp:item
         contents="Paste"
         contents-hover="Paste"
-        uri='javascript:void(myspace_clipboard_paste("myspace-src", "myspace-clipboard-copy", "myspace-dest"));'
+        uri='javascript:void(myspace_browse_fill("myspace-clipboard", "myspace-dest", "myspace_generic_return", "myspace-copy"));'
         target="_self"
         status-text="Paste stored MySpace item into a new location"/>
 
     <agp:item
         contents="Move"
         contents-hover="Move"
-        uri='javascript:void(myspace_clipboard_move("myspace-src", "myspace-clipboard-copy", "myspace-dest"));'
+        uri='javascript:void(myspace_browse_fill("myspace-clipboard", "myspace-dest", "myspace_generic_return", "myspace-move"));'
         target="_self"
         status-text="Move stored MySpace item into a new location"/>
     </agp:menu>
