@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.20 2003/09/25 01:24:50 nw Exp $
+ * $Id: SqlQuerier.java,v 1.21 2003/09/26 11:00:15 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -298,7 +298,8 @@ protected Connection createConnection() throws DatabaseAccessException {
    /* (non-Javadoc)
     * @see org.astrogrid.datacenter.queriers.DatabaseQuerier#close()
     */
-   public void close() throws DatabaseAccessException {
+   public void close() throws IOException, DatabaseAccessException {
+       super.close();
       try {
           if (jdbcConnection != null) {
             jdbcConnection.close();
