@@ -31,6 +31,7 @@ public class SexAscii2Vot
    /**
     * Converter - takes given streams and converts from the asciiIn to the
     * votOut.  NB Needs checking...
+    * @todo assumes J2000
     */
    public static void convert(AsciiInputStream asciiIn, VotOutputStream votOut, AceParameterBundle aBundle) throws IOException
    {
