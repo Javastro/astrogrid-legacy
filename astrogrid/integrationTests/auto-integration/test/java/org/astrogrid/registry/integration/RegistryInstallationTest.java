@@ -1,4 +1,4 @@
-/*$Id: RegistryInstallationTest.java,v 1.2 2004/04/22 08:59:07 nw Exp $
+/*$Id: RegistryInstallationTest.java,v 1.3 2004/05/07 10:23:38 pah Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.registry.integration;
 
+import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.scripting.Astrogrid;
 import org.astrogrid.scripting.Service;
@@ -17,6 +18,7 @@ import org.astrogrid.scripting.Service;
 import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
 
+import java.util.HashMap;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -55,12 +57,22 @@ public class RegistryInstallationTest extends TestCase {
         assertNotNull(doc);
         XMLUtils.PrettyDocumentToStream(doc,System.out);
     }
+    
+    public void testAuthority() throws RegistryException
+    {
+       HashMap auth = delegate.managedAuthorities();
+       assertNotNull(auth);
+       assertTrue("There are no managed authorities", !auth.isEmpty());
+    }
 
 }
 
 
 /* 
 $Log: RegistryInstallationTest.java,v $
+Revision 1.3  2004/05/07 10:23:38  pah
+added managed authorities test
+
 Revision 1.2  2004/04/22 08:59:07  nw
 tweaked
 
