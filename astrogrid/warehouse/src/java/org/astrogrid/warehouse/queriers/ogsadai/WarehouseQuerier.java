@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.12 2003/12/15 15:45:35 kea Exp $
+ * $Id: WarehouseQuerier.java,v 1.13 2004/01/08 20:00:42 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -147,7 +147,8 @@ public class WarehouseQuerier extends Querier
     String sql;
     AdqlQueryTranslator translator = new AdqlQueryTranslator();
     try {
-      sql = (String) translator.translate(getQueryingElement());
+      sql = escapeXmlSpecialChars(
+              (String) translator.translate(getQueryingElement()));
       log.info("SQL query is " + sql);
     }
     catch (Exception e) {
@@ -452,6 +453,27 @@ public class WarehouseQuerier extends Querier
     return jarPath + jarName;
   }
 
+  //A minimal set 
+  protected String escapeXmlSpecialChars(String inString) {        
+    String outString = "";
+    for (int i = 0; i < inString.length(); i++) {
+      char c = inString.charAt(i);
+      if (c == '<') {
+        outString = outString + "&lt;";
+      } 
+      else if (c == '>') {
+        outString = outString + "&gt;";
+      } 
+      else if (c == '&') {
+        outString = outString + "&amp;";
+      } 
+      else {
+        outString = outString + c;
+      }
+    }
+    return outString;
+  }
+
   // ----------------------------------------------------------
   // Fallback defaults for values that should be configured on a
   // per-installation basis in the WarehouseServiceImpl.properties 
@@ -469,6 +491,10 @@ public class WarehouseQuerier extends Querier
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.13  2004/01/08 20:00:42  kea
+Added XML special char escaping to sql strings returned by datacenter
+ADQL->SQL conversion (otherwise OGSA-DAI perform docs get broken).
+
 Revision 1.12  2003/12/15 15:45:35  kea
 Correcting misleading error message.
 
