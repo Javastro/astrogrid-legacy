@@ -41,14 +41,20 @@
   <!-- Generate WSDL for the service starting from a Java class defining the
         interface to a web-service port. -->
   <target name="generateWSDL">
+    <path id="classpath">
+      <pathelement location="target/classes"/>
+      <path refid="maven.dependency.classpath"/>
+    </path>
      <echo message="Generating ${wsdl.file} from ${service.java.package}.${port.interface.java.class}..."/>
      <mkdir dir="target/classes"/>
      <javac srcdir="src/java" 
-            destdir="target/classes">
+            destdir="target/classes"
+            classpathref="classpath">
         <include name="**/${port.interface.java.class}.java" />
      </javac>
      <mkdir dir="target/${wsdl.directory}"/>
-     <java classname="${java2wsdl.tool}" dir="./target/classes" fork="yes">
+     <java classname="${java2wsdl.tool}" dir="./target/classes" fork="yes"
+            classpathref="classpath">
         <arg value="-S"/>  
         <arg value="${service.name}"/>  
         <arg value="-l"/>  
@@ -64,9 +70,14 @@
   <!-- Generate Java classes, as source code, for the client
         and the service, based on the WSDL file. -->
   <target name="generateStubs" depends="generateWSDL">
+    <path id="classpath">
+      <pathelement location="target/classes"/>
+      <path refid="maven.dependency.classpath"/>
+    </path>
      <echo message="Generating stubs from ${wsdl.path} ..." />
      <mkdir dir="target/src/java"/>
-     <java classname="${wsdl.tool}" dir="." fork="yes">
+     <java classname="${wsdl.tool}" dir="." fork="yes"
+            classpathref="classpath">
         <arg value="-o"/>  
         <arg value="target/src/java"/>  
         <arg value="${wsdl.path}"/>
