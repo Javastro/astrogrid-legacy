@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/castor/hsqldb/Attic/mapping.xml,v $</cvs:source>
     | <cvs:author>$Author: KevinBenson $</cvs:author>
-    | <cvs:date>$Date: 2003/09/09 16:42:48 $</cvs:date>
-    | <cvs:version>$Revision: 1.10 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/09 19:20:20 $</cvs:date>
+    | <cvs:version>$Revision: 1.11 $</cvs:version>
     | <cvs:log>
     |   $Log: mapping.xml,v $
+    |   Revision 1.11  2003/09/09 19:20:20  KevinBenson
+    |   added resources to the mapping file
+    |
     |   Revision 1.10  2003/09/09 16:42:48  KevinBenson
     |   added password field
     |
@@ -83,6 +86,20 @@
 			<bind-xml node="element"/>
 		</field>
 	</class>
+	
+	<!-- JDO and XML Mapping for Accounts -->
+	<class name="org.astrogrid.community.policy.data.ResourceData" identity="ident">
+		<map-to table="resources" xml="resource"/>
+		<field name="ident" type="string">
+			<sql name="ident" type="char"/>
+			<bind-xml node="attribute"/>
+		</field>
+		<field name="description" type="string">
+			<sql name="description" type="char"/>
+			<bind-xml node="element"/>
+		</field>
+	</class>
+	
 	
 	<!-- JDO and XML Mapping for Groups -->
 	<class name="org.astrogrid.community.policy.data.GroupData" identity="ident">
