@@ -1,5 +1,5 @@
 /**
- * $Id: Workspace.java,v 1.2 2003/12/16 11:30:30 mch Exp $
+ * $Id: Workspace.java,v 1.3 2003/12/16 12:16:06 mch Exp $
  */
 
 package org.astrogrid.util;
@@ -124,10 +124,10 @@ public class Workspace
       if (!PERSIST) { empty(); }
 
       //attempt at threadsafetying but haven't thought about it properly - MCH
-//      File tempFile = workspaceFile;
-//      workspaceFile = null;
+      File tempFile = workspaceFile;
+      workspaceFile = null;
 
-//      if (!PERSIST) { tempFile.delete(); }
+      if (!PERSIST) { tempFile.delete(); }
    }
 
    /** Returns true if the workspace has been closed down - ie should not
