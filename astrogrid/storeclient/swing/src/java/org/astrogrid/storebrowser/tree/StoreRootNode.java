@@ -1,5 +1,5 @@
 /*
- * $Id: StoreRootNode.java,v 1.4 2005/03/31 19:25:39 mch Exp $
+ * $Id: StoreRootNode.java,v 1.5 2005/04/01 01:54:56 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -14,7 +14,7 @@ import java.net.URISyntaxException;
 import java.security.Principal;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
+import org.astrogrid.storebrowser.swing.ChildrenLoader;
 import org.astrogrid.storeclient.StoreFileResolver;
 
 /**
@@ -52,10 +52,12 @@ public class StoreRootNode extends StoreFileNode {
    }
    
    /** Thread that connects and loads first children */
-   public class InitialConnector extends StoreFileNode.ChildrenLoader {
+   public class InitialConnector implements Runnable {
+      
+      StoreFileNode node = null;
       
       public InitialConnector(StoreRootNode givenNode) {
-         super(givenNode);
+         node = givenNode;
       }
       
       public void run() {
@@ -69,7 +71,6 @@ public class StoreRootNode extends StoreFileNode {
             setError(e+" resolving storefile at "+uri, e);
          }
          SwingUtilities.invokeLater(new NodeChanger(node, node.model));
-         super.run();
       }
    }
    

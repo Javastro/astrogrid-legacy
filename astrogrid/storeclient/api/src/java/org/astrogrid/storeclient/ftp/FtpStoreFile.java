@@ -1,5 +1,5 @@
 /*
- $Id: FtpStoreFile.java,v 1.1 2005/03/31 19:25:39 mch Exp $
+ $Id: FtpStoreFile.java,v 1.2 2005/04/01 01:54:56 mch Exp $
 
  (c) Copyright...
  */
@@ -235,7 +235,7 @@ public class FtpStoreFile implements FileNode {
    }
    
    /** Lists children files if this is a container - returns null otherwise */
-   public FileNode[] listFiles() throws IOException {
+   public synchronized FileNode[] listFiles() throws IOException {
       if ( (children == null) && isFolder()) {
 
          if (!path.endsWith("/")) {

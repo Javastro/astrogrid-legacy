@@ -1,5 +1,5 @@
 /*
- * $Id: FileNode.java,v 1.1 2005/03/31 19:25:39 mch Exp $
+ * $Id: FileNode.java,v 1.2 2005/04/01 01:54:56 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -69,7 +69,10 @@ public interface FileNode  {
     * created */
    public boolean exists() throws IOException;
    
-   /** Lists children files if this is a container - returns null otherwise */
+   /** Lists children files if this is a container - returns null otherwise. NB it
+    * is worth making this synchronized in implementations so that you don't get
+    * two threads making simultaneous requests of the server - one request is made
+    * then the other picks up any cache */
    public FileNode[] listFiles() throws IOException;
    
    /** Returns the path to this file on the server, including the filename */

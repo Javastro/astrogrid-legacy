@@ -1,5 +1,5 @@
 /*
- * $Id: StoreBrowser.java,v 1.7 2005/03/31 19:25:39 mch Exp $
+ * $Id: StoreBrowser.java,v 1.8 2005/04/01 01:54:56 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -26,7 +26,10 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.account.IvoAccount;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.file.FileNode;
+import org.astrogrid.file.LocalFile;
 import org.astrogrid.io.Piper;
+import org.astrogrid.io.piper.StreamPiper;
 import org.astrogrid.slinger.Slinger;
 import org.astrogrid.slinger.mime.MimeFileExts;
 import org.astrogrid.slinger.mime.MimeTypes;
@@ -39,7 +42,6 @@ import org.astrogrid.storebrowser.folderlist.DirectoryView;
 import org.astrogrid.storebrowser.tree.StoreFileNode;
 import org.astrogrid.storebrowser.tree.StoreTreeView;
 import org.astrogrid.storebrowser.tree.StoresList;
-import org.astrogrid.file.FileNode;
 import org.astrogrid.ui.EscEnterListener;
 import org.astrogrid.ui.IconButtonHelper;
 import org.astrogrid.ui.JHistoryComboBox;
@@ -262,14 +264,14 @@ public class StoreBrowser extends JDialog
             }
          }
          else {
-            directoryView = null; //there is no directory view
+            directoryView = null; //there is no directory view so set to null so we know not to look in it for selected files
             
             //show file contents if possible
             if (f.getMimeType() == null) {
                contentPanel.getViewport().setView(null);
             }
             else {
-               if (f.getMimeType().equals(MimeTypes.PLAINTEXT)) {
+               if ((f.getMimeType().equals(MimeTypes.PLAINTEXT)) || (f.getMimeType().equals(MimeTypes.VOTABLE)) || (f.getMimeType().equals(MimeTypes.WORKFLOW)) || (f.getMimeType().equals(MimeTypes.ADQL))) {
                   JTextArea textDisplay = new JTextArea();
                   contentPanel.getViewport().setView(textDisplay);
                   try {
@@ -320,10 +322,10 @@ public class StoreBrowser extends JDialog
    public void downloadSelectedToDisk()
    {
       //get selected store path
-      FileNode file = getSelectedFile();
+      FileNode source = getSelectedFile();
       
       //check a path (not just a folder) selected
-      if ((file == null) || (file.isFolder())) {
+      if ((source == null) || (source.isFolder())) {
          JOptionPane.showMessageDialog(this, "Select file to get");
          return;
       }
@@ -333,17 +335,29 @@ public class StoreBrowser extends JDialog
       
       if (response == chooser.APPROVE_OPTION) {
          
-         File target   = chooser.getSelectedFile();
-         try {
-            Piper.bufferedPipe(file.openInputStream(), new FileOutputStream(target));
-         }
-         catch (IOException e) {
-            log.error("Failed to copy/download file from '"+file+"' to '"+target+"'",e);
-            JOptionPane.showMessageDialog(this, "Failed to download '"+target+"': "+e, "MySpace Browser", JOptionPane.ERROR_MESSAGE);
-         }
+         LocalFile target = new LocalFile(chooser.getSelectedFile());
+         
+         transfer(source, target);
       }
    }
    
+   /** Starts a Transfer from point to point - threaded so the transfer happens on a different thread */
+   public void transfer(FileNode source, FileNode target) {
+         try {
+            OutputStream out = target.openOutputStream(source.getMimeType(), false);
+            PleaseWait waitBox = new PleaseWait(this, "Connecting to server");
+            InputStream in = source.openInputStream();
+            waitBox.hide();
+            log.info("Downloading from "+source+" to "+target);
+            PipeProgressMonitor monitor = new PipeProgressMonitor(in, this, "Downloading "+source+" to "+target, source+" downloaded", (int) source.getSize());
+            StreamPiper piper = new StreamPiper();
+            piper.spawnPipe(in, out, monitor, StreamPiper.DEFAULT_BLOCK_SIZE);
+         }
+         catch (IOException e) {
+            log.error(e+" copying '"+source+"' to '"+target+"'",e);
+            JOptionPane.showMessageDialog(this, e+" copying '"+target+"': "+e, "Copy Failure", JOptionPane.ERROR_MESSAGE);
+         }
+   }
    
    /** Upload button pressed - copy file from disk to Myspace */
    public void uploadFromDisk()
@@ -353,33 +367,29 @@ public class StoreBrowser extends JDialog
          JOptionPane.showMessageDialog(this, "Set directory or filename to upload to");
          return;
       }
-      
+      if (!target.isFolder()) {
+         int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to overwrite '"+target.getPath()+"?" );
+         if (response == JOptionPane.NO_OPTION) {
+            return;
+         }
+      }
+
       int response = chooser.showOpenDialog(this);
       
       if (response == chooser.APPROVE_OPTION)
       {
-         File source = chooser.getSelectedFile();
+         FileNode source = new LocalFile(chooser.getSelectedFile());
 
          try {
-            OutputStream out = null;
             if (target.isFolder()) {
-               FileNode targetChild = target.makeFile(source.getName());
-               out = targetChild.openOutputStream(MimeFileExts.guessMimeType(source.getName()), false);
-            }
-            else {
-               out = target.openOutputStream(MimeFileExts.guessMimeType(source.getName()), false);
-               response = JOptionPane.showConfirmDialog(this, "Are you sure you want to overwrite '"+target.getPath()+"?" );
-               if (response == JOptionPane.NO_OPTION) {
-                  return;
-               }
+               target = target.makeFile(source.getName());
             }
 
-            Slinger.sling(SourceMaker.makeSource(new FileInputStream(source)), TargetMaker.makeTarget(out), operator);
-            refresh();
+            transfer(source, target);
             
          } catch (IOException e) {
-            log.error(e+" Uploading "+source+" to "+target,e);
-            JOptionPane.showMessageDialog(this, "Failed to upload '"+target+"': "+e, "MySpace Browser", JOptionPane.ERROR_MESSAGE);
+            log.error(e+" Making file "+source.getName()+" in "+target,e);
+            JOptionPane.showMessageDialog(this, e+" Making file "+source.getName()+" in "+target, "Upload Failure", JOptionPane.ERROR_MESSAGE);
          }
       }
    }

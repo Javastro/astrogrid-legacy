@@ -1,5 +1,5 @@
 /*
- * $Id: DirectoryModel.java,v 1.2 2005/03/31 19:25:39 mch Exp $
+ * $Id: DirectoryModel.java,v 1.3 2005/04/01 01:54:56 mch Exp $
  */
 
 package org.astrogrid.storebrowser.folderlist;
@@ -9,43 +9,30 @@ package org.astrogrid.storebrowser.folderlist;
  */
 
 import java.io.IOException;
-import java.security.Principal;
 import javax.swing.table.AbstractTableModel;
-import org.astrogrid.slinger.mime.MimeTypes;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.file.FileNode;
+import org.astrogrid.slinger.mime.MimeTypes;
+import org.astrogrid.storebrowser.swing.ChildrenLoader;
 
 public class DirectoryModel extends AbstractTableModel {
-   protected FileNode directory;
-   protected FileNode[] children;
-   protected int rowCount;
-   protected Principal user;
    
-   /** empty model constructor */
-   public DirectoryModel( ) throws IOException {
-   }
+   Log log = LogFactory.getLog(DirectoryModel.class);
    
-   /** empty model constructor */
-   public DirectoryModel( FileNode f) throws IOException {
-      setDirectory(f);
-   }
+   protected FileNode directory = null;
+   protected FileNode[] children = null;
 
-   public void setDirectory( FileNode dir ) throws IOException {
-      if ( dir != null ) {
-         directory = dir;
-         children = dir.listFiles();
-         if (children == null) {
-            rowCount = 0;
-         }
-         else {
-            rowCount = children.length;
-         }
-      }
-      else {
-         directory = null;
-         children = null;
-         rowCount = 0;
-      }
-      fireTableDataChanged();
+   
+   /** Construct view listing children of given node */
+   public DirectoryModel( FileNode dir) throws IOException {
+
+      assert (dir != null) : "File is null";
+      assert (dir.isFolder()) : "File "+dir+" is not a folder";
+      
+      directory = dir;
+      
+      startLoadChildren();
    }
 
    public FileNode getDirectory() { return directory; }
@@ -53,11 +40,17 @@ public class DirectoryModel extends AbstractTableModel {
    public FileNode getFile(int row) { return children[row]; }
    
    public int getRowCount() {
-      return children != null ? rowCount : 0;
+      return children != null ? children.length : 0;
    }
    
    public int getColumnCount() {
-      return children != null ? 5 :0;
+      return 5;
+//      return children != null ? 5 :0;
+   }
+   
+   public void setChildren(FileNode[] newChildren) {
+      children = newChildren;
+      fireTableDataChanged();
    }
    
    public Object getValueAt(int row, int column){
@@ -171,5 +164,15 @@ public class DirectoryModel extends AbstractTableModel {
       return super.getColumnClass( column );
       //        }
    }
+
+  /** Starts the load thread */
+   public synchronized void startLoadChildren() {
+
+      ChildrenLoader loading = new ChildrenLoader(directory, new FileListSetter(this));
+      Thread loadingThread = new Thread(loading);
+      loadingThread.start();
+   }
+
+
 }
 
