@@ -4,7 +4,7 @@
 \\pahlaptop\work\astrogrid\src\applications\schema\AGParameterDefinition.xsd">
 	<Application name="testapp" instanceClass="org.astrogrid.applications.commandline.TestApp">
 		<!--This is the main test application-->
-		<ExecutionPath>/data/work/astrogrid/src/applications/test/app/testapp.sh</ExecutionPath>
+		<ExecutionPath>/home/applications/tools/testapp.sh</ExecutionPath>
 		<Parameters>
 			<Parameter name="P1" type="xs:integer" commandPosition="1">
 				<UI_Name>Pause Time</UI_Name>

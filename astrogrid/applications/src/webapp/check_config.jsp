@@ -17,9 +17,8 @@
 ApplicationControllerConfig appConConfig = ApplicationControllerConfig.getInstance();
 
 %>
-<ul>
-<li> DataSource <%= appConConfig.getDataSource() %></li>
-</ul>
+<%= appConConfig.toHTMLReport() %>
+
 </body>
 </html>
 

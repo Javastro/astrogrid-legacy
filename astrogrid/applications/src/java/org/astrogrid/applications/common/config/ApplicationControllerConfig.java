@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerConfig.java,v 1.8 2003/12/31 00:56:17 pah Exp $
+ * $Id: ApplicationControllerConfig.java,v 1.9 2004/01/14 10:33:20 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -110,5 +110,44 @@ public class ApplicationControllerConfig {
       manager = MySpaceDelegateFactory.createDelegate(
        config.getProperty(ApplicationsConstants.MySpaceManagerKey));
        return manager;
+   }
+   
+   
+   
+   public String toHTMLReport()
+   {
+      StringBuffer rep = new StringBuffer(128);
+      
+      rep.append(config.toString());
+      rep.append("<ul>");
+      rep.append("<li>");
+      
+      rep.append("datasource :"); // could possibly get a connection and get more information...
+      if(dataSource != null)
+      {
+         rep.append(dataSource.toString());
+      }
+      rep.append("</li>");
+      
+      rep.append("<li>");
+      rep.append("working directory: ");
+      rep.append(config.getProperty(ApplicationsConstants.WorkingDirectory));
+      rep.append("</li>");
+
+      rep.append("<li>");
+      rep.append("application config file: ");
+      rep.append(config.getProperty(ApplicationsConstants.ApplicationConfigKey));
+      rep.append("</li>");
+
+      rep.append("<li>");
+      rep.append("myspace manager endpoint: ");
+      rep.append(config.getProperty(ApplicationsConstants.MySpaceManagerKey));
+      rep.append("</li>");
+      
+      rep.append("</ul>");
+
+      
+      
+      return rep.toString();
    }
 }

@@ -1,4 +1,4 @@
-<project name="applications-integration" default="hsqldb.database.create" >
+<project name="applications-integration" default="initialize" >
 <description >This file contains some admistrative tasks to help installing/running the project</description>
 
    <!-- ================ Hsqldb tasks ================ -->
@@ -16,7 +16,13 @@
     <property name="tomcat.home" location="/usr/local/tomcat"></property>
     <property name="appcon.webapp.home" value="${tomcat.home}/webapps/astrogrid-applications"></property>
 
-    <property name="hsqldb.url"      value="jdbc:hsqldb:hsql://${hsqldb.host}:${hsqldb.port}"/>
+    <property name="hsqldb.url"      value="jdbc:hsqldb:/home/applications/db/appcon"/>
+<!--    <property name="hsqldb.url"      value="jdbc:hsqldb:hsql://${hsqldb.host}:${hsqldb.port}"/> -->
+
+     <target name="initialize">
+        <antcall target="hsqldb.database.create"></antcall>
+        <copy file="${appcon.webapp.home}/test/app/testapp.sh" todir="/home/applications/tools/"></copy>
+     </target>
     
     <target name="show" depends="axis.tasks">
     <property name="testprop" refid="testpath"></property>
@@ -139,7 +145,6 @@
 
 
     <!-- ================ Database tasks ================ -->
-
     <!--+
         | Create our database tables.
         +-->
