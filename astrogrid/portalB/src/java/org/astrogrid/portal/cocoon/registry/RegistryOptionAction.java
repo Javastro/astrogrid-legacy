@@ -111,7 +111,9 @@ public class RegistryOptionAction extends AbstractAction
 
       if(RegistryOptionAction.ORGANISATION_OPTION.equals(mainElem)) {         
          fi = RegistryConfig.getRegistryOrganisationTemplate();
-      }else if(RegistryOptionAction.AUTHORITY_OPTION.equals(mainElem)) {
+      }else if(RegistryOptionAction.RESOURCE_OPTION.equals(mainElem)) {
+         fi = RegistryConfig.getResourceTemplate();
+      } else if(RegistryOptionAction.AUTHORITY_OPTION.equals(mainElem)) {
          fi = RegistryConfig.getRegistryAuthorityTemplate();
       }else if(RegistryOptionAction.REGISTRY_OPTION.equals(mainElem)) {
          fi = RegistryConfig.getRegistryTemplate();

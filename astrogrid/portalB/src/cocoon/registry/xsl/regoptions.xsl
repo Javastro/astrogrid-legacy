@@ -82,6 +82,11 @@
 			<br />
 			<input type="submit" name="addregistry" value="Go Harvest" />
 		</form>				
+		<hr />
+		<br />
+		Check Registry Status:
+				<br /><br />		
+		<a href="registrystatus.html">Link to Registry Status</a>
 	</xsl:template>
 
 	<!--+

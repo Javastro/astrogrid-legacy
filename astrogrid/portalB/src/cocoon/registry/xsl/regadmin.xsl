@@ -56,14 +56,14 @@
 							<xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
 							<xsl:attribute name="value"><xsl:value-of select="@val"/></xsl:attribute>
 							<xsl:attribute name="type">text</xsl:attribute>
-							<!--
-							<xsl:if test="$authID = @val" >
-								<xsl:attribute name="type">hidden</xsl:attribute>
+							<xsl:if test="$action = 'update'" >
+								<xsl:if test="$authID = @name" >
+									<xsl:attribute name="type">hidden</xsl:attribute>
+								</xsl:if>
+								<xsl:if test="$resKey = @name" >
+									<xsl:attribute name="type">hidden</xsl:attribute>
+								</xsl:if>							
 							</xsl:if>
-							<xsl:if test="$resKey = @val" >
-								<xsl:attribute name="type">hidden</xsl:attribute>
-							</xsl:if>							
-							-->
 						</input>
 					</td>
 				</tr>

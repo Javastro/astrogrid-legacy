@@ -10,6 +10,7 @@
 	<xsl:param name="publishregistryname" />
 	<xsl:param name="searchregistryname" />
 	<xsl:param name="queryresult" />
+	<xsl:param name="fulltable" />	
 
 	<!--+
 	    | Match the root element.
@@ -145,6 +146,8 @@
 			<br /><hr />
 		</xsl:for-each>
 
+<hr />
+<hr />
 
 	</xsl:template>
 

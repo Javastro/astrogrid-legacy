@@ -107,6 +107,8 @@ public class RegistryAdminAction extends AbstractAction
       //pass the map to the xsp page for generating the list.
       String mainElem = request.getParameter(PARAM_MAIN_ELEMENT);
       
+      Document returnDocument = null;
+      
       Document registryDocument = null;
       DocumentBuilderFactory dbf = null;
       DocumentBuilder regBuilder = null;
@@ -117,8 +119,8 @@ public class RegistryAdminAction extends AbstractAction
       if(request.getParameter(CREATE_COPY_PARAM) != null) {
          createCopy = true;
       }
-      String authID = "";
-      String resKey = "";
+      String authID = "Identifier AuthorityID";
+      String resKey = "Identifier ResourceKey";
       NodeList nl = null;
       if(action == null) {
          //Okay updateXML was used.
@@ -135,16 +137,7 @@ public class RegistryAdminAction extends AbstractAction
 
             //We want to blank out the authorityid and resource key for 
             //creating a copy area.
-            if(!createCopy) {
-               nl = registryDocument.getElementsByTagName("AuthorityID");
-               if(nl.getLength() > 0) {
-                  authID = nl.item(0).getFirstChild().getNodeValue();
-               }
-               nl = registryDocument.getElementsByTagName("ResourceKey");
-               if(nl.getLength() > 0) {
-                  resKey = nl.item(0).getFirstChild().getNodeValue();
-               }               
-            }else {
+            if(createCopy) {
                nl = registryDocument.getElementsByTagName("AuthorityID");
                if(nl.getLength() > 0) {
                   nl.item(0).getFirstChild().setNodeValue("enter authority id");
@@ -159,14 +152,22 @@ public class RegistryAdminAction extends AbstractAction
             //were doing an add so load the appropriate template.
             File fi = RegistryOptionAction.getTemplate(request);
             if(fi == null) {
-               //TODO an error to report here.
-               //darn some error is happening.
+               message = "Cannot load client template file for displaying the page.";
             }
             try {
               dbf = DocumentBuilderFactory.newInstance();
               dbf.setNamespaceAware(true);
               regBuilder = dbf.newDocumentBuilder();
               registryDocument = regBuilder.parse(fi);
+              nl = registryDocument.getElementsByTagName("AuthorityID");
+              if(nl.getLength() > 0) {
+                 nl.item(0).getFirstChild().setNodeValue("enter authority id");
+              }
+              nl = registryDocument.getElementsByTagName("ResourceKey");
+              if(nl.getLength() > 0) {
+                 nl.item(0).getFirstChild().setNodeValue("enter new resource key");
+              }
+              
             } catch (ParserConfigurationException e) {
               e.printStackTrace();
             } catch (IOException ioe) {
@@ -192,9 +193,10 @@ public class RegistryAdminAction extends AbstractAction
          }catch(Exception e) {
             e.printStackTrace();
             hm = null;
+            message = "Could not load the Managed Authority ID's for this registry which is required to validate the update.";
          }
-         
-         session.setAttribute("ManageAuthorities",hm);
+         if(hm != null)
+            session.setAttribute("ManageAuthorities",hm);
       }               
 
       //Okay it is an update or add action.      
@@ -202,18 +204,23 @@ public class RegistryAdminAction extends AbstractAction
          Enumeration enum = request.getParameterNames();
          //LinkedHashMap lhm = new LinkedHashMap();
          boolean validAuthority = true;
+         if(hm == null) {
+            validAuthority = false;
+         }
          mp = (Map)session.getAttribute(REGISTRY_ITEMS_PARAM);
          //put the request results in a LinkedHashMap
          while(enum.hasMoreElements()) {
             String param = (String)enum.nextElement();
+            
             if(param.indexOf("/") != -1) {
                String val = request.getParameter(param);
-               if(val != null && val.trim().length() > 0) {
+               //System.out.println("the param was = " + param + " and val = " + val);
+               //if(val != null && val.trim().length() > 0) {
                   if(mp.containsKey(param)) {
                      mp.put(param,val);
                   }
                   //NOT NEEDED lhm.put(param,val);
-               }
+               //}
                //make sure you have authority to make an add or update.
                if(param.indexOf("vg:") == -1 && param.indexOf("AuthorityID") != -1 && param.indexOf("Identifier") != -1) {
                   if(hm != null && !hm.containsKey(val.trim())) {
@@ -223,32 +230,43 @@ public class RegistryAdminAction extends AbstractAction
             }//if
          }//while
          //Debug lets print out the map.
-         printMap(mp);
-         //Create the DOM tree from the map.
-         Document finalDoc = RegistryAdminDocumentHelper.createDocument(mp);
-         System.out.println("the resulting document = " + XMLUtils.DocumentToString(finalDoc) );
-         url = RegistryConfig.getProperty("publish.registry.update.url");
-         
-         //Now lets create a Mapping.
-         //TODO this is not right need to create a mapping from the update service call below.
-         
-         //mp = RegistryAdminDocumentHelper.createMap(finalDoc);
-         
+//         printMap(mp);
          //make sure it is a valid authority.
          if(validAuthority) {         
-            try {
-               //System.out.println("okay the url = " + url);
-               RegistryAdminService ras = new RegistryAdminService(url);
-               ras.update(finalDoc);
-               if(finalDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","Authority").getLength() > 0) {
-                  url = RegistryConfig.getProperty("publish.registry.query.url");
-                  RegistryService rs2 = new RegistryService(url);
-                  hm = rs2.ManagedAuthorities();
-                  session.setAttribute("ManageAuthorities",hm);
-               }
-               message = "The Registry has been updated";            
-            }catch(Exception e) {
-               e.printStackTrace();
+         
+         //Create the DOM tree from the map.
+         Document finalDoc = RegistryAdminDocumentHelper.createDocument(mp);
+         System.out.println("the finalDoc to be sending = " + XMLUtils.DocumentToString(finalDoc));
+            if(validateUpdateDocument(finalDoc)) {
+               url = RegistryConfig.getProperty("publish.registry.update.url");
+               
+               //Now lets create a Mapping.
+               //TODO this is not right need to create a mapping from the update service call below.
+               
+               //mp = RegistryAdminDocumentHelper.createMap(finalDoc);
+               
+                  try {
+                     //System.out.println("okay the url = " + url);
+                     RegistryAdminService ras = new RegistryAdminService(url);
+                     
+                     if("add".equals(action)) {
+                        returnDocument = ras.add(finalDoc);
+                        if(finalDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","Authority").getLength() > 0) {
+                           url = RegistryConfig.getProperty("publish.registry.query.url");
+                           RegistryService rs2 = new RegistryService(url);
+                           hm = rs2.ManagedAuthorities();
+                           session.setAttribute("ManageAuthorities",hm);
+                        }
+                     }else {
+                        returnDocument = ras.update(finalDoc);
+                     }
+                     
+                     message = getResultMessage(returnDocument);            
+                  }catch(Exception e) {
+                     e.printStackTrace();
+                  }
+            }else {
+               message = "All the required parameters are not filled in. Authority ID, Title, Subject and Description are required.";   
             }
          }else {
             //errorMessage happened not a valid authorityid.
@@ -292,13 +310,36 @@ public class RegistryAdminAction extends AbstractAction
    }  
    
    private boolean validateUpdateDocument(Document doc) {
-      if(doc.getElementsByTagName("AuthorityID").getLength() > 0 &&
-         doc.getElementsByTagName("Description").getLength() > 0 &&
-         doc.getElementsByTagName("Title").getLength() > 0 &&
-         doc.getElementsByTagName("Subject").getLength() > 0 &&
-         doc.getElementsByTagName("ReferenceURL").getLength() > 0) {
-            return true;
-         }//if
-      return false;  
+      boolean val = true;
+      NodeList nl = null;
+      nl = doc.getElementsByTagName("AuthorityID");
+      if(nl.getLength() <= 0 || !nl.item(0).hasChildNodes())
+         val = false;
+      nl = doc.getElementsByTagName("Description");
+      if(nl.getLength() <= 0 || !nl.item(0).hasChildNodes())
+         val = false;
+      nl = doc.getElementsByTagName("Title");
+      System.out.println("the title nl = " + nl.getLength() + "look at childnodes = " +  nl.item(0).hasChildNodes() + " and nodevalud = " + nl.item(0).getFirstChild().getNodeValue() + " and length2 = " + nl.item(0).getFirstChild().getNodeValue().trim().length());
+      System.out.println("nodename = " + nl.item(0).getFirstChild().getNodeName() + " and number of children = " + nl.item(0).getChildNodes().getLength());
+      if(nl.getLength() <= 0 || !nl.item(0).hasChildNodes() || nl.item(0).getFirstChild().getNodeValue() == null || nl.item(0).getFirstChild().getNodeValue().trim().length() <= 0) 
+         val = false;
+      nl = doc.getElementsByTagName("Subject");
+      if(nl.getLength() <= 0 || !nl.item(0).hasChildNodes())
+         val = false;
+      System.out.println("okay in validateUpdatedocument and return = " + val);
+      return val;
    }//validateUpdateDocument 
+   
+   private String getResultMessage(Document doc) {
+      String message = "The Registry has been updated";
+      if(doc != null) {
+         NodeList nl = doc.getElementsByTagName("error");
+         if(nl.getLength() > 0) {
+            message = nl.item(0).getFirstChild().getNodeValue();
+         }//if
+      }
+      return message;  
+   }
+   
+   
 }

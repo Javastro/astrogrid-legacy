@@ -18,6 +18,9 @@
 		<xsp:include>java.util.HashMap</xsp:include>		
 		<xsp:include>java.util.ArrayList</xsp:include>		
 		<xsp:include>java.util.Set</xsp:include>
+		<xsp:include>org.apache.axis.utils.XMLUtils</xsp:include>
+		<xsp:include>org.w3c.dom.Node</xsp:include>
+		<xsp:include>org.w3c.dom.Element</xsp:include>		
 	</xsp:structure>	    
 	
 	<registryquery>
@@ -146,12 +149,36 @@
 						<xsp:attribute name="val"><xsp:expr>xml</xsp:expr></xsp:attribute>
 						<xsp:attribute name="update"><xsp:expr>update</xsp:expr></xsp:attribute>
 					</xsp:element>
+					<xsp:element name="testtry">
+						<xsp:expr>xml</xsp:expr>
+					</xsp:element>
 			<![CDATA[
 				}
 					}
 			]]>
 			</xsp:logic>
 		</xmlresults>
+		
+		<xmlresultnodes>
+			<xsp:logic>
+			<![CDATA[
+				System.out.println("checking xmlresultnodes");
+				ArrayList xmlresultNodes = (ArrayList)request.getAttribute("resultNodes");
+				if(xmlresultNodes != null && xmlresultNodes.size() > 0 ) {
+					iter = xmlresultNodes.iterator();	
+					System.out.println("the size of xmlresultnodes = " + xmlresultNodes.size());			
+					Node nd = null;
+					while (iter.hasNext()) {
+						nd = (Node)iter.next();
+						System.out.println("in the xsp page = " + XMLUtils.ElementToString((Element)nd));
+				]]>
+						<element><xsp:expr>nd</xsp:expr></element>
+				<![CDATA[
+					}
+				}
+			]]>
+			</xsp:logic>
+		</xmlresultnodes>
 		
 		
 		

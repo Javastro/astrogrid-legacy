@@ -8,6 +8,7 @@
 	<xsl:param name="message" />
 	<xsl:param name="registryXML" />
 	<xsl:param name="harvestResult" />		
+	<xsl:param name="addregistry" />
 	<xsl:param name="errorMessage" />
 
 	<!--+
@@ -36,24 +37,32 @@
 		<b>Harvest Information:</b><br />
 		<xsl:if test="$message != ''" >
 			<font color="blue"><xsl:value-of select="$message" /></font>
+			<br />
 		</xsl:if>	
 		<xsl:if test="$errorMessage != ''" >
 			<font color="red"><xsl:value-of select="$errorMessage" /></font>
+			<br />
 		</xsl:if>		
+		<br />
+		<a href="registryquery.html?mainelement=Registry">Query Registries</a>
 		<br />
 		<xsl:if test="$harvestResult != ''" >
 			<i>Raw XML of the Harvest Result:</i> <br />
 			<xsl:value-of select="$harvestResult" />
 		</xsl:if>
-		<xsl:if test="$errorMessage != ''" >
-		<form method="get" action="registryharvest.html" name="RegistryUpdate">
-			<input type="hidden" name="registryXML">
-				<xsl:attribute name="value"><xsl:value-of select="$registryXML" /></xsl:attribute>
-			</input>
-			<input type="text" name="dateFrom" />
-			<input type="submit" name="harvestSubmit" value="Harvest Try Again" />
-		</form>		
+		<xsl:if test="$addregistry != 'true'">
+			<xsl:if test="$errorMessage != ''" >
+				<form method="get" action="registryharvest.html" name="RegistryUpdate">
+					<input type="hidden" name="registryXML">
+						<xsl:attribute name="value"><xsl:value-of select="$registryXML" /></xsl:attribute>
+					</input>
+					<input type="text" name="dateFrom" />
+					<input type="submit" name="harvestSubmit" value="Harvest Try Again" />
+				</form>		
+			</xsl:if>
 		</xsl:if>
+		<br /><br />		
+		<a href="registrystatus.html">Link to Registry Status</a>
 	</xsl:template>
 
 	<!--+

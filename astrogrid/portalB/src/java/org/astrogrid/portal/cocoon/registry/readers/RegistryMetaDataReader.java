@@ -42,7 +42,7 @@ import org.apache.axis.utils.XMLUtils;
  *
  */
 
-public class OAIHarvestReader extends AbstractReader {
+public class RegistryMetaDataReader extends AbstractReader {
 
       /** The  source */
       private Source      inputSource;
@@ -110,46 +110,16 @@ public class OAIHarvestReader extends AbstractReader {
          Request request = ObjectModelHelper.getRequest(objectModel);
          //load the config.
          RegistryConfig.loadConfig();
-         Enumeration enum = request.getParameterNames();
-         String param = null;
-         //OAI requires having an element with all the requests passed in.
-         //this will put all the request and values into a hashmap to be 
-         //placed on an DOM element.
-         HashMap hm = new HashMap();
-         while(enum.hasMoreElements()) {
-           param = (String)enum.nextElement();
-           hm.put(param,request.getParameter(param));
-         }
-         //Get the date and if it does not exist then create a very old date.
-         String dateSince = request.getParameter("from");
-         if(dateSince == null || dateSince.trim().length() <= 0) {
-            dateSince = "1950-02-02T00:00:00";   
-         }
-         
-         //A verg and DateFrom are requried request variables, if they are not their
-         //then default it to a required variables.
-         if(request.getParameter("verb") == null) {
-            hm.put("verb","ListRecords");
-         }
-         if(request.getParameter("from") == null) {
-            hm.put("from",dateSince);
-         }
-
 
          //Instantiate a new Registry Service for the query
          String url = RegistryConfig.getProperty("publish.registry.query.url");
          RegistryService rs = new RegistryService(url);
-         //String resultDoc = XMLUtils.DocumentToString(harvestDoc);
                      
          try {
             //Now go and harvest the registry for changes since this date.
-            Document tempDoc = rs.harvestQuery(dateSince);
-            System.out.println("the source = " + source);
-            //The returned document is still in the IVOA schema xml format.
-            //go and build the OAI result around it.
-            Document harvestDoc = RegistryService.buildOAIDocument(tempDoc,source,dateSince,hm);
+            Document doc = rs.loadRegistry(null);
             //Writ it out to the outputstream for display.
-            XMLUtils.DocumentToStream(harvestDoc,out);
+            XMLUtils.DocumentToStream(doc,out);
          }catch(Exception e) {
             e.printStackTrace();
             System.out.println(e.toString());

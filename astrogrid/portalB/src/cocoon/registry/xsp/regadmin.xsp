@@ -50,6 +50,7 @@
 					            tempSplit = tempSplit.substring(0,tempSplit.length()-1);
 					         if(Character.isDigit(tempSplit.charAt(tempSplit.length()-1)))
 					            tempSplit = tempSplit.substring(0,tempSplit.length()-1);
+					         tempSplit = tempSplit.replaceAll(".*:","");
 					        regLabel += tempSplit + " ";							
 						}//for
 					}//if
