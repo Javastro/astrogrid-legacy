@@ -1,4 +1,4 @@
-/*$Id: EgsoQuerierPlugin.java,v 1.5 2004/09/29 13:39:01 mch Exp $
+/*$Id: EgsoQuerierPlugin.java,v 1.1 2004/10/05 16:10:43 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,10 +8,11 @@
  * with this distribution in the LICENSE.txt file.
  *
  **/
-package org.astrogrid.datacenter.sec.querier;
+package org.astrogrid.datacenter.impl.sec;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
 import org.astrogrid.datacenter.queriers.Querier;
@@ -19,21 +20,27 @@ import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QuerierPluginException;
 import org.astrogrid.datacenter.queriers.VotableResults;
 import org.astrogrid.datacenter.queriers.sql.StdSqlMaker;
-import org.astrogrid.datacenter.sec.secdelegate.egso.EgsoDelegate;
-import org.w3c.dom.Document;
+import org.astrogrid.datacenter.impl.sec.SEC_Port;
+import org.astrogrid.datacenter.impl.sec.SEC_Service;
+import org.astrogrid.datacenter.impl.sec.SEC_ServiceLocator;
+import org.astrogrid.util.DomHelper;
 import org.xml.sax.SAXException;
 
 /** Datacenter querier that performs queries against SEC webservice.
  * @author Kevin Benson kmb@mssl.ucl.ac.uk
+ * @author mch
  */
 public class EgsoQuerierPlugin extends QuerierPlugin {
    
-   protected EgsoDelegate delegate;
-
-   /** @todo check configuration for endpoint setting before settling with default */
+   public final static String SEC_URL = "http://radiosun.ts.astro.it/sec/sec_server.php";
+   
+   /** WSDL-generated binding to the service */
+   protected SEC_Port secPort;
+   
    public EgsoQuerierPlugin(Querier querier) throws ServiceException, MalformedURLException {
       super(querier);
-      delegate = new EgsoDelegate();
+      SEC_Service service = new SEC_ServiceLocator();
+      secPort = service.getSECPort(new URL(SEC_URL));
    }
    
    /** Called by the querier plugin mechanism to do the query.
@@ -45,12 +52,12 @@ public class EgsoQuerierPlugin extends QuerierPlugin {
       String sql = ssm.getSql(querier.getQuery());
 
       try {
-         Document resultsVotDoc = delegate.doQuery(sql);
-         VotableResults results = new VotableResults(querier, resultsVotDoc);
+         String resultsVot = secPort.sql(sql);
+         VotableResults results = new VotableResults(querier, DomHelper.newDocument(resultsVot));
          results.send(querier.getReturnSpec(), querier.getUser());
       }
       catch (SAXException e) {
-         throw new QuerierPluginException("Egso Delegate doQuery() did not return valid SQL: "+e,e);
+         throw new QuerierPluginException("Egso service at "+SEC_URL+" did not return valid VOTable XML: "+e,e);
       }
       catch (ParserConfigurationException e) {
          throw new QuerierPluginException("Server not configured correctly",e);
@@ -61,6 +68,9 @@ public class EgsoQuerierPlugin extends QuerierPlugin {
 
 /*
  $Log: EgsoQuerierPlugin.java,v $
+ Revision 1.1  2004/10/05 16:10:43  mch
+ Merged with PAL
+
  Revision 1.5  2004/09/29 13:39:01  mch
  Removed obsolete ADQL 0.5
 

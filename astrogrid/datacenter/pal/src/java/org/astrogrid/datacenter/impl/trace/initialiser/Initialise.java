@@ -1,4 +1,4 @@
-/*$Id: Initialise.java,v 1.5 2004/09/07 14:52:19 mch Exp $
+/*$Id: Initialise.java,v 1.1 2004/10/05 16:10:43 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.
  *
 **/
-package org.astrogrid.datacenter.sec.initialiser;
+package org.astrogrid.datacenter.impl.trace.initialiser;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -35,6 +35,9 @@ public class Initialise {
 
 /*
 $Log: Initialise.java,v $
+Revision 1.1  2004/10/05 16:10:43  mch
+Merged with PAL
+
 Revision 1.5  2004/09/07 14:52:19  mch
 Fixes etc for SEC
 

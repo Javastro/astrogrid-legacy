@@ -5,9 +5,9 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.datacenter.sec.secdelegate.egso;
+package org.astrogrid.datacenter.impl.sec;
 
-public class SECBindingStub extends org.apache.axis.client.Stub implements org.astrogrid.datacenter.sec.secdelegate.egso.SEC_Port {
+public class SECBindingStub extends org.apache.axis.client.Stub implements org.astrogrid.datacenter.impl.sec.SEC_Port {
     private java.util.Vector cachedSerClasses = new java.util.Vector();
     private java.util.Vector cachedSerQNames = new java.util.Vector();
     private java.util.Vector cachedSerFactories = new java.util.Vector();

@@ -5,9 +5,9 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.datacenter.sec.secdelegate.egso;
+package org.astrogrid.datacenter.impl.sec;
 
-public class SEC_ServiceLocator extends org.apache.axis.client.Service implements org.astrogrid.datacenter.sec.secdelegate.egso.SEC_Service {
+public class SEC_ServiceLocator extends org.apache.axis.client.Service implements org.astrogrid.datacenter.impl.sec.SEC_Service {
 
     // Use to get a proxy class for SECPort
     private final java.lang.String SECPort_address = "http://radiosun.ts.astro.it/sec/sec_server.php";
@@ -27,7 +27,7 @@ public class SEC_ServiceLocator extends org.apache.axis.client.Service implement
         SECPortWSDDServiceName = name;
     }
 
-    public org.astrogrid.datacenter.sec.secdelegate.egso.SEC_Port getSECPort() throws javax.xml.rpc.ServiceException {
+    public org.astrogrid.datacenter.impl.sec.SEC_Port getSECPort() throws javax.xml.rpc.ServiceException {
        java.net.URL endpoint;
         try {
             endpoint = new java.net.URL(SECPort_address);
@@ -38,9 +38,9 @@ public class SEC_ServiceLocator extends org.apache.axis.client.Service implement
         return getSECPort(endpoint);
     }
 
-    public org.astrogrid.datacenter.sec.secdelegate.egso.SEC_Port getSECPort(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
+    public org.astrogrid.datacenter.impl.sec.SEC_Port getSECPort(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
         try {
-            org.astrogrid.datacenter.sec.secdelegate.egso.SECBindingStub _stub = new org.astrogrid.datacenter.sec.secdelegate.egso.SECBindingStub(portAddress, this);
+            org.astrogrid.datacenter.impl.sec.SECBindingStub _stub = new org.astrogrid.datacenter.impl.sec.SECBindingStub(portAddress, this);
             _stub.setPortName(getSECPortWSDDServiceName());
             return _stub;
         }
@@ -56,8 +56,8 @@ public class SEC_ServiceLocator extends org.apache.axis.client.Service implement
      */
     public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         try {
-            if (org.astrogrid.datacenter.sec.secdelegate.egso.SEC_Port.class.isAssignableFrom(serviceEndpointInterface)) {
-                org.astrogrid.datacenter.sec.secdelegate.egso.SECBindingStub _stub = new org.astrogrid.datacenter.sec.secdelegate.egso.SECBindingStub(new java.net.URL(SECPort_address), this);
+            if (org.astrogrid.datacenter.impl.sec.SEC_Port.class.isAssignableFrom(serviceEndpointInterface)) {
+                org.astrogrid.datacenter.impl.sec.SECBindingStub _stub = new org.astrogrid.datacenter.impl.sec.SECBindingStub(new java.net.URL(SECPort_address), this);
                 _stub.setPortName(getSECPortWSDDServiceName());
                 return _stub;
             }

@@ -5,7 +5,7 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.datacenter.sec.secdelegate.egso;
+package org.astrogrid.datacenter.impl.sec;
 
 public interface SEC_Port extends java.rmi.Remote {
     public java.lang.String sql(java.lang.String string_1) throws java.rmi.RemoteException;
