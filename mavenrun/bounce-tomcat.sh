@@ -1,23 +1,23 @@
 #!/bin/bash
-# $Id: bounce-tomcat.sh,v 1.3 2004/11/28 21:35:06 jdt Exp $ 
+# $Id: bounce-tomcat.sh,v 1.4 2004/12/02 21:41:10 jdt Exp $ 
 ######################################################
 # Script to do a hard bounce of tomcat
 # Sometimes all processes fail to shutdown properly
 # so this attempts to kill any hanging processes
 ######################################################
 # Some reminders
-if [ -z "$CATALINA_HOME" ]; then
-   echo "Value of CATALINA_HOME must be set"
-   exit 1
-fi
+${CATALINA_HOME?"Value of CATALINA_HOME must be set"}
 
 $CATALINA_HOME/bin/shutdown.sh
 echo "Waiting for Tomcat to shutdown..."
 sleep 10
 
-# Should find a more subtle way of determining what's Tomcat and what's not!
 echo "Killing any hanging processes..."
-killall -9 java
+ps -elf | grep $CATALINA_HOME
+TOMCATPID=`ps -elf | grep $CATALINA_HOME | grep java | awk {'print $4'}`
+echo "Killing process $TOMCATPID"
+kill -9 $TOMCATPID
+
 echo "Wiping logs..."
 rm -rf $CATALINA_HOME/logs/*
 echo "Starting up...."
