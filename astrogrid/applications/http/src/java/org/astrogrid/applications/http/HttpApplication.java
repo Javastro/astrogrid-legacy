@@ -1,4 +1,4 @@
-/* $Id: HttpApplication.java,v 1.6 2004/09/17 01:23:01 nw Exp $
+/* $Id: HttpApplication.java,v 1.7 2004/09/26 23:29:38 jdt Exp $
  * Created on Jul 24, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -140,11 +140,28 @@ public boolean execute() throws CeaException {
         if (log.isTraceEnabled()) {
             log.trace("run() - start");
         }
-
+        //
+        //  The arguments must be processed before the tool document gets
+        //  turned into a calling document.
+        log.debug("Processing arguments");        
+        try{
+            for (Iterator i = inputParameterAdapters(); i.hasNext();) {
+                ParameterAdapter a = (ParameterAdapter) i.next();
+                final String name = a.getWrappedParameter().getName();
+                final Object value = a.process();
+                //Replace Parameters in the tool document
+                //with their processed values
+                //This might be a bad idea...
+                //Why not just extract the values and send them to the HttpServiceClient?  I want to have an actual Tool xml
+                //document with the correct parameter values that I can transform using the registry/user supplied xslt.
+                a.getWrappedParameter().setValue((String) value);
+                log.debug(name + "=" + value);
+            }
             //Prepare calling document, and extract what we need for the http call
             final HttpApplicationDescription description = (HttpApplicationDescription) getApplicationDescription();
             final CeaHttpApplicationType app = description.getApplication();
             final WebHttpCall httpCall = createCallingDocument(getTool(),app);
+            
             final String url = httpCall.getURL().getContent();
             final HttpMethodType requestedMethod = httpCall.getURL().getMethod();        
             HttpServiceClient.HttpServiceType method;
@@ -158,29 +175,17 @@ public boolean execute() throws CeaException {
                 reportError("Unknown http method requested"); //this really shouldn't happen, given the constraints in the schema
                 return;
             }            
-        log.debug("Processing arguments");        
-        try{
-        for (Iterator i = inputParameterAdapters(); i.hasNext();) {
-            ParameterAdapter a = (ParameterAdapter) i.next();
-            final String name = a.getWrappedParameter().getName();
-            final Object value = a.process();
-            //Replace Parameters in the tool document
-            //with their processed values
-            //This might be a bad idea..
-            a.getWrappedParameter().setValue((String) value);
-            log.debug(name + "=" + value);
-        }
-        final Enumeration enum = httpCall.enumerateSimpleParameter();
-        Map inputArguments = new HashMap();
-        while (enum.hasMoreElements()) {
-            final SimpleParameter parameter = (SimpleParameter) enum.nextElement();
-            assert parameter!=null;
-            assert parameter.getName()!=null;
-            assert parameter.getValue()!=null;
-            inputArguments.put(parameter.getName(), parameter.getValue());
-        }
-                
-        setStatus(Status.RUNNING);
+            final Enumeration enum = httpCall.enumerateSimpleParameter();
+            Map inputArguments = new HashMap();
+            while (enum.hasMoreElements()) {
+                final SimpleParameter parameter = (SimpleParameter) enum.nextElement();
+                assert parameter!=null;
+                assert parameter.getName()!=null;
+                assert parameter.getValue()!=null;
+                inputArguments.put(parameter.getName(), parameter.getValue());
+            }
+                    
+            setStatus(Status.RUNNING);
             HttpServiceClient client = new HttpServiceClient(url, method);
             final String resultText = client.call(inputArguments);
             log.debug("run() - unprocessed result:  : resultText = " + resultText);
@@ -196,15 +201,12 @@ public boolean execute() throws CeaException {
             setStatus(Status.COMPLETED);
         } catch (CeaException e) {
             log.error("run() - failed to write back param values", e);
-
             reportError("Failed to write back parameter values", e);
         } catch (HttpApplicationWebServiceURLException e) {
-            log.error("run() - problem with service URL: "+url, e);
-
+            log.error("run() - problem with service URL", e);
             reportError("Error 404 - Not Found from the application's URL", e);
         } catch (HttpApplicationNetworkException e) {
             log.error("run()", e);
-
             reportError("Network Error while contacting web server",e);
         } catch (Throwable t) {
             log.error("run()", t);
@@ -240,6 +242,11 @@ public boolean execute() throws CeaException {
 
 /*
  * $Log: HttpApplication.java,v $
+ * Revision 1.7  2004/09/26 23:29:38  jdt
+ * Put the processing of the parameters back before the creation of the calling document.  The calling doc is
+ * created using whatever values are in the Tool doc at the time, so the parameter processing must be done first.
+ * Perhaps needs some rejigging if it's misleading.
+ *
  * Revision 1.6  2004/09/17 01:23:01  nw
  * altered to make use of threadpooling
  *
