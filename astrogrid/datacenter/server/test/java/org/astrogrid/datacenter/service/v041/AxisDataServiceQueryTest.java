@@ -1,4 +1,4 @@
-/*$Id: AxisDataServiceQueryTest.java,v 1.2 2004/07/02 16:54:17 mch Exp $
+/*$Id: AxisDataServiceQueryTest.java,v 1.3 2004/07/06 18:48:34 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,16 +15,18 @@ import java.util.ArrayList;
 import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.apache.axis.AxisFault;
 import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.axisdataserver.types.Language;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
+import org.astrogrid.datacenter.metadata.MetadataServer;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
+import org.astrogrid.datacenter.queriers.sql.SqlPluginTest;
 import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.query.QueryState;
-//import org.astrogrid.mySpace.delegate.MySpaceDummyDelegate;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
@@ -51,13 +53,13 @@ public class AxisDataServiceQueryTest extends ServerTestCase {
        server = new AxisDataServer_v0_4_1();
        
        query1 = new Query();
-       query1.setQueryBody(DomHelper.newDocument(this.getClass().getResourceAsStream("../adqlQuery1.xml")).getDocumentElement());
+       query1.setQueryBody(DomHelper.newDocument(SqlPluginTest.class.getResourceAsStream("sample-adql0.5-1.xml")).getDocumentElement());
 
        query2 = new Query();
-       query2.setQueryBody(DomHelper.newDocument(this.getClass().getResourceAsStream("../adqlQuery2.xml")).getDocumentElement());
+       query2.setQueryBody(DomHelper.newDocument(SqlPluginTest.class.getResourceAsStream("sample-adql0.5-2.xml")).getDocumentElement());
        
        query3 = new Query();
-       query3.setQueryBody(DomHelper.newDocument(this.getClass().getResourceAsStream("../adqlQuery3.xml")).getDocumentElement());
+       query3.setQueryBody(DomHelper.newDocument(SqlPluginTest.class.getResourceAsStream("sample-adql0.5-3.xml")).getDocumentElement());
     }
 
     public void testDoOneShotQuery() throws Exception {
@@ -67,65 +69,71 @@ public class AxisDataServiceQueryTest extends ServerTestCase {
         assertIsVotableResultsResponse(doc);
     }
     
+    /** no longer supported
     public void testGetLanguageInfo() throws Exception {
         Language[] langs = server.getLanguageInfo(null);
         assertNotNull(langs);
         assertEquals(2,langs.length);
     }
+     */
     
     public void testGetMetadata() throws Exception {
+       SimpleConfig.setProperty(MetadataServer.METADATA_URL_LOC_KEY, ""+this.getClass().getResource("metadata.xml"));
         String result = server.getMetadata(new Object());
         assertNotNull(result);
         Document doc = DomHelper.newDocument(result);
         assertIsMetadata(doc);
     }
     
+    /** no longer supported
     public void testMakeQueryWithId() throws Exception {
         String qid = server.makeQueryWithId(query1,"foo");
         assertEquals("foo",qid);
     }
-    
+     */
     public void testAbort() throws Exception {
         String qid = server.makeQuery(query1);
         assertNotNull(qid);
         server.abortQuery(qid);
         // should have gone now.. i.e. we can't do this..
         try {
-           server.setResultsDestination(qid,new URI("file://wibble.txt"));
+           server.setResultsDestination(qid,new URI("astrogrid:store:file://wibble.txt"));
            fail("Expected to barf");
         }
-        catch (IllegalArgumentException e) {
+        catch (AxisFault e) {
             //ignored it
         }
     }
 
 
     public void testDoStagedQueryQuery() throws Exception    {
-             String qid = server.makeQuery(query1);
-             assertNotNull(qid);
-              server.setResultsDestination(qid,new URI("file://wibble.txt"));
-             assertEquals(QueryState.CONSTRUCTED.toString(),server.getStatus(qid));
-
-            TestListener l = new TestListener();
-            //server.registerWebListener()
-            server.startQuery(qid);
-            String results = null;
-            while (results == null) {
-                results = server.getResultsAndClose(qid);
-            }
-            URL votableLoc = new URL(results); // probably won't work - need to extract from xml I tbink. this is why we need beans.
-            Document votable = XMLUtils.newDocument(votableLoc.openStream());
-            assertIsVotable(votable);
+       String qid = server.makeQuery(query1);
+       assertNotNull(qid);
+       server.setResultsDestination(qid,new URI("astrogrid:store:file://wibble.txt"));
+       assertEquals(QueryState.CONSTRUCTED.toString(), server.getStatus(qid));
        
-
-        /*
-       // check what the listener recorded. - should always be the same pattern for this query.
+       TestListener l = new TestListener();
+       //server.registerWebListener()
+       server.startQuery(qid);
+       String results = null;
+       
+       /** not supported any more
+       while (results == null) {
+          results = server.getResultsAndClose(qid);
+       }
+       URL votableLoc = new URL(results); // probably won't work - need to extract from xml I tbink. this is why we need beans.
+       Document votable = XMLUtils.newDocument(votableLoc.openStream());
+       assertIsVotable(votable);
+       
+       
+       /*
+        // check what the listener recorded. - should always be the same pattern for this query.
         assertEquals(4,l.statusList.size());
         QueryStatus[] expected = new QueryStatus[]{QueryStatus.RUNNINGQuery,QueryStatus.QUERY_COMPLETE,QueryStatus.RUNNING_RESULTS,QueryStatus.FINISHED};
         for (int i = 0; i < l.statusList.size(); i++) {
-            assertEquals(expected[i],l.statusList.get(i));
+        assertEquals(expected[i],l.statusList.get(i));
         }
-      */
+        */
     }
 
  
@@ -166,6 +174,9 @@ public class AxisDataServiceQueryTest extends ServerTestCase {
 
 /*
 $Log: AxisDataServiceQueryTest.java,v $
+Revision 1.3  2004/07/06 18:48:34  mch
+Series of unit test fixes
+
 Revision 1.2  2004/07/02 16:54:17  mch
 Small fix
 

@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.4 2004/03/14 04:13:16 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.5 2004/07/06 18:48:34 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
  **/
 package org.astrogrid.datacenter.queriers.sql;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
@@ -21,6 +22,7 @@ import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
+import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.TargetIndicator;
 import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
@@ -68,11 +70,11 @@ public class SqlPluginTest extends ServerTestCase {
       askAdqlFromFile("sql-querier-test-2.xml");
    }
    
-   public void testAdl2() throws Exception {
+   public void testAdql2() throws Exception {
       askAdqlFromFile("sql-querier-test-3.xml");
    }
 
-   public void testAdl3() throws Exception {
+   public void testAdql3() throws Exception {
       askAdqlFromFile("sql-querier-test-3.xml");
    }
    
@@ -126,7 +128,18 @@ public class SqlPluginTest extends ServerTestCase {
 
     }
    
-   
+    public void testAutoMetadata() throws Exception {
+       setUp();
+       
+       QuerierPlugin plugin = new JdbcPlugin(null);
+
+       //generate metadata
+       Document metadata = plugin.getMetadata();
+       
+       //debug
+       DomHelper.DocumentToStream(metadata, System.out);
+       
+    }
    
    /** Test harness - runs tests
    */
@@ -146,6 +159,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.5  2004/07/06 18:48:34  mch
+ Series of unit test fixes
+
  Revision 1.4  2004/03/14 04:13:16  mch
  Wrapped output target in TargetIndicator
 

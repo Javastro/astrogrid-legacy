@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.9 2004/07/02 16:52:44 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.10 2004/07/06 18:48:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -239,13 +239,13 @@ public class JdbcPlugin extends QuerierPlugin  {
          
       }
       catch (SQLException e) {
-         throw new DatabaseAccessException("Could not get metadata",e);
+         throw new DatabaseAccessException("Could not get metadata: "+e,e);
       }
       catch (ParserConfigurationException e) {
-         throw new DatabaseAccessException("Server not configured correctly ",e);
+         throw new DatabaseAccessException("Server not configured correctly (no parser): "+e,e);
       }
       catch (SAXException e) {
-         throw new DatabaseAccessException("Server not configured correctly ",e);
+         throw new DatabaseAccessException("Server not configured correctly (produces illegal XML) ",e);
       }
       finally {
          //try to tidy up now

@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.7 2004/07/01 23:07:14 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.8 2004/07/06 18:48:34 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.datacenter.queriers.sql;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URL;
@@ -145,20 +146,26 @@ public class StdSqlMaker  extends SqlMaker {
    public String useXslt(Element queryBody, String namespaceURI) throws QueryException {
 
       String xsltDoc = null;
-      //work out which translator sheet to use - default
-      if (namespaceURI.equals("http://tempuri.org/adql")) { //assume v0.5
+
+      //work out which translator sheet to use
+      
+      //default
+      if ((namespaceURI==null) || (namespaceURI.length()==0)) {
+         throw new QueryException("No namespace specified in query document, so don't know what it is");
+      }
+      else if (namespaceURI.equals("http://tempuri.org/adql")) { //assume v0.5
          xsltDoc = "adql05-2-sql.xsl";
       }
-      if (namespaceURI.equals("http://adql.ivoa.net/v0.73")) {
+      else if (namespaceURI.equals("http://adql.ivoa.net/v0.73")) {
          xsltDoc = "adql073-2-sql.xsl";
       }
-      if (namespaceURI.equals("http://adql.ivoa.net/v0.8")) {
+      else if (namespaceURI.equals("http://adql.ivoa.net/v0.8")) {
          xsltDoc = "adql08-2-sql.xsl";
       }
-
-      if (namespaceURI.equals("http://astrogrid.org/sadql/v1.1")) {
+      else if (namespaceURI.equals("http://astrogrid.org/sadql/v1.1")) {
          xsltDoc = "sadql1.1-2-sql.xsl";
       }
+      
       //look up in config but using above softcoded as defaults
       String key = "datacenter.sqlmaker.xslt."+namespaceURI.replaceAll(":","_");
       xsltDoc = SimpleConfig.getSingleton().getString(key, xsltDoc);
@@ -263,6 +270,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.8  2004/07/06 18:48:34  mch
+Series of unit test fixes
+
 Revision 1.7  2004/07/01 23:07:14  mch
 Introduced metadata generator
 

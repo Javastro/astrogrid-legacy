@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.53 2004/07/05 16:35:00 mch Exp $
+ * $Id: Querier.java,v 1.54 2004/07/06 18:48:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -286,9 +286,15 @@ public class Querier implements Runnable {
     * Abort - stops query (if poss) and tidies up
     */
    public QuerierStatus abort() {
-      plugin.abort();
-      setStatus(new QuerierAborted(this));
+
+      //if it's already completed stopped, plugin will be null
+      if (plugin != null) {
+         plugin.abort();
+         setStatus(new QuerierAborted(this));
+      }
+         
       return getStatus();
+         
    }
    
    /**
@@ -408,6 +414,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.54  2004/07/06 18:48:34  mch
+ Series of unit test fixes
+
  Revision 1.53  2004/07/05 16:35:00  mch
  Added minor doc
 

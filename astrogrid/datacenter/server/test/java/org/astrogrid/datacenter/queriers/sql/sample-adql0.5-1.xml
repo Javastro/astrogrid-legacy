@@ -11,8 +11,8 @@ SELECT * FROM Tab t
     <FromClause>
       <TableReference>
         <Table>
-          <Name>Tab</Name>
-          <AliasName>t</AliasName>
+          <Name>SampleStars</Name>
+          <AliasName>s</AliasName>
         </Table>
       </TableReference>
     </FromClause>

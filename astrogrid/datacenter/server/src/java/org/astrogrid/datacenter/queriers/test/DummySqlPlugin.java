@@ -1,5 +1,5 @@
 /*
- * $Id: DummySqlPlugin.java,v 1.3 2004/03/13 23:38:46 mch Exp $
+ * $Id: DummySqlPlugin.java,v 1.4 2004/07/06 18:48:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,6 +16,8 @@ import org.astrogrid.datacenter.queriers.sql.JdbcConnections;
 import org.astrogrid.datacenter.queriers.sql.JdbcPlugin;
 import org.astrogrid.datacenter.queriers.sql.SqlMaker;
 import org.astrogrid.datacenter.queriers.sql.StdSqlMaker;
+import org.astrogrid.util.DomHelper;
+import org.w3c.dom.Document;
 
 /**
  * This plugin works with a 'fixed' set of values in an HSQL database.  So
@@ -84,7 +86,7 @@ public class DummySqlPlugin extends JdbcPlugin
       }
       
       
-      log.debug("Populating Database");
+      log.info("Populating Database");
 
       //populate stars
       try {
@@ -123,8 +125,17 @@ public class DummySqlPlugin extends JdbcPlugin
       catch (SQLException se) {
          log.error("Populating demo galaxies",se);
       }
+
+      populated = true;
       
-      
+      //check metadata
+      try {
+         JdbcPlugin plugin = new DummySqlPlugin(null);
+         Document metadata = plugin.getMetadata();
+         log.info(DomHelper.DocumentToString(metadata));
+      } catch (IOException ioe) {
+         throw new RuntimeException(ioe);
+      }
       
    }
 
@@ -150,6 +161,9 @@ public class DummySqlPlugin extends JdbcPlugin
 }
    /*
    $Log: DummySqlPlugin.java,v $
+   Revision 1.4  2004/07/06 18:48:34  mch
+   Series of unit test fixes
+
    Revision 1.3  2004/03/13 23:38:46  mch
    Test fixes and better front-end JSP access
 

@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer_v0_4_1.java,v 1.8 2004/03/18 11:48:39 mch Exp $
+ * $Id: AxisDataServer_v0_4_1.java,v 1.9 2004/07/06 18:48:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -135,6 +135,9 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
       }
       try {
          Querier querier = (Querier) madeQueriers.get(queryId);
+         if (querier == null) {
+            throw new DatacenterException("Querier not found for ID "+queryId);
+         }
          querier.setResultsTarget(new TargetIndicator(new Agsl(resultsDestination.toString())));
       } catch (Exception e) {
          throw makeFault(CLIENTFAULT, e+" setting queryId ["+queryId+"] results target to "+resultsDestination, e);
@@ -181,7 +184,13 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
     * @soap
     */
    public void abortQuery(String queryId) throws AxisFault {
-      abortQuery(Account.ANONYMOUS, queryId);
+      if (madeQueriers.get(queryId) != null) {
+         madeQueriers.remove(queryId);
+      }
+      else
+      {
+         abortQuery(Account.ANONYMOUS, queryId);
+      }
    }
    
    /**
@@ -206,8 +215,14 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
     * @soap
     */
    public String getStatus(String queryId) throws AxisFault {
-      //this call already throws SoapFaultException on error
-      return getQueryStatus(Account.ANONYMOUS, queryId).getState().toString();
+      if (madeQueriers.get(queryId) != null) {
+         return ((Querier) madeQueriers.get(queryId)).getStatus().getState().toString();
+      }
+      else
+      {
+         //this callalready throws SoapFaultException on error
+         return getQueryStatus(Account.ANONYMOUS, queryId).getState().toString();
+      }
    }
    
    /**
@@ -258,6 +273,9 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
 
 /*
 $Log: AxisDataServer_v0_4_1.java,v $
+Revision 1.9  2004/07/06 18:48:34  mch
+Series of unit test fixes
+
 Revision 1.8  2004/03/18 11:48:39  mch
 fix for startQuery
 
