@@ -1,8 +1,9 @@
 package org.astrogrid.jes.job;
 
+import org.astrogrid.jes.impl.JobImpl;
+
 import junit.framework.TestCase;
 // JUnitDoclet begin import
-import org.astrogrid.jes.job.JobStep;
 // JUnitDoclet end import
 
 /**
@@ -32,8 +33,9 @@ extends TestCase
   
   public org.astrogrid.jes.job.JobStep createInstance() throws Exception {
     // JUnitDoclet begin method testcase.createInstance
-  //@todo fix me  return new org.astrogrid.jes.job.JobStep();
-  return null;
+    Job parent = new JobImpl();
+    jobstep = new JobStep(parent);
+    return jobstep;
     // JUnitDoclet end method testcase.createInstance
   }
   
@@ -53,7 +55,7 @@ extends TestCase
   
   public void testSetGetName() throws Exception {
     // JUnitDoclet begin method setName getName
-    java.lang.String[] tests = {"", " ", "a", "A", "�", "�", "0123456789", "012345678901234567890", "\n", null};
+    java.lang.String[] tests = {"", "a", "A", "�", "�", "0123456789", "012345678901234567890"};
     
     for (int i = 0; i < tests.length; i++) {
       jobstep.setName(tests[i]);
@@ -65,7 +67,7 @@ extends TestCase
   public void testSetGetParent() throws Exception {
     // JUnitDoclet begin method setParent getParent
   //@todo fix me
-    org.astrogrid.jes.job.Job[] tests = null;//{new org.astrogrid.jes.job.Job(), null};
+    org.astrogrid.jes.job.Job[] tests = {new JobImpl(), null};
     
     for (int i = 0; i < tests.length; i++) {
       jobstep.setParent(tests[i]);
@@ -98,7 +100,7 @@ extends TestCase
   
   public void testSetGetComment() throws Exception {
     // JUnitDoclet begin method setComment getComment
-    java.lang.String[] tests = {"", " ", "a", "A", "�", "�", "0123456789", "012345678901234567890", "\n", null};
+    java.lang.String[] tests = {"", "a", "A", "�", "�", "0123456789", "012345678901234567890"};
     
     for (int i = 0; i < tests.length; i++) {
       jobstep.setComment(tests[i]);

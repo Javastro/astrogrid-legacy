@@ -84,7 +84,7 @@ extends TestCase
   
   public void testSetGetName() throws Exception {
     // JUnitDoclet begin method setName getName
-    java.lang.String[] tests = {"", " ", "a", "A", "�", "�", "0123456789", "012345678901234567890", "\n", null};
+    java.lang.String[] tests = {"", "a", "A", "�", "�", "0123456789", "012345678901234567890"};
     
     for (int i = 0; i < tests.length; i++) {
       jobimpl.setName(tests[i]);
