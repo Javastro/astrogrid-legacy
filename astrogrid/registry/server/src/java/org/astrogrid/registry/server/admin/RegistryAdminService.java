@@ -125,13 +125,16 @@ public class RegistryAdminService implements
          System.out.println("the resultDoc to find an id = " + DomHelper.DocumentToString(resultDoc));         
       }else {
          addManageError = true;
+         System.out.println("checking if this is an AuthorityType it has attributes correct = " + currentResource.hasAttributes());
          if(currentResource.hasAttributes()) {
             NamedNodeMap nnm = currentResource.getAttributes();
             for(int j = 0;j < nnm.getLength();j++) {
-               Node attrNode = nnm.item(i);
+               Node attrNode = nnm.item(j);
                String nodeVal = attrNode.getNodeValue();
+               System.out.println("Checking NodeVal for an authorityType: current NodeVal = " + nodeVal);
                if(nodeVal != null && nodeVal.indexOf("AuthorityType") != -1) {
                   if(!otherAuths.containsKey((String)ident)) {
+                     System.out.println("This is an AuthorityType and not managed by other authorities");
                      addManageError = false;
                      //update new managed authority.
                      RegistryService rs = new RegistryService();
@@ -206,16 +209,19 @@ public class RegistryAdminService implements
       String resKey = null;
       boolean addManageError = false;
       for(int i = 0;i < nl.getLength();i++) {
-        ident = getAuthorityID((Element)nl.item(i));
-        resKey = getResourceKey((Element)nl.item(i));
-        Element currentResource = (Element)nl.item(i);         
-           xql = formUpdateXQLQuery(currentResource,ident,resKey);
-           df = xsDoc.createDocumentFragment();
-           root = xsDoc.getDocumentElement().cloneNode(false);
-           root.appendChild(currentResource);
-           df.appendChild(root);
-           resultDoc = XQueryExecution.runQuery(xql,df);
-           System.out.println("the resultDoc to find an id = " + DomHelper.DocumentToString(resultDoc));         
+         ident = getAuthorityID((Element)nl.item(i));
+         resKey = getResourceKey((Element)nl.item(i));
+         Element currentResource = (Element)nl.item(i);         
+         xql = formUpdateXQLQuery(currentResource,ident,resKey);
+         df = xsDoc.createDocumentFragment();
+         root = xsDoc.getDocumentElement().cloneNode(false);
+         if(!"VODescription".equals(root.getLocalName())) {
+            root = xsDoc.createElementNS("http://www.ivoa.net/xml/VOResource/v0.9","VODescription");
+         }
+         root.appendChild(currentResource);
+         df.appendChild(root);
+         resultDoc = XQueryExecution.runQuery(xql,df);
+         System.out.println("the resultDoc to find an id = " + DomHelper.DocumentToString(resultDoc));         
       }//for
    }
   

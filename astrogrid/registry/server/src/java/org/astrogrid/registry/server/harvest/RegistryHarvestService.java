@@ -96,8 +96,8 @@ public class RegistryHarvestService implements
          
          //NodeList regNL = registryDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority");
          String selectQuery = "<query><selectionSequence>" +
-              "<selection item='searchElements' itemOp='EQ' value='all'/>" +
-              "<selectionOp op='AND'/>";
+              "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
+              "<selectionOp op='$and$'/>";
          if(regNL.getLength() > 0) {
             selectQuery +=  
             "<selection item='AuthorityID' itemOp='EQ' value='" + regNL.item(0).getFirstChild().getNodeValue() + "'/>";
@@ -155,8 +155,8 @@ public class RegistryHarvestService implements
 
          
          String selectQuery = "<query><selectionSequence>" +
-             "<selection item='searchElements' itemOp='EQ' value='all'/>" +
-             "<selectionOp op='AND'/>" + 
+             "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
+             "<selectionOp op='$and$'/>" + 
              "<selection item='@updated' itemOp='AFTER' value='" + updateVal + "'/>";;
          if(regNL.getLength() > 0) {
             selectQuery +=  
@@ -194,83 +194,45 @@ public class RegistryHarvestService implements
       ArrayList al = new ArrayList();
       RegistryAdminService ras = new RegistryAdminService();
       try {
-         System.out.println("what was passed in at harvestResoruce = " + DomHelper.DocumentToString(resources));
-         
-         
-         NodeList voList = resources.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","VODescription");
-         
-         if(voList.getLength() == 0) {
-            voList = resources.getElementsByTagNameNS("vr","VODescription");
-         }
-         if(voList.getLength() == 0) {
-            voList = resources.getElementsByTagName("VODescription");
-         }
-         if(voList.getLength() == 0) {
-            voList = resources.getElementsByTagName("vr:VODescription");
-         }
-         if(voList.getLength() == 0) {
-            return null;   
-         }
-         
+         //System.out.println("what was passed in at harvestResoruce = " + DomHelper.DocumentToString(resources));
          XSLHelper xs = new XSLHelper();
-         Document resourceChange = xs.transformDatabaseProcess(voList.item(0));
+         Document resourceChange = xs.transformDatabaseProcess((Node)resources);
          System.out.println("the resourceChange = " + DomHelper.DocumentToString(resourceChange));
          Document castorXS = xs.transformCastorProcess((Node)resourceChange);
          System.out.println("castorxs = " + DomHelper.DocumentToString(castorXS));
          VODescription vodesc = (VODescription)Unmarshaller.unmarshal(VODescription.class,castorXS);
          HashMap auths = RegistryFileHelper.getManagedAuthorities();
          int count = vodesc.getResourceCount();
-
-         DocumentBuilder registryBuilder = null;
-         Document doc = null;
-         Document resultDoc = null;
+         
+         boolean updateAllResources = true;
+         
          for(int i = 0;i < count;i++) {
             ResourceType rtTemp = vodesc.getResource(i);
             if(rtTemp instanceof ServiceType) {            
                if(rtTemp instanceof RegistryType) {
+                  System.out.println("added entry of RegistryType to be harvested");
                   al.add(rtTemp);
-                  registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-                  doc = registryBuilder.newDocument();
-                  try {                                       
-                     Marshaller.marshal(rtTemp,doc);
-                     System.out.println("updating the ResourceType document from the marshaller doc = " + DomHelper.DocumentToString(doc));
-                     ras.updateNoCheck(doc);
-//                     resultDoc = RegistryFileHelper.updateDocument(doc,true,false);
-//                     if(resultDoc != null) 
-//                        System.out.println("after updating the ResourceType document = " + DomHelper.DocumentToString(resultDoc));
-                  }catch(ValidationException ve) {
-                     ve.printStackTrace();
-                  }catch(MarshalException me) {
-                     me.printStackTrace();
-                  }
                }else {
                   if(auths != null && auths.containsKey(rtTemp.getIdentifier().getAuthorityID())) {
+                     System.out.println("added entry of ServiceType to be harvested");
                      al.add(rtTemp);
-                     registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-                     doc = registryBuilder.newDocument();
-                     try {
-                        Marshaller.marshal(rtTemp,doc);
-                        ras.updateNoCheck(doc);
-//                        resultDoc = RegistryFileHelper.updateDocument(doc,true,false);
-//                        System.out.println("after updating the ResourceType document = " + DomHelper.DocumentToString(resultDoc));
-                     }catch(ValidationException ve) {
-                        ve.printStackTrace();
-                     }catch(MarshalException me) {
-                        me.printStackTrace();
-                     }
-                  }//if
+                  }else {
+                     updateAllResources = false;   
+                  }
                }//else
             }//if
          }//for
+         
+         if(updateAllResources) {
+            System.out.println("Updating Resources of = " + DomHelper.DocumentToString(resourceChange));
+            ras.updateNoCheck(resourceChange);            
+         }
       }catch(MarshalException me) {
          me.printStackTrace();
          //throw new RegistryException(me);
       }catch(ValidationException ve) {
          ve.printStackTrace();
        //  throw new RegistryException(ve);
-      }catch(ParserConfigurationException pce) {
-         pce.printStackTrace();
-         //throw new RegistryException(pce);   
       }
       
       for(int i = 0;i < al.size();i++) {
@@ -321,16 +283,13 @@ public class RegistryHarvestService implements
          if(voList.getLength() == 0) {
             return null;   
          }
-         
+         RegistryAdminService ras = new RegistryAdminService();
          XSLHelper xs = new XSLHelper();
          Document resourceChange = xs.transformDatabaseProcess(voList.item(0));
          Document castorXS = xs.transformCastorProcess((Node)resourceChange);
-         
+         boolean updateAllResources = true;         
           //Now get the dateFrom element value as well.
-          //NodeList nl = resource.getElementsByTagName("VODescription");
-          NodeList nl = castorXS.getElementsByTagName("VODescription");
-          if(nl.getLength() > 0) {
-             VODescription vodesc = (VODescription)Unmarshaller.unmarshal(VODescription.class,nl.item(0));
+             VODescription vodesc = (VODescription)Unmarshaller.unmarshal(VODescription.class,castorXS);
              HashMap auths = RegistryFileHelper.getManagedAuthorities();
              int count = vodesc.getResourceCount();
              ArrayList al = new ArrayList();
@@ -339,19 +298,25 @@ public class RegistryHarvestService implements
                 ResourceType rtTemp = vodesc.getResource(i);
                 if(rtTemp instanceof ServiceType) {            
                    if(rtTemp instanceof RegistryType) {
-                      al.add(rtTemp);                        
+                      al.add(rtTemp);
                    }else {
-                      if(auths != null && auths.containsKey(rtTemp.getIdentifier().getAuthorityID())) {
-                         al.add(rtTemp);
-                      }//if
+                     if(auths != null && auths.containsKey(rtTemp.getIdentifier().getAuthorityID())) {
+                        al.add(rtTemp);
+                     }else {
+                        updateAllResources = false;   
+                     }
                    }//else
                 }//if
              }//for
+             
+             if(updateAllResources) {
+                System.out.println("Updating Resources of = " + DomHelper.DocumentToString(resourceChange));
+                ras.updateNoCheck(resourceChange);            
+             }             
              for(int i = 0;i < al.size();i++) {
                 //remember to use the dateFrom element.
                 beginHarvest(null,(ServiceType)al.get(i));
              }
-         }//if
       }catch(MarshalException me) {
          me.printStackTrace();
          //throw new RegistryException(me);
