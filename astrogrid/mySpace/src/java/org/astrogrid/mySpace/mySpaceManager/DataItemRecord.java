@@ -76,7 +76,7 @@ public class DataItemRecord implements Serializable
 
 /**
  * Constructor in which arguments are passed to set all the member
- * variables.
+ * variables (except dataItemUri is not passed).
  */
 
    public DataItemRecord (String dataItemName,  int dataItemID,
@@ -93,6 +93,27 @@ public class DataItemRecord implements Serializable
       this.permissionsMask = permissionsMask;
 
       this.dataItemUri = null;
+   }
+
+/**
+ * Constructor in which all arguments are passed to set all the member
+ * variables (except dataItemUri is not passed).
+ */
+
+   public DataItemRecord (String dataItemName,  int dataItemID,
+     String dataItemFile,  String dataItemUri, String ownerID,  
+     Date creationDate, Date expiryDate,  int size,  int type, 
+     String permissionsMask)
+   {  this.dataItemName = dataItemName;
+      this.dataItemID = dataItemID;
+      this.dataItemFile = dataItemFile;
+      this.dataItemUri = dataItemUri;
+      this.ownerID = ownerID;
+      this.creationDate = creationDate;
+      this.expiryDate = expiryDate;
+      this.size = size;
+      this.type = type;
+      this.permissionsMask = permissionsMask;
    }
 
 /**
@@ -161,6 +182,15 @@ public class DataItemRecord implements Serializable
 
    public String getDataItemFile()
    {  return dataItemFile;
+   }
+
+/**
+ * Return the URI name corresponding to the <code>DataHolder</code>
+ * in the appropriate MySpace server.
+ */
+
+   public String getDataItemUri()
+   {  return dataItemUri;
    }
 
 /**
@@ -258,6 +288,16 @@ public class DataItemRecord implements Serializable
 
 //
 // Other methods.
+
+/**
+ * Set the URI name corresponding to the <code>DataHolder</code>
+ * in the appropriate MySpace server.
+ */
+
+   public void setDataItemUri(String dataItemUri)
+   {  this.dataItemUri = dataItemUri;
+   }
+
 
 /**
  * Reset the DataItemFile.  The DataItemFile name should not be exported

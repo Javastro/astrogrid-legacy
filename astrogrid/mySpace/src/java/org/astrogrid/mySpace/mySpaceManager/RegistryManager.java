@@ -489,6 +489,9 @@ public class RegistryManager
          if (dbvec != null)
          {  if (dbvec.size() == 1)
             {  returnItemRecord = (DataItemRecord)dbvec.elementAt(0);
+               String uri = this.getServerURI("serv1") +
+                 returnItemRecord.getDataItemFile();
+               returnItemRecord.setDataItemUri(uri);
             }
             else
             {  throw new Exception("JDBC error : " + sqlStatement);
@@ -527,7 +530,7 @@ public class RegistryManager
  */
 
    public Vector lookupDataItemRecords(String dataHolderNameExpr)
-   {  Vector returnItemRecords = null;
+   {  Vector returnItemRecords = new Vector();
 
       try
       {
@@ -549,7 +552,16 @@ public class RegistryManager
 
          Vector dbvec = this.transact(sqlStatement, false);
          if (dbvec != null)
-         {  returnItemRecords = dbvec;
+         {  if (dbvec.size() > 0)
+            {  for(int loop=0; loop<dbvec.size(); loop++)
+               {  DataItemRecord currRec =
+                    (DataItemRecord)dbvec.elementAt(loop);
+                  String uri = this.getServerURI("serv1") +
+                    currRec.getDataItemFile();
+                  currRec.setDataItemUri(uri);
+                  returnItemRecords.add(currRec);
+               }
+            }
          }
          else
          {  throw new Exception("JDBC error : " + sqlStatement);
@@ -563,6 +575,13 @@ public class RegistryManager
          MySpaceStatus status = new MySpaceStatus(
            MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
            MySpaceStatusCode.LOG, this.getClassName() );
+      }
+
+      if (returnItemRecords != null)
+      {  if (returnItemRecords.size() == 0)
+         {  returnItemRecords = null;
+            System.out.println("hello");
+         }
       }
 
       return returnItemRecords;

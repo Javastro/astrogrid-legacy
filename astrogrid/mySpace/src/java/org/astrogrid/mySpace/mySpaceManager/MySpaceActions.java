@@ -13,7 +13,6 @@ import org.astrogrid.mySpace.mySpaceStatus.*;
  * @author A C Davenhall (Edinburgh)
  * @since Iteration 2.
  * @version Iteration 5.
- * @TODO update logging statements to use commons-logging
  */
 
 public class MySpaceActions
@@ -80,7 +79,7 @@ public class MySpaceActions
       {  RegistryManager reg = new RegistryManager(registryName);
 
          dataItemVector = this.internalLookupDataHoldersDetails(
-           account,  query, reg);
+           account, query, reg);
       }
       catch (Exception all)
       {  MySpaceStatus status  = new MySpaceStatus(
@@ -134,91 +133,142 @@ public class MySpaceActions
                  + dispatchExisting + " " + ManagerCodes.OVERWRITE);
 
 //
-//            If the ManagerCodes.OVERWRITE option has been specified then 
-//            delete any existing dataHolder of the specified name.
+//            Check whether the new contents are to be appended to an
+//            existing file.
 
-               if (dispatchExisting == ManagerCodes.OVERWRITE)
-               {  boolean deleteOk = this.deleteExistingDataHolder(
-                    account, newDataItemName, reg);
-               }
-// logger.appendMessage("MYSPACEACTION BUG266."+deleteOk);
-// } else if(dispatchExisting == ManagerCodes.APPEND){
-// logger.appendMessage("MYSPACEATION.upLoadDataHolder append = true" );
-// }
+               dispatchExisting = ManagerCodes.LEAVE;
 
-//
-//            Check that the specified dataHolder can be created.
 
-               logger.appendMessage("before checkCanBeCreated");
-               if(this.checkCanBeCreated(newDataItemName, userAcc,
-                 "", reg) == true)
+               if (dispatchExisting != ManagerCodes.APPEND)
                {
-                  logger.appendMessage("after checkCanBeCreated");
 //
-//               Create a DataItemRecord for the new DataHolder.
+//               If the ManagerCodes.OVERWRITE option has been specified then 
+//               delete any existing dataHolder of the specified name.
 
-                  Date creation = new Date();
-
-                  int newdataItemID = -1;
-                  String dataItemFileName = "";
-
-                  int dataItemType = contentsType;
-                  int dataItemSize = contents.length();
-
-                  DataItemRecord newDataItem = new DataItemRecord
-                    (newDataItemName, newdataItemID,
-                    dataItemFileName, account, creation, creation,
-                    dataItemSize, dataItemType, "permissions");
-
+                  if (dispatchExisting == ManagerCodes.OVERWRITE)
+                  {  boolean deleteOk = this.deleteExistingDataHolder(
+                       account, newDataItemName, reg);
+                  }
 //
-//               Attempt to add this entry to the registry.
+//               Check that the specified dataHolder can be created.
 
-                  logger.appendMessage("before addDataItemRecord");
-                  newDataItem = reg.addDataItemRecord(newDataItem);
-                  logger.appendMessage("after addDataItemRecord");
-
-                  System.out.println("new file name: " +
-                     newDataItem.getDataItemFile() );
-
-                  if (newDataItem != null)
-                  {  newdataItemID = newDataItem.getDataItemID();
-                     dataItemFileName = newDataItem.getDataItemFile();
+                  logger.appendMessage("before checkCanBeCreated");
+                  if(this.checkCanBeCreated(newDataItemName, userAcc,
+                    "", reg) == true)
+                  {  logger.appendMessage("after checkCanBeCreated");
 
 //
-//                  Attempt to copy the contents of the input string as
-//                  a new file on the server.
-//
-//                  [TODO]: Remove the hard-wired server name.
+//                  Create a DataItemRecord for the new DataHolder.
 
-                     String serverName = "serv1";
-                     System.out.println("serverName: " + serverName);
-                     String serverDirectory =
-                       reg.getServerDirectory(serverName);
-                     System.out.println("serverDirectory" +
-                       serverDirectory);
+                     Date creation = new Date();
 
-                     String copyTo = serverDirectory + dataItemFileName;
+                     int newdataItemID = -1;
+                     String dataItemFileName = "";
 
-                     ServerDriver serverDriver = new ServerDriver();
-                     if(!serverDriver.upLoadString(contents, copyTo) )
-                     {
+                     int dataItemType = contentsType;
+                     int dataItemSize = contents.length();
+
+                     DataItemRecord newDataItem = new DataItemRecord
+                       (newDataItemName, newdataItemID,
+                       dataItemFileName, account, creation, creation,
+                       dataItemSize, dataItemType, "permissions");
 
 //
-//                     The actual up-load of the contents failed.
-//                     Delete the new entry from the registry, to bring
-//                     the registry back into line with reality and
-//                     report an error.
+//                  Attempt to add this entry to the registry.
 
-                        reg.deleteDataItemRecord(newdataItemID);
-                        status.addCode(MySpaceStatusCode.AGMMCE00202,
+                     logger.appendMessage("before addDataItemRecord");
+                     newDataItem = reg.addDataItemRecord(newDataItem);
+                     logger.appendMessage("after addDataItemRecord");
+
+                     System.out.println("new file name: " +
+                        newDataItem.getDataItemFile() );
+
+                     if (newDataItem != null)
+                     {  newdataItemID = newDataItem.getDataItemID();
+                        dataItemFileName = newDataItem.getDataItemFile();
+
+//
+//                     Attempt to copy the contents of the input string as
+//                     a new file on the server.
+//
+//                     [TODO]: Remove the hard-wired server name.
+
+                        String serverName = "serv1";
+                        System.out.println("serverName: " + serverName);
+                        String serverDirectory =
+                          reg.getServerDirectory(serverName);
+                        System.out.println("serverDirectory" +
+                          serverDirectory);
+
+                        String copyTo = serverDirectory + dataItemFileName;
+
+                        ServerDriver serverDriver = new ServerDriver();
+                        if(!serverDriver.upLoadString(contents, copyTo,
+                          false) )
+                        {
+
+//
+//                        The actual up-load of the contents failed.
+//                        Delete the new entry from the registry, to bring
+//                        the registry back into line with reality and
+//                        report an error.
+
+                           reg.deleteDataItemRecord(newdataItemID);
+                           status.addCode(MySpaceStatusCode.AGMMCE00202,
+                             MySpaceStatusCode.ERROR,
+                             MySpaceStatusCode.LOG, this.getClassName() );
+
+                            returnStatus = false;
+                        }
+                     }
+                     else
+                     {  status.addCode(MySpaceStatusCode.AGMMCE00203,
                           MySpaceStatusCode.ERROR,
                           MySpaceStatusCode.LOG, this.getClassName() );
 
-                         returnStatus = false;
+                        returnStatus = false;
+                     }
+                  }
+               }
+               else
+               {
+//
+//               The contents are to be appended to an existing file;
+//               check that it exits.
+
+                  Vector dataItems = 
+                    this.internalLookupDataHoldersDetails(account, 
+                      newDataItemName, reg);
+
+                  boolean itemExists = false;
+                  if (dataItems != null)
+                  {  if(dataItems.size() > 0)
+                     {  itemExists = true;
+                     }
+                  }
+
+                  if (itemExists)
+                  {  DataItemRecord dataItem =
+                       (DataItemRecord)dataItems.elementAt(0);
+
+                     String dataItemFileName = dataItem.getDataItemFile();
+                     String serverName = "serv1";
+                     String serverDirectory =
+                       reg.getServerDirectory(serverName);
+ 
+                     String copyTo = serverDirectory + dataItemFileName;
+
+                     ServerDriver serverDriver = new ServerDriver();
+                     if(!serverDriver.upLoadString(contents, copyTo, true) )
+                     {  status.addCode(MySpaceStatusCode.AGMMCE00207,
+                          MySpaceStatusCode.ERROR,
+                          MySpaceStatusCode.LOG, this.getClassName() );
+
+                        returnStatus = false;
                      }
                   }
                   else
-                  {  status.addCode(MySpaceStatusCode.AGMMCE00203,
+                  {  status.addCode(MySpaceStatusCode.AGMMCE00201,
                        MySpaceStatusCode.ERROR,
                        MySpaceStatusCode.LOG, this.getClassName() );
 
@@ -238,6 +288,210 @@ public class MySpaceActions
 
       return returnStatus;
    }
+
+
+// -----------------------------------------------------------------
+
+/**
+ * Save (or put) the contents of a URL as a specified DataHolder in the 
+ * MySpace system.
+ */
+
+   public boolean putUri(String account, String newDataItemName, 
+     String importUrl, int contentsType, int dispatchExisting)
+   {  boolean returnStatus = true;
+
+      MySpaceStatus status = new MySpaceStatus();
+      logger.appendMessage("entered putUrl");
+
+      try
+      {
+//
+//      Attempt to open the registry and proceed if ok.
+
+         logger.appendMessage("registryName: " + registryName);
+         RegistryManager reg = new RegistryManager(registryName);
+         logger.appendMessage("after RegistryManager: " +
+           status.getSuccessStatus());
+         if (status.getSuccessStatus())
+         {
+
+//
+//         Assemble the UserAccount from the account.
+
+            UserAccount userAcc = new UserAccount(account, "", "");
+            logger.appendMessage("after UserAccount");
+//
+//         Check the user's system authorisation and proceed if ok.
+
+            if (userAcc.checkSystemAuthorisation(UserAccount.WRITE) )
+            {
+               logger.appendMessage("after checkSystemAuthorisation");
+               logger.appendMessage("hello");
+               logger.appendMessage("dispatchExisting, ManagerCodes.OVERWRITE"
+                 + dispatchExisting + " " + ManagerCodes.OVERWRITE);
+
+//
+//            Check whether the new contents are to be appended to an
+//            existing file.
+
+               if (dispatchExisting != ManagerCodes.APPEND)
+               {
+//
+//               If the ManagerCodes.OVERWRITE option has been specified then 
+//               delete any existing dataHolder of the specified name.
+
+                  if (dispatchExisting == ManagerCodes.OVERWRITE)
+                  {  boolean deleteOk = this.deleteExistingDataHolder(
+                       account, newDataItemName, reg);
+                  }
+//
+//               Check that the specified dataHolder can be created.
+
+                  logger.appendMessage("before checkCanBeCreated");
+                  if(this.checkCanBeCreated(newDataItemName, userAcc,
+                    "", reg) == true)
+                  {  logger.appendMessage("after checkCanBeCreated");
+
+//
+//                  Create a DataItemRecord for the new DataHolder.
+
+                     Date creation = new Date();
+
+                     int newdataItemID = -1;
+                     String dataItemFileName = "";
+
+                     int dataItemType = contentsType;
+
+//
+//                  [TODO]: Set the size properly.
+
+                     int dataItemSize = 10;
+
+                     DataItemRecord newDataItem = new DataItemRecord
+                       (newDataItemName, newdataItemID,
+                       dataItemFileName, account, creation, creation,
+                       dataItemSize, dataItemType, "permissions");
+
+//
+//                  Attempt to add this entry to the registry.
+
+                     logger.appendMessage("before addDataItemRecord");
+                     newDataItem = reg.addDataItemRecord(newDataItem);
+                     logger.appendMessage("after addDataItemRecord");
+
+                     System.out.println("new file name: " +
+                        newDataItem.getDataItemFile() );
+
+                     if (newDataItem != null)
+                     {  newdataItemID = newDataItem.getDataItemID();
+                        dataItemFileName = newDataItem.getDataItemFile();
+
+//
+//                     Attempt to copy the contents of the input string as
+//                     a new file on the server.
+//
+//                     [TODO]: Remove the hard-wired server name.
+
+                        String serverName = "serv1";
+                        System.out.println("serverName: " + serverName);
+                        String serverDirectory =
+                          reg.getServerDirectory(serverName);
+                        System.out.println("serverDirectory" +
+                          serverDirectory);
+
+                        String copyTo = serverDirectory + dataItemFileName;
+
+                        ServerDriver serverDriver = new ServerDriver();
+                        if(!serverDriver.importDataHolder(importUrl, copyTo,
+                          false) )
+                        {
+
+//
+//                        The actual up-load of the contents failed.
+//                        Delete the new entry from the registry, to bring
+//                        the registry back into line with reality and
+//                        report an error.
+
+                           reg.deleteDataItemRecord(newdataItemID);
+                           status.addCode(MySpaceStatusCode.AGMMCE00202,
+                             MySpaceStatusCode.ERROR,
+                             MySpaceStatusCode.LOG, this.getClassName() );
+
+                            returnStatus = false;
+                        }
+                     }
+                     else
+                     {  status.addCode(MySpaceStatusCode.AGMMCE00203,
+                          MySpaceStatusCode.ERROR,
+                          MySpaceStatusCode.LOG, this.getClassName() );
+
+                        returnStatus = false;
+                     }
+                  }
+               }
+               else
+               {
+//
+//               The contents are to be appended to an existing file;
+//               check that it exits.
+
+                  Vector dataItems = 
+                    this.internalLookupDataHoldersDetails(account, 
+                      newDataItemName, reg);
+
+                  boolean itemExists = false;
+                  if (dataItems != null)
+                  {  if(dataItems.size() > 0)
+                     {  itemExists = true;
+                     }
+                  }
+
+                  if (itemExists)
+                  {  DataItemRecord dataItem =
+                       (DataItemRecord)dataItems.elementAt(0);
+
+                     String dataItemFileName = dataItem.getDataItemFile();
+                     String serverName = "serv1";
+                     String serverDirectory =
+                       reg.getServerDirectory(serverName);
+ 
+                     String copyTo = serverDirectory + dataItemFileName;
+
+                     ServerDriver serverDriver = new ServerDriver();
+                     if(!serverDriver.importDataHolder(importUrl,
+                       copyTo, true) )
+                     {  status.addCode(MySpaceStatusCode.AGMMCE00207,
+                          MySpaceStatusCode.ERROR,
+                          MySpaceStatusCode.LOG, this.getClassName() );
+
+                        returnStatus = false;
+                     }
+                  }
+                  else
+                  {  status.addCode(MySpaceStatusCode.AGMMCE00201,
+                       MySpaceStatusCode.ERROR,
+                       MySpaceStatusCode.LOG, this.getClassName() );
+
+                     returnStatus = false;
+                  }
+               }
+            }
+         }
+      }
+      catch (Exception all)
+      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+           MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+           this.getClassName() );
+
+         returnStatus = false;
+      }
+
+      return returnStatus;
+   }
+
+
+
 
 // -----------------------------------------------------------------
 
@@ -555,7 +809,7 @@ public class MySpaceActions
 
                               ServerDriver serverDriver = new ServerDriver();
                               if(!serverDriver.importDataHolder(
-                                oldDataHolderURI, copyTo) )
+                                oldDataHolderURI, copyTo, false) )
                               {  copyOk = false;
                               }
                            }
@@ -1301,6 +1555,15 @@ public class MySpaceActions
 
             Vector dataItemFoundVector =
               reg.lookupDataItemRecords(query);
+
+//            if (dataItemFoundVector != null)
+//            {  logger.appendMessage("dataItemFoundVector size = " +
+//                 dataItemFoundVector.size() );
+//            }
+//            else
+//            {  logger.appendMessage("dataItemFoundVector is null");
+//            }
+
             if (status.getSuccessStatus())
             {
 
@@ -1308,43 +1571,50 @@ public class MySpaceActions
 //            Check whether any DataHolders were found (it is perfectly
 //            possible that no entries will match the query string).
 
-               if (dataItemFoundVector.size() > 0)
-               {
+               if (dataItemFoundVector != null)
+               {  if (dataItemFoundVector.size() > 0)
+                  {
 
 //
-//               Examine every entry and check that the user has the
-//               privilege to access it.  If not remove it from the list.
+//                  Examine every entry and check that the user has the
+//                  privilege to access it.  If not remove it from the list.
 
-                  for (int loop = 0; loop < dataItemFoundVector.size();
-                    loop++)
-                  {  DataItemRecord currentItem = 
-                       (DataItemRecord)dataItemFoundVector.get(loop);
+                     for (int loop = 0; loop < dataItemFoundVector.size();
+                       loop++)
+                     {  DataItemRecord currentItem = 
+                          (DataItemRecord)dataItemFoundVector.get(loop);
 
-                     String permissions;
-                     permissions = currentItem.getPermissionsMask();
-                     String ownerID;
-                     ownerID = currentItem.getOwnerID();
+                        String permissions;
+                        permissions = currentItem.getPermissionsMask();
+                        String ownerID;
+                        ownerID = currentItem.getOwnerID();
 
-                     if (!userAcc.checkAuthorisation(UserAccount.READ,
-                       ownerID, permissions))
-                     {  dataItemFoundVector.remove(loop);
+                        if (!userAcc.checkAuthorisation(UserAccount.READ,
+                          ownerID, permissions))
+                        {  dataItemFoundVector.remove(loop);
+                        }
                      }
-                  }
 
 //
-//               If any DataItemRecords remain in the Vector then copy
-//               the Vector to the return vector.  If no items are left
-//               then issue an informational message.
+//                  If any DataItemRecords remain in the Vector then copy
+//                  the Vector to the return vector.  If no items are left
+//                  then issue an informational message.
 
-                  if (dataItemFoundVector.size() > 0)
-                  {  dataItemVector = dataItemFoundVector;
+                     if (dataItemFoundVector.size() > 0)
+                     {  dataItemVector = dataItemFoundVector;
+                     }
+                     else
+                     {  status.addCode(MySpaceStatusCode.AGMMCI00250,
+                          MySpaceStatusCode.INFO, MySpaceStatusCode.NOLOG,
+                          this.getClassName() );
+                     }
                   }
                   else
                   {  status.addCode(MySpaceStatusCode.AGMMCI00250,
                        MySpaceStatusCode.INFO, MySpaceStatusCode.NOLOG,
                        this.getClassName() );
                   }
-               }
+                  }
                else
                {  status.addCode(MySpaceStatusCode.AGMMCI00250,
                     MySpaceStatusCode.INFO, MySpaceStatusCode.NOLOG,
@@ -1491,7 +1761,7 @@ public class MySpaceActions
 
    private boolean deleteExistingDataHolder(String account,
      String dataItemName, RegistryManager reg)
-   {  boolean deleteOk = false;
+   {  boolean deleteOk = true;
 
       MySpaceStatus status = new MySpaceStatus();
 

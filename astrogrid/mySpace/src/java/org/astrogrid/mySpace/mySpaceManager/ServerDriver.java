@@ -43,27 +43,34 @@ public class ServerDriver
 // -----------------------------------------------------------------
 
 /**
-  * Write the contents of an input string as a new file a MySpace
-  * server.
-  *
-  * @param contents The string containing the contents to be written
-  *  to the new file.
-  *
-  * @param newDataHolderFileName  The name of the file on the server
-  *  corresponding to the DataHolder to be copied to (ie. the
-  *  output file).  The file name should include the full directory
-  *  specification, as known to the server operating system.
-  */
+ * Write the contents of an input string as a new file a MySpace
+ * server.
+ *
+ * @param contents The string containing the contents to be written
+ *  to the new file.
+ * @param newDataHolderFileName  The name of the file on the server
+ *  corresponding to the DataHolder to be copied to (ie. the
+ *  output file).  The file name should include the full directory
+ *  specification, as known to the server operating system.
+ * @param appendFlag If true the contents will be appended to the end
+ *   of an existing file; otherwise any existing file will be
+ *   overwritten.
+ */
 
    public boolean upLoadString(String contents,
-     String newDataHolderFileName)
+     String newDataHolderFileName, boolean appendFlag)
    {  boolean successStatus = true;
 
       Configuration config = new Configuration();
 
       try
       {  if (config.getSERVERDEPLOYMENT() == config.SEPARATESERVERS)
-         {  call = createServerCall();
+         {  
+//
+//         [TODO]: This method is now broken.  The appendFlag
+//           argument should be added.
+
+            call = createServerCall();
             call.setOperationName( "upLoadString" );		
             call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
             call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
@@ -78,7 +85,8 @@ public class ServerDriver
          }
          else if (config.getSERVERDEPLOYMENT() == config.INTERNALSERVERS)
          {  ServerManager server = new ServerManager();
-            server.upLoadString(contents, newDataHolderFileName);
+            server.upLoadString(contents, newDataHolderFileName,
+              appendFlag);
          }
          else if (config.getSERVERDEPLOYMENT() == config.MANAGERONLY)
          {  logger.appendMessage(
@@ -104,28 +112,35 @@ public class ServerDriver
 // -----------------------------------------------------------------
 
 /**
-  * Import a new dataHolder into a MySpace sercer.  A remote file is
-  * imported into the MySpace server.  This remote file is identified by
-  * a URI, which is passed as one of the input arguments.  In Iteration
-  * 3 this URI must be a URL.
-  *
-  * @param importURI The URI of the remote file to be imported.
-  *
-  * @param newDataHolderFileName  The name of the file on the server
-  *  corresponding to the DataHolder to be copied to (ie. the
-  *  output file).  The file name should include the full directory
-  *  specification, as known to the server operating system.
-  */
+ * Import a new dataHolder into a MySpace sercer.  A remote file is
+ * imported into the MySpace server.  This remote file is identified by
+ * a URI, which is passed as one of the input arguments.  In Iteration
+ * 3 this URI must be a URL.
+ *
+ * @param importURI The URI of the remote file to be imported.
+ * @param newDataHolderFileName  The name of the file on the server
+ *  corresponding to the DataHolder to be copied to (ie. the
+ *  output file).  The file name should include the full directory
+ *  specification, as known to the server operating system.
+ * @param appendFlag If true the contents will be appended to the end
+ *   of an existing file; otherwise any existing file will be
+ *   overwritten.
+ */
 
    public boolean importDataHolder(String importURI, 
-     String newDataHolderFileName)
+     String newDataHolderFileName, boolean appendFlag)
    {  boolean successStatus = true;
 
       Configuration config = new Configuration();
 
       try
       {  if (config.getSERVERDEPLOYMENT() == config.SEPARATESERVERS)
-         {  call = createServerCall();
+         {
+//
+//         [TODO]: This method is now broken.  The appendFlag
+//           argument should be added.
+
+            call = createServerCall();
             call.setOperationName( "importDataHolder" );
             call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
             call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
@@ -140,7 +155,8 @@ public class ServerDriver
          }
          else if (config.getSERVERDEPLOYMENT() == config.INTERNALSERVERS)
          {  ServerManager server = new ServerManager();
-            server.importDataHolder(importURI, newDataHolderFileName);
+            server.importDataHolder(importURI, newDataHolderFileName,
+              appendFlag);
          }
          else if (config.getSERVERDEPLOYMENT() == config.MANAGERONLY)
          {  logger.appendMessage(
