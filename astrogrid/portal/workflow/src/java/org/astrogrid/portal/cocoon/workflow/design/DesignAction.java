@@ -197,7 +197,9 @@ public class DesignAction extends AbstractAction {
         ACTION_READ_LISTS = "read-lists",
         ACTION_REMOVE_WORKFLOW_FROM_SESSION = "remove-workflow-from-session",
         ACTION_RESET_WORKFLOW = "reset-workflow",
-        ACTION_REMOVE_ACTIVITY = "remove_activity";
+        ACTION_REMOVE_ACTIVITY = "remove_activity",
+	    SAVE_WORKFLOW_IVORN_PARAMETER = "save-workflow-ivorn",
+	    OPEN_WORKFLOW_IVORN_PARAMETER = "open-workflow-ivorn";
         
     public static final String
         AUTHORIZATION_RESOURCE_WORKFLOW = "workflow" ,
@@ -573,7 +575,7 @@ public class DesignAction extends AbstractAction {
         private void saveWorkflow() throws ConsistencyException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.saveWorkflow() entry" ) ;
             
-            String ivornName = request.getParameter( WORKFLOW_IVORN_PARAMETER ) ;
+            String ivornName = request.getParameter( SAVE_WORKFLOW_IVORN_PARAMETER ) ;
 			debug( "ivornName: " + ivornName );
             Ivorn ivorn = null;
                                        
@@ -627,9 +629,9 @@ public class DesignAction extends AbstractAction {
               
             String
                  name = request.getParameter( WORKFLOW_NAME_PARAMETER ),
-                 ivornName = request.getParameter( WORKFLOW_IVORN_PARAMETER ) ;
+                 ivornName = request.getParameter( OPEN_WORKFLOW_IVORN_PARAMETER ) ;
                  debug("workflow name: " + name) ;
-                 debug("ivorn: " + ivornName) ;
+                 debug("ivorn name: " + ivornName) ;
             Ivorn ivorn = null;
               
             try {

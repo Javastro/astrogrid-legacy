@@ -40,7 +40,7 @@
                         <input type="submit" name="action" value="add-name-description" />
                     </td>
                     <td>
-                        ivorn:<input type="text" name="workflow-ivorn" id="open-workflow-ivorn"/>
+                        ivorn:<input type="text" name="open-workflow-ivorn" id="open-workflow-ivorn"/>
                         agsl:<input type="text" name="open-workflow-agsl" id="open-workflow-agsl"/>                        
                         <input type="submit" name="action" value="read-workflow" />                        
                     </td>                                
@@ -56,7 +56,7 @@
                         </xsl:element>                  
                     </td>
                     <td>
-                        ivorn:<input type="text" name="workflow-ivorn" id="save-workflow-ivorn"/>
+                        ivorn:<input type="text" name="save-workflow-ivorn" id="save-workflow-ivorn"/>
                         agsl:<input type="text" name="save-workflow-agsl" id="save-workflow-agsl"/>
                         <input type="submit" name="action" value="save-workflow"/>                                                                       
                     </td>
