@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.58 2004/07/06 10:30:04 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.59 2004/07/19 10:20:56 nw Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -385,7 +385,7 @@
 <goal name="run-scripting-gui" description="don't call directly - use scripting-gui goal">
         <mkdir dir="${temporary.dir}/client" />
         <copy todir="${temporary.dir}/client" filtering="true">
-                <fileset dir="client-config" />
+                <fileset dir="webapps/astrogrid-configuration" />
         </copy>
         <!-- classname="org.mozilla.javascript.tools.shell.Main" for command-line version -->
         <java classname="org.mozilla.javascript.tools.debugger.Main"
