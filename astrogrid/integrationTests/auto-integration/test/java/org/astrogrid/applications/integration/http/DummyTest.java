@@ -4,8 +4,8 @@
  * TODO To change the template for this generated file go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-package org.astrogrid.applications.integration.http;
 
+package org.astrogrid.applications.integration.http;
 import junit.framework.TestCase;
 
 /**
@@ -14,8 +14,8 @@ import junit.framework.TestCase;
  * @author jdt
  *
  */
-public class DummyTest extends TestCase {
-	public testDummy() {
+public  class DummyTest extends TestCase {
+	public void testDummy() {
 		
 	}
 }
