@@ -1,0 +1,360 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/release/webapp/Attic/build.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2003/12/16 15:06:09 $</cvs:date>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    |   $Log: build.xml,v $
+    |   Revision 1.1  2003/12/16 15:06:09  dave
+    |   Now installs in process database
+    |
+    |   Revision 1.2  2003/12/16 12:46:35  dave
+    |   Fixed the web.xml dtd
+    |
+    |   Revision 1.1  2003/12/15 18:08:16  dave
+    |   Extending build to produce war file.
+    |
+    | </cvs:log>
+    |
+    +-->
+<project default="init" basedir="." name="Community">
+
+    <!--+
+        | The project name, used for our jar file names.
+        +-->
+    <property name="project.name" value="astrogrid-community"/>
+
+    <!--+
+        | The project build version.
+        | ${astrogrid.version}.${astrogrid.iteration}.${astrogrid.week}
+        | Note :- This should be set from within Maven.
+        +-->
+    <property name="project.version" value="1.4.1"/>
+
+    <!--+
+        | The project build directory.
+        +-->
+    <property name="project.home"    value="${basedir}"/>
+
+    <!--+
+        | Config properties.
+        +-->
+    <property name="config.base"        value="/etc/astrogrid"/>
+    <property name="config.home"        value="/etc/astrogrid/community"/>
+    <property name="client.config.home" value="/etc/astrogrid/community/client"/>
+    <property name="server.config.home" value="/etc/astrogrid/community/server"/>
+
+    <!--+
+        | Hsqldb properties.
+        +-->
+    <property name="hsqldb.version"  value="1.7.1"/>
+    <property name="hsqldb.name"     value="policy"/>
+    <property name="hsqldb.location" value="/var/astrogrid/community"/>
+    <property name="hsqldb.url"      value="jdbc:hsqldb:${hsqldb.location}"/>
+    <property name="hsqldb.user"     value="sa"/>
+    <property name="hsqldb.pass"     value=""/>
+
+    <!--+
+        | The Hsqldb library classpath.
+        +-->
+    <path id="hsqldb.classpath">
+        <pathelement location="${project.home}/config/jars/hsqldb-${hsqldb.version}.jar"/>
+    </path>
+
+    <!--+
+        | The config library classpath.
+        +-->
+    <path id="config.classpath">
+        <fileset dir="${project.home}/config/jars/">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <!-- ================ Tomcat tasks ================ -->
+    <!--+
+        | Tomcat properties.
+        +-->
+    <property name="tomcat.home"    value="/usr/java/servers/tomcat/jakarta-tomcat-4.1.24-LE-jdk14"/>
+    <property name="tomcat.host"    value="localhost"/>
+    <property name="tomcat.port"    value="8080"/>
+    <property name="tomcat.server"  value="${tomcat.host}:${tomcat.port}"/>
+    <property name="tomcat.url"     value="http://${tomcat.server}"/>
+    <property name="tomcat.timeout" value="60"/>
+
+    <!--+
+        | Tomcat manager properties.
+        +-->
+    <property name="tomcat.manager.url"      value="${tomcat.url}/manager"/>
+    <property name="tomcat.manager.username" value="astrogrid"/>
+    <property name="tomcat.manager.password" value="please"/>
+
+    <!--+
+        | Bootstrap classpath for Tomcat
+        +-->
+    <path id="tomcat.classpath.bootstrap">
+        <pathelement location="${env.JAVA_HOME}/lib/tools.jar"/>
+        <pathelement location="${tomcat.home}/bin/bootstrap.jar"/>
+    </path>
+
+    <!--+
+        | Endorsed libraries for Tomcat.
+        +-->
+    <path id="tomcat.classpath.endorsed">
+        <pathelement path="${tomcat.home}/bin"/>
+        <pathelement path="${tomcat.home}/common/endorsed"/>
+    </path>
+
+    <!--+
+        | Tomcat servlet libraries.
+        +-->
+    <path id="tomcat.classpath.servlet">
+        <pathelement location="${tomcat.home}/common/lib/servlet.jar"/>
+    </path>
+
+    <!-- Define the Tomcat manager tasks -->
+    <target name="tomcat.tasks" depends="">
+        <taskdef name="tomcat.deploy"    classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.DeployTask"/>
+        <taskdef name="tomcat.install"   classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.InstallTask"/>
+        <taskdef name="tomcat.list"      classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.ListTask"/>
+        <taskdef name="tomcat.reload"    classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.ReloadTask"/>
+        <taskdef name="tomcat.remove"    classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.RemoveTask"/>
+        <taskdef name="tomcat.resources" classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.ResourcesTask"/>
+        <taskdef name="tomcat.roles"     classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.RolesTask"/>
+        <taskdef name="tomcat.start"     classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.StartTask"/>
+        <taskdef name="tomcat.stop"      classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.StopTask"/>
+        <taskdef name="tomcat.undeploy"  classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.UndeployTask"/>
+    </target>
+
+    <!--+
+        | Start Tomcat in a separate VM.
+        +-->
+    <target name="tomcat.start" depends="">
+        <!-- Start Tomcat in a separate VM -->
+        <java taskname="tomcat" classname="org.apache.catalina.startup.Bootstrap" fork="true" dir="${tomcat.home}/bin">
+            <!-- Use the bootstrap classpath -->
+            <classpath refid="tomcat.classpath.bootstrap"/>
+            <!-- These replace the -D command line arguments -->
+            <sysproperty key="java.endorsed.dirs" path="${tomcat.classpath.endorsed}"/>
+            <sysproperty key="catalina.base"      path="${tomcat.home}"/>
+            <sysproperty key="catalina.home"      path="${tomcat.home}"/>
+            <sysproperty key="java.io.tmpdir"     path="${tomcat.home}/temp"/>
+            <!-- Select the server JVM (fails on Linux JDK 1.4.0) -->
+            <!-- <jvmarg value="-server"/> -->
+            <!-- Args for the Tomcat Bootstrap class -->
+            <arg value="start"/>
+        </java>
+    </target>
+
+    <!--+
+        | Stop Tomcat.
+        +-->
+    <target name="tomcat.stop" depends="">
+        <!-- Stop Tomcat -->
+        <java taskname="tomcat" classname="org.apache.catalina.startup.Bootstrap" fork="true">
+            <!-- Use the bootstrap classpath -->
+            <classpath refid="tomcat.classpath.bootstrap"/>
+            <!-- These replace the -D command line arguments -->
+            <sysproperty key="java.endorsed.dirs" path="${tomcat.classpath.endorsed}"/>
+            <sysproperty key="catalina.base"      path="${tomcat.home}"/>
+            <sysproperty key="catalina.home"      path="${tomcat.home}"/>
+            <sysproperty key="java.io.tmpdir"     path="${tomcat.home}/temp"/>
+            <!-- Select the server JVM (fails on Linux JDK 1.4.0) -->
+            <!-- <jvmarg value="-server"/> -->
+            <!-- Args for the Tomcat Bootstrap class -->
+            <arg value="stop"/>
+        </java>
+    </target>
+
+    <!--+
+        | Wait for Tomcat to respond.
+        +-->
+    <target name="tomcat.wait" depends="">
+        <echo message=""/>
+        <echo message="Waiting for Tomcat ...."/>
+        <echo message="URL : ${tomcat.url}/"/>
+        <waitfor maxwait="60" maxwaitunit="second" checkevery="500">
+            <http url="${tomcat.url}/"/>
+        </waitfor>
+    </target>
+
+    <!-- ================ Webapp tasks ================ -->
+    <!--+
+        | Webapp properties.
+        +-->
+    <property name="webapp.home" value="${tomcat.home}/webapps/${project.name}"/>
+
+    <!--+
+        | Deploy our webapp into Tomcat (offline).
+        +-->
+    <target name="deploy.webapp" depends="">
+        <!-- Delete any existing war file -->
+        <delete verbose="true" failonerror="false" file="${tomcat.home}/webapps/${project.name}.war"/>
+        <!-- Delete any existing webapp -->
+        <delete verbose="true" failonerror="false" includeEmptyDirs="true" dir="${tomcat.home}/webapps/${project.name}"/>
+        <!-- Deploy our war file into Tomcat -->
+        <copy verbose="true" file="${project.home}/war/${project.name}-${project.version}.war" toFile="${tomcat.home}/webapps/${project.name}.war"/>
+    </target>
+
+    <!--+
+        | Deploy our config files.
+        +-->
+    <target name="deploy.config" depends="">
+        <mkdir dir="${server.config.home}"/>
+        <copy verbose="true" file="${project.home}/config/${project.name}-config-${project.version}.xml"   toFile="${server.config.home}/${project.name}-config.xml"/>
+        <copy verbose="true" file="${project.home}/config/${project.name}-database-${project.version}.xml" toFile="${server.config.home}/${project.name}-database.xml"/>
+        <copy verbose="true" file="${project.home}/config/${project.name}-mapping-${project.version}.xml"  toFile="${server.config.home}/${project.name}-mapping.xml"/>
+    </target>
+
+    <!--+
+        | Edit the webapp JNDI property.
+        +-->
+    <target name="config.jndi" depends="">
+        <!-- Copy the existing web.xml to a backup file -->
+        <copy file="${webapp.home}/WEB-INF/web.xml" tofile="${webapp.home}/WEB-INF/web.xml.old" overwrite="true" failonerror="false"/>
+        <!-- Patch the web.xml to fix the DTD -->
+        <replace file="${webapp.home}/WEB-INF/web.xml" token="web-app_2.2.dtd" value="web-app_2_2.dtd"/>
+        <!-- Transform the target web.xml, adding our JNDI property -->
+        <xslt style="${project.home}/config/webapp.xsl"
+              in="${webapp.home}/WEB-INF/web.xml"
+              out="${webapp.home}/WEB-INF/web.xml.new">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <!-- Set the XSL params -->
+            <param name="property.name"  expression="org.astrogrid.community.config"/>
+            <param name="property.value" expression="${server.config.home}/${project.name}-config.xml"/>
+        </xslt>
+        <!-- Replace the existing web.xml with the new one -->
+        <move file="${webapp.home}/WEB-INF/web.xml.new" tofile="${webapp.home}/WEB-INF/web.xml" overwrite="true" failonerror="false"/>
+    </target>
+
+    <!--+
+        | Transform our config file, setting a named property.
+        +-->
+    <target name="config.xslt" depends="">
+        <echo message=""/>
+        <echo message="Updating community config ...."/>
+        <echo message="  Config file    : ${config.file}"/>
+        <echo message="  Property name  : ${property.name}"/>
+        <echo message="  Property value : ${property.value}"/>
+        <!-- Transform our config file, filling in the specified value -->
+        <xslt style="${project.home}/config/config.xsl"
+              in="${config.file}"
+              out="${config.file}.new">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <!-- Set the XSL params -->
+            <param name="category"         expression="org.astrogrid.community"/>
+            <param name="property.name"    expression="${property.name}"/>
+            <param name="property.value"   expression="${property.value}"/>
+        </xslt>
+        <!-- Replace our existing config.xml with the new one -->
+        <move file="${config.file}.new" tofile="${config.file}" overwrite="true" failonerror="false"/>
+    </target>
+
+    <!--+
+        | Configure our database params.
+        +-->
+    <target name="config.database" depends="">
+        <echo message="  Database url  : ${hsqldb.url}"/>
+        <echo message="  Database user : ${hsqldb.user}"/>
+        <echo message="  Database pass : ${hsqldb.pass}"/>
+        <!-- Create our database data directory -->
+        <mkdir dir="${hsqldb.location}"/>
+        <!-- Transform our config files, filling in the correct values -->
+        <antcall target="config.xslt">
+            <param name="config.file"    value="${server.config.home}/${project.name}-config.xml"/>
+            <param name="property.name"  value="database.name"/>
+            <param name="property.value" value="${hsqldb.name}"/>
+        </antcall>
+        <antcall target="config.xslt">
+            <param name="config.file"    value="${server.config.home}/${project.name}-config.xml"/>
+            <param name="property.name"  value="database.config"/>
+            <param name="property.value" value="${server.config.home}/${project.name}-database.xml"/>
+        </antcall>
+        <antcall target="config.xslt">
+            <param name="config.file"    value="${server.config.home}/${project.name}-config.xml"/>
+            <param name="property.name"  value="database.mapping"/>
+            <param name="property.value" value="${server.config.home}/${project.name}-mapping.xml"/>
+        </antcall>
+        <!-- Copy the existing config to a backup file -->
+        <copy file="${server.config.home}/${project.name}-database.xml" tofile="${server.config.home}/${project.name}-database.xml.old" overwrite="true" failonerror="false"/>
+        <!-- Transform the database config -->
+        <xslt style="${project.home}/config/database.xsl"
+              in="${server.config.home}/${project.name}-database.xml"
+              out="${server.config.home}/${project.name}-database.xml.new">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <!-- Set the XSL params -->
+            <param name="url"  expression="${hsqldb.url}"/>
+            <param name="user" expression="${hsqldb.user}"/>
+            <param name="pass" expression="${hsqldb.pass}"/>
+        </xslt>
+        <!-- Replace the existing config with the new one -->
+        <move file="${server.config.home}/${project.name}-database.xml.new" tofile="${server.config.home}/${project.name}-database.xml" overwrite="true" failonerror="false"/>
+    </target>
+
+    <!--+
+        | Create our database tables.
+        +-->
+    <target name="init.database" depends="">
+        <echo message=""/>
+        <echo message="Creating Hqsldb tables ...."/>
+        <sql driver="org.hsqldb.jdbcDriver"
+             url="${hsqldb.url}"
+             classpathref="hsqldb.classpath"
+             userid="${hsqldb.user}"
+             password="${hsqldb.pass}"
+             print="true"
+            >
+            <transaction src="${project.home}/config/create.sql"/>
+        </sql>
+    </target>
+
+    <!--+
+        | Select all rows from our database tables.
+        +-->
+    <target name="database.select" depends="">
+        <sql driver="org.hsqldb.jdbcDriver"
+             url="${hsqldb.url}"
+             classpathref="hsqldb.classpath"
+             userid="${hsqldb.user}"
+             password="${hsqldb.pass}"
+             print="true"
+            >
+            <![CDATA[
+                SELECT * FROM communities ;
+                SELECT * FROM accounts    ;
+                SELECT * FROM groups      ;
+                SELECT * FROM resources   ;
+                SELECT * FROM members     ;
+                SELECT * FROM permissions ;
+            ]]>
+        </sql>
+    </target>
+
+    <!--+
+        | Delete all rows from our database tables.
+        +-->
+    <target name="database.delete" depends="">
+        <sql driver="org.hsqldb.jdbcDriver"
+             url="${hsqldb.url}"
+             classpathref="hsqldb.classpath"
+             userid="${hsqldb.user}"
+             password="${hsqldb.pass}"
+             print="true"
+            >
+            <![CDATA[
+                DELETE FROM groups      ;
+                DELETE FROM members     ;
+                DELETE FROM accounts    ;
+                DELETE FROM resources   ;
+                DELETE FROM communities ;
+                DELETE FROM permissions ;
+            ]]>
+        </sql>
+    </target>
+
+</project>
+
+
