@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.14 2004/08/04 09:27:03 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.15 2004/08/11 13:34:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -235,37 +235,40 @@ public class JdbcPlugin extends QuerierPlugin  {
          ResultSet tables = metadata.getTables(null, null, "%", null);
 
          while (tables.next()) {
-            XmlTagPrinter tableTag = metaTag.newTag("Table", "name='"+getColumnValue(tables, "TABLE_NAME")+"'");
-            tableTag.writeTag("Description", getColumnValue(tables, "REMARKS"));
-            tableTag.writeComment("schema='"+getColumnValue(tables, "TABLE_SCHEM")+"'");
-            tableTag.writeComment("cat='"+getColumnValue(tables, "TABLE_CAT")+"'");
-            tableTag.writeComment("type='"+getColumnValue(tables, "TABLE_TYPE")+"'");
-            tableTag.writeComment("typecat='"+getColumnValue(tables, "TYPE_CAT")+"'");
-            tableTag.writeComment("typeschema='"+getColumnValue(tables, "TYPE_SCHEM")+"'");
-            tableTag.writeComment("typename='"+getColumnValue(tables, "TYPE_NAME")+"'");
-            tableTag.writeComment("selfref='"+getColumnValue(tables, "SELF_REFERENCING_COL_NAME")+"'");
-            tableTag.writeComment("refgen='"+getColumnValue(tables, "REF_GENERATION")+"'");
-            
-            ResultSet columns = metadata.getColumns(null, null, tables.getString("TABLE_NAME"), "%");
-            
-            while (columns.next()) {
-               int sqlType = Integer.parseInt(getColumnValue(columns, "DATA_TYPE"));
-               XmlTagPrinter colTag = tableTag.newTag("Column", "name='"+getColumnValue(columns, "COLUMN_NAME")+"' "+getVotableType(sqlType));
-               colTag.writeComment("schema='"+getColumnValue(columns, "TABLE_SCHEM")+"'");
-               colTag.writeComment("cat='"+getColumnValue(columns, "TABLE_CAT")+"'");
-               colTag.writeComment("table='"+getColumnValue(columns, "TABLE_NAME")+"'");
-//               colTag.writeTag("DataType", getColumnValue(columns, "DATA_TYPE"));
-               colTag.writeTag("Description", getColumnValue(columns, "REMARKS"));
-               colTag.writeTag("Units", " ");
-               colTag.writeTag("UCD", " ");
-               colTag.writeTag("UcdPlus", " ");
-               colTag.writeTag("ErrorColumn", " ");
-               colTag.close();
+            //ignore all tables beginning with 'sys' as these are standard system tables
+            //and we don't want to make these public.  I believe
+            if (getColumnValue(tables, "TABLE_NAME").startsWith("sys")) {
+               XmlTagPrinter tableTag = metaTag.newTag("Table", "name='"+getColumnValue(tables, "TABLE_NAME")+"'");
+               tableTag.writeTag("Description", getColumnValue(tables, "REMARKS"));
+               tableTag.writeComment("schema='"+getColumnValue(tables, "TABLE_SCHEM")+"'");
+               tableTag.writeComment("cat='"+getColumnValue(tables, "TABLE_CAT")+"'");
+               tableTag.writeComment("type='"+getColumnValue(tables, "TABLE_TYPE")+"'");
+               tableTag.writeComment("typecat='"+getColumnValue(tables, "TYPE_CAT")+"'");
+               tableTag.writeComment("typeschema='"+getColumnValue(tables, "TYPE_SCHEM")+"'");
+               tableTag.writeComment("typename='"+getColumnValue(tables, "TYPE_NAME")+"'");
+               tableTag.writeComment("selfref='"+getColumnValue(tables, "SELF_REFERENCING_COL_NAME")+"'");
+               tableTag.writeComment("refgen='"+getColumnValue(tables, "REF_GENERATION")+"'");
+               
+               ResultSet columns = metadata.getColumns(null, null, tables.getString("TABLE_NAME"), "%");
+               
+               while (columns.next()) {
+                  int sqlType = Integer.parseInt(getColumnValue(columns, "DATA_TYPE"));
+                  XmlTagPrinter colTag = tableTag.newTag("Column", "name='"+getColumnValue(columns, "COLUMN_NAME")+"' "+getVotableType(sqlType));
+                  colTag.writeComment("schema='"+getColumnValue(columns, "TABLE_SCHEM")+"'");
+                  colTag.writeComment("cat='"+getColumnValue(columns, "TABLE_CAT")+"'");
+                  colTag.writeComment("table='"+getColumnValue(columns, "TABLE_NAME")+"'");
+   //               colTag.writeTag("DataType", getColumnValue(columns, "DATA_TYPE"));
+                  colTag.writeTag("Description", getColumnValue(columns, "REMARKS"));
+                  colTag.writeTag("Units", " ");
+                  colTag.writeTag("UCD", " ");
+                  colTag.writeTag("UcdPlus", " ");
+                  colTag.writeTag("ErrorColumn", " ");
+                  colTag.close();
+               }
+               
+               tableTag.close();
             }
-            
-            tableTag.close();
          }
-         
          metaTag.close();
          
          return DomHelper.newDocument(sw.toString());
