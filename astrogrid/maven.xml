@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<!-- $Id: maven.xml,v 1.1 2004/05/21 17:36:29 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.2 2004/05/21 17:47:26 jdt Exp $ -->
 <!-- extension maven script -->
-<project xmlns:j="jelly:core">
+<project>
 	<!-- astrogrid goals for nightly build -->
 	<goal name="astrogrid-clean" prereqs="clean"/>
 	<goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
@@ -28,39 +28,4 @@
 	<goal name="astrogrid-install-artifact">
 		<echo message="nothing to do"/>
 	</goal>
-	    <!--+
-        | To use the following goals you need to have the correct jars installed.
-        | The smack.jar and imtask.jar may be found at http://
-        | Place them in your $MAVEN_HOME/lib directory and edit
-        | $MAVEN_HOME/bin/forehead.conf appropriately.
-        | In your build.properties you should then set
-        | jabber.host=jabber.astrogrid.org
-        | jabber.sender=maven
-        | jabber.receiver=JohnTaylor@jabber.astrogrid.org/Gaim
-        | jabber.password=maven
-        +-->
- 
-    <goal name="wave-goodbye-site">
-        <j:set var="message" value="${pom.artifactId} documentation has finished building"/>
-        <attainGoal name="jabber-me"/> 
-    </goal>    
-    <goal name="wave-goodbye-artifact">
-        <j:set var="message" value="${pom.artifactId} artifacts have finished building"/>
-        <attainGoal name="jabber-me"/> 
-    </goal>  
-    <goal name="jabber-me">
-        <j:if test="${context.getVariable('jabber.host') != null}">
-            <attainGoal name="jabber-declare-tasks"/>
-            <j:catch>
-                <jabber host="${jabber.host}" from="${jabber.sender}" 
-                    to="${jabber.receiver}" password="${jabber.password}" 
-                    message="${message}"/>
-            </j:catch>
-        </j:if>
-    </goal>
-    <!-- Configure the custom Ant tasks for Jabber -->
-    <goal name="jabber-declare-tasks">
-        <taskdef name="jabber" classname="com.tfftech.ant.taskdefs.im.jabber.JabberTask" /> 
-    </goal>
-    <!-- End Jabber Goals -->
 </project>
