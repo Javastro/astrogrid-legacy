@@ -1,4 +1,4 @@
-/* $Id: DatacenterProdder.java,v 1.5 2004/03/14 04:12:46 mch Exp $
+/* $Id: DatacenterProdder.java,v 1.6 2004/03/22 10:26:20 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -357,7 +357,7 @@ public class DatacenterProdder extends JFrame
                Agsl resultsRL = new Agsl(resultsLocator.getFileLoc());
 
                StoreClient vos = StoreDelegateFactory.createDelegate(user.toUser(), resultsRL);
-               OutputStream out = vos.putStream(resultsRL.getPath());
+               OutputStream out = vos.putStream(resultsRL.getPath(), false);
                log.info("...piping...");
                Piper.bufferedPipe(results, out);
                
@@ -416,6 +416,9 @@ public class DatacenterProdder extends JFrame
 
 /*
  $Log: DatacenterProdder.java,v $
+ Revision 1.6  2004/03/22 10:26:20  mch
+ StoreClient putStream() now takes append
+
  Revision 1.5  2004/03/14 04:12:46  mch
  Wrapped output target in TargetIndicator
 
