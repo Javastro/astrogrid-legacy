@@ -43,10 +43,13 @@ import org.astrogrid.community.client.policy.service.PolicyServiceSoapDelegate;
 
 import org.astrogrid.community.common.policy.data.PolicyPermission  ;
 import org.astrogrid.community.common.policy.data.PolicyCredentials ;
-
+import org.astrogrid.community.common.ivorn.CommunityIvornParser;
 import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.exception.CommunityServiceException;
 import org.astrogrid.community.common.exception.CommunityPolicyException;
+
+import org.astrogrid.community.User;
+import org.astrogrid.store.Ivorn;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -128,7 +131,8 @@ public class DesignAction extends AbstractAction {
     public static final String
         WORKFLOW_NAME_PARAMETER = "workflow-name",
 		WORKFLOW_NEW_NAME_PARAMETER = "workflow-new-name",  
-	    WORKFLOW_DESCRIPTION_PARAMETER = "workflow-description";
+	    WORKFLOW_DESCRIPTION_PARAMETER = "workflow-description",
+        WORKFLOW_IVORN_PARAMETER = "workflow-ivorn";
         
     public static final String
         EDIT_CONDITION_PARAMETER = "edit-condition",
@@ -241,7 +245,8 @@ public class DesignAction extends AbstractAction {
         private WorkflowManager workflowManager;
         private Workflow workflow;
 		private String template; 
-        private Credentials credentials;         
+        private Credentials credentials;
+        private User user;         
         
         public DesignActionImpl( Redirector redirector
                                , SourceResolver resolver
@@ -342,38 +347,20 @@ public class DesignAction extends AbstractAction {
 				else if( action.equals( ACTION_EDIT_WORKFLOW ) ) {
 					this.readWorkflow(); 
 				}                
-//                else if( action.equals( ACTION_DELETE_WORKFLOW ) ) {
-//                    this.deleteWorkflow(); 
-//              }
                 else if( action.equals( ACTION_SUBMIT_WORKFLOW ) ) {
                     this.submitWorkflow(); 
-                }
-                else if( action.equals( ACTION_CHOOSE_QUERY ) ) {
-                    this.chooseQuery(); 
                 }
                 else if( action.equals( ACTION_EDIT_JOINCONDITION ) ) {
                     this.editJoinCondition(); 
                 }
-//                else if( action.equals( ACTION_READ_WORKFLOW_LIST ) ) {
-//                    this.readWorkflowList(); 
-//                }
                 else if( action.equals( ACTION_READ_TOOL_LIST ) ) {
                     this.readToolList(); 
                 }
-//                else if( action.equals( ACTION_READ_QUERY_LIST ) ) {
-//                    this.readQueryList(); 
-//                }
 				else if( action.equals( ACTION_READ_LISTS ) ) {
 					this.readLists(); 
 				}			
 				else if( action.equals( ACTION_INSERT_TOOL_INTO_STEP ) ) {
-					this.insertToolIntoStep();       					
-                }
-			    else if( action.equals( ACTION_INSERT_INPUT_PARAMETER_INTO_TOOL ) ) {
-//					this.insertInputParameterIntoTool();         	
-				}                
-				else if( action.equals( ACTION_INSERT_OUTPUT_PARAMETER_INTO_TOOL ) ) {
-//				    this.insertOutputParameterIntoTool();                     								
+					this.insertToolIntoStep();       													
 			    }
 			    else if( action.equals( ACTION_INSERT_INPUT_PARAMETER ) ) {
 					this.insertInputValue();         	
@@ -396,9 +383,6 @@ public class DesignAction extends AbstractAction {
 				else if( action.equals( ACTION_REMOVE_WORKFLOW_FROM_SESSION )){
 					this.removeWorkflow();  
 				}				
-				else if( action.equals( ACTION_COPY_WORKFLOW ) ) {
-					this.copyWorkflow();                     								
-				}	
                 else if( action.equals( ACTION_INSERT_FLOW ) ) {
                     this.insertFlow();                                                    
                 }   
@@ -411,6 +395,7 @@ public class DesignAction extends AbstractAction {
                 else {
                     results = null;
                     debug( "unsupported action"); 
+                    throw new UnsupportedOperationException( action + " no longer supported");
                 }
                 
                 if (workflow != null ){
@@ -421,6 +406,7 @@ public class DesignAction extends AbstractAction {
                 }
                 
 //				this.readLists() ; // Ensure request object contains latest Workflow/Query
+
             }
             catch( ConsistencyException cex ) {
                 results = null;
@@ -478,6 +464,11 @@ public class DesignAction extends AbstractAction {
                 credentials.setAccount( account );
                 credentials.setGroup( group );
                 credentials.setSecurityToken( "dummy" );
+                
+                this.user = new User();
+                user.setAccount( userid );
+                user.setGroup( this.group );
+                user.setToken( token );
                      
             }
             finally {
@@ -548,24 +539,30 @@ public class DesignAction extends AbstractAction {
         
         private void saveWorkflow() throws ConsistencyException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.saveWorkflow() entry" ) ;
-              
+            
+            String ivornName = request.getParameter( WORKFLOW_IVORN_PARAMETER ) ;
+            Ivorn ivorn = null;
+                                       
             try {
 
-                if( workflow == null ) {
+                if( (workflow == null) || (ivornName == null) ) {
                     ; // some logging here
                     throw new ConsistencyException() ; 
                 }
                 else {
+                    ivorn = (new CommunityIvornParser(ivornName)).getIvorn();
                     WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
-//                    wfStore.saveWorkflow( credentials.getAccount(), workflow ) ;
-//					session.setAttribute( HTTP_WORKFLOW_TAG, null) ;
+                    wfStore.saveWorkflow( user, ivorn, workflow ) ;
                     session.removeAttribute( HTTP_WORKFLOW_TAG );
 					workflow = null ;
                 }            
             }
-//            catch( WorkflowInterfaceException wix ) {
-//                wix.printStackTrace();
-//            }
+            catch( CommunityIdentifierException cix ) {
+                cix.printStackTrace();
+            }
+            catch( WorkflowInterfaceException wix ) {
+                wix.printStackTrace();
+            }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.saveWorkflow() exit" ) ;
             }
@@ -577,7 +574,7 @@ public class DesignAction extends AbstractAction {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.removeWorkflow() entry" ) ;
               
             try {
-                session.setAttribute( HTTP_WORKFLOW_TAG, null) ;
+                session.removeAttribute( HTTP_WORKFLOW_TAG );
                 workflow = null ;
             }
             finally {
@@ -589,19 +586,24 @@ public class DesignAction extends AbstractAction {
         private void readWorkflow() throws ConsistencyException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflow() entry" ) ;
               
+            String
+                 name = request.getParameter( WORKFLOW_NAME_PARAMETER ),
+                 ivornName = request.getParameter( WORKFLOW_IVORN_PARAMETER ) ;
+            Ivorn ivorn = null;
+              
             try {
-                
-                String
-                    name = request.getParameter( WORKFLOW_NAME_PARAMETER ) ;
-                    
-                if( name == null ) {
+                                 
+                if( (name == null) || (ivornName == null) ) {
                     ; // some logging here
                     throw new ConsistencyException() ; 
                 }
                 
+                ivorn = (new CommunityIvornParser(ivornName)).getIvorn();
+                
                 if( workflow == null  || bConfirm == true ) {
                     WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
-//                    workflow = wfStore.readWorkflow( credentials.getAccount(), name ) ;
+                    workflow = wfStore.readWorkflow( user, ivorn ) ;
+ 
                 } 
                 
                 if( workflow != null ) {   
@@ -611,73 +613,36 @@ public class DesignAction extends AbstractAction {
                 }
                     
             }
-//            catch( WorkflowInterfaceException wix ) {
-//                wix.printStackTrace(); //JBL note
-//            }
+            catch( CommunityIdentifierException cix ) {
+                cix.printStackTrace();
+            }
+            catch( WorkflowInterfaceException wix ) {
+                wix.printStackTrace(); //JBL note
+            }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflow() exit" ) ;
             }
          
         }
 
-        private void copyWorkflow() throws ConsistencyException {
-            if( TRACE_ENABLED ) trace( "DesignActionImpl.copyWorkflow() entry" ) ;
-              
-            try {
-                
-				String
-                	name = request.getParameter( WORKFLOW_NAME_PARAMETER ) ;
-            	String
-                	newName = request.getParameter( WORKFLOW_NEW_NAME_PARAMETER ) ;
-                trace("Copying workflow: ") ;
-                trace("Origional name: " + name) ;
-                trace("New name: " + newName ) ;    
-            	if( name == null ) {
-                	trace( "DesignActionImpl.copyWorkflow(): WORKFLOW_NAME_PARAMETER was null" );
-                	throw new ConsistencyException() ;
-            	}
-            	else if( newName == null ) {
-					trace( "DesignActionImpl.copyWorkflow(): WORKFLOW_NEW_NAME_PARAMETER was null" );
-					throw new ConsistencyException() ;
-				}
-				else{
-                    WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
-//                    workflow = wfStore.readWorkflow( credentials.getAccount(), name ) ;
-//					workflow.setName( newName ) ;
-//                    wfStore.saveWorkflow( credentials.getAccount(), workflow ) ;
-					workflow = null ;   //JBL Is this OK?             
-				}
-            }
-//            catch( WorkflowInterfaceException wix ) {
-//                wix.printStackTrace(); //JBL note
-//            }
-			finally {
-				if( TRACE_ENABLED ) trace( "DesignActionImpl.copyWorkflow() exit" ) ;
-			}
-		}        
-        
-        
-        private void createWorkflowFromTemplate( String template ) throws ConsistencyException {       
-            throw new UnsupportedOperationException("DesignActionImpl.createWorkflowFromTemplate() no longer supported");
-        } 
-        
-        
         private void submitWorkflow() throws ConsistencyException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.submitWorkflow() entry" ) ;
-
+            
+            String ivornName = request.getParameter( WORKFLOW_IVORN_PARAMETER ) ;
+            Ivorn ivorn = null;
+                
             try {
-            	
-               String
-                  name = request.getParameter( WORKFLOW_NAME_PARAMETER ) ;
 
-               if( name == null ) {
+               if( ivornName == null ) {
                   ; // some logging here
                   throw new ConsistencyException() ;
                }
+               
+               ivorn = (new CommunityIvornParser(ivornName)).getIvorn();
 
 			   if( workflow == null ) {
                   WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
-//                  wfStore.readWorkflow( credentials.getAccount(), name ) ;
+                  workflow = wfStore.readWorkflow( user, ivorn ) ;
 			   }
 
                if( workflow == null ) {
@@ -688,7 +653,10 @@ public class DesignAction extends AbstractAction {
                   JobExecutionService jes = this.workflowManager.getJobExecutionService();
                   jes.submitWorkflow( workflow ) ;
                }
-                         
+                          
+            }
+            catch( CommunityIdentifierException cix ) {
+                cix.printStackTrace();
             }
             catch( WorkflowInterfaceException wix ) {
                 wix.printStackTrace(); // JBL note
@@ -699,39 +667,6 @@ public class DesignAction extends AbstractAction {
          
         } // end of submitQuery()
         
-        
-        
-        private void chooseQuery() throws ConsistencyException {
-            if( TRACE_ENABLED ) trace( "DesignActionImpl.chooseQuery() entry" ) ;
-              
-            Step step = null;
-            String
-                xpathKey = null,
-                queryName = null ;
-              
-            try {
-                
-                if( workflow == null ) {
-                     throw new ConsistencyException() ; 
-                 }
-                 
-                xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
-                queryName = request.getParameter( QUERY_NAME_PARAMETER ) ;
-                    
-                 if( xpathKey == null || queryName == null ) {
-                     ; // some logging here
-                     throw new ConsistencyException() ;
-                 }
-             
-                 step = locateStep( workflow, xpathKey );
-//               Workflow.insertQueryIntoStep( step, queryName ) ;
-    
-            }
-            finally {
-                if( TRACE_ENABLED ) trace( "DesignActionImpl.chooseQuery() exit" ) ;
-            }
-                    
-        } // end of chooseQuery()
         
         
         private void editJoinCondition() throws ConsistencyException {
@@ -837,21 +772,26 @@ public class DesignAction extends AbstractAction {
         private void readToolList() {
            if( TRACE_ENABLED ) trace( "DesignActionImpl.readToolList() entry" ) ;
            
-           String[] tools = null;
+           String[] tools = (String[])this.session.getAttribute(TOOL_LIST_PARAMETER) ;
               
            try {
-              ApplicationRegistry toolRegistry = workflowManager.getToolRegistry();
-              tools = toolRegistry.listApplications();
-//              debug( "tools list: " ); 
-//              if(tools != null){
-//                  for( int i=0; i<tools.length; i++ ){
-//                      debug( tools[i]);
+                         
+              if( tools == null ) {
+                  ApplicationRegistry toolRegistry = workflowManager.getToolRegistry();
+                  tools = toolRegistry.listApplications();
+//                  debug( "tools list: " ); 
+//                  if(tools != null){
+//                      for( int i=0; i<tools.length; i++ ){
+//                          debug( tools[i]);
+//                      }
 //                  }
-//              }
-//              else {
-//                  debug( "tools list is null" );
-//              }
-              this.request.setAttribute( TOOL_LIST_PARAMETER, tools ) ;              
+//                  else {
+//                      debug( "tools list is null" );
+//                  } 
+                  this.session.setAttribute( TOOL_LIST_PARAMETER, tools ) ;   
+              }
+              this.request.setAttribute( TOOL_LIST_PARAMETER, tools ) ; 
+       
            }
            catch( WorkflowInterfaceException wix ) {
                 debug( "wix exception: " + wix.toString() );
