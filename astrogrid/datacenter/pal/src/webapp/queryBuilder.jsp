@@ -225,10 +225,19 @@ you are building a query to be inserted into a workflow for example
    //create modelled query
    for (int con=0;con<conditionColumns.length;con++) {
     
-      if ((conditionColumns[con] != null) && (conditionColumns[con].length() >0)) {
-         String colRef = conditionColumns[con];
-         String tableName = colRef.substring(0, colRef.indexOf("."));
-         String colName = colRef.substring(colRef.indexOf(".")+1);
+      String colRef = conditionColumns[con];
+
+      if ((colRef != null) && (colRef.length() >0)) {
+         String tableName = "";
+         String colName = "";
+         if (colRef.indexOf(".")==-1) {
+            colName = colRef;
+         }
+         else {
+            //split table/column
+            tableName = colRef.substring(0, colRef.indexOf("."));
+            colName = colRef.substring(colRef.indexOf(".")+1);
+         }
          
          String operand = "";
          if (conditionOperands[con].equals("GT")) operand = ">";
@@ -290,9 +299,11 @@ you are building a query to be inserted into a workflow for example
    //build up list of search tables
    Vector searchTables = new Vector();
    for (int i = 0; i < searchCols.length; i++) {
-      String table = searchCols[i].substring(0, searchCols[i].indexOf("."));
-      if (!searchTables.contains(table)) {
-         searchTables.add(table);
+      if (searchCols[i].indexOf(".") >-1) {
+         String table = searchCols[i].substring(0, searchCols[i].indexOf("."));
+         if (!searchTables.contains(table)) {
+            searchTables.add(table);
+         }
       }
    }
    
