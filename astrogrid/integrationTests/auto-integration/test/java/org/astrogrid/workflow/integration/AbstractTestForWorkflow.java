@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForWorkflow.java,v 1.11 2004/08/19 16:27:26 nw Exp $
+/*$Id: AbstractTestForWorkflow.java,v 1.12 2004/08/19 23:31:54 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -149,7 +149,7 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
 
     protected void assertWorkflowError(Workflow result) {
         // workflow should have been executed and completed.
-        assertNotNull(result.getJobExecutionRecord());
+        assertNotNull("no execution record",result.getJobExecutionRecord());
         JobExecutionRecord jrec = result.getJobExecutionRecord();
         softAssertNotNull("no finish time recorded",jrec.getFinishTime());
         softAssertEquals("status not completed",ExecutionPhase.ERROR,jrec.getStatus());
@@ -213,12 +213,12 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
     
     protected ResultListType getResultOfStep(Step step) throws Exception {
         StepExecutionRecord rec = step.getStepExecutionRecord(0);
-        assertNotNull(rec);
+        assertNotNull("step execution record was null",rec);
 
         MessageType result = (MessageType)rec.findXPathValue("message[source='CEA']"); //@todo this is flakey - need to demarcate the result message in a better way.
-        assertNotNull(result);
+        assertNotNull("no result message found",result);
         ResultListType resultList = ResultListType.unmarshalResultListType(new StringReader(result.getContent()));
-        assertNotNull(resultList);
+        assertNotNull("result list was null",resultList);
         return resultList;
     }
     
@@ -251,6 +251,9 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
 
 /* 
 $Log: AbstractTestForWorkflow.java,v $
+Revision 1.12  2004/08/19 23:31:54  nw
+improved assertion messages
+
 Revision 1.11  2004/08/19 16:27:26  nw
 added delimiters around workflow document
 
