@@ -27,23 +27,12 @@ public class MySpaceManagerDelegate {
 	*/
 	public Vector listDataHoldings(String userid, String communityid, String criteria)throws Exception {
 		Vector vector = new Vector();
-		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
-		try {
-			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
-						  new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(targetEndPoint));
-		}
-		catch (javax.xml.rpc.ServiceException jre) {
-			if(jre.getLinkedCause()!=null)
-				jre.getLinkedCause().printStackTrace();
-		}
-		try{
-			MySpaceHelper helper = new MySpaceHelper();
-			String jobDetails = helper.buildListDataHoldings(userid, communityid, criteria);
-			String response = binding.lookupDataHoldersDetails(jobDetails);
-			vector = helper.getList(response);
-			
+		try{		
+		    String response = listDataHoldingsGen(userid, communityid, criteria);
+		    MySpaceHelper helper = new MySpaceHelper();
+	        vector = helper.getList(response);
 		}catch(java.rmi.RemoteException re) {
-					re.printStackTrace();
+			re.printStackTrace();
 		}
 		return vector;
 	}		
