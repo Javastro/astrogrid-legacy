@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.21 2004/03/15 20:39:31 mch Exp $
+ * $Id: SqlResults.java,v 1.22 2004/03/15 20:45:01 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -115,7 +115,7 @@ public class SqlResults extends QueryResults
 //         sqlResults.beforeFirst();
          int row = 0;
          int maxRow = getCount();
-         while (sqlResults.next() && ((maxAllowed==-1) || (row<maxAllowed)))
+         while (sqlResults.next())
          {
             row++;
             statusToUpdate.setNote("Processing Row "+row+" of "+maxRow);
@@ -126,6 +126,11 @@ public class SqlResults extends QueryResults
                printOut.println("                  <TD>"+sqlResults.getString(i)+"</TD>");
             }
             printOut.println("               </TR>");
+            
+            if ((maxAllowed==-1) || (row<maxAllowed)) {
+               log.warn("Limiting returned results to "+maxAllowed);
+               break;
+            }
          }
          
          printOut.println("</TABLEDATA>");
@@ -171,7 +176,7 @@ public class SqlResults extends QueryResults
 
          int row = 0;
          int maxRow = getCount();
-         while ((sqlResults.next() && ((maxAllowed==-1) || (row<maxAllowed))))
+         while (sqlResults.next())
          {
             row++;
             statusToUpdate.setNote("Processing Row "+row+" of "+maxRow);
@@ -181,6 +186,12 @@ public class SqlResults extends QueryResults
                printOut.print(sqlResults.getString(c)+", ");
             }
             printOut.println();
+            
+            if ((maxAllowed==-1) || (row<maxAllowed)) {
+               log.warn("Limiting returned results to "+maxAllowed);
+               break;
+            }
+            
          }
          
          printOut.flush();
@@ -230,6 +241,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.22  2004/03/15 20:45:01  mch
+ Added warning when limiting results
+
  Revision 1.21  2004/03/15 20:39:31  mch
  Changed default to any - will initial default in default properties
 
@@ -294,5 +308,6 @@ public class SqlResults extends QueryResults
  It03-Close
 
  */
+
 
 
