@@ -1,5 +1,5 @@
 /*
- * $Id: StdDatacenterDelegate.java,v 1.4 2003/09/08 16:34:04 mch Exp $
+ * $Id: HtmlDelegate.java,v 1.1 2003/09/09 17:50:07 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -13,7 +13,7 @@ import javax.xml.rpc.ServiceException;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.delegate.datasetAgent.DatasetAgentServiceLocator;
 import org.astrogrid.datacenter.delegate.datasetAgent.DatasetAgentSoapBindingStub;
-import org.astrogrid.datacenter.servicestatus.ServiceStatus;
+import org.astrogrid.datacenter.common.ServiceStatus;
 import org.w3c.dom.Element;
 
 /**
@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
  * @author Jeff Lusted (from DatasetAgentDelegate)
  */
 
-public class StdDatacenterDelegate extends DatacenterDelegate
+public class HtmlDelegate extends DatacenterDelegate
 {
    private URL endpoint = null;
    DatasetAgentSoapBindingStub binding;
@@ -34,9 +34,9 @@ public class StdDatacenterDelegate extends DatacenterDelegate
     * DatacenterDelegate.makeDelegate() in case we need to create new sorts
     * of datacenter delegates in the future...
     */
-   public StdDatacenterDelegate(String givenEndPoint) throws MalformedURLException, ServiceException
+   public HtmlDelegate(URL givenEndPoint) throws MalformedURLException, ServiceException
    {
-      this.endpoint = new URL(givenEndPoint);
+      this.endpoint = givenEndPoint;
 
       binding = (DatasetAgentSoapBindingStub)
             new DatasetAgentServiceLocator().getDatasetAgent( endpoint );
@@ -58,7 +58,7 @@ public class StdDatacenterDelegate extends DatacenterDelegate
     * results part of the returned document, which may be VOTable or otherwise
     * depending on the results format specified in the ADQL
     */
-   public Element adqlQueryDatacenter(Element adql) throws RemoteException
+   public Element adqlQuery(Element adql) throws RemoteException
    {
       String results = binding.runQuery(adql.toString());
 
@@ -83,6 +83,17 @@ public class StdDatacenterDelegate extends DatacenterDelegate
       }
    }
 
+   public Element getResults(String id) throws RemoteException
+   {
+      throw new UnsupportedOperationException("Not implemented yet");
+   }
+
+   public Element spawnAdqlQuery(Element adql) throws RemoteException
+   {
+      throw new UnsupportedOperationException("Not implemented yet");
+   }
+
+
    /**
     * Returns the number of items that match the given query.  This is useful for
     * doing checks on how big the result set is likely to be before it has to be
@@ -106,16 +117,28 @@ public class StdDatacenterDelegate extends DatacenterDelegate
    /**
     * Polls the service and asks for the current status
     */
-   public ServiceStatus getStatus()
+   public ServiceStatus getServiceStatus(String id)
    {
       return ServiceStatus.UNKNOWN;
+   }
+
+   /**
+    * Register a remote listener with the server
+    */
+   public void registerWebListener(URL listenerUrl)
+   {
+      //need to send url to service
+      throw new UnsupportedOperationException("Not implemented yet");
    }
 
 
 }
 
 /*
-$Log: StdDatacenterDelegate.java,v $
+$Log: HtmlDelegate.java,v $
+Revision 1.1  2003/09/09 17:50:07  mch
+Class renames, configuration key fixes, registry/metadata methods and spawning query methods
+
 Revision 1.4  2003/09/08 16:34:04  mch
 Added documentation
 

@@ -1,17 +1,23 @@
 /*
- * $Id: DatacenterDelegate.java,v 1.7 2003/09/07 18:50:13 mch Exp $
+ * $Id: DatacenterDelegate.java,v 1.8 2003/09/09 17:50:07 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
-import java.rmi.RemoteException;
+import java.net.URL;
 import java.util.Vector;
 import javax.xml.rpc.ServiceException;
-import org.astrogrid.datacenter.delegate.dummy.DummyDatacenterDelegate;
-import org.astrogrid.datacenter.servicestatus.ServiceStatus;
+import org.astrogrid.datacenter.common.DocMessageHelper;
+import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
+import org.astrogrid.datacenter.common.ServiceStatus;
+import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * A convenience class for java clients of datacenters.  They can create and
@@ -33,16 +39,34 @@ public abstract class DatacenterDelegate
 
    /** Creates a delegate given an endpoint (a url to the service)
     */
-   public static DatacenterDelegate makeDelegate(String givenEndPoint) throws MalformedURLException, ServiceException
+   public static DatacenterDelegate makeDelegate(String givenEndPoint)
+         throws MalformedURLException, ServiceException, IOException
    {
       if (givenEndPoint == null)
       {
-         return new DummyDatacenterDelegate();
+         return new DummyDelegate();
       }
       else
       {
-         return new StdDatacenterDelegate(givenEndPoint);
+         //look at format
+         URL serviceUrl = new URL(givenEndPoint);
+
+         if ((serviceUrl.getProtocol() == null) ||
+             (serviceUrl.getProtocol().length() == 0) ||
+             (serviceUrl.getProtocol().equals("socket")))
+         {
+            //no protocol given, or 'socket' given, assume it's a direct socket one
+            InetSocketAddress address = new InetSocketAddress(serviceUrl.getHost(), serviceUrl.getPort());
+
+            return new SocketDelegate(address);
+         }
+         else
+         {
+            return new HtmlDelegate(serviceUrl);
+         }
       }
+
+//    throw new IllegalArgumentException("Don't know what delegate to start for '"+givenEndPoint);
    }
 
    /**
@@ -52,36 +76,62 @@ public abstract class DatacenterDelegate
    public abstract void setTimeout(int givenTimeout);
 
    /**
-    * General purpose query database; pass in an XML document with the query
+    * General purpose blocking query database; pass in an XML document with the query
     * described in ADQL (Astronomical Data Query Language).  Returns the
-    * results part of the returned document, which may be VOTable or otherwise
+    * results part of the returned document, which may include VOTable or otherwise
     * depending on the results format specified in the ADQL
     */
-   public abstract Element adqlQueryDatacenter(Element adql) throws RemoteException;
+   public abstract Element adqlQuery(Element adql) throws IOException;
 
    /**
     * Returns the number of items that match the given query.  This is useful for
     * doing checks on how big the result set is likely to be before it has to be
     * transferred about the net.
     */
-   public abstract int adqlCountDatacenter(Element adql);
+   public abstract int adqlCountDatacenter(Element adql) throws IOException;
+
+   /**
+    * General purpose asynchronous query database; pass in an XML document with the query
+    * described in ADQL (Astronomical Data Query Language).  Returns the
+    * response document including the service id that corresponds to that query
+    */
+   public abstract Element spawnAdqlQuery(Element adql) throws IOException;
+
+   /**
+    * Examines the given response DOM element (returned by spawnAdqlQuery) and
+    * returns the service ID
+    */
+   public String getIdFromResponse(Element response)
+   {
+      NodeList ids = response.getElementsByTagName(DocMessageHelper.SERVICE_ID_TAG);
+
+      Log.affirm(ids.getLength() == 1, "More than one service ID in response...");
+
+      return ids.item(0).getNodeValue();
+   }
+
+   /**
+    * Polls the status of the service, returning the results when they're
+    * ready
+    */
+   public abstract Element getResults(String id) throws IOException;
 
    /**
     * returns metadata (an XML document describing the data the
     * center serves) in the form required by registries. See the VOResource
     * schema; I think that is what this should return...
     */
-   public abstract Element getRegistryMetadata();
+   public abstract Element getRegistryMetadata() throws IOException;
 
    /**
     * Polls the service and asks for the current status
     */
-   public abstract ServiceStatus getStatus();
+   public abstract ServiceStatus getServiceStatus(String id);
 
    /**
     * Register a status listener.  This will be informed of changes in status
     * to the service - IF the service supports such info.  Otherwise it will
-    * just get 'starting', 'working' and 'completed' messages based around the
+    * just get client 'starting', 'working' and 'completed' messages based around the
     * basic http exchange.
     */
    public void registerStatusListener(DatacenterStatusListener aListener)
@@ -91,17 +141,25 @@ public abstract class DatacenterDelegate
 
    /** informs all listeners of the new status change. Not threadsafe...
     */
-   protected void fireStatusChanged(ServiceStatus newStatus)
+   protected void fireStatusChanged(String newStatus)
    {
       for (int i=0;i<statusListeners.size();i++)
       {
          ((DatacenterStatusListener) statusListeners.get(i)).datacenterStatusChanged(newStatus);
       }
    }
+
+   /**
+    * Register web listener with service
+    */
+   public abstract void registerWebListener(URL listenerUrl);
 }
 
 /*
 $Log: DatacenterDelegate.java,v $
+Revision 1.8  2003/09/09 17:50:07  mch
+Class renames, configuration key fixes, registry/metadata methods and spawning query methods
+
 Revision 1.7  2003/09/07 18:50:13  mch
 Added typesafe ServiceStatus
 

@@ -1,43 +1,53 @@
 /*
- * $Id: DummyDatacenterDelegate.java,v 1.6 2003/09/08 16:34:04 mch Exp $
+ * $Id: DummyDelegate.java,v 1.1 2003/09/09 17:50:07 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate.dummy;
+
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
+
 import javax.xml.parsers.ParserConfigurationException;
-import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.delegate.DatacenterDelegate;
-import org.astrogrid.datacenter.delegate.DatacenterStatusListener;
-import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.datacenter.servicestatus.ServiceStatus;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+import org.apache.axis.utils.XMLUtils;
+
+import org.astrogrid.datacenter.delegate.DatacenterDelegate;
+import org.astrogrid.datacenter.delegate.DatacenterStatusListener;
+import org.astrogrid.datacenter.common.ServiceStatus;
 /**
  * An implementation of the DatacenterDelegate that validates inputs and
  * returns valid results, but does not call any datacenter services.
  * Provided for unit and integration test purposes, so applications can run
  * against a realistic data center without having to set one up.
  *
+ * @see DatacenterDelegate
+ *
  * @author M Hill
  * @author Jeff Lusted (from DatasetAgentDelegate)
  */
 
-public class DummyDatacenterDelegate extends DatacenterDelegate
+public class DummyDelegate extends DatacenterDelegate
 {
    /** used for generating random results... */
    protected static java.util.Random random = new java.util.Random();
 
-   /** Don't use this directly - use the factory method DatacenterDelegate.makeDelegate()
+   public static final String STARTING = "Starting";
+   public static final String WAITING = "Waiting for Server";
+   public static final String POST_PROCESSING = "Processing Results";
+   public static final String FINISHED = "Processing Results";
+
+
+   /** Generally speaking don't use this directly - use the factory
+    * method DatacenterDelegate.makeDelegate(null), which is a
     * so that it can make decisions on new sorts
     * of datacenter delegates in the future...
     */
-   public DummyDatacenterDelegate()
+   public DummyDelegate()
    {
    }
 
@@ -55,14 +65,15 @@ public class DummyDatacenterDelegate extends DatacenterDelegate
     * @todo returning a VOTable is not quite right - need to return the DOM
     * representation of the returning message which might contain admin info also
     */
-   public Element adqlQueryDatacenter(Element adql) throws RemoteException
+   public Element adqlQuery(Element adql) throws RemoteException
    {
-      fireStatusChanged(ServiceStatus.STARTING);
+      fireStatusChanged(STARTING);
 
-      fireStatusChanged(ServiceStatus.RUNNING_QUERY);
+      fireStatusChanged(WAITING);
 
-      //normally the given adql would be validated at the server, so we throw
-      //a special runtimeexception here if it's wrong
+      //we *could* unmarshall the query here but that starts getting all
+      //horribly involved with server code, so we just skip it...
+      /*
       try
       {
          Query query = new Query(adql);
@@ -72,8 +83,9 @@ public class DummyDatacenterDelegate extends DatacenterDelegate
          //rethrow as runtime exception - somethings gone wrong that shouldn't
          throw new RuntimeException("Query='"+adql+"',",e);
       }
+       /**/
 
-      fireStatusChanged(ServiceStatus.RUNNING_RESULTS);
+      fireStatusChanged(POST_PROCESSING);
 
       try
       {
@@ -81,7 +93,7 @@ public class DummyDatacenterDelegate extends DatacenterDelegate
          URL url = getClass().getResource("ExampleVotable.xml");
          Document resultsDoc = XMLUtils.newDocument(url.openConnection().getInputStream());
 
-         fireStatusChanged(ServiceStatus.FINISHED);
+         fireStatusChanged(FINISHED);
 
          return resultsDoc.getDocumentElement();
 
@@ -106,6 +118,21 @@ public class DummyDatacenterDelegate extends DatacenterDelegate
    }
 
    /**
+    * Dummy spawn query method - kicks off query
+    */
+   public Element spawnAdqlQuery(Element adql) throws RemoteException
+   {
+      throw new UnsupportedOperationException("Not implemented yet");
+   }
+
+
+   public Element getResults(String id) throws RemoteException
+   {
+      throw new UnsupportedOperationException("Not implemented yet");
+   }
+
+
+   /**
     * Returns a random number between 0 and 100...
     */
    public int adqlCountDatacenter(Element adql)
@@ -117,23 +144,51 @@ public class DummyDatacenterDelegate extends DatacenterDelegate
     * returns an example metadata file.
     * @todo not supported yet.  Need to make a metadata file and return it
     */
-   public Element getRegistryMetadata()
+   public Element getRegistryMetadata() throws IOException
    {
-      throw new UnsupportedOperationException();
+         //load example response votable
+      try
+      {
+         URL url = getClass().getResource("ExampleVotable.xml");
+         return XMLUtils.newDocument(url.openConnection().getInputStream()).getDocumentElement();
+      }
+      catch (ParserConfigurationException e)
+      {
+         //rethrow as IOException
+         throw new IOException("XML parser not configured: ("+e+") Dummy delegate failed to load example metadata");
+      }
+      catch (SAXException e)
+      {
+         //rethrow as IOException
+         throw new IOException("Example dummy VoRegistry metadata is invalid:"+e);
+      }
    }
 
    /**
     * Returns unknown
     */
-   public ServiceStatus getStatus()
+   public ServiceStatus getServiceStatus(String id)
    {
       return ServiceStatus.UNKNOWN;
    }
 
+   /**
+    * Registers a web listener with this service.  It's a bit of a pain to
+    * implement this properly using the dummy, so not doing it yet...
+    */
+   public void registerWebListener(URL listenerUrl)
+   {
+      throw new UnsupportedOperationException("Not implemented yet");
+   }
+
+
 }
 
 /*
-$Log: DummyDatacenterDelegate.java,v $
+$Log: DummyDelegate.java,v $
+Revision 1.1  2003/09/09 17:50:07  mch
+Class renames, configuration key fixes, registry/metadata methods and spawning query methods
+
 Revision 1.6  2003/09/08 16:34:04  mch
 Added documentation
 
