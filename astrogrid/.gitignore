@@ -3,3 +3,6 @@
 bin
 *.tws
 *.log
+test
+log
+logs

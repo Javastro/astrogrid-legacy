@@ -17,6 +17,7 @@
 	<Folder FolderName="DTD/Schemas" ExtStr="dtd;dcd;xdr;biz;xsd">
 		<File FilePath="\\pahlaptop\work\astrogrid\indsrc\workflow-objects\schema\AGApplicationBase.xsd" HomeFolder="Yes"/>
 		<File FilePath="\\pahlaptop\work\astrogrid\indsrc\workflow-objects\schema\AGParameterDefinition.xsd" HomeFolder="Yes"/>
+		<File FilePath="\\pahlaptop\work\astrogrid\indsrc\workflow-objects\wsdl\CEAResultsListener.wsdl" HomeFolder="Yes"/>
 		<File FilePath="\\pahlaptop\work\astrogrid\indsrc\workflow-objects\schema\CEATypes.xsd" HomeFolder="Yes"/>
 		<File FilePath="\\pahlaptop\work\astrogrid\indsrc\workflow-objects\wsdl\CommonExecutionConnnector.wsdl" HomeFolder="Yes"/>
 		<File FilePath="\\pahlaptop\work\astrogrid\indsrc\workflow-objects\schema\Credentials.xsd" HomeFolder="Yes"/>
