@@ -1,5 +1,5 @@
 /*
- * $Id: DummyQuerierSPI.java,v 1.5 2003/12/01 20:58:42 mch Exp $
+ * $Id: DummyQuerierSPI.java,v 1.6 2003/12/16 12:26:02 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -40,7 +40,7 @@ public String getPluginInfo() {
 
 public static Querier createDummyQuerier() throws Exception {
 
-    return new PluginQuerier(new DummyQuerierSPI(),"Handle", QueryHelper.buildMinimalQuery());
+    return new PluginQuerier(new DummyQuerierSPI(),"DummyHandle_"+QuerierManager.generateQueryId(), QueryHelper.buildMinimalQuery());
 }
 
 
