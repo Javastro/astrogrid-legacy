@@ -116,7 +116,8 @@ public class DesignAction extends AbstractAction {
         ERROR_MESSAGE_PARAMETER = "ErrorMessage",
         LOCATION_PARAMETER = "location",
 	    PARAM_NAME_PARAMETER = "param-name",
-	    PARAM_VALUE_PARAMETER = "param-value";
+	    PARAM_VALUE_PARAMETER = "param-value",
+        DIRECTION_PARAMETER = "direction";
         
     public static final String
         QUERY_NAME_PARAMETER = "query-name",
@@ -139,7 +140,8 @@ public class DesignAction extends AbstractAction {
 	    ACTION_INSERT_INPUT_PARAMETER_INTO_TOOL = "insert-input-parameter-into-tool",
 	    ACTION_INSERT_OUTPUT_PARAMETER_INTO_TOOL = "insert-output-parameter-into-tool",
 	    ACTION_INSERT_INPUT_PARAMETER = "insert-input-value",
-	    ACTION_INSERT_OUTPUT_PARAMETER = "insert-output-value",	    
+	    ACTION_INSERT_OUTPUT_PARAMETER = "insert-output-value",
+	    ACTION_RESET_PARAMETER = "reset-parameter",	    
         ACTION_READ_LISTS = "read-lists";
         
     public static final String
@@ -309,9 +311,12 @@ public class DesignAction extends AbstractAction {
 				else if( action.equals( ACTION_INSERT_OUTPUT_PARAMETER ) ) {
 					this.insertOutputValue();
 				}
+				else if( action.equals( ACTION_RESET_PARAMETER ) ) {
+				    this.resetParameter();         	
+    			}
 				else if( action.equals( ACTION_CREATE_TOOL ) ) {
 					this.createTool();                     								
-				}                
+				}  
                 else {
                     debug( "unsupported action"); 
                 }
@@ -1008,6 +1013,66 @@ public class DesignAction extends AbstractAction {
 		}
                     
 	} // end of insertOutputValue()
+
+
+    private void resetParameter() throws ConsistencyException {
+       if( TRACE_ENABLED ) trace( "DesignActionImpl.resetParameter() entry" ) ;
+			
+       Step 
+          step = null;
+       Tool
+          tool = null ;
+       Parameter
+          param = null ;
+              
+       try {		
+									
+       String
+          stepActivityKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
+       String
+          parameterName = request.getParameter( PARAM_NAME_PARAMETER ) ;				    					
+       String
+          parameterValue = request.getParameter( PARAM_VALUE_PARAMETER ) ;
+       String
+          direction = request.getParameter( DIRECTION_PARAMETER ) ;
+                            
+       if ( stepActivityKey == null) {
+          debug( "stepActivityKey is null" ) ;
+       }
+       else if ( parameterName == null) {
+          debug( "parameterName is null" ) ;
+       }
+       else if ( parameterValue == null) {
+          debug( "parameterValue is null" ) ;
+       }
+       else if ( direction == null) {
+          debug( "direction is null" ) ;
+       }
+
+       Activity
+          activity = workflow.getActivity( stepActivityKey ) ;
+                    
+       if( activity instanceof Step ) {
+          step = (Step)activity ;
+       }
+       else {
+          throw new ConsistencyException() ;
+       }
+       tool = step.getTool() ;
+				
+       workflow.insertParameterValue(tool,
+								     parameterName,
+								     parameterValue,
+								     "",
+								     direction) ;
+				
+       }
+	   finally {
+          if( TRACE_ENABLED ) trace( "DesignActionImpl.resetParameter() exit" ) ;
+	   }
+                    
+    } // end of deleteParameter() 
+
 
 
  
