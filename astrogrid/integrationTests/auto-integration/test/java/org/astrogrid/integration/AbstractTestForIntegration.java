@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.17 2004/11/19 14:17:56 clq2 Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.18 2004/11/22 15:42:08 jdt Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -121,25 +121,25 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
     protected Credentials creds;
     protected User user;
     protected Workflow wf;
-   protected Ivorn userIvorn;
-   protected Ivorn mySpaceIvorn;
+    protected Ivorn userIvorn;
+    protected Ivorn mySpaceIvorn;
     
     public static final String USERNAME = "frog";
-    public static final String COMMUNITY = SimpleConfig.getProperty("org.astrogrid.registry.authorityid", "org.astrogrid.localhost");
-    public static final String AUTHORITYID = SimpleConfig.getProperty("org.astrogrid.community.ident", "org.astrogrid.localhost");
-    public static final String MYSPACE = COMMUNITY + "/myspace";
-    public static final String TESTDSA = COMMUNITY + "/testdsa";
-    public static final String TESTAPP = COMMUNITY + "/testapp";
-    public static final String TESTAPP2 = COMMUNITY + "/testap2"; //note it isn't double 'p'
-    public static final String HELLO_WORLD = COMMUNITY + "/helloWorld";
-    public static final String HELLO_YOU = COMMUNITY + "/helloYou";
-    public static final String SUM = COMMUNITY + "/sum";
+    public static final String AUTHORITYID = SimpleConfig.getProperty("org.astrogrid.registry.authorityid", "org.astrogrid.localhost");
+    public static final String COMMUNITY = SimpleConfig.getProperty("org.astrogrid.community.ident", "org.astrogrid.localhost");
+    public static final String MYSPACE = AUTHORITYID + "/myspace";
+    public static final String TESTDSA = AUTHORITYID + "/pal-sample/ceaApplication";
+    public static final String TESTAPP = AUTHORITYID + "/testapp";
+    public static final String TESTAPP2 = AUTHORITYID + "/testap2"; //note it isn't double 'p'
+    public static final String HELLO_WORLD = AUTHORITYID + "/helloWorld";
+    public static final String HELLO_YOU = AUTHORITYID + "/helloYou";
+    public static final String SUM = AUTHORITYID + "/sum";
     //New Http-based apps
-    public static final String HTTP_HELLO_WORLD=COMMUNITY+"/HelloWorldHttpApp";
-    public static final String HTTP_ADDER_GET = COMMUNITY+"/AdderHttpGetApp";
-    public static final String HTTP_ADDER_POST = COMMUNITY+"/AdderHttpPostApp";
-    public static final String HTTP_INVALID = COMMUNITY+"/InvalidHttpApp";
-    public static final String HTTP_HELLO_YOU = COMMUNITY+"/HelloYouXMLHttpApp";
+    public static final String HTTP_HELLO_WORLD=AUTHORITYID+"/HelloWorldHttpApp";
+    public static final String HTTP_ADDER_GET = AUTHORITYID+"/AdderHttpGetApp";
+    public static final String HTTP_ADDER_POST = AUTHORITYID+"/AdderHttpPostApp";
+    public static final String HTTP_INVALID = AUTHORITYID+"/InvalidHttpApp";
+    public static final String HTTP_HELLO_YOU = AUTHORITYID+"/HelloYouXMLHttpApp";
     
    protected Ivorn createIVORN(String path)
    {
@@ -183,6 +183,9 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
+Revision 1.18  2004/11/22 15:42:08  jdt
+Fix for applications/testdsa problem.
+
 Revision 1.17  2004/11/19 14:17:56  clq2
 roll back beforeMergenww-itn07-659
 
