@@ -12,7 +12,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.xpath.XPathEvaluator;
 import org.w3c.dom.xpath.XPathException;
 import org.w3c.dom.xpath.XPathResult;
-import org.w3c.dom.xpath.XPathSetSnapshot;
+//NWW import org.w3c.dom.xpath.XPathSetSnapshot;
 
 /**
  * Represents the databases metadata, providing methods to access it.
@@ -20,6 +20,9 @@ import org.w3c.dom.xpath.XPathSetSnapshot;
  * convenience methods for often-used activities.
  *
  * @author M Hill
+ * @modifed nww - had to comment out chunks to get to compile. else breaks build.
+ * can't find an implementation for org.w3c.dom.xpath.XPathSetSnapshot. Not present in Xalan 2.5.1 - which version should we be using?
+ * @todo fix.
  */
 
 public class Metadata
@@ -40,17 +43,24 @@ public class Metadata
     * Returns metadata document for whatever the client wants to do with it
     * For safety, it (tries to) return a clone, so that the client can't
     * change it. If cloning is not supported, you get the real thing.
+    * @todo -fix.
     */
    public Document getDocument()
    {
+       /* NWW - fails to compile - says clone() is not visible. 
+                is this an implementation thing?          
+                return (Document) metadataDom.clone();
       try
       {
-         return (Document) metadataDom.clone();
-      }
-      catch (CloneNotSupportedException cnse)
-      {
+         
          return metadataDom;
       }
+      catch (CloneNotSupportedException cnse)
+      { */
+         return metadataDom;
+     /*NWW }
+      * 
+      */
    }
    
    /**
@@ -72,15 +82,18 @@ public class Metadata
     * The xpath stuff doesn't seem to have settled yet - which is why the results are
     * therefore an array of nodes, rather than a nodelist (can't get a NodeList
     * at Sep 2003)
+    * @todo fix
      */
    public Node[] getMetadata(String xpath) throws DatacenterException
    {
-      try {
-         XPathEvaluator evaluator = (XPathEvaluator) metadataDom; //Document should implement XPathEvaluator
+         /* NWW - sorry, had to temporarily comment out
+          *      try {
+         XPathEvaluator evaluator = (XPathEvaluator) metadataDom; //Document should implement XPathEvaluator          
          XPathResult results = evaluator.evaluate(xpath, metadataDom,
                null, XPathResult.NODE_SET_TYPE, null);
 
          XPathSetSnapshot set = results.getSetSnapshot(false);
+         
          
          Node[] nodes = new Node[set.getLength()];
          
@@ -94,7 +107,8 @@ public class Metadata
       }
       catch (DOMException e) {
          throw new DatacenterException("Bleurgh", e);
-      }
+      }*/
+      return null;
    }
    
    
@@ -102,6 +116,10 @@ public class Metadata
 
 /*
 $Log: Metadata.java,v $
+Revision 1.2  2003/10/13 14:11:41  nw
+commented out chunks that weren't compiling.
+need to fix later.
+
 Revision 1.1  2003/10/06 18:55:21  mch
 Naughtily large set of changes converting to SOAPy bean/interface-based delegates
 
