@@ -6,6 +6,11 @@ Install PostgreSQL
 
 Please see http://www.postgresql.org for a *full* installation guide including the creation of databases and users.
 
+Install Tomcat
+--------------
+
+Please see http://jakarta.apache.org/tomcat for a *full* installation guide.
+
 Install XMLBlaster
 ------------------
 
