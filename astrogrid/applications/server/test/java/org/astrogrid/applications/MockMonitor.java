@@ -1,4 +1,4 @@
-/*$Id: MockMonitor.java,v 1.4 2004/09/01 15:42:26 jdt Exp $
+/*$Id: MockMonitor.java,v 1.5 2004/09/15 11:37:43 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,9 @@ package org.astrogrid.applications;
 
 import java.util.Observable;
 import java.util.Observer;
+
+import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
+import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
 
 /** Mock impl of a monitor.
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
@@ -50,11 +53,25 @@ public class MockMonitor implements Observer{
         if (arg instanceof Status) {
             notifyStateChange(app,(Status)arg);
         }
+        if(arg instanceof MessageType )
+        {
+            notifyStateChange(app,(MessageType)arg);
+        }
+    }
+
+    /**
+     * @param app
+     * @param type
+     */
+    private void notifyStateChange(Application app, MessageType type) {
+        if (type.getLevel() == LogLevel.ERROR) {
+            System.err.println("saw an error\n" + type.getContent());
+        }
     }
 
     public void waitFor(int seconds) throws InterruptedException {
            long startTime = System.currentTimeMillis();
-            while (!sawExit && System.currentTimeMillis() < startTime + (seconds * 1000)) {
+            while (!sawExit && !sawError && System.currentTimeMillis() < startTime + (seconds * 1000)) {
                 Thread.sleep(1000);
             }
     }
@@ -63,6 +80,9 @@ public class MockMonitor implements Observer{
 
 /* 
 $Log: MockMonitor.java,v $
+Revision 1.5  2004/09/15 11:37:43  pah
+enhanced monitoring of error conditions
+
 Revision 1.4  2004/09/01 15:42:26  jdt
 Merged in Case 3
 
