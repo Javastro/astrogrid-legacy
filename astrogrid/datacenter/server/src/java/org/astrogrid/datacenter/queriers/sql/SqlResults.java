@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.22 2004/03/15 20:45:01 mch Exp $
+ * $Id: SqlResults.java,v 1.23 2004/03/15 21:31:40 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -128,6 +128,7 @@ public class SqlResults extends QueryResults
             printOut.println("               </TR>");
             
             if ((maxAllowed==-1) || (row<maxAllowed)) {
+               statusToUpdate.addDetail("Results limited to "+maxAllowed+" rows by datacenter");
                log.warn("Limiting returned results to "+maxAllowed);
                break;
             }
@@ -188,6 +189,7 @@ public class SqlResults extends QueryResults
             printOut.println();
             
             if ((maxAllowed==-1) || (row<maxAllowed)) {
+               statusToUpdate.addDetail("Results limited to "+maxAllowed+" rows by datacenter");
                log.warn("Limiting returned results to "+maxAllowed);
                break;
             }
@@ -241,6 +243,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.23  2004/03/15 21:31:40  mch
+ Added limit warning to querier status
+
  Revision 1.22  2004/03/15 20:45:01  mch
  Added warning when limiting results
 
@@ -308,6 +313,7 @@ public class SqlResults extends QueryResults
  It03-Close
 
  */
+
 
 
 
