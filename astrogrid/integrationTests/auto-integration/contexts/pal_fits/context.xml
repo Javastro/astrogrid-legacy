@@ -1,9 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- tomcat-5 specific deployment descriptor - can be used to configure environment, loggers, etc -->
 <Context path="/astrogrid-pal-fits-SNAPSHOT">
- <Environment name="datacenter.querier.plugin" override="false" type="java.lang.String" value="org.astrogrid.datacenter.queriers.fits.FitsQuerierPlugin" /> 
+ <Environment name="datacenter.querier.plugin" override="false" type="java.lang.String" value="org.astrogrid.datacenter.queriers.fits.FitsQuerierPlugin" />
  <Environment name="org.astrogrid.config.url" override="false" type="java.lang.String"
            value="@CONFIGPATH@/AstroGridConfig.properties"/>
- <Environment name="cea.filestore.basedir" override="false" type="java.lang.String" value="@WORKDIR@/cea/dsa/store" />
  <Environment name="datacenter.fits.index.url" override="false" type="java.lang.String" value="@TOMCATROOT@/exist/servlet/dcfitsfiles/TraceFile.xml" />
+<!-- setup for cea interface to this dsa-->
+ <Environment name="cea.filestore.basedir" override="false" type="java.lang.String" value="@WORKDIR@/cea/dsa-fits/store" />
+<Environment name="datacenter.cea.app.name" override="false" type="java.lang.String" value="@REGAUTHORITY@/trace_dsa" />
 </Context>
