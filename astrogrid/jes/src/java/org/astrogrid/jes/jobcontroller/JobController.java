@@ -165,7 +165,7 @@ public class JobController {
 		if( TRACE_ENABLED ) logger.debug( "submitJob() entry") ;
     	
         String
-	        response = null ;
+	        response = " response from JobController" ;
 		JobFactory
 		    factory = null ;
         Job
@@ -190,7 +190,8 @@ public class JobController {
                     		
 			bCleanCommit = factory.end ( true ) ;   // Commit and cleanup
                     			
-            response = formatGoodResponse( job ) ;
+//            response = formatGoodResponse( job ) ;
+            response = "Good" + response ;
 
         }
         catch( AstroGridException jex ) {
@@ -203,8 +204,10 @@ public class JobController {
 	        logger.error( generalMessage.toString() ) ;
 					
 	        // Format our error response here (partly Bug#12:  generate <<<some>>> response)...
-			if( job != null ) 
-			    response = formatBadResponse( job, detailMessage ) ;
+//			if( job != null ) 
+//			    response = formatBadResponse( job, detailMessage ) ;
+                
+            response = "Bad" + response ;
 	        
         }
         finally {

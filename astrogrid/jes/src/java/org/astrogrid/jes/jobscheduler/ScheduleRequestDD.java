@@ -35,9 +35,8 @@ public final class ScheduleRequestDD {
         
     public static final String
         JOBPARAMETER_TEMPLATE =
-        "<parameter name=\"{0}\" type=\"{1}\" " +
-        "{2} >" +                         // possible location data
-        "{3}" +                           // possible instream data
-        "</parameter>" ;         
+        "<parameter name=\"{0}\" type=\"{1}\" >" +
+        "{2}" +                         // possible location data OR possible instream data
+        "</parameter>" ; 
 	 
 }

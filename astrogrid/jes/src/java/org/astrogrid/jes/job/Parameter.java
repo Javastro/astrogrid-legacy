@@ -17,6 +17,7 @@ import org.astrogrid.jes.jobscheduler.*;
 import org.w3c.dom.* ;
 import org.apache.log4j.Logger ;
 import java.text.MessageFormat ;
+import org.apache.axis.utils.XMLUtils ;
 
 /**
  * The <code>Parameter</code> class represents... 
@@ -67,12 +68,28 @@ public class Parameter {
              
         try {
             
+            trace( "Parameter: " + XMLUtils.ElementToString( element ) ) ;
+            
             this.parent = parent ;
             this.name = element.getAttribute( SubmissionRequestDD.PAREMETER_NAME_ATTR ) ;
             this.type = element.getAttribute( SubmissionRequestDD.PAREMETER_TYPE_ATTR ) ;
-            this.location = element.getAttribute( SubmissionRequestDD.PAREMETER_LOCATION_ATTR ) ;
-            this.contents = element.getNodeValue() ;
-             
+//            this.location = element.getAttribute( SubmissionRequestDD.PAREMETER_LOCATION_ATTR ) ;
+//            this.contents = element.getNodeValue() ;
+           
+            // If the parameter is instream, the parameter contents is given by the node value, but...
+            // If the parameter is a remote reference (to a file within MySpace),
+            // then the location is set by the node value.
+            if( this.isRemoteReference() ) {
+                trace( "parameter is remote reference") ;
+                this.location = element.getFirstChild().getNodeValue().trim() ;
+                this.contents = "" ;    
+            }
+            else {
+                trace( "parameter contents is instream") ;
+                this.contents = element.getFirstChild().getNodeValue().trim() ;
+                this.location = "" ;
+            }
+                       
         }
         finally {
             if( TRACE_ENABLED ) trace( "Parameter(Element)() exit") ;
@@ -150,11 +167,18 @@ public class Parameter {
         try {
             
             Object []
-                inserts = new Object[4] ;
+                inserts = new Object[3] ;
             inserts[0] = this.getName() ;
             inserts[1] = this.getType() ;
-            inserts[2] = ( this.getLocation() == null ) ? " " :  "location=\"" + this.getLocation() + "\"" ;
-            inserts[3] = ( this.getContents() == null ) ? " " :  this.getContents() ;
+//            inserts[2] = ( this.getLocation() == null ) ? " " :  "location=\"" + this.getLocation() + "\"" ;
+//            inserts[3] = ( this.getContents() == null ) ? " " :  this.getContents() ;
+
+            if( this.isRemoteReference() ) {
+                inserts[2] = ( this.getLocation() == null ) ? " " :  this.getLocation() ;
+            }
+            else {
+                inserts[2] = ( this.getContents() == null ) ? " " :  this.getContents() ;
+            }          
 
             response = MessageFormat.format( ScheduleRequestDD.JOBPARAMETER_TEMPLATE, inserts ) ;
 
@@ -163,7 +187,29 @@ public class Parameter {
             if( TRACE_ENABLED ) trace( "Parameter.toJESXMLString() exit") ;    
         }       
         
-        return response ;       
+        return response ;  
+             
+    }
+    
+    
+    public boolean isRemoteReference() {
+        boolean
+            bRemoteRef = false ;
+            
+        if( this.type != null
+            &&
+            ( this.type.indexOf( "MySpace_FileReference") != -1 
+              ||
+              this.type.indexOf( "MySpace_VOTableReference") != -1 ) ) {
+                  
+            bRemoteRef = true ;   
+             
+        }
+        return bRemoteRef ;
+    }
+    
+    public boolean isInStream() {
+        return !isRemoteReference() ;
     }
     
      

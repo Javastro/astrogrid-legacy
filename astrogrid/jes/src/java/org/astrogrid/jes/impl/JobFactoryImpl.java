@@ -309,6 +309,17 @@ public class JobFactoryImpl implements JobFactory {
 //            this.checkPermissions( AUTHORIZATION_RESOURCE_JOB, AUTHORIZATION_ACTION_EDIT, communitySnippet ) ;
 
 			pStatement = ((JobImpl)job.getImplementation()).getPreparedStatement() ;
+            
+            logger.debug( "job.getId(): " + job.getId() ) ;
+            logger.debug( "job.getName(): " + job.getName() ) ;
+            logger.debug( "job.getStatus(): " + job.getStatus() ) ;
+            logger.debug( "Timestamp: " + new Timestamp( job.getDate().getTime() ).toString() ) ;
+            logger.debug( "job.getUserId(): " + job.getUserId() ) ;
+            logger.debug( "job.getCommunity(): " + job.getCommunity() ) ;
+            logger.debug( "job.getGroup(): " + job.getGroup() ) ;
+            logger.debug( "job.getToken(): " + job.getToken() ) ;
+            logger.debug( "job.getDocumentXML(): " + job.getDocumentXML() ) ;
+            logger.debug( "job.getDescription(): " + job.getDescription() ) ;
 			
 			pStatement.setString( 1, job.getId() ) ; 
 			pStatement.setString( 2, job.getName() ) ; 
@@ -861,11 +872,12 @@ public class JobFactoryImpl implements JobFactory {
       try {
           
           Object []
-             inserts = new Object[3] ;
+             inserts = new Object[4] ;
           inserts[0] = JES.getProperty( JES.JOB_TABLENAME_TOOL
                                       , JES.JOB_CATEGORY ) ;
           inserts[1] = tool.getParent().getParent().getId() ;
           inserts[2] = tool.getParent().getStepNumber() ;
+          inserts[3] = tool.getName() ;
 
           String
              updateString = MessageFormat.format( TOOL_INSERT_TEMPLATE, inserts ) ; 
@@ -934,9 +946,9 @@ public class JobFactoryImpl implements JobFactory {
                 tool = new Tool() ;
                 tool.setParent( jobStep ) ;
                 tool.setName( rs.getString( COL_TOOL_TOOLNAME ) ) ;
+                jobStep.setTool( tool ) ;
                 findParameters( tool ) ;
-                jobStep.setTool( tool ) ;     
-                  
+                       
                 if( rs.next() == true ) {
                     // We have a duplicate Tool!!! This should be impossible...
                     AstroGridMessage
@@ -1009,11 +1021,12 @@ public class JobFactoryImpl implements JobFactory {
         try {
 
             Object []
-                inserts = new Object[3] ;
+                inserts = new Object[4] ;
             inserts[0] = JES.getProperty( JES.JOB_TABLENAME_PARAMETER
                                         , JES.JOB_CATEGORY ) ;
             inserts[1] = tool.getParent().getParent().getId() ;
             inserts[2] = tool.getParent().getStepNumber() ;
+            inserts[3] = tool.getName() ;
 
             String
                 selectString = MessageFormat.format( PARAMETER_SELECT_TEMPLATE, inserts ) ;    

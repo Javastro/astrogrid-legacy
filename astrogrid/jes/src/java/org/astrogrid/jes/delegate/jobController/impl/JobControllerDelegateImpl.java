@@ -30,6 +30,9 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
 
         System.out.print( "submission: " + req ) ;
         
+        String
+            response = null ;
+        
         JobControllerServiceSoapBindingStub 
             binding = null ;
             
@@ -37,7 +40,7 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
             binding = (JobControllerServiceSoapBindingStub)
                 new JobControllerServiceLocator().getJobControllerService( new URL( this.getTargetEndPoint() ) );                        
             binding.setTimeout( this.getTimeout() ) ;    
-            binding.submitJob(req);
+            response = binding.submitJob(req);
         }
         catch( MalformedURLException mex ) {
             throw new JesDelegateException( mex ) ;
