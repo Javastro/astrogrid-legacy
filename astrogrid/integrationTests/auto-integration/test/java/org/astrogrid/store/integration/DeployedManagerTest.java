@@ -1,8 +1,11 @@
 package org.astrogrid.store.integration;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import junit.framework.Assert;
@@ -47,8 +50,8 @@ public class DeployedManagerTest extends TestCase
 // of operations on the remote Manager.
 
 
-   public void testDeployedManager() 
-   { /* try
+   public void testDeployedManager() throws IOException 
+   { 
       {
 //
 //      Create the contents which will subsequently be imported as a
@@ -106,7 +109,7 @@ public class DeployedManagerTest extends TestCase
 //
 //      Copy this file.
 
-         Agsl someAgsl = new Agsl("http://blue.nowhere.org",
+         Agsl someAgsl = new Agsl(new URL("http://blue.nowhere.org"),
            "/testxyz/file2");
 
          middle.copy("/testxyz/file1", someAgsl);
@@ -115,7 +118,7 @@ public class DeployedManagerTest extends TestCase
 //
 //      Move this file.
 
-         someAgsl = new Agsl("http://blue.nowhere.org",
+         someAgsl = new Agsl(new URL("http://blue.nowhere.org"),
            "/testxyz/file3");
 
          middle.move("/testxyz/file1", someAgsl);
@@ -208,11 +211,8 @@ public class DeployedManagerTest extends TestCase
             Assert.assertEquals(message.getSeverity(), StatusCodes.INFO);
          }
       }
-      catch(Exception e)
-      {  System.out.println("Exception thrown.");
-         e.printStackTrace();
-      }*/
-       fail("Fix these compile errors");
+
+    
    }
 
 
