@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow
+  xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1"  
+
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-intance"
+ name="empty workflow">
+   
+  <sequence />
+  <description
+    xmlns="">An empty workflow document
+</description>
+ <Credentials   xmlns:cred="http://www.astrogrid.org/schema/Credentials/v1"> 	
+      <cred:Account>
+      		<cred:Name>nww74</cred:Name>
+      		<cred:Community>jodrell</cred:Community>
+      	</cred:Account>
+      <cred:Group>
+      	 <cred:Name>developers</cred:Name>
+      	 <cred:Community>jodrell</cred:Community>
+      </cred:Group>
+      <cred:SecurityToken></cred:SecurityToken>      
+    </Credentials>
+</workflow>

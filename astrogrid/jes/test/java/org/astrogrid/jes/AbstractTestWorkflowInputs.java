@@ -1,4 +1,4 @@
-/*$Id: AbstractTestWorkflowInputs.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: AbstractTestWorkflowInputs.java,v 1.3 2004/03/10 13:20:54 nw Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -59,6 +59,11 @@ public abstract class AbstractTestWorkflowInputs extends TestCase{
         testIt(loadResource("/workflow6.xml"),5);
         
     }
+    
+    public void testBuildJob7() throws Exception {
+         testIt(loadResource("/workflow7.xml"),6);
+        
+     }
 
     protected InputStream loadResource(String resource) throws IOException {
         InputStream is = this.getClass().getResourceAsStream(resource);
@@ -73,6 +78,9 @@ public abstract class AbstractTestWorkflowInputs extends TestCase{
 
 /* 
 $Log: AbstractTestWorkflowInputs.java,v $
+Revision 1.3  2004/03/10 13:20:54  nw
+added empty workflow test document
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 
