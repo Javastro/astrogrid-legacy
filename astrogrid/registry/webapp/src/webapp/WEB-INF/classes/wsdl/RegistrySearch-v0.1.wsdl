@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="IVOARegistrySearch" 
+             xmlns="http://schemas.xmlsoap.org/wsdl/" 
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+             xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" 
+             xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+             xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+             xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" 
+             xmlns:adql="http://www.ivoa.net/xml/ADQL/v0.7.4"
+             xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" 
+             xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v0.1" 
+             xmlns:tns="http://www.ivoa.net/wsdl/RegistrySearch/v0.1"
+             targetNamespace="http://www.ivoa.net/wsdl/RegistrySearch/v0.1">
+
+   <types>
+      <xs:schema xmlns="http://www.w3.org/2001/XMLSchema" 
+         xmlns:tns="http://www.ivoa.net/wsdl/RegistrySearch/v0.1" 
+         targetNamespace="http://www.ivoa.net/wsdl/RegistrySearch/v0.1">
+
+         <xs:import namespace="http://www.ivoa.net/xml/ADQL/v0.7.4" 
+                    schemaLocation="ADQL-0.7.4.xsd" />
+         <xs:import namespace="http://www.ivoa.net/xml/RegistryInterface/v0.1"
+                    schemaLocation="RegistryInterface-v0.1.xsd"/>
+         
+      </xs:schema>
+   </types>
+
+   <message name="empty"/>
+
+   <message name="SearchReq">
+        <part name="adql" element="adql:Select" />
+   </message>
+
+   <message name="KeywordSearchReq">
+      <part name="keywords" type="xs:string" />
+      <part name="orValue" type="xs:boolean" />
+   </message>
+
+   <message name="SearchResp">
+      <part name="voresources" element="ri:VOResources" />
+   </message>
+   
+   <message name="GetRegistriesReq">
+
+   </message>
+   
+   
+   
+   <portType name="RegistrySearchPortType">
+
+      <operation name="Search">
+         <input message="tns:SearchReq" />
+         <output message="tns:SearchResp" />
+      </operation>
+
+      <operation name="KeywordSearch">
+         <input message="tns:KeywordSearchReq" />
+         <output message="tns:SearchResp" />
+      </operation>
+      
+      <operation name="GetRegistries">
+         <input message="tns:GetRegistriesReq" />     
+         <output message="tns:SearchResp" />
+      </operation>
+
+   </portType>
+   
+   <binding name="RegistrySearchSOAP" type="tns:RegistrySearchPortType">
+      <soap:binding style="document" 
+                    transport="http://schemas.xmlsoap.org/soap/http"/>
+                    
+      <operation name="Search">
+         <soap:operation style="document" soapAction="Search" />
+         <input>
+            <soap:body use="literal" />
+         </input>
+         <output>
+            <soap:body use="literal" />
+         </output>
+      </operation>
+      
+      <operation name="KeywordSearch">
+         <soap:operation style="document" soapAction="KeywordSearch" />
+         <input>
+            <soap:body use="literal" />
+         </input>
+         <output>
+            <soap:body use="literal" />
+         </output>
+      </operation>  
+
+      <operation name="GetRegistries">
+         <soap:operation style="document" soapAction="GetRegistries" />
+         <input>
+            <soap:body use="literal" />
+         </input>
+         <output>
+            <soap:body use="literal" />
+         </output>
+      </operation>      
+      
+   </binding>
+
+</definitions>
