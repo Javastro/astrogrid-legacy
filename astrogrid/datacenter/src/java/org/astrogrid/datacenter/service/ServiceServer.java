@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceServer.java,v 1.2 2003/09/09 17:52:29 mch Exp $
+ * $Id: ServiceServer.java,v 1.3 2003/09/09 18:32:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -134,7 +134,7 @@ public abstract class ServiceServer
     */
    public void registerServiceListener(String serviceID, URL listenerUrl)
    {
-      getService(serviceID).registerServiceListener(new WebNotifyServiceListener(listenerUrl));
+      getService(serviceID).registerServiceListener(new WebNotifyServiceListener(serviceID, listenerUrl));
    }
 
 }
