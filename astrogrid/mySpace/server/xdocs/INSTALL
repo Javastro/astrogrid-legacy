@@ -1,0 +1,330 @@
+AstroGrid Iteration 5 Kit.                                    MySpace service
+AstroGrid home page: http://www.astrogrid.org/
+
+This document refers to the AstroGrid Iteration 5 release.  It should be
+displayed with a fixed-pitch (courier) font.
+
+Comments on this document are welcome.  Please send them to: acd@roe.ac.uk
+
+-----------------------------------------------------------------------------
+
+                       Installing a MySpace Service
+                       ============================
+ 
+                        A C Davenhall and J D Taylor
+                          Version 4, 6 April 2004
+
+
+Purpose and Status of this Document
+-----------------------------------
+
+This document describes how to install a simple AstroGrid MySpace
+service.  It gives enough information to install a basic service, but
+all the configuration options are not covered.  It refers to the version
+of MySpace available at the end of AstroGrid Iteration 5 in early April 
+2004.
+
+
+Prerequisites
+-------------
+
+In order to install MySpace you require access to a computer (in practice
+a PC) running the following:
+
+* RedHat Linux version 7.2 is recommended.  However, MySpace has been
+  installed successfully on a machine running RedHat Linux version 7.1.
+
+* Tomcat version 1.2.24 or better.  Tomcat is available from the Apache
+  Software Foundation.  See http://jakarta.apache.org/tomcat/.
+
+* Though Tomcat can, in principle, be used in isolation, it is usually
+  installed with a conventional HTTP server, one of which is also
+  available from Apache (see http://www.apache.org/ and
+  http://httpd.apache.org/).
+
+* A copy of the MySpace war file, which can be obtained from
+  http://www.astrogrid.org/maven/docs/snapshot/mySpace/index.html
+
+You need to be able to log in to Tomcat with the role of `Manager'.  A
+list of Tomcat users can be found in file:
+
+  $CATALINA_HOME/conf/tomcat_users.xml
+
+where $CATALINA_HOME is the root directory of your Tomcat installation.
+You also need access to a Unix account able to read, write and execute
+files in the directories where Tomcat is installed.
+
+
+Installation Procedure
+----------------------
+
+To install an AstroGrid MySpace service proceed as follows.
+
+1. If you have not already done so then download a copy of the MySpace war
+   file and save it as a file on a local disk.
+
+   If you wish to build the war file from the MySpace source code,
+   rather than using a downloaded copy, the final section of this note
+   gives the details.
+
+   The name of the war file is astrogrid-mySpace.war and by default the
+   Web service adopts the name of the war file.  Thus, for the remainder
+   of these notes it will be assumed that the MySpace Web service will
+   be called `astrogrid-mySpace'.  If you rename the war file then the
+   name of the Web service will be correspondingly different.
+
+2. Using a Web browser, log in to your Tomcat's Application Manager,
+   which is often found at:
+
+     http://localhost:8080/Manager
+
+   Note that you will need access to (ie. a password for) a Tomcat
+   account with the role of Manager.
+
+   Scroll down to the `Upload a WAR file to install' section towards the
+   bottom of the page.  Click on the `Browse...' button and select the
+   MySpace war file which you have downloaded.  Then click on the
+   `Install' button.
+
+   If all goes well, a new entry, probably called astrogrid-mySpace,
+   should appear in the list of applications and it should be shown as
+   running.
+
+   Tomcat creates Web services in subdirectory webapps of its home
+   directory, with a separate subdirectory for each service.  There
+   should now be a subdirectory for the MySpace service, called
+   astrogrid-mySpace.  That is, the following directory should have been
+   created:
+
+     $CATALINA_HOME/webapps/astrogrid-mySpace
+
+   where $CATALINA_HOME is the root directory of your Tomcat installation.
+
+3. The present simple installation procedure creates a MySpace service
+   with a single MySpace server for holding files.  You need to choose a
+   directory where these files will be located.  The MySpace Web service
+   will need to be able to read and write files in this directory.  Also
+   the files should be accessible as URLs.  (In Iteration 5 most MySpace
+   functions do not require files to be accessible via URLs, but a few
+   do.  So, for a fully-functional MySpace service access via URLs is
+   required.)
+
+   For an operational service it is unwise to choose a directory which
+   is a subdirectory of the MySpace Web service directory because all
+   the files will be deleted if the Web service is removed (which you
+   will probably want to do periodically).
+
+   (On grendel12 I chose a sibling directory to the one for the Web
+   service:
+
+     $CATALINA_HOME/webapps/myspacerepository
+
+   and made its contents accessible via URLs by putting a fake (ie.
+   non-working) MySpace service in this directory.  However, this was a
+   kludge adopted because I didn't understand the relationship between
+   directories and URLs on grendel12.)
+
+4. You also need to choose the directory where the HSQLDB DBMS which
+   MySpace uses to record the files in the MySpace system is to be
+   located.  Again it is sensible to locate this file outside the Web
+   service directory, so that it is not deleted when the service is
+   removed.  It is probably sensible (for security) to choose a
+   directory not accessible as a URL, though the MySpace Web service
+   does need to be able to read and write to it.
+
+5. You have now chosen directories where:
+
+  - the server files are to be held,
+
+  - the HSQLDB DBMS is to be located.
+
+   Make the directory you have chosen for the HSQLDB DBMS your current
+   directory and type:
+
+   cp $CATALINA_HOME/webapps/astrogrid-mySpace/astrogrid-mySpace.servers .
+
+   Note that the servers file, here astrogrid-mySpace.servers, must
+   have the same name as your Web service, but with file-type `servers'.
+
+6. Edit the copy of astrogrid-mySpace.servers.  Most of this file is
+   comments and you need to edit only the final line:
+
+    server serv1  23  http://www.blue.nowhere.org/s1/  /base/direct/s1/
+
+   Replace:
+
+     http://www.blue.nowhere.org/s1/ with the URL for your server directory
+
+   and:
+
+     /base/direct/s1/ with the server directory's full path and name.
+
+   Note that the server name must be left at `serv1' and that the `23'
+   is the expiry period in days.  You can substitute any value you
+   prefer, but expiry periods are not fully implemented in Iteration 5.
+   An additional restriction in Iteration 5 is that the servers file
+   should contain just one server, which must be called `serv1'.
+
+7. Now make:
+
+     $CATALINA_HOME/webapps/astrogrid-mySpace/
+ 
+   your current directory and edit file astrogrid1.sh.   Change the
+   database name in the final line to the name of your Web service
+   preceded by the directory to hold the database files.  For example,
+   if the database where being put in directory 
+   /home/astrogrid/myspacedata you would put:
+
+     /home/astrogrid/myspacedata/astrogrid-mySpace
+
+   Then run script astrogrid1.sh.  The following HSQLDB files should be
+   created in the chosen directory:
+
+     astrogrid-mySpace.db.properties
+     astrogrid-mySpace.db.script
+
+   These are simply text files and you can examine them if you wish.
+
+   For further details of setting up the MySpace DBMS see the companion
+   document `Creating a New Myspace Registry' in file:
+
+     astrogrid/mySpace/xdocs/createregistry_v02.lis
+
+8. Open the configuration file:
+
+   ASTROGRID_myspacemanagerconfig.xml
+
+   in the directory:
+
+     $CATALINA_HOME/webapps/astrogrid-mySpace/WEB-INF/classes
+     
+   Edit the properties MYSPACEMANAGERURL and MYSPACEMANAGERURLs and set
+   both their values to:
+
+     http://<your host>:8080/astrogrid-mySpace/services/Manager
+
+   Note that MYSPACEMANAGERURLs should have a comma (`,') after the
+   entry, eg:
+
+     http://<your host>:8080/astrogrid-mySpace/services/Manager,
+
+   This requirement is, ahem, a feature, which will be addressed shortly.
+
+   You can check the address by browsing to it; you should get a page
+   saying `this is a web service'.
+
+   Now edit the property REGISTRYCONF and set it to the full name of
+   the HSQLDB database, including the full directory path.  For example,
+   if the database where being put in directory 
+   /home/astrogrid/myspacedata you would set it to:
+
+     /home/astrogrid/myspacedata/astrogrid-mySpace
+
+   It is sensible to make a copy of ASTROGRID_myspacemanagerconfig.xml
+   outside the MySpace server directories, so that you retain a copy
+   when you remove the Web service.
+      
+   Alternatively, move the file onto a Web server and place its URL in
+   JNDI by editing file $CATALINA_HOME/conf/servers.xml; make an
+   environment entry org.astrogrid.mySpace.config.url, for example,
+   under <DefaultContext> place:
+
+     <Environment description="MySpace Config URL"
+        name="org.astrogrid.mySpace.config.url" 
+        override="false" type="java.lang.String" 
+        value="http://localhost:8080/ASTROGRID_myspacemanagerconfig.xml"
+     />
+
+   and restart the Web server.  This latter approach will ensure that the 
+   configuration file will not get wiped between installations.
+
+
+9. You can optionally customise the introductory Web page for your
+   MySpace service.  Edit file:
+
+     $CATALINA_HOME/webapps/astrogrid-mySpace/index.html
+
+   A title and introductory paragraph can be inserted between the lines:
+
+     <!-- Start customisation
+     <!-- End customisation -->
+
+   You can, of course, edit other parts of the file if you wish, but
+   this is not recommended.  Again it is sensible to make a copy of the
+   file outside the MySpace server directories, so that you retain a copy
+   when you remove the Web service.
+
+10.Go back to the Tomcat Manager Web page and reload the MySpace Web
+   service (note: do not remove the Web service since this will wipe out
+   your configuration).
+
+11.The MySpace Web service should now be deployed.
+
+   You can access it either by following the link from the Tomcat
+   Manager page, or by accessing URL:
+
+     http://<your host>:8080/astrogrid-mySpace/
+
+   There are various test and example pages that you can try out to
+   check that all is well.
+
+
+Building the MySpace War File from Source
+-----------------------------------------
+
+To build the MySpace war file from source proceed as follows.
+
+1. If you do not have a copy of Maven (http://maven.apache.org/)
+   then obtain and install a copy and set up for using it.
+
+2. Obtain a copy of the source.  It can be extracted anonymously from
+   the AstroGrid CVS repository:
+
+     cvs -d :pserver:anoncvs@cvs.astrogrid.org:/devel \
+                                       checkout -P astrogrid/mySpace
+     cvs -d :pserver:anoncvs@cvs.astrogrid.org:/devel \
+                                       checkout -P astrogrid/maven-site
+
+3. Make:
+
+     astrogrid/mySpace
+
+   your current directory and type:
+
+     maven clean
+     maven site
+     maven war
+
+   All three commands produce output, the last two voluminously so.
+   If all has gone well then the last two commands include towards the
+   end of their spiel the welcome salutation:
+
+     BUILD SUCCESSFUL
+
+4. The war file should have been created as file:
+
+     astrogrid/mySpace/target/astrogrid-mySpace.war
+
+
+
+Author Contact Details
+----------------------
+
+A C Davenhall (acd@roe.ac.uk),
+J D Taylor (jdt@roe.ac.uk),
+Royal Observatory, Blackford Hill, Edinburgh, EH9 3HJ, UK.
+
+
+Revision History
+----------------
+
+Version 1,  4/1/04:  Original version for Iteration 4.              (ACD, JDT)
+Version 2,  6/1/04:  Minor corrections, added section on building   (ACD, JDT)
+                     from source.                                  
+Version 3,  23/1/04: Tweaks to instructions for editing
+                     ASTROGRID_myspacemanagerconfig.xml.            (JDT, ACD)
+Version 3b, 23/1/04: JNDI instructions                              (JDT)
+Version 4,  6/4/04:  Original version for Iteration 5.              (ACD)
+
+-----------------------------------------------------------------------------
+AstroGrid Iteration 5 Kit.                                    MySpace service

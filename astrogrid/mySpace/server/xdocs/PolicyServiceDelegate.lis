@@ -1,0 +1,106 @@
+AstroGrid Iteration 3 Kit.                                     mySpace system
+This document should be displayed with a fixed-pitch (courier) font.
+-----------------------------------------------------------------------------
+
+
+  Including a Real of Fake PolicyServiceDelegate in the MySpace System
+  ====================================================================
+
+                        A C Davenhall (acd@roe.ac.uk)
+                        Version 1, 24 September 2003
+
+
+
+Introduction
+------------
+
+The MySpace Manager needs to check whether the user is permitted to
+perform the operations which he is attempting.  It makes such checks by
+creating a PolicyServiceDelegate object and invoking methods of this
+object which carry out the checks required.  A real
+PolicyServiceDelegate object works by using Web services to submit
+queries to a remote policy server.  This arrangement potentially posses
+difficulties whilst the MySpace Manager (or MySpace system) is being
+tested and de-bugged.  Specifically:
+
+* the de-bug or test program must be set up for sending Web service
+  queries to the remote policy server,
+
+* the remote policy server must be up and running,
+
+* any user's details included in the test program must pertain to real
+  users known to the policy server.
+
+In order to circumvent these problems the MySpace source code includes a
+fake PolicyServiceDelegate.  This fake class contains a method for
+checking whether a user is authorised to perform a given task which is
+simply hard-coded to always return `true'.  Thus, testing of the MySpace
+system can proceed without having to worry about invoking Web services.
+The constructor for the fake PolicyServiceDelegate prints the following
+line to standard output when it is invoked:
+
+  Created fake PolicyServiceDelegate.
+
+and thus it should always be possible to tell whether a real or fake
+PolicyServiceDelegate is being used.
+
+The remainder of this note explains how to control whether real of fake
+PolicyServiceDelegate objects to be created by the MySpace system.
+
+
+Real PolicyServiceDelegate
+--------------------------
+
+In order to use real PolicyServiceDelegate objects in the MySpace system
+two jar files need to be obtained from the portalB sub-directory of the
+AstroGrid CVS repository.  The full paths and names of these files are:
+
+  .../astrogrid/portalB/depends/community/authentication-client-1.0.jar
+  .../astrogrid/portalB/depends/community/policy-client-1.0.jar
+
+Having retrieved copies of these jar files you then need to ensure that
+they are included in your CLASSPATH.  In order to ensure that the real
+PolicyServiceDelegate objects are picked up in preference to the fake
+ones (below) the jar files should occur in your CLASSPATH before the
+entry for the MySpace source tree.  (I'm unsure whether a MySpace
+release is supposed to include its own copies of these jar files, but if
+so they should probably live in:
+
+  .../astrogrid/mySpace/lib
+
+Currently I keep my copies in a directory outside the AstroGrid tree.)
+
+
+Fake PolicyServiceDelegate
+--------------------------
+
+The source code for the fake PolicyServiceDelegate class is included in
+the MySpace source tree.  Thus, the fake objects will be automatically
+included in a MySpace system unless you have the jar files for the real
+classes (above) included in your CLASSPATH before the entry for the
+MySpace tree.  There are actually two fake classes; their full names and
+paths are:
+
+  .../astrogrid/mySpace/src/java/org/astrogrid/community/common/util/
+                                                     CommunityMessage.java
+  .../astrogrid/mySpace/src/java/org/astrogrid/community/delegate/policy/
+                                                PolicyServiceDelegate.java
+
+You will need to ensure that these classes are compiled.
+
+
+
+Thus, in either case, the trick is to ensure that the correct version of
+the class is picked up, which is basically controlled by whether the jar
+files for the real classes are included in your CLASSPATH before the
+entry for the MySpace source tree.
+
+
+Revision History
+----------------
+
+Version 1, 24/9/03: Original version (ACD). 
+
+
+-----------------------------------------------------------------------------
+AstroGrid Iteration 3 Kit.                                     mySpace system

@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<!-- extension maven script -->
+<project default="astrogrid-build-site" xmlns:j="jelly:core">
+	<!--+ 
+	    | custom astrogrid goals for nightly build
+	    | It's questionable whether we need these since the build
+	    | is now controlled from the root project
+	    +-->
+	<goal name="astrogrid-clean" prereqs="clean"/>
+	<goal name="astrogrid-deploy-site">
+	    <echo message="Please deploy the site docs from the base myspace project"/>
+	</goal>
+	<goal name="astrogrid-build-site" prereqs="site"/>
+	<goal name="astrogrid-deploy-snapshot" prereqs="war:deploy-snapshot"/>
+	<goal name="astrogrid-build-snapshot" prereqs="war:snapshot"/>
+	<goal name="astrogrid-install-snapshot" prereqs="war:install-snapshot"/>
+	<goal name="astrogrid-deploy-artifact" prereqs="war:deploy"/>
+	<goal name="astrogrid-build-artifact" prereqs="war:jar"/>
+	<goal name="astrogrid-install-artifact" prereqs="war:install"/>
+	
+	
+	<preGoal name="java:compile">
+		<mkdir dir="${basedir}/target/classes"/>
+		<!-- JDepend fails if this dir is not present.  Hack to fix it. -->
+	</preGoal>
+
+	<postGoal name="war:webapp">
+		<j:set var="classes.dir" value="${pom.getPluginContext('maven-war-plugin').getVariable('webapp.build.classes')}" />
+		<echo message="Copying xml templates and properties across from ${maven.conf.dir} to ${classes.dir} directory"/>
+		<copy todir="${classes.dir}" overwrite="yes">
+			<fileset dir="${maven.conf.dir}">
+      		</fileset>
+		</copy>
+		<echo message="copying across a readme and sample config file"/>
+		<copy todir="${maven.war.webapp.dir}" overwrite="yes">
+			<fileset dir="${basedir}">
+				<include name="INSTALL"/>
+			</fileset>
+		</copy>
+		<!--Temporary measure - we need to find a better way to set up the database, and a better place to store the config files-->
+		<echo message="copying across database setup files - see xdocs/createregistry_v02.lis to see what they're for"/>
+		<copy todir="${maven.war.webapp.dir}" overwrite="yes">
+			<fileset dir="${basedir}/demoData">
+				<include name="*.servers"/>
+				<include name="*.sh"/>
+			</fileset>
+		</copy>
+	</postGoal>
+	<goal name="webapp.patch" prereqs="java:compile">
+        <copy todir="${maven.war.webapp.dir}/WEB-INF/classes">
+          <fileset dir="${maven.build.dir}/classes"/>
+        </copy>
+        <copy todir="${maven.war.webapp.dir}/">
+          <fileset dir="src/webapp">
+          <exclude name="WEB-INF/**"/>
+          </fileset>
+        </copy>
+        
+    </goal>
+	    <!--+
+        | To use the following goals you need to have the correct jars installed.
+        | The smack.jar and imtask.jar may be found at http://
+        | Place them in your $MAVEN_HOME/lib directory and edit
+        | $MAVEN_HOME/bin/forehead.conf appropriately.
+        | In your build.properties you should then set
+        | jabber.host=jabber.astrogrid.org
+        | jabber.sender=maven
+        | jabber.receiver=JohnTaylor@jabber.astrogrid.org/Gaim
+        | jabber.password=maven
+        +-->
+ 
+    <goal name="wave-goodbye-site">
+        <j:set var="message" value="${pom.artifactId} documentation has finished building"/>
+        <attainGoal name="jabber-me"/> 
+    </goal>    
+    <goal name="wave-goodbye-artifact">
+        <j:set var="message" value="${pom.artifactId} artifacts have finished building"/>
+        <attainGoal name="jabber-me"/> 
+    </goal>  
+    <goal name="jabber-me">
+        <j:if test="${context.getVariable('jabber.host') != null}">
+            <attainGoal name="jabber-declare-tasks"/>
+            <j:catch>
+                <jabber host="${jabber.host}" from="${jabber.sender}" 
+                    to="${jabber.receiver}" password="${jabber.password}" 
+                    message="${message}"/>
+            </j:catch>
+        </j:if>
+    </goal>
+    <!-- Configure the custom Ant tasks for Jabber -->
+    <goal name="jabber-declare-tasks">
+        <taskdef name="jabber" classname="com.tfftech.ant.taskdefs.im.jabber.JabberTask" /> 
+    </goal>
+    <!-- End Jabber Goals -->
+</project>

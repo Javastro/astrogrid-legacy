@@ -351,7 +351,7 @@
     +-->
 <goal name="registry.upload.test">
     <echo message="Uploading Registry Entry .."/>
-   <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
+    <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
     <echo message=""/>
 
     <ant
@@ -487,12 +487,12 @@
         <copy todir="${temporary.dir}/myspace" filtering="true">
                 <fileset dir="contexts/myspace" />
         </copy>
-        <war update="true" destfile="${temporary.dir}/astrogrid-mySpace-SNAPSHOT.war">
+        <war update="true" destfile="${temporary.dir}/astrogrid-mySpace-server-SNAPSHOT.war">
                 <metainf dir="${temporary.dir}/myspace"/>
         </war>
   <j:catch>
   <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-mySpace-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-mySpace-SNAPSHOT.war"/>
+          path="/astrogrid-mySpace-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-mySpace-server-SNAPSHOT.war"/>
   </j:catch>
 </goal>
 

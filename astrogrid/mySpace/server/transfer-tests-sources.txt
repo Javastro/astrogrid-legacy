@@ -1,0 +1,21 @@
+# Test fail-over through bad gsiftp URL. 
+1 gsiftp://nada.not-there.nix/no/way/jose file://./project.properties
+
+# Test fail-over through bad ftp URL.
+1 ftp://nada.not-there.nix/no/way/jose file://./project.properties
+
+# Test fail-over through bad http URL
+1 http://nada.not-there.nix/no/way/jose file://./project.properties
+
+# Test fail-over through bad file URL.
+1 file:///bogus/impossible file://./project.properties
+
+# Test use of single URL (uses different constructor in FileTransfer).
+0 file://./project.properties
+
+# Test HTTP transfer (this one should work).
+0 http://astrogrid.ast.cam.ac.uk/test-fixtures/maven/org/astrogrid/mySpace/mySpaceUtil/test1.txt
+
+0 file://./project.properties
+
+

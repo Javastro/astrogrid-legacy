@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<document>
+  <properties>
+    <title>Building MySpace</title>
+    <author email="jdt@roe.ac.uk">John Taylor</author>
+  </properties>
+
+  <body>
+    <section name="How to build myspace using maven">
+      <subsection name="Prerequisites">
+          <p>
+             <ul>
+                 <li>maven</li>
+                 <li>cvs</li>
+             </ul> 
+          </p>
+      </subsection>
+      <subsection name="Build">
+          <p>
+              <ul>
+                  <li>Check out the latest code from cvs under astrogrid/myspace</li>
+                  <li>In a parallel directory check out the latest code from cvs under astrogrid/maven-base</li>
+                  <li>in the myspace folder execute maven astrogrid-build-site to create the site documentation</li>
+                  <li>in the myspace folder execute maven astrogrid-build-snapshot to create the SNAPSHOT war and jar files</li>
+              </ul>
+              
+          
+          </p>
+      </subsection>
+    </section>
+  </body>
+</document>

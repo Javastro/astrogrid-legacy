@@ -1,0 +1,216 @@
+AstroGrid Iteration 2 Kit.                                     mySpace system
+This document should be displayed with a fixed-pitch (courier) font.
+-----------------------------------------------------------------------------
+
+
+                                RELEASE NOTE
+                                ============
+                   AstroGrid MySpace System for Iteration 2
+                   ========================================
+
+                          A C Davenhall, C L Qin     
+                          Version 1, 23 July 2003
+
+
+
+Introduction
+------------
+
+This document is the release note for the AstroGrid Iteration 2 mySpace
+system.  MySpace is a component of the AstroGrid software.  It provides
+AstroGrid users with access to geographically distributed scratch space.
+Its primary use is to store the results of queries submitted to
+astronomical databases by the AstroGrid system.  In Iteration 2 mySpace
+can only be used to store files (typically containing VOTables).  In
+future iterations it might also be possible to store database tables.
+Because of this mooted extension the entities which mySpace stores
+are referred to using the generic name `dataHolders', rather than simply
+being called `files.'  The mySpace system presents the user with a
+hierarchical view of his dataHolders, organising them into `containers',
+which are analogous to operating system directories or folders.
+
+MySpace is a component of the AstroGrid system.  It is not directly
+exposed to the user.  Rather, a user browses and interacts with his
+mySpace entries using the mySpace Explorer, another component of the
+Astrogrid system.  Other components of the system, such as the Data
+Agent and the Job Control, insert dataHolders into the mySpace system.
+
+This note gives an overview of the mySpace system and lists its
+assumptions, functionality, restrictions and known bugs.  It does not
+contain installation instructions; separate installation instructions
+are provided elsewhere.
+
+
+Overview
+--------
+
+MySpace is a distributed system.  The AstroGrid system could contain
+several mySpace systems.  Every mySpace system consists of a mySpace
+Manager and one or more mySpace Servers.  These components can be
+geographically dispersed.  They communicate via Web services.  The
+mySpace Servers are simply repositories for storing dataHolders (ie.
+files) and have little local intelligence.  Conversely, the mySpace
+Manager keeps track of the dataHolders known to the mySpace system:
+what dataHolders are stored, who owns them, when they were created etc.
+To store these data the mySpace Manager maintains a `registry', which
+is just a big list of all the dataHolders in the mySpace system.  This
+mySpace registry has little in common with the AstroGrid resource
+registry; the information stored in the mySpace registry for each
+dataHolder is both fixed and limited (see the Section `Information
+Stored in the MySpace Registry').
+
+In addition to using Web services internally to communicate between
+its components, mySpace is also invoked, by other components in the
+AstroGrid system, using Web servces.
+
+The mySpace Manager can be invoked to perform a number of discrete
+actions or tasks, each corresponding to some operation on the mySpace
+system.  These actions are briefly listed in the Section `Functions
+Supported', below.
+
+Iteration 2 includes the first version of the mySpace system.  Numerous
+features are either not implemented or half-implemented (ie. some of
+the `hooks' needed to implement a feature have been implemented, but
+the full, working feature is not available).  Many of these deficiencies
+and restrictions are listed in the Section `Restrictions', below.
+
+
+Assumptions
+-----------
+
+MySpace is part of the AstroGrid system and is assumed to be deployed
+as part of the AstroGrid software.  Deploying it in isolation does not
+make sense.  In particular, a mySpace Explorer is required to browse
+the contents a mySpace system.
+
+Various external components commonly required by the AstroGrid software,
+such as Apache/Tomcat, are assumed to be available.  The Iteration 2
+mySpace does not require any external components not otherwise used
+by AstroGrid.
+
+The host operating system is assumed to be Linux (though most, if not
+all, of the components would probably work on many other variants of
+Unix).
+
+
+Functions Supported
+-------------------
+
+The mySpace manager can be invoked to perform the following actions.
+
+* Look up the details of a single dataHolder.
+* Look up the details of a set of dataHolders, selected by their names
+  matching a wild-carded query.
+* Create a container.
+* Import a dataHolder.
+* Copy a dataHolder.
+* Move a dataHolder.
+* Export a dataHolder.
+* Delete a dataHolder or container.
+
+
+Information Stored in the MySpace Registry
+------------------------------------------
+
+Every entry in the mySpace registry corresponds to a dataHolder or
+container.  The following information is stored for each entry.
+
+* The full name of the dataHolder (including its full container
+  hierarchy).
+* A unique numeric identifier for the dataHolder (used internally
+  to refer to it).
+* The name of the server file corresponding to the dataHolder.
+* The user identifier of the user who owns the dataHolder.
+* The creation date.
+* The expiry date.
+* The size of the dataHolder in bytes.
+* The type of the dataHolder (with codes for VOTable and container;
+  additional codes will probably be required in the future).
+* The access permissions mask for the dataHolder.
+
+
+Restrictions and Limitations
+----------------------------
+
+The Iteration 2 mySpace has the following restrictions and limitations.
+We anticipate that many of these restrictions will be addressed in
+future iterations.
+
+* The mySpace Server(s) must be located on the same machine as the
+  Data Agent, Job Control or whichever software is importing dataHolders
+  into the mySpace system.
+
+* MySpace cannot copy dataHolders between different servers in the
+  same mySpace system.
+
+* Exporting dataHolders is implementing by returning a URL to whatever
+  software is invoking the mySpace system (usually the mySpace
+  Explorer).  This software can then use the URL to retrieve a copy of
+  the dataHolder.  This approach might or might not be a kludge.
+
+* There is no user authentication.
+
+* There is no user authorisation and checking of requested operations
+  against permissions masks.  Any user can perform any operation.
+
+* An expiry period is implemented in the sense of being computed
+  when a dataHolder is created and stored, along with the dataHolder's
+  other details, in the registry.  However, there is no action to check
+  for expired dataHolders and take some action.  Indeed, it is not
+  clear what action is required and how configurable it should be.
+
+* There are no `system administrator' actions to, for example, reconcile
+  the entries in the registry with the files actually present on the
+  servers.  Such actions would be useful, for example, for discovering
+  and recovering from misadventures.
+
+* New users can only be introduced when the registry is created, ie.
+  when the mySpace system is installed.
+
+* There are no user disk quotas on the servers.
+
+* The registry is implemented as a file rather than a DBMS.  Moreover,
+  this file is read and re-written every time the mySpace Manager
+  performs an action.  This behaviour is ok for a small registry but
+  might become unacceptably slow for a large registry.
+
+* DataHolders in the registry are identified by a unique integer
+  sequence number.  The sequence used starts at 0 for the first entry
+  and is incremented for every new entry added.  There is no facility
+  to re-use numbers as entries are deleted.  Eventually the system
+  will crash when the number becomes too large for a four-byte integer.
+
+* A very limited range of queries on the dataHolder name are supported:
+  just a wild-card (`*') at the end of of the query.  Some additional
+  options required include:
+
+  - options for a terminating wild-card to show just the entries in
+    the trailing container (`*') or to include all entries in any
+    child containers (`**'),
+
+  - embedded wild-cards (ie. not at the end of the name),
+
+  - perhaps Unix-like regular expressions.
+
+* The names of selected dataHolders and containers are returned as a
+  flat list.  It might be preferable to return them as a hierarchy
+  of containers.
+
+* The system could potentially be extended to include database tables
+  in addition to operating system files.
+
+
+Known Bugs
+----------
+
+None extant.
+
+
+Revision History
+----------------
+
+Version 1, 23/7/03: Original version (ACD, CLQ). 
+
+
+-----------------------------------------------------------------------------
+AstroGrid Iteration 2 Kit.                                     mySpace system
