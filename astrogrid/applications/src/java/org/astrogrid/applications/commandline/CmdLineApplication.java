@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplication.java,v 1.15 2004/02/02 16:49:44 pah Exp $
+ * $Id: CmdLineApplication.java,v 1.16 2004/02/27 01:03:27 nw Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -30,7 +30,10 @@ import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.manager.AbstractApplicationController;
 import org.astrogrid.community.User;
 import org.astrogrid.jes.delegate.JesDelegateException;
-import org.astrogrid.jes.delegate.jobMonitor.JobMonitorDelegate;
+import org.astrogrid.jes.delegate.JesDelegateFactory;
+import org.astrogrid.jes.delegate.JobMonitor;
+import org.astrogrid.jes.types.v1.JobInfo;
+import org.astrogrid.jes.types.v1.JobURN;
 /**
  * A generic model for a command line application. This generally assumes that the application can be run from a command line obtaining all of its parameters from commandline arguments and possibly standard in. 
  * The application can interact with the filesystem.
@@ -135,11 +138,17 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
 
       //inform the job monitor that we have finished - only if there is an endpoint specified...     
       if (jobMonitorURL != null && jobMonitorURL.length() > 0) {
-
-         JobMonitorDelegate delegate = JobMonitorDelegate.buildDelegate(jobMonitorURL);
+        //NWW: updated to new job montior delegate.
+         JobMonitor delegate = JesDelegateFactory.createJobMonitor(jobMonitorURL);
 
          try {
-            delegate.monitorJob(jobStepID, delegate.STATUS_COMPLETED, "comment");
+             JobInfo info = new JobInfo();
+             info.setComment("comment");
+             info.setJobURN(new JobURN(jobStepID));
+             info.setStatus(org.astrogrid.jes.types.v1.Status.COMPLETED);             
+             delegate.monitorJob(info);
+            //delegate.monitorJob(jobStepID, delegate.STATUS_COMPLETED, "comment");
+            // NWW end update
          }
          catch (NumberFormatException e) {
             // TODO Auto-generated catch block
