@@ -35,8 +35,12 @@ public class WKF extends org.astrogrid.Configurator {
 	public static final String 
 	/** Workflow category within the component's configuration */  
 		WORKFLOW_CATEGORY = "WORKFLOW" ,	
-	/** Key within component's configuration identifying the template used for the top workflow. */  
-        WORKFLOW_XML_TEMPLATE = "TEMPLATE.WORKFLOW_XML" ;
+	/** Key within component's configuration identifying the template used for single step jobs. */  
+        WORKFLOW_TEMPLATE_SINGLESTEP = "TEMPLATE.SINGLESTEP" ,
+    /** Key within component's configuration identifying the template used for two step sequence. */  
+        WORKFLOW_TEMPLATE_TWOSTEPSEQUENCE = "TEMPLATE.TWOSTEPSEQUENCE" ,
+    /** Key within component's configuration identifying the template used for two step flow. */  
+        WORKFLOW_TEMPLATE_TWOSTEPFLOW = "TEMPLATE.TWOSTEPFLOW" ;  
         
     public static final String 
     /** Sequence category within the component's configuration */  

@@ -16,12 +16,14 @@ import org.apache.log4j.Logger ;
 
 import org.astrogrid.i18n.*;
 import org.astrogrid.AstroGridException ;
+import org.apache.axis.utils.XMLUtils ;
 
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 import org.astrogrid.portal.workflow.*;
 import org.astrogrid.portal.workflow.design.activity.*;
 import org.w3c.dom.Document ;
 
+import java.io.* ;
 import java.io.StringReader;
 import java.io.File ;
 import java.io.BufferedOutputStream;
@@ -32,6 +34,10 @@ import java.io.OutputStream;
 import java.io.PrintStream ;
 import java.text.MessageFormat ;
 import java.util.ListIterator;
+
+import java.io.InputStream ;
+import java.io.BufferedInputStream ;
+import java.io.FileInputStream ;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -86,11 +92,11 @@ public class MySpaceHelper {
     }
     
     
-    public static Workflow readWorkflow( String userid, String community, String name ) {
+    public static String readWorkflow( String userid, String community, String name ) {
         if( TRACE_ENABLED ) trace( "MySpaceHelper.readWorkflow() entry") ; 
         
-        Workflow
-            workflow = null;
+        String
+            workflowString = null;
          
         try {
             MySpaceManagerDelegate
@@ -121,17 +127,17 @@ public class MySpaceHelper {
                                                 
             Object []
                inserts = new Object[11] ;
-            inserts[0] = workflow.getUserid() ;
-            inserts[1] = workflow.getCommunity() ;
-            inserts[2] = generateFileName( workflow ) ;
+            inserts[0] = userid ;
+            inserts[1] = community ;
+            inserts[2] = name ;
             inserts[3] = "lookupDataHolderDetails" ;
             inserts[4] = "" ;
             inserts[5] = "" ;
             inserts[6] = "" ;
             inserts[7] = "" ;
             inserts[8] = "" ;
-            inserts[9] = "/" + workflow.getUserid() + "/" + "serv2" ;
-            inserts[10] = filePath ;
+            inserts[9] = "" ;
+            inserts[10] = "/" + userid + "/serv1/" + name ;
             inserts[11] = "" ;
             
             String
@@ -142,6 +148,10 @@ public class MySpaceHelper {
                 responseXML = mySpace.upLoad( xmlRequest ) ;
                 
             diagnoseResponse( responseXML ) ;
+            
+            // Once we've located the file ...
+            workflowString = getFile( "" ) ;
+            
         }
 //        catch( FileNotFoundException fnfex ) {
 //            ;
@@ -151,13 +161,11 @@ public class MySpaceHelper {
         catch( Exception ex ) {
             ;         
         }
-        catch ( Exception ex ) {
-        }
         finally {
             if( TRACE_ENABLED ) trace( "MySpaceHelper.readWorkflow() exit") ; 
         }
        
-        return workflow ;
+        return workflowString ;
         
     }
     
@@ -206,7 +214,7 @@ public class MySpaceHelper {
             OutputStream 
                 out = new BufferedOutputStream( new FileOutputStream( filePath ) ) ;           
             pStream = new PrintStream( out ) ;
-            pStream.print( xmlWorkflow ) ;
+            pStream.print( xmlWorkflow ) ;  //JBL:  may need a loop here
             pStream.flush() ;
             pStream.close() ;
             
@@ -492,6 +500,39 @@ public class MySpaceHelper {
     } // end of diagnoseResponse()
     
     
+    
+    private static String getFile( String filePath ) {
+        if( TRACE_ENABLED ) trace( "MySpaceHelper.getFile() entry") ;  
+           
+        StringBuffer
+             sBuffer = new StringBuffer( 1024 ) ;
+         String
+             line = null ;
+              
+        try { 
+                    
+           BufferedReader
+               bufferedReader = new BufferedReader( new FileReader( filePath ) ) ;
+                    
+           line = bufferedReader.readLine() ;
+           while( line != null ){
+               sBuffer.append( line ) ;
+               line = bufferedReader.readLine() ;
+           }
+
+        }
+        catch( IOException ioex ) {
+            debug( "IOException: " + ioex.getLocalizedMessage() );
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "MySpaceHelper.getFile() exit") ;  
+        }
+  
+        return sBuffer.toString() ;
+        
+    } // end getFile()
+    
+      
     private static void trace( String traceString ) {
         System.out.println( traceString ) ;
         // logger.debug( traceString ) ;

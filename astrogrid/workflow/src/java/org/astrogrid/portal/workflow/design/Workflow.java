@@ -150,12 +150,9 @@ public class Workflow extends Activity {
          debug( "name: " + name ) ;          
             
          try {
-                         
-             templateString = WKF.getProperty( WKF.WORKFLOW_XML_TEMPLATE
-                                              , WKF.WORKFLOW_CATEGORY ) ;
                         
              InputSource
-                source = new InputSource( new StringReader( templateString ) );
+                source = new InputSource( new StringReader( retrieveTemplate(templateName) ) );
                          
              workflow = new Workflow( XMLUtils.newDocument(source) ) ;
              workflow.setUserid( userid) ;
@@ -186,19 +183,14 @@ public class Workflow extends Activity {
             workflow = null;
          
         try {
-            
-            workflow = Workflow.createWorkflow( userid, community, name, "" ) ;
-/*        
-            MySpaceManagerDelegate
-                mySpace = new MySpaceManagerDelegate( Workflow.locateMySpace( userid, community ) ) ;
-                
-            //JBL format`the MySpace request here
-            
             String
-                workflowXML = mySpace.lookupDataHolderDetails( "" ) ;
+               sourceString = MySpaceHelper.readWorkflow(  userid, community, name ) ; 
                 
-            workflow = new Workflow( workflowXML ) ;
-*/        
+            InputSource
+               source = new InputSource( new StringReader( retrieveTemplate(sourceString) ) );
+                         
+            workflow = new Workflow( XMLUtils.newDocument(source) ) ;
+      
         }
         catch ( Exception ex ) {
         }
@@ -258,8 +250,23 @@ public class Workflow extends Activity {
     
     
     //JBL Note: Is this a misnomer on my part? Should we be attempting this? Is it required?  
-    public static ListIterator readWorkflowList() {
-        return null ;
+    public static ListIterator readWorkflowList( String userid, String community, String name) {
+        if( TRACE_ENABLED ) trace( "Workflow.readWorkflowList() entry") ; 
+        
+            ListIterator
+                iterator = null;
+         
+            try {
+               iterator = MySpaceHelper.readWorkflowList(  userid, community ) ;       
+            }
+            catch ( Exception ex ) {
+            }
+            finally {
+               if( TRACE_ENABLED ) trace( "Workflow.readWorkflowList() exit") ; 
+            }
+       
+            return iterator ;
+        
     }
     
      
@@ -470,6 +477,34 @@ public class Workflow extends Activity {
             if( TRACE_ENABLED ) trace( "Workflow.locateMySpace() exit") ;
         }
     }
+    
+    private static String retrieveTemplate( String templateName ) { 
+        if( TRACE_ENABLED ) trace( "Workflow.retrieveTemplate() entry") ;
+        
+        String
+            retValue = null;
+        
+        try {
+            
+            if( templateName.equals( "OneStepJob" )  ) {
+                retValue = WKF.getProperty( WKF.WORKFLOW_TEMPLATE_SINGLESTEP, WKF.MYSPACE_CATEGORY ) ;
+            }
+            else if( templateName.equals( "TwoParallelJobsteps" )  ) {
+                retValue = WKF.getProperty( WKF.WORKFLOW_TEMPLATE_TWOSTEPFLOW, WKF.MYSPACE_CATEGORY ) ;
+            }
+            else if( templateName.equals( "TwoSequentialJobsteps" )  ) {
+                retValue = WKF.getProperty( WKF.WORKFLOW_TEMPLATE_TWOSTEPSEQUENCE, WKF.MYSPACE_CATEGORY ) ;
+            }
+
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Workflow.retrieveTemplate() exit") ;
+        }
+        
+        return retValue ;
+        
+    }
+    
 
 	private void setDirty(boolean dirty) {
 		this.dirty = dirty;
