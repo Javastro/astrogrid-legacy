@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Paul Harrison (Jodrell Bank Observatory) -->
+<!-- $Id: CommonExecutionConnnector.wsdl,v 1.1 2004/03/09 18:22:01 pah Exp $ -->
+<wsdl:definitions xmlns="http://schemas.xmlsoap.org/wsdl/" 
+    xmlns:apachesoap="http://xml.apache.org/xml-soap" 
+    xmlns:impl="urn:impl.cea.applications.astrogrid.org" 
+    xmlns:intf="urn:cea.applications.astrogrid.org" 
+    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+    xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    xmlns:cea="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" 
+    xmlns:wkf="http://www.astrogrid.org/schema/AGWorkflow/v1" 
+    xmlns:agcred="http://www.astrogrid.org/schema/Credentials/v1" 
+    xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" 
+    xmlns:ceat="http://www.astrogrid.org/schema/CEATypes/v1" 
+    targetNamespace="urn:cea.applications.astrogrid.org">
+	<wsdl:types>
+		<schema targetNamespace="urn:impl.cea.applications.astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" schemaLocation="../schema/AGApplicationBase.xsd"/>
+			<import namespace="http://www.astrogrid.org/schema/AGWorkflow/v1" schemaLocation="../schema/Workflow.xsd"/>
+			<import namespace="http://www.astrogrid.org/schema/CEATypes/v1" schemaLocation="../schema/CEATypes.xsd"/>
+			<element name="execute">
+				<complexType>
+					<sequence>
+						<element name="applicationID" type="xsd:string"/>
+						<element name="jobstepID" type="ceat:job-identifier-type"/>
+						<element name="jobMonitorURL" type="xsd:string"/>
+						<element ref="wkf:tool"/>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="executeResponse">
+				<complexType>
+					<sequence>
+						<element name="executeReturn" type="xsd:string"/>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="abort">
+				<complexType>
+					<sequence>
+						<element name="executionId" type="xsd:string"/>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="abortResponse">
+				<complexType>
+					<sequence>
+						<element name="abortReturn" type="xsd:boolean"/>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="listApplications">
+				<complexType/>
+			</element>
+			<element name="listApplicationsResponse">
+				<complexType>
+					<sequence>
+						<element name="listApplicationsReturn" type="cea:ApplicationList"/>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="getApplicationDescription">
+				<complexType>
+					<sequence>
+						<element name="applicationID" type="xsd:string"/>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="getApplicationDescriptionResponse">
+				<complexType>
+					<sequence>
+						<element name="getApplicationDescriptionReturn" type="xsd:string"/>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="queryExecutionStatus">
+				<complexType>
+					<sequence>
+						<element name="executionId" type="xsd:string"/>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="queryExecutionStatusResponse">
+				<complexType>
+					<sequence>
+						<element name="queryExecutionStatusReturn" type="ceat:message-type"/>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="returnRegistryEntry">
+				<complexType/>
+			</element>
+			<element name="returnRegistryEntryResponse">
+				<complexType>
+					<sequence>
+						<element name="returnRegistryEntryReturn" type="xsd:string"/>
+					</sequence>
+				</complexType>
+			</element>
+		</schema>
+	</wsdl:types>
+	<wsdl:message name="abortResponse">
+		<wsdl:part name="parameters" element="impl:abortResponse"/>
+	</wsdl:message>
+	<wsdl:message name="executeResponse">
+		<wsdl:part name="parameters" element="impl:executeResponse"/>
+	</wsdl:message>
+	<wsdl:message name="queryExecutionStatusRequest">
+		<wsdl:part name="parameters" element="impl:queryExecutionStatus"/>
+	</wsdl:message>
+	<wsdl:message name="executeRequest">
+		<wsdl:part name="parameters" element="impl:execute"/>
+	</wsdl:message>
+	<wsdl:message name="returnRegistryEntryResponse">
+		<wsdl:part name="parameters" element="impl:returnRegistryEntryResponse"/>
+	</wsdl:message>
+	<wsdl:message name="listApplicationsRequest">
+		<wsdl:part name="parameters" element="impl:listApplications"/>
+	</wsdl:message>
+	<wsdl:message name="queryExecutionStatusResponse">
+		<wsdl:part name="parameters" element="impl:queryExecutionStatusResponse"/>
+	</wsdl:message>
+	<wsdl:message name="listApplicationsResponse">
+		<wsdl:part name="parameters" element="impl:listApplicationsResponse"/>
+	</wsdl:message>
+	<wsdl:message name="abortRequest">
+		<wsdl:part name="parameters" element="impl:abort"/>
+	</wsdl:message>
+	<wsdl:message name="getApplicationDescriptionRequest">
+		<wsdl:part name="parameters" element="impl:getApplicationDescription"/>
+	</wsdl:message>
+	<wsdl:message name="returnRegistryEntryRequest">
+		<wsdl:part name="parameters" element="impl:returnRegistryEntry"/>
+	</wsdl:message>
+	<wsdl:message name="getApplicationDescriptionResponse">
+		<wsdl:part name="parameters" element="impl:getApplicationDescriptionResponse"/>
+	</wsdl:message>
+	<wsdl:portType name="CommonExecutionConnector">
+		<wsdl:operation name="execute" parameterOrder="">
+			<wsdl:input name="executeRequest" message="intf:executeRequest"/>
+			<wsdl:output name="executeResponse" message="intf:executeResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="abort" parameterOrder="">
+			<wsdl:input name="abortRequest" message="intf:abortRequest"/>
+			<wsdl:output name="abortResponse" message="intf:abortResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="listApplications">
+			<wsdl:input name="listApplicationsRequest" message="intf:listApplicationsRequest"/>
+			<wsdl:output name="listApplicationsResponse" message="intf:listApplicationsResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="getApplicationDescription" parameterOrder="">
+			<wsdl:input name="getApplicationDescriptionRequest" message="intf:getApplicationDescriptionRequest"/>
+			<wsdl:output name="getApplicationDescriptionResponse" message="intf:getApplicationDescriptionResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="queryExecutionStatus" parameterOrder="">
+			<wsdl:input name="queryExecutionStatusRequest" message="intf:queryExecutionStatusRequest"/>
+			<wsdl:output name="queryExecutionStatusResponse" message="intf:queryExecutionStatusResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="returnRegistryEntry">
+			<wsdl:input name="returnRegistryEntryRequest" message="intf:returnRegistryEntryRequest"/>
+			<wsdl:output name="returnRegistryEntryResponse" message="intf:returnRegistryEntryResponse"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="CommonExecutionConnectorServiceSoapBinding" type="intf:CommonExecutionConnector">
+		<wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="execute">
+			<wsdlsoap:operation/>
+			<wsdl:input>
+				<wsdlsoap:body use="literal" namespace="urn:cea.applications.astrogrid.org"/>
+			</wsdl:input>
+			<wsdl:output>
+				<wsdlsoap:body use="literal" namespace="urn:cea.applications.astrogrid.org"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="abort">
+			<wsdlsoap:operation/>
+			<wsdl:input>
+				<wsdlsoap:body use="literal" namespace="urn:cea.applications.astrogrid.org"/>
+			</wsdl:input>
+			<wsdl:output>
+				<wsdlsoap:body use="literal" namespace="urn:cea.applications.astrogrid.org"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="listApplications">
+			<wsdlsoap:operation/>
+			<wsdl:input>
+				<wsdlsoap:body use="literal" namespace="urn:cea.applications.astrogrid.org"/>
+			</wsdl:input>
+			<wsdl:output>
+				<wsdlsoap:body use="literal" namespace="urn:cea.applications.astrogrid.org"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getApplicationDescription">
+			<wsdlsoap:operation/>
+			<wsdl:input>
+				<wsdlsoap:body use="literal" namespace="urn:cea.applications.astrogrid.org"/>
+			</wsdl:input>
+			<wsdl:output>
+				<wsdlsoap:body use="literal" namespace="urn:cea.applications.astrogrid.org"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="queryExecutionStatus">
+			<wsdlsoap:operation/>
+			<wsdl:input>
+				<wsdlsoap:body use="literal" namespace="urn:cea.applications.astrogrid.org"/>
+			</wsdl:input>
+			<wsdl:output>
+				<wsdlsoap:body use="literal" namespace="urn:cea.applications.astrogrid.org"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="returnRegistryEntry">
+			<wsdlsoap:operation/>
+			<wsdl:input>
+				<wsdlsoap:body use="literal" namespace="urn:cea.applications.astrogrid.org"/>
+			</wsdl:input>
+			<wsdl:output>
+				<wsdlsoap:body use="literal" namespace="urn:cea.applications.astrogrid.org"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="CommonExecutionConnectorService">
+		<wsdl:port name="CommonExecutionConnectorService" binding="intf:CommonExecutionConnectorServiceSoapBinding">
+			<wsdlsoap:address location="http://localhost:8080/astrogrid-applications/services/CommonExecutionConnectorService"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>
