@@ -12,6 +12,7 @@
     xmlns:deploy="deploy"
     xmlns:artifact="artifact"    
     xmlns:astro="org.astrogrid.maven"
+	default="astrogrid-install-snapshot"		
     >
 
     <!--+
@@ -83,7 +84,7 @@
 			/>
     </goal>
 	
-    <!--+
+   <!--+
         | Build and install our snapshot jar(s).
         +-->
     <goal name="astrogrid-install-snapshot">

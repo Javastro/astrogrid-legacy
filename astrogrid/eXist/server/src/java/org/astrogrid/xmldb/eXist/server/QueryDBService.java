@@ -96,14 +96,15 @@ public class QueryDBService {
          numberOfResourcesReturned.trim().length() <= 0)
       {
          numberOfResourcesReturned = "25";
-      }
-
+      }//if
+      log.info("max number of resources to be returned = " + numberOfResourcesReturned);
 
       String query = "<query xmlns=\"http://exist.sourceforge.net/NS/exist\"" +
          " start=\"1\" max=\"" + numberOfResourcesReturned + "\">" +
          "<text><![CDATA[" + xql + "]]></text></query>";
       queryDoc = DomHelper.newDocument(query);
-      System.out.println("the exist query to be posted = " + query);
+      //System.out.println("the exist query to be posted = " + query);
+      log.info("query to be posted = " + query);
       long beginQ = System.currentTimeMillis();
       log.info("Query begin time: " + beginQ);
       URL postURL = getQueryUrl(collectionName);
