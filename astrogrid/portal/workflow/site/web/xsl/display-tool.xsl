@@ -138,7 +138,7 @@
             <tr>
               <td>Description:</td>
               <td>
-                <textarea name="step_description" cols="40" rows="3"><xsl:value-of select="normalize-space(@step-description)"/></textarea>
+                <textarea name="step_description" cols="40" rows="3"><xsl:value-of select="@step-description"/></textarea>
               </td> 
               <td>Description:</td>
               <td>
@@ -172,13 +172,13 @@
           <table border="2" cellspacing="0" cellpadding="0">
             <tr>
               <td colspan="2"> 
-                <div style="color: blue; background-color: lightblue; text-align: left;"><b>Step:</b> <xsl:value-of select="normalize-space(@step-name)"/></div>
+                <div style="color: blue; background-color: lightblue; text-align: left;"><b>Step:</b> <xsl:value-of select="@step-name"/></div>
               </td>
               <td>
-                <div style="color: blue; background-color: lightblue; text-align: left;"><b>Task:</b> <xsl:value-of select="normalize-space(@step-tool)"/></div>
+                <div style="color: blue; background-color: lightblue; text-align: left;"><b>Task:</b> <xsl:value-of select="@step-tool"/></div>
               </td>
               <td colspan="2">
-                <div style="color: blue; background-color: lightblue; text-align: left;"><b>Desc:</b> <xsl:value-of select="normalize-space(@step-description)"/></div>
+                <div style="color: blue; background-color: lightblue; text-align: left;"><b>Desc:</b> <xsl:value-of select="@step-description"/></div>
               </td>              
             </tr>
             <xsl:choose>
