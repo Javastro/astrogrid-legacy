@@ -1,0 +1,9 @@
+log=org.astrogrid.registry.messaging.processor.LogMessageProcessor
+query-log=org.astrogrid.registry.messaging.processor.GetLogMessagesProcessor
+
+queue=org.astrogrid.registry.messaging.processor.QueueMessageProcessor
+dequeue=org.astrogrid.registry.messaging.processor.GetQueueMessageProcessor
+
+queue-callback-start=org.astrogrid.registry.messaging.processor.QueueMessageCallbackProcessor
+queue-callback-stop=org.astrogrid.registry.messaging.processor.QueueMessageCallbackProcessor
+

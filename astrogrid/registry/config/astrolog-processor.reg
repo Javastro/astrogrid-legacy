@@ -1,9 +1,0 @@
-myNS\:test=org.astrogrid.registry.messaging.processor.TestProcessor
-myNS\:another-test=org.astrogrid.registry.messaging.processor.AnotherTestProcessor
-
-log\:log-message=org.astrogrid.registry.messaging.processor.LogMessageProcessor
-log\:get-log-messages=org.astrogrid.registry.messaging.processor.GetLogMessagesProcessor
-
-queue\:queue-message=org.astrogrid.registry.messaging.processor.QueueMessageProcessor
-queue\:get-queue-message=org.astrogrid.registry.messaging.processor.GetQueueMessageProcessor
-
