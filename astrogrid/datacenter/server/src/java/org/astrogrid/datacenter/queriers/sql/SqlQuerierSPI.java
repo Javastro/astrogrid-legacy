@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.6 2003/11/25 18:50:06 mch Exp $
+ * $Id: SqlQuerierSPI.java,v 1.1 2003/11/27 00:52:58 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,19 +17,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 import java.util.StringTokenizer;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.adql.ADQLException;
-import org.astrogrid.datacenter.axisdataserver.types.Query;
+
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.QueryTranslator;
-import org.xml.sax.SAXException;
+import org.astrogrid.datacenter.queriers.spi.BaseQuerierSPI;
+import org.astrogrid.datacenter.queriers.spi.QuerierSPI;
 
 /**
  * A general purpose SQL Querier that will (hopefully) produce bog standard
@@ -43,9 +39,7 @@ import org.xml.sax.SAXException;
  * @author M Hill
  */
 
-public class SqlQuerier extends DatabaseQuerier
-{
-    protected static final Log log = LogFactory.getLog(SqlQuerier.class);
+public class SqlQuerierSPI extends BaseQuerierSPI implements QuerierSPI {
    /** connection to the database */
    protected Connection jdbcConnection;
 
@@ -62,37 +56,34 @@ public class SqlQuerier extends DatabaseQuerier
    /** Adql -> SQL translator class */
    public static final String ADQL_SQL_TRANSLATOR = "DatabaseQuerier.AdqlSqlTranslator";
 
-   /** Default constructur
-    * Looks for JNDI connection, if that fails look for JDBC connection
-    * <p>
-    * Behaviour.
-    * <ol>
-    * <li>Loads class specified by {@link #DATABASE_QUERIER} in configuration, which must be a subclass of this class
-    * <li>Checks JNDI for a datasource under {@link #JNDI_DATASOURCE}. If present, use this to initialize the querier
-    * <li>Otherwise, checks for a database url in configuration under {@link #JDBC_URL}, and
-    * optional connection properties under {@link #CONNECTION_PROPERTIES}. If url is present, this is used to initialize the querier
-    * <li>Otherwise, attempt to instantiate the querier using a default no-arg constructor
-    * </ul>
-
-    */
-   public SqlQuerier() throws DatabaseAccessException, IOException, SAXException
-   {
-      super();
-
-   }
-
 /** JNDI key where datasource is expected */
 public final static String JNDI_DATASOURCE = "java:comp/env/jdbc/pal-datasource";
 
-/** @todo this rigmarole is gone through every time a DatabaseQuerier is created. Factor out into a factory for efficiency.
+  /** configure translators */
+  static {
+      map.add("http://tempuri.org/adql",new AdqlQueryTranslator());
+      map.add("urn:sql",new SqlQueryTranslator());
+  }
+
+/** 
+ *     * Looks for JNDI connection, if that fails look for JDBC connection
+    * <p>
+    * Behaviour.
+    * <ol>
+    * <li>Checks JNDI for a datasource under {@link #JNDI_DATASOURCE}. If present, use this to initialize the querier
+    * <li>Otherwise, checks for a database url in configuration under {@link #JDBC_URL}, and
+    * optional connection properties under {@link #CONNECTION_PROPERTIES}. If url is present, this is used to initialize the querier
+    * </ul>
+ * 
+ * @todo this rigmarole is gone through every time a DatabaseQuerier is created. Factor out into a factory for efficiency.
  * @todo introduce a jdbc connection pool - new connection is currently made for each database querier. then discarded after a single query.
  * @return
  * @throws DatabaseAccessException
  */
 protected Connection createConnection() throws DatabaseAccessException {
     log.debug("Creating Connection");
-      String userId = SimpleConfig.getProperty(USER_KEY);
-      String password = SimpleConfig.getProperty(PASSWORD_KEY);
+      String userId = config.getProperty(USER_KEY);
+      String password = config.getProperty(PASSWORD_KEY);
     Connection conn = null;
     conn = createConnectionFromJNDI(userId,password);
     if (conn == null) {
@@ -130,14 +121,14 @@ protected Connection createConnection() throws DatabaseAccessException {
     protected Connection createConnectionFromProperties(String userId,String password) throws DatabaseAccessException {
           log.debug("Looking in configuration");
 
-         String jdbcURL = SimpleConfig.getProperty(JDBC_URL_KEY);
+         String jdbcURL = config.getProperty(JDBC_URL_KEY);
          if ( jdbcURL == null || jdbcURL.length() == 0)  {
              return null;
          }
 
             //get connection properties, which needs to be provided as a Properties class, from the
             //configuration file.  These will be stored as a set of keys within another key...
-            String connectionPropertyValue = SimpleConfig.getProperty(JDBC_CONNECTION_PROPERTIES_KEY, null);
+            String connectionPropertyValue = config.getProperty(JDBC_CONNECTION_PROPERTIES_KEY, null);
             if (connectionPropertyValue != null) {
                try  {
                   Properties connectionProperties = new Properties();
@@ -182,11 +173,14 @@ protected Connection createConnection() throws DatabaseAccessException {
     * to reflect that.  Not sure where to put it yet.  It didn't like being put
     * in the constructor as exceptions in the driver constructor below were looping
     * horribly.
+    * @modified - made a object method - not being called at present.
+    * @todo create a spi factory, move call to this method there.
+    * 
     */
-   public static void startDrivers() throws DatabaseAccessException
+   public   void startDrivers() throws DatabaseAccessException
    {
          //read value
-         String drivers = SimpleConfig.getProperty(JDBC_DRIVERS_KEY);
+         String drivers = config.getProperty(JDBC_DRIVERS_KEY);
          if (drivers != null)
          {
             //break down into lines
@@ -236,97 +230,42 @@ protected Connection createConnection() throws DatabaseAccessException {
 
    }
 
-   /** factory method to create the appropriate query translator, which will
-    * be used to translate from an ADQL object model to the correct SQL for
-    * the database.
-    * <p> If no querytranslater specified in the Configuration file, it returns
-    * the default SqlQueryTranslator.
-    * <p> Subclasses can override to create special translators.
-    *
-    * @return adql to sql translator appropriate for this database flavour
-    */
-   protected QueryTranslator createQueryTranslator()
-   {
-      String translatorClassName = SimpleConfig.getProperty(ADQL_SQL_TRANSLATOR);
-      if (translatorClassName == null)
-      {
-         return new SqlQueryTranslator();
-      }
-      else
-      {
-         try
-         {
-            Constructor constr= Class.forName(translatorClassName).getConstructor(new Class[]{});
-            return (QueryTranslator) constr.newInstance(new Object[]{});
-         }
-         catch (Exception e) //catch all problems with instantiation and rethrow with more info
-         {
-             log.error("Failed to create query translator");
-            throw new RuntimeException("Failed to create query translator ("+translatorClassName+") given in config by key "+ADQL_SQL_TRANSLATOR+": "+e, e);
-         }
-      }
-   }
-
-   /**
-    * Synchronous call to the database, submitting the given query
-    * in sql form and returning the results as an SqlResults wrapper around
-    * the SQL ResultSet.
-    */
-   public QueryResults queryDatabase(Query query) throws DatabaseAccessException {
-      
-      try {
-         QueryTranslator trans = createQueryTranslator();
-         String sql = trans.translate(query.getSelect());
-         return queryDatabase(sql);
-      }
-      catch (ADQLException ae)
-      {
-         throw new DatabaseAccessException(ae, "Error translating adql ");
-      }
-
-   }
-   
-   /**
-    * Synchronous call to the database, submitting the given sql query straight
-    * to the databaes and returning the results as an SqlResults wrapper
-    * around the SQL REsultSet
-    */
-   public QueryResults queryDatabase(String sql) throws DatabaseAccessException {
-      try
-      {
-         log.debug("Queying the database");
-         jdbcConnection = createConnection();
-         Statement statement = jdbcConnection.createStatement();
-         log.debug("Query to perform: " + sql);
-         statement.execute(sql);
-         ResultSet results = statement.getResultSet();
-
-         return new SqlResults(results, workspace);
-      } catch (SQLException e) {
-         throw new DatabaseAccessException(e, "Could not query database using '" + sql + "'");
-      }
-
-   }
-   
-   /**
-    * @see org.astrogrid.datacenter.queriers.DatabaseQuerier#close()
-    */
-   public void close() throws IOException, DatabaseAccessException {
-       super.close();
-      try {
+   public void close() throws IOException, SQLException {
           if (jdbcConnection != null) {
             jdbcConnection.close();
           }
-      } catch (SQLException e) {
-         throw new DatabaseAccessException(e,"Exception occured when closing database");
-      }
-
    }
 
-    /** try and close the db connection, if not already done so */
-    protected void finalize() throws Throwable {
-        this.close();
-        super.finalize();
+
+/** performs a synchronous call to the database, submitting the given query
+ * in sql form and retiirning the results as a SqlResults wrapper arond the JDBC result set.
+ * @param o a string
+ */
+    public QueryResults doQuery(Object o, Class type) throws Exception {
+        if (! type.equals(String.class) || ! (o instanceof String)) {
+            throw new IllegalArgumentException("Translator passed unexpected intermediate type" + o.getClass().getName());
+        }
+        String sql = (String)o;  
+        try {      
+          log.debug("Queying the database");
+          jdbcConnection = createConnection();
+          Statement statement = jdbcConnection.createStatement();
+          log.debug("Query to perform: " + sql);
+          statement.execute(sql);
+          ResultSet results = statement.getResultSet();
+
+          return new SqlResults(results, workspace);
+       } catch (SQLException e) {
+          throw new DatabaseAccessException(e, "Could not query database using '" + sql + "'");
+       }
+
+    }
+
+    /* (non-Javadoc)
+     * @see org.astrogrid.datacenter.queriers.spi.QuerierSPI#getPluginInfo()
+     */
+    public String getPluginInfo() {
+        return "Vanilla SQL JDBC database Querier";
     }
 
 }

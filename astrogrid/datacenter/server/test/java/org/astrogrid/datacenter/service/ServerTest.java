@@ -25,9 +25,10 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.axisdataserver.types.Query;
+import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
+import org.astrogrid.datacenter.queriers.DummyQuerierSPI;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Document;
@@ -49,7 +50,7 @@ public class ServerTest extends ServerTestCase
    {
       //make sure database querier to be used is the dummy one - only available
       //in the test suite
-      SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, "org.astrogrid.datacenter.queriers.DummyQuerier");
+      SimpleConfig.setProperty(QuerierManager.QUERIER_SPI_KEY, DummyQuerierSPI.class.getName());
 
       //create the server
       AxisDataServer server = new AxisDataServer();
@@ -61,8 +62,8 @@ public class ServerTest extends ServerTestCase
       assertNotNull(fileDoc);
 
       Select adql = ADQLUtils.unmarshalSelect(fileDoc);
-      Query q = new Query();
-      q.setSelect(adql);
+      _query q = new _query();
+      q.setQueryBody(ADQLUtils.marshallSelect(adql).getDocumentElement());
       
       //submit query
       String result = server.doQuery(AdqlQuerier.VOTABLE,q);
@@ -103,6 +104,10 @@ public class ServerTest extends ServerTestCase
 
 /*
 $Log: ServerTest.java,v $
+Revision 1.4  2003/11/27 00:52:58  nw
+refactored to introduce plugin-back end and translator maps.
+interfaces in place. still broken code in places.
+
 Revision 1.3  2003/11/25 14:21:49  mch
 Extracted Querier from DatabaseQuerier in prep for FITS querying
 

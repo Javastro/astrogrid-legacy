@@ -1,4 +1,4 @@
-/*$Id: SybaseQueryTranslator.java,v 1.1 2003/11/14 00:38:30 mch Exp $
+/*$Id: SybaseQueryTranslator.java,v 1.2 2003/11/27 00:52:58 nw Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,13 +14,13 @@ import java.text.MessageFormat;
 
 import org.astrogrid.datacenter.adql.generated.ArchiveTable;
 import org.astrogrid.datacenter.adql.generated.Circle;
-import org.astrogrid.datacenter.queriers.sql.SqlQueryTranslator;
+import org.astrogrid.datacenter.queriers.sql.AdqlQueryTranslator;
 
 /** ADQL translator to Sybase SQL.
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Sep-2003
  * @todo fill this in - reverse engineer rules from old Query implementation.
  */
-public class SybaseQueryTranslator extends SqlQueryTranslator {
+public class SybaseQueryTranslator extends AdqlQueryTranslator {
     /** template for this expression
      * 
       transliterated from old query.Operation_Cone
@@ -54,6 +54,10 @@ public class SybaseQueryTranslator extends SqlQueryTranslator {
 
 /* 
 $Log: SybaseQueryTranslator.java,v $
+Revision 1.2  2003/11/27 00:52:58  nw
+refactored to introduce plugin-back end and translator maps.
+interfaces in place. still broken code in places.
+
 Revision 1.1  2003/11/14 00:38:30  mch
 Code restructure
 

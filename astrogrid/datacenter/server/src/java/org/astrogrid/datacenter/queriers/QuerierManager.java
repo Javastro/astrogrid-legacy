@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.2 2003/11/25 18:50:06 mch Exp $
+/*$Id: QuerierManager.java,v 1.3 2003/11/27 00:52:58 nw Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,9 +19,10 @@ import java.util.Hashtable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.axisdataserver.types.Query;
-import org.astrogrid.datacenter.axisdataserver.types.QueryId;
-import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
+import org.astrogrid.datacenter.axisdataserver.types._query;
+import org.astrogrid.datacenter.axisdataserver.types._QueryId;
+import org.astrogrid.datacenter.queriers.spi.QuerierSPI;
+import org.astrogrid.datacenter.queriers.sql.SqlQuerierSPI;
 import org.astrogrid.datacenter.snippet.CommunityHelper;
 import org.astrogrid.datacenter.snippet.DocHelper;
 import org.astrogrid.datacenter.snippet.DocMessageHelper;
@@ -31,8 +32,8 @@ import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Element;
 
-/** Manages the construction and initialization of DatabaseQueriers,
- * and maintains a  collection of current Database Queriers
+/** Manages the construction and initialization of Queriers,
+ * and maintains a  collection of current Queriers
  * - composed of the static methods factored out of DatabaseQuerier - trying to simplify that class.
  * @author Noel Winstanley nw@jb.man.ac.uk 24-Sep-2003
  *  @later - move from a static container to an object - can then have multiple containers if needed.
@@ -43,7 +44,7 @@ public class QuerierManager {
    private static final Log log = LogFactory.getLog(QuerierManager.class);
    /** Key to configuration files' entry that tells us what database querier
     * to use with this service   */
-   public static final String DATABASE_QUERIER_KEY = "DatabaseQuerierClass";
+   public static final String QUERIER_SPI_KEY = "QuerierSPI";
    
    /** lookup table of all the current queriers indexed by their handle*/
    protected static Hashtable queriers = new Hashtable();
@@ -61,7 +62,7 @@ public class QuerierManager {
       return (Querier) queriers.get(aHandle);
    }
    
-   public static Querier getQuerier(QueryId qid) {
+   public static Querier getQuerier(_QueryId qid) {
       return (Querier) queriers.get(qid.getId());
    }
    
@@ -78,11 +79,12 @@ public class QuerierManager {
     * @throws DatabaseAccessException on error (contains cause exception)
     * @deprecated Use createQuerier(Query);
     * @todo - move the extra bits in this method into the OO-version
+    * @todo - temporarily commented out.
     */
    public static Querier createQuerier(Element rootElement)
       throws DatabaseAccessException {
       
-      DatabaseQuerier querier = (DatabaseQuerier) instantiateQuerier();
+      Querier querier = new Querier(instantiateQuerierSPI(),null,null,null); // bodge
       //assigns handle
       try {
          String handle = generateHandle();
@@ -102,17 +104,19 @@ public class QuerierManager {
             log.error( "Handle '" + handle + "' already in use");
             throw new IllegalArgumentException("Handle " + handle + " already in use");
          }
-         querier.setHandle(handle);
+         //querier.setHandle(handle); bodge
          queriers.put(handle, querier);
          
-         querier.setWorkspace(new Workspace(handle));
+         //querier.setWorkspace(new Workspace(handle)); bodge
          querier.setResultsDestination(resultsDestination);
          
          // finally
          if (rootElement != null) {
-            querier.setCertification(CommunityHelper.getCertification(rootElement));
-            Query q = (Query)Unmarshaller.unmarshal(Query.class,rootElement);
-            querier.setQuery(q);
+             // bodge
+            //querier.setCertification(CommunityHelper.getCertification(rootElement));
+           //Query q = (Query)Unmarshaller.unmarshal(Query.class,rootElement);
+           
+            //querier.setQuery(q);
             querier.registerWebListeners(rootElement);  //looks through dom for web listeners
          }
          return querier;
@@ -120,12 +124,13 @@ public class QuerierManager {
       catch (IOException e) {
          reportException(e);
       }
+      /*
       catch (MarshalException e) {
          reportException(e);
       }
       catch (ValidationException e) {
          reportException(e);
-      }
+      }*/
       
       return null; // unreachable;
    }
@@ -133,43 +138,11 @@ public class QuerierManager {
    /**
     * Creates an adql querier with a generated (unique-to-this-service) handle
     */
-   public static Querier createQuerier(Query q) throws DatabaseAccessException {
+   public static Querier createQuerier(_query q) throws DatabaseAccessException {
       return QuerierManager.createQuerier(q, generateHandle());
    }
    
-   /**
-    * Creates an sql querier with a generated (unique-to-this-service) handle
-    */
-   public static Querier createSqlQuerier(String sql) throws DatabaseAccessException {
-      
-      SqlQuerier querier = null;
-      
-      try {
-         querier = (SqlQuerier) instantiateQuerier();
-      }
-      catch (ClassCastException cce) {
-         throw new DatabaseAccessException("Cannot submit sql queries to this querier: "+querier.getClass().getName());
-      }
-      
-      //assigns handle
-      String handle = generateHandle();
-      try {
-         
-         if (queriers.get(handle) != null) {
-            log.error( "Handle '" + handle + "' already in use");
-            throw new IllegalArgumentException("Handle " + handle + "already in use");
-         }
-         querier.setHandle(handle);
-         queriers.put(handle, querier);
-         
-         querier.setWorkspace(new Workspace(handle));
-//         querier.setQuery(sql);
-         return querier;
-      }
-      catch (IOException e) {
-         throw new DatabaseAccessException(e,"Could not create workspace for id:"+handle);
-      }
-   }
+ 
    
    /**
     * A factory method that Returns a Querier implementation based on the
@@ -177,20 +150,19 @@ public class QuerierManager {
     * @throws DatabaseAccessException on error (contains cause exception)
     * @todo - add parsing of results target?
     */
-   public static Querier createQuerier(Query query, String handle) throws DatabaseAccessException {
+   public static Querier createQuerier(_query query, String handle) throws DatabaseAccessException {
       
-      DatabaseQuerier querier = (DatabaseQuerier) instantiateQuerier();
+      QuerierSPI spi = instantiateQuerierSPI();
       //assigns handle
       try {
          if (queriers.get(handle) != null) {
             log.error( "Handle '" + handle + "' already in use");
             throw new IllegalArgumentException("Handle " + handle + "already in use");
          }
-         querier.setHandle(handle);
+         Workspace workspace = new Workspace(handle);
+         Querier querier = new Querier(spi,query,workspace,handle);
          queriers.put(handle, querier);
-         
-         querier.setWorkspace(new Workspace(handle));
-         querier.setQuery(query);
+
          return querier;
       }
       catch (IOException e) {
@@ -200,19 +172,18 @@ public class QuerierManager {
    
    
    /** method that handles the business of instantiating the querier object */
-   private static Querier instantiateQuerier()
+   public static QuerierSPI instantiateQuerierSPI()
       throws DatabaseAccessException {
-      String querierClass = SimpleConfig.getProperty(DATABASE_QUERIER_KEY);
-      //       "org.astrogrid.datacenter.queriers.sql.SqlQuerier"    //default to general SQL querier
+      String querierSpiClass = SimpleConfig.getProperty(QUERIER_SPI_KEY);
       
-      if (querierClass == null) {
-         throw new DatabaseAccessException("Database Querier key [" + DATABASE_QUERIER_KEY + "] "
+      if (querierSpiClass == null) {
+         throw new DatabaseAccessException(" Querier key [" + QUERIER_SPI_KEY + "] "
                                               + "cannot be found in the configuration file(s) '"  + SimpleConfig.getLocations() + "'");
       }
       
       //create querier implementation
       try {
-         Class qClass = Class.forName(querierClass);
+         Class qClass = Class.forName(querierSpiClass);
          /* NWW - interesting bug here.
           original code used class.newInstance(); this method doesn't declare it throws InvocationTargetException,
           however, this exception _is_ thrown if an exception is thrown by the constructor (as is often the case at the moment)
@@ -224,7 +195,14 @@ public class QuerierManager {
          //DatabaseQuerier querier = (DatabaseQuerier)qClass.newInstance();
          // safe equivalent
          Constructor constr = qClass.getConstructor(new Class[] { });
-         return (Querier) constr.newInstance(new Object[] {});
+         Object unknown = constr.newInstance(new Object[] {});
+         if (! (unknown instanceof QuerierSPI)) {
+             log.error("Could not load Querier : incorrect class" + unknown.getClass().getName());
+             throw new DatabaseAccessException("Could not load Querier: incorrect class" + unknown.getClass().getName());
+         } 
+         QuerierSPI spi = (QuerierSPI) unknown;
+         log.info(spi.getPluginInfo());
+         return spi;
          
       } catch (InvocationTargetException e) {
          // interested in the root cause here - invocation target is just a wrapper, and not meaningful in itself.
@@ -242,9 +220,10 @@ public class QuerierManager {
    }
    
    private static void reportException(Throwable t) throws DatabaseAccessException {
-      log.warn("Could not load Database Querier: " + t.getMessage(),t);
+      log.error("Could not load Database Querier: " + t.getMessage(),t);
       throw new DatabaseAccessException(t,"Could not load Database Querier: " + t.getMessage());
    }
+      
    
    /**
     * Generates a handle for use by a particular instance; uses the current
@@ -276,6 +255,10 @@ public class QuerierManager {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.3  2003/11/27 00:52:58  nw
+ refactored to introduce plugin-back end and translator maps.
+ interfaces in place. still broken code in places.
+
  Revision 1.2  2003/11/25 18:50:06  mch
  Abstracted Querier from DatabaseQuerier
 

@@ -1,4 +1,4 @@
-/*$Id: HsqlQuerier.java,v 1.2 2003/11/21 17:37:56 nw Exp $
+/*$Id: HsqlQuerier.java,v 1.3 2003/11/27 00:52:58 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.datacenter.queriers.hsql;
 import java.io.IOException;
 
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
+import org.astrogrid.datacenter.queriers.sql.SqlQuerierSPI;
 import org.xml.sax.SAXException;
 
 /**
@@ -23,7 +23,7 @@ import org.xml.sax.SAXException;
  * @author M Hill
  *
  */
-public class HsqlQuerier extends SqlQuerier {
+public class HsqlQuerier extends SqlQuerierSPI {
 
     public HsqlQuerier() throws DatabaseAccessException, IOException, SAXException
     {
@@ -63,6 +63,10 @@ public class HsqlQuerier extends SqlQuerier {
 
 /*
 $Log: HsqlQuerier.java,v $
+Revision 1.3  2003/11/27 00:52:58  nw
+refactored to introduce plugin-back end and translator maps.
+interfaces in place. still broken code in places.
+
 Revision 1.2  2003/11/21 17:37:56  nw
 made a start tidying up the server.
 reduced the number of failing tests

@@ -1,4 +1,4 @@
-/*$Id: HsqlTestCase.java,v 1.4 2003/11/25 14:21:49 mch Exp $
+/*$Id: HsqlTestCase.java,v 1.5 2003/11/27 00:52:58 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,7 @@ import junit.framework.TestCase;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.QuerierManager;
+import org.astrogrid.datacenter.queriers.hsql.HsqlQuerier;
 
 /** abstract test case for testing against an in-memory Hsql database.
  * @author Noel Winstanley nw@jb.man.ac.uk 05-Sep-2003
@@ -64,14 +65,14 @@ public abstract class HsqlTestCase extends TestCase {
     {
        //register HSQLDB driver with driver key in configration file
        //put driver into config file
-       SimpleConfig.setProperty(SqlQuerier.JDBC_DRIVERS_KEY, JDBC_DRIVER );
-       SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY,"org.astrogrid.datacenter.queriers.hsql.HsqlQuerier");
+       SimpleConfig.setProperty(SqlQuerierSPI.JDBC_DRIVERS_KEY, JDBC_DRIVER );
+       SimpleConfig.setProperty(QuerierManager.QUERIER_SPI_KEY,HsqlQuerier.class.getName());
         
        //register where to find database
-       SimpleConfig.setProperty(SqlQuerier.JDBC_URL_KEY, JDBC_URL );
-       SimpleConfig.setProperty(SqlQuerier.JDBC_CONNECTION_PROPERTIES_KEY,"user=sa");
+       SimpleConfig.setProperty(SqlQuerierSPI.JDBC_URL_KEY, JDBC_URL );
+       SimpleConfig.setProperty(SqlQuerierSPI.JDBC_CONNECTION_PROPERTIES_KEY,"user=sa");
 
-       SqlQuerier.startDrivers();
+
     }
     
 
@@ -139,6 +140,10 @@ public abstract class HsqlTestCase extends TestCase {
 
 /*
 $Log: HsqlTestCase.java,v $
+Revision 1.5  2003/11/27 00:52:58  nw
+refactored to introduce plugin-back end and translator maps.
+interfaces in place. still broken code in places.
+
 Revision 1.4  2003/11/25 14:21:49  mch
 Extracted Querier from DatabaseQuerier in prep for FITS querying
 

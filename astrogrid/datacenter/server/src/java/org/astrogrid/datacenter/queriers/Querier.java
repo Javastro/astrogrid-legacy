@@ -11,10 +11,14 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
 import java.util.Vector;
 import org.apache.commons.logging.Log;
-import org.astrogrid.datacenter.axisdataserver.types.Query;
+import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.delegate.Certification;
+import org.astrogrid.datacenter.queriers.spi.QuerierSPI;
+import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.service.JobNotifyServiceListener;
@@ -46,10 +50,31 @@ import org.xml.sax.SAXException;
  * @todo reinstate reference to MyspaceDummyDelegate, once myspace delegate is built
  */
 
-public abstract class Querier implements Runnable {
+public class Querier implements Runnable {
    
-   protected static final Log log = org.apache.commons.logging.LogFactory.getLog(Querier.class);
-   
+    protected static final Log log = org.apache.commons.logging.LogFactory.getLog(Querier.class);
+       
+   public Querier(QuerierSPI spi,_query query, Workspace workspace, String handle) {
+       this.spi = spi;
+       this.workspace = workspace;
+       this.query = query;
+       this.cert = (query.getCommunity() != null ? new Certification(query.getCommunity()) : null);
+       this.handle = handle;
+   }
+   /** the plugin we're managing */
+   protected final QuerierSPI spi;
+   /** query to perform */
+   protected final _query query;
+   /** Temporary workspace for working files, and somewhere to put the results
+    * for non-blocking calls */
+   protected final Workspace workspace;
+   /** A handle is used to identify a particular service.  It is also used as the
+    * basis for any temporary storage. */
+   protected final String handle;
+   /** certification information */
+   protected final Certification cert;
+      
+
    /** List of serviceListeners who will be updated when the status changes */
    private Vector serviceListeners = new Vector();
    
@@ -58,19 +83,6 @@ public abstract class Querier implements Runnable {
    
    /** If an error is thrown in the spawned thread, this holds the exception */
    private Throwable error = null;
-   
-   /** Temporary workspace for working files, and somewhere to put the results
-    * for non-blocking calls */
-   protected Workspace workspace = null;
-   
-   /** A handle is used to identify a particular service.  It is also used as the
-    * basis for any temporary storage. */
-   private String handle = null;
-   
-   /**
-    * userid and communityid for using myspace
-    */
-   private Certification user = null;
    
    /**
     * Where the result should be sent on completion.  Probably a myspace
@@ -94,32 +106,12 @@ public abstract class Querier implements Runnable {
       return handle;
    }
    
-   /** set the handle for this querier
-    * public so manager has access... */
-   public void setHandle(String handle) {
-      this.handle = handle;
-   }
-   
-   /** set the workspace for this querier */
-   public  void setWorkspace(Workspace workspace) {
-      this.workspace = workspace;
-   }
 
-   /** set the userid for this querier */
-   public void setCertification(Certification givenUser) {
-      this.user = givenUser;
-   }
-   
    /**
     * Sets up the target of where the results will be sent to
     */
    public void setResultsDestination(String resultsDestination) {
       this.resultsDestination = resultsDestination;
-      
-      //doesn't matter here - might be a synchronous call
-      //    Log.affirm(resultsDestination != null,
-      //                  "No Result target (eg myspace) given in config file (key "+RESULTS_TARGET_KEY+"), "+
-      //                    "and no key "+DocMessageHelper.RESULTS_TARGET_TAG+" in given DOM ");
    }
    
    /**
@@ -185,6 +177,53 @@ public abstract class Querier implements Runnable {
       }
    }
 
+   /** Updates the status and does the query (by calling the abstract
+     * queryDatabase() overridden by subclasses) and returns the results.
+     * Use by both synchronous (blocking) and asynchronous (threaded) querying
+     */
+    public QueryResults doQuery() throws DatabaseAccessException {
+        // initialize the spi.
+        spi.receiveConfig(getConfig());
+        spi.receiveWorkspace(workspace);        
+        setStatus(QueryStatus.CONSTRUCTED);
+        
+        // find the translator
+        Element queryBody = query.getQueryBody();
+        String namespaceURI = queryBody.getNamespaceURI();
+        if (namespaceURI == null) {
+            throw new DatabaseAccessException("Query body has no namespace - cannot determine language");
+        }
+        Translator trans = spi.getTranslatorMap().lookup(namespaceURI);
+        if (trans == null) {
+            throw new DatabaseAccessException("No translator available for namespace: " + namespaceURI);
+        }
+        // do the translation
+        Object intermediateRep = null;
+        Class expectedType = null;
+        try { // don't trust it.
+            intermediateRep = trans.translate(queryBody);
+            expectedType = trans.getResultType();
+            if (! expectedType.isInstance(intermediateRep)) { // checks result is non-null and the right type.
+                throw new DatabaseAccessException("Translation result " + intermediateRep.getClass().getName() + " not of expected type " + expectedType.getName());
+            }
+        } catch (Throwable t) {
+            throw new DatabaseAccessException(t,"Translation phase failed");
+        } 
+
+        
+        //do the query.        
+        setStatus(QueryStatus.RUNNING_QUERY);
+        setStartTime(new Date());        
+        try {       
+            QueryResults results = spi.doQuery(intermediateRep,expectedType);
+            setCompletedTime(new Date());
+            setStatus(QueryStatus.QUERY_COMPLETE);      
+            return results;
+        } catch (Throwable t) {
+            throw new DatabaseAccessException(t,"Query phase failed"); 
+        }
+    }
+
    /** TEMPORARY CONSTANT, until myspace build a delegate.
     * then can replace with MySpaceDummyDelegate.DUMMY
     * @todo update this constant with correct reference.
@@ -216,7 +255,7 @@ public abstract class Querier implements Runnable {
          myspace = new MySpaceManagerDelegate(resultsDestination);
       }
       
-      myspace.saveDataHolding(user.getUserId(), user.getCommunityId(), user.getCredentials(),
+      myspace.saveDataHolding(cert.getUserId(), cert.getCommunityId(), cert.getCredentials(),
                               "testFile",
                               "This is a test file to make sure we can create a file in myspace, so our query results are not lost",
                               "",
@@ -253,13 +292,13 @@ public abstract class Querier implements Runnable {
          results.toVotable(ba);
          ba.close();
          
-         myspace.saveDataHolding(user.getUserId(), user.getCommunityId(), user.getCredentials(),
+         myspace.saveDataHolding(cert.getUserId(), cert.getCommunityId(), cert.getCredentials(),
                                  myspaceFilename,
                                  ba.toString(),
                                  "VOTable",
                                  "Overwrite");
          
-         resultsLoc = myspace.getDataHolding(user.getUserId(), user.getCommunityId(), user.getCredentials(),  myspaceFilename);
+         resultsLoc = myspace.getDataHolding(cert.getUserId(), cert.getCommunityId(), cert.getCredentials(),  myspaceFilename);
       }
       catch (SAXException se) {
          log.error("Could not create VOTable",se);
@@ -281,11 +320,6 @@ public abstract class Querier implements Runnable {
    }
    
    
-   /** Updates the status and does the query (by calling the abstract
-    * queryDatabase() overridden by subclasses) and returns the results.
-    * Use by both synchronous (blocking) and asynchronous (threaded) querying
-    */
-   public abstract QueryResults doQuery() throws DatabaseAccessException;
    
    /** Returns the location of the results (probably a url) - returns null if
     * the results have not yet been returned from the data source
@@ -354,7 +388,14 @@ public abstract class Querier implements Runnable {
       if (QuerierManager.queriers != null && getHandle() != null) {
          QuerierManager.queriers.remove(getHandle());
       }
-      
+      if (spi != null) {
+          try {
+              spi.close();
+          } catch (Throwable t) {
+              // carry on regardless
+              log.warn("Closing SPI raised throwable",t);
+          }
+      }
       //clean up workspace
       if (workspace != null) {
          workspace.close();
@@ -412,6 +453,13 @@ public abstract class Querier implements Runnable {
       return error;
    }
    
+   /** set the error - 0only really used for testing */
+   public void setError(Throwable t) {
+       setStatus(QueryStatus.ERROR);
+       this.error =t;
+   }
+   
+   
    /**
     * Returns the current status
     */
@@ -438,9 +486,28 @@ public abstract class Querier implements Runnable {
       }
    }
    
+   /** create a config object around our properties */
+   private QuerierSPI.Config getConfig() {
+       return new QuerierSPI.Config() {
+
+        public String getProperty(String key) {
+           return  SimpleConfig.getProperty(key);
+        }
+
+        public String getProperty(String key, String defaultVal) {
+            return SimpleConfig.getProperty(key,defaultVal);
+        }
+
+       };
+   }
+   
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.3  2003/11/27 00:52:58  nw
+ refactored to introduce plugin-back end and translator maps.
+ interfaces in place. still broken code in places.
+
  Revision 1.2  2003/11/25 18:50:06  mch
  Abstracted Querier from DatabaseQuerier
 

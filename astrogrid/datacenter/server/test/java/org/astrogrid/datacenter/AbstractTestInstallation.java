@@ -1,4 +1,4 @@
-/*$Id: AbstractTestInstallation.java,v 1.3 2003/11/21 17:37:56 nw Exp $
+/*$Id: AbstractTestInstallation.java,v 1.4 2003/11/27 00:52:58 nw Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,7 @@ import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.axisdataserver.types.Query;
+import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
@@ -274,6 +274,10 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
 
 /*
 $Log: AbstractTestInstallation.java,v $
+Revision 1.4  2003/11/27 00:52:58  nw
+refactored to introduce plugin-back end and translator maps.
+interfaces in place. still broken code in places.
+
 Revision 1.3  2003/11/21 17:37:56  nw
 made a start tidying up the server.
 reduced the number of failing tests

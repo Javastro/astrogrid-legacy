@@ -23,7 +23,7 @@ import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DelegateQueryListener;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
-import org.astrogrid.datacenter.queriers.DummyQuerier;
+import org.astrogrid.datacenter.queriers.DummyQuerierSPI;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -62,7 +62,7 @@ public class ListenerTest extends ServerTestCase implements DelegateQueryListene
       assertNotNull(query);
       query.registerListener(this);
 
-      DummyQuerier querier = new DummyQuerier();
+      DummyQuerierSPI querier = new DummyQuerierSPI();
    }
 
    public void testWebListener() throws MalformedURLException, IOException, ServiceException, ADQLException, SAXException, ParserConfigurationException
@@ -78,7 +78,7 @@ public class ListenerTest extends ServerTestCase implements DelegateQueryListene
       DatacenterQuery query = delegate.makeQuery(adql);
       query.registerWebListener(new URL("http://wibble"));
 
-      DummyQuerier querier = new DummyQuerier();
+      DummyQuerierSPI querier = new DummyQuerierSPI();
    }
 
    
@@ -118,6 +118,10 @@ public class ListenerTest extends ServerTestCase implements DelegateQueryListene
 
 /*
 $Log: ListenerTest.java,v $
+Revision 1.6  2003/11/27 00:52:58  nw
+refactored to introduce plugin-back end and translator maps.
+interfaces in place. still broken code in places.
+
 Revision 1.5  2003/11/21 17:37:56  nw
 made a start tidying up the server.
 reduced the number of failing tests

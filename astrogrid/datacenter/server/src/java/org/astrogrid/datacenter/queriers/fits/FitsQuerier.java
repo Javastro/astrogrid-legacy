@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerier.java,v 1.1 2003/11/25 18:50:06 mch Exp $
+ * $Id: FitsQuerier.java,v 1.2 2003/11/27 00:52:58 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,6 +10,8 @@ import java.net.URL;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
+import org.astrogrid.datacenter.queriers.spi.BaseQuerierSPI;
+import org.astrogrid.datacenter.queriers.spi.QuerierSPI;
 
 
 /**
@@ -18,7 +20,7 @@ import org.astrogrid.datacenter.queriers.QueryResults;
  * @author M Hill
  */
 
-public class FitsQuerier extends Querier
+public class FitsQuerier extends BaseQuerierSPI implements QuerierSPI
 {
 
    /**
@@ -34,15 +36,26 @@ public class FitsQuerier extends Querier
     * queryDatabase() overridden by subclasses) and returns the results.
     * Use by both synchronous (blocking) and asynchronous (threaded) querying
     */
-   public QueryResults doQuery() throws DatabaseAccessException {
+   public QueryResults doQuery(Object o ,Class type) throws DatabaseAccessException {
       // TODO
       return null;
    }
-   
+
+/* (non-Javadoc)
+ * @see org.astrogrid.datacenter.queriers.spi.QuerierSPI#getPluginInfo()
+ */
+public String getPluginInfo() {
+    return "FITS Querier";
+}
+
 }
 
 /*
 $Log: FitsQuerier.java,v $
+Revision 1.2  2003/11/27 00:52:58  nw
+refactored to introduce plugin-back end and translator maps.
+interfaces in place. still broken code in places.
+
 Revision 1.1  2003/11/25 18:50:06  mch
 Abstracted Querier from DatabaseQuerier
 

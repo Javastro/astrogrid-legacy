@@ -1,5 +1,5 @@
 /*
- * $Id: DummyQuerierTest.java,v 1.2 2003/11/25 14:21:49 mch Exp $
+ * $Id: DummyQuerierTest.java,v 1.3 2003/11/27 00:52:58 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,6 +10,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.astrogrid.datacenter.ServerTestCase;
+import org.astrogrid.datacenter.common.QueryHelper;
 import org.w3c.dom.Document;
 
 /**
@@ -36,11 +37,11 @@ public class DummyQuerierTest extends ServerTestCase
     */
    public void testDummies() throws Exception
    {
-      Querier querier = new DummyQuerier();
+      Querier querier = DummyQuerierSPI.createDummyQuerier();
       QueryResults results = null;
 
       //dummy one should accept a null
-      results = querier.queryDatabase(null);
+      results = querier.doQuery();
 
       //and results should produce a valid xml document: this will parse it in
       //into a DOM tree

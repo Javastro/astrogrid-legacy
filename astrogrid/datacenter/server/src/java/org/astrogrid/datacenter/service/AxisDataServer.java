@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.12 2003/11/25 18:50:06 mch Exp $
+ * $Id: AxisDataServer.java,v 1.13 2003/11/27 00:52:58 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -21,15 +21,15 @@ import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.axisdataserver.types.Query;
-import org.astrogrid.datacenter.axisdataserver.types.QueryId;
+import org.astrogrid.datacenter.axisdataserver.types._language;
+import org.astrogrid.datacenter.axisdataserver.types._query;
+import org.astrogrid.datacenter.axisdataserver.types._QueryId;
 import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.delegate.DatacenterException;
-import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.snippet.ResponseHelper;
@@ -123,7 +123,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * <p>
     * @soap
     */
-   public String doQuery(String resultsFormat,  Query q) throws IOException {
+   public String doQuery(String resultsFormat,  _query q) throws IOException {
       
       if (resultsFormat == null || resultsFormat.length() == 0)  {
          throw new IllegalArgumentException("Empty parameter for results format");
@@ -133,9 +133,9 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
          throw new IllegalArgumentException("Can only produce votable results");
       }
       
-      DatabaseQuerier querier = null;
+      Querier querier = null;
       try {
-         querier = (DatabaseQuerier) QuerierManager.createQuerier(q);
+         querier =  QuerierManager.createQuerier(q);
          QueryResults results = querier.doQuery();
          querier.setStatus(QueryStatus.RUNNING_RESULTS);
          Element result = ResponseHelper.makeResultsResponse(
@@ -143,10 +143,6 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
             results.toVotable().getDocumentElement()
          ).getDocumentElement();
          return XMLUtils.ElementToString(result);
-      }
-      catch (ClassCastException cce) {
-         //query manager doesn't return a database querier
-         throw new DatacenterException("Cannot do database queries on this service");
       }
       catch (SAXException e) {
          throw new DatacenterException("Failed to convert results to VOTable", e);
@@ -167,6 +163,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * <p>
     * @soap
     */
+   /* @todo move elsewhere
    public String doSqlQuery(String resultsFormat,  String sql) throws IOException {
       
       if (resultsFormat == null || resultsFormat.length() == 0)  {
@@ -197,6 +194,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
          }
       }
    }
+   */
    /**
     * Creates an asynchronous query, returns the query id
     * Does not start the query running - may want to register listeners with
@@ -204,12 +202,12 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * <p>
     * @soap
     */
-   public QueryId  makeQuery(Query q) throws IOException {
+   public _QueryId  makeQuery(_query q) throws IOException {
       
       Querier querier = QuerierManager.createQuerier(q);
       
       //construct reply with id in it...
-      QueryId result = new QueryId();
+      _QueryId result = new _QueryId();
       result.setId( querier.getHandle() );
       return result;
    }
@@ -222,7 +220,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * NWW - changed name (was makeQuery). Method overloading is tricky for soap.
     * @soap
     */
-   public QueryId makeQueryWithId(Query q, String assignedId) throws QueryException, IOException, SAXException {
+   public _QueryId makeQueryWithId(_query q, String assignedId) throws QueryException, IOException, SAXException {
       
       if (assignedId == null || assignedId.length() == 0)  {
          throw new IllegalArgumentException("Empty assigned id");
@@ -230,7 +228,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
       Querier querier = QuerierManager.createQuerier(q, assignedId);
       
       //construct reply with id in it...
-      QueryId result = new QueryId();
+      _QueryId result = new _QueryId();
       result.setId(querier.getHandle());
       return result;
    }
@@ -239,7 +237,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * Sets where the results are to be sent
     * @soap
     */
-   public void setResultsDestination(QueryId queryId, URI resultsDestination) {
+   public void setResultsDestination(_QueryId queryId, URI resultsDestination) {
       if (resultsDestination == null )  {
          throw new IllegalArgumentException("Empty results destination");
       }
@@ -253,7 +251,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * @soap
     * @todo - use a thread pool system here - threads are resource-hungry.
     */
-   public void startQuery(QueryId id) {
+   public void startQuery(_QueryId id) {
       Querier querier = getQuerier(id);
       
       Thread queryThread = new Thread(querier);
@@ -266,7 +264,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * <p>
     * @soap
     */
-   public String getResultsAndClose(QueryId queryId) {
+   public String getResultsAndClose(_QueryId queryId) {
       Querier querier =getQuerier(queryId);
       
       //has querier finished?
@@ -285,7 +283,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * <p>
     * @soap
     */
-   public void abortQuery(QueryId queryId) {
+   public void abortQuery(_QueryId queryId) {
       Querier querier = getQuerier(queryId);
       if (querier != null)  {
          querier.abort();
@@ -297,7 +295,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * <p>
     * @soap
     */
-   public String getStatus(QueryId queryId) {
+   public String getStatus(_QueryId queryId) {
       return getQuerier(queryId).getStatus().toString();
    }
    
@@ -306,7 +304,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * <p>
     * @soap
     */
-   public void registerWebListener(QueryId queryId , URI uri) throws RemoteException {
+   public void registerWebListener(_QueryId queryId , URI uri) throws RemoteException {
       
       try  {
          URL u = new URL(uri.toString());
@@ -324,7 +322,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * <p>
     * @soap
     */
-   public void registerJobMonitor(QueryId queryId, URI uri) throws RemoteException  {
+   public void registerJobMonitor(_QueryId queryId, URI uri) throws RemoteException  {
       // check we can create an URL first..
       try  {
          URL u = new URL(uri.toString());
@@ -336,6 +334,18 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
          throw new RemoteException("Malformed URL",e);
       }
    }
+
+/* (non-Javadoc)
+ * @see org.astrogrid.datacenter.axisdataserver.AxisDataServer#getLanguageInfo(java.lang.Object)
+ */
+public _language[] getLanguageInfo(Object arg0) throws RemoteException {
+    
+        try {
+            return QuerierManager.instantiateQuerierSPI().getTranslatorMap().list();
+        } catch (DatabaseAccessException e) {
+            throw new RemoteException("Could not instantiate querier SPI",e);
+        }   
+}
    
 }
 

@@ -1,4 +1,4 @@
-/*$Id: QueryTranslator.java,v 1.2 2003/11/21 17:37:56 nw Exp $
+/*$Id: QueryTranslator.java,v 1.3 2003/11/27 00:52:58 nw Exp $
  * Created on 02-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.DynamicVisitor;
 import org.astrogrid.datacenter.adql.QOM;
+import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Element;
@@ -30,7 +31,7 @@ import org.w3c.dom.Element;
  * @see org.astrogrid.datacenter.queriers.sql.SqlQueryTranslator 
  * @see TranslationFrame
  */
-public abstract  class QueryTranslator implements DynamicVisitor {
+public abstract  class QueryTranslator implements DynamicVisitor, Translator {
     protected static final Log log = LogFactory.getLog(QueryTranslator.class);
     /** stack of translation frames
      * declare methods that require a translation frame via {@link #requiresFrame} */
@@ -42,7 +43,7 @@ public abstract  class QueryTranslator implements DynamicVisitor {
     * XML query
     * and it returns the query as an SQL an SQL SELECT statment
     */
-   public String translate(Element query) throws ADQLException, MarshalException, ValidationException
+   public Object translate(Element query) throws ADQLException, MarshalException, ValidationException
    {
        log.debug("translating query");
       QOM qom = ADQLUtils.unmarshalSelect(query);
@@ -117,6 +118,10 @@ public abstract  class QueryTranslator implements DynamicVisitor {
 
 /*
 $Log: QueryTranslator.java,v $
+Revision 1.3  2003/11/27 00:52:58  nw
+refactored to introduce plugin-back end and translator maps.
+interfaces in place. still broken code in places.
+
 Revision 1.2  2003/11/21 17:37:56  nw
 made a start tidying up the server.
 reduced the number of failing tests

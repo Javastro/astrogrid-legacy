@@ -1,4 +1,4 @@
-/*$Id: SqlQuerierTest.java,v 1.3 2003/11/21 17:37:56 nw Exp $
+/*$Id: SqlQuerierTest.java,v 1.4 2003/11/27 00:52:58 nw Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,10 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.axisdataserver.types.Query;
+import org.astrogrid.datacenter.adql.ADQLUtils;
+import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.axisdataserver.types._query;
+import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.w3c.dom.Document;
 
@@ -56,7 +59,7 @@ public class SqlQuerierTest extends ServerTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         HsqlTestCase.initializeConfiguration();
-        querier = new SqlQuerier();
+
         String script = getResourceAsString("create-test-db.sql");
         assertNotNull(script);
         conn = new HsqlTestCase.HsqlDataSource().getConnection();
@@ -64,7 +67,6 @@ public class SqlQuerierTest extends ServerTestCase {
         HsqlTestCase.runSQLScript(script,conn);
     }
 
-    protected SqlQuerier querier;
     protected Connection conn;
     /*
      * @see TestCase#tearDown()
@@ -73,9 +75,7 @@ public class SqlQuerierTest extends ServerTestCase {
         if (conn != null) {
             conn.close();
         }
-       if (querier != null) {
-           querier.close();
-       }
+
        super.tearDown();
     }
 
@@ -100,8 +100,12 @@ public class SqlQuerierTest extends ServerTestCase {
         assertNotNull(queryFile);        
         InputStream is = this.getClass().getResourceAsStream(queryFile);
         assertNotNull("Could not open query file :" + queryFile,is);
-        Query q = Query.unmarshalQuery(new InputStreamReader(is));
-        QueryResults results = querier.queryDatabase(q);
+        Select select = Select.unmarshalSelect(new InputStreamReader(is));               
+        _query q = new _query();
+        q.setQueryBody(ADQLUtils.marshallSelect(select).getDocumentElement());
+        Querier querier = new Querier(new SqlQuerierSPI(),q,null,"handle");
+        assertNotNull(querier);
+        QueryResults results = querier.doQuery();
         assertNotNull(results);
 
         Document voElement = results.toVotable();
@@ -114,6 +118,10 @@ public class SqlQuerierTest extends ServerTestCase {
 
 /*
 $Log: SqlQuerierTest.java,v $
+Revision 1.4  2003/11/27 00:52:58  nw
+refactored to introduce plugin-back end and translator maps.
+interfaces in place. still broken code in places.
+
 Revision 1.3  2003/11/21 17:37:56  nw
 made a start tidying up the server.
 reduced the number of failing tests

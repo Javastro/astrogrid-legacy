@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceServer.java,v 1.7 2003/11/25 14:17:24 mch Exp $
+ * $Id: ServiceServer.java,v 1.8 2003/11/27 00:52:58 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,7 +18,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xpath.XPathAPI;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.axisdataserver.types.QueryId;
+import org.astrogrid.datacenter.axisdataserver.types._QueryId;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.snippet.ResponseHelper;
@@ -164,7 +164,7 @@ public abstract class ServiceServer
     * if the querier has an error (status = errro) throws the exception
     * (dont liek this too general)
     */
-   public Element getQuerierStatus(QueryId queryId) throws Throwable
+   public Element getQuerierStatus(_QueryId queryId) throws Throwable
    {
       return ResponseHelper.makeStatusResponse(getQuerier(queryId)).getDocumentElement();
    }
@@ -172,7 +172,7 @@ public abstract class ServiceServer
    /**
     * Returns the service corresponding to the given ID
     */
-   protected Querier getQuerier(QueryId queryId)
+   protected Querier getQuerier(_QueryId queryId)
    {
       return QuerierManager.getQuerier(queryId.getId());
    }

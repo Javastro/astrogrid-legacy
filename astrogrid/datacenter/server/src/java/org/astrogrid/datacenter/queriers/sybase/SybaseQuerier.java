@@ -1,4 +1,4 @@
-/*$Id: SybaseQuerier.java,v 1.2 2003/11/21 17:37:56 nw Exp $
+/*$Id: SybaseQuerier.java,v 1.3 2003/11/27 00:52:58 nw Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,14 +14,14 @@ import java.io.IOException;
 
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.QueryTranslator;
-import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
+import org.astrogrid.datacenter.queriers.sql.SqlQuerierSPI;
 import org.xml.sax.SAXException;
 
 /** DatabaseQuerier implementation for Sybase.
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Sep-2003
  * @todo fill tis in.
  */
-public class SybaseQuerier extends SqlQuerier
+public class SybaseQuerier extends SqlQuerierSPI
 {
     /**
      * @param ds
@@ -45,6 +45,10 @@ public class SybaseQuerier extends SqlQuerier
 
 /*
 $Log: SybaseQuerier.java,v $
+Revision 1.3  2003/11/27 00:52:58  nw
+refactored to introduce plugin-back end and translator maps.
+interfaces in place. still broken code in places.
+
 Revision 1.2  2003/11/21 17:37:56  nw
 made a start tidying up the server.
 reduced the number of failing tests

@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.8 2003/11/25 18:50:06 mch Exp $
+ * $Id: SocketHandler.java,v 1.9 2003/11/27 00:52:58 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -13,7 +13,6 @@ import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.delegate.agss.SocketDelegate;
 import org.astrogrid.datacenter.io.SocketXmlInputStream;
 import org.astrogrid.datacenter.io.SocketXmlOutputStream;
-import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.queriers.QuerierManager;
@@ -169,7 +168,9 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
             else if (docRequest.getElementsByTagName(SocketDelegate.DO_QUERY_TAG).getLength() > 0)
             {
                //a blocking/synchronous query
-               DatabaseQuerier querier = (DatabaseQuerier) QuerierManager.createQuerier(docRequest.getDocumentElement());
+               // FIXME
+               //DatabaseQuerier querier = (DatabaseQuerier) QuerierManager.createQuerier(docRequest.getDocumentElement());
+               Querier querier = null;
                querier.registerListener(this);
                QueryResults results = querier.doQuery();
 
@@ -250,6 +251,10 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.9  2003/11/27 00:52:58  nw
+refactored to introduce plugin-back end and translator maps.
+interfaces in place. still broken code in places.
+
 Revision 1.8  2003/11/25 18:50:06  mch
 Abstracted Querier from DatabaseQuerier
 

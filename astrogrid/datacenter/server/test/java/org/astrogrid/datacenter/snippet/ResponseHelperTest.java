@@ -5,8 +5,9 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.astrogrid.datacenter.ServerTestCase;
+import org.astrogrid.datacenter.common.QueryHelper;
 import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.DummyQuerier;
+import org.astrogrid.datacenter.queriers.DummyQuerierSPI;
 import org.astrogrid.datacenter.queriers.DummyQueryResults;
 import org.w3c.dom.Document;
 
@@ -63,9 +64,7 @@ public class ResponseHelperTest extends ServerTestCase
     */
    public void testErrorResponses() throws Throwable
    {
-      DummyQuerier querier = new DummyQuerier();
-
-      querier.setErrorStatus(new IOException("Test error"));
+      querier.setError(new IOException("Test error"));
 
       try {
          ResponseHelper.makeQueryCreatedResponse(querier);
@@ -98,7 +97,7 @@ public class ResponseHelperTest extends ServerTestCase
      */
     protected void setUp() throws Exception {
         super.setUp();
-        querier = new DummyQuerier();
+        querier = DummyQuerierSPI.createDummyQuerier();
     }
 
     /* (non-Javadoc)

@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.2 2003/11/21 17:37:56 nw Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.3 2003/11/27 00:52:58 nw Exp $
  * Created on 29-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -70,7 +70,7 @@ public class SqlQueryTranslatorTest extends TestCase {
           results.load(propsStream);
           assertFalse(results.isEmpty());
             try {
-            QueryTranslator visitor = new SqlQueryTranslator();
+            QueryTranslator visitor = new AdqlQueryTranslator();
             String sql = visitor.translate(query);
             assertNotNull(sql);
              System.out.println(sql);
@@ -91,6 +91,10 @@ public class SqlQueryTranslatorTest extends TestCase {
 
 /* 
 $Log: SqlQueryTranslatorTest.java,v $
+Revision 1.3  2003/11/27 00:52:58  nw
+refactored to introduce plugin-back end and translator maps.
+interfaces in place. still broken code in places.
+
 Revision 1.2  2003/11/21 17:37:56  nw
 made a start tidying up the server.
 reduced the number of failing tests

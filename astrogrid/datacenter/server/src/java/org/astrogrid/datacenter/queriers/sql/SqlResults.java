@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.3 2003/11/21 17:37:56 nw Exp $
+ * $Id: SqlResults.java,v 1.4 2003/11/27 00:52:58 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,8 +23,8 @@ import java.sql.Types;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.Log;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.log.Log;
 import org.astrogrid.util.Workspace;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -40,7 +40,7 @@ public class SqlResults implements QueryResults
 {
    protected ResultSet sqlResults;
    protected Workspace workspace = null;
-   
+   protected static final Log log = org.apache.commons.logging.LogFactory.getLog(SqlResults.class);
    /**
     * Construct this wrapper around the given JDBC/SQL ResultSet.  We don't
     * know how big this result set will be, so it's likely we'll need a workspace
@@ -158,7 +158,7 @@ public class SqlResults implements QueryResults
       }
       catch (SQLException sqle)
       {
-         Log.logError("Could not convert results",sqle);
+         log.error("Could not convert results",sqle);
       }
    }
    
@@ -198,6 +198,10 @@ public class SqlResults implements QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.4  2003/11/27 00:52:58  nw
+ refactored to introduce plugin-back end and translator maps.
+ interfaces in place. still broken code in places.
+
  Revision 1.3  2003/11/21 17:37:56  nw
  made a start tidying up the server.
  reduced the number of failing tests
