@@ -46,7 +46,10 @@ public class Operation {
 	private Operation []
 	    subservientOperations ;
 	    
-	public Operation( Element operationElement ) throws QueryException {
+	private Catalog
+	    catalog;    
+	    
+	public Operation( Element operationElement , Catalog catalog) throws QueryException {
 		if( TRACE_ENABLED ) logger.debug( "Operation(Element): entry") ;  
 		 		
 		try {
@@ -61,13 +64,15 @@ public class Operation {
 				opElement,
 				fieldElement ;
 				
+			this.catalog = catalog;				
+				
 		    subservientOperations = new Operation[ nodeList.getLength() ];
 
 			   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
 				opElement = (Element) nodeList.item(i) ;				
 				if( opElement.getTagName().equals( JobDocDescriptor.OP_ELEMENT ) ) {
-					subservientOperations[i] = new Operation( opElement ) ;
+					subservientOperations[i] = new Operation( opElement , catalog) ;
 				}
 				else  {
 					; // JBL Note: What do I do here?
@@ -81,7 +86,7 @@ public class Operation {
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
 				fieldElement = (Element) nodeList.item(i) ;
 				if( fieldElement.getTagName().equals( JobDocDescriptor.FIELD_ELEMENT ) ) {
-					fields[i] = new Field( fieldElement ) ;						
+					fields[i] = new Field( fieldElement, catalog ) ;						
 				}
 				else  {
 					; // JBL Note: What do I do here?
@@ -125,6 +130,10 @@ public class Operation {
 
 	public String getName() {
 		return name;
+	}
+	
+	public Catalog getCatalog() {
+		return catalog;
 	}
 	
 } // end of class Operation
