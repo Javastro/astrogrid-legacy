@@ -1,4 +1,4 @@
-/*$Id: SimpleTranslatorMap.java,v 1.2 2004/01/13 00:33:14 nw Exp $
+/*$Id: SimpleTranslatorMap.java,v 1.3 2004/01/15 12:27:34 nw Exp $
  * Created on 26-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,9 @@ import java.util.Map;
 import org.apache.axis.types.URI;
 import org.astrogrid.datacenter.axisdataserver.types.Language;
 
-/** basic implementation of a translator map.
+/** Obvious implementation of a {@link TranslatorMap}
+ * <p>
+ * Should be sufficient for most cases.
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Nov-2003
  *
  */
@@ -96,6 +98,9 @@ public class SimpleTranslatorMap implements TranslatorMap {
 
 /* 
 $Log: SimpleTranslatorMap.java,v $
+Revision 1.3  2004/01/15 12:27:34  nw
+improved documentation
+
 Revision 1.2  2004/01/13 00:33:14  nw
 Merged in branch providing
 * sql pass-through
