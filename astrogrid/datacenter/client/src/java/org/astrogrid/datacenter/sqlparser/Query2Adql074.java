@@ -1,5 +1,5 @@
 /*
- * $Id: Query2Adql074.java,v 1.6 2004/08/26 11:47:16 mch Exp $
+ * $Id: Query2Adql074.java,v 1.7 2004/09/01 11:18:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -34,7 +34,7 @@ public class Query2Adql074  {
       log.debug("Making ADQL from "+query.toString());
       
       StringWriter sw = new StringWriter();
-      XmlPrinter xw = new XmlPrinter(sw);
+      XmlPrinter xw = new XmlPrinter(sw, false);
       xw.writeComment("ADQL generated from: "+query);
       xw.writeComment(comment);
       
@@ -230,6 +230,9 @@ public class Query2Adql074  {
 
 /*
  $Log: Query2Adql074.java,v $
+ Revision 1.7  2004/09/01 11:18:49  mch
+ Removed initial processing instruction
+
  Revision 1.6  2004/08/26 11:47:16  mch
  Added tests based on Patricios errors and other SQl statements, and subsequent fixes...
 
