@@ -1,7 +1,8 @@
-// Decompiled by Jad v1.5.8e. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.geocities.com/kpdus/jad.html
-// Decompiler options: packimports(3) 
-// Source File Name:   DatabaseQuerier.java
+/*
+ * $Id $
+ *
+ * (C) Copyright Astrogrid...
+ */
 
 package org.astrogrid.datacenter.queriers;
 
@@ -9,271 +10,464 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.Date;
+import java.util.Vector;
 import org.astrogrid.datacenter.adql.ADQLException;
+import org.astrogrid.datacenter.adql.QOM;
+import org.astrogrid.datacenter.common.DocMessageHelper;
 import org.astrogrid.datacenter.common.QueryStatus;
-import org.astrogrid.datacenter.delegate.JobNotifyServiceListener;
-import org.astrogrid.datacenter.delegate.WebNotifyServiceListener;
+import org.astrogrid.datacenter.service.JobNotifyServiceListener;
+import org.astrogrid.datacenter.service.WebNotifyServiceListener;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.Workspace;
 import org.astrogrid.log.Log;
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
-import org.w3c.dom.*;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-// Referenced classes of package org.astrogrid.datacenter.queriers:
-//            Query, QueryStatusForwarder, DatabaseAccessException, QueryListener, 
-//            QueryResults, DatabaseQuerierManager
+/**
+ * The Querier classes handle a single, individual query to an individual
+ * database.  If two queries will be made on a database, two Querier instances
+ * will be required.  A 'database' here is a database management system; eg
+ * MySQL, Microsoft's SQL server, etc.
+ * <p>
+ * @see package documentation
+ * <p>
+ * This class provides factory methods for both blocking and non-blocking
+ * queries, hopefully completely hiding the two-way translation process
+ *
+ * @see doQueryGetVotable()
+ * @see spawnQuery
+ * <p>
+ * @author M Hill
+ */
 
-public abstract class DatabaseQuerier
-    implements Runnable
+public abstract class DatabaseQuerier implements Runnable
 {
+   /** List of serviceListeners who will be updated when the status changes */
+   private Vector serviceListeners = new Vector();
 
-    public DatabaseQuerier()
-    {
-        serviceListeners = new Vector();
-        status = QueryStatus.UNKNOWN;
-        error = null;
-        workspace = null;
-        handle = null;
-        query = null;
-        communityid = null;
-        credential = "";
-        resultsDestination = null;
-        resultsLoc = null;
-        timeQueryStarted = null;
-        timeQueryCompleted = null;
-    }
+   /** status of call */
+   private QueryStatus status = QueryStatus.UNKNOWN;
 
-    public String getHandle()
-    {
-        return handle;
-    }
+   /** If an error is thrown in the spawned thread, this holds the exception */
+   private Throwable error = null;
 
-    void setHandle(String handle)
-    {
-        this.handle = handle;
-    }
+   /** Temporary workspace for working files, and somewhere to put the results
+    * for non-blocking calls */
+   protected Workspace workspace = null;
 
-    void setWorkspace(Workspace workspace)
-    {
-        this.workspace = workspace;
-    }
+   /** A handle is used to identify a particular service.  It is also used as the
+    * basis for any temporary storage. */
+   private String handle = null;
 
-    void setCommunityId(String communityid)
-    {
-        this.communityid = communityid;
-    }
+   /** The query object model */
+   private Query query = null;
 
-    void setUserId(String userid)
-    {
-        this.userid = userid;
-    }
+   /**
+    * userid and communityid for using myspace
+    */
+   private String userid, communityid = null;
 
-    void setCredential(String credential)
-    {
-        this.credential = credential;
-    }
+   /**
+    * Where the result should be sent on completion.  Probably a myspace
+    * server URL
+    */
+   private String resultsDestination = null;
 
-    void setQuery(Element givenDOM)
-        throws ADQLException, QueryException
-    {
-        query = new Query(givenDOM);
-        setStatus(QueryStatus.CONSTRUCTED);
-    }
+   /** Handle to the results from the query - the location (prob myspace) where
+    * the results can be found */
+   private String resultsLoc = null;
 
-    void setResultsDestination(String resultsDestination)
-    {
-        this.resultsDestination = resultsDestination;
-    }
+   /** For measuring how long the query took */
+   private Date timeQueryStarted = null;
+   /** For measuring how long query took */
+   private Date timeQueryCompleted = null;
 
-    public void registerWebListeners(Element domContainingListeners)
-        throws MalformedURLException
-    {
-        NodeList listenerTags = domContainingListeners.getElementsByTagName("NotifyMe");
-        for(int i = 0; i < listenerTags.getLength(); i++)
-        {
-            WebNotifyServiceListener listener = new WebNotifyServiceListener(new URL(((Element)listenerTags.item(i)).getNodeValue()));
-            registerListener(new QueryStatusForwarder(listener));
-        }
+   /**
+    * Returns this instances handle
+    */
+   public String getHandle()
+   {
+      return handle;
+   }
 
-        listenerTags = domContainingListeners.getElementsByTagName("JobMonitorURL");
-        for(int i = 0; i < listenerTags.getLength(); i++)
-        {
-            JobNotifyServiceListener listener = new JobNotifyServiceListener(new URL(((Element)listenerTags.item(i)).getNodeValue()));
-            registerListener(new QueryStatusForwarder(listener));
-        }
+   /** set the handle for this querier
+    * package private so manager has access... */
+    void setHandle(String handle) {
+       this.handle = handle;
+   }
 
-    }
+      /** set the workspace for this querier */
+      void setWorkspace(Workspace workspace) {
+          this.workspace = workspace;
+      }
+     /** set the userid for this querier */
+     void setCommunityId(String communityid) {
+         this.communityid = communityid;
+     }
 
-    public void run()
-    {
-        try
-        {
-        	//commented out by Catherine since we have proved it's working 24th Oct. 2003
-            //testResultsDestination();
-            QueryResults results = doQuery();
-            setStatus(QueryStatus.RUNNING_RESULTS);
-            sendResults(results);
-            setStatus(QueryStatus.FINISHED);
-        }
-        catch(QueryException e)
-        {
-            Log.logError("Could not construct query in spawned thread ", e);
-            setErrorStatus(e);
-        }
-        catch(DatabaseAccessException e)
-        {
-            Log.logError("Could not access database in spawned thread ", e);
-            setErrorStatus(e);
-        }
-        catch(IOException e)
-        {
-            Log.logError("Could not create file on myspace", e);
-            setErrorStatus(e);
-        }
-        catch(Exception e)
-        {
-            Log.logError("Myspace raised an undescriptive exception", e);
-            setErrorStatus(e);
-        }
-    }
+     /** set the userid for this querier */
+     void setUserId(String userid) {
+         this.userid = userid;
+     }
 
-    protected void testResultsDestination()
-        throws Exception
-    {
-        Log.affirm(resultsDestination != null, "No Result target (eg myspace) given in config file (key DefaultMySpace), and no key ResultsTarget in given DOM ");
-        MySpaceManagerDelegate myspace = new MySpaceManagerDelegate(resultsDestination);
-		myspace.saveDataHolding(userid, communityid, credential, "testFile", "This is a test file to make sure we can create a file in myspace, so our query results are not lost", "test", "Overwrite");
-    }
+   /**
+    * Creates the query model based on the given DOM.
+    */
+   public void setQuery(Element givenDOM) throws ADQLException, QueryException
+   {
+      query = new Query(givenDOM);
+      setStatus(QueryStatus.CONSTRUCTED);
+   }
 
-    protected void sendResults(QueryResults results)
-        throws Exception
-    {
-        Log.affirm(results != null, "No results to send");
-        MySpaceManagerDelegate myspace = new MySpaceManagerDelegate(resultsDestination);
-        String myspaceFilename = getHandle() + "_results";
-        try
-        {
-            ByteArrayOutputStream ba = new ByteArrayOutputStream();
-            results.toVotable(ba);
-            ba.close();
-			myspace.saveDataHolding(userid, communityid, credential, myspaceFilename, ba.toString(), "VOTable", "Overwrite");
-            resultsLoc = myspace.getDataHoldingUrl(userid, communityid, credential, myspaceFilename);
-        }
-        catch(SAXException se)
-        {
-            Log.logError("Could not create VOTable", se);
-        }
-    }
+   /**
+    * Creates the query model based on the given DOM.
+    */
+   public void setQuery(QOM adql)
+   {
+      query = new Query(adql);
+      setStatus(QueryStatus.CONSTRUCTED);
+   }
 
-    public QueryResults doQuery()
-        throws QueryException, DatabaseAccessException
-    {
-        setStatus(QueryStatus.RUNNING_QUERY);
-        timeQueryStarted = new Date();
-        QueryResults results = queryDatabase(query);
-        timeQueryCompleted = new Date();
-        setStatus(QueryStatus.QUERY_COMPLETE);
-        return results;
-    }
+   /**
+    * Sets up the target of where the results will be sent to
+    */
+   public void setResultsDestination(String resultsDestination)
+   {
+      this.resultsDestination = resultsDestination;
 
-    public String getResultsLoc()
-    {
-        return resultsLoc;
-    }
+      //doesn't matter here - might be a synchronous call
+      //    Log.affirm(resultsDestination != null,
+      //                  "No Result target (eg myspace) given in config file (key "+RESULTS_TARGET_KEY+"), "+
+      //                    "and no key "+DocMessageHelper.RESULTS_TARGET_TAG+" in given DOM ");
+   }
 
-    public double getQueryTimeTaken()
-    {
-        if(timeQueryStarted == null)
-            return -1D;
-        if(timeQueryCompleted == null)
-        {
-            Date timeNow = new Date();
-            return (double)(timeNow.getTime() - timeQueryStarted.getTime());
-        } else
-        {
-            return (double)(timeQueryCompleted.getTime() - timeQueryStarted.getTime());
-        }
-    }
+   /**
+    * Examines given DOM for tags requesting notifications.  Public so that
+    * listeners can be added after the querier is running.
+    */
+   public void registerWebListeners(Element domContainingListeners) throws MalformedURLException
+   {
+      //look for anonymous web listeners
+      NodeList listenerTags = domContainingListeners.getElementsByTagName(DocMessageHelper.LISTENER_TAG);
 
-    public abstract QueryResults queryDatabase(Query query1)
-        throws DatabaseAccessException;
+      for (int i=0; i<listenerTags.getLength();i++)
+      {
+         registerListener(new WebNotifyServiceListener(
+               new URL(((Element) listenerTags.item(i)).getNodeValue()))
+         );
+      }
 
-    public void abort()
-    {
-        try
-        {
-            close();
-        }
-        catch(IOException e)
-        {
-            Log.logError("Aborting querier " + this, e);
-        }
-    }
+      //look for job web listeners
+      listenerTags = domContainingListeners.getElementsByTagName(DocMessageHelper.JOBLISTENER_TAG);
 
-    public String toString()
-    {
-        return "[" + getHandle() + "] " + getClass();
-    }
+      for (int i=0; i<listenerTags.getLength();i++)
+      {
+         registerListener(new JobNotifyServiceListener(
+            new URL(((Element) listenerTags.item(i)).getNodeValue()))
+         );
+      }
 
-    public void close()
-        throws IOException
-    {
-        if(DatabaseQuerierManager.queriers != null && getHandle() != null)
-            DatabaseQuerierManager.queriers.remove(getHandle());
-        if(workspace != null)
-            workspace.close();
-    }
+   }
 
-    public synchronized void setStatus(QueryStatus newStatus)
-    {
-        Log.affirm(status != QueryStatus.ERROR, "Trying to start a step '" + newStatus + "' when the status is '" + status + "'");
-        Log.affirm(!newStatus.isBefore(status), "Trying to start a step '" + newStatus + "' that has already been completed:" + " status '" + status);
-        status = newStatus;
-        fireStatusChanged(status);
-    }
+   /**
+    * Runnable implementation - this method is called when the thread to run
+    * this asynchronously is started.  Sends the results to the destination
+    * specified in the input document.
+    */
+   public void run()
+   {
+      try
+      {
+         //test the destination is OK before doing query
+         testResultsDestination();
 
-    protected void setErrorStatus(Throwable th)
-    {
-        setStatus(QueryStatus.ERROR);
-        error = th;
-    }
+         QueryResults results = doQuery();
 
-    public Throwable getError()
-    {
-        Log.affirm(status == QueryStatus.ERROR, "Trying to get exception but there is no error, status='" + status + "'");
-        return error;
-    }
+         setStatus(QueryStatus.RUNNING_RESULTS);
 
-    public QueryStatus getStatus()
-    {
-        return status;
-    }
+         //send the results to the desstinateion
+         sendResults(results);
+         
+         setStatus(QueryStatus.FINISHED);
+         
+      }
+      catch (QueryException e)
+      {
+         Log.logError("Could not construct query in spawned thread ",e);
+         setErrorStatus(e);
+      }
+      catch (DatabaseAccessException e)
+      {
+         Log.logError("Could not access database in spawned thread ",e);
+         setErrorStatus(e);
+      }
+      catch (IOException e)
+      {
+         Log.logError("Could not create file on myspace",e);
+         setErrorStatus(e);
+      }
+      catch (Exception e)
+      {
+         Log.logError("Myspace raised an undescriptive exception",e);
+   setErrorStatus(e);
+   }
+   }
 
-    public void registerListener(QueryListener aListener)
-    {
-        serviceListeners.add(aListener);
-    }
 
-    private void fireStatusChanged(QueryStatus newStatus)
-    {
-        for(int i = 0; i < serviceListeners.size(); i++)
-            ((QueryListener)serviceListeners.get(i)).serviceStatusChanged(this);
+   /**
+    * Tests the destination exists and a file can be created on it.  This ensures
+    * not just that MySpace works but rather that the particular myspace url given
+    * is correct and the user has the right permissions on that particular one.
+    * We do this
+    * before running the query to try and ensure the query is not wasted.
+    *
+    * @throws IOException if the operation fails for any reason
+    */
+   protected void testResultsDestination() throws Exception
+   {
+      Log.affirm(resultsDestination != null,
+                 "No Result target (eg myspace) given in config file (key "+DatabaseQuerierManager.RESULTS_TARGET_KEY+"), "+
+                 "and no key "+DocMessageHelper.RESULTS_TARGET_TAG+" in given DOM ");
 
-    }
+      MySpaceManagerDelegate myspace = new MySpaceManagerDelegate(resultsDestination);
 
-    private Vector serviceListeners;
-    private QueryStatus status;
-    private Throwable error;
-    protected Workspace workspace;
-    private String handle;
-    private Query query;
-    private String userid;
-    private String communityid;
-    private String credential;
-    private String resultsDestination;
-    private String resultsLoc;
-    private Date timeQueryStarted;
-    private Date timeQueryCompleted;
+      myspace.saveDataHolding(userid, communityid, "testFile",
+                              "This is a test file to make sure we can create a file in myspace, so our query results are not lost",
+                              "test",
+                              "Overwrite"); // this interface needs refactoring. constants would be a start.
+   }
+
+   /**
+    * Sends the given results to the myspace server.
+    * @todo At some point we ought
+    * to work out a way of streaming this properly to myspace - I expect this to break
+    * on very very large votables - mch.
+    */
+   protected void sendResults(QueryResults results) throws Exception
+   {
+      Log.affirm(results != null, "No results to send");
+
+      MySpaceManagerDelegate myspace = new MySpaceManagerDelegate(resultsDestination);
+
+      String myspaceFilename = getHandle()+"_results";
+
+      try {
+         //stream results to string for outputting to myspace.   At
+         //some point we should get a socket to stream to from myspace and stream
+         //to that
+         ByteArrayOutputStream ba = new ByteArrayOutputStream();
+         results.toVotable(ba);
+         ba.close();
+
+         myspace.saveDataHolding(userid, communityid, myspaceFilename,
+                              ba.toString(),
+                              "VOTable",
+                              "Overwrite");
+
+         resultsLoc = myspace.getDataHolding(userid, communityid, myspaceFilename);
+      }
+      catch (SAXException se)
+      {
+         Log.logError("Could not create VOTable",se);
+         //couldn't send as VOTable. Try CSV
+         /*
+         ByteArrayOutputStream ba = new ByteArrayOutputStream();
+         results.toCSV(ba);
+         ba.close();
+
+         myspace.saveDataHolding(userid, communityid, myspaceFilename,
+                              ba.toString(),
+                              "CSV",
+                              myspace.OVERWRITE);
+
+         resultsLoc = myspace.getDataHoldingUrl(userid, communityid, myspaceFilename);
+          */
+      }
+
+   }
+
+
+   /** Updates the status and does the query (by calling the abstract
+    * queryDatabase() overridden by subclasses) and returns the results.
+    * Use by both synchronous (blocking) and asynchronous (threaded) querying
+    */
+   public QueryResults doQuery() throws DatabaseAccessException
+   {
+      setStatus(QueryStatus.RUNNING_QUERY);
+      this.timeQueryStarted = new Date();
+      QueryResults results = queryDatabase(query);
+      this.timeQueryCompleted = new Date();
+      setStatus(QueryStatus.QUERY_COMPLETE);
+
+      return results;
+   }
+
+   /** Returns the results - returns null if the results have not yet
+    * been returned
+    */
+   public String getResultsLoc()
+   {
+      return resultsLoc;
+   }
+
+
+   /**
+    * Returns the time it took to complete the query in milliseconds, or the
+    * time since it started (if it's still running).  -1 if the query has not
+    * yet started
+    */
+   public double getQueryTimeTaken()
+   {
+      //Log.affirm(timeQueryStarted != null, "Trying to get time taken by the query when it hasn't run"));
+      if (timeQueryStarted == null)
+      {
+         return -1; //may not have started for some reason
+      }
+
+
+      if (timeQueryCompleted == null)
+      {
+         Date timeNow = new Date();
+         return timeNow.getTime() - timeQueryStarted.getTime();
+      }
+      else
+      {
+         return timeQueryCompleted.getTime() - timeQueryStarted.getTime();
+      }
+   }
+
+   /**
+    * Applies the given query, to the database,
+    * returning the results wrapped in QueryResults.
+    */
+   public abstract QueryResults queryDatabase(Query aQuery) throws DatabaseAccessException;
+
+
+   /**
+    * Abort - stops query (if poss) and tidies up
+    */
+   public void abort()
+   {
+      try
+      {
+         close();
+      }
+      catch (IOException e)
+      {
+         Log.logError("Aborting querier "+this,e);
+      }
+   }
+
+   /**
+    * For debugging/display
+    */
+   public String toString()
+   {
+      return "["+getHandle()+"] "+this.getClass();
+   }
+
+   /** close the querier - removes itself from the list and so will eventually
+    * be garbaged collected.  Subclasses should override to release eg database
+    * connection resources
+    * @todo - ikky hack to remove self from the manager.
+    */
+   public void close() throws IOException
+   {
+      //remove from list
+      /* be extra cautious here */
+      if (DatabaseQuerierManager.queriers != null && getHandle() != null) {
+        DatabaseQuerierManager.queriers.remove(getHandle());
+      }
+
+      //clean up workspace
+      if (workspace != null) {
+       workspace.close();
+      }
+   }
+
+
+   /**
+    * Sets the status.  NB if the new status is ordered before the existing one,
+    * throws an exception (as each querier should only handle one query).
+    * Synchronised as the queriers may be running under a different thread
+    */
+   public synchronized void setStatus(QueryStatus newStatus)
+   {
+      Log.affirm(status != QueryStatus.ERROR,
+                 "Trying to start a step '"+newStatus+"' when the status is '"
+                    +status+"'");
+
+      Log.affirm(!newStatus.isBefore(status),
+                 "Trying to start a step '"+newStatus
+                    +"' that has already been completed:"
+                    +" status '"+status);
+
+      status = newStatus;
+
+      fireStatusChanged(status);
+   }
+
+
+   /**
+    * Special error status - generated when querier is in its own thread, so
+    * that it can be accessed by polling clients
+    */
+   protected void setErrorStatus(Throwable th)
+   {
+      setStatus(QueryStatus.ERROR);
+
+      error = th;
+   }
+
+   /**
+    * Returns the exception if an error has occured
+    */
+   public Throwable getError()
+   {
+      Log.affirm(status == QueryStatus.ERROR,
+                 "Trying to get exception but there is no error, status='"+status+"'");
+
+      return error;
+   }
+
+   /**
+    * Returns the current status
+    */
+   public QueryStatus getStatus()
+   {
+      return status;
+   }
+
+   /**
+    * Register a status listener.  This will be informed of changes in status
+    * to the service - IF the service supports such info.  Otherwise it will
+    * just get 'starting', 'working' and 'completed' messages based around the
+    * basic http exchange.
+    */
+   public void registerListener(QuerierListener aListener)
+   {
+      serviceListeners.add(aListener);
+   }
+
+   /** informs all listeners of the new status change. Not threadsafe... should
+    * call setStatus() rather than this directly
+    */
+   private void fireStatusChanged(QueryStatus newStatus)
+   {
+      for (int i=0;i<serviceListeners.size();i++)
+      {
+         ((QuerierListener) serviceListeners.get(i)).queryStatusChanged(this);
+      }
+   }
+
 }
+/*
+$Log: DatabaseQuerier.java,v $
+Revision 1.36  2003/11/06 11:38:48  mch
+Introducing SOAPy Beans
+
+ */
+   
