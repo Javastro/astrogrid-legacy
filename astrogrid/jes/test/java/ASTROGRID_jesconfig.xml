@@ -51,7 +51,8 @@
   <!-- CONTROLLER CATEGORY =================================================================== -->    
   <category name="CONTROLLER">
     <property name="PARSER.VALIDATION" value="false" />
-    <property name="TEMPLATE.RESPONSE" value="JobController.xmltemplate" />  
+    <property name="TEMPLATE.SUBMIT_JOB_RESPONSE" value="JobControllerResponse.xmltemplate" />  
+    <property name="TEMPLATE.TEST1" value="doesnotexist.xmltemplate" />  
     <!-- Location of our JobController -->
     <property name="URL" value="http://hydra.star.le.ac.uk:8080/axis/services/JobControllerService" />
   </category>  
@@ -71,17 +72,17 @@
    A job factory, database and table names are required of each JES -->
   <category name="JOB">
     <!-- The Job Factory -->
-    <property name="FACTORY" value="org.astrogrid.jes.impl.DummyJobFactoryImpl" /> <!--dummy for testing-->
+    <property name="FACTORY" value="org.astrogrid.jes.impl.JobFactoryImpl" /> <!--dummy for testing-->
     <!-- The Job Data Source -->
     <property name="DATASOURCE" value="testDatabase" /> <!-- HSQL Test database-->
     <!-- The Job table names -->
-    <property name="JOB" value="jes..job" />
-    <property name="JOBSTEP" value="jes..jobstep" />
-    <property name="QUERY" value="jes..query" />
-    <property name="CATALOG" value="jes..catalog" />
-    <property name="TABLE" value="jes..catalogtable" />
-    <property name="SERVICE" value="jes..service" />
-    <property name="JOBID" value="jes..jobid" />
+    <property name="TABLENAME.JOB" value="job" />
+    <property name="TABLENAME.JOBSTEP" value="jobstep" />
+    <property name="TABLENAME.QUERY" value="query" />
+    <property name="TABLENAME.CATALOG" value="catalog" />
+    <property name="TABLENAME.TABLE" value="catalogtable" />
+    <property name="TABLENAME.SERVICE" value="service" />
+    <property name="TABLENAME.JOBID" value="jobid" />
     <!-- The bookable range of Job id's -->
     <property name="ID.BOOKABLERANGE" value="100" />
   </category>
