@@ -1,11 +1,11 @@
-/*$Id: HsqlQuerier.java,v 1.1 2003/09/05 13:21:08 nw Exp $
+/*$Id: HsqlQuerier.java,v 1.2 2003/09/07 18:56:42 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.queriers.hsql;
@@ -22,22 +22,48 @@ import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
  *
  */
 public class HsqlQuerier extends SqlQuerier {
-    public static final String HSQL_DRIVER ="org.hsqldb.jdbcDriver";
-    
-    public HsqlQuerier(DataSource ds) throws DatabaseAccessException {
-        super(ds);
+
+    public HsqlQuerier() throws DatabaseAccessException {
+        super();
     }
-    
-    public HsqlQuerier(String url,Properties props) throws DatabaseAccessException {
-        super(url,HSQL_DRIVER,props);
-    }
+
+   /**
+    * Also starts Sybase jdbc driver... hardcoded, don't like this!
+    * @todo - check reason for hardcoded driver - MCH
+    */
+   public void startDrivers() throws DatabaseAccessException
+   {
+      //new com.sybase.jdbc2.jdbc.SybDriver(); //compile-time check
+      try
+      {
+         Class.forName("org.hsqldb.jdbcDriver").newInstance();
+      }
+      catch (IllegalAccessException e)
+      {
+         throw new DatabaseAccessException(e,"JDBC Driver error: " + e.toString());
+      }
+      catch (InstantiationException e)
+      {
+         throw new DatabaseAccessException(e, "JDBC Driver error: " + e.toString());
+      }
+      catch (ClassNotFoundException e)
+      {
+         throw new DatabaseAccessException(e, "JDBC Driver error: " + e.toString());
+      }
+
+      //start usual config ones
+      super.startDrivers();
+   }
 }
 
 
-/* 
+/*
 $Log: HsqlQuerier.java,v $
+Revision 1.2  2003/09/07 18:56:42  mch
+Moved ADQL package dependency to QueryTranslator only
+
 Revision 1.1  2003/09/05 13:21:08  nw
 added hsqlDb querier
 updated others to accept properties in constructor
- 
+
 */

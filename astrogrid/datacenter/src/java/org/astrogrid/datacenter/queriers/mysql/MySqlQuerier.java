@@ -1,5 +1,5 @@
 /*
- * $Id: MySqlQuerier.java,v 1.9 2003/09/05 13:21:08 nw Exp $
+ * $Id: MySqlQuerier.java,v 1.10 2003/09/07 18:56:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,38 +22,43 @@ import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
 
 public class MySqlQuerier extends SqlQuerier
 {
-
-
-   public static final String MYSQL_DRIVER = "org.gjt.mm.mysql.Driver";
-/**
-    * Constructor for test purposes really - assumes there is a mySQL
-    * database server running on the localhost
-    * @deprecated - dodgy leaving here. better to move to a testing sub-class.
-    */
    public MySqlQuerier() throws DatabaseAccessException
    {
-      this("jdbc:mysql://localhost/Catalogue",null);
+      super();
    }
-
-    /**
-     * @param ds
-     * @throws DatabaseAccessException
-     */
-    public MySqlQuerier(DataSource ds) throws DatabaseAccessException {
-        super(ds);
-    }
 
    /**
-
+    * Also starts Sybase jdbc driver... hardcoded, don't like this!
+    * @todo - check reason for hardcoded driver - MCH
     */
-   public MySqlQuerier(String url,Properties props) throws DatabaseAccessException
+   public void startDrivers() throws DatabaseAccessException
    {
-        super(url,MYSQL_DRIVER,props); 
+      //new com.sybase.jdbc2.jdbc.SybDriver(); //compile-time check
+      try
+      {
+         Class.forName("org.gjt.mm.mysql.Driver").newInstance();
+      }
+      catch (IllegalAccessException e)
+      {
+         throw new DatabaseAccessException(e,"JDBC Driver error: " + e.toString());
+      }
+      catch (InstantiationException e)
+      {
+         throw new DatabaseAccessException(e, "JDBC Driver error: " + e.toString());
+      }
+      catch (ClassNotFoundException e)
+      {
+         throw new DatabaseAccessException(e, "JDBC Driver error: " + e.toString());
+      }
+
+      //start usual config ones
+      super.startDrivers();
    }
 
-    protected QueryTranslator createQueryTranslator() {
-        return new MySqlQueryTranslator();
-    }
+   protected QueryTranslator createQueryTranslator()
+   {
+      return new MySqlQueryTranslator();
+   }
 
 }
 
