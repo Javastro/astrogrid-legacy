@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/common/xsl/Attic/astrogrid.xsl,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/30 00:04:53 $</cvs:author>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:author>$Date: 2003/07/03 13:30:38 $</cvs:author>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     | $Log: astrogrid.xsl,v $
+    | Revision 1.2  2003/07/03 13:30:38  dave
+    | Fixed http link on ivoa logo
+    |
     | Revision 1.1  2003/06/30 00:04:53  dave
     | Added initial astrogrid style
     |
@@ -216,7 +219,7 @@
 							<td align="center" style="color: #FF9900; font-size-adjust: -2; width: 140px;">
 								Member of the
 								<br/>
-								<a href="www.ivoa.net">
+								<a href="http://www.ivoa.net">
 									<img src="ivoalogo.png" title="IVOA Alliance" alt="IVOA Alliance" style="border: 0px solid ; width: 140px; height: 77px;"/>
 								</a>
 								<br/>
