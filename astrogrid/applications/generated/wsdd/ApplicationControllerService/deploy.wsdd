@@ -16,29 +16,9 @@
       <parameter name="wsdlTargetNamespace" value="urn:manager.applications.astrogrid.org"/>
       <parameter name="wsdlServiceElement" value="ApplicationControllerService"/>
       <parameter name="wsdlServicePort" value="ApplicationControllerService"/>
-      <parameter name="className" value="org.astrogrid.applications.service.ApplicationControllerServiceSoapBindingImpl"/>
+      <parameter name="className" value="org.astrogrid.applications.service.ApplicationControllerServiceSoapBindingSkeleton"/>
       <parameter name="wsdlPortType" value="ApplicationController"/>
-      <operation name="listApplications" qname="operNS:listApplications" xmlns:operNS="urn:manager.applications.astrogrid.org" returnQName="listApplicationsReturn" returnType="rtns:ArrayOf_xsd_string" xmlns:rtns="urn:manager.applications.astrogrid.org" >
-      </operation>
-      <operation name="getApplicationDescription" qname="operNS:getApplicationDescription" xmlns:operNS="urn:manager.applications.astrogrid.org" returnQName="getApplicationDescriptionReturn" returnType="rtns:SimpleApplicationDescription" xmlns:rtns="urn:beans.applications.astrogrid.org" >
-        <parameter name="applicationID" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
-      </operation>
-      <operation name="initializeApplication" qname="operNS:initializeApplication" xmlns:operNS="urn:manager.applications.astrogrid.org" returnQName="initializeApplicationReturn" returnType="rtns:int" xmlns:rtns="http://www.w3.org/2001/XMLSchema" >
-        <parameter name="applicationID" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
-        <parameter name="jobstepID" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
-        <parameter name="jobMonitorURL" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
-        <parameter name="user" type="tns:User" xmlns:tns="urn:beans.applications.astrogrid.org"/>
-        <parameter name="parameters" type="tns:ParameterValues" xmlns:tns="urn:beans.applications.astrogrid.org"/>
-      </operation>
-      <operation name="executeApplication" qname="operNS:executeApplication" xmlns:operNS="urn:manager.applications.astrogrid.org" returnQName="executeApplicationReturn" returnType="rtns:boolean" xmlns:rtns="http://www.w3.org/2001/XMLSchema" >
-        <parameter name="executionId" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
-      </operation>
-      <operation name="queryApplicationExecutionStatus" qname="operNS:queryApplicationExecutionStatus" xmlns:operNS="urn:manager.applications.astrogrid.org" returnQName="queryApplicationExecutionStatusReturn" returnType="rtns:string" xmlns:rtns="http://www.w3.org/2001/XMLSchema" >
-        <parameter name="executionId" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
-      </operation>
-      <operation name="returnRegistryEntry" qname="operNS:returnRegistryEntry" xmlns:operNS="urn:manager.applications.astrogrid.org" returnQName="returnRegistryEntryReturn" returnType="rtns:string" xmlns:rtns="http://www.w3.org/2001/XMLSchema" >
-      </operation>
-      <parameter name="allowedMethods" value="getApplicationDescription returnRegistryEntry queryApplicationExecutionStatus initializeApplication executeApplication listApplications"/>
+      <parameter name="allowedMethods" value="*"/>
 
       <typeMapping
         xmlns:ns="urn:beans.applications.astrogrid.org"

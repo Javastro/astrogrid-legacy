@@ -155,7 +155,7 @@
 	<!-- generate the server side stuff -->
   	<axis-wsdl2java output="${generated.src}"             verbose="true"
             serverside="true"
-            skeletondeploy="false"
+            skeletondeploy="true"
             testcase="false"
 		url="${wsdl.file}">
            <mapping namespace="urn:manager.applications.astrogrid.org" package="org.astrogrid.applications.service"/>
