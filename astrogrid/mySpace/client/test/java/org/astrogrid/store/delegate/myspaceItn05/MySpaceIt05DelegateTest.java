@@ -20,7 +20,7 @@ public class MySpaceIt05DelegateTest extends TestCase {
         "http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/Manager";
     //
     //Create a specified User.
-    private User operator = new User("someuser", "group", "token");
+    private User operator = new User("someuser@somewhere", "group", "token");
     /**
      * Standard constructor for JUnit test classes.
      */
