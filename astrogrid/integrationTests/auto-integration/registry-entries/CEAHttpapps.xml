@@ -221,7 +221,7 @@
             </cea:Interfaces>
         </cea:ApplicationDefinition>
 		<cea:CeaHttpAdapterSetup>
-			<ceab:URL>http://archive.ast.cam.ac.uk/cgi-bin/wfs-siap/queryImage</ceab:URL>>
+			<ceab:URL>http://archive.ast.cam.ac.uk/cgi-bin/wfs-siap/queryImage</ceab:URL>
 		</cea:CeaHttpAdapterSetup>
     </vr:Resource>
     <vr:Resource status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
