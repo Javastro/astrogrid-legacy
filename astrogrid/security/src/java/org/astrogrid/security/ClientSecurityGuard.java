@@ -6,10 +6,9 @@ import javax.xml.namespace.QName;
 import javax.xml.rpc.handler.HandlerRegistry;
 import javax.xml.rpc.handler.HandlerInfo;
 import javax.xml.rpc.Service;
-import org.astrogrid.community.common.security.data.SecurityToken;
 import org.astrogrid.community.client.security.service.SecurityServiceDelegate;
-// @TODO: lose this when the delegate factory is available.
-import org.astrogrid.community.client.security.service.SecurityServiceMockDelegate;
+import org.astrogrid.community.resolver.security.service.SecurityServiceResolver;
+import org.astrogrid.store.Ivorn;
 
 /**
  * Access to the security tokens pertaining to the client side of
@@ -47,9 +46,8 @@ import org.astrogrid.community.client.security.service.SecurityServiceMockDelega
  * a network using an initial user-name and password. This method signs
  * on to some portal that supplies the credentials for subsequent access
  * to services; these credentials are then stored in the properties of
- * the security guard. Currently, the credentials are a single-use
- * password from the AstroGrid community service and this value overwrites
- * the Username and Password properties.
+ * the security guard. Currently, the credentials are a {@link NonceToken}
+ * from the AstroGrid community service.
  *
  * @see {@link ClientCredentialHandler}
  * @see {@link SecurityGuard}
@@ -97,13 +95,10 @@ public class ClientSecurityGuard extends SecurityGuard {
    * @throws Exception if the sign-on fails
    */
   public void signOn () throws Exception {
-
-    // @TODO: use the delegate factory when it becomes available.
-    // Get the inital token (i.e. one-use password from the community
-    // service.
-    SecurityServiceDelegate ssd = new SecurityServiceMockDelegate();
+    Ivorn accountId = new Ivorn(this.getUsername());
+    SecurityServiceResolver ssr = new SecurityServiceResolver();
+    SecurityServiceDelegate ssd = ssr.resolve(accountId);
     String   u = this.getUsername();
-    System.out.println("Username: " + u);
     Password p = this.getPassword();
     NonceToken t
         = new NonceToken(ssd.checkPassword(u, p.getPlainPassword()));
