@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.12 2003/09/19 12:02:00 nw Exp $
+/*$Id: DataQueryServiceTest.java,v 1.13 2003/09/22 16:52:12 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,16 +11,14 @@
 package org.astrogrid.datacenter.service;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.sql.DataSource;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
@@ -90,7 +88,7 @@ public class DataQueryServiceTest extends TestCase {
     public void testRunQuery() throws Exception
     {
        //set up
-        DatabaseQuerier querier = new DummyQuerier();
+        DatabaseQuerier querier = new DummyQuerier(null);
         TestListener l = new TestListener();
         querier.registerListener(l);
 
@@ -103,8 +101,10 @@ public class DataQueryServiceTest extends TestCase {
        //run query
         querier.setQuery(testQuery.getDocumentElement());
         querier.doQuery();
-        Document votable = querier.getResults().toVotable();
-        assertNotNull(votable);
+        URL votableLoc = querier.getResultsLoc();
+        assertNotNull(votableLoc);
+
+        Document votable = XMLUtils.newDocument(votableLoc.openStream());
 
         assertEquals("VOTABLE",votable.getDocumentElement().getLocalName());
         assertEquals(QueryStatus.QUERY_COMPLETE,querier.getStatus());
@@ -116,16 +116,16 @@ public class DataQueryServiceTest extends TestCase {
     }
 
     public void testHandleUniqueness() throws IOException {
-        DatabaseQuerier s1 = new DummyQuerier();
+        DatabaseQuerier s1 = new DummyQuerier(null);
         assertNotNull(s1);
-        DatabaseQuerier s2 = new DummyQuerier();
+        DatabaseQuerier s2 = new DummyQuerier(null);
         assertNotNull(s2);
         assertNotSame(s1,s2);
         assertTrue(! s1.getHandle().trim().equals(s2.getHandle().trim()));
     }
 
     public void testStatus() throws IOException {
-        DatabaseQuerier s1 = new DummyQuerier();
+        DatabaseQuerier s1 = new DummyQuerier(null);
         assertEquals(s1.getStatus(),QueryStatus.CONSTRUCTED);
     }
 
@@ -149,6 +149,9 @@ public class DataQueryServiceTest extends TestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.13  2003/09/22 16:52:12  mch
+Fixes for changes to posts results to dummy myspace
+
 Revision 1.12  2003/09/19 12:02:00  nw
 fixed flakiness in db tests
 

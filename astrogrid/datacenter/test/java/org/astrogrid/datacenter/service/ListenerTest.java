@@ -36,7 +36,7 @@ public class ListenerTest extends TestCase
       DummyDelegate delegate = (DummyDelegate) DatacenterDelegate.makeDelegate(null);
       delegate.registerListener(DummyDelegate.QUERY_ID, listener);
 
-      DummyQuerier querier = new DummyQuerier();
+      DummyQuerier querier = new DummyQuerier(null);
    }
 
     /**
@@ -61,6 +61,9 @@ public class ListenerTest extends TestCase
 
 /*
 $Log: ListenerTest.java,v $
+Revision 1.4  2003/09/22 16:52:12  mch
+Fixes for changes to posts results to dummy myspace
+
 Revision 1.3  2003/09/17 14:53:02  nw
 tidied imports
 

@@ -1,4 +1,4 @@
-/*$Id: SqlQuerierTest.java,v 1.10 2003/09/19 12:01:34 nw Exp $
+/*$Id: SqlQuerierTest.java,v 1.11 2003/09/22 16:52:12 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,7 +43,7 @@ public class SqlQuerierTest extends TestCase {
       /*NWW - moved configuration (setting of keys) to setUp -
       as setUp is guaranteed to be called before a test, while main() is not -
       automated testing, testing within a GUI / IDE,,etc */
-    
+
        junit.textui.TestRunner.run(SqlQuerierTest.class);
     }
 
@@ -57,7 +57,7 @@ public class SqlQuerierTest extends TestCase {
      */
     protected void setUp() throws Exception {
         HsqlTestCase.initializeConfiguration();
-        querier = new SqlQuerier();
+        querier = new SqlQuerier(null);
         String script = HsqlTestCase.getResourceAsString("create-test-db.sql");
         HsqlTestCase.runSQLScript(script,querier.jdbcConnection);
     }
@@ -120,6 +120,9 @@ public class SqlQuerierTest extends TestCase {
 
 /*
 $Log: SqlQuerierTest.java,v $
+Revision 1.11  2003/09/22 16:52:12  mch
+Fixes for changes to posts results to dummy myspace
+
 Revision 1.10  2003/09/19 12:01:34  nw
 fixed flakiness in db tests
 

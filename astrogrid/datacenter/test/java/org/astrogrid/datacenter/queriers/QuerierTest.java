@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierTest.java,v 1.6 2003/09/17 14:53:02 nw Exp $
+ * $Id: QuerierTest.java,v 1.7 2003/09/22 16:52:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -28,7 +28,7 @@ public class QuerierTest extends TestCase
     */
    public void testDummies() throws IOException, DatabaseAccessException
    {
-      DatabaseQuerier querier = new DummyQuerier();
+      DatabaseQuerier querier = new DummyQuerier(null);
       QueryResults results = null;
 
       //dummy one should accept a null
