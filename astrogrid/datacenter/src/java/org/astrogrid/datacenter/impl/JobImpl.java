@@ -105,12 +105,12 @@ public class JobImpl extends Job {
 				 				 	
 				 	if(element.getTagName().equals( RunJobRequestDD.USERID_ELEMENT ) ) {
 					    //userId = element.getNodeValue().trim() ;
-					    userId = element.getFirstChild().toString().trim();
+					    userId = element.getFirstChild().getNodeValue().trim() ;  //toString().trim();
 					}
 					
 					else if( element.getTagName().equals( RunJobRequestDD.COMMUNITY_ELEMENT ) ) {
 						//community = element.getNodeValue().trim() ;
-						community = element.getFirstChild().toString().trim();
+						community = element.getFirstChild().getNodeValue().trim() ;  //toString().trim();
 					}
 					
 					else if( element.getTagName().equals( RunJobRequestDD.JOBSTEP_ELEMENT ) ) {
