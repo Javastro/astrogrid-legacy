@@ -1,0 +1,52 @@
+<HTML>
+<STYLE>
+A:link {text-decoration: underline; color: darkmagenta;}
+A:visited {text-decoration: underline; color: darkmagenta;}
+#f0 { font-family: "Helvetica"; font-size: 10pt;  }
+#f1 { font-family: "SansSerif"; font-size: 10pt;  }
+#f2 { font-family: "SansSerif"; font-size: 8pt;  }
+#f3 { font-family: "SansSerif"; font-size: 14pt; font-style: italic; font-weight: bold; color: #FFFFFF;  }
+#f4 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold; color: #FFFFFF;  }
+#f5 { font-family: "SansSerif"; font-size: 12pt; font-style: italic;  }
+#f6 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold;  }
+#f7 { font-family: "SansSerif"; font-size: 8pt; font-weight: bold;  }
+#f8 { font-family: "SansSerif"; font-size: 10pt; font-style: italic; font-weight: bold;  }
+#f9 { font-family: "SansSerif"; font-size: 11pt; font-style: italic; font-weight: bold;  }
+#f10 { font-family: "SansSerif"; font-size: 10pt; font-style: italic;  }
+#f11 { font-family: "SansSerif"; font-size: 10pt; font-weight: bold;  }
+#f12 { font-family: "SansSerif"; font-size: 9pt; font-style: italic; font-weight: bold;  }
+#f13 { font-family: "SansSerif"; font-size: 9pt; font-weight: bold;  }
+#f14 { font-family: "SansSerif"; font-size: 9pt;  }
+#f15 { font-family: "SansSerif"; font-size: 8pt; font-style: italic;  }
+#f16 { font-family: "monospace"; font-size: 9pt;  }
+#f17 { font-family: "SansSerif"; font-size: 9pt; font-weight: bold; color: #800080;  }
+#f18 { font-family: "SansSerif"; font-size: 8pt; font-style: italic; font-weight: bold;  }
+</STYLE>
+<BODY BGCOLOR="white">
+<BASEFONT ID="f0">
+<DIV STYLE="margin-left:2pt;margin-top:5pt;"><IMG SRC="doc-images/ActivityDiagram4.png"> <FONT ID="f6">Activity Diagram</FONT> <FONT ID="f5"><U>submit-workflow</U></FONT></DIV>
+<DIV STYLE="margin-left:3pt;margin-top:4pt;"><FONT ID="f2">package:</FONT> <FONT ID="f7"><A HREF="Package.html">use-cases</A></FONT></DIV>
+<DIV STYLE="margin-top:16pt;margin-left:2pt;"><IMG SRC="doc-images/submit-workflow_ActivityDiagram.gif" USEMAP="#M1"><MAP NAME="M1"><AREA SHAPE="rect" COORDS="525,277,688,303" HREF="submit-workflow.html#R1"><AREA SHAPE="rect" COORDS="729,284,876,308" HREF="submit-workflow.html#R2"><AREA SHAPE="rect" COORDS="525,221,693,247" HREF="submit-workflow.html#R3"><AREA SHAPE="rect" COORDS="251,174,435,196" HREF="submit-workflow.html#R4"><AREA SHAPE="rect" COORDS="251,57,428,84" HREF="submit-workflow.html#R5"><AREA SHAPE="rect" COORDS="10,10,182,38" HREF="submit-workflow.html#R6"></MAP></DIV>
+<DIV STYLE="margin-top:16pt;margin-left:2pt;"><FONT ID="f8" STYLE="background-color:#DCDCDC;">Diagram Contents Summary</FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:8pt;"><IMG SRC="doc-images/tv-activity4.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="submit-workflow.html#R5">Decode job request</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity4.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="submit-workflow.html#R3">Execute archive  query</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity4.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="submit-workflow.html#R4">Execute query job-step</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity4.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="submit-workflow.html#R6">Invoke JES</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity4.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="submit-workflow.html#R1">Locate results file</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity4.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="submit-workflow.html#R2">Store file</A></U></FONT></DIV>
+<DIV STYLE="margin-top:13pt;margin-left:2pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="98%"><TR BGCOLOR="#C0C0C0"><TD><FONT ID="f9">Activity Detail</FONT></TD></TR></TABLE></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:11pt;"><IMG SRC="doc-images/Activity4.png"> <FONT ID="f11"><A NAME="R5"></A>Activity </FONT><FONT ID="f10">Decode job request</FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:14pt;"><IMG SRC="doc-images/Activity4.png"> <FONT ID="f11"><A NAME="R3"></A>Activity </FONT><FONT ID="f10">Execute archive  query</FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2"><p> 
+Archive translates the given ADQL query into SQL and executes the query on its RDBMS. The results are retained in memory. 
+</p></FONT></DIV>
+<DIV STYLE="margin-top:10pt;margin-left:16pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Hyperlinks to elements:</FONT></DIV>
+<DIV STYLE="margin-left:22pt;margin-top:6pt;"><FONT ID="f2">to </FONT><FONT ID="f7">SequenceDiagram</FONT> <FONT ID="f15"><U><A HREF="execute-archive-query.html">execute-archive-query</A></U></FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:17pt;"><IMG SRC="doc-images/Activity4.png"> <FONT ID="f11"><A NAME="R4"></A>Activity </FONT><FONT ID="f10">Execute query job-step</FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:14pt;"><IMG SRC="doc-images/Activity4.png"> <FONT ID="f11"><A NAME="R6"></A>Activity </FONT><FONT ID="f10">Invoke JES</FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:16pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Hyperlinks to elements:</FONT></DIV>
+<DIV STYLE="margin-left:22pt;margin-top:6pt;"><FONT ID="f2">to </FONT><FONT ID="f7">SequenceDiagram</FONT> <FONT ID="f15"><U><A HREF="invoke-jes.html">invoke-jes</A></U></FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:17pt;"><IMG SRC="doc-images/Activity4.png"> <FONT ID="f11"><A NAME="R1"></A>Activity </FONT><FONT ID="f10">Locate results file</FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:14pt;"><IMG SRC="doc-images/Activity4.png"> <FONT ID="f11"><A NAME="R2"></A>Activity </FONT><FONT ID="f10">Store file</FONT></DIV>
+</BODY>
+</HTML>
