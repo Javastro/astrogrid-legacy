@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.13 2004/11/12 13:44:53 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.14 2004/11/12 15:28:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -199,13 +199,15 @@ public class VoDescriptionServer {
       boolean ceaDone = false; //backwards compatiblity marker to see if CeaResource has been done
       
       //loop through plugins adding each one's list of resources
-      for (int p = 0; p < plugins.length; p++) {
-         //make plugin
-         VoResourcePlugin plugin = createPlugin(plugins[p].toString());
-         //get resources from plugin
-         addResources(vod, plugin);
-         
-         if (plugin instanceof CeaResourceServer) { ceaDone = true; }
+      if (plugins != null) {
+         for (int p = 0; p < plugins.length; p++) {
+            //make plugin
+            VoResourcePlugin plugin = createPlugin(plugins[p].toString());
+            //get resources from plugin
+            addResources(vod, plugin);
+            
+            if (plugin instanceof CeaResourceServer) { ceaDone = true; }
+         }
       }
 
       //add the standard ones - cea, cone etc
@@ -308,6 +310,7 @@ public class VoDescriptionServer {
       StringWriter sw = new StringWriter();
       XmlPrinter xp = new XmlPrinter(sw, false);
       writeSummary(xp);
+      xp.close(); //make sure all tags are closed
       buffer.append(sw.toString());
    }
 
@@ -315,6 +318,7 @@ public class VoDescriptionServer {
       StringWriter sw = new StringWriter();
       XmlPrinter xp = new XmlPrinter(sw, false);
       writeIdentifier(xp, resourceKeyEnd);
+      xp.close(); //make sure all tags are closed
       buffer.append(sw.toString());
    }
 
@@ -322,6 +326,7 @@ public class VoDescriptionServer {
       StringWriter sw = new StringWriter();
       XmlPrinter xp = new XmlPrinter(sw, false);
       writeCuration(xp);
+      xp.close(); //make sure all tags are closed
       buffer.append(sw.toString());
    }
    
@@ -389,6 +394,7 @@ public class VoDescriptionServer {
    }
    
 }
+
 
 
 
