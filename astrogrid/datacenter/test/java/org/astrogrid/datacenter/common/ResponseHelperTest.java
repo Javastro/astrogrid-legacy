@@ -28,7 +28,7 @@ public class ResponseHelperTest extends TestCase
     */
    public void testNormalResponses() throws Throwable
    {
-      DummyQuerier querier = new DummyQuerier(null);
+      DummyQuerier querier = new DummyQuerier();
 
       ResponseHelper.makeQueryCreatedResponse(querier);
 
@@ -47,7 +47,7 @@ public class ResponseHelperTest extends TestCase
     */
    public void testErrorResponses() throws Throwable
    {
-      DummyQuerier querier = new DummyQuerier(null);
+      DummyQuerier querier = new DummyQuerier();
 
       querier.setErrorStatus(new IOException("Test error"));
 
