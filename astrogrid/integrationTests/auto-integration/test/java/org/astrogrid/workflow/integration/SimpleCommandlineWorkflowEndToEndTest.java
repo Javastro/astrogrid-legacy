@@ -1,4 +1,4 @@
-/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.6 2004/04/25 21:26:47 pah Exp $
+/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.7 2004/04/26 12:17:17 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -95,7 +95,7 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
         assertTrue("workflow is not valid",wf.isValid());
         urn = jes.submitWorkflow(wf);
          assertNotNull("submitted workflow produced null urn",urn);
-        System.out.println("SimpleCommandlineWorkflowEndToEndTest: assigned URN is " + urn.getContent());             
+        System.out.println(this.getClass().getName() + ": assigned URN is " + urn.getContent());             
          //check its in the list.
          JobSummary summaries[] = jes.readJobList(acc);       
          assertNotNull("null job list returned",summaries);
@@ -142,13 +142,9 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
       pval.setValue(INFILENAME);
       pval = (ParameterValue)tool.findXPathValue("output/parameter[name='P3']");
       pval.setValue(OUTFILENAME);
-
-
-     
-
    }
    
-   public static final long WAIT_TIME = 15 * 1000; 
+   public static final long WAIT_TIME = 60 * 1000; 
     public void testExecutionProgress() throws Exception {
         // loop, polling progress, until seen completed.
         long startTime= System.currentTimeMillis();
@@ -194,6 +190,9 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
 
 /* 
 $Log: SimpleCommandlineWorkflowEndToEndTest.java,v $
+Revision 1.7  2004/04/26 12:17:17  nw
+improved reporting of urns
+
 Revision 1.6  2004/04/25 21:26:47  pah
 made the temp file names windows friendly..
 
