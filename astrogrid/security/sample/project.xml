@@ -4,10 +4,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/security/sample/Attic/project.xml,v $</cvs:source>
     | <cvs:author>$Author: gtr $</cvs:author>
-    | <cvs:date>$Date: 2004/03/26 17:54:20 $</cvs:date>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/29 11:27:29 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.2  2004/03/29 11:27:29  gtr
+    |   New dependencies: things needd by Axis.
+    |
     |   Revision 1.1  2004/03/26 17:54:20  gtr
     |   New files for subproject: sample service and client to exercise the
     |   security library.
@@ -24,41 +27,16 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
 
-    <!--+
-        | Extend the common project descriptor.
-        +-->
-    <extend>../../maven-base/project.xml</extend>
-
-    <!--+
-        | The short name of the project.
-        | This is used when naming jars and distribution files.
-        +-->
     <id>astrogrid-security-sample-service</id>
 
-    <!--+
-        | The full name of the project.
-        | This is used when generating JavaDoc titles.
-        +-->
     <name>AstroGrid security sample service</name>
 
-    <!--+
-        | The Java package name of the project.
-        | This value is used when generating JavaDoc.
-        +-->
     <package>org.astrogrid.security.sampleservice</package>
 
-    <!--+
-        | A short description of the project.
-        | The short description should be limited to a single line.
-        +-->
     <shortDescription>
         A minimal web-service to exercise the security library.
     </shortDescription>
 
-    <!--+
-        | A detailed description of the project.
-        | This is used to generate the front page of the projects web site. 
-        +-->
     <description>
         <![CDATA[
             <p>
@@ -69,9 +47,6 @@
         ]]>
     </description>
 
-    <!--+
-        | Our cvs repository location.
-        +-->
     <repository>
         <connection>
             scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/security/sampleservice
@@ -81,67 +56,123 @@
         </developerConnection>
     </repository>
 
-    <!--+
-        | The external libraries required to build our component.
-        +-->
     <dependencies>
-        <!--+
-            | The AstroGrid common components.
-            +-->
+    
         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-common</artifactId>
-            <version>SNAPSHOT</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
+          <groupId>org.astrogrid</groupId>
+          <artifactId>astrogrid-common</artifactId>
+          <version>SNAPSHOT</version>
+          <type>jar</type>
+          <properties>
+	    <war.bundle>true</war.bundle>
+          </properties>
         </dependency>
-        <!--+
-            | The Community common components.
-            +-->
+        
         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-common</artifactId>
-            <version>SNAPSHOT</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
+          <groupId>org.astrogrid</groupId>
+          <artifactId>astrogrid-community-common</artifactId>
+          <version>SNAPSHOT</version>
+          <type>jar</type>
+          <properties>
+	    <war.bundle>true</war.bundle>
+          </properties>
+        </dependency>
+        
+        <dependency>
+          <groupId>org.astrogrid</groupId>
+          <type>jar</type>
+          <artifactId>astrogrid-security</artifactId>
+          <version>SNAPSHOT</version>
+          <properties>
+	    <war.bundle>true</war.bundle>
+          </properties>
+        </dependency>
+        
+        <dependency>
+          <groupId>axis</groupId>
+          <type>jar</type>
+          <artifactId>axis</artifactId>
+          <version>1.1</version>
+          <properties>
+            <war.bundle>true</war.bundle>
+          </properties>
+        </dependency>
+        
+        <dependency>
+          <groupId>jaxrpc-api</groupId>
+          <type>jar</type>
+          <artifactId>jaxrpc-api</artifactId>
+          <version>1.0.3</version>
+          <properties>
+	    <war.bundle>true</war.bundle>
+          </properties>
+        </dependency>
+
+        <dependency>
+          <groupId>wsdl4j</groupId>
+          <type>jar</type>
+          <artifactId>wsdl4j</artifactId>
+          <version>1.0</version>
+          <properties>
+	    <war.bundle>true</war.bundle>
+          </properties>
+        </dependency>
+
+        <dependency>
+          <groupId>activation</groupId>
+          <type>jar</type>
+          <artifactId>activation</artifactId>
+          <version>1.0.2</version>
+          <properties>
+	    <war.bundle>true</war.bundle>
+          </properties>
+        </dependency>
+
+        <dependency>
+          <groupId>commons-discovery</groupId>
+          <type>jar</type>
+          <artifactId>commons-discovery</artifactId>
+          <version>20030211.213356</version>
+          <properties>
+	    <war.bundle>true</war.bundle>
+          </properties>
+        </dependency>
+
+        <dependency>
+          <groupId>saaj</groupId>
+          <type>jar</type>
+          <artifactId>saaj</artifactId>
+          <jar>saaj.jar</jar>
+          <properties>
+	    <war.bundle>true</war.bundle>
+          </properties>
+        </dependency>
+
+        <dependency>
+          <groupId>log4j</groupId>
+          <type>jar</type>
+          <artifactId>log4j</artifactId>
+          <version>1.2.8</version>
+          <properties>
+	    <war.bundle>true</war.bundle>
+          </properties>
         </dependency>
         
     </dependencies>
 
-    <!--+
-        | The build properties for our project.
-        +-->
     <build>
-        <!--+
-            | The location of our Java source code.
-            +-->
         <sourceDirectory>src/java</sourceDirectory>
-        <!--+
-            | The location of our JUnit source code.
-            +-->
         <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-        <!--+
-            | Our JUnit test classes.
-            +-->
         <unitTest>
-            <!--+
-                | Which tests to include.
             <includes>
                 <include>**/*Test.java</include>
             </includes>
-                +-->
             <includes>
                 <include>**/*TestCase.java</include>
             </includes>
-            <!--+
-                | Which tests to exclude.
-                +-->
             <excludes>
                 <exclude>**/*Test.frog</exclude>
             </excludes>
-            <!--+
-                | The resources for our tests.
-                +-->
             <resources>
                 <resource>
                     <directory>target/database/config</directory>
