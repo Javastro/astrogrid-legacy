@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationProviderTest.java,v 1.5 2004/09/01 16:17:07 jdt Exp $
+/*$Id: HttpApplicationProviderTest.java,v 1.6 2004/09/14 16:26:26 jdt Exp $
  * Created on 30-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -237,6 +237,7 @@ public class HttpApplicationProviderTest extends TestCase {
      * @throws Exception
      */
     public void testPost() throws Exception {
+    		fail("This test is not ready yet, since the in-process webserver doesn't seem very happy with post");
             ApplicationDescription hw = getApplicationDescription("/AdderPost");
             
             Tool tool  = (Tool) toolUnmarshaller.unmarshallFromFile("tool-Adder1.xml");
@@ -245,8 +246,8 @@ public class HttpApplicationProviderTest extends TestCase {
             assertNotNull(app);
             app.addObserver(monitor);
             app.execute();
-            monitor.waitFor(10);
-            assertTrue(monitor.sawError);
+            monitor.waitFor(30);
+            assertTrue(monitor.sawExit);
     }
     /**
      * What happens if the URL returns a 404?
@@ -332,6 +333,11 @@ public class HttpApplicationProviderTest extends TestCase {
 
 /* 
 $Log: HttpApplicationProviderTest.java,v $
+Revision 1.6  2004/09/14 16:26:26  jdt
+Attempt to get the http-post working.  Upgraded http-client, to no avail.  Either http client
+or the embedded test webserver isn't handling post correctly.  Flagged tests
+to ensure this is dealt with.
+
 Revision 1.5  2004/09/01 16:17:07  jdt
 fixed unit test - file name was wrong case you great pillock.
 

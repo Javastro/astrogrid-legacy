@@ -1,5 +1,8 @@
 package fi.iki.elonen;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.*;
 import java.util.*;
 import java.net.*;
@@ -43,6 +46,11 @@ import java.net.*;
  */
 public class NanoHTTPD
 {
+	/**
+	 * Logger for this class
+	 */
+	private static final Log logger = LogFactory.getLog(NanoHTTPD.class);
+
 	// ==================================================
 	// API parts
 	// ==================================================
@@ -60,21 +68,24 @@ public class NanoHTTPD
 	 */
 	public Response serve( String uri, String method, Properties header, Properties parms )
 	{
-		System.out.println( method + " '" + uri + "' " );
+		logger.debug("serve(String, String, Properties, Properties)" + method
+				+ " '" + uri + "' ");
 		
 		Enumeration e = header.propertyNames();
 		while ( e.hasMoreElements())
 		{
 			String value = (String)e.nextElement();
-			System.out.println( "  HDR: '" + value + "' = '" + 
-								header.getProperty( value ) + "'" );
+			logger
+					.debug("serve(String, String, Properties, Properties) -   HDR: '"
+							+ value + "' = '" + header.getProperty(value) + "'");
 		}
 		e = parms.propertyNames();
 		while ( e.hasMoreElements())
 		{
 			String value = (String)e.nextElement();
-			System.out.println( "  PRM: '" + value + "' = '" + 
-								parms.getProperty( value ) + "'" );
+			logger
+					.debug("serve(String, String, Properties, Properties) -   PRM: '"
+							+ value + "' = '" + parms.getProperty(value) + "'");
 		}		
 		
 		return serveFile( uri, header, new File("."), true );
@@ -175,6 +186,10 @@ public class NanoHTTPD
 	 */
 	public NanoHTTPD( int port ) throws IOException
 	{
+		if (logger.isTraceEnabled()) {
+			logger.trace("NanoHTTPD(int) - start");
+		}
+
 		myTcpPort = port;
 
 		final ServerSocket ss = new ServerSocket( myTcpPort );		
@@ -182,17 +197,31 @@ public class NanoHTTPD
 			{
 				public void run()
 				{
+					if (logger.isTraceEnabled()) {
+						logger.trace("run() - start");
+					}
+
 					try
 					{
 						while( true )
 							new HTTPSession( ss.accept());
 					}
 					catch ( IOException ioe )
-					{}
+					{
+						logger.error("run()", ioe);
+					}
+
+					if (logger.isTraceEnabled()) {
+						logger.trace("run() - end");
+					}
 				}
 			});
 		t.setDaemon( true );
 		t.start();
+
+		if (logger.isTraceEnabled()) {
+			logger.trace("NanoHTTPD(int) - end");
+		}
 	}
 	
 	/**
@@ -200,8 +229,7 @@ public class NanoHTTPD
 	 */
 	public static void main( String[] args )
 	{
-		System.out.println( "NanoHTTPD 1.0 (c) 2001 Jarno Elonen\n" +
-							"(Command line options: [port] [--licence])\n" );
+		logger.debug("main(String[]) - NanoHTTPD 1.0 (c) 2001 Jarno Elonenn(Command line options: [port] [--licence])n");
 
 		// Show licence if requested
 		int lopt = -1;
@@ -209,7 +237,7 @@ public class NanoHTTPD
 		if ( args[i].toLowerCase().endsWith( "licence" ))
 		{
 			lopt = i;
-			System.out.println( LICENCE + "\n" );
+			logger.debug("main(String[])" + LICENCE + "n");
 		}
 		
 		// Change port if requested
@@ -219,7 +247,7 @@ public class NanoHTTPD
 		
 		if ( args.length > 1 && 
 			 args[1].toLowerCase().endsWith( "licence" ))
-				System.out.println( LICENCE + "\n" );
+				logger.debug("main(String[])" + LICENCE + "n");
 		
 		NanoHTTPD nh = null;
 		try
@@ -228,14 +256,13 @@ public class NanoHTTPD
 		}
 		catch( IOException ioe )
 		{
-			System.err.println( "Couldn't start server:\n" + ioe );
+			logger.error("main(String[]) - Couldn't start server:n" + ioe, ioe);
 			System.exit( -1 );
 		}
 		nh.myFileDir = new File("");
 		
-		System.out.println( "Now serving files in port " + port + " from \"" +
-							new File("").getAbsolutePath() + "\"" );
-		System.out.println( "Hit Enter to stop.\n" );
+		logger.debug("main(String[]) - Now serving files in port " + port+" from "+new File("").getAbsolutePath());
+		logger.debug("main(String[]) - Hit Enter to stop.n");
 				
 		try { System.in.read(); } catch( Throwable t ) {};
 	}	
@@ -246,24 +273,40 @@ public class NanoHTTPD
 	 */
 	private class HTTPSession implements Runnable
 	{
+		/**
+		 * Logger for this class
+		 */
+
 		public HTTPSession( Socket s )
 		{
+			if (logger.isTraceEnabled()) {
+				logger.trace("HTTPSession(Socket) - start");
+			}
+
 			mySocket = s;
 			Thread t = new Thread( this );
 			t.setDaemon( true );
 			t.start();
+
+			if (logger.isTraceEnabled()) {
+				logger.trace("HTTPSession(Socket) - end");
+			}
 		}
 		
 		public void run()
 		{
 			try
 			{
+				logger.debug("Awaiting connection");
 				InputStream is = mySocket.getInputStream();
+				logger.debug("Got connection");
 				if ( is == null) return;
 				BufferedReader in = new BufferedReader( new InputStreamReader( is ));
 			
 				// Read the request line
-				StringTokenizer st = new StringTokenizer( in.readLine());
+				String firstLine = in.readLine();
+				StringTokenizer st = new StringTokenizer( firstLine);
+				logger.debug("Line 1:"+firstLine);
 				if ( !st.hasMoreTokens())
 					sendError( HTTP_BADREQUEST, "BAD REQUEST: Syntax error. Usage: GET /example/file.html" );
 				
@@ -273,6 +316,9 @@ public class NanoHTTPD
 					sendError( HTTP_BADREQUEST, "BAD REQUEST: Missing URI. Usage: GET /example/file.html" );
 
 				String uri = decodePercent( st.nextToken());
+
+				logger.debug("run() - Request info:  : method = " + method
+						+ ", uri = " + uri);
 
 				// Decode parameters from the URI
 				Properties parms = new Properties();
@@ -289,18 +335,23 @@ public class NanoHTTPD
 				if ( st.hasMoreTokens())
 				{
 					String line = in.readLine();
+					logger.debug("Line 2:"+line);
 					while ( line.trim().length() > 0 )
 					{
 						int p = line.indexOf( ':' );
 						header.put( line.substring(0,p).trim(), line.substring(p+1).trim());
 						line = in.readLine();
+						logger.debug("Line:"+line);
 					}
 				}
 				
 				// If the method is POST, there may be parameters
 				// in data section, too, read another line:
-				if ( method.equalsIgnoreCase( "POST" ))
+				if ( method.equalsIgnoreCase( "POST" )) {
+					logger.debug("Method is POST so decoding parameters");
 					decodeParms( in.readLine(), parms );
+					logger.debug("Done");
+				}
 
 				// Ok, now do the serve()
 				Response r = serve( uri, method, header, parms );
@@ -368,6 +419,7 @@ public class NanoHTTPD
 		private void decodeParms( String parms, Properties p ) 
 			throws InterruptedException
 		{
+			logger.debug("decodeParms(parms = "+parms);
 			if ( parms == null )
 				return;
 			

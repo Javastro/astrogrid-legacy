@@ -1,4 +1,4 @@
-/* $Id: HttpServiceClient.java,v 1.4 2004/09/01 15:42:26 jdt Exp $
+/* $Id: HttpServiceClient.java,v 1.5 2004/09/14 16:26:26 jdt Exp $
  * Created on Jul 24, 2004
  * Copyright (C) 2004 AstroGrid. All rights reserved.
  *
@@ -108,7 +108,7 @@ public class HttpServiceClient {
             method = new GetMethod(serviceUrl);
         } else if (serviceType==HttpServiceType.POST) {
             method = new PostMethod(serviceUrl);
-            throw new UnsupportedOperationException("Post is not supported just yet");
+            //throw new UnsupportedOperationException("Post is not supported just yet");
         } else if (serviceType==HttpServiceType.TEST){
             throw new UnsupportedOperationException("Haven't done this yet");
         }
@@ -142,15 +142,25 @@ public class HttpServiceClient {
             argsArray[i] = new NameValuePair((String) key, (String) args.get(key));
         }
         
-        method.setQueryString(argsArray);
+        //Unfortunately, the GetMethod and PostMethods have different
+        //ways of setting the queries.  Using instanceof is ugly,
+        //but is the simplest way
+        if (method instanceof PostMethod) {
+        	((PostMethod)method).setRequestBody(argsArray);
+        } else {
+        	method.setQueryString(argsArray);
+        }
+        
         int statusCode = -1;
         // We will retry up to MAX_ATTEMPTS times.
         String results = null;
         for (int attempt = 0; statusCode == -1 && attempt < MAX_ATTEMPTS; attempt++) {
             try {
                 // execute the method.
+            	log.debug("Executing method: "+method);
                 statusCode = client.executeMethod(method);
                 results = method.getResponseBodyAsString();
+                log.debug("Method returned with results: "+results);
             } catch (HttpRecoverableException e) {
                 log.warn("A recoverable error occured, retrying..."+attempt,e);
             } catch (MalformedURLException e) {
@@ -193,6 +203,11 @@ public class HttpServiceClient {
 
 /*
  * $Log: HttpServiceClient.java,v $
+ * Revision 1.5  2004/09/14 16:26:26  jdt
+ * Attempt to get the http-post working.  Upgraded http-client, to no avail.  Either http client
+ * or the embedded test webserver isn't handling post correctly.  Flagged tests
+ * to ensure this is dealt with.
+ *
  * Revision 1.4  2004/09/01 15:42:26  jdt
  * Merged in Case 3
  *

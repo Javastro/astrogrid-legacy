@@ -1,4 +1,4 @@
-/* $Id: HttpServiceClientTest.java,v 1.4 2004/09/01 15:42:26 jdt Exp $
+/* $Id: HttpServiceClientTest.java,v 1.5 2004/09/14 16:26:26 jdt Exp $
  * Created on Jul 26, 2004
  * Copyright (C) 2004 AstroGrid. All rights reserved.
  *
@@ -74,6 +74,7 @@ public class HttpServiceClientTest extends TestCase {
      *  
      */
     public void testPostIsDuff() throws HttpException, IOException {
+    	fail("This test is not ready yet, since the in-process webserver doesn't seem very happy with post");
         try {
             final HttpServiceClient client = new HttpServiceClient(LOCALHOST + TestWebServer.ECHO_PARAMS_URI,
                     HttpServiceClient.HttpServiceType.POST);
@@ -179,6 +180,11 @@ public class HttpServiceClientTest extends TestCase {
 
 /*
  * $Log: HttpServiceClientTest.java,v $
+ * Revision 1.5  2004/09/14 16:26:26  jdt
+ * Attempt to get the http-post working.  Upgraded http-client, to no avail.  Either http client
+ * or the embedded test webserver isn't handling post correctly.  Flagged tests
+ * to ensure this is dealt with.
+ *
  * Revision 1.4  2004/09/01 15:42:26  jdt
  * Merged in Case 3
  *

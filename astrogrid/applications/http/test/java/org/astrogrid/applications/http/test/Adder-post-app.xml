@@ -5,7 +5,7 @@
             <AuthorityID>org.astrogrid.jdt.test</AuthorityID>
             <ResourceKey>AdderPost</ResourceKey>
         </Identifier>
-        <Title>An http-get Adder App</Title>
+        <Title>An http-post Adder App</Title>
         <ShortName>Adder</ShortName>
         <Summary>
             <Description>This is part of the astrogrid CEA.  It describes an applicaton that simple adds two params and returns the result.</Description>
