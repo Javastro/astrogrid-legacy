@@ -6,7 +6,20 @@
 </properties>
 
 <body>
-<section name="Release $Name:  $">
+	<section name="Release $Name:  $">
+		<p>Principal Changes</p>
+		<ul>
+			<li>changes to the CommonExecutionConnector interface
+				
+					</li>
+					<ul><li>added the concepts of status and results listeners</li>
+						<li>reintoduced the init phase</li>
+					</ul>
+					<li>refactored the core to use picocontainer - easier to reuse core components</li>
+					<li>introduced the HTTP GET/POST CEC</li>
+		</ul>
+	</section>
+<section name="Release Iteration05">
 
 <p>
 	Introduced the Common Execution Architecture

@@ -9,11 +9,16 @@
 		<item name="Commandline CEC" href="multiproject/astrogrid-cea-commandline/" />
 		<item name="HTTP GET/POST CEC" href="multiproject/astrogrid-cea-http/" />
     </menu>
+	<menu name="installation">
+		<item name="install" href="INSTALL.html"/>
+		<item name="release information" href="RELEASE.xml" />
+	</menu>
     <menu name="CEA" >
         <item name="Design Document" href="design/"/>
     	<item name="Schema"  href="http://www.astrogrid.org/viewcvs/astrogrid/workflow-objects/schema/"/>
 		<item name="WSDL" href="http://www.astrogrid.org/viewcvs/astrogrid/workflow-objects/wsdl/"/>
-      
+        <item name="programmers guide" href="programmers_guide.html"/>
+		<item name="adding an application" href="programmers_guide_for_applications.html"/>
     </menu> 
     <menu name="Background Information">
     	<item name="Description on Wiki" href="http://wiki.astrogrid.org/bin/view/Astrogrid/ApplicationsIntegration" />
