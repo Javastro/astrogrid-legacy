@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Account.java,v 1.21 2004/07/01 10:18:32 nw Exp $
+ * $Id: Account.java,v 1.22 2004/07/09 09:36:01 nw Exp $
  */
 
 package org.astrogrid.community.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * The user account.
  * 
- * @version $Revision: 1.21 $ $Date: 2004/07/01 10:18:32 $
+ * @version $Revision: 1.22 $ $Date: 2004/07/09 09:36:01 $
  */
 public class Account extends org.astrogrid.community.beans.v1.BaseIdentifier 
 implements java.io.Serializable

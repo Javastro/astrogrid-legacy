@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ActivityContainer.java,v 1.17 2004/07/01 10:18:32 nw Exp $
+ * $Id: ActivityContainer.java,v 1.18 2004/07/09 09:35:53 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -26,7 +26,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Abstract base class of activities that contain other activities
  * 
- * @version $Revision: 1.17 $ $Date: 2004/07/01 10:18:32 $
+ * @version $Revision: 1.18 $ $Date: 2004/07/09 09:35:53 $
  */
 public class ActivityContainer extends org.astrogrid.workflow.beans.v1.AbstractActivity 
 implements java.io.Serializable

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: AccessURLType.java,v 1.2 2004/07/01 10:18:32 nw Exp $
+ * $Id: AccessURLType.java,v 1.3 2004/07/09 09:35:54 nw Exp $
  */
 
 package org.astrogrid.registry.beans.resource;
@@ -25,7 +25,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class AccessURLType.
  * 
- * @version $Revision: 1.2 $ $Date: 2004/07/01 10:18:32 $
+ * @version $Revision: 1.3 $ $Date: 2004/07/09 09:35:54 $
  */
 public class AccessURLType extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

@@ -19,10 +19,101 @@
 				<xsd:element name="Credentials" type="agcred:Credentials" minOccurs="1" maxOccurs="1"/>
 				<xsd:element ref="er:job-execution-record" minOccurs="0" maxOccurs="1"/>
 			</xsd:all>
-			<xsd:attribute name="name" type="xsd:string" use="required">
-			</xsd:attribute>
+			<xsd:attribute name="name" type="xsd:string" use="required"/>
+			<xsd:attribute name="default-scripting-language" default="jython-2.1" type="xsd:string" use="optional" />			
+			<xsd:attribute name="id" use="optional" type="xsd:ID"/>							
 		</xsd:complexType>
 	</xsd:element>
+	
+	<!-- further workflow activty types -->
+	<xsd:element name="for" substitutionGroup="agwf:Activity">
+		<xsd:annotation>
+			<xsd:documentation>A for loop construct</xsd:documentation>
+		</xsd:annotation>
+			<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="agwf:AbstractActivity">
+					<xsd:sequence>
+						<xsd:element ref="agwf:Activity" minOccurs="0" maxOccurs="1"/>
+					</xsd:sequence>											
+				<xsd:attribute name="var" type="xsd:NCName" use="required"/>
+				<xsd:attribute name="range" type="xsd:string" use="required"/>					
+					<xsd:attribute name="scripting-language" default="jython-2.1" type="xsd:string" use="optional" />
+				</xsd:extension>
+			</xsd:complexContent>			
+			</xsd:complexType>
+	</xsd:element>
+	
+		<xsd:element name="while" substitutionGroup="agwf:Activity">
+		<xsd:annotation>
+			<xsd:documentation>A while loop construct</xsd:documentation>       
+		</xsd:annotation>				
+			<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="agwf:AbstractActivity">
+					<xsd:sequence>
+						<xsd:element ref="agwf:Activity" minOccurs="1" maxOccurs="1"/>
+					</xsd:sequence>				
+				<xsd:attribute name="test" type="xsd:string" use="required"/>
+					<xsd:attribute name="scripting-language" default="jython-2.1" type="xsd:string" use="optional" />				
+				</xsd:extension>
+			</xsd:complexContent>						
+			</xsd:complexType>
+	</xsd:element>
+	
+		<xsd:element name="parfor" substitutionGroup="agwf:Activity">
+		<xsd:annotation>
+			<xsd:documentation>A parallel-for loop construct</xsd:documentation>
+		</xsd:annotation>				
+			<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="agwf:AbstractActivity">
+					<xsd:sequence>
+						<xsd:element ref="agwf:Activity" minOccurs="1" maxOccurs="1"/>
+					</xsd:sequence>
+				<xsd:attribute name="var" type="xsd:NCName" use="required"/>
+				<xsd:attribute name="range" type="xsd:string" use="required"/>							
+					<xsd:attribute name="scripting-language" default="jython-2.1" type="xsd:string" use="optional" />				
+				</xsd:extension>
+			</xsd:complexContent>								
+			</xsd:complexType>
+	</xsd:element>
+	
+		<xsd:element name="if" substitutionGroup="agwf:Activity">
+		<xsd:annotation>
+			<xsd:documentation>An if statement</xsd:documentation>
+		</xsd:annotation>				
+			<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="agwf:AbstractActivity">
+					<xsd:sequence>
+						<xsd:element ref="agwf:then" minOccurs="0" maxOccurs="1"/>
+						<xsd:element ref="agwf:else" minOccurs="0" maxOccurs="1" />
+					</xsd:sequence>
+				<xsd:attribute name="test" type="xsd:string" use="required"/>
+				<xsd:attribute name="scripting-language" default="jython-2.1" type="xsd:string" use="optional" />								
+				</xsd:extension>
+			</xsd:complexContent>						
+			</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="then">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="agwf:Activity" minOccurs="1" maxOccurs="1" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="else">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="agwf:Activity" minOccurs="1" maxOccurs="1" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	
 	<xsd:element name="sequence" substitutionGroup="agwf:Activity" >
 		<xsd:annotation>
 			<xsd:documentation>a collection of activities to be performed sequentially</xsd:documentation>
@@ -61,6 +152,24 @@
 					<xsd:attribute name="joinCondition" use="optional" default="any" type="agwf:join-type"/>
 					<xsd:attribute name="stepNumber" type="xsd:int" use="optional"/>
 					<xsd:attribute name="sequenceNumber" type="xsd:int" use="optional"/>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="script" substitutionGroup="agwf:Activity">
+		<xsd:annotation>
+			<xsd:documentation>script text to be executed</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>			
+			<xsd:complexContent>
+				<xsd:extension base="agwf:AbstractActivity">
+					<xsd:sequence>
+						<xsd:element name="description" type="xsd:string" minOccurs="0"/>
+						<xsd:element name="body" type="xsd:string" minOccurs="1" />
+						<xsd:element ref="er:step-execution-record" minOccurs="0" maxOccurs="unbounded"/>
+					</xsd:sequence>
+					<xsd:attribute name="scripting-language" default="jython-2.1" type="xsd:string" use="optional" />
 				</xsd:extension>
 			</xsd:complexContent>
 		</xsd:complexType>
@@ -129,6 +238,7 @@
 		<xsd:annotation>
 			<xsd:documentation>The abstract base class of all activities that can be performed in a workflow</xsd:documentation>
 		</xsd:annotation>
+		<xsd:attribute name="id" use="optional" type="xsd:ID"/>
 	</xsd:complexType>
 	
 	<xsd:simpleType name="join-type">

@@ -1,4 +1,4 @@
-/*$Id: AbortJobTest.java,v 1.1 2004/04/08 14:47:12 nw Exp $
+/*$Id: AbortJobTest.java,v 1.2 2004/07/09 09:32:12 nw Exp $
  * Created on 08-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,7 +34,7 @@ public class AbortJobTest extends AbstractTestForSchedulerImpl {
      */
     protected void performTest(JobURN urn) throws Exception {
         // we know it already exists. 
-        js.abortJob(JesUtil.castor2axis(urn));
+        scheduler.abortJob(JesUtil.castor2axis(urn));
         Workflow wf = this.fac.findJob(urn);
         assertEquals(ExecutionPhase.ERROR,wf.getJobExecutionRecord().getStatus());
         MessageType[] messages = wf.getJobExecutionRecord().getMessage();
@@ -48,6 +48,10 @@ public class AbortJobTest extends AbstractTestForSchedulerImpl {
 
 /* 
 $Log: AbortJobTest.java,v $
+Revision 1.2  2004/07/09 09:32:12  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.1  2004/04/08 14:47:12  nw
 added delete and abort job functionality
  

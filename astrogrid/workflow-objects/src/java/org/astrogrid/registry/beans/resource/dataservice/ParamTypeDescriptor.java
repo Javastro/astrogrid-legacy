@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParamTypeDescriptor.java,v 1.2 2004/07/01 10:18:31 nw Exp $
+ * $Id: ParamTypeDescriptor.java,v 1.3 2004/07/09 09:35:53 nw Exp $
  */
 
 package org.astrogrid.registry.beans.resource.dataservice;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ParamTypeDescriptor.
  * 
- * @version $Revision: 1.2 $ $Date: 2004/07/01 10:18:31 $
+ * @version $Revision: 1.3 $ $Date: 2004/07/09 09:35:53 $
  */
 public class ParamTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

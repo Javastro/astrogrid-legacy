@@ -1,4 +1,4 @@
-/*$Id: ProductionComponentManagerTest.java,v 1.2 2004/03/07 21:04:38 nw Exp $
+/*$Id: ScriptDrivenComponentManagerTest.java,v 1.1 2004/07/09 09:32:12 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,31 +10,38 @@
 **/
 package org.astrogrid.jes.component;
 
-import org.astrogrid.jes.component.production.ProductionComponentManager;
+import org.astrogrid.config.Config;
+import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.jes.component.production.ScriptDrivenComponentManager;
+import org.astrogrid.jes.jobscheduler.impl.scripting.JarPathsFromConfig;
 
 import org.picocontainer.PicoException;
 
 import junit.framework.TestCase;
 
-/** Simplpe test to verify that production component manager registers a consistent set of components.
+/** Simplpe test to verify that script driven component manager registers a consistent set of components.
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Mar-2004
  *
  */
-public class ProductionComponentManagerTest extends TestCase {
+public class ScriptDrivenComponentManagerTest extends TestCase {
     /**
      * Constructor for ProductionComponentManagerTest.
      * @param arg0
      */
-    public ProductionComponentManagerTest(String arg0) {
+    public ScriptDrivenComponentManagerTest(String arg0) {
         super(arg0);
     }
     /*
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
-        cm = new ProductionComponentManager();
+        Config config= SimpleConfig.getSingleton();
+        config.setProperty(JarPathsFromConfig.JES_JAR_KEY,"dummy.jar");
+        config.setProperty(JarPathsFromConfig.LIB_JAR_KEY,"another-dummy.jar");
+        cm = new ScriptDrivenComponentManager(config);
+
     }
-    protected ComponentManager cm;
+    protected JesComponentManager cm;
     public void testVerify() {
         try {
             cm.getContainer().verify();
@@ -53,7 +60,11 @@ public class ProductionComponentManagerTest extends TestCase {
 
 
 /* 
-$Log: ProductionComponentManagerTest.java,v $
+$Log: ScriptDrivenComponentManagerTest.java,v $
+Revision 1.1  2004/07/09 09:32:12  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.2  2004/03/07 21:04:38  nw
 merged in nww-itn05-pico - adds picocontainer
 

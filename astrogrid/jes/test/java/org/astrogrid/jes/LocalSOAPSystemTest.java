@@ -1,4 +1,4 @@
-/*$Id: LocalSOAPSystemTest.java,v 1.3 2004/03/07 21:04:39 nw Exp $
+/*$Id: LocalSOAPSystemTest.java,v 1.4 2004/07/09 09:32:12 nw Exp $
  * Created on 01-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,8 @@
 **/
 package org.astrogrid.jes;
 
-import org.astrogrid.jes.component.ComponentManager;
-import org.astrogrid.jes.component.ComponentManagerFactory;
+import org.astrogrid.jes.component.JesComponentManager;
+import org.astrogrid.jes.component.JesComponentManagerFactory;
 import org.astrogrid.jes.delegate.impl.SOAPJobControllerTest;
 import org.astrogrid.jes.delegate.impl.SOAPJobMonitorTest;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
@@ -67,8 +67,8 @@ public class LocalSOAPSystemTest extends InMemorySystemTest {
         SOAPJobMonitorTest.deployLocalMonitor();
         
         // create store
-        ComponentManager cm = new SOAPTestComponentManager();        
-        ComponentManagerFactory._setInstance(cm);
+        JesComponentManager cm = new SOAPTestComponentManager();        
+        JesComponentManagerFactory._setInstance(cm);
         
         WAIT_SECONDS = 20;
     }
@@ -82,6 +82,10 @@ public class LocalSOAPSystemTest extends InMemorySystemTest {
 
 /* 
 $Log: LocalSOAPSystemTest.java,v $
+Revision 1.4  2004/07/09 09:32:12  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.3  2004/03/07 21:04:39  nw
 merged in nww-itn05-pico - adds picocontainer
 

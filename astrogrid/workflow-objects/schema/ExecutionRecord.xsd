@@ -20,6 +20,19 @@
 				</xsd:complexContent>
 			</xsd:complexType>
 		</xsd:element>
+		
+		<xsd:element name="extension">
+			<xsd:annotation>
+				<xsd:documentation>A string 'buffer' for holding further information, keyed by attribute - so execution record becomes a map.</xsd:documentation>
+			</xsd:annotation>
+			<xsd:complexType>
+				<xsd:simpleContent>
+					<xsd:extension base="xsd:string" >
+						<xsd:attribute name="key" type="xsd:string" use="required" />					
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+		</xsd:element>
   			
 		<xsd:element name="step-execution-record">
 				<xsd:annotation>
@@ -35,6 +48,7 @@
 
 		<xsd:complexType  name="execution-record-type">
 			<xsd:sequence>
+				<xsd:element ref="er:extension" minOccurs="0" maxOccurs="unbounded" />
 				<xsd:element ref="ceat:message" minOccurs="0" maxOccurs="unbounded"/>
 			</xsd:sequence>
 			<xsd:attribute name="startTime" type="xsd:dateTime" use="optional"/>

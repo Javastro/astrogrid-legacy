@@ -1,4 +1,4 @@
-/*$Id: ResumeJobSuccessTest.java,v 1.2 2004/03/17 17:20:42 nw Exp $
+/*$Id: ResumeJobSuccessTest.java,v 1.3 2004/07/09 09:32:12 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,25 +55,25 @@ public class ResumeJobSuccessTest extends AbstractTestForSchedulerImpl {
         MessageType info = new MessageType();      
         info.setContent("initializing");
         info.setPhase(org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase.INITIALIZING);       
-        js.resumeJob(id,info);
+        scheduler.resumeJob(id,info);
         
         // now a running message
         info = new MessageType();
         info.setContent("running ok");
         info.setPhase(org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase.RUNNING);
-        js.resumeJob(id,info);
+        scheduler.resumeJob(id,info);
         
         // now a completed message
         info = new MessageType();
         info.setContent("completed");
         info.setPhase(org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase.COMPLETED);
-        js.resumeJob(id,info);                    
+        scheduler.resumeJob(id,info);                    
         
         // now, say the appcon we're talking to is buggy and doen't follow protocol - what happens
         info = new MessageType();
         info.setContent("running again");
         info.setPhase(org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase.RUNNING);          
-        js.resumeJob(id,info);
+        scheduler.resumeJob(id,info);
         
         //now check behaviour is as expected.
         //as we're using in-memory job store, changes happen to objects directly.
@@ -92,6 +92,10 @@ public class ResumeJobSuccessTest extends AbstractTestForSchedulerImpl {
 
 /* 
 $Log: ResumeJobSuccessTest.java,v $
+Revision 1.3  2004/07/09 09:32:12  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.2  2004/03/17 17:20:42  nw
 extended test to simulate multiple messages being returned by app con
 

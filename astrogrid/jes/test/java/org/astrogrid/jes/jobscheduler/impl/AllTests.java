@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2004/04/08 14:47:12 nw Exp $
+/*$Id: AllTests.java,v 1.3 2004/07/09 09:32:12 nw Exp $
  * Created on 15-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,18 +22,22 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("Test for org.astrogrid.jes.jobscheduler.impl");
         //$JUnit-BEGIN$
+        suite.addTest(new TestSuite(AbortJobTest.class));
+        suite.addTest(new TestSuite(DeleteJobTest.class));
         suite.addTest(new TestSuite(ResumeJobSuccessTest.class));
         suite.addTest(new TestSuite(SchedulerTaskQueueDecoratorTest.class));
         suite.addTest(new TestSuite(SubmitNewJobNotifierFailsTest.class));
         suite.addTest(new TestSuite(SubmitNewJobSuccessTest.class));
-        suite.addTest(new TestSuite(DeleteJobTest.class));
-        suite.addTest(new TestSuite(AbortJobTest.class));
         //$JUnit-END$
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.3  2004/07/09 09:32:12  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.2  2004/04/08 14:47:12  nw
 added delete and abort job functionality
 

@@ -1,4 +1,4 @@
-/*$Id: SOAPJobControllerTest.java,v 1.4 2004/03/15 00:06:57 nw Exp $
+/*$Id: SOAPJobControllerTest.java,v 1.5 2004/07/09 09:32:12 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,8 @@
 package org.astrogrid.jes.delegate.impl;
 
 import org.astrogrid.community.beans.v1.Account;
-import org.astrogrid.jes.component.ComponentManager;
-import org.astrogrid.jes.component.ComponentManagerFactory;
+import org.astrogrid.jes.component.JesComponentManager;
+import org.astrogrid.jes.component.JesComponentManagerFactory;
 import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.jes.delegate.JobController;
@@ -66,9 +66,9 @@ public class SOAPJobControllerTest extends AbstractTestForSOAPService {
         }
         // create test fixture, once
         protected void setUp() throws Exception{   
-            ComponentManager cm = new TestComponentManager(new Mutex());        
-            ComponentManagerFactory._setInstance(cm);
-            assertTrue(ComponentManagerFactory.getInstance().getNotifier() instanceof MyMockJobScheduler); 
+            JesComponentManager cm = new TestComponentManager(new Mutex());        
+            JesComponentManagerFactory._setInstance(cm);
+            assertTrue(JesComponentManagerFactory.getInstance().getScheduler() instanceof MyMockJobScheduler); 
             deployLocalController();
         }
     }
@@ -138,7 +138,7 @@ public class SOAPJobControllerTest extends AbstractTestForSOAPService {
      public void testReadJob() throws Exception{
          System.out.println("in test read job");
          assertNotNull(storedURN);
-         JobFactory fac = ComponentManagerFactory.getInstance().getFacade().getJobFactory();
+         JobFactory fac = (JobFactory)JesComponentManagerFactory.getInstance().getContainer().getComponentInstanceOfType(JobFactory.class);
          Workflow sanityCheck = fac.findJob(storedURN);
          assertNotNull(sanityCheck);
          
@@ -177,6 +177,10 @@ public class SOAPJobControllerTest extends AbstractTestForSOAPService {
 
 /* 
 $Log: SOAPJobControllerTest.java,v $
+Revision 1.5  2004/07/09 09:32:12  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.4  2004/03/15 00:06:57  nw
 removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
 

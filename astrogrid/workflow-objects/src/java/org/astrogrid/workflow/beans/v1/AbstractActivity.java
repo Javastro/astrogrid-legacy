@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: AbstractActivity.java,v 1.18 2004/07/01 10:18:32 nw Exp $
+ * $Id: AbstractActivity.java,v 1.19 2004/07/09 09:35:54 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -25,11 +25,21 @@ import org.xml.sax.ContentHandler;
  * The abstract base class of all activities that can be performed
  * in a workflow
  * 
- * @version $Revision: 1.18 $ $Date: 2004/07/01 10:18:32 $
+ * @version $Revision: 1.19 $ $Date: 2004/07/09 09:35:54 $
  */
 public class AbstractActivity extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
 {
+
+
+      //--------------------------/
+     //- Class/Member Variables -/
+    //--------------------------/
+
+    /**
+     * Field _id
+     */
+    private java.lang.String _id;
 
 
       //----------------/
@@ -61,10 +71,27 @@ implements java.io.Serializable
         if (obj instanceof AbstractActivity) {
         
             AbstractActivity temp = (AbstractActivity)obj;
+            if (this._id != null) {
+                if (temp._id == null) return false;
+                else if (!(this._id.equals(temp._id))) 
+                    return false;
+            }
+            else if (temp._id != null)
+                return false;
             return true;
         }
         return false;
     } //-- boolean equals(java.lang.Object) 
+
+    /**
+     * Returns the value of field 'id'.
+     * 
+     * @return the value of field 'id'.
+     */
+    public java.lang.String getId()
+    {
+        return this._id;
+    } //-- java.lang.String getId() 
 
     /**
      * Method isValid
@@ -103,6 +130,16 @@ implements java.io.Serializable
         
         Marshaller.marshal(this, handler);
     } //-- void marshal(org.xml.sax.ContentHandler) 
+
+    /**
+     * Sets the value of field 'id'.
+     * 
+     * @param id the value of field 'id'.
+     */
+    public void setId(java.lang.String id)
+    {
+        this._id = id;
+    } //-- void setId(java.lang.String) 
 
     /**
      * Method unmarshalAbstractActivity

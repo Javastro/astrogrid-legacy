@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForJobController.java,v 1.7 2004/07/01 21:15:00 nw Exp $
+/*$Id: AbstractTestForJobController.java,v 1.8 2004/07/09 09:32:12 nw Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,17 +13,16 @@ package org.astrogrid.jes.jobcontroller;
 import org.astrogrid.common.bean.Axis2Castor;
 import org.astrogrid.jes.AbstractTestWorkflowInputs;
 import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
-import org.astrogrid.jes.impl.workflow.CastorBeanFacade;
 import org.astrogrid.jes.impl.workflow.InMemoryJobFactoryImpl;
-import org.astrogrid.jes.job.BeanFacade;
-import org.astrogrid.jes.job.SubmitJobRequest;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.impl.MockSchedulerImpl;
 import org.astrogrid.jes.testutils.io.FileResourceLoader;
+import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**Abstract base class for testing the job controller - handles the donkey work of feeding the controller jobs.
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Feb-2004
@@ -41,9 +40,8 @@ public abstract class AbstractTestForJobController extends AbstractTestWorkflowI
     protected void setUp() throws Exception {
         super.setUp();
         fac = createJobFactory();
-        facade = createFacade(fac);
         nudger = createNotifier();
-        jc = new JobController(facade,nudger);
+        jc = new JobController(fac,nudger);
     }
     
     /**
@@ -54,14 +52,7 @@ public abstract class AbstractTestForJobController extends AbstractTestWorkflowI
     }
 
 
-    /**
-     * @param fac
-     * @return
-     */
-    protected BeanFacade createFacade(AbstractJobFactoryImpl fac) {
-        return new CastorBeanFacade(fac);
-    }
-
+ 
 
     /**
      * @return
@@ -78,7 +69,6 @@ public abstract class AbstractTestForJobController extends AbstractTestWorkflowI
     protected AbstractJobFactoryImpl fac;
 
 
-    protected BeanFacade facade;
 
 
     protected JobScheduler nudger;
@@ -99,10 +89,8 @@ public abstract class AbstractTestForJobController extends AbstractTestWorkflowI
     protected Exception seenException; 
     /** helper method to submit a job */
     protected JobURN submitJob(InputStream is) throws Exception {
-        String workflowXML = FileResourceLoader.streamToString(is);
-        SubmitJobRequest req = facade.createSubmitJobRequest(workflowXML);
-        assertNotNull(req);
-        try {
+        Workflow req = Workflow.unmarshalWorkflow(new InputStreamReader(is));
+        try {            
             return Axis2Castor.convert(jc.submitJob(req));
         } catch (IOException e) {
             seenException = e;
@@ -114,6 +102,10 @@ public abstract class AbstractTestForJobController extends AbstractTestWorkflowI
 
 /* 
 $Log: AbstractTestForJobController.java,v $
+Revision 1.8  2004/07/09 09:32:12  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.7  2004/07/01 21:15:00  nw
 added results-listener interface to jes
 

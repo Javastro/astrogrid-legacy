@@ -1,4 +1,4 @@
-/*$Id: DeleteJobTest.java,v 1.2 2004/07/01 21:15:00 nw Exp $
+/*$Id: DeleteJobTest.java,v 1.3 2004/07/09 09:32:12 nw Exp $
  * Created on 08-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,7 @@ public class DeleteJobTest extends AbstractTestForSchedulerImpl {
      */
     protected void performTest(JobURN urn) throws Exception {
         // we know it already exists. 
-        js.deleteJob(JesUtil.castor2axis(urn));
+        scheduler.deleteJob(JesUtil.castor2axis(urn));
         try {
             this.fac.findJob(urn);
             fail("expected not to reach this");
@@ -45,6 +45,10 @@ public class DeleteJobTest extends AbstractTestForSchedulerImpl {
 
 /* 
 $Log: DeleteJobTest.java,v $
+Revision 1.3  2004/07/09 09:32:12  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.2  2004/07/01 21:15:00  nw
 added results-listener interface to jes
 

@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForSOAPService.java,v 1.5 2004/03/15 00:32:01 nw Exp $
+/*$Id: AbstractTestForSOAPService.java,v 1.6 2004/07/09 09:32:12 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.jes.delegate.impl;
 
-import org.astrogrid.jes.component.BasicComponentManager;
+import org.astrogrid.jes.component.BasicJesComponentManager;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
@@ -39,7 +39,7 @@ public class AbstractTestForSOAPService extends TestCase {
     
     
     /** subclass of componenent manager to configure local service to use a mock.. */
-    protected static  class TestComponentManager extends BasicComponentManager {
+    protected static  class TestComponentManager extends BasicJesComponentManager {
         public TestComponentManager(Sync barrier) {
             super();    
             MutablePicoContainer pico = super.getContainer();
@@ -80,6 +80,10 @@ public class AbstractTestForSOAPService extends TestCase {
 
 /* 
 $Log: AbstractTestForSOAPService.java,v $
+Revision 1.6  2004/07/09 09:32:12  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.5  2004/03/15 00:32:01  nw
 merged contents of comm package into jobscheduler package.
 

@@ -1,4 +1,4 @@
-/*$Id: SOAPJobMonitorTest.java,v 1.5 2004/03/15 00:32:01 nw Exp $
+/*$Id: SOAPJobMonitorTest.java,v 1.6 2004/07/09 09:32:12 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,8 @@
 **/
 package org.astrogrid.jes.delegate.impl;
 
-import org.astrogrid.jes.component.ComponentManager;
-import org.astrogrid.jes.component.ComponentManagerFactory;
+import org.astrogrid.jes.component.JesComponentManager;
+import org.astrogrid.jes.component.JesComponentManagerFactory;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.jes.delegate.JobMonitor;
 import org.astrogrid.jes.jobscheduler.impl.MockSchedulerImpl;
@@ -50,9 +50,9 @@ public class SOAPJobMonitorTest extends AbstractTestForSOAPService {
      */
     protected void setUp() throws Exception {
         barrier = new Mutex();
-        ComponentManager cm = new TestComponentManager(barrier);        
-        ComponentManagerFactory._setInstance(cm);
-        assertTrue(ComponentManagerFactory.getInstance().getNotifier() instanceof MyMockJobScheduler);
+        JesComponentManager cm = new TestComponentManager(barrier);        
+        JesComponentManagerFactory._setInstance(cm);
+        assertTrue(JesComponentManagerFactory.getInstance().getScheduler() instanceof MyMockJobScheduler);
        deployLocalMonitor();
        delegate = JesDelegateFactory.createJobMonitor(MONITOR_ENDPOINT);
        assertNotNull(delegate);
@@ -73,7 +73,7 @@ public class SOAPJobMonitorTest extends AbstractTestForSOAPService {
     public void testEmptyData() throws Exception {
         delegate.monitorJob(id,info);
         assertTrue("notification times out",barrier.attempt(Sync.ONE_SECOND * 10));
-        MockSchedulerImpl noti = (MockSchedulerImpl)ComponentManagerFactory.getInstance().getNotifier();
+        MockSchedulerImpl noti = (MockSchedulerImpl)JesComponentManagerFactory.getInstance().getScheduler();
         assertEquals(1,noti.getCallCount());
     }
     
@@ -105,6 +105,10 @@ public class SOAPJobMonitorTest extends AbstractTestForSOAPService {
 
 /* 
 $Log: SOAPJobMonitorTest.java,v $
+Revision 1.6  2004/07/09 09:32:12  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.5  2004/03/15 00:32:01  nw
 merged contents of comm package into jobscheduler package.
 

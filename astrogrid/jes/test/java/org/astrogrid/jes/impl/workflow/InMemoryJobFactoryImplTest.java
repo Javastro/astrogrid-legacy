@@ -1,4 +1,4 @@
-/*$Id: InMemoryJobFactoryImplTest.java,v 1.4 2004/03/04 01:57:35 nw Exp $
+/*$Id: InMemoryJobFactoryImplTest.java,v 1.5 2004/07/09 09:32:12 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,11 +15,11 @@ import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.jes.AbstractTestWorkflowInputs;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.job.NotFoundException;
-import org.astrogrid.jes.job.SubmitJobRequest;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Iterator;
 
 import junit.extensions.TestSetup;
@@ -79,10 +79,8 @@ public class InMemoryJobFactoryImplTest extends AbstractTestWorkflowInputs {
      * @see org.astrogrid.jes.impl.workflow.WorkflowInputs#testIt(java.io.InputStream, int)
      */
     protected void testIt(InputStream is, int resourceNum) throws Exception {
-        SubmitJobRequest req = new SubmitJobRequestImpl(is);
-        assertNotNull(req);
         // create job
-        Workflow j = jf.createJob(req);
+        Workflow j = jf.initializeJob(Workflow.unmarshalWorkflow(new InputStreamReader(is)));
         assertNotNull(j);
         JobURN jobURN = j.getJobExecutionRecord().getJobId();
         lastURN = jobURN;
@@ -169,6 +167,10 @@ public class InMemoryJobFactoryImplTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemoryJobFactoryImplTest.java,v $
+Revision 1.5  2004/07/09 09:32:12  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.4  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

@@ -1,4 +1,4 @@
-/*$Id: InMemorySystemTest.java,v 1.17 2004/07/01 21:15:00 nw Exp $
+/*$Id: InMemorySystemTest.java,v 1.18 2004/07/09 09:32:12 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,11 +12,10 @@ package org.astrogrid.jes;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.common.bean.Axis2Castor;
-import org.astrogrid.jes.component.BasicComponentManager;
-import org.astrogrid.jes.component.ComponentManager;
-import org.astrogrid.jes.component.ComponentManagerFactory;
+import org.astrogrid.jes.component.BasicJesComponentManager;
+import org.astrogrid.jes.component.JesComponentManager;
+import org.astrogrid.jes.component.JesComponentManagerFactory;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
-import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.Policy;
@@ -70,7 +69,7 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
         super(arg);
     }
     
-    protected class TestComponentManager extends BasicComponentManager {
+    protected class TestComponentManager extends BasicJesComponentManager {
         public TestComponentManager() {
             super();    
             MutablePicoContainer pico = super.getContainer();
@@ -99,14 +98,14 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
     
     protected void setUp() throws Exception {
         super.setUp();
-        ComponentManager cm = new TestComponentManager();        
-        ComponentManagerFactory._setInstance(cm);
+        JesComponentManager cm = new TestComponentManager();        
+        JesComponentManagerFactory._setInstance(cm);
     }
         
     protected static int WAIT_SECONDS = 5;
     
     protected JobController getController() throws Exception{
-        return ComponentManagerFactory.getInstance().getController();
+        return JesComponentManagerFactory.getInstance().getController();
     }
     
 
@@ -121,7 +120,7 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
         JobURN urn = getController().submitWorkflow(new WorkflowString(docString));
         assertNotNull(urn);
 
-        JobFactory fac = ComponentManagerFactory.getInstance().getFacade().getJobFactory();        
+        JobFactory fac = (JobFactory)JesComponentManagerFactory.getInstance().getContainer().getComponentInstanceOfType(JobFactory.class);       
         // now wait for notification that the system has finished processing.
         try {
         barrier.attemptBarrier(Sync.ONE_SECOND * WAIT_SECONDS);
@@ -170,8 +169,8 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
          * @param dispatcher
          * @param policy
          */
-        public ObservableJobScheduler(BeanFacade facade, Dispatcher dispatcher, Policy policy,CyclicBarrier barrier){
-            super(facade, dispatcher, policy);
+        public ObservableJobScheduler(JobFactory factory, Dispatcher dispatcher, Policy policy,CyclicBarrier barrier){
+            super(factory, dispatcher, policy);
             this.barrier = barrier;
 
         }
@@ -194,6 +193,10 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemorySystemTest.java,v $
+Revision 1.18  2004/07/09 09:32:12  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.17  2004/07/01 21:15:00  nw
 added results-listener interface to jes
 

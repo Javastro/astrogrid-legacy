@@ -1,4 +1,4 @@
-/*$Id: BasicComponentManagerTest.java,v 1.3 2004/03/15 00:06:57 nw Exp $
+/*$Id: BasicComponentManagerTest.java,v 1.4 2004/07/09 09:32:12 nw Exp $
  * Created on 27-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,10 +29,10 @@ public class BasicComponentManagerTest extends TestCase {
     }
     
     protected void setUp() throws Exception {
-        cm = new BasicComponentManager();
+        cm = new BasicJesComponentManager();
     }
     
-    protected ComponentManager cm;
+    protected JesComponentManager cm;
 
     /** verify container is consistent */
     public void testVerify() {
@@ -43,10 +43,7 @@ public class BasicComponentManagerTest extends TestCase {
         }
     }
 
-    public void testGetFacade() {
-        assertNotNull(cm.getFacade());
-    }
-    
+
     public void testGetContainer() {
         assertNotNull(cm.getContainer());
     }
@@ -60,7 +57,7 @@ public class BasicComponentManagerTest extends TestCase {
     }
     
     public void testGetNotifier() {
-        assertNotNull(cm.getNotifier());
+        assertNotNull(cm.getScheduler());
     }
 
     
@@ -79,6 +76,10 @@ public class BasicComponentManagerTest extends TestCase {
 
 /* 
 $Log: BasicComponentManagerTest.java,v $
+Revision 1.4  2004/07/09 09:32:12  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.3  2004/03/15 00:06:57  nw
 removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
 

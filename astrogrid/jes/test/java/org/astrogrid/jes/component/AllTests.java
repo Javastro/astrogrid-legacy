@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2004/03/07 21:04:38 nw Exp $
+/*$Id: AllTests.java,v 1.3 2004/07/09 09:32:12 nw Exp $
  * Created on 27-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,13 +23,18 @@ public class AllTests {
         TestSuite suite = new TestSuite("Test for org.astrogrid.jes.component");
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(BasicComponentManagerTest.class));
-        suite.addTest(new TestSuite(ProductionComponentManagerTest.class));
+        suite.addTest(new TestSuite(PolicyDrivenComponentManagerTest.class));
+        suite.addTest(new TestSuite(ScriptDrivenComponentManagerTest.class));
         //$JUnit-END$
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.3  2004/07/09 09:32:12  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.2  2004/03/07 21:04:38  nw
 merged in nww-itn05-pico - adds picocontainer
 

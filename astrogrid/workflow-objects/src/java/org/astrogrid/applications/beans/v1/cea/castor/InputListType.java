@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: InputListType.java,v 1.1 2004/07/01 10:18:31 nw Exp $
+ * $Id: InputListType.java,v 1.2 2004/07/09 09:35:53 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1.cea.castor;
@@ -27,7 +27,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class InputListType.
  * 
- * @version $Revision: 1.1 $ $Date: 2004/07/01 10:18:31 $
+ * @version $Revision: 1.2 $ $Date: 2004/07/09 09:35:53 $
  */
 public class InputListType extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Workflow.java,v 1.24 2004/07/01 10:18:32 nw Exp $
+ * $Id: Workflow.java,v 1.25 2004/07/09 09:35:53 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -29,7 +29,7 @@ import org.xml.sax.ContentHandler;
  * http://www.astrogrid.org/schema/AGWorkflow/v1
  *  
  * 
- * @version $Revision: 1.24 $ $Date: 2004/07/01 10:18:32 $
+ * @version $Revision: 1.25 $ $Date: 2004/07/09 09:35:53 $
  */
 public class Workflow extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -44,6 +44,16 @@ implements java.io.Serializable
      * Field _name
      */
     private java.lang.String _name;
+
+    /**
+     * Field _defaultScriptingLanguage
+     */
+    private java.lang.String _defaultScriptingLanguage = "jython-2.1";
+
+    /**
+     * Field _id
+     */
+    private java.lang.String _id;
 
     /**
      * a collection of activities to be performed sequentially
@@ -72,6 +82,7 @@ implements java.io.Serializable
 
     public Workflow() {
         super();
+        setDefaultScriptingLanguage("jython-2.1");
     } //-- org.astrogrid.workflow.beans.v1.Workflow()
 
 
@@ -101,6 +112,20 @@ implements java.io.Serializable
                     return false;
             }
             else if (temp._name != null)
+                return false;
+            if (this._defaultScriptingLanguage != null) {
+                if (temp._defaultScriptingLanguage == null) return false;
+                else if (!(this._defaultScriptingLanguage.equals(temp._defaultScriptingLanguage))) 
+                    return false;
+            }
+            else if (temp._defaultScriptingLanguage != null)
+                return false;
+            if (this._id != null) {
+                if (temp._id == null) return false;
+                else if (!(this._id.equals(temp._id))) 
+                    return false;
+            }
+            else if (temp._id != null)
                 return false;
             if (this._sequence != null) {
                 if (temp._sequence == null) return false;
@@ -146,6 +171,16 @@ implements java.io.Serializable
     } //-- org.astrogrid.community.beans.v1.Credentials getCredentials() 
 
     /**
+     * Returns the value of field 'defaultScriptingLanguage'.
+     * 
+     * @return the value of field 'defaultScriptingLanguage'.
+     */
+    public java.lang.String getDefaultScriptingLanguage()
+    {
+        return this._defaultScriptingLanguage;
+    } //-- java.lang.String getDefaultScriptingLanguage() 
+
+    /**
      * Returns the value of field 'description'.
      * 
      * @return the value of field 'description'.
@@ -154,6 +189,16 @@ implements java.io.Serializable
     {
         return this._description;
     } //-- java.lang.String getDescription() 
+
+    /**
+     * Returns the value of field 'id'.
+     * 
+     * @return the value of field 'id'.
+     */
+    public java.lang.String getId()
+    {
+        return this._id;
+    } //-- java.lang.String getId() 
 
     /**
      * Returns the value of field 'jobExecutionRecord'. The field
@@ -238,6 +283,17 @@ implements java.io.Serializable
     } //-- void setCredentials(org.astrogrid.community.beans.v1.Credentials) 
 
     /**
+     * Sets the value of field 'defaultScriptingLanguage'.
+     * 
+     * @param defaultScriptingLanguage the value of field
+     * 'defaultScriptingLanguage'.
+     */
+    public void setDefaultScriptingLanguage(java.lang.String defaultScriptingLanguage)
+    {
+        this._defaultScriptingLanguage = defaultScriptingLanguage;
+    } //-- void setDefaultScriptingLanguage(java.lang.String) 
+
+    /**
      * Sets the value of field 'description'.
      * 
      * @param description the value of field 'description'.
@@ -246,6 +302,16 @@ implements java.io.Serializable
     {
         this._description = description;
     } //-- void setDescription(java.lang.String) 
+
+    /**
+     * Sets the value of field 'id'.
+     * 
+     * @param id the value of field 'id'.
+     */
+    public void setId(java.lang.String id)
+    {
+        this._id = id;
+    } //-- void setId(java.lang.String) 
 
     /**
      * Sets the value of field 'jobExecutionRecord'. The field

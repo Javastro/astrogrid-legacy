@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.5 2004/07/01 21:15:00 nw Exp $
+/*$Id: AllTests.java,v 1.6 2004/07/09 09:32:12 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,12 +26,17 @@ public class AllTests {
         suite.addTest(org.astrogrid.jes.jobscheduler.locator.AllTests.suite());
         suite.addTest(org.astrogrid.jes.jobscheduler.dispatcher.AllTests.suite());
         suite.addTest(org.astrogrid.jes.jobscheduler.impl.AllTests.suite());
+        suite.addTest(org.astrogrid.jes.jobscheduler.impl.scripting.AllTests.suite());
         suite.addTest(org.astrogrid.jes.jobscheduler.policy.AllTests.suite());
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.6  2004/07/09 09:32:12  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.5  2004/07/01 21:15:00  nw
 added results-listener interface to jes
 

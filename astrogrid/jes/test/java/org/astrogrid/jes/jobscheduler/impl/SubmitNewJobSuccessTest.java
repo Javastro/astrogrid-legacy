@@ -1,4 +1,4 @@
-/*$Id: SubmitNewJobSuccessTest.java,v 1.1 2004/03/15 00:32:01 nw Exp $
+/*$Id: SubmitNewJobSuccessTest.java,v 1.2 2004/07/09 09:32:12 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,7 +35,7 @@ public class SubmitNewJobSuccessTest extends AbstractTestForSchedulerImpl {
 
         assertNotNull(urn);
         // could take copy of job here from store (need to clone, as using in-memory store). then compare it to result after scheduling.
-        js.scheduleNewJob(JesUtil.castor2axis(urn));
+        scheduler.scheduleNewJob(JesUtil.castor2axis(urn));
         //now check behaviour is as expected.
         // should have dispatched something - should be all steps.
         //
@@ -54,6 +54,10 @@ public class SubmitNewJobSuccessTest extends AbstractTestForSchedulerImpl {
 
 /* 
 $Log: SubmitNewJobSuccessTest.java,v $
+Revision 1.2  2004/07/09 09:32:12  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.1  2004/03/15 00:32:01  nw
 merged contents of comm package into jobscheduler package.
 

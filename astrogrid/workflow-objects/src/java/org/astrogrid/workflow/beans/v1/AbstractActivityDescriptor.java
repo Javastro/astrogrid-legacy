@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: AbstractActivityDescriptor.java,v 1.18 2004/07/01 10:18:32 nw Exp $
+ * $Id: AbstractActivityDescriptor.java,v 1.19 2004/07/09 09:35:54 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class AbstractActivityDescriptor.
  * 
- * @version $Revision: 1.18 $ $Date: 2004/07/01 10:18:32 $
+ * @version $Revision: 1.19 $ $Date: 2004/07/09 09:35:54 $
  */
 public class AbstractActivityDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -57,6 +57,46 @@ public class AbstractActivityDescriptor extends org.exolab.castor.xml.util.XMLCl
         super();
         nsURI = "http://www.astrogrid.org/schema/AGWorkflow/v1";
         xmlName = "AbstractActivity";
+        org.exolab.castor.xml.util.XMLFieldDescriptorImpl  desc           = null;
+        org.exolab.castor.xml.XMLFieldHandler              handler        = null;
+        org.exolab.castor.xml.FieldValidator               fieldValidator = null;
+        //-- initialize attribute descriptors
+        
+        //-- _id
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_id", "id", org.exolab.castor.xml.NodeType.Attribute);
+        this.identity = desc;
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                AbstractActivity target = (AbstractActivity) object;
+                return target.getId();
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    AbstractActivity target = (AbstractActivity) object;
+                    target.setId( (java.lang.String) value);
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return new java.lang.String();
+            }
+        } );
+        desc.setHandler(handler);
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _id
+        fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        { //-- local scope
+        }
+        desc.setValidator(fieldValidator);
+        //-- initialize element descriptors
+        
     } //-- org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor()
 
 

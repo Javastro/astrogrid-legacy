@@ -2,7 +2,7 @@
 <workflow
   xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1"  
 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-intance"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  name="testWorkflow1">
    
   <sequence>

@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForSchedulerImpl.java,v 1.1 2004/03/15 00:32:01 nw Exp $
+/*$Id: AbstractTestForSchedulerImpl.java,v 1.2 2004/07/09 09:32:12 nw Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,7 +35,7 @@ public abstract class AbstractTestForSchedulerImpl extends AbstractTestForJobCon
         super.setUp();
         dispatcher = createDispatcher();
         policy = createPolicy();
-        js = new SchedulerImpl(facade,dispatcher,policy);
+        scheduler = createScheduler();
         
     }
     
@@ -47,9 +47,13 @@ public abstract class AbstractTestForSchedulerImpl extends AbstractTestForJobCon
         return new MockDispatcher();
     }
     
+    protected AbstractJobSchedulerImpl createScheduler() throws Exception {
+        return new SchedulerImpl(fac,dispatcher,policy);
+    }
+    
     protected Policy policy;
     protected Dispatcher dispatcher;
-    protected SchedulerImpl js;
+    protected AbstractJobSchedulerImpl scheduler;
     
 
 }
@@ -57,6 +61,13 @@ public abstract class AbstractTestForSchedulerImpl extends AbstractTestForJobCon
 
 /* 
 $Log: AbstractTestForSchedulerImpl.java,v $
+Revision 1.2  2004/07/09 09:32:12  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
+Revision 1.1.8.1  2004/05/21 11:25:42  nw
+first checkin of prototype scrpting workflow interpreter
+
 Revision 1.1  2004/03/15 00:32:01  nw
 merged contents of comm package into jobscheduler package.
 
