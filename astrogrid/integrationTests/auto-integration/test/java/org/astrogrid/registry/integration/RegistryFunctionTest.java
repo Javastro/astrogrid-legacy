@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryFunctionTest.java,v 1.1 2004/05/07 15:32:36 pah Exp $
+ * $Id: RegistryFunctionTest.java,v 1.2 2004/06/22 13:08:23 pah Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -19,6 +19,7 @@ import java.net.URL;
 import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.beans.resource.VODescription;
@@ -70,6 +71,13 @@ public class RegistryFunctionTest extends RegistryBaseTestCase {
       
       
 
+   }
+   public void testRetrieve() throws RegistryException, URISyntaxException
+   {
+      Document doc = delegate.getResourceByIdentifierDOM(new Ivorn("ivo://"+AUTHORITY_ID+"/"+"SExtractor"));
+      assertNotNull("failed to retrieve a known registry entry",doc);
+      NodeList nodelst = doc.getDocumentElement().getChildNodes();
+      assertEquals("There should only be one entry returned for getResourceByIdentifierDOM",1, nodelst.getLength());
    }
    //TODO need tests for the other types of
 
