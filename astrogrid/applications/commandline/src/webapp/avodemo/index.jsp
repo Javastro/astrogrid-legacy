@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>AVO Demo - Photometric redshift determination</title>
-<link href="http://vm06.astrogrid.org:8080/astrogrid-portal/test/portal.css" rel="stylesheet" type="text/css" />
+<!--<link href="http://vm06.astrogrid.org:8080/astrogrid-portal/test/portal.css" rel="stylesheet" type="text/css" /> -->
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 </head>
 <body>
