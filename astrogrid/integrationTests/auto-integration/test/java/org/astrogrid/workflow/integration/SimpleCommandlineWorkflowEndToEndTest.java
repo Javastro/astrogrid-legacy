@@ -1,4 +1,4 @@
-/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.5 2004/04/25 21:10:11 pah Exp $
+/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.6 2004/04/25 21:26:47 pah Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,8 +40,8 @@ import junit.framework.TestSuite;
  *
  */
 public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegration {
-    private static final String INFILENAME = "/tmp/in";
-   private static final String OUTFILENAME = "/tmp/out";
+    private  String INFILENAME = "/tmp/in";
+   private  String OUTFILENAME = "/tmp/out";
    private File infile;
     private File outfile;
     protected final String TESTCONTENTS = "workflow test contents";
@@ -61,14 +61,6 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
         jes = manager.getJobExecutionService();
         reg = manager.getToolRegistry();
         targetApplication = TESTAPP2;
-        outfile = new File(OUTFILENAME);
-        assertNotNull(outfile);
-        infile = new File(INFILENAME);
-        assertNotNull(infile);
-        PrintWriter pw = new PrintWriter(new FileOutputStream(infile));
-        assertNotNull(pw);
-        pw.println(TESTCONTENTS);
-        pw.close();
         
         
         
@@ -87,6 +79,18 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
 
 
     public void testSubmitWorkflow() throws Exception {
+       outfile = File.createTempFile("scworkout", ".tmp");
+       assertNotNull(outfile);
+       OUTFILENAME = outfile.getAbsolutePath();
+       System.out.println("output file is "+OUTFILENAME);
+       infile =File.createTempFile("scworkin", ".tmp");
+       assertNotNull(infile);
+       INFILENAME = infile.getAbsolutePath();
+       PrintWriter pw = new PrintWriter(new FileOutputStream(infile));
+       assertNotNull(pw);
+       pw.println(TESTCONTENTS);
+       pw.close();
+
         buildWorkflow();
         assertTrue("workflow is not valid",wf.isValid());
         urn = jes.submitWorkflow(wf);
@@ -190,6 +194,9 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
 
 /* 
 $Log: SimpleCommandlineWorkflowEndToEndTest.java,v $
+Revision 1.6  2004/04/25 21:26:47  pah
+made the temp file names windows friendly..
+
 Revision 1.5  2004/04/25 21:10:11  pah
 change timings slightly to give the app time to finish
 
