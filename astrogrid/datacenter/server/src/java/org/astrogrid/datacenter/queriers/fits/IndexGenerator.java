@@ -80,23 +80,28 @@ public class IndexGenerator
       //now look for extensions
       if (primaryHdu.getHeader().getValue("EXTEND").equals("T"))
       {
-         //might be extensions
+         //read data into HDU
          reader.readData(primaryHdu);
 
-         
-         for (int i=0;i<4;i++)
-         {
-            Log.trace(""); //seperate headers
-            Log.trace(""); //seperate header-reading trace code
+         try {
+            //*might* be extensions...
+            for (int i=0;i<4;i++)
+            {
+               Log.trace(""); //seperate headers
+               Log.trace(""); //seperate header-reading trace code
             
-            header = new FitsHeader();
-            reader.readHeaderKeywords(header, null);
+               header = new FitsHeader();
+               reader.readHeaderKeywords(header, null);
          
-            snippet.append(generateIndex(header, filename));
+               snippet.append(generateIndex(header, filename));
          
-            FitsHdu extHdu = new FitsHdu(header);
+               FitsHdu extHdu = new FitsHdu(header);
          
-            reader.readData(extHdu);
+               reader.readData(extHdu);
+            }
+         }
+         catch (FitsFormatException ffe) {
+            Log.logWarning("Fits format exception: "+ffe+" assuming no extension headers");
          }
       }
       
@@ -197,6 +202,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.7  2004/07/12 23:26:14  mch
+Botch fix for no extensions
+
 Revision 1.6  2004/03/12 04:45:26  mch
 It05 MCH Refactor
 
