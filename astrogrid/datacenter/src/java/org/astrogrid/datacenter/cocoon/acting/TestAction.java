@@ -22,12 +22,42 @@ import org.astrogrid.datacenter.delegate.DatacenterDelegate;
 import org.w3c.dom.Element;
 
 /**
+ * This class provides the DataCenter UI with the facility to
+ * test a given ADQL string from the Query Builder against a
+ * DataCenter URL.
+ * 
  * @author peter.shillan <mailto:gps@roe.ac.uk />
  */
 public class TestAction extends AbstractAction {
   private Category logger = Category.getInstance(getClass());
 
   /**
+   * <p>
+   *   Test the required ADQL document against a DataCenter URL.
+   * </p>
+   * <p>
+   *   SiteMap Requirements:
+   *     <ol>
+   *       <li><code>datacenter-end-point</code>: URL for the DataCenter delegate</li>
+   *       <li><code>datacenter-delegate-class</code>: class name of the DataCenter delegate</li>
+   *       <li><code>adql-query</code>: name of the <code>Request</code> parameter containing the ADQL query string</li>
+   *     </ol>
+   * </p>
+   * <p>
+   *   SiteMap Outputs:
+   *     <ol>
+   *       <li><code>adql-query-errors</code>: "true" if ADQL produced an error</li>
+   *     </ol>
+   * </p>
+   * <p>
+   *   Request Attribute Outputs:
+   *     <ol>
+   *       <li><code>adql-query-result</code>: <code>DOM</code> element containing query result (VOTable)</li>
+   *       <li><code>adql-query-errors</code>: "true" if ADQL produced an error</li>
+   *       <li><code>adql-query-error-message</code>: ADQL query error message</li>
+   *     </ol>
+   * </p>
+   * 
    * @see org.apache.cocoon.acting.Action#act(org.apache.cocoon.environment.Redirector, org.apache.cocoon.environment.SourceResolver, java.util.Map, java.lang.String, org.apache.avalon.framework.parameters.Parameters)
    */
   public Map act(Redirector redirector, SourceResolver resolver, Map objectModel, String source, Parameters params) {

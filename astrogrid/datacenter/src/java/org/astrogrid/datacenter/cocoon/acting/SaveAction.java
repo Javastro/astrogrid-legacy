@@ -16,11 +16,40 @@ import org.astrogrid.datacenter.cocoon.acting.utils.ActionUtilsFactory;
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 
 /**
+ * This class provides the DataCenter UI with the facility to
+ * save a given MySpace named ADQL file from the Query Builder.
+ * 
  * @author peter.shillan <mailto:gps@roe.ac.uk />
  */
 public class SaveAction extends AbstractAction {
 
   /**
+   * <p>
+   *   Load the required ADQL document from MySpace.
+   * </p>
+   * <p>
+   *   SiteMap Requirements:
+   *     <ol>
+   *       <li><code>myspace-end-point</code>: URL for the MySpace delegate</li>
+   *       <li><code>myspace-delegate-class</code>: class name of the MySpace delegate</li>
+   *       <li><code>myspace-name</code>: name of the <code>Request</code> parameter containing the MySpace name</li>
+   *       <li><code>adql-query</code>: name of the <code>Request</code> parameter containing the ADQL query string</li>
+   *     </ol>
+   * </p>
+   * <p>
+   *   SiteMap Outputs:
+   *     <ol>
+   *       <li><code>adql-document-saved</code>: "true" if ADQL was successfully saved</li>
+   *     </ol>
+   * </p>
+   * <p>
+   *   Request Attribute Outputs:
+   *     <ol>
+   *       <li><code>adql-document-saved</code>: "true" if ADQL was successfully saved</li>
+   *       <li><code>adql-document-error-message</code>: ADQL save error message</li>
+   *     </ol>
+   * </p>
+   * 
    * @see org.apache.cocoon.acting.Action#act(org.apache.cocoon.environment.Redirector, org.apache.cocoon.environment.SourceResolver, java.util.Map, java.lang.String, org.apache.avalon.framework.parameters.Parameters)
    */
   public Map act(Redirector redirector, SourceResolver resolver, Map objectModel, String source, Parameters params) {
@@ -42,6 +71,7 @@ public class SaveAction extends AbstractAction {
       // do something
       String userId = "gps";
       String communityId = "tag";
+      String credential = "cred";
       String mySpaceName = utils.getRequestParameter("myspace-name", params, request);
       String adqlDocument = utils.getRequestParameter("adql-query", params, request);
       
@@ -49,6 +79,7 @@ public class SaveAction extends AbstractAction {
           delegate.saveDataHolding(
               userId,
               communityId,
+              credential,
               mySpaceName,
               adqlDocument,
               "QUERY",

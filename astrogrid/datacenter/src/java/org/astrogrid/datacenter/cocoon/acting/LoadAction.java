@@ -17,12 +17,40 @@ import org.astrogrid.datacenter.cocoon.acting.utils.ActionUtilsFactory;
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 
 /**
+ * This class provides the DataCenter UI with the facility to
+ * load a given MySpace named ADQL file into the Query Builder.
+ * 
  * @author peter.shillan <mailto:gps@roe.ac.uk />
  */
 public class LoadAction extends AbstractAction {
   private Category logger = Category.getInstance(getClass());
 
   /**
+   * <p>
+   *   Load the required ADQL document from MySpace.
+   * </p>
+   * <p>
+   *   SiteMap Requirements:
+   *     <ol>
+   *       <li><code>myspace-end-point</code>: URL for the MySpace delegate</li>
+   *       <li><code>myspace-delegate-class</code>: class name of the MySpace delegate</li>
+   *       <li><code>myspace-name</code>: name of the <code>Request</code> parameter containing the MySpace name</li>
+   *     </ol>
+   * </p>
+   * <p>
+   *   SiteMap Outputs:
+   *     <ol>
+   *       <li><code>adql-document-loaded</code>: "true" if ADQL was successfully loaded</li>
+   *     </ol>
+   * </p>
+   * <p>
+   *   Request Attribute Outputs:
+   *     <ol>
+   *       <li><code>adql-document-loaded</code>: "true" if ADQL was successfully loaded</li>
+   *       <li><code>adql-document</code>: ADQL document</li>
+   *     </ol>
+   * </p>
+   * 
    * @see org.apache.cocoon.acting.Action#act(org.apache.cocoon.environment.Redirector, org.apache.cocoon.environment.SourceResolver, java.util.Map, java.lang.String, org.apache.avalon.framework.parameters.Parameters)
    */
   public Map act(Redirector redirector, SourceResolver resolver, Map objectModel, String source, Parameters params) {
@@ -47,9 +75,10 @@ public class LoadAction extends AbstractAction {
     
       String userId = "gps";
       String communityId = "tag";
+      String credential = "cred";
       String mySpaceName = utils.getRequestParameter("myspace-name", params, request);
 
-      String adqlDocument = delegate.getDataHolding(userId, communityId, mySpaceName);
+      String adqlDocument = delegate.getDataHolding(userId, communityId, credential, mySpaceName);
       
       request.setAttribute("adql-document", adqlDocument);
       request.setAttribute("adql-document-loaded", "true");

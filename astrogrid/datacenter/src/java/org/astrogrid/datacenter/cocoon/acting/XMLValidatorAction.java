@@ -14,9 +14,46 @@ import org.astrogrid.datacenter.cocoon.acting.utils.ActionUtils;
 import org.astrogrid.datacenter.cocoon.acting.utils.ActionUtilsFactory;
 import org.astrogrid.datacenter.cocoon.acting.utils.ValidationHandler;
 
+/**
+ * This class provides the DataCenter UI with the facility to
+ * validate an XML document provided by the Query Builder.
+ * 
+ * @author peter.shillan <mailto:gps@roe.ac.uk />
+ */
 public class XMLValidatorAction extends AbstractAction {
   private Category logger = Category.getInstance(getClass());
 
+  /**
+   * <p>
+   *   Validate the XML document provided.
+   * </p>
+   * <p>
+   *   SiteMap Requirements:
+   *     <ol>
+   *       <li><code>xml-param</code>: name of the <code>Request</code> parameter containing the XML document</li>
+   *     </ol>
+   * </p>
+   * <p>
+   *   SiteMap Outputs:
+   *     <ol>
+   *       <li><code>xml-valid</code>: "true" if XML was valid</li>
+   *     </ol>
+   * </p>
+   * <p>
+   *   Request Attribute Outputs:
+   *     <ol>
+   *       <li><code>xml-valid</code>: "true" if XML was valid</li>
+   *       <li><code>xml-validation-errors</code>: "true" if XML produced errors</li>
+   *       <li><code>xml-validation-warnings</code>: "true" if XML produced warnings</li>
+   *       <li><code>xml-validation-fatal-errors</code>: "true" if XML produced fatal errors</li>
+   *       <li><code>xml-errors</code>: XML produced errors</li>
+   *       <li><code>xml-warnings</code>: XML produced warnings</li>
+   *       <li><code>xml-fatal-errors</code>: XML produced fatal errors</li>
+   *     </ol>
+   * </p>
+   * 
+   * @see org.apache.cocoon.acting.Action#act(org.apache.cocoon.environment.Redirector, org.apache.cocoon.environment.SourceResolver, java.util.Map, java.lang.String, org.apache.avalon.framework.parameters.Parameters)
+   */
   public Map act(Redirector redirector, SourceResolver resolver, Map objectModel, String source, Parameters params) {
     Map sitemapParams = new HashMap();
     ActionUtils utils = ActionUtilsFactory.getActionUtils();
