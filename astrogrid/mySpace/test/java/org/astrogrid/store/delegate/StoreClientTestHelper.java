@@ -1,4 +1,4 @@
-/*$Id: StoreClientTestHelper.java,v 1.1 2004/03/14 13:23:14 mch Exp $
+/*$Id: StoreClientTestHelper.java,v 1.2 2004/03/14 13:48:13 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,7 @@ import org.astrogrid.store.Agsl;
  * @author M Hill
  *
  */
-public abstract class StoreClientTest extends TestCase {
+public abstract class StoreClientTestHelper extends TestCase {
 
    protected static String path = "";
    
@@ -215,6 +215,9 @@ public abstract class StoreClientTest extends TestCase {
 
 /*
 $Log: StoreClientTestHelper.java,v $
+Revision 1.2  2004/03/14 13:48:13  mch
+Fixed misrename
+
 Revision 1.1  2004/03/14 13:23:14  mch
 Renamed StoreClientTestHelper so that it doesn't get used directly for testing
 
