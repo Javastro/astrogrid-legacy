@@ -1,4 +1,4 @@
-package idoozrdneligaydneq3a20;
+package id22ha6dp43xilmdp43xyxr;
 
 /**
 @version 2.0
@@ -7,15 +7,15 @@ package idoozrdneligaydneq3a20;
 */
 class diagram {
 /**
-@__ref <oiref:java#Class#org.astrogrid.jes.delegate.jobController.impl.TestDelegateImpl:oiref><oihard>
+@__ref <oiref:java#Class#org.astrogrid.jes.delegate.jobMonitor.impl.TestDelegateImpl:oiref><oihard>
 @__modelType reference 
 */
 class reference {
 }/**
-@__ref <oiref:java#Class#org.astrogrid.jes.delegate.jobController.impl.JobControllerDelegateImpl:oiref><oihard>
+@__ref <oiref:java#Class#org.astrogrid.jes.delegate.jobMonitor.impl.JobMonitorDelegateImpl:oiref><oihard>
 @__modelType reference 
 */
-class reference16 {
+class reference17 {
 }}/**
 @__tags
 @shapeType ClassDiagram 

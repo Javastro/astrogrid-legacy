@@ -78,11 +78,11 @@ class __options {
 <oigroup:<oiref:design#Class#id2bmspdnrcpt1tdnrcq5h5.diagram:oiref>=1210,60,83,102,1:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.manager.AbstractApplicationController#applicationDescriptions:oiref>=784,507,866,507:oigroup>
 <oigroup:<oiref:design#Class#id22onrdmemcb5ndmemchy7.node:oiref>=130,-20,143,188,0:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.manager.PersistenceEngine#instance:oiref>=878,447,878,497,968,497,968,407,918,407:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.manager.PersistenceEngine#instance:oiref>=878,470,878,520,968,520,968,430,918,430:oigroup>
 <oigroup:<oiref:java#Extends#org.astrogrid.applications.manager.CommandLineApplicationController#org.astrogrid.applications.manager.AbstractApplicationController:oiref>=740,616,704,616:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.Application:oiref>=790,10,200,218,1:oigroup>
 <oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#org.astrogrid.applications.manager.ApplicationController#lnkApplication:oiref>=780,139,22,23,0,0.0,-1.0:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.manager.PersistenceEngine:oiref>=718,240,200,207,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.manager.PersistenceEngine:oiref>=718,240,200,230,1:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.manager.ApplicationController:oiref>=340,50,315,339,0:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.description.ApplicationDescription:oiref>=1040,200,200,388,1:oigroup>
 <oigroup:Composite#clientRole#MemberLink#<oiref:java#Member#org.astrogrid.applications.manager.ApplicationController#lnkJobMonitor:oiref>=335,347,49,23,0,0.0,-1.0:oigroup>
@@ -91,7 +91,7 @@ class __options {
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.manager.ApplicationController#lnkJobMonitor:oiref>=340,324,190,324:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.manager.AbstractApplicationController:oiref>=260,440,444,230,0:oigroup>
 <oigroup:Composite#label#MemberLink#<oiref:java#Member#org.astrogrid.applications.manager.ApplicationController#lnkJobMonitor:oiref>=158,301,215,23,0,0.0,1.0:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.jes.jobmonitor.JobMonitor:oiref>=-10,260,200,559,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.jes.jobmonitor.JobMonitor:oiref>=-10,260,200,582,1:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.manager.CommandLineApplicationController#runningApplications:oiref>=740,775,560,775:oigroup>
 <oigroup:<oiref:java#Implements#org.astrogrid.applications.manager.AbstractApplicationController#org.astrogrid.applications.manager.ApplicationController:oiref>=497,440,497,389:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.manager.CommandLineApplicationController:oiref>=740,590,317,260,0:oigroup>

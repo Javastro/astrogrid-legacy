@@ -18,6 +18,51 @@ class reference {
 @__fqn <oiref:#Package#org.astrogrid.portal.workflow.design.unittest:oiref> 
 */
 class reference71 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.Cardinality:oiref><oihard>
+@__modelType reference 
+*/
+class reference3 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.Workflow:oiref><oihard>
+@__modelType reference 
+*/
+class reference4 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.Step:oiref><oihard>
+@__modelType reference 
+*/
+class reference5 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.Sequence:oiref><oihard>
+@__modelType reference 
+*/
+class reference6 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.WorkflowDD:oiref><oihard>
+@__modelType reference 
+*/
+class reference7 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.JoinCondition:oiref><oihard>
+@__modelType reference 
+*/
+class reference8 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.Tool:oiref><oihard>
+@__modelType reference 
+*/
+class reference9 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.Flow:oiref><oihard>
+@__modelType reference 
+*/
+class reference10 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.design.Parameter:oiref><oihard>
+@__modelType reference 
+*/
+class reference11 {
 }}/**
 @__tags
 @shapeType ClassDiagram 

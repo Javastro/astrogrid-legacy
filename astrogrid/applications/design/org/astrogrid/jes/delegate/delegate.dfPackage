@@ -39,10 +39,10 @@ class __tags {
 */
 class __options {
 }/**
-@__positions <oigroup:<oiref:java#Class#org.astrogrid.jes.delegate.JesDelegateException:oiref>=10,10,200,126,1:oigroup>
+@__positions <oigroup:<oiref:java#Class#org.astrogrid.jes.delegate.JesDelegateException:oiref>=10,10,165,172,1:oigroup>
 <oigroup:<oiref:design#Class#id47v9hdneligaydneq3a2z.diagram:oiref>=10,170,200,210,1:oigroup>
 <oigroup:<oiref:design#Class#id38wcfdneligaydneq3a1h.diagram:oiref>=230,10,200,226,1:oigroup>
-<oigroup:<oiref:design#Class#id1onhsdneligaydneq3a2i.diagram:oiref>=10,430,200,210,1:oigroup> 
+<oigroup:<oiref:design#Class#id1onhsdneligaydneq3a2i.diagram:oiref>=10,430,200,226,1:oigroup>
 */
 class __positions {
 }

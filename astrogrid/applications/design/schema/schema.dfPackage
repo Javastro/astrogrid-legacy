@@ -13,11 +13,17 @@ class diagram {
 */
 class reference {
 }/**
-@__ref <oiref:design#Class#idejw7dnd776t5dnd77krp.diagram:oiref><oihard>
+@__ref <oiref:design#Class#id4hzbado646fjddo6470dg.diagram:oiref><oihard>
 @__modelType reference
-@__fqn <oiref:#Package#schema.VOResource-v0*9-local*zip:oiref> 
+@__fqn <oiref:#Package#schema.supportingschema:oiref> 
 */
-class reference23 {
+class reference19 {
+}/**
+@__ref <oiref:design#Class#id1fbnkdmup9wsfdmupab1h.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#schema.doc:oiref> 
+*/
+class reference20 {
 }}/**
 @__tags
 @shapeType ClassDiagram 

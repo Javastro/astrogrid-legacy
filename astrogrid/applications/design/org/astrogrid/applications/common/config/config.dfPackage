@@ -49,7 +49,7 @@ class __options {
 @__positions <oigroup:<oiref:java#Class#org.astrogrid.applications.common.config.ConfigLoader:oiref>=10,610,153,276,1:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.common.config.JNDIConfig#instance:oiref>=424,514,424,564,514,564,514,474,464,474:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.common.config.ConfigLoader#theconfig:oiref>=86,610,364,468:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.common.config.ApplicationControllerConfig#instance:oiref>=1190,378,1190,428,1280,428,1280,338,1230,338:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.common.config.ApplicationControllerConfig#instance:oiref>=1190,401,1190,451,1280,451,1280,361,1230,361:oigroup>
 <oigroup:<oiref:java#Implements#org.astrogrid.applications.common.config.SyspropConfig#org.astrogrid.applications.common.config.Config:oiref>=650,192,437,155:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.common.config.JNDIConfig:oiref>=264,192,200,276,1:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.common.config.SyspropConfig:oiref>=554,192,193,184,1:oigroup>
@@ -58,7 +58,7 @@ class __options {
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.common.config.SyspropConfig#instance:oiref>=715,376,715,418,789,418,789,344,747,344:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.common.config.ApplicationControllerConfig#config:oiref>=1030,82,489,82:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.common.config.TestConfig:oiref>=10,192,200,230,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.common.config.ApplicationControllerConfig:oiref>=1030,10,200,368,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.common.config.ApplicationControllerConfig:oiref>=1030,10,200,391,1:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.common.config.Config:oiref>=301,10,188,145,1:oigroup>
 <oigroup:<oiref:java#Implements#org.astrogrid.applications.common.config.TestConfig#org.astrogrid.applications.common.config.Config:oiref>=110,192,343,155:oigroup>
 */

@@ -7,25 +7,10 @@ package id30jwrdneligaydneq3a46;
 */
 class diagram {
 /**
-@__ref <oiref:java#Class#org.astrogrid.jes.job.Service:oiref><oihard>
-@__modelType reference 
-*/
-class reference {
-}/**
 @__ref <oiref:java#Class#org.astrogrid.jes.job.JobStep:oiref><oihard>
 @__modelType reference 
 */
 class reference90 {
-}/**
-@__ref <oiref:java#Class#org.astrogrid.jes.job.Table:oiref><oihard>
-@__modelType reference 
-*/
-class reference91 {
-}/**
-@__ref <oiref:java#Class#org.astrogrid.jes.job.Query:oiref><oihard>
-@__modelType reference 
-*/
-class reference92 {
 }/**
 @__ref <oiref:java#Class#org.astrogrid.jes.job.Job:oiref><oihard>
 @__modelType reference 
@@ -47,15 +32,20 @@ class reference95 {
 */
 class reference96 {
 }/**
-@__ref <oiref:java#Class#org.astrogrid.jes.job.Catalog:oiref><oihard>
-@__modelType reference 
-*/
-class reference97 {
-}/**
 @__ref <oiref:java#Class#org.astrogrid.jes.job.JobFactory:oiref><oihard>
 @__modelType reference 
 */
 class reference98 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.jes.job.Tool:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.jes.job.Parameter:oiref><oihard>
+@__modelType reference 
+*/
+class reference18 {
 }}/**
 @__tags
 @shapeType ClassDiagram 

@@ -56,7 +56,7 @@
 				<include name="INSTALL"/>
 				<include name="README"/>
 			</fileset>
-			<fileset dir="${maven.build.dir}" includes="ApplicationControllerDelegate-${pom.currentVersion}.jar" />
+			<fileset dir="${maven.build.dir}" includes="ApplicationControllerDelegate.jar" />
 			<!-- need to do the sample config too -->
 		</copy>
 		<echo message="copying across xml schema"/>
@@ -313,7 +313,7 @@ ApplicationConfigFile=${basedir}/test/config/TestApplicationConfig.xml
         
     </goal>
     
-    <goal name="axis.webapp.install" prereqs="tomcat-declare-tasks">
+    <goal name="webapp.install" prereqs="tomcat-declare-tasks">
          <echo message="installing applications integration webapp (with axis)"/>
         <tomcat-install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/${appint.webapp.name}" war="file://${maven.build.dir}/${appint.webapp.name}"/>
     </goal>
@@ -330,7 +330,8 @@ ApplicationConfigFile=${basedir}/test/config/TestApplicationConfig.xml
 
 
     <goal name="delegatejar" prereqs="java:compile,test:compile">
-         <jar destfile="${maven.build.dir}/ApplicationControllerDelegate-${pom.currentVersion}.jar">
+    <!-- would be nice to have -${pom.currentVersion} in name, but cannot with cvs tag stuff - need to think of something better-->
+         <jar destfile="${maven.build.dir}/ApplicationControllerDelegate.jar">
             <fileset dir="${maven.build.dest}">
                <include name="**/delegate/**" />
             </fileset>
@@ -344,6 +345,12 @@ ApplicationConfigFile=${basedir}/test/config/TestApplicationConfig.xml
         <copy todir="${maven.war.webapp.dir}/WEB-INF/classes">
           <fileset dir="${maven.build.dir}/classes"/>
         </copy>
+        <copy todir="${maven.war.webapp.dir}/">
+          <fileset dir="src/webapp">
+          <exclude name="WEB-INF/**"/>
+          </fileset>
+        </copy>
+        
     </goal>
 <!-- boilerplate below here -->
  <!-- <goal name="dataserver-deploy" description="fire wsdd at axis to deploy dataserver"

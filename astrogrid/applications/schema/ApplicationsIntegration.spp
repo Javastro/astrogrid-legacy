@@ -13,6 +13,7 @@
 		<File FilePath=".\sextractor.wsdl" HomeFolder="Yes"/>
 		<File FilePath=".\SExtractorParameters-complex.xsd" HomeFolder="Yes"/>
 		<File FilePath=".\SExtractorParameters-simple.xsd" HomeFolder="Yes"/>
+		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow\schema\Workflow.xsd" HomeFolder="Yes"/>
 	</Folder>
 	<Folder FolderName="Entities" ExtStr="ent"/>
 </Project>

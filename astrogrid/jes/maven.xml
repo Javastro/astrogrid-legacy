@@ -190,10 +190,22 @@
         
     </goal>
     
-    <goal name="axis.webapp.install" prereqs="tomcat-declare-tasks, war">
+    <goal name="webapp.install" prereqs="tomcat-declare-tasks, war">
          <echo message="installing applications integration webapp (with axis)"/>
         <tomcat-install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/${appint.webapp.name}" war="file://${maven.build.dir}/${appint.webapp.name}"/>
     </goal>
+        <goal name="webapp.patch" prereqs="java:compile">
+        <copy todir="${maven.war.webapp.dir}/WEB-INF/classes">
+          <fileset dir="${maven.build.dir}/classes"/>
+        </copy>
+        <copy todir="${maven.war.webapp.dir}/">
+          <fileset dir="src/webapp">
+          <exclude name="WEB-INF/**"/>
+          </fileset>
+        </copy>
+        
+    </goal>
+    
     
     <goal name="service-deploy" prereqs="axis-declare-tasks">
          <axis-admin

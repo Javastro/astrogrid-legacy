@@ -53,9 +53,9 @@ class __options {
 <oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.ApplicationEnvironment:oiref>=270,450,200,312,1:oigroup>
 <oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node.link52:oiref>=:oigroup>
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#idacadnrcpt1tdnrk0frm.node.link51:oiref>=689,149,233,23,0,0.0,1.0:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.CmdLineApplication:oiref>=20,350,200,480,1:oigroup>
-<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node44.node:oiref>=894,172,14,20,1:oigroup>
-<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node.link51:oiref>=679,172,894,172:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.CmdLineApplication:oiref>=20,350,200,641,1:oigroup>
+<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node44.node:oiref>=858,172,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node.link51:oiref>=679,172,858,172:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.commandline.CmdLineApplication#applicationEnvironment:oiref>=220,606,270,606:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.manager.CommandLineApplicationController:oiref>=160,20,200,234,1:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.commandline.ApplicationEnvironment#cmdLineApplication:oiref>=270,474,220,474:oigroup>
@@ -64,7 +64,7 @@ class __options {
 <oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node46:oiref>=1040,30,138,270,1:oigroup>
 <oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node:oiref>=554,30,236,270,1:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.manager.CommandLineApplicationController#runningApplications:oiref>=315,254,315,450:oigroup>
-<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node44:oiref>=820,30,162,270,1:oigroup>
+<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node44:oiref>=820,30,90,270,1:oigroup>
 */
 class __positions {
 }/**

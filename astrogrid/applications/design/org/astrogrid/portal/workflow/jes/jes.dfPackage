@@ -6,7 +6,17 @@ package id83uodneligaydneq39zn;
 @__modelType diagram 
 */
 class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.jes.JobDD:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
 }/**
+@__ref <oiref:java#Class#org.astrogrid.portal.workflow.jes.Job:oiref><oihard>
+@__modelType reference 
+*/
+class reference15 {
+}}/**
 @__tags
 @shapeType ClassDiagram 
 */

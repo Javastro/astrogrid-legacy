@@ -4,6 +4,8 @@ The basic install medium is a war file called applications-integration.war, whic
 
 http://cvs.astrogrid.org/maven/astrogrid-applications/wars/astrogrid-applications.war
 
+The war requires Tomcat 4.1.24 or higher running under JVM 1.4 or higher
+
 To do the inital install of the application it needs simply to be added into $TOMCAT_HOME/webapps directory and start tomcat.
 This will install the basic files required to run the service along with some example configuration files as well as a test application.
 

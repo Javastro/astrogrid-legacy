@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterValues.java,v 1.3 2003/12/05 22:52:16 pah Exp $
+ * $Id: ParameterValues.java,v 1.4 2004/01/07 12:14:51 pah Exp $
  *
  * Created on 24 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -22,6 +22,11 @@ public class ParameterValues {
 
    public String getParameterSpec(){ return parameterSpec; }
 
+   /**
+    * Sets the parameterSpec, which is an XML description of the tool and paramters - basically the tool element in the
+    * Workflow schema <a href="http://www.astrogrid.org/schema/documentation/workflow/">described here</a> and stored at <a href="http://www.astrogrid.org/viewcvs/%2Acheckout%2A/astrogrid/workflow/schema/Workflow.xsd?rev=HEAD&content-type=text/plain">this location in cvs</a>
+    * @param parameterSpec
+    */
    public void setParameterSpec(String parameterSpec){ this.parameterSpec = parameterSpec; }
 
 /**
@@ -34,7 +39,8 @@ public class ParameterValues {
    /**
     * The list of input/output parameters as a simple XML fragment. This is of the form
     * <pre>
-    *&lt;input&gt;<br>
+     &lt;tool&gt;
+    &lt;input&gt;<br>
 &lt;parameter name="query" type="agpd:File_Reference" &gt;<br>
 myspace://image1<br>
 &lt;/parameter&gt;<br>
@@ -47,6 +53,8 @@ myspace://image1<br>
 myspace://votable1<br>
 &lt;/parameter&gt;<br>
 &lt;/output&gt;
+&lt;/tool&gt;
+
 <pre>
     * 
     */

@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<!-- $Id: index.html,v 1.2 2003/12/17 10:13:04 pah Exp $ --><!-- this is a bit of a hack - it should be generated during the site build so
+<!-- $Id: index.html,v 1.3 2004/01/07 12:14:51 pah Exp $ --><!-- this is a bit of a hack - it should be generated during the site build so
 that the styles are correct -->
   <title>AstroGrid Project - AstroGrid Applications Integration</title>
   <style type="text/css">
@@ -64,24 +64,40 @@ that the styles are correct -->
       <div class="app">
       <div class="h3">
       <h3> <a name="AstroGrid Applicatons">AstroGrid Applications
-Integration</a> </h3>
+Integration - Version $Name:  $</a> </h3>
+      <h4>Configuration</h4>
       <p> From here you can: </p>
-      <li> Browse the <a href="maven/index.html">Maven documentation</a>,
-      </li>
-      <li> Check <a href="happyaxis.jsp">HappyAxis</a> to see if
-you've installed everything successfully, or </li>
-      <li> See what <a href="servlet/AxisServlet">services</a> are
-available. There should be an applicationController service
-        <p> To configure the ApplicationController see the <a
- href="Configuration.html">instructions</a> which need to be followed
-before trying to invoke the service. There is a test application in the
-        <a href="test">test folder</a> that can be quickly configured
-to allow the installation to be&nbsp;<a href="Troubleshooting.html">tested</a></p>
-      </li>
-      <li>It does take some work work to <a
- href="ApplicationConfiguration.html">confiure&nbsp; a new application</a>
+      <ul>
+        <li> Check <a href="happyaxis.jsp">HappyAxis</a> to see if
+you've installed the necessary jars in tomcat to run axis properly.<br>
+        </li>
+        <li> See what <a href="servlet/AxisServlet">services</a> are
+available. There should be an applicationController service...&nbsp;</li>
+        <li>Before you can run the service you need to configure the
+ApplicationController - see the <a href="Configuration.html">instructions</a>
+which need to be followed
+before trying to invoke the service. <br>
+        </li>
+        <li><a
+ href="http://localhost:8080/manager/html/reload?path=/astrogrid-applications">restart
+          </a>the application in the <a
+ href="http://localhost:8080/manager/html">tomcat manager</a>.<br>
+        </li>
+        <li>You can then check your <a href="check_config.jsp">configuration</a></li>
+        <li>There is a test application in the <a href="test">test
+folder</a> that can be quickly configured
+to allow the installation to be&nbsp;<a href="Troubleshooting.html">tested</a></li>
+      </ul>
+      <h5>Application Configuration</h5>
+      <p>It does take some work work to <a
+ href="ApplicationConfiguration.html">configure&nbsp; a new application</a>
 that the command line application controller can run, however. <br>
-      </li>
+      </p>
+      <p> Browse the <a
+ href="maven/index.html">Maven
+documentation</a> for this ApplicationController service. </p>
+<h4>Using the Service</h4>
+<p>It is possible to call the service directly, with a knowledge of the wsdl, but if you are programming in java, then you might find it easier to use the delegate contained in the <a href="ApplicationControllerDelegate.jar">this jar</a>.
       </div>
       </div>
       </div>
@@ -93,7 +109,7 @@ that the command line application controller can run, however. <br>
 <table border="0" style="width: 100%;" cellpadding="4" cellspacing="0">
   <tbody>
     <tr>
-      <td> (c) 2002-2003, AstroGrid </td>
+      <td> (c) 2002-2004, AstroGrid </td>
     </tr>
   </tbody>
 </table>

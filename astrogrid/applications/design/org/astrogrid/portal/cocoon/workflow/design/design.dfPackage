@@ -6,7 +6,12 @@ package id49huvdneligaydneq39wz;
 @__modelType diagram 
 */
 class diagram {
-}/**
+/**
+@__ref <oiref:java#Class#org.astrogrid.portal.cocoon.workflow.design.DesignAction:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}}/**
 @__tags
 @shapeType ClassDiagram 
 */
