@@ -1,4 +1,4 @@
-/*$Id: JesShell.java,v 1.5 2004/08/05 07:36:14 nw Exp $
+/*$Id: JesShell.java,v 1.6 2004/08/05 09:59:58 nw Exp $
  * Created on 29-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.workflow.beans.v1.If;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Set;
@@ -98,22 +99,32 @@ public class JesShell {
         vars.readFromBinding(scriptBinding);
     }
     
-
+    /** used to evaluate uer-supplied expressions - if tests, etc 
+     * @throws IOException
+     * @throws CompilationFailedException*/
+public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, RuleStore rules) throws CompilationFailedException, IOException {
+    logger.debug("exaluating " + expr);
+    Binding scriptBinding = createScriptBinding(map,rules);
+    Vars vars = map.getEnv(id);
+    vars.addToBinding(scriptBinding);
+    // wrap it in a here-document
+    // want to return a string if it has more thatn just a single embedded ${..}, or is just a simple string.
+    // otherwise want to return the object.
+    String gExpr = "x = <<<GSTRING\n" + expr+ "\n" + "GSTRING\n " +
+        "(x instanceof GString && x.getValueCount() == 1 && x.getStrings().find{it.size() > 0} == null) ? x.getValue(0) : x"; 
+   
+    Script sc = shell.parse(gExpr);
+    sc.setBinding(scriptBinding);
+     Object result = sc.run();
+     logger.debug("result: '" + result + "' type: " + result.getClass().getName());
+     return result;
+    
+}
 
     public boolean executeSet(Set set,String state,ActivityStatusStore map, RuleStore rules) throws CompilationFailedException, IOException {
         Vars vars = map.getEnv(state);
         if (set.getValue() != null) {
-            logger.debug("evaluating " + set.getValue());
-            Binding scriptBinding = createScriptBinding(map,rules);
-            vars.addToBinding(scriptBinding);
-            // wrap it in a here-document
-            // want to return a string if it has more thatn just a single embedded ${..}, or is just a simple string.
-            // otherwise want to return the object.
-            String expr = "x = <<<GSTRING\n" + set.getValue() + "\n" + "GSTRING\n " +
-                "(x instanceof GString && x.getValueCount() == 1 && x.getStrings().find{it.size() > 0} == null) ? x.getValue(0) : x"; 
-            Script sc = shell.parse(expr);
-            sc.setBinding(scriptBinding);
-            Object result = sc.run();
+            Object result = evaluateUserExpr(set.getValue(),state,map,rules);
             vars.set(set.getVar(),result);
             return true;
         } else {
@@ -121,6 +132,13 @@ public class JesShell {
             vars.set(set.getVar(),null);
             return true;
         }
+    }
+    
+    // necessary to have these, rather than pass the string directly into evaluateUserExpr - 
+   // otherwise the gstirng gets substituted into before it reaches us.
+    public Object evaluateIfCondition(If ifObj,ActivityStatusStore map,RuleStore rules) throws CompilationFailedException, IOException {
+        return evaluateUserExpr(ifObj.getTest(),ifObj.getId(),map,rules);
+        
     }
     
     public Tool evaluateTool(Tool original,String id,ActivityStatusStore map, RuleStore rules) throws CompilationFailedException, IOException {
@@ -232,6 +250,9 @@ public class JesShell {
 
 /* 
 $Log: JesShell.java,v $
+Revision 1.6  2004/08/05 09:59:58  nw
+implemented if statement
+
 Revision 1.5  2004/08/05 07:36:14  nw
 made shell static for efficiency.
 

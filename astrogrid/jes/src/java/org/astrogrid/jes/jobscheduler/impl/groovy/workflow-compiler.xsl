@@ -247,7 +247,7 @@ jes.dispatchStep('<xsl:value-of select="generate-id()"/>',shell,states,rules);
 <rule> 
 	<name>step-end</name>
 	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == FINISH
-		<xsl:if test="@result-var"><!-- need to wait for results too, if workflow is going to use them - modelled as a separate sub state-->
+		<xsl:if test="@result-var and @result-var != ''"><!-- need to wait for results too, if workflow is going to use them - modelled as a separate sub state-->
 			&amp;&amp; states.getStatus('<xsl:value-of select="generate-id()"/>' + "-results") == FINISHED
 		</xsl:if>
 		</trigger>
@@ -354,22 +354,25 @@ states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED) ;
 <xsl:template match="wf:if" name="if">
 <!-- rules for an if
 evaluate the expression, bracnh accordingly. different behaviour depending on whether if has an else or not
+nusciance having to handle two forms of xml element - name, and via xsi type.
 -->
 <xsl:comment>if</xsl:comment>
 <rule>
 	 <name>if-start</name>
 	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
 <body>
-if (<xsl:value-of select="@test" />) {
-	  	states.setStatus('<xsl:value-of select="generate-id(./then/*)"/>', START);
+ifObj = jes.getId('<xsl:value-of select="generate-id()"/>');
+if (shell.evaluateIfCondition(ifObj,states,rules)) {
+		print("starting then branch");
+	  	states.setStatus('<xsl:value-of select="generate-id(./wf:then/* | ./wf:Activity[@xsi:type='then']/*)"/>', START);
 		states.setStatus('<xsl:value-of select="generate-id()"/>', STARTED);
-		states.setEnv('<xsl:value-of select="generate-id(./then/*)"/>',states.getEnv('<xsl:value-of select="generate-id()"/>'));
+		states.setEnv('<xsl:value-of select="generate-id(./wf:then/* | ./wf:Activity[@xsi:type='then']/*)"/>',states.getEnv('<xsl:value-of select="generate-id()"/>'));
 } else {
 	  <xsl:choose>
-	    <xsl:when test="./else">
-	     states.setStatus('<xsl:value-of select="generate-id(./else/*)"/>',START);
+	    <xsl:when test="./wf:else | ./wf:Activity[@xsi:type='else']">
+	     states.setStatus('<xsl:value-of select="generate-id(./wf:else/* | ./wf:Activity[@xsi:type='else']/*)"/>',START);
 		states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED) ;
-		states.setEnv('<xsl:value-of select="generate-id(./else/*)"/>',states.getEnv('<xsl:value-of select="generate-id()"/>'));
+		states.setEnv('<xsl:value-of select="generate-id(./wf:else/* | ./wf:Activity[@xsi:type='else']/*)"/>',states.getEnv('<xsl:value-of select="generate-id()"/>'));
 	    </xsl:when>
 	    <xsl:otherwise>
 	        states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
@@ -382,8 +385,8 @@ if (<xsl:value-of select="@test" />) {
 	<name>if-end</name>
 	<trigger>
 	  <xsl:choose>
-	    <xsl:when test="./else">states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; (states.getStatus('<xsl:value-of select="generate-id(./then/*)"/>') == FINISHED || states.getStatus('<xsl:value-of select="generate-id(./else/*)"/>') == FINISHED)</xsl:when>
-	    <xsl:otherwise>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; states.getStatus('<xsl:value-of select="generate-id(./then/*)"/>') == FINISHED</xsl:otherwise>
+	    <xsl:when test="./wf:else | ./wf:Activity[@xsi:type='else']">states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; (states.getStatus('<xsl:value-of select="generate-id(./wf:then/* | ./wf:Activity[@xsi:type='then']/*)"/>') == FINISHED || states.getStatus('<xsl:value-of select="generate-id(./wf:else/* | ./wf:Activity[@xsi:type='else']/*)"/>') == FINISHED)</xsl:when>
+	    <xsl:otherwise>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; states.getStatus('<xsl:value-of select="generate-id(./wf:then/* | ./wf:Activity[@xsi:type='then']/*)"/>') == FINISHED</xsl:otherwise>
 	  </xsl:choose>
 	</trigger>
 	<body>
