@@ -3,152 +3,47 @@
 <!-- extension maven script -->
 <project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:ant="jelly:ant" default="jar:jar">
 
-	<!-- Customise standard maven tasks -->
-
-	<preGoal name="java:compile">
-		<mkdir dir="${basedir}/target/src/java" />
-
-		<!-- declares new src tree to maven -->
-		<path id="generated.src" 
-          location="${basedir}/target/src/java"/>
-		<maven:addPath id="maven.compile.src.set" refid="generated.src"/>  
-
-		<!-- generate classes from schema and wsdl before compiling -->
-		<attainGoal name="generateStubs" />
-	</preGoal>
-
-	<postGoal name="java:compile">
-     <copy toDir="${basedir}/target/classes">
-       <fileset dir="src/java">
-         <include name="**/*.properties"/> 
-       </fileset>
-     </copy>
-	</postGoal>
-
-	<preGoal name="clean">
-		<delete dir="${basedir}/target/src" />
-		<delete>
-			<fileset dir="${basedir}/wsdl">
-			<include name="**/*.wsdl" />
-			</fileset>
-		</delete>
-	</preGoal>
-
   <!-- This file is for local adjustments.  -->
   <property file="config/build.properties"/>
    
   <!-- This file specializes this template to a particular product. -->
   <property file="config/template.properties"/>
    
-  <!-- These names are used in several targets. -->
-  <property name="wsdl.directory" value="wsdl"/>
-  <property name="wsdl.file"      value="${service.name}.wsdl"/>
-  <property name="wsdl.path"      value="${wsdl.directory}/${wsdl.file}"/>
-
-  <!-- Generate WSDL for the service starting from a Java class defining the
-        interface to a web-service port. -->
-  <target name="generateWSDL">
+  <!-- Deploy the webservice into tomcat. -->
+  <target name="deployToTomcat">
     <path id="classpath">
-      <pathelement location="target/classes"/>
       <path refid="maven.dependency.classpath"/>
     </path>
-     <echo message="Generating ${wsdl.file} from ${service.java.package}.${port.interface.java.class}..."/>
-     <mkdir dir="target/classes"/>
-     <javac srcdir="src/java" 
-            destdir="target/classes"
-            classpathref="classpath">
-        <include name="**/${port.interface.java.class}.java" />
-     </javac>
-     <mkdir dir="target/${wsdl.directory}"/>
-     <java classname="${java2wsdl.tool}" dir="./target/classes" fork="yes"
-            classpathref="classpath">
-        <arg value="-S"/>  
-        <arg value="${service.name}"/>  
-        <arg value="-l"/>  
-        <arg value="http://localhost/services/"/>  
-        <arg value="-n"/>  
-        <arg value="${service.xml.namespace.uri}"/>  
-        <arg value="-o"/>
-        <arg value="../../${wsdl.path}"/>
-        <arg value="${service.java.package}.${port.interface.java.class}"/>
-     </java>
-  </target>
-
-  <!-- Generate Java classes, as source code, for the client
-        and the service, based on the WSDL file. -->
-  <target name="generateStubs" depends="generateWSDL">
-    <path id="classpath">
-      <pathelement location="target/classes"/>
-      <path refid="maven.dependency.classpath"/>
-    </path>
-     <echo message="Generating stubs from ${wsdl.path} ..." />
-     <mkdir dir="target/src/java"/>
-     <java classname="${wsdl.tool}" dir="." fork="yes"
-            classpathref="classpath">
-        <arg value="-o"/>  
-        <arg value="target/src/java"/>  
-        <arg value="${wsdl.path}"/>
-     </java>
-     <delete file="target/src/java/org/astrogrid/warehouse/service/WarehouseServiceIfc.java"/>
-  </target>
-
-   <!-- Deploy the webservice into tomcat. -->
-   <target name="deployToTomcat">
-     <path id="classpath">
-       <path refid="maven.dependency.classpath"/>
-     </path>
-     <echo message="Deploying webservice to tomcat at ${tomcat.home}..." />
-     <copy toDir="${tomcat.home}/webapps/axis/WEB-INF/classes">
-       <fileset dir="target/classes">
-         <include name="**/*.class"/> 
-         <include name="**/*.properties"/> 
-       </fileset>
-     </copy>
-     <java classname="org.apache.axis.utils.Admin" 
+    <echo message="Deploying webservice to tomcat at ${tomcat.home}..." />
+    <copy toDir="${tomcat.home}/webapps/axis/WEB-INF/classes">
+      <fileset dir="target/classes">
+        <include name="**/*.class"/> 
+        <include name="**/*.properties"/> 
+      </fileset>
+    </copy>
+    <java classname="org.apache.axis.utils.Admin" 
           classpathref="classpath"
           dir="${tomcat.home}/webapps/axis/WEB-INF"
           fork="yes" failonerror="true">
-       <arg value="server"/>
-       <arg value="${basedir}/wsdd/deploy.wsdd"/>
-     </java>
+      <arg value="server"/>
+      <arg value="${basedir}/wsdd/deploy.wsdd"/>
+    </java>
   </target>
              
-   <!-- Undeploy the webservice from tomcat. -->
-   <target name="undeployFromTomcat">
-     <echo message="Undeploying webservice from tomcat at ${tomcat.home}..." />
-     <path id="classpath">
-       <path refid="maven.dependency.classpath"/>
-     </path>
-      <java classname="org.apache.axis.utils.Admin"
-            dir="${tomcat.home}/webapps/axis/WEB-INF"
-            classpathref="classpath" fork="yes" failonerror="true">
-        <arg value="server"/>
-        <arg value="${basedir}/wsdd/undeploy.wsdd"/>
-      </java>
-     <delete dir=
+  <!-- Undeploy the webservice from tomcat. -->
+  <target name="undeployFromTomcat">
+    <echo message="Undeploying webservice from tomcat at ${tomcat.home}..." />
+    <path id="classpath">
+      <path refid="maven.dependency.classpath"/>
+    </path>
+    <java classname="org.apache.axis.utils.Admin"
+          dir="${tomcat.home}/webapps/axis/WEB-INF"
+          classpathref="classpath" fork="yes" failonerror="true">
+      <arg value="server"/>
+      <arg value="${basedir}/wsdd/undeploy.wsdd"/>
+    </java>
+    <delete dir=
       "${tomcat.home}/webapps/axis/WEB-INF/classes/org/astrogrid/warehouse"/>
-   </target>
-
-  <!-- Start a glue-based server running -->
-   <target name="startGlueServer">
-     <path id="classpath">
-       <pathelement location="target/classes"/>
-       <path refid="maven.dependency.classpath"/>
-     </path>
-     <java classname="org.astrogrid.warehouse.service.Server" 
-        dir="/data/cass123a/gtr/electric" classpathref="classpath" fork="yes"/>
-   </target>
-
-  <!-- Start a glue-based server running -->
-   <target name="glueClientTest">
-     <path id="classpath">
-       <pathelement location="target/classes"/>
-       <path refid="maven.dependency.classpath"/>
-     </path>
-     <java classname="org.astrogrid.warehouse.delegate.GlueDelegate" 
-        dir="/data/cass123a/gtr/" classpathref="classpath" fork="yes">
-        <arg value="http://localhost:8008/glue/warehouse.wsdl"/>
-      </java>
    </target>
 
   <!-- THIS PUTS ITS VOTABLE OUTPUT IN /tmp/QUERIER_OUTPUT_VOT -->
