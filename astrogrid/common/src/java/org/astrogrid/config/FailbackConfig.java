@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.1 2004/02/24 15:35:12 mch Exp $
+ * $Id: FailbackConfig.java,v 1.2 2004/02/26 17:31:30 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -83,7 +83,7 @@ public class FailbackConfig extends Config {
    private Properties properties = null;
    
    /** key used to find the properties file */
-   private static String propertyfileKey = "org.astrogrid.properties.url";
+   private static String propertyfileKey = "org.astrogrid.config.url";
    
    /** prefix to keys when accessing JNDI services.  No idea why this is required... */
    private static String jndiPrefix = "java:comp/env/";
@@ -335,6 +335,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.2  2004/02/26 17:31:30  mch
+Fixed org.astrogrid.config.url from org.astrogrid.properties.url
+
 Revision 1.1  2004/02/24 15:35:12  mch
 Refactoring to include FailbackConfig
 
