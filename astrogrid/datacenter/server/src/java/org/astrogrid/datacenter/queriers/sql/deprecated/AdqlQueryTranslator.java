@@ -1,4 +1,4 @@
-/*$Id: AdqlQueryTranslator.java,v 1.2 2004/04/01 17:17:33 mch Exp $
+/*$Id: AdqlQueryTranslator.java,v 1.3 2004/07/07 20:46:44 mch Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -149,8 +149,8 @@ public class AdqlQueryTranslator extends QueryTranslator {
       String alias = table.substring(0,1);
       
       //get which columns given RA & DEC for cone searches
-      String raCol  = alias+"."+SimpleConfig.getSingleton().getString(StdSqlMaker.CONE_SEARCH_RA_COL_KEY);
-      String decCol = alias+"."+SimpleConfig.getSingleton().getString(StdSqlMaker.CONE_SEARCH_DEC_COL_KEY);
+      String raCol  = table+"."+SimpleConfig.getSingleton().getString(StdSqlMaker.CONE_SEARCH_RA_COL_KEY);
+      String decCol = table+"."+SimpleConfig.getSingleton().getString(StdSqlMaker.CONE_SEARCH_DEC_COL_KEY);
 
       String gcRadius = "2 * ASIN( SQRT("+
          "SIN(("+searchDec+"-"+decCol+")/2) * SIN(("+searchDec+"-"+decCol+")/2) +"+    //some sqls won't handle powers so multiply by self
@@ -365,6 +365,9 @@ public Class getResultType() {
 
 /*
  $Log: AdqlQueryTranslator.java,v $
+ Revision 1.3  2004/07/07 20:46:44  mch
+ Fix for ADQL 0.5 circle SQL
+
  Revision 1.2  2004/04/01 17:17:33  mch
  Moved configuration-based circle columns from Postgres translator (bug)
 
