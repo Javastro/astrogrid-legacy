@@ -267,6 +267,21 @@
                 tofile="${generated.src}/org/astrogrid/applications/service/v1/cea/CommonExecutionConnector-deploy.wsdd" />
 
    </goal>
+   
+  <goal name="results-wsdl" prereqs="axis-declare-tasks">
+          <axis-wsdl2java output="${generated.src}"             verbose="true"
+            serverside="true"
+            skeletondeploy="false"
+            deployscope="Application"
+            testcase="false"
+        url="${basedir}/wsdl/CEAResultsListener.wsdl"
+        namespacemappingfile="${basedir}/build/axis-namespace-mappings.properties"
+        />
+
+         <move file="${generated.src}/org/astrogrid/jes/service/v1/cearesults/deploy.wsdd"
+                tofile="${generated.src}/org/astrogrid/jes/service/v1/cearesults/CEAResultsListener-deploy.wsdd" />
+
+   </goal>
 
    <goal name="wsdd-postprocess" description="apply xslt to fix generation bugs">
            <!--declare the transformer factory to use -->
