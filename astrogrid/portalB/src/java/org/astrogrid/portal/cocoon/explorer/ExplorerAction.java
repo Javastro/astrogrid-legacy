@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/cocoon/explorer/Attic/ExplorerAction.java,v $</cvs:source>
  * <cvs:date>$Author: clq2 $</cvs:date>
- * <cvs:author>$Date: 2003/10/03 12:35:55 $</cvs:author>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:author>$Date: 2003/10/06 16:46:10 $</cvs:author>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  * $Log: ExplorerAction.java,v $
+ * Revision 1.7  2003/10/06 16:46:10  clq2
+ * fixed bug extendlease not getting 2nd page.
+ *
  * Revision 1.6  2003/10/03 12:35:55  clq2
  * added new functions
  *
@@ -792,10 +795,10 @@ public class ExplorerAction
 								//
 								// Change the selected path and action.
 								view.setSelectedPath(from) ;
-								view.setSelectedAction(RENAME_ITEM_ACTION) ;
+								view.setSelectedAction(EXTENDLEASE_ITEM_ACTION) ;
 								//
 								// Set the action and confirm values.
-								action  = RENAME_ITEM_ACTION ;
+								action  = EXTENDLEASE_ITEM_ACTION ;
 								confirm = "false" ;
 								}
 							}				
