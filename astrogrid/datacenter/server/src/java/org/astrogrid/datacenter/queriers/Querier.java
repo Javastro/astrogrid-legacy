@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.55 2004/08/17 20:19:36 mch Exp $
+ * $Id: Querier.java,v 1.56 2004/08/18 21:35:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -119,7 +119,7 @@ public class Querier implements Runnable {
        }
        **/
        //make plugin
-      QuerierPlugin plugin = QuerierPluginFactory.createPlugin(this);
+      plugin = QuerierPluginFactory.createPlugin(this);
       
       setStatus(new QuerierConstructed(this));
    }
@@ -175,7 +175,7 @@ public class Querier implements Runnable {
 
       timeQueryStarted = new Date();
       
-      plugin = QuerierPluginFactory.createPlugin(this);
+ //     plugin = QuerierPluginFactory.createPlugin(this);
       
       plugin.askQuery();
 
@@ -415,6 +415,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.56  2004/08/18 21:35:50  mch
+ Fixed odd bug; plugin created in constructor was lost, and created again during ask
+
  Revision 1.55  2004/08/17 20:19:36  mch
  Moved TargetIndicator to client
 
