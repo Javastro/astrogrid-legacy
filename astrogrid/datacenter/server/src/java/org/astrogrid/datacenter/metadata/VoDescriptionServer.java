@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.7 2004/09/08 14:45:27 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.8 2004/09/08 14:56:35 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -154,7 +154,7 @@ public class VoDescriptionServer {
    /**
     * Returns the Authority resource element of the description */
    public static Element getAuthorityResource() throws IOException {
-      return getResource("AuthorityID");
+      return getResource("AuthorityType");
    }
    
    /**
