@@ -37,40 +37,37 @@
 		</xsl:if>
 		<form method="get" name="AdminTaskSelect">
 			<select name="action">
-			  <option value="insertresource">Insert Resource</option>
-			  <option value="removeresource">Remove Resource</option>
-			  <option value="changeresourceowner">Change Resource Owner</option>
-			  <option value="insertgroup">Insert Group</option>
-			  <option value="removegroup">Remove Group</option>
-			  <option value="changegroupowner">Change Group Owner</option>
-			  <option value="insertmember">Insert Member</option>
-			  <option value="removemember">Remove Member</option>
-			  <option value="insertpermission">Insert Permission</option>
-			  <option value="removepermission">Remove Permission</option>
-			  <option value="insertcommunity">Insert Community</option>
-			  <option value="removecommunity">Remove Community</option>
-			  <option value="changeofpassword">Change Of Password</option>
-			  <option value="insertaccount">Insert Account</option>			  
-			  <option value="removeaccount">Remove Account</option>
-			  <option value="viewgroups">View Groups</option>
+					<xsl:for-each select="//admin/options/actions/action">
+						<xsl:element name="option">
+							<xsl:attribute name="value">
+								<xsl:value-of select="@val"/>
+							</xsl:attribute>
+							<xsl:if test="$action = @val">
+								<xsl:attribute name="selected">
+									<xsl:text>true</xsl:text>
+								</xsl:attribute>
+							</xsl:if>							
+							<xsl:value-of select="@name"/>
+						</xsl:element>
+					</xsl:for-each>			
 			</select>
 			<input type="submit" name="admintaskselect" value="Go" />
 		</form>
 		<xsl:if test="$action = 'insertresource'">
 			<form method="get" name="AdminInsertResource">
-				<strong>Resource Name: </strong> <input type="text" name="resourcername" />
+				<input type="hidden" name="processaction" value="insertresource" />			
+				<strong>Resource Name: </strong> <input type="text" name="ident" />
 				<br />
 				<strong>Description: </strong> <input type="text" name="description" />
-				<br />
-				*<strong><i>You will become owner of this resource, go to "ChangeResourceOwner" for assiging administration to a user group or a single user</i></strong>
 				<br />
 				<input type="submit" name="insertresource" value="Insert Resource" />
 			</form>
 		</xsl:if>
 		<xsl:if test="$action = 'removeresource'">
 			<form method="get" name="AdminRemoveResource">
-				<strong>Resources you can administrate: </strong>
-				<select name="resource">
+				<input type="hidden" name="processaction" value="removeresource" />
+				<strong>Resources: </strong>
+				<select name="ident">
 					<xsl:for-each select="//admin/options/resources/resource">
 						<xsl:element name="option">
 							<xsl:attribute name="value">
@@ -84,42 +81,12 @@
 				<input type="submit" name="removeresource" value="Remove Resource" />
 			</form>
 		</xsl:if>			
-		<xsl:if test="$action = 'changeresourceowner'">
-			<form method="get" name="AdminChangeResourceOwner">
-				<strong>Resources you can administrate: </strong>
-				<select name="resource">
-					<xsl:for-each select="//admin/options/resources/resource">
-						<xsl:element name="option">
-							<xsl:attribute name="value">
-								<xsl:value-of select="@val"/>
-							</xsl:attribute>
-							<xsl:value-of select="@name"/>
-						</xsl:element>
-					</xsl:for-each>
-				</select>
-				<br />
-				<strong>Change Owner to: </strong>
-				<select name="group">
-					<xsl:for-each select="//admin/options/singlegroups/group">
-						<xsl:element name="option">
-							<xsl:attribute name="value">
-								<xsl:value-of select="@val"/>
-							</xsl:attribute>
-							<xsl:value-of select="@name"/>
-						</xsl:element>
-					</xsl:for-each>
-				</select>
-				<br />
-				<input type="submit" name="changeresourceowner" value="Changer Owner" />
-			</form>
-		</xsl:if>			
 		<xsl:if test="$action = 'insertgroup'">			
 			<form method="get" name="AdminInsertGroup">
+				<input type="hidden" name="processaction" value="insertgroup" />
 				*<i>You can only insert MULTI user groups, single type's are automatically created with inserting an Account</i>
 				<br />
-				<strong>Group Name: </strong> <input type="text" name="groupname" />
-				<br />
-				<strong>Community: </strong> <input type="text" name="community" />
+				<strong>Group Name: </strong> <input type="text" name="ident" />
 				<br />
 				<strong>Description: </strong> <input type="text" name="description" />
 				<br />
@@ -132,46 +99,18 @@
 			<form method="get" name="AdminRemoveGroup">
 				*<i>You can only remove MULTI user groups, single type's are automatically removed with removing of an Account</i>
 				<br />
+				<input type="hidden" name="processaction" value="removegroup" />
 				<strong>Group Name: </strong> 
-				<select name="group">
-					<xsl:for-each select="//admin/options/multigroups/group">
-						<xsl:element name="option">
-							<xsl:attribute name="value">
-								<xsl:value-of select="@val"/>
-							</xsl:attribute>
-							<xsl:value-of select="@name"/>
-						</xsl:element>
-					</xsl:for-each>
-				</select>
-				<br />
-				<input type="submit" name="removegroup" value="Remove Group" />
-			</form>
-		</xsl:if>			
-		<xsl:if test="$action = 'changegroupowner'">			
-			<form method="get" name="ChangeGroupOwner">
-				*<i>You can only remove MULTI user groups ownership.</i>
-				<br />
-				<strong>Group Name: </strong> 
-				<select name="group">
-					<xsl:for-each select="//admin/options/multigroups/group">
-						<xsl:element name="option">
-							<xsl:attribute name="value">
-								<xsl:value-of select="@val"/>
-							</xsl:attribute>
-							<xsl:value-of select="@name"/>
-						</xsl:element>
-					</xsl:for-each>
-				</select>
-				<br />
-				<i>User must belong to this local community.</i>
-				<select name="group">
-					<xsl:for-each select="//admin/options/singlelocalgroup/group">
-						<xsl:element name="option">
-							<xsl:attribute name="value">
-								<xsl:value-of select="@val"/>
-							</xsl:attribute>
-							<xsl:value-of select="@name"/>
-						</xsl:element>
+				<select name="ident">
+					<xsl:for-each select="//admin/options/groups/group">
+						<xsl:if test="@type = 'MULTI'" >
+							<xsl:element name="option">
+								<xsl:attribute name="value">
+									<xsl:value-of select="@val"/>
+								</xsl:attribute>
+								<xsl:value-of select="@name"/>
+							</xsl:element>
+						</xsl:if>
 					</xsl:for-each>
 				</select>
 				<br />
@@ -180,27 +119,30 @@
 		</xsl:if>			
 		<xsl:if test="$action = 'insertmember'">			
 			<form method="get" name="InsertMember">
+				<input type="hidden" name="processaction" value="insertmember" />
 				<strong>Group Name: </strong> 
 				<select name="group">
-					<xsl:for-each select="//admin/options/multigroups/group">
-						<xsl:element name="option">
-							<xsl:attribute name="value">
-								<xsl:value-of select="@val"/>
-							</xsl:attribute>
-							<xsl:value-of select="@name"/>
-						</xsl:element>
+					<xsl:for-each select="//admin/options/groups/group">
+						<xsl:if test="@type = 'MULTI'" >
+							<xsl:element name="option">
+								<xsl:attribute name="value">
+									<xsl:value-of select="@val"/>
+								</xsl:attribute>
+								<xsl:value-of select="@name"/>
+							</xsl:element>
+						</xsl:if>
 					</xsl:for-each>
 				</select>
 				<br />
 				<strong>User: </strong>
-				<select name="group">
-					<xsl:for-each select="//admin/options/singlegroups/group">
-						<xsl:element name="option">
-							<xsl:attribute name="value">
-								<xsl:value-of select="@val"/>
-							</xsl:attribute>
-							<xsl:value-of select="@name"/>
-						</xsl:element>
+				<select name="ident">
+					<xsl:for-each select="//admin/options/accounts/account">
+							<xsl:element name="option">
+								<xsl:attribute name="value">
+									<xsl:value-of select="@val"/>
+								</xsl:attribute>
+								<xsl:value-of select="@name"/>
+							</xsl:element>
 					</xsl:for-each>
 				</select>
 				<br />
@@ -209,27 +151,30 @@
 		</xsl:if>			
 		<xsl:if test="$action = 'removemember'">			
 			<form method="get" name="RemoveMember">
+				<input type="hidden" name="processaction" value="removemember" />
 				<strong>Group Name: </strong> 
 				<select name="group">
-					<xsl:for-each select="//admin/options/multigroups/group">
-						<xsl:element name="option">
-							<xsl:attribute name="value">
-								<xsl:value-of select="@val"/>
-							</xsl:attribute>
-							<xsl:value-of select="@name"/>
-						</xsl:element>
+					<xsl:for-each select="//admin/options/groups/group">
+						<xsl:if test="@type = 'MULTI'" >
+							<xsl:element name="option">
+								<xsl:attribute name="value">
+									<xsl:value-of select="@val"/>
+								</xsl:attribute>
+								<xsl:value-of select="@name"/>
+							</xsl:element>
+						</xsl:if>
 					</xsl:for-each>
 				</select>
 				<br />
 				<strong>User: </strong>
-				<select name="group">
-					<xsl:for-each select="//admin/options/singlegroups/group">
-						<xsl:element name="option">
-							<xsl:attribute name="value">
-								<xsl:value-of select="@val"/>
-							</xsl:attribute>
-							<xsl:value-of select="@name"/>
-						</xsl:element>
+				<select name="ident">
+					<xsl:for-each select="//admin/options/accounts/account">
+							<xsl:element name="option">
+								<xsl:attribute name="value">
+									<xsl:value-of select="@val"/>
+								</xsl:attribute>
+								<xsl:value-of select="@name"/>
+							</xsl:element>
 					</xsl:for-each>
 				</select>
 				<br />
@@ -316,11 +261,12 @@
 		</xsl:if>			
 		<xsl:if test="$action = 'insertaccount'">			
 			<form method="get" name="InsertAccount">
-				<strong>User: </strong> <input type="text" name="name" />
+				<input type="hidden" name="processaction" value="insertaccount" />			
+				<strong>User: </strong> <input type="text" name="ident" />
 				<br />
-				<strong>Password: </strong> <input type="text" name="password" />
+				<strong>Password: </strong> <input type="password" name="password" />
 				<br />
-				<strong>Community: </strong> <input type="text" name="community" />
+				<strong>Description:</strong> <input type="text" name="description" />
 				<br />
 				<input type="submit" name="insertaccount" value="Insert Account" />
 			</form>
@@ -328,31 +274,48 @@
 		
 		<xsl:if test="$action = 'removeaccount'">			
 			<form method="get" name="RemoveAccount">
-				<strong>User: </strong> <input type="text" name="name" />
-				<br />
-				<strong>Community: </strong> <input type="text" name="community" />
-				<br />
+				<input type="hidden" name="processaction" value="removeaccount" />			
+				<select name="ident">
+					<xsl:for-each select="//admin/options/accounts/account">
+							<xsl:element name="option">
+								<xsl:attribute name="value">
+									<xsl:value-of select="@val"/>
+								</xsl:attribute>
+								<xsl:value-of select="@name"/>
+							</xsl:element>
+					</xsl:for-each>
+				</select>
 				<input type="submit" name="removeaccount" value="Remove Account" />
 			</form>
 		</xsl:if>			
 		<xsl:if test="$action = 'insertcommunity'">			
 			<form method="get" name="InsertCommunity">
-				<strong>Community Name: </strong> <input type="text" name="name" />
-				<br />
-				<strong>Admin Service URL: </strong> <input type="text" name="url" />
+				<input type="hidden" name="processaction" value="insertcommunity" />			
+				<strong>Community Name (Domain Name): </strong> <input type="text" name="ident" />
 				<br />
 				<input type="submit" name="insertcommunity" value="Insert Community" />
 			</form>
 		</xsl:if>			
 		<xsl:if test="$action = 'removecommunity'">			
 			<form method="get" name="RemoveCommunity">
-				<strong>Community Name: </strong> <input type="text" name="name" />
+				<input type="hidden" name="processaction" value="removecommunity" />
+				<select name="ident">
+					<xsl:for-each select="//admin/options/communities/community">
+							<xsl:element name="option">
+								<xsl:attribute name="value">
+									<xsl:value-of select="@val"/>
+								</xsl:attribute>
+								<xsl:value-of select="@name"/>
+							</xsl:element>
+					</xsl:for-each>
+				</select>
 				<br />
 				<input type="submit" name="removecommunity" value="Remove Community" />
 			</form>
-		</xsl:if>			
+		</xsl:if>
 		<xsl:if test="$action = 'changeofpassword'">			
 			<form method="get" name="ChangeOfPassword">
+				<input type="hidden" name="processaction" value="changeofpassword" />
 				<strong>Current Password: </strong> <input type="password" name="currentpassword" /><br />
 				<strong>New Password: </strong> <input type="password" name="newpassword" /><br />
 				<strong>Verify Password: </strong> <input type="password" name="verifypassword" /><br />						
@@ -364,10 +327,7 @@
 			<table border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td>
-						<strong>Name:</strong>
-					</td>
-					<td>
-						<strong>Community:</strong>
+						<strong>Group:</strong>
 					</td>
 					<td>
 						<strong>Type:</strong>
@@ -376,7 +336,7 @@
 						<strong>Description:</strong>
 					</td>
 				</tr>
-				<xsl:for-each select="//admin/options/multigroups/group">
+				<xsl:for-each select="//admin/options/groups/group">
 					<tr>
 						<td>
 							<xsl:value-of select="@val"/>
@@ -385,26 +345,10 @@
 							MSSL
 						</td>
 						<td>
-							MULTI
-						</td>
-						<td>
-							info
-						</td>
-					</tr>
-				</xsl:for-each>
-				<xsl:for-each select="//admin/options/singlegroups/group">
-					<tr>
-						<td>
 							<xsl:value-of select="@val"/>
 						</td>
 						<td>
-							MSSL
-						</td>
-						<td>
-							SINGLE
-						</td>
-						<td>
-							info
+							<xsl:value-of select="@desc"/>
 						</td>
 					</tr>
 				</xsl:for-each>

@@ -28,44 +28,17 @@ Brian McIlwrath, Astrogrid, RAL>
    Session session = null;
    String user      = request.getParameter("Username");
    String pwd       = request.getParameter("Password");
-   String community = request.getParameter("Community");
    String redirect  = "agnologin.html";
 
    DateFormat timestamp = DateFormat.getDateTimeInstance();
    String now = timestamp.format(new Date());
-
-   if( (pwdURL = parameters.getParameter("pwdfile", null)) == null) {
-      pwdURL = 
-       "http://stargrid1.bnsc.rl.ac.uk:8080/org/astrogrid/portal/password.txt";
-      System.out.println("Used backup password URL");
-   }
-   try {
-     URL url = new URL(pwdURL);
-     BufferedReader in = new BufferedReader(new 
-           InputStreamReader(url.openStream()));
-     String str;
-     while((str=in.readLine()) != null){
-        String[] fields = str.split(",");
-        if(fields.length == 2 &amp;&amp;
-           fields[0].equals(user) &amp;&amp;
-           fields[1].equals(pwd)){
-              redirect = "agindex.html";
-              break;
-        }
-     }
-     in.close();
-   }   
-   catch(Exception e) {
-        System.out.println(e);
-        System.out.println("AGLOGIN - cannot authenticate!! Default to login!");
-        redirect = "agindex.html";
-   }
+   redirect = "agindex.html";
 
    if (redirect.equals("agindex.html")) {
       System.out.println(now + " AGLOGIN " + user + " has been authenticed");
       session = request.getSession(true);
       session.setAttribute("user", user);
-      session.setAttribute("community", community);
+//      session.setAttribute("community", community);
    } else {
       session = request.getSession(false);
       if(session != null) {

@@ -43,9 +43,6 @@
 				<xsl:for-each select="//credentials/groups/group">
 					<xsl:element name="option">
 						<xsl:attribute name="value"><xsl:value-of select="@val"/></xsl:attribute>
-						<xsl:if test="@default">
-							<xsl:attribute name="selected"><xsl:value-of select="true" /></xsl:attribute>
-						</xsl:if>
 						<xsl:value-of select="@name"/>
 					</xsl:element>				  
 				</xsl:for-each>
@@ -54,13 +51,11 @@
 			<input type="submit" name="setgroup" value="Set" />
 			<br />
 			<strong>You can add more groups to your credentials if you are assigned to a group in another community.</strong>
+			<br />
 			<select name="community">
 				<xsl:for-each select="//credentials/communities/community">
 					<xsl:element name="option">
 						<xsl:attribute name="value"><xsl:value-of select="@val"/></xsl:attribute>
-						<xsl:if test="@default">
-							<xsl:attribute name="selected"><xsl:value-of select="true" /></xsl:attribute>
-						</xsl:if>
 						<xsl:value-of select="@name"/>
 					</xsl:element>
 				</xsl:for-each>

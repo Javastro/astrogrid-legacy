@@ -10,7 +10,8 @@ import org.apache.cocoon.environment.ObjectModelHelper;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
-//import org.astrogrid.community.delegate.policy.AdministrationDelegate;
+import org.astrogrid.community.delegate.policy.AdministrationDelegate;
+
 /**
  *
  * Class Name: DataQueryServlet
@@ -87,17 +88,19 @@ public class CredentialAction extends AbstractAction
          System.out.println("the action is = " + action);      
       }
       
-      //AdministrationDelegate adminDelegate = new AdministrationDelegate();
+      AdministrationDelegate adminDelegate = new AdministrationDelegate();
       ArrayList communityList = (ArrayList)session.getAttribute(PARAM_COMMUNITY_LIST);
       
       if(communityList == null || communityList.size() <= 0) {
          //call delegate to get the communities trusted by this local community.
          //fill with dummy data for the moment.
-         //communityList = adminDelegate.getCommunityList();
-         communityList.add("MSSL");
-         communityList.add("Cambridge");
-         communityList.add("Leicester");
-         communityList.add("Edinburgh");
+         try {
+            communityList = adminDelegate.getCommunityList();
+         }catch(Exception e) {
+            e.printStackTrace();
+         }
+         session.setAttribute(PARAM_COMMUNITY_LIST,communityList);
+         
       }
       
       ArrayList groupList = (ArrayList)session.getAttribute(PARAM_GROUP_LIST);
@@ -107,19 +110,21 @@ public class CredentialAction extends AbstractAction
       Map results = new HashMap();
       
       if(groupList == null || groupList.size() <= 0) {
+         groupList = new ArrayList();
          //call delegate to get the groups for the local community.
          //fill with dummy data for the moment.
          //adminDelegate.getAccountGroupList(user);
          groupList.add("Solar_Flares@mssl");
          groupList.add("BigBang@mssl");
+         session.setAttribute(PARAM_GROUP_LIST,groupList);
       }
       
-      if(action.equals(ACTION_SET_GROUP)) {
+      if(ACTION_SET_GROUP.equals(action)) {
          session.setAttribute(PARAM_CREDENTIAL,(String)request.getParameter(PARAM_CREDENTIAL));
          results.put(PARAM_CREDENTIAL,(String)request.getParameter(PARAM_CREDENTIAL));
       }
       
-      if(action.equals(ACTION_GET_COMMUNITY_GROUPS)) {
+      if(ACTION_GET_COMMUNITY_GROUPS.equals(action)) {
          String communityURL = (String)request.getParameter(PARAM_COMMUNITY_URL);
          //ArrayList temp = adminDelegate.getAccountGroupList(user,communityURL);
          //groupList.addAll(temp);
