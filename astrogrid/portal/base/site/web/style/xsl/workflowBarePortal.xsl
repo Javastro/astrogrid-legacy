@@ -23,11 +23,13 @@
         <!--
           Main stylesheet.
           -->
+          <!--
         <xsl:element name="link">
           <xsl:attribute name="href"><xsl:value-of select="$ag-css-url"/></xsl:attribute>
           <xsl:attribute name="rel">stylesheet</xsl:attribute>
           <xsl:attribute name="type">text/css</xsl:attribute>
         </xsl:element>
+        -->
 
         <!-- Process <script/> elements -->
         <xsl:for-each select="//node()[local-name() = 'ag-script']">
