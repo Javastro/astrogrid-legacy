@@ -1,8 +1,12 @@
 /*
  * @(#)Message.java   1.0
  *
- * AstroGrid Copyright notice.
- * 
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
  */
 package org.astrogrid.jes.i18n;
 
@@ -36,8 +40,10 @@ public class Message {
 		
 	private static final String
 		ASTROGRIDERROR_MESSAGEKEY_NULL = "AGJESZ00003:Message: Message key is null",
-		ASTROGRIDERROR_MESSAGE_PATTERN_OR_INSERTS_INVALID = "AGJESZ00004:Message: Message pattern or inserts are invalid",
-		ASTROGRIDERROR_MESSAGE_NOT_FOUND_IN_RESOURCEBUNDLE = "AGJESZ00005:Message: Message not found in ResourceBundle" ;
+		ASTROGRIDERROR_MESSAGE_PATTERN_OR_INSERTS_INVALID = 
+                 "AGJESZ00004:Message: Message pattern or its inserts are invalid for message with key [{0}]",
+		ASTROGRIDERROR_MESSAGE_NOT_FOUND_IN_RESOURCEBUNDLE = 
+                 "AGJESZ00005:Message: Message with key [{0}] not found in ResourceBundle" ;
 		
     private static ResourceBundle
         messages ;
@@ -102,12 +108,16 @@ public class Message {
 			logger.debug( ASTROGRIDERROR_MESSAGEKEY_NULL ) ;  
 		}
 		catch( MissingResourceException mrex ) {
-			retValue = ASTROGRIDERROR_MESSAGE_NOT_FOUND_IN_RESOURCEBUNDLE ;
-			logger.debug( ASTROGRIDERROR_MESSAGE_NOT_FOUND_IN_RESOURCEBUNDLE ) ;  
+			Object[]
+			   oa = {key} ;
+			retValue = MessageFormat.format( ASTROGRIDERROR_MESSAGE_NOT_FOUND_IN_RESOURCEBUNDLE, oa ) ;
+			logger.debug( retValue ) ;  
 		}
 		catch( IllegalArgumentException iaex ) {
-			retValue = ASTROGRIDERROR_MESSAGE_PATTERN_OR_INSERTS_INVALID ;
-			logger.debug( ASTROGRIDERROR_MESSAGE_PATTERN_OR_INSERTS_INVALID ) ;  
+			Object[]
+			   oa = {key} ;
+			retValue = MessageFormat.format( ASTROGRIDERROR_MESSAGE_PATTERN_OR_INSERTS_INVALID, oa ) ;
+			logger.debug( retValue ) ;  
 		}
 		finally {   
 			if( TRACE_ENABLED ) logger.debug( "toString(ResourceBundle): exit") ;
