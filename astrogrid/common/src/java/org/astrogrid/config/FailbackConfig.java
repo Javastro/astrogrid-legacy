@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.27 2004/10/05 19:32:43 mch Exp $
+ * $Id: FailbackConfig.java,v 1.28 2004/10/08 16:33:57 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -511,19 +511,41 @@ public class FailbackConfig extends Config {
          throw new ConfigException(ne+" locating key="+key+" in JNDI", ne);
       }
 
-      //try the properties file
+      //try the properties file. It can only hold one value per key, so we
+      //look for the key (and return a single element array if found) and/or
+      //key.1, key.2, key.3 until a key returns null.
       if (!fileInitialised) { initialiseFile(); }
 
       if (properties == null) {
          lookedIn = lookedIn +", (no config file)";
       }
       else {
-         String value = properties.getProperty(key);
          lookedIn = lookedIn +", config file(s) ("+loadedFrom()+")";
+
+         String value = properties.getProperty(key);
+         String value1 = properties.getProperty(key+".1");
       
+         //check that there aren't both settings without number and settings with
+         if ((value != null) && (value1 != null)) {
+            throw new ConfigException("Both single value and sets of values defined for key "+key+" in property file");
+         }
+
+         //only one value set
          if (value != null) {
             return new Object[] { value };
          }
+         
+         if (value1 != null) {
+            Vector values = new Vector();
+            int v = 2;
+            while (value1 != null) {
+               values.add(value1);
+               value1 = properties.getProperty(key+"."+v);
+               v++;
+            }
+            return values.toArray();
+         }
+         
       }
       
       //try the system environment
@@ -536,6 +558,19 @@ public class FailbackConfig extends Config {
       throw new PropertyNotFoundException("Could not find '"+key+"' in: "+lookedIn);
    }
 
+   /**
+    * Set property to array.  Stores in cache so it overrides all other properties
+    * with the same key.
+    */
+   public void setProperties(String key, Object[] values) {
+      if (values == null) {
+         if (cache.containsKey(key)) {
+            cache.remove(key);
+         }
+      } else {
+         cache.put(key, values);
+      }
+   }
 
    /**
     * Returns a list of keys.  This list is made up of the values in the
@@ -691,6 +726,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.28  2004/10/08 16:33:57  mch
+Added setProperties() and attempt to make getProperties() work with property files
+
 Revision 1.27  2004/10/05 19:32:43  mch
 Added getProperties
 
