@@ -1,0 +1,29 @@
+<document>
+  <properties>
+    <title>Page title</title>
+    <author email="gps@roe.ac.uk">Peter Shillan</author>
+  </properties>
+  <body>
+
+    <release version="HEAD" date="in CVS">
+      <action dev="gps" type="update">
+        Sample update release notes.
+      </action>              
+    </release>
+
+    <release version="Iteration01" date="2003-03-31">
+      <action dev="gps" type="add">
+        Sample add action.
+      </action>              
+      <action dev="gps" type="fix">
+        Corrected bug blah blah.
+      </action>              
+      <action dev="gps" type="remove">
+        Removed blah blah.
+      </action>              
+      <action dev="gps" type="update">
+        Updated blah blah.
+      </action>              
+    </release>
+  </body>
+</document>
