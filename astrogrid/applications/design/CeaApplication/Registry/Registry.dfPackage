@@ -1,0 +1,65 @@
+package id3lkcdufx6paxdufywoy5;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#CeaApplication.Registry.ResourceType:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#CeaApplication.Registry.ServiceType:oiref><oihard>
+@__modelType reference 
+*/
+class reference37 {
+}/**
+@__ref <oiref:java#Class#CeaApplication.Registry.CeaApplication:oiref><oihard>
+@__modelType reference 
+*/
+class reference38 {
+}/**
+@__ref <oiref:java#Class#CeaApplication.Registry.CeaService:oiref><oihard>
+@__modelType reference 
+*/
+class reference39 {
+}/**
+@__ref <oiref:design#Class#id3lkcdufx6paxdufywoy5.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference40 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:Composite#clientCardinality#MemberLink#<oiref:java#Member#CeaApplication.Registry.CeaService#lnkCeaApplication:oiref>=480,284,22,23,0,0.0,-1.0:oigroup>
+<oigroup:Composite#label#MemberLink#<oiref:java#Member#CeaApplication.Registry.CeaService#lnkCeaApplication:oiref>=372,255,75,23,1:oigroup>
+<oigroup:<oiref:java#Extends#CeaApplication.Registry.CeaService#CeaApplication.Registry.ServiceType:oiref>=533,220,533,169:oigroup>
+<oigroup:<oiref:design#Class#id3lkcdufx6paxdufywoy5.node:oiref>=32,29,188,41,0:oigroup>
+<oigroup:<oiref:java#Class#CeaApplication.Registry.ResourceType:oiref>=281,77,110,89,1:oigroup>
+<oigroup:<oiref:java#Extends#CeaApplication.Registry.ServiceType#CeaApplication.Registry.ResourceType:oiref>=480,123,391,123:oigroup>
+<oigroup:<oiref:java#Class#CeaApplication.Registry.CeaApplication:oiref>=210,240,119,89,1:oigroup>
+<oigroup:<oiref:java#Extends#CeaApplication.Registry.CeaApplication#CeaApplication.Registry.ResourceType:oiref>=305,240,305,166:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#CeaApplication.Registry.CeaService#lnkCeaApplication:oiref>=490,284,329,284:oigroup>
+<oigroup:<oiref:java#Class#CeaApplication.Registry.CeaService:oiref>=490,220,130,110,0:oigroup>
+<oigroup:<oiref:java#Class#CeaApplication.Registry.ServiceType:oiref>=480,80,96,89,1:oigroup>
+<oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#CeaApplication.Registry.CeaService#lnkCeaApplication:oiref>=339,261,22,23,0,0.0,1.0:oigroup>
+*/
+class __positions {
+}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text Registry Domain Objects 
+*/
+class node {
+}
