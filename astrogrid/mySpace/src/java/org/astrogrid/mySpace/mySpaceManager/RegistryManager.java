@@ -202,8 +202,11 @@ public class RegistryManager
  *   <code>DataItemRecord</code>.
  */
 
-   public int addDataItemRecord(DataItemRecord dataItemRecord)
-   {  int returnDataItemID = -1;
+   public DataItemRecord addDataItemRecord(DataItemRecord dataItemRecord)
+   {  DataItemRecord returnDataItem = new DataItemRecord();
+
+      int dataItemID = -1;
+      String dataItemFile = "";
 
       try
       {
@@ -228,13 +231,14 @@ public class RegistryManager
          String sqlStatement = "INSERT INTO reg(" +
            "dataItemName, " +
 //            dataItemID, 
-           "dataItemFile, ownerID, " +
+//            dataItemFile, 
+           "ownerID, " +
            "creationDate, expiryDate, " +
            "size, type, permissionsMask) " +
            "VALUES (" +
             "'" + dataItemRecord.getDataItemName() + "', " +
-//            dataItemRecord.getDataItemID() + ", " +
-            "'" + dataItemRecord.getDataItemFile() + "', " +
+//            "'" + dataItemRecord.getDataItemID() + "', " +
+//            "'" + dataItemRecord.getDataItemFile() + "', " +
             "'" + dataItemRecord.getOwnerID() + "', " +
             "'" + sqlCreation + "', " +
             "'" + sqlExpiry + "', " +
@@ -265,10 +269,12 @@ public class RegistryManager
 //      Attempt to retrieve the dataItemID from the returned
 //      DataItemRecord.
 
+         DataItemRecord newRec = new DataItemRecord();
+
          if (dbvec != null)
          {  if (dbvec.size() == 1)
-            {  DataItemRecord newRec = (DataItemRecord)dbvec.elementAt(0);
-               returnDataItemID = newRec.getDataItemID();
+            {  newRec = (DataItemRecord)dbvec.elementAt(0);
+               dataItemID = newRec.getDataItemID();
             }
             else
             {  throw new Exception("JDBC error : " + sqlStatement);
@@ -277,9 +283,44 @@ public class RegistryManager
          else
          {  throw new Exception("JDBC error : " + sqlStatement);
          }
+
+//
+//      Attempt to generate the file name (dataItemFile) corresponding
+//      to the dataItemID and then update the record in the database
+//      to contain this name.
+//
+//      Note that if the dataItemRecord corresponds to a container
+//      then dataItemFile is set to "none" (because there is no
+//      corresponding file in this case.
+
+         if (dataItemID > -1)
+         {  if (dataItemRecord.getType() != DataItemRecord.CON)
+            {  dataItemFile = "f" + dataItemID;
+            }
+            else
+            {  dataItemFile = "none";
+            }
+
+            sqlStatement = "UPDATE reg SET " +
+              "dataItemFile = '" + dataItemFile + "' " +
+              "WHERE (dataItemID=" + dataItemID + ")";
+
+            dbvec = this.transact(sqlStatement, true);
+            if (dbvec == null)
+            {  throw new Exception("JDBC error : " + sqlStatement);
+            }
+         }
+
+//
+//      Assemble the return dataItemRecord.
+
+         if (dataItemID > -1)
+         {  returnDataItem = newRec;
+            returnDataItem.setDataItemFile(dataItemFile);
+         }
       }
       catch (Exception all)
-      {  returnDataItemID = -1;
+      {  returnDataItem = null;
 
          if (DEBUG) all.printStackTrace();
 
@@ -288,7 +329,7 @@ public class RegistryManager
            MySpaceStatusCode.LOG, this.getClassName() );
       }
 
-      return returnDataItemID;
+      return returnDataItem;
    }
 
 // -------------------------------------------------------------------
@@ -482,7 +523,8 @@ public class RegistryManager
 
          String sqlStatement =
            "SELECT * FROM reg WHERE dataItemName LIKE '" +
-           localDataHolderNameExpr + "'";
+           localDataHolderNameExpr + "'" +
+           "ORDER BY dataItemName ASC";
 
 //
 //      Attempt to execute the SQL statement.

@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 3.
+ * @version Iteration 4.
  */
 
 public class MySpaceActions
@@ -211,11 +211,11 @@ public class MySpaceActions
 
                         Calendar cal = Calendar.getInstance();
                         cal.setTime(creation);
-                        cal.add(Calendar.DATE, reg.getExpiryPeriod() );
+                        cal.add(Calendar.DATE, reg.getServerExpiryPeriod("serv1") );
                         Date expiry = cal.getTime();
 
-                        int newdataItemID = reg.getNextDataItemID();
-                        String dataItemFileName = "f" + newdataItemID;
+                        int newdataItemID = -1;
+                        String dataItemFileName = "";
 
                         int dataItemType = oldDataItem.getType();
                         int dataItemSize = oldDataItem.getSize();
@@ -228,8 +228,9 @@ public class MySpaceActions
 //
 //                     Attempt to add this entry to the registry.
 
-                        if (reg.addDataItemRecord(newDataItem) )
-                        {
+                        newDataItem = reg.addDataItemRecord(newDataItem);
+                        if (newDataItem != null)
+                        {  newdataItemID = newDataItem.getDataItemID();
 
 //
 //                        Attempt to copy the DataHolder.
@@ -392,11 +393,6 @@ public class MySpaceActions
                }
             }
          }
-
-//
-//      Re-write the registry file.
-
-         reg.rewriteRegistryFile();
       }
       catch (Exception all)
       {  status.addCode(MySpaceStatusCode.AGMMCE00100,
@@ -479,10 +475,10 @@ public class MySpaceActions
 
                         Calendar cal = Calendar.getInstance();
                         cal.setTime(creation);
-                        cal.add(Calendar.DATE, reg.getExpiryPeriod() );
+                        cal.add(Calendar.DATE, reg.getServerExpiryPeriod("serv1") );
                         Date expiry = cal.getTime();
 
-                        int newdataItemID = reg.getNextDataItemID();
+                        int newdataItemID = -1;
                         String dataItemFileName = 
                           oldDataItem.getDataItemFile();
                         int dataItemType = oldDataItem.getType();
@@ -496,7 +492,8 @@ public class MySpaceActions
 //
 //                     Attempt to add this entry to the registry.
 
-                        if (reg.addDataItemRecord(newDataItem) )
+                        newDataItem = reg.addDataItemRecord(newDataItem);
+                        if (newDataItem != null )
                         {
 
 //
@@ -524,11 +521,6 @@ public class MySpaceActions
                }
             }
          }
-
-//
-//      Re-write the registry file.
-
-         reg.rewriteRegistryFile();
       }
       catch (Exception all)
       {  status.addCode(MySpaceStatusCode.AGMMCE00100,
@@ -542,18 +534,18 @@ public class MySpaceActions
 // -----------------------------------------------------------------
 
 /**
-  * Import a new dataHolder.  A remote file is imported into the MySpace
-  * system as a DataHolder.  This remote file is identified by a URI,
-  * which is passed as one of the input arguments.  In Iteration 3 this
-  * URI must be a URL.
-  *
-  * upLoadDataHolder and importDataHolder are similar in that both allow 
-  * new data to be introduced into a MySpace system.  The difference
-  * between them is that importDataHolder is given the URL of a remote 
-  * file, which is copied into MySpace, whereas upLoadDataHolder is
-  * given a string as an input argument whose contents are written as a 
-  * file in MySpace.
-  */
+ * Import a new dataHolder.  A remote file is imported into the MySpace
+ * system as a DataHolder.  This remote file is identified by a URI,
+ * which is passed as one of the input arguments.  In Iteration 3 this
+ * URI must be a URL.
+ *
+ * upLoadDataHolder and importDataHolder are similar in that both allow 
+ * new data to be introduced into a MySpace system.  The difference
+ * between them is that importDataHolder is given the URL of a remote 
+ * file, which is copied into MySpace, whereas upLoadDataHolder is
+ * given a string as an input argument whose contents are written as a 
+ * file in MySpace.
+ */
 
    public DataItemRecord importDataHolder(String userID, String communityID,
      String credentials, String importURI, String newDataItemName,
@@ -598,11 +590,11 @@ public class MySpaceActions
 
                   Calendar cal = Calendar.getInstance();
                   cal.setTime(creation);
-                  cal.add(Calendar.DATE, reg.getExpiryPeriod() );
+                  cal.add(Calendar.DATE, reg.getServerExpiryPeriod("serv1") );
                   Date expiry = cal.getTime();
 
-                  int newdataItemID = reg.getNextDataItemID();
-                  String dataItemFileName = "f" + newdataItemID;
+                  int newdataItemID = -1;
+                  String dataItemFileName = "";
 
                   int dataItemType =
                     DataItemRecord.translateType(contentsType);
@@ -619,7 +611,8 @@ public class MySpaceActions
 //
 //               Attempt to add this entry to the registry.
 
-                  if (reg.addDataItemRecord(newDataItem) )
+                  newDataItem = reg.addDataItemRecord(newDataItem);
+                  if (newDataItem != null )
                   {
 
 //
@@ -686,11 +679,6 @@ public class MySpaceActions
                }
             }
          }
-
-//
-//      Re-write the registry file.
-
-         reg.rewriteRegistryFile();
       }
       catch (Exception all)
       {  status.addCode(MySpaceStatusCode.AGMMCE00100,
@@ -704,14 +692,14 @@ public class MySpaceActions
 // -----------------------------------------------------------------
 
 /**
-  * Up-load a dataHolder.  Save the contents of an input String as a
-  * specified DataHolder in the MySpace system.  upLoadDataHolder and
-  * importDataHolder are similar in that both allow new data to be
-  * introduced into a MySpace system.  The difference between them is
-  * that importDataHolder is given the URL of a remote file, which is
-  * copied into MySpace, whereas upLoadDataHolder is given a string
-  * as an input argument whose contents are written as a file in MySpace.
-  */
+ * Up-load a dataHolder.  Save the contents of an input String as a
+ * specified DataHolder in the MySpace system.  upLoadDataHolder and
+ * importDataHolder are similar in that both allow new data to be
+ * introduced into a MySpace system.  The difference between them is
+ * that importDataHolder is given the URL of a remote file, which is
+ * copied into MySpace, whereas upLoadDataHolder is given a string
+ * as an input argument whose contents are written as a file in MySpace.
+ */
 
    public DataItemRecord upLoadDataHolder(String userID, String communityID,
      String credentials, String newDataItemName, String contents,
@@ -756,11 +744,11 @@ public class MySpaceActions
 
                   Calendar cal = Calendar.getInstance();
                   cal.setTime(creation);
-                  cal.add(Calendar.DATE, reg.getExpiryPeriod() );
+                  cal.add(Calendar.DATE, reg.getServerExpiryPeriod("serv1") );
                   Date expiry = cal.getTime();
 
-                  int newdataItemID = reg.getNextDataItemID();
-                  String dataItemFileName = "f" + newdataItemID;
+                  int newdataItemID = -1;
+                  String dataItemFileName = "";
 
                   int dataItemType =
                     DataItemRecord.translateType(contentsType);
@@ -774,7 +762,8 @@ public class MySpaceActions
 //
 //               Attempt to add this entry to the registry.
 
-                  if (reg.addDataItemRecord(newDataItem) )
+                  newDataItem = reg.addDataItemRecord(newDataItem);
+                  if (newDataItem != null)
                   {
 
 //
@@ -841,11 +830,6 @@ public class MySpaceActions
                }
             }
          }
-
-//
-//      Re-write the registry file.
-
-         reg.rewriteRegistryFile();
       }
       catch (Exception all)
       {  status.addCode(MySpaceStatusCode.AGMMCE00100,
@@ -860,10 +844,10 @@ public class MySpaceActions
 // -----------------------------------------------------------------
 
 /**
-  * Export a DataHolder from the MySpace system.  In Iteration 2 a
-  * DataHolder is exported by returning a URL from which a copy of it
-  * can be retrieved.
-  */
+ * Export a DataHolder from the MySpace system.  In Iteration 2 a
+ * DataHolder is exported by returning a URL from which a copy of it
+ * can be retrieved.
+ */
 
    public String exportDataHolder(String userID, String communityID,
      String credentials, int dataItemID)
@@ -986,10 +970,10 @@ public class MySpaceActions
 // -----------------------------------------------------------------
 
 /**
-  * Create a new container.  The  operation is implemented by creating
-  * a new entry in the MySpace registry.  The MySpace server is not
-  * touched.
-  */
+ * Create a new container.  The  operation is implemented by creating
+ * a new entry in the MySpace registry.  The MySpace server is not
+ * touched.
+ */
 
    public DataItemRecord createContainer(String userID, String communityID,
      String credentials, String newContainerName)
@@ -1034,11 +1018,11 @@ public class MySpaceActions
 
                   Calendar cal = Calendar.getInstance();
                   cal.setTime(creation);
-                  cal.add(Calendar.DATE, reg.getExpiryPeriod() );
+                  cal.add(Calendar.DATE, reg.getServerExpiryPeriod("serv1") );
                   Date expiry = cal.getTime();
 
-                  int newdataItemID = reg.getNextDataItemID();
-                  String dataItemFileName = "f" + newdataItemID;
+                  int newdataItemID = -1;
+                  String dataItemFileName = "";
                   int dataItemType = DataItemRecord.CON;
 
                   DataItemRecord newDataItem = new DataItemRecord
@@ -1049,7 +1033,8 @@ public class MySpaceActions
 //
 //               Attempt to add this entry to the registry.
 
-                  if (reg.addDataItemRecord(newDataItem) )
+                  newDataItem = reg.addDataItemRecord(newDataItem);
+                  if (newDataItem != null)
                   {  newContainer = newDataItem;
                   }
                   else
@@ -1060,11 +1045,6 @@ public class MySpaceActions
                }
             }
          }
-
-//
-//      Re-write the registry file.
-
-         reg.rewriteRegistryFile();
       }
       catch (Exception all)
       {  status.addCode(MySpaceStatusCode.AGMMCE00100,
@@ -1227,11 +1207,6 @@ public class MySpaceActions
                }
             }
          }
-
-//
-//      Re-write the registry file.
-
-         reg.rewriteRegistryFile();
       }
       catch (Exception all)
       {  status.addCode(MySpaceStatusCode.AGMMCE00100,
@@ -1340,11 +1315,6 @@ public class MySpaceActions
                }
             }
          }
-
-//
-//      Re-write the registry file.
-
-         reg.rewriteRegistryFile();
       }
       catch (Exception all)
       {  status.addCode(MySpaceStatusCode.AGMMCE00100,
@@ -1358,12 +1328,12 @@ public class MySpaceActions
 // -----------------------------------------------------------------
 
 /**
-  * Advance the expiry date of a DataHolder.
-  *
-  * @param advance The number of days by which the expiry date is to
-  * be advanced into the future.  A negative value will bring the
-  * expiry date closer to the present.
-  */
+ * Advance the expiry date of a DataHolder.
+ *
+ * @param advance The number of days by which the expiry date is to
+ * be advanced into the future.  A negative value will bring the
+ * expiry date closer to the present.
+ */
 
    public DataItemRecord advanceExpiryDataHolder(String userID,
      String communityID, String credentials, int dataItemID, int advance)
@@ -1463,11 +1433,6 @@ public class MySpaceActions
                }
             }
          }
-
-//
-//      Re-write the registry file.
-
-         reg.rewriteRegistryFile();
       }
       catch (Exception all)
       {  status.addCode(MySpaceStatusCode.AGMMCE00100,
@@ -1584,7 +1549,7 @@ public class MySpaceActions
 //
 //                     Create an entry for the current entry.
 
-                        int dataItemID = reg.getNextDataItemID();
+                        int dataItemID = -1;
 
                         itemRec = new DataItemRecord(containerName,
                           dataItemID, "none", "sysadmin", creation,
@@ -1593,8 +1558,8 @@ public class MySpaceActions
 //
 //                     Add the entry to the registry.
 
-                        boolean addSuccess = reg.addDataItemRecord(itemRec);
-                        if (!addSuccess)
+                        itemRec = reg.addDataItemRecord(itemRec);
+                        if (itemRec == null)
                         {  status.addCode(MySpaceStatusCode.AGMMCE00209,
                              MySpaceStatusCode.ERROR, 
                              MySpaceStatusCode.LOG,
@@ -1615,11 +1580,6 @@ public class MySpaceActions
                }
             }
          }
-
-//
-//      Re-write the registry file.
-
-         reg.rewriteRegistryFile();
       }
       catch (Exception all)
       {  status.addCode(MySpaceStatusCode.AGMMCE00100,
@@ -1634,20 +1594,21 @@ public class MySpaceActions
 // -----------------------------------------------------------------
 
 /**
-  * Delete a user.  The  operation is implemented by deleting the
-  * entire tree of containers belonging to the user.  Before attempting
-  * to delete any of the containers a check is made that the tree
-  * does not contain any dataHolders (ie. that it is solely containers).
-  * If any dataHolders are found operation is aborted without touching
-  * the tree.
-  *
-  * @param userID The user ID of the user who is to be deleted.  Note
-  * that in a sense this argument is performing two roles: it is both
-  * the ID of the user performing the operation and the ID of the user
-  * being deleted.  Thus the user is `deleting himself'.
-  */
+ * Delete a user.  The  operation is implemented by deleting the
+ * entire tree of containers belonging to the user.  Before attempting
+ * to delete any of the containers a check is made that the tree
+ * does not contain any dataHolders (ie. that it is solely containers).
+ * If any dataHolders are found operation is aborted without touching
+ * the tree.
+ *
+ * @param userID The user ID of the user who is to be deleted.  Note
+ * that in a sense this argument is performing two roles: it is both
+ * the ID of the user performing the operation and the ID of the user
+ * being deleted.  Thus the user is `deleting himself'.
+ */
 
-   public boolean deleteUser(String userID, String communityID, String credentials)
+   public boolean deleteUser(String userID, String communityID,
+     String credentials)
    {  boolean returnStatus = false;
 
       MySpaceStatus status = new MySpaceStatus();
@@ -1746,11 +1707,6 @@ public class MySpaceActions
               MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
               this.getClassName() );
          }
-
-//
-//      Re-write the registry file.
-
-         reg.rewriteRegistryFile();
       }
       catch (Exception all)
       {  status.addCode(MySpaceStatusCode.AGMMCE00100,
@@ -1781,13 +1737,13 @@ public class MySpaceActions
 // -----------------------------------------------------------------
 
 /**
-  * Internal method to lookup the details of a single DataHolder.
-  *
-  * Apart from being private, rather than public,
-  * internalLookupDataHolderDetails differs from lookupDataHolderDetails
-  * in that an existing RegistryManager manager object is passed as
-  * an argument.
-  */
+ * Internal method to lookup the details of a single DataHolder.
+ *
+ * Apart from being private, rather than public,
+ * internalLookupDataHolderDetails differs from lookupDataHolderDetails
+ * in that an existing RegistryManager manager object is passed as
+ * an argument.
+ */
 
    private DataItemRecord internalLookupDataHolderDetails(String userID,
      String communityID, String credentials, int dataItemID,
@@ -1870,13 +1826,13 @@ public class MySpaceActions
 // -----------------------------------------------------------------
 
 /**
-  * Internal method to lookup the details of a named set of DataHolders.
-  *
-  * Apart from being private, rather than public,
-  * internalLookupDataHoldersDetails differs from LookupDataHoldersDetails
-  * in that an existing RegistryManager manager object is passed as
-  * an argument.
-  */
+ * Internal method to lookup the details of a named set of DataHolders.
+ *
+ * Apart from being private, rather than public,
+ * internalLookupDataHoldersDetails differs from LookupDataHoldersDetails
+ * in that an existing RegistryManager manager object is passed as
+ * an argument.
+ */
 
    private Vector internalLookupDataHoldersDetails(String userID, 
      String communityID, String credentials, String query,

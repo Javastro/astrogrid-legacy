@@ -14,15 +14,18 @@ import java.text.*;
  *
  * <p>
  * The class has two constructors.  In one values for all the member
- * variables are passed as arguments, and there are no <code>set</code>
- * methods.  This approach is adopted because all the member variables
+ * variables are passed as arguments, and there is only one <code>set</code>
+ * method.  This approach is adopted because the member variables
  * must be specified when a <code>DataItemRecord</code> is created and
- * thereafter their values cannot change.  <code>DataItemRecords</code>
- * are created either (i) when the details for a <code>DataHolder</code>
- * is read from the MySpace registry or (ii) in preparation for writing
- * the details of a <code>DataHolder</code> to the MySpace registry.
- * The second constructor has no arguments and all the member variables
- * are set to null.  It is provided because of Java's scoping rules.
+ * thereafter their values cannot change.  The exception is the
+ * <code>dataItemFile</code> which is reset after the
+ * <code>DataItemRecord</code> has been created.
+ * <code>DataItemRecord</code>s are created either (i) when the details
+ * for a <code>DataHolder</code> is read from the MySpace registry or
+ * (ii) in preparation for writing the details of a
+ * <code>DataHolder</code> to the MySpace registry.  The second
+ * constructor has no arguments and all the member variables are set to
+ * null.  It is provided because of Java's scoping rules.
  * </p>
  * <p>
  * In contrast, there is a <code>get</code> method for every member variable.
@@ -37,7 +40,7 @@ import java.text.*;
  * </p>
  *
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 3.
+ * @version Iteration 4.
  */
 
 public class DataItemRecord implements Serializable
@@ -101,83 +104,141 @@ public class DataItemRecord implements Serializable
       this.permissionsMask = null;
    }
 
+// ----------------------------------------------------------------------
+
+//
+// Set method.
+
+/**
+ * Set the file name corresponding to the <code>DataHolder</code>
+ * in the appropriate MySpace server.
+ *
+ * @param dataItemFile The name of the file on the server corresponding
+ *   the <code>DataHolder</code>.  It is specified without any
+ *   preceeding directory structure.
+ */
+
+   protected void setDataItemFile(String dataItemFile)
+   {  this.dataItemFile = dataItemFile;
+   }
+
+// ----------------------------------------------------------------------
+
 //
 // Get methods.
 //
 // The DataItemRecord class has a get method for every member variable.
 
 /**
-  * Return the fully resolved name of the <code>DataHolder</code>.
-  */
+ * Return the fully resolved name of the <code>DataHolder</code>.
+ */
 
    public String getDataItemName()
    {  return dataItemName;
    }
 
 /**
-  * Return the identifier of the of the <code>DataHolder</code>.
-  */
+ * Return the identifier of the of the <code>DataHolder</code>.
+ */
 
    public int getDataItemID()
    {  return dataItemID;
    }
 
 /**
-  * Return the file name corresponding to the <code>DataHolder</code>
-  * in the appropriate MySpace server.
-  */
+ * Return the file name corresponding to the <code>DataHolder</code>
+ * in the appropriate MySpace server.
+ */
 
    public String getDataItemFile()
    {  return dataItemFile;
    }
 
 /**
-  * Return the identifer of the owner of the <code>DataHolder</code>.
-  */
+ * Return the identifer of the owner of the <code>DataHolder</code>.
+ */
 
    public String getOwnerID()
    {  return ownerID;
    }
 
 /**
-  * Return the creation date of the <code>DataHolder</code>.
-  */
+ * Return the creation date of the <code>DataHolder</code>.
+ */
 
    public Date getCreationDate()
    {  return creationDate;
    }
 
 /**
-  * Return the expiry date of the <code>DataHolder</code>.
-  */
+ * Return the expiry date of the <code>DataHolder</code>.
+ */
 
    public Date getExpiryDate()
    {  return expiryDate;
    }
 
 /**
-  * Return the size of the <code>DataHolder</code> (in bytes).
-  */
+ * Return the size of the <code>DataHolder</code> (in bytes).
+ */
 
    public int getSize()
    {  return size;
    }
 
 /**
-  * Return the type of the <code>DataHolder</code>.
-  */
+ * Return the type of the <code>DataHolder</code>.
+ */
 
    public int getType()
    {  return type;
    }
 
 /**
-  * Return the access permissions mask of the <code>DataHolder</code>.
-  */
+ * Return the access permissions mask of the <code>DataHolder</code>.
+ */
 
    public String getPermissionsMask()
    {  return permissionsMask;
    }
+
+/**
+ * Return the name of the server on which the <code>DataHolder</code>
+ * is stored.  The server is determined by examining the
+ * <code>dataItemName</code>.
+ */
+
+// Note that this method differs from the other get methods in that
+// it derives a value rather than simply return a member variable.
+
+   public String getServer()
+   {  String serverName = "";
+
+//
+//   Recall that dataItemNames are of the form:
+//
+//     /user@community/server/...
+//
+//   Therefore the procedure is to examine the dataItemName to
+//   check that the third "/" exists and then extract the substring
+//   between the second and third "/"s.
+
+      int containSepPos1 = dataItemName.indexOf("/");
+      int containSepPos2 = dataItemName.indexOf("/", containSepPos1+1);
+      int containSepPos3 = dataItemName.indexOf("/", containSepPos2+1);
+
+      if (containSepPos3 > 0)
+      {  serverName = dataItemName.substring(containSepPos2+1,
+           containSepPos3);
+      }
+      else
+      {  serverName = "";
+      }
+
+      return serverName;
+   }
+
+// ----------------------------------------------------------------------
 
 //
 // Other methods.

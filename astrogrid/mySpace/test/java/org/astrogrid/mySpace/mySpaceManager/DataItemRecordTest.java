@@ -9,7 +9,7 @@ import org.astrogrid.mySpace.mySpaceManager.DataItemRecord;
  * Junit tests for the <code>DataItemRecord</code> class.
  *
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 3.
+ * @version Iteration 4.
  */
 
 public class DataItemRecordTest extends TestCase
@@ -21,6 +21,22 @@ public class DataItemRecordTest extends TestCase
 
    public DataItemRecordTest (String name)
    {  super(name);
+   }
+
+/**
+ * Test the <code>getServer</code> method.  Note that this method is
+ * tested because it more than a simple code>get</code> which returns
+ * a member variable.
+ */
+
+  public void testGetServer()
+   {  Date creation = new Date(0);
+      DataItemRecord dataItem = new DataItemRecord(
+        "/clq@lei/serv1/file", 0, "file",
+        "owner", creation, creation, 0, DataItemRecord.UNKNOWN,
+        "permissions");
+
+      Assert.assertEquals(dataItem.getServer(), "serv1");
    }
 
 /**

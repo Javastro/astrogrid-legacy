@@ -142,8 +142,13 @@ public class RegistryManagerTest extends TestCase
         "/acd@roe/serv1/fred", -1, "fred.VOT", "acd@roe",
         creation, creation, 0, 0, "permissions");
 
-      int dataItemID = reg.addDataItemRecord(itemRec);
-      Assert.assertTrue(dataItemID > -1);
+      DataItemRecord  newItem = reg.addDataItemRecord(itemRec);
+      Assert.assertTrue(newItem != null);
+      int dataItemID = -1;
+      if (newItem != null)
+      {  dataItemID =newItem.getDataItemID();
+         Assert.assertTrue(dataItemID > -1);
+      }
 
       System.out.println("Tested addDataItemRecord...");
 
@@ -153,7 +158,7 @@ public class RegistryManagerTest extends TestCase
       DataItemRecord itemRec1 = reg.lookupDataItemRecord(dataItemID);
 
       Assert.assertEquals(itemRec1.getDataItemID(), dataItemID);
-      Assert.assertEquals(itemRec1.getDataItemFile(), "fred.VOT");
+      Assert.assertEquals(itemRec1.getDataItemFile(), "f" + dataItemID);
       Assert.assertEquals(itemRec1.getOwnerID(), "acd@roe");
 
       System.out.println("Tested lookupDataItemRecord...");
@@ -169,7 +174,7 @@ public class RegistryManagerTest extends TestCase
       {  DataItemRecord itemRec2 = (DataItemRecord)vec.elementAt(0);
 
          Assert.assertEquals(itemRec2.getDataItemID(), dataItemID);
-         Assert.assertEquals(itemRec2.getDataItemFile(), "fred.VOT");
+         Assert.assertEquals(itemRec2.getDataItemFile(), "f" + dataItemID);
          Assert.assertEquals(itemRec2.getOwnerID(), "acd@roe");
       }
 

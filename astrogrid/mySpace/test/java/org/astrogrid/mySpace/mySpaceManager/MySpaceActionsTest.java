@@ -173,6 +173,15 @@ public class MySpaceActionsTest extends TestCase
 
       Assert.assertEquals(itemsVec.size(), 4);
 
+//      System.out.println("\n");
+//      for (int loop=0; loop<itemsVec.size(); loop++)
+//      {  dataItem = (DataItemRecord)itemsVec.elementAt(loop);
+//         System.out.println("[" + loop + "]: " +
+//             dataItem.getDataItemName() + "  " +
+//             dataItem.getDataItemID() + "  " +
+//             dataItem.getDataItemFile() );
+//      }
+
       int dataItemId1 = 0;
       int dataItemId2 = 0;
       int dataItemId3 = 0;
@@ -285,7 +294,7 @@ public class MySpaceActionsTest extends TestCase
       String exportURI = myspace.exportDataHolder("clq", "lei",
         "credentials", dataItemId3);
 
-      Assert.assertEquals(exportURI, "http://www.blue.nowhere.org/s1/f5");
+      Assert.assertEquals(exportURI, "http://www.blue.nowhere.org/s1/f6");
 
       System.out.println("Tested exportDataHolder...");
 
@@ -353,74 +362,60 @@ public class MySpaceActionsTest extends TestCase
  */
 
    protected void setUp()
-   {  boolean success = true;
+   {  
+//
+//   Create and populate a Vector of servers.
+
+      Vector servers = new Vector();
+
+      ServerDetails server = new ServerDetails("serv1", 23,
+        "http://www.blue.nowhere.org/s1/", "/base/direct/s1/");
+      servers.add(server);
+
+      server = new ServerDetails("serv2", 34,
+        "http://www.blue.nowhere.org/s2/", "/base/direct/s2/");
+      servers.add(server);
+
+      server = new ServerDetails("serv3", 45,
+        "http://www.blue.nowhere.org/s3/", "/base/direct/s3/");
+      servers.add(server);
 
 //
-//   Write the configuraton file.
+//   Create a registry object.
 
-      try
-      {  File configFile = new File("./testreg.config");
-         FileOutputStream fos = new FileOutputStream(configFile);
-         PrintWriter pos = new PrintWriter(fos);
-
-         pos.write("\n");
-         pos.write("# Config. file for RegistryManager JUnit test.\n\n");
-         pos.write("expiryperiod 35\n\n");
-
-         pos.write(
-          "server serv1 http://www.blue.nowhere.org/s1/ /base/direct/s1/\n");
-         pos.write(
-          "server serv2 http://www.blue.nowhere.org/s2/ /base/direct/s2/\n");
-
-         pos.close();
-         fos.flush();
-         fos.close();
-      }
-      catch (IOException ioe)
-      {  System.out.println("*** Failed to write configuration file.");
-         ioe.printStackTrace();
-         success = false;
-      }
+      RegistryManager reg = new RegistryManager("testreg", servers);
 
 //
-//   Create the registry.
+//   Create the user required by the tests.
 
-      RegistryManager reg = new RegistryManager("testreg", "new");
-
-//
-//   Add a couple of entries to the registry.
-
+      boolean success = true;
       Date creation = new Date();
 
-      int seqNo = reg.getNextDataItemID();
-      DataItemRecord itemRec1 = new DataItemRecord("/clq@lei",
-        seqNo, "", "clq@lei", creation, creation, 0, DataItemRecord.CON,
+      DataItemRecord initItem = new DataItemRecord("/clq@lei",
+        -1, "", "clq@lei", creation, creation, 0, DataItemRecord.CON,
         "permissions");
-      if (!reg.addDataItemRecord(itemRec1) )
+      initItem = reg.addDataItemRecord(initItem);
+      if (initItem == null)
       {  success = false;
       }
 
-      seqNo = reg.getNextDataItemID();
-      itemRec1 = new DataItemRecord("/clq@lei/serv1",
-        seqNo, "", "clq@lei", creation, creation, 0, DataItemRecord.CON,
+      initItem = new DataItemRecord("/clq@lei/serv1", -1,
+        "", "clq@lei", creation, creation, 0, DataItemRecord.CON,
         "permissions");
-      if (!reg.addDataItemRecord(itemRec1) )
+      initItem = reg.addDataItemRecord(initItem);
+      if (initItem == null)
       {  success = false;
       }
-
-//
-//   (Re)-write the registry.
-
-      reg.rewriteRegistryFile();
-      MySpaceStatus status = new MySpaceStatus();
-      if (!status.getSuccessStatus() )
-      {  success = false;
-      }
-
-//
-//   Report error if anything is amiss.
 
       if (!success)
+      {  System.out.println("*** Failed to create user.");
+      }
+
+//
+//   Check that all is ok.
+
+      MySpaceStatus status = new MySpaceStatus();
+      if (!status.getSuccessStatus() )
       {  System.out.println("*** Failed to create test registry.");
          status.outputCodes();
       }
@@ -432,28 +427,31 @@ public class MySpaceActionsTest extends TestCase
  */
 
    protected void tearDown()
-   {  boolean configSuccess = true;
-      boolean registSuccess = true;
+   {  boolean propertiesSuccess = true;
+      boolean scriptSuccess = true;
 
       try
-      {  File configFile = new File("./testreg.config");
-         configFile.delete();
+      {  File propertiesFile = new File("./testreg.db.properties");
+         propertiesFile.delete();
       }
       catch (Exception e)
       {  e.printStackTrace();
-         configSuccess = false;
+         propertiesSuccess = false;
       }
 
       try
-      {  File registFile = new File("./testreg.reg");
-         registFile.delete();
+      {  File scriptFile = new File("./testreg.db.script");
+         scriptFile.delete();
       }
       catch (Exception e)
       {  e.printStackTrace();
-         registSuccess = false;
+         scriptSuccess = false;
       }
 
-      if (!configSuccess || !registSuccess)
+//      System.out.println("propertiesSuccess, scriptSuccess: " +
+//        propertiesSuccess + "  " + scriptSuccess);
+
+      if (!propertiesSuccess || !scriptSuccess)
       {  System.out.println("*** Failed to delete registry files.");
       }
    }
