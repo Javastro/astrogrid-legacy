@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/explorer/xsl/Attic/explorer.xsl,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/30 12:42:31 $</cvs:author>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/30 14:23:15 $</cvs:author>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     | $Log: explorer.xsl,v $
+    | Revision 1.8  2003/06/30 14:23:15  dave
+    | Disabled access to root node in the tree
+    |
     | Revision 1.7  2003/06/30 12:42:31  dave
     | Added user name session attribute
     |
@@ -277,20 +280,31 @@
 				<xsl:choose>
 					<!-- If this is a folder -->
 					<xsl:when test="@type = '1'">
-						<link type="node">
-							<!-- If this matches the explorer path -->
-							<xsl:if test="@path = //explorer/view/@path">
-								<xsl:attribute name="selected">true</xsl:attribute>
-							</xsl:if>
-							<image src="explorer/images/cont.icon.gif"/>
-							<text><xsl:value-of select="@name"/></text>
-							<href>
-								<base><xsl:value-of select="$explorer-page"/></base>
-								<param name="action">explorer-path</param>
-								<param name="AST-VIEW"><xsl:value-of select="//explorer/view/@ident"/></param>
-								<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
-							</href>
-						</link>
+
+						<xsl:choose>
+							<!-- If this is the top node -->
+							<xsl:when test="@level = 0">
+								<img border="0" src="explorer/images/root.icon.gif"/>
+							</xsl:when>
+							<!-- If this is not the top node -->
+							<xsl:otherwise>
+								<link type="node">
+									<!-- If this matches the explorer path -->
+									<xsl:if test="@path = //explorer/view/@path">
+										<xsl:attribute name="selected">true</xsl:attribute>
+									</xsl:if>
+									<image src="explorer/images/cont.icon.gif"/>
+									<text><xsl:value-of select="@name"/></text>
+									<href>
+										<base><xsl:value-of select="$explorer-page"/></base>
+										<param name="action">explorer-path</param>
+										<param name="AST-VIEW"><xsl:value-of select="//explorer/view/@ident"/></param>
+										<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
+									</href>
+								</link>
+							</xsl:otherwise>
+						</xsl:choose>
+
 					</xsl:when>
 					<!-- If this is an item -->
 					<xsl:when test="@type = '2'">
@@ -334,16 +348,29 @@
 		<xsl:choose>
 			<!-- If this node is a container -->
 			<xsl:when test="@type = '1'">
+
 				<xsl:choose>
-					<!-- If this node is not the last in its group -->
-					<xsl:when test="@more = 'true'">
-						<img border="0" src="explorer/images/cont.node.mid.gif"/>
+					<!-- If this is the top node -->
+					<xsl:when test="@level = 0">
+<!--
+						<img border="0" src="explorer/images/cont.node.top.gif"/>
+-->
 					</xsl:when>
-					<!-- If this node is the last in its group -->
+					<!-- If this is not the top node -->
 					<xsl:otherwise>
-						<img border="0" src="explorer/images/cont.node.end.gif"/>
+						<xsl:choose>
+							<!-- If this node is not the last in its group -->
+							<xsl:when test="@more = 'true'">
+								<img border="0" src="explorer/images/cont.node.mid.gif"/>
+							</xsl:when>
+							<!-- If this node is the last in its group -->
+							<xsl:otherwise>
+								<img border="0" src="explorer/images/cont.node.end.gif"/>
+							</xsl:otherwise>
+						</xsl:choose>
 					</xsl:otherwise>
 				</xsl:choose>
+
 			</xsl:when>
 			<!-- If this node is an item -->
 			<xsl:when test="@type = '2'">

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/explorer/xsp/Attic/session.xsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/30 12:42:31 $</cvs:author>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/30 14:23:15 $</cvs:author>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     | $Log: session.xsp,v $
+    | Revision 1.2  2003/06/30 14:23:15  dave
+    | Disabled access to root node in the tree
+    |
     | Revision 1.1  2003/06/30 12:42:31  dave
     | Added user name session attribute
     |
@@ -35,6 +38,13 @@
 			name   = request.getParameter("name") ;
 			value  = request.getParameter("value") ;
 			action = request.getParameter("action") ;
+
+			//
+			// If the name is null, use the default.
+			if (null == name)
+				{
+				name ="user" ;
+				}
 
 			//
 			// If the action is 'update'.
