@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceIt04ServerDelegate.java,v 1.3 2004/03/01 22:38:46 mch Exp $
+ * $Id: MySpaceIt04Delegate.java,v 1.1 2004/03/02 00:15:39 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -36,7 +36,7 @@ import org.astrogrid.store.Msrl;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class MySpaceIt04ServerDelegate implements StoreClient
+public class MySpaceIt04Delegate implements StoreClient
 {
    private MySpaceClient depIt04Delegate = null;//deprecated It04 delegate
    private Msrl serverMsrl = null; //location of server
@@ -44,7 +44,7 @@ public class MySpaceIt04ServerDelegate implements StoreClient
    //the person/account using this delegate
    private User operator = null;
 
-   public MySpaceIt04ServerDelegate(User anOperator, String endPoint) throws IOException
+   public MySpaceIt04Delegate(User anOperator, String endPoint) throws IOException
    {
       operator = anOperator;
       
@@ -350,7 +350,10 @@ public class MySpaceIt04ServerDelegate implements StoreClient
 }
 
 /*
-$Log: MySpaceIt04ServerDelegate.java,v $
+$Log: MySpaceIt04Delegate.java,v $
+Revision 1.1  2004/03/02 00:15:39  mch
+Renamed MyspaceIt04Delegate from misleading ServerDelegate
+
 Revision 1.3  2004/03/01 22:38:46  mch
 Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
 

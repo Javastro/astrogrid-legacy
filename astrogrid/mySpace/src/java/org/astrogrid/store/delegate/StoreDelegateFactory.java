@@ -1,5 +1,5 @@
 /*
- * $Id: StoreDelegateFactory.java,v 1.4 2004/03/01 22:38:46 mch Exp $
+ * $Id: StoreDelegateFactory.java,v 1.5 2004/03/02 00:15:39 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -34,7 +34,7 @@ public class StoreDelegateFactory
    public static StoreClient createDelegate(User operator, Agsl location) throws IOException
    {
       if (location.getScheme().startsWith(Agsl.SCHEME+":"+Msrl.SCHEME)) {
-         return new MySpaceIt04ServerDelegate(operator, location.getEndpoint().toString());
+         return new MySpaceIt04Delegate(operator, location.getEndpoint().toString());
       }
       if (location.getScheme().startsWith(Agsl.SCHEME+":ftp")) {
          return new FtpStore(location);
@@ -50,6 +50,9 @@ public class StoreDelegateFactory
 
 /*
 $Log: StoreDelegateFactory.java,v $
+Revision 1.5  2004/03/02 00:15:39  mch
+Renamed MyspaceIt04Delegate from misleading ServerDelegate
+
 Revision 1.4  2004/03/01 22:38:46  mch
 Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
 

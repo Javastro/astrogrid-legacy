@@ -1,5 +1,5 @@
 /*
- * $Id: LocalFileStore.java,v 1.2 2004/03/01 22:38:46 mch Exp $
+ * $Id: LocalFileStore.java,v 1.3 2004/03/02 00:15:39 mch Exp $
  *
  */
 
@@ -32,8 +32,6 @@ public class LocalFileStore implements StoreClient
    private File rootDir = null;
 
    static private Log log = LogFactory.getLog(LocalFileStore.class);
-
-   public static final String DUMMY = "http://Dummy.address/"; //use this URL to ask for a dummy delegate
 
    /**
     * Class for filtering filenames based on the given criteria
@@ -96,7 +94,7 @@ public class LocalFileStore implements StoreClient
     * Could do with better checking that the agsl is correct for this type...
     */
    public LocalFileStore(Agsl agsl) throws IOException {
-      this(agsl.getEndpoint().substring(6)); //chop off 'file://'
+      this(agsl.getEndpoint().substring(7)); //chop off 'file://'
    }
 
    /** Creates a local file store with the given file as the root
@@ -128,7 +126,7 @@ public class LocalFileStore implements StoreClient
       File target = makeLocalPath(targetPath);
 
       DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(target, append)));
-      out.writeChars(contents);
+      out.writeBytes(contents);
       out.close();
    }
    
@@ -272,7 +270,7 @@ public class LocalFileStore implements StoreClient
       InputStream in = new FileInputStream(makeLocalPath(sourcePath));
       OutputStream out = null;
       
-      if (target.getEndpoint().toLowerCase().equals(Agsl.SCHEME+":file://"+rootDir.getName())) {
+      if (target.getEndpoint().equals("file://"+rootDir.getName())) {
          //same store so make a file
          out = new FileOutputStream(makeLocalPath(target.getPath()));
       }
@@ -283,8 +281,8 @@ public class LocalFileStore implements StoreClient
       
       //transfer
       Piper.bufferedPipe(in, out);
-      out.close();
       in.close();
+      out.close();
       
    }
    
@@ -324,6 +322,9 @@ public class LocalFileStore implements StoreClient
 
 /*
 $Log: LocalFileStore.java,v $
+Revision 1.3  2004/03/02 00:15:39  mch
+Renamed MyspaceIt04Delegate from misleading ServerDelegate
+
 Revision 1.2  2004/03/01 22:38:46  mch
 Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
 
