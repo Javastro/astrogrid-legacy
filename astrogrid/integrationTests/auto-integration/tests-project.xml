@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: tests-project.xml,v 1.18 2004/07/19 23:42:07 dave Exp $ -->
+<!-- $Id: tests-project.xml,v 1.19 2004/07/22 13:55:12 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <id>auto-integration-tests</id>
@@ -30,8 +30,11 @@
         <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
         <unitTest>
             <includes>
-                <include>**/*Test.java</include>
+                <include>${astrogrid.inttest.includes}</include>
             </includes>
+		    <excludes>
+                <exclude>${astrogrid.inttest.excludes}</exclude>
+            </excludes>
             <resources>
                 <resource>
                     <directory>${basedir}/test/java</directory>
