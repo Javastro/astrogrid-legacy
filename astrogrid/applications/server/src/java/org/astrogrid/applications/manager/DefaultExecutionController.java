@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultExecutionController.java,v 1.6 2004/09/10 21:30:30 pah Exp $
+ * $Id: DefaultExecutionController.java,v 1.7 2004/09/17 01:21:49 nw Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -39,7 +39,7 @@ public class DefaultExecutionController
    implements ExecutionController, Observer, ComponentDescriptor{
 
    static final protected org.apache.commons.logging.Log logger =
-      org.apache.commons.logging.LogFactory.getLog(DefaultExecutionController.class);
+      org.apache.commons.logging.LogFactory.getLog(ExecutionController.class);
    /**
     * The store for the descriptions of the applications that this application controller manages.
     */
@@ -64,13 +64,30 @@ public  boolean execute(String executionId) throws CeaException {
       if (executionHistory.isApplicationInCurrentSet(executionId)) {
         Application app =
             (Application)executionHistory.getApplicationFromCurrentSet(executionId);
-         success = app.execute();
+        //NWW - altered this, to handle new method of running applications.
+        // will still fallback to legacy method.
+        Runnable r = app.createExecutionTask();
+        if (r == null) {
+            return app.execute();
+        } else {
+            return startRunnable(r);
+        }
       }
 
       return success;
 
    }
 
+
+
+/** abstract out how we start a runnable running.
+ * @param r
+ */
+protected boolean startRunnable(Runnable r) {
+    Thread t = new Thread(r);
+    t.start();
+    return true;
+}
 public String init(Tool tool, String jobstepID) throws CeaException {
     logger.debug("Initializing application " + jobstepID);
       int idx;
