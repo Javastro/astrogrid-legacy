@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceServer.java,v 1.14 2003/09/24 21:03:46 nw Exp $
+ * $Id: ServiceServer.java,v 1.15 2003/10/02 12:53:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -78,11 +78,16 @@ public abstract class ServiceServer
            }
            if (is == null && ! location.startsWith("/")) { // try making the resource absolute.
 //this will throw errors if the property is already absolute
+// and don't want to change the default location for this, in case it breaks socket-server based datacenters.
 // NWW - well we can check for this. commenting this out breaks datacenters running in an app server.
-// and don't want to change the default location for this, in case it breaks socket-server based datacenters. 
-                trying = this.getClass().getResource("/"+location).toString();
-                is = this.getClass().getResourceAsStream("/" + location);
-           }           
+// MCH - hopefully this will work under both :-)
+              url = this.getClass().getResource("/"+location);
+              if (url != null)
+              {
+                 trying = url.toString();
+                 is = this.getClass().getResourceAsStream("/" + location);
+              }
+           }
         }
         if (is == null) {
             throw new IOException("metadata file '"+location+"' or '"+trying+" not found");

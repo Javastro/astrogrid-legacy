@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.16 2003/09/24 21:03:46 nw Exp $
+ * $Id: SocketHandler.java,v 1.17 2003/10/02 12:53:49 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -51,14 +51,15 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
       this.socket = givenSocket;
       out = new SocketXmlOutputStream(socket.getOutputStream());
 
-      TraceInputStream tin = new TraceInputStream(socket.getInputStream());
-      tin.setState(true);
-      tin.copy2File(new File("incomingMsgs.log"));
-      in = new SocketXmlInputStream(tin);
+//      TraceInputStream tin = new TraceInputStream(socket.getInputStream());
+//      tin.setState(true);
+//      tin.copy2File(new File("incomingMsgs.log"));
+//      in = new SocketXmlInputStream(tin);
+      in = new SocketXmlInputStream(socket.getInputStream());
 
 
       //create a thread running this isntance and start it
-      new Thread(this, "SocketHandler").start();
+      new Thread(this, "SocketHandler["+socket.getPort()+"]").start();
    }
 
    /** called when the status changes - writes out the new status to the
@@ -105,7 +106,7 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
       {
          try
          {
-            Log.trace("SocketHandler: Reading/Waiting on incoming document");
+            Log.trace("SocketHandler["+socket.getPort()+"]: Reading/Waiting on incoming document");
             //read incoming document
             Document docRequest = in.readDoc();
 
@@ -113,19 +114,19 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
             if (docRequest.getElementsByTagName(SocketDelegate.REQ_REGISTRY_METADATA_TAG).getLength() > 0)
             {
                //requested registry metadata
-               Log.trace("SocketHandler: Writing registry metadata");
+               Log.trace("SocketHandler["+socket.getPort()+"]: Writing registry metadata");
 
                out.writeAsDoc(getVOResource());
             }
             else if (docRequest.getElementsByTagName(SocketDelegate.CREATE_QUERY_TAG).getLength() > 0)
             {
-               Log.trace("SocketHandler: Creating a query");
+               Log.trace("SocketHandler["+socket.getPort()+"]: Creating a query");
                DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(docRequest.getDocumentElement());
                out.writeDoc(ResponseHelper.makeQueryCreatedResponse(querier));
             }
             else if (docRequest.getElementsByTagName(SocketDelegate.START_QUERY_TAG).getLength() > 0)
             {
-               Log.trace("SocketHandler: Starting a query");
+               Log.trace("SocketHandler["+socket.getPort()+"]: Starting a query");
                DatabaseQuerier querier = getQuerierFromDoc(docRequest);
 
                Thread queryThread = new Thread(querier);
@@ -135,7 +136,7 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
             }
             else if (docRequest.getElementsByTagName(SocketDelegate.REGISTER_LISTENER_TAG).getLength() > 0)
             {
-               Log.trace("SocketHandler: Registering listeners");
+               Log.trace("SocketHandler["+socket.getPort()+"]: Registering listeners");
                DatabaseQuerier querier = getQuerierFromDoc(docRequest);
                querier.registerWebListeners(docRequest.getDocumentElement());
                out.writeDoc(ResponseHelper.makeStatusResponse(querier));
@@ -146,14 +147,14 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
             }
             else if (docRequest.getElementsByTagName(SocketDelegate.REQ_RESULTS_TAG).getLength() > 0)
             {
-               Log.trace("SocketHandler: Results Requested");
+               Log.trace("SocketHandler["+socket.getPort()+"]: Results Requested");
                DatabaseQuerier querier = getQuerierFromDoc(docRequest);
                Document response = ResponseHelper.makeResultsResponse(querier, querier.getResultsLoc());
                out.writeDoc(response);
             }
             else if (docRequest.getElementsByTagName(SocketDelegate.REQ_STATUS_TAG).getLength() > 0)
             {
-               Log.trace("SocketHandler: Status Requested");
+               Log.trace("SocketHandler["+socket.getPort()+"]: Status Requested");
                DatabaseQuerier querier = getQuerierFromDoc(docRequest);
                Document response = ResponseHelper.makeStatusResponse(querier);
                out.writeDoc(response);
@@ -242,6 +243,9 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.17  2003/10/02 12:53:49  mch
+It03-Close
+
 Revision 1.16  2003/09/24 21:03:46  nw
 altered to use DatabaseQuerierManager
 

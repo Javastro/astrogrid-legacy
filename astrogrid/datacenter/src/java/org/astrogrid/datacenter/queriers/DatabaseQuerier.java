@@ -1,18 +1,17 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.31 2003/09/26 11:38:00 nw Exp $
+ * $Id: DatabaseQuerier.java,v 1.32 2003/10/02 12:53:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.Vector;
-
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.common.DocMessageHelper;
 import org.astrogrid.datacenter.common.QueryStatus;
@@ -24,6 +23,7 @@ import org.astrogrid.log.Log;
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceDummyDelegate;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * The Querier classes handle a single, individual query to an individual
@@ -111,7 +111,7 @@ public abstract class DatabaseQuerier implements Runnable
          this.userid = userid;
      }
    /**
-    * Creates the query model based on the given DOM. 
+    * Creates the query model based on the given DOM.
     */
  void setQuery(Element givenDOM) throws ADQLException, QueryException
    {
@@ -225,7 +225,10 @@ public abstract class DatabaseQuerier implements Runnable
    }
 
    /**
-    * Sends the given results to the myspace server
+    * Sends the given results to the myspace server.
+    * @todo At some point we ought
+    * to work out a way of streaming this properly to myspace - I expect this to break
+    * on very very large votables - mch.
     */
    protected void sendResults(QueryResults results) throws IOException
    {
@@ -233,14 +236,40 @@ public abstract class DatabaseQuerier implements Runnable
 
       MySpaceDummyDelegate myspace = new MySpaceDummyDelegate(resultsDestination);
 
-      String filename = getHandle()+"_results";
+      String myspaceFilename = getHandle()+"_results";
 
-      myspace.saveDataHolding(userid, communityid, filename,
-                              XMLUtils.ElementToString(results.toVotable().getDocumentElement()),
+      try {
+         //stream results to string for outputting to myspace.   At
+         //some point we should get a socket to stream to from myspace and stream
+         //to that
+         ByteArrayOutputStream ba = new ByteArrayOutputStream();
+         results.toVotable(ba);
+         ba.close();
+      
+         myspace.saveDataHolding(userid, communityid, myspaceFilename,
+                              ba.toString(),
                               "VOTable",
                               myspace.OVERWRITE);
 
-      resultsLoc = myspace.getDataHoldingUrl(userid, communityid, filename);
+         resultsLoc = myspace.getDataHoldingUrl(userid, communityid, myspaceFilename);
+      }
+      catch (SAXException se)
+      {
+         Log.logError("Could not create VOTable",se);
+         //couldn't send as VOTable. Try CSV
+         /*
+         ByteArrayOutputStream ba = new ByteArrayOutputStream();
+         results.toCSV(ba);
+         ba.close();
+      
+         myspace.saveDataHolding(userid, communityid, myspaceFilename,
+                              ba.toString(),
+                              "CSV",
+                              myspace.OVERWRITE);
+
+         resultsLoc = myspace.getDataHoldingUrl(userid, communityid, myspaceFilename);
+          */
+      }
 
    }
 
@@ -348,7 +377,7 @@ public abstract class DatabaseQuerier implements Runnable
     * Sets the status.  NB if the new status is ordered before the existing one,
     * throws an exception (as each querier should only handle one query).
     * Synchronised as the queriers may be running under a different thread
-    */ 
+    */
    public synchronized void setStatus(QueryStatus newStatus)
    {
       Log.affirm(status != QueryStatus.ERROR,

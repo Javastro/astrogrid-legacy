@@ -1,3 +1,7 @@
+/*
+ * $Id: AsciiCodes.java,v 1.3 2003/10/02 12:53:49 mch Exp $
+ */
+
 package org.astrogrid.datacenter.io;
 
 /**
@@ -46,3 +50,10 @@ public interface AsciiCodes
    /** New line - 8 bit, NB this is probably platform dependent... */
    public static byte NL8    = CR8;          //new line (or byte[] NL8 = { CR8, LF8} )
 }
+
+/*
+$Log: AsciiCodes.java,v $
+Revision 1.3  2003/10/02 12:53:49  mch
+It03-Close
+
+ */

@@ -1,5 +1,5 @@
 /*
- * $Id: SocketDelegate.java,v 1.17 2003/09/22 16:51:24 mch Exp $
+ * $Id: SocketDelegate.java,v 1.18 2003/10/02 12:53:49 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -113,10 +113,11 @@ public class SocketDelegate extends DatacenterDelegate
       socket = aSocket;
       out = new SocketXmlOutputStream(socket.getOutputStream());
 
-      TraceInputStream tin = new TraceInputStream(socket.getInputStream());
-      tin.setState(true);
-      tin.copy2File(new File("incomingMsgs.log"));
-      in = new SocketXmlInputStream(tin);
+//      TraceInputStream tin = new TraceInputStream(socket.getInputStream());
+//      tin.setState(true);
+//      tin.copy2File(new File("incomingMsgs.log"));
+//      in = new SocketXmlInputStream(tin);
+      in = new SocketXmlInputStream(socket.getInputStream());
    }
 
    /**
@@ -344,7 +345,7 @@ public class SocketDelegate extends DatacenterDelegate
  * @see org.astrogrid.datacenter.delegate.DatacenterDelegate#abortQuery(java.lang.String)
  */
 public void abortQuery(String queryId) throws IOException {
-    throw new UnsupportedOperationException();    
+    throw new UnsupportedOperationException();
 }
 
 /* (non-Javadoc)
@@ -358,6 +359,9 @@ public Element getMetadata() throws IOException {
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.18  2003/10/02 12:53:49  mch
+It03-Close
+
 Revision 1.17  2003/09/22 16:51:24  mch
 Now posts results to dummy myspace
 

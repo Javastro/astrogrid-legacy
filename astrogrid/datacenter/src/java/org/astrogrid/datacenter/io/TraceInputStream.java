@@ -116,3 +116,10 @@ public class TraceInputStream extends java.io.FilterInputStream
       copyStream.writeChars("\n");
    }
 }
+
+/*
+$Log: TraceInputStream.java,v $
+Revision 1.2  2003/10/02 12:53:49  mch
+It03-Close
+
+ */

@@ -1,5 +1,5 @@
 /*
- * $Id: SocketXmlInputStream.java,v 1.5 2003/09/17 14:51:30 nw Exp $
+ * $Id: SocketXmlInputStream.java,v 1.6 2003/10/02 12:53:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -50,11 +50,13 @@ public class SocketXmlInputStream extends FilterInputStream implements AsciiCode
       {
          char c = (char) in.read();
          eof = (c == EOD);
-         if (!eof)
+         if (!eof && (c != NUL) && (c < 128)) //empty sockets sometimes seem to fill with 0xFFFFs
          {
             inBuffer.append(c);
          }
 
+//         System.out.print(Integer.toHexString(c)+" ");
+         
       }
 
       try
