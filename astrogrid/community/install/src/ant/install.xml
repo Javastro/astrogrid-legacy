@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/ant/install.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/04/15 02:27:46 $</cvs:date>
-    | <cvs:version>$Revision: 1.9 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/15 10:47:11 $</cvs:date>
+    | <cvs:version>$Revision: 1.10 $</cvs:version>
     | <cvs:log>
     |   $Log: install.xml,v $
+    |   Revision 1.10  2004/04/15 10:47:11  dave
+    |   Fixed ant script
+    |
     |   Revision 1.9  2004/04/15 02:27:46  dave
     |   Merged development branch, dave-dev-200404071355, into HEAD
     |
@@ -352,8 +355,8 @@
             +-->
         <database.load.task
             data="file:///${basedir}/config/community/${org.astrogrid.community.ident}.xml"
-            policyManager="${webapp.url}/services/PolicyManager"
-            securityManager="${webapp.url}/services/SecurityManager"
+            policyManager="${service.url}/PolicyManager"
+            securityManager="${service.url}/SecurityManager"
             />
     </target>
 
