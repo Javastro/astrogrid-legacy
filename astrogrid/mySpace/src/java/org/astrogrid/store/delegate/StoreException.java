@@ -1,5 +1,5 @@
 /*
- * $Id: StoreException.java,v 1.1 2004/02/24 15:59:56 mch Exp $
+ * $Id: StoreException.java,v 1.2 2004/03/01 15:15:04 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -21,10 +21,17 @@ public class StoreException extends IOException
       super(msg);
       initCause(cause);
    }
+   public StoreException(String msg)
+   {
+      super(msg);
+   }
 }
 
 /*
 $Log: StoreException.java,v $
+Revision 1.2  2004/03/01 15:15:04  mch
+Updates to Store delegates after myspace meeting
+
 Revision 1.1  2004/02/24 15:59:56  mch
 Moved It04.1 Datacenter VoSpaceClient stuff to myspace as StoreClient stuff
 

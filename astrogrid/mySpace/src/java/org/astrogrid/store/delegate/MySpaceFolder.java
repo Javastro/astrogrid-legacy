@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFolder.java,v 1.1 2004/02/24 15:59:56 mch Exp $
+ * $Id: MySpaceFolder.java,v 1.2 2004/03/01 15:15:04 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,8 +9,10 @@
 
 package org.astrogrid.store.delegate;
 
-import java.io.File;
+import java.net.MalformedURLException;
 import java.util.Hashtable;
+import org.astrogrid.store.AGSL;
+import org.astrogrid.store.Msrl;
 
 /**
  * Represents a folder in myspace. Not threadsafe.
@@ -20,82 +22,94 @@ import java.util.Hashtable;
  */
 
 
-public class MySpaceFolder extends File {
+public class MySpaceFolder implements StoreFile {
+   
    Hashtable files = new Hashtable();
-   File[] cachedArray = null;
    
    MySpaceFolder parentFolder = null; //getParentFile() does some path analysis
    
-   public MySpaceFolder(MySpaceFolder parent, String child) {
-      super(parent, child);
-      parentFolder = (MySpaceFolder) parent;
-   }
+   String name = null;
    
-   public void add(File child) {
+   AGSL agsl = null;
+   
+   /** Create folder from a myspace reference.  Use to create root folders - to
+    * create entries that are children, use the constructor that tkaes a parent */
+   public MySpaceFolder(Msrl givenMsrl, String givenName) {
+      this.agsl = givenMsrl.toAgsl();
+      name = givenName;
+   }
+ 
+   /** Creates a folder that is a child of another one.  Parent cannot be null - use
+    * the constructor that takes an Msrl to define the root folder*/
+   public MySpaceFolder(MySpaceFolder parent, String childName) {
+      
+      assert parent != null : "Parent must not be null - use MySpaceFolder(Msrl) for root folders";
+      
+      this.parentFolder = parent;
+      this.name = childName;
+      
+      try {
+         //build AGSL from parents one and child
+         agsl = new AGSL(parent.toAgsl()+"/"+childName);
+      }
+      catch (MalformedURLException mue) {
+         throw new RuntimeException("Program Error: should not be possible to build illegal AGSLs here", mue);
+      }
+      
+   }
+
+   /** Adds the given StoreFile as a file that exists in this folder */
+   public void add(StoreFile child) {
       files.put(child.getName(), child);
-      cachedArray = null;
+   }
+
+   /** Returns the StoreFile representation of the child with the given filename */
+   public StoreFile getChild(String filename) {
+      return (StoreFile) files.get(filename);
    }
    
-   public File getChild(String filename) {
-      return (File) files.get(filename);
+   /** Returns an array of the files in this container */
+   public StoreFile[] listFiles() {
+      return (StoreFile[]) (files.values().toArray(new StoreFile[] {}));
    }
-   
-   public File[] listFiles() {
-      if (cachedArray == null) {
-         cachedArray = (File[]) (files.values().toArray(new File[] {}));
-      }
-         
-      return cachedArray;
-   }
-   
-   public int getChildCount() {
-      return files.size();
-   }
-   
-   /** Returns full path apart from root */
-   public String toString()
-   {
-      //if this is root return then name
-      if (isRoot()) {
-         return super.getPath();
-      } else {
-         //if the parent of this is root, don't use that
-         if ( parentFolder.isRoot()) {
-            return "/"+getName();
-         } else {
-            return parentFolder+"/"+getName();
-         }
-      }
-   }
-   
-   /** Returns the path up to and including the individual@account */
-   public String getPath()
-   {
-      if (parentFolder == null) {
-         return "/";
-      }
-      else if (parentFolder.isRoot()) {
-         return "/"+getName();
+
+   /** Returns path on server */
+   public String getPath() {
+      if (parentFolder != null) {
+         return parentFolder.getPath()+getName()+"/";
       }
       else {
-         return parentFolder.getPath()+"/"+getName();
+         return "";
       }
    }
    
-   /** Naughty method - returns true if root
-    * if a server name is given (ie one with slashes) it seems File will
-    * make up a bunch of File parents
-    */
+   /** Returns full agsl path */
+   public String toString()    {    return getName();   }
    
-   private boolean isRoot()
-   {
-      return (parentFolder == null);
-   }
+
+   /** Returns where to find this file using an AStrogrid Store Locator */
+   public AGSL toAgsl() {           return agsl; }
+   
+   /** Returns parent folder of this file/folder */
+   public StoreFile getParent() {   return this.parentFolder;  }
+   
+   /** Returns true - this is a container */
+   public boolean isFolder() {      return true;   }
+   
+   /** Returns false - this is a container */
+   public boolean isFile() {        return false;  }
+   
+   /** Returns the filename/foldername/tablename/etc */
+   public String getName() {        return this.name; }
+   
    
 }
 
 /*
  $Log: MySpaceFolder.java,v $
+ Revision 1.2  2004/03/01 15:15:04  mch
+ Updates to Store delegates after myspace meeting
+
  Revision 1.1  2004/02/24 15:59:56  mch
  Moved It04.1 Datacenter VoSpaceClient stuff to myspace as StoreClient stuff
 

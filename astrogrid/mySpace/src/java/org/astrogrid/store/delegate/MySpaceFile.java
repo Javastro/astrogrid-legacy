@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFile.java,v 1.1 2004/02/24 15:59:56 mch Exp $
+ * $Id: MySpaceFile.java,v 1.2 2004/03/01 15:15:04 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,7 +9,8 @@
 
 package org.astrogrid.store.delegate;
 
-import java.io.File;
+import java.net.MalformedURLException;
+import org.astrogrid.store.AGSL;
 
 /**
  * Represents a file in vospace.  There is also MySpaceFolder to represent
@@ -24,20 +25,20 @@ import java.io.File;
  */
 
 
-public class MySpaceFile extends File {
-   String owner, created, expires, size, permissions = null;
+public class MySpaceFile implements StoreFile {
+   String name, owner, created, expires, size, permissions = null;
    
    MySpaceFileType type = null;
    MySpaceFolder parentFolder = null; //the ordinary parent is not quite right
    
    public MySpaceFile(MySpaceFolder parent, String child) {
-      super(parent, child);
-      parentFolder = parent;
+      this.name = child;
+      this.parentFolder = parent;
    }
    
    public MySpaceFile(MySpaceFolder parent, String aFilename, String anOwner, String aCreatedDate, String anExpiryDate, String aSize, String somePermissions, MySpaceFileType aType) {
-      super(parent, aFilename);
-      this.parentFolder = parent;
+      this(parent, aFilename);
+      
       this.owner = anOwner;
       this.created = aCreatedDate;
       this.expires = anExpiryDate;
@@ -61,27 +62,50 @@ public class MySpaceFile extends File {
 
    public String getPermissions() { return permissions; }
 
-   public String getCanonicalPath()   {
-      return super.getPath();
+   /** Returns the location of this file as an Astrogrid Storepoint Location */
+   public AGSL toAgsl()
+   {
+      try {
+         return new AGSL(parentFolder.toAgsl()+"/"+getName());
+      }
+      catch (MalformedURLException mue) {
+         throw new RuntimeException("Program error: Should not be possible to construct myspacefiles with illegal AGSLs...");
+      }
    }
    
-   public String getPath()
-   {
-      return parentFolder.getPath()+"/"+getName();
+   /** Returns the path to this file on the server */
+   public String getPath() {
+      if (parentFolder != null) {
+         return parentFolder.getPath()+getName();
+      } else {
+         return getName();
+      }
    }
+   
+   public String getName() {           return name; }
    
    /** Returns the parent folder - differs from getParent() with makes
     * a guess at the path from the initial filename... */
-   public MySpaceFolder getParentFolder() { return parentFolder; }
+   public StoreFile getParent() {      return parentFolder; }
+
    
-   /**
-    * Original File.getParent() returns a string based partly ont he filename
-    */
-   public String getParent() { return parentFolder.getPath() +"/"; }
+   /** Lists children files if this is a container - returns null otherwise */
+   public StoreFile[] listFiles() {    return null;   }
+   
+   /** Returns true if this is a container that can hold other files/folders */
+   public boolean isFolder()     {     return false;   }
+   
+   /** Returns true if this is a self-contained file.  For example, a database
+    * table might be represented as a StoreFile but it is not a file */
+   public boolean isFile() {           return true;   }
+   
 }
 
 /*
  $Log: MySpaceFile.java,v $
+ Revision 1.2  2004/03/01 15:15:04  mch
+ Updates to Store delegates after myspace meeting
+
  Revision 1.1  2004/02/24 15:59:56  mch
  Moved It04.1 Datacenter VoSpaceClient stuff to myspace as StoreClient stuff
 

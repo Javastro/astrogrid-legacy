@@ -1,5 +1,5 @@
 /*
- * $Id: StoreDelegateFactory.java,v 1.1 2004/02/24 15:59:56 mch Exp $
+ * $Id: StoreDelegateFactory.java,v 1.2 2004/03/01 15:15:04 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.URL;
 import org.astrogrid.community.Account;
 import org.astrogrid.store.AGSL;
+import org.astrogrid.store.Msrl;
 
 /**
  * Creates the appropriate delegates to access the various vospace servers
@@ -30,21 +31,31 @@ public class StoreDelegateFactory
     * myspace.  We could also add a FTP and GridFTP delegates for services
     * without accounts on MySpace servers.
     */
-   public static StoreClient createDelegate(Account operator, String endPoint) throws IOException
+   public static StoreClient createDelegate(Account operator, AGSL location) throws IOException
    {
-      if (endPoint.toLowerCase().startsWith("http:")) {
-         return new MySpaceIt04ServerDelegate(operator, endPoint);
+      if (location.getMsrl() != null) {
+         Msrl msrl = location.getMsrl();
+
+         return new MySpaceIt04ServerDelegate(operator, msrl.getDelegateEndpoint().toString());
       }
-      else if (endPoint.toLowerCase().startsWith("vospace:")) {
-         return new MySpaceIt04ServerDelegate(operator, new AGSL(new URL(endPoint), null).getDelegateEndpoint().toString());
+      URL url = location.resolveURL();
+      if (url.getProtocol().equals("ftp")) {
+         return new FtpStore(url);
       }
-      throw new IllegalArgumentException("Unknown endpoint '"+endPoint+"', don't know which delegate to create for this");
+      if (url.getProtocol().equals("file")) {
+         return new LocalFileStore();
+      }
+      
+      throw new IllegalArgumentException("Don't know how to create delegate for AGSL '"+location+"'");
    }
 
 }
 
 /*
 $Log: StoreDelegateFactory.java,v $
+Revision 1.2  2004/03/01 15:15:04  mch
+Updates to Store delegates after myspace meeting
+
 Revision 1.1  2004/02/24 15:59:56  mch
 Moved It04.1 Datacenter VoSpaceClient stuff to myspace as StoreClient stuff
 

@@ -1,5 +1,5 @@
 /*
- * $Id: StoreClient.java,v 1.1 2004/02/24 15:59:56 mch Exp $
+ * $Id: StoreClient.java,v 1.2 2004/03/01 15:15:04 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import org.astrogrid.community.Account;
+import org.astrogrid.store.AGSL;
 
 /**
  * These are the methods that vospace delegates must implement.
@@ -38,18 +39,17 @@ public interface StoreClient {
    /**
     * Returns a tree representation of the files that match the expression
     */
-   public File getEntries(Account forAccount, String filter) throws IOException;
+   public StoreFile getFiles(String filter) throws IOException;
 
    /**
     * Returns a list of all the files that match the expression
-    *
-   public List getEntriesList(User forAccount, String filter);
-    /**/
+    */
+   public StoreFile[] listFiles(String filter) throws IOException;
+
    /**
-    * getEntry obtain the details of a single, specified entry,
-    *
-   public File getEntry(User forAccount, String path);
-    /**/
+    * Returns the StoreFile representation of the file at the given AGSL
+    */
+   public StoreFile getFile(String path) throws IOException;
 
    /**
     * Puts the given string into the given location
@@ -93,19 +93,9 @@ public interface StoreClient {
    public void newFolder(String targetPath) throws IOException ;
 
    /**
-    * Copy a file
-    *
-   public void copy(User sourceAccount, String sourcePath, User targetAccount, String targetPath);
-
-   /**
     * Move a file
     *
    public void move(User sourceAccount, String sourcePath, User targetAccount, String targetPath);
-
-   /**
-    * Explicit instructions to move an entry to a particular MySpace server
-    *
-   public void moveToServer(User forAccount, String sourcePath, String targetServer);
 
    /**
     * Create a new user

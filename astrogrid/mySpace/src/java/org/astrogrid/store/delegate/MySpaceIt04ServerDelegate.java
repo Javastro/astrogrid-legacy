@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceIt04ServerDelegate.java,v 1.1 2004/02/24 15:59:56 mch Exp $
+ * $Id: MySpaceIt04ServerDelegate.java,v 1.2 2004/03/01 15:15:04 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -19,8 +19,11 @@ package org.astrogrid.store.delegate;
  * @author M Hill
  */
 
-import java.io.*;
-
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringBufferInputStream;
 import java.net.URL;
 import java.util.StringTokenizer;
 import org.apache.axis.utils.XMLUtils;
@@ -28,12 +31,15 @@ import org.astrogrid.community.Account;
 import org.astrogrid.log.Log;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
+import org.astrogrid.store.Msrl;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class MySpaceIt04ServerDelegate implements StoreClient
 {
    private MySpaceClient depIt04Delegate = null;//deprecated It04 delegate
+   private Msrl serverMsrl = null; //location of server
 
    //the person/account using this delegate
    private Account operator = null;
@@ -47,6 +53,7 @@ public class MySpaceIt04ServerDelegate implements StoreClient
          endPoint = endPoint + "/services/MySpaceManager";
       }
       depIt04Delegate = MySpaceDelegateFactory.createDelegate(endPoint);
+      serverMsrl = new Msrl(new URL(endPoint));
    }
    
    /**
@@ -80,28 +87,50 @@ public class MySpaceIt04ServerDelegate implements StoreClient
       }
    }
    
+   /**
+    * Returns a list of all the files that match the expression
+    */
+   public StoreFile[] listFiles(String filter) throws StoreException {
+      // TODO
+         throw new UnsupportedOperationException();
+   }
+   
+   /**
+    * Returns the StoreFile representation of the file at the given AGSL
+    */
+   public StoreFile getFile(String path) throws StoreException {
+      try {
+         
+         String entries = depIt04Delegate.getDataHolding(
+                              operator.getIndividual(),
+                              operator.getCommunity(),
+                              operator.getToken(),
+                              path);
+         
+         throw new UnsupportedOperationException();
+      }
+      catch (Exception e) {
+            throw new StoreException("Failed to get File at '"+path+"'", e);
+      }
+      
+   }
+   
     /**
     * Returns a tree representation of the files that match the expression
     */
-   public File getEntries(Account forAccount, String filter) throws StoreException {
+   
+   public StoreFile getFiles(String filter) throws StoreException {
 
-      MySpaceFolder rootFolder = new MySpaceFolder(null,depIt04Delegate.toString());
+      MySpaceFolder rootFolder = new MySpaceFolder(serverMsrl, "");
       
       try {
          
          String entries = null;
          
-         if (forAccount != null) {
-            entries = (String) depIt04Delegate.listDataHoldingsGen(
+         entries = (String) depIt04Delegate.listDataHoldingsGen(
                   operator.getIndividual(),
                   operator.getCommunity(), operator.getToken(),
-                  "/"+forAccount.getAstrogridId()+"/*").elementAt(0);
-         } else {
-            entries = (String) depIt04Delegate.listDataHoldingsGen(
-                  operator.getIndividual(),
-                  operator.getCommunity(), operator.getToken(),
-                  "*").elementAt(0);
-         }
+                  filter).elementAt(0);
             
          Element entryDom = XMLUtils.newDocument(new StringBufferInputStream(entries)).getDocumentElement();
             
@@ -154,7 +183,7 @@ public class MySpaceIt04ServerDelegate implements StoreClient
             return rootFolder;
          }
          catch (Exception e) {
-            throw new StoreException("Failed to getEntries tree for '"+forAccount+"' filter '"+filter+"'", e);
+            throw new StoreException("Failed to getEntries tree for filter '"+filter+"'", e);
          }
    }
    
@@ -254,13 +283,23 @@ public class MySpaceIt04ServerDelegate implements StoreClient
     */
    public void delete(String deletePath) throws IOException {
 
+      String status;
       try {
-         depIt04Delegate.deleteDataHolding(operator.getIndividual(), operator.getCommunity(), operator.getToken(),
-                                                           deletePath);
+         status = depIt04Delegate.deleteDataHolding(operator.getIndividual(), operator.getCommunity(), operator.getToken(),
+                                                           "/"+deletePath);
+
       }
       catch (Exception e) {
          throw new StoreException("Failed to delete '"+deletePath+"'", e);
       }
+
+      if (status.indexOf(">FAULT<") >-1) {
+         String msg = status.substring(status.indexOf("<details>")+9);
+         msg = msg.substring(0, msg.indexOf("</"));
+         throw new StoreException("Fault ["+msg+"] deleting '"+deletePath+"'");
+      }
+         
+      
    }
    
    /**
@@ -295,6 +334,9 @@ public class MySpaceIt04ServerDelegate implements StoreClient
 
 /*
 $Log: MySpaceIt04ServerDelegate.java,v $
+Revision 1.2  2004/03/01 15:15:04  mch
+Updates to Store delegates after myspace meeting
+
 Revision 1.1  2004/02/24 15:59:56  mch
 Moved It04.1 Datacenter VoSpaceClient stuff to myspace as StoreClient stuff
 

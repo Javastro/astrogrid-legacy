@@ -1,5 +1,5 @@
 /*
- $Id: FtpDelegate.java,v 1.1 2004/02/24 20:01:36 mch Exp $
+ $Id: FtpStore.java,v 1.1 2004/03/01 15:15:04 mch Exp $
 
  (c) Copyright...
  */
@@ -25,7 +25,7 @@ import org.astrogrid.community.Account;
  * Adapted from the ACE project
  */
 
-public class FtpDelegate implements StoreClient
+public class FtpStore implements StoreClient
 {
    private String server = null;
    private int port = DEFAULT_PORT;
@@ -164,13 +164,12 @@ public class FtpDelegate implements StoreClient
     * Construct myspace client using given endpoint, which is a complete location, eg
     * ftp://ftp.roe.ac.uk/pub/astrogrid
     */
-   public FtpDelegate(String givenEndPoint) throws IOException
+   public FtpStore(URL endPoint) throws IOException
    {
-      URL url = new URL(givenEndPoint);
-      server = url.getHost();
-      port = url.getPort();
+      server = endPoint.getHost();
+      port = endPoint.getPort();
       if (port == -1) { port = DEFAULT_PORT; }
-      rootDir = url.getPath();
+      //hmmm @todo rootDir = url.getPath();
    }
 
 
@@ -307,7 +306,7 @@ public class FtpDelegate implements StoreClient
    /**
     * Returns a tree representation of the files that match the expression
     */
-   public File getEntries(Account forAccount, String filter) throws IOException {
+   public StoreFile getFiles(String filter) throws IOException {
       
       throw new UnsupportedOperationException();
       /*
@@ -331,7 +330,24 @@ public class FtpDelegate implements StoreClient
        */
    }
    
+   /**
+    * Returns a list of the files that match the expression
+    */
+   public StoreFile[] listFiles(String filter) throws IOException {
+      
+      throw new UnsupportedOperationException();
+      //@todo
+   }
    
+   /**
+    * Returns the file corresponding to the path
+    */
+   public StoreFile getFile(String path) throws IOException {
+      
+      throw new UnsupportedOperationException();
+      //@todo
+   }
+
    /**
     * Copies the contents of the file at the given source url to the given location
     */
