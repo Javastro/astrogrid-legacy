@@ -1,4 +1,4 @@
-/*$Id: WorkflowManagerIntegrationTest.java,v 1.3 2004/04/06 12:08:30 nw Exp $
+/*$Id: WorkflowManagerIntegrationTest.java,v 1.4 2004/04/06 15:35:28 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -138,11 +138,11 @@ public class WorkflowManagerIntegrationTest extends AbstractTestForIntegration {
            Workflow w1 = jes.readJob(urn);
            assertNotNull(w1);
             assertEquals(w1.getName(),wf.getName());
-       
+        // dump it to myspace store - then we can look at it later.
+        w1.setName("execution results:" + urn.getContent());
+        manager.getWorkflowStore().saveWorkflow(acc,w1);       
        assertEquals(ExecutionPhase.COMPLETED,w1.getJobExecutionRecord().getStatus()); // i.e. its not in error
-       // dump it to myspace store - then we can look at it later.
-       w1.setName("execution results:" + urn.getContent());
-       manager.getWorkflowStore().saveWorkflow(acc,w1);
+
        
        
     }
@@ -152,6 +152,9 @@ public class WorkflowManagerIntegrationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: WorkflowManagerIntegrationTest.java,v $
+Revision 1.4  2004/04/06 15:35:28  nw
+altered order of things happining
+
 Revision 1.3  2004/04/06 12:08:30  nw
 fixes
 
