@@ -41,6 +41,9 @@ public class Parameter {
     private static Logger 
         logger = Logger.getLogger( Parameter.class ) ;    
     
+    private Tool
+        parent ;
+    
     private String
         name = null,
         type = null;
@@ -51,18 +54,19 @@ public class Parameter {
     private String
         contents = null ;
         
-    private Parameter() {
+    public Parameter() {
     }
      
-    protected Parameter( String name ) {
+    public Parameter( String name ) {
         this.name = name ;   
     }
     
-    public Parameter( Element element ) {
+    public Parameter( Tool parent, Element element ) {
         if( TRACE_ENABLED ) trace( "Parameter(Element) exit") ; 
              
         try {
             
+            this.parent = parent ;
             this.name = element.getAttribute( SubmissionRequestDD.PAREMETER_NAME_ATTR ) ;
             this.type = element.getAttribute( SubmissionRequestDD.PAREMETER_TYPE_ATTR ) ;
             this.location = element.getAttribute( SubmissionRequestDD.PAREMETER_LOCATION_ATTR ) ;
@@ -75,6 +79,10 @@ public class Parameter {
 
     } // end of Parameter(Element)
         
+  
+    public void setName( String name ){
+        this.name = name ;
+    }
   
     public String getName() {
         return this.name ;  
@@ -176,6 +184,14 @@ public class Parameter {
 	   */
 	public void setType(String string) {
 		type = string;
+	}
+
+    public void setParent(Tool parent) {
+		this.parent = parent;
+	}
+
+    public Tool getParent() {
+		return parent;
 	}
 
 } // end of class Parameter

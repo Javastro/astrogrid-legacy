@@ -106,14 +106,10 @@ public class JES extends org.astrogrid.Configurator {
         JOB_TABLENAME_JOB = "TABLENAME.JOB",
     /** Key within the component's configuration identifying the JobStep table name */  
         JOB_TABLENAME_JOBSTEP = "TABLENAME.JOBSTEP",
-    /** Key within the component's configuration identifying the Query table name */  
-        JOB_TABLENAME_QUERY = "TABLENAME.QUERY",
-    /** Key within the component's configuration identifying the Catalog table name */  
-        JOB_TABLENAME_CATALOG = "TABLENAME.CATALOG",
-    /** Key within the component's configuration identifying the Table table name */  
-        JOB_TABLENAME_TABLE = "TABLENAME.TABLE",
-    /** Key within the component's configuration identifying the Service table name */  
-        JOB_TABLENAME_SERVICE = "TABLENAME.SERVICE", 
+    /** Key within the component's configuration identifying the Tool table name */  
+        JOB_TABLENAME_TOOL = "TABLENAME.TOOL",
+    /** Key within the component's configuration identifying the Parameter table name */  
+        JOB_TABLENAME_PARAMETER = "TABLENAME.PARAMETER",
     /** Key within the component's configuration identifying the JobId table name */  
         JOB_TABLENAME_JOBID = "TABLENAME.JOBID",         
     /** Key within the component's configuration identifying the range of Job 

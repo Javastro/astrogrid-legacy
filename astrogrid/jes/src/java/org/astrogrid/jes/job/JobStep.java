@@ -117,7 +117,7 @@ public class JobStep {
 		   	   
 			       child = (Element) nodeList.item(i) ;
 			       if( child.getTagName().equals( SubmissionRequestDD.TOOL_ELEMENT ) ) 
-			           tool = new Tool( child ) ;
+			           tool = new Tool( this, child ) ;
 			           
 			   }
 			   

@@ -77,10 +77,8 @@
     <!-- The Job table names -->
     <property name="JOB" value="jes..job" />
     <property name="JOBSTEP" value="jes..jobstep" />
-    <property name="QUERY" value="jes..query" />
-    <property name="CATALOG" value="jes..catalog" />
-    <property name="TABLE" value="jes..catalogtable" />
-    <property name="SERVICE" value="jes..service" />
+    <property name="TOOL" value="jes..tool" />
+    <property name="PARAMETER" value="jes..parameter" />
     <property name="JOBID" value="jes..jobid" />
     <!-- The bookable range of Job id's -->
     <property name="ID.BOOKABLERANGE" value="100" />

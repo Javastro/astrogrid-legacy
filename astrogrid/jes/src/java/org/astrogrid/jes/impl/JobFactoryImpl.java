@@ -87,43 +87,70 @@ public class JobFactoryImpl implements JobFactory {
         COL_JOBSTEP_SEQUENCENUMBER = 6, //JBL added iteration 3
         COL_JOBSTEP_JOINCONDITION = 7 ; //JBL added iteration 3
 	
-	public static final String
-        QUERY_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER ) " +
-						  "VALUES ( ''{1}'', ''{2}'' )" ,
-	    QUERY_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}'' AND STEPNUMBER = ''{2}''" ;    
-
-	public static final String
-		CATALOG_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER, CATALOGNAME ) " +
-						  "VALUES ( ''{1}'', ''{2}'', ''{3}'' )" ,
-		CATALOG_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}'' AND STEPNUMBER = ''{2}''" ;  
-		
-	private static final int
-		COL_CATALOG_JOBURN = 1,
-		COL_CATALOG_STEPNUMBER = 2,
-		COL_CATALOG_CATALOGNAME = 3 ;    
+    public static final String
+       TOOL_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER, TOOLNAME ) " +
+                              "VALUES ( ''{1}'', ''{2}'', ''{3}'' )" ,
+       TOOL_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}'' AND STEPNUMBER = ''{2}''" ;    
+  
+    private static final int
+        COL_TOOL_JOBURN = 1,
+        COL_TOOL_STEPNUMBER = 2,
+        COL_TOOL_TOOLNAME = 3,
+        COL_TOOL_LOCATION = 4 ; 
+     
+    public static final String
+       PARAMETER_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER, TOOLNAME, PARAMNAME, DIRECTION, TYPE, LOCATION, CONTENTS  ) " +
+                                   "VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'', ''{5}'', ''{6}'', ''{7}'', ''{8}'' )" ,
+       PARAMETER_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}'' AND STEPNUMBER = ''{2}'' AND TOOLNAME = ''{3}''" ;    
+   
+    private static final int
+        COL_PARAMETER_JOBURN = 1,
+        COL_PARAMETER_STEPNUMBER = 2,
+        COL_PARAMETER_TOOLNAME = 3,
+        COL_PARAMETER_PARAMNAME = 4,
+        COL_PARAMETER_DIRECTION = 5,
+        COL_PARAMETER_TYPE = 6,
+        COL_PARAMETER_LOCATION = 7,
+        COL_PARAMETER_CONTENTS = 8 ;   
+   
     
-	public static final String
-		TABLE_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER, CATALOGNAME, TABLENAME ) " +
-						  "VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'' )" , 
-        TABLE_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}'' AND STEPNUMBER = ''{2}'' AND CATALOGNAME = ''{3}''" ; 
-          
-	private static final int
-		COL_TABLE_JOBURN = 1,
-		COL_TABLE_STEPNUMBER = 2,
-		COL_TABLE_CATALOGNAME = 3,
-		COL_TABLE_TABLENAME = 4 ;  
-						  
-	public static final String
-		SERVICE_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER, CATALOGNAME, SERVICENAME, SERVICEURL ) " +
-						  "VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'', ''{5}'' )" ,  						    
-        SERVICE_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}'' AND STEPNUMBER = ''{2}'' AND CATALOGNAME = ''{3}''" ;  
-    
-	private static final int
-		COL_SERVICE_JOBURN = 1,
-		COL_SERVICE_STEPNUMBER = 2,
-		COL_SERVICE_CATALOGNAME = 3,
-		COL_SERVICE_SERVICENAME = 4,
-        COL_SERVICE_SERVICEURL = 5 ;      
+//	public static final String
+//        QUERY_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER ) " +
+//						  "VALUES ( ''{1}'', ''{2}'' )" ,
+//	    QUERY_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}'' AND STEPNUMBER = ''{2}''" ;    
+//
+//	public static final String
+//		CATALOG_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER, CATALOGNAME ) " +
+//						  "VALUES ( ''{1}'', ''{2}'', ''{3}'' )" ,
+//		CATALOG_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}'' AND STEPNUMBER = ''{2}''" ;  
+//		
+//	private static final int
+//		COL_CATALOG_JOBURN = 1,
+//		COL_CATALOG_STEPNUMBER = 2,
+//		COL_CATALOG_CATALOGNAME = 3 ;    
+//    
+//	public static final String
+//		TABLE_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER, CATALOGNAME, TABLENAME ) " +
+//						  "VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'' )" , 
+//        TABLE_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}'' AND STEPNUMBER = ''{2}'' AND CATALOGNAME = ''{3}''" ; 
+//          
+//	private static final int
+//		COL_TABLE_JOBURN = 1,
+//		COL_TABLE_STEPNUMBER = 2,
+//		COL_TABLE_CATALOGNAME = 3,
+//		COL_TABLE_TABLENAME = 4 ;  
+//						  
+//	public static final String
+//		SERVICE_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, STEPNUMBER, CATALOGNAME, SERVICENAME, SERVICEURL ) " +
+//						  "VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'', ''{5}'' )" ,  						    
+//        SERVICE_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}'' AND STEPNUMBER = ''{2}'' AND CATALOGNAME = ''{3}''" ;  
+//    
+//	private static final int
+//		COL_SERVICE_JOBURN = 1,
+//		COL_SERVICE_STEPNUMBER = 2,
+//		COL_SERVICE_CATALOGNAME = 3,
+//		COL_SERVICE_SERVICENAME = 4,
+//        COL_SERVICE_SERVICEURL = 5 ;      
         
     public static final String
         JOBID_SELECT_TEMPLATE = "SELECT ASSIGNED FROM {0}",
@@ -693,7 +720,6 @@ public class JobFactoryImpl implements JobFactory {
 		   
 			while ( iterator.hasNext() ) {
 				jobStep = (JobStep)iterator.next() ;
-//				jobStep.setStepNumber( ++count ) ; // JBL I think this should be set from the Doc
 			    insertOneJobStep( jobStep ) ;			
 			} 
             
@@ -730,7 +756,7 @@ public class JobFactoryImpl implements JobFactory {
 			logger.debug( "Create JobStep: " + updateString ) ;			
 			statement = getConnection().createStatement() ;
 			statement.executeUpdate( updateString );
-			createQuery( jobStep.getQuery() ) ;
+			createTool( jobStep.getTool() ) ;
 		}
 		catch( SQLException sex ) {
 			AstroGridMessage
@@ -747,17 +773,6 @@ public class JobFactoryImpl implements JobFactory {
 	} // end of insertOneJobStep()
 	
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-	
 	public void findJobSteps( Job job ) throws JobException {
 		if( TRACE_ENABLED ) logger.debug( "findJobSteps(): entry") ;  
 		 	
@@ -801,7 +816,7 @@ public class JobFactoryImpl implements JobFactory {
                     //JBL added iteration 3 - sequenceNumber and joinCondition ...
                     jobStep.setSequenceNumber( new Integer( rs.getString( COL_JOBSTEP_SEQUENCENUMBER ).trim() ) ) ;
                     jobStep.setJoinCondition( rs.getString( COL_JOBSTEP_JOINCONDITION ).trim() ) ;
-					findQuery( jobStep ) ;
+					findTool( jobStep ) ;
 					job.addJobStep( jobStep ) ;
 					
 				} // end while 
@@ -823,9 +838,280 @@ public class JobFactoryImpl implements JobFactory {
 		}  	
 		  
 	} // end of findJobSteps()
+    
+    
+    private void createTool( Tool tool ) throws JobException {
+      if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.createTool(): entry") ;  
+          
+      Statement    
+         statement = null ;
+         
+      try {
+          
+          Object []
+             inserts = new Object[3] ;
+          inserts[0] = JES.getProperty( JES.JOB_TABLENAME_TOOL
+                                      , JES.JOB_CATEGORY ) ;
+          inserts[1] = tool.getParent().getParent().getId() ;
+          inserts[2] = tool.getParent().getStepNumber() ;
+
+          String
+             updateString = MessageFormat.format( TOOL_INSERT_TEMPLATE, inserts ) ; 
+          logger.debug( "Create Tool: " + updateString ) ;           
+          statement = getConnection().createStatement() ;
+          statement.executeUpdate( updateString );
+          createParameters( tool ) ;
+
+      }
+      catch( SQLException sex ) {
+          AstroGridMessage
+              message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT
+                                            , SUBCOMPONENT_NAME ) ;
+          logger.error( message.toString(), sex ) ;
+          throw new JobException( message, sex );         
+      }
+      finally {
+          if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
+          if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.createQuery(): exit") ;      
+      }
+      
+    }
 	
-	
-	
+    
+    public void findTool( JobStep jobStep ) throws JobException {
+        if( TRACE_ENABLED ) logger.debug( "JobFactoryImp.findTool(): entry") ;  
+          
+        // "SELECT * FROM {0} WHERE JOBURN = ''{1}'' AND STEPNUMBER = ''{2}''" ;      
+          
+        Tool
+            tool = null  ;
+        Statement   
+            statement = null ;
+        ResultSet
+            rs = null ;
+         
+        try {
+
+            Object []
+                inserts = new Object[3] ;
+            inserts[0] = JES.getProperty( JES.JOB_TABLENAME_TOOL
+                                        , JES.JOB_CATEGORY ) ;
+            inserts[1] = jobStep.getParent().getId() ;
+            inserts[2] = jobStep.getStepNumber() ;
+
+            String
+                selectString = MessageFormat.format( TOOL_SELECT_TEMPLATE, inserts ) ;  
+            logger.debug( "findTool: " + selectString ) ;      
+            statement = this.getConnection().createStatement() ;
+            rs = statement.executeQuery( selectString );
+          
+            if( !rs.isBeforeFirst() ) {
+                // Whoops! Tool not found when it should have been...
+                // AGJESE00750=:JobFactoryImpl: Query not found for Job with URN [{0}] and JobStep number [{1}]
+                AstroGridMessage
+                    message = new AstroGridMessage( ASTROGRIDERROR_QUERY_NOT_FOUND
+                                                  , SUBCOMPONENT_NAME
+                                                  , jobStep.getParent().getId()
+                                                  , jobStep.getStepNumber() ) ;
+                logger.error( message.toString() ) ;
+                throw new NotFoundException( message ) ;
+            }
+            else {
+                rs.next() ; // position on the first tool found (hopefully the only one!)
+  
+                tool = new Tool() ;
+                tool.setParent( jobStep ) ;
+                tool.setName( rs.getString( COL_TOOL_TOOLNAME ) ) ;
+                findParameters( tool ) ;
+                jobStep.setTool( tool ) ;     
+                  
+                if( rs.next() == true ) {
+                    // We have a duplicate Tool!!! This should be impossible...
+                    AstroGridMessage
+                        message = new AstroGridMessage( ASTROGRIDERROR_DUPLICATE_QUERY_FOUND
+                                                      , SUBCOMPONENT_NAME
+                                                      , jobStep.getParent().getId()
+                                                      , jobStep.getStepNumber() ) ;
+                    logger.error( message.toString() ) ;
+                    throw new DuplicateFoundException( message ) ;
+                }
+
+            } // end else
+                         
+        }
+        catch( SQLException ex ) {
+            AstroGridMessage
+                message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST
+                                              , SUBCOMPONENT_NAME ) ;
+            logger.error( message.toString(), ex ) ;
+            throw new JobException( message, ex ) ;         
+        }
+        finally {
+            if( rs != null ) { try { rs.close(); } catch( SQLException sex ) {;} }
+            if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
+            if( TRACE_ENABLED ) logger.debug( "JobFactoryImp.findTool(): exit") ;    
+        }   
+        
+    } // end of JobFactoryImp.findTool()
+    
+    
+    
+    
+    
+    private void createParameters( Tool tool ) throws JobException {
+      if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.createParameters(): entry") ;   
+                  
+      try {
+          
+            Iterator
+                iterator = tool.getInputParameters() ;
+         
+            while ( iterator.hasNext() ) {
+                insertOneParameter( (Parameter)iterator.next(), "input" ) ;          
+            } 
+           
+            iterator = tool.getInputParameters() ; 
+            
+            while ( iterator.hasNext() ) {
+                insertOneParameter( (Parameter)iterator.next(), "output" ) ;          
+            } 
+
+        }
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.createParameters()(): exit") ;       
+        }
+          
+    } // end of JobFactoryImpl.createParameters()
+    
+    
+    public void findParameters( Tool tool ) throws JobException {
+        if( TRACE_ENABLED ) logger.debug( "JobFactoryImp.findParameters(): entry") ;  
+          
+        Parameter
+            parameter = null ;
+        Statement   
+            statement = null ;
+        ResultSet
+            rs = null ;
+         
+        try {
+
+            Object []
+                inserts = new Object[3] ;
+            inserts[0] = JES.getProperty( JES.JOB_TABLENAME_PARAMETER
+                                        , JES.JOB_CATEGORY ) ;
+            inserts[1] = tool.getParent().getParent().getId() ;
+            inserts[2] = tool.getParent().getStepNumber() ;
+
+            String
+                selectString = MessageFormat.format( PARAMETER_SELECT_TEMPLATE, inserts ) ;    
+            logger.debug( "Find parameters: " + selectString ) ;      
+            statement = this.getConnection().createStatement() ;
+            rs = statement.executeQuery( selectString );
+          
+            if( !rs.isBeforeFirst() ) {
+                // Whoops! No parameters found when there should have been...
+                AstroGridMessage
+                    message = new AstroGridMessage( ASTROGRIDERROR_CATALOG_NOT_FOUND
+                                                  , SUBCOMPONENT_NAME
+                                                  , tool.getParent().getParent().getId()
+                                                  , tool.getParent().getStepNumber() ) ;
+              throw new NotFoundException( message ) ;
+            }
+            else {
+                
+                String
+                    direction = null ;
+                ArrayList
+                    inputParams = new ArrayList(),
+                    outputParams = new ArrayList() ;
+              
+                while( rs.next() ) {
+                  
+                    parameter = new Parameter() ;                    
+                    parameter.setName( rs.getString( COL_PARAMETER_PARAMNAME ) ) ;
+                    direction = rs.getString( COL_PARAMETER_DIRECTION ) ;
+                    parameter.setType( rs.getString( COL_PARAMETER_TYPE ) );
+                    parameter.setLocation( rs.getString( COL_PARAMETER_LOCATION) ) ;
+                    parameter.setContents( rs.getString( COL_PARAMETER_CONTENTS ) ) ;
+                    
+                    if( direction.equals( "input") ) {
+                        inputParams.add( parameter ) ;
+                    }
+                    else if( direction.equals( "output") ) {
+                        outputParams.add( parameter ) ;
+                    } 
+                  
+                } // end while 
+                
+                tool.setInputParameters( inputParams ) ;
+                tool.setOutputParameters( outputParams ) ;  
+
+            } // end else
+                         
+        }
+        catch( SQLException ex ) {
+            AstroGridMessage
+                message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST
+                                              , SUBCOMPONENT_NAME ) ;
+            logger.error( message.toString(), ex ) ;
+            throw new JobException( message, ex ) ;         
+        }
+        finally {
+            if( rs != null ) { try { rs.close(); } catch( SQLException sex ) {;} }
+            if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
+            if( TRACE_ENABLED ) logger.debug( "JobFactoryImp.findParameters(): exit") ;     
+        }   
+        
+    } // end of JobFactoryImp.findParameters()
+    
+    
+    private void insertOneParameter( Parameter param, String direction ) throws JobException {
+      if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.insertOneParameter(): entry") ;   
+          
+      // INSERT INTO {0} ( JOBURN, STEPNUMBER, TOOLNAME, PARAMNAME, DIRECTION, TYPE, LOCATION, CONTENTS  ) 
+      // VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'', ''{5}'', ''{6}'', ''{7}'', ''{8}'' ) 
+                    
+        Statement   
+            statement = null ;
+                  
+        try {
+
+            Object []
+                inserts = new Object[9] ;
+                
+            inserts[0] = JES.getProperty( JES.JOB_TABLENAME_PARAMETER
+                                        , JES.JOB_CATEGORY ) ;
+            inserts[1] = param.getParent().getParent().getParent().getId() ;            
+            inserts[2] = param.getParent().getParent().getStepNumber() ;
+            inserts[3] = param.getParent().getName() ;
+            inserts[4] = param.getName() ;
+            inserts[5] = direction ;
+            inserts[6] = param.getType() ;
+            inserts[7] = param.getLocation() ;
+            inserts[8] = param.getContents() ;
+
+            String
+                updateString = MessageFormat.format( PARAMETER_INSERT_TEMPLATE, inserts ) ;    
+            logger.debug( "Create Parameter: " + updateString ) ;     
+            statement = getConnection().createStatement() ;
+            statement.executeUpdate( updateString );
+      }
+      catch( SQLException sex ) {
+          AstroGridMessage
+              message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT
+                                              , SUBCOMPONENT_NAME ) ;
+          logger.error( message.toString(), sex ) ;
+          throw new JobException( message, sex );         
+      }
+      finally {
+          if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
+          if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.insertOneParameter(): exit") ;     
+      } 
+             
+    } // end of JobFactoryImpl.insertOneParameter()
+    
+       
 	private void updateJobSteps( Job job ) throws JobException {
 		if( TRACE_ENABLED ) logger.debug( "updateJobSteps(): exit") ;   
 					
@@ -890,363 +1176,363 @@ public class JobFactoryImpl implements JobFactory {
 	} // end of updateOneJobStep()
 	
 	 
-	public void createQuery( Query query ) throws JobException  {
-		 if( TRACE_ENABLED ) logger.debug( "createQuery(): entry") ;  
-		 	
-		 Statement    
-			statement = null ;
-    	   
-		 try {
-			
-			 Object []
-				inserts = new Object[3] ;
-			 inserts[0] = JES.getProperty( JES.JOB_TABLENAME_QUERY
-                                         , JES.JOB_CATEGORY ) ;
-			 inserts[1] = query.getParent().getParent().getId() ;
-			 inserts[2] = query.getParent().getStepNumber() ;
-
-			 String
-				updateString = MessageFormat.format( QUERY_INSERT_TEMPLATE, inserts ) ; 
-		     logger.debug( "Create Query: " + updateString ) ;			
-			 statement = getConnection().createStatement() ;
-			 statement.executeUpdate( updateString );
-			 createCatalogs( query ) ;
-
-		 }
-		 catch( SQLException sex ) {
-			 AstroGridMessage
-				 message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT
-                                               , SUBCOMPONENT_NAME ) ;
-			 logger.error( message.toString(), sex ) ;
-			 throw new JobException( message, sex );    		
-		 }
-		 finally {
-			 if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
-			 if( TRACE_ENABLED ) logger.debug( "createQuery(): exit") ;   	
-		 }
-		
-	 } // end of createQuery() 
-
-
-	public void findQuery( JobStep jobStep ) throws JobException {
-		if( TRACE_ENABLED ) logger.debug( "findQuery(): entry") ;  
-		 	
-		Query
-		   query = null ;
-		Statement   
-		   statement = null ;
-		ResultSet
-		   rs = null ;
-    	   
-		try {
-
-			Object []
-			   inserts = new Object[3] ;
-			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_QUERY
-                                        , JES.JOB_CATEGORY ) ;
-			inserts[1] = jobStep.getParent().getId() ;
-			inserts[2] = jobStep.getStepNumber() ;
-
-			String
-			   selectString = MessageFormat.format( QUERY_SELECT_TEMPLATE, inserts ) ; 	
-			logger.debug( "findQuery: " + selectString ) ;		
-			statement = this.getConnection().createStatement() ;
-			rs = statement.executeQuery( selectString );
-			
-			if( !rs.isBeforeFirst() ) {
-				// Whoops! Query not found when it should have been...
-				// AGJESE00750=:JobFactoryImpl: Query not found for Job with URN [{0}] and JobStep number [{1}]
-				AstroGridMessage
-				   message = new AstroGridMessage( ASTROGRIDERROR_QUERY_NOT_FOUND
-                                                 , SUBCOMPONENT_NAME
-				                                 , jobStep.getParent().getId()
-				                                 , jobStep.getStepNumber() ) ;
-                logger.error( message.toString() ) ;
-				throw new NotFoundException( message ) ;
-			}
-			else {
-				rs.next() ; // position on the first query found (hopefully the only one!)
-	
-	            // There is little stored in Query AT THE MOMENT.
-	            // (In fact nothing but foreign keys)
-	            // We assume here that everything is OK... (no database corruption)
-				query = new Query( jobStep ) ;
-				findCatalogs( query ) ;
-				jobStep.setQuery( query ) ;		
-					
-				if( rs.next() == true ) {
-					// We have a duplicate Query!!! This should be impossible...
-					AstroGridMessage
-					   message = new AstroGridMessage( ASTROGRIDERROR_DUPLICATE_QUERY_FOUND
-                                                     , SUBCOMPONENT_NAME
-											         , jobStep.getParent().getId()
-                                                     , jobStep.getStepNumber() ) ;
-                    logger.error( message.toString() ) ;
-					throw new DuplicateFoundException( message ) ;
-				}
-
-			} // end else
-						   
-		}
-		catch( SQLException ex ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST
-                                              , SUBCOMPONENT_NAME ) ;
-			logger.error( message.toString(), ex ) ;
-			throw new JobException( message, ex ) ;   		
-		}
-		finally {
-			if( rs != null ) { try { rs.close(); } catch( SQLException sex ) {;} }
-			if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
-			if( TRACE_ENABLED ) logger.debug( "findQuery(): exit") ;   	
-		}  	
-		  
-	} // end of findQuery()
-	
-	
-	private void createCatalogs( Query query ) throws JobException {
-		if( TRACE_ENABLED ) logger.debug( "createJobSteps(): exit") ;   
-					
-		try {
-			
-			int
-			   count = 0 ;
-			Iterator
-			   iterator = query.getCatalogs() ;
-		   
-			while ( iterator.hasNext() ) {
-				insertOneCatalog( (Catalog)iterator.next() ) ;			
-			} 
-
-		}
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "createJobSteps(): exit") ;   	
-		}
-			
-	} // end of createCatalogs(Job)
-
-
-	private void insertOneCatalog ( Catalog catalog ) throws JobException {
-		if( TRACE_ENABLED ) logger.debug( "insertOneCatalog(): exit") ;   
-			
-		Statement   
-		   statement = null ;
-					
-		try {
-
-			Object []
-			   inserts = new Object[4] ;
-			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_CATALOG
-                                        , JES.JOB_CATEGORY ) ;
-			inserts[1] = catalog.getParent().getParent().getParent().getId() ;            
-			inserts[2] = catalog.getParent().getParent().getStepNumber() ;
-			inserts[3] = catalog.getName() ;
-
-
-			String
-			   updateString = MessageFormat.format( CATALOG_INSERT_TEMPLATE, inserts ) ; 	
-			logger.debug( "Create Catalog: " + updateString ) ;		
-			statement = getConnection().createStatement() ;
-			statement.executeUpdate( updateString );
-			createTables( catalog ) ;
-			createServices( catalog ) ;
-		}
-		catch( SQLException sex ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT
-                                              , SUBCOMPONENT_NAME ) ;
-			logger.error( message.toString(), sex ) ;
-			throw new JobException( message, sex );    		
-		}
-		finally {
-			if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
-			if( TRACE_ENABLED ) logger.debug( "insertOneCatalog(): exit") ;   	
-		}
-				
-	} // end of insertOneCatalog()
-	
-	
-	public void findCatalogs( Query query ) throws JobException {
-		if( TRACE_ENABLED ) logger.debug( "findCatalogs(): entry") ;  
-		 	
-		Catalog
-		   catalog = null ;
-		Statement   
-		   statement = null ;
-		ResultSet
-		   rs = null ;
-    	   
-		try {
-
-			Object []
-			   inserts = new Object[3] ;
-			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_CATALOG
-                                        , JES.JOB_CATEGORY ) ;
-			inserts[1] = query.getParent().getParent().getId() ;
-			inserts[2] = query.getParent().getStepNumber() ;
-
-			String
-			   selectString = MessageFormat.format( CATALOG_SELECT_TEMPLATE, inserts ) ; 	
-			logger.debug( "Find catalogs: " + selectString ) ;		
-			statement = this.getConnection().createStatement() ;
-			rs = statement.executeQuery( selectString );
-			
-			if( !rs.isBeforeFirst() ) {
-				// Whoops! Catalog not found when it should have been...
-				AstroGridMessage
-				   message = new AstroGridMessage( ASTROGRIDERROR_CATALOG_NOT_FOUND
-                                                 , SUBCOMPONENT_NAME
-				                                 , query.getParent().getParent().getId()
-				                                 , query.getParent().getStepNumber() ) ;
-				throw new NotFoundException( message ) ;
-			}
-			else {
-				
-				while( rs.next() ) {
-					
-					catalog = new Catalog( query ) ; 					
-					catalog.setName( rs.getString( COL_CATALOG_CATALOGNAME ) ) ;
-					findTables( catalog ) ;
-					findServices( catalog ) ;
-					query.addCatalog( catalog ) ;
-					
-				} // end while 
-
-			} // end else
-						   
-		}
-		catch( SQLException ex ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST
-                                              , SUBCOMPONENT_NAME ) ;
-			logger.error( message.toString(), ex ) ;
-			throw new JobException( message, ex ) ;   		
-		}
-		finally {
-			if( rs != null ) { try { rs.close(); } catch( SQLException sex ) {;} }
-			if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
-			if( TRACE_ENABLED ) logger.debug( "findCatalogs(): exit") ;   	
-		}  	
-		  
-	} // end of findCatalogs()
-	
-	
-	private void createTables( Catalog catalog ) throws JobException {
-		if( TRACE_ENABLED ) logger.debug( "createTables(): exit") ;   
-					
-		try {
-			
-			Iterator
-			   iterator = catalog.getTables() ;
-		   
-			while ( iterator.hasNext() ) {
-				insertOneTable( (Table)iterator.next() ) ;			
-			} 
-
-		}
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "createTables(): exit") ;   	
-		}
-			
-	} // end of createTables(Job) 
-	
-	
-	private void createServices( Catalog catalog ) throws JobException {
-		if( TRACE_ENABLED ) logger.debug( "createServices(): exit") ;   
-					
-		try {
-			
-			Iterator
-			   iterator = catalog.getServices() ;
-		   
-			while ( iterator.hasNext() ) {
-				insertOneService( (Service)iterator.next() ) ;			
-			} 
-
-		}
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "createServices(): exit") ;   	
-		}
-			
-	} // end of createTables(Job) 
-	
-	
-	private void insertOneTable( Table table ) throws JobException {
-		if( TRACE_ENABLED ) logger.debug( "insertOneTable(): exit") ;   
-			
-		Statement   
-		   statement = null ;
-					
-		try {
-
-			Object []
-			   inserts = new Object[5] ;
-			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_TABLE
-                                        , JES.JOB_CATEGORY ) ;
-			inserts[1] = table.getParent().getParent().getParent().getParent().getId() ;  // JobURN
-			inserts[2] = table.getParent().getParent().getParent().getStepNumber() ;      // step number
-			inserts[3] = table.getParent().getName() ;                                    // catalog name
-			inserts[4] = table.getName() ;                                                // table name
-   
-			String
-			   updateString = MessageFormat.format( TABLE_INSERT_TEMPLATE, inserts ) ; 
-			logger.debug( "Create Table: " + updateString ) ;			
-			statement = getConnection().createStatement() ;
-			statement.executeUpdate( updateString );
-		}
-		catch( SQLException sex ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT
-                                              , SUBCOMPONENT_NAME ) ;
-			logger.error( message.toString(), sex ) ;
-			throw new JobException( message, sex );    		
-		}
-		finally {
-			if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
-			if( TRACE_ENABLED ) logger.debug( "insertOneTable(): exit") ;   	
-		}
-				
-	} // end of insertOneTable()
-	
-
-	private void insertOneService( Service service ) throws JobException {
-		if( TRACE_ENABLED ) logger.debug( "insertOneService(): exit") ;   
-			
-		Statement   
-		   statement = null ;
-					
-		try {
-
-			Object []
-			   inserts = new Object[6] ;
-			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_SERVICE
-                                        , JES.JOB_CATEGORY ) ;
-			inserts[1] = service.getParent().getParent().getParent().getParent().getId() ; // JobURN  
-			inserts[2] = service.getParent().getParent().getParent().getStepNumber() ;     // step number
-			inserts[3] = service.getParent().getName() ;                                   // catalog name
-			inserts[4] = service.getName() ;                                               // service name
-			inserts[5] = service.getUrl() ;                                                // service url
-  		 
-			String
-			   updateString = MessageFormat.format( SERVICE_INSERT_TEMPLATE, inserts ) ; 
-			logger.debug( "Create Service: " + updateString ) ;			
-			statement = getConnection().createStatement() ;
-			statement.executeUpdate( updateString );
-		}
-		catch( SQLException sex ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT
-                                              , SUBCOMPONENT_NAME ) ;
-			logger.error( message.toString(), sex ) ;
-			throw new JobException( message, sex );    		
-		}
-		finally {
-			if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
-			if( TRACE_ENABLED ) logger.debug( "insertOneService(): exit") ;   	
-		}
-				
-	} // end of insertOneService()
-	
+//	public void createQuery( Query query ) throws JobException  {
+//		 if( TRACE_ENABLED ) logger.debug( "createQuery(): entry") ;  
+//		 	
+//		 Statement    
+//			statement = null ;
+//    	   
+//		 try {
+//			
+//			 Object []
+//				inserts = new Object[3] ;
+//			 inserts[0] = JES.getProperty( JES.JOB_TABLENAME_QUERY
+//                                         , JES.JOB_CATEGORY ) ;
+//			 inserts[1] = query.getParent().getParent().getId() ;
+//			 inserts[2] = query.getParent().getStepNumber() ;
+//
+//			 String
+//				updateString = MessageFormat.format( QUERY_INSERT_TEMPLATE, inserts ) ; 
+//		     logger.debug( "Create Query: " + updateString ) ;			
+//			 statement = getConnection().createStatement() ;
+//			 statement.executeUpdate( updateString );
+//			 createCatalogs( query ) ;
+//
+//		 }
+//		 catch( SQLException sex ) {
+//			 AstroGridMessage
+//				 message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT
+//                                               , SUBCOMPONENT_NAME ) ;
+//			 logger.error( message.toString(), sex ) ;
+//			 throw new JobException( message, sex );    		
+//		 }
+//		 finally {
+//			 if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
+//			 if( TRACE_ENABLED ) logger.debug( "createQuery(): exit") ;   	
+//		 }
+//		
+//	 } // end of createQuery() 
+//
+//
+//	public void findQuery( JobStep jobStep ) throws JobException {
+//		if( TRACE_ENABLED ) logger.debug( "findQuery(): entry") ;  
+//		 	
+//		Query
+//		   query = null ;
+//		Statement   
+//		   statement = null ;
+//		ResultSet
+//		   rs = null ;
+//    	   
+//		try {
+//
+//			Object []
+//			   inserts = new Object[3] ;
+//			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_QUERY
+//                                        , JES.JOB_CATEGORY ) ;
+//			inserts[1] = jobStep.getParent().getId() ;
+//			inserts[2] = jobStep.getStepNumber() ;
+//
+//			String
+//			   selectString = MessageFormat.format( QUERY_SELECT_TEMPLATE, inserts ) ; 	
+//			logger.debug( "findQuery: " + selectString ) ;		
+//			statement = this.getConnection().createStatement() ;
+//			rs = statement.executeQuery( selectString );
+//			
+//			if( !rs.isBeforeFirst() ) {
+//				// Whoops! Query not found when it should have been...
+//				// AGJESE00750=:JobFactoryImpl: Query not found for Job with URN [{0}] and JobStep number [{1}]
+//				AstroGridMessage
+//				   message = new AstroGridMessage( ASTROGRIDERROR_QUERY_NOT_FOUND
+//                                                 , SUBCOMPONENT_NAME
+//				                                 , jobStep.getParent().getId()
+//				                                 , jobStep.getStepNumber() ) ;
+//                logger.error( message.toString() ) ;
+//				throw new NotFoundException( message ) ;
+//			}
+//			else {
+//				rs.next() ; // position on the first query found (hopefully the only one!)
+//	
+//	            // There is little stored in Query AT THE MOMENT.
+//	            // (In fact nothing but foreign keys)
+//	            // We assume here that everything is OK... (no database corruption)
+//				query = new Query( jobStep ) ;
+//				findCatalogs( query ) ;
+//				jobStep.setQuery( query ) ;		
+//					
+//				if( rs.next() == true ) {
+//					// We have a duplicate Query!!! This should be impossible...
+//					AstroGridMessage
+//					   message = new AstroGridMessage( ASTROGRIDERROR_DUPLICATE_QUERY_FOUND
+//                                                     , SUBCOMPONENT_NAME
+//											         , jobStep.getParent().getId()
+//                                                     , jobStep.getStepNumber() ) ;
+//                    logger.error( message.toString() ) ;
+//					throw new DuplicateFoundException( message ) ;
+//				}
+//
+//			} // end else
+//						   
+//		}
+//		catch( SQLException ex ) {
+//			AstroGridMessage
+//				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST
+//                                              , SUBCOMPONENT_NAME ) ;
+//			logger.error( message.toString(), ex ) ;
+//			throw new JobException( message, ex ) ;   		
+//		}
+//		finally {
+//			if( rs != null ) { try { rs.close(); } catch( SQLException sex ) {;} }
+//			if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
+//			if( TRACE_ENABLED ) logger.debug( "findQuery(): exit") ;   	
+//		}  	
+//		  
+//	} // end of findQuery()
+//	
+//	
+//	private void createCatalogs( Query query ) throws JobException {
+//		if( TRACE_ENABLED ) logger.debug( "createJobSteps(): exit") ;   
+//					
+//		try {
+//			
+//			int
+//			   count = 0 ;
+//			Iterator
+//			   iterator = query.getCatalogs() ;
+//		   
+//			while ( iterator.hasNext() ) {
+//				insertOneCatalog( (Catalog)iterator.next() ) ;			
+//			} 
+//
+//		}
+//		finally {
+//			if( TRACE_ENABLED ) logger.debug( "createJobSteps(): exit") ;   	
+//		}
+//			
+//	} // end of createCatalogs(Job)
+//
+//
+//	private void insertOneCatalog ( Catalog catalog ) throws JobException {
+//		if( TRACE_ENABLED ) logger.debug( "insertOneCatalog(): exit") ;   
+//			
+//		Statement   
+//		   statement = null ;
+//					
+//		try {
+//
+//			Object []
+//			   inserts = new Object[4] ;
+//			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_CATALOG
+//                                        , JES.JOB_CATEGORY ) ;
+//			inserts[1] = catalog.getParent().getParent().getParent().getId() ;            
+//			inserts[2] = catalog.getParent().getParent().getStepNumber() ;
+//			inserts[3] = catalog.getName() ;
+//
+//
+//			String
+//			   updateString = MessageFormat.format( CATALOG_INSERT_TEMPLATE, inserts ) ; 	
+//			logger.debug( "Create Catalog: " + updateString ) ;		
+//			statement = getConnection().createStatement() ;
+//			statement.executeUpdate( updateString );
+//			createTables( catalog ) ;
+//			createServices( catalog ) ;
+//		}
+//		catch( SQLException sex ) {
+//			AstroGridMessage
+//				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT
+//                                              , SUBCOMPONENT_NAME ) ;
+//			logger.error( message.toString(), sex ) ;
+//			throw new JobException( message, sex );    		
+//		}
+//		finally {
+//			if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
+//			if( TRACE_ENABLED ) logger.debug( "insertOneCatalog(): exit") ;   	
+//		}
+//				
+//	} // end of insertOneCatalog()
+//	
+//	
+//	public void findCatalogs( Query query ) throws JobException {
+//		if( TRACE_ENABLED ) logger.debug( "findCatalogs(): entry") ;  
+//		 	
+//		Catalog
+//		   catalog = null ;
+//		Statement   
+//		   statement = null ;
+//		ResultSet
+//		   rs = null ;
+//    	   
+//		try {
+//
+//			Object []
+//			   inserts = new Object[3] ;
+//			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_CATALOG
+//                                        , JES.JOB_CATEGORY ) ;
+//			inserts[1] = query.getParent().getParent().getId() ;
+//			inserts[2] = query.getParent().getStepNumber() ;
+//
+//			String
+//			   selectString = MessageFormat.format( CATALOG_SELECT_TEMPLATE, inserts ) ; 	
+//			logger.debug( "Find catalogs: " + selectString ) ;		
+//			statement = this.getConnection().createStatement() ;
+//			rs = statement.executeQuery( selectString );
+//			
+//			if( !rs.isBeforeFirst() ) {
+//				// Whoops! Catalog not found when it should have been...
+//				AstroGridMessage
+//				   message = new AstroGridMessage( ASTROGRIDERROR_CATALOG_NOT_FOUND
+//                                                 , SUBCOMPONENT_NAME
+//				                                 , query.getParent().getParent().getId()
+//				                                 , query.getParent().getStepNumber() ) ;
+//				throw new NotFoundException( message ) ;
+//			}
+//			else {
+//				
+//				while( rs.next() ) {
+//					
+//					catalog = new Catalog( query ) ; 					
+//					catalog.setName( rs.getString( COL_CATALOG_CATALOGNAME ) ) ;
+//					findTables( catalog ) ;
+//					findServices( catalog ) ;
+//					query.addCatalog( catalog ) ;
+//					
+//				} // end while 
+//
+//			} // end else
+//						   
+//		}
+//		catch( SQLException ex ) {
+//			AstroGridMessage
+//				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST
+//                                              , SUBCOMPONENT_NAME ) ;
+//			logger.error( message.toString(), ex ) ;
+//			throw new JobException( message, ex ) ;   		
+//		}
+//		finally {
+//			if( rs != null ) { try { rs.close(); } catch( SQLException sex ) {;} }
+//			if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
+//			if( TRACE_ENABLED ) logger.debug( "findCatalogs(): exit") ;   	
+//		}  	
+//		  
+//	} // end of findCatalogs()
+//	
+//	
+//	private void createTables( Catalog catalog ) throws JobException {
+//		if( TRACE_ENABLED ) logger.debug( "createTables(): exit") ;   
+//					
+//		try {
+//			
+//			Iterator
+//			   iterator = catalog.getTables() ;
+//		   
+//			while ( iterator.hasNext() ) {
+//				insertOneTable( (Table)iterator.next() ) ;			
+//			} 
+//
+//		}
+//		finally {
+//			if( TRACE_ENABLED ) logger.debug( "createTables(): exit") ;   	
+//		}
+//			
+//	} // end of createTables(Job) 
+//	
+//	
+//	private void createServices( Catalog catalog ) throws JobException {
+//		if( TRACE_ENABLED ) logger.debug( "createServices(): exit") ;   
+//					
+//		try {
+//			
+//			Iterator
+//			   iterator = catalog.getServices() ;
+//		   
+//			while ( iterator.hasNext() ) {
+//				insertOneService( (Service)iterator.next() ) ;			
+//			} 
+//
+//		}
+//		finally {
+//			if( TRACE_ENABLED ) logger.debug( "createServices(): exit") ;   	
+//		}
+//			
+//	} // end of createTables(Job) 
+//	
+//	
+//	private void insertOneTable( Table table ) throws JobException {
+//		if( TRACE_ENABLED ) logger.debug( "insertOneTable(): exit") ;   
+//			
+//		Statement   
+//		   statement = null ;
+//					
+//		try {
+//
+//			Object []
+//			   inserts = new Object[5] ;
+//			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_TABLE
+//                                        , JES.JOB_CATEGORY ) ;
+//			inserts[1] = table.getParent().getParent().getParent().getParent().getId() ;  // JobURN
+//			inserts[2] = table.getParent().getParent().getParent().getStepNumber() ;      // step number
+//			inserts[3] = table.getParent().getName() ;                                    // catalog name
+//			inserts[4] = table.getName() ;                                                // table name
+//   
+//			String
+//			   updateString = MessageFormat.format( TABLE_INSERT_TEMPLATE, inserts ) ; 
+//			logger.debug( "Create Table: " + updateString ) ;			
+//			statement = getConnection().createStatement() ;
+//			statement.executeUpdate( updateString );
+//		}
+//		catch( SQLException sex ) {
+//			AstroGridMessage
+//				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT
+//                                              , SUBCOMPONENT_NAME ) ;
+//			logger.error( message.toString(), sex ) ;
+//			throw new JobException( message, sex );    		
+//		}
+//		finally {
+//			if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
+//			if( TRACE_ENABLED ) logger.debug( "insertOneTable(): exit") ;   	
+//		}
+//				
+//	} // end of insertOneTable()
+//	
+//
+//	private void insertOneService( Service service ) throws JobException {
+//		if( TRACE_ENABLED ) logger.debug( "insertOneService(): exit") ;   
+//			
+//		Statement   
+//		   statement = null ;
+//					
+//		try {
+//
+//			Object []
+//			   inserts = new Object[6] ;
+//			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_SERVICE
+//                                        , JES.JOB_CATEGORY ) ;
+//			inserts[1] = service.getParent().getParent().getParent().getParent().getId() ; // JobURN  
+//			inserts[2] = service.getParent().getParent().getParent().getStepNumber() ;     // step number
+//			inserts[3] = service.getParent().getName() ;                                   // catalog name
+//			inserts[4] = service.getName() ;                                               // service name
+//			inserts[5] = service.getUrl() ;                                                // service url
+//  		 
+//			String
+//			   updateString = MessageFormat.format( SERVICE_INSERT_TEMPLATE, inserts ) ; 
+//			logger.debug( "Create Service: " + updateString ) ;			
+//			statement = getConnection().createStatement() ;
+//			statement.executeUpdate( updateString );
+//		}
+//		catch( SQLException sex ) {
+//			AstroGridMessage
+//				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT
+//                                              , SUBCOMPONENT_NAME ) ;
+//			logger.error( message.toString(), sex ) ;
+//			throw new JobException( message, sex );    		
+//		}
+//		finally {
+//			if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
+//			if( TRACE_ENABLED ) logger.debug( "insertOneService(): exit") ;   	
+//		}
+//				
+//	} // end of insertOneService()
+//	
 		
 	 
 	private String generateUniqueJobURN( Job job ) throws JobException {
@@ -1268,134 +1554,134 @@ public class JobFactoryImpl implements JobFactory {
 	} // end of generateUniqueJobURN()
 	
 	
-	public void findTables( Catalog catalog ) throws JobException {
-		if( TRACE_ENABLED ) logger.debug( "findTables(): entry") ;  
-		 	
-		Table
-		   table = null ;
-		Statement   
-		   statement = null ;
-		ResultSet
-		   rs = null ;
-    	   
-		try {
-
-			Object []
-			   inserts = new Object[4] ;
-			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_TABLE
-                                        , JES.JOB_CATEGORY ) ;
-			inserts[1] = catalog.getParent().getParent().getParent().getId() ;
-			inserts[2] = catalog.getParent().getParent().getStepNumber() ;
-			inserts[3] = catalog.getName() ;			
-
-			String
-			   selectString = MessageFormat.format( TABLE_SELECT_TEMPLATE, inserts ) ; 	
-			logger.debug( "Find tables: " + selectString ) ;		
-			statement = this.getConnection().createStatement() ;
-			rs = statement.executeQuery( selectString );
-			
-			if( !rs.isBeforeFirst() ) {
-				// Whoops! Table not found when it should have been...
-//				Message
-//				   message = new Message( ASTROGRIDERROR_TABLE_NOT_FOUND
-//				                        , catalog.getName()
-//										, catalog.getParent().getParent().getParent().getId()
-//										, catalog.getParent().getParent().getStepNumber() ) ;
+//	public void findTables( Catalog catalog ) throws JobException {
+//		if( TRACE_ENABLED ) logger.debug( "findTables(): entry") ;  
+//		 	
+//		Table
+//		   table = null ;
+//		Statement   
+//		   statement = null ;
+//		ResultSet
+//		   rs = null ;
+//    	   
+//		try {
+//
+//			Object []
+//			   inserts = new Object[4] ;
+//			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_TABLE
+//                                        , JES.JOB_CATEGORY ) ;
+//			inserts[1] = catalog.getParent().getParent().getParent().getId() ;
+//			inserts[2] = catalog.getParent().getParent().getStepNumber() ;
+//			inserts[3] = catalog.getName() ;			
+//
+//			String
+//			   selectString = MessageFormat.format( TABLE_SELECT_TEMPLATE, inserts ) ; 	
+//			logger.debug( "Find tables: " + selectString ) ;		
+//			statement = this.getConnection().createStatement() ;
+//			rs = statement.executeQuery( selectString );
+//			
+//			if( !rs.isBeforeFirst() ) {
+//				// Whoops! Table not found when it should have been...
+////				Message
+////				   message = new Message( ASTROGRIDERROR_TABLE_NOT_FOUND
+////				                        , catalog.getName()
+////										, catalog.getParent().getParent().getParent().getId()
+////										, catalog.getParent().getParent().getStepNumber() ) ;
+////				throw new NotFoundException( message ) ;
+//			}
+//			else {
+//				
+//				while( rs.next() ) {
+//					
+//					table = new Table( catalog ) ; 					
+//					table.setName( rs.getString( COL_TABLE_TABLENAME ) ) ;
+//					catalog.addTable( table ) ;
+//					
+//				} // end while 
+//
+//			} // end else
+//						   
+//		}
+//		catch( SQLException ex ) {
+//			AstroGridMessage
+//				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST
+//                                              , SUBCOMPONENT_NAME ) ;
+//			logger.error( message.toString(), ex ) ;
+//			throw new JobException( message, ex ) ;   		
+//		}
+//		finally {
+//			if( rs != null ) { try { rs.close(); } catch( SQLException sex ) {;} }
+//			if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
+//			if( TRACE_ENABLED ) logger.debug( "findTables(): exit") ;   	
+//		}  	
+//		  
+//	} // end of findTables()
+//  
+//  
+//	public void findServices( Catalog catalog ) throws JobException {
+//		if( TRACE_ENABLED ) logger.debug( "findServices(): entry") ;  
+//		 	
+//		Service
+//		   service = null ;
+//		Statement   
+//		   statement = null ;
+//		ResultSet
+//		   rs = null ;
+//    	   
+//		try {
+//
+//			Object []
+//			   inserts = new Object[4] ;
+//			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_SERVICE
+//                                        , JES.JOB_CATEGORY ) ;
+//			inserts[1] = catalog.getParent().getParent().getParent().getId() ;
+//			inserts[2] = catalog.getParent().getParent().getStepNumber() ;
+//			inserts[3] = catalog.getName() ;			
+//
+//			String
+//			   selectString = MessageFormat.format( SERVICE_SELECT_TEMPLATE, inserts ) ; 	
+//			logger.debug( "Find services: " + selectString ) ;		
+//			statement = this.getConnection().createStatement() ;
+//			rs = statement.executeQuery( selectString );
+//			
+//			if( !rs.isBeforeFirst() ) {
+//				// Whoops! Service not found when it should have been...
+//				AstroGridMessage
+//				   message = new AstroGridMessage( ASTROGRIDERROR_SERVICE_NOT_FOUND
+//                                                 , SUBCOMPONENT_NAME
+//										         , catalog.getName()
+//										         , catalog.getParent().getParent().getParent().getId()
+//										         , catalog.getParent().getParent().getStepNumber() ) ;
 //				throw new NotFoundException( message ) ;
-			}
-			else {
-				
-				while( rs.next() ) {
-					
-					table = new Table( catalog ) ; 					
-					table.setName( rs.getString( COL_TABLE_TABLENAME ) ) ;
-					catalog.addTable( table ) ;
-					
-				} // end while 
-
-			} // end else
-						   
-		}
-		catch( SQLException ex ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST
-                                              , SUBCOMPONENT_NAME ) ;
-			logger.error( message.toString(), ex ) ;
-			throw new JobException( message, ex ) ;   		
-		}
-		finally {
-			if( rs != null ) { try { rs.close(); } catch( SQLException sex ) {;} }
-			if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
-			if( TRACE_ENABLED ) logger.debug( "findTables(): exit") ;   	
-		}  	
-		  
-	} // end of findTables()
-  
-  
-	public void findServices( Catalog catalog ) throws JobException {
-		if( TRACE_ENABLED ) logger.debug( "findServices(): entry") ;  
-		 	
-		Service
-		   service = null ;
-		Statement   
-		   statement = null ;
-		ResultSet
-		   rs = null ;
-    	   
-		try {
-
-			Object []
-			   inserts = new Object[4] ;
-			inserts[0] = JES.getProperty( JES.JOB_TABLENAME_SERVICE
-                                        , JES.JOB_CATEGORY ) ;
-			inserts[1] = catalog.getParent().getParent().getParent().getId() ;
-			inserts[2] = catalog.getParent().getParent().getStepNumber() ;
-			inserts[3] = catalog.getName() ;			
-
-			String
-			   selectString = MessageFormat.format( SERVICE_SELECT_TEMPLATE, inserts ) ; 	
-			logger.debug( "Find services: " + selectString ) ;		
-			statement = this.getConnection().createStatement() ;
-			rs = statement.executeQuery( selectString );
-			
-			if( !rs.isBeforeFirst() ) {
-				// Whoops! Service not found when it should have been...
-				AstroGridMessage
-				   message = new AstroGridMessage( ASTROGRIDERROR_SERVICE_NOT_FOUND
-                                                 , SUBCOMPONENT_NAME
-										         , catalog.getName()
-										         , catalog.getParent().getParent().getParent().getId()
-										         , catalog.getParent().getParent().getStepNumber() ) ;
-				throw new NotFoundException( message ) ;
-			}
-			else {
-				
-				while( rs.next() ) {
-					
-				    service = new Service( catalog ) ; 					
-					service.setName( rs.getString( COL_SERVICE_SERVICENAME ) ) ;
-					service.setUrl( rs.getString( COL_SERVICE_SERVICEURL ) ) ;
-					catalog.addService( service ) ;
-					
-				} // end while 
-
-			} // end else
-						   
-		}
-		catch( SQLException ex ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST
-                                              , SUBCOMPONENT_NAME ) ;
-			logger.error( message.toString(), ex ) ;
-			throw new JobException( message, ex ) ;   		
-		}
-		finally {
-			if( rs != null ) { try { rs.close(); } catch( SQLException sex ) {;} }
-			if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
-			if( TRACE_ENABLED ) logger.debug( "findServices(): exit") ;   	
-		}  	
-		  
-	} // end of findServices()
+//			}
+//			else {
+//				
+//				while( rs.next() ) {
+//					
+//				    service = new Service( catalog ) ; 					
+//					service.setName( rs.getString( COL_SERVICE_SERVICENAME ) ) ;
+//					service.setUrl( rs.getString( COL_SERVICE_SERVICEURL ) ) ;
+//					catalog.addService( service ) ;
+//					
+//				} // end while 
+//
+//			} // end else
+//						   
+//		}
+//		catch( SQLException ex ) {
+//			AstroGridMessage
+//				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_COMPLETE_FIND_REQUEST
+//                                              , SUBCOMPONENT_NAME ) ;
+//			logger.error( message.toString(), ex ) ;
+//			throw new JobException( message, ex ) ;   		
+//		}
+//		finally {
+//			if( rs != null ) { try { rs.close(); } catch( SQLException sex ) {;} }
+//			if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
+//			if( TRACE_ENABLED ) logger.debug( "findServices(): exit") ;   	
+//		}  	
+//		  
+//	} // end of findServices()
     
     
     private void checkPermissions ( String someResource, String anAction, String snippet ) throws JobException {

@@ -13,7 +13,9 @@
     <classpathentry kind="lib" path="lib/tomcat/servlet.jar"/>
     <classpathentry kind="lib" path="lib/tomcat/wsdl4j.jar"/>
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-    <classpathentry kind="lib" path="lib/astrogrid/datacenterdelegates.jar"/>
     <classpathentry kind="lib" path="lib/astrogrid/authentication-client-1.0_JLbugfix.jar"/>
+    <classpathentry kind="lib" path="lib/astrogrid/astrogrid-common-SNAPSHOT.jar"/>
+    <classpathentry kind="lib" path="lib/astrogrid/astrogrid-datacenter-HEAD.jar"/>
+    <classpathentry kind="lib" path="lib/astrogrid/ApplicationControllerDelegate.jar"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>

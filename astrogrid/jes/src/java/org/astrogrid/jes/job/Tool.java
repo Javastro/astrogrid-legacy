@@ -45,7 +45,7 @@ public class Tool {
     private static Logger 
         logger = Logger.getLogger( Tool.class ) ; 
              
-    private static List createParameters( Element element ){
+    private List createParameters( Element element ){
         if( TRACE_ENABLED ) trace( "Tool.createParameters() entry") ;
         
         List
@@ -63,7 +63,7 @@ public class Tool {
                     element = (Element) nodeList.item(i) ;
                 
                     if ( element.getTagName().equals( SubmissionRequestDD.PAREMETER_ELEMENT ) ) {
-                           list.add( new Parameter( element ) )  ;
+                           list.add( new Parameter( this, element ) )  ;
                     }
                     
                 } // end if
@@ -79,6 +79,8 @@ public class Tool {
         
     } // end of Tool.createParameters()  
     
+    private JobStep
+        parent ;
     
     private String
         name ;
@@ -88,19 +90,20 @@ public class Tool {
         outputParameters = new ArrayList() ;    
         
         
-    private Tool() {
+    public Tool() {
     }
     
-    protected Tool( String name ) {
+    public Tool( String name ) {
         this.name = name ;
     }
         
          
-    protected Tool( Element element ) {
+    public Tool( JobStep parent, Element element ) {
         if( TRACE_ENABLED ) trace( "Tool( Element ) entry") ;  
         
         try {
             
+            this.parent = parent ;
             name = element.getAttribute( SubmissionRequestDD.TOOL_NAME_ATTR ) ;
             
             NodeList
@@ -113,10 +116,10 @@ public class Tool {
                     element = (Element) nodeList.item(i) ;
                 
                     if ( element.getTagName().equals( SubmissionRequestDD.INPUT_ELEMENT ) ) {
-                        this.inputParameters = Tool.createParameters( element ) ;   
+                        this.inputParameters = this.createParameters( element ) ;   
                     }
                     else if ( element.getTagName().equals( SubmissionRequestDD.OUTPUT_ELEMENT ) ) {
-                        this.outputParameters = Tool.createParameters( element ) ;   
+                        this.outputParameters = this.createParameters( element ) ;   
                     }  
                     
                 } // end if
@@ -268,6 +271,14 @@ public class Tool {
 	   */
 	public void setOutputParameters(List list) {
 		outputParameters = list;
+	}
+
+	public void setParent(JobStep parent) {
+		this.parent = parent;
+	}
+
+	public JobStep getParent() {
+		return parent;
 	}
 
 } // end of class Tool

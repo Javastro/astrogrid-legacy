@@ -17,6 +17,7 @@ import org.astrogrid.jes.JES ;
 import org.astrogrid.jes.jobcontroller.SubmissionRequestDD ;
 import org.astrogrid.i18n.*;
 import org.astrogrid.Configurator ;
+import org.astrogrid.community.common.util.CommunityMessage;
 import org.apache.log4j.Logger;
 
 import org.w3c.dom.* ;
@@ -31,7 +32,7 @@ import java.sql.SQLException ;
 import java.text.MessageFormat ;
 
 import javax.sql.DataSource ;
-
+import org.apache.axis.utils.XMLUtils;
 
 public class JobImpl extends Job {
 
@@ -60,7 +61,7 @@ public class JobImpl extends Job {
 	   name = "",
        description = "",
 	   community = "",
-	   userId = "",
+	   userId = "",    
 	   status ;
 	   
 	private Date
@@ -115,12 +116,17 @@ public class JobImpl extends Job {
 						jobSteps.add( jobstep ) ;
                         logger.debug( "JobStep name: " + jobstep.getName() ) ;   
 					}					
-					else if (element.getTagName().equals( SubmissionRequestDD.USERID_ELEMENT ) ) {					 	
-						userId = element.getFirstChild().getNodeValue().trim();
-                        logger.debug( "userId: " + userId ) ;
-					}
-					else if (element.getTagName().equals( SubmissionRequestDD.COMMUNITY_ELEMENT ) ) {					 	
-					    community = element.getFirstChild().getNodeValue().trim();
+//					else if (element.getTagName().equals( SubmissionRequestDD.USERID_ELEMENT ) ) {					 	
+//						userId = element.getFirstChild().getNodeValue().trim();
+//                        logger.debug( "userId: " + userId ) ;
+//					}
+					else if (element.getTagName().equals( SubmissionRequestDD.COMMUNITY_ELEMENT ) ) {
+                        String
+                            communitySnippet = XMLUtils.ElementToString( element ),
+                            account = CommunityMessage.getAccount( communitySnippet ) ;
+                        userId = account.substring( 0, account.indexOf('@') ) ;		
+                        logger.debug( "userId: " + userId ) ;		 	
+					    community = account.substring( account.indexOf('@')+1 ) ;
                         logger.debug( "community: " + community ) ;
 				 	}
                     else if (element.getTagName().equals( SubmissionRequestDD.DESCRIPTION_ELEMENT ) ) {                        
