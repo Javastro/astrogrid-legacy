@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: index.xml,v 1.9 2004/07/28 22:24:13 jdt Exp $ -->
+<!-- $Id: index.xml,v 1.10 2004/08/06 11:32:26 clq2 Exp $ -->
 <document>
 	<properties>
 		<title>Astrogrid Releases</title>
@@ -13,7 +13,11 @@
 			<subsection name="Itn06 Snapshot">
 				<P> The latest build is Itn06 Snapshot. This code is undergoing 
 					development and is built several times daily.  The latest Itn06 build is deployed
-					at least once a day to this portal on <a href="http://twmbarlwm.star.le.ac.uk:8080/astrogrid-portal">Twmbarlwm</a>.</P>
+					at least once a day to this portal on <a href="http://twmbarlwm.star.le.ac.uk:8888/astrogrid-portal">Twmbarlwm</a>.</P>
+			</subsection>
+			<subsection name="Itn06 TechPreview">
+				<P> The latest stable case build and published to Beta Testers. Milstone within Itn06 and should be built at the end of each cases after tested stable.
+					 <a href="http://twmbarlwm.star.le.ac.uk:8080/astrogrid-portal">TechPreview</a>.</P>
 			</subsection>
 			<subsection name="Itn06 Case 3">
 				<P> Case 3 has now been branched, but is not yet complete.  The Maven docs for this branch can be found by following the link on the left.  A snapshot of this case is
