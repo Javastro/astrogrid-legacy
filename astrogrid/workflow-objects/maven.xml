@@ -10,7 +10,7 @@
 
 <goal name="astrogrid-deploy-site" prereqs="site,site:fsdeploy" />
 
-<goal name="astrogrid-deploy-snapshot" prerequs="jar:deploy-snapshot"/>
+<goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot"/>
 
 
 <!-- hooks into existing goals -->
