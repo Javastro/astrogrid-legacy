@@ -1,4 +1,4 @@
-/*$Id: ExternalValue.java,v 1.2 2004/08/24 11:45:00 pah Exp $
+/*$Id: ExternalValue.java,v 1.3 2004/09/30 15:12:25 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.applications.parameter.protocol;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -17,7 +18,9 @@ import java.io.OutputStream;
  * <p>
  * Because of this vagueness, the interface provides the bare minimum for working with the external value.
  * @TODO rename the methods in this interface so that the imply opening a stream rather than reading and writing...
+ * @TODO add method to copyto local file - to take advantage of any any specialization that the protocol might have to do this...then the paramter adapters should be rewritten to use this.
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
+ * @author Paul Harrison (pah@jb.man.ac.uk)
  *
  */
 public interface ExternalValue {
@@ -29,11 +32,23 @@ public interface ExternalValue {
      * @return an output stream.
      * @throws InaccessibleExternalValueException*/
     OutputStream write() throws InaccessibleExternalValueException;
+    
+    /**
+     * Copy the contents of the external value to a file. This method can take advantage of any specializations that the protocol might have.
+    * @param f The file to which the contents of the externalValue should be copied.
+    * @return file that it has copied to - this might not be the file requested for efficiencies' sake 
+    * @throws InaccessibleExternalValueException
+   
+   File importTo(File f) throws InaccessibleExternalValueException;
+    */
 }
 
 
 /* 
 $Log: ExternalValue.java,v $
+Revision 1.3  2004/09/30 15:12:25  pah
+comment on future enhancement
+
 Revision 1.2  2004/08/24 11:45:00  pah
 added todo comment
 
