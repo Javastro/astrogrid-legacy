@@ -90,6 +90,11 @@
       <version>SNAPSHOT</version>
     </dependency>
 
+	<dependency>
+		<id>commons-lang</id>
+		<version>SNAPSHOT</version>
+	</dependency>
+
     <dependency>
       <id>jax-qname</id>
       <version>UNKNOWN</version>
