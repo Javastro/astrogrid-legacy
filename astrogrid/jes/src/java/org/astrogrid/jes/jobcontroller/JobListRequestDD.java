@@ -10,15 +10,12 @@
  */
 package org.astrogrid.jes.jobcontroller;
 
-
 public final class JobListRequestDD {
-	
-	public static final String
-	    JOBLIST_ELEMENT = "joblist",
-	    JOBLIST_USERID_ATTR = "userid",
-	    JOBLIST_COMMUNITY_ATTR = "community" ;
-	    
-    public static final String 
-        ARGUMENT_ELEMENT = "argument" ;
-	 
+
+  public static final String JOBLIST_ELEMENT = "joblist",
+    JOBLIST_USERID_ATTR = "userid",
+    JOBLIST_COMMUNITY_ATTR = "jes_community";
+
+  public static final String ARGUMENT_ELEMENT = "argument";
+
 }
