@@ -1,5 +1,5 @@
 /*
- * $Id: ConfManager.java,v 1.9 2004/03/31 11:27:56 jdt Exp $
+ * $Id: ConfManager.java,v 1.10 2004/04/07 15:57:38 jdt Exp $
  * Created on 19-Jan-2004 by John Taylor jdt@roe.ac.uk .
  * Copyright (C) AstroGrid. All rights reserved.
  * This software is published under the terms of the AstroGrid
@@ -50,9 +50,9 @@ public final class ConfManager {
      */
     private static final String JOBCONTROLLER_ENDPOINT = "jobControlerEndPoint";
     /**
-     * name of key in properties file for the portal we;
+     * name of key in properties file for the portal web site;
      */
-    private static final String PORTAL_SITE = "portalWebSite";
+    private static final String PORTAL_SITE = "org.astrogrid.portal.site";
     /**
      * Singleton
      */
@@ -169,6 +169,9 @@ public final class ConfManager {
 }
 /*
  * $Log: ConfManager.java,v $
+ * Revision 1.10  2004/04/07 15:57:38  jdt
+ * fixed the name of the portal website property
+ *
  * Revision 1.9  2004/03/31 11:27:56  jdt
  * changed key for myspace end point
  *
