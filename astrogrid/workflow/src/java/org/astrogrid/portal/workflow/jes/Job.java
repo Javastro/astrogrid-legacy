@@ -121,7 +121,7 @@ public class Job {
         try {
             jesLocation = WKF.getProperty( WKF.JES_URL, WKF.JES_CATEGORY ) ;
 
-            jobController = new JobControllerDelegate( jesLocation ) ;
+            jobController = JobControllerDelegate.buildDelegate( jesLocation ) ;
 //            jobController.cancelJob( request ) ;            
         }
         catch( Exception ex ) {
@@ -146,7 +146,7 @@ public class Job {
         if( TRACE_ENABLED ) trace( "Job.readJobList() entry") ; 
                 
         ListIterator
-           iterator = null ;
+            iterator = null ;
         String
             jesLocation = null,
             request = null ,
@@ -156,7 +156,8 @@ public class Job {
                    
         try {
             jesLocation = WKF.getProperty( WKF.JES_URL, WKF.JES_CATEGORY ) ;
-            jobController = new JobControllerDelegate( jesLocation ) ;
+            if( TRACE_ENABLED ) trace( "jesLocation: " + jesLocation) ; 
+            jobController = JobControllerDelegate.buildDelegate( jesLocation ) ;
             response = jobController.readJobList( userid
                                                 , community
                                                 , communitySnippet

@@ -1,5 +1,7 @@
 package org.astrogrid.jes.delegate.jobController;
 
+import org.astrogrid.jes.delegate.jobController.impl.* ;
+
 import java.net.URL ;
 import java.net.MalformedURLException ;
 import java.rmi.RemoteException ;
@@ -22,14 +24,38 @@ import org.astrogrid.jes.delegate.JesDelegateException ;
  * @version 1.0 02-Aug-2003
  * @since   AstroGrid 1.2
  */
-public class JobControllerDelegate {
+public abstract class JobControllerDelegate {
     
-    private static final String
+    protected static final String
         JOBLIST_TEMPLATE =
         "<?xml version='1.0' encoding='UTF-8'?>" +
         "<joblist userid=\"{0}\" community=\"{1}\" >" +
-        "   <filter>{2}</filter>" +        "   {3}" +      // community snippet goes here
+        "   <filter>{2}</filter>" +         "   {3}" +      // community snippet goes here
         "</joblist>" ;  
+        
+    private static final int
+        DEFAULT_TIMEOUT = 60000 ;
+        
+        
+    public static JobControllerDelegate buildDelegate( String targetEndPoint ){
+        return JobControllerDelegate.buildDelegate( targetEndPoint, DEFAULT_TIMEOUT ) ;
+    }
+    
+    
+    public static JobControllerDelegate buildDelegate( String targetEndPoint
+                                                     , int timeout ) {                                                        
+        JobControllerDelegate
+            delegate = null ;
+            
+        if( targetEndPoint != null ){
+            delegate = new JobControllerDelegateImpl(targetEndPoint, timeout ) ;
+        }
+        else {
+            delegate = null ;
+        }
+        return delegate ;
+    }
+    
     
     private String 
         targetEndPoint = null ;
@@ -45,69 +71,19 @@ public class JobControllerDelegate {
       this.timeout = timeout ;
     }
     
-    public void submitJob(String req) throws JesDelegateException {
-        
-        JobControllerServiceSoapBindingStub 
-            binding = null ;
-            
-        try {
-            binding = (JobControllerServiceSoapBindingStub)
-                new JobControllerServiceLocator().getJobControllerService( new URL( targetEndPoint ) );                        
-            binding.setTimeout( timeout ) ;    
-            binding.submitJob(req);
-        }
-        catch( MalformedURLException mex ) {
-            throw new JesDelegateException( mex ) ;
-        }
-        catch( RemoteException rex) {
-            throw new JesDelegateException( rex ) ;            
-        }
-        catch( javax.xml.rpc.ServiceException sex ) {
-            throw new JesDelegateException( sex ) ;    
-        }
-              
-        return ;
-  
-    } // end of submitJob()
+    public abstract void submitJob(String req) throws JesDelegateException ;
     
     
-    public String readJobList( String userid
-                             , String community
-                             , String communitySnippet
-                             , String filter ) throws JesDelegateException {
-        
-         
-         String 
-            request = this.formatListRequest( userid, community, communitySnippet, filter ),
-            response = null ;
-         JobControllerServiceSoapBindingStub 
-            binding = null ;
-                    
-         try {
-             binding = (JobControllerServiceSoapBindingStub)
-                           new JobControllerServiceLocator().getJobControllerService( new URL( targetEndPoint ) );                        
-             binding.setTimeout( timeout ) ;    
-             response = binding.readJobList( request ) ;
-         }
-         catch( MalformedURLException mex ) {
-             throw new JesDelegateException( mex ) ;
-         }
-         catch( RemoteException rex) {
-             throw new JesDelegateException( rex ) ;            
-         }
-         catch( javax.xml.rpc.ServiceException sex ) {
-             throw new JesDelegateException( sex ) ;    
-         }
-              
-         return response ;
-  
-     } // end of readJobList()
+    public abstract String readJobList( String userid
+                                      , String community
+                                      , String communitySnippet
+                                      , String filter ) throws JesDelegateException ;
      
      
-     private String formatListRequest( String userid
-                                     , String community
-                                     , String communitySnippet
-                                     , String filter ) {
+     public static String formatListRequest( String userid
+                                           , String community
+                                           , String communitySnippet
+                                           , String filter ) {
         
         String
             response = null ;                                
@@ -123,6 +99,22 @@ public class JobControllerDelegate {
         return response  ;
                                             
      } // end of formatListRequest()
-    
+
+
+	public void setTargetEndPoint(String targetEndPoint) {
+		this.targetEndPoint = targetEndPoint;
+	}
+
+	public String getTargetEndPoint() {
+		return targetEndPoint;
+	}
+
+	public void setTimeout(int timeout) {
+		this.timeout = timeout;
+	}
+
+	public int getTimeout() {
+		return timeout;
+	}    
 
 } // end of class JobControllerDelegate
