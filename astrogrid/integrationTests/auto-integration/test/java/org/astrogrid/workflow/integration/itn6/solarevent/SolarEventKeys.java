@@ -1,4 +1,4 @@
-/*$Id: SolarEventKeys.java,v 1.2 2004/08/12 14:30:03 nw Exp $
+/*$Id: SolarEventKeys.java,v 1.3 2004/08/12 15:54:06 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ package org.astrogrid.workflow.integration.itn6.solarevent;
  */
 public interface SolarEventKeys {
     public static final String SEC_APP = "org.astrogrid.localhost/sec_dsa";
-    public static final String FITS_APP = "org.astrogrid.localhost/fits_dsa";
+    public static final String FITS_APP = "org.astrogrid.localhost/trace_dsa";
     public static final String MPEG_APP = "org.astrogrid.localhost/CallMakeMPEGFitsImages";
     
     //
@@ -28,6 +28,9 @@ public interface SolarEventKeys {
 
 /* 
 $Log: SolarEventKeys.java,v $
+Revision 1.3  2004/08/12 15:54:06  nw
+fixed duff key
+
 Revision 1.2  2004/08/12 14:30:03  nw
 constructed workflows to call fits and sec. need to check the results next
 
