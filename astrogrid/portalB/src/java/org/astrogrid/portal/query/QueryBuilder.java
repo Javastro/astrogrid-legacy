@@ -194,13 +194,13 @@ public class QueryBuilder {
 					if(ci.getLinkedCriteria() != null) {
 						whereClause += ci.getJoinType() + " {" + j + "}((" + dsInfo.getName() + "." + ci.getDataSetColumn().getName() + " " + ci.getFilterType() + " " + ci.getValue() + ") " + checkOtherCriteria(dsInfo.getName(),ci) + ") ";
 					}else {
-						whereClause += ci.getJoinType() + " {" + j + "}(" + dsInfo.getName() + "." + ci.getDataSetColumn().getName() + " " + ci.getFilterType() + " " + ci.getValue() + ") ";
+						whereClause += ci.getJoinType() + " (" + dsInfo.getName() + "." + ci.getDataSetColumn().getName() + " " + ci.getFilterType() + " " + ci.getValue() + ") ";
 					}
 				}else {
 					if(ci.getLinkedCriteria() != null) {
 						whereClause = " {" + j + "}((" + dsInfo.getName() + "." + ci.getDataSetColumn().getName() + " " + ci.getFilterType() + " " + ci.getValue() + ") " + checkOtherCriteria(dsInfo.getName(),ci) + ") ";
 					}else {
-						whereClause = " {" + j + "}(" + dsInfo.getName() + "." + ci.getDataSetColumn().getName() + " " + ci.getFilterType() + " " + ci.getValue() + ") ";
+						whereClause = "(" + dsInfo.getName() + "." + ci.getDataSetColumn().getName() + " " + ci.getFilterType() + " " + ci.getValue() + ") ";
 					}
 				}//else
 			}//for

@@ -14,6 +14,8 @@
 		<xsp:include>java.io.IOException</xsp:include>
 		<xsp:include>java.util.Iterator</xsp:include>
 		<xsp:include>java.util.ArrayList</xsp:include>
+		<xsp:include>java.util.Hashtable</xsp:include>
+		<xsp:include>java.util.Enumeration</xsp:include>
 		<xsp:include>org.astrogrid.portal.query.DataSetColumn</xsp:include>
 		<xsp:include>org.astrogrid.portal.query.DataSetInformation</xsp:include>
 		<xsp:include>org.astrogrid.portal.services.myspace.client.data.DataNode</xsp:include>
@@ -33,6 +35,7 @@
 		<xsp:logic>
 			<![CDATA[
 				ArrayList dsInfoArrayList = (ArrayList)request.getAttribute("DataSetArrayList");
+				Hashtable dsUrlList = (Hashtable)request.getAttribute("DataSetAgents");
 				Integer criteriaNumber = (Integer)request.getAttribute("CriteriaNumber");
 				DataSetInformation dsInfo = null;
 				DataSetColumn dsCol = null;
@@ -81,7 +84,9 @@
 		</options>
 		<xsp:logic>
 			<![CDATA[
+				System.out.println("checking the if of criteria");
 				if(criteriaNumber != null && criteriaNumber.intValue() > 0) {
+					System.out.println("entered the if of criteria");
 					]]>
 					<options>
 						<joins>
@@ -128,5 +133,24 @@
 				</xsp:element>
 			</operators>
 		</options>
+		
+		<options>
+			<dsagents>
+			<xsp:logic>
+				<![CDATA[
+			    	for (Enumeration e = dsUrlList.keys() ; e.hasMoreElements() ;) {
+			    		String keyName = (String)e.nextElement();
+			    	]]>
+			    			<xsp:element name="dsagent">
+								<xsp:attribute name="name"><xsp:expr>keyName</xsp:expr></xsp:attribute>
+								<xsp:attribute name="val"><xsp:expr>dsUrlList.get(keyName)</xsp:expr></xsp:attribute>
+							</xsp:element>
+							<![CDATA[
+						}
+					]]>					
+			</xsp:logic>
+			</dsagents>
+		</options>
+		
 	</query>
 </xsp:page>

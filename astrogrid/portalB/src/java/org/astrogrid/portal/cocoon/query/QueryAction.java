@@ -21,8 +21,8 @@ import org.apache.cocoon.environment.ObjectModelHelper;
 import java.util.Map;
 import java.util.HashMap;
 import org.astrogrid.portal.query.*;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 
 /**
@@ -59,8 +59,6 @@ public class QueryAction extends AbstractAction
 	 */
 	public static final String USER_PARAM_NAME = "user-param" ;
 	
-	
-	
 	private static final String ACTION_ADD_SELECTION = "AddSelection";
 	
 	private static final String ACTION_REMOVE_SELECTION = "RemoveSelection";
@@ -76,8 +74,6 @@ public class QueryAction extends AbstractAction
 	
 	
 	private static final String LINK_TO = "LinkTo" ;
-	
-	//private static final String 	
 	
 	private static final String DATASET_NAME = "DataSetName";
 	
@@ -97,18 +93,29 @@ public class QueryAction extends AbstractAction
 	
 	private static final String JOIN_TYPE = "JoinType";
 	
+	private static final String DS_AGENT = "DataSetAgent";	
+	
 	
 	private static final String CONFIG_FILENAME = "ASTROGRID_DataQueryPortal.properties";
 
-	private static final String JES_URL_PROPERTY = "ASTROGRID.JES.URL";	
+	private static final String JES_URL_PROPERTY = "ASTROGRID.JES.URL";
 	
-	private static final String REGISTRY_URL_PROPERTY = "ASTROGRID.REGISTRY.URL";
-	
-	private static final String JES_METHODCALL_PROPERTY = "ASTROGRID.JES.METHODCALL";	
-	
-	private static final String REGISTRY_METHODCALL_PROPERTY = "ASTROGRID.REGISTRY.METHODCALL";	
-	
+	private static final String JES_NS_PROPERTY = "ASTROGRID.JES.NS";	
 
+	private static final String JES_METHODCALL_PROPERTY = "ASTROGRID.JES.METHODCALL";		
+	
+	private static final String REGISTRY_URL_PROPERTY = "ASTROGRID.REGISTRY.URL";	
+	
+	private static final String REGISTRY_NS_PROPERTY = "ASTROGRID.REGISTRY.NS";	
+	
+	private static final String REGISTRY_METHODCALL_PROPERTY = "ASTROGRID.REGISTRY.METHODCALL";
+	
+	private static final String DEBUG_FLAG_PROPERTY = "DEBUG.FLAG";
+	
+	private static final String DS_URL_PROPERTY = "ASTROGRID.DS.URL";
+	
+	private static final String DS_NAME_PROPERTY = "ASTROGRID.DS.NAME";
+	
 	private static final String REQUEST_CRITERIA_NUMBER = "CriteriaNumber";
 	
 	private static final String REQUEST_QUERY_STRING_SENT = "QueryStringSent";
@@ -123,21 +130,18 @@ public class QueryAction extends AbstractAction
 	
 	private static final String REQUEST_DATASET_LIST = "DataSetArrayList";	
 	
+	private static final String DS_AGENT_LIST = "DataSetAgents";
 	
-	
-	private String registryEndPoint = "http://msslxy.mssl.ucl.ac.uk:8080/soap/servlet/rpcrouter";
-	private String registryNS = "urn:org.astrogrid.registry.RegistryInterface3_0";
-	private String registryMethodCall = "submitQuery";
+	private String registryEndPoint = null;
+	private String registryNS = null;
+	private String registryMethodCall = null;
 
-	private String jesEndPoint = "http://hydra.star.le.ac.uk:8080/axis/services/JobControllerService";
-	private String jesNS = "urn:org.astrogrid.jobController";
-	private String jesMethodCall = "submitJob";	
+	private String jesEndPoint = null;
+	private String jesNS = null;
+	private String jesMethodCall = null;	
 	
-	
-	/** The DatasetAgent's properties' file. */  	
-	private Properties
-		configurationProperties = null ;
-
+	private String dsUrl = null;
+	private String dsName = null;	
 
 	/**
 	 * Our action method.
@@ -150,32 +154,52 @@ public class QueryAction extends AbstractAction
 		String source, 
 		Parameters params)
 		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("QueryAction.act()") ;
 		
 		//
 		// Get our current request and session.
 		Request request = ObjectModelHelper.getRequest(objectModel);
 		Session session = request.getSession();
-		
 
-		Properties configurationProperties = new Properties() ;
-		try {
-			configurationProperties.load(new FileInputStream(request.getContextPath() + "/" + CONFIG_FILENAME));
-			System.out.println("test = " + configurationProperties.getProperty(REGISTRY_SERVER_PROTOCOL_PROPERTY));
+		String tempStr = null;		
+		
+		Properties prop = new Properties();
+		InputStream stream = this.getClass().
+							 getResourceAsStream("QueryAction.properties");
+		if (null != stream)	{
+			try {
+				prop.load(stream);
+			}catch(IOException ioe) {
+				ioe.printStackTrace();
+			}
 		}
-		catch ( IOException ex ) {
-			configurationProperties = null ;
-			ex.printStackTrace();
-		}
+		DEBUG_FLAG = new Boolean(prop.getProperty(DEBUG_FLAG_PROPERTY,"true")).booleanValue();
+		registryEndPoint = prop.getProperty(REGISTRY_URL_PROPERTY);
+		registryNS = prop.getProperty(REGISTRY_NS_PROPERTY);		
+		registryMethodCall = prop.getProperty(REGISTRY_METHODCALL_PROPERTY);
+		jesEndPoint = prop.getProperty(JES_URL_PROPERTY);
+		jesNS = prop.getProperty(JES_NS_PROPERTY);
+		jesMethodCall = prop.getProperty(JES_METHODCALL_PROPERTY);
+		
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("QueryAction.act()") ;
 		
 		
-		System.out.println("contextpath = " + request.getContextPath());
-		System.out.println("pathinfo = " + request.getPathInfo());
-		System.out.println("pathtranslated = " + request.getPathTranslated());
-		System.out.println("servletpath = " + request.getServletPath());
+		Hashtable dsUrlHash = new Hashtable();
+		int iTemp = 0;
+		dsUrl = prop.getProperty(DS_URL_PROPERTY + iTemp);
+		dsName = prop.getProperty(DS_NAME_PROPERTY + iTemp);
+		String t = DS_NAME_PROPERTY + iTemp;
+		while(dsName != null) {
+			dsUrlHash.put(dsName,dsUrl);
+			iTemp++;
+			dsUrl = prop.getProperty(DS_URL_PROPERTY + iTemp);
+			dsName = prop.getProperty(DS_NAME_PROPERTY + iTemp);
+		}
+		request.setAttribute(DS_AGENT_LIST,dsUrlHash);
+				
 
+		
 		//
 		//Create a new HashMap for our results.  Will be used to
 		//pass to the transformer (xsl page)
@@ -202,11 +226,8 @@ public class QueryAction extends AbstractAction
 		String errorMessage = null;
 
 		String []reqTemp;
-		String userName = null;
-		String community = null;
-		String tempStr = null;
 		String jobIDStr = null;
-		int iTemp = -1;
+		
 		
 
 
@@ -228,12 +249,22 @@ public class QueryAction extends AbstractAction
 		//Columns and ucds.  See if it is in our request object
 		//if not then go get it.
 		ArrayList dsInfoFromRegistry = (ArrayList)
-		                                request.getAttribute(REQUEST_DATASET_LIST);
+		                                session.getAttribute(REQUEST_DATASET_LIST);
 		if(dsInfoFromRegistry == null || dsInfoFromRegistry.size() <= 0) {
 			dsInfoFromRegistry = getDataSetsFromRegistry();
-			request.setAttribute(REQUEST_DATASET_LIST,dsInfoFromRegistry);
-			results.put(REQUEST_DATASET_LIST,dsInfoFromRegistry);
+			session.setAttribute(REQUEST_DATASET_LIST,dsInfoFromRegistry);
 		}
+		request.setAttribute(REQUEST_DATASET_LIST,dsInfoFromRegistry);		
+		
+		tempStr = (String)request.getAttribute(REQUEST_QUERY_STRING_SENT);
+		if(!validParameter(tempStr)) {
+			tempStr = "";
+		}else {
+			results.put(REQUEST_QUERY_STRING_SENT,"\nSent Query:" + tempStr);
+			request.setAttribute(REQUEST_QUERY_STRING_SENT,tempStr);			
+		}
+				
+						
 		
 		String dsName = request.getParameter(DATASET_NAME);
 		String dsNameCriteria = request.getParameter(DATASET_NAME_CRITERIA);
@@ -242,18 +273,19 @@ public class QueryAction extends AbstractAction
 		String operator = request.getParameter(OPERATOR);
 		String value = request.getParameter(VALUE);
 		String joinType = request.getParameter(JOIN_TYPE);
-		String functionValues = request.getParameter(FUNCTION_VALUES); 
+		String functionValues = request.getParameter(FUNCTION_VALUES);
+		String dsAgent = request.getParameter(DS_AGENT); 
 		
 		String actionRemoveSelection = request.getParameter(ACTION_REMOVE_SELECTION);
 		String actionAddCriteria = request.getParameter(ACTION_ADD_CRITERIA);
 		String actionRemoveCriteria = request.getParameter(ACTION_REMOVE_CRITERIA);
 		String actionAddSelection = request.getParameter(ACTION_ADD_SELECTION);
 		String actionClearQuery = request.getParameter(ACTION_CLEAR_QUERY);
-		String actionSubmitQuery = request.getParameter(ACTION_SUBMIT_QUERY)
+		String actionSubmitQuery = request.getParameter(ACTION_SUBMIT_QUERY);
 		
 		//Start checking which button was pressed.  
 		//With AddSelection being the first to be checked.
-		if(validParameter(actionAddSelection)) {
+		if( validParameter(actionAddSelection) ) {
 			//It was an AddSelection meaning they want to 
 			//add colums/ucd or DataSet to the query.
 			if(validParameter(dsName) &&
@@ -341,7 +373,6 @@ public class QueryAction extends AbstractAction
 			   validParameter(operator) ) {
 			   	
 				DataSetInformation dsInfo = null;
-				iTemp = new Integer(request.getParameter(LINK_TO)).intValue();
 				reqTemp = request.getParameter(FILTER_COLUMN).split("-");
 				
 				//make sure the dataset exists.
@@ -371,7 +402,7 @@ public class QueryAction extends AbstractAction
 			//submitted a query to the jes system.  Send it to 
 			//the jes system and get a jobid.  Then clear out the
 			//QueryBuilder so he can start a new one.
-			jobIDStr = submitJobQuery(qb,results);
+			jobIDStr = submitJobQuery(qb,results,dsAgent);
 			request.setAttribute(REQUEST_CRITERIA_NUMBER,null);
 			tempStr = (String)request.getAttribute(REQUEST_QUERY_STRING_SENT);
 			if(!validParameter(tempStr)) {
@@ -380,6 +411,7 @@ public class QueryAction extends AbstractAction
 				
 			tempStr = qb.formulateQuery() + "- JobID= " + jobIDStr + "<br />" + tempStr;
 			results.put(REQUEST_QUERY_STRING_SENT,"\nSent Query:" + tempStr);
+			request.setAttribute(REQUEST_QUERY_STRING_SENT,tempStr);
 			qb.clear();
 			qb = null;
 			
@@ -402,6 +434,7 @@ public class QueryAction extends AbstractAction
 		
 		session.setAttribute(SESSION_QUERY_BUILDER,qb);
 
+		System.out.println("critnumber = " + request.getAttribute("CriteriaNumber") );
 		//forward back to DataQuery.jsp
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
@@ -418,13 +451,7 @@ public class QueryAction extends AbstractAction
 	 */
 	private ArrayList getDataSetsFromRegistry() {
 		String reqXmlString = QueryRegistryInformation.getAllDataSetInformationFromRegistry();
-		if(DEBUG_FLAG) {
-			System.out.println(reqXmlString);
-		}		
 		String respXmlString = sendQuery(reqXmlString,registryEndPoint,registryNS,registryMethodCall);
-		if(DEBUG_FLAG) {
-			System.out.println(respXmlString);
-		}		
 		Object []dsItems = QueryRegistryInformation.getDataSetItemsFromRegistryResponse(respXmlString);
 		ArrayList ds = new ArrayList(dsItems.length);
 		
@@ -459,7 +486,7 @@ public class QueryAction extends AbstractAction
 	 * @param results
 	 * @return
 	 */
-	private String submitJobQuery(QueryBuilder qb,Map results) {
+	private String submitJobQuery(QueryBuilder qb,Map results,String dsAgent) {
 		//submited a query so send it to the JobController.
 			String tempStr = "";
 			String jobIDStr = null;
@@ -467,7 +494,7 @@ public class QueryAction extends AbstractAction
 			
 			try {
 				CreateRequest cr = new CreateRequest();
-				Document doc = cr.buildXMLRequest(qb);
+				Document doc = cr.buildXMLRequest(qb,dsAgent);
 
 				xmlBuildResult = cr.writeDocument(doc);
 				tempStr = sendQuery(xmlBuildResult,jesEndPoint,jesNS,jesMethodCall);
@@ -504,6 +531,9 @@ public class QueryAction extends AbstractAction
 			call.setTargetEndpointAddress(new URL(endPoint));
 			call.setOperationName(new javax.xml.namespace.QName(nameSpace, methodName));
 			call.setReturnType(XMLType.XSD_STRING);
+			if(DEBUG_FLAG) {
+				System.out.println("request doc to the webservice = " + req);
+			}
 			java.lang.Object _resp = call.invoke(new java.lang.Object[] {req});
 			String response = (String)_resp;
 			if(DEBUG_FLAG) {

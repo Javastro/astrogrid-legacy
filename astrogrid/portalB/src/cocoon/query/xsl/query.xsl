@@ -7,8 +7,11 @@
 	<!--+
 	    | The current action, set from the Cocoon action.
 	    +-->
-	<xsl:param name="action"/>
-	<xsl:param name="confirm"/>
+	<xsl:param name="QueryString" />
+	<xsl:param name="QueryStringSent" />	
+	<xsl:param name="ErrorMessage" />
+	<xsl:param name="LastWebCall" />
+	
 	<!--+
 	    | The page names, set from the Cocoon sitemap.
 	    +-->
@@ -25,7 +28,6 @@
 	<!--+
 	    | Match the explorer element.
 		+-->
-<!--	<xsl:template match="explorer">  -->
 	<xsl:template match="query">
 		<page>
 			<!-- Add our page content -->
@@ -39,7 +41,30 @@
 	    | Generate the query form.
 	    +-->
 	<xsl:template name="query_form">
+		<xsl:if test="$ErrorMessage != ''">	
+			<font color="red">
+				<xsl:value-of select="$ErrorMessage" />
+			</font>	
+		</xsl:if>
 		<form method="get">
+			<strong>DataSetAgent Server</strong>
+			<select name="DataSetAgent">
+				<xsl:for-each select="//query/options/dsagents/dsagent">
+					<xsl:element name="option">
+						<xsl:attribute name="value">
+							<xsl:value-of select="@val"/>
+						</xsl:attribute>
+						<xsl:if test="@default = 'true'">
+							<xsl:attribute name="selected">
+								<xsl:value-of select="true"/>
+							</xsl:attribute>
+						</xsl:if>
+						<xsl:value-of select="@name"/>
+					</xsl:element>
+				</xsl:for-each>
+			</select>
+			<br />
+			
 			<strong>Information you want returned:</strong>
 			<select name="DataSetName">
 				<xsl:for-each select="//query/options/datasets/datasetname">
@@ -76,7 +101,7 @@
 			<input type="submit" name="RemoveSelection" value="Remove Selection" />
 			<hr />
 			<h1>Query Filter</h1>
-			<xsl:if test="//query/options/joings/@joinType">
+			<xsl:if test="//query/options/joins">
 				<select name="JoinType">
 					<xsl:for-each select="//query/options/joins/jointype">
 						<xsl:element name="option">
@@ -158,12 +183,24 @@
 			<xsl:if test="$QueryString != ''">
 				<hr />
 				<h1>The Query</h1>
-				$queryString
+				<xsl:value-of select="$QueryString" />
 				<br />
 				<input type="submit" name="ClearQuery" value="Clear Query" />
 				<input type="submit" name="SubmitQuery" value="Send Query" />
 			</xsl:if>
 		</form>
+		<xsl:if test="$QueryStringSent != ''">
+			<br />
+			<xsl:value-of select="$QueryStringSent" />
+		</xsl:if>
+		<xsl:if test="$LastWebCall != ''">	
+			<br />
+			<br />
+			<i>Here is a look at the last XML string sent to the webservice.</i>
+			<br />
+			<xsl:value-of select="$LastWebCall" />
+		</xsl:if>
+		
 	</xsl:template>
 
 	<!--+

@@ -42,7 +42,10 @@ public class CreateRequest {
 	private final String FIELD_ELEMENT = "field";
 	private final String OPERATION_ELEMENT = "operation";
 	private final String CRITERIA_ELEMENT = "criteria";
-	private final String JOBCONTROLLER_URL = "http://hydra.star.le.ac.uk:8080/axis/services/DatasetAgent"; 
+	private final String FUNCTION_TYPE = "FUNCTION";
+	private final String NONE_TYPE = "NONE";
+	
+	//private final String DS_AGENT_URL = "http://hydra.star.le.ac.uk:8080/axis/services/DatasetAgent"; 
 
 	public CreateRequest() {
 
@@ -61,165 +64,104 @@ public class CreateRequest {
 	 * @param qb
 	 * @return
 	 */
-	public Document buildXMLRequest(QueryBuilder qb) {
+	public Document buildXMLRequest(QueryBuilder qb,String dsAgent) {
 		try {
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		//dbf.setValidating(true);
-		DocumentBuilder db = dbf.newDocumentBuilder();
-		Document doc = db.getDOMImplementation().createDocument(null,JOB_ELEMENT,null);
-		String dsNameTemp = null;
-		String opTemp = null;
-		int iTemp = 0;
-		boolean newOpFound = false;
 
-		Element userElem,commElem,jobStepElem,serviceElem,queryElem;
-		Element fromElem,returnElem,criteriaElem,fieldElem,catalogElem;
-		Element opElement = null,opElem = null;
-		Element operationElem;
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document doc = db.getDOMImplementation().
+			               createDocument(null,JOB_ELEMENT,null);
+			String dsNameTemp = null;
+			String opTemp = null;
+			int iTemp = 0;
+			boolean newOpFound = false;
 
-		doc.getDocumentElement().setAttribute(NAME_ATTR,qb.getName());
+			Element userElem,commElem,jobStepElem,serviceElem,queryElem;
+			Element fromElem,returnElem,criteriaElem,fieldElem,catalogElem;
+			Element opElement = null,opElem = null;
+			Element operationElem;
 
-		userElem = doc.createElement(USERID_ELEMENT);
-		userElem.appendChild(doc.createTextNode(qb.getUserName()));
-		doc.getDocumentElement().appendChild(userElem);
+			doc.getDocumentElement().setAttribute(NAME_ATTR,qb.getName());
 
-		commElem = doc.createElement(COMM_ELEMENT);
-		commElem.appendChild(doc.createTextNode(qb.getCommunity()));
-		doc.getDocumentElement().appendChild(commElem);
-//		System.out.println("the username = " + qb.getUserName());
-//		System.out.println("the community = " + qb.getCommunity());
+			userElem = doc.createElement(USERID_ELEMENT);
+			userElem.appendChild(doc.createTextNode(qb.getUserName()));
+			doc.getDocumentElement().appendChild(userElem);
 
-		for(int i=0;i < qb.getDataSetInformation().size();i++) {
-			DataSetInformation dsInfo = (DataSetInformation)qb.getDataSetInformation().get(i);
-			dsNameTemp = dsInfo.getName().toLowerCase();
-			if( (iTemp = dsNameTemp.indexOf("-")) != -1) {
-				String temp = new String(dsNameTemp);
-				dsNameTemp = dsNameTemp.substring(0,iTemp);
-				dsNameTemp = dsNameTemp.concat(temp.substring((iTemp+1)));
-			}
-			jobStepElem = doc.createElement(JOBSTEP_ELEMENT);
-			jobStepElem.setAttribute(NAME_ATTR,dsNameTemp);
-			jobStepElem.appendChild( (queryElem = doc.createElement(QUERY_ELEMENT)) );
+			commElem = doc.createElement(COMM_ELEMENT);
+			commElem.appendChild(doc.createTextNode(qb.getCommunity()));
+			doc.getDocumentElement().appendChild(commElem);
 
-			queryElem.appendChild( (fromElem = doc.createElement(FROM_ELEMENT)) );
-				fromElem.appendChild( (catalogElem = doc.createElement(CATALOG_ELEMENT)) );
-					catalogElem.setAttribute(NAME_ATTR,dsNameTemp);
-					catalogElem.appendChild( (serviceElem = doc.createElement(SERVICE_ELEMENT)) );
-						serviceElem.setAttribute(NAME_ATTR,dsNameTemp);
-						serviceElem.setAttribute(URL_ATTR,JOBCONTROLLER_URL);
-			queryElem.appendChild ( (returnElem = doc.createElement(RETURN_ELEMENT)) );
-				for(int j=0;j < dsInfo.getDataSetColumns().size();j++) {
-					DataSetColumn dsColumn = (DataSetColumn)dsInfo.getDataSetColumns().get(j);
-					returnElem.appendChild( (fieldElem = doc.createElement(FIELD_ELEMENT)) );
-					fieldElem.setAttribute(NAME_ATTR,dsColumn.getName());
-					if(dsColumn.getType() != null && dsColumn.getType().length() > 0) {
-						fieldElem.setAttribute(TYPE_ATTR,dsColumn.getType());
-					}//if
-				}//for
+			for(int i=0;i < qb.getDataSetInformation().size();i++) {
+				DataSetInformation dsInfo = (DataSetInformation)qb.getDataSetInformation().get(i);
+				dsNameTemp = dsInfo.getName().toLowerCase();
+				if( (iTemp = dsNameTemp.indexOf("-")) != -1) {
+					String temp = new String(dsNameTemp);
+					dsNameTemp = dsNameTemp.substring(0,iTemp);
+					dsNameTemp = dsNameTemp.concat(temp.substring((iTemp+1)));
+				}
+				jobStepElem = doc.createElement(JOBSTEP_ELEMENT);
+				jobStepElem.setAttribute(NAME_ATTR,dsNameTemp);
+				jobStepElem.appendChild( (queryElem = doc.createElement(QUERY_ELEMENT)) );
 
-			queryElem.appendChild( (criteriaElem = doc.createElement(CRITERIA_ELEMENT)) );
-			criteriaElem.appendChild( (operationElem = doc.createElement(OPERATION_ELEMENT)) );
-			for(int k = 0;k < dsInfo.getCriteriaInformation().size();k++) {
-				CriteriaInformation ci = (CriteriaInformation)dsInfo.getCriteriaInformation().get(k);
-				if(k == 0 && dsInfo.getCriteriaInformation().size() == 1)  { 
-					doCriteria(doc,operationElem,ci);	
-				}else {
-					if(k == 0 && dsInfo.getCriteriaInformation().size() > 1)  {
-						CriteriaInformation ciTemp = (CriteriaInformation)dsInfo.getCriteriaInformation().get(1);
-						operationElem.setAttribute(NAME_ATTR,ciTemp.getJoinType());
-						opTemp = ciTemp.getJoinType();
-						operationElem.appendChild( (opElement = doc.createElement(OPERATION_ELEMENT)) );
-						doCriteria(doc,opElement,ci);					
-					}else {
-						operationElem.appendChild( (opElement = doc.createElement(OPERATION_ELEMENT)) );
-						if(k != (dsInfo.getCriteriaInformation().size() - 1 )) {
-							CriteriaInformation ciTemp2 = (CriteriaInformation)dsInfo.getCriteriaInformation().get(k+1);
-							if(ciTemp2.getJoinType() != null && ciTemp2.getJoinType().length() > 0) {
-								if(!ciTemp2.getJoinType().equals(opTemp)) {
-									opElement.setAttribute(NAME_ATTR,ciTemp2.getJoinType());
-									opElement.appendChild( (opElem = doc.createElement(OPERATION_ELEMENT)) );
-									doCriteria(doc,opElem,ci);
-									opElement.appendChild( (opElem = doc.createElement(OPERATION_ELEMENT)) );
-									doCriteria(doc,opElem,ciTemp2);
-									k++;
-								}else {
-									doCriteria(doc,opElement,ci);
-								}	
-							}
-						}else {
-							doCriteria(doc,opElement,ci);	
-						}
-						/*
-						if(k > 1 && ci.getJoinType() != null && ci.getJoinType().length() > 0) {
-							if(!ci.getJoinType().equals(opTemp)) {
-								opElement.setAttribute(NAME_ATTR,ci.getJoinType());
-								operationElem.appendChild( (opElem = doc.createElement(OPERATION_ELEMENT)) );
-								doCriteria(doc,opElem,ci);
-								//opTemp = ci.getJoinType();							
-							}else {
-								doCriteria(doc,opElement,ci);							
-							}//else						
-						}else {
-							if(k == 1) {
-								doCriteria(doc,opElement,ci);	
-							}	
-						}
-						*/											
-					}//else
-				}//else
-			}
-			/*
-			for(int k = (dsInfo.getCriteriaInformation().size() -1) ;k >= 0;k--) {
-				CriteriaInformation ci = (CriteriaInformation)dsInfo.getCriteriaInformation().get(k);
-				if(ci.getJoinType() != null && ci.getJoinType().length() > 0) {
-					if(k == (dsInfo.getCriteriaInformation().size() -1) ) {
-						operationElem.setAttribute(NAME_ATTR,ci.getJoinType());
-						operationElem.appendChild( (opElement = doc.createElement(OPERATION_ELEMENT)) );
-						doCriteria(doc,opElement,ci);						
-					}else {
-						operationElem.appendChild( (opElement = doc.createElement(OPERATION_ELEMENT)) );
-						opElement.setAttribute(NAME_ATTR,ci.getJoinType());
-						opTemp = ci.getJoinType();
-						operationElem.appendChild( (opElement = doc.createElement(OPERATION_ELEMENT)) );					
-					}
-				}else {
-					if(k == (dsInfo.getCriteriaInformation().size() -1) ) {
-						doCriteria(doc,operationElem,ci);		
-					}//if
-				}//else
-				//else {opElement = operationElem;}
-				
-				//
-			}//for
-			*/
-			/*
+				queryElem.appendChild( (fromElem = doc.createElement(FROM_ELEMENT)) );
+					fromElem.appendChild( (catalogElem = doc.createElement(CATALOG_ELEMENT)) );
+						catalogElem.setAttribute(NAME_ATTR,dsNameTemp);
+						catalogElem.appendChild( (serviceElem = doc.createElement(SERVICE_ELEMENT)) );
+							serviceElem.setAttribute(NAME_ATTR,dsNameTemp);
+							serviceElem.setAttribute(URL_ATTR,dsAgent);
+				queryElem.appendChild ( (returnElem = doc.createElement(RETURN_ELEMENT)) );
+					for(int j=0;j < dsInfo.getDataSetColumns().size();j++) {
+						DataSetColumn dsColumn = (DataSetColumn)dsInfo.getDataSetColumns().get(j);
+						returnElem.appendChild( (fieldElem = doc.createElement(FIELD_ELEMENT)) );
+						fieldElem.setAttribute(NAME_ATTR,dsColumn.getName());
+						if(dsColumn.getType() != null && dsColumn.getType().length() > 0) {
+							fieldElem.setAttribute(TYPE_ATTR,dsColumn.getType());
+						}//if
+					}//for
+
+				queryElem.appendChild( (criteriaElem = doc.createElement(CRITERIA_ELEMENT)) );
+				criteriaElem.appendChild( (operationElem = doc.createElement(OPERATION_ELEMENT)) );
 				for(int k = 0;k < dsInfo.getCriteriaInformation().size();k++) {
-					criteriaElem.appendChild( (operationElem = doc.createElement(OPERATION_ELEMENT)) );
 					CriteriaInformation ci = (CriteriaInformation)dsInfo.getCriteriaInformation().get(k);
-					doCriteria(doc,operationElem,ci);
-				}//for
-				*/
-			doc.getDocumentElement().appendChild(jobStepElem);
-		}//for
-
-		//printDocument(doc);
-		return doc;
+					if(k == 0 && dsInfo.getCriteriaInformation().size() == 1)  { 
+						doCriteria(doc,operationElem,ci);	
+					}else {
+						if(k == 0 && dsInfo.getCriteriaInformation().size() > 1)  {
+							CriteriaInformation ciTemp = (CriteriaInformation)dsInfo.getCriteriaInformation().get(1);
+							operationElem.setAttribute(NAME_ATTR,ciTemp.getJoinType());
+							opTemp = ciTemp.getJoinType();
+							operationElem.appendChild( (opElement = doc.createElement(OPERATION_ELEMENT)) );
+							doCriteria(doc,opElement,ci);					
+						}else {
+							operationElem.appendChild( (opElement = doc.createElement(OPERATION_ELEMENT)) );
+							if(k != (dsInfo.getCriteriaInformation().size() - 1 )) {
+								CriteriaInformation ciTemp2 = (CriteriaInformation)dsInfo.getCriteriaInformation().get(k+1);
+								if(ciTemp2.getJoinType() != null && ciTemp2.getJoinType().length() > 0) {
+									if(!ciTemp2.getJoinType().equals(opTemp)) {
+										opElement.setAttribute(NAME_ATTR,ciTemp2.getJoinType());
+										opElement.appendChild( (opElem = doc.createElement(OPERATION_ELEMENT)) );
+										doCriteria(doc,opElem,ci);
+										opElement.appendChild( (opElem = doc.createElement(OPERATION_ELEMENT)) );
+										doCriteria(doc,opElem,ciTemp2);
+										k++;
+									}else {
+										doCriteria(doc,opElement,ci);
+									}	
+								}
+							}else {
+								doCriteria(doc,opElement,ci);	
+							}
+						}//else
+					}//else
+				}
+				doc.getDocumentElement().appendChild(jobStepElem);
+			}//for
+			return doc;
 		}catch(Exception e) {
 			System.out.println(e.toString());
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	/**
-	 * Takes an xml document and prints it out on the System.out (the command line) for viewing.
-	 * @param doc
-	 * @throws Exception
-	 */
-	private void printDocument(Document doc) throws Exception {
-		TransformerFactory tf = TransformerFactory.newInstance();
-		Transformer output = tf.newTransformer();
-		output.transform(new DOMSource(doc), new StreamResult(System.out));
 	}
 
 	/**
@@ -242,9 +184,10 @@ public class CreateRequest {
 		Element fieldElem;
 		Element op,opTemp;
 		String []fValues;
-		if(ci.getDataSetColumn().getType() == null || !ci.getDataSetColumn().getType().equals("FUNCTION")) {
+		if(ci.getDataSetColumn().getType() == null || 
+		   !FUNCTION_TYPE.equals(ci.getDataSetColumn().getType()) ) {
 			opElement.setAttribute(NAME_ATTR,ci.getFilterType());
-			opElement.appendChild( (fieldElem = doc.createElement(FIELD_ELEMENT)) );
+			opElement.appendChild( (fieldElem = doc.createElement(FIELD_ELEMENT)));
 			fieldElem.setAttribute(NAME_ATTR,ci.getDataSetColumn().getName());
 			if(ci.getDataSetColumn().getType() != null) {
 				fieldElem.setAttribute(TYPE_ATTR,ci.getDataSetColumn().getType());
@@ -256,20 +199,15 @@ public class CreateRequest {
 				opElement.appendChild( (fieldElem = doc.createElement(FIELD_ELEMENT)) );
 				fieldElem.appendChild(doc.createTextNode(fValues[i]));
 			}//for
-			if(ci.getFilterType() != null && !ci.getFilterType().equals("NONE")) {
+			if(!NONE_TYPE.equals(ci.getFilterType())) {
 			  opElement.appendChild( (opTemp = doc.createElement(OPERATION_ELEMENT)) );
 			  opTemp.setAttribute(NAME_ATTR,ci.getFilterType());
 			}
 		}//else
-		if(ci.getFilterType() != null && !ci.getFilterType().equals("NONE")) {
+		if(!NONE_TYPE.equals(ci.getFilterType()) ) {
 			opElement.appendChild ( (fieldElem = doc.createElement(FIELD_ELEMENT)) );
 			fieldElem.appendChild(doc.createTextNode(ci.getValue()));
 		}
-		/*if(ci.getLinkedCriteria() != null) {
-			opElement.appendChild( (op = doc.createElement(OPERATION_ELEMENT)) );
-			doCriteria(doc,op,ci.getLinkedCriteria());
-		}//if
-		*/
 	}//doCriteria
 	
 
@@ -322,21 +260,4 @@ public class CreateRequest {
 		}//if
 	}//doCriteria
 	*/
-	
-	public static void main(String []args) {
-		try {
-		QueryBuilder qb = new QueryBuilder("JobTest");
-		DataSetInformation ds = qb.addDataSetInformation("USNOB");
-		ds.addDataSetColumn("ID","COLUMN");
-		ds.addCriteriaInformation("ID","COLUMN","EQUALS","5",null,null);
-
-		CreateRequest ci = new CreateRequest();
-		Document doc = ci.buildXMLRequest(qb);
-		String res = ci.writeDocument(doc);
-		System.out.println("the result = " + res);
-	}catch(Exception e1){e1.printStackTrace();}
-
-
-	}
-
 }

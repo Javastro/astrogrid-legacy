@@ -4,7 +4,6 @@
 
 <%
 	Iterator info;
-	//java.util.ArrayList dataSets = (ArrayList)session.getAttribute("DataSetArrayList");
 	java.util.ArrayList dataSets = (ArrayList)application.getAttribute("DataSetArrayList");
 	String userName = "";
 	String community = "";

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/Attic/sitemap.xmap,v $</cvs:source>
     | <cvs:date>$Author: KevinBenson $</cvs:date>
-    | <cvs:author>$Date: 2003/07/24 11:29:27 $</cvs:author>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:author>$Date: 2003/07/24 15:31:23 $</cvs:author>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     | $Log: sitemap.xmap,v $
+    | Revision 1.8  2003/07/24 15:31:23  KevinBenson
+    | a few bugs fixed on this integration of dataquery to cocoon
+    |
     | Revision 1.7  2003/07/24 11:29:27  KevinBenson
     | A new DataQuery for cocoon still has a few problems, but it is getting their
     |
@@ -125,9 +128,9 @@
             <map:serialize type="html"/>
          </map:match>
          
-         <!-- Explorer page -->
+         <!-- DataQuery page -->
          <map:match pattern="agdataquery.html">
-            <!-- Call our explorer action -->
+            <!-- Call our query action -->
             <map:act type="astrogrid-query">
                <!-- Set the session attribute to check for the user name -->
                <map:parameter name="user-param"  value="user"/>
@@ -137,12 +140,9 @@
                <map:transform src="query/xsl/query.xsl" label="002">
                   <!-- Add the action params -->
                   <map:parameter name="QueryString" value="{QueryString}"/>
-                  <!--
-                  <map:parameter name="dsInfo"  value="{DataSetArrayList}"/>
-                  <map:parameter name="errorMessage" value="{ErrorMessage}"/>
-
-                  <map:parameter name="lastWebCall" value="{LastWebServiceXML}"/>
-                  -->
+                  <map:parameter name="QueryStringSent" value="{QueryStringSent}"/>
+                  <map:parameter name="ErrorMessage" value="{ErrorMessage}"/>
+                  <map:parameter name="LastWebCall" value="{LastWebServiceXML}"/>
                </map:transform>
             </map:act>
             <!-- Wrap the page in our HTML template -->
