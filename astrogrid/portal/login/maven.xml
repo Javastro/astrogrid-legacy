@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/03/25 15:13:31 $</cvs:date>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/26 15:12:42 $</cvs:date>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.9  2004/03/26 15:12:42  jdt
+    |   Mods to create an "uberwar" for ease of deployment.
+    |
     |   Revision 1.8  2004/03/25 15:13:31  jdt
     |   Added a new depdendency and fixed the annoying JDepend bug.
     |
@@ -158,5 +161,14 @@
 		<mkdir dir="target/classes"/>
 		<!--fix annoying jdepend bug-->
 	</preGoal>
+	
+	<!--Copy myself into parent project to create uberjar-->
+	<postGoal name="war:war">
+        <jelly:set var="webapp.dir" value="${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
+        <echo message="${webapp.dir}"/>
+        <copy todir="../target/astrogrid-portal" overwrite="yes">
+            <fileset dir="${webapp.dir}" />
+        </copy> 
+    </postGoal>
 
 </project>

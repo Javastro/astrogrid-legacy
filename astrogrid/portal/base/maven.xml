@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<project
+    xmlns:jelly="jelly:core"
+    xmlns:maven="jelly:maven"
+    xmlns:ant="jelly:ant"
+    xmlns:deploy="deploy"
+    xmlns:util="jelly:util"
+    xmlns:doc="doc">
+
+  <!--Copy myself into parent project to create uberjar-->
+  <postGoal name="war:war">
+        <jelly:set var="webapp.dir" value="${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
+        <echo message="${webapp.dir}"/>
+        <copy todir="../target/astrogrid-portal" overwrite="yes">
+            <fileset dir="${webapp.dir}" />
+        </copy> 
+  </postGoal>
+
+</project>

@@ -16,6 +16,8 @@
         goals="jar:deploy-snapshot,war:deploy-snapshot"
         banner="Deploy Portal Component JARs and WARs"
         ignoreFailures="true"/>
+     <!--relies on subprojects copyin their stuff into target/astrogrid-portal-->
+     <attainGoal name="war:deploy-snapshot"/> 
   </goal>
 
   <goal name="astrogrid-install-snapshot">
@@ -27,6 +29,8 @@
         goals="jar:install-snapshot,war:install-snapshot"
         banner="Install Portal Component JARs and WARs"
         ignoreFailures="true"/>
+     <!--relies on subprojects copyin their stuff into target/astrogrid-portal-->
+     <attainGoal name="war:install-snapshot"/> 
   </goal>
   
   <goal name="astrogrid-build-snapshot">
@@ -38,6 +42,8 @@
         goals="jar:jar,war:war"
         banner="Install Portal Component JARs and WARs"
         ignoreFailures="true"/>
+        <!--relies on subprojects copyin their stuff into target/astrogrid-portal-->
+        <attainGoal name="war:war"/> 
   </goal>
 
   <!--See project.properties for excludes list-->
