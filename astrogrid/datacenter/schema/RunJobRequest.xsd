@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <xsd:element name="job">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="1" ref="userid"/>
+                <xsd:element maxOccurs="1" minOccurs="1" ref="community"/>
+                <xsd:element maxOccurs="1" minOccurs="1" ref="jobstep"/>
+            </xsd:sequence>
+            <xsd:attribute name="name" use="required">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string"/>
+                </xsd:simpleType>
+            </xsd:attribute>
+            <xsd:attribute name="jobURN" use="required">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string"/>
+                </xsd:simpleType>
+            </xsd:attribute>
+            <xsd:attribute name="jobMonitorURL" use="required">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string"/>
+                </xsd:simpleType>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="userid">
+        <xsd:simpleType>
+            <xsd:restriction base="xsd:string"/>
+        </xsd:simpleType>
+    </xsd:element>
+    
+    <xsd:element name="community">
+        <xsd:simpleType>
+            <xsd:restriction base="xsd:string"/>
+        </xsd:simpleType>
+    </xsd:element>
+    
+    <xsd:element name="jobstep">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="1" ref="query"/>
+            </xsd:sequence>
+            <xsd:attribute name="name" use="optional">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:whiteSpace value="preserve"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="service">
+        <xsd:complexType>
+            <xsd:sequence/>
+            <xsd:attribute name="name" use="required">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string"/>
+                </xsd:simpleType>
+            </xsd:attribute>
+            <xsd:attribute name="url" use="required">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:anyURI"/>
+                </xsd:simpleType>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="query">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="1" ref="criteria"/>
+                <xsd:element maxOccurs="1" minOccurs="1" ref="return"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="from"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="return">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="unbounded" minOccurs="1" ref="field"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="from">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" ref="catalog"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="criteria">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="1" ref="operation"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="catalog">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" ref="service"/>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" ref="table"/>
+            </xsd:sequence>
+            <xsd:attribute name="name" use="required">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string"/>
+                </xsd:simpleType>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="field">
+        <xsd:complexType>
+            <xsd:sequence/>
+            <xsd:attribute name="name" use="optional">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string"/>
+                </xsd:simpleType>
+            </xsd:attribute>
+            <xsd:attribute name="type" use="optional">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="COLUMN"/>
+                        <xsd:enumeration value="UCD"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="operation">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:group maxOccurs="1" minOccurs="1" ref="opsChoice"/>
+            </xsd:sequence>
+            <xsd:attribute name="name" use="required">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="AND"/>
+                        <xsd:enumeration value="OR"/>
+                        <xsd:enumeration value="NOT"/>
+                        <xsd:enumeration value="LESS_THAN"/>
+                        <xsd:enumeration value="GREATER_THAN"/>
+                        <xsd:enumeration value="DIFFERENCE"/>
+                        <xsd:enumeration value="AVERAGE"/>
+                        <xsd:enumeration value="CONE"/>
+                        <xsd:enumeration value="EQUALS"/>
+                        <xsd:enumeration value="GREATER_THAN_OR_EQUALS"/>
+                        <xsd:enumeration value="LESS_THAN_OR_EQUALS"/>
+                        <xsd:enumeration value="IN"/>
+                        <xsd:enumeration value="ANY"/>
+                        <xsd:enumeration value="ALL"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="table">
+        <xsd:complexType>
+            <xsd:sequence/>
+            <xsd:attribute name="name" use="optional">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string"/>
+                </xsd:simpleType>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:group name="opsSequenceA">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" ref="operation"/>
+        </xsd:sequence>
+    </xsd:group>
+    
+    <xsd:group name="opsSequenceB">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="1" ref="field"/>
+            <xsd:element maxOccurs="1" minOccurs="1" ref="operation"/>
+        </xsd:sequence>
+    </xsd:group>
+    
+    <xsd:group name="opsSequenceC">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="1" ref="field"/>
+        </xsd:sequence>
+    </xsd:group>
+    
+    <xsd:group name="opsChoice">
+        <xsd:choice>
+            <xsd:group maxOccurs="1" minOccurs="1" ref="opsSequenceA"/>
+            <xsd:group maxOccurs="1" minOccurs="1" ref="opsSequenceB"/>
+            <xsd:group maxOccurs="1" minOccurs="1" ref="opsSequenceC"/>
+        </xsd:choice>
+    </xsd:group>
+    
+</xsd:schema>
