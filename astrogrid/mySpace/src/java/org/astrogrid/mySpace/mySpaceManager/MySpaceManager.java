@@ -133,8 +133,7 @@ public String upLoad(String jobDetails){
 				if(request.get("userID")!=null) userID = request.get("userID").toString();
 				if(request.get("communityID")!=null) communityID = request.get("communityID").toString();
 				if(request.get("jobID")!=null) jobID = request.get("jobID").toString();				
-				if(request.get("newDataHolderName")!=null) newDataHolderName = request.get("newDataHolderName").toString();
-				
+
 				try{
 					if(request.get("fileSize")!=null) fileSize = Integer.parseInt(request.get("fileSize").toString());
 				}catch(NumberFormatException nfe){
@@ -161,7 +160,15 @@ public String upLoad(String jobDetails){
 			}
 			if ( DEBUG )logger.debug("FILE lOCATION: "+request.get("serverFileName"));
 			serverFileName = request.get("serverFileName").toString();
-			if ( DEBUG ) logger.debug(userID+"  "+communityID +"   "+jobID+"   "+newDataHolderName+"   "+fileSize+"   "+" serverFileName == "+serverFileName);
+			if ( (request.containsKey("newDataHolderName")) && (request.get("newDataHolderName").toString().trim().length()>0)){
+				if ( DEBUG ) logger.debug("newdatraholdernema:"+newDataHolderName+"done");
+				newDataHolderName = request.get("newDataHolderName").toString();
+			}else{
+				newDataHolderName = "/" +userID +"/serv1" +serverFileName.substring(serverFileName.lastIndexOf("/"),serverFileName.length());
+				if ( DEBUG ) logger.debug("newdataholdername:"+newDataHolderName+"done2");
+			}
+	
+			if ( DEBUG ) logger.debug("userid:" +userID+"comID:"+communityID +"jobID:"+jobID+"newdataholdername:"+newDataHolderName+"filesize:"+fileSize+" serverFileName == "+serverFileName);
 
 			if ( DEBUG ) logger.debug("About to invoke myspaceaction.importdataholder");  
 			msA.setRegistryName(registryName);
@@ -177,9 +184,10 @@ public String upLoad(String jobDetails){
 			  errCode = errCode +"," +checkStatus("UPLOADStatusCode");
 			else 
 			  errCode = checkStatus("UPLOAStatusCode");
-			if(DEBUG) logger.debug("UPLOAD CHECKING ATTRIBUTES FOR CREATING DATAITEM:"
-			    + userID +"   "+communityID +"   "+jobID +"   "+newDataHolderName +"   "
-			      +serverFileName +"   "+fileSize +"   " +"   "+mySpaceFileName+"   registryName:"+registryName);
+			if(DEBUG) logger.debug("UPLOAD CHECKING ATTRIBUTES FOR CREATING DATAITEM: userid:"
+			    + userID +"comID"+communityID +"jobID"+jobID +"newDHName"+newDataHolderName
+			    +"serverFileName"+serverFileName +"filesize"+fileSize 
+			    +"mySpaceFileName"+mySpaceFileName+"registryName:"+registryName);
 			
 			content = MySpaceUtils.readFromFile(new File(serverFileName));
 
