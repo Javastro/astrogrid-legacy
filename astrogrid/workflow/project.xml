@@ -103,6 +103,28 @@
 			<version>1.2.4</version>
 		</dependency>
 		<dependency>
+			<artifactId>commons-logging</artifactId>
+			<groupId>commons-logging</groupId>
+			<version>1.0.3</version>
+		</dependency>
+        <dependency>
+           <artifactId>commons-discovery</artifactId>
+           <groupId>commons-discovery</groupId>
+           <version>20030211.213356</version>
+        </dependency> 
+        <dependency>
+    		<artifactId>jaxrpc</artifactId>
+    		<groupId>jaxrpc</groupId>
+    		<version>UNKNOWN</version>
+    		<jar>jaxrpc.jar</jar>
+        </dependency>
+    	<dependency>
+      		<artifactId>saaj</artifactId>
+      		<groupId>saaj</groupId>
+      		<version>UNKNOWN</version>
+      		<jar>saaj.jar</jar>
+    	</dependency>         
+		<dependency>
 			<artifactId>axis</artifactId>
 			<groupId>axis</groupId>
 			<version>1.1</version>
