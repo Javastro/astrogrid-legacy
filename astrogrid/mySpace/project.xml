@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.31 2004/02/06 13:13:56 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.32 2004/02/19 01:02:50 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
@@ -14,9 +14,6 @@
         ease of moving files between MySpace and a local machine, with no need 
         for special logins (beyond generic log into AstroGrid).</description>
     <shortDescription>AstroGrid MySpace Components</shortDescription>
-    <!-- Temporary Overrides till we get consistent artifactIds-->
-    <groupId>astrogrid-mySpace</groupId>
-    <!-- end of overrides -->
     <dependencies>
         <dependency>
             <artifactId>astrogrid-common</artifactId>
